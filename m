@@ -1,26 +1,19 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eip4f-0007Rs-DP
- for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 22:17:20 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Mon, 05 Feb 2018 23:16:57 +0100
-From: stefan@agner.ch
-To: Boris Brezillon <boris.brezillon@free-electrons.com>, shijie.huang@arm.com
-Cc: han.xu@nxp.com, max.oss.09@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- dwmw2@infradead.org
-Subject: Re: [PATCH] mtd: nand: gpmi: fall back to legacy mode if no ECC
- information present
-In-Reply-To: <33bcf28ff1c613886c950465160e5a97@agner.ch>
-References: <20180129144440.13648-1-stefan@agner.ch>
- <20180130142348.35f1bce3@bbrezillon>
- <d7a812de1b96be3460230efde4914ec1@agner.ch>
- <20180131105705.17bbe858@bbrezillon>
- <33bcf28ff1c613886c950465160e5a97@agner.ch>
-Message-ID: <4952bf96840ae5b0caba7b8f472e2b1b@agner.ch>
+ id 1eippm-0000fx-3m
+ for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 23:05:59 +0000
+Received: by mail-pg0-x241.google.com with SMTP id s73so22470pgc.1
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Feb 2018 15:05:47 -0800 (PST)
+Received: from localhost ([223.27.245.122])
+ by smtp.gmail.com with ESMTPSA id m22sm18918040pfg.188.2018.02.05.15.05.44
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 05 Feb 2018 15:05:45 -0800 (PST)
+Message-ID: <5a78e349.16c6620a.3eb02.9d3c@mx.google.com>
+Sender: =?UTF-8?B?UsOpY3pleSBCw6FsaW50?= <rbalint@gmail.com>
+From: Balint Reczey <balint@balintreczey.hu>
+Date: Tue, 6 Feb 2018 05:31:32 +0700
+Subject: [PATCH] mtd: unittests: Stop testing stat() calls
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,162 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Sometimes __xstat is called instead that makes tests fragile.
+---
+ tests/unittests/Makemodule.am |  2 +-
+ tests/unittests/libmtd_test.c |  2 --
+ tests/unittests/libubi_test.c |  1 -
+ tests/unittests/test_lib.h    | 12 ------------
+ 4 files changed, 1 insertion(+), 16 deletions(-)
 
-[Also adding Huang]
-
-On 31.01.2018 22:18, stefan@agner.ch wrote:
-> I accidentally removed ML/cc before, re-adding.
-> 
-> On 31.01.2018 10:57, Boris Brezillon wrote:
->> On Wed, 31 Jan 2018 10:19:05 +0100
->> stefan@agner.ch wrote:
->>
->>> On 30.01.2018 14:23, Boris Brezillon wrote:
->>> > Hi Stefan,
->>> >
->>> > On Mon, 29 Jan 2018 15:44:40 +0100
->>> > Stefan Agner <stefan@agner.ch> wrote:
->>> >
->>> >> In case fsl,use-minimum-ecc is set, the driver tries to determine
->>> >> ECC layout by using the ECC information provided by the MTD stack.
->>> >> However, in case the NAND chip does not provide any information,
->>> >> the driver currently fails with:
->>> >>   nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xf1
->>> >>   nand: Macronix NAND 128MiB 3,3V 8-bit
->>> >>   nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
->>> >>   gpmi-nand 1806000.gpmi-nand: Error setting BCH geometry : 1
->>> >>   gpmi-nand: probe of 1806000.gpmi-nand failed with error 1
->>> >>
->>> >> Fall back to implementation specific default mode if no ECC
->>> >> information are provided by the NAND chip and fsl,use-minimum-ecc
->>> >> is specified.
->>> >
->>> > Hm, this sounds a bit fragile: if we ever fix the Macronix driver
->>> > (which should be done BTW) to set the appropriate ECC requirements, it
->>> > will break all platforms that were relying on this 'fall back to legacy
->>> > logic'.
->>>
->>> I see. It is just that downstream behaves that way, hence we sell
->>> modules which use minimal ECC on ONFI enabled chips and legacy (maximum
->>> ECC which fits into OOB) on modules with non-ONFI chips.
->>
->> And I guess you use the same DT for both variants of the board :-/
->>
-> 
-> Actually we only have two SKUs, and they differ also otherwise so I have
-> two DTs anyway.
-> 
->>>
->>> Currently we operate the above Macronix chip with 8-bit ECC since quite
->>> a while.
->>
->> Honestly, I don't see a good solution here except adding an extra DT or
->> live-patching it from the bootloader, because, even if this hack works
->> for you know, it might not in the future.
-> 
-> Extra DT is fine for Linux.
-> 
-> The problem is more with U-Boot, where I tried to add minimal ECC
-> support via Kconfig symbol and align with Linux behavior. For U-Boot I
-> would really prefer to have a single binary for all SKUs...
-> 
-> I already sent a first patchset
-> https://patchwork.ozlabs.org/patch/867180/
-> 
-> I guess it should be somehow possible to do a board specific selection
-> of ECC. But this is a discussion for another thread.
-> 
->>
->> In the future, if you plan to have boards with different variants of
->> NANDs, I recommend that you always maximize ECC, this way you won't
->> have this kind of issues.
-> 
-> Makes sense. Unfortunately, for those products we already ship, changing
-> would be rather painful.
-> 
->>
->>>
->>> > So, if what you really want is legacy_set_geometry(), don't specify
->>> > "fsl,use-minimum-ecc" in your DT and you should be good. Otherwise, fix
->>> > the Macronix driver to initialize ->ecc_{strength,step_size}_ds
->>> > appropriately.
->>>
->>> The datasheet says:
->>> • High Reliability
->>> - Endurance: 100K cycles (with 1-bit ECC per 528-byte)
->>>
->>> So we would set ecc_strenght to 1?
->>
->> If the datasheet says so, then yes, you should have
->> ->ecc_strength_ds = 1 and ->ecc_step_size_ds = 512.
->>
->>> But then there is almost no room for
->>> wear leveling. I remember that I dumped the fixed bits once on such a
->>> chip, and there were several blocks from factory which needed one bit
->>> fixed...
->>
->> Well, that's a different issue. You might want to maximize the ECC
->> strength for your specific board. In this case, you should not specify
->> "fsl,use-minimum-ecc" in your DT, or, if the driver supports it (but I
->> doubt it does), you should add "nand-ecc-maximize". Alternatively, if
->> you want to keep some of the OOB space, you can ask for a specific ECC
->> config with the "nand-ecc-strength" and "nand-ecc-step-size" properties.
-> 
-> Different issue, but in the end all I care about: Does wear leveling
-> work properly.
-> 
-> The NAND chip documentation also mentions that typical access is per
-> page (2K), I guess if one uses a single ECC across the complete page
-> then 4-bits are available, which should allow a somewhat decent wear
-> leveling.
-> 
-> I guess we can go with nand-ecc-strength/nand-ecc-step-size for that
-> chip for now.
-
-This seems not to be the case for the driver in question gpmi_nand_init
-calls:
-nand_scan_ident -> nand_dt_init (which fills
-chip->ecc.strength/chip->ecc.size)
-
-then
-
-gpmi_init_last -> gpmi_set_geometry -> bch_set_geometry ->
-legacy_set_geometry/set_geometry_by_ecc_info
-
-In both cases struct bch_geometry is calculated and overwrites
-ecc.strength/ecc.size (without considering either of them,
-set_geometry_by_ecc_info is considering ecc_strength_ds/ecc_step_ds
-though).
-
-I guess we would have to add a third option in case device tree
-specifies strength/size, and validate whether it can be reasonably
-fulfilled?
-
-E.g. extend common_nfc_set_geometry:
-
-
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
-+	struct nand_chip *chip = &this->nand;
-+
-+	if (chip->ecc.strength set && chip->ecc.strength set)
-+		return set_geometry_by_ecc_dt_info(this);
-+
- 	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
- 				|| legacy_set_geometry(this))
- 		return set_geometry_by_ecc_info(this);
+diff --git a/tests/unittests/Makemodule.am b/tests/unittests/Makemodule.am
+index 0ecdaa9..569866e 100644
+--- a/tests/unittests/Makemodule.am
++++ b/tests/unittests/Makemodule.am
+@@ -1,6 +1,6 @@
+ ubilib_test_SOURCES = tests/unittests/libubi_test.c lib/libubi.c
+ ubilib_test_LDADD = $(CMOCKA_LIBS)
+-ubilib_test_LDFLAGS = -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=stat -Wl,--wrap=ioctl -Wl,--wrap=read -Wl,--wrap=lseek
++ubilib_test_LDFLAGS = -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=ioctl -Wl,--wrap=read -Wl,--wrap=lseek
+ ubilib_test_CPPFLAGS = -O0 --std=gnu99 $(CMOCKA_CFLAGS) -I include -DSYSFS_ROOT='"tests/unittests/sysfs_mock"'
  
- 	return 0;
+ mtdlib_test_SOURCES = tests/unittests/libmtd_test.c lib/libmtd.c lib/libmtd_legacy.c
+diff --git a/tests/unittests/libmtd_test.c b/tests/unittests/libmtd_test.c
+index fc28dc0..d25b70a 100644
+--- a/tests/unittests/libmtd_test.c
++++ b/tests/unittests/libmtd_test.c
+@@ -53,7 +53,6 @@ static void test_mtd_dev_present(void **state)
+ {
+ 	int ret;
+ 	libmtd_t lib = mock_libmtd_open();
+-	expect_stat(SYSFS_ROOT "/class/mtd/mtd0", 0);
+ 	ret = mtd_dev_present(lib, 0);
+ 	assert_int_equal(ret, 1);
+ 	libmtd_close(lib);
+@@ -423,7 +422,6 @@ static void test_mtd_get_dev_info1(void **state)
+ 	struct mtd_dev_info info;
+ 	int dev_num = 0;
+ 	memset(&info, 0, sizeof(info));
+-	expect_stat(SYSFS_ROOT "/class/mtd/mtd0", 0);
+ 	expect_open(SYSFS_ROOT "/class/mtd/mtd0/dev", O_RDONLY, 0);
+ 	expect_read_real(50,0);
+ 	expect_read(1,0);
+diff --git a/tests/unittests/libubi_test.c b/tests/unittests/libubi_test.c
+index 3e08e42..da06061 100644
+--- a/tests/unittests/libubi_test.c
++++ b/tests/unittests/libubi_test.c
+@@ -98,7 +98,6 @@ static libubi_t mock_libubi_open()
+ static void test_ubi_dev_present(void **state)
+ {
+ 	libubi_t lib = mock_libubi_open();
+-	expect_stat(SYSFS_ROOT "/class/ubi/ubi0", 0);
+ 	int r = ubi_dev_present(lib, 0);
+ 	assert_int_equal(r, 1);
+ 
+diff --git a/tests/unittests/test_lib.h b/tests/unittests/test_lib.h
+index 122672b..8010843 100644
+--- a/tests/unittests/test_lib.h
++++ b/tests/unittests/test_lib.h
+@@ -58,13 +58,6 @@ int __wrap_ioctl(int fd, int req, ...)
+ 	return retval;
  }
-
---
-Stefan
-
-
-> 
-> However, in Linux we should at least fix the device tree bindings
-> documentation for "fsl,use-minimum-ecc" then.
-> 
-> --
-> Stefan
+ 
+-int __wrap_stat(const char *path, struct stat *buf)
+-{
+-	check_expected(path);
+-	assert_non_null(buf);
+-	return mock_type(int);
+-}
+-
+ int __wrap_read(int fd, char *buf, size_t len)
+ {
+ 	assert_true(fd > 0);
+@@ -121,11 +114,6 @@ off_t __wrap_lseek(int fd, off_t seek, int whence)
+ 		will_return(__wrap_ioctl, 0);\
+ 	} while(0);
+ 
+-#define expect_stat(X,Y) do { \
+-		expect_string(__wrap_stat, path, X);\
+-		will_return(__wrap_stat, Y);\
+-	} while(0);
+-
+ #define expect_write(X,Y,Z) do { \
+ 		will_return(__wrap_write, X);\
+ 		will_return(__wrap_write, Y);\
+-- 
+2.14.1
