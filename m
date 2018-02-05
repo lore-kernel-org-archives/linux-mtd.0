@@ -1,20 +1,22 @@
-Date: Mon, 5 Feb 2018 00:08:28 -0600
-From: Rob Herring <robh@kernel.org>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org,
- linux-arm-kernel@lists.infradead.org,
- boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com
-Subject: Re: [PATCH v3] arm64: dts: ls1088a: Add qspi device node for
- ls1088a-rdb
-Message-ID: <20180205060828.ubp67qmtn7m3b247@rob-hp-laptop>
-References: <1517373888-4716-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail-db5eur01on071b.outbound.protection.outlook.com
+ ([2a01:111:f400:fe02::71b]
+ helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eiaRo-0005Rv-GH
+ for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 06:40:15 +0000
+Subject: Re: UBI assert failed in ubi_wl_init
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
+ <CAFLxGvwhwy8_1piyn6WnS1XsD-eifc55C8nCsv8Eh5mmLz1GMg@mail.gmail.com>
+From: Timo Ketola <timo@exertus.fi>
+Message-ID: <eb4fbb3b-897d-458e-6e0b-5cdc8599be48@exertus.fi>
+Date: Mon, 5 Feb 2018 08:39:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1517373888-4716-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <CAFLxGvwhwy8_1piyn6WnS1XsD-eifc55C8nCsv8Eh5mmLz1GMg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 31, 2018 at 10:14:48AM +0530, Yogesh Gaur wrote:
-> Add nodes and properties for QSPI controller.
-> Add support for spansion flash, s25fs512s, as slave device for
-> QSPI controller.
-> 
-> Added entry of "fsl,ls1088a-qspi" in fsl-quadspi.txt binding file.
-> 
-> Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
-> Depends on
->  https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
-> 
-> Changes for v3:
-> - Add compatible string for slave nodes.
-> Changes for v2:
-> - Move property spi-rx-bus-width and spi-tx-bus-width from controller
->   to connected slave device node.
-> 
->  .../devicetree/bindings/mtd/fsl-quadspi.txt        |  1 +
->  arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts  | 25 ++++++++++++++++++++++
->  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi     | 12 +++++++++++
->  3 files changed, 38 insertions(+)
+On 04.02.2018 15:44, Richard Weinberger wrote:
+> Can you share me this UBI image such that I can have a quick look why
+> the invalidation did not work?
 
-Really the binding should be a separate patch, but no need to respin 
-just for that.
+Thank you for looking at this!
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I sent the image privately to not bother the list with 3M file.
+
+It really is an empty image.
+
+
+Build commands:
+
+mkfs.ubifs -e 0x1f000 -c 2048 -m 0x800 -o userfs.ubifs
+
+ubinize -o userfs.ubi -m 0x800 -p 0x20000 ubinize.cfg
+
+
+ubinize.cfg:
+
+[ubifs]
+mode=ubi
+vol_id=0
+vol_type=dynamic
+vol_name=user
+vol_alignment=1
+image=userfs.ubifs
+vol_size=1800MiB
+
+
+--
+
+Timo
