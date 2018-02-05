@@ -1,19 +1,21 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eif1P-0001V3-VL
- for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 11:33:17 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
-Date: Mon,  5 Feb 2018 14:32:59 +0300
-Message-Id: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] mtd: fsl-quadspi: Update slave device hwcap based
+ on mode provided in dtsi file
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, robh@kernel.org, mark.rutland@arm.com,
+ shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com
+References: <1517549484-6024-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1517549484-6024-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <b868bd0c-2d5e-f4cf-a32c-012e021d3a89@wedev4u.fr>
+Date: Mon, 5 Feb 2018 21:48:53 +0100
+MIME-Version: 1.0
+In-Reply-To: <1517549484-6024-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,207 +25,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On many older systems using SW sequencer the PREOP_OPTYPE register
-contains two preopcodes as following:
+Hi Yogesh,
 
-  PREOP_OPTYPE=0xf2785006
+Le 02/02/2018 à 06:31, Yogesh Gaur a écrit :
+> FSL QuadSPI controller supports Single, dual, quad modes of operation.
+> Mode information is available via "spi-tx-bus-width" and
+> "spi-rx-bus-width" nodes of device tree for the connected slave device.
+> 
+> Update read and write hwcap capability for slave device by reading
+> "spi-rx-bus-width" and "spi-tx-bus-width" respectively.
+> Assign hwcaps mask to minimal caps for the slave node i.e.
+> 	SNOR_HWCAPS_READ | SNOR_HWCAPS_PP
+> 
+> If value not provided in device tree file, then fallback to default
+> mode i.e. SNOR_HWCAPS_READ_1_1_4 and SNOR_HWCAPS_PP.
+> 
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> ---
+> Changes for v2:
+> - None
+> 
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 56 +++++++++++++++++++++++++++++++++++----
+>  1 file changed, 51 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index b9c5918..1503e0c 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -994,17 +994,14 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+>  
+>  static int fsl_qspi_probe(struct platform_device *pdev)
+>  {
+> -	const struct spi_nor_hwcaps hwcaps = {
+> -		.mask = SNOR_HWCAPS_READ_1_1_4 |
+> -			SNOR_HWCAPS_PP,
+> -	};
+> +	struct spi_nor_hwcaps hwcaps;
+>  	struct device_node *np = pdev->dev.of_node;
+>  	struct device *dev = &pdev->dev;
+>  	struct fsl_qspi *q;
+>  	struct resource *res;
+>  	struct spi_nor *nor;
+>  	struct mtd_info *mtd;
+> -	int ret, i = 0;
+> +	int ret, i = 0, value;
+>  
+>  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+>  	if (!q)
+> @@ -1077,6 +1074,10 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  
+>  	/* iterate the subnodes. */
+>  	for_each_available_child_of_node(dev->of_node, np) {
+> +		/* Reset hwcaps mask to minimal caps for the slave node. */
+> +		hwcaps.mask = SNOR_HWCAPS_READ | SNOR_HWCAPS_PP;
+> +		value = 0;
+> +
+>  		/* skip the holes */
+>  		if (!q->has_second_chip)
+>  			i *= 2;
+> @@ -1106,6 +1107,51 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		/* set the chip address for READID */
+>  		fsl_qspi_set_base_addr(q, nor);
+>  
+> +		/*
+> +		 * If spi-rx-bus-width and spi-tx-bus-width not defined assign
+> +		 * default hardware capabilities SNOR_HWCAPS_READ_1_1_4 and
+> +		 * SNOR_HWCAPS_PP supported by the Quad-SPI controller.
+> +		 */
+> +		if (!of_property_read_u32(np, "spi-rx-bus-width", &value)) {
+> +			switch (value) {
+> +			case 1:
+> +				hwcaps.mask |= SNOR_HWCAPS_READ |
+> +					       SNOR_HWCAPS_READ_FAST;
+> +				break;
+> +			case 2:
+> +				hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2 |
+> +					       SNOR_HWCAPS_READ_1_2_2;
 
-The last two bytes are the opcodes decoded to:
+I guess there is a misunderstanding in the meaning of spi-rx-bus-width and
+spi-tx-bus_width.
 
-  0x50 - Write enable for volatile status register
-  0x06 - Write enable
+spi-rx-bus-width = <N>, resp. spi-tx-bus-width = <N>, means the SPI controller
+can receive, resp. send, data on N I/O Lines.
 
-The former is used to modify volatile bits in the status register. For
-non-volatile bits the latter is needed. Preopcodes are used in SW
-sequencer to send one command "atomically" without anything else
-interfering the transfer. The sequence that gets executed is:
+Then let's take the example of some Fast Read X-Y-Z command:
 
-  - Send preopcode (write enable) from PREOP_OPTYPE register
-  - Send the actual SPI command
-  - Poll busy bit in the status register (0x05, RDSR)
+the op code is *sent* on X I/O lines: you need to check spi-tx-bus-width
+the address/mode/dummy bits are *sent* on Y I/O lines: check spi-tx-bus-width too
+the data bits are *received* on Z I/O lines: check spi-rx-bus_width.
 
-Commit 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be
-programmed by BIOS") enabled atomic sequence handling but because both
-preopcodes are programmed, the following happens:
+> +				break;
+> +			case 4:
+> +				hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4 |
+> +					       SNOR_HWCAPS_READ_1_4_4;
 
-  if (preop >> 8)
-  	val |= SSFSTS_CTL_SPOP;
+The same here: to allow SPI 1-4-4, you have to check that spi-tx-bus-width == 4.
 
-Since on these systems preop >> 8 == 0x50 we end up picking volatile
-write enable instead. Because of this the actual write command is pretty
-much NOP unless there is a WREN latched in the chip already.
+So your usage of spi-{tx|rx}-bus-width is not consistent with the usage done in
+the SPI subsystem. Please have a look at drivers/mtd/devices/m25p80.c, especially
+how the SPI_RX_QUAD and SPI_TX_QUAD flags are used in the m25p_probe() function
+to have a better idea of how it should work.
 
-Furthermore we should not really just assume that WREN was issued in
-previous call to intel_spi_write_reg() because that might not be the
-case.
+Also have a look at of_spi_parse_dt() in drivers/spi/spi.c, to figure out how the
+SPI_{TX|RX}_{DUAL|QUAD} flags are set according to the spi-{tx|rx}-bus-width DT
+properties.
 
-This updates driver to first check that the opcode is actually available
-in PREOP_OPTYPE register and if not return error back to the spi-nor
-core (if the controller is not locked we program it now). In addition we
-save the opcode to ispi->atomic_preopcode field which is checked in next
-call to intel_spi_sw_cycle() to actually enable atomic sequence using
-the requested preopcode.
+> +				break;
+> +			default:
+> +				dev_err(dev,
+> +					"spi-rx-bus-width %d not supported\n",
+> +					value);
+> +				break;
+> +			}
+> +		} else
+> +			hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
 
-Fixes: 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS")
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: stable@vger.kernel.org
----
-Changes from v1:
+Not sure whether it passes checkpatch, you may have to add { } for the else
+statement even if there is a single line as the if statement use { }.
 
-  - Added atomic_preopcode field and only when it is set, enable atomic
-    sequence.
-  - Return -EINVAL if the requested WREN operation cannot be found from
-    PREOP register instead of silently pretending it is supported.
-  - Updated patch subject to match more closely what is being fixed.
+Personally I don't mind that much. Please just check that your patch passes
+checkpatch verification and it will be okay for me :)
 
- drivers/mtd/spi-nor/intel-spi.c | 76 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 67 insertions(+), 9 deletions(-)
+Best regards,
 
-diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
-index 699951523179..8e98f4ab87c1 100644
---- a/drivers/mtd/spi-nor/intel-spi.c
-+++ b/drivers/mtd/spi-nor/intel-spi.c
-@@ -136,6 +136,7 @@
-  * @swseq_reg: Use SW sequencer in register reads/writes
-  * @swseq_erase: Use SW sequencer in erase operation
-  * @erase_64k: 64k erase supported
-+ * @atomic_preopcode: Holds preopcode when atomic sequence is requested
-  * @opcodes: Opcodes which are supported. This are programmed by BIOS
-  *           before it locks down the controller.
-  */
-@@ -153,6 +154,7 @@ struct intel_spi {
- 	bool swseq_reg;
- 	bool swseq_erase;
- 	bool erase_64k;
-+	u8 atomic_preopcode;
- 	u8 opcodes[8];
- };
- 
-@@ -474,7 +476,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
- 			      int optype)
- {
- 	u32 val = 0, status;
--	u16 preop;
-+	u8 atomic_preopcode;
- 	int ret;
- 
- 	ret = intel_spi_opcode_index(ispi, opcode, optype);
-@@ -484,17 +486,42 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
- 	if (len > INTEL_SPI_FIFO_SZ)
- 		return -EINVAL;
- 
-+	/*
-+	 * Always clear it after each SW sequencer operation regardless
-+	 * of whether it is successful or not.
-+	 */
-+	atomic_preopcode = ispi->atomic_preopcode;
-+	ispi->atomic_preopcode = 0;
-+
- 	/* Only mark 'Data Cycle' bit when there is data to be transferred */
- 	if (len > 0)
- 		val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
- 	val |= ret << SSFSTS_CTL_COP_SHIFT;
- 	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
- 	val |= SSFSTS_CTL_SCGO;
--	preop = readw(ispi->sregs + PREOP_OPTYPE);
--	if (preop) {
--		val |= SSFSTS_CTL_ACS;
--		if (preop >> 8)
--			val |= SSFSTS_CTL_SPOP;
-+	if (atomic_preopcode) {
-+		u16 preop;
-+
-+		switch (optype) {
-+		case OPTYPE_WRITE_NO_ADDR:
-+		case OPTYPE_WRITE_WITH_ADDR:
-+			/* Pick matching preopcode for the atomic sequence */
-+			preop = readw(ispi->sregs + PREOP_OPTYPE);
-+			if ((preop & 0xff) == atomic_preopcode)
-+				; /* Do nothing */
-+			else if ((preop >> 8) == atomic_preopcode)
-+				val |= SSFSTS_CTL_SPOP;
-+			else
-+				return -EINVAL;
-+
-+			/* Enable atomic sequence */
-+			val |= SSFSTS_CTL_ACS;
-+			break;
-+
-+		default:
-+			return -EINVAL;
-+		}
-+
- 	}
- 	writel(val, ispi->sregs + SSFSTS_CTL);
- 
-@@ -538,13 +565,31 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
- 
- 	/*
- 	 * This is handled with atomic operation and preop code in Intel
--	 * controller so skip it here now. If the controller is not locked,
--	 * program the opcode to the PREOP register for later use.
-+	 * controller so we only verify that it is available. If the
-+	 * controller is not locked, program the opcode to the PREOP
-+	 * register for later use.
-+	 *
-+	 * When hardware sequencer is used there is no need to program
-+	 * any opcodes (it handles them automatically as part of a command).
- 	 */
- 	if (opcode == SPINOR_OP_WREN) {
--		if (!ispi->locked)
-+		u16 preop;
-+
-+		if (!ispi->swseq_reg)
-+			return 0;
-+
-+		preop = readw(ispi->sregs + PREOP_OPTYPE);
-+		if ((preop & 0xff) != opcode && (preop >> 8) != opcode) {
-+			if (ispi->locked)
-+				return -EINVAL;
- 			writel(opcode, ispi->sregs + PREOP_OPTYPE);
-+		}
- 
-+		/*
-+		 * This enables atomic sequence on next SW sycle. Will
-+		 * be cleared after next operation.
-+		 */
-+		ispi->atomic_preopcode = opcode;
- 		return 0;
- 	}
- 
-@@ -569,6 +614,13 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
- 	u32 val, status;
- 	ssize_t ret;
- 
-+	/*
-+	 * Atomic sequence is not expected with HW sequencer reads. Make
-+	 * sure it is cleared regardless.
-+	 */
-+	if (WARN_ON_ONCE(ispi->atomic_preopcode))
-+		ispi->atomic_preopcode = 0;
-+
- 	switch (nor->read_opcode) {
- 	case SPINOR_OP_READ:
- 	case SPINOR_OP_READ_FAST:
-@@ -627,6 +679,9 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
- 	u32 val, status;
- 	ssize_t ret;
- 
-+	/* Not needed with HW sequencer write, make sure it is cleared */
-+	ispi->atomic_preopcode = 0;
-+
- 	while (len > 0) {
- 		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
- 
-@@ -707,6 +762,9 @@ static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
- 		return 0;
- 	}
- 
-+	/* Not needed with HW sequencer erase, make sure it is cleared */
-+	ispi->atomic_preopcode = 0;
-+
- 	while (len > 0) {
- 		writel(offs, ispi->base + FADDR);
- 
--- 
-2.15.1
+Cyrille
+
+> +
+> +		if (!of_property_read_u32(np, "spi-tx-bus-width", &value)) {
+> +			switch (value) {
+> +			case 1:
+> +				hwcaps.mask |= SNOR_HWCAPS_PP;
+> +				break;
+> +			case 4:
+> +				hwcaps.mask |= SNOR_HWCAPS_PP_1_1_4 |
+> +					       SNOR_HWCAPS_PP_1_4_4;
+> +				break;
+> +			default:
+> +				dev_err(dev,
+> +					"spi-tx-bus-width %d not supported\n",
+> +					value);
+> +				break;
+> +			}
+> +		}
+> +
+>  		ret = spi_nor_scan(nor, NULL, &hwcaps);
+>  		if (ret)
+>  			goto mutex_failed;
+> 
