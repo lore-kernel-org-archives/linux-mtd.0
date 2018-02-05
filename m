@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eiq5A-0005oF-7r
+ id 1eiq5A-0005oA-7q
  for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 23:21:54 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -14,12 +14,12 @@ Cc: Peter Pan <peterpansjtu@gmail.com>,
  Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
  Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>
-Subject: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
-Date: Tue,  6 Feb 2018 00:21:18 +0100
-Message-Id: <20180205232120.5851-5-boris.brezillon@bootlin.com>
-In-Reply-To: <20180205232120.5851-1-boris.brezillon@bootlin.com>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+ Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: [RFC PATCH 0/6] spi: Extend the framework to generically support
+ memory devices
+Date: Tue,  6 Feb 2018 00:21:14 +0100
+Message-Id: <20180205232120.5851-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,163 +29,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Hello all,
 
-The spi_mem interface is meant to replace the spi_flash_read() one.
-Implement the ->exec_op() method so that we can smoothly get rid of the
-old interface.
+I know a lot of you have already tried to address some of the flaws in
+the SPI NOR framework, and I'm coming with yet another proposal to solve
+some of the problems I faced recently :-/. The approach I'm proposing
+here has been motivated by the recent work done on SPI NANDs.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/spi/spi-ti-qspi.c | 85 +++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 72 insertions(+), 13 deletions(-)
+Peter has proposed a SPI NAND controller interface (based on my
+suggestions) where the controller had to implement hooks that the SPI
+NAND framework could use to execute SPI NAND operations. I thought the
+approach was acceptable as a first step before we move to a solution
+where we share even more logic between SPI NOR and SPI NAND frameworks.
+But I recently changed my mind after working with Frieder to support
+his SPI NAND (Frieder has a SPI NAND connected to the FSL QSPI
+controller).
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index c24d9b45a27c..40cac3ef6cc9 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -434,12 +434,10 @@ static int ti_qspi_dma_xfer(struct ti_qspi *qspi, dma_addr_t dma_dst,
- 	return 0;
- }
- 
--static int ti_qspi_dma_bounce_buffer(struct ti_qspi *qspi,
--				     struct spi_flash_read_message *msg)
-+static int ti_qspi_dma_bounce_buffer(struct ti_qspi *qspi, loff_t offs,
-+				     void *to, size_t readsize)
- {
--	size_t readsize = msg->len;
--	void *to = msg->buf;
--	dma_addr_t dma_src = qspi->mmap_phys_base + msg->from;
-+	dma_addr_t dma_src = qspi->mmap_phys_base + offs;
- 	int ret = 0;
- 
- 	/*
-@@ -507,13 +505,14 @@ static void ti_qspi_disable_memory_map(struct spi_device *spi)
- 	qspi->mmap_enabled = false;
- }
- 
--static void ti_qspi_setup_mmap_read(struct spi_device *spi,
--				    struct spi_flash_read_message *msg)
-+static void ti_qspi_setup_mmap_read(struct spi_device *spi, u8 opcode,
-+				    u8 data_nbits, u8 addr_width,
-+				    u8 dummy_bytes)
- {
- 	struct ti_qspi  *qspi = spi_master_get_devdata(spi->master);
--	u32 memval = msg->read_opcode;
-+	u32 memval = opcode;
- 
--	switch (msg->data_nbits) {
-+	switch (data_nbits) {
- 	case SPI_NBITS_QUAD:
- 		memval |= QSPI_SETUP_RD_QUAD;
- 		break;
-@@ -524,8 +523,8 @@ static void ti_qspi_setup_mmap_read(struct spi_device *spi,
- 		memval |= QSPI_SETUP_RD_NORMAL;
- 		break;
- 	}
--	memval |= ((msg->addr_width - 1) << QSPI_SETUP_ADDR_SHIFT |
--		   msg->dummy_bytes << QSPI_SETUP_DUMMY_SHIFT);
-+	memval |= ((addr_width - 1) << QSPI_SETUP_ADDR_SHIFT |
-+		   dummy_bytes << QSPI_SETUP_DUMMY_SHIFT);
- 	ti_qspi_write(qspi, memval,
- 		      QSPI_SPI_SETUP_REG(spi->chip_select));
- }
-@@ -546,13 +545,15 @@ static int ti_qspi_spi_flash_read(struct spi_device *spi,
- 
- 	if (!qspi->mmap_enabled)
- 		ti_qspi_enable_memory_map(spi);
--	ti_qspi_setup_mmap_read(spi, msg);
-+	ti_qspi_setup_mmap_read(spi, msg->read_opcode, msg->data_nbits,
-+				msg->addr_width, msg->dummy_bytes);
- 
- 	if (qspi->rx_chan) {
- 		if (msg->cur_msg_mapped)
- 			ret = ti_qspi_dma_xfer_sg(qspi, msg->rx_sg, msg->from);
- 		else
--			ret = ti_qspi_dma_bounce_buffer(qspi, msg);
-+			ret = ti_qspi_dma_bounce_buffer(qspi, msg->from,
-+							msg->buf, msg->len);
- 		if (ret)
- 			goto err_unlock;
- 	} else {
-@@ -566,6 +567,62 @@ static int ti_qspi_spi_flash_read(struct spi_device *spi,
- 	return ret;
- }
- 
-+static int ti_qspi_exec_mem_op(struct spi_mem *mem,
-+			       const struct spi_mem_op *op)
-+{
-+	struct ti_qspi *qspi = spi_master_get_devdata(mem->spi->master);
-+	int i, ret = 0;
-+	u32 from = 0;
-+
-+	/* Only optimize read path. */
-+	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
-+	    !op->addr.nbytes || op->addr.nbytes > 4)
-+		return -ENOTSUPP;
-+
-+	for (i = 0; i < op->addr.nbytes; i++) {
-+		from <<= 8;
-+		from |= op->addr.buf[i];
-+	}
-+
-+	/* Address exceeds MMIO window size, fall back to regular mode. */
-+	if (from > 0x4000000)
-+		return -ENOTSUPP;
-+
-+	mutex_lock(&qspi->list_lock);
-+
-+	if (!qspi->mmap_enabled)
-+		ti_qspi_enable_memory_map(mem->spi);
-+	ti_qspi_setup_mmap_read(mem->spi, op->cmd.opcode, op->data.buswidth,
-+				op->addr.nbytes, op->dummy.nbytes);
-+
-+	if (qspi->rx_chan) {
-+		struct sg_table sgt;
-+
-+		if (!virt_addr_valid(op->data.buf.in) &&
-+		    !spi_controller_dma_map_mem_op_data(mem->spi->master, op,
-+							&sgt)) {
-+			ret = ti_qspi_dma_xfer_sg(qspi, sgt, from);
-+			spi_controller_dma_unmap_mem_op_data(mem->spi->master,
-+							     op, &sgt);
-+		} else {
-+			ret = ti_qspi_dma_bounce_buffer(qspi, from,
-+							op->data.buf.in,
-+							op->data.nbytes);
-+		}
-+	} else {
-+		memcpy_fromio(op->data.buf.in, qspi->mmap_base + from,
-+			      op->data.nbytes);
-+	}
-+
-+	mutex_unlock(&qspi->list_lock);
-+
-+	return ret;
-+}
-+
-+static const struct spi_controller_mem_ops ti_qspi_mem_ops = {
-+	.exec_op = ti_qspi_exec_mem_op,
-+};
-+
- static int ti_qspi_start_transfer_one(struct spi_master *master,
- 		struct spi_message *m)
- {
-@@ -673,6 +730,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
- 				     SPI_BPW_MASK(8);
- 	master->spi_flash_read = ti_qspi_spi_flash_read;
-+	master->mem_ops = &ti_qspi_mem_ops;
- 
- 	if (!of_property_read_u32(np, "num-cs", &num_cs))
- 		master->num_chipselect = num_cs;
-@@ -785,6 +843,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 				 PTR_ERR(qspi->mmap_base));
- 			qspi->mmap_base = NULL;
- 			master->spi_flash_read = NULL;
-+			master->mem_ops = NULL;
- 		}
- 	}
- 	qspi->mmap_enabled = false;
+And here come the problems: we definitely want one FSL QSPI driver
+that works for both NANDs and NORs. In the current state, that means
+forcing the FSL QSPI driver to implement both the SPI NAND and SPI NOR
+interfaces. When you look at the internal controller logic, if we want
+to support this without duplicating too much code, we have to add
+an intermediate representation that abstracts away the NOR/NAND
+specificities and pass only basic information to the controller:
+
+* the opcode
+* the number of address cycles
+* the number of dummy cycles
+* the number of data bytes to receive/transmit
+
+And the same problem is likely to hit most of the controller drivers
+placed in drivers/mtd/spi-nor.
+
+Another problem I see with the current approach is the duplication
+of DT parsing code in almost all drivers, even though most of them
+follow the generic SPI controller/device bindings.
+
+And finally, there's the confusion brought by the 2 entry points
+exposed by the SPI NOR layer (and that we had planned to mimic in the
+SPI NAND layer): you can register a SPI NOR device directly from the
+dedicated SPI memory controller, or it can be registered through the
+SPI layer if the SPI controller is a generic SPI controller. While
+the generic SPI controller path works fine, the dedicated SPI NOR
+controller path brings its own set of issues:
+
+* the SPI bus is not represented in sysfs
+* because there's no bus, there's no uevent, which means you'll have to
+  select both the SPI NAND and SPI NOR logic as soon as one driver
+  supports both interfaces if you don't want to run into loading
+  dependency issues
+
+Not to mention that, in order to work properly, the SPI flash ids may
+have to be exported so that all QSPI controller drivers can use the
+same database.
+
+For all these reasons, I decided to try a new approach: move the
+generic "SPI memory" logic in the SPI framework (what I call the SPI
+memory interface here is actually not limited to SPI memories, and
+I'm pretty sure other QSPI devices use the same kind of protocol).
+
+So, basically, all kind of operations that can be done on a SPI
+memory are encoded with a  CMD[+ADDR][+DUMMY][+DATA_{IN,OUT}] sequence,
+and that's pretty much what I'm adding here: a way to ask the SPI
+framework to execute a SPI memory operation. If the SPI controller
+this memory is connected to is a generic SPI controller, then those
+operations will be converted to generic SPI messages, but, if the
+controller has an high-level interface to send those operations, then
+it can expose it and the framework will use it.
+
+One last comment: this new interface makes the spi_flash_read() API
+redundant, because it's able to handle both read/write path and allows
+the same kind of optimizations you could achieve with the
+spi_flash_read hooks.
+
+To sum-up: the idea behind this series is to converge to a
+common/generic interface that could be used by any kind of SPI memory
+driver and still allow per-controller optimizations.
+
+Right now, the design is quite simple, and drivers can easily implement
+the various mem_ops to optimize things. I'm currently working on the
+conversion of the FSL driver, but I'm pretty sure most of the QSPI
+drivers lying in drivers/mtd/spi-nor can easily be converted to this
+new interface.
+
+Once, we'll have that done, the SPI NOR layer will declare itself as
+a regular spi_mem_driver and we'll be done with all the funky things
+we have there. The SPI NAND patches have already been converted to this
+approach.
+
+If you want to see the big picture, my development branch is here [1]
+and contains this series + the SPI NAND patches + a hack-ish FSL
+QSPI ported to this driver which will hopefully support both SPI NANDs
+and SPI NORs (only tested with a SPI NAND so far).
+
+I know it's a big introduction, and I probably have lost most of my
+readers before this point :-). But I'd really like to have feedback on
+this series, because I'd hate to have to add yet another layer of
+insane hacks in existing QSPI drivers to support both NORs and NANDs.
+
+Mark, Cyrille, Marek, and all people that have been involved in SPI-NOR
+development lately, please have a quick look at this RFC, and let me
+know what you think.
+
+Thanks,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux/tree/spi-mem
+
+Boris Brezillon (6):
+  spi: Extend the core to ease integration of SPI memory controllers
+  spi: bcm-qspi: Implement the spi_mem interface
+  spi: bcm53xx: Implement the spi_mem interface
+  spi: ti-qspi: Implement the spi_mem interface
+  mtd: spi-nor: Use the spi_mem_xx() API
+  spi: Get rid of the spi_flash_read() API
+
+ drivers/mtd/devices/m25p80.c | 240 ++++++++--------------
+ drivers/spi/spi-bcm-qspi.c   | 173 ++++++++--------
+ drivers/spi/spi-bcm53xx.c    |  38 +++-
+ drivers/spi/spi-ti-qspi.c    |  86 +++++---
+ drivers/spi/spi.c            | 480 +++++++++++++++++++++++++++++++++++++------
+ include/linux/spi/spi.h      | 263 ++++++++++++++++++++----
+ 6 files changed, 898 insertions(+), 382 deletions(-)
+
 -- 
 2.14.1
