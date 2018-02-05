@@ -1,19 +1,25 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eippm-0000fx-3m
- for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 23:05:59 +0000
-Received: by mail-pg0-x241.google.com with SMTP id s73so22470pgc.1
- for <linux-mtd@lists.infradead.org>; Mon, 05 Feb 2018 15:05:47 -0800 (PST)
-Received: from localhost ([223.27.245.122])
- by smtp.gmail.com with ESMTPSA id m22sm18918040pfg.188.2018.02.05.15.05.44
- for <linux-mtd@lists.infradead.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Mon, 05 Feb 2018 15:05:45 -0800 (PST)
-Message-ID: <5a78e349.16c6620a.3eb02.9d3c@mx.google.com>
-Sender: =?UTF-8?B?UsOpY3pleSBCw6FsaW50?= <rbalint@gmail.com>
-From: Balint Reczey <balint@balintreczey.hu>
-Date: Tue, 6 Feb 2018 05:31:32 +0700
-Subject: [PATCH] mtd: unittests: Stop testing stat() calls
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eiq5A-0005oF-7r
+ for linux-mtd@lists.infradead.org; Mon, 05 Feb 2018 23:21:54 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org
+Cc: Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>
+Subject: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
+Date: Tue,  6 Feb 2018 00:21:18 +0100
+Message-Id: <20180205232120.5851-5-boris.brezillon@bootlin.com>
+In-Reply-To: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +29,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sometimes __xstat is called instead that makes tests fragile.
----
- tests/unittests/Makemodule.am |  2 +-
- tests/unittests/libmtd_test.c |  2 --
- tests/unittests/libubi_test.c |  1 -
- tests/unittests/test_lib.h    | 12 ------------
- 4 files changed, 1 insertion(+), 16 deletions(-)
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
 
-diff --git a/tests/unittests/Makemodule.am b/tests/unittests/Makemodule.am
-index 0ecdaa9..569866e 100644
---- a/tests/unittests/Makemodule.am
-+++ b/tests/unittests/Makemodule.am
-@@ -1,6 +1,6 @@
- ubilib_test_SOURCES = tests/unittests/libubi_test.c lib/libubi.c
- ubilib_test_LDADD = $(CMOCKA_LIBS)
--ubilib_test_LDFLAGS = -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=stat -Wl,--wrap=ioctl -Wl,--wrap=read -Wl,--wrap=lseek
-+ubilib_test_LDFLAGS = -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=ioctl -Wl,--wrap=read -Wl,--wrap=lseek
- ubilib_test_CPPFLAGS = -O0 --std=gnu99 $(CMOCKA_CFLAGS) -I include -DSYSFS_ROOT='"tests/unittests/sysfs_mock"'
- 
- mtdlib_test_SOURCES = tests/unittests/libmtd_test.c lib/libmtd.c lib/libmtd_legacy.c
-diff --git a/tests/unittests/libmtd_test.c b/tests/unittests/libmtd_test.c
-index fc28dc0..d25b70a 100644
---- a/tests/unittests/libmtd_test.c
-+++ b/tests/unittests/libmtd_test.c
-@@ -53,7 +53,6 @@ static void test_mtd_dev_present(void **state)
- {
- 	int ret;
- 	libmtd_t lib = mock_libmtd_open();
--	expect_stat(SYSFS_ROOT "/class/mtd/mtd0", 0);
- 	ret = mtd_dev_present(lib, 0);
- 	assert_int_equal(ret, 1);
- 	libmtd_close(lib);
-@@ -423,7 +422,6 @@ static void test_mtd_get_dev_info1(void **state)
- 	struct mtd_dev_info info;
- 	int dev_num = 0;
- 	memset(&info, 0, sizeof(info));
--	expect_stat(SYSFS_ROOT "/class/mtd/mtd0", 0);
- 	expect_open(SYSFS_ROOT "/class/mtd/mtd0/dev", O_RDONLY, 0);
- 	expect_read_real(50,0);
- 	expect_read(1,0);
-diff --git a/tests/unittests/libubi_test.c b/tests/unittests/libubi_test.c
-index 3e08e42..da06061 100644
---- a/tests/unittests/libubi_test.c
-+++ b/tests/unittests/libubi_test.c
-@@ -98,7 +98,6 @@ static libubi_t mock_libubi_open()
- static void test_ubi_dev_present(void **state)
- {
- 	libubi_t lib = mock_libubi_open();
--	expect_stat(SYSFS_ROOT "/class/ubi/ubi0", 0);
- 	int r = ubi_dev_present(lib, 0);
- 	assert_int_equal(r, 1);
- 
-diff --git a/tests/unittests/test_lib.h b/tests/unittests/test_lib.h
-index 122672b..8010843 100644
---- a/tests/unittests/test_lib.h
-+++ b/tests/unittests/test_lib.h
-@@ -58,13 +58,6 @@ int __wrap_ioctl(int fd, int req, ...)
- 	return retval;
+The spi_mem interface is meant to replace the spi_flash_read() one.
+Implement the ->exec_op() method so that we can smoothly get rid of the
+old interface.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/spi/spi-ti-qspi.c | 85 +++++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 72 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index c24d9b45a27c..40cac3ef6cc9 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -434,12 +434,10 @@ static int ti_qspi_dma_xfer(struct ti_qspi *qspi, dma_addr_t dma_dst,
+ 	return 0;
  }
  
--int __wrap_stat(const char *path, struct stat *buf)
--{
--	check_expected(path);
--	assert_non_null(buf);
--	return mock_type(int);
--}
--
- int __wrap_read(int fd, char *buf, size_t len)
+-static int ti_qspi_dma_bounce_buffer(struct ti_qspi *qspi,
+-				     struct spi_flash_read_message *msg)
++static int ti_qspi_dma_bounce_buffer(struct ti_qspi *qspi, loff_t offs,
++				     void *to, size_t readsize)
  {
- 	assert_true(fd > 0);
-@@ -121,11 +114,6 @@ off_t __wrap_lseek(int fd, off_t seek, int whence)
- 		will_return(__wrap_ioctl, 0);\
- 	} while(0);
+-	size_t readsize = msg->len;
+-	void *to = msg->buf;
+-	dma_addr_t dma_src = qspi->mmap_phys_base + msg->from;
++	dma_addr_t dma_src = qspi->mmap_phys_base + offs;
+ 	int ret = 0;
  
--#define expect_stat(X,Y) do { \
--		expect_string(__wrap_stat, path, X);\
--		will_return(__wrap_stat, Y);\
--	} while(0);
--
- #define expect_write(X,Y,Z) do { \
- 		will_return(__wrap_write, X);\
- 		will_return(__wrap_write, Y);\
+ 	/*
+@@ -507,13 +505,14 @@ static void ti_qspi_disable_memory_map(struct spi_device *spi)
+ 	qspi->mmap_enabled = false;
+ }
+ 
+-static void ti_qspi_setup_mmap_read(struct spi_device *spi,
+-				    struct spi_flash_read_message *msg)
++static void ti_qspi_setup_mmap_read(struct spi_device *spi, u8 opcode,
++				    u8 data_nbits, u8 addr_width,
++				    u8 dummy_bytes)
+ {
+ 	struct ti_qspi  *qspi = spi_master_get_devdata(spi->master);
+-	u32 memval = msg->read_opcode;
++	u32 memval = opcode;
+ 
+-	switch (msg->data_nbits) {
++	switch (data_nbits) {
+ 	case SPI_NBITS_QUAD:
+ 		memval |= QSPI_SETUP_RD_QUAD;
+ 		break;
+@@ -524,8 +523,8 @@ static void ti_qspi_setup_mmap_read(struct spi_device *spi,
+ 		memval |= QSPI_SETUP_RD_NORMAL;
+ 		break;
+ 	}
+-	memval |= ((msg->addr_width - 1) << QSPI_SETUP_ADDR_SHIFT |
+-		   msg->dummy_bytes << QSPI_SETUP_DUMMY_SHIFT);
++	memval |= ((addr_width - 1) << QSPI_SETUP_ADDR_SHIFT |
++		   dummy_bytes << QSPI_SETUP_DUMMY_SHIFT);
+ 	ti_qspi_write(qspi, memval,
+ 		      QSPI_SPI_SETUP_REG(spi->chip_select));
+ }
+@@ -546,13 +545,15 @@ static int ti_qspi_spi_flash_read(struct spi_device *spi,
+ 
+ 	if (!qspi->mmap_enabled)
+ 		ti_qspi_enable_memory_map(spi);
+-	ti_qspi_setup_mmap_read(spi, msg);
++	ti_qspi_setup_mmap_read(spi, msg->read_opcode, msg->data_nbits,
++				msg->addr_width, msg->dummy_bytes);
+ 
+ 	if (qspi->rx_chan) {
+ 		if (msg->cur_msg_mapped)
+ 			ret = ti_qspi_dma_xfer_sg(qspi, msg->rx_sg, msg->from);
+ 		else
+-			ret = ti_qspi_dma_bounce_buffer(qspi, msg);
++			ret = ti_qspi_dma_bounce_buffer(qspi, msg->from,
++							msg->buf, msg->len);
+ 		if (ret)
+ 			goto err_unlock;
+ 	} else {
+@@ -566,6 +567,62 @@ static int ti_qspi_spi_flash_read(struct spi_device *spi,
+ 	return ret;
+ }
+ 
++static int ti_qspi_exec_mem_op(struct spi_mem *mem,
++			       const struct spi_mem_op *op)
++{
++	struct ti_qspi *qspi = spi_master_get_devdata(mem->spi->master);
++	int i, ret = 0;
++	u32 from = 0;
++
++	/* Only optimize read path. */
++	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
++	    !op->addr.nbytes || op->addr.nbytes > 4)
++		return -ENOTSUPP;
++
++	for (i = 0; i < op->addr.nbytes; i++) {
++		from <<= 8;
++		from |= op->addr.buf[i];
++	}
++
++	/* Address exceeds MMIO window size, fall back to regular mode. */
++	if (from > 0x4000000)
++		return -ENOTSUPP;
++
++	mutex_lock(&qspi->list_lock);
++
++	if (!qspi->mmap_enabled)
++		ti_qspi_enable_memory_map(mem->spi);
++	ti_qspi_setup_mmap_read(mem->spi, op->cmd.opcode, op->data.buswidth,
++				op->addr.nbytes, op->dummy.nbytes);
++
++	if (qspi->rx_chan) {
++		struct sg_table sgt;
++
++		if (!virt_addr_valid(op->data.buf.in) &&
++		    !spi_controller_dma_map_mem_op_data(mem->spi->master, op,
++							&sgt)) {
++			ret = ti_qspi_dma_xfer_sg(qspi, sgt, from);
++			spi_controller_dma_unmap_mem_op_data(mem->spi->master,
++							     op, &sgt);
++		} else {
++			ret = ti_qspi_dma_bounce_buffer(qspi, from,
++							op->data.buf.in,
++							op->data.nbytes);
++		}
++	} else {
++		memcpy_fromio(op->data.buf.in, qspi->mmap_base + from,
++			      op->data.nbytes);
++	}
++
++	mutex_unlock(&qspi->list_lock);
++
++	return ret;
++}
++
++static const struct spi_controller_mem_ops ti_qspi_mem_ops = {
++	.exec_op = ti_qspi_exec_mem_op,
++};
++
+ static int ti_qspi_start_transfer_one(struct spi_master *master,
+ 		struct spi_message *m)
+ {
+@@ -673,6 +730,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
+ 				     SPI_BPW_MASK(8);
+ 	master->spi_flash_read = ti_qspi_spi_flash_read;
++	master->mem_ops = &ti_qspi_mem_ops;
+ 
+ 	if (!of_property_read_u32(np, "num-cs", &num_cs))
+ 		master->num_chipselect = num_cs;
+@@ -785,6 +843,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 				 PTR_ERR(qspi->mmap_base));
+ 			qspi->mmap_base = NULL;
+ 			master->spi_flash_read = NULL;
++			master->mem_ops = NULL;
+ 		}
+ 	}
+ 	qspi->mmap_enabled = false;
 -- 
 2.14.1
