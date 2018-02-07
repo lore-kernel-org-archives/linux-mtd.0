@@ -1,19 +1,22 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ej7EV-000269-KO
- for linux-mtd@lists.infradead.org; Tue, 06 Feb 2018 17:40:41 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: han.xu@nxp.com,
-	boris.brezillon@free-electrons.com
-Cc: marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
- cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
-Date: Tue,  6 Feb 2018 18:40:21 +0100
-Message-Id: <20180206174021.5947-2-stefan@agner.ch>
-In-Reply-To: <20180206174021.5947-1-stefan@agner.ch>
-References: <20180206174021.5947-1-stefan@agner.ch>
+ id 1ejPPJ-0004MB-17
+ for linux-mtd@lists.infradead.org; Wed, 07 Feb 2018 13:05:06 +0000
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
+Subject: Re: [LSF/MM TOPIC] fs-verity: file system-level integrity protection
+From: David Gstir <david@sigma-star.at>
+In-Reply-To: <20180125191152.GA11197@thunk.org>
+Date: Wed, 7 Feb 2018 14:04:36 +0100
+Cc: lsf-pc@lists.linux-foundation.org,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
+ linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Message-Id: <17162EE0-D181-4C74-8F9B-610170117CC4@sigma-star.at>
+References: <20180125191152.GA11197@thunk.org>
+To: Theodore Ts'o <tytso@mit.edu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,98 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for specified ECC strength/size using device tree
-properties nand-ecc-strength/nand-ecc-step-size.
+[CC-ing linux-mtd]
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
- 2 files changed, 24 insertions(+), 10 deletions(-)
+> On 25.01.2018, at 20:11, Theodore Ts'o <tytso@mit.edu> wrote:
+> 
+> I'd like to talk about a proposal to implement and upstream something
+> that we've been calling fs-verity, which is something like dm-verity,
+> but implemnted on a per-file basis.  It will be implemnted much like
+> fs/crypto, in that most of the code will be in a generic layer, with
+> minimal modifications needed in the file system layer.
+> 
+> The merkle tree will be located after file's normal data, and then
+> after the package manager sets the verity bit, i_size will be updated
+> so that the fs-verity header and merkle tree will be "hidden" from
+> userspace and the file will become immutable.
+> 
+> How does this differ from IMA's file integrity?
+> 
+> *) The pages are verified as they are read, so pages are verified as
+> they are read the storage device; this avoids a large latency hit when
+> the file is first opened or referenced.
+> 
+> *) The design and code are done by file system developers, so it
+> doesn't have the locking problems of the IMA code.
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-index eb2d9919d063..ea6e9b735160 100644
---- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-@@ -46,6 +46,11 @@ Optional properties:
-                        partitions written from Linux with this feature
-                        turned on may not be accessible by the BootROM
-                        code.
-+  - nand-ecc-strength: integer representing the number of bits to correct
-+                       per ECC step. Needs to be a multiple of 2.
-+  - nand-ecc-step-size: integer representing the number of data bytes
-+                       that are covered by a single ECC step. The driver
-+                       supports 512 and 1024.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index 50f8d4a1b983..8cb378358e11 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -198,17 +198,15 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
-  *
-  * We may have available oob space in this case.
-  */
--static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-+static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
-+			unsigned int ecc_strength, unsigned int ecc_step)
- {
- 	struct bch_geometry *geo = &this->bch_geometry;
- 	struct nand_chip *chip = &this->nand;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned int block_mark_bit_offset;
- 
--	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
--		return -EINVAL;
--
--	switch (chip->ecc_step_ds) {
-+	switch (ecc_step) {
- 	case SZ_512:
- 		geo->gf_len = 13;
- 		break;
-@@ -221,8 +219,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 			chip->ecc_strength_ds, chip->ecc_step_ds);
- 		return -EINVAL;
- 	}
--	geo->ecc_chunk_size = chip->ecc_step_ds;
--	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
-+	geo->ecc_chunk_size = ecc_step;
-+	geo->ecc_strength = round_up(ecc_strength, 2);
- 	if (!gpmi_check_ecc(this))
- 		return -EINVAL;
- 
-@@ -230,7 +228,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
- 	if (geo->ecc_chunk_size < mtd->oobsize) {
- 		dev_err(this->dev,
- 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
--			chip->ecc_step_ds, mtd->oobsize);
-+			ecc_step, mtd->oobsize);
- 		return -EINVAL;
- 	}
- 
-@@ -423,9 +421,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
- 
- int common_nfc_set_geometry(struct gpmi_nand_data *this)
- {
-+	struct nand_chip *chip = &this->nand;
-+
-+	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
-+		return set_geometry_by_ecc_info(this, chip->ecc.strength,
-+						chip->ecc.size);
-+
- 	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
--				|| legacy_set_geometry(this))
--		return set_geometry_by_ecc_info(this);
-+				|| legacy_set_geometry(this)) {
-+		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-+			return -EINVAL;
-+
-+		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
-+						chip->ecc_step_ds);
-+	}
- 
- 	return 0;
- }
--- 
-2.16.1
+This sounds interesting! We recently sent a proposal to add file
+authentication to UBIFS [1]. Although it does not cover the exact
+same use case, the concept is similar so that it could implement
+the same VFS/fs-verity API.
+
+It would be great to get some input on this.
+
+Thanks,
+David
+
+[1] https://marc.info/?l=linux-fsdevel&m=151620293206369&w=2
