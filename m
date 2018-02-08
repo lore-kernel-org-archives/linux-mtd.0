@@ -1,15 +1,21 @@
-From: Andy Yan <andy.yan@rock-chips.com>
-To: cyrille.pitchen@wedev4u.fr, mchehab@kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, shawn.lin@rock-chips.com, heiko@sntech.de
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com,
- Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH v8 2/3] mtd: spi-nor: add rockchip serial flash controller
- driver
-Date: Thu,  8 Feb 2018 20:18:47 +0800
-Message-Id: <1518092327-3827-1-git-send-email-andy.yan@rock-chips.com>
-In-Reply-To: <1518091958-3672-1-git-send-email-andy.yan@rock-chips.com>
-References: <1518091958-3672-1-git-send-email-andy.yan@rock-chips.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ejqc3-0001ry-V9
+ for linux-mtd@lists.infradead.org; Thu, 08 Feb 2018 18:08:03 +0000
+Date: Thu, 8 Feb 2018 19:07:44 +0100
+From: Miquel Raynal <miquel.raynal@free-electrons.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
+ richard@nod.at, bpringle@sympatico.ca, marcel.ziswiler@toradex.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH v2] mtd: nand: vf610_nfc: make use of ->exec_op()
+Message-ID: <20180208190744.615a25ef@xps13>
+In-Reply-To: <20180114220012.30039-1-stefan@agner.ch>
+References: <20180114220012.30039-1-stefan@agner.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,1081 +25,729 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Shawn Lin <shawn.lin@rock-chips.com>
+Hello Stefan,
 
-Add Rockchip SFC(serial flash controller) driver.
+On Sun, 14 Jan 2018 23:00:12 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+> This reworks the driver to make use of ->exec_op() callback. The
+> command sequencer of the VF610 NFC aligns well with the new ops
+> interface.
+>=20
+> The ops are translated to a NFC command code while filling the
+> necessary registers. Instead of using the special status and
+> read id command codes (which require the status/id form special
+> registers) the driver now uses the main data buffer for all
+> commands. This simplifies the driver as no special casing is
+> needed.
+>=20
+> For control data (status byte, id bytes and parameter page) the
+> driver needs to reverse byte order for little endian CPUs since
+> the controller seems to store the bytes in big endian order in
+> the data buffer.
+>=20
+> The current state seems to pass MTD tests on a Colibri VF61.
+>=20
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
 
----
+First, thank you again for implementing this interface in the vf610
+driver. Sorry for the very big delay I have been pretty busy these
+days.
 
-Changes in v8:
-- remove unused macro SFC_CMD_TRAN_BYTES_MASK
-- set max transfer length to 15.5KB
-- remove unnecessary buffer align check
-- remove the duplicate logic what spi-nor.c already does for spi_nor_write
-- add spi_nor_erase, as the SFC should get the erase address.
+My comments are below.
 
-Changes in v7:
-- correct the fifo status check in pio read/write mode.
-- copy data from user buffer to dma buffer
+> Hi,
+>=20
+> In this second version I was able to remove all special command
+> handling. As Boris suggested, the special READID/STATUS handling
+> is really not needed and all return values can be read from the
+> regular data buffer. This simplified code even more and allowed
+> to get rid of the hack in the MTD core. The driver is now able
 
-Changes in v6:
-- fold in Andy's improvement for checking fifo level
-  before pio read
-- rename the controller to rv1108 since offically it's
-  renamed and acked by Rob.
-- use dma_coerce_mask_and_coherent suggested by Andy.
+That is great. A rule of thumb that I tend to also forget when I write
+code: logic should not be in the NAND controller driver.
 
-Changes in v5:
-- check if the buf is aligned to 32bit
-- check if the buf for dma comes from vmalloc
-- fix to use 1-1-n according to the current framework
-- avoid bytes cnt overflow
+> to handle all commands in a single function. Therefor I also got
+> rid of the command parser, since everything is handled in a single
+> function anyway.
+>=20
+> The only thing which is somewhat unfortunate is the byte ordering
+> which needs to be reversed for commands which read flash data (id,
+> status and parameter page). All those request 8-bit handling, so
+> I used this as an indicator to fix byte order.
+>=20
+> I did meassured a slight performance drop (before vs. now):
+> - write speed is 4036 KiB/s vs 3495 KiB/s
+> - read speed is 13741 KiB/s vs 13490 KiB/s
+>=20
+> --
+> Stefan
+>=20
+>  drivers/mtd/nand/vf610_nfc.c | 444 +++++++++++++++++++------------------=
+------
+>  1 file changed, 194 insertions(+), 250 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 80d31a58e558..fb428a94bbd4 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -59,20 +59,20 @@
+>  #define OOB_64				0x0040
+>  #define OOB_MAX				0x0100
+> =20
+> -/*
+> - * NFC_CMD2[CODE] values. See section:
+> - *  - 31.4.7 Flash Command Code Description, Vybrid manual
+> - *  - 23.8.6 Flash Command Sequencer, MPC5125 manual
+> - *
+> - * Briefly these are bitmasks of controller cycles.
+> - */
+> -#define READ_PAGE_CMD_CODE		0x7EE0
+> -#define READ_ONFI_PARAM_CMD_CODE	0x4860
+> -#define PROGRAM_PAGE_CMD_CODE		0x7FC0
+> -#define ERASE_CMD_CODE			0x4EC0
+> -#define READ_ID_CMD_CODE		0x4804
+> -#define RESET_CMD_CODE			0x4040
+> -#define STATUS_READ_CMD_CODE		0x4068
+> +/* NFC_CMD2[CODE] controller cycle bit masks */
+> +#define COMMAND_CMD_BYTE1		BIT(14)
+> +#define COMMAND_CAR_BYTE1		BIT(13)
+> +#define COMMAND_CAR_BYTE2		BIT(12)
+> +#define COMMAND_RAR_BYTE1		BIT(11)
+> +#define COMMAND_RAR_BYTE2		BIT(10)
+> +#define COMMAND_RAR_BYTE3		BIT(9)
+> +#define COMMAND_WRITE_DATA		BIT(8)
+> +#define COMMAND_CMD_BYTE2		BIT(7)
+> +#define COMMAND_RB_HANDSHAKE		BIT(6)
+> +#define COMMAND_READ_DATA		BIT(5)
+> +#define COMMAND_CMD_BYTE3		BIT(4)
+> +#define COMMAND_READ_STATUS		BIT(3)
+> +#define COMMAND_READ_ID			BIT(2)
+> =20
+>  /* NFC ECC mode define */
+>  #define ECC_BYPASS			0
+> @@ -97,10 +97,21 @@
+>  /* NFC_COL_ADDR Field */
+>  #define COL_ADDR_MASK				0x0000FFFF
+>  #define COL_ADDR_SHIFT				0
+> +#define COL_ADDR_BYTE1_SHIFT			0
+> +#define COL_ADDR_BYTE2_SHIFT			8
+> +#define COL_ADDR_BYTE1(x)			((x & 0xFF) << COL_ADDR_BYTE1_SHIFT)
+> +#define COL_ADDR_BYTE2(x)			((x & 0XFF) << COL_ADDR_BYTE2_SHIFT)
+> +
+> =20
+>  /* NFC_ROW_ADDR Field */
+>  #define ROW_ADDR_MASK				0x00FFFFFF
+>  #define ROW_ADDR_SHIFT				0
+> +#define ROW_ADDR_BYTE1_SHIFT			0
+> +#define ROW_ADDR_BYTE2_SHIFT			8
+> +#define ROW_ADDR_BYTE3_SHIFT			16
+> +#define ROW_ADDR_BYTE1(x)			((x & 0xFF) << ROW_ADDR_BYTE1_SHIFT)
+> +#define ROW_ADDR_BYTE2(x)			((x & 0XFF) << ROW_ADDR_BYTE2_SHIFT)
+> +#define ROW_ADDR_BYTE3(x)			((x & 0XFF) << ROW_ADDR_BYTE3_SHIFT)
+>  #define ROW_ADDR_CHIP_SEL_RB_MASK		0xF0000000
+>  #define ROW_ADDR_CHIP_SEL_RB_SHIFT		28
+>  #define ROW_ADDR_CHIP_SEL_MASK			0x0F000000
+> @@ -142,13 +153,6 @@
+>  #define ECC_STATUS_MASK		0x80
+>  #define ECC_STATUS_ERR_COUNT	0x3F
+> =20
+> -enum vf610_nfc_alt_buf {
+> -	ALT_BUF_DATA =3D 0,
+> -	ALT_BUF_ID =3D 1,
+> -	ALT_BUF_STAT =3D 2,
+> -	ALT_BUF_ONFI =3D 3,
+> -};
+> -
+>  enum vf610_nfc_variant {
+>  	NFC_VFC610 =3D 1,
+>  };
+> @@ -158,10 +162,7 @@ struct vf610_nfc {
+>  	struct device *dev;
+>  	void __iomem *regs;
+>  	struct completion cmd_done;
+> -	uint buf_offset;
+> -	int write_sz;
+>  	/* Status and ID are in alternate locations. */
+> -	enum vf610_nfc_alt_buf alt_buf;
+>  	enum vf610_nfc_variant variant;
+>  	struct clk *clk;
+>  	bool use_hw_ecc;
+> @@ -173,6 +174,11 @@ static inline struct vf610_nfc *mtd_to_nfc(struct mt=
+d_info *mtd)
+>  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
+>  }
+> =20
+> +static inline struct vf610_nfc *chip_to_nfc(struct nand_chip *chip)
+> +{
+> +	return container_of(chip, struct vf610_nfc, chip);
+> +}
+> +
+>  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
+>  {
+>  	return readl(nfc->regs + reg);
+> @@ -214,7 +220,6 @@ static inline void vf610_nfc_memcpy(void *dst, const =
+void __iomem *src,
+>  	memcpy(dst, src, n);
+>  }
+> =20
+> -/* Clear flags for upcoming command */
+>  static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
+>  {
+>  	u32 tmp =3D vf610_nfc_read(nfc, NFC_IRQ_STATUS);
+> @@ -243,51 +248,22 @@ static void vf610_nfc_done(struct vf610_nfc *nfc)
+>  	vf610_nfc_clear_status(nfc);
+>  }
+> =20
+> -static u8 vf610_nfc_get_id(struct vf610_nfc *nfc, int col)
+> -{
+> -	u32 flash_id;
+> -
+> -	if (col < 4) {
+> -		flash_id =3D vf610_nfc_read(nfc, NFC_FLASH_STATUS1);
+> -		flash_id >>=3D (3 - col) * 8;
+> -	} else {
+> -		flash_id =3D vf610_nfc_read(nfc, NFC_FLASH_STATUS2);
+> -		flash_id >>=3D 24;
+> -	}
+> -
+> -	return flash_id & 0xff;
+> -}
+> -
+> -static u8 vf610_nfc_get_status(struct vf610_nfc *nfc)
+> +static void vf610_nfc_send_code(struct vf610_nfc *nfc, u32 cmd_code)
+>  {
+> -	return vf610_nfc_read(nfc, NFC_FLASH_STATUS2) & STATUS_BYTE1_MASK;
+> +	vf610_nfc_set_field(nfc, NFC_FLASH_CMD2, CMD_CODE_MASK, CMD_CODE_SHIFT,
+> +			    cmd_code);
+>  }
+> =20
+> -static void vf610_nfc_send_command(struct vf610_nfc *nfc, u32 cmd_byte1,
+> -				   u32 cmd_code)
+> +static void vf610_nfc_set_cmd1(struct vf610_nfc *nfc, u32 cmd_byte1)
+>  {
+> -	u32 tmp;
+> -
+> -	vf610_nfc_clear_status(nfc);
+> -
+> -	tmp =3D vf610_nfc_read(nfc, NFC_FLASH_CMD2);
+> -	tmp &=3D ~(CMD_BYTE1_MASK | CMD_CODE_MASK | BUFNO_MASK);
+> -	tmp |=3D cmd_byte1 << CMD_BYTE1_SHIFT;
+> -	tmp |=3D cmd_code << CMD_CODE_SHIFT;
+> -	vf610_nfc_write(nfc, NFC_FLASH_CMD2, tmp);
+> +	vf610_nfc_set_field(nfc, NFC_FLASH_CMD2, CMD_BYTE1_MASK,
+> +			    CMD_BYTE1_SHIFT, cmd_byte1);
+>  }
+> =20
+> -static void vf610_nfc_send_commands(struct vf610_nfc *nfc, u32 cmd_byte1,
+> -				    u32 cmd_byte2, u32 cmd_code)
+> +static void vf610_nfc_set_cmd2(struct vf610_nfc *nfc, u32 cmd_byte2)
+>  {
+> -	u32 tmp;
+> -
+> -	vf610_nfc_send_command(nfc, cmd_byte1, cmd_code);
+> -
+> -	tmp =3D vf610_nfc_read(nfc, NFC_FLASH_CMD1);
+> -	tmp &=3D ~CMD_BYTE2_MASK;
+> -	tmp |=3D cmd_byte2 << CMD_BYTE2_SHIFT;
+> -	vf610_nfc_write(nfc, NFC_FLASH_CMD1, tmp);
+> +	vf610_nfc_set_field(nfc, NFC_FLASH_CMD1, CMD_BYTE2_MASK,
+> +			    CMD_BYTE2_SHIFT, cmd_byte2);
+>  }
+> =20
+>  static irqreturn_t vf610_nfc_irq(int irq, void *data)
+> @@ -301,19 +277,6 @@ static irqreturn_t vf610_nfc_irq(int irq, void *data)
+>  	return IRQ_HANDLED;
+>  }
+> =20
+> -static void vf610_nfc_addr_cycle(struct vf610_nfc *nfc, int column, int =
+page)
+> -{
+> -	if (column !=3D -1) {
+> -		if (nfc->chip.options & NAND_BUSWIDTH_16)
+> -			column =3D column / 2;
+> -		vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
+> -				    COL_ADDR_SHIFT, column);
+> -	}
+> -	if (page !=3D -1)
+> -		vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
+> -				    ROW_ADDR_SHIFT, page);
+> -}
+> -
+>  static inline void vf610_nfc_ecc_mode(struct vf610_nfc *nfc, int ecc_mod=
+e)
+>  {
+>  	vf610_nfc_set_field(nfc, NFC_FLASH_CONFIG,
+> @@ -326,167 +289,158 @@ static inline void vf610_nfc_transfer_size(struct=
+ vf610_nfc *nfc, int size)
+>  	vf610_nfc_write(nfc, NFC_SECTOR_SIZE, size);
+>  }
+> =20
+> -static void vf610_nfc_command(struct mtd_info *mtd, unsigned command,
+> -			      int column, int page)
+> +static inline const struct nand_op_instr *vf610_get_next_instr(
+> +	const struct nand_operation *op, int *op_id)
+>  {
+> -	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+> -	int trfr_sz =3D nfc->chip.options & NAND_BUSWIDTH_16 ? 1 : 0;
+> +	if (*op_id + 1 >=3D op->ninstrs)
+> +		return NULL;
+> =20
+> -	nfc->buf_offset =3D max(column, 0);
+> -	nfc->alt_buf =3D ALT_BUF_DATA;
+> +	return &op->instrs[++(*op_id)];
 
-Changes in v4:
-- use uppercase DMA for description
-- simplify the code of get_if_type
-- use dma_dir to simplify the code
-- simplify the rockchip_sfc_do_rd_wr
-- some minor improvements
-- add reset controller when doing resume
+I don't like very much this syntax because it is kind of unreadable.
 
-Changes in v3:
-- use io{read32,write32}_rep to simplify the corner cases
-- remove more unnecessary bit definitions
-- some minor comment fixes and improvement
-- fix wrong unregister function
-- unify more code
-- use nor to avoid constantly replicating the whole
-  sfc->flash[sfc->num_chip].nor
-- add email for MODULE_AUTHOR
-- remove #if 1 --- #endif
-- extract DMA code to imporve the code structure
-- reset all when failing to do dma
-- pass sfc to get_if_type
-- rename sfc-no-dma to sfc-no-DMA
+Would you mind incrementing op_id before the return statement?
 
-Changes in v2:
-- fix typos
-- add some comment for buffer and others operations
-- rename SFC_MAX_CHIP_NUM to MAX_CHIPSELECT_NUM
-- use u8 for cs
-- return -EINVAL for default case of get_if_type
-- use readl_poll_*() to check timeout cases
-- simplify and clarify some condition checks
-- rework the bitshifts to simplify the code
-- define SFC_CMD_DUMMY(x)
-- fix ummap for dma read path and finish all the
-  cache maintenance.
-- rename to rockchip_sfc_chip_priv and embed struct spi_nor
-  in it.
-- add MODULE_AUTHOR
-- add runtime PM and general PM support.
-- Thanks for Marek's comments. Link:
-  http://lists.infradead.org/pipermail/linux-mtd/2016-November/070321.html
+> +}
+> =20
+> -	switch (command) {
+> -	case NAND_CMD_SEQIN:
+> -		/* Use valid column/page from preread... */
+> -		vf610_nfc_addr_cycle(nfc, column, page);
+> -		nfc->buf_offset =3D 0;
+> +static int vf610_nfc_exec_op(struct nand_chip *chip,
+> +			     const struct nand_operation *op,
+> +			     bool check_only)
 
- MAINTAINERS                        |   9 +
- drivers/mtd/spi-nor/Kconfig        |   7 +
- drivers/mtd/spi-nor/Makefile       |   1 +
- drivers/mtd/spi-nor/rockchip-sfc.c | 942 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 959 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/rockchip-sfc.c
+The soul of ->exec_op() is here :) However this implementation looks
+very specific to the kind of tasks you are used to do with one specific
+chip. What if someone wants to support a new command that implies
+several command/address/data cycles interleaved? Maybe one solution
+would be to rework a bit by using a case statement in a for loop. If
+the indentation level is too high, you may use helpers to do small
+tasks like sending a command or addresse cycle. What do you think?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index aa71ab52f..0718bc0 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11704,6 +11704,15 @@ F:	drivers/gpio/gpio-bd9571mwv.c
- F:	include/linux/mfd/bd9571mwv.h
- F:	Documentation/devicetree/bindings/mfd/bd9571mwv.txt
- 
-+ROCKCHIP SERIAL FLASH CONTROLLER DRIVER
-+M:	Shawn Lin <shawn.lin@rock-chips.com>
-+M:	Andy Yan <andy.yan@rock-chips.com>
-+L:	linux-mtd@lists.infradead.org
-+L:	linux-rockchip@lists.infradead.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/mtd/rockchip-sfc.txt
-+F:	drivers/mtd/spi-nor/rockchip-sfc.c
-+
- ROSE NETWORK LAYER
- M:	Ralf Baechle <ralf@linux-mips.org>
- L:	linux-hams@vger.kernel.org
-diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
-index 89da88e..f2898ea 100644
---- a/drivers/mtd/spi-nor/Kconfig
-+++ b/drivers/mtd/spi-nor/Kconfig
-@@ -129,4 +129,11 @@ config SPI_STM32_QUADSPI
- 	  This enables support for the STM32 Quad SPI controller.
- 	  We only connect the NOR to this controller.
- 
-+config SPI_ROCKCHIP_SFC
-+	tristate "Rockchip Serial Flash Controller(SFC)"
-+	depends on ARCH_ROCKCHIP || COMPILE_TEST
-+	depends on HAS_IOMEM && HAS_DMA
-+	help
-+	  This enables support for rockchip serial flash controller.
-+
- endif # MTD_SPI_NOR
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index f4c61d2..c294156 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -11,3 +11,4 @@ obj-$(CONFIG_SPI_INTEL_SPI)	+= intel-spi.o
- obj-$(CONFIG_SPI_INTEL_SPI_PCI)	+= intel-spi-pci.o
- obj-$(CONFIG_SPI_INTEL_SPI_PLATFORM)	+= intel-spi-platform.o
- obj-$(CONFIG_SPI_STM32_QUADSPI)	+= stm32-quadspi.o
-+obj-$(CONFIG_SPI_ROCKCHIP_SFC) += rockchip-sfc.o
-diff --git a/drivers/mtd/spi-nor/rockchip-sfc.c b/drivers/mtd/spi-nor/rockchip-sfc.c
-new file mode 100644
-index 0000000..6037101
---- /dev/null
-+++ b/drivers/mtd/spi-nor/rockchip-sfc.c
-@@ -0,0 +1,942 @@
-+/*
-+ * Rockchip Serial Flash Controller Driver
-+ *
-+ * Copyright (c) 2017, Rockchip Inc.
-+ * Author: Shawn Lin <shawn.lin@rock-chips.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/clk.h>
-+#include <linux/completion.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/iopoll.h>
-+#include <linux/mm.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/spi-nor.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/slab.h>
-+
-+/* System control */
-+#define SFC_CTRL			0x0
-+#define  SFC_CTRL_COMMON_BITS_1		0x0
-+#define  SFC_CTRL_COMMON_BITS_2		0x1
-+#define  SFC_CTRL_COMMON_BITS_4		0x2
-+#define  SFC_CTRL_DATA_BITS_SHIFT	12
-+#define  SFC_CTRL_ADDR_BITS_SHIFT	10
-+#define  SFC_CTRL_CMD_BITS_SHIFT	8
-+#define  SFC_CTRL_PHASE_SEL_NEGETIVE	BIT(1)
-+
-+/* Interrupt mask */
-+#define SFC_IMR				0x4
-+#define  SFC_IMR_RX_FULL		BIT(0)
-+#define  SFC_IMR_RX_UFLOW		BIT(1)
-+#define  SFC_IMR_TX_OFLOW		BIT(2)
-+#define  SFC_IMR_TX_EMPTY		BIT(3)
-+#define  SFC_IMR_TRAN_FINISH		BIT(4)
-+#define  SFC_IMR_BUS_ERR		BIT(5)
-+#define  SFC_IMR_NSPI_ERR		BIT(6)
-+#define  SFC_IMR_DMA			BIT(7)
-+
-+/* Interrupt clear */
-+#define SFC_ICLR			0x8
-+#define  SFC_ICLR_RX_FULL		BIT(0)
-+#define  SFC_ICLR_RX_UFLOW		BIT(1)
-+#define  SFC_ICLR_TX_OFLOW		BIT(2)
-+#define  SFC_ICLR_TX_EMPTY		BIT(3)
-+#define  SFC_ICLR_TRAN_FINISH		BIT(4)
-+#define  SFC_ICLR_BUS_ERR		BIT(5)
-+#define  SFC_ICLR_NSPI_ERR		BIT(6)
-+#define  SFC_ICLR_DMA			BIT(7)
-+
-+/* FIFO threshold level */
-+#define SFC_FTLR			0xc
-+#define  SFC_FTLR_TX_SHIFT		0
-+#define  SFC_FTLR_TX_MASK		0x1f
-+#define  SFC_FTLR_RX_SHIFT		8
-+#define  SFC_FTLR_RX_MASK		0x1f
-+
-+/* Reset FSM and FIFO */
-+#define SFC_RCVR			0x10
-+#define  SFC_RCVR_RESET			BIT(0)
-+
-+/* Enhanced mode */
-+#define SFC_AX				0x14
-+
-+/* Address Bit number */
-+#define SFC_ABIT			0x18
-+
-+/* Interrupt status */
-+#define SFC_ISR				0x1c
-+#define  SFC_ISR_RX_FULL_SHIFT		BIT(0)
-+#define  SFC_ISR_RX_UFLOW_SHIFT		BIT(1)
-+#define  SFC_ISR_TX_OFLOW_SHIFT		BIT(2)
-+#define  SFC_ISR_TX_EMPTY_SHIFT		BIT(3)
-+#define  SFC_ISR_TX_FINISH_SHIFT	BIT(4)
-+#define  SFC_ISR_BUS_ERR_SHIFT		BIT(5)
-+#define  SFC_ISR_NSPI_ERR_SHIFT		BIT(6)
-+#define  SFC_ISR_DMA_SHIFT		BIT(7)
-+
-+/* FIFO status */
-+#define SFC_FSR				0x20
-+#define  SFC_FSR_TX_IS_FULL		BIT(0)
-+#define  SFC_FSR_TX_IS_EMPTY		BIT(1)
-+#define  SFC_FSR_RX_IS_EMPTY		BIT(2)
-+#define  SFC_FSR_RX_IS_FULL		BIT(3)
-+#define  SFC_FSR_TXLV_MASK		GENMASK(12, 8)
-+#define  SFC_FSR_TXLV_SHIFT		8
-+#define  SFC_FSR_RXLV_MASK		GENMASK(20, 16)
-+#define  SFC_FSR_RXLV_SHIFT		16
-+
-+/* FSM status */
-+#define SFC_SR				0x24
-+#define  SFC_SR_IS_IDLE			0x0
-+#define  SFC_SR_IS_BUSY			0x1
-+
-+/* Raw interrupt status */
-+#define SFC_RISR			0x28
-+#define  SFC_RISR_RX_FULL		BIT(0)
-+#define  SFC_RISR_RX_UNDERFLOW		BIT(1)
-+#define  SFC_RISR_TX_OVERFLOW		BIT(2)
-+#define  SFC_RISR_TX_EMPTY		BIT(3)
-+#define  SFC_RISR_TRAN_FINISH		BIT(4)
-+#define  SFC_RISR_BUS_ERR		BIT(5)
-+#define  SFC_RISR_NSPI_ERR		BIT(6)
-+#define  SFC_RISR_DMA			BIT(7)
-+
-+/* Master trigger */
-+#define SFC_DMA_TRIGGER			0x80
-+
-+/* Src or Dst addr for master */
-+#define SFC_DMA_ADDR			0x84
-+
-+/* Command */
-+#define SFC_CMD				0x100
-+#define  SFC_CMD_IDX_SHIFT		0
-+#define  SFC_CMD_DUMMY_SHIFT		8
-+#define  SFC_CMD_DIR_RD			0
-+#define  SFC_CMD_DIR_WR			1
-+#define  SFC_CMD_DIR_SHIFT		12
-+#define  SFC_CMD_ADDR_ZERO		(0x0 << 14)
-+#define  SFC_CMD_ADDR_24BITS		(0x1 << 14)
-+#define  SFC_CMD_ADDR_32BITS		(0x2 << 14)
-+#define  SFC_CMD_ADDR_FRS		(0x3 << 14)
-+#define  SFC_CMD_TRAN_BYTES_SHIFT	16
-+#define  SFC_CMD_CS_SHIFT		30
-+
-+/* Address */
-+#define SFC_ADDR			0x104
-+
-+/* Data */
-+#define SFC_DATA			0x108
-+
-+#define SFC_MAX_CHIPSELECT_NUM		4
-+
-+/* The SFC can transfer max 16KB - 1 at one time
-+ * we set it to 15.5KB here for alignment.
-+ */
-+#define SFC_MAX_TRANS_BYTES		(512 * 31)
-+
-+#define SFC_CMD_DUMMY(x) \
-+	((x) << SFC_CMD_DUMMY_SHIFT)
-+
-+enum rockchip_sfc_iftype {
-+	IF_TYPE_STD,
-+	IF_TYPE_DUAL,
-+	IF_TYPE_QUAD,
-+};
-+
-+struct rockchip_sfc;
-+struct rockchip_sfc_chip_priv {
-+	u8 cs;
-+	u32 clk_rate;
-+	struct spi_nor nor;
-+	struct rockchip_sfc *sfc;
-+};
-+
-+struct rockchip_sfc {
-+	struct device *dev;
-+	struct mutex lock;
-+	void __iomem *regbase;
-+	struct clk *hclk;
-+	struct clk *clk;
-+	/* virtual mapped addr for dma_buffer */
-+	void *buffer;
-+	dma_addr_t dma_buffer;
-+	struct completion cp;
-+	struct rockchip_sfc_chip_priv flash[SFC_MAX_CHIPSELECT_NUM];
-+	u32 num_chip;
-+	bool use_dma;
-+};
-+
-+static int get_if_type(struct rockchip_sfc *sfc, enum spi_nor_protocol proto)
-+{
-+	if (proto == SNOR_PROTO_1_1_2)
-+		return IF_TYPE_DUAL;
-+	else if (proto == SNOR_PROTO_1_1_4)
-+		return IF_TYPE_QUAD;
-+	else if (proto == SNOR_PROTO_1_1_1)
-+		return IF_TYPE_STD;
-+
-+	dev_err(sfc->dev, "unsupported SPI read mode\n");
-+
-+	return -EINVAL;
-+}
-+
-+static int rockchip_sfc_reset(struct rockchip_sfc *sfc)
-+{
-+	int err;
-+	u32 status;
-+
-+	writel_relaxed(SFC_RCVR_RESET, sfc->regbase + SFC_RCVR);
-+
-+	err = readl_poll_timeout(sfc->regbase + SFC_RCVR, status,
-+				 !(status & SFC_RCVR_RESET), 20,
-+				 jiffies_to_usecs(HZ));
-+	if (err)
-+		dev_err(sfc->dev, "SFC reset never finished\n");
-+
-+	/* Still need to clear the masked interrupt from RISR */
-+	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
-+		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
-+		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
-+		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
-+		       sfc->regbase + SFC_ICLR);
-+
-+	dev_info(sfc->dev, "reset\n");
-+
-+	return err;
-+}
-+
-+static int rockchip_sfc_init(struct rockchip_sfc *sfc)
-+{
-+	int err;
-+
-+	err = rockchip_sfc_reset(sfc);
-+	if (err)
-+		return err;
-+
-+	/* Mask all eight interrupts */
-+	writel_relaxed(0xff, sfc->regbase + SFC_IMR);
-+
-+	writel_relaxed(SFC_CTRL_PHASE_SEL_NEGETIVE, sfc->regbase + SFC_CTRL);
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_prep(struct spi_nor *nor, enum spi_nor_ops ops)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	int ret;
-+
-+	mutex_lock(&sfc->lock);
-+	pm_runtime_get_sync(sfc->dev);
-+
-+	ret = clk_set_rate(sfc->clk, priv->clk_rate);
-+	if (ret)
-+		goto out;
-+
-+	ret = clk_prepare_enable(sfc->clk);
-+	if (ret)
-+		goto out;
-+
-+	return 0;
-+
-+out:
-+	mutex_unlock(&sfc->lock);
-+	return ret;
-+}
-+
-+static void rockchip_sfc_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+
-+	clk_disable_unprepare(sfc->clk);
-+	mutex_unlock(&sfc->lock);
-+	pm_runtime_mark_last_busy(sfc->dev);
-+	pm_runtime_put_autosuspend(sfc->dev);
-+}
-+
-+static inline int rockchip_sfc_get_fifo_level(struct rockchip_sfc *sfc, int wr)
-+{
-+	u32 fsr = readl_relaxed(sfc->regbase + SFC_FSR);
-+	int level;
-+
-+	if (wr)
-+		level = (fsr & SFC_FSR_TXLV_MASK) >> SFC_FSR_TXLV_SHIFT;
-+	else
-+		level = (fsr & SFC_FSR_RXLV_MASK) >> SFC_FSR_RXLV_SHIFT;
-+
-+	return level;
-+}
-+
-+static int rockchip_sfc_wait_fifo_ready(struct rockchip_sfc *sfc, int wr, u32 timeout)
-+{
-+	unsigned long deadline = jiffies + timeout;
-+	int level;
-+
-+	while (!(level = rockchip_sfc_get_fifo_level(sfc, wr))) {
-+		if (time_after_eq(jiffies, deadline)) {
-+			dev_warn(sfc->dev, "%s fifo timeout\n", wr ? "write" : "read");
-+			return -ETIMEDOUT;
-+		}
-+		udelay(1);
-+	}
-+
-+	return level;
-+}
-+
-+/* The SFC_CTRL register is a global control register,
-+ * when the controller is in busy state(SFC_SR),
-+ * SFC_CTRL cannot be set.
-+ */
-+static void rockchip_sfc_wait_idle(struct rockchip_sfc *sfc, u32 timeout_us)
-+{
-+	u32 status;
-+	int ret;
-+
-+	ret = readl_poll_timeout(sfc->regbase + SFC_SR, status,
-+				!(status & SFC_SR_IS_BUSY),
-+				20, timeout_us);
-+	if (ret) {
-+		dev_err(sfc->dev, "wait sfc idle timeout\n");
-+		rockchip_sfc_reset(sfc);
-+	}
-+}
-+
-+static void rockchip_sfc_setup_ctrl(struct rockchip_sfc *sfc)
-+{
-+	u32 reg;
-+
-+	reg = IF_TYPE_STD << SFC_CTRL_DATA_BITS_SHIFT;
-+	reg |= IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT;
-+	reg |= IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT;
-+	reg |= SFC_CTRL_PHASE_SEL_NEGETIVE;
-+
-+	rockchip_sfc_wait_idle(sfc, 10000);
-+
-+	writel_relaxed(reg, sfc->regbase + SFC_CTRL);
-+}
-+static int rockchip_sfc_op_reg(struct spi_nor *nor,
-+			       u8 opcode, int len, u8 optype)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	u32 reg;
-+
-+	rockchip_sfc_setup_ctrl(sfc);
-+
-+	reg = opcode << SFC_CMD_IDX_SHIFT;
-+	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
-+	reg |= priv->cs << SFC_CMD_CS_SHIFT;
-+	reg |= optype << SFC_CMD_DIR_SHIFT;
-+	writel_relaxed(reg, sfc->regbase + SFC_CMD);
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_write_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
-+{
-+	u8 bytes = len & 0x3;
-+	u32 dwords;
-+	int tx_level;
-+	u32 write_words;
-+	u32 tmp = 0;
-+
-+	if (len >= 4) {
-+		dwords = len >> 2;
-+		while (dwords) {
-+			tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
-+			if (tx_level < 0)
-+				return tx_level;
-+			write_words = min_t(u32, tx_level, dwords);
-+			iowrite32_rep(sfc->regbase + SFC_DATA, buf, write_words);
-+			buf += write_words << 2;
-+			dwords -= write_words;
-+		}
-+	}
-+
-+	/* write the rest non word aligned bytes */
-+	if (bytes) {
-+		tx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_WR, HZ);
-+		if (tx_level < 0)
-+			return tx_level;
-+		memcpy(&tmp, buf, bytes);
-+		writel_relaxed(tmp, sfc->regbase + SFC_DATA);
-+	}
-+
-+	return len;
-+}
-+
-+static int rockchip_sfc_read_fifo(struct rockchip_sfc *sfc, u8 *buf, int len)
-+{
-+	u8 bytes = len & 0x3;
-+	u32 dwords;
-+	u8 read_words;
-+	int rx_level;
-+	int tmp;
-+
-+	/* word aligned access only */
-+	if (len >= 4) {
-+		dwords = len >> 2;
-+		while (dwords) {
-+			rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
-+			if (rx_level < 0)
-+				return rx_level;
-+			read_words = min_t(u32, rx_level, dwords);
-+			ioread32_rep(sfc->regbase + SFC_DATA, buf, read_words);
-+			buf += read_words << 2;
-+			dwords -= read_words;
-+		}
-+	}
-+
-+	/* read the rest non word aligned bytes */
-+	if (bytes) {
-+		rx_level = rockchip_sfc_wait_fifo_ready(sfc, SFC_CMD_DIR_RD, HZ);
-+		if (rx_level < 0)
-+			return rx_level;
-+		tmp = readl_relaxed(sfc->regbase + SFC_DATA);
-+		memcpy(buf, &tmp, bytes);
-+	}
-+
-+	return len;
-+}
-+
-+static int rockchip_sfc_read_reg(struct spi_nor *nor, u8 opcode,
-+				 u8 *buf, int len)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	int ret;
-+	int trans;
-+
-+	trans = min_t(int, len, SFC_MAX_TRANS_BYTES);
-+	ret = rockchip_sfc_op_reg(nor, opcode, trans, SFC_CMD_DIR_RD);
-+	if (ret)
-+		return ret;
-+
-+	ret = rockchip_sfc_read_fifo(sfc, buf, trans);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_write_reg(struct spi_nor *nor, u8 opcode,
-+				  u8 *buf, int len)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	int ret;
-+
-+	ret = rockchip_sfc_op_reg(nor, opcode, len, SFC_CMD_DIR_WR);
-+	if (ret)
-+		return ret;
-+	ret = rockchip_sfc_write_fifo(sfc, buf, len);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_erase(struct spi_nor *nor, loff_t offs)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	u32 reg;
-+
-+	rockchip_sfc_setup_ctrl(sfc);
-+
-+	reg = nor->erase_opcode << SFC_CMD_IDX_SHIFT;
-+	reg |= (nor->addr_width == 4) ?
-+		SFC_CMD_ADDR_32BITS : SFC_CMD_ADDR_24BITS;
-+	reg |= priv->cs << SFC_CMD_CS_SHIFT;
-+	reg |= SFC_CMD_DIR_WR << SFC_CMD_DIR_SHIFT;
-+
-+	writel_relaxed(reg, sfc->regbase + SFC_CMD);
-+
-+	writel_relaxed(offs, sfc->regbase + SFC_ADDR);
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_setup_transfer(struct spi_nor *nor,
-+					       loff_t from_to,
-+					       size_t len, u8 op_type)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	u8 if_type = IF_TYPE_STD;
-+	u32 reg;
-+
-+	if (op_type == SFC_CMD_DIR_RD)
-+		if_type = get_if_type(sfc, nor->read_proto);
-+
-+	rockchip_sfc_wait_idle(sfc, 10000);
-+
-+	writel_relaxed((if_type << SFC_CTRL_DATA_BITS_SHIFT) |
-+		       (IF_TYPE_STD << SFC_CTRL_ADDR_BITS_SHIFT) |
-+		       (IF_TYPE_STD << SFC_CTRL_CMD_BITS_SHIFT) |
-+		       SFC_CTRL_PHASE_SEL_NEGETIVE,
-+		       sfc->regbase + SFC_CTRL);
-+
-+	if (op_type == SFC_CMD_DIR_WR)
-+		reg = nor->program_opcode << SFC_CMD_IDX_SHIFT;
-+	else
-+		reg = nor->read_opcode << SFC_CMD_IDX_SHIFT;
-+
-+	reg |= op_type << SFC_CMD_DIR_SHIFT;
-+	reg |= (nor->addr_width == 4) ?
-+		SFC_CMD_ADDR_32BITS : SFC_CMD_ADDR_24BITS;
-+
-+	reg |= priv->cs << SFC_CMD_CS_SHIFT;
-+	reg |= len << SFC_CMD_TRAN_BYTES_SHIFT;
-+
-+	if (op_type == SFC_CMD_DIR_RD)
-+		reg |= SFC_CMD_DUMMY(nor->read_dummy);
-+
-+	writel_relaxed(reg, sfc->regbase + SFC_CMD);
-+	writel_relaxed(from_to, sfc->regbase + SFC_ADDR);
-+
-+	return 0;
-+}
-+
-+static int rockchip_sfc_do_dma_transfer(struct spi_nor *nor, loff_t from_to,
-+					dma_addr_t dma_buf, size_t len,
-+					u8 op_type)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	u32 reg;
-+	int err = 0;
-+
-+	init_completion(&sfc->cp);
-+
-+	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
-+		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
-+		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
-+		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
-+		       sfc->regbase + SFC_ICLR);
-+
-+	/* Enable transfer complete interrupt */
-+	reg = readl_relaxed(sfc->regbase + SFC_IMR);
-+	reg &= ~SFC_IMR_TRAN_FINISH;
-+	writel_relaxed(reg, sfc->regbase + SFC_IMR);
-+
-+	err = rockchip_sfc_setup_transfer(nor, from_to, len, op_type);
-+	if (err < 0)
-+		return err;
-+
-+	writel_relaxed(dma_buf, sfc->regbase + SFC_DMA_ADDR);
-+
-+	/*
-+	 * Start dma but note that the sfc->dma_buffer is derived from
-+	 * dmam_alloc_coherent so we don't actually need any sync operations
-+	 * for coherent dma memory.
-+	 */
-+	writel_relaxed(0x1, sfc->regbase + SFC_DMA_TRIGGER);
-+
-+	/* Wait for the interrupt. */
-+	if (!wait_for_completion_timeout(&sfc->cp, msecs_to_jiffies(2000))) {
-+		dev_err(sfc->dev, "DMA wait for transfer finish timeout\n");
-+		err = -ETIMEDOUT;
-+	}
-+
-+	writel_relaxed(SFC_ICLR_RX_FULL | SFC_ICLR_RX_UFLOW |
-+		       SFC_ICLR_TX_OFLOW | SFC_ICLR_TX_EMPTY |
-+		       SFC_ICLR_TRAN_FINISH | SFC_ICLR_BUS_ERR |
-+		       SFC_ICLR_NSPI_ERR | SFC_ICLR_DMA,
-+		       sfc->regbase + SFC_ICLR);
-+	/* Disable transfer finish interrupt */
-+	reg = readl_relaxed(sfc->regbase + SFC_IMR);
-+	reg |= SFC_IMR_TRAN_FINISH;
-+	writel_relaxed(reg, sfc->regbase + SFC_IMR);
-+
-+	if (err) {
-+		rockchip_sfc_reset(sfc);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static inline int rockchip_sfc_pio_write(struct rockchip_sfc *sfc, u_char *buf,
-+					 size_t len)
-+{
-+	return rockchip_sfc_write_fifo(sfc, buf, len);
-+}
-+
-+static inline int rockchip_sfc_pio_read(struct rockchip_sfc *sfc, u_char *buf,
-+					size_t len)
-+{
-+	return rockchip_sfc_read_fifo(sfc, buf, len);
-+}
-+
-+static int rockchip_sfc_pio_transfer(struct spi_nor *nor, loff_t from_to,
-+				     size_t len, u_char *buf, u8 op_type)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	size_t trans;
-+	int ret;
-+
-+	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
-+	ret = rockchip_sfc_setup_transfer(nor, from_to, trans, op_type);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (op_type == SFC_CMD_DIR_WR)
-+		ret = rockchip_sfc_pio_write(sfc, buf, trans);
-+	else
-+		ret = rockchip_sfc_pio_read(sfc, buf, trans);
-+
-+	return ret;
-+}
-+
-+static int rockchip_sfc_dma_transfer(struct spi_nor *nor, loff_t from_to,
-+				     size_t len, u_char *buf, u8 op_type)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+	size_t trans;
-+	int ret;
-+
-+	trans = min_t(size_t, SFC_MAX_TRANS_BYTES, len);
-+
-+	if (op_type == SFC_CMD_DIR_WR)
-+		memcpy(sfc->buffer, buf, trans);
-+
-+	ret = rockchip_sfc_do_dma_transfer(nor, from_to, sfc->dma_buffer,
-+					   trans, op_type);
-+	if (ret) {
-+		dev_warn(nor->dev, "DMA timeout\n");
-+		return ret;
-+	}
-+
-+	if (op_type == SFC_CMD_DIR_RD)
-+		memcpy(buf, sfc->buffer, trans);
-+
-+	return trans;
-+}
-+
-+static ssize_t rockchip_sfc_do_rd_wr(struct spi_nor *nor, loff_t from_to,
-+				     size_t len, u_char *buf, u32 op_type)
-+{
-+	struct rockchip_sfc_chip_priv *priv = nor->priv;
-+	struct rockchip_sfc *sfc = priv->sfc;
-+
-+	/* DMA can only handle word anligned transfer chunks */
-+	if (likely(sfc->use_dma) && !(len & 0x3))
-+		return rockchip_sfc_dma_transfer(nor, from_to, len, buf, op_type);
-+	else
-+		return rockchip_sfc_pio_transfer(nor, from_to, len,
-+						 (u_char *)buf, op_type);
-+}
-+
-+static ssize_t rockchip_sfc_read(struct spi_nor *nor, loff_t from,
-+				 size_t len, u_char *read_buf)
-+{
-+	return rockchip_sfc_do_rd_wr(nor, from, len,
-+				     read_buf, SFC_CMD_DIR_RD);
-+}
-+
-+static ssize_t rockchip_sfc_write(struct spi_nor *nor, loff_t to,
-+				  size_t len, const u_char *write_buf)
-+{
-+	return rockchip_sfc_do_rd_wr(nor, to, len,
-+				     (u_char *)write_buf,
-+				     SFC_CMD_DIR_WR);
-+}
-+
-+static int rockchip_sfc_register(struct device_node *np,
-+				 struct rockchip_sfc *sfc)
-+{
-+	const struct spi_nor_hwcaps hwcaps = {
-+		.mask = SNOR_HWCAPS_READ |
-+			SNOR_HWCAPS_READ_FAST |
-+			SNOR_HWCAPS_READ_1_1_2 |
-+			SNOR_HWCAPS_READ_1_1_4 |
-+			SNOR_HWCAPS_PP,
-+	};
-+	struct device *dev = sfc->dev;
-+	struct mtd_info *mtd;
-+	struct spi_nor *nor;
-+	int ret;
-+
-+	nor = &sfc->flash[sfc->num_chip].nor;
-+	nor->dev = dev;
-+	spi_nor_set_flash_node(nor, np);
-+
-+	ret = of_property_read_u8(np, "reg", &sfc->flash[sfc->num_chip].cs);
-+	if (ret) {
-+		dev_err(dev, "No reg property for %s\n",
-+			np->full_name);
-+		return ret;
-+	}
-+
-+	ret = of_property_read_u32(np, "spi-max-frequency",
-+				   &sfc->flash[sfc->num_chip].clk_rate);
-+	if (ret) {
-+		dev_err(dev, "No spi-max-frequency property for %s\n",
-+			np->full_name);
-+		return ret;
-+	}
-+
-+	sfc->flash[sfc->num_chip].sfc = sfc;
-+	nor->priv = &sfc->flash[sfc->num_chip];
-+
-+	nor->prepare = rockchip_sfc_prep;
-+	nor->unprepare = rockchip_sfc_unprep;
-+	nor->read_reg = rockchip_sfc_read_reg;
-+	nor->write_reg = rockchip_sfc_write_reg;
-+	nor->read = rockchip_sfc_read;
-+	nor->write = rockchip_sfc_write;
-+	nor->erase = rockchip_sfc_erase;
-+	ret = spi_nor_scan(nor, NULL, &hwcaps);
-+	if (ret)
-+		return ret;
-+
-+	mtd = &nor->mtd;
-+	mtd->name = np->name;
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret)
-+		return ret;
-+
-+	sfc->num_chip++;
-+	return 0;
-+}
-+
-+static void rockchip_sfc_unregister_all(struct rockchip_sfc *sfc)
-+{
-+	int i;
-+
-+	for (i = 0; i < sfc->num_chip; i++)
-+		mtd_device_unregister(&sfc->flash[i].nor.mtd);
-+}
-+
-+static int rockchip_sfc_register_all(struct rockchip_sfc *sfc)
-+{
-+	struct device *dev = sfc->dev;
-+	struct device_node *np;
-+	int ret;
-+
-+	for_each_available_child_of_node(dev->of_node, np) {
-+		ret = rockchip_sfc_register(np, sfc);
-+		if (ret)
-+			goto fail;
-+
-+		if (sfc->num_chip == SFC_MAX_CHIPSELECT_NUM) {
-+			dev_warn(dev, "Exceeds the max cs limitation\n");
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+
-+fail:
-+	dev_err(dev, "Failed to register all chips\n");
-+	/* Unregister all the _registered_ nor flash */
-+	rockchip_sfc_unregister_all(sfc);
-+	return ret;
-+}
-+
-+static irqreturn_t rockchip_sfc_irq_handler(int irq, void *dev_id)
-+{
-+	struct rockchip_sfc *sfc = dev_id;
-+	u32 reg;
-+
-+	reg = readl_relaxed(sfc->regbase + SFC_RISR);
-+
-+	/* Clear interrupt */
-+	writel_relaxed(reg, sfc->regbase + SFC_ICLR);
-+
-+	if (reg & SFC_RISR_TRAN_FINISH)
-+		complete(&sfc->cp);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int rockchip_sfc_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct resource *res;
-+	struct rockchip_sfc *sfc;
-+	int ret;
-+
-+	sfc = devm_kzalloc(dev, sizeof(*sfc), GFP_KERNEL);
-+	if (!sfc)
-+		return -ENOMEM;
-+
-+	platform_set_drvdata(pdev, sfc);
-+	sfc->dev = dev;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	sfc->regbase = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(sfc->regbase))
-+		return PTR_ERR(sfc->regbase);
-+
-+	sfc->clk = devm_clk_get(&pdev->dev, "sfc");
-+	if (IS_ERR(sfc->clk)) {
-+		dev_err(&pdev->dev, "Failed to get sfc interface clk\n");
-+		return PTR_ERR(sfc->clk);
-+	}
-+
-+	sfc->hclk = devm_clk_get(&pdev->dev, "hsfc");
-+	if (IS_ERR(sfc->hclk)) {
-+		dev_err(&pdev->dev, "Failed to get sfc ahp clk\n");
-+		return PTR_ERR(sfc->hclk);
-+	}
-+
-+	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+	if (ret) {
-+		dev_warn(dev, "Unable to set dma mask\n");
-+		return ret;
-+	}
-+
-+	sfc->buffer = dmam_alloc_coherent(dev, SFC_MAX_TRANS_BYTES,
-+					  &sfc->dma_buffer,
-+					  GFP_KERNEL);
-+	if (!sfc->buffer)
-+		return -ENOMEM;
-+
-+	mutex_init(&sfc->lock);
-+
-+	ret = clk_prepare_enable(sfc->hclk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to enable hclk\n");
-+		goto err_hclk;
-+	}
-+
-+	ret = clk_prepare_enable(sfc->clk);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Failed to enable clk\n");
-+		goto err_clk;
-+	}
-+
-+	sfc->use_dma = !of_property_read_bool(sfc->dev->of_node,
-+					      "rockchip,sfc-no-dma");
-+
-+	/* Find the irq */
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to get the irq\n");
-+		goto err_irq;
-+	}
-+
-+	ret = devm_request_irq(dev, ret, rockchip_sfc_irq_handler,
-+			       0, pdev->name, sfc);
-+	if (ret) {
-+		dev_err(dev, "Failed to request irq\n");
-+		goto err_irq;
-+	}
-+
-+	sfc->num_chip = 0;
-+	ret = rockchip_sfc_init(sfc);
-+	if (ret)
-+		goto err_irq;
-+
-+	pm_runtime_get_noresume(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, 50);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+
-+	ret = rockchip_sfc_register_all(sfc);
-+	if (ret)
-+		goto err_register;
-+
-+	clk_disable_unprepare(sfc->clk);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
-+	return 0;
-+
-+err_register:
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_set_suspended(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+err_irq:
-+	clk_disable_unprepare(sfc->clk);
-+err_clk:
-+	clk_disable_unprepare(sfc->hclk);
-+err_hclk:
-+	mutex_destroy(&sfc->lock);
-+	return ret;
-+}
-+
-+static int rockchip_sfc_remove(struct platform_device *pdev)
-+{
-+	struct rockchip_sfc *sfc = platform_get_drvdata(pdev);
-+
-+	pm_runtime_get_sync(&pdev->dev);
-+	pm_runtime_disable(&pdev->dev);
-+	pm_runtime_put_noidle(&pdev->dev);
-+
-+	rockchip_sfc_unregister_all(sfc);
-+	mutex_destroy(&sfc->lock);
-+	clk_disable_unprepare(sfc->clk);
-+	clk_disable_unprepare(sfc->hclk);
-+	return 0;
-+}
-+
-+#ifdef CONFIG_PM
-+int rockchip_sfc_runtime_suspend(struct device *dev)
-+{
-+	struct rockchip_sfc *sfc = dev_get_drvdata(dev);
-+
-+	clk_disable_unprepare(sfc->hclk);
-+	return 0;
-+}
-+
-+int rockchip_sfc_runtime_resume(struct device *dev)
-+{
-+	struct rockchip_sfc *sfc = dev_get_drvdata(dev);
-+
-+	clk_prepare_enable(sfc->hclk);
-+	return rockchip_sfc_reset(sfc);
-+}
-+#endif /* CONFIG_PM */
-+
-+static const struct of_device_id rockchip_sfc_dt_ids[] = {
-+	{ .compatible = "rockchip,sfc"},
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, rockchip_sfc_dt_ids);
-+
-+static const struct dev_pm_ops rockchip_sfc_dev_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-+				pm_runtime_force_resume)
-+	SET_RUNTIME_PM_OPS(rockchip_sfc_runtime_suspend,
-+			   rockchip_sfc_runtime_resume, NULL)
-+};
-+
-+static struct platform_driver rockchip_sfc_driver = {
-+	.driver = {
-+		.name	= "rockchip-sfc",
-+		.of_match_table = rockchip_sfc_dt_ids,
-+		.pm = &rockchip_sfc_dev_pm_ops,
-+	},
-+	.probe	= rockchip_sfc_probe,
-+	.remove	= rockchip_sfc_remove,
-+};
-+module_platform_driver(rockchip_sfc_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Rockchip Serial Flash Controller Driver");
-+MODULE_AUTHOR("Shawn Lin <shawn.lin@rock-chips.com>");
--- 
-2.7.4
+> +{
+> +	const struct nand_op_instr *instr;
+> +	struct vf610_nfc *nfc =3D chip_to_nfc(chip);
+> +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> +	int op_id =3D -1, trfr_sz =3D 0, code =3D 0;
+> =20
+> -		/*
+> -		 * SEQIN =3D> data =3D> PAGEPROG sequence is done by the controller
+> -		 * hence we do not need to issue the command here...
+> -		 */
+> -		return;
+> -	case NAND_CMD_PAGEPROG:
+> -		trfr_sz +=3D nfc->write_sz;
+> -		vf610_nfc_transfer_size(nfc, trfr_sz);
+> -		vf610_nfc_send_commands(nfc, NAND_CMD_SEQIN,
+> -					command, PROGRAM_PAGE_CMD_CODE);
+> -		if (nfc->use_hw_ecc)
+> -			vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> -		else
+> -			vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> -		break;
+> -
+> -	case NAND_CMD_RESET:
+> -		vf610_nfc_transfer_size(nfc, 0);
+> -		vf610_nfc_send_command(nfc, command, RESET_CMD_CODE);
+> -		break;
+> -
+> -	case NAND_CMD_READOOB:
+> -		trfr_sz +=3D mtd->oobsize;
+> -		column =3D mtd->writesize;
+> -		vf610_nfc_transfer_size(nfc, trfr_sz);
+> -		vf610_nfc_send_commands(nfc, NAND_CMD_READ0,
+> -					NAND_CMD_READSTART, READ_PAGE_CMD_CODE);
+> -		vf610_nfc_addr_cycle(nfc, column, page);
+> -		vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> -		break;
+> -
+> -	case NAND_CMD_READ0:
+> -		trfr_sz +=3D mtd->writesize + mtd->oobsize;
+> -		vf610_nfc_transfer_size(nfc, trfr_sz);
+> -		vf610_nfc_send_commands(nfc, NAND_CMD_READ0,
+> -					NAND_CMD_READSTART, READ_PAGE_CMD_CODE);
+> -		vf610_nfc_addr_cycle(nfc, column, page);
+> -		vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> -		break;
+> -
+> -	case NAND_CMD_PARAM:
+> -		nfc->alt_buf =3D ALT_BUF_ONFI;
+> -		trfr_sz =3D 3 * sizeof(struct nand_onfi_params);
+> -		vf610_nfc_transfer_size(nfc, trfr_sz);
+> -		vf610_nfc_send_command(nfc, command, READ_ONFI_PARAM_CMD_CODE);
+> -		vf610_nfc_addr_cycle(nfc, -1, column);
+> -		vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> -		break;
+> -
+> -	case NAND_CMD_ERASE1:
+> -		vf610_nfc_transfer_size(nfc, 0);
+> -		vf610_nfc_send_commands(nfc, command,
+> -					NAND_CMD_ERASE2, ERASE_CMD_CODE);
+> -		vf610_nfc_addr_cycle(nfc, column, page);
+> -		break;
+> -
+> -	case NAND_CMD_READID:
+> -		nfc->alt_buf =3D ALT_BUF_ID;
+> -		nfc->buf_offset =3D 0;
+> -		vf610_nfc_transfer_size(nfc, 0);
+> -		vf610_nfc_send_command(nfc, command, READ_ID_CMD_CODE);
+> -		vf610_nfc_addr_cycle(nfc, -1, column);
+> -		break;
+> -
+> -	case NAND_CMD_STATUS:
+> -		nfc->alt_buf =3D ALT_BUF_STAT;
+> -		vf610_nfc_transfer_size(nfc, 0);
+> -		vf610_nfc_send_command(nfc, command, STATUS_READ_CMD_CODE);
+> -		break;
+> -	default:
+> -		return;
+> +
+> +	/* Some ops are optional, but they need to be in order */
+> +	instr =3D vf610_get_next_instr(op, &op_id);
+> +	if (!instr)
+> +		return -EINVAL;
+> +
+> +	if (instr && instr->type =3D=3D NAND_OP_CMD_INSTR) {
+> +		dev_dbg(nfc->dev, "OP_CMD: code 0x%02x\n", instr->ctx.cmd.opcode);
+> +		vf610_nfc_set_cmd1(nfc, instr->ctx.cmd.opcode);
+> +		code |=3D COMMAND_CMD_BYTE1;
+> +
+> +		instr =3D vf610_get_next_instr(op, &op_id);
+>  	}
+> =20
+> -	vf610_nfc_done(nfc);
+> +	if (instr && instr->type =3D=3D NAND_OP_ADDR_INSTR) {
+> +		int addr =3D 0;
+> +		u32 col =3D 0, row;
+> =20
+> -	nfc->use_hw_ecc =3D false;
+> -	nfc->write_sz =3D 0;
+> -}
+> +		if (instr->ctx.addr.naddrs > 1) {
+> +			col =3D COL_ADDR_BYTE1(instr->ctx.addr.addrs[addr++]);
+> +			code |=3D COMMAND_CAR_BYTE1;
+> =20
+> -static void vf610_nfc_read_buf(struct mtd_info *mtd, u_char *buf, int le=
+n)
+> -{
+> -	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+> -	uint c =3D nfc->buf_offset;
+> +			if (mtd->writesize > 512) {
+> +				col |=3D COL_ADDR_BYTE2(instr->ctx.addr.addrs[addr++]);
+> +				code |=3D COMMAND_CAR_BYTE2;
+> +			}
+> +		}
+> =20
+> -	/* Alternate buffers are only supported through read_byte */
+> -	WARN_ON(nfc->alt_buf);
+> +		row =3D ROW_ADDR_BYTE1(instr->ctx.addr.addrs[addr++]);
+> +		code |=3D COMMAND_RAR_BYTE1;
+> +		if (addr < instr->ctx.addr.naddrs) {
+> +			row |=3D ROW_ADDR_BYTE2(instr->ctx.addr.addrs[addr++]);
+> +			code |=3D COMMAND_RAR_BYTE2;
+> +		}
+> +		if (addr < instr->ctx.addr.naddrs) {
+> +			row |=3D ROW_ADDR_BYTE3(instr->ctx.addr.addrs[addr++]);
+> +			code |=3D COMMAND_RAR_BYTE3;
+> +		}
+> =20
+> -	vf610_nfc_memcpy(buf, nfc->regs + NFC_MAIN_AREA(0) + c, len);
+> +		dev_dbg(nfc->dev, "OP_ADDR: col %d, row %d\n", col, row);
+> +		vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
+> +			    COL_ADDR_SHIFT, col);
+> =20
+> -	nfc->buf_offset +=3D len;
+> -}
+> +		vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
+> +			    ROW_ADDR_SHIFT, row);
+> =20
+> -static void vf610_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
+> -				int len)
+> -{
+> -	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+> -	uint c =3D nfc->buf_offset;
+> -	uint l;
+> +		instr =3D vf610_get_next_instr(op, &op_id);
+> +	}
+> =20
+> -	l =3D min_t(uint, len, mtd->writesize + mtd->oobsize - c);
+> -	vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0) + c, buf, l);
+> +	if (instr && instr->type =3D=3D NAND_OP_DATA_OUT_INSTR) {
+> +		int len =3D instr->ctx.data.len;
+> +		int offset =3D 0;
+> =20
+> -	nfc->write_sz +=3D l;
+> -	nfc->buf_offset +=3D l;
+> -}
+> +		dev_dbg(nfc->dev, "OP_DATA_OUT: len %d, offset %d\n", len, offset);
+> +
+> +		vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0) + offset,
+> +				 instr->ctx.data.buf.in + offset,
+> +				 len);
+> +		code |=3D COMMAND_WRITE_DATA;
+> +		trfr_sz +=3D len;
+> +
+> +		instr =3D vf610_get_next_instr(op, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type =3D=3D NAND_OP_CMD_INSTR) {
+> +		vf610_nfc_set_cmd2(nfc, instr->ctx.cmd.opcode);
+> +		code |=3D COMMAND_CMD_BYTE2;
+> +
+> +		instr =3D vf610_get_next_instr(op, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type =3D=3D NAND_OP_WAITRDY_INSTR) {
+> +		//dev_dbg(nfc->dev, "WAITRDY [max %d ms]\n",
+> +		//		  instr->ctx.waitrdy.timeout_ms);
+> +		code |=3D COMMAND_RB_HANDSHAKE;
+> +
+> +		instr =3D vf610_get_next_instr(op, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type =3D=3D NAND_OP_DATA_IN_INSTR) {
+> +		int len =3D instr->ctx.data.len;
+> +		code |=3D COMMAND_READ_DATA;
+> +		trfr_sz +=3D len;
+> +	}
+> +
+> +	if (nfc->use_hw_ecc) {
+> +		vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> +
+> +		/* Always transfer complete page with OOB when using HW ECC */
+> +		trfr_sz =3D mtd->writesize + mtd->oobsize;
+> +	} else {
+> +		vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> +	}
+> +	vf610_nfc_transfer_size(nfc, trfr_sz);
+> +	vf610_nfc_send_code(nfc, code);
+> +
+> +	dev_dbg(nfc->dev, "Start: code: 0x%04x, hw ecc: %d, trfr_sz %d\n",
+> +		code, nfc->use_hw_ecc, trfr_sz);
+> +	vf610_nfc_done(nfc);
+> +
+> +	if (instr && instr->type =3D=3D NAND_OP_DATA_IN_INSTR) {
+> +		int len =3D instr->ctx.data.len;
+> +		int offset =3D 0;
+> +		bool fix_byte_order =3D false;
+> =20
+> -static uint8_t vf610_nfc_read_byte(struct mtd_info *mtd)
+> -{
+> -	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+> -	u8 tmp;
+> -	uint c =3D nfc->buf_offset;
+> -
+> -	switch (nfc->alt_buf) {
+> -	case ALT_BUF_ID:
+> -		tmp =3D vf610_nfc_get_id(nfc, c);
+> -		break;
+> -	case ALT_BUF_STAT:
+> -		tmp =3D vf610_nfc_get_status(nfc);
+> -		break;
+>  #ifdef __LITTLE_ENDIAN
+> -	case ALT_BUF_ONFI:
+> -		/* Reverse byte since the controller uses big endianness */
+> -		c =3D nfc->buf_offset ^ 0x3;
+> -		/* fall-through */
+> +		fix_byte_order =3D true;
+>  #endif
+> -	default:
+> -		tmp =3D *((u8 *)(nfc->regs + NFC_MAIN_AREA(0) + c));
+> -		break;
+> -	}
+> -	nfc->buf_offset++;
+> -	return tmp;
+> -}
+> +		dev_dbg(nfc->dev, "OP_DATA_IN: 8-bit: %d, len %d, offset %d\n",
+> +			instr->ctx.data.force_8bit , len, offset);
+> =20
+> -static u16 vf610_nfc_read_word(struct mtd_info *mtd)
+> -{
+> -	u16 tmp;
+> +		/*
+> +		 * HACK: force_8bit indicates reading of the parameter, status
+> +		 * or id data. The controllers seems to store data in big endian
+
+Well this is right today, but tomorrow, who knows which command will be
+executed in 8-bit mode?
+
+> +		 * byte order to the buffers. Reverse on little endian machines.
+> +		 */
+> +		if (instr->ctx.data.force_8bit && fix_byte_order) {
+> +			u8 *buf =3D instr->ctx.data.buf.in;
+> =20
+> -	vf610_nfc_read_buf(mtd, (u_char *)&tmp, sizeof(tmp));
+> -	return tmp;
+> -}
+> +			while (len--) {
+> +				int c =3D offset ^ 0x3;
+> =20
+> -/* If not provided, upper layers apply a fixed delay. */
+> -static int vf610_nfc_dev_ready(struct mtd_info *mtd)
+> -{
+> -	/* NFC handles R/B internally; always ready.  */
+> -	return 1;
+> +				*buf =3D *((u8 *)(nfc->regs + NFC_MAIN_AREA(0) + c));
+> +				//dev_info(nfc->dev, "[%d]: %02x\n", offset, *buf);
+> +				buf++; offset++;
+> +			}
+> +		} else {
+> +			vf610_nfc_memcpy(instr->ctx.data.buf.in + offset,
+> +					 nfc->regs + NFC_MAIN_AREA(0) + offset,
+> +					 len);
+> +		}
+> +	}
+> +
+> +	return 0;
+>  }
+
+When using ->exec_op, I don't think you actually need a proper
+->dev_ready() like before.
+
+> =20
+>  /*
+> @@ -511,21 +465,6 @@ static void vf610_nfc_select_chip(struct mtd_info *m=
+td, int chip)
+>  	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
+>  }
+> =20
+> -/* Count the number of 0's in buff up to max_bits */
+> -static inline int count_written_bits(uint8_t *buff, int size, int max_bi=
+ts)
+> -{
+> -	uint32_t *buff32 =3D (uint32_t *)buff;
+> -	int k, written_bits =3D 0;
+> -
+> -	for (k =3D 0; k < (size / 4); k++) {
+> -		written_bits +=3D hweight32(~buff32[k]);
+> -		if (unlikely(written_bits > max_bits))
+> -			break;
+> -	}
+> -
+> -	return written_bits;
+> -}
+> -
+>  static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *=
+dat,
+>  					 uint8_t *oob, int page)
+>  {
+> @@ -542,8 +481,7 @@ static inline int vf610_nfc_correct_data(struct mtd_i=
+nfo *mtd, uint8_t *dat,
+>  		return ecc_count;
+> =20
+>  	/* Read OOB without ECC unit enabled */
+> -	vf610_nfc_command(mtd, NAND_CMD_READOOB, 0, page);
+> -	vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
+> +	nand_read_page_op(&nfc->chip, page, mtd->writesize, oob, mtd->oobsize);
+
+Would not a nand_read_oob_op() fit better here if you only need the OOB?
+
+> =20
+>  	/*
+>  	 * On an erased page, bit count (including OOB) should be zero or
+> @@ -557,12 +495,17 @@ static inline int vf610_nfc_correct_data(struct mtd=
+_info *mtd, uint8_t *dat,
+>  static int vf610_nfc_read_page(struct mtd_info *mtd, struct nand_chip *c=
+hip,
+>  				uint8_t *buf, int oob_required, int page)
+>  {
+> +	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+>  	int eccsize =3D chip->ecc.size;
+>  	int stat;
+> =20
+> +	nfc->use_hw_ecc =3D true;
+>  	nand_read_page_op(chip, page, 0, buf, eccsize);
+>  	if (oob_required)
+> -		vf610_nfc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +		vf610_nfc_memcpy(chip->oob_poi,
+> +				 nfc->regs + NFC_MAIN_AREA(0) + mtd->writesize,
+> +				 mtd->oobsize);
+> +	nfc->use_hw_ecc =3D false;
+> =20
+>  	stat =3D vf610_nfc_correct_data(mtd, buf, chip->oob_poi, page);
+> =20
+> @@ -579,16 +522,20 @@ static int vf610_nfc_write_page(struct mtd_info *mt=
+d, struct nand_chip *chip,
+>  				const uint8_t *buf, int oob_required, int page)
+>  {
+>  	struct vf610_nfc *nfc =3D mtd_to_nfc(mtd);
+> +	int ret;
+> =20
+> -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+> -	if (oob_required)
+> -		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> -
+> -	/* Always write whole page including OOB due to HW ECC */
+>  	nfc->use_hw_ecc =3D true;
+> -	nfc->write_sz =3D mtd->writesize + mtd->oobsize;
+> +	ret =3D nand_prog_page_op(chip, page, 0, buf, mtd->writesize);
+> +	nfc->use_hw_ecc =3D false;
+
+What about calling the default ->write_page_raw() instead, which I
+guess should do exactly this by default (must check).
+
+> =20
+> -	return nand_prog_page_end_op(chip);
+> +	return ret;
+> +}
+> +
+> +static int vf610_nfc_write_page_raw(struct mtd_info *mtd, struct nand_ch=
+ip *chip,
+> +				const uint8_t *buf, int oob_required, int page)
+> +{
+> +	return nand_prog_page_op(chip, page, 0, buf,
+> +			mtd->writesize + oob_required ? mtd->oobsize : 0);
+>  }
+
+I think this is already handled by the core if you don't populate the
+->write_page_raw entry.
+
+> =20
+>  static const struct of_device_id vf610_nfc_dt_ids[] =3D {
+> @@ -606,6 +553,9 @@ static void vf610_nfc_preinit_controller(struct vf610=
+_nfc *nfc)
+>  	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_DMA_REQ_BIT);
+>  	vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_FAST_FLASH_BIT);
+> =20
+> +	/* Make sure flags are cleared on startup */
+> +	vf610_nfc_clear_status(nfc);
+> +
+
+This should probably be in another patch?
+
+>  	/* Disable virtual pages, only one elementary transfer unit */
+>  	vf610_nfc_set_field(nfc, NFC_FLASH_CONFIG, CONFIG_PAGE_CNT_MASK,
+>  			    CONFIG_PAGE_CNT_SHIFT, 1);
+> @@ -695,15 +645,8 @@ static int vf610_nfc_probe(struct platform_device *p=
+dev)
+>  		goto err_clk;
+>  	}
+> =20
+> -	chip->dev_ready =3D vf610_nfc_dev_ready;
+> -	chip->cmdfunc =3D vf610_nfc_command;
+> -	chip->read_byte =3D vf610_nfc_read_byte;
+> -	chip->read_word =3D vf610_nfc_read_word;
+> -	chip->read_buf =3D vf610_nfc_read_buf;
+> -	chip->write_buf =3D vf610_nfc_write_buf;
+> +	chip->exec_op =3D vf610_nfc_exec_op;
+>  	chip->select_chip =3D vf610_nfc_select_chip;
+> -	chip->onfi_set_features =3D nand_onfi_get_set_features_notsupp;
+> -	chip->onfi_get_features =3D nand_onfi_get_set_features_notsupp;
+> =20
+>  	chip->options |=3D NAND_NO_SUBPAGE_WRITE;
+> =20
+> @@ -770,6 +713,7 @@ static int vf610_nfc_probe(struct platform_device *pd=
+ev)
+> =20
+>  		chip->ecc.read_page =3D vf610_nfc_read_page;
+>  		chip->ecc.write_page =3D vf610_nfc_write_page;
+> +		chip->ecc.write_page_raw =3D vf610_nfc_write_page_raw;
+> =20
+>  		chip->ecc.size =3D PAGE_2K;
+>  	}
+
+
+Thank you again for this work.
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
