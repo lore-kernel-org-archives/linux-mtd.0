@@ -1,22 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ek5SS-0006Ty-Km
- for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 09:59:06 +0000
-Date: Fri, 9 Feb 2018 10:58:52 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too
- large ECC
-Message-ID: <20180209105852.21c5a400@bbrezillon>
-In-Reply-To: <7ec8aa6337c59550f335957a34658a65@agner.ch>
-References: <20180208233305.20583-1-stefan@agner.ch>
- <20180209095027.63da257d@bbrezillon>
- <7ec8aa6337c59550f335957a34658a65@agner.ch>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ek7Dm-0007jS-Ri
+ for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 11:52:05 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Fri, 09 Feb 2018 12:51:45 +0100
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too large
+ ECC
+In-Reply-To: <20180209105450.31dbc0a8@bbrezillon>
+References: <20180208233305.20583-1-stefan@agner.ch>
+ <20180209095027.63da257d@bbrezillon>
+ <7ec8aa6337c59550f335957a34658a65@agner.ch>
+ <20180209105450.31dbc0a8@bbrezillon>
+Message-ID: <cd1051b69f9c6bbac846501921981c2d@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +27,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 09 Feb 2018 10:20:37 +0100
-Stefan Agner <stefan@agner.ch> wrote:
-
+On 09.02.2018 10:54, Boris Brezillon wrote:
+> On Fri, 09 Feb 2018 10:20:37 +0100
+> Stefan Agner <stefan@agner.ch> wrote:
 > 
-> But some kind of sanity check somewhere might be worthwhile, I was a bit
-> surprised that this overflowing happens on a driver in operational use
-> and goes unnoticed. I realize that this patch is not ideal. Maybe making
-> length signed, then we could sanity check in
-> mtd_ooblayout_count_bytes...
+>> On 09.02.2018 09:50, Boris Brezillon wrote:
+>> > On Fri,  9 Feb 2018 00:33:05 +0100
+>> > Stefan Agner <stefan@agner.ch> wrote:
+>> >
+>> >> Warn in case a driver uses too large ECC with hamming layout.
+>> >> This is especially helpful since hamming layout is the default
+>> >> layout when using hardware ECC and no specific OOB layout is
+>> >> specified.
+>> >>
+>> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> >> ---
+>> >>  drivers/mtd/nand/nand_base.c | 2 ++
+>> >>  1 file changed, 2 insertions(+)
+>> >>
+>> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> >> index 96c97588e1ba..2f3f43d0e288 100644
+>> >> --- a/drivers/mtd/nand/nand_base.c
+>> >> +++ b/drivers/mtd/nand/nand_base.c
+>> >> @@ -197,6 +197,8 @@ static int nand_ooblayout_free_lp_hamming(struct mtd_info *mtd, int section,
+>> >>  		return -EINVAL;
+>> >>  	}
+>> >>
+>> >> +	WARN_ON(mtd->oobsize - ecc_offset < ecc->total);
+>> >> +
+>> >
+>> > Did you hit this problem? Anyway, if there's a case where the number of
+>> > ECC bytes does not fit in the space reserved for ECC, there's a bug
+>> > before this point, and this should be checked at init/probe time.
+>> >
+>>
+>> Yes, I realized that vf610_nfc.c, which is currently is using the
+>> hamming ooblayout. This probably crept in with commit 3cf32d180227
+>> ("mtd: nand: vf610: switch to mtd_ooblayout_ops").
+> 
+> Actually, it's bogus since 6a623e076944 ("mtd: nand: add ooblayout for
+> old hamming layout") which was fixing a bug I had introduced with my
+> mtd_ooblayout_ops series :-).
+> 
+>>
+>> When using 32-bit ECC mode the driver uses 60 bytes out of 64 bytes OOB,
+>> so it actually fits into the OOB.
+>>
+>> The layout is just bogus for that case.
+> 
+> Yep, you should use nand_ooblayout_lp_ops, which was the one used by
+> default before 6a623e076944 ("mtd: nand: add ooblayout for old hamming
+> layout").
+> 
 
-Something like that should help us detect this unexpected case:
+Ok, will send a patch for that.
 
---->8---
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 66b67014508f..ada2e709743f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -201,6 +201,9 @@ static int nand_ooblayout_free_lp_hamming(struct
-mtd_info *mtd, int section, oobregion->offset = 2;
-                oobregion->length = ecc_offset - 2;
-        } else {
-+               if (ecc_offset + ecc->total > mtd->oobsize)
-+                       return -EINVAL;
-+
-                oobregion->offset = ecc_offset + ecc->total;
-                oobregion->length = mtd->oobsize - oobregion->offset;
-        }
+--
+Stefan
+
+>> Surprisingly the oobavail
+>> calculation ends up being correct, but only because the calculation
+>> overflows twice:
+>>
+>> mtd_ooblayout_count_bytes calls first with section 0, which results in
+>> 38. the second call leads to an overflow ("-36").
+>> mtd_ooblayout_count_bytes then adds 38 to that overflow, which then
+>> overflows again to the correct value of overall free bytes of 2... I did
+>> not try actually using the free OOB area, I guess this would fail....
+> 
+> That should be fixed to be more robust, indeed.
+> 
+>>
+>> Of course the underlying issue that ooblayout for vf610_nfc.c is bogus
+>> needs to be fixed, I will send a patch for that.
+>>
+>> But some kind of sanity check somewhere might be worthwhile, I was a bit
+>> surprised that this overflowing happens on a driver in operational use
+>> and goes unnoticed. I realize that this patch is not ideal. Maybe making
+>> length signed, then we could sanity check in
+>> mtd_ooblayout_count_bytes...
+>>
+>> --
+>> Stefan
+>>
+>> >>  	if (section == 0) {
+>> >>  		oobregion->offset = 2;
+>> >>  		oobregion->length = ecc_offset - 2;
