@@ -1,15 +1,15 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ek54c-0002NW-No
- for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 09:34:28 +0000
-Date: Fri, 9 Feb 2018 10:34:04 +0100
+ id 1ek5OY-0004kb-Mw
+ for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 09:55:05 +0000
+Date: Fri, 9 Feb 2018 10:54:50 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Stefan Agner <stefan@agner.ch>
 Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too
  large ECC
-Message-ID: <20180209103404.401cca3d@bbrezillon>
+Message-ID: <20180209105450.31dbc0a8@bbrezillon>
 In-Reply-To: <7ec8aa6337c59550f335957a34658a65@agner.ch>
 References: <20180208233305.20583-1-stefan@agner.ch>
  <20180209095027.63da257d@bbrezillon>
@@ -62,11 +62,22 @@ Stefan Agner <stefan@agner.ch> wrote:
 > Yes, I realized that vf610_nfc.c, which is currently is using the
 > hamming ooblayout. This probably crept in with commit 3cf32d180227
 > ("mtd: nand: vf610: switch to mtd_ooblayout_ops").
+
+Actually, it's bogus since 6a623e076944 ("mtd: nand: add ooblayout for
+old hamming layout") which was fixing a bug I had introduced with my
+mtd_ooblayout_ops series :-).
+
 > 
 > When using 32-bit ECC mode the driver uses 60 bytes out of 64 bytes OOB,
 > so it actually fits into the OOB.
 > 
-> The layout is just bogus for that case. Surprisingly the oobavail
+> The layout is just bogus for that case.
+
+Yep, you should use nand_ooblayout_lp_ops, which was the one used by
+default before 6a623e076944 ("mtd: nand: add ooblayout for old hamming
+layout").
+
+> Surprisingly the oobavail
 > calculation ends up being correct, but only because the calculation
 > overflows twice:
 > 
@@ -75,6 +86,9 @@ Stefan Agner <stefan@agner.ch> wrote:
 > mtd_ooblayout_count_bytes then adds 38 to that overflow, which then
 > overflows again to the correct value of overall free bytes of 2... I did
 > not try actually using the free OOB area, I guess this would fail....
+
+That should be fixed to be more robust, indeed.
+
 > 
 > Of course the underlying issue that ooblayout for vf610_nfc.c is bogus
 > needs to be fixed, I will send a patch for that.
@@ -84,12 +98,6 @@ Stefan Agner <stefan@agner.ch> wrote:
 > and goes unnoticed. I realize that this patch is not ideal. Maybe making
 > length signed, then we could sanity check in
 > mtd_ooblayout_count_bytes...
-
-My point was not that we don't need the sanity check, but we probably
-want that check to happen earlier, for example when we select this
-layout. Maybe that's not possible though (I didn't look closely at the
-init sequence).
-
 > 
 > --
 > Stefan
