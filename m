@@ -1,23 +1,15 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ek7He-0001xG-7L
- for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 11:56:04 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 09 Feb 2018 12:55:49 +0100
+ id 1ek7gp-0005lc-JG
+ for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 12:22:05 +0000
 From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too large
- ECC
-In-Reply-To: <20180209105852.21c5a400@bbrezillon>
-References: <20180208233305.20583-1-stefan@agner.ch>
- <20180209095027.63da257d@bbrezillon>
- <7ec8aa6337c59550f335957a34658a65@agner.ch>
- <20180209105852.21c5a400@bbrezillon>
-Message-ID: <475d5f62d1cc95e38da0c7dc2e37a511@agner.ch>
+To: boris.brezillon@free-electrons.com
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, richard@nod.at, linux-mtd@lists.infradead.org,
+ stefan@agner.ch, stable@vger.kernel.org
+Subject: [PATCH] mtd: nand: vf610: set correct ooblayout
+Date: Fri,  9 Feb 2018 13:21:42 +0100
+Message-Id: <20180209122142.13272-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09.02.2018 10:58, Boris Brezillon wrote:
-> On Fri, 09 Feb 2018 10:20:37 +0100
-> Stefan Agner <stefan@agner.ch> wrote:
-> 
->>
->> But some kind of sanity check somewhere might be worthwhile, I was a bit
->> surprised that this overflowing happens on a driver in operational use
->> and goes unnoticed. I realize that this patch is not ideal. Maybe making
->> length signed, then we could sanity check in
->> mtd_ooblayout_count_bytes...
-> 
-> Something like that should help us detect this unexpected case:
-> 
+With commit 3cf32d180227 ("mtd: nand: vf610: switch to
+mtd_ooblayout_ops") the driver started to use the NAND cores
+default large page ooblayout. However, shortly after commit
+6a623e076944 ("mtd: nand: add ooblayout for old hamming layout")
+changed the default layout to the old hamming layout, which is
+not what vf610_nfc is using. Specify the default large page
+layout explicitly.
 
-It is less generic than making length signed and checking for positive
-length, but fine for me.
+Fixes: 6a623e076944 ("mtd: nand: add ooblayout for old hamming layout")
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/vf610_nfc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---
-Stefan
-
-> --->8---
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 66b67014508f..ada2e709743f 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -201,6 +201,9 @@ static int nand_ooblayout_free_lp_hamming(struct
-> mtd_info *mtd, int section, oobregion->offset = 2;
->                 oobregion->length = ecc_offset - 2;
->         } else {
-> +               if (ecc_offset + ecc->total > mtd->oobsize)
-> +                       return -EINVAL;
-> +
->                 oobregion->offset = ecc_offset + ecc->total;
->                 oobregion->length = mtd->oobsize - oobregion->offset;
->         }
+diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+index 80d31a58e558..f367144f3c6f 100644
+--- a/drivers/mtd/nand/vf610_nfc.c
++++ b/drivers/mtd/nand/vf610_nfc.c
+@@ -752,10 +752,8 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+ 		if (mtd->oobsize > 64)
+ 			mtd->oobsize = 64;
+ 
+-		/*
+-		 * mtd->ecclayout is not specified here because we're using the
+-		 * default large page ECC layout defined in NAND core.
+-		 */
++		/* Use default large page ECC layout defined in NAND core */
++		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+ 		if (chip->ecc.strength == 32) {
+ 			nfc->ecc_mode = ECC_60_BYTE;
+ 			chip->ecc.bytes = 60;
+-- 
+2.16.1
