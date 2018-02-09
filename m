@@ -1,22 +1,29 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ek7zg-0005z7-Ga
- for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 12:41:35 +0000
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1ek8A7-0002QL-GW
+ for linux-mtd@lists.infradead.org; Fri, 09 Feb 2018 12:52:29 +0000
+Date: Fri, 9 Feb 2018 13:52:05 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Mark Brown
+ <broonie@kernel.org>, linux-spi@vger.kernel.org, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Peter Pan <peterpansjtu@gmail.com>, Frieder
+ Schrempf <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [RFC PATCH 1/6] spi: Extend the core to ease integration of SPI
+ memory controllers
+Message-ID: <20180209135205.6872203c@xps13>
+In-Reply-To: <20180205232120.5851-2-boris.brezillon@bootlin.com>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+ <20180205232120.5851-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Fri, 09 Feb 2018 13:41:19 +0100
-From: Stefan Agner <stefan@agner.ch>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH v3 2/3] mtd: nand: vf610_nfc: make use of ->exec_op()
-In-Reply-To: <20180209092034.729e45b9@xps13>
-References: <20180208235921.31840-1-stefan@agner.ch>
- <20180208235921.31840-3-stefan@agner.ch> <20180209092034.729e45b9@xps13>
-Message-ID: <da8288954a4e730961a510df35e7756a@agner.ch>
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,456 +33,818 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09.02.2018 09:20, Miquel Raynal wrote:
-> Hi Stefan,
-> 
-> Thanks for splitting the series, it is much easier to review.
-> 
-> On Fri,  9 Feb 2018 00:59:20 +0100, Stefan Agner <stefan@agner.ch>
-> wrote:
-> 
->> This reworks the driver to make use of ->exec_op() callback. The
->> command sequencer of the VF610 NFC aligns well with the new ops
->> interface.
->>
->> The ops are translated to a NFC command code while filling the
->> necessary registers. Instead of using the special status and
->> read id command codes (which require the status/id form special
->> registers) the driver now uses the main data buffer for all
->> commands. This simplifies the driver as no special casing is
->> needed.
->>
->> For control data (status byte, id bytes and parameter page) the
->> driver needs to reverse byte order for little endian CPUs since
->> the controller seems to store the bytes in big endian order in
->> the data buffer.
->>
->> The current state seems to pass MTD tests on a Colibri VF61.
->>
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> ---
->>  drivers/mtd/nand/vf610_nfc.c | 279 +++++++++++++++++++++++++++++++++++++++++--
->>  1 file changed, 267 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
->> index 2fa61cbdbaf7..eae95877422d 100644
->> --- a/drivers/mtd/nand/vf610_nfc.c
->> +++ b/drivers/mtd/nand/vf610_nfc.c
->> @@ -74,6 +74,21 @@
->>  #define RESET_CMD_CODE			0x4040
->>  #define STATUS_READ_CMD_CODE		0x4068
->>
->> +/* NFC_CMD2[CODE] controller cycle bit masks */
->> +#define COMMAND_CMD_BYTE1		BIT(14)
->> +#define COMMAND_CAR_BYTE1		BIT(13)
->> +#define COMMAND_CAR_BYTE2		BIT(12)
->> +#define COMMAND_RAR_BYTE1		BIT(11)
->> +#define COMMAND_RAR_BYTE2		BIT(10)
->> +#define COMMAND_RAR_BYTE3		BIT(9)
->> +#define COMMAND_WRITE_DATA		BIT(8)
->> +#define COMMAND_CMD_BYTE2		BIT(7)
->> +#define COMMAND_RB_HANDSHAKE		BIT(6)
->> +#define COMMAND_READ_DATA		BIT(5)
->> +#define COMMAND_CMD_BYTE3		BIT(4)
->> +#define COMMAND_READ_STATUS		BIT(3)
->> +#define COMMAND_READ_ID			BIT(2)
->> +
->>  /* NFC ECC mode define */
->>  #define ECC_BYPASS			0
->>  #define ECC_45_BYTE			6
->> @@ -97,10 +112,14 @@
->>  /* NFC_COL_ADDR Field */
->>  #define COL_ADDR_MASK				0x0000FFFF
->>  #define COL_ADDR_SHIFT				0
->> +#define COL_ADDR(pos, val)			((val & 0xFF) << (8 * (pos)))
->> +
->>
->>  /* NFC_ROW_ADDR Field */
->>  #define ROW_ADDR_MASK				0x00FFFFFF
->>  #define ROW_ADDR_SHIFT				0
->> +#define ROW_ADDR(pos, val)			((val & 0xFF) << (8 * (pos)))
->> +
->>  #define ROW_ADDR_CHIP_SEL_RB_MASK		0xF0000000
->>  #define ROW_ADDR_CHIP_SEL_RB_SHIFT		28
->>  #define ROW_ADDR_CHIP_SEL_MASK			0x0F000000
->> @@ -173,6 +192,11 @@ static inline struct vf610_nfc *mtd_to_nfc(struct mtd_info *mtd)
->>  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
->>  }
->>
->> +static inline struct vf610_nfc *chip_to_nfc(struct nand_chip *chip)
->> +{
->> +	return container_of(chip, struct vf610_nfc, chip);
->> +}
->> +
->>  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
->>  {
->>  	return readl(nfc->regs + reg);
->> @@ -489,6 +513,184 @@ static int vf610_nfc_dev_ready(struct mtd_info *mtd)
->>  	return 1;
->>  }
->>
->> +static inline void vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row, u32 cmd1, u32 cmd2, u32 trfr_sz)
->> +{
->> +	vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
->> +			    COL_ADDR_SHIFT, col);
->> +
->> +	vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
->> +			    ROW_ADDR_SHIFT, row);
->> +
->> +	vf610_nfc_write(nfc, NFC_SECTOR_SIZE, trfr_sz);
->> +	vf610_nfc_write(nfc, NFC_FLASH_CMD1, cmd1);
->> +	vf610_nfc_write(nfc, NFC_FLASH_CMD2, cmd2);
->> +
->> +	dev_dbg(nfc->dev, "col 0x%08x, row 0x%08x, cmd1 0x%08x, cmd2 0x%08x, trfr_sz %d\n",
->> +		col, row, cmd1, cmd2, trfr_sz);
->> +
->> +	vf610_nfc_done(nfc);
->> +}
->> +
->> +static inline const struct nand_op_instr *vf610_get_next_instr(
->> +	const struct nand_subop *subop, int *op_id)
->> +{
->> +	if (*op_id + 1 >= subop->ninstrs)
->> +		return NULL;
->> +
->> +	(*op_id)++;
->> +
->> +	return &subop->instrs[*op_id];
->> +}
->> +
->> +static int vf610_nfc_cmd(struct nand_chip *chip,
->> +				const struct nand_subop *subop)
->> +{
->> +	const struct nand_op_instr *instr;
->> +	struct vf610_nfc *nfc = chip_to_nfc(chip);
->> +	struct mtd_info *mtd = nand_to_mtd(chip);
->> +	int op_id = -1, addr = 0, trfr_sz = 0;
->> +	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
->> +
->> +	/* Some ops are optional, but they need to be in order */
->> +	instr = vf610_get_next_instr(subop, &op_id);
->> +	if (!instr)
->> +		return -EINVAL;
-> 
-> Maybe here you don't need to call get_next_instr but just derive the
-> pointer from the subop parameter?
-> 
+Hi Boris,
 
-op_id needs to be incremented too. I know that helper isn't exactly
-pretty, but I need a pointer to the instruction as well as its id within
-instrs for helpers such as nand_subop_get_data_len...
+Just a few comments on the form below.
 
->> +
->> +	if (instr && instr->type == NAND_OP_CMD_INSTR) {
->> +		dev_dbg(nfc->dev, "OP_CMD: code 0x%02x\n", instr->ctx.cmd.opcode);
->> +		cmd2 |= instr->ctx.cmd.opcode << CMD_BYTE1_SHIFT;
->> +		code |= COMMAND_CMD_BYTE1;
->> +
->> +		instr = vf610_get_next_instr(subop, &op_id);
->> +	}
->> +
->> +	if (instr && instr->type == NAND_OP_ADDR_INSTR) {
->> +
->> +		if (instr->ctx.addr.naddrs > 1) {
->> +			col = COL_ADDR(0, instr->ctx.addr.addrs[addr++]);
->> +			code |= COMMAND_CAR_BYTE1;
->> +
->> +			if (mtd->writesize > 512) {
->> +				col |= COL_ADDR(1, instr->ctx.addr.addrs[addr++]);
->> +				code |= COMMAND_CAR_BYTE2;
->> +			}
->> +		}
->> +
->> +		row = ROW_ADDR(0, instr->ctx.addr.addrs[addr++]);
->> +		code |= COMMAND_RAR_BYTE1;
->> +		if (addr < instr->ctx.addr.naddrs) {
->> +			row |= ROW_ADDR(1, instr->ctx.addr.addrs[addr++]);
->> +			code |= COMMAND_RAR_BYTE2;
->> +		}
->> +		if (addr < instr->ctx.addr.naddrs) {
->> +			row |= ROW_ADDR(2, instr->ctx.addr.addrs[addr++]);
->> +			code |= COMMAND_RAR_BYTE3;
->> +		}
->> +
->> +		dev_dbg(nfc->dev, "OP_ADDR: col %d, row %d\n", col, row);
->> +
->> +		instr = vf610_get_next_instr(subop, &op_id);
->> +	}
->> +
->> +	if (instr && instr->type == NAND_OP_DATA_OUT_INSTR) {
->> +		int len = nand_subop_get_data_len(subop, op_id);
->> +		int offset = nand_subop_get_data_start_off(subop, op_id);
->> +
->> +		dev_dbg(nfc->dev, "OP_DATA_OUT: len %d, offset %d\n", len, offset);
->> +
->> +		vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0) + offset,
->> +				 instr->ctx.data.buf.in + offset,
->> +				 len);
->> +		code |= COMMAND_WRITE_DATA;
->> +		trfr_sz += len;
->> +
->> +		instr = vf610_get_next_instr(subop, &op_id);
->> +	}
->> +
->> +	if (instr && instr->type == NAND_OP_CMD_INSTR) {
->> +		cmd1 |= instr->ctx.cmd.opcode << CMD_BYTE2_SHIFT;
->> +		code |= COMMAND_CMD_BYTE2;
->> +
->> +		instr = vf610_get_next_instr(subop, &op_id);
->> +	}
->> +
->> +	if (instr && instr->type == NAND_OP_WAITRDY_INSTR) {
->> +		//dev_dbg(nfc->dev, "WAITRDY [max %d ms]\n",
->> +		//		  instr->ctx.waitrdy.timeout_ms);
-> 
-> Debug comment   ^
-> 
->> +		code |= COMMAND_RB_HANDSHAKE;
->> +
->> +		instr = vf610_get_next_instr(subop, &op_id);
->> +	}
->> +
->> +	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
->> +		int len = nand_subop_get_data_len(subop, op_id);
->> +		code |= COMMAND_READ_DATA;
->> +		trfr_sz += len;
->> +	}
->> +
->> +	cmd2 |= code << CMD_CODE_SHIFT;
->> +
->> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
->> +	vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
->> +
->> +	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
->> +		int len = nand_subop_get_data_len(subop, op_id);
->> +		int offset = nand_subop_get_data_start_off(subop, op_id);
->> +		bool fix_byte_order = false;
->> +
->> +#ifdef __LITTLE_ENDIAN
->> +		fix_byte_order = true;
->> +#endif
->> +		dev_dbg(nfc->dev, "OP_DATA_IN: 8-bit: %d, len %d, offset %d\n",
->> +			instr->ctx.data.force_8bit , len, offset);
->> +
->> +		/*
->> +		 * HACK: force_8bit indicates reading of the parameter, status
->> +		 * or id data. The controllers seems to store data in big endian
->> +		 * byte order to the buffers. Reverse on little endian machines.
->> +		 */
->> +		if (instr->ctx.data.force_8bit && fix_byte_order) {
->> +			u8 *buf = instr->ctx.data.buf.in;
->> +
->> +			while (len--) {
->> +				int c = offset ^ 0x3;
->> +
->> +				*buf = *((u8 *)(nfc->regs + NFC_MAIN_AREA(0) + c));
->> +				buf++; offset++;
->> +			}
->> +		} else {
->> +			vf610_nfc_memcpy(instr->ctx.data.buf.in + offset,
->> +					 nfc->regs + NFC_MAIN_AREA(0) + offset,
->> +					 len);
->> +		}
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct nand_op_parser vf610_nfc_op_parser = NAND_OP_PARSER(
->> +	NAND_OP_PARSER_PATTERN(
->> +		vf610_nfc_cmd,
->> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
->> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
-> 
-> Is this '5 address cycles' a real limit of the controller?
-> 
+On Tue,  6 Feb 2018 00:21:15 +0100, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-Yes 2 bytes of column address and 3 bytes of row address. At least, that
-is how they label it, not sure whether it is really relevant.
+> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+>=20
+> Some controllers are exposing high-level interfaces to access various
+> kind of SPI memories. Unfortunately they do not fit in the current
+> spi_controller model and usually have drivers placed in
+> drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
+> memories in general.
+>=20
+> This is an attempt at defining a SPI memory interface which works for
+> all kinds of SPI memories (NORs, NANDs, SRAMs).
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> ---
+>  drivers/spi/spi.c       | 423 ++++++++++++++++++++++++++++++++++++++++++=
++++++-
+>  include/linux/spi/spi.h | 226 ++++++++++++++++++++++++++
+>  2 files changed, 646 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index b33a727a0158..57bc540a0521 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -2057,6 +2057,24 @@ static int of_spi_register_master(struct spi_contr=
+oller *ctlr)
+>  }
+>  #endif
+> =20
+> +static int spi_controller_check_ops(struct spi_controller *ctlr)
+> +{
+> +	/*
+> +	 * The controller can implement only the high-level SPI-memory like
+> +	 * operations if it does not support regular SPI transfers.
+> +	 */
+> +	if (ctlr->mem_ops) {
+> +		if (!ctlr->mem_ops->supports_op ||
+> +		    !ctlr->mem_ops->exec_op)
+> +			return -EINVAL;
+> +	} else if (!ctlr->transfer && !ctlr->transfer_one &&
+> +		   !ctlr->transfer_one_message) {
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * spi_register_controller - register SPI master or slave controller
+>   * @ctlr: initialized master, originally from spi_alloc_master() or
+> @@ -2090,6 +2108,14 @@ int spi_register_controller(struct spi_controller =
+*ctlr)
+>  	if (!dev)
+>  		return -ENODEV;
+> =20
+> +	/*
+> +	 * Make sure all necessary hooks are implemented before registering
+> +	 * the SPI controller.
+> +	 */
+> +	status =3D spi_controller_check_ops(ctlr);
+> +	if (status)
+> +		return status;
+> +
+>  	if (!spi_controller_is_slave(ctlr)) {
+>  		status =3D of_spi_register_master(ctlr);
+>  		if (status)
+> @@ -2155,10 +2181,14 @@ int spi_register_controller(struct spi_controller=
+ *ctlr)
+>  			spi_controller_is_slave(ctlr) ? "slave" : "master",
+>  			dev_name(&ctlr->dev));
+> =20
+> -	/* If we're using a queued driver, start the queue */
+> -	if (ctlr->transfer)
+> +	/*
+> +	 * If we're using a queued driver, start the queue. Note that we don't
+> +	 * need the queueing logic if the driver is only supporting high-level
+> +	 * memory operations.
+> +	 */
+> +	if (ctlr->transfer) {
+>  		dev_info(dev, "controller is unqueued, this is deprecated\n");
+> -	else {
+> +	} else if (ctlr->transfer_one || ctlr->transfer_one_message) {
+>  		status =3D spi_controller_initialize_queue(ctlr);
+>  		if (status) {
+>  			device_del(&ctlr->dev);
+> @@ -2893,6 +2923,13 @@ static int __spi_async(struct spi_device *spi, str=
+uct spi_message *message)
+>  {
+>  	struct spi_controller *ctlr =3D spi->controller;
+> =20
+> +	/*
+> +	 * Some controllers do not support doing regular SPI transfers. Return
+> +	 * ENOTSUPP when this is the case.
+> +	 */
+> +	if (!ctlr->transfer)
+> +		return -ENOTSUPP;
+> +
+>  	message->spi =3D spi;
+> =20
+>  	SPI_STATISTICS_INCREMENT_FIELD(&ctlr->statistics, spi_async);
+> @@ -3321,6 +3358,386 @@ int spi_write_then_read(struct spi_device *spi,
+>  }
+>  EXPORT_SYMBOL_GPL(spi_write_then_read);
+> =20
+> +/**
+> + * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to=
+ a
+> + *					  memory operation
+> + * @ctlr: the SPI controller requesting this dma_map()
+> + * @op: the memory operation containing the buffer to map
+> + * @sgt: a pointer to a non-initialized sg_table that will be filled by =
+this
+> + *	 function
+> + *
+> + * Some controllers might want to do DMA on the data buffer embedded in =
+@op.
+> + * This helper prepares everything for you and provides a ready-to-use
+> + * sg_table. This function is not intended to be called from spi drivers.
+> + * Only SPI controller drivers should use it.
+> + * Note that the caller must ensure the memory region pointed by
+> + * op->data.buf.{in,out} is DMA-able before calling this function.
+> + *
+> + * Return: 0 in case of success, a negative error code otherwise.
+> + */
+> +int spi_controller_dma_map_mem_op_data(struct spi_controller *ctlr,
+> +				       const struct spi_mem_op *op,
+> +				       struct sg_table *sgt)
+> +{
+> +	struct device *dmadev;
+> +
+> +	if (!op->data.nbytes)
+> +		return -EINVAL;
+> +
+> +	if (op->data.dir =3D=3D SPI_MEM_DATA_OUT)
+> +		dmadev =3D ctlr->dma_tx ?
+> +			 ctlr->dma_tx->device->dev : ctlr->dev.parent;
+> +	else
+> +		dmadev =3D ctlr->dma_rx ?
+> +			 ctlr->dma_rx->device->dev : ctlr->dev.parent;
+> +
+> +	if (!dmadev)
+> +		return -EINVAL;
+> +
+> +	return spi_map_buf(ctlr, dmadev, sgt, op->data.buf.in, op->data.nbytes,
+> +			   op->data.dir =3D=3D SPI_MEM_DATA_IN ?
+> +			   DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> +}
+> +EXPORT_SYMBOL_GPL(spi_controller_dma_map_mem_op_data);
+> +
+> +/**
+> + * spi_controller_dma_unmap_mem_op_data() - DMA-unmap the buffer attache=
+d to a
+> + *					    memory operation
+> + * @ctlr: the SPI controller requesting this dma_unmap()
+> + * @op: the memory operation containing the buffer to unmap
+> + * @sgt: a pointer to an sg_table previously initialized by
+> + *	 spi_controller_dma_map_mem_op_data()
+> + *
+> + * Some controllers might want to do DMA on the data buffer embedded in =
+@op.
+> + * This helper prepares things so that the CPU can access the
+> + * op->data.buf.{in,out} buffer again.
+> + *
+> + * This function is not intended to be called from spi drivers. Only SPI
 
->> +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, PAGE_2K + OOB_MAX),
-> 
-> If PAGE_2K is 2048, you should use SZ_2K instead.
-> 
+s/spi/SPI/
 
-PAGE_2K is used throughout the driver, maybe I should replace
-everywhere?
+> + * controller drivers should use it.
+> + *
+> + * This function should be called after the DMA operation has finished a=
+n is
 
-Or #define PAGE_2K to be SZ_2K?
+s/an/and/
 
->> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
->> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
->> +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, PAGE_2K + OOB_MAX)),
->> +	);
-> 
-> Actually, because this driver is very sequential in its way of handling
-> the instructions, you should split the *_exec_op() function into
-> smaller helpers, and declare one parser pattern per helper. I'm sure it
-> will be very easy to do.
-> 
+> + * only valid if the previous spi_controller_dma_map_mem_op_data() has r=
+eturned
+> + * 0.
+> + *
+> + * Return: 0 in case of success, a negative error code otherwise.
+> + */
+> +void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+> +					  const struct spi_mem_op *op,
+> +					  struct sg_table *sgt)
+> +{
+> +	struct device *dmadev;
+> +
+> +	if (!op->data.nbytes)
+> +		return;
+> +
+> +	if (op->data.dir =3D=3D SPI_MEM_DATA_OUT)
+> +		dmadev =3D ctlr->dma_tx ?
+> +			 ctlr->dma_tx->device->dev : ctlr->dev.parent;
+> +	else
+> +		dmadev =3D ctlr->dma_rx ?
+> +			 ctlr->dma_rx->device->dev : ctlr->dev.parent;
+> +
+> +	spi_unmap_buf(ctlr, dmadev, sgt,
+> +		      op->data.dir =3D=3D SPI_MEM_DATA_IN ?
+> +		      DMA_FROM_DEVICE : DMA_TO_DEVICE);
+> +}
+> +EXPORT_SYMBOL_GPL(spi_controller_dma_unmap_mem_op_data);
+> +
+> +static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool=
+ tx)
+> +{
+> +	u32 mode =3D mem->spi->mode;
+> +
+> +	switch (buswidth) {
+> +	case 1:
+> +		return 0;
+> +
+> +	case 2:
+> +		if ((tx && (mode & (SPI_TX_DUAL | SPI_TX_QUAD))) ||
+> +		    (!tx && (mode & (SPI_RX_DUAL | SPI_RX_QUAD))))
+> +			return 0;
+> +
+> +		break;
+> +
+> +	case 4:
+> +		if ((tx && (mode & SPI_TX_QUAD)) ||
+> +		    (!tx && (mode & SPI_RX_QUAD)))
+> +			return 0;
+> +
+> +		break;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return -ENOTSUPP;
+> +}
+> +
+> +/**
+> + * spi_mem_supports_op() - Check if a memory device and the controller i=
+t is
+> + *			   connected to support a specific memory operation
+> + * @mem: the SPI memory
+> + * @op: the memory operation to check
+> + *
+> + * Some controllers are only supporting Single or Dual IOs, others might=
+ only
+> + * support specific opcodes, or it can even be that the controller and d=
+evice
+> + * both support Quad IOs but the hardware prevents you from using it bec=
+ause
+> + * only 2 IO lines are connected.
+> + *
+> + * This function checks whether a specific operation is supported.
+> + *
+> + * Return: true if @op is supported, false otherwise.
+> + */
+> +bool spi_mem_supports_op(struct spi_mem *mem, const struct spi_mem_op *o=
+p)
+> +{
+> +	struct spi_controller *ctlr =3D mem->spi->controller;
+> +
+> +	if (spi_check_buswidth_req(mem, op->cmd.buswidth, true))
+> +		return false;
+> +
+> +	if (op->addr.nbytes &&
+> +	    spi_check_buswidth_req(mem, op->addr.buswidth, true))
+> +		return false;
+> +
+> +	if (op->dummy.nbytes &&
+> +	    spi_check_buswidth_req(mem, op->dummy.buswidth, true))
+> +		return false;
+> +
+> +	if (op->data.nbytes &&
+> +	    spi_check_buswidth_req(mem, op->data.buswidth,
+> +				   op->data.dir =3D=3D SPI_MEM_DATA_IN ?
+> +				   false : true))
 
-Hm, if I would do that, then I would have to trigger a command in the
-controller for each individual step... I guess this would slow down
-things quite significantly.
+Why not just op->data.dir !=3D SPI_MEM_DATA_IN or even better =3D=3D
+SPI_MEM_DATA_OUT if it exists?
 
-Afaik, the controls strength is that it can handle a bunch of commands
-in sequence on its own and we should make use of it as much as possible.
+> +		return false;
+> +
+> +	if (ctlr->mem_ops)
+> +		return ctlr->mem_ops->supports_op(mem, op);
+> +
+> +	return true;
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_supports_op);
+> +
+> +/**
+> + * spi_mem_exec_op() - Execute a memory operation
+> + * @mem: the SPI memory
+> + * @op: the memory operation to execute
+> + *
+> + * Executes a memory operation.
+> + *
+> + * This function first checks that @op is supported and then tries to ex=
+ecute
+> + * it.
+> + *
+> + * Return: 0 in case of success, a negative error code otherwise.
+> + */
+> +int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> +{
+> +	unsigned int tmpbufsize, xferpos =3D 0, totalxferlen =3D 0;
+> +	struct spi_controller *ctlr =3D mem->spi->controller;
+> +	struct spi_transfer xfers[4] =3D { };
+> +	struct spi_message msg;
+> +	u8 *tmpbuf;
+> +	int ret;
+> +
+> +	if (!spi_mem_supports_op(mem, op))
+> +		return -ENOTSUPP;
+> +
+> +	if (ctlr->mem_ops) {
+> +		if (ctlr->auto_runtime_pm) {
+> +			ret =3D pm_runtime_get_sync(ctlr->dev.parent);
+> +			if (ret < 0) {
+> +				dev_err(&ctlr->dev,
+> +					"Failed to power device: %d\n",
+> +					ret);
+> +				return ret;
+> +			}
+> +		}
+> +
+> +		mutex_lock(&ctlr->bus_lock_mutex);
+> +		mutex_lock(&ctlr->io_mutex);
+> +		ret =3D ctlr->mem_ops->exec_op(mem, op);
+> +		mutex_unlock(&ctlr->io_mutex);
+> +		mutex_unlock(&ctlr->bus_lock_mutex);
 
-While every step in a command sequence can be optionally
-enabled/disabled through the Command Code bitfield, the commands order
-however is predefined. And that can be nicely reflected with this single
-vf610_nfc_op_parser.
+Is not this a bit dangerous? I guess that no one should release the bus
+lock without having already released the IO lock but maybe this should
+be clearly mentioned in a comment in the original structure definition?
 
-See also chapter 10.3.4.7 Flash Command Code Description of the
-(publicly available) VFxxx Controller Reference Manual.
+> +
+> +		if (ctlr->auto_runtime_pm)
+> +			pm_runtime_put(ctlr->dev.parent);
+> +
+> +		/*
+> +		 * Some controllers only optimize specific paths (typically the
+> +		 * read path) and expect the core to use the regular SPI
+> +		 * interface in these cases.
+> +		 */
+> +		if (!ret || ret !=3D -ENOTSUPP)
+> +			return ret;
+> +	}
+> +
+> +	tmpbufsize =3D sizeof(op->cmd.opcode) + op->addr.nbytes +
+> +		     op->dummy.nbytes;
+> +
+> +	/*
+> +	 * Allocate a buffer to transmit the CMD, ADDR cycles with kmalloc() so
+> +	 * we're guaranteed that this buffer is DMA-able, as required by the
+> +	 * SPI layer.
+> +	 */
+> +	tmpbuf =3D kzalloc(tmpbufsize, GFP_KERNEL | GFP_DMA);
+> +	if (!tmpbuf)
+> +		return -ENOMEM;
+> +
+> +	spi_message_init(&msg);
+> +
+> +	tmpbuf[0] =3D op->cmd.opcode;
+> +	xfers[xferpos].tx_buf =3D tmpbuf;
+> +	xfers[xferpos].len =3D sizeof(op->cmd.opcode);
+> +	xfers[xferpos].tx_nbits =3D op->cmd.buswidth;
+> +	spi_message_add_tail(&xfers[xferpos], &msg);
+> +	xferpos++;
+> +	totalxferlen++;
+> +
+> +	if (op->addr.nbytes) {
+> +		memcpy(tmpbuf + 1, op->addr.buf, op->addr.nbytes);
+> +		xfers[xferpos].tx_buf =3D tmpbuf + 1;
+> +		xfers[xferpos].len =3D op->addr.nbytes;
+> +		xfers[xferpos].tx_nbits =3D op->addr.buswidth;
+> +		spi_message_add_tail(&xfers[xferpos], &msg);
+> +		xferpos++;
+> +		totalxferlen +=3D op->addr.nbytes;
+> +	}
+> +
+> +	if (op->dummy.nbytes) {
+> +		memset(tmpbuf + op->addr.nbytes + 1, 0xff, op->dummy.nbytes);
+> +		xfers[xferpos].tx_buf =3D tmpbuf + op->addr.nbytes + 1;
+> +		xfers[xferpos].len =3D op->dummy.nbytes;
+> +		xfers[xferpos].tx_nbits =3D op->dummy.buswidth;
+> +		spi_message_add_tail(&xfers[xferpos], &msg);
+> +		xferpos++;
+> +		totalxferlen +=3D op->dummy.nbytes;
+> +	}
+> +
+> +	if (op->data.nbytes) {
+> +		if (op->data.dir =3D=3D SPI_MEM_DATA_IN) {
+> +			xfers[xferpos].rx_buf =3D op->data.buf.in;
+> +			xfers[xferpos].rx_nbits =3D op->data.buswidth;
+> +		} else {
+> +			xfers[xferpos].tx_buf =3D op->data.buf.out;
+> +			xfers[xferpos].tx_nbits =3D op->data.buswidth;
+> +		}
+> +
+> +		xfers[xferpos].len =3D op->data.nbytes;
+> +		spi_message_add_tail(&xfers[xferpos], &msg);
+> +		xferpos++;
+> +		totalxferlen +=3D op->data.nbytes;
+> +	}
+> +
+> +	ret =3D spi_sync(mem->spi, &msg);
+> +
+> +	kfree(tmpbuf);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (msg.actual_length !=3D totalxferlen)
+> +		return -EIO;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_exec_op);
+> +
+> +/**
+> + * spi_mem_adjust_op_size() - Adjust the data size of a SPI mem operatio=
+n to
+> + *			      match controller limitations
+> + * @mem: the SPI memory
+> + * @op: the operation to adjust
+> + *
+> + * Some controllers have FIFO limitations and must split a data transfer
+> + * operation into multiple ones, others require a specific alignment for
+> + * optimized accesses. This function allows SPI mem drivers to split a s=
+ingle
+> + * operation into multiple sub-operations when required.
+> + *
+> + * Return: a negative error code if the controller can't properly adjust=
+ @op,
+> + *	   0 otherwise. Note that @op->data.nbytes will be updated if @op
+> + *	   can't be handled in a single step.
+> + */
+> +int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> +{
+> +	struct spi_controller *ctlr =3D mem->spi->controller;
+> +
+> +	if (ctlr->mem_ops && ctlr->mem_ops->adjust_op_size)
+> +		return ctlr->mem_ops->adjust_op_size(mem, op);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+> +
+> +static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver=
+ *drv)
+> +{
+> +	return container_of(drv, struct spi_mem_driver, spidrv.driver);
+> +}
+> +
+> +static int spi_mem_probe(struct spi_device *spi)
+> +{
+> +	struct spi_mem_driver *memdrv =3D to_spi_mem_drv(spi->dev.driver);
+> +	struct spi_mem *mem;
+> +
+> +	mem =3D devm_kzalloc(&spi->dev, sizeof(*mem), GFP_KERNEL);
+> +	if (!mem)
+> +		return -ENOMEM;
+> +
+> +	mem->spi =3D spi;
+> +	spi_set_drvdata(spi, mem);
+> +
+> +	return memdrv->probe(mem);
+> +}
+> +
+> +static int spi_mem_remove(struct spi_device *spi)
+> +{
+> +	struct spi_mem_driver *memdrv =3D to_spi_mem_drv(spi->dev.driver);
+> +	struct spi_mem *mem =3D spi_get_drvdata(spi);
+> +
+> +	if (memdrv->remove)
+> +		return memdrv->remove(mem);
+> +
+> +	return 0;
+> +}
+> +
+> +static void spi_mem_shutdown(struct spi_device *spi)
+> +{
+> +	struct spi_mem_driver *memdrv =3D to_spi_mem_drv(spi->dev.driver);
+> +	struct spi_mem *mem =3D spi_get_drvdata(spi);
+> +
+> +	if (memdrv->shutdown)
+> +		memdrv->shutdown(mem);
+> +}
+> +
+> +/**
+> + * spi_mem_driver_register_with_owner() - Register a SPI memory driver
+> + * @memdrv: the SPI memory driver to register
+> + * @owner: the owner of this driver
+> + *
+> + * Registers a SPI memory driver.
+> + *
+> + * Return: 0 in case of success, a negative error core otherwise.
+> + */
+> +
+> +int spi_mem_driver_register_with_owner(struct spi_mem_driver *memdrv,
+> +				       struct module *owner)
+> +{
+> +	memdrv->spidrv.probe =3D spi_mem_probe;
+> +	memdrv->spidrv.remove =3D spi_mem_remove;
+> +	memdrv->spidrv.shutdown =3D spi_mem_shutdown;
+> +
+> +	return __spi_register_driver(owner, &memdrv->spidrv);
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_driver_register_with_owner);
+> +
+> +/**
+> + * spi_mem_driver_unregister_with_owner() - Unregister a SPI memory driv=
+er
+> + * @memdrv: the SPI memory driver to unregister
+> + *
+> + * Unregisters a SPI memory driver.
+> + */
+> +void spi_mem_driver_unregister(struct spi_mem_driver *memdrv)
+> +{
+> +	spi_unregister_driver(&memdrv->spidrv);
+> +}
+> +EXPORT_SYMBOL_GPL(spi_mem_driver_unregister);
+> +
+>  /*----------------------------------------------------------------------=
+---*/
+> =20
+>  #if IS_ENABLED(CONFIG_OF_DYNAMIC)
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 7b2170bfd6e7..af3c4ac62b55 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -27,6 +27,7 @@ struct property_entry;
+>  struct spi_controller;
+>  struct spi_transfer;
+>  struct spi_flash_read_message;
+> +struct spi_controller_mem_ops;
+> =20
+>  /*
+>   * INTERFACES between SPI master-side drivers and SPI slave protocol han=
+dlers,
+> @@ -376,6 +377,9 @@ static inline void spi_unregister_driver(struct spi_d=
+river *sdrv)
+>   *                    transfer_one callback.
+>   * @handle_err: the subsystem calls the driver to handle an error that o=
+ccurs
+>   *		in the generic implementation of transfer_one_message().
+> + * @mem_ops: optimized/dedicated operations for interactions with SPI me=
+mory.
+> + *	     This field is optional and should only be implemented if the
+> + *	     controller has native support for memory like operations.
+>   * @unprepare_message: undo any work done by prepare_message().
+>   * @slave_abort: abort the ongoing transfer request on an SPI slave cont=
+roller
+>   * @spi_flash_read: to support spi-controller hardwares that provide
+> @@ -564,6 +568,9 @@ struct spi_controller {
+>  	void (*handle_err)(struct spi_controller *ctlr,
+>  			   struct spi_message *message);
+> =20
+> +	/* Optimized handlers for SPI memory-like operations. */
+> +	const struct spi_controller_mem_ops *mem_ops;
+> +
+>  	/* gpio chip select */
+>  	int			*cs_gpios;
+> =20
+> @@ -1227,6 +1234,225 @@ int spi_flash_read(struct spi_device *spi,
+> =20
+>  /*----------------------------------------------------------------------=
+-----*/
+> =20
+> +/* SPI memory related definitions. */
+> +
+> +#define SPI_MEM_OP_CMD(__opcode, __buswidth)			\
+> +	{							\
+> +		.buswidth =3D __buswidth,				\
+> +		.opcode =3D __opcode,				\
+> +	}
+> +
+> +#define SPI_MEM_OP_ADDRS(__nbytes, __buf, __buswidth)		\
+> +	{							\
+> +		.nbytes =3D __nbytes,				\
+> +		.buf =3D __buf,					\
+> +		.buswidth =3D __buswidth,				\
+> +	}
+> +
+> +#define SPI_MEM_OP_NO_ADDRS	{ }
+> +
+> +#define SPI_MEM_OP_DUMMY(__nbytes, __buswidth)			\
+> +	{							\
+> +		.nbytes =3D __nbytes,				\
+> +		.buswidth =3D __buswidth,				\
+> +	}
+> +
+> +#define SPI_MEM_OP_NO_DUMMY	{ }
+> +
+> +#define SPI_MEM_OP_DATA_IN(__nbytes, __buf, __buswidth)		\
+> +	{							\
+> +		.dir =3D SPI_MEM_DATA_IN,				\
+> +		.nbytes =3D __nbytes,				\
+> +		.buf.in =3D __buf,				\
+> +		.buswidth =3D __buswidth,				\
+> +	}
+> +
+> +#define SPI_MEM_OP_DATA_OUT(__nbytes, __buf, __buswidth)	\
+> +	{							\
+> +		.dir =3D SPI_MEM_DATA_OUT,			\
+> +		.nbytes =3D __nbytes,				\
+> +		.buf.out =3D __buf,				\
+> +		.buswidth =3D __buswidth,				\
+> +	}
+> +
+> +#define SPI_MEM_OP_NO_DATA	{ }
+> +
+> +/**
+> + * enum spi_mem_data_dir - describes the direction of a SPI memory data
+> + *			   transfer from the controller perspective
+> + * @SPI_MEM_DATA_IN: data coming from the SPI memory
+> + * @SPI_MEM_DATA_OUT: data sent the SPI memory
+> + */
+> +enum spi_mem_data_dir {
+> +	SPI_MEM_DATA_IN,
+> +	SPI_MEM_DATA_OUT,
+> +};
+> +
+> +/**
+> + * struct spi_mem_op - describes a SPI memory operation
+> + * @cmd.buswidth: number of IO lines used to transmit the command
+> + * @cmd.opcode: operation opcode
+> + * @addr.nbytes: number of address bytes to send. Can be zero if the ope=
+ration
+> + *		 does not need to send an address
+> + * @addr.buswidth: number of IO lines used to transmit the address cycles
+> + * @addr.buf: buffer storing the address bytes
+> + * @dummy.nbytes: number of dummy bytes to send after an opcode or addre=
+ss. Can
+> + *		  be zero if the operation does not require dummy bytes
+> + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
+> + * @data.buswidth: number of IO lanes used to send/receive the data
+> + * @data.dir: direction of the transfer
+> + * @data.buf.in: input buffer
+> + * @data.buf.out: output buffer
+> + */
+> +struct spi_mem_op {
+> +	struct {
+> +		u8 buswidth;
+> +		u8 opcode;
+> +	} cmd;
+> +
+> +	struct {
+> +		u8 nbytes;
+> +		u8 buswidth;
+> +		const u8 *buf;
+> +	} addr;
+> +
+> +	struct {
+> +		u8 nbytes;
+> +		u8 buswidth;
+> +	} dummy;
+> +
+> +	struct {
+> +		u8 buswidth;
+> +		enum spi_mem_data_dir dir;
+> +		unsigned int nbytes;
+> +		/* buf.{in,out} must be DMA-able. */
+> +		union {
+> +			void *in;
+> +			const void *out;
+> +		} buf;
+> +	} data;
+> +};
+> +
+> +#define SPI_MEM_OP(__cmd, __addr, __dummy, __data)		\
+> +	{							\
+> +		.cmd =3D __cmd,					\
+> +		.addr =3D __addr,					\
+> +		.dummy =3D __dummy,				\
+> +		.data =3D __data,					\
+> +	}
+> +
+> +/**
+> + * struct spi_mem - describes a SPI memory device
+> + * @spi: the underlying SPI device
+> + * @drvpriv: spi_mem_drviver private data
+> + *
+> + * Extra information that describe the SPI memory device and may be need=
+ed by
+> + * the controller to properly handle this device should be placed here.
+> + *
+> + * One example would be the device size since some controller expose the=
+ir SPI
+> + * mem devices through a io-mapped region.
+> + */
+> +struct spi_mem {
+> +	struct spi_device *spi;
+> +	void *drvpriv;
+> +};
+> +
+> +/**
+> + * struct spi_mem_set_drvdata() - attach driver private data to a SPI mem
+> + *				  device
+> + * @mem: memory device
+> + * @data: data to attach to the memory device
+> + */
+> +static inline void spi_mem_set_drvdata(struct spi_mem *mem, void *data)
+> +{
+> +	mem->drvpriv =3D data;
+> +}
+> +
+> +/**
+> + * struct spi_mem_get_drvdata() - get driver private data attached to a =
+SPI mem
+> + *				  device
+> + * @mem: memory device
+> + *
+> + * Return: the data attached to the mem device.
+> + */
+> +static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+> +{
+> +	return mem->drvpriv;
+> +}
+> +
+> +/**
+> + * struct spi_controller_mem_ops - SPI memory operations
+> + * @adjust_op_size: shrink the data xfer of an operation to match contro=
+ller's
+> + *		    limitations (can be alignment of max RX/TX size
+> + *		    limitations)
+> + * @supports_op: check if an operation is supported by the controller
+> + * @exec_op: execute a SPI memory operation
+> + *
+> + * This interface should be implemented by SPI controllers providing an
+> + * high-level interface to execute SPI memory operation, which is usuall=
+y the
+> + * case for QSPI controllers.
+> + */
+> +struct spi_controller_mem_ops {
+> +	int (*adjust_op_size)(struct spi_mem *mem, struct spi_mem_op *op);
+> +	bool (*supports_op)(struct spi_mem *mem,
+> +			    const struct spi_mem_op *op);
+> +	int (*exec_op)(struct spi_mem *mem,
+> +		       const struct spi_mem_op *op);
+
+:)
+
+> +};
+> +
+> +int spi_controller_dma_map_mem_op_data(struct spi_controller *ctlr,
+> +				       const struct spi_mem_op *op,
+> +				       struct sg_table *sg);
+> +
+> +void spi_controller_dma_unmap_mem_op_data(struct spi_controller *ctlr,
+> +					  const struct spi_mem_op *op,
+> +					  struct sg_table *sg);
+> +
+> +int spi_mem_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op);
+> +
+> +bool spi_mem_supports_op(struct spi_mem *mem,
+> +			 const struct spi_mem_op *op);
+> +
+> +int spi_mem_exec_op(struct spi_mem *mem,
+> +		    const struct spi_mem_op *op);
+> +
+> +/**
+> + * struct spi_mem_driver - SPI memory driver
+> + * @spidrv: inherit from a SPI driver
+> + * @probe: probe a SPI memory. Usually where detection/initialization ta=
+kes
+> + *	   place
+> + * @remove: remove a SPI memory
+> + * @shutdown: take appropriate action when the system is shutdown
+> + *
+> + * This is just a thin wrapper around a spi_driver. The core takes care =
+of
+> + * allocating the spi_mem object and forwarding the probe/remove/shutdown
+> + * request to the spi_mem_driver. The reason we use this wrapper is beca=
+use
+> + * we might have to stuff more information into the spi_mem struct to let
+> + * SPI controllers know more about the SPI memory they interact with, and
+> + * having this intermediate layer allows us to do that without adding mo=
+re
+> + * useless fields to the spi_device object.
+> + */
+> +struct spi_mem_driver {
+> +	struct spi_driver spidrv;
+> +	int (*probe)(struct spi_mem *mem);
+> +	int (*remove)(struct spi_mem *mem);
+> +	void (*shutdown)(struct spi_mem *mem);
+> +};
+> +
+> +int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+> +				       struct module *owner);
+> +
+> +#define spi_mem_driver_register(__drv)                                  \
+> +	spi_mem_driver_register_with_owner(__drv, THIS_MODULE)
+> +
+> +void spi_mem_driver_unregister(struct spi_mem_driver *drv);
+> +
+> +#define module_spi_mem_driver(__drv)                                    \
+> +	module_driver(__drv, spi_mem_driver_register,                   \
+> +		      spi_mem_driver_unregister)
+> +
+> +/*----------------------------------------------------------------------=
+-----*/
+> +
+>  /*
+>   * INTERFACE between board init code and SPI infrastructure.
+>   *
 
 
->> +
->> +static int vf610_nfc_exec_op(struct nand_chip *chip,
->> +			     const struct nand_operation *op,
->> +			     bool check_only)
->> +{
->> +	struct vf610_nfc *nfc = chip_to_nfc(chip);
->> +
->> +	dev_dbg(nfc->dev, "exec_op, opcode 0x%02x\n", op->instrs[0].ctx.cmd.opcode);
->> +
->> +	return nand_op_parser_exec_op(chip, &vf610_nfc_op_parser, op, check_only);
->> +}
->> +
->> +
->>  /*
->>   * This function supports Vybrid only (MPC5125 would have full RB and four CS)
->>   */
->> @@ -527,8 +729,7 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
->>  		return ecc_count;
->>
->>  	/* Read OOB without ECC unit enabled */
->> -	vf610_nfc_command(mtd, NAND_CMD_READOOB, 0, page);
->> -	vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
->> +	nand_read_oob_op(&nfc->chip, page, 0, oob, mtd->oobsize);
->>
->>  	/*
->>  	 * On an erased page, bit count (including OOB) should be zero or
->> @@ -542,12 +743,42 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
->>  static int vf610_nfc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->>  				uint8_t *buf, int oob_required, int page)
->>  {
->> -	int eccsize = chip->ecc.size;
->> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
->> +	int trfr_sz = mtd->writesize + mtd->oobsize;
->> +	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
->>  	int stat;
->>
->> -	nand_read_page_op(chip, page, 0, buf, eccsize);
->> +	cmd2 |= NAND_CMD_READ0 << CMD_BYTE1_SHIFT;
->> +	code |= COMMAND_CMD_BYTE1;
->> +
->> +	code |= COMMAND_CAR_BYTE1;
->> +	code |= COMMAND_CAR_BYTE2;
->> +
->> +	row = ROW_ADDR(0, page & 0xff);
->> +	code |= COMMAND_RAR_BYTE1;
->> +	row |= ROW_ADDR(1, page >> 8);
->> +	code |= COMMAND_RAR_BYTE2;
->> +
->> +	if (chip->options & NAND_ROW_ADDR_3) {
->> +		row |= ROW_ADDR(2, page >> 16);
->> +		code |= COMMAND_RAR_BYTE3;
->> +	}
->> +
->> +	cmd1 |= NAND_CMD_READSTART << CMD_BYTE2_SHIFT;
->> +	code |= COMMAND_CMD_BYTE2;
->> +
->> +	code |= COMMAND_RB_HANDSHAKE;
->> +	code |= COMMAND_READ_DATA;
->> +	cmd2 |= code << CMD_CODE_SHIFT;
-> 
-> I don't mind if you want to split all the '|=' flagging work in
-> multiple lines but perhaps some comments would be welcome too if there
-> is a particular logic.
-> 
+Best regards,
+Miqu=C3=A8l
 
-Sound reasonable. I was also thinking of merging some of that code in
-function shared for read/write_page.
-
->> +
->> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
->> +	vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
->> +
->> +	vf610_nfc_memcpy(buf, nfc->regs + NFC_MAIN_AREA(0), mtd->writesize);
->>  	if (oob_required)
->> -		vf610_nfc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
->> +		vf610_nfc_memcpy(chip->oob_poi,
->> +				 nfc->regs + NFC_MAIN_AREA(0) + mtd->writesize,
->> +				 mtd->oobsize);
->>
->>  	stat = vf610_nfc_correct_data(mtd, buf, chip->oob_poi, page);
->>
->> @@ -564,16 +795,39 @@ static int vf610_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->>  				const uint8_t *buf, int oob_required, int page)
->>  {
->>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
->> +	int trfr_sz = mtd->writesize + mtd->oobsize;
->> +	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
->> +	int ret = 0;
->> +
->> +	cmd2 |= NAND_CMD_SEQIN << CMD_BYTE1_SHIFT;
->> +	code |= COMMAND_CMD_BYTE1;
->> +
->> +	code |= COMMAND_CAR_BYTE1;
->> +	code |= COMMAND_CAR_BYTE2;
->> +
->> +	row = ROW_ADDR(0, page & 0xff);
->> +	code |= COMMAND_RAR_BYTE1;
->> +	row |= ROW_ADDR(1, page >> 8);
->> +	code |= COMMAND_RAR_BYTE2;
->> +	if (chip->options & NAND_ROW_ADDR_3) {
->> +		row |= ROW_ADDR(2, page >> 16);
->> +		code |= COMMAND_RAR_BYTE3;
->> +	}
->>
->> -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
->> -	if (oob_required)
->> -		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
->> +	cmd1 |= NAND_CMD_PAGEPROG << CMD_BYTE2_SHIFT;
->> +	code |= COMMAND_CMD_BYTE2;
->> +
->> +	code |= COMMAND_WRITE_DATA;
->> +
->> +	vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0), buf, mtd->writesize);
->> +
->> +	code |= COMMAND_RB_HANDSHAKE;
->> +	cmd2 |= code << CMD_CODE_SHIFT;
-> 
-> Same here.
-> 
->>
->> -	/* Always write whole page including OOB due to HW ECC */
->> -	nfc->use_hw_ecc = true;
->> -	nfc->write_sz = mtd->writesize + mtd->oobsize;
->> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
->> +	vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
->>
->> -	return nand_prog_page_end_op(chip);
->> +	return ret;
->>  }
->>
->>  static const struct of_device_id vf610_nfc_dt_ids[] = {
->> @@ -686,6 +940,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
->>  	chip->read_word = vf610_nfc_read_word;
->>  	chip->read_buf = vf610_nfc_read_buf;
->>  	chip->write_buf = vf610_nfc_write_buf;
->> +	chip->exec_op = vf610_nfc_exec_op;
->>  	chip->select_chip = vf610_nfc_select_chip;
->>  	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
->>  	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
-> 
-> This is in a good shape :)
-> 
-> Thanks,
-> Miquèl
-
-Thanks!
-
---
-Stefan
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
