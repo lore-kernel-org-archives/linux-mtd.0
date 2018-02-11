@@ -1,19 +1,19 @@
-Received: from smtp3-g21.free.fr ([212.27.42.3])
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ekqrR-00011E-El
- for linux-mtd@lists.infradead.org; Sun, 11 Feb 2018 12:36:03 +0000
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add support of read/write any reg
- commands
+ id 1ekquj-0001di-UD
+ for linux-mtd@lists.infradead.org; Sun, 11 Feb 2018 12:39:27 +0000
+Subject: Re: [PATCH 2/3] mtd: spi-nor: Implement anyreg functions for
+ fsl-quadspi
 To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
  linux-mtd@lists.infradead.org
 Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
  poonam.aggrwal@nxp.com, suresh.gupta@nxp.com, yogeshnarayan.gaur@nxp.com
-References: <1517494735-2766-1-git-send-email-prabhakar.kushwaha@nxp.com>
+References: <1517494776-2816-1-git-send-email-prabhakar.kushwaha@nxp.com>
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <1a667a8a-ae47-9baf-7506-00cc2513c2bf@wedev4u.fr>
-Date: Sun, 11 Feb 2018 13:35:42 +0100
+Message-ID: <7cb5b7ec-b6f9-651c-ca22-e1ccb7b60c06@wedev4u.fr>
+Date: Sun, 11 Feb 2018 13:39:12 +0100
 MIME-Version: 1.0
-In-Reply-To: <1517494735-2766-1-git-send-email-prabhakar.kushwaha@nxp.com>
+In-Reply-To: <1517494776-2816-1-git-send-email-prabhakar.kushwaha@nxp.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -28,68 +28,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Prabhakar,
 
-Le 01/02/2018 à 15:18, Prabhakar Kushwaha a écrit :
-> Spansion flash provide support of Read Any Register and Write Any
-> Register commands.  These commands provides a way to read or write
-> all device registers - non-volatile and volatile.
+Le 01/02/2018 à 15:19, Prabhakar Kushwaha a écrit :
+> Read Any Register and Write Any Register commands provides a way to
+> read or write all device registers - non-volatile and volatile.
+> These commands are followed by a 3- or 4-byte address, followed by
+> a number of latency (dummy) cycles set by volatile configuration
+> registers. Then the selected register contents are returned or written.
 > 
-> These commands require special signature and handing from underlying
-> flash controller.
+> This patch update quadspi controller driver to implement above behavior.
 > 
 > Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 > ---
->  include/linux/mtd/spi-nor.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index de36969..a747215 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -265,6 +265,8 @@ struct flash_info;
->   *			read/write/erase/lock/unlock operations
->   * @read_reg:		[DRIVER-SPECIFIC] read out the register
->   * @write_reg:		[DRIVER-SPECIFIC] write data to the register
-> + * @read_anyreg:	[DRIVER-SPECIFIC] read out from any register
-> + * @write_anyreg	[DRIVER-SPECIFIC] write data to any register
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 2e44234..87f87ed 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -893,6 +893,22 @@ static int fsl_qspi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+>  	return ret;
+>  }
+>  
+> +static int fsl_qspi_read_anyreg(struct spi_nor *nor, u8 opcode, u32 offset,
+> +				u8 *buf, int len)
+> +{
+> +	/* TODO: It will be updated during controller changes*/
+> +
 
-For now, I'm not fond off adding new driver specific handlers such
-.read_anyreg() or .write_anyreg() because if they are supposed to be
-mandatory then you will have to provide an implementation for every single
-SPI flash controller driver, including drivers/mtd/devices/m25p80.c and all
-drivers under drivers/mtd/spi-nor/.
-
-Otherwise, if those new handlers are optional, you will have to handle
-carefully inside spi-nor.c the case where they are not implemented.
-
-Besides, Boris is proposing a new common API for all SPI flash drivers to
-send SPI flash commands to whatever kind of SPI flash memory, (Q)SPI NOR,
-QSPI NAND, SPI SRAM, ...
-
-His API is more generic and could handle the specific cases of the
-Read/Write Any Reg SPI commands so I'd rather use his API instead of adding
-too many dedicated handlers.
-
-Please have a look at his series of patches:
-https://patchwork.ozlabs.org/patch/869628/
-
-Especially, check 'struct spi_mem_op' and the spi_mem_exec_op() function.
+I guess new handlers should be added at the same time they are implemented.
 
 Best regards,
 
 Cyrille
 
->   * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
->   * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
->   * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
-> @@ -299,6 +301,10 @@ struct spi_nor {
->  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
->  	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
->  	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
-> +	int (*read_anyreg)(struct spi_nor *nor, u8 opcode, u32 offset,
-> +			   u8 *buf, int len);
-> +	int (*write_anyreg)(struct spi_nor *nor, u8 opcode, u32 offset,
-> +			    u8 *buf, int len);
->  
->  	ssize_t (*read)(struct spi_nor *nor, loff_t from,
->  			size_t len, u_char *read_buf);
+> +	return 0;
+> +}
+> +
+> +static int fsl_qspi_write_anyreg(struct spi_nor *nor, u8 opcode, u32 offset,
+> +				 u8 *buf, int len)
+> +{
+> +	/* TODO: It will be updated during controller changes*/
+> +
+> +	return 0;
+> +}
+> +
+>  static ssize_t fsl_qspi_write(struct spi_nor *nor, loff_t to,
+>  			      size_t len, const u_char *buf)
+>  {
+> @@ -1100,6 +1116,8 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>  		/* fill the hooks */
+>  		nor->read_reg = fsl_qspi_read_reg;
+>  		nor->write_reg = fsl_qspi_write_reg;
+> +		nor->read_anyreg = fsl_qspi_read_anyreg;
+> +		nor->write_anyreg = fsl_qspi_write_anyreg;
+>  		nor->read = fsl_qspi_read;
+>  		nor->write = fsl_qspi_write;
+>  		nor->erase = fsl_qspi_erase;
 > 
