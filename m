@@ -1,16 +1,26 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ekzwY-0003pd-7Q
- for linux-mtd@lists.infradead.org; Sun, 11 Feb 2018 22:17:55 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: richard@nod.at,
-	dedekind1@gmail.com,
-	adrian.hunter@intel.com
-Cc: linux-mtd@lists.infradead.org,
-	Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] UBIFS: remove unnecessary assignment
-Date: Sun, 11 Feb 2018 23:17:36 +0100
-Message-Id: <20180211221736.25453-1-stefan@agner.ch>
+Received: from smtpgcba5.buenosaires.gob.ar ([200.16.89.92])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1el2zW-0002Iu-CT
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 01:33:11 +0000
+Received: from [10.20.2.181] ([10.20.2.181]:54434 "EHLO webmail.gcba.gob.ar"
+ smtp-auth: "rfurio@buenosaires.gob.ar" rhost-flags-FAIL-FAIL-OK-FAIL)
+ by alerce01n-mr.buenosaires.gob.ar with ESMTPSA
+ id S101178549AbeBKSFLjNRdG (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Sun, 11 Feb 2018 15:05:11 -0300
+Message-ID: <20180211150349.32743qcu5bx72lqd@webmail.buenosaires.gob.ar>
+Date: Sun, 11 Feb 2018 15:03:49 -0300
+From: Alfred Cheuk Chow <rfurio@buenosaires.gob.ar>
+Reply-to: Alfred_chow12@yeah.net
+To: undisclosed-recipients:;
+Subject: 
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=ISO-8859-1;
+ DelSp="Yes";
+ format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Assigning a value of a variable to itself is not useful. This
-fixes a warning shown when using clang:
-  warning: explicitly assigning value of variable of type 'int' to itself [-Wself-assign]
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
----
- fs/ubifs/scan.c | 1 -
- 1 file changed, 1 deletion(-)
+Good Day,
 
-diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
-index aab87340d3de..16f03d9929e5 100644
---- a/fs/ubifs/scan.c
-+++ b/fs/ubifs/scan.c
-@@ -175,7 +175,6 @@ struct ubifs_scan_leb *ubifs_start_scan(const struct ubifs_info *c, int lnum,
- void ubifs_end_scan(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 		    int lnum, int offs)
- {
--	lnum = lnum;
- 	dbg_scan("stop scanning LEB %d at offset %d", lnum, offs);
- 	ubifs_assert(offs % c->min_io_size == 0);
- 
--- 
-2.16.1
+I am Mr. Alfred Cheuk Yu Chow, the Director for Credit & Marketing Chong
+Hing Bank, Hong Kong, Chong Hing Bank Center, 24 Des Voeux Road Central,
+Hong Kong. I have a business proposal of $ 38,980,369.00.
+
+All confirmable documents to back up the claims will be made available
+to you prior to your acceptance and as soon as I receive your return
+mail.
+
+Best Regards,
+Alfred Chow.
