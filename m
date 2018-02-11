@@ -1,21 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ekpIR-0004dh-Em
- for linux-mtd@lists.infradead.org; Sun, 11 Feb 2018 10:55:49 +0000
-Date: Sun, 11 Feb 2018 11:55:25 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH v3 0/3] mtd: nand: vf610_nfc: make use of ->exec_op()
-Message-ID: <20180211115525.4130772d@bbrezillon>
-In-Reply-To: <20180208235921.31840-1-stefan@agner.ch>
-References: <20180208235921.31840-1-stefan@agner.ch>
+Received: from smtp3-g21.free.fr ([212.27.42.3])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ekqrR-00011E-El
+ for linux-mtd@lists.infradead.org; Sun, 11 Feb 2018 12:36:03 +0000
+Subject: Re: [PATCH 1/3] mtd: spi-nor: Add support of read/write any reg
+ commands
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ poonam.aggrwal@nxp.com, suresh.gupta@nxp.com, yogeshnarayan.gaur@nxp.com
+References: <1517494735-2766-1-git-send-email-prabhakar.kushwaha@nxp.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <1a667a8a-ae47-9baf-7506-00cc2513c2bf@wedev4u.fr>
+Date: Sun, 11 Feb 2018 13:35:42 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1517494735-2766-1-git-send-email-prabhakar.kushwaha@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  9 Feb 2018 00:59:18 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+Hi Prabhakar,
 
-> Third revision of the rework patchset to use exec_op for NXP
-> Vybrid (and others) NAND Flash Controller.
-
-Glad to see you didn't give up on that :-). It looks pretty good
-already, just have some comments on patch 2, but I think you can drop
-the RFC prefix on your next version.
-
+Le 01/02/2018 à 15:18, Prabhakar Kushwaha a écrit :
+> Spansion flash provide support of Read Any Register and Write Any
+> Register commands.  These commands provides a way to read or write
+> all device registers - non-volatile and volatile.
 > 
-> I now avoided calling back into the stack for the ECC read/
-> write pages. This increases speed 4469 KiB/s write speed and
-> 13490 KiB/s read speed (v2 was 3495 KiB/s/13490 KiB/s).
-
-Nice improvement on the write path.
-
+> These commands require special signature and handing from underlying
+> flash controller.
 > 
-> IMHO it start to look better, probably still needs some fine
-> tuning. What I don't like too much is that the custom
-> read/write page accessors dupplicate some code, maybe this
-> could be done somewhat nicer.
-
-Hm, just had a look and I don't find there's that much code duplicated
-here, but if you find a solution to share even more code I won't
-complain ;-).
-
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> ---
+>  include/linux/mtd/spi-nor.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> --
-> Stefan
-> 
-> Changes in v3:
-> - Separate exec_op() callback addition and removal of old callbacks
-> - Push data into regs in one function
-> - Readd op parser
-> - Implement custom read/write page for hardware ECC
-> - Rely on generic ecc.write_page_raw
-> - Use nand_read_oob_op instead of nand_read_page_op
-> 
-> Stefan Agner (3):
->   mtd: nand: vf610_nfc: remove unused function
->   mtd: nand: vf610_nfc: make use of ->exec_op()
->   mtd: nand: vf610_nfc: remove old hooks
-> 
->  drivers/mtd/nand/vf610_nfc.c | 493 +++++++++++++++++++++----------------------
->  1 file changed, 239 insertions(+), 254 deletions(-)
-> 
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index de36969..a747215 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -265,6 +265,8 @@ struct flash_info;
+>   *			read/write/erase/lock/unlock operations
+>   * @read_reg:		[DRIVER-SPECIFIC] read out the register
+>   * @write_reg:		[DRIVER-SPECIFIC] write data to the register
+> + * @read_anyreg:	[DRIVER-SPECIFIC] read out from any register
+> + * @write_anyreg	[DRIVER-SPECIFIC] write data to any register
 
+For now, I'm not fond off adding new driver specific handlers such
+.read_anyreg() or .write_anyreg() because if they are supposed to be
+mandatory then you will have to provide an implementation for every single
+SPI flash controller driver, including drivers/mtd/devices/m25p80.c and all
+drivers under drivers/mtd/spi-nor/.
 
+Otherwise, if those new handlers are optional, you will have to handle
+carefully inside spi-nor.c the case where they are not implemented.
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Besides, Boris is proposing a new common API for all SPI flash drivers to
+send SPI flash commands to whatever kind of SPI flash memory, (Q)SPI NOR,
+QSPI NAND, SPI SRAM, ...
+
+His API is more generic and could handle the specific cases of the
+Read/Write Any Reg SPI commands so I'd rather use his API instead of adding
+too many dedicated handlers.
+
+Please have a look at his series of patches:
+https://patchwork.ozlabs.org/patch/869628/
+
+Especially, check 'struct spi_mem_op' and the spi_mem_exec_op() function.
+
+Best regards,
+
+Cyrille
+
+>   * @read:		[DRIVER-SPECIFIC] read data from the SPI NOR
+>   * @write:		[DRIVER-SPECIFIC] write data to the SPI NOR
+>   * @erase:		[DRIVER-SPECIFIC] erase a sector of the SPI NOR
+> @@ -299,6 +301,10 @@ struct spi_nor {
+>  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
+>  	int (*read_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+>  	int (*write_reg)(struct spi_nor *nor, u8 opcode, u8 *buf, int len);
+> +	int (*read_anyreg)(struct spi_nor *nor, u8 opcode, u32 offset,
+> +			   u8 *buf, int len);
+> +	int (*write_anyreg)(struct spi_nor *nor, u8 opcode, u32 offset,
+> +			    u8 *buf, int len);
+>  
+>  	ssize_t (*read)(struct spi_nor *nor, loff_t from,
+>  			size_t len, u_char *read_buf);
+> 
