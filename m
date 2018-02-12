@@ -1,25 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elDHx-0005pY-HT
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 12:32:55 +0000
-Date: Mon, 12 Feb 2018 13:32:41 +0100
+ id 1elDLF-0001LC-Pi
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 12:36:20 +0000
+Date: Mon, 12 Feb 2018 13:36:05 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>, Mark Brown
- <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Peter Pan
- <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>
-Subject: Re: [RFC PATCH 5/6] mtd: spi-nor: Use the spi_mem_xx() API
-Message-ID: <20180212133241.4008202d@bbrezillon>
-In-Reply-To: <933bd372-8b75-183f-0b03-563cabbbcc68@ti.com>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
- <20180205232120.5851-6-boris.brezillon@bootlin.com>
- <933bd372-8b75-183f-0b03-563cabbbcc68@ti.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Han Xu
+ <han.xu@nxp.com>
+Subject: Re: [PATCH v2 1/2] mtd: nand: Check ONFI timings have been acked by
+ the chip
+Message-ID: <20180212133605.0d8b0041@bbrezillon>
+In-Reply-To: <20180119092547.26873-2-miquel.raynal@free-electrons.com>
+References: <20180119092547.26873-1-miquel.raynal@free-electrons.com>
+ <20180119092547.26873-2-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,45 +28,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Feb 2018 17:14:21 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+On Fri, 19 Jan 2018 10:25:46 +0100
+Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> On Tuesday 06 February 2018 04:51 AM, Boris Brezillon wrote:
-> > From: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > 
-> > The spi_mem_xxx() API has been introduced to replace the
-> > spi_flash_read() one. Make use of it so we can get rid of
-> > spi_flash_read().
-> > 
-> > Note that using spi_mem_xx() also simplifies the code because this API
-> > takes care of using the regular spi_sync() interface when the optimized  
-> > ->mem_ops interface is not implemented by the controller.  
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > ---  
-> [...]
-> >  /*
-> > @@ -138,92 +121,42 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
-> >  			   u_char *buf)
-> >  {
-> >  	struct m25p *flash = nor->priv;
-> > -	struct spi_device *spi = flash->spi;
-> > -	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
-> > -	struct spi_transfer t[3];
-> > -	struct spi_message m;
-> > -	unsigned int dummy = nor->read_dummy;
-> > -	ssize_t ret;
-> > -	int cmd_sz;
-> > +	u8 addrs[4];
-> > +	struct spi_mem_op op =
-> > +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
-> > +				   SPI_MEM_OP_ADDRS(nor->addr_width, addrs, 1),
-> > +				   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
-> > +				   SPI_MEM_OP_DATA_OUT(len, buf, 1));  
+> Choosing ONFI timings when ->onfi_set/get_features() calls are supported
+> by the NAND chip is a matter of reading the chip's ONFI parameter page
+> and telling the chip the chosen mode (between all of the supported ones)
+> with ->onfi_set_feature().
 > 
-> 					^^^^ SPI_MEM_OP_DATA_IN
+> Add a check on whether the chip "acked" the timing mode or not.
+> 
+> This can be a problem for NAND chips that do not follow entirely the
+> ONFI specification. These chips actually support other modes than
+> "mode 0", but do not update the parameter page once a timing mode has
+> been selected. This issue will be addressed in another patch that will
+> add the feature to overwrite NAND chips features within the parameter
+> page, from the NAND chip driver.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> ---
+>  drivers/mtd/nand/nand_base.c | 41 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 34 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 96c97588e1ba..e209a65a17e0 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1231,15 +1231,47 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+>  			chip->onfi_timing_mode_default,
+>  		};
+>  
+> +		chip->select_chip(mtd, chipnr);
+>  		ret = chip->onfi_set_features(mtd, chip,
+>  				ONFI_FEATURE_ADDR_TIMING_MODE,
+>  				tmode_param);
+> +		chip->select_chip(mtd, -1);
+>  		if (ret)
+> -			goto err;
+> +			return ret;
+>  	}
+>  
+>  	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
+> -err:
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (chip->onfi_version &&
+> +	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
+> +	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
+> +		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {};
+> +
+> +		chip->select_chip(mtd, chipnr);
+> +		ret = chip->onfi_get_features(mtd, chip,
+> +					      ONFI_FEATURE_ADDR_TIMING_MODE,
+> +					      tmode_param);
+> +		chip->select_chip(mtd, -1);
+> +		if (ret)
+> +			goto err_reset_chip;
+> +
+> +		if (tmode_param[0] != chip->onfi_timing_mode_default) {
+> +			pr_warn("timings mode %d not acknowledged by the NAND chip\n",
+> +				chip->onfi_timing_mode_default);
+> +			goto err_reset_chip;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +err_reset_chip:
+> +	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
+> +	chip->select_chip(mtd, chipnr);
+> +	nand_reset_op(chip);
+> +	chip->select_chip(mtd, -1);
+> +
+>  	return ret;
+>  }
+>  
+> @@ -2738,10 +2770,8 @@ int nand_reset(struct nand_chip *chip, int chipnr)
+>  	if (ret)
+>  		return ret;
+>  
+> -	chip->select_chip(mtd, chipnr);
+>  	chip->data_interface = saved_data_intf;
+>  	ret = nand_setup_data_interface(chip, chipnr);
+> -	chip->select_chip(mtd, -1);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -6571,10 +6601,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  
+>  	/* Enter fastest possible mode on all dies. */
+>  	for (i = 0; i < chip->numchips; i++) {
+> -		chip->select_chip(mtd, i);
+>  		ret = nand_setup_data_interface(chip, i);
+> -		chip->select_chip(mtd, -1);
 
-Nice catch! I'll fix that in v2.
+Can you split this patch in 2: one that moves the ->select_chip() calls
+to nand_setup_data_interface() and a second one that calls
+->get_features() to make sure the new timing mode has been applied.
+
+Thanks,
+
+Boris
+
+> -
+>  		if (ret)
+>  			goto err_nand_manuf_cleanup;
+>  	}
+
+
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
