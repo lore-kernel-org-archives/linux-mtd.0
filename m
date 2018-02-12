@@ -1,31 +1,19 @@
-Date: Mon, 12 Feb 2018 11:20:42 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1elBP0-0005jZ-Uh
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 10:32:04 +0000
+Date: Mon, 12 Feb 2018 11:31:51 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@free-electrons.com>, Willy Tarreau <w@1wt.eu>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Jason Cooper <jason@lakedaemon.net>, Andrew
- Lunn <andrew@lunn.ch>, Gregory Clement
- <gregory.clement@free-electrons.com>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Russell King <linux@armlinux.org.uk>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>, Eric Miao <eric.y.miao@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will.deacon@arm.com>, Ezequiel Garcia
- <ezequiel.garcia@free-electrons.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@free-electrons.com>, Antoine Tenart
- <antoine.tenart@free-electrons.com>, Nadav Haklai <nadavh@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>, Hanna Hawa <hannah@marvell.com>, Neta Zur
- Hershkovits <neta@marvell.com>, Sean Nyekjaer <sean.nyekjaer@prevas.dk>
-Subject: Re: [PATCH v3 5/7] mtd: nand: use Marvell reworked NAND controller
- driver with all platforms
-Message-ID: <20180212112042.5b3f758f@bbrezillon>
-In-Reply-To: <20180109103637.23798-6-miquel.raynal@free-electrons.com>
-References: <20180109103637.23798-1-miquel.raynal@free-electrons.com>
- <20180109103637.23798-6-miquel.raynal@free-electrons.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
+Message-ID: <20180212113151.17c60680@bbrezillon>
+In-Reply-To: <20180206174021.5947-2-stefan@agner.ch>
+References: <20180206174021.5947-1-stefan@agner.ch>
+ <20180206174021.5947-2-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -38,33 +26,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  9 Jan 2018 11:36:35 +0100
-Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
+On Tue,  6 Feb 2018 18:40:21 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-> Actually remove pxa3xx_nand.c to let marvell_nand.c be compiled instead.
-> Also change the defconfig files using it as well as some board files
-> depending on CONFIG_MTD_NAND_PXA3xx.
+> Add support for specified ECC strength/size using device tree
+> properties nand-ecc-strength/nand-ecc-step-size.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 > ---
->  arch/arm/configs/cm_x300_defconfig  |    2 +-
->  arch/arm/configs/pxa3xx_defconfig   |    3 +-
->  arch/arm/configs/pxa_defconfig      |    2 +-
->  arch/arm/configs/raumfeld_defconfig |    2 +-
->  arch/arm/mach-mmp/ttc_dkb.c         |    4 +-
->  arch/arm/mach-pxa/cm-x300.c         |    2 +-
->  arch/arm/mach-pxa/colibri-pxa3xx.c  |    2 +-
->  arch/arm/mach-pxa/colibri.h         |    2 +-
->  arch/arm/mach-pxa/littleton.c       |    4 +-
->  arch/arm/mach-pxa/mxm8x10.c         |    4 +-
->  arch/arm/mach-pxa/zylonite.c        |    4 +-
->  drivers/mtd/nand/Kconfig            |   11 -
->  drivers/mtd/nand/Makefile           |    1 -
->  drivers/mtd/nand/pxa3xx_nand.c      | 2104 -----------------------------------
+>  .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
 
-Can you please split this patch in 2, one that patches defconfig and
-board files to use the new driver and one that actually removes the old
-driver.
+I don't care that much, but I know DT maintainers like to have DT
+bindings changes placed in a separate patch.
+
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
+>  2 files changed, 24 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> index eb2d9919d063..ea6e9b735160 100644
+> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> @@ -46,6 +46,11 @@ Optional properties:
+>                         partitions written from Linux with this feature
+>                         turned on may not be accessible by the BootROM
+>                         code.
+> +  - nand-ecc-strength: integer representing the number of bits to correct
+> +                       per ECC step. Needs to be a multiple of 2.
+> +  - nand-ecc-step-size: integer representing the number of data bytes
+> +                       that are covered by a single ECC step. The driver
+> +                       supports 512 and 1024.
+>  
+>  The device tree may optionally contain sub-nodes describing partitions of the
+>  address space. See partition.txt for more detail.
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 50f8d4a1b983..8cb378358e11 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -198,17 +198,15 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+>   *
+>   * We may have available oob space in this case.
+>   */
+> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
+> +			unsigned int ecc_strength, unsigned int ecc_step)
+>  {
+>  	struct bch_geometry *geo = &this->bch_geometry;
+>  	struct nand_chip *chip = &this->nand;
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	unsigned int block_mark_bit_offset;
+>  
+> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> -		return -EINVAL;
+> -
+> -	switch (chip->ecc_step_ds) {
+> +	switch (ecc_step) {
+>  	case SZ_512:
+>  		geo->gf_len = 13;
+>  		break;
+> @@ -221,8 +219,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  			chip->ecc_strength_ds, chip->ecc_step_ds);
+>  		return -EINVAL;
+>  	}
+> -	geo->ecc_chunk_size = chip->ecc_step_ds;
+> -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+> +	geo->ecc_chunk_size = ecc_step;
+> +	geo->ecc_strength = round_up(ecc_strength, 2);
+>  	if (!gpmi_check_ecc(this))
+>  		return -EINVAL;
+>  
+> @@ -230,7 +228,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  	if (geo->ecc_chunk_size < mtd->oobsize) {
+>  		dev_err(this->dev,
+>  			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+> -			chip->ecc_step_ds, mtd->oobsize);
+> +			ecc_step, mtd->oobsize);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -423,9 +421,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+>  
+>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  {
+> +	struct nand_chip *chip = &this->nand;
+> +
+> +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
+> +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
+> +						chip->ecc.size);
+> +
+>  	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+> -				|| legacy_set_geometry(this))
+> -		return set_geometry_by_ecc_info(this);
+> +				|| legacy_set_geometry(this)) {
+> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> +			return -EINVAL;
+> +
+> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
+> +						chip->ecc_step_ds);
+> +	}
+>  
+>  	return 0;
+>  }
+
+Both patches look good to me. Han, could review them and add your Ack
+if you're happy with the changes.
 
 Thanks,
 
