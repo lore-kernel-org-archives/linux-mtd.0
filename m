@@ -1,22 +1,19 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elBQP-0006dX-4f
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 10:33:31 +0000
-Date: Mon, 12 Feb 2018 11:33:17 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
- cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
-Message-ID: <20180212113317.7d82f5a0@bbrezillon>
-In-Reply-To: <20180206174021.5947-2-stefan@agner.ch>
-References: <20180206174021.5947-1-stefan@agner.ch>
- <20180206174021.5947-2-stefan@agner.ch>
+From: Lionel Debieve <lionel.debieve@st.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ <linux-mtd@lists.infradead.org>
+CC: <linux-arm-kernel@lists.infradead.org>, Lee Jones <lee.jones@linaro.org>,
+ <tglx@linutronix.de>, <haver@linux.vnet.ibm.com>,
+ <u.kleine-koenig@pengutronix.de>, <joel@clambassador.com>,
+ <schwarzerf@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Subject: [PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
+Date: Mon, 12 Feb 2018 11:56:42 +0100
+Message-ID: <20180212105642.8662-2-lionel.debieve@st.com>
+In-Reply-To: <20180212105642.8662-1-lionel.debieve@st.com>
+References: <20180212105642.8662-1-lionel.debieve@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,110 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Feb 2018 18:40:21 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+Update license template using SPDX. Move the global layout
+of UBI headers to dual license helping UBI to be the standard
+solution for raw NAND management.
 
-> Add support for specified ECC strength/size using device tree
-> properties nand-ecc-strength/nand-ecc-step-size.
-> 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
->  2 files changed, 24 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> index eb2d9919d063..ea6e9b735160 100644
-> --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> @@ -46,6 +46,11 @@ Optional properties:
->                         partitions written from Linux with this feature
->                         turned on may not be accessible by the BootROM
->                         code.
-> +  - nand-ecc-strength: integer representing the number of bits to correct
-> +                       per ECC step. Needs to be a multiple of 2.
-> +  - nand-ecc-step-size: integer representing the number of data bytes
-> +                       that are covered by a single ECC step. The driver
-> +                       supports 512 and 1024.
->  
->  The device tree may optionally contain sub-nodes describing partitions of the
->  address space. See partition.txt for more detail.
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 50f8d4a1b983..8cb378358e11 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -198,17 +198,15 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
->   *
->   * We may have available oob space in this case.
->   */
-> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
-> +			unsigned int ecc_strength, unsigned int ecc_step)
+Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
+---
+ drivers/mtd/ubi/ubi-media.h | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
-Nitpick: if you send a new version, could you align the second
-parameter on the open parenthesis?
-
->  {
->  	struct bch_geometry *geo = &this->bch_geometry;
->  	struct nand_chip *chip = &this->nand;
->  	struct mtd_info *mtd = nand_to_mtd(chip);
->  	unsigned int block_mark_bit_offset;
->  
-> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> -		return -EINVAL;
-> -
-> -	switch (chip->ecc_step_ds) {
-> +	switch (ecc_step) {
->  	case SZ_512:
->  		geo->gf_len = 13;
->  		break;
-> @@ -221,8 +219,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
->  			chip->ecc_strength_ds, chip->ecc_step_ds);
->  		return -EINVAL;
->  	}
-> -	geo->ecc_chunk_size = chip->ecc_step_ds;
-> -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
-> +	geo->ecc_chunk_size = ecc_step;
-> +	geo->ecc_strength = round_up(ecc_strength, 2);
->  	if (!gpmi_check_ecc(this))
->  		return -EINVAL;
->  
-> @@ -230,7 +228,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
->  	if (geo->ecc_chunk_size < mtd->oobsize) {
->  		dev_err(this->dev,
->  			"unsupported nand chip. ecc size: %d, oob size : %d\n",
-> -			chip->ecc_step_ds, mtd->oobsize);
-> +			ecc_step, mtd->oobsize);
->  		return -EINVAL;
->  	}
->  
-> @@ -423,9 +421,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
->  
->  int common_nfc_set_geometry(struct gpmi_nand_data *this)
->  {
-> +	struct nand_chip *chip = &this->nand;
-> +
-> +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
-> +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
-> +						chip->ecc.size);
-> +
->  	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-> -				|| legacy_set_geometry(this))
-> -		return set_geometry_by_ecc_info(this);
-> +				|| legacy_set_geometry(this)) {
-> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> +			return -EINVAL;
-> +
-> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
-> +						chip->ecc_step_ds);
-> +	}
->  
->  	return 0;
->  }
-
-
-
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index bfceae5a890e..195ff8ca8211 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -1,28 +1,12 @@
++/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+ /*
+- * Copyright (c) International Business Machines Corp., 2006
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+- *
++ * Copyright (C) International Business Machines Corp., 2006
+  * Authors: Artem Bityutskiy (Битюцкий Артём)
+  *          Thomas Gleixner
+  *          Frank Haverkamp
+  *          Oliver Lohmann
+  *          Andreas Arnez
+- */
+-
+-/*
++ *
+  * This file defines the layout of UBI headers and all the other UBI on-flash
+  * data structures.
+  */
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.15.1
