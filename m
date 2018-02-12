@@ -1,20 +1,19 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elLhf-0004Rr-Ht
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:32:02 +0000
-Date: Mon, 12 Feb 2018 22:31:39 +0100
+ id 1elLic-00051d-Ic
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:33:00 +0000
+Date: Mon, 12 Feb 2018 22:32:46 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
- ldv-project@linuxtesting.org, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v4 0/3] mtd: nand: vf610: fix error handling in
- vf610_nfc_probe()
-Message-ID: <20180212223139.2e5404a9@bbrezillon>
-In-Reply-To: <1518215316-21504-1-git-send-email-khoroshilov@ispras.ru>
-References: <20180130141141.7f4fd15a@bbrezillon>
- <1518215316-21504-1-git-send-email-khoroshilov@ispras.ru>
+To: Stefan Agner <stefan@agner.ch>
+Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
+ marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH v3 1/3] mtd: nand: vf610_nfc: remove unused function
+Message-ID: <20180212223246.5e236413@bbrezillon>
+In-Reply-To: <20180208235921.31840-2-stefan@agner.ch>
+References: <20180208235921.31840-1-stefan@agner.ch>
+ <20180208235921.31840-2-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 10 Feb 2018 01:28:33 +0300
-Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
+On Fri,  9 Feb 2018 00:59:19 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-> vf610_nfc_probe() misses error handling of mtd_device_register()
-> and contains unneeded of_node_put() on error path.
+> The function count_written_bits has been replaced by the generic
+> nand_check_erased_ecc_chunk() function with commit 48c25cf44118
+> ("mtd: nand: vf610_nfc: use nand_check_erased_ecc_chunk() helper").
+> Remove the unused function.
+> 
 
-Applied the whole series.
+Applied.
 
 Thanks,
 
 Boris
 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  drivers/mtd/nand/vf610_nfc.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
 > 
-> v2: Add nand_cleanup() to undone nand_scan_tail() as Boris Brezillon noted.
-> v3: Rename error labels, remove of_node_put() per Boris Brezillon request.
-> v4: Separate fix in to 3 patches.
-> 
-> Alexey Khoroshilov (3):
->   mtd: nand: vf610: remove the unnecessary of_node_put()
->   mtd: nand: vf610: improve readability of error label
->   mtd: nand: vf610: check mtd_device_register() return code
-> 
->  drivers/mtd/nand/vf610_nfc.c | 29 ++++++++++++++++-------------
->  1 file changed, 16 insertions(+), 13 deletions(-)
-> 
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 80d31a58e558..2fa61cbdbaf7 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -511,21 +511,6 @@ static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
+>  	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
+>  }
+>  
+> -/* Count the number of 0's in buff up to max_bits */
+> -static inline int count_written_bits(uint8_t *buff, int size, int max_bits)
+> -{
+> -	uint32_t *buff32 = (uint32_t *)buff;
+> -	int k, written_bits = 0;
+> -
+> -	for (k = 0; k < (size / 4); k++) {
+> -		written_bits += hweight32(~buff32[k]);
+> -		if (unlikely(written_bits > max_bits))
+> -			break;
+> -	}
+> -
+> -	return written_bits;
+> -}
+> -
+>  static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+>  					 uint8_t *oob, int page)
+>  {
 
 
 
