@@ -1,24 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elAVI-0001TR-5m
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 09:34:29 +0000
-Date: Mon, 12 Feb 2018 10:34:06 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too
- large ECC
-Message-ID: <20180212103406.34f0dae4@bbrezillon>
-In-Reply-To: <475d5f62d1cc95e38da0c7dc2e37a511@agner.ch>
-References: <20180208233305.20583-1-stefan@agner.ch>
- <20180209095027.63da257d@bbrezillon>
- <7ec8aa6337c59550f335957a34658a65@agner.ch>
- <20180209105852.21c5a400@bbrezillon>
- <475d5f62d1cc95e38da0c7dc2e37a511@agner.ch>
+ id 1elB0J-0002Zv-E1
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 10:06:33 +0000
+Date: Mon, 12 Feb 2018 11:06:09 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Han Xu
+ <han.xu@nxp.com>
+Subject: Re: [PATCH v3 0/2] Migrate the GPMI driver to use NAND core timings
+Message-ID: <20180212110609.5dccdd89@xps13>
+In-Reply-To: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
+References: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,59 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 09 Feb 2018 12:55:49 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+Hello Han,
 
-> On 09.02.2018 10:58, Boris Brezillon wrote:
-> > On Fri, 09 Feb 2018 10:20:37 +0100
-> > Stefan Agner <stefan@agner.ch> wrote:
-> >   
-> >>
-> >> But some kind of sanity check somewhere might be worthwhile, I was a bit
-> >> surprised that this overflowing happens on a driver in operational use
-> >> and goes unnoticed. I realize that this patch is not ideal. Maybe making
-> >> length signed, then we could sanity check in
-> >> mtd_ooblayout_count_bytes...  
-> > 
-> > Something like that should help us detect this unexpected case:
-> >   
-> 
-> It is less generic than making length signed and checking for positive
-> length, but fine for me.
+Would you mind give us your input about this series as well as the
+patch that follows (Use core timings instead of an empirical
+derivation) ?
 
-It's just easier for callers if they only have to check the return
-code instead of having to check both the return code and the oobregion
-fields.
+If you are unhappy with them I will welcome your comments.
 
-Would you mind modifying your patch accordingly and sending a v2?
+Thank you,
+Miqu=C3=A8l
 
-Thanks,
+On Fri, 19 Jan 2018 14:58:53 +0100, Miquel Raynal
+<miquel.raynal@free-electrons.com> wrote:
 
-Boris
+> Hello,
+>=20
+> The GPMI NAND controller driver has its own timings logic while the core
+> also has its own that should be preferred to avoid code duplication.
+> This series migrates the driver to use the ->setup_data_interface()
+> hook, preferred way to handle timings negotiation between controllers
+> and NAND chips.
+>=20
+> This driver has stronger requirements in terms of respect of the ONFI
+> specification than the core has, and last time I post changes to this
+> section this was raised to me. Hence, the first patch effectively
+> applies the same requirements to the core. Doing this can slow down
+> several chips that do not follow entirely the specifications, but
+> another series is coming to add the possibility for NAND vendors to
+> flag certain features as "unsupported". See
+>=20
+>     "mtd: nand: Check ONFI timings have been acked by the chip"
+>=20
+> commit log for more details.
+>=20
+> Thank you,
+> Miqu=C3=A8l
+>=20
+>=20
+> Changes since v2:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   - Fix ->select_chip(): chipnr =3D=3D 0 is valid.
+>   - Fix ->select_chip(): hw.must_apply_timings must be reset after a
+>     ->setup_data_interface(). =20
+>=20
+> Changes since v1:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   - Removed inline on non-static gpmi_enable/disable_clk() functions.
+>   - Rewording some lines of the patch.
+>   - Use tREA_max value provided by the core instead of a locally defined
+>     value.
+>   - Check ->conf in gpmi_setup_data_interface() instead of
+>     ->onfi_timing_mode_default (use tRC). =20
+>   - Removed useless copy of hw.timing_mode.
+>   - Moved gpmi_nfc_apply_timings() to ->select_chip().
+>   - Canceled the useless move of one structure.
+>=20
+> One comment is not addressed here: using one register for TIMING0/1 and
+> CTRL1 that is only written in ->apply_timings(). This will be done in a
+> later patch that will update the way timings are derived.
+>=20
+>=20
+> Miquel Raynal (2):
+>   mtd: nand: Check ONFI timings have been acked by the chip
+>   mtd: nand: gpmi: Support ->setup_data_interface()
+>=20
+>  drivers/mtd/nand/gpmi-nand/gpmi-lib.c  | 277 ++++++++++-----------------=
+------
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c |  42 +++--
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.h |  82 +++++-----
+>  drivers/mtd/nand/nand_base.c           |  42 ++++-
+>  4 files changed, 185 insertions(+), 258 deletions(-)
+>=20
 
-> 
-> --
-> Stefan
-> 
-> > --->8---  
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 66b67014508f..ada2e709743f 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -201,6 +201,9 @@ static int nand_ooblayout_free_lp_hamming(struct
-> > mtd_info *mtd, int section, oobregion->offset = 2;
-> >                 oobregion->length = ecc_offset - 2;
-> >         } else {
-> > +               if (ecc_offset + ecc->total > mtd->oobsize)
-> > +                       return -EINVAL;
-> > +
-> >                 oobregion->offset = ecc_offset + ecc->total;
-> >                 oobregion->length = mtd->oobsize - oobregion->offset;
-> >         }  
 
 
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 http://bootlin.com
