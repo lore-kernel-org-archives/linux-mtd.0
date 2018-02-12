@@ -1,6 +1,6 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1elLvo-0003yi-VF
+ id 1elLvo-0003yX-UO
  for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:46:40 +0000
 From: Richard Weinberger <richard@nod.at>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
@@ -18,12 +18,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
  netdev@vger.kernel.org, devel@driverdev.osuosl.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 1/5] mtd: Initialize ->fail_addr early in mtd_erase()
-Date: Mon, 12 Feb 2018 22:47:42 +0100
-Message-ID: <253082441.XNb7FBEycW@blindfold>
-In-Reply-To: <20180212210311.23244-2-boris.brezillon@bootlin.com>
+Subject: Re: [PATCH 2/5] mtd: Get rid of unused fields in struct erase_info
+Date: Mon, 12 Feb 2018 22:47:37 +0100
+Message-ID: <1968152.T5cfZSldxv@blindfold>
+In-Reply-To: <20180212210311.23244-3-boris.brezillon@bootlin.com>
 References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
- <20180212210311.23244-2-boris.brezillon@bootlin.com>
+ <20180212210311.23244-3-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -36,37 +36,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 12. Februar 2018, 22:03:07 CET schrieb Boris Brezillon:
-> mtd_erase() can return an error before ->fail_addr is initialized to
-> MTD_FAIL_ADDR_UNKNOWN. Move this initialization at the very beginning
-> of the function.
+Am Montag, 12. Februar 2018, 22:03:08 CET schrieb Boris Brezillon:
+> Some fields are not used by MTD drivers, users or core code. Moreover,
+> those fields are not documented, so get rid of them to avoid any
+> confusion.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
->  drivers/mtd/mtdcore.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  include/linux/mtd/mtd.h | 5 -----
+>  1 file changed, 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index a1c94526fb88..c87859ff338b 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -953,6 +953,8 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
->   */
->  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  {
-> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-> +
->  	if (!mtd->erasesize || !mtd->_erase)
->  		return -ENOTSUPP;
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index 205ededccc60..2a407dc9beaa 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -48,14 +48,9 @@ struct erase_info {
+>  	uint64_t addr;
+>  	uint64_t len;
+>  	uint64_t fail_addr;
+> -	u_long time;
+> -	u_long retries;
+> -	unsigned dev;
+> -	unsigned cell;
+>  	void (*callback) (struct erase_info *self);
+>  	u_long priv;
+>  	u_char state;
+> -	struct erase_info *next;
+>  };
 > 
-> @@ -961,7 +963,6 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info
-> *instr) if (!(mtd->flags & MTD_WRITEABLE))
->  		return -EROFS;
-> 
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
->  	if (!instr->len) {
->  		instr->state = MTD_ERASE_DONE;
->  		mtd_erase_callback(instr);
+>  struct mtd_erase_region_info {
 
 Reviewed-by: Richard Weinberger <richard@nod.at>
 
