@@ -1,30 +1,24 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1el8xK-000220-DF
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 07:55:19 +0000
-Date: Mon, 12 Feb 2018 08:54:42 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Mark Brown
- <broonie@kernel.org>, linux-spi@vger.kernel.org, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Peter Pan <peterpansjtu@gmail.com>, Frieder
- Schrempf <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
-Message-ID: <20180212085442.42109296@xps13>
-In-Reply-To: <20180211181819.31513336@bbrezillon>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
- <20180205232120.5851-5-boris.brezillon@bootlin.com>
- <20180211161706.31d0bdc8@xps13>
- <20180211181819.31513336@bbrezillon>
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1elAVI-0001TR-5m
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 09:34:29 +0000
+Date: Mon, 12 Feb 2018 10:34:06 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: warn if hamming layout is used with too
+ large ECC
+Message-ID: <20180212103406.34f0dae4@bbrezillon>
+In-Reply-To: <475d5f62d1cc95e38da0c7dc2e37a511@agner.ch>
+References: <20180208233305.20583-1-stefan@agner.ch>
+ <20180209095027.63da257d@bbrezillon>
+ <7ec8aa6337c59550f335957a34658a65@agner.ch>
+ <20180209105852.21c5a400@bbrezillon>
+ <475d5f62d1cc95e38da0c7dc2e37a511@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,59 +28,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Fri, 09 Feb 2018 12:55:49 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
+> On 09.02.2018 10:58, Boris Brezillon wrote:
+> > On Fri, 09 Feb 2018 10:20:37 +0100
+> > Stefan Agner <stefan@agner.ch> wrote:
+> >   
+> >>
+> >> But some kind of sanity check somewhere might be worthwhile, I was a bit
+> >> surprised that this overflowing happens on a driver in operational use
+> >> and goes unnoticed. I realize that this patch is not ideal. Maybe making
+> >> length signed, then we could sanity check in
+> >> mtd_ooblayout_count_bytes...  
+> > 
+> > Something like that should help us detect this unexpected case:
+> >   
+> 
+> It is less generic than making length signed and checking for positive
+> length, but fine for me.
 
-> > > @@ -566,6 +567,62 @@ static int ti_qspi_spi_flash_read(struct spi_dev=
-ice *spi,
-> > >  	return ret;
-> > >  }
-> > > =20
-> > > +static int ti_qspi_exec_mem_op(struct spi_mem *mem,
-> > > +			       const struct spi_mem_op *op)
-> > > +{
-> > > +	struct ti_qspi *qspi =3D spi_master_get_devdata(mem->spi->master);
-> > > +	int i, ret =3D 0;
-> > > +	u32 from =3D 0;
-> > > +
-> > > +	/* Only optimize read path. */
-> > > +	if (!op->data.nbytes || op->data.dir !=3D SPI_MEM_DATA_IN ||
-> > > +	    !op->addr.nbytes || op->addr.nbytes > 4)
-> > > +		return -ENOTSUPP;
-> > > +
-> > > +	for (i =3D 0; i < op->addr.nbytes; i++) {
-> > > +		from <<=3D 8;
-> > > +		from |=3D op->addr.buf[i];
-> > > +	}
-> > > +
-> > > +	/* Address exceeds MMIO window size, fall back to regular mode. */ =
-  =20
-> >=20
-> > I don't understand how do you fall back to regular mode? =20
->=20
-> If you look at spi_mem_exec_op() you'll see that if the controller
-> ->exec_op() returns -ENOTSUPP, the function will try to execute the =20
-> operation using the regular spi_sync() API. I'll try to make it clearer
-> in my next iteration.
+It's just easier for callers if they only have to check the return
+code instead of having to check both the return code and the oobregion
+fields.
 
-Ok, I mixed the functions in my head and this answers the below
-question as well.
-
->=20
-> > Moreover if the
-> > purpose of adding this function is to remove spi_flash_read(). =20
->=20
-> Sorry, I don't get that one. Yes, the spi_mem_ops interface is here to
-> replace the ->spi_flash_xx() one, and that's exactly what I'm doing
-> here: porting the existing implementation to the new interface, keeping
-> the exact same limitations (only read path is optimized, and the request
-> has to fall in the iomem range mapped by the driver).
->=20
+Would you mind modifying your patch accordingly and sending a v2?
 
 Thanks,
-Miqu=C3=A8l
 
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
+Boris
+
+> 
+> --
+> Stefan
+> 
+> > --->8---  
+> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> > index 66b67014508f..ada2e709743f 100644
+> > --- a/drivers/mtd/nand/nand_base.c
+> > +++ b/drivers/mtd/nand/nand_base.c
+> > @@ -201,6 +201,9 @@ static int nand_ooblayout_free_lp_hamming(struct
+> > mtd_info *mtd, int section, oobregion->offset = 2;
+> >                 oobregion->length = ecc_offset - 2;
+> >         } else {
+> > +               if (ecc_offset + ecc->total > mtd->oobsize)
+> > +                       return -EINVAL;
+> > +
+> >                 oobregion->offset = ecc_offset + ecc->total;
+> >                 oobregion->length = mtd->oobsize - oobregion->offset;
+> >         }  
+
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 http://bootlin.com
