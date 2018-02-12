@@ -1,21 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elDLF-0001LC-Pi
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 12:36:20 +0000
-Date: Mon, 12 Feb 2018 13:36:05 +0100
+ id 1elDQ1-00088I-Dk
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 12:41:20 +0000
+Date: Mon, 12 Feb 2018 13:41:01 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@free-electrons.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Han Xu
- <han.xu@nxp.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: Check ONFI timings have been acked by
- the chip
-Message-ID: <20180212133605.0d8b0041@bbrezillon>
-In-Reply-To: <20180119092547.26873-2-miquel.raynal@free-electrons.com>
-References: <20180119092547.26873-1-miquel.raynal@free-electrons.com>
- <20180119092547.26873-2-miquel.raynal@free-electrons.com>
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nftl/inftl: check mtd_erase() return value
+Message-ID: <20180212134101.571f46d6@bbrezillon>
+In-Reply-To: <20180124232434.32023-1-miquel.raynal@free-electrons.com>
+References: <20180124232434.32023-1-miquel.raynal@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,113 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 Jan 2018 10:25:46 +0100
+On Thu, 25 Jan 2018 00:24:34 +0100
 Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
 
-> Choosing ONFI timings when ->onfi_set/get_features() calls are supported
-> by the NAND chip is a matter of reading the chip's ONFI parameter page
-> and telling the chip the chosen mode (between all of the supported ones)
-> with ->onfi_set_feature().
+> Since the creation of mtd_erase(), the function can return a negative
+> error code without updating the instr->state flag. This happens for
+> instance when ->_erase() is not implemented or ->erasesize has an invalid
+> value. The calling function should error out in this case.
 > 
-> Add a check on whether the chip "acked" the timing mode or not.
+> Functions in nftlmount/inftlmount call mtd_erase() without checking the
+> return code. The instr->state flag is checked but might not have been
+> updated depending on the error path.
 > 
-> This can be a problem for NAND chips that do not follow entirely the
-> ONFI specification. These chips actually support other modes than
-> "mode 0", but do not update the parameter page once a timing mode has
-> been selected. This issue will be addressed in another patch that will
-> add the feature to overwrite NAND chips features within the parameter
-> page, from the NAND chip driver.
+> Add checks on the returned value of mtd_erase().
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
 > ---
->  drivers/mtd/nand/nand_base.c | 41 ++++++++++++++++++++++++++++++++++-------
->  1 file changed, 34 insertions(+), 7 deletions(-)
+>  drivers/mtd/inftlmount.c | 7 +++++--
+>  drivers/mtd/nftlmount.c  | 3 ++-
+>  2 files changed, 7 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 96c97588e1ba..e209a65a17e0 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -1231,15 +1231,47 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
->  			chip->onfi_timing_mode_default,
->  		};
->  
-> +		chip->select_chip(mtd, chipnr);
->  		ret = chip->onfi_set_features(mtd, chip,
->  				ONFI_FEATURE_ADDR_TIMING_MODE,
->  				tmode_param);
-> +		chip->select_chip(mtd, -1);
->  		if (ret)
-> -			goto err;
-> +			return ret;
->  	}
->  
->  	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
-> -err:
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (chip->onfi_version &&
-> +	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
-> +	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
-> +		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] = {};
-> +
-> +		chip->select_chip(mtd, chipnr);
-> +		ret = chip->onfi_get_features(mtd, chip,
-> +					      ONFI_FEATURE_ADDR_TIMING_MODE,
-> +					      tmode_param);
-> +		chip->select_chip(mtd, -1);
-> +		if (ret)
-> +			goto err_reset_chip;
-> +
-> +		if (tmode_param[0] != chip->onfi_timing_mode_default) {
-> +			pr_warn("timings mode %d not acknowledged by the NAND chip\n",
-> +				chip->onfi_timing_mode_default);
-> +			goto err_reset_chip;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +
-> +err_reset_chip:
-> +	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-> +	chip->select_chip(mtd, chipnr);
-> +	nand_reset_op(chip);
-> +	chip->select_chip(mtd, -1);
-> +
->  	return ret;
->  }
->  
-> @@ -2738,10 +2770,8 @@ int nand_reset(struct nand_chip *chip, int chipnr)
->  	if (ret)
->  		return ret;
->  
-> -	chip->select_chip(mtd, chipnr);
->  	chip->data_interface = saved_data_intf;
->  	ret = nand_setup_data_interface(chip, chipnr);
-> -	chip->select_chip(mtd, -1);
->  	if (ret)
->  		return ret;
->  
-> @@ -6571,10 +6601,7 @@ int nand_scan_tail(struct mtd_info *mtd)
->  
->  	/* Enter fastest possible mode on all dies. */
->  	for (i = 0; i < chip->numchips; i++) {
-> -		chip->select_chip(mtd, i);
->  		ret = nand_setup_data_interface(chip, i);
-> -		chip->select_chip(mtd, -1);
+> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+> index 8d6bb189ea8e..cab4a0b9f881 100644
+> --- a/drivers/mtd/inftlmount.c
+> +++ b/drivers/mtd/inftlmount.c
+> @@ -219,7 +219,9 @@ static int find_boot_record(struct INFTLrecord *inftl)
+>  				 */
+>  				instr->addr = ip->Reserved0 * inftl->EraseSize;
+>  				instr->len = inftl->EraseSize;
+> -				mtd_erase(mtd, instr);
+> +				ret = mtd_erase(mtd, instr);
+> +				if (ret < 0)
+> +					return ret;
+>  			}
+>  			if ((ip->lastUnit - ip->firstUnit + 1) < ip->virtualUnits) {
+>  				printk(KERN_WARNING "INFTL: Media Header "
+> @@ -393,7 +395,8 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
+>  	   mark only the failed block in the bbt. */
+>  	for (physblock = 0; physblock < inftl->EraseSize;
+>  	     physblock += instr->len, instr->addr += instr->len) {
+> -		mtd_erase(inftl->mbd.mtd, instr);
+> +		if (mtd_erase(inftl->mbd.mtd, instr < 0))
 
-Can you split this patch in 2: one that moves the ->select_chip() calls
-to nand_setup_data_interface() and a second one that calls
-->get_features() to make sure the new timing mode has been applied.
+		    ^ mtd_erase(inftl->mbd.mtd, instr) < 0
 
-Thanks,
+which means you did not even compile test your patch :P.
 
-Boris
-
-> -
->  		if (ret)
->  			goto err_nand_manuf_cleanup;
->  	}
+> +			goto fail;
+>  
+>  		if (instr->state == MTD_ERASE_FAILED) {
+>  			printk(KERN_WARNING "INFTL: error while formatting block %d\n",
+> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+> index 184c8fbfe465..8dbc40ab7d73 100644
+> --- a/drivers/mtd/nftlmount.c
+> +++ b/drivers/mtd/nftlmount.c
+> @@ -331,7 +331,8 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
+>  	instr->mtd = nftl->mbd.mtd;
+>  	instr->addr = block * nftl->EraseSize;
+>  	instr->len = nftl->EraseSize;
+> -	mtd_erase(mtd, instr);
+> +	if (mtd_erase(mtd, instr) < 0)
+> +		goto fail;
+>  
+>  	if (instr->state == MTD_ERASE_FAILED) {
+>  		printk("Error while formatting block %d\n", block);
 
 
 
