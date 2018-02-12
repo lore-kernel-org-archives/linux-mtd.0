@@ -1,7 +1,7 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1elM6j-0008OJ-7i
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:57:54 +0000
+ id 1elMCu-00024K-9k
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 22:04:17 +0000
 From: Richard Weinberger <richard@nod.at>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -18,12 +18,13 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
  netdev@vger.kernel.org, devel@driverdev.osuosl.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 3/5] mtd: Stop assuming mtd_erase() is asynchronous
-Date: Mon, 12 Feb 2018 22:58:56 +0100
-Message-ID: <1794415.MYW8eb4nQC@blindfold>
-In-Reply-To: <20180212210311.23244-4-boris.brezillon@bootlin.com>
+Subject: Re: [PATCH 4/5] mtd: Unconditionally update ->fail_addr and ->addr in
+ part_erase()
+Date: Mon, 12 Feb 2018 23:05:19 +0100
+Message-ID: <1548497.hsdsyCj9Tz@blindfold>
+In-Reply-To: <20180212210311.23244-5-boris.brezillon@bootlin.com>
 References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
- <20180212210311.23244-4-boris.brezillon@bootlin.com>
+ <20180212210311.23244-5-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -36,11 +37,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 12. Februar 2018, 22:03:09 CET schrieb Boris Brezillon:
-> None of the mtd->_erase() implementations work in an asynchronous manner,
-> so let's simplify MTD users that call mtd_erase(). All they need to do
-> is check the value returned by mtd_erase() and assume that != 0 means
-> failure.
+Am Montag, 12. Februar 2018, 22:03:10 CET schrieb Boris Brezillon:
+> ->fail_addr and ->addr can be updated no matter the result of
+> parent->_erase(), we just need to remove the code doing the same thing
+> in mtd_erase_callback() to avoid adjusting those fields twice.
+> 
+> Note that this can be done because all MTD users have been converted to
+> not pass an erase_info->callback() and are thus only taking the
+> ->addr_fail and ->addr fields into account after part_erase() has
+> returned.
+> 
+> While we're at it, get rid of the erase_info->mtd field which was only
+> needed to let mtd_erase_callback() get the partition device back.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
