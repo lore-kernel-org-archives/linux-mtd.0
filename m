@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elBP0-0005jZ-Uh
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 10:32:04 +0000
-Date: Mon, 12 Feb 2018 11:31:51 +0100
+ id 1elBQP-0006dX-4f
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 10:33:31 +0000
+Date: Mon, 12 Feb 2018 11:33:17 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Stefan Agner <stefan@agner.ch>
 Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com,
@@ -10,7 +10,7 @@ Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com,
  cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
-Message-ID: <20180212113151.17c60680@bbrezillon>
+Message-ID: <20180212113317.7d82f5a0@bbrezillon>
 In-Reply-To: <20180206174021.5947-2-stefan@agner.ch>
 References: <20180206174021.5947-1-stefan@agner.ch>
  <20180206174021.5947-2-stefan@agner.ch>
@@ -35,10 +35,6 @@ Stefan Agner <stefan@agner.ch> wrote:
 > Signed-off-by: Stefan Agner <stefan@agner.ch>
 > ---
 >  .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
-
-I don't care that much, but I know DT maintainers like to have DT
-bindings changes placed in a separate patch.
-
 >  drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
 >  2 files changed, 24 insertions(+), 10 deletions(-)
 > 
@@ -69,6 +65,10 @@ bindings changes placed in a separate patch.
 > -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
 > +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
 > +			unsigned int ecc_strength, unsigned int ecc_step)
+
+Nitpick: if you send a new version, could you align the second
+parameter on the open parenthesis?
+
 >  {
 >  	struct bch_geometry *geo = &this->bch_geometry;
 >  	struct nand_chip *chip = &this->nand;
@@ -127,12 +127,7 @@ bindings changes placed in a separate patch.
 >  	return 0;
 >  }
 
-Both patches look good to me. Han, could review them and add your Ack
-if you're happy with the changes.
 
-Thanks,
-
-Boris
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
