@@ -1,33 +1,27 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-db5eur01on0057.outbound.protection.outlook.com
+ ([104.47.2.57] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1elMOt-0007uS-Co
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 22:16:40 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Joern Engel <joern@lazybastard.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
- Edward Cree <ecree@solarflare.com>, Bert Kenward <bkenward@solarflare.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
- netdev@vger.kernel.org, devel@driverdev.osuosl.org,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 5/5] mtd: Stop updating erase_info->state and calling
- mtd_erase_callback()
-Date: Mon, 12 Feb 2018 23:17:41 +0100
-Message-ID: <1709914.WnqyHBqgHQ@blindfold>
-In-Reply-To: <20180212210311.23244-6-boris.brezillon@bootlin.com>
-References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
- <20180212210311.23244-6-boris.brezillon@bootlin.com>
+ id 1elMn5-0002AW-46
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 22:41:40 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Miquel Raynal <miquel.raynal@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v3 1/2] mtd: nand: Check ONFI timings have been acked by
+ the chip
+Date: Mon, 12 Feb 2018 22:41:24 +0000
+Message-ID: <94ae7de3-0aec-a912-d09f-8584eee1c44a@nxp.com>
+References: <20180119135855.10673-1-miquel.raynal@free-electrons.com>
+ <20180119135855.10673-2-miquel.raynal@free-electrons.com>
+In-Reply-To: <20180119135855.10673-2-miquel.raynal@free-electrons.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B1F7D4303D30DC4B9FB5AF48C42115CE@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,19 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 12. Februar 2018, 22:03:11 CET schrieb Boris Brezillon:
-> MTD users are no longer checking erase_info->state to determine if the
-> erase operation failed or succeeded. Moreover, mtd_erase_callback() is
-> now a NOP.
-> 
-> We can safely get rid of all mtd_erase_callback() calls and all
-> erase_info->state assignments. While at it, get rid of the
-> erase_info->state field, all MTD_ERASE_XXX definitions and the
-> mtd_erase_callback() function.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-Reviewed-by: Richard Weinberger <richard@nod.at>
-
-Thanks,
-//richard
+DQoNCk9uIDAxLzE5LzIwMTggMDc6NTggQU0sIE1pcXVlbCBSYXluYWwgd3JvdGU6DQo+IENob29z
+aW5nIE9ORkkgdGltaW5ncyB3aGVuIC0+b25maV9zZXQvZ2V0X2ZlYXR1cmVzKCkgY2FsbHMgYXJl
+IHN1cHBvcnRlZA0KPiBieSB0aGUgTkFORCBjaGlwIGlzIGEgbWF0dGVyIG9mIHJlYWRpbmcgdGhl
+IGNoaXAncyBPTkZJIHBhcmFtZXRlciBwYWdlDQo+IGFuZCB0ZWxsaW5nIHRoZSBjaGlwIHRoZSBj
+aG9zZW4gbW9kZSAoYmV0d2VlbiBhbGwgb2YgdGhlIHN1cHBvcnRlZCBvbmVzKQ0KPiB3aXRoIC0+
+b25maV9zZXRfZmVhdHVyZSgpLg0KPg0KPiBBZGQgYSBjaGVjayBvbiB3aGV0aGVyIHRoZSBjaGlw
+ICJhY2tlZCIgdGhlIHRpbWluZyBtb2RlIG9yIG5vdC4NCj4NCj4gVGhpcyBjYW4gYmUgYSBwcm9i
+bGVtIGZvciBOQU5EIGNoaXBzIHRoYXQgZG8gbm90IGZvbGxvdyBlbnRpcmVseSB0aGUNCj4gT05G
+SSBzcGVjaWZpY2F0aW9uLiBUaGVzZSBjaGlwcyBhY3R1YWxseSBzdXBwb3J0IG90aGVyIG1vZGVz
+IHRoYW4NCj4gIm1vZGUgMCIsIGJ1dCBkbyBub3QgdXBkYXRlIHRoZSBwYXJhbWV0ZXIgcGFnZSBv
+bmNlIGEgdGltaW5nIG1vZGUgaGFzDQo+IGJlZW4gc2VsZWN0ZWQuIFRoaXMgaXNzdWUgd2lsbCBi
+ZSBhZGRyZXNzZWQgaW4gYW5vdGhlciBwYXRjaCB0aGF0IHdpbGwNCj4gYWRkIHRoZSBmZWF0dXJl
+IHRvIG92ZXJ3cml0ZSBOQU5EIGNoaXBzIGZlYXR1cmVzIHdpdGhpbiB0aGUgcGFyYW1ldGVyDQo+
+IHBhZ2UsIGZyb20gdGhlIE5BTkQgY2hpcCBkcml2ZXIuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IE1p
+cXVlbCBSYXluYWwgPG1pcXVlbC5yYXluYWxAZnJlZS1lbGVjdHJvbnMuY29tPg0KPiAtLS0NCj4g
+ICBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIHwgNDEgKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKy0tLS0tLS0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMzQgaW5zZXJ0aW9ucygr
+KSwgNyBkZWxldGlvbnMoLSkNCj4NCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvbmFu
+ZF9iYXNlLmMgYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jDQo+IGluZGV4IDk2Yzk3NTg4
+ZTFiYS4uZTIwOWE2NWExN2UwIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9uYW5kL25hbmRf
+YmFzZS5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMNCj4gQEAgLTEyMzEs
+MTUgKzEyMzEsNDcgQEAgc3RhdGljIGludCBuYW5kX3NldHVwX2RhdGFfaW50ZXJmYWNlKHN0cnVj
+dCBuYW5kX2NoaXAgKmNoaXAsIGludCBjaGlwbnIpDQo+ICAgCQkJY2hpcC0+b25maV90aW1pbmdf
+bW9kZV9kZWZhdWx0LA0KPiAgIAkJfTsNCj4gICANCj4gKwkJY2hpcC0+c2VsZWN0X2NoaXAobXRk
+LCBjaGlwbnIpOw0KPiAgIAkJcmV0ID0gY2hpcC0+b25maV9zZXRfZmVhdHVyZXMobXRkLCBjaGlw
+LA0KPiAgIAkJCQlPTkZJX0ZFQVRVUkVfQUREUl9USU1JTkdfTU9ERSwNCj4gICAJCQkJdG1vZGVf
+cGFyYW0pOw0KPiArCQljaGlwLT5zZWxlY3RfY2hpcChtdGQsIC0xKTsNCj4gICAJCWlmIChyZXQp
+DQo+IC0JCQlnb3RvIGVycjsNCj4gKwkJCXJldHVybiByZXQ7DQo+ICAgCX0NCj4gICANCj4gICAJ
+cmV0ID0gY2hpcC0+c2V0dXBfZGF0YV9pbnRlcmZhY2UobXRkLCBjaGlwbnIsICZjaGlwLT5kYXRh
+X2ludGVyZmFjZSk7DQo+IC1lcnI6DQo+ICsJaWYgKHJldCkNCj4gKwkJcmV0dXJuIHJldDsNCj4g
+Kw0KPiArCWlmIChjaGlwLT5vbmZpX3ZlcnNpb24gJiYNCj4gKwkgICAgKGxlMTZfdG9fY3B1KGNo
+aXAtPm9uZmlfcGFyYW1zLm9wdF9jbWQpICYNCj4gKwkgICAgIE9ORklfT1BUX0NNRF9TRVRfR0VU
+X0ZFQVRVUkVTKSkgew0KPiArCQl1OCB0bW9kZV9wYXJhbVtPTkZJX1NVQkZFQVRVUkVfUEFSQU1f
+TEVOXSA9IHt9Ow0KPiArDQo+ICsJCWNoaXAtPnNlbGVjdF9jaGlwKG10ZCwgY2hpcG5yKTsNCj4g
+KwkJcmV0ID0gY2hpcC0+b25maV9nZXRfZmVhdHVyZXMobXRkLCBjaGlwLA0KPiArCQkJCQkgICAg
+ICBPTkZJX0ZFQVRVUkVfQUREUl9USU1JTkdfTU9ERSwNCj4gKwkJCQkJICAgICAgdG1vZGVfcGFy
+YW0pOw0KPiArCQljaGlwLT5zZWxlY3RfY2hpcChtdGQsIC0xKTsNCj4gKwkJaWYgKHJldCkNCj4g
+KwkJCWdvdG8gZXJyX3Jlc2V0X2NoaXA7DQo+ICsNCj4gKwkJaWYgKHRtb2RlX3BhcmFtWzBdICE9
+IGNoaXAtPm9uZmlfdGltaW5nX21vZGVfZGVmYXVsdCkgew0KPiArCQkJcHJfd2FybigidGltaW5n
+cyBtb2RlICVkIG5vdCBhY2tub3dsZWRnZWQgYnkgdGhlIE5BTkQgY2hpcFxuIiwNCj4gKwkJCQlj
+aGlwLT5vbmZpX3RpbWluZ19tb2RlX2RlZmF1bHQpOw0KPiArCQkJZ290byBlcnJfcmVzZXRfY2hp
+cDsNCj4gKwkJfQ0KPiArCX0NCj4gKw0KPiArCXJldHVybiAwOw0KPiArDQo+ICtlcnJfcmVzZXRf
+Y2hpcDoNCj4gKwlvbmZpX2ZpbGxfZGF0YV9pbnRlcmZhY2UoY2hpcCwgTkFORF9TRFJfSUZBQ0Us
+IDApOw0KPiArCWNoaXAtPnNlbGVjdF9jaGlwKG10ZCwgY2hpcG5yKTsNCj4gKwluYW5kX3Jlc2V0
+X29wKGNoaXApOw0KPiArCWNoaXAtPnNlbGVjdF9jaGlwKG10ZCwgLTEpOw0KPiArDQo+ICAgCXJl
+dHVybiByZXQ7DQo+ICAgfQ0KPiAgIA0KPiBAQCAtMjczOCwxMCArMjc3MCw4IEBAIGludCBuYW5k
+X3Jlc2V0KHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsIGludCBjaGlwbnIpDQo+ICAgCWlmIChyZXQp
+DQo+ICAgCQlyZXR1cm4gcmV0Ow0KPiAgIA0KPiAtCWNoaXAtPnNlbGVjdF9jaGlwKG10ZCwgY2hp
+cG5yKTsNCj4gICAJY2hpcC0+ZGF0YV9pbnRlcmZhY2UgPSBzYXZlZF9kYXRhX2ludGY7DQo+ICAg
+CXJldCA9IG5hbmRfc2V0dXBfZGF0YV9pbnRlcmZhY2UoY2hpcCwgY2hpcG5yKTsNCj4gLQljaGlw
+LT5zZWxlY3RfY2hpcChtdGQsIC0xKTsNCj4gICAJaWYgKHJldCkNCj4gICAJCXJldHVybiByZXQ7
+DQo+ICAgDQo+IEBAIC02NTcxLDEwICs2NjAxLDcgQEAgaW50IG5hbmRfc2Nhbl90YWlsKHN0cnVj
+dCBtdGRfaW5mbyAqbXRkKQ0KPiAgIA0KPiAgIAkvKiBFbnRlciBmYXN0ZXN0IHBvc3NpYmxlIG1v
+ZGUgb24gYWxsIGRpZXMuICovDQo+ICAgCWZvciAoaSA9IDA7IGkgPCBjaGlwLT5udW1jaGlwczsg
+aSsrKSB7DQo+IC0JCWNoaXAtPnNlbGVjdF9jaGlwKG10ZCwgaSk7DQo+ICAgCQlyZXQgPSBuYW5k
+X3NldHVwX2RhdGFfaW50ZXJmYWNlKGNoaXAsIGkpOw0KPiAtCQljaGlwLT5zZWxlY3RfY2hpcCht
+dGQsIC0xKTsNCj4gLQ0KPiAgIAkJaWYgKHJldCkNCj4gICAJCQlnb3RvIGVycl9uYW5kX21hbnVm
+X2NsZWFudXA7DQo+ICAgCX0NCkkgYW0gaGFwcHkgd2l0aCB0aGUgcGF0Y2ggc2V0LCBqdXN0IGRv
+bid0IGdldCB0aW1lIHRvIHRlc3QgdGhlbSBvbiBteSANCnNpZGUuIFdpbGwgYWNrIHlvdXIgbmV4
+dCBzcGxpdCBwYXRjaGVzLg0KDQpUZXN0ZWQtYnk6IEhhbiBYdSA8aGFuLnh1QG54cC5jb20+
