@@ -1,22 +1,32 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elLic-00051d-Ic
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:33:00 +0000
-Date: Mon, 12 Feb 2018 22:32:46 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH v3 1/3] mtd: nand: vf610_nfc: remove unused function
-Message-ID: <20180212223246.5e236413@bbrezillon>
-In-Reply-To: <20180208235921.31840-2-stefan@agner.ch>
-References: <20180208235921.31840-1-stefan@agner.ch>
- <20180208235921.31840-2-stefan@agner.ch>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1elLvo-0003yi-VF
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:46:40 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Joern Engel <joern@lazybastard.org>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
+ Kyungmin Park <kyungmin.park@samsung.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+ Edward Cree <ecree@solarflare.com>, Bert Kenward <bkenward@solarflare.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
+ netdev@vger.kernel.org, devel@driverdev.osuosl.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/5] mtd: Initialize ->fail_addr early in mtd_erase()
+Date: Mon, 12 Feb 2018 22:47:42 +0100
+Message-ID: <253082441.XNb7FBEycW@blindfold>
+In-Reply-To: <20180212210311.23244-2-boris.brezillon@bootlin.com>
+References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
+ <20180212210311.23244-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +36,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  9 Feb 2018 00:59:19 +0100
-Stefan Agner <stefan@agner.ch> wrote:
-
-> The function count_written_bits has been replaced by the generic
-> nand_check_erased_ecc_chunk() function with commit 48c25cf44118
-> ("mtd: nand: vf610_nfc: use nand_check_erased_ecc_chunk() helper").
-> Remove the unused function.
+Am Montag, 12. Februar 2018, 22:03:07 CET schrieb Boris Brezillon:
+> mtd_erase() can return an error before ->fail_addr is initialized to
+> MTD_FAIL_ADDR_UNKNOWN. Move this initialization at the very beginning
+> of the function.
 > 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/mtdcore.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index a1c94526fb88..c87859ff338b 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -953,6 +953,8 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
+>   */
+>  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  {
+> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+> +
+>  	if (!mtd->erasesize || !mtd->_erase)
+>  		return -ENOTSUPP;
+> 
+> @@ -961,7 +963,6 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info
+> *instr) if (!(mtd->flags & MTD_WRITEABLE))
+>  		return -EROFS;
+> 
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>  	if (!instr->len) {
+>  		instr->state = MTD_ERASE_DONE;
+>  		mtd_erase_callback(instr);
 
-Applied.
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
 Thanks,
-
-Boris
-
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  drivers/mtd/nand/vf610_nfc.c | 15 ---------------
->  1 file changed, 15 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
-> index 80d31a58e558..2fa61cbdbaf7 100644
-> --- a/drivers/mtd/nand/vf610_nfc.c
-> +++ b/drivers/mtd/nand/vf610_nfc.c
-> @@ -511,21 +511,6 @@ static void vf610_nfc_select_chip(struct mtd_info *mtd, int chip)
->  	vf610_nfc_write(nfc, NFC_ROW_ADDR, tmp);
->  }
->  
-> -/* Count the number of 0's in buff up to max_bits */
-> -static inline int count_written_bits(uint8_t *buff, int size, int max_bits)
-> -{
-> -	uint32_t *buff32 = (uint32_t *)buff;
-> -	int k, written_bits = 0;
-> -
-> -	for (k = 0; k < (size / 4); k++) {
-> -		written_bits += hweight32(~buff32[k]);
-> -		if (unlikely(written_bits > max_bits))
-> -			break;
-> -	}
-> -
-> -	return written_bits;
-> -}
-> -
->  static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
->  					 uint8_t *oob, int page)
->  {
-
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+//richard
