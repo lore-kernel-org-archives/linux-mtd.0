@@ -1,17 +1,18 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elLYU-0007er-O3
- for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:22:32 +0000
-Date: Mon, 12 Feb 2018 22:22:08 +0100
+ id 1elLZJ-00087n-MR
+ for linux-mtd@lists.infradead.org; Mon, 12 Feb 2018 21:23:23 +0000
+Date: Mon, 12 Feb 2018 22:22:59 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand: MTD_NAND_MARVELL should depend on HAS_DMA
-Message-ID: <20180212222208.39324af1@bbrezillon>
-In-Reply-To: <1517318601-14793-1-git-send-email-geert@linux-m68k.org>
-References: <1517318601-14793-1-git-send-email-geert@linux-m68k.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ stable@vger.kernel.org, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH] mtd: nand: vf610: set correct ooblayout
+Message-ID: <20180212222259.57b62131@bbrezillon>
+In-Reply-To: <20180209122142.13272-1-stefan@agner.ch>
+References: <20180209122142.13272-1-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,14 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Jan 2018 14:23:21 +0100
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Fri,  9 Feb 2018 13:21:42 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-> If NO_DMA=y:
-> 
->     ERROR: "bad_dma_ops" [drivers/mtd/nand/marvell_nand.ko] undefined!
-> 
-> Add a dependency on HAS_DMA to fix this.
+> With commit 3cf32d180227 ("mtd: nand: vf610: switch to
+> mtd_ooblayout_ops") the driver started to use the NAND cores
+> default large page ooblayout. However, shortly after commit
+> 6a623e076944 ("mtd: nand: add ooblayout for old hamming layout")
+> changed the default layout to the old hamming layout, which is
+> not what vf610_nfc is using. Specify the default large page
+> layout explicitly.
 
 Applied.
 
@@ -40,25 +43,30 @@ Thanks,
 Boris
 
 > 
-> Fixes: 02f26ecf8c772751 ("mtd: nand: add reworked Marvell NAND controller driver")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Fixes: 6a623e076944 ("mtd: nand: add ooblayout for old hamming layout")
+> Cc: <stable@vger.kernel.org> # v4.12+
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 > ---
->  drivers/mtd/nand/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/mtd/nand/vf610_nfc.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index e6b8c59f2c0da7c0..736ac887303c88ba 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -328,7 +328,7 @@ config MTD_NAND_MARVELL
->  	tristate "NAND controller support on Marvell boards"
->  	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU || \
->  		   COMPILE_TEST
-> -	depends on HAS_IOMEM
-> +	depends on HAS_IOMEM && HAS_DMA
->  	help
->  	  This enables the NAND flash controller driver for Marvell boards,
->  	  including:
+> diff --git a/drivers/mtd/nand/vf610_nfc.c b/drivers/mtd/nand/vf610_nfc.c
+> index 80d31a58e558..f367144f3c6f 100644
+> --- a/drivers/mtd/nand/vf610_nfc.c
+> +++ b/drivers/mtd/nand/vf610_nfc.c
+> @@ -752,10 +752,8 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  		if (mtd->oobsize > 64)
+>  			mtd->oobsize = 64;
+>  
+> -		/*
+> -		 * mtd->ecclayout is not specified here because we're using the
+> -		 * default large page ECC layout defined in NAND core.
+> -		 */
+> +		/* Use default large page ECC layout defined in NAND core */
+> +		mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+>  		if (chip->ecc.strength == 32) {
+>  			nfc->ecc_mode = ECC_60_BYTE;
+>  			chip->ecc.bytes = 60;
 
 
 
