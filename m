@@ -1,32 +1,22 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1elW2K-0003EI-DL
- for linux-mtd@lists.infradead.org; Tue, 13 Feb 2018 08:34:02 +0000
-Date: Tue, 13 Feb 2018 09:33:36 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>, Robert
- Jarzmik <robert.jarzmik@free.fr>, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael
- Ellerman <mpe@ellerman.id.au>, Kyungmin Park <kyungmin.park@samsung.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Solarflare linux maintainers
- <linux-net-drivers@solarflare.com>, Edward Cree <ecree@solarflare.com>,
- Bert Kenward <bkenward@solarflare.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
- netdev@vger.kernel.org, devel@driverdev.osuosl.org
-Subject: Re: [PATCH 5/5] mtd: Stop updating erase_info->state and calling
- mtd_erase_callback()
-Message-ID: <20180213093336.1172fe82@xps13>
-In-Reply-To: <20180213091714.5eca4f45@bbrezillon>
-References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
- <20180212210311.23244-6-boris.brezillon@bootlin.com>
- <20180213084246.4f626bec@xps13>
- <20180213091714.5eca4f45@bbrezillon>
+Received: from mail-eopbgr10138.outbound.protection.outlook.com
+ ([40.107.1.138] helo=EUR02-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1elZEu-00035N-UU
+ for linux-mtd@lists.infradead.org; Tue, 13 Feb 2018 11:59:15 +0000
+Subject: Re: UBI assert failed in ubi_wl_init
+To: Richard Weinberger <richard@sigma-star.at>
+References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
+ <CAFLxGvwhwy8_1piyn6WnS1XsD-eifc55C8nCsv8Eh5mmLz1GMg@mail.gmail.com>
+ <eb4fbb3b-897d-458e-6e0b-5cdc8599be48@exertus.fi>
+ <2543021.LZhlqz2gkU@blindfold>
+Cc: linux-mtd@lists.infradead.org
+From: Timo Ketola <timo@exertus.fi>
+Message-ID: <b5eb17b7-14f1-7ec4-a590-d486dd0b89b6@exertus.fi>
+Date: Tue, 13 Feb 2018 13:58:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <2543021.LZhlqz2gkU@blindfold>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,204 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On 13.02.2018 00:49, Richard Weinberger wrote:
+> I meant the image _after_ UBI failed to place the fastmap. :)
 
-On Tue, 13 Feb 2018 09:17:14 +0100, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+Argh, sorry, shame on me.
 
-> On Tue, 13 Feb 2018 08:42:46 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Hi Boris,
-> > 
-> > Just a few comments about the form.
-> > 
-> > Otherwise:
-> > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > 
-> >   
-> > > diff --git a/drivers/mtd/devices/lart.c b/drivers/mtd/devices/lart.c
-> > > index 555b94406e0b..3d6c8ffd351f 100644
-> > > --- a/drivers/mtd/devices/lart.c
-> > > +++ b/drivers/mtd/devices/lart.c
-> > > @@ -415,7 +415,6 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
-> > >  	 {
-> > >  		if (!erase_block (addr))
-> > >  		  {
-> > > -			 instr->state = MTD_ERASE_FAILED;
-> > >  			 return (-EIO);
-> > >  		  }    
-> > 
-> > You can also safely remove these '{' '}'  
-> 
-> Well, this patch is not about fixing coding style issues, otherwise I'd
-> have a lot more work on this driver :-)
+https://drive.google.com/open?id=1t-auduKG2bwzpzZf09rV4O9F7GUN2viJ
 
-Sure, I was not referring to the weird style but just that you switch
-from two to one line in the block, thus the braces are not needed
-anymore.
+https://drive.google.com/open?id=1ahKl8pf3svKQSvz6VQ-7xUQsyfkVuO7k
 
-> 
-> >   
-> > >  
-> > > @@ -425,9 +424,6 @@ static int flash_erase (struct mtd_info *mtd,struct erase_info *instr)
-> > >  		if (addr == mtd->eraseregions[i].offset + (mtd->eraseregions[i].erasesize * mtd->eraseregions[i].numblocks)) i++;
-> > >  	 }
-> > >  
-> > > -   instr->state = MTD_ERASE_DONE;
-> > > -   mtd_erase_callback(instr);
-> > > -
-> > >     return (0);
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-> > > index 5dc8bd042cc5..aaaeaae01e1d 100644
-> > > --- a/drivers/mtd/devices/mtd_dataflash.c
-> > > +++ b/drivers/mtd/devices/mtd_dataflash.c
-> > > @@ -220,10 +220,6 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
-> > >  	}
-> > >  	mutex_unlock(&priv->lock);
-> > >  
-> > > -	/* Inform MTD subsystem that erase is complete */
-> > > -	instr->state = MTD_ERASE_DONE;
-> > > -	mtd_erase_callback(instr);
-> > > -
-> > >  	return 0;
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-> > > index 0bf4aeaf0cb8..efef43c6684b 100644
-> > > --- a/drivers/mtd/devices/mtdram.c
-> > > +++ b/drivers/mtd/devices/mtdram.c
-> > > @@ -60,8 +60,6 @@ static int ram_erase(struct mtd_info *mtd, struct erase_info *instr)
-> > >  	if (check_offs_len(mtd, instr->addr, instr->len))
-> > >  		return -EINVAL;
-> > >  	memset((char *)mtd->priv + instr->addr, 0xff, instr->len);
-> > > -	instr->state = MTD_ERASE_DONE;
-> > > -	mtd_erase_callback(instr);    
-> > 
-> > Space ?  
-> 
-> I could add a blank line, but again, I'm just following the coding style
-> in place in this file :-).
+The first one is taken after the first boot and the second after the
+second boot.
 
-Ok.
+I took them with:
 
-> 
-> >   
-> > >  	return 0;
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
-> > > index 7287696a21f9..a963c88d392d 100644
-> > > --- a/drivers/mtd/devices/phram.c
-> > > +++ b/drivers/mtd/devices/phram.c
-> > > @@ -44,8 +44,6 @@ static int phram_erase(struct mtd_info *mtd, struct erase_info *instr)
-> > >  	 * I don't feel at all ashamed. This kind of thing is possible anyway
-> > >  	 * with flash, but unlikely.
-> > >  	 */    
-> > 
-> > Not sure this comment is still relevant? Maybe you could remove it
-> > or at least change it? 
-> >   
-> > > -	instr->state = MTD_ERASE_DONE;
-> > > -	mtd_erase_callback(instr);    
-> > 
-> > Space ?
-> >   
-> > >  	return 0;
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-> > > index cadea0620cd0..5d842cbca3de 100644
-> > > --- a/drivers/mtd/devices/pmc551.c
-> > > +++ b/drivers/mtd/devices/pmc551.c
-> > > @@ -184,12 +184,10 @@ static int pmc551_erase(struct mtd_info *mtd, struct erase_info *instr)
-> > >  	}
-> > >  
-> > >        out:
-> > > -	instr->state = MTD_ERASE_DONE;
-> > >  #ifdef CONFIG_MTD_PMC551_DEBUG
-> > >  	printk(KERN_DEBUG "pmc551_erase() done\n");
-> > >  #endif
-> > >  
-> > > -	mtd_erase_callback(instr);
-> > >  	return 0;
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-> > > index 26f9feaa5d17..5f383630c16f 100644
-> > > --- a/drivers/mtd/devices/powernv_flash.c
-> > > +++ b/drivers/mtd/devices/powernv_flash.c
-> > > @@ -175,19 +175,12 @@ static int powernv_flash_erase(struct mtd_info *mtd, struct erase_info *erase)
-> > >  {
-> > >  	int rc;
-> > >  
-> > > -	erase->state = MTD_ERASING;
-> > > -
-> > >  	/* todo: register our own notifier to do a true async implementation */
-> > >  	rc =  powernv_flash_async_op(mtd, FLASH_OP_ERASE, erase->addr,
-> > >  			erase->len, NULL, NULL);    
-> > 
-> > Are you sure this is still needed? Maybe this should go away in your
-> > first patch?  
-> 
-> Hm, indeed. This comment should be dropped.
-> 
-> >   
-> > > -
-> > > -	if (rc) {
-> > > +	if (rc)
-> > >  		erase->fail_addr = erase->addr;
-> > > -		erase->state = MTD_ERASE_FAILED;
-> > > -	} else {
-> > > -		erase->state = MTD_ERASE_DONE;
-> > > -	}
-> > > -	mtd_erase_callback(erase);
-> > > +
-> > >  	return rc;
-> > >  }
-> > >  
-> > > diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
-> > > index 0ec85f316d24..2f05e1801047 100644
-> > > --- a/drivers/mtd/devices/slram.c
-> > > +++ b/drivers/mtd/devices/slram.c
-> > > @@ -88,8 +88,6 @@ static int slram_erase(struct mtd_info *mtd, struct erase_info *instr)
-> > >  	 * I don't feel at all ashamed. This kind of thing is possible anyway
-> > >  	 * with flash, but unlikely.
-> > >  	 */    
-> > 
-> > Same with this comment.  
-> 
-> Actually, I'm not sure I understand that comment, but I guess it's
-> talking about races between read/write and erase paths, so nothing
-> related to the changed I'm doing here.
+# dd if=/dev/mtd1 of=/media/sda1/ubi1.bin bs=1M
 
-I thought that races could only happen because of the asynchronous
-manner how erases were handled, but if you feel this is still relevant,
-I trust you :)
+--
 
-> 
-> >   
-> > > -	instr->state = MTD_ERASE_DONE;
-> > > -	mtd_erase_callback(instr);    
-> > 
-> > Space ?
-> >   
-> > >  	return(0);
-> > >  }
-> > >      
-> > 
-> > 
-> > 
-> >   
-> 
-> 
-> 
-
-
-
--- 
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Timo
