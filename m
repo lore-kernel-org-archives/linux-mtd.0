@@ -1,27 +1,16 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
- <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>
-CC: "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, Han Xu <han.xu@nxp.com>, "festevam@gmail.com"
- <festevam@gmail.com>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Suresh
- Gupta <suresh.gupta@nxp.com>
-Subject: RE: [PATCH v2 1/2] mtd: fsl-quadspi: Update slave device hwcap based
- on mode provided in dtsi file
-Date: Tue, 13 Feb 2018 06:45:21 +0000
-Message-ID: <DB6PR0402MB28386AD10C84F1BA9DCD2B2799F60@DB6PR0402MB2838.eurprd04.prod.outlook.com>
-References: <1517549484-6024-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1517549484-6024-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <b868bd0c-2d5e-f4cf-a32c-012e021d3a89@wedev4u.fr>
-In-Reply-To: <b868bd0c-2d5e-f4cf-a32c-012e021d3a89@wedev4u.fr>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
+ festevam@gmail.com, prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v3 0/2] mtd: fsl-quadspi: Update slave device hwcap based on
+ mode provided in dtsi file
+Date: Tue, 13 Feb 2018 12:21:13 +0530
+Message-Id: <1518504675-26286-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,117 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQ3lyaWxsZSwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBDeXJp
-bGxlIFBpdGNoZW4gW21haWx0bzpjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcl0NCj4gU2VudDog
-VHVlc2RheSwgRmVicnVhcnkgMDYsIDIwMTggMjoxOSBBTQ0KPiBUbzogWW9nZXNoIE5hcmF5YW4g
-R2F1ciA8eW9nZXNobmFyYXlhbi5nYXVyQG54cC5jb20+OyBsaW51eC0NCj4gbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyByb2JoQGtlcm5lbC5vcmc7
-DQo+IG1hcmsucnV0bGFuZEBhcm0uY29tOyBzaGF3bmd1b0BrZXJuZWwub3JnDQo+IENjOiBsaW51
-eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmc7IGJvcmlzLmJyZXppbGxvbkBmcmVlLWVs
-ZWN0cm9ucy5jb207DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgSGFuIFh1IDxoYW4u
-eHVAbnhwLmNvbT47DQo+IGZlc3RldmFtQGdtYWlsLmNvbTsgUHJhYmhha2FyIEt1c2h3YWhhIDxw
-cmFiaGFrYXIua3VzaHdhaGFAbnhwLmNvbT47DQo+IFN1cmVzaCBHdXB0YSA8c3VyZXNoLmd1cHRh
-QG54cC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMS8yXSBtdGQ6IGZzbC1xdWFkc3Bp
-OiBVcGRhdGUgc2xhdmUgZGV2aWNlIGh3Y2FwIGJhc2VkDQo+IG9uIG1vZGUgcHJvdmlkZWQgaW4g
-ZHRzaSBmaWxlDQo+IA0KPiBIaSBZb2dlc2gsDQo+IA0KPiBMZSAwMi8wMi8yMDE4IMOgIDA2OjMx
-LCBZb2dlc2ggR2F1ciBhIMOpY3JpdMKgOg0KPiA+IEZTTCBRdWFkU1BJIGNvbnRyb2xsZXIgc3Vw
-cG9ydHMgU2luZ2xlLCBkdWFsLCBxdWFkIG1vZGVzIG9mIG9wZXJhdGlvbi4NCj4gPiBNb2RlIGlu
-Zm9ybWF0aW9uIGlzIGF2YWlsYWJsZSB2aWEgInNwaS10eC1idXMtd2lkdGgiIGFuZA0KPiA+ICJz
-cGktcngtYnVzLXdpZHRoIiBub2RlcyBvZiBkZXZpY2UgdHJlZSBmb3IgdGhlIGNvbm5lY3RlZCBz
-bGF2ZSBkZXZpY2UuDQo+ID4NCj4gPiBVcGRhdGUgcmVhZCBhbmQgd3JpdGUgaHdjYXAgY2FwYWJp
-bGl0eSBmb3Igc2xhdmUgZGV2aWNlIGJ5IHJlYWRpbmcNCj4gPiAic3BpLXJ4LWJ1cy13aWR0aCIg
-YW5kICJzcGktdHgtYnVzLXdpZHRoIiByZXNwZWN0aXZlbHkuDQo+ID4gQXNzaWduIGh3Y2FwcyBt
-YXNrIHRvIG1pbmltYWwgY2FwcyBmb3IgdGhlIHNsYXZlIG5vZGUgaS5lLg0KPiA+IAlTTk9SX0hX
-Q0FQU19SRUFEIHwgU05PUl9IV0NBUFNfUFANCj4gPg0KPiA+IElmIHZhbHVlIG5vdCBwcm92aWRl
-ZCBpbiBkZXZpY2UgdHJlZSBmaWxlLCB0aGVuIGZhbGxiYWNrIHRvIGRlZmF1bHQNCj4gPiBtb2Rl
-IGkuZS4gU05PUl9IV0NBUFNfUkVBRF8xXzFfNCBhbmQgU05PUl9IV0NBUFNfUFAuDQo+ID4NCj4g
-PiBTaWduZWQtb2ZmLWJ5OiBQcmFiaGFrYXIgS3VzaHdhaGEgPHByYWJoYWthci5rdXNod2FoYUBu
-eHAuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFlvZ2VzaCBHYXVyIDx5b2dlc2huYXJheWFuLmdh
-dXJAbnhwLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGZvciB2MjoNCj4gPiAtIE5vbmUNCj4g
-Pg0KPiA+ICBkcml2ZXJzL210ZC9zcGktbm9yL2ZzbC1xdWFkc3BpLmMgfCA1Ng0KPiA+ICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-NTEgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL210ZC9zcGktbm9yL2ZzbC1xdWFkc3BpLmMNCj4gPiBiL2RyaXZlcnMvbXRkL3NwaS1u
-b3IvZnNsLXF1YWRzcGkuYw0KPiA+IGluZGV4IGI5YzU5MTguLjE1MDNlMGMgMTAwNjQ0DQo+ID4g
-LS0tIGEvZHJpdmVycy9tdGQvc3BpLW5vci9mc2wtcXVhZHNwaS5jDQo+ID4gKysrIGIvZHJpdmVy
-cy9tdGQvc3BpLW5vci9mc2wtcXVhZHNwaS5jDQo+ID4gQEAgLTk5NCwxNyArOTk0LDE0IEBAIHN0
-YXRpYyB2b2lkIGZzbF9xc3BpX3VucHJlcChzdHJ1Y3Qgc3BpX25vciAqbm9yLA0KPiA+IGVudW0g
-c3BpX25vcl9vcHMgb3BzKQ0KPiA+DQo+ID4gIHN0YXRpYyBpbnQgZnNsX3FzcGlfcHJvYmUoc3Ry
-dWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikgIHsNCj4gPiAtCWNvbnN0IHN0cnVjdCBzcGlfbm9y
-X2h3Y2FwcyBod2NhcHMgPSB7DQo+ID4gLQkJLm1hc2sgPSBTTk9SX0hXQ0FQU19SRUFEXzFfMV80
-IHwNCj4gPiAtCQkJU05PUl9IV0NBUFNfUFAsDQo+ID4gLQl9Ow0KPiA+ICsJc3RydWN0IHNwaV9u
-b3JfaHdjYXBzIGh3Y2FwczsNCj4gPiAgCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBwZGV2LT5k
-ZXYub2Zfbm9kZTsNCj4gPiAgCXN0cnVjdCBkZXZpY2UgKmRldiA9ICZwZGV2LT5kZXY7DQo+ID4g
-IAlzdHJ1Y3QgZnNsX3FzcGkgKnE7DQo+ID4gIAlzdHJ1Y3QgcmVzb3VyY2UgKnJlczsNCj4gPiAg
-CXN0cnVjdCBzcGlfbm9yICpub3I7DQo+ID4gIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsNCj4gPiAt
-CWludCByZXQsIGkgPSAwOw0KPiA+ICsJaW50IHJldCwgaSA9IDAsIHZhbHVlOw0KPiA+DQo+ID4g
-IAlxID0gZGV2bV9remFsbG9jKGRldiwgc2l6ZW9mKCpxKSwgR0ZQX0tFUk5FTCk7DQo+ID4gIAlp
-ZiAoIXEpDQo+ID4gQEAgLTEwNzcsNiArMTA3NCwxMCBAQCBzdGF0aWMgaW50IGZzbF9xc3BpX3By
-b2JlKHN0cnVjdA0KPiA+IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gPg0KPiA+ICAJLyogaXRl
-cmF0ZSB0aGUgc3Vibm9kZXMuICovDQo+ID4gIAlmb3JfZWFjaF9hdmFpbGFibGVfY2hpbGRfb2Zf
-bm9kZShkZXYtPm9mX25vZGUsIG5wKSB7DQo+ID4gKwkJLyogUmVzZXQgaHdjYXBzIG1hc2sgdG8g
-bWluaW1hbCBjYXBzIGZvciB0aGUgc2xhdmUgbm9kZS4gKi8NCj4gPiArCQlod2NhcHMubWFzayA9
-IFNOT1JfSFdDQVBTX1JFQUQgfCBTTk9SX0hXQ0FQU19QUDsNCj4gPiArCQl2YWx1ZSA9IDA7DQo+
-ID4gKw0KPiA+ICAJCS8qIHNraXAgdGhlIGhvbGVzICovDQo+ID4gIAkJaWYgKCFxLT5oYXNfc2Vj
-b25kX2NoaXApDQo+ID4gIAkJCWkgKj0gMjsNCj4gPiBAQCAtMTEwNiw2ICsxMTA3LDUxIEBAIHN0
-YXRpYyBpbnQgZnNsX3FzcGlfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQ0KPiAqcGRldikN
-Cj4gPiAgCQkvKiBzZXQgdGhlIGNoaXAgYWRkcmVzcyBmb3IgUkVBRElEICovDQo+ID4gIAkJZnNs
-X3FzcGlfc2V0X2Jhc2VfYWRkcihxLCBub3IpOw0KPiA+DQo+ID4gKwkJLyoNCj4gPiArCQkgKiBJ
-ZiBzcGktcngtYnVzLXdpZHRoIGFuZCBzcGktdHgtYnVzLXdpZHRoIG5vdCBkZWZpbmVkIGFzc2ln
-bg0KPiA+ICsJCSAqIGRlZmF1bHQgaGFyZHdhcmUgY2FwYWJpbGl0aWVzIFNOT1JfSFdDQVBTX1JF
-QURfMV8xXzQNCj4gYW5kDQo+ID4gKwkJICogU05PUl9IV0NBUFNfUFAgc3VwcG9ydGVkIGJ5IHRo
-ZSBRdWFkLVNQSSBjb250cm9sbGVyLg0KPiA+ICsJCSAqLw0KPiA+ICsJCWlmICghb2ZfcHJvcGVy
-dHlfcmVhZF91MzIobnAsICJzcGktcngtYnVzLXdpZHRoIiwgJnZhbHVlKSkgew0KPiA+ICsJCQlz
-d2l0Y2ggKHZhbHVlKSB7DQo+ID4gKwkJCWNhc2UgMToNCj4gPiArCQkJCWh3Y2Fwcy5tYXNrIHw9
-IFNOT1JfSFdDQVBTX1JFQUQgfA0KPiA+ICsJCQkJCSAgICAgICBTTk9SX0hXQ0FQU19SRUFEX0ZB
-U1Q7DQo+ID4gKwkJCQlicmVhazsNCj4gPiArCQkJY2FzZSAyOg0KPiA+ICsJCQkJaHdjYXBzLm1h
-c2sgfD0gU05PUl9IV0NBUFNfUkVBRF8xXzFfMg0KPiB8DQo+ID4gKwkJCQkJICAgICAgIFNOT1Jf
-SFdDQVBTX1JFQURfMV8yXzI7DQo+IA0KPiBJIGd1ZXNzIHRoZXJlIGlzIGEgbWlzdW5kZXJzdGFu
-ZGluZyBpbiB0aGUgbWVhbmluZyBvZiBzcGktcngtYnVzLXdpZHRoIGFuZCBzcGktDQo+IHR4LWJ1
-c193aWR0aC4NCj4gDQo+IHNwaS1yeC1idXMtd2lkdGggPSA8Tj4sIHJlc3AuIHNwaS10eC1idXMt
-d2lkdGggPSA8Tj4sIG1lYW5zIHRoZSBTUEkgY29udHJvbGxlcg0KPiBjYW4gcmVjZWl2ZSwgcmVz
-cC4gc2VuZCwgZGF0YSBvbiBOIEkvTyBMaW5lcy4NCj4gDQo+IFRoZW4gbGV0J3MgdGFrZSB0aGUg
-ZXhhbXBsZSBvZiBzb21lIEZhc3QgUmVhZCBYLVktWiBjb21tYW5kOg0KPiANCj4gdGhlIG9wIGNv
-ZGUgaXMgKnNlbnQqIG9uIFggSS9PIGxpbmVzOiB5b3UgbmVlZCB0byBjaGVjayBzcGktdHgtYnVz
-LXdpZHRoIHRoZQ0KPiBhZGRyZXNzL21vZGUvZHVtbXkgYml0cyBhcmUgKnNlbnQqIG9uIFkgSS9P
-IGxpbmVzOiBjaGVjayBzcGktdHgtYnVzLXdpZHRoIHRvbw0KPiB0aGUgZGF0YSBiaXRzIGFyZSAq
-cmVjZWl2ZWQqIG9uIFogSS9PIGxpbmVzOiBjaGVjayBzcGktcngtYnVzX3dpZHRoLg0KPiANCj4g
-PiArCQkJCWJyZWFrOw0KPiA+ICsJCQljYXNlIDQ6DQo+ID4gKwkJCQlod2NhcHMubWFzayB8PSBT
-Tk9SX0hXQ0FQU19SRUFEXzFfMV80DQo+IHwNCj4gPiArCQkJCQkgICAgICAgU05PUl9IV0NBUFNf
-UkVBRF8xXzRfNDsNCj4gDQo+IFRoZSBzYW1lIGhlcmU6IHRvIGFsbG93IFNQSSAxLTQtNCwgeW91
-IGhhdmUgdG8gY2hlY2sgdGhhdCBzcGktdHgtYnVzLXdpZHRoID09IDQuDQo+IA0KPiBTbyB5b3Vy
-IHVzYWdlIG9mIHNwaS17dHh8cnh9LWJ1cy13aWR0aCBpcyBub3QgY29uc2lzdGVudCB3aXRoIHRo
-ZSB1c2FnZSBkb25lIGluDQo+IHRoZSBTUEkgc3Vic3lzdGVtLiBQbGVhc2UgaGF2ZSBhIGxvb2sg
-YXQgZHJpdmVycy9tdGQvZGV2aWNlcy9tMjVwODAuYywNCj4gZXNwZWNpYWxseSBob3cgdGhlIFNQ
-SV9SWF9RVUFEIGFuZCBTUElfVFhfUVVBRCBmbGFncyBhcmUgdXNlZCBpbiB0aGUNCj4gbTI1cF9w
-cm9iZSgpIGZ1bmN0aW9uIHRvIGhhdmUgYSBiZXR0ZXIgaWRlYSBvZiBob3cgaXQgc2hvdWxkIHdv
-cmsuDQo+IA0KPiBBbHNvIGhhdmUgYSBsb29rIGF0IG9mX3NwaV9wYXJzZV9kdCgpIGluIGRyaXZl
-cnMvc3BpL3NwaS5jLCB0byBmaWd1cmUgb3V0IGhvdyB0aGUNCj4gU1BJX3tUWHxSWH1fe0RVQUx8
-UVVBRH0gZmxhZ3MgYXJlIHNldCBhY2NvcmRpbmcgdG8gdGhlIHNwaS17dHh8cnh9LWJ1cy13aWR0
-aA0KPiBEVCBwcm9wZXJ0aWVzLg0KPiANClRoYW5rcyBmb3IgcmV2aWV3LCB3b3VsZCBpbmNvcnBv
-cmF0ZSB5b3VyIHJldmlldyBjb21tZW50cyBhbmQgd291bGQgaGF2ZSB1c2FnZSBvZiBzcGkte3J4
-L3R4fS1idXMtd2lkdGggYXMgYmVpbmcgZG9uZSBpbiBTUEkgc3Vic3lzdGVtLg0KDQo+ID4gKwkJ
-CQlicmVhazsNCj4gPiArCQkJZGVmYXVsdDoNCj4gPiArCQkJCWRldl9lcnIoZGV2LA0KPiA+ICsJ
-CQkJCSJzcGktcngtYnVzLXdpZHRoICVkIG5vdCBzdXBwb3J0ZWRcbiIsDQo+ID4gKwkJCQkJdmFs
-dWUpOw0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKwkJCX0NCj4gPiArCQl9IGVsc2UNCj4gPiArCQkJ
-aHdjYXBzLm1hc2sgfD0gU05PUl9IV0NBUFNfUkVBRF8xXzFfNDsNCj4gDQo+IE5vdCBzdXJlIHdo
-ZXRoZXIgaXQgcGFzc2VzIGNoZWNrcGF0Y2gsIHlvdSBtYXkgaGF2ZSB0byBhZGQgeyB9IGZvciB0
-aGUgZWxzZQ0KPiBzdGF0ZW1lbnQgZXZlbiBpZiB0aGVyZSBpcyBhIHNpbmdsZSBsaW5lIGFzIHRo
-ZSBpZiBzdGF0ZW1lbnQgdXNlIHsgfS4NCj4gDQpJIGhhdmUgcnVuICcgLi9zY3JpcHRzL2NoZWNr
-cGF0Y2gucGwnIHByZXNlbnQgaW4gbGludXgtbXRkIGNvZGUgYmFzZSBhbmQgaXQgaGFzbid0IHJl
-cG9ydGVkIGFueSB3YXJuaW5nIG9yIGVycm9yIG1lc3NhZ2VzLg0KTWVhbndoaWxlLCB3b3VsZCBh
-ZGQge30gYnJhY2VzIGZvciB0aGlzIGVsc2Ugc3RhdGVtZW50IGFsc28uDQoNCi0tDQpSZWdhcmRz
-DQpZb2dlc2ggR2F1ci4NCg0KPiBQZXJzb25hbGx5IEkgZG9uJ3QgbWluZCB0aGF0IG11Y2guIFBs
-ZWFzZSBqdXN0IGNoZWNrIHRoYXQgeW91ciBwYXRjaCBwYXNzZXMNCj4gY2hlY2twYXRjaCB2ZXJp
-ZmljYXRpb24gYW5kIGl0IHdpbGwgYmUgb2theSBmb3IgbWUgOikNCj4gDQo+IEJlc3QgcmVnYXJk
-cywNCj4gDQo+IEN5cmlsbGUNCj4gDQo+ID4gKw0KPiA+ICsJCWlmICghb2ZfcHJvcGVydHlfcmVh
-ZF91MzIobnAsICJzcGktdHgtYnVzLXdpZHRoIiwgJnZhbHVlKSkgew0KPiA+ICsJCQlzd2l0Y2gg
-KHZhbHVlKSB7DQo+ID4gKwkJCWNhc2UgMToNCj4gPiArCQkJCWh3Y2Fwcy5tYXNrIHw9IFNOT1Jf
-SFdDQVBTX1BQOw0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKwkJCWNhc2UgNDoNCj4gPiArCQkJCWh3
-Y2Fwcy5tYXNrIHw9IFNOT1JfSFdDQVBTX1BQXzFfMV80IHwNCj4gPiArCQkJCQkgICAgICAgU05P
-Ul9IV0NBUFNfUFBfMV80XzQ7DQo+ID4gKwkJCQlicmVhazsNCj4gPiArCQkJZGVmYXVsdDoNCj4g
-PiArCQkJCWRldl9lcnIoZGV2LA0KPiA+ICsJCQkJCSJzcGktdHgtYnVzLXdpZHRoICVkIG5vdCBz
-dXBwb3J0ZWRcbiIsDQo+ID4gKwkJCQkJdmFsdWUpOw0KPiA+ICsJCQkJYnJlYWs7DQo+ID4gKwkJ
-CX0NCj4gPiArCQl9DQo+ID4gKw0KPiA+ICAJCXJldCA9IHNwaV9ub3Jfc2Nhbihub3IsIE5VTEws
-ICZod2NhcHMpOw0KPiA+ICAJCWlmIChyZXQpDQo+ID4gIAkJCWdvdG8gbXV0ZXhfZmFpbGVkOw0K
-PiA+DQoNCg==
+This patch-set added support to update hwcap of slave device connected to
+FSL QUADSPI controller by reading values from the device tree files.
+
+Mode information is available via "spi-tx-bus-width" and
+"spi-rx-bus-width" nodes of device tree for the connected slave device.
+
+Update read and write hwcap capability for slave device by reading
+"spi-rx-bus-width" and "spi-tx-bus-width" respectively.
+
+Added usage example for spi-rx/tx-bus-width properties in spi-bus.txt
+
+Depends on
+ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
+
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: Update slave device hwcap based on mode provided in
+    dtsi file
+  dt-bindings: spi: updated usage example for spi-rx/tx-bus-width
+    properties
+
+Changes for v3:
+- Incorporated changes as per Cyrille's review comments.
+Changes for v2:
+- Drop patch 'dt-bindings: fsl-quadspi: spi-rx/tx-bus-width usage example'
+- Added usage example for spi-rx/tx-bus-width properties in spi-bus.txt
+
+ Documentation/devicetree/bindings/spi/spi-bus.txt |  2 +
+ drivers/mtd/spi-nor/fsl-quadspi.c                 | 72 +++++++++++++++++++++--
+ 2 files changed, 69 insertions(+), 5 deletions(-)
+
+-- 
+1.9.1
