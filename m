@@ -1,33 +1,28 @@
-Received: from fllnx209.ext.ti.com ([198.47.19.16])
+Received: from mail-eopbgr00060.outbound.protection.outlook.com ([40.107.0.60]
+ helo=EUR02-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1elzsi-0000jq-6I
- for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 16:26:07 +0000
-Subject: Re: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Peter Pan
- <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
- <20180205232120.5851-5-boris.brezillon@bootlin.com>
- <6a9eaaaf-20a6-b332-03d0-9d16e24d0b3d@ti.com>
- <20180212133158.3032442f@bbrezillon>
- <67e61203-a2e9-853c-6cda-7226499611c2@ti.com>
- <20180212170809.3f0b5e20@bbrezillon>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <0944fefa-6ef8-a93a-dad6-660044b8ec8e@ti.com>
-Date: Wed, 14 Feb 2018 21:55:10 +0530
-MIME-Version: 1.0
-In-Reply-To: <20180212170809.3f0b5e20@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
+ id 1elzvP-0002jo-Rf
+ for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 16:29:07 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Stefan Agner <stefan@agner.ch>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>
+CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "max.oss.09@gmail.com" <max.oss.09@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
+Date: Wed, 14 Feb 2018 16:28:36 +0000
+Message-ID: <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
+References: <20180206174021.5947-1-stefan@agner.ch>
+ <20180206174021.5947-2-stefan@agner.ch>
+In-Reply-To: <20180206174021.5947-2-stefan@agner.ch>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EB1983446AB00C4F96B6F66C2101EBC9@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,86 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On 12-Feb-18 9:38 PM, Boris Brezillon wrote:
-> On Mon, 12 Feb 2018 21:30:09 +0530
-> Vignesh R <vigneshr@ti.com> wrote:
-> 
->> On 12-Feb-18 6:01 PM, Boris Brezillon wrote:
->>> On Mon, 12 Feb 2018 17:13:55 +0530
->>> Vignesh R <vigneshr@ti.com> wrote:
->>>   
->>>> On Tuesday 06 February 2018 04:51 AM, Boris Brezillon wrote:  
->>>>> From: Boris Brezillon <boris.brezillon@free-electrons.com>
->>>>>
->>>>> The spi_mem interface is meant to replace the spi_flash_read() one.
->>>>> Implement the ->exec_op() method so that we can smoothly get rid of the
->>>>> old interface.
->>>>>
->>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
->>>>> ---
->>>>>   drivers/spi/spi-ti-qspi.c | 85 +++++++++++++++++++++++++++++++++++++++--------
->>>>>   1 file changed, 72 insertions(+), 13 deletions(-)
->>>>>
->>>>> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
->>>>> index c24d9b45a27c..40cac3ef6cc9 100644
->>>>> --- a/drivers/spi/spi-ti-qspi.c
->>>>> +++ b/drivers/spi/spi-ti-qspi.c    
->>>>
->>>> [...]
->>>>   
->>>>> +static const struct spi_controller_mem_ops ti_qspi_mem_ops = {
->>>>> +   .exec_op = ti_qspi_exec_mem_op,    
->>>>
->>>>         .supports_op = ti_qspi_supports_mem_op,
->>>>
->>>> Its required as per spi_controller_check_ops() in Patch 1/6  
->>>   
->>> ->supports_op() is optional, and if it's missing, the core will do the  
->>> regular QuadSPI/DualSPI/SingleSPI check (see spi_mem_supports_op()
->>> implementation).   
->>
->> You might have overlooked spi_controller_check_ops() from Patch 1/6:
->> +static int spi_controller_check_ops(struct spi_controller *ctlr)
->> +{
->> +	/*
->> +	 * The controller can implement only the high-level SPI-memory
->> +	 * operations if it does not support regular SPI transfers.
->> +	 */
->> +	if (ctlr->mem_ops) {
->> +		if (!ctlr->mem_ops->supports_op ||
->> +		    !ctlr->mem_ops->exec_op)
->> +			return -EINVAL;
->> +	} else if (!ctlr->transfer && !ctlr->transfer_one &&
->> +		   !ctlr->transfer_one_message) {
->> +		return -EINVAL;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>
->> So if ->supports_op() is not populated by SPI controller driver, then
->> driver probe fails with -EINVAL. This is what I observed on my TI
->> hardware when testing this patch series.
-> 
-> Correct. Then I should fix spi_controller_check_ops() to allow empty
-> ctlr->mem_ops->supports_op.
-> 
->>
->>> This being said, if you think a custom ->supports_op()
->>> implementation is needed for this controller I can add one.
->>>   
->>
->> spi_mem_supports_op() should suffice for now if above issue is fixed.
-> 
-> Cool. IIUC, you tested the series on a TI SoC. Does it work as
-> expected? Do you see any perf regressions?
-> 
-
-I am planning to collect throughput numbers with this series for TI
-QSPI. I don't think there would be noticeable degradation.
-But, it would be interesting to test for a driver thats now under
-drivers/mtd/spi-nor moved to drivers/spi and see if added overhead of
-m25p80 layer + spi core has any impact.
+DQoNCk9uIDAyLzA2LzIwMTggMTE6NDAgQU0sIFN0ZWZhbiBBZ25lciB3cm90ZToNCj4gQWRkIHN1
+cHBvcnQgZm9yIHNwZWNpZmllZCBFQ0Mgc3RyZW5ndGgvc2l6ZSB1c2luZyBkZXZpY2UgdHJlZQ0K
+PiBwcm9wZXJ0aWVzIG5hbmQtZWNjLXN0cmVuZ3RoL25hbmQtZWNjLXN0ZXAtc2l6ZS4NCj4NCj4g
+U2lnbmVkLW9mZi1ieTogU3RlZmFuIEFnbmVyIDxzdGVmYW5AYWduZXIuY2g+DQo+IC0tLQ0KPiAg
+IC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncG1pLW5hbmQudHh0ICAgICAgICAgIHwgIDUg
+KysrKw0KPiAgIGRyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbmFuZC5jICAgICAgICAg
+ICAgIHwgMjkgKysrKysrKysrKysrKystLS0tLS0tLQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgMjQg
+aW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQgYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQNCj4gaW5kZXggZWIyZDk5
+MTlkMDYzLi5lYTZlOWI3MzUxNjAgMTAwNjQ0DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9tdGQvZ3BtaS1uYW5kLnR4dA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQNCj4gQEAgLTQ2LDYgKzQ2LDExIEBA
+IE9wdGlvbmFsIHByb3BlcnRpZXM6DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBwYXJ0aXRp
+b25zIHdyaXR0ZW4gZnJvbSBMaW51eCB3aXRoIHRoaXMgZmVhdHVyZQ0KPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgdHVybmVkIG9uIG1heSBub3QgYmUgYWNjZXNzaWJsZSBieSB0aGUgQm9vdFJP
+TQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgY29kZS4NCj4gKyAgLSBuYW5kLWVjYy1zdHJl
+bmd0aDogaW50ZWdlciByZXByZXNlbnRpbmcgdGhlIG51bWJlciBvZiBiaXRzIHRvIGNvcnJlY3QN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcGVyIEVDQyBzdGVwLiBOZWVkcyB0byBiZSBhIG11
+bHRpcGxlIG9mIDIuDQo+ICsgIC0gbmFuZC1lY2Mtc3RlcC1zaXplOiBpbnRlZ2VyIHJlcHJlc2Vu
+dGluZyB0aGUgbnVtYmVyIG9mIGRhdGEgYnl0ZXMNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+dGhhdCBhcmUgY292ZXJlZCBieSBhIHNpbmdsZSBFQ0Mgc3RlcC4gVGhlIGRyaXZlcg0KPiArICAg
+ICAgICAgICAgICAgICAgICAgICBzdXBwb3J0cyA1MTIgYW5kIDEwMjQuDQo+ICAgDQo+ICAgVGhl
+IGRldmljZSB0cmVlIG1heSBvcHRpb25hbGx5IGNvbnRhaW4gc3ViLW5vZGVzIGRlc2NyaWJpbmcg
+cGFydGl0aW9ucyBvZiB0aGUNCj4gICBhZGRyZXNzIHNwYWNlLiBTZWUgcGFydGl0aW9uLnR4dCBm
+b3IgbW9yZSBkZXRhaWwuDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2dwbWktbmFu
+ZC9ncG1pLW5hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbmFuZC5jDQo+
+IGluZGV4IDUwZjhkNGExYjk4My4uOGNiMzc4MzU4ZTExIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
+L210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiArKysgYi9kcml2ZXJzL210ZC9uYW5k
+L2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiBAQCAtMTk4LDE3ICsxOTgsMTUgQEAgc3RhdGljIGlu
+bGluZSBib29sIGdwbWlfY2hlY2tfZWNjKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4g
+ICAgKg0KPiAgICAqIFdlIG1heSBoYXZlIGF2YWlsYWJsZSBvb2Igc3BhY2UgaW4gdGhpcyBjYXNl
+Lg0KPiAgICAqLw0KPiAtc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8oc3RydWN0
+IGdwbWlfbmFuZF9kYXRhICp0aGlzKQ0KPiArc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNj
+X2luZm8oc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzLA0KPiArCQkJdW5zaWduZWQgaW50IGVj
+Y19zdHJlbmd0aCwgdW5zaWduZWQgaW50IGVjY19zdGVwKQ0KPiAgIHsNCj4gICAJc3RydWN0IGJj
+aF9nZW9tZXRyeSAqZ2VvID0gJnRoaXMtPmJjaF9nZW9tZXRyeTsNCj4gICAJc3RydWN0IG5hbmRf
+Y2hpcCAqY2hpcCA9ICZ0aGlzLT5uYW5kOw0KPiAgIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5h
+bmRfdG9fbXRkKGNoaXApOw0KPiAgIAl1bnNpZ25lZCBpbnQgYmxvY2tfbWFya19iaXRfb2Zmc2V0
+Ow0KPiAgIA0KPiAtCWlmICghKGNoaXAtPmVjY19zdHJlbmd0aF9kcyA+IDAgJiYgY2hpcC0+ZWNj
+X3N0ZXBfZHMgPiAwKSkNCj4gLQkJcmV0dXJuIC1FSU5WQUw7DQo+IC0NCj4gLQlzd2l0Y2ggKGNo
+aXAtPmVjY19zdGVwX2RzKSB7DQo+ICsJc3dpdGNoIChlY2Nfc3RlcCkgew0KPiAgIAljYXNlIFNa
+XzUxMjoNCj4gICAJCWdlby0+Z2ZfbGVuID0gMTM7DQo+ICAgCQlicmVhazsNCj4gQEAgLTIyMSw4
+ICsyMTksOCBAQCBzdGF0aWMgaW50IHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyhzdHJ1Y3QgZ3Bt
+aV9uYW5kX2RhdGEgKnRoaXMpDQo+ICAgCQkJY2hpcC0+ZWNjX3N0cmVuZ3RoX2RzLCBjaGlwLT5l
+Y2Nfc3RlcF9kcyk7DQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gICAJfQ0KPiAtCWdlby0+ZWNj
+X2NodW5rX3NpemUgPSBjaGlwLT5lY2Nfc3RlcF9kczsNCj4gLQlnZW8tPmVjY19zdHJlbmd0aCA9
+IHJvdW5kX3VwKGNoaXAtPmVjY19zdHJlbmd0aF9kcywgMik7DQo+ICsJZ2VvLT5lY2NfY2h1bmtf
+c2l6ZSA9IGVjY19zdGVwOw0KPiArCWdlby0+ZWNjX3N0cmVuZ3RoID0gcm91bmRfdXAoZWNjX3N0
+cmVuZ3RoLCAyKTsNCj4gICAJaWYgKCFncG1pX2NoZWNrX2VjYyh0aGlzKSkNCj4gICAJCXJldHVy
+biAtRUlOVkFMOw0KPiAgIA0KPiBAQCAtMjMwLDcgKzIyOCw3IEBAIHN0YXRpYyBpbnQgc2V0X2dl
+b21ldHJ5X2J5X2VjY19pbmZvKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4gICAJaWYg
+KGdlby0+ZWNjX2NodW5rX3NpemUgPCBtdGQtPm9vYnNpemUpIHsNCj4gICAJCWRldl9lcnIodGhp
+cy0+ZGV2LA0KPiAgIAkJCSJ1bnN1cHBvcnRlZCBuYW5kIGNoaXAuIGVjYyBzaXplOiAlZCwgb29i
+IHNpemUgOiAlZFxuIiwNCj4gLQkJCWNoaXAtPmVjY19zdGVwX2RzLCBtdGQtPm9vYnNpemUpOw0K
+PiArCQkJZWNjX3N0ZXAsIG10ZC0+b29ic2l6ZSk7DQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsNCj4g
+ICAJfQ0KPiAgIA0KPiBAQCAtNDIzLDkgKzQyMSwyMCBAQCBzdGF0aWMgaW50IGxlZ2FjeV9zZXRf
+Z2VvbWV0cnkoc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzKQ0KPiAgIA0KPiAgIGludCBjb21t
+b25fbmZjX3NldF9nZW9tZXRyeShzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRoaXMpDQo+ICAgew0K
+PiArCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSAmdGhpcy0+bmFuZDsNCj4gKw0KPiArCWlmIChj
+aGlwLT5lY2Muc3RyZW5ndGggPiAwICYmIGNoaXAtPmVjYy5zaXplID4gMCkNCj4gKwkJcmV0dXJu
+IHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyh0aGlzLCBjaGlwLT5lY2Muc3RyZW5ndGgsDQo+ICsJ
+CQkJCQljaGlwLT5lY2Muc2l6ZSk7DQo+ICsNCg0KSSB3YXMgd29uZGVyaW5nIGhvdyB0byBrZWVw
+LCBsZXQncyBzYXkgdS1ib290LCBhbmQga2VybmVsIGVjYyBzZXR0aW5nIA0KYWxpZ25lZCwgaWYg
+dXNlcnMgY2FuIHNwZWNpZnkgdGhlIHN0cmVuZ3RoIGFuZCBzdGVwX2RzIGluIERUPyBEaWQgdS1i
+b290IA0KZW5hYmxlIHRvIGdldCB0aGVzZSBwYXJhbWV0ZXJzIGZyb20gRFQ/DQo+ICAgCWlmICgo
+b2ZfcHJvcGVydHlfcmVhZF9ib29sKHRoaXMtPmRldi0+b2Zfbm9kZSwgImZzbCx1c2UtbWluaW11
+bS1lY2MiKSkNCj4gLQkJCQl8fCBsZWdhY3lfc2V0X2dlb21ldHJ5KHRoaXMpKQ0KPiAtCQlyZXR1
+cm4gc2V0X2dlb21ldHJ5X2J5X2VjY19pbmZvKHRoaXMpOw0KPiArCQkJCXx8IGxlZ2FjeV9zZXRf
+Z2VvbWV0cnkodGhpcykpIHsNCj4gKwkJaWYgKCEoY2hpcC0+ZWNjX3N0cmVuZ3RoX2RzID4gMCAm
+JiBjaGlwLT5lY2Nfc3RlcF9kcyA+IDApKQ0KPiArCQkJcmV0dXJuIC1FSU5WQUw7DQo+ICsNCj4g
+KwkJcmV0dXJuIHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyh0aGlzLCBjaGlwLT5lY2Nfc3RyZW5n
+dGhfZHMsDQo+ICsJCQkJCQljaGlwLT5lY2Nfc3RlcF9kcyk7DQo+ICsJfQ0KPiAgIA0KPiAgIAly
+ZXR1cm4gMDsNCj4gICB9DQo=
