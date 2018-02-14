@@ -1,27 +1,33 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1em2NJ-0006yV-Nh
- for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 19:05:52 +0000
-Date: Wed, 14 Feb 2018 20:05:37 +0100
+ id 1em2RQ-0000DR-2I
+ for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 19:10:06 +0000
+Date: Wed, 14 Feb 2018 20:09:52 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Stefan Agner <stefan@agner.ch>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "max.oss.09@gmail.com"
- <max.oss.09@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
-Message-ID: <20180214200537.2c043a21@bbrezillon>
-In-Reply-To: <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
-References: <20180206174021.5947-1-stefan@agner.ch>
- <20180206174021.5947-2-stefan@agner.ch>
- <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Peter Pan
+ <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>
+Subject: Re: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
+Message-ID: <20180214200952.6a8578dc@bbrezillon>
+In-Reply-To: <0944fefa-6ef8-a93a-dad6-660044b8ec8e@ti.com>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+ <20180205232120.5851-5-boris.brezillon@bootlin.com>
+ <6a9eaaaf-20a6-b332-03d0-9d16e24d0b3d@ti.com>
+ <20180212133158.3032442f@bbrezillon>
+ <67e61203-a2e9-853c-6cda-7226499611c2@ti.com>
+ <20180212170809.3f0b5e20@bbrezillon>
+ <0944fefa-6ef8-a93a-dad6-660044b8ec8e@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,119 +37,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Feb 2018 16:28:36 +0000
-Han Xu <han.xu@nxp.com> wrote:
+On Wed, 14 Feb 2018 21:55:10 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-> On 02/06/2018 11:40 AM, Stefan Agner wrote:
-> > Add support for specified ECC strength/size using device tree
-> > properties nand-ecc-strength/nand-ecc-step-size.
-> >
-> > Signed-off-by: Stefan Agner <stefan@agner.ch>
-> > ---
-> >   .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
-> >   drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
-> >   2 files changed, 24 insertions(+), 10 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > index eb2d9919d063..ea6e9b735160 100644
-> > --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
-> > @@ -46,6 +46,11 @@ Optional properties:
-> >                          partitions written from Linux with this feature
-> >                          turned on may not be accessible by the BootROM
-> >                          code.
-> > +  - nand-ecc-strength: integer representing the number of bits to correct
-> > +                       per ECC step. Needs to be a multiple of 2.
-> > +  - nand-ecc-step-size: integer representing the number of data bytes
-> > +                       that are covered by a single ECC step. The driver
-> > +                       supports 512 and 1024.
-> >   
-> >   The device tree may optionally contain sub-nodes describing partitions of the
-> >   address space. See partition.txt for more detail.
-> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > index 50f8d4a1b983..8cb378358e11 100644
-> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> > @@ -198,17 +198,15 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
-> >    *
-> >    * We may have available oob space in this case.
-> >    */
-> > -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> > +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
-> > +			unsigned int ecc_strength, unsigned int ecc_step)
-> >   {
-> >   	struct bch_geometry *geo = &this->bch_geometry;
-> >   	struct nand_chip *chip = &this->nand;
-> >   	struct mtd_info *mtd = nand_to_mtd(chip);
-> >   	unsigned int block_mark_bit_offset;
-> >   
-> > -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> > -		return -EINVAL;
-> > -
-> > -	switch (chip->ecc_step_ds) {
-> > +	switch (ecc_step) {
-> >   	case SZ_512:
-> >   		geo->gf_len = 13;
-> >   		break;
-> > @@ -221,8 +219,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> >   			chip->ecc_strength_ds, chip->ecc_step_ds);
-> >   		return -EINVAL;
-> >   	}
-> > -	geo->ecc_chunk_size = chip->ecc_step_ds;
-> > -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
-> > +	geo->ecc_chunk_size = ecc_step;
-> > +	geo->ecc_strength = round_up(ecc_strength, 2);
-> >   	if (!gpmi_check_ecc(this))
-> >   		return -EINVAL;
-> >   
-> > @@ -230,7 +228,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> >   	if (geo->ecc_chunk_size < mtd->oobsize) {
-> >   		dev_err(this->dev,
-> >   			"unsupported nand chip. ecc size: %d, oob size : %d\n",
-> > -			chip->ecc_step_ds, mtd->oobsize);
-> > +			ecc_step, mtd->oobsize);
-> >   		return -EINVAL;
-> >   	}
-> >   
-> > @@ -423,9 +421,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
-> >   
-> >   int common_nfc_set_geometry(struct gpmi_nand_data *this)
-> >   {
-> > +	struct nand_chip *chip = &this->nand;
-> > +
-> > +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
-> > +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
-> > +						chip->ecc.size);
-> > +  
-> 
-> I was wondering how to keep, let's say u-boot, and kernel ecc setting 
-> aligned, if users can specify the strength and step_ds in DT? Did u-boot 
-> enable to get these parameters from DT?
+> On 12-Feb-18 9:38 PM, Boris Brezillon wrote:
+> > On Mon, 12 Feb 2018 21:30:09 +0530
+> > Vignesh R <vigneshr@ti.com> wrote:
+> >  =20
+> >> On 12-Feb-18 6:01 PM, Boris Brezillon wrote: =20
+> >>> On Mon, 12 Feb 2018 17:13:55 +0530
+> >>> Vignesh R <vigneshr@ti.com> wrote:
+> >>>    =20
+> >>>> On Tuesday 06 February 2018 04:51 AM, Boris Brezillon wrote:   =20
+> >>>>> From: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >>>>>
+> >>>>> The spi_mem interface is meant to replace the spi_flash_read() one.
+> >>>>> Implement the ->exec_op() method so that we can smoothly get rid of=
+ the
+> >>>>> old interface.
+> >>>>>
+> >>>>> Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> >>>>> ---
+> >>>>> =C2=A0 drivers/spi/spi-ti-qspi.c | 85 +++++++++++++++++++++++++++++=
+++++++++++--------
+> >>>>> =C2=A0 1 file changed, 72 insertions(+), 13 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+> >>>>> index c24d9b45a27c..40cac3ef6cc9 100644
+> >>>>> --- a/drivers/spi/spi-ti-qspi.c
+> >>>>> +++ b/drivers/spi/spi-ti-qspi.c=C2=A0    =20
+> >>>>
+> >>>> [...]
+> >>>>    =20
+> >>>>> +static const struct spi_controller_mem_ops ti_qspi_mem_ops =3D {
+> >>>>> +=C2=A0=C2=A0 .exec_op =3D ti_qspi_exec_mem_op,=C2=A0    =20
+> >>>>
+> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 .supports_op =3D ti_qspi_=
+supports_mem_op,
+> >>>>
+> >>>> Its required as per spi_controller_check_ops() in Patch 1/6   =20
+> >>>    =20
+> >>> ->supports_op() is optional, and if it's missing, the core will do th=
+e   =20
+> >>> regular QuadSPI/DualSPI/SingleSPI check (see spi_mem_supports_op()
+> >>> implementation).    =20
+> >>
+> >> You might have overlooked spi_controller_check_ops() from Patch 1/6:
+> >> +static int spi_controller_check_ops(struct spi_controller *ctlr)
+> >> +{
+> >> +	/*
+> >> +	 * The controller can implement only the high-level SPI-memory
+> >> +	 * operations if it does not support regular SPI transfers.
+> >> +	 */
+> >> +	if (ctlr->mem_ops) {
+> >> +		if (!ctlr->mem_ops->supports_op ||
+> >> +		    !ctlr->mem_ops->exec_op)
+> >> +			return -EINVAL;
+> >> +	} else if (!ctlr->transfer && !ctlr->transfer_one &&
+> >> +		   !ctlr->transfer_one_message) {
+> >> +		return -EINVAL;
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >>
+> >> So if ->supports_op() is not populated by SPI controller driver, then
+> >> driver probe fails with -EINVAL. This is what I observed on my TI
+> >> hardware when testing this patch series. =20
+> >=20
+> > Correct. Then I should fix spi_controller_check_ops() to allow empty
+> > ctlr->mem_ops->supports_op.
+> >  =20
+> >> =20
+> >>> This being said, if you think a custom ->supports_op()
+> >>> implementation is needed for this controller I can add one.
+> >>>    =20
+> >>
+> >> spi_mem_supports_op() should suffice for now if above issue is fixed. =
+=20
+> >=20
+> > Cool. IIUC, you tested the series on a TI SoC. Does it work as
+> > expected? Do you see any perf regressions?
+> >  =20
+>=20
+> I am planning to collect throughput numbers with this series for TI
+> QSPI. I don't think there would be noticeable degradation.
 
-Both u-boot and Linux have to support using strength/step information
-passed through the DT before you can start patching dts files. Anyway,
-users will have to change their DT (add the nand-ecc-strength/step-size
-properties) to use this feature, so they should quickly notice that
-something is going wrong and update their bootloader or drop those
-nand-ecc-xxx props.
+Ok.
 
-> >   	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-> > -				|| legacy_set_geometry(this))
-> > -		return set_geometry_by_ecc_info(this);
-> > +				|| legacy_set_geometry(this)) {
-> > +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> > +			return -EINVAL;
-> > +
-> > +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
-> > +						chip->ecc_step_ds);
-> > +	}
-> >   
-> >   	return 0;
-> >   }  
+> But, it would be interesting to test for a driver thats now under
+> drivers/mtd/spi-nor moved to drivers/spi and see if added overhead of
+> m25p80 layer + spi core has any impact.
 
+I'm working with Frieder on the fsl-qspi rework, so we should have
+numbers soon.
 
-
--- 
+--=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 http://bootlin.com
