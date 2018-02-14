@@ -1,28 +1,27 @@
-Received: from mail-eopbgr00060.outbound.protection.outlook.com ([40.107.0.60]
- helo=EUR02-AM5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1elzvP-0002jo-Rf
- for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 16:29:07 +0000
-From: Han Xu <han.xu@nxp.com>
-To: Stefan Agner <stefan@agner.ch>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>
-CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "max.oss.09@gmail.com" <max.oss.09@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1em2NJ-0006yV-Nh
+ for linux-mtd@lists.infradead.org; Wed, 14 Feb 2018 19:05:52 +0000
+Date: Wed, 14 Feb 2018 20:05:37 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Han Xu <han.xu@nxp.com>
+Cc: Stefan Agner <stefan@agner.ch>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "max.oss.09@gmail.com"
+ <max.oss.09@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH 2/2] mtd: nand: gpmi: add support for specific ECC strength
-Date: Wed, 14 Feb 2018 16:28:36 +0000
-Message-ID: <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
+Message-ID: <20180214200537.2c043a21@bbrezillon>
+In-Reply-To: <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
 References: <20180206174021.5947-1-stefan@agner.ch>
  <20180206174021.5947-2-stefan@agner.ch>
-In-Reply-To: <20180206174021.5947-2-stefan@agner.ch>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EB1983446AB00C4F96B6F66C2101EBC9@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <2f28681f-c261-31f7-9f93-602f50109343@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,77 +31,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCk9uIDAyLzA2LzIwMTggMTE6NDAgQU0sIFN0ZWZhbiBBZ25lciB3cm90ZToNCj4gQWRkIHN1
-cHBvcnQgZm9yIHNwZWNpZmllZCBFQ0Mgc3RyZW5ndGgvc2l6ZSB1c2luZyBkZXZpY2UgdHJlZQ0K
-PiBwcm9wZXJ0aWVzIG5hbmQtZWNjLXN0cmVuZ3RoL25hbmQtZWNjLXN0ZXAtc2l6ZS4NCj4NCj4g
-U2lnbmVkLW9mZi1ieTogU3RlZmFuIEFnbmVyIDxzdGVmYW5AYWduZXIuY2g+DQo+IC0tLQ0KPiAg
-IC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL210ZC9ncG1pLW5hbmQudHh0ICAgICAgICAgIHwgIDUg
-KysrKw0KPiAgIGRyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbmFuZC5jICAgICAgICAg
-ICAgIHwgMjkgKysrKysrKysrKysrKystLS0tLS0tLQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgMjQg
-aW5zZXJ0aW9ucygrKSwgMTAgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQNCj4gaW5kZXggZWIyZDk5
-MTlkMDYzLi5lYTZlOWI3MzUxNjAgMTAwNjQ0DQo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
-dHJlZS9iaW5kaW5ncy9tdGQvZ3BtaS1uYW5kLnR4dA0KPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3MvbXRkL2dwbWktbmFuZC50eHQNCj4gQEAgLTQ2LDYgKzQ2LDExIEBA
-IE9wdGlvbmFsIHByb3BlcnRpZXM6DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBwYXJ0aXRp
-b25zIHdyaXR0ZW4gZnJvbSBMaW51eCB3aXRoIHRoaXMgZmVhdHVyZQ0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdHVybmVkIG9uIG1heSBub3QgYmUgYWNjZXNzaWJsZSBieSB0aGUgQm9vdFJP
-TQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgY29kZS4NCj4gKyAgLSBuYW5kLWVjYy1zdHJl
-bmd0aDogaW50ZWdlciByZXByZXNlbnRpbmcgdGhlIG51bWJlciBvZiBiaXRzIHRvIGNvcnJlY3QN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcGVyIEVDQyBzdGVwLiBOZWVkcyB0byBiZSBhIG11
-bHRpcGxlIG9mIDIuDQo+ICsgIC0gbmFuZC1lY2Mtc3RlcC1zaXplOiBpbnRlZ2VyIHJlcHJlc2Vu
-dGluZyB0aGUgbnVtYmVyIG9mIGRhdGEgYnl0ZXMNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-dGhhdCBhcmUgY292ZXJlZCBieSBhIHNpbmdsZSBFQ0Mgc3RlcC4gVGhlIGRyaXZlcg0KPiArICAg
-ICAgICAgICAgICAgICAgICAgICBzdXBwb3J0cyA1MTIgYW5kIDEwMjQuDQo+ICAgDQo+ICAgVGhl
-IGRldmljZSB0cmVlIG1heSBvcHRpb25hbGx5IGNvbnRhaW4gc3ViLW5vZGVzIGRlc2NyaWJpbmcg
-cGFydGl0aW9ucyBvZiB0aGUNCj4gICBhZGRyZXNzIHNwYWNlLiBTZWUgcGFydGl0aW9uLnR4dCBm
-b3IgbW9yZSBkZXRhaWwuDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2dwbWktbmFu
-ZC9ncG1pLW5hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbmFuZC5jDQo+
-IGluZGV4IDUwZjhkNGExYjk4My4uOGNiMzc4MzU4ZTExIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiArKysgYi9kcml2ZXJzL210ZC9uYW5k
-L2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiBAQCAtMTk4LDE3ICsxOTgsMTUgQEAgc3RhdGljIGlu
-bGluZSBib29sIGdwbWlfY2hlY2tfZWNjKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4g
-ICAgKg0KPiAgICAqIFdlIG1heSBoYXZlIGF2YWlsYWJsZSBvb2Igc3BhY2UgaW4gdGhpcyBjYXNl
-Lg0KPiAgICAqLw0KPiAtc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8oc3RydWN0
-IGdwbWlfbmFuZF9kYXRhICp0aGlzKQ0KPiArc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNj
-X2luZm8oc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzLA0KPiArCQkJdW5zaWduZWQgaW50IGVj
-Y19zdHJlbmd0aCwgdW5zaWduZWQgaW50IGVjY19zdGVwKQ0KPiAgIHsNCj4gICAJc3RydWN0IGJj
-aF9nZW9tZXRyeSAqZ2VvID0gJnRoaXMtPmJjaF9nZW9tZXRyeTsNCj4gICAJc3RydWN0IG5hbmRf
-Y2hpcCAqY2hpcCA9ICZ0aGlzLT5uYW5kOw0KPiAgIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5h
-bmRfdG9fbXRkKGNoaXApOw0KPiAgIAl1bnNpZ25lZCBpbnQgYmxvY2tfbWFya19iaXRfb2Zmc2V0
-Ow0KPiAgIA0KPiAtCWlmICghKGNoaXAtPmVjY19zdHJlbmd0aF9kcyA+IDAgJiYgY2hpcC0+ZWNj
-X3N0ZXBfZHMgPiAwKSkNCj4gLQkJcmV0dXJuIC1FSU5WQUw7DQo+IC0NCj4gLQlzd2l0Y2ggKGNo
-aXAtPmVjY19zdGVwX2RzKSB7DQo+ICsJc3dpdGNoIChlY2Nfc3RlcCkgew0KPiAgIAljYXNlIFNa
-XzUxMjoNCj4gICAJCWdlby0+Z2ZfbGVuID0gMTM7DQo+ICAgCQlicmVhazsNCj4gQEAgLTIyMSw4
-ICsyMTksOCBAQCBzdGF0aWMgaW50IHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyhzdHJ1Y3QgZ3Bt
-aV9uYW5kX2RhdGEgKnRoaXMpDQo+ICAgCQkJY2hpcC0+ZWNjX3N0cmVuZ3RoX2RzLCBjaGlwLT5l
-Y2Nfc3RlcF9kcyk7DQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gICAJfQ0KPiAtCWdlby0+ZWNj
-X2NodW5rX3NpemUgPSBjaGlwLT5lY2Nfc3RlcF9kczsNCj4gLQlnZW8tPmVjY19zdHJlbmd0aCA9
-IHJvdW5kX3VwKGNoaXAtPmVjY19zdHJlbmd0aF9kcywgMik7DQo+ICsJZ2VvLT5lY2NfY2h1bmtf
-c2l6ZSA9IGVjY19zdGVwOw0KPiArCWdlby0+ZWNjX3N0cmVuZ3RoID0gcm91bmRfdXAoZWNjX3N0
-cmVuZ3RoLCAyKTsNCj4gICAJaWYgKCFncG1pX2NoZWNrX2VjYyh0aGlzKSkNCj4gICAJCXJldHVy
-biAtRUlOVkFMOw0KPiAgIA0KPiBAQCAtMjMwLDcgKzIyOCw3IEBAIHN0YXRpYyBpbnQgc2V0X2dl
-b21ldHJ5X2J5X2VjY19pbmZvKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4gICAJaWYg
-KGdlby0+ZWNjX2NodW5rX3NpemUgPCBtdGQtPm9vYnNpemUpIHsNCj4gICAJCWRldl9lcnIodGhp
-cy0+ZGV2LA0KPiAgIAkJCSJ1bnN1cHBvcnRlZCBuYW5kIGNoaXAuIGVjYyBzaXplOiAlZCwgb29i
-IHNpemUgOiAlZFxuIiwNCj4gLQkJCWNoaXAtPmVjY19zdGVwX2RzLCBtdGQtPm9vYnNpemUpOw0K
-PiArCQkJZWNjX3N0ZXAsIG10ZC0+b29ic2l6ZSk7DQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsNCj4g
-ICAJfQ0KPiAgIA0KPiBAQCAtNDIzLDkgKzQyMSwyMCBAQCBzdGF0aWMgaW50IGxlZ2FjeV9zZXRf
-Z2VvbWV0cnkoc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzKQ0KPiAgIA0KPiAgIGludCBjb21t
-b25fbmZjX3NldF9nZW9tZXRyeShzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRoaXMpDQo+ICAgew0K
-PiArCXN0cnVjdCBuYW5kX2NoaXAgKmNoaXAgPSAmdGhpcy0+bmFuZDsNCj4gKw0KPiArCWlmIChj
-aGlwLT5lY2Muc3RyZW5ndGggPiAwICYmIGNoaXAtPmVjYy5zaXplID4gMCkNCj4gKwkJcmV0dXJu
-IHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyh0aGlzLCBjaGlwLT5lY2Muc3RyZW5ndGgsDQo+ICsJ
-CQkJCQljaGlwLT5lY2Muc2l6ZSk7DQo+ICsNCg0KSSB3YXMgd29uZGVyaW5nIGhvdyB0byBrZWVw
-LCBsZXQncyBzYXkgdS1ib290LCBhbmQga2VybmVsIGVjYyBzZXR0aW5nIA0KYWxpZ25lZCwgaWYg
-dXNlcnMgY2FuIHNwZWNpZnkgdGhlIHN0cmVuZ3RoIGFuZCBzdGVwX2RzIGluIERUPyBEaWQgdS1i
-b290IA0KZW5hYmxlIHRvIGdldCB0aGVzZSBwYXJhbWV0ZXJzIGZyb20gRFQ/DQo+ICAgCWlmICgo
-b2ZfcHJvcGVydHlfcmVhZF9ib29sKHRoaXMtPmRldi0+b2Zfbm9kZSwgImZzbCx1c2UtbWluaW11
-bS1lY2MiKSkNCj4gLQkJCQl8fCBsZWdhY3lfc2V0X2dlb21ldHJ5KHRoaXMpKQ0KPiAtCQlyZXR1
-cm4gc2V0X2dlb21ldHJ5X2J5X2VjY19pbmZvKHRoaXMpOw0KPiArCQkJCXx8IGxlZ2FjeV9zZXRf
-Z2VvbWV0cnkodGhpcykpIHsNCj4gKwkJaWYgKCEoY2hpcC0+ZWNjX3N0cmVuZ3RoX2RzID4gMCAm
-JiBjaGlwLT5lY2Nfc3RlcF9kcyA+IDApKQ0KPiArCQkJcmV0dXJuIC1FSU5WQUw7DQo+ICsNCj4g
-KwkJcmV0dXJuIHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyh0aGlzLCBjaGlwLT5lY2Nfc3RyZW5n
-dGhfZHMsDQo+ICsJCQkJCQljaGlwLT5lY2Nfc3RlcF9kcyk7DQo+ICsJfQ0KPiAgIA0KPiAgIAly
-ZXR1cm4gMDsNCj4gICB9DQo=
+On Wed, 14 Feb 2018 16:28:36 +0000
+Han Xu <han.xu@nxp.com> wrote:
+
+> On 02/06/2018 11:40 AM, Stefan Agner wrote:
+> > Add support for specified ECC strength/size using device tree
+> > properties nand-ecc-strength/nand-ecc-step-size.
+> >
+> > Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > ---
+> >   .../devicetree/bindings/mtd/gpmi-nand.txt          |  5 ++++
+> >   drivers/mtd/nand/gpmi-nand/gpmi-nand.c             | 29 ++++++++++++++--------
+> >   2 files changed, 24 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > index eb2d9919d063..ea6e9b735160 100644
+> > --- a/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/gpmi-nand.txt
+> > @@ -46,6 +46,11 @@ Optional properties:
+> >                          partitions written from Linux with this feature
+> >                          turned on may not be accessible by the BootROM
+> >                          code.
+> > +  - nand-ecc-strength: integer representing the number of bits to correct
+> > +                       per ECC step. Needs to be a multiple of 2.
+> > +  - nand-ecc-step-size: integer representing the number of data bytes
+> > +                       that are covered by a single ECC step. The driver
+> > +                       supports 512 and 1024.
+> >   
+> >   The device tree may optionally contain sub-nodes describing partitions of the
+> >   address space. See partition.txt for more detail.
+> > diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > index 50f8d4a1b983..8cb378358e11 100644
+> > --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> > @@ -198,17 +198,15 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+> >    *
+> >    * We may have available oob space in this case.
+> >    */
+> > -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> > +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
+> > +			unsigned int ecc_strength, unsigned int ecc_step)
+> >   {
+> >   	struct bch_geometry *geo = &this->bch_geometry;
+> >   	struct nand_chip *chip = &this->nand;
+> >   	struct mtd_info *mtd = nand_to_mtd(chip);
+> >   	unsigned int block_mark_bit_offset;
+> >   
+> > -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> > -		return -EINVAL;
+> > -
+> > -	switch (chip->ecc_step_ds) {
+> > +	switch (ecc_step) {
+> >   	case SZ_512:
+> >   		geo->gf_len = 13;
+> >   		break;
+> > @@ -221,8 +219,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> >   			chip->ecc_strength_ds, chip->ecc_step_ds);
+> >   		return -EINVAL;
+> >   	}
+> > -	geo->ecc_chunk_size = chip->ecc_step_ds;
+> > -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+> > +	geo->ecc_chunk_size = ecc_step;
+> > +	geo->ecc_strength = round_up(ecc_strength, 2);
+> >   	if (!gpmi_check_ecc(this))
+> >   		return -EINVAL;
+> >   
+> > @@ -230,7 +228,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> >   	if (geo->ecc_chunk_size < mtd->oobsize) {
+> >   		dev_err(this->dev,
+> >   			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+> > -			chip->ecc_step_ds, mtd->oobsize);
+> > +			ecc_step, mtd->oobsize);
+> >   		return -EINVAL;
+> >   	}
+> >   
+> > @@ -423,9 +421,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+> >   
+> >   int common_nfc_set_geometry(struct gpmi_nand_data *this)
+> >   {
+> > +	struct nand_chip *chip = &this->nand;
+> > +
+> > +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
+> > +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
+> > +						chip->ecc.size);
+> > +  
+> 
+> I was wondering how to keep, let's say u-boot, and kernel ecc setting 
+> aligned, if users can specify the strength and step_ds in DT? Did u-boot 
+> enable to get these parameters from DT?
+
+Both u-boot and Linux have to support using strength/step information
+passed through the DT before you can start patching dts files. Anyway,
+users will have to change their DT (add the nand-ecc-strength/step-size
+properties) to use this feature, so they should quickly notice that
+something is going wrong and update their bootloader or drop those
+nand-ecc-xxx props.
+
+> >   	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+> > -				|| legacy_set_geometry(this))
+> > -		return set_geometry_by_ecc_info(this);
+> > +				|| legacy_set_geometry(this)) {
+> > +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> > +			return -EINVAL;
+> > +
+> > +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
+> > +						chip->ecc_step_ds);
+> > +	}
+> >   
+> >   	return 0;
+> >   }  
+
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
