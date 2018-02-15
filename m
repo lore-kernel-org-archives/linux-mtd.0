@@ -4,9 +4,9 @@ To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
 Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
  cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, oss@buserror.net,
  leoyang.li@nxp.com, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Subject: [PATCH 0/4][v4] dt-bindings: mtd-physmap: Add endianness supports
-Date: Thu, 15 Feb 2018 17:18:03 +0530
-Message-Id: <20180215114803.23570-1-prabhakar.kushwaha@nxp.com>
+Subject: [PATCH 1/4][v4] dt-bindings: mtd-physmap: Add endianness supports
+Date: Thu, 15 Feb 2018 17:19:04 +0530
+Message-Id: <20180215114904.23627-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,27 +22,33 @@ Connection between flash and controller is not necessary to be always
 of same type. It may varies from platform to platform.
 
 Adding endianness (optional) property to provide connection type
-information. This endianness property is checked in physmap_of_core.c
-to decide swap type. 
+information.
 
-This patch also set "big-endian" property for ls1021a, ls1043a
-and ls1046a device tree. here connection between IFC controller
-and NOR flash is big-endian.
-
-Prabhakar Kushwaha (4):
-  dt-bindings: mtd-physmap: Add endianness supports
-  driver: mtd: update struct map_info's swap as per map requirement
-  ARM: dts: Add NOR connection type with IFC
-  ARM64: dts: Add NOR connection type with IFC
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+---
+Changes for v2: updated subject
+Changes for v3: fixed typo for "big-endian"
+Changes for v4: Moved binding definition in mtd-physmap.txt
+as discussed at https://patchwork.ozlabs.org/patch/842543/
 
  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
- arch/arm/boot/dts/ls1021a-qds.dts                     | 1 +
- arch/arm/boot/dts/ls1021a-twr.dts                     | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts     | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts     | 1 +
- arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts     | 1 +
- drivers/mtd/maps/physmap_of_core.c                    | 8 ++++++++
- 7 files changed, 18 insertions(+)
+ 1 file changed, 5 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48bf4ecb..961a8eed9d0d 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -41,6 +41,11 @@ additional (optional) property is defined:
+ 
+  - erase-size : The chip's physical erase block size in bytes.
+ 
++ The device tree may optionally contain endianness property.
++ little-endian or big-endian : It represents connection between controller and
++			flash. If this property is absent, flash is considered
++			to be host-endian.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
 -- 
 2.14.1
