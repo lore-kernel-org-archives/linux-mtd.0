@@ -1,28 +1,26 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1emdDc-0000uj-IU
- for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 10:26:37 +0000
-Date: Fri, 16 Feb 2018 11:25:54 +0100
+ id 1emdVx-0007I4-6Q
+ for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 10:45:15 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Mark Brown
- <broonie@kernel.org>, linux-spi@vger.kernel.org
-Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar
- <sourav.poddar@ti.com>
-Subject: Re: [RFC PATCH 4/6] spi: ti-qspi: Implement the spi_mem interface
-Message-ID: <20180216112554.35f79e55@bbrezillon>
-In-Reply-To: <20180205232120.5851-5-boris.brezillon@bootlin.com>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
- <20180205232120.5851-5-boris.brezillon@bootlin.com>
+To: linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
+ Mike Turquette <mturquette@baylibre.com>,
+ Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org,
+ David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+Subject: [PATCH] Update Boris Brezillon email address
+Date: Fri, 16 Feb 2018 11:44:49 +0100
+Message-Id: <20180216104449.15546-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,97 +30,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  6 Feb 2018 00:21:18 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Free Electrons is now Bootlin.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Note that I'm planning to take this patch through the MTD tree.
+---
+ .mailmap    |  7 ++++---
+ MAINTAINERS | 10 +++++-----
+ 2 files changed, 9 insertions(+), 8 deletions(-)
 
-> @@ -566,6 +567,62 @@ static int ti_qspi_spi_flash_read(struct spi_device *spi,
->  	return ret;
->  }
->  
-> +static int ti_qspi_exec_mem_op(struct spi_mem *mem,
-> +			       const struct spi_mem_op *op)
-> +{
-> +	struct ti_qspi *qspi = spi_master_get_devdata(mem->spi->master);
-> +	int i, ret = 0;
-> +	u32 from = 0;
-> +
-> +	/* Only optimize read path. */
-> +	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
-> +	    !op->addr.nbytes || op->addr.nbytes > 4)
-> +		return -ENOTSUPP;
-> +
-> +	for (i = 0; i < op->addr.nbytes; i++) {
-> +		from <<= 8;
-> +		from |= op->addr.buf[i];
-> +	}
-> +
-> +	/* Address exceeds MMIO window size, fall back to regular mode. */
-> +	if (from > 0x4000000)
-> +		return -ENOTSUPP;
-> +
-> +	mutex_lock(&qspi->list_lock);
-> +
-> +	if (!qspi->mmap_enabled)
-> +		ti_qspi_enable_memory_map(mem->spi);
-> +	ti_qspi_setup_mmap_read(mem->spi, op->cmd.opcode, op->data.buswidth,
-> +				op->addr.nbytes, op->dummy.nbytes);
-> +
-> +	if (qspi->rx_chan) {
-> +		struct sg_table sgt;
-> +
-> +		if (!virt_addr_valid(op->data.buf.in) &&
-> +		    !spi_controller_dma_map_mem_op_data(mem->spi->master, op,
-> +							&sgt)) {
-
-As Vignesh just reported, it should be virt_addr_valid(op->data.buf.in)
-and not !virt_addr_valid(op->data.buf.in).
-
-> +			ret = ti_qspi_dma_xfer_sg(qspi, sgt, from);
-> +			spi_controller_dma_unmap_mem_op_data(mem->spi->master,
-> +							     op, &sgt);
-> +		} else {
-> +			ret = ti_qspi_dma_bounce_buffer(qspi, from,
-> +							op->data.buf.in,
-> +							op->data.nbytes);
-> +		}
-> +	} else {
-> +		memcpy_fromio(op->data.buf.in, qspi->mmap_base + from,
-> +			      op->data.nbytes);
-> +	}
-> +
-> +	mutex_unlock(&qspi->list_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct spi_controller_mem_ops ti_qspi_mem_ops = {
-> +	.exec_op = ti_qspi_exec_mem_op,
-> +};
-> +
->  static int ti_qspi_start_transfer_one(struct spi_master *master,
->  		struct spi_message *m)
->  {
-> @@ -673,6 +730,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
->  	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
->  				     SPI_BPW_MASK(8);
->  	master->spi_flash_read = ti_qspi_spi_flash_read;
-> +	master->mem_ops = &ti_qspi_mem_ops;
->  
->  	if (!of_property_read_u32(np, "num-cs", &num_cs))
->  		master->num_chipselect = num_cs;
-> @@ -785,6 +843,7 @@ static int ti_qspi_probe(struct platform_device *pdev)
->  				 PTR_ERR(qspi->mmap_base));
->  			qspi->mmap_base = NULL;
->  			master->spi_flash_read = NULL;
-> +			master->mem_ops = NULL;
->  		}
->  	}
->  	qspi->mmap_enabled = false;
-
-
-
+diff --git a/.mailmap b/.mailmap
+index e18cab73e209..50c1d6bf36b2 100644
+--- a/.mailmap
++++ b/.mailmap
+@@ -33,9 +33,10 @@ Axel Lin <axel.lin@gmail.com>
+ Ben Gardner <bgardner@wabtec.com>
+ Ben M Cahill <ben.m.cahill@intel.com>
+ Björn Steinbrink <B.Steinbrink@gmx.de>
+-Boris Brezillon <boris.brezillon@free-electrons.com>
+-Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon.dev@gmail.com>
+-Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon@overkiz.com>
++Boris Brezillon <boris.brezillon@bootlin.com>
++Boris Brezillon <boris.brezillon@bootlin.com> <boris.brezillon@free-electrons.com>
++Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon.dev@gmail.com>
++Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon@overkiz.com>
+ Brian Avery <b.avery@hp.com>
+ Brian King <brking@us.ibm.com>
+ Christoph Hellwig <hch@lst.de>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 34b2e9ed6d3d..38fcbabbc55b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1232,7 +1232,7 @@ F:	arch/arm/boot/dts/aspeed-*
+ F:	drivers/*/*aspeed*
+ 
+ ARM/ATMEL AT91 Clock Support
+-M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++M:	Boris Brezillon <boris.brezillon@bootlin.com>
+ S:	Maintained
+ F:	drivers/clk/at91
+ 
+@@ -4644,7 +4644,7 @@ F:	Documentation/gpu/meson.rst
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ 
+ DRM DRIVERS FOR ATMEL HLCDC
+-M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++M:	Boris Brezillon <boris.brezillon@bootlin.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ F:	drivers/gpu/drm/atmel-hlcdc/
+@@ -8412,7 +8412,7 @@ F:	include/uapi/drm/armada_drm.h
+ F:	Documentation/devicetree/bindings/display/armada/
+ 
+ MARVELL CRYPTO DRIVER
+-M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++M:	Boris Brezillon <boris.brezillon@bootlin.com>
+ M:	Arnaud Ebalard <arno@natisbad.org>
+ F:	drivers/crypto/marvell/
+ S:	Maintained
+@@ -9034,7 +9034,7 @@ F:	mm/
+ MEMORY TECHNOLOGY DEVICES (MTD)
+ M:	David Woodhouse <dwmw2@infradead.org>
+ M:	Brian Norris <computersforpeace@gmail.com>
+-M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++M:	Boris Brezillon <boris.brezillon@bootlin.com>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+ M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+@@ -9452,7 +9452,7 @@ S:	Supported
+ F:	drivers/net/ethernet/myricom/myri10ge/
+ 
+ NAND FLASH SUBSYSTEM
+-M:	Boris Brezillon <boris.brezillon@free-electrons.com>
++M:	Boris Brezillon <boris.brezillon@bootlin.com>
+ R:	Richard Weinberger <richard@nod.at>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.14.1
