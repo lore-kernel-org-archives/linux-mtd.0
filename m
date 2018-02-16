@@ -1,34 +1,25 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1emiIr-0007iq-4f
- for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 15:52:03 +0000
-Date: Fri, 16 Feb 2018 16:51:47 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kamil Konieczny <k.konieczny@partner.samsung.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org, Mike
- Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@codeaurora.org>,
- linux-clk@vger.kernel.org, David Airlie <airlied@linux.ie>, Daniel Vetter
- <daniel@ffwll.ch>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Update Boris Brezillon email address
-Message-ID: <20180216165147.41c0d9e7@bbrezillon>
-In-Reply-To: <9c05d969-b488-fbc4-4143-6446d8a6d7ab@partner.samsung.com>
-References: <CGME20180216104523epcas3p1c45769e365a181963f8328237d270854@epcas3p1.samsung.com>
- <20180216104449.15546-1-boris.brezillon@bootlin.com>
- <dbe89241-4d05-d369-2894-fdc0b2d80b80@partner.samsung.com>
- <20180216121619.3edad6fb@bbrezillon>
- <4086d3a7-c79d-6906-2778-caccd647ffe6@partner.samsung.com>
- <20180216150050.6051cc26@bbrezillon>
- <138ed639-992d-2d87-4dd4-973323cdcad7@partner.samsung.com>
- <20180216155455.36168609@bbrezillon>
- <9c05d969-b488-fbc4-4143-6446d8a6d7ab@partner.samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1emjAZ-0007M6-Pe
+ for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 16:47:33 +0000
+Received: by mail-wm0-x243.google.com with SMTP id x4so6273693wmc.0
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2018 08:47:19 -0800 (PST)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>,
+ Santosh Shilimkar <ssantosh@kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, David Lechner <david@lechnology.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 0/6] ARM: davinci: remove the mach-specific aemif driver -
+ part 1
+Date: Fri, 16 Feb 2018 17:47:06 +0100
+Message-Id: <20180216164712.25898-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,96 +29,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Feb 2018 16:35:27 +0100
-Kamil Konieczny <k.konieczny@partner.samsung.com> wrote:
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-> On 16.02.2018 15:54, Boris Brezillon wrote:
-> > Adding back all the people that were Cc-ed on the initial email.
-> >=20
-> > On Fri, 16 Feb 2018 15:18:21 +0100
-> > Kamil Konieczny <k.konieczny@partner.samsung.com> wrote:
-> >  =20
-> >> On 16.02.2018 15:00, Boris Brezillon wrote: =20
-> >>> On Fri, 16 Feb 2018 12:21:53 +0100
-> >>> Kamil Konieczny <k.konieczny@partner.samsung.com> wrote:
-> >>>    =20
-> >>>> On 16.02.2018 12:16, Boris Brezillon wrote:   =20
-> >>>>> On Fri, 16 Feb 2018 12:07:42 +0100
-> >>>>> Kamil Konieczny <k.konieczny@partner.samsung.com> wrote:
-> >>>>>      =20
-> >>>>>> On 16.02.2018 11:44, Boris Brezillon wrote:     =20
-> >>>>>>> Free Electrons is now Bootlin.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> >>>>>>> ---
-> >>>>>>> Note that I'm planning to take this patch through the MTD tree.
-> >>>>>>> ---
-> >>>>>>>  .mailmap    |  7 ++++---
-> >>>>>>>  MAINTAINERS | 10 +++++-----
-> >>>>>>>  2 files changed, 9 insertions(+), 8 deletions(-)
-> >>>>>>>
-> >>>>>>> diff --git a/.mailmap b/.mailmap
-> >>>>>>> index e18cab73e209..50c1d6bf36b2 100644
-> >>>>>>> --- a/.mailmap
-> >>>>>>> +++ b/.mailmap
-> >>>>>>> @@ -33,9 +33,10 @@ Axel Lin <axel.lin@gmail.com>
-> >>>>>>>  Ben Gardner <bgardner@wabtec.com>
-> >>>>>>>  Ben M Cahill <ben.m.cahill@intel.com>
-> >>>>>>>  Bj=C3=B6rn Steinbrink <B.Steinbrink@gmx.de>
-> >>>>>>> -Boris Brezillon <boris.brezillon@free-electrons.com>
-> >>>>>>> -Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillo=
-n.dev@gmail.com>
-> >>>>>>> -Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillo=
-n@overkiz.com>
-> >>>>>>> +Boris Brezillon <boris.brezillon@bootlin.com>
-> >>>>>>> +Boris Brezillon <boris.brezillon@bootlin.com> <boris.brezillon@f=
-ree-electrons.com>       =20
-> >>>>>>
-> >>>>>> ------------------------------------------------------------------=
- ??????????????????     =20
-> >>>>>
-> >>>>> Is there a problem with this line?
-> >>>>>      =20
-> >>>>
-> >>>> I think you want to delete all 'free-electrons', yet here you add th=
-is   =20
-> >>>
-> >>> I'm clearly not a git expert, but according to man git-shortlog [1], =
-the
-> >>> format I'm using here allows mailmap to replace the old email by the
-> >>> new one, which is exactly what I want.
-> >>>
-> >>> [1]https://git-scm.com/docs/git-shortlog
-> >>>    =20
-> >>
-> >> Ah, I see, but why do you send patch for .mailmap ?
-> >> it is your private file, not global one, I do not want mine .mailmap
-> >> to be replaced by yours :) =20
-> >=20
-> > No, it's not private, it's part of the git tree.
-> >  =20
-> >> But beside this, you can use sed script
-> >>
-> >> sed -i -e 's/free-electrons/bootlin/g' .mailmap
-> >>
-> >> Please just resend this with patch for MAINTAINER's only
-> >> =20
-> >=20
-> > .mailmap is versioned for a good reason, and I don't see why I couldn't
-> > update entries for my emails, especially since those entries already
-> > existed before this patch. =20
->=20
-> I am newbie, it looks you are right, sorry for questions.
->=20
+Hi Sekhar,
 
-No problem, but when you're not sure about something you should not act
-like you know how things should be done.
+while waiting for David's updated series I prepared the first part of
+changes required to remove duplicate aemif support from mach-davinci.
 
-Regards,
+I actually noticed that one of my previous changes from 2017 broke nand
+in legacy mode - the clock lookup no longer works. This series addresses
+it as well.
 
-Boris
+The first two patches fix the issue introduced in commit d8e22fb4ccac
+("ARM: da850: add the nand dev_id to the clock lookup table").
 
---=20
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Next two add support for board files to the aemif driver.
+
+Last two add nand support to da850-lcdk in legacy mode and make
+da850-evm use the platform driver instead of the mach-specific one.
+
+If this series gets accepted, I'll prepere a follow-up moving all
+other boards to the new platform driver.
+
+Bartosz Golaszewski (6):
+  nand: davinci: rename the platform driver
+  ARM: davinci: update the nand driver names
+  memory: aemif: don't rely on kbuild for driver's name
+  memory: aemif: add support for board files
+  ARM: davinci: add aemif & nand support to da850-lcdk in legacy mode
+  ARM: davinci: use aemif platform driver in legacy mode for da850-evm
+
+ arch/arm/mach-davinci/board-da830-evm.c     |   2 +-
+ arch/arm/mach-davinci/board-da850-evm.c     |  93 +++++++++++---------
+ arch/arm/mach-davinci/board-dm355-evm.c     |   2 +-
+ arch/arm/mach-davinci/board-dm355-leopard.c |   2 +-
+ arch/arm/mach-davinci/board-dm365-evm.c     |   2 +-
+ arch/arm/mach-davinci/board-dm644x-evm.c    |   2 +-
+ arch/arm/mach-davinci/board-dm646x-evm.c    |   2 +-
+ arch/arm/mach-davinci/board-mityomapl138.c  |   2 +-
+ arch/arm/mach-davinci/board-neuros-osd2.c   |   2 +-
+ arch/arm/mach-davinci/board-omapl138-hawk.c | 132 ++++++++++++++++++++++++++++
+ arch/arm/mach-davinci/board-sffsdr.c        |   2 +-
+ drivers/memory/ti-aemif.c                   |  59 ++++++++-----
+ drivers/mtd/nand/davinci_nand.c             |   2 +-
+ include/linux/platform_data/ti-aemif.h      |   9 ++
+ 14 files changed, 240 insertions(+), 73 deletions(-)
+
+-- 
+2.16.1
