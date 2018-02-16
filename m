@@ -1,23 +1,21 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1emdlV-0003aL-MO
- for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 11:01:23 +0000
-Date: Fri, 16 Feb 2018 12:01:05 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>
-Subject: Re: [PATCH v7 0/7] mtd: nand: Prepare things for SPI NAND support
-Message-ID: <20180216120105.295e5f59@bbrezillon>
-In-Reply-To: <20180205220205.3528-1-boris.brezillon@bootlin.com>
-References: <20180205220205.3528-1-boris.brezillon@bootlin.com>
+ id 1emgv9-0001WF-IH
+ for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 14:23:29 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 0/2] Convert FSMC NAND controller driver to ->exec_op()
+Date: Fri, 16 Feb 2018 15:22:46 +0100
+Message-Id: <20180216142248.32345-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon,  5 Feb 2018 23:01:58 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hello,
 
-> Hello all,
-> 
-> I'm finally posting a v7 of the SPI NAND preparation patches. That's on
-> my TODO list for quite some time, and I finally take the time to submit
-> things that are pending in my development branch and are ready for
-> submission (at least, that's my opinion :)).
-> 
-> Patches adding SPI NAND support have been ommited because I'm still not
-> entirely happy with the SPI memories (NOR/NAND/SRAM) / QSPI controllers
-> situation, and, despite what I said earlier, I think it's worth
-> addressing the problem now.
-> 
-> What made me change my mind is the rework of the FSL QSPI driver
-> initiated by Frieder to support NANDs. Looks like all other QSPI
-> drivers will have to implement the same kind of hack to support both
-> SPI NORs and SPI NANDs with a single driver, which implies a lot of
-> duplicated code.
-> 
-> So, instead of making the situation worse by adding yet another level
-> of complexity, I'd like to see if we can expose all QSPI NOR
-> controllers as regular SPI controllers. Well, not exactly regular SPI
-> controllers, in that they would not be able to do random SPI transfers,
-> but instead high-level operations (an operation being a
-> CMD[+ADDRS][+DUMMY][+DATA] sequence).
-> 
-> The idea is to extend the SPI framework to provide high-level APIs to
-> execute such SPI operations. Then, each SPI controller would be able
-> to implement the high-level interface directly (likely the chosen
-> approach for advanced SPI controllers) or rely on the default
-> implementation which creates regular SPI messages to do the operation.
-> 
-> Note that this high-level spi-mem interface would replace the
-> spi_flash_read() APIs and handle optimizations of both read/write
-> paths.
-> 
-> I'm currently working on a PoC to validate the feasability of this
-> approach (I pushed my work here [1], but it's not yet in a clean
-> state), but this will be part of a separate RFC.
-> 
-> Back to the initial topic. The patch series contains
-> mechanical/straightforward changes to move existing NAND code to
-> the raw subdir (patches 1 to 6) and a patch adding the generic NAND
-> layer that is meant to be used by the SPI NAND framework, and at
-> some point, by the raw NAND and OneNAND framework.
+Now that the ->exec_op() interface has been merged in the NAND core,
+convert the FSMC NAND controller driver to it.
 
-Applied the whole series.
+A previous step involves getting rid of ->IO_ADDR_[R|W] across the
+driver, which is almost entirely done in the first patch. Because the
+driver still uses at that point the default implementations of
+->read/write_byte/word(), some references are still present but are
+removed as soon as the driver is moved to ->exec_op(), when this
+dependency disappears.
 
+Best regards,
+Miquèl
+
+
+Changes since v1:
+=================
+
+- Forgot about the NAND unique ID for now, this will need a deeper
+  rework of the MTD stack and is very (ONFI-)NAND-specific.
+- Split the migration of FSMC driver to ->exec_op() into two patches,
+  one to get rid of ->IO_ADDR_[R|W], the other to implement ->exec_op()
+  and ->select_chip() which is also needed.
+- Got rid of the additional ->regs entry in the FSMC structure, using
+  the existing entry ->regs_va instead.
+
+
+Miquel Raynal (2):
+  mtd: nand: fsmc: get rid of IO_ADDR_[R|W]
+  mtd: nand: fsmc: use ->exec_op()
+
+ drivers/mtd/nand/fsmc_nand.c | 242 ++++++++++++++++++++++++-------------------
+ 1 file changed, 137 insertions(+), 105 deletions(-)
 
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+2.14.1
