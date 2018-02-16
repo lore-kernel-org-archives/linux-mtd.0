@@ -1,26 +1,23 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1emdVx-0007I4-6Q
- for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 10:45:15 +0000
+ id 1emdlV-0003aL-MO
+ for linux-mtd@lists.infradead.org; Fri, 16 Feb 2018 11:01:23 +0000
+Date: Fri, 16 Feb 2018 12:01:05 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: linux-kernel@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S. Miller" <davem@davemloft.net>, linux-crypto@vger.kernel.org,
- Mike Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>, linux-clk@vger.kernel.org,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org
-Subject: [PATCH] Update Boris Brezillon email address
-Date: Fri, 16 Feb 2018 11:44:49 +0100
-Message-Id: <20180216104449.15546-1-boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>
+Subject: Re: [PATCH v7 0/7] mtd: nand: Prepare things for SPI NAND support
+Message-ID: <20180216120105.295e5f59@bbrezillon>
+In-Reply-To: <20180205220205.3528-1-boris.brezillon@bootlin.com>
+References: <20180205220205.3528-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,82 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Free Electrons is now Bootlin.
+On Mon,  5 Feb 2018 23:01:58 +0100
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Note that I'm planning to take this patch through the MTD tree.
----
- .mailmap    |  7 ++++---
- MAINTAINERS | 10 +++++-----
- 2 files changed, 9 insertions(+), 8 deletions(-)
+> Hello all,
+> 
+> I'm finally posting a v7 of the SPI NAND preparation patches. That's on
+> my TODO list for quite some time, and I finally take the time to submit
+> things that are pending in my development branch and are ready for
+> submission (at least, that's my opinion :)).
+> 
+> Patches adding SPI NAND support have been ommited because I'm still not
+> entirely happy with the SPI memories (NOR/NAND/SRAM) / QSPI controllers
+> situation, and, despite what I said earlier, I think it's worth
+> addressing the problem now.
+> 
+> What made me change my mind is the rework of the FSL QSPI driver
+> initiated by Frieder to support NANDs. Looks like all other QSPI
+> drivers will have to implement the same kind of hack to support both
+> SPI NORs and SPI NANDs with a single driver, which implies a lot of
+> duplicated code.
+> 
+> So, instead of making the situation worse by adding yet another level
+> of complexity, I'd like to see if we can expose all QSPI NOR
+> controllers as regular SPI controllers. Well, not exactly regular SPI
+> controllers, in that they would not be able to do random SPI transfers,
+> but instead high-level operations (an operation being a
+> CMD[+ADDRS][+DUMMY][+DATA] sequence).
+> 
+> The idea is to extend the SPI framework to provide high-level APIs to
+> execute such SPI operations. Then, each SPI controller would be able
+> to implement the high-level interface directly (likely the chosen
+> approach for advanced SPI controllers) or rely on the default
+> implementation which creates regular SPI messages to do the operation.
+> 
+> Note that this high-level spi-mem interface would replace the
+> spi_flash_read() APIs and handle optimizations of both read/write
+> paths.
+> 
+> I'm currently working on a PoC to validate the feasability of this
+> approach (I pushed my work here [1], but it's not yet in a clean
+> state), but this will be part of a separate RFC.
+> 
+> Back to the initial topic. The patch series contains
+> mechanical/straightforward changes to move existing NAND code to
+> the raw subdir (patches 1 to 6) and a patch adding the generic NAND
+> layer that is meant to be used by the SPI NAND framework, and at
+> some point, by the raw NAND and OneNAND framework.
 
-diff --git a/.mailmap b/.mailmap
-index e18cab73e209..50c1d6bf36b2 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -33,9 +33,10 @@ Axel Lin <axel.lin@gmail.com>
- Ben Gardner <bgardner@wabtec.com>
- Ben M Cahill <ben.m.cahill@intel.com>
- Björn Steinbrink <B.Steinbrink@gmx.de>
--Boris Brezillon <boris.brezillon@free-electrons.com>
--Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon.dev@gmail.com>
--Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon@overkiz.com>
-+Boris Brezillon <boris.brezillon@bootlin.com>
-+Boris Brezillon <boris.brezillon@bootlin.com> <boris.brezillon@free-electrons.com>
-+Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon.dev@gmail.com>
-+Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon@overkiz.com>
- Brian Avery <b.avery@hp.com>
- Brian King <brking@us.ibm.com>
- Christoph Hellwig <hch@lst.de>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 34b2e9ed6d3d..38fcbabbc55b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1232,7 +1232,7 @@ F:	arch/arm/boot/dts/aspeed-*
- F:	drivers/*/*aspeed*
- 
- ARM/ATMEL AT91 Clock Support
--M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-+M:	Boris Brezillon <boris.brezillon@bootlin.com>
- S:	Maintained
- F:	drivers/clk/at91
- 
-@@ -4644,7 +4644,7 @@ F:	Documentation/gpu/meson.rst
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- 
- DRM DRIVERS FOR ATMEL HLCDC
--M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-+M:	Boris Brezillon <boris.brezillon@bootlin.com>
- L:	dri-devel@lists.freedesktop.org
- S:	Supported
- F:	drivers/gpu/drm/atmel-hlcdc/
-@@ -8412,7 +8412,7 @@ F:	include/uapi/drm/armada_drm.h
- F:	Documentation/devicetree/bindings/display/armada/
- 
- MARVELL CRYPTO DRIVER
--M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-+M:	Boris Brezillon <boris.brezillon@bootlin.com>
- M:	Arnaud Ebalard <arno@natisbad.org>
- F:	drivers/crypto/marvell/
- S:	Maintained
-@@ -9034,7 +9034,7 @@ F:	mm/
- MEMORY TECHNOLOGY DEVICES (MTD)
- M:	David Woodhouse <dwmw2@infradead.org>
- M:	Brian Norris <computersforpeace@gmail.com>
--M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-+M:	Boris Brezillon <boris.brezillon@bootlin.com>
- M:	Marek Vasut <marek.vasut@gmail.com>
- M:	Richard Weinberger <richard@nod.at>
- M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-@@ -9452,7 +9452,7 @@ S:	Supported
- F:	drivers/net/ethernet/myricom/myri10ge/
- 
- NAND FLASH SUBSYSTEM
--M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-+M:	Boris Brezillon <boris.brezillon@bootlin.com>
- R:	Richard Weinberger <richard@nod.at>
- L:	linux-mtd@lists.infradead.org
- W:	http://www.linux-mtd.infradead.org/
+Applied the whole series.
+
+
 -- 
-2.14.1
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
