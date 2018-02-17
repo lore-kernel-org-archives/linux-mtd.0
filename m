@@ -1,19 +1,16 @@
-Date: Sat, 17 Feb 2018 09:48:46 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1emylV-0004SQ-H4
+ for linux-mtd@lists.infradead.org; Sat, 17 Feb 2018 09:26:43 +0000
+Date: Sat, 17 Feb 2018 10:26:28 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
- boris.brezillon@free-electrons.com, prabhakar.kushwaha@nxp.com,
- suresh.gupta@nxp.com, cyrille.pitchen@wedev4u.fr, han.xu@nxp.com,
- computersforpeace@gmail.com, festevam@gmail.com,
- linux-arm-kernel@lists.infradead.org, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] dt-bindings: spi: updated usage example for
- spi-rx/tx-bus-width properties
-Message-ID: <20180217094846.60475e2f@bbrezillon>
-In-Reply-To: <1518504675-26286-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1518504675-26286-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1518504675-26286-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: [GIT PULL] mtd: fixes for 4.16-rc2
+Message-ID: <20180217102628.28639355@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,47 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+Hello Linus,
 
-Looks like you forgot to Cc Mark and the linux-spi ML.
+Here is a small fixes PR for 4.16-rc2.
 
 Regards,
 
 Boris
 
-On Tue, 13 Feb 2018 12:21:15 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
 
-> Updated usage example by adding properties spi-rx-bus-width
-> and spi-tx-bus-width for slave node binding.
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
-> Changes for v3:
-> - None
-> Changes for v2:
-> - None
-> 
->  Documentation/devicetree/bindings/spi/spi-bus.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-bus.txt b/Documentation/devicetree/bindings/spi/spi-bus.txt
-> index 1f6e86f..4dbe267 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-bus.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-bus.txt
-> @@ -101,6 +101,8 @@ SPI example for an MPC5200 SPI bus:
->  			compatible = "micrel,ks8995m";
->  			spi-max-frequency = <1000000>;
->  			reg = <0>;
-> +			spi-rx-bus-width = 4;
-> +			spi-tx-bus-width = 4;
->  		};
->  
->  		codec@1 {
+  Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
 
+are available in the git repository at:
 
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.16-rc2
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+for you to fetch changes up to f23def8038611fa362de345c540107c78edaa085:
+
+  mtd: nand: MTD_NAND_MARVELL should depend on HAS_DMA (2018-02-12 10:57:20 +0100)
+
+----------------------------------------------------------------
+* Add missing dependency to NAND_MARVELL Kconfig entry
+* Use the appropriate OOB layout in the VF610 driver
+
+----------------------------------------------------------------
+Geert Uytterhoeven (1):
+      mtd: nand: MTD_NAND_MARVELL should depend on HAS_DMA
+
+Stefan Agner (1):
+      mtd: nand: vf610: set correct ooblayout
+
+ drivers/mtd/nand/Kconfig     | 2 +-
+ drivers/mtd/nand/vf610_nfc.c | 6 ++----
