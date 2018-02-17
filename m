@@ -1,24 +1,25 @@
-Date: Fri, 16 Feb 2018 20:22:14 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1emy0o-0007ti-3Q
+ for linux-mtd@lists.infradead.org; Sat, 17 Feb 2018 08:38:28 +0000
+Date: Sat, 17 Feb 2018 09:38:12 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Lechner <david@lechnology.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Sekhar Nori <nsekhar@ti.com>, Kevin
- Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Santosh
- Shilimkar <ssantosh@kernel.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 2/6] ARM: davinci: update the nand driver names
-Message-ID: <20180216202214.66d78fab@bbrezillon>
-In-Reply-To: <0fd26035-6192-213d-4a45-02fa44fa7c39@lechnology.com>
-References: <20180216164712.25898-1-brgl@bgdev.pl>
- <20180216164712.25898-3-brgl@bgdev.pl>
- <0fd26035-6192-213d-4a45-02fa44fa7c39@lechnology.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Jonas Gorski
+ <jonas.gorski@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH V5 0/2] mtd: simplify mtd_device_parse_register() code
+Message-ID: <20180217093812.0814fe2b@bbrezillon>
+In-Reply-To: <20180116154542.9767-1-zajec5@gmail.com>
+References: <20180115224547.9265-1-zajec5@gmail.com>
+ <20180116154542.9767-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,188 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Feb 2018 13:14:14 -0600
-David Lechner <david@lechnology.com> wrote:
+On Tue, 16 Jan 2018 16:45:40 +0100
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-> On 02/16/2018 10:47 AM, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > 
-> > Since commit d8e22fb4ccac ("ARM: da850: add the nand dev_id to the clock
-> > lookup table") we can no longer correctly lookup the nand clock when
-> > booting in legacy mode. Said commit added a dev_id to the nand clock
-> > which must match and it doesn't correspond with the device name which
-> > is "davinci_nand" instead of "davinci-nand".
-> > 
-> > The driver name has been changed. Update the board files.
-> > 
-> > Fixes: d8e22fb4ccac ("ARM: da850: add the nand dev_id to the clock lookup table")
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > ---
-> >   arch/arm/mach-davinci/board-da830-evm.c     | 2 +-
-> >   arch/arm/mach-davinci/board-da850-evm.c     | 2 +-
-> >   arch/arm/mach-davinci/board-dm355-evm.c     | 2 +-
-> >   arch/arm/mach-davinci/board-dm355-leopard.c | 2 +-
-> >   arch/arm/mach-davinci/board-dm365-evm.c     | 2 +-
-> >   arch/arm/mach-davinci/board-dm644x-evm.c    | 2 +-
-> >   arch/arm/mach-davinci/board-dm646x-evm.c    | 2 +-
-> >   arch/arm/mach-davinci/board-mityomapl138.c  | 2 +-
-> >   arch/arm/mach-davinci/board-neuros-osd2.c   | 2 +-
-> >   arch/arm/mach-davinci/board-sffsdr.c        | 2 +-
-> >   10 files changed, 10 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-> > index f673cd7a6766..f8838c7b174b 100644
-> > --- a/arch/arm/mach-davinci/board-da830-evm.c
-> > +++ b/arch/arm/mach-davinci/board-da830-evm.c
-> > @@ -348,7 +348,7 @@ static struct resource da830_evm_nand_resources[] = {
-> >   };
-> >   
-> >   static struct platform_device da830_evm_nand_device = {
-> > -	.name		= "davinci_nand",
-> > +	.name		= "davinci-nand",
-> >   	.id		= 1,
-> >   	.dev		= {
-> >   		.platform_data	= &da830_evm_nand_pdata,
-> > diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-> > index d898a94f6eae..828194045a2b 100644
-> > --- a/arch/arm/mach-davinci/board-da850-evm.c
-> > +++ b/arch/arm/mach-davinci/board-da850-evm.c
-> > @@ -266,7 +266,7 @@ static struct resource da850_evm_nandflash_resource[] = {
-> >   };
-> >   
-> >   static struct platform_device da850_evm_nandflash_device = {
-> > -	.name		= "davinci_nand",
-> > +	.name		= "davinci-nand",
-> >   	.id		= 1,  
-> 
-> The clock lookup uses id == 0 ("davinci-nand.0"), so this is probably
-> still broken unless you also change the id.
-> 
-> >   	.dev		= {
-> >   		.platform_data	= &da850_evm_nandflash_data,
-> > diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
-> > index e457f299cd44..58ca7f56e112 100644
-> > --- a/arch/arm/mach-davinci/board-dm355-evm.c
-> > +++ b/arch/arm/mach-davinci/board-dm355-evm.c
-> > @@ -98,7 +98,7 @@ static struct resource davinci_nand_resources[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_nand_device = {
-> > -	.name			= "davinci_nand",
-> > +	.name			= "davinci-nand",
-> >   	.id			= 0,
-> >   
-> >   	.num_resources		= ARRAY_SIZE(davinci_nand_resources),
-> > diff --git a/arch/arm/mach-davinci/board-dm355-leopard.c b/arch/arm/mach-davinci/board-dm355-leopard.c
-> > index be997243447b..196238117f9a 100644
-> > --- a/arch/arm/mach-davinci/board-dm355-leopard.c
-> > +++ b/arch/arm/mach-davinci/board-dm355-leopard.c
-> > @@ -93,7 +93,7 @@ static struct resource davinci_nand_resources[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_nand_device = {
-> > -	.name			= "davinci_nand",
-> > +	.name			= "davinci-nand",
-> >   	.id			= 0,
-> >   
-> >   	.num_resources		= ARRAY_SIZE(davinci_nand_resources),
-> > diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-> > index e75741fb2c1d..563d66df480b 100644
-> > --- a/arch/arm/mach-davinci/board-dm365-evm.c
-> > +++ b/arch/arm/mach-davinci/board-dm365-evm.c
-> > @@ -159,7 +159,7 @@ static struct resource davinci_nand_resources[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_nand_device = {
-> > -	.name			= "davinci_nand",
-> > +	.name			= "davinci-nand",
-> >   	.id			= 0,
-> >   	.num_resources		= ARRAY_SIZE(davinci_nand_resources),
-> >   	.resource		= davinci_nand_resources,
-> > diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-> > index 85e6fb33b1ee..e42ae2163c75 100644
-> > --- a/arch/arm/mach-davinci/board-dm644x-evm.c
-> > +++ b/arch/arm/mach-davinci/board-dm644x-evm.c
-> > @@ -173,7 +173,7 @@ static struct resource davinci_evm_nandflash_resource[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_evm_nandflash_device = {
-> > -	.name		= "davinci_nand",
-> > +	.name		= "davinci-nand",
-> >   	.id		= 0,
-> >   	.dev		= {
-> >   		.platform_data	= &davinci_evm_nandflash_data,
-> > diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-> > index cb0a41e83582..614dd211e6fc 100644
-> > --- a/arch/arm/mach-davinci/board-dm646x-evm.c
-> > +++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-> > @@ -108,7 +108,7 @@ static struct resource davinci_nand_resources[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_nand_device = {
-> > -	.name			= "davinci_nand",
-> > +	.name			= "davinci-nand",
-> >   	.id			= 0,
-> >   
-> >   	.num_resources		= ARRAY_SIZE(davinci_nand_resources),
-> > diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-> > index b73ce7bae81f..bf3659a21897 100644
-> > --- a/arch/arm/mach-davinci/board-mityomapl138.c
-> > +++ b/arch/arm/mach-davinci/board-mityomapl138.c
-> > @@ -422,7 +422,7 @@ static struct resource mityomapl138_nandflash_resource[] = {
-> >   };
-> >   
-> >   static struct platform_device mityomapl138_nandflash_device = {
-> > -	.name		= "davinci_nand",
-> > +	.name		= "davinci-nand",
-> >   	.id		= 1,  
-> 
-> Same here, id probably needs to be 0.
-> 
-> >   	.dev		= {
-> >   		.platform_data	= &mityomapl138_nandflash_data,
-> > diff --git a/arch/arm/mach-davinci/board-neuros-osd2.c b/arch/arm/mach-davinci/board-neuros-osd2.c
-> > index 4da210a1a110..04132494a7c9 100644
-> > --- a/arch/arm/mach-davinci/board-neuros-osd2.c
-> > +++ b/arch/arm/mach-davinci/board-neuros-osd2.c
-> > @@ -107,7 +107,7 @@ static struct resource davinci_ntosd2_nandflash_resource[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_ntosd2_nandflash_device = {
-> > -	.name		= "davinci_nand",
-> > +	.name		= "davinci-nand",
-> >   	.id		= 0,
-> >   	.dev		= {
-> >   		.platform_data	= &davinci_ntosd2_nandflash_data,
-> > diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
-> > index d85accf7f760..c8569c8aa6e3 100644
-> > --- a/arch/arm/mach-davinci/board-sffsdr.c
-> > +++ b/arch/arm/mach-davinci/board-sffsdr.c
-> > @@ -83,7 +83,7 @@ static struct resource davinci_sffsdr_nandflash_resource[] = {
-> >   };
-> >   
-> >   static struct platform_device davinci_sffsdr_nandflash_device = {
-> > -	.name		= "davinci_nand", /* Name of driver */
-> > +	.name		= "davinci-nand", /* Name of driver */
-> >   	.id		= 0,
-> >   	.dev		= {
-> >   		.platform_data	= &davinci_sffsdr_nandflash_data,
-> >   
-> 
-> 
-> Getting out of scope of this patch, but...
-> 
-> If there is only one nand device per board, then the id should probably
-> be -1 instead of 0 for all of these boards.
-> 
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> Even though I have some experience with MTD subsystem every time I was
+> starting working on it I had to do some quick research on the code flow.
+> I think there is some place for cleanup and optimization that would
+> simplify overall code and allow new developers to start working on it
+> more easily.
+>=20
+> In these patches I meant to slightly simplify mtd_device_parse_register
+> function. I think we could reduce amount of add/register/del functions
+> and this is the first step for that.
+>=20
+> Ideally I think mtdcore.c shouldn't handle parsing but just use a single
+> function from mtdpart.c.
+>=20
+> Patch 1/2 modifies code to make sure parsing code is not mixed with MTD
+> master code. This should allow moving parsing parts to the mtdpart.c in
+> the future.
+>=20
+> Patch 2/2 simplifies code and makes sure parsing is handled at 1 place
+> only.
+>=20
+> Even though this cleanup isn't complete I think it already has some
+> value and could be accepted (if there won't be objections) on its own.
+> It's also quite small which should allow reviewing it easily.
+>=20
+> Rafa=C5=82 Mi=C5=82ecki (2):
+>   mtd: move code adding master MTD out of mtd_add_device_partitions()
+>   mtd: get rid of the mtd_add_device_partitions()
 
-Note that doing that is also breaking mtdparts users, because the
-mtdparts definition expected by the kernel would become
-mtdparts=davinci-nand:<part-layout> instead of
-mtdparts=davinci_nand.0:<part-layout>.
+Applied (even if I keep thinking those 2 commits should have been
+merged in a single one :P)
+
+Thanks,
+
+Boris
+
+>=20
+>  drivers/mtd/mtdcore.c | 58 ++++++++++++++++++---------------------------=
+------
+>  1 file changed, 20 insertions(+), 38 deletions(-)
+>=20
 
 
--- 
+
+--=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 http://bootlin.com
