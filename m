@@ -1,10 +1,10 @@
-Received: from mail-pl0-x242.google.com ([2607:f8b0:400e:c01::242])
+Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1enVSP-0005Ng-6o
- for linux-mtd@lists.infradead.org; Sun, 18 Feb 2018 20:21:10 +0000
-Received: by mail-pl0-x242.google.com with SMTP id 31so4542854ple.9
- for <linux-mtd@lists.infradead.org>; Sun, 18 Feb 2018 12:20:58 -0800 (PST)
-Message-ID: <1518985251.22603.6.camel@gmail.com>
+ id 1enVbw-0001fy-ED
+ for linux-mtd@lists.infradead.org; Sun, 18 Feb 2018 20:31:02 +0000
+Received: by mail-pl0-x243.google.com with SMTP id u13so973423plq.1
+ for <linux-mtd@lists.infradead.org>; Sun, 18 Feb 2018 12:30:49 -0800 (PST)
+Message-ID: <1518985842.22737.1.camel@gmail.com>
 Subject: Re: [Outreachy kernel] Re: [PATCH NAND 0/5] Replace printk
  statements with pr_*macros
 From: Shreeya Patel <shreeya.patel23498@gmail.com>
@@ -16,7 +16,7 @@ Cc: Julia Lawall <julia.lawall@lip6.fr>, Boris Brezillon
  Pitchen <cyrille.pitchen@wedev4u.fr>,  outreachy-kernel
  <outreachy-kernel@googlegroups.com>, linux-mtd@lists.infradead.org,
  Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date: Mon, 19 Feb 2018 01:50:51 +0530
+Date: Mon, 19 Feb 2018 02:00:42 +0530
 In-Reply-To: <20180218210950.30fe9310@bbrezillon>
 References: <cover.1518797480.git.shreeya.patel23498@gmail.com>
  <CAAEAJfAg_hei2PF37_oX2tf+Mv43ye-nEOt+KRVFerp1Jfzn2Q@mail.gmail.com>
@@ -47,6 +47,7 @@ On Sun, 2018-02-18 at 21:09 +0100, Boris Brezillon wrote:
 > discussion if they have something to add.
 
 I'll keep this in mind.
+
 > 
 > 
 > On Sun, 18 Feb 2018 23:56:05 +0530
@@ -167,6 +168,8 @@ Also, I was unable to compile ams-delta.c file.
 I am working on it right now as I will have to cross compile for arm.
 
 Thanks
+
+
 > 
 > Regards,
 > 
