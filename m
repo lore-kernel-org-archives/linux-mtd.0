@@ -1,21 +1,22 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1enJsq-0007TC-LT
- for linux-mtd@lists.infradead.org; Sun, 18 Feb 2018 07:59:42 +0000
-Date: Sun, 18 Feb 2018 08:59:18 +0100
+ id 1enRT0-0007pn-Vp
+ for linux-mtd@lists.infradead.org; Sun, 18 Feb 2018 16:05:33 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 0/2] Convert FSMC NAND controller driver to ->exec_op()
-Message-ID: <20180218085918.74a579b8@bbrezillon>
-In-Reply-To: <20180216142248.32345-1-miquel.raynal@bootlin.com>
-References: <20180216142248.32345-1-miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Kyungmin Park <kyungmin.park@samsung.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH 1/2] mtd: onenand: Get rid of comments giving the file path
+ inside the file itself
+Date: Sun, 18 Feb 2018 17:05:15 +0100
+Message-Id: <20180218160516.27946-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Feb 2018 15:22:46 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Some files add a comment giving the path of the file inside the Linux
+tree, which is pretty useless since the reader had to find the file to
+open it.
 
-> Hello,
->=20
-> Now that the ->exec_op() interface has been merged in the NAND core,
-> convert the FSMC NAND controller driver to it.
->=20
-> A previous step involves getting rid of ->IO_ADDR_[R|W] across the
-> driver, which is almost entirely done in the first patch. Because the
-> driver still uses at that point the default implementations of
-> ->read/write_byte/word(), some references are still present but are =20
-> removed as soon as the driver is moved to ->exec_op(), when this
-> dependency disappears.
->=20
-> Best regards,
-> Miqu=C3=A8l
->=20
->=20
-> Changes since v1:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> - Forgot about the NAND unique ID for now, this will need a deeper
->   rework of the MTD stack and is very (ONFI-)NAND-specific.
-> - Split the migration of FSMC driver to ->exec_op() into two patches,
->   one to get rid of ->IO_ADDR_[R|W], the other to implement ->exec_op()
->   and ->select_chip() which is also needed.
-> - Got rid of the additional ->regs entry in the FSMC structure, using
->   the existing entry ->regs_va instead.
->=20
->=20
-> Miquel Raynal (2):
->   mtd: nand: fsmc: get rid of IO_ADDR_[R|W]
->   mtd: nand: fsmc: use ->exec_op()
+Getting rid of these comments will also allow us to easily move these
+files around when needed.
 
-Applied.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/onenand/generic.c      | 2 --
+ drivers/mtd/onenand/omap2.c        | 2 --
+ drivers/mtd/onenand/onenand_base.c | 2 --
+ drivers/mtd/onenand/onenand_bbt.c  | 2 --
+ 4 files changed, 8 deletions(-)
 
-Thanks,
-
-Boris
-
->=20
->  drivers/mtd/nand/fsmc_nand.c | 242 ++++++++++++++++++++++++-------------=
-------
->  1 file changed, 137 insertions(+), 105 deletions(-)
->=20
-
-
-
---=20
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+index 125da34d8ff9..d5ccaf943b91 100644
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -1,6 +1,4 @@
+ /*
+- *  linux/drivers/mtd/onenand/generic.c
+- *
+  *  Copyright (c) 2005 Samsung Electronics
+  *  Kyungmin Park <kyungmin.park@samsung.com>
+  *
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 87c34f607a75..9c159f0dd9a6 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -1,6 +1,4 @@
+ /*
+- *  linux/drivers/mtd/onenand/omap2.c
+- *
+  *  OneNAND driver for OMAP2 / OMAP3
+  *
+  *  Copyright © 2005-2006 Nokia Corporation
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 979f4031f23c..05907b1b4098 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1,6 +1,4 @@
+ /*
+- *  linux/drivers/mtd/onenand/onenand_base.c
+- *
+  *  Copyright © 2005-2009 Samsung Electronics
+  *  Copyright © 2007 Nokia Corporation
+  *
+diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onenand_bbt.c
+index 420260c25ca0..dde20487937d 100644
+--- a/drivers/mtd/onenand/onenand_bbt.c
++++ b/drivers/mtd/onenand/onenand_bbt.c
+@@ -1,7 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- *  linux/drivers/mtd/onenand/onenand_bbt.c
+- *
+  *  Bad Block Table support for the OneNAND driver
+  *
+  *  Copyright(c) 2005 Samsung Electronics
+-- 
+2.14.1
