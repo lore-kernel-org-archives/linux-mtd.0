@@ -1,23 +1,30 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1enn7O-0002fp-Sd
- for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 15:12:42 +0000
-Date: Mon, 19 Feb 2018 16:12:16 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Shreeya Patel <shreeya.patel23498@gmail.com>
-Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, maximlevitsky@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ezequiel@vanguardiasur.com.ar, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH NAND] mtd: nand: Replace printk() with appropriate
- dev_*macro()
-Message-ID: <20180219161216.4f3ec2f3@bbrezillon>
-In-Reply-To: <1519046339-9678-1-git-send-email-shreeya.patel23498@gmail.com>
-References: <1519046339-9678-1-git-send-email-shreeya.patel23498@gmail.com>
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1enoFw-0003kq-Tw
+ for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 16:25:34 +0000
+Date: Mon, 19 Feb 2018 16:25:10 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [RFC PATCH 0/6] spi: Extend the framework to generically support
+ memory devices
+Message-ID: <20180219162510.GG32761@sirena.org.uk>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="2NLGdgz3UMHa/lqP"
+Content-Disposition: inline
+In-Reply-To: <20180205232120.5851-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,89 +34,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Feb 2018 18:48:59 +0530
-Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
 
-> Replace printks having a log level with the appropriate
-> dev_*macro.
-> Also, use pdev->dev as it is guaranteed in each case to be
-> properly initialized when passed into dev_*macro().
-> 
-> Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
-> ---
->  drivers/mtd/nand/ams-delta.c | 6 ++++--
->  drivers/mtd/nand/cafe_nand.c | 5 +++--
->  drivers/mtd/nand/sh_flctl.c  | 2 +-
->  3 files changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-> index dcec9cf..2419ca8 100644
-> --- a/drivers/mtd/nand/ams-delta.c
-> +++ b/drivers/mtd/nand/ams-delta.c
-> @@ -185,7 +185,8 @@ static int ams_delta_init(struct platform_device *pdev)
->  	/* Allocate memory for MTD device structure and private data */
->  	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
->  	if (!this) {
-> -		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
-> +		dev_warn(&pdev->dev,
-> +			 "Unable to allocate E3 NAND MTD device structure.\n");
->  		err = -ENOMEM;
->  		goto out;
->  	}
-> @@ -219,7 +220,8 @@ static int ams_delta_init(struct platform_device *pdev)
->  		this->dev_ready = ams_delta_nand_ready;
->  	} else {
->  		this->dev_ready = NULL;
-> -		printk(KERN_NOTICE "Couldn't request gpio for Delta NAND ready.\n");
-> +		dev_notice(&pdev->dev,
-> +			   "Couldn't request gpio for Delta NAND ready.\n");
->  	}
->  	/* 25 us command delay time */
->  	this->chip_delay = 30;
-> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-> index bc558c4..51f58ea 100644
-> --- a/drivers/mtd/nand/cafe_nand.c
-> +++ b/drivers/mtd/nand/cafe_nand.c
-> @@ -773,8 +773,9 @@ static int cafe_nand_probe(struct pci_dev *pdev,
->  		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
->  		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
->  	} else {
-> -		printk(KERN_WARNING "Unexpected NAND flash writesize %d. Aborting\n",
-> -		       mtd->writesize);
-> +		dev_warn(&cafe->pdev->dev,
-> +			 "Unexpected NAND flash writesize %d. Aborting\n",
-> +			 mtd->writesize);
->  		goto out_free_dma;
+--2NLGdgz3UMHa/lqP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I see plenty of printk()s (or pr_xxx()s if this patch is applied after
-the printk() -> pr_xxx() replacement) that are not converted to
-dev_xxx() in this driver. If we start using dev_xxx() it should be used
-consistently.
+On Tue, Feb 06, 2018 at 12:21:14AM +0100, Boris Brezillon wrote:
 
-How about we convert all printk()s to pr_xxx()s first (what you do in
-your first patch), including those you convert to dev_xxx() here, and
-then we consider patching some of the drivers to use dev_xxx() instead
-of pr_xxx().
+> SPI NAND layer): you can register a SPI NOR device directly from the
+> dedicated SPI memory controller, or it can be registered through the
+> SPI layer if the SPI controller is a generic SPI controller. While
+> the generic SPI controller path works fine, the dedicated SPI NOR
+> controller path brings its own set of issues:
 
->  	}
->  	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
-> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
-> index e7f3c98..c534c49 100644
-> --- a/drivers/mtd/nand/sh_flctl.c
-> +++ b/drivers/mtd/nand/sh_flctl.c
-> @@ -877,7 +877,7 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  			else if (!flctl->seqin_column)
->  				execmd_write_page_sector(mtd);
->  			else
-> -				printk(KERN_ERR "Invalid address !?\n");
-> +				dev_err(&flctl->pdev->dev, "Invalid address !?\n");
->  			break;
->  		}
->  		set_cmd_regs(mtd, command, (command << 8) | NAND_CMD_SEQIN);
+> * the SPI bus is not represented in sysfs
 
+I'm not sure if this is a big deal or not - at some point it's just an
+implementation detail of the hardware rather than something we're aware
+of or interested in.
 
+> * because there's no bus, there's no uevent, which means you'll have to
+>   select both the SPI NAND and SPI NOR logic as soon as one driver
+>   supports both interfaces if you don't want to run into loading
+>   dependency issues
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+This is sounding like we want a class (well, virtual bus in the new
+world) for these devices with a SPI based driver sitting on top of that
+for use with genuine SPI controllers.  If the intention is as the
+comments in the code suggested that controllers implementing the memory
+mapping stuff don't use SPI at all then we could have the legacy SPI bus
+support be just another driver for this class.  However when I look at
+what the drivers are actually doing it seems like that's not the case
+and the new API is intended to sit alongside normal SPI support, perhaps
+only implementing certain operations and using regular SPI for others.
+In that case it makes a lot more sense to have this be bolted on the
+side of SPI.
+
+--2NLGdgz3UMHa/lqP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqK+mUACgkQJNaLcl1U
+h9BvQwf7BeSTkVRX01pMMPeDPUstSbnx2rW/lhaOJ0l4D4mv70OnhZStOJlhQYbx
+lc2YeHPVR7xyhOXjMGsJ/+Gg4Q3rXohxQ4PP9Wr/USw440vo2S9qMRYNNk0FI2YT
+PRBMowLrzA7qN4W806cbByvQMBybtwCnvGcFCyszYE47bJQGF/jiGLq5lCXEKCFz
+KxvyoHtxcn6u+Cz+PYFqOjARTvYIiM8bY6E/zml2CZAOA/J3ow5LcWw7SyRBXTvF
+0ko70SJHJkPThznGZQwNHq8JIMJSXyP2IPToEtvfTBKbYhnp92sLAmKJsDe5Lk22
+fLmUz2kxGLN0q8stSyYHQWuuDI1MRQ==
+=P+ey
+-----END PGP SIGNATURE-----
+
+--2NLGdgz3UMHa/lqP--
