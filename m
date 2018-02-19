@@ -1,7 +1,7 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1enu2r-0002ZW-KE
- for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 22:36:30 +0000
+ id 1enu2r-0002ZY-Kg
+ for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 22:36:32 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -18,9 +18,10 @@ Cc: linux-mtd@lists.infradead.org, Daniel Mack <daniel@zonque.org>,
  Antoine Tenart <antoine.tenart@bootlin.com>,
  Nadav Haklai <nadavh@marvell.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
-Date: Mon, 19 Feb 2018 23:35:56 +0100
-Message-Id: <20180219223557.2458-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 6/6] MAINTAINERS: remove entry for deleted pxa3xx_nand
+ driver
+Date: Mon, 19 Feb 2018 23:35:57 +0100
+Message-Id: <20180219223557.2458-7-miquel.raynal@bootlin.com>
 In-Reply-To: <20180219223557.2458-1-miquel.raynal@bootlin.com>
 References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,35 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the new bindings of the reworked Marvell NAND controller driver.
+The driver pxa3xx_nand.c has been replaced everywhere by its rework
+called marvell_nand.c so this entry can now be removed.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- arch/arm/boot/dts/pxa3xx.dtsi | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ MAINTAINERS | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/arch/arm/boot/dts/pxa3xx.dtsi b/arch/arm/boot/dts/pxa3xx.dtsi
-index 55c75b67351c..982d1a62661d 100644
---- a/arch/arm/boot/dts/pxa3xx.dtsi
-+++ b/arch/arm/boot/dts/pxa3xx.dtsi
-@@ -117,15 +117,15 @@
- 			status = "disabled";
- 		};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 34b2e9ed6d3d..1efb94e6a8b3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11327,12 +11327,6 @@ F:	include/sound/pxa2xx-lib.h
+ F:	sound/arm/pxa*
+ F:	sound/soc/pxa/
  
--		nand0: nand@43100000 {
--			compatible = "marvell,pxa3xx-nand";
-+		nand_controller: nand-controller@43100000 {
-+			compatible = "marvell,pxa3xx-nand-controller";
- 			reg = <0x43100000 90>;
- 			interrupts = <45>;
- 			clocks = <&clks CLK_NAND>;
- 			dmas = <&pdma 97 3>;
- 			dma-names = "data";
- 			#address-cells = <1>;
--			#size-cells = <1>;	
-+			#size-cells = <0>;
- 			status = "disabled";
- 		};
- 
+-PXA3xx NAND FLASH DRIVER
+-M:	Ezequiel Garcia <ezequiel.garcia@free-electrons.com>
+-L:	linux-mtd@lists.infradead.org
+-S:	Maintained
+-F:	drivers/mtd/nand/raw/pxa3xx_nand.c
+-
+ QAT DRIVER
+ M:	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+ L:	qat-linux@intel.com
 -- 
 2.14.1
