@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1entny-0004jj-Rt
+ id 1entny-0004jb-Re
  for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 22:21:04 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Gregory Clement <gregory.clement@bootlin.com>,
@@ -12,12 +12,12 @@ Cc: <devicetree@vger.kernel.org>, linux-mtd@lists.infradead.org,
  Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
  Antoine Tenart <antoine.tenart@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 2/2] arm64: dts: marvell: use reworked NAND controller
- driver on Armada 8K
-Date: Mon, 19 Feb 2018 23:20:45 +0100
-Message-Id: <20180219222045.1927-3-miquel.raynal@bootlin.com>
-In-Reply-To: <20180219222045.1927-1-miquel.raynal@bootlin.com>
-References: <20180219222045.1927-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 0/2] Update 64-bit DT with new NAND controller bindings
+Date: Mon, 19 Feb 2018 23:20:43 +0100
+Message-Id: <20180219222045.1927-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,77 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the new bindings of the reworked Marvell NAND controller driver.
-Also adapt the nand controller node organization to distinguish which
-property is relevant for the controller, and which one is NAND chip
-specific. Expose the partitions as a subnode of the NAND chip.
+Hello,
 
-Remove the 'marvell,nand-enable-arbiter' property, not needed anymore as
-the driver activates the arbiter by default for all boards (either
-needed or harmless).
+These two patches have already been submitted and accepted by Gregory
+and were stacked for 4.17. But since then a small modification happened
+due to a request from Rob Herring. Also, armada-cp110-[master/slave].dtsi
+files became armada-cp110.dtsi due to the DT de-duplication work from
+Thomas Petazzoni. This small series should replace the two patches
+laying in the mvebu tree and should apply cleanly.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- arch/arm64/boot/dts/marvell/armada-8040-db.dts | 44 +++++++++++++++-----------
- 1 file changed, 26 insertions(+), 18 deletions(-)
+Thank you,
+Miquèl
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-db.dts b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-index dba55baff20f..fecd455ca047 100644
---- a/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-db.dts
-@@ -279,27 +279,35 @@
-  * Proper NAND usage will require DPR-76 to be in position 1-2, which disables
-  * MDIO signal of CP1.
-  */
--&cp1_nand {
--	num-cs = <1>;
-+&cp1_nand_controller {
- 	pinctrl-0 = <&nand_pins>, <&nand_rb>;
- 	pinctrl-names = "default";
--	nand-ecc-strength = <4>;
--	nand-ecc-step-size = <512>;
--	marvell,nand-enable-arbiter;
--	marvell,system-controller = <&cp1_syscon0>;
--	nand-on-flash-bbt;
- 
--	partition@0 {
--		label = "U-Boot";
--		reg = <0 0x200000>;
--	};
--	partition@200000 {
--		label = "Linux";
--		reg = <0x200000 0xe00000>;
--	};
--	partition@1000000 {
--		label = "Filesystem";
--		reg = <0x1000000 0x3f000000>;
-+	nand@0 {
-+		reg = <0>;
-+		nand-rb = <0>;
-+		nand-on-flash-bbt;
-+		nand-ecc-strength = <4>;
-+		nand-ecc-step-size = <512>;
-+
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "U-Boot";
-+				reg = <0 0x200000>;
-+			};
-+			partition@200000 {
-+				label = "Linux";
-+				reg = <0x200000 0xe00000>;
-+			};
-+			partition@1000000 {
-+				label = "Filesystem";
-+				reg = <0x1000000 0x3f000000>;
-+			};
-+		};
- 	};
- };
- 
+Changes since v1:
+  - Renamed a NAND property: s/marvell,rb/nand-rb/ which is already
+    documented.
+  - Rebased on v4.16-rc1.
+
+Miquel Raynal (2):
+  arm64: dts: marvell: use reworked NAND controller driver on Armada 7K
+  arm64: dts: marvell: use reworked NAND controller driver on Armada 8K
+
+ arch/arm64/boot/dts/marvell/armada-7040-db.dts | 50 ++++++++++++++++----------
+ arch/arm64/boot/dts/marvell/armada-8040-db.dts | 44 +++++++++++++----------
+ arch/arm64/boot/dts/marvell/armada-cp110.dtsi  |  8 ++---
+ 3 files changed, 61 insertions(+), 41 deletions(-)
+
 -- 
 2.14.1
