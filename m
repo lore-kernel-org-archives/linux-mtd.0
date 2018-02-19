@@ -1,8 +1,8 @@
 Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1enlte-0001sg-6M
- for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 13:54:23 +0000
-Date: Mon, 19 Feb 2018 13:53:57 +0000
+ id 1enlzU-00061k-8e
+ for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 14:00:27 +0000
+Date: Mon, 19 Feb 2018 14:00:03 +0000
 From: Mark Brown <broonie@kernel.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -18,12 +18,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>
 Subject: Re: [RFC PATCH 1/6] spi: Extend the core to ease integration of SPI
  memory controllers
-Message-ID: <20180219135357.GE32761@sirena.org.uk>
+Message-ID: <20180219140003.GF32761@sirena.org.uk>
 References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
  <20180205232120.5851-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="ytoMbUMiTKPMT3hY"
+ protocol="application/pgp-signature"; boundary="WlEyl6ow+jlIgNUh"
 Content-Disposition: inline
 In-Reply-To: <20180205232120.5851-2-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,82 +36,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---ytoMbUMiTKPMT3hY
+--WlEyl6ow+jlIgNUh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
 On Tue, Feb 06, 2018 at 12:21:15AM +0100, Boris Brezillon wrote:
 
-> Some controllers are exposing high-level interfaces to access various
-> kind of SPI memories. Unfortunately they do not fit in the current
-> spi_controller model and usually have drivers placed in
-> drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
-> memories in general.
-
-> This is an attempt at defining a SPI memory interface which works for
-> all kinds of SPI memories (NORs, NANDs, SRAMs).
-
-It would be helpful if this changelog were to describe what the
-problems are and how the patch addresses them.  Someone reading the git
-history should be able to tell what the patch is doing without having to
-google around to find a cover letter for the patch series.  It also
-feels like this should be split up a bit - there's some preparatory
-refactoring here, a new API, and an adaption layer to implement that API
-with actual SPI controllers.  It's a very large patch doing several
-different things and splitting it up would make it easier to review.
-
-I have to say I'm rather unclear why this is being done in the SPI core
-rather than as a layer on top of it - devices doing the new API can't
-support normal SPI clients at all and everything about this is entirely
-flash specific.  You've got a bit about that in your cover letter, I'll
-reply there.
-
-> @@ -2155,10 +2181,14 @@ int spi_register_controller(struct spi_controller=
- *ctlr)
->  			spi_controller_is_slave(ctlr) ? "slave" : "master",
->  			dev_name(&ctlr->dev));
-> =20
-> -	/* If we're using a queued driver, start the queue */
-> -	if (ctlr->transfer)
 > +	/*
-> +	 * If we're using a queued driver, start the queue. Note that we don't
-> +	 * need the queueing logic if the driver is only supporting high-level
-> +	 * memory operations.
+> +	 * The controller can implement only the high-level SPI-memory like
+> +	 * operations if it does not support regular SPI transfers.
 > +	 */
-> +	if (ctlr->transfer) {
->  		dev_info(dev, "controller is unqueued, this is deprecated\n");
-> -	else {
-> +	} else if (ctlr->transfer_one || ctlr->transfer_one_message) {
->  		status =3D spi_controller_initialize_queue(ctlr);
->  		if (status) {
->  			device_del(&ctlr->dev);
+> +	if (ctlr->mem_ops) {
+> +		if (!ctlr->mem_ops->supports_op ||
+> +		    !ctlr->mem_ops->exec_op)
+> +			return -EINVAL;
+> +	} else if (!ctlr->transfer && !ctlr->transfer_one &&
+> +		   !ctlr->transfer_one_message) {
+> +		return -EINVAL;
+> +	}
 
-This for example feels like a separate refactoring which could be split
-out.
+BTW your comment isn't describing what the code does - the comment says
+that having the memory operations means the driver can't be a regular
+SPI controller while the code does not do that and only checks that if a
+driver has memory ops it implements two required ones.  Indeed the
+existing drivers that are updated to the new API continue to implement
+normal SPI operations.
 
-> +	if (op->data.dir =3D=3D SPI_MEM_DATA_OUT)
-> +		dmadev =3D ctlr->dma_tx ?
-> +			 ctlr->dma_tx->device->dev : ctlr->dev.parent;
-> +	else
-> +		dmadev =3D ctlr->dma_rx ?
-> +			 ctlr->dma_rx->device->dev : ctlr->dev.parent;
-
-Please don't abuse the ternery operator like this :(
-
---ytoMbUMiTKPMT3hY
+--WlEyl6ow+jlIgNUh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqK1vQACgkQJNaLcl1U
-h9DUDgf8C7HSlJkXx8tPONghpcW9dYpUtixzw2psz5xETn9EXPJEAo2i+TZwokF0
-zXt0NPzQxoGnhd6BmqH0QZHbFqzLcn90nQ4YVarXdPXDtZ7nFxIyKmo8PeukaOuO
-6AqDyn3q6Gc07Hb+RDWPX9JQF70qEyJ2HGmOmNl0TOmKG7AB9ke73nfTsWTWqi9m
-irnnwzGs1jvNzcFM73ydH9xli6zFut0aeo/NYLNX7nVFL7UoVa5KMW1zHyS4RC32
-b0gRaPSTqTtkbG7fsJB7mB9jgxSt64cnud5CbgdYQEuHzmzL9+K0lniIGosgHtNc
-Tb6Go3Mtz7jINrYrSCZARDj43q6uPA==
-=NZc4
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlqK2GMACgkQJNaLcl1U
+h9CVkAf+KHlVU/P/aBIqDuytJNtFH1W7piqbaeTeJuXKIBjRFUXFJhAe2Fd3y9et
+RiDdKHd+FXGuHc3+gSDuo8ow0TvjNPycoC/MeyhAIsDXNIxjoSbL8KJH5Q+5b3K9
+VvbOd6xe6ktpxtrCmtN+LaeqcBMcbzmZ/w66mJbiOy/1FloNtnL04rGpNsigKKY2
+d5DrZ+NOOj4qxjvEITh27vKfy2yYPZwfj0gJfl3odaUAmB+ERXKW+sk+HbxWBkcN
+B1kVHT+zkSzGJ3e/hXUteADrIkshF53AT6pEUklvvgowl26JUR14k7Wc+PgSspng
+J/qWcKwDkCRh6KnSHIZeF0kBbKM9UA==
+=aZW9
 -----END PGP SIGNATURE-----
 
---ytoMbUMiTKPMT3hY--
+--WlEyl6ow+jlIgNUh--
