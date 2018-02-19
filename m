@@ -1,17 +1,30 @@
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+Received: from mail-eopbgr50065.outbound.protection.outlook.com ([40.107.5.65]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1enW8P-0000bE-6q
- for linux-mtd@lists.infradead.org; Sun, 18 Feb 2018 21:04:34 +0000
-Received: by mail-qt0-x244.google.com with SMTP id a9so10026122qtj.8
- for <linux-mtd@lists.infradead.org>; Sun, 18 Feb 2018 13:04:21 -0800 (PST)
+ id 1enfYX-0000Il-Qu
+ for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 07:08:13 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Suresh Gupta
+ <suresh.gupta@nxp.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, Han Xu <han.xu@nxp.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "festevam@gmail.com" <festevam@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>
+Subject: RE: [PATCH v5 1/2] mtd: fsl-quadspi: add support to create dynamic
+ LUT entry
+Date: Mon, 19 Feb 2018 07:07:50 +0000
+Message-ID: <VI1PR0402MB2845E9CB695B2E3CBB8A7F9F99C80@VI1PR0402MB2845.eurprd04.prod.outlook.com>
+References: <1517330970-15197-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1517330970-15197-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20180215163318.2a0ac5c1@bbrezillon>
+In-Reply-To: <20180215163318.2a0ac5c1@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Reply-To: agddeco11@gmail.com
-From: "MR.UDU ATTAH" <proccuagent@gmail.com>
-Date: Sun, 18 Feb 2018 13:04:20 -0800
-Message-ID: <CA+9sHOZnTbWH9aTmO82HiSW6WyM6H=7SyTq5Ajn5bchS7OcVFg@mail.gmail.com>
-Subject: Send your prices
-To: undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +34,501 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
--- 
-Dear Sir/Madam,
+Hi Boris,
 
-We need your product and price list catalog.
-We are urgently in need of your item .
-It is meant for purchase in large quantity by our government of Ecowas
-Procurement Inquiry.
-Terms of Payment: 80% down payment through T.T while remaining 20% by
-L/C will be paid before Shipment.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Thursday, February 15, 2018 9:03 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: linux-mtd@lists.infradead.org; boris.brezillon@free-electrons.com;
+> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Suresh Gupta
+> <suresh.gupta@nxp.com>; cyrille.pitchen@wedev4u.fr; Han Xu
+> <han.xu@nxp.com>; computersforpeace@gmail.com; festevam@gmail.com;
+> Frieder Schrempf <frieder.schrempf@exceet.de>
+> Subject: Re: [PATCH v5 1/2] mtd: fsl-quadspi: add support to create dynam=
+ic LUT
+> entry
+>=20
+> +Frieder
+>=20
+> Hi Yogesh,
+>=20
+> On Tue, 30 Jan 2018 22:19:29 +0530
+> Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Add support to create dynamic LUT entry.
+> >
+> > Current approach of creating LUT entries for various cmds like read,
+> > write, erase, readid, readsr, we, wd etc is that when QSPI controller
+> > gets initialized at that time static LUT entries for these cmds get cre=
+ated.
+> >
+> > Patch add support to create the LUT at run time based on the operation
+> > being performed.
+> >
+> > Added API fsl_qspi_prepare_lut(), this API would going to be called
+> > from fsl_qspi_read_reg, fsl_qspi_write_reg, fsl_qspi_write,
+> > fsl_qspi_read and fsl_qspi_erase APIs.
+> > This API would fetch required info like opcode, protocol info, dummy
+> > info for creating LUT from instance of 'struct spi_nor' and then
+> > prepare LUT entry for the required command.
+>=20
+> You're probably already aware that I proposed a new "generic spi-mem API"=
+ [1]
+> and started to port the fsl-qspi driver [2] to this new interface. While =
+doing that I
+> came to the same conclusion: given the small overhead implied by LUT
+> preparation, we can prepare OP sequences dynamically instead of hardcodin=
+g
+> them at probe time.
+>=20
+> I know I'm talking about hypothetical changes while you're providing patc=
+hes for
+> something that already exists and is in use, but maybe it'd be worth disc=
+ussing
+> things a bit so that your changes go in the direction of the spi-mem ones=
+.
+>=20
+Thanks for reviewing the code and design changes.
 
-THANKS,
-MR. UDU ATTAH
-UDU HOLDINGS GHANA.
-6 ACCRA GHANA,
-GHANA.
-Phone : Phone :+233 261 815595.
+The new design "generic spi-mem API" proposed is completely orthogonal as p=
+er existing framework in which FSL QuadSPI driver is present in MTD subsyst=
+em.
+Proposed design changes might take time to come into the mainline also this=
+ needs to be validated on different controller and on different flashes.
 
-EMAIL : agddeco11@gmail.com
+Right now we are focusing to have support of different modes, flashes/vendo=
+rs on existing framework with current LUT number limitation.
+My patch-set is a step towards achieving that by preparing LUT for individu=
+al command dynamically instead of hard-coding at probe time.
+
+> >
+> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> > ---
+> > Changes for v5:
+> > - Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
+> > Changes for v4:
+> > - Correct version numbering.
+> > Changes for v3:
+> > - Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+> > Changes for v2:
+> > - Swap patch sequences in the series to solve git bissect issue.
+> >
+> >  drivers/mtd/spi-nor/fsl-quadspi.c | 310
+> > +++++++++++++++++++++-----------------
+> >  1 file changed, 168 insertions(+), 142 deletions(-)
+> >
+> > diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > index 89306cf..84c341b 100644
+> > --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> > @@ -183,7 +183,7 @@
+> >
+> >  /* Macros for constructing the LUT register. */
+> >  #define LUT0(ins, pad, opr)						\
+> > -		(((opr) << OPRND0_SHIFT) | ((LUT_##pad) << PAD0_SHIFT) | \
+> > +		(((opr) << OPRND0_SHIFT) | ((pad) << PAD0_SHIFT) | \
+> >  		((LUT_##ins) << INSTR0_SHIFT))
+> >
+> >  #define LUT1(ins, pad, opr)	(LUT0(ins, pad, opr) << OPRND1_SHIFT)
+> > @@ -193,21 +193,21 @@
+> >  #define QUADSPI_LUT_NUM		64
+> >
+> >  /* SEQID -- we can have 16 seqids at most. */
+> > -#define SEQID_READ		0
+> > -#define SEQID_WREN		1
+> > -#define SEQID_WRDI		2
+> > -#define SEQID_RDSR		3
+> > -#define SEQID_SE		4
+> > -#define SEQID_CHIP_ERASE	5
+> > -#define SEQID_PP		6
+> > -#define SEQID_RDID		7
+> > -#define SEQID_WRSR		8
+> > -#define SEQID_RDCR		9
+> > -#define SEQID_EN4B		10
+> > -#define SEQID_BRWR		11
+> > +/* LUT0 programmed by bootloader, for run-time create entry for LUT se=
+qid
+> 1 */
+> > +#define SEQID_LUT0_BOOTLOADER	0
+> > +#define SEQID_LUT1_RUNTIME	1
+> >
+> >  #define QUADSPI_MIN_IOMAP SZ_4M
+> >
+> > +enum fsl_qspi_ops {
+> > +	FSL_QSPI_OPS_READ =3D 0,
+> > +	FSL_QSPI_OPS_WRITE,
+> > +	FSL_QSPI_OPS_ERASE,
+> > +	FSL_QSPI_OPS_READ_REG,
+> > +	FSL_QSPI_OPS_WRITE_REG,
+> > +	FSL_QSPI_OPS_WRITE_BUF_REG,
+> > +};
+>=20
+> Could we express things in something more extensible? I mean, something
+> closer to the spi_mem_op structure I add here [1]. This way the transitio=
+n to the
+> spi-mem interface will be easier.
+>=20
+> > +
+> >  enum fsl_qspi_devtype {
+> >  	FSL_QUADSPI_VYBRID,
+> >  	FSL_QUADSPI_IMX6SX,
+> > @@ -368,136 +368,158 @@ static irqreturn_t fsl_qspi_irq_handler(int irq=
+, void
+> *dev_id)
+> >  	return IRQ_HANDLED;
+> >  }
+> >
+> > -static void fsl_qspi_init_lut(struct fsl_qspi *q)
+> > +static inline s8 pad_count(s8 pad_val)
+> >  {
+> > +	s8 count =3D -1;
+> > +
+> > +	if (!pad_val)
+> > +		return 0;
+> > +
+> > +	while (pad_val) {
+> > +		pad_val >>=3D 1;
+> > +		count++;
+> > +	}
+> > +	return count;
+> > +}
+> > +
+> > +/*
+> > + * Prepare LUT entry for the input cmd.
+> > + * Protocol info is present in instance of struct spi_nor, using
+> > +which fields
+> > + * like cmd, data, addrlen along with pad info etc can be parsed.
+> > + */
+> > +static void fsl_qspi_prepare_lut(struct spi_nor *nor,
+> > +				 enum fsl_qspi_ops ops, u8 cmd)
+> > +{
+> > +	struct fsl_qspi *q =3D nor->priv;
+> >  	void __iomem *base =3D q->iobase;
+> >  	int rxfifo =3D q->devtype_data->rxfifo;
+> > +	int txfifo =3D q->devtype_data->txfifo;
+> >  	u32 lut_base;
+> > -	int i;
+> > +	u8 cmd_pad, addr_pad, data_pad, dummy_pad;
+> > +	enum spi_nor_protocol protocol =3D 0;
+> > +	u8 addrlen =3D 0;
+> > +	u8 read_dm, opcode;
+> > +	int stop_lut;
+> > +
+> > +	read_dm =3D opcode =3D cmd_pad =3D addr_pad =3D data_pad =3D dummy_pa=
+d =3D
+> 0;
+> > +
+> > +	switch (ops) {
+> > +	case FSL_QSPI_OPS_READ_REG:
+> > +	case FSL_QSPI_OPS_WRITE_REG:
+> > +	case FSL_QSPI_OPS_WRITE_BUF_REG:
+> > +		opcode =3D cmd;
+> > +		protocol =3D nor->reg_proto;
+> > +		break;
+> > +	case FSL_QSPI_OPS_READ:
+> > +		opcode =3D cmd;
+> > +		read_dm =3D nor->read_dummy;
+> > +		protocol =3D nor->read_proto;
+> > +		break;
+> > +	case FSL_QSPI_OPS_WRITE:
+> > +		opcode =3D cmd;
+> > +		protocol =3D nor->write_proto;
+> > +		break;
+> > +	case FSL_QSPI_OPS_ERASE:
+> > +		opcode =3D cmd;
+> > +		break;
+> > +	default:
+> > +		dev_err(q->dev, "Unsupported operation 0x%.2x\n", ops);
+> > +		return;
+> > +	}
+> > +
+> > +	if (protocol) {
+> > +		cmd_pad =3D spi_nor_get_protocol_inst_nbits(protocol);
+> > +		addr_pad =3D spi_nor_get_protocol_addr_nbits(protocol);
+> > +		data_pad =3D spi_nor_get_protocol_data_nbits(protocol);
+> > +	}
+> >
+> > -	struct spi_nor *nor =3D &q->nor[0];
+> > -	u8 addrlen =3D (nor->addr_width =3D=3D 3) ? ADDR24BIT : ADDR32BIT;
+> > -	u8 read_op =3D nor->read_opcode;
+> > -	u8 read_dm =3D nor->read_dummy;
+> > +	dummy_pad =3D data_pad;
+> > +
+> > +	dev_dbg(q->dev, "ops:%x opcode:%x pad[cmd:%d, addr:%d,
+> data:%d]\n",
+> > +			ops, opcode, cmd_pad, addr_pad, data_pad);
+> >
+> >  	fsl_qspi_unlock_lut(q);
+> >
+> > -	/* Clear all the LUT table */
+> > -	for (i =3D 0; i < QUADSPI_LUT_NUM; i++)
+> > -		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
+> > -
+> > -	/* Read */
+> > -	lut_base =3D SEQID_READ * 4;
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -	qspi_writel(q, LUT0(DUMMY, PAD1, read_dm) |
+> > -		    LUT1(FSL_READ, PAD4, rxfifo),
+> > -			base + QUADSPI_LUT(lut_base + 1));
+> > -
+> > -	/* Write enable */
+> > -	lut_base =3D SEQID_WREN * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WREN),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Page Program */
+> > -	lut_base =3D SEQID_PP * 4;
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, nor->program_opcode) |
+> > -		    LUT1(ADDR, PAD1, addrlen),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -	qspi_writel(q, LUT0(FSL_WRITE, PAD1, 0),
+> > -			base + QUADSPI_LUT(lut_base + 1));
+> > -
+> > -	/* Read Status */
+> > -	lut_base =3D SEQID_RDSR * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDSR) |
+> > -			LUT1(FSL_READ, PAD1, 0x1),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Erase a sector */
+> > -	lut_base =3D SEQID_SE * 4;
+> > -
+> > -	qspi_writel(q, LUT0(CMD, PAD1, nor->erase_opcode) |
+> > -		    LUT1(ADDR, PAD1, addrlen),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Erase the whole chip */
+> > -	lut_base =3D SEQID_CHIP_ERASE * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_CHIP_ERASE),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* READ ID */
+> > -	lut_base =3D SEQID_RDID * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDID) |
+> > -			LUT1(FSL_READ, PAD1, 0x8),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Write Register */
+> > -	lut_base =3D SEQID_WRSR * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRSR) |
+> > -			LUT1(FSL_WRITE, PAD1, 0x2),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Read Configuration Register */
+> > -	lut_base =3D SEQID_RDCR * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_RDCR) |
+> > -			LUT1(FSL_READ, PAD1, 0x1),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Write disable */
+> > -	lut_base =3D SEQID_WRDI * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_WRDI),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Enter 4 Byte Mode (Micron) */
+> > -	lut_base =3D SEQID_EN4B * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_EN4B),
+> > -			base + QUADSPI_LUT(lut_base));
+> > -
+> > -	/* Enter 4 Byte Mode (Spansion) */
+> > -	lut_base =3D SEQID_BRWR * 4;
+> > -	qspi_writel(q, LUT0(CMD, PAD1, SPINOR_OP_BRWR),
+> > -			base + QUADSPI_LUT(lut_base));
+> > +	/* Dynamic LUT */
+> > +	lut_base =3D SEQID_LUT1_RUNTIME * 4;
+> >
+> > -	fsl_qspi_lock_lut(q);
+> > -}
+> > +	/* default, STOP instruction to be programmed in (lut_base + 1) reg *=
+/
+> > +	stop_lut =3D 1;
+> > +	switch (ops) {
+> > +	case FSL_QSPI_OPS_READ_REG:
+> > +		qspi_writel(q, LUT0(CMD, pad_count(cmd_pad), opcode) |
+> > +			  LUT1(FSL_READ, pad_count(data_pad), rxfifo),
+> > +			  base + QUADSPI_LUT(lut_base));
+> > +		break;
+> > +	case FSL_QSPI_OPS_WRITE_REG:
+> > +		qspi_writel(q, LUT0(CMD, pad_count(cmd_pad), opcode),
+> > +			  base + QUADSPI_LUT(lut_base));
+> > +		break;
+> > +	case FSL_QSPI_OPS_WRITE_BUF_REG:
+> > +		qspi_writel(q, LUT0(CMD, pad_count(cmd_pad), opcode) |
+> > +			  LUT1(FSL_WRITE, pad_count(data_pad), txfifo),
+> > +			  base + QUADSPI_LUT(lut_base));
+> > +		break;
+> > +	case FSL_QSPI_OPS_READ:
+> > +	case FSL_QSPI_OPS_WRITE:
+> > +	case FSL_QSPI_OPS_ERASE:
+> > +		/* Common for Read, Write and Erase ops. */
+> >
+> > -/* Get the SEQID for the command */
+> > -static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd) -{
+> > -	switch (cmd) {
+> > -	case SPINOR_OP_READ_1_1_4:
+> > -		return SEQID_READ;
+> > -	case SPINOR_OP_WREN:
+> > -		return SEQID_WREN;
+> > -	case SPINOR_OP_WRDI:
+> > -		return SEQID_WRDI;
+> > -	case SPINOR_OP_RDSR:
+> > -		return SEQID_RDSR;
+> > -	case SPINOR_OP_SE:
+> > -		return SEQID_SE;
+> > -	case SPINOR_OP_CHIP_ERASE:
+> > -		return SEQID_CHIP_ERASE;
+> > -	case SPINOR_OP_PP:
+> > -		return SEQID_PP;
+> > -	case SPINOR_OP_RDID:
+> > -		return SEQID_RDID;
+> > -	case SPINOR_OP_WRSR:
+> > -		return SEQID_WRSR;
+> > -	case SPINOR_OP_RDCR:
+> > -		return SEQID_RDCR;
+> > -	case SPINOR_OP_EN4B:
+> > -		return SEQID_EN4B;
+> > -	case SPINOR_OP_BRWR:
+> > -		return SEQID_BRWR;
+> > +		addrlen =3D (nor->addr_width =3D=3D 3) ? ADDR24BIT : ADDR32BIT;
+> > +
+> > +		qspi_writel(q, LUT0(CMD, pad_count(cmd_pad), opcode) |
+> > +				LUT1(ADDR, pad_count(addr_pad), addrlen),
+> > +				base + QUADSPI_LUT(lut_base));
+> > +		/*
+> > +		 * For Erase ops - Data and Dummy not required.
+> > +		 * For Write ops - Dummy not required.
+> > +		 */
+> > +
+> > +		if (ops =3D=3D FSL_QSPI_OPS_READ) {
+> > +
+> > +			/*
+> > +			 * For cmds SPINOR_OP_READ and
+> SPINOR_OP_READ_4B value
+> > +			 * of dummy cycles are 0.
+> > +			 */
+> > +			if (read_dm)
+> > +				qspi_writel(q,
+> > +					    LUT0(DUMMY,
+> pad_count(dummy_pad),
+> > +					    read_dm) |
+> > +					    LUT1(FSL_READ,
+> pad_count(data_pad),
+> > +					    rxfifo),
+> > +					    base + QUADSPI_LUT(lut_base + 1));
+> > +			else
+> > +				qspi_writel(q,
+> > +					    LUT0(FSL_READ,
+> pad_count(data_pad),
+> > +					    rxfifo),
+> > +					    base + QUADSPI_LUT(lut_base + 1));
+> > +
+> > +			stop_lut =3D 2;
+> > +
+> > +			/* TODO Add condition to check if READ is IP/AHB. */
+> > +
+> > +			/* For AHB read, add seqid in BFGENCR register. */
+> > +			qspi_writel(q,
+> > +				    SEQID_LUT1_RUNTIME <<
+> > +				    QUADSPI_BFGENCR_SEQID_SHIFT,
+> > +				    q->iobase + QUADSPI_BFGENCR);
+> > +		}
+> > +
+> > +		if (ops =3D=3D FSL_QSPI_OPS_WRITE) {
+> > +			qspi_writel(q, LUT0(FSL_WRITE, pad_count(data_pad),
+> 0),
+> > +					base + QUADSPI_LUT(lut_base + 1));
+> > +			stop_lut =3D 2;
+> > +		}
+> > +		break;
+> >  	default:
+> > -		if (cmd =3D=3D q->nor[0].erase_opcode)
+> > -			return SEQID_SE;
+> > -		dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
+> > +		dev_err(q->dev, "Unsupported operation 0x%.2x\n", ops);
+> >  		break;
+> >  	}
+> > -	return -EINVAL;
+> > +
+> > +	/* prepare LUT for STOP instruction. */
+> > +	qspi_writel(q, 0, base +  QUADSPI_LUT(lut_base + stop_lut));
+> > +
+> > +	fsl_qspi_lock_lut(q);
+> >  }
+>=20
+> If you express operations in a generic way (with opcode, addr-cycles, dum=
+my-
+> cycles and data-in/out-cycles), this function would not have to grow ever=
+y time
+> a new operation is added to the SPI framework, and more importantly, you
+> would be able to support SPI NAND operations with almost no modifications=
+.
+>
+I have analysis your suggestion and feel that current patch-set is more cle=
+aner.
+
+Let me try to explain:
+In current MTD spi-nor framework  for exposed function ptrs i.e. nor->read_=
+reg, nor->write_reg, nor->read, nor->write and nor->erase, our's controller=
+ most of the work is common like preparing LUT command and for this fetchin=
+g required info from struct spi_nor. These are pad info bits [cmd, addr, da=
+ta and dummy] which are fetched from protocol, opcode, dummy cycles and rx/=
+tx len.
+
+One way is, as suggested by your, to parse all these info in respective fun=
+ction ptr definition and save them in common structure like spi_mem_op and =
+then call prepare_lut only to prepare LUT command using spi_mem_op structur=
+e.
+
+Other approach, which I have used is, to parse all these required info from=
+ struct spi_nor based on the Switch/Case condition in one common function i=
+nstead of parsing individually for all exposed func ptr. After this prepare=
+ LUT command from fetched information.
+
+Please suggest what approach we can follow.
+
+--
+Regards
+Yogesh Gaur.
+
+> Regards,
+>=20
+> Boris
+>=20
+> [1]https://emea01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fpa=
+tc
+> hwork.ozlabs.org%2Fproject%2Flinux-
+> mtd%2Flist%2F%3Fseries%3D27088&data=3D02%7C01%7Cyogeshnarayan.gaur%4
+> 0nxp.com%7C189fe6cf2c384934d3d408d5748971d7%7C686ea1d3bc2b4c6fa92
+> cd99c5c301635%7C0%7C1%7C636543056039805714&sdata=3DxIX5FO52%2BJlN3
+> cBj8oV6BV3K0wdUxZ%2Bc1b%2F2%2BZ%2B1rgw%3D&reserved=3D0
+> [2]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
+ith
+> ub.com%2Fbbrezillon%2Flinux%2Fcommit%2F43cc45764b975bfbb191de3f6a37
+> e073da1a2706&data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C189fe6
+> cf2c384934d3d408d5748971d7%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0
+> %7C1%7C636543056039805714&sdata=3D%2FXVUfidneitX%2Ff0ds0iEIPDLy4ssVh9
+> %2ByV8dSX079IM%3D&reserved=3D0
+> [3]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
+ith
+> ub.com%2Fbbrezillon%2Flinux%2Fcommit%2F15782494b0850533e9417ae31954
+> e33e157bbbae%23diff-
+> 2f804a2dee71d794fa82981b87f9fe0aR1291&data=3D02%7C01%7Cyogeshnarayan
+> .gaur%40nxp.com%7C189fe6cf2c384934d3d408d5748971d7%7C686ea1d3bc2b
+> 4c6fa92cd99c5c301635%7C0%7C1%7C636543056039805714&sdata=3DXb1GgQL2
+> Nhnsm6kdx3K47OSxnoH%2Bip%2FGG7L5FII3B%2Fs%3D&reserved=3D0
+>=20
+> --
+> Boris Brezillon, Bootlin (formerly Free Electrons) Embedded Linux and Ker=
+nel
+> engineering
+> https://emea01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fbootl=
+in.
+> com&data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C189fe6cf2c38493
+> 4d3d408d5748971d7%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C6
+> 36543056039805714&sdata=3DTGjVdQ%2BnTmS88L5A0%2FiksrAYJmpNpJGlBQrZY
+> vNUSzY%3D&reserved=3D0
