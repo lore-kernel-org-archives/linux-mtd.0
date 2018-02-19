@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1enmqz-0001sz-Vs
- for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 14:55:43 +0000
-Date: Mon, 19 Feb 2018 15:55:16 +0100
+ id 1enn7O-0002fp-Sd
+ for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 15:12:42 +0000
+Date: Mon, 19 Feb 2018 16:12:16 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Shreeya Patel <shreeya.patel23498@gmail.com>
 Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
@@ -10,12 +10,11 @@ Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
  cyrille.pitchen@wedev4u.fr, maximlevitsky@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  ezequiel@vanguardiasur.com.ar, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH NAND v2] mtd: nand: Replace printk() with appropriate
- pr_*macro()
-Message-ID: <20180219155516.7a67fade@bbrezillon>
-In-Reply-To: <20180219155115.3d9d1bd5@bbrezillon>
-References: <1519046025-9412-1-git-send-email-shreeya.patel23498@gmail.com>
- <20180219155115.3d9d1bd5@bbrezillon>
+Subject: Re: [PATCH NAND] mtd: nand: Replace printk() with appropriate
+ dev_*macro()
+Message-ID: <20180219161216.4f3ec2f3@bbrezillon>
+In-Reply-To: <1519046339-9678-1-git-send-email-shreeya.patel23498@gmail.com>
+References: <1519046339-9678-1-git-send-email-shreeya.patel23498@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,144 +27,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oh, and in the subject 'pr_*macro()' -> 'pr_*() macro'
+On Mon, 19 Feb 2018 18:48:59 +0530
+Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
 
-On Mon, 19 Feb 2018 15:51:15 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> Replace printks having a log level with the appropriate
+> dev_*macro.
+> Also, use pdev->dev as it is guaranteed in each case to be
+> properly initialized when passed into dev_*macro().
+> 
+> Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
+> ---
+>  drivers/mtd/nand/ams-delta.c | 6 ++++--
+>  drivers/mtd/nand/cafe_nand.c | 5 +++--
+>  drivers/mtd/nand/sh_flctl.c  | 2 +-
+>  3 files changed, 8 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+> index dcec9cf..2419ca8 100644
+> --- a/drivers/mtd/nand/ams-delta.c
+> +++ b/drivers/mtd/nand/ams-delta.c
+> @@ -185,7 +185,8 @@ static int ams_delta_init(struct platform_device *pdev)
+>  	/* Allocate memory for MTD device structure and private data */
+>  	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+>  	if (!this) {
+> -		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
+> +		dev_warn(&pdev->dev,
+> +			 "Unable to allocate E3 NAND MTD device structure.\n");
+>  		err = -ENOMEM;
+>  		goto out;
+>  	}
+> @@ -219,7 +220,8 @@ static int ams_delta_init(struct platform_device *pdev)
+>  		this->dev_ready = ams_delta_nand_ready;
+>  	} else {
+>  		this->dev_ready = NULL;
+> -		printk(KERN_NOTICE "Couldn't request gpio for Delta NAND ready.\n");
+> +		dev_notice(&pdev->dev,
+> +			   "Couldn't request gpio for Delta NAND ready.\n");
+>  	}
+>  	/* 25 us command delay time */
+>  	this->chip_delay = 30;
+> diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+> index bc558c4..51f58ea 100644
+> --- a/drivers/mtd/nand/cafe_nand.c
+> +++ b/drivers/mtd/nand/cafe_nand.c
+> @@ -773,8 +773,9 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+>  		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
+>  		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
+>  	} else {
+> -		printk(KERN_WARNING "Unexpected NAND flash writesize %d. Aborting\n",
+> -		       mtd->writesize);
+> +		dev_warn(&cafe->pdev->dev,
+> +			 "Unexpected NAND flash writesize %d. Aborting\n",
+> +			 mtd->writesize);
+>  		goto out_free_dma;
 
-> Hi Shreeya,
-> 
-> On Mon, 19 Feb 2018 18:43:45 +0530
-> Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
-> 
-> > The log levels embedded with the name are more concise than
-> > printk.
-> > Replace printks having a log level with the appropriate
-> > pr_*macro.
-> > 
-> > Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
-> > ---
-> > 
-> > Changes in v2:
-> >   -Merge previous patches of the patchset regarding replacement
-> > of printk with pr_*macro, into single patch.
-> > 
-> > 
-> >  drivers/mtd/nand/cs553x_nand.c   |  9 ++---
-> >  drivers/mtd/nand/diskonchip.c    | 76 +++++++++++++++++++++-------------------
-> >  drivers/mtd/nand/fsl_elbc_nand.c |  2 +-
-> >  drivers/mtd/nand/fsl_ifc_nand.c  |  2 +-
-> >  drivers/mtd/nand/mxc_nand.c      |  2 +-
-> >  drivers/mtd/nand/nand_bch.c      | 12 +++----
-> >  drivers/mtd/nand/nandsim.c       | 10 +++---
-> >  drivers/mtd/nand/r852.c          |  2 +-
-> >  drivers/mtd/nand/r852.h          |  6 ++--
-> >  drivers/mtd/nand/sm_common.c     |  5 ++-
-> >  10 files changed, 65 insertions(+), 61 deletions(-)
-> >   
-> 
-> [...]
-> 
-> >  
-> > diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-> > index c3aa53c..b97d88c 100644
-> > --- a/drivers/mtd/nand/diskonchip.c
-> > +++ b/drivers/mtd/nand/diskonchip.c  
-> 
-> [...]
-> 
-> > @@ -438,7 +438,7 @@ static void __init doc2000_count_chips(struct mtd_info *mtd)
-> >  			break;
-> >  	}
-> >  	doc->chips_per_floor = i;
-> > -	printk(KERN_DEBUG "Detected %d chips per floor.\n", i);
-> > +	pr_info("Detected %d chips per floor.\n", i);  
-> 
-> Should be pr_debug() here.
-> 
-> >  }
-> >    
-> 
-> [...]
-> 
-> > diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> > index 246b439..4e5f817 100644
-> > --- a/drivers/mtd/nand/nandsim.c
-> > +++ b/drivers/mtd/nand/nandsim.c
-> > @@ -184,15 +184,15 @@ MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should "
-> >  
-> >  /* Simulator's output macros (logging, debugging, warning, error) */
-> >  #define NS_LOG(args...) \
-> > -	do { if (log) printk(KERN_DEBUG NS_OUTPUT_PREFIX " log: " args); } while(0)
-> > +	do { if (log) pr_debug(NS_OUTPUT_PREFIX " log: " args); } while(0)  
-> 
-> You could define pr_fmt() to avoid passing NS_OUTPUT_PREFIX. Something
-> like:
-> 
-> #define pr_fmt(fmt)	"[nandsim]" fmt
-> 
-> (remember to put this definition before include directives).
-> 
-> Then, all you have to do is
-> 
-> do { if (log) pr_debug(" log: " args); } while(0)
-> 
-> >  #define NS_DBG(args...) \
-> > -	do { if (dbg) printk(KERN_DEBUG NS_OUTPUT_PREFIX " debug: " args); } while(0)
-> > +	do { if (dbg) pr_debug(NS_OUTPUT_PREFIX " debug: " args); } while(0)
-> >  #define NS_WARN(args...) \
-> > -	do { printk(KERN_WARNING NS_OUTPUT_PREFIX " warning: " args); } while(0)
-> > +	do { pr_warn(NS_OUTPUT_PREFIX " warning: " args); } while(0)
-> >  #define NS_ERR(args...) \
-> > -	do { printk(KERN_ERR NS_OUTPUT_PREFIX " error: " args); } while(0)
-> > +	do { pr_err(NS_OUTPUT_PREFIX " error: " args); } while(0)
-> >  #define NS_INFO(args...) \
-> > -	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); } while(0)
-> > +	do { pr_info(NS_OUTPUT_PREFIX " " args); } while(0)
-> >  
-> >  /* Busy-wait delay macros (microseconds, milliseconds) */
-> >  #define NS_UDELAY(us) \
-> > diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-> > index fc9287a..3d54c6a 100644
-> > --- a/drivers/mtd/nand/r852.c
-> > +++ b/drivers/mtd/nand/r852.c
-> > @@ -935,7 +935,7 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
-> >  		&dev->card_detect_work, 0);
-> >  
-> >  
-> > -	printk(KERN_NOTICE DRV_NAME ": driver loaded successfully\n");
-> > +	pr_notice(DRV_NAME ": driver loaded successfully\n");  
-> 
-> Same here:
-> 
-> #define pr_fmt(fmt)	DRV_NAME fmt
-> 
-> >  	return 0;
-> >  
-> >  error10:
-> > diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-> > index 8713c57..63de9b6 100644
-> > --- a/drivers/mtd/nand/r852.h
-> > +++ b/drivers/mtd/nand/r852.h
-> > @@ -149,12 +149,12 @@ struct r852_device {
-> >  
-> >  #define dbg(format, ...) \
-> >  	if (debug) \
-> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ## __VA_ARGS__)
-> > +		pr_debug(DRV_NAME ": " format "\n", ## __VA_ARGS__)
-> >  
-> >  #define dbg_verbose(format, ...) \
-> >  	if (debug > 1) \
-> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ## __VA_ARGS__)
-> > +		pr_debug(DRV_NAME ": " format "\n", ## __VA_ARGS__)
-> >    
-> 
-> And here as well.
-> 
-> Regards,
-> 
-> Boris
-> 
+I see plenty of printk()s (or pr_xxx()s if this patch is applied after
+the printk() -> pr_xxx() replacement) that are not converted to
+dev_xxx() in this driver. If we start using dev_xxx() it should be used
+consistently.
+
+How about we convert all printk()s to pr_xxx()s first (what you do in
+your first patch), including those you convert to dev_xxx() here, and
+then we consider patching some of the drivers to use dev_xxx() instead
+of pr_xxx().
+
+>  	}
+>  	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
+> diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+> index e7f3c98..c534c49 100644
+> --- a/drivers/mtd/nand/sh_flctl.c
+> +++ b/drivers/mtd/nand/sh_flctl.c
+> @@ -877,7 +877,7 @@ static void flctl_cmdfunc(struct mtd_info *mtd, unsigned int command,
+>  			else if (!flctl->seqin_column)
+>  				execmd_write_page_sector(mtd);
+>  			else
+> -				printk(KERN_ERR "Invalid address !?\n");
+> +				dev_err(&flctl->pdev->dev, "Invalid address !?\n");
+>  			break;
+>  		}
+>  		set_cmd_regs(mtd, command, (command << 8) | NAND_CMD_SEQIN);
 
 
 
