@@ -1,26 +1,25 @@
-Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoBNc-0003uv-K8
- for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 17:08:02 +0000
-Received: by mail-pl0-x241.google.com with SMTP id x19so7739765plr.13
- for <linux-mtd@lists.infradead.org>; Tue, 20 Feb 2018 09:06:48 -0800 (PST)
-Message-ID: <1519146401.12276.4.camel@gmail.com>
-Subject: Re: [PATCH NAND v2] mtd: nand: Replace printk() with appropriate
- pr_*macro()
-From: Shreeya Patel <shreeya.patel23498@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eoBXU-0001vN-Dt
+ for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 17:17:14 +0000
+Date: Tue, 20 Feb 2018 18:16:47 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Shreeya Patel <shreeya.patel23498@gmail.com>
 Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr,  maximlevitsky@gmail.com,
- linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
- ezequiel@vanguardiasur.com.ar,  outreachy-kernel@googlegroups.com
-Date: Tue, 20 Feb 2018 22:36:41 +0530
-In-Reply-To: <20180219155115.3d9d1bd5@bbrezillon>
+ cyrille.pitchen@wedev4u.fr, maximlevitsky@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ezequiel@vanguardiasur.com.ar, outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH NAND v2] mtd: nand: Replace printk() with appropriate
+ pr_*macro()
+Message-ID: <20180220181647.6f2367b6@bbrezillon>
+In-Reply-To: <1519146401.12276.4.camel@gmail.com>
 References: <1519046025-9412-1-git-send-email-shreeya.patel23498@gmail.com>
  <20180219155115.3d9d1bd5@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <1519146401.12276.4.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,176 +29,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2018-02-19 at 15:51 +0100, Boris Brezillon wrote:
-> Hi Shreeya,
-> 
-> On Mon, 19 Feb 2018 18:43:45 +0530
-> Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
-> 
-> > 
-> > The log levels embedded with the name are more concise than
-> > printk.
-> > Replace printks having a log level with the appropriate
-> > pr_*macro.
-> > 
-> > Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
-> > ---
-> > 
-> > Changes in v2:
-> >   -Merge previous patches of the patchset regarding replacement
-> > of printk with pr_*macro, into single patch.
-> > 
-> > 
-> >  drivers/mtd/nand/cs553x_nand.c   |  9 ++---
-> >  drivers/mtd/nand/diskonchip.c    | 76 +++++++++++++++++++++-------
-> > ------------
-> >  drivers/mtd/nand/fsl_elbc_nand.c |  2 +-
-> >  drivers/mtd/nand/fsl_ifc_nand.c  |  2 +-
-> >  drivers/mtd/nand/mxc_nand.c      |  2 +-
-> >  drivers/mtd/nand/nand_bch.c      | 12 +++----
-> >  drivers/mtd/nand/nandsim.c       | 10 +++---
-> >  drivers/mtd/nand/r852.c          |  2 +-
-> >  drivers/mtd/nand/r852.h          |  6 ++--
-> >  drivers/mtd/nand/sm_common.c     |  5 ++-
-> >  10 files changed, 65 insertions(+), 61 deletions(-)
-> > 
-> [...]
-> 
-> > 
-> >  
-> > diff --git a/drivers/mtd/nand/diskonchip.c
-> > b/drivers/mtd/nand/diskonchip.c
-> > index c3aa53c..b97d88c 100644
-> > --- a/drivers/mtd/nand/diskonchip.c
-> > +++ b/drivers/mtd/nand/diskonchip.c
-> [...]
-> 
-> > 
-> > @@ -438,7 +438,7 @@ static void __init doc2000_count_chips(struct
-> > mtd_info *mtd)
-> >  			break;
-> >  	}
-> >  	doc->chips_per_floor = i;
-> > -	printk(KERN_DEBUG "Detected %d chips per floor.\n", i);
-> > +	pr_info("Detected %d chips per floor.\n", i);
-> Should be pr_debug() here.
-> 
-> > 
-> >  }
-> >  
-> [...]
-> 
-> > 
-> > diff --git a/drivers/mtd/nand/nandsim.c
-> > b/drivers/mtd/nand/nandsim.c
-> > index 246b439..4e5f817 100644
-> > --- a/drivers/mtd/nand/nandsim.c
-> > +++ b/drivers/mtd/nand/nandsim.c
-> > @@ -184,15 +184,15 @@ MODULE_PARM_DESC(bch,		 "Enable
-> > BCH ecc and set how many bits should "
-> >  
-> >  /* Simulator's output macros (logging, debugging, warning, error)
-> > */
-> >  #define NS_LOG(args...) \
-> > -	do { if (log) printk(KERN_DEBUG NS_OUTPUT_PREFIX " log: "
-> > args); } while(0)
-> > +	do { if (log) pr_debug(NS_OUTPUT_PREFIX " log: " args); }
-> > while(0)
-> You could define pr_fmt() to avoid passing NS_OUTPUT_PREFIX.
-> Something
-> like:
-> 
-> #define pr_fmt(fmt)	"[nandsim]" fmt
-> 
-> (remember to put this definition before include directives).
-> 
-> Then, all you have to do is
-> 
-> do { if (log) pr_debug(" log: " args); } while(0)
-> 
-> > 
-> >  #define NS_DBG(args...) \
-> > -	do { if (dbg) printk(KERN_DEBUG NS_OUTPUT_PREFIX " debug:
-> > " args); } while(0)
-> > +	do { if (dbg) pr_debug(NS_OUTPUT_PREFIX " debug: " args);
-> > } while(0)
-> >  #define NS_WARN(args...) \
-> > -	do { printk(KERN_WARNING NS_OUTPUT_PREFIX " warning: "
-> > args); } while(0)
-> > +	do { pr_warn(NS_OUTPUT_PREFIX " warning: " args); }
-> > while(0)
-> >  #define NS_ERR(args...) \
-> > -	do { printk(KERN_ERR NS_OUTPUT_PREFIX " error: " args); }
-> > while(0)
-> > +	do { pr_err(NS_OUTPUT_PREFIX " error: " args); } while(0)
-> >  #define NS_INFO(args...) \
-> > -	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); }
-> > while(0)
-> > +	do { pr_info(NS_OUTPUT_PREFIX " " args); } while(0)
-> >  
-> >  /* Busy-wait delay macros (microseconds, milliseconds) */
-> >  #define NS_UDELAY(us) \
-> > diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-> > index fc9287a..3d54c6a 100644
-> > --- a/drivers/mtd/nand/r852.c
-> > +++ b/drivers/mtd/nand/r852.c
-> > @@ -935,7 +935,7 @@ static int  r852_probe(struct pci_dev *pci_dev,
-> > const struct pci_device_id *id)
-> >  		&dev->card_detect_work, 0);
-> >  
-> >  
-> > -	printk(KERN_NOTICE DRV_NAME ": driver loaded
-> > successfully\n");
-> > +	pr_notice(DRV_NAME ": driver loaded successfully\n");
-> Same here:
-> 
-> #define pr_fmt(fmt)	DRV_NAME fmt
+On Tue, 20 Feb 2018 22:36:41 +0530
+Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
 
-I am facing the following errors here.
+> On Mon, 2018-02-19 at 15:51 +0100, Boris Brezillon wrote:
+> > Hi Shreeya,
+> >=20
+> > On Mon, 19 Feb 2018 18:43:45 +0530
+> > Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
+> >  =20
+> > >=20
+> > > The log levels embedded with the name are more concise than
+> > > printk.
+> > > Replace printks having a log level with the appropriate
+> > > pr_*macro.
+> > >=20
+> > > Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
+> > > ---
+> > >=20
+> > > Changes in v2:
+> > > =C2=A0 -Merge previous patches of the patchset regarding replacement
+> > > of printk with pr_*macro, into single patch.
+> > >=20
+> > >=20
+> > > =C2=A0drivers/mtd/nand/cs553x_nand.c=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A09 =
+++---
+> > > =C2=A0drivers/mtd/nand/diskonchip.c=C2=A0=C2=A0=C2=A0=C2=A0| 76 +++++=
+++++++++++++++++-------
+> > > ------------
+> > > =C2=A0drivers/mtd/nand/fsl_elbc_nand.c |=C2=A0=C2=A02 +-
+> > > =C2=A0drivers/mtd/nand/fsl_ifc_nand.c=C2=A0=C2=A0|=C2=A0=C2=A02 +-
+> > > =C2=A0drivers/mtd/nand/mxc_nand.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+|=C2=A0=C2=A02 +-
+> > > =C2=A0drivers/mtd/nand/nand_bch.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+| 12 +++----
+> > > =C2=A0drivers/mtd/nand/nandsim.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0| 10 +++---
+> > > =C2=A0drivers/mtd/nand/r852.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A02 +-
+> > > =C2=A0drivers/mtd/nand/r852.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0|=C2=A0=C2=A06 ++--
+> > > =C2=A0drivers/mtd/nand/sm_common.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0|=C2=
+=A0=C2=A05 ++-
+> > > =C2=A010 files changed, 65 insertions(+), 61 deletions(-)
+> > >  =20
+> > [...]
+> >  =20
+> > >=20
+> > > =C2=A0
+> > > diff --git a/drivers/mtd/nand/diskonchip.c
+> > > b/drivers/mtd/nand/diskonchip.c
+> > > index c3aa53c..b97d88c 100644
+> > > --- a/drivers/mtd/nand/diskonchip.c
+> > > +++ b/drivers/mtd/nand/diskonchip.c =20
+> > [...]
+> >  =20
+> > >=20
+> > > @@ -438,7 +438,7 @@ static void __init doc2000_count_chips(struct
+> > > mtd_info *mtd)
+> > > =C2=A0			break;
+> > > =C2=A0	}
+> > > =C2=A0	doc->chips_per_floor =3D i;
+> > > -	printk(KERN_DEBUG "Detected %d chips per floor.\n", i);
+> > > +	pr_info("Detected %d chips per floor.\n", i); =20
+> > Should be pr_debug() here.
+> >  =20
+> > >=20
+> > > =C2=A0}
+> > > =C2=A0 =20
+> > [...]
+> >  =20
+> > >=20
+> > > diff --git a/drivers/mtd/nand/nandsim.c
+> > > b/drivers/mtd/nand/nandsim.c
+> > > index 246b439..4e5f817 100644
+> > > --- a/drivers/mtd/nand/nandsim.c
+> > > +++ b/drivers/mtd/nand/nandsim.c
+> > > @@ -184,15 +184,15 @@ MODULE_PARM_DESC(bch,		=C2=A0"Enable
+> > > BCH ecc and set how many bits should "
+> > > =C2=A0
+> > > =C2=A0/* Simulator's output macros (logging, debugging, warning, erro=
+r)
+> > > */
+> > > =C2=A0#define NS_LOG(args...) \
+> > > -	do { if (log) printk(KERN_DEBUG NS_OUTPUT_PREFIX " log: "
+> > > args); } while(0)
+> > > +	do { if (log) pr_debug(NS_OUTPUT_PREFIX " log: " args); }
+> > > while(0) =20
+> > You could define pr_fmt() to avoid passing NS_OUTPUT_PREFIX.
+> > Something
+> > like:
+> >=20
+> > #define pr_fmt(fmt)	"[nandsim]" fmt
+> >=20
+> > (remember to put this definition before include directives).
+> >=20
+> > Then, all you have to do is
+> >=20
+> > do { if (log) pr_debug(" log: " args); } while(0)
+> >  =20
+> > >=20
+> > > =C2=A0#define NS_DBG(args...) \
+> > > -	do { if (dbg) printk(KERN_DEBUG NS_OUTPUT_PREFIX " debug:
+> > > " args); } while(0)
+> > > +	do { if (dbg) pr_debug(NS_OUTPUT_PREFIX " debug: " args);
+> > > } while(0)
+> > > =C2=A0#define NS_WARN(args...) \
+> > > -	do { printk(KERN_WARNING NS_OUTPUT_PREFIX " warning: "
+> > > args); } while(0)
+> > > +	do { pr_warn(NS_OUTPUT_PREFIX " warning: " args); }
+> > > while(0)
+> > > =C2=A0#define NS_ERR(args...) \
+> > > -	do { printk(KERN_ERR NS_OUTPUT_PREFIX " error: " args); }
+> > > while(0)
+> > > +	do { pr_err(NS_OUTPUT_PREFIX " error: " args); } while(0)
+> > > =C2=A0#define NS_INFO(args...) \
+> > > -	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); }
+> > > while(0)
+> > > +	do { pr_info(NS_OUTPUT_PREFIX " " args); } while(0)
+> > > =C2=A0
+> > > =C2=A0/* Busy-wait delay macros (microseconds, milliseconds) */
+> > > =C2=A0#define NS_UDELAY(us) \
+> > > diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+> > > index fc9287a..3d54c6a 100644
+> > > --- a/drivers/mtd/nand/r852.c
+> > > +++ b/drivers/mtd/nand/r852.c
+> > > @@ -935,7 +935,7 @@ static int=C2=A0=C2=A0r852_probe(struct pci_dev *=
+pci_dev,
+> > > const struct pci_device_id *id)
+> > > =C2=A0		&dev->card_detect_work, 0);
+> > > =C2=A0
+> > > =C2=A0
+> > > -	printk(KERN_NOTICE DRV_NAME ": driver loaded
+> > > successfully\n");
+> > > +	pr_notice(DRV_NAME ": driver loaded successfully\n"); =20
+> > Same here:
+> >=20
+> > #define pr_fmt(fmt)	DRV_NAME fmt =20
+>=20
+> I am facing the following errors here.
+>=20
+>=20
+>=20
+> In file included from drivers/mtd/nand/r852.c:22:0:
+> drivers/mtd/nand/r852.h:148:0: warning: "pr_fmt" redefined
+> =C2=A0#define pr_fmt(fmt)=C2=A0=C2=A0(DRV_NAME fmt)
+> =C2=A0^
+> In file included from ./include/linux/kernel.h:14:0,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0from drivers/mtd/nand/r852.c:10:
+> ./include/linux/printk.h:287:0: note: this is the location of the
+> previous definition
+> =C2=A0#define pr_fmt(fmt) fmt
 
+That's because you didn't define pr_fmt() before all the #include
+directives in this driver. See the '#indef pr_fmt' statement in printk.h
+which is preventing redefinition of this symbol if the file including
+printk.h (either directly or indirectly) already defines it.
 
-
-In file included from drivers/mtd/nand/r852.c:22:0:
-drivers/mtd/nand/r852.h:148:0: warning: "pr_fmt" redefined
- #define pr_fmt(fmt)  (DRV_NAME fmt)
- ^
-In file included from ./include/linux/kernel.h:14:0,
-                 from drivers/mtd/nand/r852.c:10:
-./include/linux/printk.h:287:0: note: this is the location of the
-previous definition
- #define pr_fmt(fmt) fmt
-
-
-I tried doing undef and then define, but it didn't work.
-
-> 
-> > 
-> >  	return 0;
-> >  
-> >  error10:
-> > diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-> > index 8713c57..63de9b6 100644
-> > --- a/drivers/mtd/nand/r852.h
-> > +++ b/drivers/mtd/nand/r852.h
-> > @@ -149,12 +149,12 @@ struct r852_device {
-> >  
-> >  #define dbg(format, ...) \
-> >  	if (debug) \
-> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ##
-> > __VA_ARGS__)
-> > +		pr_debug(DRV_NAME ": " format "\n", ##
-> > __VA_ARGS__)
-> >  
-> >  #define dbg_verbose(format, ...) \
-> >  	if (debug > 1) \
-> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ##
-> > __VA_ARGS__)
-> > +		pr_debug(DRV_NAME ": " format "\n", ##
-> > __VA_ARGS__)
-> >  
-> And here as well.
-> 
-> Regards,
-> 
-> Boris
-> 
+--=20
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
