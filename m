@@ -1,24 +1,26 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eo5rN-0004m3-OI
- for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 11:13:23 +0000
-Date: Tue, 20 Feb 2018 12:12:59 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eoBNc-0003uv-K8
+ for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 17:08:02 +0000
+Received: by mail-pl0-x241.google.com with SMTP id x19so7739765plr.13
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Feb 2018 09:06:48 -0800 (PST)
+Message-ID: <1519146401.12276.4.camel@gmail.com>
+Subject: Re: [PATCH NAND v2] mtd: nand: Replace printk() with appropriate
+ pr_*macro()
+From: Shreeya Patel <shreeya.patel23498@gmail.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@free-electrons.com>
-Subject: Re: [PATCH 2/6] mtd: nand: Use wrappers to call onfi GET/SET_FEATURES
-Message-ID: <20180220121259.22ea6cf9@xps13>
-In-Reply-To: <20180206155508.071dc8a1@bbrezillon>
-References: <20180203095544.9855-1-miquel.raynal@bootlin.com>
- <20180203095544.9855-3-miquel.raynal@bootlin.com>
- <20180206155508.071dc8a1@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr,  maximlevitsky@gmail.com,
+ linux-mtd@lists.infradead.org,  linux-kernel@vger.kernel.org,
+ ezequiel@vanguardiasur.com.ar,  outreachy-kernel@googlegroups.com
+Date: Tue, 20 Feb 2018 22:36:41 +0530
+In-Reply-To: <20180219155115.3d9d1bd5@bbrezillon>
+References: <1519046025-9412-1-git-send-email-shreeya.patel23498@gmail.com>
+ <20180219155115.3d9d1bd5@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,94 +30,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, 2018-02-19 at 15:51 +0100, Boris Brezillon wrote:
+> Hi Shreeya,
+> 
+> On Mon, 19 Feb 2018 18:43:45 +0530
+> Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
+> 
+> > 
+> > The log levels embedded with the name are more concise than
+> > printk.
+> > Replace printks having a log level with the appropriate
+> > pr_*macro.
+> > 
+> > Signed-off-by: Shreeya Patel <shreeya.patel23498@gmail.com>
+> > ---
+> > 
+> > Changes in v2:
+> >   -Merge previous patches of the patchset regarding replacement
+> > of printk with pr_*macro, into single patch.
+> > 
+> > 
+> >  drivers/mtd/nand/cs553x_nand.c   |  9 ++---
+> >  drivers/mtd/nand/diskonchip.c    | 76 +++++++++++++++++++++-------
+> > ------------
+> >  drivers/mtd/nand/fsl_elbc_nand.c |  2 +-
+> >  drivers/mtd/nand/fsl_ifc_nand.c  |  2 +-
+> >  drivers/mtd/nand/mxc_nand.c      |  2 +-
+> >  drivers/mtd/nand/nand_bch.c      | 12 +++----
+> >  drivers/mtd/nand/nandsim.c       | 10 +++---
+> >  drivers/mtd/nand/r852.c          |  2 +-
+> >  drivers/mtd/nand/r852.h          |  6 ++--
+> >  drivers/mtd/nand/sm_common.c     |  5 ++-
+> >  10 files changed, 65 insertions(+), 61 deletions(-)
+> > 
+> [...]
+> 
+> > 
+> >  
+> > diff --git a/drivers/mtd/nand/diskonchip.c
+> > b/drivers/mtd/nand/diskonchip.c
+> > index c3aa53c..b97d88c 100644
+> > --- a/drivers/mtd/nand/diskonchip.c
+> > +++ b/drivers/mtd/nand/diskonchip.c
+> [...]
+> 
+> > 
+> > @@ -438,7 +438,7 @@ static void __init doc2000_count_chips(struct
+> > mtd_info *mtd)
+> >  			break;
+> >  	}
+> >  	doc->chips_per_floor = i;
+> > -	printk(KERN_DEBUG "Detected %d chips per floor.\n", i);
+> > +	pr_info("Detected %d chips per floor.\n", i);
+> Should be pr_debug() here.
+> 
+> > 
+> >  }
+> >  
+> [...]
+> 
+> > 
+> > diff --git a/drivers/mtd/nand/nandsim.c
+> > b/drivers/mtd/nand/nandsim.c
+> > index 246b439..4e5f817 100644
+> > --- a/drivers/mtd/nand/nandsim.c
+> > +++ b/drivers/mtd/nand/nandsim.c
+> > @@ -184,15 +184,15 @@ MODULE_PARM_DESC(bch,		 "Enable
+> > BCH ecc and set how many bits should "
+> >  
+> >  /* Simulator's output macros (logging, debugging, warning, error)
+> > */
+> >  #define NS_LOG(args...) \
+> > -	do { if (log) printk(KERN_DEBUG NS_OUTPUT_PREFIX " log: "
+> > args); } while(0)
+> > +	do { if (log) pr_debug(NS_OUTPUT_PREFIX " log: " args); }
+> > while(0)
+> You could define pr_fmt() to avoid passing NS_OUTPUT_PREFIX.
+> Something
+> like:
+> 
+> #define pr_fmt(fmt)	"[nandsim]" fmt
+> 
+> (remember to put this definition before include directives).
+> 
+> Then, all you have to do is
+> 
+> do { if (log) pr_debug(" log: " args); } while(0)
+> 
+> > 
+> >  #define NS_DBG(args...) \
+> > -	do { if (dbg) printk(KERN_DEBUG NS_OUTPUT_PREFIX " debug:
+> > " args); } while(0)
+> > +	do { if (dbg) pr_debug(NS_OUTPUT_PREFIX " debug: " args);
+> > } while(0)
+> >  #define NS_WARN(args...) \
+> > -	do { printk(KERN_WARNING NS_OUTPUT_PREFIX " warning: "
+> > args); } while(0)
+> > +	do { pr_warn(NS_OUTPUT_PREFIX " warning: " args); }
+> > while(0)
+> >  #define NS_ERR(args...) \
+> > -	do { printk(KERN_ERR NS_OUTPUT_PREFIX " error: " args); }
+> > while(0)
+> > +	do { pr_err(NS_OUTPUT_PREFIX " error: " args); } while(0)
+> >  #define NS_INFO(args...) \
+> > -	do { printk(KERN_INFO NS_OUTPUT_PREFIX " " args); }
+> > while(0)
+> > +	do { pr_info(NS_OUTPUT_PREFIX " " args); } while(0)
+> >  
+> >  /* Busy-wait delay macros (microseconds, milliseconds) */
+> >  #define NS_UDELAY(us) \
+> > diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+> > index fc9287a..3d54c6a 100644
+> > --- a/drivers/mtd/nand/r852.c
+> > +++ b/drivers/mtd/nand/r852.c
+> > @@ -935,7 +935,7 @@ static int  r852_probe(struct pci_dev *pci_dev,
+> > const struct pci_device_id *id)
+> >  		&dev->card_detect_work, 0);
+> >  
+> >  
+> > -	printk(KERN_NOTICE DRV_NAME ": driver loaded
+> > successfully\n");
+> > +	pr_notice(DRV_NAME ": driver loaded successfully\n");
+> Same here:
+> 
+> #define pr_fmt(fmt)	DRV_NAME fmt
 
-On Tue, 6 Feb 2018 15:55:08 +0100, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+I am facing the following errors here.
 
-> On Sat,  3 Feb 2018 10:55:40 +0100
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> >  /**
-> > - * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-> > + * nand_set_features_default - [REPLACEABLE] set features for ONFI NAND
-> >   * @mtd: MTD device structure
-> >   * @chip: nand chip info structure
-> >   * @addr: feature address.
-> >   * @subfeature_param: the subfeature parameters, a four bytes array.
-> >   */
-> > -static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_ch=
-ip *chip,
-> > -			int addr, uint8_t *subfeature_param)
-> > +static int nand_set_features_default(struct mtd_info *mtd,
-> > +				     struct nand_chip *chip, int addr,
-> > +				     uint8_t *subfeature_param) =20
->=20
-> This name change is not mentioned in the commit message, and it's
-> probably something you should do in a separate patch. And how about
-> moving the default specifier just after nand_ =3D>
-> nand_default_set_features().
 
-This change has been moved in a separate patch, that will be integrated
-in the series that prepares to this one (about a better handling of
-timings in the core).
 
->=20
-> >  {
-> > -	if (!chip->onfi_version ||
-> > -	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> > -	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-> > -		return -EINVAL;
-> > -
-> >  	return nand_set_features_op(chip, addr, subfeature_param);
-> >  }
-> > =20
-> >  /**
-> > - * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
-> > + * nand_get_features_default - [REPLACEABLE] get features for ONFI NAND
-> >   * @mtd: MTD device structure
-> >   * @chip: nand chip info structure
-> >   * @addr: feature address.
-> >   * @subfeature_param: the subfeature parameters, a four bytes array.
-> >   */
-> > -static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_ch=
-ip *chip,
-> > -			int addr, uint8_t *subfeature_param)
-> > +static int nand_get_features_default(struct mtd_info *mtd,
-> > +				     struct nand_chip *chip, int addr,
-> > +				     uint8_t *subfeature_param) =20
->=20
-> Ditto.
->=20
-> >  {
-> > -	if (!chip->onfi_version ||
-> > -	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> > -	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-> > -		return -EINVAL;
-> > -
-> >  	return nand_get_features_op(chip, addr, subfeature_param);
-> >  }
-> > =20
-> > @@ -5015,9 +5056,9 @@ static void nand_set_defaults(struct nand_chip *c=
-hip)
-> > =20
-> >  	/* set for ONFI nand */
-> >  	if (!chip->onfi_set_features)
-> > -		chip->onfi_set_features =3D nand_onfi_set_features;
-> > +		chip->onfi_set_features =3D nand_set_features_default;
-> >  	if (!chip->onfi_get_features)
-> > -		chip->onfi_get_features =3D nand_onfi_get_features;
-> > +		chip->onfi_get_features =3D nand_get_features_default; =20
->=20
-> We should probably also rename the hooks at some point, because GET/SET
-> FEATURES operations are not limited to ONFi compliant chips.
+In file included from drivers/mtd/nand/r852.c:22:0:
+drivers/mtd/nand/r852.h:148:0: warning: "pr_fmt" redefined
+ #define pr_fmt(fmt)  (DRV_NAME fmt)
+ ^
+In file included from ./include/linux/kernel.h:14:0,
+                 from drivers/mtd/nand/r852.c:10:
+./include/linux/printk.h:287:0: note: this is the location of the
+previous definition
+ #define pr_fmt(fmt) fmt
 
-Done. Will also be in the other series. Next version is coming soon.
 
-Thanks,
-Miqu=C3=A8l
+I tried doing undef and then define, but it didn't work.
 
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+> 
+> > 
+> >  	return 0;
+> >  
+> >  error10:
+> > diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
+> > index 8713c57..63de9b6 100644
+> > --- a/drivers/mtd/nand/r852.h
+> > +++ b/drivers/mtd/nand/r852.h
+> > @@ -149,12 +149,12 @@ struct r852_device {
+> >  
+> >  #define dbg(format, ...) \
+> >  	if (debug) \
+> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ##
+> > __VA_ARGS__)
+> > +		pr_debug(DRV_NAME ": " format "\n", ##
+> > __VA_ARGS__)
+> >  
+> >  #define dbg_verbose(format, ...) \
+> >  	if (debug > 1) \
+> > -		printk(KERN_DEBUG DRV_NAME ": " format "\n", ##
+> > __VA_ARGS__)
+> > +		pr_debug(DRV_NAME ": " format "\n", ##
+> > __VA_ARGS__)
+> >  
+> And here as well.
+> 
+> Regards,
+> 
+> Boris
+> 
