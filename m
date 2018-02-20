@@ -1,26 +1,20 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eo3jj-0004Po-6D
- for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 08:57:21 +0000
-Date: Tue, 20 Feb 2018 09:57:07 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@free-electrons.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Han Xu
- <han.xu@nxp.com>
-Subject: Re: [PATCH v2 1/2] mtd: nand: Check ONFI timings have been acked by
- the chip
-Message-ID: <20180220095707.4acf301e@xps13>
-In-Reply-To: <20180212133605.0d8b0041@bbrezillon>
-References: <20180119092547.26873-1-miquel.raynal@free-electrons.com>
- <20180119092547.26873-2-miquel.raynal@free-electrons.com>
- <20180212133605.0d8b0041@bbrezillon>
+ id 1eo3uP-0002Sn-4D
+ for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 09:08:29 +0000
+Date: Tue, 20 Feb 2018 10:07:59 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: hartleys@visionengravers.com, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [bug report] mtd: plat_nand: request memory resource before
+ doing ioremap
+Message-ID: <20180220100759.4b5acd2f@bbrezillon>
+In-Reply-To: <20180220084115.GA18059@mwanda>
+References: <20180220084115.GA18059@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,121 +24,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Dan,
 
-On Mon, 12 Feb 2018 13:36:05 +0100, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+On Tue, 20 Feb 2018 11:41:15 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-> On Fri, 19 Jan 2018 10:25:46 +0100
-> Miquel Raynal <miquel.raynal@free-electrons.com> wrote:
->=20
-> > Choosing ONFI timings when ->onfi_set/get_features() calls are supported
-> > by the NAND chip is a matter of reading the chip's ONFI parameter page
-> > and telling the chip the chosen mode (between all of the supported ones)
-> > with ->onfi_set_feature().
-> >=20
-> > Add a check on whether the chip "acked" the timing mode or not.
-> >=20
-> > This can be a problem for NAND chips that do not follow entirely the
-> > ONFI specification. These chips actually support other modes than
-> > "mode 0", but do not update the parameter page once a timing mode has
-> > been selected. This issue will be addressed in another patch that will
-> > add the feature to overwrite NAND chips features within the parameter
-> > page, from the NAND chip driver.
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@free-electrons.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c | 41 ++++++++++++++++++++++++++++++++++--=
------
-> >  1 file changed, 34 insertions(+), 7 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 96c97588e1ba..e209a65a17e0 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -1231,15 +1231,47 @@ static int nand_setup_data_interface(struct nan=
-d_chip *chip, int chipnr)
-> >  			chip->onfi_timing_mode_default,
-> >  		};
-> > =20
-> > +		chip->select_chip(mtd, chipnr);
-> >  		ret =3D chip->onfi_set_features(mtd, chip,
-> >  				ONFI_FEATURE_ADDR_TIMING_MODE,
-> >  				tmode_param);
-> > +		chip->select_chip(mtd, -1);
-> >  		if (ret)
-> > -			goto err;
-> > +			return ret;
-> >  	}
-> > =20
-> >  	ret =3D chip->setup_data_interface(mtd, chipnr, &chip->data_interface=
-);
-> > -err:
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	if (chip->onfi_version &&
-> > +	    (le16_to_cpu(chip->onfi_params.opt_cmd) &
-> > +	     ONFI_OPT_CMD_SET_GET_FEATURES)) {
-> > +		u8 tmode_param[ONFI_SUBFEATURE_PARAM_LEN] =3D {};
-> > +
-> > +		chip->select_chip(mtd, chipnr);
-> > +		ret =3D chip->onfi_get_features(mtd, chip,
-> > +					      ONFI_FEATURE_ADDR_TIMING_MODE,
-> > +					      tmode_param);
-> > +		chip->select_chip(mtd, -1);
-> > +		if (ret)
-> > +			goto err_reset_chip;
-> > +
-> > +		if (tmode_param[0] !=3D chip->onfi_timing_mode_default) {
-> > +			pr_warn("timings mode %d not acknowledged by the NAND chip\n",
-> > +				chip->onfi_timing_mode_default);
-> > +			goto err_reset_chip;
-> > +		}
-> > +	}
-> > +
-> > +	return 0;
-> > +
-> > +err_reset_chip:
-> > +	onfi_fill_data_interface(chip, NAND_SDR_IFACE, 0);
-> > +	chip->select_chip(mtd, chipnr);
-> > +	nand_reset_op(chip);
-> > +	chip->select_chip(mtd, -1);
-> > +
-> >  	return ret;
-> >  }
-> > =20
-> > @@ -2738,10 +2770,8 @@ int nand_reset(struct nand_chip *chip, int chipn=
-r)
-> >  	if (ret)
-> >  		return ret;
-> > =20
-> > -	chip->select_chip(mtd, chipnr);
-> >  	chip->data_interface =3D saved_data_intf;
-> >  	ret =3D nand_setup_data_interface(chip, chipnr);
-> > -	chip->select_chip(mtd, -1);
-> >  	if (ret)
-> >  		return ret;
-> > =20
-> > @@ -6571,10 +6601,7 @@ int nand_scan_tail(struct mtd_info *mtd)
-> > =20
-> >  	/* Enter fastest possible mode on all dies. */
-> >  	for (i =3D 0; i < chip->numchips; i++) {
-> > -		chip->select_chip(mtd, i);
-> >  		ret =3D nand_setup_data_interface(chip, i);
-> > -		chip->select_chip(mtd, -1); =20
->=20
-> Can you split this patch in 2: one that moves the ->select_chip() calls
-> to nand_setup_data_interface() and a second one that calls
-> ->get_features() to make sure the new timing mode has been applied. =20
+> [  This is really weird that Smatch is complaining about ancient code
+>    today.  No idea why.  - dan ]
 
-Done. I will send a new series with these patches plus the one that
-simplify GPMI timings derivation (untouched).
+Probably because I moved NAND code around recently.
 
-Thanks,
-Miqu=C3=A8l
+> 
+> Hello H Hartley Sweeten,
+> 
+> The patch 2d098a725333: "mtd: plat_nand: request memory resource
+> before doing ioremap" from Oct 19, 2009, leads to the following
+> static checker warning:
+> 
+> 	drivers/mtd/nand/raw/plat_nand.c:100 plat_nand_probe()
+> 	info: return a literal instead of 'err'
 
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
+Hm, I don't really get this error message? What's wrong with returning
+err when it's 0? It's true that we could return 0 directly, but I don't
+see it as a real issue. Am I missing something?
+
+> 
+> drivers/mtd/nand/raw/plat_nand.c
+>     78  
+>     79          platform_set_drvdata(pdev, data);
+>     80  
+>     81          /* Handle any platform specific setup */
+>     82          if (pdata->ctrl.probe) {
+>     83                  err = pdata->ctrl.probe(pdev);
+>     84                  if (err)
+>     85                          goto out;
+>     86          }
+>     87  
+>     88          /* Scan to find existence of the device */
+>     89          err = nand_scan(mtd, pdata->chip.nr_chips);
+>     90          if (err)
+>     91                  goto out;
+>     92  
+>     93          part_types = pdata->chip.part_probe_types;
+>     94  
+>     95          err = mtd_device_parse_register(mtd, part_types, NULL,
+>     96                                          pdata->chip.partitions,
+>     97                                          pdata->chip.nr_partitions);
+>     98  
+>     99          if (!err)
+>    100                  return err;
+>                 ^^^^^^^^^^^^^^^^^^^
+> 
+> Ugh...  Success handling.  There seems to be a lot of it in this
+> subsystem.  :(
+
+Yep, there's a lot of ancient code that no one dares to touch in the
+fear that it may break things. Also, there's so many old drivers that
+cleaning up everything would take a lot of time.
+
+> 
+>    101  
+>    102          nand_release(mtd);
+>                              ^^^
+> This call to nand_release() makes no sense.  It calls unregister but
+> mtd_device_parse_register() failed.
+
+You're right, we should call nand_cleanup() here. This being said,
+calling mtd_device_unregister() should be harmless because of this test
+[1].
+
+To sum-up, this code is definitely not meeting the kernel standards in
+term of code quality, but it doesn't seem to be buggy either.
+
+Regards,
+
+Boris
+
+[1]https://elixir.bootlin.com/linux/v4.8/source/drivers/mtd/mtdcore.c#L664
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 http://bootlin.com
