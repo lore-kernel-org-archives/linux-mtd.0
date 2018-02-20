@@ -1,18 +1,23 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1enulS-0005uP-4r
- for linux-mtd@lists.infradead.org; Mon, 19 Feb 2018 23:22:32 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2] mtd: nftl/inftl: check mtd_erase() return value
-Date: Tue, 20 Feb 2018 00:22:15 +0100
-Message-Id: <20180219232215.15938-1-miquel.raynal@bootlin.com>
+Received: from mx-ginzinger.sigmacloud.services ([185.154.235.147])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1eo35d-0005TS-Jt
+ for linux-mtd@lists.infradead.org; Tue, 20 Feb 2018 08:15:55 +0000
+From: Manfred Schlaegl <manfred.schlaegl@ginzinger.com>
+Subject: [PATCH] mtd: nand: gpmi: fix edo mode for non fully ONFI compliant
+ flashes
+To: Han Xu <han.xu@nxp.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, Manfred Schlaegl
+ <manfred.schlaegl@ginzinger.com>
+Message-ID: <2e12a84b-b4cb-f0ff-f3c9-173def6b5bd2@ginzinger.com>
+Date: Tue, 20 Feb 2018 09:15:33 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the creation of mtd_erase(), the function can return a negative
-error code without updating the instr->state flag. This happens for
-instance when ->_erase() is not implemented or ->erasesize has an invalid
-value. The calling function should error out in this case.
+In enable_edo_mode the timing mode feature is set according to previously
+read capabilities of the parameter page ("Timing mode support"). After
+the value was set, it is read back to provide a "double-check".
+If the "double check" fails, the whole function returns with an error,
+which leads to a very slow (non-edo) fallback timing.
 
-Functions in nftlmount/inftlmount call mtd_erase() without checking the
-return code. The instr->state flag is checked but might not have been
-updated depending on the error path.
+The problem here is, that there seem to be some NAND flashes, which are
+not fully ONFI 1.0 compliant.
+One of these is Winbond W29N04GV. According to datasheet and parameter
+page, the flash supports timing mode 4 (edo), but the timing mode feature
+is simply missing.
 
-Add checks on the returned value of mtd_erase().
+It seems that setting a non-existing feature is simply ignored. The real
+problem occurs, when the feature is read back: W29N04GV always delivers
+zero, which causes the "double-check" to fail. This leads to very slow
+timing and therefore to poor performance.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+To solve this, we simply remove the double-check, which is a paranoia
+check anyways.
+
+The modification was intensively tested on i.MX6 with linux-4.1, Winbond
+W29N04GV and Micron MT29F4G08ABADAH4.
+
+Signed-off-by: Manfred Schlaegl <manfred.schlaegl@ginzinger.com>
 ---
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
-Changes since v1:
-  - Fix disgraceful compilation issue.
-
- drivers/mtd/inftlmount.c | 7 +++++--
- drivers/mtd/nftlmount.c  | 3 ++-
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index 8d6bb189ea8e..34fd6180966a 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -219,7 +219,9 @@ static int find_boot_record(struct INFTLrecord *inftl)
- 				 */
- 				instr->addr = ip->Reserved0 * inftl->EraseSize;
- 				instr->len = inftl->EraseSize;
--				mtd_erase(mtd, instr);
-+				ret = mtd_erase(mtd, instr);
-+				if (ret < 0)
-+					return ret;
- 			}
- 			if ((ip->lastUnit - ip->firstUnit + 1) < ip->virtualUnits) {
- 				printk(KERN_WARNING "INFTL: Media Header "
-@@ -393,7 +395,8 @@ int INFTL_formatblock(struct INFTLrecord *inftl, int block)
- 	   mark only the failed block in the bbt. */
- 	for (physblock = 0; physblock < inftl->EraseSize;
- 	     physblock += instr->len, instr->addr += instr->len) {
--		mtd_erase(inftl->mbd.mtd, instr);
-+		if (mtd_erase(inftl->mbd.mtd, instr) < 0)
-+			goto fail;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+index 97787246af41..40fba96df215 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+@@ -939,16 +939,9 @@ static int enable_edo_mode(struct gpmi_nand_data *this, int mode)
+ 	if (ret)
+ 		goto err_out;
  
- 		if (instr->state == MTD_ERASE_FAILED) {
- 			printk(KERN_WARNING "INFTL: error while formatting block %d\n",
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index 184c8fbfe465..8dbc40ab7d73 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -331,7 +331,8 @@ int NFTL_formatblock(struct NFTLrecord *nftl, int block)
- 	instr->mtd = nftl->mbd.mtd;
- 	instr->addr = block * nftl->EraseSize;
- 	instr->len = nftl->EraseSize;
--	mtd_erase(mtd, instr);
-+	if (mtd_erase(mtd, instr) < 0)
-+		goto fail;
+-	/* [2] send GET FEATURE command to double-check the timing mode */
+-	memset(feature, 0, ONFI_SUBFEATURE_PARAM_LEN);
+-	ret = nand->onfi_get_features(mtd, nand,
+-				ONFI_FEATURE_ADDR_TIMING_MODE, feature);
+-	if (ret || feature[0] != mode)
+-		goto err_out;
+-
+ 	nand->select_chip(mtd, -1);
  
- 	if (instr->state == MTD_ERASE_FAILED) {
- 		printk("Error while formatting block %d\n", block);
+-	/* [3] set the main IO clock, 100MHz for mode 5, 80MHz for mode 4. */
++	/* [2] set the main IO clock, 100MHz for mode 5, 80MHz for mode 4. */
+ 	rate = (mode == 5) ? 100000000 : 80000000;
+ 	clk_set_rate(r->clock[0], rate);
+ 
 -- 
-2.14.1
+2.11.0
