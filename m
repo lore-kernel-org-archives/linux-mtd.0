@@ -1,9 +1,9 @@
-Received: from mail-bl2nam02olkn0810.outbound.protection.outlook.com
- ([2a01:111:f400:fe46::810]
- helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from mail-cys01nam02olkn081e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe45::81e]
+ helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoa8F-0006w6-4t
- for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 19:32:51 +0000
+ id 1eoa8H-0006wR-Ik
+ for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 19:33:12 +0000
 From: Bean Huo <beanhuo@outlook.com>
 To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "boris.brezillon@free-elections.com"
@@ -15,10 +15,10 @@ To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>
 CC: beanhuo <beanhuo@micron.com>
-Subject: [PATCH v1 2/3] mtd: probe: probe dual die entry from devicetree
- binding
-Date: Wed, 21 Feb 2018 19:32:34 +0000
-Message-ID: <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Subject: [PATCH v1 3/3] drivers: mtd: chips: add support for the dual die
+ stacked PNOR
+Date: Wed, 21 Feb 2018 19:32:37 +0000
+Message-ID: <DM2PR12MB00143807EEF9602098FF0D4BA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
 References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
 In-Reply-To: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
 Content-Language: en-US
@@ -36,73 +36,341 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: beanhuo <beanhuo@micron.com>
 
-The device_stack property now will be initialized when devicetree
-has an entry compatible with "dual_die_stack".
+For the dual die stacked parallel NOR flash (PNOR), it comprises
+two dies in the stack. These two dies can receive the commands in
+parallel, but there is only one die can be selected or accept
+commands according to the maximum address line A[max].
+For example,Micron parallel NOR MT28FW02GBBA1HPC and Cypress
+S70GL02GS, both are dual-die stacked PNOR with 2Gbit density,
+and maximum address line A[26], when A[26] =3D=3D 0, the lower 1Gb die
+is selected, when A[26] =3D=3D 1, the upper 1Gb is selected.
+
+This patch is to check the accessing offset in the chip and rebase
+the unlock cycle command base addresses.
 
 Signed-off-by: beanhuo <beanhuo@micron.com>
 ---
- drivers/mtd/chips/cfi_probe.c | 7 +++++++
- include/linux/mtd/cfi.h       | 8 ++++++++
- 2 files changed, 15 insertions(+)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 144 ++++++++++++++++++++++++++++----=
+----
+ 1 file changed, 113 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index e8d0164..6182406 100644
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -17,6 +17,7 @@
- #include <linux/mtd/map.h>
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/gen_probe.h>
-+#include <linux/of_platform.h>
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index 56aa6b7..8fa2193 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1104,6 +1104,27 @@ do {  \
 =20
- //#define DEBUG_CFI
+ #endif
 =20
-@@ -159,6 +160,7 @@ static int __xipram cfi_chip_setup(struct map_info *map=
-,
- 	int num_erase_regions =3D cfi_read_query(map, base + (0x10 + 28)*ofs_fact=
-or);
- 	int i;
- 	int addr_unlock1 =3D 0x555, addr_unlock2 =3D 0x2AA;
-+	struct device_node __maybe_unused *np =3D map->device_node;
-=20
- 	xip_enable(base, map, cfi);
- #ifdef DEBUG_CFI
-@@ -177,6 +179,11 @@ static int __xipram cfi_chip_setup(struct map_info *ma=
-p,
-=20
- 	cfi->sector_erase_cmd =3D CMD(0x30);
-=20
-+	cfi->device_stack =3D CFI_DEVICESTACK_1DIE;
-+#ifdef CONFIG_OF
-+	if (np && of_property_read_bool(np, "dual-die-stack"))
-+		cfi->device_stack =3D CFI_DEVICESTACK_2DIE;
-+#endif
- 	/* Read the CFI info structure */
- 	xip_disable_qry(base, map, cfi);
- 	for (i=3D0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); i++)
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index 9b57a9b..bda37a4 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -277,11 +277,19 @@ struct cfi_bri_query {
- #define CFI_MODE_CFI	1
- #define CFI_MODE_JEDEC	0
-=20
-+/* These values represent the die count of chip stack.
-+ * So far, there only exists two type of stack device,
-+ * single or dual die.
++/*
++ * The dual die stacked device comprises two identical dies which connecte=
+d
++ * in parallel.But there is only one die being selected each time accordin=
+g
++ * to maximum address line A[max]. When A[max] =3D=3D 0, the lower die is =
+selected,
++ * when A[max] =3D=3D 1, the upper die is selected. This function will ret=
+ure the
++ * CFI unlock-command base address accrording to accessing address.
 + */
-+#define CFI_DEVICESTACK_1DIE	1
-+#define CFI_DEVICESTACK_2DIE	2
++static loff_t get_cmd_base_address(struct map_info *map, struct flchip *ch=
+ip,
++		loff_t offset)
++{
++	struct cfi_private *cfi =3D map->fldrv_priv;
++	unsigned long cmd_base_addr =3D chip->start;
 +
- struct cfi_private {
- 	uint16_t cmdset;
- 	void *cmdset_priv;
- 	int interleave;
- 	int device_type;
-+	int device_stack;	/* Device stack type, single die or dual die. */
- 	int cfi_mode;		/* Are we a JEDEC device pretending to be CFI? */
- 	int addr_unlock1;
- 	int addr_unlock2;
++	if (cfi->device_stack =3D=3D CFI_DEVICESTACK_2DIE) {
++		if (offset >=3D (1 << (cfi->cfiq->DevSize - 1)))
++			cmd_base_addr +=3D (1 << (cfi->cfiq->DevSize - 1));
++	}
++
++	return cmd_base_addr;
++}
++
+ static inline int do_read_onechip(struct map_info *map, struct flchip *chi=
+p, loff_t adr, size_t len, u_char *buf)
+ {
+ 	unsigned long cmd_addr;
+@@ -1180,12 +1201,18 @@ static inline void otp_enter(struct map_info *map, =
+struct flchip *chip,
+ 			     loff_t adr, size_t len)
+ {
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
++	unsigned long  cmd_base_addr;
+=20
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x88, cfi->addr_unlock1, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x88, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+=20
+ 	INVALIDATE_CACHED_RANGE(map, chip->start + adr, len);
+@@ -1195,14 +1222,20 @@ static inline void otp_exit(struct map_info *map, s=
+truct flchip *chip,
+ 			    loff_t adr, size_t len)
+ {
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
++	unsigned long cmd_base_addr;
+=20
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x90, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+=20
+ 	INVALIDATE_CACHED_RANGE(map, chip->start + adr, len);
+@@ -1566,6 +1599,7 @@ static int __xipram do_write_oneword(struct map_info =
+*map, struct flchip *chip,
+ 	int ret =3D 0;
+ 	map_word oldd;
+ 	int retry_cnt =3D 0;
++	unsigned long cmd_base_addr;
+=20
+ 	adr +=3D chip->start;
+=20
+@@ -1599,10 +1633,18 @@ static int __xipram do_write_oneword(struct map_inf=
+o *map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr - chip->start);
++
+  retry:
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
+ 	map_write(map, datum, adr);
+ 	chip->state =3D mode;
+=20
+@@ -1807,6 +1849,7 @@ static int __xipram do_write_buffer(struct map_info *=
+map, struct flchip *chip,
+ 	unsigned long cmd_adr;
+ 	int z, words;
+ 	map_word datum;
++	unsigned long cmd_base_addr;
+=20
+ 	adr +=3D chip->start;
+ 	cmd_adr =3D adr;
+@@ -1827,8 +1870,15 @@ static int __xipram do_write_buffer(struct map_info =
+*map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, cmd_adr);
+=20
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr - chip->start);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
+=20
+ 	/* Write Buffer Load */
+ 	map_write(map, CMD(0x25), cmd_adr);
+@@ -1896,11 +1946,17 @@ static int __xipram do_write_buffer(struct map_info=
+ *map, struct flchip *chip,
+ 	 * See e.g.
+ 	 * http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Bu=
+ffer_Prog_Page_Buffer_Read_AN.pdf
+ 	 */
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr - chip->start);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
++	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+ 	xip_enable(map, chip, adr);
+ 	/* FIXME - should have reset delay before continuing */
+@@ -2063,6 +2119,7 @@ static int do_panic_write_oneword(struct map_info *ma=
+p, struct flchip *chip,
+ 	map_word oldd;
+ 	int ret =3D 0;
+ 	int i;
++	unsigned long cmd_base_addr;
+=20
+ 	adr +=3D chip->start;
+=20
+@@ -2087,10 +2144,18 @@ static int do_panic_write_oneword(struct map_info *=
+map, struct flchip *chip,
+=20
+ 	ENABLE_VPP(map);
+=20
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr - chip->start);
++
+ retry:
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
+ 	map_write(map, datum, adr);
+=20
+ 	for (i =3D 0; i < jiffies_to_usecs(uWriteTimeout); i++) {
+@@ -2329,6 +2394,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	unsigned long timeo =3D jiffies + HZ;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret =3D 0;
++	unsigned long cmd_base_addr;
+=20
+ 	adr +=3D chip->start;
+=20
+@@ -2346,11 +2412,21 @@ static int __xipram do_erase_oneblock(struct map_in=
+fo *map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr - chip->start);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
++			cfi->device_type, NULL);
+ 	map_write(map, cfi->sector_erase_cmd, adr);
+=20
+ 	chip->state =3D FL_ERASING;
+@@ -2399,7 +2475,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, map_word_ff(map))) {
+ 		/* reset on all failures. */
+-		map_write( map, CMD(0xF0), chip->start );
++		map_write(map, CMD(0xF0), cmd_base_addr);
+ 		/* FIXME - should have reset delay before continuing */
+=20
+ 		ret =3D -EIO;
+@@ -2549,6 +2625,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_in=
+fo *map,
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
+ 	unsigned long timeo;
+ 	int ret;
++	unsigned long cmd_base_addr;
+=20
+ 	mutex_lock(&chip->mutex);
+ 	ret =3D get_chip(map, chip, adr + chip->start, FL_LOCKING);
+@@ -2559,12 +2636,17 @@ static int __maybe_unused do_ppb_xxlock(struct map_=
+info *map,
+=20
+ 	pr_debug("MTD %s(): XXLOCK 0x%08lx len %d\n", __func__, adr, len);
+=20
+-	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
++	/* For the dual die device, rebase the command base address according
++	 * to accessing address.
++	 */
++	cmd_base_addr =3D get_cmd_base_address(map, chip, adr);
++
++	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
++	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+ 	/* PPB entry command */
+-	cfi_send_gen_cmd(0xC0, cfi->addr_unlock1, chip->start, map, cfi,
++	cfi_send_gen_cmd(0xC0, cfi->addr_unlock1, cmd_base_addr, map, cfi,
+ 			 cfi->device_type, NULL);
+=20
+ 	if (thunk =3D=3D DO_XXLOCK_ONEBLOCK_LOCK) {
+@@ -2577,8 +2659,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_in=
+fo *map,
+ 		 * have to unlock all sectors of this device instead
+ 		 */
+ 		chip->state =3D FL_UNLOCKING;
+-		map_write(map, CMD(0x80), chip->start);
+-		map_write(map, CMD(0x30), chip->start);
++		map_write(map, CMD(0x80), cmd_base_addr);
++		map_write(map, CMD(0x30), cmd_base_addr);
+ 	} else if (thunk =3D=3D DO_XXLOCK_ONEBLOCK_GETLOCK) {
+ 		chip->state =3D FL_JEDEC_QUERY;
+ 		/* Return locked status: 0->locked, 1->unlocked */
+@@ -2604,8 +2686,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_in=
+fo *map,
+ 	}
+=20
+ 	/* Exit BC commands */
+-	map_write(map, CMD(0x90), chip->start);
+-	map_write(map, CMD(0x00), chip->start);
++	map_write(map, CMD(0x90), cmd_base_addr);
++	map_write(map, CMD(0x00), cmd_base_addr);
+=20
+ 	chip->state =3D FL_READY;
+ 	put_chip(map, chip, adr + chip->start);
 --=20
 2.7.4
