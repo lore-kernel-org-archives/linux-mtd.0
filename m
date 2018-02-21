@@ -1,25 +1,27 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoTRm-0003LJ-JW
- for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 12:24:32 +0000
+ id 1eoTZb-0007mw-VR
+ for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 12:32:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Wed, 21 Feb 2018 13:24:14 +0100
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Date: Wed, 21 Feb 2018 13:32:24 +0100
 From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ marcel.ziswiler@toradex.com, richard@nod.at, bpringlemeir@gmail.com,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, dwmw2@infradead.org
 Subject: Re: [RFC PATCH v3 2/3] mtd: nand: vf610_nfc: make use of ->exec_op()
-In-Reply-To: <20180221093507.536f6917@bbrezillon>
+In-Reply-To: <20180221110911.4fe46b8c@xps13>
 References: <20180208235921.31840-1-stefan@agner.ch>
  <20180208235921.31840-3-stefan@agner.ch>
  <20180211115452.29cee45e@bbrezillon>
  <8898b2bd6b9b904f24b862d6df55ac40@agner.ch>
- <20180221092821.42fa6b42@bbrezillon> <20180221093507.536f6917@bbrezillon>
-Message-ID: <426c92deb8fa26bfd7f14999804e335a@agner.ch>
+ <8898b2bd6b9b904f24b862d6df55ac40@agner.ch>
+ <20180221081812.79e912a5@bbrezillon>
+ <e5d20aa9a17caaa79a3618367f22637f@agner.ch> <20180221110911.4fe46b8c@xps13>
+Message-ID: <20dbaf1ff98f3c09e07cba10703b3106@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +31,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 21.02.2018 09:35, Boris Brezillon wrote:
-> On Wed, 21 Feb 2018 09:28:21 +0100
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On 21.02.2018 11:09, Miquel Raynal wrote:
+> Hi Stefan,
 > 
->> On Wed, 21 Feb 2018 00:15:18 +0100
->> Stefan Agner <stefan@agner.ch> wrote:
->>
->> > >> +		}
->> > >> +
->> > >> +		row = ROW_ADDR(0, instr->ctx.addr.addrs[addr++]);
->> > >> +		code |= COMMAND_RAR_BYTE1;
->> > >> +		if (addr < instr->ctx.addr.naddrs) {
->> > >> +			row |= ROW_ADDR(1, instr->ctx.addr.addrs[addr++]);
->> > >> +			code |= COMMAND_RAR_BYTE2;
->> > >> +		}
->> > >> +		if (addr < instr->ctx.addr.naddrs) {
->> > >> +			row |= ROW_ADDR(2, instr->ctx.addr.addrs[addr++]);
->> > >> +			code |= COMMAND_RAR_BYTE3;
->> > >> +		}
->> > >> +
->> > >> +		dev_dbg(nfc->dev, "OP_ADDR: col %d, row %d\n", col, row);
->> > >> +
->> > >> +		instr = vf610_get_next_instr(subop, &op_id);
->> > >> +	}
->> > >> +
->> > >> +	if (instr && instr->type == NAND_OP_DATA_OUT_INSTR) {
->> > >> +		int len = nand_subop_get_data_len(subop, op_id);
->> > >> +		int offset = nand_subop_get_data_start_off(subop, op_id);
->> > >> +
->> > >> +		dev_dbg(nfc->dev, "OP_DATA_OUT: len %d, offset %d\n", len, offset);
->> > >> +
->> > >> +		vf610_nfc_memcpy(nfc->regs + NFC_MAIN_AREA(0) + offset,
->> > >> +				 instr->ctx.data.buf.in + offset,
->> > >> +				 len);
->> > >
->> > > I think you have the same endianness problem you have for the READ
->> > > path. For example, I doubt SET_FEATURES will work properly if you're
->> > > in LE. So I repeat my initial suggestion: always do the byte swapping
->> > > when you're transfering data to/from the SRAM from vf610_nfc_cmd()
->> > > and use vf610_nfc_memcpy() only in the ->read/write_page()
->> > > implementations.
->> > >
+> 
+>> >> >> +{
+>> >> >> +	vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
+>> >> >> +			    COL_ADDR_SHIFT, col);
+>> >> >> +
+>> >> >> +	vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
+>> >> >> +			    ROW_ADDR_SHIFT, row);
+>> >> >> +
+>> >> >> +	vf610_nfc_write(nfc, NFC_SECTOR_SIZE, trfr_sz);
+>> >> >> +	vf610_nfc_write(nfc, NFC_FLASH_CMD1, cmd1);
+>> >> >> +	vf610_nfc_write(nfc, NFC_FLASH_CMD2, cmd2);
+>> >> >> +
+>> >> >> +	dev_dbg(nfc->dev, "col 0x%08x, row 0x%08x, cmd1 0x%08x, cmd2 0x%08x, trfr_sz %d\n",
+>> >> >> +		col, row, cmd1, cmd2, trfr_sz);
+>> >> >> +
+>> >> >> +	vf610_nfc_done(nfc);
+>> >> >> +}
+>> >> >> +
+>> >> >> +static inline const struct nand_op_instr *vf610_get_next_instr(
+>> >> >> +	const struct nand_subop *subop, int *op_id)
+>> >> >> +{
+>> >> >> +	if (*op_id + 1 >= subop->ninstrs)
+>> >> >> +		return NULL;
+>> >> >> +
+>> >> >> +	(*op_id)++;
+>> >> >> +
+>> >> >> +	return &subop->instrs[*op_id];
+>> >> >> +}
+>> >> >> +
+>> >> >> +static int vf610_nfc_cmd(struct nand_chip *chip,
+>> >> >> +				const struct nand_subop *subop)
+>> >> >> +{
+>> >> >> +	const struct nand_op_instr *instr;
+>> >> >> +	struct vf610_nfc *nfc = chip_to_nfc(chip);
+>> >> >> +	struct mtd_info *mtd = nand_to_mtd(chip);
+>> >> >> +	int op_id = -1, addr = 0, trfr_sz = 0;
+>> >> >> +	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+>> >> >> +
+>> >> >> +	/* Some ops are optional, but they need to be in order */
+>> >> >> +	instr = vf610_get_next_instr(subop, &op_id);
+>> >> >> +	if (!instr)
+>> >> >> +		return -EINVAL;
+>> >> >> +
+>> >> >> +	if (instr && instr->type == NAND_OP_CMD_INSTR) {
+>> >> >> +		dev_dbg(nfc->dev, "OP_CMD: code 0x%02x\n", instr->ctx.cmd.opcode);
+>> >> >> +		cmd2 |= instr->ctx.cmd.opcode << CMD_BYTE1_SHIFT;
+>> >> >> +		code |= COMMAND_CMD_BYTE1;
+>> >> >> +
+>> >> >> +		instr = vf610_get_next_instr(subop, &op_id);
+>> >> >> +	}
+>> >> >> +
+>> >> >> +	if (instr && instr->type == NAND_OP_ADDR_INSTR) {
+>> >> >> +
+>> >> >
+>> >> > Hm, you're still checking the sequencing consistency here. This should
+>> >> > have been taken care by the core parser already, so really, this is not
+>> >> > needed.
+>> >> >
+>> >>
+>> >> Since those operations are optional, I have to check...
 >> >
->> > Hm, but doesn't that leads to wrong order of data when using e.g. raw
->> > read/write page...?
+>> > Looks like my previous pastebin was not containing all the changes I
+>> > wanted to share with you, so here is the full version [1].
+>> >
+>> > Hm, what do these checks add to the checks done in the parser? Even if
+>> > all instructions are optional in your pattern the core parser still
+>> > check that when they appear in the proper order. So, you can for
+>> > example never have CMD1+CMD2+ADDR*5 passed to vf610_nfc_cmd().
 >>
->> Yep you'll have to implement ->{read,write}_{page,oob}[_raw](), but I
->> prefer that to having an ->exec_op() implementation that tries to guess
->> what the core is trying to do.
+>> Sure...
 >>
+>> >
+>> > The only exception I can think of is when you have DATA_OUT+CMD. In
+>> > this case, you probably want to skip CMD_BYTE1 and use CMD_BYTE2
+>> > directly, but that can easily be taken care of in the alternative
+>> > implementation I proposed:
+>> >
+>> > 		if (instr->type == NAND_OP_DATA_OUT_INSTR) {
+>> > 			/*
+>> > 			 * If there was no CMD instruction before the
+>> > 			 * DATA_OUT one, we must skip CMD_BYTE1 and use
+>> > 			 * CMD_BYTE2 directly so that the CMD cycle is
+>> > 			 * really placed after the DATA_OUT one.
+>> > 			 */
+>> > 			if (!ncmds)
+>> > 				ncmds++;
+>> > 			....
+>> > 		}
+>> >
+>> >
+>>
+>> I fully understand, I do not have to enforce order since I can rely on
+>> the order passed by the stack.
+>>
+>> It is also not what I am after. I just check which operation is going to
+>> be next. Like your switch statement.
+>>
+>> I just see don't see a real advantage in using a for loop. It makes it
+>> harder to read, since the order of operations will no more be obvious.
+>> It makes this ncmd work around necessary.
 > 
-> One more thing, in its current state the driver may fail to detect
-> blocks marked bad by the manufacturer because of this endianness issue.
-> That should work most of the time because manufacturers tend to fill
-> the whole block with zeros when they want to mark it bad, but they're
-> not required to do that.
+> Well, the aim of ->exec_op() was initially to get rid of the controller
+> specificities and be free to implement new NAND operations without
+> having to check every controller driver in the world, so doing it this
+> way freezes the possibilities to a reduced set of operations (ie. what
+> we do today). This is wrong from my point of view and I would really
+> welcome a for-loop approach instead.
 
-That sounds scary. I think bad block scan is done through oob reads
-only. I guess if we only implement raw read/write and ecc read/write,
-the stack will actually read OOB with proper ending when implemented as
-you suggested.
+We can write a driver however we want, the hardware is still strictly
+sequentially...
+
+The current implementation should not restrict possible operations in
+any way other than it is enforced by hardware anyway...
+
+So the discussion is only about readability/style.
+
+I will make a cleaned up v4 still sequentially and then we can compare
+that to a for loop again to make a final decision.
 
 --
 Stefan
+
+
+> 
+> Thanks,
+> Miquèl
+> 
+>>
+>> Using a for loop just because we can? I haven't seen a convincing
+>> argument so far.
+>>
+>>
