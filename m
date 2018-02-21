@@ -1,8 +1,8 @@
-Received: from mail-oln040092003013.outbound.protection.outlook.com
- ([40.92.3.13] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from mail-oln040092003094.outbound.protection.outlook.com
+ ([40.92.3.94] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eoa8A-0006vR-Tj
- for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 19:32:44 +0000
+ id 1eoa8C-0006vp-7W
+ for linux-mtd@lists.infradead.org; Wed, 21 Feb 2018 19:32:45 +0000
 From: Bean Huo <beanhuo@outlook.com>
 To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "boris.brezillon@free-elections.com"
@@ -14,9 +14,11 @@ To: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>
 CC: beanhuo <beanhuo@micron.com>
-Subject: [PATCH v1 0/3] mtd: add support for the dual-die stack parallel NOR
-Date: Wed, 21 Feb 2018 19:32:29 +0000
-Message-ID: <DM2PR12MB0014E20BA4896461BD477FDAA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Subject: [PATCH v1 1/3] mtd: physmap: add dual die entry in devicetree binding
+Date: Wed, 21 Feb 2018 19:32:32 +0000
+Message-ID: <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
+In-Reply-To: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -32,43 +34,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: beanhuo <beanhuo@micron.com>
 
-The dual-die stacked parallel NOR flash comprises the two identical dies
-in parallel. the second/upper die should be selected through its unlock
-cycle command addresses, maximum address line A[max]. when the=20
-A[max] =3D=3D 1, the second/upper die is activated, when  A[max] =3D=3D 0, =
-the=20
-first/lower die is activated.
-Because CFI table doesn't exist one entry that can tell us this is a dual
-die device, I only add this information in the devicetree binding.
+This commit adds the dual die entry in the devicetree binding
+for the daul die stacked parallel NOR.
 
-This patch now will update following funcitons:
-otp_enter()
-otp_exit()
-do_write_oneword()
-do_write_buffer()
-do_panic_write_oneword()
-do_erase_oneblock()
-do_ppb_xxlock()
+Signed-off-by: beanhuo <beanhuo@micron.com>
+---
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-For the Micron dual-die stacked PNOR,since there are two dies now,
-the following functions need to be changed, but not in this series
-patch. Because I am not 100% sure if other parallel NOR vendors'
-dual-die stacked PNOR need, still studying.
-do_otp_lock()
-cfi_amdstd_otp_walk()
-do_erase_chip()
-
-beanhuo (3):
-  mtd: physmap: add dual die entry in devicetree binding
-  mtd: probe: probe dual die entry from devicetree binding
-  drivers: mtd: chips: add support for the dual die stacked PNOR
-
- .../devicetree/bindings/mtd/mtd-physmap.txt        |   2 +
- drivers/mtd/chips/cfi_cmdset_0002.c                | 144 ++++++++++++++++-=
-----
- drivers/mtd/chips/cfi_probe.c                      |   7 +
- include/linux/mtd/cfi.h                            |   8 ++
- 4 files changed, 130 insertions(+), 31 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Docume=
+ntation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48b..782bacc 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -29,6 +29,8 @@ file systems on embedded devices.
+  - use-advanced-sector-protection: boolean to enable support for the
+    advanced sector protection (Spansion: PPB - Persistent Protection
+    Bits) locking.
++ - dual-die-stack: boolean to enable support for the devices with the
++   two dies in stack.
+=20
+ For JEDEC compatible devices, the following additional properties
+ are defined:
 --=20
 2.7.4
