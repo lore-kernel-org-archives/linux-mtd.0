@@ -1,6 +1,6 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eomge-0003i4-Pt
+ id 1eomge-0003i5-U4
  for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 08:57:10 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -10,11 +10,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org,
  David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Subject: [PATCH 2/2] Change Linux major number
-Date: Thu, 22 Feb 2018 09:56:45 +0100
-Message-Id: <20180222085645.9451-2-boris.brezillon@bootlin.com>
-In-Reply-To: <20180222085645.9451-1-boris.brezillon@bootlin.com>
-References: <20180222085645.9451-1-boris.brezillon@bootlin.com>
+Subject: [PATCH 1/2] Stop mentioning l2-mtd
+Date: Thu, 22 Feb 2018 09:56:44 +0100
+Message-Id: <20180222085645.9451-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus switched to 4.x a while back. Let's update the website to reflect
-that before he decides to switch to 5.x.
+All developments happen on linux-mtd now, so let's stop mentioning
+l2-mtd on the website.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- source.xml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ source.xml | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
 diff --git a/source.xml b/source.xml
-index 648d8988c052..6f1ebc43c256 100644
+index 991e86118f48..648d8988c052 100644
 --- a/source.xml
 +++ b/source.xml
-@@ -162,7 +162,7 @@ Signed-off-by: Realname &amp;lt;realmail&amp;gt;<br />
- 
- <h2><a name="kernelversions">Kernel versions</a></h2>
- <p>The MTD code in the linux kernel is updated from the MTD GIT tree
--in kernel version <b>3.x (newest) only</b>.  The 2.4 kernel does not
-+in kernel version <b>4.x (newest) only</b>.  The 2.4 kernel does not
- have NAND support in JFFS2, and will not have anything but
- high-priority bug-fixes applied to it.</p>
- <P>As of March 2005 we dropped Linux 2.4 support from CVS head. This
+@@ -13,10 +13,12 @@
+     <P>MTD development is kept in GIT and managed according to standard Linux
+     development practices. Development is based off of one of several trees,
+     depending on what you're targeting. For MTD development, patches are kept
+-    in the <TT>linux-mtd.git</TT> and <TT>l2-mtd.git</TT> repositories. The
+-    former targets the current release cycle (use this only for bugfixes other
++    in the <TT>linux-mtd.git</TT> repository. The <TT>master</TT> (also called
++    <TT>mtd/fixes</TT>), <TT>nand/fixes</TT> and <TT>spi-nor/fixes</TT>
++    branches target the current release cycle (use this only for bugfixes other
+     material that's worthy of rapid integration into Linus' tree), while the
+-    latter targets the next Linux release (use this for most development).
++    <TT>mtd/next</TT>, <TT>nand/next</TT> and <TT>spi-nor/next</TT> branches
++    target the next Linux release (use this for most development).
+     UBI and UBIFS development is tracked separately, in
+     <TT>linux-ubifs.git</TT>. User-space tools are kept in
+     <TT>mtd-utils.git</TT>.</P>
+@@ -43,18 +45,6 @@
+                 http://git.infradead.org/linux-mtd.git</a>
+         </td>
+     </tr>
+-    <tr>
+-        <td>
+-            MTD (next)
+-        </td>
+-        <td>
+-            <tt>git://git.infradead.org/l2-mtd.git</tt>
+-        </td>
+-        <td>
+-            <a href="http://git.infradead.org/l2-mtd.git">
+-                http://git.infradead.org/l2-mtd.git</a>
+-        </td>
+-    </tr>
+     <tr>
+         <td>
+             UBI / UBIFS
 -- 
 2.14.1
