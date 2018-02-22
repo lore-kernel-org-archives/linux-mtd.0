@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eoqWq-00020z-75
- for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 13:03:23 +0000
-Date: Thu, 22 Feb 2018 14:02:53 +0100
+ id 1eoqZY-0003mX-OC
+ for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 13:06:10 +0000
+Date: Thu, 22 Feb 2018 14:05:42 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Bean Huo <beanhuo@outlook.com>
 Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
@@ -15,12 +15,12 @@ Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, beanhuo
  <beanhuo@micron.com>
-Subject: Re: [PATCH v1 2/3] mtd: probe: probe dual die entry from devicetree
+Subject: Re: [PATCH v1 1/3] mtd: physmap: add dual die entry in devicetree
  binding
-Message-ID: <20180222140253.1773d3ce@bbrezillon>
-In-Reply-To: <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Message-ID: <20180222140542.47340842@bbrezillon>
+In-Reply-To: <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
 References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
- <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+ <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,95 +33,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 Feb 2018 19:32:34 +0000
+On Wed, 21 Feb 2018 19:32:32 +0000
 Bean Huo <beanhuo@outlook.com> wrote:
 
 > From: beanhuo <beanhuo@micron.com>
 > 
-> The device_stack property now will be initialized when devicetree
-> has an entry compatible with "dual_die_stack".
+> This commit adds the dual die entry in the devicetree binding
+> for the daul die stacked parallel NOR.
 > 
 > Signed-off-by: beanhuo <beanhuo@micron.com>
 > ---
->  drivers/mtd/chips/cfi_probe.c | 7 +++++++
->  include/linux/mtd/cfi.h       | 8 ++++++++
->  2 files changed, 15 insertions(+)
+>  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-> index e8d0164..6182406 100644
-> --- a/drivers/mtd/chips/cfi_probe.c
-> +++ b/drivers/mtd/chips/cfi_probe.c
-> @@ -17,6 +17,7 @@
->  #include <linux/mtd/map.h>
->  #include <linux/mtd/cfi.h>
->  #include <linux/mtd/gen_probe.h>
-> +#include <linux/of_platform.h>
->  
->  //#define DEBUG_CFI
->  
-> @@ -159,6 +160,7 @@ static int __xipram cfi_chip_setup(struct map_info *map,
->  	int num_erase_regions = cfi_read_query(map, base + (0x10 + 28)*ofs_factor);
->  	int i;
->  	int addr_unlock1 = 0x555, addr_unlock2 = 0x2AA;
-> +	struct device_node __maybe_unused *np = map->device_node;
+> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> index 4a0a48b..782bacc 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> @@ -29,6 +29,8 @@ file systems on embedded devices.
+>   - use-advanced-sector-protection: boolean to enable support for the
+>     advanced sector protection (Spansion: PPB - Persistent Protection
+>     Bits) locking.
+> + - dual-die-stack: boolean to enable support for the devices with the
+> +   two dies in stack.
 
-You can drop this variable...
+How about making that more future proof and adding a property that
+directly contains the number of dies (num-dies)?
 
 >  
->  	xip_enable(base, map, cfi);
->  #ifdef DEBUG_CFI
-> @@ -177,6 +179,11 @@ static int __xipram cfi_chip_setup(struct map_info *map,
->  
->  	cfi->sector_erase_cmd = CMD(0x30);
->  
-> +	cfi->device_stack = CFI_DEVICESTACK_1DIE;
-> +#ifdef CONFIG_OF
-> +	if (np && of_property_read_bool(np, "dual-die-stack"))
-> +		cfi->device_stack = CFI_DEVICESTACK_2DIE;
-> +#endif
-
-and simply do:
-
-	if (of_property_read_bool(map->device_node, "dual-die-stack"))
-		cfi->device_stack = CFI_DEVICESTACK_2DIE;
-
->  	/* Read the CFI info structure */
->  	xip_disable_qry(base, map, cfi);
->  	for (i=0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); i++)
-> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-> index 9b57a9b..bda37a4 100644
-> --- a/include/linux/mtd/cfi.h
-> +++ b/include/linux/mtd/cfi.h
-> @@ -277,11 +277,19 @@ struct cfi_bri_query {
->  #define CFI_MODE_CFI	1
->  #define CFI_MODE_JEDEC	0
->  
-> +/* These values represent the die count of chip stack.
-> + * So far, there only exists two type of stack device,
-> + * single or dual die.
-> + */
-> +#define CFI_DEVICESTACK_1DIE	1
-> +#define CFI_DEVICESTACK_2DIE	2
-
-Why are these macros needed?
-
-> +
->  struct cfi_private {
->  	uint16_t cmdset;
->  	void *cmdset_priv;
->  	int interleave;
->  	int device_type;
-> +	int device_stack;	/* Device stack type, single die or dual die. */
-
-Why not simply:
-
-	int num_dies;
-
-which would contain the number of dies.
-
->  	int cfi_mode;		/* Are we a JEDEC device pretending to be CFI? */
->  	int addr_unlock1;
->  	int addr_unlock2;
+>  For JEDEC compatible devices, the following additional properties
+>  are defined:
 
 
 
