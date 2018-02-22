@@ -1,13 +1,15 @@
-Received: from nbd.name ([2a01:4f8:221:3d45::2])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eontE-0000hj-4b
- for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 10:14:13 +0000
-From: Felix Fietkau <nbd@nbd.name>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: allow NOR driver to write fewer bytes than
- requested
-Date: Thu, 22 Feb 2018 11:13:58 +0100
-Message-Id: <20180222101358.20035-1-nbd@nbd.name>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, oss@buserror.net,
+ leoyang.li@nxp.com, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH 0/4][v4][RESEND] dt-bindings: mtd-physmap: Add endianness
+ supports
+Date: Thu, 22 Feb 2018 15:45:05 +0530
+Message-Id: <20180222101511.29631-1-prabhakar.kushwaha@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The write size can be constrained by the maximum message/transfer size
-of the SPI controller. Only check for ret = 0 to avoid an infinite loop.
+Connection between flash and controller is not necessary to be always
+of same type. It may varies from platform to platform.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
----
- drivers/mtd/spi-nor/spi-nor.c | 9 +--------
- 1 file changed, 1 insertion(+), 8 deletions(-)
+Adding endianness (optional) property to provide connection type
+information. This endianness property is checked in physmap_of_core.c
+to decide swap type. 
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 61de4cc3bd7f..c60802eb6aa3 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1392,7 +1392,7 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 
- 		write_enable(nor);
- 		ret = nor->write(nor, addr, page_remain, buf + i);
--		if (ret < 0)
-+		if (ret <= 0)
- 			goto write_err;
- 		written = ret;
- 
-@@ -1401,13 +1401,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 			goto write_err;
- 		*retlen += written;
- 		i += written;
--		if (written != page_remain) {
--			dev_err(nor->dev,
--				"While writing %zu bytes written %zd bytes\n",
--				page_remain, written);
--			ret = -EIO;
--			goto write_err;
--		}
- 	}
- 
- write_err:
+This patch also set "big-endian" property for ls1021a, ls1043a
+and ls1046a device tree. here connection between IFC controller
+and NOR flash is big-endian.
+
+Prabhakar Kushwaha (4):
+  dt-bindings: mtd-physmap: Add endianness supports
+  driver: mtd: update struct map_info's swap as per map requirement
+  ARM: dts: Add NOR connection type with IFC
+  ARM64: dts: Add NOR connection type with IFC
+
+Resending as all patches of patchset never reaches to patchwork.
+
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+ arch/arm/boot/dts/ls1021a-qds.dts                     | 1 +
+ arch/arm/boot/dts/ls1021a-twr.dts                     | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts     | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts     | 1 +
+ arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts     | 1 +
+ drivers/mtd/maps/physmap_of_core.c                    | 8 ++++++++
+ 7 files changed, 18 insertions(+)
+
 -- 
-2.14.2
+2.14.1
