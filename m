@@ -1,19 +1,18 @@
-Date: Thu, 22 Feb 2018 11:21:43 +0100
+Received: from mail.free-electrons.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eoq88-0005VC-Aj
+ for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 12:37:46 +0000
+Date: Thu, 22 Feb 2018 13:37:20 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
- boris.brezillon@free-electrons.com, leoyang.li@nxp.com, oss@buserror.net,
- Jagdish Gediya <jagdish.gediya@nxp.com>, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 2/4][v4] driver: mtd: update struct map_info's swap as
- per map requirement
-Message-ID: <20180222112143.191e829a@bbrezillon>
-In-Reply-To: <20180215115000.23684-1-prabhakar.kushwaha@nxp.com>
-References: <20180215115000.23684-1-prabhakar.kushwaha@nxp.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MAINTAINERS: Update email address for Miquel Raynal
+Message-ID: <20180222133720.3d89ec11@bbrezillon>
+In-Reply-To: <20180219225759.3427-1-miquel.raynal@bootlin.com>
+References: <20180219225759.3427-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 15 Feb 2018 17:20:00 +0530
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+On Mon, 19 Feb 2018 23:57:59 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> It is not necessary for all device's maps to be CFI_HOST_ENDIAN.
-> Maps device can be Big endian or little endian.
-> 
-> Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
-> CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
-> 
-> Now update struct map_info's swap field based on device characteristics
-> defined in device tree.
-> 
-> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Free Electrons is now Bootlin.
+
+Applied.
+
+Thanks,
+
+Boris
+
+>=20
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
-> Changes for v2: Incorporated review comments from Boris Brezillon
-> http://patchwork.ozlabs.org/patch/758381/
-> Changes for v3: None
-> Changes for v4: Updated code as per new defined binding of physmap.txt
-> 
->  drivers/mtd/maps/physmap_of_core.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-> index b1bd4faecfb2..6eee160dfb3d 100644
-> --- a/drivers/mtd/maps/physmap_of_core.c
-> +++ b/drivers/mtd/maps/physmap_of_core.c
-> @@ -20,6 +20,7 @@
->  #include <linux/mtd/map.h>
->  #include <linux/mtd/partitions.h>
->  #include <linux/mtd/concat.h>
-> +#include <linux/mtd/cfi_endian.h>
->  #include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/of_platform.h>
-> @@ -233,6 +234,13 @@ static int of_flash_probe(struct platform_device *dev)
->  		info->list[i].map.bankwidth = be32_to_cpup(width);
->  		info->list[i].map.device_node = dp;
->  
-> +		if (of_property_read_bool(dp, "big-endian"))
-> +			info->list[i].map.swap = CFI_BIG_ENDIAN;
-> +		else if (of_property_read_bool(dp, "little-endian"))
-> +			info->list[i].map.swap = CFI_LITTLE_ENDIAN;
-> +		else
-> +			info->list[i].map.swap = CFI_HOST_ENDIAN;
-> +
-
-Are you sure we want the default to be CFI_HOST_ENDIAN when the
-property is not defined? I think we should leave ->swap to 0 and let
-the CFI logic use the CFI_DEFAULT_ENDIAN value. What you're doing here
-you're likely to break platforms that are not explicitly specifying
-endianness in their DT and are instead relying on the Kconfig choice.
-
-I think that was one of Scott's comments on your previous version.
-
->  		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
->  		if (err)
->  			goto err_out;
+>  .mailmap    | 1 +
+>  MAINTAINERS | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/.mailmap b/.mailmap
+> index e18cab73e209..6cc2d5a94cc2 100644
+> --- a/.mailmap
+> +++ b/.mailmap
+> @@ -126,6 +126,7 @@ Mayuresh Janorkar <mayur@ti.com>
+>  Michael Buesch <m@bues.ch>
+>  Michel D=C3=A4nzer <michel@tungstengraphics.com>
+>  Miodrag Dinic <miodrag.dinic@mips.com> <miodrag.dinic@imgtec.com>
+> +Miquel Raynal <miquel.raynal@bootlin.com> <miquel.raynal@free-electrons.=
+com>
+>  Mitesh shah <mshah@teja.com>
+>  Mohit Kumar <mohit.kumar@st.com> <mohit.kumar.dhaka@gmail.com>
+>  Morten Welinder <terra@gnome.org>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1efb94e6a8b3..1b0972015358 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8471,7 +8471,7 @@ S:	Odd Fixes
+>  F:	drivers/net/wireless/marvell/mwl8k.c
+> =20
+>  MARVELL NAND CONTROLLER DRIVER
+> -M:	Miquel Raynal <miquel.raynal@free-electrons.com>
+> +M:	Miquel Raynal <miquel.raynal@bootlin.com>
+>  L:	linux-mtd@lists.infradead.org
+>  S:	Maintained
+>  F:	drivers/mtd/nand/raw/marvell_nand.c
 
 
 
--- 
+--=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
