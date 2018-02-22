@@ -1,18 +1,19 @@
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org
-Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+Date: Thu, 22 Feb 2018 11:28:14 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
  cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, oss@buserror.net,
- leoyang.li@nxp.com, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Jagdish Gediya <jagdish.gediya@nxp.com>
-Subject: [PATCH 2/2][v2][RESEND] ARM: dts: ls1021aqds: Add nand node for ifc
- controller
-Date: Thu, 22 Feb 2018 15:45:11 +0530
-Message-Id: <20180222101511.29631-7-prabhakar.kushwaha@nxp.com>
+ leoyang.li@nxp.com
+Subject: Re: [PATCH 0/4][v4][RESEND] dt-bindings: mtd-physmap: Add
+ endianness supports
+Message-ID: <20180222112814.3717af47@bbrezillon>
 In-Reply-To: <20180222101511.29631-1-prabhakar.kushwaha@nxp.com>
 References: <20180222101511.29631-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-LS1021AQDS support NAND flash on IFC chip-select 2.
+Hi Prabhakar,
 
-So add NAND node in device tree for IFC controller.
+On Thu, 22 Feb 2018 15:45:05 +0530
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
----
-Due to patch series http://patchwork.ozlabs.org/project/linux-mtd/list/?series=28735
-this patch is now independent of flash propoerty. So resending.
+> Connection between flash and controller is not necessary to be always
+> of same type. It may varies from platform to platform.
+> 
+> Adding endianness (optional) property to provide connection type
+> information. This endianness property is checked in physmap_of_core.c
+> to decide swap type. 
+> 
+> This patch also set "big-endian" property for ls1021a, ls1043a
+> and ls1046a device tree. here connection between IFC controller
+> and NOR flash is big-endian.
+> 
+> Prabhakar Kushwaha (4):
+>   dt-bindings: mtd-physmap: Add endianness supports
+>   driver: mtd: update struct map_info's swap as per map requirement
+>   ARM: dts: Add NOR connection type with IFC
+>   ARM64: dts: Add NOR connection type with IFC
 
-Resending as all patches of patchset never reaches to patchwork.
+First of all, can you stop sending dts changes until we've agreed on
+the dt-bindings/driver changes.
 
- arch/arm/boot/dts/ls1021a-qds.dts | 5 +++++
- 1 file changed, 5 insertions(+)
+> 
+> Resending as all patches of patchset never reaches to patchwork.
 
-diff --git a/arch/arm/boot/dts/ls1021a-qds.dts b/arch/arm/boot/dts/ls1021a-qds.dts
-index 8a383d37884a..fe352ff60b35 100644
---- a/arch/arm/boot/dts/ls1021a-qds.dts
-+++ b/arch/arm/boot/dts/ls1021a-qds.dts
-@@ -240,6 +240,11 @@
- 		big-endian;
- 	};
- 
-+	nand@2,0 {
-+		compatible = "fsl,ifc-nand";
-+		reg = <0x2 0x0 0x10000>;
-+	};
-+
- 	fpga: board-control@3,0 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
+Hm, I think they reached patchwork, it's just that dts changes won't
+be applied to the MTD tree, so I mark them as 'Not applicable'.
+
+Regards,
+
+Boris
+
+> 
+>  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+>  arch/arm/boot/dts/ls1021a-qds.dts                     | 1 +
+>  arch/arm/boot/dts/ls1021a-twr.dts                     | 1 +
+>  arch/arm64/boot/dts/freescale/fsl-ls1043a-qds.dts     | 1 +
+>  arch/arm64/boot/dts/freescale/fsl-ls1043a-rdb.dts     | 1 +
+>  arch/arm64/boot/dts/freescale/fsl-ls1046a-qds.dts     | 1 +
+>  drivers/mtd/maps/physmap_of_core.c                    | 8 ++++++++
+>  7 files changed, 18 insertions(+)
+> 
+
+
+
 -- 
-2.14.1
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
