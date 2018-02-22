@@ -1,26 +1,29 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1eoq9A-0005pk-0D
- for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 12:38:50 +0000
-Date: Thu, 22 Feb 2018 13:38:24 +0100
+ id 1eoqWq-00020z-75
+ for linux-mtd@lists.infradead.org; Thu, 22 Feb 2018 13:03:23 +0000
+Date: Thu, 22 Feb 2018 14:02:53 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: linux-kernel@vger.kernel.org
-Cc: Herbert Xu <herbert@gondor.apana.org.au>, Marek Vasut
- <marek.vasut@gmail.com>, David Airlie <airlied@linux.ie>, Richard
- Weinberger <richard@nod.at>, Mike Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@codeaurora.org>, dri-devel@lists.freedesktop.org,
- linux-clk@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-crypto@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] Update Boris Brezillon email address
-Message-ID: <20180222133824.6494645f@bbrezillon>
-In-Reply-To: <20180216104449.15546-1-boris.brezillon@bootlin.com>
-References: <20180216104449.15546-1-boris.brezillon@bootlin.com>
+To: Bean Huo <beanhuo@outlook.com>
+Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "boris.brezillon@free-elections.com" <boris.brezillon@free-elections.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, beanhuo
+ <beanhuo@micron.com>
+Subject: Re: [PATCH v1 2/3] mtd: probe: probe dual die entry from devicetree
+ binding
+Message-ID: <20180222140253.1773d3ce@bbrezillon>
+In-Reply-To: <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
+ <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,96 +33,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 16 Feb 2018 11:44:49 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Wed, 21 Feb 2018 19:32:34 +0000
+Bean Huo <beanhuo@outlook.com> wrote:
 
-> Free Electrons is now Bootlin.
->=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> From: beanhuo <beanhuo@micron.com>
+> 
+> The device_stack property now will be initialized when devicetree
+> has an entry compatible with "dual_die_stack".
+> 
+> Signed-off-by: beanhuo <beanhuo@micron.com>
 > ---
-> Note that I'm planning to take this patch through the MTD tree.
+>  drivers/mtd/chips/cfi_probe.c | 7 +++++++
+>  include/linux/mtd/cfi.h       | 8 ++++++++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+> index e8d0164..6182406 100644
+> --- a/drivers/mtd/chips/cfi_probe.c
+> +++ b/drivers/mtd/chips/cfi_probe.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/mtd/map.h>
+>  #include <linux/mtd/cfi.h>
+>  #include <linux/mtd/gen_probe.h>
+> +#include <linux/of_platform.h>
+>  
+>  //#define DEBUG_CFI
+>  
+> @@ -159,6 +160,7 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+>  	int num_erase_regions = cfi_read_query(map, base + (0x10 + 28)*ofs_factor);
+>  	int i;
+>  	int addr_unlock1 = 0x555, addr_unlock2 = 0x2AA;
+> +	struct device_node __maybe_unused *np = map->device_node;
 
-Applied to the nand/next branch of the MTD tree.
+You can drop this variable...
 
-> ---
->  .mailmap    |  7 ++++---
->  MAINTAINERS | 10 +++++-----
->  2 files changed, 9 insertions(+), 8 deletions(-)
->=20
-> diff --git a/.mailmap b/.mailmap
-> index e18cab73e209..50c1d6bf36b2 100644
-> --- a/.mailmap
-> +++ b/.mailmap
-> @@ -33,9 +33,10 @@ Axel Lin <axel.lin@gmail.com>
->  Ben Gardner <bgardner@wabtec.com>
->  Ben M Cahill <ben.m.cahill@intel.com>
->  Bj=C3=B6rn Steinbrink <B.Steinbrink@gmx.de>
-> -Boris Brezillon <boris.brezillon@free-electrons.com>
-> -Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon.dev@gm=
-ail.com>
-> -Boris Brezillon <boris.brezillon@free-electrons.com> <b.brezillon@overki=
-z.com>
-> +Boris Brezillon <boris.brezillon@bootlin.com>
-> +Boris Brezillon <boris.brezillon@bootlin.com> <boris.brezillon@free-elec=
-trons.com>
-> +Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon.dev@gmail.com>
-> +Boris Brezillon <boris.brezillon@bootlin.com> <b.brezillon@overkiz.com>
->  Brian Avery <b.avery@hp.com>
->  Brian King <brking@us.ibm.com>
->  Christoph Hellwig <hch@lst.de>
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 34b2e9ed6d3d..38fcbabbc55b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -1232,7 +1232,7 @@ F:	arch/arm/boot/dts/aspeed-*
->  F:	drivers/*/*aspeed*
-> =20
->  ARM/ATMEL AT91 Clock Support
-> -M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Boris Brezillon <boris.brezillon@bootlin.com>
->  S:	Maintained
->  F:	drivers/clk/at91
-> =20
-> @@ -4644,7 +4644,7 @@ F:	Documentation/gpu/meson.rst
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
-> =20
->  DRM DRIVERS FOR ATMEL HLCDC
-> -M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Boris Brezillon <boris.brezillon@bootlin.com>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Supported
->  F:	drivers/gpu/drm/atmel-hlcdc/
-> @@ -8412,7 +8412,7 @@ F:	include/uapi/drm/armada_drm.h
->  F:	Documentation/devicetree/bindings/display/armada/
-> =20
->  MARVELL CRYPTO DRIVER
-> -M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Boris Brezillon <boris.brezillon@bootlin.com>
->  M:	Arnaud Ebalard <arno@natisbad.org>
->  F:	drivers/crypto/marvell/
->  S:	Maintained
-> @@ -9034,7 +9034,7 @@ F:	mm/
->  MEMORY TECHNOLOGY DEVICES (MTD)
->  M:	David Woodhouse <dwmw2@infradead.org>
->  M:	Brian Norris <computersforpeace@gmail.com>
-> -M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Boris Brezillon <boris.brezillon@bootlin.com>
->  M:	Marek Vasut <marek.vasut@gmail.com>
->  M:	Richard Weinberger <richard@nod.at>
->  M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> @@ -9452,7 +9452,7 @@ S:	Supported
->  F:	drivers/net/ethernet/myricom/myri10ge/
-> =20
->  NAND FLASH SUBSYSTEM
-> -M:	Boris Brezillon <boris.brezillon@free-electrons.com>
-> +M:	Boris Brezillon <boris.brezillon@bootlin.com>
->  R:	Richard Weinberger <richard@nod.at>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
+>  
+>  	xip_enable(base, map, cfi);
+>  #ifdef DEBUG_CFI
+> @@ -177,6 +179,11 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+>  
+>  	cfi->sector_erase_cmd = CMD(0x30);
+>  
+> +	cfi->device_stack = CFI_DEVICESTACK_1DIE;
+> +#ifdef CONFIG_OF
+> +	if (np && of_property_read_bool(np, "dual-die-stack"))
+> +		cfi->device_stack = CFI_DEVICESTACK_2DIE;
+> +#endif
+
+and simply do:
+
+	if (of_property_read_bool(map->device_node, "dual-die-stack"))
+		cfi->device_stack = CFI_DEVICESTACK_2DIE;
+
+>  	/* Read the CFI info structure */
+>  	xip_disable_qry(base, map, cfi);
+>  	for (i=0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); i++)
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index 9b57a9b..bda37a4 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -277,11 +277,19 @@ struct cfi_bri_query {
+>  #define CFI_MODE_CFI	1
+>  #define CFI_MODE_JEDEC	0
+>  
+> +/* These values represent the die count of chip stack.
+> + * So far, there only exists two type of stack device,
+> + * single or dual die.
+> + */
+> +#define CFI_DEVICESTACK_1DIE	1
+> +#define CFI_DEVICESTACK_2DIE	2
+
+Why are these macros needed?
+
+> +
+>  struct cfi_private {
+>  	uint16_t cmdset;
+>  	void *cmdset_priv;
+>  	int interleave;
+>  	int device_type;
+> +	int device_stack;	/* Device stack type, single die or dual die. */
+
+Why not simply:
+
+	int num_dies;
+
+which would contain the number of dies.
+
+>  	int cfi_mode;		/* Are we a JEDEC device pretending to be CFI? */
+>  	int addr_unlock1;
+>  	int addr_unlock2;
 
 
 
---=20
+-- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
