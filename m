@@ -1,9 +1,9 @@
-Received: from mail-by2nam01olkn082c.outbound.protection.outlook.com
- ([2a01:111:f400:fe42::82c]
- helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-co1nam04olkn0806.outbound.protection.outlook.com
+ ([2a01:111:f400:fe4d::806]
+ helo=NAM04-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1epBJl-0002UF-Rt
- for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 11:15:11 +0000
+ id 1epBlF-0006EL-Hh
+ for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 11:43:40 +0000
 From: Bean Huo <beanhuo@outlook.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
@@ -12,17 +12,16 @@ CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
  "robh+dt@kernel.org" <robh+dt@kernel.org>, "mark.rutland@arm.com"
  <mark.rutland@arm.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, beanhuo <beanhuo@micron.com>,
+ <linux-mtd@lists.infradead.org>, beanhuo <beanhuo@micron.com>,
  "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v1 2/3] mtd: probe: probe dual die entry from devicetree
- binding
-Date: Fri, 23 Feb 2018 11:14:57 +0000
-Message-ID: <DM2PR12MB0014A0DCB95D52F22D1DF41BA6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Subject: Re: [PATCH v1 3/3] drivers: mtd: chips: add support for the dual die
+ stacked PNOR
+Date: Fri, 23 Feb 2018 11:43:21 +0000
+Message-ID: <DM2PR12MB001437E51CB54D86406D2550A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
 References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
- <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>,
- <20180222140253.1773d3ce@bbrezillon>
-In-Reply-To: <20180222140253.1773d3ce@bbrezillon>
+ <DM2PR12MB00143807EEF9602098FF0D4BA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>,
+ <20180222143357.4ec680b6@bbrezillon>
+In-Reply-To: <20180222143357.4ec680b6@bbrezillon>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -36,69 +35,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
-Below suggested points will be involved in next patch. Thanks Boris.=0A=
-=0A=
->>       int addr_unlock1 =3D 0x555, addr_unlock2 =3D 0x2AA;=0A=
->> +     struct device_node __maybe_unused *np =3D map->device_node;=0A=
-=0A=
->You can drop this variable...=0A=
-=0A=
+Boris,=0A=
 >>=0A=
->>       xip_enable(base, map, cfi);=0A=
->>  #ifdef DEBUG_CFI=0A=
->> @@ -177,6 +179,11 @@ static int __xipram cfi_chip_setup(struct map_info =
-*map,=0A=
->>=0A=
->>       cfi->sector_erase_cmd =3D CMD(0x30);=0A=
->>=0A=
->> +     cfi->device_stack =3D CFI_DEVICESTACK_1DIE;=0A=
->> +#ifdef CONFIG_OF=0A=
->> +     if (np && of_property_read_bool(np, "dual-die-stack"))=0A=
->> +             cfi->device_stack =3D CFI_DEVICESTACK_2DIE;=0A=
->> +#endif=0A=
->and simply do:=0A=
+>> +/*=0A=
+>> + * The dual die stacked device comprises two identical dies which conne=
+cted=0A=
+>                                                                   ^are=0A=
+fixed in next patch.=0A=
 =0A=
->      if (of_property_read_bool(map->device_node, "dual-die-stack"))=0A=
->             cfi->device_stack =3D CFI_DEVICESTACK_2DIE;=0A=
+>> + * in parallel.But there is only one die being selected each time accor=
+ding=0A=
 =0A=
->>       /* Read the CFI info structure */=0A=
->>       xip_disable_qry(base, map, cfi);=0A=
->>       for (i=3D0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); =
-i++)=0A=
->> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h=0A=
->> index 9b57a9b..bda37a4 100644=0A=
->> --- a/include/linux/mtd/cfi.h=0A=
->> +++ b/include/linux/mtd/cfi.h=0A=
->> @@ -277,11 +277,19 @@ struct cfi_bri_query {=0A=
->>  #define CFI_MODE_CFI 1=0A=
->>  #define CFI_MODE_JEDEC       0=0A=
->>=0A=
->> +/* These values represent the die count of chip stack.=0A=
->> + * So far, there only exists two type of stack device,=0A=
->> + * single or dual die.=0A=
+   >               ^ missing space after the period=0A=
+fixed in next patch.=0A=
+=0A=
+>> + * to maximum address line A[max]. When A[max] =3D=3D 0, the lower die =
+is selected,=0A=
+>> + * when A[max] =3D=3D 1, the upper die is selected. This function will =
+reture the=0A=
+>=0A=
+ >                                                               ^return=0A=
+>> + * CFI unlock-command base address according to accessing address.=0A=
+>Is it really just about unlock commands?=0A=
+=0A=
+Except unlock commands, other commands also need but don't need to add=0A=
+0x555/0x2AA. And current parallel nor driver already does this way.=0A=
+so we don't need to change.=0A=
+=0A=
 >> + */=0A=
->> +#define CFI_DEVICESTACK_1DIE 1=0A=
->> +#define CFI_DEVICESTACK_2DIE 2=0A=
+>> +static loff_t get_cmd_base_address(struct map_info *map, struct flchip =
+*chip,=0A=
+>> +             loff_t offset)=0A=
+>> +{=0A=
+>> +     struct cfi_private *cfi =3D map->fldrv_priv;=0A=
+>>=0A=
+>>+     unsigned long cmd_base_addr =3D chip->start;=0A=
+>>+=0A=
+>> +     if (cfi->device_stack =3D=3D CFI_DEVICESTACK_2DIE) {=0A=
+>>+             if (offset >=3D (1 << (cfi->cfiq->DevSize - 1)))=0A=
+>>+                     cmd_base_addr +=3D (1 << (cfi->cfiq->DevSize - 1));=
 =0A=
->Why are these macros needed?=0A=
+>> +     }=0A=
 =0A=
->> +=0A=
->>  struct cfi_private {=0A=
->>       uint16_t cmdset;=0A=
->>       void *cmdset_priv;=0A=
->>       int interleave;=0A=
->>       int device_type;=0A=
->> +     int device_stack;       /* Device stack type, single die or dual d=
-ie. */=0A=
+>Could be done in a more generic way:=0A=
 =0A=
->Why not simply:=0A=
+ >    unsigned long die =3D offset >> (cfi->cfiq->DevSize - 1);=0A=
 =0A=
->       int num_dies;=0A=
+>        if (cfi->device_stack =3D=3D 1) {=0A=
+ >               WARN_ON(die);=0A=
+  >              return cmd_base_addr;=0A=
+  >      }=0A=
 =0A=
->which would contain the number of dies.=0A=
+   >     cmd_base_addr +=3D die << (cfi->cfiq->DevSize - 1);=0A=
 =0A=
->>       int cfi_mode;           /* Are we a JEDEC device pretending to be =
-CFI? */=0A=
->>       int addr_unlock1;=0A=
->>       int addr_unlock2;=0A=
+it will be included in next patch, thanks.=0A=
+=0A=
+...=0A=
+>> -     cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,=
+=0A=
+>> +     /* For the dual die device, rebase the command base address accord=
+ing=0A=
+=0A=
+>Please do not use net-style comments.=0A=
+=0A=
+To be honest, I don't know what is net-style comments.=0A=
+=0A=
+>--=0A=
+>Boris Brezillon, Bootlin (formerly Free Electrons)=0A=
+>Embedded Linux and Kernel engineering=0A=
+>https://bootlin.com=0A=
