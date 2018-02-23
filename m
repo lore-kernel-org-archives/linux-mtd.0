@@ -1,8 +1,8 @@
 Received: from mail.free-electrons.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1epFc1-0001e3-Vq
- for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 15:50:24 +0000
-Date: Fri, 23 Feb 2018 16:49:53 +0100
+ by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1epFff-0003VQ-Nm
+ for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 15:54:04 +0000
+Date: Fri, 23 Feb 2018 16:53:40 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Bean Huo <beanhuo@outlook.com>
 Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
@@ -11,17 +11,18 @@ Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
  <richard@nod.at>, "cyrille.pitchen@wedev4u.fr"
  <cyrille.pitchen@wedev4u.fr>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
  "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, beanhuo
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, beanhuo
  <beanhuo@micron.com>, "boris.brezillon@free-electrons.com"
  <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v1 3/3] drivers: mtd: chips: add support for the dual
- die stacked PNOR
-Message-ID: <20180223164953.3dee49b0@bbrezillon>
-In-Reply-To: <DM2PR12MB001437E51CB54D86406D2550A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Subject: Re: [PATCH v1 1/3] mtd: physmap: add dual die entry in devicetree
+ binding
+Message-ID: <20180223165340.24bb2c6c@bbrezillon>
+In-Reply-To: <DM2PR12MB0014BEF2B19FED0392EB0366A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
 References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
- <DM2PR12MB00143807EEF9602098FF0D4BA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
- <20180222143357.4ec680b6@bbrezillon>
- <DM2PR12MB001437E51CB54D86406D2550A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
+ <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
+ <20180222140542.47340842@bbrezillon>
+ <DM2PR12MB0014BEF2B19FED0392EB0366A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -34,82 +35,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Feb 2018 11:43:21 +0000
+On Fri, 23 Feb 2018 11:07:17 +0000
 Bean Huo <beanhuo@outlook.com> wrote:
 
 > Boris,
+> thanks for the review.
+> 
+> >> + - dual-die-stack: boolean to enable support for the devices with the
+> >> +   two dies in stack.  
+> 
+> >How about making that more future proof and adding a property that
+> >directly contains the number of dies (num-dies)?  
+> 
+> Exactly, I also thought here should add a property, through which it can be compatible
+> with all kinds of PNOR for the future more dies stacked device.
+> But currently, it doesn't exist  PNOR device with more than two dies, and we
+> have no idea about 4/6 dies stacked device operation sequence. so I simply add a boolean
+> entry and try to only enable dual-die stacked PNOR firstly.
+
+Actually, I think it's better to think about future evolutions now than
+adding a new property every time a vendor decides to add more dies (I
+guess the number of dies will always be a power-of-2).
+
+> 
+> Maybe I can try to do that in next version patch. the software implementation is so flexible.
+> 
 > >>
-> >> +/*
-> >> + * The dual die stacked device comprises two identical dies which connected  
-> >                                                                   ^are  
-> fixed in next patch.
+> >>  For JEDEC compatible devices, the following additional properties
+> >>  are defined:  
 > 
-> >> + * in parallel.But there is only one die being selected each time according  
-> 
->    >               ^ missing space after the period  
-> fixed in next patch.
-> 
-> >> + * to maximum address line A[max]. When A[max] == 0, the lower die is selected,
-> >> + * when A[max] == 1, the upper die is selected. This function will reture the  
-> >
->  >                                                               ^return  
-> >> + * CFI unlock-command base address according to accessing address.  
-> >Is it really just about unlock commands?  
-> 
-> Except unlock commands, other commands also need but don't need to add
-> 0x555/0x2AA. And current parallel nor driver already does this way.
-> so we don't need to change.
 
-Sorry, I don't understand, probably because I lack some background on
-CFI. I'll try to document myself if I find some time.
 
-> 
-> >> + */
-> >> +static loff_t get_cmd_base_address(struct map_info *map, struct flchip *chip,
-> >> +             loff_t offset)
-> >> +{
-> >> +     struct cfi_private *cfi = map->fldrv_priv;
-> >>
-> >>+     unsigned long cmd_base_addr = chip->start;
-> >>+
-> >> +     if (cfi->device_stack == CFI_DEVICESTACK_2DIE) {
-> >>+             if (offset >= (1 << (cfi->cfiq->DevSize - 1)))
-> >>+                     cmd_base_addr += (1 << (cfi->cfiq->DevSize - 1));
-> >> +     }  
-> 
-> >Could be done in a more generic way:  
-> 
->  >    unsigned long die = offset >> (cfi->cfiq->DevSize - 1);  
-> 
-> >        if (cfi->device_stack == 1) {
->  >               WARN_ON(die);
->   >              return cmd_base_addr;
->   >      }  
-> 
->    >     cmd_base_addr += die << (cfi->cfiq->DevSize - 1);  
-> 
-> it will be included in next patch, thanks.
-> 
-> ...
-> >> -     cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> >> +     /* For the dual die device, rebase the command base address according  
-> 
-> >Please do not use net-style comments.  
-> 
-> To be honest, I don't know what is net-style comments.
-
-Net-style comment:
-
-/* blablabla
- * blablabla
- */
-
-Kernel-style comment:
-
-/*
- * blablabla
- * blablabla
- */
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
