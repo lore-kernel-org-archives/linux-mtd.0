@@ -1,8 +1,9 @@
-Received: from mail-oln040092000013.outbound.protection.outlook.com
- ([40.92.0.13] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+Received: from mail-by2nam01olkn082c.outbound.protection.outlook.com
+ ([2a01:111:f400:fe42::82c]
+ helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1epBCN-0007c7-6A
- for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 11:07:32 +0000
+ id 1epBJl-0002UF-Rt
+ for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 11:15:11 +0000
 From: Bean Huo <beanhuo@outlook.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
@@ -14,14 +15,14 @@ CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
  <devicetree@vger.kernel.org>, beanhuo <beanhuo@micron.com>,
  "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v1 1/3] mtd: physmap: add dual die entry in devicetree
+Subject: Re: [PATCH v1 2/3] mtd: probe: probe dual die entry from devicetree
  binding
-Date: Fri, 23 Feb 2018 11:07:17 +0000
-Message-ID: <DM2PR12MB0014BEF2B19FED0392EB0366A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Date: Fri, 23 Feb 2018 11:14:57 +0000
+Message-ID: <DM2PR12MB0014A0DCB95D52F22D1DF41BA6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
 References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
- <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>,
- <20180222140542.47340842@bbrezillon>
-In-Reply-To: <20180222140542.47340842@bbrezillon>
+ <DM2PR12MB001471EC3E5B6841C61ED9FEA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>,
+ <20180222140253.1773d3ce@bbrezillon>
+In-Reply-To: <20180222140253.1773d3ce@bbrezillon>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -35,29 +36,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,=0A=
-thanks for the review.=0A=
 =0A=
->> + - dual-die-stack: boolean to enable support for the devices with the=
+Below suggested points will be involved in next patch. Thanks Boris.=0A=
 =0A=
->> +   two dies in stack.=0A=
+>>       int addr_unlock1 =3D 0x555, addr_unlock2 =3D 0x2AA;=0A=
+>> +     struct device_node __maybe_unused *np =3D map->device_node;=0A=
 =0A=
->How about making that more future proof and adding a property that=0A=
->directly contains the number of dies (num-dies)?=0A=
-=0A=
-Exactly, I also thought here should add a property, through which it can be=
- compatible=0A=
-with all kinds of PNOR for the future more dies stacked device.=0A=
-But currently, it doesn't exist  PNOR device with more than two dies, and w=
-e=0A=
-have no idea about 4/6 dies stacked device operation sequence. so I simply =
-add a boolean=0A=
-entry and try to only enable dual-die stacked PNOR firstly.=0A=
-=0A=
-Maybe I can try to do that in next version patch. the software implementati=
-on is so flexible.=0A=
+>You can drop this variable...=0A=
 =0A=
 >>=0A=
->>  For JEDEC compatible devices, the following additional properties=0A=
->>  are defined:=0A=
+>>       xip_enable(base, map, cfi);=0A=
+>>  #ifdef DEBUG_CFI=0A=
+>> @@ -177,6 +179,11 @@ static int __xipram cfi_chip_setup(struct map_info =
+*map,=0A=
+>>=0A=
+>>       cfi->sector_erase_cmd =3D CMD(0x30);=0A=
+>>=0A=
+>> +     cfi->device_stack =3D CFI_DEVICESTACK_1DIE;=0A=
+>> +#ifdef CONFIG_OF=0A=
+>> +     if (np && of_property_read_bool(np, "dual-die-stack"))=0A=
+>> +             cfi->device_stack =3D CFI_DEVICESTACK_2DIE;=0A=
+>> +#endif=0A=
+>and simply do:=0A=
 =0A=
+>      if (of_property_read_bool(map->device_node, "dual-die-stack"))=0A=
+>             cfi->device_stack =3D CFI_DEVICESTACK_2DIE;=0A=
+=0A=
+>>       /* Read the CFI info structure */=0A=
+>>       xip_disable_qry(base, map, cfi);=0A=
+>>       for (i=3D0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); =
+i++)=0A=
+>> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h=0A=
+>> index 9b57a9b..bda37a4 100644=0A=
+>> --- a/include/linux/mtd/cfi.h=0A=
+>> +++ b/include/linux/mtd/cfi.h=0A=
+>> @@ -277,11 +277,19 @@ struct cfi_bri_query {=0A=
+>>  #define CFI_MODE_CFI 1=0A=
+>>  #define CFI_MODE_JEDEC       0=0A=
+>>=0A=
+>> +/* These values represent the die count of chip stack.=0A=
+>> + * So far, there only exists two type of stack device,=0A=
+>> + * single or dual die.=0A=
+>> + */=0A=
+>> +#define CFI_DEVICESTACK_1DIE 1=0A=
+>> +#define CFI_DEVICESTACK_2DIE 2=0A=
+=0A=
+>Why are these macros needed?=0A=
+=0A=
+>> +=0A=
+>>  struct cfi_private {=0A=
+>>       uint16_t cmdset;=0A=
+>>       void *cmdset_priv;=0A=
+>>       int interleave;=0A=
+>>       int device_type;=0A=
+>> +     int device_stack;       /* Device stack type, single die or dual d=
+ie. */=0A=
+=0A=
+>Why not simply:=0A=
+=0A=
+>       int num_dies;=0A=
+=0A=
+>which would contain the number of dies.=0A=
+=0A=
+>>       int cfi_mode;           /* Are we a JEDEC device pretending to be =
+CFI? */=0A=
+>>       int addr_unlock1;=0A=
+>>       int addr_unlock2;=0A=
