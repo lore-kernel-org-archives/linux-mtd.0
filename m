@@ -1,31 +1,33 @@
-Received: from mail.free-electrons.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1epFff-0003VQ-Nm
- for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 15:54:04 +0000
-Date: Fri, 23 Feb 2018 16:53:40 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bean Huo <beanhuo@outlook.com>
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, beanhuo
- <beanhuo@micron.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>
-Subject: Re: [PATCH v1 1/3] mtd: physmap: add dual die entry in devicetree
- binding
-Message-ID: <20180223165340.24bb2c6c@bbrezillon>
-In-Reply-To: <DM2PR12MB0014BEF2B19FED0392EB0366A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
-References: <1519241514-6466-1-git-send-email-beanhuo@outlook.com>
- <DM2PR12MB001463BD62775C388AEBFD3FA6CE0@DM2PR12MB0014.namprd12.prod.outlook.com>
- <20180222140542.47340842@bbrezillon>
- <DM2PR12MB0014BEF2B19FED0392EB0366A6CC0@DM2PR12MB0014.namprd12.prod.outlook.com>
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1epK9B-0003j7-AY
+ for linux-mtd@lists.infradead.org; Fri, 23 Feb 2018 20:40:51 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Arnd Bergmann <arnd@arndb.de>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, <devicetree@vger.kernel.org>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ linux-arm-kernel <linux-arm-kernel-bounces@lists.infradead.org>
+Subject: Re: [PATCH v4 1/6] mtd: nand: use Marvell reworked NAND controller
+ driver with all platforms
+References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
+ <20180219223557.2458-2-miquel.raynal@bootlin.com>
+ <20180222104943.5a155319@bbrezillon>
+Date: Fri, 23 Feb 2018 21:40:26 +0100
+In-Reply-To: <20180222104943.5a155319@bbrezillon> (Boris Brezillon's message
+ of "Thu, 22 Feb 2018 10:49:43 +0100")
+Message-ID: <87tvu7783p.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,39 +37,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Feb 2018 11:07:17 +0000
-Bean Huo <beanhuo@outlook.com> wrote:
+Boris Brezillon <boris.brezillon@bootlin.com> writes:
 
-> Boris,
-> thanks for the review.
-> 
-> >> + - dual-die-stack: boolean to enable support for the devices with the
-> >> +   two dies in stack.  
-> 
-> >How about making that more future proof and adding a property that
-> >directly contains the number of dies (num-dies)?  
-> 
-> Exactly, I also thought here should add a property, through which it can be compatible
-> with all kinds of PNOR for the future more dies stacked device.
-> But currently, it doesn't exist  PNOR device with more than two dies, and we
-> have no idea about 4/6 dies stacked device operation sequence. so I simply add a boolean
-> entry and try to only enable dual-die stacked PNOR firstly.
+> +Arnd and the LAKML
+>
+> Arnd, Robert, I'd like to apply this patch through the MTD tree so
+> we can get rid of the pxa driver in 4.17. Robert already gave his
+> Tested-by, but I wanted to make sure this was okay for me to take it
+> through the MTD tree. I can provide an immutable branch if needed.
+>
+> Thanks,
+>
+> Boris
+Hi Boris,
 
-Actually, I think it's better to think about future evolutions now than
-adding a new property every time a vendor decides to add more dies (I
-guess the number of dies will always be a power-of-2).
+As I'm expecting conflicts in the pxa tree this next cycle (I have gpio, mtd and
+the normal pxa tree in mind), an immutable branch is needed for me please. I'll
+merge it into the pxa/for-next tree just to be sure I have all the conflict
+covered.
 
-> 
-> Maybe I can try to do that in next version patch. the software implementation is so flexible.
-> 
-> >>
-> >>  For JEDEC compatible devices, the following additional properties
-> >>  are defined:  
-> 
+Cheers.
 
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--
+Robert
