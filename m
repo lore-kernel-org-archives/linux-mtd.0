@@ -1,21 +1,23 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqKvO-0005ec-Uh
- for linux-mtd@lists.infradead.org; Mon, 26 Feb 2018 15:42:53 +0000
-Date: Mon, 26 Feb 2018 16:42:31 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
- cluster-devel@redhat.com, linux-mtd@lists.infradead.org,
- linux-ntfs-dev@lists.sourceforge.net
-Subject: Re: [PATCH 4/4] fs: move I_DIRTY_INODE to fs.h
-Message-ID: <20180226154231.xmjs72osfwiahme6@quack2.suse.cz>
-References: <20180221155449.25542-1-hch@lst.de>
- <20180221155449.25542-5-hch@lst.de>
+ id 1eqP21-0007Uf-08
+ for linux-mtd@lists.infradead.org; Mon, 26 Feb 2018 20:05:55 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180221155449.25542-5-hch@lst.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Mon, 26 Feb 2018 21:05:35 +0100
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, marcel.ziswiler@toradex.com, richard@nod.at,
+ linux-mtd@lists.infradead.org, bpringle@sympatico.ca
+Subject: Re: [RFC PATCH v4 1/2] mtd: nand: vf610_nfc: make use of ->exec_op()
+In-Reply-To: <2044ff39c936ecf123f32e7cecedb12b@agner.ch>
+References: <20180222202918.8708-1-stefan@agner.ch>
+ <20180222202918.8708-2-stefan@agner.ch> <20180222230637.6f8437f9@bbrezillon>
+ <2044ff39c936ecf123f32e7cecedb12b@agner.ch>
+Message-ID: <b3d84aab5b89d333d731c515f564f917@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,121 +27,241 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 21-02-18 07:54:49, Christoph Hellwig wrote:
-> And use it in a few more places rather than opencoding the values.
+On 26.02.2018 08:48, Stefan Agner wrote:
+> On 22.02.2018 23:06, Boris Brezillon wrote:
+>> On Thu, 22 Feb 2018 21:29:17 +0100
+>> Stefan Agner <stefan@agner.ch> wrote:
+>>
+>>> This reworks the driver to make use of ->exec_op() callback. The
+>>> command sequencer of the VF610 NFC aligns well with the new ops
+>>> interface.
+>>>
+>>> The ops are translated to a NFC command code while filling the
+>>> necessary registers. Instead of using the special status and
+>>> read id command codes (which require the status/id form special
+>>> registers) the driver now uses the main data buffer for all
+>>> commands. This simplifies the driver as no special casing is
+>>> needed.
+>>>
+>>> For control data (status byte, id bytes and parameter page) the
+>>> driver needs to reverse byte order for little endian CPUs since
+>>> the controller seems to store the bytes in big endian order in
+>>> the data buffer.
+>>>
+>>> The current state seems to pass MTD tests on a Colibri VF61.
+>>>
+>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>>> ---
+>>>  drivers/mtd/nand/raw/vf610_nfc.c | 439 +++++++++++++++++++++++++++++++++++++--
+>>>  1 file changed, 425 insertions(+), 14 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+>>> index 5d7a1f8f580f..9baf80766307 100644
+>>> --- a/drivers/mtd/nand/raw/vf610_nfc.c
+>>> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
+>>> @@ -74,6 +74,22 @@
+>>>  #define RESET_CMD_CODE			0x4040
+>>>  #define STATUS_READ_CMD_CODE		0x4068
+>>>
+>>> +/* NFC_CMD2[CODE] controller cycle bit masks */
+>>> +#define COMMAND_CMD_BYTE1		BIT(14)
+>>> +#define COMMAND_CAR_BYTE1		BIT(13)
+>>> +#define COMMAND_CAR_BYTE2		BIT(12)
+>>> +#define COMMAND_RAR_BYTE1		BIT(11)
+>>> +#define COMMAND_RAR_BYTE2		BIT(10)
+>>> +#define COMMAND_RAR_BYTE3		BIT(9)
+>>> +#define COMMAND_NADDR_BYTES(x)		GENMASK(13, 13 - (x) - 1)
+>>> +#define COMMAND_WRITE_DATA		BIT(8)
+>>> +#define COMMAND_CMD_BYTE2		BIT(7)
+>>> +#define COMMAND_RB_HANDSHAKE		BIT(6)
+>>> +#define COMMAND_READ_DATA		BIT(5)
+>>> +#define COMMAND_CMD_BYTE3		BIT(4)
+>>> +#define COMMAND_READ_STATUS		BIT(3)
+>>> +#define COMMAND_READ_ID			BIT(2)
+>>> +
+>>>  /* NFC ECC mode define */
+>>>  #define ECC_BYPASS			0
+>>>  #define ECC_45_BYTE			6
+>>> @@ -97,10 +113,14 @@
+>>>  /* NFC_COL_ADDR Field */
+>>>  #define COL_ADDR_MASK				0x0000FFFF
+>>>  #define COL_ADDR_SHIFT				0
+>>> +#define COL_ADDR(pos, val)			((val & 0xFF) << (8 * (pos)))
+>>> +
+>>>
+>>>  /* NFC_ROW_ADDR Field */
+>>>  #define ROW_ADDR_MASK				0x00FFFFFF
+>>>  #define ROW_ADDR_SHIFT				0
+>>> +#define ROW_ADDR(pos, val)			((val & 0xFF) << (8 * (pos)))
+>>> +
+>>>  #define ROW_ADDR_CHIP_SEL_RB_MASK		0xF0000000
+>>>  #define ROW_ADDR_CHIP_SEL_RB_SHIFT		28
+>>>  #define ROW_ADDR_CHIP_SEL_MASK			0x0F000000
+>>> @@ -165,6 +185,7 @@ struct vf610_nfc {
+>>>  	enum vf610_nfc_variant variant;
+>>>  	struct clk *clk;
+>>>  	bool use_hw_ecc;
+>>> +	bool page_access;
+>>
+>> This field deserves a comment IMO, even if you describe in details what
+>> it does in the rd/wr_from/to_sram() funcs.
+>>
+>>>  	u32 ecc_mode;
+>>>  };
+>>>
+>>> @@ -173,6 +194,11 @@ static inline struct vf610_nfc *mtd_to_nfc(struct mtd_info *mtd)
+>>>  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
+>>>  }
+>>>
+>>> +static inline struct vf610_nfc *chip_to_nfc(struct nand_chip *chip)
+>>> +{
+>>> +	return container_of(chip, struct vf610_nfc, chip);
+>>> +}
+>>> +
+>>>  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
+>>>  {
+>>>  	return readl(nfc->regs + reg);
+>>> @@ -214,6 +240,86 @@ static inline void vf610_nfc_memcpy(void *dst, const void __iomem *src,
+>>>  	memcpy(dst, src, n);
+>>>  }
+>>>
+>>> +static inline bool vf610_nfc_is_little_endian(void)
+>>
+>> It's not really the NFC that is LE, is it? I mean, you could have the
+>> kernel configured in BIG ENDIAN for this platform, and then you wouldn't
+>> have to do the byte-swapping.
+>>
+>>> +{
+>>> +#ifdef __LITTLE_ENDIAN
+>>> +	return true;
+>>> +#else
+>>> +	return false;
+>>> +#endif
+>>> +}
+>>> +
+>>> +/**
+>>> + * Read accessor for internal SRAM buffer
+>>> + * @dst: destination address in regular memory
+>>> + * @src: source address in SRAM buffer
+>>> + * @len: bytes to copy
+>>> + * @fix_endian: Fix endianness if required
+>>> + *
+>>> + * Use this accessor for the internal SRAM buffers. On the ARM
+>>> + * Freescale Vybrid SoC it's known that the driver can treat
+>>> + * the SRAM buffer as if it's memory. Other platform might need
+>>> + * to treat the buffers differently.
+>>> + *
+>>> + * The controller stores bytes from the NAND chip internally in big
+>>> + * endianness. On little endian platforms such as Vybrid this leads
+>>> + * to reversed byte order.
+>>> + * For performance reason (and earlier probably due to unanawareness)
+>>
+>> 							  ^ unawareness
+>>
+>>> + * the driver avoids correcting endianness where it has control over
+>>> + * write and read side (e.g. page wise data access).
+>>> + * In case endianness matters len should be a multiple of 4.
+>>> + */
+>>> +static inline void vf610_nfc_rd_from_sram(void *dst, const void __iomem *src,
+>>> +					  size_t len, bool fix_endian)
+>>> +{
+>>> +	if (vf610_nfc_is_little_endian() && fix_endian) {
+>>> +		unsigned int i;
+>>> +
+>>> +		for (i = 0; i < len; i += 4) {
+>>> +			u32 val = be32_to_cpu(__raw_readl(src + i));
+>>> +			memcpy(dst + i, &val, min(sizeof(val), len - i));
+>>> +		}
+>>> +	} else {
+>>> +		memcpy_fromio(dst, src, len);
+>>> +	}
+>>> +}
+>>> +
+>>> +/**
+>>> + * Write accessor for internal SRAM buffer
+>>> + * @dst: destination address in SRAM buffer
+>>> + * @src: source address in regular memory
+>>> + * @len: bytes to copy
+>>> + * @fix_endian: Fix endianness if required
+>>> + *
+>>> + * Use this accessor for the internal SRAM buffers. On the ARM
+>>> + * Freescale Vybrid SoC it's known that the driver can treat
+>>> + * the SRAM buffer as if it's memory. Other platform might need
+>>> + * to treat the buffers differently.
+>>> + *
+>>> + * The controller stores bytes from the NAND chip internally in big
+>>> + * endianness. On little endian platforms such as Vybrid this leads
+>>> + * to reversed byte order.
+>>> + * For performance reason (and earlier probably due to unanawareness)
+>>
+>> 							  ^ unawareness
+>>
+>>> + * the driver avoids correcting endianness where it has control over
+>>> + * write and read side (e.g. page wise data access).
+>>> + * In case endianness matters len should be a multiple of 4.
+>>
+>> That's the opposite actually. If fix_endian is set, we don't have any
+>> requirement on len alignment, because the cpu_to_be32(val) will save
+>> us. But we have a problem when fix_endian is false an len is not
+>> aligned on 4, because, AFAIR memcpy_toio() does 32-bit accesses when
+>> things are properly aligned on 32 bits, and when that's not the case it
+>> falls back to 16 or 8 bit accesses, which in our case may lead to data
+>> loss on LE platforms.
+>>
+
+I guess that also applies to read?
+
+Wouldn't that mean that my status command is broken? The stack usually
+does a 1 byte read there....
+
+<snip>
+
+>> Same problem here. The above logic should be replaced by:
+>>
+>> 	nfc->page_access = true;
+>> 	ret = nand_prog_page_begin_op(chip, page, mtd->writesize,
+>> 				      chip->oob_poi, mtd->oobsize);
+>>
+>> 	nfc->page_access = false;
+>>
+>> 	if (ret)
+>> 		return ret;
+>>
+>> 	return nand_prog_page_end_op(chip);
+>>
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-
-Looks fine to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/inode.c    | 4 ++--
->  fs/fs-writeback.c  | 9 +++------
->  fs/gfs2/super.c    | 2 +-
->  include/linux/fs.h | 3 ++-
->  4 files changed, 8 insertions(+), 10 deletions(-)
+> Read/write seems to work, but there seems to be an issue with data:
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index c94780075b04..6d2a18991fcb 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5032,12 +5032,12 @@ static int other_inode_match(struct inode * inode, unsigned long ino,
->  
->  	if ((inode->i_ino != ino) ||
->  	    (inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW |
-> -			       I_DIRTY_SYNC | I_DIRTY_DATASYNC)) ||
-> +			       I_DIRTY_INODE)) ||
->  	    ((inode->i_state & I_DIRTY_TIME) == 0))
->  		return 0;
->  	spin_lock(&inode->i_lock);
->  	if (((inode->i_state & (I_FREEING | I_WILL_FREE | I_NEW |
-> -				I_DIRTY_SYNC | I_DIRTY_DATASYNC)) == 0) &&
-> +				I_DIRTY_INODE)) == 0) &&
->  	    (inode->i_state & I_DIRTY_TIME)) {
->  		struct ext4_inode_info	*ei = EXT4_I(inode);
->  
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index d4d04fee568a..1280f915079b 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1343,7 +1343,7 @@ __writeback_single_inode(struct inode *inode, struct writeback_control *wbc)
->  
->  	dirty = inode->i_state & I_DIRTY;
->  	if (inode->i_state & I_DIRTY_TIME) {
-> -		if ((dirty & (I_DIRTY_SYNC | I_DIRTY_DATASYNC)) ||
-> +		if ((dirty & I_DIRTY_INODE) ||
->  		    wbc->sync_mode == WB_SYNC_ALL ||
->  		    unlikely(inode->i_state & I_DIRTY_TIME_EXPIRED) ||
->  		    unlikely(time_after(jiffies,
-> @@ -2112,7 +2112,6 @@ static noinline void block_dump___mark_inode_dirty(struct inode *inode)
->   */
->  void __mark_inode_dirty(struct inode *inode, int flags)
->  {
-> -#define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
->  	struct super_block *sb = inode->i_sb;
->  	int dirtytime;
->  
-> @@ -2122,7 +2121,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  	 * Don't do this for I_DIRTY_PAGES - that doesn't actually
->  	 * dirty the inode itself
->  	 */
-> -	if (flags & (I_DIRTY_SYNC | I_DIRTY_DATASYNC | I_DIRTY_TIME)) {
-> +	if (flags & (I_DIRTY_INODE | I_DIRTY_TIME)) {
->  		trace_writeback_dirty_inode_start(inode, flags);
->  
->  		if (sb->s_op->dirty_inode)
-> @@ -2197,7 +2196,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  			if (dirtytime)
->  				inode->dirtied_time_when = jiffies;
->  
-> -			if (inode->i_state & (I_DIRTY_INODE | I_DIRTY_PAGES))
-> +			if (inode->i_state & I_DIRTY)
->  				dirty_list = &wb->b_dirty;
->  			else
->  				dirty_list = &wb->b_dirty_time;
-> @@ -2221,8 +2220,6 @@ void __mark_inode_dirty(struct inode *inode, int flags)
->  	}
->  out_unlock_inode:
->  	spin_unlock(&inode->i_lock);
-> -
-> -#undef I_DIRTY_INODE
->  }
->  EXPORT_SYMBOL(__mark_inode_dirty);
->  
-> diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-> index 620be0521866..cf5c7f3080d2 100644
-> --- a/fs/gfs2/super.c
-> +++ b/fs/gfs2/super.c
-> @@ -800,7 +800,7 @@ static void gfs2_dirty_inode(struct inode *inode, int flags)
->  	int need_endtrans = 0;
->  	int ret;
->  
-> -	if (!(flags & (I_DIRTY_DATASYNC|I_DIRTY_SYNC)))
-> +	if (!(flags & I_DIRTY_INODE))
->  		return;
->  	if (unlikely(test_bit(SDF_SHUTDOWN, &sdp->sd_flags)))
->  		return;
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 2a815560fda0..86112ab0a1c0 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -2014,7 +2014,8 @@ static inline void init_sync_kiocb(struct kiocb *kiocb, struct file *filp)
->  #define I_WB_SWITCH		(1 << 13)
->  #define I_OVL_INUSE			(1 << 14)
->  
-> -#define I_DIRTY (I_DIRTY_SYNC | I_DIRTY_DATASYNC | I_DIRTY_PAGES)
-> +#define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-> +#define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
->  #define I_DIRTY_ALL (I_DIRTY | I_DIRTY_TIME)
->  
->  extern void __mark_inode_dirty(struct inode *, int);
-> -- 
-> 2.14.2
+> root@colibri-vf:~# insmod mtd_oobtest.ko dev=3
+> [   69.609120]
+> [   69.610664] =================================================
+> [   69.616734] mtd_oobtest: MTD device: 3
+> [   69.631659] mtd_oobtest: MTD device size 16777216, eraseblock size
+> 131072, page size 2048, count of eraseblocks 128, pages per eraseblock
+> 64, OOB size 64
+> [   69.647814] mtd_test: scanning for bad eraseblocks
+> [   69.654166] mtd_test: scanned 128 eraseblocks, 0 are bad
+> [   69.659507] mtd_oobtest: test 1 of 5
+> [   69.736812] mtd_oobtest: writing OOBs of whole device
+> [   69.755753] mtd_oobtest: written up to eraseblock 0
+> [   71.500646] mtd_oobtest: written 128 eraseblocks
+> [   71.505397] mtd_oobtest: verifying all eraseblocks
+> [   71.510336] mtd_oobtest: error @addr[0x0:0x0] 0xff -> 0xe diff 0xf1
+> [   71.516727] mtd_oobtest: error @addr[0x0:0x1] 0xff -> 0x10 diff 0xef
+> [   71.523164] mtd_oobtest: error: verify failed at 0x0
+> [   71.530372] mtd_oobtest: error @addr[0x800:0x0] 0xff -> 0x82 diff
+> 0x7d
+> [   71.537083] mtd_oobtest: error @addr[0x800:0x1] 0xff -> 0x10 diff
+> 0xef
+> [   71.543709] mtd_oobtest: error: verify failed at 0x800
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Need to check what is exactly going wrong.
+
+I found the issue there, the COMMAND_NADDR_BYTES macro should look like
+this:
+
+#define COMMAND_NADDR_BYTES(x)		GENMASK(13, 13 - (x) + 1)
+
+
+--
+Stefan
