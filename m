@@ -1,23 +1,32 @@
-Received: from mga17.intel.com ([192.55.52.151])
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqiVp-0000zl-H5
- for linux-mtd@lists.infradead.org; Tue, 27 Feb 2018 16:53:58 +0000
-Date: Tue, 27 Feb 2018 18:51:42 +0200
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ id 1eqlZj-0007n1-7f
+ for linux-mtd@lists.infradead.org; Tue, 27 Feb 2018 20:10:16 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Arnd Bergmann <arnd@arndb.de>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>
-Subject: Re: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
-Message-ID: <20180227165142.GL2424@lahna.fi.intel.com>
-References: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Eric Miao <eric.y.miao@gmail.com>,
+ Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, <devicetree@vger.kernel.org>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ linux-arm-kernel <linux-arm-kernel-bounces@lists.infradead.org>
+Subject: Re: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
+References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
+ <20180219223557.2458-6-miquel.raynal@bootlin.com>
+ <20180222104618.1ff78b52@bbrezillon>
+Date: Tue, 27 Feb 2018 21:09:51 +0100
+In-Reply-To: <20180222104618.1ff78b52@bbrezillon> (Boris Brezillon's message
+ of "Thu, 22 Feb 2018 10:46:18 +0100")
+Message-ID: <87efl66vow.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +36,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 05, 2018 at 02:32:59PM +0300, Mika Westerberg wrote:
-> Changes from v1:
-> 
->   - Added atomic_preopcode field and only when it is set, enable atomic
->     sequence.
->   - Return -EINVAL if the requested WREN operation cannot be found from
->     PREOP register instead of silently pretending it is supported.
->   - Updated patch subject to match more closely what is being fixed.
+Boris Brezillon <boris.brezillon@bootlin.com> writes:
 
-Any comments on these two? I did the changes Cyrille asked me to do.
+> +Arnd and the LAKML
+>
+> Hi Miquel,
+>
+> Please try to Cc the LAKML and the arm-soc maintainers when you send DT
+> changes.
+>
+> Arnd, Robert, I'd like to apply this patch through the MTD tree since
+> it depends on patch 1 of this series ("mtd: nand: use Marvell reworked
+> NAND controller driver with all platforms").
+> Otherwise, I can leave it to Robert for 4.18.
 
-Thanks!
+This one looks conflict free, so I have no objection if you carry it through
+your tree.
+
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Cheers.
+
+--
+Robert
