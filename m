@@ -1,25 +1,17 @@
-Date: Tue, 27 Feb 2018 21:42:45 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1eqmPh-0006Fm-0G
+ for linux-mtd@lists.infradead.org; Tue, 27 Feb 2018 21:03:55 +0000
+Date: Tue, 27 Feb 2018 22:03:28 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Arnd Bergmann
- <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Daniel Mack
- <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Eric Miao
- <eric.y.miao@gmail.com>, Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
- <devicetree@vger.kernel.org>, Gregory Clement
- <gregory.clement@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Antoine Tenart
- <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-arm-kernel <linux-arm-kernel-bounces@lists.infradead.org>
-Subject: Re: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
-Message-ID: <20180227214245.4267448e@bbrezillon>
-In-Reply-To: <87efl66vow.fsf@belgarion.home>
-References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
- <20180219223557.2458-6-miquel.raynal@bootlin.com>
- <20180222104618.1ff78b52@bbrezillon>
- <87efl66vow.fsf@belgarion.home>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: tests: check erase block count in page test
+Message-ID: <20180227220328.546750db@bbrezillon>
+In-Reply-To: <20180226212703.1662-1-stefan@agner.ch>
+References: <20180226212703.1662-1-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,86 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+On Mon, 26 Feb 2018 22:27:03 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-On Tue, 27 Feb 2018 21:09:51 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+> When there is only a single erase block, the cross talk test
 
-> Boris Brezillon <boris.brezillon@bootlin.com> writes:
-> 
-> > +Arnd and the LAKML
-> >
-> > Hi Miquel,
-> >
-> > Please try to Cc the LAKML and the arm-soc maintainers when you send DT
-> > changes.
-> >
-> > Arnd, Robert, I'd like to apply this patch through the MTD tree since
-> > it depends on patch 1 of this series ("mtd: nand: use Marvell reworked
-> > NAND controller driver with all platforms").
-> > Otherwise, I can leave it to Robert for 4.18.  
-> 
-> This one looks conflict free, so I have no objection if you carry it through
-> your tree.
+Not sure cross talk is the appropriate term here. Why not cross erase
+test?
 
-Already prepared an immutable branch with all patches of this series
-for you to pull in the pxa tree:
+> does not report sensible errors. Warn in case there is only
+> a single erase block instead of executing the test.
 
-The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
+I guess the equivalent userspace test [1], suffer from the same
+problem. Could you fix it too?
+Also, I encourage everyone to use the userspace tests, since kernel ones
+will be removed at some point.
 
-  Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git nand/pxa3xx-removal
-
-for you to fetch changes up to fa4d26b6f00e2c3460c2cc070f467c74d163bf40:
-
-  MAINTAINERS: remove entry for deleted pxa3xx_nand driver (2018-02-23 22:12:15 +0100)
-
-----------------------------------------------------------------
-Miquel Raynal (6):
-      mtd: nand: use Marvell reworked NAND controller driver with all platforms
-      mtd: nand: remove deprecated pxa3xx_nand driver
-      mtd: nand: remove useless fields from pxa3xx NAND platform data
-      dt-bindings: mtd: remove pxa3xx NAND controller documentation
-      arm: dts: pxa: use reworked NAND controller driver
-      MAINTAINERS: remove entry for deleted pxa3xx_nand driver
-
- Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt |   50 -
- MAINTAINERS                                           |    6 -
- arch/arm/boot/dts/pxa3xx.dtsi                         |    6 +-
- arch/arm/configs/cm_x300_defconfig                    |    2 +-
- arch/arm/configs/pxa3xx_defconfig                     |    3 +-
- arch/arm/configs/pxa_defconfig                        |    2 +-
- arch/arm/configs/raumfeld_defconfig                   |    2 +-
- arch/arm/mach-mmp/ttc_dkb.c                           |    4 +-
- arch/arm/mach-pxa/cm-x300.c                           |    8 +-
- arch/arm/mach-pxa/colibri-pxa3xx.c                    |    8 +-
- arch/arm/mach-pxa/colibri.h                           |    2 +-
- arch/arm/mach-pxa/littleton.c                         |   10 +-
- arch/arm/mach-pxa/mxm8x10.c                           |   10 +-
- arch/arm/mach-pxa/raumfeld.c                          |    6 +-
- arch/arm/mach-pxa/zylonite.c                          |   10 +-
- drivers/mtd/nand/Kconfig                              |   11 -
- drivers/mtd/nand/Makefile                             |    1 -
- drivers/mtd/nand/marvell_nand.c                       |    3 +-
- drivers/mtd/nand/pxa3xx_nand.c                        | 2105 ------------------------------------------
- include/linux/platform_data/mtd-nand-pxa3xx.h         |   43 +-
- 20 files changed, 43 insertions(+), 2249 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
- delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
-
+[1]http://git.infradead.org/mtd-utils.git/blob/refs/heads/master:/tests/mtd-tests/nandpagetest.c
 
 > 
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  drivers/mtd/tests/pagetest.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+> index ff1e0565b020..bc303cac9f43 100644
+> --- a/drivers/mtd/tests/pagetest.c
+> +++ b/drivers/mtd/tests/pagetest.c
+> @@ -435,9 +435,13 @@ static int __init mtd_pagetest_init(void)
+>  	if (err)
+>  		goto out;
+>  
+> -	err = erasecrosstest();
+> -	if (err)
+> -		goto out;
+> +	if (ebcnt > 1) {
+> +		err = erasecrosstest();
+> +		if (err)
+> +			goto out;
+> +	} else {
+> +		pr_info("skipping erasecrosstest, 2 erase blocks needed\n");
+> +	}
+>  
+>  	err = erasetest();
+>  	if (err)
 
-Unfortunately I didn't have your ack when I prepared the branch, so it's
-not there. Let me know if this is a problem.
-
-Regards,
-
-Boris
 
 
 -- 
