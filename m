@@ -1,14 +1,14 @@
 Received: from mxhk.zte.com.cn ([63.217.80.70])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqrRB-000175-14
- for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 02:25:46 +0000
-From: Jiang Biao <jiang.biao2@zte.com.cn>
+ id 1eqrjo-00015i-VH
+ for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 02:45:02 +0000
+From: Liu Song <liu.song11@zte.com.cn>
 To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
-Subject: [PATCH] fs/ubifs: remove useless parameter of lpt_heap_replace
-Date: Wed, 28 Feb 2018 10:22:37 +0800
-Message-Id: <1519784557-105528-1-git-send-email-jiang.biao2@zte.com.cn>
+ jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn, liu.song11@zte.com.cn
+Subject: [PATCH] fs/UBIFS: make 'sum' definition closer to where it is used
+Date: Wed, 28 Feb 2018 10:42:03 +0800
+Message-Id: <1519785723-105686-1-git-send-email-liu.song11@zte.com.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The parameter *old_lprops* is never used in lpt_heap_replace(),
-remove it to avoid compile warning.
+Local var sum is only used in one branch, and it may be not used if 
+it is defined outside the branch. Try to move the definition into 
+the branch to make it closer to where it is actually used. 
 
-Signed-off-by: Jiang Biao <jiang.biao2@zte.com.cn>
+Signed-off-by: Liu Song <liu.song11@zte.com.cn>
+Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
 ---
- fs/ubifs/lprops.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/ubifs/find.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index 6c3a1ab..f5a4684 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -244,7 +244,6 @@ static void remove_from_lpt_heap(struct ubifs_info *c,
- /**
-  * lpt_heap_replace - replace lprops in a category heap.
-  * @c: UBIFS file-system description object
-- * @old_lprops: LEB properties to replace
-  * @new_lprops: LEB properties with which to replace
-  * @cat: LEB category
-  *
-@@ -254,7 +253,6 @@ static void remove_from_lpt_heap(struct ubifs_info *c,
-  * lprops.  This function does that.
-  */
- static void lpt_heap_replace(struct ubifs_info *c,
--			     struct ubifs_lprops *old_lprops,
- 			     struct ubifs_lprops *new_lprops, int cat)
+diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
+index 2dcf3d4..4eb11c1 100644
+--- a/fs/ubifs/find.c
++++ b/fs/ubifs/find.c
+@@ -233,7 +233,7 @@ static const struct ubifs_lprops *scan_for_dirty(struct ubifs_info *c,
+ int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
+ 			 int min_space, int pick_free)
  {
- 	struct ubifs_lpt_heap *heap;
-@@ -362,7 +360,7 @@ void ubifs_replace_cat(struct ubifs_info *c, struct ubifs_lprops *old_lprops,
- 	case LPROPS_DIRTY:
- 	case LPROPS_DIRTY_IDX:
- 	case LPROPS_FREE:
--		lpt_heap_replace(c, old_lprops, new_lprops, cat);
-+		lpt_heap_replace(c, new_lprops, cat);
- 		break;
- 	case LPROPS_UNCAT:
- 	case LPROPS_EMPTY:
+-	int err = 0, sum, exclude_index = pick_free == 2 ? 1 : 0;
++	int err = 0, exclude_index = pick_free == 2 ? 1 : 0;
+ 	const struct ubifs_lprops *lp = NULL, *idx_lp = NULL;
+ 	struct ubifs_lpt_heap *heap, *idx_heap;
+ 
+@@ -285,6 +285,7 @@ int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
+ 	idx_heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
+ 
+ 	if (idx_heap->cnt && !exclude_index) {
++		int sum;
+ 		idx_lp = idx_heap->arr[0];
+ 		sum = idx_lp->free + idx_lp->dirty;
+ 		/*
 -- 
-2.7.4
+1.8.3.1
