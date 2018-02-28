@@ -1,19 +1,30 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1er0Jd-0002cZ-VK
- for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 11:54:35 +0000
-From: Radu Pirea <radu.pirea@microchip.com>
-To: <cyrille.pitchen@wedev4u.fr>, <marek.vasut@gmail.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <nicolas.ferre@microchip.com>
-CC: Radu Pirea <radu.pirea@microchip.com>
-Subject: [PATCH] spi-nor: Add support for Atmel Dataflash memories
-Date: Wed, 28 Feb 2018 13:55:01 +0200
-Message-ID: <1519818901-7116-1-git-send-email-radu.pirea@microchip.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1er0oI-00025f-3n
+ for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 12:26:36 +0000
+Date: Wed, 28 Feb 2018 13:25:49 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Peter Pan <peterpansjtu@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Mark Brown
+ <broonie@kernel.org>, linux-spi@vger.kernel.org, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar
+ <sourav.poddar@ti.com>
+Subject: Re: [RFC PATCH 1/6] spi: Extend the core to ease integration of SPI
+ memory controllers
+Message-ID: <20180228132549.75727e55@bbrezillon>
+In-Reply-To: <CAAyFORKQCBMOGajA6-evsO8FfFz7_8-PGqU4MmhRic18PFrLUQ@mail.gmail.com>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+ <20180205232120.5851-2-boris.brezillon@bootlin.com>
+ <CAAyFORKQCBMOGajA6-evsO8FfFz7_8-PGqU4MmhRic18PFrLUQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,283 +34,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch add support in spi-nor for allmost all dataflash memories
-supported by old mtd_dataflash driver.
+On Wed, 28 Feb 2018 15:51:29 +0800
+Peter Pan <peterpansjtu@gmail.com> wrote:
 
-Signed-off-by: Radu Pirea <radu.pirea@microchip.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 150 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/spi-nor.h   |  10 +++
- 2 files changed, 158 insertions(+), 2 deletions(-)
+> > +int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+> > +{
+> > +       unsigned int tmpbufsize, xferpos = 0, totalxferlen = 0;
+> > +       struct spi_controller *ctlr = mem->spi->controller;
+> > +       struct spi_transfer xfers[4] = { };
+> > +       struct spi_message msg;
+> > +       u8 *tmpbuf;
+> > +       int ret;
+> > +
+> > +       if (!spi_mem_supports_op(mem, op))
+> > +               return -ENOTSUPP;
+> > +
+> > +       if (ctlr->mem_ops) {
+> > +               if (ctlr->auto_runtime_pm) {
+> > +                       ret = pm_runtime_get_sync(ctlr->dev.parent);
+> > +                       if (ret < 0) {
+> > +                               dev_err(&ctlr->dev,
+> > +                                       "Failed to power device: %d\n",
+> > +                                       ret);
+> > +                               return ret;
+> > +                       }
+> > +               }
+> > +
+> > +               mutex_lock(&ctlr->bus_lock_mutex);
+> > +               mutex_lock(&ctlr->io_mutex);
+> > +               ret = ctlr->mem_ops->exec_op(mem, op);
+> > +               mutex_unlock(&ctlr->io_mutex);
+> > +               mutex_unlock(&ctlr->bus_lock_mutex);
+> > +
+> > +               if (ctlr->auto_runtime_pm)
+> > +                       pm_runtime_put(ctlr->dev.parent);
+> > +
+> > +               /*
+> > +                * Some controllers only optimize specific paths (typically the
+> > +                * read path) and expect the core to use the regular SPI
+> > +                * interface in these cases.
+> > +                */
+> > +               if (!ret || ret != -ENOTSUPP)
+> > +                       return ret;
+> > +       }
+> > +
+> > +       tmpbufsize = sizeof(op->cmd.opcode) + op->addr.nbytes +
+> > +                    op->dummy.nbytes;  
+> 
+> Here you are using sizeof(op->cmd.opcode) while the code after this
+> assumes opcode is u8(ie. "memcpy(tmpbuf + 1, op->addr.buf, op->addr.nbytes);")
+> It may be confused.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d445a4d..4cb3cf7 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -89,6 +89,7 @@ struct flash_info {
- #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
- #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
- #define USE_CLSR		BIT(14)	/* use CLSR command */
-+#define SPI_DATAFLASH		BIT(15) /* Atmel Dataflash memory */
- 
- 	int	(*quad_enable)(struct spi_nor *nor);
- };
-@@ -306,6 +307,20 @@ static int s3an_sr_ready(struct spi_nor *nor)
- 	return !!(val & XSR_RDY);
- }
- 
-+static int dataflash_sr_ready(struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_DFRDSR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error %d reading DFSR\n", ret);
-+		return ret;
-+	}
-+
-+	return !!(val & DFSR_RDY);
-+}
-+
- static inline int spi_nor_sr_ready(struct spi_nor *nor)
- {
- 	int sr = read_sr(nor);
-@@ -354,6 +369,8 @@ static int spi_nor_ready(struct spi_nor *nor)
- 
- 	if (nor->flags & SNOR_F_READY_XSR_RDY)
- 		sr = s3an_sr_ready(nor);
-+	else if (nor->flags & SPI_DATAFLASH)
-+		sr = dataflash_sr_ready(nor);
- 	else
- 		sr = spi_nor_sr_ready(nor);
- 	if (sr < 0)
-@@ -457,6 +474,44 @@ static loff_t spi_nor_s3an_addr_convert(struct spi_nor *nor, unsigned int addr)
- 	return page | offset;
- }
- 
-+static loff_t spi_nor_dataflash_addr_convert(struct spi_nor *nor,
-+					     unsigned int addr)
-+{
-+	unsigned int offset;
-+	unsigned int page;
-+	unsigned int page_offset;
-+
-+	page = addr / nor->page_size;
-+	offset = addr % nor->page_size;
-+	page_offset = fls(nor->page_size);
-+	if (is_power_of_2(nor->page_size))
-+		page_offset--;
-+
-+	return (page << page_offset) | offset;
-+}
-+
-+static int spi_nor_dataflash_erase_sector(struct spi_nor *nor, u32 addr)
-+{
-+	u32 block_size = 8 * nor->page_size;
-+	u32 blocks = nor->mtd.erasesize / block_size;
-+	u32 addr_local;
-+	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
-+	int i, j;
-+
-+	for (j = 0; j < blocks; j++) {
-+		addr_local = spi_nor_dataflash_addr_convert(nor, addr);
-+		for (i = nor->addr_width - 1; i >= 0; i--) {
-+			buf[i] = addr_local & 0xff;
-+			addr_local >>= 8;
-+		}
-+		nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
-+		addr += block_size;
-+		spi_nor_wait_till_ready(nor);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Initiate the erasure of a single sector
-  */
-@@ -542,7 +597,11 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 		while (len) {
- 			write_enable(nor);
- 
--			ret = spi_nor_erase_sector(nor, addr);
-+			if (nor->flags & SPI_DATAFLASH)
-+				ret = spi_nor_dataflash_erase_sector(nor, addr);
-+			else
-+				ret = spi_nor_erase_sector(nor, addr);
-+
- 			if (ret)
- 				goto erase_err;
- 
-@@ -914,6 +973,20 @@ static int macronix_quad_enable(struct spi_nor *nor);
- 		.page_size = 256,					\
- 		.flags = (_flags),
- 
-+#define INFOP(_jedec_id, _ext_id, _sector_size, _n_sectors, _page_size, _flags)	\
-+		.id = {							\
-+			((_jedec_id) >> 16) & 0xff,			\
-+			((_jedec_id) >> 8) & 0xff,			\
-+			(_jedec_id) & 0xff,				\
-+			((_ext_id) >> 8) & 0xff,			\
-+			(_ext_id) & 0xff,				\
-+			},						\
-+		.id_len = (!(_jedec_id) ? 0 : (3 + ((_ext_id) ? 2 : 0))),	\
-+		.sector_size = (_sector_size),				\
-+		.n_sectors = (_n_sectors),				\
-+		.page_size = _page_size,				\
-+		.flags = (_flags),
-+
- #define INFO6(_jedec_id, _ext_id, _sector_size, _n_sectors, _flags)	\
- 		.id = {							\
- 			((_jedec_id) >> 16) & 0xff,			\
-@@ -975,7 +1048,14 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
- 	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
- 
--	{ "at45db081d", INFO(0x1f2500, 0, 64 * 1024, 16, SECT_4K) },
-+	{ "at45db021d", INFOP(0x1f2300, 0, 512 * 264,  2, 264, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db041d", INFOP(0x1f2400, 0, 256 * 264,  8, 264, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db081d", INFOP(0x1f2500, 0, 256 * 264, 16, 264, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db161d", INFOP(0x1f2600, 0, 256 * 528, 16, 528, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db321d", INFOP(0x1f2700, 0, 128 * 528, 64, 528, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db321d", INFOP(0x1f2701, 0, 128 * 528, 64, 528, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db642d", INFOP(0x1f2800, 0, 256 * 1056, 32, 1056, SPI_DATAFLASH | NO_CHIP_ERASE) },
-+	{ "at45db641e", INFOP(0x1f2800, 0x0100, 1024 * 264, 32, 264, SPI_DATAFLASH | NO_CHIP_ERASE) },
- 
- 	/* EON -- en25xxx */
- 	{ "en25f32",    INFO(0x1c3116, 0, 64 * 1024,   64, SECT_4K) },
-@@ -1278,6 +1358,9 @@ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
- 		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
- 			addr = spi_nor_s3an_addr_convert(nor, addr);
- 
-+		if (nor->flags & SPI_DATAFLASH)
-+			addr = spi_nor_dataflash_addr_convert(nor, addr);
-+
- 		ret = nor->read(nor, addr, len, buf);
- 		if (ret == 0) {
- 			/* We shouldn't see 0-length reads */
-@@ -1379,6 +1462,21 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	return ret;
- }
- 
-+static int dataflash_memtobuf(struct spi_nor *nor, u32 addr)
-+{
-+	u8 buf[SPI_NOR_MAX_ADDR_WIDTH];
-+	int i;
-+
-+	addr = spi_nor_dataflash_addr_convert(nor, addr);
-+
-+	for (i = nor->addr_width - 1; i >= 0; i--) {
-+		buf[i] = addr & 0xff;
-+		addr >>= 8;
-+	}
-+
-+	return nor->write_reg(nor, SPINOR_OP_DFMTB, buf, nor->addr_width);
-+}
-+
- /*
-  * Write an address range to the nor chip.  Data must be written in
-  * FLASH_PAGESIZE chunks.  The address range may be any size provided
-@@ -1420,9 +1518,17 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		page_remain = min_t(size_t,
- 				    nor->page_size - page_offset, len - i);
- 
-+		if (nor->flags & SPI_DATAFLASH) {
-+			dataflash_memtobuf(nor, addr);
-+			spi_nor_wait_till_ready(nor);
-+		}
-+
- 		if (nor->flags & SNOR_F_S3AN_ADDR_DEFAULT)
- 			addr = spi_nor_s3an_addr_convert(nor, addr);
- 
-+		if (nor->flags & SPI_DATAFLASH)
-+			addr = spi_nor_dataflash_addr_convert(nor, addr);
-+
- 		write_enable(nor);
- 		ret = nor->write(nor, addr, page_remain, buf + i);
- 		if (ret < 0)
-@@ -1742,6 +1848,37 @@ static int s3an_nor_scan(const struct flash_info *info, struct spi_nor *nor)
- 	return 0;
- }
- 
-+static int dataflash_nor_scan(const struct flash_info *info,
-+			      struct spi_nor *nor)
-+{
-+	int ret;
-+	u8 val;
-+
-+	ret = nor->read_reg(nor, SPINOR_OP_DFRDSR, &val, 1);
-+	if (ret < 0) {
-+		dev_err(nor->dev, "error reading status register\n");
-+		return ret;
-+	}
-+
-+	nor->erase_opcode = SPINOR_OP_DFBE_8k;
-+	nor->program_opcode = SPINOR_OP_DFBTOM;
-+	nor->read_opcode = SPINOR_OP_DFRD;
-+	nor->flags |= SNOR_F_NO_OP_CHIP_ERASE;
-+
-+	if (val & DFSR_PAGESIZE) {
-+		/* Flash in Power of 2 mode */
-+		nor->mtd.erasesize = nor->mtd.erasesize / nor->page_size *
-+		(1 << (fls(nor->page_size) - 1));
-+		nor->mtd.size = nor->mtd.erasesize * info->n_sectors;
-+		nor->page_size = 1 << (fls(nor->page_size) - 1);
-+		nor->mtd.writebufsize = nor->page_size;
-+	}
-+
-+	nor->read_dummy = 32;
-+
-+	return 0;
-+}
-+
- struct spi_nor_read_command {
- 	u8			num_mode_clocks;
- 	u8			num_wait_states;
-@@ -2818,6 +2955,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (info->flags & SPI_S3AN)
- 		nor->flags |=  SNOR_F_READY_XSR_RDY;
- 
-+	if (info->flags & SPI_DATAFLASH)
-+		nor->flags |= SPI_DATAFLASH;
-+
- 	/* Parse the Serial Flash Discoverable Parameters table. */
- 	ret = spi_nor_init_params(nor, info, &params);
- 	if (ret)
-@@ -2922,6 +3062,12 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 			return ret;
- 	}
- 
-+	if (info->flags & SPI_DATAFLASH) {
-+		ret = dataflash_nor_scan(info, nor);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/* Send all the required SPI flash commands to initialize device */
- 	nor->info = info;
- 	ret = spi_nor_init(nor);
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index de36969..843edf9 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -91,6 +91,16 @@
- #define SPINOR_OP_WRDI		0x04	/* Write disable */
- #define SPINOR_OP_AAI_WP	0xad	/* Auto address increment word program */
- 
-+/* Used for Atmel Dataflashes only. */
-+#define SPINOR_OP_DFRDSR	0xd7
-+#define SPINOR_OP_DFBE_8k	0x50
-+#define SPINOR_OP_DFMTB		0x53
-+#define SPINOR_OP_DFBTOM	0x82
-+#define SPINOR_OP_DFRD		0xe8
-+
-+#define DFSR_PAGESIZE		BIT(0)	/* Page size in Po2 or Linear */
-+#define DFSR_RDY		BIT(7)	/* Ready */
-+
- /* Used for S3AN flashes only */
- #define SPINOR_OP_XSE		0x50	/* Sector erase */
- #define SPINOR_OP_XPP		0x82	/* Page program */
+Will use sizeof(op->cmd.opcode) everywhere then.
+
 -- 
-2.7.4
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
