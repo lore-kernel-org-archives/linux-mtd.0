@@ -1,14 +1,14 @@
-Received: from mxhk.zte.com.cn ([63.217.80.70])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1eqrjo-00015i-VH
- for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 02:45:02 +0000
-From: Liu Song <liu.song11@zte.com.cn>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn, liu.song11@zte.com.cn
-Subject: [PATCH] fs/UBIFS: make 'sum' definition closer to where it is used
-Date: Wed, 28 Feb 2018 10:42:03 +0800
-Message-Id: <1519785723-105686-1-git-send-email-liu.song11@zte.com.cn>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, oss@buserror.net,
+ leoyang.li@nxp.com, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH 1/2][v5] dt-bindings: mtd-physmap: Add endianness supports
+Date: Wed, 28 Feb 2018 13:03:34 +0530
+Message-Id: <20180228073335.1758-1-prabhakar.kushwaha@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +18,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Local var sum is only used in one branch, and it may be not used if 
-it is defined outside the branch. Try to move the definition into 
-the branch to make it closer to where it is actually used. 
+Connection between flash and controller is not necessary to be always
+of same type. It may varies from platform to platform.
 
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
-Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
+Adding endianness (optional) property to provide connection type
+information.
+
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- fs/ubifs/find.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes for v2: updated subject
+Changes for v3: fixed typo for "big-endian"
+Changes for v4: Moved binding definition in mtd-physmap.txt
+as discussed at https://patchwork.ozlabs.org/patch/842543/
+Changes for v5: Sending as it is
 
-diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
-index 2dcf3d4..4eb11c1 100644
---- a/fs/ubifs/find.c
-+++ b/fs/ubifs/find.c
-@@ -233,7 +233,7 @@ static const struct ubifs_lprops *scan_for_dirty(struct ubifs_info *c,
- int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
- 			 int min_space, int pick_free)
- {
--	int err = 0, sum, exclude_index = pick_free == 2 ? 1 : 0;
-+	int err = 0, exclude_index = pick_free == 2 ? 1 : 0;
- 	const struct ubifs_lprops *lp = NULL, *idx_lp = NULL;
- 	struct ubifs_lpt_heap *heap, *idx_heap;
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48bf4ecb..961a8eed9d0d 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -41,6 +41,11 @@ additional (optional) property is defined:
  
-@@ -285,6 +285,7 @@ int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
- 	idx_heap = &c->lpt_heap[LPROPS_DIRTY_IDX - 1];
+  - erase-size : The chip's physical erase block size in bytes.
  
- 	if (idx_heap->cnt && !exclude_index) {
-+		int sum;
- 		idx_lp = idx_heap->arr[0];
- 		sum = idx_lp->free + idx_lp->dirty;
- 		/*
++ The device tree may optionally contain endianness property.
++ little-endian or big-endian : It represents connection between controller and
++			flash. If this property is absent, flash is considered
++			to be host-endian.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
 -- 
-1.8.3.1
+2.14.1
