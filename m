@@ -1,30 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1er0oI-00025f-3n
- for linux-mtd@lists.infradead.org; Wed, 28 Feb 2018 12:26:36 +0000
-Date: Wed, 28 Feb 2018 13:25:49 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Peter Pan <peterpansjtu@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org, Mark Brown
- <broonie@kernel.org>, linux-spi@vger.kernel.org, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar
- <sourav.poddar@ti.com>
-Subject: Re: [RFC PATCH 1/6] spi: Extend the core to ease integration of SPI
- memory controllers
-Message-ID: <20180228132549.75727e55@bbrezillon>
-In-Reply-To: <CAAyFORKQCBMOGajA6-evsO8FfFz7_8-PGqU4MmhRic18PFrLUQ@mail.gmail.com>
-References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
- <20180205232120.5851-2-boris.brezillon@bootlin.com>
- <CAAyFORKQCBMOGajA6-evsO8FfFz7_8-PGqU4MmhRic18PFrLUQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Antoine Tenart <antoine.tenart@bootlin.com>,
+ Nadav Haklai <nadavh@marvell.com>, Shadi Ammouri <shadi@marvell.com>,
+ Omri Itach <omrii@marvell.com>, Hanna Hawa <hannah@marvell.com>,
+ Igal Liberman <igall@marvell.com>, Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH] mtd: nand: marvell: Fix clock resource by adding a register
+ clock
+Date: Wed, 28 Feb 2018 15:35:53 +0100
+Message-Id: <20180228143553.12485-1-gregory.clement@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,60 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 Feb 2018 15:51:29 +0800
-Peter Pan <peterpansjtu@gmail.com> wrote:
+On Armada 7K/8K we need to explicitly enable the register clock. This
+clock is optional because not all the SoCs using this IP need it but at
+least for Armada 7K/8K it is actually mandatory.
 
-> > +int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> > +{
-> > +       unsigned int tmpbufsize, xferpos = 0, totalxferlen = 0;
-> > +       struct spi_controller *ctlr = mem->spi->controller;
-> > +       struct spi_transfer xfers[4] = { };
-> > +       struct spi_message msg;
-> > +       u8 *tmpbuf;
-> > +       int ret;
-> > +
-> > +       if (!spi_mem_supports_op(mem, op))
-> > +               return -ENOTSUPP;
-> > +
-> > +       if (ctlr->mem_ops) {
-> > +               if (ctlr->auto_runtime_pm) {
-> > +                       ret = pm_runtime_get_sync(ctlr->dev.parent);
-> > +                       if (ret < 0) {
-> > +                               dev_err(&ctlr->dev,
-> > +                                       "Failed to power device: %d\n",
-> > +                                       ret);
-> > +                               return ret;
-> > +                       }
-> > +               }
-> > +
-> > +               mutex_lock(&ctlr->bus_lock_mutex);
-> > +               mutex_lock(&ctlr->io_mutex);
-> > +               ret = ctlr->mem_ops->exec_op(mem, op);
-> > +               mutex_unlock(&ctlr->io_mutex);
-> > +               mutex_unlock(&ctlr->bus_lock_mutex);
-> > +
-> > +               if (ctlr->auto_runtime_pm)
-> > +                       pm_runtime_put(ctlr->dev.parent);
-> > +
-> > +               /*
-> > +                * Some controllers only optimize specific paths (typically the
-> > +                * read path) and expect the core to use the regular SPI
-> > +                * interface in these cases.
-> > +                */
-> > +               if (!ret || ret != -ENOTSUPP)
-> > +                       return ret;
-> > +       }
-> > +
-> > +       tmpbufsize = sizeof(op->cmd.opcode) + op->addr.nbytes +
-> > +                    op->dummy.nbytes;  
-> 
-> Here you are using sizeof(op->cmd.opcode) while the code after this
-> assumes opcode is u8(ie. "memcpy(tmpbuf + 1, op->addr.buf, op->addr.nbytes);")
-> It may be confused.
+The binding documentation is updated accordingly.
 
-Will use sizeof(op->cmd.opcode) everywhere then.
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ Documentation/devicetree/bindings/mtd/marvell-nand.txt |  6 +++++-
+ drivers/mtd/nand/marvell_nand.c                        | 14 ++++++++++++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
 
+diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+index c08fb477b3c6..4ee9813bf88f 100644
+--- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+@@ -14,7 +14,11 @@ Required properties:
+ - #address-cells: shall be set to 1. Encode the NAND CS.
+ - #size-cells: shall be set to 0.
+ - interrupts: shall define the NAND controller interrupt.
+-- clocks: shall reference the NAND controller clock.
++- clocks: shall reference the NAND controller clocks, the second one is
++  optional but needed for the Armada 7K/8K SoCs
++- clock-names: mandatory if there is a second clock, in this case the
++   name must be "core" for the first clock and "reg" for the second
++   one
+ - marvell,system-controller: Set to retrieve the syscon node that handles
+   NAND controller related registers (only required with the
+   "marvell,armada-8k-nand[-controller]" compatibles).
+diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
+index 2196f2a233d6..be874c636b5f 100644
+--- a/drivers/mtd/nand/marvell_nand.c
++++ b/drivers/mtd/nand/marvell_nand.c
+@@ -321,6 +321,7 @@ struct marvell_nfc {
+ 	struct device *dev;
+ 	void __iomem *regs;
+ 	struct clk *ecc_clk;
++	struct clk *reg_clk;
+ 	struct completion complete;
+ 	unsigned long assigned_cs;
+ 	struct list_head chips;
+@@ -2747,6 +2748,17 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
++	if (IS_ERR(nfc->reg_clk) && PTR_ERR(nfc->reg_clk) == -EPROBE_DEFER) {
++		clk_disable_unprepare(nfc->ecc_clk);
++		return -EPROBE_DEFER;
++	}
++	if (!IS_ERR(nfc->reg_clk)) {
++		ret = clk_prepare_enable(nfc->reg_clk);
++		if (ret)
++			goto unprepare_clk;
++	}
++
+ 	marvell_nfc_disable_int(nfc, NDCR_ALL_INT);
+ 	marvell_nfc_clear_int(nfc, NDCR_ALL_INT);
+ 	ret = devm_request_irq(dev, irq, marvell_nfc_isr,
+@@ -2780,6 +2792,7 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+ 	return 0;
+ 
+ unprepare_clk:
++	clk_disable_unprepare(nfc->reg_clk);
+ 	clk_disable_unprepare(nfc->ecc_clk);
+ 
+ 	return ret;
+@@ -2797,6 +2810,7 @@ static int marvell_nfc_remove(struct platform_device *pdev)
+ 	}
+ 
+ 	clk_disable_unprepare(nfc->ecc_clk);
++	clk_disable_unprepare(nfc->reg_clk);
+ 
+ 	return 0;
+ }
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.16.1
