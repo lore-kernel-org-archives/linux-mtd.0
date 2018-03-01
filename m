@@ -1,26 +1,15 @@
-Date: Thu, 1 Mar 2018 17:57:32 +0100
+Date: Thu, 1 Mar 2018 18:12:48 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Arnd Bergmann <arnd@arndb.de>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Eric Miao <eric.y.miao@gmail.com>, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Gregory Clement
- <gregory.clement@bootlin.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Antoine Tenart
- <antoine.tenart@bootlin.com>, linux-arm-kernel
- <linux-arm-kernel-bounces@lists.infradead.org>
-Subject: Re: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
-Message-ID: <20180301175732.3be789fb@bbrezillon>
-In-Reply-To: <20180301100446.0f61aaf9@xps13>
-References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
- <20180219223557.2458-6-miquel.raynal@bootlin.com>
- <20180222104618.1ff78b52@bbrezillon>
- <87efl66vow.fsf@belgarion.home>
- <20180227214245.4267448e@bbrezillon>
- <20180301100446.0f61aaf9@xps13>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, boris.brezillon@free-electrons.com,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, oss@buserror.net,
+ leoyang.li@nxp.com
+Subject: Re: [PATCH 1/2][v5] dt-bindings: mtd-physmap: Add endianness supports
+Message-ID: <20180301181248.7212a5c5@bbrezillon>
+In-Reply-To: <20180228073335.1758-1-prabhakar.kushwaha@nxp.com>
+References: <20180228073335.1758-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,75 +22,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Mar 2018 10:04:46 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Wed, 28 Feb 2018 13:03:34 +0530
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-> Hi Robert,
+> Connection between flash and controller is not necessary to be always
+> of same type. It may varies from platform to platform.
 > 
-> On Tue, 27 Feb 2018 21:42:45 +0100, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
+> Adding endianness (optional) property to provide connection type
+> information.
 > 
-> > Hi Robert,
-> > 
-> > On Tue, 27 Feb 2018 21:09:51 +0100
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >   
-> > > Boris Brezillon <boris.brezillon@bootlin.com> writes:
-> > >     
-> > > > +Arnd and the LAKML
-> > > >
-> > > > Hi Miquel,
-> > > >
-> > > > Please try to Cc the LAKML and the arm-soc maintainers when you send DT
-> > > > changes.
-> > > >
-> > > > Arnd, Robert, I'd like to apply this patch through the MTD tree since
-> > > > it depends on patch 1 of this series ("mtd: nand: use Marvell reworked
-> > > > NAND controller driver with all platforms").
-> > > > Otherwise, I can leave it to Robert for 4.18.      
-> > > 
-> > > This one looks conflict free, so I have no objection if you carry it through
-> > > your tree.    
-> > 
-> > Already prepared an immutable branch with all patches of this series
-> > for you to pull in the pxa tree:
-> > 
-> > The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
-> > 
-> >   Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
-> > 
-> > are available in the git repository at:
-> > 
-> >   git://git.infradead.org/linux-mtd.git nand/pxa3xx-removal
-> > 
-> > for you to fetch changes up to fa4d26b6f00e2c3460c2cc070f467c74d163bf40:
-> > 
-> >   MAINTAINERS: remove entry for deleted pxa3xx_nand driver (2018-02-23 22:12:15 +0100)
-> >   
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> Changes for v2: updated subject
+> Changes for v3: fixed typo for "big-endian"
+> Changes for v4: Moved binding definition in mtd-physmap.txt
+> as discussed at https://patchwork.ozlabs.org/patch/842543/
+> Changes for v5: Sending as it is
 > 
-> As you may know, this commit:
+>  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
->     mtd: nand: remove useless fields from pxa3xx NAND platform data
-> 
-> currently breaks linux-next build as I forgot to patch files in the
-> mach-mmp directory.
-> 
-> I sent a fix for that yesterday to linux-arm-kernel@ and Boris:
-> 
->     arm: mmp: Fix build issue due to PXA NAND pdata structure changes
-> 
-> but maybe, it would be better to squash the fix directly in Boris'
-> immutable branch if you did not pull it already?
+> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> index 4a0a48bf4ecb..961a8eed9d0d 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> @@ -41,6 +41,11 @@ additional (optional) property is defined:
+>  
+>   - erase-size : The chip's physical erase block size in bytes.
+>  
+> + The device tree may optionally contain endianness property.
+> + little-endian or big-endian : It represents connection between controller and
+> +			flash.
 
-I guess Miquel meant squash it into the commit introducing the
-regression ("mtd: nand: remove useless fields from pxa3xx NAND platform
-data"), and I agree, if you haven't pulled the branch yet, I'd prefer to
-create a new one addressing the issue. I could also add your Acked-by
-at the same time ;-).
+Hm, I'm not even sure it has to do with the HW connection of the data
+lines (D0:X), probably more something related to how the flash was
+programmed (some people program the flash using a dedicated programmer
+before soldering it on the board) and the current platform endianness
+(which for some platforms, can be changed with a Kconfig option).
 
-Thanks,
+> If this property is absent, flash is considered
+> +			to be host-endian.
 
-Boris
+The second sentence is no longer valid. Now, if the property is missing
+the behavior is platform/configuration dependent, not necessarily
+host-endian.
+
+> +
+>  The device tree may optionally contain sub-nodes describing partitions of the
+>  address space. See partition.txt for more detail.
+>  
+
+
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
