@@ -1,16 +1,16 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1erQyV-0001Vm-Fi
- for linux-mtd@lists.infradead.org; Thu, 01 Mar 2018 16:23:03 +0000
+ id 1erR10-0002dJ-LN
+ for linux-mtd@lists.infradead.org; Thu, 01 Mar 2018 16:25:08 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Jiang Biao <jiang.biao2@zte.com.cn>
+To: Liu Song <liu.song11@zte.com.cn>
 Cc: dedekind1@gmail.com, adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, zhong.weidong@zte.com.cn
-Subject: Re: [PATCH] fs/ubifs: remove useless parameter of lpt_heap_replace
-Date: Thu, 01 Mar 2018 17:23:41 +0100
-Message-ID: <3489822.spB4g6dZPN@blindfold>
-In-Reply-To: <1519784557-105528-1-git-send-email-jiang.biao2@zte.com.cn>
-References: <1519784557-105528-1-git-send-email-jiang.biao2@zte.com.cn>
+ linux-kernel@vger.kernel.org, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
+Subject: Re: [PATCH] fs/UBIFS: make 'sum' definition closer to where it is used
+Date: Thu, 01 Mar 2018 17:26:19 +0100
+Message-ID: <49033492.RPiX3hNQUc@blindfold>
+In-Reply-To: <1519785723-105686-1-git-send-email-liu.song11@zte.com.cn>
+References: <1519785723-105686-1-git-send-email-liu.song11@zte.com.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -23,11 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 28. Februar 2018, 03:22:37 CET schrieb Jiang Biao:
-> The parameter *old_lprops* is never used in lpt_heap_replace(),
-> remove it to avoid compile warning.
+Am Mittwoch, 28. Februar 2018, 03:42:03 CET schrieb Liu Song:
+> Local var sum is only used in one branch, and it may be not used if
+> it is defined outside the branch. Try to move the definition into
+> the branch to make it closer to where it is actually used.
 
-Makes sense. But what compiler warning do you get?
+Does this fix a problem?
+I'm not a huge fan of defining variables in the middle of functions unless it 
+makes the code really better.
 
 Thanks,
 //richard
