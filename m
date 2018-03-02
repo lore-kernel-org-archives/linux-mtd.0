@@ -8,9 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 40/52] mtd: rawnand: tango: convert driver to nand_scan()
-Date: Fri,  2 Mar 2018 18:03:48 +0100
-Message-Id: <20180302170400.6712-41-miquel.raynal@bootlin.com>
+Subject: [PATCH 39/52] mtd: rawnand: tango: fix probe function error path
+Date: Fri,  2 Mar 2018 18:03:47 +0100
+Message-Id: <20180302170400.6712-40-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,69 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+An error after nand_scan_tail() should trigger a nand_release().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/tango_nand.c | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/tango_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index 69e5eb136edc..a45ad30bc095 100644
+index c5bee00b7f5e..69e5eb136edc 100644
 --- a/drivers/mtd/nand/raw/tango_nand.c
 +++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -517,6 +517,24 @@ static int tango_set_timings(struct mtd_info *mtd, int csline,
- 	return 0;
- }
+@@ -591,8 +591,10 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 	tchip->bb_cfg = BB_CFG(mtd->writesize, BBM_SIZE);
  
-+static int tango_attach_chip(struct nand_chip *chip)
-+{
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	ecc->mode = NAND_ECC_HW;
-+	ecc->algo = NAND_ECC_BCH;
-+	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
-+
-+	ecc->read_page_raw = tango_read_page_raw;
-+	ecc->write_page_raw = tango_write_page_raw;
-+	ecc->read_page = tango_read_page;
-+	ecc->write_page = tango_write_page;
-+	ecc->read_oob = tango_read_oob;
-+	ecc->write_oob = tango_write_oob;
-+
-+	return 0;
-+}
-+
- static int chip_init(struct device *dev, struct device_node *np)
- {
- 	u32 cs;
-@@ -566,22 +584,8 @@ static int chip_init(struct device *dev, struct device_node *np)
- 	mtd_set_ooblayout(mtd, &tango_nand_ooblayout_ops);
- 	mtd->dev.parent = dev;
- 
--	err = nand_scan_ident(mtd, 1, NULL);
+ 	err = mtd_device_register(mtd, NULL, 0);
 -	if (err)
--		return err;
--
--	ecc->mode = NAND_ECC_HW;
--	ecc->algo = NAND_ECC_BCH;
--	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
--
--	ecc->read_page_raw = tango_read_page_raw;
--	ecc->write_page_raw = tango_write_page_raw;
--	ecc->read_page = tango_read_page;
--	ecc->write_page = tango_write_page;
--	ecc->read_oob = tango_read_oob;
--	ecc->write_oob = tango_write_oob;
--
--	err = nand_scan_tail(mtd);
-+	chip->ecc.attach_chip = tango_attach_chip;
-+	err = nand_scan(mtd, 1);
- 	if (err)
++	if (err) {
++		nand_release(mtd);
  		return err;
++	}
+ 
+ 	nfc->chips[cs] = tchip;
  
 -- 
 2.14.1
