@@ -8,9 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 47/52] mtd: rawnand: docg4: fix the probe function error path
-Date: Fri,  2 Mar 2018 18:03:55 +0100
-Message-Id: <20180302170400.6712-48-miquel.raynal@bootlin.com>
+Subject: [PATCH 34/52] mtd: rawnand: s3c2410: convert driver to nand_scan()
+Date: Fri,  2 Mar 2018 18:03:42 +0100
+Message-Id: <20180302170400.6712-35-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,76 +22,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() call should trigger a nand_release()
-call. This is rightly handled in the remove function, but not in the
-probe function.
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/docg4.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/s3c2410.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-index 1314aa99b9ab..1d3d5ac24381 100644
---- a/drivers/mtd/nand/raw/docg4.c
-+++ b/drivers/mtd/nand/raw/docg4.c
-@@ -1341,7 +1341,7 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	nand = kzalloc(len, GFP_KERNEL);
- 	if (nand == NULL) {
- 		retval = -ENOMEM;
--		goto fail_unmap;
-+		goto unmap;
- 	}
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index 1bc0458063d8..67cf185ed116 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -915,20 +915,19 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ }
  
- 	mtd = nand_to_mtd(nand);
-@@ -1357,7 +1357,7 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
- 	if (doc->bch == NULL) {
- 		retval = -EINVAL;
--		goto fail;
-+		goto free_nand;
- 	}
+ /**
+- * s3c2410_nand_update_chip - post probe update
+- * @info: The controller instance.
+- * @nmtd: The driver version of the MTD instance.
++ * s3c2410_nand_attach_chip - Init the ECC engine after NAND scan
++ * @chip: The NAND chip
+  *
+- * This routine is called after the chip probe has successfully completed
+- * and the relevant per-chip information updated. This call ensure that
++ * This hook is called by the core after the identification of the NAND chip,
++ * once the relevant per-chip information is up to date.. This call ensure that
+  * we update the internal state accordingly.
+  *
+  * The internal state is currently limited to the ECC state information.
+ */
+-static int s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+-				    struct s3c2410_nand_mtd *nmtd)
++static int s3c2410_nand_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = &nmtd->chip;
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
  
- 	platform_set_drvdata(pdev, doc);
-@@ -1366,30 +1366,32 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	retval = read_id_reg(mtd);
- 	if (retval == -ENODEV) {
- 		dev_warn(dev, "No diskonchip G4 device found.\n");
--		goto fail;
-+		goto free_bch;
- 	}
+ 	switch (chip->ecc.mode) {
  
- 	retval = nand_scan_tail(mtd);
- 	if (retval)
--		goto fail;
-+		goto free_bch;
+@@ -1161,15 +1160,8 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		mtd->dev.parent = &pdev->dev;
+ 		s3c2410_nand_init_chip(info, nmtd, sets);
  
- 	retval = read_factory_bbt(mtd);
- 	if (retval)
--		goto fail;
-+		goto release_nand;
- 
- 	retval = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
- 	if (retval)
--		goto fail;
-+		goto release_nand;
- 
- 	doc->mtd = mtd;
-+
- 	return 0;
- 
--fail:
-+release_nand:
- 	nand_release(mtd); /* deletes partitions and mtd devices */
-+free_bch:
- 	free_bch(doc->bch);
-+free_nand:
- 	kfree(nand);
+-		err = nand_scan_ident(mtd, (sets) ? sets->nr_chips : 1, NULL);
+-		if (err)
+-			goto exit_error;
 -
--fail_unmap:
-+unmap:
- 	iounmap(virtadr);
+-		err = s3c2410_nand_update_chip(info, nmtd);
+-		if (err < 0)
+-			goto exit_error;
+-
+-		err = nand_scan_tail(mtd);
++		nmtd->chip.ecc.attach_chip = s3c2410_nand_attach_chip;
++		err = nand_scan(mtd, sets ? sets->nr_chips : 1);
+ 		if (err)
+ 			goto exit_error;
  
- 	return retval;
 -- 
 2.14.1
