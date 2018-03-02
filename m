@@ -8,9 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 31/52] mtd: rawnand: omap2: fix the probe function error path
-Date: Fri,  2 Mar 2018 18:03:39 +0100
-Message-Id: <20180302170400.6712-32-miquel.raynal@bootlin.com>
+Subject: [PATCH 48/52] mtd: rawnand: docg4: convert driver to nand_scan()
+Date: Fri,  2 Mar 2018 18:03:56 +0100
+Message-Id: <20180302170400.6712-49-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,34 +22,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() call should trigger a nand_release()
-call. This is rightly handled in the remove function, but not in the
-probe function.
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/omap2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/docg4.c | 51 ++++++++++++++++++++++++--------------------
+ 1 file changed, 28 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 8cdf7d3d8fa7..88c43334d777 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -2263,12 +2263,14 @@ static int omap_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+index 1d3d5ac24381..dce040d75af0 100644
+--- a/drivers/mtd/nand/raw/docg4.c
++++ b/drivers/mtd/nand/raw/docg4.c
+@@ -1227,10 +1227,9 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+ 	 * required within a nand driver because they are performed by the nand
+ 	 * infrastructure code as part of nand_scan().  In this case they need
+ 	 * to be initialized here because we skip call to nand_scan_ident() (the
+-	 * first half of nand_scan()).  The call to nand_scan_ident() is skipped
+-	 * because for this device the chip id is not read in the manner of a
+-	 * standard nand device.  Unfortunately, nand_scan_ident() does other
+-	 * things as well, such as call nand_set_defaults().
++	 * first half of nand_scan()).  The call to nand_scan_ident() could be
++	 * skipped because for this device the chip id is not read in the manner
++	 * of a standard nand device.
+ 	 */
  
- 	err = mtd_device_register(mtd, NULL, 0);
- 	if (err)
--		goto return_error;
-+		goto release_nand;
+ 	struct nand_chip *nand = mtd_to_nand(mtd);
+@@ -1315,6 +1314,23 @@ static int __init read_id_reg(struct mtd_info *mtd)
  
- 	platform_set_drvdata(pdev, mtd);
+ static char const *part_probes[] = { "cmdlinepart", "saftlpart", NULL };
  
- 	return 0;
++static int docg4_attach_chip(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct docg4_priv *doc = (struct docg4_priv *)(chip + 1);
++
++	init_mtd_structs(mtd);
++
++	/* Initialize kernel BCH algorithm */
++	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
++	if (!doc->bch)
++		return -EINVAL;
++
++	reset(mtd);
++
++	return read_id_reg(mtd);
++}
++
+ static int __init probe_docg4(struct platform_device *pdev)
+ {
+ 	struct mtd_info *mtd;
+@@ -1350,26 +1366,16 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	mtd->dev.parent = &pdev->dev;
+ 	doc->virtadr = virtadr;
+ 	doc->dev = dev;
+-
+-	init_mtd_structs(mtd);
+-
+-	/* initialize kernel bch algorithm */
+-	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
+-	if (doc->bch == NULL) {
+-		retval = -EINVAL;
+-		goto free_nand;
+-	}
+-
+ 	platform_set_drvdata(pdev, doc);
  
-+release_nand:
-+	nand_release(mtd);
- return_error:
- 	if (!IS_ERR_OR_NULL(info->dma))
- 		dma_release_channel(info->dma);
+-	reset(mtd);
+-	retval = read_id_reg(mtd);
+-	if (retval == -ENODEV) {
+-		dev_warn(dev, "No diskonchip G4 device found.\n");
+-		goto free_bch;
+-	}
+-
+-	retval = nand_scan_tail(mtd);
++	/*
++	 * Asking for 0 chips is useless here but it warns the user that the use
++	 * of the nand_scan() function is a bit abused here because the
++	 * initialization is actually a bit specific and re-handled again in the
++	 * ->attach_chip() hook. It will probably leak some memory though.
++	 */
++	nand->ecc.attach_chip = docg4_attach_chip;
++	retval = nand_scan(mtd, 0);
+ 	if (retval)
+ 		goto free_bch;
+ 
+@@ -1389,7 +1395,6 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	nand_release(mtd); /* deletes partitions and mtd devices */
+ free_bch:
+ 	free_bch(doc->bch);
+-free_nand:
+ 	kfree(nand);
+ unmap:
+ 	iounmap(virtadr);
 -- 
 2.14.1
