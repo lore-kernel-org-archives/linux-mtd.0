@@ -8,9 +8,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
-Date: Fri,  2 Mar 2018 18:03:29 +0100
-Message-Id: <20180302170400.6712-22-miquel.raynal@bootlin.com>
+Subject: [PATCH 51/52] mtd: rawnand: do not export nand_scan_[ident|tail]()
+ anymore
+Date: Fri,  2 Mar 2018 18:03:59 +0100
+Message-Id: <20180302170400.6712-52-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,89 +23,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+Both nand_scan_ident() and nand_scan_tail() helpers used to be called
+directly from controller drivers that needed to tweak some ECC-related
+parameters before nand_scan_tail(). This separation prevented dynamic
+allocations during the phase of NAND identification, which was
+inconvenient.
+
+All controller drivers have been moved to use nand_scan(), in
+conjunction with the chip->ecc.[attach|detach]_chip() hooks that
+actually do the required tweaking sequence between both ident/tail
+calls, allowing programmers to use dynamic allocation as they need all
+across the scanning sequence.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 54 ++++++++++++++++++++++++++++++++--------
+ include/linux/mtd/rawnand.h      | 12 +++------
+ 2 files changed, 48 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-index e69f6ae4c539..fd5dc9d9b0c6 100644
---- a/drivers/mtd/nand/raw/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/jz4780_nand.c
-@@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
- 	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 0d850dbf843d..82d52112907f 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5100,6 +5100,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_onfi_params *p;
++	char *model;
+ 	char id[4];
+ 	int i, ret, val;
+ 
+@@ -5159,7 +5160,14 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 
+ 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+ 	sanitize_string(p->model, sizeof(p->model));
+-	memcpy(chip->parameters.model, p->model, sizeof(p->model));
++	model = kzalloc(sizeof(p->model), GFP_KERNEL);
++	if (!model) {
++		ret = -ENOMEM;
++		goto free_onfi_param_page;
++	}
++
++	memcpy(model, p->model, sizeof(p->model));
++	chip->parameters.model = model;
+ 	if (!mtd->name)
+ 		mtd->name = chip->parameters.model;
+ 
+@@ -5240,6 +5248,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_jedec_params *p;
+ 	struct jedec_ecc_info *ecc;
++	char *model;
+ 	char id[5];
+ 	int i, val, ret;
+ 
+@@ -5290,7 +5299,14 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 
+ 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+ 	sanitize_string(p->model, sizeof(p->model));
+-	memcpy(chip->parameters.model, p->model, sizeof(p->model));
++	model = kzalloc(sizeof(p->model), GFP_KERNEL);
++	if (!p) {
++		ret = -ENOMEM;
++		goto free_jedec_param_page;
++	}
++
++	memcpy(model, p->model, sizeof(p->model));
++	chip->parameters.model = model;
+ 	if (!mtd->name)
+ 		mtd->name = chip->parameters.model;
+ 
+@@ -5858,7 +5874,7 @@ static int nand_dt_init(struct nand_chip *chip)
  }
  
--static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
-+static int jz4780_nand_attach_chip(struct nand_chip *chip)
+ /**
+- * nand_scan_ident - [NAND Interface] Scan for the NAND device
++ * nand_scan_ident - Scan for the NAND device
+  * @mtd: MTD device structure
+  * @maxchips: number of chips to scan for
+  * @table: alternative NAND ID table
+@@ -5866,9 +5882,13 @@ static int nand_dt_init(struct nand_chip *chip)
+  * This is the first phase of the normal nand_scan() function. It reads the
+  * flash ID and sets up MTD fields accordingly.
+  *
++ * This helper used to be called directly from controller drivers that needed
++ * to tweak some ECC-related parameters before nand_scan_tail(). This separation
++ * prevented dynamic allocations during this phase which was unconvenient and
++ * as been banned for the benefit of the ->init_ecc()/cleanup_ecc() hooks.
+  */
+-int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+-		    struct nand_flash_dev *table)
++static int nand_scan_ident(struct mtd_info *mtd, int maxchips,
++			   struct nand_flash_dev *table)
  {
--	struct nand_chip *chip = &nand->chip;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
- 	int eccbytes;
-@@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
- 	switch (chip->ecc.mode) {
- 	case NAND_ECC_HW:
- 		if (!nfc->bch) {
--			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
-+			dev_err(nfc->dev,
-+				"HW BCH selected, but BCH controller not found\n");
- 			return -ENODEV;
- 		}
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+@@ -5942,7 +5962,11 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
  
-@@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
- 		chip->ecc.correct = jz4780_nand_ecc_correct;
- 		/* fall through */
- 	case NAND_ECC_SOFT:
--		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
--			(nfc->bch) ? "hardware BCH" : "software ECC",
--			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
-+		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
-+			 (nfc->bch) ? "hardware BCH" : "software ECC",
-+			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
- 		break;
- 	case NAND_ECC_NONE:
--		dev_info(dev, "not using ECC\n");
-+		dev_info(nfc->dev, "not using ECC\n");
- 		break;
- 	default:
--		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
-+		dev_err(nfc->dev, "ECC mode %d not supported\n",
-+			chip->ecc.mode);
- 		return -EINVAL;
+ 	return 0;
+ }
+-EXPORT_SYMBOL(nand_scan_ident);
++
++static void nand_scan_ident_cleanup(struct nand_chip *chip)
++{
++	kfree(chip->parameters.model);
++}
+ 
+ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+ {
+@@ -6295,14 +6319,14 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
+ }
+ 
+ /**
+- * nand_scan_tail - [NAND Interface] Scan for the NAND device
++ * nand_scan_tail - Scan for the NAND device
+  * @mtd: MTD device structure
+  *
+  * This is the second phase of the normal nand_scan() function. It fills out
+  * all the uninitialized function pointers with the defaults and scans for a
+  * bad block table if appropriate.
+  */
+-int nand_scan_tail(struct mtd_info *mtd)
++static int nand_scan_tail(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+@@ -6626,7 +6650,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(nand_scan_tail);
+ 
+ /*
+  * is_module_text_address() isn't exported, and it's mostly a pointless
+@@ -6661,12 +6684,20 @@ int nand_scan(struct mtd_info *mtd, int maxchips)
+ 	if (chip->ecc.attach_chip) {
+ 		ret = chip->ecc.attach_chip(chip);
+ 		if (ret)
+-			return ret;
++			goto cleanup_ident;
  	}
  
-@@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
- 	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+ 	ret = nand_scan_tail(mtd);
++	if (ret)
++		goto detach_chip;
++
++	return 0;
++
++detach_chip:
+ 	if (ret && chip->ecc.detach_chip)
+ 		chip->ecc.detach_chip(chip);
++cleanup_ident:
++	nand_scan_ident_cleanup(chip);
  
- 	if (eccbytes > mtd->oobsize - 2) {
--		dev_err(dev,
-+		dev_err(nfc->dev,
- 			"invalid ECC config: required %d ECC bytes, but only %d are available",
- 			eccbytes, mtd->oobsize - 2);
- 		return -EINVAL;
-@@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
- 	chip->controller = &nfc->controller;
- 	nand_set_flash_node(chip, np);
+ 	return ret;
+ }
+@@ -6699,6 +6730,9 @@ void nand_cleanup(struct nand_chip *chip)
+ 	/* Free controller specific allocations after chip identification */
+ 	if (chip->ecc.detach_chip)
+ 		chip->ecc.detach_chip(chip);
++
++	/* Free identification phase allocations */
++	nand_scan_ident_cleanup(chip);
+ }
  
--	ret = nand_scan_ident(mtd, 1, NULL);
--	if (ret)
--		return ret;
+ EXPORT_SYMBOL_GPL(nand_cleanup);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 318c73a206fc..9e15256bef2b 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -29,15 +29,11 @@ struct device_node;
+ 
+ /* Scan and identify a NAND device */
+ int nand_scan(struct mtd_info *mtd, int max_chips);
++
+ /*
+- * Separate phases of nand_scan(), allowing board driver to intervene
+- * and override command or ECC setup according to flash type.
++ * Unregister the MTD device and free resources held by the NAND device, must be
++ * called on error after a successful nand_scan().
+  */
+-int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+-			   struct nand_flash_dev *table);
+-int nand_scan_tail(struct mtd_info *mtd);
 -
--	ret = jz4780_nand_init_ecc(nand, dev);
--	if (ret)
--		return ret;
--
--	ret = nand_scan_tail(mtd);
-+	chip->ecc.attach_chip = jz4780_nand_attach_chip;
-+	ret = nand_scan(mtd, 1);
- 	if (ret)
- 		return ret;
+-/* Unregister the MTD device and free resources held by the NAND device */
+ void nand_release(struct mtd_info *mtd);
  
+ /* Internal helper for board drivers which need to override command function */
+@@ -443,7 +439,7 @@ struct onfi_params {
+ 
+ struct nand_parameters {
+ 	/* Generic parameters */
+-	char model[100];
++	const char *model;
+ 	bool supports_set_get_features;
+ 	DECLARE_BITMAP(set_feature_list, ONFI_FEATURE_NUMBER);
+ 	DECLARE_BITMAP(get_feature_list, ONFI_FEATURE_NUMBER);
 -- 
 2.14.1
