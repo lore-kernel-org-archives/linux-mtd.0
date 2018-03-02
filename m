@@ -8,9 +8,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 39/52] mtd: rawnand: tango: fix probe function error path
-Date: Fri,  2 Mar 2018 18:03:47 +0100
-Message-Id: <20180302170400.6712-40-miquel.raynal@bootlin.com>
+Subject: [PATCH 36/52] mtd: rawnand: sh_flctl: fix the probe function error
+ path
+Date: Fri,  2 Mar 2018 18:03:44 +0100
+Message-Id: <20180302170400.6712-37-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,28 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_release().
+An error after nand_scan_tail() call should trigger a nand_release()
+call. This is rightly handled in the remove function, but not in the
+probe function.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/tango_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/sh_flctl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index c5bee00b7f5e..69e5eb136edc 100644
---- a/drivers/mtd/nand/raw/tango_nand.c
-+++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -591,8 +591,10 @@ static int chip_init(struct device *dev, struct device_node *np)
- 	tchip->bb_cfg = BB_CFG(mtd->writesize, BBM_SIZE);
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index d14c26cb59df..67f125d56771 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -1214,9 +1214,13 @@ static int flctl_probe(struct platform_device *pdev)
  
- 	err = mtd_device_register(mtd, NULL, 0);
--	if (err)
-+	if (err) {
-+		nand_release(mtd);
- 		return err;
-+	}
+ 	ret = mtd_device_register(flctl_mtd, flctl->pdata->parts,
+ 				  flctl->pdata->nr_parts);
++	if (ret)
++		goto release_nand;
  
- 	nfc->chips[cs] = tchip;
+ 	return 0;
  
++release_nand:
++	nand_release(flctl_mtd);
+ err_chip:
+ 	flctl_release_dma(flctl);
+ 	pm_runtime_disable(&pdev->dev);
 -- 
 2.14.1
