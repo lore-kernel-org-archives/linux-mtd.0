@@ -8,9 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 30/52] mtd: rawnand: nandsim: convert driver to nand_scan()
-Date: Fri,  2 Mar 2018 18:03:38 +0100
-Message-Id: <20180302170400.6712-31-miquel.raynal@bootlin.com>
+Subject: [PATCH 49/52] mtd: rawnand: qcom: convert driver to nand_scan()
+Date: Fri,  2 Mar 2018 18:03:57 +0100
+Message-Id: <20180302170400.6712-50-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,105 +29,130 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 78 ++++++++++++++++++++++--------------------
- 1 file changed, 41 insertions(+), 37 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 67 ++++++++++++---------------------------
+ 1 file changed, 20 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 44322a363ba5..b3b502c9e9e4 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2192,6 +2192,44 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- 	return;
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index b554fb6e609c..d45b4e50e6a5 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2315,10 +2315,10 @@ static const struct mtd_ooblayout_ops qcom_nand_ooblayout_ops = {
+ 	.free = qcom_nand_ooblayout_free,
+ };
+ 
+-static int qcom_nand_host_setup(struct qcom_nand_host *host)
++static int qcom_nand_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	int cwperpage, bad_block_byte;
+@@ -2623,9 +2623,9 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ 	return 0;
  }
  
-+static int ns_attach_chip(struct nand_chip *chip)
-+{
-+	unsigned int eccsteps, eccbytes;
-+
-+	if (!bch)
-+		return 0;
-+
-+	if (!mtd_nand_has_bch()) {
-+		NS_ERR("BCH ECC support is disabled\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Use 512-byte ecc blocks */
-+	eccsteps = nsmtd->writesize / 512;
-+	eccbytes = ((bch * 13) + 7) / 8;
-+
-+	/* Do not bother supporting small page devices */
-+	if (nsmtd->oobsize < 64 || !eccsteps) {
-+		NS_ERR("BCH not available on small page devices\n");
-+		return -EINVAL;
-+	}
-+
-+	if (((eccbytes * eccsteps) + 2) > nsmtd->oobsize) {
-+		NS_ERR("Invalid BCH value %u\n", bch);
-+		return -EINVAL;
-+	}
-+
-+	chip->ecc.mode = NAND_ECC_SOFT;
-+	chip->ecc.algo = NAND_ECC_BCH;
-+	chip->ecc.size = 512;
-+	chip->ecc.strength = bch;
-+	chip->ecc.bytes = eccbytes;
-+
-+	NS_INFO("Using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
-+
-+	return 0;
-+}
-+
- /*
-  * Module initialization function
-  */
-@@ -2276,44 +2314,10 @@ static int __init ns_init_module(void)
- 	if ((retval = parse_gravepages()) != 0)
- 		goto error;
+-static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+-			       struct qcom_nand_host *host,
+-			       struct device_node *dn)
++static int qcom_nand_host_init_and_register(struct qcom_nand_controller *nandc,
++					    struct qcom_nand_host *host,
++					    struct device_node *dn)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -2672,30 +2672,14 @@ static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+ 	/* set up initial status value */
+ 	host->status = NAND_STATUS_READY | NAND_STATUS_WP;
  
--	retval = nand_scan_ident(nsmtd, 1, NULL);
-+	chip->ecc.attach_chip = ns_attach_chip;
-+	retval = nand_scan(nsmtd, 1);
- 	if (retval) {
--		NS_ERR("cannot scan NAND Simulator device\n");
--		goto error;
--	}
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (ret)
+-		return ret;
 -
--	if (bch) {
--		unsigned int eccsteps, eccbytes;
--		if (!mtd_nand_has_bch()) {
--			NS_ERR("BCH ECC support is disabled\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		/* use 512-byte ecc blocks */
--		eccsteps = nsmtd->writesize/512;
--		eccbytes = (bch*13+7)/8;
--		/* do not bother supporting small page devices */
--		if ((nsmtd->oobsize < 64) || !eccsteps) {
--			NS_ERR("bch not available on small page devices\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
--			NS_ERR("invalid bch value %u\n", bch);
--			retval = -EINVAL;
--			goto error;
--		}
--		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_BCH;
--		chip->ecc.size = 512;
--		chip->ecc.strength = bch;
--		chip->ecc.bytes = eccbytes;
--		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
--	}
+-	ret = qcom_nand_host_setup(host);
 -
--	retval = nand_scan_tail(nsmtd);
--	if (retval) {
--		NS_ERR("can't register NAND Simulator\n");
-+		NS_ERR("Could not scan NAND Simulator device\n");
- 		goto error;
+-	return ret;
+-}
+-
+-static int qcom_nand_mtd_register(struct qcom_nand_controller *nandc,
+-				  struct qcom_nand_host *host,
+-				  struct device_node *dn)
+-{
+-	struct nand_chip *chip = &host->chip;
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	int ret;
+-
+-	ret = nand_scan_tail(mtd);
++	chip->ecc.attach_chip = qcom_nand_attach_chip;
++	ret = nand_scan(mtd, 1);
+ 	if (ret)
+ 		return ret;
+ 
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret)
+-		nand_cleanup(mtd_to_nand(mtd));
++		nand_cleanup(chip);
+ 
+ 	return ret;
+ }
+@@ -2704,9 +2688,19 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ {
+ 	struct device *dev = nandc->dev;
+ 	struct device_node *dn = dev->of_node, *child;
+-	struct qcom_nand_host *host, *tmp;
++	struct qcom_nand_host *host;
+ 	int ret;
+ 
++	if (nandc->props->is_bam) {
++		free_bam_transaction(nandc);
++		nandc->bam_txn = alloc_bam_transaction(nandc);
++		if (!nandc->bam_txn) {
++			dev_err(nandc->dev,
++				"failed to allocate bam transaction\n");
++			return -ENOMEM;
++		}
++	}
++
+ 	for_each_available_child_of_node(dn, child) {
+ 		host = devm_kzalloc(dev, sizeof(*host), GFP_KERNEL);
+ 		if (!host) {
+@@ -2714,7 +2708,7 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 			return -ENOMEM;
+ 		}
+ 
+-		ret = qcom_nand_host_init(nandc, host, child);
++		ret = qcom_nand_host_init_and_register(nandc, host, child);
+ 		if (ret) {
+ 			devm_kfree(dev, host);
+ 			continue;
+@@ -2723,27 +2717,6 @@ static int qcom_probe_nand_devices(struct qcom_nand_controller *nandc)
+ 		list_add_tail(&host->node, &nandc->host_list);
  	}
+ 
+-	if (list_empty(&nandc->host_list))
+-		return -ENODEV;
+-
+-	if (nandc->props->is_bam) {
+-		free_bam_transaction(nandc);
+-		nandc->bam_txn = alloc_bam_transaction(nandc);
+-		if (!nandc->bam_txn) {
+-			dev_err(nandc->dev,
+-				"failed to allocate bam transaction\n");
+-			return -ENOMEM;
+-		}
+-	}
+-
+-	list_for_each_entry_safe(host, tmp, &nandc->host_list, node) {
+-		ret = qcom_nand_mtd_register(nandc, host, child);
+-		if (ret) {
+-			list_del(&host->node);
+-			devm_kfree(dev, host);
+-		}
+-	}
+-
+ 	if (list_empty(&nandc->host_list))
+ 		return -ENODEV;
  
 -- 
 2.14.1
