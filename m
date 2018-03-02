@@ -8,10 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 35/52] mtd: rawnand: sh_flctl: move all NAND chip related
- setup in one function
-Date: Fri,  2 Mar 2018 18:03:43 +0100
-Message-Id: <20180302170400.6712-36-miquel.raynal@bootlin.com>
+Subject: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
+Date: Fri,  2 Mar 2018 18:03:29 +0100
+Message-Id: <20180302170400.6712-22-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,121 +22,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Prepare the conversion of the sh_flctl driver to nand_scan() by moving
-all the configuration that must be made after nand_scan_ident() in one
-single function. Create a pdata entry in the controller structure for
-that.
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sh_flctl.c | 38 +++++++++++++++++++-------------------
- include/linux/mtd/sh_flctl.h    |  1 +
- 2 files changed, 20 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 9eb3cf9db111..d14c26cb59df 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1007,6 +1007,16 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
- 	struct nand_chip *chip = &flctl->chip;
+diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+index e69f6ae4c539..fd5dc9d9b0c6 100644
+--- a/drivers/mtd/nand/raw/jz4780_nand.c
++++ b/drivers/mtd/nand/raw/jz4780_nand.c
+@@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
+ 	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+ }
  
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		/*
-+		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
-+		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
-+		 * flctl->flcmncr_base to pdata->flcmncr_val.
-+		 */
-+		flctl->pdata->flcmncr_val |= SEL_16BIT;
-+		flctl->flcmncr_base = flctl->pdata->flcmncr_val;
-+	}
-+
- 	if (mtd->writesize == 512) {
- 		flctl->page_size = 0;
- 		if (chip->chipsize > (32 << 20)) {
-@@ -1122,7 +1132,6 @@ static int flctl_probe(struct platform_device *pdev)
- 	struct sh_flctl *flctl;
- 	struct mtd_info *flctl_mtd;
- 	struct nand_chip *nand;
--	struct sh_flctl_platform_data *pdata;
- 	int ret;
- 	int irq;
+-static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
++static int jz4780_nand_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = &nand->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+ 	int eccbytes;
+@@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	switch (chip->ecc.mode) {
+ 	case NAND_ECC_HW:
+ 		if (!nfc->bch) {
+-			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
++			dev_err(nfc->dev,
++				"HW BCH selected, but BCH controller not found\n");
+ 			return -ENODEV;
+ 		}
  
-@@ -1150,11 +1159,11 @@ static int flctl_probe(struct platform_device *pdev)
- 	}
- 
- 	if (pdev->dev.of_node)
--		pdata = flctl_parse_dt(&pdev->dev);
-+		flctl->pdata = flctl_parse_dt(&pdev->dev);
- 	else
--		pdata = dev_get_platdata(&pdev->dev);
-+		flctl->pdata = dev_get_platdata(&pdev->dev);
- 
--	if (!pdata) {
-+	if (!flctl->pdata) {
- 		dev_err(&pdev->dev, "no setup data defined\n");
+@@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		chip->ecc.correct = jz4780_nand_ecc_correct;
+ 		/* fall through */
+ 	case NAND_ECC_SOFT:
+-		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+-			(nfc->bch) ? "hardware BCH" : "software ECC",
+-			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
++		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
++			 (nfc->bch) ? "hardware BCH" : "software ECC",
++			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+ 		break;
+ 	case NAND_ECC_NONE:
+-		dev_info(dev, "not using ECC\n");
++		dev_info(nfc->dev, "not using ECC\n");
+ 		break;
+ 	default:
+-		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
++		dev_err(nfc->dev, "ECC mode %d not supported\n",
++			chip->ecc.mode);
  		return -EINVAL;
  	}
-@@ -1165,9 +1174,9 @@ static int flctl_probe(struct platform_device *pdev)
- 	nand_set_flash_node(nand, pdev->dev.of_node);
- 	flctl_mtd->dev.parent = &pdev->dev;
- 	flctl->pdev = pdev;
--	flctl->hwecc = pdata->has_hwecc;
--	flctl->holden = pdata->use_holden;
--	flctl->flcmncr_base = pdata->flcmncr_val;
-+	flctl->hwecc = flctl->pdata->has_hwecc;
-+	flctl->holden = flctl->pdata->use_holden;
-+	flctl->flcmncr_base = flctl->pdata->flcmncr_val;
- 	flctl->flintdmacr_base = flctl->hwecc ? (STERINTE | ECERB) : STERINTE;
  
- 	/* Set address of hardware control function */
-@@ -1183,7 +1192,7 @@ static int flctl_probe(struct platform_device *pdev)
- 	nand->set_features = nand_get_set_features_notsupp;
- 	nand->get_features = nand_get_set_features_notsupp;
+@@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
  
--	if (pdata->flcmncr_val & SEL_16BIT)
-+	if (flctl->pdata->flcmncr_val & SEL_16BIT)
- 		nand->options |= NAND_BUSWIDTH_16;
+ 	if (eccbytes > mtd->oobsize - 2) {
+-		dev_err(dev,
++		dev_err(nfc->dev,
+ 			"invalid ECC config: required %d ECC bytes, but only %d are available",
+ 			eccbytes, mtd->oobsize - 2);
+ 		return -EINVAL;
+@@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 	chip->controller = &nfc->controller;
+ 	nand_set_flash_node(chip, np);
  
- 	pm_runtime_enable(&pdev->dev);
-@@ -1195,16 +1204,6 @@ static int flctl_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_chip;
- 
--	if (nand->options & NAND_BUSWIDTH_16) {
--		/*
--		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
--		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
--		 * flctl->flcmncr_base to pdata->flcmncr_val.
--		 */
--		pdata->flcmncr_val |= SEL_16BIT;
--		flctl->flcmncr_base = pdata->flcmncr_val;
--	}
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (ret)
+-		return ret;
 -
- 	ret = flctl_chip_init_tail(flctl_mtd);
+-	ret = jz4780_nand_init_ecc(nand, dev);
+-	if (ret)
+-		return ret;
+-
+-	ret = nand_scan_tail(mtd);
++	chip->ecc.attach_chip = jz4780_nand_attach_chip;
++	ret = nand_scan(mtd, 1);
  	if (ret)
- 		goto err_chip;
-@@ -1213,7 +1212,8 @@ static int flctl_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_chip;
+ 		return ret;
  
--	ret = mtd_device_register(flctl_mtd, pdata->parts, pdata->nr_parts);
-+	ret = mtd_device_register(flctl_mtd, flctl->pdata->parts,
-+				  flctl->pdata->nr_parts);
- 
- 	return 0;
- 
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index c759d403cbc0..c9f486c6c019 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -148,6 +148,7 @@ struct sh_flctl {
- 	struct dev_pm_qos_request pm_qos;
- 	void __iomem		*reg;
- 	resource_size_t		fifo;
-+	struct sh_flctl_platform_data *pdata;
- 
- 	uint8_t	done_buff[2048 + 64];	/* max size 2048 + 64 */
- 	int	read_bytes;
 -- 
 2.14.1
