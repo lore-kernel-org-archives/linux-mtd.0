@@ -8,9 +8,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Harvey Hunt <harveyhuntnexus@gmail.com>, Stefan Agner <stefan@agner.ch>
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 20/52] mtd: rawnand: hisi504: convert driver to nand_scan()
-Date: Fri,  2 Mar 2018 18:03:28 +0100
-Message-Id: <20180302170400.6712-21-miquel.raynal@bootlin.com>
+Subject: [PATCH 14/52] mtd: rawnand: fsl_ifc: fix probe function error path
+Date: Fri,  2 Mar 2018 18:03:22 +0100
+Message-Id: <20180302170400.6712-15-miquel.raynal@bootlin.com>
 In-Reply-To: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,112 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+An error after nand_scan_tail() should trigger a nand_release().
+The helper mtd_device_parse_register() returns an error code that should
+be checked and nand_release() called accordingly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/hisi504_nand.c | 74 ++++++++++++++++++++-----------------
- 1 file changed, 40 insertions(+), 34 deletions(-)
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-index 3c64a6281b54..94d02539d150 100644
---- a/drivers/mtd/nand/raw/hisi504_nand.c
-+++ b/drivers/mtd/nand/raw/hisi504_nand.c
-@@ -709,9 +709,46 @@ static int hisi_nfc_ecc_probe(struct hinfc_host *host)
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 7bcd95ff38c9..f9c042d69b1c 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -1065,12 +1065,16 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+ 
+ 	/* First look for RedBoot table or partitions on the command
+ 	 * line, these take precedence over device tree information */
+-	mtd_device_parse_register(mtd, part_probe_types, NULL, NULL, 0);
++	ret = mtd_device_parse_register(mtd, part_probe_types, NULL, NULL, 0);
++	if (ret)
++		goto release_nand;
+ 
+ 	dev_info(priv->dev, "IFC NAND device at 0x%llx, bank %d\n",
+ 		 (unsigned long long)res.start, priv->bank);
  	return 0;
- }
  
-+static int hisi_nfc_attach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct hinfc_host *host = nand_get_controller_data(chip);
-+	int flag;
-+
-+	host->buffer = dmam_alloc_coherent(host->dev,
-+					   mtd->writesize + mtd->oobsize,
-+					   &host->dma_buffer, GFP_KERNEL);
-+	if (!host->buffer)
-+		return -ENOMEM;
-+
-+	host->dma_oob = host->dma_buffer + mtd->writesize;
-+	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
-+
-+	flag = hinfc_read(host, HINFC504_CON);
-+	flag &= ~(HINFC504_CON_PAGESIZE_MASK << HINFC504_CON_PAGEISZE_SHIFT);
-+	switch (mtd->writesize) {
-+	case 2048:
-+		flag |= (0x001 << HINFC504_CON_PAGEISZE_SHIFT);
-+		break;
-+	/*
-+	 * TODO: add more pagesize support,
-+	 * default pagesize has been set in hisi_nfc_host_init
-+	 */
-+	default:
-+		dev_err(host->dev, "NON-2KB page size nand flash\n");
-+		return -EINVAL;
-+	}
-+	hinfc_write(host, flag, HINFC504_CON);
-+
-+	if (chip->ecc.mode == NAND_ECC_HW)
-+		hisi_nfc_ecc_probe(host);
-+
-+	return 0;
-+}
-+
- static int hisi_nfc_probe(struct platform_device *pdev)
- {
--	int ret = 0, irq, flag, max_chips = HINFC504_MAX_CHIP;
-+	int ret = 0, irq, max_chips = HINFC504_MAX_CHIP;
- 	struct device *dev = &pdev->dev;
- 	struct hinfc_host *host;
- 	struct nand_chip  *chip;
-@@ -769,42 +806,11 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = nand_scan_ident(mtd, max_chips, NULL);
-+	chip->ecc.attach_chip = hisi_nfc_attach_chip;
-+	ret = nand_scan(mtd, max_chips);
- 	if (ret)
- 		return ret;
- 
--	host->buffer = dmam_alloc_coherent(dev, mtd->writesize + mtd->oobsize,
--		&host->dma_buffer, GFP_KERNEL);
--	if (!host->buffer)
--		return -ENOMEM;
--
--	host->dma_oob = host->dma_buffer + mtd->writesize;
--	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
--
--	flag = hinfc_read(host, HINFC504_CON);
--	flag &= ~(HINFC504_CON_PAGESIZE_MASK << HINFC504_CON_PAGEISZE_SHIFT);
--	switch (mtd->writesize) {
--	case 2048:
--		flag |= (0x001 << HINFC504_CON_PAGEISZE_SHIFT); break;
--	/*
--	 * TODO: add more pagesize support,
--	 * default pagesize has been set in hisi_nfc_host_init
--	 */
--	default:
--		dev_err(dev, "NON-2KB page size nand flash\n");
--		return -EINVAL;
--	}
--	hinfc_write(host, flag, HINFC504_CON);
--
--	if (chip->ecc.mode == NAND_ECC_HW)
--		hisi_nfc_ecc_probe(host);
--
--	ret = nand_scan_tail(mtd);
--	if (ret) {
--		dev_err(dev, "nand_scan_tail failed: %d\n", ret);
--		return ret;
--	}
--
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "Err MTD partition=%d\n", ret);
++release_nand:
++	nand_release(mtd);
+ err:
+ 	fsl_ifc_chip_remove(priv);
+ 	return ret;
 -- 
 2.14.1
