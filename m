@@ -1,24 +1,16 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1es4ZY-00053V-UE
- for linux-mtd@lists.infradead.org; Sat, 03 Mar 2018 10:39:27 +0000
+ id 1es4eo-0007ug-8V
+ for linux-mtd@lists.infradead.org; Sat, 03 Mar 2018 10:44:51 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, linux-mtd@lists.infradead.org,
- Koen Vandeputte <koen.vandeputte@ncentric.com>,
- Scott Bowman <wbowma01@harris.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: Does modern UBI/UBIFS still suffer from the 'unstable bits issue'?
-Date: Sat, 03 Mar 2018 11:40:31 +0100
-Message-ID: <3359334.BzATs06viZ@blindfold>
-In-Reply-To: <CAJ+vNU3JhZRFfh-GC+SDXe0ynQadt1Yup4vLFfGuzRy_c5a8QQ@mail.gmail.com>
-References: <CAJ+vNU0O4uBHzd2h0Nbjbm8fp+9e2UEiqHEZ6A5RZHjLsArAPw@mail.gmail.com>
- <4813843.hImRYGMsqb@blindfold>
- <CAJ+vNU3JhZRFfh-GC+SDXe0ynQadt1Yup4vLFfGuzRy_c5a8QQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, cyrille.pitchen@wedev4u.fr,
+ marek.vasut@gmail.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ dedekind1@gmail.com, tharvey@gateworks.com, stable@vger.kernel.org
+Subject: [PATCH] ubi: Reject MLC NAND
+Date: Sat,  3 Mar 2018 11:45:54 +0100
+Message-Id: <20180303104554.5958-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tim,
+While UBI and UBIFS seem to work at first sight with MLC NAND, you will
+most likely lose all your data upon a power-cut or due to read/write
+disturb.
+In order to protect users from bad surprises, refuse to attach to MLC
+NAND.
 
-Am Freitag, 2. M=E4rz 2018, 17:20:57 CET schrieb Tim Harvey:
-> > Just to be sure, this is SLC NAND, right?
->=20
-> No, its a MT29F16G08 16GB MLC
+Cc: stable@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ drivers/mtd/ubi/build.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Sorry, MLC NAND is not supported by UBI and UBIFS [0].
-
-The ECC errors you are facing are most likely caused by paired pages.
-On MLC NAND, pages come in pairs. If a write operation is interrupted, not=
-=20
-only the current page is corrupted like on SLC, also the already written=20
-paired page is lost too.
-Boris Brezillon and I spent a lot of time in addressing this problem but ca=
-me=20
-to no good solution after all.
-Well, we had a solution but it needs a lot of testing and fine tuning, sadl=
-y=20
-we run out of budget.
-Beside of that, read and write disturb are also an important factor, this c=
-an=20
-be addressed with the experimental ubihealthd.
-
-Thanks,
-//richard
-
-[0] http://linux-mtd.infradead.org/doc/ubifs.html#L_ubifs_mlc
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index e941395de3ae..753494e042d5 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -854,6 +854,17 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
+ 		return -EINVAL;
+ 	}
+ 
++	/*
++	 * Both UBI and UBIFS have been designed for SLC NAND and NOR flashes.
++	 * MLC NAND is different and needs special care, otherwise UBI or UBIFS
++	 * will die soon and you will lose all your data.
++	 */
++	if (mtd->type == MTD_MLCNANDFLASH) {
++		pr_err("ubi: refuse attaching mtd%d - MLC NAND is not supported\n",
++			mtd->index);
++		return -EINVAL;
++	}
++
+ 	if (ubi_num == UBI_DEV_NUM_AUTO) {
+ 		/* Search for an empty slot in the @ubi_devices array */
+ 		for (ubi_num = 0; ubi_num < UBI_MAX_DEVICES; ubi_num++)
+-- 
+2.13.6
