@@ -1,16 +1,23 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1es4eo-0007ug-8V
- for linux-mtd@lists.infradead.org; Sat, 03 Mar 2018 10:44:51 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, cyrille.pitchen@wedev4u.fr,
- marek.vasut@gmail.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
- dedekind1@gmail.com, tharvey@gateworks.com, stable@vger.kernel.org
-Subject: [PATCH] ubi: Reject MLC NAND
-Date: Sat,  3 Mar 2018 11:45:54 +0100
-Message-Id: <20180303104554.5958-1-richard@nod.at>
+ id 1es7km-000203-HX
+ for linux-mtd@lists.infradead.org; Sat, 03 Mar 2018 14:03:14 +0000
+Received: by mail-pl0-x244.google.com with SMTP id bb3-v6so7299869plb.2
+ for <linux-mtd@lists.infradead.org>; Sat, 03 Mar 2018 06:03:00 -0800 (PST)
+Date: Sat, 3 Mar 2018 19:32:33 +0530
+From: Arushi Singhal <arushisinghal19971997@gmail.com>
+To: boris.brezillon@free-electrons.com
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ outreachy-kernel@googlegroups.com
+Subject: [PATCH] mtd: nand: Added spaces around ('=' and '<')
+Message-ID: <20180303140233.GA9634@seema-Inspiron-15-3567>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While UBI and UBIFS seem to work at first sight with MLC NAND, you will
-most likely lose all your data upon a power-cut or due to read/write
-disturb.
-In order to protect users from bad surprises, refuse to attach to MLC
-NAND.
+Add spaces around ('=' and '<'),  to conform to the Linux
+kernel coding style. Issue found using checkpatch.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 ---
- drivers/mtd/ubi/build.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/mtd/nand/ams-delta.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index e941395de3ae..753494e042d5 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -854,6 +854,17 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 		return -EINVAL;
- 	}
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index d60ada4..9de6572 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -94,7 +94,7 @@ static void ams_delta_write_buf(struct mtd_info *mtd, const u_char *buf,
+ {
+ 	int i;
  
-+	/*
-+	 * Both UBI and UBIFS have been designed for SLC NAND and NOR flashes.
-+	 * MLC NAND is different and needs special care, otherwise UBI or UBIFS
-+	 * will die soon and you will lose all your data.
-+	 */
-+	if (mtd->type == MTD_MLCNANDFLASH) {
-+		pr_err("ubi: refuse attaching mtd%d - MLC NAND is not supported\n",
-+			mtd->index);
-+		return -EINVAL;
-+	}
-+
- 	if (ubi_num == UBI_DEV_NUM_AUTO) {
- 		/* Search for an empty slot in the @ubi_devices array */
- 		for (ubi_num = 0; ubi_num < UBI_MAX_DEVICES; ubi_num++)
+-	for (i=0; i<len; i++)
++	for (i = 0; i < len; i++)
+ 		ams_delta_write_byte(mtd, buf[i]);
+ }
+ 
+@@ -102,7 +102,7 @@ static void ams_delta_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ {
+ 	int i;
+ 
+-	for (i=0; i<len; i++)
++	for (i = 0; i < len; i++)
+ 		buf[i] = ams_delta_read_byte(mtd);
+ }
+ 
 -- 
-2.13.6
+2.7.4
