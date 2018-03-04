@@ -1,21 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1esPl2-0001pU-7w
- for linux-mtd@lists.infradead.org; Sun, 04 Mar 2018 09:16:42 +0000
-Date: Sun, 4 Mar 2018 10:16:25 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr,
- richard@nod.at, linux-mtd@lists.infradead.org, David Oberhollenzer
- <david.oberhollenzer@sigma-star.at>
-Subject: Re: [PATCH mtd-utils] mtd: tests: check erase block count in page test
-Message-ID: <20180304101625.4cb2bdc5@bbrezillon>
-In-Reply-To: <20180303223946.18636-1-stefan@agner.ch>
-References: <20180303223946.18636-1-stefan@agner.ch>
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1esWve-0004zH-JH
+ for linux-mtd@lists.infradead.org; Sun, 04 Mar 2018 16:56:08 +0000
+Subject: Re: [PATCH] mtd: spi-nor: Remove unneeded driver.bus assignment
+To: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+References: <20180214124625.30765-1-boris.brezillon@bootlin.com>
+ <d5224efa-bea9-66f7-689d-534607a4cb3b@nxp.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <c9eadf9d-acde-18ca-9a0d-bffef33d4d91@wedev4u.fr>
+Date: Sun, 4 Mar 2018 17:55:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <d5224efa-bea9-66f7-689d-534607a4cb3b@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+David who maintains mtd-utils.
-
-On Sat,  3 Mar 2018 23:39:46 +0100
-Stefan Agner <stefan@agner.ch> wrote:
-
-> When there is only a single erase block, the cross erase test
-> does not report sensible errors. Warn in case there is only
-> a single erase block instead of executing the test.
+Le 14/02/2018 à 17:09, Han Xu a écrit :
 > 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  tests/mtd-tests/nandpagetest.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
-> index c6812df..115cedb 100644
-> --- a/tests/mtd-tests/nandpagetest.c
-> +++ b/tests/mtd-tests/nandpagetest.c
-> @@ -551,8 +551,12 @@ int main(int argc, char **argv)
->  	}
->  	printf("verified %u eraseblocks\n", i);
->  
-> -	if (crosstest())
-> -		goto out;
-> +	if (ebcnt > 1) {
-> +		if (crosstest())
-> +			goto out;
-> +	} else {
-> +		printf("skipping erasecrosstest, 2 erase blocks needed\n");
-> +	}
->  
->  	if (erasecrosstest())
->  		goto out;
+> On 02/14/2018 06:46 AM, Boris Brezillon wrote:
+>> platform_driver_register() takes care of assigning driver->bus
+>> to &platform_bus_type, no need to explicitly assign it in the driver.
+>>
+>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
+Applied to the spi-nor/next branch of linux-mtd
 
+Thanks!
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>> ---
+>>   drivers/mtd/spi-nor/fsl-quadspi.c | 1 -
+>>   1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> index 2901c7bd9e30..dc9914fce296 100644
+>> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> @@ -1174,7 +1174,6 @@ static int fsl_qspi_resume(struct platform_device *pdev)
+>>   static struct platform_driver fsl_qspi_driver = {
+>>   	.driver = {
+>>   		.name	= "fsl-quadspi",
+>> -		.bus	= &platform_bus_type,
+>>   		.of_match_table = fsl_qspi_dt_ids,
+>>   	},
+>>   	.probe          = fsl_qspi_probe,
+> Acked-by: Han Xu <han.xu@nxp.com>
+> 
