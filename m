@@ -1,22 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1esZah-0000wC-Tn
- for linux-mtd@lists.infradead.org; Sun, 04 Mar 2018 19:46:42 +0000
-Date: Sun, 4 Mar 2018 20:46:25 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com, tharvey@gateworks.com,
- stable@vger.kernel.org
-Subject: Re: [PATCH] ubi: Reject MLC NAND
-Message-ID: <20180304204625.5f7da30f@bbrezillon>
-In-Reply-To: <20180303104554.5958-1-richard@nod.at>
-References: <20180303104554.5958-1-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1esZtl-00083L-6e
+ for linux-mtd@lists.infradead.org; Sun, 04 Mar 2018 20:06:23 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: han.xu@nxp.com,
+	boris.brezillon@free-electrons.com
+Cc: marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
+ strength
+Date: Sun,  4 Mar 2018 21:06:01 +0100
+Message-Id: <20180304200602.11475-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +22,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat,  3 Mar 2018 11:45:54 +0100
-Richard Weinberger <richard@nod.at> wrote:
+Add support for specified ECC strength/size using device tree
+properties nand-ecc-strength/nand-ecc-step-size.
 
-> While UBI and UBIFS seem to work at first sight with MLC NAND, you will
-> most likely lose all your data upon a power-cut or due to read/write
-> disturb.
-> In order to protect users from bad surprises, refuse to attach to MLC
-> NAND.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
->  drivers/mtd/ubi/build.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-> index e941395de3ae..753494e042d5 100644
-> --- a/drivers/mtd/ubi/build.c
-> +++ b/drivers/mtd/ubi/build.c
-> @@ -854,6 +854,17 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
->  		return -EINVAL;
->  	}
->  
-> +	/*
-> +	 * Both UBI and UBIFS have been designed for SLC NAND and NOR flashes.
-> +	 * MLC NAND is different and needs special care, otherwise UBI or UBIFS
-> +	 * will die soon and you will lose all your data.
-> +	 */
-> +	if (mtd->type == MTD_MLCNANDFLASH) {
-> +		pr_err("ubi: refuse attaching mtd%d - MLC NAND is not supported\n",
-> +			mtd->index);
-> +		return -EINVAL;
-> +	}
-> +
->  	if (ubi_num == UBI_DEV_NUM_AUTO) {
->  		/* Search for an empty slot in the @ubi_devices array */
->  		for (ubi_num = 0; ubi_num < UBI_MAX_DEVICES; ubi_num++)
-
-
-
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index 61fdd733492f..d04754289c03 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -198,17 +198,16 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+  *
+  * We may have available oob space in this case.
+  */
+-static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
++static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
++				    unsigned int ecc_strength,
++				    unsigned int ecc_step)
+ {
+ 	struct bch_geometry *geo = &this->bch_geometry;
+ 	struct nand_chip *chip = &this->nand;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	unsigned int block_mark_bit_offset;
+ 
+-	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+-		return -EINVAL;
+-
+-	switch (chip->ecc_step_ds) {
++	switch (ecc_step) {
+ 	case SZ_512:
+ 		geo->gf_len = 13;
+ 		break;
+@@ -221,8 +220,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 			chip->ecc_strength_ds, chip->ecc_step_ds);
+ 		return -EINVAL;
+ 	}
+-	geo->ecc_chunk_size = chip->ecc_step_ds;
+-	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
++	geo->ecc_chunk_size = ecc_step;
++	geo->ecc_strength = round_up(ecc_strength, 2);
+ 	if (!gpmi_check_ecc(this))
+ 		return -EINVAL;
+ 
+@@ -230,7 +229,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+ 	if (geo->ecc_chunk_size < mtd->oobsize) {
+ 		dev_err(this->dev,
+ 			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+-			chip->ecc_step_ds, mtd->oobsize);
++			ecc_step, mtd->oobsize);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -423,9 +422,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+ 
+ int common_nfc_set_geometry(struct gpmi_nand_data *this)
+ {
++	struct nand_chip *chip = &this->nand;
++
++	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
++		return set_geometry_by_ecc_info(this, chip->ecc.strength,
++						chip->ecc.size);
++
+ 	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+-				|| legacy_set_geometry(this))
+-		return set_geometry_by_ecc_info(this);
++				|| legacy_set_geometry(this)) {
++		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
++			return -EINVAL;
++
++		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
++						chip->ecc_step_ds);
++	}
+ 
+ 	return 0;
+ }
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.16.2
