@@ -1,27 +1,31 @@
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1estYh-0008BI-Pl
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2018 17:05:58 +0000
-Received: by mail-wr0-x229.google.com with SMTP id v111so18047184wrb.3
- for <linux-mtd@lists.infradead.org>; Mon, 05 Mar 2018 09:05:45 -0800 (PST)
+Date: Mon, 5 Mar 2018 18:46:15 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Eric Miao <eric.y.miao@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ Antoine Tenart <antoine.tenart@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Gregory Clement <gregory.clement@bootlin.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-arm-kernel
+ <linux-arm-kernel-bounces@lists.infradead.org>
+Subject: Re: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
+Message-ID: <20180305184615.0a2d6628@bbrezillon>
+In-Reply-To: <87606f7cdh.fsf@belgarion.home>
+References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
+ <20180219223557.2458-6-miquel.raynal@bootlin.com>
+ <20180222104618.1ff78b52@bbrezillon>
+ <87efl66vow.fsf@belgarion.home>
+ <20180227214245.4267448e@bbrezillon>
+ <20180301100446.0f61aaf9@xps13>
+ <20180301175732.3be789fb@bbrezillon>
+ <87606f7cdh.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <3359334.BzATs06viZ@blindfold>
-References: <CAJ+vNU0O4uBHzd2h0Nbjbm8fp+9e2UEiqHEZ6A5RZHjLsArAPw@mail.gmail.com>
- <4813843.hImRYGMsqb@blindfold>
- <CAJ+vNU3JhZRFfh-GC+SDXe0ynQadt1Yup4vLFfGuzRy_c5a8QQ@mail.gmail.com>
- <3359334.BzATs06viZ@blindfold>
-From: Tim Harvey <tharvey@gateworks.com>
-Date: Mon, 5 Mar 2018 09:05:42 -0800
-Message-ID: <CAJ+vNU0r19m7XhsAukH1iLnGUYBnoMUX32F24k3bxKRrXrXz=Q@mail.gmail.com>
-Subject: Re: Does modern UBI/UBIFS still suffer from the 'unstable bits issue'?
-To: Richard Weinberger <richard@nod.at>, Han Xu <xhnjupt@gmail.com>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- linux-mtd@lists.infradead.org, Koen Vandeputte <koen.vandeputte@ncentric.com>,
- Scott Bowman <wbowma01@harris.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +35,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 3, 2018 at 2:40 AM, Richard Weinberger <richard@nod.at> wrote:
-> Tim,
->
-> Am Freitag, 2. M=C3=A4rz 2018, 17:20:57 CET schrieb Tim Harvey:
->> > Just to be sure, this is SLC NAND, right?
->>
->> No, its a MT29F16G08 16GB MLC
->
-> Sorry, MLC NAND is not supported by UBI and UBIFS [0].
->
-> The ECC errors you are facing are most likely caused by paired pages.
-> On MLC NAND, pages come in pairs. If a write operation is interrupted, no=
-t
-> only the current page is corrupted like on SLC, also the already written
-> paired page is lost too.
-> Boris Brezillon and I spent a lot of time in addressing this problem but =
-came
-> to no good solution after all.
-> Well, we had a solution but it needs a lot of testing and fine tuning, sa=
-dly
-> we run out of budget.
-> Beside of that, read and write disturb are also an important factor, this=
- can
-> be addressed with the experimental ubihealthd.
->
+On Thu, 01 Mar 2018 21:46:18 +0100
+Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-Richard,
+> Boris Brezillon <boris.brezillon@bootlin.com> writes:
+> 
+> > On Thu, 1 Mar 2018 10:04:46 +0100
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > I guess Miquel meant squash it into the commit introducing the
+> > regression ("mtd: nand: remove useless fields from pxa3xx NAND platform
+> > data"), and I agree, if you haven't pulled the branch yet, I'd prefer to
+> > create a new one addressing the issue. I could also add your Acked-by
+> > at the same time ;-).  
+> Lucky you, I was going to pull this Saturday, you still can make that change.
 
-My mistake - it is the  MT29F2G08ABAEAH4 being used here which is SLC not M=
-LC.
+Here is the new PR:
 
-So I suppose perhaps we could be running into the issue Han Xu pointed out.
+The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
 
-Regards,
+  Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
 
-Tim
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/nand/pxa3xx-removal
+
+for you to fetch changes up to 048a4663a2a4b1b784f1c284d30873901148f009:
+
+  MAINTAINERS: remove entry for deleted pxa3xx_nand driver (2018-03-02 22:46:39 +0100)
+
+----------------------------------------------------------------
+Remove the pxa3xx_nand driver (replaced by marvell_nand).
+
+----------------------------------------------------------------
+Miquel Raynal (6):
+      mtd: nand: use Marvell reworked NAND controller driver with all platforms
+      mtd: nand: remove deprecated pxa3xx_nand driver
+      mtd: nand: remove useless fields from pxa3xx NAND platform data
+      dt-bindings: mtd: remove pxa3xx NAND controller documentation
+      arm: dts: pxa: use reworked NAND controller driver
+      MAINTAINERS: remove entry for deleted pxa3xx_nand driver
+
+ Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt |   50 -
+ MAINTAINERS                                           |    6 -
+ arch/arm/boot/dts/pxa3xx.dtsi                         |    6 +-
+ arch/arm/configs/cm_x300_defconfig                    |    2 +-
+ arch/arm/configs/pxa3xx_defconfig                     |    3 +-
+ arch/arm/configs/pxa_defconfig                        |    2 +-
+ arch/arm/configs/raumfeld_defconfig                   |    2 +-
+ arch/arm/mach-mmp/aspenite.c                          |    6 +-
+ arch/arm/mach-mmp/ttc_dkb.c                           |    9 +-
+ arch/arm/mach-pxa/cm-x300.c                           |    8 +-
+ arch/arm/mach-pxa/colibri-pxa3xx.c                    |    8 +-
+ arch/arm/mach-pxa/colibri.h                           |    2 +-
+ arch/arm/mach-pxa/littleton.c                         |   10 +-
+ arch/arm/mach-pxa/mxm8x10.c                           |   10 +-
+ arch/arm/mach-pxa/raumfeld.c                          |    6 +-
+ arch/arm/mach-pxa/zylonite.c                          |   10 +-
+ drivers/mtd/nand/Kconfig                              |   11 -
+ drivers/mtd/nand/Makefile                             |    1 -
+ drivers/mtd/nand/marvell_nand.c                       |    3 +-
+ drivers/mtd/nand/pxa3xx_nand.c                        | 2105 ------------------------------------------
+ include/linux/platform_data/mtd-nand-pxa3xx.h         |   43 +-
+ 21 files changed, 46 insertions(+), 2257 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
+ delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
