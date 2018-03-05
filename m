@@ -1,22 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1essyE-0007an-NP
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2018 16:28:16 +0000
-Date: Mon, 5 Mar 2018 17:28:02 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v6 1/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
-Message-ID: <20180305172802.5f69879a@bbrezillon>
-In-Reply-To: <20180303222237.902-2-stefan@agner.ch>
-References: <20180303222237.902-1-stefan@agner.ch>
- <20180303222237.902-2-stefan@agner.ch>
+Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1estYh-0008BI-Pl
+ for linux-mtd@lists.infradead.org; Mon, 05 Mar 2018 17:05:58 +0000
+Received: by mail-wr0-x229.google.com with SMTP id v111so18047184wrb.3
+ for <linux-mtd@lists.infradead.org>; Mon, 05 Mar 2018 09:05:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3359334.BzATs06viZ@blindfold>
+References: <CAJ+vNU0O4uBHzd2h0Nbjbm8fp+9e2UEiqHEZ6A5RZHjLsArAPw@mail.gmail.com>
+ <4813843.hImRYGMsqb@blindfold>
+ <CAJ+vNU3JhZRFfh-GC+SDXe0ynQadt1Yup4vLFfGuzRy_c5a8QQ@mail.gmail.com>
+ <3359334.BzATs06viZ@blindfold>
+From: Tim Harvey <tharvey@gateworks.com>
+Date: Mon, 5 Mar 2018 09:05:42 -0800
+Message-ID: <CAJ+vNU0r19m7XhsAukH1iLnGUYBnoMUX32F24k3bxKRrXrXz=Q@mail.gmail.com>
+Subject: Re: Does modern UBI/UBIFS still suffer from the 'unstable bits issue'?
+To: Richard Weinberger <richard@nod.at>, Han Xu <xhnjupt@gmail.com>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org, Koen Vandeputte <koen.vandeputte@ncentric.com>,
+ Scott Bowman <wbowma01@harris.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat,  3 Mar 2018 23:22:35 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+On Sat, Mar 3, 2018 at 2:40 AM, Richard Weinberger <richard@nod.at> wrote:
+> Tim,
+>
+> Am Freitag, 2. M=C3=A4rz 2018, 17:20:57 CET schrieb Tim Harvey:
+>> > Just to be sure, this is SLC NAND, right?
+>>
+>> No, its a MT29F16G08 16GB MLC
+>
+> Sorry, MLC NAND is not supported by UBI and UBIFS [0].
+>
+> The ECC errors you are facing are most likely caused by paired pages.
+> On MLC NAND, pages come in pairs. If a write operation is interrupted, no=
+t
+> only the current page is corrupted like on SLC, also the already written
+> paired page is lost too.
+> Boris Brezillon and I spent a lot of time in addressing this problem but =
+came
+> to no good solution after all.
+> Well, we had a solution but it needs a lot of testing and fine tuning, sa=
+dly
+> we run out of budget.
+> Beside of that, read and write disturb are also an important factor, this=
+ can
+> be addressed with the experimental ubihealthd.
+>
 
->  
-> @@ -564,14 +868,95 @@ static int vf610_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
->  				const uint8_t *buf, int oob_required, int page)
->  {
->  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-> +	int trfr_sz = mtd->writesize + mtd->oobsize;
-> +	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
-> +	int ret = 0;
->  
-> -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
-> -	if (oob_required)
-> -		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +	cmd2 |= NAND_CMD_SEQIN << CMD_BYTE1_SHIFT;
-> +	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
-> +
-> +	vf610_nfc_fill_row(chip, page, &code, &row);
-> +
-> +	cmd1 |= NAND_CMD_PAGEPROG << CMD_BYTE2_SHIFT;
-> +	code |= COMMAND_CMD_BYTE2 | COMMAND_WRITE_DATA;
-> +
-> +	/*
-> +	 * Don't fix endianness on page access for historical reasons.
-> +	 * See comment in vf610_nfc_wr_to_sram
-> +	 */
-> +	vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0), buf,
-> +			     mtd->writesize, false);
-> +
-> +	code |= COMMAND_RB_HANDSHAKE;
-> +	cmd2 |= code << CMD_CODE_SHIFT;
-> +
-> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
-> +	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
-> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+Richard,
 
-I didn't notice that in my previous review, but you need to check the
-status here:
+My mistake - it is the  MT29F2G08ABAEAH4 being used here which is SLC not M=
+LC.
 
-	ret = nand_status_op(chip, &status);
-	if (ret)
-		return ret;
+So I suppose perhaps we could be running into the issue Han Xu pointed out.
 
-	if (status & NAND_STATUS_FAIL)
-		return -EIO;
+Regards,
 
-	return 0;
-> +
-> +	return ret;
-> +}
-> +
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Tim
