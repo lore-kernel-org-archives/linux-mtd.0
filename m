@@ -1,22 +1,22 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1essER-0000LK-1P
- for linux-mtd@lists.infradead.org; Mon, 05 Mar 2018 15:40:57 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Arushi Singhal <arushisinghal19971997@gmail.com>
-Cc: boris.brezillon@free-electrons.com, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [PATCH] mtd: nand: Added spaces around ('=' and '<')
-Date: Mon, 05 Mar 2018 16:42:03 +0100
-Message-ID: <2872216.aoWXzO2rYL@blindfold>
-In-Reply-To: <20180303140233.GA9634@seema-Inspiron-15-3567>
-References: <20180303140233.GA9634@seema-Inspiron-15-3567>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1essyE-0007an-NP
+ for linux-mtd@lists.infradead.org; Mon, 05 Mar 2018 16:28:16 +0000
+Date: Mon, 5 Mar 2018 17:28:02 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
+ marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v6 1/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
+Message-ID: <20180305172802.5f69879a@bbrezillon>
+In-Reply-To: <20180303222237.902-2-stefan@agner.ch>
+References: <20180303222237.902-1-stefan@agner.ch>
+ <20180303222237.902-2-stefan@agner.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arushi Singhal,
+On Sat,  3 Mar 2018 23:22:35 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-Am Samstag, 3. M=E4rz 2018, 15:02:33 CET schrieb Arushi Singhal:
-> Add spaces around ('=3D' and '<'),  to conform to the Linux
-> kernel coding style. Issue found using checkpatch.
+>  
+> @@ -564,14 +868,95 @@ static int vf610_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				const uint8_t *buf, int oob_required, int page)
+>  {
+>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int trfr_sz = mtd->writesize + mtd->oobsize;
+> +	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+> +	int ret = 0;
+>  
+> -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+> -	if (oob_required)
+> -		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +	cmd2 |= NAND_CMD_SEQIN << CMD_BYTE1_SHIFT;
+> +	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
+> +
+> +	vf610_nfc_fill_row(chip, page, &code, &row);
+> +
+> +	cmd1 |= NAND_CMD_PAGEPROG << CMD_BYTE2_SHIFT;
+> +	code |= COMMAND_CMD_BYTE2 | COMMAND_WRITE_DATA;
+> +
+> +	/*
+> +	 * Don't fix endianness on page access for historical reasons.
+> +	 * See comment in vf610_nfc_wr_to_sram
+> +	 */
+> +	vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0), buf,
+> +			     mtd->writesize, false);
+> +
+> +	code |= COMMAND_RB_HANDSHAKE;
+> +	cmd2 |= code << CMD_CODE_SHIFT;
+> +
+> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> +	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
+> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
 
-please fix real issues. Coding style fixes to existing code just add too mu=
-ch=20
-churn. Except for drivers/staging/.
+I didn't notice that in my previous review, but you need to check the
+status here:
 
-If you're looking for a small MTD related project, I can offer the followin=
-g.
-Cleanup all ubi_assert()s in drivers/mtd/ubi/.
-Some of them need to be transformed into a meaningful warning/error message=
-,=20
-others into a hard error, such as WARN_ON().
-Review/understand every ubi_assert() and convert it.
+	ret = nand_status_op(chip, &status);
+	if (ret)
+		return ret;
 
-Thanks,
-//richard=20
+	if (status & NAND_STATUS_FAIL)
+		return -EIO;
+
+	return 0;
+> +
+> +	return ret;
+> +}
+> +
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
