@@ -1,26 +1,23 @@
-Date: Tue, 6 Mar 2018 14:10:54 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Russell King - ARM Linux <linux@armlinux.org.uk>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, Andrew Lunn
- <andrew@lunn.ch>, Jason Cooper <jason@lakedaemon.net>, Antoine Tenart
- <antoine.tenart@bootlin.com>, Hanna Hawa <hannah@marvell.com>, Omri Itach
- <omrii@marvell.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org, Igal Liberman <igall@marvell.com>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Shadi Ammouri <shadi@marvell.com>, Marcin
- Wojtas <mw@semihalf.com>, linux-arm-kernel@lists.infradead.org, Sebastian
- Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH] mtd: nand: marvell: Fix clock resource by adding a
- register clock
-Message-ID: <20180306141054.1a280f07@bbrezillon>
-In-Reply-To: <20180306130833.GJ9418@n2100.armlinux.org.uk>
-References: <20180228143553.12485-1-gregory.clement@bootlin.com>
- <20180301183520.4251439a@bbrezillon> <874llt5ut2.fsf@bootlin.com>
- <20180306134311.7bbf8ce7@bbrezillon>
- <20180306130833.GJ9418@n2100.armlinux.org.uk>
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1etLqe-0008MC-7j
+ for linux-mtd@lists.infradead.org; Tue, 06 Mar 2018 23:18:23 +0000
+Date: Wed, 7 Mar 2018 00:18:05 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, dedekind1@gmail.com, tharvey@gateworks.com,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] ubi: Reject MLC NAND
+Message-ID: <20180306231805.GA28183@amd>
+References: <20180303104554.5958-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="HlL+5n6rz5pIUxbD"
+Content-Disposition: inline
+In-Reply-To: <20180303104554.5958-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,83 +27,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 6 Mar 2018 13:08:33 +0000
-Russell King - ARM Linux <linux@armlinux.org.uk> wrote:
 
-> On Tue, Mar 06, 2018 at 01:43:11PM +0100, Boris Brezillon wrote:
-> > Hi Greg,
-> > 
-> > On Tue, 06 Mar 2018 12:04:41 +0100
-> > Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
-> >   
-> > > Hi Boris,
-> > >  
-> > >  On jeu., mars 01 2018, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> > >   
-> > > > Hi Greg,
-> > > >
-> > > > On Wed, 28 Feb 2018 15:35:53 +0100
-> > > > Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
-> > > >    
-> > > >> On Armada 7K/8K we need to explicitly enable the register clock. This
-> > > >> clock is optional because not all the SoCs using this IP need it but at
-> > > >> least for Armada 7K/8K it is actually mandatory.
-> > > >> 
-> > > >> The binding documentation is updated accordingly.
-> > > >> 
-> > > >> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> > > >> ---
-> > > >>  Documentation/devicetree/bindings/mtd/marvell-nand.txt |  6 +++++-
-> > > >>  drivers/mtd/nand/marvell_nand.c                        | 14 ++++++++++++++
-> > > >>  2 files changed, 19 insertions(+), 1 deletion(-)
-> > > >> 
-> > > >> diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > > >> index c08fb477b3c6..4ee9813bf88f 100644
-> > > >> --- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > > >> +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> > > >> @@ -14,7 +14,11 @@ Required properties:
-> > > >>  - #address-cells: shall be set to 1. Encode the NAND CS.
-> > > >>  - #size-cells: shall be set to 0.
-> > > >>  - interrupts: shall define the NAND controller interrupt.
-> > > >> -- clocks: shall reference the NAND controller clock.
-> > > >> +- clocks: shall reference the NAND controller clocks, the second one is
-> > > >> +  optional but needed for the Armada 7K/8K SoCs
-> > > >> +- clock-names: mandatory if there is a second clock, in this case the
-> > > >> +   name must be "core" for the first clock and "reg" for the second
-> > > >> +   one    
-> > > >
-> > > > Hm, not sure this is a good idea to impose a specific order. I know you    
-> > > 
-> > > It would be a problem if the use of this clock would be at dts level
-> > > for each board. But here we only setup this property in the dtsi at SoC
-> > > level. So enforcing the order is not a problem as the dtsi are all well
-> > > reviewed and remains pretty rare.  
-> > 
-> > I'm still not convinced this is a good idea, but okay.
-> >   
-> > >   
-> > > > do that to avoid changing the code requesting the core clk, but I'd
-> > > > prefer to have a solution where we first search for a clock named
-> > > > "core" (devm_clk_get(&pdev->dev, "core")), and if it's missing,
-> > > > fall back to devm_clk_get(&pdev->dev, NULL).    
-> > > 
-> > > I really wanted to avoid adding more code only for legacy reason.  
-> > 
-> > It's adding only 2 lines:
-> > 
-> > 	reg_clk = devm_clk_get(&pdev->dev, "core");
-> > 	if (IS_ERR(reg_clk) && PTR_ERR(reg_clk) == -ENOENT)
-> > 		reg_clk = devm_clk_get(&pdev->dev, NULL);  
-> 
-> 	reg_clk = devm_clk_get(&pdev->dev, "core");
-> 	if (reg_clk == ERR_PTR(-ENOENT))
-> 		reg_clk = devm_clk_get(&pdev->dev, NULL);
-> 
-> is simpler and easier to read?
+--HlL+5n6rz5pIUxbD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Indeed, no need to check IS_ERR(reg_clk) first.
+On Sat 2018-03-03 11:45:54, Richard Weinberger wrote:
+> While UBI and UBIFS seem to work at first sight with MLC NAND, you will
+> most likely lose all your data upon a power-cut or due to read/write
+> disturb.
+> In order to protect users from bad surprises, refuse to attach to MLC
+> NAND.
+>=20
+> Cc: stable@vger.kernel.org
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+That sounds like _really_ bad idea for stable. All it does is it
+removes support for hardware that somehow works.
+
+Now... Yes, handling flash is hard, MLC NAND is worst of the
+bunch. But...
+
+Read disturb is not unique to MLC, right? Happens to all the flashes,
+its just that MLC has tighter margins for error.
+
+Power-cut. UBIFS is just not power-cut safe, right? My notes say that
+power-cut during erase could result in flash that contains all 1s, but
+will start showing errors very quickly. Again, not MLC specific. Can
+be solved with battery...
+
+(And yes, there are some problems specific to MLC, where parts of page
+need to be written in specific order. Not sure how it affects
+ubifs. But it was not listed as a reason for the patch.)
+
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+>  drivers/mtd/ubi/build.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index e941395de3ae..753494e042d5 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -854,6 +854,17 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi=
+_num,
+>  		return -EINVAL;
+>  	}
+> =20
+> +	/*
+> +	 * Both UBI and UBIFS have been designed for SLC NAND and NOR flashes.
+> +	 * MLC NAND is different and needs special care, otherwise UBI or UBIFS
+> +	 * will die soon and you will lose all your data.
+> +	 */
+> +	if (mtd->type =3D=3D MTD_MLCNANDFLASH) {
+> +		pr_err("ubi: refuse attaching mtd%d - MLC NAND is not supported\n",
+> +			mtd->index);
+> +		return -EINVAL;
+> +	}
+> +
+>  	if (ubi_num =3D=3D UBI_DEV_NUM_AUTO) {
+>  		/* Search for an empty slot in the @ubi_devices array */
+>  		for (ubi_num =3D 0; ubi_num < UBI_MAX_DEVICES; ubi_num++)
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--HlL+5n6rz5pIUxbD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlqfIa0ACgkQMOfwapXb+vJ6ZQCgqFe1Pe55Q2kgHjXoMClPat83
+iCAAn2HkaKl7ZEWEuffl0iDyWmSFI405
+=OGEp
+-----END PGP SIGNATURE-----
+
+--HlL+5n6rz5pIUxbD--
