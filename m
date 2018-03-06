@@ -1,31 +1,25 @@
-Date: Mon, 5 Mar 2018 18:46:15 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Eric Miao <eric.y.miao@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
- Antoine Tenart <antoine.tenart@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Gregory Clement <gregory.clement@bootlin.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Ezequiel Garcia
- <ezequiel@vanguardiasur.com.ar>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-arm-kernel
- <linux-arm-kernel-bounces@lists.infradead.org>
-Subject: Re: [PATCH v4 5/6] arm: dts: pxa: use reworked NAND controller driver
-Message-ID: <20180305184615.0a2d6628@bbrezillon>
-In-Reply-To: <87606f7cdh.fsf@belgarion.home>
-References: <20180219223557.2458-1-miquel.raynal@bootlin.com>
- <20180219223557.2458-6-miquel.raynal@bootlin.com>
- <20180222104618.1ff78b52@bbrezillon>
- <87efl66vow.fsf@belgarion.home>
- <20180227214245.4267448e@bbrezillon>
- <20180301100446.0f61aaf9@xps13>
- <20180301175732.3be789fb@bbrezillon>
- <87606f7cdh.fsf@belgarion.home>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>
+CC: "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "oss@buserror.net" <oss@buserror.net>, Leo Li
+ <leoyang.li@nxp.com>, Jagdish Gediya <jagdish.gediya@nxp.com>
+Subject: RE: [PATCH 2/2][v5] driver: mtd: update struct map_info's swap as per
+ map requirement
+Date: Tue, 6 Mar 2018 06:02:08 +0000
+Message-ID: <HE1PR04MB1241B7EE0E3905E20214C2A797D90@HE1PR04MB1241.eurprd04.prod.outlook.com>
+References: <20180228073335.1758-1-prabhakar.kushwaha@nxp.com>
+ <20180228073335.1758-2-prabhakar.kushwaha@nxp.com>
+In-Reply-To: <20180228073335.1758-2-prabhakar.kushwaha@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,72 +29,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 01 Mar 2018 21:46:18 +0100
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Dear Boris,
 
-> Boris Brezillon <boris.brezillon@bootlin.com> writes:
-> 
-> > On Thu, 1 Mar 2018 10:04:46 +0100
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > I guess Miquel meant squash it into the commit introducing the
-> > regression ("mtd: nand: remove useless fields from pxa3xx NAND platform
-> > data"), and I agree, if you haven't pulled the branch yet, I'd prefer to
-> > create a new one addressing the issue. I could also add your Acked-by
-> > at the same time ;-).  
-> Lucky you, I was going to pull this Saturday, you still can make that change.
+> -----Original Message-----
+> From: Prabhakar Kushwaha
+> Sent: Wednesday, February 28, 2018 1:04 PM
+> To: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
+> robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org; boris.brezillon@free-
+> electrons.com; cyrille.pitchen@wedev4u.fr; computersforpeace@gmail.com;
+> oss@buserror.net; Leo Li <leoyang.li@nxp.com>; Prabhakar Kushwaha
+> <prabhakar.kushwaha@nxp.com>; Jagdish Gediya
+> <jagdish.gediya@nxp.com>
+> Subject: [PATCH 2/2][v5] driver: mtd: update struct map_info's swap as pe=
+r
+> map requirement
+>=20
+> It is not necessary for all device's maps to be CFI_HOST_ENDIAN.
+> Maps device can be Big endian or little endian.
+>=20
+> Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
+> CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
+>=20
+> Now update struct map_info's swap field based on device characteristics
+> defined in device tree.
+>=20
+> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> ---
+> Changes for v2: Incorporated review comments from Boris Brezillon
+> http://patchwork.ozlabs.org/patch/758381/
+> Changes for v3: None
+> Changes for v4: Updated code as per new defined binding of physmap.txt
+> Changes for v5: Avoid map.swap set in case of endiannes not defined in dt=
+s
+> file
+>=20
+>  drivers/mtd/maps/physmap_of_core.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>=20
+> diff --git a/drivers/mtd/maps/physmap_of_core.c
+> b/drivers/mtd/maps/physmap_of_core.c
+> index b1bd4faecfb2..527b1682381f 100644
+> --- a/drivers/mtd/maps/physmap_of_core.c
+> +++ b/drivers/mtd/maps/physmap_of_core.c
+> @@ -20,6 +20,7 @@
+>  #include <linux/mtd/map.h>
+>  #include <linux/mtd/partitions.h>
+>  #include <linux/mtd/concat.h>
+> +#include <linux/mtd/cfi_endian.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+> @@ -233,6 +234,11 @@ static int of_flash_probe(struct platform_device
+> *dev)
+>  		info->list[i].map.bankwidth =3D be32_to_cpup(width);
+>  		info->list[i].map.device_node =3D dp;
+>=20
+> +		if (of_property_read_bool(dp, "big-endian"))
+> +			info->list[i].map.swap =3D CFI_BIG_ENDIAN;
+> +		else if (of_property_read_bool(dp, "little-endian"))
+> +			info->list[i].map.swap =3D CFI_LITTLE_ENDIAN;
+> +
+>  		err =3D of_flash_probe_gemini(dev, dp, &info->list[i].map);
+>  		if (err)
+>  			goto err_out;
+> --
+> 2.14.1
 
-Here is the new PR:
+Is this patch correct with respect to device binding (http://patchwork.ozla=
+bs.org/patch/878974/)
+May I go ahead and send device tree patches for other NXP platforms
 
-The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
+will http://patchwork.ozlabs.org/patch/878974/  along with this patch be se=
+nd via linux-mtd repo?
 
-  Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/nand/pxa3xx-removal
-
-for you to fetch changes up to 048a4663a2a4b1b784f1c284d30873901148f009:
-
-  MAINTAINERS: remove entry for deleted pxa3xx_nand driver (2018-03-02 22:46:39 +0100)
-
-----------------------------------------------------------------
-Remove the pxa3xx_nand driver (replaced by marvell_nand).
-
-----------------------------------------------------------------
-Miquel Raynal (6):
-      mtd: nand: use Marvell reworked NAND controller driver with all platforms
-      mtd: nand: remove deprecated pxa3xx_nand driver
-      mtd: nand: remove useless fields from pxa3xx NAND platform data
-      dt-bindings: mtd: remove pxa3xx NAND controller documentation
-      arm: dts: pxa: use reworked NAND controller driver
-      MAINTAINERS: remove entry for deleted pxa3xx_nand driver
-
- Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt |   50 -
- MAINTAINERS                                           |    6 -
- arch/arm/boot/dts/pxa3xx.dtsi                         |    6 +-
- arch/arm/configs/cm_x300_defconfig                    |    2 +-
- arch/arm/configs/pxa3xx_defconfig                     |    3 +-
- arch/arm/configs/pxa_defconfig                        |    2 +-
- arch/arm/configs/raumfeld_defconfig                   |    2 +-
- arch/arm/mach-mmp/aspenite.c                          |    6 +-
- arch/arm/mach-mmp/ttc_dkb.c                           |    9 +-
- arch/arm/mach-pxa/cm-x300.c                           |    8 +-
- arch/arm/mach-pxa/colibri-pxa3xx.c                    |    8 +-
- arch/arm/mach-pxa/colibri.h                           |    2 +-
- arch/arm/mach-pxa/littleton.c                         |   10 +-
- arch/arm/mach-pxa/mxm8x10.c                           |   10 +-
- arch/arm/mach-pxa/raumfeld.c                          |    6 +-
- arch/arm/mach-pxa/zylonite.c                          |   10 +-
- drivers/mtd/nand/Kconfig                              |   11 -
- drivers/mtd/nand/Makefile                             |    1 -
- drivers/mtd/nand/marvell_nand.c                       |    3 +-
- drivers/mtd/nand/pxa3xx_nand.c                        | 2105 ------------------------------------------
- include/linux/platform_data/mtd-nand-pxa3xx.h         |   43 +-
- 21 files changed, 46 insertions(+), 2257 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/pxa3xx-nand.txt
- delete mode 100644 drivers/mtd/nand/pxa3xx_nand.c
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--pk
