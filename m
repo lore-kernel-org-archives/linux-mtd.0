@@ -1,24 +1,24 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etgqu-00020z-AJ
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 21:44:03 +0000
-Date: Wed, 7 Mar 2018 22:43:42 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com, tharvey@gateworks.com,
- stable@vger.kernel.org
-Subject: Re: [PATCH] ubi: Reject MLC NAND
-Message-ID: <20180307214342.GA9852@amd>
-References: <20180303104554.5958-1-richard@nod.at> <20180306231805.GA28183@amd>
- <6772577.AmT7QaWTNU@blindfold>
+ id 1eth8u-0002OV-TO
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 22:02:39 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Arushi Singhal <arushisinghal19971997@gmail.com>
+Cc: boris.brezillon@free-electrons.com, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH] mtd: nand: Added spaces around ('=' and '<')
+Date: Wed, 07 Mar 2018 23:03:53 +0100
+Message-ID: <4005910.RbgyVDuFdx@blindfold>
+In-Reply-To: <CA+XqjF-2K48uEPHhgoH4K+4X0Gnr=S3VaG4-VeZ9urfsNEf3QQ@mail.gmail.com>
+References: <20180303140233.GA9634@seema-Inspiron-15-3567>
+ <2872216.aoWXzO2rYL@blindfold>
+ <CA+XqjF-2K48uEPHhgoH4K+4X0Gnr=S3VaG4-VeZ9urfsNEf3QQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
-Content-Disposition: inline
-In-Reply-To: <6772577.AmT7QaWTNU@blindfold>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Arushi,
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed 2018-03-07 09:01:16, Richard Weinberger wrote:
-> Pavel,
->=20
-> Am Mittwoch, 7. M=E4rz 2018, 00:18:05 CET schrieb Pavel Machek:
-> > On Sat 2018-03-03 11:45:54, Richard Weinberger wrote:
-> > > While UBI and UBIFS seem to work at first sight with MLC NAND, you wi=
-ll
-> > > most likely lose all your data upon a power-cut or due to read/write
-> > > disturb.
-> > > In order to protect users from bad surprises, refuse to attach to MLC
-> > > NAND.
-> > >=20
-> > > Cc: stable@vger.kernel.org
+Am Mittwoch, 7. M=E4rz 2018, 16:38:50 CET schrieb Arushi Singhal:
+> On Mon, Mar 5, 2018 at 9:12 PM, Richard Weinberger <richard@nod.at> wrote:
+> > Arushi Singhal,
 > >=20
-> > That sounds like _really_ bad idea for stable. All it does is it
-> > removes support for hardware that somehow works.
+> > Am Samstag, 3. M=E4rz 2018, 15:02:33 CET schrieb Arushi Singhal:
+> > > Add spaces around ('=3D' and '<'),  to conform to the Linux
+> > > kernel coding style. Issue found using checkpatch.
+> >=20
+> > please fix real issues. Coding style fixes to existing code just add too
+> > much
+> > churn. Except for drivers/staging/.
 >=20
-> MLC is not supported and does not work. Full stop.
-> If someone manages to get it somehow work, either with hardware or softwa=
-re=20
-> hacks they are on their own.
-> Having it in stable is the only chance we have to get it into vendor
-> kernels.
+> Hello Richard
+> Thanks for explaining,
+>=20
+> > If you're looking for a small MTD related project, I can offer the
+> > following.
+> > Cleanup all ubi_assert()s in drivers/mtd/ubi/.
+> > Some of them need to be transformed into a meaningful warning/error
+> > message,
+> > others into a hard error, such as WARN_ON().
+> > Review/understand every ubi_assert() and convert it.
+>=20
+> Before doing this task, I read about this discussion (
+> http://lists.infradead.org/pipermail/linux-mtd/2014-November/056352.html =
+).
+> In this discussion it is decided to split ubi_assert() into two different
+> functions, BUG_ON() and WARN_ON(). Even some of the asserts can be removed
+> too.
 
-Can you show how it meets the stable kernel criteria? They are
-documented in tree. This should not be in stable.
+Very good! You managed to exhume my forgotten TODOs. ;-)
 
-And I'd like to see changelog improved. Real reason MLC is not
-supported is upper/lower page parts on MLC. And real fix to work with
-bigger pages in UBI.
+One comment on BUG_ON(), we have to make very sure that it is not user=20
+trigger-able.
 
-
-									Pavel
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlqgXQ4ACgkQMOfwapXb+vL/RQCfcpBSzmmWE68AU/fR354AZh14
-0bkAn1T3J8vwYErdMbytKXu7fUJ4kbvO
-=uVCT
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
+Thanks,
+//richard =20
