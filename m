@@ -1,25 +1,23 @@
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- linux-arm-kernel@lists.infradead.org,
- Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
- Shadi Ammouri <shadi@marvell.com>, Omri Itach <omrii@marvell.com>,
- Hanna Hawa <hannah@marvell.com>, Igal Liberman <igall@marvell.com>,
- Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH] mtd: nand: marvell: Fix clock resource by adding a
- register clock
-References: <20180228143553.12485-1-gregory.clement@bootlin.com>
- <20180301183520.4251439a@bbrezillon> <874llt5ut2.fsf@bootlin.com>
- <20180306134311.7bbf8ce7@bbrezillon>
-Date: Wed, 07 Mar 2018 15:23:30 +0100
-In-Reply-To: <20180306134311.7bbf8ce7@bbrezillon> (Boris Brezillon's message
- of "Tue, 6 Mar 2018 13:43:11 +0100")
-Message-ID: <87woyo3qxp.fsf@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1etavm-0004TK-Of
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 15:24:40 +0000
+Message-ID: <1520436263.2674.35.camel@gmail.com>
+Subject: Re: [PATCH] ubi: Reject MLC NAND
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Richard Weinberger <richard@nod.at>, Pavel Machek <pavel@ucw.cz>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org, tharvey@gateworks.com, stable@vger.kernel.org
+Date: Wed, 07 Mar 2018 17:24:23 +0200
+In-Reply-To: <6772577.AmT7QaWTNU@blindfold>
+References: <20180303104554.5958-1-richard@nod.at>
+ <20180306231805.GA28183@amd> <6772577.AmT7QaWTNU@blindfold>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
- 
- On mar., mars 06 2018, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Wed, 2018-03-07 at 09:01 +0100, Richard Weinberger wrote:
+> Pavel,
+> 
+> Am Mittwoch, 7. März 2018, 00:18:05 CET schrieb Pavel Machek:
+> > On Sat 2018-03-03 11:45:54, Richard Weinberger wrote:
+> > > While UBI and UBIFS seem to work at first sight with MLC NAND,
+> > > you will
+> > > most likely lose all your data upon a power-cut or due to
+> > > read/write
+> > > disturb.
+> > > In order to protect users from bad surprises, refuse to attach to
+> > > MLC
+> > > NAND.
+> > > 
+> > > Cc: stable@vger.kernel.org
+> > 
+> > That sounds like _really_ bad idea for stable. All it does is it
+> > removes support for hardware that somehow works.
+> 
+> MLC is not supported and does not work. Full stop.
 
->> >
->> > Another solution would be to retrieve the reg clk only on platforms
->> > that need it (based on the compatible). This way you won't have to test
->> > for -ENOENT and could simply propagate the error to the upper layer.  
->> 
->> We can't do this because we need to be bacwkard compatible.
->
-> I don't get it. If the clock is missing in the DT, the NAND is
-> already not working on these platforms, right? How could we break
-> something that is already broken?
-
-As you probably know this patch have been tested on an Armada 7K based
-board, so it more or less works.
-
-But it works because the second clock used by the nand controller is
-also used by other IP and already setup by the drivers of these IP. So
-today it is only if you boot a kernel without crypto, i2c, spi and uart
-support that the nand won't work.
-
-Then the current representation is wrong, but it is still usable in most
-of the case. So that's why we still need to support the case where we
-have only one clock in the device tree.
-
-Gregory
-
-
->
-> Regards,
->
-> Boris
->
-> -- 
-> Boris Brezillon, Bootlin (formerly Free Electrons)
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
-
--- 
-Gregory Clement, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Ack.
