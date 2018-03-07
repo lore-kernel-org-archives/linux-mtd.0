@@ -1,28 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1ethah-0006pd-So
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 22:31:22 +0000
-Date: Wed, 7 Mar 2018 23:30:57 +0100
+ id 1ethkf-0002WH-Ku
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 22:41:39 +0000
+Date: Wed, 7 Mar 2018 23:40:51 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Pavel Machek <pavel@ucw.cz>
-Cc: David Woodhouse <dwmw2@infradead.org>, Greg KH <greg@kroah.com>, Steve
- deRosier <derosier@gmail.com>, Richard Weinberger <richard@nod.at>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, dedekind1@gmail.com,
- tharvey@gateworks.com, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, cyrille.pitchen@wedev4u.fr,
+ marek.vasut@gmail.com, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, dedekind1@gmail.com,
+ tharvey@gateworks.com, stable@vger.kernel.org
 Subject: Re: [PATCH] ubi: Reject MLC NAND
-Message-ID: <20180307233057.54bd35c3@bbrezillon>
-In-Reply-To: <20180307221733.GE10438@amd>
+Message-ID: <20180307234051.479d9eed@bbrezillon>
+In-Reply-To: <20180307214342.GA9852@amd>
 References: <20180303104554.5958-1-richard@nod.at> <20180306231805.GA28183@amd>
  <6772577.AmT7QaWTNU@blindfold> <20180307214342.GA9852@amd>
- <CALLGbRK4w9Yhznt6+aqr8jptQjsp7FmbjQMPtvhh2h354n2G0A@mail.gmail.com>
- <1520460673.31298.136.camel@infradead.org>
- <20180307221733.GE10438@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,73 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pavel,
-
-On Wed, 7 Mar 2018 23:17:33 +0100
+On Wed, 7 Mar 2018 22:43:42 +0100
 Pavel Machek <pavel@ucw.cz> wrote:
 
-> On Wed 2018-03-07 22:11:13, David Woodhouse wrote:
-> > 
-> > 
-> > On Wed, 2018-03-07 at 14:08 -0800, Steve deRosier wrote:  
-> > > 
-> > > To clarify one thing: the reason for this is MLC has actually never
-> > > been supported, nor worked properly. The fact that it kinda worked was
-> > > incidental and the cause of major problems for people due to that not
-> > > being clear. This patch only makes it explicit and avoids people
-> > > mistakenly trying to use UBIFS on MLC flash and risking their data and
-> > > products. To me, that's what's important.
-> > > 
-> > > This is an important patch, even if all it does is keep people from
-> > > loosing data. It also changes the conversation from "I have a
-> > > corrupted UBIFS device, BTW it's on MLC..." to "What can we do to get
-> > > UBIFS to work on MLC".  
-> 
-> Well, for -stable I'd suggest printk(KERN_ALERT ...) but keep the
-> system running.
-> 
-> > This is a bug fix.
-> > 
-> > UBI on MLC never worked. It was a bug that we ever permitted it. This
-> > is now fixed.  
-> 
-> Yeah, well, so lets say I have a working hardware (maybe using
-> read-only UBI on MLC), update to next stable kernel, and now kernel
-> refuses to see the partition.
+> On Wed 2018-03-07 09:01:16, Richard Weinberger wrote:
+> > Pavel,
+> >=20
+> > Am Mittwoch, 7. M=C3=A4rz 2018, 00:18:05 CET schrieb Pavel Machek: =20
+> > > On Sat 2018-03-03 11:45:54, Richard Weinberger wrote: =20
+> > > > While UBI and UBIFS seem to work at first sight with MLC NAND, you =
+will
+> > > > most likely lose all your data upon a power-cut or due to read/write
+> > > > disturb.
+> > > > In order to protect users from bad surprises, refuse to attach to M=
+LC
+> > > > NAND.
+> > > >=20
+> > > > Cc: stable@vger.kernel.org =20
+> > >=20
+> > > That sounds like _really_ bad idea for stable. All it does is it
+> > > removes support for hardware that somehow works. =20
+> >=20
+> > MLC is not supported and does not work. Full stop.
+> > If someone manages to get it somehow work, either with hardware or soft=
+ware=20
+> > hacks they are on their own.
+> > Having it in stable is the only chance we have to get it into vendor
+> > kernels. =20
+>=20
+> Can you show how it meets the stable kernel criteria? They are
+> documented in tree. This should not be in stable.
+>=20
+> And I'd like to see changelog improved. Real reason MLC is not
+> supported is upper/lower page parts on MLC. And real fix to work with
+> bigger pages in UBI.
 
-Read-only does not save you from the read-disturb issue, and you even
-have to take care of programming the full erase-block on some MLC
-NANDs, which AFAIR is not done when updating a static volume.
+Come on! Don't you think this would have been fixed already if it was
+that easy?! Have you looked at an MLC datasheet to see how paired pages
+are combined? If you had you would now that paired pages are almost all
+the time not contiguous, thus preventing the trick you're suggesting
+here. Please document yourself before doing such presumptuous
+statements (you can have a look at these slides if you want some details
+about why this is not so simple [1]).
 
-I have one simple question: did you ever play with MLC NANDs or are you
-just trolling? If you had, like Richard and I did when working on MLC
-support, I'm pretty sure you wouldn't play this "don't backport to
-stable" card.
+I'm definitely not saying supporting MLC NANDs in Linux is impossible,
+and if you're interested in working on this topic I'd be happy to help.
+But please don't block this patch without understanding what supporting
+MLC NANDs implies.
 
-Now, if you volunteer to add reliable MLC support, I can send you a
-few boards to play with. I even have a "working but not so tested PoC"
-here [1] if you want to finish the job, but please don't do the mistake
-of thinking the fix is that simple.
+[1]https://events.static.linuxfound.org/sites/events/files/slides/ubi-mlc.p=
+df
 
-> 
-> I'll certainly not consider this patch a bug fix.
-
-And apparently a lot of people disagree with you on this point, and I
-guess all of them had problems with MLC NANDs.
-
-> 
-> Removing support for hardware that "only works by mistake" may be good
-> idea, but maybe it is slightly too surprising for a -stable.
-
-I wouldn't say "work by mistake" but "seems to work at first but in the
-end breaks", so definitely a candidate for -stable IMO.
-
-Regards,
-
-Boris
-
-[1]https://github.com/bbrezillon/linux/tree/nand/mlc
--- 
+--=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
