@@ -1,22 +1,18 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-eopbgr30050.outbound.protection.outlook.com ([40.107.3.50]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etTzi-0003ai-0s
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 08:00:20 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Pavel Machek <pavel@ucw.cz>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, dedekind1@gmail.com, tharvey@gateworks.com,
- stable@vger.kernel.org
-Subject: Re: [PATCH] ubi: Reject MLC NAND
-Date: Wed, 07 Mar 2018 09:01:16 +0100
-Message-ID: <6772577.AmT7QaWTNU@blindfold>
-In-Reply-To: <20180306231805.GA28183@amd>
-References: <20180303104554.5958-1-richard@nod.at> <20180306231805.GA28183@amd>
+ id 1etVCl-0003kk-Po
+ for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 09:17:56 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ oss@buserror.net, leoyang.li@nxp.com,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH] driver: mtd: ifc: increase eccstat array size for ver >= 2.0.0
+Date: Wed,  7 Mar 2018 14:46:56 +0530
+Message-Id: <20180307091656.16378-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pavel,
+Number of ECC status registers i.e. (ECCSTATx) has been increased
+in IFC version 2.0.0 due to increase in SRAM size.
 
-Am Mittwoch, 7. M=E4rz 2018, 00:18:05 CET schrieb Pavel Machek:
-> On Sat 2018-03-03 11:45:54, Richard Weinberger wrote:
-> > While UBI and UBIFS seem to work at first sight with MLC NAND, you will
-> > most likely lose all your data upon a power-cut or due to read/write
-> > disturb.
-> > In order to protect users from bad surprises, refuse to attach to MLC
-> > NAND.
-> >=20
-> > Cc: stable@vger.kernel.org
->=20
-> That sounds like _really_ bad idea for stable. All it does is it
-> removes support for hardware that somehow works.
+Fix the resulting eccstat array overflow.
 
-MLC is not supported and does not work. Full stop.
-If someone manages to get it somehow work, either with hardware or software=
-=20
-hacks they are on their own.
-Having it in stable is the only chance we have to get it into vendor kernel=
-s.
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-All this patch does is representing the current state of UBI/UBIFS.
-
-In the last months I got a way too much boards with MLC NAND on my desk whe=
-re=20
-UBIFS broke. Customers wished they had known before...
-
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 4872a7ba6503..612f0990fa90 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -193,7 +193,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+ 	struct fsl_ifc_nand_ctrl *nctrl = ifc_nand_ctrl;
+ 	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
+-	u32 eccstat[4];
++	u32 eccstat[8];
+ 	int i;
+ 
+ 	/* set the chip select for NAND Transaction */
+@@ -237,8 +237,14 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+ 		else
+ 			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
+ 
+-		for (i = sector / 4; i <= sector_end / 4; i++)
++		for (i = sector / 4; i <= sector_end / 4; i++) {
++			if (i >= ARRAY_SIZE(eccstat)) {
++				dev_err(priv->dev, "%s: eccstat small for %d\n",
++					__func__, i);
++				return;
++			}
+ 			eccstat[i] = ifc_in32(&eccstat_regs[i]);
++		}
+ 
+ 		for (i = sector; i <= sector_end; i++) {
+ 			errors = check_read_ecc(mtd, ctrl, eccstat, i);
+-- 
+2.14.1
