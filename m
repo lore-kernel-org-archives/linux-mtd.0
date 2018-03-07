@@ -1,23 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etavm-0004TK-Of
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 15:24:40 +0000
-Message-ID: <1520436263.2674.35.camel@gmail.com>
-Subject: Re: [PATCH] ubi: Reject MLC NAND
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>, Pavel Machek <pavel@ucw.cz>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, tharvey@gateworks.com, stable@vger.kernel.org
-Date: Wed, 07 Mar 2018 17:24:23 +0200
-In-Reply-To: <6772577.AmT7QaWTNU@blindfold>
-References: <20180303104554.5958-1-richard@nod.at>
- <20180306231805.GA28183@amd> <6772577.AmT7QaWTNU@blindfold>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Antoine Tenart <antoine.tenart@bootlin.com>,
+ Nadav Haklai <nadavh@marvell.com>, Shadi Ammouri <shadi@marvell.com>,
+ Omri Itach <omrii@marvell.com>, Hanna Hawa <hannah@marvell.com>,
+ Igal Liberman <igall@marvell.com>, Marcin Wojtas <mw@semihalf.com>
+Subject: [PATCH v2] mtd: nand: marvell: Fix clock resource by adding a
+ register clock
+Date: Wed,  7 Mar 2018 17:13:16 +0100
+Message-Id: <20180307161316.14612-1-gregory.clement@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +23,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-03-07 at 09:01 +0100, Richard Weinberger wrote:
-> Pavel,
-> 
-> Am Mittwoch, 7. März 2018, 00:18:05 CET schrieb Pavel Machek:
-> > On Sat 2018-03-03 11:45:54, Richard Weinberger wrote:
-> > > While UBI and UBIFS seem to work at first sight with MLC NAND,
-> > > you will
-> > > most likely lose all your data upon a power-cut or due to
-> > > read/write
-> > > disturb.
-> > > In order to protect users from bad surprises, refuse to attach to
-> > > MLC
-> > > NAND.
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > 
-> > That sounds like _really_ bad idea for stable. All it does is it
-> > removes support for hardware that somehow works.
-> 
-> MLC is not supported and does not work. Full stop.
+On Armada 7K/8K we need to explicitly enable the register clock. This
+clock is optional because not all the SoCs using this IP need it but at
+least for Armada 7K/8K it is actually mandatory.
 
-Ack.
+The binding documentation is updated accordingly.
+
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+Changelog:
+v1-> v2
+
+ - Removed the unnecessary IS_ERR() call
+ - Skip the reg clock only if it is not present by checking "-ENOENT"
+ - Add a label for uninitializing the reg clock.
+ 
+ .../devicetree/bindings/mtd/marvell-nand.txt       |  6 +++++-
+ drivers/mtd/nand/marvell_nand.c                    | 24 ++++++++++++++++++----
+ 2 files changed, 25 insertions(+), 5 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+index c08fb477b3c6..4ee9813bf88f 100644
+--- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
+@@ -14,7 +14,11 @@ Required properties:
+ - #address-cells: shall be set to 1. Encode the NAND CS.
+ - #size-cells: shall be set to 0.
+ - interrupts: shall define the NAND controller interrupt.
+-- clocks: shall reference the NAND controller clock.
++- clocks: shall reference the NAND controller clocks, the second one is
++  optional but needed for the Armada 7K/8K SoCs
++- clock-names: mandatory if there is a second clock, in this case the
++   name must be "core" for the first clock and "reg" for the second
++   one
+ - marvell,system-controller: Set to retrieve the syscon node that handles
+   NAND controller related registers (only required with the
+   "marvell,armada-8k-nand[-controller]" compatibles).
+diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
+index 2196f2a233d6..072e23635375 100644
+--- a/drivers/mtd/nand/marvell_nand.c
++++ b/drivers/mtd/nand/marvell_nand.c
+@@ -321,6 +321,7 @@ struct marvell_nfc {
+ 	struct device *dev;
+ 	void __iomem *regs;
+ 	struct clk *ecc_clk;
++	struct clk *reg_clk;
+ 	struct completion complete;
+ 	unsigned long assigned_cs;
+ 	struct list_head chips;
+@@ -2747,12 +2748,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
++	if (PTR_ERR(nfc->reg_clk) != -ENOENT) {
++		if (!IS_ERR(nfc->reg_clk)) {
++			ret = clk_prepare_enable(nfc->reg_clk);
++			if (ret)
++				goto unprepare_clk;
++		} else {
++			ret = PTR_ERR(nfc->reg_clk);
++			goto unprepare_clk;
++		}
++	}
++
+ 	marvell_nfc_disable_int(nfc, NDCR_ALL_INT);
+ 	marvell_nfc_clear_int(nfc, NDCR_ALL_INT);
+ 	ret = devm_request_irq(dev, irq, marvell_nfc_isr,
+ 			       0, "marvell-nfc", nfc);
+ 	if (ret)
+-		goto unprepare_clk;
++		goto unprepare_clk_reg;
+ 
+ 	/* Get NAND controller capabilities */
+ 	if (pdev->id_entry)
+@@ -2763,22 +2776,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+ 	if (!nfc->caps) {
+ 		dev_err(dev, "Could not retrieve NFC caps\n");
+ 		ret = -EINVAL;
+-		goto unprepare_clk;
++		goto unprepare_clk_reg;
+ 	}
+ 
+ 	/* Init the controller and then probe the chips */
+ 	ret = marvell_nfc_init(nfc);
+ 	if (ret)
+-		goto unprepare_clk;
++		goto unprepare_clk_reg;
+ 
+ 	platform_set_drvdata(pdev, nfc);
+ 
+ 	ret = marvell_nand_chips_init(dev, nfc);
+ 	if (ret)
+-		goto unprepare_clk;
++		goto unprepare_clk_reg;
+ 
+ 	return 0;
+ 
++unprepare_clk_reg:
++	clk_disable_unprepare(nfc->reg_clk);
+ unprepare_clk:
+ 	clk_disable_unprepare(nfc->ecc_clk);
+ 
+@@ -2796,6 +2811,7 @@ static int marvell_nfc_remove(struct platform_device *pdev)
+ 		dma_release_channel(nfc->dma_chan);
+ 	}
+ 
++	clk_disable_unprepare(nfc->reg_clk);
+ 	clk_disable_unprepare(nfc->ecc_clk);
+ 
+ 	return 0;
+-- 
+2.16.1
