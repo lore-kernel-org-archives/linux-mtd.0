@@ -1,16 +1,27 @@
-Received: from mail-db5eur01on0115.outbound.protection.outlook.com
- ([104.47.2.115] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-io0-x231.google.com ([2607:f8b0:4001:c06::231])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etivD-0007Dx-PY
- for linux-mtd@lists.infradead.org; Wed, 07 Mar 2018 23:56:38 +0000
-From: Stephen Douthit <stephend@silicom-usa.com>
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: spi-nor: Add Winbond w25q32jv support
-Date: Wed,  7 Mar 2018 18:55:57 -0500
-Message-Id: <20180307235557.27108-1-stephend@silicom-usa.com>
+ id 1etvoT-00060Y-I4
+ for linux-mtd@lists.infradead.org; Thu, 08 Mar 2018 13:42:32 +0000
+Received: by mail-io0-x231.google.com with SMTP id d71so7091526iog.4
+ for <linux-mtd@lists.infradead.org>; Thu, 08 Mar 2018 05:42:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20180303104554.5958-1-richard@nod.at>
+References: <20180303104554.5958-1-richard@nod.at>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 8 Mar 2018 14:42:16 +0100
+Message-ID: <CACRpkdYOqt4xTqGmbSwd_R84NRD8GA9TsHEk_hJ68hhxwbsL_Q@mail.gmail.com>
+Subject: Re: [PATCH] ubi: Reject MLC NAND
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Mark Vasut <marek.vasut@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>, tharvey@gateworks.com,
+ stable <stable@vger.kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +31,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Datasheet:
-https://www.winbond.com/resource-files/w25q32jv%20dtr%20revf%2002242017.pdf
+On Sat, Mar 3, 2018 at 11:45 AM, Richard Weinberger <richard@nod.at> wrote:
 
-Minimal testing done with fw_printenv/fw_setenv, test board did not
-support dual or quad access.
+> While UBI and UBIFS seem to work at first sight with MLC NAND, you will
+> most likely lose all your data upon a power-cut or due to read/write
+> disturb.
+>
+> In order to protect users from bad surprises, refuse to attach to MLC
+> NAND.
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-Signed-off-by: Stephen Douthit <stephend@silicom-usa.com>
-Tested-by: Stephen Douthit <stephend@silicom-usa.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 5 +++++
- 1 file changed, 5 insertions(+)
+I'm sorry to disturb in this interesting discussion about what
+"stable" really means as in "stable kernel".  Stable for who and
+in what sense, that seems to be the question.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d445a4d3b770..a0022549ad92 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1201,6 +1201,11 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
-+	{
-+		"w25q32jv", INFO(0xef7016, 0, 64 * 1024,  64,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+	},
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
- 	{
--- 
-2.14.3
+But my main problem here is to understand who the consumers
+of the MLC NAND devices really are.
+
+I hear some talk here about lab boards. But where is this
+really deployed, large-scale? And who are the people that
+will have their devices potentially not booting after this patch?
+
+I am pretty sure these people are board support or
+customization consultants with work being done for some
+certain products, and not hobbyists and even less end
+consumers, right?
+
+What kind of devices are MLC NANDs being deployed in?
+Certainly not laptops, tablets and phones, they all use eMMC
+and even start to venture into UFS (unified flash storage).
+
+What is using these flashes? Routers and switches? NAS boxes?
+Industrial control? Automotive?
+
+Or are (God forbid, but would not surprise me) talking about a
+Linux instance running inside of eMMCs or UFS devices?
+
+Yours,
+Linus Walleij
