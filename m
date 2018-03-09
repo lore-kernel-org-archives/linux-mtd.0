@@ -1,21 +1,16 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1euHhF-0005h2-BH
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2018 13:04:31 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Krzysztof Kozlowski <krzk@kernel.org>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH] mtd: nand: remove STANDALONE compile mode of nand_ecc
-Date: Fri,  9 Mar 2018 22:03:52 +0900
-Message-Id: <1520600632-24955-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1euJUo-0006JY-Pf
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2018 14:59:48 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: miquel.raynal@free-electrons.com,
+	boris.brezillon@free-electrons.com
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
+ marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org, stefan@agner.ch
+Subject: [PATCH v7 0/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
+Date: Fri,  9 Mar 2018 15:50:35 +0100
+Message-Id: <20180309145038.29024-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This file can not be built independently any more.  We would have to
-bring in more to resolve mtd_to_nand(mtd)->ecc.size, for example.
+Seventh revision of the rework patchset to use exec_op for NXP
+Vybrid (and others) NAND Flash Controller.
 
-It is difficult to notice a breakage since nobody compiles this mode.
-It is not worth fixing or maintaining in my opinion.  Remove.
+--
+Stefan
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+Changes in v7:
+- Check NAND status in vf610_nfc_write_page
 
- drivers/mtd/nand/raw/nand_ecc.c | 20 --------------------
- 1 file changed, 20 deletions(-)
+Changes in v6:
+- Checkpatch style fixes
+- Subject change
 
-diff --git a/drivers/mtd/nand/raw/nand_ecc.c b/drivers/mtd/nand/raw/nand_ecc.c
-index 3630f0f..8e132ed 100644
---- a/drivers/mtd/nand/raw/nand_ecc.c
-+++ b/drivers/mtd/nand/raw/nand_ecc.c
-@@ -28,15 +28,6 @@
-  *
-  */
- 
--/*
-- * The STANDALONE macro is useful when running the code outside the kernel
-- * e.g. when running the code in a testbed or a benchmark program.
-- * When STANDALONE is used, the module related macros are commented out
-- * as well as the linux include files.
-- * Instead a private definition of mtd_info is given to satisfy the compiler
-- * (the code does not use mtd_info, so the code does not care)
-- */
--#ifndef STANDALONE
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -44,17 +35,6 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <asm/byteorder.h>
--#else
--#include <stdint.h>
--struct mtd_info;
--#define EXPORT_SYMBOL(x)  /* x */
--
--#define MODULE_LICENSE(x)	/* x */
--#define MODULE_AUTHOR(x)	/* x */
--#define MODULE_DESCRIPTION(x)	/* x */
--
--#define pr_err printf
--#endif
- 
- /*
-  * invparity is a 256 byte table that contains the odd parity
+Changes in v5:
+- Fix COMMAND_NADDR_BYTES macro (fixes oob/page test issues)
+- Renamed page_access to data_access
+- Removed unclear debugging messages
+- Introduce vf610_nfc_fill_row to avoid code dupplication in
+  vf610_nfc_(read|write)_page
+- Add patch to enable ONFI SET/GET_FEATURES
+- Comment/commit message fixes
+
+Changes in v4:
+- Rebased to nand/next
+- Simplify filling of address cycles
+- Use accessors for SRAM (vf610_nfc_rd_from_sram/vf610_nfc_wr_to_sram)
+- Use two op-parser patterns to avoid a single command reading and writing
+  in a single operation
+- Implement (read|write)_(page|oob)[_raw] to set page_access
+- Set and clear vf610_nfc_ecc_mode in ecc (read|write)_page
+- Clear/set 16-bit config when 16-bit bus is used and 8-bit access is
+  requested
+
+Changes in v3:
+- Separate exec_op() callback addition and removal of old callbacks
+- Push data into regs in one function
+- Readd op parser
+- Implement custom read/write page for hardware ECC
+- Rely on generic ecc.write_page_raw
+- Use nand_read_oob_op instead of nand_read_page_op
+
+Stefan Agner (3):
+  mtd: rawnand: vf610_nfc: make use of ->exec_op()
+  mtd: rawnand: vf610_nfc: remove old hooks
+  mtd: rawnand: vf610_nfc: support ONFI SET/GET_FEATURES commands
+
+ drivers/mtd/nand/raw/vf610_nfc.c | 624 +++++++++++++++++++++++----------------
+ 1 file changed, 372 insertions(+), 252 deletions(-)
+
 -- 
-2.7.4
+2.16.2
