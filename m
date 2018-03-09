@@ -1,27 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mail-io0-x243.google.com ([2607:f8b0:4001:c06::243])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1etxZ5-0001q9-Oa
- for linux-mtd@lists.infradead.org; Thu, 08 Mar 2018 15:34:53 +0000
-Message-ID: <1520523268.20980.43.camel@gmail.com>
-Subject: Re: [PATCH] ubi: Reject MLC NAND
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Richard Weinberger <richard@nod.at>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>,  Mark Vasut <marek.vasut@gmail.com>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- tharvey@gateworks.com, stable <stable@vger.kernel.org>, Ulf Hansson
- <ulf.hansson@linaro.org>
-Date: Thu, 08 Mar 2018 17:34:28 +0200
-In-Reply-To: <10429741.dU3vzh71GH@blindfold>
-References: <20180303104554.5958-1-richard@nod.at>
- <3797589.z8fAhu5iDP@blindfold> <1520521275.20980.41.camel@gmail.com>
- <10429741.dU3vzh71GH@blindfold>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1euFcw-0008Eg-OY
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2018 10:51:56 +0000
+Received: by mail-io0-x243.google.com with SMTP id q24so3102172ioh.8
+ for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2018 02:51:44 -0800 (PST)
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+To: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 0/2] mtd: use put_device() if device_register fail
+Date: Fri,  9 Mar 2018 16:20:47 +0530
+Message-Id: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,8 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2018-03-08 at 16:28 +0100, Richard Weinberger wrote:
-> You mean *not* widely used?
+if device_register() returned an error! Always use put_device()
+to give up the reference initialized.
 
-Yes, indeed, thanks for correction. MLC just wasn't there yet when
-UBI/UBIFS were upstreamed.
+Arvind Yadav (2):
+  [PATCH 1/2] mtd: use put_device() if device_register fail
+  [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
+
+ drivers/mtd/mtdcore.c | 1 +
+ drivers/mtd/ubi/vmt.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+-- 
+1.9.1
