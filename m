@@ -1,22 +1,21 @@
-Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
+Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1euFd5-0008KJ-5O
- for linux-mtd@lists.infradead.org; Fri, 09 Mar 2018 10:52:05 +0000
-Received: by mail-io0-x241.google.com with SMTP id m22so3088604iob.12
- for <linux-mtd@lists.infradead.org>; Fri, 09 Mar 2018 02:51:52 -0800 (PST)
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
- cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
-Date: Fri,  9 Mar 2018 16:20:49 +0530
-Message-Id: <5d9b08afdad2fbc65bac48d8ae22f4925bb80512.1520592440.git.arvind.yadav.cs@gmail.com>
-In-Reply-To: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
-In-Reply-To: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
+ id 1euHhF-0005h2-BH
+ for linux-mtd@lists.infradead.org; Fri, 09 Mar 2018 13:04:31 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Peter Pan <peterpandong@micron.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>, Tony Lindgren <tony@atomide.com>
+Subject: [PATCH] mtd: nand: remove STANDALONE compile mode of nand_ecc
+Date: Fri,  9 Mar 2018 22:03:52 +0900
+Message-Id: <1520600632-24955-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +25,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-if device_register() returned an error! Always use put_device()
-to give up the reference initialized.
+This file can not be built independently any more.  We would have to
+bring in more to resolve mtd_to_nand(mtd)->ecc.size, for example.
 
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+It is difficult to notice a breakage since nobody compiles this mode.
+It is not worth fixing or maintaining in my opinion.  Remove.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- drivers/mtd/ubi/vmt.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 3fd8d7f..db85b68 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -609,6 +609,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct ubi_volume *vol)
- 	return err;
+ drivers/mtd/nand/raw/nand_ecc.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_ecc.c b/drivers/mtd/nand/raw/nand_ecc.c
+index 3630f0f..8e132ed 100644
+--- a/drivers/mtd/nand/raw/nand_ecc.c
++++ b/drivers/mtd/nand/raw/nand_ecc.c
+@@ -28,15 +28,6 @@
+  *
+  */
  
- out_cdev:
-+	put_device(&vol->dev);
- 	cdev_del(&vol->cdev);
- 	return err;
- }
+-/*
+- * The STANDALONE macro is useful when running the code outside the kernel
+- * e.g. when running the code in a testbed or a benchmark program.
+- * When STANDALONE is used, the module related macros are commented out
+- * as well as the linux include files.
+- * Instead a private definition of mtd_info is given to satisfy the compiler
+- * (the code does not use mtd_info, so the code does not care)
+- */
+-#ifndef STANDALONE
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -44,17 +35,6 @@
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/nand_ecc.h>
+ #include <asm/byteorder.h>
+-#else
+-#include <stdint.h>
+-struct mtd_info;
+-#define EXPORT_SYMBOL(x)  /* x */
+-
+-#define MODULE_LICENSE(x)	/* x */
+-#define MODULE_AUTHOR(x)	/* x */
+-#define MODULE_DESCRIPTION(x)	/* x */
+-
+-#define pr_err printf
+-#endif
+ 
+ /*
+  * invparity is a 256 byte table that contains the odd parity
 -- 
-1.9.1
+2.7.4
