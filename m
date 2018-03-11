@@ -1,18 +1,17 @@
-Received: from sg05.corpemail.net ([128.199.149.210])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1euvuo-0005tq-Bm
- for linux-mtd@lists.infradead.org; Sun, 11 Mar 2018 08:01:22 +0000
-From: OuYang ZhiZhong <ouyzz@yealink.com>
-To: <dwmw2@infradead.org>
-CC: <computersforpeace@gmail.com>, <boris.brezillon@free-electrons.com>,
- <marek.vasut@gmail.com>, <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <oyzhizhong@gmail.com>, <ouyzz@yealink.com>, <stable@vger.kernel.org>
-Subject: [PATCH v4] mtdchar: fix usage of mtd_ooblayout_ecc()
-Date: Sun, 11 Mar 2018 15:59:07 +0800
-Message-ID: <1520755147-4414-1-git-send-email-ouyzz@yealink.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mx2.mailbox.org ([80.241.60.215])
+ by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1ev3Tc-0001iB-Eh
+ for linux-mtd@lists.infradead.org; Sun, 11 Mar 2018 16:05:37 +0000
+From: Hauke Mehrtens <hauke@hauke-m.de>
+To: richard@nod.at,
+	dedekind1@gmail.com,
+	adrian.hunter@intel.com
+Cc: linux-mtd@lists.infradead.org,
+	Hauke Mehrtens <hauke@hauke-m.de>
+Subject: [PATCH] ubifs: Add option to create UBI FS version 4 on empty UBI
+ volume
+Date: Sun, 11 Mar 2018 17:04:51 +0100
+Message-Id: <20180311160451.26833-1-hauke@hauke-m.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Section was not properly computed. The value of OOB region definition is
-always ECC section 0 information in the OOB area, but we want to get all
-the ECC bytes information, so we should call
-mtd_ooblayout_ecc(mtd, section++, &oobregion) until it returns -ERANGE.
+Instead of creating an ubifs file system with format version 5 by
+default on empty UBI volumes add a compile option to create an older ubi
+with file system format version 4 instated. This allows it to be mount
+as a volume on kernel versions < 4.10, which does not support format
+version 5.
+We saw that some people can not access their older data when they
+downgraded from kernel 4.14 to kernel 4.9 to prevent this this option
+would help.
 
-Fixes: c2b78452a9db ("mtd: use mtd_ooblayout_xxx() helpers where appropriate")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: OuYang ZhiZhong <ouyzz@yealink.com>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 ---
- drivers/mtd/mtdchar.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ubifs/Kconfig | 13 +++++++++++++
+ fs/ubifs/sb.c    |  6 ++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index de8c902..7d80a8b 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -479,7 +479,7 @@ static int shrink_ecclayout(struct mtd_info *mtd,
- 	for (i = 0; i < MTD_MAX_ECCPOS_ENTRIES;) {
- 		u32 eccpos;
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index 83a961bf7280..a1426b865726 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -74,3 +74,16 @@ config UBIFS_FS_SECURITY
+ 	  the extended attribute support in advance.
  
--		ret = mtd_ooblayout_ecc(mtd, section, &oobregion);
-+		ret = mtd_ooblayout_ecc(mtd, section++, &oobregion);
- 		if (ret < 0) {
- 			if (ret != -ERANGE)
- 				return ret;
-@@ -526,7 +526,7 @@ static int get_oobinfo(struct mtd_info *mtd, struct nand_oobinfo *to)
- 	for (i = 0; i < ARRAY_SIZE(to->eccpos);) {
- 		u32 eccpos;
+ 	  If you are not using a security module, say N.
++
++config UBIFS_FS_FORMAT4
++	bool "Use file system format version 4 for new file systems"
++	depends on UBIFS_FS
++	help
++	  Instead of creating new file systems with the new ubifs file
++	  system version 5, use the old format version 4 for implicitly
++	  by the driver created file systems on an empty UBI volume. This
++	  makes it possible to  mount these file systems also with kernel
++	  versions before 4.10. The driver will still support file system
++	  format version 5 for ubifs file systems created with version 5.
++
++	  If you are unsure, say N.
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 8c25081a5109..6e8b6cccda6b 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -165,7 +165,9 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	tmp64 = (long long)max_buds * c->leb_size;
+ 	if (big_lpt)
+ 		sup_flags |= UBIFS_FLG_BIGLPT;
++#ifndef CONFIG_UBIFS_FS_FORMAT4
+ 	sup_flags |= UBIFS_FLG_DOUBLE_HASH;
++#endif
  
--		ret = mtd_ooblayout_ecc(mtd, section, &oobregion);
-+		ret = mtd_ooblayout_ecc(mtd, section++, &oobregion);
- 		if (ret < 0) {
- 			if (ret != -ERANGE)
- 				return ret;
+ 	sup->ch.node_type  = UBIFS_SB_NODE;
+ 	sup->key_hash      = UBIFS_KEY_HASH_R5;
+@@ -181,7 +183,11 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
+ 	sup->fanout        = cpu_to_le32(DEFAULT_FANOUT);
+ 	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
++#ifdef CONFIG_UBIFS_FS_FORMAT4
++	sup->fmt_version   = cpu_to_le32(4);
++#else
+ 	sup->fmt_version   = cpu_to_le32(UBIFS_FORMAT_VERSION);
++#endif
+ 	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
+ 	if (c->mount_opts.override_compr)
+ 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
 -- 
-1.7.9.5
+2.11.0
