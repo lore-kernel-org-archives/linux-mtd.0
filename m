@@ -1,17 +1,20 @@
-Received: from mx2.mailbox.org ([80.241.60.215])
+Received: from mail-sn1nam02on0045.outbound.protection.outlook.com
+ ([104.47.36.45] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by merlin.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1ev3Tc-0001iB-Eh
- for linux-mtd@lists.infradead.org; Sun, 11 Mar 2018 16:05:37 +0000
-From: Hauke Mehrtens <hauke@hauke-m.de>
-To: richard@nod.at,
-	dedekind1@gmail.com,
-	adrian.hunter@intel.com
-Cc: linux-mtd@lists.infradead.org,
-	Hauke Mehrtens <hauke@hauke-m.de>
-Subject: [PATCH] ubifs: Add option to create UBI FS version 4 on empty UBI
- volume
-Date: Sun, 11 Mar 2018 17:04:51 +0100
-Message-Id: <20180311160451.26833-1-hauke@hauke-m.de>
+ id 1ev3UJ-0001jf-Tc
+ for linux-mtd@lists.infradead.org; Sun, 11 Mar 2018 16:06:20 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
+Date: Sun, 11 Mar 2018 16:06:03 +0000
+Message-ID: <1520784361.4790.86.camel@infinera.com>
+References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+In-Reply-To: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BA9C494593084041AF6873569922D727@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Instead of creating an ubifs file system with format version 5 by
-default on empty UBI volumes add a compile option to create an older ubi
-with file system format version 4 instated. This allows it to be mount
-as a volume on kernel versions < 4.10, which does not support format
-version 5.
-We saw that some people can not access their older data when they
-downgraded from kernel 4.14 to kernel 4.9 to prevent this this option
-would help.
-
-Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
----
- fs/ubifs/Kconfig | 13 +++++++++++++
- fs/ubifs/sb.c    |  6 ++++++
- 2 files changed, 19 insertions(+)
-
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index 83a961bf7280..a1426b865726 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -74,3 +74,16 @@ config UBIFS_FS_SECURITY
- 	  the extended attribute support in advance.
- 
- 	  If you are not using a security module, say N.
-+
-+config UBIFS_FS_FORMAT4
-+	bool "Use file system format version 4 for new file systems"
-+	depends on UBIFS_FS
-+	help
-+	  Instead of creating new file systems with the new ubifs file
-+	  system version 5, use the old format version 4 for implicitly
-+	  by the driver created file systems on an empty UBI volume. This
-+	  makes it possible to  mount these file systems also with kernel
-+	  versions before 4.10. The driver will still support file system
-+	  format version 5 for ubifs file systems created with version 5.
-+
-+	  If you are unsure, say N.
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 8c25081a5109..6e8b6cccda6b 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -165,7 +165,9 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	tmp64 = (long long)max_buds * c->leb_size;
- 	if (big_lpt)
- 		sup_flags |= UBIFS_FLG_BIGLPT;
-+#ifndef CONFIG_UBIFS_FS_FORMAT4
- 	sup_flags |= UBIFS_FLG_DOUBLE_HASH;
-+#endif
- 
- 	sup->ch.node_type  = UBIFS_SB_NODE;
- 	sup->key_hash      = UBIFS_KEY_HASH_R5;
-@@ -181,7 +183,11 @@ static int create_default_filesystem(struct ubifs_info *c)
- 	sup->jhead_cnt     = cpu_to_le32(DEFAULT_JHEADS_CNT);
- 	sup->fanout        = cpu_to_le32(DEFAULT_FANOUT);
- 	sup->lsave_cnt     = cpu_to_le32(c->lsave_cnt);
-+#ifdef CONFIG_UBIFS_FS_FORMAT4
-+	sup->fmt_version   = cpu_to_le32(4);
-+#else
- 	sup->fmt_version   = cpu_to_le32(UBIFS_FORMAT_VERSION);
-+#endif
- 	sup->time_gran     = cpu_to_le32(DEFAULT_TIME_GRAN);
- 	if (c->mount_opts.override_compr)
- 		sup->default_compr = cpu_to_le16(c->mount_opts.compr_type);
--- 
-2.11.0
+T24gVGh1LCAyMDE4LTAzLTAxIGF0IDE0OjM5ICswMTAwLCBKb2FraW0gVGplcm5sdW5kIHdyb3Rl
+Og0KPiBUaGlzIGZpeGVzIGEgYnVnIHdoaWNoIGFsbG93cyByZWFkL3dyaXRlIHRvIGEgZXJhc2Ug
+YmxvY2sgY3VycmVudGx5DQo+IGVyYXNpbmcuDQo+IEFsc28gd29ya3MgYXJvdW5kIGEgY2hpcCBi
+dWcgaW4gTWljcm9uIDI4RjAwQVAzMCBjaGlwcy4NCj4gDQo+IEpvYWtpbSBUamVybmx1bmQgKDMp
+Og0KPiAgIGNmaV9jbWRzZXRfMDAwMTogRG8gbm90IGFsbG93IHJlYWQvd3JpdGUgdG8gc3VzcGVu
+ZCBlcmFzZSBibG9jay4NCj4gICBjZmlfY21kc2V0XzAwMDE6IFdvcmthcm91bmQgTWljcm9uIEVy
+YXNlIHN1c3BlbmQgYnVnLg0KPiAgIGNmaV9jbWRzZXRfMDAwMjogRG8gbm90IGFsbG93IHJlYWQv
+d3JpdGUgdG8gc3VzcGVuZCBlcmFzZSBibG9jay4NCj4gDQo+ICBkcml2ZXJzL210ZC9jaGlwcy9j
+ZmlfY21kc2V0XzAwMDEuYyB8IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0K
+PiAgZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAgOSArKysrKystLS0NCj4g
+IGluY2x1ZGUvbGludXgvbXRkL2ZsYXNoY2hpcC5oICAgICAgIHwgIDEgKw0KPiAgMyBmaWxlcyBj
+aGFuZ2VkLCAzNSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiANCg0KUGluZz8NClRo
+aXMgaXMgYSBmYWlybHkgc2VyaW91cyBidWcgYXMgaXQgY29uZnVzZXMgdGhlIGZsYXNoIHN0YXRl
+IG1hY2hpbmUsDQptYWtpbmcgZnVydGhlciBmbGFzaCBhY2Nlc3MgZmFpbC4NCg0KIEpvY2tl
