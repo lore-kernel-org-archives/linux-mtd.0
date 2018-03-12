@@ -1,19 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
- id 1evSen-0001Qu-5t
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 18:58:51 +0000
-Date: Mon, 12 Mar 2018 19:58:18 +0100
+ id 1evSgZ-0003DS-9m
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 19:01:11 +0000
+Date: Mon, 12 Mar 2018 20:00:10 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- marcel.ziswiler@toradex.com, richard@nod.at, bpringlemeir@gmail.com,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH v7 0/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
-Message-ID: <20180312195818.2f23de04@bbrezillon>
-In-Reply-To: <20180309145038.29024-1-stefan@agner.ch>
-References: <20180309145038.29024-1-stefan@agner.ch>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, jocelyncarroue@macronix.com,
+ juliensu@mxic.com.tw, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Stefan Agner <stefan@agner.ch>, linux-mtd@lists.infradead.org, Ezequiel
+ Garcia <ezequiel.garcia@free-electrons.com>, Han Xu <han.xu@nxp.com>
+Subject: Re: [PATCH v3 09/14] mtd: rawnand: prepare the removal of
+ ONFI/JEDEC parameter pages
+Message-ID: <20180312200010.49d828d6@bbrezillon>
+In-Reply-To: <20180302142422.2543-10-miquel.raynal@bootlin.com>
+References: <20180302142422.2543-1-miquel.raynal@bootlin.com>
+ <20180302142422.2543-10-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,62 +30,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  9 Mar 2018 15:50:35 +0100
-Stefan Agner <stefan@agner.ch> wrote:
+On Fri,  2 Mar 2018 15:24:17 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Seventh revision of the rework patchset to use exec_op for NXP
-> Vybrid (and others) NAND Flash Controller.
+> The NAND chip parameter page is statically allocated within the
+> nand_chip structure, which reserves a lot of space. Even not ONFI nor
+> JEDEC chips have it embedded. Also, only a few parameters are actually
+> read from the parameter page after the detection.
 > 
-> --
-> Stefan
+> To prepare to the removal of such huge structure, a small NAND parameter
+> structure is allocated statically and contains only very few members
+> that are generic to all chips and actually used elsewhere in the code.
 > 
-> Changes in v7:
-> - Check NAND status in vf610_nfc_write_page
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 32 +++++++++++++-------------------
+>  include/linux/mtd/rawnand.h      |  6 ++++++
+>  2 files changed, 19 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index e5bcfbf7c7f6..30364f60dc4d 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -1174,9 +1174,7 @@ int nand_get_features(struct nand_chip *chip, int addr,
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  
+> -	if (!chip->onfi_version ||
+> -	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> -	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> +	if (!chip->parameters.supports_set_get_features)
+>  		return -ENOTSUPP;
+>  
+>  	return chip->get_features(mtd, chip, addr, subfeature_param);
+> @@ -1197,9 +1195,7 @@ int nand_set_features(struct nand_chip *chip, int addr,
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  
+> -	if (!chip->onfi_version ||
+> -	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+> -	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+> +	if (!chip->parameters.supports_set_get_features)
+>  		return -ENOTSUPP;
+>  
+>  	return chip->set_features(mtd, chip, addr, subfeature_param);
+> @@ -5150,8 +5146,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  
+>  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+>  	sanitize_string(p->model, sizeof(p->model));
+> +	memcpy(chip->parameters.model, p->model, sizeof(p->model));
+>  	if (!mtd->name)
+> -		mtd->name = p->model;
+> +		mtd->name = chip->parameters.model;
+>  
+>  	mtd->writesize = le32_to_cpu(p->byte_per_page);
+>  
+> @@ -5198,6 +5195,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  		pr_warn("Could not retrieve ONFI ECC requirements\n");
+>  	}
+>  
+> +	/* Save some parameters from the parameter page for future use */
+> +	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES)
+> +		chip->parameters.supports_set_get_features = true;
+> +
+>  	return 1;
+>  }
+>  
+> @@ -5250,8 +5251,9 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+>  
+>  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+>  	sanitize_string(p->model, sizeof(p->model));
+> +	memcpy(chip->parameters.model, p->model, sizeof(p->model));
 
-Still no NAND status check in vf610_nfc_write_page(), maybe you forgot
-to squash the changes in patch 1.
+It's safe as long as chip->parameters.model is bigger than p->model,
+which is the case here, but how about enforcing it, just in case
+someone decides to change the chip->parameters.model size.
 
-> 
-> Changes in v6:
-> - Checkpatch style fixes
-> - Subject change
-> 
-> Changes in v5:
-> - Fix COMMAND_NADDR_BYTES macro (fixes oob/page test issues)
-> - Renamed page_access to data_access
-> - Removed unclear debugging messages
-> - Introduce vf610_nfc_fill_row to avoid code dupplication in
->   vf610_nfc_(read|write)_page
-> - Add patch to enable ONFI SET/GET_FEATURES
-> - Comment/commit message fixes
-> 
-> Changes in v4:
-> - Rebased to nand/next
-> - Simplify filling of address cycles
-> - Use accessors for SRAM (vf610_nfc_rd_from_sram/vf610_nfc_wr_to_sram)
-> - Use two op-parser patterns to avoid a single command reading and writing
->   in a single operation
-> - Implement (read|write)_(page|oob)[_raw] to set page_access
-> - Set and clear vf610_nfc_ecc_mode in ecc (read|write)_page
-> - Clear/set 16-bit config when 16-bit bus is used and 8-bit access is
->   requested
-> 
-> Changes in v3:
-> - Separate exec_op() callback addition and removal of old callbacks
-> - Push data into regs in one function
-> - Readd op parser
-> - Implement custom read/write page for hardware ECC
-> - Rely on generic ecc.write_page_raw
-> - Use nand_read_oob_op instead of nand_read_page_op
-> 
-> Stefan Agner (3):
->   mtd: rawnand: vf610_nfc: make use of ->exec_op()
->   mtd: rawnand: vf610_nfc: remove old hooks
->   mtd: rawnand: vf610_nfc: support ONFI SET/GET_FEATURES commands
-> 
->  drivers/mtd/nand/raw/vf610_nfc.c | 624 +++++++++++++++++++++++----------------
->  1 file changed, 372 insertions(+), 252 deletions(-)
-> 
+	strncpy(chip->parameters.model, p->model,
+		sizeof(chip->parameters.model) - 1;
+
+>  	if (!mtd->name)
+> -		mtd->name = p->model;
+> +		mtd->name = chip->parameters.model;
+>  
+>  	mtd->writesize = le32_to_cpu(p->byte_per_page);
+>  
+> @@ -5652,17 +5654,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+>  
+>  	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+>  		maf_id, dev_id);
+> -
+> -	if (chip->onfi_version)
+> -		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+> -			chip->onfi_params.model);
+> -	else if (chip->jedec_version)
+> -		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+> -			chip->jedec_params.model);
+> -	else
+> -		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+> -			type->name);
+> -
+> +	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+> +		(chip->onfi_version || chip->jedec_version) ?
+> +		chip->parameters.model : type->name);
+>  	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+>  		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+>  		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 3cc2a3435b20..1af0bff58ff4 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -429,6 +429,11 @@ struct nand_jedec_params {
+>  	__le16 crc;
+>  } __packed;
+>  
+> +struct nand_parameters {
+> +	char model[100];
+> +	bool supports_set_get_features;
+> +};
+
+Can you document this structure with a kernel-doc header?
+
+> +
+>  /* The maximum expected count of bytes in the NAND ID sequence */
+>  #define NAND_MAX_ID_LEN 8
+>  
+> @@ -1249,6 +1254,7 @@ struct nand_chip {
+>  		struct nand_onfi_params	onfi_params;
+>  		struct nand_jedec_params jedec_params;
+>  	};
+> +	struct nand_parameters parameters;
+
+You forgot to update the kernel-doc header.
+
+>  	u16 max_bb_per_die;
+>  	u32 blocks_per_die;
+>  
 
 
 
