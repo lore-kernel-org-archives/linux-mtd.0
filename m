@@ -1,23 +1,18 @@
-Received: from mail-bl2nam02on0085.outbound.protection.outlook.com
- ([104.47.38.85] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evLMN-0005Fs-Ea
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 11:11:27 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "andrea.adami@gmail.com" <andrea.adami@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
-Date: Mon, 12 Mar 2018 11:11:04 +0000
-Message-ID: <1520853062.4790.103.camel@infinera.com>
-References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
- <1520784361.4790.86.camel@infinera.com>
- <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
-In-Reply-To: <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4E3CB023733D3F41BF96DC9EE4C1BCFC@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1evOSm-0007gq-Ki
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 14:30:15 +0000
+To: linux-mtd@lists.infradead.org
+Cc: yamada.masahiro@socionext.com, boris.brezillon@free-electrons.com,
+ Benedikt Spranger <b.spranger@linutronix.de>
+From: Philipp Rosenberger <p.rosenberger@linutronix.de>
+Subject: DENALI: can't detect NAND chip
+Message-ID: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
+Date: Mon, 12 Mar 2018 15:29:46 +0100
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uLCAyMDE4LTAzLTEyIGF0IDEwOjA5ICswMTAwLCBBbmRyZWEgQWRhbWkgd3JvdGU6DQo+
-IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2Fu
-aXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
-dSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0KPiAN
-Cj4gDQo+IE9uIFN1biwgTWFyIDExLCAyMDE4IGF0IDU6MDYgUE0sIEpvYWtpbSBUamVybmx1bmQN
-Cj4gPEpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29tPiB3cm90ZToNCj4gPiBPbiBUaHUsIDIw
-MTgtMDMtMDEgYXQgMTQ6MzkgKzAxMDAsIEpvYWtpbSBUamVybmx1bmQgd3JvdGU6DQo+ID4gPiBU
-aGlzIGZpeGVzIGEgYnVnIHdoaWNoIGFsbG93cyByZWFkL3dyaXRlIHRvIGEgZXJhc2UgYmxvY2sg
-Y3VycmVudGx5DQo+ID4gPiBlcmFzaW5nLg0KPiA+ID4gQWxzbyB3b3JrcyBhcm91bmQgYSBjaGlw
-IGJ1ZyBpbiBNaWNyb24gMjhGMDBBUDMwIGNoaXBzLg0KPiA+ID4gDQo+ID4gPiBKb2FraW0gVGpl
-cm5sdW5kICgzKToNCj4gPiA+ICAgY2ZpX2NtZHNldF8wMDAxOiBEbyBub3QgYWxsb3cgcmVhZC93
-cml0ZSB0byBzdXNwZW5kIGVyYXNlIGJsb2NrLg0KPiA+ID4gICBjZmlfY21kc2V0XzAwMDE6IFdv
-cmthcm91bmQgTWljcm9uIEVyYXNlIHN1c3BlbmQgYnVnLg0KPiA+ID4gICBjZmlfY21kc2V0XzAw
-MDI6IERvIG5vdCBhbGxvdyByZWFkL3dyaXRlIHRvIHN1c3BlbmQgZXJhc2UgYmxvY2suDQo+ID4g
-PiANCj4gPiA+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYyB8IDMzICsrKysr
-KysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0KPiA+ID4gIGRyaXZlcnMvbXRkL2NoaXBzL2Nm
-aV9jbWRzZXRfMDAwMi5jIHwgIDkgKysrKysrLS0tDQo+ID4gPiAgaW5jbHVkZS9saW51eC9tdGQv
-Zmxhc2hjaGlwLmggICAgICAgfCAgMSArDQo+ID4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAzNSBpbnNl
-cnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gDQo+ID4gUGluZz8NCj4gPiBU
-aGlzIGlzIGEgZmFpcmx5IHNlcmlvdXMgYnVnIGFzIGl0IGNvbmZ1c2VzIHRoZSBmbGFzaCBzdGF0
-ZSBtYWNoaW5lLA0KPiA+IG1ha2luZyBmdXJ0aGVyIGZsYXNoIGFjY2VzcyBmYWlsLg0KPiA+IA0K
-PiANCj4gSGVsbG8sDQo+IA0KPiBJIGRvbid0IHVuZGVydHNhbmQgZXhhY3RseSBmcm9tIHRoZSB0
-aXRsZXMgd2hhdCBpcyBoYXBwZW5pbmcuDQo+IERvIHlvdSB3YW50IHRvIGRpc2FibGUgZXJhc2Ug
-YW5kIHdpdGUgc3VzcGVuZCBsaWtlIGluIHRoaXMgb3RoZXIgMjAxNg0KPiBwYXRjaCBmb3VuZCBh
-cm91bmQ/DQoNCk5vdCBxdWl0ZSwgdGhlIGZpcnN0IHBhcnQgaXMgYWJvdXQgcHJldmVudGluZyBy
-ZWFkL3dyaXRlIHRvIGEgYmxvY2sgdGhhdCBpcw0KYmVpbmcgZXJhc2VkLiBUaGlzIGNhbiBoYXBw
-ZW4gaWYgdHdvIGFwcHMgb3BlbnMgdGhlIHNhbWUgL2Rldi9tdGQgZGV2aWNlLg0KDQpUaGVuIHRo
-ZXJlIGlzIGEgYnVnIGZpeCBmb3IgZXJhc2Ugc3VzcGVuZCBub3Qgd29ya2luZyBpbiB0aGUgc21h
-bGxlciBib290IGJsb2NrDQpzZWN0aW9ucywgdGhhdCBwYXJ0IGlzIHNpbWlsYXIgdG8gdGhlIHBh
-dGNoIHlvdSByZWZlcmVuY2UgYnV0IG11Y2ggbGVzcyBpbnZhc2l2ZQ0KDQo+IGh0dHBzOi8vcGF0
-Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTM4MDAyOS8NCj4gDQo+IFNlZSwgSSBhbSB1c2VyIG9m
-IHRoZSBTaGFycCBMSDI4RjY0MEJGIE5PUiwgdmVyeSBzaW1pbGFyIHRvIHRoZSBJbnRlbA0KPiBT
-dGFydGFmbGFzaCwgNC1QbGFuZSBQYWdlIE1vZGUgRHVhbCBXb3JrLg0KPiBPbiB0aGVzZSBjaGlw
-cyBlcmFzZSBzdXNwZW5kIHdvcmtzIGp1c3QgZmluZS4NCj4gV2hhdCBoYXMgYmVlbiBkaXNhYmxl
-ZCBpcyBkdWFsIHdvcms6IHNpbXVsdGFuZW91cyByZWFkLXdoaWxlLWVyYXNlIGFuZA0KPiByZWFk
-LXdoaWxlLXByb2dyYW0gYmVjYXVzZSB0aGVyZSBoYXMgbmV2ZXIgYmVlbiByZWFsIHN1cHBvcnQg
-Zm9yDQo+IG4tcGxhbmVzIGluIGtlcm5lbC4NCj4gDQo+IFdoYXQgaXMgZXhhY3RseSB0aGUgaXNz
-dWU/DQo+IFJlZ2FyZHMNCj4gQW5kcmVhDQo+IA0KPiA+ICBKb2NrZQ0KPiA+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IExpbnV4IE1U
-RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0K
+Hi,
+
+I'm currently porting Linux 4.14 to a Altera Cyclone V based board. The
+Denali NAND Driver isn't able to detect the NAND chip Micron MT29F4G08) correctly.
+
+[    0.862242] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
+[    0.868604] nand: Unknown denali-nand
+[    0.872253] nand: bus width 8 instead of 16 bits
+[    0.876899] nand: No NAND device found
+[    0.880688] denali-nand-dt: probe of ff900000.nand failed with error -22
+
+The correct ManufID is 0x2c and the DevID is 0xdc. Currently we are
+running a 4.1 kernel with the "old" denali driver without this problem.
+While researching the issue I found the following Mail in the
+Rocketboards archive, which seems to be the same issue.
+
+https://lists.rocketboards.org/pipermail/rfi/2017-September/003627.html
+
+
+We also tested Linux 4.16-rc5 without any additional patches with the same behavior.
+
+Best regards,
+Philipp
