@@ -1,24 +1,24 @@
-Received: from smtprelay0246.hostedemail.com ([216.40.44.246]
- helo=smtprelay.hostedemail.com)
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evRD3-0002Oo-Oo
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 17:26:07 +0000
-Message-ID: <1520875536.2049.11.camel@perches.com>
-Subject: Re: [PATCH] mtd: chips: Replace printk() with pr_*() and define
- pr_fmt()
-From: Joe Perches <joe@perches.com>
-To: Arushi Singhal <arushisinghal19971997@gmail.com>, dwmw2@infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>,  linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Date: Mon, 12 Mar 2018 10:25:36 -0700
-In-Reply-To: <20180312170208.GA10604@seema-Inspiron-15-3567>
-References: <20180312170208.GA10604@seema-Inspiron-15-3567>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1evRGb-0004Fb-Mn
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 17:29:49 +0000
+Received: by mail-wr0-x242.google.com with SMTP id n12so5395669wra.2
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Mar 2018 10:29:34 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <5AA6AA84.6040001@gmail.com>
+References: <fa970be78de11dee1a217c9a75ab0850f1780e0c.1520591977.git.arvind.yadav.cs@gmail.com>
+ <20180312.104323.14368638452528082.davem@davemloft.net>
+ <5AA6AA84.6040001@gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 12 Mar 2018 18:29:32 +0100
+Message-ID: <CAFLxGvw1U2OZn4kU1O6uJ17yWYf1deE=+Cr56Foffdq7Q=5u3A@mail.gmail.com>
+Subject: Re: [PATCH] net: hns: use put_device() if device_register fail
+To: arvindY <arvind.yadav.cs@gmail.com>
+Cc: David Miller <davem@davemloft.net>, yisen.zhuang@huawei.com,
+ salil.mehta@huawei.com,
+ linyunsheng@huawei.com, LKML <linux-kernel@vger.kernel.org>,
+ netdev@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2018-03-12 at 22:32 +0530, Arushi Singhal wrote:
-> Using pr_<loglevel>() is more concise than printk(KERN_<LOGLEVEL>).
-> This patch:
-> * Replace printks having a log level with the appropriate pr_*() macros.
-> * Define pr_fmt() to include relevant name.
-> * Remove redundant prefixes from pr_*() calls.
-> * Indent the code where possible.
+On Mon, Mar 12, 2018 at 5:27 PM, arvindY <arvind.yadav.cs@gmail.com> wrote:
+>
+>
+> On Monday 12 March 2018 08:13 PM, David Miller wrote:
+>>
+>> From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+>> Date: Fri,  9 Mar 2018 16:11:17 +0530
+>>
+>>> if device_register() returned an error! Always use put_device()
+>>> to give up the reference initialized.
+>>>
+>>> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+>>
+>> I do not see anything giving cls_dev an initial non-zero reference
+>> count before this device_register() call.
+>
+> Yes,  you are correct there is nothing to release (hnae_release).
 
-Hello Arushi.
+Wait, this is not what DaveM said.
+Since you sent also patches to MTD I care about this too.
 
-When you do these, please remember to remove the unnecessary
-and inconsistent uses of periods and to coalesce formats
-where appropriate.
+Do we have to call put_device() in any case after a failure of
+device_register() or not?
+In this case the release function is empty, so nothing is going to released.
+But technically a put_device() is needed and correct according to your
+change log.
 
-Also, there was _some_ logic here behind the use of the
-"cfi_cmdset_0001:" prefix on only some of the error messages.
+I have to admit I don't know all details of the driver core, maybe you
+can help me.
+device_register() calls device_initialize() followed by device_add().
+device_initialize() does a kobject_init() which again sets the
+reference counter to 1 via kref_init().
+In the next step device_add() does a get_device() --> reference
+counter goes up to 2.
+But in the exit path of the function a put_device() is done, also in
+case of an error.
+So device_register() always returns with reference count 1.
 
-Perhaps the commit message should describe that change a bit
-more fully.
+If I understand this correctly a put_device() is mandatory.
+Also in this driver.
+Can you please enlighten me? :-)
 
-Lastly, please run checkpatch on your proposed patches.
-
-$ ./scripts/checkpatch.pl --terse patch.mbox
-patch.mbox:151: ERROR: space prohibited before that close parenthesis ')'
-patch.mbox:160: ERROR: space prohibited before that close parenthesis ')'
-patch.mbox:183: WARNING: line over 80 characters
-patch.mbox:201: WARNING: line over 80 characters
-patch.mbox:211: ERROR: space required after that ',' (ctx:VxV)
-patch.mbox:253: WARNING: quoted string split across lines
-patch.mbox:273: WARNING: line over 80 characters
-patch.mbox:273: WARNING: Prefer using '"%s...", __func__' to using 'put_chip', this function's name, in a string
-patch.mbox:282: WARNING: line over 80 characters
-patch.mbox:304: WARNING: line over 80 characters
-patch.mbox:313: WARNING: line over 80 characters
-patch.mbox:346: WARNING: line over 80 characters
-patch.mbox:364: WARNING: line over 80 characters
-patch.mbox:376: WARNING: line over 80 characters
-patch.mbox:383: WARNING: line over 80 characters
-patch.mbox:456: WARNING: line over 80 characters
-patch.mbox:465: WARNING: line over 80 characters
-total: 3 errors, 14 warnings, 343 lines checked
+-- 
+Thanks,
+//richard
