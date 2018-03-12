@@ -1,24 +1,22 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evRGb-0004Fb-Mn
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 17:29:49 +0000
-Received: by mail-wr0-x242.google.com with SMTP id n12so5395669wra.2
- for <linux-mtd@lists.infradead.org>; Mon, 12 Mar 2018 10:29:34 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.89 #1 (Red Hat Linux))
+ id 1evSen-0001Qu-5t
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 18:58:51 +0000
+Date: Mon, 12 Mar 2018 19:58:18 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
+ marcel.ziswiler@toradex.com, richard@nod.at, bpringlemeir@gmail.com,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH v7 0/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
+Message-ID: <20180312195818.2f23de04@bbrezillon>
+In-Reply-To: <20180309145038.29024-1-stefan@agner.ch>
+References: <20180309145038.29024-1-stefan@agner.ch>
 MIME-Version: 1.0
-In-Reply-To: <5AA6AA84.6040001@gmail.com>
-References: <fa970be78de11dee1a217c9a75ab0850f1780e0c.1520591977.git.arvind.yadav.cs@gmail.com>
- <20180312.104323.14368638452528082.davem@davemloft.net>
- <5AA6AA84.6040001@gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 12 Mar 2018 18:29:32 +0100
-Message-ID: <CAFLxGvw1U2OZn4kU1O6uJ17yWYf1deE=+Cr56Foffdq7Q=5u3A@mail.gmail.com>
-Subject: Re: [PATCH] net: hns: use put_device() if device_register fail
-To: arvindY <arvind.yadav.cs@gmail.com>
-Cc: David Miller <davem@davemloft.net>, yisen.zhuang@huawei.com,
- salil.mehta@huawei.com,
- linyunsheng@huawei.com, LKML <linux-kernel@vger.kernel.org>,
- netdev@vger.kernel.org, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 12, 2018 at 5:27 PM, arvindY <arvind.yadav.cs@gmail.com> wrote:
->
->
-> On Monday 12 March 2018 08:13 PM, David Miller wrote:
->>
->> From: Arvind Yadav <arvind.yadav.cs@gmail.com>
->> Date: Fri,  9 Mar 2018 16:11:17 +0530
->>
->>> if device_register() returned an error! Always use put_device()
->>> to give up the reference initialized.
->>>
->>> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
->>
->> I do not see anything giving cls_dev an initial non-zero reference
->> count before this device_register() call.
->
-> Yes,  you are correct there is nothing to release (hnae_release).
+On Fri,  9 Mar 2018 15:50:35 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-Wait, this is not what DaveM said.
-Since you sent also patches to MTD I care about this too.
+> Seventh revision of the rework patchset to use exec_op for NXP
+> Vybrid (and others) NAND Flash Controller.
+> 
+> --
+> Stefan
+> 
+> Changes in v7:
+> - Check NAND status in vf610_nfc_write_page
 
-Do we have to call put_device() in any case after a failure of
-device_register() or not?
-In this case the release function is empty, so nothing is going to released.
-But technically a put_device() is needed and correct according to your
-change log.
+Still no NAND status check in vf610_nfc_write_page(), maybe you forgot
+to squash the changes in patch 1.
 
-I have to admit I don't know all details of the driver core, maybe you
-can help me.
-device_register() calls device_initialize() followed by device_add().
-device_initialize() does a kobject_init() which again sets the
-reference counter to 1 via kref_init().
-In the next step device_add() does a get_device() --> reference
-counter goes up to 2.
-But in the exit path of the function a put_device() is done, also in
-case of an error.
-So device_register() always returns with reference count 1.
+> 
+> Changes in v6:
+> - Checkpatch style fixes
+> - Subject change
+> 
+> Changes in v5:
+> - Fix COMMAND_NADDR_BYTES macro (fixes oob/page test issues)
+> - Renamed page_access to data_access
+> - Removed unclear debugging messages
+> - Introduce vf610_nfc_fill_row to avoid code dupplication in
+>   vf610_nfc_(read|write)_page
+> - Add patch to enable ONFI SET/GET_FEATURES
+> - Comment/commit message fixes
+> 
+> Changes in v4:
+> - Rebased to nand/next
+> - Simplify filling of address cycles
+> - Use accessors for SRAM (vf610_nfc_rd_from_sram/vf610_nfc_wr_to_sram)
+> - Use two op-parser patterns to avoid a single command reading and writing
+>   in a single operation
+> - Implement (read|write)_(page|oob)[_raw] to set page_access
+> - Set and clear vf610_nfc_ecc_mode in ecc (read|write)_page
+> - Clear/set 16-bit config when 16-bit bus is used and 8-bit access is
+>   requested
+> 
+> Changes in v3:
+> - Separate exec_op() callback addition and removal of old callbacks
+> - Push data into regs in one function
+> - Readd op parser
+> - Implement custom read/write page for hardware ECC
+> - Rely on generic ecc.write_page_raw
+> - Use nand_read_oob_op instead of nand_read_page_op
+> 
+> Stefan Agner (3):
+>   mtd: rawnand: vf610_nfc: make use of ->exec_op()
+>   mtd: rawnand: vf610_nfc: remove old hooks
+>   mtd: rawnand: vf610_nfc: support ONFI SET/GET_FEATURES commands
+> 
+>  drivers/mtd/nand/raw/vf610_nfc.c | 624 +++++++++++++++++++++++----------------
+>  1 file changed, 372 insertions(+), 252 deletions(-)
+> 
 
-If I understand this correctly a put_device() is mandatory.
-Also in this driver.
-Can you please enlighten me? :-)
+
 
 -- 
-Thanks,
-//richard
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
