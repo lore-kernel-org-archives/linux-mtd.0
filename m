@@ -1,16 +1,20 @@
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- oss@buserror.net, leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Jagdish Gediya <jagdish.gediya@nxp.com>
-Subject: [PATCH 2/2][v6] driver: mtd: update struct map_info's swap as per map
- requirement
-Date: Mon, 12 Mar 2018 13:42:21 +0530
-Message-Id: <20180312081221.8246-1-prabhakar.kushwaha@nxp.com>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
+ id 1evJSL-0002Ck-32
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 09:09:22 +0000
+Received: by mail-wm0-x243.google.com with SMTP id 139so14587662wmn.2
+ for <linux-mtd@lists.infradead.org>; Mon, 12 Mar 2018 02:09:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1520784361.4790.86.camel@infinera.com>
+References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+ <1520784361.4790.86.camel@infinera.com>
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Mon, 12 Mar 2018 10:09:05 +0100
+Message-ID: <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,51 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is not necessary for all device's maps to be CFI_HOST_ENDIAN.
-Maps device can be Big endian or little endian.
+On Sun, Mar 11, 2018 at 5:06 PM, Joakim Tjernlund
+<Joakim.Tjernlund@infinera.com> wrote:
+> On Thu, 2018-03-01 at 14:39 +0100, Joakim Tjernlund wrote:
+>> This fixes a bug which allows read/write to a erase block currently
+>> erasing.
+>> Also works around a chip bug in Micron 28F00AP30 chips.
+>>
+>> Joakim Tjernlund (3):
+>>   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
+>>   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
+>>   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
+>>
+>>  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
+>>  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
+>>  include/linux/mtd/flashchip.h       |  1 +
+>>  3 files changed, 35 insertions(+), 8 deletions(-)
+>>
+>
+> Ping?
+> This is a fairly serious bug as it confuses the flash state machine,
+> making further flash access fail.
+>
 
-Currently it is being taken care using CONFIG_MTD_CFI_LE_BYTE_SWAP or
-CONFIG_MTD_CFI_BE_BYTE_SWAP i.e. compile time.
+Hello,
 
-Now update struct map_info's swap field based on device characteristics
-defined in device tree.
+I don't undertsand exactly from the titles what is happening.
+Do you want to disable erase and wite suspend like in this other 2016
+patch found around?
 
-Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
----
-Changes for v2: Incorporated review comments from Boris Brezillon
-http://patchwork.ozlabs.org/patch/758381/
-Changes for v3: None
-Changes for v4: Updated code as per new defined binding of physmap.txt
-Changes for v5: Avoid map.swap set in case of endiannes not defined in dts file
-Changes for v6: Sending as it is
+https://patchwork.kernel.org/patch/9380029/
 
- drivers/mtd/maps/physmap_of_core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+See, I am user of the Sharp LH28F640BF NOR, very similar to the Intel
+Startaflash, 4-Plane Page Mode Dual Work.
+On these chips erase suspend works just fine.
+What has been disabled is dual work: simultaneous read-while-erase and
+read-while-program because there has never been real support for
+n-planes in kernel.
 
-diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-index b1bd4faecfb2..527b1682381f 100644
---- a/drivers/mtd/maps/physmap_of_core.c
-+++ b/drivers/mtd/maps/physmap_of_core.c
-@@ -20,6 +20,7 @@
- #include <linux/mtd/map.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/concat.h>
-+#include <linux/mtd/cfi_endian.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
-@@ -233,6 +234,11 @@ static int of_flash_probe(struct platform_device *dev)
- 		info->list[i].map.bankwidth = be32_to_cpup(width);
- 		info->list[i].map.device_node = dp;
- 
-+		if (of_property_read_bool(dp, "big-endian"))
-+			info->list[i].map.swap = CFI_BIG_ENDIAN;
-+		else if (of_property_read_bool(dp, "little-endian"))
-+			info->list[i].map.swap = CFI_LITTLE_ENDIAN;
-+
- 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
- 		if (err)
- 			goto err_out;
--- 
-2.14.1
+What is exactly the issue?
+Regards
+Andrea
+
+>  Jocke
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
