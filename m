@@ -1,24 +1,14 @@
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evGNp-0001V0-HX
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 05:52:31 +0000
-Received: by mail-io0-x242.google.com with SMTP id v10so3340497iob.6
- for <linux-mtd@lists.infradead.org>; Sun, 11 Mar 2018 22:52:17 -0700 (PDT)
-Subject: Re: [PATCH 0/2] mtd: use put_device() if device_register fail
-To: Richard Weinberger <richard@nod.at>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
- <3975609.gPYExXdWMR@blindfold>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Message-ID: <4a280604-16f2-776b-d997-d5882af6fe35@gmail.com>
-Date: Mon, 12 Mar 2018 11:21:24 +0530
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ oss@buserror.net, leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
+Date: Mon, 12 Mar 2018 13:41:28 +0530
+Message-Id: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <3975609.gPYExXdWMR@blindfold>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Connection between flash and controller is not necessary to be always
+of same type. It may varies from platform to platform.
 
+Adding endianness (optional) property to provide connection type
+information.
 
-On Monday 12 March 2018 01:05 AM, Richard Weinberger wrote:
-> Am Freitag, 9. März 2018, 11:50:47 CET schrieb Arvind Yadav:
->> if device_register() returned an error! Always use put_device()
->> to give up the reference initialized.
->>
->> Arvind Yadav (2):
->>    [PATCH 1/2] mtd: use put_device() if device_register fail
->>    [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
-> Uhh, this is not obvious. Does device_register() really always return with a
-> reference held in all (error) cases?
->
-> Thanks,
-> //richard
-if device_register() returned an error! Always use put_device()
-to give up the reference initialized.(-- Please see the comment
-for device_register() ). put_device() is able to handle those case
-where it'll not return a reference.
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes for v2: updated subject
+Changes for v3: fixed typo for "big-endian"
+Changes for v4: Moved binding definition in mtd-physmap.txt
+as discussed at https://patchwork.ozlabs.org/patch/842543/
+Changes for v5: Sending as it is
+Changes for v6: Updated binding when endianness property is absent
 
-~arvind
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48bf4ecb..691c98f7301d 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -41,6 +41,11 @@ additional (optional) property is defined:
+ 
+  - erase-size : The chip's physical erase block size in bytes.
+ 
++ The device tree may optionally contain endianness property.
++ little-endian or big-endian : It represents connection between controller and
++			flash. If this property is absent, connection is described
++			by the CFI_DEFAULT_ENDIAN.
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
+-- 
+2.14.1
