@@ -1,18 +1,23 @@
-Received: from galois.linutronix.de ([2a01:7a0:2:106d:700::1])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evOSm-0007gq-Ki
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 14:30:15 +0000
-To: linux-mtd@lists.infradead.org
-Cc: yamada.masahiro@socionext.com, boris.brezillon@free-electrons.com,
- Benedikt Spranger <b.spranger@linutronix.de>
-From: Philipp Rosenberger <p.rosenberger@linutronix.de>
-Subject: DENALI: can't detect NAND chip
-Message-ID: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
-Date: Mon, 12 Mar 2018 15:29:46 +0100
+ id 1evOTk-00017n-LA
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 14:31:15 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/2] mtd: use put_device() if device_register fail
+Date: Mon, 12 Mar 2018 15:32:29 +0100
+Message-ID: <3321429.TYNOhWIX1S@blindfold>
+In-Reply-To: <4a280604-16f2-776b-d997-d5882af6fe35@gmail.com>
+References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
+ <3975609.gPYExXdWMR@blindfold>
+ <4a280604-16f2-776b-d997-d5882af6fe35@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Arvind,
 
-I'm currently porting Linux 4.14 to a Altera Cyclone V based board. The
-Denali NAND Driver isn't able to detect the NAND chip Micron MT29F4G08) correctly.
+Am Montag, 12. M=E4rz 2018, 06:51:24 CET schrieb Arvind Yadav:
+> On Monday 12 March 2018 01:05 AM, Richard Weinberger wrote:
+> > Am Freitag, 9. M=E4rz 2018, 11:50:47 CET schrieb Arvind Yadav:
+> >> if device_register() returned an error! Always use put_device()
+> >> to give up the reference initialized.
+> >>=20
+> >> Arvind Yadav (2):
+> >>    [PATCH 1/2] mtd: use put_device() if device_register fail
+> >>    [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
+> >=20
+> > Uhh, this is not obvious. Does device_register() really always return w=
+ith
+> > a reference held in all (error) cases?
+> >=20
+> > Thanks,
+> > //richard
+>=20
+> if device_register() returned an error! Always use put_device()
+> to give up the reference initialized.(-- Please see the comment
+> for device_register() ). put_device() is able to handle those case
+> where it'll not return a reference.
 
-[    0.862242] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
-[    0.868604] nand: Unknown denali-nand
-[    0.872253] nand: bus width 8 instead of 16 bits
-[    0.876899] nand: No NAND device found
-[    0.880688] denali-nand-dt: probe of ff900000.nand failed with error -22
+You are right.
 
-The correct ManufID is 0x2c and the DevID is 0xdc. Currently we are
-running a 4.1 kernel with the "old" denali driver without this problem.
-While researching the issue I found the following Mail in the
-Rocketboards archive, which seems to be the same issue.
+=46or both patches:
+Acked-by: Richard Weinberger <richard@nod.at>
 
-https://lists.rocketboards.org/pipermail/rfi/2017-September/003627.html
-
-
-We also tested Linux 4.16-rc5 without any additional patches with the same behavior.
-
-Best regards,
-Philipp
+Thanks,
+//richard
