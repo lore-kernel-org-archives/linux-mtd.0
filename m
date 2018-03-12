@@ -1,23 +1,25 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evOTk-00017n-LA
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 14:31:15 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] mtd: use put_device() if device_register fail
-Date: Mon, 12 Mar 2018 15:32:29 +0100
-Message-ID: <3321429.TYNOhWIX1S@blindfold>
-In-Reply-To: <4a280604-16f2-776b-d997-d5882af6fe35@gmail.com>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
- <3975609.gPYExXdWMR@blindfold>
- <4a280604-16f2-776b-d997-d5882af6fe35@gmail.com>
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ Shadi Ammouri <shadi@marvell.com>, Omri Itach <omrii@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, Igal Liberman <igall@marvell.com>,
+ Marcin Wojtas <mw@semihalf.com>, Rob Herring <robh@kernel.org>,
+ "devicetree\@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: nand: marvell: Fix clock resource by adding a
+ register clock
+References: <20180307161316.14612-1-gregory.clement@bootlin.com>
+ <20180307204418.014622b8@bbrezillon>
+Date: Mon, 12 Mar 2018 17:55:26 +0100
+In-Reply-To: <20180307204418.014622b8@bbrezillon> (Boris Brezillon's message
+ of "Wed, 7 Mar 2018 20:44:18 +0100")
+Message-ID: <87vae11bep.fsf@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +29,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arvind,
+Hi Boris,
+ 
+ On mer., mars 07 2018, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Am Montag, 12. M=E4rz 2018, 06:51:24 CET schrieb Arvind Yadav:
-> On Monday 12 March 2018 01:05 AM, Richard Weinberger wrote:
-> > Am Freitag, 9. M=E4rz 2018, 11:50:47 CET schrieb Arvind Yadav:
-> >> if device_register() returned an error! Always use put_device()
-> >> to give up the reference initialized.
-> >>=20
-> >> Arvind Yadav (2):
-> >>    [PATCH 1/2] mtd: use put_device() if device_register fail
-> >>    [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
-> >=20
-> > Uhh, this is not obvious. Does device_register() really always return w=
-ith
-> > a reference held in all (error) cases?
-> >=20
-> > Thanks,
-> > //richard
->=20
-> if device_register() returned an error! Always use put_device()
-> to give up the reference initialized.(-- Please see the comment
-> for device_register() ). put_device() is able to handle those case
-> where it'll not return a reference.
+>>    NAND controller related registers (only required with the
+>>    "marvell,armada-8k-nand[-controller]" compatibles).
+>> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
+>> index 2196f2a233d6..072e23635375 100644
+>> --- a/drivers/mtd/nand/marvell_nand.c
+>> +++ b/drivers/mtd/nand/marvell_nand.c
+>> @@ -321,6 +321,7 @@ struct marvell_nfc {
+>>  	struct device *dev;
+>>  	void __iomem *regs;
+>>  	struct clk *ecc_clk;
+>> +	struct clk *reg_clk;
+>
+> There's a kernel-doc header describing the marvell_nfc fields, could
+> you add an entry for reg_clk?
 
-You are right.
+OK I will
 
-=46or both patches:
-Acked-by: Richard Weinberger <richard@nod.at>
+>
+>>  	struct completion complete;
+>>  	unsigned long assigned_cs;
+>>  	struct list_head chips;
+>> @@ -2747,12 +2748,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
+>> +	if (PTR_ERR(nfc->reg_clk) != -ENOENT) {
+>> +		if (!IS_ERR(nfc->reg_clk)) {
+>> +			ret = clk_prepare_enable(nfc->reg_clk);
+>> +			if (ret)
+>> +				goto unprepare_clk;
+>
+> I already suggested to move the devm_clk_get(&pdev->dev, "reg") before
+> the clk_prepare_enable(nfc->ecc_clk) one to simplify the error path.
+>
 
-Thanks,
-//richard
+Actually I started to implement your suggestion but unlike what you
+though it made the code less simpler. Indeed by having the mandatory
+clock first than in case of failure we can directly exit the function.
+
+If the reg clock was initialized first, then if the core/ecc clock fail
+in soem case we woudl need to daisbel the reg clock and in other case we
+could directly exit.
+
+
+>> +		} else {
+>> +			ret = PTR_ERR(nfc->reg_clk);
+>> +			goto unprepare_clk;
+>> +		}
+>> +	}
+>
+> So nfc->reg_clk stays assigned to -ENOENT if the clk is not present, and
+> clk_disable_unprepare() will manipulate an invalid pointer when called
+> from the error or ->remove() path.
+
+I think you missed the fact that the clk_disable_unprepare() function
+managed the invalid pointer, have a look on the functions and you will
+see that IS_ERR() is used, so there is no point to set the pointer to NULL.
+
+>
+> Could be addressed/simplified with something like that:
+>
+> 	/*
+> 	 * The register clk is only required on armada 8k. By assigning
+> 	 * ->reg_clk to NULL when -ENOENT is returned, we make sure all
+> 	 * clk_prepare_enable()/clk_disable_unprepare() calls work
+> 	 * correctly even if the clk is missing.
+> 	 */
+> 	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
+> 	if (PTR_ERR(nfc->reg_clk) == -ENOENT)
+> 		nfc->reg_clk = NULL;
+>
+> 	if (IS_ERR(nfc->reg_clk))
+> 		return PTR_ERR(nfc->reg_clk);
+>
+> 	...
+>
+> 	ret = clk_prepare_enable(nfc->reg_clk);
+> 	if (ret)
+> 		goto unprepare_ecc_clk;
+>
+>
+>> +
+>>  	marvell_nfc_disable_int(nfc, NDCR_ALL_INT);
+>>  	marvell_nfc_clear_int(nfc, NDCR_ALL_INT);
+>>  	ret = devm_request_irq(dev, irq, marvell_nfc_isr,
+>>  			       0, "marvell-nfc", nfc);
+>>  	if (ret)
+>> -		goto unprepare_clk;
+>> +		goto unprepare_clk_reg;
+>>  
+>>  	/* Get NAND controller capabilities */
+>>  	if (pdev->id_entry)
+>> @@ -2763,22 +2776,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+>>  	if (!nfc->caps) {
+>>  		dev_err(dev, "Could not retrieve NFC caps\n");
+>>  		ret = -EINVAL;
+>> -		goto unprepare_clk;
+>> +		goto unprepare_clk_reg;
+>>  	}
+>>  
+>>  	/* Init the controller and then probe the chips */
+>>  	ret = marvell_nfc_init(nfc);
+>>  	if (ret)
+>> -		goto unprepare_clk;
+>> +		goto unprepare_clk_reg;
+>>  
+>>  	platform_set_drvdata(pdev, nfc);
+>>  
+>>  	ret = marvell_nand_chips_init(dev, nfc);
+>>  	if (ret)
+>> -		goto unprepare_clk;
+>> +		goto unprepare_clk_reg;
+>>  
+>>  	return 0;
+>>  
+>> +unprepare_clk_reg:
+>> +	clk_disable_unprepare(nfc->reg_clk);
+>>  unprepare_clk:
+>
+> Please rename the label (unprepare_clk -> unprepare_ecc_clk).
+
+OK
+
+>
+>>  	clk_disable_unprepare(nfc->ecc_clk);
+>>  
+>> @@ -2796,6 +2811,7 @@ static int marvell_nfc_remove(struct platform_device *pdev)
+>>  		dma_release_channel(nfc->dma_chan);
+>>  	}
+>>  
+>> +	clk_disable_unprepare(nfc->reg_clk);
+>>  	clk_disable_unprepare(nfc->ecc_clk);
+>>  
+>>  	return 0;
+>
+>
+>
+> -- 
+> Boris Brezillon, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
+
+-- 
+Gregory Clement, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
