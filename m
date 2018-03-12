@@ -1,20 +1,23 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-bl2nam02on0085.outbound.protection.outlook.com
+ ([104.47.38.85] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.89 #1 (Red Hat Linux))
- id 1evJSL-0002Ck-32
- for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 09:09:22 +0000
-Received: by mail-wm0-x243.google.com with SMTP id 139so14587662wmn.2
- for <linux-mtd@lists.infradead.org>; Mon, 12 Mar 2018 02:09:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1520784361.4790.86.camel@infinera.com>
+ id 1evLMN-0005Fs-Ea
+ for linux-mtd@lists.infradead.org; Mon, 12 Mar 2018 11:11:27 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "andrea.adami@gmail.com" <andrea.adami@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
+Date: Mon, 12 Mar 2018 11:11:04 +0000
+Message-ID: <1520853062.4790.103.camel@infinera.com>
 References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
  <1520784361.4790.86.camel@infinera.com>
-From: Andrea Adami <andrea.adami@gmail.com>
-Date: Mon, 12 Mar 2018 10:09:05 +0100
-Message-ID: <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
+In-Reply-To: <CAAQYJAs93d87kWej7D6qMEcwv-3Xqb-WiZwM9M1s430vs+mzEg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4E3CB023733D3F41BF96DC9EE4C1BCFC@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Mar 11, 2018 at 5:06 PM, Joakim Tjernlund
-<Joakim.Tjernlund@infinera.com> wrote:
-> On Thu, 2018-03-01 at 14:39 +0100, Joakim Tjernlund wrote:
->> This fixes a bug which allows read/write to a erase block currently
->> erasing.
->> Also works around a chip bug in Micron 28F00AP30 chips.
->>
->> Joakim Tjernlund (3):
->>   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
->>   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
->>   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
->>
->>  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
->>  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
->>  include/linux/mtd/flashchip.h       |  1 +
->>  3 files changed, 35 insertions(+), 8 deletions(-)
->>
->
-> Ping?
-> This is a fairly serious bug as it confuses the flash state machine,
-> making further flash access fail.
->
-
-Hello,
-
-I don't undertsand exactly from the titles what is happening.
-Do you want to disable erase and wite suspend like in this other 2016
-patch found around?
-
-https://patchwork.kernel.org/patch/9380029/
-
-See, I am user of the Sharp LH28F640BF NOR, very similar to the Intel
-Startaflash, 4-Plane Page Mode Dual Work.
-On these chips erase suspend works just fine.
-What has been disabled is dual work: simultaneous read-while-erase and
-read-while-program because there has never been real support for
-n-planes in kernel.
-
-What is exactly the issue?
-Regards
-Andrea
-
->  Jocke
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+T24gTW9uLCAyMDE4LTAzLTEyIGF0IDEwOjA5ICswMTAwLCBBbmRyZWEgQWRhbWkgd3JvdGU6DQo+
+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2Fu
+aXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlv
+dSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0KPiAN
+Cj4gDQo+IE9uIFN1biwgTWFyIDExLCAyMDE4IGF0IDU6MDYgUE0sIEpvYWtpbSBUamVybmx1bmQN
+Cj4gPEpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29tPiB3cm90ZToNCj4gPiBPbiBUaHUsIDIw
+MTgtMDMtMDEgYXQgMTQ6MzkgKzAxMDAsIEpvYWtpbSBUamVybmx1bmQgd3JvdGU6DQo+ID4gPiBU
+aGlzIGZpeGVzIGEgYnVnIHdoaWNoIGFsbG93cyByZWFkL3dyaXRlIHRvIGEgZXJhc2UgYmxvY2sg
+Y3VycmVudGx5DQo+ID4gPiBlcmFzaW5nLg0KPiA+ID4gQWxzbyB3b3JrcyBhcm91bmQgYSBjaGlw
+IGJ1ZyBpbiBNaWNyb24gMjhGMDBBUDMwIGNoaXBzLg0KPiA+ID4gDQo+ID4gPiBKb2FraW0gVGpl
+cm5sdW5kICgzKToNCj4gPiA+ICAgY2ZpX2NtZHNldF8wMDAxOiBEbyBub3QgYWxsb3cgcmVhZC93
+cml0ZSB0byBzdXNwZW5kIGVyYXNlIGJsb2NrLg0KPiA+ID4gICBjZmlfY21kc2V0XzAwMDE6IFdv
+cmthcm91bmQgTWljcm9uIEVyYXNlIHN1c3BlbmQgYnVnLg0KPiA+ID4gICBjZmlfY21kc2V0XzAw
+MDI6IERvIG5vdCBhbGxvdyByZWFkL3dyaXRlIHRvIHN1c3BlbmQgZXJhc2UgYmxvY2suDQo+ID4g
+PiANCj4gPiA+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYyB8IDMzICsrKysr
+KysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0KPiA+ID4gIGRyaXZlcnMvbXRkL2NoaXBzL2Nm
+aV9jbWRzZXRfMDAwMi5jIHwgIDkgKysrKysrLS0tDQo+ID4gPiAgaW5jbHVkZS9saW51eC9tdGQv
+Zmxhc2hjaGlwLmggICAgICAgfCAgMSArDQo+ID4gPiAgMyBmaWxlcyBjaGFuZ2VkLCAzNSBpbnNl
+cnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gDQo+ID4gUGluZz8NCj4gPiBU
+aGlzIGlzIGEgZmFpcmx5IHNlcmlvdXMgYnVnIGFzIGl0IGNvbmZ1c2VzIHRoZSBmbGFzaCBzdGF0
+ZSBtYWNoaW5lLA0KPiA+IG1ha2luZyBmdXJ0aGVyIGZsYXNoIGFjY2VzcyBmYWlsLg0KPiA+IA0K
+PiANCj4gSGVsbG8sDQo+IA0KPiBJIGRvbid0IHVuZGVydHNhbmQgZXhhY3RseSBmcm9tIHRoZSB0
+aXRsZXMgd2hhdCBpcyBoYXBwZW5pbmcuDQo+IERvIHlvdSB3YW50IHRvIGRpc2FibGUgZXJhc2Ug
+YW5kIHdpdGUgc3VzcGVuZCBsaWtlIGluIHRoaXMgb3RoZXIgMjAxNg0KPiBwYXRjaCBmb3VuZCBh
+cm91bmQ/DQoNCk5vdCBxdWl0ZSwgdGhlIGZpcnN0IHBhcnQgaXMgYWJvdXQgcHJldmVudGluZyBy
+ZWFkL3dyaXRlIHRvIGEgYmxvY2sgdGhhdCBpcw0KYmVpbmcgZXJhc2VkLiBUaGlzIGNhbiBoYXBw
+ZW4gaWYgdHdvIGFwcHMgb3BlbnMgdGhlIHNhbWUgL2Rldi9tdGQgZGV2aWNlLg0KDQpUaGVuIHRo
+ZXJlIGlzIGEgYnVnIGZpeCBmb3IgZXJhc2Ugc3VzcGVuZCBub3Qgd29ya2luZyBpbiB0aGUgc21h
+bGxlciBib290IGJsb2NrDQpzZWN0aW9ucywgdGhhdCBwYXJ0IGlzIHNpbWlsYXIgdG8gdGhlIHBh
+dGNoIHlvdSByZWZlcmVuY2UgYnV0IG11Y2ggbGVzcyBpbnZhc2l2ZQ0KDQo+IGh0dHBzOi8vcGF0
+Y2h3b3JrLmtlcm5lbC5vcmcvcGF0Y2gvOTM4MDAyOS8NCj4gDQo+IFNlZSwgSSBhbSB1c2VyIG9m
+IHRoZSBTaGFycCBMSDI4RjY0MEJGIE5PUiwgdmVyeSBzaW1pbGFyIHRvIHRoZSBJbnRlbA0KPiBT
+dGFydGFmbGFzaCwgNC1QbGFuZSBQYWdlIE1vZGUgRHVhbCBXb3JrLg0KPiBPbiB0aGVzZSBjaGlw
+cyBlcmFzZSBzdXNwZW5kIHdvcmtzIGp1c3QgZmluZS4NCj4gV2hhdCBoYXMgYmVlbiBkaXNhYmxl
+ZCBpcyBkdWFsIHdvcms6IHNpbXVsdGFuZW91cyByZWFkLXdoaWxlLWVyYXNlIGFuZA0KPiByZWFk
+LXdoaWxlLXByb2dyYW0gYmVjYXVzZSB0aGVyZSBoYXMgbmV2ZXIgYmVlbiByZWFsIHN1cHBvcnQg
+Zm9yDQo+IG4tcGxhbmVzIGluIGtlcm5lbC4NCj4gDQo+IFdoYXQgaXMgZXhhY3RseSB0aGUgaXNz
+dWU/DQo+IFJlZ2FyZHMNCj4gQW5kcmVhDQo+IA0KPiA+ICBKb2NrZQ0KPiA+IF9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiA+IExpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vbGludXgtbXRkLw0K
