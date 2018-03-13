@@ -1,25 +1,26 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1evfcZ-0003QZ-Kt
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2018 08:49:25 +0000
-Received: from mail-vk0-f46.google.com (mail-vk0-f46.google.com
- [209.85.213.46]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id w2D8mgTa027034
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2018 17:48:43 +0900
-Received: by mail-vk0-f46.google.com with SMTP id t126so7980227vkb.11
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2018 01:48:43 -0700 (PDT)
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ linux-arm-kernel@lists.infradead.org,
+ Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ Shadi Ammouri <shadi@marvell.com>, Omri Itach <omrii@marvell.com>,
+ Hanna Hawa <hannah@marvell.com>, Igal Liberman <igall@marvell.com>,
+ Marcin Wojtas <mw@semihalf.com>, Rob Herring <robh@kernel.org>,
+ "devicetree\@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: nand: marvell: Fix clock resource by adding a
+ register clock
+References: <20180307161316.14612-1-gregory.clement@bootlin.com>
+ <20180307204418.014622b8@bbrezillon> <87vae11bep.fsf@bootlin.com>
+ <20180312203529.7963ef29@bbrezillon>
+Date: Tue, 13 Mar 2018 11:29:34 +0100
+In-Reply-To: <20180312203529.7963ef29@bbrezillon> (Boris Brezillon's message
+ of "Mon, 12 Mar 2018 20:35:29 +0100")
+Message-ID: <87o9js1d69.fsf@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
-References: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Tue, 13 Mar 2018 17:48:01 +0900
-Message-ID: <CAK7LNASK=ENQC6f8EB78YSYz9n067uj8=tHarNT1J627FPRuhA@mail.gmail.com>
-Subject: Re: DENALI: can't detect NAND chip
-To: Philipp Rosenberger <p.rosenberger@linutronix.de>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Benedikt Spranger <b.spranger@linutronix.de>,
- Boris Brezillon <boris.brezillon@free-electrons.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +30,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-03-12 23:29 GMT+09:00 Philipp Rosenberger <p.rosenberger@linutronix.de>:
-> Hi,
+Hi Boris,
+ 
+ On lun., mars 12 2018, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+
+> On Mon, 12 Mar 2018 17:55:26 +0100
+> Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
 >
-> I'm currently porting Linux 4.14 to a Altera Cyclone V based board. The
-> Denali NAND Driver isn't able to detect the NAND chip Micron MT29F4G08) correctly.
+>> >  
+>> >>  	struct completion complete;
+>> >>  	unsigned long assigned_cs;
+>> >>  	struct list_head chips;
+>> >> @@ -2747,12 +2748,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+>> >>  	if (ret)
+>> >>  		return ret;
+>> >>  
+>> >> +	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
+>> >> +	if (PTR_ERR(nfc->reg_clk) != -ENOENT) {
+>> >> +		if (!IS_ERR(nfc->reg_clk)) {
+>> >> +			ret = clk_prepare_enable(nfc->reg_clk);
+>> >> +			if (ret)
+>> >> +				goto unprepare_clk;  
+>> >
+>> > I already suggested to move the devm_clk_get(&pdev->dev, "reg") before
+>> > the clk_prepare_enable(nfc->ecc_clk) one to simplify the error path.
+>> >  
+>> 
+>> Actually I started to implement your suggestion but unlike what you
+>> though it made the code less simpler. Indeed by having the mandatory
+>> clock first than in case of failure we can directly exit the function.
+>> 
+>> If the reg clock was initialized first, then if the core/ecc clock fail
+>> in soem case we woudl need to daisbel the reg clock and in other case we
+>> could directly exit.
 >
-> [    0.862242] nand: device found, Manufacturer ID: 0x00, Chip ID: 0x2c
-> [    0.868604] nand: Unknown denali-nand
-> [    0.872253] nand: bus width 8 instead of 16 bits
-> [    0.876899] nand: No NAND device found
-> [    0.880688] denali-nand-dt: probe of ff900000.nand failed with error -22
->
-> The correct ManufID is 0x2c and the DevID is 0xdc. Currently we are
-> running a 4.1 kernel with the "old" denali driver without this problem.
-> While researching the issue I found the following Mail in the
-> Rocketboards archive, which seems to be the same issue.
->
-> https://lists.rocketboards.org/pipermail/rfi/2017-September/003627.html
->
->
-> We also tested Linux 4.16-rc5 without any additional patches with the same behavior.
->
+> Well, it's pretty much the same problem if you do it in the order you
+> propose here: if the core clk enable fails, you'll have to disable the
+
+So if it is the same no need to change! :)
+
+> reg clk. Plus, I'm not a big fan of if/else block imbrications when we
+> can avoid them.
 
 
-I got a similar report before for SOCFPGA.
+Your solution to avoid if/else block is to add extra code and extra test
+which do not bring anything except removing an if/else bloc.
 
-The reporter found a problem in his clock setting:
-http://linux-mtd.infradead.narkive.com/MMBF5wzm/nand-denali-issue-with-4-13
+For the record it was
+
+	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
+	if (PTR_ERR(nfc->reg_clk) == -ENOENT)
+		nfc->reg_clk = NULL;
+--> here you set to NULL whereas it is useless
+
+
+	if (IS_ERR(nfc->reg_clk))
+		return PTR_ERR(nfc->reg_clk);
+--> here you test again the return value even if it was previously set
+to -ENOENT
+
+	...
+
+	ret = clk_prepare_enable(nfc->reg_clk);
+--> here if reg_clk was NULL due to the beginning of the block you do a
+useless call to clk_prepare_enable
+
+	if (ret)
+		goto unprepare_ecc_clk;
+
+
+Gregory
+
+>
+>> 
+>> 
+>> >> +		} else {
+>> >> +			ret = PTR_ERR(nfc->reg_clk);
+>> >> +			goto unprepare_clk;
+>> >> +		}
+>> >> +	}  
 
 
 
 -- 
-Best Regards
-Masahiro Yamada
+Gregory Clement, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+http://bootlin.com
