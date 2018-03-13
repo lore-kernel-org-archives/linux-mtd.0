@@ -1,17 +1,16 @@
-Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
+Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1evmmn-0003Lk-LS
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2018 16:28:29 +0000
-Received: by mail-qt0-x243.google.com with SMTP id z14so236592qti.2
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2018 09:28:14 -0700 (PDT)
+ id 1evn0O-0006jE-Gm
+ for linux-mtd@lists.infradead.org; Tue, 13 Mar 2018 16:42:30 +0000
+Received: by mail-qk0-x22d.google.com with SMTP id o25so269163qkl.7
+ for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2018 09:42:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180312170208.GA10604@seema-Inspiron-15-3567>
-References: <20180312170208.GA10604@seema-Inspiron-15-3567>
+In-Reply-To: <20180311172309.GA1964@seema-Inspiron-15-3567>
+References: <20180311172309.GA1964@seema-Inspiron-15-3567>
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 13 Mar 2018 18:28:13 +0200
-Message-ID: <CAHp75VfZKrm-K+VJDmFrwxyqVvm9D9CuZV6CVtsNSrw6WWfQRA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: chips: Replace printk() with pr_*() and define
- pr_fmt()
+Date: Tue, 13 Mar 2018 18:42:16 +0200
+Message-ID: <CAHp75VfdJwVy3EpvGJHS7_Xz_YCoLXcV4o=88megrqcMG2KyBA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: Replace printk() with more standardize output format.
 To: Arushi Singhal <arushisinghal19971997@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -19,7 +18,8 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ ezequiel@vanguardiasur.com.ar
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,20 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 12, 2018 at 7:02 PM, Arushi Singhal
+On Sun, Mar 11, 2018 at 7:23 PM, Arushi Singhal
 <arushisinghal19971997@gmail.com> wrote:
-> Using pr_<loglevel>() is more concise than printk(KERN_<LOGLEVEL>).
-> This patch:
 
+> +               pr_notice("ftl_cs: format error: too many "
+> +                         "transfer units!\n");
 
-> @@ -182,7 +184,7 @@ static void fixup_convert_atmel_pri(struct mtd_info *mtd)
+Please, join messages back to be one line for one line.
 
-> -       printk(KERN_ERR "atmel Features: %02x\n", atmel_pri.Features);
-> +       pr_err("atmel Features: %02x\n", atmel_pri.Features);
+Examples:
 
-Does struct mtd_info include a pointer to struct device? In such case,
-why not to use dev_*() macros instead?
-(It's a question to the all current pr_*()/printk() calls.
+pr("part1 "
+ "part2\'n");
+
+-> pr("part1 part2\'n");
+
+While
+pr("part1\n"
+ "part2\'n");
+
+stays the same.
 
 -- 
 With Best Regards,
