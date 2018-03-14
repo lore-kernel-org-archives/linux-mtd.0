@@ -1,23 +1,53 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-oi0-x241.google.com ([2607:f8b0:4003:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewC0U-0007WK-6x
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 19:24:15 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Arvind Yadav <arvind.yadav.cs@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
-Date: Wed, 14 Mar 2018 20:25:25 +0100
-Message-ID: <3619597.KITkZyk1Wv@blindfold>
-In-Reply-To: <20180314195652.59b21594@bbrezillon>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
- <5d9b08afdad2fbc65bac48d8ae22f4925bb80512.1520592440.git.arvind.yadav.cs@gmail.com>
- <20180314195652.59b21594@bbrezillon>
+ id 1ewF9q-0005GY-VN
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 22:46:08 +0000
+Received: by mail-oi0-x241.google.com with SMTP id j79so4097007oib.12
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 15:45:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Sender: rjwysocki@gmail.com
+In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
+References: <20180314153603.3127932-1-arnd@arndb.de>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Wed, 14 Mar 2018 23:45:54 +0100
+Message-ID: <CAJZ5v0jsoxWRiwPOCJH6AAz-MiccOuicD8peCevLRMbTfc7LEg@mail.gmail.com>
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Jonathan Corbet <corbet@lwn.net>, Tejun Heo <tj@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Viresh Kumar <viresh.kumar@linaro.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ David Miller <davem@davemloft.net>, Borislav Petkov <bp@alien8.de>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Wolfram Sang <wsa@the-dreams.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, boris.brezillon@bootlin.com,
+ cyrille.pitchen@wedev4u.fr, wg@grandegger.com, mkl@pengutronix.de,
+ alexandre.belloni@bootlin.com, Mark Brown <broonie@kernel.org>,
+ jic23@kernel.org,
+ Lars-Peter Clausen <lars@metafoo.de>, Jiri Slaby <jslaby@suse.com>,
+ Alan Stern <stern@rowland.harvard.edu>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, shli@kernel.org,
+ linux-watchdog@vger.kernel.org,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ linux-ide@vger.kernel.org,
+ Linux PM <linux-pm@vger.kernel.org>, linux-crypto@vger.kernel.org,
+ "open list:EDAC-CORE" <linux-edac@vger.kernel.org>, linux-gpio@vger.kernel.org,
+ linux-i2c <linux-i2c@vger.kernel.org>, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, netdev <netdev@vger.kernel.org>,
+ linux-can@vger.kernel.org, Linux PWM List <linux-pwm@vger.kernel.org>,
+ linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-serial@vger.kernel.org,
+ "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" <linux-usb@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>,
+ linux-raid@vger.kernel.org,
+ "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..."
+ <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +57,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 14. M=E4rz 2018, 19:56:52 CET schrieb Boris Brezillon:
-> On Fri,  9 Mar 2018 16:20:49 +0530
->=20
-> Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
-> > if device_register() returned an error! Always use put_device()
-> > to give up the reference initialized.
-> >=20
-> > Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
-> > ---
-> >=20
-> >  drivers/mtd/ubi/vmt.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >=20
-> > diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-> > index 3fd8d7f..db85b68 100644
-> > --- a/drivers/mtd/ubi/vmt.c
-> > +++ b/drivers/mtd/ubi/vmt.c
-> > @@ -609,6 +609,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct
-> > ubi_volume *vol)>=20
-> >  	return err;
-> > =20
-> >  out_cdev:
-> > +	put_device(&vol->dev);
-> >=20
-> >  	cdev_del(&vol->cdev);
->=20
-> use-after-free bug here: put_device() has freed the vol obj, and you're
-> dereferencing the pointer just after that.
+On Wed, Mar 14, 2018 at 4:35 PM, Arnd Bergmann <arnd@arndb.de> wrote:
+> Hi driver maintainers,
+>
+> I just posted one series with the removal of eight architectures,
+> see https://lkml.org/lkml/2018/3/14/505 for details, or
+> https://lwn.net/Articles/748074/ for more background.
+>
+> These are the device drivers that go along with them. I have already
+> picked up the drivers for arch/metag/ into my tree, they were reviewed
+> earlier.
+>
+> Please let me know if you have any concerns with the patch, or if you
+> prefer to pick up the patches in your respective trees.  I created
+> the patches with 'git format-patch -D', so they will not apply without
+> manually removing those files.
+>
+> For anything else, I'd keep the removal patches in my asm-generic tree
+> and will send a pull request for 4.17 along with the actual arch removal.
 
-eeek, thanks for looking at more context.
-Arvind, while you are right that put_device() is missing, please double che=
-ck=20
-that freeing the devices is also correct.
+Please include the cpufreq patches into that and you can add ACKs from
+me on them if that helps.
 
-Thanks,
-//richard
+Thanks!
