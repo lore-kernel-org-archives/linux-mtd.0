@@ -1,18 +1,20 @@
-Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ew8SE-0004Ue-Ru
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 15:36:40 +0000
-Received: by mail-pl0-x241.google.com with SMTP id f23-v6so1888125plr.10
- for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 08:36:28 -0700 (PDT)
+ id 1ew8SI-0004Uo-Dz
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 15:36:45 +0000
+Received: by mail-pf0-x243.google.com with SMTP id f80so1543660pfa.8
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 08:36:31 -0700 (PDT)
 From: Arushi Singhal <arushisinghal19971997@gmail.com>
 To: dwmw2@infradead.org
 Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arushi Singhal <arushisinghal19971997@gmail.com>
-Subject: [PATCH 1/3] mtd: nand: Remove print after allocation failure
-Date: Wed, 14 Mar 2018 21:05:16 +0530
-Message-Id: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
+Subject: [PATCH 2/3] mtd: maps: Remove print after allocation failure
+Date: Wed, 14 Mar 2018 21:05:17 +0530
+Message-Id: <1521041718-32492-2-git-send-email-arushisinghal19971997@gmail.com>
+In-Reply-To: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
+References: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +30,24 @@ anyway.
 
 Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 ---
- drivers/mtd/nand/ams-delta.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/maps/sun_uflash.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 9de6572..6e7f6e0 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -185,7 +185,6 @@ static int ams_delta_init(struct platform_device *pdev)
- 	/* Allocate memory for MTD device structure and private data */
- 	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
- 	if (!this) {
--		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
- 		err = -ENOMEM;
- 		goto out;
+diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
+index 1e73bba..80a253c 100644
+--- a/drivers/mtd/maps/sun_uflash.c
++++ b/drivers/mtd/maps/sun_uflash.c
+@@ -62,10 +62,8 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
  	}
+ 
+ 	up = kzalloc(sizeof(struct uflash_dev), GFP_KERNEL);
+-	if (!up) {
+-		printk(KERN_ERR PFX "Cannot allocate struct uflash_dev\n");
++	if (!up)
+ 		return -ENOMEM;
+-	}
+ 
+ 	/* copy defaults and tweak parameters */
+ 	memcpy(&up->map, &uflash_map_templ, sizeof(uflash_map_templ));
 -- 
 2.7.4
