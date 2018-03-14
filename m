@@ -1,22 +1,22 @@
-Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ew5ui-0002ly-7L
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 12:53:53 +0000
-Received: by mail-wm0-x22e.google.com with SMTP id x7so3820595wmc.0
- for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 05:53:41 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ew7W6-0006Ua-EE
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 14:36:36 +0000
+Date: Wed, 14 Mar 2018 15:36:00 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com, richard@nod.at,
+ cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: use put_device() if device_register fail
+Message-ID: <20180314153600.458c0fe4@bbrezillon>
+In-Reply-To: <39c4af723ea37cd05976a17cb9c1fbc975496ffd.1520592440.git.arvind.yadav.cs@gmail.com>
+References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
+ <39c4af723ea37cd05976a17cb9c1fbc975496ffd.1520592440.git.arvind.yadav.cs@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <22711116.lYnEpaWOtA@blindfold>
-References: <CWLP265MB0721344DBE1B7785E7D2C6A5D2DE0@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
- <22711116.lYnEpaWOtA@blindfold>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 14 Mar 2018 13:53:39 +0100
-Message-ID: <CAFLxGvzZNYiqQy2GnkyOfcZ+fnx1SVisVc=ntL90vk1gFf2YyA@mail.gmail.com>
-Subject: Re: power loss results in mounting failure on SLC NAND
-To: Richard Weinberger <richard@nod.at>
-Cc: martin bayern <martinbayern@outlook.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,123 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 9, 2018 at 9:12 PM, Richard Weinberger <richard@nod.at> wrote:
-> Martin,
->
-> Am Freitag, 9. M=C3=A4rz 2018, 20:39:27 CET schrieb martin bayern:
->> Hi
->>
->> I encountered one issue on my board during power loss immunity testing. =
-It
->> has SLC Nand and Linux 4.2. From my initial analysis, seems the issue is
->> related to fastmap.
->>
->> When disabling fastmap, the corrupted PEB, which was damaged by power-cu=
-t
->> when erasing it, can be re-erased during Ubi attaching. So, in the end, =
-I
->> can=E2=80=99t see mounting failure.
->>
->> But, if enable fastmap, I will see mounting failure.
->>
->> I tracked Ubi source code, during attaching, Ubi will scan every PEB, an=
-d
->> read EC&Vid pages if both pages are damaged, will erase it later due to
->> uncompleted erase before.  While for the fastmap case, it doesn=E2=80=99=
-t scan each
->> PEB, so, maybe it will miss re-erase corrupted PEB?
->
-> So, in this case the upper layer, namely UBIFS, will be unhappy because i=
-t
-> cannot deal with the ECC error, right?
-> I fear fastmap changed the semantics of UBI a bit and UBIFS trips over th=
-at.
->
-> Does the following patch make UBIFS happy again?
-> If so, we need to improve it further, to be more smart and check every ma=
-pping
-> only once.
->
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index 250e30fac61b..617742948442 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -490,6 +490,37 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct
-> ubi_volume *vol,
->         return err;
->  }
->
-> +int fixup_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int ln=
-um,
-> int *pnum)
-> +{
-> +       int err;
-> +       struct ubi_vid_io_buf *vidb;
-> +
-> +       if (!ubi->fast_attach)
-> +               return 0;
-> +
-> +       vidb =3D ubi_alloc_vid_buf(ubi, GFP_NOFS);
-> +       if (!vidb)
-> +               return -ENOMEM;
-> +
-> +       err =3D ubi_io_read_vid_hdr(ubi, *pnum, vidb, 0);
-> +       if (err > 0 && err !=3D UBI_IO_BITFLIPS) {
-> +               int torture =3D 0;
-> +
-> +               if (err =3D=3D UBI_IO_BAD_HDR_EBADMSG || err =3D=3D UBI_I=
-O_FF_BITFLIPS)
-> +                       torture =3D 1;
-> +
-> +               down_read(&ubi->fm_eba_sem);
-> +               vol->eba_tbl->entries[lnum].pnum =3D UBI_LEB_UNMAPPED;
-> +               up_read(&ubi->fm_eba_sem);
-> +               ubi_wl_put_peb(ubi, vol->vol_id, lnum, *pnum, torture);
-> +
-> +               *pnum =3D -1;
-> +       }
-> +
-> +       ubi_free_vid_buf(vidb);
-> +       return 0;
-> +}
-> +
->  /**
->   * ubi_eba_read_leb - read data.
->   * @ubi: UBI device description object
-> @@ -522,6 +553,13 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct
-> ubi_volume *vol, int lnum,
->                 return err;
->
->         pnum =3D vol->eba_tbl->entries[lnum].pnum;
-> +
-> +       if (pnum >=3D 0) {
-> +               err =3D fixup_mapping(ubi, vol, lnum, &pnum);
-> +               if (err < 0)
-> +                       goto out_unlock;
-> +       }
-> +
->         if (pnum < 0) {
->                 /*
->                  * The logical eraseblock is not mapped, fill the whole b=
-uffer
-> @@ -931,6 +969,12 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct
-> ubi_volume *vol, int lnum,
->
->         pnum =3D vol->eba_tbl->entries[lnum].pnum;
->         if (pnum >=3D 0) {
-> +               err =3D fixup_mapping(ubi, vol, lnum, &pnum);
-> +               if (err < 0)
-> +                       goto out;
-> +       }
-> +
-> +       if (pnum >=3D 0) {
->                 dbg_eba("write %d bytes at offset %d of LEB %d:%d, PEB %d=
-",
->                         len, offset, vol_id, lnum, pnum);
->
+On Fri,  9 Mar 2018 16:20:48 +0530
+Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
 
-Did this help?
+> if device_register() returned an error! Always use put_device()
+> to give up the reference initialized.
+> 
+> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 28553c8..4d77ca2 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -586,6 +586,7 @@ int add_mtd_device(struct mtd_info *mtd)
+>  	return 0;
+>  
+>  fail_added:
+> +	put_device(&mtd->dev);
 
---=20
-Thanks,
-//richard
+Not sure this is a good idea: the put_device() call will trigger
+an mtd_devtype->release(), which will in turn call device_destroy() on
+something that does not exist yet. Not sure if this is a real problem,
+but it does not look like the right thing to do.
+
+>  	of_node_put(mtd_get_of_node(mtd));
+
+You're referencing an object that is supposed to have been
+freed/released by the put_device() call. Again, it's not really a
+problem because in our case ->release() does not free the mtd object
+(as is usually done in other parts of the kernel), but it still looks
+wrong. It's probably better to move the of_node_put() and the below
+idr_remove() call in the ->release() hook if you want to use
+put_device().
+
+>  	idr_remove(&mtd_idr, i);
+
+
+
+>  fail_locked:
+
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
