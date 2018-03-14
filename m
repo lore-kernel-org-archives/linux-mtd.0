@@ -1,26 +1,20 @@
-Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
+Received: from mail-bl2nam02on0052.outbound.protection.outlook.com
+ ([104.47.38.52] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1evn0O-0006jE-Gm
- for linux-mtd@lists.infradead.org; Tue, 13 Mar 2018 16:42:30 +0000
-Received: by mail-qk0-x22d.google.com with SMTP id o25so269163qkl.7
- for <linux-mtd@lists.infradead.org>; Tue, 13 Mar 2018 09:42:18 -0700 (PDT)
+ id 1ew3y9-0005b6-1q
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 10:49:23 +0000
+From: <nagasureshkumarrelli@gmail.com>
+To: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
+ <cyrille.pitchen@wedev4u.fr>, <miquel.raynal@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <michals@xilinx.com>, <punnaia@xilinx.com>, Naga Sureshkumar Relli
+ <nagasure@xilinx.com>
+Subject: [LINUX PATCH v8 0/2] Add arm pl353 smc nand driver for xilinx zynq soc
+Date: Wed, 14 Mar 2018 16:18:00 +0530
+Message-ID: <1521024480-30588-1-git-send-email-nagasureshkumarrelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20180311172309.GA1964@seema-Inspiron-15-3567>
-References: <20180311172309.GA1964@seema-Inspiron-15-3567>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 13 Mar 2018 18:42:16 +0200
-Message-ID: <CAHp75VfdJwVy3EpvGJHS7_Xz_YCoLXcV4o=88megrqcMG2KyBA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: Replace printk() with more standardize output format.
-To: Arushi Singhal <arushisinghal19971997@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- ezequiel@vanguardiasur.com.ar
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Mar 11, 2018 at 7:23 PM, Arushi Singhal
-<arushisinghal19971997@gmail.com> wrote:
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
 
-> +               pr_notice("ftl_cs: format error: too many "
-> +                         "transfer units!\n");
+This latest series make use of ->exec_op() . Referenced the marvel driver as
+pointed by Miquel. Sorry for the long delay to send v8.
 
-Please, join messages back to be one line for one line.
+The following patches add arm pl353 static memory controller driver for
+xilinx zynq soc. The arm pl353 smc supports two interfaces i.e nand and
+nor/sram memory interfaces. The current implementation supports only a
+single SMC instance and nand specific configuration.
 
-Examples:
+xilinx zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-pr("part1 "
- "part2\'n");
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
+DDI0380G_smc_pl350_series_r2p1_trm.pdf
 
--> pr("part1 part2\'n");
+Tested Micron MT29F2G08ABAEAWP (On-die capable) and AMD/Spansion S34ML01G1.
+The v7 patch series can be found here (https://lkml.org/lkml/2015/6/8/499)
 
-While
-pr("part1\n"
- "part2\'n");
+Naga Sureshkumar Relli (2):
+  Documentation: nand: pl353: Add documentation for controller and
+    driver
+  mtd: rawnand: pl353: Add basic driver for arm pl353 smc nand interface
 
-stays the same.
+ Documentation/mtd/nand/pl353-nand.txt |   92 +++
+ drivers/mtd/nand/raw/Kconfig          |    8 +
+ drivers/mtd/nand/raw/Makefile         |    1 +
+ drivers/mtd/nand/raw/pl353_nand.c     | 1363 +++++++++++++++++++++++++++++++++
+ 4 files changed, 1464 insertions(+)
+ create mode 100644 Documentation/mtd/nand/pl353-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/pl353_nand.c
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
