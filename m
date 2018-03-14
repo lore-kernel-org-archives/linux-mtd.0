@@ -1,33 +1,22 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ew5FP-00072k-Fa
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 12:11:13 +0000
-Received: by mail-lf0-x241.google.com with SMTP id w16-v6so4380225lfc.13
- for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 05:11:01 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Frank Rowand <frowand.list@gmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Geert Uytterhoeven <geert+renesas@glider.be>,
- Jonas Gorski <jonas.gorski@gmail.com>,
- Florian Fainelli <f.fainelli@gmail.com>, John Crispin <john@phrozen.org>,
- Peter Rosin <peda@axentia.se>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V10 2/3] mtd: rename "ofpart" parser to "fixed-partitions" as
- it fits it better
-Date: Wed, 14 Mar 2018 13:10:43 +0100
-Message-Id: <20180314121044.12033-3-zajec5@gmail.com>
-In-Reply-To: <20180314121044.12033-1-zajec5@gmail.com>
-References: <20180130201059.4424-1-zajec5@gmail.com>
- <20180314121044.12033-1-zajec5@gmail.com>
+Received: from mail-wm0-x22e.google.com ([2a00:1450:400c:c09::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ew5ui-0002ly-7L
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 12:53:53 +0000
+Received: by mail-wm0-x22e.google.com with SMTP id x7so3820595wmc.0
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 05:53:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <22711116.lYnEpaWOtA@blindfold>
+References: <CWLP265MB0721344DBE1B7785E7D2C6A5D2DE0@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
+ <22711116.lYnEpaWOtA@blindfold>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 14 Mar 2018 13:53:39 +0100
+Message-ID: <CAFLxGvzZNYiqQy2GnkyOfcZ+fnx1SVisVc=ntL90vk1gFf2YyA@mail.gmail.com>
+Subject: Re: power loss results in mounting failure on SLC NAND
+To: Richard Weinberger <richard@nod.at>
+Cc: martin bayern <martinbayern@outlook.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,74 +26,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Mar 9, 2018 at 9:12 PM, Richard Weinberger <richard@nod.at> wrote:
+> Martin,
+>
+> Am Freitag, 9. M=C3=A4rz 2018, 20:39:27 CET schrieb martin bayern:
+>> Hi
+>>
+>> I encountered one issue on my board during power loss immunity testing. =
+It
+>> has SLC Nand and Linux 4.2. From my initial analysis, seems the issue is
+>> related to fastmap.
+>>
+>> When disabling fastmap, the corrupted PEB, which was damaged by power-cu=
+t
+>> when erasing it, can be re-erased during Ubi attaching. So, in the end, =
+I
+>> can=E2=80=99t see mounting failure.
+>>
+>> But, if enable fastmap, I will see mounting failure.
+>>
+>> I tracked Ubi source code, during attaching, Ubi will scan every PEB, an=
+d
+>> read EC&Vid pages if both pages are damaged, will erase it later due to
+>> uncompleted erase before.  While for the fastmap case, it doesn=E2=80=99=
+t scan each
+>> PEB, so, maybe it will miss re-erase corrupted PEB?
+>
+> So, in this case the upper layer, namely UBIFS, will be unhappy because i=
+t
+> cannot deal with the ECC error, right?
+> I fear fastmap changed the semantics of UBI a bit and UBIFS trips over th=
+at.
+>
+> Does the following patch make UBIFS happy again?
+> If so, we need to improve it further, to be more smart and check every ma=
+pping
+> only once.
+>
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index 250e30fac61b..617742948442 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -490,6 +490,37 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct
+> ubi_volume *vol,
+>         return err;
+>  }
+>
+> +int fixup_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int ln=
+um,
+> int *pnum)
+> +{
+> +       int err;
+> +       struct ubi_vid_io_buf *vidb;
+> +
+> +       if (!ubi->fast_attach)
+> +               return 0;
+> +
+> +       vidb =3D ubi_alloc_vid_buf(ubi, GFP_NOFS);
+> +       if (!vidb)
+> +               return -ENOMEM;
+> +
+> +       err =3D ubi_io_read_vid_hdr(ubi, *pnum, vidb, 0);
+> +       if (err > 0 && err !=3D UBI_IO_BITFLIPS) {
+> +               int torture =3D 0;
+> +
+> +               if (err =3D=3D UBI_IO_BAD_HDR_EBADMSG || err =3D=3D UBI_I=
+O_FF_BITFLIPS)
+> +                       torture =3D 1;
+> +
+> +               down_read(&ubi->fm_eba_sem);
+> +               vol->eba_tbl->entries[lnum].pnum =3D UBI_LEB_UNMAPPED;
+> +               up_read(&ubi->fm_eba_sem);
+> +               ubi_wl_put_peb(ubi, vol->vol_id, lnum, *pnum, torture);
+> +
+> +               *pnum =3D -1;
+> +       }
+> +
+> +       ubi_free_vid_buf(vidb);
+> +       return 0;
+> +}
+> +
+>  /**
+>   * ubi_eba_read_leb - read data.
+>   * @ubi: UBI device description object
+> @@ -522,6 +553,13 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct
+> ubi_volume *vol, int lnum,
+>                 return err;
+>
+>         pnum =3D vol->eba_tbl->entries[lnum].pnum;
+> +
+> +       if (pnum >=3D 0) {
+> +               err =3D fixup_mapping(ubi, vol, lnum, &pnum);
+> +               if (err < 0)
+> +                       goto out_unlock;
+> +       }
+> +
+>         if (pnum < 0) {
+>                 /*
+>                  * The logical eraseblock is not mapped, fill the whole b=
+uffer
+> @@ -931,6 +969,12 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct
+> ubi_volume *vol, int lnum,
+>
+>         pnum =3D vol->eba_tbl->entries[lnum].pnum;
+>         if (pnum >=3D 0) {
+> +               err =3D fixup_mapping(ubi, vol, lnum, &pnum);
+> +               if (err < 0)
+> +                       goto out;
+> +       }
+> +
+> +       if (pnum >=3D 0) {
+>                 dbg_eba("write %d bytes at offset %d of LEB %d:%d, PEB %d=
+",
+>                         len, offset, vol_id, lnum, pnum);
+>
 
-Type "ofpart" means that OF should be used to get partitioning info and
-this driver supports "fixed-partitions" binding only. Renaming it should
-lead to less confusion especially when parsers for new compatibility
-strings start to appear.
+Did this help?
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/mtdpart.c |  4 ++--
- drivers/mtd/ofpart.c  | 11 ++++++-----
- 2 files changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 105fe2c7729c..cdb1f496ab95 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -907,7 +907,7 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	struct device_node *np;
- 	struct property *prop;
- 	const char *compat;
--	const char *fixed = "ofpart";
-+	const char *fixed = "fixed-partitions";
- 	int ret, err = 0;
- 
- 	np = of_get_child_by_name(mtd_get_of_node(master), "partitions");
-@@ -927,7 +927,7 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	of_node_put(np);
- 
- 	/*
--	 * For backward compatibility we have to try the "ofpart"
-+	 * For backward compatibility we have to try the "fixed-partitions"
- 	 * parser. It supports old DT format with partitions specified as a
- 	 * direct subnodes of a flash device DT node without any compatibility
- 	 * specified we could match.
-diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-index 6bdf4e525677..9f497315e65d 100644
---- a/drivers/mtd/ofpart.c
-+++ b/drivers/mtd/ofpart.c
-@@ -25,9 +25,9 @@ static bool node_has_compatible(struct device_node *pp)
- 	return of_get_property(pp, "compatible", NULL);
- }
- 
--static int parse_ofpart_partitions(struct mtd_info *master,
--				   const struct mtd_partition **pparts,
--				   struct mtd_part_parser_data *data)
-+static int parse_fixed_partitions(struct mtd_info *master,
-+				  const struct mtd_partition **pparts,
-+				  struct mtd_part_parser_data *data)
- {
- 	struct mtd_partition *parts;
- 	struct device_node *mtd_node;
-@@ -141,8 +141,8 @@ static int parse_ofpart_partitions(struct mtd_info *master,
- }
- 
- static struct mtd_part_parser ofpart_parser = {
--	.parse_fn = parse_ofpart_partitions,
--	.name = "ofpart",
-+	.parse_fn = parse_fixed_partitions,
-+	.name = "fixed-partitions",
- };
- 
- static int parse_ofoldpart_partitions(struct mtd_info *master,
-@@ -229,4 +229,5 @@ MODULE_AUTHOR("Vitaly Wool, David Gibson");
-  * with the same name. Since we provide the ofoldpart parser, we should have
-  * the corresponding alias.
-  */
-+MODULE_ALIAS("fixed-partitions");
- MODULE_ALIAS("ofoldpart");
--- 
-2.11.0
+--=20
+Thanks,
+//richard
