@@ -1,18 +1,18 @@
-Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ew8SI-0004Uo-Dz
- for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 15:36:45 +0000
-Received: by mail-pf0-x243.google.com with SMTP id f80so1543660pfa.8
- for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 08:36:31 -0700 (PDT)
+ id 1ew8SP-0004VL-0M
+ for linux-mtd@lists.infradead.org; Wed, 14 Mar 2018 15:36:53 +0000
+Received: by mail-pg0-x244.google.com with SMTP id x2so1504114pgo.9
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 08:36:36 -0700 (PDT)
 From: Arushi Singhal <arushisinghal19971997@gmail.com>
 To: dwmw2@infradead.org
 Cc: computersforpeace@gmail.com, boris.brezillon@free-electrons.com,
  marek.vasut@gmail.com, richard@nod.at, cyrille.pitchen@wedev4u.fr,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  Arushi Singhal <arushisinghal19971997@gmail.com>
-Subject: [PATCH 2/3] mtd: maps: Remove print after allocation failure
-Date: Wed, 14 Mar 2018 21:05:17 +0530
-Message-Id: <1521041718-32492-2-git-send-email-arushisinghal19971997@gmail.com>
+Subject: [PATCH 3/3] mtd: Remove print after allocation failure
+Date: Wed, 14 Mar 2018 21:05:18 +0530
+Message-Id: <1521041718-32492-3-git-send-email-arushisinghal19971997@gmail.com>
 In-Reply-To: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
 References: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,24 +30,26 @@ anyway.
 
 Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 ---
- drivers/mtd/maps/sun_uflash.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/mtd/inftlmount.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-index 1e73bba..80a253c 100644
---- a/drivers/mtd/maps/sun_uflash.c
-+++ b/drivers/mtd/maps/sun_uflash.c
-@@ -62,10 +62,8 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
- 	}
+diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index 8d6bb189..6b94646 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -562,12 +562,8 @@ int INFTL_mount(struct INFTLrecord *s)
  
- 	up = kzalloc(sizeof(struct uflash_dev), GFP_KERNEL);
--	if (!up) {
--		printk(KERN_ERR PFX "Cannot allocate struct uflash_dev\n");
-+	if (!up)
+ 	/* Temporary buffer to store ANAC numbers. */
+ 	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
+-	if (!ANACtable) {
+-		printk(KERN_WARNING "INFTL: allocation of ANACtable "
+-				"failed (%zd bytes)\n",
+-				s->nb_blocks * sizeof(u8));
++	if (!ANACtable)
  		return -ENOMEM;
 -	}
  
- 	/* copy defaults and tweak parameters */
- 	memcpy(&up->map, &uflash_map_templ, sizeof(uflash_map_templ));
+ 	/*
+ 	 * First pass is to explore each physical unit, and construct the
 -- 
 2.7.4
