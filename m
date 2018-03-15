@@ -1,23 +1,21 @@
-Received: from mail-by2nam01on0085.outbound.protection.outlook.com
- ([104.47.34.85] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewX6n-0007ag-Fk
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 17:56:11 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewXDR-0002si-Al
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 18:03:04 +0000
+Date: Thu, 15 Mar 2018 19:02:32 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
-Date: Thu, 15 Mar 2018 17:55:57 +0000
-Message-ID: <1521136555.4790.159.camel@infinera.com>
+Message-ID: <20180315190232.6b8b8d77@bbrezillon>
+In-Reply-To: <1521136555.4790.159.camel@infinera.com>
 References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
  <1520784361.4790.86.camel@infinera.com>
  <20180315165454.5bf24ec0@bbrezillon>
-In-Reply-To: <20180315165454.5bf24ec0@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DFEBD4703051884E873B1DFFC18607FD@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <1521136555.4790.159.camel@infinera.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVGh1LCAyMDE4LTAzLTE1IGF0IDE2OjU0ICswMTAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IE9uIFN1biwgMTEgTWFyIDIwMTggMTY6MDY6MDMgKzAwMDANCj4gSm9ha2ltIFRq
-ZXJubHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+IHdyb3RlOg0KPiANCj4gPiBP
-biBUaHUsIDIwMTgtMDMtMDEgYXQgMTQ6MzkgKzAxMDAsIEpvYWtpbSBUamVybmx1bmQgd3JvdGU6
-DQo+ID4gPiBUaGlzIGZpeGVzIGEgYnVnIHdoaWNoIGFsbG93cyByZWFkL3dyaXRlIHRvIGEgZXJh
-c2UgYmxvY2sgY3VycmVudGx5DQo+ID4gPiBlcmFzaW5nLg0KPiA+ID4gQWxzbyB3b3JrcyBhcm91
-bmQgYSBjaGlwIGJ1ZyBpbiBNaWNyb24gMjhGMDBBUDMwIGNoaXBzLg0KPiA+ID4gDQo+ID4gPiBK
-b2FraW0gVGplcm5sdW5kICgzKToNCj4gPiA+ICAgY2ZpX2NtZHNldF8wMDAxOiBEbyBub3QgYWxs
-b3cgcmVhZC93cml0ZSB0byBzdXNwZW5kIGVyYXNlIGJsb2NrLg0KPiA+ID4gICBjZmlfY21kc2V0
-XzAwMDE6IFdvcmthcm91bmQgTWljcm9uIEVyYXNlIHN1c3BlbmQgYnVnLg0KPiA+ID4gICBjZmlf
-Y21kc2V0XzAwMDI6IERvIG5vdCBhbGxvdyByZWFkL3dyaXRlIHRvIHN1c3BlbmQgZXJhc2UgYmxv
-Y2suDQo+ID4gPiANCj4gPiA+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYyB8
-IDMzICsrKysrKysrKysrKysrKysrKysrKysrKysrKystLS0tLQ0KPiA+ID4gIGRyaXZlcnMvbXRk
-L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgIDkgKysrKysrLS0tDQo+ID4gPiAgaW5jbHVkZS9s
-aW51eC9tdGQvZmxhc2hjaGlwLmggICAgICAgfCAgMSArDQo+ID4gPiAgMyBmaWxlcyBjaGFuZ2Vk
-LCAzNSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gDQo+ID4gUGlu
-Zz8NCj4gDQo+IFlvdSBkaWRuJ3QgQ2MgdGhlIE1URCBtYWludGFpbmVycywgc28gdGhhdCdzIG5v
-dCBzdXJwcmlzaW5nIHlvdSBkb24ndA0KPiBnZXQgYSByZXBseSBmcm9tIHVzIDpQLg0KDQpJIGZp
-bmQgaXQgbW9yZSBzdXJwcmlzaW5nIHRoYXQgdGhlIE1URCBtYWludGFpbmVycyBkb2Vzbid0IHJl
-YWQgdGhlIE1URCBsaXN0ID8gSSBmaWd1cmVkDQp0aGlzIHdhcyBhIHJlcXVpcmVtZW50Lg0KDQo+
-IA0KPiA+IFRoaXMgaXMgYSBmYWlybHkgc2VyaW91cyBidWcgYXMgaXQgY29uZnVzZXMgdGhlIGZs
-YXNoIHN0YXRlIG1hY2hpbmUsDQo+ID4gbWFraW5nIGZ1cnRoZXIgZmxhc2ggYWNjZXNzIGZhaWwu
-DQo+IA0KPiBJJ2xsIHRyeSB0byBoYXZlIGEgbG9vay4NCg0KVGhhbmtz
+On Thu, 15 Mar 2018 17:55:57 +0000
+Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+
+> On Thu, 2018-03-15 at 16:54 +0100, Boris Brezillon wrote:
+> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> > 
+> > 
+> > On Sun, 11 Mar 2018 16:06:03 +0000
+> > Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+> >   
+> > > On Thu, 2018-03-01 at 14:39 +0100, Joakim Tjernlund wrote:  
+> > > > This fixes a bug which allows read/write to a erase block currently
+> > > > erasing.
+> > > > Also works around a chip bug in Micron 28F00AP30 chips.
+> > > > 
+> > > > Joakim Tjernlund (3):
+> > > >   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
+> > > >   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
+> > > >   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
+> > > > 
+> > > >  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
+> > > >  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
+> > > >  include/linux/mtd/flashchip.h       |  1 +
+> > > >  3 files changed, 35 insertions(+), 8 deletions(-)
+> > > >   
+> > > 
+> > > Ping?  
+> > 
+> > You didn't Cc the MTD maintainers, so that's not surprising you don't
+> > get a reply from us :P.  
+> 
+> I find it more surprising that the MTD maintainers doesn't read the MTD list ?
+
+I do read the ML occasionally, though I tend to rely on what's in my
+inbox, so there might be a bigger latency if you don't Cc me. I guess
+the process differ for each maintainer, but it's a good practice to Cc
+maintainers when you send a patch.
+
+> I figured this was a requirement.
+> 
+> >   
+> > > This is a fairly serious bug as it confuses the flash state machine,
+> > > making further flash access fail.  
+> > 
+> > I'll try to have a look.  
+> 
+> Thanks
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
