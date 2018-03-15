@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewVPe-0003qY-57
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 16:08:16 +0000
-Date: Thu, 15 Mar 2018 17:07:02 +0100
+ id 1ewVSc-00066M-UD
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 16:10:56 +0000
+Date: Thu, 15 Mar 2018 17:10:06 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Arushi Singhal <arushisinghal19971997@gmail.com>
 Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
  linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
  linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
  computersforpeace@gmail.com
-Subject: Re: [PATCH 2/3] mtd: maps: Remove print after allocation failure
-Message-ID: <20180315170702.552c4756@bbrezillon>
-In-Reply-To: <1521041718-32492-2-git-send-email-arushisinghal19971997@gmail.com>
+Subject: Re: [PATCH 3/3] mtd: Remove print after allocation failure
+Message-ID: <20180315171006.258edcca@bbrezillon>
+In-Reply-To: <1521041718-32492-3-git-send-email-arushisinghal19971997@gmail.com>
 References: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
- <1521041718-32492-2-git-send-email-arushisinghal19971997@gmail.com>
+ <1521041718-32492-3-git-send-email-arushisinghal19971997@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,7 +28,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Arushi,
 
-On Wed, 14 Mar 2018 21:05:17 +0530
+On Wed, 14 Mar 2018 21:05:18 +0530
 Arushi Singhal <arushisinghal19971997@gmail.com> wrote:
 
 > The prints after [k|v][m|z|c]alloc() functions are not needed, because
@@ -37,34 +37,30 @@ Arushi Singhal <arushisinghal19971997@gmail.com> wrote:
 > 
 > Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 > ---
->  drivers/mtd/maps/sun_uflash.c | 4 +---
+>  drivers/mtd/inftlmount.c | 6 +-----
 
-And here as well some of the drivers are still printing error messages
-after mem allocation failures (amd76xrom, ck804xrom, esb2rom, ichxrom,
-vmu-flash).
+I didn't check but I'm pretty sure you missed some of them here too.
 
-Regards,
-
-Boris
-
->  1 file changed, 1 insertion(+), 3 deletions(-)
+>  1 file changed, 1 insertion(+), 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/maps/sun_uflash.c b/drivers/mtd/maps/sun_uflash.c
-> index 1e73bba..80a253c 100644
-> --- a/drivers/mtd/maps/sun_uflash.c
-> +++ b/drivers/mtd/maps/sun_uflash.c
-> @@ -62,10 +62,8 @@ int uflash_devinit(struct platform_device *op, struct device_node *dp)
->  	}
+> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+> index 8d6bb189..6b94646 100644
+> --- a/drivers/mtd/inftlmount.c
+> +++ b/drivers/mtd/inftlmount.c
+> @@ -562,12 +562,8 @@ int INFTL_mount(struct INFTLrecord *s)
 >  
->  	up = kzalloc(sizeof(struct uflash_dev), GFP_KERNEL);
-> -	if (!up) {
-> -		printk(KERN_ERR PFX "Cannot allocate struct uflash_dev\n");
-> +	if (!up)
+>  	/* Temporary buffer to store ANAC numbers. */
+>  	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
+> -	if (!ANACtable) {
+> -		printk(KERN_WARNING "INFTL: allocation of ANACtable "
+> -				"failed (%zd bytes)\n",
+> -				s->nb_blocks * sizeof(u8));
+> +	if (!ANACtable)
 >  		return -ENOMEM;
 > -	}
 >  
->  	/* copy defaults and tweak parameters */
->  	memcpy(&up->map, &uflash_map_templ, sizeof(uflash_map_templ));
+>  	/*
+>  	 * First pass is to explore each physical unit, and construct the
 
 
 
