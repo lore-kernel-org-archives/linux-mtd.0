@@ -1,51 +1,23 @@
-Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
+Received: from mail-ot0-x242.google.com ([2607:f8b0:4003:c0f::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewOtX-0000LW-Bb
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 09:09:57 +0000
-Received: by mail-io0-x242.google.com with SMTP id d11so1427236iop.6
- for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 02:09:44 -0700 (PDT)
+ id 1ewSWa-0008C9-QP
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 13:02:35 +0000
+Received: by mail-ot0-x242.google.com with SMTP id i28-v6so2057707otf.8
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 06:02:18 -0700 (PDT)
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <20180315063238.3303b8d1@bbrezillon>
-References: <20180314153603.3127932-1-arnd@arndb.de>
- <20180315063238.3303b8d1@bbrezillon>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 15 Mar 2018 10:09:43 +0100
-Message-ID: <CAK8P3a151M35ywHyABt2KFypPaiZROYuL10ztChwjSwqS9haHg@mail.gmail.com>
-Subject: Re: [PATCH 00/47] arch-removal: device drivers
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Guenter Roeck <linux@roeck-us.net>,
- Jonathan Corbet <corbet@lwn.net>, Tejun Heo <tj@kernel.org>,
- gregkh <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, Viresh Kumar <viresh.kumar@linaro.org>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Miller <davem@davemloft.net>,
- Borislav Petkov <bp@alien8.de>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Linus Walleij <linus.walleij@linaro.org>, Wolfram Sang <wsa@the-dreams.de>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, wg@grandegger.com,
- mkl@pengutronix.de, Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Mark Brown <broonie@kernel.org>,
- Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
- Jiri Slaby <jslaby@suse.com>, Alan Stern <stern@rowland.harvard.edu>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Shaohua Li <shli@kernel.org>, linux-watchdog@vger.kernel.org,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, linux-pm@vger.kernel.org,
- "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
- <linux-crypto@vger.kernel.org>, linux-edac@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
- "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, Networking <netdev@vger.kernel.org>,
- linux-can@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
- linux-iio@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- "open list:SOFTWARE RAID (Multiple Disks) SUPPORT"
- <linux-raid@vger.kernel.org>, alsa-devel@alsa-project.org
+In-Reply-To: <CAOMZO5A91xYK+36MumVFxsH2j9aqhsqpg8_OVhbOKtiXTKAnEw@mail.gmail.com>
+References: <1517001805-7646-1-git-send-email-festevam@gmail.com>
+ <CAOMZO5A91xYK+36MumVFxsH2j9aqhsqpg8_OVhbOKtiXTKAnEw@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Thu, 15 Mar 2018 10:02:16 -0300
+Message-ID: <CAOMZO5DDoe5nKkk5fjBfB2eiMYF_X-EJ0yGsxhUFJ=ZSZAc8hQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v6 1/2] mtd: fsl-quadspi: Distinguish the mtd
+ device names
+To: cyrille.pitchen@wedev4u.fr
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ linux-mtd@lists.infradead.org,
+ Han Xu <han.xu@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
+ Fabio Estevam <fabio.estevam@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -56,42 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 15, 2018 at 6:32 AM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Hi Arnd,
->
-> On Wed, 14 Mar 2018 16:35:13 +0100
-> Arnd Bergmann <arnd@arndb.de> wrote:
->
->> Hi driver maintainers,
->>
->> I just posted one series with the removal of eight architectures,
->> see https://lkml.org/lkml/2018/3/14/505 for details, or
->> https://lwn.net/Articles/748074/ for more background.
->>
->> These are the device drivers that go along with them. I have already
->> picked up the drivers for arch/metag/ into my tree, they were reviewed
->> earlier.
->>
->> Please let me know if you have any concerns with the patch, or if you
->> prefer to pick up the patches in your respective trees.  I created
->> the patches with 'git format-patch -D', so they will not apply without
->> manually removing those files.
->>
->> For anything else, I'd keep the removal patches in my asm-generic tree
->> and will send a pull request for 4.17 along with the actual arch removal.
->>
+Hi Cyrille,
 
->
-> If you don't mind, I'd like to take the mtd patches through the MTD
-> tree. As you've probably noticed, nand code has been moved around and
-> it's easier for me to carry those 2 simple changes in my tree than
-> creating an immutable branch.
->
-> Let me know if this is a problem.
+Any chance to get this one applied to 4.17?
 
-Sounds good, I've removed the two patches from my tree now.
-I've already sent a version of those that is based on your latest tree to
-you for inclusion.
-
-      Arnd
+On Tue, Feb 13, 2018 at 11:47 PM, Fabio Estevam <festevam@gmail.com> wrote:
+> Hi Cyrille,
+>
+> On Fri, Jan 26, 2018 at 7:23 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>> From: Fabio Estevam <fabio.estevam@nxp.com>
+>>
+>> Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+>> to QSPI2 the following output from /proc/mtd is seen:
+>>
+>> # cat /proc/mtd
+>> dev:    size   erasesize  name
+>> mtd0: 01000000 00010000 "21e4000.qspi"
+>> mtd1: 01000000 00010000 "21e4000.qspi"
+>>
+>> Attempts to partition them on the kernel command line result in both
+>> chips with identical (and identically named) partitions, which is
+>> an inconvenient behavior.
+>>
+>> Assign a different mtd->name for each mtd device to avoid this problem.
+>>
+>> After this change the output from /proc/mtd becomes:
+>>
+>> # cat /proc/mtd
+>> dev:    size   erasesize  name
+>> mtd0: 01000000 00010000 "21e4000.qspi-0"
+>> mtd1: 01000000 00010000 "21e4000.qspi-1"
+>>
+>> In order to keep mtdparts compatibility keep the mtd->name
+>> unchanged when a single SPI NOR is present.
+>>
+>> Reported-by: David Wolfe <david.wolfe@nxp.com>
+>> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+>> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+>> Acked-by: Han Xu <han.xu@nxp.com>
+>> ---
+>> Resending it as I missed to send it to Cyrille
+>
+>  A gentle ping on this series.
+>
+>>
+>> Changes since v5:
+>> - Preserve the label value, if any. (Boris)
+>>
+>>  drivers/mtd/spi-nor/fsl-quadspi.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> index 2901c7b..1038842 100644
+>> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+>> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+>> @@ -1051,6 +1051,24 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+>>                 spi_nor_set_flash_node(nor, np);
+>>                 nor->priv = q;
+>>
+>> +               if (q->nor_num > 1 && !mtd->name) {
+>> +                       int spiflash_idx;
+>> +
+>> +                       ret = of_property_read_u32(np, "reg", &spiflash_idx);
+>> +                       if (!ret) {
+>> +                               mtd->name = devm_kasprintf(dev, GFP_KERNEL,
+>> +                                                          "%s-%d",
+>> +                                                          dev_name(dev),
+>> +                                                          spiflash_idx);
+>> +                               if (!mtd->name) {
+>> +                                       ret = -ENOMEM;
+>> +                                       goto mutex_failed;
+>> +                               }
+>> +                       } else {
+>> +                               dev_warn(dev, "reg property is missing\n");
+>> +                       }
+>> +               }
+>> +
+>>                 /* fill the hooks */
+>>                 nor->read_reg = fsl_qspi_read_reg;
+>>                 nor->write_reg = fsl_qspi_write_reg;
+>> --
+>> 2.7.4
+>>
