@@ -1,19 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewUvw-0005EJ-ID
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 15:36:51 +0000
-Date: Thu, 15 Mar 2018 16:36:20 +0100
+Date: Thu, 15 Mar 2018 16:23:20 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>, han.xu@nxp.com
-Cc: boris.brezillon@free-electrons.com, max.oss.09@gmail.com,
- richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- dwmw2@infradead.org
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
- strength
-Message-ID: <20180315163620.6122d752@bbrezillon>
-In-Reply-To: <20180304200602.11475-1-stefan@agner.ch>
-References: <20180304200602.11475-1-stefan@agner.ch>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Josh Wu <rainyfeeling@outlook.com>, Kamal
+ Dasu <kdasu.kdev@gmail.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Stefan Agner <stefan@agner.ch>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 02/52] mtd: rawnand: bf5xx: fix probe function error path
+Message-ID: <20180315162320.38f06fe7@bbrezillon>
+In-Reply-To: <20180302170400.6712-3-miquel.raynal@bootlin.com>
+References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
+ <20180302170400.6712-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,100 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri,  2 Mar 2018 18:03:10 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-On Sun,  4 Mar 2018 21:06:01 +0100
-Stefan Agner <stefan@agner.ch> wrote:
-
-> Add support for specified ECC strength/size using device tree
-> properties nand-ecc-strength/nand-ecc-step-size.
-
-Han, we didn't hear back from you on that. Are you okay with adding
-these new properties? IIRC, you feared there would be a delta between
-u-boot and linux support.
-
-Stephan, there's no changelog. Has anything changed in this version or
-is this just a RESEND?
-
-Regards,
-
-Boris
-
+> An error after nand_scan_tail() should trigger a nand_release().
+> The helper mtd_device_register() (wrapped by bf5xx_nand_add_partition())
+> returns an error code that should be checked and nand_release() called
+> accordingly.
 > 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 30 ++++++++++++++++++++----------
->  1 file changed, 20 insertions(+), 10 deletions(-)
+>  drivers/mtd/nand/raw/bf5xx_nand.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> index 61fdd733492f..d04754289c03 100644
-> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-> @@ -198,17 +198,16 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
->   *
->   * We may have available oob space in this case.
->   */
-> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
-> +				    unsigned int ecc_strength,
-> +				    unsigned int ecc_step)
->  {
->  	struct bch_geometry *geo = &this->bch_geometry;
->  	struct nand_chip *chip = &this->nand;
->  	struct mtd_info *mtd = nand_to_mtd(chip);
->  	unsigned int block_mark_bit_offset;
+> diff --git a/drivers/mtd/nand/raw/bf5xx_nand.c b/drivers/mtd/nand/raw/bf5xx_nand.c
+> index 9a1d8d104570..da7a6083b0e5 100644
+> --- a/drivers/mtd/nand/raw/bf5xx_nand.c
+> +++ b/drivers/mtd/nand/raw/bf5xx_nand.c
+> @@ -831,11 +831,16 @@ static int bf5xx_nand_probe(struct platform_device *pdev)
+>  #endif
 >  
-> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> -		return -EINVAL;
-> -
-> -	switch (chip->ecc_step_ds) {
-> +	switch (ecc_step) {
->  	case SZ_512:
->  		geo->gf_len = 13;
->  		break;
-> @@ -221,8 +220,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
->  			chip->ecc_strength_ds, chip->ecc_step_ds);
->  		return -EINVAL;
->  	}
-> -	geo->ecc_chunk_size = chip->ecc_step_ds;
-> -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
-> +	geo->ecc_chunk_size = ecc_step;
-> +	geo->ecc_strength = round_up(ecc_strength, 2);
->  	if (!gpmi_check_ecc(this))
->  		return -EINVAL;
+>  	/* add NAND partition */
+> -	bf5xx_nand_add_partition(info);
+> +	err = bf5xx_nand_add_partition(info);
+> +	if (err)
+> +		goto out_err_release_nand;
 >  
-> @@ -230,7 +229,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
->  	if (geo->ecc_chunk_size < mtd->oobsize) {
->  		dev_err(this->dev,
->  			"unsupported nand chip. ecc size: %d, oob size : %d\n",
-> -			chip->ecc_step_ds, mtd->oobsize);
-> +			ecc_step, mtd->oobsize);
->  		return -EINVAL;
->  	}
->  
-> @@ -423,9 +422,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
->  
->  int common_nfc_set_geometry(struct gpmi_nand_data *this)
->  {
-> +	struct nand_chip *chip = &this->nand;
+>  	dev_dbg(&pdev->dev, "initialised ok\n");
 > +
-> +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
-> +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
-> +						chip->ecc.size);
-> +
->  	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
-> -				|| legacy_set_geometry(this))
-> -		return set_geometry_by_ecc_info(this);
-> +				|| legacy_set_geometry(this)) {
-> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
-> +			return -EINVAL;
-> +
-> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
-> +						chip->ecc_step_ds);
-> +	}
->  
 >  	return 0;
->  }
+>  
+> +out_err_release_nand:
+> +	nand_release(mtd);
+
+You should call nand_cleanup() here not nand_release(), because the
+mtd device has not been registered and nand_release() does both
+mtd_device_unregister() and nand_cleanup().
+
+I'll let you check the other patches.
+
+>  out_err_nand_scan:
+>  	bf5xx_nand_dma_remove(info);
+>  out_err:
 
 
 
