@@ -1,23 +1,23 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewUyk-0005s3-VN
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 15:39:52 +0000
-Date: Thu, 15 Mar 2018 16:39:18 +0100
-In-Reply-To: <20180315163620.6122d752@bbrezillon>
-References: <20180304200602.11475-1-stefan@agner.ch>
- <20180315163620.6122d752@bbrezillon>
+Subject: Re: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
+To: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
+ <20180302170400.6712-22-miquel.raynal@bootlin.com>
+From: Harvey Hunt <harveyhuntnexus@gmail.com>
+Message-ID: <d57f95d3-03d0-5905-835f-c278df578b1e@gmail.com>
+Date: Thu, 15 Mar 2018 15:40:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
- strength
-To: Boris Brezillon <boris.brezillon@bootlin.com>,han.xu@nxp.com
-CC: boris.brezillon@free-electrons.com, max.oss.09@gmail.com, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org
-From: Stefan Agner <stefan@agner.ch>
-Message-ID: <C8FA1701-52CE-46B6-9A3E-3249D1BDA4AC@agner.ch>
+In-Reply-To: <20180302170400.6712-22-miquel.raynal@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,117 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Miquel,
 
+Sorry it's taken me a little while to review your changes, a few
+comments below:
 
-On March 15, 2018 4:36:20 PM GMT+01:00, Boris Brezillon <boris=2Ebrezillon=
-@bootlin=2Ecom> wrote:
->Hi,
->
->On Sun,  4 Mar 2018 21:06:01 +0100
->Stefan Agner <stefan@agner=2Ech> wrote:
->
->> Add support for specified ECC strength/size using device tree
->> properties nand-ecc-strength/nand-ecc-step-size=2E
->
->Han, we didn't hear back from you on that=2E Are you okay with adding
->these new properties? IIRC, you feared there would be a delta between
->u-boot and linux support=2E
->
->Stephan, there's no changelog=2E Has anything changed in this version or
->is this just a RESEND?
+On 03/02/2018 05:03 PM, Miquel Raynal wrote:
+> Two helpers have been added to the core to make ECC-related
+> configuration between the detection phase and the final NAND scan. Use
+> these hooks and convert the driver to just use nand_scan() instead of
+> both nand_scan_ident() and nand_scan_tail().
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
+>  1 file changed, 12 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+> index e69f6ae4c539..fd5dc9d9b0c6 100644
+> --- a/drivers/mtd/nand/raw/jz4780_nand.c
+> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+> @@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
+>  	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+>  }
+>  
+> -static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
+> +static int jz4780_nand_attach_chip(struct nand_chip *chip)
+>  {
+> -	struct nand_chip *chip = &nand->chip;
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+>  	int eccbytes;
+> @@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  	switch (chip->ecc.mode) {
+>  	case NAND_ECC_HW:
+>  		if (!nfc->bch) {
+> -			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
+> +			dev_err(nfc->dev,
+> +				"HW BCH selected, but BCH controller not found\n");
+>  			return -ENODEV;
+>  		}
+>  
+> @@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  		chip->ecc.correct = jz4780_nand_ecc_correct;
+>  		/* fall through */
+>  	case NAND_ECC_SOFT:
+> -		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+> -			(nfc->bch) ? "hardware BCH" : "software ECC",
+> -			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+> +		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+> +			 (nfc->bch) ? "hardware BCH" : "software ECC",
+> +			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes)>  		break;
+>  	case NAND_ECC_NONE:
+> -		dev_info(dev, "not using ECC\n");
+> +		dev_info(nfc->dev, "not using ECC\n");
+>  		break;
+>  	default:
+> -		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
+> +		dev_err(nfc->dev, "ECC mode %d not supported\n",
+> +			chip->ecc.mode);
+>  		return -EINVAL;
+>  	}
+These changes seem redundant as dev is passed into the function,
+although you could remove it from the function defintion.
 
-Sorry forgot that=2E I just split documentation and driver changes=2E
+>  
+> @@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+>  
+>  	if (eccbytes > mtd->oobsize - 2) {
+> -		dev_err(dev,
+> +		dev_err(nfc->dev,
+>  			"invalid ECC config: required %d ECC bytes, but only %d are available",
+>  			eccbytes, mtd->oobsize - 2);
+>  		return -EINVAL;
+> @@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+>  	chip->controller = &nfc->controller;
+>  	nand_set_flash_node(chip, np);
+>  
+> -	ret = nand_scan_ident(mtd, 1, NULL);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = jz4780_nand_init_ecc(nand, dev)
 
---
-Stefan
+You've removed this call, but without it the ECC won't be initialised...
 
->
->Regards,
->
->Boris
->
->>=20
->> Signed-off-by: Stefan Agner <stefan@agner=2Ech>
->> ---
->>  drivers/mtd/nand/gpmi-nand/gpmi-nand=2Ec | 30
->++++++++++++++++++++----------
->>  1 file changed, 20 insertions(+), 10 deletions(-)
->>=20
->> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand=2Ec
->b/drivers/mtd/nand/gpmi-nand/gpmi-nand=2Ec
->> index 61fdd733492f=2E=2Ed04754289c03 100644
->> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand=2Ec
->> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand=2Ec
->> @@ -198,17 +198,16 @@ static inline bool gpmi_check_ecc(struct
->gpmi_nand_data *this)
->>   *
->>   * We may have available oob space in this case=2E
->>   */
->> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
->> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
->> +				    unsigned int ecc_strength,
->> +				    unsigned int ecc_step)
->>  {
->>  	struct bch_geometry *geo =3D &this->bch_geometry;
->>  	struct nand_chip *chip =3D &this->nand;
->>  	struct mtd_info *mtd =3D nand_to_mtd(chip);
->>  	unsigned int block_mark_bit_offset;
->> =20
->> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
->> -		return -EINVAL;
->> -
->> -	switch (chip->ecc_step_ds) {
->> +	switch (ecc_step) {
->>  	case SZ_512:
->>  		geo->gf_len =3D 13;
->>  		break;
->> @@ -221,8 +220,8 @@ static int set_geometry_by_ecc_info(struct
->gpmi_nand_data *this)
->>  			chip->ecc_strength_ds, chip->ecc_step_ds);
->>  		return -EINVAL;
->>  	}
->> -	geo->ecc_chunk_size =3D chip->ecc_step_ds;
->> -	geo->ecc_strength =3D round_up(chip->ecc_strength_ds, 2);
->> +	geo->ecc_chunk_size =3D ecc_step;
->> +	geo->ecc_strength =3D round_up(ecc_strength, 2);
->>  	if (!gpmi_check_ecc(this))
->>  		return -EINVAL;
->> =20
->> @@ -230,7 +229,7 @@ static int set_geometry_by_ecc_info(struct
->gpmi_nand_data *this)
->>  	if (geo->ecc_chunk_size < mtd->oobsize) {
->>  		dev_err(this->dev,
->>  			"unsupported nand chip=2E ecc size: %d, oob size : %d\n",
->> -			chip->ecc_step_ds, mtd->oobsize);
->> +			ecc_step, mtd->oobsize);
->>  		return -EINVAL;
->>  	}
->> =20
->> @@ -423,9 +422,20 @@ static int legacy_set_geometry(struct
->gpmi_nand_data *this)
->> =20
->>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
->>  {
->> +	struct nand_chip *chip =3D &this->nand;
->> +
->> +	if (chip->ecc=2Estrength > 0 && chip->ecc=2Esize > 0)
->> +		return set_geometry_by_ecc_info(this, chip->ecc=2Estrength,
->> +						chip->ecc=2Esize);
->> +
->>  	if ((of_property_read_bool(this->dev->of_node,
->"fsl,use-minimum-ecc"))
->> -				|| legacy_set_geometry(this))
->> -		return set_geometry_by_ecc_info(this);
->> +				|| legacy_set_geometry(this)) {
->> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
->> +			return -EINVAL;
->> +
->> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
->> +						chip->ecc_step_ds);
->> +	}
->> =20
->>  	return 0;
->>  }
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = nand_scan_tail(mtd);
+> +	chip->ecc.attach_chip = jz4780_nand_attach_chip;
 
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+This function doesn't exist.
+
+> +	ret = nand_scan(mtd, 1);
+>  	if (ret)
+>  		return ret;
+>  
+> 
+
+Thanks,
+
+Harvey
