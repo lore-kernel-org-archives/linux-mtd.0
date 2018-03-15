@@ -1,21 +1,18 @@
-Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+Received: from 2.mo178.mail-out.ovh.net ([46.105.39.61])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewY5v-0001Fy-Cf
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 18:59:21 +0000
-Subject: Re: [PATCH RESEND v6 1/2] mtd: fsl-quadspi: Distinguish the mtd
- device names
-To: Fabio Estevam <festevam@gmail.com>
-Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
- han.xu@nxp.com, david.wolfe@nxp.com, Fabio Estevam <fabio.estevam@nxp.com>
-References: <1517001805-7646-1-git-send-email-festevam@gmail.com>
+ id 1ewYBW-0003nK-DB
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 19:05:12 +0000
+Received: from player746.ha.ovh.net (unknown [10.109.122.131])
+ by mo178.mail-out.ovh.net (Postfix) with ESMTP id 542AC7F8C
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 20:04:50 +0100 (CET)
 From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <0354a333-d178-918c-8395-ef7408070478@wedev4u.fr>
-Date: Thu, 15 Mar 2018 19:58:57 +0100
-MIME-Version: 1.0
-In-Reply-To: <1517001805-7646-1-git-send-email-festevam@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To: computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] MAINTAINERS: update maintainers for MTD and SPI NOR subsystems
+Date: Thu, 15 Mar 2018 20:04:38 +0100
+Message-Id: <20180315190438.4832-1-cyrille.pitchen@wedev4u.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 26/01/2018 à 22:23, Fabio Estevam a écrit :
-> From: Fabio Estevam <fabio.estevam@nxp.com>
-> 
-> Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
-> to QSPI2 the following output from /proc/mtd is seen:
-> 
-> # cat /proc/mtd 
-> dev:    size   erasesize  name
-> mtd0: 01000000 00010000 "21e4000.qspi"
-> mtd1: 01000000 00010000 "21e4000.qspi"
-> 
-> Attempts to partition them on the kernel command line result in both
-> chips with identical (and identically named) partitions, which is
-> an inconvenient behavior.
-> 
-> Assign a different mtd->name for each mtd device to avoid this problem.
-> 
-> After this change the output from /proc/mtd becomes:
-> 
-> # cat /proc/mtd 
-> dev:    size   erasesize  name
-> mtd0: 01000000 00010000 "21e4000.qspi-0"
-> mtd1: 01000000 00010000 "21e4000.qspi-1"
-> 
-> In order to keep mtdparts compatibility keep the mtd->name
-> unchanged when a single SPI NOR is present.
-> 
-> Reported-by: David Wolfe <david.wolfe@nxp.com>
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Acked-by: Han Xu <han.xu@nxp.com>
+remove myself as MTD and SPI NOR maintainer.
 
-Series applied to the spi-nor/next branch of linux-mtd
+Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks!
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 3bdc260e36b7..7892db9a9494 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9037,7 +9037,6 @@ M:	Brian Norris <computersforpeace@gmail.com>
+ M:	Boris Brezillon <boris.brezillon@free-electrons.com>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ M:	Richard Weinberger <richard@nod.at>
+-M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+ Q:	http://patchwork.ozlabs.org/project/linux-mtd/list/
+@@ -13006,7 +13005,6 @@ F:	arch/arm/boot/dts/spear*
+ F:	arch/arm/mach-spear/
+ 
+ SPI NOR SUBSYSTEM
+-M:	Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+ M:	Marek Vasut <marek.vasut@gmail.com>
+ L:	linux-mtd@lists.infradead.org
+ W:	http://www.linux-mtd.infradead.org/
+-- 
+2.14.1
