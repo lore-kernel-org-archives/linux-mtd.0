@@ -1,24 +1,52 @@
-Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewOYp-0000A4-G1
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 08:48:32 +0000
-Received: by mail-it0-x243.google.com with SMTP id e195-v6so3393443ita.5
- for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 01:48:21 -0700 (PDT)
-Subject: Re: [PATCH 2/2 v2] mtd: ubi: use put_device() if device_register fail
-To: Richard Weinberger <richard@nod.at>
-References: <1521098431-29565-1-git-send-email-arvind.yadav.cs@gmail.com>
- <5296799.FRhcbj8Hd9@blindfold>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Message-ID: <11250cfc-f092-b299-1044-50334c518bf1@gmail.com>
-Date: Thu, 15 Mar 2018 14:17:25 +0530
+ id 1ewOtX-0000LW-Bb
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 09:09:57 +0000
+Received: by mail-io0-x242.google.com with SMTP id d11so1427236iop.6
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 02:09:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5296799.FRhcbj8Hd9@blindfold>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+Sender: arndbergmann@gmail.com
+In-Reply-To: <20180315063238.3303b8d1@bbrezillon>
+References: <20180314153603.3127932-1-arnd@arndb.de>
+ <20180315063238.3303b8d1@bbrezillon>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 15 Mar 2018 10:09:43 +0100
+Message-ID: <CAK8P3a151M35ywHyABt2KFypPaiZROYuL10ztChwjSwqS9haHg@mail.gmail.com>
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Guenter Roeck <linux@roeck-us.net>,
+ Jonathan Corbet <corbet@lwn.net>, Tejun Heo <tj@kernel.org>,
+ gregkh <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rjw@rjwysocki.net>, Viresh Kumar <viresh.kumar@linaro.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Miller <davem@davemloft.net>,
+ Borislav Petkov <bp@alien8.de>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Wolfram Sang <wsa@the-dreams.de>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, wg@grandegger.com,
+ mkl@pengutronix.de, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Mark Brown <broonie@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>,
+ Jiri Slaby <jslaby@suse.com>, Alan Stern <stern@rowland.harvard.edu>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Shaohua Li <shli@kernel.org>, linux-watchdog@vger.kernel.org,
+ "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+ IDE-ML <linux-ide@vger.kernel.org>, linux-pm@vger.kernel.org,
+ "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
+ <linux-crypto@vger.kernel.org>, linux-edac@vger.kernel.org,
+ linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
+ "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Networking <netdev@vger.kernel.org>,
+ linux-can@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ "open list:SOFTWARE RAID (Multiple Disks) SUPPORT"
+ <linux-raid@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +56,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On Thursday 15 March 2018 01:25 PM, Richard Weinberger wrote:
-> Am Donnerstag, 15. März 2018, 08:20:31 CET schrieb Arvind Yadav:
->> if device_register() returned an error! Always use put_device()
->> to give up the reference initialized.
-> Like DaveM said, there is no need to shout and use "!".
-
-I will fix this and send you update patch.
->   
->> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
->> ---
->> change in v2:
->>          Fix use-after-free bug. move put_device() after cdev_del().
->>
->>   drivers/mtd/ubi/vmt.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
->> index 3fd8d7f..93c6163 100644
->> --- a/drivers/mtd/ubi/vmt.c
->> +++ b/drivers/mtd/ubi/vmt.c
->> @@ -610,6 +610,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct
->> ubi_volume *vol)
->>
->>   out_cdev:
->>   	cdev_del(&vol->cdev);
->> +	put_device(&vol->dev);
->>   	return err;
-> The more I dig into device code, the more questions I have.
-> Why is cdev_del() not part of the release function?
+On Thu, Mar 15, 2018 at 6:32 AM, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> Hi Arnd,
 >
-> Thanks,
-> //richard
+> On Wed, 14 Mar 2018 16:35:13 +0100
+> Arnd Bergmann <arnd@arndb.de> wrote:
+>
+>> Hi driver maintainers,
+>>
+>> I just posted one series with the removal of eight architectures,
+>> see https://lkml.org/lkml/2018/3/14/505 for details, or
+>> https://lwn.net/Articles/748074/ for more background.
+>>
+>> These are the device drivers that go along with them. I have already
+>> picked up the drivers for arch/metag/ into my tree, they were reviewed
+>> earlier.
+>>
+>> Please let me know if you have any concerns with the patch, or if you
+>> prefer to pick up the patches in your respective trees.  I created
+>> the patches with 'git format-patch -D', so they will not apply without
+>> manually removing those files.
+>>
+>> For anything else, I'd keep the removal patches in my asm-generic tree
+>> and will send a pull request for 4.17 along with the actual arch removal.
+>>
 
-Yes, It's should be a part release function.
+>
+> If you don't mind, I'd like to take the mtd patches through the MTD
+> tree. As you've probably noticed, nand code has been moved around and
+> it's easier for me to carry those 2 simple changes in my tree than
+> creating an immutable branch.
+>
+> Let me know if this is a problem.
 
-~arvind
+Sounds good, I've removed the two patches from my tree now.
+I've already sent a version of those that is based on your latest tree to
+you for inclusion.
+
+      Arnd
