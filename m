@@ -1,21 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewXDR-0002si-Al
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 18:03:04 +0000
-Date: Thu, 15 Mar 2018 19:02:32 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
-Message-ID: <20180315190232.6b8b8d77@bbrezillon>
-In-Reply-To: <1521136555.4790.159.camel@infinera.com>
-References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
- <1520784361.4790.86.camel@infinera.com>
- <20180315165454.5bf24ec0@bbrezillon>
- <1521136555.4790.159.camel@infinera.com>
+Received: from smtp3-g21.free.fr ([2a01:e0c:1:1599::12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewY5v-0001Fy-Cf
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 18:59:21 +0000
+Subject: Re: [PATCH RESEND v6 1/2] mtd: fsl-quadspi: Distinguish the mtd
+ device names
+To: Fabio Estevam <festevam@gmail.com>
+Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ han.xu@nxp.com, david.wolfe@nxp.com, Fabio Estevam <fabio.estevam@nxp.com>
+References: <1517001805-7646-1-git-send-email-festevam@gmail.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <0354a333-d178-918c-8395-ef7408070478@wedev4u.fr>
+Date: Thu, 15 Mar 2018 19:58:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1517001805-7646-1-git-send-email-festevam@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 15 Mar 2018 17:55:57 +0000
-Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
-
-> On Thu, 2018-03-15 at 16:54 +0100, Boris Brezillon wrote:
-> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
-> > 
-> > 
-> > On Sun, 11 Mar 2018 16:06:03 +0000
-> > Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
-> >   
-> > > On Thu, 2018-03-01 at 14:39 +0100, Joakim Tjernlund wrote:  
-> > > > This fixes a bug which allows read/write to a erase block currently
-> > > > erasing.
-> > > > Also works around a chip bug in Micron 28F00AP30 chips.
-> > > > 
-> > > > Joakim Tjernlund (3):
-> > > >   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
-> > > >   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
-> > > >   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
-> > > > 
-> > > >  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
-> > > >  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
-> > > >  include/linux/mtd/flashchip.h       |  1 +
-> > > >  3 files changed, 35 insertions(+), 8 deletions(-)
-> > > >   
-> > > 
-> > > Ping?  
-> > 
-> > You didn't Cc the MTD maintainers, so that's not surprising you don't
-> > get a reply from us :P.  
+Le 26/01/2018 à 22:23, Fabio Estevam a écrit :
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 > 
-> I find it more surprising that the MTD maintainers doesn't read the MTD list ?
-
-I do read the ML occasionally, though I tend to rely on what's in my
-inbox, so there might be a bigger latency if you don't Cc me. I guess
-the process differ for each maintainer, but it's a good practice to Cc
-maintainers when you send a patch.
-
-> I figured this was a requirement.
+> Currently on a imx6sx-sdb board, which has two SPI NOR chips connected
+> to QSPI2 the following output from /proc/mtd is seen:
 > 
-> >   
-> > > This is a fairly serious bug as it confuses the flash state machine,
-> > > making further flash access fail.  
-> > 
-> > I'll try to have a look.  
+> # cat /proc/mtd 
+> dev:    size   erasesize  name
+> mtd0: 01000000 00010000 "21e4000.qspi"
+> mtd1: 01000000 00010000 "21e4000.qspi"
 > 
-> Thanks
+> Attempts to partition them on the kernel command line result in both
+> chips with identical (and identically named) partitions, which is
+> an inconvenient behavior.
+> 
+> Assign a different mtd->name for each mtd device to avoid this problem.
+> 
+> After this change the output from /proc/mtd becomes:
+> 
+> # cat /proc/mtd 
+> dev:    size   erasesize  name
+> mtd0: 01000000 00010000 "21e4000.qspi-0"
+> mtd1: 01000000 00010000 "21e4000.qspi-1"
+> 
+> In order to keep mtdparts compatibility keep the mtd->name
+> unchanged when a single SPI NOR is present.
+> 
+> Reported-by: David Wolfe <david.wolfe@nxp.com>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Acked-by: Han Xu <han.xu@nxp.com>
 
+Series applied to the spi-nor/next branch of linux-mtd
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks!
