@@ -1,22 +1,14 @@
-Date: Thu, 15 Mar 2018 14:56:20 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>, Jason Cooper
- <jason@lakedaemon.net>, Antoine Tenart <antoine.tenart@bootlin.com>, Omri
- Itach <omrii@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Shadi Ammouri
- <shadi@marvell.com>, Igal Liberman <igall@marvell.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Hanna Hawa
- <hannah@marvell.com>, linux-arm-kernel@lists.infradead.org, Sebastian
- Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH v3] mtd: nand: marvell: Fix clock resource by adding a
- register clock
-Message-ID: <20180315145620.4680b7e6@bbrezillon>
-In-Reply-To: <20180313103016.7695-1-gregory.clement@bootlin.com>
-References: <20180313103016.7695-1-gregory.clement@bootlin.com>
+Received: from mout.gmx.net ([212.227.15.18])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewTdB-0000os-Jy
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 14:13:34 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <trinity-f2c4ec20-92aa-4549-961a-54ada3bed090-1521123187434@3c-app-gmx-bs35>
+From: "Frank Smith" <smith-f@gmx.de>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found. is25lp256d
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 15 Mar 2018 15:13:07 +0100
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +18,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg,
+Dear list,
 
-On Tue, 13 Mar 2018 11:30:16 +0100
-Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
+I am trying to get a new issi flash device (is25lp256d, 32MB) working. 
+http://www.issi.com/WW/pdf/IS25LP(WP)256D.pdf
 
-> diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> index c08fb477b3c6..4ee9813bf88f 100644
-> --- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> @@ -14,7 +14,11 @@ Required properties:
->  - #address-cells: shall be set to 1. Encode the NAND CS.
->  - #size-cells: shall be set to 0.
->  - interrupts: shall define the NAND controller interrupt.
-> -- clocks: shall reference the NAND controller clock.
-> +- clocks: shall reference the NAND controller clocks, the second one is
-> +  optional but needed for the Armada 7K/8K SoCs
-> +- clock-names: mandatory if there is a second clock, in this case the
-> +   name must be "core" for the first clock and "reg" for the second
-> +   one
+Therefore I added this line to spi-nor.c:
 
-The order is no longer enforced in this version of the patch.
+{ "is25lp256d", INFO(0x9d6019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK) },
 
-Regards,
+I can confirm the flash device works as espected for the first 16MB.
 
-Boris
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+But, when I change the partition in the device tree, from 16MB to 32MB I get the following errror: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found. 
+
+Changed "reg = <0x600000 0xa00000>;" to "reg = <0x600000 0x1a00000>;" in my device-tree file as follows:
+
+spi_2: spi@0x31044000 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	compatible = "adi,spi3";
+	reg = <0x31044000 0xFF>;
+	interrupts = <0 71 0>;
+	num-cs = <128>;
+	dma-channel = <26>, <27>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&spi2_quad>;
+
+	flash: s25fl128s@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "issi,is25lp256d", "jedec,spi-nor";
+		spi-max-frequency = <50000000>;
+		reg = <31>;
+		spi-cpol;
+		spi-cpha;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+		dma-mode;
+		partition@0 {
+			label = "uboot (spi)";
+			reg = <0x0 0x80000>;
+		};
+		partition@1 {
+			label = "kernel (spi)";
+			reg = <0x80000 0x580000>;
+		};
+		partition@2 {
+			label = "root file system (spi)";
+			reg = <0x600000 0x1a00000>;   /* <--- changed this from 0x0a00000 to 0x1a00000 */
+		};
+	};
+};
+
+Tried to use mtd-tools, but when writing at address 0xaXXXXX or higher, linux starts hanging, without a Ops.
+
+Any Ideas? What is wrong with the higher addresses?
