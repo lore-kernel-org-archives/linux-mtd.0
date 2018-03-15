@@ -1,19 +1,36 @@
-Subject: Re: [LINUX PATCH v8 1/2] Documentation: nand: pl353: Add
- documentation for controller and driver
-To: nagasureshkumarrelli@gmail.com, boris.brezillon@bootlin.com,
- richard@nod.at, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, cyrille.pitchen@wedev4u.fr, miquel.raynal@bootlin.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- michals@xilinx.com, punnaia@xilinx.com,
- Naga Sureshkumar Relli <nagasure@xilinx.com>
-References: <1521024494-30632-1-git-send-email-nagasureshkumarrelli@gmail.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0abb517f-6360-5b45-18a8-d049f3ab7a4e@infradead.org>
-Date: Wed, 14 Mar 2018 16:57:14 -0700
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewLVj-0005vB-Vv
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 05:33:10 +0000
+Date: Thu, 15 Mar 2018 06:32:38 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-kernel@vger.kernel.org, linux@roeck-us.net, corbet@lwn.net,
+ tj@kernel.org, gregkh@linuxfoundation.org, rjw@rjwysocki.net,
+ viresh.kumar@linaro.org, herbert@gondor.apana.org.au, davem@davemloft.net,
+ bp@alien8.de, mchehab@kernel.org, linus.walleij@linaro.org,
+ wsa@the-dreams.de, dmitry.torokhov@gmail.com, ulf.hansson@linaro.org,
+ cyrille.pitchen@wedev4u.fr, wg@grandegger.com, mkl@pengutronix.de,
+ alexandre.belloni@bootlin.com, broonie@kernel.org, jic23@kernel.org,
+ lars@metafoo.de, jslaby@suse.com, stern@rowland.harvard.edu,
+ b.zolnierkie@samsung.com, shli@kernel.org, linux-watchdog@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, linux-pwm@vger.kernel.org,
+ linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux-raid@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 00/47] arch-removal: device drivers
+Message-ID: <20180315063238.3303b8d1@bbrezillon>
+In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
+References: <20180314153603.3127932-1-arnd@arndb.de>
 MIME-Version: 1.0
-In-Reply-To: <1521024494-30632-1-git-send-email-nagasureshkumarrelli@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,157 +41,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/14/2018 03:48 AM, nagasureshkumarrelli@gmail.com wrote:
-> From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Hi Arnd,
+
+On Wed, 14 Mar 2018 16:35:13 +0100
+Arnd Bergmann <arnd@arndb.de> wrote:
+
+> Hi driver maintainers,
 > 
-> Added notes about the controller and driver
+> I just posted one series with the removal of eight architectures,
+> see https://lkml.org/lkml/2018/3/14/505 for details, or
+> https://lwn.net/Articles/748074/ for more background.
 > 
-> Signed-off-by: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> ---
-
-Hi,
-
-> ---
->  Documentation/mtd/nand/pl353-nand.txt | 92 +++++++++++++++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
->  create mode 100644 Documentation/mtd/nand/pl353-nand.txt
+> These are the device drivers that go along with them. I have already
+> picked up the drivers for arch/metag/ into my tree, they were reviewed
+> earlier.
 > 
-> diff --git a/Documentation/mtd/nand/pl353-nand.txt b/Documentation/mtd/nand/pl353-nand.txt
-> new file mode 100644
-> index 0000000..ac6fbd5
-> --- /dev/null
-> +++ b/Documentation/mtd/nand/pl353-nand.txt
-> @@ -0,0 +1,92 @@
-> +This documents provides some notes about the ARM pl353 smc controller used in
-
-s/smc/SMC/
-
-> +Zynq SOC and confined to NAND specific details.
-> +
-> +Overview of the controller
-> +==========================
-> +	The SMC (PL353) supports two memory interfaces:
-> +	Interface 0 type SRAM.
-> +	Interface 1 type NAND.
-> +	This configuration supports the following configurable options:
-> +	   . 32-bit or 64-bit AXI data width
-> +	   . 8-bit, 16-bit, or 32-bit memory data width for interface 0
-> +	   . 8-bit, or 16-bit memory data width for interface 1
-> +	   . 1-4 chip selects on each interface
-> +	   . SLC ECC block for interface 1
-> +
-> +For more information, refer the below link for TRM
-> +http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/
-> +DDI0380G_smc_pl350_series_r2p1_trm.pdf
-> +
-> +NAND memory accesses
-> +====================
-> +	. Two phase NAND accesses
-> +	. NAND command phase transfers
-> +	. NAND data phase transfers
-> +
-> +Two phase NAND accesses
-> +	The SMC defines two phases of commands when transferring data to or from
-> +NAND flash.
-> +
-> +Command phase
-> +	Commands and optional address information are written to the NAND flash.
-> +The command and address can be associated with either a data phase operation to
-> +write to or read from the array, or a status/ID register transfer.
-> +
-> +Data phase
-> + Data is either written to or read from the NAND flash. This data can be either
-> +data transferred to or from the array, or status/ID register information.
-> +
-> +NAND AXI address setup
-> +       AXI address      Command phase      Data phase
-> +	[31:24]         Chip address       Chip address
-> +	[23]            NoOfAddCycles_2    Reserved
-> +	[22]            NoOfAddCycles_1    Reserved
-> +	[21]            NoOfAddCycles_0    ClearCS
-> +	[20]            End command valid  End command valid
-> +	[19]            0                  1
-> +	[18:11]         End command        End command
-> +	[10:3]          Start command      [10] ECC Last
-> +					   [9:3] Reserved
-> +	[2:0]           Reserved           Reserved
-> +
-> +ECC
-> +===
-> +    It operates on a number of 512 byte blocks of NAND memory and can be
-> +programmed to store the ECC codes after the data in memory. For writes,
-> +the ECC is written to the spare area of the page. For reads, the result of
-> +a block ECC check are made available to the device driver.
-> +
-> +------------------------------------------------------------------------
-> +|               n * 512 blocks                  | extra  | ecc    |     |
-> +|                                               | block  | codes  |     |
-> +------------------------------------------------------------------------
-> +
-> +The ECC calculation uses a simple Hamming code, using 1-bit correction 2-bit
-> +detection. It starts when a valid read or write command with a 512 byte aligned
-> +address is detected on the memory interface.
-> +
-> +Driver details
-> +==============
-> +	The NAND driver has dependency with the pl353_smc memory controller
-> +driver for intializing the nand timing parameters, bus width, ECC modes,
-
-              initializing the NAND
-
-> +control and status information.
-> +
-> +Since the controller expects that the chipselect bit should be cleared for the
-> +last data transfer i.e last 4 data bytes, the existing nandbase page
-> +read/write routines for soft ecc and ecc none modes will not work. So, inorder
-
-                                                                          in order
-
-> +to make this driver work, it always updates the ecc mode as HW ECC and
-
-                                                   ECC mode
-
-> +implemented the page read/write functions for supporting the SW ECC.
-
-   implements the
-
-> +
-> +HW ECC mode:
-> +	Upto 2K page size is supported and beyond that it retuns
-
-	Up to                                             returns
-
-> +-ENOSUPPORT error. If the flsh has ONDIE ecc controller then the
-
-                             flash (?) has on-die ECC
-
-> +priority has given to the ONDIE ecc controller. Also the current
-
-            is               on-die ECC
-
-> +implementation has support for upto 64 byte oob area
-
-                                  up to            area.
-
-> +
-> +SW ECC mode:
-> +	It supports all the pgae sizes. But since, zynq soc bootrom uses
-
-	                                           Zynq SOC
-
-> +HW ECC for the devices that have pgae size <=2K so, to avoid any ecc related
-
-                                    page      <= 2K, to avoid any ECC-related
-
-> +issues during boot, prefer HW ECC over SW ECC.
-> +
-> +For devicetree binding information please refer the below dt binding file
-
-                                      please refer to the below
-
-> +Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt.
+> Please let me know if you have any concerns with the patch, or if you
+> prefer to pick up the patches in your respective trees.  I created
+> the patches with 'git format-patch -D', so they will not apply without
+> manually removing those files.
 > 
+> For anything else, I'd keep the removal patches in my asm-generic tree
+> and will send a pull request for 4.17 along with the actual arch removal.
+> 
+>        Arnd
+> 
+> Arnd Bergmann
+>   edac: remove tile driver
+>   net: tile: remove ethernet drivers
+>   net: adi: remove blackfin ethernet drivers
+>   net: 8390: remove m32r specific bits
+>   net: remove cris etrax ethernet driver
+>   net: smsc: remove m32r specific smc91x configuration
+>   raid: remove tile specific raid6 implementation
+>   rtc: remove tile driver
+>   rtc: remove bfin driver
+>   char: remove obsolete ds1302 rtc driver
+>   char: remove tile-srom.c
+>   char: remove blackfin OTP driver
+>   pcmcia: remove m32r drivers
+>   pcmcia: remove blackfin driver
+>   ASoC: remove blackfin drivers
+>   video/logo: remove obsolete logo files
+>   fbdev: remove blackfin drivers
+>   fbdev: s1d13xxxfb: remove m32r specific hacks
+>   crypto: remove blackfin CRC driver
+>   media: platform: remove blackfin capture driver
+>   media: platform: remove m32r specific arv driver
+>   cpufreq: remove blackfin driver
+>   cpufreq: remove cris specific drivers
+>   gpio: remove etraxfs driver
+>   pinctrl: remove adi2/blackfin drivers
+>   ata: remove bf54x driver
+>   input: keyboard: remove bf54x driver
+>   input: misc: remove blackfin rotary driver
+>   mmc: remove bfin_sdh driver
+>   can: remove bfin_can driver
+>   watchdog: remove bfin_wdt driver
+>   mtd: maps: remove bfin-async-flash driver
+>   mtd: nand: remove bf5xx_nand driver
 
+If you don't mind, I'd like to take the mtd patches through the MTD
+tree. As you've probably noticed, nand code has been moved around and
+it's easier for me to carry those 2 simple changes in my tree than
+creating an immutable branch.
+
+Let me know if this is a problem.
+
+Regards,
+
+Boris
 
 -- 
-~Randy
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
