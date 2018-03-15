@@ -1,37 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewLVj-0005vB-Vv
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 05:33:10 +0000
-Date: Thu, 15 Mar 2018 06:32:38 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-kernel@vger.kernel.org, linux@roeck-us.net, corbet@lwn.net,
- tj@kernel.org, gregkh@linuxfoundation.org, rjw@rjwysocki.net,
- viresh.kumar@linaro.org, herbert@gondor.apana.org.au, davem@davemloft.net,
- bp@alien8.de, mchehab@kernel.org, linus.walleij@linaro.org,
- wsa@the-dreams.de, dmitry.torokhov@gmail.com, ulf.hansson@linaro.org,
- cyrille.pitchen@wedev4u.fr, wg@grandegger.com, mkl@pengutronix.de,
- alexandre.belloni@bootlin.com, broonie@kernel.org, jic23@kernel.org,
- lars@metafoo.de, jslaby@suse.com, stern@rowland.harvard.edu,
- b.zolnierkie@samsung.com, shli@kernel.org, linux-watchdog@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-ide@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, linux-pwm@vger.kernel.org,
- linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux-raid@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 00/47] arch-removal: device drivers
-Message-ID: <20180315063238.3303b8d1@bbrezillon>
-In-Reply-To: <20180314153603.3127932-1-arnd@arndb.de>
-References: <20180314153603.3127932-1-arnd@arndb.de>
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewMao-0005qp-Iu
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 06:42:27 +0000
+Received: by mail-it0-x241.google.com with SMTP id w3-v6so7683724itc.4
+ for <linux-mtd@lists.infradead.org>; Wed, 14 Mar 2018 23:42:15 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: ubi: use put_device() if device_register fail
+To: Richard Weinberger <richard@nod.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
+ <5d9b08afdad2fbc65bac48d8ae22f4925bb80512.1520592440.git.arvind.yadav.cs@gmail.com>
+ <20180314195652.59b21594@bbrezillon> <3619597.KITkZyk1Wv@blindfold>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Message-ID: <728eddc9-210f-94ae-eca0-d9bbc6bbf55c@gmail.com>
+Date: Thu, 15 Mar 2018 12:11:19 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3619597.KITkZyk1Wv@blindfold>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,78 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
 
-On Wed, 14 Mar 2018 16:35:13 +0100
-Arnd Bergmann <arnd@arndb.de> wrote:
 
-> Hi driver maintainers,
-> 
-> I just posted one series with the removal of eight architectures,
-> see https://lkml.org/lkml/2018/3/14/505 for details, or
-> https://lwn.net/Articles/748074/ for more background.
-> 
-> These are the device drivers that go along with them. I have already
-> picked up the drivers for arch/metag/ into my tree, they were reviewed
-> earlier.
-> 
-> Please let me know if you have any concerns with the patch, or if you
-> prefer to pick up the patches in your respective trees.  I created
-> the patches with 'git format-patch -D', so they will not apply without
-> manually removing those files.
-> 
-> For anything else, I'd keep the removal patches in my asm-generic tree
-> and will send a pull request for 4.17 along with the actual arch removal.
-> 
->        Arnd
-> 
-> Arnd Bergmann
->   edac: remove tile driver
->   net: tile: remove ethernet drivers
->   net: adi: remove blackfin ethernet drivers
->   net: 8390: remove m32r specific bits
->   net: remove cris etrax ethernet driver
->   net: smsc: remove m32r specific smc91x configuration
->   raid: remove tile specific raid6 implementation
->   rtc: remove tile driver
->   rtc: remove bfin driver
->   char: remove obsolete ds1302 rtc driver
->   char: remove tile-srom.c
->   char: remove blackfin OTP driver
->   pcmcia: remove m32r drivers
->   pcmcia: remove blackfin driver
->   ASoC: remove blackfin drivers
->   video/logo: remove obsolete logo files
->   fbdev: remove blackfin drivers
->   fbdev: s1d13xxxfb: remove m32r specific hacks
->   crypto: remove blackfin CRC driver
->   media: platform: remove blackfin capture driver
->   media: platform: remove m32r specific arv driver
->   cpufreq: remove blackfin driver
->   cpufreq: remove cris specific drivers
->   gpio: remove etraxfs driver
->   pinctrl: remove adi2/blackfin drivers
->   ata: remove bf54x driver
->   input: keyboard: remove bf54x driver
->   input: misc: remove blackfin rotary driver
->   mmc: remove bfin_sdh driver
->   can: remove bfin_can driver
->   watchdog: remove bfin_wdt driver
->   mtd: maps: remove bfin-async-flash driver
->   mtd: nand: remove bf5xx_nand driver
+On Thursday 15 March 2018 12:55 AM, Richard Weinberger wrote:
+> Am Mittwoch, 14. März 2018, 19:56:52 CET schrieb Boris Brezillon:
+>> On Fri,  9 Mar 2018 16:20:49 +0530
+>>
+>> Arvind Yadav <arvind.yadav.cs@gmail.com> wrote:
+>>> if device_register() returned an error! Always use put_device()
+>>> to give up the reference initialized.
+>>>
+>>> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+>>> ---
+>>>
+>>>   drivers/mtd/ubi/vmt.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+>>> index 3fd8d7f..db85b68 100644
+>>> --- a/drivers/mtd/ubi/vmt.c
+>>> +++ b/drivers/mtd/ubi/vmt.c
+>>> @@ -609,6 +609,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct
+>>> ubi_volume *vol)>
+>>>   	return err;
+>>>   
+>>>   out_cdev:
+>>> +	put_device(&vol->dev);
+>>>
+>>>   	cdev_del(&vol->cdev);
+>> use-after-free bug here: put_device() has freed the vol obj, and you're
+>> dereferencing the pointer just after that.
+Thanks Boris, to point out this error.
+> eeek, thanks for looking at more context.
+> Arvind, while you are right that put_device() is missing, please double check
+> that freeing the devices is also correct.
+>
+> Thanks,
+> //richard
+Sorry for that. I will take care of this.
 
-If you don't mind, I'd like to take the mtd patches through the MTD
-tree. As you've probably noticed, nand code has been moved around and
-it's easier for me to carry those 2 simple changes in my tree than
-creating an immutable branch.
-
-Let me know if this is a problem.
-
-Regards,
-
-Boris
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+~arvind
