@@ -1,22 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewVSc-00066M-UD
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 16:10:56 +0000
-Date: Thu, 15 Mar 2018 17:10:06 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arushi Singhal <arushisinghal19971997@gmail.com>
-Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
- linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com
-Subject: Re: [PATCH 3/3] mtd: Remove print after allocation failure
-Message-ID: <20180315171006.258edcca@bbrezillon>
-In-Reply-To: <1521041718-32492-3-git-send-email-arushisinghal19971997@gmail.com>
-References: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
- <1521041718-32492-3-git-send-email-arushisinghal19971997@gmail.com>
+Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewWtJ-0000sv-IJ
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 17:42:15 +0000
+Received: by mail-pl0-x241.google.com with SMTP id m22-v6so4206710pls.5
+ for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2018 10:42:03 -0700 (PDT)
+Subject: Re: [PATCH 2/2 v2] mtd: ubi: use put_device() if device_register fail
+To: Richard Weinberger <richard@nod.at>
+References: <1521098431-29565-1-git-send-email-arvind.yadav.cs@gmail.com>
+ <5296799.FRhcbj8Hd9@blindfold>
+ <11250cfc-f092-b299-1044-50334c518bf1@gmail.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@free-electrons.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, dedekind1@gmail.com,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+From: arvindY <arvind.yadav.cs@gmail.com>
+Message-ID: <5AAAB066.90900@gmail.com>
+Date: Thu, 15 Mar 2018 23:11:58 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <11250cfc-f092-b299-1044-50334c518bf1@gmail.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arushi,
-
-On Wed, 14 Mar 2018 21:05:18 +0530
-Arushi Singhal <arushisinghal19971997@gmail.com> wrote:
-
-> The prints after [k|v][m|z|c]alloc() functions are not needed, because
-> in case of failure, allocator will print their internal error prints
-> anyway.
-> 
-> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
-> ---
->  drivers/mtd/inftlmount.c | 6 +-----
-
-I didn't check but I'm pretty sure you missed some of them here too.
-
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-> index 8d6bb189..6b94646 100644
-> --- a/drivers/mtd/inftlmount.c
-> +++ b/drivers/mtd/inftlmount.c
-> @@ -562,12 +562,8 @@ int INFTL_mount(struct INFTLrecord *s)
->  
->  	/* Temporary buffer to store ANAC numbers. */
->  	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
-> -	if (!ANACtable) {
-> -		printk(KERN_WARNING "INFTL: allocation of ANACtable "
-> -				"failed (%zd bytes)\n",
-> -				s->nb_blocks * sizeof(u8));
-> +	if (!ANACtable)
->  		return -ENOMEM;
-> -	}
->  
->  	/*
->  	 * First pass is to explore each physical unit, and construct the
 
 
+On Thursday 15 March 2018 02:17 PM, Arvind Yadav wrote:
+>
+>
+> On Thursday 15 March 2018 01:25 PM, Richard Weinberger wrote:
+>> Am Donnerstag, 15. März 2018, 08:20:31 CET schrieb Arvind Yadav:
+>>> if device_register() returned an error! Always use put_device()
+>>> to give up the reference initialized.
+>> Like DaveM said, there is no need to shout and use "!".
+>
+> I will fix this and send you update patch.
+>>> Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+>>> ---
+>>> change in v2:
+>>>          Fix use-after-free bug. move put_device() after cdev_del().
+>>>
+>>>   drivers/mtd/ubi/vmt.c | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+>>> index 3fd8d7f..93c6163 100644
+>>> --- a/drivers/mtd/ubi/vmt.c
+>>> +++ b/drivers/mtd/ubi/vmt.c
+>>> @@ -610,6 +610,7 @@ int ubi_add_volume(struct ubi_device *ubi, struct
+>>> ubi_volume *vol)
+>>>
+>>>   out_cdev:
+>>>       cdev_del(&vol->cdev);
+>>> +    put_device(&vol->dev);
+>>>       return err;
+>> The more I dig into device code, the more questions I have.
+>> Why is cdev_del() not part of the release function?
+>>
+>> Thanks,
+>> //richard
+>
+> Yes, It's should be a part release function.
+>
+> ~arvind
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I was wrong, We can not add cdev_del() in release(vol_release)
+function.
+Function's ubi_create_volume and ubi_add_volume both are using
+same release function to release a volume devices.
+ubi_add_volume is registering character device for the volume.
+So we will have to release character device here.
+
+~arvind
