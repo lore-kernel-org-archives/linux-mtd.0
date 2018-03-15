@@ -1,16 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewVDx-0004r7-Uh
- for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 15:55:27 +0000
-Date: Thu, 15 Mar 2018 16:54:54 +0100
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewVKQ-0007xd-Ic
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 16:03:40 +0000
+Date: Thu, 15 Mar 2018 17:01:37 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
-Message-ID: <20180315165454.5bf24ec0@bbrezillon>
-In-Reply-To: <1520784361.4790.86.camel@infinera.com>
-References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
- <1520784361.4790.86.camel@infinera.com>
+To: Arushi Singhal <arushisinghal19971997@gmail.com>
+Cc: dwmw2@infradead.org, boris.brezillon@free-electrons.com, richard@nod.at,
+ linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH 1/3] mtd: nand: Remove print after allocation failure
+Message-ID: <20180315170137.403af265@bbrezillon>
+In-Reply-To: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
+References: <1521041718-32492-1-git-send-email-arushisinghal19971997@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,40 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 11 Mar 2018 16:06:03 +0000
-Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+On Wed, 14 Mar 2018 21:05:16 +0530
+Arushi Singhal <arushisinghal19971997@gmail.com> wrote:
 
-> On Thu, 2018-03-01 at 14:39 +0100, Joakim Tjernlund wrote:
-> > This fixes a bug which allows read/write to a erase block currently
-> > erasing.
-> > Also works around a chip bug in Micron 28F00AP30 chips.
-> > 
-> > Joakim Tjernlund (3):
-> >   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
-> >   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
-> >   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
-> > 
-> >  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
-> >  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
-> >  include/linux/mtd/flashchip.h       |  1 +
-> >  3 files changed, 35 insertions(+), 8 deletions(-)
-> >   
+> The prints after [k|v][m|z|c]alloc() functions are not needed, because
+> in case of failure, allocator will print their internal error prints
+> anyway.
 > 
-> Ping?
+> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
+> ---
+>  drivers/mtd/nand/ams-delta.c | 1 -
 
-You didn't Cc the MTD maintainers, so that's not surprising you don't
-get a reply from us :P.
+You miss quite a few of them (atmel, nandsim, sunxi_nand at least,
+there might be others).
 
-> This is a fairly serious bug as it confuses the flash state machine,
-> making further flash access fail.
-
-I'll try to have a look.
-
+>  1 file changed, 1 deletion(-)
 > 
->  Jocke
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+> index 9de6572..6e7f6e0 100644
+> --- a/drivers/mtd/nand/ams-delta.c
+> +++ b/drivers/mtd/nand/ams-delta.c
+> @@ -185,7 +185,6 @@ static int ams_delta_init(struct platform_device *pdev)
+>  	/* Allocate memory for MTD device structure and private data */
+>  	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
+>  	if (!this) {
+> -		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
+>  		err = -ENOMEM;
+>  		goto out;
+>  	}
 
 
 
