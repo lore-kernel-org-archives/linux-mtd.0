@@ -1,19 +1,19 @@
-Date: Thu, 15 Mar 2018 16:24:25 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewUvw-0005EJ-ID
+ for linux-mtd@lists.infradead.org; Thu, 15 Mar 2018 15:36:51 +0000
+Date: Thu, 15 Mar 2018 16:36:20 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Josh Wu <rainyfeeling@outlook.com>, Kamal
- Dasu <kdasu.kdev@gmail.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- Stefan Agner <stefan@agner.ch>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 01/52] mtd: rawnand: add hooks that may be called during
- nand_scan()
-Message-ID: <20180315162425.04b98745@bbrezillon>
-In-Reply-To: <20180302170400.6712-2-miquel.raynal@bootlin.com>
-References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
- <20180302170400.6712-2-miquel.raynal@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>, han.xu@nxp.com
+Cc: boris.brezillon@free-electrons.com, max.oss.09@gmail.com,
+ richard@nod.at, linux-kernel@vger.kernel.org, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, cyrille.pitchen@wedev4u.fr,
+ dwmw2@infradead.org
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
+ strength
+Message-ID: <20180315163620.6122d752@bbrezillon>
+In-Reply-To: <20180304200602.11475-1-stefan@agner.ch>
+References: <20180304200602.11475-1-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,103 +26,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  2 Mar 2018 18:03:09 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi,
 
-> In order to remove the limitation that forbids dynamic allocation in
-> nand_scan_ident(), we must create a path that will be the same for all
-> controller drivers. The idea is to use nand_scan() instead of the widely
-> implemented nand_scan_ident()/nand_scan_tail() couple. In order to
-> achieve this, controller drivers will need to adjust some parameters
-> between these two functions depending on the NAND chip wired on them.
+On Sun,  4 Mar 2018 21:06:01 +0100
+Stefan Agner <stefan@agner.ch> wrote:
+
+> Add support for specified ECC strength/size using device tree
+> properties nand-ecc-strength/nand-ecc-step-size.
+
+Han, we didn't hear back from you on that. Are you okay with adding
+these new properties? IIRC, you feared there would be a delta between
+u-boot and linux support.
+
+Stephan, there's no changelog. Has anything changed in this version or
+is this just a RESEND?
+
+Regards,
+
+Boris
+
 > 
-> For that, a hook called ->attach_chip() is created in the
-> nand_hw_control structure (called *controller in struct nand_chip) of
-> the NAND chip structure.
-> 
-> Another hook, ->detach_chip() is also introduced in order to clean the
-> controller driver's potential allocations in case of failure of
-> nand_scan_tail(). There is no need for the controller driver to call the
-> ->detach_chip() hook directly upon error after a successful nand_scan().  
-> In this situation, calling nand_release() as before is enough.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 > ---
->  drivers/mtd/nand/raw/nand_base.c | 21 +++++++++++++++++++--
->  include/linux/mtd/rawnand.h      |  6 ++++++
->  2 files changed, 25 insertions(+), 2 deletions(-)
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 30 ++++++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index ef0a44a8c3d5..182904b2fc07 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -6647,11 +6647,23 @@ EXPORT_SYMBOL(nand_scan_tail);
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 61fdd733492f..d04754289c03 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -198,17 +198,16 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+>   *
+>   * We may have available oob space in this case.
 >   */
->  int nand_scan(struct mtd_info *mtd, int maxchips)
+> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
+> +				    unsigned int ecc_strength,
+> +				    unsigned int ecc_step)
 >  {
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
->  	int ret;
+>  	struct bch_geometry *geo = &this->bch_geometry;
+>  	struct nand_chip *chip = &this->nand;
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	unsigned int block_mark_bit_offset;
 >  
->  	ret = nand_scan_ident(mtd, maxchips, NULL);
-> -	if (!ret)
-> -		ret = nand_scan_tail(mtd);
-> +	if (ret)
-> +		return ret;
+> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> -		return -EINVAL;
+> -
+> -	switch (chip->ecc_step_ds) {
+> +	switch (ecc_step) {
+>  	case SZ_512:
+>  		geo->gf_len = 13;
+>  		break;
+> @@ -221,8 +220,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  			chip->ecc_strength_ds, chip->ecc_step_ds);
+>  		return -EINVAL;
+>  	}
+> -	geo->ecc_chunk_size = chip->ecc_step_ds;
+> -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+> +	geo->ecc_chunk_size = ecc_step;
+> +	geo->ecc_strength = round_up(ecc_strength, 2);
+>  	if (!gpmi_check_ecc(this))
+>  		return -EINVAL;
+>  
+> @@ -230,7 +229,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  	if (geo->ecc_chunk_size < mtd->oobsize) {
+>  		dev_err(this->dev,
+>  			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+> -			chip->ecc_step_ds, mtd->oobsize);
+> +			ecc_step, mtd->oobsize);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -423,9 +422,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+>  
+>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  {
+> +	struct nand_chip *chip = &this->nand;
 > +
-> +	if (chip->ecc.attach_chip) {
-> +		ret = chip->ecc.attach_chip(chip);
-> +		if (ret)
-> +			return ret;
+> +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
+> +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
+> +						chip->ecc.size);
+> +
+>  	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+> -				|| legacy_set_geometry(this))
+> -		return set_geometry_by_ecc_info(this);
+> +				|| legacy_set_geometry(this)) {
+> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> +			return -EINVAL;
+> +
+> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
+> +						chip->ecc_step_ds);
 > +	}
-> +
-> +	ret = nand_scan_tail(mtd);
-> +	if (ret && chip->ecc.detach_chip)
-> +		chip->ecc.detach_chip(chip);
-> +
->  	return ret;
+>  
+>  	return 0;
 >  }
->  EXPORT_SYMBOL(nand_scan);
-> @@ -6679,7 +6691,12 @@ void nand_cleanup(struct nand_chip *chip)
->  
->  	/* Free manufacturer priv data. */
->  	nand_manufacturer_cleanup(chip);
-> +
-> +	/* Free controller specific allocations after chip identification */
-> +	if (chip->ecc.detach_chip)
-> +		chip->ecc.detach_chip(chip);
->  }
-> +
->  EXPORT_SYMBOL_GPL(nand_cleanup);
->  
->  /**
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 348f2aba0b9e..53bb6ef1a7c2 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -576,6 +576,10 @@ static const struct nand_ecc_caps __name = {			\
->   * @read_oob_raw:	function to read chip OOB data without ECC
->   * @read_oob:	function to read chip OOB data
->   * @write_oob:	function to write chip OOB data
-> + * @attach_chip:	Callback that may be called between nand_detec() and
-> + *			nand_scan_tail() during nand_scan() (optional).
-> + * @detach_chip:	Callback that may be called if nand_scan_tail() fails
-> + *			(optional).
->   */
->  struct nand_ecc_ctrl {
->  	nand_ecc_modes_t mode;
-> @@ -616,6 +620,8 @@ struct nand_ecc_ctrl {
->  	int (*read_oob)(struct mtd_info *mtd, struct nand_chip *chip, int page);
->  	int (*write_oob)(struct mtd_info *mtd, struct nand_chip *chip,
->  			int page);
-> +	int (*attach_chip)(struct nand_chip *chip);
-> +	void (*detach_chip)(struct nand_chip *chip);
-
-As said in my reply to the cover letter, I'd prefer to have these hooks
-in nand_hw_ctrl.
-
->  };
->  
->  /**
 
 
 
