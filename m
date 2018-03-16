@@ -1,6 +1,6 @@
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpnA-0002uj-Ii
+ id 1ewpnA-0002uh-Do
  for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:18 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 05/21] firewire: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Fri, 16 Mar 2018 14:51:38 +0100
-Message-Id: <1521208314-4783-6-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v2 20/21] staging: vc04_services: Remove depends on HAS_DMA in
+ case of platform dependency
+Date: Fri, 16 Mar 2018 14:51:53 +0100
+Message-Id: <1521208314-4783-21-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,18 +75,19 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/firewire/Kconfig | 1 -
+ drivers/staging/vc04_services/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/firewire/Kconfig b/drivers/firewire/Kconfig
-index 145974f9662b63e6..4199849e37585181 100644
---- a/drivers/firewire/Kconfig
-+++ b/drivers/firewire/Kconfig
-@@ -1,5 +1,4 @@
- menu "IEEE 1394 (FireWire) support"
+diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+index f5aaf7d629f0fae9..98064ce2c2b47c7f 100644
+--- a/drivers/staging/vc04_services/Kconfig
++++ b/drivers/staging/vc04_services/Kconfig
+@@ -1,6 +1,5 @@
+ menuconfig BCM_VIDEOCORE
+ 	tristate "Broadcom VideoCore support"
 -	depends on HAS_DMA
- 	depends on PCI || COMPILE_TEST
- 	# firewire-core does not depend on PCI but is
- 	# not useful without PCI controller driver
+ 	depends on OF
+ 	depends on RASPBERRYPI_FIRMWARE || (COMPILE_TEST && !RASPBERRYPI_FIRMWARE)
+ 	default y
 -- 
 2.7.4
