@@ -1,23 +1,51 @@
-Date: Fri, 16 Mar 2018 14:57:00 +0100
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, Jason Cooper <jason@lakedaemon.net>, Andrew
- Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, linux-arm-kernel@lists.infradead.org,
- Antoine Tenart <antoine.tenart@bootlin.com>, Nadav Haklai
- <nadavh@marvell.com>, Shadi Ammouri <shadi@marvell.com>, Omri Itach
- <omrii@marvell.com>, Hanna Hawa <hannah@marvell.com>, Igal Liberman
- <igall@marvell.com>, Marcin Wojtas <mw@semihalf.com>
-Subject: Re: [PATCH v3] mtd: nand: marvell: Fix clock resource by adding a
- register clock
-Message-ID: <20180316145700.570da89f@xps13>
-In-Reply-To: <20180313103016.7695-1-gregory.clement@bootlin.com>
-References: <20180313103016.7695-1-gregory.clement@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewqgz-0006oh-UP
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:50:57 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
+ Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>,
+ Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
+Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
+ linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v2 16/21] remoteproc: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Fri, 16 Mar 2018 14:51:49 +0100
+Message-Id: <1521208314-4783-17-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,75 +55,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Gregory,
+Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+In most cases this other symbol is an architecture or platform specific
+symbol, or PCI.
 
-On Tue, 13 Mar 2018 11:30:16 +0100, Gregory CLEMENT
-<gregory.clement@bootlin.com> wrote:
+Generic symbols and drivers without platform dependencies keep their
+dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+cannot work anyway.
 
-> On Armada 7K/8K we need to explicitly enable the register clock. This
-> clock is optional because not all the SoCs using this IP need it but at
-> least for Armada 7K/8K it is actually mandatory.
->=20
-> The binding documentation is updated accordingly.
->=20
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
-> Changelog:
-> v2 -> v3
->  - Updating the kerneldoc
->  - Renaming unprepare_clk to unprepare_ecc_clk
->  - Adding extra test on the presence of "core" clock to make Boris happy
->=20
-> v1 -> v2
->=20
->  - Removed the unnecessary IS_ERR() call
->  - Skip the reg clock only if it is not present by checking "-ENOENT"
->  - Add a label for uninitializing the reg clock.
->=20
->  .../devicetree/bindings/mtd/marvell-nand.txt       |  6 +++-
->  drivers/mtd/nand/marvell_nand.c                    | 34 ++++++++++++++++=
-++----
->  2 files changed, 33 insertions(+), 7 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Doc=
-umentation/devicetree/bindings/mtd/marvell-nand.txt
-> index c08fb477b3c6..4ee9813bf88f 100644
-> --- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> @@ -14,7 +14,11 @@ Required properties:
->  - #address-cells: shall be set to 1. Encode the NAND CS.
->  - #size-cells: shall be set to 0.
->  - interrupts: shall define the NAND controller interrupt.
-> -- clocks: shall reference the NAND controller clock.
-> +- clocks: shall reference the NAND controller clocks, the second one is
-> +  optional but needed for the Armada 7K/8K SoCs
-> +- clock-names: mandatory if there is a second clock, in this case the
-> +   name must be "core" for the first clock and "reg" for the second
-> +   one
->  - marvell,system-controller: Set to retrieve the syscon node that handles
->    NAND controller related registers (only required with the
->    "marvell,armada-8k-nand[-controller]" compatibles).
-> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_n=
-and.c
-> index 2196f2a233d6..0e7e8017046a 100644
-> --- a/drivers/mtd/nand/marvell_nand.c
-> +++ b/drivers/mtd/nand/marvell_nand.c
-> @@ -308,6 +308,7 @@ struct marvell_nfc_caps {
->   * @dev:		Parent device (used to print error messages)
->   * @regs:		NAND controller registers
->   * @ecc_clk:		ECC block clock, two times the NAND controller clock
+This simplifies the dependencies, and allows to improve compile-testing.
 
-Is this comment "two times the NAND controller clock" still valid?
-Shall we reference the "NAND registers clock" instead?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Mark Brown <broonie@kernel.org>
+Acked-by: Robin Murphy <robin.murphy@arm.com>
+---
+v2:
+  - Add Reviewed-by, Acked-by,
+  - Drop RFC state,
+  - Split per subsystem.
+---
+ drivers/remoteproc/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-> + * @reg_clk:		Regsiters clock
-
-Typo here: s/Regsiters/Registers/
-
-Thank you,
-Miqu=C3=A8l
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
+index b609e1d3654ba65f..b60d8132113de0f7 100644
+--- a/drivers/remoteproc/Kconfig
++++ b/drivers/remoteproc/Kconfig
+@@ -23,7 +23,6 @@ config IMX_REMOTEPROC
+ 
+ config OMAP_REMOTEPROC
+ 	tristate "OMAP remoteproc support"
+-	depends on HAS_DMA
+ 	depends on ARCH_OMAP4 || SOC_OMAP5
+ 	depends on OMAP_IOMMU
+ 	select MAILBOX
+-- 
+2.7.4
