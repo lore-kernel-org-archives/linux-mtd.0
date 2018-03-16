@@ -1,7 +1,7 @@
 Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpnA-0002ue-DI
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:11 +0000
+ id 1ewpnA-0002ug-Dc
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:12 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 02/21] ata: Remove depends on HAS_DMA in case of platform
+Subject: [PATCH v2 19/21] spi: Remove depends on HAS_DMA in case of platform
  dependency
-Date: Fri, 16 Mar 2018 14:51:35 +0100
-Message-Id: <1521208314-4783-3-git-send-email-geert@linux-m68k.org>
+Date: Fri, 16 Mar 2018 14:51:52 +0100
+Message-Id: <1521208314-4783-20-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,28 +75,87 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/ata/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/spi/Kconfig | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
-index a7120d6211546949..9eaeed1fb237fa33 100644
---- a/drivers/ata/Kconfig
-+++ b/drivers/ata/Kconfig
-@@ -398,7 +398,6 @@ config SATA_DWC_VDEBUG
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index 603783976b8152d4..7bd3a94f58511c41 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -71,7 +71,6 @@ config SPI_ARMADA_3700
  
- config SATA_HIGHBANK
- 	tristate "Calxeda Highbank SATA support"
+ config SPI_ATMEL
+ 	tristate "Atmel SPI Controller"
 -	depends on HAS_DMA
- 	depends on ARCH_HIGHBANK || COMPILE_TEST
+ 	depends on (ARCH_AT91 || AVR32 || COMPILE_TEST)
  	help
- 	  This option enables support for the Calxeda Highbank SoC's
-@@ -408,7 +407,6 @@ config SATA_HIGHBANK
+ 	  This selects a driver for the Atmel SPI Controller, present on
+@@ -252,7 +251,6 @@ config SPI_EFM32
  
- config SATA_MV
- 	tristate "Marvell SATA support"
+ config SPI_EP93XX
+ 	tristate "Cirrus Logic EP93xx SPI controller"
 -	depends on HAS_DMA
- 	depends on PCI || ARCH_DOVE || ARCH_MV78XX0 || \
- 		   ARCH_MVEBU || ARCH_ORION5X || COMPILE_TEST
- 	select GENERIC_PHY
+ 	depends on ARCH_EP93XX || COMPILE_TEST
+ 	help
+ 	  This enables using the Cirrus EP93xx SPI controller in master
+@@ -374,7 +372,6 @@ config SPI_FSL_SPI
+ config SPI_FSL_DSPI
+ 	tristate "Freescale DSPI controller"
+ 	select REGMAP_MMIO
+-	depends on HAS_DMA
+ 	depends on SOC_VF610 || SOC_LS1021A || ARCH_LAYERSCAPE || M5441x || COMPILE_TEST
+ 	help
+ 	  This enables support for the Freescale DSPI controller in master
+@@ -450,7 +447,6 @@ config SPI_OMAP_UWIRE
+ 
+ config SPI_OMAP24XX
+ 	tristate "McSPI driver for OMAP"
+-	depends on HAS_DMA
+ 	depends on ARCH_OMAP2PLUS || COMPILE_TEST
+ 	select SG_SPLIT
+ 	help
+@@ -459,7 +455,6 @@ config SPI_OMAP24XX
+ 
+ config SPI_TI_QSPI
+ 	tristate "DRA7xxx QSPI controller support"
+-	depends on HAS_DMA
+ 	depends on ARCH_OMAP2PLUS || COMPILE_TEST
+ 	help
+ 	  QSPI master controller for DRA7xxx used for flash devices.
+@@ -488,7 +483,6 @@ config SPI_PIC32
+ config SPI_PIC32_SQI
+ 	tristate "Microchip PIC32 Quad SPI driver"
+ 	depends on MACH_PIC32 || COMPILE_TEST
+-	depends on HAS_DMA
+ 	help
+ 	  SPI driver for PIC32 Quad SPI controller.
+ 
+@@ -591,7 +585,7 @@ config SPI_SC18IS602
+ 
+ config SPI_SH_MSIOF
+ 	tristate "SuperH MSIOF SPI controller"
+-	depends on HAVE_CLK && HAS_DMA
++	depends on HAVE_CLK
+ 	depends on ARCH_SHMOBILE || ARCH_RENESAS || COMPILE_TEST
+ 	help
+ 	  SPI driver for SuperH and SH Mobile MSIOF blocks.
+@@ -669,7 +663,7 @@ config SPI_MXS
+ config SPI_TEGRA114
+ 	tristate "NVIDIA Tegra114 SPI Controller"
+ 	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
+-	depends on RESET_CONTROLLER && HAS_DMA
++	depends on RESET_CONTROLLER
+ 	help
+ 	  SPI driver for NVIDIA Tegra114 SPI Controller interface. This controller
+ 	  is different than the older SoCs SPI controller and also register interface
+@@ -687,7 +681,7 @@ config SPI_TEGRA20_SFLASH
+ config SPI_TEGRA20_SLINK
+ 	tristate "Nvidia Tegra20/Tegra30 SLINK Controller"
+ 	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
+-	depends on RESET_CONTROLLER && HAS_DMA
++	depends on RESET_CONTROLLER
+ 	help
+ 	  SPI driver for Nvidia Tegra20/Tegra30 SLINK Controller interface.
+ 
 -- 
 2.7.4
