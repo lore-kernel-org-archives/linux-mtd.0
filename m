@@ -1,7 +1,7 @@
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpnX-0002uj-2K
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:36 +0000
+ id 1ewqDi-0002vc-Hy
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:20:53 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 17/21] scsi: hisi_sas: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Fri, 16 Mar 2018 14:51:50 +0100
-Message-Id: <1521208314-4783-18-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v2 09/21] iommu: Remove depends on HAS_DMA in case of platform
+ dependency
+Date: Fri, 16 Mar 2018 14:51:42 +0100
+Message-Id: <1521208314-4783-10-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,20 +75,38 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/scsi/hisi_sas/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iommu/Kconfig | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/scsi/hisi_sas/Kconfig b/drivers/scsi/hisi_sas/Kconfig
-index d42f29a5eb65046d..57183fce70fb6355 100644
---- a/drivers/scsi/hisi_sas/Kconfig
-+++ b/drivers/scsi/hisi_sas/Kconfig
-@@ -1,6 +1,6 @@
- config SCSI_HISI_SAS
- 	tristate "HiSilicon SAS"
--	depends on HAS_DMA && HAS_IOMEM
-+	depends on HAS_IOMEM
- 	depends on ARM64 || COMPILE_TEST
- 	select SCSI_SAS_LIBSAS
- 	select BLK_DEV_INTEGRITY
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index f3a21343e636a8f2..32e91398c0555272 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -23,7 +23,7 @@ config IOMMU_IO_PGTABLE
+ config IOMMU_IO_PGTABLE_LPAE
+ 	bool "ARMv7/v8 Long Descriptor Format"
+ 	select IOMMU_IO_PGTABLE
+-	depends on HAS_DMA && (ARM || ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64))
++	depends on ARM || ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
+ 	help
+ 	  Enable support for the ARM long descriptor pagetable format.
+ 	  This allocator supports 4K/2M/1G, 16K/32M and 64K/512M page
+@@ -42,7 +42,7 @@ config IOMMU_IO_PGTABLE_LPAE_SELFTEST
+ config IOMMU_IO_PGTABLE_ARMV7S
+ 	bool "ARMv7/v8 Short Descriptor Format"
+ 	select IOMMU_IO_PGTABLE
+-	depends on HAS_DMA && (ARM || ARM64 || COMPILE_TEST)
++	depends on ARM || ARM64 || COMPILE_TEST
+ 	help
+ 	  Enable support for the ARM Short-descriptor pagetable format.
+ 	  This supports 32-bit virtual and physical addresses mapped using
+@@ -374,7 +374,6 @@ config QCOM_IOMMU
+ 	# Note: iommu drivers cannot (yet?) be built as modules
+ 	bool "Qualcomm IOMMU Support"
+ 	depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
+-	depends on HAS_DMA
+ 	select IOMMU_API
+ 	select IOMMU_IO_PGTABLE_LPAE
+ 	select ARM_DMA_USE_IOMMU
 -- 
 2.7.4
