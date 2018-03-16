@@ -1,50 +1,61 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from orcrist.hmeau.com ([104.223.48.154] helo=deadmen.hmeau.com)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewrnW-000459-Gt
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 16:01:40 +0000
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+ id 1ewrgG-0003x3-9r
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 15:54:09 +0000
+Date: Fri, 16 Mar 2018 23:52:50 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Felipe
- Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K . Petersen"
- <martin.petersen@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Tejun
- Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S .
- Miller" <davem@davemloft.net>, Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>, Wolfram Sang
- <wsa@the-dreams.de>, Jonathan Cameron <jic23@kernel.org>, Joerg Roedel
- <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>, Jassi Brar
- <jassisinghbrar@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf
- Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen
- <ohad@wizery.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt
- <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
- iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
- linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
- linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/21] fbdev: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Fri, 16 Mar 2018 17:01:13 +0100
-Message-id: <1863306.fWLBGQtWhd@amdc3058>
-In-reply-to: <1521208314-4783-5-git-send-email-geert@linux-m68k.org>
-MIME-version: 1.0
-Content-transfer-encoding: 7Bit
-Content-type: text/plain; charset="us-ascii"
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
+ iommu@lists.linux-foundation.org, USB list <linux-usb@vger.kernel.org>,
+ scsi <linux-scsi@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-ide@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+ Linux I2C <linux-i2c@vger.kernel.org>, linux-iio@vger.kernel.org,
+ linux-block@vger.kernel.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>, linux-remoteproc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>,
+ driverdevel <devel@driverdev.osuosl.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
+Message-ID: <20180316155250.GA7095@gondor.apana.org.au>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <CGME20180316152138epcas1p3e0e107cd14fd6fb4aeb595e0e7661ab7@epcas1p3.samsung.com>
- <1521208314-4783-5-git-send-email-geert@linux-m68k.org>
+ <20180316151410.GA6527@gondor.apana.org.au>
+ <CAMuHMdUKULvoB6-6EhsYpdbWEEEfjtn27GbzpXj7+Mz+=qeOnw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUKULvoB6-6EhsYpdbWEEEfjtn27GbzpXj7+Mz+=qeOnw@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -54,26 +65,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, March 16, 2018 02:51:37 PM Geert Uytterhoeven wrote:
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
-> 
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
-> 
-> This simplifies the dependencies, and allows to improve compile-testing.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
+On Fri, Mar 16, 2018 at 04:41:57PM +0100, Geert Uytterhoeven wrote:
+>
+> | To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
+> | this (drivers) series should be applied after the previous (core)
+> | series (but not many people may notice/care ;-)
 
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Oops, didn't notice it :)
 
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+> Apart from introducing build failures in allmodconfig/allyesconfig builds on
+> (uncommon) NO_DMA=y platforms, they can be applied directly and individually.
+
+I think I'll leave this with you then.
+
+Thanks,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
