@@ -1,8 +1,8 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewqRQ-0001we-OK
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:34:46 +0000
-Date: Fri, 16 Mar 2018 15:34:39 +0100
+ id 1ewqTY-0004N5-NC
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:37:00 +0000
+Date: Fri, 16 Mar 2018 15:36:45 +0100
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Christoph Hellwig <hch@lst.de>,
@@ -42,15 +42,15 @@ Cc: Christoph Hellwig <hch@lst.de>,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 20/21] staging: vc04_services: Remove depends on
- HAS_DMA in case of platform dependency
-Message-ID: <20180316143439.GB29333@kroah.com>
+Subject: Re: [PATCH v2 21/21] usb: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180316143645.GA32669@kroah.com>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-21-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-22-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1521208314-4783-21-git-send-email-geert@linux-m68k.org>
+In-Reply-To: <1521208314-4783-22-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -60,7 +60,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 16, 2018 at 02:51:53PM +0100, Geert Uytterhoeven wrote:
+On Fri, Mar 16, 2018 at 02:51:54PM +0100, Geert Uytterhoeven wrote:
 > Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
 > symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
 > In most cases this other symbol is an architecture or platform specific
@@ -75,5 +75,6 @@ On Fri, Mar 16, 2018 at 02:51:53PM +0100, Geert Uytterhoeven wrote:
 > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 > Reviewed-by: Mark Brown <broonie@kernel.org>
 > Acked-by: Robin Murphy <robin.murphy@arm.com>
+> Acked-by: Felipe Balbi <felipe.balbi@linux.intel.com> [drivers/usb/gadget/]
 
 Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
