@@ -1,25 +1,60 @@
-Subject: Re: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewrUf-0005Y0-I2
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 15:42:40 +0000
+Received: by mail-qk0-x243.google.com with SMTP id h14so5977996qkj.11
+ for <linux-mtd@lists.infradead.org>; Fri, 16 Mar 2018 08:41:59 -0700 (PDT)
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20180316151410.GA6527@gondor.apana.org.au>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <20180316151410.GA6527@gondor.apana.org.au>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 16 Mar 2018 16:41:57 +0100
+Message-ID: <CAMuHMdUKULvoB6-6EhsYpdbWEEEfjtn27GbzpXj7+Mz+=qeOnw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
+To: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
+ Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
- Stefan Agner <stefan@agner.ch>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org
-References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
- <20180302170400.6712-22-miquel.raynal@bootlin.com>
- <d57f95d3-03d0-5905-835f-c278df578b1e@gmail.com>
- <20180316143824.568be773@xps13>
-From: Harvey Hunt <harveyhuntnexus@gmail.com>
-Message-ID: <c3df8f9f-7d3f-4fa5-dad3-a9f6697aa67d@gmail.com>
-Date: Fri, 16 Mar 2018 15:33:05 +0000
-MIME-Version: 1.0
-In-Reply-To: <20180316143824.568be773@xps13>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
+ USB list <linux-usb@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-ide@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi <linux-spi@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,151 +64,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquèl,
+Hi Herbert,
 
-On 03/16/2018 01:38 PM, Miquel Raynal wrote:
-> Hi Harvey,
-> 
-> On Thu, 15 Mar 2018 15:40:25 +0000, Harvey Hunt
-> <harveyhuntnexus@gmail.com> wrote:
-> 
->> Hi Miquel,
+On Fri, Mar 16, 2018 at 4:14 PM, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> On Fri, Mar 16, 2018 at 02:51:33PM +0100, Geert Uytterhoeven wrote:
+>> This patch series:
+>>   - Removes dependencies on HAS_DMA for symbols that already have
+>>     platform dependencies implying HAS_DMA.
 >>
->> Sorry it's taken me a little while to review your changes, a few
->> comments below:
+>> To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
+>> this (drivers) series should be applied after the previous (core)
+>> series (but not many people may notice/care ;-)
 >>
->> On 03/02/2018 05:03 PM, Miquel Raynal wrote:
->>> Two helpers have been added to the core to make ECC-related
->>> configuration between the detection phase and the final NAND scan. Use
->>> these hooks and convert the driver to just use nand_scan() instead of
->>> both nand_scan_ident() and nand_scan_tail().
->>>
->>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
->>> ---
->>>  drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
->>>  1 file changed, 12 insertions(+), 18 deletions(-)
->>>
->>> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
->>> index e69f6ae4c539..fd5dc9d9b0c6 100644
->>> --- a/drivers/mtd/nand/raw/jz4780_nand.c
->>> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
->>> @@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
->>>  	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
->>>  }
->>>  
->>> -static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
->>> +static int jz4780_nand_attach_chip(struct nand_chip *chip)
->>>  {
->>> -	struct nand_chip *chip = &nand->chip;
->>>  	struct mtd_info *mtd = nand_to_mtd(chip);
->>>  	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
->>>  	int eccbytes;
->>> @@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
->>>  	switch (chip->ecc.mode) {
->>>  	case NAND_ECC_HW:
->>>  		if (!nfc->bch) {
->>> -			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
->>> +			dev_err(nfc->dev,
->>> +				"HW BCH selected, but BCH controller not found\n");
->>>  			return -ENODEV;
->>>  		}
->>>  
->>> @@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
->>>  		chip->ecc.correct = jz4780_nand_ecc_correct;
->>>  		/* fall through */
->>>  	case NAND_ECC_SOFT:
->>> -		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
->>> -			(nfc->bch) ? "hardware BCH" : "software ECC",
->>> -			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
->>> +		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
->>> +			 (nfc->bch) ? "hardware BCH" : "software ECC",
->>> +			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes)>  		break;
->>>  	case NAND_ECC_NONE:
->>> -		dev_info(dev, "not using ECC\n");
->>> +		dev_info(nfc->dev, "not using ECC\n");
->>>  		break;
->>>  	default:
->>> -		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
->>> +		dev_err(nfc->dev, "ECC mode %d not supported\n",
->>> +			chip->ecc.mode);
->>>  		return -EINVAL;
->>>  	}  
->> These changes seem redundant as dev is passed into the function,
->> although you could remove it from the function defintion.
-> 
-> That is right, I should have also removed the 'dev' parameter.
-> 
-
-That'd be great
-
+>> Changes compared to v1:
+>>   - Add Reviewed-by, Acked-by,
+>>   - Drop dependency of SND_SOC_LPASS_IPQ806X on HAS_DMA,
+>>   - Drop dependency of VIDEOBUF{,2}_DMA_{CONTIG,SG} on HAS_DMA,
+>>   - Drop new dependencies of VIDEO_IPU3_CIO2, DVB_C8SECTPFE, and
+>>     MTD_NAND_MARVELL on HAS_DMA,
+>>   - Split in per-subsystem patches,
+>>   - Split-off the core part in a separate series.
 >>
->>>  
->>> @@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
->>>  	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
->>>  
->>>  	if (eccbytes > mtd->oobsize - 2) {
->>> -		dev_err(dev,
->>> +		dev_err(nfc->dev,
->>>  			"invalid ECC config: required %d ECC bytes, but only %d are available",
->>>  			eccbytes, mtd->oobsize - 2);
->>>  		return -EINVAL;
->>> @@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
->>>  	chip->controller = &nfc->controller;
->>>  	nand_set_flash_node(chip, np);
->>>  
->>> -	ret = nand_scan_ident(mtd, 1, NULL);
->>> -	if (ret)
->>> -		return ret;
->>> -
->>> -	ret = jz4780_nand_init_ecc(nand, dev)  
+>> This series is against v4.16-rc5. It can also be found at
+>> https://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git/log/?h=no-dma-compile-testing-v2
 >>
->> You've removed this call, but without it the ECC won't be initialised...
-> 
-> Actually it is not removed but just renamed to match the core's hook
-> name. The purpose of this function is to perform any chip-related
-> tuning after the identification, and the name should not limit
-> ourselves to do something not related to ECC configuration.
-> 
+>> It has been compile-tested with allmodconfig and allyesconfig for
+>> m68k/sun3, and has received attention from the kbuild test robot.
+>
+> Do these patches have any dependencies? Can they be applied directly
+> in a subsystem tree?
 
-Sorry for the noise, seems I've forgotten how to read patches...
+| To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
+| this (drivers) series should be applied after the previous (core)
+| series (but not many people may notice/care ;-)
 
->>
->>> -	if (ret)
->>> -		return ret;
->>> -
->>> -	ret = nand_scan_tail(mtd);
->>> +	chip->ecc.attach_chip = jz4780_nand_attach_chip;  
->>
->> This function doesn't exist.
-> 
-> See above, the *nand_init_ecc() function has been renamed in
-> *nand_attach_chip().
-> 
-> This hook: chip->ecc.attach_chip() will be called between
-> nand_scan_ident() and nand_scan_tail() from within nand_scan().
-> 
+Apart from introducing build failures in allmodconfig/allyesconfig builds on
+(uncommon) NO_DMA=y platforms, they can be applied directly and individually.
 
-Same as above :-)
+Gr{oetje,eeting}s,
 
-Once you remove the redundant dev param:
+                        Geert
 
-Acked-By: Harvey Hunt <harveyhuntnexus@gmail.com>
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
->>
->>> +	ret = nand_scan(mtd, 1);
->>>  	if (ret)
->>>  		return ret;
->>>  
->>>   
->>
->> Thanks,
->>
->> Harvey
-> 
-> Thanks for reviewing,
-> Miquèl
-> 
-
-Thanks,
-
-Harvey
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
