@@ -1,55 +1,25 @@
-Received: from newton.telenet-ops.be ([195.130.132.45])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewrAx-0006aM-Gf
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 15:22:42 +0000
-Received: from albert.telenet-ops.be (albert.telenet-ops.be
- [IPv6:2a02:1800:110:4::f00:1a])
- by newton.telenet-ops.be (Postfix) with ESMTPS id 402q1W0bSjzMqkLT
- for <linux-mtd@lists.infradead.org>; Fri, 16 Mar 2018 16:21:35 +0100 (CET)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
+Subject: Re: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>,
- Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
-Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
- linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
- linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 04/21] fbdev: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Fri, 16 Mar 2018 14:51:37 +0100
-Message-Id: <1521208314-4783-5-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ Josh Wu <rainyfeeling@outlook.com>, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Stefan Agner <stefan@agner.ch>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
+ <20180302170400.6712-22-miquel.raynal@bootlin.com>
+ <d57f95d3-03d0-5905-835f-c278df578b1e@gmail.com>
+ <20180316143824.568be773@xps13>
+From: Harvey Hunt <harveyhuntnexus@gmail.com>
+Message-ID: <c3df8f9f-7d3f-4fa5-dad3-a9f6697aa67d@gmail.com>
+Date: Fri, 16 Mar 2018 15:33:05 +0000
+MIME-Version: 1.0
+In-Reply-To: <20180316143824.568be773@xps13>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -59,42 +29,151 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-In most cases this other symbol is an architecture or platform specific
-symbol, or PCI.
+Hi Miquèl,
 
-Generic symbols and drivers without platform dependencies keep their
-dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-cannot work anyway.
+On 03/16/2018 01:38 PM, Miquel Raynal wrote:
+> Hi Harvey,
+> 
+> On Thu, 15 Mar 2018 15:40:25 +0000, Harvey Hunt
+> <harveyhuntnexus@gmail.com> wrote:
+> 
+>> Hi Miquel,
+>>
+>> Sorry it's taken me a little while to review your changes, a few
+>> comments below:
+>>
+>> On 03/02/2018 05:03 PM, Miquel Raynal wrote:
+>>> Two helpers have been added to the core to make ECC-related
+>>> configuration between the detection phase and the final NAND scan. Use
+>>> these hooks and convert the driver to just use nand_scan() instead of
+>>> both nand_scan_ident() and nand_scan_tail().
+>>>
+>>> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>>> ---
+>>>  drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
+>>>  1 file changed, 12 insertions(+), 18 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+>>> index e69f6ae4c539..fd5dc9d9b0c6 100644
+>>> --- a/drivers/mtd/nand/raw/jz4780_nand.c
+>>> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+>>> @@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
+>>>  	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+>>>  }
+>>>  
+>>> -static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
+>>> +static int jz4780_nand_attach_chip(struct nand_chip *chip)
+>>>  {
+>>> -	struct nand_chip *chip = &nand->chip;
+>>>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>>>  	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+>>>  	int eccbytes;
+>>> @@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>>>  	switch (chip->ecc.mode) {
+>>>  	case NAND_ECC_HW:
+>>>  		if (!nfc->bch) {
+>>> -			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
+>>> +			dev_err(nfc->dev,
+>>> +				"HW BCH selected, but BCH controller not found\n");
+>>>  			return -ENODEV;
+>>>  		}
+>>>  
+>>> @@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>>>  		chip->ecc.correct = jz4780_nand_ecc_correct;
+>>>  		/* fall through */
+>>>  	case NAND_ECC_SOFT:
+>>> -		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+>>> -			(nfc->bch) ? "hardware BCH" : "software ECC",
+>>> -			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+>>> +		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+>>> +			 (nfc->bch) ? "hardware BCH" : "software ECC",
+>>> +			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes)>  		break;
+>>>  	case NAND_ECC_NONE:
+>>> -		dev_info(dev, "not using ECC\n");
+>>> +		dev_info(nfc->dev, "not using ECC\n");
+>>>  		break;
+>>>  	default:
+>>> -		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
+>>> +		dev_err(nfc->dev, "ECC mode %d not supported\n",
+>>> +			chip->ecc.mode);
+>>>  		return -EINVAL;
+>>>  	}  
+>> These changes seem redundant as dev is passed into the function,
+>> although you could remove it from the function defintion.
+> 
+> That is right, I should have also removed the 'dev' parameter.
+> 
 
-This simplifies the dependencies, and allows to improve compile-testing.
+That'd be great
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Acked-by: Robin Murphy <robin.murphy@arm.com>
----
-v2:
-  - Add Reviewed-by, Acked-by,
-  - Drop RFC state,
-  - Split per subsystem.
----
- drivers/video/fbdev/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>>>  
+>>> @@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>>>  	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+>>>  
+>>>  	if (eccbytes > mtd->oobsize - 2) {
+>>> -		dev_err(dev,
+>>> +		dev_err(nfc->dev,
+>>>  			"invalid ECC config: required %d ECC bytes, but only %d are available",
+>>>  			eccbytes, mtd->oobsize - 2);
+>>>  		return -EINVAL;
+>>> @@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+>>>  	chip->controller = &nfc->controller;
+>>>  	nand_set_flash_node(chip, np);
+>>>  
+>>> -	ret = nand_scan_ident(mtd, 1, NULL);
+>>> -	if (ret)
+>>> -		return ret;
+>>> -
+>>> -	ret = jz4780_nand_init_ecc(nand, dev)  
+>>
+>> You've removed this call, but without it the ECC won't be initialised...
+> 
+> Actually it is not removed but just renamed to match the core's hook
+> name. The purpose of this function is to perform any chip-related
+> tuning after the identification, and the name should not limit
+> ourselves to do something not related to ECC configuration.
+> 
 
-diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
-index 11e699f1062b78ea..abee481f5fb778dd 100644
---- a/drivers/video/fbdev/Kconfig
-+++ b/drivers/video/fbdev/Kconfig
-@@ -2174,7 +2174,8 @@ config FB_XILINX
- 
- config FB_GOLDFISH
- 	tristate "Goldfish Framebuffer"
--	depends on FB && HAS_DMA && (GOLDFISH || COMPILE_TEST)
-+	depends on FB
-+	depends on GOLDFISH || COMPILE_TEST
- 	select FB_CFB_FILLRECT
- 	select FB_CFB_COPYAREA
- 	select FB_CFB_IMAGEBLIT
--- 
-2.7.4
+Sorry for the noise, seems I've forgotten how to read patches...
+
+>>
+>>> -	if (ret)
+>>> -		return ret;
+>>> -
+>>> -	ret = nand_scan_tail(mtd);
+>>> +	chip->ecc.attach_chip = jz4780_nand_attach_chip;  
+>>
+>> This function doesn't exist.
+> 
+> See above, the *nand_init_ecc() function has been renamed in
+> *nand_attach_chip().
+> 
+> This hook: chip->ecc.attach_chip() will be called between
+> nand_scan_ident() and nand_scan_tail() from within nand_scan().
+> 
+
+Same as above :-)
+
+Once you remove the redundant dev param:
+
+Acked-By: Harvey Hunt <harveyhuntnexus@gmail.com>
+
+>>
+>>> +	ret = nand_scan(mtd, 1);
+>>>  	if (ret)
+>>>  		return ret;
+>>>  
+>>>   
+>>
+>> Thanks,
+>>
+>> Harvey
+> 
+> Thanks for reviewing,
+> Miquèl
+> 
+
+Thanks,
+
+Harvey
