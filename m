@@ -1,9 +1,12 @@
-Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
+Received: from 8bytes.org ([2a01:238:4383:600:38bc:a715:4b6d:a889]
+ helo=theia.8bytes.org)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewqhc-0006oh-97
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:51:46 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christoph Hellwig <hch@lst.de>,
+ id 1ewqhk-0007El-AZ
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:51:49 +0000
+Date: Fri, 16 Mar 2018 15:51:16 +0100
+From: Joerg Roedel <joro@8bytes.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
  Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -14,9 +17,9 @@ To: Christoph Hellwig <hch@lst.de>,
  Herbert Xu <herbert@gondor.apana.org.au>,
  "David S . Miller" <davem@davemloft.net>,
  Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>, Jonathan Cameron <jic23@kernel.org>,
  Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
  Ulf Hansson <ulf.hansson@linaro.org>,
@@ -25,11 +28,11 @@ To: Christoph Hellwig <hch@lst.de>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>,
- Ohad Ben-Cohen <ohad@wizery.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
  Bjorn Andersson <bjorn.andersson@linaro.org>,
- Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
-Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
+ Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
+ iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
  linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
  linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
@@ -39,13 +42,16 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 07/21] i2c: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Fri, 16 Mar 2018 14:51:40 +0100
-Message-Id: <1521208314-4783-8-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 09/21] iommu: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180316145116.GE11365@8bytes.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-10-git-send-email-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1521208314-4783-10-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -55,56 +61,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-In most cases this other symbol is an architecture or platform specific
-symbol, or PCI.
+On Fri, Mar 16, 2018 at 02:51:42PM +0100, Geert Uytterhoeven wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-Generic symbols and drivers without platform dependencies keep their
-dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-cannot work anyway.
-
-This simplifies the dependencies, and allows to improve compile-testing.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Acked-by: Robin Murphy <robin.murphy@arm.com>
----
-v2:
-  - Add Reviewed-by, Acked-by,
-  - Drop RFC state,
-  - Split per subsystem.
----
- drivers/i2c/busses/Kconfig | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index e2954fb86d659f36..2ce9bbd5d56ed06a 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -725,7 +725,6 @@ config I2C_MPC
- config I2C_MT65XX
- 	tristate "MediaTek I2C adapter"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
--	depends on HAS_DMA
- 	help
- 	  This selects the MediaTek(R) Integrated Inter Circuit bus driver
- 	  for MT65xx and MT81xx.
-@@ -903,7 +902,6 @@ config I2C_SH7760
- 
- config I2C_SH_MOBILE
- 	tristate "SuperH Mobile I2C Controller"
--	depends on HAS_DMA
- 	depends on ARCH_SHMOBILE || ARCH_RENESAS || COMPILE_TEST
- 	help
- 	  If you say yes to this option, support will be included for the
-@@ -1106,7 +1104,6 @@ config I2C_XLP9XX
- 
- config I2C_RCAR
- 	tristate "Renesas R-Car I2C Controller"
--	depends on HAS_DMA
- 	depends on ARCH_RENESAS || COMPILE_TEST
- 	select I2C_SLAVE
- 	help
--- 
-2.7.4
+Acked-by: Joerg Roedel <jroedel@suse.de>
