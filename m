@@ -1,7 +1,7 @@
 Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewqgz-0006oh-UP
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:50:57 +0000
+ id 1ewqhc-0006oh-97
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:51:46 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 16/21] remoteproc: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Fri, 16 Mar 2018 14:51:49 +0100
-Message-Id: <1521208314-4783-17-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v2 07/21] i2c: Remove depends on HAS_DMA in case of platform
+ dependency
+Date: Fri, 16 Mar 2018 14:51:40 +0100
+Message-Id: <1521208314-4783-8-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,20 +75,36 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/remoteproc/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/i2c/busses/Kconfig | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/remoteproc/Kconfig b/drivers/remoteproc/Kconfig
-index b609e1d3654ba65f..b60d8132113de0f7 100644
---- a/drivers/remoteproc/Kconfig
-+++ b/drivers/remoteproc/Kconfig
-@@ -23,7 +23,6 @@ config IMX_REMOTEPROC
- 
- config OMAP_REMOTEPROC
- 	tristate "OMAP remoteproc support"
+diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+index e2954fb86d659f36..2ce9bbd5d56ed06a 100644
+--- a/drivers/i2c/busses/Kconfig
++++ b/drivers/i2c/busses/Kconfig
+@@ -725,7 +725,6 @@ config I2C_MPC
+ config I2C_MT65XX
+ 	tristate "MediaTek I2C adapter"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
 -	depends on HAS_DMA
- 	depends on ARCH_OMAP4 || SOC_OMAP5
- 	depends on OMAP_IOMMU
- 	select MAILBOX
+ 	help
+ 	  This selects the MediaTek(R) Integrated Inter Circuit bus driver
+ 	  for MT65xx and MT81xx.
+@@ -903,7 +902,6 @@ config I2C_SH7760
+ 
+ config I2C_SH_MOBILE
+ 	tristate "SuperH Mobile I2C Controller"
+-	depends on HAS_DMA
+ 	depends on ARCH_SHMOBILE || ARCH_RENESAS || COMPILE_TEST
+ 	help
+ 	  If you say yes to this option, support will be included for the
+@@ -1106,7 +1104,6 @@ config I2C_XLP9XX
+ 
+ config I2C_RCAR
+ 	tristate "Renesas R-Car I2C Controller"
+-	depends on HAS_DMA
+ 	depends on ARCH_RENESAS || COMPILE_TEST
+ 	select I2C_SLAVE
+ 	help
 -- 
 2.7.4
