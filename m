@@ -1,7 +1,7 @@
 Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpnA-0002ul-Iw
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:26 +0000
+ id 1ewpnX-0002uj-2K
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:36 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 13/21] mmc: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Fri, 16 Mar 2018 14:51:46 +0100
-Message-Id: <1521208314-4783-14-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v2 17/21] scsi: hisi_sas: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Fri, 16 Mar 2018 14:51:50 +0100
+Message-Id: <1521208314-4783-18-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -75,78 +75,20 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/mmc/host/Kconfig | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ drivers/scsi/hisi_sas/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 620c2d90a646f387..f6d43348b4a3e5d4 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -358,7 +358,6 @@ config MMC_MESON_MX_SDIO
- 	tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
- 	depends on ARCH_MESON || COMPILE_TEST
- 	depends on COMMON_CLK
--	depends on HAS_DMA
- 	depends on OF
- 	help
- 	  This selects support for the SD/MMC Host Controller on
-@@ -401,7 +400,6 @@ config MMC_OMAP
- 
- config MMC_OMAP_HS
- 	tristate "TI OMAP High Speed Multimedia Card Interface support"
--	depends on HAS_DMA
- 	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
- 	help
- 	  This selects the TI OMAP High Speed Multimedia card Interface.
-@@ -511,7 +509,6 @@ config MMC_DAVINCI
- 
- config MMC_GOLDFISH
- 	tristate "goldfish qemu Multimedia Card Interface support"
--	depends on HAS_DMA
- 	depends on GOLDFISH || COMPILE_TEST
- 	help
- 	  This selects the Goldfish Multimedia card Interface emulation
-@@ -605,7 +602,7 @@ config MMC_SDHI
- 
- config MMC_SDHI_SYS_DMAC
- 	tristate "DMA for SDHI SD/SDIO controllers using SYS-DMAC"
--	depends on MMC_SDHI && HAS_DMA
-+	depends on MMC_SDHI
- 	default MMC_SDHI if (SUPERH || ARM)
- 	help
- 	  This provides DMA support for SDHI SD/SDIO controllers
-@@ -615,7 +612,7 @@ config MMC_SDHI_SYS_DMAC
- config MMC_SDHI_INTERNAL_DMAC
- 	tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+diff --git a/drivers/scsi/hisi_sas/Kconfig b/drivers/scsi/hisi_sas/Kconfig
+index d42f29a5eb65046d..57183fce70fb6355 100644
+--- a/drivers/scsi/hisi_sas/Kconfig
++++ b/drivers/scsi/hisi_sas/Kconfig
+@@ -1,6 +1,6 @@
+ config SCSI_HISI_SAS
+ 	tristate "HiSilicon SAS"
+-	depends on HAS_DMA && HAS_IOMEM
++	depends on HAS_IOMEM
  	depends on ARM64 || COMPILE_TEST
--	depends on MMC_SDHI && HAS_DMA
-+	depends on MMC_SDHI
- 	default MMC_SDHI if ARM64
- 	help
- 	  This provides DMA support for SDHI SD/SDIO controllers
-@@ -688,7 +685,6 @@ config MMC_CAVIUM_THUNDERX
- 
- config MMC_DW
- 	tristate "Synopsys DesignWare Memory Card Interface"
--	depends on HAS_DMA
- 	depends on ARC || ARM || ARM64 || MIPS || COMPILE_TEST
- 	help
- 	  This selects support for the Synopsys DesignWare Mobile Storage IP
-@@ -758,7 +754,6 @@ config MMC_DW_ZX
- 
- config MMC_SH_MMCIF
- 	tristate "SuperH Internal MMCIF support"
--	depends on HAS_DMA
- 	depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
- 	help
- 	  This selects the MMC Host Interface controller (MMCIF) found in various
-@@ -878,7 +873,6 @@ config MMC_TOSHIBA_PCI
- config MMC_BCM2835
- 	tristate "Broadcom BCM2835 SDHOST MMC Controller support"
- 	depends on ARCH_BCM2835 || COMPILE_TEST
--	depends on HAS_DMA
- 	help
- 	  This selects the BCM2835 SDHOST MMC controller. If you have
- 	  a BCM2835 platform with SD or MMC devices, say Y or M here.
+ 	select SCSI_SAS_LIBSAS
+ 	select BLK_DEV_INTEGRITY
 -- 
 2.7.4
