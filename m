@@ -1,26 +1,21 @@
-Received: from mail-ve1eur01on0717.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::717]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpVv-0002xb-2j
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:35:22 +0000
-Subject: Re: UBI assert failed in ubi_wl_init
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: Richard Weinberger <richard@sigma-star.at>, linux-mtd@lists.infradead.org
-References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
- <2543021.LZhlqz2gkU@blindfold>
- <b5eb17b7-14f1-7ec4-a590-d486dd0b89b6@exertus.fi>
- <63275670.WCUj5TjS3v@blindfold>
- <180bb6ee-51db-ddff-207b-e76580dab687@exertus.fi>
- <CAFLxGvx35u-5Z83m_21Q73QPf7e8ZeoMsxU-B2jdzY2-BrWamw@mail.gmail.com>
-From: Timo Ketola <timo@exertus.fi>
-Message-ID: <7002f6eb-f177-0929-79da-62f42551459f@exertus.fi>
-Date: Fri, 16 Mar 2018 15:34:57 +0200
+Date: Fri, 16 Mar 2018 14:38:24 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Harvey Hunt <harveyhuntnexus@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Josh Wu <rainyfeeling@outlook.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Stefan Agner <stefan@agner.ch>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 21/52] mtd: rawnand: jz4780: convert driver to nand_scan()
+Message-ID: <20180316143824.568be773@xps13>
+In-Reply-To: <d57f95d3-03d0-5905-835f-c278df578b1e@gmail.com>
+References: <20180302170400.6712-1-miquel.raynal@bootlin.com>
+ <20180302170400.6712-22-miquel.raynal@bootlin.com>
+ <d57f95d3-03d0-5905-835f-c278df578b1e@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvx35u-5Z83m_21Q73QPf7e8ZeoMsxU-B2jdzY2-BrWamw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +25,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18.02.2018 22:31, Richard Weinberger wrote:
-> Okay. That's a bit odd. Maybe my analysis is wrong. Can you try the
-> following, replay the image to your NAND and attach again.
-> Then you should get the same UBI assert a second time.
+Hi Harvey,
 
-Of course I can but what would be the difference to simple rebooting? I
-get the assertion failure on every boot from the second one onwards.
-Before I commit to that one, let's look what I found recently.
+On Thu, 15 Mar 2018 15:40:25 +0000, Harvey Hunt
+<harveyhuntnexus@gmail.com> wrote:
 
-I already tried the replay but bumped into ECC errors. Due to that and
-other things I switched the kernel to Freescale IMX 4.9.74 with Boundary
-fixes. I reduced the size of the user partition to 1800M and got rid of
-the 'could not get any free erase block' and 'Unable to write new
-fastmap' errors. The assertion failures from the second boot onwards
-remained.
+> Hi Miquel,
+>=20
+> Sorry it's taken me a little while to review your changes, a few
+> comments below:
+>=20
+> On 03/02/2018 05:03 PM, Miquel Raynal wrote:
+> > Two helpers have been added to the core to make ECC-related
+> > configuration between the detection phase and the final NAND scan. Use
+> > these hooks and convert the driver to just use nand_scan() instead of
+> > both nand_scan_ident() and nand_scan_tail().
+> >=20
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
+> >  1 file changed, 12 insertions(+), 18 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/=
+jz4780_nand.c
+> > index e69f6ae4c539..fd5dc9d9b0c6 100644
+> > --- a/drivers/mtd/nand/raw/jz4780_nand.c
+> > +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+> > @@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info =
+*mtd, u8 *dat,
+> >  	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+> >  }
+> > =20
+> > -static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct =
+device *dev)
+> > +static int jz4780_nand_attach_chip(struct nand_chip *chip)
+> >  {
+> > -	struct nand_chip *chip =3D &nand->chip;
+> >  	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> >  	struct jz4780_nand_controller *nfc =3D to_jz4780_nand_controller(chip=
+->controller);
+> >  	int eccbytes;
+> > @@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_=
+chip *nand, struct device *de
+> >  	switch (chip->ecc.mode) {
+> >  	case NAND_ECC_HW:
+> >  		if (!nfc->bch) {
+> > -			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
+> > +			dev_err(nfc->dev,
+> > +				"HW BCH selected, but BCH controller not found\n");
+> >  			return -ENODEV;
+> >  		}
+> > =20
+> > @@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nan=
+d_chip *nand, struct device *de
+> >  		chip->ecc.correct =3D jz4780_nand_ecc_correct;
+> >  		/* fall through */
+> >  	case NAND_ECC_SOFT:
+> > -		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+> > -			(nfc->bch) ? "hardware BCH" : "software ECC",
+> > -			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+> > +		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+> > +			 (nfc->bch) ? "hardware BCH" : "software ECC",
+> > +			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes)>  		break;
+> >  	case NAND_ECC_NONE:
+> > -		dev_info(dev, "not using ECC\n");
+> > +		dev_info(nfc->dev, "not using ECC\n");
+> >  		break;
+> >  	default:
+> > -		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
+> > +		dev_err(nfc->dev, "ECC mode %d not supported\n",
+> > +			chip->ecc.mode);
+> >  		return -EINVAL;
+> >  	} =20
+> These changes seem redundant as dev is passed into the function,
+> although you could remove it from the function defintion.
 
-I wondered why I'm not seeing the same issue with my smaller 64M system
-mtd. Then I reduced the user partition to 48M and the mtd to 64M and the
-issue vanished. Then I kept the partition at 48M but restored the mtd
-size to 1800M and the issue returned. If I make the mtd size 0x4e680000
-or smaller there is no issue. If I make it 0x4e6a0000 or larger the
-issue is there. Every time I erased the NAND and burned a fresh image.
+That is right, I should have also removed the 'dev' parameter.
 
-What do you want me to do next?
+>=20
+> > =20
+> > @@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_=
+chip *nand, struct device *de
+> >  	eccbytes =3D mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+> > =20
+> >  	if (eccbytes > mtd->oobsize - 2) {
+> > -		dev_err(dev,
+> > +		dev_err(nfc->dev,
+> >  			"invalid ECC config: required %d ECC bytes, but only %d are availab=
+le",
+> >  			eccbytes, mtd->oobsize - 2);
+> >  		return -EINVAL;
+> > @@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_d=
+evice *pdev,
+> >  	chip->controller =3D &nfc->controller;
+> >  	nand_set_flash_node(chip, np);
+> > =20
+> > -	ret =3D nand_scan_ident(mtd, 1, NULL);
+> > -	if (ret)
+> > -		return ret;
+> > -
+> > -	ret =3D jz4780_nand_init_ecc(nand, dev) =20
+>=20
+> You've removed this call, but without it the ECC won't be initialised...
 
---
+Actually it is not removed but just renamed to match the core's hook
+name. The purpose of this function is to perform any chip-related
+tuning after the identification, and the name should not limit
+ourselves to do something not related to ECC configuration.
 
-Timo
+>=20
+> > -	if (ret)
+> > -		return ret;
+> > -
+> > -	ret =3D nand_scan_tail(mtd);
+> > +	chip->ecc.attach_chip =3D jz4780_nand_attach_chip; =20
+>=20
+> This function doesn't exist.
+
+See above, the *nand_init_ecc() function has been renamed in
+*nand_attach_chip().
+
+This hook: chip->ecc.attach_chip() will be called between
+nand_scan_ident() and nand_scan_tail() from within nand_scan().
+
+>=20
+> > +	ret =3D nand_scan(mtd, 1);
+> >  	if (ret)
+> >  		return ret;
+> > =20
+> >  =20
+>=20
+> Thanks,
+>=20
+> Harvey
+
+Thanks for reviewing,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
