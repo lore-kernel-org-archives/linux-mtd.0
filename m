@@ -1,19 +1,56 @@
-Received: from mga07.intel.com ([134.134.136.100])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewqE8-0003X6-MF
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:21:15 +0000
-Message-ID: <1521210046.23017.16.camel@linux.intel.com>
-Subject: Re: [PATCH] mtd: st_spi_fsm: use %*ph to print small buffer
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Antonio Cardace <anto.cardace@gmail.com>,
- boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr
-Cc: linux-mtd@lists.infradead.org
-Date: Fri, 16 Mar 2018 16:20:46 +0200
-In-Reply-To: <20180212184130.10238-1-anto.cardace@gmail.com>
-References: <20180212184130.10238-1-anto.cardace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1ewqRQ-0001wJ-OL
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:34:46 +0000
+Date: Fri, 16 Mar 2018 15:34:32 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
+ iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
+ linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 18/21] serial: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180316143432.GA29333@kroah.com>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-19-git-send-email-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1521208314-4783-19-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +60,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2018-02-12 at 18:41 +0000, Antonio Cardace wrote:
-> Use %*ph format to print small buffer as hex string.
+On Fri, Mar 16, 2018 at 02:51:51PM +0100, Geert Uytterhoeven wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
 > 
-
-Any comments so far?
-
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
-> ---
->  drivers/mtd/devices/st_spi_fsm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
 > 
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c
-> b/drivers/mtd/devices/st_spi_fsm.c
-> index 7bc29d725200..a33f5fd6818c 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.c
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -1868,8 +1868,7 @@ static struct flash_info
-> *stfsm_jedec_probe(struct stfsm *fsm)
->  	 */
->  	ext_jedec = id[3] << 8  | id[4];
->  
-> -	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x
-> %02x]\n",
-> -		jedec, id[0], id[1], id[2], id[3], id[4]);
-> +	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%5ph]\n", jedec, id);
->  
->  	for (info = flash_types; info->name; info++) {
->  		if (info->jedec_id == jedec) {
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
