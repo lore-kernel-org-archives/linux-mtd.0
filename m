@@ -1,49 +1,18 @@
-Received: from [45.249.212.32] (helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewqU4-0004ch-Jn
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:37:31 +0000
-Subject: Re: [PATCH v2 17/21] scsi: hisi_sas: Remove depends on HAS_DMA in
- case of platform dependency
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
- <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "James E . J . Bottomley"
- <jejb@linux.vnet.ibm.com>, "Martin K . Petersen"
- <martin.petersen@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
- "Mark Brown" <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Tejun
- Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S .
- Miller" <davem@davemloft.net>, Bartlomiej Zolnierkiewicz
- <b.zolnierkie@samsung.com>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan
- Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>, Wolfram Sang
- <wsa@the-dreams.de>, "Jonathan Cameron" <jic23@kernel.org>, Joerg Roedel
- <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>, Jassi Brar
- <jassisinghbrar@gmail.com>, "Mauro Carvalho Chehab" <mchehab@kernel.org>, Ulf
- Hansson <ulf.hansson@linaro.org>, "David Woodhouse" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen
- <ohad@wizery.com>, "Bjorn Andersson" <bjorn.andersson@linaro.org>, Eric
- Anholt <eric@anholt.net>, "Stefan Wahren" <stefan.wahren@i2se.com>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-18-git-send-email-geert@linux-m68k.org>
-CC: <alsa-devel@alsa-project.org>, <linux-iio@vger.kernel.org>,
- <linux-fpga@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
- <linux-fbdev@vger.kernel.org>, <linux-ide@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <linux1394-devel@lists.sourceforge.net>, <devel@driverdev.osuosl.org>,
- <linux-scsi@vger.kernel.org>, <linux-serial@vger.kernel.org>,
- <linux-media@vger.kernel.org>, <linux-block@vger.kernel.org>,
- <netdev@vger.kernel.org>, <linux-usb@vger.kernel.org>,
- <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-spi@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
- <linux-crypto@vger.kernel.org>
-From: John Garry <john.garry@huawei.com>
-Message-ID: <0786b588-f165-6f71-7ede-7c26a27becbc@huawei.com>
-Date: Fri, 16 Mar 2018 14:36:46 +0000
-MIME-Version: 1.0
-In-Reply-To: <1521208314-4783-18-git-send-email-geert@linux-m68k.org>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+Received: from mga06.intel.com ([134.134.136.31])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ewqDu-0007nH-6k
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 14:20:47 +0000
+Message-ID: <1521210030.23017.15.camel@linux.intel.com>
+Subject: Re: [PATCH] mtd: nftl: use %*ph to print small buffer
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Antonio Cardace <anto.cardace@gmail.com>,
+ boris.brezillon@free-electrons.com
+Cc: linux-mtd@lists.infradead.org
+Date: Fri, 16 Mar 2018 16:20:30 +0200
+In-Reply-To: <20180213175245.17703-1-anto.cardace@gmail.com>
+References: <20180213175245.17703-1-anto.cardace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -54,20 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 16/03/2018 13:51, Geert Uytterhoeven wrote:
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
->
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
->
-> This simplifies the dependencies, and allows to improve compile-testing.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
+On Tue, 2018-02-13 at 17:52 +0000, Antonio Cardace wrote:
+> Use %*ph format to print small buffer as hex string.
+> 
 
-Acked-by: John Garry <john.garry@huawei.com>
+Any comments so far?
+
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
+> ---
+> 
+>  drivers/mtd/nftlmount.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+> index 184c8fbfe465..a8bdc1455b50 100644
+> --- a/drivers/mtd/nftlmount.c
+> +++ b/drivers/mtd/nftlmount.c
+> @@ -122,8 +122,7 @@ static int find_boot_record(struct NFTLrecord
+> *nftl)
+>  		if (memcmp(buf, "ANAND", 6)) {
+>  			printk(KERN_NOTICE "ANAND header found at
+> 0x%x in mtd%d, but went away on reread!\n",
+>  			       block * nftl->EraseSize, nftl-
+> >mbd.mtd->index);
+> -			printk(KERN_NOTICE "New data are: %02x %02x
+> %02x %02x %02x %02x\n",
+> -			       buf[0], buf[1], buf[2], buf[3],
+> buf[4], buf[5]);
+> +			printk(KERN_NOTICE "New data are: %6ph\n",
+> buf);
+>  			continue;
+>  		}
+>  #endif
+
+-- 
+Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Intel Finland Oy
