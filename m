@@ -1,7 +1,7 @@
 Received: from andre.telenet-ops.be ([2a02:1800:120:4::f00:15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ewpnA-0002ui-IV
- for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:19 +0000
+ id 1ewpnA-0002uk-Io
+ for linux-mtd@lists.infradead.org; Fri, 16 Mar 2018 13:53:18 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -40,10 +40,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
  linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 21/21] usb: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Fri, 16 Mar 2018 14:51:54 +0100
-Message-Id: <1521208314-4783-22-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v2 11/21] mailbox: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Fri, 16 Mar 2018 14:51:44 +0100
+Message-Id: <1521208314-4783-12-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -66,54 +66,45 @@ cannot work anyway.
 
 This simplifies the dependencies, and allows to improve compile-testing.
 
+Notes:
+  - FSL_FMAN keeps its dependency on HAS_DMA, as it calls set_dma_ops(),
+    which does not exist if HAS_DMA=n (Do we need a dummy? The use of
+    set_dma_ops() in this driver is questionable),
+  - SND_SOC_LPASS_IPQ806X and SND_SOC_LPASS_PLATFORM loose their
+    dependency on HAS_DMA, as they are selected from
+    SND_SOC_APQ8016_SBC.
+
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Felipe Balbi <felipe.balbi@linux.intel.com> [drivers/usb/gadget/]
 ---
 v2:
   - Add Reviewed-by, Acked-by,
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/usb/gadget/udc/Kconfig | 4 ++--
- drivers/usb/mtu3/Kconfig       | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mailbox/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
-index 0875d38476ee9395..9c3b4f86965e80c7 100644
---- a/drivers/usb/gadget/udc/Kconfig
-+++ b/drivers/usb/gadget/udc/Kconfig
-@@ -179,7 +179,7 @@ config USB_R8A66597
- 
- config USB_RENESAS_USBHS_UDC
- 	tristate 'Renesas USBHS controller'
--	depends on USB_RENESAS_USBHS && HAS_DMA
-+	depends on USB_RENESAS_USBHS
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index ba2f1525f4eef454..f3c68fe15180d035 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -154,7 +154,6 @@ config XGENE_SLIMPRO_MBOX
+ config BCM_PDC_MBOX
+ 	tristate "Broadcom FlexSparx DMA Mailbox"
+ 	depends on ARCH_BCM_IPROC || COMPILE_TEST
+-	depends on HAS_DMA
  	help
- 	   Renesas USBHS is a discrete USB host and peripheral controller chip
- 	   that supports both full and high speed USB 2.0 data transfers.
-@@ -192,7 +192,7 @@ config USB_RENESAS_USBHS_UDC
- config USB_RENESAS_USB3
- 	tristate 'Renesas USB3.0 Peripheral controller'
- 	depends on ARCH_RENESAS || COMPILE_TEST
--	depends on EXTCON && HAS_DMA
-+	depends on EXTCON
- 	help
- 	   Renesas USB3.0 Peripheral controller is a USB peripheral controller
- 	   that supports super, high, and full speed USB 3.0 data transfers.
-diff --git a/drivers/usb/mtu3/Kconfig b/drivers/usb/mtu3/Kconfig
-index 25cd61947beea51e..c0c0eb88e5eafc74 100644
---- a/drivers/usb/mtu3/Kconfig
-+++ b/drivers/usb/mtu3/Kconfig
-@@ -2,7 +2,7 @@
- 
- config USB_MTU3
- 	tristate "MediaTek USB3 Dual Role controller"
--	depends on EXTCON && (USB || USB_GADGET) && HAS_DMA
-+	depends on EXTCON && (USB || USB_GADGET)
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 	select USB_XHCI_MTK if USB_SUPPORT && USB_XHCI_HCD
+ 	  Mailbox implementation for the Broadcom FlexSparx DMA ring manager,
+ 	  which provides access to various offload engines on Broadcom
+@@ -164,7 +163,6 @@ config BCM_FLEXRM_MBOX
+ 	tristate "Broadcom FlexRM Mailbox"
+ 	depends on ARM64
+ 	depends on ARCH_BCM_IPROC || COMPILE_TEST
+-	depends on HAS_DMA
+ 	select GENERIC_MSI_IRQ_DOMAIN
+ 	default m if ARCH_BCM_IPROC
  	help
 -- 
 2.7.4
