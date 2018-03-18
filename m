@@ -1,29 +1,16 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exflW-0006JA-2Z
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:22:57 +0000
-Date: Sun, 18 Mar 2018 22:22:31 +0100
+ id 1exfm7-0006hd-Tt
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:23:41 +0000
+Date: Sun, 18 Mar 2018 22:23:10 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org
-Cc: Joern Engel <joern@lazybastard.org>, Robert Jarzmik
- <robert.jarzmik@free.fr>, Benjamin Herrenschmidt
- <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael
- Ellerman <mpe@ellerman.id.au>, Kyungmin Park <kyungmin.park@samsung.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Solarflare linux maintainers
- <linux-net-drivers@solarflare.com>, Edward Cree <ecree@solarflare.com>,
- Bert Kenward <bkenward@solarflare.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
- netdev@vger.kernel.org, devel@driverdev.osuosl.org, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 1/5] mtd: Initialize ->fail_addr early in mtd_erase()
-Message-ID: <20180318222231.48533c20@bbrezillon>
-In-Reply-To: <20180212210311.23244-2-boris.brezillon@bootlin.com>
-References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
- <20180212210311.23244-2-boris.brezillon@bootlin.com>
+To: Antonio Cardace <anto.cardace@gmail.com>
+Cc: boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ andriy.shevchenko@linux.intel.com
+Subject: Re: [PATCH] mtd: nftl: use %*ph to print small buffer
+Message-ID: <20180318222310.63630656@bbrezillon>
+In-Reply-To: <20180213175245.17703-1-anto.cardace@gmail.com>
+References: <20180213175245.17703-1-anto.cardace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -36,42 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Feb 2018 22:03:07 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Tue, 13 Feb 2018 17:52:45 +0000
+Antonio Cardace <anto.cardace@gmail.com> wrote:
 
-> mtd_erase() can return an error before ->fail_addr is initialized to
-> MTD_FAIL_ADDR_UNKNOWN. Move this initialization at the very beginning
-> of the function.
+> Use %*ph format to print small buffer as hex string.
 
-Applied the patchset after addressing Miquel's comments.
+Applied.
+
+Thanks,
+
+Boris
 
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
 > ---
->  drivers/mtd/mtdcore.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> What about this one?
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index a1c94526fb88..c87859ff338b 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -953,6 +953,8 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
->   */
->  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  {
-> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-> +
->  	if (!mtd->erasesize || !mtd->_erase)
->  		return -ENOTSUPP;
->  
-> @@ -961,7 +963,6 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  	if (!(mtd->flags & MTD_WRITEABLE))
->  		return -EROFS;
->  
-> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
->  	if (!instr->len) {
->  		instr->state = MTD_ERASE_DONE;
->  		mtd_erase_callback(instr);
+>  drivers/mtd/nftlmount.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+> index 184c8fbfe465..a8bdc1455b50 100644
+> --- a/drivers/mtd/nftlmount.c
+> +++ b/drivers/mtd/nftlmount.c
+> @@ -122,8 +122,7 @@ static int find_boot_record(struct NFTLrecord *nftl)
+>  		if (memcmp(buf, "ANAND", 6)) {
+>  			printk(KERN_NOTICE "ANAND header found at 0x%x in mtd%d, but went away on reread!\n",
+>  			       block * nftl->EraseSize, nftl->mbd.mtd->index);
+> -			printk(KERN_NOTICE "New data are: %02x %02x %02x %02x %02x %02x\n",
+> -			       buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
+> +			printk(KERN_NOTICE "New data are: %6ph\n", buf);
+>  			continue;
+>  		}
+>  #endif
 
 
 
