@@ -1,16 +1,29 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exfkm-0005v6-LT
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:22:14 +0000
-Date: Sun, 18 Mar 2018 22:21:46 +0100
+ id 1exflW-0006JA-2Z
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:22:57 +0000
+Date: Sun, 18 Mar 2018 22:22:31 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Antonio Cardace <anto.cardace@gmail.com>
-Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
- linux-mtd@lists.infradead.org, andriy.shevchenko@linux.intel.com
-Subject: Re: [PATCH] mtd: st_spi_fsm: use %*ph to print small buffer
-Message-ID: <20180318222146.25423c5d@bbrezillon>
-In-Reply-To: <20180212184130.10238-1-anto.cardace@gmail.com>
-References: <20180212184130.10238-1-anto.cardace@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org
+Cc: Joern Engel <joern@lazybastard.org>, Robert Jarzmik
+ <robert.jarzmik@free.fr>, Benjamin Herrenschmidt
+ <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael
+ Ellerman <mpe@ellerman.id.au>, Kyungmin Park <kyungmin.park@samsung.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Solarflare linux maintainers
+ <linux-net-drivers@solarflare.com>, Edward Cree <ecree@solarflare.com>,
+ Bert Kenward <bkenward@solarflare.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, linuxppc-dev@lists.ozlabs.org,
+ netdev@vger.kernel.org, devel@driverdev.osuosl.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH 1/5] mtd: Initialize ->fail_addr early in mtd_erase()
+Message-ID: <20180318222231.48533c20@bbrezillon>
+In-Reply-To: <20180212210311.23244-2-boris.brezillon@bootlin.com>
+References: <20180212210311.23244-1-boris.brezillon@bootlin.com>
+ <20180212210311.23244-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,38 +36,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Feb 2018 18:41:30 +0000
-Antonio Cardace <anto.cardace@gmail.com> wrote:
+On Mon, 12 Feb 2018 22:03:07 +0100
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Use %*ph format to print small buffer as hex string.
+> mtd_erase() can return an error before ->fail_addr is initialized to
+> MTD_FAIL_ADDR_UNKNOWN. Move this initialization at the very beginning
+> of the function.
 
-Applied.
-
-Thanks,
-
-Boris
+Applied the patchset after addressing Miquel's comments.
 
 > 
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Signed-off-by: Antonio Cardace <anto.cardace@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
->  drivers/mtd/devices/st_spi_fsm.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/mtd/mtdcore.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-> index 7bc29d725200..a33f5fd6818c 100644
-> --- a/drivers/mtd/devices/st_spi_fsm.c
-> +++ b/drivers/mtd/devices/st_spi_fsm.c
-> @@ -1868,8 +1868,7 @@ static struct flash_info *stfsm_jedec_probe(struct stfsm *fsm)
->  	 */
->  	ext_jedec = id[3] << 8  | id[4];
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index a1c94526fb88..c87859ff338b 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -953,6 +953,8 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
+>   */
+>  int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  {
+> +	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+> +
+>  	if (!mtd->erasesize || !mtd->_erase)
+>  		return -ENOTSUPP;
 >  
-> -	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%02x %02x %02x %02x %02x]\n",
-> -		jedec, id[0], id[1], id[2], id[3], id[4]);
-> +	dev_dbg(fsm->dev, "JEDEC =  0x%08x [%5ph]\n", jedec, id);
+> @@ -961,7 +963,6 @@ int mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	if (!(mtd->flags & MTD_WRITEABLE))
+>  		return -EROFS;
 >  
->  	for (info = flash_types; info->name; info++) {
->  		if (info->jedec_id == jedec) {
+> -	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+>  	if (!instr->len) {
+>  		instr->state = MTD_ERASE_DONE;
+>  		mtd_erase_callback(instr);
 
 
 
