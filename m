@@ -1,57 +1,23 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exdK8-0001wT-Mf
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 18:46:31 +0000
-Received: by mail-lf0-x244.google.com with SMTP id t132-v6so22232200lfe.2
- for <linux-mtd@lists.infradead.org>; Sun, 18 Mar 2018 11:46:16 -0700 (PDT)
-Subject: Re: [PATCH v2 10/21] lightnvm: Remove depends on HAS_DMA in case of
- platform dependency
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig
- <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>,
- Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>
-Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
- linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
- linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
-From: =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
-Message-ID: <319a2b17-f08e-7219-cf5d-08e2df81d55c@lightnvm.io>
-Date: Sun, 18 Mar 2018 19:46:11 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1exfbr-0000fx-D6
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:12:57 +0000
+Date: Sun, 18 Mar 2018 22:12:31 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, Kyungmin Park
+ <kyungmin.park@samsung.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH 1/2] mtd: onenand: Get rid of comments giving the file
+ path inside the file itself
+Message-ID: <20180318221231.4645cd9f@bbrezillon>
+In-Reply-To: <20180218160516.27946-1-boris.brezillon@bootlin.com>
+References: <20180218160516.27946-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -61,53 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/16/2018 02:51 PM, Geert Uytterhoeven wrote:
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
-> 
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
-> 
-> This simplifies the dependencies, and allows to improve compile-testing.
-> 
-> Notes:
->    - FSL_FMAN keeps its dependency on HAS_DMA, as it calls set_dma_ops(),
->      which does not exist if HAS_DMA=n (Do we need a dummy? The use of
->      set_dma_ops() in this driver is questionable),
->    - SND_SOC_LPASS_IPQ806X and SND_SOC_LPASS_PLATFORM loose their
->      dependency on HAS_DMA, as they are selected from
->      SND_SOC_APQ8016_SBC.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
-> ---
-> v2:
->    - Add Reviewed-by, Acked-by,
->    - Drop RFC state,
->    - Split per subsystem.
-> ---
->   drivers/lightnvm/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/lightnvm/Kconfig b/drivers/lightnvm/Kconfig
-> index 10c08982185a572f..9c03f35d9df113c6 100644
-> --- a/drivers/lightnvm/Kconfig
-> +++ b/drivers/lightnvm/Kconfig
-> @@ -4,7 +4,7 @@
->   
->   menuconfig NVM
->   	bool "Open-Channel SSD target support"
-> -	depends on BLOCK && HAS_DMA && PCI
-> +	depends on BLOCK && PCI
->   	select BLK_DEV_NVME
->   	help
->   	  Say Y here to get to enable Open-channel SSDs.
-> 
+On Sun, 18 Feb 2018 17:05:15 +0100
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Looks good.
+> Some files add a comment giving the path of the file inside the Linux
+> tree, which is pretty useless since the reader had to find the file to
+> open it.
+>=20
+> Getting rid of these comments will also allow us to easily move these
+> files around when needed.
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Reviewed-by: Matias Bjørling <mb@lightnvm.io>
+Queued both patches to nand/next.
+
+> ---
+>  drivers/mtd/onenand/generic.c      | 2 --
+>  drivers/mtd/onenand/omap2.c        | 2 --
+>  drivers/mtd/onenand/onenand_base.c | 2 --
+>  drivers/mtd/onenand/onenand_bbt.c  | 2 --
+>  4 files changed, 8 deletions(-)
+>=20
+> diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+> index 125da34d8ff9..d5ccaf943b91 100644
+> --- a/drivers/mtd/onenand/generic.c
+> +++ b/drivers/mtd/onenand/generic.c
+> @@ -1,6 +1,4 @@
+>  /*
+> - *  linux/drivers/mtd/onenand/generic.c
+> - *
+>   *  Copyright (c) 2005 Samsung Electronics
+>   *  Kyungmin Park <kyungmin.park@samsung.com>
+>   *
+> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+> index 87c34f607a75..9c159f0dd9a6 100644
+> --- a/drivers/mtd/onenand/omap2.c
+> +++ b/drivers/mtd/onenand/omap2.c
+> @@ -1,6 +1,4 @@
+>  /*
+> - *  linux/drivers/mtd/onenand/omap2.c
+> - *
+>   *  OneNAND driver for OMAP2 / OMAP3
+>   *
+>   *  Copyright =C2=A9 2005-2006 Nokia Corporation
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
+nand_base.c
+> index 979f4031f23c..05907b1b4098 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -1,6 +1,4 @@
+>  /*
+> - *  linux/drivers/mtd/onenand/onenand_base.c
+> - *
+>   *  Copyright =C2=A9 2005-2009 Samsung Electronics
+>   *  Copyright =C2=A9 2007 Nokia Corporation
+>   *
+> diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onen=
+and_bbt.c
+> index 420260c25ca0..dde20487937d 100644
+> --- a/drivers/mtd/onenand/onenand_bbt.c
+> +++ b/drivers/mtd/onenand/onenand_bbt.c
+> @@ -1,7 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*
+> - *  linux/drivers/mtd/onenand/onenand_bbt.c
+> - *
+>   *  Bad Block Table support for the OneNAND driver
+>   *
+>   *  Copyright(c) 2005 Samsung Electronics
+
+
+
+--=20
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
