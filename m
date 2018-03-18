@@ -1,23 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exfbr-0000fx-D6
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:12:57 +0000
-Date: Sun, 18 Mar 2018 22:12:31 +0100
+ id 1exfdP-00014n-Et
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:14:33 +0000
+Date: Sun, 18 Mar 2018 22:14:09 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, Kyungmin Park
- <kyungmin.park@samsung.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH 1/2] mtd: onenand: Get rid of comments giving the file
- path inside the file itself
-Message-ID: <20180318221231.4645cd9f@bbrezillon>
-In-Reply-To: <20180218160516.27946-1-boris.brezillon@bootlin.com>
-References: <20180218160516.27946-1-boris.brezillon@bootlin.com>
+To: Shreeya Patel <shreeya.patel23498@gmail.com>
+Cc: boris.brezillon@free-electrons.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, maximlevitsky@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ezequiel@vanguardiasur.com.ar, outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH NAND v5] mtd: nand: Replace printk() with appropriate
+ pr_*() macro
+Message-ID: <20180318221409.65945850@bbrezillon>
+In-Reply-To: <1519317082-4790-1-git-send-email-shreeya.patel23498@gmail.com>
+References: <1519317082-4790-1-git-send-email-shreeya.patel23498@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 18 Feb 2018 17:05:15 +0100
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Thu, 22 Feb 2018 22:01:22 +0530
+Shreeya Patel <shreeya.patel23498@gmail.com> wrote:
 
-> Some files add a comment giving the path of the file inside the Linux
-> tree, which is pretty useless since the reader had to find the file to
-> open it.
->=20
-> Getting rid of these comments will also allow us to easily move these
-> files around when needed.
->=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Using pr_<loglevel>() is more concise than
+> printk(KERN_<LOGLEVEL>).
+> Replace printks having a log level with the appropriate
+> pr_*() macros.
+> Define pr_fmt() and remove other additional macros from
+> the replaced printks.
 
-Queued both patches to nand/next.
+Applied.
 
-> ---
->  drivers/mtd/onenand/generic.c      | 2 --
->  drivers/mtd/onenand/omap2.c        | 2 --
->  drivers/mtd/onenand/onenand_base.c | 2 --
->  drivers/mtd/onenand/onenand_bbt.c  | 2 --
->  4 files changed, 8 deletions(-)
->=20
-> diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
-> index 125da34d8ff9..d5ccaf943b91 100644
-> --- a/drivers/mtd/onenand/generic.c
-> +++ b/drivers/mtd/onenand/generic.c
-> @@ -1,6 +1,4 @@
->  /*
-> - *  linux/drivers/mtd/onenand/generic.c
-> - *
->   *  Copyright (c) 2005 Samsung Electronics
->   *  Kyungmin Park <kyungmin.park@samsung.com>
->   *
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 87c34f607a75..9c159f0dd9a6 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -1,6 +1,4 @@
->  /*
-> - *  linux/drivers/mtd/onenand/omap2.c
-> - *
->   *  OneNAND driver for OMAP2 / OMAP3
->   *
->   *  Copyright =C2=A9 2005-2006 Nokia Corporation
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
-nand_base.c
-> index 979f4031f23c..05907b1b4098 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -1,6 +1,4 @@
->  /*
-> - *  linux/drivers/mtd/onenand/onenand_base.c
-> - *
->   *  Copyright =C2=A9 2005-2009 Samsung Electronics
->   *  Copyright =C2=A9 2007 Nokia Corporation
->   *
-> diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onen=
-and_bbt.c
-> index 420260c25ca0..dde20487937d 100644
-> --- a/drivers/mtd/onenand/onenand_bbt.c
-> +++ b/drivers/mtd/onenand/onenand_bbt.c
-> @@ -1,7 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - *  linux/drivers/mtd/onenand/onenand_bbt.c
-> - *
->   *  Bad Block Table support for the OneNAND driver
->   *
->   *  Copyright(c) 2005 Samsung Electronics
+Thanks,
 
+Boris
 
-
---=20
+-- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
