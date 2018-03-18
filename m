@@ -1,18 +1,47 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exfnR-0007hD-O1
- for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 21:24:57 +0000
-Date: Sun, 18 Mar 2018 22:24:31 +0100
+ id 1exgPp-0008Bl-SQ
+ for linux-mtd@lists.infradead.org; Sun, 18 Mar 2018 22:04:36 +0000
+Date: Sun, 18 Mar 2018 23:04:10 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: maps: remove bfin-async-flash driver
-Message-ID: <20180318222431.499bbac3@bbrezillon>
-In-Reply-To: <20180314163106.375231-1-arnd@arndb.de>
-References: <20180314163106.375231-1-arnd@arndb.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Felipe
+ Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>, "Martin K . Petersen"
+ <martin.petersen@oracle.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Tejun
+ Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>, "David S .
+ Miller" <davem@davemloft.net>, Bartlomiej Zolnierkiewicz
+ <b.zolnierkie@samsung.com>, Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>, Wolfram Sang
+ <wsa@the-dreams.de>, Jonathan Cameron <jic23@kernel.org>, Joerg Roedel
+ <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>, Jassi Brar
+ <jassisinghbrar@gmail.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf
+ Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
+ <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen
+ <ohad@wizery.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, Eric
+ Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
+ iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
+ linux-scsi@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 14/21] mtd: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180318230410.382f69a1@bbrezillon>
+In-Reply-To: <1521208314-4783-15-git-send-email-geert@linux-m68k.org>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-15-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,265 +54,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Mar 2018 17:30:22 +0100
-Arnd Bergmann <arnd@arndb.de> wrote:
+Hi Geert,
 
-> The blackfin architecture is getting removed, so this driver
-> has become obsolete.
+On Fri, 16 Mar 2018 14:51:47 +0100
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
 > 
 
-Applied to mtd/next.
+Don't know which release you're targeting but it's likely to conflict
+with the change I have in my nand/next branch. Is this a problem if I
+take this patch through the mtd tree after [1] has reached Linus' tree?
 
-Thanks,
+Regards,
 
 Boris
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+[1]https://lkml.org/lkml/2018/3/16/435
+
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
 > ---
->  drivers/mtd/maps/Kconfig            |  10 --
->  drivers/mtd/maps/Makefile           |   1 -
->  drivers/mtd/maps/bfin-async-flash.c | 196 ------------------------------------
->  3 files changed, 207 deletions(-)
->  delete mode 100644 drivers/mtd/maps/bfin-async-flash.c
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Drop new dependency of MTD_NAND_MARVELL on HAS_DMA,
+>   - Split per subsystem.
 > ---
-> Sending these two patches separately, as the NAND driver patch
-> has a nasty conflict with the directory move. Please pick
-> up both into the mtd tree.
-> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> index 542fdf8e81fa..bdc1283f30fb 100644
-> --- a/drivers/mtd/maps/Kconfig
-> +++ b/drivers/mtd/maps/Kconfig
-> @@ -334,16 +334,6 @@ config MTD_PCMCIA_ANONYMOUS
+>  drivers/mtd/nand/Kconfig    | 8 ++------
+>  drivers/mtd/spi-nor/Kconfig | 2 +-
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 736ac887303c88ba..55a2f8a2fa90cd87 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -46,7 +46,7 @@ config MTD_NAND_DENALI
+>  config MTD_NAND_DENALI_PCI
+>          tristate "Support Denali NAND controller on Intel Moorestown"
+>  	select MTD_NAND_DENALI
+> -	depends on HAS_DMA && PCI
+> +	depends on PCI
+>          help
+>            Enable the driver for NAND flash on Intel Moorestown, using the
+>            Denali NAND controller core.
+> @@ -184,7 +184,6 @@ config MTD_NAND_S3C2410_CLKSTOP
+>  config MTD_NAND_TANGO
+>  	tristate "NAND Flash support for Tango chips"
+>  	depends on ARCH_TANGO || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables the NAND Flash controller on Tango chips.
 >  
->  	  If unsure, say N.
+> @@ -328,7 +327,7 @@ config MTD_NAND_MARVELL
+>  	tristate "NAND controller support on Marvell boards"
+>  	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU || \
+>  		   COMPILE_TEST
+> -	depends on HAS_IOMEM && HAS_DMA
+> +	depends on HAS_IOMEM
+>  	help
+>  	  This enables the NAND flash controller driver for Marvell boards,
+>  	  including:
+> @@ -490,7 +489,6 @@ config MTD_NAND_SH_FLCTL
+>  	tristate "Support for NAND on Renesas SuperH FLCTL"
+>  	depends on SUPERH || COMPILE_TEST
+>  	depends on HAS_IOMEM
+> -	depends on HAS_DMA
+>  	help
+>  	  Several Renesas SuperH CPU has FLCTL. This option enables support
+>  	  for NAND Flash using FLCTL.
+> @@ -558,7 +556,6 @@ config MTD_NAND_SUNXI
+>  config MTD_NAND_HISI504
+>  	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables support for NAND controller on Hisilicon SoC Hip04.
 >  
-> -config MTD_BFIN_ASYNC
-> -	tristate "Blackfin BF533-STAMP Flash Chip Support"
-> -	depends on BFIN533_STAMP && MTD_CFI && MTD_COMPLEX_MAPPINGS
-> -	default y
-> -	help
-> -	  Map driver which allows for simultaneous utilization of
-> -	  ethernet and CFI parallel flash.
-> -
-> -	  If compiled as a module, it will be called bfin-async-flash.
-> -
->  config MTD_GPIO_ADDR
->  	tristate "GPIO-assisted Flash Chip Support"
->  	depends on GPIOLIB || COMPILE_TEST
-> diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-> index b849aaf85c34..51acf1fec19b 100644
-> --- a/drivers/mtd/maps/Makefile
-> +++ b/drivers/mtd/maps/Makefile
-> @@ -42,7 +42,6 @@ obj-$(CONFIG_MTD_SCB2_FLASH)	+= scb2_flash.o
->  obj-$(CONFIG_MTD_IXP4XX)	+= ixp4xx.o
->  obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
->  obj-$(CONFIG_MTD_INTEL_VR_NOR)	+= intel_vr_nor.o
-> -obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
->  obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
->  obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
->  obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
-> diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
-> deleted file mode 100644
-> index 41730feeace8..000000000000
-> --- a/drivers/mtd/maps/bfin-async-flash.c
-> +++ /dev/null
-> @@ -1,196 +0,0 @@
-> -/*
-> - * drivers/mtd/maps/bfin-async-flash.c
-> - *
-> - * Handle the case where flash memory and ethernet mac/phy are
-> - * mapped onto the same async bank.  The BF533-STAMP does this
-> - * for example.  All board-specific configuration goes in your
-> - * board resources file.
-> - *
-> - * Copyright 2000 Nicolas Pitre <nico@fluxnic.net>
-> - * Copyright 2005-2008 Analog Devices Inc.
-> - *
-> - * Enter bugs at http://blackfin.uclinux.org/
-> - *
-> - * Licensed under the GPL-2 or later.
-> - */
-> -
-> -#include <linux/kernel.h>
-> -#include <linux/module.h>
-> -#include <linux/mtd/mtd.h>
-> -#include <linux/mtd/map.h>
-> -#include <linux/mtd/partitions.h>
-> -#include <linux/mtd/physmap.h>
-> -#include <linux/platform_device.h>
-> -#include <linux/slab.h>
-> -#include <linux/types.h>
-> -
-> -#include <asm/blackfin.h>
-> -#include <linux/gpio.h>
-> -#include <linux/io.h>
-> -#include <asm/unaligned.h>
-> -
-> -#define pr_devinit(fmt, args...) \
-> -		({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
-> -
-> -#define DRIVER_NAME "bfin-async-flash"
-> -
-> -struct async_state {
-> -	struct mtd_info *mtd;
-> -	struct map_info map;
-> -	int enet_flash_pin;
-> -	uint32_t flash_ambctl0, flash_ambctl1;
-> -	uint32_t save_ambctl0, save_ambctl1;
-> -	unsigned long irq_flags;
-> -};
-> -
-> -static void switch_to_flash(struct async_state *state)
-> -{
-> -	local_irq_save(state->irq_flags);
-> -
-> -	gpio_set_value(state->enet_flash_pin, 0);
-> -
-> -	state->save_ambctl0 = bfin_read_EBIU_AMBCTL0();
-> -	state->save_ambctl1 = bfin_read_EBIU_AMBCTL1();
-> -	bfin_write_EBIU_AMBCTL0(state->flash_ambctl0);
-> -	bfin_write_EBIU_AMBCTL1(state->flash_ambctl1);
-> -	SSYNC();
-> -}
-> -
-> -static void switch_back(struct async_state *state)
-> -{
-> -	bfin_write_EBIU_AMBCTL0(state->save_ambctl0);
-> -	bfin_write_EBIU_AMBCTL1(state->save_ambctl1);
-> -	SSYNC();
-> -
-> -	gpio_set_value(state->enet_flash_pin, 1);
-> -
-> -	local_irq_restore(state->irq_flags);
-> -}
-> -
-> -static map_word bfin_flash_read(struct map_info *map, unsigned long ofs)
-> -{
-> -	struct async_state *state = (struct async_state *)map->map_priv_1;
-> -	uint16_t word;
-> -	map_word test;
-> -
-> -	switch_to_flash(state);
-> -
-> -	word = readw(map->virt + ofs);
-> -
-> -	switch_back(state);
-> -
-> -	test.x[0] = word;
-> -	return test;
-> -}
-> -
-> -static void bfin_flash_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
-> -{
-> -	struct async_state *state = (struct async_state *)map->map_priv_1;
-> -
-> -	switch_to_flash(state);
-> -
-> -	memcpy(to, map->virt + from, len);
-> -
-> -	switch_back(state);
-> -}
-> -
-> -static void bfin_flash_write(struct map_info *map, map_word d1, unsigned long ofs)
-> -{
-> -	struct async_state *state = (struct async_state *)map->map_priv_1;
-> -	uint16_t d;
-> -
-> -	d = d1.x[0];
-> -
-> -	switch_to_flash(state);
-> -
-> -	writew(d, map->virt + ofs);
-> -	SSYNC();
-> -
-> -	switch_back(state);
-> -}
-> -
-> -static void bfin_flash_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
-> -{
-> -	struct async_state *state = (struct async_state *)map->map_priv_1;
-> -
-> -	switch_to_flash(state);
-> -
-> -	memcpy(map->virt + to, from, len);
-> -	SSYNC();
-> -
-> -	switch_back(state);
-> -}
-> -
-> -static const char * const part_probe_types[] = {
-> -	"cmdlinepart", "RedBoot", NULL };
-> -
-> -static int bfin_flash_probe(struct platform_device *pdev)
-> -{
-> -	struct physmap_flash_data *pdata = dev_get_platdata(&pdev->dev);
-> -	struct resource *memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	struct resource *flash_ambctl = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-> -	struct async_state *state;
-> -
-> -	state = kzalloc(sizeof(*state), GFP_KERNEL);
-> -	if (!state)
-> -		return -ENOMEM;
-> -
-> -	state->map.name       = DRIVER_NAME;
-> -	state->map.read       = bfin_flash_read;
-> -	state->map.copy_from  = bfin_flash_copy_from;
-> -	state->map.write      = bfin_flash_write;
-> -	state->map.copy_to    = bfin_flash_copy_to;
-> -	state->map.bankwidth  = pdata->width;
-> -	state->map.size       = resource_size(memory);
-> -	state->map.virt       = (void __iomem *)memory->start;
-> -	state->map.phys       = memory->start;
-> -	state->map.map_priv_1 = (unsigned long)state;
-> -	state->enet_flash_pin = platform_get_irq(pdev, 0);
-> -	state->flash_ambctl0  = flash_ambctl->start;
-> -	state->flash_ambctl1  = flash_ambctl->end;
-> -
-> -	if (gpio_request(state->enet_flash_pin, DRIVER_NAME)) {
-> -		pr_devinit(KERN_ERR DRIVER_NAME ": Failed to request gpio %d\n", state->enet_flash_pin);
-> -		kfree(state);
-> -		return -EBUSY;
-> -	}
-> -	gpio_direction_output(state->enet_flash_pin, 1);
-> -
-> -	pr_devinit(KERN_NOTICE DRIVER_NAME ": probing %d-bit flash bus\n", state->map.bankwidth * 8);
-> -	state->mtd = do_map_probe(memory->name, &state->map);
-> -	if (!state->mtd) {
-> -		gpio_free(state->enet_flash_pin);
-> -		kfree(state);
-> -		return -ENXIO;
-> -	}
-> -
-> -	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
-> -				  pdata->parts, pdata->nr_parts);
-> -
-> -	platform_set_drvdata(pdev, state);
-> -
-> -	return 0;
-> -}
-> -
-> -static int bfin_flash_remove(struct platform_device *pdev)
-> -{
-> -	struct async_state *state = platform_get_drvdata(pdev);
-> -	gpio_free(state->enet_flash_pin);
-> -	mtd_device_unregister(state->mtd);
-> -	map_destroy(state->mtd);
-> -	kfree(state);
-> -	return 0;
-> -}
-> -
-> -static struct platform_driver bfin_flash_driver = {
-> -	.probe		= bfin_flash_probe,
-> -	.remove		= bfin_flash_remove,
-> -	.driver		= {
-> -		.name	= DRIVER_NAME,
-> -	},
-> -};
-> -
-> -module_platform_driver(bfin_flash_driver);
-> -
-> -MODULE_LICENSE("GPL");
-> -MODULE_DESCRIPTION("MTD map driver for Blackfins with flash/ethernet on same async bank");
+> @@ -572,7 +569,6 @@ config MTD_NAND_QCOM
+>  config MTD_NAND_MTK
+>  	tristate "Support for NAND controller on MTK SoCs"
+>  	depends on ARCH_MEDIATEK || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables support for NAND controller on MTK SoCs.
+>  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 89da88e591215db1..c493b8230a38c059 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -71,7 +71,7 @@ config SPI_FSL_QUADSPI
+>  config SPI_HISI_SFC
+>  	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> -	depends on HAS_IOMEM && HAS_DMA
+> +	depends on HAS_IOMEM
+>  	help
+>  	  This enables support for hisilicon SPI-NOR flash controller.
+>  
 
 
 
