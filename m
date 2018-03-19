@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exv9S-0004fW-Dk
+ id 1exv9S-0004fb-Ec
  for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 13:48:48 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 05/14] mtd: rawnand: mxc: remove useless checks in
- GET/SET_FEATURES functions
-Date: Mon, 19 Mar 2018 14:47:22 +0100
-Message-Id: <20180319134731.22605-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 07/14] mtd: rawnand: check ONFI timings have been acked by
+ the chip
+Date: Mon, 19 Mar 2018 14:47:24 +0100
+Message-Id: <20180319134731.22605-8-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 References: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,43 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All the calls to the chip's hooks ->get/set_features() go through
-the core's wrappers nand_get/set_features() that already do the
-necessary checks about feature support. Remove these
-checks from the mxc's functions.
+Choosing ONFI timings when ->set/get_features() calls are supported
+by the NAND chip is a matter of reading the chip's ONFI parameter page
+and telling the chip the chosen mode (between all of the supported ones)
+with ->set_feature().
+
+Add a check on whether the chip "acked" the timing mode or not.
+
+This can be a problem for NAND chips that do not follow entirely the
+ONFI specification. These chips actually support other modes than
+"mode 0", but either:
+1/ do not update the timing mode register once a timing mode has been
+   selected.
+or
+2/ do not support the TIMING_MODE featured and thus do not require users
+   to change the timing mode at all.
+
+These issues will be addressed in another patch that will add the
+feature to overwrite NAND chips features within the parameter page, from
+the NAND chip driver.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested-by: Han Xu <han.xu@nxp.com>
 ---
- drivers/mtd/nand/raw/mxc_nand.c | 10 ----------
- 1 file changed, 10 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 36 +++++++++++++++++++++++++++++++++++-
+ 1 file changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 61501654e708..944ecf03d3b1 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1428,11 +1428,6 @@ static int mxc_nand_set_features(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
- 	int i;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 1721a73fe2dd..91fa1f09fa26 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -1282,7 +1282,41 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
+ 	}
  
--	if (!chip->onfi_version ||
--	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
--	      & ONFI_OPT_CMD_SET_GET_FEATURES))
--		return -EINVAL;
--
- 	host->buf_start = 0;
+ 	/* Change the mode on the controller side */
+-	return chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
++	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
++	if (ret)
++		return ret;
++
++	/* Check the mode has been accepted by the chip, if supported */
++	if (!nand_supports_set_get_features(chip))
++		return 0;
++
++	memset(tmode_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
++	chip->select_chip(mtd, chipnr);
++	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_TIMING_MODE,
++				tmode_param);
++	chip->select_chip(mtd, -1);
++	if (ret)
++		goto err_reset_chip;
++
++	if (tmode_param[0] != chip->onfi_timing_mode_default) {
++		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
++			chip->onfi_timing_mode_default);
++		goto err_reset_chip;
++	}
++
++	return 0;
++
++err_reset_chip:
++	/*
++	 * Fallback to mode 0 if the chip explicitly did not ack the chosen
++	 * timing mode.
++	 */
++	nand_reset_data_interface(chip, chipnr);
++	chip->select_chip(mtd, chipnr);
++	nand_reset_op(chip);
++	chip->select_chip(mtd, -1);
++
++	return ret;
+ }
  
- 	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-@@ -1453,11 +1448,6 @@ static int mxc_nand_get_features(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
- 	int i;
- 
--	if (!chip->onfi_version ||
--	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
--	      & ONFI_OPT_CMD_SET_GET_FEATURES))
--		return -EINVAL;
--
- 	host->devtype_data->send_cmd(host, NAND_CMD_GET_FEATURES, false);
- 	mxc_do_addr_cycle(mtd, addr, -1);
- 	host->devtype_data->send_page(mtd, NFC_OUTPUT);
+ /**
 -- 
 2.14.1
