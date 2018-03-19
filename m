@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exrFI-00066s-Um
+ id 1exrFI-00066y-Un
  for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:38:26 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 01/13] mtd: rawnand: rename default
- ->onfi_get/set_features() implementations
-Date: Mon, 19 Mar 2018 10:37:59 +0100
-Message-Id: <20180319093811.18351-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 04/13] mtd: rawnand: mxc: remove useless checks in
+ GET/SET_FEATURES functions
+Date: Mon, 19 Mar 2018 10:38:02 +0100
+Message-Id: <20180319093811.18351-5-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 References: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,67 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Prepare future work on the ->onfi_get/set_features() hooks by renaming
-the core's implementation as 'default' ones.
+All the calls to the chip's hooks ->get/set_features() go through
+the core's wrappers nand_get/set_features() that already do the
+necessary checks about feature support. Remove these
+checks from the mxc's functions.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/mtd/nand/raw/mxc_nand.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e70ca16a5118..d1d5e2281860 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4769,14 +4769,15 @@ static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
- }
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 61501654e708..944ecf03d3b1 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -1428,11 +1428,6 @@ static int mxc_nand_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+ 	int i;
  
- /**
-- * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-+ * nand_default_onfi_set_features- [REPLACEABLE] set features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-  * @addr: feature address.
-  * @subfeature_param: the subfeature parameters, a four bytes array.
-  */
--static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
--			int addr, uint8_t *subfeature_param)
-+static int nand_default_onfi_set_features(struct mtd_info *mtd,
-+					  struct nand_chip *chip, int addr,
-+					  uint8_t *subfeature_param)
- {
- 	if (!chip->onfi_version ||
- 	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-@@ -4787,14 +4788,15 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
- }
+-	if (!chip->onfi_version ||
+-	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+-	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+-		return -EINVAL;
+-
+ 	host->buf_start = 0;
  
- /**
-- * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
-+ * nand_default_onfi_get_features- [REPLACEABLE] get features for ONFI nand
-  * @mtd: MTD device structure
-  * @chip: nand chip info structure
-  * @addr: feature address.
-  * @subfeature_param: the subfeature parameters, a four bytes array.
-  */
--static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
--			int addr, uint8_t *subfeature_param)
-+static int nand_default_onfi_get_features(struct mtd_info *mtd,
-+					  struct nand_chip *chip, int addr,
-+					  uint8_t *subfeature_param)
- {
- 	if (!chip->onfi_version ||
- 	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-@@ -4879,9 +4881,9 @@ static void nand_set_defaults(struct nand_chip *chip)
+ 	for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+@@ -1453,11 +1448,6 @@ static int mxc_nand_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct mxc_nand_host *host = nand_get_controller_data(nand_chip);
+ 	int i;
  
- 	/* set for ONFI nand */
- 	if (!chip->onfi_set_features)
--		chip->onfi_set_features = nand_onfi_set_features;
-+		chip->onfi_set_features = nand_default_onfi_set_features;
- 	if (!chip->onfi_get_features)
--		chip->onfi_get_features = nand_onfi_get_features;
-+		chip->onfi_get_features = nand_default_onfi_get_features;
- 
- 	/* If called twice, pointers that depend on busw may need to be reset */
- 	if (!chip->read_byte || chip->read_byte == nand_read_byte)
+-	if (!chip->onfi_version ||
+-	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+-	      & ONFI_OPT_CMD_SET_GET_FEATURES))
+-		return -EINVAL;
+-
+ 	host->devtype_data->send_cmd(host, NAND_CMD_GET_FEATURES, false);
+ 	mxc_do_addr_cycle(mtd, addr, -1);
+ 	host->devtype_data->send_page(mtd, NFC_OUTPUT);
 -- 
 2.14.1
