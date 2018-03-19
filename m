@@ -1,24 +1,18 @@
-Received: from [45.249.212.35] (helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exqAC-0005Dq-3t
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 08:29:05 +0000
-Subject: Re: [PATCH] jffs2: remove fd from the f->dents list immediately.
-To: David Woodhouse <dwmw2@infradead.org>, Joakim Tjernlund
- <Joakim.Tjernlund@infinera.com>
-CC: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-References: <20180316110522.1120-1-yuyufen@huawei.com>
- <1521203963.4790.208.camel@infinera.com>
- <1521204767.20126.123.camel@infradead.org>
-From: yuyufen <yuyufen@huawei.com>
-Message-ID: <8bce38ca-aa2e-1928-4807-5571f91ae1c8@huawei.com>
-Date: Mon, 19 Mar 2018 16:27:03 +0800
-MIME-Version: 1.0
-In-Reply-To: <1521204767.20126.123.camel@infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1exqzd-00060C-BX
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:22:30 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2] mtd: rawnand: makes the Kconfig entry clear when it comes
+ to raw NANDs
+Date: Mon, 19 Mar 2018 10:21:58 +0100
+Message-Id: <20180319092158.11838-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, David
+Files have been moved in the NAND subsystem to reflect the different
+flavors of NAND devices.
 
-On 2018/3/16 20:52, David Woodhouse wrote:
-> On Fri, 2018-03-16 at 12:39 +0000, Joakim Tjernlund wrote:
->>> After reverting the commit, we test 'rm -r', which can remove all
->>> files, and all seems OK!
->> UHH, this is mine (and Davids work from 2007)!
->> I cannot remember  any details this long afterwards but I guess you cannot just
->> revert that part as it triggers some other bug, David?
-> Right, the issue was with f_pos in the directory.
->
-> The 'rm' we were testing with at the time would delete a bunch of
-> directory entries, then continue with its readdir() to work out what
-> else to delete. But when we were handling f_pos on directories merely
-> as the position on the list, and when we were *deleting* things from
-> that list as we went, some dirents ended up moving so that they were
-> *before* the position that 'rm' had got to with its readdir().
-Thanks a for explaining in detail. And you are right.
+Raw/Parallel NAND devices have been moved to a "raw" subdirectory to
+make the difference with OneNAND and SPI NAND for instance. So adjust
+the Kconfig entry to clarify things.
 
-We have a directory, including 2000 files. After getdents and unlink as 
-follow:
-     for ( ; ; ) {
-         nread = syscall(SYS_getdents, fd, buf, BUF_SIZE); //BUF_SIZE=1024
-         for (bpos = 0; bpos < nread;) {
-             unlink(d->d_name);
-         }
-     }
-we found there is still 990 files!
-> But... the list we're traversing is *already* ordered by CRC, and that
-> could be a much saner thing to use as f_pos. We just have to make sure
-That's true. Our experiments also show that  it can quicken traverse.
-However, when the list is very long (e.g. 1000000), the number of traverse
-times can reach thousands.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
 
-What's more, a lot of memory space is occupying and will be more and more.
-I have no idea how to improve this. Do you have some good idea?
+Changes since v1:
+=================
+  - s|RawNAND|Raw/Parallel NAND| to avoid a possible confusion with a
+    brand name like OneNAND.
 
-Thanks,
-yufen
-> we cope with hash collisions. Shifting left by 4 bits and using the low
-> 4 bits would allow us to cope with 16 names with the same hash... but
-> I'm not sure that's good enough.
+ drivers/mtd/nand/raw/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 9b1918af0064..46b29d277804 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -11,12 +11,12 @@ config MTD_NAND_ECC_SMC
+ 
+ 
+ menuconfig MTD_NAND
+-	tristate "NAND Device Support"
++	tristate "Raw/Parallel NAND Device Support"
+ 	depends on MTD
+ 	select MTD_NAND_ECC
+ 	help
+-	  This enables support for accessing all type of NAND flash
+-	  devices. For further information see
++	  This enables support for accessing all type of raw/parallel
++	  NAND flash devices. For further information see
+ 	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
+ 
+ if MTD_NAND
+-- 
+2.14.1
