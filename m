@@ -1,23 +1,15 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mga09.intel.com ([134.134.136.24])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exyvA-0007wz-Hc
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 17:50:27 +0000
-Received: by mail-pg0-x241.google.com with SMTP id m15so7193279pgc.1
- for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2018 10:49:57 -0700 (PDT)
-Date: Mon, 19 Mar 2018 23:19:08 +0530
-From: Arushi Singhal <arushisinghal19971997@gmail.com>
-To: dwmw2@infradead.org
-Cc: Brian Norris <computersforpeace@gmail.com>,
- outreachy-kernel@googlegroups.com,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: Replace printk() with more standardize output format
-Message-ID: <20180319174908.GA29619@seema-Inspiron-15-3567>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ id 1exzo5-0000ij-Ub
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 18:46:55 +0000
+From: thor.thayer@linux.intel.com
+To: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thor.thayer@linux.intel.com
+Subject: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+Date: Mon, 19 Mar 2018 13:45:24 -0500
+Message-Id: <1521485124-24882-1-git-send-email-thor.thayer@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,364 +19,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-printk() is the raw way to print output and should be avoided.
+From: Thor Thayer <thor.thayer@linux.intel.com>
 
-For drivers with defined "struct device object", dev_*macro() is
-prefer to standardize the output format within the subsystem.
+The current Cadence QSPI driver caused a kernel panic when loading
+a Root Filesystem from QSPI. The problem was caused by reading more
+bytes than needed because the QSPI operated on 4 bytes at a time.
+<snip>
+[    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
+[    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
+[    7.956247]
+[    7.966046] Unable to handle kernel paging request at virtual
+address bfe08002
+[    7.973239] pgd = eebfc000
+[    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+</snip>
+Notice above how only 1 byte needed to be read but by reading 4 bytes
+into the end of a mapped page, a unrecoverable page fault occurred.
 
-If no "struct device object" is defined prefer pr_*macro() over
-printk().
+This patch uses a temporary buffer to hold the 4 bytes read and then
+copies only the bytes required into the buffer. A min() function is
+used to limit the length to prevent buffer overflows.
 
-This patch Replace printk having a log level with the appropriate output
-format according to the order of preference.
+Similar changes were made for the write routine.
 
-Change string explicitly mentioning function name to "%s...", __func__.
-
-Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
+Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
 ---
-changes in v2
-*Change string explicitly mentioning function name to "%s...", __func__.
-*merge quoted string split across lines.
-*Cc'ed outreachy mailing list
+ drivers/mtd/spi-nor/cadence-quadspi.c | 39 ++++++++++++++++++++++++++++-------
+ 1 file changed, 31 insertions(+), 8 deletions(-)
 
- drivers/mtd/ftl.c | 108 ++++++++++++++++++++++++------------------------------
- 1 file changed, 47 insertions(+), 61 deletions(-)
-
-diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
-index 664d206..a048429 100644
---- a/drivers/mtd/ftl.c
-+++ b/drivers/mtd/ftl.c
-@@ -177,18 +177,18 @@ static int scan_header(partition_t *part)
-     }
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 4b8e9183489a..b22ed982f896 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -501,7 +501,8 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 	void __iomem *reg_base = cqspi->iobase;
+ 	void __iomem *ahb_base = cqspi->ahb_base;
+ 	unsigned int remaining = n_rx;
+-	unsigned int bytes_to_read = 0;
++	unsigned int mod_bytes, words_to_read, bytes_to_read = 0;
++	u8 *rxbuf_end = rxbuf + n_rx;
+ 	int ret = 0;
  
-     if (offset == max_offset) {
--	printk(KERN_NOTICE "ftl_cs: FTL header not found.\n");
-+	pr_notice("ftl_cs: FTL header not found.\n");
- 	return -ENOENT;
-     }
-     if (header.BlockSize != 9 ||
- 	(header.EraseUnitSize < 10) || (header.EraseUnitSize > 31) ||
- 	(header.NumTransferUnits >= le16_to_cpu(header.NumEraseUnits))) {
--	printk(KERN_NOTICE "ftl_cs: FTL header corrupt!\n");
-+	pr_notice("ftl_cs: FTL header corrupt!\n");
- 	return -1;
-     }
-     if ((1 << header.EraseUnitSize) != part->mbd.mtd->erasesize) {
--	printk(KERN_NOTICE "ftl: FTL EraseUnitSize %x != MTD erasesize %x\n",
--	       1 << header.EraseUnitSize,part->mbd.mtd->erasesize);
-+	pr_notice("ftl: FTL EraseUnitSize %x != MTD erasesize %x\n",
-+		  1 << header.EraseUnitSize, part->mbd.mtd->erasesize);
- 	return -1;
-     }
-     part->header = header;
-@@ -240,8 +240,7 @@ static int build_maps(partition_t *part)
- 	    xvalid++;
- 	} else {
- 	    if (xtrans == part->header.NumTransferUnits) {
--		printk(KERN_NOTICE "ftl_cs: format error: too many "
--		       "transfer units!\n");
-+		pr_notice("ftl_cs: format error: too many transfer units!\n");
- 		goto out_XferInfo;
- 	    }
- 	    if (hdr_ok && (le16_to_cpu(header.LogicalEUN) == 0xffff)) {
-@@ -261,8 +260,7 @@ static int build_maps(partition_t *part)
-     header = part->header;
-     if ((xtrans != header.NumTransferUnits) ||
- 	(xvalid+xtrans != le16_to_cpu(header.NumEraseUnits))) {
--	printk(KERN_NOTICE "ftl_cs: format error: erase units "
--	       "don't add up!\n");
-+	pr_notice("ftl_cs: format error: erase units don't add up!\n");
- 	goto out_XferInfo;
-     }
+ 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+@@ -533,9 +534,21 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 			bytes_to_read *= cqspi->fifo_width;
+ 			bytes_to_read = bytes_to_read > remaining ?
+ 					remaining : bytes_to_read;
+-			ioread32_rep(ahb_base, rxbuf,
+-				     DIV_ROUND_UP(bytes_to_read, 4));
+-			rxbuf += bytes_to_read;
++			/* Read 4 byte chunks before using single byte mode */
++			words_to_read = bytes_to_read / 4;
++			mod_bytes = bytes_to_read % 4;
++			if (words_to_read) {
++				ioread32_rep(ahb_base, rxbuf, words_to_read);
++				rxbuf += (words_to_read * 4);
++			}
++			if (mod_bytes) {
++				unsigned int temp = ioread32(ahb_base);
++
++				memcpy(rxbuf, &temp, min((unsigned int)
++							 (rxbuf_end - rxbuf),
++							 mod_bytes));
++				rxbuf += mod_bytes;
++			}
+ 			remaining -= bytes_to_read;
+ 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+ 		}
+@@ -599,7 +612,7 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+ 	struct cqspi_st *cqspi = f_pdata->cqspi;
+ 	void __iomem *reg_base = cqspi->iobase;
+ 	unsigned int remaining = n_tx;
+-	unsigned int write_bytes;
++	unsigned int mod_bytes, write_bytes, write_words;
+ 	int ret;
  
-@@ -384,8 +382,7 @@ static void ftl_erase_callback(struct erase_info *erase)
- 	if (part->XferInfo[i].Offset == erase->addr) break;
+ 	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
+@@ -625,9 +638,20 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
  
-     if (i == part->header.NumTransferUnits) {
--	printk(KERN_NOTICE "ftl_cs: internal error: "
--	       "erase lookup failed!\n");
-+	pr_notice("ftl_cs: internal error: erase lookup failed!\n");
- 	return;
-     }
+ 	while (remaining > 0) {
+ 		write_bytes = remaining > page_size ? page_size : remaining;
+-		iowrite32_rep(cqspi->ahb_base, txbuf,
+-			      DIV_ROUND_UP(write_bytes, 4));
++		write_words = write_bytes / 4;
++		mod_bytes = write_bytes % 4;
++		/* Write 4 bytes at a time then single bytes. */
++		if (write_words) {
++			iowrite32_rep(cqspi->ahb_base, txbuf, write_words);
++			txbuf += (write_words * 4);
++		}
++		if (mod_bytes) {
++			unsigned int temp = 0xFFFFFFFF;
  
-@@ -394,8 +391,7 @@ static void ftl_erase_callback(struct erase_info *erase)
- 	xfer->state = XFER_ERASED;
-     else {
- 	xfer->state = XFER_FAILED;
--	printk(KERN_NOTICE "ftl_cs: erase failed: state = %d\n",
--	       erase->state);
-+	pr_notice("ftl_cs: erase failed: state = %d\n", erase->state);
-     }
++			memcpy(&temp, txbuf, min(sizeof(temp), mod_bytes));
++			iowrite32(temp, cqspi->ahb_base);
++			txbuf += mod_bytes;
++		}
+ 		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+ 						  msecs_to_jiffies
+ 						  (CQSPI_TIMEOUT_MS));
+@@ -637,7 +661,6 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+ 			goto failwr;
+ 		}
  
-     kfree(erase);
-@@ -492,7 +488,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
- 	part->bam_index = 0xffff;
+-		txbuf += write_bytes;
+ 		remaining -= write_bytes;
  
- 	if (ret) {
--	    printk( KERN_WARNING "ftl: Failed to read BAM cache in copy_erase_unit()!\n");
-+	    pr_warn("ftl: Failed to read BAM cache in %s()!\n", __func__);
- 	    return ret;
- 	}
-     }
-@@ -506,7 +502,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
-                     (u_char *)&unit);
- 
-     if (ret) {
--	printk( KERN_WARNING "ftl: Failed to write back to BAM cache in copy_erase_unit()!\n");
-+	pr_warn("ftl: Failed to write back to BAM cache in %s()!\n", __func__);
- 	return ret;
-     }
- 
-@@ -525,7 +521,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
- 	    ret = mtd_read(part->mbd.mtd, src, SECTOR_SIZE, &retlen,
-                            (u_char *)buf);
- 	    if (ret) {
--		printk(KERN_WARNING "ftl: Error reading old xfer unit in copy_erase_unit\n");
-+		pr_warn("ftl: Error reading old xfer unit in %s\n", __func__);
- 		return ret;
-             }
- 
-@@ -533,7 +529,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
- 	    ret = mtd_write(part->mbd.mtd, dest, SECTOR_SIZE, &retlen,
-                             (u_char *)buf);
- 	    if (ret)  {
--		printk(KERN_WARNING "ftl: Error writing new xfer unit in copy_erase_unit\n");
-+		pr_warn("ftl: Error writing new xfer unit in %s\n", __func__);
- 		return ret;
-             }
- 
-@@ -555,7 +551,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
-                     &retlen,
-                     (u_char *)part->bam_cache);
-     if (ret) {
--	printk( KERN_WARNING "ftl: Error writing BAM in copy_erase_unit\n");
-+	pr_warn("ftl: Error writing BAM in %s\n", __func__);
- 	return ret;
-     }
- 
-@@ -565,7 +561,7 @@ static int copy_erase_unit(partition_t *part, uint16_t srcunit,
-                     &retlen, (u_char *)&srcunitswap);
- 
-     if (ret) {
--	printk(KERN_WARNING "ftl: Error writing new LogicalEUN in copy_erase_unit\n");
-+	pr_warn("ftl: Error writing new LogicalEUN in %s\n", __func__);
- 	return ret;
-     }
- 
-@@ -643,17 +639,14 @@ static int reclaim_block(partition_t *part)
- 	}
- 	if (xfer == 0xffff) {
- 	    if (queued) {
--		pr_debug("ftl_cs: waiting for transfer "
--		      "unit to be prepared...\n");
-+		pr_debug("ftl_cs: waiting for transfer unit to be prepared...\n");
- 		mtd_sync(part->mbd.mtd);
- 	    } else {
- 		static int ne = 0;
- 		if (++ne < 5)
--		    printk(KERN_NOTICE "ftl_cs: reclaim failed: no "
--			   "suitable transfer units!\n");
-+		    pr_notice("ftl_cs: reclaim failed: no suitable transfer units!\n");
- 		else
--		    pr_debug("ftl_cs: reclaim failed: no "
--			  "suitable transfer units!\n");
-+		    pr_debug("ftl_cs: reclaim failed: no suitable transfer units!\n");
- 
- 		return -EIO;
- 	    }
-@@ -679,11 +672,9 @@ static int reclaim_block(partition_t *part)
- 	if (best == 0) {
- 	    static int ne = 0;
- 	    if (++ne < 5)
--		printk(KERN_NOTICE "ftl_cs: reclaim failed: "
--		       "no free blocks!\n");
-+		pr_notice("ftl_cs: reclaim failed: no free blocks!\n");
- 	    else
--		pr_debug("ftl_cs: reclaim failed: "
--		       "no free blocks!\n");
-+		pr_debug("ftl_cs: reclaim failed: no free blocks!\n");
- 
- 	    return -EIO;
- 	}
-@@ -692,7 +683,7 @@ static int reclaim_block(partition_t *part)
-     if (!ret)
- 	erase_xfer(part, xfer);
-     else
--	printk(KERN_NOTICE "ftl_cs: copy_erase_unit failed!\n");
-+	pr_notice("ftl_cs: copy_erase_unit failed!\n");
-     return ret;
- } /* reclaim_block */
- 
-@@ -710,10 +701,9 @@ static int reclaim_block(partition_t *part)
- static void dump_lists(partition_t *part)
- {
-     int i;
--    printk(KERN_DEBUG "ftl_cs: Free total = %d\n", part->FreeTotal);
-+    pr_dbg("ftl_cs: Free total = %d\n", part->FreeTotal);
-     for (i = 0; i < part->DataUnits; i++)
--	printk(KERN_DEBUG "ftl_cs:   unit %d: %d phys, %d free, "
--	       "%d deleted\n", i,
-+	pr_dbg("ftl_cs: unit %d: %d phys, %d free, %d deleted\n", i,
- 	       part->EUNInfo[i].Offset >> part->header.EraseUnitSize,
- 	       part->EUNInfo[i].Free, part->EUNInfo[i].Deleted);
- }
-@@ -750,7 +740,7 @@ static uint32_t find_free(partition_t *part)
-                        (u_char *)(part->bam_cache));
- 
- 	if (ret) {
--	    printk(KERN_WARNING"ftl: Error reading BAM in find_free\n");
-+	    pr_warn("ftl: Error reading BAM in %s\n", __func__);
- 	    return 0;
- 	}
- 	part->bam_index = eun;
-@@ -765,7 +755,7 @@ static uint32_t find_free(partition_t *part)
- 	if (++ne == 1)
- 	    dump_lists(part);
- #endif
--	printk(KERN_NOTICE "ftl_cs: bad free list!\n");
-+	pr_notice("ftl_cs: bad free list!\n");
- 	return 0;
-     }
-     pr_debug("ftl_cs: found free block at %d in %d\n", blk, eun);
-@@ -791,14 +781,14 @@ static int ftl_read(partition_t *part, caddr_t buffer,
-     pr_debug("ftl_cs: ftl_read(0x%p, 0x%lx, %ld)\n",
- 	  part, sector, nblocks);
-     if (!(part->state & FTL_FORMATTED)) {
--	printk(KERN_NOTICE "ftl_cs: bad partition\n");
-+	pr_notice("ftl_cs: bad partition\n");
- 	return -EIO;
-     }
-     bsize = 1 << part->header.EraseUnitSize;
- 
-     for (i = 0; i < nblocks; i++) {
- 	if (((sector+i) * SECTOR_SIZE) >= le32_to_cpu(part->header.FormattedSize)) {
--	    printk(KERN_NOTICE "ftl_cs: bad read offset\n");
-+	    pr_notice("ftl_cs: bad read offset\n");
- 	    return -EIO;
- 	}
- 	log_addr = part->VirtualBlockMap[sector+i];
-@@ -811,7 +801,7 @@ static int ftl_read(partition_t *part, caddr_t buffer,
-                            (u_char *)buffer);
- 
- 	    if (ret) {
--		printk(KERN_WARNING "Error reading MTD device in ftl_read()\n");
-+		pr_warn("Error reading MTD device in %s()\n", __func__);
- 		return ret;
- 	    }
- 	}
-@@ -849,7 +839,7 @@ static int set_bam_entry(partition_t *part, uint32_t log_addr,
-     ret = mtd_read(part->mbd.mtd, offset, sizeof(uint32_t), &retlen,
-                    (u_char *)&old_addr);
-     if (ret) {
--	printk(KERN_WARNING"ftl: Error reading old_addr in set_bam_entry: %d\n",ret);
-+	pr_warn("ftl: Error reading old_addr in %s: %d\n", __func__, ret);
- 	return ret;
-     }
-     old_addr = le32_to_cpu(old_addr);
-@@ -859,9 +849,9 @@ static int set_bam_entry(partition_t *part, uint32_t log_addr,
- 	(!BLOCK_DELETED(virt_addr) && (old_addr != 0xfffffffe))) {
- 	static int ne = 0;
- 	if (++ne < 5) {
--	    printk(KERN_NOTICE "ftl_cs: set_bam_entry() inconsistency!\n");
--	    printk(KERN_NOTICE "ftl_cs:   log_addr = 0x%x, old = 0x%x"
--		   ", new = 0x%x\n", log_addr, old_addr, virt_addr);
-+	    pr_notice("ftl_cs: %s() inconsistency!\n", __func__);
-+	    pr_notice("ftl_cs: log_addr = 0x%x, old = 0x%x, new = 0x%x\n",
-+		      log_addr, old_addr, virt_addr);
- 	}
- 	return -EIO;
-     }
-@@ -872,11 +862,9 @@ static int set_bam_entry(partition_t *part, uint32_t log_addr,
- 	if (le32_to_cpu(part->bam_cache[blk]) != old_addr) {
- 	    static int ne = 0;
- 	    if (++ne < 5) {
--		printk(KERN_NOTICE "ftl_cs: set_bam_entry() "
--		       "inconsistency!\n");
--		printk(KERN_NOTICE "ftl_cs:   log_addr = 0x%x, cache"
--		       " = 0x%x\n",
--		       le32_to_cpu(part->bam_cache[blk]), old_addr);
-+		pr_notice("ftl_cs: %s() inconsistency!\n", __func__);
-+		pr_notice("ftl_cs: log_addr = 0x%x, cache = 0x%x\n",
-+			  le32_to_cpu(part->bam_cache[blk]), old_addr);
- 	    }
- 	    return -EIO;
- 	}
-@@ -887,9 +875,9 @@ static int set_bam_entry(partition_t *part, uint32_t log_addr,
-                     (u_char *)&le_virt_addr);
- 
-     if (ret) {
--	printk(KERN_NOTICE "ftl_cs: set_bam_entry() failed!\n");
--	printk(KERN_NOTICE "ftl_cs:   log_addr = 0x%x, new = 0x%x\n",
--	       log_addr, virt_addr);
-+	pr_notice("ftl_cs: %s() failed!\n", __func__);
-+	pr_notice("ftl_cs: log_addr = 0x%x, new = 0x%x\n",
-+		  log_addr, virt_addr);
-     }
-     return ret;
- } /* set_bam_entry */
-@@ -905,7 +893,7 @@ static int ftl_write(partition_t *part, caddr_t buffer,
-     pr_debug("ftl_cs: ftl_write(0x%p, %ld, %ld)\n",
- 	  part, sector, nblocks);
-     if (!(part->state & FTL_FORMATTED)) {
--	printk(KERN_NOTICE "ftl_cs: bad partition\n");
-+	pr_notice("ftl_cs: bad partition\n");
- 	return -EIO;
-     }
-     /* See if we need to reclaim space, before we start */
-@@ -920,7 +908,7 @@ static int ftl_write(partition_t *part, caddr_t buffer,
-     virt_addr = sector * SECTOR_SIZE | BLOCK_DATA;
-     for (i = 0; i < nblocks; i++) {
- 	if (virt_addr >= le32_to_cpu(part->header.FormattedSize)) {
--	    printk(KERN_NOTICE "ftl_cs: bad write offset\n");
-+	    pr_notice("ftl_cs: bad write offset\n");
- 	    return -EIO;
- 	}
- 
-@@ -929,8 +917,7 @@ static int ftl_write(partition_t *part, caddr_t buffer,
- 	if (blk == 0) {
- 	    static int ne = 0;
- 	    if (++ne < 5)
--		printk(KERN_NOTICE "ftl_cs: internal error: "
--		       "no free blocks!\n");
-+		pr_notice("ftl_cs: internal error: no free blocks!\n");
- 	    return -ENOSPC;
- 	}
- 
-@@ -946,10 +933,9 @@ static int ftl_write(partition_t *part, caddr_t buffer,
- 	ret = mtd_write(part->mbd.mtd, offset, SECTOR_SIZE, &retlen, buffer);
- 
- 	if (ret) {
--	    printk(KERN_NOTICE "ftl_cs: block write failed!\n");
--	    printk(KERN_NOTICE "ftl_cs:   log_addr = 0x%x, virt_addr"
--		   " = 0x%x, Offset = 0x%zx\n", log_addr, virt_addr,
--		   offset);
-+	    pr_notice("ftl_cs: block write failed!\n");
-+	    pr_notice("ftl_cs: log_addr = 0x%x, virt_addr = 0x%x,"
-+		      " Offset = 0x%zx\n", log_addr, virt_addr, offset);
- 	    return -EIO;
- 	}
- 
-@@ -1045,8 +1031,8 @@ static void ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	partition = kzalloc(sizeof(partition_t), GFP_KERNEL);
- 
- 	if (!partition) {
--		printk(KERN_WARNING "No memory to scan for FTL on %s\n",
--		       mtd->name);
-+		dev_warn(&mtd->dev, "No memory to scan for FTL on %s\n",
-+			 mtd->name);
- 		return;
- 	}
- 
-@@ -1057,8 +1043,8 @@ static void ftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 
- 		partition->state = FTL_FORMATTED;
- #ifdef PCMCIA_DEBUG
--		printk(KERN_INFO "ftl_cs: opening %d KiB FTL partition\n",
--		       le32_to_cpu(partition->header.FormattedSize) >> 10);
-+		dev_info(&mtd->dev, "ftl_cs: opening %d KiB FTL partition\n",
-+			 le32_to_cpu(partition->header.FormattedSize) >> 10);
- #endif
- 		partition->mbd.size = le32_to_cpu(partition->header.FormattedSize) >> 9;
- 
+ 		if (remaining > 0)
 -- 
 2.7.4
