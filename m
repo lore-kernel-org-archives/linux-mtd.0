@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exrFV-0006C3-KW
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:38:56 +0000
+ id 1exrFV-0006Ae-KK
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:38:58 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 12/13] mtd: rawnand: get rid of the JEDEC parameter page in
- nand_chip
-Date: Mon, 19 Mar 2018 10:38:10 +0100
-Message-Id: <20180319093811.18351-13-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 08/13] mtd: rawnand: prepare the removal of ONFI/JEDEC
+ parameter pages
+Date: Mon, 19 Mar 2018 10:38:06 +0100
+Message-Id: <20180319093811.18351-9-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 References: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,146 +30,135 @@ nand_chip structure, which reserves a lot of space. Even not ONFI nor
 JEDEC chips have it embedded. Also, only a few parameters are actually
 read from the parameter page after the detection.
 
-Now that there is a small nand_parameters structure that can held
-generic parameters, remove the JEDEC page from the nand_chip structure
-by just allocating it during the identification phase and removing it
-right after.
+To prepare to the removal of such huge structure, a small NAND parameter
+structure is allocated statically and contains only very few members
+that are generic to all chips and actually used elsewhere in the code.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 34 ++++++++++++++++++++++++----------
- include/linux/mtd/rawnand.h      | 14 +-------------
- 2 files changed, 25 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 34 +++++++++++++++-------------------
+ include/linux/mtd/rawnand.h      | 13 +++++++++++++
+ 2 files changed, 28 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 61794bfd1d58..c4e1a26689d9 100644
+index e5bcfbf7c7f6..c3bc814a9beb 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5226,7 +5226,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- static int nand_flash_detect_jedec(struct nand_chip *chip)
+@@ -1174,9 +1174,7 @@ int nand_get_features(struct nand_chip *chip, int addr,
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct nand_jedec_params *p = &chip->jedec_params;
-+	struct nand_jedec_params *p;
- 	struct jedec_ecc_info *ecc;
- 	char id[5];
- 	int i, val, ret;
-@@ -5236,14 +5236,23 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
- 	if (ret || strncmp(id, "JEDEC", sizeof(id)))
- 		return 0;
  
-+	/* JEDEC chip: allocate a buffer to hold its parameter page */
-+	p = kzalloc(sizeof(*p), GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+
- 	ret = nand_read_param_page_op(chip, 0x40, NULL, 0);
--	if (ret)
--		return 0;
-+	if (ret) {
-+		ret = 0;
-+		goto free_jedec_param_page;
-+	}
+-	if (!chip->onfi_version ||
+-	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+-	      & ONFI_OPT_CMD_SET_GET_FEATURES))
++	if (!chip->parameters.supports_set_get_features)
+ 		return -ENOTSUPP;
  
- 	for (i = 0; i < 3; i++) {
- 		ret = nand_read_data_op(chip, p, sizeof(*p), true);
--		if (ret)
--			return 0;
-+		if (ret) {
-+			ret = 0;
-+			goto free_jedec_param_page;
-+		}
+ 	return chip->get_features(mtd, chip, addr, subfeature_param);
+@@ -1197,9 +1195,7 @@ int nand_set_features(struct nand_chip *chip, int addr,
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
  
- 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
- 				le16_to_cpu(p->crc))
-@@ -5252,7 +5261,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+-	if (!chip->onfi_version ||
+-	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+-	      & ONFI_OPT_CMD_SET_GET_FEATURES))
++	if (!chip->parameters.supports_set_get_features)
+ 		return -ENOTSUPP;
  
- 	if (i == 3) {
- 		pr_err("Could not find valid JEDEC parameter page; aborting\n");
--		return 0;
-+		goto free_jedec_param_page;
- 	}
- 
- 	/* Check version */
-@@ -5264,7 +5273,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
- 
- 	if (!chip->jedec_version) {
- 		pr_info("unsupported JEDEC version: %d\n", val);
--		return 0;
-+		goto free_jedec_param_page;
- 	}
+ 	return chip->set_features(mtd, chip, addr, subfeature_param);
+@@ -5150,8 +5146,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
  
  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-@@ -5287,7 +5296,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
- 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
- 	chip->bits_per_cell = p->bits_per_cell;
+ 	sanitize_string(p->model, sizeof(p->model));
++	strncpy(chip->parameters.model, p->model,
++		sizeof(chip->parameters.model) - 1);
+ 	if (!mtd->name)
+-		mtd->name = p->model;
++		mtd->name = chip->parameters.model;
  
--	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
-+	if (le16_to_cpu(p->features) & JEDEC_FEATURE_16_BIT_BUS)
- 		chip->options |= NAND_BUSWIDTH_16;
+ 	mtd->writesize = le32_to_cpu(p->byte_per_page);
  
- 	/* ECC info */
-@@ -5300,7 +5309,9 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
- 		pr_warn("Invalid codeword size\n");
+@@ -5198,6 +5196,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		pr_warn("Could not retrieve ONFI ECC requirements\n");
  	}
  
--	return 1;
-+free_jedec_param_page:
-+	kfree(p);
-+	return ret;
++	/* Save some parameters from the parameter page for future use */
++	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES)
++		chip->parameters.supports_set_get_features = true;
++
+ 	return 1;
  }
  
- /*
-@@ -5606,7 +5617,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 			goto ident_done;
+@@ -5250,8 +5252,10 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
  
- 		/* Check if the chip is JEDEC compliant */
--		if (nand_flash_detect_jedec(chip))
-+		ret = nand_flash_detect_jedec(chip);
-+		if (ret < 0)
-+			return ret;
-+		if (ret)
- 			goto ident_done;
- 	}
+ 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+ 	sanitize_string(p->model, sizeof(p->model));
++	strncpy(chip->parameters.model, p->model,
++		sizeof(chip->parameters.model) - 1);
+ 	if (!mtd->name)
+-		mtd->name = p->model;
++		mtd->name = chip->parameters.model;
  
+ 	mtd->writesize = le32_to_cpu(p->byte_per_page);
+ 
+@@ -5652,17 +5656,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		maf_id, dev_id);
+-
+-	if (chip->onfi_version)
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			chip->onfi_params.model);
+-	else if (chip->jedec_version)
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			chip->jedec_params.model);
+-	else
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			type->name);
+-
++	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
++		(chip->onfi_version || chip->jedec_version) ?
++		chip->parameters.model : type->name);
+ 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 58269f71ad6c..4671b092d1d8 100644
+index 3cc2a3435b20..a24591411d78 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1202,8 +1202,6 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  *			non 0 if JEDEC supported.
-  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+@@ -429,6 +429,16 @@ struct nand_jedec_params {
+ 	__le16 crc;
+ } __packed;
+ 
++/**
++ * struct nand_parameters - NAND generic parameters from the parameter page
++ * @model: Model name
++ * @supports_set_get_features: The NAND chip supports setting/getting features
++ */
++struct nand_parameters {
++	char model[100];
++	bool supports_set_get_features;
++};
++
+ /* The maximum expected count of bytes in the NAND ID sequence */
+ #define NAND_MAX_ID_LEN 8
+ 
+@@ -1165,6 +1175,8 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
   *			supported, 0 otherwise.
-- * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-- *			supported, 0 otherwise.
-  * @parameters:		[INTERN] holds generic parameters under an easily
-  *			readable form.
+  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+  *			supported, 0 otherwise.
++ * @parameters:		[INTERN] holds generic parameters under an easily
++ *			readable form.
   * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
-@@ -1286,10 +1284,7 @@ struct nand_chip {
- 	struct nand_id id;
- 	int onfi_version;
- 	int jedec_version;
--	union {
--		struct nand_onfi_params	onfi_params;
--		struct nand_jedec_params jedec_params;
--	};
-+	struct nand_onfi_params	onfi_params;
- 	struct nand_parameters parameters;
+  *			this nand device will encounter their life times.
+  * @blocks_per_die:	[INTERN] The number of PEBs in a die
+@@ -1249,6 +1261,7 @@ struct nand_chip {
+ 		struct nand_onfi_params	onfi_params;
+ 		struct nand_jedec_params jedec_params;
+ 	};
++	struct nand_parameters parameters;
  	u16 max_bb_per_die;
  	u32 blocks_per_die;
-@@ -1620,13 +1615,6 @@ static inline int nand_opcode_8bits(unsigned int command)
- 	return 0;
- }
- 
--/* return the supported JEDEC features. */
--static inline int jedec_feature(struct nand_chip *chip)
--{
--	return chip->jedec_version ? le16_to_cpu(chip->jedec_params.features)
--		: 0;
--}
--
- /* get timing characteristics from ONFI timing mode. */
- const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
  
 -- 
 2.14.1
