@@ -1,18 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exqzd-00060C-BX
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:22:30 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2] mtd: rawnand: makes the Kconfig entry clear when it comes
- to raw NANDs
-Date: Mon, 19 Mar 2018 10:21:58 +0100
-Message-Id: <20180319092158.11838-1-miquel.raynal@bootlin.com>
+ id 1exr7M-0001nn-R0
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:30:20 +0000
+Date: Mon, 19 Mar 2018 10:30:00 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: OuYang ZhiZhong <ouyzz@yealink.com>
+Cc: <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@free-electrons.com>, <marek.vasut@gmail.com>,
+ <richard@nod.at>, <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <oyzhizhong@gmail.com>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v4] mtdchar: fix usage of mtd_ooblayout_ecc()
+Message-ID: <20180319103000.2c1902f7@bbrezillon>
+In-Reply-To: <1520755147-4414-1-git-send-email-ouyzz@yealink.com>
+References: <1520755147-4414-1-git-send-email-ouyzz@yealink.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Files have been moved in the NAND subsystem to reflect the different
-flavors of NAND devices.
+On Sun, 11 Mar 2018 15:59:07 +0800
+OuYang ZhiZhong <ouyzz@yealink.com> wrote:
 
-Raw/Parallel NAND devices have been moved to a "raw" subdirectory to
-make the difference with OneNAND and SPI NAND for instance. So adjust
-the Kconfig entry to clarify things.
+> Section was not properly computed. The value of OOB region definition is
+> always ECC section 0 information in the OOB area, but we want to get all
+> the ECC bytes information, so we should call
+> mtd_ooblayout_ecc(mtd, section++, &oobregion) until it returns -ERANGE.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
+Applied.
 
-Changes since v1:
-=================
-  - s|RawNAND|Raw/Parallel NAND| to avoid a possible confusion with a
-    brand name like OneNAND.
+Thanks,
 
- drivers/mtd/nand/raw/Kconfig | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Boris
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 9b1918af0064..46b29d277804 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -11,12 +11,12 @@ config MTD_NAND_ECC_SMC
- 
- 
- menuconfig MTD_NAND
--	tristate "NAND Device Support"
-+	tristate "Raw/Parallel NAND Device Support"
- 	depends on MTD
- 	select MTD_NAND_ECC
- 	help
--	  This enables support for accessing all type of NAND flash
--	  devices. For further information see
-+	  This enables support for accessing all type of raw/parallel
-+	  NAND flash devices. For further information see
- 	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
- 
- if MTD_NAND
+> 
+> Fixes: c2b78452a9db ("mtd: use mtd_ooblayout_xxx() helpers where appropriate")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: OuYang ZhiZhong <ouyzz@yealink.com>
+> ---
+>  drivers/mtd/mtdchar.c |    4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index de8c902..7d80a8b 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -479,7 +479,7 @@ static int shrink_ecclayout(struct mtd_info *mtd,
+>  	for (i = 0; i < MTD_MAX_ECCPOS_ENTRIES;) {
+>  		u32 eccpos;
+>  
+> -		ret = mtd_ooblayout_ecc(mtd, section, &oobregion);
+> +		ret = mtd_ooblayout_ecc(mtd, section++, &oobregion);
+>  		if (ret < 0) {
+>  			if (ret != -ERANGE)
+>  				return ret;
+> @@ -526,7 +526,7 @@ static int get_oobinfo(struct mtd_info *mtd, struct nand_oobinfo *to)
+>  	for (i = 0; i < ARRAY_SIZE(to->eccpos);) {
+>  		u32 eccpos;
+>  
+> -		ret = mtd_ooblayout_ecc(mtd, section, &oobregion);
+> +		ret = mtd_ooblayout_ecc(mtd, section++, &oobregion);
+>  		if (ret < 0) {
+>  			if (ret != -ERANGE)
+>  				return ret;
+
+
+
 -- 
-2.14.1
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
