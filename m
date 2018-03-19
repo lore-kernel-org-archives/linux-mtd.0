@@ -1,19 +1,20 @@
-Received: from verein.lst.de ([213.95.11.211] helo=newverein.lst.de)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exseX-0002K1-GX
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 11:08:37 +0000
-Date: Mon, 19 Mar 2018 12:08:16 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: viro@zeniv.linux.org.uk
-Cc: linux-fsdevel@vger.kernel.org, cluster-devel@redhat.com,
- linux-mtd@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net
-Subject: Re: a few I_DIRTY* related cleanups
-Message-ID: <20180319110816.GA23904@lst.de>
-References: <20180221155449.25542-1-hch@lst.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1exseZ-0002Og-OQ
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 11:08:42 +0000
+Date: Mon, 19 Mar 2018 12:08:13 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jagdish Gediya <jagdish.gediya@nxp.com>
+Cc: linux-mtd@lists.infradead.org, oss@buserror.net,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ leoyang.li@nxp.com, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+Message-ID: <20180319120813.27819c38@bbrezillon>
+In-Reply-To: <1521497112-31770-1-git-send-email-jagdish.gediya@nxp.com>
+References: <1521497112-31770-1-git-send-email-jagdish.gediya@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180221155449.25542-1-hch@lst.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,7 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 21, 2018 at 07:54:45AM -0800, Christoph Hellwig wrote:
-> Move I_DIRTY_INODE to fs.h, and use the I_DIRTY* defines more consistently.
+On Tue, 20 Mar 2018 03:35:12 +0530
+Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
 
-Al, are you going to pick this up?
+> As per the IFC hardware manual, Most significant 2 bytes in
+> nand_fsr register are the outcome of NAND READ STATUS command.
+> 
+> So status value need to be shifted and aligned as per the nand
+> framework requirement.
+> 
+> Cc: stable@vger.kernel.org
+
+Fixes tag please.
+
+> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> ---
+>  drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index d9ce398..951dd89 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
+>  	fsl_ifc_run_command(mtd);
+>  
+>  	nand_fsr = ifc_in32(&ifc->ifc_nand.nand_fsr);
+> -
+> +	nand_fsr >>= 16;
+> +	nand_fsr = (nand_fsr >> 8) | (nand_fsr << 8);
+>  	/*
+>  	 * The chip always seems to report that it is
+>  	 * write-protected, even when it is not.
+>  	 */
+> -	return nand_fsr | NAND_STATUS_WP;
+> +	return (nand_fsr & 0xff) | NAND_STATUS_WP;
+>  }
+>  
+>  /*
+
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
