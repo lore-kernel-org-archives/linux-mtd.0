@@ -1,21 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exrV7-00007p-Dz
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:54:47 +0000
-Date: Mon, 19 Mar 2018 10:54:30 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: rawnand: makes the Kconfig entry clear when it
- comes to raw NANDs
-Message-ID: <20180319105430.532cd350@bbrezillon>
-In-Reply-To: <20180319092158.11838-1-miquel.raynal@bootlin.com>
-References: <20180319092158.11838-1-miquel.raynal@bootlin.com>
+Received: from mail-eopbgr00079.outbound.protection.outlook.com ([40.107.0.79]
+ helo=EUR02-AM5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1exrXI-0001rg-Il
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:57:02 +0000
+From: Jagdish Gediya <jagdish.gediya@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: oss@buserror.net, boris.brezillon@free-electrons.com,
+ computersforpeace@gmail.com, leoyang.li@nxp.com,
+ Jagdish Gediya <jagdish.gediya@nxp.com>, stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+Date: Tue, 20 Mar 2018 03:35:12 +0530
+Message-Id: <1521497112-31770-1-git-send-email-jagdish.gediya@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Mar 2018 10:21:58 +0100
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+As per the IFC hardware manual, Most significant 2 bytes in
+nand_fsr register are the outcome of NAND READ STATUS command.
 
-> Files have been moved in the NAND subsystem to reflect the different
-> flavors of NAND devices.
-> 
-> Raw/Parallel NAND devices have been moved to a "raw" subdirectory to
-> make the difference with OneNAND and SPI NAND for instance. So adjust
-> the Kconfig entry to clarify things.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+So status value need to be shifted and aligned as per the nand
+framework requirement.
 
-Applied.
+Cc: stable@vger.kernel.org
+Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+---
+ drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Thanks,
-
-Boris
-
-> ---
-> 
-> Changes since v1:
-> =================
->   - s|RawNAND|Raw/Parallel NAND| to avoid a possible confusion with a
->     brand name like OneNAND.
-> 
->  drivers/mtd/nand/raw/Kconfig | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index 9b1918af0064..46b29d277804 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -11,12 +11,12 @@ config MTD_NAND_ECC_SMC
->  
->  
->  menuconfig MTD_NAND
-> -	tristate "NAND Device Support"
-> +	tristate "Raw/Parallel NAND Device Support"
->  	depends on MTD
->  	select MTD_NAND_ECC
->  	help
-> -	  This enables support for accessing all type of NAND flash
-> -	  devices. For further information see
-> +	  This enables support for accessing all type of raw/parallel
-> +	  NAND flash devices. For further information see
->  	  <http://www.linux-mtd.infradead.org/doc/nand.html>.
->  
->  if MTD_NAND
-
-
-
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index d9ce398..951dd89 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	fsl_ifc_run_command(mtd);
+ 
+ 	nand_fsr = ifc_in32(&ifc->ifc_nand.nand_fsr);
+-
++	nand_fsr >>= 16;
++	nand_fsr = (nand_fsr >> 8) | (nand_fsr << 8);
+ 	/*
+ 	 * The chip always seems to report that it is
+ 	 * write-protected, even when it is not.
+ 	 */
+-	return nand_fsr | NAND_STATUS_WP;
++	return (nand_fsr & 0xff) | NAND_STATUS_WP;
+ }
+ 
+ /*
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+1.9.1
