@@ -1,21 +1,21 @@
-Received: from mail-ve1eur01on060e.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::60e]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exrAo-0003NB-T3
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:33:49 +0000
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- oss@buserror.net, leoyang.li@nxp.com,
- Jagdish Gediya <jagdish.gediya@nxp.com>, stable@vger.kernel.org,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Subject: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix eccstat array overflow for IFC
- ver >= 2.0.0
-Date: Tue, 20 Mar 2018 03:09:38 +0530
-Message-Id: <1521495578-14860-1-git-send-email-jagdish.gediya@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1exrFI-00066s-Um
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:38:26 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
+ Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
+ jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v4 01/13] mtd: rawnand: rename default
+ ->onfi_get/set_features() implementations
+Date: Mon, 19 Mar 2018 10:37:59 +0100
+Message-Id: <20180319093811.18351-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20180319093811.18351-1-miquel.raynal@bootlin.com>
+References: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,75 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Number of ECC status registers i.e. (ECCSTATx) has been increased in IFC
-version 2.0.0 due to increase in SRAM size. This is causing eccstat
-array to over flow.
+Prepare future work on the ->onfi_get/set_features() hooks by renaming
+the core's implementation as 'default' ones.
 
-So, replace eccstat array with u32 variable to make it fail-safe and
-independent of number of ECC status registers or SRAM size.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Changes for v2: Incorporated comments from Miquel Raynal and Boris Brezillon 
-	- Updated patch subject
-	- Remove usage of eccstat array
-	- Added Cc: stable@vger.kernel.org 
+ drivers/mtd/nand/raw/nand_base.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
 
- drivers/mtd/nand/fsl_ifc_nand.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 4872a7b..d9ce398 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -173,14 +173,9 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
- 
- /* returns nonzero if entire page is blank */
- static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
--			  u32 *eccstat, unsigned int bufnum)
-+			  u32 eccstat, unsigned int bufnum)
- {
--	u32 reg = eccstat[bufnum / 4];
--	int errors;
--
--	errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
--
--	return errors;
-+	return  (eccstat >> ((3 - bufnum % 4) * 8)) & 15;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index e70ca16a5118..d1d5e2281860 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -4769,14 +4769,15 @@ static int nand_max_bad_blocks(struct mtd_info *mtd, loff_t ofs, size_t len)
  }
  
- /*
-@@ -193,7 +188,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_ifc_nand_ctrl *nctrl = ifc_nand_ctrl;
- 	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
--	u32 eccstat[4];
-+	u32 eccstat;
- 	int i;
+ /**
+- * nand_onfi_set_features- [REPLACEABLE] set features for ONFI nand
++ * nand_default_onfi_set_features- [REPLACEABLE] set features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+  * @addr: feature address.
+  * @subfeature_param: the subfeature parameters, a four bytes array.
+  */
+-static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+-			int addr, uint8_t *subfeature_param)
++static int nand_default_onfi_set_features(struct mtd_info *mtd,
++					  struct nand_chip *chip, int addr,
++					  uint8_t *subfeature_param)
+ {
+ 	if (!chip->onfi_version ||
+ 	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+@@ -4787,14 +4788,15 @@ static int nand_onfi_set_features(struct mtd_info *mtd, struct nand_chip *chip,
+ }
  
- 	/* set the chip select for NAND Transaction */
-@@ -237,10 +232,18 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 		else
- 			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
+ /**
+- * nand_onfi_get_features- [REPLACEABLE] get features for ONFI nand
++ * nand_default_onfi_get_features- [REPLACEABLE] get features for ONFI nand
+  * @mtd: MTD device structure
+  * @chip: nand chip info structure
+  * @addr: feature address.
+  * @subfeature_param: the subfeature parameters, a four bytes array.
+  */
+-static int nand_onfi_get_features(struct mtd_info *mtd, struct nand_chip *chip,
+-			int addr, uint8_t *subfeature_param)
++static int nand_default_onfi_get_features(struct mtd_info *mtd,
++					  struct nand_chip *chip, int addr,
++					  uint8_t *subfeature_param)
+ {
+ 	if (!chip->onfi_version ||
+ 	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
+@@ -4879,9 +4881,9 @@ static void nand_set_defaults(struct nand_chip *chip)
  
--		for (i = sector / 4; i <= sector_end / 4; i++)
--			eccstat[i] = ifc_in32(&eccstat_regs[i]);
-+		eccstat = 0;
+ 	/* set for ONFI nand */
+ 	if (!chip->onfi_set_features)
+-		chip->onfi_set_features = nand_onfi_set_features;
++		chip->onfi_set_features = nand_default_onfi_set_features;
+ 	if (!chip->onfi_get_features)
+-		chip->onfi_get_features = nand_onfi_get_features;
++		chip->onfi_get_features = nand_default_onfi_get_features;
  
- 		for (i = sector; i <= sector_end; i++) {
-+
-+			/*
-+			 * if page size and sector size both are 512B then
-+			 * sector may not be multiple of 4 but sector and
-+			 * sector_end will be same.
-+			 */
-+			if ((i % 4 == 0) || (sector == sector_end))
-+				eccstat = ifc_in32(&eccstat_regs[i / 4]);
-+
- 			errors = check_read_ecc(mtd, ctrl, eccstat, i);
- 
- 			if (errors == 15) {
+ 	/* If called twice, pointers that depend on busw may need to be reset */
+ 	if (!chip->read_byte || chip->read_byte == nand_read_byte)
 -- 
-1.9.1
+2.14.1
