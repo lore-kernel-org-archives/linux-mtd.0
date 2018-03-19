@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exrFV-0006Ae-KK
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:38:58 +0000
+ id 1exrFV-0006GR-KR
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 09:39:03 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v4 08/13] mtd: rawnand: prepare the removal of ONFI/JEDEC
- parameter pages
-Date: Mon, 19 Mar 2018 10:38:06 +0100
-Message-Id: <20180319093811.18351-9-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 13/13] mtd: rawnand: get rid of the ONFI parameter page in
+ nand_chip
+Date: Mon, 19 Mar 2018 10:38:11 +0100
+Message-Id: <20180319093811.18351-14-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 References: <20180319093811.18351-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,135 +30,121 @@ nand_chip structure, which reserves a lot of space. Even not ONFI nor
 JEDEC chips have it embedded. Also, only a few parameters are actually
 read from the parameter page after the detection.
 
-To prepare to the removal of such huge structure, a small NAND parameter
-structure is allocated statically and contains only very few members
-that are generic to all chips and actually used elsewhere in the code.
+Now that there is a small nand_parameters structure that hold all needed
+ONFI parameters, remove the ONFI page from the nand_chip structure by
+just allocating it during the identification phase and removing it right
+after.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 34 +++++++++++++++-------------------
- include/linux/mtd/rawnand.h      | 13 +++++++++++++
- 2 files changed, 28 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 34 +++++++++++++++++++++++++---------
+ include/linux/mtd/rawnand.h      |  3 ---
+ 2 files changed, 25 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index e5bcfbf7c7f6..c3bc814a9beb 100644
+index c4e1a26689d9..241a2dfb6cc2 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1174,9 +1174,7 @@ int nand_get_features(struct nand_chip *chip, int addr,
+@@ -5099,7 +5099,7 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ static int nand_flash_detect_onfi(struct nand_chip *chip)
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct nand_onfi_params *p = &chip->onfi_params;
++	struct nand_onfi_params *p;
+ 	char id[4];
+ 	int i, ret, val;
  
--	if (!chip->onfi_version ||
--	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
--	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-+	if (!chip->parameters.supports_set_get_features)
- 		return -ENOTSUPP;
+@@ -5108,14 +5108,23 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	if (ret || strncmp(id, "ONFI", 4))
+ 		return 0;
  
- 	return chip->get_features(mtd, chip, addr, subfeature_param);
-@@ -1197,9 +1195,7 @@ int nand_set_features(struct nand_chip *chip, int addr,
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
++	/* ONFI chip: allocate a buffer to hold its parameter page */
++	p = kzalloc(sizeof(*p), GFP_KERNEL);
++	if (!p)
++		return -ENOMEM;
++
+ 	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+-	if (ret)
+-		return 0;
++	if (ret) {
++		ret = 0;
++		goto free_onfi_param_page;
++	}
  
--	if (!chip->onfi_version ||
--	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
--	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-+	if (!chip->parameters.supports_set_get_features)
- 		return -ENOTSUPP;
+ 	for (i = 0; i < 3; i++) {
+ 		ret = nand_read_data_op(chip, p, sizeof(*p), true);
+-		if (ret)
+-			return 0;
++		if (ret) {
++			ret = 0;
++			goto free_onfi_param_page;
++		}
  
- 	return chip->set_features(mtd, chip, addr, subfeature_param);
-@@ -5150,8 +5146,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+ 				le16_to_cpu(p->crc)) {
+@@ -5125,7 +5134,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
  
- 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
- 	sanitize_string(p->model, sizeof(p->model));
-+	strncpy(chip->parameters.model, p->model,
-+		sizeof(chip->parameters.model) - 1);
- 	if (!mtd->name)
--		mtd->name = p->model;
-+		mtd->name = chip->parameters.model;
- 
- 	mtd->writesize = le32_to_cpu(p->byte_per_page);
- 
-@@ -5198,6 +5196,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 		pr_warn("Could not retrieve ONFI ECC requirements\n");
+ 	if (i == 3) {
+ 		pr_err("Could not find valid ONFI parameter page; aborting\n");
+-		return 0;
++		goto free_onfi_param_page;
  	}
  
-+	/* Save some parameters from the parameter page for future use */
-+	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES)
-+		chip->parameters.supports_set_get_features = true;
-+
- 	return 1;
- }
+ 	/* Check version */
+@@ -5143,7 +5152,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
  
-@@ -5250,8 +5252,10 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 	if (!chip->onfi_version) {
+ 		pr_info("unsupported ONFI version: %d\n", val);
+-		return 0;
++		goto free_onfi_param_page;
++	} else {
++		ret = 1;
+ 	}
  
  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
- 	sanitize_string(p->model, sizeof(p->model));
-+	strncpy(chip->parameters.model, p->model,
-+		sizeof(chip->parameters.model) - 1);
- 	if (!mtd->name)
--		mtd->name = p->model;
-+		mtd->name = chip->parameters.model;
+@@ -5217,7 +5228,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	memcpy(chip->parameters.onfi.vendor, p->vendor,
+ 	       sizeof(p->vendor));
  
- 	mtd->writesize = le32_to_cpu(p->byte_per_page);
+-	return 1;
++free_onfi_param_page:
++	kfree(p);
++	return ret;
+ }
  
-@@ -5652,17 +5656,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ /*
+@@ -5613,7 +5626,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
+ 		/* Check if the chip is ONFI compliant */
+-		if (nand_flash_detect_onfi(chip))
++		ret = nand_flash_detect_onfi(chip);
++		if (ret < 0)
++			return ret;
++		if (ret)
+ 			goto ident_done;
  
- 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
- 		maf_id, dev_id);
--
--	if (chip->onfi_version)
--		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
--			chip->onfi_params.model);
--	else if (chip->jedec_version)
--		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
--			chip->jedec_params.model);
--	else
--		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
--			type->name);
--
-+	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
-+		(chip->onfi_version || chip->jedec_version) ?
-+		chip->parameters.model : type->name);
- 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
- 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
- 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+ 		/* Check if the chip is JEDEC compliant */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 3cc2a3435b20..a24591411d78 100644
+index 4671b092d1d8..a543714558ff 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -429,6 +429,16 @@ struct nand_jedec_params {
- 	__le16 crc;
- } __packed;
- 
-+/**
-+ * struct nand_parameters - NAND generic parameters from the parameter page
-+ * @model: Model name
-+ * @supports_set_get_features: The NAND chip supports setting/getting features
-+ */
-+struct nand_parameters {
-+	char model[100];
-+	bool supports_set_get_features;
-+};
-+
- /* The maximum expected count of bytes in the NAND ID sequence */
- #define NAND_MAX_ID_LEN 8
- 
-@@ -1165,6 +1175,8 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  *			supported, 0 otherwise.
-  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
-  *			supported, 0 otherwise.
-+ * @parameters:		[INTERN] holds generic parameters under an easily
-+ *			readable form.
+@@ -1200,8 +1200,6 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+  *			non 0 if ONFI supported.
+  * @jedec_version:	[INTERN] holds the chip JEDEC version (BCD encoded),
+  *			non 0 if JEDEC supported.
+- * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+- *			supported, 0 otherwise.
+  * @parameters:		[INTERN] holds generic parameters under an easily
+  *			readable form.
   * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
-  *			this nand device will encounter their life times.
-  * @blocks_per_die:	[INTERN] The number of PEBs in a die
-@@ -1249,6 +1261,7 @@ struct nand_chip {
- 		struct nand_onfi_params	onfi_params;
- 		struct nand_jedec_params jedec_params;
- 	};
-+	struct nand_parameters parameters;
+@@ -1284,7 +1282,6 @@ struct nand_chip {
+ 	struct nand_id id;
+ 	int onfi_version;
+ 	int jedec_version;
+-	struct nand_onfi_params	onfi_params;
+ 	struct nand_parameters parameters;
  	u16 max_bb_per_die;
  	u32 blocks_per_die;
- 
 -- 
 2.14.1
