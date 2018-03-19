@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exv9S-0004fb-Ec
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 13:48:48 +0000
+ id 1exv9S-0004gB-Dh
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 13:48:49 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 07/14] mtd: rawnand: check ONFI timings have been acked by
- the chip
-Date: Mon, 19 Mar 2018 14:47:24 +0100
-Message-Id: <20180319134731.22605-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 09/14] mtd: rawnand: prepare the removal of ONFI/JEDEC
+ parameter pages
+Date: Mon, 19 Mar 2018 14:47:26 +0100
+Message-Id: <20180319134731.22605-10-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 References: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,78 +25,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Choosing ONFI timings when ->set/get_features() calls are supported
-by the NAND chip is a matter of reading the chip's ONFI parameter page
-and telling the chip the chosen mode (between all of the supported ones)
-with ->set_feature().
+The NAND chip parameter page is statically allocated within the
+nand_chip structure, which reserves a lot of space. Even not ONFI nor
+JEDEC chips have it embedded. Also, only a few parameters are actually
+read from the parameter page after the detection.
 
-Add a check on whether the chip "acked" the timing mode or not.
-
-This can be a problem for NAND chips that do not follow entirely the
-ONFI specification. These chips actually support other modes than
-"mode 0", but either:
-1/ do not update the timing mode register once a timing mode has been
-   selected.
-or
-2/ do not support the TIMING_MODE featured and thus do not require users
-   to change the timing mode at all.
-
-These issues will be addressed in another patch that will add the
-feature to overwrite NAND chips features within the parameter page, from
-the NAND chip driver.
+To prepare to the removal of such huge structure, a small NAND parameter
+structure is allocated statically and contains only very few members
+that are generic to all chips and actually used elsewhere in the code.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Han Xu <han.xu@nxp.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 36 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 35 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/nand_base.c | 29 ++++++++++++++---------------
+ include/linux/mtd/rawnand.h      | 13 +++++++++++++
+ 2 files changed, 27 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 1721a73fe2dd..91fa1f09fa26 100644
+index 4526473dceed..bf9c62ae252b 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -1282,7 +1282,41 @@ static int nand_setup_data_interface(struct nand_chip *chip, int chipnr)
- 	}
+@@ -1162,8 +1162,7 @@ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
  
- 	/* Change the mode on the controller side */
--	return chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
-+	ret = chip->setup_data_interface(mtd, chipnr, &chip->data_interface);
-+	if (ret)
-+		return ret;
-+
-+	/* Check the mode has been accepted by the chip, if supported */
-+	if (!nand_supports_set_get_features(chip))
-+		return 0;
-+
-+	memset(tmode_param, 0, ONFI_SUBFEATURE_PARAM_LEN);
-+	chip->select_chip(mtd, chipnr);
-+	ret = nand_get_features(chip, ONFI_FEATURE_ADDR_TIMING_MODE,
-+				tmode_param);
-+	chip->select_chip(mtd, -1);
-+	if (ret)
-+		goto err_reset_chip;
-+
-+	if (tmode_param[0] != chip->onfi_timing_mode_default) {
-+		pr_warn("timing mode %d not acknowledged by the NAND chip\n",
-+			chip->onfi_timing_mode_default);
-+		goto err_reset_chip;
-+	}
-+
-+	return 0;
-+
-+err_reset_chip:
-+	/*
-+	 * Fallback to mode 0 if the chip explicitly did not ack the chosen
-+	 * timing mode.
-+	 */
-+	nand_reset_data_interface(chip, chipnr);
-+	chip->select_chip(mtd, chipnr);
-+	nand_reset_op(chip);
-+	chip->select_chip(mtd, -1);
-+
-+	return ret;
+ static bool nand_supports_set_get_features(struct nand_chip *chip)
+ {
+-	return (chip->onfi_version && (le16_to_cpu(chip->onfi_params.opt_cmd)
+-				       & ONFI_OPT_CMD_SET_GET_FEATURES));
++	return chip->parameters.supports_set_get_features;
  }
  
  /**
+@@ -5144,8 +5143,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 
+ 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+ 	sanitize_string(p->model, sizeof(p->model));
++	strncpy(chip->parameters.model, p->model,
++		sizeof(chip->parameters.model) - 1);
+ 	if (!mtd->name)
+-		mtd->name = p->model;
++		mtd->name = chip->parameters.model;
+ 
+ 	mtd->writesize = le32_to_cpu(p->byte_per_page);
+ 
+@@ -5192,6 +5193,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		pr_warn("Could not retrieve ONFI ECC requirements\n");
+ 	}
+ 
++	/* Save some parameters from the parameter page for future use */
++	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES)
++		chip->parameters.supports_set_get_features = true;
++
+ 	return 1;
+ }
+ 
+@@ -5244,8 +5249,10 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 
+ 	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+ 	sanitize_string(p->model, sizeof(p->model));
++	strncpy(chip->parameters.model, p->model,
++		sizeof(chip->parameters.model) - 1);
+ 	if (!mtd->name)
+-		mtd->name = p->model;
++		mtd->name = chip->parameters.model;
+ 
+ 	mtd->writesize = le32_to_cpu(p->byte_per_page);
+ 
+@@ -5646,17 +5653,9 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 
+ 	pr_info("device found, Manufacturer ID: 0x%02x, Chip ID: 0x%02x\n",
+ 		maf_id, dev_id);
+-
+-	if (chip->onfi_version)
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			chip->onfi_params.model);
+-	else if (chip->jedec_version)
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			chip->jedec_params.model);
+-	else
+-		pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
+-			type->name);
+-
++	pr_info("%s %s\n", nand_manufacturer_name(manufacturer),
++		(chip->onfi_version || chip->jedec_version) ?
++		chip->parameters.model : type->name);
+ 	pr_info("%d MiB, %s, erase size: %d KiB, page size: %d, OOB size: %d\n",
+ 		(int)(chip->chipsize >> 20), nand_is_slc(chip) ? "SLC" : "MLC",
+ 		mtd->erasesize >> 10, mtd->writesize, mtd->oobsize);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3cc2a3435b20..a24591411d78 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -429,6 +429,16 @@ struct nand_jedec_params {
+ 	__le16 crc;
+ } __packed;
+ 
++/**
++ * struct nand_parameters - NAND generic parameters from the parameter page
++ * @model: Model name
++ * @supports_set_get_features: The NAND chip supports setting/getting features
++ */
++struct nand_parameters {
++	char model[100];
++	bool supports_set_get_features;
++};
++
+ /* The maximum expected count of bytes in the NAND ID sequence */
+ #define NAND_MAX_ID_LEN 8
+ 
+@@ -1165,6 +1175,8 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+  *			supported, 0 otherwise.
+  * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
+  *			supported, 0 otherwise.
++ * @parameters:		[INTERN] holds generic parameters under an easily
++ *			readable form.
+  * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
+  *			this nand device will encounter their life times.
+  * @blocks_per_die:	[INTERN] The number of PEBs in a die
+@@ -1249,6 +1261,7 @@ struct nand_chip {
+ 		struct nand_onfi_params	onfi_params;
+ 		struct nand_jedec_params jedec_params;
+ 	};
++	struct nand_parameters parameters;
+ 	u16 max_bb_per_die;
+ 	u32 blocks_per_die;
+ 
 -- 
 2.14.1
