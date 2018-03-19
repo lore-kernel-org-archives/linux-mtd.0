@@ -1,22 +1,23 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ey3Cd-0008FM-8k
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 22:24:29 +0000
+ id 1ey3LM-0003oy-LN
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 22:33:30 +0000
+Received: by mail-wm0-x243.google.com with SMTP id h21so17970813wmd.1
+ for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2018 15:33:17 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+To: thor.thayer@linux.intel.com, cyrille.pitchen@wedev4u.fr,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1521485124-24882-1-git-send-email-thor.thayer@linux.intel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <cfadfbab-70bd-cb1c-c9a6-446cefd87e9e@gmail.com>
+Date: Mon, 19 Mar 2018 23:33:12 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1521485124-24882-1-git-send-email-thor.thayer@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date: Mon, 19 Mar 2018 23:24:13 +0100
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
- marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v8 0/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
-In-Reply-To: <20180318221806.0f61b15c@bbrezillon>
-References: <20180318155929.16561-1-stefan@agner.ch>
- <20180318221806.0f61b15c@bbrezillon>
-Message-ID: <79eb1c6ea2a253bae525f609ad748860@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +27,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18.03.2018 22:18, Boris Brezillon wrote:
-> On Sun, 18 Mar 2018 16:59:26 +0100
-> Stefan Agner <stefan@agner.ch> wrote:
+On 03/19/2018 07:45 PM, thor.thayer@linux.intel.com wrote:
+> From: Thor Thayer <thor.thayer@linux.intel.com>
 > 
->> Eighth revision of the rework patchset to use exec_op for NXP
->> Vybrid (and others) NAND Flash Controller.
->>
+> The current Cadence QSPI driver caused a kernel panic when loading
+> a Root Filesystem from QSPI. The problem was caused by reading more
+> bytes than needed because the QSPI operated on 4 bytes at a time.
+> <snip>
+> [    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
+> [    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
+> [    7.956247]
+> [    7.966046] Unable to handle kernel paging request at virtual
+> address bfe08002
+> [    7.973239] pgd = eebfc000
+> [    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+> </snip>
+> Notice above how only 1 byte needed to be read but by reading 4 bytes
+> into the end of a mapped page, a unrecoverable page fault occurred.
 > 
-> Already had fixed the problem locally, so I applied v7, which should be
-> pretty much the same as your v8. Could you test nand/next or linux-next
-> and let me know if there is a problem.
+> This patch uses a temporary buffer to hold the 4 bytes read and then
+> copies only the bytes required into the buffer. A min() function is
+> used to limit the length to prevent buffer overflows.
 > 
+> Similar changes were made for the write routine.
+> 
+> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 39 ++++++++++++++++++++++++++++-------
+>  1 file changed, 31 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 4b8e9183489a..b22ed982f896 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -501,7 +501,8 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+>  	void __iomem *reg_base = cqspi->iobase;
+>  	void __iomem *ahb_base = cqspi->ahb_base;
+>  	unsigned int remaining = n_rx;
+> -	unsigned int bytes_to_read = 0;
+> +	unsigned int mod_bytes, words_to_read, bytes_to_read = 0;
+> +	u8 *rxbuf_end = rxbuf + n_rx;
+>  	int ret = 0;
+>  
+>  	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+> @@ -533,9 +534,21 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+>  			bytes_to_read *= cqspi->fifo_width;
+>  			bytes_to_read = bytes_to_read > remaining ?
+>  					remaining : bytes_to_read;
+> -			ioread32_rep(ahb_base, rxbuf,
+> -				     DIV_ROUND_UP(bytes_to_read, 4));
+> -			rxbuf += bytes_to_read;
+> +			/* Read 4 byte chunks before using single byte mode */
+> +			words_to_read = bytes_to_read / 4;
+> +			mod_bytes = bytes_to_read % 4;
+> +			if (words_to_read) {
+> +				ioread32_rep(ahb_base, rxbuf, words_to_read);
+> +				rxbuf += (words_to_read * 4);
+> +			}
+> +			if (mod_bytes) {
+> +				unsigned int temp = ioread32(ahb_base);
+> +
+> +				memcpy(rxbuf, &temp, min((unsigned int)
+> +							 (rxbuf_end - rxbuf),
+> +							 mod_bytes));
+> +				rxbuf += mod_bytes;
+> +			}
 
-Looks good to me, compiled and tested successfully too.
+Wouldn't it make more sense to read in 4 byte increments all the time
+except for the one last read instead ? This code above where you always
+check for trailing bytes can make the next read cycle do ioreaad32 into
+unaligned memory address and thus cause slowdown. (consider the example
+where the controller first reports it has 5 bytes ready, then reports it
+has 7 bytes ready. If you read 4 bytes in the first cycle, wait a bit
+and then check how much data the controller has in the next cycle, it
+will be 8 bytes, all nicely aligned).
 
-Thanks!
+Does it make sense ?
 
---
-Stefan
-
-> Thanks,
-> 
-> Boris
-> 
->> --
->> Stefan
->>
->> Changes in v8:
->> - Check NAND status in vf610_nfc_write_page
->>
->> Changes in v7:
->> - (accidentally none)
->>
->> Changes in v6:
->> - Checkpatch style fixes
->> - Subject change
->>
->> Changes in v5:
->> - Fix COMMAND_NADDR_BYTES macro (fixes oob/page test issues)
->> - Renamed page_access to data_access
->> - Removed unclear debugging messages
->> - Introduce vf610_nfc_fill_row to avoid code duplication in
->>   vf610_nfc_(read|write)_page
->> - Add patch to enable ONFI SET/GET_FEATURES
->> - Comment/commit message fixes
->>
->> Changes in v4:
->> - Rebased to nand/next
->> - Simplify filling of address cycles
->> - Use accessors for SRAM (vf610_nfc_rd_from_sram/vf610_nfc_wr_to_sram)
->> - Use two op-parser patterns to avoid a single command reading and writing
->>   in a single operation
->> - Implement (read|write)_(page|oob)[_raw] to set page_access
->> - Set and clear vf610_nfc_ecc_mode in ecc (read|write)_page
->> - Clear/set 16-bit config when 16-bit bus is used and 8-bit access is
->>   requested
->>
->> Changes in v3:
->> - Separate exec_op() callback addition and removal of old callbacks
->> - Push data into regs in one function
->> - Readd op parser
->> - Implement custom read/write page for hardware ECC
->> - Rely on generic ecc.write_page_raw
->> - Use nand_read_oob_op instead of nand_read_page_op
->>
->> Stefan Agner (3):
->>   mtd: rawnand: vf610_nfc: make use of ->exec_op()
->>   mtd: rawnand: vf610_nfc: remove old hooks
->>   mtd: rawnand: vf610_nfc: support ONFI SET/GET_FEATURES commands
->>
->>  drivers/mtd/nand/raw/vf610_nfc.c | 632 +++++++++++++++++++++++----------------
->>  1 file changed, 380 insertions(+), 252 deletions(-)
->>
+-- 
+Best regards,
+Marek Vasut
