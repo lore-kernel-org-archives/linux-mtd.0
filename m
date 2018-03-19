@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exv9S-0004i9-Dl
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 13:48:53 +0000
+ id 1exv9S-0004iC-F5
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 13:48:55 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Han Xu <han.xu@nxp.com>,
  Stefan Agner <stefan@agner.ch>, juliensu@mxic.com.tw,
  jocelyncarroue@macronix.com, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 14/14] mtd: rawnand: get rid of the ONFI parameter page in
+Subject: [PATCH v5 13/14] mtd: rawnand: get rid of the JEDEC parameter page in
  nand_chip
-Date: Mon, 19 Mar 2018 14:47:31 +0100
-Message-Id: <20180319134731.22605-15-miquel.raynal@bootlin.com>
+Date: Mon, 19 Mar 2018 14:47:30 +0100
+Message-Id: <20180319134731.22605-14-miquel.raynal@bootlin.com>
 In-Reply-To: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 References: <20180319134731.22605-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,45 +30,45 @@ nand_chip structure, which reserves a lot of space. Even not ONFI nor
 JEDEC chips have it embedded. Also, only a few parameters are actually
 read from the parameter page after the detection.
 
-Now that there is a small nand_parameters structure that hold all needed
-ONFI parameters, remove the ONFI page from the nand_chip structure by
-just allocating it during the identification phase and removing it right
-after.
+Now that there is a small nand_parameters structure that can held
+generic parameters, remove the JEDEC page from the nand_chip structure
+by just allocating it during the identification phase and removing it
+right after.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 34 +++++++++++++++++++++++++---------
- include/linux/mtd/rawnand.h      |  3 ---
- 2 files changed, 25 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 34 ++++++++++++++++++++++++----------
+ include/linux/mtd/rawnand.h      | 14 +-------------
+ 2 files changed, 25 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 331f233a2abc..9e151e4c7570 100644
+index 0a30332ffe46..331f233a2abc 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5101,7 +5101,7 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
- static int nand_flash_detect_onfi(struct nand_chip *chip)
+@@ -5228,7 +5228,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ static int nand_flash_detect_jedec(struct nand_chip *chip)
  {
  	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct nand_onfi_params *p = &chip->onfi_params;
-+	struct nand_onfi_params *p;
- 	char id[4];
- 	int i, ret, val;
- 
-@@ -5110,14 +5110,23 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 	if (ret || strncmp(id, "ONFI", 4))
+-	struct nand_jedec_params *p = &chip->jedec_params;
++	struct nand_jedec_params *p;
+ 	struct jedec_ecc_info *ecc;
+ 	char id[5];
+ 	int i, val, ret;
+@@ -5238,14 +5238,23 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 	if (ret || strncmp(id, "JEDEC", sizeof(id)))
  		return 0;
  
-+	/* ONFI chip: allocate a buffer to hold its parameter page */
++	/* JEDEC chip: allocate a buffer to hold its parameter page */
 +	p = kzalloc(sizeof(*p), GFP_KERNEL);
 +	if (!p)
 +		return -ENOMEM;
 +
- 	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+ 	ret = nand_read_param_page_op(chip, 0x40, NULL, 0);
 -	if (ret)
 -		return 0;
 +	if (ret) {
 +		ret = 0;
-+		goto free_onfi_param_page;
++		goto free_jedec_param_page;
 +	}
  
  	for (i = 0; i < 3; i++) {
@@ -77,74 +77,99 @@ index 331f233a2abc..9e151e4c7570 100644
 -			return 0;
 +		if (ret) {
 +			ret = 0;
-+			goto free_onfi_param_page;
++			goto free_jedec_param_page;
 +		}
  
- 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
- 				le16_to_cpu(p->crc)) {
-@@ -5127,7 +5136,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 510) ==
+ 				le16_to_cpu(p->crc))
+@@ -5254,7 +5263,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
  
  	if (i == 3) {
- 		pr_err("Could not find valid ONFI parameter page; aborting\n");
+ 		pr_err("Could not find valid JEDEC parameter page; aborting\n");
 -		return 0;
-+		goto free_onfi_param_page;
++		goto free_jedec_param_page;
  	}
  
  	/* Check version */
-@@ -5145,7 +5154,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+@@ -5266,7 +5275,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
  
- 	if (!chip->onfi_version) {
- 		pr_info("unsupported ONFI version: %d\n", val);
+ 	if (!chip->jedec_version) {
+ 		pr_info("unsupported JEDEC version: %d\n", val);
 -		return 0;
-+		goto free_onfi_param_page;
-+	} else {
-+		ret = 1;
++		goto free_jedec_param_page;
  	}
  
  	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
-@@ -5219,7 +5230,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 	memcpy(chip->parameters.onfi.vendor, p->vendor,
- 	       sizeof(p->vendor));
+@@ -5289,7 +5298,7 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+ 	chip->bits_per_cell = p->bits_per_cell;
+ 
+-	if (jedec_feature(chip) & JEDEC_FEATURE_16_BIT_BUS)
++	if (le16_to_cpu(p->features) & JEDEC_FEATURE_16_BIT_BUS)
+ 		chip->options |= NAND_BUSWIDTH_16;
+ 
+ 	/* ECC info */
+@@ -5302,7 +5311,9 @@ static int nand_flash_detect_jedec(struct nand_chip *chip)
+ 		pr_warn("Invalid codeword size\n");
+ 	}
  
 -	return 1;
-+free_onfi_param_page:
++free_jedec_param_page:
 +	kfree(p);
 +	return ret;
  }
  
  /*
-@@ -5615,7 +5628,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
- 	chip->onfi_version = 0;
- 	if (!type->name || !type->pagesize) {
- 		/* Check if the chip is ONFI compliant */
--		if (nand_flash_detect_onfi(chip))
-+		ret = nand_flash_detect_onfi(chip);
+@@ -5608,7 +5619,10 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 			goto ident_done;
+ 
+ 		/* Check if the chip is JEDEC compliant */
+-		if (nand_flash_detect_jedec(chip))
++		ret = nand_flash_detect_jedec(chip);
 +		if (ret < 0)
 +			return ret;
 +		if (ret)
  			goto ident_done;
+ 	}
  
- 		/* Check if the chip is JEDEC compliant */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 8ee95d44b2d3..89675cb9c79f 100644
+index fd0299a6e453..8ee95d44b2d3 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1202,8 +1202,6 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  *			non 0 if ONFI supported.
-  * @jedec_version:	[INTERN] holds the chip JEDEC version (BCD encoded),
+@@ -1204,8 +1204,6 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
   *			non 0 if JEDEC supported.
-- * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  * @onfi_params:	[INTERN] holds the ONFI page parameter when ONFI is
+  *			supported, 0 otherwise.
+- * @jedec_params:	[INTERN] holds the JEDEC parameter page when JEDEC is
 - *			supported, 0 otherwise.
   * @parameters:		[INTERN] holds generic parameters under an easily
   *			readable form.
   * @max_bb_per_die:	[INTERN] the max number of bad blocks each die of a
-@@ -1286,7 +1284,6 @@ struct nand_chip {
+@@ -1288,10 +1286,7 @@ struct nand_chip {
  	struct nand_id id;
  	int onfi_version;
  	int jedec_version;
--	struct nand_onfi_params	onfi_params;
+-	union {
+-		struct nand_onfi_params	onfi_params;
+-		struct nand_jedec_params jedec_params;
+-	};
++	struct nand_onfi_params	onfi_params;
  	struct nand_parameters parameters;
  	u16 max_bb_per_die;
  	u32 blocks_per_die;
+@@ -1622,13 +1617,6 @@ static inline int nand_opcode_8bits(unsigned int command)
+ 	return 0;
+ }
+ 
+-/* return the supported JEDEC features. */
+-static inline int jedec_feature(struct nand_chip *chip)
+-{
+-	return chip->jedec_version ? le16_to_cpu(chip->jedec_params.features)
+-		: 0;
+-}
+-
+ /* get timing characteristics from ONFI timing mode. */
+ const struct nand_sdr_timings *onfi_async_timing_mode_to_sdr_timings(int mode);
+ 
 -- 
 2.14.1
