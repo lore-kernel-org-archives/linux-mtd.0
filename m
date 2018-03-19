@@ -1,62 +1,23 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from mout.gmx.net ([212.227.15.19])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1exxJZ-00036e-Jx
- for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 16:07:39 +0000
-Received: from mail-qk0-f178.google.com (mail-qk0-f178.google.com
- [209.85.220.178])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id CA0D521867
- for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2018 16:07:11 +0000 (UTC)
-Received: by mail-qk0-f178.google.com with SMTP id 132so18850044qkd.5
- for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2018 09:07:11 -0700 (PDT)
+ id 1exyu2-0007N6-C3
+ for linux-mtd@lists.infradead.org; Mon, 19 Mar 2018 17:49:00 +0000
 MIME-Version: 1.0
-In-Reply-To: <1521208314-4783-7-git-send-email-geert@linux-m68k.org>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-7-git-send-email-geert@linux-m68k.org>
-From: Alan Tull <atull@kernel.org>
-Date: Mon, 19 Mar 2018 11:06:29 -0500
-Message-ID: <CANk1AXR3sv2=G-KsQh1p0rdcvy-3XZs6qVy5EMbcAMS6OSVzeQ@mail.gmail.com>
-Subject: Re: [PATCH v2 06/21] fpga: Remove depends on HAS_DMA in case of
- platform dependency
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>,
- Joerg Roedel <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>,
- Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
- linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-ide@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-block@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
- devel@driverdev.osuosl.org, linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <trinity-7ecf3411-8627-4866-a39b-3c73f6226ed8-1521481723239@3c-app-gmx-bs23>
+From: "Frank Smith" <smith-f@gmx.de>
+To: "Frank Smith" <smith-f@gmx.de>
+Cc: "Frieder Schrempf" <frieder.schrempf@exceet.de>,
+ linux-mtd@lists.infradead.org
+Subject: Aw: Re:  Re: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+ found. is25lp256d
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Mar 2018 18:48:43 +0100
+In-Reply-To: <trinity-f32d437e-64fa-481b-a9d3-1ed9f8affc8a-1521188924456@3c-app-gmx-bs35>
+References: <trinity-f2c4ec20-92aa-4549-961a-54ada3bed090-1521123187434@3c-app-gmx-bs35>
+ <4fa247df-ecd3-1034-aaa1-45bfdc1bcda8@exceet.de>
+ <trinity-16b93208-69da-44fd-8882-e4852cb4837b-1521125017314@3c-app-gmx-bs35>
+ <c88b8eb2-b613-9108-c5df-095ec3e0a1e2@exceet.de>
+ <trinity-f32d437e-64fa-481b-a9d3-1ed9f8affc8a-1521188924456@3c-app-gmx-bs35>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -66,70 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 16, 2018 at 8:51 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
+After some debugging, I figured out is25lp256d is not jedec jesd16b conform.
 
-Hi Geert,
+nor->addr_width = 3 is the result from the spi_nor_parse_bfpt and this is wrong. It should be 4.
 
-This essentially removes this commit
+	err = spi_nor_read_sfdp_dma_unsafe(nor,  addr, len, &bfpt);
+	if (err < 0)
+		return err;
 
-commit 1c8cb409491403036919dd1c6b45013dc8835a44
-Author: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Wed Aug 3 13:45:46 2016 -0700
+	/* Fix endianness of the BFPT DWORDs. */
+	for (i = 0; i < BFPT_DWORD_MAX; i++)
+		bfpt.dwords[i] = le32_to_cpu(bfpt.dwords[i]);
 
-    drivers/fpga/Kconfig: fix build failure
+        /* Number of address bytes. */
+	switch (bfpt.dwords[BFPT_DWORD(1)] & BFPT_DWORD1_ADDRESS_BYTES_MASK) {
+	case BFPT_DWORD1_ADDRESS_BYTES_3_ONLY:  <-- this is not right should be 3 or 4
+		nor->addr_width = 3;
+		break;
 
-    While building m32r allmodconfig the build is failing with the error:
+	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+		nor->addr_width = 4;
+		break;
 
-      ERROR: "bad_dma_ops" [drivers/fpga/zynq-fpga.ko] undefined!
+	default:
+		break;
+	}
 
-    Xilinx Zynq FPGA is using DMA but there was no dependency while
-    building.
 
-    Link: http://lkml.kernel.org/r/1464346526-13913-1-git-send-email-sudipm.mukherjee@gmail.com
-    Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-    Acked-by: Moritz Fischer <moritz.fischer@ettus.com>
-    Cc: Alan Tull <atull@opensource.altera.com>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+I got it working with the following hack:
 
-Alan
+sei-nor.h
+#define SNOR_MFR_ISSI	0x9d 
 
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
->
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
->
-> This simplifies the dependencies, and allows to improve compile-testing.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
-> ---
-> v2:
->   - Add Reviewed-by, Acked-by,
->   - Drop RFC state,
->   - Split per subsystem.
-> ---
->  drivers/fpga/Kconfig | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> index f47ef848bcd056d5..fd539132542e30ee 100644
-> --- a/drivers/fpga/Kconfig
-> +++ b/drivers/fpga/Kconfig
-> @@ -53,7 +53,6 @@ config FPGA_MGR_ALTERA_CVP
->  config FPGA_MGR_ZYNQ_FPGA
->         tristate "Xilinx Zynq FPGA"
->         depends on ARCH_ZYNQ || COMPILE_TEST
-> -       depends on HAS_DMA
->         help
->           FPGA manager driver support for Xilinx Zynq FPGAs.
->
-> --
-> 2.7.4
->
+spi-nor.c:
+{ "is25lp256d", INFO(0x9d6019, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_HAS_LOCK | SPI_NOR_4B_OPCODES) },
+
+spi_nor_init_params(){
+..
+if(JEDEC_MFR(info)== SNOR_MFR_ISSI)
+   nor->addr_width = 0;
+}
