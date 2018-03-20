@@ -1,25 +1,24 @@
-Received: from mail-db5eur01on0076.outbound.protection.outlook.com
- ([104.47.2.76] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyEJY-00036v-UX
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:16:22 +0000
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyETK-0007T8-Il
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:26:28 +0000
+Date: Tue, 20 Mar 2018 11:26:03 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jagdish Gediya <jagdish.gediya@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
  "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
-Date: Tue, 20 Mar 2018 10:16:04 +0000
-Message-ID: <HE1PR0402MB2778416737B158CDA0C31A9090AB0@HE1PR0402MB2778.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+Message-ID: <20180320112603.48549875@bbrezillon>
+In-Reply-To: <HE1PR0402MB2778416737B158CDA0C31A9090AB0@HE1PR0402MB2778.eurprd04.prod.outlook.com>
 References: <1521564229-8018-1-git-send-email-jagdish.gediya@nxp.com>
  <20180320092037.54dd0eff@bbrezillon>
-In-Reply-To: <20180320092037.54dd0eff@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <HE1PR0402MB2778416737B158CDA0C31A9090AB0@HE1PR0402MB2778.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,85 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Tue, 20 Mar 2018 10:16:04 +0000
+Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Tuesday, March 20, 2018 1:51 PM
-> To: Jagdish Gediya <jagdish.gediya@nxp.com>
-> Cc: linux-mtd@lists.infradead.org; boris.brezillon@free-electrons.com;
-> computersforpeace@gmail.com; oss@buserror.net; Leo Li
-> <leoyang.li@nxp.com>; stable@vger.kernel.org
-> Subject: Re: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return =
-value
->=20
-> On Tue, 20 Mar 2018 22:13:38 +0530
-> Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
->=20
-> > As per the IFC hardware manual, Most significant 2 bytes in nand_fsr
-> > register are the outcome of NAND READ STATUS command.
-> >
-> > So status value need to be shifted and aligned as per the nand
-> > framework requirement.
-> >
-> > Fixes: 82771882d960 ("NAND Machine support for Integrated Flash
-> > Controller")
-> > Cc: stable@vger.kernel.org # v3.18+
-> > Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> > Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> > ---
-> > Changes for v2: Incorporated comments from Boris Brezillon
-> >         - Added fixes tag
-> >
-> >  drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c
-> > b/drivers/mtd/nand/fsl_ifc_nand.c index 9390cbd..0aa03ba 100644
-> > --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> > @@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, str=
-uct
-> nand_chip *chip)
-> >  	fsl_ifc_run_command(mtd);
-> >
-> >  	nand_fsr =3D ifc_in32(&ifc->ifc_nand.nand_fsr);
-> > -
-> > +	nand_fsr >>=3D 16;
-> > +	nand_fsr =3D (nand_fsr >> 8) | (nand_fsr << 8);
->=20
-> Why are you swapping the upper and lower bytes? If the NAND status is sto=
-red
-> in the upper byte of the fsr reg (bits 24 to 31), then shift the value by=
- 24
-> directly. Note that (nand_fsr << 8) is useless here since you're masking
-> nand_fsr with 0xff before returning it.
->=20
-nand_fsr register is,
- 31				   0
- ---------------------------------------------
-| RS0 | RS1 | reserved | reserved |
- ---------------------------------------------
-I intended to make it,
-31		           0
- -----------------------------
-| 00 | 00 | RS1 | RS0 |
- -----------------------------
-RS0 gets the nand read status. I am not dropping RS1 value for possible fut=
-ure use.
-> >  	/*
-> >  	 * The chip always seems to report that it is
-> >  	 * write-protected, even when it is not.
-> >  	 */
-> > -	return nand_fsr | NAND_STATUS_WP;
-> > +	return (nand_fsr & 0xff) | NAND_STATUS_WP;
-It should be 0xffff instead of 0xff.
-> >  }
-> >
-> >  /*
->=20
->=20
->=20
+> Hi Boris,
+> 
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > Sent: Tuesday, March 20, 2018 1:51 PM
+> > To: Jagdish Gediya <jagdish.gediya@nxp.com>
+> > Cc: linux-mtd@lists.infradead.org; boris.brezillon@free-electrons.com;
+> > computersforpeace@gmail.com; oss@buserror.net; Leo Li
+> > <leoyang.li@nxp.com>; stable@vger.kernel.org
+> > Subject: Re: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+> > 
+> > On Tue, 20 Mar 2018 22:13:38 +0530
+> > Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
+> >   
+> > > As per the IFC hardware manual, Most significant 2 bytes in nand_fsr
+> > > register are the outcome of NAND READ STATUS command.
+> > >
+> > > So status value need to be shifted and aligned as per the nand
+> > > framework requirement.
+> > >
+> > > Fixes: 82771882d960 ("NAND Machine support for Integrated Flash
+> > > Controller")
+> > > Cc: stable@vger.kernel.org # v3.18+
+> > > Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> > > Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> > > ---
+> > > Changes for v2: Incorporated comments from Boris Brezillon
+> > >         - Added fixes tag
+> > >
+> > >  drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
+> > >  1 file changed, 3 insertions(+), 2 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c
+> > > b/drivers/mtd/nand/fsl_ifc_nand.c index 9390cbd..0aa03ba 100644
+> > > --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> > > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> > > @@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct  
+> > nand_chip *chip)  
+> > >  	fsl_ifc_run_command(mtd);
+> > >
+> > >  	nand_fsr = ifc_in32(&ifc->ifc_nand.nand_fsr);
+> > > -
+> > > +	nand_fsr >>= 16;
+> > > +	nand_fsr = (nand_fsr >> 8) | (nand_fsr << 8);  
+> > 
+> > Why are you swapping the upper and lower bytes? If the NAND status is stored
+> > in the upper byte of the fsr reg (bits 24 to 31), then shift the value by 24
+> > directly. Note that (nand_fsr << 8) is useless here since you're masking
+> > nand_fsr with 0xff before returning it.
+> >   
+> nand_fsr register is,
+>  31				   0
+>  ---------------------------------------------
+> | RS0 | RS1 | reserved | reserved |
+>  ---------------------------------------------
+> I intended to make it,
+> 31		           0
+>  -----------------------------
+> | 00 | 00 | RS1 | RS0 |
+>  -----------------------------
+> RS0 gets the nand read status. I am not dropping RS1 value for possible future use.
 
-Thanks,
-Jagdish
+Then store the nand status in a different var and keep nand_fsr
+untouched:
+
+	status = nand_fsr >> 24;
+
+Note that I don't see the point of keeping RS1 until you really need it.
+
+> > >  	/*
+> > >  	 * The chip always seems to report that it is
+> > >  	 * write-protected, even when it is not.
+> > >  	 */
+> > > -	return nand_fsr | NAND_STATUS_WP;
+> > > +	return (nand_fsr & 0xff) | NAND_STATUS_WP;  
+> It should be 0xffff instead of 0xff.
+
+No it should not. The ->waitfunc() semantic is enforced by the
+framework and it expects a NAND status *byte*.
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
