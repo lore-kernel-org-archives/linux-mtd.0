@@ -1,20 +1,61 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyCVw-0001Cs-Bo
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 08:21:06 +0000
-Date: Tue, 20 Mar 2018 09:20:37 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jagdish Gediya <jagdish.gediya@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- computersforpeace@gmail.com, oss@buserror.net, leoyang.li@nxp.com,
- stable@vger.kernel.org
-Subject: Re: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
-Message-ID: <20180320092037.54dd0eff@bbrezillon>
-In-Reply-To: <1521564229-8018-1-git-send-email-jagdish.gediya@nxp.com>
-References: <1521564229-8018-1-git-send-email-jagdish.gediya@nxp.com>
+Received: from mail-qt0-x241.google.com ([2607:f8b0:400d:c0d::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyE1U-0001Uf-B2
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 09:57:42 +0000
+Received: by mail-qt0-x241.google.com with SMTP id a20so906537qtj.3
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 02:57:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20180316212317.7d5rri3p25hpmx44@ninjato>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <20180316212317.7d5rri3p25hpmx44@ninjato>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 20 Mar 2018 10:57:28 +0100
+Message-ID: <CAMuHMdUUKMngcyajm_s==KbhL3ZjMNHVxhNNGkPWkpnePE2rMw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Jonathan Cameron <jic23@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
+ USB list <linux-usb@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-ide@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi <linux-spi@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,56 +65,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 Mar 2018 22:13:38 +0530
-Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
+Hi Wolfram,
 
-> As per the IFC hardware manual, Most significant 2 bytes in
-> nand_fsr register are the outcome of NAND READ STATUS command.
-> 
-> So status value need to be shifted and aligned as per the nand
-> framework requirement.
-> 
-> Fixes: 82771882d960 ("NAND Machine support for Integrated Flash Controller")
-> Cc: stable@vger.kernel.org # v3.18+
-> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> ---
-> Changes for v2: Incorporated comments from Boris Brezillon
->         - Added fixes tag
-> 
->  drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index 9390cbd..0aa03ba 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
->  	fsl_ifc_run_command(mtd);
->  
->  	nand_fsr = ifc_in32(&ifc->ifc_nand.nand_fsr);
-> -
-> +	nand_fsr >>= 16;
-> +	nand_fsr = (nand_fsr >> 8) | (nand_fsr << 8);
+On Fri, Mar 16, 2018 at 10:23 PM, Wolfram Sang <wsa@the-dreams.de> wrote:
+>> To avoid allmodconfig/allyesconfig regressions on NO_DMA=y platforms,
+>> this (drivers) series should be applied after the previous (core)
+>> series (but not many people may notice/care ;-)
+>
+> I still don't get if there is a dependency on the core patches. I.e.
+> shall I apply the subsystem patch now by myself or do you want to push
+> the series after the core patch and need my ack here?
 
-Why are you swapping the upper and lower bytes? If the NAND status is
-stored in the upper byte of the fsr reg (bits 24 to 31), then shift the
-value by 24 directly. Note that (nand_fsr << 8) is useless here since
-you're masking nand_fsr with 0xff before returning it.
+Yes, there is a dependency. Without the core patches, enabling COMPILE_TEST,
+and compile-testing drivers irrelevant on obscure NO_DMA=y platforms will
+cause build failures.
 
->  	/*
->  	 * The chip always seems to report that it is
->  	 * write-protected, even when it is not.
->  	 */
-> -	return nand_fsr | NAND_STATUS_WP;
-> +	return (nand_fsr & 0xff) | NAND_STATUS_WP;
->  }
->  
->  /*
+To play it safe, you want to postpone the subsystem patches until the core
+part has landed upstream. I will rebase and resubmit after v4.17-rc1.
 
+Thanks, and sorry for being unclear.
 
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
