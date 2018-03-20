@@ -1,21 +1,21 @@
-Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
+Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyE7x-0003wE-F9
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:04:24 +0000
-Received: by mail-qk0-x241.google.com with SMTP id p66so711766qkd.0
- for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 03:04:11 -0700 (PDT)
+ id 1eyEAW-0006NL-T0
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:07:25 +0000
+Received: by mail-qt0-x243.google.com with SMTP id j26so911849qtl.11
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 03:06:50 -0700 (PDT)
 MIME-Version: 1.0
 Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <CANk1AXR3sv2=G-KsQh1p0rdcvy-3XZs6qVy5EMbcAMS6OSVzeQ@mail.gmail.com>
+In-Reply-To: <20180318230410.382f69a1@bbrezillon>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-7-git-send-email-geert@linux-m68k.org>
- <CANk1AXR3sv2=G-KsQh1p0rdcvy-3XZs6qVy5EMbcAMS6OSVzeQ@mail.gmail.com>
+ <1521208314-4783-15-git-send-email-geert@linux-m68k.org>
+ <20180318230410.382f69a1@bbrezillon>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 20 Mar 2018 11:04:09 +0100
-Message-ID: <CAMuHMdU-0VOs6MYrCaCrtRfBqGgaQfox1AgbExNNcYxVC6Uh-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 06/21] fpga: Remove depends on HAS_DMA in case of
+Date: Tue, 20 Mar 2018 11:06:48 +0100
+Message-ID: <CAMuHMdW2ohqEC2QZ8p7d9cN08a14pV19VcyWMKLS-egzc5JLMA@mail.gmail.com>
+Subject: Re: [PATCH v2 14/21] mtd: Remove depends on HAS_DMA in case of
  platform dependency
-To: Alan Tull <atull@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
  Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,15 +27,13 @@ Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
  "David S . Miller" <davem@davemloft.net>,
  Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
  Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>,
- Joerg Roedel <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>,
- Jassi Brar <jassisinghbrar@gmail.com>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
  Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+ Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Richard Weinberger <richard@nod.at>,
@@ -56,7 +54,7 @@ Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
  netdev <netdev@vger.kernel.org>,
  linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
  linux-spi <linux-spi@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -67,36 +65,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alan,
+Hi Boris,
 
-On Mon, Mar 19, 2018 at 5:06 PM, Alan Tull <atull@kernel.org> wrote:
-> On Fri, Mar 16, 2018 at 8:51 AM, Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> This essentially removes this commit
+On Sun, Mar 18, 2018 at 11:04 PM, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> On Fri, 16 Mar 2018 14:51:47 +0100
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> commit 1c8cb409491403036919dd1c6b45013dc8835a44
-> Author: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-> Date:   Wed Aug 3 13:45:46 2016 -0700
->
->     drivers/fpga/Kconfig: fix build failure
->
->     While building m32r allmodconfig the build is failing with the error:
->
->       ERROR: "bad_dma_ops" [drivers/fpga/zynq-fpga.ko] undefined!
->
->     Xilinx Zynq FPGA is using DMA but there was no dependency while
->     building.
->
->     Link: http://lkml.kernel.org/r/1464346526-13913-1-git-send-email-sudipm.mukherjee@gmail.com
->     Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
->     Acked-by: Moritz Fischer <moritz.fischer@ettus.com>
->     Cc: Alan Tull <atull@opensource.altera.com>
->     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
->     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-
-Yes it does. The major change is that the first (core) series introduces
-all needed dummies to do successful compile-testing on NO_DMA=y platforms.
-
 >> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
 >> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
 >> In most cases this other symbol is an architecture or platform specific
@@ -108,6 +83,15 @@ all needed dummies to do successful compile-testing on NO_DMA=y platforms.
 >>
 >> This simplifies the dependencies, and allows to improve compile-testing.
 >>
+>
+> Don't know which release you're targeting but it's likely to conflict
+> with the change I have in my nand/next branch. Is this a problem if I
+> take this patch through the mtd tree after [1] has reached Linus' tree?
+
+No problem, I will rebase and resubmit after v4.17-rc1.
+
+> [1]https://lkml.org/lkml/2018/3/16/435
+>
 >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 >> Reviewed-by: Mark Brown <broonie@kernel.org>
 >> Acked-by: Robin Murphy <robin.murphy@arm.com>
