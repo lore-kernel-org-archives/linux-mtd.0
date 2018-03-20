@@ -1,21 +1,21 @@
-Received: from mail-qt0-x243.google.com ([2607:f8b0:400d:c0d::243])
+Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyEAW-0006NL-T0
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:07:25 +0000
-Received: by mail-qt0-x243.google.com with SMTP id j26so911849qtl.11
- for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 03:06:50 -0700 (PDT)
+ id 1eyECj-0006yE-JO
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:09:19 +0000
+Received: by mail-qk0-x244.google.com with SMTP id s9so949115qke.12
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 03:09:07 -0700 (PDT)
 MIME-Version: 1.0
 Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20180318230410.382f69a1@bbrezillon>
+In-Reply-To: <AM5PR04MB3267989AB6A81639F61AB165ECD40@AM5PR04MB3267.eurprd04.prod.outlook.com>
 References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-15-git-send-email-geert@linux-m68k.org>
- <20180318230410.382f69a1@bbrezillon>
+ <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
+ <AM5PR04MB3267989AB6A81639F61AB165ECD40@AM5PR04MB3267.eurprd04.prod.outlook.com>
 From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 20 Mar 2018 11:06:48 +0100
-Message-ID: <CAMuHMdW2ohqEC2QZ8p7d9cN08a14pV19VcyWMKLS-egzc5JLMA@mail.gmail.com>
-Subject: Re: [PATCH v2 14/21] mtd: Remove depends on HAS_DMA in case of
+Date: Tue, 20 Mar 2018 11:09:06 +0100
+Message-ID: <CAMuHMdXZNqO0NDESs9Y3uJs0kmQSXY05ei0xJE9uT9EUixuxAQ@mail.gmail.com>
+Subject: Re: [PATCH v2 10/21] lightnvm: Remove depends on HAS_DMA in case of
  platform dependency
-To: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Madalin-cristian Bucur <madalin.bucur@nxp.com>
 Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
  Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -39,22 +39,29 @@ Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
  Richard Weinberger <richard@nod.at>,
  Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
  Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
- USB list <linux-usb@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>,
- linux-ide@vger.kernel.org,
- Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
- Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
- linux1394-devel@lists.sourceforge.net,
- linux-fpga@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
- linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- Linux MMC List <linux-mmc@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- netdev <netdev@vger.kernel.org>,
- linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi <linux-spi@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+ Stefan Wahren <stefan.wahren@i2se.com>,
+ "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+ "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+ "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+ "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+ "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+ "linux1394-devel@lists.sourceforge.net"
+ <linux1394-devel@lists.sourceforge.net>,
+ "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+ "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+ "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+ "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -65,14 +72,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Madalin-cristian,
 
-On Sun, Mar 18, 2018 at 11:04 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> On Fri, 16 Mar 2018 14:51:47 +0100
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
->> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+On Mon, Mar 19, 2018 at 6:27 AM, Madalin-cristian Bucur
+<madalin.bucur@nxp.com> wrote:
+>> -----Original Message-----
+>> From: netdev-owner@vger.kernel.org [mailto:netdev-owner@vger.kernel.org]
+>> On Behalf Of Geert Uytterhoeven
+>> Remove dependencies on HAS_DMA where a Kconfig symbol depends on
+>> another
 >> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
 >> In most cases this other symbol is an architecture or platform specific
 >> symbol, or PCI.
@@ -83,15 +91,21 @@ On Sun, Mar 18, 2018 at 11:04 PM, Boris Brezillon
 >>
 >> This simplifies the dependencies, and allows to improve compile-testing.
 >>
+>> Notes:
+>>   - FSL_FMAN keeps its dependency on HAS_DMA, as it calls set_dma_ops(),
+>>     which does not exist if HAS_DMA=n (Do we need a dummy? The use of
+>>     set_dma_ops() in this driver is questionable),
 >
-> Don't know which release you're targeting but it's likely to conflict
-> with the change I have in my nand/next branch. Is this a problem if I
-> take this patch through the mtd tree after [1] has reached Linus' tree?
-
-No problem, I will rebase and resubmit after v4.17-rc1.
-
-> [1]https://lkml.org/lkml/2018/3/16/435
+> Hi,
 >
+> The set_dma_ops() is no longer required in the fsl/fman, I'll send a patch to remove it.
+
+Thank you, looking forward to it!
+
+>>   - SND_SOC_LPASS_IPQ806X and SND_SOC_LPASS_PLATFORM loose their
+>>     dependency on HAS_DMA, as they are selected from
+>>     SND_SOC_APQ8016_SBC.
+>>
 >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 >> Reviewed-by: Mark Brown <broonie@kernel.org>
 >> Acked-by: Robin Murphy <robin.murphy@arm.com>
