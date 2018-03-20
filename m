@@ -1,21 +1,69 @@
-Subject: Re: [PATCH v2 2/2] mtd: nand: Remove print after allocation failure
-To: Arushi Singhal <arushisinghal19971997@gmail.com>,
- <boris.brezillon@free-electrons.com>
-CC: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <marek.vasut@gmail.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <maxime.ripard@free-electrons.com>, <alexandre.belloni@free-electrons.com>,
- <rainyfeeling@outlook.com>, <miquel.raynal@free-electrons.com>
-References: <1521559885-10523-1-git-send-email-arushisinghal19971997@gmail.com>
- <1521559885-10523-2-git-send-email-arushisinghal19971997@gmail.com>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Message-ID: <a2e42b52-d43c-5fcb-ebe6-661d1695e89f@microchip.com>
-Date: Tue, 20 Mar 2018 17:21:42 +0100
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyLsf-0001HC-2J
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 18:21:11 +0000
+Received: from mail-qt0-f170.google.com (mail-qt0-f170.google.com
+ [209.85.216.170])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id D153021850
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 18:20:53 +0000 (UTC)
+Received: by mail-qt0-f170.google.com with SMTP id v11so2627978qtj.6
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 11:20:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1521559885-10523-2-git-send-email-arushisinghal19971997@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAMuHMdU-0VOs6MYrCaCrtRfBqGgaQfox1AgbExNNcYxVC6Uh-Q@mail.gmail.com>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+ <1521208314-4783-7-git-send-email-geert@linux-m68k.org>
+ <CANk1AXR3sv2=G-KsQh1p0rdcvy-3XZs6qVy5EMbcAMS6OSVzeQ@mail.gmail.com>
+ <CAMuHMdU-0VOs6MYrCaCrtRfBqGgaQfox1AgbExNNcYxVC6Uh-Q@mail.gmail.com>
+From: Alan Tull <atull@kernel.org>
+Date: Tue, 20 Mar 2018 13:20:11 -0500
+Message-ID: <CANk1AXRve3asPTufFYe=C_YPfyGwDpXxOWYZbWDq2bAnVkj00A@mail.gmail.com>
+Subject: Re: [PATCH v2 06/21] fpga: Remove depends on HAS_DMA in case of
+ platform dependency
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Matias Bjorling <mb@lightnvm.io>,
+ Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
+ USB list <linux-usb@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-ide@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi <linux-spi@vger.kernel.org>, driverdevel <devel@driverdev.osuosl.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,256 +73,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 20/03/2018 at 16:31, Arushi Singhal wrote:
-> The prints after [k|v][m|z|c]alloc() etc. functions are not needed, because
-> in case of failure, allocator will print their internal error prints
-> anyway.
-> 
-> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->   drivers/mtd/nand/ams-delta.c             |  1 -
->   drivers/mtd/nand/atmel/nand-controller.c | 13 +++---------
+On Tue, Mar 20, 2018 at 5:04 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
 
-For Atmel NAND driver:
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Hi Geert,
 
->   drivers/mtd/nand/marvell_nand.c          |  8 ++------
->   drivers/mtd/nand/nandsim.c               | 35 ++++++++------------------------
->   drivers/mtd/nand/ndfc.c                  |  4 +---
->   drivers/mtd/nand/sunxi_nand.c            |  4 +---
->   6 files changed, 15 insertions(+), 50 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-> index 9de6572..6e7f6e0 100644
-> --- a/drivers/mtd/nand/ams-delta.c
-> +++ b/drivers/mtd/nand/ams-delta.c
-> @@ -185,7 +185,6 @@ static int ams_delta_init(struct platform_device *pdev)
->   	/* Allocate memory for MTD device structure and private data */
->   	this = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
->   	if (!this) {
-> -		printk (KERN_WARNING "Unable to allocate E3 NAND MTD device structure.\n");
->   		err = -ENOMEM;
->   		goto out;
->   	}
-> diff --git a/drivers/mtd/nand/atmel/nand-controller.c b/drivers/mtd/nand/atmel/nand-controller.c
-> index b2f00b3..b973d42 100644
-> --- a/drivers/mtd/nand/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/atmel/nand-controller.c
-> @@ -1615,10 +1615,8 @@ static int atmel_nand_register(struct atmel_nand *nand)
->   		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
->   					   "%s:nand.%d", dev_name(nc->dev),
->   					   nand->cs[0].id);
-> -		if (!mtd->name) {
-> -			dev_err(nc->dev, "Failed to allocate mtd->name\n");
-> +		if (!mtd->name)
->   			return -ENOMEM;
-> -		}
->   	}
->   
->   	ret = nand_scan_tail(mtd);
-> @@ -1657,10 +1655,8 @@ static struct atmel_nand *atmel_nand_create(struct atmel_nand_controller *nc,
->   	nand = devm_kzalloc(nc->dev,
->   			    sizeof(*nand) + (numcs * sizeof(*nand->cs)),
->   			    GFP_KERNEL);
-> -	if (!nand) {
-> -		dev_err(nc->dev, "Failed to allocate NAND object\n");
-> +	if (!nand)
->   		return ERR_PTR(-ENOMEM);
-> -	}
->   
->   	nand->numcs = numcs;
->   
-> @@ -2217,11 +2213,8 @@ atmel_hsmc_nand_controller_init(struct atmel_hsmc_nand_controller *nc)
->   	nc->sram.virt = gen_pool_dma_alloc(nc->sram.pool,
->   					    ATMEL_NFC_SRAM_SIZE,
->   					    &nc->sram.dma);
-> -	if (!nc->sram.virt) {
-> -		dev_err(nc->base.dev,
-> -			"Could not allocate memory from the NFC SRAM pool\n");
-> +	if (!nc->sram.virt)
->   		return -ENOMEM;
-> -	}
->   
->   	return 0;
->   }
-> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
-> index 2196f2a..9dd2673 100644
-> --- a/drivers/mtd/nand/marvell_nand.c
-> +++ b/drivers/mtd/nand/marvell_nand.c
-> @@ -2307,10 +2307,8 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
->   				    (nsels *
->   				     sizeof(struct marvell_nand_chip_sel)),
->   				    GFP_KERNEL);
-> -	if (!marvell_nand) {
-> -		dev_err(dev, "could not allocate chip structure\n");
-> +	if (!marvell_nand)
->   		return -ENOMEM;
-> -	}
->   
->   	marvell_nand->nsels = nsels;
->   	marvell_nand->selected_die = -1;
-> @@ -2506,10 +2504,8 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
->   		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
->   					   "%s:nand.%d", dev_name(nfc->dev),
->   					   marvell_nand->sels[0].cs);
-> -		if (!mtd->name) {
-> -			dev_err(nfc->dev, "Failed to allocate mtd->name\n");
-> +		if (!mtd->name)
->   			return -ENOMEM;
-> -		}
->   	}
->   
->   	ret = nand_scan_tail(mtd);
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index 44322a3..b6a5c09 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -569,13 +569,11 @@ static int __init alloc_device(struct nandsim *ns)
->   		ns->pages_written = vzalloc(BITS_TO_LONGS(ns->geom.pgnum) *
->   					    sizeof(unsigned long));
->   		if (!ns->pages_written) {
-> -			NS_ERR("alloc_device: unable to allocate pages written array\n");
->   			err = -ENOMEM;
->   			goto err_close;
->   		}
->   		ns->file_buf = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
->   		if (!ns->file_buf) {
-> -			NS_ERR("alloc_device: unable to allocate file buf\n");
->   			err = -ENOMEM;
->   			goto err_free;
->   		}
-> @@ -584,10 +582,8 @@ static int __init alloc_device(struct nandsim *ns)
->   	}
->   
->   	ns->pages = vmalloc(ns->geom.pgnum * sizeof(union ns_mem));
-> -	if (!ns->pages) {
-> -		NS_ERR("alloc_device: unable to allocate page array\n");
-> +	if (!ns->pages)
->   		return -ENOMEM;
-> -	}
->   	for (i = 0; i < ns->geom.pgnum; i++) {
->   		ns->pages[i].byte = NULL;
->   	}
-> @@ -769,11 +765,8 @@ static int __init init_nandsim(struct mtd_info *mtd)
->   
->   	/* Allocate / initialize the internal buffer */
->   	ns->buf.byte = kmalloc(ns->geom.pgszoob, GFP_KERNEL);
-> -	if (!ns->buf.byte) {
-> -		NS_ERR("init_nandsim: unable to allocate %u bytes for the internal buffer\n",
-> -			ns->geom.pgszoob);
-> +	if (!ns->buf.byte)
->   		return -ENOMEM;
-> -	}
->   	memset(ns->buf.byte, 0xFF, ns->geom.pgszoob);
->   
->   	return 0;
-> @@ -844,10 +837,8 @@ static int parse_weakblocks(void)
->   		if (*w == ',')
->   			w += 1;
->   		wb = kzalloc(sizeof(*wb), GFP_KERNEL);
-> -		if (!wb) {
-> -			NS_ERR("unable to allocate memory.\n");
-> +		if (!wb)
->   			return -ENOMEM;
-> -		}
->   		wb->erase_block_no = erase_block_no;
->   		wb->max_erases = max_erases;
->   		list_add(&wb->list, &weak_blocks);
-> @@ -895,10 +886,8 @@ static int parse_weakpages(void)
->   		if (*w == ',')
->   			w += 1;
->   		wp = kzalloc(sizeof(*wp), GFP_KERNEL);
-> -		if (!wp) {
-> -			NS_ERR("unable to allocate memory.\n");
-> +		if (!wp)
->   			return -ENOMEM;
-> -		}
->   		wp->page_no = page_no;
->   		wp->max_writes = max_writes;
->   		list_add(&wp->list, &weak_pages);
-> @@ -946,10 +935,8 @@ static int parse_gravepages(void)
->   		if (*g == ',')
->   			g += 1;
->   		gp = kzalloc(sizeof(*gp), GFP_KERNEL);
-> -		if (!gp) {
-> -			NS_ERR("unable to allocate memory.\n");
-> +		if (!gp)
->   			return -ENOMEM;
-> -		}
->   		gp->page_no = page_no;
->   		gp->max_reads = max_reads;
->   		list_add(&gp->list, &grave_pages);
-> @@ -1000,10 +987,8 @@ static int setup_wear_reporting(struct mtd_info *mtd)
->   		return -ENOMEM;
->   	}
->   	erase_block_wear = kzalloc(mem, GFP_KERNEL);
-> -	if (!erase_block_wear) {
-> -		NS_ERR("Too many erase blocks for wear reporting\n");
-> +	if (!erase_block_wear)
->   		return -ENOMEM;
-> -	}
->   	return 0;
->   }
->   
-> @@ -1558,10 +1543,8 @@ static int prog_page(struct nandsim *ns, int num)
->   		 * again and deadlocks. This was seen in practice.
->   		 */
->   		mypage->byte = kmem_cache_alloc(ns->nand_pages_slab, GFP_NOFS);
-> -		if (mypage->byte == NULL) {
-> -			NS_ERR("prog_page: error allocating memory for page %d\n", ns->regs.row);
-> +		if (!mypage->byte)
->   			return -1;
-> -		}
->   		memset(mypage->byte, 0xFF, ns->geom.pgszoob);
->   	}
->   
-> @@ -2209,10 +2192,8 @@ static int __init ns_init_module(void)
->   	/* Allocate and initialize mtd_info, nand_chip and nandsim structures */
->   	chip = kzalloc(sizeof(struct nand_chip) + sizeof(struct nandsim),
->   		       GFP_KERNEL);
-> -	if (!chip) {
-> -		NS_ERR("unable to allocate core structures.\n");
-> +	if (!chip)
->   		return -ENOMEM;
-> -	}
->   	nsmtd       = nand_to_mtd(chip);
->   	nand        = (struct nandsim *)(chip + 1);
->   	nand_set_controller_data(chip, (void *)nand);
-> diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-> index d8a8068..ea8d652 100644
-> --- a/drivers/mtd/nand/ndfc.c
-> +++ b/drivers/mtd/nand/ndfc.c
-> @@ -223,10 +223,8 @@ static int ndfc_probe(struct platform_device *ofdev)
->   	dev_set_drvdata(&ofdev->dev, ndfc);
->   
->   	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
-> -	if (!ndfc->ndfcbase) {
-> -		dev_err(&ofdev->dev, "failed to get memory\n");
-> +	if (!ndfc->ndfcbase)
->   		return -EIO;
-> -	}
->   
->   	ccr = NDFC_CCR_BS(ndfc->chip_select);
->   
-> diff --git a/drivers/mtd/nand/sunxi_nand.c b/drivers/mtd/nand/sunxi_nand.c
-> index f5a55c6..f38359f7 100644
-> --- a/drivers/mtd/nand/sunxi_nand.c
-> +++ b/drivers/mtd/nand/sunxi_nand.c
-> @@ -2030,10 +2030,8 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
->   			    sizeof(*chip) +
->   			    (nsels * sizeof(struct sunxi_nand_chip_sel)),
->   			    GFP_KERNEL);
-> -	if (!chip) {
-> -		dev_err(dev, "could not allocate chip\n");
-> +	if (!chip)
->   		return -ENOMEM;
-> -	}
->   
->   	chip->nsels = nsels;
->   	chip->selected = -1;
-> 
+> Hi Alan,
+>
+> On Mon, Mar 19, 2018 at 5:06 PM, Alan Tull <atull@kernel.org> wrote:
+>> On Fri, Mar 16, 2018 at 8:51 AM, Geert Uytterhoeven
+>> <geert@linux-m68k.org> wrote:
+>> This essentially removes this commit
+>>
+>> commit 1c8cb409491403036919dd1c6b45013dc8835a44
+>> Author: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+>> Date:   Wed Aug 3 13:45:46 2016 -0700
+>>
+>>     drivers/fpga/Kconfig: fix build failure
+>>
+>>     While building m32r allmodconfig the build is failing with the error:
+>>
+>>       ERROR: "bad_dma_ops" [drivers/fpga/zynq-fpga.ko] undefined!
+>>
+>>     Xilinx Zynq FPGA is using DMA but there was no dependency while
+>>     building.
+>>
+>>     Link: http://lkml.kernel.org/r/1464346526-13913-1-git-send-email-sudipm.mukherjee@gmail.com
+>>     Signed-off-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+>>     Acked-by: Moritz Fischer <moritz.fischer@ettus.com>
+>>     Cc: Alan Tull <atull@opensource.altera.com>
+>>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+>>     Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+>
+> Yes it does. The major change is that the first (core) series introduces
+> all needed dummies to do successful compile-testing on NO_DMA=y platforms.
 
+OK yes, I looked at the first patch that does the fix.  Looks good.
+Thanks for doing this.
 
--- 
-Nicolas Ferre
+>
+>>> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+>>> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+>>> In most cases this other symbol is an architecture or platform specific
+>>> symbol, or PCI.
+>>>
+>>> Generic symbols and drivers without platform dependencies keep their
+>>> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+>>> cannot work anyway.
+>>>
+>>> This simplifies the dependencies, and allows to improve compile-testing.
+>>>
+>>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>>> Reviewed-by: Mark Brown <broonie@kernel.org>
+>>> Acked-by: Robin Murphy <robin.murphy@arm.com>
+Acked-by: Alan Tull <atull@kernel.org>
+
+Regards,
+Alan
+
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
