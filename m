@@ -1,22 +1,18 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail-eopbgr30046.outbound.protection.outlook.com ([40.107.3.46]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyEZ7-0001ML-7G
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:32:30 +0000
-Date: Tue, 20 Mar 2018 18:31:25 +0800
-From: kbuild test robot <lkp@intel.com>
-To: thor.thayer@linux.intel.com
-Cc: kbuild-all@01.org, cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, richard@nod.at,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thor.thayer@linux.intel.com
-Subject: Re: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
-Message-ID: <201803201812.TdB2doqa%fengguang.wu@intel.com>
-References: <1521485124-24882-1-git-send-email-thor.thayer@linux.intel.com>
+ id 1eyEte-0001Os-Mm
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:53:40 +0000
+From: Jagdish Gediya <jagdish.gediya@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ oss@buserror.net, leoyang.li@nxp.com,
+ Jagdish Gediya <jagdish.gediya@nxp.com>, stable@vger.kernel.org
+Subject: [PATCH][v3] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+Date: Wed, 21 Mar 2018 04:31:36 +0530
+Message-Id: <1521586908-7667-1-git-send-email-jagdish.gediya@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1521485124-24882-1-git-send-email-thor.thayer@linux.intel.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,131 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thor,
+As per the IFC hardware manual, Most significant 2 bytes in
+nand_fsr register are the outcome of NAND READ STATUS command.
 
-I love your patch! Perhaps something to improve:
+So status value need to be shifted and aligned as per the nand
+framework requirement.
 
-[auto build test WARNING on v4.16-rc4]
-[also build test WARNING on next-20180319]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/thor-thayer-linux-intel-com/mtd-spi-nor-Fix-Cadence-QSPI-page-fault-kernel-panic/20180320-133857
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/mtd/spi-nor/cadence-quadspi.c:651:25: sparse: incompatible types in comparison expression (different type sizes)
-   In file included from include/linux/clk.h:16:0,
-                    from drivers/mtd/spi-nor/cadence-quadspi.c:18:
-   drivers/mtd/spi-nor/cadence-quadspi.c: In function 'cqspi_indirect_write_execute':
-   include/linux/kernel.h:793:16: warning: comparison of distinct pointer types lacks a cast
-     (void) (&min1 == &min2);   7-                ^
-   include/linux/kernel.h:802:2: note: in expansion of macro '__min'
-     __min(typeof(x), typeof(y),   10-  ^~~~~
-   drivers/mtd/spi-nor/cadence-quadspi.c:651:25: note: in expansion of macro 'min'
-       memcpy(&temp, txbuf, min(sizeof(temp), mod_bytes));
-                            ^~~
-
-vim +651 drivers/mtd/spi-nor/cadence-quadspi.c
-
-   606	
-   607	static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
-   608						const u8 *txbuf, const size_t n_tx)
-   609	{
-   610		const unsigned int page_size = nor->page_size;
-   611		struct cqspi_flash_pdata *f_pdata = nor->priv;
-   612		struct cqspi_st *cqspi = f_pdata->cqspi;
-   613		void __iomem *reg_base = cqspi->iobase;
-   614		unsigned int remaining = n_tx;
-   615		unsigned int mod_bytes, write_bytes, write_words;
-   616		int ret;
-   617	
-   618		writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
-   619		writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
-   620	
-   621		/* Clear all interrupts. */
-   622		writel(CQSPI_IRQ_STATUS_MASK, reg_base + CQSPI_REG_IRQSTATUS);
-   623	
-   624		writel(CQSPI_IRQ_MASK_WR, reg_base + CQSPI_REG_IRQMASK);
-   625	
-   626		reinit_completion(&cqspi->transfer_complete);
-   627		writel(CQSPI_REG_INDIRECTWR_START_MASK,
-   628		       reg_base + CQSPI_REG_INDIRECTWR);
-   629		/*
-   630		 * As per 66AK2G02 TRM SPRUHY8F section 11.15.5.3 Indirect Access
-   631		 * Controller programming sequence, couple of cycles of
-   632		 * QSPI_REF_CLK delay is required for the above bit to
-   633		 * be internally synchronized by the QSPI module. Provide 5
-   634		 * cycles of delay.
-   635		 */
-   636		if (cqspi->wr_delay)
-   637			ndelay(cqspi->wr_delay);
-   638	
-   639		while (remaining > 0) {
-   640			write_bytes = remaining > page_size ? page_size : remaining;
-   641			write_words = write_bytes / 4;
-   642			mod_bytes = write_bytes % 4;
-   643			/* Write 4 bytes at a time then single bytes. */
-   644			if (write_words) {
-   645				iowrite32_rep(cqspi->ahb_base, txbuf, write_words);
-   646				txbuf += (write_words * 4);
-   647			}
-   648			if (mod_bytes) {
-   649				unsigned int temp = 0xFFFFFFFF;
-   650	
- > 651				memcpy(&temp, txbuf, min(sizeof(temp), mod_bytes));
-   652				iowrite32(temp, cqspi->ahb_base);
-   653				txbuf += mod_bytes;
-   654			}
-   655			ret = wait_for_completion_timeout(&cqspi->transfer_complete,
-   656							  msecs_to_jiffies
-   657							  (CQSPI_TIMEOUT_MS));
-   658			if (!ret) {
-   659				dev_err(nor->dev, "Indirect write timeout\n");
-   660				ret = -ETIMEDOUT;
-   661				goto failwr;
-   662			}
-   663	
-   664			remaining -= write_bytes;
-   665	
-   666			if (remaining > 0)
-   667				reinit_completion(&cqspi->transfer_complete);
-   668		}
-   669	
-   670		/* Check indirect done status */
-   671		ret = cqspi_wait_for_bit(reg_base + CQSPI_REG_INDIRECTWR,
-   672					 CQSPI_REG_INDIRECTWR_DONE_MASK, 0);
-   673		if (ret) {
-   674			dev_err(nor->dev,
-   675				"Indirect write completion error (%i)\n", ret);
-   676			goto failwr;
-   677		}
-   678	
-   679		/* Disable interrupt. */
-   680		writel(0, reg_base + CQSPI_REG_IRQMASK);
-   681	
-   682		/* Clear indirect completion status */
-   683		writel(CQSPI_REG_INDIRECTWR_DONE_MASK, reg_base + CQSPI_REG_INDIRECTWR);
-   684	
-   685		cqspi_wait_idle(cqspi);
-   686	
-   687		return 0;
-   688	
-   689	failwr:
-   690		/* Disable interrupt. */
-   691		writel(0, reg_base + CQSPI_REG_IRQMASK);
-   692	
-   693		/* Cancel the indirect write */
-   694		writel(CQSPI_REG_INDIRECTWR_CANCEL_MASK,
-   695		       reg_base + CQSPI_REG_INDIRECTWR);
-   696		return ret;
-   697	}
-   698	
-
+Fixes: 82771882d960 ("NAND Machine support for Integrated Flash Controller")
+Cc: stable@vger.kernel.org # v3.18+
+Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Changes for v2: Incorporated comments from Boris Brezillon
+        - Added fixes tag
+
+Changes for v3: Incorporated comments from Boris Brezillon
+
+ drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+index 9390cbd..16104ca 100644
+--- a/drivers/mtd/nand/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/fsl_ifc_nand.c
+@@ -629,6 +629,7 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+ 	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
+ 	u32 nand_fsr;
++	int status;
+ 
+ 	/* Use READ_STATUS command, but wait for the device to be ready */
+ 	ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+@@ -643,12 +644,12 @@ static int fsl_ifc_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ 	fsl_ifc_run_command(mtd);
+ 
+ 	nand_fsr = ifc_in32(&ifc->ifc_nand.nand_fsr);
+-
++	status = nand_fsr >> 24;
+ 	/*
+ 	 * The chip always seems to report that it is
+ 	 * write-protected, even when it is not.
+ 	 */
+-	return nand_fsr | NAND_STATUS_WP;
++	return status | NAND_STATUS_WP;
+ }
+ 
+ /*
+-- 
+1.9.1
