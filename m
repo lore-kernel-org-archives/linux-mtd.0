@@ -1,24 +1,24 @@
-Received: from mail-wm0-x232.google.com ([2a00:1450:400c:c09::232])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyPKj-0003It-K2
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 22:02:21 +0000
-Received: by mail-wm0-x232.google.com with SMTP id f19so6328561wmc.0
- for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 15:02:06 -0700 (PDT)
+ id 1eyQLN-0004ZA-3u
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 23:07:03 +0000
+Received: by mail-wr0-x242.google.com with SMTP id s18so3379137wrg.9
+ for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 16:06:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7002f6eb-f177-0929-79da-62f42551459f@exertus.fi>
-References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
- <2543021.LZhlqz2gkU@blindfold>
- <b5eb17b7-14f1-7ec4-a590-d486dd0b89b6@exertus.fi>
- <63275670.WCUj5TjS3v@blindfold>
- <180bb6ee-51db-ddff-207b-e76580dab687@exertus.fi>
- <CAFLxGvx35u-5Z83m_21Q73QPf7e8ZeoMsxU-B2jdzY2-BrWamw@mail.gmail.com>
- <7002f6eb-f177-0929-79da-62f42551459f@exertus.fi>
+In-Reply-To: <20180301133941.19660-3-joakim.tjernlund@infinera.com>
+References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+ <20180301133941.19660-3-joakim.tjernlund@infinera.com>
 From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 20 Mar 2018 23:02:04 +0100
-Message-ID: <CAFLxGvwyxJT8BtuPTJRonPhNnJ5mRtqda3H3u7bDTOsx7cRvtw@mail.gmail.com>
-Subject: Re: UBI assert failed in ubi_wl_init
-To: Timo Ketola <timo@exertus.fi>
-Cc: Richard Weinberger <richard@sigma-star.at>, linux-mtd@lists.infradead.org
+Date: Wed, 21 Mar 2018 00:06:48 +0100
+Message-ID: <CAFLxGvx9ZC6P9iYtODnvGi=qnE1Z9zNtdbo6fRAFBSpdsLzV8g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] cfi_cmdset_0001: Workaround Micron Erase suspend bug.
+To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ Joakim Tjernlund <joakim.tjernlund@transmode.se>,
+ stable <stable@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,41 +29,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Timo,
+Joakim,
 
-On Fri, Mar 16, 2018 at 2:34 PM, Timo Ketola <timo@exertus.fi> wrote:
-> On 18.02.2018 22:31, Richard Weinberger wrote:
->> Okay. That's a bit odd. Maybe my analysis is wrong. Can you try the
->> following, replay the image to your NAND and attach again.
->> Then you should get the same UBI assert a second time.
+On Thu, Mar 1, 2018 at 2:39 PM, Joakim Tjernlund
+<joakim.tjernlund@infinera.com> wrote:
+> From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 >
-> Of course I can but what would be the difference to simple rebooting? I
-> get the assertion failure on every boot from the second one onwards.
-> Before I commit to that one, let's look what I found recently.
->
-> I already tried the replay but bumped into ECC errors. Due to that and
-> other things I switched the kernel to Freescale IMX 4.9.74 with Boundary
-> fixes. I reduced the size of the user partition to 1800M and got rid of
-> the 'could not get any free erase block' and 'Unable to write new
-> fastmap' errors. The assertion failures from the second boot onwards
-> remained.
->
-> I wondered why I'm not seeing the same issue with my smaller 64M system
-> mtd. Then I reduced the user partition to 48M and the mtd to 64M and the
-> issue vanished. Then I kept the partition at 48M but restored the mtd
-> size to 1800M and the issue returned. If I make the mtd size 0x4e680000
-> or smaller there is no issue. If I make it 0x4e6a0000 or larger the
-> issue is there. Every time I erased the NAND and burned a fresh image.
->
-> What do you want me to do next?
+> Some Micron chips does not work well wrt Erase suspend for
+> boot blocks. This avoids the issue by not allowing Erase suspend
+> for the boot blocks for the 28F00AP30(1GBit) chip.
 
-Did you verify the image or not? :)
-I asked you do to so because the image you sent me does not make sense
-and I'm not sure whether I can trust it.
-Hence I asked for a double-check.
+Is this bug documented somewhere?
 
-You seem to run in some wired corner-case, that's why I'd like to
-inspect your fastmap.
+> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index b59872304ae7..64ae65dab877 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -45,6 +45,7 @@
+>  #define I82802AB       0x00ad
+>  #define I82802AC       0x00ac
+>  #define PF38F4476      0x881c
+> +#define M28F00AP30     0x8963
+>  /* STMicroelectronics chips */
+>  #define M50LPW080       0x002F
+>  #define M50FLW080A     0x0080
+> @@ -375,6 +376,17 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+>                 extp->MinorVersion = '1';
+>  }
+>
+> +static int cfi_is_micron_28F00AP30(struct cfi_private *cfi, struct flchip *chip)
+> +{
+> +       /*
+> +        * Micron(was Numonyx) 1Gbit bottom boot are buggy w.r.t
+> +        * Erase Supend for their small Erase Blocks(0x8000)
+> +        */
+> +       if (cfi->mfr == CFI_MFR_INTEL && cfi->id == M28F00AP30)
+> +               return 1;
+> +       return 0;
+> +}
+> +
+>  static inline struct cfi_pri_intelext *
+>  read_pri_intelext(struct map_info *map, __u16 adr)
+>  {
+> @@ -854,6 +866,11 @@ static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long
+>                     chip->in_progress_block_addr)
+>                         goto sleep;
+>
+> +               /* do not suspend small EBs, buggy Micron Chips */
+> +               if (cfi_is_micron_28F00AP30(cfi, chip) &&
+> +                   (chip->in_progress_block_mask == ~(0x8000-1)))
+> +                       goto sleep;
+> +
+>                 /* Erase suspend */
+>                 map_write(map, CMD(0xB0), chip->in_progress_block_addr);
+>
+> --
+> 2.13.6
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
 
 -- 
 Thanks,
