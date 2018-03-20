@@ -1,68 +1,25 @@
-Received: from mail-qk0-x244.google.com ([2607:f8b0:400d:c09::244])
+Received: from mail-db5eur01on0076.outbound.protection.outlook.com
+ ([104.47.2.76] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyECj-0006yE-JO
- for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:09:19 +0000
-Received: by mail-qk0-x244.google.com with SMTP id s9so949115qke.12
- for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2018 03:09:07 -0700 (PDT)
+ id 1eyEJY-00036v-UX
+ for linux-mtd@lists.infradead.org; Tue, 20 Mar 2018 10:16:22 +0000
+From: Jagdish Gediya <jagdish.gediya@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return value
+Date: Tue, 20 Mar 2018 10:16:04 +0000
+Message-ID: <HE1PR0402MB2778416737B158CDA0C31A9090AB0@HE1PR0402MB2778.eurprd04.prod.outlook.com>
+References: <1521564229-8018-1-git-send-email-jagdish.gediya@nxp.com>
+ <20180320092037.54dd0eff@bbrezillon>
+In-Reply-To: <20180320092037.54dd0eff@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <AM5PR04MB3267989AB6A81639F61AB165ECD40@AM5PR04MB3267.eurprd04.prod.outlook.com>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
- <1521208314-4783-11-git-send-email-geert@linux-m68k.org>
- <AM5PR04MB3267989AB6A81639F61AB165ECD40@AM5PR04MB3267.eurprd04.prod.outlook.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 20 Mar 2018 11:09:06 +0100
-Message-ID: <CAMuHMdXZNqO0NDESs9Y3uJs0kmQSXY05ei0xJE9uT9EUixuxAQ@mail.gmail.com>
-Subject: Re: [PATCH v2 10/21] lightnvm: Remove depends on HAS_DMA in case of
- platform dependency
-To: Madalin-cristian Bucur <madalin.bucur@nxp.com>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
- Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>,
- "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
- "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
- "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
- "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
- "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
- "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- "linux1394-devel@lists.sourceforge.net"
- <linux1394-devel@lists.sourceforge.net>,
- "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
- "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
- "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
- "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
- "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
- "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -72,51 +29,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Madalin-cristian,
+Hi Boris,
 
-On Mon, Mar 19, 2018 at 6:27 AM, Madalin-cristian Bucur
-<madalin.bucur@nxp.com> wrote:
->> -----Original Message-----
->> From: netdev-owner@vger.kernel.org [mailto:netdev-owner@vger.kernel.org]
->> On Behalf Of Geert Uytterhoeven
->> Remove dependencies on HAS_DMA where a Kconfig symbol depends on
->> another
->> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
->> In most cases this other symbol is an architecture or platform specific
->> symbol, or PCI.
->>
->> Generic symbols and drivers without platform dependencies keep their
->> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
->> cannot work anyway.
->>
->> This simplifies the dependencies, and allows to improve compile-testing.
->>
->> Notes:
->>   - FSL_FMAN keeps its dependency on HAS_DMA, as it calls set_dma_ops(),
->>     which does not exist if HAS_DMA=n (Do we need a dummy? The use of
->>     set_dma_ops() in this driver is questionable),
->
-> Hi,
->
-> The set_dma_ops() is no longer required in the fsl/fman, I'll send a patch to remove it.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Tuesday, March 20, 2018 1:51 PM
+> To: Jagdish Gediya <jagdish.gediya@nxp.com>
+> Cc: linux-mtd@lists.infradead.org; boris.brezillon@free-electrons.com;
+> computersforpeace@gmail.com; oss@buserror.net; Leo Li
+> <leoyang.li@nxp.com>; stable@vger.kernel.org
+> Subject: Re: [PATCH][v2] mtd: rawnand: fsl_ifc: Fix nand waitfunc return =
+value
+>=20
+> On Tue, 20 Mar 2018 22:13:38 +0530
+> Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
+>=20
+> > As per the IFC hardware manual, Most significant 2 bytes in nand_fsr
+> > register are the outcome of NAND READ STATUS command.
+> >
+> > So status value need to be shifted and aligned as per the nand
+> > framework requirement.
+> >
+> > Fixes: 82771882d960 ("NAND Machine support for Integrated Flash
+> > Controller")
+> > Cc: stable@vger.kernel.org # v3.18+
+> > Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> > Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> > ---
+> > Changes for v2: Incorporated comments from Boris Brezillon
+> >         - Added fixes tag
+> >
+> >  drivers/mtd/nand/fsl_ifc_nand.c | 5 +++--
+> >  1 file changed, 3 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c
+> > b/drivers/mtd/nand/fsl_ifc_nand.c index 9390cbd..0aa03ba 100644
+> > --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> > @@ -643,12 +643,13 @@ static int fsl_ifc_wait(struct mtd_info *mtd, str=
+uct
+> nand_chip *chip)
+> >  	fsl_ifc_run_command(mtd);
+> >
+> >  	nand_fsr =3D ifc_in32(&ifc->ifc_nand.nand_fsr);
+> > -
+> > +	nand_fsr >>=3D 16;
+> > +	nand_fsr =3D (nand_fsr >> 8) | (nand_fsr << 8);
+>=20
+> Why are you swapping the upper and lower bytes? If the NAND status is sto=
+red
+> in the upper byte of the fsr reg (bits 24 to 31), then shift the value by=
+ 24
+> directly. Note that (nand_fsr << 8) is useless here since you're masking
+> nand_fsr with 0xff before returning it.
+>=20
+nand_fsr register is,
+ 31				   0
+ ---------------------------------------------
+| RS0 | RS1 | reserved | reserved |
+ ---------------------------------------------
+I intended to make it,
+31		           0
+ -----------------------------
+| 00 | 00 | RS1 | RS0 |
+ -----------------------------
+RS0 gets the nand read status. I am not dropping RS1 value for possible fut=
+ure use.
+> >  	/*
+> >  	 * The chip always seems to report that it is
+> >  	 * write-protected, even when it is not.
+> >  	 */
+> > -	return nand_fsr | NAND_STATUS_WP;
+> > +	return (nand_fsr & 0xff) | NAND_STATUS_WP;
+It should be 0xffff instead of 0xff.
+> >  }
+> >
+> >  /*
+>=20
+>=20
+>=20
 
-Thank you, looking forward to it!
-
->>   - SND_SOC_LPASS_IPQ806X and SND_SOC_LPASS_PLATFORM loose their
->>     dependency on HAS_DMA, as they are selected from
->>     SND_SOC_APQ8016_SBC.
->>
->> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> Reviewed-by: Mark Brown <broonie@kernel.org>
->> Acked-by: Robin Murphy <robin.murphy@arm.com>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Thanks,
+Jagdish
