@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydOD-0001Ym-59
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:20 +0000
+ id 1eydOV-0001k7-0k
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:25 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 13/16] mtd: rawnand: hisi504: fix and enhance the probe
+Subject: [PATCH v2 15/16] mtd: rawnand: lpc32xx_slc: fix and enhance the probe
  function error path
-Date: Wed, 21 Mar 2018 14:01:54 +0100
-Message-Id: <20180321130157.9524-14-miquel.raynal@bootlin.com>
+Date: Wed, 21 Mar 2018 14:01:56 +0100
+Message-Id: <20180321130157.9524-16-miquel.raynal@bootlin.com>
 In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,104 +29,85 @@ An error after nand_scan_tail() should trigger a nand_cleanup().
 The helper mtd_device_parse_register() returns an error code that should
 be checked and nand_cleanup() called accordingly.
 
-Also prepare the migration of the hisi504_nand driver to use nand_scan()
+Also prepare the migration of the lpc32xx_slc driver to use nand_scan()
 by cleaning the error path in the probe function.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/hisi504_nand.c | 35 ++++++++++++-----------------------
- 1 file changed, 12 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-index 27558a67fa41..a1e009c8e556 100644
---- a/drivers/mtd/nand/raw/hisi504_nand.c
-+++ b/drivers/mtd/nand/raw/hisi504_nand.c
-@@ -731,23 +731,19 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		dev_err(dev, "no IRQ resource defined\n");
--		ret = -ENXIO;
--		goto err_res;
-+		return -ENXIO;
+diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+index 5f7cc6da0a7f..143e1ec3a90a 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_slc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+@@ -831,11 +831,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "Clock failure\n");
+ 		res = -ENOENT;
+-		goto err_exit1;
++		goto release_gpio;
+ 	}
+ 	res = clk_prepare_enable(host->clk);
+ 	if (res)
+-		goto err_exit1;
++		goto release_gpio;
+ 
+ 	/* Set NAND IO addresses and command/ready functions */
+ 	chip->IO_ADDR_R = SLC_DATA(host->io_base);
+@@ -874,19 +874,19 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 				      GFP_KERNEL);
+ 	if (host->data_buf == NULL) {
+ 		res = -ENOMEM;
+-		goto err_exit2;
++		goto release_clk;
  	}
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	host->iobase = devm_ioremap_resource(dev, res);
--	if (IS_ERR(host->iobase)) {
--		ret = PTR_ERR(host->iobase);
--		goto err_res;
--	}
-+	if (IS_ERR(host->iobase))
-+		return PTR_ERR(host->iobase);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
- 	host->mmio = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(host->mmio)) {
--		ret = PTR_ERR(host->mmio);
- 		dev_err(dev, "devm_ioremap_resource[1] fail\n");
--		goto err_res;
-+		return PTR_ERR(host->mmio);
+ 	res = lpc32xx_nand_dma_setup(host);
+ 	if (res) {
+ 		res = -EIO;
+-		goto err_exit2;
++		goto release_clk;
  	}
  
- 	mtd->name		= "hisi_nand";
-@@ -770,19 +766,17 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 	ret = devm_request_irq(dev, irq, hinfc_irq_handle, 0x0, "nandc", host);
- 	if (ret) {
- 		dev_err(dev, "failed to request IRQ\n");
--		goto err_res;
-+		return ret;
- 	}
+ 	/* Find NAND device */
+ 	res = nand_scan_ident(mtd, 1, NULL);
+ 	if (res)
+-		goto err_exit3;
++		goto release_dma;
  
- 	ret = nand_scan_ident(mtd, max_chips, NULL);
- 	if (ret)
--		goto err_res;
-+		return ret;
- 
- 	host->buffer = dmam_alloc_coherent(dev, mtd->writesize + mtd->oobsize,
- 		&host->dma_buffer, GFP_KERNEL);
--	if (!host->buffer) {
--		ret = -ENOMEM;
--		goto err_res;
--	}
-+	if (!host->buffer)
-+		return -ENOMEM;
- 
- 	host->dma_oob = host->dma_buffer + mtd->writesize;
- 	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
-@@ -798,8 +792,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 	/* OOB and ECC CPU and DMA work areas */
+ 	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
+@@ -920,21 +920,23 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
  	 */
- 	default:
- 		dev_err(dev, "NON-2KB page size nand flash\n");
--		ret = -EINVAL;
--		goto err_res;
-+		return -EINVAL;
- 	}
- 	hinfc_write(host, flag, HINFC504_CON);
+ 	res = nand_scan_tail(mtd);
+ 	if (res)
+-		goto err_exit3;
++		goto release_dma;
  
-@@ -809,21 +802,17 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 	ret = nand_scan_tail(mtd);
- 	if (ret) {
- 		dev_err(dev, "nand_scan_tail failed: %d\n", ret);
--		goto err_res;
-+		return ret;
- 	}
+ 	mtd->name = "nxp_lpc3220_slc";
+ 	res = mtd_device_register(mtd, host->ncfg->parts,
+ 				  host->ncfg->num_parts);
+-	if (!res)
+-		return res;
++	if (res)
++		goto cleanup_nand;
  
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "Err MTD partition=%d\n", ret);
--		goto err_mtd;
-+		nand_cleanup(chip);
-+		return ret;
- 	}
- 
- 	return 0;
--
--err_mtd:
 -	nand_release(mtd);
--err_res:
--	return ret;
- }
++	return 0;
  
- static int hisi_nfc_remove(struct platform_device *pdev)
+-err_exit3:
++cleanup_nand:
++	nand_cleanup(chip);
++release_dma:
+ 	dma_release_channel(host->dma_chan);
+-err_exit2:
++release_clk:
+ 	clk_disable_unprepare(host->clk);
+-err_exit1:
++release_gpio:
+ 	lpc32xx_wp_enable(host);
+ 
+ 	return res;
 -- 
 2.14.1
