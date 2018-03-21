@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydOD-0001YY-5J
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:05 +0000
+ id 1eydOD-0001Yh-5H
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:06 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 09/16] mtd: rawnand: mxc: fix probe function error path
-Date: Wed, 21 Mar 2018 14:01:50 +0100
-Message-Id: <20180321130157.9524-10-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 12/16] mtd: rawnand: tango: fix probe function error path
+Date: Wed, 21 Mar 2018 14:01:53 +0100
+Message-Id: <20180321130157.9524-13-miquel.raynal@bootlin.com>
 In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,35 +30,24 @@ be checked and nand_cleanup() called accordingly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/mxc_nand.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/tango_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 944ecf03d3b1..45786e707b7b 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1911,15 +1911,18 @@ static int mxcnd_probe(struct platform_device *pdev)
- 		goto escan;
+diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
+index c5bee00b7f5e..f54518ffb36a 100644
+--- a/drivers/mtd/nand/raw/tango_nand.c
++++ b/drivers/mtd/nand/raw/tango_nand.c
+@@ -591,8 +591,10 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 	tchip->bb_cfg = BB_CFG(mtd->writesize, BBM_SIZE);
  
- 	/* Register the partitions */
--	mtd_device_parse_register(mtd, part_probes,
--			NULL,
--			host->pdata.parts,
--			host->pdata.nr_parts);
-+	err = mtd_device_parse_register(mtd, part_probes, NULL,
-+					host->pdata.parts,
-+					host->pdata.nr_parts);
-+	if (err)
-+		goto cleanup_nand;
+ 	err = mtd_device_register(mtd, NULL, 0);
+-	if (err)
++	if (err) {
++		nand_cleanup(chip);
+ 		return err;
++	}
  
- 	platform_set_drvdata(pdev, host);
+ 	nfc->chips[cs] = tchip;
  
- 	return 0;
- 
-+cleanup_nand:
-+	nand_cleanup(this);
- escan:
- 	if (host->clk_act)
- 		clk_disable_unprepare(host->clk);
 -- 
 2.14.1
