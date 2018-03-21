@@ -1,23 +1,20 @@
-Received: from mail-eopbgr50073.outbound.protection.outlook.com ([40.107.5.73]
- helo=EUR03-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eybuI-00035o-7t
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 11:27:55 +0000
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
- computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
- marek.vasut@gmail.com, frieder.schrempf@exceet.de,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v7 2/2] mtd: fsl-quadspi: fix init AHB read in
- fsl_qspi_nor_setup()
-Date: Wed, 21 Mar 2018 16:56:05 +0530
-Message-Id: <1521631565-24413-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1521631565-24413-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1521631565-24413-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eydNy-0001W6-U1
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:02:38 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v2 02/16] mtd: rawnand: cafe: fix probe function error path
+Date: Wed, 21 Mar 2018 14:01:43 +0100
+Message-Id: <20180321130157.9524-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move AHB read initialize in fsl_qspi_nor_setup().
+An error after nand_scan_tail() should trigger a nand_cleanup().
+The helper mtd_device_parse_register() returns an error code that should
+be checked and nand_cleanup() called accordingly.
 
-In file spi-nor.c, func spi_nor_scan() calls nor->read() thru
-spi_nor_read_sfdp() API.
-
-Presently, fsl_qspi_init_ahb_read() called from fsl_qspi_nor_setup_last().
-Func fsl_qspi_probe() calls spi_nor_scan() first and then calls
-fsl_qspi_nor_setup_last().
-
-When nor->read() being called from inside spi_nor_read_sfdp(), QSPI cntlr
-AHB mode initialization is not yet done results in data read error.
-
-Initialize AHB read inside fsl_qspi_nor_setup().
-
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
-Changes for v7:
-- None
-Changes for v6:
-- None
-Changes for v5:
-- None
-Changes for v4:
-- None
-Changes for v3:
-- None
-Changes for v2:
-- None
+ drivers/mtd/nand/raw/cafe_nand.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 64b8bb3..424094a 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -820,6 +820,9 @@ static int fsl_qspi_nor_setup(struct fsl_qspi *q)
- 	/* enable the interrupt */
- 	qspi_writel(q, QUADSPI_RSER_TFIE, q->iobase + QUADSPI_RSER);
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index 3c1b6a3786b2..de9682d87a56 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -774,21 +774,25 @@ static int cafe_nand_probe(struct pci_dev *pdev,
+ 	pci_set_drvdata(pdev, mtd);
  
-+	/* Init for AHB read */
-+	fsl_qspi_init_ahb_read(q);
+ 	mtd->name = "cafe_nand";
+-	mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
++	err = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
++	if (err)
++		goto out_cleanup_nand;
+ 
+-	goto out;
++	return 0;
+ 
+- out_free_dma:
++out_cleanup_nand:
++	nand_cleanup(&cafe->nand);
++out_free_dma:
+ 	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
+- out_irq:
++out_irq:
+ 	/* Disable NAND IRQ in global IRQ mask register */
+ 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
+ 	free_irq(pdev->irq, mtd);
+- out_ior:
++out_ior:
+ 	pci_iounmap(pdev, cafe->mmio);
+- out_free_mtd:
++out_free_mtd:
+ 	kfree(cafe);
+- out:
 +
- 	return 0;
+ 	return err;
  }
  
-@@ -842,9 +845,6 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
- 	if (ret)
- 		return ret;
- 
--	/* Init for AHB read */
--	fsl_qspi_init_ahb_read(q);
--
- 	/* Prepare LUT for AHB read - required for read from devmem interface */
- 	fsl_qspi_prep_ahb_read(q);
- 
 -- 
-1.9.1
+2.14.1
