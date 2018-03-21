@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydOD-0001Xu-63
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:11 +0000
+ id 1eydOD-0001Z6-5F
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:15 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 05/16] mtd: rawnand: docg4: fix the probe function error
- path
-Date: Wed, 21 Mar 2018 14:01:46 +0100
-Message-Id: <20180321130157.9524-6-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 14/16] mtd: rawnand: lpc32xx_mlc: fix and enhance the probe
+ function error path
+Date: Wed, 21 Mar 2018 14:01:55 +0100
+Message-Id: <20180321130157.9524-15-miquel.raynal@bootlin.com>
 In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,77 +25,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup() call.
-The helper mtd_device_register() returns an error code that should
+An error after nand_scan_tail() should trigger a nand_cleanup().
+The helper mtd_device_parse_register() returns an error code that should
 be checked and nand_cleanup() called accordingly.
+
+Also prepare the migration of the lpc32xx_mlc driver to use nand_scan()
+by cleaning the error path in the probe function.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/docg4.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-index 1314aa99b9ab..bb96cb33cd6b 100644
---- a/drivers/mtd/nand/raw/docg4.c
-+++ b/drivers/mtd/nand/raw/docg4.c
-@@ -1341,7 +1341,7 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	nand = kzalloc(len, GFP_KERNEL);
- 	if (nand == NULL) {
- 		retval = -ENOMEM;
--		goto fail_unmap;
-+		goto unmap;
- 	}
- 
- 	mtd = nand_to_mtd(nand);
-@@ -1357,7 +1357,7 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
- 	if (doc->bch == NULL) {
- 		retval = -EINVAL;
--		goto fail;
-+		goto free_nand;
- 	}
- 
- 	platform_set_drvdata(pdev, doc);
-@@ -1366,30 +1366,32 @@ static int __init probe_docg4(struct platform_device *pdev)
- 	retval = read_id_reg(mtd);
- 	if (retval == -ENODEV) {
- 		dev_warn(dev, "No diskonchip G4 device found.\n");
--		goto fail;
-+		goto free_bch;
- 	}
- 
- 	retval = nand_scan_tail(mtd);
- 	if (retval)
--		goto fail;
-+		goto free_bch;
- 
- 	retval = read_factory_bbt(mtd);
- 	if (retval)
--		goto fail;
-+		goto cleanup_nand;
- 
- 	retval = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
- 	if (retval)
--		goto fail;
-+		goto cleanup_nand;
- 
- 	doc->mtd = mtd;
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index e357948a7505..052d123a8304 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -673,7 +673,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	host->io_base = devm_ioremap_resource(&pdev->dev, rc);
+ 	if (IS_ERR(host->io_base))
+ 		return PTR_ERR(host->io_base);
+-	
 +
- 	return 0;
+ 	host->io_base_phy = rc->start;
  
--fail:
--	nand_release(mtd); /* deletes partitions and mtd devices */
+ 	nand_chip = &host->nand_chip;
+@@ -706,11 +706,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	if (IS_ERR(host->clk)) {
+ 		dev_err(&pdev->dev, "Clock initialization failure\n");
+ 		res = -ENOENT;
+-		goto err_exit1;
++		goto free_gpio;
+ 	}
+ 	res = clk_prepare_enable(host->clk);
+ 	if (res)
+-		goto err_put_clk;
++		goto put_clk;
+ 
+ 	nand_chip->cmd_ctrl = lpc32xx_nand_cmd_ctrl;
+ 	nand_chip->dev_ready = lpc32xx_nand_device_ready;
+@@ -744,7 +744,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 		res = lpc32xx_dma_setup(host);
+ 		if (res) {
+ 			res = -EIO;
+-			goto err_exit2;
++			goto unprepare_clk;
+ 		}
+ 	}
+ 
+@@ -754,18 +754,18 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	 */
+ 	res = nand_scan_ident(mtd, 1, NULL);
+ 	if (res)
+-		goto err_exit3;
++		goto release_dma_chan;
+ 
+ 	host->dma_buf = devm_kzalloc(&pdev->dev, mtd->writesize, GFP_KERNEL);
+ 	if (!host->dma_buf) {
+ 		res = -ENOMEM;
+-		goto err_exit3;
++		goto release_dma_chan;
+ 	}
+ 
+ 	host->dummy_buf = devm_kzalloc(&pdev->dev, mtd->writesize, GFP_KERNEL);
+ 	if (!host->dummy_buf) {
+ 		res = -ENOMEM;
+-		goto err_exit3;
++		goto release_dma_chan;
+ 	}
+ 
+ 	nand_chip->ecc.mode = NAND_ECC_HW;
+@@ -783,14 +783,14 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	if (host->irq < 0) {
+ 		dev_err(&pdev->dev, "failed to get platform irq\n");
+ 		res = -EINVAL;
+-		goto err_exit3;
++		goto release_dma_chan;
+ 	}
+ 
+ 	if (request_irq(host->irq, (irq_handler_t)&lpc3xxx_nand_irq,
+ 			IRQF_TRIGGER_HIGH, DRV_NAME, host)) {
+ 		dev_err(&pdev->dev, "Error requesting NAND IRQ\n");
+ 		res = -ENXIO;
+-		goto err_exit3;
++		goto release_dma_chan;
+ 	}
+ 
+ 	/*
+@@ -799,27 +799,29 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	 */
+ 	res = nand_scan_tail(mtd);
+ 	if (res)
+-		goto err_exit4;
++		goto free_irq;
+ 
+ 	mtd->name = DRV_NAME;
+ 
+ 	res = mtd_device_register(mtd, host->ncfg->parts,
+ 				  host->ncfg->num_parts);
+-	if (!res)
+-		return res;
++	if (res)
++		goto cleanup_nand;
+ 
+-	nand_release(mtd);
++	return 0;
+ 
+-err_exit4:
 +cleanup_nand:
-+	nand_cleanup(nand);
-+free_bch:
- 	free_bch(doc->bch);
-+free_nand:
- 	kfree(nand);
--
--fail_unmap:
-+unmap:
- 	iounmap(virtadr);
++	nand_cleanup(nand_chip);
++free_irq:
+ 	free_irq(host->irq, host);
+-err_exit3:
++release_dma_chan:
+ 	if (use_dma)
+ 		dma_release_channel(host->dma_chan);
+-err_exit2:
++unprepare_clk:
+ 	clk_disable_unprepare(host->clk);
+-err_put_clk:
++put_clk:
+ 	clk_put(host->clk);
+-err_exit1:
++free_gpio:
+ 	lpc32xx_wp_enable(host);
+ 	gpio_free(host->ncfg->wp_gpio);
  
- 	return retval;
 -- 
 2.14.1
