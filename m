@@ -1,19 +1,22 @@
-Received: from mail-ve1eur01on0057.outbound.protection.outlook.com
- ([104.47.1.57] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyYCE-0002wA-N5
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 07:30:09 +0000
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- oss@buserror.net, leoyang.li@nxp.com,
- Jagdish Gediya <jagdish.gediya@nxp.com>, stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: fsl_ifc: Read ECCSTAT0 and ECCSTAT1 registers
- for IFC 2.0
-Date: Thu, 22 Mar 2018 01:08:10 +0530
-Message-Id: <1521661101-26911-1-git-send-email-jagdish.gediya@nxp.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyYgk-0007bY-4e
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 08:01:40 +0000
+Date: Wed, 21 Mar 2018 09:01:23 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Arushi Singhal <arushisinghal19971997@gmail.com>
+Cc: dwmw2@infradead.org, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>
+Subject: Re: [PATCH] mtd: devices: check mtd_device_register() return code
+Message-ID: <20180321090123.07d55e32@xps13>
+In-Reply-To: <20180321053709.GA5611@seema-Inspiron-15-3567>
+References: <20180321053709.GA5611@seema-Inspiron-15-3567>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +26,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to missing information in Hardware manual, current
-implementation doesn't read ECCSTAT0 and ECCSTAT1 registers
-for IFC 2.0.
+Hi Arushi,
 
-Add support to read ECCSTAT0 and ECCSTAT1 registers during
-ecccheck for IFC 2.0.
+On Wed, 21 Mar 2018 11:07:09 +0530, Arushi Singhal
+<arushisinghal19971997@gmail.com> wrote:
 
-Fixes: 656441478ed5 ("mtd: nand: ifc: Fix location of eccstat
-registers for IFC V1.0")
-Cc: stable@vger.kernel.org # v3.18+
-Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
----
- drivers/mtd/nand/fsl_ifc_nand.c | 6 +-----
- include/linux/fsl_ifc.h         | 6 +-----
- 2 files changed, 2 insertions(+), 10 deletions(-)
+> stfsm_probe() misses error handling of mtd_device_register().
+>=20
+> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
+> ---
+>  drivers/mtd/devices/st_spi_fsm.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_sp=
+i_fsm.c
+> index 7bc29d7..e1aa4f8 100644
+> --- a/drivers/mtd/devices/st_spi_fsm.c
+> +++ b/drivers/mtd/devices/st_spi_fsm.c
+> @@ -2125,7 +2125,13 @@ static int stfsm_probe(struct platform_device *pde=
+v)
+>  		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
+>  		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
+> =20
+> -	return mtd_device_register(&fsm->mtd, NULL, 0);
+> +	ret =3D mtd_device_register(&fsm->mtd, NULL, 0);
+> +	if (ret) {
+> +		pr_err("Failed to register device\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index ed64759..1513298 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -227,11 +227,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 		int sector_end = sector_start + chip->ecc.steps - 1;
- 		__be32 *eccstat_regs;
- 
--		if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
--			eccstat_regs = ifc->ifc_nand.v2_nand_eccstat;
--		else
--			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
--
-+		eccstat_regs = ifc->ifc_nand.nand_eccstat;
- 		eccstat = ifc_in32(&eccstat_regs[sector_start / 4]);
- 
- 		for (i = sector_start; i <= sector_end; i++) {
-diff --git a/include/linux/fsl_ifc.h b/include/linux/fsl_ifc.h
-index c332f0a..3fdfede 100644
---- a/include/linux/fsl_ifc.h
-+++ b/include/linux/fsl_ifc.h
-@@ -734,11 +734,7 @@ struct fsl_ifc_nand {
- 	u32 res19[0x10];
- 	__be32 nand_fsr;
- 	u32 res20;
--	/* The V1 nand_eccstat is actually 4 words that overlaps the
--	 * V2 nand_eccstat.
--	 */
--	__be32 v1_nand_eccstat[2];
--	__be32 v2_nand_eccstat[6];
-+	__be32 nand_eccstat[8];
- 	u32 res21[0x1c];
- 	__be32 nanndcr;
- 	u32 res22[0x2];
--- 
-1.9.1
+I don't think this bring anything. However, if you want to fix
+something you should jump below on error to disable the clock instead
+of returning 'ret' directly.
+
+> =20
+>  err_clk_unprepare:
+>  	clk_disable_unprepare(fsm->clk);
+
+Thanks,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
