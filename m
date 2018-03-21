@@ -1,23 +1,21 @@
-Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164])
+Received: from mail-eopbgr50073.outbound.protection.outlook.com ([40.107.5.73]
+ helo=EUR03-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyafr-0004vO-Cp
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 10:08:53 +0000
-Subject: Re: [PATCH 1/2] mtd: use put_device() if device_register fail
-To: arvindY <arvind.yadav.cs@gmail.com>
-CC: <linux-mtd@lists.infradead.org>
-References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
- <39c4af723ea37cd05976a17cb9c1fbc975496ffd.1520592440.git.arvind.yadav.cs@gmail.com>
- <20180314153600.458c0fe4@bbrezillon> <5AACE3C9.9090602@gmail.com>
- <8d72819d-0811-33c1-41df-fb19ce6de57c@solarflare.com>
- <5AAFF9C6.2010800@gmail.com>
-From: Martin Habets <mhabets@solarflare.com>
-Message-ID: <62045684-37a7-4359-7f8b-00816a64aa0b@solarflare.com>
-Date: Wed, 21 Mar 2018 10:08:33 +0000
+ id 1eybu9-00035o-L1
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 11:27:43 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@exceet.de,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v7 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Wed, 21 Mar 2018 16:56:03 +0530
+Message-Id: <1521631565-24413-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <5AAFF9C6.2010800@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arvind,
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-On 19/03/18 17:56, arvindY wrote:
-> 
-> 
-> On Monday 19 March 2018 04:13 PM, Martin Habets wrote:
->> On 17/03/18 09:45, arvindY wrote:
->>>>>       of_node_put(mtd_get_of_node(mtd));
->>>> You're referencing an object that is supposed to have been
->>>> freed/released by the put_device() call. Again, it's not really a
->>>> problem because in our case ->release() does not free the mtd object
->>>> (as is usually done in other parts of the kernel), but it still looks
->>>> wrong. It's probably better to move the of_node_put() and the below
->>>> idr_remove() call in the ->release() hook if you want to use
->>>> put_device().
->>>>
->>>>>       idr_remove(&mtd_idr, i);
->>> Sure, we can move put_device() below this. But need to check
->>> how we can add hook in release.
->> My guess is that you would need this:
->> http://lists.infradead.org/pipermail/linux-mtd/2017-May/074373.html
-> 
-> we should not removes(device_destroy) a MTD device in
-> release. MTD device should be removes when
-> deleting(unregister) a MTD device.
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-No, deleting an MTD device should only decrement a refcounter.
-At this point there can still be other processes with a /dev/mtd*
-device open.
-When there are no more users release gets called to remove it.
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, needed for read register, read any register
+commands, read SFDP register, not available at time of spi_nor_scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+thus require to have dynamic LUT creation support.
 
-> MTD device should decrement refcount of a node and
-> Remove MTD from IDR in dev->release().
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
 
-You could be right about this, I'm not sure.
+Also fix initialize sequence of AHB read, move
+fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
 
-My patch allows the caller to free the mtd_info memory. This is needed since
-the caller allocated the memory in the first place, and because the caller has
-no other of knowing that the last MTD user is gone.
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
 
-Martin
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
+
+Changes for v7:
+- Incorporated Han review comments.
+
+Changes for v6:
+- Incorporated Boris review comments.
+- Added dedicated LUT for AHB read cmd, required for devmem Read.
+
+Changes for v5:
+- Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
+
+Changes for v4:
+- Drop patch
+'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
+would be taken care in next-series.
+- Added patch for 'fix initialize sequence of AHB read'.
+
+Changes for v3:
+- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+- Update information in cover letter.
+
+Changes for v2:
+- Swap patch sequences in the series to solve git bissect issue.
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 484 +++++++++++++++++++++++++-------------
+ 1 file changed, 324 insertions(+), 160 deletions(-)
+
+-- 
+1.9.1
