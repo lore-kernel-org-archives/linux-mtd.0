@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydOD-0001Ye-5A
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:04 +0000
+ id 1eydOD-0001Xu-63
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:11 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 08/16] mtd: rawnand: fsmc: fix and enhance probe function
- error path
-Date: Wed, 21 Mar 2018 14:01:49 +0100
-Message-Id: <20180321130157.9524-9-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 05/16] mtd: rawnand: docg4: fix the probe function error
+ path
+Date: Wed, 21 Mar 2018 14:01:46 +0100
+Message-Id: <20180321130157.9524-6-miquel.raynal@bootlin.com>
 In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,106 +25,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup().
-
-Also, goto labels should indicate what the next cleanup is, not the
-point from which they can be accessed.
+An error after nand_scan_tail() should trigger a nand_cleanup() call.
+The helper mtd_device_register() returns an error code that should
+be checked and nand_cleanup() called accordingly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/docg4.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 28c48dcc514e..f4a5a317d4ae 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -1022,12 +1022,12 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 		host->read_dma_chan = dma_request_channel(mask, filter, NULL);
- 		if (!host->read_dma_chan) {
- 			dev_err(&pdev->dev, "Unable to get read dma channel\n");
--			goto err_req_read_chnl;
-+			goto disable_clk;
- 		}
- 		host->write_dma_chan = dma_request_channel(mask, filter, NULL);
- 		if (!host->write_dma_chan) {
- 			dev_err(&pdev->dev, "Unable to get write dma channel\n");
--			goto err_req_write_chnl;
-+			goto release_dma_read_chan;
- 		}
+diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+index 1314aa99b9ab..bb96cb33cd6b 100644
+--- a/drivers/mtd/nand/raw/docg4.c
++++ b/drivers/mtd/nand/raw/docg4.c
+@@ -1341,7 +1341,7 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	nand = kzalloc(len, GFP_KERNEL);
+ 	if (nand == NULL) {
+ 		retval = -ENOMEM;
+-		goto fail_unmap;
++		goto unmap;
  	}
  
-@@ -1050,7 +1050,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	ret = nand_scan_ident(mtd, 1, NULL);
- 	if (ret) {
- 		dev_err(&pdev->dev, "No NAND Device found!\n");
--		goto err_scan_ident;
-+		goto release_dma_write_chan;
+ 	mtd = nand_to_mtd(nand);
+@@ -1357,7 +1357,7 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
+ 	if (doc->bch == NULL) {
+ 		retval = -EINVAL;
+-		goto fail;
++		goto free_nand;
  	}
  
- 	if (AMBA_REV_BITS(host->pid) >= 8) {
-@@ -1065,7 +1065,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 			dev_warn(&pdev->dev, "No oob scheme defined for oobsize %d\n",
- 				 mtd->oobsize);
- 			ret = -EINVAL;
--			goto err_probe;
-+			goto release_dma_write_chan;
- 		}
- 
- 		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
-@@ -1090,7 +1090,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 
- 		default:
- 			dev_err(&pdev->dev, "Unsupported ECC mode!\n");
--			goto err_probe;
-+			goto release_dma_write_chan;
- 		}
- 
- 		/*
-@@ -1110,7 +1110,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 					 "No oob scheme defined for oobsize %d\n",
- 					 mtd->oobsize);
- 				ret = -EINVAL;
--				goto err_probe;
-+				goto release_dma_write_chan;
- 			}
- 		}
+ 	platform_set_drvdata(pdev, doc);
+@@ -1366,30 +1366,32 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	retval = read_id_reg(mtd);
+ 	if (retval == -ENODEV) {
+ 		dev_warn(dev, "No diskonchip G4 device found.\n");
+-		goto fail;
++		goto free_bch;
  	}
-@@ -1118,26 +1118,29 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	/* Second stage of scan to fill MTD data-structures */
- 	ret = nand_scan_tail(mtd);
- 	if (ret)
--		goto err_probe;
-+		goto release_dma_write_chan;
  
- 	mtd->name = "nand";
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret)
--		goto err_probe;
+ 	retval = nand_scan_tail(mtd);
+ 	if (retval)
+-		goto fail;
++		goto free_bch;
+ 
+ 	retval = read_factory_bbt(mtd);
+ 	if (retval)
+-		goto fail;
 +		goto cleanup_nand;
  
- 	platform_set_drvdata(pdev, host);
- 	dev_info(&pdev->dev, "FSMC NAND driver registration successful\n");
+ 	retval = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
+ 	if (retval)
+-		goto fail;
++		goto cleanup_nand;
+ 
+ 	doc->mtd = mtd;
 +
  	return 0;
  
--err_probe:
--err_scan_ident:
+-fail:
+-	nand_release(mtd); /* deletes partitions and mtd devices */
 +cleanup_nand:
 +	nand_cleanup(nand);
-+release_dma_write_chan:
- 	if (host->mode == USE_DMA_ACCESS)
- 		dma_release_channel(host->write_dma_chan);
--err_req_write_chnl:
-+release_dma_read_chan:
- 	if (host->mode == USE_DMA_ACCESS)
- 		dma_release_channel(host->read_dma_chan);
--err_req_read_chnl:
-+disable_clk:
- 	clk_disable_unprepare(host->clk);
-+
- 	return ret;
- }
++free_bch:
+ 	free_bch(doc->bch);
++free_nand:
+ 	kfree(nand);
+-
+-fail_unmap:
++unmap:
+ 	iounmap(virtadr);
  
+ 	return retval;
 -- 
 2.14.1
