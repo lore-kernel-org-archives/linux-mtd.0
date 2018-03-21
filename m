@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydNy-0001W5-U2
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:02:40 +0000
+ id 1eydNy-0001WD-U9
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:02:41 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 01/16] mtd: rawnand: brcmnand: fix probe function error path
-Date: Wed, 21 Mar 2018 14:01:42 +0100
-Message-Id: <20180321130157.9524-2-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 04/16] mtd: rawnand: denali: fix probe function error path
+Date: Wed, 21 Mar 2018 14:01:45 +0100
+Message-Id: <20180321130157.9524-5-miquel.raynal@bootlin.com>
 In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,25 +30,26 @@ be checked and nand_cleanup() called accordingly.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/denali.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index c28fd2bc1a84..1306aaa7a8bf 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2297,7 +2297,11 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
- 	if (ret)
- 		return ret;
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index 313c7f50621b..2a302a1d1430 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1384,10 +1384,12 @@ int denali_init(struct denali_nand_info *denali)
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(denali->dev, "Failed to register MTD: %d\n", ret);
+-		goto free_buf;
++		goto cleanup_nand;
+ 	}
+ 	return 0;
  
--	return mtd_device_register(mtd, NULL, 0);
-+	ret = mtd_device_register(mtd, NULL, 0);
-+	if (ret)
-+		nand_cleanup(chip);
-+
-+	return ret;
- }
- 
- static void brcmnand_save_restore_cs_config(struct brcmnand_host *host,
++cleanup_nand:
++	nand_cleanup(chip);
+ free_buf:
+ 	kfree(denali->buf);
+ disable_irq:
 -- 
 2.14.1
