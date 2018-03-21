@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydNy-0001W6-U1
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:02:38 +0000
+ id 1eydNy-0001Vd-U0
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:02:40 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,11 +10,12 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 02/16] mtd: rawnand: cafe: fix probe function error path
-Date: Wed, 21 Mar 2018 14:01:43 +0100
-Message-Id: <20180321130157.9524-3-miquel.raynal@bootlin.com>
-In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
-References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 00/16] Fix probe functions error path
+Date: Wed, 21 Mar 2018 14:01:41 +0100
+Message-Id: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup().
-The helper mtd_device_parse_register() returns an error code that should
-be checked and nand_cleanup() called accordingly.
+Hello all,
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
- drivers/mtd/nand/raw/cafe_nand.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+In order to remove the limitation that prevents dynamic allocations
+during the identification phase (nand_scan_ident()), we need to get rid
+of the nand_scan_ident()/nand_scan_tail() calls from drivers and only
+export nand_scan().
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 3c1b6a3786b2..de9682d87a56 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -774,21 +774,25 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	pci_set_drvdata(pdev, mtd);
- 
- 	mtd->name = "cafe_nand";
--	mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
-+	err = mtd_device_parse_register(mtd, part_probes, NULL, NULL, 0);
-+	if (err)
-+		goto out_cleanup_nand;
- 
--	goto out;
-+	return 0;
- 
-- out_free_dma:
-+out_cleanup_nand:
-+	nand_cleanup(&cafe->nand);
-+out_free_dma:
- 	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-- out_irq:
-+out_irq:
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
- 	free_irq(pdev->irq, mtd);
-- out_ior:
-+out_ior:
- 	pci_iounmap(pdev, cafe->mmio);
-- out_free_mtd:
-+out_free_mtd:
- 	kfree(cafe);
-- out:
-+
- 	return err;
- }
- 
+This series prepares the migration to nand_scan() by first fixing (and
+enhancing some times) the probe function error path of the drivers that
+do not use nand_scan() yet.
+
+The three main problems addressed in the series are:
+1/ a wrong error path that does not free/disable the resources
+   correctly.
+2/ nand_cleanup() is not called upon error after a successful
+   nand_scan_tail().
+3/ nand_release() is called instead of nand_cleanup(). nand_release()
+   does call nand_cleanup() and also mtd_device_unregister(), which
+   should not be called while mtd_device_register() as succeeded.
+
+Thanks,
+Miquèl
+
+Changes since v1:
+=================
+ * Extracted only the patches fixing the error path from the first huge
+   series (50+ patches) that also converted the drivers to nand_scan().
+ * Changed wrong nand_release() calls to nand_cleanup().
+
+
+Miquel Raynal (16):
+  mtd: rawnand: brcmnand: fix probe function error path
+  mtd: rawnand: cafe: fix probe function error path
+  mtd: rawnand: davinci: fix probe function error path
+  mtd: rawnand: denali: fix probe function error path
+  mtd: rawnand: docg4: fix the probe function error path
+  mtd: rawnand: fsl_elbc: fix probe function error path
+  mtd: rawnand: fsl_ifc: fix probe function error path
+  mtd: rawnand: fsmc: fix and enhance probe function error path
+  mtd: rawnand: mxc: fix probe function error path
+  mtd: rawnand: omap2: fix the probe function error path
+  mtd: rawnand: sh_flctl: fix the probe function error path
+  mtd: rawnand: tango: fix probe function error path
+  mtd: rawnand: hisi504: fix and enhance the probe function error path
+  mtd: rawnand: lpc32xx_mlc: fix and enhance the probe function error
+    path
+  mtd: rawnand: lpc32xx_slc: fix and enhance the probe function error
+    path
+  mtd: rawnand: s3c2410: enhance the probe function error path
+
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c |  6 ++++-
+ drivers/mtd/nand/raw/cafe_nand.c         | 18 +++++++++------
+ drivers/mtd/nand/raw/davinci_nand.c      |  6 +++--
+ drivers/mtd/nand/raw/denali.c            |  4 +++-
+ drivers/mtd/nand/raw/docg4.c             | 22 +++++++++---------
+ drivers/mtd/nand/raw/fsl_elbc_nand.c     |  9 ++++++--
+ drivers/mtd/nand/raw/fsl_ifc_nand.c      |  8 ++++++-
+ drivers/mtd/nand/raw/fsmc_nand.c         | 27 +++++++++++++----------
+ drivers/mtd/nand/raw/hisi504_nand.c      | 35 ++++++++++-------------------
+ drivers/mtd/nand/raw/lpc32xx_mlc.c       | 38 +++++++++++++++++---------------
+ drivers/mtd/nand/raw/lpc32xx_slc.c       | 26 ++++++++++++----------
+ drivers/mtd/nand/raw/mxc_nand.c          | 11 +++++----
+ drivers/mtd/nand/raw/omap2.c             |  5 ++++-
+ drivers/mtd/nand/raw/s3c2410.c           | 24 ++++++++++----------
+ drivers/mtd/nand/raw/sh_flctl.c          |  4 ++++
+ drivers/mtd/nand/raw/tango_nand.c        |  4 +++-
+ 16 files changed, 140 insertions(+), 107 deletions(-)
+
 -- 
 2.14.1
