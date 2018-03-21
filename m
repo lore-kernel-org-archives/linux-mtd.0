@@ -1,21 +1,26 @@
-Received: from mail-wr0-x236.google.com ([2a00:1450:400c:c0c::236])
+Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eygEy-00071g-FM
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 16:05:31 +0000
-Received: by mail-wr0-x236.google.com with SMTP id o8so5745657wra.1
- for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2018 09:05:16 -0700 (PDT)
+ id 1eylUN-00081s-Jb
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 21:41:45 +0000
+Received: by mail-wr0-x234.google.com with SMTP id s10so6663664wra.13
+ for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2018 14:41:32 -0700 (PDT)
+Subject: Re: [PATCH] MAINTAINERS: update maintainers for MTD and SPI NOR
+ subsystems
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+References: <20180315190438.4832-1-cyrille.pitchen@wedev4u.fr>
+ <c7722fa4-992e-717d-2b46-51f906a8978f@gmail.com>
+ <309adb80-217b-1328-e462-d4596231bb25@wedev4u.fr>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <a4407023-0482-8a98-5bb2-9114ac8a8e2f@gmail.com>
+Date: Wed, 21 Mar 2018 22:33:26 +0100
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvzZNYiqQy2GnkyOfcZ+fnx1SVisVc=ntL90vk1gFf2YyA@mail.gmail.com>
-References: <CWLP265MB0721344DBE1B7785E7D2C6A5D2DE0@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
- <22711116.lYnEpaWOtA@blindfold>
- <CAFLxGvzZNYiqQy2GnkyOfcZ+fnx1SVisVc=ntL90vk1gFf2YyA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 21 Mar 2018 17:05:14 +0100
-Message-ID: <CAFLxGvxaYo9TfCMZPr4su6y7opQgeodK98r5rb5UU9O4H0Ff_Q@mail.gmail.com>
-Subject: Re: power loss results in mounting failure on SLC NAND
-To: martin bayern <martinbayern@outlook.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <309adb80-217b-1328-e462-d4596231bb25@wedev4u.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 14, 2018 at 1:53 PM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Fri, Mar 9, 2018 at 9:12 PM, Richard Weinberger <richard@nod.at> wrote:
-> Did this help?
+On 03/18/2018 06:14 PM, Cyrille Pitchen wrote:
+> Hi Marek,
 
-*kind ping*
+Hi,
 
-I'd really love to hear whether the patch helps. I think we need to
-address this case, but first I'd like to hear whether it helped.
+> Le 18/03/2018 à 00:41, Marek Vasut a écrit :
+>> On 03/15/2018 08:04 PM, Cyrille Pitchen wrote:
+>>> remove myself as MTD and SPI NOR maintainer.
+>>>
+>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+>>
+>> What happened ?
+>>
+> 
+> Nothing to worry. Since I was hired for a new job, I've been facing issues
+> to do spi-nor reviews in a reasonable delay. I have to admit that I took
+> more and more time before replying to people and I suspect it won't go
+> better soon.
+> 
+> So I've talked about it with Boris hence he suggested that I remove my name
+> from MAINTAINERS to avoid confusion so people are not surprised or
+> frustrated that I don't review their series on time.
+> 
+> I really don't know yet whether I could go back again later to help
+> reviewing mtd/spi-nor patches but for now I just have to admit that about mtd
+> topcis, I'm off-line almost all the time :(
+> 
+> Sorry guys and thanks for your concern, Marek! :)
+That's kinda sad, I'd like to NAK this patch.
+Thanks for all the help!
 
 -- 
-Thanks,
-//richard
+Best regards,
+Marek Vasut
