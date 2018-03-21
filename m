@@ -1,20 +1,23 @@
-Received: from mail-he1eur01on0041.outbound.protection.outlook.com
- ([104.47.0.41] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from dispatch1-us1.ppe-hosted.com ([67.231.154.164])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eyaVQ-0007LT-Cf
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 09:58:06 +0000
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
-To: linux-mtd@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- oss@buserror.net, leoyang.li@nxp.com,
- Jagdish Gediya <jagdish.gediya@nxp.com>, stable@vger.kernel.org,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Subject: [PATCH][v5] mtd: rawnand: fsl_ifc: Fix eccstat array overflow for IFC
- ver >= 2.0.0
-Date: Thu, 22 Mar 2018 03:36:03 +0530
-Message-Id: <1521669973-10450-1-git-send-email-jagdish.gediya@nxp.com>
+ id 1eyafr-0004vO-Cp
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 10:08:53 +0000
+Subject: Re: [PATCH 1/2] mtd: use put_device() if device_register fail
+To: arvindY <arvind.yadav.cs@gmail.com>
+CC: <linux-mtd@lists.infradead.org>
+References: <cover.1520592440.git.arvind.yadav.cs@gmail.com>
+ <39c4af723ea37cd05976a17cb9c1fbc975496ffd.1520592440.git.arvind.yadav.cs@gmail.com>
+ <20180314153600.458c0fe4@bbrezillon> <5AACE3C9.9090602@gmail.com>
+ <8d72819d-0811-33c1-41df-fb19ce6de57c@solarflare.com>
+ <5AAFF9C6.2010800@gmail.com>
+From: Martin Habets <mhabets@solarflare.com>
+Message-ID: <62045684-37a7-4359-7f8b-00816a64aa0b@solarflare.com>
+Date: Wed, 21 Mar 2018 10:08:33 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <5AAFF9C6.2010800@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,89 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Number of ECC status registers i.e. (ECCSTATx) has been increased in IFC
-version 2.0.0 due to increase in SRAM size. This is causing eccstat
-array to over flow.
+Hi Arvind,
 
-So, replace eccstat array with u32 variable to make it fail-safe and
-independent of number of ECC status registers or SRAM size.
+On 19/03/18 17:56, arvindY wrote:
+> 
+> 
+> On Monday 19 March 2018 04:13 PM, Martin Habets wrote:
+>> On 17/03/18 09:45, arvindY wrote:
+>>>>>       of_node_put(mtd_get_of_node(mtd));
+>>>> You're referencing an object that is supposed to have been
+>>>> freed/released by the put_device() call. Again, it's not really a
+>>>> problem because in our case ->release() does not free the mtd object
+>>>> (as is usually done in other parts of the kernel), but it still looks
+>>>> wrong. It's probably better to move the of_node_put() and the below
+>>>> idr_remove() call in the ->release() hook if you want to use
+>>>> put_device().
+>>>>
+>>>>>       idr_remove(&mtd_idr, i);
+>>> Sure, we can move put_device() below this. But need to check
+>>> how we can add hook in release.
+>> My guess is that you would need this:
+>> http://lists.infradead.org/pipermail/linux-mtd/2017-May/074373.html
+> 
+> we should not removes(device_destroy) a MTD device in
+> release. MTD device should be removes when
+> deleting(unregister) a MTD device.
 
-Fixes: bccb06c353af ("mtd: nand: ifc: update bufnum mask for ver >= 2.0.0")
-Cc: stable@vger.kernel.org # 3.18+
-Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
----
-Changes for v2: Incorporated comments from Miquel Raynal and Boris Brezillon 
-        - Updated patch subject
-        - Remove usage of eccstat array
-        - Added Cc: stable@vger.kernel.org 
+No, deleting an MTD device should only decrement a refcounter.
+At this point there can still be other processes with a /dev/mtd*
+device open.
+When there are no more users release gets called to remove it.
 
-Changes for v3: Incorporated comments from Boris Brezillon
-        - Added fixes tag
+> MTD device should decrement refcount of a node and
+> Remove MTD from IDR in dev->release().
 
-Changes for v4: Incorporated comments from Boris Brezillon
+You could be right about this, I'm not sure.
 
-Changes for v5: Incorporated comments from Boris Brezillon
+My patch allows the caller to free the mtd_info memory. This is needed since
+the caller allocated the memory in the first place, and because the caller has
+no other of knowing that the last MTD user is gone.
 
- drivers/mtd/nand/fsl_ifc_nand.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index 4872a7b..f0b4ecd 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -173,14 +173,9 @@ static void set_addr(struct mtd_info *mtd, int column, int page_addr, int oob)
- 
- /* returns nonzero if entire page is blank */
- static int check_read_ecc(struct mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
--			  u32 *eccstat, unsigned int bufnum)
-+			  u32 eccstat, unsigned int bufnum)
- {
--	u32 reg = eccstat[bufnum / 4];
--	int errors;
--
--	errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
--
--	return errors;
-+	return  (eccstat >> ((3 - bufnum % 4) * 8)) & 15;
- }
- 
- /*
-@@ -193,7 +188,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_ifc_nand_ctrl *nctrl = ifc_nand_ctrl;
- 	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
--	u32 eccstat[4];
-+	u32 eccstat;
- 	int i;
- 
- 	/* set the chip select for NAND Transaction */
-@@ -228,8 +223,8 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 	if (nctrl->eccread) {
- 		int errors;
- 		int bufnum = nctrl->page & priv->bufnum_mask;
--		int sector = bufnum * chip->ecc.steps;
--		int sector_end = sector + chip->ecc.steps - 1;
-+		int sector_start = bufnum * chip->ecc.steps;
-+		int sector_end = sector_start + chip->ecc.steps - 1;
- 		__be32 *eccstat_regs;
- 
- 		if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
-@@ -237,10 +232,12 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
- 		else
- 			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
- 
--		for (i = sector / 4; i <= sector_end / 4; i++)
--			eccstat[i] = ifc_in32(&eccstat_regs[i]);
-+		eccstat = ifc_in32(&eccstat_regs[sector_start / 4]);
-+
-+		for (i = sector_start; i <= sector_end; i++) {
-+			if ((i != sector_start) && !(i % 4))
-+				eccstat = ifc_in32(&eccstat_regs[i / 4]);
- 
--		for (i = sector; i <= sector_end; i++) {
- 			errors = check_read_ecc(mtd, ctrl, eccstat, i);
- 
- 			if (errors == 15) {
--- 
-1.9.1
+Martin
