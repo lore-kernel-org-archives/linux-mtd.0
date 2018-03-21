@@ -1,21 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eydOV-0001k7-0k
- for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:03:25 +0000
+ id 1eydY2-0000MA-4Z
+ for linux-mtd@lists.infradead.org; Wed, 21 Mar 2018 13:13:00 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 15/16] mtd: rawnand: lpc32xx_slc: fix and enhance the probe
- function error path
-Date: Wed, 21 Mar 2018 14:01:56 +0100
-Message-Id: <20180321130157.9524-16-miquel.raynal@bootlin.com>
-In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
-References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 1/2] mtd: rawnand: add a field in nand_chip to fill an array
+ of IDs
+Date: Wed, 21 Mar 2018 14:12:34 +0100
+Message-Id: <20180321131235.9822-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20180321131235.9822-1-miquel.raynal@bootlin.com>
+References: <20180321131235.9822-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,89 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup().
-The helper mtd_device_parse_register() returns an error code that should
-be checked and nand_cleanup() called accordingly.
-
-Also prepare the migration of the lpc32xx_slc driver to use nand_scan()
-by cleaning the error path in the probe function.
+Add an alternate way to give to the core another ID table to later
+remove the one given in nand_scan_ident() as part of the migration to
+nand_scan().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/lpc32xx_slc.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 8 ++++++--
+ include/linux/mtd/rawnand.h      | 3 +++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 5f7cc6da0a7f..143e1ec3a90a 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -831,11 +831,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(host->clk)) {
- 		dev_err(&pdev->dev, "Clock failure\n");
- 		res = -ENOENT;
--		goto err_exit1;
-+		goto release_gpio;
- 	}
- 	res = clk_prepare_enable(host->clk);
- 	if (res)
--		goto err_exit1;
-+		goto release_gpio;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 9e151e4c7570..d652c692bb1b 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5598,8 +5598,12 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
+ 	manufacturer = nand_get_manufacturer(maf_id);
+ 	chip->manufacturer.desc = manufacturer;
  
- 	/* Set NAND IO addresses and command/ready functions */
- 	chip->IO_ADDR_R = SLC_DATA(host->io_base);
-@@ -874,19 +874,19 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 				      GFP_KERNEL);
- 	if (host->data_buf == NULL) {
- 		res = -ENOMEM;
--		goto err_exit2;
-+		goto release_clk;
- 	}
+-	if (!type)
+-		type = nand_flash_ids;
++	if (!type) {
++		if (chip->flash_ids)
++			type = chip->flash_ids;
++		else
++			type = nand_flash_ids;
++	}
  
- 	res = lpc32xx_nand_dma_setup(host);
- 	if (res) {
- 		res = -EIO;
--		goto err_exit2;
-+		goto release_clk;
- 	}
+ 	/*
+ 	 * Save the NAND_BUSWIDTH_16 flag before letting auto-detection logic
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 89675cb9c79f..04b6b99cfb99 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1215,6 +1215,7 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
+  *			  chipnr is set to %NAND_DATA_IFACE_CHECK_ONLY this
+  *			  means the configuration should not be applied but
+  *			  only checked.
++ * @flash_ids:		[OPTIONAL] local NAND flash ID table
+  * @bbt:		[INTERN] bad block table pointer
+  * @bbt_td:		[REPLACEABLE] bad block table descriptor for flash
+  *			lookup.
+@@ -1301,6 +1302,8 @@ struct nand_chip {
+ 	unsigned long buf_align;
+ 	struct nand_hw_control hwcontrol;
  
- 	/* Find NAND device */
- 	res = nand_scan_ident(mtd, 1, NULL);
- 	if (res)
--		goto err_exit3;
-+		goto release_dma;
- 
- 	/* OOB and ECC CPU and DMA work areas */
- 	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-@@ -920,21 +920,23 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	 */
- 	res = nand_scan_tail(mtd);
- 	if (res)
--		goto err_exit3;
-+		goto release_dma;
- 
- 	mtd->name = "nxp_lpc3220_slc";
- 	res = mtd_device_register(mtd, host->ncfg->parts,
- 				  host->ncfg->num_parts);
--	if (!res)
--		return res;
-+	if (res)
-+		goto cleanup_nand;
- 
--	nand_release(mtd);
-+	return 0;
- 
--err_exit3:
-+cleanup_nand:
-+	nand_cleanup(chip);
-+release_dma:
- 	dma_release_channel(host->dma_chan);
--err_exit2:
-+release_clk:
- 	clk_disable_unprepare(host->clk);
--err_exit1:
-+release_gpio:
- 	lpc32xx_wp_enable(host);
- 
- 	return res;
++	struct nand_flash_dev *flash_ids;
++
+ 	uint8_t *bbt;
+ 	struct nand_bbt_descr *bbt_td;
+ 	struct nand_bbt_descr *bbt_md;
 -- 
 2.14.1
