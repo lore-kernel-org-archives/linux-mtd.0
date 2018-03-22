@@ -1,22 +1,26 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-by2nam01on0072.outbound.protection.outlook.com
+ ([104.47.34.72] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ez16N-0007Ea-F9
- for linux-mtd@lists.infradead.org; Thu, 22 Mar 2018 14:22:06 +0000
-Received: by mail-wm0-x242.google.com with SMTP id l16so16510413wmh.3
- for <linux-mtd@lists.infradead.org>; Thu, 22 Mar 2018 07:21:48 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180301133941.19660-4-joakim.tjernlund@infinera.com>
-References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
- <20180301133941.19660-4-joakim.tjernlund@infinera.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Thu, 22 Mar 2018 15:21:46 +0100
-Message-ID: <CAFLxGvxc1=uZjtW-MixRa5FJQmBnnuK4fKvaFsTCnoEa17OCqQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] cfi_cmdset_0002: Do not allow read/write to suspend
+ id 1ez1Au-0001AT-N9
+ for linux-mtd@lists.infradead.org; Thu, 22 Mar 2018 14:26:42 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "richard.weinberger@gmail.com" <richard.weinberger@gmail.com>
+CC: "joakim.tjernlund@transmode.se" <joakim.tjernlund@transmode.se>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 1/3] cfi_cmdset_0001: Do not allow read/write to suspend
  erase block.
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 22 Mar 2018 14:26:27 +0000
+Message-ID: <1521728785.4790.326.camel@infinera.com>
+References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+ <20180301133941.19660-2-joakim.tjernlund@infinera.com>
+ <CAFLxGvwMJxJmVtpXPcmpZc5NaLDomNmOtvyn0_KMtqouM4dv3w@mail.gmail.com>
+In-Reply-To: <CAFLxGvwMJxJmVtpXPcmpZc5NaLDomNmOtvyn0_KMtqouM4dv3w@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9CAC19E264196C42B62AFD8414EC89F7@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +30,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim,
-
-On Thu, Mar 1, 2018 at 2:39 PM, Joakim Tjernlund
-<joakim.tjernlund@infinera.com> wrote:
-> Currently it is possible to read and/or write to suspend EB's.
-> Writing /dev/mtdX or /dev/mtdblockX from several processes may
-> break the flash state machine.
->
-> Taken from cfi_cmdset_0001 driver.
-
-Does cfi_cmdset_0020 also need fixing?
-
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 56aa6b75213d..d524a64ed754 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -816,9 +816,10 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
->                     (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))))
->                         goto sleep;
->
-> -               /* We could check to see if we're trying to access the sector
-> -                * that is currently being erased. However, no user will try
-> -                * anything like that so we just wait for the timeout. */
-
-:-)
-
-> +               /* Do not allow suspend iff read/write to EB address */
-> +               if ((adr & chip->in_progress_block_mask) ==
-> +                   chip->in_progress_block_addr)
-> +                       goto sleep;
->
->                 /* Erase suspend */
->                 /* It's harmless to issue the Erase-Suspend and Erase-Resume
-> @@ -2267,6 +2268,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->         chip->state = FL_ERASING;
->         chip->erase_suspended = 0;
->         chip->in_progress_block_addr = adr;
-> +       chip->in_progress_block_mask = ~(map->size - 1);
->
->         INVALIDATE_CACHE_UDELAY(map, chip,
->                                 adr, map->size,
-> @@ -2356,6 +2358,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->         chip->state = FL_ERASING;
->         chip->erase_suspended = 0;
->         chip->in_progress_block_addr = adr;
-> +       chip->in_progress_block_mask = ~(len - 1);
->
->         INVALIDATE_CACHE_UDELAY(map, chip,
->                                 adr, len,
-
-Reviewed-by: Richard Weinberger <richard@nod.at>
-
--- 
-Thanks,
-//richard
+T24gVGh1LCAyMDE4LTAzLTIyIGF0IDE1OjE0ICswMTAwLCBSaWNoYXJkIFdlaW5iZXJnZXIgd3Jv
+dGU6DQo+IA0KPiBPbiBUaHUsIE1hciAxLCAyMDE4IGF0IDI6MzkgUE0sIEpvYWtpbSBUamVybmx1
+bmQNCj4gPGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEuY29tPiB3cm90ZToNCj4gPiBGcm9tOiBK
+b2FraW0gVGplcm5sdW5kIDxqb2FraW0udGplcm5sdW5kQHRyYW5zbW9kZS5zZT4NCj4gPiANCj4g
+PiBDdXJyZW50bHkgaXQgaXMgcG9zc2libGUgdG8gcmVhZCBhbmQvb3Igd3JpdGUgdG8gc3VzcGVu
+ZCBFQidzLg0KPiA+IFdyaXRpbmcgL2Rldi9tdGRYIG9yIC9kZXYvbXRkYmxvY2tYIGZyb20gc2V2
+ZXJhbCBwcm9jZXNzZXMgbWF5DQo+ID4gYnJlYWsgdGhlIGZsYXNoIHN0YXRlIG1hY2hpbmUuDQo+
+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSm9ha2ltIFRqZXJubHVuZCA8am9ha2ltLnRqZXJubHVu
+ZEBpbmZpbmVyYS5jb20+DQo+ID4gQ2M6IDxzdGFibGVAdmdlci5rZXJuZWwub3JnPg0KPiA+IC0t
+LQ0KPiA+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYyB8IDE2ICsrKysrKysr
+KysrLS0tLS0NCj4gPiAgaW5jbHVkZS9saW51eC9tdGQvZmxhc2hjaGlwLmggICAgICAgfCAgMSAr
+DQo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkN
+Cj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAx
+LmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDEuYw0KPiA+IGluZGV4IDYwZDVk
+MTllMzQ3Zi4uYjU5ODcyMzA0YWU3IDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL2NoaXBz
+L2NmaV9jbWRzZXRfMDAwMS5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
+dF8wMDAxLmMNCj4gPiBAQCAtODQ5LDIxICs4NDksMjUgQEAgc3RhdGljIGludCBjaGlwX3JlYWR5
+IChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwgdW5zaWduZWQgbG9u
+Zw0KPiA+ICAgICAgICAgICAgICAgICAgICAgIChtb2RlID09IEZMX1dSSVRJTkcgJiYgKGNmaXAt
+PlN1c3BlbmRDbWRTdXBwb3J0ICYgMSkpKSkNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBn
+b3RvIHNsZWVwOw0KPiA+IA0KPiA+ICsgICAgICAgICAgICAgICAvKiBEbyBub3QgYWxsb3cgc3Vz
+cGVuZCBpZmYgcmVhZC93cml0ZSB0byBFQiBhZGRyZXNzICovDQo+ID4gKyAgICAgICAgICAgICAg
+IGlmICgoYWRyICYgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfbWFzaykgPT0NCj4gPiArICAgICAg
+ICAgICAgICAgICAgIGNoaXAtPmluX3Byb2dyZXNzX2Jsb2NrX2FkZHIpDQo+ID4gKyAgICAgICAg
+ICAgICAgICAgICAgICAgZ290byBzbGVlcDsNCj4gPiANCj4gPiAgICAgICAgICAgICAgICAgLyog
+RXJhc2Ugc3VzcGVuZCAqLw0KPiA+IC0gICAgICAgICAgICAgICBtYXBfd3JpdGUobWFwLCBDTUQo
+MHhCMCksIGFkcik7DQo+ID4gKyAgICAgICAgICAgICAgIG1hcF93cml0ZShtYXAsIENNRCgweEIw
+KSwgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7DQo+ID4gDQo+ID4gICAgICAgICAgICAg
+ICAgIC8qIElmIHRoZSBmbGFzaCBoYXMgZmluaXNoZWQgZXJhc2luZywgdGhlbiAnZXJhc2Ugc3Vz
+cGVuZCcNCj4gPiAgICAgICAgICAgICAgICAgICogYXBwZWFycyB0byBtYWtlIHNvbWUgKDI4RjMy
+MCkgZmxhc2ggZGV2aWNlcyBzd2l0Y2ggdG8NCj4gPiAgICAgICAgICAgICAgICAgICogJ3JlYWQn
+IG1vZGUuICBNYWtlIHN1cmUgdGhhdCB3ZSBzd2l0Y2ggdG8gJ3JlYWQgc3RhdHVzJw0KPiA+ICAg
+ICAgICAgICAgICAgICAgKiBtb2RlIHNvIHdlIGdldCB0aGUgcmlnaHQgZGF0YS4gLS1ybWsNCj4g
+PiAgICAgICAgICAgICAgICAgICovDQo+ID4gLSAgICAgICAgICAgICAgIG1hcF93cml0ZShtYXAs
+IENNRCgweDcwKSwgYWRyKTsNCj4gPiArICAgICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwgQ01E
+KDB4NzApLCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsNCj4gDQo+IFdoeSBkbyB5b3Ug
+Y2hhbmdlIHRvIGNoaXAtPmluX3Byb2dyZXNzX2Jsb2NrX2FkZHIgaGVyZT8NCg0KVG8gYmUgY29u
+c2lzdGVudCwgaW5fcHJvZ3Jlc3NfYmxvY2tfYWRkciBpcyB0aGUgYmxvY2sgaW4gcHJvZ3Jlc3Mu
+IGFkciB3aWxsIHdvcmsgdG9vDQpidXQgaXQgbG9va3Mgb2RkIHRvIG1peCBhZHIgYW5kIGluX3By
+b2dyZXNzX2Jsb2NrX2FkZHIgc28gY2hhbmdlIGl0IGZvciBjbGFyaXR5Lg0KDQo+IA0KPiA+ICAg
+ICAgICAgICAgICAgICBjaGlwLT5vbGRzdGF0ZSA9IEZMX0VSQVNJTkc7DQo+ID4gICAgICAgICAg
+ICAgICAgIGNoaXAtPnN0YXRlID0gRkxfRVJBU0VfU1VTUEVORElORzsNCj4gPiAgICAgICAgICAg
+ICAgICAgY2hpcC0+ZXJhc2Vfc3VzcGVuZGVkID0gMTsNCj4gPiAgICAgICAgICAgICAgICAgZm9y
+ICg7Oykgew0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cyA9IG1hcF9yZWFkKG1h
+cCwgYWRyKTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBzdGF0dXMgPSBtYXBfcmVhZCht
+YXAsIGNoaXAtPmluX3Byb2dyZXNzX2Jsb2NrX2FkZHIpOw0KPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgIGlmIChtYXBfd29yZF9hbmRlcXVhbChtYXAsIHN0YXR1cywgc3RhdHVzX09LLCBzdGF0
+dXNfT0spKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4g
+DQo+ID4gQEAgLTEwNTksOCArMTA2Myw4IEBAIHN0YXRpYyB2b2lkIHB1dF9jaGlwKHN0cnVjdCBt
+YXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkDQo+ID4g
+ICAgICAgICAgICAgICAgICAgIHNlbmRpbmcgdGhlIDB4NzAgKFJlYWQgU3RhdHVzKSBjb21tYW5k
+IHRvIGFuIGVyYXNpbmcNCj4gPiAgICAgICAgICAgICAgICAgICAgY2hpcCBhbmQgZXhwZWN0aW5n
+IGl0IHRvIGJlIGlnbm9yZWQsIHRoYXQncyB3aGF0IHdlDQo+ID4gICAgICAgICAgICAgICAgICAg
+IGRvLiAqLw0KPiA+IC0gICAgICAgICAgICAgICBtYXBfd3JpdGUobWFwLCBDTUQoMHhkMCksIGFk
+cik7DQo+ID4gLSAgICAgICAgICAgICAgIG1hcF93cml0ZShtYXAsIENNRCgweDcwKSwgYWRyKTsN
+Cj4gPiArICAgICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwgQ01EKDB4ZDApLCBjaGlwLT5pbl9w
+cm9ncmVzc19ibG9ja19hZGRyKTsNCj4gPiArICAgICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwg
+Q01EKDB4NzApLCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsNCj4gPiAgICAgICAgICAg
+ICAgICAgY2hpcC0+b2xkc3RhdGUgPSBGTF9SRUFEWTsNCj4gPiAgICAgICAgICAgICAgICAgY2hp
+cC0+c3RhdGUgPSBGTF9FUkFTSU5HOw0KPiA+ICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiBA
+QCAtMTk1MSw2ICsxOTU1LDggQEAgc3RhdGljIGludCBfX3hpcHJhbSBkb19lcmFzZV9vbmVibG9j
+ayhzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcCAqY2hpcCwNCj4gPiAgICAgICAg
+IG1hcF93cml0ZShtYXAsIENNRCgweEQwKSwgYWRyKTsNCj4gPiAgICAgICAgIGNoaXAtPnN0YXRl
+ID0gRkxfRVJBU0lORzsNCj4gPiAgICAgICAgIGNoaXAtPmVyYXNlX3N1c3BlbmRlZCA9IDA7DQo+
+ID4gKyAgICAgICBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyID0gYWRyOw0KPiA+ICsgICAg
+ICAgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfbWFzayA9IH4obGVuIC0gMSk7DQo+ID4gDQo+ID4g
+ICAgICAgICByZXQgPSBJTlZBTF9DQUNIRV9BTkRfV0FJVChtYXAsIGNoaXAsIGFkciwNCj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFkciwgbGVuLA0KPiA+IGRpZmYgLS1n
+aXQgYS9pbmNsdWRlL2xpbnV4L210ZC9mbGFzaGNoaXAuaCBiL2luY2x1ZGUvbGludXgvbXRkL2Zs
+YXNoY2hpcC5oDQo+ID4gaW5kZXggYjYzZmE0NTdmZWJkLi4zNTI5NjgzZjY5MWUgMTAwNjQ0DQo+
+ID4gLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvZmxhc2hjaGlwLmgNCj4gPiArKysgYi9pbmNsdWRl
+L2xpbnV4L210ZC9mbGFzaGNoaXAuaA0KPiA+IEBAIC04NSw2ICs4NSw3IEBAIHN0cnVjdCBmbGNo
+aXAgew0KPiA+ICAgICAgICAgdW5zaWduZWQgaW50IHdyaXRlX3N1c3BlbmRlZDoxOw0KPiA+ICAg
+ICAgICAgdW5zaWduZWQgaW50IGVyYXNlX3N1c3BlbmRlZDoxOw0KPiA+ICAgICAgICAgdW5zaWdu
+ZWQgbG9uZyBpbl9wcm9ncmVzc19ibG9ja19hZGRyOw0KPiA+ICsgICAgICAgdW5zaWduZWQgbG9u
+ZyBpbl9wcm9ncmVzc19ibG9ja19tYXNrOw0KPiA+IA0KPiA+ICAgICAgICAgc3RydWN0IG11dGV4
+IG11dGV4Ow0KPiA+ICAgICAgICAgd2FpdF9xdWV1ZV9oZWFkX3Qgd3E7IC8qIFdhaXQgb24gaGVy
+ZSB3aGVuIHdlJ3JlIHdhaXRpbmcgZm9yIHRoZSBjaGlwDQo+ID4gLS0NCj4gPiAyLjEzLjYNCj4g
+PiANCj4gPiANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18NCj4gPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QNCj4gPiBo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8NCj4g
+DQo+IA0KPiANCj4gLS0NCj4gVGhhbmtzLA0KPiAvL3JpY2hhcmQNCg==
