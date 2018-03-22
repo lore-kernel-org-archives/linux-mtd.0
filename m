@@ -1,32 +1,28 @@
-Received: from mail-sn1nam02on0606.outbound.protection.outlook.com
- ([2a01:111:f400:fe44::606]
- helo=NAM02-SN1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1eysuK-0004NI-S1
- for linux-mtd@lists.infradead.org; Thu, 22 Mar 2018 05:37:02 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
-CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1eyugv-0003vT-Hw
+ for linux-mtd@lists.infradead.org; Thu, 22 Mar 2018 07:31:20 +0000
+Date: Thu, 22 Mar 2018 08:31:00 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
  <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>, "Punnaiah
- Choudary Kalluri" <punnaia@xilinx.com>
-Subject: RE: [LINUX PATCH v8 1/2] Documentation: nand: pl353: Add
+ <marek.vasut@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Michal Simek <michals@xilinx.com>,
+ "Punnaiah Choudary Kalluri" <punnaia@xilinx.com>
+Subject: Re: [LINUX PATCH v8 1/2] Documentation: nand: pl353: Add
  documentation for controller and driver
-Date: Thu, 22 Mar 2018 05:36:44 +0000
-Message-ID: <BY2PR02MB1411BBD9FB5D17BB641D2B89AFA90@BY2PR02MB1411.namprd02.prod.outlook.com>
+Message-ID: <20180322083100.54c67c5f@xps13>
+In-Reply-To: <BY2PR02MB1411BBD9FB5D17BB641D2B89AFA90@BY2PR02MB1411.namprd02.prod.outlook.com>
 References: <1521024494-30632-1-git-send-email-nagasureshkumarrelli@gmail.com>
  <20180319220811.34a99c3d@xps13>
-In-Reply-To: <20180319220811.34a99c3d@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <BY2PR02MB1411BBD9FB5D17BB641D2B89AFA90@BY2PR02MB1411.namprd02.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,157 +32,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQpUaGFua3MgZm9yIHJldmlld2luZyB0aGUgcGF0Y2ggc2VyaWVzLg0KUGxl
-YXNlIHNlZSBteSBjb21tZW50cyBiZWxvdy4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KPiBGcm9tOiBNaXF1ZWwgUmF5bmFsIFttYWlsdG86bWlxdWVsLnJheW5hbEBib290bGluLmNv
-bV0NCj4gU2VudDogVHVlc2RheSwgTWFyY2ggMjAsIDIwMTggMjozOCBBTQ0KPiBUbzogbmFnYXN1
-cmVzaGt1bWFycmVsbGlAZ21haWwuY29tDQo+IENjOiBib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5j
-b207IHJpY2hhcmRAbm9kLmF0OyBkd213MkBpbmZyYWRlYWQub3JnOw0KPiBjb21wdXRlcnNmb3Jw
-ZWFjZUBnbWFpbC5jb207IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsNCj4gY3lyaWxsZS5waXRjaGVu
-QHdlZGV2NHUuZnI7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC0NCj4ga2Vy
-bmVsQHZnZXIua2VybmVsLm9yZzsgTWljaGFsIFNpbWVrIDxtaWNoYWxzQHhpbGlueC5jb20+OyBQ
-dW5uYWlhaA0KPiBDaG91ZGFyeSBLYWxsdXJpIDxwdW5uYWlhQHhpbGlueC5jb20+OyBOYWdhIFN1
-cmVzaGt1bWFyIFJlbGxpDQo+IDxuYWdhc3VyZUB4aWxpbnguY29tPg0KPiBTdWJqZWN0OiBSZTog
-W0xJTlVYIFBBVENIIHY4IDEvMl0gRG9jdW1lbnRhdGlvbjogbmFuZDogcGwzNTM6IEFkZA0KPiBk
-b2N1bWVudGF0aW9uIGZvciBjb250cm9sbGVyIGFuZCBkcml2ZXINCj4gDQo+IEhpIG5hZ2EsDQo+
-IA0KPiBPbiBXZWQsIDE0IE1hciAyMDE4IDE2OjE4OjE0ICswNTMwLCA8bmFnYXN1cmVzaGt1bWFy
-cmVsbGlAZ21haWwuY29tPg0KPiB3cm90ZToNCj4gDQo+ID4gRnJvbTogTmFnYSBTdXJlc2hrdW1h
-ciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gPg0KPiA+IEFkZGVkIG5vdGVzIGFib3V0
-IHRoZSBjb250cm9sbGVyIGFuZCBkcml2ZXINCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5hZ2Eg
-U3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+ID4gLS0tDQo+ID4gQ2hh
-bmdlcyBpbiB2OA0KPiA+ICAtIE5vbmUNCj4gPiBDaGFuZ2VzIGluIHY3Og0KPiA+IC0gTm9uZQ0K
-PiA+IENoYW5nZXMgaW4gdjY6DQo+ID4gLSBOb25lDQo+ID4gQ2hhbmdlcyBpbiB2NToNCj4gPiAt
-IEZpeGVkIHRoZSByZXZpZXcgY29tbWVudHMNCj4gPiBDaGFuZ2VzIGluIHY0Og0KPiA+IC0gTm9u
-ZQ0KPiA+IC0tLQ0KPiA+ICBEb2N1bWVudGF0aW9uL210ZC9uYW5kL3BsMzUzLW5hbmQudHh0IHwg
-OTINCj4gPiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUg
-Y2hhbmdlZCwgOTIgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1l
-bnRhdGlvbi9tdGQvbmFuZC9wbDM1My1uYW5kLnR4dA0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL0Rv
-Y3VtZW50YXRpb24vbXRkL25hbmQvcGwzNTMtbmFuZC50eHQNCj4gPiBiL0RvY3VtZW50YXRpb24v
-bXRkL25hbmQvcGwzNTMtbmFuZC50eHQNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGlu
-ZGV4IDAwMDAwMDAuLmFjNmZiZDUNCj4gPiAtLS0gL2Rldi9udWxsDQo+ID4gKysrIGIvRG9jdW1l
-bnRhdGlvbi9tdGQvbmFuZC9wbDM1My1uYW5kLnR4dA0KPiA+IEBAIC0wLDAgKzEsOTIgQEANCj4g
-PiArVGhpcyBkb2N1bWVudHMgcHJvdmlkZXMgc29tZSBub3RlcyBhYm91dCB0aGUgQVJNIHBsMzUz
-IHNtYyBjb250cm9sbGVyDQo+ID4gK3VzZWQgaW4gWnlucSBTT0MgYW5kIGNvbmZpbmVkIHRvIE5B
-TkQgc3BlY2lmaWMgZGV0YWlscy4NCj4gPiArDQo+ID4gK092ZXJ2aWV3IG9mIHRoZSBjb250cm9s
-bGVyDQo+ID4gKz09PT09PT09PT09PT09PT09PT09PT09PT09DQo+ID4gKwlUaGUgU01DIChQTDM1
-Mykgc3VwcG9ydHMgdHdvIG1lbW9yeSBpbnRlcmZhY2VzOg0KPiA+ICsJSW50ZXJmYWNlIDAgdHlw
-ZSBTUkFNLg0KPiA+ICsJSW50ZXJmYWNlIDEgdHlwZSBOQU5ELg0KPiA+ICsJVGhpcyBjb25maWd1
-cmF0aW9uIHN1cHBvcnRzIHRoZSBmb2xsb3dpbmcgY29uZmlndXJhYmxlIG9wdGlvbnM6DQo+ID4g
-KwkgICAuIDMyLWJpdCBvciA2NC1iaXQgQVhJIGRhdGEgd2lkdGgNCj4gPiArCSAgIC4gOC1iaXQs
-IDE2LWJpdCwgb3IgMzItYml0IG1lbW9yeSBkYXRhIHdpZHRoIGZvciBpbnRlcmZhY2UgMA0KPiA+
-ICsJICAgLiA4LWJpdCwgb3IgMTYtYml0IG1lbW9yeSBkYXRhIHdpZHRoIGZvciBpbnRlcmZhY2Ug
-MQ0KPiA+ICsJICAgLiAxLTQgY2hpcCBzZWxlY3RzIG9uIGVhY2ggaW50ZXJmYWNlDQo+ID4gKwkg
-ICAuIFNMQyBFQ0MgYmxvY2sgZm9yIGludGVyZmFjZSAxDQo+ID4gKw0KPiA+ICtGb3IgbW9yZSBp
-bmZvcm1hdGlvbiwgcmVmZXIgdGhlIGJlbG93IGxpbmsgZm9yIFRSTQ0KPiA+ICtodHRwOi8vaW5m
-b2NlbnRlci5hcm0uY29tL2hlbHAvdG9waWMvY29tLmFybS5kb2MuZGRpMDM4MGcvDQo+ID4gK0RE
-STAzODBHX3NtY19wbDM1MF9zZXJpZXNfcjJwMV90cm0ucGRmDQo+IA0KPiBJIHRoaW5rIGl0IGlz
-IGJldHRlciB0byBkbyBub3QgYnJlYWsgdGhlIGxpbmtzPw0KSSB3aWxsIGNvcnJlY3QgaXQgaW4g
-bmV4dCBwYXRjaC4NCj4gDQo+ID4gKw0KPiA+ICtOQU5EIG1lbW9yeSBhY2Nlc3Nlcw0KPiA+ICs9
-PT09PT09PT09PT09PT09PT09PQ0KPiA+ICsJLiBUd28gcGhhc2UgTkFORCBhY2Nlc3Nlcw0KPiA+
-ICsJLiBOQU5EIGNvbW1hbmQgcGhhc2UgdHJhbnNmZXJzDQo+ID4gKwkuIE5BTkQgZGF0YSBwaGFz
-ZSB0cmFuc2ZlcnMNCj4gPiArDQo+ID4gK1R3byBwaGFzZSBOQU5EIGFjY2Vzc2VzDQo+ID4gKwlU
-aGUgU01DIGRlZmluZXMgdHdvIHBoYXNlcyBvZiBjb21tYW5kcyB3aGVuIHRyYW5zZmVycmluZyBk
-YXRhIHRvIG9yDQo+ID4gK2Zyb20gTkFORCBmbGFzaC4NCj4gPiArDQo+ID4gK0NvbW1hbmQgcGhh
-c2UNCj4gPiArCUNvbW1hbmRzIGFuZCBvcHRpb25hbCBhZGRyZXNzIGluZm9ybWF0aW9uIGFyZSB3
-cml0dGVuIHRvIHRoZSBOQU5EDQo+IGZsYXNoLg0KPiA+ICtUaGUgY29tbWFuZCBhbmQgYWRkcmVz
-cyBjYW4gYmUgYXNzb2NpYXRlZCB3aXRoIGVpdGhlciBhIGRhdGEgcGhhc2UNCj4gPiArb3BlcmF0
-aW9uIHRvIHdyaXRlIHRvIG9yIHJlYWQgZnJvbSB0aGUgYXJyYXksIG9yIGEgc3RhdHVzL0lEIHJl
-Z2lzdGVyIHRyYW5zZmVyLg0KPiA+ICsNCj4gPiArRGF0YSBwaGFzZQ0KPiA+ICsgRGF0YSBpcyBl
-aXRoZXIgd3JpdHRlbiB0byBvciByZWFkIGZyb20gdGhlIE5BTkQgZmxhc2guIFRoaXMgZGF0YSBj
-YW4NCj4gPiArYmUgZWl0aGVyIGRhdGEgdHJhbnNmZXJyZWQgdG8gb3IgZnJvbSB0aGUgYXJyYXks
-IG9yIHN0YXR1cy9JRCByZWdpc3Rlcg0KPiBpbmZvcm1hdGlvbi4NCj4gPiArDQo+ID4gK05BTkQg
-QVhJIGFkZHJlc3Mgc2V0dXANCj4gPiArICAgICAgIEFYSSBhZGRyZXNzICAgICAgQ29tbWFuZCBw
-aGFzZSAgICAgIERhdGEgcGhhc2UNCj4gPiArCVszMToyNF0gICAgICAgICBDaGlwIGFkZHJlc3Mg
-ICAgICAgQ2hpcCBhZGRyZXNzDQo+ID4gKwlbMjNdICAgICAgICAgICAgTm9PZkFkZEN5Y2xlc18y
-ICAgIFJlc2VydmVkDQo+ID4gKwlbMjJdICAgICAgICAgICAgTm9PZkFkZEN5Y2xlc18xICAgIFJl
-c2VydmVkDQo+ID4gKwlbMjFdICAgICAgICAgICAgTm9PZkFkZEN5Y2xlc18wICAgIENsZWFyQ1MN
-Cj4gPiArCVsyMF0gICAgICAgICAgICBFbmQgY29tbWFuZCB2YWxpZCAgRW5kIGNvbW1hbmQgdmFs
-aWQNCj4gPiArCVsxOV0gICAgICAgICAgICAwICAgICAgICAgICAgICAgICAgMQ0KPiA+ICsJWzE4
-OjExXSAgICAgICAgIEVuZCBjb21tYW5kICAgICAgICBFbmQgY29tbWFuZA0KPiA+ICsJWzEwOjNd
-ICAgICAgICAgIFN0YXJ0IGNvbW1hbmQgICAgICBbMTBdIEVDQyBMYXN0DQo+ID4gKwkJCQkJICAg
-Wzk6M10gUmVzZXJ2ZWQNCj4gPiArCVsyOjBdICAgICAgICAgICBSZXNlcnZlZCAgICAgICAgICAg
-UmVzZXJ2ZWQNCj4gPiArDQo+ID4gK0VDQw0KPiA+ICs9PT0NCj4gPiArICAgIEl0IG9wZXJhdGVz
-IG9uIGEgbnVtYmVyIG9mIDUxMiBieXRlIGJsb2NrcyBvZiBOQU5EIG1lbW9yeSBhbmQgY2FuDQo+
-ID4gK2JlIHByb2dyYW1tZWQgdG8gc3RvcmUgdGhlIEVDQyBjb2RlcyBhZnRlciB0aGUgZGF0YSBp
-biBtZW1vcnkuIEZvcg0KPiA+ICt3cml0ZXMsIHRoZSBFQ0MgaXMgd3JpdHRlbiB0byB0aGUgc3Bh
-cmUgYXJlYSBvZiB0aGUgcGFnZS4gRm9yIHJlYWRzLA0KPiA+ICt0aGUgcmVzdWx0IG9mIGEgYmxv
-Y2sgRUNDIGNoZWNrIGFyZSBtYWRlIGF2YWlsYWJsZSB0byB0aGUgZGV2aWNlIGRyaXZlci4NCj4g
-PiArDQo+ID4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICstLS0NCj4gPiArfCAgICAgICAgICAgICAgIG4g
-KiA1MTIgYmxvY2tzICAgICAgICAgICAgICAgICAgfCBleHRyYSAgfCBlY2MgICAgfCAgICAgfA0K
-PiA+ICt8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGJs
-b2NrICB8IGNvZGVzICB8ICAgICB8DQo+ID4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPiA+ICstLS0NCj4gPiAr
-DQo+ID4gK1RoZSBFQ0MgY2FsY3VsYXRpb24gdXNlcyBhIHNpbXBsZSBIYW1taW5nIGNvZGUsIHVz
-aW5nIDEtYml0DQo+ID4gK2NvcnJlY3Rpb24gMi1iaXQgZGV0ZWN0aW9uLiBJdCBzdGFydHMgd2hl
-biBhIHZhbGlkIHJlYWQgb3Igd3JpdGUNCj4gPiArY29tbWFuZCB3aXRoIGEgNTEyIGJ5dGUgYWxp
-Z25lZCBhZGRyZXNzIGlzIGRldGVjdGVkIG9uIHRoZSBtZW1vcnkNCj4gaW50ZXJmYWNlLg0KPiA+
-ICsNCj4gPiArRHJpdmVyIGRldGFpbHMNCj4gPiArPT09PT09PT09PT09PT0NCj4gPiArCVRoZSBO
-QU5EIGRyaXZlciBoYXMgZGVwZW5kZW5jeSB3aXRoIHRoZSBwbDM1M19zbWMgbWVtb3J5DQo+IGNv
-bnRyb2xsZXINCj4gPiArZHJpdmVyIGZvciBpbnRpYWxpemluZyB0aGUgbmFuZCB0aW1pbmcgcGFy
-YW1ldGVycywgYnVzIHdpZHRoLCBFQ0MNCj4gPiArbW9kZXMsDQo+IA0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBeTkFORA0KPiANCj4gPiArY29udHJvbCBhbmQgc3RhdHVzIGluZm9y
-bWF0aW9uLg0KPiA+ICsNCj4gPiArU2luY2UgdGhlIGNvbnRyb2xsZXIgZXhwZWN0cyB0aGF0IHRo
-ZSBjaGlwc2VsZWN0IGJpdCBzaG91bGQgYmUNCj4gPiArY2xlYXJlZCBmb3IgdGhlDQo+IA0KPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5jaGlwIHNlbGVjdCAgIF4g
-d291bGQ/IGlzPw0KV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+IA0KPiA+ICtsYXN0IGRh
-dGEgdHJhbnNmZXIgaS5lIGxhc3QgNCBkYXRhIGJ5dGVzLCB0aGUgZXhpc3RpbmcgbmFuZGJhc2Ug
-cGFnZQ0KPiANCj4gV2hhdCBpcyBuYW5kYmFzZT8NCkl0IGlzIGp1c3QgbmFuZCBwYWdlIHJlYWQv
-d3JpdGUsIEkgd2lsbCBjb3JyZWN0IGl0LA0KPiANCj4gPiArcmVhZC93cml0ZSByb3V0aW5lcyBm
-b3Igc29mdCBlY2MgYW5kIGVjYyBub25lIG1vZGVzIHdpbGwgbm90IHdvcmsuDQo+ID4gK1NvLCBp
-bm9yZGVyDQo+IA0KPiBzL2VjYy9FQ0MvICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgaW4gb3JkZXJeDQo+IA0KPiA+ICt0byBtYWtlIHRoaXMgZHJpdmVy
-IHdvcmssIGl0IGFsd2F5cyB1cGRhdGVzIHRoZSBlY2MgbW9kZSBhcyBIVyBFQ0MNCj4gPiArYW5k
-IGNhbg0KPiANCj4gcy9lY2MvRUNDLw0KSSB3aWxsIHVwZGF0ZS4NCj4gDQo+ID4gK2ltcGxlbWVu
-dGVkIHRoZSBwYWdlIHJlYWQvd3JpdGUgZnVuY3Rpb25zIGZvciBzdXBwb3J0aW5nIHRoZSBTVyBF
-Q0MuDQo+IA0KPiBzL2NhbiBpbXBsZW1lbnRlZC9pbXBsZW1lbnRzLz8NCldpbGwgY29ycmVjdCBp
-biBuZXh0IHBhdGNoLg0KDQo+IA0KPiBJIGRvbid0IHVuZGVyc3RhbmQgdGhpcyBwYXJhZ3JhcGgs
-IGNhbiB5b3UgZXhwbGFpbiBpdCBwbGVhc2U/IEkgYW0gbm90IHN1cmUgdG8NCj4gdW5kZXJzdGFu
-ZCB0aGUgbGltaXRhdGlvbiBub3IgaG93IHlvdSBhZGRyZXNzIGl0Lg0KVGhlcmUgaXMgYSBsaW1p
-dGF0aW9uIGluIFNNQywgdGhhdCB3ZSBtdXN0IHNldCBFQ0MgTEFTVCBvbiBsYXN0IGRhdGEgcGhh
-c2UgYWNjZXNzLCANCnRvIHRlbGwgRUNDIGJsb2NrIG5vdCB0byBleHBlY3QgYW55IGRhdGEgZnVy
-dGhlci4NCkV4OiAgV2hlbiBudW1iZXIgb2YgRUNDIFNURVAgYXJlIDQsIHRoZW4gdGlsbCAzIHdl
-IHdpbGwgd3JpdGUgdG8gZmxhc2ggdXNpbmcgU01DIHdpdGggSFcgRUNDIGVuYWJsZWQuDQpBbmQg
-Zm9yIHRoZSBsYXN0IEVDQyBTVEVQLCB3ZSB3aWxsIHN1YnRyYWN0IDRieXRlcyBmcm9tIHBhZ2Ug
-c2l6ZSwgYW5kIHdpbGwgaW5pdGlhdGUgYSB0cmFuc2Zlci4NCkFuZCB0aGUgcmVtYWluaW5nIDQg
-YXMgb25lIG1vcmUgdHJhbnNmZXIgd2l0aCBFQ0NfTEFTVCBiaXQgc2V0IGluIE5BTkQgRGF0YSBw
-aGFzZSByZWdpc3RlciB0byBub3RpZnkNCkVDQyBibG9jayBub3QgdG8gZXhwZWN0IGFueSBtb3Jl
-IGRhdGEuIFRoZSBsYXN0IGJsb2NrIHNob3VsZCBiZSBhbGlnbiB3aXRoIGVuZCBvZiA1MTIgYnl0
-ZSBibG9jay4NCkJlY2F1c2Ugb2YgdGhpcyBsaW1pdGF0aW9uLCB3ZSBhcmUgbm90IHVzaW5nIGNv
-cmUgcm91dGluZXMuDQo+IA0KPiA+ICsNCj4gPiArSFcgRUNDIG1vZGU6DQo+ID4gKwlVcHRvIDJL
-IHBhZ2Ugc2l6ZSBpcyBzdXBwb3J0ZWQgYW5kIGJleW9uZCB0aGF0IGl0IHJldHVucyAtRU5PU1VQ
-UE9SVA0KPiA+ICtlcnJvci4gSWYgdGhlIGZsc2ggaGFzIE9ORElFIGVjYyBjb250cm9sbGVyIHRo
-ZW4gdGhlDQo+IA0KPiAgICAgXiAtRU5PVFNVUFAgICAgICAgICAgICAgIF5mbGFzaCAgIF5vbi1k
-aWUgRUNDDQo+IA0KV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4gK3ByaW9yaXR5IGhh
-cyBnaXZlbiB0byB0aGUgT05ESUUgZWNjIGNvbnRyb2xsZXIuIEFsc28gdGhlIGN1cnJlbnQNCj4g
-DQo+ICAgICAgICAgICAgIF4gaXMgZ2l2ZW4/ICAgICAgXm9uLWRpZSBFQ0MNCj4gDQpXaWxsIGNv
-cnJlY3QgaW4gbmV4dCBwYXRjaC4NCj4gPiAraW1wbGVtZW50YXRpb24gaGFzIHN1cHBvcnQgZm9y
-IHVwdG8gNjQgYnl0ZSBvb2IgYXJlYQ0KPiANCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIF51cCB0byA2NCBieXRlcyBvZiBPT0IgZGF0YS4NCj4gDQpXaWxsIGNvcnJlY3QgaW4g
-bmV4dCBwYXRjaC4NCj4gPiArDQo+ID4gK1NXIEVDQyBtb2RlOg0KPiA+ICsJSXQgc3VwcG9ydHMg
-YWxsIHRoZSBwZ2FlIHNpemVzLiBCdXQgc2luY2UsIHp5bnEgc29jIGJvb3Ryb20gdXNlcw0KPiAN
-Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4gcGFnZSAgICAgICAgICAgICAgICAgXlp5
-bmMgU09DDQo+IA0KV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4gK0hXIEVDQyBmb3Ig
-dGhlIGRldmljZXMgdGhhdCBoYXZlIHBnYWUgc2l6ZSA8PTJLIHNvLCB0byBhdm9pZCBhbnkgZWNj
-DQo+ID4gK3JlbGF0ZWQNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IF4gcGFnZSA8PSAySywgICAgICAgICAgICAgICBFQ0NeDQo+IA0KV2lsbCBjb3JyZWN0IGluIG5l
-eHQgcGF0Y2guDQo+ID4gK2lzc3VlcyBkdXJpbmcgYm9vdCwgcHJlZmVyIEhXIEVDQyBvdmVyIFNX
-IEVDQy4NCj4gDQo+IEkgc3VwcG9zZSB0aGlzIG1lYW5zIHRoYXQgaWYgbm8gRUNDIG1vZGUgaXMg
-Z2l2ZW4gaWUuIG5vIG5hbmQtZWNjLW1vZGUgaW4gdGhlDQo+IERULCB0aGUgZHJpdmVyIHdpbGwg
-dXNlIEhXIEVDQyBieSBkZWZhdWx0LCByaWdodD8NClllcy4NCj4gDQo+ID4gKw0KPiA+ICtGb3Ig
-ZGV2aWNldHJlZSBiaW5kaW5nIGluZm9ybWF0aW9uIHBsZWFzZSByZWZlciB0aGUgYmVsb3cgZHQg
-YmluZGluZw0KPiA+ICtmaWxlIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1v
-cnktY29udHJvbGxlcnMvcGwzNTMtc21jLnR4dC4NCj4gDQo+IFRoaXMgZmlsZSBkb2VzIG5vdCBl
-eGlzdCBpbiBteSB0cmVlLg0KQWN0dWFsbHkgdGhpcyBkcml2ZXIgaGFzIGRlcGVuZGVuY3kgd2l0
-aCBTTUMgZHJpdmVyLg0KUmVjZW50bHkgSSBzZW50IG9uZSBtb3JlIHBhdGNoIHNlcmllcywgdGhl
-cmUgd2Ugd2lsbCBmaW5kIGFsbCB0aGVzZS4NClRoaXMgaXMgZm9yIGRyaXZlcnMvbWVtb3J5Lw0K
-U2luY2UgU01DIGNvbnRyb2xsZXIgaGFzIHR3byBpbnRlcmZhY2VzLCBOYW5kIGFuZCBOb3IuDQpT
-byB3ZSBoYXZlIHR3byBkcml2ZXJzLCBvbmUgbWFpbiBkcml2ZXIgaXMgU01DIGFuZCB0aGUgc2Vj
-b25kIGlzIE5BTkQgZHJpdmVyLg0KaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMva2VybmVs
-L21zZzI3NDg4MzIuaHRtbA0KaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMva2VybmVsL21z
-ZzI3NDg4MzQuaHRtbA0KaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMva2VybmVsL21zZzI3
-NDg4NDAuaHRtbA0KDQo+IA0KPiANCj4gVGhhbmtzIGZvciBjb250cmlidXRpbmcgdGhpcyBkcml2
-ZXIsDQo+IE1pcXXDqGwNCj4gDQo+IC0tDQo+IE1pcXVlbCBSYXluYWwsIEJvb3RsaW4gKGZvcm1l
-cmx5IEZyZWUgRWxlY3Ryb25zKSBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsDQo+IGVuZ2luZWVy
-aW5nIGh0dHBzOi8vYm9vdGxpbi5jb20NCg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aS4NCg==
+Hi Naga,
+
+I removed linux-kernel from the cc: list (linux-mtd is enough).
+
+> > > +Since the controller expects that the chipselect bit should be
+> > > +cleared for the =20
+> >=20
+> >                                          ^chip select   ^ would? is? =20
+> Will correct in next patch.
+> >  =20
+> > > +last data transfer i.e last 4 data bytes, the existing nandbase page=
+ =20
+> >=20
+> > What is nandbase? =20
+> It is just nand page read/write, I will correct it,
+> >  =20
+> > > +read/write routines for soft ecc and ecc none modes will not work.
+> > > +So, inorder =20
+> >=20
+> > s/ecc/ECC/                                                   in order^
+> >  =20
+> > > +to make this driver work, it always updates the ecc mode as HW ECC
+> > > +and can =20
+> >=20
+> > s/ecc/ECC/ =20
+> I will update.
+> >  =20
+> > > +implemented the page read/write functions for supporting the SW ECC.=
+ =20
+> >=20
+> > s/can implemented/implements/? =20
+> Will correct in next patch.
+>=20
+> >=20
+> > I don't understand this paragraph, can you explain it please? I am not =
+sure to
+> > understand the limitation nor how you address it. =20
+> There is a limitation in SMC, that we must set ECC LAST on last data phas=
+e access,=20
+> to tell ECC block not to expect any data further.
+> Ex:  When number of ECC STEP are 4, then till 3 we will write to flash us=
+ing SMC with HW ECC enabled.
+> And for the last ECC STEP, we will subtract 4bytes from page size, and wi=
+ll initiate a transfer.
+> And the remaining 4 as one more transfer with ECC_LAST bit set in NAND Da=
+ta phase register to notify
+> ECC block not to expect any more data. The last block should be align wit=
+h end of 512 byte block.
+> Because of this limitation, we are not using core routines.
+
+This is way more understandable, thanks. Can you adapt this
+explanation into the documentation?
+
+Otherwise I am still not convinced that you need special handlers for
+SW ECC nor raw page accessors as they don't toggle the ECC/ECC_LAST bit
+set, so please try to remove them from both the documentation and the
+code.
+
+> >  =20
+> > > +
+> > > +HW ECC mode:
+> > > +	Upto 2K page size is supported and beyond that it retuns -ENOSUPPORT
+> > > +error. If the flsh has ONDIE ecc controller then the =20
+> >=20
+> >     ^ -ENOTSUPP              ^flash   ^on-die ECC
+> >  =20
+> Will correct in next patch.
+> > > +priority has given to the ONDIE ecc controller. Also the current =20
+> >=20
+> >             ^ is given?      ^on-die ECC
+> >  =20
+> Will correct in next patch.
+> > > +implementation has support for upto 64 byte oob area =20
+> >=20
+> >                                   ^up to 64 bytes of OOB data.
+> >  =20
+> Will correct in next patch.
+> > > +
+> > > +SW ECC mode:
+> > > +	It supports all the pgae sizes. But since, zynq soc bootrom uses =20
+> >=20
+> >                             ^ page                 ^Zync SOC
+> >  =20
+> Will correct in next patch.
+> > > +HW ECC for the devices that have pgae size <=3D2K so, to avoid any e=
+cc
+> > > +related =20
+> >=20
+> >                                     ^ page <=3D 2K,               ECC^
+> >  =20
+> Will correct in next patch.
+> > > +issues during boot, prefer HW ECC over SW ECC. =20
+> >=20
+> > I suppose this means that if no ECC mode is given ie. no nand-ecc-mode =
+in the
+> > DT, the driver will use HW ECC by default, right? =20
+> Yes.
+
+Then can you reword to make it clearer? I think you can drop the
+"issues during boot" argument and stick to something simple like "When
+the kernel is not aware of the ECC mode, use HW ECC by default.
+
+> >  =20
+> > > +
+> > > +For devicetree binding information please refer the below dt binding
+> > > +file Documentation/devicetree/bindings/memory-controllers/pl353-smc.=
+txt. =20
+> >=20
+> > This file does not exist in my tree. =20
+> Actually this driver has dependency with SMC driver.
+> Recently I sent one more patch series, there we will find all these.
+> This is for drivers/memory/
+> Since SMC controller has two interfaces, Nand and Nor.
+> So we have two drivers, one main driver is SMC and the second is NAND dri=
+ver.
+> https://www.spinics.net/lists/kernel/msg2748832.html
+> https://www.spinics.net/lists/kernel/msg2748834.html
+> https://www.spinics.net/lists/kernel/msg2748840.html
+
+Ok, thanks for pointing the links.
+
+>=20
+> >=20
+> >=20
+> > Thanks for contributing this driver,
+> > Miqu=C3=A8l
+> >=20
+> > --
+> > Miquel Raynal, Bootlin (formerly Free Electrons) Embedded Linux and Ker=
+nel
+> > engineering https://bootlin.com =20
+>=20
+> Thanks,
+> Naga Sureshkumar Relli.
+
+
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
