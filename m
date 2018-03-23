@@ -1,18 +1,18 @@
 Received: from mail-pl0-x242.google.com ([2607:f8b0:400e:c01::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezSPL-0000ia-MI
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:28 +0000
-Received: by mail-pl0-x242.google.com with SMTP id 9-v6so8021302ple.11
- for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:19 -0700 (PDT)
+ id 1ezSPL-0000jP-Lg
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:30 +0000
+Received: by mail-pl0-x242.google.com with SMTP id w12-v6so8027847plp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:22 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Jaegeuk Kim <jaegeuk@kernel.org>,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 08/14] fscrypt: drop empty name check from fname_decrypt()
-Date: Fri, 23 Mar 2018 12:23:52 -0700
-Message-Id: <20180323192358.95691-9-ebiggers3@gmail.com>
+Subject: [PATCH 11/14] fscrypt: remove internal key size constants
+Date: Fri, 23 Mar 2018 12:23:55 -0700
+Message-Id: <20180323192358.95691-12-ebiggers3@gmail.com>
 In-Reply-To: <20180323192358.95691-1-ebiggers3@gmail.com>
 References: <20180323192358.95691-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,30 +26,97 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-fname_decrypt() is validating that the encrypted filename is nonempty.
-However, earlier a stronger precondition was already enforced: the
-encrypted filename must be at least 16 (FS_CRYPTO_BLOCK_SIZE) bytes.
+With one exception, the internal key size constants such as
+FS_AES_256_XTS_KEY_SIZE are only used for the 'available_modes' array,
+where they really only serve to obfuscate what the values are.  Also
+some of the constants are unused, and the key sizes tend to be in the
+names of the algorithms anyway.  In the past these values were also
+misused, e.g. we used to have FS_AES_256_XTS_KEY_SIZE in places that
+technically should have been FS_MAX_KEY_SIZE.
 
-Drop the redundant check for an empty filename.
+The exception is that FS_AES_128_ECB_KEY_SIZE is used for key
+derivation.  But it's more appropriate to use
+FS_KEY_DERIVATION_NONCE_SIZE for that instead.
+
+Thus, just put the sizes directly in the 'available_modes' array.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/crypto/fscrypt_private.h | 10 +---------
+ fs/crypto/keyinfo.c         | 19 +++++++------------
+ 2 files changed, 8 insertions(+), 21 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index cc9590b5f371..c4eb3a235ae4 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -97,9 +97,6 @@ static int fname_decrypt(struct inode *inode,
- 	int res = 0;
- 	char iv[FS_CRYPTO_BLOCK_SIZE];
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index bf0bbba783f8..a3697397e190 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -18,15 +18,7 @@
  
--	if (iname->len <= 0)
--		return -EIO;
+ /* Encryption parameters */
+ #define FS_IV_SIZE			16
+-#define FS_AES_128_ECB_KEY_SIZE		16
+-#define FS_AES_128_CBC_KEY_SIZE		16
+-#define FS_AES_128_CTS_KEY_SIZE		16
+-#define FS_AES_256_GCM_KEY_SIZE		32
+-#define FS_AES_256_CBC_KEY_SIZE		32
+-#define FS_AES_256_CTS_KEY_SIZE		32
+-#define FS_AES_256_XTS_KEY_SIZE		64
 -
- 	/* Allocate request */
- 	req = skcipher_request_alloc(tfm, GFP_NOFS);
- 	if (!req)
+-#define FS_KEY_DERIVATION_NONCE_SIZE		16
++#define FS_KEY_DERIVATION_NONCE_SIZE	16
+ 
+ /**
+  * Encryption context for inode
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 4913a4d5204f..0a134f985681 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -27,7 +27,7 @@ static struct crypto_shash *essiv_hash_tfm;
+  *
+  * Return: Zero on success; non-zero otherwise.
+  */
+-static int derive_key_aes(u8 deriving_key[FS_AES_128_ECB_KEY_SIZE],
++static int derive_key_aes(u8 deriving_key[FS_KEY_DERIVATION_NONCE_SIZE],
+ 				const struct fscrypt_key *source_key,
+ 				u8 derived_raw_key[FS_MAX_KEY_SIZE])
+ {
+@@ -52,7 +52,7 @@ static int derive_key_aes(u8 deriving_key[FS_AES_128_ECB_KEY_SIZE],
+ 			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+ 			crypto_req_done, &wait);
+ 	res = crypto_skcipher_setkey(tfm, deriving_key,
+-					FS_AES_128_ECB_KEY_SIZE);
++				     FS_KEY_DERIVATION_NONCE_SIZE);
+ 	if (res < 0)
+ 		goto out;
+ 
+@@ -100,7 +100,6 @@ static int validate_user_key(struct fscrypt_info *crypt_info,
+ 		goto out;
+ 	}
+ 	master_key = (struct fscrypt_key *)ukp->data;
+-	BUILD_BUG_ON(FS_AES_128_ECB_KEY_SIZE != FS_KEY_DERIVATION_NONCE_SIZE);
+ 
+ 	if (master_key->size < min_keysize || master_key->size > FS_MAX_KEY_SIZE
+ 	    || master_key->size % AES_BLOCK_SIZE != 0) {
+@@ -121,15 +120,11 @@ static const struct {
+ 	const char *cipher_str;
+ 	int keysize;
+ } available_modes[] = {
+-	[FS_ENCRYPTION_MODE_AES_256_XTS] = { "xts(aes)",
+-					     FS_AES_256_XTS_KEY_SIZE },
+-	[FS_ENCRYPTION_MODE_AES_256_CTS] = { "cts(cbc(aes))",
+-					     FS_AES_256_CTS_KEY_SIZE },
+-	[FS_ENCRYPTION_MODE_AES_128_CBC] = { "cbc(aes)",
+-					     FS_AES_128_CBC_KEY_SIZE },
+-	[FS_ENCRYPTION_MODE_AES_128_CTS] = { "cts(cbc(aes))",
+-					     FS_AES_128_CTS_KEY_SIZE },
+-	[FS_ENCRYPTION_MODE_SPECK128_256_XTS] = { "xts(speck128)", 64 },
++	[FS_ENCRYPTION_MODE_AES_256_XTS]      = { "xts(aes)",		64 },
++	[FS_ENCRYPTION_MODE_AES_256_CTS]      = { "cts(cbc(aes))",	32 },
++	[FS_ENCRYPTION_MODE_AES_128_CBC]      = { "cbc(aes)",		16 },
++	[FS_ENCRYPTION_MODE_AES_128_CTS]      = { "cts(cbc(aes))",	16 },
++	[FS_ENCRYPTION_MODE_SPECK128_256_XTS] = { "xts(speck128)",	64 },
+ 	[FS_ENCRYPTION_MODE_SPECK128_256_CTS] = { "cts(cbc(speck128))", 32 },
+ };
+ 
 -- 
 2.17.0.rc0.231.g781580f067-goog
