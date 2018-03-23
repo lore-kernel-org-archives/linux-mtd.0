@@ -1,23 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezHZW-0006MK-Ec
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 07:57:12 +0000
-Date: Fri, 23 Mar 2018 08:56:56 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
- festevam@gmail.com, marek.vasut@gmail.com, frieder.schrempf@exceet.de,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com
-Subject: Re: [PATCH v8 1/2] mtd: fsl-quadspi: add support to create dynamic
- LUT entry
-Message-ID: <20180323085656.2eb56a19@bbrezillon>
-In-Reply-To: <1521788544-17950-2-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1521788544-17950-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1521788544-17950-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>
+CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
+Date: Fri, 23 Mar 2018 07:59:33 +0000
+Message-ID: <VI1PR0402MB385471846E1D3B747C67B48D97A80@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
+In-Reply-To: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+Hi Boris,
 
-On Fri, 23 Mar 2018 12:32:23 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-> @@ -916,6 +1025,23 @@ static int fsl_qspi_erase(struct spi_nor *nor, loff_t offs)
->  {
->  	struct fsl_qspi *q = nor->priv;
->  	int ret;
-> +	struct fsl_qspi_mem_op *op = q->op_data;
-> +
-> +	fsl_clr_qspi_mem_data(op);
-> +
-> +	/*
-> +	 * Fill required entry of struct fsl_qspi_mem_op to prepare
-> +	 * LUT for requested cmd.
-> +	 * Erase operation works on single pad.
-> +	 */
-> +	op->cmd.opcode = nor->erase_opcode;
-> +	op->cmd.pad = 1;
-> +
-> +	op->addr.addrlen = (nor->addr_width == 3) ? ADDR24BIT : ADDR32BIT;
-> +	op->addr.pad = 1;
-> +
-> +	/* Dummy and Data info not required for Erase cmd */
-> +	fsl_qspi_prepare_lut(nor, op);
->  
->  	dev_dbg(nor->dev, "%dKiB at 0x%08x:0x%08x\n",
->  		nor->mtd.erasesize / 1024, q->chip_base_addr, (u32)offs);
-> @@ -967,12 +1093,18 @@ static int fsl_qspi_probe(struct platform_device *pdev)
->  	struct resource *res;
->  	struct spi_nor *nor;
->  	struct mtd_info *mtd;
-> +	struct fsl_qspi_mem_op *mem_op_data;
->  	int ret, i = 0;
->  
->  	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
->  	if (!q)
->  		return -ENOMEM;
->  
-> +	mem_op_data = kmalloc(sizeof(struct fsl_qspi_mem_op), GFP_KERNEL);
-> +	if (!mem_op_data)
-> +		return -ENOMEM;
-> +	q->op_data = mem_op_data;
-> +
+> -----Original Message-----
+> From: Prabhakar Kushwaha
+> Sent: Monday, March 12, 2018 1:41 PM
+> To: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
+> robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org
+> Cc: boris.brezillon@free-electrons.com; computersforpeace@gmail.com;
+> oss@buserror.net; Leo Li <leoyang.li@nxp.com>; linux-arm-
+> kernel@lists.infradead.org; Prabhakar Kushwaha
+> <prabhakar.kushwaha@nxp.com>
+> Subject: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness
+> supports
+>=20
+> Connection between flash and controller is not necessary to be always of
+> same type. It may varies from platform to platform.
+>=20
+> Adding endianness (optional) property to provide connection type
+> information.
+>=20
+> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> ---
+> Changes for v2: updated subject
+> Changes for v3: fixed typo for "big-endian"
+> Changes for v4: Moved binding definition in mtd-physmap.txt as discussed =
+at
+> https://patchwork.ozlabs.org/patch/842543/
+> Changes for v5: Sending as it is
+> Changes for v6: Updated binding when endianness property is absent
+>=20
 
-Why do you need to dynamically allocate this object? Actually, it's not
-even needed to embed it in fsl_qspi, just put a fsl_qspi_mem_op object
-on the stack when you need one.
+I hope this version is good enough to be accepted.=20
 
-Regards,
+May I go ahead and send device tree changes for other NXP SoCs.
 
-Boris
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+--pk
