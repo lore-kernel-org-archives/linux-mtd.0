@@ -1,17 +1,22 @@
-Date: Fri, 23 Mar 2018 09:34:08 +0100
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, robh@kernel.org
-Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
- mark.rutland@arm.com, shawnguo@kernel.org,
- boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
- oss@buserror.net, leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
-Message-ID: <20180323093408.230a61c1@bbrezillon>
-In-Reply-To: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
-References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
+Received: from mail-he1eur01on0094.outbound.protection.outlook.com
+ ([104.47.0.94] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ezIyF-0000jB-Cx
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 09:26:50 +0000
+Subject: Re: UBI assert failed in ubi_wl_init
+To: Richard Weinberger <richard@sigma-star.at>, linux-mtd@lists.infradead.org
+References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
+ <7511413.bof9RI5LLK@blindfold>
+ <a6a77fba-9df1-2dac-25a7-c0d3d9bc5b42@exertus.fi>
+ <2385502.GW1C2yTnO0@blindfold>
+From: Timo Ketola <timo@exertus.fi>
+Message-ID: <d154d30e-af96-007f-70cb-dafbbfd294ef@exertus.fi>
+Date: Fri, 23 Mar 2018 11:26:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <2385502.GW1C2yTnO0@blindfold>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Mar 2018 13:41:28 +0530
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
-
-> Connection between flash and controller is not necessary to be always
-> of same type. It may varies from platform to platform.
+On 22.03.2018 17:48, Richard Weinberger wrote:
+> Am Donnerstag, 22. März 2018, 16:40:42 CET schrieb Timo Ketola:
+>> I'm slightly confused though, because flash_erase reports total of eight
+>> blocks:
+>>
+>> # flash_eraseall /dev/mtd1
+>> Erasing 128 Kibyte @ 3bf60000 - 48% complete.
+>> Skipping bad block at 0x3bf80000
+>>
+>> Skipping bad block at 0x3bfa0000
+>>
+>> Skipping bad block at 0x3bfc0000
+>>
+>> Skipping bad block at 0x3bfe0000
+>> Erasing 128 Kibyte @ 7bf60000 - 99% complete.
+>> Skipping bad block at 0x7bf80000
+>>
+>> Skipping bad block at 0x7bfa0000
+>>
+>> Skipping bad block at 0x7bfc0000
+>>
+>> Skipping bad block at 0x7bfe0000
+>> Erasing 128 Kibyte @ 7c000000 - 100% complete.
+>>
+>>
+>> but, log tells only about four blocks:
+>>
+>> [    1.549699] Bad block table found at page 524224, version 0x01
+>> [    1.554241] Bad block table found at page 1048512, version 0x01
+>> [    1.561314] Bad block table found at page 524160, version 0x01
+>> [    1.565853] Bad block table found at page 1048448, version 0x01
+>> [    1.573232] 2 ofpart partitions found on MTD device gpmi-nand
+>> [    1.577688] Creating 2 MTD partitions on "gpmi-nand":
+>> [    1.581499] 0x000000000000-0x000004000000 : "system"
+>> [    1.595001] 0x000004000000-0x000080000000 : "user"
 > 
-> Adding endianness (optional) property to provide connection type
-> information.
-> 
-> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> ---
-> Changes for v2: updated subject
-> Changes for v3: fixed typo for "big-endian"
-> Changes for v4: Moved binding definition in mtd-physmap.txt
-> as discussed at https://patchwork.ozlabs.org/patch/842543/
-> Changes for v5: Sending as it is
-> Changes for v6: Updated binding when endianness property is absent
-> 
->  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> index 4a0a48bf4ecb..691c98f7301d 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> @@ -41,6 +41,11 @@ additional (optional) property is defined:
->  
->   - erase-size : The chip's physical erase block size in bytes.
->  
-> + The device tree may optionally contain endianness property.
-> + little-endian or big-endian : It represents connection between controller and
+> Now things get interesting.
+> Can it be that the number of bad blocks is not stable?
+> IOW sometimes 4 and sometimes 8 are reported?
+> This would more or less explain what you see.
 
-You still haven't answered the comments I made on your v5. To me, this
-does not represent how the controller and chip pins are connected, but
-how the chip was programmed and which endianness should be used by the
-controller to correctly read the data back. Maybe I'm wrong, hence my
-question.
+Dumps show that the two blocks per chip are really bad block tables. The
+other two are empty. Could it be that the mtd reserves the other two for
+bbt mirrors?
 
-> +			flash. If this property is absent, connection is described
-> +			by the CFI_DEFAULT_ENDIAN.
+Anyway, I configured the bbt off and now there is full 15872 good PEBs
+but the issue stays. Here is a dump after full erase ('nand scrub' from
+U-Boot), ubiformat, ubiattach, ubimkvol -m -N user and a couple of reboots:
 
-Nope, you can't refer to linux-specific config options in a DT binding,
-because those bindings are supposed to be OS-agnostic. Maybe something
-like "If this property is missing, the endianness is chosen by the
-system (potentially based on extra configuration options).".
+https://drive.google.com/open?id=1QGUIxarow3mGXbiJYgsLzc-a_Y5oN5XS
 
-Rob, any suggestion other suggestion?
+Is there any documents about the structure of fastmap blocks? google was
+no friend for me...
 
-Regards,
+> Fastmap does not care about bad block itself, all it cares about the total 
+> number of good blocks.
 
-Boris
+How does it record the block references, absolute or relative to good
+blocks?
 
+| a | b | bad | c |
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Would it record c as block 3 (as absolute) or 2 (as third good one)?
+
+--
+
+Timo
