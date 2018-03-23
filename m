@@ -1,21 +1,17 @@
-From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
- <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
-Date: Fri, 23 Mar 2018 07:59:33 +0000
-Message-ID: <VI1PR0402MB385471846E1D3B747C67B48D97A80@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
+Date: Fri, 23 Mar 2018 09:34:08 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, robh@kernel.org
+Cc: linux-mtd@lists.infradead.org, devicetree@vger.kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ oss@buserror.net, leoyang.li@nxp.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
+Message-ID: <20180323093408.230a61c1@bbrezillon>
 In-Reply-To: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +21,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon, 12 Mar 2018 13:41:28 +0530
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-
-> -----Original Message-----
-> From: Prabhakar Kushwaha
-> Sent: Monday, March 12, 2018 1:41 PM
-> To: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
-> robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org
-> Cc: boris.brezillon@free-electrons.com; computersforpeace@gmail.com;
-> oss@buserror.net; Leo Li <leoyang.li@nxp.com>; linux-arm-
-> kernel@lists.infradead.org; Prabhakar Kushwaha
-> <prabhakar.kushwaha@nxp.com>
-> Subject: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness
-> supports
->=20
-> Connection between flash and controller is not necessary to be always of
-> same type. It may varies from platform to platform.
->=20
+> Connection between flash and controller is not necessary to be always
+> of same type. It may varies from platform to platform.
+> 
 > Adding endianness (optional) property to provide connection type
 > information.
->=20
+> 
 > Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 > Reviewed-by: Rob Herring <robh@kernel.org>
 > ---
 > Changes for v2: updated subject
 > Changes for v3: fixed typo for "big-endian"
-> Changes for v4: Moved binding definition in mtd-physmap.txt as discussed =
-at
-> https://patchwork.ozlabs.org/patch/842543/
+> Changes for v4: Moved binding definition in mtd-physmap.txt
+> as discussed at https://patchwork.ozlabs.org/patch/842543/
 > Changes for v5: Sending as it is
 > Changes for v6: Updated binding when endianness property is absent
->=20
+> 
+>  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> index 4a0a48bf4ecb..691c98f7301d 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+> @@ -41,6 +41,11 @@ additional (optional) property is defined:
+>  
+>   - erase-size : The chip's physical erase block size in bytes.
+>  
+> + The device tree may optionally contain endianness property.
+> + little-endian or big-endian : It represents connection between controller and
 
-I hope this version is good enough to be accepted.=20
+You still haven't answered the comments I made on your v5. To me, this
+does not represent how the controller and chip pins are connected, but
+how the chip was programmed and which endianness should be used by the
+controller to correctly read the data back. Maybe I'm wrong, hence my
+question.
 
-May I go ahead and send device tree changes for other NXP SoCs.
+> +			flash. If this property is absent, connection is described
+> +			by the CFI_DEFAULT_ENDIAN.
 
---pk
+Nope, you can't refer to linux-specific config options in a DT binding,
+because those bindings are supposed to be OS-agnostic. Maybe something
+like "If this property is missing, the endianness is chosen by the
+system (potentially based on extra configuration options).".
+
+Rob, any suggestion other suggestion?
+
+Regards,
+
+Boris
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
