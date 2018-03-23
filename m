@@ -1,18 +1,18 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezSPT-0000j7-HW
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:49 +0000
-Received: by mail-pg0-x241.google.com with SMTP id m15so4960130pgc.1
- for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:21 -0700 (PDT)
+ id 1ezSPY-0000m9-E3
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:54 +0000
+Received: by mail-pl0-x244.google.com with SMTP id w12-v6so8027924plp.4
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:25 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Jaegeuk Kim <jaegeuk@kernel.org>,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 10/14] fscrypt: remove unnecessary check for non-logon key type
-Date: Fri, 23 Mar 2018 12:23:54 -0700
-Message-Id: <20180323192358.95691-11-ebiggers3@gmail.com>
+Subject: [PATCH 14/14] fscrypt: only derive the needed portion of the key
+Date: Fri, 23 Mar 2018 12:23:58 -0700
+Message-Id: <20180323192358.95691-15-ebiggers3@gmail.com>
 In-Reply-To: <20180323192358.95691-1-ebiggers3@gmail.com>
 References: <20180323192358.95691-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,31 +26,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-We're passing 'key_type_logon' to request_key(), so the found key is
-guaranteed to be of type "logon".  Thus, there is no reason to check
-later that the key is really a "logon" key.
+Currently the key derivation function in fscrypt uses the master key
+length as the amount of output key material to derive.  This works, but
+it means we can waste time deriving more key material than is actually
+used, e.g. most commonly, deriving 64 bytes for directories which only
+take a 32-byte AES-256-CTS-CBC key.  It also forces us to validate that
+the master key length is a multiple of AES_BLOCK_SIZE, which wouldn't
+otherwise be necessary.
+
+Fix it to only derive the needed length key.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keyinfo.c | 6 ------
- 1 file changed, 6 deletions(-)
+ fs/crypto/keyinfo.c | 39 ++++++++++++++++-----------------------
+ 1 file changed, 16 insertions(+), 23 deletions(-)
 
 diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index 1435a1c81010..4913a4d5204f 100644
+index f00bf1437c3c..81cd7ea86c07 100644
 --- a/fs/crypto/keyinfo.c
 +++ b/fs/crypto/keyinfo.c
-@@ -89,12 +89,6 @@ static int validate_user_key(struct fscrypt_info *crypt_info,
- 		return PTR_ERR(keyring_key);
- 	down_read(&keyring_key->sem);
+@@ -19,17 +19,16 @@
  
--	if (keyring_key->type != &key_type_logon) {
--		printk_once(KERN_WARNING
--				"%s: key type must be logon\n", __func__);
--		res = -ENOKEY;
--		goto out;
--	}
- 	ukp = user_key_payload_locked(keyring_key);
- 	if (!ukp) {
- 		/* key was revoked before we acquired its semaphore */
+ static struct crypto_shash *essiv_hash_tfm;
+ 
+-/**
+- * derive_key_aes() - Derive a key using AES-128-ECB
+- * @deriving_key: Encryption key used for derivation.
+- * @source_key:   Source key to which to apply derivation.
+- * @derived_raw_key:  Derived raw key.
++/*
++ * Key derivation function.  This generates the derived key by encrypting the
++ * master key with AES-128-ECB using the inode's nonce as the AES key.
+  *
+- * Return: Zero on success; non-zero otherwise.
++ * The master key must be at least as long as the derived key.  If the master
++ * key is longer, then only the first 'derived_keysize' bytes are used.
+  */
+-static int derive_key_aes(const u8 deriving_key[FS_KEY_DERIVATION_NONCE_SIZE],
+-				const struct fscrypt_key *source_key,
+-				u8 derived_raw_key[FS_MAX_KEY_SIZE])
++static int derive_key_aes(const u8 *master_key,
++			  const struct fscrypt_context *ctx,
++			  u8 *derived_key, unsigned int derived_keysize)
+ {
+ 	int res = 0;
+ 	struct skcipher_request *req = NULL;
+@@ -51,14 +50,13 @@ static int derive_key_aes(const u8 deriving_key[FS_KEY_DERIVATION_NONCE_SIZE],
+ 	skcipher_request_set_callback(req,
+ 			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
+ 			crypto_req_done, &wait);
+-	res = crypto_skcipher_setkey(tfm, deriving_key,
+-				     FS_KEY_DERIVATION_NONCE_SIZE);
++	res = crypto_skcipher_setkey(tfm, ctx->nonce, sizeof(ctx->nonce));
+ 	if (res < 0)
+ 		goto out;
+ 
+-	sg_init_one(&src_sg, source_key->raw, source_key->size);
+-	sg_init_one(&dst_sg, derived_raw_key, source_key->size);
+-	skcipher_request_set_crypt(req, &src_sg, &dst_sg, source_key->size,
++	sg_init_one(&src_sg, master_key, derived_keysize);
++	sg_init_one(&dst_sg, derived_key, derived_keysize);
++	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
+ 				   NULL);
+ 	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
+ out:
+@@ -109,10 +107,9 @@ find_and_lock_process_key(const char *prefix,
+ 		goto invalid;
+ 	}
+ 
+-	if (payload->size < min_keysize ||
+-	    payload->size % AES_BLOCK_SIZE != 0) {
++	if (payload->size < min_keysize) {
+ 		fscrypt_warn(NULL,
+-			     "key with description '%s' is too short or is misaligned (got %u bytes, need %u+ bytes)",
++			     "key with description '%s' is too short (got %u bytes, need %u+ bytes)",
+ 			     key->description, payload->size, min_keysize);
+ 		goto invalid;
+ 	}
+@@ -145,7 +142,7 @@ static int find_and_derive_key(const struct inode *inode,
+ 	}
+ 	if (IS_ERR(key))
+ 		return PTR_ERR(key);
+-	err = derive_key_aes(ctx->nonce, payload, derived_key);
++	err = derive_key_aes(payload->raw, ctx, derived_key, derived_keysize);
+ 	up_read(&key->sem);
+ 	key_put(key);
+ 	return err;
+@@ -327,7 +324,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	 * crypto API as part of key derivation.
+ 	 */
+ 	res = -ENOMEM;
+-	raw_key = kmalloc(FS_MAX_KEY_SIZE, GFP_NOFS);
++	raw_key = kmalloc(keysize, GFP_NOFS);
+ 	if (!raw_key)
+ 		goto out;
+ 
+@@ -345,10 +342,6 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	}
+ 	crypt_info->ci_ctfm = ctfm;
+ 	crypto_skcipher_set_flags(ctfm, CRYPTO_TFM_REQ_WEAK_KEY);
+-	/*
+-	 * if the provided key is longer than keysize, we use the first
+-	 * keysize bytes of the derived key only
+-	 */
+ 	res = crypto_skcipher_setkey(ctfm, raw_key, keysize);
+ 	if (res)
+ 		goto out;
 -- 
 2.17.0.rc0.231.g781580f067-goog
