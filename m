@@ -1,26 +1,21 @@
-Received: from mail-ve1eur02on061f.outbound.protection.outlook.com
- ([2a01:111:f400:fe06::61f]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mail-ve1eur01on0065.outbound.protection.outlook.com
+ ([104.47.1.65] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezEsT-0002dw-JX
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 05:04:43 +0000
-From: Jagdish Gediya <jagdish.gediya@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>
-Subject: RE: [PATCH][v5] mtd: rawnand: fsl_ifc: Fix eccstat array overflow for
- IFC ver >= 2.0.0
-Date: Fri, 23 Mar 2018 05:04:15 +0000
-Message-ID: <HE1PR0402MB27787356BB94AB5D0C69153C90A80@HE1PR0402MB2778.eurprd04.prod.outlook.com>
-References: <1521669973-10450-1-git-send-email-jagdish.gediya@nxp.com>
-In-Reply-To: <1521669973-10450-1-git-send-email-jagdish.gediya@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1ezGk4-0004or-69
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 07:04:02 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@exceet.de,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v8 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Fri, 23 Mar 2018 12:32:22 +0530
+Message-Id: <1521788544-17950-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,118 +25,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-> -----Original Message-----
-> From: Jagdish Gediya
-> Sent: Thursday, March 22, 2018 3:36 AM
-> To: linux-mtd@lists.infradead.org
-> Cc: boris.brezillon@free-electrons.com; computersforpeace@gmail.com;
-> oss@buserror.net; Leo Li <leoyang.li@nxp.com>; Jagdish Gediya
-> <jagdish.gediya@nxp.com>; stable@vger.kernel.org; Prabhakar Kushwaha
-> <prabhakar.kushwaha@nxp.com>
-> Subject: [PATCH][v5] mtd: rawnand: fsl_ifc: Fix eccstat array overflow fo=
-r IFC
-> ver >=3D 2.0.0
->=20
-> Number of ECC status registers i.e. (ECCSTATx) has been increased in IFC
-> version 2.0.0 due to increase in SRAM size. This is causing eccstat array=
- to over
-> flow.
->=20
-> So, replace eccstat array with u32 variable to make it fail-safe and inde=
-pendent
-> of number of ECC status registers or SRAM size.
->=20
-> Fixes: bccb06c353af ("mtd: nand: ifc: update bufnum mask for ver >=3D 2.0=
-.0")
-> Cc: stable@vger.kernel.org # 3.18+
-> Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> ---
-> Changes for v2: Incorporated comments from Miquel Raynal and Boris Brezil=
-lon
->         - Updated patch subject
->         - Remove usage of eccstat array
->         - Added Cc: stable@vger.kernel.org
->=20
-> Changes for v3: Incorporated comments from Boris Brezillon
->         - Added fixes tag
->=20
-> Changes for v4: Incorporated comments from Boris Brezillon
->=20
-> Changes for v5: Incorporated comments from Boris Brezillon
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-I am seeing this patch[v5]'s state as superseded @ https://patchwork.ozlabs=
-.org/project/linux-mtd/list/?series=3D&submitter=3D73665&state=3D9&q=3D&arc=
-hive=3D&delegate=3D , May I know the reason?
->=20
->  drivers/mtd/nand/fsl_ifc_nand.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_n=
-and.c
-> index 4872a7b..f0b4ecd 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -173,14 +173,9 @@ static void set_addr(struct mtd_info *mtd, int
-> column, int page_addr, int oob)
->=20
->  /* returns nonzero if entire page is blank */  static int check_read_ecc=
-(struct
-> mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
-> -			  u32 *eccstat, unsigned int bufnum)
-> +			  u32 eccstat, unsigned int bufnum)
->  {
-> -	u32 reg =3D eccstat[bufnum / 4];
-> -	int errors;
-> -
-> -	errors =3D (reg >> ((3 - bufnum % 4) * 8)) & 15;
-> -
-> -	return errors;
-> +	return  (eccstat >> ((3 - bufnum % 4) * 8)) & 15;
->  }
->=20
->  /*
-> @@ -193,7 +188,7 @@ static void fsl_ifc_run_command(struct mtd_info
-> *mtd)
->  	struct fsl_ifc_ctrl *ctrl =3D priv->ctrl;
->  	struct fsl_ifc_nand_ctrl *nctrl =3D ifc_nand_ctrl;
->  	struct fsl_ifc_runtime __iomem *ifc =3D ctrl->rregs;
-> -	u32 eccstat[4];
-> +	u32 eccstat;
->  	int i;
->=20
->  	/* set the chip select for NAND Transaction */ @@ -228,8 +223,8 @@
-> static void fsl_ifc_run_command(struct mtd_info *mtd)
->  	if (nctrl->eccread) {
->  		int errors;
->  		int bufnum =3D nctrl->page & priv->bufnum_mask;
-> -		int sector =3D bufnum * chip->ecc.steps;
-> -		int sector_end =3D sector + chip->ecc.steps - 1;
-> +		int sector_start =3D bufnum * chip->ecc.steps;
-> +		int sector_end =3D sector_start + chip->ecc.steps - 1;
->  		__be32 *eccstat_regs;
->=20
->  		if (ctrl->version >=3D FSL_IFC_VERSION_2_0_0) @@ -237,10
-> +232,12 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
->  		else
->  			eccstat_regs =3D ifc->ifc_nand.v1_nand_eccstat;
->=20
-> -		for (i =3D sector / 4; i <=3D sector_end / 4; i++)
-> -			eccstat[i] =3D ifc_in32(&eccstat_regs[i]);
-> +		eccstat =3D ifc_in32(&eccstat_regs[sector_start / 4]);
-> +
-> +		for (i =3D sector_start; i <=3D sector_end; i++) {
-> +			if ((i !=3D sector_start) && !(i % 4))
-> +				eccstat =3D ifc_in32(&eccstat_regs[i / 4]);
->=20
-> -		for (i =3D sector; i <=3D sector_end; i++) {
->  			errors =3D check_read_ecc(mtd, ctrl, eccstat, i);
->=20
->  			if (errors =3D=3D 15) {
-> --
-> 1.9.1
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, needed for read register, read any register
+commands, read SFDP register, not available at time of spi_nor_scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+thus require to have dynamic LUT creation support.
 
-Thanks,
-Jagdish
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
+
+Also fix initialize sequence of AHB read, move
+fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
+
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
+
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
+
+Changes for v8:
+- Incorporated Frieder Schrempf review comments.
+Changes for v7:
+- Incorporated Han Xu review comments.
+Changes for v6:
+- Incorporated Boris Brezillon review comments.
+- Added dedicated LUT for AHB read cmd, required for devmem Read.
+Changes for v5:
+- Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
+Changes for v4:
+- Drop patch
+'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
+would be taken care in next-series.
+- Added patch for 'fix initialize sequence of AHB read'.
+Changes for v3:
+- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+- Update information in cover letter.
+Changes for v2:
+- Swap patch sequences in the series to solve git bissect issue.
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 474 ++++++++++++++++++++++++--------------
+ 1 file changed, 304 insertions(+), 170 deletions(-)
+
+-- 
+1.9.1
