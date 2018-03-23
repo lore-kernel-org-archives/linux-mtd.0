@@ -1,20 +1,20 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-bl2nam02on0614.outbound.protection.outlook.com
+ ([2a01:111:f400:fe46::614]
+ helo=NAM02-BL2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezJ5Z-0002vS-7R
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 09:34:23 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: Timo Ketola <timo@exertus.fi>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBI assert failed in ubi_wl_init
-Date: Fri, 23 Mar 2018 10:35:40 +0100
-Message-ID: <2757178.TuWGByBY2B@blindfold>
-In-Reply-To: <d154d30e-af96-007f-70cb-dafbbfd294ef@exertus.fi>
-References: <50443554-3f18-ce1b-70e7-a8092b39f5f5@exertus.fi>
- <2385502.GW1C2yTnO0@blindfold>
- <d154d30e-af96-007f-70cb-dafbbfd294ef@exertus.fi>
+ id 1ezLj6-0006KH-GD
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 12:23:23 +0000
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: <cyrille.pitchen@wedev4u.fr>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@free-electrons.com>
+CC: <linux-mtd@lists.infradead.org>, Naga Sureshkumar Relli
+ <nagasure@xilinx.com>
+Subject: [RFC PATCH 0/5] RFC for Zynq QSPI
+Date: Fri, 23 Mar 2018 17:51:57 +0530
+Message-ID: <1521807722-21626-1-git-send-email-nagasure@xilinx.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,91 +24,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Timo,
+Xilinx Zynq uses a QSPI controller that is based on the Cadence SPI IP.
+This controller implements all the functionality required to support
+Quad SPI NOR flash devices.
+This driver along with the MTD layer is used to support flash devices.
 
-Am Freitag, 23. M=E4rz 2018, 10:26:30 CET schrieb Timo Ketola:
-> On 22.03.2018 17:48, Richard Weinberger w> rote:
-> > Am Donnerstag, 22. M=E4rz 2018, 16:40:42 CET schrieb Timo Ketola:
-> >> I'm slightly confused though, because flash_erase reports total of eig=
-ht
-> >> blocks:
-> >>=20
-> >> # flash_eraseall /dev/mtd1
-> >> Erasing 128 Kibyte @ 3bf60000 - 48% complete.
-> >> Skipping bad block at 0x3bf80000
-> >>=20
-> >> Skipping bad block at 0x3bfa0000
-> >>=20
-> >> Skipping bad block at 0x3bfc0000
-> >>=20
-> >> Skipping bad block at 0x3bfe0000
-> >> Erasing 128 Kibyte @ 7bf60000 - 99% complete.
-> >> Skipping bad block at 0x7bf80000
-> >>=20
-> >> Skipping bad block at 0x7bfa0000
-> >>=20
-> >> Skipping bad block at 0x7bfc0000
-> >>=20
-> >> Skipping bad block at 0x7bfe0000
-> >> Erasing 128 Kibyte @ 7c000000 - 100% complete.
-> >>=20
-> >>=20
-> >> but, log tells only about four blocks:
-> >>=20
-> >> [    1.549699] Bad block table found at page 524224, version 0x01
-> >> [    1.554241] Bad block table found at page 1048512, version 0x01
-> >> [    1.561314] Bad block table found at page 524160, version 0x01
-> >> [    1.565853] Bad block table found at page 1048448, version 0x01
-> >> [    1.573232] 2 ofpart partitions found on MTD device gpmi-nand
-> >> [    1.577688] Creating 2 MTD partitions on "gpmi-nand":
-> >> [    1.581499] 0x000000000000-0x000004000000 : "system"
-> >> [    1.595001] 0x000004000000-0x000080000000 : "user"
-> >=20
-> > Now things get interesting.
-> > Can it be that the number of bad blocks is not stable?
-> > IOW sometimes 4 and sometimes 8 are reported?
-> > This would more or less explain what you see.
->=20
-> Dumps show that the two blocks per chip are really bad block tables. The
-> other two are empty. Could it be that the mtd reserves the other two for
-> bbt mirrors?
+This series is for the following purposes:
+- RFC of the Quad SPI driver.
+- We currently use a custom MTD layer and would like to get inputs on
+  dual stacked/dual parallel handling (described below).
 
-This can be.
+The flash device(s) can be connected in the three configurations:
+1. Single - One flash device with 1 CS, 1 Clock and 4 IO lines.
+2. Dual Parallel - Two flash devices connected with common CS and
+   separate IO lines (resulting in 8 IO lines).
+   In this configuration, the controller
+   a) Duplicates commands, address etc. sent on both sets of 4 IO lines.
+   b) Stripes data both transmitted and received i.e.
+      4 bits of data is sent to the first flash and the other 4 bits
+      to the second flash. Similarly read data is also consolidated.
+   Due to this, TX and RX data handling in the driver need special
+   handling for parallel mode.
+3. Dual Stacked - Two flash devices connected with separate CS and
+   4 common IO lines. This is largely similar to single, except for
+   the slave selection logic.
+The above configuration is conveyed to the QSPI driver through a
+devicetree property.
 
-> Anyway, I configured the bbt off and now there is full 15872 good PEBs
-> but the issue stays. Here is a dump after full erase ('nand scrub' from
-> U-Boot), ubiformat, ubiattach, ubimkvol -m -N user and a couple of reboot=
-s:
->=20
-> https://drive.google.com/open?id=3D1QGUIxarow3mGXbiJYgsLzc-a_Y5oN5XS
->=20
-> Is there any documents about the structure of fastmap blocks? google was
-> no friend for me...
+The QSPI driver differs from the existing Cadence SPI driver in
+the following respects majorly:
+1. TX and RX handling: Different TX registers are used to write into
+   the TX FIFO. TXD0, TXD1, TXD2 and TXD3 are used write 4, 1, 2 and 3
+   bytes respectively. Depending on the TXD register used, the received
+   bytes also need to be handled separately.
+2. Depending on the configuration in which flash devices are connected
+   (single, parallel or stacked), QSPI controller configuration registers
+   need to be modified.
+3. There is no support for extended slave select in QSPI, as opposed to
+   SPI. In case of stacked configuration, the slave select field remains
+   the same and a different configuration bit is used to select between
+   the two flash devices.
+4. Handling of dual parallel configuration.
 
-See ubi-media.h.
-=20
-> > Fastmap does not care about bad block itself, all it cares about the to=
-tal
-> > number of good blocks.
->=20
-> How does it record the block references, absolute or relative to good
-> blocks?
->=20
-> | a | b | bad | c |
->=20
-> Would it record c as block 3 (as absolute) or 2 (as third good one)?
+MTD layer:
+The Xilinx Zynq MTD layer by far makes use of the mainline version with
+some differences. The primary flash families supported are
+Spansion, Winbond and Micron.
+- Probe:
+  - In dual configurations, both flash devices are recognized as one
+    continuous memory. (ID is read only from one flash and it is a 
+    pre-stated assumption that both flash devices have the same flash
+    make and size.)
+- Addressing:
+  a) In dual stacked mode, the address passed to the MTD layer can be
+     between 0x0 to 2*(one flash size). Hence the MTD layer has to recognize
+     whether the address belongs to the first flash or the second flash
+     subtract the offset and indicate the same to the QSPI driver.
+  b) In dual stacked mode too the address can range between
+     0 to 2*(one flash size). But, when an 8 bit word is written,
+     4 bits are written to the first and 4 bits are written to the
+     second flash. Hence the address sent is always halved and checks
+     are in place for even address and even length.
+- 4 byte addressing is not supported and hence bank selection logic is used
+  along with the addressing system described above.
+- Flash register read/writes, for example, lock/unlock, quad enable etc.
+  are handled differently in dual stacked and parallel modes.
 
-As I said, Fastmap does not care at all. It takes the PEB numbers from UBI.
-And UBI just skips bad blocks. So c will be 3.
+This is tested with current master branch of Linux.
+To make Zynq QSPI work, we need to tweak spi-nor.c.
+I agree that changing the spi-nor layer apis, doesn't look good but
+i didn't find a way to do the same.
+So please suggest a way to handle Zynq QSPI controller in dual parallel and 
+stacked modes.
+we can move the spi/spi-zynq-qspi.c to spi-nor/ but even in that case
+also changes are needed in spi-nor.c.
+What ever the changes we do to make Zynq QSPI work, will applicable for 
+Xilinx ZynqMP SOC QSPI controller(spi-zynqmp-qspi.c) as well.
+I am happy to do the changes suggested, so that we will have a solution
+for Xilinx Zynq and ZynqMP SOC QSPI controllers.
 
-The big difference between Fastmap and non-Fastmap is that PEB numbers are=
-=20
-stored on flash.
-So maybe we have bug in this area.
+Naga Sureshkumar Relli (5):
+  spi: Add support for Zynq qspi controller
+  mtd: spi-nor: Add support for Zynq QSPI controller
+  mtd: spi-nor: Add Dual Parallel and Stacked support for Zynq QSPI
+  spi: Add PM Support for Zynq QSPI controller
+  devicetree: Add devicetree bindings documentation for Zynq QSPI
 
-Thanks,
-//richard
+ .../devicetree/bindings/spi/spi-zynq-qspi.txt      |  26 +
+ drivers/mtd/spi-nor/spi-nor.c                      | 425 ++++++++++-
+ drivers/spi/Kconfig                                |  15 +
+ drivers/spi/Makefile                               |   1 +
+ drivers/spi/spi-zynq-qspi.c                        | 827 +++++++++++++++++++++
+ include/linux/mtd/spi-nor.h                        |  15 +-
+ include/linux/spi/spi.h                            |   5 +-
+ 7 files changed, 1276 insertions(+), 38 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-zynq-qspi.txt
+ create mode 100644 drivers/spi/spi-zynq-qspi.c
 
-=2D-=20
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+-- 
+2.7.4
