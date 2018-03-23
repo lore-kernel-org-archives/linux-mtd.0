@@ -1,30 +1,21 @@
-Received: from mail-dm3nam03on0085.outbound.protection.outlook.com
- ([104.47.41.85] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezMyr-000110-Fj
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 13:43:44 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Michal Simek
- <michals@xilinx.com>, Punnaiah Choudary Kalluri <punnaia@xilinx.com>
-Subject: RE: [LINUX PATCH v8 1/2] Documentation: nand: pl353: Add
- documentation for controller and driver
-Date: Fri, 23 Mar 2018 13:43:19 +0000
-Message-ID: <BY2PR02MB14118E329A7064692B80995AAFA80@BY2PR02MB1411.namprd02.prod.outlook.com>
-References: <1521024494-30632-1-git-send-email-nagasureshkumarrelli@gmail.com>
- <20180319220811.34a99c3d@xps13>
- <BY2PR02MB1411BBD9FB5D17BB641D2B89AFA90@BY2PR02MB1411.namprd02.prod.outlook.com>
- <20180322083100.54c67c5f@xps13>
-In-Reply-To: <20180322083100.54c67c5f@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ezNSr-0007G5-98
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 14:14:48 +0000
+Date: Fri, 23 Mar 2018 15:14:27 +0100
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
+ Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Jagdish Gediya <jagdish.gediya@nxp.com>,
+ OuYang ZhiZhong <ouyzz@yealink.com>
+Subject: [GIT PULL] mtd: fixes for 4.16-rc7
+Message-ID: <20180323151427.31229231@bbrezillon>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,100 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBUaHVy
-c2RheSwgTWFyY2ggMjIsIDIwMTggMTowMSBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IG5hZ2FzdXJlc2hrdW1hcnJlbGxpQGdtYWls
-LmNvbTsgYm9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tOw0KPiByaWNoYXJkQG5vZC5hdDsgZHdt
-dzJAaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiBtYXJlay52
-YXN1dEBnbWFpbC5jb207IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBNaWNoYWwgU2lt
-ZWsNCj4gPG1pY2hhbHNAeGlsaW54LmNvbT47IFB1bm5haWFoIENob3VkYXJ5IEthbGx1cmkgPHB1
-bm5haWFAeGlsaW54LmNvbT4NCj4gU3ViamVjdDogUmU6IFtMSU5VWCBQQVRDSCB2OCAxLzJdIERv
-Y3VtZW50YXRpb246IG5hbmQ6IHBsMzUzOiBBZGQNCj4gZG9jdW1lbnRhdGlvbiBmb3IgY29udHJv
-bGxlciBhbmQgZHJpdmVyDQo+IA0KPiBIaSBOYWdhLA0KPiANCj4gSSByZW1vdmVkIGxpbnV4LWtl
-cm5lbCBmcm9tIHRoZSBjYzogbGlzdCAobGludXgtbXRkIGlzIGVub3VnaCkuDQo+IA0KPiA+ID4g
-PiArU2luY2UgdGhlIGNvbnRyb2xsZXIgZXhwZWN0cyB0aGF0IHRoZSBjaGlwc2VsZWN0IGJpdCBz
-aG91bGQgYmUNCj4gPiA+ID4gK2NsZWFyZWQgZm9yIHRoZQ0KPiA+ID4NCj4gPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXmNoaXAgc2VsZWN0ICAgXiB3b3VsZD8g
-aXM/DQo+ID4gV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4gPg0KPiA+ID4gPiArbGFz
-dCBkYXRhIHRyYW5zZmVyIGkuZSBsYXN0IDQgZGF0YSBieXRlcywgdGhlIGV4aXN0aW5nIG5hbmRi
-YXNlDQo+ID4gPiA+ICtwYWdlDQo+ID4gPg0KPiA+ID4gV2hhdCBpcyBuYW5kYmFzZT8NCj4gPiBJ
-dCBpcyBqdXN0IG5hbmQgcGFnZSByZWFkL3dyaXRlLCBJIHdpbGwgY29ycmVjdCBpdCwNCj4gPiA+
-DQo+ID4gPiA+ICtyZWFkL3dyaXRlIHJvdXRpbmVzIGZvciBzb2Z0IGVjYyBhbmQgZWNjIG5vbmUg
-bW9kZXMgd2lsbCBub3Qgd29yay4NCj4gPiA+ID4gK1NvLCBpbm9yZGVyDQo+ID4gPg0KPiA+ID4g
-cy9lY2MvRUNDLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGluIG9yZGVyXg0KPiA+ID4NCj4gPiA+ID4gK3RvIG1ha2UgdGhpcyBkcml2ZXIgd29yaywg
-aXQgYWx3YXlzIHVwZGF0ZXMgdGhlIGVjYyBtb2RlIGFzIEhXDQo+ID4gPiA+ICtFQ0MgYW5kIGNh
-bg0KPiA+ID4NCj4gPiA+IHMvZWNjL0VDQy8NCj4gPiBJIHdpbGwgdXBkYXRlLg0KPiA+ID4NCj4g
-PiA+ID4gK2ltcGxlbWVudGVkIHRoZSBwYWdlIHJlYWQvd3JpdGUgZnVuY3Rpb25zIGZvciBzdXBw
-b3J0aW5nIHRoZSBTVyBFQ0MuDQo+ID4gPg0KPiA+ID4gcy9jYW4gaW1wbGVtZW50ZWQvaW1wbGVt
-ZW50cy8/DQo+ID4gV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4NCj4gPiA+DQo+ID4g
-PiBJIGRvbid0IHVuZGVyc3RhbmQgdGhpcyBwYXJhZ3JhcGgsIGNhbiB5b3UgZXhwbGFpbiBpdCBw
-bGVhc2U/IEkgYW0NCj4gPiA+IG5vdCBzdXJlIHRvIHVuZGVyc3RhbmQgdGhlIGxpbWl0YXRpb24g
-bm9yIGhvdyB5b3UgYWRkcmVzcyBpdC4NCj4gPiBUaGVyZSBpcyBhIGxpbWl0YXRpb24gaW4gU01D
-LCB0aGF0IHdlIG11c3Qgc2V0IEVDQyBMQVNUIG9uIGxhc3QgZGF0YQ0KPiA+IHBoYXNlIGFjY2Vz
-cywgdG8gdGVsbCBFQ0MgYmxvY2sgbm90IHRvIGV4cGVjdCBhbnkgZGF0YSBmdXJ0aGVyLg0KPiA+
-IEV4OiAgV2hlbiBudW1iZXIgb2YgRUNDIFNURVAgYXJlIDQsIHRoZW4gdGlsbCAzIHdlIHdpbGwg
-d3JpdGUgdG8gZmxhc2ggdXNpbmcNCj4gU01DIHdpdGggSFcgRUNDIGVuYWJsZWQuDQo+ID4gQW5k
-IGZvciB0aGUgbGFzdCBFQ0MgU1RFUCwgd2Ugd2lsbCBzdWJ0cmFjdCA0Ynl0ZXMgZnJvbSBwYWdl
-IHNpemUsIGFuZCB3aWxsDQo+IGluaXRpYXRlIGEgdHJhbnNmZXIuDQo+ID4gQW5kIHRoZSByZW1h
-aW5pbmcgNCBhcyBvbmUgbW9yZSB0cmFuc2ZlciB3aXRoIEVDQ19MQVNUIGJpdCBzZXQgaW4gTkFO
-RA0KPiA+IERhdGEgcGhhc2UgcmVnaXN0ZXIgdG8gbm90aWZ5IEVDQyBibG9jayBub3QgdG8gZXhw
-ZWN0IGFueSBtb3JlIGRhdGEuIFRoZSBsYXN0DQo+IGJsb2NrIHNob3VsZCBiZSBhbGlnbiB3aXRo
-IGVuZCBvZiA1MTIgYnl0ZSBibG9jay4NCj4gPiBCZWNhdXNlIG9mIHRoaXMgbGltaXRhdGlvbiwg
-d2UgYXJlIG5vdCB1c2luZyBjb3JlIHJvdXRpbmVzLg0KPiANCj4gVGhpcyBpcyB3YXkgbW9yZSB1
-bmRlcnN0YW5kYWJsZSwgdGhhbmtzLiBDYW4geW91IGFkYXB0IHRoaXMgZXhwbGFuYXRpb24gaW50
-bw0KPiB0aGUgZG9jdW1lbnRhdGlvbj8NCk9rLCBJIHdpbGwgYWRkIGluIG5leHQgc2VyaWVzLg0K
-PiANCj4gT3RoZXJ3aXNlIEkgYW0gc3RpbGwgbm90IGNvbnZpbmNlZCB0aGF0IHlvdSBuZWVkIHNw
-ZWNpYWwgaGFuZGxlcnMgZm9yIFNXIEVDQyBub3INCj4gcmF3IHBhZ2UgYWNjZXNzb3JzIGFzIHRo
-ZXkgZG9uJ3QgdG9nZ2xlIHRoZSBFQ0MvRUNDX0xBU1QgYml0IHNldCwgc28gcGxlYXNlIHRyeQ0K
-PiB0byByZW1vdmUgdGhlbSBmcm9tIGJvdGggdGhlIGRvY3VtZW50YXRpb24gYW5kIHRoZSBjb2Rl
-Lg0KU3VyZSwgSSB3aWxsIHVwZGF0ZS4NCj4gDQo+ID4gPg0KPiA+ID4gPiArDQo+ID4gPiA+ICtI
-VyBFQ0MgbW9kZToNCj4gPiA+ID4gKwlVcHRvIDJLIHBhZ2Ugc2l6ZSBpcyBzdXBwb3J0ZWQgYW5k
-IGJleW9uZCB0aGF0IGl0IHJldHVucw0KPiA+ID4gPiArLUVOT1NVUFBPUlQgZXJyb3IuIElmIHRo
-ZSBmbHNoIGhhcyBPTkRJRSBlY2MgY29udHJvbGxlciB0aGVuIHRoZQ0KPiA+ID4NCj4gPiA+ICAg
-ICBeIC1FTk9UU1VQUCAgICAgICAgICAgICAgXmZsYXNoICAgXm9uLWRpZSBFQ0MNCj4gPiA+DQo+
-ID4gV2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4gPiA+ICtwcmlvcml0eSBoYXMgZ2l2
-ZW4gdG8gdGhlIE9ORElFIGVjYyBjb250cm9sbGVyLiBBbHNvIHRoZSBjdXJyZW50DQo+ID4gPg0K
-PiA+ID4gICAgICAgICAgICAgXiBpcyBnaXZlbj8gICAgICBeb24tZGllIEVDQw0KPiA+ID4NCj4g
-PiBXaWxsIGNvcnJlY3QgaW4gbmV4dCBwYXRjaC4NCj4gPiA+ID4gK2ltcGxlbWVudGF0aW9uIGhh
-cyBzdXBwb3J0IGZvciB1cHRvIDY0IGJ5dGUgb29iIGFyZWENCj4gPiA+DQo+ID4gPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgXnVwIHRvIDY0IGJ5dGVzIG9mIE9PQiBkYXRhLg0K
-PiA+ID4NCj4gPiBXaWxsIGNvcnJlY3QgaW4gbmV4dCBwYXRjaC4NCj4gPiA+ID4gKw0KPiA+ID4g
-PiArU1cgRUNDIG1vZGU6DQo+ID4gPiA+ICsJSXQgc3VwcG9ydHMgYWxsIHRoZSBwZ2FlIHNpemVz
-LiBCdXQgc2luY2UsIHp5bnEgc29jIGJvb3Ryb20gdXNlcw0KPiA+ID4NCj4gPiA+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBeIHBhZ2UgICAgICAgICAgICAgICAgIF5aeW5jIFNPQw0KPiA+
-ID4NCj4gPiBXaWxsIGNvcnJlY3QgaW4gbmV4dCBwYXRjaC4NCj4gPiA+ID4gK0hXIEVDQyBmb3Ig
-dGhlIGRldmljZXMgdGhhdCBoYXZlIHBnYWUgc2l6ZSA8PTJLIHNvLCB0byBhdm9pZCBhbnkNCj4g
-PiA+ID4gK2VjYyByZWxhdGVkDQo+ID4gPg0KPiA+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgXiBwYWdlIDw9IDJLLCAgICAgICAgICAgICAgIEVDQ14NCj4gPiA+DQo+ID4g
-V2lsbCBjb3JyZWN0IGluIG5leHQgcGF0Y2guDQo+ID4gPiA+ICtpc3N1ZXMgZHVyaW5nIGJvb3Qs
-IHByZWZlciBIVyBFQ0Mgb3ZlciBTVyBFQ0MuDQo+ID4gPg0KPiA+ID4gSSBzdXBwb3NlIHRoaXMg
-bWVhbnMgdGhhdCBpZiBubyBFQ0MgbW9kZSBpcyBnaXZlbiBpZS4gbm8NCj4gPiA+IG5hbmQtZWNj
-LW1vZGUgaW4gdGhlIERULCB0aGUgZHJpdmVyIHdpbGwgdXNlIEhXIEVDQyBieSBkZWZhdWx0LCBy
-aWdodD8NCj4gPiBZZXMuDQo+IA0KPiBUaGVuIGNhbiB5b3UgcmV3b3JkIHRvIG1ha2UgaXQgY2xl
-YXJlcj8gSSB0aGluayB5b3UgY2FuIGRyb3AgdGhlDQo+ICJpc3N1ZXMgZHVyaW5nIGJvb3QiIGFy
-Z3VtZW50IGFuZCBzdGljayB0byBzb21ldGhpbmcgc2ltcGxlIGxpa2UgIldoZW4NCj4gdGhlIGtl
-cm5lbCBpcyBub3QgYXdhcmUgb2YgdGhlIEVDQyBtb2RlLCB1c2UgSFcgRUNDIGJ5IGRlZmF1bHQu
-DQpPaywgSSB3aWxsIHVwZGF0ZQ0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0K
-PiANCj4gPiA+DQo+ID4gPiA+ICsNCj4gPiA+ID4gK0ZvciBkZXZpY2V0cmVlIGJpbmRpbmcgaW5m
-b3JtYXRpb24gcGxlYXNlIHJlZmVyIHRoZSBiZWxvdyBkdCBiaW5kaW5nDQo+ID4gPiA+ICtmaWxl
-IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZW1vcnktY29udHJvbGxlcnMvcGwz
-NTMtDQo+IHNtYy50eHQuDQo+ID4gPg0KPiA+ID4gVGhpcyBmaWxlIGRvZXMgbm90IGV4aXN0IGlu
-IG15IHRyZWUuDQo+ID4gQWN0dWFsbHkgdGhpcyBkcml2ZXIgaGFzIGRlcGVuZGVuY3kgd2l0aCBT
-TUMgZHJpdmVyLg0KPiA+IFJlY2VudGx5IEkgc2VudCBvbmUgbW9yZSBwYXRjaCBzZXJpZXMsIHRo
-ZXJlIHdlIHdpbGwgZmluZCBhbGwgdGhlc2UuDQo+ID4gVGhpcyBpcyBmb3IgZHJpdmVycy9tZW1v
-cnkvDQo+ID4gU2luY2UgU01DIGNvbnRyb2xsZXIgaGFzIHR3byBpbnRlcmZhY2VzLCBOYW5kIGFu
-ZCBOb3IuDQo+ID4gU28gd2UgaGF2ZSB0d28gZHJpdmVycywgb25lIG1haW4gZHJpdmVyIGlzIFNN
-QyBhbmQgdGhlIHNlY29uZCBpcyBOQU5EIGRyaXZlci4NCj4gPiBodHRwczovL3d3dy5zcGluaWNz
-Lm5ldC9saXN0cy9rZXJuZWwvbXNnMjc0ODgzMi5odG1sDQo+ID4gaHR0cHM6Ly93d3cuc3Bpbmlj
-cy5uZXQvbGlzdHMva2VybmVsL21zZzI3NDg4MzQuaHRtbA0KPiA+IGh0dHBzOi8vd3d3LnNwaW5p
-Y3MubmV0L2xpc3RzL2tlcm5lbC9tc2cyNzQ4ODQwLmh0bWwNCj4gDQo+IE9rLCB0aGFua3MgZm9y
-IHBvaW50aW5nIHRoZSBsaW5rcy4NCj4gDQo+ID4NCj4gPiA+DQo+ID4gPg0KPiA+ID4gVGhhbmtz
-IGZvciBjb250cmlidXRpbmcgdGhpcyBkcml2ZXIsDQo+ID4gPiBNaXF1w6hsDQo+ID4gPg0KPiA+
-ID4gLS0NCj4gPiA+IE1pcXVlbCBSYXluYWwsIEJvb3RsaW4gKGZvcm1lcmx5IEZyZWUgRWxlY3Ry
-b25zKSBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVsDQo+ID4gPiBlbmdpbmVlcmluZyBodHRwczov
-L2Jvb3RsaW4uY29tDQo+ID4NCj4gPiBUaGFua3MsDQo+ID4gTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aS4NCj4gDQo+IA0KPiANCj4gLS0NCj4gTWlxdWVsIFJheW5hbCwgQm9vdGxpbiAoZm9ybWVybHkg
-RnJlZSBFbGVjdHJvbnMpDQo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcN
-Cj4gaHR0cHM6Ly9ib290bGluLmNvbQ0K
+Hello Linus,
+
+Here is a fixes PR for 4.16-rc7.
+
+Regards,
+
+Boris
+
+The following changes since commit c698ca5278934c0ae32297a8725ced2e27585d7f:
+
+  Linux 4.16-rc6 (2018-03-18 17:48:42 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.16-rc7
+
+for you to fetch changes up to 6b00c35138b404be98b85f4a703be594cbed501c:
+
+  mtd: nand: fsl_ifc: Read ECCSTAT0 and ECCSTAT1 registers for IFC 2.0 (2018-03-21 10:22:28 +0100)
+
+----------------------------------------------------------------
+* Fix several problems in the fsl_ifc NAND controller driver
+* Fix misuse of mtd_ooblayout_ecc() in mtdchar.c
+
+----------------------------------------------------------------
+Jagdish Gediya (3):
+      mtd: nand: fsl_ifc: Fix nand waitfunc return value
+      mtd: nand: fsl_ifc: Fix eccstat array overflow for IFC ver >= 2.0.0
+      mtd: nand: fsl_ifc: Read ECCSTAT0 and ECCSTAT1 registers for IFC 2.0
+
+OuYang ZhiZhong (1):
+      mtdchar: fix usage of mtd_ooblayout_ecc()
+
+ drivers/mtd/mtdchar.c           |  4 ++--
+ drivers/mtd/nand/fsl_ifc_nand.c | 32 +++++++++++++-------------------
+ include/linux/fsl_ifc.h         |  6 +-----
+ 3 files changed, 16 insertions(+), 26 deletions(-)
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
