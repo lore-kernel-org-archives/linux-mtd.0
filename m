@@ -1,22 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezHSP-0001r4-5a
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 07:50:15 +0000
-Date: Fri, 23 Mar 2018 08:49:32 +0100
+ id 1ezHTP-0002np-5u
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 07:50:55 +0000
+Date: Fri, 23 Mar 2018 08:50:37 +0100
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Jagdish Gediya <jagdish.gediya@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>
-Subject: Re: [PATCH][v5] mtd: rawnand: fsl_ifc: Fix eccstat array overflow
- for IFC ver >= 2.0.0
-Message-ID: <20180323084932.67848138@bbrezillon>
-In-Reply-To: <HE1PR0402MB27787356BB94AB5D0C69153C90A80@HE1PR0402MB2778.eurprd04.prod.outlook.com>
-References: <1521669973-10450-1-git-send-email-jagdish.gediya@nxp.com>
- <HE1PR0402MB27787356BB94AB5D0C69153C90A80@HE1PR0402MB2778.eurprd04.prod.outlook.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
+ stable@vger.kernel.org, leoyang.li@nxp.com, oss@buserror.net,
+ computersforpeace@gmail.com
+Subject: Re: [PATCH] mtd: rawnand: fsl_ifc: Read ECCSTAT0 and ECCSTAT1
+ registers for IFC 2.0
+Message-ID: <20180323085037.04ce1041@bbrezillon>
+In-Reply-To: <1521661101-26911-1-git-send-email-jagdish.gediya@nxp.com>
+References: <1521661101-26911-1-git-send-email-jagdish.gediya@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,128 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Mar 2018 05:04:15 +0000
+On Thu, 22 Mar 2018 01:08:10 +0530
 Jagdish Gediya <jagdish.gediya@nxp.com> wrote:
 
-> Hi Boris,
+> Due to missing information in Hardware manual, current
+> implementation doesn't read ECCSTAT0 and ECCSTAT1 registers
+> for IFC 2.0.
 > 
-> > -----Original Message-----
-> > From: Jagdish Gediya
-> > Sent: Thursday, March 22, 2018 3:36 AM
-> > To: linux-mtd@lists.infradead.org
-> > Cc: boris.brezillon@free-electrons.com; computersforpeace@gmail.com;
-> > oss@buserror.net; Leo Li <leoyang.li@nxp.com>; Jagdish Gediya
-> > <jagdish.gediya@nxp.com>; stable@vger.kernel.org; Prabhakar Kushwaha
-> > <prabhakar.kushwaha@nxp.com>
-> > Subject: [PATCH][v5] mtd: rawnand: fsl_ifc: Fix eccstat array overflow for IFC
-> > ver >= 2.0.0
-> > 
-> > Number of ECC status registers i.e. (ECCSTATx) has been increased in IFC
-> > version 2.0.0 due to increase in SRAM size. This is causing eccstat array to over
-> > flow.
-> > 
-> > So, replace eccstat array with u32 variable to make it fail-safe and independent
-> > of number of ECC status registers or SRAM size.
-> > 
-> > Fixes: bccb06c353af ("mtd: nand: ifc: update bufnum mask for ver >= 2.0.0")
-> > Cc: stable@vger.kernel.org # 3.18+
-> > Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> > Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
-> > ---
-> > Changes for v2: Incorporated comments from Miquel Raynal and Boris Brezillon
-> >         - Updated patch subject
-> >         - Remove usage of eccstat array
-> >         - Added Cc: stable@vger.kernel.org
-> > 
-> > Changes for v3: Incorporated comments from Boris Brezillon
-> >         - Added fixes tag
-> > 
-> > Changes for v4: Incorporated comments from Boris Brezillon
-> > 
-> > Changes for v5: Incorporated comments from Boris Brezillon  
+> Add support to read ECCSTAT0 and ECCSTAT1 registers during
+> ecccheck for IFC 2.0.
 > 
-> I am seeing this patch[v5]'s state as superseded @ https://patchwork.ozlabs.org/project/linux-mtd/list/?series=&submitter=73665&state=9&q=&archive=&delegate= , May I know the reason?
+> Fixes: 656441478ed5 ("mtd: nand: ifc: Fix location of eccstat
+> registers for IFC V1.0")
+> Cc: stable@vger.kernel.org # v3.18+
+> Signed-off-by: Jagdish Gediya <jagdish.gediya@nxp.com>
+> Reviewed-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
 
-Because I applied v4 (+ the modification I suggested) before you sent
-v5.
+Applied.
 
-I just pushed the mtd/fixes branch [1] and I'm planning to send a fixes
-PR to Linus later today.
-
-Regards,
+Thanks,
 
 Boris
 
-[1]http://git.infradead.org/linux-mtd.git/shortlog/refs/heads/master
-
-> > 
-> >  drivers/mtd/nand/fsl_ifc_nand.c | 23 ++++++++++-------------
-> >  1 file changed, 10 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> > index 4872a7b..f0b4ecd 100644
-> > --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> > +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> > @@ -173,14 +173,9 @@ static void set_addr(struct mtd_info *mtd, int
-> > column, int page_addr, int oob)
-> > 
-> >  /* returns nonzero if entire page is blank */  static int check_read_ecc(struct
-> > mtd_info *mtd, struct fsl_ifc_ctrl *ctrl,
-> > -			  u32 *eccstat, unsigned int bufnum)
-> > +			  u32 eccstat, unsigned int bufnum)
-> >  {
-> > -	u32 reg = eccstat[bufnum / 4];
-> > -	int errors;
-> > -
-> > -	errors = (reg >> ((3 - bufnum % 4) * 8)) & 15;
-> > -
-> > -	return errors;
-> > +	return  (eccstat >> ((3 - bufnum % 4) * 8)) & 15;
-> >  }
-> > 
-> >  /*
-> > @@ -193,7 +188,7 @@ static void fsl_ifc_run_command(struct mtd_info
-> > *mtd)
-> >  	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
-> >  	struct fsl_ifc_nand_ctrl *nctrl = ifc_nand_ctrl;
-> >  	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
-> > -	u32 eccstat[4];
-> > +	u32 eccstat;
-> >  	int i;
-> > 
-> >  	/* set the chip select for NAND Transaction */ @@ -228,8 +223,8 @@
-> > static void fsl_ifc_run_command(struct mtd_info *mtd)
-> >  	if (nctrl->eccread) {
-> >  		int errors;
-> >  		int bufnum = nctrl->page & priv->bufnum_mask;
-> > -		int sector = bufnum * chip->ecc.steps;
-> > -		int sector_end = sector + chip->ecc.steps - 1;
-> > +		int sector_start = bufnum * chip->ecc.steps;
-> > +		int sector_end = sector_start + chip->ecc.steps - 1;
-> >  		__be32 *eccstat_regs;
-> > 
-> >  		if (ctrl->version >= FSL_IFC_VERSION_2_0_0) @@ -237,10
-> > +232,12 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
-> >  		else
-> >  			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
-> > 
-> > -		for (i = sector / 4; i <= sector_end / 4; i++)
-> > -			eccstat[i] = ifc_in32(&eccstat_regs[i]);
-> > +		eccstat = ifc_in32(&eccstat_regs[sector_start / 4]);
-> > +
-> > +		for (i = sector_start; i <= sector_end; i++) {
-> > +			if ((i != sector_start) && !(i % 4))
-> > +				eccstat = ifc_in32(&eccstat_regs[i / 4]);
-> > 
-> > -		for (i = sector; i <= sector_end; i++) {
-> >  			errors = check_read_ecc(mtd, ctrl, eccstat, i);
-> > 
-> >  			if (errors == 15) {
-> > --
-> > 1.9.1  
+> ---
+>  drivers/mtd/nand/fsl_ifc_nand.c | 6 +-----
+>  include/linux/fsl_ifc.h         | 6 +-----
+>  2 files changed, 2 insertions(+), 10 deletions(-)
 > 
-> Thanks,
-> Jagdish
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index ed64759..1513298 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -227,11 +227,7 @@ static void fsl_ifc_run_command(struct mtd_info *mtd)
+>  		int sector_end = sector_start + chip->ecc.steps - 1;
+>  		__be32 *eccstat_regs;
+>  
+> -		if (ctrl->version >= FSL_IFC_VERSION_2_0_0)
+> -			eccstat_regs = ifc->ifc_nand.v2_nand_eccstat;
+> -		else
+> -			eccstat_regs = ifc->ifc_nand.v1_nand_eccstat;
+> -
+> +		eccstat_regs = ifc->ifc_nand.nand_eccstat;
+>  		eccstat = ifc_in32(&eccstat_regs[sector_start / 4]);
+>  
+>  		for (i = sector_start; i <= sector_end; i++) {
+> diff --git a/include/linux/fsl_ifc.h b/include/linux/fsl_ifc.h
+> index c332f0a..3fdfede 100644
+> --- a/include/linux/fsl_ifc.h
+> +++ b/include/linux/fsl_ifc.h
+> @@ -734,11 +734,7 @@ struct fsl_ifc_nand {
+>  	u32 res19[0x10];
+>  	__be32 nand_fsr;
+>  	u32 res20;
+> -	/* The V1 nand_eccstat is actually 4 words that overlaps the
+> -	 * V2 nand_eccstat.
+> -	 */
+> -	__be32 v1_nand_eccstat[2];
+> -	__be32 v2_nand_eccstat[6];
+> +	__be32 nand_eccstat[8];
+>  	u32 res21[0x1c];
+>  	__be32 nanndcr;
+>  	u32 res22[0x2];
 
 
 
