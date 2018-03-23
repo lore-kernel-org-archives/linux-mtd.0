@@ -1,18 +1,18 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
+Received: from mail-pf0-x243.google.com ([2607:f8b0:400e:c00::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezSPN-0000iM-IE
- for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:42 +0000
-Received: by mail-pf0-x241.google.com with SMTP id d26so5106718pfn.5
- for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:18 -0700 (PDT)
+ id 1ezSPP-0000hh-07
+ for linux-mtd@lists.infradead.org; Fri, 23 Mar 2018 19:31:43 +0000
+Received: by mail-pf0-x243.google.com with SMTP id a11so1750719pff.8
+ for <linux-mtd@lists.infradead.org>; Fri, 23 Mar 2018 12:31:16 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
  linux-mtd@lists.infradead.org, Jaegeuk Kim <jaegeuk@kernel.org>,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 07/14] fscrypt: drop max_namelen check from fname_decrypt()
-Date: Fri, 23 Mar 2018 12:23:51 -0700
-Message-Id: <20180323192358.95691-8-ebiggers3@gmail.com>
+Subject: [PATCH 05/14] fscrypt: don't clear flags on crypto transform
+Date: Fri, 23 Mar 2018 12:23:49 -0700
+Message-Id: <20180323192358.95691-6-ebiggers3@gmail.com>
 In-Reply-To: <20180323192358.95691-1-ebiggers3@gmail.com>
 References: <20180323192358.95691-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,39 +26,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-fname_decrypt() returns an error if the input filename is longer than
-the inode's ->max_namelen() as given by the filesystem.  But, this
-doesn't actually make sense because the filesystem provided the input
-filename in the first place, where it was subject to the filesystem's
-limits.  And fscrypt_decrypt() has no internal limit itself.
+fscrypt is clearing the flags on the crypto_skcipher it allocates for
+each inode.  But, this is unnecessary and may cause problems in the
+future because it will even clear flags that are meant to be internal to
+the crypto API, e.g. CRYPTO_TFM_NEED_KEY.
 
-Thus, remove this unnecessary check.
+Remove the unnecessary flag clearing.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ fs/crypto/keyinfo.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index 8088a606c0aa..cc9590b5f371 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -93,14 +93,11 @@ static int fname_decrypt(struct inode *inode,
- 	struct skcipher_request *req = NULL;
- 	DECLARE_CRYPTO_WAIT(wait);
- 	struct scatterlist src_sg, dst_sg;
--	struct fscrypt_info *ci = inode->i_crypt_info;
--	struct crypto_skcipher *tfm = ci->ci_ctfm;
-+	struct crypto_skcipher *tfm = inode->i_crypt_info->ci_ctfm;
- 	int res = 0;
- 	char iv[FS_CRYPTO_BLOCK_SIZE];
--	unsigned lim;
- 
--	lim = inode->i_sb->s_cop->max_namelen(inode);
--	if (iname->len <= 0 || iname->len > lim)
-+	if (iname->len <= 0)
- 		return -EIO;
- 
- 	/* Allocate request */
+diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
+index 8099388f5581..1435a1c81010 100644
+--- a/fs/crypto/keyinfo.c
++++ b/fs/crypto/keyinfo.c
+@@ -327,7 +327,6 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 		goto out;
+ 	}
+ 	crypt_info->ci_ctfm = ctfm;
+-	crypto_skcipher_clear_flags(ctfm, ~0);
+ 	crypto_skcipher_set_flags(ctfm, CRYPTO_TFM_REQ_WEAK_KEY);
+ 	/*
+ 	 * if the provided key is longer than keysize, we use the first
 -- 
 2.17.0.rc0.231.g781580f067-goog
