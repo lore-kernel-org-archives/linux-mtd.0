@@ -1,19 +1,19 @@
-Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
+Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezgFt-000739-KB
- for linux-mtd@lists.infradead.org; Sat, 24 Mar 2018 10:18:35 +0000
-Received: by mail-pl0-x244.google.com with SMTP id f23-v6so8943977plr.10
- for <linux-mtd@lists.infradead.org>; Sat, 24 Mar 2018 03:18:23 -0700 (PDT)
-Date: Sat, 24 Mar 2018 15:47:27 +0530
+ id 1ezhCo-0005Za-Rm
+ for linux-mtd@lists.infradead.org; Sat, 24 Mar 2018 11:19:28 +0000
+Received: by mail-pl0-x241.google.com with SMTP id x4-v6so8994613pln.7
+ for <linux-mtd@lists.infradead.org>; Sat, 24 Mar 2018 04:19:16 -0700 (PDT)
+Date: Sat, 24 Mar 2018 16:48:20 +0530
 From: Arushi Singhal <arushisinghal19971997@gmail.com>
-To: boris.brezillon@free-electrons.com
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
+To: dwmw2@infradead.org
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: nand: do not initialise statics to 0 or NULL
-Message-ID: <20180324101727.GA748@seema-Inspiron-15-3567>
+Subject: [PATCH] mtd: devices: check mtd_device_register() return code
+Message-ID: <20180324111820.GA1997@seema-Inspiron-15-3567>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -26,26 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes the checkpatch.pl error to ams-delta.c.
-ERROR: do not initialise statics to 0 or NULL
+stfsm_probe() misses error handling of mtd_device_register().
 
 Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 ---
- drivers/mtd/nand/ams-delta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/devices/st_spi_fsm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
-index 6e7f6e0..8e89452 100644
---- a/drivers/mtd/nand/ams-delta.c
-+++ b/drivers/mtd/nand/ams-delta.c
-@@ -35,7 +35,7 @@
- /*
-  * MTD structure for E3 (Delta)
-  */
--static struct mtd_info *ams_delta_mtd = NULL;
-+static struct mtd_info *ams_delta_mtd;
+diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
+index 7bc29d7..4a99a6a 100644
+--- a/drivers/mtd/devices/st_spi_fsm.c
++++ b/drivers/mtd/devices/st_spi_fsm.c
+@@ -2125,7 +2125,13 @@ static int stfsm_probe(struct platform_device *pdev)
+ 		(long long)fsm->mtd.size, (long long)(fsm->mtd.size >> 20),
+ 		fsm->mtd.erasesize, (fsm->mtd.erasesize >> 10));
  
- /*
-  * Define partitions for flash devices
+-	return mtd_device_register(&fsm->mtd, NULL, 0);
++	ret = mtd_device_register(&fsm->mtd, NULL, 0);
++	if (ret) {
++		pr_err("Failed to register device\n");
++		goto err_clk_unprepare;
++	}
++
++	return 0;
+ 
+ err_clk_unprepare:
+ 	clk_disable_unprepare(fsm->clk);
 -- 
 2.7.4
