@@ -1,24 +1,18 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ezsYz-0004ik-Fq
- for linux-mtd@lists.infradead.org; Sat, 24 Mar 2018 23:27:06 +0000
-From: Alban Bedel <albeu@free.fr>
-To: linux-kernel@vger.kernel.org
-Cc: Alban Bedel <albeu@free.fr>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode for the
- cells list
-Date: Sun, 25 Mar 2018 00:24:57 +0100
-Message-Id: <1521933899-362-2-git-send-email-albeu@free.fr>
-In-Reply-To: <1521933899-362-1-git-send-email-albeu@free.fr>
-References: <1521933899-362-1-git-send-email-albeu@free.fr>
+Received: from mail-db5eur01on0135.outbound.protection.outlook.com
+ ([104.47.2.135] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0OFL-0002K9-Qw
+ for linux-mtd@lists.infradead.org; Mon, 26 Mar 2018 09:16:59 +0000
+From: "Wang, Qiong (Q.)" <qwang34@yfve.com.cn>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Is it really reasonable to reserve a percentage of the total nand
+ flash size for bad block handling for UBI?
+Date: Mon, 26 Mar 2018 09:16:42 +0000
+Message-ID: <HE1PR0601MB24277E30F93433268CD816BAF3AD0@HE1PR0601MB2427.eurprd06.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,123 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Having the cells as subnodes of the provider device without any
-compatible property might clash with other bindings. To avoid this
-problem update the binding to have all the cells in a 'nvmem-cells'
-subnode with a 'nvmem-cells' compatible string. This new binding
-guarantee that we can turn any kind of device in a nvmem provider.
-
-While discouraged for new uses the old scheme is still supported for
-backward compatibility.
-
-Signed-off-by: Alban Bedel <albeu@free.fr>
----
- Documentation/devicetree/bindings/nvmem/nvmem.txt | 55 ++++++++++++++++-------
- drivers/nvmem/core.c                              | 10 +++++
- 2 files changed, 48 insertions(+), 17 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Documentation/devicetree/bindings/nvmem/nvmem.txt
-index fd06c09..6b723e7 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
-@@ -11,14 +11,29 @@ these data from, and where they are stored on the storage device.
- This document is here to document this.
- 
- = Data providers =
--Contains bindings specific to provider drivers and data cells as children
--of this node.
-+A data provider should have a subnode named 'nvmem-cells' that contains
-+a subnodes for each data cells.
-+
-+For backward compatibility the nvmem data cells can be direct children
-+of the data provider. This use is discouraged as it can conflict with
-+other bindings.
- 
- Optional properties:
-  read-only: Mark the provider as read only.
- 
-+= Data cells list =
-+The data cells list node should be named 'nvmem-cells' and have a
-+child node for each data cell.
-+
-+Required properties:
-+ compatible: Must be "nvmem-cells"
-+ #address-cells: <1> if the provider use 32 bit addressing,
-+                 <2> for 64 bits addressing
-+ #size-cells: <1> if the provider use 32 bit sizes,
-+              <2> for 64 bits sizes
-+
- = Data cells =
--These are the child nodes of the provider which contain data cell
-+These are the child nodes of the nvmem-cells node which contain data cell
- information like offset and size in nvmem provider.
- 
- Required properties:
-@@ -37,24 +52,30 @@ For example:
- 		...
- 
- 		/* Data cells */
--		tsens_calibration: calib@404 {
--			reg = <0x404 0x10>;
--		};
-+		nvmem-cells {
-+			compatible = "nvmem-cells";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
- 
--		tsens_calibration_bckp: calib_bckp@504 {
--			reg = <0x504 0x11>;
--			bits = <6 128>
--		};
-+			tsens_calibration: calib@404 {
-+				reg = <0x404 0x10>;
-+			};
- 
--		pvs_version: pvs-version@6 {
--			reg = <0x6 0x2>
--			bits = <7 2>
--		};
-+			tsens_calibration_bckp: calib_bckp@504 {
-+				reg = <0x504 0x11>;
-+				bits = <6 128>
-+			};
- 
--		speed_bin: speed-bin@c{
--			reg = <0xc 0x1>;
--			bits = <2 3>;
-+			pvs_version: pvs-version@6 {
-+				reg = <0x6 0x2>
-+				bits = <7 2>
-+			};
- 
-+			speed_bin: speed-bin@c{
-+				reg = <0xc 0x1>;
-+				bits = <2 3>;
-+
-+			};
- 		};
- 		...
- 	};
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 78051f0..a59195c 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -783,6 +783,16 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_node *np,
- 	if (!nvmem_np)
- 		return ERR_PTR(-EINVAL);
- 
-+	/* Devices using the new binding have all the cells in
-+	 * a subnode with compatible = "nvmem-cells". In this
-+	 * case the device will be the parent of this node.
-+	 */
-+	if (of_device_is_compatible(nvmem_np, "nvmem-cells")) {
-+		nvmem_np = of_get_next_parent(nvmem_np);
-+		if (!nvmem_np)
-+			return ERR_PTR(-EINVAL);
-+	}
-+
- 	nvmem = __nvmem_device_get(nvmem_np, NULL, NULL);
- 	of_node_put(nvmem_np);
- 	if (IS_ERR(nvmem))
--- 
-2.7.4
+SGVsbG8sDQoNCknigJltIGNyZWF0aW5nIGEgMTZNaUIgVUJJRlMgcGFydGl0aW9uIG91dCBvZiBh
+IDUxMk1pQiBuYW5kIGZsYXNoLkFmdGVyIGl0IGlzIHN1Y2Nlc3NmdWxseSBtb3VudGVkIEkgZGlz
+Y292ZXJlZCB0aGF0IDgwIFBFQnMgYXJlIHJlc2VydmVkIGZvciB0aGUgYmFkIGJsb2NrIGhhbmRs
+aW5nLiBTaW5jZSB0aGUgUEVCIHNpemUgaXMgMTI4S2lCIGZvciBteSBuYW5kIGZsYXNoLHRoYXQg
+aXMgdG90YWxseSAxME1pQiwgdGFraW5nIG1vcmUgdGhhbiBoYWxmIHNpemUgb2YgbXkgcGFydGl0
+aW9uIHNpemUuDQoNCkFmdGVyIGNoZWNraW5nIHRoZSB1Ymkgc291cmNlIGNvZGUgSSBkaXNjb3Zl
+cmVkIHRoYXQgaXMgYmVjYXVzZSB1YmkgdXNlcyB0aGUgdG90YWwgbmFuZCBmbGFzaCBzaXplIHRv
+IG11bHRpcGx5IHRoZSBtYXggYmFkIFBFQiBwZXJjZW50YWdlIHRvIGdldCB0aGUgcmVzZXJ2ZWQg
+YmFkIGJsb2NrLiBJIGxpc3RlZCB0aGUgc291cmNlIGNvZGUgYmVsb3c6DQoNCmRyaXZlcnMvbXRk
+L3ViaS9idWlsZC5jDQoNCnN0YXRpYyBpbnQgZ2V0X2JhZF9wZWJfbGltaXQoY29uc3Qgc3RydWN0
+IHViaV9kZXZpY2UgKnViaSwgaW50IG1heF9iZWJfcGVyMTAyNCkNCnsNCiAgICAgICAgIGludCBs
+aW1pdCwgZGV2aWNlX3BlYnM7DQogICAgICAgICB1aW50NjRfdCBkZXZpY2Vfc2l6ZTsNCg0KICAg
+ICAgICAgaWYgKCFtYXhfYmViX3BlcjEwMjQpDQogICAgICAgICAgICAgICAgICByZXR1cm4gMDsN
+Cg0KICAgICAgICAgLyoNCiAgICAgICAgICogSGVyZSB3ZSBhcmUgdXNpbmcgc2l6ZSBvZiB0aGUg
+ZW50aXJlIGZsYXNoIGNoaXAgYW5kDQogICAgICAgICAqIG5vdCBqdXN0IHRoZSBNVEQgcGFydGl0
+aW9uIHNpemUgYmVjYXVzZSB0aGUgbWF4aW11bQ0KICAgICAgICAgKiBudW1iZXIgb2YgYmFkIGVy
+YXNlYmxvY2tzIGlzIGEgcGVyY2VudGFnZSBvZiB0aGUNCiAgICAgICAgICogd2hvbGUgZGV2aWNl
+IGFuZCBiYWQgZXJhc2VibG9ja3MgYXJlIG5vdCBmYWlybHkNCiAgICAgICAgICogZGlzdHJpYnV0
+ZWQgb3ZlciB0aGUgZmxhc2ggY2hpcC4gU28gdGhlIHdvcnN0IGNhc2UNCiAgICAgICAgICogaXMg
+dGhhdCBhbGwgdGhlIGJhZCBlcmFzZWJsb2NrcyBvZiB0aGUgY2hpcCBhcmUgaW4NCiAgICAgICAg
+ICogdGhlIE1URCBwYXJ0aXRpb24gd2UgYXJlIGF0dGFjaGluZyAodWJpLT5tdGQpLg0KICAgICAg
+ICAgKi8NCiAgICAgICAgIGRldmljZV9zaXplID0gbXRkX2dldF9kZXZpY2Vfc2l6ZSh1YmktPm10
+ZCk7DQogICAgICAgICBkZXZpY2VfcGVicyA9IG10ZF9kaXZfYnlfZWIoZGV2aWNlX3NpemUsIHVi
+aS0+bXRkKTsNCiAgICAgICAgIGxpbWl0ID0gbXVsdF9mcmFjKGRldmljZV9wZWJzLCBtYXhfYmVi
+X3BlcjEwMjQsIDEwMjQpOw0KDQogICAgICAgICAvKiBSb3VuZCBpdCB1cCAqLw0KICAgICAgICAg
+aWYgKG11bHRfZnJhYyhsaW1pdCwgMTAyNCwgbWF4X2JlYl9wZXIxMDI0KSA8IGRldmljZV9wZWJz
+KQ0KICAgICAgICAgICAgICAgICAgbGltaXQgKz0gMTsNCg0KICAgICAgICAgcmV0dXJuIGxpbWl0
+Ow0KfQ0KDQpUaGUgY29tbWVudCBleHBsYWluZWQgdGhhdCB0aGUgd29yc3QgY2FzZSBpcyB0aGF0
+IGFsbCB0aGUgYmFkIGVyYXNlYmxvY2tzIG9mIHRoZSBjaGlwIGFyZSBpbiB0aGUgTVREIHBhcnRp
+dGlvbiB3ZSBhcmUgYXR0YWNoaW5nIGJ1dCBJIGRvIHRoaW5rIGl04oCZcyBhIHJhdGhlciByYXJl
+IHNpdHVhdGlvbi4gSSB3b25kZXIgaXMgaXQgcmVhbGx5IG5lY2Vzc2FyeSB0byByZXNlcnZlIHNv
+IG1hbnkgUEVCcyBmb3IgYmFkIGJsb2NrIGhhbmRsaW5nIGZvciBzdWNoIHNtYWxsIHBhcnRpdGlv
+bj8gV2hhdCBpZiBJIG5lZWQgYSBzbWFsbCB1YmlmcyBwYXJ0aXRpb24gd2l0aG91dCBzbyBtYW55
+IFBFQnMgcmVzZXJ2ZWQgZm9yIGJhZCBibG9jayBoYW5kbGluZz8NCg0KQmVzdCBSZWdhcmRzLA0K
+5rGq55C8L1dhbmcgUWlvbmcNCg0K6L2v5Lu25LiO5rWL6K+V6YOoL+i9r+S7tuW3peeoi+W4iFNv
+ZnR3YXJlwqBEZXNpZ24mVGVzdCBEZXB0Li9Tb2Z0d2FyZSBFbmdpbmVlcg0KVGVsICs4NiAyNSA4
+MTA2IDkyMzINCkUtbWFpbDogcXdhbmczNEB5ZnZlLmNvbS5jbg0K5bu26ZSL5Lyf5LiW6YCa55S1
+5a2Q56eR5oqA77yI5Y2X5Lqs77yJ5pyJ6ZmQ5YWs5Y+4DQpZYW5mZW5nIFZpc3Rlb24gRWxlY3Ry
+b25pY3MgVGVjaG5vbG9neSAoTmFuamluZykgQ28uLCBMdGQNCuaxn+iLj+ecgeWNl+S6rOW4guax
+n+WugeWMuuiLj+a6kOWkp+mBkzE55Y+35Zu96ZmF5LyB5Lia5oC76YOo5ZutQzHluqc35qW8DQpB
+ZGRyZXNzOiA3RiwgQzEsIEppdWxvbmdodSBJbnRlcm5hdGlvbmFsIENvcnBvcmF0ZSBIZWFkcXVh
+cnRlcnMsIE5vLiAxOSBTdXl1YW4gUm9hZCwgSmlhbmduaW5nIERldmVsb3BtZW50IFpvbmUsIE5h
+bmppbmcsIENoaW5hDQoNCg==
