@@ -1,22 +1,21 @@
-Date: Mon, 26 Mar 2018 18:49:01 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>, Jason Cooper
- <jason@lakedaemon.net>, Antoine Tenart <antoine.tenart@bootlin.com>, Omri
- Itach <omrii@marvell.com>, Nadav Haklai <nadavh@marvell.com>, Shadi Ammouri
- <shadi@marvell.com>, Igal Liberman <igall@marvell.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Marcin Wojtas <mw@semihalf.com>, Hanna Hawa
- <hannah@marvell.com>, linux-arm-kernel@lists.infradead.org, Sebastian
- Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: Re: [PATCH v3] mtd: nand: marvell: Fix clock resource by adding a
- register clock
-Message-ID: <20180326184901.3a3e5fdd@bbrezillon>
-In-Reply-To: <20180313103016.7695-1-gregory.clement@bootlin.com>
-References: <20180313103016.7695-1-gregory.clement@bootlin.com>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0YPb-0005SC-9h
+ for linux-mtd@lists.infradead.org; Mon, 26 Mar 2018 20:08:13 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Olivier Schonken <olivier.schonken@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: Atmel Nand PMECC UBI ECC issue
+Date: Mon, 26 Mar 2018 22:07:49 +0200
+Message-ID: <1849050.lXIvJB3S2I@blindfold>
+In-Reply-To: <CALdGskLaHrZGa7u4_jmJjq1VPRv6AYgRpSsYcNy+-EtgWR0H=Q@mail.gmail.com>
+References: <CALdGskLaHrZGa7u4_jmJjq1VPRv6AYgRpSsYcNy+-EtgWR0H=Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,159 +25,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Mar 2018 11:30:16 +0100
-Gregory CLEMENT <gregory.clement@bootlin.com> wrote:
+Oliver,
 
-> On Armada 7K/8K we need to explicitly enable the register clock. This
-> clock is optional because not all the SoCs using this IP need it but at
-> least for Armada 7K/8K it is actually mandatory.
-> 
-> The binding documentation is updated accordingly.
-> 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Am Montag, 26. M=E4rz 2018, 16:56:17 CEST schrieb Olivier Schonken:
+> Sorry for the resend, seems my gmail editor was in HTML mode which got
+> rejected by the mailing list.  Humble apologies.
+>=20
+> I have run into an issue with the Atmel nand controller on the
+> SAMA5D36, which I am struggling to debug.
+>=20
+> We are using custom hardware based on the SAMA5D36. With Micron
+> MT29F8G08ABBCAH4 NAND flash.  Kernel version is 4.14.29 - mainline
+> from kernel.org.  ECC strength is 24 bits with 1024 byte sector size.
+> The PMECC settings was calculated as per
+> https://www.at91.com/linux4sam/bin/view/Linux4SAM/PmeccConfigure, with
+> the nand HEADER value at 0xc0e18e05.
+>=20
+> The system works, and only some units present the error, the baffling
+> part of it, is that a unit can work properly for a long while, and
+> then suddenly the error presents itself. (Once traced it to a glibc
+> library file, which means it isn't even due to heavy writing on the
+> filesystem.) I have noticed that most of the time the PEB in which the
+> error occurs is the same.  Even after reprogramming the device via
+> ubiformat, or SAM-BA.
+>=20
+> In the attached log output, you will see that there is a UBIFS error,
+> where it detects a bitflip, which I confirmed by comparing the binary
+> sequence to the Buildroot generated ubi file.
+>=20
+> Using Atmel's SAM-BA to read back the contents of the NAND flash,
+> yields the correct contents for the page causing the ECC error.
+>=20
+> 31 18 10 06 00 FE A2 74 FB CF 00 00 00 00 00 00 C5 05 00 00 01 00 00
+> 00 AB 0C 00 00
 
-Applied after fixing the typo and the binding doc.
+At which offset it this?
+
+> Starting up linux again results in the same issue.
+> This extract shows the ubifs magic number with the bitflip. The rest
+> of the binary sequence matches a unique part of the ubi image.
+>=20
+> [   75.140000] 7fe0: b6f8f8e4 becf7a40 b6be5788 b6e9c000 60000010 ffffffff
+> [   75.150000] UBIFS error (ubi0:0 pid 1): ubifs_check_node: bad magic
+> 0x6101830, expected 0x6101831
+> [   75.160000] UBIFS error (ubi0:0 pid 1): ubifs_check_node: bad node
+> at LEB 325:216208
+> [   75.160000] Not a node, first 24 bytes:
+> [   75.160000] 00000000: 30 18 10 06 00 fe a2 74 fb cf 00 00 00 00 00
+> 00 c5 05 00 00 01 00 00 00
+> 0......t................
+> [   75.180000] CPU: 0 PID: 1 Comm: systemd Not tainted 4.14.29+ #706
+>=20
+> mtdinfo for the partition in question
+> Type:                           nand
+> Eraseblock size:                262144 bytes, 256.0 KiB
+> Amount of eraseblocks:          2048 (536870912 bytes, 512.0 MiB)
+> Minimum input/output unit size: 4096 bytes
+> Sub-page size:                  4096 bytes
+> OOB size:                       224 bytes
+> Character device major/minor:   90:10
+> Bad blocks are allowed:         true
+> Device is writable:             true
+>=20
+> Device tree entry:
+>         nand_controller: nand-controller {
+>                 status =3D "okay";
+>=20
+>                 nand@3 {
+>                     reg =3D <0x3 0x0 0x800000>;
+>                     atmel,rb =3D <0>;
+>                     nand-bus-width =3D <8>;
+>                     nand-ecc-mode =3D "hw";
+>                     nand-ecc-strength =3D <24>;
+>                     nand-ecc-step-size =3D <1024>;
+>                     nand-on-flash-bbt;
+>                     label =3D "atmel_nand";
+>                 };
+>             };
+>=20
+> Attached are the dmesg traces with the ECC issue.  A nanddump of the
+> block with the ECC error, including OOB contents as per "nanddump -f
+> nandblock-withoob.ubi /dev/mtd5 -s 0x51c0000 -o -l 262144 &>
+> nanddump-cmdline-output.txt"
+
+Can you please share the dump without OOB?
+UBI does not use OOB, so we don't need it and can use offsets as seen by UB=
+I=20
+and UBIFS as-is. :)
 
 Thanks,
-
-Boris
-
-> ---
-> Changelog:
-> v2 -> v3
->  - Updating the kerneldoc
->  - Renaming unprepare_clk to unprepare_ecc_clk
->  - Adding extra test on the presence of "core" clock to make Boris happy
-> 
-> v1 -> v2
-> 
->  - Removed the unnecessary IS_ERR() call
->  - Skip the reg clock only if it is not present by checking "-ENOENT"
->  - Add a label for uninitializing the reg clock.
-> 
->  .../devicetree/bindings/mtd/marvell-nand.txt       |  6 +++-
->  drivers/mtd/nand/marvell_nand.c                    | 34 ++++++++++++++++++----
->  2 files changed, 33 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/marvell-nand.txt b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> index c08fb477b3c6..4ee9813bf88f 100644
-> --- a/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/marvell-nand.txt
-> @@ -14,7 +14,11 @@ Required properties:
->  - #address-cells: shall be set to 1. Encode the NAND CS.
->  - #size-cells: shall be set to 0.
->  - interrupts: shall define the NAND controller interrupt.
-> -- clocks: shall reference the NAND controller clock.
-> +- clocks: shall reference the NAND controller clocks, the second one is
-> +  optional but needed for the Armada 7K/8K SoCs
-> +- clock-names: mandatory if there is a second clock, in this case the
-> +   name must be "core" for the first clock and "reg" for the second
-> +   one
->  - marvell,system-controller: Set to retrieve the syscon node that handles
->    NAND controller related registers (only required with the
->    "marvell,armada-8k-nand[-controller]" compatibles).
-> diff --git a/drivers/mtd/nand/marvell_nand.c b/drivers/mtd/nand/marvell_nand.c
-> index 2196f2a233d6..0e7e8017046a 100644
-> --- a/drivers/mtd/nand/marvell_nand.c
-> +++ b/drivers/mtd/nand/marvell_nand.c
-> @@ -308,6 +308,7 @@ struct marvell_nfc_caps {
->   * @dev:		Parent device (used to print error messages)
->   * @regs:		NAND controller registers
->   * @ecc_clk:		ECC block clock, two times the NAND controller clock
-> + * @reg_clk:		Regsiters clock
->   * @complete:		Completion object to wait for NAND controller events
->   * @assigned_cs:	Bitmask describing already assigned CS lines
->   * @chips:		List containing all the NAND chips attached to
-> @@ -321,6 +322,7 @@ struct marvell_nfc {
->  	struct device *dev;
->  	void __iomem *regs;
->  	struct clk *ecc_clk;
-> +	struct clk *reg_clk;
->  	struct completion complete;
->  	unsigned long assigned_cs;
->  	struct list_head chips;
-> @@ -2739,7 +2741,12 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  		return irq;
->  	}
->  
-> -	nfc->ecc_clk = devm_clk_get(&pdev->dev, NULL);
-> +	nfc->ecc_clk = devm_clk_get(&pdev->dev, "core");
-> +
-> +	/* Managed the legacy case (when the first clock was not named) */
-> +	if (nfc->ecc_clk == ERR_PTR(-ENOENT))
-> +		nfc->ecc_clk = devm_clk_get(&pdev->dev, NULL);
-> +
->  	if (IS_ERR(nfc->ecc_clk))
->  		return PTR_ERR(nfc->ecc_clk);
->  
-> @@ -2747,12 +2754,24 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
->  
-> +	nfc->reg_clk = devm_clk_get(&pdev->dev, "reg");
-> +	if (PTR_ERR(nfc->reg_clk) != -ENOENT) {
-> +		if (!IS_ERR(nfc->reg_clk)) {
-> +			ret = clk_prepare_enable(nfc->reg_clk);
-> +			if (ret)
-> +				goto unprepare_ecc_clk;
-> +		} else {
-> +			ret = PTR_ERR(nfc->reg_clk);
-> +			goto unprepare_ecc_clk;
-> +		}
-> +	}
-> +
->  	marvell_nfc_disable_int(nfc, NDCR_ALL_INT);
->  	marvell_nfc_clear_int(nfc, NDCR_ALL_INT);
->  	ret = devm_request_irq(dev, irq, marvell_nfc_isr,
->  			       0, "marvell-nfc", nfc);
->  	if (ret)
-> -		goto unprepare_clk;
-> +		goto unprepare_reg_clk;
->  
->  	/* Get NAND controller capabilities */
->  	if (pdev->id_entry)
-> @@ -2763,23 +2782,25 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  	if (!nfc->caps) {
->  		dev_err(dev, "Could not retrieve NFC caps\n");
->  		ret = -EINVAL;
-> -		goto unprepare_clk;
-> +		goto unprepare_reg_clk;
->  	}
->  
->  	/* Init the controller and then probe the chips */
->  	ret = marvell_nfc_init(nfc);
->  	if (ret)
-> -		goto unprepare_clk;
-> +		goto unprepare_reg_clk;
->  
->  	platform_set_drvdata(pdev, nfc);
->  
->  	ret = marvell_nand_chips_init(dev, nfc);
->  	if (ret)
-> -		goto unprepare_clk;
-> +		goto unprepare_reg_clk;
->  
->  	return 0;
->  
-> -unprepare_clk:
-> +unprepare_reg_clk:
-> +	clk_disable_unprepare(nfc->reg_clk);
-> +unprepare_ecc_clk:
->  	clk_disable_unprepare(nfc->ecc_clk);
->  
->  	return ret;
-> @@ -2796,6 +2817,7 @@ static int marvell_nfc_remove(struct platform_device *pdev)
->  		dma_release_channel(nfc->dma_chan);
->  	}
->  
-> +	clk_disable_unprepare(nfc->reg_clk);
->  	clk_disable_unprepare(nfc->ecc_clk);
->  
->  	return 0;
-
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+//richard
