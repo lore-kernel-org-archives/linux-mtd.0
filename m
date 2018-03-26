@@ -1,26 +1,15 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0RoI-0001kj-6g
- for linux-mtd@lists.infradead.org; Mon, 26 Mar 2018 13:05:19 +0000
-Date: Mon, 26 Mar 2018 15:04:51 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Maxime Ripard
- <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring
- <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: sunxi: Stop supporting ECC_HW_SYNDROME mode
-Message-ID: <20180326150451.0d398bdd@xps13>
-In-Reply-To: <20180321105327.27a28987@bbrezillon>
-References: <20180321083618.18355-1-boris.brezillon@bootlin.com>
- <20180321105327.27a28987@bbrezillon>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0Sop-00036L-P7
+ for linux-mtd@lists.infradead.org; Mon, 26 Mar 2018 14:09:55 +0000
+From: thor.thayer@linux.intel.com
+To: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thor.thayer@linux.intel.com
+Subject: [PATCHv2] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+Date: Mon, 26 Mar 2018 09:12:17 -0500
+Message-Id: <1522073537-27386-1-git-send-email-thor.thayer@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,34 +19,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+From: Thor Thayer <thor.thayer@linux.intel.com>
 
-On Wed, 21 Mar 2018 10:53:27 +0100, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+The current Cadence QSPI driver caused a kernel panic when loading
+a Root Filesystem from QSPI. The problem was caused by reading more
+bytes than needed because the QSPI operated on 4 bytes at a time.
+<snip>
+[    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
+[    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
+[    7.956247]
+[    7.966046] Unable to handle kernel paging request at virtual
+address bfe08002
+[    7.973239] pgd = eebfc000
+[    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+</snip>
+Notice above how only 1 byte needed to be read but by reading 4 bytes
+into the end of a mapped page, an unrecoverable page fault occurred.
 
-> On Wed, 21 Mar 2018 09:36:18 +0100
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->=20
-> > This mode is not used by any existing setup and should not be used
-> > because it overrides the BBMs. Let's just remove it before someone =20
->=20
-> 	     ^ 'overwrites' not 'overrides'
->=20
-> > starts using it.
-> >=20
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  .../devicetree/bindings/mtd/sunxi-nand.txt         |   4 +-
-> >  drivers/mtd/nand/raw/sunxi_nand.c                  | 155 +++----------=
---------
-> >  2 files changed, 22 insertions(+), 137 deletions(-)
+This patch uses a temporary buffer to hold the 4 bytes read and then
+copies only the bytes required into the buffer. A min() function is
+used to limit the length to prevent buffer overflows.
 
-Tested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Request testing of this patch on other platforms. This was tested
+on the Intel Arria10 SoCFPGA DevKit.
 
-Thanks,
-Miqu=C3=A8l
+Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+---
+v2  Changes to only write dangling bytes at end of transfer since
+      previous patch may have multiple dangling byte transfers.
+    Remove write patch since no errors reported and write timeout
+      needs more investigation.
+---
+ drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 4b8e9183489a..5872f31eaa60 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -501,7 +501,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 	void __iomem *reg_base = cqspi->iobase;
+ 	void __iomem *ahb_base = cqspi->ahb_base;
+ 	unsigned int remaining = n_rx;
++	unsigned int mod_bytes = n_rx % 4;
+ 	unsigned int bytes_to_read = 0;
++	u8 *rxbuf_end = rxbuf + n_rx;
+ 	int ret = 0;
+ 
+ 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+@@ -530,11 +532,24 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 		}
+ 
+ 		while (bytes_to_read != 0) {
++			unsigned int word_remain = round_down(remaining, 4);
++
+ 			bytes_to_read *= cqspi->fifo_width;
+ 			bytes_to_read = bytes_to_read > remaining ?
+ 					remaining : bytes_to_read;
+-			ioread32_rep(ahb_base, rxbuf,
+-				     DIV_ROUND_UP(bytes_to_read, 4));
++			bytes_to_read = round_down(bytes_to_read, 4);
++			/* Read 4 byte word chunks then single bytes */
++			if (bytes_to_read) {
++				ioread32_rep(ahb_base, rxbuf,
++					     (bytes_to_read / 4));
++			} else if (!word_remain && mod_bytes) {
++				unsigned int temp = ioread32(ahb_base);
++
++				bytes_to_read = mod_bytes;
++				memcpy(rxbuf, &temp, min((unsigned int)
++							 (rxbuf_end - rxbuf),
++							 bytes_to_read));
++			}
+ 			rxbuf += bytes_to_read;
+ 			remaining -= bytes_to_read;
+ 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+-- 
+2.7.4
