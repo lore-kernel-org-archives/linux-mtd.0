@@ -1,22 +1,23 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0trS-0003RE-U2
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 19:02:24 +0000
+ id 1f0u71-0002BO-U6
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 19:18:29 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: jedec_probe: Fix crash in jedec_read_mfr()
-Date: Tue, 27 Mar 2018 21:02:08 +0200
-Message-ID: <21454318.LBOlOGBNfX@blindfold>
-In-Reply-To: <20180303222903.27767-1-linus.walleij@linaro.org>
-References: <20180303222903.27767-1-linus.walleij@linaro.org>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH] mtd: update documentation of mtd_device_parse_register()
+Date: Tue, 27 Mar 2018 21:18:14 +0200
+Message-ID: <11374740.7K3gF4UMb0@blindfold>
+In-Reply-To: <20180327133647.15110-1-zajec5@gmail.com>
+References: <20180327133647.15110-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Samstag, 3. M=E4rz 2018, 23:29:03 CEST schrieb Linus Walleij:
-> It turns out that the loop where we read manufacturer
-> jedec_read_mfd() can under some circumstances get a
-> CFI_MFR_CONTINUATION repeatedly, making the loop go
-> over all banks and eventually hit the end of the
-> map and crash because of an access violation:
+Am Dienstag, 27. M=C3=A4rz 2018, 15:36:47 CEST schrieb Rafa=C5=82 Mi=C5=82e=
+cki:
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >=20
-> Unable to handle kernel paging request at virtual address c4980000
-> pgd =3D (ptrval)
-> [c4980000] *pgd=3D03808811, *pte=3D00000000, *ppte=3D00000000
-> Internal error: Oops: 7 [#1] PREEMPT ARM
-> CPU: 0 PID: 1 Comm: swapper Not tainted 4.16.0-rc1+ #150
-> Hardware name: Gemini (Device Tree)
-> PC is at jedec_probe_chip+0x6ec/0xcd0
-> LR is at 0x4
-> pc : [<c03a2bf4>]    lr : [<00000004>]    psr: 60000013
-> sp : c382dd18  ip : 0000ffff  fp : 00000000
-> r10: c0626388  r9 : 00020000  r8 : c0626340
-> r7 : 00000000  r6 : 00000001  r5 : c3a71afc  r4 : c382dd70
-> r3 : 00000001  r2 : c4900000  r1 : 00000002  r0 : 00080000
-> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> Control: 0000397f  Table: 00004000  DAC: 00000053
-> Process swapper (pid: 1, stack limit =3D 0x(ptrval))
+> In the commit 2c77c57d22adb ("mtd: move code adding master MTD out of
+> mtd_add_device_partitions()") behavior of mtd_device_parse_register()
+> has very slightly changed. It's a pretty non-significant order change
+> to match updated function behavior.
 >=20
-> Fix this by breaking the loop with a return 0 if
-> the offset exceeds the map size.
->=20
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 > ---
->  drivers/mtd/chips/jedec_probe.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/mtd/mtdcore.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 >=20
-> diff --git a/drivers/mtd/chips/jedec_probe.c
-> b/drivers/mtd/chips/jedec_probe.c index 7c0b27d132b1..b479bd81120b 100644
-> --- a/drivers/mtd/chips/jedec_probe.c
-> +++ b/drivers/mtd/chips/jedec_probe.c
-> @@ -1889,6 +1889,8 @@ static inline u32 jedec_read_mfr(struct map_info *m=
-ap,
-> uint32_t base, do {
->  		uint32_t ofs =3D cfi_build_cmd_addr(0 + (bank << 8), map, cfi);
->  		mask =3D (1 << (cfi->device_type * 8)) - 1;
-> +		if (ofs >=3D map->size)
-> +			return 0;
->  		result =3D map_read(map, base + ofs);
->  		bank++;
->  	} while ((result.x[0] & mask) =3D=3D CFI_MFR_CONTINUATION);
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index f25d65ea7149..20d5262c5b5c 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -673,14 +673,13 @@ static void mtd_set_dev_defaults(struct mtd_info *m=
+td)
+>   * 'parse_mtd_partitions()') and MTD device and partitions registering. =
+It
+>   * basically follows the most common pattern found in many MTD drivers:
+>   *
+> - * * It first tries to probe partitions on MTD device @mtd using parsers
+> + * * If the MTD_PARTITIONED_MASTER option is set, then the device as a w=
+hole is
+> + *   registered first.
+> + * * Then It tries to probe partitions on MTD device @mtd using parsers
+>   *   specified in @types (if @types is %NULL, then the default list of p=
+arsers
+>   *   is used, see 'parse_mtd_partitions()' for more information). If non=
+e are
+>   *   found this functions tries to fallback to information specified in
+>   *   @parts/@nr_parts.
+> - * * If any partitioning info was found, this function registers the fou=
+nd
+> - *   partitions. If the MTD_PARTITIONED_MASTER option is set, then the d=
+evice
+> - *   as a whole is registered first.
+>   * * If no partitions were found this function just registers the MTD de=
+vice
+>   *   @mtd and exits.
+>   *
+>=20
 
-The fix is legit but I'm not sure whether we should emit a warning in this=
-=20
-case too since something is obviously wrong.
-Boris?
+Thanks for taking care of docs. :-)
+
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
 Thanks,
 //richard
