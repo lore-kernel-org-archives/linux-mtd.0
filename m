@@ -1,25 +1,23 @@
-Date: Tue, 27 Mar 2018 14:12:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: "robh@kernel.org" <robh@kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "oss@buserror.net" <oss@buserror.net>, Leo Li <leoyang.li@nxp.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Poonam Aggrwal
- <poonam.aggrwal@nxp.com>
-Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
-Message-ID: <20180327141254.56051a74@bbrezillon>
-In-Reply-To: <VI1PR0402MB385456DB28FE27FCF9ACCAB997AC0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
- <20180323093408.230a61c1@bbrezillon>
- <VI1PR0402MB385456DB28FE27FCF9ACCAB997AC0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0omt-0007zv-FT
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 13:37:21 +0000
+Received: by mail-lf0-x242.google.com with SMTP id v207-v6so33354127lfa.10
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 06:37:07 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: update documentation of mtd_device_parse_register()
+Date: Tue, 27 Mar 2018 15:36:47 +0200
+Message-Id: <20180327133647.15110-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,106 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Mar 2018 12:06:41 +0000
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+From: Rafał Miłecki <rafal@milecki.pl>
 
-> Hi Boris,
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Friday, March 23, 2018 2:04 PM
-> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>;
-> > robh@kernel.org
-> > Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
-> > mark.rutland@arm.com; shawnguo@kernel.org; boris.brezillon@free-
-> > electrons.com; computersforpeace@gmail.com; oss@buserror.net; Leo Li
-> > <leoyang.li@nxp.com>; linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness
-> > supports
-> > 
-> > On Mon, 12 Mar 2018 13:41:28 +0530
-> > Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
-> >   
-> > > Connection between flash and controller is not necessary to be always
-> > > of same type. It may varies from platform to platform.
-> > >
-> > > Adding endianness (optional) property to provide connection type
-> > > information.
-> > >
-> > > Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > ---
-> > > Changes for v2: updated subject
-> > > Changes for v3: fixed typo for "big-endian"
-> > > Changes for v4: Moved binding definition in mtd-physmap.txt as
-> > > discussed at
-> > >  
-> > https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpat  
-> > >  
-> > chwork.ozlabs.org%2Fpatch%2F842543%2F&data=02%7C01%7Cprabhakar.ku
-> > shwah  
-> > >  
-> > a%40nxp.com%7C4e3c62614d144bdbb76408d59098d999%7C686ea1d3bc2b4c
-> > 6fa92cd  
-> > >  
-> > 99c5c301635%7C0%7C0%7C636573908516332353&sdata=Od7aqu%2BqV4RHB
-> > EmT08UOb  
-> > > H2EFGgWmGfftCRKlOlj1kY%3D&reserved=0
-> > > Changes for v5: Sending as it is
-> > > Changes for v6: Updated binding when endianness property is absent
-> > >
-> > >  Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> > > b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> > > index 4a0a48bf4ecb..691c98f7301d 100644
-> > > --- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> > > +++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-> > > @@ -41,6 +41,11 @@ additional (optional) property is defined:
-> > >
-> > >   - erase-size : The chip's physical erase block size in bytes.
-> > >
-> > > + The device tree may optionally contain endianness property.
-> > > + little-endian or big-endian : It represents connection between
-> > > + controller and  
-> > 
-> > You still haven't answered the comments I made on your v5. To me, this does
-> > not represent how the controller and chip pins are connected, but how the
-> > chip was programmed and which endianness should be used by the
-> > controller to correctly read the data back. Maybe I'm wrong, hence my
-> > question.
-> >   
-> 
-> NXP's ARM SoC has IFC module which interface with NOR flash. Here IFC is big endian module connected with NOR flash. 
-> As SoC has ARM processor(Littler Endian),  CONFIG_MTD_CFI_BE_BYTE_SWAP needs to be enabled  to make sure data is read correctly.  
-> This is the reason, I wrote about connection between controller and flash.
-> 
-> In a way, I agree with you.  It is not about connection. 
-> It is about how controller read the data (inherently ARM processor)
-> 
-> So I am planning to write below text
-> little-endian or big-endian: It represents endianness of controller for correct data reading from flash.
+In the commit 2c77c57d22adb ("mtd: move code adding master MTD out of
+mtd_add_device_partitions()") behavior of mtd_device_parse_register()
+has very slightly changed. It's a pretty non-significant order change
+to match updated function behavior.
 
-"
- Represents the endianness that should be used by the controller to
- properly read/write data from/to the flash.
-"
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/mtd/mtdcore.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
->                                                  If this property is missing, the endianness is chosen by the system (potentially based
->                                                 on extra configuration options).
-
-This part is good.
-
-> 
-> please let me know if above definition requires more changes. 
-> 
-> Regards,
-> Prabhakar
-
-
-
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index f25d65ea7149..20d5262c5b5c 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -673,14 +673,13 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
+  * 'parse_mtd_partitions()') and MTD device and partitions registering. It
+  * basically follows the most common pattern found in many MTD drivers:
+  *
+- * * It first tries to probe partitions on MTD device @mtd using parsers
++ * * If the MTD_PARTITIONED_MASTER option is set, then the device as a whole is
++ *   registered first.
++ * * Then It tries to probe partitions on MTD device @mtd using parsers
+  *   specified in @types (if @types is %NULL, then the default list of parsers
+  *   is used, see 'parse_mtd_partitions()' for more information). If none are
+  *   found this functions tries to fallback to information specified in
+  *   @parts/@nr_parts.
+- * * If any partitioning info was found, this function registers the found
+- *   partitions. If the MTD_PARTITIONED_MASTER option is set, then the device
+- *   as a whole is registered first.
+  * * If no partitions were found this function just registers the MTD device
+  *   @mtd and exits.
+  *
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.11.0
