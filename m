@@ -1,22 +1,28 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-ot0-x22f.google.com ([2607:f8b0:4003:c0f::22f])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0uKe-0007hC-QH
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 19:32:34 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Arushi Singhal <arushisinghal19971997@gmail.com>
-Cc: dwmw2@infradead.org, Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: Replace typedef with struct
-Date: Tue, 27 Mar 2018 21:32:19 +0200
-Message-ID: <2234121.GJlN6YpY6x@blindfold>
-In-Reply-To: <20180318175122.GA15004@seema-Inspiron-15-3567>
-References: <20180318175122.GA15004@seema-Inspiron-15-3567>
+ id 1f0uuN-00058V-SU
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 20:09:29 +0000
+Received: by mail-ot0-x22f.google.com with SMTP id r30-v6so177387otr.2
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 13:09:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+In-Reply-To: <alpine.DEB.2.21.1802121206440.1158@nanos.tec.linutronix.de>
+References: <20180212105642.8662-1-lionel.debieve@st.com>
+ <20180212105642.8662-2-lionel.debieve@st.com>
+ <alpine.DEB.2.21.1802121206440.1158@nanos.tec.linutronix.de>
+From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Date: Tue, 27 Mar 2018 22:09:14 +0200
+Message-ID: <CA+M3ks4RMeicX_AAPVwPgULTEg3nbHrm9bkj7ev3XX1No2OQvQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Lionel Debieve <lionel.debieve@st.com>,
+ Benjamin GAIGNARD <benjamin.gaignard@st.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, joel@clambassador.com,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-mtd@lists.infradead.org,
+ haver@linux.vnet.ibm.com, u.kleine-koenig@pengutronix.de,
+ schwarzerf@gmail.com, Lee Jones <lee.jones@linaro.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, 18. M=E4rz 2018, 18:51:23 CEST schrieb Arushi Singhal:
-> Using typedef for a structure type is not suggested in Linux kernel
-> coding style guidelines. Hence, occurrence of typedefs has been
-> removed.
->=20
-> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
-> ---
->  drivers/mtd/ssfdc.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
-> index 95f0bf9..8bae672 100644
-> --- a/drivers/mtd/ssfdc.c
-> +++ b/drivers/mtd/ssfdc.c
-> @@ -54,15 +54,15 @@ SumSector	2,000	4,000	8,000	16,000	32,000	64,000	128,=
-000	256,000
->  SectorSize	512	512	512	512	512	512	512	512
->  **/
-> =20
-> -typedef struct {
-> +struct chs_entry {
->  	unsigned long size;
->  	unsigned short cyl;
->  	unsigned char head;
->  	unsigned char sec;
-> -} chs_entry_t;
-> +};
-> =20
->  /* Must be ordered by size */
-> -static const chs_entry_t chs_table[] =3D {
-> +static const struct chs_entry chs_table[] =3D {
->  	{ MiB(  1), 125,  4,  4 },
->  	{ MiB(  2), 125,  4,  8 },
->  	{ MiB(  4), 250,  4,  8 },
->=20
+2018-02-12 12:08 GMT+01:00 Thomas Gleixner <tglx@linutronix.de>:
+> On Mon, 12 Feb 2018, Lionel Debieve wrote:
+>
+>> Update license template using SPDX. Move the global layout
+>> of UBI headers to dual license helping UBI to be the standard
+>> solution for raw NAND management.
 
-Didn't we already talk about coding style fixes on existing code? ;-)
+Hi Frank,
 
-Thanks,
-//richard
+May I ask you your point of view on this license evolution ?
+
+Regards,
+Benjamin
+
+>
+> No objections from my side, but you really need to poke IBM about that. And
+> if that happens then the kernel header. where this is copied from needs to
+> be updated as well....
+>
+> Thanks,
+>
+>         tglx
+>
+>
+>
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
