@@ -1,21 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0rzL-0003hk-RV
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 17:02:25 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0skx-0004g2-S8
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 17:51:37 +0000
+Received: by mail-it0-x241.google.com with SMTP id v194-v6so305086itb.0
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 10:51:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180303222903.27767-1-linus.walleij@linaro.org>
+References: <20180303222903.27767-1-linus.walleij@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 27 Mar 2018 19:51:24 +0200
+Message-ID: <CACRpkdb2UsX9bqA1j9i6z_QxmnLDM45xCnninvGf_vdhEN=r3g@mail.gmail.com>
+Subject: Re: [PATCH] mtd: jedec_probe: Fix crash in jedec_read_mfr()
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Olivier Schonken <olivier.schonken@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] mtd: nand: atmel: Fix get_sectorsize() function
-Date: Tue, 27 Mar 2018 19:01:58 +0200
-Message-Id: <20180327170158.3351-1-boris.brezillon@bootlin.com>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-get_sectorsize() was not using the appropriate macro to extract the
-ECC sector size from the config cache, which led to buggy ECC when
-using 1024 byte sectors.
+On Sat, Mar 3, 2018 at 11:29 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-Cc: <stable@vger.kernel.org>
-Reported-by: Olivier Schonken <olivier.schonken@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/atmel/pmecc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> It turns out that the loop where we read manufacturer
+> jedec_read_mfd() can under some circumstances get a
+> CFI_MFR_CONTINUATION repeatedly, making the loop go
+> over all banks and eventually hit the end of the
+> map and crash because of an access violation:
+>
+> Unable to handle kernel paging request at virtual address c4980000
+> pgd = (ptrval)
+> [c4980000] *pgd=03808811, *pte=00000000, *ppte=00000000
+> Internal error: Oops: 7 [#1] PREEMPT ARM
+> CPU: 0 PID: 1 Comm: swapper Not tainted 4.16.0-rc1+ #150
+> Hardware name: Gemini (Device Tree)
+> PC is at jedec_probe_chip+0x6ec/0xcd0
+> LR is at 0x4
+> pc : [<c03a2bf4>]    lr : [<00000004>]    psr: 60000013
+> sp : c382dd18  ip : 0000ffff  fp : 00000000
+> r10: c0626388  r9 : 00020000  r8 : c0626340
+> r7 : 00000000  r6 : 00000001  r5 : c3a71afc  r4 : c382dd70
+> r3 : 00000001  r2 : c4900000  r1 : 00000002  r0 : 00080000
+> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
+> Control: 0000397f  Table: 00004000  DAC: 00000053
+> Process swapper (pid: 1, stack limit = 0x(ptrval))
+>
+> Fix this by breaking the loop with a return 0 if
+> the offset exceeds the map size.
+>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
-index 8268636675ef..4124bf91bee6 100644
---- a/drivers/mtd/nand/atmel/pmecc.c
-+++ b/drivers/mtd/nand/atmel/pmecc.c
-@@ -426,7 +426,7 @@ static int get_strength(struct atmel_pmecc_user *user)
- 
- static int get_sectorsize(struct atmel_pmecc_user *user)
- {
--	return user->cache.cfg & PMECC_LOOKUP_TABLE_SIZE_1024 ? 1024 : 512;
-+	return user->cache.cfg & PMECC_CFG_SECTOR1024 ? 1024 : 512;
- }
- 
- static void atmel_pmecc_gen_syndrome(struct atmel_pmecc_user *user, int sector)
--- 
-2.14.1
+Could someone maintaining MTD please pick up this bug fix?
+
+It is a very real problem to me.
+
+Yours,
+Linus Walleij
