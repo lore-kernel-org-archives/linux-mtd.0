@@ -1,23 +1,23 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0omt-0007zv-FT
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 13:37:21 +0000
-Received: by mail-lf0-x242.google.com with SMTP id v207-v6so33354127lfa.10
- for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 06:37:07 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] mtd: update documentation of mtd_device_parse_register()
-Date: Tue, 27 Mar 2018 15:36:47 +0200
-Message-Id: <20180327133647.15110-1-zajec5@gmail.com>
+ id 1f0pHm-0002zC-S8
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 14:09:21 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Olivier Schonken <olivier.schonken@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: Atmel Nand PMECC UBI ECC issue
+Date: Tue, 27 Mar 2018 16:08:46 +0200
+Message-ID: <3546894.3QeRhpBW0o@blindfold>
+In-Reply-To: <CALdGsk++QA-mHmQx+L6qumt7xaXicfdqC=iBhmda7vYB+-bNpg@mail.gmail.com>
+References: <CALdGskLaHrZGa7u4_jmJjq1VPRv6AYgRpSsYcNy+-EtgWR0H=Q@mail.gmail.com>
+ <1849050.lXIvJB3S2I@blindfold>
+ <CALdGsk++QA-mHmQx+L6qumt7xaXicfdqC=iBhmda7vYB+-bNpg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+Oliver,
 
-In the commit 2c77c57d22adb ("mtd: move code adding master MTD out of
-mtd_add_device_partitions()") behavior of mtd_device_parse_register()
-has very slightly changed. It's a pretty non-significant order change
-to match updated function behavior.
+Am Dienstag, 27. M=E4rz 2018, 10:28:52 CEST schrieb Olivier Schonken:
+> Hi Richard
+>=20
+> The bytes in question is at offset 36c90.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/mtdcore.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+Okay. At this offset we have a UBIFS data node of length 1477.
+One bit of the UBIFS magic changed. 0x30 instead of 0x31
+=46un fact, the UBIFS CRC32 is correct. UBIFS magic and the CRC32 are not=20
+covered by the CRC.
+So, really just one bit changed, in the magic.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index f25d65ea7149..20d5262c5b5c 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -673,14 +673,13 @@ static void mtd_set_dev_defaults(struct mtd_info *mtd)
-  * 'parse_mtd_partitions()') and MTD device and partitions registering. It
-  * basically follows the most common pattern found in many MTD drivers:
-  *
-- * * It first tries to probe partitions on MTD device @mtd using parsers
-+ * * If the MTD_PARTITIONED_MASTER option is set, then the device as a whole is
-+ *   registered first.
-+ * * Then It tries to probe partitions on MTD device @mtd using parsers
-  *   specified in @types (if @types is %NULL, then the default list of parsers
-  *   is used, see 'parse_mtd_partitions()' for more information). If none are
-  *   found this functions tries to fallback to information specified in
-  *   @parts/@nr_parts.
-- * * If any partitioning info was found, this function registers the found
-- *   partitions. If the MTD_PARTITIONED_MASTER option is set, then the device
-- *   as a whole is registered first.
-  * * If no partitions were found this function just registers the MTD device
-  *   @mtd and exits.
-  *
--- 
-2.11.0
+Thanks,
+//richard
