@@ -1,23 +1,22 @@
 Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0u71-0002BO-U6
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 19:18:29 +0000
+ id 1f0uKe-0007hC-QH
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 19:32:34 +0000
 From: Richard Weinberger <richard@nod.at>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
+To: Arushi Singhal <arushisinghal19971997@gmail.com>
+Cc: dwmw2@infradead.org, Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: update documentation of mtd_device_parse_register()
-Date: Tue, 27 Mar 2018 21:18:14 +0200
-Message-ID: <11374740.7K3gF4UMb0@blindfold>
-In-Reply-To: <20180327133647.15110-1-zajec5@gmail.com>
-References: <20180327133647.15110-1-zajec5@gmail.com>
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: Replace typedef with struct
+Date: Tue, 27 Mar 2018 21:32:19 +0200
+Message-ID: <2234121.GJlN6YpY6x@blindfold>
+In-Reply-To: <20180318175122.GA15004@seema-Inspiron-15-3567>
+References: <20180318175122.GA15004@seema-Inspiron-15-3567>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 27. M=C3=A4rz 2018, 15:36:47 CEST schrieb Rafa=C5=82 Mi=C5=82e=
-cki:
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+Am Sonntag, 18. M=E4rz 2018, 18:51:23 CEST schrieb Arushi Singhal:
+> Using typedef for a structure type is not suggested in Linux kernel
+> coding style guidelines. Hence, occurrence of typedefs has been
+> removed.
 >=20
-> In the commit 2c77c57d22adb ("mtd: move code adding master MTD out of
-> mtd_add_device_partitions()") behavior of mtd_device_parse_register()
-> has very slightly changed. It's a pretty non-significant order change
-> to match updated function behavior.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 > ---
->  drivers/mtd/mtdcore.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+>  drivers/mtd/ssfdc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >=20
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index f25d65ea7149..20d5262c5b5c 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -673,14 +673,13 @@ static void mtd_set_dev_defaults(struct mtd_info *m=
-td)
->   * 'parse_mtd_partitions()') and MTD device and partitions registering. =
-It
->   * basically follows the most common pattern found in many MTD drivers:
->   *
-> - * * It first tries to probe partitions on MTD device @mtd using parsers
-> + * * If the MTD_PARTITIONED_MASTER option is set, then the device as a w=
-hole is
-> + *   registered first.
-> + * * Then It tries to probe partitions on MTD device @mtd using parsers
->   *   specified in @types (if @types is %NULL, then the default list of p=
-arsers
->   *   is used, see 'parse_mtd_partitions()' for more information). If non=
-e are
->   *   found this functions tries to fallback to information specified in
->   *   @parts/@nr_parts.
-> - * * If any partitioning info was found, this function registers the fou=
-nd
-> - *   partitions. If the MTD_PARTITIONED_MASTER option is set, then the d=
-evice
-> - *   as a whole is registered first.
->   * * If no partitions were found this function just registers the MTD de=
-vice
->   *   @mtd and exits.
->   *
+> diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+> index 95f0bf9..8bae672 100644
+> --- a/drivers/mtd/ssfdc.c
+> +++ b/drivers/mtd/ssfdc.c
+> @@ -54,15 +54,15 @@ SumSector	2,000	4,000	8,000	16,000	32,000	64,000	128,=
+000	256,000
+>  SectorSize	512	512	512	512	512	512	512	512
+>  **/
+> =20
+> -typedef struct {
+> +struct chs_entry {
+>  	unsigned long size;
+>  	unsigned short cyl;
+>  	unsigned char head;
+>  	unsigned char sec;
+> -} chs_entry_t;
+> +};
+> =20
+>  /* Must be ordered by size */
+> -static const chs_entry_t chs_table[] =3D {
+> +static const struct chs_entry chs_table[] =3D {
+>  	{ MiB(  1), 125,  4,  4 },
+>  	{ MiB(  2), 125,  4,  8 },
+>  	{ MiB(  4), 250,  4,  8 },
 >=20
 
-Thanks for taking care of docs. :-)
-
-Reviewed-by: Richard Weinberger <richard@nod.at>
+Didn't we already talk about coding style fixes on existing code? ;-)
 
 Thanks,
 //richard
