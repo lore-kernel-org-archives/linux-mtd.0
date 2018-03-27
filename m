@@ -1,20 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0iro-0001R2-Aq
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 07:18:02 +0000
-Date: Tue, 27 Mar 2018 09:17:37 +0200
+ id 1f0jTN-0000Jm-LB
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 07:56:51 +0000
+Date: Tue, 27 Mar 2018 09:56:37 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] Uniform way to pass a NAND ID table to the core
-Message-ID: <20180327091737.7d09b189@bbrezillon>
-In-Reply-To: <20180321131235.9822-1-miquel.raynal@bootlin.com>
-References: <20180321131235.9822-1-miquel.raynal@bootlin.com>
+ Vasut <marek.vasut@gmail.com>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org, Kamal Dasu
+ <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v2 06/16] mtd: rawnand: fsl_elbc: fix probe function
+ error path
+Message-ID: <20180327095637.2662b531@bbrezillon>
+In-Reply-To: <20180321130157.9524-7-miquel.raynal@bootlin.com>
+References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+ <20180321130157.9524-7-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
-
-On Wed, 21 Mar 2018 14:12:33 +0100
+On Wed, 21 Mar 2018 14:01:47 +0100
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Hello,
->=20
-> As part of the work of migrating all the drivers to nand_scan(), and
-> because nand_scan() does not provide a way to pass any ID table, create
-> a field in NAND chip so a controller driver can expose its ID table to
-> the core through it and stop using the last parameter of
-> nand_scan_ident() for that.
+> An error after nand_scan_tail() should trigger a nand_cleanup().
+> The helper mtd_device_parse_register() returns an error code that should
+> be checked and nand_cleanup() called accordingly.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/fsl_elbc_nand.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+> index d28df991c73c..7a7cb60ec93c 100644
+> --- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
+> @@ -926,15 +926,20 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
+>  
+>  	/* First look for RedBoot table or partitions on the command
+>  	 * line, these take precedence over device tree information */
+> -	mtd_device_parse_register(mtd, part_probe_types, NULL,
+> -				  NULL, 0);
+> +	ret = mtd_device_parse_register(mtd, part_probe_types, NULL, NULL, 0);
+> +	if (ret)
+> +		goto cleanup_nand;
+>  
+>  	pr_info("eLBC NAND device at 0x%llx, bank %d\n",
+>  		(unsigned long long)res.start, priv->bank);
+> +
+>  	return 0;
+>  
+> +cleanup_nand:
+> +	nand_cleanup(&priv->chip);
+>  err:
+>  	fsl_elbc_chip_remove(priv);
 
-I'm not a big fan of adding yet another field to the nand_chip struct.
-Could we instead create a nand_scan_with_ids() function that takes an
-extra ID table in argument and then make nand_scan() a wrapper around
-this new function?
+fsl_elbc_chip_remove() is already calling nand_release() (which
+contains a call to nand_cleanup()), so we might experience double-free
+issues if some of the fields are not re-initialized to NULL.
 
-int nand_scan_with_ids(struct mtd_info *mtd, int max_chips,
-		       struct nand_flash_dev *ids);
-
-static inline int nand_scan(struct mtd_info *mtd, int max_chips)
-{
-	return nand_scan_with_ids(mtd, max_chips, NULL);
-}
-
-Regards,
-
-Boris
-
->=20
-> Apply this to the sm_common driver which is the only one that actually
-> provides its own ID table, so there is no remaining driver using this
-> third parameter, so all can be moved easily to nand_scan() in a next
-> series.
->=20
-> Thanks,
-> Miqu=C3=A8l
->=20
-> Miquel Raynal (2):
->   mtd: rawnand: add a field in nand_chip to fill an array of IDs
->   mtd: rawnand: sm_common: make use of the new flash_ids table entry
->=20
->  drivers/mtd/nand/raw/nand_base.c | 8 ++++++--
->  drivers/mtd/nand/raw/sm_common.c | 5 +++--
->  include/linux/mtd/rawnand.h      | 3 +++
->  3 files changed, 12 insertions(+), 4 deletions(-)
->=20
+> +
+>  	return ret;
+>  }
+>  
 
 
 
---=20
+-- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
