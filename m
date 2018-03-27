@@ -1,23 +1,25 @@
-Received: from mail-io0-x231.google.com ([2607:f8b0:4001:c06::231])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f0sln-00050I-Pm
- for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 17:52:29 +0000
-Received: by mail-io0-x231.google.com with SMTP id r18so311007ioa.1
- for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 10:52:17 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180303223145.27903-1-linus.walleij@linaro.org>
-References: <20180303223145.27903-1-linus.walleij@linaro.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 27 Mar 2018 19:52:16 +0200
-Message-ID: <CACRpkdbyj4Cqd9b14K-iggK8GBhMQ-dsbEHsOBJ-hN7BRJvUMg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: jedec_probe: add Eon EN29LV400A IDs
-To: David Woodhouse <dwmw2@infradead.org>,
+ id 1f0tYu-0001O3-F4
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 18:43:14 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Olivier Schonken <olivier.schonken@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: nand: atmel: Fix get_sectorsize() function
+Date: Tue, 27 Mar 2018 20:42:57 +0200
+Message-ID: <8243180.0gKHKBdRfY@blindfold>
+In-Reply-To: <20180327170158.3351-1-boris.brezillon@bootlin.com>
+References: <20180327170158.3351-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Mar 3, 2018 at 11:31 PM, Linus Walleij <linus.walleij@linaro.org> wrote:
+Am Dienstag, 27. M=E4rz 2018, 19:01:58 CEST schrieb Boris Brezillon:
+> get_sectorsize() was not using the appropriate macro to extract the
+> ECC sector size from the config cache, which led to buggy ECC when
+> using 1024 byte sectors.
+>=20
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Olivier Schonken <olivier.schonken@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/nand/atmel/pmecc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmec=
+c.c
+> index 8268636675ef..4124bf91bee6 100644
+> --- a/drivers/mtd/nand/atmel/pmecc.c
+> +++ b/drivers/mtd/nand/atmel/pmecc.c
+> @@ -426,7 +426,7 @@ static int get_strength(struct atmel_pmecc_user *user)
+>=20
+>  static int get_sectorsize(struct atmel_pmecc_user *user)
+>  {
+> -	return user->cache.cfg & PMECC_LOOKUP_TABLE_SIZE_1024 ? 1024 : 512;
+> +	return user->cache.cfg & PMECC_CFG_SECTOR1024 ? 1024 : 512;
+>  }
+>=20
+>  static void atmel_pmecc_gen_syndrome(struct atmel_pmecc_user *user, int
+> sector)
 
-> This adds the JEDEC IDs for Eon EN29LV400A variants
-> EN29LV400AB and EN29LV400AT. This chip is found in the
-> D-Link DNS-313.
->
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Richard Weinberger <richard@nod.at>
 
-Could someone from the MTD camp please pick up this patch?
-
-I am using this flash chip.
-
-Yours,
-Linus Walleij
+Thanks,
+//richard
