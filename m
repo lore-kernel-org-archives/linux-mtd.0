@@ -1,21 +1,25 @@
+Received: from mail-io0-x233.google.com ([2607:f8b0:4001:c06::233])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0vGH-0002Z1-GS
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 20:32:06 +0000
+Received: by mail-io0-x233.google.com with SMTP id y128so834725iod.4
+ for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2018 13:31:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180212105642.8662-2-lionel.debieve@st.com>
-References: <20180212105642.8662-1-lionel.debieve@st.com>
- <20180212105642.8662-2-lionel.debieve@st.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 27 Mar 2018 22:18:51 +0200
-Message-ID: <CAFLxGvxcWLxHyTzgbGssqOEUp2=TU07mLk1-XHavL4HU8N7caQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
-To: Lionel Debieve <lionel.debieve@st.com>
-Cc: Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Benjamin GAIGNARD <benjamin.gaignard@st.com>, joel@clambassador.com,
- schwarzerf@gmail.com, linux-arm-kernel@lists.infradead.org,
- =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>,
- haver@linux.vnet.ibm.com
+In-Reply-To: <21454318.LBOlOGBNfX@blindfold>
+References: <20180303222903.27767-1-linus.walleij@linaro.org>
+ <21454318.LBOlOGBNfX@blindfold>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 27 Mar 2018 22:31:51 +0200
+Message-ID: <CACRpkdaGsEAX01pd+OiP0Vys9jQZGeqioM6c3VreDcTMSKfY6Q@mail.gmail.com>
+Subject: Re: [PATCH] mtd: jedec_probe: Fix crash in jedec_read_mfr()
+To: Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 12, 2018 at 11:56 AM, Lionel Debieve <lionel.debieve@st.com> wrote:
-> Update license template using SPDX. Move the global layout
-> of UBI headers to dual license helping UBI to be the standard
-> solution for raw NAND management.
+On Tue, Mar 27, 2018 at 9:02 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am Samstag, 3. M=C3=A4rz 2018, 23:29:03 CEST schrieb Linus Walleij:
 
-So the goal is re-implementing UBI under a non-GPL license?
+>> It turns out that the loop where we read manufacturer
+>> jedec_read_mfd() can under some circumstances get a
+>> CFI_MFR_CONTINUATION repeatedly, making the loop go
+>> over all banks and eventually hit the end of the
+>> map and crash because of an access violation:
+>>
+>>               uint32_t ofs =3D cfi_build_cmd_addr(0 + (bank << 8), map, =
+cfi);
+>>               mask =3D (1 << (cfi->device_type * 8)) - 1;
+>> +             if (ofs >=3D map->size)
+>> +                     return 0;
+>>               result =3D map_read(map, base + ofs);
+>>               bank++;
+>>       } while ((result.x[0] & mask) =3D=3D CFI_MFR_CONTINUATION);
+>
+> The fix is legit but I'm not sure whether we should emit a warning in thi=
+s
+> case too since something is obviously wrong.
 
-If we get a clear ack from all major UBI copyright holders, fine by me.
+What is wrong is perhaps our way of probing JEDEC
+Flashes: the condition is hit when accessing a device on a
+16bit bus in 8bit mode, which is what the probe code tries
+before it tries 16bit.
 
--- 
-Thanks,
-//richard
+However there are clear comments in the
+code (above jedec_match()) indicating that it is impossible
+to do a perfect probe routine so this could be expected to
+happen to some extent,I am merely amending an issue that
+may be unfixable.
+
+Yours,
+Linus Walleij
