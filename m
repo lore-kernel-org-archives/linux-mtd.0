@@ -1,25 +1,21 @@
-Message-ID: <1522166596.5274.6.camel@buserror.net>
-From: Scott Wood <oss@buserror.net>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, "robh@kernel.org" <robh@kernel.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,  "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, Leo Li <leoyang.li@nxp.com>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Poonam Aggrwal
- <poonam.aggrwal@nxp.com>
-Date: Tue, 27 Mar 2018 11:03:16 -0500
-In-Reply-To: <VI1PR0402MB385456DB28FE27FCF9ACCAB997AC0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <20180312081128.8195-1-prabhakar.kushwaha@nxp.com>
- <20180323093408.230a61c1@bbrezillon>
- <VI1PR0402MB385456DB28FE27FCF9ACCAB997AC0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness supports
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f0rzL-0003hk-RV
+ for linux-mtd@lists.infradead.org; Tue, 27 Mar 2018 17:02:25 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Olivier Schonken <olivier.schonken@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] mtd: nand: atmel: Fix get_sectorsize() function
+Date: Tue, 27 Mar 2018 19:01:58 +0200
+Message-Id: <20180327170158.3351-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2018-03-27 at 12:06 +0000, Prabhakar Kushwaha wrote:
-> Hi Boris,
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Friday, March 23, 2018 2:04 PM
-> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>;
-> > robh@kernel.org
-> > Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
-> > mark.rutland@arm.com; shawnguo@kernel.org; boris.brezillon@free-
-> > electrons.com; computersforpeace@gmail.com; oss@buserror.net; Leo Li
-> > <leoyang.li@nxp.com>; linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH 1/2][v6] dt-bindings: mtd-physmap: Add endianness
-> > supports
-> > 
-> > You still haven't answered the comments I made on your v5. To me, this
-> > does
-> > not represent how the controller and chip pins are connected, but how the
-> > chip was programmed and which endianness should be used by the
-> > controller to correctly read the data back. Maybe I'm wrong, hence my
-> > question.
-> > 
-> 
-> NXP's ARM SoC has IFC module which interface with NOR flash. Here IFC is big
-> endian module connected with NOR flash. 
-> As SoC has ARM processor(Littler Endian),  CONFIG_MTD_CFI_BE_BYTE_SWAP needs
-> to be enabled  to make sure data is read correctly.  
-> This is the reason, I wrote about connection between controller and flash.
-> 
-> In a way, I agree with you.  It is not about connection. 
-> It is about how controller read the data (inherently ARM processor)
+get_sectorsize() was not using the appropriate macro to extract the
+ECC sector size from the config cache, which led to buggy ECC when
+using 1024 byte sectors.
 
-It is not about anything inherent to ARM (which, like PPC, is a bi-endian
-arch).  It's about the programming model of IFC on certain SoCs.
+Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+Cc: <stable@vger.kernel.org>
+Reported-by: Olivier Schonken <olivier.schonken@gmail.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/atmel/pmecc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--Scott
+diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+index 8268636675ef..4124bf91bee6 100644
+--- a/drivers/mtd/nand/atmel/pmecc.c
++++ b/drivers/mtd/nand/atmel/pmecc.c
+@@ -426,7 +426,7 @@ static int get_strength(struct atmel_pmecc_user *user)
+ 
+ static int get_sectorsize(struct atmel_pmecc_user *user)
+ {
+-	return user->cache.cfg & PMECC_LOOKUP_TABLE_SIZE_1024 ? 1024 : 512;
++	return user->cache.cfg & PMECC_CFG_SECTOR1024 ? 1024 : 512;
+ }
+ 
+ static void atmel_pmecc_gen_syndrome(struct atmel_pmecc_user *user, int sector)
+-- 
+2.14.1
