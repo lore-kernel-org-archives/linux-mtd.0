@@ -1,20 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f157Q-0005Qd-Em
- for linux-mtd@lists.infradead.org; Wed, 28 Mar 2018 07:03:42 +0000
-Date: Wed, 28 Mar 2018 09:03:12 +0200
+ id 1f15Jz-0002zu-TQ
+ for linux-mtd@lists.infradead.org; Wed, 28 Mar 2018 07:16:37 +0000
+Date: Wed, 28 Mar 2018 09:16:13 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Linus Walleij <linus.walleij@linaro.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: jedec_probe: Fix crash in jedec_read_mfr()
-Message-ID: <20180328090312.4a9b6cfa@bbrezillon>
-In-Reply-To: <21454318.LBOlOGBNfX@blindfold>
-References: <20180303222903.27767-1-linus.walleij@linaro.org>
- <21454318.LBOlOGBNfX@blindfold>
+To: Arushi Singhal <arushisinghal19971997@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, dwmw2@infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: Replace typedef with struct
+Message-ID: <20180328091613.7a867a0f@bbrezillon>
+In-Reply-To: <2234121.GJlN6YpY6x@blindfold>
+References: <20180318175122.GA15004@seema-Inspiron-15-3567>
+ <2234121.GJlN6YpY6x@blindfold>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,69 +27,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Mar 2018 21:02:08 +0200
+On Tue, 27 Mar 2018 21:32:19 +0200
 Richard Weinberger <richard@nod.at> wrote:
 
-> Am Samstag, 3. M=C3=A4rz 2018, 23:29:03 CEST schrieb Linus Walleij:
-> > It turns out that the loop where we read manufacturer
-> > jedec_read_mfd() can under some circumstances get a
-> > CFI_MFR_CONTINUATION repeatedly, making the loop go
-> > over all banks and eventually hit the end of the
-> > map and crash because of an access violation:
+> Am Sonntag, 18. M=C3=A4rz 2018, 18:51:23 CEST schrieb Arushi Singhal:
+> > Using typedef for a structure type is not suggested in Linux kernel
+> > coding style guidelines. Hence, occurrence of typedefs has been
+> > removed.
 > >=20
-> > Unable to handle kernel paging request at virtual address c4980000
-> > pgd =3D (ptrval)
-> > [c4980000] *pgd=3D03808811, *pte=3D00000000, *ppte=3D00000000
-> > Internal error: Oops: 7 [#1] PREEMPT ARM
-> > CPU: 0 PID: 1 Comm: swapper Not tainted 4.16.0-rc1+ #150
-> > Hardware name: Gemini (Device Tree)
-> > PC is at jedec_probe_chip+0x6ec/0xcd0
-> > LR is at 0x4
-> > pc : [<c03a2bf4>]    lr : [<00000004>]    psr: 60000013
-> > sp : c382dd18  ip : 0000ffff  fp : 00000000
-> > r10: c0626388  r9 : 00020000  r8 : c0626340
-> > r7 : 00000000  r6 : 00000001  r5 : c3a71afc  r4 : c382dd70
-> > r3 : 00000001  r2 : c4900000  r1 : 00000002  r0 : 00080000
-> > Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment none
-> > Control: 0000397f  Table: 00004000  DAC: 00000053
-> > Process swapper (pid: 1, stack limit =3D 0x(ptrval))
-> >=20
-> > Fix this by breaking the loop with a return 0 if
-> > the offset exceeds the map size.
-> >=20
-> > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> > Signed-off-by: Arushi Singhal <arushisinghal19971997@gmail.com>
 > > ---
-> >  drivers/mtd/chips/jedec_probe.c | 2 ++
-> >  1 file changed, 2 insertions(+)
+> >  drivers/mtd/ssfdc.c | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
 > >=20
-> > diff --git a/drivers/mtd/chips/jedec_probe.c
-> > b/drivers/mtd/chips/jedec_probe.c index 7c0b27d132b1..b479bd81120b 1006=
-44
-> > --- a/drivers/mtd/chips/jedec_probe.c
-> > +++ b/drivers/mtd/chips/jedec_probe.c
-> > @@ -1889,6 +1889,8 @@ static inline u32 jedec_read_mfr(struct map_info =
-*map,
-> > uint32_t base, do {
-> >  		uint32_t ofs =3D cfi_build_cmd_addr(0 + (bank << 8), map, cfi);
-> >  		mask =3D (1 << (cfi->device_type * 8)) - 1;
-> > +		if (ofs >=3D map->size)
-> > +			return 0;
-> >  		result =3D map_read(map, base + ofs);
-> >  		bank++;
-> >  	} while ((result.x[0] & mask) =3D=3D CFI_MFR_CONTINUATION); =20
+> > diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+> > index 95f0bf9..8bae672 100644
+> > --- a/drivers/mtd/ssfdc.c
+> > +++ b/drivers/mtd/ssfdc.c
+> > @@ -54,15 +54,15 @@ SumSector	2,000	4,000	8,000	16,000	32,000	64,000	12=
+8,000	256,000
+> >  SectorSize	512	512	512	512	512	512	512	512
+> >  **/
+> > =20
+> > -typedef struct {
+> > +struct chs_entry {
+> >  	unsigned long size;
+> >  	unsigned short cyl;
+> >  	unsigned char head;
+> >  	unsigned char sec;
+> > -} chs_entry_t;
+> > +};
+> > =20
+> >  /* Must be ordered by size */
+> > -static const chs_entry_t chs_table[] =3D {
+> > +static const struct chs_entry chs_table[] =3D {
+> >  	{ MiB(  1), 125,  4,  4 },
+> >  	{ MiB(  2), 125,  4,  8 },
+> >  	{ MiB(  4), 250,  4,  8 },
+> >  =20
 >=20
-> The fix is legit but I'm not sure whether we should emit a warning in thi=
-s=20
-> case too since something is obviously wrong.
-> Boris?
+> Didn't we already talk about coding style fixes on existing code? ;-)
 
-Looks good to me: 0 does not seem to be a valid id, so it should not
-allow the caller to find a valid match (we could also return
-CFI_MFR_CONTINUATION but 0 is fine).
+I'll add one thing to Richard's complaint: please stop sending new
+coding style or cosmetic changes until the previous ones have been
+accepted.
 
-Linus, do you want to add a Fixes and Cc-stable tag so that it can be
-backported to stable kernels?
+There's a reason I don't apply those patches right away even though
+they are simple. Those patches have a low priority in my review list
+and improvements or fixes usually get reviewed before them. The reason
+I do that is:
 
+1/ I want to reward contributors who submit things that actually matter
+   to the subsystem
+2/ It tends to discourage drive-by contributors whose only interest is
+   to get a lot of trivial patches in the kernel
+
+Note that I'm not saying never, but you have to accept to wait longer
+for this kind of patches, and more importantly, if you keep sending
+only coding style patches, we might decide to ignore your contributions
+at some point.
+
+Regards,
+
+Boris
 
 --=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
