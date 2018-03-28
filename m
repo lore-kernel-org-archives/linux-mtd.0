@@ -1,23 +1,15 @@
-Date: Tue, 27 Mar 2018 23:06:33 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-cc: Lionel Debieve <lionel.debieve@st.com>,
- Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Benjamin GAIGNARD <benjamin.gaignard@st.com>, joel@clambassador.com,
- schwarzerf@gmail.com, linux-arm-kernel@lists.infradead.org,
- =?ISO-8859-15?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
- Lee Jones <lee.jones@linaro.org>, haver@linux.vnet.ibm.com
-Subject: Re: [PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
-In-Reply-To: <CAFLxGvxcWLxHyTzgbGssqOEUp2=TU07mLk1-XHavL4HU8N7caQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.1803272305350.1618@nanos.tec.linutronix.de>
-References: <20180212105642.8662-1-lionel.debieve@st.com>
- <20180212105642.8662-2-lionel.debieve@st.com>
- <CAFLxGvxcWLxHyTzgbGssqOEUp2=TU07mLk1-XHavL4HU8N7caQ@mail.gmail.com>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org
+Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ boris.brezillon@free-electrons.com, computersforpeace@gmail.com,
+ oss@buserror.net, linux-arm-kernel@lists.infradead.org, leoyang.li@nxp.com,
+ poonam.aggrwal@nxp.com, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Subject: [PATCH 1/2][v7] dt-bindings: mtd-physmap: Add endianness supports
+Date: Wed, 28 Mar 2018 11:14:43 +0530
+Message-Id: <20180328054443.2829-1-prabhakar.kushwaha@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +19,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Mar 2018, Richard Weinberger wrote:
+Connection between flash and controller is not necessary to be always
+of same type. It may varies from platform to platform.
 
-> On Mon, Feb 12, 2018 at 11:56 AM, Lionel Debieve <lionel.debieve@st.com> wrote:
-> > Update license template using SPDX. Move the global layout
-> > of UBI headers to dual license helping UBI to be the standard
-> > solution for raw NAND management.
-> 
-> So the goal is re-implementing UBI under a non-GPL license?
-> 
-> If we get a clear ack from all major UBI copyright holders, fine by me.
+Adding endianness (optional) property to provide connection type
+information.
 
-I already acked that for the u-boot SPL code. So yes:
+Signed-off-by: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
+Changes for v2: updated subject
+Changes for v3: fixed typo for "big-endian"
+Changes for v4: Moved binding definition in mtd-physmap.txt
+as discussed at https://patchwork.ozlabs.org/patch/842543/
+Changes for v5: Sending as it is
+Changes for v6: Updated binding when endianness property is absent
+Changes for v7: Updated binding details
 
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 4a0a48bf4ecb..232fa12e90ef 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -41,6 +41,13 @@ additional (optional) property is defined:
+ 
+  - erase-size : The chip's physical erase block size in bytes.
+ 
++ The device tree may optionally contain endianness property.
++ little-endian or big-endian : It Represents the endianness that should be used
++                               by the controller to  properly read/write data
++			       from/to the flash. If this property is missing,
++			       the endianness is chosen by the system
++			       (potentially based on extra configuration options).
++
+ The device tree may optionally contain sub-nodes describing partitions of the
+ address space. See partition.txt for more detail.
+ 
+-- 
+2.14.1
