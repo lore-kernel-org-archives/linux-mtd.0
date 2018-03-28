@@ -1,17 +1,15 @@
-Date: Wed, 28 Mar 2018 13:37:50 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
+From: Richard Weinberger <richard@nod.at>
 To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: Re: [PATCH 2/2] mtd: nand: Fix some function description mismatches
- in core.c
-Message-ID: <20180328133750.1c42044d@bbrezillon>
-In-Reply-To: <1522228438-64034-3-git-send-email-xiaolei.li@mediatek.com>
+Cc: boris.brezillon@bootlin.com, linux-mtd@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com
+Subject: Re: [PATCH 0/2] Fix some function description mismatches
+Date: Wed, 28 Mar 2018 14:06:26 +0200
+Message-ID: <24567439.icTe1ItB9o@blindfold>
+In-Reply-To: <1522228438-64034-1-git-send-email-xiaolei.li@mediatek.com>
 References: <1522228438-64034-1-git-send-email-xiaolei.li@mediatek.com>
- <1522228438-64034-3-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,70 +19,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 Mar 2018 17:13:58 +0800
-Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+Am Mittwoch, 28. M=E4rz 2018, 11:13:56 CEST schrieb Xiaolei Li:
+> This patch fixes some function description mismatches.
 
-> In core.c, some function descriptions do not match function
-> definitions. Just fix these mismatches.
-> 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> ---
->  drivers/mtd/nand/core.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-> index f237a68..9f6febd 100644
-> --- a/drivers/mtd/nand/core.c
-> +++ b/drivers/mtd/nand/core.c
-> @@ -51,7 +51,7 @@ bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
->  /**
->   * nanddev_markbad() - Mark a block as bad
->   * @nand: NAND device
-> - * @block: block to mark bad
-> + * @pos: position of the block to mark bad
->   *
->   * Mark a block bad. This function is updating the BBT if available and
->   * calls the low-level markbad hook (nand->ops->markbad()).
-> @@ -117,9 +117,9 @@ bool nanddev_isreserved(struct nand_device *nand, const struct nand_pos *pos)
->  /**
->   * nanddev_erase() - Erase a NAND portion
->   * @nand: NAND device
-> - * @block: eraseblock to erase
-> + * @pos: position of the block to erase
->   *
-> - * Erases @block if it's not bad.
-> + * Erases the block if it's not bad.
->   *
->   * Return: 0 in case of success, a negative error code otherwise.
->   */
-> @@ -179,11 +179,11 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
->  /**
->   * nanddev_init() - Initialize a NAND device
->   * @nand: NAND device
-> - * @memorg: NAND memory organization descriptor
->   * @ops: NAND device operations
-> + * @owner: MTD module owner
+Did you find these manually or in some automated way?
 
-	      ^ NAND device owner.
-
->   *
-> - * Initializes a NAND device object. Consistency checks are done on @memorg and
-> - * @ops. Also takes care of initializing the BBT.
-> + * Initializes a NAND device object. Consistency checks are done on @ops and
-> + * nand memory organization. Also takes care of initializing the BBT.
-
-Don't remember the exact format, but I thing you can use something
-@nand->memorg
-
-Anyway, thanks for reporting and fixing those problems in the doc.
-
->   *
->   * Return: 0 in case of success, a negative error code otherwise.
->   */
-
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+//richard
