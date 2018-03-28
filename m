@@ -1,20 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f16VN-00057y-W5
- for linux-mtd@lists.infradead.org; Wed, 28 Mar 2018 08:32:27 +0000
-Date: Wed, 28 Mar 2018 10:32:04 +0200
+ id 1f16ba-0007pS-EV
+ for linux-mtd@lists.infradead.org; Wed, 28 Mar 2018 08:38:52 +0000
+Date: Wed, 28 Mar 2018 10:38:28 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Olivier Schonken <olivier.schonken@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: Atmel Nand PMECC UBI ECC issue
-Message-ID: <20180328103204.5272349a@bbrezillon>
-In-Reply-To: <3546894.3QeRhpBW0o@blindfold>
-References: <CALdGskLaHrZGa7u4_jmJjq1VPRv6AYgRpSsYcNy+-EtgWR0H=Q@mail.gmail.com>
- <1849050.lXIvJB3S2I@blindfold>
- <CALdGsk++QA-mHmQx+L6qumt7xaXicfdqC=iBhmda7vYB+-bNpg@mail.gmail.com>
- <3546894.3QeRhpBW0o@blindfold>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org, Kamal Dasu
+ <kdasu.kdev@gmail.com>
+Subject: Re: [PATCH v2 00/16] Fix probe functions error path
+Message-ID: <20180328103828.28f61da5@bbrezillon>
+In-Reply-To: <20180321130157.9524-1-miquel.raynal@bootlin.com>
+References: <20180321130157.9524-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,30 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Mar 2018 16:08:46 +0200
-Richard Weinberger <richard@nod.at> wrote:
+On Wed, 21 Mar 2018 14:01:41 +0100
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Oliver,
+> Hello all,
 >=20
-> Am Dienstag, 27. M=C3=A4rz 2018, 10:28:52 CEST schrieb Olivier Schonken:
-> > Hi Richard
-> >=20
-> > The bytes in question is at offset 36c90. =20
+> In order to remove the limitation that prevents dynamic allocations
+> during the identification phase (nand_scan_ident()), we need to get rid
+> of the nand_scan_ident()/nand_scan_tail() calls from drivers and only
+> export nand_scan().
 >=20
-> Okay. At this offset we have a UBIFS data node of length 1477.
-> One bit of the UBIFS magic changed. 0x30 instead of 0x31
-> Fun fact, the UBIFS CRC32 is correct. UBIFS magic and the CRC32 are not=20
-> covered by the CRC.
-> So, really just one bit changed, in the magic.
+> This series prepares the migration to nand_scan() by first fixing (and
+> enhancing some times) the probe function error path of the drivers that
+> do not use nand_scan() yet.
+>=20
+> The three main problems addressed in the series are:
+> 1/ a wrong error path that does not free/disable the resources
+>    correctly.
+> 2/ nand_cleanup() is not called upon error after a successful
+>    nand_scan_tail().
+> 3/ nand_release() is called instead of nand_cleanup(). nand_release()
+>    does call nand_cleanup() and also mtd_device_unregister(), which
+>    should not be called while mtd_device_register() as succeeded.
+>=20
+> Thanks,
+> Miqu=C3=A8l
+>=20
+> Changes since v1:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  * Extracted only the patches fixing the error path from the first huge
+>    series (50+ patches) that also converted the drivers to nand_scan().
+>  * Changed wrong nand_release() calls to nand_cleanup().
+>=20
+>=20
+> Miquel Raynal (16):
+>   mtd: rawnand: brcmnand: fix probe function error path
+>   mtd: rawnand: cafe: fix probe function error path
+>   mtd: rawnand: davinci: fix probe function error path
+>   mtd: rawnand: denali: fix probe function error path
 
-Looks like this problem was caused by a bug in the atmel NFC driver.
-Fix is available here [1].
+Applied patches 1 to 4...
 
-Regards,
+>   mtd: rawnand: docg4: fix the probe function error path
+>   mtd: rawnand: fsl_elbc: fix probe function error path
+>   mtd: rawnand: fsl_ifc: fix probe function error path
+>   mtd: rawnand: fsmc: fix and enhance probe function error path
+>   mtd: rawnand: mxc: fix probe function error path
+>   mtd: rawnand: omap2: fix the probe function error path
+>   mtd: rawnand: sh_flctl: fix the probe function error path
+>   mtd: rawnand: tango: fix probe function error path
 
-Boris
+... patches 9 to 12...
 
-[1]http://patchwork.ozlabs.org/patch/891725/
+>   mtd: rawnand: hisi504: fix and enhance the probe function error path
+>   mtd: rawnand: lpc32xx_mlc: fix and enhance the probe function error
+>     path
+>   mtd: rawnand: lpc32xx_slc: fix and enhance the probe function error
+>     path
+>   mtd: rawnand: s3c2410: enhance the probe function error path
+
+... and patch 16.
+
+>=20
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c |  6 ++++-
+>  drivers/mtd/nand/raw/cafe_nand.c         | 18 +++++++++------
+>  drivers/mtd/nand/raw/davinci_nand.c      |  6 +++--
+>  drivers/mtd/nand/raw/denali.c            |  4 +++-
+>  drivers/mtd/nand/raw/docg4.c             | 22 +++++++++---------
+>  drivers/mtd/nand/raw/fsl_elbc_nand.c     |  9 ++++++--
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c      |  8 ++++++-
+>  drivers/mtd/nand/raw/fsmc_nand.c         | 27 +++++++++++++----------
+>  drivers/mtd/nand/raw/hisi504_nand.c      | 35 ++++++++++----------------=
+---
+>  drivers/mtd/nand/raw/lpc32xx_mlc.c       | 38 +++++++++++++++++---------=
+------
+>  drivers/mtd/nand/raw/lpc32xx_slc.c       | 26 ++++++++++++----------
+>  drivers/mtd/nand/raw/mxc_nand.c          | 11 +++++----
+>  drivers/mtd/nand/raw/omap2.c             |  5 ++++-
+>  drivers/mtd/nand/raw/s3c2410.c           | 24 ++++++++++----------
+>  drivers/mtd/nand/raw/sh_flctl.c          |  4 ++++
+>  drivers/mtd/nand/raw/tango_nand.c        |  4 +++-
+>  16 files changed, 140 insertions(+), 107 deletions(-)
+>=20
+
+
+
 --=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
