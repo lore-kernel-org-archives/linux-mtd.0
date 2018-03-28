@@ -1,15 +1,24 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH 2/2] mtd: nand: Fix some function description mismatches in
- core.c
-Date: Wed, 28 Mar 2018 17:13:58 +0800
-Message-ID: <1522228438-64034-3-git-send-email-xiaolei.li@mediatek.com>
-In-Reply-To: <1522228438-64034-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1522228438-64034-1-git-send-email-xiaolei.li@mediatek.com>
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org"
+ <robh@kernel.org>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, Poonam Aggrwal
+ <poonam.aggrwal@nxp.com>, Leo Li <leoyang.li@nxp.com>, "oss@buserror.net"
+ <oss@buserror.net>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 1/2][v7] dt-bindings: mtd-physmap: Add endianness supports
+Date: Wed, 28 Mar 2018 09:48:08 +0000
+Message-ID: <VI1PR0402MB3854A5A7E389D80CCEF0197997A30@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+References: <20180328054443.2829-1-prabhakar.kushwaha@nxp.com>
+ <20180328103001.6f4b16d9@bbrezillon>
+In-Reply-To: <20180328103001.6f4b16d9@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In core.c, some function descriptions do not match function
-definitions. Just fix these mismatches.
+Hi Boris,
 
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
----
- drivers/mtd/nand/core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Wednesday, March 28, 2018 2:00 PM
+> To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
+> mark.rutland@arm.com; robh@kernel.org; boris.brezillon@free-electrons.com=
+;
+> Poonam Aggrwal <poonam.aggrwal@nxp.com>; Leo Li <leoyang.li@nxp.com>;
+> oss@buserror.net; computersforpeace@gmail.com; shawnguo@kernel.org;
+> linux-arm-kernel@lists.infradead.org
+> Subject: Re: [PATCH 1/2][v7] dt-bindings: mtd-physmap: Add endianness
+> supports
+>=20
+> On Wed, 28 Mar 2018 11:14:43 +0530
+> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+>=20
+> > Connection between flash and controller is not necessary to be always
+> > of same type. It may varies from platform to platform.
+> >
+> > Adding endianness (optional) property to provide connection type
+> > information.
+>=20
+> You forgot to adjust your commit message.
+>=20
+> If you're okay, I'll replace your message by:
+>=20
+> "
+> Provides a way to specify the endianness to use when accessing a memory-
+> mapped flash.
+> "
+>=20
 
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index f237a68..9f6febd 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -51,7 +51,7 @@ bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
- /**
-  * nanddev_markbad() - Mark a block as bad
-  * @nand: NAND device
-- * @block: block to mark bad
-+ * @pos: position of the block to mark bad
-  *
-  * Mark a block bad. This function is updating the BBT if available and
-  * calls the low-level markbad hook (nand->ops->markbad()).
-@@ -117,9 +117,9 @@ bool nanddev_isreserved(struct nand_device *nand, const struct nand_pos *pos)
- /**
-  * nanddev_erase() - Erase a NAND portion
-  * @nand: NAND device
-- * @block: eraseblock to erase
-+ * @pos: position of the block to erase
-  *
-- * Erases @block if it's not bad.
-+ * Erases the block if it's not bad.
-  *
-  * Return: 0 in case of success, a negative error code otherwise.
-  */
-@@ -179,11 +179,11 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
- /**
-  * nanddev_init() - Initialize a NAND device
-  * @nand: NAND device
-- * @memorg: NAND memory organization descriptor
-  * @ops: NAND device operations
-+ * @owner: MTD module owner
-  *
-- * Initializes a NAND device object. Consistency checks are done on @memorg and
-- * @ops. Also takes care of initializing the BBT.
-+ * Initializes a NAND device object. Consistency checks are done on @ops and
-+ * nand memory organization. Also takes care of initializing the BBT.
-  *
-  * Return: 0 in case of success, a negative error code otherwise.
-  */
--- 
-1.9.1
+Thanks for catching this. Please adjust as you suggested.
+
+--prabhakar
