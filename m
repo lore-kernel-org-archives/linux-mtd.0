@@ -1,19 +1,21 @@
-Date: Thu, 29 Mar 2018 16:29:22 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f1bGd-0000xr-W2
+ for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 17:23:17 +0000
+Date: Thu, 29 Mar 2018 19:22:52 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Peter Rosin <peda@axentia.se>, <linux-kernel@vger.kernel.org>,
- "wenyouya@gmail.com" <wenyouya@gmail.com>, Josh Wu
- <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-Message-ID: <20180329162922.5db7acd1@bbrezillon>
-In-Reply-To: <30d8bd45-4e5d-3703-5f41-07f5fc70f09d@microchip.com>
-References: <20180329131054.22506-1-peda@axentia.se>
- <30d8bd45-4e5d-3703-5f41-07f5fc70f09d@microchip.com>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Olivier Schonken
+ <olivier.schonken@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: nand: atmel: Fix get_sectorsize() function
+Message-ID: <20180329192252.1380fa25@bbrezillon>
+In-Reply-To: <20180327170158.3351-1-boris.brezillon@bootlin.com>
+References: <20180327170158.3351-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,50 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 Mar 2018 16:20:38 +0200
-Nicolas Ferre <nicolas.ferre@microchip.com> wrote:
+On Tue, 27 Mar 2018 19:01:58 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> On 29/03/2018 at 15:10, Peter Rosin wrote:
-> > On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
-> > flash accesses have a tendency to cause display disturbances. Add a
-> > module param to disable DMA from the NAND controller, since that fixes
-> > the display problem for me.
-> > 
-> > Signed-off-by: Peter Rosin <peda@axentia.se>
-> > ---
-> >   drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
-> >   1 file changed, 6 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> > index b2f00b398490..2ff7a77c7b8e 100644
-> > --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-> > +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> > @@ -129,6 +129,11 @@
-> >   #define DEFAULT_TIMEOUT_MS			1000
-> >   #define MIN_DMA_LEN				128
-> >   
-> > +static bool atmel_nand_avoid_dma __read_mostly;
-> > +
-> > +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
-> > +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);  
+> get_sectorsize() was not using the appropriate macro to extract the
+> ECC sector size from the config cache, which led to buggy ECC when
+> using 1024 byte sectors.
 > 
-> We had the DT parameter "atmel,nand-has-dma" for this purpose and it was
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Cc: <stable@vger.kernel.org>
+> Reported-by: Olivier Schonken <olivier.schonken@gmail.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Actually, that was not my understanding of this property. To me it
-sounds like something to flag whether the platform supports DMA or
-not, no whether it should be enabled on a per-board basis.
+Applied.
 
-> associated with a module parameter as well (use_dma,).
-
-That's true for the use_dma module param, I didn't add it back when
-reworking the driver.
-
+> ---
+>  drivers/mtd/nand/atmel/pmecc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Is it only managed by old DT binding?
+> diff --git a/drivers/mtd/nand/atmel/pmecc.c b/drivers/mtd/nand/atmel/pmecc.c
+> index 8268636675ef..4124bf91bee6 100644
+> --- a/drivers/mtd/nand/atmel/pmecc.c
+> +++ b/drivers/mtd/nand/atmel/pmecc.c
+> @@ -426,7 +426,7 @@ static int get_strength(struct atmel_pmecc_user *user)
+>  
+>  static int get_sectorsize(struct atmel_pmecc_user *user)
+>  {
+> -	return user->cache.cfg & PMECC_LOOKUP_TABLE_SIZE_1024 ? 1024 : 512;
+> +	return user->cache.cfg & PMECC_CFG_SECTOR1024 ? 1024 : 512;
+>  }
+>  
+>  static void atmel_pmecc_gen_syndrome(struct atmel_pmecc_user *user, int sector)
 
-It is. I'm really not in favor of adding the DT prop back, but let's
-re-introduce the module param if you think it's needed. BTW, the module
-name has changed, so the param name will be different.
+
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
