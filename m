@@ -1,24 +1,14 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1bX9-0002nv-79
- for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 17:40:21 +0000
-Date: Thu, 29 Mar 2018 19:39:56 +0200
+Date: Thu, 29 Mar 2018 19:54:52 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Gregory CLEMENT
- <gregory.clement@bootlin.com>, Jason Cooper <jason@lakedaemon.net>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Andrew Lunn
- <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] mtd: rawnand: marvell: Rename ->ecc_clk into ->core_clk
-Message-ID: <20180329193956.6991022e@bbrezillon>
-In-Reply-To: <20180326095301.13283-1-boris.brezillon@bootlin.com>
-References: <20180326095301.13283-1-boris.brezillon@bootlin.com>
+To: Xiaolei Li <xiaolei.li@mediatek.com>
+Cc: <richard@nod.at>, linux-mediatek@lists.infradead.org,
+ linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
+Subject: Re: [PATCH v2 2/2] mtd: nand: Fix some function description
+ mismatches in core.c
+Message-ID: <20180329195452.582f4910@bbrezillon>
+In-Reply-To: <1522287299-12620-3-git-send-email-xiaolei.li@mediatek.com>
+References: <1522287299-12620-1-git-send-email-xiaolei.li@mediatek.com>
+ <1522287299-12620-3-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,107 +21,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 26 Mar 2018 11:53:01 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Thu, 29 Mar 2018 09:34:59 +0800
+Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-> The core clock field was badly named ->ecc_clk which might lead to some
-> confusion. Rename it ->core_clk.
+> In core.c, some function descriptions do not match function
+> definitions. Just fix these mismatches.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 
 Applied.
 
+Thanks,
+
+Boris
+
 > ---
->  drivers/mtd/nand/raw/marvell_nand.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
+>  drivers/mtd/nand/core.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index 3d84f4252af4..10e953218948 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -307,7 +307,7 @@ struct marvell_nfc_caps {
->   * @controller:		Base controller structure
->   * @dev:		Parent device (used to print error messages)
->   * @regs:		NAND controller registers
-> - * @ecc_clk:		ECC block clock, two times the NAND controller clock
-> + * @core_clk:		Core clock
->   * @reg_clk:		Regiters clock
->   * @complete:		Completion object to wait for NAND controller events
->   * @assigned_cs:	Bitmask describing already assigned CS lines
-> @@ -321,7 +321,7 @@ struct marvell_nfc {
->  	struct nand_hw_control controller;
->  	struct device *dev;
->  	void __iomem *regs;
-> -	struct clk *ecc_clk;
-> +	struct clk *core_clk;
->  	struct clk *reg_clk;
->  	struct completion complete;
->  	unsigned long assigned_cs;
-> @@ -2193,7 +2193,7 @@ static int marvell_nfc_setup_data_interface(struct mtd_info *mtd, int chipnr,
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  	struct marvell_nand_chip *marvell_nand = to_marvell_nand(chip);
->  	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-> -	unsigned int period_ns = 1000000000 / clk_get_rate(nfc->ecc_clk) * 2;
-> +	unsigned int period_ns = 1000000000 / clk_get_rate(nfc->core_clk) * 2;
->  	const struct nand_sdr_timings *sdr;
->  	struct marvell_nfc_timings nfc_tmg;
->  	int read_delay;
-> @@ -2759,16 +2759,16 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  		return irq;
->  	}
->  
-> -	nfc->ecc_clk = devm_clk_get(&pdev->dev, "core");
-> +	nfc->core_clk = devm_clk_get(&pdev->dev, "core");
->  
->  	/* Managed the legacy case (when the first clock was not named) */
-> -	if (nfc->ecc_clk == ERR_PTR(-ENOENT))
-> -		nfc->ecc_clk = devm_clk_get(&pdev->dev, NULL);
-> +	if (nfc->core_clk == ERR_PTR(-ENOENT))
-> +		nfc->core_clk = devm_clk_get(&pdev->dev, NULL);
->  
-> -	if (IS_ERR(nfc->ecc_clk))
-> -		return PTR_ERR(nfc->ecc_clk);
-> +	if (IS_ERR(nfc->core_clk))
-> +		return PTR_ERR(nfc->core_clk);
->  
-> -	ret = clk_prepare_enable(nfc->ecc_clk);
-> +	ret = clk_prepare_enable(nfc->core_clk);
->  	if (ret)
->  		return ret;
->  
-> @@ -2777,10 +2777,10 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  		if (!IS_ERR(nfc->reg_clk)) {
->  			ret = clk_prepare_enable(nfc->reg_clk);
->  			if (ret)
-> -				goto unprepare_ecc_clk;
-> +				goto unprepare_core_clk;
->  		} else {
->  			ret = PTR_ERR(nfc->reg_clk);
-> -			goto unprepare_ecc_clk;
-> +			goto unprepare_core_clk;
->  		}
->  	}
->  
-> @@ -2818,8 +2818,8 @@ static int marvell_nfc_probe(struct platform_device *pdev)
->  
->  unprepare_reg_clk:
->  	clk_disable_unprepare(nfc->reg_clk);
-> -unprepare_ecc_clk:
-> -	clk_disable_unprepare(nfc->ecc_clk);
-> +unprepare_core_clk:
-> +	clk_disable_unprepare(nfc->core_clk);
->  
->  	return ret;
->  }
-> @@ -2836,7 +2836,7 @@ static int marvell_nfc_remove(struct platform_device *pdev)
->  	}
->  
->  	clk_disable_unprepare(nfc->reg_clk);
-> -	clk_disable_unprepare(nfc->ecc_clk);
-> +	clk_disable_unprepare(nfc->core_clk);
->  
->  	return 0;
->  }
+> diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
+> index f237a68..d0cd6f8 100644
+> --- a/drivers/mtd/nand/core.c
+> +++ b/drivers/mtd/nand/core.c
+> @@ -51,7 +51,7 @@ bool nanddev_isbad(struct nand_device *nand, const struct nand_pos *pos)
+>  /**
+>   * nanddev_markbad() - Mark a block as bad
+>   * @nand: NAND device
+> - * @block: block to mark bad
+> + * @pos: position of the block to mark bad
+>   *
+>   * Mark a block bad. This function is updating the BBT if available and
+>   * calls the low-level markbad hook (nand->ops->markbad()).
+> @@ -117,9 +117,9 @@ bool nanddev_isreserved(struct nand_device *nand, const struct nand_pos *pos)
+>  /**
+>   * nanddev_erase() - Erase a NAND portion
+>   * @nand: NAND device
+> - * @block: eraseblock to erase
+> + * @pos: position of the block to erase
+>   *
+> - * Erases @block if it's not bad.
+> + * Erases the block if it's not bad.
+>   *
+>   * Return: 0 in case of success, a negative error code otherwise.
+>   */
+> @@ -179,11 +179,11 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
+>  /**
+>   * nanddev_init() - Initialize a NAND device
+>   * @nand: NAND device
+> - * @memorg: NAND memory organization descriptor
+>   * @ops: NAND device operations
+> + * @owner: NAND device owner
+>   *
+> - * Initializes a NAND device object. Consistency checks are done on @memorg and
+> - * @ops. Also takes care of initializing the BBT.
+> + * Initializes a NAND device object. Consistency checks are done on @ops and
+> + * @nand->memorg. Also takes care of initializing the BBT.
+>   *
+>   * Return: 0 in case of success, a negative error code otherwise.
+>   */
 
 
 
