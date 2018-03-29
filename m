@@ -1,16 +1,15 @@
-Message-ID: <1522285649.8261.5.camel@mhfsdcap03>
-Subject: Re: [PATCH 0/2] Fix some function description mismatches
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Richard Weinberger <richard@nod.at>
-CC: <boris.brezillon@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date: Thu, 29 Mar 2018 09:07:29 +0800
-In-Reply-To: <24567439.icTe1ItB9o@blindfold>
-References: <1522228438-64034-1-git-send-email-xiaolei.li@mediatek.com>
- <24567439.icTe1ItB9o@blindfold>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <boris.brezillon@bootlin.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
+Subject: [PATCH v2 1/2] mtd: Fix some function description mismatches in
+ mtdcore.c
+Date: Thu, 29 Mar 2018 09:34:58 +0800
+Message-ID: <1522287299-12620-2-git-send-email-xiaolei.li@mediatek.com>
+In-Reply-To: <1522287299-12620-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1522287299-12620-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +19,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard
+In mtdcore.c, some function descriptions do not match function
+definitions. Just fix these mismatches.
 
-On Wed, 2018-03-28 at 14:06 +0200, Richard Weinberger wrote:
-> Am Mittwoch, 28. März 2018, 11:13:56 CEST schrieb Xiaolei Li:
-> > This patch fixes some function description mismatches.
-> 
-> Did you find these manually or in some automated way?
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ drivers/mtd/mtdcore.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-I found these by accident. Do you know whether there is a tool to do
-comments check? 
-
-Thanks.
-Xiaolei
-
-> 
-> Thanks,
-> //richard
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 28553c8..413ea9b 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -419,7 +419,7 @@ int mtd_wunit_to_pairing_info(struct mtd_info *mtd, int wunit,
+ EXPORT_SYMBOL_GPL(mtd_wunit_to_pairing_info);
+ 
+ /**
+- * mtd_wunit_to_pairing_info - get wunit from pairing information
++ * mtd_pairing_info_to_wunit - get wunit from pairing information
+  * @mtd: pointer to new MTD device info structure
+  * @info: pairing information struct
+  *
+@@ -1525,9 +1525,9 @@ int mtd_ooblayout_get_databytes(struct mtd_info *mtd, u8 *databuf,
+ EXPORT_SYMBOL_GPL(mtd_ooblayout_get_databytes);
+ 
+ /**
+- * mtd_ooblayout_get_eccbytes - set data bytes into the oob buffer
++ * mtd_ooblayout_set_databytes - set data bytes into the oob buffer
+  * @mtd: mtd info structure
+- * @eccbuf: source buffer to get data bytes from
++ * @databuf: source buffer to get data bytes from
+  * @oobbuf: OOB buffer
+  * @start: first ECC byte to set
+  * @nbytes: number of ECC bytes to set
+@@ -1559,7 +1559,7 @@ int mtd_ooblayout_count_freebytes(struct mtd_info *mtd)
+ EXPORT_SYMBOL_GPL(mtd_ooblayout_count_freebytes);
+ 
+ /**
+- * mtd_ooblayout_count_freebytes - count the number of ECC bytes in OOB
++ * mtd_ooblayout_count_eccbytes - count the number of ECC bytes in OOB
+  * @mtd: mtd info structure
+  *
+  * Works like mtd_ooblayout_count_bytes(), except it count ECC bytes.
+-- 
+1.9.1
