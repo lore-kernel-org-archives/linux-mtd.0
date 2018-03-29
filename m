@@ -1,23 +1,20 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1Wps-0002Dl-F5
- for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 12:39:22 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+From: Peter Rosin <peda@axentia.se>
+To: linux-kernel@vger.kernel.org
+Cc: Peter Rosin <peda@axentia.se>, Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.17
-Date: Thu, 29 Mar 2018 14:38:51 +0200
-Message-ID: <1867180.CYXbpziSQa@blindfold>
-In-Reply-To: <20180329143707.78d422c3@bbrezillon>
-References: <20180329095815.746d5f3f@bbrezillon>
- <20180329142541.35cfee66@xps13> <20180329143707.78d422c3@bbrezillon>
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Date: Thu, 29 Mar 2018 15:10:54 +0200
+Message-Id: <20180329131054.22506-1-peda@axentia.se>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 29. M=E4rz 2018, 14:37:07 CEST schrieb Boris Brezillon:
-> On Thu, 29 Mar 2018 14:25:41 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> > Hello,
-> >=20
-> > [...]
-> >=20
-> > > We (Marek, Richard and I) will try to take over the maintenance of the
-> > > spi-nor sub-subsystem, but it's likely to be a bit laggy for a few mo=
-re
-> > > weeks. =20
-> >=20
-> > Since I have been contributing/reviewing for a couple of months
-> > (essentially around the nand/ subdirectory), I would like to help you
-> > focus on 'other' MTD tasks by joining officially Boris in the NAND
-> > subsystem as co-maintainer and being CC'ed on these patches.
-> >=20
-> > I know I'm still pretty new to this community but it seems that even
-> > by being 4 official maintainers, some of you need more air, that I
-> > could partially bring.
->=20
-> It would be appreciated, indeed. Send patch to add yourself in
-> MAINTAINERS and we'll see if other MTD maintainers are okay with that.
+On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+flash accesses have a tendency to cause display disturbances. Add a
+module param to disable DMA from the NAND controller, since that fixes
+the display problem for me.
 
-=46ine by me. Please add my Ack.
+Signed-off-by: Peter Rosin <peda@axentia.se>
+---
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Thanks,
-//richard
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index b2f00b398490..2ff7a77c7b8e 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -129,6 +129,11 @@
+ #define DEFAULT_TIMEOUT_MS			1000
+ #define MIN_DMA_LEN				128
+ 
++static bool atmel_nand_avoid_dma __read_mostly;
++
++MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
++module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);
++
+ enum atmel_nand_rb_type {
+ 	ATMEL_NAND_NO_RB,
+ 	ATMEL_NAND_NATIVE_RB,
+@@ -1977,7 +1982,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+ 		return ret;
+ 	}
+ 
+-	if (nc->caps->has_dma) {
++	if (nc->caps->has_dma && !atmel_nand_avoid_dma) {
+ 		dma_cap_mask_t mask;
+ 
+ 		dma_cap_zero(mask);
+-- 
+2.11.0
