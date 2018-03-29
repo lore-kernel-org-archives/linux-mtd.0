@@ -1,22 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1dwq-0003Jd-PJ
- for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 20:15:02 +0000
-Date: Thu, 29 Mar 2018 22:14:48 +0200
+ id 1f1e2u-0006eQ-Uv
+ for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 20:21:18 +0000
+Date: Thu, 29 Mar 2018 22:21:04 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: jedec_probe: add Eon EN29LV400A IDs
-Message-ID: <20180329221448.203c4775@bbrezillon>
-In-Reply-To: <20180303223145.27903-1-linus.walleij@linaro.org>
-References: <20180303223145.27903-1-linus.walleij@linaro.org>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ computersforpeace@gmail.com, dwmw2@infradead.org, richard@nod.at,
+ boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: update maintainers for MTD and SPI NOR
+ subsystems
+Message-ID: <20180329222104.4727fb73@bbrezillon>
+In-Reply-To: <a4407023-0482-8a98-5bb2-9114ac8a8e2f@gmail.com>
+References: <20180315190438.4832-1-cyrille.pitchen@wedev4u.fr>
+ <c7722fa4-992e-717d-2b46-51f906a8978f@gmail.com>
+ <309adb80-217b-1328-e462-d4596231bb25@wedev4u.fr>
+ <a4407023-0482-8a98-5bb2-9114ac8a8e2f@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,79 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat,  3 Mar 2018 23:31:45 +0100
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On Wed, 21 Mar 2018 22:33:26 +0100
+Marek Vasut <marek.vasut@gmail.com> wrote:
 
-> This adds the JEDEC IDs for Eon EN29LV400A variants
-> EN29LV400AB and EN29LV400AT. This chip is found in the
-> D-Link DNS-313.
-> 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> On 03/18/2018 06:14 PM, Cyrille Pitchen wrote:
+> > Hi Marek, =20
+>=20
+> Hi,
+>=20
+> > Le 18/03/2018 =C3=A0 00:41, Marek Vasut a =C3=A9crit : =20
+> >> On 03/15/2018 08:04 PM, Cyrille Pitchen wrote: =20
+> >>> remove myself as MTD and SPI NOR maintainer.
+> >>>
+> >>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 
 Applied.
 
-Thanks,
+> >>
+> >> What happened ?
+> >> =20
+> >=20
+> > Nothing to worry. Since I was hired for a new job, I've been facing iss=
+ues
+> > to do spi-nor reviews in a reasonable delay. I have to admit that I took
+> > more and more time before replying to people and I suspect it won't go
+> > better soon.
+> >=20
+> > So I've talked about it with Boris hence he suggested that I remove my =
+name
+> > from MAINTAINERS to avoid confusion so people are not surprised or
+> > frustrated that I don't review their series on time.
+> >=20
+> > I really don't know yet whether I could go back again later to help
+> > reviewing mtd/spi-nor patches but for now I just have to admit that abo=
+ut mtd
+> > topcis, I'm off-line almost all the time :(
+> >=20
+> > Sorry guys and thanks for your concern, Marek! :) =20
+> That's kinda sad, I'd like to NAK this patch.
+
+Yes, it's sad. Anyway, thanks for clarifying the situation.
+
+Regards,
 
 Boris
 
-> ---
->  drivers/mtd/chips/jedec_probe.c | 32 ++++++++++++++++++++++++++++++++
->  1 file changed, 32 insertions(+)
-> 
-> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-> index b479bd81120b..6f7e7e1b3fe5 100644
-> --- a/drivers/mtd/chips/jedec_probe.c
-> +++ b/drivers/mtd/chips/jedec_probe.c
-> @@ -53,6 +53,8 @@
->  #define AT49BV32XT	0x00C9
->  
->  /* Eon */
-> +#define EN29LV400AT	0x22B9
-> +#define EN29LV400AB	0x22BA
->  #define EN29SL800BB	0x226B
->  #define EN29SL800BT	0x22EA
->  
-> @@ -641,6 +643,36 @@ static const struct amd_flash_info jedec_table[] = {
->  			ERASEINFO(0x10000,63),
->  			ERASEINFO(0x02000,8)
->  		}
-> +	}, {
-> +		.mfr_id		= CFI_MFR_EON,
-> +		.dev_id		= EN29LV400AT,
-> +		.name		= "Eon EN29LV400AT",
-> +		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-> +		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
-> +		.dev_size	= SIZE_512KiB,
-> +		.cmd_set	= P_ID_AMD_STD,
-> +		.nr_regions	= 4,
-> +		.regions	= {
-> +			ERASEINFO(0x10000,7),
-> +			ERASEINFO(0x08000,1),
-> +			ERASEINFO(0x02000,2),
-> +			ERASEINFO(0x04000,1),
-> +		}
-> +	}, {
-> +		.mfr_id		= CFI_MFR_EON,
-> +		.dev_id		= EN29LV400AB,
-> +		.name		= "Eon EN29LV400AB",
-> +		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-> +		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
-> +		.dev_size	= SIZE_512KiB,
-> +		.cmd_set	= P_ID_AMD_STD,
-> +		.nr_regions	= 4,
-> +		.regions	= {
-> +			ERASEINFO(0x04000,1),
-> +			ERASEINFO(0x02000,2),
-> +			ERASEINFO(0x08000,1),
-> +			ERASEINFO(0x10000,7),
-> +		}
->  	}, {
->  		.mfr_id		= CFI_MFR_EON,
->  		.dev_id		= EN29SL800BT,
-
-
-
--- 
+--=20
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
