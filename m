@@ -1,20 +1,22 @@
 Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Peter Rosin <peda@axentia.se>, <linux-kernel@vger.kernel.org>, Boris
- Brezillon <boris.brezillon@bootlin.com>
-CC: "wenyouya@gmail.com" <wenyouya@gmail.com>, Josh Wu
- <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>
+To: Nicolas Ferre <nicolas.ferre@microchip.com>,
+ linux-kernel@vger.kernel.org, Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: "wenyouya@gmail.com" <wenyouya@gmail.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 References: <20180329131054.22506-1-peda@axentia.se>
-From: Nicolas Ferre <nicolas.ferre@microchip.com>
-Message-ID: <30d8bd45-4e5d-3703-5f41-07f5fc70f09d@microchip.com>
-Date: Thu, 29 Mar 2018 16:20:38 +0200
+ <30d8bd45-4e5d-3703-5f41-07f5fc70f09d@microchip.com>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <12f7f95a-0e1d-14d0-b402-10d1172004b3@axentia.se>
+Date: Thu, 29 Mar 2018 16:23:32 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180329131054.22506-1-peda@axentia.se>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <30d8bd45-4e5d-3703-5f41-07f5fc70f09d@microchip.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,52 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/03/2018 at 15:10, Peter Rosin wrote:
-> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
-> flash accesses have a tendency to cause display disturbances. Add a
-> module param to disable DMA from the NAND controller, since that fixes
-> the display problem for me.
+On 2018-03-29 16:20, Nicolas Ferre wrote:
+> On 29/03/2018 at 15:10, Peter Rosin wrote:
+>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+>> flash accesses have a tendency to cause display disturbances. Add a
+>> module param to disable DMA from the NAND controller, since that fixes
+>> the display problem for me.
+>>
+>> Signed-off-by: Peter Rosin <peda@axentia.se>
+>> ---
+>>   drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>> index b2f00b398490..2ff7a77c7b8e 100644
+>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>> @@ -129,6 +129,11 @@
+>>   #define DEFAULT_TIMEOUT_MS			1000
+>>   #define MIN_DMA_LEN				128
+>>   
+>> +static bool atmel_nand_avoid_dma __read_mostly;
+>> +
+>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);
 > 
-> Signed-off-by: Peter Rosin <peda@axentia.se>
-> ---
->   drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
+> We had the DT parameter "atmel,nand-has-dma" for this purpose and it was 
+> associated with a module parameter as well (use_dma,).
 > 
-> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> index b2f00b398490..2ff7a77c7b8e 100644
-> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> @@ -129,6 +129,11 @@
->   #define DEFAULT_TIMEOUT_MS			1000
->   #define MIN_DMA_LEN				128
->   
-> +static bool atmel_nand_avoid_dma __read_mostly;
-> +
-> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
-> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);
+> Is it only managed by old DT binding?
 
-We had the DT parameter "atmel,nand-has-dma" for this purpose and it was 
-associated with a module parameter as well (use_dma,).
+Saw it, but I need the reverse. I.e. *not* using DMA.
 
-Is it only managed by old DT binding?
+And I didn't think this belonged in DT since in some sense it doesn't really
+describe HW so I went with a module parameter.
 
-Best regards,
-   Nicoals
-
->   enum atmel_nand_rb_type {
->   	ATMEL_NAND_NO_RB,
->   	ATMEL_NAND_NATIVE_RB,
-> @@ -1977,7 +1982,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
->   		return ret;
->   	}
->   
-> -	if (nc->caps->has_dma) {
-> +	if (nc->caps->has_dma && !atmel_nand_avoid_dma) {
->   		dma_cap_mask_t mask;
->   
->   		dma_cap_zero(mask);
-> 
-
-
--- 
-Nicolas Ferre
+Cheers,
+Peter
