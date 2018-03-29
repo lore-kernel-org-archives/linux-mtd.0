@@ -1,24 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1e3S-0006ub-MR
- for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 20:21:52 +0000
-Date: Thu, 29 Mar 2018 22:21:38 +0200
+Date: Thu, 29 Mar 2018 22:22:32 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>
-Subject: Re: [PATCH] mtd: update documentation of mtd_device_parse_register()
-Message-ID: <20180329222138.3612c5f1@bbrezillon>
-In-Reply-To: <11374740.7K3gF4UMb0@blindfold>
-References: <20180327133647.15110-1-zajec5@gmail.com>
- <11374740.7K3gF4UMb0@blindfold>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org"
+ <robh@kernel.org>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, Poonam Aggrwal
+ <poonam.aggrwal@nxp.com>, Leo Li <leoyang.li@nxp.com>, "oss@buserror.net"
+ <oss@buserror.net>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/2][v7] dt-bindings: mtd-physmap: Add endianness supports
+Message-ID: <20180329222232.4b8406b2@bbrezillon>
+In-Reply-To: <VI1PR0402MB3854A5A7E389D80CCEF0197997A30@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+References: <20180328054443.2829-1-prabhakar.kushwaha@nxp.com>
+ <20180328103001.6f4b16d9@bbrezillon>
+ <VI1PR0402MB3854A5A7E389D80CCEF0197997A30@VI1PR0402MB3854.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Mar 2018 21:18:14 +0200
-Richard Weinberger <richard@nod.at> wrote:
+On Wed, 28 Mar 2018 09:48:08 +0000
+Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
 
-> Am Dienstag, 27. M=C3=A4rz 2018, 15:36:47 CEST schrieb Rafa=C5=82 Mi=C5=
-=82ecki:
-> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >=20
-> > In the commit 2c77c57d22adb ("mtd: move code adding master MTD out of
-> > mtd_add_device_partitions()") behavior of mtd_device_parse_register()
-> > has very slightly changed. It's a pretty non-significant order change
-> > to match updated function behavior.
-> >=20
-> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Hi Boris,
+> 
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > Sent: Wednesday, March 28, 2018 2:00 PM
+> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> > Cc: linux-mtd@lists.infradead.org; devicetree@vger.kernel.org;
+> > mark.rutland@arm.com; robh@kernel.org; boris.brezillon@free-electrons.com;
+> > Poonam Aggrwal <poonam.aggrwal@nxp.com>; Leo Li <leoyang.li@nxp.com>;
+> > oss@buserror.net; computersforpeace@gmail.com; shawnguo@kernel.org;
+> > linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH 1/2][v7] dt-bindings: mtd-physmap: Add endianness
+> > supports
+> > 
+> > On Wed, 28 Mar 2018 11:14:43 +0530
+> > Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+> >   
+> > > Connection between flash and controller is not necessary to be always
+> > > of same type. It may varies from platform to platform.
+> > >
+> > > Adding endianness (optional) property to provide connection type
+> > > information.  
+> > 
+> > You forgot to adjust your commit message.
+> > 
+> > If you're okay, I'll replace your message by:
+> > 
+> > "
+> > Provides a way to specify the endianness to use when accessing a memory-
+> > mapped flash.
+> > "
+> >   
+> 
+> Thanks for catching this. Please adjust as you suggested.
 
 Applied.
 
@@ -48,54 +73,14 @@ Thanks,
 
 Boris
 
-> > ---
-> >  drivers/mtd/mtdcore.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index f25d65ea7149..20d5262c5b5c 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -673,14 +673,13 @@ static void mtd_set_dev_defaults(struct mtd_info =
-*mtd)
-> >   * 'parse_mtd_partitions()') and MTD device and partitions registering=
-. It
-> >   * basically follows the most common pattern found in many MTD drivers:
-> >   *
-> > - * * It first tries to probe partitions on MTD device @mtd using parse=
-rs
-> > + * * If the MTD_PARTITIONED_MASTER option is set, then the device as a=
- whole is
-> > + *   registered first.
-> > + * * Then It tries to probe partitions on MTD device @mtd using parsers
-> >   *   specified in @types (if @types is %NULL, then the default list of=
- parsers
-> >   *   is used, see 'parse_mtd_partitions()' for more information). If n=
-one are
-> >   *   found this functions tries to fallback to information specified in
-> >   *   @parts/@nr_parts.
-> > - * * If any partitioning info was found, this function registers the f=
-ound
-> > - *   partitions. If the MTD_PARTITIONED_MASTER option is set, then the=
- device
-> > - *   as a whole is registered first.
-> >   * * If no partitions were found this function just registers the MTD =
-device
-> >   *   @mtd and exits.
-> >   *
-> >  =20
->=20
-> Thanks for taking care of docs. :-)
->=20
-> Reviewed-by: Richard Weinberger <richard@nod.at>
->=20
-> Thanks,
-> //richard
->=20
+> 
+> --prabhakar
+> 
+> 
 
 
 
---=20
+-- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
