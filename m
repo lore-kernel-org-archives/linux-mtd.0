@@ -1,21 +1,16 @@
-Received: from mail.rptsys.com ([192.119.205.245])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f1fzd-0001oE-Fs
- for linux-mtd@lists.infradead.org; Thu, 29 Mar 2018 22:26:03 +0000
-Message-ID: <5ABD67EC.6060307@raptorengineering.com>
-Date: Thu, 29 Mar 2018 17:25:48 -0500
-From: Timothy Pearson <tpearson@raptorengineering.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f1pHD-0002qj-AY
+ for linux-mtd@lists.infradead.org; Fri, 30 Mar 2018 08:20:49 +0000
+Date: Fri, 30 Mar 2018 10:20:34 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Marek Vasut <marex@denx.de>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [GIT PULL v2] mtd: spi-nor: Changes for 4.17
+Message-ID: <20180330102034.7db0a4e4@bbrezillon>
 MIME-Version: 1.0
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-CC: linux-mtd@lists.infradead.org, Stewart Smith <stewart@linux.vnet.ibm.com>
-Subject: Re: [PATCH] mtd/powernv_flash: Enable partition support
-References: <746862757.61253.1522008301855.JavaMail.zimbra@raptorengineeringinc.com>
- <CACna6rwWT1CNkov7PJiCCDYGciEa_assaj0MO3nkJNL2h_sJOA@mail.gmail.com>
- <5ABD5E1B.9050500@raptorengineering.com>
- <CACna6rxHmPFJqGdvBHt62R9YKVAtajj4S2e=+B6t+EOr7bpApA@mail.gmail.com>
-In-Reply-To: <CACna6rxHmPFJqGdvBHt62R9YKVAtajj4S2e=+B6t+EOr7bpApA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/29/2018 05:11 PM, Rafa=C5=82 Mi=C5=82ecki wrote:
-> On 29 March 2018 at 23:43, Timothy Pearson
-> <tpearson@raptorengineering.com> wrote:
->> Will resend with Signed-off-by.
->>
->> Before this patch, the driver was not picking up the OF-provided
->> partition list.  It seemed specifically designed to register only one
->> large partition covering the entire PNOR; mtd_device_register() does n=
-ot
->> run parsing of any type AFAIK.
->=20
-> Please don't top post.
+Hello,
 
-Whoops!  I have to interface with other entities that need top posting
-and slipped up here.  Sorry about that!
+Nothing new compared to the v1 expect I added my SoB on Fabio's patch
+because I amended my own patch to fix the subject prefix and became
+commiter of the 2 other patches during the process.
 
-> This is how mtd_device_register is defined:
-> #define mtd_device_register(master, parts, nr_parts) \
->         mtd_device_parse_register(master, NULL, NULL, parts, nr_parts)
->=20
-> So your patch seems to be replacing
-> mtd_device_parse_register(&data->mtd, NULL, NULL, NULL, 0);
-> with
-> mtd_device_parse_register(&data->mtd, part_probes, NULL, NULL, 0);
->=20
-> I still claim that all it does is replacing list of default parsers:
-> "cmdlinepart", "ofpart", NULL
-> with a custom list:
-> "ofpart", NULL
->=20
-> I don't think you need that. Probably the only change you really need i=
-s to add:
-> mtd_set_of_node(&data->mtd, dev->of_node);
+Regards,
 
-It's possible; I'm not as familiar with the MTD subsystem as I should
-be.  That being said, in this application there is no chance of
-partition information being passed via kernel command line, so the right
-thing to do from a design perspective is lock the parser to ofpart only.
+Boris
 
-If you need me to remove that part of the patch I will do so.
+The following changes since commit 7928b2cbe55b2a410a0f5c1f154610059c57b1b2:
 
-Thanks!
+  Linux 4.16-rc1 (2018-02-11 15:04:29 -0800)
 
---=20
-Timothy Pearson
-Raptor Engineering
-+1 (415) 727-8645 (direct line)
-+1 (512) 690-0200 (switchboard)
-https://www.raptorengineering.com
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/spi-nor/for-4.17
+
+for you to fetch changes up to e8de85d5a107352ff428f735b0afc8133bcbc3e5:
+
+  dt-bindings: fsl-quadspi: Add the example of two SPI NOR (2018-03-30 10:05:08 +0200)
+
+----------------------------------------------------------------
+* Make fsl-quaspi assign different names to MTD devices connected
+  to the same QSPI controller
+* Remove an unneeded driver.bus assigned in the fsl-qspi driver
+
+----------------------------------------------------------------
+Boris Brezillon (1):
+      mtd: fsl-quadspi: Remove unneeded driver.bus assignment
+
+Fabio Estevam (2):
+      mtd: fsl-quadspi: Distinguish the mtd device names
+      dt-bindings: fsl-quadspi: Add the example of two SPI NOR
+
+ Documentation/devicetree/bindings/mtd/fsl-quadspi.txt | 24 ++++++++++++++++++++++++
+ drivers/mtd/spi-nor/fsl-quadspi.c                     | 19 ++++++++++++++++++-
+ 2 files changed, 42 insertions(+), 1 deletion(-)
