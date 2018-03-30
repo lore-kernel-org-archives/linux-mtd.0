@@ -1,19 +1,26 @@
-From: Sekhar Nori <nsekhar@ti.com>
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+From: Peter Rosin <peda@axentia.se>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>,
+Cc: linux-kernel@vger.kernel.org, Josh Wu <rainyfeeling@outlook.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Sekhar Nori <nsekhar@ti.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>,
- David Lechner <david@lechnology.com>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] mtd: nand: davinci: don't acquire and enable clock
-Date: Fri, 30 Mar 2018 20:00:51 +0530
-Message-ID: <20180330143051.26423-1-nsekhar@ti.com>
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+Message-ID: <68b5f229-638f-e589-36e0-921eb9101848@axentia.se>
+Date: Fri, 30 Mar 2018 23:43:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,107 +30,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND itself is an asynchronous interface, it does not have any
-clock input. DaVinci NAND driver acquires clock for AEMIF
-(asynchronous external memory interface) which is an on-chip
-IP to which NAND is connected.
+On 2018-03-29 16:27, Peter Rosin wrote:
+> On 2018-03-29 15:44, Boris Brezillon wrote:
+>> On Thu, 29 Mar 2018 15:37:43 +0200
+>> Peter Rosin <peda@axentia.se> wrote:
+>>
+>>> On 2018-03-29 15:33, Boris Brezillon wrote:
+>>>> On Thu, 29 Mar 2018 15:10:54 +0200
+>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>   
+>>>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+>>>>> flash accesses have a tendency to cause display disturbances. Add a
+>>>>> module param to disable DMA from the NAND controller, since that fixes
+>>>>> the display problem for me.
+>>>>>
+>>>>> Signed-off-by: Peter Rosin <peda@axentia.se>
+>>>>> ---
+>>>>>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+>>>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>> index b2f00b398490..2ff7a77c7b8e 100644
+>>>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>> @@ -129,6 +129,11 @@
+>>>>>  #define DEFAULT_TIMEOUT_MS			1000
+>>>>>  #define MIN_DMA_LEN				128
+>>>>>  
+>>>>> +static bool atmel_nand_avoid_dma __read_mostly;
+>>>>> +
+>>>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+>>>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);  
+>>>>
+>>>> I'm not a big fan of those driver specific cmdline parameters. Can't we
+>>>> instead give an higher priority to HLCDC master using the bus matrix?  
+>>>
+>>> I don't know if it will be enough, but we sure can try. However, I have
+>>> no idea how to do that. I will happily test stuff though...
+>>
+>> There's no interface to configure that from Linux, but you can try to
+>> tweak it with devmem and if that does the trick, maybe we can expose a
+>> way to configure that from Linux. For more details, see the "Bus Matrix
+>> (MATRIX)" section in Atmel datasheets.
+> 
+> I don't seem to succeed in changing the registers I think I need to change.
+> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
+> it. But when I try to write to "Priority Registers B For Slaves" it doesn't
+> take, regardless of write protect mode.
+> 
+> Can the relevant bits only be written when the HLCDC is inactive or
+> something?
 
-The same clock is also enabled in AEMIF driver (either present
-drivers/memory or from machine code for some older platforms).
-AEMIF timing must be initialized before NAND can be accessed.
-This ensures that AEMIF clock is enabled too.
+Here is someone else with what seems like very similar problems[1], however
+also with USB disturbing the display. I can't test that (easily) since a
+mux in front of the USB port was unfortunately wired incorrectly in this
+first attempt. And USB disturbing the display is not a showstopper around
+here, since USB will only be used for debugging etc in my case.
 
-Remove the superfluous clock acquisition and enable in DaVinci
-NAND driver.
+[1] https://www.avrfreaks.net/forum/sama5d31-ahb-bus-matrix-lcd
 
-Tested on K2L, K2HK, K2E, DA850 EVM, DA850 LCDK in device-tree
-boot and DM644x EVM in legacy boot.
-
-Signed-off-by: Sekhar Nori <nsekhar@ti.com>
----
-Hi Boris,
-
-If/when this patch gets accepted, it will nice to put this on
-an immutable branch others can merge. There is potential cleanup
-in drivers/clock and in DaVinci machine code that will depend
-on this.
-
-Thanks,
-Sekhar
-
- drivers/mtd/nand/raw/davinci_nand.c | 25 +------------------------
- 1 file changed, 1 insertion(+), 24 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 0f09518d980f..7255a0d94374 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -27,7 +27,6 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/err.h>
--#include <linux/clk.h>
- #include <linux/io.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
-@@ -55,7 +54,6 @@ struct davinci_nand_info {
- 	struct nand_chip	chip;
- 
- 	struct device		*dev;
--	struct clk		*clk;
- 
- 	bool			is_readmode;
- 
-@@ -703,22 +701,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	/* Use board-specific ECC config */
- 	info->chip.ecc.mode	= pdata->ecc_mode;
- 
--	ret = -EINVAL;
--
--	info->clk = devm_clk_get(&pdev->dev, "aemif");
--	if (IS_ERR(info->clk)) {
--		ret = PTR_ERR(info->clk);
--		dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
--		return ret;
--	}
--
--	ret = clk_prepare_enable(info->clk);
--	if (ret < 0) {
--		dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
--			ret);
--		goto err_clk_enable;
--	}
--
- 	spin_lock_irq(&davinci_nand_lock);
- 
- 	/* put CSxNAND into NAND mode */
-@@ -732,7 +714,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	ret = nand_scan_ident(mtd, pdata->mask_chipsel ? 2 : 1, NULL);
- 	if (ret < 0) {
- 		dev_dbg(&pdev->dev, "no NAND chip(s) found\n");
--		goto err;
-+		return ret;
- 	}
- 
- 	switch (info->chip.ecc.mode) {
-@@ -838,9 +820,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	nand_cleanup(&info->chip);
- 
- err:
--	clk_disable_unprepare(info->clk);
--
--err_clk_enable:
- 	spin_lock_irq(&davinci_nand_lock);
- 	if (info->chip.ecc.mode == NAND_ECC_HW_SYNDROME)
- 		ecc4_busy = false;
-@@ -859,8 +838,6 @@ static int nand_davinci_remove(struct platform_device *pdev)
- 
- 	nand_release(nand_to_mtd(&info->chip));
- 
--	clk_disable_unprepare(info->clk);
--
- 	return 0;
- }
- 
--- 
-2.16.2
+Cheers,
+Peter
