@@ -1,8 +1,8 @@
 Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f30RY-0004Zp-Vs
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:28:29 +0000
+ id 1f30RY-0004Ui-Vr
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:28:31 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -26,9 +26,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Subject: [PATCH 10/15] ata: pata_pxa: remove the dmaengine compat need
-Date: Mon,  2 Apr 2018 16:26:51 +0200
-Message-Id: <20180402142656.26815-11-robert.jarzmik@free.fr>
+Subject: [PATCH 08/15] ASoC: pxa: remove the dmaengine compat need
+Date: Mon,  2 Apr 2018 16:26:49 +0200
+Message-Id: <20180402142656.26815-9-robert.jarzmik@free.fr>
 In-Reply-To: <20180402142656.26815-1-robert.jarzmik@free.fr>
 References: <20180402142656.26815-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -49,50 +49,133 @@ generic function dma_request_slave_channel().
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/ata/pata_pxa.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ sound/arm/pxa2xx-ac97.c     | 14 ++------------
+ sound/arm/pxa2xx-pcm-lib.c  |  6 +++---
+ sound/soc/pxa/pxa2xx-ac97.c | 32 +++++---------------------------
+ 3 files changed, 10 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/ata/pata_pxa.c b/drivers/ata/pata_pxa.c
-index f6c46e9a4dc0..e8b6a2e464c9 100644
---- a/drivers/ata/pata_pxa.c
-+++ b/drivers/ata/pata_pxa.c
-@@ -25,7 +25,6 @@
- #include <linux/libata.h>
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
--#include <linux/dma/pxa-dma.h>
- #include <linux/gpio.h>
- #include <linux/slab.h>
- #include <linux/completion.h>
-@@ -180,8 +179,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	struct resource *irq_res;
- 	struct pata_pxa_pdata *pdata = dev_get_platdata(&pdev->dev);
- 	struct dma_slave_config	config;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- 	int ret = 0;
+diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
+index 4bc244c40f80..236a63cdaf9f 100644
+--- a/sound/arm/pxa2xx-ac97.c
++++ b/sound/arm/pxa2xx-ac97.c
+@@ -63,28 +63,18 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+ 	.reset	= pxa2xx_ac97_legacy_reset,
+ };
  
- 	/*
-@@ -278,10 +275,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
+-static struct pxad_param pxa2xx_ac97_pcm_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 12,
+-};
+-
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_out",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_out_req,
+-};
+-
+-static struct pxad_param pxa2xx_ac97_pcm_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 11,
+ };
  
- 	ap->private_data = data;
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_in",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_in_req,
+ };
  
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	param.prio = PXAD_PRIO_LOWEST;
--	param.drcmr = pdata->dma_dreq;
- 	memset(&config, 0, sizeof(config));
- 	config.src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-@@ -294,8 +287,7 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	 * Request the DMA channel
- 	 */
- 	data->dma_chan =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &pdev->dev, "data");
-+		dma_request_slave_channel(&pdev->dev, "data");
- 	if (!data->dma_chan)
- 		return -EBUSY;
- 	ret = dmaengine_slave_config(data->dma_chan, &config);
+ static struct snd_pcm *pxa2xx_ac97_pcm;
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index e8da3b8ee721..cbfaba60b79a 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -125,9 +125,9 @@ int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return snd_dmaengine_pcm_open_request_chan(substream,
+-					pxad_filter_fn,
+-					dma_params->filter_data);
++	return snd_dmaengine_pcm_open(
++		substream, dma_request_slave_channel(rtd->platform->dev,
++						     dma_params->chan_name));
+ }
+ EXPORT_SYMBOL(__pxa2xx_pcm_open);
+ 
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 803818aabee9..1b41c0f2a8fb 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -68,61 +68,39 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+ 	.reset	= pxa2xx_ac97_cold_reset,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_stereo_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 11,
+-};
+-
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_in",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_stereo_in_req,
+-};
+-
+-static struct pxad_param pxa2xx_ac97_pcm_stereo_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 12,
+ };
+ 
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_out",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_stereo_out_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mono_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 10,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
+ 	.addr		= __PREG(MODR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mono_out",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_out_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mono_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 9,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
+ 	.addr		= __PREG(MODR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mono_in",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_in_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mic_mono_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 8,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
+ 	.addr		= __PREG(MCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mic_mono",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
+ };
+ 
+ static int pxa2xx_ac97_hifi_startup(struct snd_pcm_substream *substream,
 -- 
 2.11.0
