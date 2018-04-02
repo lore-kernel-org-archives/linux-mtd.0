@@ -1,23 +1,34 @@
-Date: Mon, 2 Apr 2018 14:22:49 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Peter Rosin <peda@axentia.se>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Josh Wu
- <rainyfeeling@outlook.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-Message-ID: <20180402142249.7e076a64@bbrezillon>
-In-Reply-To: <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f30Qn-00046w-5W
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:27:35 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Subject: [PATCH 00/15] ARM: pxa: switch to DMA slave maps
+Date: Mon,  2 Apr 2018 16:26:41 +0200
+Message-Id: <20180402142656.26815-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,69 +38,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 Mar 2018 16:27:12 +0200
-Peter Rosin <peda@axentia.se> wrote:
+Hi,
 
-> On 2018-03-29 15:44, Boris Brezillon wrote:
-> > On Thu, 29 Mar 2018 15:37:43 +0200
-> > Peter Rosin <peda@axentia.se> wrote:
-> >   
-> >> On 2018-03-29 15:33, Boris Brezillon wrote:  
-> >>> On Thu, 29 Mar 2018 15:10:54 +0200
-> >>> Peter Rosin <peda@axentia.se> wrote:
-> >>>     
-> >>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
-> >>>> flash accesses have a tendency to cause display disturbances. Add a
-> >>>> module param to disable DMA from the NAND controller, since that fixes
-> >>>> the display problem for me.
-> >>>>
-> >>>> Signed-off-by: Peter Rosin <peda@axentia.se>
-> >>>> ---
-> >>>>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
-> >>>>  1 file changed, 6 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> >>>> index b2f00b398490..2ff7a77c7b8e 100644
-> >>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-> >>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> >>>> @@ -129,6 +129,11 @@
-> >>>>  #define DEFAULT_TIMEOUT_MS			1000
-> >>>>  #define MIN_DMA_LEN				128
-> >>>>  
-> >>>> +static bool atmel_nand_avoid_dma __read_mostly;
-> >>>> +
-> >>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
-> >>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);    
-> >>>
-> >>> I'm not a big fan of those driver specific cmdline parameters. Can't we
-> >>> instead give an higher priority to HLCDC master using the bus matrix?    
-> >>
-> >> I don't know if it will be enough, but we sure can try. However, I have
-> >> no idea how to do that. I will happily test stuff though...  
-> > 
-> > There's no interface to configure that from Linux, but you can try to
-> > tweak it with devmem and if that does the trick, maybe we can expose a
-> > way to configure that from Linux. For more details, see the "Bus Matrix
-> > (MATRIX)" section in Atmel datasheets.  
-> 
-> I don't seem to succeed in changing the registers I think I need to change.
-> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
-> it.
+This serie is aimed at removing the dmaengine slave compat use, and transfer
+knowledge of the DMA requestors into architecture code.
 
-You mean 0x4D415400, right? ("MAT0" != 0x4D415400).
+This was discussed/advised by Arnd a couple of years back, it's almost time.
 
-> But when I try to write to "Priority Registers B For Slaves" it doesn't
-> take, regardless of write protect mode.
+The serie is divided in 3 phasees :
+ - phase 1 : patch 1/15 and patch 2/15
+   => this is the preparation work
+ - phase 2 : patches 3/15 .. 10/15
+   => this is the switch of all the drivers
+   => this one will require either an Ack of the maintainers or be taken by them
+      once phase 1 is merged
+ - phase 3 : patches 11/15
+   => this is the last part, cleanup and removal of export of the DMA filter
+      function
 
-Did you check MATRIX_WPSR after writing to MATRIX_PRXSY?
+As this looks like a patch bomb, each maintainer expressing for his tree either
+an Ack or "I want to take through my tree" will be spared in the next iterations
+of this serie.
 
-> 
-> Can the relevant bits only be written when the HLCDC is inactive or
-> something?
+Several of these changes have been tested on actual hardware, including :
+ - pxamci
+ - pxa_camera
+ - smc*
+ - ASoC and SSP
 
-I don't know, but maybe Nicolas does.
+Happy review.
+
+Robert Jarzmik (15):
+  dmaengine: pxa: use a dma slave map
+  ARM: pxa: add dma slave map
+  mmc: pxamci: remove the dmaengine compat need
+  media: pxa_camera: remove the dmaengine compat need
+  mtd: nand: pxa3xx: remove the dmaengine compat need
+  net: smc911x: remove the dmaengine compat need
+  net: smc91x: remove the dmaengine compat need
+  ASoC: pxa: remove the dmaengine compat need
+  net: irda: pxaficp_ir: remove the dmaengine compat need
+  ata: pata_pxa: remove the dmaengine compat need
+  dmaengine: pxa: document pxad_param
+  dmaengine: pxa: make the filter function internal
+  ARM: pxa: remove the DMA IO resources
+  ARM: pxa: change SSP devices allocation
+  ARM: pxa: change SSP DMA channels allocation
+
+ arch/arm/mach-pxa/devices.c               | 269 ++++++++++++++----------------
+ arch/arm/mach-pxa/devices.h               |  14 +-
+ arch/arm/mach-pxa/include/mach/audio.h    |  12 ++
+ arch/arm/mach-pxa/pxa25x.c                |   4 +-
+ arch/arm/mach-pxa/pxa27x.c                |   4 +-
+ arch/arm/mach-pxa/pxa3xx.c                |   5 +-
+ arch/arm/plat-pxa/ssp.c                   |  50 +-----
+ drivers/ata/pata_pxa.c                    |  10 +-
+ drivers/dma/pxa_dma.c                     |  13 +-
+ drivers/media/platform/pxa_camera.c       |  22 +--
+ drivers/mmc/host/pxamci.c                 |  29 +---
+ drivers/mtd/nand/pxa3xx_nand.c            |  10 +-
+ drivers/net/ethernet/smsc/smc911x.c       |  16 +-
+ drivers/net/ethernet/smsc/smc91x.c        |  12 +-
+ drivers/net/ethernet/smsc/smc91x.h        |   1 -
+ drivers/staging/irda/drivers/pxaficp_ir.c |  14 +-
+ include/linux/dma/pxa-dma.h               |  20 +--
+ include/linux/platform_data/mmp_dma.h     |   4 +
+ include/linux/pxa2xx_ssp.h                |   4 +-
+ sound/arm/pxa2xx-ac97.c                   |  14 +-
+ sound/arm/pxa2xx-pcm-lib.c                |   6 +-
+ sound/soc/pxa/pxa-ssp.c                   |   5 +-
+ sound/soc/pxa/pxa2xx-ac97.c               |  32 +---
+ 23 files changed, 196 insertions(+), 374 deletions(-)
 
 -- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.11.0
