@@ -1,13 +1,20 @@
-Date: Mon, 2 Apr 2018 14:15:05 +0200
+Date: Mon, 2 Apr 2018 14:22:49 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: <richard@nod.at>, linux-mediatek@lists.infradead.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
-Message-ID: <20180402141505.33051c14@bbrezillon>
-In-Reply-To: <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
-References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
- <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
+To: Peter Rosin <peda@axentia.se>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Josh Wu
+ <rainyfeeling@outlook.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Richard
+ Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180402142249.7e076a64@bbrezillon>
+In-Reply-To: <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,75 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Xiaolei,
+On Thu, 29 Mar 2018 16:27:12 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
-On Mon, 2 Apr 2018 16:20:10 +0800
-Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> On 2018-03-29 15:44, Boris Brezillon wrote:
+> > On Thu, 29 Mar 2018 15:37:43 +0200
+> > Peter Rosin <peda@axentia.se> wrote:
+> >   
+> >> On 2018-03-29 15:33, Boris Brezillon wrote:  
+> >>> On Thu, 29 Mar 2018 15:10:54 +0200
+> >>> Peter Rosin <peda@axentia.se> wrote:
+> >>>     
+> >>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+> >>>> flash accesses have a tendency to cause display disturbances. Add a
+> >>>> module param to disable DMA from the NAND controller, since that fixes
+> >>>> the display problem for me.
+> >>>>
+> >>>> Signed-off-by: Peter Rosin <peda@axentia.se>
+> >>>> ---
+> >>>>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+> >>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> >>>> index b2f00b398490..2ff7a77c7b8e 100644
+> >>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> >>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> >>>> @@ -129,6 +129,11 @@
+> >>>>  #define DEFAULT_TIMEOUT_MS			1000
+> >>>>  #define MIN_DMA_LEN				128
+> >>>>  
+> >>>> +static bool atmel_nand_avoid_dma __read_mostly;
+> >>>> +
+> >>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+> >>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);    
+> >>>
+> >>> I'm not a big fan of those driver specific cmdline parameters. Can't we
+> >>> instead give an higher priority to HLCDC master using the bus matrix?    
+> >>
+> >> I don't know if it will be enough, but we sure can try. However, I have
+> >> no idea how to do that. I will happily test stuff though...  
+> > 
+> > There's no interface to configure that from Linux, but you can try to
+> > tweak it with devmem and if that does the trick, maybe we can expose a
+> > way to configure that from Linux. For more details, see the "Bus Matrix
+> > (MATRIX)" section in Atmel datasheets.  
+> 
+> I don't seem to succeed in changing the registers I think I need to change.
+> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
+> it.
 
-> Expose mtd OOB available size by sysfs file. Then users can get available
-> OOB size by accessing /sys/class/mtd/mtdX/oobavail.
+You mean 0x4D415400, right? ("MAT0" != 0x4D415400).
 
-May I ask why you need to expose that? I'm not against exposing new
-things through sysfs, but since this is part of the ABI, I'd like to be
-sure we actually need it.
+> But when I try to write to "Priority Registers B For Slaves" it doesn't
+> take, regardless of write protect mode.
 
-Regards,
-
-Boris
+Did you check MATRIX_WPSR after writing to MATRIX_PRXSY?
 
 > 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> ---
->  Documentation/ABI/testing/sysfs-class-mtd |  8 ++++++++
->  drivers/mtd/mtdcore.c                     | 10 ++++++++++
->  2 files changed, 18 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-> index f34e5923..3bc7c0a 100644
-> --- a/Documentation/ABI/testing/sysfs-class-mtd
-> +++ b/Documentation/ABI/testing/sysfs-class-mtd
-> @@ -232,3 +232,11 @@ Description:
->  		of the parent (another partition or a flash device) in bytes.
->  		This attribute is absent on flash devices, so it can be used
->  		to distinguish them from partitions.
-> +
-> +What:		/sys/class/mtd/mtdX/oobavail
-> +Date:		April 2018
-> +KernelVersion:	4.16
-> +Contact:	linux-mtd@lists.infradead.org
-> +Description:
-> +		Number of bytes available for a client to place data into
-> +		the out of band area.
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 807d17d..99d9352 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -210,6 +210,15 @@ static ssize_t mtd_oobsize_show(struct device *dev,
->  }
->  static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
->  
-> +static ssize_t mtd_oobavail_show(struct device *dev,
-> +				 struct device_attribute *attr, char *buf)
-> +{
-> +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobavail);
-> +}
-> +static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
-> +
->  static ssize_t mtd_numeraseregions_show(struct device *dev,
->  		struct device_attribute *attr, char *buf)
->  {
-> @@ -327,6 +336,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
->  	&dev_attr_writesize.attr,
->  	&dev_attr_subpagesize.attr,
->  	&dev_attr_oobsize.attr,
-> +	&dev_attr_oobavail.attr,
->  	&dev_attr_numeraseregions.attr,
->  	&dev_attr_name.attr,
->  	&dev_attr_ecc_strength.attr,
+> Can the relevant bits only be written when the HLCDC is inactive or
+> something?
 
-
+I don't know, but maybe Nicolas does.
 
 -- 
 Boris Brezillon, Bootlin (formerly Free Electrons)
