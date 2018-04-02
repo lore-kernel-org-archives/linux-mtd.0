@@ -1,8 +1,8 @@
 Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f30R9-0004E3-LN
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:27:57 +0000
+ id 1f30RM-0004Td-Q7
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:28:12 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -20,16 +20,18 @@ To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>
+ Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
+ Robert Jarzmik <robert.jarzmik@renault.com>,
+ "yuval.shaia@oracle.com" <yuval.shaia@oracle.com>,
+ Arvind Yadav <arvind.yadav.cs@gmail.com>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
- Robert Jarzmik <robert.jarzmik@renault.com>
-Subject: [PATCH 05/15] mtd: nand: pxa3xx: remove the dmaengine compat need
-Date: Mon,  2 Apr 2018 16:26:46 +0200
-Message-Id: <20180402142656.26815-6-robert.jarzmik@free.fr>
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Subject: [PATCH 07/15] net: smc91x: remove the dmaengine compat need
+Date: Mon,  2 Apr 2018 16:26:48 +0200
+Message-Id: <20180402142656.26815-8-robert.jarzmik@free.fr>
 In-Reply-To: <20180402142656.26815-1-robert.jarzmik@free.fr>
 References: <20180402142656.26815-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -52,36 +54,45 @@ generic function dma_request_slave_channel().
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/mtd/nand/pxa3xx_nand.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/net/ethernet/smsc/smc91x.c | 12 +-----------
+ drivers/net/ethernet/smsc/smc91x.h |  1 -
+ 2 files changed, 1 insertion(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index d1979c7dbe7e..4a56a0aef5b1 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1518,8 +1518,6 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- {
- 	struct platform_device *pdev = info->pdev;
- 	struct dma_slave_config	config;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- 	int ret;
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 080428762858..4c600f430f6d 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2018,18 +2018,8 @@ static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
+ 	lp->cfg.flags |= SMC91X_USE_DMA;
+ #  endif
+ 	if (lp->cfg.flags & SMC91X_USE_DMA) {
+-		dma_cap_mask_t mask;
+-		struct pxad_param param;
+-
+-		dma_cap_zero(mask);
+-		dma_cap_set(DMA_SLAVE, mask);
+-		param.prio = PXAD_PRIO_LOWEST;
+-		param.drcmr = -1UL;
+-
+ 		lp->dma_chan =
+-			dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-							 &param, &dev->dev,
+-							 "data");
++			dma_request_slave_channel(lp->device, "data");
+ 	}
+ #endif
  
- 	info->data_buff = kmalloc(info->buf_size, GFP_KERNEL);
-@@ -1533,13 +1531,7 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- 		return ret;
+diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
+index 08b17adf0a65..e849b6c2fa60 100644
+--- a/drivers/net/ethernet/smsc/smc91x.h
++++ b/drivers/net/ethernet/smsc/smc91x.h
+@@ -327,7 +327,6 @@ struct smc_local {
+  * as RX which can overrun memory and lose packets.
+  */
+ #include <linux/dma-mapping.h>
+-#include <linux/dma/pxa-dma.h>
  
- 	sg_init_one(&info->sg, info->data_buff, info->buf_size);
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	param.prio = PXAD_PRIO_LOWEST;
--	param.drcmr = info->drcmr_dat;
--	info->dma_chan = dma_request_slave_channel_compat(mask, pxad_filter_fn,
--							  &param, &pdev->dev,
--							  "data");
-+	info->dma_chan = dma_request_slave_channel(&pdev->dev, "data");
- 	if (!info->dma_chan) {
- 		dev_err(&pdev->dev, "unable to request data dma channel\n");
- 		return -ENODEV;
+ #ifdef SMC_insl
+ #undef SMC_insl
 -- 
 2.11.0
