@@ -1,39 +1,27 @@
-Date: Tue, 3 Apr 2018 00:35:13 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: kbuild-all@01.org, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Josh Wu <rainyfeeling@outlook.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Thomas Gleixner <tglx@linutronix.de>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 12/15] dmaengine: pxa: make the filter function internal
-Message-ID: <201804030025.FmWPyArN%fengguang.wu@intel.com>
-References: <20180402142656.26815-13-robert.jarzmik@free.fr>
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+ <20180402142249.7e076a64@bbrezillon>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
+Date: Mon, 2 Apr 2018 19:59:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180402142656.26815-13-robert.jarzmik@free.fr>
+In-Reply-To: <20180402142249.7e076a64@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,123 +31,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Robert,
+On 2018-04-02 14:22, Boris Brezillon wrote:
+> On Thu, 29 Mar 2018 16:27:12 +0200
+> Peter Rosin <peda@axentia.se> wrote:
+> 
+>> On 2018-03-29 15:44, Boris Brezillon wrote:
+>>> On Thu, 29 Mar 2018 15:37:43 +0200
+>>> Peter Rosin <peda@axentia.se> wrote:
+>>>   
+>>>> On 2018-03-29 15:33, Boris Brezillon wrote:  
+>>>>> On Thu, 29 Mar 2018 15:10:54 +0200
+>>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>>     
+>>>>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+>>>>>> flash accesses have a tendency to cause display disturbances. Add a
+>>>>>> module param to disable DMA from the NAND controller, since that fixes
+>>>>>> the display problem for me.
+>>>>>>
+>>>>>> Signed-off-by: Peter Rosin <peda@axentia.se>
+>>>>>> ---
+>>>>>>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+>>>>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>> index b2f00b398490..2ff7a77c7b8e 100644
+>>>>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>> @@ -129,6 +129,11 @@
+>>>>>>  #define DEFAULT_TIMEOUT_MS			1000
+>>>>>>  #define MIN_DMA_LEN				128
+>>>>>>  
+>>>>>> +static bool atmel_nand_avoid_dma __read_mostly;
+>>>>>> +
+>>>>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+>>>>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);    
+>>>>>
+>>>>> I'm not a big fan of those driver specific cmdline parameters. Can't we
+>>>>> instead give an higher priority to HLCDC master using the bus matrix?    
+>>>>
+>>>> I don't know if it will be enough, but we sure can try. However, I have
+>>>> no idea how to do that. I will happily test stuff though...  
+>>>
+>>> There's no interface to configure that from Linux, but you can try to
+>>> tweak it with devmem and if that does the trick, maybe we can expose a
+>>> way to configure that from Linux. For more details, see the "Bus Matrix
+>>> (MATRIX)" section in Atmel datasheets.  
+>>
+>> I don't seem to succeed in changing the registers I think I need to change.
+>> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
+>> it.
+> 
+> You mean 0x4D415400, right? ("MAT0" != 0x4D415400).
 
-I love your patch! Perhaps something to improve:
+Bits 1 through 7 do not matter, so even though not equal they are (or
+should be) equivalent. But I did use 0x4d415400. I simply used the
+shorter syntax since that was easier to type and conveyed the relevant
+info.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v4.16]
-[cannot apply to arm-soc/for-next next-20180329]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>> But when I try to write to "Priority Registers B For Slaves" it doesn't
+>> take, regardless of write protect mode.
+> 
+> Did you check MATRIX_WPSR after writing to MATRIX_PRXSY?
 
-url:    https://github.com/0day-ci/linux/commits/Robert-Jarzmik/ARM-pxa-switch-to-DMA-slave-maps/20180402-233029
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+No, but did it again and checked, see transcript below. BTW, how do I
+know which master is in use for the LCD controller? 8 or 9? Both? And
+which DDR slave is the target? 7, 8, 9 or 10? More than one?
+
+Cheers,
+Peter
+
+# devmem2 0xffffede4 w
+/dev/mem opened.
+Memory mapped at address 0xb6f50000.
+Value at address 0xFFFFEDE4 (0xb6f50de4): 0x0
+# devmem2 0xffffede4 w 0x4d415401
+/dev/mem opened.
+Memory mapped at address 0xb6f0d000.
+Value at address 0xFFFFEDE4 (0xb6f0dde4): 0x0
+Written 0x4D415401; readback 0x4D415401
+# devmem2 0xffffede4 w
+/dev/mem opened.
+Memory mapped at address 0xb6f55000.
+Value at address 0xFFFFEDE4 (0xb6f55de4): 0x1
+# devmem2 0xffffede4 w 0x4d415400
+/dev/mem opened.
+Memory mapped at address 0xb6fb5000.
+Value at address 0xFFFFEDE4 (0xb6fb5de4): 0x1
+Written 0x4D415400; readback 0x4D415400
+# devmem2 0xffffede4 w
+/dev/mem opened.
+Memory mapped at address 0xb6fef000.
+Value at address 0xFFFFEDE4 (0xb6fefde4): 0x0
 
 
-sparse warnings: (new ones prefixed by >>)
+# devmem2 0xffffede8 w
+/dev/mem opened.
+Memory mapped at address 0xb6fe9000.
+Value at address 0xFFFFEDE8 (0xb6fe9de8): 0x0
 
-   drivers/mtd/nand/marvell_nand.c:2621:17: sparse: undefined identifier 'pxad_filter_fn'
->> drivers/mtd/nand/marvell_nand.c:2621:17: sparse: call with no type!
-   In file included from drivers/mtd/nand/marvell_nand.c:21:0:
-   drivers/mtd/nand/marvell_nand.c: In function 'marvell_nfc_init_dma':
-   drivers/mtd/nand/marvell_nand.c:2621:42: error: 'pxad_filter_fn' undeclared (first use in this function); did you mean 'dma_filter_fn'?
-      dma_request_slave_channel_compat(mask, pxad_filter_fn,
-                                             ^
-   include/linux/dmaengine.h:1408:46: note: in definition of macro 'dma_request_slave_channel_compat'
-     __dma_request_slave_channel_compat(&(mask), x, y, dev, name)
-                                                 ^
-   drivers/mtd/nand/marvell_nand.c:2621:42: note: each undeclared identifier is reported only once for each function it appears in
-      dma_request_slave_channel_compat(mask, pxad_filter_fn,
-                                             ^
-   include/linux/dmaengine.h:1408:46: note: in definition of macro 'dma_request_slave_channel_compat'
-     __dma_request_slave_channel_compat(&(mask), x, y, dev, name)
-                                                 ^
 
-vim +2621 drivers/mtd/nand/marvell_nand.c
+# devmem2 0xffffecbc w
+/dev/mem opened.
+Memory mapped at address 0xb6ff0000.
+Value at address 0xFFFFECBC (0xb6ff0cbc): 0x0
+# devmem2 0xffffecbc w 0x33
+/dev/mem opened.
+Memory mapped at address 0xb6f79000.
+Value at address 0xFFFFECBC (0xb6f79cbc): 0x0
+Written 0x33; readback 0x33
+# devmem2 0xffffecbc w
+/dev/mem opened.
+Memory mapped at address 0xb6efe000.
+Value at address 0xFFFFECBC (0xb6efecbc): 0x0
 
-02f26ecf Miquel Raynal 2018-01-09  2588  
-02f26ecf Miquel Raynal 2018-01-09  2589  static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
-02f26ecf Miquel Raynal 2018-01-09  2590  {
-02f26ecf Miquel Raynal 2018-01-09  2591  	struct platform_device *pdev = container_of(nfc->dev,
-02f26ecf Miquel Raynal 2018-01-09  2592  						    struct platform_device,
-02f26ecf Miquel Raynal 2018-01-09  2593  						    dev);
-02f26ecf Miquel Raynal 2018-01-09  2594  	struct dma_slave_config config = {};
-02f26ecf Miquel Raynal 2018-01-09  2595  	struct resource *r;
-02f26ecf Miquel Raynal 2018-01-09  2596  	dma_cap_mask_t mask;
-02f26ecf Miquel Raynal 2018-01-09  2597  	struct pxad_param param;
-02f26ecf Miquel Raynal 2018-01-09  2598  	int ret;
-02f26ecf Miquel Raynal 2018-01-09  2599  
-02f26ecf Miquel Raynal 2018-01-09  2600  	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
-02f26ecf Miquel Raynal 2018-01-09  2601  		dev_warn(nfc->dev,
-02f26ecf Miquel Raynal 2018-01-09  2602  			 "DMA not enabled in configuration\n");
-02f26ecf Miquel Raynal 2018-01-09  2603  		return -ENOTSUPP;
-02f26ecf Miquel Raynal 2018-01-09  2604  	}
-02f26ecf Miquel Raynal 2018-01-09  2605  
-02f26ecf Miquel Raynal 2018-01-09  2606  	ret = dma_set_mask_and_coherent(nfc->dev, DMA_BIT_MASK(32));
-02f26ecf Miquel Raynal 2018-01-09  2607  	if (ret)
-02f26ecf Miquel Raynal 2018-01-09  2608  		return ret;
-02f26ecf Miquel Raynal 2018-01-09  2609  
-02f26ecf Miquel Raynal 2018-01-09  2610  	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-02f26ecf Miquel Raynal 2018-01-09  2611  	if (!r) {
-02f26ecf Miquel Raynal 2018-01-09  2612  		dev_err(nfc->dev, "No resource defined for data DMA\n");
-02f26ecf Miquel Raynal 2018-01-09  2613  		return -ENXIO;
-02f26ecf Miquel Raynal 2018-01-09  2614  	}
-02f26ecf Miquel Raynal 2018-01-09  2615  
-02f26ecf Miquel Raynal 2018-01-09  2616  	param.drcmr = r->start;
-02f26ecf Miquel Raynal 2018-01-09  2617  	param.prio = PXAD_PRIO_LOWEST;
-02f26ecf Miquel Raynal 2018-01-09  2618  	dma_cap_zero(mask);
-02f26ecf Miquel Raynal 2018-01-09  2619  	dma_cap_set(DMA_SLAVE, mask);
-02f26ecf Miquel Raynal 2018-01-09  2620  	nfc->dma_chan =
-02f26ecf Miquel Raynal 2018-01-09 @2621  		dma_request_slave_channel_compat(mask, pxad_filter_fn,
-02f26ecf Miquel Raynal 2018-01-09  2622  						 &param, nfc->dev,
-02f26ecf Miquel Raynal 2018-01-09  2623  						 "data");
-02f26ecf Miquel Raynal 2018-01-09  2624  	if (!nfc->dma_chan) {
-02f26ecf Miquel Raynal 2018-01-09  2625  		dev_err(nfc->dev,
-02f26ecf Miquel Raynal 2018-01-09  2626  			"Unable to request data DMA channel\n");
-02f26ecf Miquel Raynal 2018-01-09  2627  		return -ENODEV;
-02f26ecf Miquel Raynal 2018-01-09  2628  	}
-02f26ecf Miquel Raynal 2018-01-09  2629  
-02f26ecf Miquel Raynal 2018-01-09  2630  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-02f26ecf Miquel Raynal 2018-01-09  2631  	if (!r)
-02f26ecf Miquel Raynal 2018-01-09  2632  		return -ENXIO;
-02f26ecf Miquel Raynal 2018-01-09  2633  
-02f26ecf Miquel Raynal 2018-01-09  2634  	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-02f26ecf Miquel Raynal 2018-01-09  2635  	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-02f26ecf Miquel Raynal 2018-01-09  2636  	config.src_addr = r->start + NDDB;
-02f26ecf Miquel Raynal 2018-01-09  2637  	config.dst_addr = r->start + NDDB;
-02f26ecf Miquel Raynal 2018-01-09  2638  	config.src_maxburst = 32;
-02f26ecf Miquel Raynal 2018-01-09  2639  	config.dst_maxburst = 32;
-02f26ecf Miquel Raynal 2018-01-09  2640  	ret = dmaengine_slave_config(nfc->dma_chan, &config);
-02f26ecf Miquel Raynal 2018-01-09  2641  	if (ret < 0) {
-02f26ecf Miquel Raynal 2018-01-09  2642  		dev_err(nfc->dev, "Failed to configure DMA channel\n");
-02f26ecf Miquel Raynal 2018-01-09  2643  		return ret;
-02f26ecf Miquel Raynal 2018-01-09  2644  	}
-02f26ecf Miquel Raynal 2018-01-09  2645  
-02f26ecf Miquel Raynal 2018-01-09  2646  	/*
-02f26ecf Miquel Raynal 2018-01-09  2647  	 * DMA must act on length multiple of 32 and this length may be
-02f26ecf Miquel Raynal 2018-01-09  2648  	 * bigger than the destination buffer. Use this buffer instead
-02f26ecf Miquel Raynal 2018-01-09  2649  	 * for DMA transfers and then copy the desired amount of data to
-02f26ecf Miquel Raynal 2018-01-09  2650  	 * the provided buffer.
-02f26ecf Miquel Raynal 2018-01-09  2651  	 */
-c495a927 Miquel Raynal 2018-01-19  2652  	nfc->dma_buf = kmalloc(MAX_CHUNK_SIZE, GFP_KERNEL | GFP_DMA);
-02f26ecf Miquel Raynal 2018-01-09  2653  	if (!nfc->dma_buf)
-02f26ecf Miquel Raynal 2018-01-09  2654  		return -ENOMEM;
-02f26ecf Miquel Raynal 2018-01-09  2655  
-02f26ecf Miquel Raynal 2018-01-09  2656  	nfc->use_dma = true;
-02f26ecf Miquel Raynal 2018-01-09  2657  
-02f26ecf Miquel Raynal 2018-01-09  2658  	return 0;
-02f26ecf Miquel Raynal 2018-01-09  2659  }
-02f26ecf Miquel Raynal 2018-01-09  2660  
 
-:::::: The code at line 2621 was first introduced by commit
-:::::: 02f26ecf8c772751d4b24744d487f6b1b20e75d4 mtd: nand: add reworked Marvell NAND controller driver
-
-:::::: TO: Miquel Raynal <miquel.raynal@free-electrons.com>
-:::::: CC: Boris Brezillon <boris.brezillon@free-electrons.com>
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+# devmem2 0xffffede8 w
+/dev/mem opened.
+Memory mapped at address 0xb6f9e000.
+Value at address 0xFFFFEDE8 (0xb6f9ede8): 0x0
