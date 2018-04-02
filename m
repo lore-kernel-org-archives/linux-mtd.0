@@ -1,8 +1,8 @@
 Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
  helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f30RY-0004YI-Va
- for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:28:25 +0000
+ id 1f30RY-0004Zp-Vs
+ for linux-mtd@lists.infradead.org; Mon, 02 Apr 2018 14:28:29 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -20,16 +20,15 @@ To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, "David S. Miller" <davem@davemloft.net>,
- Pravin Shedge <pravin.shedge4linux@gmail.com>
+ Arnd Bergmann <arnd@arndb.de>
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Subject: [PATCH 09/15] net: irda: pxaficp_ir: remove the dmaengine compat need
-Date: Mon,  2 Apr 2018 16:26:50 +0200
-Message-Id: <20180402142656.26815-10-robert.jarzmik@free.fr>
+Subject: [PATCH 10/15] ata: pata_pxa: remove the dmaengine compat need
+Date: Mon,  2 Apr 2018 16:26:51 +0200
+Message-Id: <20180402142656.26815-11-robert.jarzmik@free.fr>
 In-Reply-To: <20180402142656.26815-1-robert.jarzmik@free.fr>
 References: <20180402142656.26815-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -50,58 +49,50 @@ generic function dma_request_slave_channel().
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- drivers/staging/irda/drivers/pxaficp_ir.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ drivers/ata/pata_pxa.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/staging/irda/drivers/pxaficp_ir.c b/drivers/staging/irda/drivers/pxaficp_ir.c
-index 2ea00a6531f9..9dd6e21dc11e 100644
---- a/drivers/staging/irda/drivers/pxaficp_ir.c
-+++ b/drivers/staging/irda/drivers/pxaficp_ir.c
-@@ -20,7 +20,6 @@
- #include <linux/clk.h>
+diff --git a/drivers/ata/pata_pxa.c b/drivers/ata/pata_pxa.c
+index f6c46e9a4dc0..e8b6a2e464c9 100644
+--- a/drivers/ata/pata_pxa.c
++++ b/drivers/ata/pata_pxa.c
+@@ -25,7 +25,6 @@
+ #include <linux/libata.h>
+ #include <linux/platform_device.h>
  #include <linux/dmaengine.h>
- #include <linux/dma-mapping.h>
 -#include <linux/dma/pxa-dma.h>
  #include <linux/gpio.h>
  #include <linux/slab.h>
- #include <linux/sched/clock.h>
-@@ -735,9 +734,7 @@ static void pxa_irda_shutdown(struct pxa_irda *si)
- static int pxa_irda_start(struct net_device *dev)
- {
- 	struct pxa_irda *si = netdev_priv(dev);
--	dma_cap_mask_t mask;
+ #include <linux/completion.h>
+@@ -180,8 +179,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
+ 	struct resource *irq_res;
+ 	struct pata_pxa_pdata *pdata = dev_get_platdata(&pdev->dev);
  	struct dma_slave_config	config;
+-	dma_cap_mask_t mask;
 -	struct pxad_param param;
- 	int err;
+ 	int ret = 0;
  
- 	si->speed = 9600;
-@@ -757,9 +754,6 @@ static int pxa_irda_start(struct net_device *dev)
- 	disable_irq(si->icp_irq);
+ 	/*
+@@ -278,10 +275,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
  
- 	err = -EBUSY;
+ 	ap->private_data = data;
+ 
 -	dma_cap_zero(mask);
 -	dma_cap_set(DMA_SLAVE, mask);
 -	param.prio = PXAD_PRIO_LOWEST;
- 
+-	param.drcmr = pdata->dma_dreq;
  	memset(&config, 0, sizeof(config));
- 	config.src_addr_width = DMA_SLAVE_BUSWIDTH_1_BYTE;
-@@ -769,15 +763,11 @@ static int pxa_irda_start(struct net_device *dev)
- 	config.src_maxburst = 32;
- 	config.dst_maxburst = 32;
- 
--	param.drcmr = si->drcmr_rx;
--	si->rxdma = dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						     &param, &dev->dev, "rx");
-+	si->rxdma = dma_request_slave_channel(&dev->dev, "rx");
- 	if (!si->rxdma)
- 		goto err_rx_dma;
- 
--	param.drcmr = si->drcmr_tx;
--	si->txdma = dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						     &param, &dev->dev, "tx");
-+	si->txdma = dma_request_slave_channel(&dev->dev, "tx");
- 	if (!si->txdma)
- 		goto err_tx_dma;
- 
+ 	config.src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+ 	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
+@@ -294,8 +287,7 @@ static int pxa_ata_probe(struct platform_device *pdev)
+ 	 * Request the DMA channel
+ 	 */
+ 	data->dma_chan =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &param, &pdev->dev, "data");
++		dma_request_slave_channel(&pdev->dev, "data");
+ 	if (!data->dma_chan)
+ 		return -EBUSY;
+ 	ret = dmaengine_slave_config(data->dma_chan, &config);
 -- 
 2.11.0
