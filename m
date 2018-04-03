@@ -1,17 +1,22 @@
-Message-ID: <1522723618.3504.7.camel@mhfsdcap03>
-Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date: Tue, 3 Apr 2018 10:46:58 +0800
-In-Reply-To: <20180402141505.33051c14@bbrezillon>
-References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
- <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
- <20180402141505.33051c14@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mail-he1eur01on0602.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1e::602]
+ helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3EYv-0002QK-Kn
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2018 05:32:56 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@exceet.de,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v9 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Tue,  3 Apr 2018 11:01:13 +0530
+Message-Id: <1522733475-31480-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,90 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Boris,
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:
-> Hi Xiaolei,
-> 
-> On Mon, 2 Apr 2018 16:20:10 +0800
-> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-> 
-> > Expose mtd OOB available size by sysfs file. Then users can get available
-> > OOB size by accessing /sys/class/mtd/mtdX/oobavail.
-> 
-> May I ask why you need to expose that? I'm not against exposing new
-> things through sysfs, but since this is part of the ABI, I'd like to be
-> sure we actually need it.
-> 
-That is user-space can write OOB data through ioctl MEMWRITE now.
-If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
-OOB available bytes it can use. But I didn't find a way to get it. (If
-there is already a method, please kindly let me know, thanks.)
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-One problem I know is to do Jffs2 type flash erase using MTD user-space
-tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
-free area, but it can not get OOB available size.
-Please refer this commit:
-http://git.infradead.org/mtd-utils.git/commit/d7e86124d55bbcee1b82c68b82389ebcda588076
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, needed for read register, read any register
+commands, read SFDP register, not available at time of spi_nor_scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+thus require to have dynamic LUT creation support.
 
-Thanks!
-Xiaolei
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
 
-> Regards,
-> 
-> Boris
-> 
-> > 
-> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-class-mtd |  8 ++++++++
-> >  drivers/mtd/mtdcore.c                     | 10 ++++++++++
-> >  2 files changed, 18 insertions(+)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
-> > index f34e5923..3bc7c0a 100644
-> > --- a/Documentation/ABI/testing/sysfs-class-mtd
-> > +++ b/Documentation/ABI/testing/sysfs-class-mtd
-> > @@ -232,3 +232,11 @@ Description:
-> >  		of the parent (another partition or a flash device) in bytes.
-> >  		This attribute is absent on flash devices, so it can be used
-> >  		to distinguish them from partitions.
-> > +
-> > +What:		/sys/class/mtd/mtdX/oobavail
-> > +Date:		April 2018
-> > +KernelVersion:	4.16
-> > +Contact:	linux-mtd@lists.infradead.org
-> > +Description:
-> > +		Number of bytes available for a client to place data into
-> > +		the out of band area.
-> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > index 807d17d..99d9352 100644
-> > --- a/drivers/mtd/mtdcore.c
-> > +++ b/drivers/mtd/mtdcore.c
-> > @@ -210,6 +210,15 @@ static ssize_t mtd_oobsize_show(struct device *dev,
-> >  }
-> >  static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
-> >  
-> > +static ssize_t mtd_oobavail_show(struct device *dev,
-> > +				 struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> > +
-> > +	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobavail);
-> > +}
-> > +static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
-> > +
-> >  static ssize_t mtd_numeraseregions_show(struct device *dev,
-> >  		struct device_attribute *attr, char *buf)
-> >  {
-> > @@ -327,6 +336,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
-> >  	&dev_attr_writesize.attr,
-> >  	&dev_attr_subpagesize.attr,
-> >  	&dev_attr_oobsize.attr,
-> > +	&dev_attr_oobavail.attr,
-> >  	&dev_attr_numeraseregions.attr,
-> >  	&dev_attr_name.attr,
-> >  	&dev_attr_ecc_strength.attr,
-> 
-> 
-> 
+Also fix initialize sequence of AHB read, move
+fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
+
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
+
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
+
+Changes for v9:
+- Incorporated Boris Brezillon review comments.
+Changes for v8:
+- Incorporated Frieder Schrempf review comments.
+Changes for v7:
+- Incorporated Han Xu review comments.
+Changes for v6:
+- Incorporated Boris Brezillon review comments.
+- Added dedicated LUT for AHB read cmd, required for devmem Read.
+Changes for v5:
+- Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
+Changes for v4:
+- Drop patch
+'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
+would be taken care in next-series.
+- Added patch for 'fix initialize sequence of AHB read'.
+Changes for v3:
+- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+- Update information in cover letter.
+Changes for v2:
+- Swap patch sequences in the series to solve git bissect issue.
+
+ drivers/mtd/spi-nor/fsl-quadspi.c | 468 ++++++++++++++++++++++++--------------
+ 1 file changed, 298 insertions(+), 170 deletions(-)
+
+-- 
+1.9.1
