@@ -1,38 +1,21 @@
+Received: from dd6426.kasserver.com ([85.13.131.52])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3Seg-00015U-HU
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2018 20:35:48 +0000
+Subject: Re: UBIFS - ubifs_get_pnode.part.4: error -22 reading pnode
+To: richard.weinberger@gmail.com
+References: <95F51F4B902CAC40AF459205F6322F01B80E921AE3@BMK019S01.emtrion.local>
+ <CAFLxGvz=_x2NWhz_T_TqKc5JnRC+fGkD37daf+zks-pnyydMyw@mail.gmail.com>
+ <s1l9q5oc97q87j6d75pkp49b.1522781343251@email.android.com>
+Cc: linux-mtd@lists.infradead.org
+From: Frank Erdrich <frank@erdrich.net>
+Message-ID: <c3a2d38b-a789-81e6-bf3f-7a573778a054@erdrich.net>
+Date: Tue, 3 Apr 2018 22:26:32 +0200
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <87tvss48ti.fsf@belgarion.home>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-3-robert.jarzmik@free.fr>
- <CAK8P3a3pSitVqfiF2LK0cMrAKLOeCWXXJBLeVc5f_Tg=vALkUA@mail.gmail.com>
- <87tvss48ti.fsf@belgarion.home>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 3 Apr 2018 17:39:08 +0200
-Message-ID: <CAK8P3a2FFVnPj4+VoQET3-Jz2DaYbc6UUJnX1fH5s8VumJZ7Og@mail.gmail.com>
-Subject: Re: [PATCH 02/15] ARM: pxa: add dma slave map
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>,
- Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- IDE-ML <linux-ide@vger.kernel.org>, dmaengine@vger.kernel.org,
- Linux Media Mailing List <linux-media@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, Networking <netdev@vger.kernel.org>,
- devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <s1l9q5oc97q87j6d75pkp49b.1522781343251@email.android.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,98 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 3, 2018 at 5:18 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Arnd Bergmann <arnd@arndb.de> writes:
->
->>> +       { "smc911x.0", "rx", PDMA_FILTER_PARAM(LOWEST, -1) },
->>> +       { "smc911x.0", "tx", PDMA_FILTER_PARAM(LOWEST, -1) },
->>> +       { "smc91x.0", "data", PDMA_FILTER_PARAM(LOWEST, -1) },
->>
->> This one is interesting, as you are dealing with an off-chip device,
->> and the channel number is '-'1. How does this even work? Does it
->> mean
->
-> This relies on pxa_dma, in which the "-1" for a requestor line means "no
-> requestor" or said in another way "always requesting". As a consequence, as soon
-> as the DMA descriptors are queued, the transfer begins, and it is supposed
-> implicitely that the FIFO output availability is at least as quick as the system
-> bus and the DMA size is perfectly fit for the FIFO available bytes.
->
-> This is what has been the underlying of DMA transfers of smc91x(x) on the PXA
-> platforms, where the smc91x(s) are directly wired on the system bus (the same
-> bus having DRAM, SRAM, IO-mapped devices).
+Hello Richard,
 
-Ok, I looked at the driver in more detail now and found the scary parts.
-So it's using the async DMA interface to do synchronous DMA in
-interrupt context in order to transfer the rx data faster than an readsl()
-would, correct?
+thanks for your quick response. And sorry for writing from another 
+Mail-account, I hope that will not break the thread. Our setup at work 
+is a little bit weird and I need an admin to send messages to a mailing 
+list (disclaimer removal and stuff like that).
 
-It still feels odd to me that there is an entry in the slave map for
-a device that does not have a request line. However, it also seems
-that the entire code in those two drivers that deals with DMA is specific
-to PXA anyway, so maybe it can be done differently: instead of
-calling dma_request_slave_channel_compat() or dma_request_chan()
-with a fake request line, how about calling dma_request_channel()
-with an NULL filter function and data, and have the driver handle
-the empty data case the same way as the rq=-1 case today?
+> Frank,
+> 
+> On Tue, Apr 3, 2018 at 10:28 AM, Erdrich, Frank
+> <Frank.Erdrich@emtrion.de> wrote:
+>  > Hello,
+>  >
+>  > we are encountering an error on UBIFS that prevents mounting of a 
+> partition. Maybe one of you can tell me the directly the reason for that 
+> or can help me hunting this error down.
+> 
+> UBIFS got confused wrt. free space accounting.
+> Can you tell me more on your setup? Do you use Fastmap? fscrypt? xattr?
 
->>> +       /* PXA25x specific map */
->>> +       { "pxa25x-ssp.0", "rx", PDMA_FILTER_PARAM(LOWEST, 13) },
->>> +       { "pxa25x-ssp.0", "tx", PDMA_FILTER_PARAM(LOWEST, 14) },
->>> +       { "pxa25x-nssp.1", "rx", PDMA_FILTER_PARAM(LOWEST, 15) },
->>> +       { "pxa25x-nssp.1", "tx", PDMA_FILTER_PARAM(LOWEST, 16) },
->>> +       { "pxa25x-nssp.2", "rx", PDMA_FILTER_PARAM(LOWEST, 23) },
->>> +       { "pxa25x-nssp.2", "tx", PDMA_FILTER_PARAM(LOWEST, 24) },
->>> +       { "pxa-pcm-audio", "nssp2_rx", PDMA_FILTER_PARAM(LOWEST, 15) },
->>> +       { "pxa-pcm-audio", "nssp2_tx", PDMA_FILTER_PARAM(LOWEST, 16) },
->>> +       { "pxa-pcm-audio", "nssp3_rx", PDMA_FILTER_PARAM(LOWEST, 23) },
->>> +       { "pxa-pcm-audio", "nssp3_tx", PDMA_FILTER_PARAM(LOWEST, 24) },
->>> +
->>> +       /* PXA27x specific map */
->>> +       { "pxa-pcm-audio", "ssp3_rx", PDMA_FILTER_PARAM(LOWEST, 66) },
->>> +       { "pxa-pcm-audio", "ssp3_tx", PDMA_FILTER_PARAM(LOWEST, 67) },
->>> +       { "pxa27x-camera.0", "CI_Y", PDMA_FILTER_PARAM(HIGHEST, 68) },
->>> +       { "pxa27x-camera.0", "CI_U", PDMA_FILTER_PARAM(HIGHEST, 69) },
->>> +       { "pxa27x-camera.0", "CI_V", PDMA_FILTER_PARAM(HIGHEST, 70) },
->>> +
->>> +       /* PXA3xx specific map */
->>> +       { "pxa-pcm-audio", "ssp4_rx", PDMA_FILTER_PARAM(LOWEST, 2) },
->>> +       { "pxa-pcm-audio", "ssp4_tx", PDMA_FILTER_PARAM(LOWEST, 3) },
->>> +       { "pxa2xx-mci.1", "rx", PDMA_FILTER_PARAM(LOWEST, 93) },
->>> +       { "pxa2xx-mci.1", "tx", PDMA_FILTER_PARAM(LOWEST, 94) },
->>> +       { "pxa3xx-nand", "data", PDMA_FILTER_PARAM(LOWEST, 97) },
->>> +       { "pxa2xx-mci.2", "rx", PDMA_FILTER_PARAM(LOWEST, 100) },
->>> +       { "pxa2xx-mci.2", "tx", PDMA_FILTER_PARAM(LOWEST, 101) },
->>> +};
->>
->> Since more than half the entries in here are chip specific, maybe it would be
->> better to split that table into three and have a copy for each one in
->> arch/arm/mach-pxa/pxa{25x.27x.3xx}.c?
-> Mmmh, today the split is :
->  - 16 common entries
->  - 10 pxa25x specific entries
->  - 5 pxa27x specific entries
->  - 7 pxa3xx specific entries
->  => total of 38 lines
->
-> After the split we'll have :
->  - 26 pxa25x specific entries
->  - 21 pxa27x specific entries
->  - 23 pxa3xx specific entries
->  => total of 70 lines
->
-> That doubles the number of lines, not counting the declarations, and amending of
-> pxa2xx_set_dmac_info().
->
-> If you think it's worth it, what is the driving benefit behind ?
+We use only extended attributes. fastmap and fscrypt are not used. That 
+are the kernel options we have set:
 
-It seems a bit cleaner to only register the tables for the dma lines that
-are actually present on a given chip.
+CONFIG_MTD_UBI=y
+CONFIG_MTD_UBI_WL_THRESHOLD=4096
+CONFIG_MTD_UBI_BEB_LIMIT=20
+# CONFIG_MTD_UBI_FASTMAP is not set
+# CONFIG_MTD_UBI_GLUEBI is not set
+# CONFIG_MTD_UBI_BLOCK is not set
+CONFIG_UBIFS_FS=y
+CONFIG_UBIFS_FS_ADVANCED_COMPR=y
+CONFIG_UBIFS_FS_LZO=y
+CONFIG_UBIFS_FS_ZLIB=y
+# CONFIG_UBIFS_ATIME_SUPPORT is not set
 
->> Does that mean it's actually a memory-to-memory transfer with a device being
->> on the external SRAM interface?
-> I'm taking this is the follow up to the "-1" question :0
+The Flash itself is divided into three mtd partitions to get some sort 
+of separation of critical data against other data. The partition that 
+shows that error is a logging partition which is, of course, written on 
+a regular base. We are not using the sync mount option at the moment. 
+Writeback timers (for dirty data) are on default value.
 
-Right.
+>  > I'm not deep enough in the ubifs system to completely understand what 
+> is happening here but for me it seems that there are more dirty data to 
+> write than the size of the LEB.
+>  > -> 3: free 507904 dirty 524128 flags 34 lnum 0
+>  > I've seen that the values are checked in validate_pnode() where the 
+> -EINVAL (-22) comes from. The question is, how can dirty data bigger 
+> that the LEB size?
+> 
+> Yes, this can happen. That's why UBIFS does in some cases a fixup of
+> the used/free numbers.
+> These numbers are not always updated immediately and when a power-cut
+> happens their state might be inconsistent.
 
-        Arnd
+I'm totally fine with that behaviour as a power-cut can happen anytime 
+in an embedded system but I would assume that the ubifs-recovery would 
+bring back the system to a operable state. Or is there an error in my 
+reasoning?
+
+Please let me know if you need more information or if I should do 
+special testing.
+
+
+Best regards,
+Frank Erdrich
