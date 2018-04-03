@@ -1,27 +1,17 @@
-Date: Mon, 2 Apr 2018 22:35:39 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Peter Rosin <peda@axentia.se>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Josh Wu
- <rainyfeeling@outlook.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-Message-ID: <20180402223539.6dff3f38@bbrezillon>
-In-Reply-To: <8e35701f-1bfa-c9c0-62e6-48ed19d7ba37@axentia.se>
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon>
- <8e35701f-1bfa-c9c0-62e6-48ed19d7ba37@axentia.se>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <1522723618.3504.7.camel@mhfsdcap03>
+Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date: Tue, 3 Apr 2018 10:46:58 +0800
+In-Reply-To: <20180402141505.33051c14@bbrezillon>
+References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
+ <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
+ <20180402141505.33051c14@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,34 +21,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2 Apr 2018 22:23:17 +0200
-Peter Rosin <peda@axentia.se> wrote:
+Hello Boris,
 
-
-> > I don't use devmem2. Is 'readback' information accurate or is it
-> > always what's been written? Because when you write 0x33 to 0xFFFFECBC,
-> > 0x33 is read back, but just after that, when you read it again it's 0.  
+On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:
+> Hi Xiaolei,
 > 
-> Looking at the devmem2 source, it seems very likely that the compiler
-> optimizes out the read and thus outputs what has been written.
-
-Yep, had a look too, and it's missing a volatile specifier to prevent
-that sort of optimizations.
-
+> On Mon, 2 Apr 2018 16:20:10 +0800
+> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 > 
-> >> BTW, how do I
-> >> know which master is in use for the LCD controller? 8 or 9? Both?  
+> > Expose mtd OOB available size by sysfs file. Then users can get available
+> > OOB size by accessing /sys/class/mtd/mtdX/oobavail.
+> 
+> May I ask why you need to expose that? I'm not against exposing new
+> things through sysfs, but since this is part of the ABI, I'd like to be
+> sure we actually need it.
+> 
+That is user-space can write OOB data through ioctl MEMWRITE now.
+If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
+OOB available bytes it can use. But I didn't find a way to get it. (If
+there is already a method, please kindly let me know, thanks.)
+
+One problem I know is to do Jffs2 type flash erase using MTD user-space
+tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
+free area, but it can not get OOB available size.
+Please refer this commit:
+http://git.infradead.org/mtd-utils.git/commit/d7e86124d55bbcee1b82c68b82389ebcda588076
+
+Thanks!
+Xiaolei
+
+> Regards,
+> 
+> Boris
+> 
 > > 
-> > It's configurable on a per-layer basis through the SIF bit in
-> > LCDC_<layer>CFG0. The driver tries to dispatch the load on those 2 AHB
-> > masters [1].  
+> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-class-mtd |  8 ++++++++
+> >  drivers/mtd/mtdcore.c                     | 10 ++++++++++
+> >  2 files changed, 18 insertions(+)
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-class-mtd b/Documentation/ABI/testing/sysfs-class-mtd
+> > index f34e5923..3bc7c0a 100644
+> > --- a/Documentation/ABI/testing/sysfs-class-mtd
+> > +++ b/Documentation/ABI/testing/sysfs-class-mtd
+> > @@ -232,3 +232,11 @@ Description:
+> >  		of the parent (another partition or a flash device) in bytes.
+> >  		This attribute is absent on flash devices, so it can be used
+> >  		to distinguish them from partitions.
+> > +
+> > +What:		/sys/class/mtd/mtdX/oobavail
+> > +Date:		April 2018
+> > +KernelVersion:	4.16
+> > +Contact:	linux-mtd@lists.infradead.org
+> > +Description:
+> > +		Number of bytes available for a client to place data into
+> > +		the out of band area.
+> > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> > index 807d17d..99d9352 100644
+> > --- a/drivers/mtd/mtdcore.c
+> > +++ b/drivers/mtd/mtdcore.c
+> > @@ -210,6 +210,15 @@ static ssize_t mtd_oobsize_show(struct device *dev,
+> >  }
+> >  static DEVICE_ATTR(oobsize, S_IRUGO, mtd_oobsize_show, NULL);
+> >  
+> > +static ssize_t mtd_oobavail_show(struct device *dev,
+> > +				 struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct mtd_info *mtd = dev_get_drvdata(dev);
+> > +
+> > +	return snprintf(buf, PAGE_SIZE, "%lu\n", (unsigned long)mtd->oobavail);
+> > +}
+> > +static DEVICE_ATTR(oobavail, S_IRUGO, mtd_oobavail_show, NULL);
+> > +
+> >  static ssize_t mtd_numeraseregions_show(struct device *dev,
+> >  		struct device_attribute *attr, char *buf)
+> >  {
+> > @@ -327,6 +336,7 @@ static ssize_t mtd_bbtblocks_show(struct device *dev,
+> >  	&dev_attr_writesize.attr,
+> >  	&dev_attr_subpagesize.attr,
+> >  	&dev_attr_oobsize.attr,
+> > +	&dev_attr_oobavail.attr,
+> >  	&dev_attr_numeraseregions.attr,
+> >  	&dev_attr_name.attr,
+> >  	&dev_attr_ecc_strength.attr,
 > 
-> Ok, I only have one plane (in this case, i.e. no cursor, no overlays etc),
-> would that mean that only one master is used?
-
-Yep, it's always using the first one (master 8 on a sama5d3).
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> 
+> 
