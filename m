@@ -1,18 +1,18 @@
-Date: Tue, 3 Apr 2018 10:43:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: xiaolei li <xiaolei.li@mediatek.com>
-Cc: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Message-ID: <1522748411.3673.12.camel@mhfsdcap03>
 Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
-Message-ID: <20180403104354.03895246@bbrezillon>
-In-Reply-To: <1522723618.3504.7.camel@mhfsdcap03>
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Date: Tue, 3 Apr 2018 17:40:11 +0800
+In-Reply-To: <20180403104354.03895246@bbrezillon>
 References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
  <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
- <20180402141505.33051c14@bbrezillon>
- <1522723618.3504.7.camel@mhfsdcap03>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+ <20180402141505.33051c14@bbrezillon>	<1522723618.3504.7.camel@mhfsdcap03>
+ <20180403104354.03895246@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 Apr 2018 10:46:58 +0800
-xiaolei li <xiaolei.li@mediatek.com> wrote:
-
-> Hello Boris,
+On Tue, 2018-04-03 at 10:43 +0200, Boris Brezillon wrote:
+> On Tue, 3 Apr 2018 10:46:58 +0800
+> xiaolei li <xiaolei.li@mediatek.com> wrote:
 > 
-> On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:
-> > Hi Xiaolei,
+> > Hello Boris,
 > > 
-> > On Mon, 2 Apr 2018 16:20:10 +0800
-> > Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-> >   
-> > > Expose mtd OOB available size by sysfs file. Then users can get available
-> > > OOB size by accessing /sys/class/mtd/mtdX/oobavail.  
-> > 
-> > May I ask why you need to expose that? I'm not against exposing new
-> > things through sysfs, but since this is part of the ABI, I'd like to be
-> > sure we actually need it.
-> >   
-> That is user-space can write OOB data through ioctl MEMWRITE now.
-> If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
-> OOB available bytes it can use. But I didn't find a way to get it. (If
-> there is already a method, please kindly let me know, thanks.)
-
-Nope. We have the ECCGETLAYOUT ioctl, but it's not reliable because of
-the MTD_MAX_OOBFREE_ENTRIES limitation.
-
+> > On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:
+> > > Hi Xiaolei,
+> > > 
+> > > On Mon, 2 Apr 2018 16:20:10 +0800
+> > > Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> > >   
+> > > > Expose mtd OOB available size by sysfs file. Then users can get available
+> > > > OOB size by accessing /sys/class/mtd/mtdX/oobavail.  
+> > > 
+> > > May I ask why you need to expose that? I'm not against exposing new
+> > > things through sysfs, but since this is part of the ABI, I'd like to be
+> > > sure we actually need it.
+> > >   
+> > That is user-space can write OOB data through ioctl MEMWRITE now.
+> > If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
+> > OOB available bytes it can use. But I didn't find a way to get it. (If
+> > there is already a method, please kindly let me know, thanks.)
 > 
-> One problem I know is to do Jffs2 type flash erase using MTD user-space
-> tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
-> free area, but it can not get OOB available size.
+> Nope. We have the ECCGETLAYOUT ioctl, but it's not reliable because of
+> the MTD_MAX_OOBFREE_ENTRIES limitation.
+> 
+> > 
+> > One problem I know is to do Jffs2 type flash erase using MTD user-space
+> > tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
+> > free area, but it can not get OOB available size.
+> 
+> That's a good reason to expose this property indeed. Do you plan to fix
+> mtd-utils to use the sysfs value when it's available? Also, do we need
+> to expose the ECC/free layout as done with the
+> ECCGETLAYOUT/MEMGETOOBSEL ioctls?
+> 
+Yes. I plan to fix mtd-utils problem if this change is accepted.
 
-That's a good reason to expose this property indeed. Do you plan to fix
-mtd-utils to use the sysfs value when it's available? Also, do we need
-to expose the ECC/free layout as done with the
-ECCGETLAYOUT/MEMGETOOBSEL ioctls?
+struct nand_oobinfo and struct nand_ecclayout_user in mtd-abi.h are
+obsoleted, and user can not get oob layout by ioctl method now.
+sysfs seems a method to fetch oob layout. But I don't know which
+user-space case will use oob layout now. Maybe expose them in the future
+if they are really needed?
+
+Thanks,
+Xiaolei
