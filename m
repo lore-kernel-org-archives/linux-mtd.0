@@ -16,8 +16,8 @@ References: <20180329131054.22506-1-peda@axentia.se>
  <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
  <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
 From: Peter Rosin <peda@axentia.se>
-Message-ID: <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
-Date: Tue, 3 Apr 2018 08:11:30 +0200
+Message-ID: <d9da5ae4-68d0-df88-1214-f53f6b18d718@axentia.se>
+Date: Tue, 3 Apr 2018 08:51:10 +0200
 MIME-Version: 1.0
 In-Reply-To: <20180402222020.1d344c14@bbrezillon>
 Content-Type: text/plain; charset=utf-8
@@ -125,34 +125,11 @@ On 2018-04-02 22:20, Boris Brezillon wrote:
 > Looks like I was wrong. According to "Table 15-3. SAMA5D3 Master to
 > Slave Access", LCDC port 0 can only access DDR port 2 and LCDC port 1
 > can only access DDR port 3.
+> 
+> Can you try to write 0x3 to 0xFFFFECCC and 0x30 to 0xFFFFECD4?
 
-About that table, someone with HW-knowledge should have a real close
-look at it! Why?
-
-I peeked at all the PRxSy registers and there are a lot of '3' entries
-for all the MxPR fields. In fact, the '3' entries align very neatly
-with the checks in this "Master to Slave Access" table. Except they
-don't, after a while.
-
-Here's how the table looks in my datasheet:
-
- 0 vv--v--v--vvvv-
- 1 vv--v--v--vvvv-
- 2 vv-------------
- 3 vv--------vvv--
- 4 vv-------------
- 5 v--------------
- 6 vv--vv-vvvvvvvv
-   v--------------
- 7 v--------------
- 8 --v-v--v-------
- 9 -v---v--v--v---
-10 ---------vv-vvv
-11 v--v-----------
-12 v-----v--------
-
-And here's the '3' entries when digging in the registers (the extra
-dash at the end is for the 16th non-existent slave):
+Given the matrix dump in the other mail, it is not surprising that I
+can't. But if I change the matrix from the default
 
  0 33--3--3--3333--
  1 33--3--3--3333--
@@ -171,19 +148,30 @@ dash at the end is for the 16th non-existent slave):
 14 ----------------
 15 ----------------
 
-There's a big mismatch for the four DDR2 lines in the table; they
-seem to map to only three registers. Other than that, the only tweak
-or anomaly is that first entry (Cortex A5) for master 3 (Int ROM).
+to
 
-*time passes*
+ 0 33--3--3--3333--
+ 1 33--3--3--3333--
+ 2 33--------------
+ 3 -3--------333---
+ 4 33--------------
+ 5 3---------------
+ 6 33--33-33333333-
+ 7 --1-1--3--------
+ 8 -1---1--3--3----
+ 9 --1-1--3-33-333-
+10 3--3------------
+11 3-----3---------
+12 ----------------
+13 ----------------
+14 ----------------
+15 ----------------
 
-Arrrgh!! You say "Table 15-3". This is Table 14-3 for me! I believe
-I'm using the latest datasheet (02-Feb-16). What are you reading???!?
-Is that something that adds to the confusion?
-
-> Can you try to write 0x3 to 0xFFFFECCC and 0x30 to 0xFFFFECD4?
-
-Will continue experimenting...
+which I *think* is reducing the prio of accesses from all DMAC masters
+to all DDR slaves, and then change the ULBT to 1 (SINGLE) for all
+six DMAC masters, I still get the same display disturbances on nand
+accesses. And I can't seem to tweak the LQOSENx bits, at least not for
+the DMAC/DDR case.
 
 Cheers,
 Peter
