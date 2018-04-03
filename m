@@ -1,30 +1,17 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Josh Wu <rainyfeeling@outlook.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon>
- <8e35701f-1bfa-c9c0-62e6-48ed19d7ba37@axentia.se>
- <20180403071843.GI14180@piout.net>
-From: Peter Rosin <peda@axentia.se>
-Message-ID: <6a2b49fb-8e2c-ff76-4743-08f8d6a8d5e9@axentia.se>
-Date: Tue, 3 Apr 2018 10:37:44 +0200
+Date: Tue, 3 Apr 2018 10:43:54 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: xiaolei li <xiaolei.li@mediatek.com>
+Cc: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
+Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
+Message-ID: <20180403104354.03895246@bbrezillon>
+In-Reply-To: <1522723618.3504.7.camel@mhfsdcap03>
+References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
+ <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
+ <20180402141505.33051c14@bbrezillon>
+ <1522723618.3504.7.camel@mhfsdcap03>
 MIME-Version: 1.0
-In-Reply-To: <20180403071843.GI14180@piout.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,24 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-03 09:18, Alexandre Belloni wrote:
-> On 02/04/2018 at 22:23:17 +0200, Peter Rosin wrote:
->>>> No, but did it again and checked, see transcript below.
->>>
->>> I don't use devmem2. Is 'readback' information accurate or is it
->>> always what's been written? Because when you write 0x33 to 0xFFFFECBC,
->>> 0x33 is read back, but just after that, when you read it again it's 0.
->>
->> Looking at the devmem2 source, it seems very likely that the compiler
->> optimizes out the read and thus outputs what has been written.
->>
+On Tue, 3 Apr 2018 10:46:58 +0800
+xiaolei li <xiaolei.li@mediatek.com> wrote:
+
+> Hello Boris,
 > 
-> At least on x86, it is not optimized out.
+> On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:
+> > Hi Xiaolei,
+> > 
+> > On Mon, 2 Apr 2018 16:20:10 +0800
+> > Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> >   
+> > > Expose mtd OOB available size by sysfs file. Then users can get available
+> > > OOB size by accessing /sys/class/mtd/mtdX/oobavail.  
+> > 
+> > May I ask why you need to expose that? I'm not against exposing new
+> > things through sysfs, but since this is part of the ABI, I'd like to be
+> > sure we actually need it.
+> >   
+> That is user-space can write OOB data through ioctl MEMWRITE now.
+> If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
+> OOB available bytes it can use. But I didn't find a way to get it. (If
+> there is already a method, please kindly let me know, thanks.)
 
-Looking at the disassembly, they are gone here (not that I'm fluent).
-I then tried to compile devmem2 with -O0 (instead of -Os) and the read
-is then fine. So, I guess the devmem2 devs could claim that it's a
-buildroot issue, but a volatile would certainly have helped...
+Nope. We have the ECCGETLAYOUT ioctl, but it's not reliable because of
+the MTD_MAX_OOBFREE_ENTRIES limitation.
 
-Cheers,
-Peter
+> 
+> One problem I know is to do Jffs2 type flash erase using MTD user-space
+> tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
+> free area, but it can not get OOB available size.
+
+That's a good reason to expose this property indeed. Do you plan to fix
+mtd-utils to use the sysfs value when it's available? Also, do we need
+to expose the ECC/free layout as done with the
+ECCGETLAYOUT/MEMGETOOBSEL ioctls?
