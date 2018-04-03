@@ -1,29 +1,23 @@
-Date: Tue, 3 Apr 2018 09:32:29 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Peter Rosin <peda@axentia.se>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Josh Wu <rainyfeeling@outlook.com>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-Message-ID: <20180403093229.66dd1dcf@bbrezillon>
-In-Reply-To: <20180403091522.1a498544@bbrezillon>
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon>
- <20180402222020.1d344c14@bbrezillon>
- <d9da5ae4-68d0-df88-1214-f53f6b18d718@axentia.se>
- <20180403091522.1a498544@bbrezillon>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3GRy-0003R9-DG
+ for linux-mtd@lists.infradead.org; Tue, 03 Apr 2018 07:34:06 +0000
+Date: Tue, 3 Apr 2018 09:33:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 05/15] mtd: nand: pxa3xx: remove the dmaengine compat need
+Message-ID: <20180403093336.6748bd3a@xps13>
+In-Reply-To: <20180402142656.26815-6-robert.jarzmik@free.fr>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-6-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,39 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 3 Apr 2018 09:15:22 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> 
-> > 
-> > to
-> > 
-> >  0 33--3--3--3333--
-> >  1 33--3--3--3333--
-> >  2 33--------------
-> >  3 -3--------333---
-> >  4 33--------------
-> >  5 3---------------
-> >  6 33--33-33333333-
-> >  7 --1-1--3--------
-> >  8 -1---1--3--3----  
-> 
-> Why do you change priority on slave 7 and 8 (AKA DDR port 0 and 1)?
-> They don't seem to be used by the LCDC.
-> 
-> >  9 --1-1--3-33-333-  
-> 
-> Shouldn't we have
-> 
->    9 -1---1--3--1----
-> 
-> here?
+Hi Robert,
 
-Never mind. I just read the email where you explain the datasheet vs
-reality mismatch after this one.
+On Mon,  2 Apr 2018 16:26:46 +0200, Robert Jarzmik
+<robert.jarzmik@free.fr> wrote:
 
-I guess we'll have to wait for a Nicolas' feedback here.
+> From: Robert Jarzmik <robert.jarzmik@renault.com>
+>=20
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
+>=20
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+>=20
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
+This file has been "replaced" by marvell_nand.c in mtd/next. Once -rc1
+will be out, could you do the same change in that file?
+
+Thanks,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
