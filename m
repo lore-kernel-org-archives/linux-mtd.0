@@ -1,29 +1,20 @@
-Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+Received: from mail-am5eur03on061e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe08::61e]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3ePi-0004PM-ND
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 09:09:08 +0000
-Received: by mail-wr0-x229.google.com with SMTP id n2so18044697wrj.7
- for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2018 02:08:55 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
-To: Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>
-References: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
- <20180227165142.GL2424@lahna.fi.intel.com>
- <20180403134836.GD2173@lahna.fi.intel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <cf459344-c3aa-5bf7-c013-782a402d797c@gmail.com>
-Date: Wed, 4 Apr 2018 10:21:45 +0200
+ id 1f3fKV-00063L-DR
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 10:07:49 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@exceet.de, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [RFC PATCH 0/4] mtd: spi-nor: Add NXP FlexSPI driver
+Date: Wed,  4 Apr 2018 15:36:07 +0530
+Message-Id: <1522836371-2828-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20180403134836.GD2173@lahna.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/03/2018 03:48 PM, Mika Westerberg wrote:
-> On Tue, Feb 27, 2018 at 06:51:42PM +0200, Mika Westerberg wrote:
->> On Mon, Feb 05, 2018 at 02:32:59PM +0300, Mika Westerberg wrote:
->>> Changes from v1:
->>>
->>>   - Added atomic_preopcode field and only when it is set, enable atomic
->>>     sequence.
->>>   - Return -EINVAL if the requested WREN operation cannot be found from
->>>     PREOP register instead of silently pretending it is supported.
->>>   - Updated patch subject to match more closely what is being fixed.
->>
->> Any comments on these two? I did the changes Cyrille asked me to do.
-> 
-> Ping. If no comments, could someone pick these up please.
-> 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+Add NXP FlexSPI driver
+
+NXP uses FlexSPI controller.
+The FlexSPI(Flex Serial Peripheral controller) acts as an interface
+to external serial flash devices, maximum 4, each with upto 8 bidirectional
+data lines.
+
+(1) The FlexSPI controller is driven by the LUT(Look-up Table) registers.
+ The LUT registers are a look-up-table for sequences of instructions.
+ A valid sequence consists of four LUT registers.
+
+(2) The definition of the LUT register shows below:
+ ---------------------------------------------------
+ | INSTR1 | PAD1 | OPRND1 | INSTR0 | PAD0 | OPRND0 |
+ ---------------------------------------------------
+
+ There are several types of INSTRx, such as:
+ CMD     : the SPI NOR command.
+ ADDR    : the address for the SPI NOR command.
+ DUMMY   : the dummy cycles needed by the SPI NOR command.
+ ....
+
+ There are several types of PADx, such as:
+ PAD1    : use single I/O line.
+ PAD2    : use dual I/O lines.
+ PAD4    : use quad I/O lines.
+ PAD8    : use octal I/O lines.
+ ....
+
+(3) LUTs are being created at run-time based on the commands passed from
+ the spi-nor framework.
+
+(4) Mode [single, dual, quad or octal] bit information derived from device
+ tree by parsing spi-rx-bus-width and spi-tx-bus-width property.
+
+(5) Tested this driver with the mtd_debug utility on NXP LX2160
+ emulator platform.
+
+This series added below patches:
+- Added entry for mt35xu512aba NOR flash in spi_nor_ids table
+- Add flags for Octal I/O data transfer in spi/spi.h
+- Add binding file for NXP FlexSPI driver
+- Add NXP FlexSPI driver in mtd interface
+
+Yogesh Gaur (4):
+  mtd: spi-nor: Add entry for mt35xu512aba flash
+  spi: add flags for octal I/O data transfer
+  dt-bindings: Add binding file for NXP FlexSPI driver
+  mtd: spi-nor: Add NXP FlexSPI driver
+
+ .../devicetree/bindings/mtd/nxp-flexspi.txt        |   40 +
+ MAINTAINERS                                        |    7 +
+ drivers/mtd/spi-nor/Kconfig                        |    7 +
+ drivers/mtd/spi-nor/Makefile                       |    1 +
+ drivers/mtd/spi-nor/nxp-flexspi.c                  | 1508 ++++++++++++++++++++
+ drivers/mtd/spi-nor/spi-nor.c                      |    7 +-
+ include/linux/mtd/cfi.h                            |    1 +
+ include/linux/mtd/spi-nor.h                        |    1 +
+ include/linux/spi/spi.h                            |    2 +
+ 9 files changed, 1573 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nxp-flexspi.txt
+ create mode 100644 drivers/mtd/spi-nor/nxp-flexspi.c
 
 -- 
-Best regards,
-Marek Vasut
+1.9.1
