@@ -1,24 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3cXD-0000GX-G8
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 07:08:45 +0000
-Date: Wed, 4 Apr 2018 09:08:31 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>
-Cc: Xidong Wang <wangxidong_97@163.com>, Mans Rullgard <mans@mansr.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/1] mtd:nand:fix memory leak
-Message-ID: <20180404090831.37e85d59@bbrezillon>
-In-Reply-To: <20180404090710.4f74b5b4@bbrezillon>
-References: <1522811151-18853-1-git-send-email-wangxidong_97@163.com>
- <20180404082807.0f211578@xps13>
- <20180404090710.4f74b5b4@bbrezillon>
+Received: from mail-wr0-x229.google.com ([2a00:1450:400c:c0c::229])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3ePi-0004PM-ND
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 09:09:08 +0000
+Received: by mail-wr0-x229.google.com with SMTP id n2so18044697wrj.7
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2018 02:08:55 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
+To: Mika Westerberg <mika.westerberg@linux.intel.com>,
+ linux-mtd@lists.infradead.org
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Anthony Wong <anthony.wong@canonical.com>, Bin Meng <bmeng.cn@gmail.com>
+References: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
+ <20180227165142.GL2424@lahna.fi.intel.com>
+ <20180403134836.GD2173@lahna.fi.intel.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <cf459344-c3aa-5bf7-c013-782a402d797c@gmail.com>
+Date: Wed, 4 Apr 2018 10:21:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180403134836.GD2173@lahna.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,66 +33,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Apr 2018 09:07:10 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On 04/03/2018 03:48 PM, Mika Westerberg wrote:
+> On Tue, Feb 27, 2018 at 06:51:42PM +0200, Mika Westerberg wrote:
+>> On Mon, Feb 05, 2018 at 02:32:59PM +0300, Mika Westerberg wrote:
+>>> Changes from v1:
+>>>
+>>>   - Added atomic_preopcode field and only when it is set, enable atomic
+>>>     sequence.
+>>>   - Return -EINVAL if the requested WREN operation cannot be found from
+>>>     PREOP register instead of silently pretending it is supported.
+>>>   - Updated patch subject to match more closely what is being fixed.
+>>
+>> Any comments on these two? I did the changes Cyrille asked me to do.
+> 
+> Ping. If no comments, could someone pick these up please.
+> 
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-> On Wed, 4 Apr 2018 08:28:07 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Hi Xidong,
-> > 
-> > As part of a reorganization in the NAND subsystem, you should now
-> > prefix your commit title this way:
-> > 
-> >         mtd: rawnand: tango: fix memory leak
-> > 
-> > Not sure if this patch is candidate to cc:stable?
-> > 
-> > On Wed,  4 Apr 2018 11:05:51 +0800, Xidong Wang
-> > <wangxidong_97@163.com> wrote:
-> >   
-> > > In function tango_nand_probe(), the memory allocated by
-> > > clk_get() is not released on the normal path and
-> > > the error path that IS_ERR(nfc->chan) returns true.    
-> > 
-> > The fact that the error path returns true looks out of topic, can you
-> > remove it? Just saying that you fix a memory leak is enough I guess.
-> >   
-> > > This will result in a memory leak bug.
-> > > 
-> > > Signed-off-by: Xidong Wang <wangxidong_97@163.com>
-> > > ---
-> > >  drivers/mtd/nand/tango_nand.c | 5 ++++-
-> > >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/tango_nand.c b/drivers/mtd/nand/tango_nand.c
-> > > index c5bee00b..8083459 100644
-> > > --- a/drivers/mtd/nand/tango_nand.c
-> > > +++ b/drivers/mtd/nand/tango_nand.c
-> > > @@ -648,12 +648,15 @@ static int tango_nand_probe(struct platform_device *pdev)
-> > >  		return PTR_ERR(clk);
-> > >  
-> > >  	nfc->chan = dma_request_chan(&pdev->dev, "rxtx");
-> > > -	if (IS_ERR(nfc->chan))
-> > > +	if (IS_ERR(nfc->chan)) {
-> > > +		clk_put(clk);
-> > >  		return PTR_ERR(nfc->chan);
-> > > +	}
-> > >  
-> > >  	platform_set_drvdata(pdev, nfc);
-> > >  	nand_hw_control_init(&nfc->hw);
-> > >  	nfc->freq_kHz = clk_get_rate(clk) / 1000;
-> > > +	clk_put(clk);    
-> > 
-> > If the clock is used only here, better do the frequency derivation
-> > right after the clock_get(), and follow with a clk_put()? This way you
-> > don't have to change the error path and 'related' actions remain
-> > grouped.  
-> 
-> Hm, definitely not a good idea to release the reference you have on the
-> clk if the driver depends on it. I recommend using devm_clk_get() to
-> solve this leak.
-> 
-
-BTW, it's also weird that the driver does not prepare_enable the clk.
-Mark, any comments?
+-- 
+Best regards,
+Marek Vasut
