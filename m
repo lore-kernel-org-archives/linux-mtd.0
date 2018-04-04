@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3hkZ-0001oK-Fo
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 12:42:53 +0000
+ id 1f3hkl-0001pY-Pq
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 12:43:05 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@free-electrons.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -12,12 +12,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 0/9] Update for QCOM NAND driver
-Date: Wed,  4 Apr 2018 18:12:16 +0530
-Message-Id: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 2/9] mtd: nand: qcom: wait for desc completion in all BAM
+ channels
+Date: Wed,  4 Apr 2018 18:12:18 +0530
+Message-Id: <1522845745-6624-3-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +27,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series mainly deals with error handling and erased page
-bitflip detection for QCOM NAND driver.
+The BAM has 3 channels - tx, rx and command. command channel
+is used for register read/writes, tx channel for data writes
+and rx channel for data reads. Currently, the driver assumes the
+transfer completion once it gets all the command descriptor
+completed. Sometimes, there is race condition in data channel
+(tx/rx) and command channel completion and in these cases,
+the data in buffer is not valid during the small window between
+command descriptor completion and data descriptor completion.
 
-1. The error handling was missing for some of the cases so fixed
-   the same.
+Now, the changes have been made to assign the callback for
+channel's final descriptor. The DMA will generate the callback
+when all the descriptor have completed in that channel.
+The NAND transfer will be completed only when all required
+DMA channels have generated the completion callback.
 
-2. Add the support for taking ECC strength from ONFI parameter.
-   The earlier QCOM boards were coming with 4-bit ECC chip but
-   now the same boards are coming with 8-bit ECC chip since the
-   earlier 4-bit parts are obsolete from some vendors.
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+ drivers/mtd/nand/qcom_nandc.c | 55 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 54 insertions(+), 1 deletion(-)
 
-3. We got few issues related with NAND erased page bitflips. The
-   QCOM NAND controller can’t detect the bitflip in completely erased
-   page so added the support to detect the same. It implemented the
-   logic mentioned in patch [1] which didn’t go in mainline and later
-   the generic functions were provided [2] to count the number of
-   bitflips and make all 0xff. This patch series did some optimization
-   logic to prevent the unnecessary full page raw read and data copy
-   from QCOM NAND controller to DMA.
-
-4. Following are the testing done for these patches in QCOM IPQ8074
-   HK01 (4-bit and 8-bit ECC chip) and IPQ806x AP148 boards.
-    a. Run all mtd test and check if it passes
-    b. Introduce custom bitflips in erased page and check if it
-       returns no error/EUCLEAN/EBADMSG depending upon number of
-       bitflips and position.
-    c. Introduce failure condition for operational failure and
-       check if it detects the same.
-
-[1]: https://patchwork.ozlabs.org/patch/328994/
-[2]: https://patchwork.ozlabs.org/patch/509970/
-
-Abhishek Sahu (9):
-  mtd: nand: qcom: use the ecc strength from device parameter
-  mtd: nand: qcom: wait for desc completion in all BAM channels
-  mtd: nand: qcom: erased page detection for uncorrectable errors only
-  mtd: nand: qcom: fix null pointer access for erased buffer detection
-  mtd: nand: qcom: parse read errors for read oob also
-  mtd: nand: qcom: support for checking read errors for last codeword
-  mtd: nand: qcom: check for operation errors in case of raw read
-  mtd: nand: qcom: helper function for raw read
-  mtd: nand: qcom: erased page bitflips detection
-
- drivers/mtd/nand/qcom_nandc.c | 468 ++++++++++++++++++++++++++++++------------
- 1 file changed, 333 insertions(+), 135 deletions(-)
-
+diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+index 8dd40de..17321fc 100644
+--- a/drivers/mtd/nand/qcom_nandc.c
++++ b/drivers/mtd/nand/qcom_nandc.c
+@@ -213,6 +213,8 @@
+ #define QPIC_PER_CW_CMD_SGL		32
+ #define QPIC_PER_CW_DATA_SGL		8
+ 
++#define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
++
+ /*
+  * Flags used in DMA descriptor preparation helper functions
+  * (i.e. read_reg_dma/write_reg_dma/read_data_dma/write_data_dma)
+@@ -245,6 +247,11 @@
+  * @tx_sgl_start - start index in data sgl for tx.
+  * @rx_sgl_pos - current index in data sgl for rx.
+  * @rx_sgl_start - start index in data sgl for rx.
++ * @first_chan_done - if current transfer already has got first channel
++ *		      DMA desc completion.
++ * @txn_done - completion for nand transfer.
++ * @last_data_desc - last DMA desc in data channel (tx/rx).
++ * @last_cmd_desc - last DMA desc in command channel.
+  */
+ struct bam_transaction {
+ 	struct bam_cmd_element *bam_ce;
+@@ -258,6 +265,10 @@ struct bam_transaction {
+ 	u32 tx_sgl_start;
+ 	u32 rx_sgl_pos;
+ 	u32 rx_sgl_start;
++	bool first_chan_done;
++	struct completion txn_done;
++	struct dma_async_tx_descriptor *last_data_desc;
++	struct dma_async_tx_descriptor *last_cmd_desc;
+ };
+ 
+ /*
+@@ -504,6 +515,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+ 
+ 	bam_txn->data_sgl = bam_txn_buf;
+ 
++	init_completion(&bam_txn->txn_done);
++
+ 	return bam_txn;
+ }
+ 
+@@ -523,11 +536,36 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+ 	bam_txn->tx_sgl_start = 0;
+ 	bam_txn->rx_sgl_pos = 0;
+ 	bam_txn->rx_sgl_start = 0;
++	bam_txn->last_data_desc = NULL;
++	bam_txn->first_chan_done = false;
+ 
+ 	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
+ 		      QPIC_PER_CW_CMD_SGL);
+ 	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
+ 		      QPIC_PER_CW_DATA_SGL);
++
++	reinit_completion(&bam_txn->txn_done);
++}
++
++/* Callback for DMA descriptor completion */
++static void qpic_bam_dma_done(void *data)
++{
++	struct bam_transaction *bam_txn = data;
++
++	/*
++	 * In case of data transfer with NAND, 2 callbacks will be generated.
++	 * One for command channel and another one for data channel.
++	 * If current transaction has data descriptors then check if its
++	 * already got one DMA channel completion callback. In this case
++	 * make the NAND transfer complete otherwise mark first_chan_done true
++	 * and wait for next channel DMA completion callback.
++	 */
++	if (bam_txn->last_data_desc && !bam_txn->first_chan_done) {
++		bam_txn->first_chan_done = true;
++		return;
++	}
++
++	complete(&bam_txn->txn_done);
+ }
+ 
+ static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+@@ -756,6 +794,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
+ 
+ 	desc->dma_desc = dma_desc;
+ 
++	/* update last data/command descriptor */
++	if (chan == nandc->cmd_chan)
++		bam_txn->last_cmd_desc = dma_desc;
++	else
++		bam_txn->last_data_desc = dma_desc;
++
+ 	list_add_tail(&desc->node, &nandc->desc_list);
+ 
+ 	return 0;
+@@ -1273,10 +1317,19 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+ 		cookie = dmaengine_submit(desc->dma_desc);
+ 
+ 	if (nandc->props->is_bam) {
++		bam_txn->last_cmd_desc->callback = qpic_bam_dma_done;
++		bam_txn->last_cmd_desc->callback_param = bam_txn;
++		if (bam_txn->last_data_desc) {
++			bam_txn->last_data_desc->callback = qpic_bam_dma_done;
++			bam_txn->last_data_desc->callback_param = bam_txn;
++		}
++
+ 		dma_async_issue_pending(nandc->tx_chan);
+ 		dma_async_issue_pending(nandc->rx_chan);
++		dma_async_issue_pending(nandc->cmd_chan);
+ 
+-		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
++		if (!wait_for_completion_timeout(&bam_txn->txn_done,
++						 QPIC_NAND_COMPLETION_TIMEOUT))
+ 			return -ETIMEDOUT;
+ 	} else {
+ 		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
