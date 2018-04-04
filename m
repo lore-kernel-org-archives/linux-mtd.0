@@ -1,27 +1,41 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3nzh-0006Ob-Pv
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 19:22:56 +0000
-Date: Wed, 4 Apr 2018 21:22:38 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
- linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Bin Meng <bmeng.cn@gmail.com>,
- Richard Weinberger <richard@nod.at>, Anthony Wong
- <anthony.wong@canonical.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
-Message-ID: <20180404212238.0dbeae6f@bbrezillon>
-In-Reply-To: <cf459344-c3aa-5bf7-c013-782a402d797c@gmail.com>
-References: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
- <20180227165142.GL2424@lahna.fi.intel.com>
- <20180403134836.GD2173@lahna.fi.intel.com>
- <cf459344-c3aa-5bf7-c013-782a402d797c@gmail.com>
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f3oPh-0002XU-So
+ for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 19:49:47 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>,
+ Samuel Ortiz <samuel@sortiz.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ "linux-mmc\@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ driverdevel <devel@driverdev.osuosl.org>, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 00/15] ARM: pxa: switch to DMA slave maps
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <CAPDyKFot9dAST2jQL5s8E4U=bCHxkio=uwpqPd6S0N4FWJRB-w@mail.gmail.com>
+Date: Wed, 04 Apr 2018 21:49:26 +0200
+In-Reply-To: <CAPDyKFot9dAST2jQL5s8E4U=bCHxkio=uwpqPd6S0N4FWJRB-w@mail.gmail.com>
+ (Ulf Hansson's message of "Tue, 3 Apr 2018 17:08:42 +0200")
+Message-ID: <874lkq4urd.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +45,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Apr 2018 10:21:45 +0200
-Marek Vasut <marek.vasut@gmail.com> wrote:
+Ulf Hansson <ulf.hansson@linaro.org> writes:
 
-> On 04/03/2018 03:48 PM, Mika Westerberg wrote:
-> > On Tue, Feb 27, 2018 at 06:51:42PM +0200, Mika Westerberg wrote:  
-> >> On Mon, Feb 05, 2018 at 02:32:59PM +0300, Mika Westerberg wrote:  
-> >>> Changes from v1:
-> >>>
-> >>>   - Added atomic_preopcode field and only when it is set, enable atomic
-> >>>     sequence.
-> >>>   - Return -EINVAL if the requested WREN operation cannot be found from
-> >>>     PREOP register instead of silently pretending it is supported.
-> >>>   - Updated patch subject to match more closely what is being fixed.  
-> >>
-> >> Any comments on these two? I did the changes Cyrille asked me to do.  
-> > 
-> > Ping. If no comments, could someone pick these up please.
-> >   
-> Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
-> 
+> On 2 April 2018 at 16:26, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>> Hi,
+>>
+>> This serie is aimed at removing the dmaengine slave compat use, and transfer
+>> knowledge of the DMA requestors into architecture code.
+>> As this looks like a patch bomb, each maintainer expressing for his tree either
+>> an Ack or "I want to take through my tree" will be spared in the next iterations
+>> of this serie.
+>
+> Perhaps an option is to send this hole series as PR for 3.17 rc1, that
+> would removed some churns and make this faster/easier? Well, if you
+> receive the needed acks of course.
+For 3.17-rc1 it looks a bit optimistic with the review time ... If I have all
+acks, I'll queue it into my pxa tree. If at least one maintainer withholds his
+ack, the end of the serie (phase 3) won't be applied until it is sorted out.
 
-Will queue this patches to mtd/fixes just after 4.17-rc1 is out. Sorry
-for the huge delay.
+Cheers.
 
-Regards,
-
-Boris
+--
+Robert
