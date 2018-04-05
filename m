@@ -1,56 +1,42 @@
-Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3sqF-0000vT-NH
- for linux-mtd@lists.infradead.org; Thu, 05 Apr 2018 00:33:29 +0000
-Received: by mail-qt0-x244.google.com with SMTP id g5so25205761qth.7
- for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2018 17:33:15 -0700 (PDT)
+ id 1f3yPO-0003qW-Ib
+ for linux-mtd@lists.infradead.org; Thu, 05 Apr 2018 06:30:08 +0000
+Received: by mail-it0-x242.google.com with SMTP id h143-v6so1514042ita.4
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2018 23:29:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
-References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
-From: Rob Herring <robherring2@gmail.com>
-Date: Wed, 4 Apr 2018 19:32:53 -0500
-Message-ID: <CAL_JsqJMppYaz31Gg8BH2OaAxs56dnjZ4y+nzBBp-Tt2odaqCw@mail.gmail.com>
-Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
- "Martin K . Petersen" <martin.petersen@oracle.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
- Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+In-Reply-To: <20180404215623.2bf07406@bbrezillon>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <CAPDyKFot9dAST2jQL5s8E4U=bCHxkio=uwpqPd6S0N4FWJRB-w@mail.gmail.com>
+ <874lkq4urd.fsf@belgarion.home> <20180404215623.2bf07406@bbrezillon>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 5 Apr 2018 08:29:53 +0200
+Message-ID: <CAPDyKFoFz_HgYPOMGuOTpehrTR3DtWE3uZbcnVwUwVhDy02Mow@mail.gmail.com>
+Subject: Re: [PATCH 00/15] ARM: pxa: switch to DMA slave maps
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>,
+ Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>,
- Linux IOMMU <iommu@lists.linux-foundation.org>,
- Linux USB List <linux-usb@vger.kernel.org>, linux-scsi@vger.kernel.org,
- Linux-ALSA <alsa-devel@alsa-project.org>, linux-ide@vger.kernel.org,
- "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
- <linux-crypto@vger.kernel.org>, linux-fbdev@vger.kernel.org,
- linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
- Linux I2C <linux-i2c@vger.kernel.org>, linux-iio@vger.kernel.org,
- linux-block@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- netdev <netdev@vger.kernel.org>,
- "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM"
- <linux-remoteproc@vger.kernel.org>,
- "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
- linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-ide@vger.kernel.org,
+ dmaengine@vger.kernel.org, linux-media@vger.kernel.org,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, driverdevel <devel@driverdev.osuosl.org>,
+ alsa-devel@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -61,27 +47,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 16, 2018 at 8:51 AM, Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->         Hi all,
+On 4 April 2018 at 21:56, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> On Wed, 04 Apr 2018 21:49:26 +0200
+> Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 >
-> If NO_DMA=y, get_dma_ops() returns a reference to the non-existing
-> symbol bad_dma_ops, thus causing a link failure if it is ever used.
+>> Ulf Hansson <ulf.hansson@linaro.org> writes:
+>>
+>> > On 2 April 2018 at 16:26, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>> >> Hi,
+>> >>
+>> >> This serie is aimed at removing the dmaengine slave compat use, and transfer
+>> >> knowledge of the DMA requestors into architecture code.
+>> >> As this looks like a patch bomb, each maintainer expressing for his tree either
+>> >> an Ack or "I want to take through my tree" will be spared in the next iterations
+>> >> of this serie.
+>> >
+>> > Perhaps an option is to send this hole series as PR for 3.17 rc1, that
+>> > would removed some churns and make this faster/easier? Well, if you
+>> > receive the needed acks of course.
+>> For 3.17-rc1 it looks a bit optimistic with the review time ... If I have all
 >
-> The intention of this is twofold:
->   1. To catch users of the DMA API on systems that do no support the DMA
->      mapping API,
->   2. To avoid building drivers that cannot work on such systems anyway.
->
-> However, the disadvantage is that we have to keep on adding dependencies
-> on HAS_DMA all over the place.
->
-> Thanks to the COMPILE_TEST symbol, lots of drivers now depend on one or
-> more platform dependencies (that imply HAS_DMA) || COMPILE_TEST, thus
-> already covering intention #2.  Having to add an explicit dependency on
-> HAS_DMA here is cumbersome, and hinders compile-testing.
+> Especially since 3.17-rc1 has been released more than 3 years ago :-),
+> but I guess you meant 4.17-rc1.
 
-The same can be said for CONFIG_IOMEM and CONFIG_OF. Any plans to
-remove those too? CONFIG_IOMEM is mostly just a !CONFIG_UM option.
+Yeah, I realize that I was a bit lost in time yesterday. Even more
+people have been having fun about it (me too). :-)
 
-Rob
+Kind regards
+Uffe
