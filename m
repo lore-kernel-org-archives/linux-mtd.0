@@ -1,20 +1,57 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-qt0-x244.google.com ([2607:f8b0:400d:c0d::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f3r0r-0006ib-Kv
- for linux-mtd@lists.infradead.org; Wed, 04 Apr 2018 22:36:19 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: Frank Erdrich <frank@erdrich.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS - ubifs_get_pnode.part.4: error -22 reading pnode
-Date: Thu, 05 Apr 2018 00:36:01 +0200
-Message-ID: <1874641.K4bY7NcptO@blindfold>
-In-Reply-To: <fac82fd0-1c68-8ea7-d066-65c5901ff539@erdrich.net>
-References: <95F51F4B902CAC40AF459205F6322F01B80E921AE3@BMK019S01.emtrion.local>
- <4391036.Fuyg1DPom3@blindfold>
- <fac82fd0-1c68-8ea7-d066-65c5901ff539@erdrich.net>
+ id 1f3sqF-0000vT-NH
+ for linux-mtd@lists.infradead.org; Thu, 05 Apr 2018 00:33:29 +0000
+Received: by mail-qt0-x244.google.com with SMTP id g5so25205761qth.7
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2018 17:33:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+References: <1521208314-4783-1-git-send-email-geert@linux-m68k.org>
+From: Rob Herring <robherring2@gmail.com>
+Date: Wed, 4 Apr 2018 19:32:53 -0500
+Message-ID: <CAL_JsqJMppYaz31Gg8BH2OaAxs56dnjZ4y+nzBBp-Tt2odaqCw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/21] Allow compile-testing NO_DMA (drivers)
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>,
+ Linux IOMMU <iommu@lists.linux-foundation.org>,
+ Linux USB List <linux-usb@vger.kernel.org>, linux-scsi@vger.kernel.org,
+ Linux-ALSA <alsa-devel@alsa-project.org>, linux-ide@vger.kernel.org,
+ "open list:HARDWARE RANDOM NUMBER GENERATOR CORE"
+ <linux-crypto@vger.kernel.org>, linux-fbdev@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+ Linux I2C <linux-i2c@vger.kernel.org>, linux-iio@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ netdev <netdev@vger.kernel.org>,
+ "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM"
+ <linux-remoteproc@vger.kernel.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +61,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Frank,
+On Fri, Mar 16, 2018 at 8:51 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+>         Hi all,
+>
+> If NO_DMA=y, get_dma_ops() returns a reference to the non-existing
+> symbol bad_dma_ops, thus causing a link failure if it is ever used.
+>
+> The intention of this is twofold:
+>   1. To catch users of the DMA API on systems that do no support the DMA
+>      mapping API,
+>   2. To avoid building drivers that cannot work on such systems anyway.
+>
+> However, the disadvantage is that we have to keep on adding dependencies
+> on HAS_DMA all over the place.
+>
+> Thanks to the COMPILE_TEST symbol, lots of drivers now depend on one or
+> more platform dependencies (that imply HAS_DMA) || COMPILE_TEST, thus
+> already covering intention #2.  Having to add an explicit dependency on
+> HAS_DMA here is cumbersome, and hinders compile-testing.
 
-Am Mittwoch, 4. April 2018, 06:58:40 CEST schrieb Frank Erdrich:
-> > Can you reproduce the issue?
-> > If so, please retry with the attached patches.
-> > They will not fix your already broken UBIFS but they (hopefully) will
-> > make sure that the accounting problem will not happen again.
-> 
-> That's the biggest problem. There is no way to reproduce it on a proper 
-> way. The only thing I can do at the moment is to write to the partition 
-> and do random power-cuts.
-> 
-> I will try the patches you have provided an will check if the error 
-> comes up with them or not. Unluckily I'm out of office for today, so I 
-> can start testing tomorrow.
-> 
-> > Can you also share me the broken UBIFS image?
-> 
-> I have to talk to our customer if that is ok for him, but I think that 
-> will not be a big problem. Can you give me a command line to extract 
-> that image from the flash in a way, that it is directly usable by you 
-> without do conversion stuff?.
+The same can be said for CONFIG_IOMEM and CONFIG_OF. Any plans to
+remove those too? CONFIG_IOMEM is mostly just a !CONFIG_UM option.
 
-In this case I'm just interested in UBIFS itself.
-So you can directly dd/cat from /dev/ubiX_Y.
-
-Thanks,
-//richard
-
--- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+Rob
