@@ -1,25 +1,15 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f4QWw-0001jk-T2
- for linux-mtd@lists.infradead.org; Fri, 06 Apr 2018 12:31:49 +0000
-Date: Fri, 6 Apr 2018 14:31:33 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
- parameter
-Message-ID: <20180406143133.67f33d33@xps13>
-In-Reply-To: <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
-References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f4nTG-0007eT-Q2
+ for linux-mtd@lists.infradead.org; Sat, 07 Apr 2018 13:01:32 +0000
+From: Marek Vasut <marex@denx.de>
+To: linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marex@denx.de>, Angelo Dureghello <angelo@sysam.it>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: [PATCH] mtd: spi-nor: add support for ISSI is25lp256
+Date: Sat,  7 Apr 2018 15:01:05 +0200
+Message-Id: <20180407130105.24671-1-marex@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,89 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+Add support for ISSI is25lp256 spi nor flash.
 
-On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
-<absahu@codeaurora.org> wrote:
+Signed-off-by: Marek Vasut <marex@denx.de>
+Cc: Angelo Dureghello <angelo@sysam.it>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> Currently the driver uses the ECC strength specified in
-> device tree. The ONFI or JEDEC device parameter page
-> contains the =E2=80=98ECC correctability=E2=80=99 field which indicates t=
-he
-> number of bits that the host should be able to correct per
-> 512 bytes of data.
-
-This is misleading. This field is not about the controller but rather
-the chip requirements in terms of minimal strength for nominal use.
-
-> The ecc correctability is assigned in
-> chip parameter during device probe time. QPIC/EBI2 NAND
-> supports 4/8-bit ecc correction. The Same kind of board
-> can have different NAND parts so use the ecc strength
-> from device parameter (if its non zero) instead of
-> device tree.
-
-That is not what you do.
-
-What you do is forcing the strength to be 8-bit per ECC chunk if the
-NAND chip requires at least 8-bit/chunk strength.
-
-The DT property is here to force a strength. Otherwise, Linux will
-propose to the NAND controller to use the minimum strength required by
-the chip (from either the ONFI/JEDEC parameter page or from a static
-table).
-
-IMHO, you have two solutions:
-1/ Remove these properties from the board DT (breaks DT backward
-compatibility though);
-2/ Create another DT for the board.
-
-However, there is something to do in this driver: the strength chosen
-should be limited to the controller capabilities (8-bit/512B if I
-understand correctly). In this case you have two options: either you
-limit the strength like the size [1] if (ecc->strength > 8); or you
-just limit the maximum strength to 8 like this [2] and the core will
-spawn a warning in the dmesg telling that the ECC strength used is
-below the NAND chip requirements.
-
-Thanks,
-Miqu=C3=A8l
-
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/qcom_na=
-ndc.c#L2332
-[2] http://code.bulix.org/nyf63w-315268
-
-
->=20
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->  drivers/mtd/nand/qcom_nandc.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 563b759..8dd40de 100644
-> --- a/drivers/mtd/nand/qcom_nandc.c
-> +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -2334,6 +2334,14 @@ static int qcom_nand_host_setup(struct qcom_nand_h=
-ost *host)
->  		return -EINVAL;
->  	}
-> =20
-> +	/*
-> +	 * Read the required ecc strength from NAND device and overwrite
-> +	 * the device tree ecc strength for devices which require
-> +	 * ecc correctability bits >=3D 8
-> +	 */
-> +	if (chip->ecc_strength_ds >=3D 8)
-> +		ecc->strength =3D 8;
-> +
->  	wide_bus =3D chip->options & NAND_BUSWIDTH_16 ? true : false;
-> =20
->  	if (ecc->strength >=3D 8) {
-
-
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5bfa36e95f35..a9e3f0ff0974 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1049,6 +1049,8 @@ static const struct flash_info spi_nor_ids[] = {
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
++	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
++			SECT_4K | SPI_NOR_DUAL_READ) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+-- 
+2.16.2
