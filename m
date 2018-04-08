@@ -1,20 +1,22 @@
-Message-ID: <1523150792.14673.2.camel@mhfsdcap03>
-Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <linux-mtd@lists.infradead.org>
-Date: Sun, 8 Apr 2018 09:26:32 +0800
-In-Reply-To: <20180404220541.27bed79a@bbrezillon>
-References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
- <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
- <20180402141505.33051c14@bbrezillon>	<1522723618.3504.7.camel@mhfsdcap03>
- <20180403104354.03895246@bbrezillon>	<1522748411.3673.12.camel@mhfsdcap03>
- <20180403121406.3f14a4b7@bbrezillon>	<1522753263.3673.16.camel@mhfsdcap03>
- <20180404220541.27bed79a@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f54O0-0005bP-7r
+ for linux-mtd@lists.infradead.org; Sun, 08 Apr 2018 07:05:13 +0000
+From: NeilBrown <neil@brown.name>
+To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Marek Vasut <marek.vasut@gmail.com>
+Date: Sun, 08 Apr 2018 17:04:44 +1000
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: clear Extended Address Reg on switch to 3-byte
+ addressing.
+Message-ID: <874lkmw54j.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,73 +26,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-04-04 at 22:05 +0200, Boris Brezillon wrote:
-> On Tue, 3 Apr 2018 19:01:03 +0800
-> xiaolei li <xiaolei.li@mediatek.com> wrote:
-> 
-> > On Tue, 2018-04-03 at 12:14 +0200, Boris Brezillon wrote:
-> > > On Tue, 3 Apr 2018 17:40:11 +0800
-> > > xiaolei li <xiaolei.li@mediatek.com> wrote:
-> > >   
-> > > > On Tue, 2018-04-03 at 10:43 +0200, Boris Brezillon wrote:  
-> > > > > On Tue, 3 Apr 2018 10:46:58 +0800
-> > > > > xiaolei li <xiaolei.li@mediatek.com> wrote:
-> > > > >     
-> > > > > > Hello Boris,
-> > > > > > 
-> > > > > > On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:    
-> > > > > > > Hi Xiaolei,
-> > > > > > > 
-> > > > > > > On Mon, 2 Apr 2018 16:20:10 +0800
-> > > > > > > Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-> > > > > > >       
-> > > > > > > > Expose mtd OOB available size by sysfs file. Then users can get available
-> > > > > > > > OOB size by accessing /sys/class/mtd/mtdX/oobavail.      
-> > > > > > > 
-> > > > > > > May I ask why you need to expose that? I'm not against exposing new
-> > > > > > > things through sysfs, but since this is part of the ABI, I'd like to be
-> > > > > > > sure we actually need it.
-> > > > > > >       
-> > > > > > That is user-space can write OOB data through ioctl MEMWRITE now.
-> > > > > > If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
-> > > > > > OOB available bytes it can use. But I didn't find a way to get it. (If
-> > > > > > there is already a method, please kindly let me know, thanks.)    
-> > > > > 
-> > > > > Nope. We have the ECCGETLAYOUT ioctl, but it's not reliable because of
-> > > > > the MTD_MAX_OOBFREE_ENTRIES limitation.
-> > > > >     
-> > > > > > 
-> > > > > > One problem I know is to do Jffs2 type flash erase using MTD user-space
-> > > > > > tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
-> > > > > > free area, but it can not get OOB available size.    
-> > > > > 
-> > > > > That's a good reason to expose this property indeed. Do you plan to fix
-> > > > > mtd-utils to use the sysfs value when it's available? Also, do we need
-> > > > > to expose the ECC/free layout as done with the
-> > > > > ECCGETLAYOUT/MEMGETOOBSEL ioctls?
-> > > > >     
-> > > > Yes. I plan to fix mtd-utils problem if this change is accepted.
-> > > > 
-> > > > struct nand_oobinfo and struct nand_ecclayout_user in mtd-abi.h are
-> > > > obsoleted, and user can not get oob layout by ioctl method now.
-> > > > sysfs seems a method to fetch oob layout. But I don't know which
-> > > > user-space case will use oob layout now. Maybe expose them in the future
-> > > > if they are really needed?  
-> > > 
-> > > If the layout is not needed yet, let's not expose it. BTW, are you
-> > > really using JFFS2 on modern NAND chips? Sounds like a bad idea to me.  
-> > Yes. I tested Micron SLC NAND with 4K page size and 224 OOB size these
-> > days. Jffs2 runs good on this NAND.
-> 
-> Yes, it should work, but I'm not sure JFFS2 scales well on >128MB
-> NANDs, and people tend to use UBI on such devices nowadays (this + the
-> fact that JFFS2 is not actively maintained).
-Yes.
-> 
-> Anyway, I guess your change is acceptable, I'd just like to see
-> patches for mtd-utils using this sysfs entry now ;-).
-OK. Thanks. I will send mtd-utils patches ASAP.
-> 
-> Regards,
-> 
-> Boris
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+
+According to section
+   8.2.7 Write Extended Address Register (C5h)
+
+of the Winbond W25Q256FV data sheet (256M-BIT SPI flash)
+
+   The Extended Address Register is only effective when the device is
+   in the 3-Byte Address Mode.  When the device operates in the 4-Byte
+   Address Mode (ADS=3D1), any command with address input of A31-A24
+   will replace the Extended Address Register values. It is
+   recommended to check and update the Extended Address Register if
+   necessary when the device is switched from 4-Byte to 3-Byte Address
+   Mode.
+
+This patch adds code to implement that recommendation.  Without this,
+my GNUBEE-PC1 will not successfully reboot, as the Extended Address
+Register is left with a value of '1'. When the SOC attempts to read
+(in 3-byte address mode) the boot loader, it reads from the wrong
+location.
+
+Signed-off-by: NeilBrown <neil@brown.name>
+=2D--
+ drivers/mtd/spi-nor/spi-nor.c | 10 ++++++++++
+ include/linux/mtd/spi-nor.h   |  2 ++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d445a4d3b770..c303bf0d2982 100644
+=2D-- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -269,6 +269,7 @@ static inline int set_4byte(struct spi_nor *nor, const =
+struct flash_info *info,
+ 	int status;
+ 	bool need_wren =3D false;
+ 	u8 cmd;
++	u8 val;
+=20
+ 	switch (JEDEC_MFR(info)) {
+ 	case SNOR_MFR_MICRON:
+@@ -283,6 +284,15 @@ static inline int set_4byte(struct spi_nor *nor, const=
+ struct flash_info *info,
+ 		status =3D nor->write_reg(nor, cmd, NULL, 0);
+ 		if (need_wren)
+ 			write_disable(nor);
++		if (!status && !enable &&
++		    nor->read_reg(nor, SPINOR_OP_RDXA, &val, 1) =3D=3D 0 &&
++		    val !=3D 0) {
++			/* need to reset the Extended Address Register */
++			write_enable(nor);
++			val =3D 0;
++			nor->write_reg(nor, SPINOR_OP_WRXA, &val, 1);
++			write_disable(nor);
++		}
+=20
+ 		return status;
+ 	default:
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index de36969eb359..42954419cfdf 100644
+=2D-- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -62,6 +62,8 @@
+ #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+ #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+ #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
++#define SPINOR_OP_RDXA		0xc8	/* Read Extended Address Register */
++#define SPINOR_OP_WRXA		0xc5	/* Write Extended Address Register */
+=20
+ /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+ #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+=2D-=20
+2.14.0.rc0.dirty
+
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlrJvwwACgkQOeye3VZi
+gbkV3A/+NvOnM5VU3pW4nS9rZnQ4zrCRmGF5IqmTm95eLLRRbhMlUXymQxToVFjW
+wFdPvnogqaFvUnBBE/YuzLvWwuwLk4YCSt3du0fxWXAN60jCRRm2PM4ATxrYjaDK
+qFu4exU2aWf/BFnuNgH3ydH9uhU69b9oEc1RQ+MqRam1SLDucg1grGFsbFRVR3bV
+L77Q0TsxCwGqLBS7Znc+A+kUJ1M1Pq2Uw55JZhB/3178d+K0A951LjUXBLG95jjh
+hURozyDaJpqeWVaIHbMn2lANt2WXDC9b/fj02/8gScACcYrEfuHbGtYJAMDktX4I
+eO8QTPqQ1aKPlYWrUpm+etHFjoHu1n6yUSd6OP9Abg+L3B0PQrMWX3mX/AAbn/AV
+Gh1Mk4V3DDERZz1Yibnb9drRxK5R3X2Y3Rxbm+5Yn+5QlYeHFeg7ZOkW9iZuVA+n
+K7Ke7xCmeLBE6wJHO0PNHYTEJT+LNbU6XIfQoPnEiU7W1rvjdxkWXOo6ggKi3rSn
+N+64yqOrqj+ZqR1ndSe9GsCewxcUIcE80VvyDerxNlGepDVrQvaybANC4zFRt5hB
+ZVygUBI9LMdA3kKw8egve0B0ylAY0ViWIVVmA7462KlAjVZ4q8BY6KpjWlnsf3nb
+RCt0R4tQa5Mje2rf5kanzsYQdFSLIP61DiC6EYkynloKOPnWsBs=
+=S+TY
+-----END PGP SIGNATURE-----
+--=-=-=--
