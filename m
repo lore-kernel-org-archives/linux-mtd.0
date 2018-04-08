@@ -1,16 +1,20 @@
-Received: from secvs02.rockwellcollins.com ([205.175.225.241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f4qXW-0000TE-No
- for linux-mtd@lists.infradead.org; Sat, 07 Apr 2018 16:18:08 +0000
-Received: by mail-oi0-f72.google.com with SMTP id k13-v6so2428339oib.4
- for <linux-mtd@lists.infradead.org>; Sat, 07 Apr 2018 09:17:50 -0700 (PDT)
-MIME-Version: 1.0
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Sat, 7 Apr 2018 11:17:49 -0500
-Message-ID: <CADFuHZ71CjMPTB_GmQA6c2YRdJvYSW=ep6vPQzwXgMZxtSbR6Q@mail.gmail.com>
-Subject: ubihealthd : Question regarding the frequency of reading and scrubbing
-To: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Message-ID: <1523150792.14673.2.camel@mhfsdcap03>
+Subject: Re: [PATCH] mtd: Add sysfs attribute for mtd OOB available size
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
+ <srv_heupstream@mediatek.com>, <linux-mtd@lists.infradead.org>
+Date: Sun, 8 Apr 2018 09:26:32 +0800
+In-Reply-To: <20180404220541.27bed79a@bbrezillon>
+References: <1522657210-56833-1-git-send-email-xiaolei.li@mediatek.com>
+ <1522657210-56833-2-git-send-email-xiaolei.li@mediatek.com>
+ <20180402141505.33051c14@bbrezillon>	<1522723618.3504.7.camel@mhfsdcap03>
+ <20180403104354.03895246@bbrezillon>	<1522748411.3673.12.camel@mhfsdcap03>
+ <20180403121406.3f14a4b7@bbrezillon>	<1522753263.3673.16.camel@mhfsdcap03>
+ <20180404220541.27bed79a@bbrezillon>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-I am using ubihealthd (https://lwn.net/Articles/663751/) to trigger
-re-reads and scrubbing on NAND partitions.
-
-My question is regarding the frequency of triggering reads and scrubs,
-how can I trigger them efficiently so that it does not overkill for my
-NAND partitions, CPU and still serve it purpose of data retention?
-
-Mount type of the partition (read only/read write)  matter on the
-frequency at which I should schedule read and scrub? As per the
-default parameters, read interval is 10 times more frequent than
-scrub? Also, the read threshold varies based on the use-case or the
-default value is acceptable for all use-cases ?
-
--- 
-Ronak A Desai
-Sr. Software Engineer
-Airborne Information Solutions / RC Linux Platform Software
-MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
-Ronak.Desai@rockwellcollins.com
-https://www.rockwellcollins.com/
+On Wed, 2018-04-04 at 22:05 +0200, Boris Brezillon wrote:
+> On Tue, 3 Apr 2018 19:01:03 +0800
+> xiaolei li <xiaolei.li@mediatek.com> wrote:
+> 
+> > On Tue, 2018-04-03 at 12:14 +0200, Boris Brezillon wrote:
+> > > On Tue, 3 Apr 2018 17:40:11 +0800
+> > > xiaolei li <xiaolei.li@mediatek.com> wrote:
+> > >   
+> > > > On Tue, 2018-04-03 at 10:43 +0200, Boris Brezillon wrote:  
+> > > > > On Tue, 3 Apr 2018 10:46:58 +0800
+> > > > > xiaolei li <xiaolei.li@mediatek.com> wrote:
+> > > > >     
+> > > > > > Hello Boris,
+> > > > > > 
+> > > > > > On Mon, 2018-04-02 at 14:15 +0200, Boris Brezillon wrote:    
+> > > > > > > Hi Xiaolei,
+> > > > > > > 
+> > > > > > > On Mon, 2 Apr 2018 16:20:10 +0800
+> > > > > > > Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> > > > > > >       
+> > > > > > > > Expose mtd OOB available size by sysfs file. Then users can get available
+> > > > > > > > OOB size by accessing /sys/class/mtd/mtdX/oobavail.      
+> > > > > > > 
+> > > > > > > May I ask why you need to expose that? I'm not against exposing new
+> > > > > > > things through sysfs, but since this is part of the ABI, I'd like to be
+> > > > > > > sure we actually need it.
+> > > > > > >       
+> > > > > > That is user-space can write OOB data through ioctl MEMWRITE now.
+> > > > > > If OOB operation mode is MTD_OPS_AUTO_OOB, user should know how many
+> > > > > > OOB available bytes it can use. But I didn't find a way to get it. (If
+> > > > > > there is already a method, please kindly let me know, thanks.)    
+> > > > > 
+> > > > > Nope. We have the ECCGETLAYOUT ioctl, but it's not reliable because of
+> > > > > the MTD_MAX_OOBFREE_ENTRIES limitation.
+> > > > >     
+> > > > > > 
+> > > > > > One problem I know is to do Jffs2 type flash erase using MTD user-space
+> > > > > > tool flash_erase. flash_erase tool will program "cleanmarker" into OOB
+> > > > > > free area, but it can not get OOB available size.    
+> > > > > 
+> > > > > That's a good reason to expose this property indeed. Do you plan to fix
+> > > > > mtd-utils to use the sysfs value when it's available? Also, do we need
+> > > > > to expose the ECC/free layout as done with the
+> > > > > ECCGETLAYOUT/MEMGETOOBSEL ioctls?
+> > > > >     
+> > > > Yes. I plan to fix mtd-utils problem if this change is accepted.
+> > > > 
+> > > > struct nand_oobinfo and struct nand_ecclayout_user in mtd-abi.h are
+> > > > obsoleted, and user can not get oob layout by ioctl method now.
+> > > > sysfs seems a method to fetch oob layout. But I don't know which
+> > > > user-space case will use oob layout now. Maybe expose them in the future
+> > > > if they are really needed?  
+> > > 
+> > > If the layout is not needed yet, let's not expose it. BTW, are you
+> > > really using JFFS2 on modern NAND chips? Sounds like a bad idea to me.  
+> > Yes. I tested Micron SLC NAND with 4K page size and 224 OOB size these
+> > days. Jffs2 runs good on this NAND.
+> 
+> Yes, it should work, but I'm not sure JFFS2 scales well on >128MB
+> NANDs, and people tend to use UBI on such devices nowadays (this + the
+> fact that JFFS2 is not actively maintained).
+Yes.
+> 
+> Anyway, I guess your change is acceptable, I'd just like to see
+> patches for mtd-utils using this sysfs entry now ;-).
+OK. Thanks. I will send mtd-utils patches ASAP.
+> 
+> Regards,
+> 
+> Boris
