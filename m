@@ -1,12 +1,17 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <david.oberhollenzer@sigma-star.at>, <boris.brezillon@bootlin.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH 0/2] Fix Jffs2 type flash erase problem
-Date: Mon, 9 Apr 2018 11:10:08 +0800
-Message-ID: <1523243410-65424-1-git-send-email-xiaolei.li@mediatek.com>
+Subject: Re: [PATCH 1/2] libmtd: Add support to access OOB available size
+To: Xiaolei Li <xiaolei.li@mediatek.com>, boris.brezillon@bootlin.com
+Cc: linux-mtd@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ srv_heupstream@mediatek.com
+References: <1523243410-65424-1-git-send-email-xiaolei.li@mediatek.com>
+ <1523243410-65424-2-git-send-email-xiaolei.li@mediatek.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <99d17022-0b07-a999-b6ac-05b51df7d18d@sigma-star.at>
+Date: Mon, 9 Apr 2018 08:58:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1523243410-65424-2-git-send-email-xiaolei.li@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,43 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jffs2 clean marker is not written actually, because OOB write length is
-set to 0 when do mtd_write(). So, "-j" option of flash_erase is usless now.
+Hi,
 
-This patch adds support to access OOB available size by
-/sys/class/mtd/mtdX/oobavail. Then, user can write clean marker to OOB
-free area with the minimum size between OOB available size and 8. This
-is the same with Jffs2 itself. Please refer the function
-jffs2_write_nand_cleanmarker() in the kernel file fs/jffs2/wbuf.c.
+On 04/09/2018 05:10 AM, Xiaolei Li wrote:
+> @@ -769,6 +774,8 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, s=
+truct mtd_dev_info *mtd)
+>  		return -1;
+>  	if (dev_read_pos_int(lib->mtd_oob_size, mtd_num, &mtd->oob_size))
+>  		return -1;
+> +	if (dev_read_pos_int(lib->mtd_oobavail, mtd_num, &mtd->oobavail))
+> +		return -1;
+>  	if (dev_read_pos_int(lib->mtd_region_cnt, mtd_num, &mtd->region_cnt))
+>  		return -1;
+>  	if (dev_read_hex_int(lib->mtd_flags, mtd_num, &ret))
 
-And this patch depends on the reviewing patch "mtd: Add sysfs attribute for
-mtd OOB available size"[1].
+I'm not sure if it is a good idea to do a hard fail here, since this
+depends on a recent change to the kernel.
 
-Changes relative to:
---------------------
-tree	: https://github.com/sigma-star/mtd-utils
-branch	: master
-commit	:
-	'commit 80de29a464c7 ("mkfs.ubifs: Allow root entry in device
-	 table")'
+It might be preferable to catch and handle ENOENT, otherwise the next
+release of mtd-utils will only work on the next kernel release onward.
 
-Tests:
-------
-* do "flash_erase -j" operation on SLC NAND MT29F16G08ADBCA, which page
-  size is 4096, oob size is 224.
-* mount jffs2 file system, do "dd" test, and there is no problem.
+Maybe mtd_oobavail could to be set to some reasonable default that
+retains the current behaviour on "older" kernels?
 
-[1] https://patchwork.kernel.org/patch/10319475/
 
-Xiaolei Li (2):
-  libmtd: Add support to access OOB available size
-  misc-utils: flash_erase: Fix Jffs2 type flash erase problem
+Thanks,
 
- include/libmtd.h         | 2 ++
- lib/libmtd.c             | 7 +++++++
- lib/libmtd_int.h         | 3 +++
- misc-utils/flash_erase.c | 9 +++++----
- 4 files changed, 17 insertions(+), 4 deletions(-)
-
--- 
-1.9.1
+David
