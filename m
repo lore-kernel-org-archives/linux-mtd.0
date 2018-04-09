@@ -1,17 +1,20 @@
-Received: from mail3.emtrion.de ([80.150.99.69])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5TKF-0004FQ-Ib
- for linux-mtd@lists.infradead.org; Mon, 09 Apr 2018 09:43:01 +0000
-From: "Erdrich, Frank" <Frank.Erdrich@emtrion.de>
-To: "richard@nod.at" <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 9 Apr 2018 11:41:15 +0200
-Subject: WG: Re: UBIFS - ubifs_get_pnode.part.4: error -22 reading pnode
-Message-ID: <95F51F4B902CAC40AF459205F6322F01B80E921C5F@BMK019S01.emtrion.local>
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1f5Ta9-0002tK-9a
+ for linux-mtd@lists.infradead.org; Mon, 09 Apr 2018 09:59:27 +0000
+Date: Mon, 9 Apr 2018 11:59:12 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: David Gstir <david@sigma-star.at>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [RFC] UBIFS authentication
+Message-ID: <20180409095912.f7d35y7yjdnj2ffz@pengutronix.de>
+References: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +24,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Richard,
+Hi David,
 
-At the end of the last week I analyzed the data of our test setup. We have =
-around 26 devices in a long time test setup where we are doing several stre=
-ss tests on the devices. A typical test run is to power up the device, exec=
-ute the test, power down (hard power cut). The tests were run for around 2 =
-Weeks and we have two devices that show that error. The interesting thing a=
-bout that is that it never corrupted the root-partition, although this part=
-ition is written during every testrun. And there seems to be a pattern when=
- that error happens.
+On Wed, Jan 17, 2018 at 04:19:14PM +0100, David Gstir wrote:
+> Hi everybody!
+> 
+> ### Index Authentication
+> 
+> Through UBIFS' concept of a wandering tree, it already takes care of only
+> updating and persisting changed parts from leaf node up to the root node
+> of the full B+ tree. This enables us to augment the index nodes of the tree
+> with a hash over each node's child nodes. As a result, the index basically also
+> a Merkle tree. Since the leaf nodes of the index contain the actual filesystem
+> data, the hashes of their parent index nodes thus cover all the file contents
+> and file metadata. When a file changes, the UBIFS index is updated accordingly
+> from the leaf nodes up to the root node including the master node. This process
+> can be hooked to recompute the hash only for each changed node at the same time.
+> Whenever a file is read, UBIFS can verify the hashes from each leaf node up to
+> the root node to ensure the node's integrity.
+> 
+> To ensure the authenticity of the whole index, the UBIFS master node stores a
+> keyed hash (HMAC) over its own contents (which includes the location of the root
+> node) and the root node of the index tree. As mentioned above, the master node
+> is always written to the flash whenever the index is persisted (ie. on index
+> commit).
+> 
+> Using this approach only UBIFS index nodes and the master node are changed to
+> include a hash. All other types of nodes will remain unchanged. This reduces
+> the storage overhead which is precious for users of UBIFS (ie. embedded
+> devices).
+> 
+> 
+>                                             HMAC Master Node
+>                                                  |
+>                       ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
+>                       '     +---------------+    o  '
+>                       '     |  Master Node  |       '
+>                       '     +---------------+       '       Hash Index Node #1
+>                       '             |               '                |
+>        . . . . . . . .'. . . . . .  v . . . . . . . . . . . . . . . .|. . . . .
+>        .              '      +---------------+      '                o        .
+>        .              '      | Index Node #1 |      '                         .
+>        .              '      +---------------+      '                         .
+>        .              '        |    ...   |  (fanout: 8)                      .
+>        .              ' ' ' '  | ' ' ' '  | ' ' ' ' '                         .
+>        .               +-------+          +------+                            .
+>        .               |                         |                            .
+>        .     ' ' ' ' ' v ' ' ' ' '  ' ' ' ' ' '  v  ' ' ' ' ' ' ' ' ' ' '     .
+>        .     ' +---------------+ '  '     +---------------+             '     .
+>        .     ' | Index Node #2 | '  '     | Index Node #3 |             '     .
+>        .     ' +---------------+ '  '     +---------------+             '     .
+>        .     '   |   ...         '  '        |   ...   |                '     .
+>        . . . ' . v . . . . . . . '. ' . . .  v . . . . v . . . . . . . .' . . .
+>              ' +-----------+     '  '+----------+  +-----------+        '
+>              ' | Data Node |     '  '| INO Node |  | DENT Node |        '
+>              ' +-----------+     '  '+----------+  +-----------+        '
+>              '  o                '  '                                o  '
+>              ' '|' ' ' ' ' ' ' ' '  ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
+>                 |                                                    |
+>           Hash Index Node #2                                Hash Index Node #3
 
-During the bootup before the error from my first post pops up (ubifs_get_pn=
-ode.part.4: error -22 reading pnode) this error messages were seen on all o=
-f the two devices that have shown the other error:
+When a hash covers an index node and also its children then of course
+this is really space efficient, but this also means that in order to
+read a node we always have to read all of its children. Also adding a
+new leaf node means rehashing all siblings. Is it really worth paying
+this price to save a few bytes for more hashes?
+I would rather suggest to add a hash per child to each index node.
 
-ubi2: attaching mtd2
-ubi2: scanning is finished
-ubi2: attached mtd2 (name \"log\", size 70 MiB)
-ubi2: PEB size: 524288 bytes (512 KiB), LEB size: 516096 bytes
-ubi2: min./max. I/O unit sizes: 4096/4096, sub-page size 4096
-ubi2: VID header offset: 4096 (aligned 4096), data offset: 8192
-ubi2: good PEBs: 140, bad PEBs: 0, corrupted PEBs: 0
-ubi2: user volume: 1, internal volumes: 1, max. volumes count: 128
-ubi2: max/mean erase counter: 66/30, WL threshold: 4096, image sequence num=
-ber: 1574181447
-ubi2: available PEBs: 0, total reserved PEBs: 140, PEBs reserved for bad PE=
-B handling: 40
-ubi2: background thread \"ubi_bgt2d\" started, PID 129
-         Mounting log partition...
-UBIFS (ubi2:0): background thread \"ubifs_bgt2_0\" started, PID 145 UBIFS (=
-ubi2:0): recovery needed UBIFS assert failed in ubifs_change_lp at 559 (pid=
- 143)
-CPU: 0 PID: 143 Comm: mount Not tainted 4.9.51 #152 Hardware name: Atmel SA=
-MA5 [<c0110570>] (unwind_backtrace) from [<c010d488>] (show_stack+0x20/0x24=
-) [<c010d488>] (show_stack) from [<c0390cdc>] (dump_stack+0x24/0x28) [<c039=
-0cdc>] (dump_stack) from [<c031f7b8>] (ubifs_change_lp+0x754/0x794) [<c031f=
-7b8>] (ubifs_change_lp) from [<c030d6c8>] (ubifs_replay_journal+0x105c/0x16=
-70)
-[<c030d6c8>] (ubifs_replay_journal) from [<c0300380>] (ubifs_mount+0x1194/0=
-x1e8c) [<c0300380>] (ubifs_mount) from [<c0209ea0>] (mount_fs+0x54/0x170) [=
-<c0209ea0>] (mount_fs) from [<c0228dec>] (vfs_kern_mount+0x58/0x124) [<c022=
-8dec>] (vfs_kern_mount) from [<c022c6e0>] (do_mount+0x1bc/0xcc0) [<c022c6e0=
->] (do_mount) from [<c022d548>] (SyS_mount+0x84/0xac) [<c022d548>] (SyS_mou=
-nt) from [<c0109380>] (ret_fast_syscall+0x0/0x3c) UBIFS assert failed in pa=
-ck_bits at 242 (pid 143)
-CPU: 0 PID: 143 Comm: mount Not tainted 4.9.51 #152 Hardware name: Atmel SA=
-MA5 [<c0110570>] (unwind_backtrace) from [<c010d488>] (show_stack+0x20/0x24=
-) [<c010d488>] (show_stack) from [<c0390cdc>] (dump_stack+0x24/0x28) [<c039=
-0cdc>] (dump_stack) from [<c0319408>] (pack_bits+0x244/0x248) [<c0319408>] =
-(pack_bits) from [<c031a274>] (ubifs_pack_pnode+0xa0/0x12c) [<c031a274>] (u=
-bifs_pack_pnode) from [<c0325ad4>] (ubifs_lpt_end_commit+0x29c/0x8d4)
-[<c0325ad4>] (ubifs_lpt_end_commit) from [<c0310044>] (do_commit+0x2b4/0x5d=
-8) [<c0310044>] (do_commit) from [<c03106c0>] (ubifs_run_commit+0xcc/0x184)=
- [<c03106c0>] (ubifs_run_commit) from [<c03219ec>] (ubifs_rcvry_gc_commit+0=
-xc0/0x348)
-[<c03219ec>] (ubifs_rcvry_gc_commit) from [<c030049c>] (ubifs_mount+0x12b0/=
-0x1e8c) [<c030049c>] (ubifs_mount) from [<c0209ea0>] (mount_fs+0x54/0x170) =
-[<c0209ea0>] (mount_fs) from [<c0228dec>] (vfs_kern_mount+0x58/0x124) [<c02=
-28dec>] (vfs_kern_mount) from [<c022c6e0>] (do_mount+0x1bc/0xcc0) [<c022c6e=
-0>] (do_mount) from [<c022d548>] (SyS_mount+0x84/0xac) [<c022d548>] (SyS_mo=
-unt) from [<c0109380>] (ret_fast_syscall+0x0/0x3c) UBIFS (ubi2:0): recovery=
- completed UBIFS (ubi2:0): UBIFS: mounted UBI device 2, volume 0, name \"lo=
-g\"
-UBIFS (ubi2:0): LEB size: 516096 bytes (504 KiB), min./max. I/O unit sizes:=
- 4096 bytes/4096 bytes UBIFS (ubi2:0): FS size: 44384256 bytes (42 MiB, 86 =
-LEBs), journal size 4128769 bytes (3 MiB, 6 LEBs) UBIFS (ubi2:0): reserved =
-for root: 2096377 bytes (2047 KiB) UBIFS (ubi2:0): media format: w4/r0 (lat=
-est is w4/r0), UUID 05834B37-B18C-476F-BFA5-DB76ADF26D50, small LPT model
-systemd[1]: Mounted log partition.
+Sascha
 
-So the cycle is as follows:
-
-- power up the device
-- error " UBIFS assert failed in ubifs_change_lp" was seen during bootup
-- tests are run
-- device gets power cut
-- device is powered up again
-- error ubifs_get_pnode.part.4: error -22 reading pnode pops up during boot=
-up
-
-I'm not sure if that helps.
-I also have to retest your patches. I tried to backport them to kernel 4.9 =
-which isn't that easy due to fscrypt so I will prepare a newer kernel where=
- the patches will apply in an easier way.
-
-
-Best regards,
-Frank Erdrich
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
