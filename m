@@ -1,22 +1,14 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5nIS-0007lD-Uz
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 07:02:35 +0000
-Date: Tue, 10 Apr 2018 09:02:10 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: David Gstir <david@sigma-star.at>
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [RFC] UBIFS authentication
-Message-ID: <20180410070210.4chxbjlijoohpo5c@pengutronix.de>
-References: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
- <20180409095912.f7d35y7yjdnj2ffz@pengutronix.de>
- <9EEA8AD6-E46F-45B7-8A85-98E4CC82B1D3@sigma-star.at>
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <david.oberhollenzer@sigma-star.at>, <boris.brezillon@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
+Subject: [PATCH v2 1/3] libmtd: Add support to access OOB available size
+Date: Tue, 10 Apr 2018 15:36:55 +0800
+Message-ID: <1523345817-42627-2-git-send-email-xiaolei.li@mediatek.com>
+In-Reply-To: <1523345817-42627-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1523345817-42627-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9EEA8AD6-E46F-45B7-8A85-98E4CC82B1D3@sigma-star.at>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,128 +18,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 09, 2018 at 05:23:05PM +0200, David Gstir wrote:
-> Hi Sascha,
-> 
-> > On 09.04.2018, at 11:59, Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> > 
-> > Hi David,
-> > 
-> > On Wed, Jan 17, 2018 at 04:19:14PM +0100, David Gstir wrote:
-> >> Hi everybody!
-> >> 
-> >> ### Index Authentication
-> >> 
-> >> Through UBIFS' concept of a wandering tree, it already takes care of only
-> >> updating and persisting changed parts from leaf node up to the root node
-> >> of the full B+ tree. This enables us to augment the index nodes of the tree
-> >> with a hash over each node's child nodes. As a result, the index basically also
-> >> a Merkle tree. Since the leaf nodes of the index contain the actual filesystem
-> >> data, the hashes of their parent index nodes thus cover all the file contents
-> >> and file metadata. When a file changes, the UBIFS index is updated accordingly
-> >> from the leaf nodes up to the root node including the master node. This process
-> >> can be hooked to recompute the hash only for each changed node at the same time.
-> >> Whenever a file is read, UBIFS can verify the hashes from each leaf node up to
-> >> the root node to ensure the node's integrity.
-> >> 
-> >> To ensure the authenticity of the whole index, the UBIFS master node stores a
-> >> keyed hash (HMAC) over its own contents (which includes the location of the root
-> >> node) and the root node of the index tree. As mentioned above, the master node
-> >> is always written to the flash whenever the index is persisted (ie. on index
-> >> commit).
-> >> 
-> >> Using this approach only UBIFS index nodes and the master node are changed to
-> >> include a hash. All other types of nodes will remain unchanged. This reduces
-> >> the storage overhead which is precious for users of UBIFS (ie. embedded
-> >> devices).
-> >> 
-> >> 
-> >>                                            HMAC Master Node
-> >>                                                 |
-> >>                      ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
-> >>                      '     +---------------+    o  '
-> >>                      '     |  Master Node  |       '
-> >>                      '     +---------------+       '       Hash Index Node #1
-> >>                      '             |               '                |
-> >>       . . . . . . . .'. . . . . .  v . . . . . . . . . . . . . . . .|. . . . .
-> >>       .              '      +---------------+      '                o        .
-> >>       .              '      | Index Node #1 |      '                         .
-> >>       .              '      +---------------+      '                         .
-> >>       .              '        |    ...   |  (fanout: 8)                      .
-> >>       .              ' ' ' '  | ' ' ' '  | ' ' ' ' '                         .
-> >>       .               +-------+          +------+                            .
-> >>       .               |                         |                            .
-> >>       .     ' ' ' ' ' v ' ' ' ' '  ' ' ' ' ' '  v  ' ' ' ' ' ' ' ' ' ' '     .
-> >>       .     ' +---------------+ '  '     +---------------+             '     .
-> >>       .     ' | Index Node #2 | '  '     | Index Node #3 |             '     .
-> >>       .     ' +---------------+ '  '     +---------------+             '     .
-> >>       .     '   |   ...         '  '        |   ...   |                '     .
-> >>       . . . ' . v . . . . . . . '. ' . . .  v . . . . v . . . . . . . .' . . .
-> >>             ' +-----------+     '  '+----------+  +-----------+        '
-> >>             ' | Data Node |     '  '| INO Node |  | DENT Node |        '
-> >>             ' +-----------+     '  '+----------+  +-----------+        '
-> >>             '  o                '  '                                o  '
-> >>             ' '|' ' ' ' ' ' ' ' '  ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
-> >>                |                                                    |
-> >>          Hash Index Node #2                                Hash Index Node #3
-> > 
-> > When a hash covers an index node and also its children then of course
-> > this is really space efficient, but this also means that in order to
-> > read a node we always have to read all of its children. Also adding a
-> > new leaf node means rehashing all siblings. Is it really worth paying
-> > this price to save a few bytes for more hashes?
-> > I would rather suggest to add a hash per child to each index node.
-> 
-> What you propose is a simple tradeoff between the required on-flash storage
-> space and the amount of read operations needed to verify the index node integrity.
-> 
-> To get some numbers here: In case of SHA256 and a fanout of 8, we'd store an
-> additional 224 bytes per index node and safe 7 index node reads per tree level.
+This patch exposes OOB available size to user. Then user can use
+OOB free area according to OOB available size.
 
-To get some more numbers I analyzed some typical rootfs here. It has:
+Steps to get OOB available size:
+First, access /sys/class/mtd/mtdX/oobavail. If not exist, then
+try to get ecc layout by ioctl "ECCGETLAYOUT". If none of them
+work, set OOB available size to 0.
 
-16137 data nodes with total size 41802586
-uncompressed data size:          62380950
-2116 inode nodes with total size   347042
-2115 dent nodes with total size    148790
-2911 idx nodes with total size     547068
-Total number of branches: 23278
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ include/libmtd.h    |  2 ++
+ lib/libmtd.c        | 14 ++++++++++++++
+ lib/libmtd_int.h    |  5 +++++
+ lib/libmtd_legacy.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 64 insertions(+)
 
-With a SHA256 per branch this would add another 744896 bytes or 1.7%
-overhead to the image (1.1% if using the uncompressed data size as base).
-
-> 
-> I hope it is clear that having a single hash does _not_ mean we have to read
-> the whole tree! :)
-> 
-> Considering that UBIFS is mostly used in embedded where storage space is rather
-> precious, we opted for storing a single hash. But sure, storing a hash per
-> branch/child  is a possibility and we have to discuss if that is acceptable
-> in most use cases.
-> 
-> As for adding new leaf nodes: If we add a leaf node, we'll always have to recompute
-> the hash of every index node on the path to the root node. Even with a hash per
-> branch/child. In case of TNC split/merge operations likely even more.
-> But I don't get why you think that would mean we have to recompute the hash
-> on all siblings of that nodes? Or do you simply mean that we have to re-read all
-> those siblings to compute the hash on the parent?
-
-I mean that before we can use the "DENT Node" in the picture above we
-also have to verify the "INO Node". To get there, we also have to verify
-the unrelated "Index Node #2". so in reality we have to verify
-seven unrelated leaf nodes and another seven unrelated nodes per tree
-level before we can use a node. When changing nodes we have to make sure
-all the unrelated nodes stay in memory or we have to read them back from
-the device. Of course, some of the unrelated nodes will be used anyway
-in the next few moments, nevertheless I can imagine we pay a significant
-performance penalty for this.
-read/write throughput is another very precious resource on embedded
-systems ;)
-
-Sascha
-
+diff --git a/include/libmtd.h b/include/libmtd.h
+index db85fb4..cc24af8 100644
+--- a/include/libmtd.h
++++ b/include/libmtd.h
+@@ -66,6 +66,7 @@ struct mtd_info
+  * @min_io_size: minimum input/output unit size
+  * @subpage_size: sub-page size
+  * @oob_size: OOB size (zero if the device does not have OOB area)
++ * @oobavail: free OOB size
+  * @region_cnt: count of additional erase regions
+  * @writable: zero if the device is read-only
+  * @bb_allowed: non-zero if the MTD device may have bad eraseblocks
+@@ -84,6 +85,7 @@ struct mtd_dev_info
+ 	int min_io_size;
+ 	int subpage_size;
+ 	int oob_size;
++	int oobavail;
+ 	int region_cnt;
+ 	unsigned int writable:1;
+ 	unsigned int bb_allowed:1;
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 86c89ae..7382229 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -614,6 +614,10 @@ libmtd_t libmtd_open(void)
+ 	if (!lib->mtd_oob_size)
+ 		goto out_error;
+ 
++	lib->mtd_oobavail = mkpath(lib->mtd, MTD_OOBAVAIL);
++	if (!lib->mtd_oobavail)
++		goto out_error;
++
+ 	lib->mtd_region_cnt = mkpath(lib->mtd, MTD_REGION_CNT);
+ 	if (!lib->mtd_region_cnt)
+ 		goto out_error;
+@@ -637,6 +641,7 @@ void libmtd_close(libmtd_t desc)
+ 	free(lib->mtd_flags);
+ 	free(lib->mtd_region_cnt);
+ 	free(lib->mtd_oob_size);
++	free(lib->mtd_oobavail);
+ 	free(lib->mtd_subpage_size);
+ 	free(lib->mtd_min_io_size);
+ 	free(lib->mtd_size);
+@@ -769,6 +774,15 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd)
+ 		return -1;
+ 	if (dev_read_pos_int(lib->mtd_oob_size, mtd_num, &mtd->oob_size))
+ 		return -1;
++	if (dev_read_pos_int(lib->mtd_oobavail, mtd_num, &mtd->oobavail)) {
++		/*
++		 * Fail to access oobavail sysfs file,
++		 * try ioctl ECCGETLAYOUT. */
++		mtd->oobavail = legacy_get_mtd_oobavail1(mtd_num);
++		/* Set 0 as default if can not get valid ecc layout */
++		if (mtd->oobavail < 0)
++			mtd->oobavail = 0;
++	}
+ 	if (dev_read_pos_int(lib->mtd_region_cnt, mtd_num, &mtd->region_cnt))
+ 		return -1;
+ 	if (dev_read_hex_int(lib->mtd_flags, mtd_num, &ret))
+diff --git a/lib/libmtd_int.h b/lib/libmtd_int.h
+index 03b0863..c0514d2 100644
+--- a/lib/libmtd_int.h
++++ b/lib/libmtd_int.h
+@@ -44,6 +44,7 @@ extern "C" {
+ #define MTD_MIN_IO_SIZE  "writesize"
+ #define MTD_SUBPAGE_SIZE "subpagesize"
+ #define MTD_OOB_SIZE     "oobsize"
++#define MTD_OOBAVAIL     "oobavail"
+ #define MTD_REGION_CNT   "numeraseregions"
+ #define MTD_FLAGS        "flags"
+ 
+@@ -63,6 +64,7 @@ extern "C" {
+  * @mtd_min_io_size: minimum I/O unit size file pattern
+  * @mtd_subpage_size: sub-page size file pattern
+  * @mtd_oob_size: MTD device OOB size file pattern
++ * @mtd_oobavail: MTD device free OOB size file pattern
+  * @mtd_region_cnt: count of additional erase regions file pattern
+  * @mtd_flags: MTD device flags file pattern
+  * @sysfs_supported: non-zero if sysfs is supported by MTD
+@@ -92,6 +94,7 @@ struct libmtd
+ 	char *mtd_min_io_size;
+ 	char *mtd_subpage_size;
+ 	char *mtd_oob_size;
++	char *mtd_oobavail;
+ 	char *mtd_region_cnt;
+ 	char *mtd_flags;
+ 	unsigned int sysfs_supported:1;
+@@ -103,6 +106,8 @@ int legacy_dev_present(int mtd_num);
+ int legacy_mtd_get_info(struct mtd_info *info);
+ int legacy_get_dev_info(const char *node, struct mtd_dev_info *mtd);
+ int legacy_get_dev_info1(int dev_num, struct mtd_dev_info *mtd);
++int legacy_get_mtd_oobavail(const char *node);
++int legacy_get_mtd_oobavail1(int mtd_num);
+ 
+ #ifdef __cplusplus
+ }
+diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c
+index 46f51fd..e1ab48e 100644
+--- a/lib/libmtd_legacy.c
++++ b/lib/libmtd_legacy.c
+@@ -215,6 +215,46 @@ int legacy_mtd_get_info(struct mtd_info *info)
+ 	return 0;
+ }
+ 
++int legacy_get_mtd_oobavail(const char *node)
++{
++	struct stat st;
++	struct nand_ecclayout_user usrlay;
++	int fd, ret;
++
++	if (stat(node, &st))
++		return sys_errmsg("cannot open \"%s\"", node);
++
++	if (!S_ISCHR(st.st_mode)) {
++		errno = EINVAL;
++		return errmsg("\"%s\" is not a character device", node);
++	}
++
++	fd = open(node, O_RDONLY);
++	if (fd == -1)
++		return sys_errmsg("cannot open \"%s\"", node);
++
++	ret = ioctl(fd, ECCGETLAYOUT, &usrlay);
++	if (ret < 0) {
++		sys_errmsg("ECCGETLAYOUT ioctl request failed");
++		goto out_close;
++	}
++
++	ret = usrlay.oobavail;
++
++out_close:
++	close(fd);
++
++	return ret;
++}
++
++int legacy_get_mtd_oobavail1(int mtd_num)
++{
++	char node[sizeof(MTD_DEV_PATT) + 20];
++
++	sprintf(node, MTD_DEV_PATT, mtd_num);
++	return legacy_get_mtd_oobavail(node);
++}
++
+ /**
+  * legacy_get_dev_info - legacy version of 'mtd_get_dev_info()'.
+  * @node: name of the MTD device node
+@@ -335,6 +375,9 @@ int legacy_get_dev_info(const char *node, struct mtd_dev_info *mtd)
+ 
+ 	close(fd);
+ 
++	ret = legacy_get_mtd_oobavail(node);
++	mtd->oobavail = ret > 0 ? ret : 0;
++
+ 	/*
+ 	 * Unfortunately, the device name is not available via ioctl, and
+ 	 * we have to parse /proc/mtd to get it.
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+1.9.1
