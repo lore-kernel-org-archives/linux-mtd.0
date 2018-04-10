@@ -1,15 +1,27 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <david.oberhollenzer@sigma-star.at>, <boris.brezillon@bootlin.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v2 3/3] misc-utils: flash_erase: Fix Jffs2 type flash erase
- problem
-Date: Tue, 10 Apr 2018 15:36:57 +0800
-Message-ID: <1523345817-42627-4-git-send-email-xiaolei.li@mediatek.com>
-In-Reply-To: <1523345817-42627-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1523345817-42627-1-git-send-email-xiaolei.li@mediatek.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f5nzt-0002xA-Be
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 07:47:23 +0000
+Date: Tue, 10 Apr 2018 09:46:57 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, linux-arm-msm@vger.kernel.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Richard Weinberger
+ <richard@nod.at>, Andy Gross <andy.gross@linaro.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
+ parameter
+Message-ID: <20180410094657.63ac7ec9@xps13>
+In-Reply-To: <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
+ <20180406143133.67f33d33@xps13>
+ <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +31,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently, Jffs2 clean marker is not written actually, because the oob
-write length is set to 0 when do mtd_write().
+Hi Abhishek,
 
-So, get OOB available size at first, and set the correct clean marker
-length, then program clean marker to free OOB area.
+On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-Fixes: d7e86124d55b ("mtd-utils: Support jffs2 flash-erase for large OOB (>32b)")
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
----
- misc-utils/flash_erase.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> On 2018-04-06 18:01, Miquel Raynal wrote:
+> > Hi Abhishek,
+> >=20
+> > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
+> > <absahu@codeaurora.org> wrote:
+> >  =20
+> >> Currently the driver uses the ECC strength specified in
+> >> device tree. The ONFI or JEDEC device parameter page
+> >> contains the =E2=80=98ECC correctability=E2=80=99 field which indicate=
+s the
+> >> number of bits that the host should be able to correct per
+> >> 512 bytes of data. =20
+> >=20
+> > This is misleading. This field is not about the controller but rather
+> > the chip requirements in terms of minimal strength for nominal use.
+> >  =20
+>=20
+>   Thanks Miquel.
+>=20
+>   Yes. Its NAND chip requirement. I have used the description for
+>   NAND ONFI param page
+>=20
+>   5.6.1.24. Byte 112: Number of bits ECC correctability
+>   This field indicates the number of bits that the host should be
+>   able to correct per 512 bytes of data.
+>=20
+> >> The ecc correctability is assigned in
+> >> chip parameter during device probe time. QPIC/EBI2 NAND
+> >> supports 4/8-bit ecc correction. The Same kind of board
+> >> can have different NAND parts so use the ecc strength
+> >> from device parameter (if its non zero) instead of
+> >> device tree. =20
+> >=20
+> > That is not what you do.
+> >=20
+> > What you do is forcing the strength to be 8-bit per ECC chunk if the
+> > NAND chip requires at least 8-bit/chunk strength.
+> >=20
+> > The DT property is here to force a strength. Otherwise, Linux will
+> > propose to the NAND controller to use the minimum strength required by
+> > the chip (from either the ONFI/JEDEC parameter page or from a static
+> > table).
+> >  =20
+>=20
+>   The main problem is that the same kind of boards can have different
+>   NAND parts.
+>=20
+>   Lets assume, we have following 2 cases.
+>=20
+>   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
+>      will be zero. In this case, the ecc->strength from DT
+>      will be used
 
-diff --git a/misc-utils/flash_erase.c b/misc-utils/flash_erase.c
-index 0c9449f..e7a00ae 100644
---- a/misc-utils/flash_erase.c
-+++ b/misc-utils/flash_erase.c
-@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
- {
- 	libmtd_t mtd_desc;
- 	struct mtd_dev_info mtd;
--	int fd;
-+	int fd, cmlen = 8;
- 	unsigned long long start;
- 	unsigned int eb, eb_start, eb_cnt;
- 	bool isNAND;
-@@ -190,10 +190,11 @@ int main(int argc, char *argv[])
- 	if (jffs2) {
- 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
- 		cleanmarker.nodetype = cpu_to_je16 (JFFS2_NODETYPE_CLEANMARKER);
--		if (!isNAND)
-+		if (!isNAND) {
- 			cleanmarker.totlen = cpu_to_je32(sizeof(cleanmarker));
--		else {
-+		} else {
- 			cleanmarker.totlen = cpu_to_je32(8);
-+			cmlen = min(mtd.oobavail, 8);
- 		}
- 		cleanmarker.hdr_crc = cpu_to_je32(mtd_crc32(0, &cleanmarker, sizeof(cleanmarker) - 4));
- 	}
-@@ -242,7 +243,7 @@ int main(int argc, char *argv[])
- 
- 		/* write cleanmarker */
- 		if (isNAND) {
--			if (mtd_write(mtd_desc, &mtd, fd, eb, 0, NULL, 0, &cleanmarker, 0,
-+			if (mtd_write(mtd_desc, &mtd, fd, eb, 0, NULL, 0, &cleanmarker, cmlen,
- 					MTD_OPS_AUTO_OOB) != 0) {
- 				sys_errmsg("%s: MTD writeoob failure", mtd_device);
- 				continue;
--- 
-1.9.1
+No, the strength from DT will always be used if the property is
+present, no matter the type of chip.
+
+>   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
+>      Since QCOM nand controller can not support
+>      ECC correction greater than 8 bits so we can use 8 bit ECC
+>      itself instead of failing NAND boot completely.
+
+I understand that. But this is still not what you do.
+
+>=20
+> > IMHO, you have two solutions:
+> > 1/ Remove these properties from the board DT (breaks DT backward
+> > compatibility though); =20
+>=20
+>   - nand-ecc-strength: This is optional property in nand.txt and
+>     Required property in qcom_nandc.txt.
+
+Well, this property is not controller specific but chip specific. The
+controller driver does not rely on it, so this property should not be
+required.
+
+> We can't remove since
+>     if the device is Non ONFI/JEDEC, then ecc strength will come
+>     from DT only.
+
+We can remove it and let the core handle this (as this is generic to
+all raw NANDs and not specific to this controller driver). Try it out!
+
+However if the defaults value do not match your expectations, I think
+you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
+your strength_ds field and let you avoid using these properties.
+
+>=20
+> > 2/ Create another DT for the board.
+> >  =20
+>=20
+>   Its not about board but about part. We have IPQ8074 HK01 board
+>   with 4 bit ECC chip/8 bit ECC chip/non ONFI/JEDEC chip.
+>=20
+> > However, there is something to do in this driver: the strength chosen
+> > should be limited to the controller capabilities (8-bit/512B if I
+> > understand correctly). In this case you have two options: either you
+> > limit the strength like the size [1] if (ecc->strength > 8); =20
+>=20
+>   Limiting the strength will make all the boards with ecc strength > 8
+>   to fail completely
+>=20
+> > just limit the maximum strength to 8 like this [2] and the core will
+> > spawn a warning in the dmesg telling that the ECC strength used is
+> > below the NAND chip requirements. =20
+>=20
+>   Yes its good idea. I can update the patch with dmesg warning.
+>=20
+>   Thanks,
+>   Abhishek
+>=20
+> >=20
+> > Thanks,
+> > Miqu=C3=A8l
+> >=20
+> > [1]
+> > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/qcom_na=
+ndc.c#L2332
+> > [2] http://code.bulix.org/nyf63w-315268
+> >=20
+> >  =20
+> >>=20
+> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> >> ---
+> >>  drivers/mtd/nand/qcom_nandc.c | 8 ++++++++
+> >>  1 file changed, 8 insertions(+)
+> >>=20
+> >> diff --git a/drivers/mtd/nand/qcom_nandc.c=20
+> >> b/drivers/mtd/nand/qcom_nandc.c
+> >> index 563b759..8dd40de 100644
+> >> --- a/drivers/mtd/nand/qcom_nandc.c
+> >> +++ b/drivers/mtd/nand/qcom_nandc.c
+> >> @@ -2334,6 +2334,14 @@ static int qcom_nand_host_setup(struct=20
+> >> qcom_nand_host *host)
+> >>  		return -EINVAL;
+> >>  	}
+> >>=20
+> >> +	/*
+> >> +	 * Read the required ecc strength from NAND device and overwrite
+> >> +	 * the device tree ecc strength for devices which require
+> >> +	 * ecc correctability bits >=3D 8
+> >> +	 */
+> >> +	if (chip->ecc_strength_ds >=3D 8)
+> >> +		ecc->strength =3D 8;
+> >> +
+> >>  	wide_bus =3D chip->options & NAND_BUSWIDTH_16 ? true : false;
+> >>=20
+> >>  	if (ecc->strength >=3D 8) { =20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+Thanks,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
