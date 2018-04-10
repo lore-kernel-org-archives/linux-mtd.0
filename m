@@ -1,29 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5oK0-000376-UY
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 08:08:10 +0000
-Date: Tue, 10 Apr 2018 10:07:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Abhishek Sahu <absahu@codeaurora.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
- parameter
-Message-ID: <20180410100745.625d66f8@bbrezillon>
-In-Reply-To: <20180410095558.34c4d91f@xps13>
-References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
- <20180406143133.67f33d33@xps13>
- <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
- <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
+From: Vignesh R <vigneshr@ti.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ Vignesh R <vigneshr@ti.com>, Linux ARM
+ Mailing List <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] mtd: spi-nor: cadence-quadspi: Add DMA support for direct
+ mode reads
+Date: Tue, 10 Apr 2018 13:49:10 +0530
+Message-ID: <20180410081910.858-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,110 +20,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 Apr 2018 09:55:58 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Add support to use DMA over memory mapped reads in direct mode. This
+helps in reducing CPU usage from ~100% to ~10% when reading data from
+flash. For non-DMA'able/vmalloc'd buffers, driver just falls back to CPU
+based memcpy.
 
-> > Hi Abhishek,
-> >=20
-> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
-> > <absahu@codeaurora.org> wrote:
-> >  =20
-> > > On 2018-04-06 18:01, Miquel Raynal wrote:   =20
-> > > > Hi Abhishek,
-> > > >=20
-> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
-> > > > <absahu@codeaurora.org> wrote:
-> > > >      =20
-> > > >> Currently the driver uses the ECC strength specified in
-> > > >> device tree. The ONFI or JEDEC device parameter page
-> > > >> contains the =E2=80=98ECC correctability=E2=80=99 field which indi=
-cates the
-> > > >> number of bits that the host should be able to correct per
-> > > >> 512 bytes of data.     =20
-> > > >=20
-> > > > This is misleading. This field is not about the controller but rath=
-er
-> > > > the chip requirements in terms of minimal strength for nominal use.
-> > > >      =20
-> > >=20
-> > >   Thanks Miquel.
-> > >=20
-> > >   Yes. Its NAND chip requirement. I have used the description for
-> > >   NAND ONFI param page
-> > >=20
-> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
-> > >   This field indicates the number of bits that the host should be
-> > >   able to correct per 512 bytes of data.
-> > >    =20
-> > > >> The ecc correctability is assigned in
-> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
-> > > >> supports 4/8-bit ecc correction. The Same kind of board
-> > > >> can have different NAND parts so use the ecc strength
-> > > >> from device parameter (if its non zero) instead of
-> > > >> device tree.     =20
-> > > >=20
-> > > > That is not what you do.
-> > > >=20
-> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
-> > > > NAND chip requires at least 8-bit/chunk strength.
-> > > >=20
-> > > > The DT property is here to force a strength. Otherwise, Linux will
-> > > > propose to the NAND controller to use the minimum strength required=
- by
-> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
-> > > > table).
-> > > >      =20
-> > >=20
-> > >   The main problem is that the same kind of boards can have different
-> > >   NAND parts.
-> > >=20
-> > >   Lets assume, we have following 2 cases.
-> > >=20
-> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
-> > >      will be zero. In this case, the ecc->strength from DT
-> > >      will be used   =20
-> >=20
-> > No, the strength from DT will always be used if the property is
-> > present, no matter the type of chip.
-> >  =20
-> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
-> > >      Since QCOM nand controller can not support
-> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
-> > >      itself instead of failing NAND boot completely.   =20
-> >=20
-> > I understand that. But this is still not what you do.
-> >  =20
-> > >    =20
-> > > > IMHO, you have two solutions:
-> > > > 1/ Remove these properties from the board DT (breaks DT backward
-> > > > compatibility though);     =20
-> > >=20
-> > >   - nand-ecc-strength: This is optional property in nand.txt and
-> > >     Required property in qcom_nandc.txt.   =20
-> >=20
-> > Well, this property is not controller specific but chip specific. The
-> > controller driver does not rely on it, so this property should not be
-> > required.
-> >  =20
-> > > We can't remove since
-> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
-> > >     from DT only.   =20
-> >=20
-> > We can remove it and let the core handle this (as this is generic to
-> > all raw NANDs and not specific to this controller driver). Try it out!
-> >=20
-> > However if the defaults value do not match your expectations, I think
-> > you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
-> > your strength_ds field and let you avoid using these properties. =20
->=20
-> Actually nand_ids.c should not be filled anymore, instead you can
-> implement this detection thanks to the part full name in the vendor
-> code nand_samsung.c, nand_micron.c, nand_macronix.c, nand_hynix.c, etc.
+Signed-off-by: Vignesh R <vigneshr@ti.com>
+---
+ drivers/mtd/spi-nor/cadence-quadspi.c | 96 ++++++++++++++++++++++++++-
+ 1 file changed, 94 insertions(+), 2 deletions(-)
 
-Usually you don't have to go that far, and the ECC requirements are
-encoded somewhere in the ID (after byte 2). When that's not the
-case, you may have to check the full ID.
-
-> Depending on what part you are using, it might already work.
-
-Yep.
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 4b8e9183489a..2f3a4d4232b3 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -18,6 +18,8 @@
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/delay.h>
++#include <linux/dma-mapping.h>
++#include <linux/dmaengine.h>
+ #include <linux/err.h>
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
+@@ -73,6 +75,10 @@ struct cqspi_st {
+ 	struct completion	transfer_complete;
+ 	struct mutex		bus_mutex;
+ 
++	struct dma_chan		*rx_chan;
++	struct completion	rx_dma_complete;
++	dma_addr_t		mmap_phys_base;
++
+ 	int			current_cs;
+ 	int			current_page_size;
+ 	int			current_erase_size;
+@@ -915,11 +921,75 @@ static ssize_t cqspi_write(struct spi_nor *nor, loff_t to,
+ 	return len;
+ }
+ 
++static void cqspi_rx_dma_callback(void *param)
++{
++	struct cqspi_st *cqspi = param;
++
++	complete(&cqspi->rx_dma_complete);
++}
++
++static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
++				     loff_t from, size_t len)
++{
++	struct cqspi_flash_pdata *f_pdata = nor->priv;
++	struct cqspi_st *cqspi = f_pdata->cqspi;
++	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
++	dma_addr_t dma_src = (dma_addr_t)cqspi->mmap_phys_base + from;
++	int ret = 0;
++	struct dma_async_tx_descriptor *tx;
++	dma_cookie_t cookie;
++	dma_addr_t dma_dst;
++
++	if (!cqspi->rx_chan || !virt_addr_valid(buf)) {
++		memcpy_fromio(buf, cqspi->ahb_base + from, len);
++		return 0;
++	}
++
++	dma_dst = dma_map_single(nor->dev, buf, len, DMA_DEV_TO_MEM);
++	if (dma_mapping_error(nor->dev, dma_dst)) {
++		dev_err(nor->dev, "dma mapping failed\n");
++		return -ENOMEM;
++	}
++	tx = dmaengine_prep_dma_memcpy(cqspi->rx_chan, dma_dst, dma_src,
++				       len, flags);
++	if (!tx) {
++		dev_err(nor->dev, "device_prep_dma_memcpy error\n");
++		ret = -EIO;
++		goto err_unmap;
++	}
++
++	tx->callback = cqspi_rx_dma_callback;
++	tx->callback_param = cqspi;
++	cookie = tx->tx_submit(tx);
++	reinit_completion(&cqspi->rx_dma_complete);
++
++	ret = dma_submit_error(cookie);
++	if (ret) {
++		dev_err(nor->dev, "dma_submit_error %d\n", cookie);
++		ret = -EIO;
++		goto err_unmap;
++	}
++
++	dma_async_issue_pending(cqspi->rx_chan);
++	ret = wait_for_completion_timeout(&cqspi->rx_dma_complete,
++					  msecs_to_jiffies(len));
++	if (ret <= 0) {
++		dmaengine_terminate_sync(cqspi->rx_chan);
++		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
++		ret = -ETIMEDOUT;
++		goto err_unmap;
++	}
++
++err_unmap:
++	dma_unmap_single(nor->dev, dma_dst, len, DMA_DEV_TO_MEM);
++
++	return 0;
++}
++
+ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
+ 			  size_t len, u_char *buf)
+ {
+ 	struct cqspi_flash_pdata *f_pdata = nor->priv;
+-	struct cqspi_st *cqspi = f_pdata->cqspi;
+ 	int ret;
+ 
+ 	ret = cqspi_set_protocol(nor, 1);
+@@ -931,7 +1001,7 @@ static ssize_t cqspi_read(struct spi_nor *nor, loff_t from,
+ 		return ret;
+ 
+ 	if (f_pdata->use_direct_mode)
+-		memcpy_fromio(buf, cqspi->ahb_base + from, len);
++		ret = cqspi_direct_read_execute(nor, buf, from, len);
+ 	else
+ 		ret = cqspi_indirect_read_execute(nor, buf, from, len);
+ 	if (ret)
+@@ -1100,6 +1170,21 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+ 	cqspi_controller_enable(cqspi, 1);
+ }
+ 
++static void cqspi_request_mmap_dma(struct cqspi_st *cqspi)
++{
++	dma_cap_mask_t mask;
++
++	dma_cap_zero(mask);
++	dma_cap_set(DMA_MEMCPY, mask);
++
++	cqspi->rx_chan = dma_request_chan_by_mask(&mask);
++	if (IS_ERR(cqspi->rx_chan)) {
++		dev_err(&cqspi->pdev->dev, "No Rx DMA available\n");
++		cqspi->rx_chan = NULL;
++	}
++	init_completion(&cqspi->rx_dma_complete);
++}
++
+ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ {
+ 	const struct spi_nor_hwcaps hwcaps = {
+@@ -1177,6 +1262,9 @@ static int cqspi_setup_flash(struct cqspi_st *cqspi, struct device_node *np)
+ 			f_pdata->use_direct_mode = true;
+ 			dev_dbg(nor->dev, "using direct mode for %s\n",
+ 				mtd->name);
++
++			if (!cqspi->rx_chan)
++				cqspi_request_mmap_dma(cqspi);
+ 		}
+ 	}
+ 
+@@ -1237,6 +1325,7 @@ static int cqspi_probe(struct platform_device *pdev)
+ 		dev_err(dev, "Cannot remap AHB address.\n");
+ 		return PTR_ERR(cqspi->ahb_base);
+ 	}
++	cqspi->mmap_phys_base = (dma_addr_t)res_ahb->start;
+ 	cqspi->ahb_size = resource_size(res_ahb);
+ 
+ 	init_completion(&cqspi->transfer_complete);
+@@ -1307,6 +1396,9 @@ static int cqspi_remove(struct platform_device *pdev)
+ 
+ 	cqspi_controller_enable(cqspi, 0);
+ 
++	if (cqspi->rx_chan)
++		dma_release_channel(cqspi->rx_chan);
++
+ 	clk_disable_unprepare(cqspi->clk);
+ 
+ 	pm_runtime_put_sync(&pdev->dev);
+-- 
+2.17.0
