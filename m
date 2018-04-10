@@ -1,18 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5uzi-0001C6-BR
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 15:15:39 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f5wEK-00029g-F6
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 16:34:49 +0000
+Received: by mail-lf0-x242.google.com with SMTP id p142-v6so12588633lfd.6
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2018 09:34:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAMuHMdWm96dPSx8bms0esFaDhCri9daon0UT4x=qEqeK2XFnTA@mail.gmail.com>
+References: <1523276721-4982-1-git-send-email-geert+renesas@glider.be>
+ <9bea3ad8-7e84-87c2-9963-de81ad4cb3bf@gmail.com>
+ <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
+ <87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com>
+ <CAMuHMdWm96dPSx8bms0esFaDhCri9daon0UT4x=qEqeK2XFnTA@mail.gmail.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Tue, 10 Apr 2018 09:34:34 -0700
+Message-ID: <CALupW3CvugBA6WZ1+xf1sh5Qmz1s1V8BNSXGATzDzP_t_=6J_A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: partitions: Handle add_mtd_device() failures
+ gracefully
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
  Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: [PATCH] mtd: nand: Fix nanddev_mtd_erase()
-Date: Tue, 10 Apr 2018 17:15:13 +0200
-Message-Id: <20180410151513.27898-1-boris.brezillon@bootlin.com>
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +36,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit e7bfb3fdbde3 ("mtd: Stop updating erase_info->state and calling
-mtd_erase_callback()") removed the einfo->state field and the
-MTD_ERASE_XXX macros. At the same time, the generic NAND layer was added
-and made sure to update the erase info state.
+On Tue, Apr 10, 2018 at 7:47 AM, Geert Uytterhoeven
+<geert@linux-m68k.org> wrote:
+> Hi Marek,
+>
+> On Tue, Apr 10, 2018 at 4:37 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>> On 04/10/2018 03:26 PM, Geert Uytterhoeven wrote:
+>>> On Mon, Apr 9, 2018 at 11:59 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>>> On 04/09/2018 02:25 PM, Geert Uytterhoeven wrote:
+>>>>> Currently add_mtd_device() failures are plainly ignored, which may lead
+>>>>> to kernel crashes later.
+>>>
+>>>>> Fix this by ignoring and freeing partitions that failed to add in
+>>>>> add_mtd_partitions().  The same issue is present in mtd_add_partition(),
+>>>>> so fix that as well.
+>>>>>
+>>>>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>>> ---
+>>>>> I don't know if it is worthwhile factoring out the common handling.
+>>>>>
+>>>>> Should allocate_partition() fail instead?  There's a comment saying
+>>>>> "let's register it anyway to preserve ordering".
+>>>
+>>>>> --- a/drivers/mtd/mtdpart.c
+>>>>> +++ b/drivers/mtd/mtdpart.c
+>>>
+>>>>> @@ -746,7 +753,15 @@ int add_mtd_partitions(struct mtd_info *master,
+>>>>>               list_add(&slave->list, &mtd_partitions);
+>>>>>               mutex_unlock(&mtd_partitions_mutex);
+>>>>>
+>>>>> -             add_mtd_device(&slave->mtd);
+>>>>> +             ret = add_mtd_device(&slave->mtd);
+>>>>> +             if (ret) {
+>>>>> +                     mutex_lock(&mtd_partitions_mutex);
+>>>>> +                     list_del(&slave->list);
+>>>>> +                     mutex_unlock(&mtd_partitions_mutex);
+>>>>> +                     free_partition(slave);
+>>>>> +                     continue;
+>>>>> +             }
+>>>>
+>>>> Why is the partition even in the list in the first place ? Can we avoid
+>>>> adding it rather than adding and removing it ?
+>>>
+>>> Hence my question "Should allocate_partition() fail instead?".
+>>> Note that if we go that route, it should be a "soft" failure, as we
+>>> probably don't
+>>> want to drop all other partitions on the device.
+>> Is the number of partitions ie. in /proc/mtdparts an ABI ?
+>
+> I don't know.
+>
 
-It did not result in a build failure after merging the nand/for-4.17
-branch in mtd/next because the generic NAND layer is not selected yet.
-Let's fix that before a config option starts selecting MTD_NAND_CORE.
+I don't know if it's an ABI, but having consistent /dev/mtdX numbering
+is important, even in the case of a failed partition.  Many scripts on
+embedded systems are hard-coded to /dev/mtdX identifies with the
+expectation that they can access a particular address region of flash.
+I'm sure that's what the "let's register it anyway to preserve
+ordering" comment was trying to get across. I've even seen weird
+things in dts files where later entries specify earlier addresses in
+order to leave the old /dev/mtdX numbering alone.
 
-Fixes: e7bfb3fdbde3 ("mtd: Stop updating erase_info->state and calling mtd_erase_callback()")
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/core.c | 3 ---
- 1 file changed, 3 deletions(-)
+Obviously, a better user solution is to construct the mtdX number from
+/proc/mtd based on filtering for the name field, but not everyone
+does.
 
-diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
-index d0cd6f8635d7..9c9f8936b63b 100644
---- a/drivers/mtd/nand/core.c
-+++ b/drivers/mtd/nand/core.c
-@@ -162,7 +162,6 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
- 		ret = nanddev_erase(nand, &pos);
- 		if (ret) {
- 			einfo->fail_addr = nanddev_pos_to_offs(nand, &pos);
--			einfo->state = MTD_ERASE_FAILED;
- 
- 			return ret;
- 		}
-@@ -170,8 +169,6 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
- 		nanddev_pos_next_eraseblock(nand, &pos);
- 	}
- 
--	einfo->state = MTD_ERASE_DONE;
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(nanddev_mtd_erase);
--- 
-2.14.1
+I'd be wary about doing any fix that disturbs the numbering as you'll
+be disturbing users.  At a minum, a loud warning in the log.
+
+That said - obviously fixing the kernel crash must happen.
+
+- Steve
