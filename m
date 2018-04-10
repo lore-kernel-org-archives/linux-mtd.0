@@ -1,27 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5mTU-0004tz-OC
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 06:09:50 +0000
+ id 1f5nIS-0007lD-Uz
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 07:02:35 +0000
+Date: Tue, 10 Apr 2018 09:02:10 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: David Gstir <david@sigma-star.at>
+Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [RFC] UBIFS authentication
+Message-ID: <20180410070210.4chxbjlijoohpo5c@pengutronix.de>
+References: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
+ <20180409095912.f7d35y7yjdnj2ffz@pengutronix.de>
+ <9EEA8AD6-E46F-45B7-8A85-98E4CC82B1D3@sigma-star.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Tue, 10 Apr 2018 11:39:35 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
- parameter
-In-Reply-To: <20180406143133.67f33d33@xps13>
-References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
- <20180406143133.67f33d33@xps13>
-Message-ID: <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9EEA8AD6-E46F-45B7-8A85-98E4CC82B1D3@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,127 +26,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-06 18:01, Miquel Raynal wrote:
-> Hi Abhishek,
+On Mon, Apr 09, 2018 at 05:23:05PM +0200, David Gstir wrote:
+> Hi Sascha,
 > 
-> On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
+> > On 09.04.2018, at 11:59, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> > 
+> > Hi David,
+> > 
+> > On Wed, Jan 17, 2018 at 04:19:14PM +0100, David Gstir wrote:
+> >> Hi everybody!
+> >> 
+> >> ### Index Authentication
+> >> 
+> >> Through UBIFS' concept of a wandering tree, it already takes care of only
+> >> updating and persisting changed parts from leaf node up to the root node
+> >> of the full B+ tree. This enables us to augment the index nodes of the tree
+> >> with a hash over each node's child nodes. As a result, the index basically also
+> >> a Merkle tree. Since the leaf nodes of the index contain the actual filesystem
+> >> data, the hashes of their parent index nodes thus cover all the file contents
+> >> and file metadata. When a file changes, the UBIFS index is updated accordingly
+> >> from the leaf nodes up to the root node including the master node. This process
+> >> can be hooked to recompute the hash only for each changed node at the same time.
+> >> Whenever a file is read, UBIFS can verify the hashes from each leaf node up to
+> >> the root node to ensure the node's integrity.
+> >> 
+> >> To ensure the authenticity of the whole index, the UBIFS master node stores a
+> >> keyed hash (HMAC) over its own contents (which includes the location of the root
+> >> node) and the root node of the index tree. As mentioned above, the master node
+> >> is always written to the flash whenever the index is persisted (ie. on index
+> >> commit).
+> >> 
+> >> Using this approach only UBIFS index nodes and the master node are changed to
+> >> include a hash. All other types of nodes will remain unchanged. This reduces
+> >> the storage overhead which is precious for users of UBIFS (ie. embedded
+> >> devices).
+> >> 
+> >> 
+> >>                                            HMAC Master Node
+> >>                                                 |
+> >>                      ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
+> >>                      '     +---------------+    o  '
+> >>                      '     |  Master Node  |       '
+> >>                      '     +---------------+       '       Hash Index Node #1
+> >>                      '             |               '                |
+> >>       . . . . . . . .'. . . . . .  v . . . . . . . . . . . . . . . .|. . . . .
+> >>       .              '      +---------------+      '                o        .
+> >>       .              '      | Index Node #1 |      '                         .
+> >>       .              '      +---------------+      '                         .
+> >>       .              '        |    ...   |  (fanout: 8)                      .
+> >>       .              ' ' ' '  | ' ' ' '  | ' ' ' ' '                         .
+> >>       .               +-------+          +------+                            .
+> >>       .               |                         |                            .
+> >>       .     ' ' ' ' ' v ' ' ' ' '  ' ' ' ' ' '  v  ' ' ' ' ' ' ' ' ' ' '     .
+> >>       .     ' +---------------+ '  '     +---------------+             '     .
+> >>       .     ' | Index Node #2 | '  '     | Index Node #3 |             '     .
+> >>       .     ' +---------------+ '  '     +---------------+             '     .
+> >>       .     '   |   ...         '  '        |   ...   |                '     .
+> >>       . . . ' . v . . . . . . . '. ' . . .  v . . . . v . . . . . . . .' . . .
+> >>             ' +-----------+     '  '+----------+  +-----------+        '
+> >>             ' | Data Node |     '  '| INO Node |  | DENT Node |        '
+> >>             ' +-----------+     '  '+----------+  +-----------+        '
+> >>             '  o                '  '                                o  '
+> >>             ' '|' ' ' ' ' ' ' ' '  ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
+> >>                |                                                    |
+> >>          Hash Index Node #2                                Hash Index Node #3
+> > 
+> > When a hash covers an index node and also its children then of course
+> > this is really space efficient, but this also means that in order to
+> > read a node we always have to read all of its children. Also adding a
+> > new leaf node means rehashing all siblings. Is it really worth paying
+> > this price to save a few bytes for more hashes?
+> > I would rather suggest to add a hash per child to each index node.
 > 
->> Currently the driver uses the ECC strength specified in
->> device tree. The ONFI or JEDEC device parameter page
->> contains the ‘ECC correctability’ field which indicates the
->> number of bits that the host should be able to correct per
->> 512 bytes of data.
+> What you propose is a simple tradeoff between the required on-flash storage
+> space and the amount of read operations needed to verify the index node integrity.
 > 
-> This is misleading. This field is not about the controller but rather
-> the chip requirements in terms of minimal strength for nominal use.
-> 
+> To get some numbers here: In case of SHA256 and a fanout of 8, we'd store an
+> additional 224 bytes per index node and safe 7 index node reads per tree level.
 
-  Thanks Miquel.
+To get some more numbers I analyzed some typical rootfs here. It has:
 
-  Yes. Its NAND chip requirement. I have used the description for
-  NAND ONFI param page
+16137 data nodes with total size 41802586
+uncompressed data size:          62380950
+2116 inode nodes with total size   347042
+2115 dent nodes with total size    148790
+2911 idx nodes with total size     547068
+Total number of branches: 23278
 
-  5.6.1.24. Byte 112: Number of bits ECC correctability
-  This field indicates the number of bits that the host should be
-  able to correct per 512 bytes of data.
-
->> The ecc correctability is assigned in
->> chip parameter during device probe time. QPIC/EBI2 NAND
->> supports 4/8-bit ecc correction. The Same kind of board
->> can have different NAND parts so use the ecc strength
->> from device parameter (if its non zero) instead of
->> device tree.
-> 
-> That is not what you do.
-> 
-> What you do is forcing the strength to be 8-bit per ECC chunk if the
-> NAND chip requires at least 8-bit/chunk strength.
-> 
-> The DT property is here to force a strength. Otherwise, Linux will
-> propose to the NAND controller to use the minimum strength required by
-> the chip (from either the ONFI/JEDEC parameter page or from a static
-> table).
-> 
-
-  The main problem is that the same kind of boards can have different
-  NAND parts.
-
-  Lets assume, we have following 2 cases.
-
-  1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
-     will be zero. In this case, the ecc->strength from DT
-     will be used
-  2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
-     Since QCOM nand controller can not support
-     ECC correction greater than 8 bits so we can use 8 bit ECC
-     itself instead of failing NAND boot completely.
-
-> IMHO, you have two solutions:
-> 1/ Remove these properties from the board DT (breaks DT backward
-> compatibility though);
-
-  - nand-ecc-strength: This is optional property in nand.txt and
-    Required property in qcom_nandc.txt. We can't remove since
-    if the device is Non ONFI/JEDEC, then ecc strength will come
-    from DT only.
-
-> 2/ Create another DT for the board.
-> 
-
-  Its not about board but about part. We have IPQ8074 HK01 board
-  with 4 bit ECC chip/8 bit ECC chip/non ONFI/JEDEC chip.
-
-> However, there is something to do in this driver: the strength chosen
-> should be limited to the controller capabilities (8-bit/512B if I
-> understand correctly). In this case you have two options: either you
-> limit the strength like the size [1] if (ecc->strength > 8);
-
-  Limiting the strength will make all the boards with ecc strength > 8
-  to fail completely
-
-> just limit the maximum strength to 8 like this [2] and the core will
-> spawn a warning in the dmesg telling that the ECC strength used is
-> below the NAND chip requirements.
-
-  Yes its good idea. I can update the patch with dmesg warning.
-
-  Thanks,
-  Abhishek
+With a SHA256 per branch this would add another 744896 bytes or 1.7%
+overhead to the image (1.1% if using the uncompressed data size as base).
 
 > 
-> Thanks,
-> Miquèl
+> I hope it is clear that having a single hash does _not_ mean we have to read
+> the whole tree! :)
 > 
-> [1]
-> https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/qcom_nandc.c#L2332
-> [2] http://code.bulix.org/nyf63w-315268
+> Considering that UBIFS is mostly used in embedded where storage space is rather
+> precious, we opted for storing a single hash. But sure, storing a hash per
+> branch/child  is a possibility and we have to discuss if that is acceptable
+> in most use cases.
 > 
-> 
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>  drivers/mtd/nand/qcom_nandc.c | 8 ++++++++
->>  1 file changed, 8 insertions(+)
->> 
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index 563b759..8dd40de 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -2334,6 +2334,14 @@ static int qcom_nand_host_setup(struct 
->> qcom_nand_host *host)
->>  		return -EINVAL;
->>  	}
->> 
->> +	/*
->> +	 * Read the required ecc strength from NAND device and overwrite
->> +	 * the device tree ecc strength for devices which require
->> +	 * ecc correctability bits >= 8
->> +	 */
->> +	if (chip->ecc_strength_ds >= 8)
->> +		ecc->strength = 8;
->> +
->>  	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
->> 
->>  	if (ecc->strength >= 8) {
+> As for adding new leaf nodes: If we add a leaf node, we'll always have to recompute
+> the hash of every index node on the path to the root node. Even with a hash per
+> branch/child. In case of TNC split/merge operations likely even more.
+> But I don't get why you think that would mean we have to recompute the hash
+> on all siblings of that nodes? Or do you simply mean that we have to re-read all
+> those siblings to compute the hash on the parent?
+
+I mean that before we can use the "DENT Node" in the picture above we
+also have to verify the "INO Node". To get there, we also have to verify
+the unrelated "Index Node #2". so in reality we have to verify
+seven unrelated leaf nodes and another seven unrelated nodes per tree
+level before we can use a node. When changing nodes we have to make sure
+all the unrelated nodes stay in memory or we have to read them back from
+the device. Of course, some of the unrelated nodes will be used anyway
+in the next few moments, nevertheless I can imagine we pay a significant
+performance penalty for this.
+read/write throughput is another very precious resource on embedded
+systems ;)
+
+Sascha
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
