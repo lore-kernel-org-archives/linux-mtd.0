@@ -1,12 +1,22 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5uPC-0000O9-2m
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 14:37:55 +0000
-Received: by mail-wr0-x242.google.com with SMTP id l49so13074412wrl.4
- for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2018 07:37:43 -0700 (PDT)
+ id 1f5uYE-0004fD-II
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 14:47:16 +0000
+Received: by mail-qk0-x243.google.com with SMTP id o64so13617596qkl.7
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2018 07:47:04 -0700 (PDT)
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com>
+References: <1523276721-4982-1-git-send-email-geert+renesas@glider.be>
+ <9bea3ad8-7e84-87c2-9963-de81ad4cb3bf@gmail.com>
+ <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
+ <87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 10 Apr 2018 16:47:02 +0200
+Message-ID: <CAMuHMdWm96dPSx8bms0esFaDhCri9daon0UT4x=qEqeK2XFnTA@mail.gmail.com>
 Subject: Re: [PATCH] mtd: partitions: Handle add_mtd_device() failures
  gracefully
-To: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Marek Vasut <marek.vasut@gmail.com>
 Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -15,17 +25,7 @@ Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
  MTD Maling List <linux-mtd@lists.infradead.org>,
  Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1523276721-4982-1-git-send-email-geert+renesas@glider.be>
- <9bea3ad8-7e84-87c2-9963-de81ad4cb3bf@gmail.com>
- <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <87feac02-e955-1897-d4a4-d6d6d1082e45@gmail.com>
-Date: Tue, 10 Apr 2018 16:37:40 +0200
-MIME-Version: 1.0
-In-Reply-To: <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,51 +35,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/10/2018 03:26 PM, Geert Uytterhoeven wrote:
-> Hi Marek,
-> 
-> On Mon, Apr 9, 2018 at 11:59 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> On 04/09/2018 02:25 PM, Geert Uytterhoeven wrote:
->>> Currently add_mtd_device() failures are plainly ignored, which may lead
->>> to kernel crashes later.
-> 
->>> Fix this by ignoring and freeing partitions that failed to add in
->>> add_mtd_partitions().  The same issue is present in mtd_add_partition(),
->>> so fix that as well.
->>>
->>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->>> ---
->>> I don't know if it is worthwhile factoring out the common handling.
->>>
->>> Should allocate_partition() fail instead?  There's a comment saying
->>> "let's register it anyway to preserve ordering".
-> 
->>> --- a/drivers/mtd/mtdpart.c
->>> +++ b/drivers/mtd/mtdpart.c
-> 
->>> @@ -746,7 +753,15 @@ int add_mtd_partitions(struct mtd_info *master,
->>>               list_add(&slave->list, &mtd_partitions);
->>>               mutex_unlock(&mtd_partitions_mutex);
->>>
->>> -             add_mtd_device(&slave->mtd);
->>> +             ret = add_mtd_device(&slave->mtd);
->>> +             if (ret) {
->>> +                     mutex_lock(&mtd_partitions_mutex);
->>> +                     list_del(&slave->list);
->>> +                     mutex_unlock(&mtd_partitions_mutex);
->>> +                     free_partition(slave);
->>> +                     continue;
->>> +             }
+Hi Marek,
+
+On Tue, Apr 10, 2018 at 4:37 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+> On 04/10/2018 03:26 PM, Geert Uytterhoeven wrote:
+>> On Mon, Apr 9, 2018 at 11:59 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
+>>> On 04/09/2018 02:25 PM, Geert Uytterhoeven wrote:
+>>>> Currently add_mtd_device() failures are plainly ignored, which may lead
+>>>> to kernel crashes later.
 >>
->> Why is the partition even in the list in the first place ? Can we avoid
->> adding it rather than adding and removing it ?
-> 
-> Hence my question "Should allocate_partition() fail instead?".
-> Note that if we go that route, it should be a "soft" failure, as we
-> probably don't
-> want to drop all other partitions on the device.
-Is the number of partitions ie. in /proc/mtdparts an ABI ?
+>>>> Fix this by ignoring and freeing partitions that failed to add in
+>>>> add_mtd_partitions().  The same issue is present in mtd_add_partition(),
+>>>> so fix that as well.
+>>>>
+>>>> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+>>>> ---
+>>>> I don't know if it is worthwhile factoring out the common handling.
+>>>>
+>>>> Should allocate_partition() fail instead?  There's a comment saying
+>>>> "let's register it anyway to preserve ordering".
+>>
+>>>> --- a/drivers/mtd/mtdpart.c
+>>>> +++ b/drivers/mtd/mtdpart.c
+>>
+>>>> @@ -746,7 +753,15 @@ int add_mtd_partitions(struct mtd_info *master,
+>>>>               list_add(&slave->list, &mtd_partitions);
+>>>>               mutex_unlock(&mtd_partitions_mutex);
+>>>>
+>>>> -             add_mtd_device(&slave->mtd);
+>>>> +             ret = add_mtd_device(&slave->mtd);
+>>>> +             if (ret) {
+>>>> +                     mutex_lock(&mtd_partitions_mutex);
+>>>> +                     list_del(&slave->list);
+>>>> +                     mutex_unlock(&mtd_partitions_mutex);
+>>>> +                     free_partition(slave);
+>>>> +                     continue;
+>>>> +             }
+>>>
+>>> Why is the partition even in the list in the first place ? Can we avoid
+>>> adding it rather than adding and removing it ?
+>>
+>> Hence my question "Should allocate_partition() fail instead?".
+>> Note that if we go that route, it should be a "soft" failure, as we
+>> probably don't
+>> want to drop all other partitions on the device.
+> Is the number of partitions ie. in /proc/mtdparts an ABI ?
+
+I don't know.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Best regards,
-Marek Vasut
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
