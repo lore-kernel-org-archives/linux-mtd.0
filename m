@@ -1,20 +1,21 @@
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mail-wm0-x22a.google.com ([2a00:1450:400c:c09::22a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5zx2-0005YV-HT
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 20:33:14 +0000
-Reply-To: thor.thayer@linux.intel.com
-Subject: Re: [PATCH] mtd: spi-nor: Add Micron MT25QU02 support
-To: Marek Vasut <marek.vasut@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org
-References: <1522955569-19927-1-git-send-email-thor.thayer@linux.intel.com>
- <5b5783bc-5f7b-0076-6dde-993ffe36ca58@gmail.com>
-From: Thor Thayer <thor.thayer@linux.intel.com>
-Message-ID: <b580ae74-b54c-6912-7238-dae8deb94072@linux.intel.com>
-Date: Tue, 10 Apr 2018 15:35:48 -0500
+ id 1f60P1-0000zC-8I
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 21:02:08 +0000
+Received: by mail-wm0-x22a.google.com with SMTP id b21so997492wme.4
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Apr 2018 14:01:56 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: hisi: Avoid generic function names
+To: Ezequiel Garcia <ezequiel@collabora.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>, boris.brezillon@bootlin.com
+References: <20180410200106.21173-1-ezequiel@collabora.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <f2f9a818-e5d8-eb88-3a6c-56674d712f49@gmail.com>
+Date: Tue, 10 Apr 2018 22:58:00 +0200
 MIME-Version: 1.0
-In-Reply-To: <5b5783bc-5f7b-0076-6dde-993ffe36ca58@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20180410200106.21173-1-ezequiel@collabora.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,29 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
-
-On 04/05/2018 02:17 PM, Marek Vasut wrote:
-> On 04/05/2018 09:12 PM, thor.thayer@linux.intel.com wrote:
->> From: Thor Thayer <thor.thayer@linux.intel.com>
->>
->> Add support for a new Micron 2Gb Flash memory part.
->> Datasheet is available: mt25q_qlkt_l_02g_cbb_0.pdf
->>
->> Testing was done on a Stratix10 SoCFPGA Development Kit.
->>
->> Reported-by: Sujith Chidurala <sujith.chakra.chidurala@intel.com>
->> Tested-by: Paul Kim <paul.kim@intel.com>
->> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
->> ---
+On 04/10/2018 10:01 PM, Ezequiel Garcia wrote:
+> Using generic names such as get_if_type() is frowned
+> upon: it suggests a core function (which is not),
+> and then it makes code navigation harder.
 > 
-> Do we need this or can this be recognized as a SFDP flash ?
+> Given drivers are often used as starting point
+> to write other drivers, generic names tend to spread
+> like the flu. Cure the problem.
 > 
-The error is
-"cadence-qspi ff8d2000.spi: unrecognized JEDEC id bytes: 20, bb, 22" 
-which is fixed with this table addition. Is there a better way to handle 
-this?
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 
-Thanks for reviewing and the reply.
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 
-Thor
+-- 
+Best regards,
+Marek Vasut
