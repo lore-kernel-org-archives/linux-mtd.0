@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5ppc-0000zO-9N
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 09:44:55 +0000
-Date: Tue, 10 Apr 2018 11:44:28 +0200
+ id 1f5q88-0002DE-65
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 10:04:06 +0000
+Date: Tue, 10 Apr 2018 12:03:38 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
@@ -11,11 +11,11 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
  <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
  <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
  Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 8/9] mtd: nand: qcom: helper function for raw read
-Message-ID: <20180410114428.68d59c8d@xps13>
-In-Reply-To: <1522845745-6624-9-git-send-email-absahu@codeaurora.org>
+Subject: Re: [PATCH 5/9] mtd: nand: qcom: parse read errors for read oob also
+Message-ID: <20180410120338.663d5925@xps13>
+In-Reply-To: <1522845745-6624-6-git-send-email-absahu@codeaurora.org>
 References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-9-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-6-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,233 +30,92 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Abhishek,
 
-On Wed,  4 Apr 2018 18:12:24 +0530, Abhishek Sahu
+On Wed,  4 Apr 2018 18:12:21 +0530, Abhishek Sahu
 <absahu@codeaurora.org> wrote:
 
-> This patch does minor code reorganization for raw reads.
-> Currently the raw read is required for complete page but for
-> subsequent patches related with erased codeword bit flips
-> detection, only few CW should be read. So, this patch adds
-> helper function and introduces the read CW bitmask which
-> specifies which CW reads are required in complete page.
-
-I am not sure this is the right approach for subpage reads. If the
-controller supports it, you should just enable it in chip->options.
-
+> read_page and read_oob both calls the read_page_ecc function.
+> The QCOM NAND controller protect the OOB available bytes with
+> ECC so read errors should be checked for read_oob also. Now
+> this patch moves the error checking code inside read_page_ecc
+> so caller does not have to check explicitly for read errors.
 > 
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+
+Nitpick: the prefix should be "mtd: rawnand: qcom: " now as this driver
+has been moved to drivers/mtd/nand/raw/.
+
+Otherwise:
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
 > ---
->  drivers/mtd/nand/qcom_nandc.c | 186 +++++++++++++++++++++++++-----------------
->  1 file changed, 110 insertions(+), 76 deletions(-)
+>  drivers/mtd/nand/qcom_nandc.c | 19 ++++++-------------
+>  1 file changed, 6 insertions(+), 13 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
-> index 40c790e..f5d1fa4 100644
+> index 0ebcc55..ba43752 100644
 > --- a/drivers/mtd/nand/qcom_nandc.c
 > +++ b/drivers/mtd/nand/qcom_nandc.c
-> @@ -1590,6 +1590,114 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
->  }
+> @@ -1676,6 +1676,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  	struct nand_chip *chip = &host->chip;
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> +	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+>  	int i, ret;
 >  
->  /*
-> + * Helper to perform the page raw read operation. The read_cw_mask will be
-> + * used to specify the codewords for which the data should be read. The
-> + * single page contains multiple CW. Sometime, only few CW data is required
-> + * in complete page. Also, start address will be determined with
-> + * this CW mask to skip unnecessary data copy from NAND flash device. Then,
-> + * actual data copy from NAND controller to data buffer will be done only
-> + * for the CWs which have the mask set.
-> + */
-> +static int
-> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> +		    u8 *data_buf, u8 *oob_buf,
-> +		    int page, unsigned long read_cw_mask)
-> +{
-> +	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> +	int i, ret;
-> +	int read_loc, start_step, last_step;
-> +
-> +	nand_read_page_op(chip, page, 0, NULL, 0);
-> +
-> +	host->use_ecc = false;
-> +	start_step = ffs(read_cw_mask) - 1;
-> +	last_step = fls(read_cw_mask);
-> +
-> +	clear_bam_transaction(nandc);
-> +	set_address(host, host->cw_size * start_step, page);
-> +	update_rw_regs(host, last_step - start_step, true);
-> +	config_nand_page_read(nandc);
-> +
-> +	for (i = start_step; i < last_step; i++) {
-> +		int data_size1, data_size2, oob_size1, oob_size2;
-> +		int reg_off = FLASH_BUF_ACC;
-> +
-> +		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> +		oob_size1 = host->bbm_size;
-> +
-> +		if (i == (ecc->steps - 1)) {
-> +			data_size2 = ecc->size - data_size1 -
-> +				     ((ecc->steps - 1) << 2);
-> +			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
-> +				    host->spare_bytes;
-> +		} else {
-> +			data_size2 = host->cw_data - data_size1;
-> +			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
-> +		}
-> +
-> +		/*
-> +		 * Don't perform actual data copy from NAND controller to data
-> +		 * buffer through DMA for this codeword
-> +		 */
-> +		if (!(read_cw_mask & BIT(i))) {
-> +			if (nandc->props->is_bam)
-> +				nandc_set_read_loc(nandc, 0, 0, 0, 1);
-> +
-> +			config_nand_cw_read(nandc, false);
-> +
-> +			data_buf += data_size1 + data_size2;
-> +			oob_buf += oob_size1 + oob_size2;
-> +
-> +			continue;
-> +		}
-> +
-> +		if (nandc->props->is_bam) {
-> +			read_loc = 0;
-> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-> +			read_loc += data_size1;
-> +
-> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-> +			read_loc += oob_size1;
-> +
-> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-> +			read_loc += data_size2;
-> +
-> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-> +		}
-> +
-> +		config_nand_cw_read(nandc, false);
-> +
-> +		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
-> +		reg_off += data_size1;
-> +		data_buf += data_size1;
-> +
-> +		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
-> +		reg_off += oob_size1;
-> +		oob_buf += oob_size1;
-> +
-> +		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
-> +		reg_off += data_size2;
-> +		data_buf += data_size2;
-> +
-> +		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
-> +		oob_buf += oob_size2;
-> +	}
-> +
-> +	ret = submit_descs(nandc);
-> +	if (ret)
-> +		dev_err(nandc->dev, "failure to read raw page\n");
-> +
-> +	free_descs(nandc);
-> +
+>  	config_nand_page_read(nandc);
+> @@ -1741,6 +1742,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  
+>  	free_descs(nandc);
+>  
 > +	if (!ret)
-> +		ret = check_flash_errors(host, last_step - start_step);
+> +		ret = parse_read_errors(host, data_buf_start, oob_buf_start);
 > +
-> +	return 0;
-> +}
-> +
-> +/*
->   * reads back status registers set by the controller to notify page read
->   * errors. this is equivalent to what 'ecc->correct()' would do.
->   */
-> @@ -1839,82 +1947,8 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
->  				    struct nand_chip *chip, uint8_t *buf,
->  				    int oob_required, int page)
->  {
-> -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
-> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-> -	u8 *data_buf, *oob_buf;
-> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> -	int i, ret;
-> -	int read_loc;
-> -
-> -	nand_read_page_op(chip, page, 0, NULL, 0);
-> -	data_buf = buf;
-> -	oob_buf = chip->oob_poi;
-> -
-> -	host->use_ecc = false;
-> -
-> -	clear_bam_transaction(nandc);
-> -	update_rw_regs(host, ecc->steps, true);
-> -	config_nand_page_read(nandc);
-> -
-> -	for (i = 0; i < ecc->steps; i++) {
-> -		int data_size1, data_size2, oob_size1, oob_size2;
-> -		int reg_off = FLASH_BUF_ACC;
-> -
-> -		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> -		oob_size1 = host->bbm_size;
-> -
-> -		if (i == (ecc->steps - 1)) {
-> -			data_size2 = ecc->size - data_size1 -
-> -				     ((ecc->steps - 1) << 2);
-> -			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
-> -				    host->spare_bytes;
-> -		} else {
-> -			data_size2 = host->cw_data - data_size1;
-> -			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
-> -		}
-> -
-> -		if (nandc->props->is_bam) {
-> -			read_loc = 0;
-> -			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-> -			read_loc += data_size1;
-> -
-> -			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-> -			read_loc += oob_size1;
-> -
-> -			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-> -			read_loc += data_size2;
-> -
-> -			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-> -		}
-> -
-> -		config_nand_cw_read(nandc, false);
-> -
-> -		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
-> -		reg_off += data_size1;
-> -		data_buf += data_size1;
-> -
-> -		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
-> -		reg_off += oob_size1;
-> -		oob_buf += oob_size1;
-> -
-> -		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
-> -		reg_off += data_size2;
-> -		data_buf += data_size2;
-> -
-> -		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
-> -		oob_buf += oob_size2;
-> -	}
-> -
-> -	ret = submit_descs(nandc);
-> -	if (ret)
-> -		dev_err(nandc->dev, "failure to read raw page\n");
-> -
-> -	free_descs(nandc);
-> -
-> -	if (!ret)
-> -		ret = check_flash_errors(host, ecc->steps);
-> -
-> -	return 0;
-> +	return nandc_read_page_raw(mtd, chip, buf, chip->oob_poi, page,
-> +				   BIT(chip->ecc.steps) - 1);
-
-I don't understand this. chip->ecc.steps is constant, right? So you
-always ask for the same subpage?
-
+>  	return ret;
 >  }
 >  
->  /* implements ecc->read_oob() */
+> @@ -1786,20 +1790,14 @@ static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	u8 *data_buf, *oob_buf = NULL;
+> -	int ret;
+>  
+>  	nand_read_page_op(chip, page, 0, NULL, 0);
+>  	data_buf = buf;
+>  	oob_buf = oob_required ? chip->oob_poi : NULL;
+>  
+>  	clear_bam_transaction(nandc);
+> -	ret = read_page_ecc(host, data_buf, oob_buf);
+> -	if (ret) {
+> -		dev_err(nandc->dev, "failure to read page\n");
+> -		return ret;
+> -	}
+>  
+> -	return parse_read_errors(host, data_buf, oob_buf);
+> +	return read_page_ecc(host, data_buf, oob_buf);
+>  }
+>  
+>  /* implements ecc->read_page_raw() */
+> @@ -1889,7 +1887,6 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> -	int ret;
+>  
+>  	clear_read_regs(nandc);
+>  	clear_bam_transaction(nandc);
+> @@ -1898,11 +1895,7 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  	set_address(host, 0, page);
+>  	update_rw_regs(host, ecc->steps, true);
+>  
+> -	ret = read_page_ecc(host, NULL, chip->oob_poi);
+> -	if (ret)
+> -		dev_err(nandc->dev, "failure to read oob\n");
+> -
+> -	return ret;
+> +	return read_page_ecc(host, NULL, chip->oob_poi);
+>  }
+>  
+>  /* implements ecc->write_page() */
 
 
 
