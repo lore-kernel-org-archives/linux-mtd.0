@@ -1,22 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5ott-0005Tf-RH
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 08:45:24 +0000
-Date: Tue, 10 Apr 2018 10:44:49 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- cyrille.pitchen@wedev4u.fr, computersforpeace@gmail.com, han.xu@nxp.com,
- festevam@gmail.com, marek.vasut@gmail.com, frieder.schrempf@exceet.de,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com
-Subject: Re: [PATCH v10 0/2] mtd: fsl-quadspi: add support to create dynamic
- LUT entry
-Message-ID: <20180410104449.4f0ff5ce@bbrezillon>
-In-Reply-To: <1523349348-20778-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1523349348-20778-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ id 1f5p8J-00038v-JI
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 09:00:13 +0000
+Date: Tue, 10 Apr 2018 10:59:45 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/9] mtd: nand: qcom: erased page detection for
+ uncorrectable errors only
+Message-ID: <20180410105945.65f2cade@xps13>
+In-Reply-To: <1522845745-6624-4-git-send-email-absahu@codeaurora.org>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-4-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +29,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 10 Apr 2018 14:05:46 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Hi Abhishek,
 
-> fsl-quadspi.c driver creates different LUT entries for various cmds like
-> read, write, erase, readid etc. These entries are created statically when
-> driver gets intiliazed.
-> 
-> To support various cmds e.g. different read cmds like SPINOR_OP_READ,
-> SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
-> SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
-> have different LUT entries for different cmds.
-> 
-> FSL QUADSPI controller has 4 chip select and one can use different flashes
-> on all different chip select.
-> We analyzed that the flashes have different parameters for the same command
-> and this is true for NAND devices.
-> Also reg_protocol information, needed for read register, read any register
-> commands, read SFDP register, not available at time of spi_nor_scan.
-> As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
-> thus require to have dynamic LUT creation support.
-> 
-> Thus to have support for different flash devices, this patch-set adds
-> support to create LUT entry in run-time based on the exact cmnd requested.
-> Information like cmnd opcode, protocol info, dummy bit info etc required
-> for creating LUT entries parsed from instance of passed 'struct spi_nor'.
-> 
-> Also fix initialize sequence of AHB read, move
-> fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
-> 
-> Tested with "S25FS512S" flash and have checked read, write, erase
-> functionality using mtd_debug utility.
-> For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
-> SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
-> i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
-> SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
-> 
-> Yogesh Gaur (2):
->   mtd: fsl-quadspi: add support to create dynamic LUT entry
->   mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
-> 
-> Changes for v10:
-> - Incorporated Han Xu review comments.
-> Changes for v9:
-> - Incorporated Boris Brezillon review comments.
-> Changes for v8:
-> - Incorporated Frieder Schrempf review comments.
-> Changes for v7:
-> - Incorporated Han Xu review comments.
+On Wed,  4 Apr 2018 18:12:19 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-This kind of changelogs ('Incorporated xxx review comments') is not
-really useful, so please describe what had changed functionally or what
-has been fixed instead. You can of course specify who suggested the
-change, but it should not be the only information you give.
+> The NAND flash controller generates ECC uncorrectable error
+> first in case of completely erased page. Currently driver
+> applies the erased page detection logic for other operation
+> errors also so fix this and return EIO for other operational
+> errors.
 
-> Changes for v6:
-> - Incorporated Boris Brezillon review comments.
-> - Added dedicated LUT for AHB read cmd, required for devmem Read.
-> Changes for v5:
-> - Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
-> Changes for v4:
-> - Drop patch
-> 'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
-> would be taken care in next-series.
-> - Added patch for 'fix initialize sequence of AHB read'.
-> Changes for v3:
-> - Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
-> - Update information in cover letter.
-> Changes for v2:
-> - Swap patch sequences in the series to solve git bissect issue.
-> 
->  drivers/mtd/spi-nor/fsl-quadspi.c | 468 ++++++++++++++++++++++++--------------
->  1 file changed, 298 insertions(+), 170 deletions(-)
-> 
+I am sorry I don't understand very well what is the purpose of this
+patch, could you please explain it again?
+
+Do you mean that you want to avoid having rising ECC errors when you
+read erased pages?
+
+>=20
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>  drivers/mtd/nand/qcom_nandc.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/qcom_nandc.c b/drivers/mtd/nand/qcom_nandc.c
+> index 17321fc..57c16a6 100644
+> --- a/drivers/mtd/nand/qcom_nandc.c
+> +++ b/drivers/mtd/nand/qcom_nandc.c
+> @@ -1578,6 +1578,7 @@ static int parse_read_errors(struct qcom_nand_host =
+*host, u8 *data_buf,
+>  	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
+>  	unsigned int max_bitflips =3D 0;
+>  	struct read_stats *buf;
+> +	bool flash_op_err =3D false;
+>  	int i;
+> =20
+>  	buf =3D (struct read_stats *)nandc->reg_read_buf;
+> @@ -1599,7 +1600,7 @@ static int parse_read_errors(struct qcom_nand_host =
+*host, u8 *data_buf,
+>  		buffer =3D le32_to_cpu(buf->buffer);
+>  		erased_cw =3D le32_to_cpu(buf->erased_cw);
+> =20
+> -		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
+> +		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
+
+And later you have another "if (buffer & BS_UNCORRECTABLE_BIT)" which
+is then redundant, unless that is not what you actually want to do?
+
+Maybe you can add comments before the if ()/ else if () to explain in
+which case you enter each branch.
+
+>  			bool erased;
+> =20
+>  			/* ignore erased codeword errors */
+> @@ -1641,6 +1642,8 @@ static int parse_read_errors(struct qcom_nand_host =
+*host, u8 *data_buf,
+>  						max_t(unsigned int, max_bitflips, ret);
+>  				}
+>  			}
+> +		} else if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
+> +			flash_op_err =3D true;
+>  		} else {
+>  			unsigned int stat;
+> =20
+> @@ -1654,6 +1657,9 @@ static int parse_read_errors(struct qcom_nand_host =
+*host, u8 *data_buf,
+>  			oob_buf +=3D oob_len + ecc->bytes;
+>  	}
+> =20
+> +	if (flash_op_err)
+> +		return -EIO;
+> +
+
+In you are propagating an error related to the controller, this is
+fine, but I think you just want to raise the fact that a NAND
+uncorrectable error occurred, in this case you should just increment
+mtd->ecc_stats.failed and return 0 (returning max_bitflips here would be
+fine too has it would be 0 too).
+
+>  	return max_bitflips;
+>  }
+> =20
+
+Thanks,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
