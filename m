@@ -1,24 +1,21 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-eopbgr20086.outbound.protection.outlook.com ([40.107.2.86]
+ helo=EUR02-VE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5oUd-0007vQ-Tk
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 08:19:11 +0000
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.3 \(3445.6.18\))
-Subject: Re: [RFC] UBIFS authentication
-From: David Gstir <david@sigma-star.at>
-In-Reply-To: <20180410070210.4chxbjlijoohpo5c@pengutronix.de>
-Date: Tue, 10 Apr 2018 10:18:51 +0200
-Cc: linux-fscrypt@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <53E660CA-9F26-40C6-9C37-652F847BC737@sigma-star.at>
-References: <E6D3BD02-AF3A-4B75-92FD-A8A07B4C9C51@sigma-star.at>
- <20180409095912.f7d35y7yjdnj2ffz@pengutronix.de>
- <9EEA8AD6-E46F-45B7-8A85-98E4CC82B1D3@sigma-star.at>
- <20180410070210.4chxbjlijoohpo5c@pengutronix.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
+ id 1f5omL-0008P3-Qv
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 08:37:40 +0000
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, cyrille.pitchen@wedev4u.fr,
+ computersforpeace@gmail.com, han.xu@nxp.com, festevam@gmail.com,
+ marek.vasut@gmail.com, frieder.schrempf@exceet.de,
+ prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v10 0/2] mtd: fsl-quadspi: add support to create dynamic LUT
+ entry
+Date: Tue, 10 Apr 2018 14:05:46 +0530
+Message-Id: <1523349348-20778-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,213 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+fsl-quadspi.c driver creates different LUT entries for various cmds like
+read, write, erase, readid etc. These entries are created statically when
+driver gets intiliazed.
 
-> On 10.04.2018, at 09:02, Sascha Hauer <s.hauer@pengutronix.de> wrote:
->=20
-> On Mon, Apr 09, 2018 at 05:23:05PM +0200, David Gstir wrote:
->> Hi Sascha,
->>=20
->>> On 09.04.2018, at 11:59, Sascha Hauer <s.hauer@pengutronix.de> =
-wrote:
->>>=20
->>> Hi David,
->>>=20
->>> On Wed, Jan 17, 2018 at 04:19:14PM +0100, David Gstir wrote:
->>>> Hi everybody!
->>>>=20
->>>> ### Index Authentication
->>>>=20
->>>> Through UBIFS' concept of a wandering tree, it already takes care =
-of only
->>>> updating and persisting changed parts from leaf node up to the root =
-node
->>>> of the full B+ tree. This enables us to augment the index nodes of =
-the tree
->>>> with a hash over each node's child nodes. As a result, the index =
-basically also
->>>> a Merkle tree. Since the leaf nodes of the index contain the actual =
-filesystem
->>>> data, the hashes of their parent index nodes thus cover all the =
-file contents
->>>> and file metadata. When a file changes, the UBIFS index is updated =
-accordingly
->>>> from the leaf nodes up to the root node including the master node. =
-This process
->>>> can be hooked to recompute the hash only for each changed node at =
-the same time.
->>>> Whenever a file is read, UBIFS can verify the hashes from each leaf =
-node up to
->>>> the root node to ensure the node's integrity.
->>>>=20
->>>> To ensure the authenticity of the whole index, the UBIFS master =
-node stores a
->>>> keyed hash (HMAC) over its own contents (which includes the =
-location of the root
->>>> node) and the root node of the index tree. As mentioned above, the =
-master node
->>>> is always written to the flash whenever the index is persisted (ie. =
-on index
->>>> commit).
->>>>=20
->>>> Using this approach only UBIFS index nodes and the master node are =
-changed to
->>>> include a hash. All other types of nodes will remain unchanged. =
-This reduces
->>>> the storage overhead which is precious for users of UBIFS (ie. =
-embedded
->>>> devices).
->>>>=20
->>>>=20
->>>>                                           HMAC Master Node
->>>>                                                |
->>>>                     ' ' ' ' ' ' ' ' ' ' ' ' ' '|' '
->>>>                     '     +---------------+    o  '
->>>>                     '     |  Master Node  |       '
->>>>                     '     +---------------+       '       Hash =
-Index Node #1
->>>>                     '             |               '                =
-|
->>>>      . . . . . . . .'. . . . . .  v . . . . . . . . . . . . . . . =
-.|. . . . .
->>>>      .              '      +---------------+      '                =
-o        .
->>>>      .              '      | Index Node #1 |      '                 =
-        .
->>>>      .              '      +---------------+      '                 =
-        .
->>>>      .              '        |    ...   |  (fanout: 8)              =
-        .
->>>>      .              ' ' ' '  | ' ' ' '  | ' ' ' ' '                 =
-        .
->>>>      .               +-------+          +------+                    =
-        .
->>>>      .               |                         |                    =
-        .
->>>>      .     ' ' ' ' ' v ' ' ' ' '  ' ' ' ' ' '  v  ' ' ' ' ' ' ' ' ' =
-' '     .
->>>>      .     ' +---------------+ '  '     +---------------+           =
-  '     .
->>>>      .     ' | Index Node #2 | '  '     | Index Node #3 |           =
-  '     .
->>>>      .     ' +---------------+ '  '     +---------------+           =
-  '     .
->>>>      .     '   |   ...         '  '        |   ...   |              =
-  '     .
->>>>      . . . ' . v . . . . . . . '. ' . . .  v . . . . v . . . . . . =
-. .' . . .
->>>>            ' +-----------+     '  '+----------+  +-----------+      =
-  '
->>>>            ' | Data Node |     '  '| INO Node |  | DENT Node |      =
-  '
->>>>            ' +-----------+     '  '+----------+  +-----------+      =
-  '
->>>>            '  o                '  '                                =
-o  '
->>>>            ' '|' ' ' ' ' ' ' ' '  ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' ' =
-'|' '
->>>>               |                                                    =
-|
->>>>         Hash Index Node #2                                Hash =
-Index Node #3
->>>=20
->>> When a hash covers an index node and also its children then of =
-course
->>> this is really space efficient, but this also means that in order to
->>> read a node we always have to read all of its children. Also adding =
-a
->>> new leaf node means rehashing all siblings. Is it really worth =
-paying
->>> this price to save a few bytes for more hashes?
->>> I would rather suggest to add a hash per child to each index node.
->>=20
->> What you propose is a simple tradeoff between the required on-flash =
-storage
->> space and the amount of read operations needed to verify the index =
-node integrity.
->>=20
->> To get some numbers here: In case of SHA256 and a fanout of 8, we'd =
-store an
->> additional 224 bytes per index node and safe 7 index node reads per =
-tree level.
->=20
-> To get some more numbers I analyzed some typical rootfs here. It has:
->=20
-> 16137 data nodes with total size 41802586
-> uncompressed data size:          62380950
-> 2116 inode nodes with total size   347042
-> 2115 dent nodes with total size    148790
-> 2911 idx nodes with total size     547068
-> Total number of branches: 23278
->=20
-> With a SHA256 per branch this would add another 744896 bytes or 1.7%
-> overhead to the image (1.1% if using the uncompressed data size as =
-base).
+To support various cmds e.g. different read cmds like SPINOR_OP_READ,
+SPINOR_OP_READ_4B, SPINOR_OP_READ_FAST_4B, SPINOR_OP_READ_FAST,
+SPINOR_OP_READ_1_1_2, SPINOR_OP_READ_1_2_2 etc driver needs to
+have different LUT entries for different cmds.
 
-Yes, that matches my calculations. But IMHO these 1.7% matter and
-we should not give them up that easily.
+FSL QUADSPI controller has 4 chip select and one can use different flashes
+on all different chip select.
+We analyzed that the flashes have different parameters for the same command
+and this is true for NAND devices.
+Also reg_protocol information, needed for read register, read any register
+commands, read SFDP register, not available at time of spi_nor_scan.
+As FSL QUADSPI controller has limitation in number of LUT entries, max 16,
+thus require to have dynamic LUT creation support.
 
+Thus to have support for different flash devices, this patch-set adds
+support to create LUT entry in run-time based on the exact cmnd requested.
+Information like cmnd opcode, protocol info, dummy bit info etc required
+for creating LUT entries parsed from instance of passed 'struct spi_nor'.
 
+Also fix initialize sequence of AHB read, move
+fsl_qspi_init_ahb_read() in  fsl_qspi_nor_setup() function.
 
->> I hope it is clear that having a single hash does _not_ mean we have =
-to read
->> the whole tree! :)
->>=20
->> Considering that UBIFS is mostly used in embedded where storage space =
-is rather
->> precious, we opted for storing a single hash. But sure, storing a =
-hash per
->> branch/child  is a possibility and we have to discuss if that is =
-acceptable
->> in most use cases.
->>=20
->> As for adding new leaf nodes: If we add a leaf node, we'll always =
-have to recompute
->> the hash of every index node on the path to the root node. Even with =
-a hash per
->> branch/child. In case of TNC split/merge operations likely even more.
->> But I don't get why you think that would mean we have to recompute =
-the hash
->> on all siblings of that nodes? Or do you simply mean that we have to =
-re-read all
->> those siblings to compute the hash on the parent?
->=20
-> I mean that before we can use the "DENT Node" in the picture above we
-> also have to verify the "INO Node". To get there, we also have to =
-verify
-> the unrelated "Index Node #2". so in reality we have to verify
-> seven unrelated leaf nodes and another seven unrelated nodes per tree
-> level before we can use a node. When changing nodes we have to make =
-sure
-> all the unrelated nodes stay in memory or we have to read them back =
-from
-> the device. Of course, some of the unrelated nodes will be used anyway
-> in the next few moments, nevertheless I can imagine we pay a =
-significant
-> performance penalty for this.
+Tested with "S25FS512S" flash and have checked read, write, erase
+functionality using mtd_debug utility.
+For read have checked hwcaps as SNOR_HWCAPS_READ_FAST,
+SNOR_HWCAPS_READ_1_2_2 and SNOR_HWCAPS_READ_1_4_4
+i.e. read cmds SPINOR_OP_READ_FAST_4B [0x0c],
+SPINOR_OP_READ_1_2_2_4B [0xbc] and SPINOR_OP_READ_1_4_4_4B [0xec]
 
-Are you sure about that? The UBIFS TNC will first of all try to cache as
-much as possible and I'd argue that most of the time the nodes required
-for a hash will already be in memory. Even if we have to load the nodes
-from memory, we could consider changing the cache semantics of the TNC
-to optimize for that. Richard did some tests related to this at the UBI
-level [1]. But that is something that we will have to evaluate once
-we have a first PoC implementation of UBIFS authentication.
+Yogesh Gaur (2):
+  mtd: fsl-quadspi: add support to create dynamic LUT entry
+  mtd: fsl-quadspi: fix init AHB read in fsl_qspi_nor_setup()
 
-Anyways, I get what you mean and I agree that this is surely an =
-optimization
-worth pursuing! Also, note that the whole thing is rather a concept =
-instead
-of a detailed implementation guide, so there are bound to be things that
-can be optimized. :)
+Changes for v10:
+- Incorporated Han Xu review comments.
+Changes for v9:
+- Incorporated Boris Brezillon review comments.
+Changes for v8:
+- Incorporated Frieder Schrempf review comments.
+Changes for v7:
+- Incorporated Han Xu review comments.
+Changes for v6:
+- Incorporated Boris Brezillon review comments.
+- Added dedicated LUT for AHB read cmd, required for devmem Read.
+Changes for v5:
+- Fix LUT preparation for SPINOR_OP_READ and SPINOR_OP_READ_4B cmds.
+Changes for v4:
+- Drop patch
+'mtd: fsl-quadspi: update hwcaps read capabilities as READ_1_4_4', it
+would be taken care in next-series.
+- Added patch for 'fix initialize sequence of AHB read'.
+Changes for v3:
+- Add STOP instruction for prepared LUT and remove memset of 4 LUT reg.
+- Update information in cover letter.
+Changes for v2:
+- Swap patch sequences in the series to solve git bissect issue.
 
+ drivers/mtd/spi-nor/fsl-quadspi.c | 468 ++++++++++++++++++++++++--------------
+ 1 file changed, 298 insertions(+), 170 deletions(-)
 
-> read/write throughput is another very precious resource on embedded
-> systems ;)
-
-Yep! :D
-
-Thanks,
-David
-
-[1] http://lists.infradead.org/pipermail/linux-mtd/2016-July/068521.html
+-- 
+1.9.1
