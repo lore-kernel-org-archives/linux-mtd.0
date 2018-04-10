@@ -1,11 +1,12 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f5o8d-00074l-ST
- for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 07:56:26 +0000
-Date: Tue, 10 Apr 2018 09:55:58 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ id 1f5oK0-000376-UY
+ for linux-mtd@lists.infradead.org; Tue, 10 Apr 2018 08:08:10 +0000
+Date: Tue, 10 Apr 2018 10:07:45 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Abhishek Sahu <absahu@codeaurora.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Archit Taneja
  <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
  <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
@@ -13,13 +14,13 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
  Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
  parameter
-Message-ID: <20180410095558.34c4d91f@xps13>
-In-Reply-To: <20180410094657.63ac7ec9@xps13>
+Message-ID: <20180410100745.625d66f8@bbrezillon>
+In-Reply-To: <20180410095558.34c4d91f@xps13>
 References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
  <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
  <20180406143133.67f33d33@xps13>
  <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
- <20180410094657.63ac7ec9@xps13>
+ <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -32,177 +33,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 10 Apr 2018 09:55:58 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Hi Abhishek,
->=20
-> On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
->=20
-> > On 2018-04-06 18:01, Miquel Raynal wrote: =20
-> > > Hi Abhishek,
+> > Hi Abhishek,
+> >=20
+> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
+> > <absahu@codeaurora.org> wrote:
+> >  =20
+> > > On 2018-04-06 18:01, Miquel Raynal wrote:   =20
+> > > > Hi Abhishek,
+> > > >=20
+> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
+> > > > <absahu@codeaurora.org> wrote:
+> > > >      =20
+> > > >> Currently the driver uses the ECC strength specified in
+> > > >> device tree. The ONFI or JEDEC device parameter page
+> > > >> contains the =E2=80=98ECC correctability=E2=80=99 field which indi=
+cates the
+> > > >> number of bits that the host should be able to correct per
+> > > >> 512 bytes of data.     =20
+> > > >=20
+> > > > This is misleading. This field is not about the controller but rath=
+er
+> > > > the chip requirements in terms of minimal strength for nominal use.
+> > > >      =20
 > > >=20
-> > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
-> > > <absahu@codeaurora.org> wrote:
+> > >   Thanks Miquel.
+> > >=20
+> > >   Yes. Its NAND chip requirement. I have used the description for
+> > >   NAND ONFI param page
+> > >=20
+> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
+> > >   This field indicates the number of bits that the host should be
+> > >   able to correct per 512 bytes of data.
 > > >    =20
-> > >> Currently the driver uses the ECC strength specified in
-> > >> device tree. The ONFI or JEDEC device parameter page
-> > >> contains the =E2=80=98ECC correctability=E2=80=99 field which indica=
-tes the
-> > >> number of bits that the host should be able to correct per
-> > >> 512 bytes of data.   =20
+> > > >> The ecc correctability is assigned in
+> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
+> > > >> supports 4/8-bit ecc correction. The Same kind of board
+> > > >> can have different NAND parts so use the ecc strength
+> > > >> from device parameter (if its non zero) instead of
+> > > >> device tree.     =20
+> > > >=20
+> > > > That is not what you do.
+> > > >=20
+> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
+> > > > NAND chip requires at least 8-bit/chunk strength.
+> > > >=20
+> > > > The DT property is here to force a strength. Otherwise, Linux will
+> > > > propose to the NAND controller to use the minimum strength required=
+ by
+> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
+> > > > table).
+> > > >      =20
 > > >=20
-> > > This is misleading. This field is not about the controller but rather
-> > > the chip requirements in terms of minimal strength for nominal use.
+> > >   The main problem is that the same kind of boards can have different
+> > >   NAND parts.
+> > >=20
+> > >   Lets assume, we have following 2 cases.
+> > >=20
+> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
+> > >      will be zero. In this case, the ecc->strength from DT
+> > >      will be used   =20
+> >=20
+> > No, the strength from DT will always be used if the property is
+> > present, no matter the type of chip.
+> >  =20
+> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
+> > >      Since QCOM nand controller can not support
+> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
+> > >      itself instead of failing NAND boot completely.   =20
+> >=20
+> > I understand that. But this is still not what you do.
+> >  =20
 > > >    =20
+> > > > IMHO, you have two solutions:
+> > > > 1/ Remove these properties from the board DT (breaks DT backward
+> > > > compatibility though);     =20
+> > >=20
+> > >   - nand-ecc-strength: This is optional property in nand.txt and
+> > >     Required property in qcom_nandc.txt.   =20
 > >=20
-> >   Thanks Miquel.
-> >=20
-> >   Yes. Its NAND chip requirement. I have used the description for
-> >   NAND ONFI param page
-> >=20
-> >   5.6.1.24. Byte 112: Number of bits ECC correctability
-> >   This field indicates the number of bits that the host should be
-> >   able to correct per 512 bytes of data.
+> > Well, this property is not controller specific but chip specific. The
+> > controller driver does not rely on it, so this property should not be
+> > required.
 > >  =20
-> > >> The ecc correctability is assigned in
-> > >> chip parameter during device probe time. QPIC/EBI2 NAND
-> > >> supports 4/8-bit ecc correction. The Same kind of board
-> > >> can have different NAND parts so use the ecc strength
-> > >> from device parameter (if its non zero) instead of
-> > >> device tree.   =20
-> > >=20
-> > > That is not what you do.
-> > >=20
-> > > What you do is forcing the strength to be 8-bit per ECC chunk if the
-> > > NAND chip requires at least 8-bit/chunk strength.
-> > >=20
-> > > The DT property is here to force a strength. Otherwise, Linux will
-> > > propose to the NAND controller to use the minimum strength required by
-> > > the chip (from either the ONFI/JEDEC parameter page or from a static
-> > > table).
-> > >    =20
+> > > We can't remove since
+> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
+> > >     from DT only.   =20
 > >=20
-> >   The main problem is that the same kind of boards can have different
-> >   NAND parts.
+> > We can remove it and let the core handle this (as this is generic to
+> > all raw NANDs and not specific to this controller driver). Try it out!
 > >=20
-> >   Lets assume, we have following 2 cases.
-> >=20
-> >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
-> >      will be zero. In this case, the ecc->strength from DT
-> >      will be used =20
+> > However if the defaults value do not match your expectations, I think
+> > you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
+> > your strength_ds field and let you avoid using these properties. =20
 >=20
-> No, the strength from DT will always be used if the property is
-> present, no matter the type of chip.
->=20
-> >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
-> >      Since QCOM nand controller can not support
-> >      ECC correction greater than 8 bits so we can use 8 bit ECC
-> >      itself instead of failing NAND boot completely. =20
->=20
-> I understand that. But this is still not what you do.
->=20
-> >  =20
-> > > IMHO, you have two solutions:
-> > > 1/ Remove these properties from the board DT (breaks DT backward
-> > > compatibility though);   =20
-> >=20
-> >   - nand-ecc-strength: This is optional property in nand.txt and
-> >     Required property in qcom_nandc.txt. =20
->=20
-> Well, this property is not controller specific but chip specific. The
-> controller driver does not rely on it, so this property should not be
-> required.
->=20
-> > We can't remove since
-> >     if the device is Non ONFI/JEDEC, then ecc strength will come
-> >     from DT only. =20
->=20
-> We can remove it and let the core handle this (as this is generic to
-> all raw NANDs and not specific to this controller driver). Try it out!
->=20
-> However if the defaults value do not match your expectations, I think
-> you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
-> your strength_ds field and let you avoid using these properties.
+> Actually nand_ids.c should not be filled anymore, instead you can
+> implement this detection thanks to the part full name in the vendor
+> code nand_samsung.c, nand_micron.c, nand_macronix.c, nand_hynix.c, etc.
 
-Actually nand_ids.c should not be filled anymore, instead you can
-implement this detection thanks to the part full name in the vendor
-code nand_samsung.c, nand_micron.c, nand_macronix.c, nand_hynix.c, etc.
-Depending on what part you are using, it might already work.
+Usually you don't have to go that far, and the ECC requirements are
+encoded somewhere in the ID (after byte 2). When that's not the
+case, you may have to check the full ID.
 
->=20
-> >  =20
-> > > 2/ Create another DT for the board.
-> > >    =20
-> >=20
-> >   Its not about board but about part. We have IPQ8074 HK01 board
-> >   with 4 bit ECC chip/8 bit ECC chip/non ONFI/JEDEC chip.
-> >  =20
-> > > However, there is something to do in this driver: the strength chosen
-> > > should be limited to the controller capabilities (8-bit/512B if I
-> > > understand correctly). In this case you have two options: either you
-> > > limit the strength like the size [1] if (ecc->strength > 8);   =20
-> >=20
-> >   Limiting the strength will make all the boards with ecc strength > 8
-> >   to fail completely
-> >  =20
-> > > just limit the maximum strength to 8 like this [2] and the core will
-> > > spawn a warning in the dmesg telling that the ECC strength used is
-> > > below the NAND chip requirements.   =20
-> >=20
-> >   Yes its good idea. I can update the patch with dmesg warning.
-> >=20
-> >   Thanks,
-> >   Abhishek
-> >  =20
-> > >=20
-> > > Thanks,
-> > > Miqu=C3=A8l
-> > >=20
-> > > [1]
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/qcom_=
-nandc.c#L2332
-> > > [2] http://code.bulix.org/nyf63w-315268
-> > >=20
-> > >    =20
-> > >>=20
-> > >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> > >> ---
-> > >>  drivers/mtd/nand/qcom_nandc.c | 8 ++++++++
-> > >>  1 file changed, 8 insertions(+)
-> > >>=20
-> > >> diff --git a/drivers/mtd/nand/qcom_nandc.c=20
-> > >> b/drivers/mtd/nand/qcom_nandc.c
-> > >> index 563b759..8dd40de 100644
-> > >> --- a/drivers/mtd/nand/qcom_nandc.c
-> > >> +++ b/drivers/mtd/nand/qcom_nandc.c
-> > >> @@ -2334,6 +2334,14 @@ static int qcom_nand_host_setup(struct=20
-> > >> qcom_nand_host *host)
-> > >>  		return -EINVAL;
-> > >>  	}
-> > >>=20
-> > >> +	/*
-> > >> +	 * Read the required ecc strength from NAND device and overwrite
-> > >> +	 * the device tree ecc strength for devices which require
-> > >> +	 * ecc correctability bits >=3D 8
-> > >> +	 */
-> > >> +	if (chip->ecc_strength_ds >=3D 8)
-> > >> +		ecc->strength =3D 8;
-> > >> +
-> > >>  	wide_bus =3D chip->options & NAND_BUSWIDTH_16 ? true : false;
-> > >>=20
-> > >>  	if (ecc->strength >=3D 8) {   =20
-> >=20
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/ =20
->=20
->=20
+> Depending on what part you are using, it might already work.
 
-Thanks,
-Miqu=C3=A8l
-
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yep.
