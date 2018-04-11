@@ -2,9 +2,12 @@ From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <boris.brezillon@bootlin.com>, <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
  <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH 0/8] Improve MTK NAND driver and ->calc_ecc_bytes() hook
-Date: Wed, 11 Apr 2018 11:41:50 +0800
-Message-ID: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
+Subject: [PATCH 4/8] mtd: rawnand: mtk: Remove max_sector_size from struct
+ mtk_nfc_caps
+Date: Wed, 11 Apr 2018 11:41:54 +0800
+Message-ID: <1523418118-57686-5-git-send-email-xiaolei.li@mediatek.com>
+In-Reply-To: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -16,50 +19,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These patches are mainly to:
-  - Fix some MTK NAND driver DT binding description errors.
-  - Support FDM ECC protected bytes setting by DT properity.
-  - Support nand-ecc-maximize DT properity. And improve
-    ->calc_ecc_bytes() hook.
-  - Add maintainer entry for Mediatek NAND controller driver.
+Remove max_sector_size from struct mtk_nfc_caps, and use sector size
+array and number of sector size to show sector sizes that controller
+supports.
 
-Changes relative to:
---------------------
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ drivers/mtd/nand/raw/mtk_nand.c | 32 +++++++++++++++++++++++++++-----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
 
-tree    : https://github.com/bbrezillon/linux-0day
-branch  : nand/next
-commit  :
-	'commit ba4150b1ec2a ("mtd: rawnand: s3c2410: enhance the probe
-	 function error path")'
-
-Tests:
-------
-  - ubifs and jffs2 are validated on NAND device MT29F16G08ADBCA
-    by 'dd' command.
-  - all drivers/mtd/tests/* pass.
-
-Xiaolei Li (8):
-  dt-bindings: mtd: mtk-nand: Update properties description
-  MAINTAINERS: Add entry for Mediatek NAND controller driver
-  mtd: rawnand: mtk: Add DT property mtk,fdm-ecc-size
-  mtd: rawnand: mtk: Remove max_sector_size from struct mtk_nfc_caps
-  mtd: rawnand: Modify ->calc_ecc_bytes() hook in nand_ecc_caps
-  mtd: rawnand: mtk: Introduce mtk_ecc_calc_parity_bytes() function
-  mtd: rawnand: mtk: Introduce mtk_ecc_get_strength_num(),
-    mtk_ecc_get_strength()
-  mtd: rawnand: mtk: Use generic helpers to calculate ecc size and
-    strength
-
- Documentation/devicetree/bindings/mtd/mtk-nand.txt |  24 ++-
- MAINTAINERS                                        |   7 +
- drivers/mtd/nand/raw/denali.c                      |   3 +-
- drivers/mtd/nand/raw/denali.h                      |   2 +-
- drivers/mtd/nand/raw/mtk_ecc.c                     |  43 ++---
- drivers/mtd/nand/raw/mtk_ecc.h                     |   5 +-
- drivers/mtd/nand/raw/mtk_nand.c                    | 187 ++++++++++++++-------
- drivers/mtd/nand/raw/nand_base.c                   |  11 +-
- include/linux/mtd/rawnand.h                        |  77 ++++-----
- 9 files changed, 223 insertions(+), 136 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+index b05f619..2c244c2 100644
+--- a/drivers/mtd/nand/raw/mtk_nand.c
++++ b/drivers/mtd/nand/raw/mtk_nand.c
+@@ -105,10 +105,11 @@
+ struct mtk_nfc_caps {
+ 	const u8 *spare_size;
+ 	u8 num_spare_size;
++	const int *sector_size;
++	int num_sector_size;
+ 	u8 pageformat_spare_shift;
+ 	u8 nfi_clk_div;
+ 	u8 max_sector;
+-	u32 max_sector_size;
+ };
+ 
+ struct mtk_nfc_bad_mark_ctl {
+@@ -177,6 +178,14 @@ struct mtk_nfc {
+ 	16, 26, 27, 28
+ };
+ 
++static const int sector_size_max_1k[] = {
++	1024, 512
++};
++
++static const int sector_size_max_512[] = {
++	512
++};
++
+ static inline struct mtk_nfc_nand_chip *to_mtk_nand(struct nand_chip *nand)
+ {
+ 	return container_of(nand, struct mtk_nfc_nand_chip, nand);
+@@ -257,6 +266,16 @@ static inline u8 nfi_readb(struct mtk_nfc *nfc, u32 reg)
+ 	return readb_relaxed(nfc->regs + reg);
+ }
+ 
++static int mtk_nfc_max_sector_size(struct mtk_nfc *nfc)
++{
++	int i, sector_size = 0;
++
++	for (i = 0; i < nfc->caps->num_sector_size; i++)
++		sector_size = max(sector_size, nfc->caps->sector_size[i]);
++
++	return sector_size;
++}
++
+ static void mtk_nfc_hw_reset(struct mtk_nfc *nfc)
+ {
+ 	struct device *dev = nfc->dev;
+@@ -1211,7 +1230,7 @@ static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
+ 		 */
+ 		if (nand->ecc.size < 1024) {
+ 			if (mtd->writesize > 512 &&
+-			    nfc->caps->max_sector_size > 512) {
++			    mtk_nfc_max_sector_size(nfc) > 512) {
+ 				nand->ecc.size = 1024;
+ 				nand->ecc.strength <<= 1;
+ 			} else {
+@@ -1400,28 +1419,31 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
+ static const struct mtk_nfc_caps mtk_nfc_caps_mt2701 = {
+ 	.spare_size = spare_size_mt2701,
+ 	.num_spare_size = 16,
++	.sector_size = sector_size_max_1k,
++	.num_sector_size = 2,
+ 	.pageformat_spare_shift = 4,
+ 	.nfi_clk_div = 1,
+ 	.max_sector = 16,
+-	.max_sector_size = 1024,
+ };
+ 
+ static const struct mtk_nfc_caps mtk_nfc_caps_mt2712 = {
+ 	.spare_size = spare_size_mt2712,
+ 	.num_spare_size = 19,
++	.sector_size = sector_size_max_1k,
++	.num_sector_size = 2,
+ 	.pageformat_spare_shift = 16,
+ 	.nfi_clk_div = 2,
+ 	.max_sector = 16,
+-	.max_sector_size = 1024,
+ };
+ 
+ static const struct mtk_nfc_caps mtk_nfc_caps_mt7622 = {
+ 	.spare_size = spare_size_mt7622,
+ 	.num_spare_size = 4,
++	.sector_size = sector_size_max_512,
++	.num_sector_size = 1,
+ 	.pageformat_spare_shift = 4,
+ 	.nfi_clk_div = 1,
+ 	.max_sector = 8,
+-	.max_sector_size = 512,
+ };
+ 
+ static const struct of_device_id mtk_nfc_id_table[] = {
 -- 
 1.9.1
