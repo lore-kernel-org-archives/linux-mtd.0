@@ -1,30 +1,19 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Josh Wu <rainyfeeling@outlook.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
- <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
- <20180403091813.5fb5c18c@bbrezillon>
- <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
- <20180411165925.2be0d45b@bbrezillon>
-From: Peter Rosin <peda@axentia.se>
-Message-ID: <bb64d0b1-bb3a-06b0-9e90-0caf7531f3c5@axentia.se>
-Date: Wed, 11 Apr 2018 17:10:43 +0200
+Received: from mga12.intel.com ([192.55.52.136])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6HSM-0005kG-H4
+ for linux-mtd@lists.infradead.org; Wed, 11 Apr 2018 15:14:44 +0000
+Reply-To: thor.thayer@linux.intel.com
+Subject: Re: [PATCHv2] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+To: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1522073537-27386-1-git-send-email-thor.thayer@linux.intel.com>
+From: Thor Thayer <thor.thayer@linux.intel.com>
+Message-ID: <0b460613-4ac2-c4d8-429e-248a4742a408@linux.intel.com>
+Date: Wed, 11 Apr 2018 10:17:21 -0500
 MIME-Version: 1.0
-In-Reply-To: <20180411165925.2be0d45b@bbrezillon>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1522073537-27386-1-git-send-email-thor.thayer@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,28 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-11 16:59, Boris Brezillon wrote:
-> On Wed, 11 Apr 2018 16:44:10 +0200
-> Peter Rosin <peda@axentia.se> wrote:
+Hi. Any comments on this patch?
+
+On 03/26/2018 09:12 AM, thor.thayer@linux.intel.com wrote:
+> From: Thor Thayer <thor.thayer@linux.intel.com>
 > 
->> Hi Nicolas,
->>
->> Boris asked for your input on this (the datasheet difference appears to
->> have no bearing on the issue) elsewhere in the tree of messages. It's
->> now been a week or so and I'm starting to wonder if you missed this
->> altogether or if you are simply out of office or something?
+> The current Cadence QSPI driver caused a kernel panic when loading
+> a Root Filesystem from QSPI. The problem was caused by reading more
+> bytes than needed because the QSPI operated on 4 bytes at a time.
+> <snip>
+> [    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
+> [    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
+> [    7.956247]
+> [    7.966046] Unable to handle kernel paging request at virtual
+> address bfe08002
+> [    7.973239] pgd = eebfc000
+> [    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+> </snip>
+> Notice above how only 1 byte needed to be read but by reading 4 bytes
+> into the end of a mapped page, an unrecoverable page fault occurred.
 > 
-> I was wondering if you had given up on this problem, it seems you did
-> not.
-
-I have my local patch to disable dma for the flash, but local patches
-are always a disappointment.
-
->      Did you try forcing the HLCDC to use the 2nd interface (ahb_id=1)
-> instead of the first one?
-
-Just tried, and it's better that way, but the problem still exist and is
-very visible on some (but apparently not all) flash accesses.
-
-Cheers,
-Peter
+> This patch uses a temporary buffer to hold the 4 bytes read and then
+> copies only the bytes required into the buffer. A min() function is
+> used to limit the length to prevent buffer overflows.
+> 
+> Request testing of this patch on other platforms. This was tested
+> on the Intel Arria10 SoCFPGA DevKit.
+> 
+> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+> ---
+> v2  Changes to only write dangling bytes at end of transfer since
+>        previous patch may have multiple dangling byte transfers.
+>      Remove write patch since no errors reported and write timeout
+>        needs more investigation.
+> ---
+>   drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 4b8e9183489a..5872f31eaa60 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -501,7 +501,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+>   	void __iomem *reg_base = cqspi->iobase;
+>   	void __iomem *ahb_base = cqspi->ahb_base;
+>   	unsigned int remaining = n_rx;
+> +	unsigned int mod_bytes = n_rx % 4;
+>   	unsigned int bytes_to_read = 0;
+> +	u8 *rxbuf_end = rxbuf + n_rx;
+>   	int ret = 0;
+>   
+>   	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+> @@ -530,11 +532,24 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+>   		}
+>   
+>   		while (bytes_to_read != 0) {
+> +			unsigned int word_remain = round_down(remaining, 4);
+> +
+>   			bytes_to_read *= cqspi->fifo_width;
+>   			bytes_to_read = bytes_to_read > remaining ?
+>   					remaining : bytes_to_read;
+> -			ioread32_rep(ahb_base, rxbuf,
+> -				     DIV_ROUND_UP(bytes_to_read, 4));
+> +			bytes_to_read = round_down(bytes_to_read, 4);
+> +			/* Read 4 byte word chunks then single bytes */
+> +			if (bytes_to_read) {
+> +				ioread32_rep(ahb_base, rxbuf,
+> +					     (bytes_to_read / 4));
+> +			} else if (!word_remain && mod_bytes) {
+> +				unsigned int temp = ioread32(ahb_base);
+> +
+> +				bytes_to_read = mod_bytes;
+> +				memcpy(rxbuf, &temp, min((unsigned int)
+> +							 (rxbuf_end - rxbuf),
+> +							 bytes_to_read));
+> +			}
+>   			rxbuf += bytes_to_read;
+>   			remaining -= bytes_to_read;
+>   			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> 
