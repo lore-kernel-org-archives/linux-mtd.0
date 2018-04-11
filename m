@@ -2,10 +2,10 @@ From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <boris.brezillon@bootlin.com>, <richard@nod.at>
 CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
  <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH 8/8] mtd: rawnand: mtk: Use generic helpers to calculate ecc
- size and strength
-Date: Wed, 11 Apr 2018 11:41:58 +0800
-Message-ID: <1523418118-57686-9-git-send-email-xiaolei.li@mediatek.com>
+Subject: [PATCH 5/8] mtd: rawnand: Modify ->calc_ecc_bytes() hook in
+ nand_ecc_caps
+Date: Wed, 11 Apr 2018 11:41:55 +0800
+Message-ID: <1523418118-57686-6-git-send-email-xiaolei.li@mediatek.com>
 In-Reply-To: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
 References: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
@@ -19,299 +19,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An optional DT properity named nand-ecc-maximize is used to choose whether
-maximize ecc strength or just match ecc strength required.
+Maybe some controllers need more information besides step size and ecc
+strength to calculate ECC bytes.
 
-But MTK nand driver always maximize ecc strength now.
-
-This patch uses generic helpers to calculate ecc size and strength
-automatically according to nand-ecc-maximize setting.
-
-Please remember to enable nand-ecc-maximize DT setting if want to be
-compatible with older Bootloader base on this patch.
+struct nand_ecc_ctrl provides lots of ECC control information include
+private ECC control data. So, add it into ->calc_ecc_bytes() interface,
+to make this hook be more flexible.
 
 Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 ---
- drivers/mtd/nand/raw/mtk_ecc.c  |  25 -------
- drivers/mtd/nand/raw/mtk_ecc.h  |   2 -
- drivers/mtd/nand/raw/mtk_nand.c | 152 ++++++++++++++++++++++++----------------
- 3 files changed, 93 insertions(+), 86 deletions(-)
+ drivers/mtd/nand/raw/denali.c    |  3 +-
+ drivers/mtd/nand/raw/denali.h    |  2 +-
+ drivers/mtd/nand/raw/nand_base.c | 11 ++++--
+ include/linux/mtd/rawnand.h      | 77 ++++++++++++++++++++--------------------
+ 4 files changed, 50 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.c b/drivers/mtd/nand/raw/mtk_ecc.c
-index 71390e7..cd68157 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.c
-+++ b/drivers/mtd/nand/raw/mtk_ecc.c
-@@ -426,31 +426,6 @@ int mtk_ecc_encode(struct mtk_ecc *ecc, struct mtk_ecc_config *config,
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index 2a302a1..907609c 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1113,7 +1113,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
  }
- EXPORT_SYMBOL(mtk_ecc_encode);
  
--void mtk_ecc_adjust_strength(struct mtk_ecc *ecc, u32 *p)
--{
--	const int *ecc_strength = ecc->caps->ecc_strength;
--	int i;
--
--	for (i = 0; i < ecc->caps->num_ecc_strength; i++) {
--		if (*p <= ecc_strength[i]) {
--			if (!i)
--				*p = ecc_strength[i];
--			else if (*p != ecc_strength[i])
--				*p = ecc_strength[i - 1];
--			return;
--		}
--	}
--
--	*p = ecc_strength[ecc->caps->num_ecc_strength - 1];
--}
--EXPORT_SYMBOL(mtk_ecc_adjust_strength);
--
--unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc)
--{
--	return ecc->caps->parity_bits;
--}
--EXPORT_SYMBOL(mtk_ecc_get_parity_bits);
--
- int mtk_ecc_get_strength_num(struct mtk_ecc *ecc)
+-int denali_calc_ecc_bytes(int step_size, int strength)
++int denali_calc_ecc_bytes(struct nand_ecc_ctrl *ecc, int step_size,
++			  int strength)
  {
- 	return ecc->caps->num_ecc_strength;
-diff --git a/drivers/mtd/nand/raw/mtk_ecc.h b/drivers/mtd/nand/raw/mtk_ecc.h
-index 5687864..e7f20f0 100644
---- a/drivers/mtd/nand/raw/mtk_ecc.h
-+++ b/drivers/mtd/nand/raw/mtk_ecc.h
-@@ -40,8 +40,6 @@ struct mtk_ecc_config {
- int mtk_ecc_wait_done(struct mtk_ecc *, enum mtk_ecc_operation);
- int mtk_ecc_enable(struct mtk_ecc *, struct mtk_ecc_config *);
- void mtk_ecc_disable(struct mtk_ecc *);
--void mtk_ecc_adjust_strength(struct mtk_ecc *ecc, u32 *p);
--unsigned int mtk_ecc_get_parity_bits(struct mtk_ecc *ecc);
- int mtk_ecc_get_strength_num(struct mtk_ecc *ecc);
- const int *mtk_ecc_get_strength(struct mtk_ecc *ecc);
- int mtk_ecc_calc_parity_bytes(struct mtk_ecc *ecc, int ecc_strength);
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index 249b3fb..b535eee 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -157,6 +157,8 @@ struct mtk_nfc {
- 	struct completion done;
- 	struct list_head chips;
+ 	/* BCH code.  Denali requires ecc.bytes to be multiple of 2 */
+ 	return DIV_ROUND_UP(strength * fls(step_size * 8), 16) * 2;
+diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
+index 9ad33d2..644dffd 100644
+--- a/drivers/mtd/nand/raw/denali.h
++++ b/drivers/mtd/nand/raw/denali.h
+@@ -328,7 +328,7 @@ struct denali_nand_info {
+ #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
+ #define DENALI_CAP_DMA_64BIT			BIT(1)
  
-+	const struct nand_ecc_caps *ecccaps;
-+
- 	u8 *buffer;
+-int denali_calc_ecc_bytes(int step_size, int strength);
++int denali_calc_ecc_bytes(struct nand_ecc_ctrl *, int, int);
+ int denali_init(struct denali_nand_info *denali);
+ void denali_remove(struct denali_nand_info *denali);
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d0b993f..e17abc8 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6052,6 +6052,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
+ 			const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	const struct nand_ecc_step_info *stepinfo;
+ 	int preset_step = chip->ecc.size;
+ 	int preset_strength = chip->ecc.strength;
+@@ -6076,7 +6077,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
+ 			if (stepinfo->strengths[j] != preset_strength)
+ 				continue;
+ 
+-			ecc_bytes = caps->calc_ecc_bytes(preset_step,
++			ecc_bytes = caps->calc_ecc_bytes(ecc, preset_step,
+ 							 preset_strength);
+ 			if (WARN_ON_ONCE(ecc_bytes < 0))
+ 				return ecc_bytes;
+@@ -6114,6 +6115,7 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ 		       const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	const struct nand_ecc_step_info *stepinfo;
+ 	int req_step = chip->ecc_step_ds;
+ 	int req_strength = chip->ecc_strength_ds;
+@@ -6152,7 +6154,8 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ 
+ 			nsteps = mtd->writesize / step_size;
+ 
+-			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
++			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
++							 strength);
+ 			if (WARN_ON_ONCE(ecc_bytes < 0))
+ 				continue;
+ 			ecc_bytes_total = ecc_bytes * nsteps;
+@@ -6198,6 +6201,7 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ 		      const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	const struct nand_ecc_step_info *stepinfo;
+ 	int step_size, strength, nsteps, ecc_bytes, corr;
+ 	int best_corr = 0;
+@@ -6224,7 +6228,8 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ 
+ 			nsteps = mtd->writesize / step_size;
+ 
+-			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
++			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
++							 strength);
+ 			if (WARN_ON_ONCE(ecc_bytes < 0))
+ 				continue;
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b..e7c7fdb 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -507,44 +507,6 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
+ }
+ 
+ /**
+- * struct nand_ecc_step_info - ECC step information of ECC engine
+- * @stepsize: data bytes per ECC step
+- * @strengths: array of supported strengths
+- * @nstrengths: number of supported strengths
+- */
+-struct nand_ecc_step_info {
+-	int stepsize;
+-	const int *strengths;
+-	int nstrengths;
+-};
+-
+-/**
+- * struct nand_ecc_caps - capability of ECC engine
+- * @stepinfos: array of ECC step information
+- * @nstepinfos: number of ECC step information
+- * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
+- */
+-struct nand_ecc_caps {
+-	const struct nand_ecc_step_info *stepinfos;
+-	int nstepinfos;
+-	int (*calc_ecc_bytes)(int step_size, int strength);
+-};
+-
+-/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
+-#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
+-static const int __name##_strengths[] = { __VA_ARGS__ };	\
+-static const struct nand_ecc_step_info __name##_stepinfo = {	\
+-	.stepsize = __step,					\
+-	.strengths = __name##_strengths,			\
+-	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
+-};								\
+-static const struct nand_ecc_caps __name = {			\
+-	.stepinfos = &__name##_stepinfo,			\
+-	.nstepinfos = 1,					\
+-	.calc_ecc_bytes = __calc,				\
+-}
+-
+-/**
+  * struct nand_ecc_ctrl - Control structure for ECC
+  * @mode:	ECC mode
+  * @algo:	ECC algorithm
+@@ -639,6 +601,45 @@ struct nand_ecc_ctrl {
  };
  
-@@ -266,16 +268,6 @@ static inline u8 nfi_readb(struct mtk_nfc *nfc, u32 reg)
- 	return readb_relaxed(nfc->regs + reg);
- }
- 
--static int mtk_nfc_max_sector_size(struct mtk_nfc *nfc)
--{
--	int i, sector_size = 0;
--
--	for (i = 0; i < nfc->caps->num_sector_size; i++)
--		sector_size = max(sector_size, nfc->caps->sector_size[i]);
--
--	return sector_size;
--}
--
- static void mtk_nfc_hw_reset(struct mtk_nfc *nfc)
- {
- 	struct device *dev = nfc->dev;
-@@ -1171,14 +1163,15 @@ static void mtk_nfc_set_bad_mark_ctl(struct mtk_nfc_bad_mark_ctl *bm_ctl,
- 	}
- }
- 
--static int mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
-+static int mtk_nfc_set_spare_per_sector(int ecc_size, u32 *sps,
-+					struct mtd_info *mtd)
- {
- 	struct nand_chip *nand = mtd_to_nand(mtd);
- 	struct mtk_nfc *nfc = nand_get_controller_data(nand);
- 	const u8 *spare = nfc->caps->spare_size;
- 	u32 eccsteps, i, closest_spare = 0;
- 
--	eccsteps = mtd->writesize / nand->ecc.size;
-+	eccsteps = mtd->writesize / ecc_size;
- 	*sps = mtd->oobsize / eccsteps;
- 
- 	if (nand->ecc.size == 1024)
-@@ -1205,68 +1198,102 @@ static int mtk_nfc_set_spare_per_sector(u32 *sps, struct mtd_info *mtd)
- 
- static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
- {
--	struct nand_chip *nand = mtd_to_nand(mtd);
--	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(nand);
--	struct mtk_nfc *nfc = nand_get_controller_data(nand);
--	u32 spare;
--	int free, ret;
-+	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	struct mtk_nfc_nand_chip *mtk_nand = to_mtk_nand(chip);
-+	struct mtk_nfc *nfc = nand_get_controller_data(chip);
-+	const struct nand_ecc_caps *caps = nfc->ecccaps;
-+	int tmp, oobavail, nsteps, ret;
- 
- 	/* support only ecc hw mode */
--	if (nand->ecc.mode != NAND_ECC_HW) {
-+	if (ecc->mode != NAND_ECC_HW) {
- 		dev_err(dev, "ecc.mode not supported\n");
- 		return -EINVAL;
- 	}
- 
--	/* if optional dt settings not present */
--	if (!nand->ecc.size || !nand->ecc.strength) {
--		/* use datasheet requirements */
--		nand->ecc.strength = nand->ecc_strength_ds;
--		nand->ecc.size = nand->ecc_step_ds;
-+	if (ecc->size && ecc->strength)
-+		tmp = ecc->size;
-+	else
-+		tmp = chip->ecc_step_ds;
-+	if (!tmp)
-+		return -ENOTSUPP;
- 
--		/*
--		 * align eccstrength and eccsize
--		 * this controller only supports 512 and 1024 sizes
--		 */
--		if (nand->ecc.size < 1024) {
--			if (mtd->writesize > 512 &&
--			    mtk_nfc_max_sector_size(nfc) > 512) {
--				nand->ecc.size = 1024;
--				nand->ecc.strength <<= 1;
--			} else {
--				nand->ecc.size = 512;
--			}
--		} else {
--			nand->ecc.size = 1024;
--		}
-+	nsteps = mtd->writesize / tmp;
-+	/* Adjust spare size per sector through required ecc size */
-+	ret = mtk_nfc_set_spare_per_sector(tmp, &oobavail, mtd);
-+	if (ret)
-+		return ret;
-+	oobavail -= mtk_nand->fdm.ecc_size;
-+	oobavail *= nsteps;
-+	if (ecc->size && ecc->strength)
-+		ret = nand_check_ecc_caps(chip, caps, oobavail);
-+	else
-+		ret = nand_match_ecc_req(chip, caps, oobavail);
-+	if (ret)
-+		return ret;
- 
--		ret = mtk_nfc_set_spare_per_sector(&spare, mtd);
-+	if (ecc->options & NAND_ECC_MAXIMIZE) {
-+		/* Maximize ecc strength */
-+		ret = mtk_nfc_set_spare_per_sector(ecc->size, &oobavail,
-+						   mtd);
- 		if (ret)
- 			return ret;
--
--		/* calculate oob bytes except ecc parity data */
--		free = mtk_ecc_calc_parity_bytes(nfc->ecc, nand->ecc.strength);
--		free = spare - free;
--
-+		tmp = oobavail - caps->calc_ecc_bytes(ecc, ecc->size,
-+						      ecc->strength);
- 		/*
--		 * enhance ecc strength if oob left is bigger than max FDM size
--		 * or reduce ecc strength if oob size is not enough for ecc
--		 * parity data.
-+		 * Only maximize ecc strength if free OOB size is more than
-+		 * NFI_FDM_MAX_SIZE.
- 		 */
--		if (free > NFI_FDM_MAX_SIZE) {
--			spare -= NFI_FDM_MAX_SIZE;
--			nand->ecc.strength = (spare << 3) /
--					     mtk_ecc_get_parity_bits(nfc->ecc);
--		} else if (free < 0) {
--			spare -= mtk_nand->fdm.ecc_size;
--			nand->ecc.strength = (spare << 3) /
--					     mtk_ecc_get_parity_bits(nfc->ecc);
-+		if (tmp > NFI_FDM_MAX_SIZE) {
-+			oobavail -= NFI_FDM_MAX_SIZE;
-+			nsteps = mtd->writesize / ecc->size;
-+			oobavail *= nsteps;
-+			ret = nand_maximize_ecc(chip, caps, oobavail);
-+			if (ret)
-+				return ret;
- 		}
- 	}
- 
--	mtk_ecc_adjust_strength(nfc->ecc, &nand->ecc.strength);
--
- 	dev_info(dev, "eccsize %d eccstrength %d\n",
--		 nand->ecc.size, nand->ecc.strength);
-+		 ecc->size, ecc->strength);
+ /**
++ * struct nand_ecc_step_info - ECC step information of ECC engine
++ * @stepsize: data bytes per ECC step
++ * @strengths: array of supported strengths
++ * @nstrengths: number of supported strengths
++ */
++struct nand_ecc_step_info {
++	int stepsize;
++	const int *strengths;
++	int nstrengths;
++};
 +
-+	return 0;
++/**
++ * struct nand_ecc_caps - capability of ECC engine
++ * @stepinfos: array of ECC step information
++ * @nstepinfos: number of ECC step information
++ * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
++ */
++struct nand_ecc_caps {
++	const struct nand_ecc_step_info *stepinfos;
++	int nstepinfos;
++	int (*calc_ecc_bytes)(struct nand_ecc_ctrl *ecc, int step_size,
++			      int strength);
++};
++
++/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
++#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
++static const int __name##_strengths[] = { __VA_ARGS__ };	\
++static const struct nand_ecc_step_info __name##_stepinfo = {	\
++	.stepsize = __step,					\
++	.strengths = __name##_strengths,			\
++	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
++};								\
++static const struct nand_ecc_caps __name = {			\
++	.stepinfos = &__name##_stepinfo,			\
++	.nstepinfos = 1,					\
++	.calc_ecc_bytes = __calc,				\
 +}
 +
-+static int mtk_nfc_calc_ecc_bytes(struct nand_ecc_ctrl *ecc, int step_size,
-+				  int strength)
-+{
-+	struct mtk_ecc *mtkecc = (struct mtk_ecc *)ecc->priv;
-+
-+	return mtk_ecc_calc_parity_bytes(mtkecc, strength);
-+}
-+
-+static int mtk_nfc_ecc_caps_init(struct device *dev, struct mtk_nfc *nfc)
-+{
-+	struct nand_ecc_caps *ecccaps;
-+	struct nand_ecc_step_info *stepinfos;
-+	int i, nsector = nfc->caps->num_sector_size;
-+
-+	ecccaps = devm_kzalloc(dev, sizeof(*ecccaps), GFP_KERNEL);
-+	if (!ecccaps)
-+		return -ENOMEM;
-+
-+	stepinfos = devm_kzalloc(dev, sizeof(*stepinfos) * nsector, GFP_KERNEL);
-+	if (!stepinfos)
-+		return -ENOMEM;
-+
-+	nfc->ecccaps = ecccaps;
-+
-+	ecccaps->stepinfos = stepinfos;
-+	ecccaps->nstepinfos = nsector;
-+	ecccaps->calc_ecc_bytes = mtk_nfc_calc_ecc_bytes;
-+
-+	for (i = 0; i < nsector; i++) {
-+		stepinfos->stepsize = nfc->caps->sector_size[i];
-+		stepinfos->strengths = mtk_ecc_get_strength(nfc->ecc);
-+		stepinfos->nstrengths = mtk_ecc_get_strength_num(nfc->ecc);
-+		stepinfos++;
-+	}
- 
- 	return 0;
- }
-@@ -1329,6 +1356,8 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 	/* set default mode in case dt entry is missing */
- 	nand->ecc.mode = NAND_ECC_HW;
- 
-+	nand->ecc.priv = (void *)nfc->ecc;
-+
- 	nand->ecc.write_subpage = mtk_nfc_write_subpage_hwecc;
- 	nand->ecc.write_page_raw = mtk_nfc_write_page_raw;
- 	nand->ecc.write_page = mtk_nfc_write_page_hwecc;
-@@ -1366,7 +1395,8 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
- 		return -EINVAL;
- 	}
- 
--	ret = mtk_nfc_set_spare_per_sector(&chip->spare_per_sector, mtd);
-+	ret = mtk_nfc_set_spare_per_sector(nand->ecc.size,
-+					   &chip->spare_per_sector, mtd);
- 	if (ret)
- 		return ret;
- 
-@@ -1539,6 +1569,10 @@ static int mtk_nfc_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, nfc);
- 
-+	ret = mtk_nfc_ecc_caps_init(dev, nfc);
-+	if (ret)
-+		goto clk_disable;
-+
- 	ret = mtk_nfc_nand_chips_init(dev, nfc);
- 	if (ret) {
- 		dev_err(dev, "failed to init nand chips\n");
++/**
+  * struct nand_sdr_timings - SDR NAND chip timings
+  *
+  * This struct defines the timing requirements of a SDR NAND chip.
 -- 
 1.9.1
