@@ -1,15 +1,30 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH 5/8] mtd: rawnand: Modify ->calc_ecc_bytes() hook in
- nand_ecc_caps
-Date: Wed, 11 Apr 2018 11:41:55 +0800
-Message-ID: <1523418118-57686-6-git-send-email-xiaolei.li@mediatek.com>
-In-Reply-To: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+To: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, Josh Wu <rainyfeeling@outlook.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+ <20180402142249.7e076a64@bbrezillon>
+ <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
+ <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
+ <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
+ <20180403091813.5fb5c18c@bbrezillon>
+From: Peter Rosin <peda@axentia.se>
+Message-ID: <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
+Date: Wed, 11 Apr 2018 16:44:10 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20180403091813.5fb5c18c@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,199 +34,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Maybe some controllers need more information besides step size and ecc
-strength to calculate ECC bytes.
+Hi Nicolas,
 
-struct nand_ecc_ctrl provides lots of ECC control information include
-private ECC control data. So, add it into ->calc_ecc_bytes() interface,
-to make this hook be more flexible.
+Boris asked for your input on this (the datasheet difference appears to
+have no bearing on the issue) elsewhere in the tree of messages. It's
+now been a week or so and I'm starting to wonder if you missed this
+altogether or if you are simply out of office or something?
 
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
----
- drivers/mtd/nand/raw/denali.c    |  3 +-
- drivers/mtd/nand/raw/denali.h    |  2 +-
- drivers/mtd/nand/raw/nand_base.c | 11 ++++--
- include/linux/mtd/rawnand.h      | 77 ++++++++++++++++++++--------------------
- 4 files changed, 50 insertions(+), 43 deletions(-)
+Cheers,
+Peter
 
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 2a302a1..907609c 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1113,7 +1113,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
- }
- 
--int denali_calc_ecc_bytes(int step_size, int strength)
-+int denali_calc_ecc_bytes(struct nand_ecc_ctrl *ecc, int step_size,
-+			  int strength)
- {
- 	/* BCH code.  Denali requires ecc.bytes to be multiple of 2 */
- 	return DIV_ROUND_UP(strength * fls(step_size * 8), 16) * 2;
-diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
-index 9ad33d2..644dffd 100644
---- a/drivers/mtd/nand/raw/denali.h
-+++ b/drivers/mtd/nand/raw/denali.h
-@@ -328,7 +328,7 @@ struct denali_nand_info {
- #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
- #define DENALI_CAP_DMA_64BIT			BIT(1)
- 
--int denali_calc_ecc_bytes(int step_size, int strength);
-+int denali_calc_ecc_bytes(struct nand_ecc_ctrl *, int, int);
- int denali_init(struct denali_nand_info *denali);
- void denali_remove(struct denali_nand_info *denali);
- 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d0b993f..e17abc8 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -6052,6 +6052,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
- 			const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	const struct nand_ecc_step_info *stepinfo;
- 	int preset_step = chip->ecc.size;
- 	int preset_strength = chip->ecc.strength;
-@@ -6076,7 +6077,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
- 			if (stepinfo->strengths[j] != preset_strength)
- 				continue;
- 
--			ecc_bytes = caps->calc_ecc_bytes(preset_step,
-+			ecc_bytes = caps->calc_ecc_bytes(ecc, preset_step,
- 							 preset_strength);
- 			if (WARN_ON_ONCE(ecc_bytes < 0))
- 				return ecc_bytes;
-@@ -6114,6 +6115,7 @@ int nand_match_ecc_req(struct nand_chip *chip,
- 		       const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	const struct nand_ecc_step_info *stepinfo;
- 	int req_step = chip->ecc_step_ds;
- 	int req_strength = chip->ecc_strength_ds;
-@@ -6152,7 +6154,8 @@ int nand_match_ecc_req(struct nand_chip *chip,
- 
- 			nsteps = mtd->writesize / step_size;
- 
--			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-+			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
-+							 strength);
- 			if (WARN_ON_ONCE(ecc_bytes < 0))
- 				continue;
- 			ecc_bytes_total = ecc_bytes * nsteps;
-@@ -6198,6 +6201,7 @@ int nand_maximize_ecc(struct nand_chip *chip,
- 		      const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	const struct nand_ecc_step_info *stepinfo;
- 	int step_size, strength, nsteps, ecc_bytes, corr;
- 	int best_corr = 0;
-@@ -6224,7 +6228,8 @@ int nand_maximize_ecc(struct nand_chip *chip,
- 
- 			nsteps = mtd->writesize / step_size;
- 
--			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-+			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
-+							 strength);
- 			if (WARN_ON_ONCE(ecc_bytes < 0))
- 				continue;
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 5dad59b..e7c7fdb 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -507,44 +507,6 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
- }
- 
- /**
-- * struct nand_ecc_step_info - ECC step information of ECC engine
-- * @stepsize: data bytes per ECC step
-- * @strengths: array of supported strengths
-- * @nstrengths: number of supported strengths
-- */
--struct nand_ecc_step_info {
--	int stepsize;
--	const int *strengths;
--	int nstrengths;
--};
--
--/**
-- * struct nand_ecc_caps - capability of ECC engine
-- * @stepinfos: array of ECC step information
-- * @nstepinfos: number of ECC step information
-- * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
-- */
--struct nand_ecc_caps {
--	const struct nand_ecc_step_info *stepinfos;
--	int nstepinfos;
--	int (*calc_ecc_bytes)(int step_size, int strength);
--};
--
--/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
--#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
--static const int __name##_strengths[] = { __VA_ARGS__ };	\
--static const struct nand_ecc_step_info __name##_stepinfo = {	\
--	.stepsize = __step,					\
--	.strengths = __name##_strengths,			\
--	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
--};								\
--static const struct nand_ecc_caps __name = {			\
--	.stepinfos = &__name##_stepinfo,			\
--	.nstepinfos = 1,					\
--	.calc_ecc_bytes = __calc,				\
--}
--
--/**
-  * struct nand_ecc_ctrl - Control structure for ECC
-  * @mode:	ECC mode
-  * @algo:	ECC algorithm
-@@ -639,6 +601,45 @@ struct nand_ecc_ctrl {
- };
- 
- /**
-+ * struct nand_ecc_step_info - ECC step information of ECC engine
-+ * @stepsize: data bytes per ECC step
-+ * @strengths: array of supported strengths
-+ * @nstrengths: number of supported strengths
-+ */
-+struct nand_ecc_step_info {
-+	int stepsize;
-+	const int *strengths;
-+	int nstrengths;
-+};
-+
-+/**
-+ * struct nand_ecc_caps - capability of ECC engine
-+ * @stepinfos: array of ECC step information
-+ * @nstepinfos: number of ECC step information
-+ * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
-+ */
-+struct nand_ecc_caps {
-+	const struct nand_ecc_step_info *stepinfos;
-+	int nstepinfos;
-+	int (*calc_ecc_bytes)(struct nand_ecc_ctrl *ecc, int step_size,
-+			      int strength);
-+};
-+
-+/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
-+#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
-+static const int __name##_strengths[] = { __VA_ARGS__ };	\
-+static const struct nand_ecc_step_info __name##_stepinfo = {	\
-+	.stepsize = __step,					\
-+	.strengths = __name##_strengths,			\
-+	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
-+};								\
-+static const struct nand_ecc_caps __name = {			\
-+	.stepinfos = &__name##_stepinfo,			\
-+	.nstepinfos = 1,					\
-+	.calc_ecc_bytes = __calc,				\
-+}
-+
-+/**
-  * struct nand_sdr_timings - SDR NAND chip timings
-  *
-  * This struct defines the timing requirements of a SDR NAND chip.
--- 
-1.9.1
+On 2018-04-03 09:18, Boris Brezillon wrote:
+> On Tue, 3 Apr 2018 08:11:30 +0200
+> Peter Rosin <peda@axentia.se> wrote:
+> 
+>> On 2018-04-02 22:20, Boris Brezillon wrote:
+>>> On Mon, 2 Apr 2018 21:28:43 +0200
+>>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>>>   
+>>>> On Mon, 2 Apr 2018 19:59:39 +0200
+>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>  
+>>>>> On 2018-04-02 14:22, Boris Brezillon wrote:    
+>>>>>> On Thu, 29 Mar 2018 16:27:12 +0200
+>>>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>>>       
+>>>>>>> On 2018-03-29 15:44, Boris Brezillon wrote:      
+>>>>>>>> On Thu, 29 Mar 2018 15:37:43 +0200
+>>>>>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>>>>>         
+>>>>>>>>> On 2018-03-29 15:33, Boris Brezillon wrote:        
+>>>>>>>>>> On Thu, 29 Mar 2018 15:10:54 +0200
+>>>>>>>>>> Peter Rosin <peda@axentia.se> wrote:
+>>>>>>>>>>           
+>>>>>>>>>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+>>>>>>>>>>> flash accesses have a tendency to cause display disturbances. Add a
+>>>>>>>>>>> module param to disable DMA from the NAND controller, since that fixes
+>>>>>>>>>>> the display problem for me.
+>>>>>>>>>>>
+>>>>>>>>>>> Signed-off-by: Peter Rosin <peda@axentia.se>
+>>>>>>>>>>> ---
+>>>>>>>>>>>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+>>>>>>>>>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>>>>>>>>>
+>>>>>>>>>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>>>>>>> index b2f00b398490..2ff7a77c7b8e 100644
+>>>>>>>>>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>>>>>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+>>>>>>>>>>> @@ -129,6 +129,11 @@
+>>>>>>>>>>>  #define DEFAULT_TIMEOUT_MS			1000
+>>>>>>>>>>>  #define MIN_DMA_LEN				128
+>>>>>>>>>>>  
+>>>>>>>>>>> +static bool atmel_nand_avoid_dma __read_mostly;
+>>>>>>>>>>> +
+>>>>>>>>>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+>>>>>>>>>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);          
+>>>>>>>>>>
+>>>>>>>>>> I'm not a big fan of those driver specific cmdline parameters. Can't we
+>>>>>>>>>> instead give an higher priority to HLCDC master using the bus matrix?          
+>>>>>>>>>
+>>>>>>>>> I don't know if it will be enough, but we sure can try. However, I have
+>>>>>>>>> no idea how to do that. I will happily test stuff though...        
+>>>>>>>>
+>>>>>>>> There's no interface to configure that from Linux, but you can try to
+>>>>>>>> tweak it with devmem and if that does the trick, maybe we can expose a
+>>>>>>>> way to configure that from Linux. For more details, see the "Bus Matrix
+>>>>>>>> (MATRIX)" section in Atmel datasheets.        
+>>>>>>>
+>>>>>>> I don't seem to succeed in changing the registers I think I need to change.
+>>>>>>> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
+>>>>>>> it.      
+>>>>>>
+>>>>>> You mean 0x4D415400, right? ("MAT0" != 0x4D415400).      
+>>>>>
+>>>>> Bits 1 through 7 do not matter, so even though not equal they are (or
+>>>>> should be) equivalent. But I did use 0x4d415400. I simply used the
+>>>>> shorter syntax since that was easier to type and conveyed the relevant
+>>>>> info.    
+>>>>
+>>>> Ok.
+>>>>  
+>>>>>     
+>>>>>>> But when I try to write to "Priority Registers B For Slaves" it doesn't
+>>>>>>> take, regardless of write protect mode.      
+>>>>>>
+>>>>>> Did you check MATRIX_WPSR after writing to MATRIX_PRXSY?      
+>>>>>
+>>>>> No, but did it again and checked, see transcript below.    
+>>>>
+>>>> I don't use devmem2. Is 'readback' information accurate or is it
+>>>> always what's been written? Because when you write 0x33 to 0xFFFFECBC,
+>>>> 0x33 is read back, but just after that, when you read it again it's 0.
+>>>>  
+>>>>> BTW, how do I
+>>>>> know which master is in use for the LCD controller? 8 or 9? Both?    
+>>>>
+>>>> It's configurable on a per-layer basis through the SIF bit in
+>>>> LCDC_<layer>CFG0. The driver tries to dispatch the load on those 2 AHB
+>>>> masters [1].
+>>>>  
+>>>>> And
+>>>>> which DDR slave is the target? 7, 8, 9 or 10? More than one?    
+>>>>
+>>>> This, I don't know. I guess all of them can be used.  
+>>>
+>>> Looks like I was wrong. According to "Table 15-3. SAMA5D3 Master to
+>>> Slave Access", LCDC port 0 can only access DDR port 2 and LCDC port 1
+>>> can only access DDR port 3.  
+>>
+>> About that table, someone with HW-knowledge should have a real close
+>> look at it! Why?
+>>
+>> I peeked at all the PRxSy registers and there are a lot of '3' entries
+>> for all the MxPR fields. In fact, the '3' entries align very neatly
+>> with the checks in this "Master to Slave Access" table. Except they
+>> don't, after a while.
+>>
+>> Here's how the table looks in my datasheet:
+>>
+>>  0 vv--v--v--vvvv-
+>>  1 vv--v--v--vvvv-
+>>  2 vv-------------
+>>  3 vv--------vvv--
+>>  4 vv-------------
+>>  5 v--------------
+>>  6 vv--vv-vvvvvvvv
+>>    v--------------
+>>  7 v--------------
+>>  8 --v-v--v-------
+>>  9 -v---v--v--v---
+>> 10 ---------vv-vvv
+>> 11 v--v-----------
+>> 12 v-----v--------
+>>
+>> And here's the '3' entries when digging in the registers (the extra
+>> dash at the end is for the 16th non-existent slave):
+>>
+>>  0 33--3--3--3333--
+>>  1 33--3--3--3333--
+>>  2 33--------------
+>>  3 -3--------333---
+>>  4 33--------------
+>>  5 3---------------
+>>  6 33--33-33333333-
+>>  7 --3-3--3--------
+>>  8 -3---3--3--3----
+>>  9 --3-3--3-33-333-
+>> 10 3--3------------
+>> 11 3-----3---------
+>> 12 ----------------
+>> 13 ----------------
+>> 14 ----------------
+>> 15 ----------------
+>>
+>> There's a big mismatch for the four DDR2 lines in the table; they
+>> seem to map to only three registers. Other than that, the only tweak
+>> or anomaly is that first entry (Cortex A5) for master 3 (Int ROM).
+>>
+>> *time passes*
+>>
+>> Arrrgh!! You say "Table 15-3". This is Table 14-3 for me! I believe
+>> I'm using the latest datasheet (02-Feb-16). What are you reading???!?
+> 
+> Oops, I was reading an old datasheet (from 2014).
