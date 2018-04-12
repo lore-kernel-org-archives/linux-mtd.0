@@ -1,33 +1,27 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Josh Wu <rainyfeeling@outlook.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
- <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
- <20180403091813.5fb5c18c@bbrezillon>
- <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
- <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-From: Peter Rosin <peda@axentia.se>
-Message-ID: <36fd2204-50dc-329d-ff13-0dd11490cda5@axentia.se>
-Date: Thu, 12 Apr 2018 09:18:19 +0200
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6Wjs-0001j0-U9
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 07:33:50 +0000
 MIME-Version: 1.0
-In-Reply-To: <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Thu, 12 Apr 2018 13:03:37 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 7/9] mtd: nand: qcom: check for operation errors in case
+ of raw read
+In-Reply-To: <20180410121230.1ffdd473@xps13>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-8-git-send-email-absahu@codeaurora.org>
+ <20180410121230.1ffdd473@xps13>
+Message-ID: <321c3977cb4cc31e2e1591ed11588d06@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,230 +31,218 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-11 17:34, Nicolas Ferre wrote:
-> On 11/04/2018 at 16:44, Peter Rosin wrote:
->> Hi Nicolas,
->>
->> Boris asked for your input on this (the datasheet difference appears to
->> have no bearing on the issue) elsewhere in the tree of messages. It's
->> now been a week or so and I'm starting to wonder if you missed this
->> altogether or if you are simply out of office or something?
+On 2018-04-10 15:42, Miquel Raynal wrote:
+> Hi Abhishek,
 > 
-> Hi Peter,
+> On Wed,  4 Apr 2018 18:12:23 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
 > 
-> I didn't dig into this issue with matrix datasheet reset values and your 
-> findings below. I'll try to move forward with your detailed explanation 
-> and with my contacts within the "product" team internally.
-
-Thanks, I feel that experimenting with the matrix with bogus documentation
-is harder than needed, so I'm waiting for that information.
-
-> However, I have the feeling that this sounds a little bit familiar to me 
-> and that the pins drive strength for the NAND Flash *and* LCD must be 
-> positioned to "Medium drive" at least for these interfaces (register 
-> PIO_CFGR).
+>> Currently there is no error checking for raw read. For raw
+>> reads, there won’t be any ECC failure but the operational
+>> failures are possible so schedule the NAND_FLASH_STATUS read
+>> after each codeword.
+>> 
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>  drivers/mtd/nand/qcom_nandc.c | 56 
+>> +++++++++++++++++++++++++++++++++++--------
+>>  1 file changed, 46 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c 
+>> b/drivers/mtd/nand/qcom_nandc.c
+>> index dce97e8..40c790e 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -1099,7 +1099,8 @@ static void config_nand_page_read(struct 
+>> qcom_nand_controller *nandc)
+>>   * Helper to prepare DMA descriptors for configuring registers
+>>   * before reading each codeword in NAND page.
+>>   */
+>> -static void config_nand_cw_read(struct qcom_nand_controller *nandc)
+>> +static void
+>> +config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
+>>  {
+>>  	if (nandc->props->is_bam)
+>>  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
+>> @@ -1108,19 +1109,25 @@ static void config_nand_cw_read(struct 
+>> qcom_nand_controller *nandc)
+>>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
+>>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
+>> 
+>> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
+>> -	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
+>> -		     NAND_BAM_NEXT_SGL);
+>> +	if (use_ecc) {
+>> +		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
+>> +		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
+>> +			     NAND_BAM_NEXT_SGL);
+>> +	} else {
+>> +		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
+>> +	}
+>>  }
+>> 
+>>  /*
+>>   * Helper to prepare dma descriptors to configure registers needed 
+>> for reading a
+>>   * single codeword in page
+>>   */
+>> -static void config_nand_single_cw_page_read(struct 
+>> qcom_nand_controller *nandc)
+>> +static void
+>> +config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
+>> +				bool use_ecc)
+>>  {
+>>  	config_nand_page_read(nandc);
+>> -	config_nand_cw_read(nandc);
+>> +	config_nand_cw_read(nandc, use_ecc);
+>>  }
+>> 
+>>  /*
+>> @@ -1201,7 +1208,7 @@ static int nandc_param(struct qcom_nand_host 
+>> *host)
+>>  	nandc->buf_count = 512;
+>>  	memset(nandc->data_buffer, 0xff, nandc->buf_count);
+>> 
+>> -	config_nand_single_cw_page_read(nandc);
+>> +	config_nand_single_cw_page_read(nandc, false);
+>> 
+>>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
+>>  		      nandc->buf_count, 0);
+>> @@ -1565,6 +1572,23 @@ struct read_stats {
+>>  	__le32 erased_cw;
+>>  };
+>> 
+>> +/* reads back FLASH_STATUS register set by the controller */
+>> +static int check_flash_errors(struct qcom_nand_host *host, int 
+>> cw_cnt)
+>> +{
+>> +	struct nand_chip *chip = &host->chip;
+>> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>> +	int i;
+>> +
+>> +	for (i = 0; i < cw_cnt; i++) {
+>> +		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
+>> +
+>> +		if (flash & (FS_OP_ERR | FS_MPU_ERR))
+>> +			return -EIO;
 > 
-> We use this particular setting for our own vendor branch and found that 
-> the LCD and NAND Flash was far more sable on *some HW boards*. Here is 
-> an example for NAND but you can find the same for LCD:
-> https://github.com/linux4sam/linux-at91/commit/99d9e4c8848a2f16cc5b34bb27e588ca7504b695
-> Obviously the "drive strength" property added by Ludovic has been 
-> proposed but is not accepted yet in Mainline and this is why you don't 
-> see it positioned here.
-
-Ok, translating this from SAMA5D2 to SAMA5D3 (which is what I have), I
-assume this is PIO_DRIVER1 and PIO_DRIVER2 instead. Peeking at those
-registers they all contain 0xaaaaaaaa, so I guess all pins are already
-"Medium drive" on my board. Also, looking at that sama5d2-ptc-ek patch
-it seems possible to adjust the drive strength of the nand D<x> lines,
-and I don't think that's possible on the SAMA5D3? The NAND uses D0-D15
-on our board, but there is no alternative use for those pins.
-
-So I can change the drive-strength for these LCD pins: LCDDAT0-15 (only
-using rgb565), LCDVSYNC, LCDHSYNC, LCDPCK and LCDDEN (LCDDISP is not
-used). And for the NAND I can fiddle with NANDALE and NANDCLE.
-
-I.e. PA0-15, PA26-29 and PE21-22
-
-I tried to change the drive strength of these pins to both "Low Drive"
-and "High Drive" and it didn't have any visible effect on the display
-artifacts during NAND accesses.
-
-> If it feels like an issue with "crosstalk" it might be the reason why. 
-> For overruns or underruns, it's true that I would say that it's not 
-> related and that dealing with the matrix is the way to go.
-
-It does feel like underruns and that the LCD controller isn't able to
-keep up with the needed tempo of the display output. At least that is
-consistent with how the artifacts look.
-
-> You can simply test this using devmem2 and see if it's better.
-
-See above.
-
-> Hope that it helps.
-
-Sorry, but no disco. Thanks though!
-
-Cheers,
-Peter
-
-> Best regards,
->    Nicolas
+> This is already checked in parse_read_error(), maybe it would be
+> preferable to have different path inside this function depending on the
+> 'raw' nature of the operation?
 > 
->> On 2018-04-03 09:18, Boris Brezillon wrote:
->>> On Tue, 3 Apr 2018 08:11:30 +0200
->>> Peter Rosin <peda@axentia.se> wrote:
->>>
->>>> On 2018-04-02 22:20, Boris Brezillon wrote:
->>>>> On Mon, 2 Apr 2018 21:28:43 +0200
->>>>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->>>>>    
->>>>>> On Mon, 2 Apr 2018 19:59:39 +0200
->>>>>> Peter Rosin <peda@axentia.se> wrote:
->>>>>>   
->>>>>>> On 2018-04-02 14:22, Boris Brezillon wrote:
->>>>>>>> On Thu, 29 Mar 2018 16:27:12 +0200
->>>>>>>> Peter Rosin <peda@axentia.se> wrote:
->>>>>>>>        
->>>>>>>>> On 2018-03-29 15:44, Boris Brezillon wrote:
->>>>>>>>>> On Thu, 29 Mar 2018 15:37:43 +0200
->>>>>>>>>> Peter Rosin <peda@axentia.se> wrote:
->>>>>>>>>>          
->>>>>>>>>>> On 2018-03-29 15:33, Boris Brezillon wrote:
->>>>>>>>>>>> On Thu, 29 Mar 2018 15:10:54 +0200
->>>>>>>>>>>> Peter Rosin <peda@axentia.se> wrote:
->>>>>>>>>>>>            
->>>>>>>>>>>>> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
->>>>>>>>>>>>> flash accesses have a tendency to cause display disturbances. Add a
->>>>>>>>>>>>> module param to disable DMA from the NAND controller, since that fixes
->>>>>>>>>>>>> the display problem for me.
->>>>>>>>>>>>>
->>>>>>>>>>>>> Signed-off-by: Peter Rosin <peda@axentia.se>
->>>>>>>>>>>>> ---
->>>>>>>>>>>>>   drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
->>>>>>>>>>>>>   1 file changed, 6 insertions(+), 1 deletion(-)
->>>>>>>>>>>>>
->>>>>>>>>>>>> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
->>>>>>>>>>>>> index b2f00b398490..2ff7a77c7b8e 100644
->>>>>>>>>>>>> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
->>>>>>>>>>>>> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
->>>>>>>>>>>>> @@ -129,6 +129,11 @@
->>>>>>>>>>>>>   #define DEFAULT_TIMEOUT_MS			1000
->>>>>>>>>>>>>   #define MIN_DMA_LEN				128
->>>>>>>>>>>>>   
->>>>>>>>>>>>> +static bool atmel_nand_avoid_dma __read_mostly;
->>>>>>>>>>>>> +
->>>>>>>>>>>>> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
->>>>>>>>>>>>> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);
->>>>>>>>>>>>
->>>>>>>>>>>> I'm not a big fan of those driver specific cmdline parameters. Can't we
->>>>>>>>>>>> instead give an higher priority to HLCDC master using the bus matrix?
->>>>>>>>>>>
->>>>>>>>>>> I don't know if it will be enough, but we sure can try. However, I have
->>>>>>>>>>> no idea how to do that. I will happily test stuff though...
->>>>>>>>>>
->>>>>>>>>> There's no interface to configure that from Linux, but you can try to
->>>>>>>>>> tweak it with devmem and if that does the trick, maybe we can expose a
->>>>>>>>>> way to configure that from Linux. For more details, see the "Bus Matrix
->>>>>>>>>> (MATRIX)" section in Atmel datasheets.
->>>>>>>>>
->>>>>>>>> I don't seem to succeed in changing the registers I think I need to change.
->>>>>>>>> I can poke the "Write Protection Mode Register" by writing MAT0 and MAT1 to
->>>>>>>>> it.
->>>>>>>>
->>>>>>>> You mean 0x4D415400, right? ("MAT0" != 0x4D415400).
->>>>>>>
->>>>>>> Bits 1 through 7 do not matter, so even though not equal they are (or
->>>>>>> should be) equivalent. But I did use 0x4d415400. I simply used the
->>>>>>> shorter syntax since that was easier to type and conveyed the relevant
->>>>>>> info.
->>>>>>
->>>>>> Ok.
->>>>>>   
->>>>>>>      
->>>>>>>>> But when I try to write to "Priority Registers B For Slaves" it doesn't
->>>>>>>>> take, regardless of write protect mode.
->>>>>>>>
->>>>>>>> Did you check MATRIX_WPSR after writing to MATRIX_PRXSY?
->>>>>>>
->>>>>>> No, but did it again and checked, see transcript below.
->>>>>>
->>>>>> I don't use devmem2. Is 'readback' information accurate or is it
->>>>>> always what's been written? Because when you write 0x33 to 0xFFFFECBC,
->>>>>> 0x33 is read back, but just after that, when you read it again it's 0.
->>>>>>   
->>>>>>> BTW, how do I
->>>>>>> know which master is in use for the LCD controller? 8 or 9? Both?
->>>>>>
->>>>>> It's configurable on a per-layer basis through the SIF bit in
->>>>>> LCDC_<layer>CFG0. The driver tries to dispatch the load on those 2 AHB
->>>>>> masters [1].
->>>>>>   
->>>>>>> And
->>>>>>> which DDR slave is the target? 7, 8, 9 or 10? More than one?
->>>>>>
->>>>>> This, I don't know. I guess all of them can be used.
->>>>>
->>>>> Looks like I was wrong. According to "Table 15-3. SAMA5D3 Master to
->>>>> Slave Access", LCDC port 0 can only access DDR port 2 and LCDC port 1
->>>>> can only access DDR port 3.
->>>>
->>>> About that table, someone with HW-knowledge should have a real close
->>>> look at it! Why?
->>>>
->>>> I peeked at all the PRxSy registers and there are a lot of '3' entries
->>>> for all the MxPR fields. In fact, the '3' entries align very neatly
->>>> with the checks in this "Master to Slave Access" table. Except they
->>>> don't, after a while.
->>>>
->>>> Here's how the table looks in my datasheet:
->>>>
->>>>   0 vv--v--v--vvvv-
->>>>   1 vv--v--v--vvvv-
->>>>   2 vv-------------
->>>>   3 vv--------vvv--
->>>>   4 vv-------------
->>>>   5 v--------------
->>>>   6 vv--vv-vvvvvvvv
->>>>     v--------------
->>>>   7 v--------------
->>>>   8 --v-v--v-------
->>>>   9 -v---v--v--v---
->>>> 10 ---------vv-vvv
->>>> 11 v--v-----------
->>>> 12 v-----v--------
->>>>
->>>> And here's the '3' entries when digging in the registers (the extra
->>>> dash at the end is for the 16th non-existent slave):
->>>>
->>>>   0 33--3--3--3333--
->>>>   1 33--3--3--3333--
->>>>   2 33--------------
->>>>   3 -3--------333---
->>>>   4 33--------------
->>>>   5 3---------------
->>>>   6 33--33-33333333-
->>>>   7 --3-3--3--------
->>>>   8 -3---3--3--3----
->>>>   9 --3-3--3-33-333-
->>>> 10 3--3------------
->>>> 11 3-----3---------
->>>> 12 ----------------
->>>> 13 ----------------
->>>> 14 ----------------
->>>> 15 ----------------
->>>>
->>>> There's a big mismatch for the four DDR2 lines in the table; they
->>>> seem to map to only three registers. Other than that, the only tweak
->>>> or anomaly is that first entry (Cortex A5) for master 3 (Int ROM).
->>>>
->>>> *time passes*
->>>>
->>>> Arrrgh!! You say "Table 15-3". This is Table 14-3 for me! I believe
->>>> I'm using the latest datasheet (02-Feb-16). What are you reading???!?
->>>
->>> Oops, I was reading an old datasheet (from 2014).
->>
+
+  Thanks Miquel,
+
+  The parse_read_error will be called only for reads with ECC enabled
+  which uses 3 status registers. It has other code also related with
+  erased page detection and more code will be added in last patch
+  for bitflip detection.
+
+  For all others cases, only one status register FLASH_STATUS needs
+  to be checked and this check_flash_errors does the same.
+
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  /*
+>>   * reads back status registers set by the controller to notify page 
+>> read
+>>   * errors. this is equivalent to what 'ecc->correct()' would do.
+>> @@ -1707,7 +1731,7 @@ static int read_page_ecc(struct qcom_nand_host 
+>> *host, u8 *data_buf,
+>>  			}
+>>  		}
+>> 
+>> -		config_nand_cw_read(nandc);
+>> +		config_nand_cw_read(nandc, true);
+>> 
+>>  		if (data_buf)
+>>  			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
+>> @@ -1771,7 +1795,7 @@ static int copy_last_cw(struct qcom_nand_host 
+>> *host, int page)
+>>  	set_address(host, host->cw_size * (ecc->steps - 1), page);
+>>  	update_rw_regs(host, 1, true);
+>> 
+>> -	config_nand_single_cw_page_read(nandc);
+>> +	config_nand_single_cw_page_read(nandc, host->use_ecc);
+>> 
+>>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
+>> 
+>> @@ -1781,6 +1805,15 @@ static int copy_last_cw(struct qcom_nand_host 
+>> *host, int page)
+>> 
+>>  	free_descs(nandc);
+>> 
+>> +	if (!ret) {
+>> +		if (host->use_ecc)
+>> +			ret = parse_read_errors(host, nandc->data_buffer,
+>> +						nandc->data_buffer + size,
+>> +						true);
+>> +		else
+>> +			ret = check_flash_errors(host, 1);
 > 
+> This way you would avoid this ^
 > 
+>> +	}
+>> +
+> 
+> As a general way, I don't like very much this kind of error checking
+> structure:
+> 
+> if (!ret)
+>         ret = something();
+> ...
+> return ret;
+> 
+> I would rather prefer:
+> 
+> if (ret)
+>         return ret;
+> 
+> return something();
+> 
+>>  	return ret;
+>>  }
+>> 
+
+  Yes. That would make it more readable.
+  I will fix that.
+
+>> @@ -1854,7 +1887,7 @@ static int qcom_nandc_read_page_raw(struct 
+>> mtd_info *mtd,
+>>  			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+>>  		}
+>> 
+>> -		config_nand_cw_read(nandc);
+>> +		config_nand_cw_read(nandc, false);
+>> 
+>>  		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+>>  		reg_off += data_size1;
+>> @@ -1878,6 +1911,9 @@ static int qcom_nandc_read_page_raw(struct 
+>> mtd_info *mtd,
+>> 
+>>  	free_descs(nandc);
+>> 
+>> +	if (!ret)
+>> +		ret = check_flash_errors(host, ecc->steps);
+>> +
+> 
+> There is not point in doing ret = ... if you return 0 right after.
+> Please check what would be the most appropriate.
+> 
+
+  Thanks Miquel for noticing it.
+  This 'return 0' was present from the initial commit itself.
+  I will raise separate patch to fix this.
+
+  Thanks,
+  Abhishek
+
+>>  	return 0;
+>>  }
+>> 
+> 
+> Thanks,
+> Miquèl
