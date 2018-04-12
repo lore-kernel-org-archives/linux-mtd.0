@@ -1,18 +1,27 @@
-Message-ID: <1523511881.14673.28.camel@mhfsdcap03>
-Subject: Re: [PATCH 5/8] mtd: rawnand: Modify ->calc_ecc_bytes() hook in
- nand_ecc_caps
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: <richard@nod.at>, <linux-mediatek@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date: Thu, 12 Apr 2018 13:44:41 +0800
-In-Reply-To: <20180411205757.06495b7b@bbrezillon>
-References: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
- <1523418118-57686-6-git-send-email-xiaolei.li@mediatek.com>
- <20180411205757.06495b7b@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6VoA-0005z2-4R
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 06:34:11 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Thu, 12 Apr 2018 12:03:58 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 3/9] mtd: nand: qcom: erased page detection for
+ uncorrectable errors only
+In-Reply-To: <20180410105945.65f2cade@xps13>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-4-git-send-email-absahu@codeaurora.org>
+ <20180410105945.65f2cade@xps13>
+Message-ID: <2c93157a2982365ceaa8af17d5e3b97a@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,209 +31,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-04-11 at 20:57 +0200, Boris Brezillon wrote:
-> On Wed, 11 Apr 2018 11:41:55 +0800
-> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+On 2018-04-10 14:29, Miquel Raynal wrote:
+> Hi Abhishek,
 > 
-> > Maybe some controllers need more information besides step size and ecc
-> > strength to calculate ECC bytes.
-> > 
-> > struct nand_ecc_ctrl provides lots of ECC control information include
-> > private ECC control data. So, add it into ->calc_ecc_bytes() interface,
-> > to make this hook be more flexible.
+> On Wed,  4 Apr 2018 18:12:19 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
 > 
-> I'm not fond of this approach. Why don't you provide a different
-> function for the 2 cases you have (parity = 13 and parity = 14)? 
+>> The NAND flash controller generates ECC uncorrectable error
+>> first in case of completely erased page. Currently driver
+>> applies the erased page detection logic for other operation
+>> errors also so fix this and return EIO for other operational
+>> errors.
 > 
-OK. It is achievable. Will rollback this change in patch v2.
-Thanks.
+> I am sorry I don't understand very well what is the purpose of this
+> patch, could you please explain it again?
+> 
+> Do you mean that you want to avoid having rising ECC errors when you
+> read erased pages?
+> 
+  Thanks Miquel for your review.
 
-> > 
-> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> > ---
-> >  drivers/mtd/nand/raw/denali.c    |  3 +-
-> >  drivers/mtd/nand/raw/denali.h    |  2 +-
-> >  drivers/mtd/nand/raw/nand_base.c | 11 ++++--
-> >  include/linux/mtd/rawnand.h      | 77 ++++++++++++++++++++--------------------
-> >  4 files changed, 50 insertions(+), 43 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> > index 2a302a1..907609c 100644
-> > --- a/drivers/mtd/nand/raw/denali.c
-> > +++ b/drivers/mtd/nand/raw/denali.c
-> > @@ -1113,7 +1113,8 @@ static void denali_hw_init(struct denali_nand_info *denali)
-> >  	iowrite32(0xffff, denali->reg + SPARE_AREA_MARKER);
-> >  }
-> >  
-> > -int denali_calc_ecc_bytes(int step_size, int strength)
-> > +int denali_calc_ecc_bytes(struct nand_ecc_ctrl *ecc, int step_size,
-> > +			  int strength)
-> >  {
-> >  	/* BCH code.  Denali requires ecc.bytes to be multiple of 2 */
-> >  	return DIV_ROUND_UP(strength * fls(step_size * 8), 16) * 2;
-> > diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
-> > index 9ad33d2..644dffd 100644
-> > --- a/drivers/mtd/nand/raw/denali.h
-> > +++ b/drivers/mtd/nand/raw/denali.h
-> > @@ -328,7 +328,7 @@ struct denali_nand_info {
-> >  #define DENALI_CAP_HW_ECC_FIXUP			BIT(0)
-> >  #define DENALI_CAP_DMA_64BIT			BIT(1)
-> >  
-> > -int denali_calc_ecc_bytes(int step_size, int strength);
-> > +int denali_calc_ecc_bytes(struct nand_ecc_ctrl *, int, int);
-> >  int denali_init(struct denali_nand_info *denali);
-> >  void denali_remove(struct denali_nand_info *denali);
-> >  
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index d0b993f..e17abc8 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -6052,6 +6052,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
-> >  			const struct nand_ecc_caps *caps, int oobavail)
-> >  {
-> >  	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> >  	const struct nand_ecc_step_info *stepinfo;
-> >  	int preset_step = chip->ecc.size;
-> >  	int preset_strength = chip->ecc.strength;
-> > @@ -6076,7 +6077,7 @@ int nand_check_ecc_caps(struct nand_chip *chip,
-> >  			if (stepinfo->strengths[j] != preset_strength)
-> >  				continue;
-> >  
-> > -			ecc_bytes = caps->calc_ecc_bytes(preset_step,
-> > +			ecc_bytes = caps->calc_ecc_bytes(ecc, preset_step,
-> >  							 preset_strength);
-> >  			if (WARN_ON_ONCE(ecc_bytes < 0))
-> >  				return ecc_bytes;
-> > @@ -6114,6 +6115,7 @@ int nand_match_ecc_req(struct nand_chip *chip,
-> >  		       const struct nand_ecc_caps *caps, int oobavail)
-> >  {
-> >  	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> >  	const struct nand_ecc_step_info *stepinfo;
-> >  	int req_step = chip->ecc_step_ds;
-> >  	int req_strength = chip->ecc_strength_ds;
-> > @@ -6152,7 +6154,8 @@ int nand_match_ecc_req(struct nand_chip *chip,
-> >  
-> >  			nsteps = mtd->writesize / step_size;
-> >  
-> > -			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-> > +			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
-> > +							 strength);
-> >  			if (WARN_ON_ONCE(ecc_bytes < 0))
-> >  				continue;
-> >  			ecc_bytes_total = ecc_bytes * nsteps;
-> > @@ -6198,6 +6201,7 @@ int nand_maximize_ecc(struct nand_chip *chip,
-> >  		      const struct nand_ecc_caps *caps, int oobavail)
-> >  {
-> >  	struct mtd_info *mtd = nand_to_mtd(chip);
-> > +	struct nand_ecc_ctrl *ecc = &chip->ecc;
-> >  	const struct nand_ecc_step_info *stepinfo;
-> >  	int step_size, strength, nsteps, ecc_bytes, corr;
-> >  	int best_corr = 0;
-> > @@ -6224,7 +6228,8 @@ int nand_maximize_ecc(struct nand_chip *chip,
-> >  
-> >  			nsteps = mtd->writesize / step_size;
-> >  
-> > -			ecc_bytes = caps->calc_ecc_bytes(step_size, strength);
-> > +			ecc_bytes = caps->calc_ecc_bytes(ecc, step_size,
-> > +							 strength);
-> >  			if (WARN_ON_ONCE(ecc_bytes < 0))
-> >  				continue;
-> >  
-> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> > index 5dad59b..e7c7fdb 100644
-> > --- a/include/linux/mtd/rawnand.h
-> > +++ b/include/linux/mtd/rawnand.h
-> > @@ -507,44 +507,6 @@ static inline void nand_hw_control_init(struct nand_hw_control *nfc)
-> >  }
-> >  
-> >  /**
-> > - * struct nand_ecc_step_info - ECC step information of ECC engine
-> > - * @stepsize: data bytes per ECC step
-> > - * @strengths: array of supported strengths
-> > - * @nstrengths: number of supported strengths
-> > - */
-> > -struct nand_ecc_step_info {
-> > -	int stepsize;
-> > -	const int *strengths;
-> > -	int nstrengths;
-> > -};
-> > -
-> > -/**
-> > - * struct nand_ecc_caps - capability of ECC engine
-> > - * @stepinfos: array of ECC step information
-> > - * @nstepinfos: number of ECC step information
-> > - * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
-> > - */
-> > -struct nand_ecc_caps {
-> > -	const struct nand_ecc_step_info *stepinfos;
-> > -	int nstepinfos;
-> > -	int (*calc_ecc_bytes)(int step_size, int strength);
-> > -};
-> > -
-> > -/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
-> > -#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
-> > -static const int __name##_strengths[] = { __VA_ARGS__ };	\
-> > -static const struct nand_ecc_step_info __name##_stepinfo = {	\
-> > -	.stepsize = __step,					\
-> > -	.strengths = __name##_strengths,			\
-> > -	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
-> > -};								\
-> > -static const struct nand_ecc_caps __name = {			\
-> > -	.stepinfos = &__name##_stepinfo,			\
-> > -	.nstepinfos = 1,					\
-> > -	.calc_ecc_bytes = __calc,				\
-> > -}
-> > -
-> > -/**
-> >   * struct nand_ecc_ctrl - Control structure for ECC
-> >   * @mode:	ECC mode
-> >   * @algo:	ECC algorithm
-> > @@ -639,6 +601,45 @@ struct nand_ecc_ctrl {
-> >  };
-> >  
-> >  /**
-> > + * struct nand_ecc_step_info - ECC step information of ECC engine
-> > + * @stepsize: data bytes per ECC step
-> > + * @strengths: array of supported strengths
-> > + * @nstrengths: number of supported strengths
-> > + */
-> > +struct nand_ecc_step_info {
-> > +	int stepsize;
-> > +	const int *strengths;
-> > +	int nstrengths;
-> > +};
-> > +
-> > +/**
-> > + * struct nand_ecc_caps - capability of ECC engine
-> > + * @stepinfos: array of ECC step information
-> > + * @nstepinfos: number of ECC step information
-> > + * @calc_ecc_bytes: driver's hook to calculate ECC bytes per step
-> > + */
-> > +struct nand_ecc_caps {
-> > +	const struct nand_ecc_step_info *stepinfos;
-> > +	int nstepinfos;
-> > +	int (*calc_ecc_bytes)(struct nand_ecc_ctrl *ecc, int step_size,
-> > +			      int strength);
-> > +};
-> > +
-> > +/* a shorthand to generate struct nand_ecc_caps with only one ECC stepsize */
-> > +#define NAND_ECC_CAPS_SINGLE(__name, __calc, __step, ...)	\
-> > +static const int __name##_strengths[] = { __VA_ARGS__ };	\
-> > +static const struct nand_ecc_step_info __name##_stepinfo = {	\
-> > +	.stepsize = __step,					\
-> > +	.strengths = __name##_strengths,			\
-> > +	.nstrengths = ARRAY_SIZE(__name##_strengths),		\
-> > +};								\
-> > +static const struct nand_ecc_caps __name = {			\
-> > +	.stepinfos = &__name##_stepinfo,			\
-> > +	.nstepinfos = 1,					\
-> > +	.calc_ecc_bytes = __calc,				\
-> > +}
-> > +
-> > +/**
-> >   * struct nand_sdr_timings - SDR NAND chip timings
-> >   *
-> >   * This struct defines the timing requirements of a SDR NAND chip.
+  QCOM NAND flash controller has in built erased page
+  detection HW.
+  Following is the flow in the HW if controller tries
+  to read erased page
+
+  1. First ECC uncorrectable error will be generated from
+     ECC engine since ECC engine first calculates the ECC with
+     all 0xff and match the calculated ECC with ECC code in OOB
+     (which is again all 0xff).
+  2. After getting ECC error, erased CW detection HW checks if
+     all the bytes in page are 0xff and then it updates the
+     status in separate register NAND_ERASED_CW_DETECT_STATUS
+
+  So the erased CW detect status should be checked only if
+  ECC engine generated the uncorrectable error.
+
+  Currently for all other operational errors also (like TIMEOUT,
+  MPU errors etc), the erased CW detect register was being
+  checked.
+
+>> 
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>>  drivers/mtd/nand/qcom_nandc.c | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mtd/nand/qcom_nandc.c 
+>> b/drivers/mtd/nand/qcom_nandc.c
+>> index 17321fc..57c16a6 100644
+>> --- a/drivers/mtd/nand/qcom_nandc.c
+>> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> @@ -1578,6 +1578,7 @@ static int parse_read_errors(struct 
+>> qcom_nand_host *host, u8 *data_buf,
+>>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>>  	unsigned int max_bitflips = 0;
+>>  	struct read_stats *buf;
+>> +	bool flash_op_err = false;
+>>  	int i;
+>> 
+>>  	buf = (struct read_stats *)nandc->reg_read_buf;
+>> @@ -1599,7 +1600,7 @@ static int parse_read_errors(struct 
+>> qcom_nand_host *host, u8 *data_buf,
+>>  		buffer = le32_to_cpu(buf->buffer);
+>>  		erased_cw = le32_to_cpu(buf->erased_cw);
+>> 
+>> -		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
+>> +		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
 > 
+> And later you have another "if (buffer & BS_UNCORRECTABLE_BIT)" which
+> is then redundant, unless that is not what you actually want to do?
+
+  Yes. That check seems to be redundant. I will fix that.
+
+> 
+> Maybe you can add comments before the if ()/ else if () to explain in
+> which case you enter each branch.
+
+  Sure. That would be better. Will add the same in next patch set.
+
+> 
+>>  			bool erased;
+>> 
+>>  			/* ignore erased codeword errors */
+>> @@ -1641,6 +1642,8 @@ static int parse_read_errors(struct 
+>> qcom_nand_host *host, u8 *data_buf,
+>>  						max_t(unsigned int, max_bitflips, ret);
+>>  				}
+>>  			}
+>> +		} else if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
+>> +			flash_op_err = true;
+>>  		} else {
+>>  			unsigned int stat;
+>> 
+>> @@ -1654,6 +1657,9 @@ static int parse_read_errors(struct 
+>> qcom_nand_host *host, u8 *data_buf,
+>>  			oob_buf += oob_len + ecc->bytes;
+>>  	}
+>> 
+>> +	if (flash_op_err)
+>> +		return -EIO;
+>> +
+> 
+> In you are propagating an error related to the controller, this is
+> fine, but I think you just want to raise the fact that a NAND
+> uncorrectable error occurred, in this case you should just increment
+> mtd->ecc_stats.failed and return 0 (returning max_bitflips here would 
+> be
+> fine too has it would be 0 too).
+
+   The flash_op_err will be for other operational errors only (like 
+timeout,
+   MPU error, device failure etc). For correctable errors,
+
+   ret = nand_check_erased_ecc_chunk(data_buf,
+                           data_len, eccbuf, ecclen, oob_buf,
+                           extraooblen, ecc->strength);
+                   if (ret < 0) {
+                           mtd->ecc_stats.failed++;
+                   } else {
+                           mtd->ecc_stats.corrected += ret;
+
+  Already, it is incrementing mtd->ecc_stats.failed
+
+  Thanks,
+  Abhishek
