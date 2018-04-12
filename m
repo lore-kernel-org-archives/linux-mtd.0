@@ -1,25 +1,31 @@
-Received: from mail-am5eur03olkn080b.outbound.protection.outlook.com
- ([2a01:111:f400:fe08::80b]
- helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6Y19-0005RQ-RD
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 08:55:45 +0000
-From: martin bayern <Martinbayern@outlook.com>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: power loss results in mounting failure on SLC NAND
-Date: Thu, 12 Apr 2018 08:55:30 +0000
-Message-ID: <CWLP265MB0721D354333D3492047D68DBD2BC0@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
-References: <CWLP265MB0721344DBE1B7785E7D2C6A5D2DE0@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
- <22711116.lYnEpaWOtA@blindfold>
- <CAFLxGvzZNYiqQy2GnkyOfcZ+fnx1SVisVc=ntL90vk1gFf2YyA@mail.gmail.com>,
- <CAFLxGvxaYo9TfCMZPr4su6y7opQgeodK98r5rb5UU9O4H0Ff_Q@mail.gmail.com>,
- <CWLP265MB072103268B9C8C1834D61C8AD2A90@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <CWLP265MB072103268B9C8C1834D61C8AD2A90@CWLP265MB0721.GBRP265.PROD.OUTLOOK.COM>
-Content-Language: en-GB
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+ id 1f6Z1M-0002Tk-LY
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 10:00:02 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Thu, 12 Apr 2018 15:29:48 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
+ parameter
+In-Reply-To: <20180410100745.625d66f8@bbrezillon>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
+ <20180406143133.67f33d33@xps13>
+ <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
+ <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
+ <20180410100745.625d66f8@bbrezillon>
+Message-ID: <c1cb40d0d24e50657308a40bb8398d35@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,12 +35,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi, Richard=0A=
-Seems it works, but I cannot much sure that.  I need more tests.=0A=
-Normally, all corrupted blocks (because of power loss during erasing) will =
-be re-erase during attach stage.=0A=
-you know it is not easy to reproduce. the corrupted block should be behind =
-first-64-PEB, also it results from=0A=
-power loss during erasing. I only reproduced one-time during last two-week =
-testing. Maybe because of re-flash=0A=
-NAND. Anyway, as long as I have any new updates, I will touch you.=0A=
+On 2018-04-10 13:37, Boris Brezillon wrote:
+> On Tue, 10 Apr 2018 09:55:58 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+>> > Hi Abhishek,
+>> >
+>> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
+>> > <absahu@codeaurora.org> wrote:
+>> >
+>> > > On 2018-04-06 18:01, Miquel Raynal wrote:
+>> > > > Hi Abhishek,
+>> > > >
+>> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
+>> > > > <absahu@codeaurora.org> wrote:
+>> > > >
+>> > > >> Currently the driver uses the ECC strength specified in
+>> > > >> device tree. The ONFI or JEDEC device parameter page
+>> > > >> contains the ‘ECC correctability’ field which indicates the
+>> > > >> number of bits that the host should be able to correct per
+>> > > >> 512 bytes of data.
+>> > > >
+>> > > > This is misleading. This field is not about the controller but rather
+>> > > > the chip requirements in terms of minimal strength for nominal use.
+>> > > >
+>> > >
+>> > >   Thanks Miquel.
+>> > >
+>> > >   Yes. Its NAND chip requirement. I have used the description for
+>> > >   NAND ONFI param page
+>> > >
+>> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
+>> > >   This field indicates the number of bits that the host should be
+>> > >   able to correct per 512 bytes of data.
+>> > >
+>> > > >> The ecc correctability is assigned in
+>> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
+>> > > >> supports 4/8-bit ecc correction. The Same kind of board
+>> > > >> can have different NAND parts so use the ecc strength
+>> > > >> from device parameter (if its non zero) instead of
+>> > > >> device tree.
+>> > > >
+>> > > > That is not what you do.
+>> > > >
+>> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
+>> > > > NAND chip requires at least 8-bit/chunk strength.
+>> > > >
+>> > > > The DT property is here to force a strength. Otherwise, Linux will
+>> > > > propose to the NAND controller to use the minimum strength required by
+>> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
+>> > > > table).
+>> > > >
+>> > >
+>> > >   The main problem is that the same kind of boards can have different
+>> > >   NAND parts.
+>> > >
+>> > >   Lets assume, we have following 2 cases.
+>> > >
+>> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
+>> > >      will be zero. In this case, the ecc->strength from DT
+>> > >      will be used
+>> >
+>> > No, the strength from DT will always be used if the property is
+>> > present, no matter the type of chip.
+>> >
+>> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
+>> > >      Since QCOM nand controller can not support
+>> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
+>> > >      itself instead of failing NAND boot completely.
+>> >
+>> > I understand that. But this is still not what you do.
+>> >
+>> > >
+>> > > > IMHO, you have two solutions:
+>> > > > 1/ Remove these properties from the board DT (breaks DT backward
+>> > > > compatibility though);
+>> > >
+>> > >   - nand-ecc-strength: This is optional property in nand.txt and
+>> > >     Required property in qcom_nandc.txt.
+>> >
+>> > Well, this property is not controller specific but chip specific. The
+>> > controller driver does not rely on it, so this property should not be
+>> > required.
+>> >
+>> > > We can't remove since
+>> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
+>> > >     from DT only.
+>> >
+>> > We can remove it and let the core handle this (as this is generic to
+>> > all raw NANDs and not specific to this controller driver). Try it out!
+
+  Thanks Boris and Miquel for your inputs.
+
+  Just want to confirm if already its implemented in core layer
+  or shall I explore regrading this option.
+
+  I checked by removing this property alone from dtsi and it was
+  failing with
+
+  "Driver must set ecc.strength when using hardware ECC"
+
+  I checked the code in nand_base.c also but couldn't get
+  anything related with this.
+
+  Thanks,
+  Abhishek
+
+>> >
+>> > However if the defaults value do not match your expectations, I think
+>> > you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
+>> > your strength_ds field and let you avoid using these properties.
+>> 
+>> Actually nand_ids.c should not be filled anymore, instead you can
+>> implement this detection thanks to the part full name in the vendor
+>> code nand_samsung.c, nand_micron.c, nand_macronix.c, nand_hynix.c, 
+>> etc.
+> 
+> Usually you don't have to go that far, and the ECC requirements are
+> encoded somewhere in the ID (after byte 2). When that's not the
+> case, you may have to check the full ID.
+> 
+>> Depending on what part you are using, it might already work.
+> 
+> Yep.
