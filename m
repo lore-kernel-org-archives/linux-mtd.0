@@ -1,28 +1,15 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6bza-00033V-TK
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 13:10:24 +0000
-Date: Thu, 12 Apr 2018 15:09:52 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
-Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJl?=
- =?UTF-8?B?Y2tp?= <rafal@milecki.pl>, Sourav Poddar <sourav.poddar@ti.com>
-Subject: Re: [PATCH v2 07/10] spi: bcm53xx: Implement the spi_mem interface
-Message-ID: <20180412150952.57a525ee@bbrezillon>
-In-Reply-To: <20180410224439.9260-8-boris.brezillon@bootlin.com>
-References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
- <20180410224439.9260-8-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6cVU-0002Lb-Ja
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 13:43:23 +0000
+Received: by mail-wm0-x244.google.com with SMTP id b127so11794870wmf.5
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Apr 2018 06:43:09 -0700 (PDT)
+From: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
+To: linux-mtd@lists.infradead.org
+Cc: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
+Subject: [PATCH] mtdcore: add writeable attribute in sysfs
+Date: Thu, 12 Apr 2018 15:42:32 +0200
+Message-Id: <20180412134232.14006-1-charles-antoine.couret@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,98 +19,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 Apr 2018 00:44:36 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+MTD devices read-write or read-only property could be set by the bootloader with
+the mtdparts argument but there is no way to change this definition at runtime
+on Linux. The flags can be read but can not be changed.
 
-> The spi_mem interface is meant to replace the spi_flash_read() one.
-> Implement the ->exec_op() method so that we can smoothly get rid of the
-> old interface.
-> 
-> Note that the current ->flash_read() implementation looks a bit fragile
-> since it does not take the ->read_opcode passed by the spi-nor layer
-> into account, which means if might not work with all kind of NORs.
-> 
-> Anyway, I left the logic unchanged and added a few extra checks to make
-> sure we're receiving something that looks like a NOR read operation.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Changes in v2:
-> - include spi-mem.h
-> - treat op->addr.val differently since it's now an u64
-> ---
->  drivers/spi/spi-bcm2835.c |  1 +
->  drivers/spi/spi-bcm53xx.c | 36 +++++++++++++++++++++++++++++++++++-
->  2 files changed, 36 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-> index f35cc10772f6..41ed371eaf15 100644
-> --- a/drivers/spi/spi-bcm2835.c
-> +++ b/drivers/spi/spi-bcm2835.c
-> @@ -37,6 +37,7 @@
->  #include <linux/of_gpio.h>
->  #include <linux/of_irq.h>
->  #include <linux/spi/spi.h>
-> +#include <linux/spi/spi-mem.h>
+This patch adds the possibility to force a MTD device to be read-only or read-write
+even if the bootloader requested something else. The purpose is to offer to
+the user of a device to eventually change something that is not allowed
+like updating the bootloader or change its environement.
 
-Oops, I didn't modify the appropriate file. This line should be added
-in drivers/spi/spi-bcm53xx.c. I'll fix that in the next version.
+Or to protect the device without using mtdro virtual device to read the content.
+---
+ drivers/mtd/mtdcore.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
->  
->  /* SPI register offsets */
->  #define BCM2835_SPI_CS			0x00
-> diff --git a/drivers/spi/spi-bcm53xx.c b/drivers/spi/spi-bcm53xx.c
-> index d02ceb7a29d1..016059d3160b 100644
-> --- a/drivers/spi/spi-bcm53xx.c
-> +++ b/drivers/spi/spi-bcm53xx.c
-> @@ -257,6 +257,38 @@ static int bcm53xxspi_transfer_one(struct spi_master *master,
->  	return 0;
->  }
->  
-> +static int bcm53xxspi_exec_mem_op(struct spi_mem *mem,
-> +				  const struct spi_mem_op *op)
-> +{
-> +	struct bcm53xxspi *b53spi = spi_master_get_devdata(mem->spi->master);
-> +	u32 from;
-> +
-> +	/*
-> +	 * FIXME: There's nothing in this driver programming the opcode and
-> +	 * buswidth to be used when a read is done on the mmio window, but it
-> +	 * seems to be used to access a SPI NOR device, so restrict access
-> +	 * access to SPINOR_OP_READ commands.
-> +	 */
-> +	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
-> +	    op->addr.nbytes != 3 || op->cmd.opcode != 0x3)
-> +		return -ENOTSUPP;
-> +
-> +	/* Return -ENOTSUPP so that the core can fall back to normal reads. */
-> +	from = op->addr.val;
-> +	if (from + op->data.nbytes > BCM53XXSPI_FLASH_WINDOW)
-> +		return -ENOTSUPP;
-> +
-> +	bcm53xxspi_enable_bspi(b53spi);
-> +	memcpy_fromio(op->data.buf.in, b53spi->mmio_base + from,
-> +		      op->data.nbytes);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct spi_controller_mem_ops bcm53xxspi_mem_ops = {
-> +	.exec_op = bcm53xxspi_exec_mem_op,
-> +};
-> +
->  static int bcm53xxspi_flash_read(struct spi_device *spi,
->  				 struct spi_flash_read_message *msg)
->  {
-> @@ -311,8 +343,10 @@ static int bcm53xxspi_bcma_probe(struct bcma_device *core)
->  
->  	master->dev.of_node = dev->of_node;
->  	master->transfer_one = bcm53xxspi_transfer_one;
-> -	if (b53spi->mmio_base)
-> +	if (b53spi->mmio_base) {
-> +		master->mem_ops = &bcm53xxspi_mem_ops;
->  		master->spi_flash_read = bcm53xxspi_flash_read;
-> +	}
->  
->  	bcma_set_drvdata(core, b53spi);
->  
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 807d17d863b3..3a9a7055ee53 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -158,6 +158,39 @@ static ssize_t mtd_flags_show(struct device *dev,
+ }
+ static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
+ 
++static ssize_t mtd_writeable_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	unsigned int writeable = mtd->flags & MTD_WRITEABLE ? 1 : 0;
++
++	return snprintf(buf, PAGE_SIZE, "%d\n", writeable);
++
++}
++
++static ssize_t mtd_writeable_store(struct device *dev,
++					   struct device_attribute *attr,
++					   const char *buf, size_t count)
++{
++	struct mtd_info *mtd = dev_get_drvdata(dev);
++	unsigned int writeable;
++	int retval;
++
++
++	retval = kstrtouint(buf, 0, &writeable);
++	if (retval)
++		return retval;
++
++	if (writeable)
++		mtd->flags |= MTD_WRITEABLE;
++	else
++		mtd->flags &= ~MTD_WRITEABLE;
++
++	return count;
++}
++static DEVICE_ATTR(writeable, S_IRUGO | S_IWUSR, mtd_writeable_show,
++	mtd_writeable_store);
++
+ static ssize_t mtd_size_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+@@ -322,6 +355,7 @@ static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
++	&dev_attr_writeable.attr,
+ 	&dev_attr_size.attr,
+ 	&dev_attr_erasesize.attr,
+ 	&dev_attr_writesize.attr,
+-- 
+2.17.0
