@@ -1,6 +1,10 @@
-Date: Thu, 12 Apr 2018 16:26:32 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6fVt-0001r0-RR
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 16:55:59 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mark Brown <broonie@kernel.org>
 Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
  Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
@@ -11,8 +15,8 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>,
+ Samuel Ortiz <samuel@sortiz.org>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
  Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
@@ -22,14 +26,15 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
 Subject: Re: [PATCH 08/15] ASoC: pxa: remove the dmaengine compat need
-Message-ID: <20180412152632.GG9929@sirena.org.uk>
 References: <20180402142656.26815-1-robert.jarzmik@free.fr>
  <20180402142656.26815-9-robert.jarzmik@free.fr>
+ <20180412152632.GG9929@sirena.org.uk>
+Date: Thu, 12 Apr 2018 18:55:28 +0200
+In-Reply-To: <20180412152632.GG9929@sirena.org.uk> (Mark Brown's message of
+ "Thu, 12 Apr 2018 16:26:32 +0100")
+Message-ID: <87a7u82wlb.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="fCcDWlUEdh43YKr8"
-Content-Disposition: inline
-In-Reply-To: <20180402142656.26815-9-robert.jarzmik@free.fr>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,33 +44,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Mark Brown <broonie@kernel.org> writes:
 
---fCcDWlUEdh43YKr8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> On Mon, Apr 02, 2018 at 04:26:49PM +0200, Robert Jarzmik wrote:
+>> As the pxa architecture switched towards the dmaengine slave map, the
+>> old compatibility mechanism to acquire the dma requestor line number and
+>> priority are not needed anymore.
+>
+> Acked-by: Mark Brown <broonie@kernel.org>
+>
+> If there's no dependency I'm happy to take this for 4.18.
+Thanks for the ack.
 
-On Mon, Apr 02, 2018 at 04:26:49PM +0200, Robert Jarzmik wrote:
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
+The patches 1 and 2 are the dependency here, so I'd rather push it through my
+tree once the review is complete.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Cheers.
 
-If there's no dependency I'm happy to take this for 4.18.
-
---fCcDWlUEdh43YKr8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrPeqcACgkQJNaLcl1U
-h9BSZAf/TjOZQziPXrBJ727QgQKnwF8+6GXuQPc3HlwShDoJ9qAWnzcOSwzJ8fkE
-dcG2858Zo0M7NCqcoOokOhM4wKUOn3aCE78wDsjEPX/PohKdI3uHZXBLbSrFaSF8
-y1TYjHDRCKqYTTfaG4bNfONcAb+ymbxjGD4ZOsrkV82pl8tCA+zCT5g6C8PrqshL
-GwwmmJQHGK0CU477p0+QN/EsW/B9VNLNsqpeFS9WAlZcTuA004mW/3YYf8hwpk0i
-pFqD2AXnmrDVsynBm78eKaAtqMRUkd0I/iWRWqFf7DtVVx6Foo8877fCdcVLYgYI
-mArYZJIh+YC/f25ftES/xWmAqIokOQ==
-=INfO
------END PGP SIGNATURE-----
-
---fCcDWlUEdh43YKr8--
+-- 
+Robert
