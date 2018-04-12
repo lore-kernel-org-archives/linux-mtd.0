@@ -1,12 +1,12 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6Wjs-0001j0-U9
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 07:33:50 +0000
+ id 1f6XAL-0004Ua-I9
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 08:01:17 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8;
  format=flowed
 Content-Transfer-Encoding: 8bit
-Date: Thu, 12 Apr 2018 13:03:37 +0530
+Date: Thu, 12 Apr 2018 13:30:56 +0530
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
@@ -15,13 +15,12 @@ Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
  <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
  <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
  Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 7/9] mtd: nand: qcom: check for operation errors in case
- of raw read
-In-Reply-To: <20180410121230.1ffdd473@xps13>
+Subject: Re: [PATCH 9/9] mtd: nand: qcom: erased page bitflips detection
+In-Reply-To: <20180410123003.34f4cfaa@xps13>
 References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-8-git-send-email-absahu@codeaurora.org>
- <20180410121230.1ffdd473@xps13>
-Message-ID: <321c3977cb4cc31e2e1591ed11588d06@codeaurora.org>
+ <1522845745-6624-10-git-send-email-absahu@codeaurora.org>
+ <20180410123003.34f4cfaa@xps13>
+Message-ID: <a28caf668b5dd7a9993d8eabbbdf5fd8@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,218 +30,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-10 15:42, Miquel Raynal wrote:
+On 2018-04-10 16:00, Miquel Raynal wrote:
 > Hi Abhishek,
 > 
-> On Wed,  4 Apr 2018 18:12:23 +0530, Abhishek Sahu
+> On Wed,  4 Apr 2018 18:12:25 +0530, Abhishek Sahu
 > <absahu@codeaurora.org> wrote:
 > 
->> Currently there is no error checking for raw read. For raw
->> reads, there won’t be any ECC failure but the operational
->> failures are possible so schedule the NAND_FLASH_STATUS read
->> after each codeword.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->>  drivers/mtd/nand/qcom_nandc.c | 56 
->> +++++++++++++++++++++++++++++++++++--------
->>  1 file changed, 46 insertions(+), 10 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/qcom_nandc.c 
->> b/drivers/mtd/nand/qcom_nandc.c
->> index dce97e8..40c790e 100644
->> --- a/drivers/mtd/nand/qcom_nandc.c
->> +++ b/drivers/mtd/nand/qcom_nandc.c
->> @@ -1099,7 +1099,8 @@ static void config_nand_page_read(struct 
->> qcom_nand_controller *nandc)
->>   * Helper to prepare DMA descriptors for configuring registers
->>   * before reading each codeword in NAND page.
->>   */
->> -static void config_nand_cw_read(struct qcom_nand_controller *nandc)
->> +static void
->> +config_nand_cw_read(struct qcom_nand_controller *nandc, bool use_ecc)
->>  {
->>  	if (nandc->props->is_bam)
->>  		write_reg_dma(nandc, NAND_READ_LOCATION_0, 4,
->> @@ -1108,19 +1109,25 @@ static void config_nand_cw_read(struct 
->> qcom_nand_controller *nandc)
->>  	write_reg_dma(nandc, NAND_FLASH_CMD, 1, NAND_BAM_NEXT_SGL);
->>  	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
->> 
->> -	read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
->> -	read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
->> -		     NAND_BAM_NEXT_SGL);
->> +	if (use_ecc) {
->> +		read_reg_dma(nandc, NAND_FLASH_STATUS, 2, 0);
->> +		read_reg_dma(nandc, NAND_ERASED_CW_DETECT_STATUS, 1,
->> +			     NAND_BAM_NEXT_SGL);
->> +	} else {
->> +		read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
->> +	}
->>  }
->> 
->>  /*
->>   * Helper to prepare dma descriptors to configure registers needed 
->> for reading a
->>   * single codeword in page
->>   */
->> -static void config_nand_single_cw_page_read(struct 
->> qcom_nand_controller *nandc)
->> +static void
->> +config_nand_single_cw_page_read(struct qcom_nand_controller *nandc,
->> +				bool use_ecc)
->>  {
->>  	config_nand_page_read(nandc);
->> -	config_nand_cw_read(nandc);
->> +	config_nand_cw_read(nandc, use_ecc);
->>  }
->> 
->>  /*
->> @@ -1201,7 +1208,7 @@ static int nandc_param(struct qcom_nand_host 
->> *host)
->>  	nandc->buf_count = 512;
->>  	memset(nandc->data_buffer, 0xff, nandc->buf_count);
->> 
->> -	config_nand_single_cw_page_read(nandc);
->> +	config_nand_single_cw_page_read(nandc, false);
->> 
->>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer,
->>  		      nandc->buf_count, 0);
->> @@ -1565,6 +1572,23 @@ struct read_stats {
->>  	__le32 erased_cw;
->>  };
->> 
->> +/* reads back FLASH_STATUS register set by the controller */
->> +static int check_flash_errors(struct qcom_nand_host *host, int 
->> cw_cnt)
->> +{
->> +	struct nand_chip *chip = &host->chip;
->> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> +	int i;
->> +
->> +	for (i = 0; i < cw_cnt; i++) {
->> +		u32 flash = le32_to_cpu(nandc->reg_read_buf[i]);
->> +
->> +		if (flash & (FS_OP_ERR | FS_MPU_ERR))
->> +			return -EIO;
+>> Some of the newer nand parts can have bit flips in an erased
+>> page due to the process technology used. In this case, qpic
 > 
-> This is already checked in parse_read_error(), maybe it would be
-> preferable to have different path inside this function depending on the
-> 'raw' nature of the operation?
+> AFAIK, this has always been possible, it was just rare.
 > 
 
-  Thanks Miquel,
+  Yes Miquel. It was rare earlier.
+  Now, we are observing this more for newer parts coming.
 
-  The parse_read_error will be called only for reads with ECC enabled
-  which uses 3 status registers. It has other code also related with
-  erased page detection and more code will be added in last patch
-  for bitflip detection.
-
-  For all others cases, only one status register FLASH_STATUS needs
-  to be checked and this check_flash_errors does the same.
-
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  /*
->>   * reads back status registers set by the controller to notify page 
->> read
->>   * errors. this is equivalent to what 'ecc->correct()' would do.
->> @@ -1707,7 +1731,7 @@ static int read_page_ecc(struct qcom_nand_host 
->> *host, u8 *data_buf,
->>  			}
->>  		}
->> 
->> -		config_nand_cw_read(nandc);
->> +		config_nand_cw_read(nandc, true);
->> 
->>  		if (data_buf)
->>  			read_data_dma(nandc, FLASH_BUF_ACC, data_buf,
->> @@ -1771,7 +1795,7 @@ static int copy_last_cw(struct qcom_nand_host 
->> *host, int page)
->>  	set_address(host, host->cw_size * (ecc->steps - 1), page);
->>  	update_rw_regs(host, 1, true);
->> 
->> -	config_nand_single_cw_page_read(nandc);
->> +	config_nand_single_cw_page_read(nandc, host->use_ecc);
->> 
->>  	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
->> 
->> @@ -1781,6 +1805,15 @@ static int copy_last_cw(struct qcom_nand_host 
->> *host, int page)
->> 
->>  	free_descs(nandc);
->> 
->> +	if (!ret) {
->> +		if (host->use_ecc)
->> +			ret = parse_read_errors(host, nandc->data_buffer,
->> +						nandc->data_buffer + size,
->> +						true);
->> +		else
->> +			ret = check_flash_errors(host, 1);
+>> nand controller is not able to identify that page as an erased
+>> page. Currently the driver calls nand_check_erased_ecc_chunk for
+>> identifying the erased pages but this won’t work always since the
+>> checking is being with ECC engine returned data. In case of
+>> bitflips, the ECC engine tries to correct the data and then it
+>> generates the uncorrectable error. Now, this data is not equal to
+>> original raw data. For erased CW identification, the raw data
+>> should be read again from NAND device and this
+>> nand_check_erased_ecc_chunk function should be called for raw
+>> data only.
 > 
-> This way you would avoid this ^
+> Absolutely.
 > 
->> +	}
->> +
-> 
-> As a general way, I don't like very much this kind of error checking
-> structure:
-> 
-> if (!ret)
->         ret = something();
-> ...
-> return ret;
-> 
-> I would rather prefer:
-> 
-> if (ret)
->         return ret;
-> 
-> return something();
-> 
->>  	return ret;
->>  }
 >> 
-
-  Yes. That would make it more readable.
-  I will fix that.
-
->> @@ -1854,7 +1887,7 @@ static int qcom_nandc_read_page_raw(struct 
->> mtd_info *mtd,
->>  			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
->>  		}
+>> Now following logic is being added to identify the erased
+>> codeword bitflips.
 >> 
->> -		config_nand_cw_read(nandc);
->> +		config_nand_cw_read(nandc, false);
->> 
->>  		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
->>  		reg_off += data_size1;
->> @@ -1878,6 +1911,9 @@ static int qcom_nandc_read_page_raw(struct 
->> mtd_info *mtd,
->> 
->>  	free_descs(nandc);
->> 
->> +	if (!ret)
->> +		ret = check_flash_errors(host, ecc->steps);
->> +
+>> 1. In most of the case, not all the codewords will have bitflips
+>>    and only single CW will have bitflips. So, there is no need to
+>>    read the complete raw page data. The NAND raw read can be
+>>    scheduled for any CW in page. The NAND controller works on CW
+>>    basis and it will update the status register after each CW read.
+>>    Maintain the bitmask for the CW which generated the uncorrectable
+>>    error.
+>> 2. Schedule the raw flash read from NAND flash device to
+>>    NAND controller buffer for all these CWs between first and last
+>>    uncorrectable errors CWs. Copy the content from NAND controller
+>>    buffer to actual data buffer only for the uncorrectable errors
+>>    CWs so that other CW data content won’t be affected, and
+>>    unnecessary data copy can be avoided.
 > 
-> There is not point in doing ret = ... if you return 0 right after.
-> Please check what would be the most appropriate.
+> In case of uncorrectable error, the penalty is huge anyway.
 > 
 
-  Thanks Miquel for noticing it.
-  This 'return 0' was present from the initial commit itself.
-  I will raise separate patch to fix this.
+  Yes. We can't avoid that.
+  But we are reducing that by doing raw read for few subpages in
+  which we got uncorrectale error.
+
+>> 3. Both DATA and OOB need to be checked for number of 0. The
+>>    top-level API can be called with only data buf or oob buf so use
+>>    chip->databuf if data buf is null and chip->oob_poi if
+>>    oob buf is null for copying the raw bytes temporarily.
+> 
+> You can do that. But when you do, you should tell the core you used
+> that buffer and that it cannot rely on what is inside. Please
+> invalidate the page cache with:
+> 
+> chip->pagebuf = -1;
+> 
+
+  Thanks Miquel. I will check and update the patch.
+
+>> 4. For each CW, check the number of 0 in cw_data and usable
+>>    oob bytes, The bbm and spare bytes bit flip won’t affect the ECC
+>>    so don’t check the number of bitflips in this area.
+> 
+> OOB is an area in which you are supposed to find the BBM, the ECC bytes
+> and the spare bytes. Spare bytes == usable OOB bytes. And the BBM
+> should be protected too. I don't get this sentence but I don't see its
+> application neither in the code?
+> 
+
+  QCOM NAND layout does not support the BBM ECC protection.
+
+  IN OOB,
+
+  For all the possible layouts (4 bit RS/4 bit BCH/8 bit BCH)
+  it has 16 usable OOB bytes which is protected with ECC.
+
+  All the bytes in OOB other than BBM, ECC bytes and usable
+  OOB bytes are ununsed.
+
+  You can refer qcom_nand_host_setup for layout detail.
 
   Thanks,
   Abhishek
-
->>  	return 0;
->>  }
->> 
-> 
-> Thanks,
-> Miquèl
