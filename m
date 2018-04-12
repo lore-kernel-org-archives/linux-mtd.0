@@ -1,22 +1,23 @@
-Received: from mail-he1eur01on0125.outbound.protection.outlook.com
- ([104.47.0.125] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6RIC-0008Ha-Bh
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 01:44:54 +0000
-From: "Wang, Qiong (Q.)" <qwang34@yfve.com.cn>
-To: Richard Weinberger <richard.weinberger@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: Could someone tell me if the fastmap feature in ubi is stable for
- use in production?
-Date: Thu, 12 Apr 2018 01:28:57 +0000
-Message-ID: <HE1PR0601MB2427E2D63802632D71F6BE3CF3BC0@HE1PR0601MB2427.eurprd06.prod.outlook.com>
-References: <HE1PR0601MB2427C395930AEEA2E8B3F2CFF3BF0@HE1PR0601MB2427.eurprd06.prod.outlook.com>
- <CAFLxGvxZKHBsZja-aEVGrR8ftqeGo9ptpj_zKFirvSKCMvSgmg@mail.gmail.com>
-In-Reply-To: <CAFLxGvxZKHBsZja-aEVGrR8ftqeGo9ptpj_zKFirvSKCMvSgmg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1f6Uk5-0004xv-IO
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 05:25:55 +0000
+Received: by mail-lf0-x242.google.com with SMTP id m200-v6so5820797lfm.4
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Apr 2018 22:25:42 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: Hauke Mehrtens <hauke@hauke-m.de>, linux-mtd@lists.infradead.org,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH] mtd: bcm47xxpart: improve handling TRX partition size
+Date: Thu, 12 Apr 2018 07:24:52 +0200
+Message-Id: <20180412052452.11498-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KVGhhbmsgeW91IHNvIG11Y2ggZm9yIHlvdXIgaW5mb3JtYXRpb24uIE91
-ciBwbGFuIGlzIHRvIHVzZSBpdCBidXQgd2l0aCBhbGwgbWVhbnMgb2YgdGVzdC4gV2Ugd2lsbCBs
-b29rIGludG8gdGhlIHBhdGNoIHRoYXQgeW91IHNob3dlZCB0byB1cyBhbmQgZGVjaWRlIGlmIHdl
-IGNhbiBhZGQgaXQgaW4gb3VyIHByb2plY3QuDQoNClRoYW5rcyBhZ2Fpbi4NCg0KQmVzdCBSZWdh
-cmRzLA0K5rGq55C8L1dhbmcgUWlvbmcNCg0K6L2v5Lu25LiO5rWL6K+V6YOoL+i9r+S7tuW3peeo
-i+W4iFNvZnR3YXJlwqBEZXNpZ24mVGVzdCBEZXB0Li9Tb2Z0d2FyZSBFbmdpbmVlcg0KVGVsICs4
-NiAyNSA4MTA2IDkyMzINCkUtbWFpbDogcXdhbmczNEB5ZnZlLmNvbS5jbg0K5bu26ZSL5Lyf5LiW
-6YCa55S15a2Q56eR5oqA77yI5Y2X5Lqs77yJ5pyJ6ZmQ5YWs5Y+4DQpZYW5mZW5nIFZpc3Rlb24g
-RWxlY3Ryb25pY3MgVGVjaG5vbG9neSAoTmFuamluZykgQ28uLCBMdGQNCuaxn+iLj+ecgeWNl+S6
-rOW4guaxn+WugeWMuuiLj+a6kOWkp+mBkzE55Y+35Zu96ZmF5LyB5Lia5oC76YOo5ZutQzHluqc3
-5qW8DQpBZGRyZXNzOiA3RiwgQzEsIEppdWxvbmdodSBJbnRlcm5hdGlvbmFsIENvcnBvcmF0ZSBI
-ZWFkcXVhcnRlcnMsIE5vLiAxOSBTdXl1YW4gUm9hZCwgSmlhbmduaW5nIERldmVsb3BtZW50IFpv
-bmUsIE5hbmppbmcsIENoaW5hDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206
-IFJpY2hhcmQgV2VpbmJlcmdlciBbbWFpbHRvOnJpY2hhcmQud2VpbmJlcmdlckBnbWFpbC5jb21d
-IA0KU2VudDogMjAxOOW5tDTmnIg55pelIDE4OjU2DQpUbzogV2FuZywgUWlvbmcgKFEuKQ0KQ2M6
-IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBSZTogQ291bGQgc29tZW9u
-ZSB0ZWxsIG1lIGlmIHRoZSBmYXN0bWFwIGZlYXR1cmUgaW4gdWJpIGlzIHN0YWJsZSBmb3IgdXNl
-IGluIHByb2R1Y3Rpb24/DQoNCldhbmcsIFFpb25nIChRLiksDQoNCk9uIE1vbiwgQXByIDksIDIw
-MTggYXQgMTI6MjUgUE0sIFdhbmcsIFFpb25nIChRLikgPHF3YW5nMzRAeWZ2ZS5jb20uY24+IHdy
-b3RlOg0KPiBIaSBleHBlcnRzLA0KPg0KPiBJIGhhdmUgZm91bmQgdGhlIGJlbG93IGxpbmsgaW4g
-dGhlIGxpbnV4LW10ZCB3ZWJzaXRlIGV4cGxhaW5pbmcgZmFzdG1hcCBmZWF0dXJlIGluIHViaS4N
-Cj4gaHR0cDovL2xpbnV4LW10ZC5pbmZyYWRlYWQub3JnL2RvYy91YmkuaHRtbCNMX2Zhc3RtYXAN
-Cj4NCj4gT3VyIHByb2plY3QgdXNlcyBsYXJnZSBuYW5kIGZsYXNoIGFuZCBJIGZvdW5kIHRoYXQg
-ZmFzdG1hcCBjYW4gcmVkdWNlIHRoZSB1YmkgYXR0YWNoIHByb2Nlc3MgdG8gdGhlIHRpbWUgd2Ug
-d2FudC4gT3VyIGNvbmNlcm4gaXMsIHNpbmNlIGl0IGlzIGFuIGV4cGVyaW1lbnRhbCwgaXMgaXQg
-c3RhYmxlIHRvIHVzZSBpbiBvdXIgcHJvamVjdD8gQXJlIHRoZXJlIGFueSByZXBvcnRlZCBpc3N1
-ZSBvZiB0aGlzIGZlYXR1cmU/T3VyIGJpZ2dlc3Qgd29ycnkgaXMgdGhhdCBjYW4gaXQgcG9zc2li
-bHkgYnJpY2sgb3VyIHN5c3RlbSBkdXJpbmcgdGhlIGJvb3QgdXAgcHJvY2Vzcy4NCg0KV2VsbCwg
-aXQgaXMgYSBub24tdHJ2aWFsIGFnZ3Jlc3NpdmUgb3B0aW1pemF0aW9uLg0KTGF0ZWx5IEkgcGxh
-bm5lZCB0byBtYXJrIGl0IGZpbmFsbHkgYXMgc3RhYmxlIGJ1dCB0aGVuIHRoaXMgaGFwcGVuZWQg
-cG9wcGVkIHVwLg0KDQpbMF0gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xp
-bnV4LW10ZC8yMDE4LU1hcmNoLzA3OTYxMC5odG1sDQoNCk9uIHRoZSBvdGhlciBoYW5kLCBpZiBv
-bmx5IHZlcnkgZmV3IHBlb3BsZSBhcmUgdXNpbmcgaXQsIHdlIHdvbid0IGZpbmQgcmVtYWluaW5n
-IHN1YnRsZSBidWdzLg0KDQotLQ0KVGhhbmtzLA0KLy9yaWNoYXJkDQo=
+From: Rafał Miłecki <rafal@milecki.pl>
+
+When bcm47xxpart finds a TRX partition (container) it's supposed to jump
+to the end of it and keep looking for more partitions. TRX and its
+subpartitions are handled be a separated parser.
+
+The problem with old code was relying on the length specified in a TRX
+header. That isn't reliable as TRX is commonly modified to have checksum
+cover only non-changing subpartitions. Otherwise modifying e.g. a rootfs
+would result in CRC32 mismatch and bootloader refusing to boot a
+firmware.
+
+Fix it by trying better to figure out a real TRX size. We can securely
+assume that TRX has to cover all subpartitions and the last one is at
+least of a block size in size. Then compare it with a length field.
+
+This makes code more optimal & reliable thanks to skipping data that
+shouldn't be parsed.
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+ drivers/mtd/bcm47xxpart.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+index fe2581d9d882..1f0239848ebe 100644
+--- a/drivers/mtd/bcm47xxpart.c
++++ b/drivers/mtd/bcm47xxpart.c
+@@ -186,6 +186,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 		/* TRX */
+ 		if (buf[0x000 / 4] == TRX_MAGIC) {
+ 			struct trx_header *trx;
++			uint32_t last_subpart;
++			uint32_t trx_size;
+ 
+ 			if (trx_num >= ARRAY_SIZE(trx_parts))
+ 				pr_warn("No enough space to store another TRX found at 0x%X\n",
+@@ -195,11 +197,23 @@ static int bcm47xxpart_parse(struct mtd_info *master,
+ 			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
+ 					     offset, 0);
+ 
+-			/* Jump to the end of TRX */
++			/*
++			 * Try to find TRX size. The "length" field isn't fully
++			 * reliable as it could be decreased to make CRC32 cover
++			 * only part of TRX data. It's commonly used as checksum
++			 * can't cover e.g. ever-changing rootfs partition.
++			 * Use offsets as helpers for assuming min TRX size.
++			 */
+ 			trx = (struct trx_header *)buf;
+-			offset = roundup(offset + trx->length, blocksize);
+-			/* Next loop iteration will increase the offset */
+-			offset -= blocksize;
++			last_subpart = max3(trx->offset[0], trx->offset[1],
++					    trx->offset[2]);
++			trx_size = max(trx->length, last_subpart + blocksize);
++
++			/*
++			 * Skip the TRX data. Decrease offset by block size as
++			 * the next loop iteration will increase it.
++			 */
++			offset += roundup(trx_size, blocksize) - blocksize;
+ 			continue;
+ 		}
+ 
+-- 
+2.12.0
