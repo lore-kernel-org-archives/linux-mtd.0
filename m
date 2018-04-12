@@ -1,29 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6drp-0003dx-Gu
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 15:10:31 +0000
-Date: Thu, 12 Apr 2018 17:10:05 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Peter Pan
- <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
- <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of
- SPI memory controllers
-Message-ID: <20180412171005.5cfaba58@bbrezillon>
-In-Reply-To: <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
-References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
- <20180410224439.9260-5-boris.brezillon@bootlin.com>
- <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
+Date: Thu, 12 Apr 2018 16:26:32 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 08/15] ASoC: pxa: remove the dmaengine compat need
+Message-ID: <20180412152632.GG9929@sirena.org.uk>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-9-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="fCcDWlUEdh43YKr8"
+Content-Disposition: inline
+In-Reply-To: <20180402142656.26815-9-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,97 +39,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Apr 2018 20:08:28 +0530
-Vignesh R <vigneshr@ti.com> wrote:
 
-> Hi,
-> 
-> - Sourav Poddar <sourav.poddar@ti.com> mail ID no longer valid.
-> 
-> On Wednesday 11 April 2018 04:14 AM, Boris Brezillon wrote:
-> > Some controllers are exposing high-level interfaces to access various
-> > kind of SPI memories. Unfortunately they do not fit in the current
-> > spi_controller model and usually have drivers placed in
-> > drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
-> > memories in general.
-> > 
-> > This is an attempt at defining a SPI memory interface which works for
-> > all kinds of SPI memories (NORs, NANDs, SRAMs).
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---  
-> 
-> [...]
-> 
-> > +/**
-> > + * struct spi_mem_op - describes a SPI memory operation
-> > + * @cmd.buswidth: number of IO lines used to transmit the command
-> > + * @cmd.opcode: operation opcode
-> > + * @addr.nbytes: number of address bytes to send. Can be zero if the operation
-> > + *		 does not need to send an address
-> > + * @addr.buswidth: number of IO lines used to transmit the address cycles
-> > + * @addr.val: address value. This value is always sent MSB first on the bus.
-> > + *	      Note that only @addr.nbytes are taken into account in this
-> > + *	      address value, so users should make sure the value fits in the
-> > + *	      assigned number of bytes.
-> > + * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
-> > + *		  be zero if the operation does not require dummy bytes
-> > + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
-> > + * @data.buswidth: number of IO lanes used to send/receive the data
-> > + * @data.dir: direction of the transfer
-> > + * @data.buf.in: input buffer
-> > + * @data.buf.out: output buffer
-> > + */
-> > +struct spi_mem_op {
-> > +	struct {
-> > +		u8 buswidth;
-> > +		u8 opcode;
-> > +	} cmd;
-> > +
-> > +	struct {
-> > +		u8 nbytes;
-> > +		u8 buswidth;
-> > +		u64 val;  
-> 
-> You could consider using loff_t here and be consistent with
-> spi_nor_read/write() API as well as mtd->_read().
+--fCcDWlUEdh43YKr8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hm, I always have a hard time using types which does not clearly say
-how large they are, but okay.
+On Mon, Apr 02, 2018 at 04:26:49PM +0200, Robert Jarzmik wrote:
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
 
-> 
-> > +	} addr;
-> > +
-> > +	struct {
-> > +		u8 nbytes;
-> > +		u8 buswidth;
-> > +	} dummy;
-> > +
-> > +	struct {
-> > +		u8 buswidth;
-> > +		enum spi_mem_data_dir dir;
-> > +		unsigned int nbytes;
-> > +		/* buf.{in,out} must be DMA-able. */
-> > +		union {
-> > +			void *in;
-> > +			const void *out;
-> > +		} buf;
-> > +	} data;
-> > +};
-> > +  
-> 
-> Some flash devices support Dual/Quad DDR (Double Data Rate) mode and the
-> SPI controller driver would need to know this information. We will need
-> to add a field for that.
+Acked-by: Mark Brown <broonie@kernel.org>
 
-Well, let's wait until we actually need that.
+If there's no dependency I'm happy to take this for 4.18.
 
-> 
-> Currently, there are drivers under mtd/spi-nor/ that need to know
-> page/sector/total size of flash memory(info available in
-> -`struct spi_nor). We would need a way to provide this info to spi_mem
-> drivers, if we ever plan to move drivers under mtd/spi-nor to spi/
+--fCcDWlUEdh43YKr8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Again, we'll see when we'll try to move them, but I hope still we won't
-need that. Looks like the kind of information I'd like to keep away
-from spi controller drivers.
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrPeqcACgkQJNaLcl1U
+h9BSZAf/TjOZQziPXrBJ727QgQKnwF8+6GXuQPc3HlwShDoJ9qAWnzcOSwzJ8fkE
+dcG2858Zo0M7NCqcoOokOhM4wKUOn3aCE78wDsjEPX/PohKdI3uHZXBLbSrFaSF8
+y1TYjHDRCKqYTTfaG4bNfONcAb+ymbxjGD4ZOsrkV82pl8tCA+zCT5g6C8PrqshL
+GwwmmJQHGK0CU477p0+QN/EsW/B9VNLNsqpeFS9WAlZcTuA004mW/3YYf8hwpk0i
+pFqD2AXnmrDVsynBm78eKaAtqMRUkd0I/iWRWqFf7DtVVx6Foo8877fCdcVLYgYI
+mArYZJIh+YC/f25ftES/xWmAqIokOQ==
+=INfO
+-----END PGP SIGNATURE-----
+
+--fCcDWlUEdh43YKr8--
