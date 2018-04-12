@@ -1,16 +1,24 @@
-Date: Wed, 11 Apr 2018 21:13:08 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: <richard@nod.at>, linux-mediatek@lists.infradead.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH 3/8] mtd: rawnand: mtk: Add DT property mtk,fdm-ecc-size
-Message-ID: <20180411211308.436d19c0@bbrezillon>
-In-Reply-To: <1523418118-57686-4-git-send-email-xiaolei.li@mediatek.com>
-References: <1523418118-57686-1-git-send-email-xiaolei.li@mediatek.com>
- <1523418118-57686-4-git-send-email-xiaolei.li@mediatek.com>
+Received: from mail-ve1eur01on0119.outbound.protection.outlook.com
+ ([104.47.1.119] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6R5U-0003eq-3A
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 01:31:47 +0000
+From: "Wang, Qiong (Q.)" <qwang34@yfve.com.cn>
+To: Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>, Richard Weinberger
+ <richard.weinberger@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: Could someone tell me if the fastmap feature in ubi is stable for
+ use in production?
+Date: Thu, 12 Apr 2018 01:31:28 +0000
+Message-ID: <HE1PR0601MB2427A9A0DF661BCD3E14B301F3BC0@HE1PR0601MB2427.eurprd06.prod.outlook.com>
+References: <HE1PR0601MB2427C395930AEEA2E8B3F2CFF3BF0@HE1PR0601MB2427.eurprd06.prod.outlook.com>
+ <CAFLxGvxZKHBsZja-aEVGrR8ftqeGo9ptpj_zKFirvSKCMvSgmg@mail.gmail.com>
+ <CAAEAJfD8OhiekCgNjYjEVa65Xe8CXK2UM4C74xt4JVz-K7xzDQ@mail.gmail.com>
+In-Reply-To: <CAAEAJfD8OhiekCgNjYjEVa65Xe8CXK2UM4C74xt4JVz-K7xzDQ@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 Apr 2018 11:41:53 +0800
-Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-
-> For some MTK NAND chips, BootROM may access more than one byte
-> ECC protected FDM data, but now we fix ECC protected FDM byte as 1.
-> This will make some chips be failed to boot up.
-> 
-> With this DT property setting, different MTK NAND chips with the same
-> NAND controller IP can work well.
-> 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/mtd/mtk-nand.txt |  6 ++++++
->  drivers/mtd/nand/raw/mtk_nand.c                    | 25 ++++++++++++++++------
->  2 files changed, 24 insertions(+), 7 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> index ef786568..a8e4136 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> @@ -47,6 +47,12 @@ Children nodes properties:
->  - reg:			Chip Select Signal, default 0.
->  			Set as reg = <0>, <1> when need 2 CS.
->  Optional:
-> +- mtk,fdm-ecc-size:	Integer representing ECC protected FDM bytes.
-> +			Should be in the range [1,8], if not present 1.
-> +			On some MTK NAND chips, BootROM may access more than
-> +			one byte ECC protected FDM data. Different MTK chips
-> +			with the same NAND controller IP will work well with
-> +			this properity setting.
-
-Is this something that changes on a per-SoC basis, or can a specific
-SoC have a different behavior depending on the version of the BootROM
-it embeds (that would be quite tricky to deal with since that would
-mean having different dts if you start using newer revisions of the same
-SoC).
-
-If it's on a per-SoC basis, I'd recommend defining new compatibles
-instead of adding this property.
+SGkgRXplcXVpZWwsDQoNClRoYW5rcyBmb3IgeW91ciBhZHZpY2UuIE1heSBJIGFzayB3aGF0IHBh
+dGNoIHRoYXQgUmljaGFyZCBnYXZlIHRvIHlvdSB0byBmaXggeW91ciBidWc/IElzIGl0IHRoZSBz
+YW1lIGFzIHdoYXQgUmljaGFyZCBzaG93ZWQgbWUgYmVmb3JlIGluIHRoZSBmb2xsb3dpbmcgbGlu
+az8NCg0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDE4
+LU1hcmNoLzA3OTYxMC5odG1sDQoNCkJlc3QgUmVnYXJkcywNCuaxqueQvC9XYW5nIFFpb25nDQoN
+Cui9r+S7tuS4jua1i+ivlemDqC/ova/ku7blt6XnqIvluIhTb2Z0d2FyZcKgRGVzaWduJlRlc3Qg
+RGVwdC4vU29mdHdhcmUgRW5naW5lZXINClRlbCArODYgMjUgODEwNiA5MjMyDQpFLW1haWw6IHF3
+YW5nMzRAeWZ2ZS5jb20uY24NCuW7tumUi+S8n+S4lumAmueUteWtkOenkeaKgO+8iOWNl+S6rO+8
+ieaciemZkOWFrOWPuA0KWWFuZmVuZyBWaXN0ZW9uIEVsZWN0cm9uaWNzIFRlY2hub2xvZ3kgKE5h
+bmppbmcpIENvLiwgTHRkDQrmsZ/oi4/nnIHljZfkuqzluILmsZ/lroHljLroi4/mupDlpKfpgZMx
+OeWPt+WbvemZheS8geS4muaAu+mDqOWbrUMx5bqnN+alvA0KQWRkcmVzczogN0YsIEMxLCBKaXVs
+b25naHUgSW50ZXJuYXRpb25hbCBDb3Jwb3JhdGUgSGVhZHF1YXJ0ZXJzLCBOby4gMTkgU3V5dWFu
+IFJvYWQsIEppYW5nbmluZyBEZXZlbG9wbWVudCBab25lLCBOYW5qaW5nLCBDaGluYQ0KDQoNCi0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBFemVxdWllbCBHYXJjaWEgW21haWx0bzpl
+emVxdWllbEB2YW5ndWFyZGlhc3VyLmNvbS5hcl0gDQpTZW50OiAyMDE45bm0NOaciDEx5pelIDIz
+OjA5DQpUbzogUmljaGFyZCBXZWluYmVyZ2VyDQpDYzogV2FuZywgUWlvbmcgKFEuKTsgbGludXgt
+bXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBDb3VsZCBzb21lb25lIHRlbGwg
+bWUgaWYgdGhlIGZhc3RtYXAgZmVhdHVyZSBpbiB1YmkgaXMgc3RhYmxlIGZvciB1c2UgaW4gcHJv
+ZHVjdGlvbj8NCg0KV2FuZywgUWlvbmcgKFEuKSwNCg0KDQpPbiA5IEFwcmlsIDIwMTggYXQgMDc6
+NTUsIFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZC53ZWluYmVyZ2VyQGdtYWlsLmNvbT4gd3Jv
+dGU6DQo+IFdhbmcsIFFpb25nIChRLiksDQo+DQo+IE9uIE1vbiwgQXByIDksIDIwMTggYXQgMTI6
+MjUgUE0sIFdhbmcsIFFpb25nIChRLikgPHF3YW5nMzRAeWZ2ZS5jb20uY24+IHdyb3RlOg0KPj4g
+SGkgZXhwZXJ0cywNCj4+DQo+PiBJIGhhdmUgZm91bmQgdGhlIGJlbG93IGxpbmsgaW4gdGhlIGxp
+bnV4LW10ZCB3ZWJzaXRlIGV4cGxhaW5pbmcgZmFzdG1hcCBmZWF0dXJlIGluIHViaS4NCj4+IGh0
+dHA6Ly9saW51eC1tdGQuaW5mcmFkZWFkLm9yZy9kb2MvdWJpLmh0bWwjTF9mYXN0bWFwDQo+Pg0K
+Pj4gT3VyIHByb2plY3QgdXNlcyBsYXJnZSBuYW5kIGZsYXNoIGFuZCBJIGZvdW5kIHRoYXQgZmFz
+dG1hcCBjYW4gcmVkdWNlIHRoZSB1YmkgYXR0YWNoIHByb2Nlc3MgdG8gdGhlIHRpbWUgd2Ugd2Fu
+dC4gT3VyIGNvbmNlcm4gaXMsIHNpbmNlIGl0IGlzIGFuIGV4cGVyaW1lbnRhbCwgaXMgaXQgc3Rh
+YmxlIHRvIHVzZSBpbiBvdXIgcHJvamVjdD8gQXJlIHRoZXJlIGFueSByZXBvcnRlZCBpc3N1ZSBv
+ZiB0aGlzIGZlYXR1cmU/T3VyIGJpZ2dlc3Qgd29ycnkgaXMgdGhhdCBjYW4gaXQgcG9zc2libHkg
+YnJpY2sgb3VyIHN5c3RlbSBkdXJpbmcgdGhlIGJvb3QgdXAgcHJvY2Vzcy4NCg0KRm9yIHdoYXQg
+aXQncyB3b3J0aCwgSSd2ZSB1c2VkIFVCSSBmYXN0bWFwIGluIHByb2R1Y3Rpb24sIGFuZCBzbyBm
+YXIgd2UgZGlkbid0IGhhdmUgaXNzdWVzLg0KDQpOb3RlIHRoYXQgd2UgcHJlcGFyZWQgYSBsb3Qg
+b2YgdGVzdHMsIGJhc2VkIG9uIG91ciBwYXJ0aWN1bGFyIHVzZSBjYXNlLiBJZiBJIHJlbWVtYmVy
+IGNvcnJlY3RseSwgd2UgaGl0IG9uZSBidWcgYW5kIFJpY2hhcmQgd2FzIGtpbmQgZW5vdWdoIHRv
+IGZpeCBpdCBpbiBhIGZldyBob3Vycy4NCg0KU28gbXkgYWR2aXNlIGlzOiB1c2UgaXQsIGJ1dCBi
+eSBhbGwgbWVhbnMgdGVzdCBpdC4gQXMgYW55dGhpbmcgZWxzZS4NCg0KSG9wZSBpdCBoZWxwcywN
+CkV6ZQ0K
