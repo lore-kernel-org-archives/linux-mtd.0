@@ -1,31 +1,28 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6Z1M-0002Tk-LY
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 10:00:02 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6bza-00033V-TK
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 13:10:24 +0000
+Date: Thu, 12 Apr 2018 15:09:52 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJl?=
+ =?UTF-8?B?Y2tp?= <rafal@milecki.pl>, Sourav Poddar <sourav.poddar@ti.com>
+Subject: Re: [PATCH v2 07/10] spi: bcm53xx: Implement the spi_mem interface
+Message-ID: <20180412150952.57a525ee@bbrezillon>
+In-Reply-To: <20180410224439.9260-8-boris.brezillon@bootlin.com>
+References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
+ <20180410224439.9260-8-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Thu, 12 Apr 2018 15:29:48 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
- parameter
-In-Reply-To: <20180410100745.625d66f8@bbrezillon>
-References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
- <20180406143133.67f33d33@xps13>
- <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
- <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
- <20180410100745.625d66f8@bbrezillon>
-Message-ID: <c1cb40d0d24e50657308a40bb8398d35@codeaurora.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,126 +32,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-10 13:37, Boris Brezillon wrote:
-> On Tue, 10 Apr 2018 09:55:58 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Wed, 11 Apr 2018 00:44:36 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+
+> The spi_mem interface is meant to replace the spi_flash_read() one.
+> Implement the ->exec_op() method so that we can smoothly get rid of the
+> old interface.
 > 
->> > Hi Abhishek,
->> >
->> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
->> > <absahu@codeaurora.org> wrote:
->> >
->> > > On 2018-04-06 18:01, Miquel Raynal wrote:
->> > > > Hi Abhishek,
->> > > >
->> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
->> > > > <absahu@codeaurora.org> wrote:
->> > > >
->> > > >> Currently the driver uses the ECC strength specified in
->> > > >> device tree. The ONFI or JEDEC device parameter page
->> > > >> contains the ‘ECC correctability’ field which indicates the
->> > > >> number of bits that the host should be able to correct per
->> > > >> 512 bytes of data.
->> > > >
->> > > > This is misleading. This field is not about the controller but rather
->> > > > the chip requirements in terms of minimal strength for nominal use.
->> > > >
->> > >
->> > >   Thanks Miquel.
->> > >
->> > >   Yes. Its NAND chip requirement. I have used the description for
->> > >   NAND ONFI param page
->> > >
->> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
->> > >   This field indicates the number of bits that the host should be
->> > >   able to correct per 512 bytes of data.
->> > >
->> > > >> The ecc correctability is assigned in
->> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
->> > > >> supports 4/8-bit ecc correction. The Same kind of board
->> > > >> can have different NAND parts so use the ecc strength
->> > > >> from device parameter (if its non zero) instead of
->> > > >> device tree.
->> > > >
->> > > > That is not what you do.
->> > > >
->> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
->> > > > NAND chip requires at least 8-bit/chunk strength.
->> > > >
->> > > > The DT property is here to force a strength. Otherwise, Linux will
->> > > > propose to the NAND controller to use the minimum strength required by
->> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
->> > > > table).
->> > > >
->> > >
->> > >   The main problem is that the same kind of boards can have different
->> > >   NAND parts.
->> > >
->> > >   Lets assume, we have following 2 cases.
->> > >
->> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
->> > >      will be zero. In this case, the ecc->strength from DT
->> > >      will be used
->> >
->> > No, the strength from DT will always be used if the property is
->> > present, no matter the type of chip.
->> >
->> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
->> > >      Since QCOM nand controller can not support
->> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
->> > >      itself instead of failing NAND boot completely.
->> >
->> > I understand that. But this is still not what you do.
->> >
->> > >
->> > > > IMHO, you have two solutions:
->> > > > 1/ Remove these properties from the board DT (breaks DT backward
->> > > > compatibility though);
->> > >
->> > >   - nand-ecc-strength: This is optional property in nand.txt and
->> > >     Required property in qcom_nandc.txt.
->> >
->> > Well, this property is not controller specific but chip specific. The
->> > controller driver does not rely on it, so this property should not be
->> > required.
->> >
->> > > We can't remove since
->> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
->> > >     from DT only.
->> >
->> > We can remove it and let the core handle this (as this is generic to
->> > all raw NANDs and not specific to this controller driver). Try it out!
-
-  Thanks Boris and Miquel for your inputs.
-
-  Just want to confirm if already its implemented in core layer
-  or shall I explore regrading this option.
-
-  I checked by removing this property alone from dtsi and it was
-  failing with
-
-  "Driver must set ecc.strength when using hardware ECC"
-
-  I checked the code in nand_base.c also but couldn't get
-  anything related with this.
-
-  Thanks,
-  Abhishek
-
->> >
->> > However if the defaults value do not match your expectations, I think
->> > you can add your non-ONFI/JEDEC chip in 'nand_ids.c', this should fill
->> > your strength_ds field and let you avoid using these properties.
->> 
->> Actually nand_ids.c should not be filled anymore, instead you can
->> implement this detection thanks to the part full name in the vendor
->> code nand_samsung.c, nand_micron.c, nand_macronix.c, nand_hynix.c, 
->> etc.
+> Note that the current ->flash_read() implementation looks a bit fragile
+> since it does not take the ->read_opcode passed by the spi-nor layer
+> into account, which means if might not work with all kind of NORs.
 > 
-> Usually you don't have to go that far, and the ECC requirements are
-> encoded somewhere in the ID (after byte 2). When that's not the
-> case, you may have to check the full ID.
+> Anyway, I left the logic unchanged and added a few extra checks to make
+> sure we're receiving something that looks like a NOR read operation.
 > 
->> Depending on what part you are using, it might already work.
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v2:
+> - include spi-mem.h
+> - treat op->addr.val differently since it's now an u64
+> ---
+>  drivers/spi/spi-bcm2835.c |  1 +
+>  drivers/spi/spi-bcm53xx.c | 36 +++++++++++++++++++++++++++++++++++-
+>  2 files changed, 36 insertions(+), 1 deletion(-)
 > 
-> Yep.
+> diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+> index f35cc10772f6..41ed371eaf15 100644
+> --- a/drivers/spi/spi-bcm2835.c
+> +++ b/drivers/spi/spi-bcm2835.c
+> @@ -37,6 +37,7 @@
+>  #include <linux/of_gpio.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/spi/spi.h>
+> +#include <linux/spi/spi-mem.h>
+
+Oops, I didn't modify the appropriate file. This line should be added
+in drivers/spi/spi-bcm53xx.c. I'll fix that in the next version.
+
+>  
+>  /* SPI register offsets */
+>  #define BCM2835_SPI_CS			0x00
+> diff --git a/drivers/spi/spi-bcm53xx.c b/drivers/spi/spi-bcm53xx.c
+> index d02ceb7a29d1..016059d3160b 100644
+> --- a/drivers/spi/spi-bcm53xx.c
+> +++ b/drivers/spi/spi-bcm53xx.c
+> @@ -257,6 +257,38 @@ static int bcm53xxspi_transfer_one(struct spi_master *master,
+>  	return 0;
+>  }
+>  
+> +static int bcm53xxspi_exec_mem_op(struct spi_mem *mem,
+> +				  const struct spi_mem_op *op)
+> +{
+> +	struct bcm53xxspi *b53spi = spi_master_get_devdata(mem->spi->master);
+> +	u32 from;
+> +
+> +	/*
+> +	 * FIXME: There's nothing in this driver programming the opcode and
+> +	 * buswidth to be used when a read is done on the mmio window, but it
+> +	 * seems to be used to access a SPI NOR device, so restrict access
+> +	 * access to SPINOR_OP_READ commands.
+> +	 */
+> +	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+> +	    op->addr.nbytes != 3 || op->cmd.opcode != 0x3)
+> +		return -ENOTSUPP;
+> +
+> +	/* Return -ENOTSUPP so that the core can fall back to normal reads. */
+> +	from = op->addr.val;
+> +	if (from + op->data.nbytes > BCM53XXSPI_FLASH_WINDOW)
+> +		return -ENOTSUPP;
+> +
+> +	bcm53xxspi_enable_bspi(b53spi);
+> +	memcpy_fromio(op->data.buf.in, b53spi->mmio_base + from,
+> +		      op->data.nbytes);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct spi_controller_mem_ops bcm53xxspi_mem_ops = {
+> +	.exec_op = bcm53xxspi_exec_mem_op,
+> +};
+> +
+>  static int bcm53xxspi_flash_read(struct spi_device *spi,
+>  				 struct spi_flash_read_message *msg)
+>  {
+> @@ -311,8 +343,10 @@ static int bcm53xxspi_bcma_probe(struct bcma_device *core)
+>  
+>  	master->dev.of_node = dev->of_node;
+>  	master->transfer_one = bcm53xxspi_transfer_one;
+> -	if (b53spi->mmio_base)
+> +	if (b53spi->mmio_base) {
+> +		master->mem_ops = &bcm53xxspi_mem_ops;
+>  		master->spi_flash_read = bcm53xxspi_flash_read;
+> +	}
+>  
+>  	bcma_set_drvdata(core, b53spi);
+>  
