@@ -1,15 +1,29 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from lelnx194.ext.ti.com ([198.47.27.80])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6cVU-0002Lb-Ja
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 13:43:23 +0000
-Received: by mail-wm0-x244.google.com with SMTP id b127so11794870wmf.5
- for <linux-mtd@lists.infradead.org>; Thu, 12 Apr 2018 06:43:09 -0700 (PDT)
-From: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
-To: linux-mtd@lists.infradead.org
-Cc: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
-Subject: [PATCH] mtdcore: add writeable attribute in sysfs
-Date: Thu, 12 Apr 2018 15:42:32 +0200
-Message-Id: <20180412134232.14006-1-charles-antoine.couret@essensium.com>
+ id 1f6dMl-0003nK-Bv
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 14:38:25 +0000
+Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of SPI
+ memory controllers
+To: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>
+CC: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Maxime Chevallier <maxime.chevallier@bootlin.com>
+References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
+ <20180410224439.9260-5-boris.brezillon@bootlin.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
+Date: Thu, 12 Apr 2018 20:08:28 +0530
+MIME-Version: 1.0
+In-Reply-To: <20180410224439.9260-5-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,71 +33,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD devices read-write or read-only property could be set by the bootloader with
-the mtdparts argument but there is no way to change this definition at runtime
-on Linux. The flags can be read but can not be changed.
 
-This patch adds the possibility to force a MTD device to be read-only or read-write
-even if the bootloader requested something else. The purpose is to offer to
-the user of a device to eventually change something that is not allowed
-like updating the bootloader or change its environement.
+Hi,
 
-Or to protect the device without using mtdro virtual device to read the content.
----
- drivers/mtd/mtdcore.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+- Sourav Poddar <sourav.poddar@ti.com> mail ID no longer valid.
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 807d17d863b3..3a9a7055ee53 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -158,6 +158,39 @@ static ssize_t mtd_flags_show(struct device *dev,
- }
- static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
- 
-+static ssize_t mtd_writeable_show(struct device *dev,
-+		struct device_attribute *attr, char *buf)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	unsigned int writeable = mtd->flags & MTD_WRITEABLE ? 1 : 0;
-+
-+	return snprintf(buf, PAGE_SIZE, "%d\n", writeable);
-+
-+}
-+
-+static ssize_t mtd_writeable_store(struct device *dev,
-+					   struct device_attribute *attr,
-+					   const char *buf, size_t count)
-+{
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
-+	unsigned int writeable;
-+	int retval;
-+
-+
-+	retval = kstrtouint(buf, 0, &writeable);
-+	if (retval)
-+		return retval;
-+
-+	if (writeable)
-+		mtd->flags |= MTD_WRITEABLE;
-+	else
-+		mtd->flags &= ~MTD_WRITEABLE;
-+
-+	return count;
-+}
-+static DEVICE_ATTR(writeable, S_IRUGO | S_IWUSR, mtd_writeable_show,
-+	mtd_writeable_store);
-+
- static ssize_t mtd_size_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
-@@ -322,6 +355,7 @@ static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
- static struct attribute *mtd_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_flags.attr,
-+	&dev_attr_writeable.attr,
- 	&dev_attr_size.attr,
- 	&dev_attr_erasesize.attr,
- 	&dev_attr_writesize.attr,
+On Wednesday 11 April 2018 04:14 AM, Boris Brezillon wrote:
+> Some controllers are exposing high-level interfaces to access various
+> kind of SPI memories. Unfortunately they do not fit in the current
+> spi_controller model and usually have drivers placed in
+> drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
+> memories in general.
+> 
+> This is an attempt at defining a SPI memory interface which works for
+> all kinds of SPI memories (NORs, NANDs, SRAMs).
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+
+[...]
+
+> +/**
+> + * struct spi_mem_op - describes a SPI memory operation
+> + * @cmd.buswidth: number of IO lines used to transmit the command
+> + * @cmd.opcode: operation opcode
+> + * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+> + *		 does not need to send an address
+> + * @addr.buswidth: number of IO lines used to transmit the address cycles
+> + * @addr.val: address value. This value is always sent MSB first on the bus.
+> + *	      Note that only @addr.nbytes are taken into account in this
+> + *	      address value, so users should make sure the value fits in the
+> + *	      assigned number of bytes.
+> + * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+> + *		  be zero if the operation does not require dummy bytes
+> + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
+> + * @data.buswidth: number of IO lanes used to send/receive the data
+> + * @data.dir: direction of the transfer
+> + * @data.buf.in: input buffer
+> + * @data.buf.out: output buffer
+> + */
+> +struct spi_mem_op {
+> +	struct {
+> +		u8 buswidth;
+> +		u8 opcode;
+> +	} cmd;
+> +
+> +	struct {
+> +		u8 nbytes;
+> +		u8 buswidth;
+> +		u64 val;
+
+You could consider using loff_t here and be consistent with
+spi_nor_read/write() API as well as mtd->_read().
+
+> +	} addr;
+> +
+> +	struct {
+> +		u8 nbytes;
+> +		u8 buswidth;
+> +	} dummy;
+> +
+> +	struct {
+> +		u8 buswidth;
+> +		enum spi_mem_data_dir dir;
+> +		unsigned int nbytes;
+> +		/* buf.{in,out} must be DMA-able. */
+> +		union {
+> +			void *in;
+> +			const void *out;
+> +		} buf;
+> +	} data;
+> +};
+> +
+
+Some flash devices support Dual/Quad DDR (Double Data Rate) mode and the
+SPI controller driver would need to know this information. We will need
+to add a field for that.
+
+Currently, there are drivers under mtd/spi-nor/ that need to know
+page/sector/total size of flash memory(info available in
+-`struct spi_nor). We would need a way to provide this info to spi_mem
+drivers, if we ever plan to move drivers under mtd/spi-nor to spi/
+
+
+[...]
 -- 
-2.17.0
+Regards
+Vignesh
