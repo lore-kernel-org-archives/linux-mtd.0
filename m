@@ -1,28 +1,28 @@
-Received: from lelnx194.ext.ti.com ([198.47.27.80])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6dMl-0003nK-Bv
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 14:38:25 +0000
-Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of SPI
- memory controllers
-To: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>
-CC: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Maxime Chevallier <maxime.chevallier@bootlin.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f6drp-0003dx-Gu
+ for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 15:10:31 +0000
+Date: Thu, 12 Apr 2018 17:10:05 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Peter Pan
+ <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of
+ SPI memory controllers
+Message-ID: <20180412171005.5cfaba58@bbrezillon>
+In-Reply-To: <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
 References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
  <20180410224439.9260-5-boris.brezillon@bootlin.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
-Date: Thu, 12 Apr 2018 20:08:28 +0530
+ <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20180410224439.9260-5-boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,90 +33,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 12 Apr 2018 20:08:28 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-Hi,
-
-- Sourav Poddar <sourav.poddar@ti.com> mail ID no longer valid.
-
-On Wednesday 11 April 2018 04:14 AM, Boris Brezillon wrote:
-> Some controllers are exposing high-level interfaces to access various
-> kind of SPI memories. Unfortunately they do not fit in the current
-> spi_controller model and usually have drivers placed in
-> drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
-> memories in general.
+> Hi,
 > 
-> This is an attempt at defining a SPI memory interface which works for
-> all kinds of SPI memories (NORs, NANDs, SRAMs).
+> - Sourav Poddar <sourav.poddar@ti.com> mail ID no longer valid.
 > 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
+> On Wednesday 11 April 2018 04:14 AM, Boris Brezillon wrote:
+> > Some controllers are exposing high-level interfaces to access various
+> > kind of SPI memories. Unfortunately they do not fit in the current
+> > spi_controller model and usually have drivers placed in
+> > drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
+> > memories in general.
+> > 
+> > This is an attempt at defining a SPI memory interface which works for
+> > all kinds of SPI memories (NORs, NANDs, SRAMs).
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---  
+> 
+> [...]
+> 
+> > +/**
+> > + * struct spi_mem_op - describes a SPI memory operation
+> > + * @cmd.buswidth: number of IO lines used to transmit the command
+> > + * @cmd.opcode: operation opcode
+> > + * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+> > + *		 does not need to send an address
+> > + * @addr.buswidth: number of IO lines used to transmit the address cycles
+> > + * @addr.val: address value. This value is always sent MSB first on the bus.
+> > + *	      Note that only @addr.nbytes are taken into account in this
+> > + *	      address value, so users should make sure the value fits in the
+> > + *	      assigned number of bytes.
+> > + * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+> > + *		  be zero if the operation does not require dummy bytes
+> > + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
+> > + * @data.buswidth: number of IO lanes used to send/receive the data
+> > + * @data.dir: direction of the transfer
+> > + * @data.buf.in: input buffer
+> > + * @data.buf.out: output buffer
+> > + */
+> > +struct spi_mem_op {
+> > +	struct {
+> > +		u8 buswidth;
+> > +		u8 opcode;
+> > +	} cmd;
+> > +
+> > +	struct {
+> > +		u8 nbytes;
+> > +		u8 buswidth;
+> > +		u64 val;  
+> 
+> You could consider using loff_t here and be consistent with
+> spi_nor_read/write() API as well as mtd->_read().
 
-[...]
+Hm, I always have a hard time using types which does not clearly say
+how large they are, but okay.
 
-> +/**
-> + * struct spi_mem_op - describes a SPI memory operation
-> + * @cmd.buswidth: number of IO lines used to transmit the command
-> + * @cmd.opcode: operation opcode
-> + * @addr.nbytes: number of address bytes to send. Can be zero if the operation
-> + *		 does not need to send an address
-> + * @addr.buswidth: number of IO lines used to transmit the address cycles
-> + * @addr.val: address value. This value is always sent MSB first on the bus.
-> + *	      Note that only @addr.nbytes are taken into account in this
-> + *	      address value, so users should make sure the value fits in the
-> + *	      assigned number of bytes.
-> + * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
-> + *		  be zero if the operation does not require dummy bytes
-> + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
-> + * @data.buswidth: number of IO lanes used to send/receive the data
-> + * @data.dir: direction of the transfer
-> + * @data.buf.in: input buffer
-> + * @data.buf.out: output buffer
-> + */
-> +struct spi_mem_op {
-> +	struct {
-> +		u8 buswidth;
-> +		u8 opcode;
-> +	} cmd;
-> +
-> +	struct {
-> +		u8 nbytes;
-> +		u8 buswidth;
-> +		u64 val;
+> 
+> > +	} addr;
+> > +
+> > +	struct {
+> > +		u8 nbytes;
+> > +		u8 buswidth;
+> > +	} dummy;
+> > +
+> > +	struct {
+> > +		u8 buswidth;
+> > +		enum spi_mem_data_dir dir;
+> > +		unsigned int nbytes;
+> > +		/* buf.{in,out} must be DMA-able. */
+> > +		union {
+> > +			void *in;
+> > +			const void *out;
+> > +		} buf;
+> > +	} data;
+> > +};
+> > +  
+> 
+> Some flash devices support Dual/Quad DDR (Double Data Rate) mode and the
+> SPI controller driver would need to know this information. We will need
+> to add a field for that.
 
-You could consider using loff_t here and be consistent with
-spi_nor_read/write() API as well as mtd->_read().
+Well, let's wait until we actually need that.
 
-> +	} addr;
-> +
-> +	struct {
-> +		u8 nbytes;
-> +		u8 buswidth;
-> +	} dummy;
-> +
-> +	struct {
-> +		u8 buswidth;
-> +		enum spi_mem_data_dir dir;
-> +		unsigned int nbytes;
-> +		/* buf.{in,out} must be DMA-able. */
-> +		union {
-> +			void *in;
-> +			const void *out;
-> +		} buf;
-> +	} data;
-> +};
-> +
+> 
+> Currently, there are drivers under mtd/spi-nor/ that need to know
+> page/sector/total size of flash memory(info available in
+> -`struct spi_nor). We would need a way to provide this info to spi_mem
+> drivers, if we ever plan to move drivers under mtd/spi-nor to spi/
 
-Some flash devices support Dual/Quad DDR (Double Data Rate) mode and the
-SPI controller driver would need to know this information. We will need
-to add a field for that.
-
-Currently, there are drivers under mtd/spi-nor/ that need to know
-page/sector/total size of flash memory(info available in
--`struct spi_nor). We would need a way to provide this info to spi_mem
-drivers, if we ever plan to move drivers under mtd/spi-nor to spi/
-
-
-[...]
--- 
-Regards
-Vignesh
+Again, we'll see when we'll try to move them, but I hope still we won't
+need that. Looks like the kind of information I'd like to keep away
+from spi controller drivers.
