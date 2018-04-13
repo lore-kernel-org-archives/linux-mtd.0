@@ -1,31 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f6iOG-0004Km-4k
- for linux-mtd@lists.infradead.org; Thu, 12 Apr 2018 20:00:18 +0000
-Date: Thu, 12 Apr 2018 21:59:51 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, linux-spi@vger.kernel.org, Peter Pan
- <peterpansjtu@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Frieder
- Schrempf <frieder.schrempf@exceet.de>, Mark Brown <broonie@kernel.org>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Maxime Chevallier <maxime.chevallier@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of
- SPI memory controllers
-Message-ID: <20180412215951.751bf889@bbrezillon>
-In-Reply-To: <20180412171005.5cfaba58@bbrezillon>
-References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
- <20180410224439.9260-5-boris.brezillon@bootlin.com>
- <60f3d53a-9668-9e1c-9f29-45aaf4004630@ti.com>
- <20180412171005.5cfaba58@bbrezillon>
+Received: from mail-db5eur01on0084.outbound.protection.outlook.com
+ ([104.47.2.84] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f76hQ-0001lj-5U
+ for linux-mtd@lists.infradead.org; Fri, 13 Apr 2018 21:57:41 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Stefan Agner <stefan@agner.ch>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>
+CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "max.oss.09@gmail.com" <max.oss.09@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
+ strength
+Date: Fri, 13 Apr 2018 21:57:24 +0000
+Message-ID: <a82587cc-cccc-40f6-3d27-23a20b3f72c7@nxp.com>
+References: <20180304200602.11475-1-stefan@agner.ch>
+In-Reply-To: <20180304200602.11475-1-stefan@agner.ch>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8B69A6AE8D13EB4AB49159FE9EB9C566@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,139 +32,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Apr 2018 17:10:05 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-
-> On Thu, 12 Apr 2018 20:08:28 +0530
-> Vignesh R <vigneshr@ti.com> wrote:
-> 
-> > Hi,
-> > 
-> > - Sourav Poddar <sourav.poddar@ti.com> mail ID no longer valid.
-> > 
-> > On Wednesday 11 April 2018 04:14 AM, Boris Brezillon wrote:  
-> > > Some controllers are exposing high-level interfaces to access various
-> > > kind of SPI memories. Unfortunately they do not fit in the current
-> > > spi_controller model and usually have drivers placed in
-> > > drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
-> > > memories in general.
-> > > 
-> > > This is an attempt at defining a SPI memory interface which works for
-> > > all kinds of SPI memories (NORs, NANDs, SRAMs).
-> > > 
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > ---    
-> > 
-> > [...]
-> >   
-> > > +/**
-> > > + * struct spi_mem_op - describes a SPI memory operation
-> > > + * @cmd.buswidth: number of IO lines used to transmit the command
-> > > + * @cmd.opcode: operation opcode
-> > > + * @addr.nbytes: number of address bytes to send. Can be zero if the operation
-> > > + *		 does not need to send an address
-> > > + * @addr.buswidth: number of IO lines used to transmit the address cycles
-> > > + * @addr.val: address value. This value is always sent MSB first on the bus.
-> > > + *	      Note that only @addr.nbytes are taken into account in this
-> > > + *	      address value, so users should make sure the value fits in the
-> > > + *	      assigned number of bytes.
-> > > + * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
-> > > + *		  be zero if the operation does not require dummy bytes
-> > > + * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
-> > > + * @data.buswidth: number of IO lanes used to send/receive the data
-> > > + * @data.dir: direction of the transfer
-> > > + * @data.buf.in: input buffer
-> > > + * @data.buf.out: output buffer
-> > > + */
-> > > +struct spi_mem_op {
-> > > +	struct {
-> > > +		u8 buswidth;
-> > > +		u8 opcode;
-> > > +	} cmd;
-> > > +
-> > > +	struct {
-> > > +		u8 nbytes;
-> > > +		u8 buswidth;
-> > > +		u64 val;    
-> > 
-> > You could consider using loff_t here and be consistent with
-> > spi_nor_read/write() API as well as mtd->_read().  
-> 
-> Hm, I always have a hard time using types which does not clearly say
-> how large they are, but okay.
-
-BTW, loff_t is signed, which doesn't really make sense here, so I'd
-like to keep an u64 unless you have a strong reason not to.
-
-> 
-> >   
-> > > +	} addr;
-> > > +
-> > > +	struct {
-> > > +		u8 nbytes;
-> > > +		u8 buswidth;
-> > > +	} dummy;
-> > > +
-> > > +	struct {
-> > > +		u8 buswidth;
-> > > +		enum spi_mem_data_dir dir;
-> > > +		unsigned int nbytes;
-> > > +		/* buf.{in,out} must be DMA-able. */
-> > > +		union {
-> > > +			void *in;
-> > > +			const void *out;
-> > > +		} buf;
-> > > +	} data;
-> > > +};
-> > > +    
-> > 
-> > Some flash devices support Dual/Quad DDR (Double Data Rate) mode and the
-> > SPI controller driver would need to know this information. We will need
-> > to add a field for that.  
-> 
-> Well, let's wait until we actually need that.
-> 
-> > 
-> > Currently, there are drivers under mtd/spi-nor/ that need to know
-> > page/sector/total size of flash memory(info available in
-> > -`struct spi_nor). We would need a way to provide this info to spi_mem
-> > drivers, if we ever plan to move drivers under mtd/spi-nor to spi/  
-> 
-> Again, we'll see when we'll try to move them, but I hope still we won't
-> need that. Looks like the kind of information I'd like to keep away
-> from spi controller drivers.
-
-Let me clarify this part. I already thought a bit about this problem,
-and that's the very reason we have an intermediate layer with a spi_mem
-struct pointing to the real spi_device object. The idea is to add new
-fields to spi_mem object if/when we really have to. We'd also have to
-add ->attach/detach() methods to spi_mem_ops so that SPI mem controller
-can know when a new device is about to be accessed by a spi-mem
-driver, can parse the information provided in spi_mem and configure the
-controller accordingly.
-
-Now, even if that's something I considered when designing the spi-mem
-interface, I'd like to stay away from this sort of specialization as
-long as possible. Why? Simply because dealing with memory specificities
-like "is it a NOR, a NAND or an SRAM? Should I erase blocks before
-writing data? What's the page size, sector size, eraseblock size? ..."
-is not something that belongs in the SPI framework. IMHO, it should
-stay in SPI mem drivers (the SPI NOR or SPI NAND framework are such SPI
-mem drivers).
-
-This being said, I see a real need for advanced features. One example I
-have in mind is a "direct-mapping API", where a spi_mem user could ask
-for a specific region of the memory to be directly mapped (if the
-feature is supported by the controller of course). And that's something
-I think we can make generic enough to consider adding it to the
-spi_mem_ops interface. All we'll need is a way to say "I want to map
-this portion of the memory in R, W or RW and when you need to
-read/write use this spi_mem_op and patch the address based on the
-actual memory address that is being accessed".
-
-Maybe I'm wrong and some controllers actually need to know which type
-of device they are dealing with, but in that case, I'm not so sure they
-belong in the SPI framework at all, unless they provide a dummy mode in
-which they can act as a regular SPI/SPI mem controller (i.e. send SPI
-mem operations without trying to be smart and do things behind our
-back).
+DQoNCk9uIDAzLzA0LzIwMTggMDI6MDYgUE0sIFN0ZWZhbiBBZ25lciB3cm90ZToNCj4gQWRkIHN1
+cHBvcnQgZm9yIHNwZWNpZmllZCBFQ0Mgc3RyZW5ndGgvc2l6ZSB1c2luZyBkZXZpY2UgdHJlZQ0K
+PiBwcm9wZXJ0aWVzIG5hbmQtZWNjLXN0cmVuZ3RoL25hbmQtZWNjLXN0ZXAtc2l6ZS4NCj4gDQo+
+IFNpZ25lZC1vZmYtYnk6IFN0ZWZhbiBBZ25lciA8c3RlZmFuQGFnbmVyLmNoPg0KPiAtLS0NCj4g
+ICBkcml2ZXJzL210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYyB8IDMwICsrKysrKysrKysr
+KysrKysrKysrLS0tLS0tLS0tLQ0KPiAgIDEgZmlsZSBjaGFuZ2VkLCAyMCBpbnNlcnRpb25zKCsp
+LCAxMCBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2dw
+bWktbmFuZC9ncG1pLW5hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvZ3BtaS1uYW5kL2dwbWktbmFu
+ZC5jDQo+IGluZGV4IDYxZmRkNzMzNDkyZi4uZDA0NzU0Mjg5YzAzIDEwMDY0NA0KPiAtLS0gYS9k
+cml2ZXJzL210ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiArKysgYi9kcml2ZXJzL210
+ZC9uYW5kL2dwbWktbmFuZC9ncG1pLW5hbmQuYw0KPiBAQCAtMTk4LDE3ICsxOTgsMTYgQEAgc3Rh
+dGljIGlubGluZSBib29sIGdwbWlfY2hlY2tfZWNjKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhp
+cykNCj4gICAgKg0KPiAgICAqIFdlIG1heSBoYXZlIGF2YWlsYWJsZSBvb2Igc3BhY2UgaW4gdGhp
+cyBjYXNlLg0KPiAgICAqLw0KPiAtc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8o
+c3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzKQ0KPiArc3RhdGljIGludCBzZXRfZ2VvbWV0cnlf
+YnlfZWNjX2luZm8oc3RydWN0IGdwbWlfbmFuZF9kYXRhICp0aGlzLA0KPiArCQkJCSAgICB1bnNp
+Z25lZCBpbnQgZWNjX3N0cmVuZ3RoLA0KPiArCQkJCSAgICB1bnNpZ25lZCBpbnQgZWNjX3N0ZXAp
+DQo+ICAgew0KPiAgIAlzdHJ1Y3QgYmNoX2dlb21ldHJ5ICpnZW8gPSAmdGhpcy0+YmNoX2dlb21l
+dHJ5Ow0KPiAgIAlzdHJ1Y3QgbmFuZF9jaGlwICpjaGlwID0gJnRoaXMtPm5hbmQ7DQo+ICAgCXN0
+cnVjdCBtdGRfaW5mbyAqbXRkID0gbmFuZF90b19tdGQoY2hpcCk7DQo+ICAgCXVuc2lnbmVkIGlu
+dCBibG9ja19tYXJrX2JpdF9vZmZzZXQ7DQo+ICAgDQo+IC0JaWYgKCEoY2hpcC0+ZWNjX3N0cmVu
+Z3RoX2RzID4gMCAmJiBjaGlwLT5lY2Nfc3RlcF9kcyA+IDApKQ0KPiAtCQlyZXR1cm4gLUVJTlZB
+TDsNCj4gLQ0KPiAtCXN3aXRjaCAoY2hpcC0+ZWNjX3N0ZXBfZHMpIHsNCj4gKwlzd2l0Y2ggKGVj
+Y19zdGVwKSB7DQo+ICAgCWNhc2UgU1pfNTEyOg0KPiAgIAkJZ2VvLT5nZl9sZW4gPSAxMzsNCj4g
+ICAJCWJyZWFrOw0KPiBAQCAtMjIxLDggKzIyMCw4IEBAIHN0YXRpYyBpbnQgc2V0X2dlb21ldHJ5
+X2J5X2VjY19pbmZvKHN0cnVjdCBncG1pX25hbmRfZGF0YSAqdGhpcykNCj4gICAJCQljaGlwLT5l
+Y2Nfc3RyZW5ndGhfZHMsIGNoaXAtPmVjY19zdGVwX2RzKTsNCj4gICAJCXJldHVybiAtRUlOVkFM
+Ow0KPiAgIAl9DQo+IC0JZ2VvLT5lY2NfY2h1bmtfc2l6ZSA9IGNoaXAtPmVjY19zdGVwX2RzOw0K
+PiAtCWdlby0+ZWNjX3N0cmVuZ3RoID0gcm91bmRfdXAoY2hpcC0+ZWNjX3N0cmVuZ3RoX2RzLCAy
+KTsNCj4gKwlnZW8tPmVjY19jaHVua19zaXplID0gZWNjX3N0ZXA7DQo+ICsJZ2VvLT5lY2Nfc3Ry
+ZW5ndGggPSByb3VuZF91cChlY2Nfc3RyZW5ndGgsIDIpOw0KPiAgIAlpZiAoIWdwbWlfY2hlY2tf
+ZWNjKHRoaXMpKQ0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICAgDQo+IEBAIC0yMzAsNyArMjI5
+LDcgQEAgc3RhdGljIGludCBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8oc3RydWN0IGdwbWlfbmFu
+ZF9kYXRhICp0aGlzKQ0KPiAgIAlpZiAoZ2VvLT5lY2NfY2h1bmtfc2l6ZSA8IG10ZC0+b29ic2l6
+ZSkgew0KPiAgIAkJZGV2X2Vycih0aGlzLT5kZXYsDQo+ICAgCQkJInVuc3VwcG9ydGVkIG5hbmQg
+Y2hpcC4gZWNjIHNpemU6ICVkLCBvb2Igc2l6ZSA6ICVkXG4iLA0KPiAtCQkJY2hpcC0+ZWNjX3N0
+ZXBfZHMsIG10ZC0+b29ic2l6ZSk7DQo+ICsJCQllY2Nfc3RlcCwgbXRkLT5vb2JzaXplKTsNCj4g
+ICAJCXJldHVybiAtRUlOVkFMOw0KPiAgIAl9DQo+ICAgDQo+IEBAIC00MjMsOSArNDIyLDIwIEBA
+IHN0YXRpYyBpbnQgbGVnYWN5X3NldF9nZW9tZXRyeShzdHJ1Y3QgZ3BtaV9uYW5kX2RhdGEgKnRo
+aXMpDQo+ICAgDQo+ICAgaW50IGNvbW1vbl9uZmNfc2V0X2dlb21ldHJ5KHN0cnVjdCBncG1pX25h
+bmRfZGF0YSAqdGhpcykNCj4gICB7DQo+ICsJc3RydWN0IG5hbmRfY2hpcCAqY2hpcCA9ICZ0aGlz
+LT5uYW5kOw0KPiArDQo+ICsJaWYgKGNoaXAtPmVjYy5zdHJlbmd0aCA+IDAgJiYgY2hpcC0+ZWNj
+LnNpemUgPiAwKQ0KPiArCQlyZXR1cm4gc2V0X2dlb21ldHJ5X2J5X2VjY19pbmZvKHRoaXMsIGNo
+aXAtPmVjYy5zdHJlbmd0aCwNCj4gKwkJCQkJCWNoaXAtPmVjYy5zaXplKTsNCj4gKw0KPiAgIAlp
+ZiAoKG9mX3Byb3BlcnR5X3JlYWRfYm9vbCh0aGlzLT5kZXYtPm9mX25vZGUsICJmc2wsdXNlLW1p
+bmltdW0tZWNjIikpDQo+IC0JCQkJfHwgbGVnYWN5X3NldF9nZW9tZXRyeSh0aGlzKSkNCj4gLQkJ
+cmV0dXJuIHNldF9nZW9tZXRyeV9ieV9lY2NfaW5mbyh0aGlzKTsNCj4gKwkJCQl8fCBsZWdhY3lf
+c2V0X2dlb21ldHJ5KHRoaXMpKSB7DQo+ICsJCWlmICghKGNoaXAtPmVjY19zdHJlbmd0aF9kcyA+
+IDAgJiYgY2hpcC0+ZWNjX3N0ZXBfZHMgPiAwKSkNCj4gKwkJCXJldHVybiAtRUlOVkFMOw0KPiAr
+DQo+ICsJCXJldHVybiBzZXRfZ2VvbWV0cnlfYnlfZWNjX2luZm8odGhpcywgY2hpcC0+ZWNjX3N0
+cmVuZ3RoX2RzLA0KPiArCQkJCQkJY2hpcC0+ZWNjX3N0ZXBfZHMpOw0KPiArCX0NCj4gICANCj4g
+ICAJcmV0dXJuIDA7DQo+ICAgfQ0KPiANCg0KQWNrZWQtYnk6IEhhbiBYdSA8aGFuLnh1QG54cC5j
+b20+
