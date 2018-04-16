@@ -1,23 +1,31 @@
-Received: from lelnx193.ext.ti.com ([198.47.27.77])
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f82Ps-0002Wv-IJ
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 11:35:27 +0000
-Subject: Re: [PATCH v2] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
-To: Ladislav Michl <ladis@linux-mips.org>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>, Roger Quadros
- <rogerq@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren
- <tony@atomide.com>, "H. Nikolaus Schaller" <hns@goldelico.com>, Andreas
- Kemnade <andreas@kemnade.info>
-References: <20180416065256.GA24455@lenoch>
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Message-ID: <8b073dce-2a9e-5068-6499-a36915f5ed90@ti.com>
-Date: Mon, 16 Apr 2018 14:34:54 +0300
+ id 1f82zE-0008F3-8n
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 12:12:03 +0000
+Date: Mon, 16 Apr 2018 13:11:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-spi@vger.kernel.org, Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH v2 02/10] spi: Expose spi_{map,unmap}_buf() for internal
+ use
+Message-ID: <20180416121127.GC20726@sirena.org.uk>
+References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
+ <20180410224439.9260-3-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <20180416065256.GA24455@lenoch>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="DSayHWYpDlRfCAAQ"
+Content-Disposition: inline
+In-Reply-To: <20180410224439.9260-3-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,184 +36,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+--DSayHWYpDlRfCAAQ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2018-04-16 09:52, Ladislav Michl wrote:
-> dma_map_single doesn't get the proper DMA address for vmalloced area,
+On Wed, Apr 11, 2018 at 12:44:31AM +0200, Boris Brezillon wrote:
 
-Which is not a big surprise as vmalloc will allocate contiguous virtual
-memory (which might corresponds to non-contiguous physical memory). Even
-if you somehow get the physical address of the start of the vmalloced
-buffer, you don't really know how long that chunk is and where the
-buffer continues in physical memory.
+> 2/ we create a new header (drivers/spi/internals.h?) for all
+>    definitions that are meant for internal use (shared between spi.c
+>    and spi-mem.c)
 
-Creating sg_list of the vmalloced buffer should be possible also by
-walking the virt memory and get the pages with vmalloc_to_page().
-I don't think there is a generic vmalloc_to_sg(), one can be implemented.
-
-> so disable DMA in this case.
-> 
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> Reported-by: "H. Nikolaus Schaller" <hns@goldelico.com>
-> Tested-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+> I personally prefer #2 as it provides a better separation between spi
+> and spi-mem code.
 > ---
->  Changes:
->  -v2: Added Tested-by tag, based on v4.17-rc1 (no change in patch itself)
-> 
->  drivers/mtd/nand/onenand/omap2.c | 105 +++++++++++--------------------
->  1 file changed, 38 insertions(+), 67 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
-> index 9c159f0dd9a6..321137158ff3 100644
-> --- a/drivers/mtd/nand/onenand/omap2.c
-> +++ b/drivers/mtd/nand/onenand/omap2.c
-> @@ -375,56 +375,42 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
->  {
->  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
->  	struct onenand_chip *this = mtd->priv;
-> -	dma_addr_t dma_src, dma_dst;
-> -	int bram_offset;
-> +	struct device *dev = &c->pdev->dev;
->  	void *buf = (void *)buffer;
-> +	dma_addr_t dma_src, dma_dst;
-> +	int bram_offset, err;
->  	size_t xtra;
-> -	int ret;
->  
->  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-> -		goto out_copy;
-> -
-> -	/* panic_write() may be in an interrupt context */
-> -	if (in_interrupt() || oops_in_progress)
-> +	/*
-> +	 * If the buffer address is not DMA-able, len is not long enough to make
-> +	 * DMA transfers profitable or panic_write() may be in an interrupt
-> +	 * context fallback to PIO mode.
-> +	 */
-> +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
-> +	    count < 384 || in_interrupt() || oops_in_progress )
->  		goto out_copy;
->  
-> -	if (buf >= high_memory) {
-> -		struct page *p1;
-> -
-> -		if (((size_t)buf & PAGE_MASK) !=
-> -		    ((size_t)(buf + count - 1) & PAGE_MASK))
-> -			goto out_copy;
-> -		p1 = vmalloc_to_page(buf);
-> -		if (!p1)
-> -			goto out_copy;
-> -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
-> -	}
-> -
->  	xtra = count & 3;
->  	if (xtra) {
->  		count -= xtra;
->  		memcpy(buf + count, this->base + bram_offset + count, xtra);
->  	}
->  
-> +	dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
->  	dma_src = c->phys_base + bram_offset;
-> -	dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
-> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
-> -		dev_err(&c->pdev->dev,
-> -			"Couldn't DMA map a %d byte buffer\n",
-> -			count);
-> -		goto out_copy;
-> -	}
->  
-> -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
-> -
-> -	if (ret) {
-> -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> +	if (dma_mapping_error(dev, dma_dst)) {
-> +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
->  		goto out_copy;
->  	}
->  
-> -	return 0;
-> +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> +	dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
-> +	if (!err)
-> +		return 0;
-> +
-> +	dev_err(dev, "timeout waiting for DMA\n");
->  
->  out_copy:
->  	memcpy(buf, this->base + bram_offset, count);
-> @@ -437,49 +423,34 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  {
->  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
->  	struct onenand_chip *this = mtd->priv;
-> -	dma_addr_t dma_src, dma_dst;
-> -	int bram_offset;
-> +	struct device *dev = &c->pdev->dev;
->  	void *buf = (void *)buffer;
-> -	int ret;
-> +	dma_addr_t dma_src, dma_dst;
-> +	int bram_offset, err;
->  
->  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
-> -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
-> -		goto out_copy;
-> -
-> -	/* panic_write() may be in an interrupt context */
-> -	if (in_interrupt() || oops_in_progress)
-> +	/*
-> +	 * If the buffer address is not DMA-able, len is not long enough to make
-> +	 * DMA transfers profitable or panic_write() may be in an interrupt
-> +	 * context fallback to PIO mode.
-> +	 */
-> +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
-> +	    count < 384 || in_interrupt() || oops_in_progress )
->  		goto out_copy;
->  
-> -	if (buf >= high_memory) {
-> -		struct page *p1;
-> -
-> -		if (((size_t)buf & PAGE_MASK) !=
-> -		    ((size_t)(buf + count - 1) & PAGE_MASK))
-> -			goto out_copy;
-> -		p1 = vmalloc_to_page(buf);
-> -		if (!p1)
-> -			goto out_copy;
-> -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
-> -	}
-> -
-> -	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
-> +	dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
->  	dma_dst = c->phys_base + bram_offset;
-> -	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
-> -		dev_err(&c->pdev->dev,
-> -			"Couldn't DMA map a %d byte buffer\n",
-> -			count);
-> -		return -1;
-> -	}
-> -
-> -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> -	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
-> -
-> -	if (ret) {
-> -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
-> +	if (dma_mapping_error(dev, dma_src)) {
-> +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
->  		goto out_copy;
->  	}
->  
-> -	return 0;
-> +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
-> +	dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
-> +	if (!err)
-> +		return 0;
-> +
-> +	dev_err(dev, "timeout waiting for DMA\n");
->  
->  out_copy:
->  	memcpy(this->base + bram_offset, buf, count);
-> 
+>  drivers/spi/spi.c       | 23 +++++------------------
+>  include/linux/spi/spi.h | 26 ++++++++++++++++++++++++++
+>  2 files changed, 31 insertions(+), 18 deletions(-)
 
-- Péter
+I prefer that too (if you prefer it you should go with it so it's the
+option on the table!).  I'd go with drivers/spi/internals.h though so
+that it's even more obvious if something is being silly trying to use
+it when they shouldn't.
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+--DSayHWYpDlRfCAAQ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrUku4ACgkQJNaLcl1U
+h9CJ5wgAgpUXA9I2SZRq2krUOla6ygDObJY6loIIg/CrJLASzhi6JC/ZqI3me5mR
+OMrmmZXyLTN5Ri7SZaBvivDbBJ3D4JnguhE9Smz4kw9EGfE75K64mcA2iVMIZ9aj
+cudXzuTFUXUWLJ/MEUIA5L9ZTyi2nthn8srO2Ef2GPLBwtbYeqwqJnmXrJBhDK3Z
+jAKS3p3PZgeDzHGEArpxTj64eVbtr07NixAQXu1eNq5udVWYTqpA0Fj+udghxWAk
++c8fOrLqZspda8EpKktwgHOTyFJOnVhX+9pgid8nfkVWTUce1aUe5iC0ILJSZ77N
+nNuHPLUYuiXroKwyC464boDxIyBzmg==
+=Utjc
+-----END PGP SIGNATURE-----
+
+--DSayHWYpDlRfCAAQ--
