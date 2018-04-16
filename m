@@ -1,17 +1,26 @@
-Message-ID: <1523852857.14673.30.camel@mhfsdcap03>
-Subject: Re: [PATCH] mtd: nand: mtk: use of_device_get_match_data()
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Ryder Lee <ryder.lee@mediatek.com>
-CC: Boris Brezillon <boris.brezillon@free-electrons.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Date: Mon, 16 Apr 2018 12:27:37 +0800
-In-Reply-To: <c3af6d5035e43b53b5cc7ee68f9f1a853ce2a8f9.1523347340.git.ryder.lee@mediatek.com>
-References: <31f944ab8dfcc1d7b6f03b35657a2a34825b5246.1523347340.git.ryder.lee@mediatek.com>
- <c3af6d5035e43b53b5cc7ee68f9f1a853ce2a8f9.1523347340.git.ryder.lee@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f7y0z-0003wE-Ct
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 06:53:27 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990391AbeDPGxJl90wk (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 16 Apr 2018 08:53:09 +0200
+Date: Mon, 16 Apr 2018 08:52:59 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Roger Quadros <rogerq@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
+ "H. Nikolaus Schaller" <hns@goldelico.com>,
+ Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
+Message-ID: <20180416065256.GA24455@lenoch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +30,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2018-04-16 at 10:33 +0800, Ryder Lee wrote:
-> The usage of of_device_get_match_data() reduce the code size a bit.
-> 
-> Also, the only way to call .probe() is to match an entry in
-> .of_match_table[], so of_device_id cannot be NULL.
-> 
-> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  drivers/mtd/nand/raw/mtk_ecc.c  |  7 +------
->  drivers/mtd/nand/raw/mtk_nand.c | 10 +---------
->  2 files changed, 2 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mtk_ecc.c b/drivers/mtd/nand/mtk_ecc.c
-> index 40d86a8..6432bd7 100644
-> --- a/drivers/mtd/nand/raw/mtk_ecc.c
-> +++ b/drivers/mtd/nand/raw/mtk_ecc.c
-> @@ -500,7 +500,6 @@ static int mtk_ecc_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	struct mtk_ecc *ecc;
->  	struct resource *res;
-> -	const struct of_device_id *of_ecc_id = NULL;
->  	u32 max_eccdata_size;
->  	int irq, ret;
->  
-> @@ -508,11 +507,7 @@ static int mtk_ecc_probe(struct platform_device *pdev)
->  	if (!ecc)
->  		return -ENOMEM;
->  
-> -	of_ecc_id = of_match_device(mtk_ecc_dt_match, &pdev->dev);
-> -	if (!of_ecc_id)
-> -		return -ENODEV;
-> -
-> -	ecc->caps = of_ecc_id->data;
-> +	ecc->caps = of_device_get_match_data(dev);
->  
-Thanks.
+dma_map_single doesn't get the proper DMA address for vmalloced area,
+so disable DMA in this case.
 
-Reviewed-by: Xiaolei Li <xiaolei.li@mediatek.com>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Reported-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+Tested-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+---
+ Changes:
+ -v2: Added Tested-by tag, based on v4.17-rc1 (no change in patch itself)
 
->  	max_eccdata_size = ecc->caps->num_ecc_strength - 1;
->  	max_eccdata_size = ecc->caps->ecc_strength[max_eccdata_size];
-> diff --git a/drivers/mtd/nand/mtk_nand.c b/drivers/mtd/nand/mtk_nand.c
-> index 6977da3..75c845a 100644
-> --- a/drivers/mtd/nand/raw/mtk_nand.c
-> +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> @@ -1434,7 +1434,6 @@ static int mtk_nfc_probe(struct platform_device *pdev)
->  	struct device_node *np = dev->of_node;
->  	struct mtk_nfc *nfc;
->  	struct resource *res;
-> -	const struct of_device_id *of_nfc_id = NULL;
->  	int ret, irq;
->  
->  	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
-> @@ -1452,6 +1451,7 @@ static int mtk_nfc_probe(struct platform_device *pdev)
->  	else if (!nfc->ecc)
->  		return -ENODEV;
->  
-> +	nfc->caps = of_device_get_match_data(dev);
->  	nfc->dev = dev;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> @@ -1498,14 +1498,6 @@ static int mtk_nfc_probe(struct platform_device *pdev)
->  		goto clk_disable;
->  	}
->  
-> -	of_nfc_id = of_match_device(mtk_nfc_id_table, &pdev->dev);
-> -	if (!of_nfc_id) {
-> -		ret = -ENODEV;
-> -		goto clk_disable;
-> -	}
-> -
-> -	nfc->caps = of_nfc_id->data;
-> -
->  	platform_set_drvdata(pdev, nfc);
->  
->  	ret = mtk_nfc_nand_chips_init(dev, nfc);
+ drivers/mtd/nand/onenand/omap2.c | 105 +++++++++++--------------------
+ 1 file changed, 38 insertions(+), 67 deletions(-)
+
+diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
+index 9c159f0dd9a6..321137158ff3 100644
+--- a/drivers/mtd/nand/onenand/omap2.c
++++ b/drivers/mtd/nand/onenand/omap2.c
+@@ -375,56 +375,42 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ {
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+-	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	struct device *dev = &c->pdev->dev;
+ 	void *buf = (void *)buffer;
++	dma_addr_t dma_src, dma_dst;
++	int bram_offset, err;
+ 	size_t xtra;
+-	int ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+-	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+-		goto out_copy;
+-
+-	/* panic_write() may be in an interrupt context */
+-	if (in_interrupt() || oops_in_progress)
++	/*
++	 * If the buffer address is not DMA-able, len is not long enough to make
++	 * DMA transfers profitable or panic_write() may be in an interrupt
++	 * context fallback to PIO mode.
++	 */
++	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
++	    count < 384 || in_interrupt() || oops_in_progress )
+ 		goto out_copy;
+ 
+-	if (buf >= high_memory) {
+-		struct page *p1;
+-
+-		if (((size_t)buf & PAGE_MASK) !=
+-		    ((size_t)(buf + count - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(buf);
+-		if (!p1)
+-			goto out_copy;
+-		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+-	}
+-
+ 	xtra = count & 3;
+ 	if (xtra) {
+ 		count -= xtra;
+ 		memcpy(buf + count, this->base + bram_offset + count, xtra);
+ 	}
+ 
++	dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
+ 	dma_src = c->phys_base + bram_offset;
+-	dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
+-		dev_err(&c->pdev->dev,
+-			"Couldn't DMA map a %d byte buffer\n",
+-			count);
+-		goto out_copy;
+-	}
+ 
+-	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+-	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+-
+-	if (ret) {
+-		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++	if (dma_mapping_error(dev, dma_dst)) {
++		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+ 		goto out_copy;
+ 	}
+ 
+-	return 0;
++	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
++	dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
++	if (!err)
++		return 0;
++
++	dev_err(dev, "timeout waiting for DMA\n");
+ 
+ out_copy:
+ 	memcpy(buf, this->base + bram_offset, count);
+@@ -437,49 +423,34 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ {
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+-	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	struct device *dev = &c->pdev->dev;
+ 	void *buf = (void *)buffer;
+-	int ret;
++	dma_addr_t dma_src, dma_dst;
++	int bram_offset, err;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+-	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+-		goto out_copy;
+-
+-	/* panic_write() may be in an interrupt context */
+-	if (in_interrupt() || oops_in_progress)
++	/*
++	 * If the buffer address is not DMA-able, len is not long enough to make
++	 * DMA transfers profitable or panic_write() may be in an interrupt
++	 * context fallback to PIO mode.
++	 */
++	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
++	    count < 384 || in_interrupt() || oops_in_progress )
+ 		goto out_copy;
+ 
+-	if (buf >= high_memory) {
+-		struct page *p1;
+-
+-		if (((size_t)buf & PAGE_MASK) !=
+-		    ((size_t)(buf + count - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(buf);
+-		if (!p1)
+-			goto out_copy;
+-		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+-	}
+-
+-	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
++	dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
+ 	dma_dst = c->phys_base + bram_offset;
+-	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
+-		dev_err(&c->pdev->dev,
+-			"Couldn't DMA map a %d byte buffer\n",
+-			count);
+-		return -1;
+-	}
+-
+-	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+-	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+-
+-	if (ret) {
+-		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++	if (dma_mapping_error(dev, dma_src)) {
++		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+ 		goto out_copy;
+ 	}
+ 
+-	return 0;
++	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
++	dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
++	if (!err)
++		return 0;
++
++	dev_err(dev, "timeout waiting for DMA\n");
+ 
+ out_copy:
+ 	memcpy(this->base + bram_offset, buf, count);
+-- 
+2.17.0
