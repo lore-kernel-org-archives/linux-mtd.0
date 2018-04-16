@@ -1,16 +1,29 @@
-Received: from ch3vs02.rockwellcollins.com ([205.175.226.29])
+Received: from mail-ot0-f195.google.com ([74.125.82.195])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f872U-00083n-5I
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 16:31:35 +0000
-Received: by mail-oi0-f72.google.com with SMTP id i124-v6so9275715oib.3
- for <linux-mtd@lists.infradead.org>; Mon, 16 Apr 2018 09:31:21 -0700 (PDT)
+ id 1f8BIn-0004qn-Kn
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 21:04:43 +0000
+Received: by mail-ot0-f195.google.com with SMTP id p2-v6so2207689otf.3
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Apr 2018 14:04:31 -0700 (PDT)
+Date: Mon, 16 Apr 2018 16:04:29 -0500
+From: Rob Herring <robh@kernel.org>
+To: Alban Bedel <albeu@free.fr>
+Cc: linux-kernel@vger.kernel.org,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Mark Rutland <mark.rutland@arm.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode for
+ the cells list
+Message-ID: <20180416210429.e3yo52f355qxnopb@rob-hp-laptop>
+References: <1521933899-362-1-git-send-email-albeu@free.fr>
+ <1521933899-362-2-git-send-email-albeu@free.fr>
 MIME-Version: 1.0
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Mon, 16 Apr 2018 11:31:20 -0500
-Message-ID: <CADFuHZ4BhwGg-SE1aa9xoUntWVYXV5T+WhUYqHF2TNQ+fZ8p5Q@mail.gmail.com>
-Subject: Updates to ubihealthd
-To: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
-Content-Type: multipart/mixed; boundary="000000000000840c2d0569f9c0fa"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1521933899-362-2-git-send-email-albeu@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,178 +33,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---000000000000840c2d0569f9c0fa
-Content-Type: text/plain; charset="UTF-8"
+On Sun, Mar 25, 2018 at 12:24:57AM +0100, Alban Bedel wrote:
+> Having the cells as subnodes of the provider device without any
+> compatible property might clash with other bindings. To avoid this
+> problem update the binding to have all the cells in a 'nvmem-cells'
+> subnode with a 'nvmem-cells' compatible string. This new binding
+> guarantee that we can turn any kind of device in a nvmem provider.
+> 
+> While discouraged for new uses the old scheme is still supported for
+> backward compatibility.
+> 
+> Signed-off-by: Alban Bedel <albeu@free.fr>
+> ---
+>  Documentation/devicetree/bindings/nvmem/nvmem.txt | 55 ++++++++++++++++-------
+>  drivers/nvmem/core.c                              | 10 +++++
+>  2 files changed, 48 insertions(+), 17 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Documentation/devicetree/bindings/nvmem/nvmem.txt
+> index fd06c09..6b723e7 100644
+> --- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
+> +++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
+> @@ -11,14 +11,29 @@ these data from, and where they are stored on the storage device.
+>  This document is here to document this.
+>  
+>  = Data providers =
+> -Contains bindings specific to provider drivers and data cells as children
+> -of this node.
+> +A data provider should have a subnode named 'nvmem-cells' that contains
+> +a subnodes for each data cells.
+> +
+> +For backward compatibility the nvmem data cells can be direct children
+> +of the data provider. This use is discouraged as it can conflict with
+> +other bindings.
 
-This is the updates to the work which Richard did in
-past(https://lwn.net/Articles/663751/).
+I don't think we need to go this far. Whether this is necessary depends 
+on the provider.
 
-I am not suggesting it to merge somewhere. This is more of a FYI so
-that  someone can use it as these changes are to make it work on large
-UBI volumes and fix some issues. As without these changes, it will
-cause heavy CPU load and won't respond to user signals when running
-with large UBI volumes.  I have tested these changes on target HW
-where UBI volume size is greater than 60 GB.
-
-Also, I noticed that the read counter in this patch
-(http://lists.infradead.org/pipermail/linux-mtd/2015-November/063125.html)
-was not initialized in the drivers/mtd/ubi/wl.c/ubi_wl_init function
-so that also I updated. Please let me know if someone needs that
-updated patch.
-
--- 
-Ronak A Desai
-Sr. Software Engineer
-Airborne Information Solutions / RC Linux Platform Software
-MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
-Ronak.Desai@rockwellcollins.com
-https://www.rockwellcollins.com/
-
---000000000000840c2d0569f9c0fa
-Content-Type: application/octet-stream;
-	name="0001-ubihealthd-Updated-ubihealthd-to-handle-large-UBI-vo.patch"
-Content-Disposition: attachment;
-	filename="0001-ubihealthd-Updated-ubihealthd-to-handle-large-UBI-vo.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_jg2fwm9u0
-
-RnJvbSA1MmUxMTZlYmNhNDM4NGIzMzI5NjI1MTk5YWQxODEwOTVjZTY0ZTQ1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBSb25hayBEZXNhaSA8cm9uYWsuZGVzYWlAcm9ja3dlbGxjb2xs
-aW5zLmNvbT4KRGF0ZTogRnJpLCA2IEFwciAyMDE4IDEwOjQ5OjQyIC0wNTAwClN1YmplY3Q6IFtQ
-QVRDSF0gdWJpaGVhbHRoZCA6IFVwZGF0ZWQgdWJpaGVhbHRoZCB0byBoYW5kbGUgbGFyZ2UgVUJJ
-IHZvbHVtZXMKClRoaXMgcGF0Y2ggdXBkYXRlcyB1YmloZWFsdGhkIGZvciB0aGUgZm9sbG93aW5n
-IHRoaW5ncywKMSkgRG8gc3RhdGlzdGljIHVwZGF0ZXMgaW4gY2h1bmsgb2YgNTAwIGVyYXNlIGJs
-b2Nrcy4KMikgVXBkYXRlZCBsb2dpYyB0byByZWFkIHN0YXRzIGZyb20gdGhlIHByZS1leGlzdGlu
-ZyBzdGF0IGZpbGUuCjMpIENoZWNrZWQgc2h1dGRvd24gZmxhZyBiZWZvcmUgZG9pbmcgcmVhZCBv
-ciBzY3J1YiB3b3JrCjQpIEZpeGVkIGluY29ycmVjdCB2YWx1ZSBvZiBwZWIgbnVtYmVyIHBhc3Np
-bmcgdG8gcmVhZF9wZWIgYW5kIHNjcnViX3BlYi4KNSkgQWRkZWQgc29tZSBzbGVlcCBpbiBsb29w
-cyBzbyB0aGF0IHByb2Nlc3NvciBjYW4gaGF2ZSBzY2hlZHVsaW5nIHRpbWUuCgpTaWduZWQtb2Zm
-LWJ5OiBSb25hayBEZXNhaSA8cm9uYWsuZGVzYWlAcm9ja3dlbGxjb2xsaW5zLmNvbT4KLS0tCiB1
-YmloZWFsdGhkLmMgfCA4MyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKy0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCA2OSBpbnNlcnRpb25zKCspLCAx
-NCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS91YmloZWFsdGhkLmMgYi91YmloZWFsdGhkLmMK
-aW5kZXggNGJlMTVkNS4uZTVlMzczZCAxMDA2NDQKLS0tIGEvdWJpaGVhbHRoZC5jCisrKyBiL3Vi
-aWhlYWx0aGQuYwpAQCAtNTUsNiArNTUsOSBAQAogI2RlZmluZSBsb2dfaW5mbyhNLCAuLi4pIF9s
-b2coMywgIltJTkZPXSIgTSwgIyNfX1ZBX0FSR1NfXyk7CiAjZGVmaW5lIGxvZ19kZWJ1ZyhNLCAu
-Li4pIF9sb2coNCwgIltERUJVR10iIE0sICMjX19WQV9BUkdTX18pOwogCisjZGVmaW5lIFNUQVRf
-UEVCX0NIVU5LICAoNTAwKQorc3RhdGljIGludCBwZWJfc3RhcnQ7CitzdGF0aWMgaW50IHBlYl9l
-bmQ7CiAKIGludCBsb2dfbGV2ZWw7CiAKQEAgLTIxNSw2ICsyMTgsOSBAQCBzdGF0aWMgaW50IGlu
-aXRfc3RhdHMoaW50IGZkLCBzdHJ1Y3QgbGlzdF9oZWFkICpoZWFkLCBpbnQgcG51bSkKIHsKIAlp
-bnQgaSwgZXJyID0gMDsKIAlzaXplX3QgcmVxX3NpemUgPSBwbnVtICogc2l6ZW9mKHN0cnVjdCB1
-Ymlfc3RhdHNfZW50cnkpOworCXN0cnVjdCB0aW1lc3BlYyB3YWl0OworCXdhaXQudHZfc2VjID0g
-MDsKKwl3YWl0LnR2X25zZWMgPSAyOyAvKiAybnMgKi8KIAlzdHJ1Y3QgdWJpX3N0YXRzX3JlcSAq
-cmVxID0gbWFsbG9jKHNpemVvZihzdHJ1Y3QgdWJpX3N0YXRzX3JlcSkgKyByZXFfc2l6ZSk7CiAJ
-aWYgKCFyZXEpIHsKIAkJbG9nX2VycigiQ291bGQgbm90IGFsbG9jIHViaV9zdGF0c19yZXE6ICVz
-Iiwgc3RyZXJyb3IoZXJybm8pKTsKQEAgLTI1Myw2ICsyNTksNyBAQCBzdGF0aWMgaW50IGluaXRf
-c3RhdHMoaW50IGZkLCBzdHJ1Y3QgbGlzdF9oZWFkICpoZWFkLCBpbnQgcG51bSkKIAkJfQogCQlw
-LT5wZWIgPSBwZWI7CiAJCWxpc3RfYWRkX3RhaWwoJnAtPmxpc3QsIGhlYWQpOworCQkodm9pZClu
-YW5vc2xlZXAoJndhaXQsIE5VTEwpOwogCX0KIAlmcmVlKHJlcSk7CiAJcmV0dXJuIDA7CkBAIC0y
-NzMsNiArMjgwLDkgQEAgc3RhdGljIHZvaWQgZnJlZV9saXN0KHN0cnVjdCBwZWJfbGlzdCAqaGVh
-ZCkKIAogc3RhdGljIGludCB1cGRhdGVfc3RhdHMoaW50IGZkLCBzdHJ1Y3QgcGViX2xpc3QgKmhl
-YWQsIGludCBwbnVtKQogeworCXN0cnVjdCB0aW1lc3BlYyB3YWl0OworCXdhaXQudHZfc2VjID0g
-MDsKKwl3YWl0LnR2X25zZWMgPSAyOyAvKiAybnMgKi8KIAlpZiAobGlzdF9lbXB0eSgmaGVhZC0+
-bGlzdCkpIHsKIAkJbG9nX2ZhdGFsKCJQRUIgbGlzdCBub3QgaW5pdGlhbGl6ZWQiKTsKIAkJcmV0
-dXJuIC0xOwpAQCAtMjk1LDggKzMwNSwyMyBAQCBzdGF0aWMgaW50IHVwZGF0ZV9zdGF0cyhpbnQg
-ZmQsIHN0cnVjdCBwZWJfbGlzdCAqaGVhZCwgaW50IHBudW0pCiAJCXJldHVybiAtMTsKIAl9CiAJ
-bG9nX2RlYnVnKCJLZXJuZWwgcmVwb3J0ZWQgc3RhdHMgZm9yICVkIFBFQnMiLCBlcnIpOworCisJ
-LyogRGl2aWRlIHRoZSB0b3RhbCBudW1iZXIgb2YgUEVCcyBpbiBhIHNtYWxsIGNodW5rKFNUQVRf
-UEVCX0NIVU5LKSBmb3IKKwkgKiBzdGF0aXN0aWMgdXBkYXRlcyBzbyB0aGF0IHN0YXRpc3RpYyB1
-cGRhdGVzIGNhbiBiZSBkb25lIGluIHBhcnRzLgorCSAqLworCWlmIChlcnIgPiBTVEFUX1BFQl9D
-SFVOSykKKwl7CisJCWlmICgocGViX3N0YXJ0ICsgU1RBVF9QRUJfQ0hVTkspIDwgZXJyKQorCQkJ
-cGViX2VuZCA9IChwZWJfc3RhcnQgKyBTVEFUX1BFQl9DSFVOSyk7CisJCWVsc2UKKwkJCXBlYl9l
-bmQgPSBlcnI7CisJfQorCWVsc2UKKwkJcGViX2VuZCA9IGVycjsKKworCWxvZ19kZWJ1ZygiLS0+
-IHBlYl9zdGFydCA9ICVkLCBwZWJfZW5kID0gJWQgUEVCcyIsIHBlYl9zdGFydCwgcGViX2VuZCk7
-CiAJdGltZV90IG5vdyA9IHRpbWUoTlVMTCk7Ci0JZm9yIChpID0gMDsgaSA8IGVycjsgaSsrKSB7
-CisJZm9yIChpID0gcGViX3N0YXJ0OyBpIDwgcGViX2VuZDsgaSsrKSB7CiAJCXN0cnVjdCB1Ymlf
-c3RhdHNfZW50cnkgKnMgPSAmcmVxLT5zdGF0c1tpXTsKIAkJc3RydWN0IHBlYl9saXN0ICpwID0g
-TlVMTDsKIAkJc3RydWN0IHBlYl9pbmZvICpwZWIgPSBOVUxMOwpAQCAtMzE5LDYgKzM0NCwxOCBA
-QCBzdGF0aWMgaW50IHVwZGF0ZV9zdGF0cyhpbnQgZmQsIHN0cnVjdCBwZWJfbGlzdCAqaGVhZCwg
-aW50IHBudW0pCiAJCQlwZWItPnByZXZfcmVhZF9jbnQgPSBwZWItPnJlYWRfY250OwogCQlwZWIt
-Pmxhc3Rfc3RhdF91cGRhdGUgPSBub3c7CiAJfQorCisJaWYgKGVyciA+IFNUQVRfUEVCX0NIVU5L
-KQorCXsKKwkJaWYgKHBlYl9lbmQgPT0gZXJyKQorCQl7CisJCQlwZWJfc3RhcnQgPSAwOworCQkJ
-cGViX2VuZCA9IDA7CisJCX0KKwkJZWxzZQorCQkJcGViX3N0YXJ0ICs9IFNUQVRfUEVCX0NIVU5L
-OworCX0KKwogCWZyZWUocmVxKTsKIAlyZXR1cm4gMDsKIH0KQEAgLTMyNiw4ICszNjMsOSBAQCBz
-dGF0aWMgaW50IHVwZGF0ZV9zdGF0cyhpbnQgZmQsIHN0cnVjdCBwZWJfbGlzdCAqaGVhZCwgaW50
-IHBudW0pCiBzdGF0aWMgaW50IHJlYWRfcGViKGludCBmZCwgc3RydWN0IHBlYl9pbmZvICpwZWIp
-CiB7CiAJdGltZV90IG5vdyA9IHRpbWUoTlVMTCk7CisJaW50MzJfdCBwZWJfbnVtID0gKGludDMy
-X3QpcGViLT5wZWJfbnVtOwogCWxvZ19kZWJ1ZygiUmVhZGluZyBQRUIgJSJQUkl1NjQgLCBwZWIt
-PnBlYl9udW0pOwotCWludCBlcnIgPSBpb2N0bChmZCwgVUJJX0lPQ1JQRUIsICZwZWItPnBlYl9u
-dW0pOworCWludCBlcnIgPSBpb2N0bChmZCwgVUJJX0lPQ1JQRUIsICZwZWJfbnVtKTsKIAlpZiAo
-ZXJyIDwgMCkgewogCQlsb2dfZXJyKCJFcnJvciB3aGlsZSByZWFkaW5nIFBFQiAlIiBQUkl1NjQs
-IHBlYi0+cGViX251bSk7CiAJCXJldHVybiAtMTsKQEAgLTMzOSw4ICszNzcsOSBAQCBzdGF0aWMg
-aW50IHJlYWRfcGViKGludCBmZCwgc3RydWN0IHBlYl9pbmZvICpwZWIpCiBzdGF0aWMgaW50IHNj
-cnViX3BlYihpbnQgZmQsIHN0cnVjdCBwZWJfaW5mbyAqcGViKQogewogCXRpbWVfdCBub3cgPSB0
-aW1lKE5VTEwpOworCWludDMyX3QgcGViX251bSA9IChpbnQzMl90KXBlYi0+cGViX251bTsKIAls
-b2dfZGVidWcoIlNjcnViYmluZyBQRUIgJSJQUkl1NjQsIHBlYi0+cGViX251bSk7Ci0JaW50IGVy
-ciA9IGlvY3RsIChmZCwgVUJJX0lPQ1NQRUIsICZwZWItPnBlYl9udW0pOworCWludCBlcnIgPSBp
-b2N0bCAoZmQsIFVCSV9JT0NTUEVCLCAmcGViX251bSk7CiAJaWYgKGVyciA8IDApIHsKIAkJbG9n
-X2VycigiRXJyb3Igd2hpbGUgc2NydWJiaW5nIFBFQiAlIiBQUkl1NjQsIHBlYi0+cGViX251bSk7
-CiAJCXJldHVybiAtMTsKQEAgLTQyNyw2ICs0NjYsOSBAQCBzdGF0aWMgaW50IHJlYWRfc3RhdHNf
-ZmlsZShjb25zdCBjaGFyICpmaWxlbmFtZSwgc3RydWN0IHBlYl9saXN0ICpwZWJfaGVhZCwgc3Ry
-dQogCXVpbnQ2NF90IG1hZ2ljX3ZlcnNpb247CiAJRklMRSAqZmlsZSA9IGZvcGVuKGZpbGVuYW1l
-LCAicmIiKTsKIAlzc2l6ZV90IGk7CisJc3RydWN0IHRpbWVzcGVjIHdhaXQ7CisJd2FpdC50dl9z
-ZWMgPSAwOworCXdhaXQudHZfbnNlYyA9IDI7IC8qIDJucyAqLwogCWlmIChmaWxlID09IE5VTEwp
-CiAJCXJldHVybiAtMTsKIAlmcmVhZCgmbWFnaWNfdmVyc2lvbiwgc2l6ZW9mKG1hZ2ljX3ZlcnNp
-b24pLCAxLCBmaWxlKTsKQEAgLTQzOCwyMCArNDgwLDIwIEBAIHN0YXRpYyBpbnQgcmVhZF9zdGF0
-c19maWxlKGNvbnN0IGNoYXIgKmZpbGVuYW1lLCBzdHJ1Y3QgcGViX2xpc3QgKnBlYl9oZWFkLCBz
-dHJ1CiAJZnJlYWQoJm51bV9wZWJzLCBzaXplb2YobnVtX3BlYnMpLCAxLCBmaWxlKTsKIAlmcmVh
-ZCgmbmV4dF9yZWFkX3BlYiwgc2l6ZW9mKG5leHRfcmVhZF9wZWIpLCAxLCBmaWxlKTsKIAlmcmVh
-ZCgmbmV4dF9zY3J1Yl9wZWIsIHNpemVvZihuZXh0X3NjcnViX3BlYiksIDEsIGZpbGUpOwotCWZv
-ciAoaSA9IDA7IGkgPCBudW1fcGViczsgaSsrKSB7CisKKwlzdHJ1Y3QgcGViX2xpc3QgKnEgPSBO
-VUxMOworCWxpc3RfZm9yX2VhY2hfZW50cnkocSwgJnBlYl9oZWFkLT5saXN0LCBsaXN0KSB7CiAJ
-CXN0cnVjdCBwZWJfaW5mbyAqcGViID0gbWFsbG9jKHNpemVvZihzdHJ1Y3QgcGViX2luZm8pKTsK
-IAkJaWYgKCFwZWIpIHsKIAkJCWxvZ19lcnIoIkNvdWxkIG5vdCBhbGxvY2F0ZSBwZWJfaW5mbyIp
-OwogCQkJcmV0dXJuIC0xOwogCQl9Ci0JCXN0cnVjdCBwZWJfbGlzdCAqcCA9IE5VTEw7CiAJCWZy
-ZWFkKHBlYiwgc2l6ZW9mKHN0cnVjdCBwZWJfaW5mbyksIDEsIGZpbGUpOwotCQlsaXN0X2Zvcl9l
-YWNoX2VudHJ5KHAsICZwZWJfaGVhZC0+bGlzdCwgbGlzdCkgewotCQkJaWYgKHAtPnBlYiAmJiAo
-cC0+cGViLT5wZWJfbnVtID09IHBlYi0+cGViX251bSkpIHsKLQkJCQlmcmVlKHAtPnBlYik7Ci0J
-CQkJcC0+cGViID0gcGViOwotCQkJfQorCQlpZiAocS0+cGViICYmIChxLT5wZWItPnBlYl9udW0g
-PT0gcGViLT5wZWJfbnVtKSkgeworCQkJZnJlZShxLT5wZWIpOworCQkJcS0+cGViID0gcGViOwog
-CQl9CisJCSh2b2lkKW5hbm9zbGVlcCgmd2FpdCwgTlVMTCk7CiAJfQogCS8qIGluaXQgcmVhZCBh
-bmQgc2NydWIgbGlzdHMgKi8KIAlzdHJ1Y3QgcGViX2xpc3QgKnAgPSBOVUxMOwpAQCAtNDYwLDYg
-KzUwMiw3IEBAIHN0YXRpYyBpbnQgcmVhZF9zdGF0c19maWxlKGNvbnN0IGNoYXIgKmZpbGVuYW1l
-LCBzdHJ1Y3QgcGViX2xpc3QgKnBlYl9oZWFkLCBzdHJ1CiAJCQlzY2hlZHVsZV9wZWIoJnNjaGVk
-X3JlYWRfaGVhZC0+bGlzdCwgcC0+cGViLCBTQ0hFRF9SRUFEKTsKIAkJaWYgKHAtPnBlYi0+cGVi
-X251bSA+PSBuZXh0X3NjcnViX3BlYikKIAkJCXNjaGVkdWxlX3BlYigmc2NoZWRfc2NydWJfaGVh
-ZC0+bGlzdCwgcC0+cGViLCBTQ0hFRF9TQ1JVQik7CisJCSh2b2lkKW5hbm9zbGVlcCgmd2FpdCwg
-TlVMTCk7CiAJfQogCXAgPSBOVUxMOwogCWxpc3RfZm9yX2VhY2hfZW50cnkocCwgJnBlYl9oZWFk
-LT5saXN0LCBsaXN0KSB7CkBAIC00NjcsNiArNTEwLDcgQEAgc3RhdGljIGludCByZWFkX3N0YXRz
-X2ZpbGUoY29uc3QgY2hhciAqZmlsZW5hbWUsIHN0cnVjdCBwZWJfbGlzdCAqcGViX2hlYWQsIHN0
-cnUKIAkJCXNjaGVkdWxlX3BlYigmc2NoZWRfcmVhZF9oZWFkLT5saXN0LCBwLT5wZWIsIFNDSEVE
-X1JFQUQpOwogCQlpZiAocC0+cGViLT5wZWJfbnVtIDwgbmV4dF9zY3J1Yl9wZWIpCiAJCQlzY2hl
-ZHVsZV9wZWIoJnNjaGVkX3NjcnViX2hlYWQtPmxpc3QsIHAtPnBlYiwgU0NIRURfU0NSVUIpOwor
-CQkodm9pZCluYW5vc2xlZXAoJndhaXQsIE5VTEwpOwogCX0KIAogCXJldHVybiAwOwpAQCAtNTA2
-LDYgKzU1MCw5IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikKIAlzdHJ1Y3QgcGVi
-X2xpc3QgKnBlYl9oZWFkOwogCWNvbnN0IGNoYXIgKnN0YXRzX2ZpbGUgPSAiL3RtcC91YmloZWFs
-dGhfc3RhdHMiOwogCWNvbnN0IGNoYXIgKnViaV9kZXYgPSAiL2Rldi91YmkwIjsKKwlzdHJ1Y3Qg
-dGltZXNwZWMgd2FpdDsKKwl3YWl0LnR2X3NlYyA9IDA7CisJd2FpdC50dl9uc2VjID0gMjsgLyog
-Mm5zICovCiAJbG9nX2xldmVsID0gNDsKIAogCXdoaWxlICgoYyA9IGdldG9wdF9sb25nKGFyZ2Ms
-IGFyZ3YsIG9wdF9zdHJpbmcsIG9wdGlvbnMsICZpKSkgIT0gLTEpIHsKQEAgLTU5Nyw2ICs2NDQs
-NyBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3YpCiAJCWxpc3RfZm9yX2VhY2hfZW50
-cnkocCwgJnBlYl9oZWFkLT5saXN0LCBsaXN0KSB7CiAJCQlzY2hlZHVsZV9wZWIoJnNjaGVkX3Jl
-YWRfaGVhZC0+bGlzdCwgcC0+cGViLCBTQ0hFRF9SRUFEKTsKIAkJCXNjaGVkdWxlX3BlYigmc2No
-ZWRfc2NydWJfaGVhZC0+bGlzdCwgcC0+cGViLCBTQ0hFRF9TQ1JVQik7CisJCQkodm9pZCluYW5v
-c2xlZXAoJndhaXQsIE5VTEwpOwogCQl9CiAJfQogCkBAIC02NTIsNyArNzAwLDcgQEAgaW50IG1h
-aW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2KQogCQkJfQogCQl9CiAJCS8qIHN0YXRzIHRpbWVyICov
-Ci0JCWlmIChwZmRbMV0ucmV2ZW50cyAmIFBPTExJTikgeworCQlpZiAoKHBmZFsxXS5yZXZlbnRz
-ICYgUE9MTElOKSAmJiAhc2h1dGRvd24pIHsKIAkJCXVpbnQ2NF90IHRtcDsKIAkJCXJlYWQoc3Rh
-dHNfdGltZXIsICZ0bXAsIHNpemVvZih0bXApKTsKIAkJCS8qIHVwZGF0ZSBzdGF0cyAqLwpAQCAt
-NjcxLDEzICs3MTksMjAgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2KQogCQkJCS8q
-IHJlYWQgd2hvbGUgUEVCIGlmIG51bWJlciBvZiByZWFkcyBzaW5jZSBsYXN0IGNoZWNrIGlzIGFi
-b3ZlIHRocmVzaG9sZCAqLwogCQkJCWlmIChyZWFkX3N0YXRzID49IHJlYWRfdGhyZXNob2xkKSB7
-CiAJCQkJCWxvZ19pbmZvKCJUb28gbWFueSByZWFkcyBmb3IgUEVCICUiIFBSSXU2NCAiIGJldHdl
-ZW4gc3RhdHMgdXBkYXRlcywgc2NoZWR1bGluZyBSRUFEIiwgcGViLT5wZWJfbnVtKTsKLQkJCQkJ
-cmVhZF9wZWIoZmQsIHBlYik7CisJCQkJCWlmICghcmVhZF9wZWIoZmQsIHBlYikpCisJCQkJCXsK
-KwkJCQkJCS8qIE5vIG5lZWQgdG8gd2FpdCB0byB1cGRhdGUgcHJldmlvdXMgcmVhZCBjb3VudCBh
-cworCQkJCQkJICogcmVhZCBpcyBwZXJmb3JtZWQgc3VjY2Vzc2Z1bGx5LgorCQkJCQkJICovCisJ
-CQkJCQlwZWItPnByZXZfcmVhZF9jbnQgPSBwZWItPnJlYWRfY250OworCQkJCQl9CiAJCQkJfQor
-CQkJCSh2b2lkKW5hbm9zbGVlcCgmd2FpdCwgTlVMTCk7CiAJCQl9CiAJCX0KIAogCQkvKiByZWFk
-X3BlYl90aW1lciAqLwotCQlpZiAocGZkWzJdLnJldmVudHMgJiBQT0xMSU4pIHsKKwkJaWYgKChw
-ZmRbMl0ucmV2ZW50cyAmIFBPTExJTikgJiYgIXNodXRkb3duKSB7CiAJCQl1aW50NjRfdCB0bXA7
-CiAJCQlyZWFkKHBmZFsyXS5mZCwgJnRtcCwgc2l6ZW9mKHRtcCkpOwogCQkJLyogZG8gbmV4dCBw
-ZWIgcmVhZCAqLwpAQCAtNjg3LDcgKzc0Miw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoq
-YXJndikKIAkJfQogCiAJCS8qIHNjcnViIHBlYnMgKi8KLQkJaWYgKHBmZFszXS5yZXZlbnRzICYg
-UE9MTElOKSB7CisJCWlmICgocGZkWzNdLnJldmVudHMgJiBQT0xMSU4pICYmICFzaHV0ZG93bikg
-ewogCQkJdWludDY0X3QgdG1wOwogCQkJcmVhZChwZmRbM10uZmQsICZ0bXAsIHNpemVvZih0bXAp
-KTsKIAkJCS8qIGRvIG5leHQgcGViIHNjcnViICovCi0tIAoxLjkuMQoK
---000000000000840c2d0569f9c0fa--
+>  
+>  Optional properties:
+>   read-only: Mark the provider as read only.
+>  
+> += Data cells list =
+> +The data cells list node should be named 'nvmem-cells' and have a
+> +child node for each data cell.
+> +
+> +Required properties:
+> + compatible: Must be "nvmem-cells"
+> + #address-cells: <1> if the provider use 32 bit addressing,
+> +                 <2> for 64 bits addressing
+> + #size-cells: <1> if the provider use 32 bit sizes,
+> +              <2> for 64 bits sizes
+> +
+>  = Data cells =
+> -These are the child nodes of the provider which contain data cell
+> +These are the child nodes of the nvmem-cells node which contain data cell
+>  information like offset and size in nvmem provider.
