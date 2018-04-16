@@ -1,25 +1,31 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f830y-0000Jj-UC
- for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 12:13:46 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org, Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>, linux-spi@vger.kernel.org
-Subject: Applied "spi: Check presence the of ->transfer[_xxx]() before
- registering a controller" to the spi tree
-In-Reply-To: <20180410224439.9260-2-boris.brezillon@bootlin.com>
-Message-Id: <E1f830e-0001Lz-Vf@debutante>
-Date: Mon, 16 Apr 2018 13:13:24 +0100
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f84Fj-0001n2-E2
+ for linux-mtd@lists.infradead.org; Mon, 16 Apr 2018 13:33:09 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990408AbeDPNcuCgzlw (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 16 Apr 2018 15:32:50 +0200
+Date: Mon, 16 Apr 2018 15:32:48 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Roger Quadros <rogerq@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Tony Lindgren <tony@atomide.com>,
+ "H. Nikolaus Schaller" <hns@goldelico.com>,
+ Andreas Kemnade <andreas@kemnade.info>
+Subject: Re: [PATCH v2] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
+Message-ID: <20180416133248.GA29565@lenoch>
+References: <20180416065256.GA24455@lenoch>
+ <8b073dce-2a9e-5068-6499-a36915f5ed90@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8b073dce-2a9e-5068-6499-a36915f5ed90@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,90 +35,195 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch
+Hi Péter,
 
-   spi: Check presence the of ->transfer[_xxx]() before registering a controller
+On Mon, Apr 16, 2018 at 02:34:54PM +0300, Peter Ujfalusi wrote:
+> On 2018-04-16 09:52, Ladislav Michl wrote:
+> > dma_map_single doesn't get the proper DMA address for vmalloced area,
+> 
+> Which is not a big surprise as vmalloc will allocate contiguous virtual
+> memory (which might corresponds to non-contiguous physical memory). Even
+> if you somehow get the physical address of the start of the vmalloced
+> buffer, you don't really know how long that chunk is and where the
+> buffer continues in physical memory.
+> 
+> Creating sg_list of the vmalloced buffer should be possible also by
+> walking the virt memory and get the pages with vmalloc_to_page().
+> I don't think there is a generic vmalloc_to_sg(), one can be implemented.
 
-has been applied to the spi tree at
+Please see previous bugreport here:
+https://marc.info/?l=linux-omap&m=152337752611812&w=2
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+Unfortunately issue was noticed after v4.16 come out and v4.17-rc1 was
+about to released. Thus safe change was introduced.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Best regards,
+	ladis
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From bd40560ac3365e3a2d512d0ad03ceb6c7f603c0c Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-Date: Wed, 11 Apr 2018 00:44:30 +0200
-Subject: [PATCH] spi: Check presence the of ->transfer[_xxx]() before
- registering a controller
-
-Right now, no checks are done on the presence of a ->transfer[_xxx]()
-method, which can lead to a NULL pointer dereference when someone
-starts sending something on the bus.
-
-Do the check at registration time and refuse to add the controller if
-all ->transfer[_xxx]() pointers are NULL.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/spi/spi.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 7b213faa0a2b..24369e437c6b 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -2063,6 +2063,19 @@ static int of_spi_register_master(struct spi_controller *ctlr)
- }
- #endif
- 
-+static int spi_controller_check_ops(struct spi_controller *ctlr)
-+{
-+	/*
-+	 * The controller must at least implement one of the ->transfer()
-+	 * hooks.
-+	 */
-+	if (!ctlr->transfer && !ctlr->transfer_one &&
-+	    !ctlr->transfer_one_message)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- /**
-  * spi_register_controller - register SPI master or slave controller
-  * @ctlr: initialized master, originally from spi_alloc_master() or
-@@ -2096,6 +2109,14 @@ int spi_register_controller(struct spi_controller *ctlr)
- 	if (!dev)
- 		return -ENODEV;
- 
-+	/*
-+	 * Make sure all necessary hooks are implemented before registering
-+	 * the SPI controller.
-+	 */
-+	status = spi_controller_check_ops(ctlr);
-+	if (status)
-+		return status;
-+
- 	if (!spi_controller_is_slave(ctlr)) {
- 		status = of_spi_register_master(ctlr);
- 		if (status)
--- 
-2.17.0
+> > so disable DMA in this case.
+> > 
+> > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> > Reported-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+> > Tested-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+> > ---
+> >  Changes:
+> >  -v2: Added Tested-by tag, based on v4.17-rc1 (no change in patch itself)
+> > 
+> >  drivers/mtd/nand/onenand/omap2.c | 105 +++++++++++--------------------
+> >  1 file changed, 38 insertions(+), 67 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
+> > index 9c159f0dd9a6..321137158ff3 100644
+> > --- a/drivers/mtd/nand/onenand/omap2.c
+> > +++ b/drivers/mtd/nand/onenand/omap2.c
+> > @@ -375,56 +375,42 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+> >  {
+> >  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+> >  	struct onenand_chip *this = mtd->priv;
+> > -	dma_addr_t dma_src, dma_dst;
+> > -	int bram_offset;
+> > +	struct device *dev = &c->pdev->dev;
+> >  	void *buf = (void *)buffer;
+> > +	dma_addr_t dma_src, dma_dst;
+> > +	int bram_offset, err;
+> >  	size_t xtra;
+> > -	int ret;
+> >  
+> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+> > -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+> > -		goto out_copy;
+> > -
+> > -	/* panic_write() may be in an interrupt context */
+> > -	if (in_interrupt() || oops_in_progress)
+> > +	/*
+> > +	 * If the buffer address is not DMA-able, len is not long enough to make
+> > +	 * DMA transfers profitable or panic_write() may be in an interrupt
+> > +	 * context fallback to PIO mode.
+> > +	 */
+> > +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
+> > +	    count < 384 || in_interrupt() || oops_in_progress )
+> >  		goto out_copy;
+> >  
+> > -	if (buf >= high_memory) {
+> > -		struct page *p1;
+> > -
+> > -		if (((size_t)buf & PAGE_MASK) !=
+> > -		    ((size_t)(buf + count - 1) & PAGE_MASK))
+> > -			goto out_copy;
+> > -		p1 = vmalloc_to_page(buf);
+> > -		if (!p1)
+> > -			goto out_copy;
+> > -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+> > -	}
+> > -
+> >  	xtra = count & 3;
+> >  	if (xtra) {
+> >  		count -= xtra;
+> >  		memcpy(buf + count, this->base + bram_offset + count, xtra);
+> >  	}
+> >  
+> > +	dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
+> >  	dma_src = c->phys_base + bram_offset;
+> > -	dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
+> > -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
+> > -		dev_err(&c->pdev->dev,
+> > -			"Couldn't DMA map a %d byte buffer\n",
+> > -			count);
+> > -		goto out_copy;
+> > -	}
+> >  
+> > -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> > -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+> > -
+> > -	if (ret) {
+> > -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+> > +	if (dma_mapping_error(dev, dma_dst)) {
+> > +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+> >  		goto out_copy;
+> >  	}
+> >  
+> > -	return 0;
+> > +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> > +	dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
+> > +	if (!err)
+> > +		return 0;
+> > +
+> > +	dev_err(dev, "timeout waiting for DMA\n");
+> >  
+> >  out_copy:
+> >  	memcpy(buf, this->base + bram_offset, count);
+> > @@ -437,49 +423,34 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+> >  {
+> >  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+> >  	struct onenand_chip *this = mtd->priv;
+> > -	dma_addr_t dma_src, dma_dst;
+> > -	int bram_offset;
+> > +	struct device *dev = &c->pdev->dev;
+> >  	void *buf = (void *)buffer;
+> > -	int ret;
+> > +	dma_addr_t dma_src, dma_dst;
+> > +	int bram_offset, err;
+> >  
+> >  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+> > -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+> > -		goto out_copy;
+> > -
+> > -	/* panic_write() may be in an interrupt context */
+> > -	if (in_interrupt() || oops_in_progress)
+> > +	/*
+> > +	 * If the buffer address is not DMA-able, len is not long enough to make
+> > +	 * DMA transfers profitable or panic_write() may be in an interrupt
+> > +	 * context fallback to PIO mode.
+> > +	 */
+> > +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
+> > +	    count < 384 || in_interrupt() || oops_in_progress )
+> >  		goto out_copy;
+> >  
+> > -	if (buf >= high_memory) {
+> > -		struct page *p1;
+> > -
+> > -		if (((size_t)buf & PAGE_MASK) !=
+> > -		    ((size_t)(buf + count - 1) & PAGE_MASK))
+> > -			goto out_copy;
+> > -		p1 = vmalloc_to_page(buf);
+> > -		if (!p1)
+> > -			goto out_copy;
+> > -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+> > -	}
+> > -
+> > -	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
+> > +	dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
+> >  	dma_dst = c->phys_base + bram_offset;
+> > -	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
+> > -		dev_err(&c->pdev->dev,
+> > -			"Couldn't DMA map a %d byte buffer\n",
+> > -			count);
+> > -		return -1;
+> > -	}
+> > -
+> > -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> > -	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+> > -
+> > -	if (ret) {
+> > -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+> > +	if (dma_mapping_error(dev, dma_src)) {
+> > +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+> >  		goto out_copy;
+> >  	}
+> >  
+> > -	return 0;
+> > +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> > +	dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
+> > +	if (!err)
+> > +		return 0;
+> > +
+> > +	dev_err(dev, "timeout waiting for DMA\n");
+> >  
+> >  out_copy:
+> >  	memcpy(this->base + bram_offset, buf, count);
+> > 
+> 
+> - Péter
+> 
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
