@@ -1,7 +1,7 @@
-Received: from michel.telenet-ops.be ([2a02:1800:110:4::f00:18])
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8UkM-0008Eu-5B
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:30 +0000
+ id 1f8UkL-00087W-Gy
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:29 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,12 +38,15 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 08/20] iio: adc: Remove depends on HAS_DMA in case of
+Subject: [PATCH v3 10/20] lightnvm: Remove depends on HAS_DMA in case of
  platform dependency
-Date: Tue, 17 Apr 2018 19:49:08 +0200
-Message-Id: <1523987360-18760-9-git-send-email-geert@linux-m68k.org>
+Date: Tue, 17 Apr 2018 19:49:10 +0200
+Message-Id: <1523987360-18760-11-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -67,39 +70,33 @@ This simplifies the dependencies, and allows to improve compile-testing.
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Reviewed-by: Matias Bjørling <mb@lightnvm.io>
 ---
 v3:
-  - Add Acked-by,
+  - Add Reviewed-by,
   - Rebase to v4.17-rc1,
+  - Removed bogus notes,
 
 v2:
   - Add Reviewed-by, Acked-by,
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/iio/adc/Kconfig | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/lightnvm/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 15606f237480dacb..88bbcd0e98632273 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -157,7 +157,6 @@ config AT91_SAMA5D2_ADC
- 	tristate "Atmel AT91 SAMA5D2 ADC"
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	depends on HAS_IOMEM
--	depends on HAS_DMA
- 	select IIO_TRIGGERED_BUFFER
+diff --git a/drivers/lightnvm/Kconfig b/drivers/lightnvm/Kconfig
+index 10c08982185a572f..9c03f35d9df113c6 100644
+--- a/drivers/lightnvm/Kconfig
++++ b/drivers/lightnvm/Kconfig
+@@ -4,7 +4,7 @@
+ 
+ menuconfig NVM
+ 	bool "Open-Channel SSD target support"
+-	depends on BLOCK && HAS_DMA && PCI
++	depends on BLOCK && PCI
+ 	select BLK_DEV_NVME
  	help
- 	  Say yes here to build support for Atmel SAMA5D2 ADC which is
-@@ -646,7 +645,6 @@ config SD_ADC_MODULATOR
- config STM32_ADC_CORE
- 	tristate "STMicroelectronics STM32 adc core"
- 	depends on ARCH_STM32 || COMPILE_TEST
--	depends on HAS_DMA
- 	depends on OF
- 	depends on REGULATOR
- 	select IIO_BUFFER
+ 	  Say Y here to get to enable Open-channel SSDs.
 -- 
 2.7.4
