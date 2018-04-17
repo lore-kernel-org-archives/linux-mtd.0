@@ -1,30 +1,28 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from smtp1-g21.free.fr ([2a01:e0c:1:1599::10])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8OIp-0006mz-2o
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 10:57:36 +0000
-Date: Tue, 17 Apr 2018 11:57:13 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-spi@vger.kernel.org, Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar <sourav.poddar@ti.com>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH v2 00/10] spi: Extend the framework to generically
- support memory devices
-Message-ID: <20180417105713.GC8973@sirena.org.uk>
-References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
+ id 1f8PmP-0006cF-6v
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 12:32:15 +0000
+Date: Tue, 17 Apr 2018 14:31:28 +0200
+From: Alban <albeu@free.fr>
+To: Rob Herring <robh@kernel.org>
+Cc: Alban <albeu@free.fr>, linux-kernel@vger.kernel.org, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Mark Rutland <mark.rutland@arm.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
+ for the cells list
+Message-ID: <20180417143128.69126385@avionic-0020>
+In-Reply-To: <20180416210429.e3yo52f355qxnopb@rob-hp-laptop>
+References: <1521933899-362-1-git-send-email-albeu@free.fr>
+ <1521933899-362-2-git-send-email-albeu@free.fr>
+ <20180416210429.e3yo52f355qxnopb@rob-hp-laptop>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
-Content-Disposition: inline
-In-Reply-To: <20180410224439.9260-1-boris.brezillon@bootlin.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/esdboVINWphvIninm4cYbzi"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,34 +32,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--Sig_/esdboVINWphvIninm4cYbzi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
---L6iaP+gRLNZHKoI4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Mon, 16 Apr 2018 16:04:29 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-On Wed, Apr 11, 2018 at 12:44:29AM +0200, Boris Brezillon wrote:
+> On Sun, Mar 25, 2018 at 12:24:57AM +0100, Alban Bedel wrote:
+> > Having the cells as subnodes of the provider device without any
+> > compatible property might clash with other bindings. To avoid this
+> > problem update the binding to have all the cells in a 'nvmem-cells'
+> > subnode with a 'nvmem-cells' compatible string. This new binding
+> > guarantee that we can turn any kind of device in a nvmem provider.
+> >=20
+> > While discouraged for new uses the old scheme is still supported for
+> > backward compatibility.
+> >=20
+> > Signed-off-by: Alban Bedel <albeu@free.fr>
+> > ---
+> >  Documentation/devicetree/bindings/nvmem/nvmem.txt | 55 +++++++++++++++=
++-------
+> >  drivers/nvmem/core.c                              | 10 +++++
+> >  2 files changed, 48 insertions(+), 17 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Docume=
+ntation/devicetree/bindings/nvmem/nvmem.txt
+> > index fd06c09..6b723e7 100644
+> > --- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
+> > +++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
+> > @@ -11,14 +11,29 @@ these data from, and where they are stored on the s=
+torage device.
+> >  This document is here to document this.
+> > =20
+> >  =3D Data providers =3D
+> > -Contains bindings specific to provider drivers and data cells as child=
+ren
+> > -of this node.
+> > +A data provider should have a subnode named 'nvmem-cells' that contains
+> > +a subnodes for each data cells.
+> > +
+> > +For backward compatibility the nvmem data cells can be direct children
+> > +of the data provider. This use is discouraged as it can conflict with
+> > +other bindings. =20
+>=20
+> I don't think we need to go this far. Whether this is necessary depends=20
+> on the provider.
 
-> In this v2, I think I addressed all the comments I had except the
-> advanced direct memory mapping stuff mentioned by Cyrille, but I don't
-> think any of the work done in this series prevents us from adding this
-> feature later on.
+It depend more on the drivers implementation. Sure as long as the
+driver only support the nvmem API it doesn't matter, both binding are
+fine. But if it ever need to support another API the bindings might
+clash and the whole device binding will need to be updated. So all in
+all I see very few value in still allowing the old binding for new
+devices, or do you seen any problem with the new binding?
 
-I'm pretty much OK with this, there's a few small bits to be addressed
-it seems but it looks good overall.
+However if the consensus is to keep both styles I will rewrite this
+paragraph as needed.
 
---L6iaP+gRLNZHKoI4
-Content-Type: application/pgp-signature; name="signature.asc"
+Alban
+
+--Sig_/esdboVINWphvIninm4cYbzi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrV0wkACgkQJNaLcl1U
-h9CZoQf/a+SZVy8o3vQ6NykHLZMDfH66KJMqpQq+Din8bbLl4p/n8GH50hU4AbK/
-YOq/KfcWLFw9ql5+JGV5dqdHL1rgQDx0LQA0yDw3RDY9yijF4EgevTD8jmUK4iIN
-Imme9bHaZFwADAazz3bxuDfjADzLXZkgHQ8r2CQ3mWGPJU+wfcoA1b+koEQLtlMt
-xZ62m/bXWQv5pXBNMATIUyRUQnFnuWVU/SInmxDxaj3VBxJnNd3C/bb1YmdY5v/b
-IM8/6wu7PVMbCD9Xh1nz54+Wl0sB11a9jSGLLUhwLReBexhOpEj3IMFi78P4HE51
-6ckZH1NtvoCYQLlJNUFyl7fzsDwuog==
-=iUuM
+iQIcBAEBCAAGBQJa1ekhAAoJEHSUmkuduC28zUMP/R1CQa0hBlA+o8D8cTMQpkcN
+xacENM3vNWs8WCGoiKWnbMtMFPNBTELSg201T+2iL4d/oCTZ29sOjoziTACQyqAJ
+vTI5HqGVZtsUl/r3wzrWCudrGbT+ghon9rvJrkpPE3t+G6YoVrqfYvxYqwRjA2EP
+sg825d9ZtAlijI0JtgYHPklGRej7AMMy8b6KbDXgnGTM+Xr4ETQ/VaefAOUszjL3
+FeZjGL8Su3hZmEcOIMv50yVLrVZt05URnU8nX8FqkX5/i0Hzr50eS1bLjfSKu69m
+pGZuLB9mQMDjEj13SY/fJS/tRe+6g8GLe2EPiWwcy6RN6I0vCquIIzzESJOkwUgo
++FeLp1bZA9UGg3PtFtuY1zvkHJIwafBE/4NwSd7d4nF0lHZsLzDgIhEOUNnwqKvc
+vo9RB+MDskA2viYoLC+IUwgYdYpQHyfRn/AucccNvlfvV8u6uuFnfeXUrGU9bmIO
+80uTEavVCjUVMwixZy4+jUXcgZVusg5S9sjiZQj81jBhtVulUint5/4caApKmQy+
+//ujAMHVq5KxVQ639+exxkM1cqV8+NcsxY0HQHLmYmJwLNoXsLubwM6pYrMfhN0Y
+Idg/c/NVt2/EvrNee0a3W88VpiExZTfzXCdDkUi1qgcPvmdOX/SB0QIFF4bEhV44
+BsEGkmWGx1g7yTvlsU/x
+=eR8l
 -----END PGP SIGNATURE-----
 
---L6iaP+gRLNZHKoI4--
+--Sig_/esdboVINWphvIninm4cYbzi--
