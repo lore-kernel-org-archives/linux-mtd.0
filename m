@@ -1,7 +1,7 @@
 Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8UkL-00086o-Ic
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:29 +0000
+ id 1f8UkL-00086E-IK
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:30 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,10 +38,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 01/20] ASoC: Remove depends on HAS_DMA in case of platform
+Subject: [PATCH v3 09/20] iommu: Remove depends on HAS_DMA in case of platform
  dependency
-Date: Tue, 17 Apr 2018 19:49:01 +0200
-Message-Id: <1523987360-18760-2-git-send-email-geert@linux-m68k.org>
+Date: Tue, 17 Apr 2018 19:49:09 +0200
+Message-Id: <1523987360-18760-10-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -64,15 +64,10 @@ cannot work anyway.
 
 This simplifies the dependencies, and allows to improve compile-testing.
 
-Note:
-  - The various SND_SOC_LPASS_* symbols had to loose their dependencies
-    on HAS_DMA, as they are selected by SND_SOC_STORM and/or
-    SND_SOC_APQ8016_SBC.
-
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Mark Brown <broonie@kernel.org>
+Acked-by: Joerg Roedel <jroedel@suse.de>
 ---
 v3:
   - Add Acked-by,
@@ -81,93 +76,40 @@ v3:
 v2:
   - Add Reviewed-by, Acked-by,
   - Drop RFC state,
-  - Drop dependency of SND_SOC_LPASS_IPQ806X on HAS_DMA,
   - Split per subsystem.
 ---
- sound/soc/bcm/Kconfig      | 3 +--
- sound/soc/kirkwood/Kconfig | 1 -
- sound/soc/pxa/Kconfig      | 1 -
- sound/soc/qcom/Kconfig     | 7 ++-----
- 4 files changed, 3 insertions(+), 9 deletions(-)
+ drivers/iommu/Kconfig | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/bcm/Kconfig b/sound/soc/bcm/Kconfig
-index edf367100ebd2f17..02f50b7a966ff262 100644
---- a/sound/soc/bcm/Kconfig
-+++ b/sound/soc/bcm/Kconfig
-@@ -11,9 +11,8 @@ config SND_BCM2835_SOC_I2S
- config SND_SOC_CYGNUS
- 	tristate "SoC platform audio for Broadcom Cygnus chips"
- 	depends on ARCH_BCM_CYGNUS || COMPILE_TEST
--	depends on HAS_DMA
+diff --git a/drivers/iommu/Kconfig b/drivers/iommu/Kconfig
+index df171cb8582296b9..c76157e57f6ba4ba 100644
+--- a/drivers/iommu/Kconfig
++++ b/drivers/iommu/Kconfig
+@@ -23,7 +23,7 @@ config IOMMU_IO_PGTABLE
+ config IOMMU_IO_PGTABLE_LPAE
+ 	bool "ARMv7/v8 Long Descriptor Format"
+ 	select IOMMU_IO_PGTABLE
+-	depends on HAS_DMA && (ARM || ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64))
++	depends on ARM || ARM64 || (COMPILE_TEST && !GENERIC_ATOMIC64)
  	help
- 	  Say Y if you want to add support for ASoC audio on Broadcom
- 	  Cygnus chips (bcm958300, bcm958305, bcm911360)
- 
--	  If you don't know what to do here, say N.
-\ No newline at end of file
-+	  If you don't know what to do here, say N.
-diff --git a/sound/soc/kirkwood/Kconfig b/sound/soc/kirkwood/Kconfig
-index bc3c7b5ac752e471..132bb83f8e99aff3 100644
---- a/sound/soc/kirkwood/Kconfig
-+++ b/sound/soc/kirkwood/Kconfig
-@@ -1,7 +1,6 @@
- config SND_KIRKWOOD_SOC
- 	tristate "SoC Audio for the Marvell Kirkwood and Dove chips"
- 	depends on ARCH_DOVE || ARCH_MVEBU || COMPILE_TEST
--	depends on HAS_DMA
+ 	  Enable support for the ARM long descriptor pagetable format.
+ 	  This allocator supports 4K/2M/1G, 16K/32M and 64K/512M page
+@@ -42,7 +42,7 @@ config IOMMU_IO_PGTABLE_LPAE_SELFTEST
+ config IOMMU_IO_PGTABLE_ARMV7S
+ 	bool "ARMv7/v8 Short Descriptor Format"
+ 	select IOMMU_IO_PGTABLE
+-	depends on HAS_DMA && (ARM || ARM64 || COMPILE_TEST)
++	depends on ARM || ARM64 || COMPILE_TEST
  	help
- 	  Say Y or M if you want to add support for codecs attached to
- 	  the Kirkwood I2S interface. You will also need to select the
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 484ab3c2ad672fc8..960744e46edc0549 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -1,7 +1,6 @@
- config SND_PXA2XX_SOC
- 	tristate "SoC Audio for the Intel PXA2xx chip"
- 	depends on ARCH_PXA || COMPILE_TEST
+ 	  Enable support for the ARM Short-descriptor pagetable format.
+ 	  This supports 32-bit virtual and physical addresses mapped using
+@@ -376,7 +376,6 @@ config QCOM_IOMMU
+ 	# Note: iommu drivers cannot (yet?) be built as modules
+ 	bool "Qualcomm IOMMU Support"
+ 	depends on ARCH_QCOM || (COMPILE_TEST && !GENERIC_ATOMIC64)
 -	depends on HAS_DMA
- 	select SND_PXA2XX_LIB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 8ec9a074b38bd702..3cc252e55468eaab 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -11,24 +11,21 @@ config SND_SOC_LPASS_CPU
- 
- config SND_SOC_LPASS_PLATFORM
- 	tristate
--	depends on HAS_DMA
- 	select REGMAP_MMIO
- 
- config SND_SOC_LPASS_IPQ806X
- 	tristate
--	depends on HAS_DMA
- 	select SND_SOC_LPASS_CPU
- 	select SND_SOC_LPASS_PLATFORM
- 
- config SND_SOC_LPASS_APQ8016
- 	tristate
--	depends on HAS_DMA
- 	select SND_SOC_LPASS_CPU
- 	select SND_SOC_LPASS_PLATFORM
- 
- config SND_SOC_STORM
- 	tristate "ASoC I2S support for Storm boards"
--	depends on SND_SOC_QCOM && HAS_DMA
-+	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_IPQ806X
- 	select SND_SOC_MAX98357A
- 	help
-@@ -37,7 +34,7 @@ config SND_SOC_STORM
- 
- config SND_SOC_APQ8016_SBC
- 	tristate "SoC Audio support for APQ8016 SBC platforms"
--	depends on SND_SOC_QCOM && HAS_DMA
-+	depends on SND_SOC_QCOM
- 	select SND_SOC_LPASS_APQ8016
- 	help
-           Support for Qualcomm Technologies LPASS audio block in
+ 	select IOMMU_API
+ 	select IOMMU_IO_PGTABLE_LPAE
+ 	select ARM_DMA_USE_IOMMU
 -- 
 2.7.4
