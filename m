@@ -1,7 +1,7 @@
 Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8UkT-0008Ik-C7
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:35 +0000
+ id 1f8V8g-0003g4-2d
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 18:15:36 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,10 +38,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 20/20] usb: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Tue, 17 Apr 2018 19:49:20 +0200
-Message-Id: <1523987360-18760-21-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v3 11/20] mailbox: Remove depends on HAS_DMA in case of
+ platform dependency
+Date: Tue, 17 Apr 2018 19:49:11 +0200
+Message-Id: <1523987360-18760-12-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -67,56 +67,38 @@ This simplifies the dependencies, and allows to improve compile-testing.
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Felipe Balbi <felipe.balbi@linux.intel.com> [drivers/usb/gadget/]
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
 v3:
-  - Add Acked-by,
   - Rebase to v4.17-rc1,
+  - Removed bogus notes,
 
 v2:
   - Add Reviewed-by, Acked-by,
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/usb/gadget/udc/Kconfig | 4 ++--
- drivers/usb/mtu3/Kconfig       | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mailbox/Kconfig | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/Kconfig b/drivers/usb/gadget/udc/Kconfig
-index 0875d38476ee9395..9c3b4f86965e80c7 100644
---- a/drivers/usb/gadget/udc/Kconfig
-+++ b/drivers/usb/gadget/udc/Kconfig
-@@ -179,7 +179,7 @@ config USB_R8A66597
- 
- config USB_RENESAS_USBHS_UDC
- 	tristate 'Renesas USBHS controller'
--	depends on USB_RENESAS_USBHS && HAS_DMA
-+	depends on USB_RENESAS_USBHS
+diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
+index a2bb27446dce4e2b..725dce5ba62d5baf 100644
+--- a/drivers/mailbox/Kconfig
++++ b/drivers/mailbox/Kconfig
+@@ -162,7 +162,6 @@ config XGENE_SLIMPRO_MBOX
+ config BCM_PDC_MBOX
+ 	tristate "Broadcom FlexSparx DMA Mailbox"
+ 	depends on ARCH_BCM_IPROC || COMPILE_TEST
+-	depends on HAS_DMA
  	help
- 	   Renesas USBHS is a discrete USB host and peripheral controller chip
- 	   that supports both full and high speed USB 2.0 data transfers.
-@@ -192,7 +192,7 @@ config USB_RENESAS_USBHS_UDC
- config USB_RENESAS_USB3
- 	tristate 'Renesas USB3.0 Peripheral controller'
- 	depends on ARCH_RENESAS || COMPILE_TEST
--	depends on EXTCON && HAS_DMA
-+	depends on EXTCON
- 	help
- 	   Renesas USB3.0 Peripheral controller is a USB peripheral controller
- 	   that supports super, high, and full speed USB 3.0 data transfers.
-diff --git a/drivers/usb/mtu3/Kconfig b/drivers/usb/mtu3/Kconfig
-index 25cd61947beea51e..c0c0eb88e5eafc74 100644
---- a/drivers/usb/mtu3/Kconfig
-+++ b/drivers/usb/mtu3/Kconfig
-@@ -2,7 +2,7 @@
- 
- config USB_MTU3
- 	tristate "MediaTek USB3 Dual Role controller"
--	depends on EXTCON && (USB || USB_GADGET) && HAS_DMA
-+	depends on EXTCON && (USB || USB_GADGET)
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
- 	select USB_XHCI_MTK if USB_SUPPORT && USB_XHCI_HCD
+ 	  Mailbox implementation for the Broadcom FlexSparx DMA ring manager,
+ 	  which provides access to various offload engines on Broadcom
+@@ -172,7 +171,6 @@ config BCM_FLEXRM_MBOX
+ 	tristate "Broadcom FlexRM Mailbox"
+ 	depends on ARM64
+ 	depends on ARCH_BCM_IPROC || COMPILE_TEST
+-	depends on HAS_DMA
+ 	select GENERIC_MSI_IRQ_DOMAIN
+ 	default m if ARCH_BCM_IPROC
  	help
 -- 
 2.7.4
