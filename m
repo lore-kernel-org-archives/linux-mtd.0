@@ -1,7 +1,7 @@
 Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8VmP-0007PH-QB
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 18:56:39 +0000
+ id 1f8Vn7-0007PH-9R
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 18:57:33 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,10 +38,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 05/20] firewire: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Tue, 17 Apr 2018 19:49:05 +0200
-Message-Id: <1523987360-18760-6-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v3 19/20] staging: vc04_services: Remove depends on HAS_DMA in
+ case of platform dependency
+Date: Tue, 17 Apr 2018 19:49:19 +0200
+Message-Id: <1523987360-18760-20-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -67,8 +67,10 @@ This simplifies the dependencies, and allows to improve compile-testing.
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
 v3:
+  - Add Acked-by,
   - Rebase to v4.17-rc1,
 
 v2:
@@ -76,18 +78,19 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/firewire/Kconfig | 1 -
+ drivers/staging/vc04_services/Kconfig | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/firewire/Kconfig b/drivers/firewire/Kconfig
-index 145974f9662b63e6..4199849e37585181 100644
---- a/drivers/firewire/Kconfig
-+++ b/drivers/firewire/Kconfig
-@@ -1,5 +1,4 @@
- menu "IEEE 1394 (FireWire) support"
+diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+index f5aaf7d629f0fae9..98064ce2c2b47c7f 100644
+--- a/drivers/staging/vc04_services/Kconfig
++++ b/drivers/staging/vc04_services/Kconfig
+@@ -1,6 +1,5 @@
+ menuconfig BCM_VIDEOCORE
+ 	tristate "Broadcom VideoCore support"
 -	depends on HAS_DMA
- 	depends on PCI || COMPILE_TEST
- 	# firewire-core does not depend on PCI but is
- 	# not useful without PCI controller driver
+ 	depends on OF
+ 	depends on RASPBERRYPI_FIRMWARE || (COMPILE_TEST && !RASPBERRYPI_FIRMWARE)
+ 	default y
 -- 
 2.7.4
