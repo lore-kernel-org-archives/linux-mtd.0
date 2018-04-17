@@ -1,7 +1,7 @@
 Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8Vjq-0007PH-0b
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 18:54:00 +0000
+ id 1f8VkJ-0007PH-LO
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 18:54:29 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,10 +38,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 06/20] fpga: Remove depends on HAS_DMA in case of platform
+Subject: [PATCH v3 14/20] mtd: Remove depends on HAS_DMA in case of platform
  dependency
-Date: Tue, 17 Apr 2018 19:49:06 +0200
-Message-Id: <1523987360-18760-7-git-send-email-geert@linux-m68k.org>
+Date: Tue, 17 Apr 2018 19:49:14 +0200
+Message-Id: <1523987360-18760-15-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -67,31 +67,86 @@ This simplifies the dependencies, and allows to improve compile-testing.
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Alan Tull <atull@kernel.org>
 ---
 v3:
-  - Add Acked-by,
   - Rebase to v4.17-rc1,
 
 v2:
   - Add Reviewed-by, Acked-by,
   - Drop RFC state,
+  - Drop new dependency of MTD_NAND_MARVELL on HAS_DMA,
   - Split per subsystem.
 ---
- drivers/fpga/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/nand/raw/Kconfig | 8 ++------
+ drivers/mtd/spi-nor/Kconfig  | 2 +-
+ 2 files changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-index f47ef848bcd056d5..fd539132542e30ee 100644
---- a/drivers/fpga/Kconfig
-+++ b/drivers/fpga/Kconfig
-@@ -53,7 +53,6 @@ config FPGA_MGR_ALTERA_CVP
- config FPGA_MGR_ZYNQ_FPGA
- 	tristate "Xilinx Zynq FPGA"
- 	depends on ARCH_ZYNQ || COMPILE_TEST
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 19a2b283fbbe627e..6871ff0fd300bb81 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -46,7 +46,7 @@ config MTD_NAND_DENALI
+ config MTD_NAND_DENALI_PCI
+         tristate "Support Denali NAND controller on Intel Moorestown"
+ 	select MTD_NAND_DENALI
+-	depends on HAS_DMA && PCI
++	depends on PCI
+         help
+           Enable the driver for NAND flash on Intel Moorestown, using the
+           Denali NAND controller core.
+@@ -152,7 +152,6 @@ config MTD_NAND_S3C2410_CLKSTOP
+ config MTD_NAND_TANGO
+ 	tristate "NAND Flash support for Tango chips"
+ 	depends on ARCH_TANGO || COMPILE_TEST
 -	depends on HAS_DMA
  	help
- 	  FPGA manager driver support for Xilinx Zynq FPGAs.
+ 	  Enables the NAND Flash controller on Tango chips.
+ 
+@@ -285,7 +284,7 @@ config MTD_NAND_MARVELL
+ 	tristate "NAND controller support on Marvell boards"
+ 	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU || \
+ 		   COMPILE_TEST
+-	depends on HAS_IOMEM && HAS_DMA
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables the NAND flash controller driver for Marvell boards,
+ 	  including:
+@@ -447,7 +446,6 @@ config MTD_NAND_SH_FLCTL
+ 	tristate "Support for NAND on Renesas SuperH FLCTL"
+ 	depends on SUPERH || COMPILE_TEST
+ 	depends on HAS_IOMEM
+-	depends on HAS_DMA
+ 	help
+ 	  Several Renesas SuperH CPU has FLCTL. This option enables support
+ 	  for NAND Flash using FLCTL.
+@@ -515,7 +513,6 @@ config MTD_NAND_SUNXI
+ config MTD_NAND_HISI504
+ 	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+ 	depends on ARCH_HISI || COMPILE_TEST
+-	depends on HAS_DMA
+ 	help
+ 	  Enables support for NAND controller on Hisilicon SoC Hip04.
+ 
+@@ -529,7 +526,6 @@ config MTD_NAND_QCOM
+ config MTD_NAND_MTK
+ 	tristate "Support for NAND controller on MTK SoCs"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
+-	depends on HAS_DMA
+ 	help
+ 	  Enables support for NAND controller on MTK SoCs.
+ 	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 89da88e591215db1..c493b8230a38c059 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -71,7 +71,7 @@ config SPI_FSL_QUADSPI
+ config SPI_HISI_SFC
+ 	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
+ 	depends on ARCH_HISI || COMPILE_TEST
+-	depends on HAS_IOMEM && HAS_DMA
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables support for hisilicon SPI-NOR flash controller.
  
 -- 
 2.7.4
