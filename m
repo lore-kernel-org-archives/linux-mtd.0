@@ -1,7 +1,7 @@
 Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8UkL-00087a-HA
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:27 +0000
+ id 1f8UkL-00086w-Gv
+ for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 17:50:29 +0000
 From: Geert Uytterhoeven <geert@linux-m68k.org>
 To: Christoph Hellwig <hch@lst.de>,
  Marek Szyprowski <m.szyprowski@samsung.com>,
@@ -38,10 +38,10 @@ Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
  linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
  devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
  Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 03/20] crypto: Remove depends on HAS_DMA in case of
- platform dependency
-Date: Tue, 17 Apr 2018 19:49:03 +0200
-Message-Id: <1523987360-18760-4-git-send-email-geert@linux-m68k.org>
+Subject: [PATCH v3 04/20] fbdev: Remove depends on HAS_DMA in case of platform
+ dependency
+Date: Tue, 17 Apr 2018 19:49:04 +0200
+Message-Id: <1523987360-18760-5-git-send-email-geert@linux-m68k.org>
 In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -67,7 +67,7 @@ This simplifies the dependencies, and allows to improve compile-testing.
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Reviewed-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 ---
 v3:
   - Add Acked-by,
@@ -78,96 +78,22 @@ v2:
   - Drop RFC state,
   - Split per subsystem.
 ---
- drivers/crypto/Kconfig | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ drivers/video/fbdev/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index d1ea1a07cecbb36c..3dbc47528667b77c 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -419,7 +419,7 @@ config CRYPTO_DEV_EXYNOS_RNG
- config CRYPTO_DEV_S5P
- 	tristate "Support for Samsung S5PV210/Exynos crypto accelerator"
- 	depends on ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
--	depends on HAS_IOMEM && HAS_DMA
-+	depends on HAS_IOMEM
- 	select CRYPTO_AES
- 	select CRYPTO_BLKCIPHER
- 	help
-@@ -466,7 +466,6 @@ endif # if CRYPTO_DEV_UX500
+diff --git a/drivers/video/fbdev/Kconfig b/drivers/video/fbdev/Kconfig
+index d94254263ea5caa7..4f9853ec1721950f 100644
+--- a/drivers/video/fbdev/Kconfig
++++ b/drivers/video/fbdev/Kconfig
+@@ -2075,7 +2075,8 @@ config FB_XILINX
  
- config CRYPTO_DEV_ATMEL_AUTHENC
- 	tristate "Support for Atmel IPSEC/SSL hw accelerator"
--	depends on HAS_DMA
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	select CRYPTO_AUTHENC
- 	select CRYPTO_DEV_ATMEL_AES
-@@ -479,7 +478,6 @@ config CRYPTO_DEV_ATMEL_AUTHENC
- 
- config CRYPTO_DEV_ATMEL_AES
- 	tristate "Support for Atmel AES hw accelerator"
--	depends on HAS_DMA
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	select CRYPTO_AES
- 	select CRYPTO_AEAD
-@@ -494,7 +492,6 @@ config CRYPTO_DEV_ATMEL_AES
- 
- config CRYPTO_DEV_ATMEL_TDES
- 	tristate "Support for Atmel DES/TDES hw accelerator"
--	depends on HAS_DMA
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	select CRYPTO_DES
- 	select CRYPTO_BLKCIPHER
-@@ -508,7 +505,6 @@ config CRYPTO_DEV_ATMEL_TDES
- 
- config CRYPTO_DEV_ATMEL_SHA
- 	tristate "Support for Atmel SHA hw accelerator"
--	depends on HAS_DMA
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	select CRYPTO_HASH
- 	help
-@@ -574,7 +570,8 @@ config CRYPTO_DEV_CAVIUM_ZIP
- 
- config CRYPTO_DEV_QCE
- 	tristate "Qualcomm crypto engine accelerator"
--	depends on (ARCH_QCOM || COMPILE_TEST) && HAS_DMA && HAS_IOMEM
-+	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	select CRYPTO_AES
- 	select CRYPTO_DES
- 	select CRYPTO_ECB
-@@ -598,7 +595,6 @@ source "drivers/crypto/vmx/Kconfig"
- config CRYPTO_DEV_IMGTEC_HASH
- 	tristate "Imagination Technologies hardware hash accelerator"
- 	depends on MIPS || COMPILE_TEST
--	depends on HAS_DMA
- 	select CRYPTO_MD5
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
-@@ -650,7 +646,6 @@ config CRYPTO_DEV_ROCKCHIP
- 
- config CRYPTO_DEV_MEDIATEK
- 	tristate "MediaTek's EIP97 Cryptographic Engine driver"
--	depends on HAS_DMA
- 	depends on (ARM && ARCH_MEDIATEK) || COMPILE_TEST
- 	select CRYPTO_AES
- 	select CRYPTO_AEAD
-@@ -688,7 +683,7 @@ source "drivers/crypto/stm32/Kconfig"
- 
- config CRYPTO_DEV_SAFEXCEL
- 	tristate "Inside Secure's SafeXcel cryptographic engine driver"
--	depends on HAS_DMA && OF
-+	depends on OF
- 	depends on (ARM64 && ARCH_MVEBU) || (COMPILE_TEST && 64BIT)
- 	select CRYPTO_AES
- 	select CRYPTO_BLKCIPHER
-@@ -706,7 +701,6 @@ config CRYPTO_DEV_SAFEXCEL
- config CRYPTO_DEV_ARTPEC6
- 	tristate "Support for Axis ARTPEC-6/7 hardware crypto acceleration."
- 	depends on ARM && (ARCH_ARTPEC || COMPILE_TEST)
--	depends on HAS_DMA
- 	depends on OF
- 	select CRYPTO_AEAD
- 	select CRYPTO_AES
+ config FB_GOLDFISH
+ 	tristate "Goldfish Framebuffer"
+-	depends on FB && HAS_DMA && (GOLDFISH || COMPILE_TEST)
++	depends on FB
++	depends on GOLDFISH || COMPILE_TEST
+ 	select FB_CFB_FILLRECT
+ 	select FB_CFB_COPYAREA
+ 	select FB_CFB_IMAGEBLIT
 -- 
 2.7.4
