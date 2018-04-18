@@ -1,26 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8nzj-0005kp-3f
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2018 14:23:36 +0000
-Date: Wed, 18 Apr 2018 16:23:23 +0200
+ id 1f8o1L-0006Na-Iv
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2018 14:25:31 +0000
+Date: Wed, 18 Apr 2018 16:25:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
+To: Mark Brown <broonie@kernel.org>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
  Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, Peter Pan
- <peterpansjtu@gmail.com>, Vignesh R <vigneshr@ti.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ linux-spi@vger.kernel.org, Peter Pan <peterpansjtu@gmail.com>, Frieder
+ Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Yogesh
+ Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
  <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Sourav Poddar
  <sourav.poddar@ti.com>, Maxime Chevallier <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH v2 04/10] spi: Extend the core to ease integration of
- SPI memory controllers
-Message-ID: <20180418162323.0db577a3@bbrezillon>
-In-Reply-To: <31229922-5bc4-99ce-5373-452d27a20ade@exceet.de>
+Subject: Re: [PATCH v2 00/10] spi: Extend the framework to generically
+ support memory devices
+Message-ID: <20180418162503.764f4761@bbrezillon>
+In-Reply-To: <20180417105713.GC8973@sirena.org.uk>
 References: <20180410224439.9260-1-boris.brezillon@bootlin.com>
- <20180410224439.9260-5-boris.brezillon@bootlin.com>
- <31229922-5bc4-99ce-5373-452d27a20ade@exceet.de>
+ <20180417105713.GC8973@sirena.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,37 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frieder,
+Hi Mark,
 
-On Mon, 16 Apr 2018 12:33:54 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
- 
-> > +
-> > +/**
-> > + * spi_mem_supports_op() - Check if a memory device and the controller it is
-> > + *			   connected to support a specific memory operation
-> > + * @mem: the SPI memory
-> > + * @op: the memory operation to check
-> > + *
-> > + * Some controllers are only supporting Single or Dual IOs, others might only
-> > + * support specific opcodes, or it can even be that the controller and device
-> > + * both support Quad IOs but the hardware prevents you from using it because
-> > + * only 2 IO lines are connected.
-> > + *
-> > + * This function checks whether a specific operation is supported.
-> > + *
-> > + * Return: true if @op is supported, false otherwise.
-> > + */
-> > +bool spi_mem_supports_op(struct spi_mem *mem, const struct spi_mem_op *op)
-> > +{
-> > +	struct spi_controller *ctlr = mem->spi->controller;
-> > +
-> > +	if (ctlr->mem_ops->supports_op)  
+On Tue, 17 Apr 2018 11:57:13 +0100
+Mark Brown <broonie@kernel.org> wrote:
+
+> On Wed, Apr 11, 2018 at 12:44:29AM +0200, Boris Brezillon wrote:
 > 
-> this misses a null check for mem_ops:
-> 	if (ctlr->mem_ops && ctlr->mem_ops->supports_op)
+> > In this v2, I think I addressed all the comments I had except the
+> > advanced direct memory mapping stuff mentioned by Cyrille, but I don't
+> > think any of the work done in this series prevents us from adding this
+> > feature later on.  
+> 
+> I'm pretty much OK with this, there's a few small bits to be addressed
+> it seems but it looks good overall.
 
-Yep. I'll fix that in v3.
+Okay, cool. I'll send a v3 addressing the few issues pointed by
+reviewers.
 
 Thanks,
 
