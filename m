@@ -1,49 +1,19 @@
-Received: from baptiste.telenet-ops.be ([2a02:1800:120:4::f00:13])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8Wfj-00012T-TN
- for linux-mtd@lists.infradead.org; Tue, 17 Apr 2018 19:53:49 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
+Received: from xes-mad.com ([216.165.139.220] helo=mail.xes-mad.com)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f8bM4-0007Ur-Hj
+ for linux-mtd@lists.infradead.org; Wed, 18 Apr 2018 00:53:50 +0000
+Date: Tue, 17 Apr 2018 19:53:34 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Kalle Valo <kvalo@codeaurora.org>,
- Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>
-Cc: iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-ide@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-block@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 18/20] spi: Remove depends on HAS_DMA in case of platform
- dependency
-Date: Tue, 17 Apr 2018 19:49:18 +0200
-Message-Id: <1523987360-18760-19-git-send-email-geert@linux-m68k.org>
-In-Reply-To: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
-References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <2051977971.384388.1524012814487.JavaMail.zimbra@xes-inc.com>
+Subject: [PATCH RESEND] mtd: cfi: Support early CFI fixups
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -53,112 +23,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-In most cases this other symbol is an architecture or platform specific
-symbol, or PCI.
+Some CFI devices need fixups that affect the number of chips detected,
+but the current fixup infrastructure (struct cfi_fixup and cfi_fixup())
+does not cover this situation.
 
-Generic symbols and drivers without platform dependencies keep their
-dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-cannot work anyway.
+Introduce struct cfi_early_fixup and cfi_early_fixup() to fill the void
+along with the fixup for S70GL02GS.
 
-This simplifies the dependencies, and allows to improve compile-testing.
+Without early fixups (top half of device cannot be written or erased):
+  ff0000000.nor-boot: Found 1 x16 devices at 0x0 in 16-bit bank. <snip>
+  Amd/Fujitsu Extended Query Table at 0x0040
+    Amd/Fujitsu Extended Query version 1.5.
+  number of CFI chips: 1
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Reviewed-by: Mark Brown <broonie@kernel.org>
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-Acked-by: Mark Brown <broonie@kernel.org>
+With early fixups (entire device can be written and erased):
+  Bad S70GL02GS CFI data; adjust to detect 2 chips
+  ff0000000.nor-boot: Found 1 x16 devices at 0x0 in 16-bit bank. <snip>
+  ff0000000.nor-boot: Found 1 x16 devices at 0x8000000 in 16-bit bank
+  Amd/Fujitsu Extended Query Table at 0x0040
+    Amd/Fujitsu Extended Query version 1.5.
+  number of CFI chips: 2
+
+Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
 ---
-v3:
-  - Add Acked-by,
-  - Rebase to v4.17-rc1,
 
-v2:
-  - Add Reviewed-by, Acked-by,
-  - Drop RFC state,
-  - Split per subsystem.
----
- drivers/spi/Kconfig | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
+ * Resent due to mailing list bounce
+ * Compiled under 4.16. Tested under 4.1 and 3.12 (e5500 PowerPC)
 
-diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
-index 2d4146ce2f1be49d..5a8524a3bc13f92d 100644
---- a/drivers/spi/Kconfig
-+++ b/drivers/spi/Kconfig
-@@ -71,7 +71,6 @@ config SPI_ARMADA_3700
+ drivers/mtd/chips/cfi_probe.c | 18 ++++++++++++++++++
+ drivers/mtd/chips/cfi_util.c  | 13 +++++++++++++
+ include/linux/mtd/cfi.h       | 10 ++++++++++
+ 3 files changed, 41 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index e8d0164..8b60aff 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -151,6 +151,22 @@ static int __xipram cfi_probe_chip(struct map_info *map, __u32 base,
+ 	return 1;
+ }
  
- config SPI_ATMEL
- 	tristate "Atmel SPI Controller"
--	depends on HAS_DMA
- 	depends on ARCH_AT91 || COMPILE_TEST
- 	help
- 	  This selects a driver for the Atmel SPI Controller, present on
-@@ -233,7 +232,6 @@ config SPI_EFM32
++static void fixup_s70gl02gs_chips(struct cfi_private *cfi)
++{
++	/*
++	 * S70GL02GS flash reports a single 256 MiB chip, but is really made up
++	 * of two 128 MiB chips with 1024 sectors each.
++	 */
++	cfi->cfiq->DevSize = 27;
++	cfi->cfiq->EraseRegionInfo[0] = 0x20003ff;
++	pr_warn("Bad S70GL02GS CFI data; adjust to detect 2 chips\n");
++}
++
++static struct cfi_early_fixup cfi_early_fixup_table[] = {
++	{ CFI_MFR_AMD, 0x4801, fixup_s70gl02gs_chips },
++	{ 0, 0, NULL },
++};
++
+ static int __xipram cfi_chip_setup(struct map_info *map,
+ 				   struct cfi_private *cfi)
+ {
+@@ -235,6 +251,8 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi_qry_mode_off(base, map, cfi);
+ 	xip_allowed(base, map);
  
- config SPI_EP93XX
- 	tristate "Cirrus Logic EP93xx SPI controller"
--	depends on HAS_DMA
- 	depends on ARCH_EP93XX || COMPILE_TEST
- 	help
- 	  This enables using the Cirrus EP93xx SPI controller in master
-@@ -355,7 +353,6 @@ config SPI_FSL_SPI
- config SPI_FSL_DSPI
- 	tristate "Freescale DSPI controller"
- 	select REGMAP_MMIO
--	depends on HAS_DMA
- 	depends on SOC_VF610 || SOC_LS1021A || ARCH_LAYERSCAPE || M5441x || COMPILE_TEST
- 	help
- 	  This enables support for the Freescale DSPI controller in master
-@@ -431,7 +428,6 @@ config SPI_OMAP_UWIRE
++	cfi_early_fixup(cfi, cfi_early_fixup_table);
++
+ 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. Manufacturer ID %#08x Chip ID %#08x\n",
+ 	       map->name, cfi->interleave, cfi->device_type*8, base,
+ 	       map->bankwidth*8, cfi->mfr, cfi->id);
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index 6f16552..e25d858 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -333,6 +333,19 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
  
- config SPI_OMAP24XX
- 	tristate "McSPI driver for OMAP"
--	depends on HAS_DMA
- 	depends on ARCH_OMAP2PLUS || COMPILE_TEST
- 	select SG_SPLIT
- 	help
-@@ -440,7 +436,6 @@ config SPI_OMAP24XX
+ EXPORT_SYMBOL(cfi_read_pri);
  
- config SPI_TI_QSPI
- 	tristate "DRA7xxx QSPI controller support"
--	depends on HAS_DMA
- 	depends on ARCH_OMAP2PLUS || COMPILE_TEST
- 	help
- 	  QSPI master controller for DRA7xxx used for flash devices.
-@@ -469,7 +464,6 @@ config SPI_PIC32
- config SPI_PIC32_SQI
- 	tristate "Microchip PIC32 Quad SPI driver"
- 	depends on MACH_PIC32 || COMPILE_TEST
--	depends on HAS_DMA
- 	help
- 	  SPI driver for PIC32 Quad SPI controller.
++void cfi_early_fixup(struct cfi_private *cfi, struct cfi_early_fixup *fixups)
++{
++	struct cfi_early_fixup *f;
++
++	for (f = fixups; f->fixup; f++) {
++		if (((f->mfr == CFI_MFR_ANY) || (f->mfr == cfi->mfr)) &&
++		    ((f->id == CFI_ID_ANY) || (f->id == cfi->id))) {
++			f->fixup(cfi);
++		}
++	}
++}
++EXPORT_SYMBOL(cfi_early_fixup);
++
+ void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup *fixups)
+ {
+ 	struct map_info *map = mtd->priv;
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index 9b57a9b..7d304db 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -353,6 +353,15 @@ void __xipram cfi_qry_mode_off(uint32_t base, struct map_info *map,
  
-@@ -572,7 +566,7 @@ config SPI_SC18IS602
+ struct cfi_extquery *cfi_read_pri(struct map_info *map, uint16_t adr, uint16_t size,
+ 			     const char* name);
++
++/* CFI fixup that can occur immediately after reading */
++struct cfi_early_fixup {
++	uint16_t mfr;
++	uint16_t id;
++	void (*fixup)(struct cfi_private *cfi);
++};
++
++/* CFI fixup that can only occur after MTD device exists */
+ struct cfi_fixup {
+ 	uint16_t mfr;
+ 	uint16_t id;
+@@ -380,6 +389,7 @@ struct cfi_fixup {
+ #define CFI_MFR_TOSHIBA		0x0098
+ #define CFI_MFR_WINBOND		0x00DA
  
- config SPI_SH_MSIOF
- 	tristate "SuperH MSIOF SPI controller"
--	depends on HAVE_CLK && HAS_DMA
-+	depends on HAVE_CLK
- 	depends on ARCH_SHMOBILE || ARCH_RENESAS || COMPILE_TEST
- 	help
- 	  SPI driver for SuperH and SH Mobile MSIOF blocks.
-@@ -650,7 +644,7 @@ config SPI_MXS
- config SPI_TEGRA114
- 	tristate "NVIDIA Tegra114 SPI Controller"
- 	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
--	depends on RESET_CONTROLLER && HAS_DMA
-+	depends on RESET_CONTROLLER
- 	help
- 	  SPI driver for NVIDIA Tegra114 SPI Controller interface. This controller
- 	  is different than the older SoCs SPI controller and also register interface
-@@ -668,7 +662,7 @@ config SPI_TEGRA20_SFLASH
- config SPI_TEGRA20_SLINK
- 	tristate "Nvidia Tegra20/Tegra30 SLINK Controller"
- 	depends on (ARCH_TEGRA && TEGRA20_APB_DMA) || COMPILE_TEST
--	depends on RESET_CONTROLLER && HAS_DMA
-+	depends on RESET_CONTROLLER
- 	help
- 	  SPI driver for Nvidia Tegra20/Tegra30 SLINK Controller interface.
++void cfi_early_fixup(struct cfi_private *cfi, struct cfi_early_fixup *fixups);
+ void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
  
+ typedef int (*varsize_frob_t)(struct map_info *map, struct flchip *chip,
 -- 
 2.7.4
