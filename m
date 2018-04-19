@@ -1,26 +1,56 @@
-From: Lionel DEBIEVE <lionel.debieve@st.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>, Richard Weinberger
- <richard@nod.at>
-CC: Adrian Hunter <adrian.hunter@intel.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, Lee Jones <lee.jones@linaro.org>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "haver@linux.vnet.ibm.com"
- <haver@linux.vnet.ibm.com>, "u.kleine-koenig@pengutronix.de"
- <u.kleine-koenig@pengutronix.de>, "joel@clambassador.com"
- <joel@clambassador.com>, "schwarzerf@gmail.com" <schwarzerf@gmail.com>,
- Benjamin GAIGNARD <benjamin.gaignard@st.com>
-Subject: Re: [Resend PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
-Date: Thu, 19 Apr 2018 12:11:34 +0000
-Message-ID: <b187fbe0-80c3-1e30-f0e0-e1ee0b5ad0f7@st.com>
-References: <20180419081323.16597-1-lionel.debieve@st.com>
- <20180419081323.16597-2-lionel.debieve@st.com> <1959407.buQAJQDfDJ@blindfold>
- <1524136750.3190.98.camel@gmail.com>
-In-Reply-To: <1524136750.3190.98.camel@gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D7C51FDBA9CE3841806CAA2239D6270B@st.com>
-Content-Transfer-Encoding: base64
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f99Ru-00038q-U4
+ for linux-mtd@lists.infradead.org; Thu, 19 Apr 2018 13:18:13 +0000
+Received: by mail-io0-x244.google.com with SMTP id l2-v6so5072304iog.9
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Apr 2018 06:17:56 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1523987360-18760-14-git-send-email-geert@linux-m68k.org>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ <1523987360-18760-14-git-send-email-geert@linux-m68k.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 19 Apr 2018 15:17:53 +0200
+Message-ID: <CAPDyKFrDsqJ-URAi=b0JmRkqoAqgT01HDPpQtNkH5to_Enm+LA@mail.gmail.com>
+Subject: Re: [PATCH v3 13/20] mmc: Remove depends on HAS_DMA in case of
+ platform dependency
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
+ Linux USB List <linux-usb@vger.kernel.org>, alsa-devel@alsa-project.org,
+ linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-block <linux-block@vger.kernel.org>,
+ linux-media@vger.kernel.org,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+ driverdevel <devel@driverdev.osuosl.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +60,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUmljaGFyZCwNCg0KSWYgeW91IGhhdmUgYW4gSUJNIGNvbnRhY3QsIHBsZWFzZSBzaGFyZSBh
-cyBub2JvZHkgcGFydCBvZiBJQk0gdGFrZSBjYXJlIA0Kb2YgdGhpcyByZXF1ZXN0Lg0KDQpJJ20g
-bm90IGFibGUgdG8gZmluZCBhbnkgbWFpbnRhaW5lciBvciBzb21lb25lIGZyb20gSUJNIHRoYXQg
-bWFuYWdlIG10ZCANCnBhcnQuDQoNCkJSDQoNCg0KT24gMDQvMTkvMjAxOCAwMToxOSBQTSwgQXJ0
-ZW0gQml0eXV0c2tpeSB3cm90ZToNCj4gT24gVGh1LCAyMDE4LTA0LTE5IGF0IDEzOjEyICswMjAw
-LCBSaWNoYXJkIFdlaW5iZXJnZXIgd3JvdGU6DQo+PiBBbSBEb25uZXJzdGFnLCAxOS4gQXByaWwg
-MjAxOCwgMTA6MTM6MjMgQ0VTVCBzY2hyaWViIExpb25lbCBEZWJpZXZlOg0KPj4+IFVwZGF0ZSBs
-aWNlbnNlIHRlbXBsYXRlIHVzaW5nIFNQRFguIE1vdmUgdGhlIGdsb2JhbCBsYXlvdXQNCj4+PiBv
-ZiBVQkkgaGVhZGVycyB0byBkdWFsIGxpY2Vuc2UgaGVscGluZyBVQkkgdG8gYmUgdGhlIHN0YW5k
-YXJkDQo+Pj4gc29sdXRpb24gZm9yIHJhdyBOQU5EIG1hbmFnZW1lbnQuDQo+Pj4NCj4+PiBTaWdu
-ZWQtb2ZmLWJ5OiBMaW9uZWwgRGViaWV2ZSA8bGlvbmVsLmRlYmlldmVAc3QuY29tPg0KPj4+IEFj
-a2VkLWJ5OiBUaG9tYXMgR2xlaXhuZXIgPHRnbHhAbGludXRyb25peC5kZT4NCj4+IEkgZmVhciB3
-ZSBuZWVkIGdldCBhbiBBQ0sgZnJvbSBJQksgZm9sa3MgdG9vLg0KPiBOb3RlLCBteSBhY2sgaXMg
-anVzdCBmcm9tIG1lIHBlcnNvbmFsbHksIEkgZG8gbm90IHJlcHJlc2VudCBhIGNvbXBhbnkNCj4g
-aW4gdGhpcyBjYXNlLiBJIGRvIG5vdCBrbm93IG11Y2ggbXkgYWNrIG1hdHRlcnMgaW4gdGhpcyBj
-YXNlIGFuZCBJIGFtDQo+IG5vdCBhIGNvcHlyaWdodCBob2xkZXIuDQo+DQo=
+On 17 April 2018 at 19:49, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+>
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+>
+> This simplifies the dependencies, and allows to improve compile-testing.
+>
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
+> Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Thanks, applied for next!
+
+Kind regrds
+Uffe
+
+> ---
+> v3:
+>   - Add Acked-by,
+>   - Rebase to v4.17-rc1,
+>
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Split per subsystem.
+> ---
+>  drivers/mmc/host/Kconfig | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 9589f9c9046f14b1..3978d0418958bf6b 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -358,7 +358,6 @@ config MMC_MESON_MX_SDIO
+>         tristate "Amlogic Meson6/Meson8/Meson8b SD/MMC Host Controller support"
+>         depends on ARCH_MESON || COMPILE_TEST
+>         depends on COMMON_CLK
+> -       depends on HAS_DMA
+>         depends on OF
+>         help
+>           This selects support for the SD/MMC Host Controller on
+> @@ -401,7 +400,6 @@ config MMC_OMAP
+>
+>  config MMC_OMAP_HS
+>         tristate "TI OMAP High Speed Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
+>         help
+>           This selects the TI OMAP High Speed Multimedia card Interface.
+> @@ -511,7 +509,6 @@ config MMC_DAVINCI
+>
+>  config MMC_GOLDFISH
+>         tristate "goldfish qemu Multimedia Card Interface support"
+> -       depends on HAS_DMA
+>         depends on GOLDFISH || COMPILE_TEST
+>         help
+>           This selects the Goldfish Multimedia card Interface emulation
+> @@ -605,7 +602,7 @@ config MMC_SDHI
+>
+>  config MMC_SDHI_SYS_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using SYS-DMAC"
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if (SUPERH || ARM)
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -615,7 +612,7 @@ config MMC_SDHI_SYS_DMAC
+>  config MMC_SDHI_INTERNAL_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+>         depends on ARM64 || COMPILE_TEST
+> -       depends on MMC_SDHI && HAS_DMA
+> +       depends on MMC_SDHI
+>         default MMC_SDHI if ARM64
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+> @@ -669,7 +666,6 @@ config MMC_CAVIUM_THUNDERX
+>
+>  config MMC_DW
+>         tristate "Synopsys DesignWare Memory Card Interface"
+> -       depends on HAS_DMA
+>         depends on ARC || ARM || ARM64 || MIPS || COMPILE_TEST
+>         help
+>           This selects support for the Synopsys DesignWare Mobile Storage IP
+> @@ -748,7 +744,6 @@ config MMC_DW_ZX
+>
+>  config MMC_SH_MMCIF
+>         tristate "SuperH Internal MMCIF support"
+> -       depends on HAS_DMA
+>         depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+>         help
+>           This selects the MMC Host Interface controller (MMCIF) found in various
+> @@ -868,7 +863,6 @@ config MMC_TOSHIBA_PCI
+>  config MMC_BCM2835
+>         tristate "Broadcom BCM2835 SDHOST MMC Controller support"
+>         depends on ARCH_BCM2835 || COMPILE_TEST
+> -       depends on HAS_DMA
+>         help
+>           This selects the BCM2835 SDHOST MMC controller. If you have
+>           a BCM2835 platform with SD or MMC devices, say Y or M here.
+> --
+> 2.7.4
+>
