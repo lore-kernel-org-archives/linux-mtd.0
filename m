@@ -1,22 +1,19 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f8wex-0005qT-MX
- for linux-mtd@lists.infradead.org; Wed, 18 Apr 2018 23:38:46 +0000
-Received: by mail-wr0-x242.google.com with SMTP id u11-v6so9093885wri.12
- for <linux-mtd@lists.infradead.org>; Wed, 18 Apr 2018 16:38:32 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: Add support for XM25QH64A and XM25QH128A
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, richard@nod.at, linux-mtd@lists.infradead.org
-References: <20180418202532.15876-1-hauke@hauke-m.de>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <48427f0e-cd32-15c2-d032-73d9a26b0cd3@gmail.com>
-Date: Wed, 18 Apr 2018 23:02:55 +0200
+From: Lionel Debieve <lionel.debieve@st.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ <linux-mtd@lists.infradead.org>
+CC: <linux-arm-kernel@lists.infradead.org>, Lee Jones <lee.jones@linaro.org>,
+ <tglx@linutronix.de>, <haver@linux.vnet.ibm.com>,
+ <u.kleine-koenig@pengutronix.de>, <joel@clambassador.com>,
+ <schwarzerf@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Subject: [Resend PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
+Date: Thu, 19 Apr 2018 10:13:23 +0200
+Message-ID: <20180419081323.16597-2-lionel.debieve@st.com>
+In-Reply-To: <20180419081323.16597-1-lionel.debieve@st.com>
+References: <20180419081323.16597-1-lionel.debieve@st.com>
 MIME-Version: 1.0
-In-Reply-To: <20180418202532.15876-1-hauke@hauke-m.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/18/2018 10:25 PM, Hauke Mehrtens wrote:
-> These devices are produced by Wuhan Xinxin Semiconductor Manufacturing
-> Corp. (XMC) and found on some routers from Chinese manufactures.
-> 
-> The data sheets can be found here:
-> http://www.xmcwh.com/Uploads/2018-03-01/5a9799e4cb355.pdf
-> http://www.xmcwh.com/Uploads/2018-02-05/5a77e6dbe968b.pdf
-> 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+Update license template using SPDX. Move the global layout
+of UBI headers to dual license helping UBI to be the standard
+solution for raw NAND management.
 
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
+Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ drivers/mtd/ubi/ubi-media.h | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e95f35..c453afa70ce2 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1230,6 +1230,10 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
->  	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
->  	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
-> +
-> +	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
-> +	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ },
->  };
->  
-> 
-
-
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index bfceae5a890e..195ff8ca8211 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -1,28 +1,12 @@
++/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+ /*
+- * Copyright (c) International Business Machines Corp., 2006
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+- *
++ * Copyright (C) International Business Machines Corp., 2006
+  * Authors: Artem Bityutskiy (Битюцкий Артём)
+  *          Thomas Gleixner
+  *          Frank Haverkamp
+  *          Oliver Lohmann
+  *          Andreas Arnez
+- */
+-
+-/*
++ *
+  * This file defines the layout of UBI headers and all the other UBI on-flash
+  * data structures.
+  */
 -- 
-Best regards,
-Marek Vasut
+2.15.1
