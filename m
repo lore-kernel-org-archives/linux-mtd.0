@@ -1,19 +1,20 @@
 Received: from sauhun.de ([88.99.104.3] helo=pokefinder.org)
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9ADS-0004be-5J
- for linux-mtd@lists.infradead.org; Thu, 19 Apr 2018 14:07:16 +0000
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1f9ADV-0005X1-4G
+ for linux-mtd@lists.infradead.org; Thu, 19 Apr 2018 14:07:18 +0000
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-renesas-soc@vger.kernel.org, kernel-janitors@vger.kernel.org,
  Wolfram Sang <wsa+renesas@sang-engineering.com>,
- Kyungmin Park <kyungmin.park@samsung.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCH 30/61] mtd: nand: onenand: simplify getting .drvdata
-Date: Thu, 19 Apr 2018 16:06:00 +0200
-Message-Id: <20180419140641.27926-31-wsa+renesas@sang-engineering.com>
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 29/61] mtd: devices: simplify getting .drvdata
+Date: Thu, 19 Apr 2018 16:05:59 +0200
+Message-Id: <20180419140641.27926-30-wsa+renesas@sang-engineering.com>
 In-Reply-To: <20180419140641.27926-1-wsa+renesas@sang-engineering.com>
 References: <20180419140641.27926-1-wsa+renesas@sang-engineering.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -33,32 +34,22 @@ Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
 Build tested only. buildbot is happy. Please apply individually.
 
- drivers/mtd/nand/onenand/samsung.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/devices/docg3.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/onenand/samsung.c b/drivers/mtd/nand/onenand/samsung.c
-index 2e9d076e445a..4cce4c0311ca 100644
---- a/drivers/mtd/nand/onenand/samsung.c
-+++ b/drivers/mtd/nand/onenand/samsung.c
-@@ -958,8 +958,7 @@ static int s3c_onenand_remove(struct platform_device *pdev)
- 
- static int s3c_pm_ops_suspend(struct device *dev)
+diff --git a/drivers/mtd/devices/docg3.c b/drivers/mtd/devices/docg3.c
+index c594fe5eac08..802d8f159e90 100644
+--- a/drivers/mtd/devices/docg3.c
++++ b/drivers/mtd/devices/docg3.c
+@@ -1470,8 +1470,7 @@ static struct docg3 *sysfs_dev2docg3(struct device *dev,
+ 				     struct device_attribute *attr)
  {
+ 	int floor;
 -	struct platform_device *pdev = to_platform_device(dev);
--	struct mtd_info *mtd = platform_get_drvdata(pdev);
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct onenand_chip *this = mtd->priv;
+-	struct mtd_info **docg3_floors = platform_get_drvdata(pdev);
++	struct mtd_info **docg3_floors = dev_get_drvdata(dev);
  
- 	this->wait(mtd, FL_PM_SUSPENDED);
-@@ -968,8 +967,7 @@ static int s3c_pm_ops_suspend(struct device *dev)
- 
- static  int s3c_pm_ops_resume(struct device *dev)
- {
--	struct platform_device *pdev = to_platform_device(dev);
--	struct mtd_info *mtd = platform_get_drvdata(pdev);
-+	struct mtd_info *mtd = dev_get_drvdata(dev);
- 	struct onenand_chip *this = mtd->priv;
- 
- 	this->unlock_all(mtd);
+ 	floor = attr->attr.name[1] - '0';
+ 	if (floor < 0 || floor >= DOC_MAX_NBFLOORS)
 -- 
 2.11.0
