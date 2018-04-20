@@ -1,16 +1,17 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+Received: from mail-wr0-f196.google.com ([209.85.128.196])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9RNI-0007pg-4K
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:46 +0000
-Received: by mail-wr0-x241.google.com with SMTP id h3-v6so20667133wrh.5
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:21 -0700 (PDT)
+ id 1f9RNK-0007qi-FU
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:51 +0000
+Received: by mail-wr0-f196.google.com with SMTP id w3-v6so20659505wrg.2
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:24 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Han Xu <han.xu@nxp.com>, Sam Lefebvre <sam.lefebvre@essensium.com>,
- "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
-Subject: [PATCH 16/18] mtd: rawnand: gpmi: inline gpmi_cmd_ctrl()
-Date: Fri, 20 Apr 2018 10:19:44 +0200
-Message-Id: <20180420081946.16088-17-sam.lefebvre@essensium.com>
+ Arnout Vandecappelle <arnout@mind.be>
+Subject: [PATCH 17/18] mtd: rawnand: gpmi: gpmi_nand_command(): use separate
+ sgl for the two commands
+Date: Fri, 20 Apr 2018 10:19:45 +0200
+Message-Id: <20180420081946.16088-18-sam.lefebvre@essensium.com>
 In-Reply-To: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 References: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,172 +23,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
+To enable chaining the two DMAs corresponding to the two commands that
+can be issued by gpmi_nand_command(), duplicate the cmd_sgl and
+command_length. For cmd_buffer, instead of duplicating it, we can use
+a fixed offset within the buffer.
 
-gpmi_cmd_ctrl() has two "states":
+The appropriate sgl and command_length is passed to gpmi_send_command(),
+and the sg_init_one(), dma_map_sg() and dma_unmap_sg() calls are hoisted
+out of it. This is needed because the unmapping should only be done
+after both commands have finished.
 
-* ALE or CLE is set, in this case the command/control data is buffered.
-  These calls are replaced with
-	this->cmd_buffer[this->command_length++] = data;
-
-* ALE and CLE are not set, in this case the command is sent (DMA is
-  started). These calls are replaced with
-	ret = gpmi_send_command(this);
-	if (ret)
-		dev_err(this->dev, "Chip: %u, Error %d\n",
-			this->current_chip, ret);
-	this->command_length = 0;
-
-The 'ctrl' variable/parameter is not used.
-
+Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 85 ++++++++++--------------------
- 1 file changed, 29 insertions(+), 56 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 12 ++----
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 68 +++++++++++++++++-------------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  9 +++-
+ 3 files changed, 49 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 5700ca1d2ae6..97d44fe212c9 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -786,40 +786,6 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 	return -ENOMEM;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+index 1858afdb400d..46b2208df30e 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+@@ -548,11 +548,11 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 	return reg & mask;
  }
  
--static void gpmi_cmd_ctrl(struct mtd_info *mtd, int data, unsigned int ctrl)
--{
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	struct gpmi_nand_data *this = nand_get_controller_data(chip);
--	int ret;
--
--	/*
--	 * Every operation begins with a command byte and a series of zero or
--	 * more address bytes. These are distinguished by either the Address
--	 * Latch Enable (ALE) or Command Latch Enable (CLE) signals being
--	 * asserted. When MTD is ready to execute the command, it will deassert
--	 * both latch enables.
--	 *
--	 * Rather than run a separate DMA operation for every single byte, we
--	 * queue them up and run a single DMA operation for the entire series
--	 * of command and data bytes. NAND_CMD_NONE means the END of the queue.
--	 */
--	if ((ctrl & (NAND_ALE | NAND_CLE))) {
--		if (data != NAND_CMD_NONE)
--			this->cmd_buffer[this->command_length++] = data;
--		return;
--	}
--
--	if (!this->command_length)
--		return;
--
--	ret = gpmi_send_command(this);
--	if (ret)
--		dev_err(this->dev, "Chip: %u, Error %d\n",
--			this->current_chip, ret);
--
--	this->command_length = 0;
--}
--
- static int gpmi_dev_ready(struct mtd_info *mtd)
+-int gpmi_send_command(struct gpmi_nand_data *this)
++int gpmi_send_command(struct gpmi_nand_data *this, struct scatterlist *sgl,
++		      unsigned int command_length)
  {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-@@ -1104,7 +1070,8 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 			      int column, int page_addr)
- {
- 	register struct nand_chip *chip = mtd_to_nand(mtd);
--	int ctrl = NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE;
-+	struct gpmi_nand_data *this = nand_get_controller_data(chip);
-+	int ret;
+ 	struct dma_chan *channel = get_dma_chan(this);
+ 	struct dma_async_tx_descriptor *desc;
+-	struct scatterlist *sgl;
+ 	int chip = this->current_chip;
+ 	int ret;
+ 	u32 pio[3];
+@@ -564,7 +564,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
+ 		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
+ 		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_CLE)
+ 		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
+-		| BF_GPMI_CTRL0_XFER_COUNT(this->command_length);
++		| BF_GPMI_CTRL0_XFER_COUNT(command_length);
+ 	pio[1] = pio[2] = 0;
+ 	desc = dmaengine_prep_slave_sg(channel,
+ 					(struct scatterlist *)pio,
+@@ -573,10 +573,6 @@ int gpmi_send_command(struct gpmi_nand_data *this)
+ 		return -EINVAL;
+ 
+ 	/* [2] send out the COMMAND + ADDRESS string stored in @buffer */
+-	sgl = &this->cmd_sgl;
+-
+-	sg_init_one(sgl, this->cmd_buffer, this->command_length);
+-	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel,
+ 				sgl, 1, DMA_MEM_TO_DEV,
+ 				DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+@@ -586,8 +582,6 @@ int gpmi_send_command(struct gpmi_nand_data *this)
+ 	/* [3] submit the DMA */
+ 	ret = start_dma_without_bch_irq(this, desc);
+ 
+-	dma_unmap_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
+-
+ 	return ret;
+ }
+ 
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 97d44fe212c9..4455ea428255 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -1075,6 +1075,9 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
  	/* Large page devices (> 512 bytes) behave slightly differently. */
  	bool is_lp = mtd->writesize > 512;
  
-@@ -1132,39 +1099,41 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 			column -= 256;
- 			readcmd = NAND_CMD_READ1;
- 		}
--		gpmi_cmd_ctrl(mtd, readcmd, ctrl);
--		ctrl &= ~NAND_CTRL_CHANGE;
-+		this->cmd_buffer[this->command_length++] = readcmd;
- 	}
- 
- 	/* Command latch cycle */
- 	if (command != NAND_CMD_NONE)
--		gpmi_cmd_ctrl(mtd, command, ctrl);
-+		this->cmd_buffer[this->command_length++] = command;
- 
--	/* Address cycle, when necessary */
--	ctrl = NAND_NCE | NAND_ALE | NAND_CTRL_CHANGE;
- 	/* Serially input address */
- 	if (column != -1) {
- 		/* Adjust columns for 16 bit buswidth */
- 		if (chip->options & NAND_BUSWIDTH_16 &&
- 				!nand_opcode_8bits(command))
- 			column >>= 1;
--		gpmi_cmd_ctrl(mtd, column, ctrl);
--		ctrl &= ~NAND_CTRL_CHANGE;
-+		this->cmd_buffer[this->command_length++] = column;
- 
- 		/* Only output a single addr cycle for 8bits opcodes. */
- 		if (is_lp && !nand_opcode_8bits(command))
--			gpmi_cmd_ctrl(mtd, column >> 8, ctrl);
-+			this->cmd_buffer[this->command_length++] = column >> 8;
- 	}
- 	if (page_addr != -1) {
--		gpmi_cmd_ctrl(mtd, page_addr, ctrl);
--		ctrl &= ~NAND_CTRL_CHANGE;
--		gpmi_cmd_ctrl(mtd, page_addr >> 8, ctrl);
-+		this->cmd_buffer[this->command_length++] = page_addr;
-+		this->cmd_buffer[this->command_length++] = page_addr >> 8;
- 		if (chip->options & NAND_ROW_ADDR_3)
--			gpmi_cmd_ctrl(mtd, page_addr >> 16, ctrl);
-+			this->cmd_buffer[this->command_length++] = page_addr >> 16;
- 	}
- 
- 	/* This starts the DMA for the command and waits for it to finish. */
--	gpmi_cmd_ctrl(mtd, NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
-+	if (this->command_length > 0) {
-+		ret = gpmi_send_command(this);
-+		if (ret)
-+			dev_err(this->dev, "Chip: %u, Error %d\n",
-+				this->current_chip, ret);
++	BUG_ON(this->command_length != 0);
++	BUG_ON(this->command_length2 != 0);
 +
-+		this->command_length = 0;
+ 	if (is_lp) {
+ 		/* Large page devices don't have the separate regions as we
+ 		 * have in the small page devices. We must emulate
+@@ -1125,47 +1128,54 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
+ 			this->cmd_buffer[this->command_length++] = page_addr >> 16;
+ 	}
+ 
++	/* Reuse the same cmd_buffer for the possible second command. The address
++	 * must be word-aligned. For convenience, use a fixed offset of 64, much
++	 * larger than the maximum command_length. */
++	if (is_lp)
++		switch (command) {
++		case NAND_CMD_RNDOUT:
++			/* No ready / busy check necessary */
++			this->cmd_buffer[64 + this->command_length2++] = NAND_CMD_RNDOUTSTART;
++			break;
++
++		case NAND_CMD_READ0:
++			/*
++			 * READ0 is sometimes used to exit GET STATUS mode. When this
++			 * is the case no address cycles are requested, and we can use
++			 * this information to detect that that we should not wait for
++			 * the device to be ready and READSTART should not be issued.
++			 */
++			if (column != -1 || page_addr != -1)
++				this->cmd_buffer[64 + this->command_length2++] = NAND_CMD_READSTART;
++			break;
++		}
++
+ 	/* This starts the DMA for the command and waits for it to finish. */
+ 	if (this->command_length > 0) {
+-		ret = gpmi_send_command(this);
++		sg_init_one(&this->cmd_sgl, this->cmd_buffer, this->command_length);
++		dma_map_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
++		ret = gpmi_send_command(this, &this->cmd_sgl, this->command_length);
+ 		if (ret)
+ 			dev_err(this->dev, "Chip: %u, Error %d\n",
+ 				this->current_chip, ret);
+-
+-		this->command_length = 0;
+ 	}
+ 
+-	if (!is_lp)
+-		return;
+-
+-	switch (command) {
+-	case NAND_CMD_RNDOUT:
+-		/* No ready / busy check necessary */
+-		this->cmd_buffer[this->command_length++] = NAND_CMD_RNDOUTSTART;
+-		ret = gpmi_send_command(this);
++	if (this->command_length2 > 0) {
++		sg_init_one(&this->cmd_sgl2, this->cmd_buffer + 64, this->command_length2);
++		dma_map_sg(this->dev, &this->cmd_sgl2, 1, DMA_TO_DEVICE);
++		ret = gpmi_send_command(this, &this->cmd_sgl2, this->command_length2);
+ 		if (ret)
+ 			dev_err(this->dev, "Chip: %u, Error %d\n",
+ 				this->current_chip, ret);
+-		this->command_length = 0;
+-		break;
+-
+-	case NAND_CMD_READ0:
+-		/*
+-		 * READ0 is sometimes used to exit GET STATUS mode. When this
+-		 * is the case no address cycles are requested, and we can use
+-		 * this information to detect that that we should not wait for
+-		 * the device to be ready and READSTART should not be issued.
+-		 */
+-		if (column == -1 && page_addr == -1)
+-			return;
 +	}
  
- 	if (!is_lp)
- 		return;
-@@ -1172,10 +1141,12 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 	switch (command) {
- 	case NAND_CMD_RNDOUT:
- 		/* No ready / busy check necessary */
--		gpmi_cmd_ctrl(mtd, NAND_CMD_RNDOUTSTART,
--			      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
--		gpmi_cmd_ctrl(mtd, NAND_CMD_NONE,
--			      NAND_NCE | NAND_CTRL_CHANGE);
-+		this->cmd_buffer[this->command_length++] = NAND_CMD_RNDOUTSTART;
-+		ret = gpmi_send_command(this);
-+		if (ret)
-+			dev_err(this->dev, "Chip: %u, Error %d\n",
-+				this->current_chip, ret);
-+		this->command_length = 0;
- 		break;
- 
- 	case NAND_CMD_READ0:
-@@ -1188,10 +1159,12 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 		if (column == -1 && page_addr == -1)
- 			return;
- 
--		gpmi_cmd_ctrl(mtd, NAND_CMD_READSTART,
--			      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
--		gpmi_cmd_ctrl(mtd, NAND_CMD_NONE,
--			      NAND_NCE | NAND_CTRL_CHANGE);
-+		this->cmd_buffer[this->command_length++] = NAND_CMD_READSTART;
-+		ret = gpmi_send_command(this);
-+		if (ret)
-+			dev_err(this->dev, "Chip: %u, Error %d\n",
-+				this->current_chip, ret);
-+		this->command_length = 0;
- 		break;
+-		this->cmd_buffer[this->command_length++] = NAND_CMD_READSTART;
+-		ret = gpmi_send_command(this);
+-		if (ret)
+-			dev_err(this->dev, "Chip: %u, Error %d\n",
+-				this->current_chip, ret);
++	if (this->command_length > 0) {
++		dma_unmap_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
+ 		this->command_length = 0;
+-		break;
++	}
++	if (this->command_length2 > 0) {
++		dma_unmap_sg(this->dev, &this->cmd_sgl2, 1, DMA_TO_DEVICE);
++		this->command_length2 = 0;
  	}
  }
+ 
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+index 6aa10d6962d6..9dc3dd16fa0b 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+@@ -139,11 +139,15 @@ struct gpmi_nand_data {
+ 
+ 	/* General-use Variables */
+ 	int			current_chip;
+-	unsigned int		command_length;
+ 
++	unsigned int		command_length;
+ 	struct scatterlist	cmd_sgl;
+ 	char			*cmd_buffer;
+ 
++	unsigned int		command_length2;
++	struct scatterlist	cmd_sgl2;
++	char			*cmd_buffer2;
++
+ 	struct scatterlist	data_sgl;
+ 	char			*data_buffer_dma;
+ 
+@@ -184,7 +188,8 @@ void gpmi_clear_bch(struct gpmi_nand_data *);
+ void gpmi_dump_info(struct gpmi_nand_data *);
+ int bch_set_geometry(struct gpmi_nand_data *);
+ int gpmi_is_ready(struct gpmi_nand_data *, unsigned chip);
+-int gpmi_send_command(struct gpmi_nand_data *);
++int gpmi_send_command(struct gpmi_nand_data *, struct scatterlist *sgl,
++		      unsigned int command_length);
+ int gpmi_enable_clk(struct gpmi_nand_data *this);
+ int gpmi_disable_clk(struct gpmi_nand_data *this);
+ int gpmi_setup_data_interface(struct mtd_info *mtd, int chipnr,
 -- 
 2.14.1
