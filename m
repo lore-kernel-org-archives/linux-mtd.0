@@ -1,17 +1,18 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9RMt-0007Wh-Qp
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:11 +0000
-Received: by mail-wr0-x241.google.com with SMTP id d1-v6so20637977wrj.13
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:25:57 -0700 (PDT)
+ id 1f9RMx-0007Zw-1i
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:14 +0000
+Received: by mail-wr0-x243.google.com with SMTP id u11-v6so20624234wri.12
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:02 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Han Xu <han.xu@nxp.com>, Sam Lefebvre <sam.lefebvre@essensium.com>,
  Sascha Hauer <s.hauer@pengutronix.de>,
  Arnout Vandecappelle <arnout@mind.be>
-Subject: [PATCH 02/18] mtd: nand: gpmi: pass buffer and len around
-Date: Fri, 20 Apr 2018 10:19:30 +0200
-Message-Id: <20180420081946.16088-3-sam.lefebvre@essensium.com>
+Subject: [PATCH 05/18] mtd: nand: gpmi: return valid value from
+ bch_set_geometry()
+Date: Fri, 20 Apr 2018 10:19:33 +0200
+Message-Id: <20180420081946.16088-6-sam.lefebvre@essensium.com>
 In-Reply-To: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 References: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,184 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Instead of putting the buffer and len passed in from the mtd core
-into the private data struct, just pass it around in the GPMI
-drivers functions. This makes the lifetime of the variables more
-clear and the code easier to follow.
+The caller of bch_set_geometry() expects the return value to
+be an error code, so !0 is not valid. return the error from the
+just called function instead.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
 v2: rebased
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 14 +++++++-------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 20 ++++++++------------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h | 11 ++++-------
- 3 files changed, 19 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-index d479358758a0..447961b798b4 100644
+index 39834bedf460..83697b8df871 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-@@ -587,7 +587,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	return ret;
- }
- 
--int gpmi_send_data(struct gpmi_nand_data *this)
-+int gpmi_send_data(struct gpmi_nand_data *this, const void *buf, int len)
- {
- 	struct dma_async_tx_descriptor *desc;
- 	struct dma_chan *channel = get_dma_chan(this);
-@@ -606,7 +606,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 		| BF_GPMI_CTRL0_CS(chip, this)
- 		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
- 		| BF_GPMI_CTRL0_ADDRESS(address)
--		| BF_GPMI_CTRL0_XFER_COUNT(this->upper_len);
-+		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
- 	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-@@ -614,7 +614,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 		return -EINVAL;
- 
- 	/* [2] send DMA request */
--	prepare_data_dma(this, DMA_TO_DEVICE);
-+	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_MEM_TO_DEV,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-@@ -629,7 +629,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	return ret;
- }
- 
--int gpmi_read_data(struct gpmi_nand_data *this)
-+int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- {
- 	struct dma_async_tx_descriptor *desc;
- 	struct dma_chan *channel = get_dma_chan(this);
-@@ -643,7 +643,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 		| BF_GPMI_CTRL0_CS(chip, this)
- 		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
- 		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
--		| BF_GPMI_CTRL0_XFER_COUNT(this->upper_len);
-+		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
- 	desc = dmaengine_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
-@@ -652,7 +652,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 		return -EINVAL;
- 
- 	/* [2] : send DMA request */
--	prepare_data_dma(this, DMA_FROM_DEVICE);
-+	prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_DEV_TO_MEM,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-@@ -665,7 +665,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 
- 	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
- 	if (this->direct_dma_map_ok == false)
--		memcpy(this->upper_buf, this->data_buffer_dma, this->upper_len);
-+		memcpy(buf, this->data_buffer_dma, len);
- 
- 	return ret;
- }
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 864fda1901a6..5fa9cd4fac4a 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -437,15 +437,15 @@ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
- }
- 
- /* Can we use the upper's buffer directly for DMA? */
--void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
-+void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
-+		      enum dma_data_direction dr)
- {
- 	struct scatterlist *sgl = &this->data_sgl;
+@@ -258,8 +258,9 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	unsigned int gf_len;
  	int ret;
  
- 	/* first try to map the upper buffer directly */
--	if (virt_addr_valid(this->upper_buf) &&
--		!object_is_on_stack(this->upper_buf)) {
--		sg_init_one(sgl, this->upper_buf, this->upper_len);
-+	if (virt_addr_valid(buf) && !object_is_on_stack(buf)) {
-+		sg_init_one(sgl, buf, len);
- 		ret = dma_map_sg(this->dev, sgl, 1, dr);
- 		if (ret == 0)
- 			goto map_fail;
-@@ -456,10 +456,10 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
+-	if (common_nfc_set_geometry(this))
+-		return !0;
++	ret = common_nfc_set_geometry(this);
++	if (ret)
++		return ret;
  
- map_fail:
- 	/* We have to use our own DMA buffer. */
--	sg_init_one(sgl, this->data_buffer_dma, this->upper_len);
-+	sg_init_one(sgl, this->data_buffer_dma, len);
- 
- 	if (dr == DMA_TO_DEVICE)
--		memcpy(this->data_buffer_dma, this->upper_buf, this->upper_len);
-+		memcpy(this->data_buffer_dma, buf, len);
- 
- 	dma_map_sg(this->dev, sgl, 1, dr);
- 
-@@ -919,10 +919,8 @@ static void gpmi_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 
- 	dev_dbg(this->dev, "len is %d\n", len);
--	this->upper_buf	= buf;
--	this->upper_len	= len;
- 
--	gpmi_read_data(this);
-+	gpmi_read_data(this, buf, len);
- }
- 
- static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-@@ -931,10 +929,8 @@ static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 
- 	dev_dbg(this->dev, "len is %d\n", len);
--	this->upper_buf	= (uint8_t *)buf;
--	this->upper_len	= len;
- 
--	gpmi_send_data(this);
-+	gpmi_send_data(this, buf, len);
- }
- 
- static uint8_t gpmi_read_byte(struct mtd_info *mtd)
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index 2397010a8963..fba72ad28263 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -141,10 +141,6 @@ struct gpmi_nand_data {
- 	int			current_chip;
- 	unsigned int		command_length;
- 
--	/* passed from upper layer */
--	uint8_t			*upper_buf;
--	int			upper_len;
--
- 	/* for DMA operations */
- 	bool			direct_dma_map_ok;
- 
-@@ -178,7 +174,7 @@ struct gpmi_nand_data {
- /* Common Services */
- int common_nfc_set_geometry(struct gpmi_nand_data *);
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
--void prepare_data_dma(struct gpmi_nand_data *,
-+void prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
- 		      enum dma_data_direction dr);
- int start_dma_without_bch_irq(struct gpmi_nand_data *,
- 			      struct dma_async_tx_descriptor *);
-@@ -197,8 +193,9 @@ int gpmi_disable_clk(struct gpmi_nand_data *this);
- int gpmi_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 			      const struct nand_data_interface *conf);
- void gpmi_nfc_apply_timings(struct gpmi_nand_data *this);
--int gpmi_read_data(struct gpmi_nand_data *);
--int gpmi_send_data(struct gpmi_nand_data *);
-+int gpmi_read_data(struct gpmi_nand_data *, void *buf, int len);
-+int gpmi_send_data(struct gpmi_nand_data *, const void *buf, int len);
-+
- int gpmi_send_page(struct gpmi_nand_data *,
- 		   dma_addr_t payload, dma_addr_t auxiliary);
- int gpmi_read_page(struct gpmi_nand_data *,
+ 	block_count   = bch_geo->ecc_chunk_count - 1;
+ 	block_size    = bch_geo->ecc_chunk_size;
 -- 
 2.14.1
