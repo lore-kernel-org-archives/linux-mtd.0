@@ -1,50 +1,16 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9Ccv-0005Cq-0V
- for linux-mtd@lists.infradead.org; Thu, 19 Apr 2018 16:42:04 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
- Herbert Xu <herbert@gondor.apana.org.au>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>,
- Moritz Fischer <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Cyrille Pi
- tchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>, Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
- Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
- linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
- linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
- linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
- linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
- linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH v3 15/20] net: Remove depends on HAS_DMA in case of
- platform dependency
-In-Reply-To: <1523987360-18760-16-git-send-email-geert@linux-m68k.org> (Geert
- Uytterhoeven's message of "Tue, 17 Apr 2018 19:49:15 +0200")
-References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
- <1523987360-18760-16-git-send-email-geert@linux-m68k.org>
-Date: Thu, 19 Apr 2018 19:41:15 +0300
-Message-ID: <87wox3i1xw.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+ id 1f9RHP-000328-Og
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:20:32 +0000
+Received: by mail-wr0-x243.google.com with SMTP id v15-v6so2517754wrm.10
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:20:16 -0700 (PDT)
+From: Sam Lefebvre <sam.lefebvre@essensium.com>
+To: linux-mtd@lists.infradead.org
+Cc: Han Xu <han.xu@nxp.com>,
+	Sam Lefebvre <sam.lefebvre@essensium.com>
+Subject: Reducing the number of interrupts by page reads, part 1 
+Date: Fri, 20 Apr 2018 10:19:28 +0200
+Message-Id: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -54,79 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(adding linux-wireless)
+The current implementation for gmpi nand flashes use existing libraries for composing                    
+dma command chains in different pieces with mutliple interrupts. This invokes a lot of                   
+unnecessary context switches. In order to make more optimal use of dma chaining capabilities
+of the gpmi hardware, some rework must be performed to allow gpmi_ecc_read_page() submitting 
+a range of dma's to reduce the interrupts from 4 to 1 for every page read.
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+In the current situation, a page read for large page incurs 4 interrupts:
+- DMA for READ0
+- DMA for READSTART
+- DMA for reading of page data
+- BCH
+                                                                                                         
+This series is the first part which contains some preparation work and primary modifications             
+to reduce the number of interrrupts from 4 to 3 for each page read action by removing the
+interrupt for READ0.                               
 
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
->
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
->
-> This simplifies the dependencies, and allows to improve compile-testing.
->
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
-> ---
-> v3:
->   - Rebase to v4.17-rc1,
->   - Drop obsolete note about FSL_FMAN,
->
-> v2:
->   - Add Reviewed-by, Acked-by,
->   - Drop RFC state,
->   - Split per subsystem.
-> ---
->  drivers/net/ethernet/amd/Kconfig                | 2 +-
->  drivers/net/ethernet/apm/xgene-v2/Kconfig       | 1 -
->  drivers/net/ethernet/apm/xgene/Kconfig          | 1 -
->  drivers/net/ethernet/arc/Kconfig                | 6 ++++--
->  drivers/net/ethernet/broadcom/Kconfig           | 2 --
->  drivers/net/ethernet/calxeda/Kconfig            | 2 +-
->  drivers/net/ethernet/hisilicon/Kconfig          | 2 +-
->  drivers/net/ethernet/marvell/Kconfig            | 8 +++-----
->  drivers/net/ethernet/mellanox/mlxsw/Kconfig     | 2 +-
->  drivers/net/ethernet/renesas/Kconfig            | 2 --
->  drivers/net/wireless/broadcom/brcm80211/Kconfig | 1 -
->  drivers/net/wireless/quantenna/qtnfmac/Kconfig  | 2 +-
->  12 files changed, 12 insertions(+), 19 deletions(-)
+Some changes by Sasha Hauer are also adopted which contain some bugfixes and preliminary
+cleanup of several parts in de code.
 
-For wireless:
+Sam lefebvre 
 
-Acked-by: Kalle Valo <kvalo@codeaurora.org>
-
-Leaving the hunks for linux-wireless list to see:
-
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/Kconfig b/drivers/net/wireless/broadcom/brcm80211/Kconfig
-> index 9d99eb42d9176f0f..6acba67bca07abd7 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/Kconfig
-> +++ b/drivers/net/wireless/broadcom/brcm80211/Kconfig
-> @@ -60,7 +60,6 @@ config BRCMFMAC_PCIE
->  	bool "PCIE bus interface support for FullMAC driver"
->  	depends on BRCMFMAC
->  	depends on PCI
-> -	depends on HAS_DMA
->  	select BRCMFMAC_PROTO_MSGBUF
->  	select FW_LOADER
->  	---help---
-> diff --git a/drivers/net/wireless/quantenna/qtnfmac/Kconfig b/drivers/net/wireless/quantenna/qtnfmac/Kconfig
-> index 025fa6018550895a..8d1492a90bd135c0 100644
-> --- a/drivers/net/wireless/quantenna/qtnfmac/Kconfig
-> +++ b/drivers/net/wireless/quantenna/qtnfmac/Kconfig
-> @@ -7,7 +7,7 @@ config QTNFMAC
->  config QTNFMAC_PEARL_PCIE
->  	tristate "Quantenna QSR10g PCIe support"
->  	default n
-> -	depends on HAS_DMA && PCI && CFG80211
-> +	depends on PCI && CFG80211
->  	select QTNFMAC
->  	select FW_LOADER
->  	select CRC32
-
--- 
-Kalle Valo
+----------------------------------------------------------------                                        
+Arnout Vandecappelle (Essensium/Mind) (8):                                                              
+      mtd: rawnand: make nand_command() and nand_command_lp() more similar                              
+      mtd: rawnand: factor nand_command_lp() into nand_command()                                        
+      mtd: rawnand: gpmi: instantiate cmdfunc                                                           
+      mtd: rawnand: gpmi: gpmi_ccs_delay() is not needed                                                
+      mtd: rawnand: gpmi: explicit delays are not needed                                                
+      mtd: rawnand: gpmi: no explicit wait is needed after sending a command                            
+      mtd: rawnand: gpmi: cmd_ctrl is no longer needed                                                  
+      mtd: rawnand: gpmi: inline gpmi_cmd_ctrl()                                                        
+                                                                                                        
+Sam Lefebvre (Essensium/Mind) (4):                                                                     
+      mtd: rawnand: gpmi: return generated errors in gpmi_ecc_read_oob()                                
+      mtd: rawnand: gpmi: set aggregate ready/busy signalling                                           
+      mtd: rawnand: gpmi: gpmi_nand_command(): use separate sgl for the two commands                    
+      mtd: rawnand: gpmi: issue two commands in a single DMA chain                                      
+                                                                                                        
+Sascha Hauer (6):                                                                                       
+      mtd: nand: gpmi: drop dma_ops_type                                                                
+      mtd: nand: gpmi: pass buffer and len around                                                       
+      mtd: nand: gpmi: put only once used functions inline                                              
+      mtd: nand: gpmi: remove direct_dma_map_ok from driver data struct                                 
+      mtd: nand: gpmi: return valid value from bch_set_geometry()                                       
+      mtd: nand: gpmi: remove unnecessary variables                                                     
+                                                                                                        
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  71 ++++++------                                          
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 330 ++++++++++++++++++++++++++++--------------------------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  34 ++----                                                
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h |   1 +                                                     
+ drivers/mtd/nand/raw/nand_base.c           | 259 +++++++++++++-----------------------------            
+ 5 files changed, 304 insertions(+), 391 deletions(-)                                                   
