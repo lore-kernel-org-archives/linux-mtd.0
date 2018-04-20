@@ -1,18 +1,16 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9RMx-0007Yq-1m
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:14 +0000
-Received: by mail-wr0-x243.google.com with SMTP id d1-v6so20638434wrj.13
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:00 -0700 (PDT)
+ id 1f9RN4-0007mc-1U
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:24 +0000
+Received: by mail-wr0-x242.google.com with SMTP id s18-v6so20638598wrg.9
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:16 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Han Xu <han.xu@nxp.com>, Sam Lefebvre <sam.lefebvre@essensium.com>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Arnout Vandecappelle <arnout@mind.be>
-Subject: [PATCH 04/18] mtd: nand: gpmi: remove direct_dma_map_ok from driver
- data struct
-Date: Fri, 20 Apr 2018 10:19:32 +0200
-Message-Id: <20180420081946.16088-5-sam.lefebvre@essensium.com>
+ "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
+Subject: [PATCH 13/18] mtd: rawnand: gpmi: explicit delays are not needed
+Date: Fri, 20 Apr 2018 10:19:41 +0200
+Message-Id: <20180420081946.16088-14-sam.lefebvre@essensium.com>
 In-Reply-To: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 References: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,146 +22,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+From: "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
 
-Instead of putting direct_dma_map_ok into driver struct pass it around
-between functions to make the code more readable.
+gpmi-nand implements the dev_ready function, so explicit delays are not
+needed for the RESET and READ0 commands. Therefore, the
+gpmi_wait_status_ready() function and the includes it brings in are not
+needed.
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+The RESET command just falls through to the nand_wait_ready() call.
+
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
-v2: rebased
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  5 +++--
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 15 +++++++--------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  5 +----
- 3 files changed, 11 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 40 ------------------------------
+ 1 file changed, 40 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-index 447961b798b4..39834bedf460 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-@@ -636,6 +636,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 	int chip = this->current_chip;
- 	int ret;
- 	u32 pio[2];
-+	bool direct;
- 
- 	/* [1] : send PIO */
- 	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__READ)
-@@ -652,7 +653,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 		return -EINVAL;
- 
- 	/* [2] : send DMA request */
--	prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
-+	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_DEV_TO_MEM,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-@@ -664,7 +665,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- 	ret = start_dma_without_bch_irq(this, desc);
- 
- 	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
--	if (this->direct_dma_map_ok == false)
-+	if (!direct)
- 		memcpy(buf, this->data_buffer_dma, len);
- 
- 	return ret;
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 774ac98fbdb2..9ecba7ea0cd5 100644
+index ccde6500f981..8531bc8d531d 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -437,7 +437,7 @@ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+@@ -25,7 +25,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/module.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/nmi.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include "gpmi-nand.h"
+@@ -1093,25 +1092,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	return max_bitflips;
  }
  
- /* Can we use the upper's buffer directly for DMA? */
--void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
-+bool prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
- 		      enum dma_data_direction dr)
- {
- 	struct scatterlist *sgl = &this->data_sgl;
-@@ -450,8 +450,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
- 		if (ret == 0)
- 			goto map_fail;
- 
--		this->direct_dma_map_ok = true;
--		return;
-+		return true;
- 	}
- 
- map_fail:
-@@ -463,7 +462,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
- 
- 	dma_map_sg(this->dev, sgl, 1, dr);
- 
--	this->direct_dma_map_ok = false;
-+	return false;
- }
- 
- /* This will be called after the DMA operation is finished. */
-@@ -956,12 +955,12 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	unsigned char *status;
- 	unsigned int  max_bitflips = 0;
- 	int           ret;
-+	bool          direct = false;
- 
- 	dev_dbg(this->dev, "page number is : %d\n", page);
- 
- 	payload_virt = this->payload_virt;
- 	payload_phys = this->payload_phys;
--	this->direct_dma_map_ok = false;
- 
- 	if (virt_addr_valid(buf)) {
- 		dma_addr_t dest_phys;
-@@ -971,7 +970,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 		if (!dma_mapping_error(this->dev, dest_phys)) {
- 			payload_virt = buf;
- 			payload_phys = dest_phys;
--			this->direct_dma_map_ok = true;
-+			direct = true;
- 		}
- 	}
- 
-@@ -981,7 +980,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	/* go! */
- 	ret = gpmi_read_page(this, payload_phys, auxiliary_phys);
- 
--	if (this->direct_dma_map_ok)
-+	if (direct)
- 		dma_unmap_single(this->dev, payload_phys, nfc_geo->payload_size,
- 				 DMA_FROM_DEVICE);
- 
-@@ -993,7 +992,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
--	if (!this->direct_dma_map_ok)
-+	if (!direct)
- 		memcpy(buf, this->payload_virt, nfc_geo->payload_size);
- 
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index fba72ad28263..6aa10d6962d6 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -141,9 +141,6 @@ struct gpmi_nand_data {
- 	int			current_chip;
- 	unsigned int		command_length;
- 
--	/* for DMA operations */
--	bool			direct_dma_map_ok;
+-static void gpmi_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
+-{
+-	register struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
 -
- 	struct scatterlist	cmd_sgl;
- 	char			*cmd_buffer;
+-	timeo = jiffies + msecs_to_jiffies(timeo);
+-	do {
+-		u8 status;
+-
+-		ret = nand_read_data_op(chip, &status, sizeof(status), true);
+-		if (ret)
+-			return;
+-
+-		if (status & NAND_STATUS_READY)
+-			break;
+-		touch_softlockup_watchdog();
+-	} while (time_before(jiffies, timeo));
+-};
+-
+ /**
+  * gpmi_nand_command - Send command to NAND device
+  * @mtd: MTD device structure
+@@ -1212,18 +1192,6 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
+ 		}
+ 		break;
  
-@@ -174,7 +171,7 @@ struct gpmi_nand_data {
- /* Common Services */
- int common_nfc_set_geometry(struct gpmi_nand_data *);
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
--void prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
-+bool prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
- 		      enum dma_data_direction dr);
- int start_dma_without_bch_irq(struct gpmi_nand_data *,
- 			      struct dma_async_tx_descriptor *);
+-	case NAND_CMD_RESET:
+-		if (chip->dev_ready)
+-			break;
+-		udelay(chip->chip_delay);
+-		chip->cmd_ctrl(mtd, NAND_CMD_STATUS,
+-			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+-		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
+-			       NAND_NCE | NAND_CTRL_CHANGE);
+-		/* EZ-NAND can take upto 250ms as per ONFi v4.0 */
+-		gpmi_wait_status_ready(mtd, 250);
+-		return;
+-
+ 	case NAND_CMD_RNDOUT:
+ 		if (is_lp) {
+ 			/* No ready / busy check necessary */
+@@ -1254,14 +1222,6 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
+ 		/* Read commands must wait */
+ 		break;
+ 	}
+-	/*
+-	 * If we don't have access to the busy pin, we apply the given command
+-	 * delay.
+-	 */
+-	if (!chip->dev_ready) {
+-		udelay(chip->chip_delay);
+-		return;
+-	}
+ 
+ 	/*
+ 	 * Apply this short delay always to ensure that we do wait tWB in
 -- 
 2.14.1
