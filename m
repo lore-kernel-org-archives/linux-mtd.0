@@ -1,17 +1,18 @@
 Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9RMx-0007dk-1X
+ id 1f9RMx-0007Yq-1m
  for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 08:26:14 +0000
-Received: by mail-wr0-x243.google.com with SMTP id v24-v6so20633159wra.8
- for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:09 -0700 (PDT)
+Received: by mail-wr0-x243.google.com with SMTP id d1-v6so20638434wrj.13
+ for <linux-mtd@lists.infradead.org>; Fri, 20 Apr 2018 01:26:00 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Han Xu <han.xu@nxp.com>, Sam Lefebvre <sam.lefebvre@essensium.com>,
- "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
-Subject: [PATCH 09/18] mtd: rawnand: make nand_command() and nand_command_lp()
- more similar
-Date: Fri, 20 Apr 2018 10:19:37 +0200
-Message-Id: <20180420081946.16088-10-sam.lefebvre@essensium.com>
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Arnout Vandecappelle <arnout@mind.be>
+Subject: [PATCH 04/18] mtd: nand: gpmi: remove direct_dma_map_ok from driver
+ data struct
+Date: Fri, 20 Apr 2018 10:19:32 +0200
+Message-Id: <20180420081946.16088-5-sam.lefebvre@essensium.com>
 In-Reply-To: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 References: <20180420081946.16088-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,133 +24,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Arnout Vandecappelle (Essensium/Mind)" <arnout@mind.be>
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-The nand_command() and nand_command_lp() functions are very similar,
-but there are slight typographic differences. As a preparation for
-unifying the two later, make them more similar now.
+Instead of putting direct_dma_map_ok into driver struct pass it around
+between functions to make the code more readable.
 
-This includes the following changes.
-
-In nand_command():
-- use explicit NAND_NCE | NAND_{A,C}LE instead of NAND_CTRL_{A,C}LE
-  (the explicit form seems to be used more often tree-wide).
-- proper line-wrapping.
-
-In nand_command_lp():
-- use the ctrl local variable wherever appropriate.
-- remove the additional 'if (column != -1 || page_addr != -1)' around
-  the two individual conditions.
-
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
-Note that I don't have access to a small-page device, so only tested on
-large-page devices. Also only tested on i.MX6Q (gpmi-nand).
-
-Note that this patch can be removed from the series without affecting
-the rest.
+v2: rebased
 ---
- drivers/mtd/nand/raw/nand_base.c | 59 +++++++++++++++++++---------------------
- 1 file changed, 28 insertions(+), 31 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  5 +++--
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 15 +++++++--------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  5 +----
+ 3 files changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 72f3a89da513..bcc0344b1f27 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -761,7 +761,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 			 int column, int page_addr)
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+index 447961b798b4..39834bedf460 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+@@ -636,6 +636,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 	int chip = this->current_chip;
+ 	int ret;
+ 	u32 pio[2];
++	bool direct;
+ 
+ 	/* [1] : send PIO */
+ 	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__READ)
+@@ -652,7 +653,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 		return -EINVAL;
+ 
+ 	/* [2] : send DMA request */
+-	prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
++	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
+ 					1, DMA_DEV_TO_MEM,
+ 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+@@ -664,7 +665,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 	ret = start_dma_without_bch_irq(this, desc);
+ 
+ 	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
+-	if (this->direct_dma_map_ok == false)
++	if (!direct)
+ 		memcpy(buf, this->data_buffer_dma, len);
+ 
+ 	return ret;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 774ac98fbdb2..9ecba7ea0cd5 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -437,7 +437,7 @@ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ }
+ 
+ /* Can we use the upper's buffer directly for DMA? */
+-void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
++bool prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 		      enum dma_data_direction dr)
  {
- 	register struct nand_chip *chip = mtd_to_nand(mtd);
--	int ctrl = NAND_CTRL_CLE | NAND_CTRL_CHANGE;
-+	int ctrl = NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE;
+ 	struct scatterlist *sgl = &this->data_sgl;
+@@ -450,8 +450,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 		if (ret == 0)
+ 			goto map_fail;
  
- 	/* Write out the command to the device */
- 	if (command == NAND_CMD_SEQIN) {
-@@ -785,7 +785,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 		chip->cmd_ctrl(mtd, command, ctrl);
- 
- 	/* Address cycle, when necessary */
--	ctrl = NAND_CTRL_ALE | NAND_CTRL_CHANGE;
-+	ctrl = NAND_NCE | NAND_ALE | NAND_CTRL_CHANGE;
- 	/* Serially input address */
- 	if (column != -1) {
- 		/* Adjust columns for 16 bit buswidth */
-@@ -825,9 +825,9 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 			break;
- 		udelay(chip->chip_delay);
- 		chip->cmd_ctrl(mtd, NAND_CMD_STATUS,
--			       NAND_CTRL_CLE | NAND_CTRL_CHANGE);
--		chip->cmd_ctrl(mtd,
--			       NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
-+			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
-+			       NAND_NCE | NAND_CTRL_CHANGE);
- 		/* EZ-NAND can take upto 250ms as per ONFi v4.0 */
- 		nand_wait_status_ready(mtd, 250);
- 		return;
-@@ -896,6 +896,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 			    int column, int page_addr)
- {
- 	register struct nand_chip *chip = mtd_to_nand(mtd);
-+	int ctrl = NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE;
- 
- 	/* Emulate NAND_CMD_READOOB */
- 	if (command == NAND_CMD_READOOB) {
-@@ -905,33 +906,29 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 
- 	/* Command latch cycle */
- 	if (command != NAND_CMD_NONE)
--		chip->cmd_ctrl(mtd, command,
--			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
-+		chip->cmd_ctrl(mtd, command, ctrl);
- 
--	if (column != -1 || page_addr != -1) {
--		int ctrl = NAND_CTRL_CHANGE | NAND_NCE | NAND_ALE;
--
--		/* Serially input address */
--		if (column != -1) {
--			/* Adjust columns for 16 bit buswidth */
--			if (chip->options & NAND_BUSWIDTH_16 &&
--					!nand_opcode_8bits(command))
--				column >>= 1;
--			chip->cmd_ctrl(mtd, column, ctrl);
--			ctrl &= ~NAND_CTRL_CHANGE;
--
--			/* Only output a single addr cycle for 8bits opcodes. */
--			if (!nand_opcode_8bits(command))
--				chip->cmd_ctrl(mtd, column >> 8, ctrl);
--		}
--		if (page_addr != -1) {
--			chip->cmd_ctrl(mtd, page_addr, ctrl);
--			chip->cmd_ctrl(mtd, page_addr >> 8,
--				       NAND_NCE | NAND_ALE);
--			if (chip->options & NAND_ROW_ADDR_3)
--				chip->cmd_ctrl(mtd, page_addr >> 16,
--					       NAND_NCE | NAND_ALE);
--		}
-+	/* Address cycle, when necessary */
-+	ctrl = NAND_NCE | NAND_ALE | NAND_CTRL_CHANGE;
-+	/* Serially input address */
-+	if (column != -1) {
-+		/* Adjust columns for 16 bit buswidth */
-+		if (chip->options & NAND_BUSWIDTH_16 &&
-+				!nand_opcode_8bits(command))
-+			column >>= 1;
-+		chip->cmd_ctrl(mtd, column, ctrl);
-+		ctrl &= ~NAND_CTRL_CHANGE;
-+
-+		/* Only output a single addr cycle for 8bits opcodes. */
-+		if (!nand_opcode_8bits(command))
-+			chip->cmd_ctrl(mtd, column >> 8, ctrl);
-+	}
-+	if (page_addr != -1) {
-+		chip->cmd_ctrl(mtd, page_addr, ctrl);
-+		ctrl &= ~NAND_CTRL_CHANGE;
-+		chip->cmd_ctrl(mtd, page_addr >> 8, ctrl);
-+		if (chip->options & NAND_ROW_ADDR_3)
-+			chip->cmd_ctrl(mtd, page_addr >> 16, ctrl);
+-		this->direct_dma_map_ok = true;
+-		return;
++		return true;
  	}
- 	chip->cmd_ctrl(mtd, NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
  
+ map_fail:
+@@ -463,7 +462,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 
+ 	dma_map_sg(this->dev, sgl, 1, dr);
+ 
+-	this->direct_dma_map_ok = false;
++	return false;
+ }
+ 
+ /* This will be called after the DMA operation is finished. */
+@@ -956,12 +955,12 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	unsigned char *status;
+ 	unsigned int  max_bitflips = 0;
+ 	int           ret;
++	bool          direct = false;
+ 
+ 	dev_dbg(this->dev, "page number is : %d\n", page);
+ 
+ 	payload_virt = this->payload_virt;
+ 	payload_phys = this->payload_phys;
+-	this->direct_dma_map_ok = false;
+ 
+ 	if (virt_addr_valid(buf)) {
+ 		dma_addr_t dest_phys;
+@@ -971,7 +970,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 		if (!dma_mapping_error(this->dev, dest_phys)) {
+ 			payload_virt = buf;
+ 			payload_phys = dest_phys;
+-			this->direct_dma_map_ok = true;
++			direct = true;
+ 		}
+ 	}
+ 
+@@ -981,7 +980,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	/* go! */
+ 	ret = gpmi_read_page(this, payload_phys, auxiliary_phys);
+ 
+-	if (this->direct_dma_map_ok)
++	if (direct)
+ 		dma_unmap_single(this->dev, payload_phys, nfc_geo->payload_size,
+ 				 DMA_FROM_DEVICE);
+ 
+@@ -993,7 +992,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	/* Loop over status bytes, accumulating ECC status. */
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
+-	if (!this->direct_dma_map_ok)
++	if (!direct)
+ 		memcpy(buf, this->payload_virt, nfc_geo->payload_size);
+ 
+ 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+index fba72ad28263..6aa10d6962d6 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+@@ -141,9 +141,6 @@ struct gpmi_nand_data {
+ 	int			current_chip;
+ 	unsigned int		command_length;
+ 
+-	/* for DMA operations */
+-	bool			direct_dma_map_ok;
+-
+ 	struct scatterlist	cmd_sgl;
+ 	char			*cmd_buffer;
+ 
+@@ -174,7 +171,7 @@ struct gpmi_nand_data {
+ /* Common Services */
+ int common_nfc_set_geometry(struct gpmi_nand_data *);
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
+-void prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
++bool prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
+ 		      enum dma_data_direction dr);
+ int start_dma_without_bch_irq(struct gpmi_nand_data *,
+ 			      struct dma_async_tx_descriptor *);
 -- 
 2.14.1
