@@ -1,20 +1,15 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9ZhC-0005DL-Ns
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 17:19:40 +0000
-Date: Fri, 20 Apr 2018 19:19:24 +0200
+ id 1f9bMN-000890-K9
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 19:06:17 +0000
+Date: Fri, 20 Apr 2018 21:05:51 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Quentin Schulz <quentin.schulz@bootlin.com>
-Cc: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] ubi: introduce ubi.nocheck parameter to skip CRC
- check when attaching ubi vol
-Message-ID: <20180420191924.18b81e96@bbrezillon>
-In-Reply-To: <6551534f88b3aa77cc377c4270c4ddf7fe92cdf4.1524214122.git-series.quentin.schulz@bootlin.com>
-References: <95e04a201ac4ef82e68ce8e0c4f548b193e51b55.1524214122.git-series.quentin.schulz@bootlin.com>
- <6551534f88b3aa77cc377c4270c4ddf7fe92cdf4.1524214122.git-series.quentin.schulz@bootlin.com>
+To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 0/3] mtd: fix AMD/Intel flash bugs
+Message-ID: <20180420210551.6e193d84@bbrezillon>
+In-Reply-To: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
+References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,25 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Apr 2018 10:52:41 +0200
-Quentin Schulz <quentin.schulz@bootlin.com> wrote:
+On Thu,  1 Mar 2018 14:39:38 +0100
+Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
 
-> There's already ECC on NAND pages so there may be no need for one to
-> check the CRC of a UBI volume.
-
-That's true that ECC can help detecting corruptions, but I don't think
-this is the actual reason for disabling CRC check at volume open time.
-The actual reason for doing that is when the UBI volume user (in our
-case the squashfs FS) is also checking data consistency on its own
-(which is the case for squashfs).
-
+> This fixes a bug which allows read/write to a erase block currently
+> erasing.
+> Also works around a chip bug in Micron 28F00AP30 chips.
 > 
-> Let's introduce a ubi.nocheck parameter that let one skip the CRC check
-> when attaching a UBI volume.
+> Joakim Tjernlund (3):
+>   cfi_cmdset_0001: Do not allow read/write to suspend erase block.
+>   cfi_cmdset_0001: Workaround Micron Erase suspend bug.
+>   cfi_cmdset_0002: Do not allow read/write to suspend erase block.
 > 
-> This also drastically speeds kernel boot by removing a potentially
-> useless check, e.g. I gained 3.2s on boot time of a SPEAr600-based board
-> for a ~20MB UBI volume used as rootfs.
 
-Can you give the old and new open/mount time instead of telling how
-much you gained on the whole boot-time?
+All these patches have a Cc-stable tag but no Fixes tag. Can you add
+a proper Fixes to each of them?
+
+>  drivers/mtd/chips/cfi_cmdset_0001.c | 33 ++++++++++++++++++++++++++++-----
+>  drivers/mtd/chips/cfi_cmdset_0002.c |  9 ++++++---
+>  include/linux/mtd/flashchip.h       |  1 +
+>  3 files changed, 35 insertions(+), 8 deletions(-)
+> 
