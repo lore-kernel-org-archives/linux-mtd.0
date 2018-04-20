@@ -1,15 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9bwk-0008TC-Gl
- for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 19:43:52 +0000
-Date: Fri, 20 Apr 2018 21:43:27 +0200
+ id 1f9c7R-0003lo-BY
+ for linux-mtd@lists.infradead.org; Fri, 20 Apr 2018 19:54:56 +0000
+Date: Fri, 20 Apr 2018 21:54:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Charles-Antoine Couret <charles-antoine.couret@essensium.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtdcore: add writeable attribute in sysfs
-Message-ID: <20180420214327.25b8ac15@bbrezillon>
-In-Reply-To: <20180412134232.14006-1-charles-antoine.couret@essensium.com>
-References: <20180412134232.14006-1-charles-antoine.couret@essensium.com>
+To: NeilBrown <neil@brown.name>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: spi-nor: clear Winbond Extended Address Reg on
+ switch to 3-byte addressing.
+Message-ID: <20180420215440.7b078f6c@bbrezillon>
+In-Reply-To: <87sh7wrq8p.fsf@notabene.neil.brown.name>
+References: <874lkmw54j.fsf@notabene.neil.brown.name>
+ <87sh7wrq8p.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,97 +28,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Charles-Antoine,
+Hi Neil,
 
-On Thu, 12 Apr 2018 15:42:32 +0200
-Charles-Antoine Couret <charles-antoine.couret@essensium.com> wrote:
+On Mon, 16 Apr 2018 09:42:30 +1000
+NeilBrown <neil@brown.name> wrote:
 
-> MTD devices read-write or read-only property could be set by the bootloader with
-> the mtdparts argument but there is no way to change this definition at runtime
-> on Linux. The flags can be read but can not be changed.
+> Winbond spi-nor flash 32MB and larger have an 'Extended Address
+> Register' as one option for addressing beyond 16MB (Macronix
+> has the same concept, Spansion has EXTADD bits in the Bank Address
+> Register).
 > 
-> This patch adds the possibility to force a MTD device to be read-only or read-write
-> even if the bootloader requested something else. The purpose is to offer to
-> the user of a device to eventually change something that is not allowed
-> like updating the bootloader or change its environement.
-
-Hm, why don't you remove the RO constraint on such partitions then? I
-mean, if the device can be written, even rarely, it's no longer a
-read-only device.
-
+> According to section
+>    8.2.7 Write Extended Address Register (C5h)
 > 
-> Or to protect the device without using mtdro virtual device to read the content.
+> of the Winbond W25Q256FV data sheet (256M-BIT SPI flash)
+> 
+>    The Extended Address Register is only effective when the device is
+>    in the 3-Byte Address Mode.  When the device operates in the 4-Byte
+>    Address Mode (ADS=1), any command with address input of A31-A24
+>    will replace the Extended Address Register values. It is
+>    recommended to check and update the Extended Address Register if
+>    necessary when the device is switched from 4-Byte to 3-Byte Address
+>    Mode.
+> 
+> So the documentation suggests clearing the EAR after switching to
+> 3-byte mode.  Experimentation shows that the EAR is *always* one after
+> the switch to 3-byte mode, so clearing the EAR is mandatory at
+> shutdown for a subsequent 3-byte-addressed reboot to work.
+> 
+> Note that some SOCs (e.g. MT7621) do not assert a reset line at normal
+> reboot, so we cannot rely on hardware reset.  The MT7621 does assert a
+> reset line at watchdog-reset.
+> 
+> Signed-off-by: NeilBrown <neil@brown.name>
 
-What's the point? Only root can access /dev/mtdX. Looks like you want
-to protect against inadvertent write to the wrong MTD dev, but I'm not
-sure this is the kernel responsibility to enforce that.
-
-Missing Signed-off-by tag.
+We should probably backport the fix. Can you add a Fixes and Cc-stable
+tag?
 
 > ---
->  drivers/mtd/mtdcore.c | 34 ++++++++++++++++++++++++++++++++++
->  1 file changed, 34 insertions(+)
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 807d17d863b3..3a9a7055ee53 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -158,6 +158,39 @@ static ssize_t mtd_flags_show(struct device *dev,
->  }
->  static DEVICE_ATTR(flags, S_IRUGO, mtd_flags_show, NULL);
+> following a helpful discussion with Marek, I've revised the description
+> a little, and make the code change specific to winbond.
+> I've change the OP names to RDEAR and WREAR instead of RDXA and WRXA to
+> match names used in the Macronix documentation.  Winbond documentation
+> doesn't provide abbreviated OP names.
+> 
+> Thanks,
+> NeilBrown
+> 
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 13 +++++++++++++
+>  include/linux/mtd/spi-nor.h   |  2 ++
+>  2 files changed, 15 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d445a4d3b770..0d0af0acf8b9 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -284,6 +284,19 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  		if (need_wren)
+>  			write_disable(nor);
 >  
-> +static ssize_t mtd_writeable_show(struct device *dev,
-> +		struct device_attribute *attr, char *buf)
+> +		if (!status && !enable &&
+> +		    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
+> +			/* On Winbond W25Q256FV, leaving 4byte mode causes
 
-Please align parameters on the open-parenthesis.
+We use regular kernel-comment style in MTD:
 
-> +{
-> +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +	unsigned int writeable = mtd->flags & MTD_WRITEABLE ? 1 : 0;
-> +
-> +	return snprintf(buf, PAGE_SIZE, "%d\n", writeable);
-> +
-> +}
-> +
-> +static ssize_t mtd_writeable_store(struct device *dev,
-> +					   struct device_attribute *attr,
-> +					   const char *buf, size_t count)
-> +{
-> +	struct mtd_info *mtd = dev_get_drvdata(dev);
-> +	unsigned int writeable;
-> +	int retval;
-> +
-> +
-> +	retval = kstrtouint(buf, 0, &writeable);
-> +	if (retval)
-> +		return retval;
-> +
-> +	if (writeable)
-> +		mtd->flags |= MTD_WRITEABLE;
-> +	else
-> +		mtd->flags &= ~MTD_WRITEABLE;
+			/*
+			 * blablabla
+			 */
 
-What happens if you turn a RW device into a RO while it's still being
-used by someone? Not sure at all this is safe.
-
-Regards,
+Thanks,
 
 Boris
 
+> +			 * the Extended Address Register to be set to 1, so all
+> +			 * 3-byte-address reads come from the second 16M.
+> +			 * We must clear the register to enable normal behavior.
+> +			 */
+> +			write_enable(nor);
+> +			nor->cmd_buf[0] = 0;
+> +			nor->write_reg(nor, SPINOR_OP_WREAR, nor->cmd_buf, 1);
+> +			write_disable(nor);
+> +		}
 > +
-> +	return count;
-> +}
-> +static DEVICE_ATTR(writeable, S_IRUGO | S_IWUSR, mtd_writeable_show,
-> +	mtd_writeable_store);
-> +
->  static ssize_t mtd_size_show(struct device *dev,
->  		struct device_attribute *attr, char *buf)
->  {
-> @@ -322,6 +355,7 @@ static DEVICE_ATTR(bbt_blocks, S_IRUGO, mtd_bbtblocks_show, NULL);
->  static struct attribute *mtd_attrs[] = {
->  	&dev_attr_type.attr,
->  	&dev_attr_flags.attr,
-> +	&dev_attr_writeable.attr,
->  	&dev_attr_size.attr,
->  	&dev_attr_erasesize.attr,
->  	&dev_attr_writesize.attr,
+>  		return status;
+>  	default:
+>  		/* Spansion style */
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index de36969eb359..e60da0d34cc1 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -62,6 +62,8 @@
+>  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+>  #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+>  #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+> +#define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
+> +#define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
+>  
+>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+>  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
