@@ -1,14 +1,14 @@
-Date: Fri, 20 Apr 2018 22:18:43 +0200
+Date: Fri, 20 Apr 2018 22:23:50 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Xiaolei Li <xiaolei.li@mediatek.com>
 Cc: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
  <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Subject: Re: [PATCH v2 3/4] mtd: rawnand: mtk: Replace max_sector_size with
- sector size array
-Message-ID: <20180420221843.45f9d006@bbrezillon>
-In-Reply-To: <1523864464-41059-4-git-send-email-xiaolei.li@mediatek.com>
+Subject: Re: [PATCH v2 4/4] mtd: rawnand: mtk: Add new nfc capability
+ maximize_fdm_ecc
+Message-ID: <20180420222350.620e4db7@bbrezillon>
+In-Reply-To: <1523864464-41059-5-git-send-email-xiaolei.li@mediatek.com>
 References: <1523864464-41059-1-git-send-email-xiaolei.li@mediatek.com>
- <1523864464-41059-4-git-send-email-xiaolei.li@mediatek.com>
+ <1523864464-41059-5-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,115 +21,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 Apr 2018 15:41:03 +0800
+On Mon, 16 Apr 2018 15:41:04 +0800
 Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-> Remove max_sector_size from struct mtk_nfc_caps, and use sector size
-> array and number of sector size to show sector sizes that controller
-> supports.
+> For some MTK NAND chips, BootROM will access more than one byte
+> ECC protected FDM data, but now we fix ECC protected FDM byte as 1.
+> This will make some chips be failed to boot up.
+> 
+> This patch adds one new nfc capability maximize_fdm_ecc to maximize ECC
+> protected FDM bytes if it is true.
 > 
 > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-
-I don't see the point of this patch. I was seeing a clear benefit when
-you were moving to the generic ECC selection code, but since you've
-dropped this part from the patch series, this patch becomes useless.
-
-Am I missing something?
-
 > ---
->  drivers/mtd/nand/raw/mtk_nand.c | 32 +++++++++++++++++++++++++++-----
->  1 file changed, 27 insertions(+), 5 deletions(-)
+>  drivers/mtd/nand/raw/mtk_nand.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+>  mode change 100644 => 100755 drivers/mtd/nand/raw/mtk_nand.c
 > 
 > diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-> index 6977da3..03a4df2 100644
+> old mode 100644
+> new mode 100755
+> index 03a4df2..7025132
 > --- a/drivers/mtd/nand/raw/mtk_nand.c
 > +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> @@ -106,10 +106,11 @@
->  struct mtk_nfc_caps {
->  	const u8 *spare_size;
->  	u8 num_spare_size;
-> +	const int *sector_size;
-> +	int num_sector_size;
+> @@ -111,6 +111,7 @@ struct mtk_nfc_caps {
 >  	u8 pageformat_spare_shift;
 >  	u8 nfi_clk_div;
 >  	u8 max_sector;
-> -	u32 max_sector_size;
+> +	bool maximize_fdm_ecc;
 >  };
 >  
 >  struct mtk_nfc_bad_mark_ctl {
-> @@ -178,6 +179,14 @@ struct mtk_nfc {
->  	16, 26, 27, 28
->  };
+> @@ -1151,8 +1152,8 @@ static void mtk_nfc_set_fdm(struct mtk_nfc_fdm *fdm, struct mtd_info *mtd)
+>  	if (fdm->reg_size > NFI_FDM_MAX_SIZE)
+>  		fdm->reg_size = NFI_FDM_MAX_SIZE;
 >  
-> +static const int sector_size_max_1k[] = {
-> +	1024, 512
-> +};
-> +
-> +static const int sector_size_max_512[] = {
-> +	512
-> +};
-> +
->  static inline struct mtk_nfc_nand_chip *to_mtk_nand(struct nand_chip *nand)
->  {
->  	return container_of(nand, struct mtk_nfc_nand_chip, nand);
-> @@ -258,6 +267,16 @@ static inline u8 nfi_readb(struct mtk_nfc *nfc, u32 reg)
->  	return readb_relaxed(nfc->regs + reg);
+> -	/* bad block mark storage */
+> -	fdm->ecc_size = 1;
+> +	/* Reserve at least one byte for bad mark */
+> +	fdm->ecc_size = nfc->caps->maximize_fdm_ecc ? fdm->reg_size : 1;
 >  }
 >  
-> +static int mtk_nfc_max_sector_size(struct mtk_nfc *nfc)
-> +{
-> +	int i, sector_size = 0;
-> +
-> +	for (i = 0; i < nfc->caps->num_sector_size; i++)
-> +		sector_size = max(sector_size, nfc->caps->sector_size[i]);
-> +
-> +	return sector_size;
-> +}
-> +
->  static void mtk_nfc_hw_reset(struct mtk_nfc *nfc)
->  {
->  	struct device *dev = nfc->dev;
-> @@ -1207,7 +1226,7 @@ static int mtk_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
->  		 */
->  		if (nand->ecc.size < 1024) {
->  			if (mtd->writesize > 512 &&
-> -			    nfc->caps->max_sector_size > 512) {
-> +			    mtk_nfc_max_sector_size(nfc) > 512) {
->  				nand->ecc.size = 1024;
->  				nand->ecc.strength <<= 1;
->  			} else {
-> @@ -1389,28 +1408,31 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
->  static const struct mtk_nfc_caps mtk_nfc_caps_mt2701 = {
->  	.spare_size = spare_size_mt2701,
->  	.num_spare_size = 16,
-> +	.sector_size = sector_size_max_1k,
-> +	.num_sector_size = 2,
+>  static void mtk_nfc_set_bad_mark_ctl(struct mtk_nfc_bad_mark_ctl *bm_ctl,
+> @@ -1413,6 +1414,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
 >  	.pageformat_spare_shift = 4,
 >  	.nfi_clk_div = 1,
 >  	.max_sector = 16,
-> -	.max_sector_size = 1024,
+> +	.maximize_fdm_ecc = false,
 >  };
 >  
 >  static const struct mtk_nfc_caps mtk_nfc_caps_mt2712 = {
->  	.spare_size = spare_size_mt2712,
->  	.num_spare_size = 19,
-> +	.sector_size = sector_size_max_1k,
-> +	.num_sector_size = 2,
+> @@ -1423,6 +1425,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
 >  	.pageformat_spare_shift = 16,
 >  	.nfi_clk_div = 2,
 >  	.max_sector = 16,
-> -	.max_sector_size = 1024,
+> +	.maximize_fdm_ecc = false,
 >  };
 >  
 >  static const struct mtk_nfc_caps mtk_nfc_caps_mt7622 = {
->  	.spare_size = spare_size_mt7622,
->  	.num_spare_size = 4,
-> +	.sector_size = sector_size_max_512,
-> +	.num_sector_size = 1,
+> @@ -1433,6 +1436,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
 >  	.pageformat_spare_shift = 4,
 >  	.nfi_clk_div = 1,
 >  	.max_sector = 8,
-> -	.max_sector_size = 512,
+> +	.maximize_fdm_ecc = false,
 >  };
+
+So, you introduce a new flag, but all existing SoCs are setting it to
+false. Can you please send a patch series containing all the
+modifications, or at least point to a branch containing all the changes
+you intend to push so that we know why the changes are required?
+Your first version of this patchset was better in this regard.
+
 >  
 >  static const struct of_device_id mtk_nfc_id_table[] = {
