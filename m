@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9wov-0007uw-Ey
+ id 1f9wov-0007ux-EU
  for linux-mtd@lists.infradead.org; Sat, 21 Apr 2018 18:01:11 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -10,9 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>,
  Sylvain Lemieux <slemieux.tyco@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 10/11] mtd: rawnand: lpc32xx_slc: clean the probe function
-Date: Sat, 21 Apr 2018 20:00:42 +0200
-Message-Id: <20180421180043.18366-11-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 09/11] mtd: rawnand: lpc32xx_mlc: fix the probe function
+ error path
+Date: Sat, 21 Apr 2018 20:00:41 +0200
+Message-Id: <20180421180043.18366-10-miquel.raynal@bootlin.com>
 In-Reply-To: <20180421180043.18366-1-miquel.raynal@bootlin.com>
 References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,86 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Before fixing the error path of the probe function, fix the style of the
-entire function and particularly the goto labels: they should indicate
-what the next cleanup to do is.
+An error after nand_scan_tail() should trigger a nand_cleanup() and not
+a nand_release(). The latter doing an mtd_device_unregister() which is
+not needed if mtd_device_register() failed.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/lpc32xx_slc.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_mlc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 5f7cc6da0a7f..342f666ad435 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -831,11 +831,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	if (IS_ERR(host->clk)) {
- 		dev_err(&pdev->dev, "Clock failure\n");
- 		res = -ENOENT;
--		goto err_exit1;
-+		goto release_gpio;
- 	}
- 	res = clk_prepare_enable(host->clk);
- 	if (res)
--		goto err_exit1;
-+		goto release_gpio;
- 
- 	/* Set NAND IO addresses and command/ready functions */
- 	chip->IO_ADDR_R = SLC_DATA(host->io_base);
-@@ -874,19 +874,19 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 				      GFP_KERNEL);
- 	if (host->data_buf == NULL) {
- 		res = -ENOMEM;
--		goto err_exit2;
-+		goto release_clk;
- 	}
- 
- 	res = lpc32xx_nand_dma_setup(host);
- 	if (res) {
- 		res = -EIO;
--		goto err_exit2;
-+		goto release_clk;
- 	}
- 
- 	/* Find NAND device */
- 	res = nand_scan_ident(mtd, 1, NULL);
- 	if (res)
--		goto err_exit3;
-+		goto release_dma;
- 
- 	/* OOB and ECC CPU and DMA work areas */
- 	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-@@ -920,21 +920,23 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	 */
- 	res = nand_scan_tail(mtd);
- 	if (res)
--		goto err_exit3;
-+		goto release_dma;
- 
- 	mtd->name = "nxp_lpc3220_slc";
+diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+index 6e31faf2f07f..052d123a8304 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
+@@ -806,12 +806,12 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
  	res = mtd_device_register(mtd, host->ncfg->parts,
  				  host->ncfg->num_parts);
--	if (!res)
--		return res;
-+	if (res)
-+		goto release_nand;
+ 	if (res)
+-		goto release_nand;
++		goto cleanup_nand;
  
-+	return 0;
-+
-+release_nand:
- 	nand_release(mtd);
--
--err_exit3:
-+release_dma:
- 	dma_release_channel(host->dma_chan);
--err_exit2:
-+release_clk:
- 	clk_disable_unprepare(host->clk);
--err_exit1:
-+release_gpio:
- 	lpc32xx_wp_enable(host);
+ 	return 0;
  
- 	return res;
+-release_nand:
+-	nand_release(mtd);
++cleanup_nand:
++	nand_cleanup(nand_chip);
+ free_irq:
+ 	free_irq(host->irq, host);
+ release_dma_chan:
 -- 
 2.14.1
