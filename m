@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1f9wov-0007v3-EV
- for linux-mtd@lists.infradead.org; Sat, 21 Apr 2018 18:01:14 +0000
+ id 1f9wov-0007uc-Ez
+ for linux-mtd@lists.infradead.org; Sat, 21 Apr 2018 18:01:13 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>,
  Sylvain Lemieux <slemieux.tyco@gmail.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v3 11/11] mtd: rawnand: lpc32xx_slc: fix the probe function
- error path
-Date: Sat, 21 Apr 2018 20:00:43 +0200
-Message-Id: <20180421180043.18366-12-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 05/11] mtd: rawnand: fsmc: fix the probe function error path
+Date: Sat, 21 Apr 2018 20:00:37 +0200
+Message-Id: <20180421180043.18366-6-miquel.raynal@bootlin.com>
 In-Reply-To: <20180421180043.18366-1-miquel.raynal@bootlin.com>
 References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,34 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup() and not
-a nand_release(). The latter doing an mtd_device_unregister() which is
-not needed if mtd_device_register() failed.
+An error after nand_scan_tail() should trigger a nand_cleanup().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/lpc32xx_slc.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 342f666ad435..143e1ec3a90a 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -926,12 +926,12 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	res = mtd_device_register(mtd, host->ncfg->parts,
- 				  host->ncfg->num_parts);
- 	if (res)
--		goto release_nand;
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 35af3890ddba..f4a5a317d4ae 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -1123,13 +1123,15 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	mtd->name = "nand";
+ 	ret = mtd_device_register(mtd, NULL, 0);
+ 	if (ret)
+-		goto release_dma_write_chan;
 +		goto cleanup_nand;
+ 
+ 	platform_set_drvdata(pdev, host);
+ 	dev_info(&pdev->dev, "FSMC NAND driver registration successful\n");
  
  	return 0;
  
--release_nand:
--	nand_release(mtd);
 +cleanup_nand:
-+	nand_cleanup(chip);
- release_dma:
- 	dma_release_channel(host->dma_chan);
- release_clk:
++	nand_cleanup(nand);
+ release_dma_write_chan:
+ 	if (host->mode == USE_DMA_ACCESS)
+ 		dma_release_channel(host->write_dma_chan);
 -- 
 2.14.1
