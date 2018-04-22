@@ -1,18 +1,26 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAJRe-0001lF-GZ
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 18:10:40 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ id 1fAJq4-0002qf-06
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 18:35:54 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: nand: add myself as NAND co-maintainer
-Date: Sun, 22 Apr 2018 19:55:53 +0200
-Message-Id: <20180422175553.7489-1-miquel.raynal@bootlin.com>
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc: Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: [PATCH v3 2/9] spi: Add an helper to flush the message queue
+Date: Sun, 22 Apr 2018 20:35:15 +0200
+Message-Id: <20180422183522.11118-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20180422183522.11118-1-boris.brezillon@bootlin.com>
+References: <20180422183522.11118-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +30,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have been actively reviewing and contributing improvements to the NAND
-subsystem for more than 6 months now and am willing to continue doing so
-in the future. Formalize my new role.
+This is needed by the spi-mem logic to force all messages that have been
+queued before a memory operation to be sent before we start the memory
+operation. We do that in order to guarantee that spi-mem operations do
+not preempt regular SPI transfers.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Changes in v3:
+- prototype moved to drivers/spi/internals.h
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0a1410d5a621..85b39fd1c70d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9574,6 +9574,7 @@ F:	drivers/net/ethernet/myricom/myri10ge/
+Changes in v2:
+- patch added
+---
+ drivers/spi/internals.h |  2 ++
+ drivers/spi/spi.c       | 16 ++++++++++++++++
+ 2 files changed, 18 insertions(+)
+
+diff --git a/drivers/spi/internals.h b/drivers/spi/internals.h
+index dbe56c77b464..4a28a8395552 100644
+--- a/drivers/spi/internals.h
++++ b/drivers/spi/internals.h
+@@ -17,6 +17,8 @@
+ #include <linux/scatterlist.h>
+ #include <linux/spi/spi.h>
  
- NAND FLASH SUBSYSTEM
- M:	Boris Brezillon <boris.brezillon@bootlin.com>
-+M:	Miquel Raynal <miquel.raynal@bootlin.com>
- R:	Richard Weinberger <richard@nod.at>
- L:	linux-mtd@lists.infradead.org
- W:	http://www.linux-mtd.infradead.org/
++void spi_flush_queue(struct spi_controller *ctrl);
++
+ #ifdef CONFIG_HAS_DMA
+ int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
+ 		struct sg_table *sgt, void *buf, size_t len,
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index a59f01005906..9ab65fb2738e 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1522,6 +1522,22 @@ static int spi_controller_initialize_queue(struct spi_controller *ctlr)
+ 	return ret;
+ }
+ 
++/**
++ * spi_flush_queue - Send all pending messages in the queue from the callers'
++ *		     context
++ * @ctlr: controller to process queue for
++ *
++ * This should be used when one wants to ensure all pending messages have been
++ * sent before doing something. Is used by the spi-mem code to make sure SPI
++ * memory operations do not preempt regular SPI transfers that have been queued
++ * before the spi-mem operation.
++ */
++void spi_flush_queue(struct spi_controller *ctlr)
++{
++	if (ctlr->transfer == spi_queued_transfer)
++		__spi_pump_messages(ctlr, false);
++}
++
+ /*-------------------------------------------------------------------------*/
+ 
+ #if defined(CONFIG_OF)
 -- 
 2.14.1
