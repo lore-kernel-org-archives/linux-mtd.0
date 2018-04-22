@@ -1,23 +1,41 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fA7uD-00049H-6K
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 05:51:23 +0000
-Date: Sun, 22 Apr 2018 07:51:06 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/2] Uniform way to pass a NAND ID table to the core
-Message-ID: <20180422075106.76c249a9@bbrezillon>
-In-Reply-To: <20180422033600.014f53c5@xps13>
-References: <20180321131235.9822-1-miquel.raynal@bootlin.com>
- <20180327091737.7d09b189@bbrezillon>
- <20180421201900.6c6e4a33@xps13>
- <20180421212853.34bf15b9@bbrezillon>
- <20180422033600.014f53c5@xps13>
+Subject: Re: [PATCH 04/15] media: pxa_camera: remove the dmaengine compat need
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Petr Cvek <petr.cvek@tul.cz>,
+ Sakari Ailus <sakari.ailus@iki.fi>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Pravin Shedge <pravin.shedge4linux@gmail.com>,
+ Flavio Ceolin <flavio.ceolin@intel.com>,
+ Robert Jarzmik <robert.jarzmik@renault.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
+ =?UTF-8?Q?Niklas_S=c3=b6derlund?= <niklas.soderlund+renesas@ragnatech.se>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-5-robert.jarzmik@free.fr>
+From: Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <89f3e97c-08a4-33b6-8fd3-0c1b4dea2065@xs4all.nl>
+Date: Sun, 22 Apr 2018 13:06:12 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180402142656.26815-5-robert.jarzmik@free.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,57 +46,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 22 Apr 2018 03:36:00 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On 04/02/2018 04:26 PM, Robert Jarzmik wrote:
+> From: Robert Jarzmik <robert.jarzmik@renault.com>
+> 
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
+> 
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-> Hi Boris,
-> 
-> On Sat, 21 Apr 2018 21:28:53 +0200, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> 
-> > On Sat, 21 Apr 2018 20:19:00 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > Hi Boris,
-> > > 
-> > > On Tue, 27 Mar 2018 09:17:37 +0200, Boris Brezillon
-> > > <boris.brezillon@bootlin.com> wrote:
-> > >     
-> > > > Hi Miquel,
-> > > > 
-> > > > On Wed, 21 Mar 2018 14:12:33 +0100
-> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > >       
-> > > > > Hello,
-> > > > > 
-> > > > > As part of the work of migrating all the drivers to nand_scan(), and
-> > > > > because nand_scan() does not provide a way to pass any ID table, create
-> > > > > a field in NAND chip so a controller driver can expose its ID table to
-> > > > > the core through it and stop using the last parameter of
-> > > > > nand_scan_ident() for that.        
-> > > > 
-> > > > I'm not a big fan of adding yet another field to the nand_chip struct.
-> > > > Could we instead create a nand_scan_with_ids() function that takes an
-> > > > extra ID table in argument and then make nand_scan() a wrapper around
-> > > > this new function?
-> > > > 
-> > > > int nand_scan_with_ids(struct mtd_info *mtd, int max_chips,
-> > > > 		       struct nand_flash_dev *ids);
-> > > > 
-> > > > static inline int nand_scan(struct mtd_info *mtd, int max_chips)
-> > > > {
-> > > > 	return nand_scan_with_ids(mtd, max_chips, NULL);
-> > > > }      
-> > > 
-> > > Sure I can do that, but I found too impacting the fact that we should
-> > > patch all the drivers to call nand_scan_with_ids() from your example.    
-> > 
-> > Nope we don't have to do that, see the nand_scan() wrapper proposed
-> > above.  
-> 
-> Actually I was embarrassed by the 'static' keyword, I'll just drop
-> it off.
+Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 
-It's "static inline" and that's because I was suggesting to define the
-nand_scan() wrapper directly in rawnand.h instead of exporting a symbol
-for a one line function.
+Regards,
+
+	Hans
+
+> ---
+>  drivers/media/platform/pxa_camera.c | 22 +++-------------------
+>  1 file changed, 3 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+> index c71a00736541..4c82d1880753 100644
+> --- a/drivers/media/platform/pxa_camera.c
+> +++ b/drivers/media/platform/pxa_camera.c
+> @@ -2357,8 +2357,6 @@ static int pxa_camera_probe(struct platform_device *pdev)
+>  		.src_maxburst = 8,
+>  		.direction = DMA_DEV_TO_MEM,
+>  	};
+> -	dma_cap_mask_t mask;
+> -	struct pxad_param params;
+>  	char clk_name[V4L2_CLK_NAME_SIZE];
+>  	int irq;
+>  	int err = 0, i;
+> @@ -2432,34 +2430,20 @@ static int pxa_camera_probe(struct platform_device *pdev)
+>  	pcdev->base = base;
+>  
+>  	/* request dma */
+> -	dma_cap_zero(mask);
+> -	dma_cap_set(DMA_SLAVE, mask);
+> -	dma_cap_set(DMA_PRIVATE, mask);
+> -
+> -	params.prio = 0;
+> -	params.drcmr = 68;
+> -	pcdev->dma_chans[0] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_Y");
+> +	pcdev->dma_chans[0] = dma_request_slave_channel(&pdev->dev, "CI_Y");
+>  	if (!pcdev->dma_chans[0]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+>  		return -ENODEV;
+>  	}
+>  
+> -	params.drcmr = 69;
+> -	pcdev->dma_chans[1] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_U");
+> +	pcdev->dma_chans[1] = dma_request_slave_channel(&pdev->dev, "CI_U");
+>  	if (!pcdev->dma_chans[1]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+>  		err = -ENODEV;
+>  		goto exit_free_dma_y;
+>  	}
+>  
+> -	params.drcmr = 70;
+> -	pcdev->dma_chans[2] =
+> -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> -						 &params, &pdev->dev, "CI_V");
+> +	pcdev->dma_chans[2] = dma_request_slave_channel(&pdev->dev, "CI_V");
+>  	if (!pcdev->dma_chans[2]) {
+>  		dev_err(&pdev->dev, "Can't request DMA for V\n");
+>  		err = -ENODEV;
+> 
