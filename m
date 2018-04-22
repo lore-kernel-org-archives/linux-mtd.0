@@ -1,16 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAIa1-0002pK-1t
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:15:18 +0000
-Date: Sun, 22 Apr 2018 19:14:50 +0200
+ id 1fAIeK-0004k7-Ba
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:19:42 +0000
+Date: Sun, 22 Apr 2018 19:19:18 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: thor.thayer@linux.intel.com
-Cc: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- richard@nod.at, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Add Micron MT25QU02 support
-Message-ID: <20180422191450.58d76abb@bbrezillon>
-In-Reply-To: <1522955569-19927-1-git-send-email-thor.thayer@linux.intel.com>
-References: <1522955569-19927-1-git-send-email-thor.thayer@linux.intel.com>
+To: Marek Vasut <marex@denx.de>
+Cc: linux-mtd@lists.infradead.org, Angelo Dureghello <angelo@sysam.it>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: spi-nor: add support for ISSI is25lp256
+Message-ID: <20180422191918.0201a590@bbrezillon>
+In-Reply-To: <20180407130105.24671-1-marex@denx.de>
+References: <20180407130105.24671-1-marex@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,19 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  5 Apr 2018 14:12:49 -0500
-thor.thayer@linux.intel.com wrote:
+On Sat,  7 Apr 2018 15:01:05 +0200
+Marek Vasut <marex@denx.de> wrote:
 
-> From: Thor Thayer <thor.thayer@linux.intel.com>
+> Add support for ISSI is25lp256 spi nor flash.
 > 
-> Add support for a new Micron 2Gb Flash memory part.
-> Datasheet is available: mt25q_qlkt_l_02g_cbb_0.pdf
-> 
-> Testing was done on a Stratix10 SoCFPGA Development Kit.
-> 
-> Reported-by: Sujith Chidurala <sujith.chakra.chidurala@intel.com>
-> Tested-by: Paul Kim <paul.kim@intel.com>
-> Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+> Signed-off-by: Marek Vasut <marex@denx.de>
+> Cc: Angelo Dureghello <angelo@sysam.it>
+> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 
 Applied to spi-nor/next.
 
@@ -44,18 +41,19 @@ Thanks,
 Boris
 
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mtd/spi-nor/spi-nor.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e95f35..8b459766a4ca 100644
+> index 5bfa36e95f35..a9e3f0ff0974 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1087,6 +1087,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q512ax3",  INFO(0x20ba20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
->  	{ "n25q00",      INFO(0x20ba21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
->  	{ "n25q00a",     INFO(0x20bb21, 0, 64 * 1024, 2048, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
-> +	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+> @@ -1049,6 +1049,8 @@ static const struct flash_info spi_nor_ids[] = {
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+>  			SECT_4K | SPI_NOR_DUAL_READ) },
+> +	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+> +			SECT_4K | SPI_NOR_DUAL_READ) },
 >  
->  	/* PMC */
->  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+>  	/* Macronix */
+>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
