@@ -1,25 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAIha-0007Fk-6G
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:23:25 +0000
-Date: Sun, 22 Apr 2018 19:22:39 +0200
+ id 1fAIjI-000809-Dc
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:24:56 +0000
+Date: Sun, 22 Apr 2018 19:24:25 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: NeilBrown <neil@brown.name>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+To: Stefan Agner <stefan@agner.ch>
+Cc: han.xu@nxp.com, boris.brezillon@free-electrons.com,
+ marek.vasut@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ cyrille.pitchen@wedev4u.fr, max.oss.09@gmail.com,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] mtd: spi-nor: clear Winbond Extended Address Reg on
- switch to 3-byte addressing.
-Message-ID: <20180422192239.4972500f@bbrezillon>
-In-Reply-To: <87o9ido5e7.fsf@notabene.neil.brown.name>
-References: <874lkmw54j.fsf@notabene.neil.brown.name>
- <87sh7wrq8p.fsf@notabene.neil.brown.name>
- <20180420215440.7b078f6c@bbrezillon>
- <87h8o5po1h.fsf@notabene.neil.brown.name>
- <967de310-3b9a-1853-3377-71f71fd8ac27@gmail.com>
- <87o9ido5e7.fsf@notabene.neil.brown.name>
+Subject: Re: [PATCH v2 1/2] mtd: rawnand: gpmi: add support for specific ECC
+ strength
+Message-ID: <20180422192425.7cc090f4@bbrezillon>
+In-Reply-To: <20180304200602.11475-1-stefan@agner.ch>
+References: <20180304200602.11475-1-stefan@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,92 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 21 Apr 2018 08:54:40 +1000
-NeilBrown <neil@brown.name> wrote:
+On Sun,  4 Mar 2018 21:06:01 +0100
+Stefan Agner <stefan@agner.ch> wrote:
 
-> Winbond spi-nor flash 32MB and larger have an 'Extended Address
-> Register' as one option for addressing beyond 16MB (Macronix
-> has the same concept, Spansion has EXTADD bits in the Bank Address
-> Register).
+> Add support for specified ECC strength/size using device tree
+> properties nand-ecc-strength/nand-ecc-step-size.
 > 
-> According to section
->    8.2.7 Write Extended Address Register (C5h)
-> 
-> of the Winbond W25Q256FV data sheet (256M-BIT SPI flash)
-> 
->    The Extended Address Register is only effective when the device is
->    in the 3-Byte Address Mode.  When the device operates in the 4-Byte
->    Address Mode (ADS=1), any command with address input of A31-A24
->    will replace the Extended Address Register values. It is
->    recommended to check and update the Extended Address Register if
->    necessary when the device is switched from 4-Byte to 3-Byte Address
->    Mode.
-> 
-> So the documentation suggests clearing the EAR after switching to
-> 3-byte mode.  Experimentation shows that the EAR is *always* one after
-> the switch to 3-byte mode, so clearing the EAR is mandatory at
-> shutdown for a subsequent 3-byte-addressed reboot to work.
-> 
-> Note that some SOCs (e.g. MT7621) do not assert a reset line at normal
-> reboot, so we cannot rely on hardware reset.  The MT7621 does assert a
-> reset line at watchdog-reset.
-> 
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> Signed-off-by: NeilBrown <neil@brown.name>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
 
-Applied to spi-nor/next.
+Applied to nand/next.
 
 Thanks,
 
 Boris
 
 > ---
+>  drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 30 ++++++++++++++++++++----------
+>  1 file changed, 20 insertions(+), 10 deletions(-)
 > 
-> Changes since v3:
->  Removed Fixes/stable tags. Added Acked-by from Marek.
-> Changes sinc3 v2:
->   Fixed comment style.
-> 
-> 
->  drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++++++
->  include/linux/mtd/spi-nor.h   |  2 ++
->  2 files changed, 16 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e95f35..42ae9a1529bb 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -284,6 +284,20 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->  		if (need_wren)
->  			write_disable(nor);
+> diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> index 61fdd733492f..d04754289c03 100644
+> --- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> +++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+> @@ -198,17 +198,16 @@ static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+>   *
+>   * We may have available oob space in this case.
+>   */
+> -static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> +static int set_geometry_by_ecc_info(struct gpmi_nand_data *this,
+> +				    unsigned int ecc_strength,
+> +				    unsigned int ecc_step)
+>  {
+>  	struct bch_geometry *geo = &this->bch_geometry;
+>  	struct nand_chip *chip = &this->nand;
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	unsigned int block_mark_bit_offset;
 >  
-> +		if (!status && !enable &&
-> +		    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
-> +			/*
-> +			 * On Winbond W25Q256FV, leaving 4byte mode causes
-> +			 * the Extended Address Register to be set to 1, so all
-> +			 * 3-byte-address reads come from the second 16M.
-> +			 * We must clear the register to enable normal behavior.
-> +			 */
-> +			write_enable(nor);
-> +			nor->cmd_buf[0] = 0;
-> +			nor->write_reg(nor, SPINOR_OP_WREAR, nor->cmd_buf, 1);
-> +			write_disable(nor);
-> +		}
+> -	if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> -		return -EINVAL;
+> -
+> -	switch (chip->ecc_step_ds) {
+> +	switch (ecc_step) {
+>  	case SZ_512:
+>  		geo->gf_len = 13;
+>  		break;
+> @@ -221,8 +220,8 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  			chip->ecc_strength_ds, chip->ecc_step_ds);
+>  		return -EINVAL;
+>  	}
+> -	geo->ecc_chunk_size = chip->ecc_step_ds;
+> -	geo->ecc_strength = round_up(chip->ecc_strength_ds, 2);
+> +	geo->ecc_chunk_size = ecc_step;
+> +	geo->ecc_strength = round_up(ecc_strength, 2);
+>  	if (!gpmi_check_ecc(this))
+>  		return -EINVAL;
+>  
+> @@ -230,7 +229,7 @@ static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+>  	if (geo->ecc_chunk_size < mtd->oobsize) {
+>  		dev_err(this->dev,
+>  			"unsupported nand chip. ecc size: %d, oob size : %d\n",
+> -			chip->ecc_step_ds, mtd->oobsize);
+> +			ecc_step, mtd->oobsize);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -423,9 +422,20 @@ static int legacy_set_geometry(struct gpmi_nand_data *this)
+>  
+>  int common_nfc_set_geometry(struct gpmi_nand_data *this)
+>  {
+> +	struct nand_chip *chip = &this->nand;
 > +
->  		return status;
->  	default:
->  		/* Spansion style */
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index de36969eb359..e60da0d34cc1 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -62,6 +62,8 @@
->  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
->  #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
->  #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
-> +#define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
-> +#define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
+> +	if (chip->ecc.strength > 0 && chip->ecc.size > 0)
+> +		return set_geometry_by_ecc_info(this, chip->ecc.strength,
+> +						chip->ecc.size);
+> +
+>  	if ((of_property_read_bool(this->dev->of_node, "fsl,use-minimum-ecc"))
+> -				|| legacy_set_geometry(this))
+> -		return set_geometry_by_ecc_info(this);
+> +				|| legacy_set_geometry(this)) {
+> +		if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+> +			return -EINVAL;
+> +
+> +		return set_geometry_by_ecc_info(this, chip->ecc_strength_ds,
+> +						chip->ecc_step_ds);
+> +	}
 >  
->  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
->  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+>  	return 0;
+>  }
