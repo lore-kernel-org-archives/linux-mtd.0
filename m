@@ -1,15 +1,20 @@
-Date: Sun, 22 Apr 2018 19:28:20 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAIo4-0002lL-HH
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:29:46 +0000
+Date: Sun, 22 Apr 2018 19:29:21 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: richard@nod.at, linux-mediatek@lists.infradead.org,
- linux-mtd@lists.infradead.org, srv_heupstream@mediatek.com
-Subject: Re: [PATCH v2 2/4] MAINTAINERS: Add entry for Mediatek NAND
- controller driver
-Message-ID: <20180422192820.06147c31@bbrezillon>
-In-Reply-To: <20180420222451.20d72560@bbrezillon>
-References: <1523864464-41059-1-git-send-email-xiaolei.li@mediatek.com>
- <1523864464-41059-3-git-send-email-xiaolei.li@mediatek.com>
- <20180420222451.20d72560@bbrezillon>
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ kernel-janitors@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH 30/61] mtd: nand: onenand: simplify getting .drvdata
+Message-ID: <20180422192921.61a6b28b@bbrezillon>
+In-Reply-To: <20180419140641.27926-31-wsa+renesas@sang-engineering.com>
+References: <20180419140641.27926-1-wsa+renesas@sang-engineering.com>
+ <20180419140641.27926-31-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,37 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Apr 2018 22:24:51 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Thu, 19 Apr 2018 16:06:00 +0200
+Wolfram Sang <wsa+renesas@sang-engineering.com> wrote:
 
-> On Mon, 16 Apr 2018 15:41:02 +0800
-> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+> We should get drvdata from struct device directly. Going via
+> platform_device is an unneeded step back and forth.
 > 
-> > Add entry for Mediatek NAND controller driver and its bindings.
-> > 
-> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> > ---
-> >  MAINTAINERS | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index d262f17..429ef09 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -8838,6 +8838,13 @@ L:	linux-wireless@vger.kernel.org
-> >  S:	Maintained
-> >  F:	drivers/net/wireless/mediatek/mt7601u/
-> >  
-> > +MEDIATEK NAND CONTROLLER DRIVER
-> > +M:	Xiaolei Li <xiaolei.li@mediatek.com>
-> > +L:	linux-mtd@lists.infradead.org
-> > +S:	Maintained
-> > +F:	drivers/mtd/nand/raw/mtk_*
-> > +F:	Documentation/devicetree/bindings/mtd/mtk-nand.txt  
-> 
-> Thanks for doing that.
-> 
-> I'll apply the patch, you can drop it from your v3.
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
 Applied to nand/next.
 
@@ -60,13 +41,34 @@ Thanks,
 
 Boris
 
+> ---
 > 
-> > +
-> >  MEDIATEK RANDOM NUMBER GENERATOR SUPPORT
-> >  M:	Sean Wang <sean.wang@mediatek.com>
-> >  S:	Maintained  
+> Build tested only. buildbot is happy. Please apply individually.
 > 
+>  drivers/mtd/nand/onenand/samsung.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/mtd/nand/onenand/samsung.c b/drivers/mtd/nand/onenand/samsung.c
+> index 2e9d076e445a..4cce4c0311ca 100644
+> --- a/drivers/mtd/nand/onenand/samsung.c
+> +++ b/drivers/mtd/nand/onenand/samsung.c
+> @@ -958,8 +958,7 @@ static int s3c_onenand_remove(struct platform_device *pdev)
+>  
+>  static int s3c_pm_ops_suspend(struct device *dev)
+>  {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> +	struct mtd_info *mtd = dev_get_drvdata(dev);
+>  	struct onenand_chip *this = mtd->priv;
+>  
+>  	this->wait(mtd, FL_PM_SUSPENDED);
+> @@ -968,8 +967,7 @@ static int s3c_pm_ops_suspend(struct device *dev)
+>  
+>  static  int s3c_pm_ops_resume(struct device *dev)
+>  {
+> -	struct platform_device *pdev = to_platform_device(dev);
+> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> +	struct mtd_info *mtd = dev_get_drvdata(dev);
+>  	struct onenand_chip *this = mtd->priv;
+>  
+>  	this->unlock_all(mtd);
