@@ -1,16 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAIgn-0006ru-Qi
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:22:32 +0000
-Date: Sun, 22 Apr 2018 19:21:51 +0200
+ id 1fAIha-0007Fk-6G
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:23:25 +0000
+Date: Sun, 22 Apr 2018 19:22:39 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- richard@nod.at, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: Add support for XM25QH64A and XM25QH128A
-Message-ID: <20180422192151.1411c459@bbrezillon>
-In-Reply-To: <20180418202532.15876-1-hauke@hauke-m.de>
-References: <20180418202532.15876-1-hauke@hauke-m.de>
+To: NeilBrown <neil@brown.name>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] mtd: spi-nor: clear Winbond Extended Address Reg on
+ switch to 3-byte addressing.
+Message-ID: <20180422192239.4972500f@bbrezillon>
+In-Reply-To: <87o9ido5e7.fsf@notabene.neil.brown.name>
+References: <874lkmw54j.fsf@notabene.neil.brown.name>
+ <87sh7wrq8p.fsf@notabene.neil.brown.name>
+ <20180420215440.7b078f6c@bbrezillon>
+ <87h8o5po1h.fsf@notabene.neil.brown.name>
+ <967de310-3b9a-1853-3377-71f71fd8ac27@gmail.com>
+ <87o9ido5e7.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,17 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Apr 2018 22:25:32 +0200
-Hauke Mehrtens <hauke@hauke-m.de> wrote:
+On Sat, 21 Apr 2018 08:54:40 +1000
+NeilBrown <neil@brown.name> wrote:
 
-> These devices are produced by Wuhan Xinxin Semiconductor Manufacturing
-> Corp. (XMC) and found on some routers from Chinese manufactures.
+> Winbond spi-nor flash 32MB and larger have an 'Extended Address
+> Register' as one option for addressing beyond 16MB (Macronix
+> has the same concept, Spansion has EXTADD bits in the Bank Address
+> Register).
 > 
-> The data sheets can be found here:
-> http://www.xmcwh.com/Uploads/2018-03-01/5a9799e4cb355.pdf
-> http://www.xmcwh.com/Uploads/2018-02-05/5a77e6dbe968b.pdf
+> According to section
+>    8.2.7 Write Extended Address Register (C5h)
 > 
-> Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
+> of the Winbond W25Q256FV data sheet (256M-BIT SPI flash)
+> 
+>    The Extended Address Register is only effective when the device is
+>    in the 3-Byte Address Mode.  When the device operates in the 4-Byte
+>    Address Mode (ADS=1), any command with address input of A31-A24
+>    will replace the Extended Address Register values. It is
+>    recommended to check and update the Extended Address Register if
+>    necessary when the device is switched from 4-Byte to 3-Byte Address
+>    Mode.
+> 
+> So the documentation suggests clearing the EAR after switching to
+> 3-byte mode.  Experimentation shows that the EAR is *always* one after
+> the switch to 3-byte mode, so clearing the EAR is mandatory at
+> shutdown for a subsequent 3-byte-addressed reboot to work.
+> 
+> Note that some SOCs (e.g. MT7621) do not assert a reset line at normal
+> reboot, so we cannot rely on hardware reset.  The MT7621 does assert a
+> reset line at watchdog-reset.
+> 
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
+> Signed-off-by: NeilBrown <neil@brown.name>
 
 Applied to spi-nor/next.
 
@@ -42,21 +72,52 @@ Thanks,
 Boris
 
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> 
+> Changes since v3:
+>  Removed Fixes/stable tags. Added Acked-by from Marek.
+> Changes sinc3 v2:
+>   Fixed comment style.
+> 
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 14 ++++++++++++++
+>  include/linux/mtd/spi-nor.h   |  2 ++
+>  2 files changed, 16 insertions(+)
 > 
 > diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e95f35..c453afa70ce2 100644
+> index 5bfa36e95f35..42ae9a1529bb 100644
 > --- a/drivers/mtd/spi-nor/spi-nor.c
 > +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1230,6 +1230,10 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "3S400AN", S3AN_INFO(0x1f2400, 256, 264) },
->  	{ "3S700AN", S3AN_INFO(0x1f2500, 512, 264) },
->  	{ "3S1400AN", S3AN_INFO(0x1f2600, 512, 528) },
-> +
-> +	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
-> +	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> +	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ },
->  };
+> @@ -284,6 +284,20 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  		if (need_wren)
+>  			write_disable(nor);
 >  
+> +		if (!status && !enable &&
+> +		    JEDEC_MFR(info) == SNOR_MFR_WINBOND) {
+> +			/*
+> +			 * On Winbond W25Q256FV, leaving 4byte mode causes
+> +			 * the Extended Address Register to be set to 1, so all
+> +			 * 3-byte-address reads come from the second 16M.
+> +			 * We must clear the register to enable normal behavior.
+> +			 */
+> +			write_enable(nor);
+> +			nor->cmd_buf[0] = 0;
+> +			nor->write_reg(nor, SPINOR_OP_WREAR, nor->cmd_buf, 1);
+> +			write_disable(nor);
+> +		}
+> +
+>  		return status;
+>  	default:
+>  		/* Spansion style */
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index de36969eb359..e60da0d34cc1 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -62,6 +62,8 @@
+>  #define SPINOR_OP_RDCR		0x35	/* Read configuration register */
+>  #define SPINOR_OP_RDFSR		0x70	/* Read flag status register */
+>  #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
+> +#define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
+> +#define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
+>  
+>  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
+>  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
