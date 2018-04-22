@@ -1,19 +1,48 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAIT8-0008JJ-D2
- for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:08:08 +0000
-Date: Sun, 22 Apr 2018 19:07:43 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ronak Desai <ronak.desai@rockwellcollins.com>
-Cc: linux-mtd@lists.infradead.org, prabhakar.kushwaha@nxp.com
-Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
- driver for ONFI nand
-Message-ID: <20180422190743.36e65119@xps13>
-In-Reply-To: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
-References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
+ id 1fAIYJ-0002Bf-0r
+ for linux-mtd@lists.infradead.org; Sun, 22 Apr 2018 17:13:28 +0000
+Date: Sun, 22 Apr 2018 19:12:57 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski
+ <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Felipe
+ Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>, Herbert Xu
+ <herbert@gondor.apana.org.au>, "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Stefan Richter
+ <stefanr@s5r6.in-berlin.de>, Alan Tull <atull@kernel.org>, Moritz Fischer
+ <mdf@kernel.org>, Wolfram Sang <wsa@the-dreams.de>, Jonathan Cameron
+ <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>, Matias Bjorling
+ <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>, Mauro Carvalho
+ Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>, Bjorn
+ Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>, iommu@lists.linux-foundation.org,
+ linux-usb@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-ide@vger.kernel.org, linux-crypto@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-spi@vger.kernel.org, devel@driverdev.osuosl.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 14/20] mtd: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180422191257.255bdd9f@bbrezillon>
+In-Reply-To: <1523987360-18760-15-git-send-email-geert@linux-m68k.org>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ <1523987360-18760-15-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,144 +52,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ronak,
+On Tue, 17 Apr 2018 19:49:14 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-On Tue, 17 Apr 2018 14:10:59 -0500, Ronak Desai
-<ronak.desai@rockwellcollins.com> wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
 
-> This patch adds set feature command (EFh) support in Freescale IFC nand
-> controller driver.
->=20
-> The SET FEATURES (EFh) command is used to modify the target's default
-> power-on behavior. This command uses one-byte feature address to
-> determine which sub-feature parameters will be modified.
->=20
-
-Could you rebase on top of 4.17-rc1 at least, this file has moved and
-the core changed about set/get_features() handling.
-
-Also while you are at it, the prefix should be
-'mtd: rawnand: fsl_ifc: '.
-
-> Signed-off-by: Ronak Desai <ronak.desai@rockwellcollins.com>
-> ---
->  drivers/mtd/nand/fsl_ifc_nand.c |   51 +++++++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 51 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_n=
-and.c
-> index af85c4b..20b97ef 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -613,6 +613,23 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, un=
-signed int command,
-> 		fsl_ifc_run_command(mtd);
-> 		return;
->=20
-> +	case NAND_CMD_SET_FEATURES: {
-> +		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
-> +			(IFC_FIR_OP_UA << IFC_NAND_FIR0_OP1_SHIFT) |
-> +			(IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP2_SHIFT),
-> +			&ifc->ifc_nand.nand_fir0);
-> +
-> +		ifc_out32((NAND_CMD_SET_FEATURES << IFC_NAND_FCR0_CMD0_SHIFT),
-> +			&ifc->ifc_nand.nand_fcr0);
-> +
-> +		ifc_out32(column, &ifc->ifc_nand.row3);
-> +
-> +		 /* Write only 4 bytes from flash buffer */
-> +		ifc_out32(4, &ifc->ifc_nand.nand_fbcr);
-> +		fsl_ifc_run_command(mtd);
-> +		return;
-> +	}
-> +
-> 	case NAND_CMD_RNDOUT: {
-> 		__le16 Tccs =3D 0;
-> 		chip->onfi_version ? (Tccs =3D chip->onfi_params.t_ccs)
-> @@ -905,6 +922,39 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *pr=
-iv)
-> 	ifc_out32(csor_ext, &ifc_global->csor_cs[cs].csor_ext);
->  }
->=20
-> +/**
-> + * fsl_ifc_onfi_set_features- set features for ONFI nand
-> + * @mtd: MTD device structure
-> + * @chip: nand chip info structure
-> + * @addr: feature address.
-> + * @subfeature_param: the subfeature parameters, a four bytes array.
-> + */
-> +static int fsl_ifc_onfi_set_features(struct mtd_info *mtd, struct nand_c=
-hip *chip,
-> +			int addr, uint8_t *subfeature_param)
-> +{
-> +	int status;
-> +	int i;
-> +
-> +#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
-> +	if (!chip->onfi_version ||
-> +	    !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> +	      & ONFI_OPT_CMD_SET_GET_FEATURES))
-> +		return -EINVAL;
-> +#endif
-
-No need to do that, the core will take care of it, see [1].
-
-> +
-> +	/* Want data from start of the buffer */
-> +	set_addr(mtd, 0, 0, 0);
-
-This is the only thing that differs from the core's implementation. I
-see most of the time it is called from ->cmdfunc(), could you move it
-there? If yes you could get rid of this entire hook and rely on the
-core's function.
-
-> +
-> +	for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-> +		chip->write_byte(mtd, subfeature_param[i]);
-> +
-> +	chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);
-> +
-> +	status =3D chip->waitfunc(mtd, chip);
-> +	if (status & NAND_STATUS_FAIL)
-> +		return -EIO;
-> +	return 0;
-> +}
->  static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
->  {
-> 	struct fsl_ifc_ctrl *ctrl =3D priv->ctrl;
-> @@ -932,6 +982,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
-> 	chip->select_chip =3D fsl_ifc_select_chip;
-> 	chip->cmdfunc =3D fsl_ifc_cmdfunc;
-> 	chip->waitfunc =3D fsl_ifc_wait;
-> +	chip->onfi_set_features =3D fsl_ifc_onfi_set_features;
-
-Should be chip->set_features now. And fsl_ifc_onfi_set_features() could
-become fsl_ifc_set_features().
-
-If the driver does not support get_features, you should add a:
-
-        chip->get_features =3D nand_get_set_features_notsupp;
-
->=20
-> 	chip->bbt_td =3D &bbt_main_descr;
-> 	chip->bbt_md =3D &bbt_mirror_descr;
-> --
-> 1.7.9.5
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-[1]
-https://elixir.bootlin.com/linux/v4.17-rc1/source/drivers/mtd/nand/raw/nand=
-_base.c#L1204
+Applied to mtd/next.
 
 Thanks,
-Miqu=C3=A8l
 
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Boris
+
+> ---
+> v3:
+>   - Rebase to v4.17-rc1,
+> 
+> v2:
+>   - Add Reviewed-by, Acked-by,
+>   - Drop RFC state,
+>   - Drop new dependency of MTD_NAND_MARVELL on HAS_DMA,
+>   - Split per subsystem.
+> ---
+>  drivers/mtd/nand/raw/Kconfig | 8 ++------
+>  drivers/mtd/spi-nor/Kconfig  | 2 +-
+>  2 files changed, 3 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index 19a2b283fbbe627e..6871ff0fd300bb81 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -46,7 +46,7 @@ config MTD_NAND_DENALI
+>  config MTD_NAND_DENALI_PCI
+>          tristate "Support Denali NAND controller on Intel Moorestown"
+>  	select MTD_NAND_DENALI
+> -	depends on HAS_DMA && PCI
+> +	depends on PCI
+>          help
+>            Enable the driver for NAND flash on Intel Moorestown, using the
+>            Denali NAND controller core.
+> @@ -152,7 +152,6 @@ config MTD_NAND_S3C2410_CLKSTOP
+>  config MTD_NAND_TANGO
+>  	tristate "NAND Flash support for Tango chips"
+>  	depends on ARCH_TANGO || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables the NAND Flash controller on Tango chips.
+>  
+> @@ -285,7 +284,7 @@ config MTD_NAND_MARVELL
+>  	tristate "NAND controller support on Marvell boards"
+>  	depends on PXA3xx || ARCH_MMP || PLAT_ORION || ARCH_MVEBU || \
+>  		   COMPILE_TEST
+> -	depends on HAS_IOMEM && HAS_DMA
+> +	depends on HAS_IOMEM
+>  	help
+>  	  This enables the NAND flash controller driver for Marvell boards,
+>  	  including:
+> @@ -447,7 +446,6 @@ config MTD_NAND_SH_FLCTL
+>  	tristate "Support for NAND on Renesas SuperH FLCTL"
+>  	depends on SUPERH || COMPILE_TEST
+>  	depends on HAS_IOMEM
+> -	depends on HAS_DMA
+>  	help
+>  	  Several Renesas SuperH CPU has FLCTL. This option enables support
+>  	  for NAND Flash using FLCTL.
+> @@ -515,7 +513,6 @@ config MTD_NAND_SUNXI
+>  config MTD_NAND_HISI504
+>  	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables support for NAND controller on Hisilicon SoC Hip04.
+>  
+> @@ -529,7 +526,6 @@ config MTD_NAND_QCOM
+>  config MTD_NAND_MTK
+>  	tristate "Support for NAND controller on MTK SoCs"
+>  	depends on ARCH_MEDIATEK || COMPILE_TEST
+> -	depends on HAS_DMA
+>  	help
+>  	  Enables support for NAND controller on MTK SoCs.
+>  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+> diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+> index 89da88e591215db1..c493b8230a38c059 100644
+> --- a/drivers/mtd/spi-nor/Kconfig
+> +++ b/drivers/mtd/spi-nor/Kconfig
+> @@ -71,7 +71,7 @@ config SPI_FSL_QUADSPI
+>  config SPI_HISI_SFC
+>  	tristate "Hisilicon SPI-NOR Flash Controller(SFC)"
+>  	depends on ARCH_HISI || COMPILE_TEST
+> -	depends on HAS_IOMEM && HAS_DMA
+> +	depends on HAS_IOMEM
+>  	help
+>  	  This enables support for hisilicon SPI-NOR flash controller.
+>  
