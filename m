@@ -1,33 +1,24 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAVDS-0001M9-4q
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 06:44:58 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Mon, 23 Apr 2018 12:14:32 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
- parameter
-In-Reply-To: <20180422183440.3ce7e7aa@xps13>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAVPH-0003Lt-6r
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 06:57:01 +0000
+Date: Mon, 23 Apr 2018 08:56:35 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 6/9] mtd: nand: qcom: support for checking read errors
+ for last codeword
+Message-ID: <20180423085635.794037ef@xps13>
+In-Reply-To: <10ef5f58aceed5bb5069dad6c1b1b0e3@codeaurora.org>
 References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
- <20180406143133.67f33d33@xps13>
- <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
- <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
- <20180410100745.625d66f8@bbrezillon>
- <c1cb40d0d24e50657308a40bb8398d35@codeaurora.org>
- <20180422183440.3ce7e7aa@xps13>
-Message-ID: <689fa334d7105e251463e58e1aef3ec8@codeaurora.org>
+ <1522845745-6624-7-git-send-email-absahu@codeaurora.org>
+ <20180410120542.24ea9ddb@xps13>
+ <d9f06fe59fa76d2dbf97cb0b5de75bc7@codeaurora.org>
+ <20180422181530.63f39278@xps13>
+ <10ef5f58aceed5bb5069dad6c1b1b0e3@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,139 +28,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-22 22:04, Miquel Raynal wrote:
-> Hi Abhishek,
-> 
-> On Thu, 12 Apr 2018 15:29:48 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
-> 
->> On 2018-04-10 13:37, Boris Brezillon wrote:
->> > On Tue, 10 Apr 2018 09:55:58 +0200
->> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->> > >> > Hi Abhishek,
->> >> >
->> >> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
->> >> > <absahu@codeaurora.org> wrote:
->> >> >
->> >> > > On 2018-04-06 18:01, Miquel Raynal wrote:
->> >> > > > Hi Abhishek,
->> >> > > >
->> >> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
->> >> > > > <absahu@codeaurora.org> wrote:
->> >> > > >
->> >> > > >> Currently the driver uses the ECC strength specified in
->> >> > > >> device tree. The ONFI or JEDEC device parameter page
->> >> > > >> contains the ‘ECC correctability’ field which indicates the
->> >> > > >> number of bits that the host should be able to correct per
->> >> > > >> 512 bytes of data.
->> >> > > >
->> >> > > > This is misleading. This field is not about the controller but rather
->> >> > > > the chip requirements in terms of minimal strength for nominal use.
->> >> > > >
->> >> > >
->> >> > >   Thanks Miquel.
->> >> > >
->> >> > >   Yes. Its NAND chip requirement. I have used the description for
->> >> > >   NAND ONFI param page
->> >> > >
->> >> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
->> >> > >   This field indicates the number of bits that the host should be
->> >> > >   able to correct per 512 bytes of data.
->> >> > >
->> >> > > >> The ecc correctability is assigned in
->> >> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
->> >> > > >> supports 4/8-bit ecc correction. The Same kind of board
->> >> > > >> can have different NAND parts so use the ecc strength
->> >> > > >> from device parameter (if its non zero) instead of
->> >> > > >> device tree.
->> >> > > >
->> >> > > > That is not what you do.
->> >> > > >
->> >> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
->> >> > > > NAND chip requires at least 8-bit/chunk strength.
->> >> > > >
->> >> > > > The DT property is here to force a strength. Otherwise, Linux will
->> >> > > > propose to the NAND controller to use the minimum strength required by
->> >> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
->> >> > > > table).
->> >> > > >
->> >> > >
->> >> > >   The main problem is that the same kind of boards can have different
->> >> > >   NAND parts.
->> >> > >
->> >> > >   Lets assume, we have following 2 cases.
->> >> > >
->> >> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
->> >> > >      will be zero. In this case, the ecc->strength from DT
->> >> > >      will be used
->> >> >
->> >> > No, the strength from DT will always be used if the property is
->> >> > present, no matter the type of chip.
->> >> >
->> >> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
->> >> > >      Since QCOM nand controller can not support
->> >> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
->> >> > >      itself instead of failing NAND boot completely.
->> >> >
->> >> > I understand that. But this is still not what you do.
->> >> >
->> >> > >
->> >> > > > IMHO, you have two solutions:
->> >> > > > 1/ Remove these properties from the board DT (breaks DT backward
->> >> > > > compatibility though);
->> >> > >
->> >> > >   - nand-ecc-strength: This is optional property in nand.txt and
->> >> > >     Required property in qcom_nandc.txt.
->> >> >
->> >> > Well, this property is not controller specific but chip specific. The
->> >> > controller driver does not rely on it, so this property should not be
->> >> > required.
->> >> >
->> >> > > We can't remove since
->> >> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
->> >> > >     from DT only.
->> >> >
->> >> > We can remove it and let the core handle this (as this is generic to
->> >> > all raw NANDs and not specific to this controller driver). Try it out!
->> 
->>   Thanks Boris and Miquel for your inputs.
->> 
->>   Just want to confirm if already its implemented in core layer
->>   or shall I explore regrading this option.
->> 
->>   I checked by removing this property alone from dtsi and it was
->>   failing with
->> 
->>   "Driver must set ecc.strength when using hardware ECC"
->> 
->>   I checked the code in nand_base.c also but couldn't get
->>   anything related with this.
-> 
-> I don't know exactly what you did but you should have a look at what
-> lead you to this path:
-> https://elixir.bootlin.com/linux/v4.17-rc1/source/drivers/mtd/nand/raw/nand_base.c#L6421
-> 
+Hi Abhishek,
 
-  Our driver supports both ECC strength 4 bits and 8 bits
-  and normally till now, we need to specify the ecc strength in device 
-tree.
+On Mon, 23 Apr 2018 11:38:27 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-  Now, since same board can have different ECC strength chip so we
-  can't fix the ecc strength in device tree and we need to look
-  the required correction in ONFI param.
+> On 2018-04-22 21:45, Miquel Raynal wrote:
+> > Hi Abhishek, =20
+> > > On Thu, 12 Apr 2018 12:47:42 +0530, Abhishek Sahu =20
+> > <absahu@codeaurora.org> wrote: =20
+> > >> On 2018-04-10 15:35, Miquel Raynal wrote:
+> >> > Hi Abhishek, =20
+> >> > > On Wed,  4 Apr 2018 18:12:22 +0530, Abhishek Sahu =20
+> >> > <absahu@codeaurora.org> wrote: =20
+> >> > >> Add boolean function argument in parse_read_errors to identify =20
+> >> >> whether the read error has been called for complete page read or
+> >> >> only last codeword read. This will help in subsequent patches to
+> >> >> detect ECC errors in case of last codeword read.
+> >> > > Can you explain when this happen: "last codeword read"? I don't se=
+e the =20
+> >> > use case. =20
+> >> >>   Hi Miquel,
+> >> >>   This is happening inside qcom_nandc_write_oob where the last subp=
+age =20
+> >>   data is being copied first.
+> > > I still don't understand the use case.
+> > > What to you mean last 'subpage copied first'? =20
+> >  =20
+>   Hi Miquel,
+>=20
+>   According to current implementation
+>=20
+>   QCOM NAND layout protect 16 bytes of available oob with ECC also.
+>   When ecc->write_oob (qcom_nandc_write_oob) is being called
+>   then it can't update just OOB bytes.
+>=20
+>   It needs to first read the last subpage which includes old
+>   OOB bytes. Then it updates the old OOB bytes with new one
+>   and then again write the data back.
+>=20
+>   You can refer function comment of qcom_nandc_write_oob
+>   for the same.
 
-  We can have some code in generic layer which
+Oh well, I think I see where we misunderstood: ->write_oob only asks
+you to write some data, that is all. The user is supposed to know
+which type of flash he is handling. If he writes a section that
+has already been written, well, bad for him. But you certainly don't
+want to handle that in the controller driver directly.
 
-  1. Provides the way to specify the supported strength in DT by NAND
-     controller (for our case, it is 4 and 8)
-  2. Read the chip ONFI/JEDEC Param and choose the configure to use
-     controller strength according to its requirement.
-  3. For Non ONFI/JEDEC devices, choose the maximum strength according
-     to OOB bytes.
+>=20
+>   But, to me, it looks like this read is unnecessary since
+>   all the other bytes will be 0xff only. Require your help
+>   in confirming the same and then I will remove that read
+>   last subpage implementation.
 
-  I just want to check if we have something like this already in place
-  or I can add the same in generic code so that this can be used by
-  other drivers also.
+I think you can drop it.
 
-  Thanks,
-  Abhishek
+Thanks,
+Miqu=C3=A8l
+
+>=20
+>   Thanks,
+>   Abhishek
+>=20
+> >> >>     host->use_ecc =3D true;
+> >> >>     clear_bam_transaction(nandc); =20
+> >>     ret =3D copy_last_cw(host, page);
+> >>     if (ret)
+> >>         return ret; =20
+> >> >>   you can refer function comment of qcom_nandc_write_oob  for more =
+=20
+> >>   detail. =20
+> >> >>   Thanks, =20
+> >>   Abhishek =20
+
+
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
