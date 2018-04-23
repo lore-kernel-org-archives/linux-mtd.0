@@ -1,15 +1,23 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from da1vs01.rockwellcollins.com ([205.175.227.27])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAg0y-0007XI-O6
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 18:16:38 +0000
-From: thor.thayer@linux.intel.com
-To: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, thor.thayer@linux.intel.com,
- stable@vger.kernel.org
-Subject: [PATCHv3] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
-Date: Mon, 23 Apr 2018 12:45:11 -0500
-Message-Id: <1524505511-4780-1-git-send-email-thor.thayer@linux.intel.com>
+ id 1fAhZC-0006tn-OU
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 19:56:13 +0000
+Received: by mail-ot0-f200.google.com with SMTP id m22-v6so8531498otf.3
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2018 12:55:49 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180422190743.36e65119@xps13>
+References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
+ <20180422190743.36e65119@xps13>
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Mon, 23 Apr 2018 14:55:48 -0500
+Message-ID: <CADFuHZ4i52AxD6G3xf_RyWD7Z5bs-2-zXddMevBsKYkT=JTWCg@mail.gmail.com>
+Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
+ driver for ONFI nand
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,84 +27,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thor Thayer <thor.thayer@linux.intel.com>
+On Sun, Apr 22, 2018 at 12:07 PM, Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> Hi Ronak,
+>
+> On Tue, 17 Apr 2018 14:10:59 -0500, Ronak Desai
+> <ronak.desai@rockwellcollins.com> wrote:
+>
+>> This patch adds set feature command (EFh) support in Freescale IFC nand
+>> controller driver.
+>>
+>> The SET FEATURES (EFh) command is used to modify the target's default
+>> power-on behavior. This command uses one-byte feature address to
+>> determine which sub-feature parameters will be modified.
+>>
+>
+> Could you rebase on top of 4.17-rc1 at least, this file has moved and
+> the core changed about set/get_features() handling.
+>
+> Also while you are at it, the prefix should be
+> 'mtd: rawnand: fsl_ifc: '.
+>
+Agree, I will do that.
 
-The current Cadence QSPI driver caused a kernel panic when loading
-a Root Filesystem from QSPI. The problem was caused by reading more
-bytes than needed because the QSPI operated on 4 bytes at a time.
-<snip>
-[    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
-[    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
-[    7.956247]
-[    7.966046] Unable to handle kernel paging request at virtual
-address bfe08002
-[    7.973239] pgd = eebfc000
-[    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
-</snip>
-Notice above how only 1 byte needed to be read but by reading 4 bytes
-into the end of a mapped page, an unrecoverable page fault occurred.
+>> Signed-off-by: Ronak Desai <ronak.desai@rockwellcollins.com>
+>> ---
+>>  drivers/mtd/nand/fsl_ifc_nand.c |   51 ++++++++++++++++++++++++++++++++=
++++++++
+>>  1 file changed, 51 insertions(+)
+>>
+>> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_=
+nand.c
+>> index af85c4b..20b97ef 100644
+>> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+>> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+>> @@ -613,6 +613,23 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, u=
+nsigned int command,
+>>               fsl_ifc_run_command(mtd);
+>>               return;
+>>
+>> +     case NAND_CMD_SET_FEATURES: {
+>> +             ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+>> +                     (IFC_FIR_OP_UA << IFC_NAND_FIR0_OP1_SHIFT) |
+>> +                     (IFC_FIR_OP_WBCD << IFC_NAND_FIR0_OP2_SHIFT),
+>> +                     &ifc->ifc_nand.nand_fir0);
+>> +
+>> +             ifc_out32((NAND_CMD_SET_FEATURES << IFC_NAND_FCR0_CMD0_SHI=
+FT),
+>> +                     &ifc->ifc_nand.nand_fcr0);
+>> +
+>> +             ifc_out32(column, &ifc->ifc_nand.row3);
+>> +
+>> +              /* Write only 4 bytes from flash buffer */
+>> +             ifc_out32(4, &ifc->ifc_nand.nand_fbcr);
+>> +             fsl_ifc_run_command(mtd);
+>> +             return;
+>> +     }
+>> +
+>>       case NAND_CMD_RNDOUT: {
+>>               __le16 Tccs =3D 0;
+>>               chip->onfi_version ? (Tccs =3D chip->onfi_params.t_ccs)
+>> @@ -905,6 +922,39 @@ static void fsl_ifc_sram_init(struct fsl_ifc_mtd *p=
+riv)
+>>       ifc_out32(csor_ext, &ifc_global->csor_cs[cs].csor_ext);
+>>  }
+>>
+>> +/**
+>> + * fsl_ifc_onfi_set_features- set features for ONFI nand
+>> + * @mtd: MTD device structure
+>> + * @chip: nand chip info structure
+>> + * @addr: feature address.
+>> + * @subfeature_param: the subfeature parameters, a four bytes array.
+>> + */
+>> +static int fsl_ifc_onfi_set_features(struct mtd_info *mtd, struct nand_=
+chip *chip,
+>> +                     int addr, uint8_t *subfeature_param)
+>> +{
+>> +     int status;
+>> +     int i;
+>> +
+>> +#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
+>> +     if (!chip->onfi_version ||
+>> +         !(le16_to_cpu(chip->onfi_params.opt_cmd)
+>> +           & ONFI_OPT_CMD_SET_GET_FEATURES))
+>> +             return -EINVAL;
+>> +#endif
+>
+> No need to do that, the core will take care of it, see [1].
 
-This patch uses a temporary buffer to hold the 4 bytes read and then
-copies only the bytes required into the buffer. A min() function is
-used to limit the length to prevent buffer overflows.
+Agree, I will remove this.
+>
+>> +
+>> +     /* Want data from start of the buffer */
+>> +     set_addr(mtd, 0, 0, 0);
+>
+> This is the only thing that differs from the core's implementation. I
+> see most of the time it is called from ->cmdfunc(), could you move it
+> there? If yes you could get rid of this entire hook and rely on the
+> core's function.
+>
+NAND_CMD_SET_FEATURES command sends the sub-feature param from flash
+buffer on the provided address and I added this here because I wanted
+to make sure
+that the data is set from start of the buffer. I looked at the core's
+implementation
+and I see that the NAND_CMD_SET_FEATURES  command is called first and then
+the data is filled into the buffer which will not work in case of my
+implementation.
+So, I will have to keep this here and the function, please suggest. I
+will wait for your
+feedback before submitting V2.  Moreover, I would suggest to check
+sequence in core's
+implementation as the command should run after setting the data and not bef=
+ore.
+>> +
+>> +     for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+>> +             chip->write_byte(mtd, subfeature_param[i]);
+>> +
+>> +     chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);
+>> +
+>> +     status =3D chip->waitfunc(mtd, chip);
+>> +     if (status & NAND_STATUS_FAIL)
+>> +             return -EIO;
+>> +     return 0;
+>> +}
+>>  static int fsl_ifc_chip_init(struct fsl_ifc_mtd *priv)
+>>  {
+>>       struct fsl_ifc_ctrl *ctrl =3D priv->ctrl;
+>> @@ -932,6 +982,7 @@ static int fsl_ifc_chip_init(struct fsl_ifc_mtd *pri=
+v)
+>>       chip->select_chip =3D fsl_ifc_select_chip;
+>>       chip->cmdfunc =3D fsl_ifc_cmdfunc;
+>>       chip->waitfunc =3D fsl_ifc_wait;
+>> +     chip->onfi_set_features =3D fsl_ifc_onfi_set_features;
+>
+> Should be chip->set_features now. And fsl_ifc_onfi_set_features() could
+> become fsl_ifc_set_features().
+>
+> If the driver does not support get_features, you should add a:
+>
+>         chip->get_features =3D nand_get_set_features_notsupp;
+>
+Agree, I will update this.
+>>
+>>       chip->bbt_td =3D &bbt_main_descr;
+>>       chip->bbt_md =3D &bbt_mirror_descr;
+>> --
+>> 1.7.9.5
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+> [1]
+> https://elixir.bootlin.com/linux/v4.17-rc1/source/drivers/mtd/nand/raw/na=
+nd_base.c#L1204
+>
+> Thanks,
+> Miqu=C3=A8l
+>
+> --
+> Miquel Raynal, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
 
-Request testing of this patch on other platforms. This was tested
-on the Intel Arria10 SoCFPGA DevKit.
 
-Fixes: 0cf1725676a97fc8 ("mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl")
-Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
----
-v2  Changes to only write dangling bytes at end of transfer since
-      previous patch may have multiple dangling byte transfers.
-    Remove write patch since no errors reported and write timeout
-      needs more investigation.
-v3  Add Fixes tag Cc-stable tag.
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 2f3a4d4232b3..c3f7aaa5d18f 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -507,7 +507,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 	void __iomem *reg_base = cqspi->iobase;
- 	void __iomem *ahb_base = cqspi->ahb_base;
- 	unsigned int remaining = n_rx;
-+	unsigned int mod_bytes = n_rx % 4;
- 	unsigned int bytes_to_read = 0;
-+	u8 *rxbuf_end = rxbuf + n_rx;
- 	int ret = 0;
- 
- 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
-@@ -536,11 +538,24 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 		}
- 
- 		while (bytes_to_read != 0) {
-+			unsigned int word_remain = round_down(remaining, 4);
-+
- 			bytes_to_read *= cqspi->fifo_width;
- 			bytes_to_read = bytes_to_read > remaining ?
- 					remaining : bytes_to_read;
--			ioread32_rep(ahb_base, rxbuf,
--				     DIV_ROUND_UP(bytes_to_read, 4));
-+			bytes_to_read = round_down(bytes_to_read, 4);
-+			/* Read 4 byte word chunks then single bytes */
-+			if (bytes_to_read) {
-+				ioread32_rep(ahb_base, rxbuf,
-+					     (bytes_to_read / 4));
-+			} else if (!word_remain && mod_bytes) {
-+				unsigned int temp = ioread32(ahb_base);
-+
-+				bytes_to_read = mod_bytes;
-+				memcpy(rxbuf, &temp, min((unsigned int)
-+							 (rxbuf_end - rxbuf),
-+							 bytes_to_read));
-+			}
- 			rxbuf += bytes_to_read;
- 			remaining -= bytes_to_read;
- 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
--- 
-2.7.4
+--=20
+Ronak A Desai
+Sr. Software Engineer
+Airborne Information Solutions / RC Linux Platform Software
+MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
+
+Phone : 319-263-2667 / VPN : 263-2667
+
+Ronak.Desai@rockwellcollins.com
+
+https://www.rockwellcollins.com/
