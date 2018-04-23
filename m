@@ -1,25 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAaGy-0007bI-BH
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 12:08:46 +0000
-Date: Mon, 23 Apr 2018 14:08:21 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Quentin Schulz <quentin.schulz@bootlin.com>
-Cc: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] ubi: introduce ubi.nocheck parameter to skip CRC
- check when attaching ubi vol
-Message-ID: <20180423140821.3992df89@bbrezillon>
-In-Reply-To: <20180423094009.5cjvg7jxvwiegq2g@qschulz>
-References: <95e04a201ac4ef82e68ce8e0c4f548b193e51b55.1524214122.git-series.quentin.schulz@bootlin.com>
- <6551534f88b3aa77cc377c4270c4ddf7fe92cdf4.1524214122.git-series.quentin.schulz@bootlin.com>
- <20180420191924.18b81e96@bbrezillon>
- <20180423094009.5cjvg7jxvwiegq2g@qschulz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-qk0-x241.google.com ([2607:f8b0:400d:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAaJC-00039Q-Ie
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 12:11:04 +0000
+Received: by mail-qk0-x241.google.com with SMTP id s78so15839721qkl.8
+ for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2018 05:10:50 -0700 (PDT)
+From: Fabio Estevam <festevam@gmail.com>
+To: boris.brezillon@bootlin.com
+Cc: marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] mtd: maps: pismo: Remove owner assignment from i2c_driver
+Date: Mon, 23 Apr 2018 09:07:13 -0300
+Message-Id: <1524485233-20502-1-git-send-email-festevam@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 23 Apr 2018 11:40:09 +0200
-Quentin Schulz <quentin.schulz@bootlin.com> wrote:
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-> Hi Boris,
-> 
-> On Fri, Apr 20, 2018 at 07:19:24PM +0200, Boris Brezillon wrote:
-> > On Fri, 20 Apr 2018 10:52:41 +0200
-> > Quentin Schulz <quentin.schulz@bootlin.com> wrote:
-> >   
-> > > There's already ECC on NAND pages so there may be no need for one to
-> > > check the CRC of a UBI volume.  
-> > 
-> > That's true that ECC can help detecting corruptions, but I don't think
-> > this is the actual reason for disabling CRC check at volume open time.
-> > The actual reason for doing that is when the UBI volume user (in our
-> > case the squashfs FS) is also checking data consistency on its own
-> > (which is the case for squashfs).
-> >   
-> > > 
-> > > Let's introduce a ubi.nocheck parameter that let one skip the CRC check
-> > > when attaching a UBI volume.
-> > > 
-> > > This also drastically speeds kernel boot by removing a potentially
-> > > useless check, e.g. I gained 3.2s on boot time of a SPEAr600-based board
-> > > for a ~20MB UBI volume used as rootfs.  
-> > 
-> > Can you give the old and new open/mount time instead of telling how
-> > much you gained on the whole boot-time?  
-> 
-> # grabserial -v -d /dev/ttyUSB0 -t "Starting kernel"
-> 
-> Kernel command line is:
-> rootfstype=squashfs root=/dev/ubiblock0_0 ubi.mtd=ubi ubi.block=0,rootfs mtdparts=nand:92M@36M(ubi)
-> 
-> Current behaviour (CRC checking):
-> [2.335558 0.017867] ubi0: attaching mtd7
-> [2.504021 0.168463] ubi0: scanning is finished
-> [2.519824 0.015803] ubi0: attached mtd7 (name "ubi", size 92 MiB)
-> [2.523987 0.004163] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-> [2.530447 0.006460] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> [2.535836 0.005389] ubi0: VID header offset: 512 (aligned 512), data offset: 2048
-> [2.541601 0.005765] ubi0: good PEBs: 736, bad PEBs: 0, corrupted PEBs: 0
-> [2.547923 0.006322] ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
-> [2.554223 0.006300] ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 463835917
-> [2.562460 0.008237] ubi0: available PEBs: 0, total reserved PEBs: 736, PEBs reserved for bad PEB handling: 20
-> [2.569779 0.007319] ubi0: background thread "ubi_bgt0d" started, PID 546
-> [4.550142 1.980363] block ubiblock0_0: created from ubi0:0(rootfs)
-> 
-> Skipping CRC check (ubi.nocheck=0,rootfs):
-> [2.349903 0.019126] ubi0: attaching mtd7
-> [2.516995 0.167092] ubi0: scanning is finished
-> [2.527101 0.010106] ubi0: skipping CRC check for volume rootfs
-> [2.536719 0.009618] ubi0: attached mtd7 (name "ubi", size 92 MiB)
-> [2.541859 0.005140] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 129024 bytes
-> [2.547744 0.005885] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 512
-> [2.552990 0.005246] ubi0: VID header offset: 512 (aligned 512), data offset: 2048
-> [2.560497 0.007507] ubi0: good PEBs: 736, bad PEBs: 0, corrupted PEBs: 0
-> [2.568010 0.007513] ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
-> [2.574723 0.006713] ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 463835917
-> [2.586223 0.011500] ubi0: available PEBs: 0, total reserved PEBs: 736, PEBs reserved for bad PEB handling: 20
-> [2.592365 0.006142] ubi0: background thread "ubi_bgt0d" started, PID 545
-> [2.595960 0.003595] block ubiblock0_0: created from ubi0:0(rootfs)
-> 
-> It seems like it's more in the magnitude of 2s rather than 3, but still.
+Structure i2c_driver does not need to set the owner field, as this will
+be populated by the driver core.
 
-No, I meant add this information to the commit message since telling
-how many seconds are saved on the absolute boot-time does not give any
-information on the before vs after ratio.
+Generated by scripts/coccinelle/api/platform_no_drv_owner.cocci.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ drivers/mtd/maps/pismo.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/maps/pismo.c b/drivers/mtd/maps/pismo.c
+index dc6df9a..c065d79 100644
+--- a/drivers/mtd/maps/pismo.c
++++ b/drivers/mtd/maps/pismo.c
+@@ -265,7 +265,6 @@ MODULE_DEVICE_TABLE(i2c, pismo_id);
+ static struct i2c_driver pismo_driver = {
+ 	.driver	= {
+ 		.name	= "pismo",
+-		.owner	= THIS_MODULE,
+ 	},
+ 	.probe		= pismo_probe,
+ 	.remove		= pismo_remove,
+-- 
+2.7.4
