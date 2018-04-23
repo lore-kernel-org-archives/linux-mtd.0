@@ -1,15 +1,21 @@
-Received: from mga12.intel.com ([192.55.52.136])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAf8B-000292-1r
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 17:20:00 +0000
-From: thor.thayer@linux.intel.com
+ id 1fAfTg-00053T-BP
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 17:42:18 +0000
+Reply-To: thor.thayer@linux.intel.com
+Subject: Re: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
 To: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
  boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, thor.thayer@linux.intel.com,
- stable@vger.kernel.org
-Subject: [PATCH] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
-Date: Mon, 23 Apr 2018 12:22:16 -0500
-Message-Id: <1524504136-4395-1-git-send-email-thor.thayer@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org
+References: <1524504136-4395-1-git-send-email-thor.thayer@linux.intel.com>
+From: Thor Thayer <thor.thayer@linux.intel.com>
+Message-ID: <048fcfb3-cd0a-2c5d-eca6-1295579d1d68@linux.intel.com>
+Date: Mon, 23 Apr 2018 12:44:49 -0500
+MIME-Version: 1.0
+In-Reply-To: <1524504136-4395-1-git-send-email-thor.thayer@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,84 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thor Thayer <thor.thayer@linux.intel.com>
+On 04/23/2018 12:22 PM, thor.thayer@linux.intel.com wrote:
+> From: Thor Thayer <thor.thayer@linux.intel.com>
+> 
 
-The current Cadence QSPI driver caused a kernel panic when loading
-a Root Filesystem from QSPI. The problem was caused by reading more
-bytes than needed because the QSPI operated on 4 bytes at a time.
 <snip>
-[    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
-[    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
-[    7.956247]
-[    7.966046] Unable to handle kernel paging request at virtual
-address bfe08002
-[    7.973239] pgd = eebfc000
-[    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
-</snip>
-Notice above how only 1 byte needed to be read but by reading 4 bytes
-into the end of a mapped page, an unrecoverable page fault occurred.
-
-This patch uses a temporary buffer to hold the 4 bytes read and then
-copies only the bytes required into the buffer. A min() function is
-used to limit the length to prevent buffer overflows.
-
-Request testing of this patch on other platforms. This was tested
-on the Intel Arria10 SoCFPGA DevKit.
-
-Fixes: 0cf1725676a97fc8 ("mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl")
-Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
----
-v2  Changes to only write dangling bytes at end of transfer since
-      previous patch may have multiple dangling byte transfers.
-    Remove write patch since no errors reported and write timeout
-      needs more investigation.
-v3  Add Fixes tag Cc-stable tag.
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index 2f3a4d4232b3..c3f7aaa5d18f 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -507,7 +507,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 	void __iomem *reg_base = cqspi->iobase;
- 	void __iomem *ahb_base = cqspi->ahb_base;
- 	unsigned int remaining = n_rx;
-+	unsigned int mod_bytes = n_rx % 4;
- 	unsigned int bytes_to_read = 0;
-+	u8 *rxbuf_end = rxbuf + n_rx;
- 	int ret = 0;
- 
- 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
-@@ -536,11 +538,24 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 		}
- 
- 		while (bytes_to_read != 0) {
-+			unsigned int word_remain = round_down(remaining, 4);
-+
- 			bytes_to_read *= cqspi->fifo_width;
- 			bytes_to_read = bytes_to_read > remaining ?
- 					remaining : bytes_to_read;
--			ioread32_rep(ahb_base, rxbuf,
--				     DIV_ROUND_UP(bytes_to_read, 4));
-+			bytes_to_read = round_down(bytes_to_read, 4);
-+			/* Read 4 byte word chunks then single bytes */
-+			if (bytes_to_read) {
-+				ioread32_rep(ahb_base, rxbuf,
-+					     (bytes_to_read / 4));
-+			} else if (!word_remain && mod_bytes) {
-+				unsigned int temp = ioread32(ahb_base);
-+
-+				bytes_to_read = mod_bytes;
-+				memcpy(rxbuf, &temp, min((unsigned int)
-+							 (rxbuf_end - rxbuf),
-+							 bytes_to_read));
-+			}
- 			rxbuf += bytes_to_read;
- 			remaining -= bytes_to_read;
- 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
--- 
-2.7.4
+Please disregard - the patch version is incorrect. I will fix and resubmit.
