@@ -1,25 +1,15 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAfqc-0002bM-Br
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 18:06:00 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org, Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>, linux-spi@vger.kernel.org
-Subject: Applied "spi: Expose spi_{map,
- unmap}_buf() for internal use" to the spi tree
-In-Reply-To: <20180422183522.11118-2-boris.brezillon@bootlin.com>
-Message-Id: <E1fAfqR-0004M5-3E@debutante>
-Date: Mon, 23 Apr 2018 19:05:43 +0100
+ id 1fAg0y-0007XI-O6
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 18:16:38 +0000
+From: thor.thayer@linux.intel.com
+To: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, thor.thayer@linux.intel.com,
+ stable@vger.kernel.org
+Subject: [PATCHv3] mtd: spi-nor: Fix Cadence QSPI page fault kernel panic
+Date: Mon, 23 Apr 2018 12:45:11 -0500
+Message-Id: <1524505511-4780-1-git-send-email-thor.thayer@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,157 +19,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch
+From: Thor Thayer <thor.thayer@linux.intel.com>
 
-   spi: Expose spi_{map,unmap}_buf() for internal use
+The current Cadence QSPI driver caused a kernel panic when loading
+a Root Filesystem from QSPI. The problem was caused by reading more
+bytes than needed because the QSPI operated on 4 bytes at a time.
+<snip>
+[    7.947754] spi_nor_read[1048]:from 0x037cad74, len 1 [bfe07fff]
+[    7.956247] cqspi_read[910]:offset 0x58502516, buffer=bfe07fff
+[    7.956247]
+[    7.966046] Unable to handle kernel paging request at virtual
+address bfe08002
+[    7.973239] pgd = eebfc000
+[    7.975931] [bfe08002] *pgd=2fffb811, *pte=00000000, *ppte=00000000
+</snip>
+Notice above how only 1 byte needed to be read but by reading 4 bytes
+into the end of a mapped page, an unrecoverable page fault occurred.
 
-has been applied to the spi tree at
+This patch uses a temporary buffer to hold the 4 bytes read and then
+copies only the bytes required into the buffer. A min() function is
+used to limit the length to prevent buffer overflows.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git 
+Request testing of this patch on other platforms. This was tested
+on the Intel Arria10 SoCFPGA DevKit.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 46336966bf0852d76f76c1292c057635b05dbb1b Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-Date: Sun, 22 Apr 2018 20:35:14 +0200
-Subject: [PATCH] spi: Expose spi_{map,unmap}_buf() for internal use
-
-spi_{map,unmap}_buf() are needed by the spi-mem logic that is about to
-be introduced to prepare data buffer for DMA operations.
-
-Remove the static specifier on these functions and add their prototypes
-to drivers/spi/internals.h. We do not export the symbols here because
-both SPI_MEM and SPI can't be enabled as modules and we'd like to
-prevent controller/device drivers from using these functions.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 0cf1725676a97fc8 ("mtd: spi-nor: cqspi: Fix build on arches missing readsl/writesl")
+Signed-off-by: Thor Thayer <thor.thayer@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Marek Vasut <marek.vasut@gmail.com>
 ---
- drivers/spi/internals.h | 41 +++++++++++++++++++++++++++++++++++++++++
- drivers/spi/spi.c       | 25 +++++++------------------
- 2 files changed, 48 insertions(+), 18 deletions(-)
- create mode 100644 drivers/spi/internals.h
+v2  Changes to only write dangling bytes at end of transfer since
+      previous patch may have multiple dangling byte transfers.
+    Remove write patch since no errors reported and write timeout
+      needs more investigation.
+v3  Add Fixes tag Cc-stable tag.
+---
+ drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/spi/internals.h b/drivers/spi/internals.h
-new file mode 100644
-index 000000000000..dbe56c77b464
---- /dev/null
-+++ b/drivers/spi/internals.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright (C) 2018 Exceet Electronics GmbH
-+ * Copyright (C) 2018 Bootlin
-+ *
-+ * Author: Boris Brezillon <boris.brezillon@bootlin.com>
-+ *
-+ * Helpers needed by the spi or spi-mem logic. Should not be used outside of
-+ * spi-mem.c and spi.c.
-+ */
-+
-+#ifndef __LINUX_SPI_INTERNALS_H
-+#define __LINUX_SPI_INTERNALS_H
-+
-+#include <linux/device.h>
-+#include <linux/dma-direction.h>
-+#include <linux/scatterlist.h>
-+#include <linux/spi/spi.h>
-+
-+#ifdef CONFIG_HAS_DMA
-+int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
-+		struct sg_table *sgt, void *buf, size_t len,
-+		enum dma_data_direction dir);
-+void spi_unmap_buf(struct spi_controller *ctlr, struct device *dev,
-+		   struct sg_table *sgt, enum dma_data_direction dir);
-+#else /* !CONFIG_HAS_DMA */
-+static inline int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
-+			      struct sg_table *sgt, void *buf, size_t len,
-+			      enum dma_data_direction dir)
-+{
-+	return -EINVAL;
-+}
-+
-+static inline void spi_unmap_buf(struct spi_controller *ctlr,
-+				 struct device *dev, struct sg_table *sgt,
-+				 enum dma_data_direction dir)
-+{
-+}
-+#endif /* CONFIG_HAS_DMA */
-+
-+#endif /* __LINUX_SPI_INTERNALS_H */
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 7b213faa0a2b..86b778d8563e 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -46,6 +46,8 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/spi.h>
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+index 2f3a4d4232b3..c3f7aaa5d18f 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -507,7 +507,9 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 	void __iomem *reg_base = cqspi->iobase;
+ 	void __iomem *ahb_base = cqspi->ahb_base;
+ 	unsigned int remaining = n_rx;
++	unsigned int mod_bytes = n_rx % 4;
+ 	unsigned int bytes_to_read = 0;
++	u8 *rxbuf_end = rxbuf + n_rx;
+ 	int ret = 0;
  
-+#include "internals.h"
+ 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
+@@ -536,11 +538,24 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+ 		}
+ 
+ 		while (bytes_to_read != 0) {
++			unsigned int word_remain = round_down(remaining, 4);
 +
- static DEFINE_IDR(spi_master_idr);
- 
- static void spidev_release(struct device *dev)
-@@ -740,9 +742,9 @@ static void spi_set_cs(struct spi_device *spi, bool enable)
- }
- 
- #ifdef CONFIG_HAS_DMA
--static int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
--		       struct sg_table *sgt, void *buf, size_t len,
--		       enum dma_data_direction dir)
-+int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
-+		struct sg_table *sgt, void *buf, size_t len,
-+		enum dma_data_direction dir)
- {
- 	const bool vmalloced_buf = is_vmalloc_addr(buf);
- 	unsigned int max_seg_size = dma_get_max_seg_size(dev);
-@@ -821,8 +823,8 @@ static int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
- 	return 0;
- }
- 
--static void spi_unmap_buf(struct spi_controller *ctlr, struct device *dev,
--			  struct sg_table *sgt, enum dma_data_direction dir)
-+void spi_unmap_buf(struct spi_controller *ctlr, struct device *dev,
-+		   struct sg_table *sgt, enum dma_data_direction dir)
- {
- 	if (sgt->orig_nents) {
- 		dma_unmap_sg(dev, sgt->sgl, sgt->orig_nents, dir);
-@@ -907,19 +909,6 @@ static int __spi_unmap_msg(struct spi_controller *ctlr, struct spi_message *msg)
- 	return 0;
- }
- #else /* !CONFIG_HAS_DMA */
--static inline int spi_map_buf(struct spi_controller *ctlr, struct device *dev,
--			      struct sg_table *sgt, void *buf, size_t len,
--			      enum dma_data_direction dir)
--{
--	return -EINVAL;
--}
--
--static inline void spi_unmap_buf(struct spi_controller *ctlr,
--				 struct device *dev, struct sg_table *sgt,
--				 enum dma_data_direction dir)
--{
--}
--
- static inline int __spi_map_msg(struct spi_controller *ctlr,
- 				struct spi_message *msg)
- {
+ 			bytes_to_read *= cqspi->fifo_width;
+ 			bytes_to_read = bytes_to_read > remaining ?
+ 					remaining : bytes_to_read;
+-			ioread32_rep(ahb_base, rxbuf,
+-				     DIV_ROUND_UP(bytes_to_read, 4));
++			bytes_to_read = round_down(bytes_to_read, 4);
++			/* Read 4 byte word chunks then single bytes */
++			if (bytes_to_read) {
++				ioread32_rep(ahb_base, rxbuf,
++					     (bytes_to_read / 4));
++			} else if (!word_remain && mod_bytes) {
++				unsigned int temp = ioread32(ahb_base);
++
++				bytes_to_read = mod_bytes;
++				memcpy(rxbuf, &temp, min((unsigned int)
++							 (rxbuf_end - rxbuf),
++							 bytes_to_read));
++			}
+ 			rxbuf += bytes_to_read;
+ 			remaining -= bytes_to_read;
+ 			bytes_to_read = cqspi_get_rd_sram_level(cqspi);
 -- 
-2.17.0
+2.7.4
