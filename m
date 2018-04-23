@@ -1,18 +1,24 @@
-Message-ID: <1524449091.14673.50.camel@mhfsdcap03>
-Subject: Re: [PATCH v2 4/4] mtd: rawnand: mtk: Add new nfc capability
- maximize_fdm_ecc
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-mediatek@lists.infradead.org>, <srv_heupstream@mediatek.com>
-Date: Mon, 23 Apr 2018 10:04:51 +0800
-In-Reply-To: <20180420222350.620e4db7@bbrezillon>
-References: <1523864464-41059-1-git-send-email-xiaolei.li@mediatek.com>
- <1523864464-41059-5-git-send-email-xiaolei.li@mediatek.com>
- <20180420222350.620e4db7@bbrezillon>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAUeU-0006kt-53
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 06:08:39 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 23 Apr 2018 11:38:27 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 6/9] mtd: nand: qcom: support for checking read errors for
+ last codeword
+In-Reply-To: <20180422181530.63f39278@xps13>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-7-git-send-email-absahu@codeaurora.org>
+ <20180410120542.24ea9ddb@xps13>
+ <d9f06fe59fa76d2dbf97cb0b5de75bc7@codeaurora.org>
+ <20180422181530.63f39278@xps13>
+Message-ID: <10ef5f58aceed5bb5069dad6c1b1b0e3@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,87 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
+On 2018-04-22 21:45, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> On Thu, 12 Apr 2018 12:47:42 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
+> 
+>> On 2018-04-10 15:35, Miquel Raynal wrote:
+>> > Hi Abhishek,
+>> > > On Wed,  4 Apr 2018 18:12:22 +0530, Abhishek Sahu
+>> > <absahu@codeaurora.org> wrote:
+>> > >> Add boolean function argument in parse_read_errors to identify
+>> >> whether the read error has been called for complete page read or
+>> >> only last codeword read. This will help in subsequent patches to
+>> >> detect ECC errors in case of last codeword read.
+>> > > Can you explain when this happen: "last codeword read"? I don't see the
+>> > use case.
+>> 
+>>   Hi Miquel,
+>> 
+>>   This is happening inside qcom_nandc_write_oob where the last subpage
+>>   data is being copied first.
+> 
+> I still don't understand the use case.
+> 
+> What to you mean last 'subpage copied first'?
+> 
 
-On Fri, 2018-04-20 at 22:23 +0200, Boris Brezillon wrote:
-> On Mon, 16 Apr 2018 15:41:04 +0800
-> Xiaolei Li <xiaolei.li@mediatek.com> wrote:
-> 
-> > For some MTK NAND chips, BootROM will access more than one byte
-> > ECC protected FDM data, but now we fix ECC protected FDM byte as 1.
-> > This will make some chips be failed to boot up.
-> > 
-> > This patch adds one new nfc capability maximize_fdm_ecc to maximize ECC
-> > protected FDM bytes if it is true.
-> > 
-> > Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-> > ---
-> >  drivers/mtd/nand/raw/mtk_nand.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >  mode change 100644 => 100755 drivers/mtd/nand/raw/mtk_nand.c
-> > 
-> > diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-> > old mode 100644
-> > new mode 100755
-> > index 03a4df2..7025132
-> > --- a/drivers/mtd/nand/raw/mtk_nand.c
-> > +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> > @@ -111,6 +111,7 @@ struct mtk_nfc_caps {
-> >  	u8 pageformat_spare_shift;
-> >  	u8 nfi_clk_div;
-> >  	u8 max_sector;
-> > +	bool maximize_fdm_ecc;
-> >  };
-> >  
-> >  struct mtk_nfc_bad_mark_ctl {
-> > @@ -1151,8 +1152,8 @@ static void mtk_nfc_set_fdm(struct mtk_nfc_fdm *fdm, struct mtd_info *mtd)
-> >  	if (fdm->reg_size > NFI_FDM_MAX_SIZE)
-> >  		fdm->reg_size = NFI_FDM_MAX_SIZE;
-> >  
-> > -	/* bad block mark storage */
-> > -	fdm->ecc_size = 1;
-> > +	/* Reserve at least one byte for bad mark */
-> > +	fdm->ecc_size = nfc->caps->maximize_fdm_ecc ? fdm->reg_size : 1;
-> >  }
-> >  
-> >  static void mtk_nfc_set_bad_mark_ctl(struct mtk_nfc_bad_mark_ctl *bm_ctl,
-> > @@ -1413,6 +1414,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
-> >  	.pageformat_spare_shift = 4,
-> >  	.nfi_clk_div = 1,
-> >  	.max_sector = 16,
-> > +	.maximize_fdm_ecc = false,
-> >  };
-> >  
-> >  static const struct mtk_nfc_caps mtk_nfc_caps_mt2712 = {
-> > @@ -1423,6 +1425,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
-> >  	.pageformat_spare_shift = 16,
-> >  	.nfi_clk_div = 2,
-> >  	.max_sector = 16,
-> > +	.maximize_fdm_ecc = false,
-> >  };
-> >  
-> >  static const struct mtk_nfc_caps mtk_nfc_caps_mt7622 = {
-> > @@ -1433,6 +1436,7 @@ static int mtk_nfc_nand_chips_init(struct device *dev, struct mtk_nfc *nfc)
-> >  	.pageformat_spare_shift = 4,
-> >  	.nfi_clk_div = 1,
-> >  	.max_sector = 8,
-> > +	.maximize_fdm_ecc = false,
-> >  };
-> 
-> So, you introduce a new flag, but all existing SoCs are setting it to
-> false. Can you please send a patch series containing all the
-OK. Because some MTK SoCs that will apply "true" setting have not been
-upstreamed now, so I think it is better to send a patch series in the
-future as your advice.
-I will remove this patch in v3. Sorry for making you confused.
+  Hi Miquel,
 
-Thanks.
-Xiaolei
+  According to current implementation
 
-> modifications, or at least point to a branch containing all the changes
-> you intend to push so that we know why the changes are required?
-> Your first version of this patchset was better in this regard.
-> 
-> >  
-> >  static const struct of_device_id mtk_nfc_id_table[] = {
-> 
+  QCOM NAND layout protect 16 bytes of available oob with ECC also.
+  When ecc->write_oob (qcom_nandc_write_oob) is being called
+  then it can't update just OOB bytes.
+
+  It needs to first read the last subpage which includes old
+  OOB bytes. Then it updates the old OOB bytes with new one
+  and then again write the data back.
+
+  You can refer function comment of qcom_nandc_write_oob
+  for the same.
+
+  But, to me, it looks like this read is unnecessary since
+  all the other bytes will be 0xff only. Require your help
+  in confirming the same and then I will remove that read
+  last subpage implementation.
+
+  Thanks,
+  Abhishek
+
+>> 
+>>     host->use_ecc = true;
+>> 
+>>     clear_bam_transaction(nandc);
+>>     ret = copy_last_cw(host, page);
+>>     if (ret)
+>>         return ret;
+>> 
+>>   you can refer function comment of qcom_nandc_write_oob  for more
+>>   detail.
+>> 
+>>   Thanks,
+>>   Abhishek
