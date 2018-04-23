@@ -1,25 +1,27 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAVQt-0003l1-Fp
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 06:58:41 +0000
-Date: Mon, 23 Apr 2018 08:58:17 +0200
+ id 1fAVXq-0008SL-9l
+ for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 07:05:52 +0000
+Date: Mon, 23 Apr 2018 09:05:28 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 8/9] mtd: nand: qcom: helper function for raw read
-Message-ID: <20180423085817.74e56091@xps13>
-In-Reply-To: <484485e160af41cf062549938c53d078@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
+ parameter
+Message-ID: <20180423090528.6e9d8b9c@xps13>
+In-Reply-To: <689fa334d7105e251463e58e1aef3ec8@codeaurora.org>
 References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-9-git-send-email-absahu@codeaurora.org>
- <20180410114428.68d59c8d@xps13>
- <c3e32eb24408a973d0c89984a466d9da@codeaurora.org>
- <20180422181929.65d42ca8@xps13>
- <484485e160af41cf062549938c53d078@codeaurora.org>
+ <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
+ <20180406143133.67f33d33@xps13>
+ <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
+ <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
+ <20180410100745.625d66f8@bbrezillon>
+ <c1cb40d0d24e50657308a40bb8398d35@codeaurora.org>
+ <20180422183440.3ce7e7aa@xps13>
+ <689fa334d7105e251463e58e1aef3ec8@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -34,272 +36,174 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Abhishek,
 
-On Mon, 23 Apr 2018 11:58:42 +0530, Abhishek Sahu
+Reduced the cc: list.
+
+On Mon, 23 Apr 2018 12:14:32 +0530, Abhishek Sahu
 <absahu@codeaurora.org> wrote:
 
-> On 2018-04-22 21:49, Miquel Raynal wrote:
+> On 2018-04-22 22:04, Miquel Raynal wrote:
 > > Hi Abhishek, =20
-> > > On Thu, 12 Apr 2018 12:36:42 +0530, Abhishek Sahu =20
+> > > On Thu, 12 Apr 2018 15:29:48 +0530, Abhishek Sahu =20
 > > <absahu@codeaurora.org> wrote: =20
-> > >> On 2018-04-10 15:14, Miquel Raynal wrote:
-> >> > Hi Abhishek, =20
-> >> > > On Wed,  4 Apr 2018 18:12:24 +0530, Abhishek Sahu =20
-> >> > <absahu@codeaurora.org> wrote: =20
-> >> > >> This patch does minor code reorganization for raw reads. =20
-> >> >> Currently the raw read is required for complete page but for
-> >> >> subsequent patches related with erased codeword bit flips
-> >> >> detection, only few CW should be read. So, this patch adds
-> >> >> helper function and introduces the read CW bitmask which
-> >> >> specifies which CW reads are required in complete page.
-> >> > > I am not sure this is the right approach for subpage reads. If the=
- =20
-> >> > controller supports it, you should just enable it in chip->options.
-> >> > =20
-> >>   Thanks Miquel. =20
-> >> >>   It is internal to this file only. This patch makes one static hel=
-per =20
-> >>   function which provides the support to read subpages.
-> > > Drivers should expose raw helpers, why keeping this helper static the=
-n? =20
-> > >> >> >> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org> =20
-> >> >> ---
-> >> >>  drivers/mtd/nand/qcom_nandc.c | 186 >> +++++++++++++++++++++++++--=
----------------
-> >> >>  1 file changed, 110 insertions(+), 76 deletions(-) =20
-> >> >> >> diff --git a/drivers/mtd/nand/qcom_nandc.c >> b/drivers/mtd/nand=
-/qcom_nandc.c =20
-> >> >> index 40c790e..f5d1fa4 100644
-> >> >> --- a/drivers/mtd/nand/qcom_nandc.c
-> >> >> +++ b/drivers/mtd/nand/qcom_nandc.c
-> >> >> @@ -1590,6 +1590,114 @@ static int check_flash_errors(struct >> qco=
-m_nand_host *host, int cw_cnt)
-> >> >>  } =20
-> >> >> >>  /* =20
-> >> >> + * Helper to perform the page raw read operation. The read_cw_mask=
- >> will be
-> >> >> + * used to specify the codewords for which the data should be read=
-. >> The
-> >> >> + * single page contains multiple CW. Sometime, only few CW data is=
- >> required
-> >> >> + * in complete page. Also, start address will be determined with
-> >> >> + * this CW mask to skip unnecessary data copy from NAND flash devi=
-ce. >> Then,
-> >> >> + * actual data copy from NAND controller to data buffer will be do=
-ne >> only
-> >> >> + * for the CWs which have the mask set.
-> >> >> + */
-> >> >> +static int
-> >> >> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> >> >> +		    u8 *data_buf, u8 *oob_buf,
-> >> >> +		    int page, unsigned long read_cw_mask)
-> >> >> +{
-> >> >> +	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
-> >> >> +	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(c=
-hip);
-> >> >> +	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> >> >> +	int i, ret;
-> >> >> +	int read_loc, start_step, last_step;
-> >> >> +
-> >> >> +	nand_read_page_op(chip, page, 0, NULL, 0);
-> >> >> +
-> >> >> +	host->use_ecc =3D false;
-> >> >> +	start_step =3D ffs(read_cw_mask) - 1;
-> >> >> +	last_step =3D fls(read_cw_mask);
-> >> >> +
-> >> >> +	clear_bam_transaction(nandc);
-> >> >> +	set_address(host, host->cw_size * start_step, page);
-> >> >> +	update_rw_regs(host, last_step - start_step, true);
-> >> >> +	config_nand_page_read(nandc);
-> >> >> +
-> >> >> +	for (i =3D start_step; i < last_step; i++) {
-> >> >> +		int data_size1, data_size2, oob_size1, oob_size2;
-> >> >> +		int reg_off =3D FLASH_BUF_ACC;
-> >> >> +
-> >> >> +		data_size1 =3D mtd->writesize - host->cw_size * (ecc->steps - 1);
-> >> >> +		oob_size1 =3D host->bbm_size;
-> >> >> +
-> >> >> +		if (i =3D=3D (ecc->steps - 1)) {
-> >> >> +			data_size2 =3D ecc->size - data_size1 -
-> >> >> +				     ((ecc->steps - 1) << 2);
-> >> >> +			oob_size2 =3D (ecc->steps << 2) + host->ecc_bytes_hw +
-> >> >> +				    host->spare_bytes;
-> >> >> +		} else {
-> >> >> +			data_size2 =3D host->cw_data - data_size1;
-> >> >> +			oob_size2 =3D host->ecc_bytes_hw + host->spare_bytes;
-> >> >> +		}
-> >> >> +
-> >> >> +		/*
-> >> >> +		 * Don't perform actual data copy from NAND controller to data
-> >> >> +		 * buffer through DMA for this codeword
-> >> >> +		 */
-> >> >> +		if (!(read_cw_mask & BIT(i))) {
-> >> >> +			if (nandc->props->is_bam)
-> >> >> +				nandc_set_read_loc(nandc, 0, 0, 0, 1);
-> >> >> +
-> >> >> +			config_nand_cw_read(nandc, false);
-> >> >> +
-> >> >> +			data_buf +=3D data_size1 + data_size2;
-> >> >> +			oob_buf +=3D oob_size1 + oob_size2;
-> >> >> +
-> >> >> +			continue;
-> >> >> +		}
-> >> >> +
-> >> >> +		if (nandc->props->is_bam) {
-> >> >> +			read_loc =3D 0;
-> >> >> +			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-> >> >> +			read_loc +=3D data_size1;
-> >> >> +
-> >> >> +			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-> >> >> +			read_loc +=3D oob_size1;
-> >> >> +
-> >> >> +			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-> >> >> +			read_loc +=3D data_size2;
-> >> >> +
-> >> >> +			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-> >> >> +		}
-> >> >> +
-> >> >> +		config_nand_cw_read(nandc, false);
-> >> >> +
-> >> >> +		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
-> >> >> +		reg_off +=3D data_size1;
-> >> >> +		data_buf +=3D data_size1;
-> >> >> +
-> >> >> +		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
-> >> >> +		reg_off +=3D oob_size1;
-> >> >> +		oob_buf +=3D oob_size1;
-> >> >> +
-> >> >> +		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
-> >> >> +		reg_off +=3D data_size2;
-> >> >> +		data_buf +=3D data_size2;
-> >> >> +
-> >> >> +		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
-> >> >> +		oob_buf +=3D oob_size2;
-> >> >> +	}
-> >> >> +
-> >> >> +	ret =3D submit_descs(nandc);
-> >> >> +	if (ret)
-> >> >> +		dev_err(nandc->dev, "failure to read raw page\n");
-> >> >> +
-> >> >> +	free_descs(nandc);
-> >> >> +
-> >> >> +	if (!ret)
-> >> >> +		ret =3D check_flash_errors(host, last_step - start_step);
-> >> >> +
-> >> >> +	return 0;
-> >> >> +}
-> >> >> +
-> >> >> +/*
-> >> >>   * reads back status registers set by the controller to notify pag=
-e >> read
-> >> >>   * errors. this is equivalent to what 'ecc->correct()' would do.
-> >> >>   */
-> >> >> @@ -1839,82 +1947,8 @@ static int qcom_nandc_read_page_raw(struct >=
-> mtd_info *mtd,
-> >> >>  				    struct nand_chip *chip, uint8_t *buf,
-> >> >>  				    int oob_required, int page)
-> >> >>  {
-> >> >> -	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
-> >> >> -	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(c=
-hip);
-> >> >> -	u8 *data_buf, *oob_buf;
-> >> >> -	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> >> >> -	int i, ret;
-> >> >> -	int read_loc;
-> >> >> -
-> >> >> -	nand_read_page_op(chip, page, 0, NULL, 0);
-> >> >> -	data_buf =3D buf;
-> >> >> -	oob_buf =3D chip->oob_poi;
-> >> >> -
-> >> >> -	host->use_ecc =3D false;
-> >> >> -
-> >> >> -	clear_bam_transaction(nandc);
-> >> >> -	update_rw_regs(host, ecc->steps, true);
-> >> >> -	config_nand_page_read(nandc);
-> >> >> -
-> >> >> -	for (i =3D 0; i < ecc->steps; i++) {
-> >> >> -		int data_size1, data_size2, oob_size1, oob_size2;
-> >> >> -		int reg_off =3D FLASH_BUF_ACC;
-> >> >> -
-> >> >> -		data_size1 =3D mtd->writesize - host->cw_size * (ecc->steps - 1);
-> >> >> -		oob_size1 =3D host->bbm_size;
-> >> >> -
-> >> >> -		if (i =3D=3D (ecc->steps - 1)) {
-> >> >> -			data_size2 =3D ecc->size - data_size1 -
-> >> >> -				     ((ecc->steps - 1) << 2);
-> >> >> -			oob_size2 =3D (ecc->steps << 2) + host->ecc_bytes_hw +
-> >> >> -				    host->spare_bytes;
-> >> >> -		} else {
-> >> >> -			data_size2 =3D host->cw_data - data_size1;
-> >> >> -			oob_size2 =3D host->ecc_bytes_hw + host->spare_bytes;
-> >> >> -		}
-> >> >> -
-> >> >> -		if (nandc->props->is_bam) {
-> >> >> -			read_loc =3D 0;
-> >> >> -			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
-> >> >> -			read_loc +=3D data_size1;
-> >> >> -
-> >> >> -			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
-> >> >> -			read_loc +=3D oob_size1;
-> >> >> -
-> >> >> -			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
-> >> >> -			read_loc +=3D data_size2;
-> >> >> -
-> >> >> -			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
-> >> >> -		}
-> >> >> -
-> >> >> -		config_nand_cw_read(nandc, false);
-> >> >> -
-> >> >> -		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
-> >> >> -		reg_off +=3D data_size1;
-> >> >> -		data_buf +=3D data_size1;
-> >> >> -
-> >> >> -		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
-> >> >> -		reg_off +=3D oob_size1;
-> >> >> -		oob_buf +=3D oob_size1;
-> >> >> -
-> >> >> -		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
-> >> >> -		reg_off +=3D data_size2;
-> >> >> -		data_buf +=3D data_size2;
-> >> >> -
-> >> >> -		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
-> >> >> -		oob_buf +=3D oob_size2;
-> >> >> -	}
-> >> >> -
-> >> >> -	ret =3D submit_descs(nandc);
-> >> >> -	if (ret)
-> >> >> -		dev_err(nandc->dev, "failure to read raw page\n");
-> >> >> -
-> >> >> -	free_descs(nandc);
-> >> >> -
-> >> >> -	if (!ret)
-> >> >> -		ret =3D check_flash_errors(host, ecc->steps);
-> >> >> -
-> >> >> -	return 0;
-> >> >> +	return nandc_read_page_raw(mtd, chip, buf, chip->oob_poi, page,
-> >> >> +				   BIT(chip->ecc.steps) - 1);
-> >> > > I don't understand this. chip->ecc.steps is constant, right? So yo=
-u =20
-> >> > always ask for the same subpage? =20
-> >> >>   We need to do raw read for subpages in which we got uncorrectable=
- =20
-> >>   error in next patch for erased page bitflip detection. This patch >>=
- does
-> >>   reorganization of raw read and moves common code in helper function
-> >>   nandc_read_page_raw. =20
-> >> >>   For nomral raw read, all the subpages will be read so =20
-> >>   BIT(chip->ecc.steps) - 1 is used for qcom_nandc_read_page_raw. =20
-> >> >>   While for erased page raw read, only those sub pages will be =20
-> >>   read for which the controller gives the uncorrectable error.
-> > > Still not okay: the driver should expose a way to do raw reads no =20
-> > matter the length and the start and you should use that in a generic
-> > way.
+> > >> On 2018-04-10 13:37, Boris Brezillon wrote:
+> >> > On Tue, 10 Apr 2018 09:55:58 +0200
+> >> > Miquel Raynal <miquel.raynal@bootlin.com> wrote: =20
+> >> > >> > Hi Abhishek, =20
+> >> >> >
+> >> >> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
+> >> >> > <absahu@codeaurora.org> wrote:
+> >> >> > =20
+> >> >> > > On 2018-04-06 18:01, Miquel Raynal wrote: =20
+> >> >> > > > Hi Abhishek,
+> >> >> > > >
+> >> >> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
+> >> >> > > > <absahu@codeaurora.org> wrote:
+> >> >> > > > =20
+> >> >> > > >> Currently the driver uses the ECC strength specified in
+> >> >> > > >> device tree. The ONFI or JEDEC device parameter page
+> >> >> > > >> contains the =E2=80=98ECC correctability=E2=80=99 field whic=
+h indicates the
+> >> >> > > >> number of bits that the host should be able to correct per
+> >> >> > > >> 512 bytes of data. =20
+> >> >> > > >
+> >> >> > > > This is misleading. This field is not about the controller bu=
+t rather
+> >> >> > > > the chip requirements in terms of minimal strength for nomina=
+l use.
+> >> >> > > > =20
+> >> >> > >
+> >> >> > >   Thanks Miquel.
+> >> >> > >
+> >> >> > >   Yes. Its NAND chip requirement. I have used the description f=
+or
+> >> >> > >   NAND ONFI param page
+> >> >> > >
+> >> >> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
+> >> >> > >   This field indicates the number of bits that the host should =
+be
+> >> >> > >   able to correct per 512 bytes of data.
+> >> >> > > =20
+> >> >> > > >> The ecc correctability is assigned in
+> >> >> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
+> >> >> > > >> supports 4/8-bit ecc correction. The Same kind of board
+> >> >> > > >> can have different NAND parts so use the ecc strength
+> >> >> > > >> from device parameter (if its non zero) instead of
+> >> >> > > >> device tree. =20
+> >> >> > > >
+> >> >> > > > That is not what you do.
+> >> >> > > >
+> >> >> > > > What you do is forcing the strength to be 8-bit per ECC chunk=
+ if the
+> >> >> > > > NAND chip requires at least 8-bit/chunk strength.
+> >> >> > > >
+> >> >> > > > The DT property is here to force a strength. Otherwise, Linux=
+ will
+> >> >> > > > propose to the NAND controller to use the minimum strength re=
+quired by
+> >> >> > > > the chip (from either the ONFI/JEDEC parameter page or from a=
+ static
+> >> >> > > > table).
+> >> >> > > > =20
+> >> >> > >
+> >> >> > >   The main problem is that the same kind of boards can have dif=
+ferent
+> >> >> > >   NAND parts.
+> >> >> > >
+> >> >> > >   Lets assume, we have following 2 cases.
+> >> >> > >
+> >> >> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
+> >> >> > >      will be zero. In this case, the ecc->strength from DT
+> >> >> > >      will be used =20
+> >> >> >
+> >> >> > No, the strength from DT will always be used if the property is
+> >> >> > present, no matter the type of chip.
+> >> >> > =20
+> >> >> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
+> >> >> > >      Since QCOM nand controller can not support
+> >> >> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
+> >> >> > >      itself instead of failing NAND boot completely. =20
+> >> >> >
+> >> >> > I understand that. But this is still not what you do.
+> >> >> > =20
+> >> >> > > =20
+> >> >> > > > IMHO, you have two solutions:
+> >> >> > > > 1/ Remove these properties from the board DT (breaks DT backw=
+ard
+> >> >> > > > compatibility though); =20
+> >> >> > >
+> >> >> > >   - nand-ecc-strength: This is optional property in nand.txt and
+> >> >> > >     Required property in qcom_nandc.txt. =20
+> >> >> >
+> >> >> > Well, this property is not controller specific but chip specific.=
+ The
+> >> >> > controller driver does not rely on it, so this property should no=
+t be
+> >> >> > required.
+> >> >> > =20
+> >> >> > > We can't remove since
+> >> >> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
+> >> >> > >     from DT only. =20
+> >> >> >
+> >> >> > We can remove it and let the core handle this (as this is generic=
+ to
+> >> >> > all raw NANDs and not specific to this controller driver). Try it=
+ out! =20
+> >> >>   Thanks Boris and Miquel for your inputs.
+> >> >>   Just want to confirm if already its implemented in core layer =20
+> >>   or shall I explore regrading this option. =20
+> >> >>   I checked by removing this property alone from dtsi and it was =20
+> >>   failing with =20
+> >> >>   "Driver must set ecc.strength when using hardware ECC"
+> >> >>   I checked the code in nand_base.c also but couldn't get =20
+> >>   anything related with this.
+> > > I don't know exactly what you did but you should have a look at what =
+=20
+> > lead you to this path:
+> > https://elixir.bootlin.com/linux/v4.17-rc1/source/drivers/mtd/nand/raw/=
+nand_base.c#L6421
 > >  =20
->   Thanks Miquel.
->   I will explore regarding that.
->   Looks like, we can some helper like read_subpage.
+>   Our driver supports both ECC strength 4 bits and 8 bits
+>   and normally till now, we need to specify the ecc strength in device tr=
+ee.
+>=20
+>   Now, since same board can have different ECC strength chip so we
+>   can't fix the ecc strength in device tree and we need to look
+>   the required correction in ONFI param.
+>=20
+>   We can have some code in generic layer which
+>=20
+>   1. Provides the way to specify the supported strength in DT by NAND
+>      controller (for our case, it is 4 and 8)
 
-Of course, when you implement raw accessors you can have static helpers
-to clarify the code.
+This is already the case, right? You use the DT to give the desired
+strength. As discussed earlier, let's forget about this option and
+focus on 2/ and 3/.
+
+>   2. Read the chip ONFI/JEDEC Param and choose the configure to use
+>      controller strength according to its requirement.
+>   3. For Non ONFI/JEDEC devices, choose the maximum strength according
+>      to OOB bytes.
+
+Both of them are already handled. A lot of controller drivers rely on
+this logic already. Remove both ECC strength and size DT properties and
+add traces in the core to figure out why it rejected your chip.
+
+We might help you if you provide more information.
 
 Regards,
 Miqu=C3=A8l
+
+>=20
+>   I just want to check if we have something like this already in place
+>   or I can add the same in generic code so that this can be used by
+>   other drivers also.
+>=20
+>   Thanks,
+>   Abhishek
+
+
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
