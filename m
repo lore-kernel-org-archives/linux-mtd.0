@@ -1,27 +1,26 @@
-Received: from da1vs01.rockwellcollins.com ([205.175.227.27])
+Received: from mail-cys01nam02on061d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe45::61d]
+ helo=NAM02-CY1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fB1SO-0004n2-8c
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 17:10:25 +0000
-Received: by mail-oi0-f70.google.com with SMTP id k136-v6so8792764oih.4
- for <linux-mtd@lists.infradead.org>; Tue, 24 Apr 2018 10:10:09 -0700 (PDT)
+ id 1fB1dd-0002Bd-Lz
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 17:21:59 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>
+Subject: Re: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
+ status
+Date: Tue, 24 Apr 2018 17:21:44 +0000
+Message-ID: <3450467624181f68487553e60491af12577ae927.camel@infinera.com>
+References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <21308f79d7979df5bf9aa10d07a940188415777c.camel@infinera.com>
+ <TY1PR01MB0954D5C62191B212D4A7AA40DC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY1PR01MB0954D5C62191B212D4A7AA40DC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BCCDE18FD2DFA145B4A9980E1D98FFA9@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20180424160028.1de6cfb6@xps13>
-References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
- <20180422190743.36e65119@xps13>
- <CADFuHZ4i52AxD6G3xf_RyWD7Z5bs-2-zXddMevBsKYkT=JTWCg@mail.gmail.com>
- <20180424115618.70438e41@xps13>
- <CADFuHZ6tJOVzhZOede_DvCbzBC_iJNJ4zpZtU4RtAp0sRJpOUw@mail.gmail.com>
- <20180424160028.1de6cfb6@xps13>
-From: Ronak Desai <ronak.desai@rockwellcollins.com>
-Date: Tue, 24 Apr 2018 12:10:07 -0500
-Message-ID: <CADFuHZ5f4+jjVazc-0Q2qXmHWXnxXPSjdnmRtYue1-BvT02s4g@mail.gmail.com>
-Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
- driver for ONFI nand
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,159 +30,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 24, 2018 at 9:00 AM, Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> Hi Ronak,
->
-> On Tue, 24 Apr 2018 08:51:48 -0500, Ronak Desai
-> <ronak.desai@rockwellcollins.com> wrote:
->
->> On Tue, Apr 24, 2018 at 4:56 AM, Miquel Raynal
->> <miquel.raynal@bootlin.com> wrote:
->> > Hi Ronak,
->> >
->> >> >> +/**
->> >> >> + * fsl_ifc_onfi_set_features- set features for ONFI nand
->> >> >> + * @mtd: MTD device structure
->> >> >> + * @chip: nand chip info structure
->> >> >> + * @addr: feature address.
->> >> >> + * @subfeature_param: the subfeature parameters, a four bytes arr=
-ay.
->> >> >> + */
->> >> >> +static int fsl_ifc_onfi_set_features(struct mtd_info *mtd, struct=
- nand_chip *chip,
->> >> >> +                     int addr, uint8_t *subfeature_param)
->> >> >> +{
->> >> >> +     int status;
->> >> >> +     int i;
->> >> >> +
->> >> >> +#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
->> >> >> +     if (!chip->onfi_version ||
->> >> >> +         !(le16_to_cpu(chip->onfi_params.opt_cmd)
->> >> >> +           & ONFI_OPT_CMD_SET_GET_FEATURES))
->> >> >> +             return -EINVAL;
->> >> >> +#endif
->> >> >
->> >> > No need to do that, the core will take care of it, see [1].
->> >>
->> >> Agree, I will remove this.
->> >> >
->> >> >> +
->> >> >> +     /* Want data from start of the buffer */
->> >> >> +     set_addr(mtd, 0, 0, 0);
->> >> >
->> >> > This is the only thing that differs from the core's implementation.=
- I
->> >> > see most of the time it is called from ->cmdfunc(), could you move =
-it
->> >> > there? If yes you could get rid of this entire hook and rely on the
->> >> > core's function.
->> >> >
->> >> NAND_CMD_SET_FEATURES command sends the sub-feature param from flash
->> >> buffer on the provided address and I added this here because I wanted
->> >> to make sure
->> >> that the data is set from start of the buffer. I looked at the core's
->> >> implementation
->> >> and I see that the NAND_CMD_SET_FEATURES  command is called first and=
- then
->> >> the data is filled into the buffer which will not work in case of my
->> >> implementation.
->> >> So, I will have to keep this here and the function, please suggest. I
->> >> will wait for your
->> >> feedback before submitting V2.  Moreover, I would suggest to check
->> >> sequence in core's
->> >> implementation as the command should run after setting the data and n=
-ot before.
->> >
->> > Not sure what you mean exactly by "NAND_CMD_SET_FEATURES is called fir=
-st
->> > and the data is filled into the buffer", could you please point out th=
-e
->> > faulty section in the core so I can have a look?
->> >
->> I was pointing to the code in else part in "nand_set_features_op". FSL
->> nand controller
->> driver does not use "exec_op" so if I use nand_default_set_features
->> from core as you suggested
->> then code in the else part will be executed and as depicted below, the
->> controller specific NAND_CMD_SET_FEATURES
->> is called before writing the sub-feature parameters. Whereas in my
->> implementation and I believe in general
->> also you would want to call the controller specific "cmdfunc" only
->> after writing the sub-feature parameters
->> in buffer. Please correct me if I am missing anything here.
->>
->> 2193     } else {
->> 2194         chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, feature, -1);
->> 2195         for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
->> 2196             chip->write_byte(mtd, params[i]);
->
-> The logic is supposedly the same between ->exec_op/->cmdfunc()
-> regarding this area, the NAND protocol requires the command
-> NAND_CMD_SET_FEATURES to be sent on the NAND bus together with 1/ the
-> feature (or address) and then 2/ the parameters. I don't think this is
-> wrong. You can check this matches the flowchart available p242 of the
-> ONFI specification [1].
->
-I think it depends on the implementation of the NAND controller's
-command function. In FSL driver, the command is executed when the
-cmdfunc is called so flash controller data buffer needs to be filled
-with the data that needs to be send in that command beforehand. Here
-you are assuming that the cmndfunc is just sending the command and
-then write_byte will transfer data on the bus. So, I think I will keep
-my driver specific implementation of set_feature and will not use
-core's function.
->>
->> > Thanks,
->> > Miqu=C3=A8l
->> >
->> >> >> +
->> >> >> +     for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
->> >> >> +             chip->write_byte(mtd, subfeature_param[i]);
->> >> >> +
->> >> >> +     chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);
->
-> And this implementation does the opposite :)
-No, this is not opposite, I am just copying the data in the nand
-controller data buffer and not sending on the bus and when the
-NAND_CMD_SET_FEATURES is called, in that I tell nand controller to
-transfer 4 bytes from data buffer after sending the set feature
-command. So, on the bus the sequence will be same as depicted in the
-ONFI specification. I have tested this on two different target
-hardwares with processors having this nand controller.
->
->> >> >> +
->> >> >> +     status =3D chip->waitfunc(mtd, chip);
->> >> >> +     if (status & NAND_STATUS_FAIL)
->> >> >> +             return -EIO;
->> >> >> +     return 0;
->> >> >> +}
->> >
->> >
->> > --
->> > Miquel Raynal, Bootlin (formerly Free Electrons)
->> > Embedded Linux and Kernel engineering
->> > https://bootlin.com
->>
->>
->>
->
-> [1] http://www.onfi.org/~/media/onfi/specs/onfi_4_0-gold.pdf?la=3Den
->
-> Thanks,
-> Miqu=C3=A8l
->
-> --
-> Miquel Raynal, Bootlin (formerly Free Electrons)
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
-
-
-
---=20
-Ronak A Desai
-Sr. Software Engineer
-Airborne Information Solutions / RC Linux Platform Software
-MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
-Ronak.Desai@rockwellcollins.com
-https://www.rockwellcollins.com/
+T24gVHVlLCAyMDE4LTA0LTI0IGF0IDE0OjA4ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3Rl
+Og0KPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBvdXRzaWRlIG9mIHRoZSBv
+cmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVz
+cyB5b3UgcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4N
+Cj4gDQo+IA0KPiBIaSBKb2NrZS1zYW4sDQo+IA0KPiBUaGFua3MgZm9yIHlvdXIgY29tbWVudC4N
+Cj4gDQo+ID4gSSBmaW5kIHRoaXMgYSBiaXQgb2RkLiBJIGFtIGxvb2tpbmcgYXQgc29tZSBvdGhl
+ciBlcmFzZSBzdXNwZW5kIHByb2JsZW1zIHdlDQo+ID4gc2VlIG9uIEN5cHJlc3MgQU1EIE5PUiBm
+bGFzaCBhbmQgSSBoYXZlIG5vdGVkIHRoYXQgdGhlcmUgaXMgbW9yZSB0aGFuIGp1c3QgRFE2IHRv
+Z2dsaW5nLg0KPiA+IENoZWNraW5nIERRNSBpbiBjb21iaW5hdGlvbiB3aXRoIERRNiBpcyBvbmUu
+DQo+IA0KPiAgIEJ5IHRoZSB3YXkgSSBoYXZlIGFsc28gZm91bmQgb25seSBvbmNlIGRvX2VyYXNl
+X29uZWJsb2NrKCkgd2FzIGZhaWxlZCBieSB0aGUgdGltZW91dCBvbiB0aGUgd3JpdGUgZmFpbHVy
+ZSBzaXR1YXRpb24uDQo+ICAgU28gSSB0aG91Z2h0IHRoYXQgdGhlIGVycm9yIGFsc28gY2FuIGJl
+IHJlc29sdmVkIGJ5IHRoZSAzIHRpbWVzIHJlYWRpbmcgZm9yIGNoZWNraW5nIGNoaXBfcmVhZHko
+KS4NCg0KV2UgaGF2ZSBzZWUgc2V2ZXJhbCB0aW1lcyB0aGF0IHRvbyBtYW55IEVyYXNlIHN1c3Bl
+bmQgZm9yIG9uZSBibG9jayB3aWxsIGNhdXNlIDUuNS4yLjYgRFE1OiBFeGNlZWRlZCBUaW1pbmcN
+CkxpbWl0cw0KVGhpcyBjb25kaXRpb24gaXMgbm90IGNoZWNrZWQgZm9yIG5vciBoYW5kbGVkIGlu
+IGFueSB3YXkuDQoNCg0KPiANCj4gPiBIb3cgZGlkIHlvdSB5b3UgYXJyaXZlIGF0IHJlYWRpbmcg
+MyB0aW1lcyBpcyBjb3JyZWN0PyBJcyB0aGUgYW55IGRvY3VtZW50YXRpb24NCj4gPiBzdXBwb3J0
+aW5nIHRoaXM/DQo+IA0KPiAgIEFib3V0IHRoZSAzIHRpbWVzIHJlYWRpbmcgaXMgZGVzY3JpYmVk
+IGJ5IHRoZSBwYWdlIDMyIG9uIGZvbGxvd2luZyBDeXByZXNzIFMyOUdMeHh4UCBmbGFzaCBkYXRh
+IHNoZWV0Lg0KPiAgICAgPGh0dHA6Ly93d3cuY3lwcmVzcy5jb20vZmlsZS8yMTk5MjYvZG93bmxv
+YWQ+DQoNCkkgZG9uJ3QgaGF2ZSBzdWNoIGluZm8gZm9yIG15IGNoaXAgYXQgcGFnZSAzMiwgSSBh
+bSBsb29raW5nIGF0IFMyOUdMMDFHUy9TMjlHTDUxMlMNClMyOUdMMjU2Uy9TMjlHTDEyOFMgZnJv
+bSBodHRwOi8vd3d3LmN5cHJlc3MuY29tL2ZpbGUvMTc3OTc2L2Rvd25sb2FkDQoNCkkgYW0gbG9v
+a2luZyBhdCBjaGFwIDUuNS4yLjUgUmVhZGluZyBUb2dnbGUgQml0cyBEUTYvRFEyDQoNCj4gDQo+
+ID4gQWxsIGluIGFsbCwgZXJyb3IgaGFuZGxpbmcgaW4gY21kc2V0MDAwMiBpcyBsYWNraW5nLg0K
+PiANCj4gICBJIGhhdmUgdW5kZXJzdG9vZCBhcyB0aGF0IGl0IGlzIGZvciBleGFtcGxlIEZJWE1F
+IHBhcnRzIGZvciB0aGUgZXJyb3IgY2FzZSBpbiBjZmlfY21kc2V0XzAwMDIuDQo+ICAgSXMgdGhp
+cyBjb3JyZWN0Pw0KDQpIYXZlbid0IGxvb2tlZCBhdCBhbGwgdGhlIEZJWE1FJ3MgYnV0IEkgYW0g
+bG9va2luZyBhcmUgaG93IGVyYXNlIHN1c3BlbmQgZmFpbHVyZSBhcmUgaGFuZGxlZA0KDQo+IA0K
+PiBSZWdhcmRzLA0KPiBJa2VnYW1pDQo+IA0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+PiBGcm9tOiBKb2FraW0gVGplcm5sdW5kIFttYWlsdG86Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVy
+YS5jb21dDQo+IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDI0LCAyMDE4IDg6MDUgUE0NCj4gVG86IElL
+RUdBTUkgVG9rdW5vcmk7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IENjOiBQQUNL
+SEFNIENocmlzDQo+IFN1YmplY3Q6IFJlOiBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVhZCBkYXRh
+IDMgdGltZXMgdG8gY2hlY2sgd3JpdGUgb3BlcmF0aW9uIHN0YXR1cw0KPiANCj4gT24gVHVlLCAy
+MDE4LTA0LTI0IGF0IDA1OjU0ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3RlOg0KPiA+IA0K
+PiA+IEhpLA0KPiA+IA0KPiA+IExldCB1cyBjb25zdWx0IHRvIGNoYW5nZSBtdGQgY2ZpX2NtZHNl
+dF8wMDAyIHRvIHJlYWQgZGF0YSAzIHRpbWVzIGFzIGJlbG93IHBhdGNoLg0KPiA+IENhbiB3ZSBj
+aGFuZ2UgdGhlIG10ZCBjZmlfY21kc2V0XzAwMDIgZHJpdmVyIGxpa2UgdGhpcz8NCj4gPiBJZiBh
+bnkgY29tbWVudCBvciBjb25jZXJuIHBsZWFzZSBsZXQgdXMga25vdy4NCj4gPiANCj4gPiBGcm9t
+IGQ5MjQ4MjJjOTk2YjljMGVjY2M4MTVlNTAxOGEwYzNlYTYwNzcxMzcgTW9uIFNlcCAxNyAwMDow
+MDowMCAyMDAxDQo+ID4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVs
+ZXNpcy5jby5qcD4NCj4gPiBEYXRlOiBUdWUsIDI0IEFwciAyMDE4IDEzOjI2OjM3ICswOTAwDQo+
+ID4gU3ViamVjdDogW1BBVENIIDIvMl0gbXRkOiBjZmlfY21kc2V0XzAwMDI6IFJlYWQgZGF0YSAz
+IHRpbWVzIHRvIGNoZWNrIHdyaXRlDQo+ID4gIG9wZXJhdGlvbiBzdGF0dXMNCj4gPiANCj4gPiBD
+eXByZXNzIFMyOUdMeHh4UCBmbGFzaCBpcyBuZWVkZWQgdG8gcmVhZCBkYXRhIDMgdGltZXMgdG8g
+Y2hlY2sgRFE2IHRvZ2dsZXMuDQo+ID4gQWN0dWFsbHkgdGhlIHJlYWQgZGF0YSBpcyBzb21ldGlt
+ZXMgY2hhbmdlZCBieSB0aGUgM3JkIHJlYWRpbmcuDQo+ID4gQWxzbyB0aGlzIGlzIGNhdXNlZCBv
+biBvdGhlciBmbGFzaCBkZXZpY2UgYWxzby4NCj4gPiBUaGUgZmxhc2ggd3JpdGUgZmFpbHVyZSBp
+cyBwb3NzaWJsZSB0byBiZSBjYXVzZWQgYnkgdGhlIGVycm9yLg0KPiA+IFRvIHJlc29sdmUgdGhl
+IGlzc3VlIGNoYW5nZSB0aGUgcmVhZCBudW1iZXIgb2YgdGltZXMgdG8gMyBmcm9tIDIuDQo+IA0K
+PiBIaQ0KPiANCj4gSSBmaW5kIHRoaXMgYSBiaXQgb2RkLiBJIGFtIGxvb2tpbmcgYXQgc29tZSBv
+dGhlciBlcmFzZSBzdXNwZW5kIHByb2JsZW1zIHdlDQo+IHNlZSBvbiBDeXByZXNzIEFNRCBOT1Ig
+Zmxhc2ggYW5kIEkgaGF2ZSBub3RlZCB0aGF0IHRoZXJlIGlzIG1vcmUgdGhhbiBqdXN0IERRNiB0
+b2dnbGluZy4NCj4gQ2hlY2tpbmcgRFE1IGluIGNvbWJpbmF0aW9uIHdpdGggRFE2IGlzIG9uZS4N
+Cj4gSG93IGRpZCB5b3UgeW91IGFycml2ZSBhdCByZWFkaW5nIDMgdGltZXMgaXMgY29ycmVjdD8g
+SXMgdGhlIGFueSBkb2N1bWVudGF0aW9uDQo+IHN1cHBvcnRpbmcgdGhpcz8NCj4gDQo+IEFsbCBp
+biBhbGwsIGVycm9yIGhhbmRsaW5nIGluIGNtZHNldDAwMDIgaXMgbGFja2luZy4NCj4gDQo+ICBK
+b2NrZQ0KPiANCg==
