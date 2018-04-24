@@ -1,18 +1,32 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.202])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAqup-0006po-3O
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 05:55:01 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>
-Subject: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
- status
-Date: Tue, 24 Apr 2018 05:54:43 +0000
-Message-ID: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fArOY-0003mu-2r
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 06:25:43 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Tue, 24 Apr 2018 11:55:29 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/9] mtd: nand: qcom: use the ecc strength from device
+ parameter
+In-Reply-To: <20180423090528.6e9d8b9c@xps13>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-2-git-send-email-absahu@codeaurora.org>
+ <20180406143133.67f33d33@xps13>
+ <23c8330d00d4d9b62c4c1ab597cbb22b@codeaurora.org>
+ <20180410094657.63ac7ec9@xps13> <20180410095558.34c4d91f@xps13>
+ <20180410100745.625d66f8@bbrezillon>
+ <c1cb40d0d24e50657308a40bb8398d35@codeaurora.org>
+ <20180422183440.3ce7e7aa@xps13>
+ <689fa334d7105e251463e58e1aef3ec8@codeaurora.org>
+ <20180423090528.6e9d8b9c@xps13>
+Message-ID: <d3f50d25da1c82142c55394dd4b42aea@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +36,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 2018-04-23 12:35, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> Reduced the cc: list.
+> 
+> On Mon, 23 Apr 2018 12:14:32 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
+> 
+>> On 2018-04-22 22:04, Miquel Raynal wrote:
+>> > Hi Abhishek,
+>> > > On Thu, 12 Apr 2018 15:29:48 +0530, Abhishek Sahu
+>> > <absahu@codeaurora.org> wrote:
+>> > >> On 2018-04-10 13:37, Boris Brezillon wrote:
+>> >> > On Tue, 10 Apr 2018 09:55:58 +0200
+>> >> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>> >> > >> > Hi Abhishek,
+>> >> >> >
+>> >> >> > On Tue, 10 Apr 2018 11:39:35 +0530, Abhishek Sahu
+>> >> >> > <absahu@codeaurora.org> wrote:
+>> >> >> >
+>> >> >> > > On 2018-04-06 18:01, Miquel Raynal wrote:
+>> >> >> > > > Hi Abhishek,
+>> >> >> > > >
+>> >> >> > > > On Wed,  4 Apr 2018 18:12:17 +0530, Abhishek Sahu
+>> >> >> > > > <absahu@codeaurora.org> wrote:
+>> >> >> > > >
+>> >> >> > > >> Currently the driver uses the ECC strength specified in
+>> >> >> > > >> device tree. The ONFI or JEDEC device parameter page
+>> >> >> > > >> contains the ‘ECC correctability’ field which indicates the
+>> >> >> > > >> number of bits that the host should be able to correct per
+>> >> >> > > >> 512 bytes of data.
+>> >> >> > > >
+>> >> >> > > > This is misleading. This field is not about the controller but rather
+>> >> >> > > > the chip requirements in terms of minimal strength for nominal use.
+>> >> >> > > >
+>> >> >> > >
+>> >> >> > >   Thanks Miquel.
+>> >> >> > >
+>> >> >> > >   Yes. Its NAND chip requirement. I have used the description for
+>> >> >> > >   NAND ONFI param page
+>> >> >> > >
+>> >> >> > >   5.6.1.24. Byte 112: Number of bits ECC correctability
+>> >> >> > >   This field indicates the number of bits that the host should be
+>> >> >> > >   able to correct per 512 bytes of data.
+>> >> >> > >
+>> >> >> > > >> The ecc correctability is assigned in
+>> >> >> > > >> chip parameter during device probe time. QPIC/EBI2 NAND
+>> >> >> > > >> supports 4/8-bit ecc correction. The Same kind of board
+>> >> >> > > >> can have different NAND parts so use the ecc strength
+>> >> >> > > >> from device parameter (if its non zero) instead of
+>> >> >> > > >> device tree.
+>> >> >> > > >
+>> >> >> > > > That is not what you do.
+>> >> >> > > >
+>> >> >> > > > What you do is forcing the strength to be 8-bit per ECC chunk if the
+>> >> >> > > > NAND chip requires at least 8-bit/chunk strength.
+>> >> >> > > >
+>> >> >> > > > The DT property is here to force a strength. Otherwise, Linux will
+>> >> >> > > > propose to the NAND controller to use the minimum strength required by
+>> >> >> > > > the chip (from either the ONFI/JEDEC parameter page or from a static
+>> >> >> > > > table).
+>> >> >> > > >
+>> >> >> > >
+>> >> >> > >   The main problem is that the same kind of boards can have different
+>> >> >> > >   NAND parts.
+>> >> >> > >
+>> >> >> > >   Lets assume, we have following 2 cases.
+>> >> >> > >
+>> >> >> > >   1. Non ONFI/JEDEC device for which chip->ecc_strength_ds
+>> >> >> > >      will be zero. In this case, the ecc->strength from DT
+>> >> >> > >      will be used
+>> >> >> >
+>> >> >> > No, the strength from DT will always be used if the property is
+>> >> >> > present, no matter the type of chip.
+>> >> >> >
+>> >> >> > >   2. ONFI/JEDEC device for which chip->ecc_strength_ds > 8.
+>> >> >> > >      Since QCOM nand controller can not support
+>> >> >> > >      ECC correction greater than 8 bits so we can use 8 bit ECC
+>> >> >> > >      itself instead of failing NAND boot completely.
+>> >> >> >
+>> >> >> > I understand that. But this is still not what you do.
+>> >> >> >
+>> >> >> > >
+>> >> >> > > > IMHO, you have two solutions:
+>> >> >> > > > 1/ Remove these properties from the board DT (breaks DT backward
+>> >> >> > > > compatibility though);
+>> >> >> > >
+>> >> >> > >   - nand-ecc-strength: This is optional property in nand.txt and
+>> >> >> > >     Required property in qcom_nandc.txt.
+>> >> >> >
+>> >> >> > Well, this property is not controller specific but chip specific. The
+>> >> >> > controller driver does not rely on it, so this property should not be
+>> >> >> > required.
+>> >> >> >
+>> >> >> > > We can't remove since
+>> >> >> > >     if the device is Non ONFI/JEDEC, then ecc strength will come
+>> >> >> > >     from DT only.
+>> >> >> >
+>> >> >> > We can remove it and let the core handle this (as this is generic to
+>> >> >> > all raw NANDs and not specific to this controller driver). Try it out!
+>> >> >>   Thanks Boris and Miquel for your inputs.
+>> >> >>   Just want to confirm if already its implemented in core layer
+>> >>   or shall I explore regrading this option.
+>> >> >>   I checked by removing this property alone from dtsi and it was
+>> >>   failing with
+>> >> >>   "Driver must set ecc.strength when using hardware ECC"
+>> >> >>   I checked the code in nand_base.c also but couldn't get
+>> >>   anything related with this.
+>> > > I don't know exactly what you did but you should have a look at what
+>> > lead you to this path:
+>> > https://elixir.bootlin.com/linux/v4.17-rc1/source/drivers/mtd/nand/raw/nand_base.c#L6421
+>> >
+>>   Our driver supports both ECC strength 4 bits and 8 bits
+>>   and normally till now, we need to specify the ecc strength in device 
+>> tree.
+>> 
+>>   Now, since same board can have different ECC strength chip so we
+>>   can't fix the ecc strength in device tree and we need to look
+>>   the required correction in ONFI param.
+>> 
+>>   We can have some code in generic layer which
+>> 
+>>   1. Provides the way to specify the supported strength in DT by NAND
+>>      controller (for our case, it is 4 and 8)
+> 
+> This is already the case, right? You use the DT to give the desired
+> strength. As discussed earlier, let's forget about this option and
+> focus on 2/ and 3/.
+> 
+>>   2. Read the chip ONFI/JEDEC Param and choose the configure to use
+>>      controller strength according to its requirement.
+>>   3. For Non ONFI/JEDEC devices, choose the maximum strength according
+>>      to OOB bytes.
+> 
+> Both of them are already handled. A lot of controller drivers rely on
+> this logic already. Remove both ECC strength and size DT properties and
+> add traces in the core to figure out why it rejected your chip.
+> 
+> We might help you if you provide more information.
+> 
+> Regards,
+> Miquèl
+> 
 
-Let us consult to change mtd cfi_cmdset_0002 to read data 3 times as below =
-patch.
-Can we change the mtd cfi_cmdset_0002 driver like this?
-If any comment or concern please let us know.
+  Thanks a lot for your help Miquel!!!
 
->From d924822c996b9c0eccc815e5018a0c3ea6077137 Mon Sep 17 00:00:00 2001
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Date: Tue, 24 Apr 2018 13:26:37 +0900
-Subject: [PATCH 2/2] mtd: cfi_cmdset_0002: Read data 3 times to check write
- operation status
+  I got the required functions which we need to invoke inside
+  our driver
 
-Cypress S29GLxxxP flash is needed to read data 3 times to check DQ6 toggles=
-.
-Actually the read data is sometimes changed by the 3rd reading.
-Also this is caused on other flash device also.
-The flash write failure is possible to be caused by the error.
-To resolve the issue change the read number of times to 3 from 2.
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+  
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=2c8f8afa7f92acb07641bf95b940d384ed1d0294
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index 56aa6b75213d..dc7667ff134a 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -743,12 +743,13 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_i=
-nfo *mtd)
-  */
- static int __xipram chip_ready(struct map_info *map, unsigned long addr)
- {
--	map_word d, t;
-+	map_word r1, r2, r3;
-=20
--	d =3D map_read(map, addr);
--	t =3D map_read(map, addr);
-+	r1 =3D map_read(map, addr);
-+	r2 =3D map_read(map, addr);
-+	r3 =3D map_read(map, addr);
-=20
--	return map_word_equal(map, d, t);
-+	return map_word_equal(map, r1, r2) && map_word_equal(map, r2, r3);
- }
-=20
- /*
---=20
-2.16.1
+  I will do the changes accordingly.
 
-Regards,
-Ikegami
+  Regards,
+  Abhishek
+
+>> 
+>>   I just want to check if we have something like this already in place
+>>   or I can add the same in generic code so that this can be used by
+>>   other drivers also.
+>> 
+>>   Thanks,
+>>   Abhishek
