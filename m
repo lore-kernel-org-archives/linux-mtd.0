@@ -1,23 +1,25 @@
-Received: from mail-by2nam01on0089.outbound.protection.outlook.com
- ([104.47.34.89] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+Received: from secvs01.rockwellcollins.com ([205.175.225.240])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAvkq-0001ME-Fp
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 11:05:02 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>
-Subject: Re: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
- status
-Date: Tue, 24 Apr 2018 11:04:45 +0000
-Message-ID: <21308f79d7979df5bf9aa10d07a940188415777c.camel@infinera.com>
-References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-In-Reply-To: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <56696EE805C135439BE4A52461EA971E@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1fAyMV-0000Jn-4v
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 13:52:06 +0000
+Received: by mail-ot0-f197.google.com with SMTP id s6-v6so12830562oth.20
+ for <linux-mtd@lists.infradead.org>; Tue, 24 Apr 2018 06:51:49 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20180424115618.70438e41@xps13>
+References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
+ <20180422190743.36e65119@xps13>
+ <CADFuHZ4i52AxD6G3xf_RyWD7Z5bs-2-zXddMevBsKYkT=JTWCg@mail.gmail.com>
+ <20180424115618.70438e41@xps13>
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Tue, 24 Apr 2018 08:51:48 -0500
+Message-ID: <CADFuHZ6tJOVzhZOede_DvCbzBC_iJNJ4zpZtU4RtAp0sRJpOUw@mail.gmail.com>
+Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
+ driver for ONFI nand
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +29,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAyMDE4LTA0LTI0IGF0IDA1OjU0ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3Rl
-Og0KPiANCj4gSGksDQo+IA0KPiBMZXQgdXMgY29uc3VsdCB0byBjaGFuZ2UgbXRkIGNmaV9jbWRz
-ZXRfMDAwMiB0byByZWFkIGRhdGEgMyB0aW1lcyBhcyBiZWxvdyBwYXRjaC4NCj4gQ2FuIHdlIGNo
-YW5nZSB0aGUgbXRkIGNmaV9jbWRzZXRfMDAwMiBkcml2ZXIgbGlrZSB0aGlzPw0KPiBJZiBhbnkg
-Y29tbWVudCBvciBjb25jZXJuIHBsZWFzZSBsZXQgdXMga25vdy4NCj4gDQo+IEZyb20gZDkyNDgy
-MmM5OTZiOWMwZWNjYzgxNWU1MDE4YTBjM2VhNjA3NzEzNyBNb24gU2VwIDE3IDAwOjAwOjAwIDIw
-MDENCj4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5q
-cD4NCj4gRGF0ZTogVHVlLCAyNCBBcHIgMjAxOCAxMzoyNjozNyArMDkwMA0KPiBTdWJqZWN0OiBb
-UEFUQ0ggMi8yXSBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVhZCBkYXRhIDMgdGltZXMgdG8gY2hl
-Y2sgd3JpdGUNCj4gIG9wZXJhdGlvbiBzdGF0dXMNCj4gDQo+IEN5cHJlc3MgUzI5R0x4eHhQIGZs
-YXNoIGlzIG5lZWRlZCB0byByZWFkIGRhdGEgMyB0aW1lcyB0byBjaGVjayBEUTYgdG9nZ2xlcy4N
-Cj4gQWN0dWFsbHkgdGhlIHJlYWQgZGF0YSBpcyBzb21ldGltZXMgY2hhbmdlZCBieSB0aGUgM3Jk
-IHJlYWRpbmcuDQo+IEFsc28gdGhpcyBpcyBjYXVzZWQgb24gb3RoZXIgZmxhc2ggZGV2aWNlIGFs
-c28uDQo+IFRoZSBmbGFzaCB3cml0ZSBmYWlsdXJlIGlzIHBvc3NpYmxlIHRvIGJlIGNhdXNlZCBi
-eSB0aGUgZXJyb3IuDQo+IFRvIHJlc29sdmUgdGhlIGlzc3VlIGNoYW5nZSB0aGUgcmVhZCBudW1i
-ZXIgb2YgdGltZXMgdG8gMyBmcm9tIDIuDQoNCkhpIA0KDQpJIGZpbmQgdGhpcyBhIGJpdCBvZGQu
-IEkgYW0gbG9va2luZyBhdCBzb21lIG90aGVyIGVyYXNlIHN1c3BlbmQgcHJvYmxlbXMgd2UNCnNl
-ZSBvbiBDeXByZXNzIEFNRCBOT1IgZmxhc2ggYW5kIEkgaGF2ZSBub3RlZCB0aGF0IHRoZXJlIGlz
-IG1vcmUgdGhhbiBqdXN0IERRNiB0b2dnbGluZy4NCkNoZWNraW5nIERRNSBpbiBjb21iaW5hdGlv
-biB3aXRoIERRNiBpcyBvbmUuDQpIb3cgZGlkIHlvdSB5b3UgYXJyaXZlIGF0IHJlYWRpbmcgMyB0
-aW1lcyBpcyBjb3JyZWN0PyBJcyB0aGUgYW55IGRvY3VtZW50YXRpb24NCnN1cHBvcnRpbmcgdGhp
-cz8NCg0KQWxsIGluIGFsbCwgZXJyb3IgaGFuZGxpbmcgaW4gY21kc2V0MDAwMiBpcyBsYWNraW5n
-Lg0KDQogSm9ja2UNCg0K
+On Tue, Apr 24, 2018 at 4:56 AM, Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> Hi Ronak,
+>
+>> >> +/**
+>> >> + * fsl_ifc_onfi_set_features- set features for ONFI nand
+>> >> + * @mtd: MTD device structure
+>> >> + * @chip: nand chip info structure
+>> >> + * @addr: feature address.
+>> >> + * @subfeature_param: the subfeature parameters, a four bytes array.
+>> >> + */
+>> >> +static int fsl_ifc_onfi_set_features(struct mtd_info *mtd, struct na=
+nd_chip *chip,
+>> >> +                     int addr, uint8_t *subfeature_param)
+>> >> +{
+>> >> +     int status;
+>> >> +     int i;
+>> >> +
+>> >> +#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
+>> >> +     if (!chip->onfi_version ||
+>> >> +         !(le16_to_cpu(chip->onfi_params.opt_cmd)
+>> >> +           & ONFI_OPT_CMD_SET_GET_FEATURES))
+>> >> +             return -EINVAL;
+>> >> +#endif
+>> >
+>> > No need to do that, the core will take care of it, see [1].
+>>
+>> Agree, I will remove this.
+>> >
+>> >> +
+>> >> +     /* Want data from start of the buffer */
+>> >> +     set_addr(mtd, 0, 0, 0);
+>> >
+>> > This is the only thing that differs from the core's implementation. I
+>> > see most of the time it is called from ->cmdfunc(), could you move it
+>> > there? If yes you could get rid of this entire hook and rely on the
+>> > core's function.
+>> >
+>> NAND_CMD_SET_FEATURES command sends the sub-feature param from flash
+>> buffer on the provided address and I added this here because I wanted
+>> to make sure
+>> that the data is set from start of the buffer. I looked at the core's
+>> implementation
+>> and I see that the NAND_CMD_SET_FEATURES  command is called first and th=
+en
+>> the data is filled into the buffer which will not work in case of my
+>> implementation.
+>> So, I will have to keep this here and the function, please suggest. I
+>> will wait for your
+>> feedback before submitting V2.  Moreover, I would suggest to check
+>> sequence in core's
+>> implementation as the command should run after setting the data and not =
+before.
+>
+> Not sure what you mean exactly by "NAND_CMD_SET_FEATURES is called first
+> and the data is filled into the buffer", could you please point out the
+> faulty section in the core so I can have a look?
+>
+I was pointing to the code in else part in "nand_set_features_op". FSL
+nand controller
+driver does not use "exec_op" so if I use nand_default_set_features
+from core as you suggested
+then code in the else part will be executed and as depicted below, the
+controller specific NAND_CMD_SET_FEATURES
+is called before writing the sub-feature parameters. Whereas in my
+implementation and I believe in general
+also you would want to call the controller specific "cmdfunc" only
+after writing the sub-feature parameters
+in buffer. Please correct me if I am missing anything here.
+
+2193     } else {
+2194         chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, feature, -1);
+2195         for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+2196             chip->write_byte(mtd, params[i]);
+
+> Thanks,
+> Miqu=C3=A8l
+>
+>> >> +
+>> >> +     for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
+>> >> +             chip->write_byte(mtd, subfeature_param[i]);
+>> >> +
+>> >> +     chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);
+>> >> +
+>> >> +     status =3D chip->waitfunc(mtd, chip);
+>> >> +     if (status & NAND_STATUS_FAIL)
+>> >> +             return -EIO;
+>> >> +     return 0;
+>> >> +}
+>
+>
+> --
+> Miquel Raynal, Bootlin (formerly Free Electrons)
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
+
+
+
+--=20
+Ronak A Desai
+Sr. Software Engineer
+Airborne Information Solutions / RC Linux Platform Software
+MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
+Ronak.Desai@rockwellcollins.com
+https://www.rockwellcollins.com/
