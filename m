@@ -1,30 +1,14 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAjfH-0006A2-85
- for linux-mtd@lists.infradead.org; Mon, 23 Apr 2018 22:10:29 +0000
-Date: Tue, 24 Apr 2018 00:10:04 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>, Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
- <maxime.chevallier@bootlin.com>
-Subject: Re: [PATCH v3 3/9] spi: Extend the core to ease integration of SPI
- memory controllers
-Message-ID: <20180424000805.6c015a40@bbrezillon>
-In-Reply-To: <CAHp75VfNzxGoSk==sdnOzp7LhuHVuanWAHOQk0eQC_g3Y3miQA@mail.gmail.com>
-References: <20180422183522.11118-1-boris.brezillon@bootlin.com>
- <20180422183522.11118-4-boris.brezillon@bootlin.com>
- <CAHp75VfNzxGoSk==sdnOzp7LhuHVuanWAHOQk0eQC_g3Y3miQA@mail.gmail.com>
+From: Xiaolei Li <xiaolei.li@mediatek.com>
+To: <boris.brezillon@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+ <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
+Subject: [PATCH v3] dt-bindings: mtd: mtk-nand: Update properties description
+Date: Tue, 24 Apr 2018 10:11:07 +0800
+Message-ID: <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
+In-Reply-To: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
+References: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,35 +18,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andy,
+Update ecc step size, ecc strength, and parity bits supported on
+each MTK NAND controller.
 
-On Tue, 24 Apr 2018 00:53:22 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
+---
+ Documentation/devicetree/bindings/mtd/mtk-nand.txt | 24 +++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-> On Sun, Apr 22, 2018 at 9:35 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > Some controllers are exposing high-level interfaces to access various
-> > kind of SPI memories. Unfortunately they do not fit in the current
-> > spi_controller model and usually have drivers placed in
-> > drivers/mtd/spi-nor which are only supporting SPI NORs and not SPI
-> > memories in general.
-> >
-> > This is an attempt at defining a SPI memory interface which works for
-> > all kinds of SPI memories (NORs, NANDs, SRAMs).  
-> 
-> > +config SPI_MEM
-> > +       bool "SPI memory extension"  
-> 
-> > +#if IS_ENABLED(CONFIG_SPI_MEM)  
-> 
-> IS_BUILTIN().
-> You defined it as boolean, IS_ENABLE() is superfluous.
-
-Sorry but I don't see the problem here. Yes, IS_BUILTIN() would work,
-but IS_ENABLED() works fine too and has not impact on runtime perfs
-(and probably near zero impact on compilation time). Anyway, I'll let
-Mark decide if this is important enough to send a new version.
-
-Regards,
-
-Boris
+diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+index 1c88526..f20ab4a 100644
+--- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
++++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+@@ -50,14 +50,19 @@ Optional:
+ - nand-on-flash-bbt:	Store BBT on NAND Flash.
+ - nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
+ - nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
+-			valid values: 512 and 1024.
++			valid values:
++			512 and 1024 on mt2701 and mt2712.
++			512 only on mt7622.
+ 			1024 is recommended for large page NANDs.
+ - nand-ecc-strength:	Number of bits to correct per ECC step.
+-			The valid values that the controller supports are: 4, 6,
+-			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
+-			48, 52, 56, 60.
++			The valid values that each controller supports:
++			mt2701: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
++				32, 36, 40, 44, 48, 52, 56, 60.
++			mt2712: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
++				32, 36, 40, 44, 48, 52, 56, 60, 68, 72, 80.
++			mt7622: 4, 6, 8, 10, 12, 14, 16.
+ 			The strength should be calculated as follows:
+-			E = (S - F) * 8 / 14
++			E = (S - F) * 8 / B
+ 			S = O / (P / Q)
+ 				E :	nand-ecc-strength.
+ 				S :	spare size per sector.
+@@ -66,6 +71,15 @@ Optional:
+ 				O :	oob size.
+ 				P :	page size.
+ 				Q :	nand-ecc-step-size.
++				B :	number of parity bits needed to correct
++					1 bitflip.
++					According to MTK NAND controller design,
++					this number depends on max ecc step size
++					that MTK NAND controller supports.
++					If max ecc step size supported is 1024,
++					then it should be always 14. And if max
++					ecc step size is 512, then it should be
++					always 13.
+ 			If the result does not match any one of the listed
+ 			choices above, please select the smaller valid value from
+ 			the list.
+-- 
+1.9.1
