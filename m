@@ -1,27 +1,33 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fB1tL-000153-H7
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 17:38:13 +0000
-Date: Tue, 24 Apr 2018 19:37:58 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ronak Desai <ronak.desai@rockwellcollins.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, "linux-mtd @ lists . infradead . org"
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
- driver for ONFI nand
-Message-ID: <20180424193758.57ae5547@bbrezillon>
-In-Reply-To: <CADFuHZ5f4+jjVazc-0Q2qXmHWXnxXPSjdnmRtYue1-BvT02s4g@mail.gmail.com>
-References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
- <20180422190743.36e65119@xps13>
- <CADFuHZ4i52AxD6G3xf_RyWD7Z5bs-2-zXddMevBsKYkT=JTWCg@mail.gmail.com>
- <20180424115618.70438e41@xps13>
- <CADFuHZ6tJOVzhZOede_DvCbzBC_iJNJ4zpZtU4RtAp0sRJpOUw@mail.gmail.com>
- <20180424160028.1de6cfb6@xps13>
- <CADFuHZ5f4+jjVazc-0Q2qXmHWXnxXPSjdnmRtYue1-BvT02s4g@mail.gmail.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fB3KY-00084R-6e
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 19:10:24 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Michal Hocko <mhocko@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>, Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Mikulas Patocka <mpatocka@redhat.com>, linux-mtd@lists.infradead.org,
+ linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Date: Tue, 24 Apr 2018 21:10:08 +0200
+Message-ID: <1912881.zKmfqiQKhD@blindfold>
+In-Reply-To: <20180424162712.GL17484@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +37,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ronak,
+[resending without html ...]
 
-I'm jumping on this discussion to clarify a few things.
+Am Dienstag, 24. April 2018, 18:27:12 CEST schrieb Michal Hocko:
+> Hi,
+> it seems that we still have few vmalloc users who perform GFP_NOFS
+> allocation:
+> drivers/mtd/ubi/io.c
 
-On Tue, 24 Apr 2018 12:10:07 -0500
-Ronak Desai <ronak.desai@rockwellcollins.com> wrote:
+UBI is not a big deal. We use it here like in UBIFS for debugging
+when self-checks are enabled.
 
-> >> >> >> +
-> >> >> >> +     for (i = 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-> >> >> >> +             chip->write_byte(mtd, subfeature_param[i]);
-> >> >> >> +
-> >> >> >> +     chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);  
-> >
-> > And this implementation does the opposite :)  
-> No, this is not opposite, I am just copying the data in the nand
-> controller data buffer and not sending on the bus and when the
-> NAND_CMD_SET_FEATURES is called, in that I tell nand controller to
-> transfer 4 bytes from data buffer after sending the set feature
-> command. So, on the bus the sequence will be same as depicted in the
-> ONFI specification. I have tested this on two different target
-> hardwares with processors having this nand controller.
+> fs/ext4/xattr.c
+> fs/gfs2/dir.c
+> fs/gfs2/quota.c
+> fs/nfs/blocklayout/extent_tree.c
+> fs/ubifs/debug.c
+> fs/ubifs/lprops.c
+> fs/ubifs/lpt_commit.c
+> fs/ubifs/orphan.c
 
-The ->cmdfunc() semantic has been abused for too long by too many
-drivers, let's stop this insanity. ->cmdfunc() has been designed to
-send CMD and ADDR cycles on the NAND bus, not to trigger the actual
-data transfer. You might think this is a bad design (and I partially
-agree that things were not perfect), but that's how it is. This being
-said, we now have a clean way for drivers to get all information at
-once (CMD, ADDR and DATA cycles) and it's called ->exec_op().
+All users in UBIFS are debugging code and some error reporting.
+No fast paths.
+I think we can switch to prealloation + locking without much hassle.
+I can prepare a patch.
 
-If you don't want to patch the driver to support ->exec_op(), I can
-consider accepting a temporary solution where the whole SET_FEATURES
-handling is done in fsl_ifc_onfi_set_features() (that is, moving the
-code you have in the 'case NAND_CMD_SET_FEATURES' in the
-fsl_ifc_onfi_set_features() function so that you don't call ->cmdfunc()
-at all), but I'd really prefer to have the driver converted to
-->exec_op(), and I think we (Miquel and I) can help with that.
-
-BTW, you implement ->set_features() but ->get_features() is not
-supported??!! This sounds like a bad idea to me...
-
-Regards,
-
-Boris
+Thanks,
+//richard
