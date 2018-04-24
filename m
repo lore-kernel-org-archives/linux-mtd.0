@@ -1,24 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.195])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fAyUr-0005Zt-6Y
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 14:00:57 +0000
-Date: Tue, 24 Apr 2018 16:00:28 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Ronak Desai <ronak.desai@rockwellcollins.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Subject: Re: [PATCH] Added set feature command in FSL IFC nand controller
- driver for ONFI nand
-Message-ID: <20180424160028.1de6cfb6@xps13>
-In-Reply-To: <CADFuHZ6tJOVzhZOede_DvCbzBC_iJNJ4zpZtU4RtAp0sRJpOUw@mail.gmail.com>
-References: <1523992259-56588-1-git-send-email-ronak.desai@rockwellcollins.com>
- <20180422190743.36e65119@xps13>
- <CADFuHZ4i52AxD6G3xf_RyWD7Z5bs-2-zXddMevBsKYkT=JTWCg@mail.gmail.com>
- <20180424115618.70438e41@xps13>
- <CADFuHZ6tJOVzhZOede_DvCbzBC_iJNJ4zpZtU4RtAp0sRJpOUw@mail.gmail.com>
+ id 1fAycT-00027J-OY
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 14:08:37 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>
+Subject: RE: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
+ status
+Date: Tue, 24 Apr 2018 14:08:16 +0000
+Message-ID: <TY1PR01MB0954D5C62191B212D4A7AA40DC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <21308f79d7979df5bf9aa10d07a940188415777c.camel@infinera.com>
+In-Reply-To: <21308f79d7979df5bf9aa10d07a940188415777c.camel@infinera.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,128 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ronak,
-
-On Tue, 24 Apr 2018 08:51:48 -0500, Ronak Desai
-<ronak.desai@rockwellcollins.com> wrote:
-
-> On Tue, Apr 24, 2018 at 4:56 AM, Miquel Raynal
-> <miquel.raynal@bootlin.com> wrote:
-> > Hi Ronak,
-> > =20
-> >> >> +/**
-> >> >> + * fsl_ifc_onfi_set_features- set features for ONFI nand
-> >> >> + * @mtd: MTD device structure
-> >> >> + * @chip: nand chip info structure
-> >> >> + * @addr: feature address.
-> >> >> + * @subfeature_param: the subfeature parameters, a four bytes arra=
-y.
-> >> >> + */
-> >> >> +static int fsl_ifc_onfi_set_features(struct mtd_info *mtd, struct =
-nand_chip *chip,
-> >> >> +                     int addr, uint8_t *subfeature_param)
-> >> >> +{
-> >> >> +     int status;
-> >> >> +     int i;
-> >> >> +
-> >> >> +#ifdef CONFIG_SYS_NAND_ONFI_DETECTION
-> >> >> +     if (!chip->onfi_version ||
-> >> >> +         !(le16_to_cpu(chip->onfi_params.opt_cmd)
-> >> >> +           & ONFI_OPT_CMD_SET_GET_FEATURES))
-> >> >> +             return -EINVAL;
-> >> >> +#endif =20
-> >> >
-> >> > No need to do that, the core will take care of it, see [1]. =20
-> >>
-> >> Agree, I will remove this. =20
-> >> > =20
-> >> >> +
-> >> >> +     /* Want data from start of the buffer */
-> >> >> +     set_addr(mtd, 0, 0, 0); =20
-> >> >
-> >> > This is the only thing that differs from the core's implementation. I
-> >> > see most of the time it is called from ->cmdfunc(), could you move it
-> >> > there? If yes you could get rid of this entire hook and rely on the
-> >> > core's function.
-> >> > =20
-> >> NAND_CMD_SET_FEATURES command sends the sub-feature param from flash
-> >> buffer on the provided address and I added this here because I wanted
-> >> to make sure
-> >> that the data is set from start of the buffer. I looked at the core's
-> >> implementation
-> >> and I see that the NAND_CMD_SET_FEATURES  command is called first and =
-then
-> >> the data is filled into the buffer which will not work in case of my
-> >> implementation.
-> >> So, I will have to keep this here and the function, please suggest. I
-> >> will wait for your
-> >> feedback before submitting V2.  Moreover, I would suggest to check
-> >> sequence in core's
-> >> implementation as the command should run after setting the data and no=
-t before. =20
-> >
-> > Not sure what you mean exactly by "NAND_CMD_SET_FEATURES is called first
-> > and the data is filled into the buffer", could you please point out the
-> > faulty section in the core so I can have a look?
-> > =20
-> I was pointing to the code in else part in "nand_set_features_op". FSL
-> nand controller
-> driver does not use "exec_op" so if I use nand_default_set_features
-> from core as you suggested
-> then code in the else part will be executed and as depicted below, the
-> controller specific NAND_CMD_SET_FEATURES
-> is called before writing the sub-feature parameters. Whereas in my
-> implementation and I believe in general
-> also you would want to call the controller specific "cmdfunc" only
-> after writing the sub-feature parameters
-> in buffer. Please correct me if I am missing anything here.
->=20
-> 2193     } else {
-> 2194         chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, feature, -1);
-> 2195         for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-> 2196             chip->write_byte(mtd, params[i]);
-
-The logic is supposedly the same between ->exec_op/->cmdfunc()
-regarding this area, the NAND protocol requires the command
-NAND_CMD_SET_FEATURES to be sent on the NAND bus together with 1/ the
-feature (or address) and then 2/ the parameters. I don't think this is
-wrong. You can check this matches the flowchart available p242 of the
-ONFI specification [1].
-
->=20
-> > Thanks,
-> > Miqu=C3=A8l
-> > =20
-> >> >> +
-> >> >> +     for (i =3D 0; i < ONFI_SUBFEATURE_PARAM_LEN; ++i)
-> >> >> +             chip->write_byte(mtd, subfeature_param[i]);
-> >> >> +
-> >> >> +     chip->cmdfunc(mtd, NAND_CMD_SET_FEATURES, addr, 0);
-
-And this implementation does the opposite :)
-
-> >> >> +
-> >> >> +     status =3D chip->waitfunc(mtd, chip);
-> >> >> +     if (status & NAND_STATUS_FAIL)
-> >> >> +             return -EIO;
-> >> >> +     return 0;
-> >> >> +} =20
-> >
-> >
-> > --
-> > Miquel Raynal, Bootlin (formerly Free Electrons)
-> > Embedded Linux and Kernel engineering
-> > https://bootlin.com =20
->=20
->=20
->=20
-
-[1] http://www.onfi.org/~/media/onfi/specs/onfi_4_0-gold.pdf?la=3Den
-
-Thanks,
-Miqu=C3=A8l
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+SGkgSm9ja2Utc2FuLA0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudC4NCg0KPiBJIGZpbmQgdGhp
+cyBhIGJpdCBvZGQuIEkgYW0gbG9va2luZyBhdCBzb21lIG90aGVyIGVyYXNlIHN1c3BlbmQgcHJv
+YmxlbXMgd2UNCj4gc2VlIG9uIEN5cHJlc3MgQU1EIE5PUiBmbGFzaCBhbmQgSSBoYXZlIG5vdGVk
+IHRoYXQgdGhlcmUgaXMgbW9yZSB0aGFuIGp1c3QgRFE2IHRvZ2dsaW5nLg0KPiBDaGVja2luZyBE
+UTUgaW4gY29tYmluYXRpb24gd2l0aCBEUTYgaXMgb25lLg0KDQogIEJ5IHRoZSB3YXkgSSBoYXZl
+IGFsc28gZm91bmQgb25seSBvbmNlIGRvX2VyYXNlX29uZWJsb2NrKCkgd2FzIGZhaWxlZCBieSB0
+aGUgdGltZW91dCBvbiB0aGUgd3JpdGUgZmFpbHVyZSBzaXR1YXRpb24uDQogIFNvIEkgdGhvdWdo
+dCB0aGF0IHRoZSBlcnJvciBhbHNvIGNhbiBiZSByZXNvbHZlZCBieSB0aGUgMyB0aW1lcyByZWFk
+aW5nIGZvciBjaGVja2luZyBjaGlwX3JlYWR5KCkuDQoNCj4gSG93IGRpZCB5b3UgeW91IGFycml2
+ZSBhdCByZWFkaW5nIDMgdGltZXMgaXMgY29ycmVjdD8gSXMgdGhlIGFueSBkb2N1bWVudGF0aW9u
+DQo+IHN1cHBvcnRpbmcgdGhpcz8NCg0KICBBYm91dCB0aGUgMyB0aW1lcyByZWFkaW5nIGlzIGRl
+c2NyaWJlZCBieSB0aGUgcGFnZSAzMiBvbiBmb2xsb3dpbmcgQ3lwcmVzcyBTMjlHTHh4eFAgZmxh
+c2ggZGF0YSBzaGVldC4NCiAgICA8aHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzIxOTkyNi9k
+b3dubG9hZD4NCg0KPiBBbGwgaW4gYWxsLCBlcnJvciBoYW5kbGluZyBpbiBjbWRzZXQwMDAyIGlz
+IGxhY2tpbmcuDQoNCiAgSSBoYXZlIHVuZGVyc3Rvb2QgYXMgdGhhdCBpdCBpcyBmb3IgZXhhbXBs
+ZSBGSVhNRSBwYXJ0cyBmb3IgdGhlIGVycm9yIGNhc2UgaW4gY2ZpX2NtZHNldF8wMDAyLg0KICBJ
+cyB0aGlzIGNvcnJlY3Q/DQoNClJlZ2FyZHMsDQpJa2VnYW1pDQoNCi0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tDQpGcm9tOiBKb2FraW0gVGplcm5sdW5kIFttYWlsdG86Sm9ha2ltLlRqZXJubHVu
+ZEBpbmZpbmVyYS5jb21dIA0KU2VudDogVHVlc2RheSwgQXByaWwgMjQsIDIwMTggODowNSBQTQ0K
+VG86IElLRUdBTUkgVG9rdW5vcmk7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpDYzog
+UEFDS0hBTSBDaHJpcw0KU3ViamVjdDogUmU6IG10ZDogY2ZpX2NtZHNldF8wMDAyOiBSZWFkIGRh
+dGEgMyB0aW1lcyB0byBjaGVjayB3cml0ZSBvcGVyYXRpb24gc3RhdHVzDQoNCk9uIFR1ZSwgMjAx
+OC0wNC0yNCBhdCAwNTo1NCArMDAwMCwgSUtFR0FNSSBUb2t1bm9yaSB3cm90ZToNCj4gDQo+IEhp
+LA0KPiANCj4gTGV0IHVzIGNvbnN1bHQgdG8gY2hhbmdlIG10ZCBjZmlfY21kc2V0XzAwMDIgdG8g
+cmVhZCBkYXRhIDMgdGltZXMgYXMgYmVsb3cgcGF0Y2guDQo+IENhbiB3ZSBjaGFuZ2UgdGhlIG10
+ZCBjZmlfY21kc2V0XzAwMDIgZHJpdmVyIGxpa2UgdGhpcz8NCj4gSWYgYW55IGNvbW1lbnQgb3Ig
+Y29uY2VybiBwbGVhc2UgbGV0IHVzIGtub3cuDQo+IA0KPiBGcm9tIGQ5MjQ4MjJjOTk2YjljMGVj
+Y2M4MTVlNTAxOGEwYzNlYTYwNzcxMzcgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxDQo+IEZyb206
+IFRva3Vub3JpIElrZWdhbWkgPGlrZWdhbWlAYWxsaWVkLXRlbGVzaXMuY28uanA+DQo+IERhdGU6
+IFR1ZSwgMjQgQXByIDIwMTggMTM6MjY6MzcgKzA5MDANCj4gU3ViamVjdDogW1BBVENIIDIvMl0g
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IFJlYWQgZGF0YSAzIHRpbWVzIHRvIGNoZWNrIHdyaXRlDQo+
+ICBvcGVyYXRpb24gc3RhdHVzDQo+IA0KPiBDeXByZXNzIFMyOUdMeHh4UCBmbGFzaCBpcyBuZWVk
+ZWQgdG8gcmVhZCBkYXRhIDMgdGltZXMgdG8gY2hlY2sgRFE2IHRvZ2dsZXMuDQo+IEFjdHVhbGx5
+IHRoZSByZWFkIGRhdGEgaXMgc29tZXRpbWVzIGNoYW5nZWQgYnkgdGhlIDNyZCByZWFkaW5nLg0K
+PiBBbHNvIHRoaXMgaXMgY2F1c2VkIG9uIG90aGVyIGZsYXNoIGRldmljZSBhbHNvLg0KPiBUaGUg
+Zmxhc2ggd3JpdGUgZmFpbHVyZSBpcyBwb3NzaWJsZSB0byBiZSBjYXVzZWQgYnkgdGhlIGVycm9y
+Lg0KPiBUbyByZXNvbHZlIHRoZSBpc3N1ZSBjaGFuZ2UgdGhlIHJlYWQgbnVtYmVyIG9mIHRpbWVz
+IHRvIDMgZnJvbSAyLg0KDQpIaSANCg0KSSBmaW5kIHRoaXMgYSBiaXQgb2RkLiBJIGFtIGxvb2tp
+bmcgYXQgc29tZSBvdGhlciBlcmFzZSBzdXNwZW5kIHByb2JsZW1zIHdlDQpzZWUgb24gQ3lwcmVz
+cyBBTUQgTk9SIGZsYXNoIGFuZCBJIGhhdmUgbm90ZWQgdGhhdCB0aGVyZSBpcyBtb3JlIHRoYW4g
+anVzdCBEUTYgdG9nZ2xpbmcuDQpDaGVja2luZyBEUTUgaW4gY29tYmluYXRpb24gd2l0aCBEUTYg
+aXMgb25lLg0KSG93IGRpZCB5b3UgeW91IGFycml2ZSBhdCByZWFkaW5nIDMgdGltZXMgaXMgY29y
+cmVjdD8gSXMgdGhlIGFueSBkb2N1bWVudGF0aW9uDQpzdXBwb3J0aW5nIHRoaXM/DQoNCkFsbCBp
+biBhbGwsIGVycm9yIGhhbmRsaW5nIGluIGNtZHNldDAwMDIgaXMgbGFja2luZy4NCg0KIEpvY2tl
+DQoNCg==
