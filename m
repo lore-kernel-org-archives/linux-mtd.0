@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fB08L-0001Ts-Ux
- for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 15:46:00 +0000
-Date: Tue, 24 Apr 2018 17:45:19 +0200
+ id 1fB09E-0002a6-FU
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 15:46:43 +0000
+Date: Tue, 24 Apr 2018 17:46:16 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Joakim Tjernlund <joakim.tjernlund@transmode.se>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/3] cfi_cmdset_0001: Do not allow read/write to suspend
- erase block.
-Message-ID: <20180424174519.0c1bab0a@bbrezillon>
-In-Reply-To: <20180301133941.19660-2-joakim.tjernlund@infinera.com>
-References: <20180301133941.19660-1-joakim.tjernlund@infinera.com>
- <20180301133941.19660-2-joakim.tjernlund@infinera.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: nand: Fix nanddev_mtd_erase()
+Message-ID: <20180424174616.776d18dd@bbrezillon>
+In-Reply-To: <20180410151513.27898-1-boris.brezillon@bootlin.com>
+References: <20180410151513.27898-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,94 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  1 Mar 2018 14:39:39 +0100
-Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
+On Tue, 10 Apr 2018 17:15:13 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+> Commit e7bfb3fdbde3 ("mtd: Stop updating erase_info->state and calling
+> mtd_erase_callback()") removed the einfo->state field and the
+> MTD_ERASE_XXX macros. At the same time, the generic NAND layer was added
+> and made sure to update the erase info state.
 > 
-> Currently it is possible to read and/or write to suspend EB's.
-> Writing /dev/mtdX or /dev/mtdblockX from several processes may
-> break the flash state machine.
+> It did not result in a build failure after merging the nand/for-4.17
+> branch in mtd/next because the generic NAND layer is not selected yet.
+> Let's fix that before a config option starts selecting MTD_NAND_CORE.
 > 
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-> Cc: <stable@vger.kernel.org>
+> Fixes: e7bfb3fdbde3 ("mtd: Stop updating erase_info->state and calling mtd_erase_callback()")
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Applied the patch series to mtd/master after changing the subject
-prefix for "mtd: cfi: cmdset_xxx: ".
-
-I'll send a fixes PR to Linus later this week.
-
-Thanks,
-
-Boris
+Applied to master.
 
 > ---
->  drivers/mtd/chips/cfi_cmdset_0001.c | 16 +++++++++++-----
->  include/linux/mtd/flashchip.h       |  1 +
->  2 files changed, 12 insertions(+), 5 deletions(-)
+>  drivers/mtd/nand/core.c | 3 ---
+>  1 file changed, 3 deletions(-)
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 60d5d19e347f..b59872304ae7 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -849,21 +849,25 @@ static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long
->  		     (mode == FL_WRITING && (cfip->SuspendCmdSupport & 1))))
->  			goto sleep;
+> diff --git a/drivers/mtd/nand/core.c b/drivers/mtd/nand/core.c
+> index d0cd6f8635d7..9c9f8936b63b 100644
+> --- a/drivers/mtd/nand/core.c
+> +++ b/drivers/mtd/nand/core.c
+> @@ -162,7 +162,6 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
+>  		ret = nanddev_erase(nand, &pos);
+>  		if (ret) {
+>  			einfo->fail_addr = nanddev_pos_to_offs(nand, &pos);
+> -			einfo->state = MTD_ERASE_FAILED;
 >  
-> +		/* Do not allow suspend iff read/write to EB address */
-> +		if ((adr & chip->in_progress_block_mask) ==
-> +		    chip->in_progress_block_addr)
-> +			goto sleep;
+>  			return ret;
+>  		}
+> @@ -170,8 +169,6 @@ int nanddev_mtd_erase(struct mtd_info *mtd, struct erase_info *einfo)
+>  		nanddev_pos_next_eraseblock(nand, &pos);
+>  	}
 >  
->  		/* Erase suspend */
-> -		map_write(map, CMD(0xB0), adr);
-> +		map_write(map, CMD(0xB0), chip->in_progress_block_addr);
->  
->  		/* If the flash has finished erasing, then 'erase suspend'
->  		 * appears to make some (28F320) flash devices switch to
->  		 * 'read' mode.  Make sure that we switch to 'read status'
->  		 * mode so we get the right data. --rmk
->  		 */
-> -		map_write(map, CMD(0x70), adr);
-> +		map_write(map, CMD(0x70), chip->in_progress_block_addr);
->  		chip->oldstate = FL_ERASING;
->  		chip->state = FL_ERASE_SUSPENDING;
->  		chip->erase_suspended = 1;
->  		for (;;) {
-> -			status = map_read(map, adr);
-> +			status = map_read(map, chip->in_progress_block_addr);
->  			if (map_word_andequal(map, status, status_OK, status_OK))
->  			        break;
->  
-> @@ -1059,8 +1063,8 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
->  		   sending the 0x70 (Read Status) command to an erasing
->  		   chip and expecting it to be ignored, that's what we
->  		   do. */
-> -		map_write(map, CMD(0xd0), adr);
-> -		map_write(map, CMD(0x70), adr);
-> +		map_write(map, CMD(0xd0), chip->in_progress_block_addr);
-> +		map_write(map, CMD(0x70), chip->in_progress_block_addr);
->  		chip->oldstate = FL_READY;
->  		chip->state = FL_ERASING;
->  		break;
-> @@ -1951,6 +1955,8 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  	map_write(map, CMD(0xD0), adr);
->  	chip->state = FL_ERASING;
->  	chip->erase_suspended = 0;
-> +	chip->in_progress_block_addr = adr;
-> +	chip->in_progress_block_mask = ~(len - 1);
->  
->  	ret = INVAL_CACHE_AND_WAIT(map, chip, adr,
->  				   adr, len,
-> diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
-> index b63fa457febd..3529683f691e 100644
-> --- a/include/linux/mtd/flashchip.h
-> +++ b/include/linux/mtd/flashchip.h
-> @@ -85,6 +85,7 @@ struct flchip {
->  	unsigned int write_suspended:1;
->  	unsigned int erase_suspended:1;
->  	unsigned long in_progress_block_addr;
-> +	unsigned long in_progress_block_mask;
->  
->  	struct mutex mutex;
->  	wait_queue_head_t wq; /* Wait on here when we're waiting for the chip
+> -	einfo->state = MTD_ERASE_DONE;
+> -
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(nanddev_mtd_erase);
