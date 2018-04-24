@@ -2,11 +2,9 @@ From: Xiaolei Li <xiaolei.li@mediatek.com>
 To: <boris.brezillon@bootlin.com>
 CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
  <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v3] dt-bindings: mtd: mtk-nand: Update properties description
-Date: Tue, 24 Apr 2018 10:11:07 +0800
-Message-ID: <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
-In-Reply-To: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
-References: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
+Subject: [PATCH v3] Improve MTK NAND driver
+Date: Tue, 24 Apr 2018 10:11:06 +0800
+Message-ID: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,58 +16,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Update ecc step size, ecc strength, and parity bits supported on
-each MTK NAND controller.
+This patch fixes some MTK NAND driver DT binding description errors.
 
-Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
----
+Changes relative to:
+--------------------
+tree    : https://github.com/bbrezillon/linux-0day
+branch  : nand/next
+commit  :
+	'commit ba4150b1ec2a ("mtd: rawnand: s3c2410: enhance the probe
+	 function error path")'
+
+Patch v3:
+  - Remove max_sector_size change. It is uselees now.
+  - Remove maximize_fdm_ecc new caps patch. Send a patch series for this
+    change in the future.
+  - Remove MTK NAND Controller maintainers entry patch. This patch was
+    accepted in patch v2.
+
+Patch v2:
+  - Add new nfc capability instead of defining new DT property.
+  - Remove not backward compat patches about nand-ecc-maximize.
+
+Xiaolei Li (1):
+  dt-bindings: mtd: mtk-nand: Update properties description
+
  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 24 +++++++++++++++++-----
  1 file changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-index 1c88526..f20ab4a 100644
---- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-@@ -50,14 +50,19 @@ Optional:
- - nand-on-flash-bbt:	Store BBT on NAND Flash.
- - nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
- - nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
--			valid values: 512 and 1024.
-+			valid values:
-+			512 and 1024 on mt2701 and mt2712.
-+			512 only on mt7622.
- 			1024 is recommended for large page NANDs.
- - nand-ecc-strength:	Number of bits to correct per ECC step.
--			The valid values that the controller supports are: 4, 6,
--			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
--			48, 52, 56, 60.
-+			The valid values that each controller supports:
-+			mt2701: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
-+				32, 36, 40, 44, 48, 52, 56, 60.
-+			mt2712: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
-+				32, 36, 40, 44, 48, 52, 56, 60, 68, 72, 80.
-+			mt7622: 4, 6, 8, 10, 12, 14, 16.
- 			The strength should be calculated as follows:
--			E = (S - F) * 8 / 14
-+			E = (S - F) * 8 / B
- 			S = O / (P / Q)
- 				E :	nand-ecc-strength.
- 				S :	spare size per sector.
-@@ -66,6 +71,15 @@ Optional:
- 				O :	oob size.
- 				P :	page size.
- 				Q :	nand-ecc-step-size.
-+				B :	number of parity bits needed to correct
-+					1 bitflip.
-+					According to MTK NAND controller design,
-+					this number depends on max ecc step size
-+					that MTK NAND controller supports.
-+					If max ecc step size supported is 1024,
-+					then it should be always 14. And if max
-+					ecc step size is 512, then it should be
-+					always 13.
- 			If the result does not match any one of the listed
- 			choices above, please select the smaller valid value from
- 			the list.
 -- 
 1.9.1
