@@ -1,12 +1,19 @@
-From: Xiaolei Li <xiaolei.li@mediatek.com>
-To: <boris.brezillon@bootlin.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
- <srv_heupstream@mediatek.com>, <xiaolei.li@mediatek.com>
-Subject: [PATCH v3] Improve MTK NAND driver
-Date: Tue, 24 Apr 2018 10:11:06 +0800
-Message-ID: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fAqYh-0007WW-NK
+ for linux-mtd@lists.infradead.org; Tue, 24 Apr 2018 05:32:10 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+CC: Tobi Wulff <Tobi.Wulff@alliedtelesis.co.nz>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>
+Subject: NAND timeout issues with blank chip and Marvell NFC
+Date: Tue, 24 Apr 2018 05:31:39 +0000
+Message-ID: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,32 +23,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes some MTK NAND driver DT binding description errors.
-
-Changes relative to:
---------------------
-tree    : https://github.com/bbrezillon/linux-0day
-branch  : nand/next
-commit  :
-	'commit ba4150b1ec2a ("mtd: rawnand: s3c2410: enhance the probe
-	 function error path")'
-
-Patch v3:
-  - Remove max_sector_size change. It is uselees now.
-  - Remove maximize_fdm_ecc new caps patch. Send a patch series for this
-    change in the future.
-  - Remove MTK NAND Controller maintainers entry patch. This patch was
-    accepted in patch v2.
-
-Patch v2:
-  - Add new nfc capability instead of defining new DT property.
-  - Remove not backward compat patches about nand-ecc-maximize.
-
-Xiaolei Li (1):
-  dt-bindings: mtd: mtk-nand: Update properties description
-
- Documentation/devicetree/bindings/mtd/mtk-nand.txt | 24 +++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
-
--- 
-1.9.1
+Hi,=0A=
+=0A=
+We're in the process of qualifying new NAND chips (Macronix =0A=
+MX30LF2G18AC) for one of our Armada-385 based devices and we're =0A=
+experiencing some long startup times on units with factory fresh NAND =0A=
+chips. Anecdotally I think I've also seen this behaviour on the old =0A=
+chips as well (Micron MT29F2G08ABAEAWP-ITX:E).=0A=
+=0A=
+On 4.17.0-rc2 with the newly re-written NAND infrastructure we see=0A=
+=0A=
+nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
+nand: Macronix MX30LF2G18AC=0A=
+nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=0A=
+marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)=0A=
+marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)=0A=
+Bad block table not found for chip 0=0A=
+Bad block table not found for chip 0=0A=
+Scanning device for bad blocks=0A=
+=0A=
+(nothing for some time)=0A=
+=0A=
+On an older kernel we see=0A=
+=0A=
+pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=0A=
+nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
+nand: Macronix MX30LF2G18AC=0A=
+nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=0A=
+pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048=0A=
+Bad block table not found for chip 0=0A=
+Bad block table not found for chip 0=0A=
+Scanning device for bad blocks=0A=
+pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
+pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
+pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
+pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
+pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
+...=0A=
+(time outs continue for some time)=0A=
+=0A=
+Presumably the new driver in 4.17.0-rc2 is experiencing the same wait =0A=
+time out but just not complaining about it.=0A=
+=0A=
+If we leave the system running long enough (in the order of 30 minutes) =0A=
+things seem to sort themselves out and bootup continues, the subsequent =0A=
+boots are fine. If we run 'nand erase.chip' from u-boot on a fresh unit =0A=
+and then boot into the kernel then things are also fine.=0A=
+=0A=
+If we run 'nand scrub.chip -y' from u-boot we are able to re-create the =0A=
+problem.=0A=
+=0A=
+Our suspicion is that erased state of the chip is probably not agreeable =
+=0A=
+with either the ecc data or the bad block table location (or both). By =0A=
+erasing it from u-boot this must fill in valid data in the expected =0A=
+places and the kernel is happy.=0A=
+=0A=
+We could update our manufacturing procedures to run 'nand erase.chip' =0A=
+before the first boot but this feels wrong. Some of our devices boot =0A=
+over the network so the nand is not normally touched by the bootloader. =0A=
+It seems that there is some unhandled error condition that is stopping =0A=
+the kernel from seeing that the chip is completely blank and making =0A=
+forward progress.=0A=
+=0A=
+Has anyone else seen something like this before? Any thoughts as to how =0A=
+we can avoid the long delay?=0A=
+=0A=
+Thanks=0A=
+Chris=0A=
