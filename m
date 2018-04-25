@@ -1,19 +1,21 @@
 Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBRsW-0008KC-KV
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 21:23:07 +0000
+ id 1fBT8u-000765-KD
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 22:44:07 +0000
 From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Steve deRosier
- <derosier@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>, Tobi Wulff
- <Tobi.Wulff@alliedtelesis.co.nz>
-Subject: Re: NAND timeout issues with blank chip and Marvell NFC
-Date: Wed, 25 Apr 2018 21:22:45 +0000
-Message-ID: <72ff5349ac6e48a9ab74986947572108@svr-chch-ex1.atlnz.lc>
-References: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
- <CALLGbRJOGq_3xtWRojPtjVSgnxt-GhwYKUvwEgQKLct=XtEjAw@mail.gmail.com>
- <20180424180837.398957ba@xps13>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
+ Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Thomas
+ Petazzoni" <thomas.petazzoni@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: fix the chip-select DT parsing
+ logic
+Date: Wed, 25 Apr 2018 22:43:43 +0000
+Message-ID: <cc8aca06646f401d96a3dc7856572733@svr-chch-ex1.atlnz.lc>
+References: <20180425141632.9876-1-miquel.raynal@bootlin.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -29,155 +31,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Miquel,=0A=
 =0A=
-On 25/04/18 04:08, Miquel Raynal wrote:=0A=
-> Hi Steve, Chris,=0A=
+On 26/04/18 02:16, Miquel Raynal wrote:=0A=
+> The block responsible of parsing the DT for the number of chip-select=0A=
+> lines uses an 'if/else if/else if' block. The content of the second and=
+=0A=
+> third 'else if' conditions are:=0A=
+>          1/ the actual condition to enter the sub-block and=0A=
+>          2/ the operation to do in this sub-block.=0A=
 > =0A=
-> On Tue, 24 Apr 2018 08:49:47 -0700, Steve deRosier <derosier@gmail.com>=
-=0A=
-> wrote:=0A=
+>          [...]=0A=
+>          else if (condition1_to_enter && action1() =3D=3D failed)=0A=
+>                  raise_error();=0A=
+>          else if (condition2_to_enter && action2() =3D=3D failed)=0A=
+>                  raise_error();=0A=
+>          [...]=0A=
 > =0A=
->> Hi Chris,=0A=
->>=0A=
->> On Mon, Apr 23, 2018 at 10:31 PM, Chris Packham=0A=
->> <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
->>> Hi,=0A=
->>>=0A=
->>> We're in the process of qualifying new NAND chips (Macronix=0A=
->>> MX30LF2G18AC) for one of our Armada-385 based devices and we're=0A=
->>> experiencing some long startup times on units with factory fresh NAND=
-=0A=
->>> chips. Anecdotally I think I've also seen this behaviour on the old=0A=
->>> chips as well (Micron MT29F2G08ABAEAWP-ITX:E).=0A=
->>>=0A=
->>> On 4.17.0-rc2 with the newly re-written NAND infrastructure we see=0A=
->>>=0A=
->>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>> nand: Macronix MX30LF2G18AC=0A=
->>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=
-=0A=
->>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)=0A=
->>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)=0A=
->>> Bad block table not found for chip 0=0A=
->>> Bad block table not found for chip 0=0A=
->>> Scanning device for bad blocks=0A=
->>>=0A=
->>> (nothing for some time)=0A=
->>>=0A=
->>> On an older kernel we see=0A=
->>>=0A=
->>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=
-=0A=
->>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>> nand: Macronix MX30LF2G18AC=0A=
->>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=
-=0A=
->>> pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048=0A=
->>> Bad block table not found for chip 0=0A=
->>> Bad block table not found for chip 0=0A=
->>> Scanning device for bad blocks=0A=
->>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>> ...=0A=
->>> (time outs continue for some time)=0A=
->>>=0A=
->>> Presumably the new driver in 4.17.0-rc2 is experiencing the same wait=
-=0A=
->>> time out but just not complaining about it.=0A=
->>>=0A=
->>> If we leave the system running long enough (in the order of 30 minutes)=
-=0A=
->>> things seem to sort themselves out and bootup continues, the subsequent=
-=0A=
->>> boots are fine. If we run 'nand erase.chip' from u-boot on a fresh unit=
-=0A=
->>> and then boot into the kernel then things are also fine.=0A=
->>>=0A=
->>> If we run 'nand scrub.chip -y' from u-boot we are able to re-create the=
-=0A=
->>> problem.=0A=
->>>=0A=
->>> Our suspicion is that erased state of the chip is probably not agreeabl=
-e=0A=
->>> with either the ecc data or the bad block table location (or both). By=
-=0A=
->>> erasing it from u-boot this must fill in valid data in the expected=0A=
->>> places and the kernel is happy.=0A=
->>>   =0A=
->>=0A=
->> During your very first boot, Linux can't find the bad-block table and=0A=
->> thus does a full scan of the chip, each and every block, to find the=0A=
->> manufacturer bad block marks and then constructs the table. I imagine=0A=
->> you've got a parameter incorrect somewhere that's causing it to wait=0A=
->> for timeouts at read points, instead of quickly able to read through=0A=
->> the 2k or 4k blocks on that flash.  On subsequent boots, you don't see=
-=0A=
->> this issue because the BBT is found and Linux just uses that. Same=0A=
->> deal if you do a `nand erase.chip`, because the BBT is itself marked=0A=
->> with a bad-block marker and gets skipped during a normal erase.=0A=
+> In case of failure, the sub-block is entered and an error raised.=0A=
+> Otherwise, in case of success, the code would continue erroneously in=0A=
+> the next 'else if' statement because it did not failed (and did not=0A=
+> enter the first 'else if' sub-block).=0A=
 > =0A=
-> I share Steve's thoughts on that, there is probably some=0A=
-> misconfiguration at some point, having a first long boot is not a=0A=
-> problem, but 30 minutes for a 256MiB chip... What I don't understand is=
+> The first 'else if' refers to legacy bindings while the second 'else if'=
 =0A=
-> that you should have timeouts with the recent kernel too if there is=0A=
-> actually something wrong happening.=0A=
-=0A=
-As I mentioned in my other reply I may have understated the time. It is =0A=
-~30mins with the old pxa3xx driver but the new one seems to block =0A=
-indefinitely for me.=0A=
-=0A=
->>=0A=
->> Now, I don't know if you're aware of this, but by doing the `nand=0A=
->> scub.chip -y`, you've ruined the flash chip.  That device can not be=0A=
->> relied upon anymore. A scrub will ignore the factory bad-block-marks=0A=
->> and erase them. Unless you stored this information off-chip and=0A=
->> rewrite the markers, you've now lost the bad-block information from=0A=
->> the manufacturer's tests.  In any case, this erases the BBT, so your=0A=
->> next boot triggers Linux to rebuild the BBT.=0A=
+> refers to new bindings. The second 'else if', which is entered=0A=
+> erroneously, checks for the 'reg' property, which, for old bindings,=0A=
+> does not mean anything because it would not be the number of CS=0A=
+> available, but the regular register map of almost any DT node. This=0A=
+> being said, the content of the 'reg' property being the register map=0A=
+> offset and length, it has '2' values, so the number of CS in this=0A=
+> situation is assumed to be '2'.=0A=
 > =0A=
-> I think U-Boot will do it automatically after the scrub. But the result=
+> When running nand_scan_ident() with 2 CS, the core will check for an=0A=
+> array of chips. It will first issue a RESET and then a READ_ID. Of=0A=
+> course this will trigger two timeouts because there is no chip in front=
 =0A=
-> is still the same.=0A=
+> of the second CS:=0A=
 > =0A=
->>=0A=
->>> We could update our manufacturing procedures to run 'nand erase.chip'=
-=0A=
->>> before the first boot but this feels wrong. Some of our devices boot=0A=
->>> over the network so the nand is not normally touched by the bootloader.=
-=0A=
->>> It seems that there is some unhandled error condition that is stopping=
-=0A=
->>> the kernel from seeing that the chip is completely blank and making=0A=
->>> forward progress.=0A=
->>>   =0A=
->>=0A=
->> erase chip won't fix your issue. The BBT scan is going to happen=0A=
->> anyway. There is however clearly some parameter that is setup=0A=
->> incorrectly that's causing it to wait for the timeout instead of being=
-=0A=
->> able to quickly read pages. I don't see why that'd be unique to the=0A=
->> BBT scan however, I'd expect you to see the problem on all reads, thus=
-=0A=
->> slowing down the system noticeably in general.=0A=
->>=0A=
->> Your hint is likely these lines:=0A=
->>      " marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)=0A=
->>        marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)"=
-=0A=
->>=0A=
->> You can go look at that in the driver and compare with the relevant=0A=
->> behavior in the datasheets. Sorry, but I can't help more specifically,=
-=0A=
->> I'd have to know your particular hardware and datasheets and spend=0A=
->> some time looking at the code.=0A=
+> [    1.367460] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x000000=
+80)=0A=
+> [    1.474292] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x000002=
+80)=0A=
 > =0A=
-> I also reproduce the problem on my Armada 38x, the two timeouts at boot=
+> Indeed, this is harmless and the core will then assume there is only one=
 =0A=
-> time (not specifically the first one) are suspicious, I'm going to look=
+> valid CS.=0A=
+> =0A=
+> Fix the logic in the whole block by entering each sub-block just on the=
 =0A=
-> into it.=0A=
+> 'is legacy' condition, doing the action inside the sub-block. This way,=
 =0A=
-Thanks for leaping onto it. I'll keep investigating it here as well.=0A=
+> when the action succeeds, the whole block is left.=0A=
+> =0A=
+> Furthermore, for both the old bindings and the new bindings the same=0A=
+> logic was applied to retrieve the number of CS lines:=0A=
+> using of_get_property() to get a size in bytes, converted in the actual=
+=0A=
+> number of lines by dividing it per sizeof(u32) (4 bytes).=0A=
+> =0A=
+> This is fine for the 'reg' property which is a list of the CS IDs but=0A=
+> not for the 'num-cs' property which is directly the value of the number=
+=0A=
+> of CS.=0A=
+> =0A=
+> Anyway, no existing DT uses another value than 'num-cs =3D <1>' and no=0A=
+> other value has ever been supported by the old driver (pxa3xx_nand.c).=0A=
+> Remove this condition and apply a number of 1 CS anyway, as already=0A=
+> described in the bindings.=0A=
+> =0A=
+> Finally, the 'reg' property of a 'nand' node (with the new bindings)=0A=
+> gives the IDs of each CS line in use. marvell_nand.c driver first look=0A=
+> at the number of CS lines that are present in this property.=0A=
+> =0A=
+> Better use of_property_count_elems_of_size() than dividing by 4 the size=
+=0A=
+> of the number of bytes returned by of_get_property().=0A=
+> =0A=
+> Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller dr=
+iver")=0A=
+> Cc: stable@vger.kernel.org=0A=
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>=0A=
+=0A=
+This stops the timeout warnings on my platform. So for that part=0A=
+=0A=
+Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+=0A=
