@@ -1,24 +1,31 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.6])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.10])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fB81t-00023t-5j
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 00:11:27 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>
-Subject: RE: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
- status
-Date: Wed, 25 Apr 2018 00:11:07 +0000
-Message-ID: <TY1PR01MB09541F8DC2244DD278C21B08DC8F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ id 1fBA0g-0003SS-9K
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 02:18:21 +0000
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com
+ (mail-os2jpn01lp0147.outbound.protection.outlook.com [23.103.139.147])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
+ CB435294001
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2018 11:18:03 +0900 (JST)
+ (envelope-from smtpuser@allied-telesis.co.jp)
+From: smtpuser <smtpuser@allied-telesis.co.jp>
+To: Brian Norris <computersforpeace@gmail.com>
+Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: Read data 3 times to check write
+ operation status
+Date: Wed, 25 Apr 2018 11:17:26 +0900
+Message-Id: <20180425021726.18591-1-smtpuser@allied-telesis.co.jp>
+In-Reply-To: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <21308f79d7979df5bf9aa10d07a940188415777c.camel@infinera.com>
- <TY1PR01MB0954D5C62191B212D4A7AA40DC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <3450467624181f68487553e60491af12577ae927.camel@infinera.com>
-In-Reply-To: <3450467624181f68487553e60491af12577ae927.camel@infinera.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,91 +35,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogSm9ha2ltIFRqZXJubHVu
-ZCBbbWFpbHRvOkpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29tXQ0KPiBTZW50OiBXZWRuZXNk
-YXksIEFwcmlsIDI1LCAyMDE4IDI6MjIgQU0NCj4gVG86IElLRUdBTUkgVG9rdW5vcmk7IGxpbnV4
-LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IENjOiBQQUNLSEFNIENocmlzDQo+IFN1YmplY3Q6
-IFJlOiBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVhZCBkYXRhIDMgdGltZXMgdG8gY2hlY2sgd3Jp
-dGUNCj4gb3BlcmF0aW9uIHN0YXR1cw0KPiANCj4gT24gVHVlLCAyMDE4LTA0LTI0IGF0IDE0OjA4
-ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3RlOg0KPiA+IENBVVRJT046IFRoaXMgZW1haWwg
-b3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2FuaXphdGlvbi4gRG8gbm90DQo+IGNs
-aWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSByZWNvZ25pemUgdGhlIHNl
-bmRlciBhbmQga25vdw0KPiB0aGUgY29udGVudCBpcyBzYWZlLg0KPiA+DQo+ID4NCj4gPiBIaSBK
-b2NrZS1zYW4sDQo+ID4NCj4gPiBUaGFua3MgZm9yIHlvdXIgY29tbWVudC4NCj4gPg0KPiA+ID4g
-SSBmaW5kIHRoaXMgYSBiaXQgb2RkLiBJIGFtIGxvb2tpbmcgYXQgc29tZSBvdGhlciBlcmFzZSBz
-dXNwZW5kIHByb2JsZW1zDQo+IHdlDQo+ID4gPiBzZWUgb24gQ3lwcmVzcyBBTUQgTk9SIGZsYXNo
-IGFuZCBJIGhhdmUgbm90ZWQgdGhhdCB0aGVyZSBpcyBtb3JlIHRoYW4NCj4ganVzdCBEUTYgdG9n
-Z2xpbmcuDQo+ID4gPiBDaGVja2luZyBEUTUgaW4gY29tYmluYXRpb24gd2l0aCBEUTYgaXMgb25l
-Lg0KPiA+DQo+ID4gICBCeSB0aGUgd2F5IEkgaGF2ZSBhbHNvIGZvdW5kIG9ubHkgb25jZSBkb19l
-cmFzZV9vbmVibG9jaygpIHdhcyBmYWlsZWQNCj4gYnkgdGhlIHRpbWVvdXQgb24gdGhlIHdyaXRl
-IGZhaWx1cmUgc2l0dWF0aW9uLg0KPiA+ICAgU28gSSB0aG91Z2h0IHRoYXQgdGhlIGVycm9yIGFs
-c28gY2FuIGJlIHJlc29sdmVkIGJ5IHRoZSAzIHRpbWVzIHJlYWRpbmcNCj4gZm9yIGNoZWNraW5n
-IGNoaXBfcmVhZHkoKS4NCj4gDQo+IFdlIGhhdmUgc2VlIHNldmVyYWwgdGltZXMgdGhhdCB0b28g
-bWFueSBFcmFzZSBzdXNwZW5kIGZvciBvbmUgYmxvY2sgd2lsbA0KPiBjYXVzZSA1LjUuMi42IERR
-NTogRXhjZWVkZWQgVGltaW5nDQo+IExpbWl0cw0KPiBUaGlzIGNvbmRpdGlvbiBpcyBub3QgY2hl
-Y2tlZCBmb3Igbm9yIGhhbmRsZWQgaW4gYW55IHdheS4NCg0KSSBoYXZlIGp1c3QgY2hlY2tlZCB0
-aGUgZXJyb3IgaW4gdGhlIHBhc3QgYWdhaW4uDQpUaGlzIHdhcyBjYXVzZWQgYnkgdGhlIGVycm9y
-IGNhc2Ugb2YgY2hpcF9nb29kKCkgaW4gdGhlIGRvX2VyYXNlX29uZWJsb2NrKCkuDQpCdXQgaXQg
-d2FzIG5vdCBjYXVzZWQgYnkgdGhlIGVycm9yIGNhc2Ugb2YgY2hpcF9yZWFkeSgpIGFjdHVhbGx5
-Lg0KU28gaXQgc2VlbXMgYSBzaW1pbGFyIGNhc2UgYnV0IHRoZSBmbGFzaCBkZXZpY2UgaXMgZGlm
-ZmVyZW50Lg0KSSBoYXZlIGNvbmZpcm1lZCBpdCBvbiB0aGUgTUFDUk9OSVggZmxhc2ggZGV2aWNl
-IE1YMjlHTDUxMkZIVDJJLTExRy4NCkJ1dCB0aGUgaXNzdWUgd2FzIG5vdCByZXByb2R1Y2VkIGF0
-IHRoYXQgdGltZS4NCkkgdGhvdWdodCB0aGF0IHRoZSBpc3N1ZSBpcyBhbHNvIHJlc29sdmVkIGJ5
-IHRoZSBjaGFuZ2UgdG8gcmVhZCAzIHRpbWVzIGJ1dCBub3Qgc3VyZS4NCg0KPiA+DQo+ID4gPiBI
-b3cgZGlkIHlvdSB5b3UgYXJyaXZlIGF0IHJlYWRpbmcgMyB0aW1lcyBpcyBjb3JyZWN0PyBJcyB0
-aGUgYW55DQo+IGRvY3VtZW50YXRpb24NCj4gPiA+IHN1cHBvcnRpbmcgdGhpcz8NCj4gPg0KPiA+
-ICAgQWJvdXQgdGhlIDMgdGltZXMgcmVhZGluZyBpcyBkZXNjcmliZWQgYnkgdGhlIHBhZ2UgMzIg
-b24gZm9sbG93aW5nDQo+IEN5cHJlc3MgUzI5R0x4eHhQIGZsYXNoIGRhdGEgc2hlZXQuDQo+ID4g
-ICAgIDxodHRwOi8vd3d3LmN5cHJlc3MuY29tL2ZpbGUvMjE5OTI2L2Rvd25sb2FkPg0KPiANCj4g
-SSBkb24ndCBoYXZlIHN1Y2ggaW5mbyBmb3IgbXkgY2hpcCBhdCBwYWdlIDMyLCBJIGFtIGxvb2tp
-bmcgYXQNCj4gUzI5R0wwMUdTL1MyOUdMNTEyUw0KPiBTMjlHTDI1NlMvUzI5R0wxMjhTIGZyb20g
-aHR0cDovL3d3dy5jeXByZXNzLmNvbS9maWxlLzE3Nzk3Ni9kb3dubG9hZA0KPiANCj4gSSBhbSBs
-b29raW5nIGF0IGNoYXAgNS41LjIuNSBSZWFkaW5nIFRvZ2dsZSBCaXRzIERRNi9EUTINCg0KWWVz
-IGl0IGlzIGRlc2NyaWJlZCBieSB0aGUgQ3lwcmVzcyBTMjlHTHh4eFAgZmxhc2ggZGF0YSBzaGVl
-dCBvbmx5IGFzIGZhciBhcyBJIGtub3cuDQpBbHNvIGl0IGlzIG5vdCBkZXNjcmliZWQgYnkgdGhl
-IE1BQ1JPTklYIGZsYXNoIGRldmljZSBkYXRhIHNoZWV0Lg0KQnV0IGFjdHVhbGx5IEkgaGF2ZSBj
-b25maXJtZWQgdGhhdCB0aGUgM3JkIHRpbWUgcmVhZCBkYXRhIHdhcyBjaGFuZ2VkIG9uIHRoZSBN
-QUNST05JWCBmbGFzaCBkZXZpY2UgYWxzby4NCkFsc28gaWYgdGhlIGJ1cyB0aW1pbmcgYmV0d2Vl
-biBDUFUgYW5kIGZsYXNoIHdhcyBjaGFuZ2VkIGJ5IGVuYWJsaW5nIEV4dGVybmFsU3luYyBtb2Rl
-IG9uIG91ciBDUFUgdGhlbiB0aGUgYm90aCBDeXByZXNzIGFuZCBNQUNST05JWCBkZXZpY2VzIGFy
-ZSBmYWlsZWQgdG8gd3JpdGUuDQogIE5vdGU6IFRoaXMgaXMgY2F1c2VkIG9uIG90aGVyIGFsdGVy
-bmF0aXZlIGZsYXNoIGRldmljZXMgb24gb3VyIHByb2R1Y3RzLg0KU28gaXQgc2VlbXMgdGhhdCBp
-dCBpcyBiZXR0ZXIgdG8gYmUgY2hhbmdlZCB0byByZWFkIDMgdGltZXMgZm9yIGFsbCBmbGFzaCBk
-ZXZpY2VzIHN1cHBvcnRlZCBieSB0aGUgY2ZpX2NtZHNldF8wMDAyIGRyaXZlci4NCg0KPiA+DQo+
-ID4gPiBBbGwgaW4gYWxsLCBlcnJvciBoYW5kbGluZyBpbiBjbWRzZXQwMDAyIGlzIGxhY2tpbmcu
-DQo+ID4NCj4gPiAgIEkgaGF2ZSB1bmRlcnN0b29kIGFzIHRoYXQgaXQgaXMgZm9yIGV4YW1wbGUg
-RklYTUUgcGFydHMgZm9yIHRoZSBlcnJvcg0KPiBjYXNlIGluIGNmaV9jbWRzZXRfMDAwMi4NCj4g
-PiAgIElzIHRoaXMgY29ycmVjdD8NCj4gDQo+IEhhdmVuJ3QgbG9va2VkIGF0IGFsbCB0aGUgRklY
-TUUncyBidXQgSSBhbSBsb29raW5nIGFyZSBob3cgZXJhc2Ugc3VzcGVuZA0KPiBmYWlsdXJlIGFy
-ZSBoYW5kbGVkDQoNCiAgSSBzZWUgYW5kIG5vdGVkIGl0Lg0KDQo+ID4NCj4gPiBSZWdhcmRzLA0K
-PiA+IElrZWdhbWkNCj4gPg0KPiA+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJv
-bTogSm9ha2ltIFRqZXJubHVuZCBbbWFpbHRvOkpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29t
-XQ0KPiA+IFNlbnQ6IFR1ZXNkYXksIEFwcmlsIDI0LCAyMDE4IDg6MDUgUE0NCj4gPiBUbzogSUtF
-R0FNSSBUb2t1bm9yaTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gPiBDYzogUEFD
-S0hBTSBDaHJpcw0KPiA+IFN1YmplY3Q6IFJlOiBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogUmVhZCBk
-YXRhIDMgdGltZXMgdG8gY2hlY2sgd3JpdGUNCj4gb3BlcmF0aW9uIHN0YXR1cw0KPiA+DQo+ID4g
-T24gVHVlLCAyMDE4LTA0LTI0IGF0IDA1OjU0ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3Rl
-Og0KPiA+ID4NCj4gPiA+IEhpLA0KPiA+ID4NCj4gPiA+IExldCB1cyBjb25zdWx0IHRvIGNoYW5n
-ZSBtdGQgY2ZpX2NtZHNldF8wMDAyIHRvIHJlYWQgZGF0YSAzIHRpbWVzIGFzDQo+IGJlbG93IHBh
-dGNoLg0KPiA+ID4gQ2FuIHdlIGNoYW5nZSB0aGUgbXRkIGNmaV9jbWRzZXRfMDAwMiBkcml2ZXIg
-bGlrZSB0aGlzPw0KPiA+ID4gSWYgYW55IGNvbW1lbnQgb3IgY29uY2VybiBwbGVhc2UgbGV0IHVz
-IGtub3cuDQo+ID4gPg0KPiA+ID4gRnJvbSBkOTI0ODIyYzk5NmI5YzBlY2NjODE1ZTUwMThhMGMz
-ZWE2MDc3MTM3IE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KPiA+ID4gRnJvbTogVG9rdW5vcmkg
-SWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gPiA+IERhdGU6IFR1ZSwg
-MjQgQXByIDIwMTggMTM6MjY6MzcgKzA5MDANCj4gPiA+IFN1YmplY3Q6IFtQQVRDSCAyLzJdIG10
-ZDogY2ZpX2NtZHNldF8wMDAyOiBSZWFkIGRhdGEgMyB0aW1lcyB0byBjaGVjaw0KPiB3cml0ZQ0K
-PiA+ID4gIG9wZXJhdGlvbiBzdGF0dXMNCj4gPiA+DQo+ID4gPiBDeXByZXNzIFMyOUdMeHh4UCBm
-bGFzaCBpcyBuZWVkZWQgdG8gcmVhZCBkYXRhIDMgdGltZXMgdG8gY2hlY2sgRFE2DQo+IHRvZ2ds
-ZXMuDQo+ID4gPiBBY3R1YWxseSB0aGUgcmVhZCBkYXRhIGlzIHNvbWV0aW1lcyBjaGFuZ2VkIGJ5
-IHRoZSAzcmQgcmVhZGluZy4NCj4gPiA+IEFsc28gdGhpcyBpcyBjYXVzZWQgb24gb3RoZXIgZmxh
-c2ggZGV2aWNlIGFsc28uDQo+ID4gPiBUaGUgZmxhc2ggd3JpdGUgZmFpbHVyZSBpcyBwb3NzaWJs
-ZSB0byBiZSBjYXVzZWQgYnkgdGhlIGVycm9yLg0KPiA+ID4gVG8gcmVzb2x2ZSB0aGUgaXNzdWUg
-Y2hhbmdlIHRoZSByZWFkIG51bWJlciBvZiB0aW1lcyB0byAzIGZyb20gMi4NCj4gPg0KPiA+IEhp
-DQo+ID4NCj4gPiBJIGZpbmQgdGhpcyBhIGJpdCBvZGQuIEkgYW0gbG9va2luZyBhdCBzb21lIG90
-aGVyIGVyYXNlIHN1c3BlbmQgcHJvYmxlbXMNCj4gd2UNCj4gPiBzZWUgb24gQ3lwcmVzcyBBTUQg
-Tk9SIGZsYXNoIGFuZCBJIGhhdmUgbm90ZWQgdGhhdCB0aGVyZSBpcyBtb3JlIHRoYW4NCj4ganVz
-dCBEUTYgdG9nZ2xpbmcuDQo+ID4gQ2hlY2tpbmcgRFE1IGluIGNvbWJpbmF0aW9uIHdpdGggRFE2
-IGlzIG9uZS4NCj4gPiBIb3cgZGlkIHlvdSB5b3UgYXJyaXZlIGF0IHJlYWRpbmcgMyB0aW1lcyBp
-cyBjb3JyZWN0PyBJcyB0aGUgYW55DQo+IGRvY3VtZW50YXRpb24NCj4gPiBzdXBwb3J0aW5nIHRo
-aXM/DQo+ID4NCj4gPiBBbGwgaW4gYWxsLCBlcnJvciBoYW5kbGluZyBpbiBjbWRzZXQwMDAyIGlz
-IGxhY2tpbmcuDQo+ID4NCj4gPiAgSm9ja2UNCj4gPg0K
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+
+Cypress S29GLxxxP flash is needed to read data 3 times to check DQ6 toggles.
+Actually the read data is sometimes changed by the 3rd reading.
+Also this is caused on other flash device also.
+The flash write failure is possible to be caused by the error.
+To resolve the issue change the read number of times to 3 from 2.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+I have just updated the patch to add Signed-off-by and Cc lines.
+This patch will be sent by git-send-email.
+Also for our company mail system the sender mail address is needed to be set as smtpuser <smtpuser@allied-telesis.co.jp>.
+But do not reply to the email address smtpuser <smtpuser@allied-telesis.co.jp>.
+Please reply to my email address Tokunori Ikegami <ikegami@allied-telesis.co.jp> if any comemnt or problem.
+Sorry for inconvinient about this.
+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 56aa6b75213d..dc7667ff134a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -743,12 +743,13 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+  */
+ static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+ {
+-	map_word d, t;
++	map_word r1, r2, r3;
+ 
+-	d = map_read(map, addr);
+-	t = map_read(map, addr);
++	r1 = map_read(map, addr);
++	r2 = map_read(map, addr);
++	r3 = map_read(map, addr);
+ 
+-	return map_word_equal(map, d, t);
++	return map_word_equal(map, r1, r2) && map_word_equal(map, r2, r3);
+ }
+ 
+ /*
+-- 
+2.16.1
