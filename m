@@ -1,20 +1,41 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBLED-0007c3-Qd
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 14:17:03 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fBLgW-0002NT-8X
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 14:46:18 +0000
+Date: Wed, 25 Apr 2018 08:45:57 -0600
+From: Michal Hocko <mhocko@kernel.org>
+To: Mikulas Patocka <mpatocka@redhat.com>
+Cc: Richard Weinberger <richard@nod.at>, LKML <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
- Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: marvell: fix the chip-select DT parsing logic
-Date: Wed, 25 Apr 2018 16:16:32 +0200
-Message-Id: <20180425141632.9876-1-miquel.raynal@bootlin.com>
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Message-ID: <20180425144557.GD17484@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
+ <3732370.1623zxSvNg@blindfold>
+ <20180424192803.GT17484@dhcp22.suse.cz>
+ <3894056.cxOY6eVYVp@blindfold>
+ <20180424230943.GY17484@dhcp22.suse.cz>
+ <alpine.LRH.2.02.1804241911040.19786@file01.intranet.prod.int.rdu2.redhat.com>
+ <20180424232517.GC17484@dhcp22.suse.cz>
+ <alpine.LRH.2.02.1804250841230.16455@file01.intranet.prod.int.rdu2.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.1804250841230.16455@file01.intranet.prod.int.rdu2.redhat.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,122 +45,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The block responsible of parsing the DT for the number of chip-select
-lines uses an 'if/else if/else if' block. The content of the second and
-third 'else if' conditions are:
-        1/ the actual condition to enter the sub-block and
-        2/ the operation to do in this sub-block.
+On Wed 25-04-18 08:43:32, Mikulas Patocka wrote:
+> 
+> 
+> On Tue, 24 Apr 2018, Michal Hocko wrote:
+> 
+> > On Tue 24-04-18 19:17:12, Mikulas Patocka wrote:
+> > > 
+> > > 
+> > > On Tue, 24 Apr 2018, Michal Hocko wrote:
+> > > 
+> > > > On Wed 25-04-18 00:18:40, Richard Weinberger wrote:
+> > > > > Am Dienstag, 24. April 2018, 21:28:03 CEST schrieb Michal Hocko:
+> > > > > > > Also only for debugging.
+> > > > > > > Getting rid of vmalloc with GFP_NOFS in UBIFS is no big problem.
+> > > > > > > I can prepare a patch.
+> > > > > > 
+> > > > > > Cool!
+> > > > > > 
+> > > > > > Anyway, if UBIFS has some reclaim recursion critical sections in general
+> > > > > > it would be really great to have them documented and that is where the
+> > > > > > scope api is really handy. Just add the scope and document what is the
+> > > > > > recursion issue. This will help people reading the code as well. Ideally
+> > > > > > there shouldn't be any explicit GFP_NOFS in the code.
+> > > > > 
+> > > > > So in a perfect world a filesystem calls memalloc_nofs_save/restore and
+> > > > > always uses GFP_KERNEL for kmalloc/vmalloc?
+> > > > 
+> > > > Exactly! And in a dream world those memalloc_nofs_save act as a
+> > > > documentation of the reclaim recursion documentation ;)
+> > > > -- 
+> > > > Michal Hocko
+> > > > SUSE Labs
+> > > 
+> > > BTW. should memalloc_nofs_save and memalloc_noio_save be merged into just 
+> > > one that prevents both I/O and FS recursion?
+> > 
+> > Why should FS usage stop IO altogether?
+> 
+> Because the IO may reach loop and loop may redirect it to the same 
+> filesystem that is running under memalloc_nofs_save and deadlock.
 
-        [...]
-        else if (condition1_to_enter && action1() == failed)
-                raise_error();
-        else if (condition2_to_enter && action2() == failed)
-                raise_error();
-        [...]
+So what is the difference with the current GFP_NOFS?
 
-In case of failure, the sub-block is entered and an error raised.
-Otherwise, in case of success, the code would continue erroneously in
-the next 'else if' statement because it did not failed (and did not
-enter the first 'else if' sub-block).
+> > > memalloc_nofs_save allows submitting bios to I/O stack and the bios 
+> > > created under memalloc_nofs_save could be sent to the loop device and the 
+> > > loop device calls the filesystem...
+> > 
+> > Don't those use NOIO context?
+> 
+> What do you mean?
 
-The first 'else if' refers to legacy bindings while the second 'else if'
-refers to new bindings. The second 'else if', which is entered
-erroneously, checks for the 'reg' property, which, for old bindings,
-does not mean anything because it would not be the number of CS
-available, but the regular register map of almost any DT node. This
-being said, the content of the 'reg' property being the register map
-offset and length, it has '2' values, so the number of CS in this
-situation is assumed to be '2'.
-
-When running nand_scan_ident() with 2 CS, the core will check for an
-array of chips. It will first issue a RESET and then a READ_ID. Of
-course this will trigger two timeouts because there is no chip in front
-of the second CS:
-
-[    1.367460] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000080)
-[    1.474292] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000280)
-
-Indeed, this is harmless and the core will then assume there is only one
-valid CS.
-
-Fix the logic in the whole block by entering each sub-block just on the
-'is legacy' condition, doing the action inside the sub-block. This way,
-when the action succeeds, the whole block is left.
-
-Furthermore, for both the old bindings and the new bindings the same
-logic was applied to retrieve the number of CS lines:
-using of_get_property() to get a size in bytes, converted in the actual
-number of lines by dividing it per sizeof(u32) (4 bytes).
-
-This is fine for the 'reg' property which is a list of the CS IDs but
-not for the 'num-cs' property which is directly the value of the number
-of CS.
-
-Anyway, no existing DT uses another value than 'num-cs = <1>' and no
-other value has ever been supported by the old driver (pxa3xx_nand.c).
-Remove this condition and apply a number of 1 CS anyway, as already
-described in the bindings.
-
-Finally, the 'reg' property of a 'nand' node (with the new bindings)
-gives the IDs of each CS line in use. marvell_nand.c driver first look
-at the number of CS lines that are present in this property.
-
-Better use of_property_count_elems_of_size() than dividing by 4 the size
-of the number of bytes returned by of_get_property().
-
-Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller driver")
-Cc: stable@vger.kernel.org
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
----
-
-Initially in three different patches, these changes touch the same
-section of code and are linked to each other, so they have been squashed
-for being queued in the fixes branch.
-
- drivers/mtd/nand/raw/marvell_nand.c | 25 ++++++++-----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 10e953218948..1d779a35ac8e 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2299,29 +2299,20 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
- 	/*
- 	 * The legacy "num-cs" property indicates the number of CS on the only
- 	 * chip connected to the controller (legacy bindings does not support
--	 * more than one chip). CS are only incremented one by one while the RB
--	 * pin is always the #0.
-+	 * more than one chip). The CS and RB pins are always the #0.
- 	 *
- 	 * When not using legacy bindings, a couple of "reg" and "nand-rb"
- 	 * properties must be filled. For each chip, expressed as a subnode,
- 	 * "reg" points to the CS lines and "nand-rb" to the RB line.
- 	 */
--	if (pdata) {
-+	if (pdata || nfc->caps->legacy_of_bindings) {
- 		nsels = 1;
--	} else if (nfc->caps->legacy_of_bindings &&
--		   !of_get_property(np, "num-cs", &nsels)) {
--		dev_err(dev, "missing num-cs property\n");
--		return -EINVAL;
--	} else if (!of_get_property(np, "reg", &nsels)) {
--		dev_err(dev, "missing reg property\n");
--		return -EINVAL;
--	}
--
--	if (!pdata)
--		nsels /= sizeof(u32);
--	if (!nsels) {
--		dev_err(dev, "invalid reg property size\n");
--		return -EINVAL;
-+	} else {
-+		nsels = of_property_count_elems_of_size(np, "reg", sizeof(u32));
-+		if (nsels <= 0) {
-+			dev_err(dev, "missing/invalid reg property\n");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	/* Alloc the nand chip structure */
+That the loop driver should make sure it will not recurse. The scope API
+doesn't add anything new here.
 -- 
-2.14.1
+Michal Hocko
+SUSE Labs
