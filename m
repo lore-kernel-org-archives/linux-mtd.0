@@ -1,30 +1,29 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-it0-x244.google.com ([2607:f8b0:4001:c0b::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBDys-0001Ul-Ff
- for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 06:32:58 +0000
+ id 1fBGBW-00045r-9k
+ for linux-mtd@lists.infradead.org; Wed, 25 Apr 2018 08:53:56 +0000
+Received: by mail-it0-x244.google.com with SMTP id t192-v6so14706642itc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 25 Apr 2018 01:53:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 25 Apr 2018 12:02:29 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 8/9] mtd: nand: qcom: helper function for raw read
-In-Reply-To: <20180423085817.74e56091@xps13>
-References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
- <1522845745-6624-9-git-send-email-absahu@codeaurora.org>
- <20180410114428.68d59c8d@xps13>
- <c3e32eb24408a973d0c89984a466d9da@codeaurora.org>
- <20180422181929.65d42ca8@xps13>
- <484485e160af41cf062549938c53d078@codeaurora.org>
- <20180423085817.74e56091@xps13>
-Message-ID: <892130678772dca7116bd8dcdcb3cc44@codeaurora.org>
+In-Reply-To: <20180330143051.26423-1-nsekhar@ti.com>
+References: <20180330143051.26423-1-nsekhar@ti.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Wed, 25 Apr 2018 10:53:42 +0200
+Message-ID: <CAMRc=Mdsqc-ZJy9WMkdh_S=ehh1CfyFtgyF6mWwFT=xnNGhieg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: nand: davinci: don't acquire and enable clock
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+ David Lechner <david@lechnology.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,150 +33,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-23 12:28, Miquel Raynal wrote:
-> Hi Abhishek,
-> 
-> On Mon, 23 Apr 2018 11:58:42 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
-> 
->> On 2018-04-22 21:49, Miquel Raynal wrote:
->> > Hi Abhishek,
->> > > On Thu, 12 Apr 2018 12:36:42 +0530, Abhishek Sahu
->> > <absahu@codeaurora.org> wrote:
->> > >> On 2018-04-10 15:14, Miquel Raynal wrote:
->> >> > Hi Abhishek,
->> >> > > On Wed,  4 Apr 2018 18:12:24 +0530, Abhishek Sahu
->> >> > <absahu@codeaurora.org> wrote:
->> >> > >> This patch does minor code reorganization for raw reads.
->> >> >> Currently the raw read is required for complete page but for
->> >> >> subsequent patches related with erased codeword bit flips
->> >> >> detection, only few CW should be read. So, this patch adds
->> >> >> helper function and introduces the read CW bitmask which
->> >> >> specifies which CW reads are required in complete page.
->> >> > > I am not sure this is the right approach for subpage reads. If the
->> >> > controller supports it, you should just enable it in chip->options.
->> >> >
->> >>   Thanks Miquel.
->> >> >>   It is internal to this file only. This patch makes one static helper
->> >>   function which provides the support to read subpages.
->> > > Drivers should expose raw helpers, why keeping this helper static then?
->> > >> >> >> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> >> >> ---
->> >> >>  drivers/mtd/nand/qcom_nandc.c | 186 >> +++++++++++++++++++++++++-----------------
->> >> >>  1 file changed, 110 insertions(+), 76 deletions(-)
->> >> >> >> diff --git a/drivers/mtd/nand/qcom_nandc.c >> b/drivers/mtd/nand/qcom_nandc.c
->> >> >> index 40c790e..f5d1fa4 100644
->> >> >> --- a/drivers/mtd/nand/qcom_nandc.c
->> >> >> +++ b/drivers/mtd/nand/qcom_nandc.c
->> >> >> @@ -1590,6 +1590,114 @@ static int check_flash_errors(struct >> qcom_nand_host *host, int cw_cnt)
->> >> >>  }
->> >> >> >>  /*
->> >> >> + * Helper to perform the page raw read operation. The read_cw_mask >> will be
->> >> >> + * used to specify the codewords for which the data should be read. >> The
->> >> >> + * single page contains multiple CW. Sometime, only few CW data is >> required
->> >> >> + * in complete page. Also, start address will be determined with
->> >> >> + * this CW mask to skip unnecessary data copy from NAND flash device. >> Then,
->> >> >> + * actual data copy from NAND controller to data buffer will be done >> only
->> >> >> + * for the CWs which have the mask set.
->> >> >> + */
->> >> >> +static int
->> >> >> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->> >> >> +		    u8 *data_buf, u8 *oob_buf,
->> >> >> +		    int page, unsigned long read_cw_mask)
->> >> >> +{
+2018-03-30 16:30 GMT+02:00 Sekhar Nori <nsekhar@ti.com>:
+> NAND itself is an asynchronous interface, it does not have any
+> clock input. DaVinci NAND driver acquires clock for AEMIF
+> (asynchronous external memory interface) which is an on-chip
+> IP to which NAND is connected.
+>
+> The same clock is also enabled in AEMIF driver (either present
+> drivers/memory or from machine code for some older platforms).
+> AEMIF timing must be initialized before NAND can be accessed.
+> This ensures that AEMIF clock is enabled too.
+>
+> Remove the superfluous clock acquisition and enable in DaVinci
+> NAND driver.
+>
+> Tested on K2L, K2HK, K2E, DA850 EVM, DA850 LCDK in device-tree
+> boot and DM644x EVM in legacy boot.
+>
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> ---
+> Hi Boris,
+>
+> If/when this patch gets accepted, it will nice to put this on
+> an immutable branch others can merge. There is potential cleanup
+> in drivers/clock and in DaVinci machine code that will depend
+> on this.
+>
+> Thanks,
+> Sekhar
+>
+>  drivers/mtd/nand/raw/davinci_nand.c | 25 +------------------------
+>  1 file changed, 1 insertion(+), 24 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+> index 0f09518d980f..7255a0d94374 100644
+> --- a/drivers/mtd/nand/raw/davinci_nand.c
+> +++ b/drivers/mtd/nand/raw/davinci_nand.c
+> @@ -27,7 +27,6 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/err.h>
+> -#include <linux/clk.h>
+>  #include <linux/io.h>
+>  #include <linux/mtd/rawnand.h>
+>  #include <linux/mtd/partitions.h>
+> @@ -55,7 +54,6 @@ struct davinci_nand_info {
+>         struct nand_chip        chip;
+>
+>         struct device           *dev;
+> -       struct clk              *clk;
+>
+>         bool                    is_readmode;
+>
+> @@ -703,22 +701,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>         /* Use board-specific ECC config */
+>         info->chip.ecc.mode     = pdata->ecc_mode;
+>
+> -       ret = -EINVAL;
+> -
+> -       info->clk = devm_clk_get(&pdev->dev, "aemif");
+> -       if (IS_ERR(info->clk)) {
+> -               ret = PTR_ERR(info->clk);
+> -               dev_dbg(&pdev->dev, "unable to get AEMIF clock, err %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       ret = clk_prepare_enable(info->clk);
+> -       if (ret < 0) {
+> -               dev_dbg(&pdev->dev, "unable to enable AEMIF clock, err %d\n",
+> -                       ret);
+> -               goto err_clk_enable;
+> -       }
+> -
+>         spin_lock_irq(&davinci_nand_lock);
+>
+>         /* put CSxNAND into NAND mode */
+> @@ -732,7 +714,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>         ret = nand_scan_ident(mtd, pdata->mask_chipsel ? 2 : 1, NULL);
+>         if (ret < 0) {
+>                 dev_dbg(&pdev->dev, "no NAND chip(s) found\n");
+> -               goto err;
+> +               return ret;
+>         }
+>
+>         switch (info->chip.ecc.mode) {
+> @@ -838,9 +820,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>         nand_cleanup(&info->chip);
+>
+>  err:
+> -       clk_disable_unprepare(info->clk);
+> -
+> -err_clk_enable:
+>         spin_lock_irq(&davinci_nand_lock);
+>         if (info->chip.ecc.mode == NAND_ECC_HW_SYNDROME)
+>                 ecc4_busy = false;
+> @@ -859,8 +838,6 @@ static int nand_davinci_remove(struct platform_device *pdev)
+>
+>         nand_release(nand_to_mtd(&info->chip));
+>
+> -       clk_disable_unprepare(info->clk);
+> -
+>         return 0;
+>  }
+>
+> --
+> 2.16.2
+>
 
-  <snip>
-
->> >> >> -	free_descs(nandc);
->> >> >> -
->> >> >> -	if (!ret)
->> >> >> -		ret = check_flash_errors(host, ecc->steps);
->> >> >> -
->> >> >> -	return 0;
->> >> >> +	return nandc_read_page_raw(mtd, chip, buf, chip->oob_poi, page,
->> >> >> +				   BIT(chip->ecc.steps) - 1);
->> >> > > I don't understand this. chip->ecc.steps is constant, right? So you
->> >> > always ask for the same subpage?
->> >> >>   We need to do raw read for subpages in which we got uncorrectable
->> >>   error in next patch for erased page bitflip detection. This patch >> does
->> >>   reorganization of raw read and moves common code in helper function
->> >>   nandc_read_page_raw.
->> >> >>   For nomral raw read, all the subpages will be read so
->> >>   BIT(chip->ecc.steps) - 1 is used for qcom_nandc_read_page_raw.
->> >> >>   While for erased page raw read, only those sub pages will be
->> >>   read for which the controller gives the uncorrectable error.
->> > > Still not okay: the driver should expose a way to do raw reads no
->> > matter the length and the start and you should use that in a generic
->> > way.
->> >
->>   Thanks Miquel.
->>   I will explore regarding that.
->>   Looks like, we can some helper like read_subpage.
-> 
-> Of course, when you implement raw accessors you can have static helpers
-> to clarify the code.
-> 
-
-  Hi Miquel,
-
-  I checked regarding generic function.
-
-  Normally the other NAND controller stores the data in main area
-  and ecc bytes in oob area. So if page size is 2048+64 then 2048
-  data bytes will go in main area followed by ECC bytes
-
-  Main                 |        OOB
-  ------------------------------------
-  D1 D2...........D2048|E1..........E64
-
-  The QCOM nand contoller follows different layout in which this
-  2048+64 is internally divided in 528 bytes codeword so it will
-  come to 4 codewords. Each codeword contains 516 bytes followed
-  by ECC parity bytes. Also in at 0x1f0 offset in each CW, the bad
-  block marker is stored. so each CW contains badblock marker also.
-  The avilable OOB bytes are 16 which is also protected by ECC.
-
-  516 * 4 = 2048 data bytes + 16 available oob bytes.
-
-  So for QCOM layout, it will be something lile
-
-
-  0       D1.........D495 B1 D496....D516 E1...E7  U1..U4
-  0x210   D517......D1012 B2 D1016..D1032 E8...E14 U5..U8
-  0x420   D1033.....D1528 B3 D1529..D1548 E15..E21 U9..U12
-  0x630   D1549.....D2044 B4 D2045..D2048 O1...O16 E22 E28 U13..U16
-
-  Where D - Data bytes
-        B - BBM bytes
-        E - ECC parity bytes
-        U - Unused bytes
-        O - Avilable OOB bytes
-
-  Now, the raw read expect data to be returned in buffer in the
-  form of
-
-  D1.....D2048 B1 E1...E7 U1..U4 B2 E8...E14 U5..U8 B3 E15..E21
-  U9..U12 B4 O1...O16 E22 E28 U13..U16
-
-  Now, the puporose of that helper function is read selected
-  codewords. This codeword is QCOM specific and other controller
-  normally doesn't follow this kind of layout.
-
-  Now If we make generic fuction for subpgage raw read with any
-  start and length then that function we can't use for erased page
-  bitflip detection.
-
-  If we give the start as 0 with length 528 then our requirement is
-  to get 516 data bytes in data buffer and 12 bytes in OOB buffer
-  but according to standard operations, it will be interpreted as
-  all data bytes from D1..D528
-
-  so that helper function is to read selected Codewords from
-  QCOM NAND controller. This Codeword is different from subpages
-
-  Regarding more info for layout, you can refer comment in
-  
-https://elixir.bootlin.com/linux/latest/source/drivers/mtd/nand/qcom_nandc.c#L2191
-
-  Thanks,
-  Abhishek
+Tested-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
