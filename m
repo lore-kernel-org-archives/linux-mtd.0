@@ -1,14 +1,18 @@
-Date: Thu, 26 Apr 2018 22:09:21 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fBoiY-00026G-Ii
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 21:46:20 +0000
+Date: Thu, 26 Apr 2018 23:46:05 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Xiaolei Li <xiaolei.li@mediatek.com>
-Cc: linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
- srv_heupstream@mediatek.com
-Subject: Re: [PATCH v3] dt-bindings: mtd: mtk-nand: Update properties
- description
-Message-ID: <20180426220921.16ad89e5@bbrezillon>
-In-Reply-To: <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
-References: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
- <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
+To: Sam Lefebvre <sam.lefebvre@essensium.com>
+Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
+ Dries Staelens <dries.staelens@barco.com>
+Subject: Re: [PATCH 13/13] mtd: rawnand: gmpi: chain gpmi_nand_command()
+ with gpmi_ecc_read_page_data()
+Message-ID: <20180426234605.72cd5cb4@bbrezillon>
+In-Reply-To: <20180426154134.8270-14-sam.lefebvre@essensium.com>
+References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
+ <20180426154134.8270-14-sam.lefebvre@essensium.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -21,66 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Apr 2018 10:11:07 +0800
-Xiaolei Li <xiaolei.li@mediatek.com> wrote:
+On Thu, 26 Apr 2018 17:41:34 +0200
+Sam Lefebvre <sam.lefebvre@essensium.com> wrote:
 
-> Update ecc step size, ecc strength, and parity bits supported on
-> each MTK NAND controller.
+> An additional interrupt can be avoided in the page and subpage
+> read operations by adding a flag start_dma to indicate weather
+> gpmi_nand_command() needs to be chained with other dma commands
+> or not.
 > 
-> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
-
-Applied.
-
-Thanks,
-
-Boris
-
+> In case of chaining, gpmi_read_page() gets a flag that adds:
+> DMA_PREP_INTERRUPT: chain the dma with previous one
+> DMA_PREP_PQ_DISABLE_P: wait for prefetching being ready
+> before reading, turns on the CCW_WAIT4RDY flag.
+> 
+> Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
 > ---
->  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 24 +++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
+>  drivers/dma/mxs-dma.c                      |  3 +++
+
+Changes to mxs-dma.c should be done in a separate patch.
+
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  6 ++++--
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 12 ++++++++++--
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  3 ++-
+>  4 files changed, 19 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> index 1c88526..f20ab4a 100644
-> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
-> @@ -50,14 +50,19 @@ Optional:
->  - nand-on-flash-bbt:	Store BBT on NAND Flash.
->  - nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
->  - nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
-> -			valid values: 512 and 1024.
-> +			valid values:
-> +			512 and 1024 on mt2701 and mt2712.
-> +			512 only on mt7622.
->  			1024 is recommended for large page NANDs.
->  - nand-ecc-strength:	Number of bits to correct per ECC step.
-> -			The valid values that the controller supports are: 4, 6,
-> -			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
-> -			48, 52, 56, 60.
-> +			The valid values that each controller supports:
-> +			mt2701: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
-> +				32, 36, 40, 44, 48, 52, 56, 60.
-> +			mt2712: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
-> +				32, 36, 40, 44, 48, 52, 56, 60, 68, 72, 80.
-> +			mt7622: 4, 6, 8, 10, 12, 14, 16.
->  			The strength should be calculated as follows:
-> -			E = (S - F) * 8 / 14
-> +			E = (S - F) * 8 / B
->  			S = O / (P / Q)
->  				E :	nand-ecc-strength.
->  				S :	spare size per sector.
-> @@ -66,6 +71,15 @@ Optional:
->  				O :	oob size.
->  				P :	page size.
->  				Q :	nand-ecc-step-size.
-> +				B :	number of parity bits needed to correct
-> +					1 bitflip.
-> +					According to MTK NAND controller design,
-> +					this number depends on max ecc step size
-> +					that MTK NAND controller supports.
-> +					If max ecc step size supported is 1024,
-> +					then it should be always 14. And if max
-> +					ecc step size is 512, then it should be
-> +					always 13.
->  			If the result does not match any one of the listed
->  			choices above, please select the smaller valid value from
->  			the list.
+> diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+> index 41d167921fab..cb13fc759f97 100644
+> --- a/drivers/dma/mxs-dma.c
+> +++ b/drivers/dma/mxs-dma.c
+> @@ -82,6 +82,7 @@
+>  #define CCW_CHAIN		(1 << 2)
+>  #define CCW_IRQ			(1 << 3)
+>  #define CCW_DEC_SEM		(1 << 6)
+> +#define CCW_WAIT4RDY		(1 << 5)
+>  #define CCW_WAIT4END		(1 << 7)
+>  #define CCW_HALT_ON_TERM	(1 << 8)
+>  #define CCW_TERM_FLUSH		(1 << 9)
+> @@ -551,6 +552,8 @@ static struct dma_async_tx_descriptor *mxs_dma_prep_slave_sg(
+>  		ccw->bits |= CCW_TERM_FLUSH;
+>  		ccw->bits |= BF_CCW(sg_len, PIO_NUM);
+>  		ccw->bits |= BF_CCW(MXS_DMA_CMD_NO_XFER, COMMAND);
+> +		if (flags & DMA_PREP_PQ_DISABLE_P)
+> +			ccw->bits |= CCW_WAIT4RDY;
+
+Hm, I'm really not sure this is a good idea to abuse the
+DMA_PREP_PQ_DISABLE_P flag like that. Better add an mxs APBH specific
+API on top of the DMA API to set some of the NAND related flags
+(NAND_LOCK, NAND_WAIT4RDY).
