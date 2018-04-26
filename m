@@ -1,20 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBkfe-0007Df-Dd
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:27:04 +0000
-Date: Thu, 26 Apr 2018 19:26:48 +0200
+ id 1fBkmT-00024I-V9
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:34:07 +0000
+Date: Thu, 26 Apr 2018 19:33:47 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH v3 10/11] mtd: rawnand: lpc32xx_slc: clean the probe
- function
-Message-ID: <20180426192648.4df1ad55@bbrezillon>
-In-Reply-To: <20180421180043.18366-11-miquel.raynal@bootlin.com>
-References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
- <20180421180043.18366-11-miquel.raynal@bootlin.com>
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: rawnand: add a way to pass an ID table with
+ nand_scan()
+Message-ID: <20180426193347.0f92db42@bbrezillon>
+In-Reply-To: <20180422160230.4969-1-miquel.raynal@bootlin.com>
+References: <20180422160230.4969-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,95 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 21 Apr 2018 20:00:42 +0200
+On Sun, 22 Apr 2018 18:02:30 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Before fixing the error path of the probe function, fix the style of the
-> entire function and particularly the goto labels: they should indicate
-> what the next cleanup to do is.
+> As part of the work of migrating all the drivers to nand_scan(), and
+> because nand_scan() does not provide a way to pass an ID table, rename
+> the function nand_scan_with_ids() and add a third parameter to give a
+> flash ID table (like what was done with nand_scan_ident()).
+> 
+> Create a nand_scan() helper that is just a wrapper of
+> nand_scan_with_ids(), passing NULL as the ID table. This way a
+> controller drivers can continue using nand_scan() transparently.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
->  drivers/mtd/nand/raw/lpc32xx_slc.c | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-> index 5f7cc6da0a7f..342f666ad435 100644
-> --- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-> +++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-> @@ -831,11 +831,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
->  	if (IS_ERR(host->clk)) {
->  		dev_err(&pdev->dev, "Clock failure\n");
->  		res = -ENOENT;
-> -		goto err_exit1;
-> +		goto release_gpio;
->  	}
->  	res = clk_prepare_enable(host->clk);
->  	if (res)
-> -		goto err_exit1;
-> +		goto release_gpio;
+> Changes since v1:
+> =================
+>  * Removed the ID table from nand_chip structure and created a
+>    nand_scan_with_ids() function called by nand_scan().
+>  * No need to apply any change to the sm_common.c driver, switching
+>    from nand_scan() to nand_scan_with_ids() will be done in a future
+>    series.
+> 
+> 
+>  drivers/mtd/nand/raw/nand_base.c | 8 +++++---
+>  include/linux/mtd/rawnand.h      | 9 ++++++++-
+>  2 files changed, 13 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 72f3a89da513..15d6c6e2b77a 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -6630,19 +6630,21 @@ EXPORT_SYMBOL(nand_scan_tail);
+>  #endif
 >  
->  	/* Set NAND IO addresses and command/ready functions */
->  	chip->IO_ADDR_R = SLC_DATA(host->io_base);
-> @@ -874,19 +874,19 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
->  				      GFP_KERNEL);
->  	if (host->data_buf == NULL) {
->  		res = -ENOMEM;
-> -		goto err_exit2;
-> +		goto release_clk;
->  	}
+>  /**
+> - * nand_scan - [NAND Interface] Scan for the NAND device
+> + * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
+>   * @mtd: MTD device structure
+>   * @maxchips: number of chips to scan for
+> + * @ids: optional flash IDs table
+>   *
+>   * This fills out all the uninitialized function pointers with the defaults.
+>   * The flash ID is read and the mtd/chip structures are filled with the
+>   * appropriate values.
+>   */
+> -int nand_scan(struct mtd_info *mtd, int maxchips)
+> +int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+> +		       struct nand_flash_dev *ids)
+>  {
+>  	int ret;
 >  
->  	res = lpc32xx_nand_dma_setup(host);
->  	if (res) {
->  		res = -EIO;
-> -		goto err_exit2;
-> +		goto release_clk;
->  	}
+> -	ret = nand_scan_ident(mtd, maxchips, NULL);
+> +	ret = nand_scan_ident(mtd, maxchips, ids);
+>  	if (!ret)
+>  		ret = nand_scan_tail(mtd);
+>  	return ret;
+
+You forgot to change the name of the exported symbol. No need to send a
+new version, I'll fix it when applying.
+
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 5dad59b31244..ba8d908f5cc7 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -28,7 +28,14 @@ struct nand_flash_dev;
+>  struct device_node;
 >  
->  	/* Find NAND device */
->  	res = nand_scan_ident(mtd, 1, NULL);
->  	if (res)
-> -		goto err_exit3;
-> +		goto release_dma;
->  
->  	/* OOB and ECC CPU and DMA work areas */
->  	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-> @@ -920,21 +920,23 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
->  	 */
->  	res = nand_scan_tail(mtd);
->  	if (res)
-> -		goto err_exit3;
-> +		goto release_dma;
->  
->  	mtd->name = "nxp_lpc3220_slc";
->  	res = mtd_device_register(mtd, host->ncfg->parts,
->  				  host->ncfg->num_parts);
-> -	if (!res)
-> -		return res;
-> +	if (res)
-> +		goto release_nand;
->  
-> +	return 0;
+>  /* Scan and identify a NAND device */
+> -int nand_scan(struct mtd_info *mtd, int max_chips);
+> +int nand_scan_with_ids(struct mtd_info *mtd, int max_chips,
+> +		       struct nand_flash_dev *ids);
 > +
-> +release_nand:
->  	nand_release(mtd);
-> -
-> -err_exit3:
-> +release_dma:
->  	dma_release_channel(host->dma_chan);
-> -err_exit2:
-> +release_clk:
-
-You mean unprepare_clk.
-
->  	clk_disable_unprepare(host->clk);
-> -err_exit1:
-> +release_gpio:
-
-And I'd go for enable_wp here since it's not releasing the gpio at all.
-
-No need to resend, I'll fix it when applying
-
->  	lpc32xx_wp_enable(host);
->  
->  	return res;
+> +static inline int nand_scan(struct mtd_info *mtd, int max_chips)
+> +{
+> +	return nand_scan_with_ids(mtd, max_chips, NULL);
+> +}
+> +
+>  /*
+>   * Separate phases of nand_scan(), allowing board driver to intervene
+>   * and override command or ECC setup according to flash type.
