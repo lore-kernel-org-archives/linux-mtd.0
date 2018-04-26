@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBk5h-0003Id-Ay
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 16:49:54 +0000
-Date: Thu, 26 Apr 2018 18:49:31 +0200
+ id 1fBkNN-0005tl-MD
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:08:11 +0000
+Date: Thu, 26 Apr 2018 19:07:57 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Sam Lefebvre <sam.lefebvre@essensium.com>
-Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
- Dries Staelens <dries.staelens@barco.com>
-Subject: Re: [PATCH 09/13] mtd: rawnand: gpmi: poll the BCH interrupt bit in
- start_dma_with_bch_irq()
-Message-ID: <20180426184931.4f711654@bbrezillon>
-In-Reply-To: <20180426154134.8270-10-sam.lefebvre@essensium.com>
-References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
- <20180426154134.8270-10-sam.lefebvre@essensium.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org, Nadav Haklai
+ <nadavh@marvell.com>, Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Ofer Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: fix the chip-select DT
+ parsing logic
+Message-ID: <20180426190757.1bcebf90@bbrezillon>
+In-Reply-To: <20180425141632.9876-1-miquel.raynal@bootlin.com>
+References: <20180425141632.9876-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,58 +28,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 Apr 2018 17:41:30 +0200
-Sam Lefebvre <sam.lefebvre@essensium.com> wrote:
+On Wed, 25 Apr 2018 16:16:32 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> To improve nand performance, the BCH interrupt bit must be polled
-> before waiting for occurence. This avoids an unnecessary context switch.
+> The block responsible of parsing the DT for the number of chip-select
+> lines uses an 'if/else if/else if' block. The content of the second and
+> third 'else if' conditions are:
+>         1/ the actual condition to enter the sub-block and
+>         2/ the operation to do in this sub-block.
 > 
-> Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
+>         [...]
+>         else if (condition1_to_enter && action1() == failed)
+>                 raise_error();
+>         else if (condition2_to_enter && action2() == failed)
+>                 raise_error();
+>         [...]
+> 
+> In case of failure, the sub-block is entered and an error raised.
+> Otherwise, in case of success, the code would continue erroneously in
+> the next 'else if' statement because it did not failed (and did not
+> enter the first 'else if' sub-block).
+> 
+> The first 'else if' refers to legacy bindings while the second 'else if'
+> refers to new bindings. The second 'else if', which is entered
+> erroneously, checks for the 'reg' property, which, for old bindings,
+> does not mean anything because it would not be the number of CS
+> available, but the regular register map of almost any DT node. This
+> being said, the content of the 'reg' property being the register map
+> offset and length, it has '2' values, so the number of CS in this
+> situation is assumed to be '2'.
+> 
+> When running nand_scan_ident() with 2 CS, the core will check for an
+> array of chips. It will first issue a RESET and then a READ_ID. Of
+> course this will trigger two timeouts because there is no chip in front
+> of the second CS:
+> 
+> [    1.367460] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000080)
+> [    1.474292] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000280)
+> 
+> Indeed, this is harmless and the core will then assume there is only one
+> valid CS.
+> 
+> Fix the logic in the whole block by entering each sub-block just on the
+> 'is legacy' condition, doing the action inside the sub-block. This way,
+> when the action succeeds, the whole block is left.
+> 
+> Furthermore, for both the old bindings and the new bindings the same
+> logic was applied to retrieve the number of CS lines:
+> using of_get_property() to get a size in bytes, converted in the actual
+> number of lines by dividing it per sizeof(u32) (4 bytes).
+> 
+> This is fine for the 'reg' property which is a list of the CS IDs but
+> not for the 'num-cs' property which is directly the value of the number
+> of CS.
+> 
+> Anyway, no existing DT uses another value than 'num-cs = <1>' and no
+> other value has ever been supported by the old driver (pxa3xx_nand.c).
+> Remove this condition and apply a number of 1 CS anyway, as already
+> described in the bindings.
+> 
+> Finally, the 'reg' property of a 'nand' node (with the new bindings)
+> gives the IDs of each CS line in use. marvell_nand.c driver first look
+> at the number of CS lines that are present in this property.
+> 
+> Better use of_property_count_elems_of_size() than dividing by 4 the size
+> of the number of bytes returned by of_get_property().
+> 
+> Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller driver")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Queued to master.
+
+Thanks,
+
+Boris
+
 > ---
->  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> index 60bc1bac7741..28a2cf106ddc 100644
-> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-> @@ -503,18 +503,31 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
->   * Actually, we must wait for two interrupts :
->   *	[1] firstly the DMA interrupt and
->   *	[2] secondly the BCH interrupt.
-> + *	To improve performance, we first poll for the BCH
-> + *	interrupt.
->   */
->  int start_dma_with_bch_irq(struct gpmi_nand_data *this,
->  			struct dma_async_tx_descriptor *desc)
->  {
->  	struct completion *bch_c = &this->bch_done;
-> +	struct resources *r = &this->resources;
->  	unsigned long timeout;
+> Initially in three different patches, these changes touch the same
+> section of code and are linked to each other, so they have been squashed
+> for being queued in the fixes branch.
+> 
+>  drivers/mtd/nand/raw/marvell_nand.c | 25 ++++++++-----------------
+>  1 file changed, 8 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index 10e953218948..1d779a35ac8e 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -2299,29 +2299,20 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
+>  	/*
+>  	 * The legacy "num-cs" property indicates the number of CS on the only
+>  	 * chip connected to the controller (legacy bindings does not support
+> -	 * more than one chip). CS are only incremented one by one while the RB
+> -	 * pin is always the #0.
+> +	 * more than one chip). The CS and RB pins are always the #0.
+>  	 *
+>  	 * When not using legacy bindings, a couple of "reg" and "nand-rb"
+>  	 * properties must be filled. For each chip, expressed as a subnode,
+>  	 * "reg" points to the CS lines and "nand-rb" to the RB line.
+>  	 */
+> -	if (pdata) {
+> +	if (pdata || nfc->caps->legacy_of_bindings) {
+>  		nsels = 1;
+> -	} else if (nfc->caps->legacy_of_bindings &&
+> -		   !of_get_property(np, "num-cs", &nsels)) {
+> -		dev_err(dev, "missing num-cs property\n");
+> -		return -EINVAL;
+> -	} else if (!of_get_property(np, "reg", &nsels)) {
+> -		dev_err(dev, "missing reg property\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	if (!pdata)
+> -		nsels /= sizeof(u32);
+> -	if (!nsels) {
+> -		dev_err(dev, "invalid reg property size\n");
+> -		return -EINVAL;
+> +	} else {
+> +		nsels = of_property_count_elems_of_size(np, "reg", sizeof(u32));
+> +		if (nsels <= 0) {
+> +			dev_err(dev, "missing/invalid reg property\n");
+> +			return -EINVAL;
+> +		}
+>  	}
 >  
-> -	/* Prepare to receive an interrupt from the BCH block. */
-> -	init_completion(bch_c);
-> +	/* Disable interrupt */
-> +	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN, r->bch_regs + HW_BCH_CTRL_CLR);
-
-I'd prefer to have it disabled in the probe function.
-
->  
->  	/* start the DMA */
->  	start_dma_without_bch_irq(this, desc);
-> +	if (readl(r->bch_regs + HW_BCH_CTRL) & BM_BCH_CTRL_COMPLETE_IRQ) {
-> +		writel(BM_BCH_CTRL_COMPLETE_IRQ, r->bch_regs + HW_BCH_CTRL_CLR);
-> +		return 0;
-> +	}
-> +
-> +	/* Prepare to receive an interrupt from the BCH block. */
-> +	init_completion(bch_c);
-> +
-> +	/* Re-enable interrupt */
-> +	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN, r->bch_regs + HW_BCH_CTRL_SET);
->  
->  	/* Wait for the interrupt from the BCH block. */
->  	timeout = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
-
-And then you can disable it here, so that the interrupt is only active
-when we need it.
+>  	/* Alloc the nand chip structure */
