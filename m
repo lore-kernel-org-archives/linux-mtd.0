@@ -1,29 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBlKz-0001C2-Vo
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 18:09:47 +0000
-Date: Thu, 26 Apr 2018 20:09:23 +0200
+ id 1fBmvp-0003zf-Rn
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 19:51:55 +0000
+Date: Thu, 26 Apr 2018 21:51:38 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Geert Uytterhoeven
- <geert+renesas@glider.be>, Richard Weinberger <richard@nod.at>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux-Renesas
- <linux-renesas-soc@vger.kernel.org>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: partitions: Handle add_mtd_device() failures
- gracefully
-Message-ID: <20180426200923.4a13474e@bbrezillon>
-In-Reply-To: <CAMuHMdWRyZYX+oKN-nxzKbCqZn1zojKwX8Gv6tGg=UZSa3k_LA@mail.gmail.com>
-References: <1523276721-4982-1-git-send-email-geert+renesas@glider.be>
- <9bea3ad8-7e84-87c2-9963-de81ad4cb3bf@gmail.com>
- <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
- <20180426195303.1f08d2cd@bbrezillon>
- <CAMuHMdWRyZYX+oKN-nxzKbCqZn1zojKwX8Gv6tGg=UZSa3k_LA@mail.gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [PATCH v3 00/11] Fix NAND controllers probe functions error path
+Message-ID: <20180426215138.05b4df99@bbrezillon>
+In-Reply-To: <20180421180043.18366-1-miquel.raynal@bootlin.com>
+References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,61 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 Apr 2018 19:56:58 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Sat, 21 Apr 2018 20:00:32 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> Hi Boris,
-> 
-> On Thu, Apr 26, 2018 at 7:53 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > On Tue, 10 Apr 2018 15:26:20 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
-> >> On Mon, Apr 9, 2018 at 11:59 PM, Marek Vasut <marek.vasut@gmail.com> wrote:  
-> >> > On 04/09/2018 02:25 PM, Geert Uytterhoeven wrote:  
-> >> >> Currently add_mtd_device() failures are plainly ignored, which may lead
-> >> >> to kernel crashes later.  
-> >>  
-> >> >> Fix this by ignoring and freeing partitions that failed to add in
-> >> >> add_mtd_partitions().  The same issue is present in mtd_add_partition(),
-> >> >> so fix that as well.
-> >> >>
-> >> >> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> >> >> ---
-> >> >> I don't know if it is worthwhile factoring out the common handling.
-> >> >>
-> >> >> Should allocate_partition() fail instead?  There's a comment saying
-> >> >> "let's register it anyway to preserve ordering".  
-> >>  
-> >> >> --- a/drivers/mtd/mtdpart.c
-> >> >> +++ b/drivers/mtd/mtdpart.c  
-> >>  
-> >> >> @@ -746,7 +753,15 @@ int add_mtd_partitions(struct mtd_info *master,
-> >> >>               list_add(&slave->list, &mtd_partitions);
-> >> >>               mutex_unlock(&mtd_partitions_mutex);
-> >> >>
-> >> >> -             add_mtd_device(&slave->mtd);
-> >> >> +             ret = add_mtd_device(&slave->mtd);
-> >> >> +             if (ret) {
-> >> >> +                     mutex_lock(&mtd_partitions_mutex);
-> >> >> +                     list_del(&slave->list);
-> >> >> +                     mutex_unlock(&mtd_partitions_mutex);
-> >> >> +                     free_partition(slave);
-> >> >> +                     continue;
-> >> >> +             }  
-> >> >
-> >> > Why is the partition even in the list in the first place ? Can we avoid
-> >> > adding it rather than adding and removing it ?  
-> >>
-> >> Hence my question "Should allocate_partition() fail instead?".  
-> >
-> > I'd prefer this option too. Can you prepare a new version doing that?  
-> 
-> OK, then I have another question ;-)
-> 
-> Should this be a special failure, so all other valid partitions on the
-> same FLASH
-> are still added, or should it be fatal, so no partitions are added at all?
+> Hello all,
+>=20
+> In order to remove the limitation that prevents dynamic allocations
+> during the identification phase (nand_scan_ident()), we need to get rid
+> of the nand_scan_ident()/nand_scan_tail() calls from drivers and only
+> export nand_scan().
+>=20
+> This series prepares the migration to nand_scan() by first fixing (and
+> enhancing some times) the probe function error path of the drivers that
+> do not use nand_scan() yet.
+>=20
+> The three main problems addressed in the series are:
+> 0/ unproper error path (fuzzy, styling issues, undescriptive goto's).
+> 1/ a wrong error path that does not free/disable the resources
+>    correctly.
+> 2/ nand_cleanup() is not called upon error after a successful
+>    nand_scan_tail().
+> 3/ nand_release() is called instead of nand_cleanup(). nand_release()
+>    does call nand_cleanup() and also mtd_device_unregister(), which
+>    should not be called while mtd_device_register() as succeeded.
+>=20
+> Thanks,
+> Miqu=C3=A8l
 
-I guess we can go for the "drop the invalid partitions and print a
-warning" approach. Anyway, I'm sure people will notice really quickly
-when one of their partition is missing, so it's not a big deal IMO.
+Applied.
+
+Thanks,
+
+Boris
+
+>=20
+> Changes since v2:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  * Reworked the few remaining patches that needed small changes.
+>  * docg4: changed the commit message as proposed.
+>  * fsl_elbc/fsl_ifc: moved the wrong nand_release() out of the
+>    'remove' function to avoid double free possible issues.
+>  * fsmc/hisi504/lpc32xx_mlc/lpc32xx_slc: split the changes in two
+>    commits, one to fix the goto labels/style, one that actually fixes
+>    the function.
+>=20
+> Changes since v1:
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>  * Extracted only the patches fixing the error path from the first huge
+>    series (50+ patches) that also converted the drivers to nand_scan().
+>  * Changed wrong nand_release() calls to nand_cleanup().
+>=20
+>=20
+> Miquel Raynal (11):
+>   mtd: rawnand: docg4: fix the probe function error path
+>   mtd: rawnand: fsl_elbc: fix probe function error path
+>   mtd: rawnand: fsl_ifc: fix probe function error path
+>   mtd: rawnand: fsmc: clean the probe function style
+>   mtd: rawnand: fsmc: fix the probe function error path
+>   mtd: rawnand: hisi504: clean the probe function error path
+>   mtd: rawnand: hisi504: fix the probe function error path
+>   mtd: rawnand: lpc32xx_mlc: clean the probe function
+>   mtd: rawnand: lpc32xx_mlc: fix the probe function error path
+>   mtd: rawnand: lpc32xx_slc: clean the probe function
+>   mtd: rawnand: lpc32xx_slc: fix the probe function error path
+>=20
+>  drivers/mtd/nand/raw/docg4.c         | 22 +++++++++++----------
+>  drivers/mtd/nand/raw/fsl_elbc_nand.c | 13 ++++++++----
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c  | 12 +++++++++---
+>  drivers/mtd/nand/raw/fsmc_nand.c     | 27 +++++++++++++------------
+>  drivers/mtd/nand/raw/hisi504_nand.c  | 35 ++++++++++++------------------=
+---
+>  drivers/mtd/nand/raw/lpc32xx_mlc.c   | 38 +++++++++++++++++++-----------=
+------
+>  drivers/mtd/nand/raw/lpc32xx_slc.c   | 26 ++++++++++++------------
+>  7 files changed, 91 insertions(+), 82 deletions(-)
+>=20
