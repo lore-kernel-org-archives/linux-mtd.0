@@ -1,21 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBkNN-0005tl-MD
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:08:11 +0000
-Date: Thu, 26 Apr 2018 19:07:57 +0200
+ id 1fBkfe-0007Df-Dd
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:27:04 +0000
+Date: Thu, 26 Apr 2018 19:26:48 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org, Nadav Haklai
- <nadavh@marvell.com>, Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- linux-mtd@lists.infradead.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Ofer Heifetz <oferh@marvell.com>
-Subject: Re: [PATCH v2] mtd: rawnand: marvell: fix the chip-select DT
- parsing logic
-Message-ID: <20180426190757.1bcebf90@bbrezillon>
-In-Reply-To: <20180425141632.9876-1-miquel.raynal@bootlin.com>
-References: <20180425141632.9876-1-miquel.raynal@bootlin.com>
+ Vasut <marek.vasut@gmail.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [PATCH v3 10/11] mtd: rawnand: lpc32xx_slc: clean the probe
+ function
+Message-ID: <20180426192648.4df1ad55@bbrezillon>
+In-Reply-To: <20180421180043.18366-11-miquel.raynal@bootlin.com>
+References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
+ <20180421180043.18366-11-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,130 +27,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 25 Apr 2018 16:16:32 +0200
+On Sat, 21 Apr 2018 20:00:42 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> The block responsible of parsing the DT for the number of chip-select
-> lines uses an 'if/else if/else if' block. The content of the second and
-> third 'else if' conditions are:
->         1/ the actual condition to enter the sub-block and
->         2/ the operation to do in this sub-block.
+> Before fixing the error path of the probe function, fix the style of the
+> entire function and particularly the goto labels: they should indicate
+> what the next cleanup to do is.
 > 
->         [...]
->         else if (condition1_to_enter && action1() == failed)
->                 raise_error();
->         else if (condition2_to_enter && action2() == failed)
->                 raise_error();
->         [...]
-> 
-> In case of failure, the sub-block is entered and an error raised.
-> Otherwise, in case of success, the code would continue erroneously in
-> the next 'else if' statement because it did not failed (and did not
-> enter the first 'else if' sub-block).
-> 
-> The first 'else if' refers to legacy bindings while the second 'else if'
-> refers to new bindings. The second 'else if', which is entered
-> erroneously, checks for the 'reg' property, which, for old bindings,
-> does not mean anything because it would not be the number of CS
-> available, but the regular register map of almost any DT node. This
-> being said, the content of the 'reg' property being the register map
-> offset and length, it has '2' values, so the number of CS in this
-> situation is assumed to be '2'.
-> 
-> When running nand_scan_ident() with 2 CS, the core will check for an
-> array of chips. It will first issue a RESET and then a READ_ID. Of
-> course this will trigger two timeouts because there is no chip in front
-> of the second CS:
-> 
-> [    1.367460] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000080)
-> [    1.474292] marvell-nfc f2720000.nand: Timeout on CMDD (NDSR: 0x00000280)
-> 
-> Indeed, this is harmless and the core will then assume there is only one
-> valid CS.
-> 
-> Fix the logic in the whole block by entering each sub-block just on the
-> 'is legacy' condition, doing the action inside the sub-block. This way,
-> when the action succeeds, the whole block is left.
-> 
-> Furthermore, for both the old bindings and the new bindings the same
-> logic was applied to retrieve the number of CS lines:
-> using of_get_property() to get a size in bytes, converted in the actual
-> number of lines by dividing it per sizeof(u32) (4 bytes).
-> 
-> This is fine for the 'reg' property which is a list of the CS IDs but
-> not for the 'num-cs' property which is directly the value of the number
-> of CS.
-> 
-> Anyway, no existing DT uses another value than 'num-cs = <1>' and no
-> other value has ever been supported by the old driver (pxa3xx_nand.c).
-> Remove this condition and apply a number of 1 CS anyway, as already
-> described in the bindings.
-> 
-> Finally, the 'reg' property of a 'nand' node (with the new bindings)
-> gives the IDs of each CS line in use. marvell_nand.c driver first look
-> at the number of CS lines that are present in this property.
-> 
-> Better use of_property_count_elems_of_size() than dividing by 4 the size
-> of the number of bytes returned by of_get_property().
-> 
-> Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller driver")
-> Cc: stable@vger.kernel.org
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Queued to master.
-
-Thanks,
-
-Boris
-
 > ---
+>  drivers/mtd/nand/raw/lpc32xx_slc.c | 26 ++++++++++++++------------
+>  1 file changed, 14 insertions(+), 12 deletions(-)
 > 
-> Initially in three different patches, these changes touch the same
-> section of code and are linked to each other, so they have been squashed
-> for being queued in the fixes branch.
-> 
->  drivers/mtd/nand/raw/marvell_nand.c | 25 ++++++++-----------------
->  1 file changed, 8 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index 10e953218948..1d779a35ac8e 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -2299,29 +2299,20 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
->  	/*
->  	 * The legacy "num-cs" property indicates the number of CS on the only
->  	 * chip connected to the controller (legacy bindings does not support
-> -	 * more than one chip). CS are only incremented one by one while the RB
-> -	 * pin is always the #0.
-> +	 * more than one chip). The CS and RB pins are always the #0.
->  	 *
->  	 * When not using legacy bindings, a couple of "reg" and "nand-rb"
->  	 * properties must be filled. For each chip, expressed as a subnode,
->  	 * "reg" points to the CS lines and "nand-rb" to the RB line.
->  	 */
-> -	if (pdata) {
-> +	if (pdata || nfc->caps->legacy_of_bindings) {
->  		nsels = 1;
-> -	} else if (nfc->caps->legacy_of_bindings &&
-> -		   !of_get_property(np, "num-cs", &nsels)) {
-> -		dev_err(dev, "missing num-cs property\n");
-> -		return -EINVAL;
-> -	} else if (!of_get_property(np, "reg", &nsels)) {
-> -		dev_err(dev, "missing reg property\n");
-> -		return -EINVAL;
-> -	}
-> -
-> -	if (!pdata)
-> -		nsels /= sizeof(u32);
-> -	if (!nsels) {
-> -		dev_err(dev, "invalid reg property size\n");
-> -		return -EINVAL;
-> +	} else {
-> +		nsels = of_property_count_elems_of_size(np, "reg", sizeof(u32));
-> +		if (nsels <= 0) {
-> +			dev_err(dev, "missing/invalid reg property\n");
-> +			return -EINVAL;
-> +		}
+> diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+> index 5f7cc6da0a7f..342f666ad435 100644
+> --- a/drivers/mtd/nand/raw/lpc32xx_slc.c
+> +++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+> @@ -831,11 +831,11 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	if (IS_ERR(host->clk)) {
+>  		dev_err(&pdev->dev, "Clock failure\n");
+>  		res = -ENOENT;
+> -		goto err_exit1;
+> +		goto release_gpio;
+>  	}
+>  	res = clk_prepare_enable(host->clk);
+>  	if (res)
+> -		goto err_exit1;
+> +		goto release_gpio;
+>  
+>  	/* Set NAND IO addresses and command/ready functions */
+>  	chip->IO_ADDR_R = SLC_DATA(host->io_base);
+> @@ -874,19 +874,19 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  				      GFP_KERNEL);
+>  	if (host->data_buf == NULL) {
+>  		res = -ENOMEM;
+> -		goto err_exit2;
+> +		goto release_clk;
 >  	}
 >  
->  	/* Alloc the nand chip structure */
+>  	res = lpc32xx_nand_dma_setup(host);
+>  	if (res) {
+>  		res = -EIO;
+> -		goto err_exit2;
+> +		goto release_clk;
+>  	}
+>  
+>  	/* Find NAND device */
+>  	res = nand_scan_ident(mtd, 1, NULL);
+>  	if (res)
+> -		goto err_exit3;
+> +		goto release_dma;
+>  
+>  	/* OOB and ECC CPU and DMA work areas */
+>  	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
+> @@ -920,21 +920,23 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+>  	 */
+>  	res = nand_scan_tail(mtd);
+>  	if (res)
+> -		goto err_exit3;
+> +		goto release_dma;
+>  
+>  	mtd->name = "nxp_lpc3220_slc";
+>  	res = mtd_device_register(mtd, host->ncfg->parts,
+>  				  host->ncfg->num_parts);
+> -	if (!res)
+> -		return res;
+> +	if (res)
+> +		goto release_nand;
+>  
+> +	return 0;
+> +
+> +release_nand:
+>  	nand_release(mtd);
+> -
+> -err_exit3:
+> +release_dma:
+>  	dma_release_channel(host->dma_chan);
+> -err_exit2:
+> +release_clk:
+
+You mean unprepare_clk.
+
+>  	clk_disable_unprepare(host->clk);
+> -err_exit1:
+> +release_gpio:
+
+And I'd go for enable_wp here since it's not releasing the gpio at all.
+
+No need to resend, I'll fix it when applying
+
+>  	lpc32xx_wp_enable(host);
+>  
+>  	return res;
