@@ -1,17 +1,17 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBj28-0005hR-5m
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:09 +0000
-Received: by mail-wr0-x243.google.com with SMTP id h3-v6so57285408wrh.5
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:41:57 -0700 (PDT)
+ id 1fBj26-0005h6-CN
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:12 +0000
+Received: by mail-wm0-x244.google.com with SMTP id n10so14102011wmc.1
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:41:56 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Dries Staelens <dries.staelens@barco.com>,
  Sam Lefebvre <sam.lefebvre@essensium.com>,
  Arnout Vandecapelle <arnout@mind.be>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 02/13] mtd: nand: gpmi: pass buffer and len around
-Date: Thu, 26 Apr 2018 17:41:23 +0200
-Message-Id: <20180426154134.8270-3-sam.lefebvre@essensium.com>
+Subject: [PATCH 01/13] mtd: nand: gpmi: drop dma_ops_type
+Date: Thu, 26 Apr 2018 17:41:22 +0200
+Message-Id: <20180426154134.8270-2-sam.lefebvre@essensium.com>
 In-Reply-To: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,184 +25,210 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Instead of putting the buffer and len passed in from the mtd core
-into the private data struct, just pass it around in the GPMI
-drivers functions. This makes the lifetime of the variables more
-clear and the code easier to follow.
+The GPMI nand driver puts dma_ops_type in its private data struct. Based
+on the ops type the DMA callback handler unmaps previously mapped
+buffers. Instead of unmapping the buffers in the DMA callback handler,
+do this in the caller directly which waits for the DMA transfer to
+finish. This makes the whole dma_ops_type mechanism unnecessary.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
-v2: rebased
+v2: also unmap the cmd_sgl, don't unmap in gpmi_read_page() (it's done
+    in the bch interrupt handler). Sascha, in the future better test
+    with CONFIG_DMA_API_DEBUG :-)
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 14 +++++++-------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 20 ++++++++------------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h | 11 ++++-------
- 3 files changed, 19 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 36 +++++++++++++++++-------------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 31 ++-----------------------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h | 11 ---------
+ 3 files changed, 23 insertions(+), 55 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-index d479358758a0..447961b798b4 100644
+index e94556705dc7..d479358758a0 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-@@ -587,7 +587,7 @@ int gpmi_send_command(struct gpmi_nand_data *this)
- 	return ret;
+@@ -544,19 +544,13 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+ 	return reg & mask;
  }
  
--int gpmi_send_data(struct gpmi_nand_data *this)
-+int gpmi_send_data(struct gpmi_nand_data *this, const void *buf, int len)
+-static inline void set_dma_type(struct gpmi_nand_data *this,
+-					enum dma_ops_type type)
+-{
+-	this->last_dma_type = this->dma_type;
+-	this->dma_type = type;
+-}
+-
+ int gpmi_send_command(struct gpmi_nand_data *this)
  {
- 	struct dma_async_tx_descriptor *desc;
  	struct dma_chan *channel = get_dma_chan(this);
-@@ -606,7 +606,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 		| BF_GPMI_CTRL0_CS(chip, this)
- 		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
- 		| BF_GPMI_CTRL0_ADDRESS(address)
--		| BF_GPMI_CTRL0_XFER_COUNT(this->upper_len);
-+		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
- 	desc = dmaengine_prep_slave_sg(channel, (struct scatterlist *)pio,
- 					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-@@ -614,7 +614,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct scatterlist *sgl;
+ 	int chip = this->current_chip;
++	int ret;
+ 	u32 pio[3];
+ 
+ 	/* [1] send out the PIO words */
+@@ -586,8 +580,11 @@ int gpmi_send_command(struct gpmi_nand_data *this)
  		return -EINVAL;
  
- 	/* [2] send DMA request */
--	prepare_data_dma(this, DMA_TO_DEVICE);
-+	prepare_data_dma(this, buf, len, DMA_TO_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_MEM_TO_DEV,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-@@ -629,7 +629,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
- 	return ret;
+ 	/* [3] submit the DMA */
+-	set_dma_type(this, DMA_FOR_COMMAND);
+-	return start_dma_without_bch_irq(this, desc);
++	ret = start_dma_without_bch_irq(this, desc);
++
++	dma_unmap_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
++
++	return ret;
  }
  
--int gpmi_read_data(struct gpmi_nand_data *this)
-+int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
- {
+ int gpmi_send_data(struct gpmi_nand_data *this)
+@@ -595,6 +592,7 @@ int gpmi_send_data(struct gpmi_nand_data *this)
  	struct dma_async_tx_descriptor *desc;
  	struct dma_chan *channel = get_dma_chan(this);
-@@ -643,7 +643,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 		| BF_GPMI_CTRL0_CS(chip, this)
- 		| BF_GPMI_CTRL0_LOCK_CS(LOCK_CS_ENABLE, this)
- 		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_DATA)
--		| BF_GPMI_CTRL0_XFER_COUNT(this->upper_len);
-+		| BF_GPMI_CTRL0_XFER_COUNT(len);
- 	pio[1] = 0;
- 	desc = dmaengine_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
-@@ -652,7 +652,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
+ 	int chip = this->current_chip;
++	int ret;
+ 	uint32_t command_mode;
+ 	uint32_t address;
+ 	u32 pio[2];
+@@ -624,8 +622,11 @@ int gpmi_send_data(struct gpmi_nand_data *this)
  		return -EINVAL;
  
- 	/* [2] : send DMA request */
--	prepare_data_dma(this, DMA_FROM_DEVICE);
-+	prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
- 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
- 					1, DMA_DEV_TO_MEM,
- 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
-@@ -665,7 +665,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
- 
- 	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
- 	if (this->direct_dma_map_ok == false)
--		memcpy(this->upper_buf, this->data_buffer_dma, this->upper_len);
-+		memcpy(buf, this->data_buffer_dma, len);
- 
- 	return ret;
+ 	/* [3] submit the DMA */
+-	set_dma_type(this, DMA_FOR_WRITE_DATA);
+-	return start_dma_without_bch_irq(this, desc);
++	ret = start_dma_without_bch_irq(this, desc);
++
++	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_TO_DEVICE);
++
++	return ret;
  }
+ 
+ int gpmi_read_data(struct gpmi_nand_data *this)
+@@ -633,6 +634,7 @@ int gpmi_read_data(struct gpmi_nand_data *this)
+ 	struct dma_async_tx_descriptor *desc;
+ 	struct dma_chan *channel = get_dma_chan(this);
+ 	int chip = this->current_chip;
++	int ret;
+ 	u32 pio[2];
+ 
+ 	/* [1] : send PIO */
+@@ -658,8 +660,14 @@ int gpmi_read_data(struct gpmi_nand_data *this)
+ 		return -EINVAL;
+ 
+ 	/* [3] : submit the DMA */
+-	set_dma_type(this, DMA_FOR_READ_DATA);
+-	return start_dma_without_bch_irq(this, desc);
++
++	ret = start_dma_without_bch_irq(this, desc);
++
++	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
++	if (this->direct_dma_map_ok == false)
++		memcpy(this->upper_buf, this->data_buffer_dma, this->upper_len);
++
++	return ret;
+ }
+ 
+ int gpmi_send_page(struct gpmi_nand_data *this,
+@@ -703,7 +711,6 @@ int gpmi_send_page(struct gpmi_nand_data *this,
+ 	if (!desc)
+ 		return -EINVAL;
+ 
+-	set_dma_type(this, DMA_FOR_WRITE_ECC_PAGE);
+ 	return start_dma_with_bch_irq(this, desc);
+ }
+ 
+@@ -785,7 +792,6 @@ int gpmi_read_page(struct gpmi_nand_data *this,
+ 		return -EINVAL;
+ 
+ 	/* [4] submit the DMA */
+-	set_dma_type(this, DMA_FOR_READ_ECC_PAGE);
+ 	return start_dma_with_bch_irq(this, desc);
+ }
+ 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 864fda1901a6..5fa9cd4fac4a 100644
+index c2597c8107a0..864fda1901a6 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -437,15 +437,15 @@ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+@@ -472,31 +472,6 @@ static void dma_irq_callback(void *param)
+ 	struct gpmi_nand_data *this = param;
+ 	struct completion *dma_c = &this->dma_done;
+ 
+-	switch (this->dma_type) {
+-	case DMA_FOR_COMMAND:
+-		dma_unmap_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
+-		break;
+-
+-	case DMA_FOR_READ_DATA:
+-		dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
+-		if (this->direct_dma_map_ok == false)
+-			memcpy(this->upper_buf, this->data_buffer_dma,
+-				this->upper_len);
+-		break;
+-
+-	case DMA_FOR_WRITE_DATA:
+-		dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_TO_DEVICE);
+-		break;
+-
+-	case DMA_FOR_READ_ECC_PAGE:
+-	case DMA_FOR_WRITE_ECC_PAGE:
+-		/* We have to wait the BCH interrupt to finish. */
+-		break;
+-
+-	default:
+-		dev_err(this->dev, "in wrong DMA operation.\n");
+-	}
+-
+ 	complete(dma_c);
  }
  
- /* Can we use the upper's buffer directly for DMA? */
--void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
-+void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
-+		      enum dma_data_direction dr)
- {
- 	struct scatterlist *sgl = &this->data_sgl;
- 	int ret;
- 
- 	/* first try to map the upper buffer directly */
--	if (virt_addr_valid(this->upper_buf) &&
--		!object_is_on_stack(this->upper_buf)) {
--		sg_init_one(sgl, this->upper_buf, this->upper_len);
-+	if (virt_addr_valid(buf) && !object_is_on_stack(buf)) {
-+		sg_init_one(sgl, buf, len);
- 		ret = dma_map_sg(this->dev, sgl, 1, dr);
- 		if (ret == 0)
- 			goto map_fail;
-@@ -456,10 +456,10 @@ void prepare_data_dma(struct gpmi_nand_data *this, enum dma_data_direction dr)
- 
- map_fail:
- 	/* We have to use our own DMA buffer. */
--	sg_init_one(sgl, this->data_buffer_dma, this->upper_len);
-+	sg_init_one(sgl, this->data_buffer_dma, len);
- 
- 	if (dr == DMA_TO_DEVICE)
--		memcpy(this->data_buffer_dma, this->upper_buf, this->upper_len);
-+		memcpy(this->data_buffer_dma, buf, len);
- 
- 	dma_map_sg(this->dev, sgl, 1, dr);
- 
-@@ -919,10 +919,8 @@ static void gpmi_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 
- 	dev_dbg(this->dev, "len is %d\n", len);
--	this->upper_buf	= buf;
--	this->upper_len	= len;
- 
--	gpmi_read_data(this);
-+	gpmi_read_data(this, buf, len);
- }
- 
- static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-@@ -931,10 +929,8 @@ static void gpmi_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 
- 	dev_dbg(this->dev, "len is %d\n", len);
--	this->upper_buf	= (uint8_t *)buf;
--	this->upper_len	= len;
- 
--	gpmi_send_data(this);
-+	gpmi_send_data(this, buf, len);
- }
- 
- static uint8_t gpmi_read_byte(struct mtd_info *mtd)
+@@ -516,8 +491,7 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
+ 	/* Wait for the interrupt from the DMA block. */
+ 	timeout = wait_for_completion_timeout(dma_c, msecs_to_jiffies(1000));
+ 	if (!timeout) {
+-		dev_err(this->dev, "DMA timeout, last DMA :%d\n",
+-			this->last_dma_type);
++		dev_err(this->dev, "DMA timeout, last DMA\n");
+ 		gpmi_dump_info(this);
+ 		return -ETIMEDOUT;
+ 	}
+@@ -546,8 +520,7 @@ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
+ 	/* Wait for the interrupt from the BCH block. */
+ 	timeout = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
+ 	if (!timeout) {
+-		dev_err(this->dev, "BCH timeout, last DMA :%d\n",
+-			this->last_dma_type);
++		dev_err(this->dev, "BCH timeout\n");
+ 		gpmi_dump_info(this);
+ 		return -ETIMEDOUT;
+ 	}
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index 2397010a8963..fba72ad28263 100644
+index 62fde59b995f..2397010a8963 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -141,10 +141,6 @@ struct gpmi_nand_data {
- 	int			current_chip;
- 	unsigned int		command_length;
+@@ -77,15 +77,6 @@ struct boot_rom_geometry {
+ 	unsigned int  search_area_stride_exponent;
+ };
  
--	/* passed from upper layer */
--	uint8_t			*upper_buf;
--	int			upper_len;
+-/* DMA operations types */
+-enum dma_ops_type {
+-	DMA_FOR_COMMAND = 1,
+-	DMA_FOR_READ_DATA,
+-	DMA_FOR_WRITE_DATA,
+-	DMA_FOR_READ_ECC_PAGE,
+-	DMA_FOR_WRITE_ECC_PAGE
+-};
 -
- 	/* for DMA operations */
- 	bool			direct_dma_map_ok;
+ enum gpmi_type {
+ 	IS_MX23,
+ 	IS_MX28,
+@@ -178,8 +169,6 @@ struct gpmi_nand_data {
+ 	/* DMA channels */
+ #define DMA_CHANS		8
+ 	struct dma_chan		*dma_chans[DMA_CHANS];
+-	enum dma_ops_type	last_dma_type;
+-	enum dma_ops_type	dma_type;
+ 	struct completion	dma_done;
  
-@@ -178,7 +174,7 @@ struct gpmi_nand_data {
- /* Common Services */
- int common_nfc_set_geometry(struct gpmi_nand_data *);
- struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
--void prepare_data_dma(struct gpmi_nand_data *,
-+void prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
- 		      enum dma_data_direction dr);
- int start_dma_without_bch_irq(struct gpmi_nand_data *,
- 			      struct dma_async_tx_descriptor *);
-@@ -197,8 +193,9 @@ int gpmi_disable_clk(struct gpmi_nand_data *this);
- int gpmi_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 			      const struct nand_data_interface *conf);
- void gpmi_nfc_apply_timings(struct gpmi_nand_data *this);
--int gpmi_read_data(struct gpmi_nand_data *);
--int gpmi_send_data(struct gpmi_nand_data *);
-+int gpmi_read_data(struct gpmi_nand_data *, void *buf, int len);
-+int gpmi_send_data(struct gpmi_nand_data *, const void *buf, int len);
-+
- int gpmi_send_page(struct gpmi_nand_data *,
- 		   dma_addr_t payload, dma_addr_t auxiliary);
- int gpmi_read_page(struct gpmi_nand_data *,
+ 	/* private */
 -- 
 2.14.1
