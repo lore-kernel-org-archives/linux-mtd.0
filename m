@@ -1,17 +1,18 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBj2D-0005hg-9p
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:20 +0000
-Received: by mail-wr0-x242.google.com with SMTP id p5-v6so29489316wre.12
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:04 -0700 (PDT)
+ id 1fBj2J-0005id-S5
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:22 +0000
+Received: by mail-wm0-x242.google.com with SMTP id b21so14198961wme.4
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:09 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Dries Staelens <dries.staelens@barco.com>,
  Sam Lefebvre <sam.lefebvre@essensium.com>,
- Arnout Vandecapelle <arnout@mind.be>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 06/13] mtd: nand: gpmi: remove unnecessary variables
-Date: Thu, 26 Apr 2018 17:41:27 +0200
-Message-Id: <20180426154134.8270-7-sam.lefebvre@essensium.com>
+ Arnout Vandecapelle <arnout@mind.be>
+Subject: [PATCH 09/13] mtd: rawnand: gpmi: poll the BCH interrupt bit in
+ start_dma_with_bch_irq()
+Date: Thu, 26 Apr 2018 17:41:30 +0200
+Message-Id: <20180426154134.8270-10-sam.lefebvre@essensium.com>
 In-Reply-To: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,80 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sascha Hauer <s.hauer@pengutronix.de>
+To improve nand performance, the BCH interrupt bit must be polled
+before waiting for occurence. This avoids an unnecessary context switch.
 
-Use this->auxiliary_virt and this->auxiliary_phys directly rather
-than creating extra local variables for them.
-
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
+Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
 ---
-v2: rebased
----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 15 +++++----------
- 1 file changed, 5 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 9ecba7ea0cd5..7ba00b8ab288 100644
+index 60bc1bac7741..28a2cf106ddc 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -949,8 +949,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	void          *payload_virt;
- 	dma_addr_t    payload_phys;
--	void          *auxiliary_virt;
--	dma_addr_t    auxiliary_phys;
- 	unsigned int  i;
- 	unsigned char *status;
- 	unsigned int  max_bitflips = 0;
-@@ -974,11 +972,8 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 		}
- 	}
+@@ -503,18 +503,31 @@ int start_dma_without_bch_irq(struct gpmi_nand_data *this,
+  * Actually, we must wait for two interrupts :
+  *	[1] firstly the DMA interrupt and
+  *	[2] secondly the BCH interrupt.
++ *	To improve performance, we first poll for the BCH
++ *	interrupt.
+  */
+ int start_dma_with_bch_irq(struct gpmi_nand_data *this,
+ 			struct dma_async_tx_descriptor *desc)
+ {
+ 	struct completion *bch_c = &this->bch_done;
++	struct resources *r = &this->resources;
+ 	unsigned long timeout;
  
--	auxiliary_virt = this->auxiliary_virt;
--	auxiliary_phys = this->auxiliary_phys;
--
- 	/* go! */
--	ret = gpmi_read_page(this, payload_phys, auxiliary_phys);
-+	ret = gpmi_read_page(this, payload_phys, this->auxiliary_phys);
+-	/* Prepare to receive an interrupt from the BCH block. */
+-	init_completion(bch_c);
++	/* Disable interrupt */
++	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN, r->bch_regs + HW_BCH_CTRL_CLR);
  
- 	if (direct)
- 		dma_unmap_single(this->dev, payload_phys, nfc_geo->payload_size,
-@@ -990,7 +985,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	}
+ 	/* start the DMA */
+ 	start_dma_without_bch_irq(this, desc);
++	if (readl(r->bch_regs + HW_BCH_CTRL) & BM_BCH_CTRL_COMPLETE_IRQ) {
++		writel(BM_BCH_CTRL_COMPLETE_IRQ, r->bch_regs + HW_BCH_CTRL_CLR);
++		return 0;
++	}
++
++	/* Prepare to receive an interrupt from the BCH block. */
++	init_completion(bch_c);
++
++	/* Re-enable interrupt */
++	writel(BM_BCH_CTRL_COMPLETE_IRQ_EN, r->bch_regs + HW_BCH_CTRL_SET);
  
- 	/* Loop over status bytes, accumulating ECC status. */
--	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
-+	status = this->auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
- 	if (!direct)
- 		memcpy(buf, this->payload_virt, nfc_geo->payload_size);
-@@ -1048,7 +1043,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 						buf + i * nfc_geo->ecc_chunk_size,
- 						nfc_geo->ecc_chunk_size,
- 						eccbuf, eccbytes,
--						auxiliary_virt,
-+						this->auxiliary_virt,
- 						nfc_geo->metadata_size,
- 						nfc_geo->ecc_strength);
- 			} else {
-@@ -1076,7 +1071,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	}
- 
- 	/* handle the block mark swapping */
--	block_mark_swapping(this, buf, auxiliary_virt);
-+	block_mark_swapping(this, buf, this->auxiliary_virt);
- 
- 	if (oob_required) {
- 		/*
-@@ -1090,7 +1085,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 		 * the block mark.
- 		 */
- 		memset(chip->oob_poi, ~0, mtd->oobsize);
--		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
-+		chip->oob_poi[0] = ((uint8_t *)this->auxiliary_virt)[0];
- 	}
- 
- 	return max_bitflips;
+ 	/* Wait for the interrupt from the BCH block. */
+ 	timeout = wait_for_completion_timeout(bch_c, msecs_to_jiffies(1000));
 -- 
 2.14.1
