@@ -1,18 +1,14 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBnBk-0001yr-QZ
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 20:08:23 +0000
-Date: Thu, 26 Apr 2018 22:08:08 +0200
+Date: Thu, 26 Apr 2018 22:09:21 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH] mtd: nand: add myself as NAND co-maintainer
-Message-ID: <20180426220808.2abed5a4@bbrezillon>
-In-Reply-To: <20180422175553.7489-1-miquel.raynal@bootlin.com>
-References: <20180422175553.7489-1-miquel.raynal@bootlin.com>
+To: Xiaolei Li <xiaolei.li@mediatek.com>
+Cc: linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
+ srv_heupstream@mediatek.com
+Subject: Re: [PATCH v3] dt-bindings: mtd: mtk-nand: Update properties
+ description
+Message-ID: <20180426220921.16ad89e5@bbrezillon>
+In-Reply-To: <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
+References: <1524535867-32413-1-git-send-email-xiaolei.li@mediatek.com>
+ <1524535867-32413-2-git-send-email-xiaolei.li@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,15 +21,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 22 Apr 2018 19:55:53 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Tue, 24 Apr 2018 10:11:07 +0800
+Xiaolei Li <xiaolei.li@mediatek.com> wrote:
 
-> I have been actively reviewing and contributing improvements to the NAND
-> subsystem for more than 6 months now and am willing to continue doing so
-> in the future. Formalize my new role.
+> Update ecc step size, ecc strength, and parity bits supported on
+> each MTK NAND controller.
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Acked-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Xiaolei Li <xiaolei.li@mediatek.com>
 
 Applied.
 
@@ -42,18 +36,51 @@ Thanks,
 Boris
 
 > ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/devicetree/bindings/mtd/mtk-nand.txt | 24 +++++++++++++++++-----
+>  1 file changed, 19 insertions(+), 5 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 0a1410d5a621..85b39fd1c70d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9574,6 +9574,7 @@ F:	drivers/net/ethernet/myricom/myri10ge/
->  
->  NAND FLASH SUBSYSTEM
->  M:	Boris Brezillon <boris.brezillon@bootlin.com>
-> +M:	Miquel Raynal <miquel.raynal@bootlin.com>
->  R:	Richard Weinberger <richard@nod.at>
->  L:	linux-mtd@lists.infradead.org
->  W:	http://www.linux-mtd.infradead.org/
+> diff --git a/Documentation/devicetree/bindings/mtd/mtk-nand.txt b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> index 1c88526..f20ab4a 100644
+> --- a/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/mtk-nand.txt
+> @@ -50,14 +50,19 @@ Optional:
+>  - nand-on-flash-bbt:	Store BBT on NAND Flash.
+>  - nand-ecc-mode:	the NAND ecc mode (check driver for supported modes)
+>  - nand-ecc-step-size:	Number of data bytes covered by a single ECC step.
+> -			valid values: 512 and 1024.
+> +			valid values:
+> +			512 and 1024 on mt2701 and mt2712.
+> +			512 only on mt7622.
+>  			1024 is recommended for large page NANDs.
+>  - nand-ecc-strength:	Number of bits to correct per ECC step.
+> -			The valid values that the controller supports are: 4, 6,
+> -			8, 10, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 40, 44,
+> -			48, 52, 56, 60.
+> +			The valid values that each controller supports:
+> +			mt2701: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
+> +				32, 36, 40, 44, 48, 52, 56, 60.
+> +			mt2712: 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 28,
+> +				32, 36, 40, 44, 48, 52, 56, 60, 68, 72, 80.
+> +			mt7622: 4, 6, 8, 10, 12, 14, 16.
+>  			The strength should be calculated as follows:
+> -			E = (S - F) * 8 / 14
+> +			E = (S - F) * 8 / B
+>  			S = O / (P / Q)
+>  				E :	nand-ecc-strength.
+>  				S :	spare size per sector.
+> @@ -66,6 +71,15 @@ Optional:
+>  				O :	oob size.
+>  				P :	page size.
+>  				Q :	nand-ecc-step-size.
+> +				B :	number of parity bits needed to correct
+> +					1 bitflip.
+> +					According to MTK NAND controller design,
+> +					this number depends on max ecc step size
+> +					that MTK NAND controller supports.
+> +					If max ecc step size supported is 1024,
+> +					then it should be always 14. And if max
+> +					ecc step size is 512, then it should be
+> +					always 13.
+>  			If the result does not match any one of the listed
+>  			choices above, please select the smaller valid value from
+>  			the list.
