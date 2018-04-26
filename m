@@ -1,20 +1,26 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBj2P-0005lM-0S
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:26 +0000
-Received: by mail-wr0-x243.google.com with SMTP id v5-v6so6503064wrf.9
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:14 -0700 (PDT)
-From: Sam Lefebvre <sam.lefebvre@essensium.com>
-To: linux-mtd@lists.infradead.org
-Cc: Dries Staelens <dries.staelens@barco.com>,
- Sam Lefebvre <sam.lefebvre@essensium.com>,
- Arnout Vandecapelle <arnout@mind.be>
-Subject: [PATCH 12/13] mtd: rawnand: gpmi: issue two commands in a single DMA
- chain
-Date: Thu, 26 Apr 2018 17:41:33 +0200
-Message-Id: <20180426154134.8270-13-sam.lefebvre@essensium.com>
-In-Reply-To: <20180426154134.8270-1-sam.lefebvre@essensium.com>
-References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fBjbS-0000dR-BO
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 16:18:40 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc: Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: [PATCH v4 4/7] spi: bcm53xx: Implement the spi_mem interface
+Date: Thu, 26 Apr 2018 18:18:17 +0200
+Message-Id: <20180426161820.2852-5-boris.brezillon@bootlin.com>
+In-Reply-To: <20180426161820.2852-1-boris.brezillon@bootlin.com>
+References: <20180426161820.2852-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,103 +30,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-gpmi_nand_command() may issue two commands. Instead of issuing them as
-separate DMAs, chain them together and issue only a single DMA.
+The spi_mem interface is meant to replace the spi_flash_read() one.
+Implement the ->exec_op() method so that we can smoothly get rid of the
+old interface.
 
-This removes one DMA interrupt and associated overhead. For full-page
-reads with ECC, it reduces the number of interrupts from 4 per page to
-3 per page (2 DMA interrupts + 1 BCH interrupt).
+Note that the current ->flash_read() implementation looks a bit fragile
+since it does not take the ->read_opcode passed by the spi-nor layer
+into account, which means if might not work with all kind of NORs.
 
-Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
-Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
+Anyway, I left the logic unchanged and added a few extra checks to make
+sure we're receiving something that looks like a NOR read operation.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 12 +++++++-----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c |  8 +++++---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  2 +-
- 3 files changed, 13 insertions(+), 9 deletions(-)
+Changes in v4:
+- none
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-index 46b2208df30e..8f5a2a242228 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-@@ -549,12 +549,12 @@ int gpmi_is_ready(struct gpmi_nand_data *this, unsigned chip)
+Changes in v3:
+- include spi-mem.h from spi-bcm53xx.c instead of spi-bcm2835.c
+
+Changes in v2:
+- include spi-mem.h
+- treat op->addr.val differently since it's now an u64
+---
+ drivers/spi/spi-bcm53xx.c | 37 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-bcm53xx.c b/drivers/spi/spi-bcm53xx.c
+index d02ceb7a29d1..5044e4e4a263 100644
+--- a/drivers/spi/spi-bcm53xx.c
++++ b/drivers/spi/spi-bcm53xx.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/bcma/bcma.h>
+ #include <linux/spi/spi.h>
++#include <linux/spi/spi-mem.h>
+ 
+ #include "spi-bcm53xx.h"
+ 
+@@ -257,6 +258,38 @@ static int bcm53xxspi_transfer_one(struct spi_master *master,
+ 	return 0;
  }
  
- int gpmi_send_command(struct gpmi_nand_data *this, struct scatterlist *sgl,
--		      unsigned int command_length)
-+		      unsigned int command_length, bool chain, bool start_dma)
++static int bcm53xxspi_exec_mem_op(struct spi_mem *mem,
++				  const struct spi_mem_op *op)
++{
++	struct bcm53xxspi *b53spi = spi_master_get_devdata(mem->spi->master);
++	u32 from;
++
++	/*
++	 * FIXME: There's nothing in this driver programming the opcode and
++	 * buswidth to be used when a read is done on the mmio window, but it
++	 * seems to be used to access a SPI NOR device, so restrict access
++	 * access to SPINOR_OP_READ commands.
++	 */
++	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
++	    op->addr.nbytes != 3 || op->cmd.opcode != 0x3)
++		return -ENOTSUPP;
++
++	/* Return -ENOTSUPP so that the core can fall back to normal reads. */
++	from = op->addr.val;
++	if (from + op->data.nbytes > BCM53XXSPI_FLASH_WINDOW)
++		return -ENOTSUPP;
++
++	bcm53xxspi_enable_bspi(b53spi);
++	memcpy_fromio(op->data.buf.in, b53spi->mmio_base + from,
++		      op->data.nbytes);
++
++	return 0;
++}
++
++static const struct spi_controller_mem_ops bcm53xxspi_mem_ops = {
++	.exec_op = bcm53xxspi_exec_mem_op,
++};
++
+ static int bcm53xxspi_flash_read(struct spi_device *spi,
+ 				 struct spi_flash_read_message *msg)
  {
- 	struct dma_chan *channel = get_dma_chan(this);
- 	struct dma_async_tx_descriptor *desc;
- 	int chip = this->current_chip;
--	int ret;
-+	int ret = 0;
- 	u32 pio[3];
+@@ -311,8 +344,10 @@ static int bcm53xxspi_bcma_probe(struct bcma_device *core)
  
- 	/* [1] send out the PIO words */
-@@ -568,7 +568,8 @@ int gpmi_send_command(struct gpmi_nand_data *this, struct scatterlist *sgl,
- 	pio[1] = pio[2] = 0;
- 	desc = dmaengine_prep_slave_sg(channel,
- 					(struct scatterlist *)pio,
--					ARRAY_SIZE(pio), DMA_TRANS_NONE, 0);
-+					ARRAY_SIZE(pio), DMA_TRANS_NONE,
-+					chain ? DMA_PREP_INTERRUPT : 0);
- 	if (!desc)
- 		return -EINVAL;
+ 	master->dev.of_node = dev->of_node;
+ 	master->transfer_one = bcm53xxspi_transfer_one;
+-	if (b53spi->mmio_base)
++	if (b53spi->mmio_base) {
++		master->mem_ops = &bcm53xxspi_mem_ops;
+ 		master->spi_flash_read = bcm53xxspi_flash_read;
++	}
  
-@@ -579,8 +580,9 @@ int gpmi_send_command(struct gpmi_nand_data *this, struct scatterlist *sgl,
- 	if (!desc)
- 		return -EINVAL;
+ 	bcma_set_drvdata(core, b53spi);
  
--	/* [3] submit the DMA */
--	ret = start_dma_without_bch_irq(this, desc);
-+	if (start_dma)
-+		/* [3] submit the DMA */
-+		ret = start_dma_without_bch_irq(this, desc);
- 
- 	return ret;
- }
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 81accbf175bf..49599d6dd841 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1163,11 +1163,12 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 			break;
- 		}
- 
--	/* This starts the DMA for the command and waits for it to finish. */
-+	/* Chain the two commands, start the DMA and wait for it to finish. */
- 	if (this->command_length > 0) {
- 		sg_init_one(&this->cmd_sgl, this->cmd_buffer, this->command_length);
- 		dma_map_sg(this->dev, &this->cmd_sgl, 1, DMA_TO_DEVICE);
--		ret = gpmi_send_command(this, &this->cmd_sgl, this->command_length);
-+		ret = gpmi_send_command(this, &this->cmd_sgl, this->command_length,
-+					false, this->command_length2 == 0);
- 		if (ret)
- 			dev_err(this->dev, "Chip: %u, Error %d\n",
- 				this->current_chip, ret);
-@@ -1176,7 +1177,8 @@ static void gpmi_nand_command(struct mtd_info *mtd, unsigned int command,
- 	if (this->command_length2 > 0) {
- 		sg_init_one(&this->cmd_sgl2, this->cmd_buffer + 64, this->command_length2);
- 		dma_map_sg(this->dev, &this->cmd_sgl2, 1, DMA_TO_DEVICE);
--		ret = gpmi_send_command(this, &this->cmd_sgl2, this->command_length2);
-+		ret = gpmi_send_command(this, &this->cmd_sgl2, this->command_length2,
-+					this->command_length > 0, true);
- 		if (ret)
- 			dev_err(this->dev, "Chip: %u, Error %d\n",
- 				this->current_chip, ret);
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-index 9dc3dd16fa0b..a09ec300754f 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
-@@ -189,7 +189,7 @@ void gpmi_dump_info(struct gpmi_nand_data *);
- int bch_set_geometry(struct gpmi_nand_data *);
- int gpmi_is_ready(struct gpmi_nand_data *, unsigned chip);
- int gpmi_send_command(struct gpmi_nand_data *, struct scatterlist *sgl,
--		      unsigned int command_length);
-+		      unsigned int command_length, bool chain, bool start_dma);
- int gpmi_enable_clk(struct gpmi_nand_data *this);
- int gpmi_disable_clk(struct gpmi_nand_data *this);
- int gpmi_setup_data_interface(struct mtd_info *mtd, int chipnr,
 -- 
 2.14.1
