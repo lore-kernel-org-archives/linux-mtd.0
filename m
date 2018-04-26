@@ -1,25 +1,32 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBZHV-0006Gb-Nq
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 05:17:24 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Steve deRosier
- <derosier@gmail.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>, Tobi Wulff
- <Tobi.Wulff@alliedtelesis.co.nz>
-Subject: Re: NAND timeout issues with blank chip and Marvell NFC
-Date: Thu, 26 Apr 2018 05:16:57 +0000
-Message-ID: <d9eff05a579344d9a569e5bc0e1ec6bf@svr-chch-ex1.atlnz.lc>
-References: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
- <CALLGbRJOGq_3xtWRojPtjVSgnxt-GhwYKUvwEgQKLct=XtEjAw@mail.gmail.com>
- <20180424180837.398957ba@xps13>
- <72ff5349ac6e48a9ab74986947572108@svr-chch-ex1.atlnz.lc>
- <7cd09dc2689643e9a8e0751e1cba3e11@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1fBZqV-0004kI-I6
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 05:53:35 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Thu, 26 Apr 2018 11:23:19 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Archit Taneja
+ <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 8/9] mtd: nand: qcom: helper function for raw read
+In-Reply-To: <20180425145905.219b6faf@xps13>
+References: <1522845745-6624-1-git-send-email-absahu@codeaurora.org>
+ <1522845745-6624-9-git-send-email-absahu@codeaurora.org>
+ <20180410114428.68d59c8d@xps13>
+ <c3e32eb24408a973d0c89984a466d9da@codeaurora.org>
+ <20180422181929.65d42ca8@xps13>
+ <484485e160af41cf062549938c53d078@codeaurora.org>
+ <20180423085817.74e56091@xps13>
+ <892130678772dca7116bd8dcdcb3cc44@codeaurora.org>
+ <20180425145905.219b6faf@xps13>
+Message-ID: <798994bd2cf24e919403f568cb1ff3ea@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,217 +36,176 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An update for the end of my working day.=0A=
-=0A=
-On 26/04/18 13:40, Chris Packham wrote:=0A=
-> On 26/04/18 09:22, Chris Packham wrote:=0A=
->> Hi Miquel,=0A=
->>=0A=
->> On 25/04/18 04:08, Miquel Raynal wrote:=0A=
->>> Hi Steve, Chris,=0A=
->>>=0A=
->>> On Tue, 24 Apr 2018 08:49:47 -0700, Steve deRosier <derosier@gmail.com>=
-=0A=
->>> wrote:=0A=
->>>=0A=
->>>> Hi Chris,=0A=
->>>>=0A=
->>>> On Mon, Apr 23, 2018 at 10:31 PM, Chris Packham=0A=
->>>> <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
->>>>> Hi,=0A=
->>>>>=0A=
->>>>> We're in the process of qualifying new NAND chips (Macronix=0A=
->>>>> MX30LF2G18AC) for one of our Armada-385 based devices and we're=0A=
->>>>> experiencing some long startup times on units with factory fresh NAND=
-=0A=
->>>>> chips. Anecdotally I think I've also seen this behaviour on the old=
-=0A=
->>>>> chips as well (Micron MT29F2G08ABAEAWP-ITX:E).=0A=
->>>>>=0A=
->>>>> On 4.17.0-rc2 with the newly re-written NAND infrastructure we see=0A=
->>>>>=0A=
->>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>>>> nand: Macronix MX30LF2G18AC=0A=
->>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 6=
-4=0A=
->>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)=0A=
->>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)=0A=
->>>>> Bad block table not found for chip 0=0A=
->>>>> Bad block table not found for chip 0=0A=
->>>>> Scanning device for bad blocks=0A=
->>>>>=0A=
->>>>> (nothing for some time)=0A=
->>>>>=0A=
->>>>> On an older kernel we see=0A=
->>>>>=0A=
->>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device=
-=0A=
->>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>>>> nand: Macronix MX30LF2G18AC=0A=
->>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 6=
-4=0A=
->>>>> pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048=0A=
->>>>> Bad block table not found for chip 0=0A=
->>>>> Bad block table not found for chip 0=0A=
->>>>> Scanning device for bad blocks=0A=
->>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>> ...=0A=
->>>>> (time outs continue for some time)=0A=
->>>>>=0A=
->>>>> Presumably the new driver in 4.17.0-rc2 is experiencing the same wait=
-=0A=
->>>>> time out but just not complaining about it.=0A=
->>>>>=0A=
->>>>> If we leave the system running long enough (in the order of 30 minute=
-s)=0A=
->>>>> things seem to sort themselves out and bootup continues, the subseque=
-nt=0A=
->>>>> boots are fine. If we run 'nand erase.chip' from u-boot on a fresh un=
-it=0A=
->>>>> and then boot into the kernel then things are also fine.=0A=
->>>>>=0A=
->>>>> If we run 'nand scrub.chip -y' from u-boot we are able to re-create t=
-he=0A=
->>>>> problem.=0A=
->>>>>=0A=
->>>>> Our suspicion is that erased state of the chip is probably not agreea=
-ble=0A=
->>>>> with either the ecc data or the bad block table location (or both). B=
-y=0A=
->>>>> erasing it from u-boot this must fill in valid data in the expected=
-=0A=
->>>>> places and the kernel is happy.=0A=
->>>>>     =0A=
->>>>=0A=
->>>> During your very first boot, Linux can't find the bad-block table and=
-=0A=
->>>> thus does a full scan of the chip, each and every block, to find the=
-=0A=
->>>> manufacturer bad block marks and then constructs the table. I imagine=
-=0A=
->>>> you've got a parameter incorrect somewhere that's causing it to wait=
-=0A=
->>>> for timeouts at read points, instead of quickly able to read through=
-=0A=
->>>> the 2k or 4k blocks on that flash.  On subsequent boots, you don't see=
-=0A=
->>>> this issue because the BBT is found and Linux just uses that. Same=0A=
->>>> deal if you do a `nand erase.chip`, because the BBT is itself marked=
-=0A=
->>>> with a bad-block marker and gets skipped during a normal erase.=0A=
->>>=0A=
->>> I share Steve's thoughts on that, there is probably some=0A=
->>> misconfiguration at some point, having a first long boot is not a=0A=
->>> problem, but 30 minutes for a 256MiB chip... What I don't understand is=
-=0A=
->>> that you should have timeouts with the recent kernel too if there is=0A=
->>> actually something wrong happening.=0A=
->>=0A=
->> As I mentioned in my other reply I may have understated the time. It is=
-=0A=
->> ~30mins with the old pxa3xx driver but the new one seems to block=0A=
->> indefinitely for me.=0A=
->>=0A=
->>>>=0A=
->>>> Now, I don't know if you're aware of this, but by doing the `nand=0A=
->>>> scub.chip -y`, you've ruined the flash chip.  That device can not be=
-=0A=
->>>> relied upon anymore. A scrub will ignore the factory bad-block-marks=
-=0A=
->>>> and erase them. Unless you stored this information off-chip and=0A=
->>>> rewrite the markers, you've now lost the bad-block information from=0A=
->>>> the manufacturer's tests.  In any case, this erases the BBT, so your=
-=0A=
->>>> next boot triggers Linux to rebuild the BBT.=0A=
->>>=0A=
->>> I think U-Boot will do it automatically after the scrub. But the result=
-=0A=
->>> is still the same.=0A=
->>>=0A=
->>>>=0A=
->>>>> We could update our manufacturing procedures to run 'nand erase.chip'=
-=0A=
->>>>> before the first boot but this feels wrong. Some of our devices boot=
-=0A=
->>>>> over the network so the nand is not normally touched by the bootloade=
-r.=0A=
->>>>> It seems that there is some unhandled error condition that is stoppin=
-g=0A=
->>>>> the kernel from seeing that the chip is completely blank and making=
-=0A=
->>>>> forward progress.=0A=
->>>>>     =0A=
->>>>=0A=
->>>> erase chip won't fix your issue. The BBT scan is going to happen=0A=
->>>> anyway. There is however clearly some parameter that is setup=0A=
->>>> incorrectly that's causing it to wait for the timeout instead of being=
-=0A=
->>>> able to quickly read pages. I don't see why that'd be unique to the=0A=
->>>> BBT scan however, I'd expect you to see the problem on all reads, thus=
-=0A=
->>>> slowing down the system noticeably in general.=0A=
->>>>=0A=
->>>> Your hint is likely these lines:=0A=
->>>>        " marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080=
-)=0A=
->>>>          marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280=
-)"=0A=
->>>>=0A=
->>>> You can go look at that in the driver and compare with the relevant=0A=
->>>> behavior in the datasheets. Sorry, but I can't help more specifically,=
-=0A=
->>>> I'd have to know your particular hardware and datasheets and spend=0A=
->>>> some time looking at the code.=0A=
->>>=0A=
->>> I also reproduce the problem on my Armada 38x, the two timeouts at boot=
-=0A=
->>> time (not specifically the first one) are suspicious, I'm going to look=
-=0A=
->>> into it.=0A=
->>=0A=
->> Thanks for leaping onto it. I'll keep investigating it here as well.=0A=
->>=0A=
-> =0A=
-> When I add some debugging to marvell_nfc_wait_op I see=0A=
-> =0A=
-> marvell-nfc f10d0000.flash: timeout_ms =3D 250=0A=
-> marvell-nfc f10d0000.flash: done=0A=
-> marvell-nfc f10d0000.flash: timeout_ms =3D 1=0A=
-> marvell-nfc f10d0000.flash: done=0A=
-> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
-> nand: Macronix MX30LF2G18AC=0A=
-> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=0A=
-> Bad block table not found for chip 0=0A=
-> Bad block table not found for chip 0=0A=
-> Scanning device for bad blocks=0A=
-> marvell-nfc f10d0000.flash: timeout_ms =3D 4=0A=
-> marvell-nfc f10d0000.flash: done=0A=
-> marvell-nfc f10d0000.flash: timeout_ms =3D 600000000=0A=
-> =0A=
-> That last line looks quite odd. I think the problem might be related to=
-=0A=
-> this line from marvell_nfc_hw_ecc_bch_write_page()=0A=
-> =0A=
->    ret =3D marvell_nfc_wait_op(chip,=0A=
->                              chip->data_interface.timings.sdr.tPROG_max);=
-=0A=
-> =0A=
-> Based on the datasheet that number is 600 microseconds(us) not the=0A=
-> milliseconds expected by marvell_nfc_wait_op().=0A=
-> =0A=
-=0A=
-So naturally throwing in some PSEC_TO_MSEC() calls stopped the really =0A=
-long timeouts but then the probe would fail. It seems that I'm getting =0A=
-some "page done" and "command done" interrupts indications (NDSR =3D =0A=
-0x0000500) while attempting to write the oob data.=0A=
-=0A=
-I've also re-done some of my initial tests and it seems that 4.17-rc2 =0A=
-cannot mount this chip. The 4.16.4 kernel can.=0A=
-=0A=
-Even if I use the old kernel to create the ubi volumes the new kernel =0A=
-seems to hang while mounting in a similar place to what I was seeing =0A=
-with the BBT creation.=0A=
+On 2018-04-25 18:29, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> On Wed, 25 Apr 2018 12:02:29 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
+> 
+>> On 2018-04-23 12:28, Miquel Raynal wrote:
+>> > Hi Abhishek,
+>> > > On Mon, 23 Apr 2018 11:58:42 +0530, Abhishek Sahu
+>> > <absahu@codeaurora.org> wrote:
+>> > >> On 2018-04-22 21:49, Miquel Raynal wrote:
+>> >> > Hi Abhishek,
+>> >> > > On Thu, 12 Apr 2018 12:36:42 +0530, Abhishek Sahu
+>> >> > <absahu@codeaurora.org> wrote:
+>> >> > >> On 2018-04-10 15:14, Miquel Raynal wrote:
+>> >> >> > Hi Abhishek,
+>> >> >> > > On Wed,  4 Apr 2018 18:12:24 +0530, Abhishek Sahu
+>> >> >> > <absahu@codeaurora.org> wrote:
+>> >> >> > >> This patch does minor code reorganization for raw reads.
+>> >> >> >> Currently the raw read is required for complete page but for
+>> >> >> >> subsequent patches related with erased codeword bit flips
+>> >> >> >> detection, only few CW should be read. So, this patch adds
+>> >> >> >> helper function and introduces the read CW bitmask which
+>> >> >> >> specifies which CW reads are required in complete page.
+>> >> >> > > I am not sure this is the right approach for subpage reads. If the
+>> >> >> > controller supports it, you should just enable it in chip->options.
+>> >> >> >
+>> >> >>   Thanks Miquel.
+>> >> >> >>   It is internal to this file only. This patch makes one static helper
+>> >> >>   function which provides the support to read subpages.
+>> >> > > Drivers should expose raw helpers, why keeping this helper static then?
+>> >> > >> >> >> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> >> >> >> ---
+>> >> >> >>  drivers/mtd/nand/qcom_nandc.c | 186 >> +++++++++++++++++++++++++-----------------
+>> >> >> >>  1 file changed, 110 insertions(+), 76 deletions(-)
+>> >> >> >> >> diff --git a/drivers/mtd/nand/qcom_nandc.c >> b/drivers/mtd/nand/qcom_nandc.c
+>> >> >> >> index 40c790e..f5d1fa4 100644
+>> >> >> >> --- a/drivers/mtd/nand/qcom_nandc.c
+>> >> >> >> +++ b/drivers/mtd/nand/qcom_nandc.c
+>> >> >> >> @@ -1590,6 +1590,114 @@ static int check_flash_errors(struct >> qcom_nand_host *host, int cw_cnt)
+>> >> >> >>  }
+>> >> >> >> >>  /*
+>> >> >> >> + * Helper to perform the page raw read operation. The read_cw_mask >> will be
+>> >> >> >> + * used to specify the codewords for which the data should be read. >> The
+>> >> >> >> + * single page contains multiple CW. Sometime, only few CW data is >> required
+>> >> >> >> + * in complete page. Also, start address will be determined with
+>> >> >> >> + * this CW mask to skip unnecessary data copy from NAND flash device. >> Then,
+>> >> >> >> + * actual data copy from NAND controller to data buffer will be done >> only
+>> >> >> >> + * for the CWs which have the mask set.
+>> >> >> >> + */
+>> >> >> >> +static int
+>> >> >> >> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+>> >> >> >> +		    u8 *data_buf, u8 *oob_buf,
+>> >> >> >> +		    int page, unsigned long read_cw_mask)
+>> >> >> >> +{
+>> 
+>>   <snip>
+>> 
+>> >> >> >> -	free_descs(nandc);
+>> >> >> >> -
+>> >> >> >> -	if (!ret)
+>> >> >> >> -		ret = check_flash_errors(host, ecc->steps);
+>> >> >> >> -
+>> >> >> >> -	return 0;
+>> >> >> >> +	return nandc_read_page_raw(mtd, chip, buf, chip->oob_poi, page,
+>> >> >> >> +				   BIT(chip->ecc.steps) - 1);
+>> >> >> > > I don't understand this. chip->ecc.steps is constant, right? So you
+>> >> >> > always ask for the same subpage?
+>> >> >> >>   We need to do raw read for subpages in which we got uncorrectable
+>> >> >>   error in next patch for erased page bitflip detection. This patch >> does
+>> >> >>   reorganization of raw read and moves common code in helper function
+>> >> >>   nandc_read_page_raw.
+>> >> >> >>   For nomral raw read, all the subpages will be read so
+>> >> >>   BIT(chip->ecc.steps) - 1 is used for qcom_nandc_read_page_raw.
+>> >> >> >>   While for erased page raw read, only those sub pages will be
+>> >> >>   read for which the controller gives the uncorrectable error.
+>> >> > > Still not okay: the driver should expose a way to do raw reads no
+>> >> > matter the length and the start and you should use that in a generic
+>> >> > way.
+>> >> >
+>> >>   Thanks Miquel.
+>> >>   I will explore regarding that.
+>> >>   Looks like, we can some helper like read_subpage.
+>> > > Of course, when you implement raw accessors you can have static helpers
+>> > to clarify the code.
+>> >
+>>   Hi Miquel,
+>> 
+>>   I checked regarding generic function.
+>> 
+>>   Normally the other NAND controller stores the data in main area
+>>   and ecc bytes in oob area. So if page size is 2048+64 then 2048
+>>   data bytes will go in main area followed by ECC bytes
+>> 
+>>   Main                 |        OOB
+>>   ------------------------------------
+>>   D1 D2...........D2048|E1..........E64
+>> 
+>>   The QCOM nand contoller follows different layout in which this
+>>   2048+64 is internally divided in 528 bytes codeword so it will
+>>   come to 4 codewords. Each codeword contains 516 bytes followed
+>>   by ECC parity bytes. Also in at 0x1f0 offset in each CW, the bad
+
+  Sorry Miquel.
+  Its 0x1d0 instead of 0x1f0.
+
+>>   block marker is stored. so each CW contains badblock marker also.
+>>   The avilable OOB bytes are 16 which is also protected by ECC.
+>> 
+>>   516 * 4 = 2048 data bytes + 16 available oob bytes.
+>> 
+>>   So for QCOM layout, it will be something lile
+>> 
+>> 
+>>   0       D1.........D495 B1 D496....D516 E1...E7  U1..U4
+>>   0x210   D517......D1012 B2 D1016..D1032 E8...E14 U5..U8
+>>   0x420   D1033.....D1528 B3 D1529..D1548 E15..E21 U9..U12
+>>   0x630   D1549.....D2044 B4 D2045..D2048 O1...O16 E22 E28 U13..U16
+>> 
+>>   Where D - Data bytes
+>>         B - BBM bytes
+>>         E - ECC parity bytes
+>>         U - Unused bytes
+>>         O - Avilable OOB bytes
+>> 
+>>   Now, the raw read expect data to be returned in buffer in the
+>>   form of
+>> 
+>>   D1.....D2048 B1 E1...E7 U1..U4 B2 E8...E14 U5..U8 B3 E15..E21
+>>   U9..U12 B4 O1...O16 E22 E28 U13..U16
+>> 
+>>   Now, the puporose of that helper function is read selected
+>>   codewords. This codeword is QCOM specific and other controller
+>>   normally doesn't follow this kind of layout.
+>> 
+>>   Now If we make generic fuction for subpgage raw read with any
+>>   start and length then that function we can't use for erased page
+>>   bitflip detection.
+>> 
+>>   If we give the start as 0 with length 528 then our requirement is
+>>   to get 516 data bytes in data buffer and 12 bytes in OOB buffer
+>>   but according to standard operations, it will be interpreted as
+>>   all data bytes from D1..D528
+>> 
+>>   so that helper function is to read selected Codewords from
+>>   QCOM NAND controller. This Codeword is different from subpages
+> 
+> Thanks for the clarification, I understand now. Maybe you can add a
+> comment about this particular layout and why you need this helper to
+> check for erased pages.
+> 
+
+  Sure Miquel. Will add the same in comment.
+
+> BTW are these BBM preserved somehow?
+
+  The QCOM nand layout is such that, the bad block byte for last codeowrd
+  will come to first byte in spare area. If we have 2048+64 bytes device,
+  then it will have 4 codewords of size 528. For the last codeword, the
+  B4 will come at
+
+  528 * 3 + 0x1d0 = 0x800 which is first byte in OOB area.
+
+  Normally vendor make this byte as non 0xff for factory bad block.
+  For bad blocks created after that this byte will be marked
+  as non 0xff in
+  
+https://elixir.bootlin.com/linux/v4.16/source/drivers/mtd/nand/qcom_nandc.c#L2657
+
+  This bad block byte won't be touched during read/write with ECC.
+
+  Thanks,
+  Abhishek
