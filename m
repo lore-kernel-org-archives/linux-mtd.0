@@ -1,17 +1,18 @@
 Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBj29-0005hv-P0
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:12 +0000
-Received: by mail-wr0-x244.google.com with SMTP id v60-v6so57238613wrc.7
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:06 -0700 (PDT)
+ id 1fBj29-0005hY-Oo
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:13 +0000
+Received: by mail-wr0-x244.google.com with SMTP id c14-v6so17133373wrd.4
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:01 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Dries Staelens <dries.staelens@barco.com>,
  Sam Lefebvre <sam.lefebvre@essensium.com>,
- Arnout Vandecapelle <arnout@mind.be>, Han Xu <han.xu@nxp.com>
-Subject: [PATCH 07/13] mtd: rawnand: gpmi: set aggregate ready/busy signalling
-Date: Thu, 26 Apr 2018 17:41:28 +0200
-Message-Id: <20180426154134.8270-8-sam.lefebvre@essensium.com>
+ Arnout Vandecapelle <arnout@mind.be>, Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 04/13] mtd: nand: gpmi: remove direct_dma_map_ok from driver
+ data struct
+Date: Thu, 26 Apr 2018 17:41:25 +0200
+Message-Id: <20180426154134.8270-5-sam.lefebvre@essensium.com>
 In-Reply-To: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,59 +24,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The GPMI block by default decouples the ready/busy signal (which is
-shared between all chip-selects) to separate internal signals per
-chip-select. However, since the gpmi-nand driver uses DMA0 for all
-chip-selects, DMA transfers will not be able to see the ready/busy
-status for any chip-select other than 0.
+From: Sascha Hauer <s.hauer@pengutronix.de>
 
-Currently, this happens to work because nand_command() ends with an
-explicit nand_wait_ready() and the driver only sets up a single command
-in a DMA chain. nand_wait_ready() polls for the chip-select specific
-ready/busy status bit. Future patches, however, will set up a DMA chain
-with several commands, so these will have to wait correctly in the DMA
-chain itself.
+Instead of putting direct_dma_map_ok into driver struct pass it around
+between functions to make the code more readable.
 
-To fix this, set the GANGED_RDYBUSY bit in the control1 register. This
-ties all internal ready/busy signals together, so DMA0 will also see
-the ready/busy status of chip selects 1-2-3. It's a bit silly that this
-isn't implied in hardware by the DECOUPLE_CS bit.
-
-Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
-Cc: Han Xu <han.xu@nxp.com>
 ---
-Tested on an i.MX6Q with two identical chips on CS0 and CS1.
+v2: rebased
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 3 +++
- drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  |  5 +++--
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 15 +++++++--------
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h |  5 +----
+ 3 files changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-index 83697b8df871..1858afdb400d 100644
+index 447961b798b4..39834bedf460 100644
 --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
 +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
-@@ -193,6 +193,9 @@ int gpmi_init(struct gpmi_nand_data *this)
- 	 */
- 	writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+@@ -636,6 +636,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 	int chip = this->current_chip;
+ 	int ret;
+ 	u32 pio[2];
++	bool direct;
  
-+	/* Aggregate ready busy signalling. */
-+	writel(BM_GPMI_CTRL1_GANGED_RDYBUSY, r->gpmi_regs + HW_GPMI_CTRL1_SET);
-+
- 	gpmi_disable_clk(this);
- 	return 0;
- err_out:
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
-index d92bf32221ca..e341802c90ac 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
-@@ -120,6 +120,7 @@
- #define BV_GPMI_CTRL1_WRN_DLY_SEL_7_TO_12NS		0x2
- #define BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY		0x3
+ 	/* [1] : send PIO */
+ 	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__READ)
+@@ -652,7 +653,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 		return -EINVAL;
  
-+#define BM_GPMI_CTRL1_GANGED_RDYBUSY		(1 << 19)
- #define BM_GPMI_CTRL1_BCH_MODE				(1 << 18)
+ 	/* [2] : send DMA request */
+-	prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
++	direct = prepare_data_dma(this, buf, len, DMA_FROM_DEVICE);
+ 	desc = dmaengine_prep_slave_sg(channel, &this->data_sgl,
+ 					1, DMA_DEV_TO_MEM,
+ 					DMA_PREP_INTERRUPT | DMA_CTRL_ACK);
+@@ -664,7 +665,7 @@ int gpmi_read_data(struct gpmi_nand_data *this, void *buf, int len)
+ 	ret = start_dma_without_bch_irq(this, desc);
  
- #define BP_GPMI_CTRL1_DLL_ENABLE			17
+ 	dma_unmap_sg(this->dev, &this->data_sgl, 1, DMA_FROM_DEVICE);
+-	if (this->direct_dma_map_ok == false)
++	if (!direct)
+ 		memcpy(buf, this->data_buffer_dma, len);
+ 
+ 	return ret;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index 774ac98fbdb2..9ecba7ea0cd5 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -437,7 +437,7 @@ struct dma_chan *get_dma_chan(struct gpmi_nand_data *this)
+ }
+ 
+ /* Can we use the upper's buffer directly for DMA? */
+-void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
++bool prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 		      enum dma_data_direction dr)
+ {
+ 	struct scatterlist *sgl = &this->data_sgl;
+@@ -450,8 +450,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 		if (ret == 0)
+ 			goto map_fail;
+ 
+-		this->direct_dma_map_ok = true;
+-		return;
++		return true;
+ 	}
+ 
+ map_fail:
+@@ -463,7 +462,7 @@ void prepare_data_dma(struct gpmi_nand_data *this, const void *buf, int len,
+ 
+ 	dma_map_sg(this->dev, sgl, 1, dr);
+ 
+-	this->direct_dma_map_ok = false;
++	return false;
+ }
+ 
+ /* This will be called after the DMA operation is finished. */
+@@ -956,12 +955,12 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	unsigned char *status;
+ 	unsigned int  max_bitflips = 0;
+ 	int           ret;
++	bool          direct = false;
+ 
+ 	dev_dbg(this->dev, "page number is : %d\n", page);
+ 
+ 	payload_virt = this->payload_virt;
+ 	payload_phys = this->payload_phys;
+-	this->direct_dma_map_ok = false;
+ 
+ 	if (virt_addr_valid(buf)) {
+ 		dma_addr_t dest_phys;
+@@ -971,7 +970,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 		if (!dma_mapping_error(this->dev, dest_phys)) {
+ 			payload_virt = buf;
+ 			payload_phys = dest_phys;
+-			this->direct_dma_map_ok = true;
++			direct = true;
+ 		}
+ 	}
+ 
+@@ -981,7 +980,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	/* go! */
+ 	ret = gpmi_read_page(this, payload_phys, auxiliary_phys);
+ 
+-	if (this->direct_dma_map_ok)
++	if (direct)
+ 		dma_unmap_single(this->dev, payload_phys, nfc_geo->payload_size,
+ 				 DMA_FROM_DEVICE);
+ 
+@@ -993,7 +992,7 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	/* Loop over status bytes, accumulating ECC status. */
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
+-	if (!this->direct_dma_map_ok)
++	if (!direct)
+ 		memcpy(buf, this->payload_virt, nfc_geo->payload_size);
+ 
+ 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+index fba72ad28263..6aa10d6962d6 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h
+@@ -141,9 +141,6 @@ struct gpmi_nand_data {
+ 	int			current_chip;
+ 	unsigned int		command_length;
+ 
+-	/* for DMA operations */
+-	bool			direct_dma_map_ok;
+-
+ 	struct scatterlist	cmd_sgl;
+ 	char			*cmd_buffer;
+ 
+@@ -174,7 +171,7 @@ struct gpmi_nand_data {
+ /* Common Services */
+ int common_nfc_set_geometry(struct gpmi_nand_data *);
+ struct dma_chan *get_dma_chan(struct gpmi_nand_data *);
+-void prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
++bool prepare_data_dma(struct gpmi_nand_data *, const void *buf, int len,
+ 		      enum dma_data_direction dr);
+ int start_dma_without_bch_irq(struct gpmi_nand_data *,
+ 			      struct dma_async_tx_descriptor *);
 -- 
 2.14.1
