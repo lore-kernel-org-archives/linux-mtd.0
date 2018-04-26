@@ -1,17 +1,18 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBj29-0005hW-Oj
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:13 +0000
-Received: by mail-wr0-x244.google.com with SMTP id o15-v6so57259212wro.11
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:41:59 -0700 (PDT)
+ id 1fBj2D-0005hb-Ah
+ for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 15:42:15 +0000
+Received: by mail-wr0-x242.google.com with SMTP id d1-v6so57227904wrj.13
+ for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 08:42:02 -0700 (PDT)
 From: Sam Lefebvre <sam.lefebvre@essensium.com>
 To: linux-mtd@lists.infradead.org
 Cc: Dries Staelens <dries.staelens@barco.com>,
  Sam Lefebvre <sam.lefebvre@essensium.com>,
  Arnout Vandecapelle <arnout@mind.be>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 03/13] mtd: nand: gpmi: put only once used functions inline
-Date: Thu, 26 Apr 2018 17:41:24 +0200
-Message-Id: <20180426154134.8270-4-sam.lefebvre@essensium.com>
+Subject: [PATCH 05/13] mtd: nand: gpmi: return valid value from
+ bch_set_geometry()
+Date: Thu, 26 Apr 2018 17:41:26 +0200
+Message-Id: <20180426154134.8270-6-sam.lefebvre@essensium.com>
 In-Reply-To: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,138 +26,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Sascha Hauer <s.hauer@pengutronix.de>
 
-read_page_prepare(), read_page_end() and read_page_swap_end() are
-trivial functions that are used only once and take 8 arguments each.
-De-obfuscate the code by open coding these functions in
-gpmi_ecc_read_page()
+The caller of bch_set_geometry() expects the return value to
+be an error code, so !0 is not valid. return the error from the
+just called function instead.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
 ---
 v2: rebased
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 89 ++++++++----------------------
- 1 file changed, 23 insertions(+), 66 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 5fa9cd4fac4a..774ac98fbdb2 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -668,56 +668,6 @@ static void release_resources(struct gpmi_nand_data *this)
- 	release_dma_channels(this);
- }
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+index 39834bedf460..83697b8df871 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+@@ -258,8 +258,9 @@ int bch_set_geometry(struct gpmi_nand_data *this)
+ 	unsigned int gf_len;
+ 	int ret;
  
--static int read_page_prepare(struct gpmi_nand_data *this,
--			void *destination, unsigned length,
--			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
--			void **use_virt, dma_addr_t *use_phys)
--{
--	struct device *dev = this->dev;
--
--	if (virt_addr_valid(destination)) {
--		dma_addr_t dest_phys;
--
--		dest_phys = dma_map_single(dev, destination,
--						length, DMA_FROM_DEVICE);
--		if (dma_mapping_error(dev, dest_phys)) {
--			if (alt_size < length) {
--				dev_err(dev, "Alternate buffer is too small\n");
--				return -ENOMEM;
--			}
--			goto map_failed;
--		}
--		*use_virt = destination;
--		*use_phys = dest_phys;
--		this->direct_dma_map_ok = true;
--		return 0;
--	}
--
--map_failed:
--	*use_virt = alt_virt;
--	*use_phys = alt_phys;
--	this->direct_dma_map_ok = false;
--	return 0;
--}
--
--static inline void read_page_end(struct gpmi_nand_data *this,
--			void *destination, unsigned length,
--			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
--			void *used_virt, dma_addr_t used_phys)
--{
--	if (this->direct_dma_map_ok)
--		dma_unmap_single(this->dev, used_phys, length, DMA_FROM_DEVICE);
--}
--
--static inline void read_page_swap_end(struct gpmi_nand_data *this,
--			void *destination, unsigned length,
--			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
--			void *used_virt, dma_addr_t used_phys)
--{
--	if (!this->direct_dma_map_ok)
--		memcpy(destination, alt_virt, length);
--}
--
- static int send_page_prepare(struct gpmi_nand_data *this,
- 			const void *source, unsigned length,
- 			void *alt_virt, dma_addr_t alt_phys, unsigned alt_size,
-@@ -1008,24 +958,33 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	int           ret;
+-	if (common_nfc_set_geometry(this))
+-		return !0;
++	ret = common_nfc_set_geometry(this);
++	if (ret)
++		return ret;
  
- 	dev_dbg(this->dev, "page number is : %d\n", page);
--	ret = read_page_prepare(this, buf, nfc_geo->payload_size,
--					this->payload_virt, this->payload_phys,
--					nfc_geo->payload_size,
--					&payload_virt, &payload_phys);
--	if (ret) {
--		dev_err(this->dev, "Inadequate DMA buffer\n");
--		ret = -ENOMEM;
--		return ret;
-+
-+	payload_virt = this->payload_virt;
-+	payload_phys = this->payload_phys;
-+	this->direct_dma_map_ok = false;
-+
-+	if (virt_addr_valid(buf)) {
-+		dma_addr_t dest_phys;
-+
-+		dest_phys = dma_map_single(this->dev, buf, nfc_geo->payload_size,
-+					   DMA_FROM_DEVICE);
-+		if (!dma_mapping_error(this->dev, dest_phys)) {
-+			payload_virt = buf;
-+			payload_phys = dest_phys;
-+			this->direct_dma_map_ok = true;
-+		}
- 	}
-+
- 	auxiliary_virt = this->auxiliary_virt;
- 	auxiliary_phys = this->auxiliary_phys;
- 
- 	/* go! */
- 	ret = gpmi_read_page(this, payload_phys, auxiliary_phys);
--	read_page_end(this, buf, nfc_geo->payload_size,
--			this->payload_virt, this->payload_phys,
--			nfc_geo->payload_size,
--			payload_virt, payload_phys);
-+
-+	if (this->direct_dma_map_ok)
-+		dma_unmap_single(this->dev, payload_phys, nfc_geo->payload_size,
-+				 DMA_FROM_DEVICE);
-+
- 	if (ret) {
- 		dev_err(this->dev, "Error in ECC-based read: %d\n", ret);
- 		return ret;
-@@ -1034,10 +993,8 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
- 	/* Loop over status bytes, accumulating ECC status. */
- 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
- 
--	read_page_swap_end(this, buf, nfc_geo->payload_size,
--			   this->payload_virt, this->payload_phys,
--			   nfc_geo->payload_size,
--			   payload_virt, payload_phys);
-+	if (!this->direct_dma_map_ok)
-+		memcpy(buf, this->payload_virt, nfc_geo->payload_size);
- 
- 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
- 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+ 	block_count   = bch_geo->ecc_chunk_count - 1;
+ 	block_size    = bch_geo->ecc_chunk_size;
 -- 
 2.14.1
