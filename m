@@ -1,32 +1,20 @@
-Received: from mail-vk0-x22c.google.com ([2607:f8b0:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBl8o-0003pu-Dy
- for linux-mtd@lists.infradead.org; Thu, 26 Apr 2018 17:57:12 +0000
-Received: by mail-vk0-x22c.google.com with SMTP id x204so16605430vkd.7
- for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2018 10:57:00 -0700 (PDT)
+Date: Thu, 26 Apr 2018 20:01:08 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Sekhar Nori <nsekhar@ti.com>
+Cc: David Lechner <david@lechnology.com>, Bartosz Golaszewski
+ <bgolaszewski@baylibre.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: davinci: don't acquire and enable clock
+Message-ID: <20180426200108.2afb375c@bbrezillon>
+In-Reply-To: <20180330143051.26423-1-nsekhar@ti.com>
+References: <20180330143051.26423-1-nsekhar@ti.com>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20180426195303.1f08d2cd@bbrezillon>
-References: <1523276721-4982-1-git-send-email-geert+renesas@glider.be>
- <9bea3ad8-7e84-87c2-9963-de81ad4cb3bf@gmail.com>
- <CAMuHMdWHoxrq-tj=QznAhuZ8eC22gTTgWFi9HgyqT9pNfJFJyw@mail.gmail.com>
- <20180426195303.1f08d2cd@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 26 Apr 2018 19:56:58 +0200
-Message-ID: <CAMuHMdWRyZYX+oKN-nxzKbCqZn1zojKwX8Gv6tGg=UZSa3k_LA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: partitions: Handle add_mtd_device() failures
- gracefully
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,65 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Sekhar,
 
-On Thu, Apr 26, 2018 at 7:53 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> On Tue, 10 Apr 2018 15:26:20 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, Apr 9, 2018 at 11:59 PM, Marek Vasut <marek.vasut@gmail.com> wrote:
->> > On 04/09/2018 02:25 PM, Geert Uytterhoeven wrote:
->> >> Currently add_mtd_device() failures are plainly ignored, which may lead
->> >> to kernel crashes later.
->>
->> >> Fix this by ignoring and freeing partitions that failed to add in
->> >> add_mtd_partitions().  The same issue is present in mtd_add_partition(),
->> >> so fix that as well.
->> >>
->> >> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
->> >> ---
->> >> I don't know if it is worthwhile factoring out the common handling.
->> >>
->> >> Should allocate_partition() fail instead?  There's a comment saying
->> >> "let's register it anyway to preserve ordering".
->>
->> >> --- a/drivers/mtd/mtdpart.c
->> >> +++ b/drivers/mtd/mtdpart.c
->>
->> >> @@ -746,7 +753,15 @@ int add_mtd_partitions(struct mtd_info *master,
->> >>               list_add(&slave->list, &mtd_partitions);
->> >>               mutex_unlock(&mtd_partitions_mutex);
->> >>
->> >> -             add_mtd_device(&slave->mtd);
->> >> +             ret = add_mtd_device(&slave->mtd);
->> >> +             if (ret) {
->> >> +                     mutex_lock(&mtd_partitions_mutex);
->> >> +                     list_del(&slave->list);
->> >> +                     mutex_unlock(&mtd_partitions_mutex);
->> >> +                     free_partition(slave);
->> >> +                     continue;
->> >> +             }
->> >
->> > Why is the partition even in the list in the first place ? Can we avoid
->> > adding it rather than adding and removing it ?
->>
->> Hence my question "Should allocate_partition() fail instead?".
->
-> I'd prefer this option too. Can you prepare a new version doing that?
+On Fri, 30 Mar 2018 20:00:51 +0530
+Sekhar Nori <nsekhar@ti.com> wrote:
 
-OK, then I have another question ;-)
+> NAND itself is an asynchronous interface, it does not have any
+> clock input. DaVinci NAND driver acquires clock for AEMIF
+> (asynchronous external memory interface) which is an on-chip
+> IP to which NAND is connected.
+> 
+> The same clock is also enabled in AEMIF driver (either present
+> drivers/memory or from machine code for some older platforms).
+> AEMIF timing must be initialized before NAND can be accessed.
+> This ensures that AEMIF clock is enabled too.
+> 
+> Remove the superfluous clock acquisition and enable in DaVinci
+> NAND driver.
+> 
+> Tested on K2L, K2HK, K2E, DA850 EVM, DA850 LCDK in device-tree
+> boot and DM644x EVM in legacy boot.
+> 
+> Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+> ---
+> Hi Boris,
+> 
+> If/when this patch gets accepted, it will nice to put this on
+> an immutable branch others can merge. There is potential cleanup
+> in drivers/clock and in DaVinci machine code that will depend
+> on this.
 
-Should this be a special failure, so all other valid partitions on the
-same FLASH
-are still added, or should it be fatal, so no partitions are added at all?
+I prepared the nand/davinci-clock tag for you to fetch if needed. I'll
+merge it into the nand/next branch soon.
 
-Gr{oetje,eeting}s,
+Thanks,
 
-                        Geert
+Boris 
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+The following changes since commit 60cc43fc888428bb2f18f08997432d426a243338:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  Linux 4.17-rc1 (2018-04-15 18:24:20 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/nand/davinci-clock
+
+for you to fetch changes up to a8e3923ab57192547ffad01d78939c5c0d5d0c30:
+
+  mtd: rawnand: davinci: don't acquire and enable clock (2018-04-26 19:55:40 +0200)
+
+----------------------------------------------------------------
+Prepare things for davinci clk driver cleanup
+
+----------------------------------------------------------------
+Sekhar Nori (1):
+      mtd: rawnand: davinci: don't acquire and enable clock
+
+ drivers/mtd/nand/raw/davinci_nand.c | 25 +------------------------
+ 1 file changed, 1 insertion(+), 24 deletions(-)
