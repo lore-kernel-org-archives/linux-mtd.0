@@ -1,19 +1,19 @@
 Received: from twosheds.infradead.org ([2001:8b0:10b:1:21d:7dff:fe04:dbe2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fC2tt-0005e6-J9
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 12:54:57 +0000
-Message-ID: <1524833695.18504.36.camel@infradead.org>
-Subject: Re: [PATCH 3/3] jffs2: put directories f->sem on a separate
- lockdep class
+ id 1fCBlS-00053M-DF
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 22:22:50 +0000
+Message-ID: <1524867762.18504.89.camel@infradead.org>
+Subject: Re: [PATCH] jffs2: safely remove obsolete dirent from the f->dents
+ list
 From: David Woodhouse <dwmw2@infradead.org>
-To: Helmut Grohne <h.grohne@intenta.de>, linux-mtd@lists.infradead.org
-Cc: Peter Zijlstra <peterz@infradead.org>
-In-Reply-To: <d36fa783db66ec430565a065245ebcacfea39e13.1524823321.git.h.grohne@intenta.de>
-References: <cover.1524823321.git.h.grohne@intenta.de>
- <d36fa783db66ec430565a065245ebcacfea39e13.1524823321.git.h.grohne@intenta.de>
+To: Yufen Yu <yuyufen@huawei.com>
+Cc: Joakim.Tjernlund@infinera.com, viro@zeniv.linux.org.uk,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20180329120023.33169-1-yuyufen@huawei.com>
+References: <20180329120023.33169-1-yuyufen@huawei.com>
 Content-Type: multipart/signed; micalg="sha-256";
- protocol="application/x-pkcs7-signature"; boundary="=-ndSYXbv4vQU35DrRy9/b"
-Date: Fri, 27 Apr 2018 13:54:55 +0100
+ protocol="application/x-pkcs7-signature"; boundary="=-seZyAtsnIeSdQMmE/nRt"
+Date: Fri, 27 Apr 2018 23:22:42 +0100
 Mime-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +25,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-ndSYXbv4vQU35DrRy9/b
+--=-seZyAtsnIeSdQMmE/nRt
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2018-04-27 at 12:30 +0200, Helmut Grohne wrote:
+This looks a lot better than the first iteration; thank you for getting
+it to this point. One last thing, I hope...
+On Thu, 2018-03-29 at 20:00 +0800, Yufen Yu wrote:
 >=20
-> @@ -60,6 +62,7 @@ static void jffs2_i_init_once(void *foo)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct jffs2_inode_info *=
-f =3D foo;
+> --- a/fs/jffs2/jffs2_fs_i.h
+> +++ b/fs/jffs2/jffs2_fs_i.h
+> @@ -42,6 +42,12 @@ struct jffs2_inode_info {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Directory entries */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct jffs2_full_dirent =
+*dents;
 > =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_init(&f->sem);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0lockdep_set_class(&f->sem, &jf=
-fs2_inode_info_sem_key);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inode_init_once(&f->vfs_i=
-node);
-> =C2=A0}
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Directory open refcount */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0atomic_t nr_dir_opening;
+> +
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* obsolete dirent count in th=
+e list of 'dents' */
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned int obsolete_count;
+> +
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* The target path if thi=
+s is the inode of a symlink */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0unsigned char *target;
 > =C2=A0
 
-The point in init_once is that inode structures can get reused. So if
-it gets used the first time for a directory, then re-used for a file,
-nothing ever sets the lockdep class back to jffs2_inode_info_sem_key.
+You've made JFFS2_INVALID_LIMIT 64, which is reasonable enough
+(although it's a bit of a weird name and possibly wants to be more
+specific =E2=80=94 invalid *what*?).
 
-Other than that, this all looks good; thanks!
+So the maximum interesting value of ->obsolete_count is 64. Which means
+it might as well be a uint8_t and sit in the padding after the
+'usercompr' field.
 
-
---=-ndSYXbv4vQU35DrRy9/b
+It might be useful to look at putting the mutually exclusive fields in
+struct jffs2_inode_info into a union, and then we don't need the
+additional space of the atomic_t either; we'll never need that *and*
+the fragtree at the same time... will we?
+--=-seZyAtsnIeSdQMmE/nRt
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -133,20 +147,20 @@ px9/s81rgzdEZOofSlZHynoSMYIDxzCCA8MCAQEwgawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQI
 ExJHcmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBD
 QSBMaW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQg
 U2VjdXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCWCGSAFlAwQCAQUAoIIB6zAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODA0MjcxMjU0NTVaMC8GCSqG
-SIb3DQEJBDEiBCCnW7I/zh5oHbpXioCOZ/OrD0P/CgcoRDd6WCLt5OVnsDCBvQYJKwYBBAGCNxAE
+hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xODA0MjcyMjIyNDJaMC8GCSqG
+SIb3DQEJBDEiBCDN+rwrudub1YyplaZcZPBgWIPh0y/zDufTWGsEg/2z6zCBvQYJKwYBBAGCNxAE
 MYGvMIGsMIGXMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
 VQQHEwdTYWxmb3JkMRowGAYDVQQKExFDT01PRE8gQ0EgTGltaXRlZDE9MDsGA1UEAxM0Q09NT0RP
 IFJTQSBDbGllbnQgQXV0aGVudGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIQTUYRMpPx2e52
 jnkx1q87gDCBvwYLKoZIhvcNAQkQAgsxga+ggawwgZcxCzAJBgNVBAYTAkdCMRswGQYDVQQIExJH
 cmVhdGVyIE1hbmNoZXN0ZXIxEDAOBgNVBAcTB1NhbGZvcmQxGjAYBgNVBAoTEUNPTU9ETyBDQSBM
 aW1pdGVkMT0wOwYDVQQDEzRDT01PRE8gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2Vj
-dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBAB/FoA183FQM
-bDTE7wGclPmSJfw206/uFqC43u1TrnndPCJKg2u5iR6/bM+YJXZOfl8UMudUYlFls4wR/L56mlq1
-G7FjIAYZNB6K1nFlg9BWYPkWjOQzQtQuLAROyXemttBgrjtQt2763azwE5OMAyPQULCq5hapH5eN
-WV63a7IG70UitpdiPzGkM5VQktFU7G+GnX3wXU1F++KzBIzdJtYOaQB3HA0y2Hi2JgZfnx8xJ9je
-Owi3M2gUG7mOUfvLUZ1/8WW+Q24VmKffy2pMRhAUu7XSmHCdQmPNpyLPBBMEX2Y7o34j8QpHu5y6
-Zi3NnVXHy1E4atdA5o2+ZgMN7hMAAAAAAAA=
+dXJlIEVtYWlsIENBAhBNRhEyk/HZ7naOeTHWrzuAMA0GCSqGSIb3DQEBAQUABIIBAMdebeMGAONJ
+gIfPgAK/grylniMjwKf0Z3VHsDcHdURZD1aplHPnoldYrv1vq7cPq2r9r/CySWJBwkPx2z4X+eyj
+sNrXJrYH6L1ARKWJBHU+trnbahP6zv5ByKNE3q8sSCdNMN1uqDvOSmmUlgVsJCkp1zzclNS0M6OL
+VJNDV9WjiNle4p7o2xFstxgDTEl5KrMIXw6eryjKeYGM6rI4YXTomcwa/iPI2IEMawTAh59em/ey
+eS/dYQVu4/FYUjRwD/HetfuEMIDEQdpuGYl8YYB5cRqoSsADeYTMvesL5wu15vpwHC9t7CM7lp02
+4sxOQ3muR/f2D4l1UzBTkNJCFeYAAAAAAAA=
 
 
---=-ndSYXbv4vQU35DrRy9/b--
+--=-seZyAtsnIeSdQMmE/nRt--
