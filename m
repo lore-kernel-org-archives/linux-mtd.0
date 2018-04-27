@@ -1,16 +1,17 @@
 Received: from mail-he1eur01on0122.outbound.protection.outlook.com
  ([104.47.0.122] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBr9O-0003W1-6L
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 00:22:32 +0000
+ id 1fBr9l-0003W1-Dx
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 00:22:56 +0000
 From: Jane Wan <Jane.Wan@nokia.com>
 To: dwmw2@infradead.org,
 	computersforpeace@gmail.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  ties.bos@nokia.com, Jane Wan <Jane.Wan@nokia.com>
-Subject: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
-Date: Thu, 26 Apr 2018 17:19:55 -0700
-Message-Id: <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+Subject: [PATCH 2/2] Use bit-wise majority to recover the contents of ONFI
+ parameter
+Date: Thu, 26 Apr 2018 17:19:56 -0700
+Message-Id: <1524788396-32380-3-git-send-email-Jane.Wan@nokia.com>
 In-Reply-To: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
 References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
@@ -26,37 +27,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
 ---
- drivers/mtd/nand/fsl_ifc_nand.c |   10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/nand_base.c |   35 +++++++++++++++++++++++++++++++----
+ 1 file changed, 31 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-index ca36b35..a3cf6ca 100644
---- a/drivers/mtd/nand/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/fsl_ifc_nand.c
-@@ -413,6 +413,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 	struct fsl_ifc_mtd *priv = chip->priv;
- 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
-+	int len;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c2e1232..161b523 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3153,8 +3153,10 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 					int *busw)
+ {
+ 	struct nand_onfi_params *p = &chip->onfi_params;
+-	int i, j;
+-	int val;
++	int i, j, k, len, val;
++	uint8_t copy[3][256], v8;
++
++	len = (sizeof(*p) > 256) ? 256 : sizeof(*p);
  
- 	/* clear the read buffer */
- 	ifc_nand_ctrl->read_bytes = 0;
-@@ -462,11 +463,12 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 		ifc_out32(column, &ifc->ifc_nand.row3);
+ 	/* Try ONFI for unknown chip or LP */
+ 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+@@ -3170,11 +3172,36 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, struct nand_chip *chip,
+ 				le16_to_cpu(p->crc)) {
+ 			break;
+ 		}
++		pr_err("CRC of parameter page %d is not valid\n", i);
++		for (j = 0; j < len; j++)
++			copy[i][j] = ((uint8_t *)p)[j];
+ 	}
  
- 		/*
--		 * although currently it's 8 bytes for READID, we always read
--		 * the maximum 256 bytes(for PARAM)
-+		 * For READID, read 8 bytes that are currently used.
-+		 * For PARAM, read all 3 copies of 256-bytes pages.
- 		 */
--		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
--		ifc_nand_ctrl->read_bytes = 256;
-+		len = (command == NAND_CMD_PARAM) ? (3 * 256) : 8;
-+		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
-+		ifc_nand_ctrl->read_bytes = len;
+ 	if (i == 3) {
+-		pr_err("Could not find valid ONFI parameter page; aborting\n");
+-		return 0;
++		pr_err("Could not find valid ONFI parameter page\n");
++		pr_info("Recover ONFI parameters with bit-wise majority\n");
++		for (j = 0; j < len; j++) {
++			if (copy[0][j] == copy[1][j] ||
++			    copy[0][j] == copy[2][j]) {
++				((uint8_t *)p)[j] = copy[0][j];
++			} else if (copy[1][j] == copy[2][j]) {
++				((uint8_t *)p)[j] = copy[1][j];
++			} else {
++				((uint8_t *)p)[j] = 0;
++				for (k = 0; k < 8; k++) {
++					v8 = (copy[0][j] >> k) & 0x1;
++					v8 += (copy[1][j] >> k) & 0x1;
++					v8 += (copy[2][j] >> k) & 0x1;
++					if (v8 > 1)
++						((uint8_t *)p)[j] |= (1 << k);
++				}
++			}
++		}
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=
++		    le16_to_cpu(p->crc)) {
++			pr_err("ONFI parameter recovery failed, aborting\n");
++			return 0;
++		}
+ 	}
  
- 		set_addr(mtd, 0, 0, 0);
- 		fsl_ifc_run_command(mtd);
+ 	/* Check version */
 -- 
 1.7.9.5
