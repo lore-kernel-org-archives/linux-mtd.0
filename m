@@ -1,20 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fByFh-0000gn-Kw
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 07:57:11 +0000
-Date: Fri, 27 Apr 2018 09:56:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Marek Vasut <marex@denx.de>, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] mtd: Fixes for 4.17-rc3
-Message-ID: <20180427095645.5e583c24@bbrezillon>
+Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fC0c7-0004Tf-Kd
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 10:28:43 +0000
+Received: by mail-wr0-x22e.google.com with SMTP id v60-v6so1263464wrc.7
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2018 03:28:15 -0700 (PDT)
+From: Sam Lefebvre <sam.lefebvre@saleconix.be>
+Subject: Re: optimizing the nand read performance by reducing interrupts from
+ 4 to 1
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
+ Dries Staelens <dries.staelens@barco.com>,
+ Richard Weinberger <richard@nod.at>, Han Xu <han.xu@nxp.com>,
+ sam.lefebvre@essensium.com
+References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
+ <20180426182843.02f60425@bbrezillon>
+Message-ID: <9ab9b851-a8bf-f783-b5e9-998950b47900@essensium.com>
+Date: Fri, 27 Apr 2018 12:27:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180426182843.02f60425@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+Hi Boris
 
-Here is the MTD fixes PR for 4.17-rc3.
+On 26/04/18 18:28, Boris Brezillon wrote:
 
-Regards,
+> Hi Sam,
+>
+> On Thu, 26 Apr 2018 17:41:21 +0200
+> Sam Lefebvre <sam.lefebvre@essensium.com> wrote:
+>
+> Are there any changes in this version? I don't see a changelog and the
+> version number has not been incremented.
 
-Boris
+Until now we did not used version numbers. Because of time limitation
+patches have been reordered and limited in such way that:
 
-The following changes since commit 60cc43fc888428bb2f18f08997432d426a243338:
+Patches 1-9 will be probably accepted.
+Patches 10-13 is a solution for nand read performance improvement,
+may be possibly not accepted upstream but can be useful for somebody
+who want to use it in the future.
 
-  Linux 4.17-rc1 (2018-04-15 18:24:20 -0700)
+> Also, I nacked this patch in my previous review, so I'm not going to
+> accept it now, unless you have strong arguments to convince me.
 
-are available in the git repository at:
+I will remember that these patches are based on your mail of march 5,
+2018 where you suggested to reduce the number of interrupts in the
+current implementation. Due to budgetary constraints, today is the
+last day we are able to work on it in terms of this project.
 
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.17-rc3
+Some measurements showed:
+Reduction of 10% boot time on quad core.
+Reduction of 3% boot time on dual lite.
 
-for you to fetch changes up to f6997bec6af43396ff530caee79e178d32774a49:
+>
+> One last thing, can you Cc the relevant maintainers next time (you can
+> use scripts/get_maintainers.pl to get the list).
 
-  mtd: rawnand: marvell: fix the chip-select DT parsing logic (2018-04-26 19:06:42 +0200)
+Ok, I will check that.
 
-----------------------------------------------------------------
-* Fix nanddev_mtd_erase() function to match the changes done in
-  e7bfb3fdbde3 ("mtd: Stop updating erase_info->state and calling
-  mtd_erase_callback()")
-* Fix a memory leak in the Tango NAND controller driver
-* Fix read/write to a suspended erase block in the CFI driver
-* Fix the DT parsing logic in the Marvell NAND controller driver
+Best regards,
+Sam
 
-----------------------------------------------------------------
-Boris Brezillon (1):
-      mtd: nand: Fix nanddev_mtd_erase()
-
-Joakim Tjernlund (3):
-      mtd: cfi: cmdset_0001: Do not allow read/write to suspend erase block.
-      mtd: cfi: cmdset_0001: Workaround Micron Erase suspend bug.
-      mtd: cfi: cmdset_0002: Do not allow read/write to suspend erase block.
-
-Marc Gonzalez (1):
-      mtd: rawnand: tango: Fix struct clk memory leak
-
-Miquel Raynal (1):
-      mtd: rawnand: marvell: fix the chip-select DT parsing logic
-
-Thor Thayer (1):
-      mtd: spi-nor: cadence-quadspi: Fix page fault kernel panic
-
- drivers/mtd/chips/cfi_cmdset_0001.c   | 33 ++++++++++++++++++++++++++++-----
- drivers/mtd/chips/cfi_cmdset_0002.c   |  9 ++++++---
- drivers/mtd/nand/core.c               |  3 ---
- drivers/mtd/nand/raw/marvell_nand.c   | 25 ++++++++-----------------
- drivers/mtd/nand/raw/tango_nand.c     |  2 +-
- drivers/mtd/spi-nor/cadence-quadspi.c | 19 +++++++++++++++++--
- include/linux/mtd/flashchip.h         |  1 +
- 7 files changed, 61 insertions(+), 31 deletions(-)
+> Regards,
+>
+> Boris
+>
