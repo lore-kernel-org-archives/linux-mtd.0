@@ -1,15 +1,17 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fBv2Z-0003Hp-L5
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 04:31:26 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Steve deRosier <derosier@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, Tobi Wulff <Tobi.Wulff@alliedtelesis.co.nz>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fBwgU-0000vL-ET
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 06:16:45 +0000
+Date: Fri, 27 Apr 2018 08:16:17 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Steve deRosier
+ <derosier@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Tobi Wulff
+ <Tobi.Wulff@alliedtelesis.co.nz>
 Subject: Re: NAND timeout issues with blank chip and Marvell NFC
-Date: Fri, 27 Apr 2018 04:30:55 +0000
-Message-ID: <f47f2762a08d4eae97755fbaca8656b6@svr-chch-ex1.atlnz.lc>
+Message-ID: <20180427081617.7aacddc8@bbrezillon>
+In-Reply-To: <f47f2762a08d4eae97755fbaca8656b6@svr-chch-ex1.atlnz.lc>
 References: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
  <CALLGbRJOGq_3xtWRojPtjVSgnxt-GhwYKUvwEgQKLct=XtEjAw@mail.gmail.com>
  <20180424180837.398957ba@xps13>
@@ -18,10 +20,10 @@ References: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
  <d9eff05a579344d9a569e5bc0e1ec6bf@svr-chch-ex1.atlnz.lc>
  <20180426090321.1a5dee5b@xps13>
  <7db679c90cc041c78a1eb1fadf505bcd@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <f47f2762a08d4eae97755fbaca8656b6@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,413 +33,364 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=
-=0A=
-On 27/04/18 10:43, Chris Packham wrote:=0A=
-> Hi Miquel,=0A=
-> =0A=
-> On 26/04/18 19:03, Miquel Raynal wrote:=0A=
->> Hi Chris,=0A=
->>=0A=
->> On Thu, 26 Apr 2018 05:16:57 +0000, Chris Packham=0A=
->> <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
->>=0A=
->>> An update for the end of my working day.=0A=
->>>=0A=
->>> On 26/04/18 13:40, Chris Packham wrote:=0A=
->>>> On 26/04/18 09:22, Chris Packham wrote:=0A=
->>>>> Hi Miquel,=0A=
->>>>>=0A=
->>>>> On 25/04/18 04:08, Miquel Raynal wrote:=0A=
->>>>>> Hi Steve, Chris,=0A=
->>>>>>=0A=
->>>>>> On Tue, 24 Apr 2018 08:49:47 -0700, Steve deRosier <derosier@gmail.c=
-om>=0A=
->>>>>> wrote:=0A=
->>>>>>    =0A=
->>>>>>> Hi Chris,=0A=
->>>>>>>=0A=
->>>>>>> On Mon, Apr 23, 2018 at 10:31 PM, Chris Packham=0A=
->>>>>>> <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
->>>>>>>> Hi,=0A=
->>>>>>>>=0A=
->>>>>>>> We're in the process of qualifying new NAND chips (Macronix=0A=
->>>>>>>> MX30LF2G18AC) for one of our Armada-385 based devices and we're=0A=
->>>>>>>> experiencing some long startup times on units with factory fresh N=
-AND=0A=
->>>>>>>> chips. Anecdotally I think I've also seen this behaviour on the ol=
-d=0A=
->>>>>>>> chips as well (Micron MT29F2G08ABAEAWP-ITX:E).=0A=
->>>>>>>>=0A=
->>>>>>>> On 4.17.0-rc2 with the newly re-written NAND infrastructure we see=
-=0A=
->>>>>>>>=0A=
->>>>>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>>>>>>> nand: Macronix MX30LF2G18AC=0A=
->>>>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size=
-: 64=0A=
->>>>>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)=0A=
->>>>>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)=0A=
->>>>>>>> Bad block table not found for chip 0=0A=
->>>>>>>> Bad block table not found for chip 0=0A=
->>>>>>>> Scanning device for bad blocks=0A=
->>>>>>>>=0A=
->>>>>>>> (nothing for some time)=0A=
->>>>>>>>=0A=
->>>>>>>> On an older kernel we see=0A=
->>>>>>>>=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this dev=
-ice=0A=
->>>>>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>>>>>>> nand: Macronix MX30LF2G18AC=0A=
->>>>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size=
-: 64=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048=0A=
->>>>>>>> Bad block table not found for chip 0=0A=
->>>>>>>> Bad block table not found for chip 0=0A=
->>>>>>>> Scanning device for bad blocks=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!=0A=
->>>>>>>> ...=0A=
->>>>>>>> (time outs continue for some time)=0A=
->>>>>>>>=0A=
->>>>>>>> Presumably the new driver in 4.17.0-rc2 is experiencing the same w=
-ait=0A=
->>>>>>>> time out but just not complaining about it.=0A=
->>>>>>>>=0A=
->>>>>>>> If we leave the system running long enough (in the order of 30 min=
-utes)=0A=
->>>>>>>> things seem to sort themselves out and bootup continues, the subse=
-quent=0A=
->>>>>>>> boots are fine. If we run 'nand erase.chip' from u-boot on a fresh=
- unit=0A=
->>>>>>>> and then boot into the kernel then things are also fine.=0A=
->>>>>>>>=0A=
->>>>>>>> If we run 'nand scrub.chip -y' from u-boot we are able to re-creat=
-e the=0A=
->>>>>>>> problem.=0A=
->>>>>>>>=0A=
->>>>>>>> Our suspicion is that erased state of the chip is probably not agr=
-eeable=0A=
->>>>>>>> with either the ecc data or the bad block table location (or both)=
-. By=0A=
->>>>>>>> erasing it from u-boot this must fill in valid data in the expecte=
-d=0A=
->>>>>>>> places and the kernel is happy.=0A=
->>>>>>>>         =0A=
->>>>>>>=0A=
->>>>>>> During your very first boot, Linux can't find the bad-block table a=
-nd=0A=
->>>>>>> thus does a full scan of the chip, each and every block, to find th=
-e=0A=
->>>>>>> manufacturer bad block marks and then constructs the table. I imagi=
-ne=0A=
->>>>>>> you've got a parameter incorrect somewhere that's causing it to wai=
-t=0A=
->>>>>>> for timeouts at read points, instead of quickly able to read throug=
-h=0A=
->>>>>>> the 2k or 4k blocks on that flash.  On subsequent boots, you don't =
-see=0A=
->>>>>>> this issue because the BBT is found and Linux just uses that. Same=
-=0A=
->>>>>>> deal if you do a `nand erase.chip`, because the BBT is itself marke=
-d=0A=
->>>>>>> with a bad-block marker and gets skipped during a normal erase.=0A=
->>>>>>=0A=
->>>>>> I share Steve's thoughts on that, there is probably some=0A=
->>>>>> misconfiguration at some point, having a first long boot is not a=0A=
->>>>>> problem, but 30 minutes for a 256MiB chip... What I don't understand=
- is=0A=
->>>>>> that you should have timeouts with the recent kernel too if there is=
-=0A=
->>>>>> actually something wrong happening.=0A=
->>>>>=0A=
->>>>> As I mentioned in my other reply I may have understated the time. It =
-is=0A=
->>>>> ~30mins with the old pxa3xx driver but the new one seems to block=0A=
->>>>> indefinitely for me.=0A=
->>>>>    =0A=
->>>>>>>=0A=
->>>>>>> Now, I don't know if you're aware of this, but by doing the `nand=
-=0A=
->>>>>>> scub.chip -y`, you've ruined the flash chip.  That device can not b=
-e=0A=
->>>>>>> relied upon anymore. A scrub will ignore the factory bad-block-mark=
-s=0A=
->>>>>>> and erase them. Unless you stored this information off-chip and=0A=
->>>>>>> rewrite the markers, you've now lost the bad-block information from=
-=0A=
->>>>>>> the manufacturer's tests.  In any case, this erases the BBT, so you=
-r=0A=
->>>>>>> next boot triggers Linux to rebuild the BBT.=0A=
->>>>>>=0A=
->>>>>> I think U-Boot will do it automatically after the scrub. But the res=
-ult=0A=
->>>>>> is still the same.=0A=
->>>>>>    =0A=
->>>>>>>    =0A=
->>>>>>>> We could update our manufacturing procedures to run 'nand erase.ch=
-ip'=0A=
->>>>>>>> before the first boot but this feels wrong. Some of our devices bo=
-ot=0A=
->>>>>>>> over the network so the nand is not normally touched by the bootlo=
-ader.=0A=
->>>>>>>> It seems that there is some unhandled error condition that is stop=
-ping=0A=
->>>>>>>> the kernel from seeing that the chip is completely blank and makin=
-g=0A=
->>>>>>>> forward progress.=0A=
->>>>>>>>         =0A=
->>>>>>>=0A=
->>>>>>> erase chip won't fix your issue. The BBT scan is going to happen=0A=
->>>>>>> anyway. There is however clearly some parameter that is setup=0A=
->>>>>>> incorrectly that's causing it to wait for the timeout instead of be=
-ing=0A=
->>>>>>> able to quickly read pages. I don't see why that'd be unique to the=
-=0A=
->>>>>>> BBT scan however, I'd expect you to see the problem on all reads, t=
-hus=0A=
->>>>>>> slowing down the system noticeably in general.=0A=
->>>>>>>=0A=
->>>>>>> Your hint is likely these lines:=0A=
->>>>>>>          " marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x000=
-00080)=0A=
->>>>>>>            marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x000=
-00280)"=0A=
->>>>>>>=0A=
->>>>>>> You can go look at that in the driver and compare with the relevant=
-=0A=
->>>>>>> behavior in the datasheets. Sorry, but I can't help more specifical=
-ly,=0A=
->>>>>>> I'd have to know your particular hardware and datasheets and spend=
-=0A=
->>>>>>> some time looking at the code.=0A=
->>>>>>=0A=
->>>>>> I also reproduce the problem on my Armada 38x, the two timeouts at b=
-oot=0A=
->>>>>> time (not specifically the first one) are suspicious, I'm going to l=
-ook=0A=
->>>>>> into it.=0A=
->>>>>=0A=
->>>>> Thanks for leaping onto it. I'll keep investigating it here as well.=
-=0A=
->>>>>    =0A=
->>>>=0A=
->>>> When I add some debugging to marvell_nfc_wait_op I see=0A=
->>>>=0A=
->>>> marvell-nfc f10d0000.flash: timeout_ms =3D 250=0A=
->>>> marvell-nfc f10d0000.flash: done=0A=
->>>> marvell-nfc f10d0000.flash: timeout_ms =3D 1=0A=
->>>> marvell-nfc f10d0000.flash: done=0A=
->>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda=0A=
->>>> nand: Macronix MX30LF2G18AC=0A=
->>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64=
-=0A=
->>>> Bad block table not found for chip 0=0A=
->>>> Bad block table not found for chip 0=0A=
->>>> Scanning device for bad blocks=0A=
->>>> marvell-nfc f10d0000.flash: timeout_ms =3D 4=0A=
->>>> marvell-nfc f10d0000.flash: done=0A=
->>>> marvell-nfc f10d0000.flash: timeout_ms =3D 600000000=0A=
->>>>=0A=
->>>> That last line looks quite odd. I think the problem might be related t=
-o=0A=
->>>> this line from marvell_nfc_hw_ecc_bch_write_page()=0A=
->>>>=0A=
->>>>      ret =3D marvell_nfc_wait_op(chip,=0A=
->>>>                                chip->data_interface.timings.sdr.tPROG_=
-max);=0A=
->>>>=0A=
->>>> Based on the datasheet that number is 600 microseconds(us) not the=0A=
->>>> milliseconds expected by marvell_nfc_wait_op().=0A=
->>>>     =0A=
->>>=0A=
->>> So naturally throwing in some PSEC_TO_MSEC() calls stopped the really=
-=0A=
->>> long timeouts but then the probe would fail. It seems that I'm getting=
-=0A=
->>> some "page done" and "command done" interrupts indications (NDSR =3D=0A=
->>> 0x0000500) while attempting to write the oob data.=0A=
->>=0A=
->> My bad, I might have forgotten one of these. Can you send a patch or=0A=
->> show me which delay was wrong?=0A=
-> =0A=
-> Here's the local change I have applied. Assuming my MUA doesn't mess up=
-=0A=
-> the formatting. I'm not 100% sure this is correct. The older pxa driver=
-=0A=
-> seemed to have a fixed 200ms delay for these operations.=0A=
-> =0A=
-> --- 8< ---=0A=
-> Subject: [PATCH] mtd: rawnand: marvell: pass ms delay to wait_op=0A=
-> =0A=
-> marvell_nfc_wait_op() expects the delay to be expressed in milliseconds=
-=0A=
-> but nand_sdr_timings uses picoseconds. Use PSEC_TO_MSEC when passing=0A=
-> tPROG_max to marvell_nfc_wait_op().=0A=
-> =0A=
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
-> ---=0A=
->    drivers/mtd/nand/raw/marvell_nand.c | 4 ++--=0A=
->    1 file changed, 2 insertions(+), 2 deletions(-)=0A=
-> =0A=
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> b/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> index 1d779a35ac8e..e4b964fd40d8 100644=0A=
-> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> @@ -1074,7 +1074,7 @@ static int=0A=
-> marvell_nfc_hw_ecc_hmg_do_write_page(struct nand_chip *chip,=0A=
->    		return ret;=0A=
-> =0A=
->    	ret =3D marvell_nfc_wait_op(chip,=0A=
-> -				  chip->data_interface.timings.sdr.tPROG_max);=0A=
-> +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));=0A=
->    	return ret;=0A=
->    }=0A=
-> =0A=
-> @@ -1494,7 +1494,7 @@ static int=0A=
-> marvell_nfc_hw_ecc_bch_write_page(struct mtd_info *mtd,=0A=
->    	}=0A=
-> =0A=
->    	ret =3D marvell_nfc_wait_op(chip,=0A=
-> -				  chip->data_interface.timings.sdr.tPROG_max);=0A=
-> +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));=0A=
-> =0A=
->    	marvell_nfc_disable_hw_ecc(chip);=0A=
-> =0A=
-> --- 8< ---=0A=
-> =0A=
->>=0A=
->> Can you also add a dump_stack() in the error path of the timeout=0A=
->> (probably *wait_cmdd()) and show the full boot log?=0A=
->>=0A=
-> =0A=
-> It's actually *wait_op(). Here's the output with a small debug patch=0A=
-> applied on top of the delay changes above.=0A=
-> =0A=
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> b/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> index e4b964fd40d8..5af28c7f4487 100644=0A=
-> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> @@ -627,6 +627,8 @@ static int marvell_nfc_wait_op(struct nand_chip=0A=
-> *chip, unsigned int timeout_ms)=0A=
->           marvell_nfc_disable_int(nfc, NDCR_RDYM);=0A=
->           marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));=0A=
->           if (!ret) {=0A=
-> +               dev_info(nfc->dev, "NDSR %08x\n", readl(nfc->regs + NDSR)=
-);=0A=
-> +               dump_stack();=0A=
->                   dev_err(nfc->dev, "Timeout waiting for RB signal\n");=
-=0A=
->                   return -ETIMEDOUT;=0A=
->           }=0A=
-> marvell-nfc f10d0000.flash: NDSR 00000500=0A=
-> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.17.0-rc2-at1+ #3=0A=
-> Hardware name: Marvell Armada 380/385 (Device Tree)=0A=
-> [<80110f40>] (unwind_backtrace) from [<8010c350>] (show_stack+0x10/0x14)=
-=0A=
-> [<8010c350>] (show_stack) from [<805c1274>] (dump_stack+0x88/0x9c)=0A=
-> [<805c1274>] (dump_stack) from [<803fdefc>] (marvell_nfc_wait_op+0xb0/0xc=
-8)=0A=
-> [<803fdefc>] (marvell_nfc_wait_op) from [<803fe4e0>]=0A=
-> (marvell_nfc_hw_ecc_bch_write_page+0x264/0x2d8)=0A=
-> [<803fe4e0>] (marvell_nfc_hw_ecc_bch_write_page) from [<803f6c64>]=0A=
-> (nand_do_write_ops+0x328/0x438)=0A=
-> [<803f6c64>] (nand_do_write_ops) from [<803f6dc8>]=0A=
-> (nand_write_oob+0x54/0x84)=0A=
-> [<803f6dc8>] (nand_write_oob) from [<803fa7a8>] (write_bbt+0x31c/0x720)=
-=0A=
-> [<803fa7a8>] (write_bbt) from [<803fb364>] (nand_default_bbt+0x314/0x6fc)=
-=0A=
-> [<803fb364>] (nand_default_bbt) from [<803f5a84>]=0A=
-> (nand_scan_tail+0xa98/0xaf0)=0A=
-> [<803f5a84>] (nand_scan_tail) from [<803fed68>]=0A=
-> (marvell_nand_chip_init+0x6b8/0x8ec)=0A=
-> [<803fed68>] (marvell_nand_chip_init) from [<803ff2dc>]=0A=
-> (marvell_nfc_probe+0x340/0x38c)=0A=
-> [<803ff2dc>] (marvell_nfc_probe) from [<803bfdc8>]=0A=
-> (platform_drv_probe+0x34/0x70)=0A=
-> [<803bfdc8>] (platform_drv_probe) from [<803be724>]=0A=
-> (really_probe+0x230/0x2c8)=0A=
-> [<803be724>] (really_probe) from [<803be868>] (__driver_attach+0xac/0xbc)=
-=0A=
-> [<803be868>] (__driver_attach) from [<803bcaa4>]=0A=
-> (bus_for_each_dev+0x68/0xb4)=0A=
-> [<803bcaa4>] (bus_for_each_dev) from [<803bdcec>]=0A=
-> (bus_add_driver+0x198/0x210)=0A=
-> [<803bdcec>] (bus_add_driver) from [<803bef78>] (driver_register+0x78/0xf=
-8)=0A=
-> [<803bef78>] (driver_register) from [<80102ca4>]=0A=
-> (do_one_initcall+0x50/0x19c)=0A=
-> [<80102ca4>] (do_one_initcall) from [<80800e3c>]=0A=
-> (kernel_init_freeable+0x144/0x1e8)=0A=
-> [<80800e3c>] (kernel_init_freeable) from [<805d5300>]=0A=
-> (kernel_init+0x8/0x110)=0A=
-> [<805d5300>] (kernel_init) from [<801010e8>] (ret_from_fork+0x14/0x2c)=0A=
-> Exception stack(0xbc037fb0 to 0xbc037ff8)=0A=
-> 7fa0:                                     00000000 00000000 00000000=0A=
-> 00000000=0A=
-> 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000=0A=
-> 00000000=0A=
-> 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000=0A=
-> marvell-nfc f10d0000.flash: Timeout waiting for RB signal=0A=
-> nand_bbt: error while writing BBT block -110=0A=
-> =0A=
->>>=0A=
->>> I've also re-done some of my initial tests and it seems that 4.17-rc2=
-=0A=
->>> cannot mount this chip. The 4.16.4 kernel can.=0A=
->>>=0A=
->>> Even if I use the old kernel to create the ubi volumes the new kernel=
-=0A=
->>> seems to hang while mounting in a similar place to what I was seeing=0A=
->>> with the BBT creation.=0A=
-=0A=
-I've now got access to 2 other systems so I now have to 3 different =0A=
-configurations all using the Armada-385 SoC. Here's a quick breakdown of =
-=0A=
-the systems=0A=
-=0A=
-Board               NAND Chip                 Size/Erase/Page/OOB=0A=
------               ---------                 -----------------------=0A=
-db-88f6820-amc [1]  Micron MT29F8G08ABACAWP   1024 MiB/256 KiB/4096/224=0A=
-x530 #1 [2]         Macronix MX30LF2G18AC     256 MiB/128 KiB/2048/64=0A=
-x530 #2             Micron MT29F2G08ABAEAWP   256 MiB/128 KiB/2048/64=0A=
-=0A=
-[1] - Reference board from Marvell=0A=
-[2] - Our custom design=0A=
-=0A=
-The db-88f6820-amc seems to be the best behaved if I configure =0A=
-nand-ecc-strength =3D <4> and nand-ecc-step-size =3D <512>. I can detect th=
-e =0A=
-chip, create a ubi volume and mount it. Files even stick around :).=0A=
-=0A=
-The one problem it does have in this configuration is the familiar =0A=
-"nand: WARNING: pxa3xx_nand-0: the ECC used on your system is too weak =0A=
-compared to the one required by the NAND chip". From what I read in the =0A=
-Marvell datasheet even though the chip requires 8-bits of ECC per 540 =0A=
-bytes of data the 16-bits per 2048 bytes of data implemented by the =0A=
-controller should satisfy this.=0A=
-=0A=
-If I set marvell,nand-keep-config or nand-ecc-strength =3D <8>. I get ECC =
-=0A=
-errors reported (probably due to the change in configuraiton) and =0A=
-ultimately the mount fails "mount: mounting ubi0:user on /flash failed: =0A=
-Invalid argument" I haven't really dug into where that's coming from.=0A=
-=0A=
-Both the x530 boards with the smaller chips fail in similar ways with =0A=
-4.17-rc2. Namely they either hang at mount time or if I've killed the =0A=
-BBT they hang at startup.=0A=
-=0A=
-The smaller page sizes are probably the main difference between the =0A=
-custom boards and the reference board. That's possibly the source of the =
-=0A=
-PAGED interrupts, but then the old driver didn't explicitly do anything =0A=
-to handle these.=0A=
-=0A=
-All 3 systems seem fine running 4.16.4 with the pxa3xx_nand driver.=0A=
+On Fri, 27 Apr 2018 04:30:55 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+
+> Hi,
+> 
+> On 27/04/18 10:43, Chris Packham wrote:
+> > Hi Miquel,
+> > 
+> > On 26/04/18 19:03, Miquel Raynal wrote:  
+> >> Hi Chris,
+> >>
+> >> On Thu, 26 Apr 2018 05:16:57 +0000, Chris Packham
+> >> <Chris.Packham@alliedtelesis.co.nz> wrote:
+> >>  
+> >>> An update for the end of my working day.
+> >>>
+> >>> On 26/04/18 13:40, Chris Packham wrote:  
+> >>>> On 26/04/18 09:22, Chris Packham wrote:  
+> >>>>> Hi Miquel,
+> >>>>>
+> >>>>> On 25/04/18 04:08, Miquel Raynal wrote:  
+> >>>>>> Hi Steve, Chris,
+> >>>>>>
+> >>>>>> On Tue, 24 Apr 2018 08:49:47 -0700, Steve deRosier <derosier@gmail.com>
+> >>>>>> wrote:
+> >>>>>>      
+> >>>>>>> Hi Chris,
+> >>>>>>>
+> >>>>>>> On Mon, Apr 23, 2018 at 10:31 PM, Chris Packham
+> >>>>>>> <Chris.Packham@alliedtelesis.co.nz> wrote:  
+> >>>>>>>> Hi,
+> >>>>>>>>
+> >>>>>>>> We're in the process of qualifying new NAND chips (Macronix
+> >>>>>>>> MX30LF2G18AC) for one of our Armada-385 based devices and we're
+> >>>>>>>> experiencing some long startup times on units with factory fresh NAND
+> >>>>>>>> chips. Anecdotally I think I've also seen this behaviour on the old
+> >>>>>>>> chips as well (Micron MT29F2G08ABAEAWP-ITX:E).
+> >>>>>>>>
+> >>>>>>>> On 4.17.0-rc2 with the newly re-written NAND infrastructure we see
+> >>>>>>>>
+> >>>>>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda
+> >>>>>>>> nand: Macronix MX30LF2G18AC
+> >>>>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> >>>>>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)
+> >>>>>>>> marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)
+> >>>>>>>> Bad block table not found for chip 0
+> >>>>>>>> Bad block table not found for chip 0
+> >>>>>>>> Scanning device for bad blocks
+> >>>>>>>>
+> >>>>>>>> (nothing for some time)
+> >>>>>>>>
+> >>>>>>>> On an older kernel we see
+> >>>>>>>>
+> >>>>>>>> pxa3xx-nand f10d0000.flash: This platform can't do DMA on this device
+> >>>>>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda
+> >>>>>>>> nand: Macronix MX30LF2G18AC
+> >>>>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> >>>>>>>> pxa3xx-nand f10d0000.flash: ECC strength 16, ECC step size 2048
+> >>>>>>>> Bad block table not found for chip 0
+> >>>>>>>> Bad block table not found for chip 0
+> >>>>>>>> Scanning device for bad blocks
+> >>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!
+> >>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!
+> >>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!
+> >>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!
+> >>>>>>>> pxa3xx-nand f10d0000.flash: Wait time out!!!
+> >>>>>>>> ...
+> >>>>>>>> (time outs continue for some time)
+> >>>>>>>>
+> >>>>>>>> Presumably the new driver in 4.17.0-rc2 is experiencing the same wait
+> >>>>>>>> time out but just not complaining about it.
+> >>>>>>>>
+> >>>>>>>> If we leave the system running long enough (in the order of 30 minutes)
+> >>>>>>>> things seem to sort themselves out and bootup continues, the subsequent
+> >>>>>>>> boots are fine. If we run 'nand erase.chip' from u-boot on a fresh unit
+> >>>>>>>> and then boot into the kernel then things are also fine.
+> >>>>>>>>
+> >>>>>>>> If we run 'nand scrub.chip -y' from u-boot we are able to re-create the
+> >>>>>>>> problem.
+> >>>>>>>>
+> >>>>>>>> Our suspicion is that erased state of the chip is probably not agreeable
+> >>>>>>>> with either the ecc data or the bad block table location (or both). By
+> >>>>>>>> erasing it from u-boot this must fill in valid data in the expected
+> >>>>>>>> places and the kernel is happy.
+> >>>>>>>>           
+> >>>>>>>
+> >>>>>>> During your very first boot, Linux can't find the bad-block table and
+> >>>>>>> thus does a full scan of the chip, each and every block, to find the
+> >>>>>>> manufacturer bad block marks and then constructs the table. I imagine
+> >>>>>>> you've got a parameter incorrect somewhere that's causing it to wait
+> >>>>>>> for timeouts at read points, instead of quickly able to read through
+> >>>>>>> the 2k or 4k blocks on that flash.  On subsequent boots, you don't see
+> >>>>>>> this issue because the BBT is found and Linux just uses that. Same
+> >>>>>>> deal if you do a `nand erase.chip`, because the BBT is itself marked
+> >>>>>>> with a bad-block marker and gets skipped during a normal erase.  
+> >>>>>>
+> >>>>>> I share Steve's thoughts on that, there is probably some
+> >>>>>> misconfiguration at some point, having a first long boot is not a
+> >>>>>> problem, but 30 minutes for a 256MiB chip... What I don't understand is
+> >>>>>> that you should have timeouts with the recent kernel too if there is
+> >>>>>> actually something wrong happening.  
+> >>>>>
+> >>>>> As I mentioned in my other reply I may have understated the time. It is
+> >>>>> ~30mins with the old pxa3xx driver but the new one seems to block
+> >>>>> indefinitely for me.
+> >>>>>      
+> >>>>>>>
+> >>>>>>> Now, I don't know if you're aware of this, but by doing the `nand
+> >>>>>>> scub.chip -y`, you've ruined the flash chip.  That device can not be
+> >>>>>>> relied upon anymore. A scrub will ignore the factory bad-block-marks
+> >>>>>>> and erase them. Unless you stored this information off-chip and
+> >>>>>>> rewrite the markers, you've now lost the bad-block information from
+> >>>>>>> the manufacturer's tests.  In any case, this erases the BBT, so your
+> >>>>>>> next boot triggers Linux to rebuild the BBT.  
+> >>>>>>
+> >>>>>> I think U-Boot will do it automatically after the scrub. But the result
+> >>>>>> is still the same.
+> >>>>>>      
+> >>>>>>>      
+> >>>>>>>> We could update our manufacturing procedures to run 'nand erase.chip'
+> >>>>>>>> before the first boot but this feels wrong. Some of our devices boot
+> >>>>>>>> over the network so the nand is not normally touched by the bootloader.
+> >>>>>>>> It seems that there is some unhandled error condition that is stopping
+> >>>>>>>> the kernel from seeing that the chip is completely blank and making
+> >>>>>>>> forward progress.
+> >>>>>>>>           
+> >>>>>>>
+> >>>>>>> erase chip won't fix your issue. The BBT scan is going to happen
+> >>>>>>> anyway. There is however clearly some parameter that is setup
+> >>>>>>> incorrectly that's causing it to wait for the timeout instead of being
+> >>>>>>> able to quickly read pages. I don't see why that'd be unique to the
+> >>>>>>> BBT scan however, I'd expect you to see the problem on all reads, thus
+> >>>>>>> slowing down the system noticeably in general.
+> >>>>>>>
+> >>>>>>> Your hint is likely these lines:
+> >>>>>>>          " marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000080)
+> >>>>>>>            marvell-nfc f10d0000.flash: Timeout on CMDD (NDSR: 0x00000280)"
+> >>>>>>>
+> >>>>>>> You can go look at that in the driver and compare with the relevant
+> >>>>>>> behavior in the datasheets. Sorry, but I can't help more specifically,
+> >>>>>>> I'd have to know your particular hardware and datasheets and spend
+> >>>>>>> some time looking at the code.  
+> >>>>>>
+> >>>>>> I also reproduce the problem on my Armada 38x, the two timeouts at boot
+> >>>>>> time (not specifically the first one) are suspicious, I'm going to look
+> >>>>>> into it.  
+> >>>>>
+> >>>>> Thanks for leaping onto it. I'll keep investigating it here as well.
+> >>>>>      
+> >>>>
+> >>>> When I add some debugging to marvell_nfc_wait_op I see
+> >>>>
+> >>>> marvell-nfc f10d0000.flash: timeout_ms = 250
+> >>>> marvell-nfc f10d0000.flash: done
+> >>>> marvell-nfc f10d0000.flash: timeout_ms = 1
+> >>>> marvell-nfc f10d0000.flash: done
+> >>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda
+> >>>> nand: Macronix MX30LF2G18AC
+> >>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> >>>> Bad block table not found for chip 0
+> >>>> Bad block table not found for chip 0
+> >>>> Scanning device for bad blocks
+> >>>> marvell-nfc f10d0000.flash: timeout_ms = 4
+> >>>> marvell-nfc f10d0000.flash: done
+> >>>> marvell-nfc f10d0000.flash: timeout_ms = 600000000
+> >>>>
+> >>>> That last line looks quite odd. I think the problem might be related to
+> >>>> this line from marvell_nfc_hw_ecc_bch_write_page()
+> >>>>
+> >>>>      ret = marvell_nfc_wait_op(chip,
+> >>>>                                chip->data_interface.timings.sdr.tPROG_max);
+> >>>>
+> >>>> Based on the datasheet that number is 600 microseconds(us) not the
+> >>>> milliseconds expected by marvell_nfc_wait_op().
+> >>>>       
+> >>>
+> >>> So naturally throwing in some PSEC_TO_MSEC() calls stopped the really
+> >>> long timeouts but then the probe would fail. It seems that I'm getting
+> >>> some "page done" and "command done" interrupts indications (NDSR =
+> >>> 0x0000500) while attempting to write the oob data.  
+> >>
+> >> My bad, I might have forgotten one of these. Can you send a patch or
+> >> show me which delay was wrong?  
+> > 
+> > Here's the local change I have applied. Assuming my MUA doesn't mess up
+> > the formatting. I'm not 100% sure this is correct. The older pxa driver
+> > seemed to have a fixed 200ms delay for these operations.
+> > 
+> > --- 8< ---
+> > Subject: [PATCH] mtd: rawnand: marvell: pass ms delay to wait_op
+> > 
+> > marvell_nfc_wait_op() expects the delay to be expressed in milliseconds
+> > but nand_sdr_timings uses picoseconds. Use PSEC_TO_MSEC when passing
+> > tPROG_max to marvell_nfc_wait_op().
+> > 
+> > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > ---
+> >    drivers/mtd/nand/raw/marvell_nand.c | 4 ++--
+> >    1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/marvell_nand.c
+> > b/drivers/mtd/nand/raw/marvell_nand.c
+> > index 1d779a35ac8e..e4b964fd40d8 100644
+> > --- a/drivers/mtd/nand/raw/marvell_nand.c
+> > +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> > @@ -1074,7 +1074,7 @@ static int
+> > marvell_nfc_hw_ecc_hmg_do_write_page(struct nand_chip *chip,
+> >    		return ret;
+> > 
+> >    	ret = marvell_nfc_wait_op(chip,
+> > -				  chip->data_interface.timings.sdr.tPROG_max);
+> > +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
+> >    	return ret;
+> >    }
+> > 
+> > @@ -1494,7 +1494,7 @@ static int
+> > marvell_nfc_hw_ecc_bch_write_page(struct mtd_info *mtd,
+> >    	}
+> > 
+> >    	ret = marvell_nfc_wait_op(chip,
+> > -				  chip->data_interface.timings.sdr.tPROG_max);
+> > +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
+> > 
+> >    	marvell_nfc_disable_hw_ecc(chip);
+> > 
+> > --- 8< ---
+> >   
+> >>
+> >> Can you also add a dump_stack() in the error path of the timeout
+> >> (probably *wait_cmdd()) and show the full boot log?
+> >>  
+> > 
+> > It's actually *wait_op(). Here's the output with a small debug patch
+> > applied on top of the delay changes above.
+> > 
+> > diff --git a/drivers/mtd/nand/raw/marvell_nand.c
+> > b/drivers/mtd/nand/raw/marvell_nand.c
+> > index e4b964fd40d8..5af28c7f4487 100644
+> > --- a/drivers/mtd/nand/raw/marvell_nand.c
+> > +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> > @@ -627,6 +627,8 @@ static int marvell_nfc_wait_op(struct nand_chip
+> > *chip, unsigned int timeout_ms)
+> >           marvell_nfc_disable_int(nfc, NDCR_RDYM);
+> >           marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
+> >           if (!ret) {
+> > +               dev_info(nfc->dev, "NDSR %08x\n", readl(nfc->regs + NDSR));
+> > +               dump_stack();
+> >                   dev_err(nfc->dev, "Timeout waiting for RB signal\n");
+> >                   return -ETIMEDOUT;
+> >           }
+> > marvell-nfc f10d0000.flash: NDSR 00000500
+> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.17.0-rc2-at1+ #3
+> > Hardware name: Marvell Armada 380/385 (Device Tree)
+> > [<80110f40>] (unwind_backtrace) from [<8010c350>] (show_stack+0x10/0x14)
+> > [<8010c350>] (show_stack) from [<805c1274>] (dump_stack+0x88/0x9c)
+> > [<805c1274>] (dump_stack) from [<803fdefc>] (marvell_nfc_wait_op+0xb0/0xc8)
+> > [<803fdefc>] (marvell_nfc_wait_op) from [<803fe4e0>]
+> > (marvell_nfc_hw_ecc_bch_write_page+0x264/0x2d8)
+> > [<803fe4e0>] (marvell_nfc_hw_ecc_bch_write_page) from [<803f6c64>]
+> > (nand_do_write_ops+0x328/0x438)
+> > [<803f6c64>] (nand_do_write_ops) from [<803f6dc8>]
+> > (nand_write_oob+0x54/0x84)
+> > [<803f6dc8>] (nand_write_oob) from [<803fa7a8>] (write_bbt+0x31c/0x720)
+> > [<803fa7a8>] (write_bbt) from [<803fb364>] (nand_default_bbt+0x314/0x6fc)
+> > [<803fb364>] (nand_default_bbt) from [<803f5a84>]
+> > (nand_scan_tail+0xa98/0xaf0)
+> > [<803f5a84>] (nand_scan_tail) from [<803fed68>]
+> > (marvell_nand_chip_init+0x6b8/0x8ec)
+> > [<803fed68>] (marvell_nand_chip_init) from [<803ff2dc>]
+> > (marvell_nfc_probe+0x340/0x38c)
+> > [<803ff2dc>] (marvell_nfc_probe) from [<803bfdc8>]
+> > (platform_drv_probe+0x34/0x70)
+> > [<803bfdc8>] (platform_drv_probe) from [<803be724>]
+> > (really_probe+0x230/0x2c8)
+> > [<803be724>] (really_probe) from [<803be868>] (__driver_attach+0xac/0xbc)
+> > [<803be868>] (__driver_attach) from [<803bcaa4>]
+> > (bus_for_each_dev+0x68/0xb4)
+> > [<803bcaa4>] (bus_for_each_dev) from [<803bdcec>]
+> > (bus_add_driver+0x198/0x210)
+> > [<803bdcec>] (bus_add_driver) from [<803bef78>] (driver_register+0x78/0xf8)
+> > [<803bef78>] (driver_register) from [<80102ca4>]
+> > (do_one_initcall+0x50/0x19c)
+> > [<80102ca4>] (do_one_initcall) from [<80800e3c>]
+> > (kernel_init_freeable+0x144/0x1e8)
+> > [<80800e3c>] (kernel_init_freeable) from [<805d5300>]
+> > (kernel_init+0x8/0x110)
+> > [<805d5300>] (kernel_init) from [<801010e8>] (ret_from_fork+0x14/0x2c)
+> > Exception stack(0xbc037fb0 to 0xbc037ff8)
+> > 7fa0:                                     00000000 00000000 00000000
+> > 00000000
+> > 7fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+> > 00000000
+> > 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+> > marvell-nfc f10d0000.flash: Timeout waiting for RB signal
+> > nand_bbt: error while writing BBT block -110
+> >   
+> >>>
+> >>> I've also re-done some of my initial tests and it seems that 4.17-rc2
+> >>> cannot mount this chip. The 4.16.4 kernel can.
+> >>>
+> >>> Even if I use the old kernel to create the ubi volumes the new kernel
+> >>> seems to hang while mounting in a similar place to what I was seeing
+> >>> with the BBT creation.  
+> 
+> I've now got access to 2 other systems so I now have to 3 different 
+> configurations all using the Armada-385 SoC. Here's a quick breakdown of 
+> the systems
+> 
+> Board               NAND Chip                 Size/Erase/Page/OOB
+> -----               ---------                 -----------------------
+> db-88f6820-amc [1]  Micron MT29F8G08ABACAWP   1024 MiB/256 KiB/4096/224
+> x530 #1 [2]         Macronix MX30LF2G18AC     256 MiB/128 KiB/2048/64
+> x530 #2             Micron MT29F2G08ABAEAWP   256 MiB/128 KiB/2048/64
+> 
+> [1] - Reference board from Marvell
+> [2] - Our custom design
+> 
+> The db-88f6820-amc seems to be the best behaved if I configure 
+> nand-ecc-strength = <4> and nand-ecc-step-size = <512>. I can detect the 
+> chip, create a ubi volume and mount it. Files even stick around :).
+> 
+> The one problem it does have in this configuration is the familiar 
+> "nand: WARNING: pxa3xx_nand-0: the ECC used on your system is too weak 
+> compared to the one required by the NAND chip". From what I read in the 
+> Marvell datasheet even though the chip requires 8-bits of ECC per 540 
+> bytes of data the 16-bits per 2048 bytes of data implemented by the 
+> controller should satisfy this.
+
+No, it's not true. Well, it will work for some time, and then fail when
+too many erase cycles have been done on a block. You should always try
+to at least meet the chip requirements. Anyway, that's not really the
+issue here.
+
+> 
+> If I set marvell,nand-keep-config or nand-ecc-strength = <8>. I get ECC 
+> errors reported (probably due to the change in configuraiton) and 
+> ultimately the mount fails "mount: mounting ubi0:user on /flash failed: 
+> Invalid argument" I haven't really dug into where that's coming from.
+
+For the ECC change, that's not surprising, since u-boot probably writes
+things in the 4bit/512 config.
+
+> 
+> Both the x530 boards with the smaller chips fail in similar ways with 
+> 4.17-rc2. Namely they either hang at mount time or if I've killed the 
+> BBT they hang at startup.
+> 
+> The smaller page sizes are probably the main difference between the 
+> custom boards and the reference board. That's possibly the source of the 
+> PAGED interrupts, but then the old driver didn't explicitly do anything 
+> to handle these.
+
+Interesting. I guess the main difference with 2k pages is that write
+operations are one in a single controller operation while with other
+layout you have to do more that one.
+
+> 
+> All 3 systems seem fine running 4.16.4 with the pxa3xx_nand driver.
+
+Oh, I thought you were testing 4.16 with the new driver. So finding the
+regression might not be that simple here.
