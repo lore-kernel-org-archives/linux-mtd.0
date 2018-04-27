@@ -1,18 +1,23 @@
-Received: from mail.intenta.de ([178.249.25.132])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fC0ek-0006j8-1b
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 10:31:16 +0000
-Date: Fri, 27 Apr 2018 12:30:56 +0200
-From: Helmut Grohne <h.grohne@intenta.de>
-To: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
-CC: Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 3/3] jffs2: put directories f->sem on a separate lockdep class
-Message-ID: <d36fa783db66ec430565a065245ebcacfea39e13.1524823321.git.h.grohne@intenta.de>
-References: <cover.1524823321.git.h.grohne@intenta.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fC2C8-0002gx-Vl
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 12:09:47 +0000
+Date: Fri, 27 Apr 2018 14:09:15 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Sam Lefebvre <sam.lefebvre@saleconix.be>
+Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
+ Dries Staelens <dries.staelens@barco.com>, Richard Weinberger
+ <richard@nod.at>, Han Xu <han.xu@nxp.com>, sam.lefebvre@essensium.com
+Subject: Re: optimizing the nand read performance by reducing interrupts
+ from 4 to 1
+Message-ID: <20180427140916.459f76ab@bbrezillon>
+In-Reply-To: <9ab9b851-a8bf-f783-b5e9-998950b47900@essensium.com>
+References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
+ <20180426182843.02f60425@bbrezillon>
+ <9ab9b851-a8bf-f783-b5e9-998950b47900@essensium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1524823321.git.h.grohne@intenta.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,111 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We get a lockdep warning if we read a directory (e.g. ls) and fault a page on a
-regular file:
+Hi Sam,
 
-[  181.206207] mmaptest/392 is trying to acquire lock:
-[  181.211066]  (&f->sem){+.+.}, at: [<c01ff7d8>] jffs2_readpage+0x30/0x5c
-[  181.217663]
-[  181.217663] but task is already holding lock:
-[  181.223477]  (&mm->mmap_sem){++++}, at: [<c04928e8>] do_page_fault+0xa8/0x454
-[  181.230596]
-[  181.230596] which lock already depends on the new lock.
-[  181.230596]
-[  181.238755]
-[  181.238755] the existing dependency chain (in reverse order) is:
-[  181.246219]
-[  181.246219] -> #1 (&mm->mmap_sem){++++}:
-[  181.251614]        __might_fault+0x90/0xc0
-[  181.255694]        filldir+0xa4/0x1f4
-[  181.259334]        jffs2_readdir+0xd8/0x1d4
-[  181.263499]        iterate_dir+0x78/0x128
-[  181.267490]        SyS_getdents+0x8c/0x12c
-[  181.271576]        ret_fast_syscall+0x0/0x28
-[  181.275818]
-[  181.275818] -> #0 (&f->sem){+.+.}:
-[  181.280690]        lock_acquire+0xfc/0x2b0
-[  181.284763]        __mutex_lock+0x8c/0xb0c
-[  181.288842]        mutex_lock_nested+0x2c/0x34
-[  181.293272]        jffs2_readpage+0x30/0x5c
-[  181.297438]        filemap_fault+0x600/0x73c
-[  181.301690]        __do_fault+0x28/0xb8
-[  181.305510]        handle_mm_fault+0x854/0xec0
-[  181.309937]        do_page_fault+0x384/0x454
-[  181.314188]        do_DataAbort+0x4c/0xc8
-[  181.318181]        __dabt_usr+0x44/0x60
-[  181.321999]        0xb6dffb02
+On Fri, 27 Apr 2018 12:27:49 +0200
+Sam Lefebvre <sam.lefebvre@saleconix.be> wrote:
 
-Like with inode->i_rwsem, we recognize that this can never result in a dead
-lock, because we cannot page fault directory inodes and we cannot call getdents
-on non-directories. Thus we need different lockdep classes depending on the
-mode. This mirrors what lockdep_annotate_inode_mutex_key does to inodes.
+> > Are there any changes in this version? I don't see a changelog and the
+> > version number has not been incremented.  
+> 
+> Until now we did not used version numbers. Because of time limitation
+> patches have been reordered and limited in such way that:
+> 
+> Patches 1-9 will be probably accepted.
+> Patches 10-13 is a solution for nand read performance improvement,
+> may be possibly not accepted upstream but can be useful for somebody
+> who want to use it in the future.
 
-Link: https://www.spinics.net/lists/linux-rt-users/msg07644.html
-Signed-off-by: Helmut Grohne <h.grohne@intenta.de>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- fs/jffs2/fs.c    | 12 ++++++++++++
- fs/jffs2/super.c |  3 +++
- 2 files changed, 15 insertions(+)
+How does that prevent you from adding a version number to the patch
+series? It's as easy as passing "-vX" to your git format-patch command
+(where X is the version number of the patch series), and it helps
+maintainers keeping track of various versions of the patchset.
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index 89a10b398d00..1717c464a21a 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -26,6 +26,8 @@
- #include <linux/crc32.h>
- #include "nodelist.h"
- 
-+static struct lock_class_key jffs2_inode_info_sem_dir_key;
-+
- static int jffs2_flash_setup(struct jffs2_sb_info *c);
- 
- int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
-@@ -277,6 +279,11 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
- 
- 	inode->i_mode = jemode_to_cpu(latest_node.mode);
- 
-+	/* Mirror lock class of inode->i_rwsem, see
-+	 * lockdep_annotate_inode_mutex_key.
-+	 */
-+	if (S_ISDIR(inode->i_mode))
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_dir_key);
- 	mutex_lock(&f->sem);
- 
- 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
-@@ -439,6 +446,11 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
- 
- 	f = JFFS2_INODE_INFO(inode);
- 	jffs2_init_inode_info(f);
-+	/* Mirror lock class of inode->i_rwsem, see
-+	 * lockdep_annotate_inode_mutex_key.
-+	 */
-+	if (S_ISDIR(mode))
-+		lockdep_set_class(&f->sem, &jffs2_inode_info_sem_dir_key);
- 	mutex_lock(&f->sem);
- 
- 	memset(ri, 0, sizeof(*ri));
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 87bdf0f4cba1..f338a4f4bec5 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -30,6 +30,8 @@
- #include "compr.h"
- #include "nodelist.h"
- 
-+static struct lock_class_key jffs2_inode_info_sem_key;
-+
- static void jffs2_put_super(struct super_block *);
- 
- static struct kmem_cache *jffs2_inode_cachep;
-@@ -60,6 +62,7 @@ static void jffs2_i_init_once(void *foo)
- 	struct jffs2_inode_info *f = foo;
- 
- 	mutex_init(&f->sem);
-+	lockdep_set_class(&f->sem, &jffs2_inode_info_sem_key);
- 	inode_init_once(&f->vfs_inode);
- }
- 
--- 
-2.11.0
+> 
+> > Also, I nacked this patch in my previous review, so I'm not going to
+> > accept it now, unless you have strong arguments to convince me.  
+> 
+> I will remember that these patches are based on your mail of march 5,
+> 2018 where you suggested to reduce the number of interrupts in the
+> current implementation.
+
+I certainly never told you to implement ->cmdfunc(). Just quoting my
+answer to your private email for the record:
+
+"
+Before you even consider these options I'd recommend reworking the
+gpmi_ecc_read_page() function to avoid splitting things in 2 distinct
+calls:
+
+1/ nand_read_page_op()
+2/ gpmi_ecc_read_page_data()
+
+#1 is responsible for 2 DMA interrupts (READ0+ADDR and READ_START PIO
+xfers), and #2 is responsible for the last DMA interrupt (READ_DATA PIO
+xfer) + the BCH interrupt. I think you could turn this into a single
+interrupt by chaining the READ0+ADDR+READ_START+WAITREADY+DATA_IN
+instructions, wait for DMA completion and then poll the BCH status
+instead of using interrupts (assuming BCH calculation does not take too
+long).
+"
+
+Don't know where you see any mention of cmdfunc() in there, and I
+actually suggested what I'm suggesting today, that is, implementing the
+optimization in gpmi_ecc_read_page().
+
+> Due to budgetary constraints, today is the
+> last day we are able to work on it in terms of this project.
+
+That won't convince me, quite the opposite actually. If the goal is to
+send the current status so that other people can take over this work,
+then that's fine, but don't expect me to accept the patches as-is.
+
+> 
+> Some measurements showed:
+> Reduction of 10% boot time on quad core.
+> Reduction of 3% boot time on dual lite.
+
+That's a nice improvement, indeed, but still not a good reason to take
+the patches, especially since I proposed 2 alternatives, "->exec_op()"
+or "gpmi_ecc_read_page() optim", and I'm almost sure the 2nd one is
+even less invasive than re-implementing your own cmdfunc().
+
+Regards,
+
+Boris
