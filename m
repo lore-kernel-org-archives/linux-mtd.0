@@ -1,26 +1,18 @@
-Received: from mail-wr0-x22e.google.com ([2a00:1450:400c:c0c::22e])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fC0c7-0004Tf-Kd
- for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 10:28:43 +0000
-Received: by mail-wr0-x22e.google.com with SMTP id v60-v6so1263464wrc.7
- for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2018 03:28:15 -0700 (PDT)
-From: Sam Lefebvre <sam.lefebvre@saleconix.be>
-Subject: Re: optimizing the nand read performance by reducing interrupts from
- 4 to 1
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
- Dries Staelens <dries.staelens@barco.com>,
- Richard Weinberger <richard@nod.at>, Han Xu <han.xu@nxp.com>,
- sam.lefebvre@essensium.com
-References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
- <20180426182843.02f60425@bbrezillon>
-Message-ID: <9ab9b851-a8bf-f783-b5e9-998950b47900@essensium.com>
-Date: Fri, 27 Apr 2018 12:27:49 +0200
+Received: from mail.intenta.de ([178.249.25.132])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fC0ed-00054D-FU
+ for linux-mtd@lists.infradead.org; Fri, 27 Apr 2018 10:31:04 +0000
+Date: Fri, 27 Apr 2018 12:30:44 +0200
+From: Helmut Grohne <h.grohne@intenta.de>
+To: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+CC: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 2/3] jffs2: jffs2_iget defer f->sem acquisition
+Message-ID: <95327ddd01e86d0160c2d678f4306a737cb6a085.1524823321.git.h.grohne@intenta.de>
+References: <cover.1524823321.git.h.grohne@intenta.de>
 MIME-Version: 1.0
-In-Reply-To: <20180426182843.02f60425@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <cover.1524823321.git.h.grohne@intenta.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
+At the point where f->sem is taken, we know that we have a locked I_NEW
+inode. Since jffs2_iget is the only function processing I_NEW inodes and
+iget_locked blocks on I_NEW inodes, we know that we are the only user of
+the inode until we unlock_new_inode it. Since 7aaea7605c0 ("jffs2: fix
+unbalanced locking"), jffs2_do_read_inode no longer touches f->sem and
+does not make the inode visible to others either. Thus we can call it
+without f->sem acquired. Nextup, inode->i_mode is protected until
+unlock_new_inode.
 
-On 26/04/18 18:28, Boris Brezillon wrote:
+After deferring the locking, we can decide upon the proper lock class
+depending on inode->i_mode.
 
-> Hi Sam,
->
-> On Thu, 26 Apr 2018 17:41:21 +0200
-> Sam Lefebvre <sam.lefebvre@essensium.com> wrote:
->
-> Are there any changes in this version? I don't see a changelog and the
-> version number has not been incremented.
+Signed-off-by: Helmut Grohne <h.grohne@intenta.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+ fs/jffs2/fs.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Until now we did not used version numbers. Because of time limitation
-patches have been reordered and limited in such way that:
-
-Patches 1-9 will be probably accepted.
-Patches 10-13 is a solution for nand read performance improvement,
-may be possibly not accepted upstream but can be useful for somebody
-who want to use it in the future.
-
-> Also, I nacked this patch in my previous review, so I'm not going to
-> accept it now, unless you have strong arguments to convince me.
-
-I will remember that these patches are based on your mail of march 5,
-2018 where you suggested to reduce the number of interrupts in the
-current implementation. Due to budgetary constraints, today is the
-last day we are able to work on it in terms of this project.
-
-Some measurements showed:
-Reduction of 10% boot time on quad core.
-Reduction of 3% boot time on dual lite.
-
->
-> One last thing, can you Cc the relevant maintainers next time (you can
-> use scripts/get_maintainers.pl to get the list).
-
-Ok, I will check that.
-
-Best regards,
-Sam
-
-> Regards,
->
-> Boris
->
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index eab04eca95a3..89a10b398d00 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -270,13 +270,15 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 	c = JFFS2_SB_INFO(inode->i_sb);
+ 
+ 	jffs2_init_inode_info(f);
+-	mutex_lock(&f->sem);
+ 
+ 	ret = jffs2_do_read_inode(c, f, inode->i_ino, &latest_node);
+ 	if (ret)
+ 		goto error;
+ 
+ 	inode->i_mode = jemode_to_cpu(latest_node.mode);
++
++	mutex_lock(&f->sem);
++
+ 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
+ 	i_gid_write(inode, je16_to_cpu(latest_node.gid));
+ 	inode->i_size = je32_to_cpu(latest_node.isize);
+-- 
+2.11.0
