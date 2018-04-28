@@ -1,53 +1,21 @@
-Received: from orcrist.hmeau.com ([104.223.48.154] helo=deadmen.hmeau.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCLBg-0008QQ-Bt
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2018 08:26:37 +0000
-Date: Sat, 28 Apr 2018 16:24:38 +0800
-From: Herbert Xu <herbert@gondor.apana.org.au>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>,
- Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
- "David S . Miller" <davem@davemloft.net>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Stefan Richter <stefanr@s5r6.in-berlin.de>,
- Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
- Wolfram Sang <wsa@the-dreams.de>,
- Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
- Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Richard Weinberger <richard@nod.at>,
- Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
- Bjorn Andersson <bjorn.andersson@linaro.org>,
- Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
- iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
- alsa-devel@alsa-project.org, linux-ide@vger.kernel.org,
- linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org,
- linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
- linux-block@vger.kernel.org, linux-media@vger.kernel.org,
- linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
- linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
- devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/20] crypto: Remove depends on HAS_DMA in case of
- platform dependency
-Message-ID: <20180428082438.azb64xw6hofisdwi@gondor.apana.org.au>
-References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
- <1523987360-18760-4-git-send-email-geert@linux-m68k.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fCOFL-0004lO-TD
+ for linux-mtd@lists.infradead.org; Sat, 28 Apr 2018 11:42:33 +0000
+Date: Sat, 28 Apr 2018 13:42:18 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, ties.bos@nokia.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Boris
+ Brezillon <Boris.Brezillon@bootlin.com>
+Subject: Re: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
+Message-ID: <20180428134218.3ae857eb@xps13>
+In-Reply-To: <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
+ <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1523987360-18760-4-git-send-email-geert@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -57,37 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 17, 2018 at 07:49:03PM +0200, Geert Uytterhoeven wrote:
-> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
-> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
-> In most cases this other symbol is an architecture or platform specific
-> symbol, or PCI.
-> 
-> Generic symbols and drivers without platform dependencies keep their
-> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
-> cannot work anyway.
-> 
-> This simplifies the dependencies, and allows to improve compile-testing.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Reviewed-by: Mark Brown <broonie@kernel.org>
-> Acked-by: Robin Murphy <robin.murphy@arm.com>
-> Acked-by: Herbert Xu <herbert@gondor.apana.org.au>
-> ---
-> v3:
->   - Add Acked-by,
->   - Rebase to v4.17-rc1,
-> 
-> v2:
->   - Add Reviewed-by, Acked-by,
->   - Drop RFC state,
->   - Split per subsystem.
-> ---
->  drivers/crypto/Kconfig | 14 ++++----------
->  1 file changed, 4 insertions(+), 10 deletions(-)
+Hi Jane,
 
-Patch applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+You forgot to Cc the right maintainers, please
+use ./scripts/get_maintainer.pl for that.
+
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+
+Please add a description of what your are doing in the commit message.
+The description in the cover letter is good, you can copy the relevant
+section here.
+
+> ---
+>  drivers/mtd/nand/fsl_ifc_nand.c |   10 ++++++----
+
+Also, just for you to know, files have moved in a raw/ subdirectory, so
+please rebase on top of 4.17-rc1 and prefix the commit title with
+"mtd: rawnand: fsl_ifc:".
+
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_n=
+and.c
+> index ca36b35..a3cf6ca 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -413,6 +413,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, uns=
+igned int command,
+>  	struct fsl_ifc_mtd *priv =3D chip->priv;
+>  	struct fsl_ifc_ctrl *ctrl =3D priv->ctrl;
+>  	struct fsl_ifc_runtime __iomem *ifc =3D ctrl->rregs;
+> +	int len;
+> =20
+>  	/* clear the read buffer */
+>  	ifc_nand_ctrl->read_bytes =3D 0;
+> @@ -462,11 +463,12 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, u=
+nsigned int command,
+>  		ifc_out32(column, &ifc->ifc_nand.row3);
+> =20
+>  		/*
+> -		 * although currently it's 8 bytes for READID, we always read
+> -		 * the maximum 256 bytes(for PARAM)
+> +		 * For READID, read 8 bytes that are currently used.
+> +		 * For PARAM, read all 3 copies of 256-bytes pages.
+>  		 */
+> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
+> -		ifc_nand_ctrl->read_bytes =3D 256;
+> +		len =3D (command =3D=3D NAND_CMD_PARAM) ? (3 * 256) : 8;
+
+There is already a "command =3D=3D NAND_CMD_PARAM" condition above, you
+might want to use it.
+
+> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
+> +		ifc_nand_ctrl->read_bytes =3D len;
+> =20
+>  		set_addr(mtd, 0, 0, 0);
+>  		fsl_ifc_run_command(mtd);
+
+The overall ->cmdfunc() approach of this driver is horrible. However
+this fixes its implementation to match the current state of the core,
+so I guess it is fine.
+
+Regards,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
