@@ -1,22 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCoip-00005o-2h
- for linux-mtd@lists.infradead.org; Sun, 29 Apr 2018 15:58:44 +0000
-Date: Sun, 29 Apr 2018 17:58:29 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Linux
- mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: nftl: Remove VLA usage
-Message-ID: <20180429175829.0266b7f4@bbrezillon>
-In-Reply-To: <CAGXu5jJJDF-3E_rt-16B-0CwjcF+52LPNGefD-KP+qz1JwM=6g@mail.gmail.com>
-References: <20180423203500.GA36488@beast> <20180429111605.4cdf5ab2@bbrezillon>
- <CAGXu5jJJDF-3E_rt-16B-0CwjcF+52LPNGefD-KP+qz1JwM=6g@mail.gmail.com>
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fCudQ-0005EJ-NY
+ for linux-mtd@lists.infradead.org; Sun, 29 Apr 2018 22:17:34 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Miquel Raynal <miquel.raynal@bootlin.com>, Steve deRosier
+ <derosier@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Tobi Wulff <Tobi.Wulff@alliedtelesis.co.nz>
+Subject: NAND ecc-strength (was Re: NAND timeout issues with blank chip and
+ Marvell NFC)
+Date: Sun, 29 Apr 2018 22:17:08 +0000
+Message-ID: <2847aa9260084a6da170afe239a33d36@svr-chch-ex1.atlnz.lc>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 29 Apr 2018 07:31:15 -0700
-Kees Cook <keescook@chromium.org> wrote:
-
-> On Sun, Apr 29, 2018 at 2:16 AM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > Hi Kees,
-> >
-> > On Mon, 23 Apr 2018 13:35:00 -0700
-> > Kees Cook <keescook@chromium.org> wrote:
-> >  
-> >> On the quest to remove all VLAs from the kernel[1] this changes the
-> >> check_free_sectors() routine to use the same stack buffer for both
-> >> data byte checks (SECTORSIZE) and oob byte checks (oobsize). Since
-> >> these regions aren't needed at the same time, they don't need to be
-> >> consecutively allocated. Additionally, while it's possible for oobsize
-> >> to be large, it is unlikely to be larger than the actual SECTORSIZE. As
-> >> such, remove the VLA, adjust offsets and add a sanity check to make sure
-> >> we never get a pathological oobsize.
-> >>
-> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
-> >>
-> >> Signed-off-by: Kees Cook <keescook@chromium.org>
-> >> ---
-> >>  drivers/mtd/inftlmount.c | 11 ++++++++---
-> >>  drivers/mtd/nftlmount.c  | 11 ++++++++---
-> >>  2 files changed, 16 insertions(+), 6 deletions(-)
-> >>
-> >> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-> >> index aab4f68bd36f..9cdae7f0fc2e 100644
-> >> --- a/drivers/mtd/inftlmount.c
-> >> +++ b/drivers/mtd/inftlmount.c
-> >> @@ -334,7 +334,7 @@ static int memcmpb(void *a, int c, int n)
-> >>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
-> >>       int len, int check_oob)
-> >>  {
-> >> -     u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
-> >> +     u8 buf[SECTORSIZE];  
-> >
-> > Could we instead move to dynamic allocation. I mean, SECTORSIZE is 512
-> > bytes, so only with this function we consume 1/16 of the stack. Not to
-> > mention that some MTD drivers might want to do DMA on buffer passed by
-> > the MTD user, and if the buffer is on the stack they'll have to use a
-> > bounce buffer instead.  
-> 
-> Sure! I can rework it to do that. Is GFP_KERNEL okay for that, or does
-> it need something else?
-
-Just had a quick look, and I think GFP_KERNEL is good.
+Hi Boris & all,=0A=
+=0A=
+Permit me a slight tangent.=0A=
+=0A=
+On 27/04/18 18:16, Boris Brezillon wrote:=0A=
+>> The one problem it does have in this configuration is the familiar=0A=
+>> "nand: WARNING: pxa3xx_nand-0: the ECC used on your system is too weak=
+=0A=
+>> compared to the one required by the NAND chip". From what I read in the=
+=0A=
+>> Marvell datasheet even though the chip requires 8-bits of ECC per 540=0A=
+>> bytes of data the 16-bits per 2048 bytes of data implemented by the=0A=
+>> controller should satisfy this.=0A=
+ >=0A=
+> No, it's not true. Well, it will work for some time, and then fail when=
+=0A=
+> too many erase cycles have been done on a block. You should always try=0A=
+> to at least meet the chip requirements. Anyway, that's not really the=0A=
+> issue here.=0A=
+> =0A=
+>> If I set marvell,nand-keep-config or nand-ecc-strength =3D <8>. I get EC=
+C=0A=
+>> errors reported (probably due to the change in configuration) and=0A=
+>> ultimately the mount fails "mount: mounting ubi0:user on /flash failed:=
+=0A=
+>> Invalid argument" I haven't really dug into where that's coming from.=0A=
+ >=0A=
+> For the ECC change, that's not surprising, since u-boot probably writes=
+=0A=
+> things in the 4bit/512 config.=0A=
+> =0A=
+=0A=
+So this raises a bit of concern. A certain NAND flash vendor has =0A=
+released an end of life notice for some of their chips (I won't name =0A=
+them specifically because I'm not sure if there is a NDA in place). The =0A=
+suggested replacement part requires 8bit/540byte ECC whereas the old one =
+=0A=
+required 4bit/540byte.=0A=
+=0A=
+The first problem I face is how do we handle the possibility of having =0A=
+either chip installed. Since the current dtb has ecc-strength =3D <4> do =
+=0A=
+we need the bootloader to modify this on the fly this based on some =0A=
+identifier that distinguishes old from new? Or is there some way of =0A=
+saying ecc-strength =3D <pick a value appropriate for the chip>.=0A=
+=0A=
+The second problem is that, if I understand correctly, the Marvell NFCv2 =
+=0A=
+BCH implementation is always 16bit/2048bytes. So even if I get the dts =0A=
+to say the right thing the hardware based ECC will ignore it.=0A=
