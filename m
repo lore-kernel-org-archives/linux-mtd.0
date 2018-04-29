@@ -1,22 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCOcu-0003p1-VN
- for linux-mtd@lists.infradead.org; Sat, 28 Apr 2018 12:06:55 +0000
-Date: Sat, 28 Apr 2018 14:06:38 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Jane Wan <Jane.Wan@nokia.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, ties.bos@nokia.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Boris
- Brezillon <Boris.Brezillon@bootlin.com>
-Subject: Re: [PATCH 2/2] Use bit-wise majority to recover the contents of
- ONFI parameter
-Message-ID: <20180428140638.2e2c04dd@xps13>
-In-Reply-To: <1524788396-32380-3-git-send-email-Jane.Wan@nokia.com>
-References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
- <1524788396-32380-3-git-send-email-Jane.Wan@nokia.com>
+ id 1fCiRQ-0000I4-M0
+ for linux-mtd@lists.infradead.org; Sun, 29 Apr 2018 09:16:23 +0000
+Date: Sun, 29 Apr 2018 11:16:05 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: nftl: Remove VLA usage
+Message-ID: <20180429111605.4cdf5ab2@bbrezillon>
+In-Reply-To: <20180423203500.GA36488@beast>
+References: <20180423203500.GA36488@beast>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,112 +25,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jane,
+Hi Kees,
 
-Same comments as before, please: get the right maintainers, add a
-commit log, rebase and fix the title prefix.
+On Mon, 23 Apr 2018 13:35:00 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-Have you ever needed/tried this algorithm before?=20
-
-On Thu, 26 Apr 2018 17:19:56 -0700, Jane Wan
-<Jane.Wan@nokia.com> wrote:
-
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> On the quest to remove all VLAs from the kernel[1] this changes the
+> check_free_sectors() routine to use the same stack buffer for both
+> data byte checks (SECTORSIZE) and oob byte checks (oobsize). Since
+> these regions aren't needed at the same time, they don't need to be
+> consecutively allocated. Additionally, while it's possible for oobsize
+> to be large, it is unlikely to be larger than the actual SECTORSIZE. As
+> such, remove the VLA, adjust offsets and add a sanity check to make sure
+> we never get a pathological oobsize.
+> 
+> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  drivers/mtd/nand/nand_base.c |   35 +++++++++++++++++++++++++++++++----
->  1 file changed, 31 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index c2e1232..161b523 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3153,8 +3153,10 @@ static int nand_flash_detect_onfi(struct mtd_info =
-*mtd, struct nand_chip *chip,
->  					int *busw)
+>  drivers/mtd/inftlmount.c | 11 ++++++++---
+>  drivers/mtd/nftlmount.c  | 11 ++++++++---
+>  2 files changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+> index aab4f68bd36f..9cdae7f0fc2e 100644
+> --- a/drivers/mtd/inftlmount.c
+> +++ b/drivers/mtd/inftlmount.c
+> @@ -334,7 +334,7 @@ static int memcmpb(void *a, int c, int n)
+>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>  	int len, int check_oob)
 >  {
->  	struct nand_onfi_params *p =3D &chip->onfi_params;
-> -	int i, j;
-> -	int val;
-> +	int i, j, k, len, val;
-> +	uint8_t copy[3][256], v8;
+> -	u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
+> +	u8 buf[SECTORSIZE];
 
-Please use u8 instead of uint8_t (./scripts/checkpatch.pl --strict will
-give you the list of styling issues to fix.
+Could we instead move to dynamic allocation. I mean, SECTORSIZE is 512
+bytes, so only with this function we consume 1/16 of the stack. Not to
+mention that some MTD drivers might want to do DMA on buffer passed by
+the MTD user, and if the buffer is on the stack they'll have to use a
+bounce buffer instead.
 
-I don't think you should allocate that much space on the stack, please
-use dynamic allocation.
+Regards,
 
-> +
-> +	len =3D (sizeof(*p) > 256) ? 256 : sizeof(*p);
+Boris
 
-This is a maximum derivation, there are helpers for that.
-
-I am not sure this is relevant, won't you read only 256 bytes anyway?
-
-> =20
->  	/* Try ONFI for unknown chip or LP */
->  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
-> @@ -3170,11 +3172,36 @@ static int nand_flash_detect_onfi(struct mtd_info=
- *mtd, struct nand_chip *chip,
->  				le16_to_cpu(p->crc)) {
->  			break;
->  		}
-
-Space.
-
-> +		pr_err("CRC of parameter page %d is not valid\n", i);
-> +		for (j =3D 0; j < len; j++)
-> +			copy[i][j] =3D ((uint8_t *)p)[j];
-
-'copy' is maybe not a meaningful name.
-
->  	}
-> =20
->  	if (i =3D=3D 3) {
-> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -		return 0;
-> +		pr_err("Could not find valid ONFI parameter page\n");
-> +		pr_info("Recover ONFI parameters with bit-wise majority\n");
-> +		for (j =3D 0; j < len; j++) {
-> +			if (copy[0][j] =3D=3D copy[1][j] ||
-> +			    copy[0][j] =3D=3D copy[2][j]) {
-> +				((uint8_t *)p)[j] =3D copy[0][j];
-> +			} else if (copy[1][j] =3D=3D copy[2][j]) {
-> +				((uint8_t *)p)[j] =3D copy[1][j];
-> +			} else {
-> +				((uint8_t *)p)[j] =3D 0;
-> +				for (k =3D 0; k < 8; k++) {
-> +					v8 =3D (copy[0][j] >> k) & 0x1;
-
-v8 could be declared in the else statement of in the for loop.
-The name could also be changed.
-
-> +					v8 +=3D (copy[1][j] >> k) & 0x1;
-> +					v8 +=3D (copy[2][j] >> k) & 0x1;
-> +					if (v8 > 1)
-> +						((uint8_t *)p)[j] |=3D (1 << k);
-
-Please use the BIT() macro.
-
-> +				}
+>  	struct mtd_info *mtd = inftl->mbd.mtd;
+>  	size_t retlen;
+>  	int i;
+> @@ -346,10 +346,15 @@ static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+>  			return -1;
+>  
+>  		if (check_oob) {
+> +			if (mtd->oobsize > sizeof(buf)) {
+> +				pr_warn("MTD oobsize > SECTORSIZE: %d\n",
+> +					mtd->oobsize);
+> +				return -1;
 > +			}
-> +		}
-
-Space.
-
-> +		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=3D
-> +		    le16_to_cpu(p->crc)) {
-> +			pr_err("ONFI parameter recovery failed, aborting\n");
-> +			return 0;
-> +		}
->  	}
-> =20
->  	/* Check version */
-
-Thanks,
-Miqu=C3=A8l
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>  			if(inftl_read_oob(mtd, address, mtd->oobsize,
+> -					  &retlen, &buf[SECTORSIZE]) < 0)
+> +					  &retlen, buf) < 0)
+>  				return -1;
+> -			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
+> +			if (memcmpb(buf, 0xff, mtd->oobsize) != 0)
+>  				return -1;
+>  		}
+>  		address += SECTORSIZE;
+> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+> index a6fbfa4e5799..e6eba7f3fdf5 100644
+> --- a/drivers/mtd/nftlmount.c
+> +++ b/drivers/mtd/nftlmount.c
+> @@ -272,7 +272,7 @@ static int memcmpb(void *a, int c, int n)
+>  static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int len,
+>  			      int check_oob)
+>  {
+> -	u8 buf[SECTORSIZE + nftl->mbd.mtd->oobsize];
+> +	u8 buf[SECTORSIZE];
+>  	struct mtd_info *mtd = nftl->mbd.mtd;
+>  	size_t retlen;
+>  	int i;
+> @@ -284,10 +284,15 @@ static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int
+>  			return -1;
+>  
+>  		if (check_oob) {
+> +			if (mtd->oobsize > sizeof(buf)) {
+> +				pr_warn("MTD oobsize > SECTORSIZE: %d\n",
+> +					mtd->oobsize);
+> +				return -1;
+> +			}
+>  			if(nftl_read_oob(mtd, address, mtd->oobsize,
+> -					 &retlen, &buf[SECTORSIZE]) < 0)
+> +					 &retlen, buf) < 0)
+>  				return -1;
+> -			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
+> +			if (memcmpb(buf, 0xff, mtd->oobsize) != 0)
+>  				return -1;
+>  		}
+>  		address += SECTORSIZE;
