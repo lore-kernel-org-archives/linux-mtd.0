@@ -1,22 +1,22 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fCnp8-0003uJ-K1
- for linux-mtd@lists.infradead.org; Sun, 29 Apr 2018 15:01:12 +0000
-Received: by mail-pg0-x241.google.com with SMTP id p9-v6so1785602pgc.9
- for <linux-mtd@lists.infradead.org>; Sun, 29 Apr 2018 08:00:56 -0700 (PDT)
-Date: Sun, 29 Apr 2018 08:00:53 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mtd: nftl: Remove VLA usage
-Message-ID: <20180429150053.GA27374@beast>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fCoip-00005o-2h
+ for linux-mtd@lists.infradead.org; Sun, 29 Apr 2018 15:58:44 +0000
+Date: Sun, 29 Apr 2018 17:58:29 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Linux
+ mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nftl: Remove VLA usage
+Message-ID: <20180429175829.0266b7f4@bbrezillon>
+In-Reply-To: <CAGXu5jJJDF-3E_rt-16B-0CwjcF+52LPNGefD-KP+qz1JwM=6g@mail.gmail.com>
+References: <20180423203500.GA36488@beast> <20180429111605.4cdf5ab2@bbrezillon>
+ <CAGXu5jJJDF-3E_rt-16B-0CwjcF+52LPNGefD-KP+qz1JwM=6g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,122 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On the quest to remove all stack VLAs from the kernel[1] this changes
-the check_free_sectors() routine to use a kmalloc()ed buffer instead
-of a large VLA stack buffer.
+On Sun, 29 Apr 2018 07:31:15 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-[1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
+> On Sun, Apr 29, 2018 at 2:16 AM, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > Hi Kees,
+> >
+> > On Mon, 23 Apr 2018 13:35:00 -0700
+> > Kees Cook <keescook@chromium.org> wrote:
+> >  
+> >> On the quest to remove all VLAs from the kernel[1] this changes the
+> >> check_free_sectors() routine to use the same stack buffer for both
+> >> data byte checks (SECTORSIZE) and oob byte checks (oobsize). Since
+> >> these regions aren't needed at the same time, they don't need to be
+> >> consecutively allocated. Additionally, while it's possible for oobsize
+> >> to be large, it is unlikely to be larger than the actual SECTORSIZE. As
+> >> such, remove the VLA, adjust offsets and add a sanity check to make sure
+> >> we never get a pathological oobsize.
+> >>
+> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
+> >>
+> >> Signed-off-by: Kees Cook <keescook@chromium.org>
+> >> ---
+> >>  drivers/mtd/inftlmount.c | 11 ++++++++---
+> >>  drivers/mtd/nftlmount.c  | 11 ++++++++---
+> >>  2 files changed, 16 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+> >> index aab4f68bd36f..9cdae7f0fc2e 100644
+> >> --- a/drivers/mtd/inftlmount.c
+> >> +++ b/drivers/mtd/inftlmount.c
+> >> @@ -334,7 +334,7 @@ static int memcmpb(void *a, int c, int n)
+> >>  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
+> >>       int len, int check_oob)
+> >>  {
+> >> -     u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
+> >> +     u8 buf[SECTORSIZE];  
+> >
+> > Could we instead move to dynamic allocation. I mean, SECTORSIZE is 512
+> > bytes, so only with this function we consume 1/16 of the stack. Not to
+> > mention that some MTD drivers might want to do DMA on buffer passed by
+> > the MTD user, and if the buffer is on the stack they'll have to use a
+> > bounce buffer instead.  
+> 
+> Sure! I can rework it to do that. Is GFP_KERNEL okay for that, or does
+> it need something else?
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2: kmalloc() instead of stack buffer (Boris)
----
- drivers/mtd/inftlmount.c | 23 ++++++++++++++++-------
- drivers/mtd/nftlmount.c  | 23 ++++++++++++++++-------
- 2 files changed, 32 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-index aab4f68bd36f..2d598412972d 100644
---- a/drivers/mtd/inftlmount.c
-+++ b/drivers/mtd/inftlmount.c
-@@ -334,28 +334,37 @@ static int memcmpb(void *a, int c, int n)
- static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
- 	int len, int check_oob)
- {
--	u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
- 	struct mtd_info *mtd = inftl->mbd.mtd;
- 	size_t retlen;
--	int i;
-+	int i, ret;
-+	u8 *buf;
-+
-+	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
-+	if (!buf)
-+		return -1;
- 
-+	ret = -1;
- 	for (i = 0; i < len; i += SECTORSIZE) {
- 		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
--			return -1;
-+			goto out;
- 		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
--			return -1;
-+			goto out;
- 
- 		if (check_oob) {
- 			if(inftl_read_oob(mtd, address, mtd->oobsize,
- 					  &retlen, &buf[SECTORSIZE]) < 0)
--				return -1;
-+				goto out;
- 			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
--				return -1;
-+				goto out;
- 		}
- 		address += SECTORSIZE;
- 	}
- 
--	return 0;
-+	ret = 0;
-+
-+out:
-+	kfree(buf);
-+	return ret;
- }
- 
- /*
-diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-index a6fbfa4e5799..6281da3dadac 100644
---- a/drivers/mtd/nftlmount.c
-+++ b/drivers/mtd/nftlmount.c
-@@ -272,28 +272,37 @@ static int memcmpb(void *a, int c, int n)
- static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int len,
- 			      int check_oob)
- {
--	u8 buf[SECTORSIZE + nftl->mbd.mtd->oobsize];
- 	struct mtd_info *mtd = nftl->mbd.mtd;
- 	size_t retlen;
--	int i;
-+	int i, ret;
-+	u8 *buf;
-+
-+	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
-+	if (!buf)
-+		return -1;
- 
-+	ret = -1;
- 	for (i = 0; i < len; i += SECTORSIZE) {
- 		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
--			return -1;
-+			goto out;
- 		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
--			return -1;
-+			goto out;
- 
- 		if (check_oob) {
- 			if(nftl_read_oob(mtd, address, mtd->oobsize,
- 					 &retlen, &buf[SECTORSIZE]) < 0)
--				return -1;
-+				goto out;
- 			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
--				return -1;
-+				goto out;
- 		}
- 		address += SECTORSIZE;
- 	}
- 
--	return 0;
-+	ret = 0;
-+
-+out:
-+	kfree(buf);
-+	return ret;
- }
- 
- /* NFTL_format: format a Erase Unit by erasing ALL Erase Zones in the Erase Unit and
--- 
-2.7.4
-
-
--- 
-Kees Cook
-Pixel Security
+Just had a quick look, and I think GFP_KERNEL is good.
