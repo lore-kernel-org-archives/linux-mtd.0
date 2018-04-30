@@ -1,17 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD5cB-0004WU-Rq
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 10:01:06 +0000
-Date: Mon, 30 Apr 2018 12:00:46 +0200
+Date: Mon, 30 Apr 2018 12:09:30 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jane Wan <Jane.Wan@nokia.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, ties.bos@nokia.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
-Message-ID: <20180430120046.3c87db2a@bbrezillon>
-In-Reply-To: <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
-References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
- <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
+ King <linux@armlinux.org.uk>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
+ Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz
+ Golaszewski <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 00/12] mtd: nand: davinci: stop using pdev->id as
+ chipselect
+Message-ID: <20180430120930.4768a7cb@bbrezillon>
+In-Reply-To: <20180430082453.8091-1-brgl@bgdev.pl>
+References: <20180430082453.8091-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,52 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jane,
+Hi Bartosz,
 
-On Thu, 26 Apr 2018 17:19:55 -0700
-Jane Wan <Jane.Wan@nokia.com> wrote:
+On Mon, 30 Apr 2018 10:24:41 +0200
+Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> ---
->  drivers/mtd/nand/fsl_ifc_nand.c |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
-> index ca36b35..a3cf6ca 100644
-> --- a/drivers/mtd/nand/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
-> @@ -413,6 +413,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  	struct fsl_ifc_mtd *priv = chip->priv;
->  	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
->  	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
-> +	int len;
->  
->  	/* clear the read buffer */
->  	ifc_nand_ctrl->read_bytes = 0;
-> @@ -462,11 +463,12 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  		ifc_out32(column, &ifc->ifc_nand.row3);
->  
->  		/*
-> -		 * although currently it's 8 bytes for READID, we always read
-> -		 * the maximum 256 bytes(for PARAM)
-> +		 * For READID, read 8 bytes that are currently used.
-> +		 * For PARAM, read all 3 copies of 256-bytes pages.
->  		 */
-> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
-> -		ifc_nand_ctrl->read_bytes = 256;
-> +		len = (command == NAND_CMD_PARAM) ? (3 * 256) : 8;
-> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
-> +		ifc_nand_ctrl->read_bytes = len;
+> We have the 'ti,davinci-chipselect' property in the device tree, but
+> when using platform data the driver silently uses the id field of
+> struct platform_device as the chipselect. This is confusing and we
+> almost broke the nand support again recently after converting the
+> platform to common clock framework (which changed the device id in the
+> clock lookup - the problem is gone now that we no longer acquire the
+> clock in the nand driver.
+> 
+> This series adds a new field to davinci-nand platform data, then makes
+> all board use it and finally modifies the two drivers that make use of
+> it.
+> 
+> Bartosz Golaszewski (12):
+>   mtd: nand: davinci: store the core chipselect number in platform data
 
-This driver really calls for a clean rework to transition to
-->exec_op(). Guessing the amount of data to be read from ->cmdfunc() is
-broken and your patch series just shows how broken this is. What next?
-What if some NANDs have 4 or more copies of the param page?
+Raw NAND related patches (that is, everything that is not onenand or
+SPI NAND) should use the "mtd: rawnand: " prefix now. Other than that,
+I'm fine with the patch series, just let me know how you want to have it
+merged (through the MTD tree or the davinci tree).
 
-I'm still undecided whether I want to apply this patch. I guess having
-some guarantees that someone will actually work on implementing
-->exec_op() in a near future would help me take this decision.
-
-Regards,
+Thanks,
 
 Boris
