@@ -1,24 +1,18 @@
-Date: Mon, 30 Apr 2018 18:47:51 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
- Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/12] mtd: nand: davinci: stop using pdev->id as
- chipselect
-Message-ID: <20180430184751.574550cc@bbrezillon>
-In-Reply-To: <CAMRc=Mf2TKsuiudxPdEFStrstHH65jHb6JFJ0Ort9GvWDSo9bQ@mail.gmail.com>
-References: <20180430082453.8091-1-brgl@bgdev.pl>
- <20180430120930.4768a7cb@bbrezillon>
- <CAMRc=Mf2TKsuiudxPdEFStrstHH65jHb6JFJ0Ort9GvWDSo9bQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail-pf0-x22c.google.com ([2607:f8b0:400e:c00::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fDHiw-0003lw-NJ
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 22:56:48 +0000
+Received: by mail-pf0-x22c.google.com with SMTP id o76so7873194pfi.5
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 15:56:36 -0700 (PDT)
+From: Eric Biggers <ebiggers3@gmail.com>
+To: linux-fscrypt@vger.kernel.org,
+	"Theodore Y . Ts'o" <tytso@mit.edu>
+Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ Eric Biggers <ebiggers@google.com>
+Subject: [PATCH v2 00/15] fscrypt: improved logging and other cleanups
+Date: Mon, 30 Apr 2018 15:51:34 -0700
+Message-Id: <20180430225149.183514-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +22,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Apr 2018 18:45:06 +0200
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+From: Eric Biggers <ebiggers@google.com>
 
-> 2018-04-30 12:09 GMT+02:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> > Hi Bartosz,
-> >
-> > On Mon, 30 Apr 2018 10:24:41 +0200
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >>
-> >> We have the 'ti,davinci-chipselect' property in the device tree, but
-> >> when using platform data the driver silently uses the id field of
-> >> struct platform_device as the chipselect. This is confusing and we
-> >> almost broke the nand support again recently after converting the
-> >> platform to common clock framework (which changed the device id in the
-> >> clock lookup - the problem is gone now that we no longer acquire the
-> >> clock in the nand driver.
-> >>
-> >> This series adds a new field to davinci-nand platform data, then makes
-> >> all board use it and finally modifies the two drivers that make use of
-> >> it.
-> >>
-> >> Bartosz Golaszewski (12):
-> >>   mtd: nand: davinci: store the core chipselect number in platform data
-> >
-> > Raw NAND related patches (that is, everything that is not onenand or
-> > SPI NAND) should use the "mtd: rawnand: " prefix now. Other than that,
-> > I'm fine with the patch series, just let me know how you want to have it
-> > merged (through the MTD tree or the davinci tree).
-> >
-> > Thanks,
-> >
-> > Boris
-> 
-> I think Sekhar could pick all those patches up for 4.18.
+Hello, here's yet another round of cleanups for fscrypt.  Please
+consider for v4.18.  These are all patches I've sent out previously.
+The series is based on v4.17-rc3.
 
-Okay, then I'd need an immutable branch containing these changes.
+Patches 1-12 mostly remove unnecessary or redundant code from a number
+of different places; nothing particularly noteworthy.  Note: to avoid a
+merge conflict with f2fs/dev, I've dropped the patch
+"fscrypt: remove WARN_ON_ONCE() when decryption fails".
 
-> 
-> Sekhar - do you want me to resend the series with the commit message
-> changed as requested by Boris, or can you fix it when applying the
-> series?
-> 
-> Best regards,
-> Bartosz Golaszewski
+Patch 13 switches the existing warning and error messages in fscrypt
+over to use a common logging function, which is ratelimited and includes
+the filesystem name (->s_id) when available as well as a consistent
+prefix of "fscrypt:".
+
+Patches 14-15 are optimizations and cleanups for key lookup and key
+derivation.  They are extracted from the patch "fscrypt: refactor
+finding and deriving key" I had originally sent as part of the series
+"fscrypt: filesystem-level keyring and v2 policy support".  But I think
+they're useful changes by themselves, so no need to wait on them.
+
+Eric Biggers (15):
+  fs, fscrypt: only define ->s_cop when FS_ENCRYPTION is enabled
+  fscrypt: clean up after fscrypt_prepare_lookup() conversions
+  fscrypt: remove unnecessary NULL check when allocating skcipher
+  fscrypt: remove error messages for skcipher_request_alloc() failure
+  fscrypt: remove stale comment from fscrypt_d_revalidate()
+  fscrypt: don't clear flags on crypto transform
+  fscrypt: don't special-case EOPNOTSUPP from
+    fscrypt_get_encryption_info()
+  fscrypt: drop max_namelen check from fname_decrypt()
+  fscrypt: drop empty name check from fname_decrypt()
+  fscrypt: make fscrypt_operations.max_namelen an integer
+  fscrypt: remove unnecessary check for non-logon key type
+  fscrypt: remove internal key size constants
+  fscrypt: use a common logging function
+  fscrypt: separate key lookup from key derivation
+  fscrypt: only derive the needed portion of the key
+
+ fs/crypto/crypto.c              |  36 ++++--
+ fs/crypto/fname.c               |  32 ++---
+ fs/crypto/fscrypt_private.h     |  19 +--
+ fs/crypto/hooks.c               |   5 +-
+ fs/crypto/keyinfo.c             | 200 +++++++++++++++++---------------
+ fs/ext4/super.c                 |   8 +-
+ fs/f2fs/super.c                 |   8 +-
+ fs/ubifs/crypto.c               |  10 +-
+ include/linux/fs.h              |   4 +-
+ include/linux/fscrypt_notsupp.h |  10 --
+ include/linux/fscrypt_supp.h    |  16 +--
+ 11 files changed, 161 insertions(+), 187 deletions(-)
+
+-- 
+2.17.0.441.gb46fe60e1d-goog
