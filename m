@@ -1,25 +1,20 @@
-Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD47o-0002zL-JX
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 08:25:34 +0000
-Received: by mail-wr0-x241.google.com with SMTP id v60-v6so7198799wrc.7
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 01:25:32 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Tony Lindgren <tony@atomide.com>,
- Krzysztof Kozlowski <krzk@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 11/12] mtd: nand: davinci: stop using pdev->id as chipselect
-Date: Mon, 30 Apr 2018 10:24:52 +0200
-Message-Id: <20180430082453.8091-12-brgl@bgdev.pl>
-In-Reply-To: <20180430082453.8091-1-brgl@bgdev.pl>
-References: <20180430082453.8091-1-brgl@bgdev.pl>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fD5cB-0004WU-Rq
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 10:01:06 +0000
+Date: Mon, 30 Apr 2018 12:00:46 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, ties.bos@nokia.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
+Message-ID: <20180430120046.3c87db2a@bbrezillon>
+In-Reply-To: <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
+ <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi Jane,
 
-All platform now use the core_chipsel field in platform data. Stop
-using pdev->id in the driver.
+On Thu, 26 Apr 2018 17:19:55 -0700
+Jane Wan <Jane.Wan@nokia.com> wrote:
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/mtd/nand/raw/davinci_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> ---
+>  drivers/mtd/nand/fsl_ifc_nand.c |   10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/fsl_ifc_nand.c b/drivers/mtd/nand/fsl_ifc_nand.c
+> index ca36b35..a3cf6ca 100644
+> --- a/drivers/mtd/nand/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/fsl_ifc_nand.c
+> @@ -413,6 +413,7 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+>  	struct fsl_ifc_mtd *priv = chip->priv;
+>  	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
+>  	struct fsl_ifc_runtime __iomem *ifc = ctrl->rregs;
+> +	int len;
+>  
+>  	/* clear the read buffer */
+>  	ifc_nand_ctrl->read_bytes = 0;
+> @@ -462,11 +463,12 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+>  		ifc_out32(column, &ifc->ifc_nand.row3);
+>  
+>  		/*
+> -		 * although currently it's 8 bytes for READID, we always read
+> -		 * the maximum 256 bytes(for PARAM)
+> +		 * For READID, read 8 bytes that are currently used.
+> +		 * For PARAM, read all 3 copies of 256-bytes pages.
+>  		 */
+> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
+> -		ifc_nand_ctrl->read_bytes = 256;
+> +		len = (command == NAND_CMD_PARAM) ? (3 * 256) : 8;
+> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
+> +		ifc_nand_ctrl->read_bytes = len;
 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 7255a0d94374..cd12e5abafde 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -545,7 +545,7 @@ static struct davinci_nand_pdata
- 			return ERR_PTR(-ENOMEM);
- 		if (!of_property_read_u32(pdev->dev.of_node,
- 			"ti,davinci-chipselect", &prop))
--			pdev->id = prop;
-+			pdata->core_chipsel = prop;
- 		else
- 			return ERR_PTR(-EINVAL);
- 
-@@ -627,7 +627,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 
- 	/* which external chipselect will we be managing? */
--	if (pdev->id < 0 || pdev->id > 3)
-+	if (pdata->core_chipsel < 0 || pdata->core_chipsel > 3)
- 		return -ENODEV;
- 
- 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-@@ -683,7 +683,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	info->ioaddr		= (uint32_t __force) vaddr;
- 
- 	info->current_cs	= info->ioaddr;
--	info->core_chipsel	= pdev->id;
-+	info->core_chipsel	= pdata->core_chipsel;
- 	info->mask_chipsel	= pdata->mask_chipsel;
- 
- 	/* use nandboot-capable ALE/CLE masks by default */
--- 
-2.17.0
+This driver really calls for a clean rework to transition to
+->exec_op(). Guessing the amount of data to be read from ->cmdfunc() is
+broken and your patch series just shows how broken this is. What next?
+What if some NANDs have 4 or more copies of the param page?
+
+I'm still undecided whether I want to apply this patch. I guess having
+some guarantees that someone will actually work on implementing
+->exec_op() in a near future would help me take this decision.
+
+Regards,
+
+Boris
