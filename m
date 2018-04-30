@@ -1,9 +1,9 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wr0-x241.google.com ([2a00:1450:400c:c0c::241])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD47v-0002xh-5W
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 08:25:40 +0000
-Received: by mail-wm0-x244.google.com with SMTP id i3so12815323wmf.3
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 01:25:28 -0700 (PDT)
+ id 1fD47o-0002zL-JX
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 08:25:34 +0000
+Received: by mail-wr0-x241.google.com with SMTP id v60-v6so7198799wrc.7
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 01:25:32 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>,
@@ -15,10 +15,9 @@ To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 08/12] ARM: davinci: mityomapl138: specify the chipselect in
- davinci_nand_pdata
-Date: Mon, 30 Apr 2018 10:24:49 +0200
-Message-Id: <20180430082453.8091-9-brgl@bgdev.pl>
+Subject: [PATCH 11/12] mtd: nand: davinci: stop using pdev->id as chipselect
+Date: Mon, 30 Apr 2018 10:24:52 +0200
+Message-Id: <20180430082453.8091-12-brgl@bgdev.pl>
 In-Reply-To: <20180430082453.8091-1-brgl@bgdev.pl>
 References: <20180430082453.8091-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,25 +31,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We now have the core_chipsel field in davinci_nand_pdata. Use it
-instead of the platform_device id number.
+All platform now use the core_chipsel field in platform data. Stop
+using pdev->id in the driver.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-mityomapl138.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/davinci_nand.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index f442784eded3..2cce0d7d2f2a 100644
---- a/arch/arm/mach-davinci/board-mityomapl138.c
-+++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -400,6 +400,7 @@ static struct mtd_partition mityomapl138_nandflash_partition[] = {
- };
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 7255a0d94374..cd12e5abafde 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -545,7 +545,7 @@ static struct davinci_nand_pdata
+ 			return ERR_PTR(-ENOMEM);
+ 		if (!of_property_read_u32(pdev->dev.of_node,
+ 			"ti,davinci-chipselect", &prop))
+-			pdev->id = prop;
++			pdata->core_chipsel = prop;
+ 		else
+ 			return ERR_PTR(-EINVAL);
  
- static struct davinci_nand_pdata mityomapl138_nandflash_data = {
-+	.core_chipsel	= 1,
- 	.parts		= mityomapl138_nandflash_partition,
- 	.nr_parts	= ARRAY_SIZE(mityomapl138_nandflash_partition),
- 	.ecc_mode	= NAND_ECC_HW,
+@@ -627,7 +627,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 
+ 	/* which external chipselect will we be managing? */
+-	if (pdev->id < 0 || pdev->id > 3)
++	if (pdata->core_chipsel < 0 || pdata->core_chipsel > 3)
+ 		return -ENODEV;
+ 
+ 	info = devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
+@@ -683,7 +683,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	info->ioaddr		= (uint32_t __force) vaddr;
+ 
+ 	info->current_cs	= info->ioaddr;
+-	info->core_chipsel	= pdev->id;
++	info->core_chipsel	= pdata->core_chipsel;
+ 	info->mask_chipsel	= pdata->mask_chipsel;
+ 
+ 	/* use nandboot-capable ALE/CLE masks by default */
 -- 
 2.17.0
