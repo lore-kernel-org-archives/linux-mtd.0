@@ -1,19 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from xes-mad.com ([216.165.139.220] helo=mail.xes-mad.com)
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD9Yp-0003IT-4m
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 14:13:49 +0000
-Date: Mon, 30 Apr 2018 16:13:35 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2] mtd: nftl: Remove VLA usage
-Message-ID: <20180430161335.7616321e@bbrezillon>
-In-Reply-To: <20180429150053.GA27374@beast>
-References: <20180429150053.GA27374@beast>
+ id 1fD9xD-0005Ai-ST
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 14:39:01 +0000
+Date: Mon, 30 Apr 2018 09:38:45 -0500 (CDT)
+From: Aaron Sierra <asierra@xes-inc.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <370277171.65649.1525099125471.JavaMail.zimbra@xes-inc.com>
+In-Reply-To: <20180430123956.05074e3b@bbrezillon>
+References: <2051977971.384388.1524012814487.JavaMail.zimbra@xes-inc.com>
+ <20180430123956.05074e3b@bbrezillon>
+Subject: Re: [PATCH RESEND] mtd: cfi: Support early CFI fixups
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,125 +27,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 29 Apr 2018 08:00:53 -0700
-Kees Cook <keescook@chromium.org> wrote:
+----- Original Message -----
+> From: "Boris Brezillon" <boris.brezillon@bootlin.com>
+> Sent: Monday, April 30, 2018 5:39:56 AM
+> Subject: Re: [PATCH RESEND] mtd: cfi: Support early CFI fixups
 
-> On the quest to remove all stack VLAs from the kernel[1] this changes
-> the check_free_sectors() routine to use a kmalloc()ed buffer instead
-> of a large VLA stack buffer.
+Boris,
+Thanks for your review.
+
+> Hello Aaron,
 > 
-> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
+> On Tue, 17 Apr 2018 19:53:34 -0500 (CDT)
+> Aaron Sierra <asierra@xes-inc.com> wrote:
 > 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-
-Applied to mtd/next.
-
-Thanks,
-
-Boris
-
-> ---
-> v2: kmalloc() instead of stack buffer (Boris)
-> ---
->  drivers/mtd/inftlmount.c | 23 ++++++++++++++++-------
->  drivers/mtd/nftlmount.c  | 23 ++++++++++++++++-------
->  2 files changed, 32 insertions(+), 14 deletions(-)
+>> Some CFI devices need fixups that affect the number of chips detected,
+>> but the current fixup infrastructure (struct cfi_fixup and cfi_fixup())
+>> does not cover this situation.
+>> 
+>> Introduce struct cfi_early_fixup and cfi_early_fixup() to fill the void
+>> along with the fixup for S70GL02GS.
+>> 
+>> Without early fixups (top half of device cannot be written or erased):
+>>   ff0000000.nor-boot: Found 1 x16 devices at 0x0 in 16-bit bank. <snip>
+>>   Amd/Fujitsu Extended Query Table at 0x0040
+>>     Amd/Fujitsu Extended Query version 1.5.
+>>   number of CFI chips: 1
+>> 
+>> With early fixups (entire device can be written and erased):
+>>   Bad S70GL02GS CFI data; adjust to detect 2 chips
+>>   ff0000000.nor-boot: Found 1 x16 devices at 0x0 in 16-bit bank. <snip>
+>>   ff0000000.nor-boot: Found 1 x16 devices at 0x8000000 in 16-bit bank
+>>   Amd/Fujitsu Extended Query Table at 0x0040
+>>     Amd/Fujitsu Extended Query version 1.5.
+>>   number of CFI chips: 2
+>> 
+>> Signed-off-by: Aaron Sierra <asierra@xes-inc.com>
+>> ---
+>> 
+>>  * Resent due to mailing list bounce
+>>  * Compiled under 4.16. Tested under 4.1 and 3.12 (e5500 PowerPC)
+>> 
+>>  drivers/mtd/chips/cfi_probe.c | 18 ++++++++++++++++++
+>>  drivers/mtd/chips/cfi_util.c  | 13 +++++++++++++
+>>  include/linux/mtd/cfi.h       | 10 ++++++++++
+>>  3 files changed, 41 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+>> index e8d0164..8b60aff 100644
+>> --- a/drivers/mtd/chips/cfi_probe.c
+>> +++ b/drivers/mtd/chips/cfi_probe.c
+>> @@ -151,6 +151,22 @@ static int __xipram cfi_probe_chip(struct map_info *map,
+>> __u32 base,
+>>  	return 1;
+>>  }
+>>  
+>> +static void fixup_s70gl02gs_chips(struct cfi_private *cfi)
+>> +{
+>> +	/*
+>> +	 * S70GL02GS flash reports a single 256 MiB chip, but is really made up
+>> +	 * of two 128 MiB chips with 1024 sectors each.
+>> +	 */
+>> +	cfi->cfiq->DevSize = 27;
+>> +	cfi->cfiq->EraseRegionInfo[0] = 0x20003ff;
+>> +	pr_warn("Bad S70GL02GS CFI data; adjust to detect 2 chips\n");
+>> +}
+>> +
+>> +static struct cfi_early_fixup cfi_early_fixup_table[] = {
+>> +	{ CFI_MFR_AMD, 0x4801, fixup_s70gl02gs_chips },
+>> +	{ 0, 0, NULL },
+>> +};
+>> +
 > 
-> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
-> index aab4f68bd36f..2d598412972d 100644
-> --- a/drivers/mtd/inftlmount.c
-> +++ b/drivers/mtd/inftlmount.c
-> @@ -334,28 +334,37 @@ static int memcmpb(void *a, int c, int n)
->  static int check_free_sectors(struct INFTLrecord *inftl, unsigned int address,
->  	int len, int check_oob)
->  {
-> -	u8 buf[SECTORSIZE + inftl->mbd.mtd->oobsize];
->  	struct mtd_info *mtd = inftl->mbd.mtd;
->  	size_t retlen;
-> -	int i;
-> +	int i, ret;
-> +	u8 *buf;
-> +
-> +	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
-> +	if (!buf)
-> +		return -1;
->  
-> +	ret = -1;
->  	for (i = 0; i < len; i += SECTORSIZE) {
->  		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
-> -			return -1;
-> +			goto out;
->  		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
-> -			return -1;
-> +			goto out;
->  
->  		if (check_oob) {
->  			if(inftl_read_oob(mtd, address, mtd->oobsize,
->  					  &retlen, &buf[SECTORSIZE]) < 0)
-> -				return -1;
-> +				goto out;
->  			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
-> -				return -1;
-> +				goto out;
->  		}
->  		address += SECTORSIZE;
->  	}
->  
-> -	return 0;
-> +	ret = 0;
-> +
-> +out:
-> +	kfree(buf);
-> +	return ret;
->  }
->  
->  /*
-> diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
-> index a6fbfa4e5799..6281da3dadac 100644
-> --- a/drivers/mtd/nftlmount.c
-> +++ b/drivers/mtd/nftlmount.c
-> @@ -272,28 +272,37 @@ static int memcmpb(void *a, int c, int n)
->  static int check_free_sectors(struct NFTLrecord *nftl, unsigned int address, int len,
->  			      int check_oob)
->  {
-> -	u8 buf[SECTORSIZE + nftl->mbd.mtd->oobsize];
->  	struct mtd_info *mtd = nftl->mbd.mtd;
->  	size_t retlen;
-> -	int i;
-> +	int i, ret;
-> +	u8 *buf;
-> +
-> +	buf = kmalloc(SECTORSIZE + mtd->oobsize, GFP_KERNEL);
-> +	if (!buf)
-> +		return -1;
->  
-> +	ret = -1;
->  	for (i = 0; i < len; i += SECTORSIZE) {
->  		if (mtd_read(mtd, address, SECTORSIZE, &retlen, buf))
-> -			return -1;
-> +			goto out;
->  		if (memcmpb(buf, 0xff, SECTORSIZE) != 0)
-> -			return -1;
-> +			goto out;
->  
->  		if (check_oob) {
->  			if(nftl_read_oob(mtd, address, mtd->oobsize,
->  					 &retlen, &buf[SECTORSIZE]) < 0)
-> -				return -1;
-> +				goto out;
->  			if (memcmpb(buf + SECTORSIZE, 0xff, mtd->oobsize) != 0)
-> -				return -1;
-> +				goto out;
->  		}
->  		address += SECTORSIZE;
->  	}
->  
-> -	return 0;
-> +	ret = 0;
-> +
-> +out:
-> +	kfree(buf);
-> +	return ret;
->  }
->  
->  /* NFTL_format: format a Erase Unit by erasing ALL Erase Zones in the Erase Unit and
+> Can you move these changes to a separate patch: one patch adding the
+> early fixup infra, and another one making use of it for S70GL02GS.
+
+Sure thing.
+
+[snip]
+
+>> --- a/include/linux/mtd/cfi.h
+>> +++ b/include/linux/mtd/cfi.h
+>> @@ -353,6 +353,15 @@ void __xipram cfi_qry_mode_off(uint32_t base, struct
+>> map_info *map,
+>>  
+>>  struct cfi_extquery *cfi_read_pri(struct map_info *map, uint16_t adr, uint16_t
+>>  size,
+>>  			     const char* name);
+>> +
+>> +/* CFI fixup that can occur immediately after reading */
+> 
+>					   ^ "after reading the ID" ?
+
+After reading the CFI structure out of the device, not just the ID. These
+fixups apply to the just-read, byte-swapped, in-memory representation of
+the CFI structure. Is more clarification necessary?
+
+>> +struct cfi_early_fixup {
+>> +	uint16_t mfr;
+>> +	uint16_t id;
+>> +	void (*fixup)(struct cfi_private *cfi);
+>> +};
+>> +
+>> +/* CFI fixup that can only occur after MTD device exists */
+>>  struct cfi_fixup {
+>>  	uint16_t mfr;
+>>  	uint16_t id;
+>> @@ -380,6 +389,7 @@ struct cfi_fixup {
+>>  #define CFI_MFR_TOSHIBA		0x0098
+>>  #define CFI_MFR_WINBOND		0x00DA
+>>  
+>> +void cfi_early_fixup(struct cfi_private *cfi, struct cfi_early_fixup *fixups);
+> 
+> Is cfi_early_fixup() intended to be used outside of cfi_probe.c? If
+> that's not the case, I'd recommend to keep the struct and function def
+> in cfi_probe.c.
+
+It is not, but since this is adding a second fixup mechanism for CFI, I
+thought there may be value in defining both of them in close proximity to
+each  other. That way anyone looking for available mechanisms would find
+both instead of only one or the other. Does that value outweigh it only
+being used in one file?
+
+-Aaron
+
+>>  void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
+>>  
+>>  typedef int (*varsize_frob_t)(struct map_info *map, struct flchip *chip,
+> 
+> Thanks,
+> 
+> Boris
