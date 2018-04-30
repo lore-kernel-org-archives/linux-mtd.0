@@ -1,18 +1,19 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from mail-pg0-x242.google.com ([2607:f8b0:400e:c05::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDHj2-0003nN-Fl
+ id 1fDHj1-0003mS-H5
  for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 22:56:54 +0000
-Received: by mail-pg0-x241.google.com with SMTP id m21-v6so7256064pgv.8
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 15:56:48 -0700 (PDT)
+Received: by mail-pg0-x242.google.com with SMTP id b9-v6so7260276pgf.6
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 15:56:41 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 10/15] fscrypt: make fscrypt_operations.max_namelen an integer
-Date: Mon, 30 Apr 2018 15:51:44 -0700
-Message-Id: <20180430225149.183514-11-ebiggers3@gmail.com>
+Subject: [PATCH 02/15] fscrypt: clean up after fscrypt_prepare_lookup()
+ conversions
+Date: Mon, 30 Apr 2018 15:51:36 -0700
+Message-Id: <20180430225149.183514-3-ebiggers3@gmail.com>
 In-Reply-To: <20180430225149.183514-1-ebiggers3@gmail.com>
 References: <20180430225149.183514-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,124 +27,88 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Now ->max_namelen() is only called to limit the filename length when
-adding NUL padding, and only for real filenames -- not symlink targets.
-It also didn't give the correct length for symlink targets anyway since
-it forgot to subtract 'sizeof(struct fscrypt_symlink_data)'.
-
-Thus, change ->max_namelen from a function to a simple 'unsigned int'
-that gives the filesystem's maximum filename length.
+Now that all filesystems have been converted to use
+fscrypt_prepare_lookup(), we can remove the fscrypt_set_d_op() and
+fscrypt_set_encrypted_dentry() functions as well as un-export
+fscrypt_d_ops.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/fname.c            |  2 +-
- fs/ext4/super.c              |  8 +-------
- fs/f2fs/super.c              |  8 +-------
- fs/ubifs/crypto.c            | 10 +---------
- include/linux/fscrypt_supp.h |  2 +-
- 5 files changed, 5 insertions(+), 25 deletions(-)
+ fs/crypto/crypto.c              |  1 -
+ fs/crypto/fscrypt_private.h     |  1 +
+ include/linux/fscrypt_notsupp.h | 10 ----------
+ include/linux/fscrypt_supp.h    | 14 --------------
+ 4 files changed, 1 insertion(+), 25 deletions(-)
 
-diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
-index c4eb3a235ae4..39091fc31e98 100644
---- a/fs/crypto/fname.c
-+++ b/fs/crypto/fname.c
-@@ -334,7 +334,7 @@ int fscrypt_setup_filename(struct inode *dir, const struct qstr *iname,
- 
- 	if (dir->i_crypt_info) {
- 		if (!fscrypt_fname_encrypted_size(dir, iname->len,
--						  dir->i_sb->s_cop->max_namelen(dir),
-+						  dir->i_sb->s_cop->max_namelen,
- 						  &fname->crypto_buf.len))
- 			return -ENAMETOOLONG;
- 		fname->crypto_buf.name = kmalloc(fname->crypto_buf.len,
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index eb104e8476f0..502c36da292c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1237,19 +1237,13 @@ static bool ext4_dummy_context(struct inode *inode)
- 	return DUMMY_ENCRYPTION_ENABLED(EXT4_SB(inode->i_sb));
- }
- 
--static unsigned ext4_max_namelen(struct inode *inode)
--{
--	return S_ISLNK(inode->i_mode) ? inode->i_sb->s_blocksize :
--		EXT4_NAME_LEN;
--}
--
- static const struct fscrypt_operations ext4_cryptops = {
- 	.key_prefix		= "ext4:",
- 	.get_context		= ext4_get_context,
- 	.set_context		= ext4_set_context,
- 	.dummy_context		= ext4_dummy_context,
- 	.empty_dir		= ext4_empty_dir,
--	.max_namelen		= ext4_max_namelen,
-+	.max_namelen		= EXT4_NAME_LEN,
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index ce654526c0fb..f2b2d8408a01 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -353,7 +353,6 @@ static int fscrypt_d_revalidate(struct dentry *dentry, unsigned int flags)
+ const struct dentry_operations fscrypt_d_ops = {
+ 	.d_revalidate = fscrypt_d_revalidate,
  };
- #endif
+-EXPORT_SYMBOL(fscrypt_d_ops);
  
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 42d564c5ccd0..970ae27f401c 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1930,19 +1930,13 @@ static bool f2fs_dummy_context(struct inode *inode)
- 	return DUMMY_ENCRYPTION_ENABLED(F2FS_I_SB(inode));
- }
- 
--static unsigned f2fs_max_namelen(struct inode *inode)
--{
--	return S_ISLNK(inode->i_mode) ?
--			inode->i_sb->s_blocksize : F2FS_NAME_LEN;
--}
--
- static const struct fscrypt_operations f2fs_cryptops = {
- 	.key_prefix	= "f2fs:",
- 	.get_context	= f2fs_get_context,
- 	.set_context	= f2fs_set_context,
- 	.dummy_context	= f2fs_dummy_context,
- 	.empty_dir	= f2fs_empty_dir,
--	.max_namelen	= f2fs_max_namelen,
-+	.max_namelen	= F2FS_NAME_LEN,
- };
- #endif
- 
-diff --git a/fs/ubifs/crypto.c b/fs/ubifs/crypto.c
-index 616a688f5d8f..55c508fe8131 100644
---- a/fs/ubifs/crypto.c
-+++ b/fs/ubifs/crypto.c
-@@ -24,14 +24,6 @@ static bool ubifs_crypt_empty_dir(struct inode *inode)
- 	return ubifs_check_dir_empty(inode) == 0;
- }
- 
--static unsigned int ubifs_crypt_max_namelen(struct inode *inode)
--{
--	if (S_ISLNK(inode->i_mode))
--		return UBIFS_MAX_INO_DATA;
--	else
--		return UBIFS_MAX_NLEN;
--}
--
- int ubifs_encrypt(const struct inode *inode, struct ubifs_data_node *dn,
- 		  unsigned int in_len, unsigned int *out_len, int block)
+ void fscrypt_restore_control_page(struct page *page)
  {
-@@ -89,5 +81,5 @@ const struct fscrypt_operations ubifs_crypt_operations = {
- 	.get_context		= ubifs_crypt_get_context,
- 	.set_context		= ubifs_crypt_set_context,
- 	.empty_dir		= ubifs_crypt_empty_dir,
--	.max_namelen		= ubifs_crypt_max_namelen,
-+	.max_namelen		= UBIFS_MAX_NLEN,
- };
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index ad6722bae8b7..fb96e493167b 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -106,6 +106,7 @@ extern int fscrypt_do_page_crypto(const struct inode *inode,
+ 				  gfp_t gfp_flags);
+ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
+ 					      gfp_t gfp_flags);
++extern const struct dentry_operations fscrypt_d_ops;
+ 
+ /* fname.c */
+ extern int fname_encrypt(struct inode *inode, const struct qstr *iname,
+diff --git a/include/linux/fscrypt_notsupp.h b/include/linux/fscrypt_notsupp.h
+index 44b50c04bae9..25b6492de6e5 100644
+--- a/include/linux/fscrypt_notsupp.h
++++ b/include/linux/fscrypt_notsupp.h
+@@ -64,16 +64,6 @@ static inline void fscrypt_restore_control_page(struct page *page)
+ 	return;
+ }
+ 
+-static inline void fscrypt_set_d_op(struct dentry *dentry)
+-{
+-	return;
+-}
+-
+-static inline void fscrypt_set_encrypted_dentry(struct dentry *dentry)
+-{
+-	return;
+-}
+-
+ /* policy.c */
+ static inline int fscrypt_ioctl_set_policy(struct file *filp,
+ 					   const void __user *arg)
 diff --git a/include/linux/fscrypt_supp.h b/include/linux/fscrypt_supp.h
-index c9c2cc26bc62..5080cb1bec4c 100644
+index 477a7a6504d2..c9c2cc26bc62 100644
 --- a/include/linux/fscrypt_supp.h
 +++ b/include/linux/fscrypt_supp.h
-@@ -29,7 +29,7 @@ struct fscrypt_operations {
- 	int (*set_context)(struct inode *, const void *, size_t, void *);
- 	bool (*dummy_context)(struct inode *);
- 	bool (*empty_dir)(struct inode *);
--	unsigned (*max_namelen)(struct inode *);
-+	unsigned int max_namelen;
- };
+@@ -74,20 +74,6 @@ static inline struct page *fscrypt_control_page(struct page *page)
  
- struct fscrypt_ctx {
+ extern void fscrypt_restore_control_page(struct page *);
+ 
+-extern const struct dentry_operations fscrypt_d_ops;
+-
+-static inline void fscrypt_set_d_op(struct dentry *dentry)
+-{
+-	d_set_d_op(dentry, &fscrypt_d_ops);
+-}
+-
+-static inline void fscrypt_set_encrypted_dentry(struct dentry *dentry)
+-{
+-	spin_lock(&dentry->d_lock);
+-	dentry->d_flags |= DCACHE_ENCRYPTED_WITH_KEY;
+-	spin_unlock(&dentry->d_lock);
+-}
+-
+ /* policy.c */
+ extern int fscrypt_ioctl_set_policy(struct file *, const void __user *);
+ extern int fscrypt_ioctl_get_policy(struct file *, void __user *);
 -- 
 2.17.0.441.gb46fe60e1d-goog
