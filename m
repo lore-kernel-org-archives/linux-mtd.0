@@ -1,18 +1,18 @@
 Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDHj6-0003qH-Vx
+ id 1fDHj7-0003oe-0A
  for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 22:57:00 +0000
-Received: by mail-pf0-x241.google.com with SMTP id j11so7866033pff.10
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 15:56:53 -0700 (PDT)
+Received: by mail-pf0-x241.google.com with SMTP id a11so7865852pfn.9
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 15:56:51 -0700 (PDT)
 From: Eric Biggers <ebiggers3@gmail.com>
 To: linux-fscrypt@vger.kernel.org,
 	"Theodore Y . Ts'o" <tytso@mit.edu>
 Cc: Jaegeuk Kim <jaegeuk@kernel.org>, linux-ext4@vger.kernel.org,
  linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org,
  Eric Biggers <ebiggers@google.com>
-Subject: [PATCH 15/15] fscrypt: only derive the needed portion of the key
-Date: Mon, 30 Apr 2018 15:51:49 -0700
-Message-Id: <20180430225149.183514-16-ebiggers3@gmail.com>
+Subject: [PATCH 13/15] fscrypt: use a common logging function
+Date: Mon, 30 Apr 2018 15:51:47 -0700
+Message-Id: <20180430225149.183514-14-ebiggers3@gmail.com>
 In-Reply-To: <20180430225149.183514-1-ebiggers3@gmail.com>
 References: <20180430225149.183514-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,111 +26,195 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Eric Biggers <ebiggers@google.com>
 
-Currently the key derivation function in fscrypt uses the master key
-length as the amount of output key material to derive.  This works, but
-it means we can waste time deriving more key material than is actually
-used, e.g. most commonly, deriving 64 bytes for directories which only
-take a 32-byte AES-256-CTS-CBC key.  It also forces us to validate that
-the master key length is a multiple of AES_BLOCK_SIZE, which wouldn't
-otherwise be necessary.
+Use a common function for fscrypt warning and error messages so that all
+the messages are consistently ratelimited, include the "fscrypt:"
+prefix, and include the filesystem name if applicable.
 
-Fix it to only derive the needed length key.
+Also fix up a few of the log messages to be more descriptive.
 
 Signed-off-by: Eric Biggers <ebiggers@google.com>
 ---
- fs/crypto/keyinfo.c | 39 ++++++++++++++++-----------------------
- 1 file changed, 16 insertions(+), 23 deletions(-)
+ fs/crypto/crypto.c          | 28 +++++++++++++++++++++++++---
+ fs/crypto/fname.c           | 10 ++++++----
+ fs/crypto/fscrypt_private.h |  8 ++++++++
+ fs/crypto/hooks.c           |  5 +++--
+ fs/crypto/keyinfo.c         | 27 +++++++++++++++------------
+ 5 files changed, 57 insertions(+), 21 deletions(-)
 
+diff --git a/fs/crypto/crypto.c b/fs/crypto/crypto.c
+index d22887f689ad..a40d7d73b633 100644
+--- a/fs/crypto/crypto.c
++++ b/fs/crypto/crypto.c
+@@ -174,9 +174,10 @@ int fscrypt_do_page_crypto(const struct inode *inode, fscrypt_direction_t rw,
+ 		res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
+ 	skcipher_request_free(req);
+ 	if (res) {
+-		printk_ratelimited(KERN_ERR
+-			"%s: crypto_skcipher_encrypt() returned %d\n",
+-			__func__, res);
++		fscrypt_err(inode->i_sb,
++			    "%scryption failed for inode %lu, block %llu: %d",
++			    (rw == FS_DECRYPT ? "de" : "en"),
++			    inode->i_ino, lblk_num, res);
+ 		return res;
+ 	}
+ 	return 0;
+@@ -416,6 +417,27 @@ int fscrypt_initialize(unsigned int cop_flags)
+ 	return res;
+ }
+ 
++void fscrypt_msg(struct super_block *sb, const char *level,
++		 const char *fmt, ...)
++{
++	static DEFINE_RATELIMIT_STATE(rs, DEFAULT_RATELIMIT_INTERVAL,
++				      DEFAULT_RATELIMIT_BURST);
++	struct va_format vaf;
++	va_list args;
++
++	if (!__ratelimit(&rs))
++		return;
++
++	va_start(args, fmt);
++	vaf.fmt = fmt;
++	vaf.va = &args;
++	if (sb)
++		printk("%sfscrypt (%s): %pV\n", level, sb->s_id, &vaf);
++	else
++		printk("%sfscrypt: %pV\n", level, &vaf);
++	va_end(args);
++}
++
+ /**
+  * fscrypt_init() - Set up for fs encryption.
+  */
+diff --git a/fs/crypto/fname.c b/fs/crypto/fname.c
+index 39091fc31e98..d7a0f682ca12 100644
+--- a/fs/crypto/fname.c
++++ b/fs/crypto/fname.c
+@@ -71,8 +71,9 @@ int fname_encrypt(struct inode *inode, const struct qstr *iname,
+ 	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+-		printk_ratelimited(KERN_ERR
+-				"%s: Error (error code %d)\n", __func__, res);
++		fscrypt_err(inode->i_sb,
++			    "Filename encryption failed for inode %lu: %d",
++			    inode->i_ino, res);
+ 		return res;
+ 	}
+ 
+@@ -115,8 +116,9 @@ static int fname_decrypt(struct inode *inode,
+ 	res = crypto_wait_req(crypto_skcipher_decrypt(req), &wait);
+ 	skcipher_request_free(req);
+ 	if (res < 0) {
+-		printk_ratelimited(KERN_ERR
+-				"%s: Error (error code %d)\n", __func__, res);
++		fscrypt_err(inode->i_sb,
++			    "Filename decryption failed for inode %lu: %d",
++			    inode->i_ino, res);
+ 		return res;
+ 	}
+ 
+diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
+index 8358610d6558..09d6c72635b6 100644
+--- a/fs/crypto/fscrypt_private.h
++++ b/fs/crypto/fscrypt_private.h
+@@ -100,6 +100,14 @@ extern struct page *fscrypt_alloc_bounce_page(struct fscrypt_ctx *ctx,
+ 					      gfp_t gfp_flags);
+ extern const struct dentry_operations fscrypt_d_ops;
+ 
++extern void __printf(3, 4) __cold
++fscrypt_msg(struct super_block *sb, const char *level, const char *fmt, ...);
++
++#define fscrypt_warn(sb, fmt, ...)		\
++	fscrypt_msg(sb, KERN_WARNING, fmt, ##__VA_ARGS__)
++#define fscrypt_err(sb, fmt, ...)		\
++	fscrypt_msg(sb, KERN_ERR, fmt, ##__VA_ARGS__)
++
+ /* fname.c */
+ extern int fname_encrypt(struct inode *inode, const struct qstr *iname,
+ 			 u8 *out, unsigned int olen);
+diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
+index bec06490fb13..926e5df20ec3 100644
+--- a/fs/crypto/hooks.c
++++ b/fs/crypto/hooks.c
+@@ -39,8 +39,9 @@ int fscrypt_file_open(struct inode *inode, struct file *filp)
+ 	dir = dget_parent(file_dentry(filp));
+ 	if (IS_ENCRYPTED(d_inode(dir)) &&
+ 	    !fscrypt_has_permitted_context(d_inode(dir), inode)) {
+-		pr_warn_ratelimited("fscrypt: inconsistent encryption contexts: %lu/%lu",
+-				    d_inode(dir)->i_ino, inode->i_ino);
++		fscrypt_warn(inode->i_sb,
++			     "inconsistent encryption contexts: %lu/%lu",
++			     d_inode(dir)->i_ino, inode->i_ino);
+ 		err = -EPERM;
+ 	}
+ 	dput(dir);
 diff --git a/fs/crypto/keyinfo.c b/fs/crypto/keyinfo.c
-index f248ee9974fa..c4d1388fc9b4 100644
+index f6d6acd37b97..f63bfd6dffd6 100644
 --- a/fs/crypto/keyinfo.c
 +++ b/fs/crypto/keyinfo.c
-@@ -19,17 +19,16 @@
+@@ -103,9 +103,8 @@ static int validate_user_key(struct fscrypt_info *crypt_info,
  
- static struct crypto_shash *essiv_hash_tfm;
- 
--/**
-- * derive_key_aes() - Derive a key using AES-128-ECB
-- * @deriving_key: Encryption key used for derivation.
-- * @source_key:   Source key to which to apply derivation.
-- * @derived_raw_key:  Derived raw key.
-+/*
-+ * Key derivation function.  This generates the derived key by encrypting the
-+ * master key with AES-128-ECB using the inode's nonce as the AES key.
-  *
-- * Return: Zero on success; non-zero otherwise.
-+ * The master key must be at least as long as the derived key.  If the master
-+ * key is longer, then only the first 'derived_keysize' bytes are used.
-  */
--static int derive_key_aes(const u8 deriving_key[FS_KEY_DERIVATION_NONCE_SIZE],
--				const struct fscrypt_key *source_key,
--				u8 derived_raw_key[FS_MAX_KEY_SIZE])
-+static int derive_key_aes(const u8 *master_key,
-+			  const struct fscrypt_context *ctx,
-+			  u8 *derived_key, unsigned int derived_keysize)
- {
- 	int res = 0;
- 	struct skcipher_request *req = NULL;
-@@ -51,14 +50,13 @@ static int derive_key_aes(const u8 deriving_key[FS_KEY_DERIVATION_NONCE_SIZE],
- 	skcipher_request_set_callback(req,
- 			CRYPTO_TFM_REQ_MAY_BACKLOG | CRYPTO_TFM_REQ_MAY_SLEEP,
- 			crypto_req_done, &wait);
--	res = crypto_skcipher_setkey(tfm, deriving_key,
--				     FS_KEY_DERIVATION_NONCE_SIZE);
-+	res = crypto_skcipher_setkey(tfm, ctx->nonce, sizeof(ctx->nonce));
- 	if (res < 0)
+ 	if (master_key->size < min_keysize || master_key->size > FS_MAX_KEY_SIZE
+ 	    || master_key->size % AES_BLOCK_SIZE != 0) {
+-		printk_once(KERN_WARNING
+-				"%s: key size incorrect: %d\n",
+-				__func__, master_key->size);
++		fscrypt_warn(NULL, "key size incorrect: %u",
++			     master_key->size);
+ 		res = -ENOKEY;
  		goto out;
+ 	}
+@@ -132,9 +131,10 @@ static int determine_cipher_type(struct fscrypt_info *ci, struct inode *inode,
+ 	u32 mode;
  
--	sg_init_one(&src_sg, source_key->raw, source_key->size);
--	sg_init_one(&dst_sg, derived_raw_key, source_key->size);
--	skcipher_request_set_crypt(req, &src_sg, &dst_sg, source_key->size,
-+	sg_init_one(&src_sg, master_key, derived_keysize);
-+	sg_init_one(&dst_sg, derived_key, derived_keysize);
-+	skcipher_request_set_crypt(req, &src_sg, &dst_sg, derived_keysize,
- 				   NULL);
- 	res = crypto_wait_req(crypto_skcipher_encrypt(req), &wait);
- out:
-@@ -109,10 +107,9 @@ find_and_lock_process_key(const char *prefix,
- 		goto invalid;
+ 	if (!fscrypt_valid_enc_modes(ci->ci_data_mode, ci->ci_filename_mode)) {
+-		pr_warn_ratelimited("fscrypt: inode %lu uses unsupported encryption modes (contents mode %d, filenames mode %d)\n",
+-				    inode->i_ino,
+-				    ci->ci_data_mode, ci->ci_filename_mode);
++		fscrypt_warn(inode->i_sb,
++			     "inode %lu uses unsupported encryption modes (contents mode %d, filenames mode %d)",
++			     inode->i_ino, ci->ci_data_mode,
++			     ci->ci_filename_mode);
+ 		return -EINVAL;
  	}
  
--	if (payload->size < min_keysize ||
--	    payload->size % AES_BLOCK_SIZE != 0) {
-+	if (payload->size < min_keysize) {
- 		fscrypt_warn(NULL,
--			     "key with description '%s' is too short or is misaligned (got %u bytes, need %u+ bytes)",
-+			     "key with description '%s' is too short (got %u bytes, need %u+ bytes)",
- 			     key->description, payload->size, min_keysize);
- 		goto invalid;
- 	}
-@@ -145,7 +142,7 @@ static int find_and_derive_key(const struct inode *inode,
- 	}
- 	if (IS_ERR(key))
- 		return PTR_ERR(key);
--	err = derive_key_aes(ctx->nonce, payload, derived_key);
-+	err = derive_key_aes(payload->raw, ctx, derived_key, derived_keysize);
- 	up_read(&key->sem);
- 	key_put(key);
- 	return err;
-@@ -325,7 +322,7 @@ int fscrypt_get_encryption_info(struct inode *inode)
- 	 * crypto API as part of key derivation.
- 	 */
- 	res = -ENOMEM;
--	raw_key = kmalloc(FS_MAX_KEY_SIZE, GFP_NOFS);
-+	raw_key = kmalloc(keysize, GFP_NOFS);
- 	if (!raw_key)
+@@ -173,8 +173,9 @@ static int derive_essiv_salt(const u8 *key, int keysize, u8 *salt)
+ 
+ 		tfm = crypto_alloc_shash("sha256", 0, 0);
+ 		if (IS_ERR(tfm)) {
+-			pr_warn_ratelimited("fscrypt: error allocating SHA-256 transform: %ld\n",
+-					    PTR_ERR(tfm));
++			fscrypt_warn(NULL,
++				     "error allocating SHA-256 transform: %ld",
++				     PTR_ERR(tfm));
+ 			return PTR_ERR(tfm);
+ 		}
+ 		prev_tfm = cmpxchg(&essiv_hash_tfm, NULL, tfm);
+@@ -309,8 +310,9 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	ctfm = crypto_alloc_skcipher(cipher_str, 0, 0);
+ 	if (IS_ERR(ctfm)) {
+ 		res = PTR_ERR(ctfm);
+-		pr_debug("%s: error %d (inode %lu) allocating crypto tfm\n",
+-			 __func__, res, inode->i_ino);
++		fscrypt_warn(inode->i_sb,
++			     "error allocating '%s' transform for inode %lu: %d",
++			     cipher_str, inode->i_ino, res);
  		goto out;
- 
-@@ -343,10 +340,6 @@ int fscrypt_get_encryption_info(struct inode *inode)
  	}
  	crypt_info->ci_ctfm = ctfm;
- 	crypto_skcipher_set_flags(ctfm, CRYPTO_TFM_REQ_WEAK_KEY);
--	/*
--	 * if the provided key is longer than keysize, we use the first
--	 * keysize bytes of the derived key only
--	 */
- 	res = crypto_skcipher_setkey(ctfm, raw_key, keysize);
- 	if (res)
- 		goto out;
+@@ -327,8 +329,9 @@ int fscrypt_get_encryption_info(struct inode *inode)
+ 	    crypt_info->ci_data_mode == FS_ENCRYPTION_MODE_AES_128_CBC) {
+ 		res = init_essiv_generator(crypt_info, raw_key, keysize);
+ 		if (res) {
+-			pr_debug("%s: error %d (inode %lu) allocating essiv tfm\n",
+-				 __func__, res, inode->i_ino);
++			fscrypt_warn(inode->i_sb,
++				     "error initializing ESSIV generator for inode %lu: %d",
++				     inode->i_ino, res);
+ 			goto out;
+ 		}
+ 	}
 -- 
 2.17.0.441.gb46fe60e1d-goog
