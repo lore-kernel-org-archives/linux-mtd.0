@@ -1,9 +1,9 @@
 Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fD47q-00060o-UX
- for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 08:25:40 +0000
-Received: by mail-wr0-x242.google.com with SMTP id o4-v6so7203968wrm.0
- for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 01:25:24 -0700 (PDT)
+ id 1fD47q-00060X-VK
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 08:25:43 +0000
+Received: by mail-wr0-x242.google.com with SMTP id o2-v6so4292739wrj.13
+ for <linux-mtd@lists.infradead.org>; Mon, 30 Apr 2018 01:25:21 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
  Russell King <linux@armlinux.org.uk>,
@@ -15,10 +15,10 @@ To: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
 Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org,
  Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 04/12] ARM: davinci: dm355-evm: specify the chipselect in
+Subject: [PATCH 02/12] ARM: davinci: da830-evm: specify the chipselect in
  davinci_nand_pdata
-Date: Mon, 30 Apr 2018 10:24:45 +0200
-Message-Id: <20180430082453.8091-5-brgl@bgdev.pl>
+Date: Mon, 30 Apr 2018 10:24:43 +0200
+Message-Id: <20180430082453.8091-3-brgl@bgdev.pl>
 In-Reply-To: <20180430082453.8091-1-brgl@bgdev.pl>
 References: <20180430082453.8091-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,20 +37,20 @@ instead of the platform_device id number.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-dm355-evm.c | 1 +
+ arch/arm/mach-davinci/board-da830-evm.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-davinci/board-dm355-evm.c b/arch/arm/mach-davinci/board-dm355-evm.c
-index ea03ddcd35f5..ecd67a978aad 100644
---- a/arch/arm/mach-davinci/board-dm355-evm.c
-+++ b/arch/arm/mach-davinci/board-dm355-evm.c
-@@ -77,6 +77,7 @@ static struct mtd_partition davinci_nand_partitions[] = {
+diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+index d283faefaf97..7cfb6f7e39e7 100644
+--- a/arch/arm/mach-davinci/board-da830-evm.c
++++ b/arch/arm/mach-davinci/board-da830-evm.c
+@@ -304,6 +304,7 @@ static struct davinci_aemif_timing da830_evm_nandflash_timing = {
  };
  
- static struct davinci_nand_pdata davinci_nand_data = {
-+	.core_chipsel		= 0,
- 	.mask_chipsel		= BIT(14),
- 	.parts			= davinci_nand_partitions,
- 	.nr_parts		= ARRAY_SIZE(davinci_nand_partitions),
+ static struct davinci_nand_pdata da830_evm_nand_pdata = {
++	.core_chipsel	= 1,
+ 	.parts		= da830_evm_nand_partitions,
+ 	.nr_parts	= ARRAY_SIZE(da830_evm_nand_partitions),
+ 	.ecc_mode	= NAND_ECC_HW,
 -- 
 2.17.0
