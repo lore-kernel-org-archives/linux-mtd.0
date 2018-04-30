@@ -1,21 +1,20 @@
-Date: Mon, 30 Apr 2018 12:09:30 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
- Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 00/12] mtd: nand: davinci: stop using pdev->id as
- chipselect
-Message-ID: <20180430120930.4768a7cb@bbrezillon>
-In-Reply-To: <20180430082453.8091-1-brgl@bgdev.pl>
-References: <20180430082453.8091-1-brgl@bgdev.pl>
+Received: from mail.intenta.de ([178.249.25.132])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fD65z-0008WN-2N
+ for linux-mtd@lists.infradead.org; Mon, 30 Apr 2018 10:31:59 +0000
+Date: Mon, 30 Apr 2018 12:31:28 +0200
+From: Helmut Grohne <h.grohne@intenta.de>
+To: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>
+CC: Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2] jffs2: put directories f->sem on a separate lockdep class
+Message-ID: <20180430103126.w44pr4u3pyjbatbp@laureti-dev>
+References: <cover.1524823321.git.h.grohne@intenta.de>
+ <d36fa783db66ec430565a065245ebcacfea39e13.1524823321.git.h.grohne@intenta.de>
+ <1524833695.18504.36.camel@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1524833695.18504.36.camel@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +24,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bartosz,
+We get a lockdep warning if we read a directory (e.g. ls) and fault a
+page on a regular file:
 
-On Mon, 30 Apr 2018 10:24:41 +0200
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+[  181.206207] mmaptest/392 is trying to acquire lock:
+[  181.211066]  (&f->sem){+.+.}, at: [<c01ff7d8>] jffs2_readpage+0x30/0x5c
+[  181.217663]
+[  181.217663] but task is already holding lock:
+[  181.223477]  (&mm->mmap_sem){++++}, at: [<c04928e8>] do_page_fault+0xa8/0x454
+[  181.230596]
+[  181.230596] which lock already depends on the new lock.
+[  181.230596]
+[  181.238755]
+[  181.238755] the existing dependency chain (in reverse order) is:
+[  181.246219]
+[  181.246219] -> #1 (&mm->mmap_sem){++++}:
+[  181.251614]        __might_fault+0x90/0xc0
+[  181.255694]        filldir+0xa4/0x1f4
+[  181.259334]        jffs2_readdir+0xd8/0x1d4
+[  181.263499]        iterate_dir+0x78/0x128
+[  181.267490]        SyS_getdents+0x8c/0x12c
+[  181.271576]        ret_fast_syscall+0x0/0x28
+[  181.275818]
+[  181.275818] -> #0 (&f->sem){+.+.}:
+[  181.280690]        lock_acquire+0xfc/0x2b0
+[  181.284763]        __mutex_lock+0x8c/0xb0c
+[  181.288842]        mutex_lock_nested+0x2c/0x34
+[  181.293272]        jffs2_readpage+0x30/0x5c
+[  181.297438]        filemap_fault+0x600/0x73c
+[  181.301690]        __do_fault+0x28/0xb8
+[  181.305510]        handle_mm_fault+0x854/0xec0
+[  181.309937]        do_page_fault+0x384/0x454
+[  181.314188]        do_DataAbort+0x4c/0xc8
+[  181.318181]        __dabt_usr+0x44/0x60
+[  181.321999]        0xb6dffb02
 
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> 
-> We have the 'ti,davinci-chipselect' property in the device tree, but
-> when using platform data the driver silently uses the id field of
-> struct platform_device as the chipselect. This is confusing and we
-> almost broke the nand support again recently after converting the
-> platform to common clock framework (which changed the device id in the
-> clock lookup - the problem is gone now that we no longer acquire the
-> clock in the nand driver.
-> 
-> This series adds a new field to davinci-nand platform data, then makes
-> all board use it and finally modifies the two drivers that make use of
-> it.
-> 
-> Bartosz Golaszewski (12):
->   mtd: nand: davinci: store the core chipselect number in platform data
+Like with inode->i_rwsem, we recognize that this can never result in a
+dead lock, because we cannot page fault directory inodes and we cannot
+call getdents on non-directories. Thus we need different lockdep classes
+depending on the mode. This mirrors what
+lockdep_annotate_inode_mutex_key does to inodes.
 
-Raw NAND related patches (that is, everything that is not onenand or
-SPI NAND) should use the "mtd: rawnand: " prefix now. Other than that,
-I'm fine with the patch series, just let me know how you want to have it
-merged (through the MTD tree or the davinci tree).
+Link: https://www.spinics.net/lists/linux-rt-users/msg07644.html
+Signed-off-by: Helmut Grohne <h.grohne@intenta.de>
+Cc: Peter Zijlstra <peterz@infradead.org>
+---
+I have reworked only this last patch of the series to avoid sending three
+extra mails. If you prefer the full series, I can resend it.
 
-Thanks,
+Changing lock classes after using a lock is not a common thing to do, yet
+this patch does exactly that. Thus I opted for performing two extra tests
+to gain more confidence in the correctness of this approach:
 
-Boris
+ * I tried adding a BUG_ON(!mutex_is_locked(&f->sem)) to before the lock
+   class change to validate that the mutex on the I_NEW inode cannot be
+   held. This call did not error out in my tests.
+
+ * I tried adding a mutex_clear(&f->sem) to jffs2_do_clear_inode and
+   reinitialized it before setting the mutex class to validate that it
+   really isn't used in the relevant time frame. This did not cause
+   lockdep to complain in my tests.
+
+Changes in v2:
+ - Initialize the lock class on every inode initialization rather than just the
+   initial one in jffs2_i_init_once. (Thanks to David Woodhouse for pointing at
+   this issue.)
+ - Properly wrap the commit message to make checkpatch.pl fully happy.
+
+---
+ fs/jffs2/fs.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 89a10b398d00..9bc3cd204732 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -26,6 +26,9 @@
+ #include <linux/crc32.h>
+ #include "nodelist.h"
+ 
++static struct lock_class_key jffs2_inode_info_sem_key,
++	 jffs2_inode_info_sem_dir_key;
++
+ static int jffs2_flash_setup(struct jffs2_sb_info *c);
+ 
+ int jffs2_do_setattr (struct inode *inode, struct iattr *iattr)
+@@ -277,6 +280,11 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 
+ 	inode->i_mode = jemode_to_cpu(latest_node.mode);
+ 
++	/* Mirror lock class of inode->i_rwsem, see
++	 * lockdep_annotate_inode_mutex_key.
++	 */
++	lockdep_set_class(&f->sem, S_ISDIR(inode->i_mode) ?
++		&jffs2_inode_info_sem_dir_key : &jffs2_inode_info_sem_key);
+ 	mutex_lock(&f->sem);
+ 
+ 	i_uid_write(inode, je16_to_cpu(latest_node.uid));
+@@ -439,6 +447,11 @@ struct inode *jffs2_new_inode (struct inode *dir_i, umode_t mode, struct jffs2_r
+ 
+ 	f = JFFS2_INODE_INFO(inode);
+ 	jffs2_init_inode_info(f);
++	/* Mirror lock class of inode->i_rwsem, see
++	 * lockdep_annotate_inode_mutex_key.
++	 */
++	lockdep_set_class(&f->sem, S_ISDIR(inode->i_mode) ?
++		&jffs2_inode_info_sem_dir_key : &jffs2_inode_info_sem_key);
+ 	mutex_lock(&f->sem);
+ 
+ 	memset(ri, 0, sizeof(*ri));
+-- 
+2.11.0
