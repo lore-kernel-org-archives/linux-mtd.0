@@ -1,22 +1,36 @@
-Date: Tue, 1 May 2018 17:02:01 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Sekhar Nori <nsekhar@ti.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
- Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 00/12] mtd: nand: davinci: stop using pdev->id as
- chipselect
-Message-ID: <20180501170201.6b3c034a@bbrezillon>
-In-Reply-To: <276f8b2b-34a1-ec00-e348-21b5bcb2f0c0@ti.com>
-References: <20180430082453.8091-1-brgl@bgdev.pl>
- <20180430120930.4768a7cb@bbrezillon>
- <276f8b2b-34a1-ec00-e348-21b5bcb2f0c0@ti.com>
+Received: from mail-wr0-x234.google.com ([2a00:1450:400c:c0c::234])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fDYSr-0007ki-06
+ for linux-mtd@lists.infradead.org; Tue, 01 May 2018 16:49:18 +0000
+Received: by mail-wr0-x234.google.com with SMTP id o4-v6so11315097wrm.0
+ for <linux-mtd@lists.infradead.org>; Tue, 01 May 2018 09:49:06 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode for
+ the cells list
+To: Alban <albeu@free.fr>
+Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+References: <1521933899-362-1-git-send-email-albeu@free.fr>
+ <1521933899-362-2-git-send-email-albeu@free.fr>
+ <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
+ <20180417165420.423a691b@avionic-0020>
+ <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
+ <20180417180040.04f53495@avionic-0020> <20180418134119.2e587621@avionic-0020>
+ <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
+ <20180418143243.3c23493c@avionic-0020>
+ <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
+ <20180418153440.187ed16e@avionic-0020>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
+Date: Tue, 1 May 2018 17:49:03 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180418153440.187ed16e@avionic-0020>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,45 +41,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 May 2018 16:01:42 +0530
-Sekhar Nori <nsekhar@ti.com> wrote:
 
-> On Monday 30 April 2018 03:39 PM, Boris Brezillon wrote:
-> > Hi Bartosz,
-> > 
-> > On Mon, 30 Apr 2018 10:24:41 +0200
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >   
-> >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >>
-> >> We have the 'ti,davinci-chipselect' property in the device tree, but
-> >> when using platform data the driver silently uses the id field of
-> >> struct platform_device as the chipselect. This is confusing and we
-> >> almost broke the nand support again recently after converting the
-> >> platform to common clock framework (which changed the device id in the
-> >> clock lookup - the problem is gone now that we no longer acquire the
-> >> clock in the nand driver.
-> >>
-> >> This series adds a new field to davinci-nand platform data, then makes
-> >> all board use it and finally modifies the two drivers that make use of
-> >> it.
-> >>
-> >> Bartosz Golaszewski (12):
-> >>   mtd: nand: davinci: store the core chipselect number in platform data  
-> > 
-> > Raw NAND related patches (that is, everything that is not onenand or
-> > SPI NAND) should use the "mtd: rawnand: " prefix now. Other than that,
-> > I'm fine with the patch series, just let me know how you want to have it  
+
+On 18/04/18 14:34, Alban wrote:
+> On Wed, 18 Apr 2018 13:53:56 +0100
+> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 > 
-> Hi Boris, should I convert the "I'm fine" to some sort of formal tag? If
-> yes, what is the tag and for which patches?
+>> On 18/04/18 13:32, Alban wrote:
+>>>> I was also suggesting you to use nvmem-cell subnode, but make it a
+>>>> proper nvmem provider device, rather than reusing its parent device.
+>>>>
+>>>> You would end up some thing like this in dt.
+>>>>
+>>>> flash@0 {
+>>>> 	#address-cells = <1>;
+>>>> 	#size-cells = <1>;
+>>>> 	compatible = "s25sl064a";
+>>>> 	reg = <0>;
+>>>>
+>>>> 	nvmem-cells {
+>>>> 		compatible = "mtd-nvmem";
+>>>> 		#address-cells = <1>;
+>>>> 		#size-cells = <1>;
+>>>>
+>>>> 		calibration: calib@404 {
+>>>> 			reg = <0x404 0x10>;
+>>>> 		};
+>>>> 	};
+>>>> };
+>>> But the root cause is in the nvmem binding, this conflict could exists
+>> No, the root cause is because of passing wrong device instance to nvmem
+>> core. And trying to workaround is the actual issue.
+> 
+> The data is stored on the MTD, so the nvmem provider is the MTD device.
+> I don't think it is a good idea to have a virtual device in the DT to
+> accommodate the nvmem API.
+> 
+Yep, I agree! this is same issue if we make nvmem-cells a child of nvmem 
+provider too.
 
-Yep, you can add
+However, I would like to see this moving forward.
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+I can think of one possible solution here, which is, adding 
+"nvmem-mtd-cell" or "nvmem-cell" compatible string to each cell. The 
+problem you mentioned regarding #address-cells and #size-cells with 
+provider need to be addressed in nvmem core.
 
-on patches 1 and 11.
+Currently nvmem core only support offsets of 32 bits, if you are 
+expecting a 64 bit offsets then we should add that as a feature to nvmem 
+core.
 
-Thanks,
+nvmem core as it is today should work fine with 32 bit offsets for mtd 
+cases.
 
-Boris
+what do you think?
+
+thanks,
+srini
