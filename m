@@ -1,28 +1,27 @@
-Subject: Re: [PATCH 01/12] mtd: nand: davinci: store the core chipselect
- number in platform data
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-CC: Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
- Lindgren <tony@atomide.com>, Krzysztof Kozlowski <krzk@kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>
-References: <20180430082453.8091-1-brgl@bgdev.pl>
- <20180430082453.8091-2-brgl@bgdev.pl>
- <3dccc5af-2df1-8374-e4e8-0a8b9ea1ae99@ti.com>
- <8b7e4588-5a35-6c18-fe60-148d6ccf778c@ti.com>
- <447b4f2f-27c8-f552-d058-3b2eba71a765@ti.com>
- <CAMRc=Md4_QvyMP_vwwD8qpONr3SmWoxn+BJDd1OBHdR6rCLoWg@mail.gmail.com>
-From: Sekhar Nori <nsekhar@ti.com>
-Message-ID: <16cff7a1-4353-5e03-fd0d-54cfe36a85ec@ti.com>
-Date: Wed, 2 May 2018 20:30:55 +0530
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fDtgb-0000ZL-GL
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2018 15:28:55 +0000
+Date: Wed, 2 May 2018 17:28:30 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Steve deRosier <derosier@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, Tobi Wulff <Tobi.Wulff@alliedtelesis.co.nz>
+Subject: Re: NAND timeout issues with blank chip and Marvell NFC
+Message-ID: <20180502172830.7697e75f@xps13>
+In-Reply-To: <7db679c90cc041c78a1eb1fadf505bcd@svr-chch-ex1.atlnz.lc>
+References: <cf834bbf9ac14cfc8ad07e4921245f6f@svr-chch-ex1.atlnz.lc>
+ <CALLGbRJOGq_3xtWRojPtjVSgnxt-GhwYKUvwEgQKLct=XtEjAw@mail.gmail.com>
+ <20180424180837.398957ba@xps13>
+ <72ff5349ac6e48a9ab74986947572108@svr-chch-ex1.atlnz.lc>
+ <7cd09dc2689643e9a8e0751e1cba3e11@svr-chch-ex1.atlnz.lc>
+ <d9eff05a579344d9a569e5bc0e1ec6bf@svr-chch-ex1.atlnz.lc>
+ <20180426090321.1a5dee5b@xps13>
+ <7db679c90cc041c78a1eb1fadf505bcd@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-In-Reply-To: <CAMRc=Md4_QvyMP_vwwD8qpONr3SmWoxn+BJDd1OBHdR6rCLoWg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,94 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 02 May 2018 04:15 PM, Bartosz Golaszewski wrote:
-> 2018-05-01 12:29 GMT+02:00 Sekhar Nori <nsekhar@ti.com>:
->> On Tuesday 01 May 2018 03:23 PM, Sekhar Nori wrote:
->>> On Tuesday 01 May 2018 02:55 PM, Sekhar Nori wrote:
->>>> On Monday 30 April 2018 01:54 PM, Bartosz Golaszewski wrote:
->>>>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>>>
->>>>> We have the 'ti,davinci-chipselect' property in the device tree, but
->>>>> when using platform data the driver silently uses the id field of
->>>>> struct platform_device as the chipselect. This is confusing and we
->>>>> almost broke the nand support again recently after converting the
->>>>> platform to common clock framework (which changed the device id in the
->>>>> clock lookup - the problem is gone now that we no longer acquire the
->>>>> clock in the nand driver.
->>>>>
->>>>> This patch adds a new filed - core_chipsel - to the platform_data.
->>>>
->>>> s/filed/field
->>>>
->>>>> Subsequent patches will convert the platforms to using this new field.
->>>>
->>>> Can you add a comment for this new field too, like how we have for most
->>>> other fields?
->>>>
->>>> Curious on what 'core' in core_chipsel means. Something to do with
->>>> chip-select offset we have on DA850?
->>>
->>> Looks like you may have just picked the terminology from DaVinci NAND
->>> driver (introduced back in 2009). But in this context, it means the
->>> 0-indexed chip-select number that of the asynchronous memory interface
->>> to which the NAND device is connected.
->>>
->>> So, may be a comment here will suffice.
->>
->> This is what I committed:
->>
-> 
-> I don't see it in your tree yet.
+Hi Chris,
 
-I pushed it out now. Wanted to do some basic testing.
 
-> 
->> --8<--
->> commit 533d93703fa717fdf74c4fb711c868c4fdc8b475 (HEAD -> refs/heads/v4.18/nand-cs-simplification)
->> Author:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
->> AuthorDate: Mon Apr 30 10:24:42 2018 +0200
->> Commit:     Sekhar Nori <nsekhar@ti.com>
->> CommitDate: Tue May 1 15:57:47 2018 +0530
->>
->>     mtd: nand: davinci: store the core chipselect number in platform data
->>
->>     We have the 'ti,davinci-chipselect' property in the device tree, but
->>     when using platform data the driver silently uses the id field of
->>     struct platform_device as the chipselect. This is confusing and we
->>     almost broke the nand support again recently after converting the
->>     platform to common clock framework (which changed the device id in the
->>     clock lookup - the problem is gone now that we no longer acquire the
->>     clock in the nand driver.
->>
->>     This patch adds a new field - core_chipsel - to the platform_data.
->>     Subsequent patches will convert the platforms to using this new field.
->>
->>     Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>     Signed-off-by: Sekhar Nori <nsekhar@ti.com>
->>
->> diff --git a/include/linux/platform_data/mtd-davinci.h b/include/linux/platform_data/mtd-davinci.h
->> index f1a2cf655bdb..1bbfa27cccb4 100644
->> --- a/include/linux/platform_data/mtd-davinci.h
->> +++ b/include/linux/platform_data/mtd-davinci.h
->> @@ -56,6 +56,16 @@ struct davinci_nand_pdata {          /* platform_data */
->>         uint32_t                mask_ale;
->>         uint32_t                mask_cle;
->>
->> +       /*
->> +        * 0-indexed chip-select number of the asynchronous
->> +        * interface to which the NAND device has been connected.
->> +        *
->> +        * So, if you have NAND connected to CS3 of DA850, you
->> +        * will pass '1' here. Since the asynchronous interface
->> +        * on DA850 starts from CS2.
->> +        */
-> 
-> Maybe we should add that on all other DaVinci SoCs the async interface
-> starts from CS0?
+> >>>>>>> nand: device found, Manufacturer ID: 0xc2, Chip ID: 0xda
+> >>>>>>> nand: Macronix MX30LF2G18AC
+> >>>>>>> nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB siz=
+e: 64
 
-I just intended it to be an example (and chose the more confusing one).
-I had already created the tree, not just pushed it out, so I went with
-what I already have.
+When forcing the ONFI parameters in the core to match the
+characteristics of your chip, it looks like I hit the same problems:
+http://code.bulix.org/nun6tn-327366
+
+I will search for a fix and let you know.
+
+>=20
+> --- 8< ---
+> Subject: [PATCH] mtd: rawnand: marvell: pass ms delay to wait_op
+>=20
+> marvell_nfc_wait_op() expects the delay to be expressed in milliseconds
+> but nand_sdr_timings uses picoseconds. Use PSEC_TO_MSEC when passing
+> tPROG_max to marvell_nfc_wait_op().
+>=20
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+>   drivers/mtd/nand/raw/marvell_nand.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c=20
+> b/drivers/mtd/nand/raw/marvell_nand.c
+> index 1d779a35ac8e..e4b964fd40d8 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -1074,7 +1074,7 @@ static int=20
+> marvell_nfc_hw_ecc_hmg_do_write_page(struct nand_chip *chip,
+>   		return ret;
+>=20
+>   	ret =3D marvell_nfc_wait_op(chip,
+> -				  chip->data_interface.timings.sdr.tPROG_max);
+> +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
+>   	return ret;
+>   }
+>=20
+> @@ -1494,7 +1494,7 @@ static int=20
+> marvell_nfc_hw_ecc_bch_write_page(struct mtd_info *mtd,
+>   	}
+>=20
+>   	ret =3D marvell_nfc_wait_op(chip,
+> -				  chip->data_interface.timings.sdr.tPROG_max);
+> +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
+>=20
+>   	marvell_nfc_disable_hw_ecc(chip);
+>=20
+> --- 8< ---
+
+Could you please send this patch officially with the proper Fixes:/Cc:
+tags?
 
 Thanks,
-Sekhar
+Miqu=C3=A8l
+
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
