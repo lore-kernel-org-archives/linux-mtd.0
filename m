@@ -1,32 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDpAe-0002hp-53
- for linux-mtd@lists.infradead.org; Wed, 02 May 2018 10:39:41 +0000
-Date: Wed, 2 May 2018 12:39:14 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- "shreeya.patel23498@gmail.com" <shreeya.patel23498@gmail.com>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "Bos, Ties \(Nokia - US/Sunnyvale\)"
- <ties.bos@nokia.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "jagdish.gediya@nxp.com"
- <jagdish.gediya@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
-Message-ID: <20180502123914.3755a634@bbrezillon>
-In-Reply-To: <VI1PR07MB161575ACAE380B18882E8EE981810@VI1PR07MB1615.eurprd07.prod.outlook.com>
-References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
- <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
- <20180428134218.3ae857eb@xps13>
- <VI1PR07MB161575ACAE380B18882E8EE981810@VI1PR07MB1615.eurprd07.prod.outlook.com>
+ id 1fDpCl-0004O2-5l
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2018 10:41:49 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23991534AbeEBKldkQxAh (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Wed, 2 May 2018 12:41:33 +0200
+Date: Wed, 2 May 2018 12:41:32 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>, Roger Quadros <rogerq@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
+ "H. Nikolaus Schaller" <hns@goldelico.com>,
+ Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v3] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
+Message-ID: <20180502104132.GA12979@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,39 +30,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 May 2018 05:01:23 +0000
-"Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com> wrote:
+dma_map_single does not work for vmalloc-ed buffers,
+so disable DMA in this case.
 
-> Hi Miqu=C3=A8l and Boris,
->=20
-> Thank you for your response and feedback.  I've modified the fix based on=
- your comments. =20
-> Please see the updated patch file at the end of this message (also in att=
-achment).
-> My answers to your comments/questions are inline in the previous message.
->=20
-> Here is the answer to Boris question in another email thread:
->=20
-> > What if some NANDs have 4 or more copies of the param page? =20
->  [Jane] The ONFI spec defines that the parameter page and its two redunda=
-nt copies are mandatory. =20
-> The additional redundant pages are optional.  Currently, the FSL NAND dri=
-ver only reads the first=20
-> parameter page.  This patch is to fix the driver to meet the mandatory re=
-quirement in the spec.=20
-> We got a batch of particularly bad NAND chips recently and we needed thes=
-e changes to make them=20
-> work reliably over temperature.  The patch was verified using these bad c=
-hips.
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Reported-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+Tested-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+---
+ Changes:
+  -v2: Added Tested-by tag, based on v4.17-rc1 (no change in patch itself)
+  -v3: Reworded commit log
 
-And that proves my point. The core is reading 3 param pages [1], but
-since this driver was trying to guess how many bytes to read from
-->cmdfunc() and did not guess correctly you ended up with a partially
-working implementation (works only if the first PARAM page is valid).
-Now, you fix it to read 3 PARAM pages, but what if we decide to read
-more to cope with MLC NANDs where even more copy are needed to have one
-valid version? You'll have to patch ->cmdfunc() again, just because
-you're trying to guess something that the core is supposed to tell you.
+ drivers/mtd/nand/onenand/omap2.c | 105 +++++++++++--------------------
+ 1 file changed, 38 insertions(+), 67 deletions(-)
 
-[1]https://elixir.bootlin.com/linux/v4.17-rc3/source/drivers/mtd/nand/raw/n=
-and_base.c#L5115
+diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
+index 9c159f0dd9a6..321137158ff3 100644
+--- a/drivers/mtd/nand/onenand/omap2.c
++++ b/drivers/mtd/nand/onenand/omap2.c
+@@ -375,56 +375,42 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+ {
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+-	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	struct device *dev = &c->pdev->dev;
+ 	void *buf = (void *)buffer;
++	dma_addr_t dma_src, dma_dst;
++	int bram_offset, err;
+ 	size_t xtra;
+-	int ret;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+-	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+-		goto out_copy;
+-
+-	/* panic_write() may be in an interrupt context */
+-	if (in_interrupt() || oops_in_progress)
++	/*
++	 * If the buffer address is not DMA-able, len is not long enough to make
++	 * DMA transfers profitable or panic_write() may be in an interrupt
++	 * context fallback to PIO mode.
++	 */
++	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
++	    count < 384 || in_interrupt() || oops_in_progress )
+ 		goto out_copy;
+ 
+-	if (buf >= high_memory) {
+-		struct page *p1;
+-
+-		if (((size_t)buf & PAGE_MASK) !=
+-		    ((size_t)(buf + count - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(buf);
+-		if (!p1)
+-			goto out_copy;
+-		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+-	}
+-
+ 	xtra = count & 3;
+ 	if (xtra) {
+ 		count -= xtra;
+ 		memcpy(buf + count, this->base + bram_offset + count, xtra);
+ 	}
+ 
++	dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
+ 	dma_src = c->phys_base + bram_offset;
+-	dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
+-	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
+-		dev_err(&c->pdev->dev,
+-			"Couldn't DMA map a %d byte buffer\n",
+-			count);
+-		goto out_copy;
+-	}
+ 
+-	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+-	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+-
+-	if (ret) {
+-		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++	if (dma_mapping_error(dev, dma_dst)) {
++		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+ 		goto out_copy;
+ 	}
+ 
+-	return 0;
++	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
++	dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
++	if (!err)
++		return 0;
++
++	dev_err(dev, "timeout waiting for DMA\n");
+ 
+ out_copy:
+ 	memcpy(buf, this->base + bram_offset, count);
+@@ -437,49 +423,34 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+ {
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 	struct onenand_chip *this = mtd->priv;
+-	dma_addr_t dma_src, dma_dst;
+-	int bram_offset;
++	struct device *dev = &c->pdev->dev;
+ 	void *buf = (void *)buffer;
+-	int ret;
++	dma_addr_t dma_src, dma_dst;
++	int bram_offset, err;
+ 
+ 	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+-	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+-		goto out_copy;
+-
+-	/* panic_write() may be in an interrupt context */
+-	if (in_interrupt() || oops_in_progress)
++	/*
++	 * If the buffer address is not DMA-able, len is not long enough to make
++	 * DMA transfers profitable or panic_write() may be in an interrupt
++	 * context fallback to PIO mode.
++	 */
++	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
++	    count < 384 || in_interrupt() || oops_in_progress )
+ 		goto out_copy;
+ 
+-	if (buf >= high_memory) {
+-		struct page *p1;
+-
+-		if (((size_t)buf & PAGE_MASK) !=
+-		    ((size_t)(buf + count - 1) & PAGE_MASK))
+-			goto out_copy;
+-		p1 = vmalloc_to_page(buf);
+-		if (!p1)
+-			goto out_copy;
+-		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+-	}
+-
+-	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
++	dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
+ 	dma_dst = c->phys_base + bram_offset;
+-	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
+-		dev_err(&c->pdev->dev,
+-			"Couldn't DMA map a %d byte buffer\n",
+-			count);
+-		return -1;
+-	}
+-
+-	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+-	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+-
+-	if (ret) {
+-		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
++	if (dma_mapping_error(dev, dma_src)) {
++		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+ 		goto out_copy;
+ 	}
+ 
+-	return 0;
++	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
++	dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
++	if (!err)
++		return 0;
++
++	dev_err(dev, "timeout waiting for DMA\n");
+ 
+ out_copy:
+ 	memcpy(this->base + bram_offset, buf, count);
+-- 
+2.17.0
