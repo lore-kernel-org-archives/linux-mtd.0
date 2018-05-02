@@ -1,30 +1,32 @@
-Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fDmmp-0004mC-F4
- for linux-mtd@lists.infradead.org; Wed, 02 May 2018 08:06:54 +0000
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990404AbeEBIGhPmv6U (ORCPT
- <rfc822;linux-mtd@lists.infradead.org>);
- Wed, 2 May 2018 10:06:37 +0200
-Date: Wed, 2 May 2018 10:06:36 +0200
-Sender: Ladislav Michl <ladis@linux-mips.org>
-From: Ladislav Michl <ladis@linux-mips.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>, Roger Quadros <rogerq@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- "H. Nikolaus Schaller" <hns@goldelico.com>,
- Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: [PATCH v2] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
-Message-ID: <20180502080636.GA2124@lenoch>
-References: <20180416065256.GA24455@lenoch>
- <20180420220134.3021860f@bbrezillon>
+ id 1fDmqH-0005y9-22
+ for linux-mtd@lists.infradead.org; Wed, 02 May 2018 08:10:27 +0000
+Date: Wed, 2 May 2018 10:10:11 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
+Cc: Boris Brezillon <Boris.Brezillon@bootlin.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "Bos, Ties (Nokia - US/Sunnyvale)"
+ <ties.bos@nokia.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>, "jagdish.gediya@nxp.com"
+ <jagdish.gediya@nxp.com>, "shreeya.patel23498@gmail.com"
+ <shreeya.patel23498@gmail.com>
+Subject: Re: [PATCH 1/2] Fix FSL NAND driver to read all ONFI parameter pages
+Message-ID: <20180502101011.797e4ec4@xps13>
+In-Reply-To: <VI1PR07MB161575ACAE380B18882E8EE981810@VI1PR07MB1615.eurprd07.prod.outlook.com>
+References: <1524788396-32380-1-git-send-email-Jane.Wan@nokia.com>
+ <1524788396-32380-2-git-send-email-Jane.Wan@nokia.com>
+ <20180428134218.3ae857eb@xps13>
+ <VI1PR07MB161575ACAE380B18882E8EE981810@VI1PR07MB1615.eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180420220134.3021860f@bbrezillon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +36,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Jane,
 
-(and apologies for delay)
+On Tue, 1 May 2018 05:01:23 +0000, "Wan, Jane (Nokia - US/Sunnyvale)"
+<jane.wan@nokia.com> wrote:
 
-On Fri, Apr 20, 2018 at 10:01:34PM +0200, Boris Brezillon wrote:
-> Hi Ladislav,
-> 
-> On Mon, 16 Apr 2018 08:52:59 +0200
-> Ladislav Michl <ladis@linux-mips.org> wrote:
-> 
-> > dma_map_single doesn't get the proper DMA address for vmalloced area,
-> 
-> That's not true, it returns the right DMA (physical) address, it's just
-> that:
+> Hi Miqu=C3=A8l and Boris,
+>=20
+> Thank you for your response and feedback.  I've modified the fix based on=
+ your comments. =20
+> Please see the updated patch file at the end of this message (also in att=
+achment).
+> My answers to your comments/questions are inline in the previous message.
 
-To be honest I used log message from commit dcf08227e964 which is dealing
-with the same issue.
+Usually we answer inline in each e-mail, then we post a new version
+with a version counter incremented (use the '-v2- of 'git format-patch'
+to add the '[PATCH v2 x/y]' prefix automatically). Reposting is
+important as maintainers use 'patchwork' to follow the evolution of
+each patch. So in your case, nothing shows that you posted a v2.
 
-> 1/ the memory location is not necessarily physically contiguous
-> 2/ in case your arch is VIVT ot VIPT, there may be several entries in
->    the cache pointing to the same physical location, and the cache
->    maintenance operations done by dma_map_single() will only operate on
->    one of these entries.
+>=20
+> Here is the answer to Boris question in another email thread:
+>=20
+> > What if some NANDs have 4 or more copies of the param page? =20
+>  [Jane] The ONFI spec defines that the parameter page and its two redunda=
+nt copies are mandatory. =20
+> The additional redundant pages are optional.  Currently, the FSL NAND dri=
+ver only reads the first=20
+> parameter page.  This patch is to fix the driver to meet the mandatory re=
+quirement in the spec.=20
+> We got a batch of particularly bad NAND chips recently and we needed thes=
+e changes to make them=20
+> work reliably over temperature.  The patch was verified using these bad c=
+hips.
 
-Well, there are few things suspicious here: DMA is used to transfer data
-to system memory from bufferram which is 3kB in size. Nikolaus reported
-Internal error: Oops: 805 [#1] PREEMPT SMP ARM
-PC is at v7_dma_inv_range+0x30/0x48
-LR is at dma_cache_maint_page+0xd0/0xe0
-but I do not see how could it happen if it would be caused by 1/ or 2/ above.
-Cache issue would cause data inconsistencies which should be caught by upper
-MTD layers.
+I think Boris' remark was much more general than just this use case.
+The whole logic of tailoring ->cmdfunc() in each driver by guessing the
+data length, while there is absolutely no indication of it in this hook
+is broken. The core is moving to a new interface called ->exec_op(),
+and we would welcome a migration of this driver to this hook, that
+would be much much more easy to maintain for everyone.
 
-And given that replacing dma_map_single with dma_map_page done in first
-version of patch also fixed oops, it is not caused by 1/
-CPU is OMAP3630 based on Cortex-A8, D-cache is often described as PIPT but
-seems to be VIPT with built-in alias detection mechanism - anyone with
-better knowledge will eventually correct me, thank you.
 
-> > so disable DMA in this case.
-> > 
-> 
-> The fix looks good though. Can you rephrase your commit message to make
-> it clearer.
+Thanks,
+Miqu=C3=A8l
 
-Sure, I'd like to, but I do not know what's root cause yet :)
+>=20
+> Best regards,
+> Jane
+>=20
+> Updated patch:
+> From 701de4146aa6355c951e97a77476e12d2da56d42 Mon Sep 17 00:00:00 2001
+> From: Jane Wan <Jane.Wan@nokia.com>
+> Date: Mon, 30 Apr 2018 13:30:46 -0700
+> Subject: [PATCH 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read a=
+ll
+>  ONFI parameter pages
+>=20
+> Per ONFI specification (Rev. 4.0), if the CRC of the first parameter page
+> read is not valid, the host should read redundant parameter page copies.
+> Fix FSL NAND driver to read the two redundant copies which are mandatory
+> in the specification.
+>=20
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> ---
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c |   17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/f=
+sl_ifc_nand.c
+> index 61aae02..98aac1f 100644
+> --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> @@ -342,9 +342,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, un=
+signed int command,
+> =20
+>  	case NAND_CMD_READID:
+>  	case NAND_CMD_PARAM: {
+> +		/*
+> +		 * For READID, read 8 bytes that are currently used.
+> +		 * For PARAM, read all 3 copies of 256-bytes pages.
+> +		 */
+> +		int len =3D 8;
+>  		int timing =3D IFC_FIR_OP_RB;
+> -		if (command =3D=3D NAND_CMD_PARAM)
+> +		if (command =3D=3D NAND_CMD_PARAM) {
+>  			timing =3D IFC_FIR_OP_RBCD;
+> +			len =3D 256 * 3;
+> +		}
+> =20
+>  		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+>  			  (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+> @@ -354,12 +361,8 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, un=
+signed int command,
+>  			  &ifc->ifc_nand.nand_fcr0);
+>  		ifc_out32(column, &ifc->ifc_nand.row3);
+> =20
+> -		/*
+> -		 * although currently it's 8 bytes for READID, we always read
+> -		 * the maximum 256 bytes(for PARAM)
+> -		 */
+> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
+> -		ifc_nand_ctrl->read_bytes =3D 256;
+> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
+> +		ifc_nand_ctrl->read_bytes =3D len;
+> =20
+>  		set_addr(mtd, 0, 0, 0);
+>  		fsl_ifc_run_command(mtd);
 
-> Thanks,
-> 
-> Boris
-	
-Best regards,
-	ladis
+
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
