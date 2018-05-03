@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDEc-0007d7-EG
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:24 +0000
+ id 1fEDEd-0007fQ-02
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:25 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -11,10 +11,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 04/14] mtd: rawnand: qcom: use the ecc strength from device
- parameter
-Date: Thu,  3 May 2018 17:50:31 +0530
-Message-Id: <1525350041-22995-5-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 05/14] mtd: rawnand: qcom: wait for desc completion in all
+ BAM channels
+Date: Thu,  3 May 2018 17:50:32 +0530
+Message-Id: <1525350041-22995-6-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,90 +26,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently the driver uses the ECC strength specified in DT.
-The QPIC/EBI2 NAND supports 4 or 8-bit ECC correction. The same
-kind of board can have different NAND parts so use the ECC
-strength from device parameters if it is not specified in DT.
+The BAM has 3 channels - tx, rx and command. command channel
+is used for register read/writes, tx channel for data writes
+and rx channel for data reads. Currently, the driver assumes the
+transfer completion once it gets all the command descriptor
+completed. Sometimes, there is race condition in data channel
+(tx/rx) and command channel completion and in these cases,
+the data in buffer is not valid during the small window between
+command descriptor completion and data descriptor completion.
+
+Now, the changes have been made to assign the callback for
+channel's final descriptor. The DMA will generate the callback
+when all the descriptors have completed in that channel.
+The NAND transfer will be completed only when all required
+DMA channels have generated the completion callback.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v1:
 
-  1. Removed the custom logic and used the helper fuction.
+  NONE
 
- drivers/mtd/nand/raw/qcom_nandc.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+  1. Removed the custom logic and used the helper fuction.
+ drivers/mtd/nand/raw/qcom_nandc.c | 55 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 54 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index b554fb6..a8d71ce 100644
+index a8d71ce..3d1ff54 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2315,13 +2315,21 @@ static int qcom_nand_ooblayout_free(struct mtd_info *mtd, int section,
- 	.free = qcom_nand_ooblayout_free,
+@@ -213,6 +213,8 @@
+ #define QPIC_PER_CW_CMD_SGL		32
+ #define QPIC_PER_CW_DATA_SGL		8
+ 
++#define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
++
+ /*
+  * Flags used in DMA descriptor preparation helper functions
+  * (i.e. read_reg_dma/write_reg_dma/read_data_dma/write_data_dma)
+@@ -245,6 +247,11 @@
+  * @tx_sgl_start - start index in data sgl for tx.
+  * @rx_sgl_pos - current index in data sgl for rx.
+  * @rx_sgl_start - start index in data sgl for rx.
++ * @first_chan_done - if current transfer already has got first channel
++ *		      DMA desc completion.
++ * @txn_done - completion for nand transfer.
++ * @last_data_desc - last DMA desc in data channel (tx/rx).
++ * @last_cmd_desc - last DMA desc in command channel.
+  */
+ struct bam_transaction {
+ 	struct bam_cmd_element *bam_ce;
+@@ -258,6 +265,10 @@ struct bam_transaction {
+ 	u32 tx_sgl_start;
+ 	u32 rx_sgl_pos;
+ 	u32 rx_sgl_start;
++	bool first_chan_done;
++	struct completion txn_done;
++	struct dma_async_tx_descriptor *last_data_desc;
++	struct dma_async_tx_descriptor *last_cmd_desc;
  };
  
-+static int
-+qcom_nandc_calc_ecc_bytes(int step_size, int strength)
-+{
-+	return strength == 4 ? 12 : 16;
-+}
-+NAND_ECC_CAPS_SINGLE(qcom_nandc_ecc_caps, qcom_nandc_calc_ecc_bytes,
-+		     NANDC_STEP_SIZE, 4, 8);
+ /*
+@@ -504,6 +515,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+ 
+ 	bam_txn->data_sgl = bam_txn_buf;
+ 
++	init_completion(&bam_txn->txn_done);
 +
- static int qcom_nand_host_setup(struct qcom_nand_host *host)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	int cwperpage, bad_block_byte;
-+	int cwperpage, bad_block_byte, ret;
- 	bool wide_bus;
- 	int ecc_mode = 1;
+ 	return bam_txn;
+ }
  
-@@ -2334,8 +2342,20 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 		return -EINVAL;
- 	}
+@@ -523,11 +536,36 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+ 	bam_txn->tx_sgl_start = 0;
+ 	bam_txn->rx_sgl_pos = 0;
+ 	bam_txn->rx_sgl_start = 0;
++	bam_txn->last_data_desc = NULL;
++	bam_txn->first_chan_done = false;
  
-+	cwperpage = mtd->writesize / ecc->size;
+ 	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
+ 		      QPIC_PER_CW_CMD_SGL);
+ 	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
+ 		      QPIC_PER_CW_DATA_SGL);
++
++	reinit_completion(&bam_txn->txn_done);
++}
++
++/* Callback for DMA descriptor completion */
++static void qpic_bam_dma_done(void *data)
++{
++	struct bam_transaction *bam_txn = data;
 +
 +	/*
-+	 * Each CW has 4 available OOB bytes which will be protected with ECC
-+	 * so remaining bytes can be used for ECC.
++	 * In case of data transfer with NAND, 2 callbacks will be generated.
++	 * One for command channel and another one for data channel.
++	 * If current transaction has data descriptors then check if its
++	 * already got one DMA channel completion callback. In this case
++	 * make the NAND transfer complete otherwise mark first_chan_done true
++	 * and wait for next channel DMA completion callback.
 +	 */
-+	ret = nand_ecc_param_setup(chip, &qcom_nandc_ecc_caps,
-+				   mtd->oobsize - (cwperpage << 2));
-+	if (ret) {
-+		dev_err(nandc->dev, "No valid ecc settings possible\n");
-+		return ret;
++	if (bam_txn->last_data_desc && !bam_txn->first_chan_done) {
++		bam_txn->first_chan_done = true;
++		return;
 +	}
 +
- 	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
--
- 	if (ecc->strength >= 8) {
- 		/* 8 bit ECC defaults to BCH ECC on all platforms */
- 		host->bch_enabled = true;
-@@ -2403,7 +2423,6 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
++	complete(&bam_txn->txn_done);
+ }
  
- 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+ static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+@@ -756,6 +794,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
  
--	cwperpage = mtd->writesize / ecc->size;
- 	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
- 				     cwperpage);
+ 	desc->dma_desc = dma_desc;
  
-@@ -2419,12 +2438,6 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 	 * for 8 bit ECC
- 	 */
- 	host->cw_size = host->cw_data + ecc->bytes;
--
--	if (ecc->bytes * (mtd->writesize / ecc->size) > mtd->oobsize) {
--		dev_err(nandc->dev, "ecc data doesn't fit in OOB area\n");
--		return -EINVAL;
--	}
--
- 	bad_block_byte = mtd->writesize - host->cw_size * (cwperpage - 1) + 1;
++	/* update last data/command descriptor */
++	if (chan == nandc->cmd_chan)
++		bam_txn->last_cmd_desc = dma_desc;
++	else
++		bam_txn->last_data_desc = dma_desc;
++
+ 	list_add_tail(&desc->node, &nandc->desc_list);
  
- 	host->cfg0 = (cwperpage - 1) << CW_PER_PAGE
+ 	return 0;
+@@ -1273,10 +1317,19 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+ 		cookie = dmaengine_submit(desc->dma_desc);
+ 
+ 	if (nandc->props->is_bam) {
++		bam_txn->last_cmd_desc->callback = qpic_bam_dma_done;
++		bam_txn->last_cmd_desc->callback_param = bam_txn;
++		if (bam_txn->last_data_desc) {
++			bam_txn->last_data_desc->callback = qpic_bam_dma_done;
++			bam_txn->last_data_desc->callback_param = bam_txn;
++		}
++
+ 		dma_async_issue_pending(nandc->tx_chan);
+ 		dma_async_issue_pending(nandc->rx_chan);
++		dma_async_issue_pending(nandc->cmd_chan);
+ 
+-		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
++		if (!wait_for_completion_timeout(&bam_txn->txn_done,
++						 QPIC_NAND_COMPLETION_TIMEOUT))
+ 			return -ETIMEDOUT;
+ 	} else {
+ 		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
