@@ -1,17 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDAD-0005U0-3Q
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:16:47 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fEDEN-0007a0-IB
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:05 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: add default values for dynamic timings
-Date: Thu,  3 May 2018 14:16:20 +0200
-Message-Id: <20180503121620.13450-1-miquel.raynal@bootlin.com>
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
+ Abhishek Sahu <absahu@codeaurora.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH v2 01/14] mtd: rawnand: helper function for setting up ECC
+ parameters
+Date: Thu,  3 May 2018 17:50:28 +0530
+Message-Id: <1525350041-22995-2-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,153 +27,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some timings like tBERS (block erase time), tCCs (change column setup
-time), tPROG (page program time) and tR (page read time) are derived
-from the ONFI parameter page. They are set in the SDR interface only
-under certain circumstances: the chip is ONFI compliant and
-->setup_data_interface() is populated.
+commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+match, maximize ECC settings") provides generic helpers which
+drivers can use for setting up ECC parameters.
 
-The former makes the use of these timings unreliable if the driver uses
-one of these four values with a non-ONFI chip, while the latter is a
-problem for drivers not populating ->setup_data_interface() hook but
-using these delays nonetheless in the code.
+Since same board can have different ECC strength nand chips so
+following is the logic for setting up ECC strength and ECC step
+size, which can be used by most of the drivers.
 
-Fix this situation by taking the highest possible value for each
-timing (stored as unsigned 16-bit entries in the parameter page).
+1. If both ECC step size and ECC strength are already set
+   (usually by DT) then just check whether this setting
+   is supported by NAND controller.
+2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+   supported by NAND controller.
+3. Otherwise, try to match the ECC step size and ECC strength closest
+   to the chip's requirement. If available OOB size can't fit the chip
+   requirement then select maximum ECC strength which can be fit with
+   available OOB size with warning.
 
-This makes tBERS, tPROG and tR maximum times being ~65ms while typical
-values are at most a few milliseconds. As these are timeouts, it is not
-impacting at all on the performances in nominal use.
+This patch introduces nand_ecc_param_setup function which calls the
+required helper functions for the above logic. The drivers can use
+this single function instead of calling the 3 helper functions
+individually.
 
-tCCS minimum time (delay to wait after a change column) becomes ~65us
-while typical values are a few hundred nanoseconds. This might have an
-impact depending on the driver's implementation.
-
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/raw/nand_timings.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+* Changes from v1:
 
-diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-index 7c4e4a371bbc..848446f8004c 100644
---- a/drivers/mtd/nand/raw/nand_timings.c
-+++ b/drivers/mtd/nand/raw/nand_timings.c
-@@ -13,6 +13,8 @@
- #include <linux/export.h>
- #include <linux/mtd/rawnand.h>
+  NEW PATCH
+
+ drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  3 +++
+ 2 files changed, 45 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 72f3a89..dd7a984 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6249,6 +6249,48 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ }
+ EXPORT_SYMBOL_GPL(nand_maximize_ecc);
  
-+#define ONFI_DYN_TIMING_MAX U16_MAX
++/**
++ * nand_ecc_param_setup - Set the ECC strength and ECC step size
++ * @chip: nand chip info structure
++ * @caps: ECC engine caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * Choose the ECC strength according to following logic
++ *
++ * 1. If both ECC step size and ECC strength are already set (usually by DT)
++ *    then check if it is supported by this controller.
++ * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
++ * 3. Otherwise, try to match the ECC step size and ECC strength closest
++ *    to the chip's requirement. If available OOB size can't fit the chip
++ *    requirement then fallback to the maximum ECC step size and ECC strength
++ *    and print the warning.
++ *
++ * On success, the chosen ECC settings are set.
++ */
++int nand_ecc_param_setup(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail)
++{
++	int ret;
 +
- static const struct nand_data_interface onfi_sdr_timings[] = {
- 	/* Mode 0 */
- 	{
-@@ -24,6 +26,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 20000,
- 			.tALS_min = 50000,
- 			.tAR_min = 25000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 100000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 20000,
-@@ -38,6 +42,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 10000,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 100000,
- 			.tREA_max = 40000,
- 			.tREH_min = 30000,
-@@ -66,6 +72,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 10000,
- 			.tALS_min = 25000,
- 			.tAR_min = 10000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 45000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 10000,
-@@ -80,6 +88,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 0,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 50000,
- 			.tREA_max = 30000,
- 			.tREH_min = 15000,
-@@ -108,6 +118,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 10000,
- 			.tALS_min = 15000,
- 			.tAR_min = 10000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 30000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 10000,
-@@ -122,6 +134,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 0,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 35000,
- 			.tREA_max = 25000,
- 			.tREH_min = 15000,
-@@ -150,6 +164,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
- 			.tAR_min = 10000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 25000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 5000,
-@@ -164,6 +180,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 0,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 30000,
- 			.tREA_max = 20000,
- 			.tREH_min = 10000,
-@@ -192,6 +210,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
- 			.tAR_min = 10000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 25000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 5000,
-@@ -206,6 +226,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 0,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 25000,
- 			.tREA_max = 20000,
- 			.tREH_min = 10000,
-@@ -234,6 +256,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tALH_min = 5000,
- 			.tALS_min = 10000,
- 			.tAR_min = 10000,
-+			.tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tCCS_min = 1000UL * ONFI_DYN_TIMING_MAX,
- 			.tCEA_max = 25000,
- 			.tCEH_min = 20000,
- 			.tCH_min = 5000,
-@@ -248,6 +272,8 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
- 			.tFEAT_max = 1000000,
- 			.tIR_min = 0,
- 			.tITC_max = 1000000,
-+			.tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
-+			.tR_max = 1000000ULL * ONFI_DYN_TIMING_MAX,
- 			.tRC_min = 20000,
- 			.tREA_max = 16000,
- 			.tREH_min = 7000,
++	if (chip->ecc.size && chip->ecc.strength)
++		return nand_check_ecc_caps(chip, caps, oobavail);
++
++	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
++		return nand_maximize_ecc(chip, caps, oobavail);
++
++	if (!nand_match_ecc_req(chip, caps, oobavail))
++		return 0;
++
++	ret = nand_maximize_ecc(chip, caps, oobavail);
++	if (!ret)
++		pr_warn("ECC (step, strength) = (%d, %d) not supported on this controller. Fallback to (%d, %d)\n",
++			chip->ecc_step_ds, chip->ecc_strength_ds,
++			chip->ecc.size, chip->ecc.strength);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(nand_ecc_param_setup);
++
+ /*
+  * Check if the chip configuration meet the datasheet requirements.
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b..afc7447 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1627,6 +1627,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ int nand_maximize_ecc(struct nand_chip *chip,
+ 		      const struct nand_ecc_caps *caps, int oobavail);
+ 
++int nand_ecc_param_setup(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail);
++
+ /* Default write_oob implementation */
+ int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
+ 
 -- 
-2.14.1
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
+is a member of Code Aurora Forum, hosted by The Linux Foundation
