@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDEc-0007bO-ER
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:21 +0000
+ id 1fEDEc-0007d7-EG
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:24 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -10,12 +10,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: [PATCH v2 03/14] dt-bindings: qcom_nandc: make nand-ecc-strength
- optional
-Date: Thu,  3 May 2018 17:50:30 +0530
-Message-Id: <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v2 04/14] mtd: rawnand: qcom: use the ecc strength from device
+ parameter
+Date: Thu,  3 May 2018 17:50:31 +0530
+Message-Id: <1525350041-22995-5-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,38 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now, nand-ecc-strength is optional. If specified in DT, then
-controller will use this ECC strength otherwise ECC strength will
-be calculated according to chip requirement and available OOB size.
+Currently the driver uses the ECC strength specified in DT.
+The QPIC/EBI2 NAND supports 4 or 8-bit ECC correction. The same
+kind of board can have different NAND parts so use the ECC
+strength from device parameters if it is not specified in DT.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v1:
 
-  NEW PATCH
+  1. Removed the custom logic and used the helper fuction.
 
- Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-index 73d336be..f246aa0 100644
---- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-+++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-@@ -45,11 +45,13 @@ Required properties:
- 			number (e.g., 0, 1, 2, etc.)
- - #address-cells:	see partition.txt
- - #size-cells:		see partition.txt
--- nand-ecc-strength:	see nand.txt
- - nand-ecc-step-size:	must be 512. see nand.txt for more details.
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index b554fb6..a8d71ce 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2315,13 +2315,21 @@ static int qcom_nand_ooblayout_free(struct mtd_info *mtd, int section,
+ 	.free = qcom_nand_ooblayout_free,
+ };
  
- Optional properties:
- - nand-bus-width:	see nand.txt
-+- nand-ecc-strength:	see nand.txt. If not specified, then ECC strength will
-+			be used according to chip requirement and available
-+			OOB size.
++static int
++qcom_nandc_calc_ecc_bytes(int step_size, int strength)
++{
++	return strength == 4 ? 12 : 16;
++}
++NAND_ECC_CAPS_SINGLE(qcom_nandc_ecc_caps, qcom_nandc_calc_ecc_bytes,
++		     NANDC_STEP_SIZE, 4, 8);
++
+ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ {
+ 	struct nand_chip *chip = &host->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+-	int cwperpage, bad_block_byte;
++	int cwperpage, bad_block_byte, ret;
+ 	bool wide_bus;
+ 	int ecc_mode = 1;
  
- Each nandcs device node may optionally contain a 'partitions' sub-node, which
- further contains sub-nodes describing the flash partition mapping. See
+@@ -2334,8 +2342,20 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 		return -EINVAL;
+ 	}
+ 
++	cwperpage = mtd->writesize / ecc->size;
++
++	/*
++	 * Each CW has 4 available OOB bytes which will be protected with ECC
++	 * so remaining bytes can be used for ECC.
++	 */
++	ret = nand_ecc_param_setup(chip, &qcom_nandc_ecc_caps,
++				   mtd->oobsize - (cwperpage << 2));
++	if (ret) {
++		dev_err(nandc->dev, "No valid ecc settings possible\n");
++		return ret;
++	}
++
+ 	wide_bus = chip->options & NAND_BUSWIDTH_16 ? true : false;
+-
+ 	if (ecc->strength >= 8) {
+ 		/* 8 bit ECC defaults to BCH ECC on all platforms */
+ 		host->bch_enabled = true;
+@@ -2403,7 +2423,6 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 
+ 	mtd_set_ooblayout(mtd, &qcom_nand_ooblayout_ops);
+ 
+-	cwperpage = mtd->writesize / ecc->size;
+ 	nandc->max_cwperpage = max_t(unsigned int, nandc->max_cwperpage,
+ 				     cwperpage);
+ 
+@@ -2419,12 +2438,6 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
+ 	 * for 8 bit ECC
+ 	 */
+ 	host->cw_size = host->cw_data + ecc->bytes;
+-
+-	if (ecc->bytes * (mtd->writesize / ecc->size) > mtd->oobsize) {
+-		dev_err(nandc->dev, "ecc data doesn't fit in OOB area\n");
+-		return -EINVAL;
+-	}
+-
+ 	bad_block_byte = mtd->writesize - host->cw_size * (cwperpage - 1) + 1;
+ 
+ 	host->cfg0 = (cwperpage - 1) << CW_PER_PAGE
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
