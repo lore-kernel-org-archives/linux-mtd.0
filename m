@@ -1,6 +1,6 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDEq-0007kH-E1
+ id 1fEDEq-0007nN-E4
  for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:49 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
@@ -11,15 +11,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 07/14] mtd: rawnand: qcom: fix null pointer access for
- erased page detection
-Date: Thu,  3 May 2018 17:50:34 +0530
-Message-Id: <1525350041-22995-8-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 08/14] mtd: rawnand: qcom: parse read errors for read oob
+ also
+Date: Thu,  3 May 2018 17:50:35 +0530
+Message-Id: <1525350041-22995-9-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,63 +26,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-parse_read_errors can be called with only oob_buf in which case
-data_buf will be NULL.  If data_buf is NULL, then don’t
-treat this page as completely erased in case of ECC uncorrectable
-error for RS ECC. For BCH ECC, the controller itself tells
-regarding erased page in status register.
+read_page and read_oob both calls the read_page_ecc function.
+The QCOM NAND controller protect the OOB available bytes with
+ECC so read errors should be checked for read_oob also. Now
+this patch moves the error checking code inside read_page_ecc
+so caller does not have to check explicitly for read errors.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
 * Changes from v1:
 
-  1. Added more detail in commit message
-  2. Added comment before each if/else
+  1. Minor code change for return early in case of error
 
- drivers/mtd/nand/raw/qcom_nandc.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index e6a21598..fa38142 100644
+index fa38142..61d0e7d 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1613,13 +1613,24 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
- 			int ret, ecclen, extraooblen;
- 			void *eccbuf;
+@@ -1700,6 +1700,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_chip *chip = &host->chip;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+ 	int i, ret;
  
--			/* ignore erased codeword errors */
-+			/*
-+			 * For BCH ECC, ignore erased codeword errors, if
-+			 * ERASED_CW bits are set.
-+			 */
- 			if (host->bch_enabled) {
- 				erased = (erased_cw & ERASED_CW) == ERASED_CW ?
- 					 true : false;
--			} else {
-+			/*
-+			 * For RS ECC, HW reports the erased CW by placing
-+			 * special characters at certain offsets in the buffer.
-+			 * These special characters will be valid only if
-+			 * complete page is read i.e. data_buf is not NULL.
-+			 */
-+			} else if (data_buf) {
- 				erased = erased_chunk_check_and_fixup(data_buf,
- 								      data_len);
-+			} else {
-+				erased = false;
- 			}
- 
- 			if (erased) {
-@@ -1667,7 +1678,8 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
- 			max_bitflips = max(max_bitflips, stat);
- 		}
- 
--		data_buf += data_len;
-+		if (data_buf)
-+			data_buf += data_len;
- 		if (oob_buf)
- 			oob_buf += oob_len + ecc->bytes;
+ 	config_nand_page_read(nandc);
+@@ -1760,12 +1761,14 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
  	}
+ 
+ 	ret = submit_descs(nandc);
+-	if (ret)
++	free_descs(nandc);
++
++	if (ret) {
+ 		dev_err(nandc->dev, "failure to read page/oob\n");
++		return ret;
++	}
+ 
+-	free_descs(nandc);
+-
+-	return ret;
++	return parse_read_errors(host, data_buf_start, oob_buf_start);
+ }
+ 
+ /*
+@@ -1810,20 +1813,14 @@ static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	u8 *data_buf, *oob_buf = NULL;
+-	int ret;
+ 
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	data_buf = buf;
+ 	oob_buf = oob_required ? chip->oob_poi : NULL;
+ 
+ 	clear_bam_transaction(nandc);
+-	ret = read_page_ecc(host, data_buf, oob_buf);
+-	if (ret) {
+-		dev_err(nandc->dev, "failure to read page\n");
+-		return ret;
+-	}
+ 
+-	return parse_read_errors(host, data_buf, oob_buf);
++	return read_page_ecc(host, data_buf, oob_buf);
+ }
+ 
+ /* implements ecc->read_page_raw() */
+@@ -1913,7 +1910,6 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-	int ret;
+ 
+ 	clear_read_regs(nandc);
+ 	clear_bam_transaction(nandc);
+@@ -1922,11 +1918,7 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	set_address(host, 0, page);
+ 	update_rw_regs(host, ecc->steps, true);
+ 
+-	ret = read_page_ecc(host, NULL, chip->oob_poi);
+-	if (ret)
+-		dev_err(nandc->dev, "failure to read oob\n");
+-
+-	return ret;
++	return read_page_ecc(host, NULL, chip->oob_poi);
+ }
+ 
+ /* implements ecc->write_page() */
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
