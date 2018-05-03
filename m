@@ -1,25 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fE9B8-0003Kv-CI
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 08:01:28 +0000
-Date: Thu, 3 May 2018 10:01:14 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Chris Packham <Chris.Packham@alliedtelesis.co.nz>, Richard Weinberger
- <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: pass ms delay to wait_op
-Message-ID: <20180503100114.16d573dc@xps13>
-In-Reply-To: <20180503090348.0c10b00f@bbrezillon>
-References: <20180503022128.10702-1-chris.packham@alliedtelesis.co.nz>
- <a40b0454ea78494983c909fd6b2c08c8@svr-chch-ex1.atlnz.lc>
- <20180503090348.0c10b00f@bbrezillon>
+ id 1fE9TC-0000SJ-RI
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 08:20:09 +0000
+Date: Thu, 3 May 2018 10:19:42 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Peter
+ Ujfalusi <peter.ujfalusi@ti.com>, Roger Quadros <rogerq@ti.com>, Aaro
+ Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, "H.
+ Nikolaus Schaller" <hns@goldelico.com>, Andreas Kemnade
+ <andreas@kemnade.info>
+Subject: Re: [PATCH v3] mtd: onenand: omap2: Disable DMA for HIGHMEM buffers
+Message-ID: <20180503101942.6851a4fc@bbrezillon>
+In-Reply-To: <20180502104132.GA12979@lenoch>
+References: <20180502104132.GA12979@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +26,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris, Chris,
+On Wed, 2 May 2018 12:41:32 +0200
+Ladislav Michl <ladis@linux-mips.org> wrote:
 
-> > > diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/r=
-aw/marvell_nand.c
-> > > index 1d779a35ac8e..e4b964fd40d8 100644
-> > > --- a/drivers/mtd/nand/raw/marvell_nand.c
-> > > +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> > > @@ -1074,7 +1074,7 @@ static int marvell_nfc_hw_ecc_hmg_do_write_page=
-(struct nand_chip *chip,
-> > >   		return ret;
-> > >  =20
-> > >   	ret =3D marvell_nfc_wait_op(chip,
-> > > -				  chip->data_interface.timings.sdr.tPROG_max);
-> > > +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
-> > >   	return ret;
-> > >   }
-> > >  =20
-> > > @@ -1494,7 +1494,7 @@ static int marvell_nfc_hw_ecc_bch_write_page(st=
-ruct mtd_info *mtd,
-> > >   	}
-> > >  =20
-> > >   	ret =3D marvell_nfc_wait_op(chip,
-> > > -				  chip->data_interface.timings.sdr.tPROG_max);
-> > > +				  PSEC_TO_MSEC(chip->data_interface.timings.sdr.tPROG_max));
-> > >  =20
+> dma_map_single does not work for vmalloc-ed buffers,
+> so disable DMA in this case.
+> 
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> Reported-by: "H. Nikolaus Schaller" <hns@goldelico.com>
+> Tested-by: "H. Nikolaus Schaller" <hns@goldelico.com>
 
-[...]
+Applied to mtd/master. Will be part of the next fixes PR I'll send
+later this week.
 
-> > The old pxa3xx driver had hard coded 200ms delays. These delays now wor=
-k=20
-> > out to 1ms which seems every bit as wrong as 600000000ms. =20
+Thanks,
 
-When the 'keep-config' property is populated, the
-->setup_data_interface() hook of the driver is not shown to the core,
-which leads to not "updating" the timings like tPROG_max.
+Boris
 
-While it worked with the old driver that hardcoded this delay, this
-might not work anymore with the current driver because it expects
-timings.sdr.tPROG_max to be !=3D 0 (and PSEC_TO_MSEC(0) also returns 0).
-
-This is probably something to fix.
-
-Regards,
-Miqu=C3=A8l
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> ---
+>  Changes:
+>   -v2: Added Tested-by tag, based on v4.17-rc1 (no change in patch itself)
+>   -v3: Reworded commit log
+> 
+>  drivers/mtd/nand/onenand/omap2.c | 105 +++++++++++--------------------
+>  1 file changed, 38 insertions(+), 67 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/onenand/omap2.c b/drivers/mtd/nand/onenand/omap2.c
+> index 9c159f0dd9a6..321137158ff3 100644
+> --- a/drivers/mtd/nand/onenand/omap2.c
+> +++ b/drivers/mtd/nand/onenand/omap2.c
+> @@ -375,56 +375,42 @@ static int omap2_onenand_read_bufferram(struct mtd_info *mtd, int area,
+>  {
+>  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+>  	struct onenand_chip *this = mtd->priv;
+> -	dma_addr_t dma_src, dma_dst;
+> -	int bram_offset;
+> +	struct device *dev = &c->pdev->dev;
+>  	void *buf = (void *)buffer;
+> +	dma_addr_t dma_src, dma_dst;
+> +	int bram_offset, err;
+>  	size_t xtra;
+> -	int ret;
+>  
+>  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+> -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+> -		goto out_copy;
+> -
+> -	/* panic_write() may be in an interrupt context */
+> -	if (in_interrupt() || oops_in_progress)
+> +	/*
+> +	 * If the buffer address is not DMA-able, len is not long enough to make
+> +	 * DMA transfers profitable or panic_write() may be in an interrupt
+> +	 * context fallback to PIO mode.
+> +	 */
+> +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
+> +	    count < 384 || in_interrupt() || oops_in_progress )
+>  		goto out_copy;
+>  
+> -	if (buf >= high_memory) {
+> -		struct page *p1;
+> -
+> -		if (((size_t)buf & PAGE_MASK) !=
+> -		    ((size_t)(buf + count - 1) & PAGE_MASK))
+> -			goto out_copy;
+> -		p1 = vmalloc_to_page(buf);
+> -		if (!p1)
+> -			goto out_copy;
+> -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+> -	}
+> -
+>  	xtra = count & 3;
+>  	if (xtra) {
+>  		count -= xtra;
+>  		memcpy(buf + count, this->base + bram_offset + count, xtra);
+>  	}
+>  
+> +	dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
+>  	dma_src = c->phys_base + bram_offset;
+> -	dma_dst = dma_map_single(&c->pdev->dev, buf, count, DMA_FROM_DEVICE);
+> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
+> -		dev_err(&c->pdev->dev,
+> -			"Couldn't DMA map a %d byte buffer\n",
+> -			count);
+> -		goto out_copy;
+> -	}
+>  
+> -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+> -
+> -	if (ret) {
+> -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+> +	if (dma_mapping_error(dev, dma_dst)) {
+> +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+>  		goto out_copy;
+>  	}
+>  
+> -	return 0;
+> +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> +	dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
+> +	if (!err)
+> +		return 0;
+> +
+> +	dev_err(dev, "timeout waiting for DMA\n");
+>  
+>  out_copy:
+>  	memcpy(buf, this->base + bram_offset, count);
+> @@ -437,49 +423,34 @@ static int omap2_onenand_write_bufferram(struct mtd_info *mtd, int area,
+>  {
+>  	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+>  	struct onenand_chip *this = mtd->priv;
+> -	dma_addr_t dma_src, dma_dst;
+> -	int bram_offset;
+> +	struct device *dev = &c->pdev->dev;
+>  	void *buf = (void *)buffer;
+> -	int ret;
+> +	dma_addr_t dma_src, dma_dst;
+> +	int bram_offset, err;
+>  
+>  	bram_offset = omap2_onenand_bufferram_offset(mtd, area) + area + offset;
+> -	if (bram_offset & 3 || (size_t)buf & 3 || count < 384)
+> -		goto out_copy;
+> -
+> -	/* panic_write() may be in an interrupt context */
+> -	if (in_interrupt() || oops_in_progress)
+> +	/*
+> +	 * If the buffer address is not DMA-able, len is not long enough to make
+> +	 * DMA transfers profitable or panic_write() may be in an interrupt
+> +	 * context fallback to PIO mode.
+> +	 */
+> +	if (!virt_addr_valid(buf) || bram_offset & 3 || (size_t)buf & 3 ||
+> +	    count < 384 || in_interrupt() || oops_in_progress )
+>  		goto out_copy;
+>  
+> -	if (buf >= high_memory) {
+> -		struct page *p1;
+> -
+> -		if (((size_t)buf & PAGE_MASK) !=
+> -		    ((size_t)(buf + count - 1) & PAGE_MASK))
+> -			goto out_copy;
+> -		p1 = vmalloc_to_page(buf);
+> -		if (!p1)
+> -			goto out_copy;
+> -		buf = page_address(p1) + ((size_t)buf & ~PAGE_MASK);
+> -	}
+> -
+> -	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
+> +	dma_src = dma_map_single(dev, buf, count, DMA_TO_DEVICE);
+>  	dma_dst = c->phys_base + bram_offset;
+> -	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
+> -		dev_err(&c->pdev->dev,
+> -			"Couldn't DMA map a %d byte buffer\n",
+> -			count);
+> -		return -1;
+> -	}
+> -
+> -	ret = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> -	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+> -
+> -	if (ret) {
+> -		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+> +	if (dma_mapping_error(dev, dma_src)) {
+> +		dev_err(dev, "Couldn't DMA map a %d byte buffer\n", count);
+>  		goto out_copy;
+>  	}
+>  
+> -	return 0;
+> +	err = omap2_onenand_dma_transfer(c, dma_src, dma_dst, count);
+> +	dma_unmap_page(dev, dma_src, count, DMA_TO_DEVICE);
+> +	if (!err)
+> +		return 0;
+> +
+> +	dev_err(dev, "timeout waiting for DMA\n");
+>  
+>  out_copy:
+>  	memcpy(this->base + bram_offset, buf, count);
