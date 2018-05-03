@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDEN-0007aM-Iy
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:09 +0000
+ id 1fEDEN-0007Zc-I4
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:12 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -10,14 +10,13 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v2 02/14] mtd: rawnand: denali: use helper function for ecc
- setup
-Date: Thu,  3 May 2018 17:50:29 +0530
-Message-Id: <1525350041-22995-3-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
-References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v2 00/14]  Update for QCOM NAND driver
+Date: Thu,  3 May 2018 17:50:27 +0530
+Message-Id: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now, the NAND base layer has helper function for ecc
-parameters setup which does the same thing.
+* v2:
 
-CC: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
-* Changes from v1:
+1. Addressed all review comments in v1.
+1. Make the generic helper function for NAND ECC parameters setup
+   and used this helper function for QCOM and Denali nand driver
+   for ECC setup.
+2. Modified commit message for some of the patches and added more
+   comments.
+3. Added new patch for fixing ‘return 0’ for raw read.
+4. Removed the read last codeword part for nand oob write.
+5. Reorganized bad block check function and removed the
+   read_last_cw function completely.
 
-  NEW PATCH
+* v1:
 
- drivers/mtd/nand/raw/denali.c | 30 ++----------------------------
- 1 file changed, 2 insertions(+), 28 deletions(-)
+This patch series mainly deals with error handling and erased page
+bitflip detection for QCOM NAND driver.
 
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 2a302a1..d75f4e5 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1120,33 +1120,6 @@ int denali_calc_ecc_bytes(int step_size, int strength)
- }
- EXPORT_SYMBOL(denali_calc_ecc_bytes);
- 
--static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
--			    struct denali_nand_info *denali)
--{
--	int oobavail = mtd->oobsize - denali->oob_skip_bytes;
--	int ret;
--
--	/*
--	 * If .size and .strength are already set (usually by DT),
--	 * check if they are supported by this controller.
--	 */
--	if (chip->ecc.size && chip->ecc.strength)
--		return nand_check_ecc_caps(chip, denali->ecc_caps, oobavail);
--
--	/*
--	 * We want .size and .strength closest to the chip's requirement
--	 * unless NAND_ECC_MAXIMIZE is requested.
--	 */
--	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
--		ret = nand_match_ecc_req(chip, denali->ecc_caps, oobavail);
--		if (!ret)
--			return 0;
--	}
--
--	/* Max ECC strength is the last thing we can do */
--	return nand_maximize_ecc(chip, denali->ecc_caps, oobavail);
--}
--
- static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *oobregion)
- {
-@@ -1317,7 +1290,8 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
- 
--	ret = denali_ecc_setup(mtd, chip, denali);
-+	ret = nand_ecc_param_setup(chip, denali->ecc_caps,
-+				   mtd->oobsize - denali->oob_skip_bytes);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to setup ECC settings.\n");
- 		goto disable_irq;
+1. The error handling was missing for some of the cases so fixed
+   the same.
+
+2. Add the support for taking ECC strength from ONFI parameter.
+   The earlier QCOM boards were coming with 4-bit ECC chip but
+   now the same boards are coming with 8-bit ECC chip since the
+   earlier 4-bit parts are obsolete from some vendors.
+
+3. We got few issues related with NAND erased page bitflips. The
+   QCOM NAND controller can’t detect the bitflip in completely erased
+   page so added the support to detect the same. It implemented the
+   logic mentioned in patch [1] which didn’t go in mainline and later
+   the generic functions were provided [2] to count the number of
+   bitflips and make all 0xff. This patch series did some optimization
+   logic to prevent the unnecessary full page raw read and data copy
+   from QCOM NAND controller to DMA.
+
+4. Following are the testing done for these patches in QCOM IPQ8074
+   HK01 (4-bit and 8-bit ECC chip) and IPQ806x AP148 boards.
+    a. Run all mtd test and check if it passes
+    b. Introduce custom bitflips in erased page and check if it
+       returns no error/EUCLEAN/EBADMSG depending upon number of
+       bitflips and position.
+    c. Introduce failure condition for operational failure and
+       check if it detects the same.
+
+[1]: https://patchwork.ozlabs.org/patch/328994/
+[2]: https://patchwork.ozlabs.org/patch/509970/
+
+Abhishek Sahu (14):
+  mtd: rawnand: helper function for setting up ECC parameters
+  mtd: rawnand: denali: use helper function for ecc setup
+  dt-bindings: qcom_nandc: make nand-ecc-strength optional
+  mtd: rawnand: qcom: use the ecc strength from device parameter
+  mtd: rawnand: qcom: wait for desc completion in all BAM channels
+  mtd: rawnand: qcom: erased page detection for uncorrectable errors
+    only
+  mtd: rawnand: qcom: fix null pointer access for erased page detection
+  mtd: rawnand: qcom: parse read errors for read oob also
+  mtd: rawnand: qcom: modify write_oob to remove read codeword part
+  mtd: rawnand: qcom: fix return value for raw page read
+  mtd: rawnand: qcom: minor code reorganization for bad block check
+  mtd: rawnand: qcom: check for operation errors in case of raw read
+  mtd: rawnand: qcom: helper function for raw read
+  mtd: rawnand: qcom: erased page bitflips detection
+
+ .../devicetree/bindings/mtd/qcom_nandc.txt         |   4 +-
+ drivers/mtd/nand/raw/denali.c                      |  30 +-
+ drivers/mtd/nand/raw/nand_base.c                   |  42 ++
+ drivers/mtd/nand/raw/qcom_nandc.c                  | 622 ++++++++++++++-------
+ include/linux/mtd/rawnand.h                        |   3 +
+ 5 files changed, 461 insertions(+), 240 deletions(-)
+
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
