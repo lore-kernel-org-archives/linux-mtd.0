@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDF4-0007u7-Gq
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:22:00 +0000
+ id 1fEDFJ-0007z2-43
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:22:13 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -11,15 +11,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 11/14] mtd: rawnand: qcom: minor code reorganization for
- bad block check
-Date: Thu,  3 May 2018 17:50:38 +0530
-Message-Id: <1525350041-22995-12-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 13/14] mtd: rawnand: qcom: helper function for raw read
+Date: Thu,  3 May 2018 17:50:40 +0530
+Message-Id: <1525350041-22995-14-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,135 +25,237 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The QCOM NAND layout is such that, the bad block byte offset for
-last codeword will come to first byte in spare area. Currently,
-the raw read for last codeword is being done with copy_last_cw
-function. It does following 2 things
-
-1. Read the last codeword bytes from NAND chip to NAND
-   controller internal HW buffer.
-2. Copy all these bytes from this HW buffer to driver RAM
-   buffer.
-
-For bad block check, maximum two bytes are required so instead of
-copying the complete bytes in step 2, only those bbm_size bytes
-can be copied.
-
-This patch does minor code reorganization for the same. After
-this, copy_last_cw function won’t be required.
+This patch does minor code reorganization for raw reads.
+Currently the raw read is required for complete page but for
+subsequent patches related with erased codeword bit flips
+detection, only few CW should be read. So, this patch adds
+helper function and introduces the read CW bitmask which
+specifies which CW reads are required in complete page.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v1:
 
- NEW CHANGE
+ 1. Included more detail in function comment
 
- drivers/mtd/nand/raw/qcom_nandc.c | 66 +++++++++++++++------------------------
- 1 file changed, 25 insertions(+), 41 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 197 ++++++++++++++++++++++++--------------
+ 1 file changed, 123 insertions(+), 74 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 17b7f3af..10bdc6c 100644
+index d828115..5148b49 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1771,41 +1771,6 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	return parse_read_errors(host, data_buf_start, oob_buf_start);
+@@ -1590,6 +1590,127 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
  }
  
--/*
-- * a helper that copies the last step/codeword of a page (containing free oob)
-- * into our local buffer
-- */
--static int copy_last_cw(struct qcom_nand_host *host, int page)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int size;
--	int ret;
--
--	clear_read_regs(nandc);
--
--	size = host->use_ecc ? host->cw_data : host->cw_size;
--
--	/* prepare a clean read buffer */
--	memset(nandc->data_buffer, 0xff, size);
--
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
--	update_rw_regs(host, 1, true);
--
--	config_nand_single_cw_page_read(nandc);
--
--	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
--
--	ret = submit_descs(nandc);
--	if (ret)
--		dev_err(nandc->dev, "failed to copy last codeword\n");
--
--	free_descs(nandc);
--
--	return ret;
--}
--
- /* implements ecc->read_page() */
- static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
-@@ -2121,6 +2086,7 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int page, ret, bbpos, bad = 0;
- 	u32 flash_status;
-+	u8 *bbm_bytes_buf = chip->data_buf;
- 
- 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
- 
-@@ -2131,11 +2097,31 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	 * that contains the BBM
- 	 */
- 	host->use_ecc = false;
-+	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
- 
- 	clear_bam_transaction(nandc);
--	ret = copy_last_cw(host, page);
--	if (ret)
-+	clear_read_regs(nandc);
+ /*
++ * Helper to perform the page raw read operation. The read_cw_mask will be
++ * used to specify the codewords (CW) for which the data should be read. The
++ * single page contains multiple CW.
++ *
++ * Normally other NAND controllers store the data in main area and
++ * ecc bytes in oob area. So, if page size is 2048+64 then 2048
++ * data bytes will go in main area followed by ECC bytes. The QCOM NAND
++ * controller follows different layout in which the data+oob is internally
++ * divided in 528/532 bytes CW and each CW contains 516 bytes followed by
++ * ECC parity bytes for that CW. By this, 4 available oob bytes per CW
++ * will also be protected with ECC.
++ *
++ * For each CW read, following are the 2 steps
++ * 1. Read the codeword bytes from NAND chip to NAND controller internal HW
++ *    buffer.
++ * 2. Copy all these bytes from this HW buffer to driver RAM buffer.
++ *
++ * Sometime, only few CW data is required in complete page. The read_cw_mask
++ * specifies which CW in a page needs to be read. Start address will be
++ * determined with this CW mask to skip unnecessary data copy from NAND
++ * flash device. Then, actual data copy from NAND controller HW internal buffer
++ * to data buffer will be done only for the CWs, which have the mask set.
++ */
++static int
++nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
++		    u8 *data_buf, u8 *oob_buf,
++		    int page, unsigned long read_cw_mask)
++{
++	struct qcom_nand_host *host = to_qcom_nand_host(chip);
++	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	int i, ret;
++	int read_loc, start_step, last_step;
 +
-+	set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	update_rw_regs(host, 1, true);
++	nand_read_page_op(chip, page, 0, NULL, 0);
 +
-+	/*
-+	 * The last codeword data will be copied from NAND device to NAND
-+	 * controller internal HW buffer. Copy only required BBM size bytes
-+	 * from this HW buffer to bbm_bytes_buf which is present at
-+	 * bbpos offset.
-+	 */
-+	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
-+	config_nand_single_cw_page_read(nandc);
-+	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
-+		      host->bbm_size, 0);
++	host->use_ecc = false;
++	start_step = ffs(read_cw_mask) - 1;
++	last_step = fls(read_cw_mask);
++
++	clear_bam_transaction(nandc);
++	set_address(host, host->cw_size * start_step, page);
++	update_rw_regs(host, last_step - start_step, true);
++	config_nand_page_read(nandc);
++
++	for (i = start_step; i < last_step; i++) {
++		int data_size1, data_size2, oob_size1, oob_size2;
++		int reg_off = FLASH_BUF_ACC;
++
++		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
++		oob_size1 = host->bbm_size;
++
++		if (i == (ecc->steps - 1)) {
++			data_size2 = ecc->size - data_size1 -
++				     ((ecc->steps - 1) << 2);
++			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
++				    host->spare_bytes;
++		} else {
++			data_size2 = host->cw_data - data_size1;
++			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
++		}
++
++		/*
++		 * Don't perform actual data copy from NAND controller internal
++		 * HW buffer to data buffer through DMA for this codeword.
++		 */
++		if (!(read_cw_mask & BIT(i))) {
++			if (nandc->props->is_bam)
++				nandc_set_read_loc(nandc, 0, 0, 0, 1);
++
++			config_nand_cw_read(nandc, false);
++
++			data_buf += data_size1 + data_size2;
++			oob_buf += oob_size1 + oob_size2;
++
++			continue;
++		}
++
++		if (nandc->props->is_bam) {
++			read_loc = 0;
++			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
++			read_loc += data_size1;
++
++			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
++			read_loc += oob_size1;
++
++			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
++			read_loc += data_size2;
++
++			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
++		}
++
++		config_nand_cw_read(nandc, false);
++
++		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
++		reg_off += data_size1;
++		data_buf += data_size1;
++
++		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
++		reg_off += oob_size1;
++		oob_buf += oob_size1;
++
++		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
++		reg_off += data_size2;
++		data_buf += data_size2;
++
++		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
++		oob_buf += oob_size2;
++	}
 +
 +	ret = submit_descs(nandc);
 +	free_descs(nandc);
 +	if (ret) {
-+		dev_err(nandc->dev, "failed to copy bad block bytes\n");
- 		goto err;
++		dev_err(nandc->dev, "failure to read raw page\n");
++		return ret;
 +	}
- 
- 	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
- 
-@@ -2144,12 +2130,10 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 		goto err;
- 	}
- 
--	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
++
++	return check_flash_errors(host, ecc->steps);
++}
++
++/*
+  * reads back status registers set by the controller to notify page read
+  * errors. this is equivalent to what 'ecc->correct()' would do.
+  */
+@@ -1817,80 +1938,8 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
+ 				    struct nand_chip *chip, uint8_t *buf,
+ 				    int oob_required, int page)
+ {
+-	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+-	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+-	u8 *data_buf, *oob_buf;
+-	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-	int i, ret;
+-	int read_loc;
 -
--	bad = nandc->data_buffer[bbpos] != 0xff;
-+	bad = bbm_bytes_buf[0] != 0xff;
- 
- 	if (chip->options & NAND_BUSWIDTH_16)
--		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
-+		bad = bad || (bbm_bytes_buf[1] != 0xff);
- err:
- 	return bad;
+-	nand_read_page_op(chip, page, 0, NULL, 0);
+-	data_buf = buf;
+-	oob_buf = chip->oob_poi;
+-
+-	host->use_ecc = false;
+-
+-	clear_bam_transaction(nandc);
+-	update_rw_regs(host, ecc->steps, true);
+-	config_nand_page_read(nandc);
+-
+-	for (i = 0; i < ecc->steps; i++) {
+-		int data_size1, data_size2, oob_size1, oob_size2;
+-		int reg_off = FLASH_BUF_ACC;
+-
+-		data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+-		oob_size1 = host->bbm_size;
+-
+-		if (i == (ecc->steps - 1)) {
+-			data_size2 = ecc->size - data_size1 -
+-				     ((ecc->steps - 1) << 2);
+-			oob_size2 = (ecc->steps << 2) + host->ecc_bytes_hw +
+-				    host->spare_bytes;
+-		} else {
+-			data_size2 = host->cw_data - data_size1;
+-			oob_size2 = host->ecc_bytes_hw + host->spare_bytes;
+-		}
+-
+-		if (nandc->props->is_bam) {
+-			read_loc = 0;
+-			nandc_set_read_loc(nandc, 0, read_loc, data_size1, 0);
+-			read_loc += data_size1;
+-
+-			nandc_set_read_loc(nandc, 1, read_loc, oob_size1, 0);
+-			read_loc += oob_size1;
+-
+-			nandc_set_read_loc(nandc, 2, read_loc, data_size2, 0);
+-			read_loc += data_size2;
+-
+-			nandc_set_read_loc(nandc, 3, read_loc, oob_size2, 1);
+-		}
+-
+-		config_nand_cw_read(nandc, false);
+-
+-		read_data_dma(nandc, reg_off, data_buf, data_size1, 0);
+-		reg_off += data_size1;
+-		data_buf += data_size1;
+-
+-		read_data_dma(nandc, reg_off, oob_buf, oob_size1, 0);
+-		reg_off += oob_size1;
+-		oob_buf += oob_size1;
+-
+-		read_data_dma(nandc, reg_off, data_buf, data_size2, 0);
+-		reg_off += data_size2;
+-		data_buf += data_size2;
+-
+-		read_data_dma(nandc, reg_off, oob_buf, oob_size2, 0);
+-		oob_buf += oob_size2;
+-	}
+-
+-	ret = submit_descs(nandc);
+-	free_descs(nandc);
+-	if (ret) {
+-		dev_err(nandc->dev, "failure to read raw page\n");
+-		return ret;
+-	}
+-
+-	return check_flash_errors(host, ecc->steps);
++	return nandc_read_page_raw(mtd, chip, buf, chip->oob_poi, page,
++				   BIT(chip->ecc.steps) - 1);
  }
+ 
+ /* implements ecc->read_oob() */
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
