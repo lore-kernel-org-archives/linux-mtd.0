@@ -1,19 +1,54 @@
-Received: from mail.intenta.de ([178.249.25.132])
+Received: from 8bytes.org ([2a01:238:4383:600:38bc:a715:4b6d:a889]
+ helo=theia.8bytes.org)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDmX-0001iu-6J
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:56:22 +0000
-Date: Thu, 3 May 2018 14:56:01 +0200
-From: Helmut Grohne <h.grohne@intenta.de>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-CC: <linux-mtd@lists.infradead.org>
-Subject: Re: [LINUX, v8, 2/2] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Message-ID: <20180503125600.vkv5vowdyjz5p2zt@laureti-dev>
-References: <1521024505-30677-1-git-send-email-nagasureshkumarrelli@gmail.com>
+ id 1fEDsw-0003m8-Rm
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 13:03:05 +0000
+Date: Thu, 3 May 2018 15:02:44 +0200
+From: Joerg Roedel <joro@8bytes.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Tejun Heo <tj@kernel.org>,
+ Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>, Jonathan Cameron <jic23@kernel.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>,
+ Eric Anholt <eric@anholt.net>, Stefan Wahren <stefan.wahren@i2se.com>,
+ iommu@lists.linux-foundation.org, linux-usb@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-ide@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-fbdev@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-fpga@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-iio@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-media@vger.kernel.org,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-spi@vger.kernel.org,
+ devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/20] iommu: Remove depends on HAS_DMA in case of
+ platform dependency
+Message-ID: <20180503130244.ifal7n4tyxvekjnj@8bytes.org>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ <1523987360-18760-10-git-send-email-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1521024505-30677-1-git-send-email-nagasureshkumarrelli@gmail.com>
+In-Reply-To: <1523987360-18760-10-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +58,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 14, 2018 at 04:18:25PM +0530, Naga Sureshkumar Relli wrote:
-> +	xnand->row_addr_cycles = nand_chip->onfi_params.addr_cycles & 0xF;
-> +	xnand->col_addr_cycles =
-> +				(nand_chip->onfi_params.addr_cycles >> 4) & 0xF;
+On Tue, Apr 17, 2018 at 07:49:09PM +0200, Geert Uytterhoeven wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Acked-by: Robin Murphy <robin.murphy@arm.com>
+> Acked-by: Joerg Roedel <jroedel@suse.de>
 
-Meanwhile onfi_params have been removed from the mainline and this patch
-no longer builds against v4.17-rc3. Can you resend a version that builds
-against with more recent kernels?
-
-Helmut
+Applied, thanks.
