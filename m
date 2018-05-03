@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEDEd-0007fQ-02
- for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:25 +0000
+ id 1fEDEq-0007hw-E3
+ for linux-mtd@lists.infradead.org; Thu, 03 May 2018 12:21:42 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -11,10 +11,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v2 05/14] mtd: rawnand: qcom: wait for desc completion in all
- BAM channels
-Date: Thu,  3 May 2018 17:50:32 +0530
-Message-Id: <1525350041-22995-6-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v2 06/14] mtd: rawnand: qcom: erased page detection for
+ uncorrectable errors only
+Date: Thu,  3 May 2018 17:50:33 +0530
+Message-Id: <1525350041-22995-7-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,147 +26,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The BAM has 3 channels - tx, rx and command. command channel
-is used for register read/writes, tx channel for data writes
-and rx channel for data reads. Currently, the driver assumes the
-transfer completion once it gets all the command descriptor
-completed. Sometimes, there is race condition in data channel
-(tx/rx) and command channel completion and in these cases,
-the data in buffer is not valid during the small window between
-command descriptor completion and data descriptor completion.
+Following is the flow in the HW if controller tries to read erased
+page
 
-Now, the changes have been made to assign the callback for
-channel's final descriptor. The DMA will generate the callback
-when all the descriptors have completed in that channel.
-The NAND transfer will be completed only when all required
-DMA channels have generated the completion callback.
+1. First ECC uncorrectable error will be generated from ECC engine
+   since ECC engine first calculates the ECC with all 0xff and match
+   the calculated ECC with ECC code in OOB (which is again all 0xff).
+2. After getting ECC error, erased CW detection logic will be
+   applied which is different for BCH and RS ECC
+    a. For BCH, HW checks if all the bytes in page are 0xff and then
+       it updates the status in separate register
+       NAND_ERASED_CW_DETECT_STATUS.
+    b. For RS ECC, the HW reports the same error when reading an
+       erased CW, but it notifies that it is an erased CW by
+       placing special characters at certain offsets in the
+       buffer.
+
+So the erased CW detect status should be checked only if ECC engine
+generated the uncorrectable error.
+
+Currently for all other operational errors also (like TIMEOUT, MPU
+errors, etc.), the erased CW detect logic is being applied so fix this
+and return EIO for other operational errors.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v1:
 
-  NONE
+  1. Added more detail in commit message
+  2. Added comment before each if/else
+  3. Removed redundant check for BS_UNCORRECTABLE_BIT
 
-  1. Removed the custom logic and used the helper fuction.
- drivers/mtd/nand/raw/qcom_nandc.c | 55 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 54 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 65 ++++++++++++++++++++++++++-------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index a8d71ce..3d1ff54 100644
+index 3d1ff54..e6a21598 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -213,6 +213,8 @@
- #define QPIC_PER_CW_CMD_SGL		32
- #define QPIC_PER_CW_DATA_SGL		8
+@@ -1578,6 +1578,7 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	unsigned int max_bitflips = 0;
+ 	struct read_stats *buf;
++	bool flash_op_err = false;
+ 	int i;
  
-+#define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
+ 	buf = (struct read_stats *)nandc->reg_read_buf;
+@@ -1599,8 +1600,18 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 		buffer = le32_to_cpu(buf->buffer);
+ 		erased_cw = le32_to_cpu(buf->erased_cw);
+ 
+-		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++		/*
++		 * Check ECC failure for each codeword. ECC failure can
++		 * happen in either of the following conditions
++		 * 1. If number of bitflips are greater than ECC engine
++		 *    capability.
++		 * 2. If this codeword contains all 0xff for which erased
++		 *    codeword detection check will be done.
++		 */
++		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
+ 			bool erased;
++			int ret, ecclen, extraooblen;
++			void *eccbuf;
+ 
+ 			/* ignore erased codeword errors */
+ 			if (host->bch_enabled) {
+@@ -1618,29 +1629,36 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 				continue;
+ 			}
+ 
+-			if (buffer & BS_UNCORRECTABLE_BIT) {
+-				int ret, ecclen, extraooblen;
+-				void *eccbuf;
++			eccbuf = oob_buf ? oob_buf + oob_len : NULL;
++			ecclen = oob_buf ? host->ecc_bytes_hw : 0;
++			extraooblen = oob_buf ? oob_len : 0;
+ 
+-				eccbuf = oob_buf ? oob_buf + oob_len : NULL;
+-				ecclen = oob_buf ? host->ecc_bytes_hw : 0;
+-				extraooblen = oob_buf ? oob_len : 0;
+-
+-				/*
+-				 * make sure it isn't an erased page reported
+-				 * as not-erased by HW because of a few bitflips
+-				 */
+-				ret = nand_check_erased_ecc_chunk(data_buf,
+-					data_len, eccbuf, ecclen, oob_buf,
+-					extraooblen, ecc->strength);
+-				if (ret < 0) {
+-					mtd->ecc_stats.failed++;
+-				} else {
+-					mtd->ecc_stats.corrected += ret;
+-					max_bitflips =
+-						max_t(unsigned int, max_bitflips, ret);
+-				}
++			/*
++			 * make sure it isn't an erased page reported
++			 * as not-erased by HW because of a few bitflips
++			 */
++			ret = nand_check_erased_ecc_chunk(data_buf,
++				data_len, eccbuf, ecclen, oob_buf,
++				extraooblen, ecc->strength);
++			if (ret < 0) {
++				mtd->ecc_stats.failed++;
++			} else {
++				mtd->ecc_stats.corrected += ret;
++				max_bitflips =
++					max_t(unsigned int, max_bitflips, ret);
+ 			}
++		/*
++		 * Check if MPU or any other operational error (timeout,
++		 * device failure, etc.) happened for this codeword and
++		 * make flash_op_err true. If flash_op_err is set, then
++		 * EIO will be returned for page read.
++		 */
++		} else if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++			flash_op_err = true;
++		/*
++		 * No ECC or operational errors happened. Check the number of
++		 * bits corrected and update the ecc_stats.corrected.
++		 */
+ 		} else {
+ 			unsigned int stat;
+ 
+@@ -1654,6 +1672,9 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 			oob_buf += oob_len + ecc->bytes;
+ 	}
+ 
++	if (flash_op_err)
++		return -EIO;
 +
- /*
-  * Flags used in DMA descriptor preparation helper functions
-  * (i.e. read_reg_dma/write_reg_dma/read_data_dma/write_data_dma)
-@@ -245,6 +247,11 @@
-  * @tx_sgl_start - start index in data sgl for tx.
-  * @rx_sgl_pos - current index in data sgl for rx.
-  * @rx_sgl_start - start index in data sgl for rx.
-+ * @first_chan_done - if current transfer already has got first channel
-+ *		      DMA desc completion.
-+ * @txn_done - completion for nand transfer.
-+ * @last_data_desc - last DMA desc in data channel (tx/rx).
-+ * @last_cmd_desc - last DMA desc in command channel.
-  */
- struct bam_transaction {
- 	struct bam_cmd_element *bam_ce;
-@@ -258,6 +265,10 @@ struct bam_transaction {
- 	u32 tx_sgl_start;
- 	u32 rx_sgl_pos;
- 	u32 rx_sgl_start;
-+	bool first_chan_done;
-+	struct completion txn_done;
-+	struct dma_async_tx_descriptor *last_data_desc;
-+	struct dma_async_tx_descriptor *last_cmd_desc;
- };
- 
- /*
-@@ -504,6 +515,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
- 
- 	bam_txn->data_sgl = bam_txn_buf;
- 
-+	init_completion(&bam_txn->txn_done);
-+
- 	return bam_txn;
+ 	return max_bitflips;
  }
  
-@@ -523,11 +536,36 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
- 	bam_txn->tx_sgl_start = 0;
- 	bam_txn->rx_sgl_pos = 0;
- 	bam_txn->rx_sgl_start = 0;
-+	bam_txn->last_data_desc = NULL;
-+	bam_txn->first_chan_done = false;
- 
- 	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
- 		      QPIC_PER_CW_CMD_SGL);
- 	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
- 		      QPIC_PER_CW_DATA_SGL);
-+
-+	reinit_completion(&bam_txn->txn_done);
-+}
-+
-+/* Callback for DMA descriptor completion */
-+static void qpic_bam_dma_done(void *data)
-+{
-+	struct bam_transaction *bam_txn = data;
-+
-+	/*
-+	 * In case of data transfer with NAND, 2 callbacks will be generated.
-+	 * One for command channel and another one for data channel.
-+	 * If current transaction has data descriptors then check if its
-+	 * already got one DMA channel completion callback. In this case
-+	 * make the NAND transfer complete otherwise mark first_chan_done true
-+	 * and wait for next channel DMA completion callback.
-+	 */
-+	if (bam_txn->last_data_desc && !bam_txn->first_chan_done) {
-+		bam_txn->first_chan_done = true;
-+		return;
-+	}
-+
-+	complete(&bam_txn->txn_done);
- }
- 
- static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
-@@ -756,6 +794,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
- 
- 	desc->dma_desc = dma_desc;
- 
-+	/* update last data/command descriptor */
-+	if (chan == nandc->cmd_chan)
-+		bam_txn->last_cmd_desc = dma_desc;
-+	else
-+		bam_txn->last_data_desc = dma_desc;
-+
- 	list_add_tail(&desc->node, &nandc->desc_list);
- 
- 	return 0;
-@@ -1273,10 +1317,19 @@ static int submit_descs(struct qcom_nand_controller *nandc)
- 		cookie = dmaengine_submit(desc->dma_desc);
- 
- 	if (nandc->props->is_bam) {
-+		bam_txn->last_cmd_desc->callback = qpic_bam_dma_done;
-+		bam_txn->last_cmd_desc->callback_param = bam_txn;
-+		if (bam_txn->last_data_desc) {
-+			bam_txn->last_data_desc->callback = qpic_bam_dma_done;
-+			bam_txn->last_data_desc->callback_param = bam_txn;
-+		}
-+
- 		dma_async_issue_pending(nandc->tx_chan);
- 		dma_async_issue_pending(nandc->rx_chan);
-+		dma_async_issue_pending(nandc->cmd_chan);
- 
--		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
-+		if (!wait_for_completion_timeout(&bam_txn->txn_done,
-+						 QPIC_NAND_COMPLETION_TIMEOUT))
- 			return -ETIMEDOUT;
- 	} else {
- 		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
