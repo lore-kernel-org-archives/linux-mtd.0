@@ -1,9 +1,9 @@
-Received: from mail-am5eur03on0721.outbound.protection.outlook.com
- ([2a01:111:f400:fe08::721]
+Received: from mail-am5eur03on072d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe08::72d]
  helo=EUR03-AM5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEh0l-0004NE-Hq
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 20:09:01 +0000
+ id 1fEh14-0004RU-Tb
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 20:09:20 +0000
 From: Jane Wan <Jane.Wan@nokia.com>
 To: Boris.Brezillon@bootlin.com, miquel.raynal@bootlin.com,
  dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
@@ -12,10 +12,12 @@ To: Boris.Brezillon@bootlin.com, miquel.raynal@bootlin.com,
  shreeya.patel23498@gmail.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  ties.bos@nokia.com, Jane Wan <Jane.Wan@nokia.com>
-Subject: [PATCH v2 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read all
- ONFI parameter pages
-Date: Fri,  4 May 2018 13:08:12 -0700
-Message-Id: <1525464493-5006-1-git-send-email-Jane.Wan@nokia.com>
+Subject: [PATCH v2 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
+ recover the contents of ONFI parameter
+Date: Fri,  4 May 2018 13:08:13 -0700
+Message-Id: <1525464493-5006-2-git-send-email-Jane.Wan@nokia.com>
+In-Reply-To: <1525464493-5006-1-git-send-email-Jane.Wan@nokia.com>
+References: <1525464493-5006-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,52 +29,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Per ONFI specification (Rev. 4.0), if the CRC of the first parameter page
-read is not valid, the host should read redundant parameter page copies.
-Fix FSL NAND driver to read the two redundant copies which are mandatory
-in the specification.
+Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+CRC values, the bit-wise majority may be used to recover the contents of
+the parameter pages from the parameter page copies present.
 
 Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
 ---
- drivers/mtd/nand/raw/fsl_ifc_nand.c |   17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c |   36 ++++++++++++++++++++++++++++++------
+ 1 file changed, 30 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 61aae02..98aac1f 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -342,9 +342,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 72f3a89..464c4fb 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5086,6 +5086,8 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ 	return ret;
+ }
  
- 	case NAND_CMD_READID:
- 	case NAND_CMD_PARAM: {
-+		/*
-+		 * For READID, read 8 bytes that are currently used.
-+		 * For PARAM, read all 3 copies of 256-bytes pages.
-+		 */
-+		int len = 8;
- 		int timing = IFC_FIR_OP_RB;
--		if (command == NAND_CMD_PARAM)
-+		if (command == NAND_CMD_PARAM) {
- 			timing = IFC_FIR_OP_RBCD;
-+			len = 256 * 3;
++#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
++
+ /*
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+  */
+@@ -5094,7 +5096,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct nand_onfi_params *p;
+ 	char id[4];
+-	int i, ret, val;
++	int i, ret, val, pagesize;
++	u8 *buf;
+ 
+ 	/* Try ONFI for unknown chip or LP */
+ 	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+@@ -5102,8 +5105,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		return 0;
+ 
+ 	/* ONFI chip: allocate a buffer to hold its parameter page */
+-	p = kzalloc(sizeof(*p), GFP_KERNEL);
+-	if (!p)
++	pagesize = sizeof(*p);
++	buf = kzalloc((pagesize * 3), GFP_KERNEL);
++	if (!buf)
+ 		return -ENOMEM;
+ 
+ 	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+@@ -5113,7 +5117,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	}
+ 
+ 	for (i = 0; i < 3; i++) {
+-		ret = nand_read_data_op(chip, p, sizeof(*p), true);
++		p = (struct nand_onfi_params *)&buf[i*pagesize];
++		ret = nand_read_data_op(chip, p, pagesize, true);
+ 		if (ret) {
+ 			ret = 0;
+ 			goto free_onfi_param_page;
+@@ -5126,8 +5131,27 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	}
+ 
+ 	if (i == 3) {
+-		pr_err("Could not find valid ONFI parameter page; aborting\n");
+-		goto free_onfi_param_page;
++		int j, k, l;
++		u8 v, m;
++
++		pr_err("Could not find valid ONFI parameter page\n");
++		pr_info("Recover ONFI params with bit-wise majority\n");
++		for (j = 0; j < pagesize; j++) {
++			v = 0;
++			for (k = 0; k < 8; k++) {
++				m = 0;
++				for (l = 0; l < 3; l++)
++					m += GET_BIT(k, buf[l*pagesize + j]);
++				if (m > 1)
++					v |= BIT(k);
++			}
++			((u8 *)p)[j] = v;
 +		}
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=
++				le16_to_cpu(p->crc)) {
++			pr_err("ONFI parameter recovery failed, aborting\n");
++			goto free_onfi_param_page;
++		}
+ 	}
  
- 		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
- 			  (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
-@@ -354,12 +361,8 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
- 			  &ifc->ifc_nand.nand_fcr0);
- 		ifc_out32(column, &ifc->ifc_nand.row3);
- 
--		/*
--		 * although currently it's 8 bytes for READID, we always read
--		 * the maximum 256 bytes(for PARAM)
--		 */
--		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
--		ifc_nand_ctrl->read_bytes = 256;
-+		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
-+		ifc_nand_ctrl->read_bytes = len;
- 
- 		set_addr(mtd, 0, 0, 0);
- 		fsl_ifc_run_command(mtd);
+ 	/* Check version */
 -- 
 1.7.9.5
