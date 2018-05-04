@@ -1,24 +1,16 @@
-Received: from mail-bl2nam02on0059.outbound.protection.outlook.com
- ([104.47.38.59] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEUUj-0006F9-Al
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 06:47:13 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Helmut Grohne
- <h.grohne@intenta.de>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Boris
- Brezillon" <Boris.Brezillon@bootlin.com>
-Subject: RE: [LINUX, v8, 2/2] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Date: Fri, 4 May 2018 06:46:50 +0000
-Message-ID: <DM2PR02MB1418743DD67EAB0DBBA180D0AF860@DM2PR02MB1418.namprd02.prod.outlook.com>
-References: <1521024505-30677-1-git-send-email-nagasureshkumarrelli@gmail.com>
- <20180503125600.vkv5vowdyjz5p2zt@laureti-dev> <20180503162530.437f147a@xps13>
-In-Reply-To: <20180503162530.437f147a@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1fEUdu-0002v1-QW
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 06:56:36 +0000
+Date: Fri, 4 May 2018 08:56:21 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: v4.4-stable: GPMI nand controller broken
+Message-ID: <20180504065621.hclfdfxjxnobt4e7@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +20,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsICYgSGVsbXV0LA0KDQpUaGFua3MgZm9yIHVwZGF0aW5nIHRoZSBsYXRlc3QgY2hh
-bmdlcy4NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaXF1ZWwgUmF5
-bmFsIFttYWlsdG86bWlxdWVsLnJheW5hbEBib290bGluLmNvbV0NCj4gU2VudDogVGh1cnNkYXks
-IE1heSAzLCAyMDE4IDc6NTYgUE0NCj4gVG86IEhlbG11dCBHcm9obmUgPGguZ3JvaG5lQGludGVu
-dGEuZGU+DQo+IENjOiBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIDxuYWdhc3VyZUB4aWxpbnguY29t
-PjsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEJvcmlzDQo+IEJyZXppbGxvbiA8Qm9y
-aXMuQnJlemlsbG9uQGJvb3RsaW4uY29tPg0KPiBTdWJqZWN0OiBSZTogW0xJTlVYLCB2OCwgMi8y
-XSBtdGQ6IHJhd25hbmQ6IHBsMzUzOiBBZGQgYmFzaWMgZHJpdmVyIGZvciBhcm0gcGwzNTMgc21j
-IG5hbmQNCj4gaW50ZXJmYWNlDQo+IA0KPiBIaSBOYWdhLA0KPiANCj4gT24gVGh1LCAzIE1heSAy
-MDE4IDE0OjU2OjAxICswMjAwLCBIZWxtdXQgR3JvaG5lIDxoLmdyb2huZUBpbnRlbnRhLmRlPg0K
-PiB3cm90ZToNCj4gDQo+ID4gT24gV2VkLCBNYXIgMTQsIDIwMTggYXQgMDQ6MTg6MjVQTSArMDUz
-MCwgTmFnYSBTdXJlc2hrdW1hciBSZWxsaSB3cm90ZToNCj4gPiA+ICsJeG5hbmQtPnJvd19hZGRy
-X2N5Y2xlcyA9IG5hbmRfY2hpcC0+b25maV9wYXJhbXMuYWRkcl9jeWNsZXMgJiAweEY7DQo+ID4g
-PiArCXhuYW5kLT5jb2xfYWRkcl9jeWNsZXMgPQ0KPiA+ID4gKwkJCQkobmFuZF9jaGlwLT5vbmZp
-X3BhcmFtcy5hZGRyX2N5Y2xlcyA+PiA0KSAmIDB4RjsNCj4gPg0KPiA+IE1lYW53aGlsZSBvbmZp
-X3BhcmFtcyBoYXZlIGJlZW4gcmVtb3ZlZCBmcm9tIHRoZSBtYWlubGluZSBhbmQgdGhpcw0KPiA+
-IHBhdGNoIG5vIGxvbmdlciBidWlsZHMgYWdhaW5zdCB2NC4xNy1yYzMuIENhbiB5b3UgcmVzZW5k
-IGEgdmVyc2lvbg0KPiA+IHRoYXQgYnVpbGRzIGFnYWluc3Qgd2l0aCBtb3JlIHJlY2VudCBrZXJu
-ZWxzPw0KPiANCj4gQWN0dWFsbHkgSSdtIG5vdCBzdXJlIHlvdSBuZWVkIGFkZHJfY3ljbGVzIGZy
-b20gdGhlIE9ORkkgcGFyYW0gcGFnZS4gV2hhdCBhYm91dCBub24tDQo+IE9ORkkgY2hpcHM/IEFu
-eXdheSB5b3Ugd29uJ3QgZmluZCB0aGlzIGVudHJ5IGFueW1vcmUgYXMgdGhlIHBhcmFtIHBhZ2Ug
-aXMgbm93IGZyZWVkIGFmdGVyDQo+IHByb2JlLg0KPiANCj4gSSBkb24ndCBnZXQgd2h5IHlvdSBu
-ZWVkIHRoaXMgdGhvdWdoPw0KPiBNYXliZSB5b3Ugc2hvdWxkIGhhdmUgYSBsb29rIGF0IHRoZSBO
-QU5EX1JPV19BRERSXzMgZmxhZz8NCg0KVGhlIGFybSBTTUMgcGwzNTMgY29udHJvbGxlciBvcGVy
-YXRlcyBpbiBjbWQgcGhhc2UgYW5kIGRhdGEgcGhhc2UuDQpJbiBjbWQgcGhhc2UgaXQgcmVxdWly
-ZXMgbnVtYmVyIG9mIGFkZHJlc3MgY3ljbGVzLCBoZW5jZSB3ZSBhcmUgdXNpbmcgdGhpcw0KQnkg
-cmVhZGluZyBmcm9tIHBhcmFtZXRlciBwYWdlLg0KRE9DOiBodHRwOi8vaW5mb2NlbnRlci5hcm0u
-Y29tL2hlbHAvdG9waWMvY29tLmFybS5kb2MuZGRpMDM4MGcvRERJMDM4MEdfc21jX3BsMzUwX3Nl
-cmllc19yMnAxX3RybS5wZGYNCmlmIHlvdSBzZWUgdGFibGUyLTIgTkFORCBBWEkgYWRkcmVzcyBz
-ZXR1cCwgaXQgZGVzY3JpYmVzIHRoZSB1c2FnZSBvZiBjbWQNCmFuZCBkYXRhIHBoYXNlcy4NCklm
-IHdlIHJlbW92ZSB0aGlzIG9uZmlfcGFyYW1zLCBpcyB0aGVyZSBhbiBhbHRlcm5hdGl2ZSB0byB3
-cml0ZSB0aGUgbnVtYmVyIG9mIGFkZHJlc3MgY3ljbGVzIGZpbGVkIGluDQpDbWQgcGhhc2UgcmVn
-aXN0ZXI/IA0KT3IgY2FuIEkgdXNlIG1heCB2YWx1ZT8sIHRoYXQgbWVhbnMgYXMgcGVyIHNwZWMg
-aXQgc3VwcG9ydHMgbWF4IG9mIDcgYWRkcmVzcyBjeWNsZXMoaXQgaXMgYSAzYml0IHZhbHVlKS4N
-Cg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1hciBSZWxsaS4NCj4gDQo+IFRoYW5rcywNCj4gTWlx
-dcOobA0KPiANCj4gPg0KPiA+IEhlbG11dA0KPiA+DQo+ID4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+ID4gTGludXggTVREIGRpc2N1c3Np
-b24gbWFpbGluZyBsaXN0DQo+ID4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9saW51eC1tdGQvDQo+IA0KPiANCj4gDQo+IC0tDQo+IE1pcXVlbCBSYXluYWwsIEJv
-b3RsaW4gKGZvcm1lcmx5IEZyZWUgRWxlY3Ryb25zKSBFbWJlZGRlZCBMaW51eCBhbmQgS2VybmVs
-IGVuZ2luZWVyaW5nDQo+IGh0dHBzOi8vYm9vdGxpbi5jb20NCg==
+The following went into v4.4.120:
+
+197190bc5c48 mtd: nand: gpmi: Fix failure when a erased page has a bitflip at BBM
+
+This patch was backported to far for the stable tree. It only makes sense
+(and only works) together with:
+
+bd2e778c9ee3 gpmi-nand: Handle ECC Errors in erased pages
+
+which first appeared in v4.7.
+
+So either we revert 197190bc5c48 on the v4.4 stable tree or we apply the
+attached patch which is a backport of bd2e778c9ee3 for v4.4.
+
+I don't know which solution is prefered, personally I would prefer
+applying the attached patch which is also a bugfix. Without it erased
+pages may not be handled properly.
+
+Sascha
+
+---------------------------8<-------------------------------
+
+>From ec42023a83778e524a024bdd25d970b8dc7a3966 Mon Sep 17 00:00:00 2001
+From: Markus Pargmann <mpa@pengutronix.de>
+Date: Mon, 25 Apr 2016 14:35:12 +0200
+Subject: [PATCH] gpmi-nand: Handle ECC Errors in erased pages
+
+ECC is only calculated for written pages. As erased pages are not
+actively written the ECC is always invalid. For this purpose the
+Hardware BCH unit is able to check for erased pages and does not raise
+an ECC error in this case. This behaviour can be influenced using the
+BCH_MODE register which sets the number of allowed bitflips in an erased
+page. Unfortunately the unit is not capable of fixing the bitflips in
+memory.
+
+To avoid complete software checks for erased pages, we can simply check
+buffers with uncorrectable ECC errors because we know that any erased
+page with errors is uncorrectable by the BCH unit.
+
+This patch adds the generic nand_check_erased_ecc_chunk() to gpmi-nand
+to correct erased pages. To have the valid data in the buffer before
+using them, this patch moves the read_page_swap_end() call before the
+ECC status checking for-loop.
+
+Fixes: 197190bc5c48 ("mtd: nand: gpmi: Fix failure when a erased page has a bitflip at BBM")
+Signed-off-by: Markus Pargmann <mpa@pengutronix.de>
+[Squashed patches by Stefan and Boris to check ECC area]
+Tested-by: Stefan Christ <s.christ@phytec.de>
+Acked-by: Han xu <han.xu@nxp.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 78 ++++++++++++++++++++++++--
+ 1 file changed, 73 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index e2a239c1f40b..40a335c6b792 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -1032,14 +1032,87 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	/* Loop over status bytes, accumulating ECC status. */
+ 	status = auxiliary_virt + nfc_geo->auxiliary_status_offset;
+ 
++	read_page_swap_end(this, buf, nfc_geo->payload_size,
++			   this->payload_virt, this->payload_phys,
++			   nfc_geo->payload_size,
++			   payload_virt, payload_phys);
++
+ 	for (i = 0; i < nfc_geo->ecc_chunk_count; i++, status++) {
+ 		if ((*status == STATUS_GOOD) || (*status == STATUS_ERASED))
+ 			continue;
+ 
+ 		if (*status == STATUS_UNCORRECTABLE) {
++			int eccbits = nfc_geo->ecc_strength * nfc_geo->gf_len;
++			u8 *eccbuf = this->raw_buffer;
++			int offset, bitoffset;
++			int eccbytes;
++			int flips;
++
++			/* Read ECC bytes into our internal raw_buffer */
++			offset = nfc_geo->metadata_size * 8;
++			offset += ((8 * nfc_geo->ecc_chunk_size) + eccbits) * (i + 1);
++			offset -= eccbits;
++			bitoffset = offset % 8;
++			eccbytes = DIV_ROUND_UP(offset + eccbits, 8);
++			offset /= 8;
++			eccbytes -= offset;
++			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, offset, -1);
++			chip->read_buf(mtd, eccbuf, eccbytes);
++
++			/*
++			 * ECC data are not byte aligned and we may have
++			 * in-band data in the first and last byte of
++			 * eccbuf. Set non-eccbits to one so that
++			 * nand_check_erased_ecc_chunk() does not count them
++			 * as bitflips.
++			 */
++			if (bitoffset)
++				eccbuf[0] |= GENMASK(bitoffset - 1, 0);
++
++			bitoffset = (bitoffset + eccbits) % 8;
++			if (bitoffset)
++				eccbuf[eccbytes - 1] |= GENMASK(7, bitoffset);
++
++			/*
++			 * The ECC hardware has an uncorrectable ECC status
++			 * code in case we have bitflips in an erased page. As
++			 * nothing was written into this subpage the ECC is
++			 * obviously wrong and we can not trust it. We assume
++			 * at this point that we are reading an erased page and
++			 * try to correct the bitflips in buffer up to
++			 * ecc_strength bitflips. If this is a page with random
++			 * data, we exceed this number of bitflips and have a
++			 * ECC failure. Otherwise we use the corrected buffer.
++			 */
++			if (i == 0) {
++				/* The first block includes metadata */
++				flips = nand_check_erased_ecc_chunk(
++						buf + i * nfc_geo->ecc_chunk_size,
++						nfc_geo->ecc_chunk_size,
++						eccbuf, eccbytes,
++						auxiliary_virt,
++						nfc_geo->metadata_size,
++						nfc_geo->ecc_strength);
++			} else {
++				flips = nand_check_erased_ecc_chunk(
++						buf + i * nfc_geo->ecc_chunk_size,
++						nfc_geo->ecc_chunk_size,
++						eccbuf, eccbytes,
++						NULL, 0,
++						nfc_geo->ecc_strength);
++			}
++
++			if (flips > 0) {
++				max_bitflips = max_t(unsigned int, max_bitflips,
++						     flips);
++				mtd->ecc_stats.corrected += flips;
++				continue;
++			}
++
+ 			mtd->ecc_stats.failed++;
+ 			continue;
+ 		}
++
+ 		mtd->ecc_stats.corrected += *status;
+ 		max_bitflips = max_t(unsigned int, max_bitflips, *status);
+ 	}
+@@ -1062,11 +1135,6 @@ static int gpmi_ecc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->oob_poi[0] = ((uint8_t *) auxiliary_virt)[0];
+ 	}
+ 
+-	read_page_swap_end(this, buf, nfc_geo->payload_size,
+-			this->payload_virt, this->payload_phys,
+-			nfc_geo->payload_size,
+-			payload_virt, payload_phys);
+-
+ 	return max_bitflips;
+ }
+ 
+-- 
+2.17.0
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
