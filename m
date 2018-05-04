@@ -1,25 +1,19 @@
-Received: from mail-am5eur03on072d.outbound.protection.outlook.com
- ([2a01:111:f400:fe08::72d]
- helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+Received: from out1-smtp.messagingengine.com ([66.111.4.25])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEh14-0004RU-Tb
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 20:09:20 +0000
-From: Jane Wan <Jane.Wan@nokia.com>
-To: Boris.Brezillon@bootlin.com, miquel.raynal@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
- marek.vasut@gmail.com, yamada.masahiro@socionext.com,
- prabhakar.kushwaha@nxp.com, shawnguo@kernel.org, jagdish.gediya@nxp.com,
- shreeya.patel23498@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ties.bos@nokia.com, Jane Wan <Jane.Wan@nokia.com>
-Subject: [PATCH v2 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
- recover the contents of ONFI parameter
-Date: Fri,  4 May 2018 13:08:13 -0700
-Message-Id: <1525464493-5006-2-git-send-email-Jane.Wan@nokia.com>
-In-Reply-To: <1525464493-5006-1-git-send-email-Jane.Wan@nokia.com>
-References: <1525464493-5006-1-git-send-email-Jane.Wan@nokia.com>
+ id 1fEiwl-0001yJ-CD
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 22:13:00 +0000
+Date: Fri, 4 May 2018 15:12:31 -0700
+From: Greg KH <greg@kroah.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: v4.4-stable: GPMI nand controller broken
+Message-ID: <20180504221231.GB20328@kroah.com>
+References: <20180504065621.hclfdfxjxnobt4e7@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180504065621.hclfdfxjxnobt4e7@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,89 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
-CRC values, the bit-wise majority may be used to recover the contents of
-the parameter pages from the parameter page copies present.
+On Fri, May 04, 2018 at 08:56:21AM +0200, Sascha Hauer wrote:
+> The following went into v4.4.120:
+> 
+> 197190bc5c48 mtd: nand: gpmi: Fix failure when a erased page has a bitflip at BBM
+> 
+> This patch was backported to far for the stable tree. It only makes sense
+> (and only works) together with:
+> 
+> bd2e778c9ee3 gpmi-nand: Handle ECC Errors in erased pages
+> 
+> which first appeared in v4.7.
+> 
+> So either we revert 197190bc5c48 on the v4.4 stable tree or we apply the
+> attached patch which is a backport of bd2e778c9ee3 for v4.4.
+> 
+> I don't know which solution is prefered, personally I would prefer
+> applying the attached patch which is also a bugfix. Without it erased
+> pages may not be handled properly.
 
-Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
----
- drivers/mtd/nand/raw/nand_base.c |   36 ++++++++++++++++++++++++++++++------
- 1 file changed, 30 insertions(+), 6 deletions(-)
+I've now applied this bugfix, thanks!
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 72f3a89..464c4fb 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5086,6 +5086,8 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
- 	return ret;
- }
- 
-+#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
-+
- /*
-  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
-  */
-@@ -5094,7 +5096,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct nand_onfi_params *p;
- 	char id[4];
--	int i, ret, val;
-+	int i, ret, val, pagesize;
-+	u8 *buf;
- 
- 	/* Try ONFI for unknown chip or LP */
- 	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
-@@ -5102,8 +5105,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 		return 0;
- 
- 	/* ONFI chip: allocate a buffer to hold its parameter page */
--	p = kzalloc(sizeof(*p), GFP_KERNEL);
--	if (!p)
-+	pagesize = sizeof(*p);
-+	buf = kzalloc((pagesize * 3), GFP_KERNEL);
-+	if (!buf)
- 		return -ENOMEM;
- 
- 	ret = nand_read_param_page_op(chip, 0, NULL, 0);
-@@ -5113,7 +5117,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 	}
- 
- 	for (i = 0; i < 3; i++) {
--		ret = nand_read_data_op(chip, p, sizeof(*p), true);
-+		p = (struct nand_onfi_params *)&buf[i*pagesize];
-+		ret = nand_read_data_op(chip, p, pagesize, true);
- 		if (ret) {
- 			ret = 0;
- 			goto free_onfi_param_page;
-@@ -5126,8 +5131,27 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 	}
- 
- 	if (i == 3) {
--		pr_err("Could not find valid ONFI parameter page; aborting\n");
--		goto free_onfi_param_page;
-+		int j, k, l;
-+		u8 v, m;
-+
-+		pr_err("Could not find valid ONFI parameter page\n");
-+		pr_info("Recover ONFI params with bit-wise majority\n");
-+		for (j = 0; j < pagesize; j++) {
-+			v = 0;
-+			for (k = 0; k < 8; k++) {
-+				m = 0;
-+				for (l = 0; l < 3; l++)
-+					m += GET_BIT(k, buf[l*pagesize + j]);
-+				if (m > 1)
-+					v |= BIT(k);
-+			}
-+			((u8 *)p)[j] = v;
-+		}
-+		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=
-+				le16_to_cpu(p->crc)) {
-+			pr_err("ONFI parameter recovery failed, aborting\n");
-+			goto free_onfi_param_page;
-+		}
- 	}
- 
- 	/* Check version */
--- 
-1.7.9.5
+greg k-h
