@@ -1,15 +1,14 @@
-Received: from mail-ve1eur01on0728.outbound.protection.outlook.com
- ([2a01:111:f400:fe1f::728]
- helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+Received: from mail-db5eur01on071f.outbound.protection.outlook.com
+ ([2a01:111:f400:fe02::71f]
+ helo=EUR01-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEPda-0001U4-5D
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 01:35:56 +0000
+ id 1fEQA8-0006T2-0O
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 02:09:34 +0000
 From: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Boris Brezillon
- <Boris.Brezillon@bootlin.com>
-CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "Bos, Ties (Nokia - US/Sunnyvale)"
- <ties.bos@nokia.com>, "linux-mtd@lists.infradead.org"
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+CC: "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "Bos, Ties
+ (Nokia - US/Sunnyvale)" <ties.bos@nokia.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, "richard@nod.at" <richard@nod.at>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
@@ -18,12 +17,12 @@ CC: "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  "shawnguo@kernel.org" <shawnguo@kernel.org>, "jagdish.gediya@nxp.com"
  <jagdish.gediya@nxp.com>, "shreeya.patel23498@gmail.com"
  <shreeya.patel23498@gmail.com>
-Subject: [PATCH v2 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read
-Date: Fri, 4 May 2018 01:35:37 +0000
-Message-ID: <VI1PR07MB161500797A6B12A989D8976681860@VI1PR07MB1615.eurprd07.prod.outlook.com>
+Subject: [PATCH v2 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
+Date: Fri, 4 May 2018 02:09:12 +0000
+Message-ID: <VI1PR07MB161553DA5D3EF35C9052B1CA81860@VI1PR07MB1615.eurprd07.prod.outlook.com>
 Content-Language: en-US
 Content-Type: multipart/mixed;
- boundary="_002_VI1PR07MB161500797A6B12A989D8976681860VI1PR07MB1615eurp_"
+ boundary="_002_VI1PR07MB161553DA5D3EF35C9052B1CA81860VI1PR07MB1615eurp_"
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,184 +33,261 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---_002_VI1PR07MB161500797A6B12A989D8976681860VI1PR07MB1615eurp_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+--_002_VI1PR07MB161553DA5D3EF35C9052B1CA81860VI1PR07MB1615eurp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgTWlxdWVsIGFuZCBCb3JpcywNCg0KVGhhbmsgeW91IGZvciB5b3VyIHJlc3BvbnNlLiAgVGhl
-IGZvbGxvd2luZyBpcyB0aGUgcmVwb3N0aW5nIHRoZSB2MiB2ZXJzaW9uIG9mIHRoZSBwYXRjaCAo
-YWxzbyBpbiB0aGUgYXR0YWNobWVudCkuDQoNClN1YmplY3Q6IFtQQVRDSCB2MiAxLzJdIG10ZDog
-cmF3bmFuZDogZnNsX2lmYzogZml4IEZTTCBOQU5EIGRyaXZlciB0byByZWFkDQogYWxsIE9ORkkg
-cGFyYW1ldGVyIHBhZ2VzDQoNClBlciBPTkZJIHNwZWNpZmljYXRpb24gKFJldi4gNC4wKSwgaWYg
-dGhlIENSQyBvZiB0aGUgZmlyc3QgcGFyYW1ldGVyIHBhZ2UNCnJlYWQgaXMgbm90IHZhbGlkLCB0
-aGUgaG9zdCBzaG91bGQgcmVhZCByZWR1bmRhbnQgcGFyYW1ldGVyIHBhZ2UgY29waWVzLg0KRml4
-IEZTTCBOQU5EIGRyaXZlciB0byByZWFkIHRoZSB0d28gcmVkdW5kYW50IGNvcGllcyB3aGljaCBh
-cmUgbWFuZGF0b3J5DQppbiB0aGUgc3BlY2lmaWNhdGlvbi4NCg0KU2lnbmVkLW9mZi1ieTogSmFu
-ZSBXYW4gPEphbmUuV2FuQG5va2lhLmNvbT4NCi0tLQ0KIGRyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
-bF9pZmNfbmFuZC5jIHwgICAxNyArKysrKysrKysrLS0tLS0tLQ0KIDEgZmlsZSBjaGFuZ2VkLCAx
-MCBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvbmFuZC9yYXcvZnNsX2lmY19uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZj
-X25hbmQuYw0KaW5kZXggNjFhYWUwMi4uOThhYWMxZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRk
-L25hbmQvcmF3L2ZzbF9pZmNfbmFuZC5jDQorKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xf
-aWZjX25hbmQuYw0KQEAgLTM0Miw5ICszNDIsMTYgQEAgc3RhdGljIHZvaWQgZnNsX2lmY19jbWRm
-dW5jKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB1bnNpZ25lZCBpbnQgY29tbWFuZCwNCiANCiAJY2Fz
-ZSBOQU5EX0NNRF9SRUFESUQ6DQogCWNhc2UgTkFORF9DTURfUEFSQU06IHsNCisJCS8qDQorCQkg
-KiBGb3IgUkVBRElELCByZWFkIDggYnl0ZXMgdGhhdCBhcmUgY3VycmVudGx5IHVzZWQuDQorCQkg
-KiBGb3IgUEFSQU0sIHJlYWQgYWxsIDMgY29waWVzIG9mIDI1Ni1ieXRlcyBwYWdlcy4NCisJCSAq
-Lw0KKwkJaW50IGxlbiA9IDg7DQogCQlpbnQgdGltaW5nID0gSUZDX0ZJUl9PUF9SQjsNCi0JCWlm
-IChjb21tYW5kID09IE5BTkRfQ01EX1BBUkFNKQ0KKwkJaWYgKGNvbW1hbmQgPT0gTkFORF9DTURf
-UEFSQU0pIHsNCiAJCQl0aW1pbmcgPSBJRkNfRklSX09QX1JCQ0Q7DQorCQkJbGVuID0gMjU2ICog
-MzsNCisJCX0NCiANCiAJCWlmY19vdXQzMigoSUZDX0ZJUl9PUF9DVzAgPDwgSUZDX05BTkRfRklS
-MF9PUDBfU0hJRlQpIHwNCiAJCQkgIChJRkNfRklSX09QX1VBICA8PCBJRkNfTkFORF9GSVIwX09Q
-MV9TSElGVCkgfA0KQEAgLTM1NCwxMiArMzYxLDggQEAgc3RhdGljIHZvaWQgZnNsX2lmY19jbWRm
-dW5jKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB1bnNpZ25lZCBpbnQgY29tbWFuZCwNCiAJCQkgICZp
-ZmMtPmlmY19uYW5kLm5hbmRfZmNyMCk7DQogCQlpZmNfb3V0MzIoY29sdW1uLCAmaWZjLT5pZmNf
-bmFuZC5yb3czKTsNCiANCi0JCS8qDQotCQkgKiBhbHRob3VnaCBjdXJyZW50bHkgaXQncyA4IGJ5
-dGVzIGZvciBSRUFESUQsIHdlIGFsd2F5cyByZWFkDQotCQkgKiB0aGUgbWF4aW11bSAyNTYgYnl0
-ZXMoZm9yIFBBUkFNKQ0KLQkJICovDQotCQlpZmNfb3V0MzIoMjU2LCAmaWZjLT5pZmNfbmFuZC5u
-YW5kX2ZiY3IpOw0KLQkJaWZjX25hbmRfY3RybC0+cmVhZF9ieXRlcyA9IDI1NjsNCisJCWlmY19v
-dXQzMihsZW4sICZpZmMtPmlmY19uYW5kLm5hbmRfZmJjcik7DQorCQlpZmNfbmFuZF9jdHJsLT5y
-ZWFkX2J5dGVzID0gbGVuOw0KIA0KIAkJc2V0X2FkZHIobXRkLCAwLCAwLCAwKTsNCiAJCWZzbF9p
-ZmNfcnVuX2NvbW1hbmQobXRkKTsNCi0tIA0KMS43LjkuNQ0KDQpCZXN0IHJlZ2FyZHMsDQpKYW5l
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlxdWVsIFJheW5hbCBb
-bWFpbHRvOm1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb21dDQo+IFNlbnQ6IFdlZG5lc2RheSwgTWF5
-IDAyLCAyMDE4IDE6MTAgQU0NCj4gVG86IFdhbiwgSmFuZSAoTm9raWEgLSBVUy9TdW5ueXZhbGUp
-IDxqYW5lLndhbkBub2tpYS5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPEJvcmlzLkJyZXpp
-bGxvbkBib290bGluLmNvbT47IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBl
-YWNlQGdtYWlsLmNvbTsgQm9zLCBUaWVzIChOb2tpYSAtIFVTL1N1bm55dmFsZSkNCj4gPHRpZXMu
-Ym9zQG5va2lhLmNvbT47IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC0NCj4g
-a2VybmVsQHZnZXIua2VybmVsLm9yZzsgcmljaGFyZEBub2QuYXQ7IG1hcmVrLnZhc3V0QGdtYWls
-LmNvbTsNCj4geWFtYWRhLm1hc2FoaXJvQHNvY2lvbmV4dC5jb207IHByYWJoYWthci5rdXNod2Fo
-YUBueHAuY29tOw0KPiBzaGF3bmd1b0BrZXJuZWwub3JnOyBqYWdkaXNoLmdlZGl5YUBueHAuY29t
-Ow0KPiBzaHJlZXlhLnBhdGVsMjM0OThAZ21haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
-MS8yXSBGaXggRlNMIE5BTkQgZHJpdmVyIHRvIHJlYWQgYWxsIE9ORkkgcGFyYW1ldGVyIHBhZ2Vz
-DQo+IA0KPiBIaSBKYW5lLA0KPiANCj4gT24gVHVlLCAxIE1heSAyMDE4IDA1OjAxOjIzICswMDAw
-LCAiV2FuLCBKYW5lIChOb2tpYSAtIFVTL1N1bm55dmFsZSkiDQo+IDxqYW5lLndhbkBub2tpYS5j
-b20+IHdyb3RlOg0KPiANCj4gPiBIaSBNaXF1w6hsIGFuZCBCb3JpcywNCj4gPg0KPiA+IFRoYW5r
-IHlvdSBmb3IgeW91ciByZXNwb25zZSBhbmQgZmVlZGJhY2suICBJJ3ZlIG1vZGlmaWVkIHRoZSBm
-aXggYmFzZWQgb24geW91cg0KPiBjb21tZW50cy4NCj4gPiBQbGVhc2Ugc2VlIHRoZSB1cGRhdGVk
-IHBhdGNoIGZpbGUgYXQgdGhlIGVuZCBvZiB0aGlzIG1lc3NhZ2UgKGFsc28gaW4NCj4gYXR0YWNo
-bWVudCkuDQo+ID4gTXkgYW5zd2VycyB0byB5b3VyIGNvbW1lbnRzL3F1ZXN0aW9ucyBhcmUgaW5s
-aW5lIGluIHRoZSBwcmV2aW91cyBtZXNzYWdlLg0KPiANCj4gVXN1YWxseSB3ZSBhbnN3ZXIgaW5s
-aW5lIGluIGVhY2ggZS1tYWlsLCB0aGVuIHdlIHBvc3QgYSBuZXcgdmVyc2lvbiB3aXRoIGENCj4g
-dmVyc2lvbiBjb3VudGVyIGluY3JlbWVudGVkICh1c2UgdGhlICctdjItIG9mICdnaXQgZm9ybWF0
-LXBhdGNoJw0KPiB0byBhZGQgdGhlICdbUEFUQ0ggdjIgeC95XScgcHJlZml4IGF1dG9tYXRpY2Fs
-bHkpLiBSZXBvc3RpbmcgaXMgaW1wb3J0YW50IGFzDQo+IG1haW50YWluZXJzIHVzZSAncGF0Y2h3
-b3JrJyB0byBmb2xsb3cgdGhlIGV2b2x1dGlvbiBvZiBlYWNoIHBhdGNoLiBTbyBpbiB5b3VyDQo+
-IGNhc2UsIG5vdGhpbmcgc2hvd3MgdGhhdCB5b3UgcG9zdGVkIGEgdjIuDQoNCiBbSmFuZV0gVGhh
-bmsgeW91IGZvciB0aGUgaW5mby4gIEknbSByZXBvc3RpbmcgdGhlIHYyIHZlcnNpb24gb2YgdGhl
-IHBhdGNoLg0KDQo+IA0KPiA+DQo+ID4gSGVyZSBpcyB0aGUgYW5zd2VyIHRvIEJvcmlzIHF1ZXN0
-aW9uIGluIGFub3RoZXIgZW1haWwgdGhyZWFkOg0KPiA+DQo+ID4gPiBXaGF0IGlmIHNvbWUgTkFO
-RHMgaGF2ZSA0IG9yIG1vcmUgY29waWVzIG9mIHRoZSBwYXJhbSBwYWdlPw0KPiA+ICBbSmFuZV0g
-VGhlIE9ORkkgc3BlYyBkZWZpbmVzIHRoYXQgdGhlIHBhcmFtZXRlciBwYWdlIGFuZCBpdHMgdHdv
-IHJlZHVuZGFudA0KPiBjb3BpZXMgYXJlIG1hbmRhdG9yeS4NCj4gPiBUaGUgYWRkaXRpb25hbCBy
-ZWR1bmRhbnQgcGFnZXMgYXJlIG9wdGlvbmFsLiAgQ3VycmVudGx5LCB0aGUgRlNMIE5BTkQNCj4g
-PiBkcml2ZXIgb25seSByZWFkcyB0aGUgZmlyc3QgcGFyYW1ldGVyIHBhZ2UuICBUaGlzIHBhdGNo
-IGlzIHRvIGZpeCB0aGUgZHJpdmVyIHRvDQo+IG1lZXQgdGhlIG1hbmRhdG9yeSByZXF1aXJlbWVu
-dCBpbiB0aGUgc3BlYy4NCj4gPiBXZSBnb3QgYSBiYXRjaCBvZiBwYXJ0aWN1bGFybHkgYmFkIE5B
-TkQgY2hpcHMgcmVjZW50bHkgYW5kIHdlIG5lZWRlZA0KPiA+IHRoZXNlIGNoYW5nZXMgdG8gbWFr
-ZSB0aGVtIHdvcmsgcmVsaWFibHkgb3ZlciB0ZW1wZXJhdHVyZS4gIFRoZSBwYXRjaCB3YXMNCj4g
-dmVyaWZpZWQgdXNpbmcgdGhlc2UgYmFkIGNoaXBzLg0KPiANCj4gSSB0aGluayBCb3JpcycgcmVt
-YXJrIHdhcyBtdWNoIG1vcmUgZ2VuZXJhbCB0aGFuIGp1c3QgdGhpcyB1c2UgY2FzZS4NCj4gVGhl
-IHdob2xlIGxvZ2ljIG9mIHRhaWxvcmluZyAtPmNtZGZ1bmMoKSBpbiBlYWNoIGRyaXZlciBieSBn
-dWVzc2luZyB0aGUgZGF0YQ0KPiBsZW5ndGgsIHdoaWxlIHRoZXJlIGlzIGFic29sdXRlbHkgbm8g
-aW5kaWNhdGlvbiBvZiBpdCBpbiB0aGlzIGhvb2sgaXMgYnJva2VuLiBUaGUNCj4gY29yZSBpcyBt
-b3ZpbmcgdG8gYSBuZXcgaW50ZXJmYWNlIGNhbGxlZCAtPmV4ZWNfb3AoKSwgYW5kIHdlIHdvdWxk
-IHdlbGNvbWUgYQ0KPiBtaWdyYXRpb24gb2YgdGhpcyBkcml2ZXIgdG8gdGhpcyBob29rLCB0aGF0
-IHdvdWxkIGJlIG11Y2ggbXVjaCBtb3JlIGVhc3kgdG8NCj4gbWFpbnRhaW4gZm9yIGV2ZXJ5b25l
-Lg0KDQpbSmFuZV0gSSB1bmRlcnN0YW5kLiAgSSBjYW4gdHJ5IHRvIGludmVzdGlnYXRlIGl0LiAg
-VGhlIGNoYW5nZSBpcyBub250cml2aWFsLiAgT3VyIGN1cnJlbnQNCktlcm5lbCBpcyBiYXNlZCBv
-biB2NC4xLjggY29taW5nIGZyb20gdmVuZG9ycyBCU1AuICBUaGUgdGVzdGluZyBvZiBtYXNzaXZl
-IGNoYW5nZXMNCmluIHRoZSBsYXRlc3Qga2VybmVsIHZlcnNpb24gbWF5IGFsc28gYmUgYSBjaGFs
-bGVuZ2UuICBJIHdpc2ggdGhlIGN1cnJlbnQgcGF0Y2ggc3RpbGwgY291bGQNCmhlbHAgc29tZW9u
-ZSB3aG8gbWF5IGVuY291bnRlciB0aGUgc2FtZSBwcm9ibGVtIHdlIGhhZCByZWNlbnRseSB3aXRo
-IHRoZSBiYWQNCk5BTkQgY2hpcHMuDQogDQo+IA0KPiANCj4gVGhhbmtzLA0KPiBNaXF1w6hsDQo+
-IA0KPiA+DQo+ID4gQmVzdCByZWdhcmRzLA0KPiA+IEphbmUNCj4gPg0KPiA+IFVwZGF0ZWQgcGF0
-Y2g6DQo+ID4gRnJvbSA3MDFkZTQxNDZhYTYzNTVjOTUxZTk3YTc3NDc2ZTEyZDJkYTU2ZDQyIE1v
-biBTZXAgMTcgMDA6MDA6MDANCj4gMjAwMQ0KPiA+IEZyb206IEphbmUgV2FuIDxKYW5lLldhbkBu
-b2tpYS5jb20+DQo+ID4gRGF0ZTogTW9uLCAzMCBBcHIgMjAxOCAxMzozMDo0NiAtMDcwMA0KPiA+
-IFN1YmplY3Q6IFtQQVRDSCAxLzJdIG10ZDogcmF3bmFuZDogZnNsX2lmYzogZml4IEZTTCBOQU5E
-IGRyaXZlciB0bw0KPiA+IHJlYWQgYWxsICBPTkZJIHBhcmFtZXRlciBwYWdlcw0KPiA+DQo+ID4g
-UGVyIE9ORkkgc3BlY2lmaWNhdGlvbiAoUmV2LiA0LjApLCBpZiB0aGUgQ1JDIG9mIHRoZSBmaXJz
-dCBwYXJhbWV0ZXINCj4gPiBwYWdlIHJlYWQgaXMgbm90IHZhbGlkLCB0aGUgaG9zdCBzaG91bGQg
-cmVhZCByZWR1bmRhbnQgcGFyYW1ldGVyIHBhZ2UgY29waWVzLg0KPiA+IEZpeCBGU0wgTkFORCBk
-cml2ZXIgdG8gcmVhZCB0aGUgdHdvIHJlZHVuZGFudCBjb3BpZXMgd2hpY2ggYXJlDQo+ID4gbWFu
-ZGF0b3J5IGluIHRoZSBzcGVjaWZpY2F0aW9uLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogSmFu
-ZSBXYW4gPEphbmUuV2FuQG5va2lhLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvbmFu
-ZC9yYXcvZnNsX2lmY19uYW5kLmMgfCAgIDE3ICsrKysrKysrKystLS0tLS0tDQo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbF9pZmNfbmFuZC5jDQo+ID4gYi9kcml2
-ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYw0KPiA+IGluZGV4IDYxYWFlMDIuLjk4YWFj
-MWYgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNsX2lmY19uYW5kLmMN
-Cj4gPiArKysgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9mc2xfaWZjX25hbmQuYw0KPiA+IEBAIC0z
-NDIsOSArMzQyLDE2IEBAIHN0YXRpYyB2b2lkIGZzbF9pZmNfY21kZnVuYyhzdHJ1Y3QgbXRkX2lu
-Zm8gKm10ZCwNCj4gPiB1bnNpZ25lZCBpbnQgY29tbWFuZCwNCj4gPg0KPiA+ICAJY2FzZSBOQU5E
-X0NNRF9SRUFESUQ6DQo+ID4gIAljYXNlIE5BTkRfQ01EX1BBUkFNOiB7DQo+ID4gKwkJLyoNCj4g
-PiArCQkgKiBGb3IgUkVBRElELCByZWFkIDggYnl0ZXMgdGhhdCBhcmUgY3VycmVudGx5IHVzZWQu
-DQo+ID4gKwkJICogRm9yIFBBUkFNLCByZWFkIGFsbCAzIGNvcGllcyBvZiAyNTYtYnl0ZXMgcGFn
-ZXMuDQo+ID4gKwkJICovDQo+ID4gKwkJaW50IGxlbiA9IDg7DQo+ID4gIAkJaW50IHRpbWluZyA9
-IElGQ19GSVJfT1BfUkI7DQo+ID4gLQkJaWYgKGNvbW1hbmQgPT0gTkFORF9DTURfUEFSQU0pDQo+
-ID4gKwkJaWYgKGNvbW1hbmQgPT0gTkFORF9DTURfUEFSQU0pIHsNCj4gPiAgCQkJdGltaW5nID0g
-SUZDX0ZJUl9PUF9SQkNEOw0KPiA+ICsJCQlsZW4gPSAyNTYgKiAzOw0KPiA+ICsJCX0NCj4gPg0K
-PiA+ICAJCWlmY19vdXQzMigoSUZDX0ZJUl9PUF9DVzAgPDwgSUZDX05BTkRfRklSMF9PUDBfU0hJ
-RlQpIHwNCj4gPiAgCQkJICAoSUZDX0ZJUl9PUF9VQSAgPDwgSUZDX05BTkRfRklSMF9PUDFfU0hJ
-RlQpIHwNCj4gQEAgLTM1NCwxMiArMzYxLDgNCj4gPiBAQCBzdGF0aWMgdm9pZCBmc2xfaWZjX2Nt
-ZGZ1bmMoc3RydWN0IG10ZF9pbmZvICptdGQsIHVuc2lnbmVkIGludCBjb21tYW5kLA0KPiA+ICAJ
-CQkgICZpZmMtPmlmY19uYW5kLm5hbmRfZmNyMCk7DQo+ID4gIAkJaWZjX291dDMyKGNvbHVtbiwg
-JmlmYy0+aWZjX25hbmQucm93Myk7DQo+ID4NCj4gPiAtCQkvKg0KPiA+IC0JCSAqIGFsdGhvdWdo
-IGN1cnJlbnRseSBpdCdzIDggYnl0ZXMgZm9yIFJFQURJRCwgd2UgYWx3YXlzIHJlYWQNCj4gPiAt
-CQkgKiB0aGUgbWF4aW11bSAyNTYgYnl0ZXMoZm9yIFBBUkFNKQ0KPiA+IC0JCSAqLw0KPiA+IC0J
-CWlmY19vdXQzMigyNTYsICZpZmMtPmlmY19uYW5kLm5hbmRfZmJjcik7DQo+ID4gLQkJaWZjX25h
-bmRfY3RybC0+cmVhZF9ieXRlcyA9IDI1NjsNCj4gPiArCQlpZmNfb3V0MzIobGVuLCAmaWZjLT5p
-ZmNfbmFuZC5uYW5kX2ZiY3IpOw0KPiA+ICsJCWlmY19uYW5kX2N0cmwtPnJlYWRfYnl0ZXMgPSBs
-ZW47DQo+ID4NCj4gPiAgCQlzZXRfYWRkcihtdGQsIDAsIDAsIDApOw0KPiA+ICAJCWZzbF9pZmNf
-cnVuX2NvbW1hbmQobXRkKTsNCj4gDQo+IA0KPiANCj4gLS0NCj4gTWlxdWVsIFJheW5hbCwgQm9v
-dGxpbiAoZm9ybWVybHkgRnJlZSBFbGVjdHJvbnMpIEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwN
-Cj4gZW5naW5lZXJpbmcgaHR0cHM6Ly9ib290bGluLmNvbQ0K
+Hi,
 
---_002_VI1PR07MB161500797A6B12A989D8976681860VI1PR07MB1615eurp_
+The following is the reposting of patch with v2 version indication based on=
+ comment on "[PATCH 1/2]" (also in the attachment).
+
+Subject: [PATCH v2 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
+ recover the contents of ONFI parameter
+
+Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+CRC values, the bit-wise majority may be used to recover the contents of
+the parameter pages from the parameter page copies present.
+
+Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+---
+ drivers/mtd/nand/raw/nand_base.c |   36 ++++++++++++++++++++++++++++++----=
+--
+ 1 file changed, 30 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_b=
+ase.c
+index 72f3a89..464c4fb 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5086,6 +5086,8 @@ static int nand_flash_detect_ext_param_page(struct na=
+nd_chip *chip,
+ 	return ret;
+ }
+=20
++#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
++
+ /*
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwi=
+se.
+  */
+@@ -5094,7 +5096,8 @@ static int nand_flash_detect_onfi(struct nand_chip *c=
+hip)
+ 	struct mtd_info *mtd =3D nand_to_mtd(chip);
+ 	struct nand_onfi_params *p;
+ 	char id[4];
+-	int i, ret, val;
++	int i, ret, val, pagesize;
++	u8 *buf;
+=20
+ 	/* Try ONFI for unknown chip or LP */
+ 	ret =3D nand_readid_op(chip, 0x20, id, sizeof(id));
+@@ -5102,8 +5105,9 @@ static int nand_flash_detect_onfi(struct nand_chip *c=
+hip)
+ 		return 0;
+=20
+ 	/* ONFI chip: allocate a buffer to hold its parameter page */
+-	p =3D kzalloc(sizeof(*p), GFP_KERNEL);
+-	if (!p)
++	pagesize =3D sizeof(*p);
++	buf =3D kzalloc((pagesize * 3), GFP_KERNEL);
++	if (!buf)
+ 		return -ENOMEM;
+=20
+ 	ret =3D nand_read_param_page_op(chip, 0, NULL, 0);
+@@ -5113,7 +5117,8 @@ static int nand_flash_detect_onfi(struct nand_chip *c=
+hip)
+ 	}
+=20
+ 	for (i =3D 0; i < 3; i++) {
+-		ret =3D nand_read_data_op(chip, p, sizeof(*p), true);
++		p =3D (struct nand_onfi_params *)&buf[i*pagesize];
++		ret =3D nand_read_data_op(chip, p, pagesize, true);
+ 		if (ret) {
+ 			ret =3D 0;
+ 			goto free_onfi_param_page;
+@@ -5126,8 +5131,27 @@ static int nand_flash_detect_onfi(struct nand_chip *=
+chip)
+ 	}
+=20
+ 	if (i =3D=3D 3) {
+-		pr_err("Could not find valid ONFI parameter page; aborting\n");
+-		goto free_onfi_param_page;
++		int j, k, l;
++		u8 v, m;
++
++		pr_err("Could not find valid ONFI parameter page\n");
++		pr_info("Recover ONFI params with bit-wise majority\n");
++		for (j =3D 0; j < pagesize; j++) {
++			v =3D 0;
++			for (k =3D 0; k < 8; k++) {
++				m =3D 0;
++				for (l =3D 0; l < 3; l++)
++					m +=3D GET_BIT(k, buf[l*pagesize + j]);
++				if (m > 1)
++					v |=3D BIT(k);
++			}
++			((u8 *)p)[j] =3D v;
++		}
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=3D
++				le16_to_cpu(p->crc)) {
++			pr_err("ONFI parameter recovery failed, aborting\n");
++			goto free_onfi_param_page;
++		}
+ 	}
+=20
+ 	/* Check version */
+--=20
+1.7.9.5
+
+Thanks.
+Jane
+
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Wednesday, May 02, 2018 3:32 AM
+> To: Wan, Jane (Nokia - US/Sunnyvale) <jane.wan@nokia.com>
+> Cc: dwmw2@infradead.org; computersforpeace@gmail.com; Bos, Ties (Nokia -
+> US/Sunnyvale) <ties.bos@nokia.com>; linux-mtd@lists.infradead.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH 2/2] Use bit-wise majority to recover the contents of=
+ ONFI
+> parameter
+>=20
+> On Wed, 2 May 2018 12:25:45 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>=20
+> > Hi Jane,
+> >
+> > On Thu, 26 Apr 2018 17:19:56 -0700
+> > Jane Wan <Jane.Wan@nokia.com> wrote:
+> >
+> > > Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> > > ---
+> > >  drivers/mtd/nand/nand_base.c |   35 +++++++++++++++++++++++++++++++-
+> ---
+> > >  1 file changed, 31 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/nand/nand_base.c
+> > > b/drivers/mtd/nand/nand_base.c index c2e1232..161b523 100644
+> > > --- a/drivers/mtd/nand/nand_base.c
+> > > +++ b/drivers/mtd/nand/nand_base.c
+> > > @@ -3153,8 +3153,10 @@ static int nand_flash_detect_onfi(struct
+> mtd_info *mtd, struct nand_chip *chip,
+> > >  					int *busw)
+> > >  {
+> > >  	struct nand_onfi_params *p =3D &chip->onfi_params;
+> > > -	int i, j;
+> > > -	int val;
+> > > +	int i, j, k, len, val;
+> > > +	uint8_t copy[3][256], v8;
+> > > +
+> > > +	len =3D (sizeof(*p) > 256) ? 256 : sizeof(*p);
+> > >
+> > >  	/* Try ONFI for unknown chip or LP */
+> > >  	chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1); @@ -3170,11
+> > > +3172,36 @@ static int nand_flash_detect_onfi(struct mtd_info *mtd, s=
+truct
+> nand_chip *chip,
+> > >  				le16_to_cpu(p->crc)) {
+> > >  			break;
+> > >  		}
+> > > +		pr_err("CRC of parameter page %d is not valid\n", i);
+> > > +		for (j =3D 0; j < len; j++)
+> > > +			copy[i][j] =3D ((uint8_t *)p)[j];
+> > >  	}
+> > >
+> > >  	if (i =3D=3D 3) {
+> > > -		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> > > -		return 0;
+> > > +		pr_err("Could not find valid ONFI parameter page\n");
+> > > +		pr_info("Recover ONFI parameters with bit-wise majority\n");
+> > > +		for (j =3D 0; j < len; j++) {
+> > > +			if (copy[0][j] =3D=3D copy[1][j] ||
+> > > +			    copy[0][j] =3D=3D copy[2][j]) {
+> > > +				((uint8_t *)p)[j] =3D copy[0][j];
+> > > +			} else if (copy[1][j] =3D=3D copy[2][j]) {
+> > > +				((uint8_t *)p)[j] =3D copy[1][j];
+> > > +			} else {
+> > > +				((uint8_t *)p)[j] =3D 0;
+> > > +				for (k =3D 0; k < 8; k++) {
+> > > +					v8 =3D (copy[0][j] >> k) & 0x1;
+> > > +					v8 +=3D (copy[1][j] >> k) & 0x1;
+> > > +					v8 +=3D (copy[2][j] >> k) & 0x1;
+> > > +					if (v8 > 1)
+> > > +						((uint8_t *)p)[j] |=3D (1 << k);
+> > > +				}
+> > > +			}
+> > > +		}
+> >
+> > I'd like this bit-wise majority algorithm to be generic and moved to
+> > nand_base.c, because we might want to do the same in the core and make
+> > it work for any number of repetitions of the PARAM page.
+>=20
+> Never mind, I thought you were implementing that in the FSL IFC driver, b=
+ut
+> you're actually modifying the core.
+
+--_002_VI1PR07MB161553DA5D3EF35C9052B1CA81860VI1PR07MB1615eurp_
 Content-Type: application/octet-stream;
-	name="0001-mtd-rawnand-fsl_ifc-fix-FSL-NAND-driver-to-read-all-.patch"
-Content-Description: 0001-mtd-rawnand-fsl_ifc-fix-FSL-NAND-driver-to-read-all-.patch
+	name="0002-mtd-rawnand-fsl_ifc-use-bit-wise-majority-to-recover.patch"
+Content-Description: 0002-mtd-rawnand-fsl_ifc-use-bit-wise-majority-to-recover.patch
 Content-Disposition: attachment;
-	filename="0001-mtd-rawnand-fsl_ifc-fix-FSL-NAND-driver-to-read-all-.patch";
-	size=1926; creation-date="Fri, 04 May 2018 01:12:25 GMT";
+	filename="0002-mtd-rawnand-fsl_ifc-use-bit-wise-majority-to-recover.patch";
+	size=2894; creation-date="Fri, 04 May 2018 02:01:29 GMT";
 	modification-date="Fri, 04 May 2018 01:04:12 GMT"
 Content-Transfer-Encoding: base64
 
-RnJvbSA3MDFkZTQxNDZhYTYzNTVjOTUxZTk3YTc3NDc2ZTEyZDJkYTU2ZDQyIE1vbiBTZXAgMTcg
+RnJvbSBlMTRlZDdkYzA4Mjk2YTUyZjgxZDE0NzgxZGVlMmY0NTVkZDkwYmJkIE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBKYW5lIFdhbiA8SmFuZS5XYW5Abm9raWEuY29tPgpEYXRlOiBN
-b24sIDMwIEFwciAyMDE4IDEzOjMwOjQ2IC0wNzAwClN1YmplY3Q6IFtQQVRDSCB2MiAxLzJdIG10
-ZDogcmF3bmFuZDogZnNsX2lmYzogZml4IEZTTCBOQU5EIGRyaXZlciB0byByZWFkCiBhbGwgT05G
-SSBwYXJhbWV0ZXIgcGFnZXMKClBlciBPTkZJIHNwZWNpZmljYXRpb24gKFJldi4gNC4wKSwgaWYg
-dGhlIENSQyBvZiB0aGUgZmlyc3QgcGFyYW1ldGVyIHBhZ2UKcmVhZCBpcyBub3QgdmFsaWQsIHRo
-ZSBob3N0IHNob3VsZCByZWFkIHJlZHVuZGFudCBwYXJhbWV0ZXIgcGFnZSBjb3BpZXMuCkZpeCBG
-U0wgTkFORCBkcml2ZXIgdG8gcmVhZCB0aGUgdHdvIHJlZHVuZGFudCBjb3BpZXMgd2hpY2ggYXJl
-IG1hbmRhdG9yeQppbiB0aGUgc3BlY2lmaWNhdGlvbi4KClNpZ25lZC1vZmYtYnk6IEphbmUgV2Fu
-IDxKYW5lLldhbkBub2tpYS5jb20+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9yYXcvZnNsX2lmY19u
-YW5kLmMgfCAgIDE3ICsrKysrKysrKystLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0
-aW9ucygrKSwgNyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL3Jh
-dy9mc2xfaWZjX25hbmQuYyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbF9pZmNfbmFuZC5jCmlu
-ZGV4IDYxYWFlMDIuLjk4YWFjMWYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L2Zz
-bF9pZmNfbmFuZC5jCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L2ZzbF9pZmNfbmFuZC5jCkBA
-IC0zNDIsOSArMzQyLDE2IEBAIHN0YXRpYyB2b2lkIGZzbF9pZmNfY21kZnVuYyhzdHJ1Y3QgbXRk
-X2luZm8gKm10ZCwgdW5zaWduZWQgaW50IGNvbW1hbmQsCiAKIAljYXNlIE5BTkRfQ01EX1JFQURJ
-RDoKIAljYXNlIE5BTkRfQ01EX1BBUkFNOiB7CisJCS8qCisJCSAqIEZvciBSRUFESUQsIHJlYWQg
-OCBieXRlcyB0aGF0IGFyZSBjdXJyZW50bHkgdXNlZC4KKwkJICogRm9yIFBBUkFNLCByZWFkIGFs
-bCAzIGNvcGllcyBvZiAyNTYtYnl0ZXMgcGFnZXMuCisJCSAqLworCQlpbnQgbGVuID0gODsKIAkJ
-aW50IHRpbWluZyA9IElGQ19GSVJfT1BfUkI7Ci0JCWlmIChjb21tYW5kID09IE5BTkRfQ01EX1BB
-UkFNKQorCQlpZiAoY29tbWFuZCA9PSBOQU5EX0NNRF9QQVJBTSkgewogCQkJdGltaW5nID0gSUZD
-X0ZJUl9PUF9SQkNEOworCQkJbGVuID0gMjU2ICogMzsKKwkJfQogCiAJCWlmY19vdXQzMigoSUZD
-X0ZJUl9PUF9DVzAgPDwgSUZDX05BTkRfRklSMF9PUDBfU0hJRlQpIHwKIAkJCSAgKElGQ19GSVJf
-T1BfVUEgIDw8IElGQ19OQU5EX0ZJUjBfT1AxX1NISUZUKSB8CkBAIC0zNTQsMTIgKzM2MSw4IEBA
-IHN0YXRpYyB2b2lkIGZzbF9pZmNfY21kZnVuYyhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgdW5zaWdu
-ZWQgaW50IGNvbW1hbmQsCiAJCQkgICZpZmMtPmlmY19uYW5kLm5hbmRfZmNyMCk7CiAJCWlmY19v
-dXQzMihjb2x1bW4sICZpZmMtPmlmY19uYW5kLnJvdzMpOwogCi0JCS8qCi0JCSAqIGFsdGhvdWdo
-IGN1cnJlbnRseSBpdCdzIDggYnl0ZXMgZm9yIFJFQURJRCwgd2UgYWx3YXlzIHJlYWQKLQkJICog
-dGhlIG1heGltdW0gMjU2IGJ5dGVzKGZvciBQQVJBTSkKLQkJICovCi0JCWlmY19vdXQzMigyNTYs
-ICZpZmMtPmlmY19uYW5kLm5hbmRfZmJjcik7Ci0JCWlmY19uYW5kX2N0cmwtPnJlYWRfYnl0ZXMg
-PSAyNTY7CisJCWlmY19vdXQzMihsZW4sICZpZmMtPmlmY19uYW5kLm5hbmRfZmJjcik7CisJCWlm
-Y19uYW5kX2N0cmwtPnJlYWRfYnl0ZXMgPSBsZW47CiAKIAkJc2V0X2FkZHIobXRkLCAwLCAwLCAw
-KTsKIAkJZnNsX2lmY19ydW5fY29tbWFuZChtdGQpOwotLSAKMS43LjkuNQoK
+b24sIDMwIEFwciAyMDE4IDE0OjA1OjQwIC0wNzAwClN1YmplY3Q6IFtQQVRDSCB2MiAyLzJdIG10
+ZDogcmF3bmFuZDogZnNsX2lmYzogdXNlIGJpdC13aXNlIG1ham9yaXR5IHRvCiByZWNvdmVyIHRo
+ZSBjb250ZW50cyBvZiBPTkZJIHBhcmFtZXRlcgoKUGVyIE9ORkkgc3BlY2lmaWNhdGlvbiAoUmV2
+LiA0LjApLCBpZiBhbGwgcGFyYW1ldGVyIHBhZ2VzIGhhdmUgaW52YWxpZApDUkMgdmFsdWVzLCB0
+aGUgYml0LXdpc2UgbWFqb3JpdHkgbWF5IGJlIHVzZWQgdG8gcmVjb3ZlciB0aGUgY29udGVudHMg
+b2YKdGhlIHBhcmFtZXRlciBwYWdlcyBmcm9tIHRoZSBwYXJhbWV0ZXIgcGFnZSBjb3BpZXMgcHJl
+c2VudC4KClNpZ25lZC1vZmYtYnk6IEphbmUgV2FuIDxKYW5lLldhbkBub2tpYS5jb20+Ci0tLQog
+ZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNlLmMgfCAgIDM2ICsrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKy0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKyksIDYg
+ZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9yYXcvbmFuZF9iYXNl
+LmMgYi9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwppbmRleCA3MmYzYTg5Li40NjRj
+NGZiIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYworKysgYi9k
+cml2ZXJzL210ZC9uYW5kL3Jhdy9uYW5kX2Jhc2UuYwpAQCAtNTA4Niw2ICs1MDg2LDggQEAgc3Rh
+dGljIGludCBuYW5kX2ZsYXNoX2RldGVjdF9leHRfcGFyYW1fcGFnZShzdHJ1Y3QgbmFuZF9jaGlw
+ICpjaGlwLAogCXJldHVybiByZXQ7CiB9CiAKKyNkZWZpbmUgR0VUX0JJVChiaXQsIHZhbCkgICAo
+KCh2YWwpID4+IChiaXQpKSAmIDB4MDEpCisKIC8qCiAgKiBDaGVjayBpZiB0aGUgTkFORCBjaGlw
+IGlzIE9ORkkgY29tcGxpYW50LCByZXR1cm5zIDEgaWYgaXQgaXMsIDAgb3RoZXJ3aXNlLgogICov
+CkBAIC01MDk0LDcgKzUwOTYsOCBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmko
+c3RydWN0IG5hbmRfY2hpcCAqY2hpcCkKIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9IG5hbmRfdG9f
+bXRkKGNoaXApOwogCXN0cnVjdCBuYW5kX29uZmlfcGFyYW1zICpwOwogCWNoYXIgaWRbNF07Ci0J
+aW50IGksIHJldCwgdmFsOworCWludCBpLCByZXQsIHZhbCwgcGFnZXNpemU7CisJdTggKmJ1ZjsK
+IAogCS8qIFRyeSBPTkZJIGZvciB1bmtub3duIGNoaXAgb3IgTFAgKi8KIAlyZXQgPSBuYW5kX3Jl
+YWRpZF9vcChjaGlwLCAweDIwLCBpZCwgc2l6ZW9mKGlkKSk7CkBAIC01MTAyLDggKzUxMDUsOSBA
+QCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmkoc3RydWN0IG5hbmRfY2hpcCAqY2hp
+cCkKIAkJcmV0dXJuIDA7CiAKIAkvKiBPTkZJIGNoaXA6IGFsbG9jYXRlIGEgYnVmZmVyIHRvIGhv
+bGQgaXRzIHBhcmFtZXRlciBwYWdlICovCi0JcCA9IGt6YWxsb2Moc2l6ZW9mKCpwKSwgR0ZQX0tF
+Uk5FTCk7Ci0JaWYgKCFwKQorCXBhZ2VzaXplID0gc2l6ZW9mKCpwKTsKKwlidWYgPSBremFsbG9j
+KChwYWdlc2l6ZSAqIDMpLCBHRlBfS0VSTkVMKTsKKwlpZiAoIWJ1ZikKIAkJcmV0dXJuIC1FTk9N
+RU07CiAKIAlyZXQgPSBuYW5kX3JlYWRfcGFyYW1fcGFnZV9vcChjaGlwLCAwLCBOVUxMLCAwKTsK
+QEAgLTUxMTMsNyArNTExNyw4IEBAIHN0YXRpYyBpbnQgbmFuZF9mbGFzaF9kZXRlY3Rfb25maShz
+dHJ1Y3QgbmFuZF9jaGlwICpjaGlwKQogCX0KIAogCWZvciAoaSA9IDA7IGkgPCAzOyBpKyspIHsK
+LQkJcmV0ID0gbmFuZF9yZWFkX2RhdGFfb3AoY2hpcCwgcCwgc2l6ZW9mKCpwKSwgdHJ1ZSk7CisJ
+CXAgPSAoc3RydWN0IG5hbmRfb25maV9wYXJhbXMgKikmYnVmW2kqcGFnZXNpemVdOworCQlyZXQg
+PSBuYW5kX3JlYWRfZGF0YV9vcChjaGlwLCBwLCBwYWdlc2l6ZSwgdHJ1ZSk7CiAJCWlmIChyZXQp
+IHsKIAkJCXJldCA9IDA7CiAJCQlnb3RvIGZyZWVfb25maV9wYXJhbV9wYWdlOwpAQCAtNTEyNiw4
+ICs1MTMxLDI3IEBAIHN0YXRpYyBpbnQgbmFuZF9mbGFzaF9kZXRlY3Rfb25maShzdHJ1Y3QgbmFu
+ZF9jaGlwICpjaGlwKQogCX0KIAogCWlmIChpID09IDMpIHsKLQkJcHJfZXJyKCJDb3VsZCBub3Qg
+ZmluZCB2YWxpZCBPTkZJIHBhcmFtZXRlciBwYWdlOyBhYm9ydGluZ1xuIik7Ci0JCWdvdG8gZnJl
+ZV9vbmZpX3BhcmFtX3BhZ2U7CisJCWludCBqLCBrLCBsOworCQl1OCB2LCBtOworCisJCXByX2Vy
+cigiQ291bGQgbm90IGZpbmQgdmFsaWQgT05GSSBwYXJhbWV0ZXIgcGFnZVxuIik7CisJCXByX2lu
+Zm8oIlJlY292ZXIgT05GSSBwYXJhbXMgd2l0aCBiaXQtd2lzZSBtYWpvcml0eVxuIik7CisJCWZv
+ciAoaiA9IDA7IGogPCBwYWdlc2l6ZTsgaisrKSB7CisJCQl2ID0gMDsKKwkJCWZvciAoayA9IDA7
+IGsgPCA4OyBrKyspIHsKKwkJCQltID0gMDsKKwkJCQlmb3IgKGwgPSAwOyBsIDwgMzsgbCsrKQor
+CQkJCQltICs9IEdFVF9CSVQoaywgYnVmW2wqcGFnZXNpemUgKyBqXSk7CisJCQkJaWYgKG0gPiAx
+KQorCQkJCQl2IHw9IEJJVChrKTsKKwkJCX0KKwkJCSgodTggKilwKVtqXSA9IHY7CisJCX0KKwkJ
+aWYgKG9uZmlfY3JjMTYoT05GSV9DUkNfQkFTRSwgKHVpbnQ4X3QgKilwLCAyNTQpICE9CisJCQkJ
+bGUxNl90b19jcHUocC0+Y3JjKSkgeworCQkJcHJfZXJyKCJPTkZJIHBhcmFtZXRlciByZWNvdmVy
+eSBmYWlsZWQsIGFib3J0aW5nXG4iKTsKKwkJCWdvdG8gZnJlZV9vbmZpX3BhcmFtX3BhZ2U7CisJ
+CX0KIAl9CiAKIAkvKiBDaGVjayB2ZXJzaW9uICovCi0tIAoxLjcuOS41Cgo=
 
---_002_VI1PR07MB161500797A6B12A989D8976681860VI1PR07MB1615eurp_--
+--_002_VI1PR07MB161553DA5D3EF35C9052B1CA81860VI1PR07MB1615eurp_--
