@@ -1,19 +1,40 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEgJy-0001Pa-CK
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 19:24:47 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, stable@vger.kernel.org
-Subject: [PATCH v2] mtd: rawnand: Make sure we wait tWB before polling the
- STATUS reg
-Date: Fri,  4 May 2018 21:24:31 +0200
-Message-Id: <20180504192431.16661-1-boris.brezillon@bootlin.com>
+Date: Fri, 4 May 2018 16:29:32 -0300
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To: Hans Verkuil <hverkuil@xs4all.nl>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej
+ Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod
+ Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>,
+ Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi
+ Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+ <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Petr Cvek
+ <petr.cvek@tul.cz>, Sakari Ailus <sakari.ailus@iki.fi>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>, Pravin Shedge
+ <pravin.shedge4linux@gmail.com>, Flavio Ceolin <flavio.ceolin@intel.com>,
+ Robert Jarzmik <robert.jarzmik@renault.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, Niklas
+ =?UTF-8?B?U8O2ZGVybHVuZA==?=        
+ <niklas.soderlund+renesas@ragnatech.se>
+Subject: Re: [PATCH 04/15] media: pxa_camera: remove the dmaengine compat need
+Message-ID: <20180504162932.52a020cc@vento.lan>
+In-Reply-To: <89f3e97c-08a4-33b6-8fd3-0c1b4dea2065@xs4all.nl>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-5-robert.jarzmik@free.fr>
+ <89f3e97c-08a4-33b6-8fd3-0c1b4dea2065@xs4all.nl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +44,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND chips require a bit of time to take the NAND operation into
-account and set the BUSY bit in the STATUS reg. Make sure we don't poll
-the STATUS reg too early in nand_soft_waitrdy().
+Em Sun, 22 Apr 2018 13:06:12 +0200
+Hans Verkuil <hverkuil@xs4all.nl> escreveu:
 
-Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Changes in v2:
-- Move the ndelay() to nand_soft_waitrdy() instead of having it in the
-  FSMC driver
----
- drivers/mtd/nand/raw/nand_base.c | 5 +++++
- 1 file changed, 5 insertions(+)
+> On 04/02/2018 04:26 PM, Robert Jarzmik wrote:
+> > From: Robert Jarzmik <robert.jarzmik@renault.com>
+> > 
+> > As the pxa architecture switched towards the dmaengine slave map, the
+> > old compatibility mechanism to acquire the dma requestor line number and
+> > priority are not needed anymore.
+> > 
+> > This patch simplifies the dma resource acquisition, using the more
+> > generic function dma_request_slave_channel().
+> > 
+> > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>  
+> 
+> Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 72f3a89da513..da94fcb4dd9b 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -706,12 +706,17 @@ static void nand_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
-  */
- int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
- {
-+	const struct nand_sdr_timings *timings;
- 	u8 status = 0;
- 	int ret;
- 
- 	if (!chip->exec_op)
- 		return -ENOTSUPP;
- 
-+	/* Wait tWB before polling the STATUS reg. */
-+	timings = nand_get_sdr_timings(&chip->data_interface);
-+	ndelay(PSEC_TO_NSEC(sdr->tWB_max));
-+
- 	ret = nand_status_op(chip, NULL);
- 	if (ret)
- 		return ret;
--- 
-2.14.1
+I'm assuming that you'll be applying it together with other PXA patches.
+So:
+
+Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+
+Regards,
+Mauro
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> > ---
+> >  drivers/media/platform/pxa_camera.c | 22 +++-------------------
+> >  1 file changed, 3 insertions(+), 19 deletions(-)
+> > 
+> > diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+> > index c71a00736541..4c82d1880753 100644
+> > --- a/drivers/media/platform/pxa_camera.c
+> > +++ b/drivers/media/platform/pxa_camera.c
+> > @@ -2357,8 +2357,6 @@ static int pxa_camera_probe(struct platform_device *pdev)
+> >  		.src_maxburst = 8,
+> >  		.direction = DMA_DEV_TO_MEM,
+> >  	};
+> > -	dma_cap_mask_t mask;
+> > -	struct pxad_param params;
+> >  	char clk_name[V4L2_CLK_NAME_SIZE];
+> >  	int irq;
+> >  	int err = 0, i;
+> > @@ -2432,34 +2430,20 @@ static int pxa_camera_probe(struct platform_device *pdev)
+> >  	pcdev->base = base;
+> >  
+> >  	/* request dma */
+> > -	dma_cap_zero(mask);
+> > -	dma_cap_set(DMA_SLAVE, mask);
+> > -	dma_cap_set(DMA_PRIVATE, mask);
+> > -
+> > -	params.prio = 0;
+> > -	params.drcmr = 68;
+> > -	pcdev->dma_chans[0] =
+> > -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> > -						 &params, &pdev->dev, "CI_Y");
+> > +	pcdev->dma_chans[0] = dma_request_slave_channel(&pdev->dev, "CI_Y");
+> >  	if (!pcdev->dma_chans[0]) {
+> >  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+> >  		return -ENODEV;
+> >  	}
+> >  
+> > -	params.drcmr = 69;
+> > -	pcdev->dma_chans[1] =
+> > -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> > -						 &params, &pdev->dev, "CI_U");
+> > +	pcdev->dma_chans[1] = dma_request_slave_channel(&pdev->dev, "CI_U");
+> >  	if (!pcdev->dma_chans[1]) {
+> >  		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+> >  		err = -ENODEV;
+> >  		goto exit_free_dma_y;
+> >  	}
+> >  
+> > -	params.drcmr = 70;
+> > -	pcdev->dma_chans[2] =
+> > -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+> > -						 &params, &pdev->dev, "CI_V");
+> > +	pcdev->dma_chans[2] = dma_request_slave_channel(&pdev->dev, "CI_V");
+> >  	if (!pcdev->dma_chans[2]) {
+> >  		dev_err(&pdev->dev, "Can't request DMA for V\n");
+> >  		err = -ENODEV;
+> >   
+> 
+
+
+
+Thanks,
+Mauro
