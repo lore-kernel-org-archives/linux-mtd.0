@@ -1,24 +1,22 @@
-Received: from [45.249.212.32] (helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEX0l-00065s-6M
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 09:28:21 +0000
-Subject: Re: [PATCH] jffs2: safely remove obsolete dirent from the f->dents
- list
-To: David Woodhouse <dwmw2@infradead.org>
-CC: <Joakim.Tjernlund@infinera.com>, <viro@zeniv.linux.org.uk>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-References: <20180329120023.33169-1-yuyufen@huawei.com>
- <1524867762.18504.89.camel@infradead.org>
- <223f07c9-f07d-f434-6478-274990fbdf54@huawei.com>
- <1525421898.9367.116.camel@infradead.org>
-From: yuyufen <yuyufen@huawei.com>
-Message-ID: <012cd157-0c85-34a2-b42a-d9b3f6434c49@huawei.com>
-Date: Fri, 4 May 2018 17:27:22 +0800
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fEXHQ-00077c-Nt
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 09:45:34 +0000
+Date: Fri, 4 May 2018 11:45:10 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Make sure we wait tWB before
+ polling the STATUS reg
+Message-ID: <20180504114510.4ea1e2f2@xps13>
+In-Reply-To: <20180503074544.19938-1-boris.brezillon@bootlin.com>
+References: <20180503074544.19938-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <1525421898.9367.116.camel@infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,90 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris,
 
-Hi, David.
-On 2018/5/4 16:18, David Woodhouse wrote:
->
-> On Fri, 2018-05-04 at 16:06 +0800, yuyufen wrote:
->>> You've made JFFS2_INVALID_LIMIT 64, which is reasonable enough
->>> (although it's a bit of a weird name and possibly wants to be more
->>> specific — invalid *what*?).
->> Thansk a lot for your suggestions.
->>
->> Yes, it is really a bad name. How about JFFS2_OBS_DIRENT_LIMIT?  I am
->> not sure.
-> That'll do; at least it's a hint in the right direction :)
->
->>> So the maximum interesting value of ->obsolete_count is 64. Which means
->>> it might as well be a uint8_t and sit in the padding after the
->>> 'usercompr' field.
->>>
->>> It might be useful to look at putting the mutually exclusive fields in
->>> struct jffs2_inode_info into a union, and then we don't need the
->>> additional space of the atomic_t either; we'll never need that *and*
->>> the fragtree at the same time... will we?
->> You are right, thanks. But, obsolete_count may be large. So, I apply to
->> use uint16_t and it also sits in the padding after the 'usercompr'
->> field.
-> You can always just cap it. Once it reaches 64 it never changes again,
-> until you actually harvest them. Without that, a uint16_t could
-> overflow too.
+On Thu,  3 May 2018 09:45:44 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-I think 'JFFS2_OBS_DIRENT_LIMIT' may cause misunderstanding. Sorry for that.
-In my patch, it just means a threshold value. when ->nr_dir_opening is 
-'0' and
-  ->obsolete_count is bigger than the value, it can trigger removing 
-operations.
+> NAND chips require a bit of time to take the NAND operation into account
+> and set the BUSY bit in the STATUS reg. Make sure we don't poll the
+> STATUS reg too early.
+>=20
+> Fixes: 4da712e70294 ("mtd: nand: fsmc: use ->exec_op()")
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/fsmc_nand.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc=
+_nand.c
+> index 28c48dcc514e..0960665858b7 100644
+> --- a/drivers/mtd/nand/raw/fsmc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsmc_nand.c
+> @@ -18,6 +18,7 @@
+> =20
+>  #include <linux/clk.h>
+>  #include <linux/completion.h>
+> +#include <linux/delay.h>
+>  #include <linux/dmaengine.h>
+>  #include <linux/dma-direction.h>
+>  #include <linux/dma-mapping.h>
+> @@ -695,6 +696,13 @@ static int fsmc_exec_op(struct nand_chip *chip, cons=
+t struct nand_operation *op,
+>  			pr_debug("  ->WAITRDY  [max %d ms]\n",
+>  				 instr->ctx.waitrdy.timeout_ms);
+> =20
+> +			/*
+> +			 * Make sure we wait tWB before polling the STATUS
+> +			 * register.
+> +			 */
+> +			if (op_id && op->instrs[op_id - 1].delay_ns)
+> +				ndelay(op->instrs[op_id - 1].delay_ns);
+> +
+>  			ret =3D nand_soft_waitrdy(chip,
+>  						instr->ctx.waitrdy.timeout_ms);
+>  			break;
 
-If ->nr_dir_opening is not '0', obsolete_count may continuously increase 
-and can
-exceed 64.
-
-+static int jffs2_dir_release(struct inode *dir_i, struct file *filp)
-+{
-+#ifndef CONFIG_JFFS2_SUMMARY
-+       struct jffs2_inode_info *dir_f = JFFS2_INODE_INFO(dir_i);
-+
-+       BUG_ON(atomic_read(&dir_f->nr_dir_opening) <= 0);
-+
-+       mutex_lock(&dir_f->sem);
-+       /* jffs2_dir_open may increase nr_dir_opening after
-+        * atomic_dec_and_test() returning true.
-+        * However, it cannot traverse the list until hold
-+        * mutex dir_f->sem lock, so that we can go on
-+{
-+#ifndef CONFIG_JFFS2_SUMMARY
-+       struct jffs2_inode_info *dir_f = JFFS2_INODE_INFO(dir_i);
-+
-+       BUG_ON(atomic_read(&dir_f->nr_dir_opening) <= 0);
-+
-+       mutex_lock(&dir_f->sem);
-+       /* jffs2_dir_open may increase nr_dir_opening after
-+        * atomic_dec_and_test() returning true.
-+        * However, it cannot traverse the list until hold
-+        * mutex dir_f->sem lock, so that we can go on
-+        * removing.*/
-+       if (atomic_dec_and_test(&dir_f->nr_dir_opening) &&
-+                       dir_f->obsolete_count > JFFS2_OBS_DIRENT_LIMIT) {
-+               struct jffs2_full_dirent **prev = &dir_f->dents;
-+
-+               /* remove all obsolete dirent from the list, which
-+                * can save memory space and reduce CPU time for
-+                * traverse the list */
-+               while((*prev) && (dir_f->obsolete_count--)) {
-+                       if ((*prev)->raw == NULL && (*prev)->ino == 0) {
-+                               struct jffs2_full_dirent *this = *prev;
-+                               *prev = this->next;
-+                               jffs2_free_full_dirent(this);
-+                       } else
-+                               prev = &((*prev)->next);
-+               }
-+       }
-+       mutex_unlock(&dir_f->sem);
-+#endif
-+
-+       return 0;
-+}
+I'm afraid that we encounter this exact same issue with all the drivers
+using nand_soft_waitrdy() whenever the controller does not already
+wait for tWB. Could we force a tWB_max delay directly inside
+nand_soft_waitrdy()?
 
 Thanks,
-Yufen
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
