@@ -1,29 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fEUn9-0006kg-FZ
- for linux-mtd@lists.infradead.org; Fri, 04 May 2018 07:06:09 +0000
-Date: Fri, 4 May 2018 09:05:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "Bos, Ties (Nokia - US/Sunnyvale)"
- <ties.bos@nokia.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, "jagdish.gediya@nxp.com"
- <jagdish.gediya@nxp.com>, "shreeya.patel23498@gmail.com"
- <shreeya.patel23498@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read
-Message-ID: <20180504090545.2b422446@bbrezillon>
-In-Reply-To: <VI1PR07MB161500797A6B12A989D8976681860@VI1PR07MB1615.eurprd07.prod.outlook.com>
-References: <VI1PR07MB161500797A6B12A989D8976681860@VI1PR07MB1615.eurprd07.prod.outlook.com>
+Received: from szxga04-in.huawei.com ([45.249.212.190] helo=huawei.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fEVkc-0004Kk-8K
+ for linux-mtd@lists.infradead.org; Fri, 04 May 2018 08:07:36 +0000
+Subject: Re: [PATCH] jffs2: safely remove obsolete dirent from the f->dents
+ list
+To: David Woodhouse <dwmw2@infradead.org>
+CC: <Joakim.Tjernlund@infinera.com>, <viro@zeniv.linux.org.uk>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20180329120023.33169-1-yuyufen@huawei.com>
+ <1524867762.18504.89.camel@infradead.org>
+From: yuyufen <yuyufen@huawei.com>
+Message-ID: <223f07c9-f07d-f434-6478-274990fbdf54@huawei.com>
+Date: Fri, 4 May 2018 16:06:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1524867762.18504.89.camel@infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jane,
 
-On Fri, 4 May 2018 01:35:37 +0000
-"Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com> wrote:
+On 2018/4/28 6:22, David Woodhouse wrote:
+> This looks a lot better than the first iteration; thank you for getting
+> it to this point. One last thing, I hope...
+> On Thu, 2018-03-29 at 20:00 +0800, Yufen Yu wrote:
+>> --- a/fs/jffs2/jffs2_fs_i.h
+>> +++ b/fs/jffs2/jffs2_fs_i.h
+>> @@ -42,6 +42,12 @@ struct jffs2_inode_info {
+>>          /* Directory entries */
+>>          struct jffs2_full_dirent *dents;
+>>   
+>> +       /* Directory open refcount */
+>> +       atomic_t nr_dir_opening;
+>> +
+>> +       /* obsolete dirent count in the list of 'dents' */
+>> +       unsigned int obsolete_count;
+>> +
+>>          /* The target path if this is the inode of a symlink */
+>>          unsigned char *target;
+>>   
+> You've made JFFS2_INVALID_LIMIT 64, which is reasonable enough
+> (although it's a bit of a weird name and possibly wants to be more
+> specific — invalid *what*?).
+Thansk a lot for your suggestions.
 
-> Hi Miquel and Boris,
-> 
-> Thank you for your response.  The following is the reposting the v2 version of the patch (also in the attachment).
+Yes, it is really a bad name. How about JFFS2_OBS_DIRENT_LIMIT?  I am 
+not sure.
 
-No need to attach the patch, and this message should not be placed
-here...
-
-> 
-> Subject: [PATCH v2 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read
->  all ONFI parameter pages
-> 
-> Per ONFI specification (Rev. 4.0), if the CRC of the first parameter page
-> read is not valid, the host should read redundant parameter page copies.
-> Fix FSL NAND driver to read the two redundant copies which are mandatory
-> in the specification.
-> 
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> ---
-
-... but here.
-
-Also, I'd recommend using git send-email to send patches, so that they
-are properly sent and placed in a thread when they are part of a patch
-series.
+>
+> So the maximum interesting value of ->obsolete_count is 64. Which means
+> it might as well be a uint8_t and sit in the padding after the
+> 'usercompr' field.
+>
+> It might be useful to look at putting the mutually exclusive fields in
+> struct jffs2_inode_info into a union, and then we don't need the
+> additional space of the atomic_t either; we'll never need that *and*
+> the fragtree at the same time... will we?
+You are right, thanks. But, obsolete_count may be large. So, I apply to 
+use uint16_t and
+it also sits in the padding after the 'usercompr' field.
 
 Thanks,
-
-Boris
-
->  drivers/mtd/nand/raw/fsl_ifc_nand.c |   17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-> index 61aae02..98aac1f 100644
-> --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-> +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-> @@ -342,9 +342,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  
->  	case NAND_CMD_READID:
->  	case NAND_CMD_PARAM: {
-> +		/*
-> +		 * For READID, read 8 bytes that are currently used.
-> +		 * For PARAM, read all 3 copies of 256-bytes pages.
-> +		 */
-> +		int len = 8;
->  		int timing = IFC_FIR_OP_RB;
-> -		if (command == NAND_CMD_PARAM)
-> +		if (command == NAND_CMD_PARAM) {
->  			timing = IFC_FIR_OP_RBCD;
-> +			len = 256 * 3;
-> +		}
->  
->  		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
->  			  (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
-> @@ -354,12 +361,8 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
->  			  &ifc->ifc_nand.nand_fcr0);
->  		ifc_out32(column, &ifc->ifc_nand.row3);
->  
-> -		/*
-> -		 * although currently it's 8 bytes for READID, we always read
-> -		 * the maximum 256 bytes(for PARAM)
-> -		 */
-> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
-> -		ifc_nand_ctrl->read_bytes = 256;
-> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
-> +		ifc_nand_ctrl->read_bytes = len;
->  
->  		set_addr(mtd, 0, 0, 0);
->  		fsl_ifc_run_command(mtd);
+Yufen
