@@ -1,10 +1,6 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFcjW-0003Cw-Ss
- for linux-mtd@lists.infradead.org; Mon, 07 May 2018 09:47:05 +0000
-Date: Mon, 7 May 2018 11:46:50 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Date: Mon, 7 May 2018 08:32:32 -0300
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
  Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
  Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, David
@@ -12,10 +8,11 @@ Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  linux-mtd@lists.infradead.org
 Subject: Re: [PATCH 16/18] mtd: rawnand.h: use nested union kernel-doc markups
-Message-ID: <20180507114650.171edcc2@bbrezillon>
-In-Reply-To: <39d8d4f0e0ff5a06be0303f7f4f2eac5fb45b9ca.1525684985.git.mchehab+samsung@kernel.org>
+Message-ID: <20180507083232.5a084ba7@vento.lan>
+In-Reply-To: <20180507114650.171edcc2@bbrezillon>
 References: <cover.1525684985.git.mchehab+samsung@kernel.org>
  <39d8d4f0e0ff5a06be0303f7f4f2eac5fb45b9ca.1525684985.git.mchehab+samsung@kernel.org>
+ <20180507114650.171edcc2@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,72 +25,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mauro,
+Hi Boris,
 
-On Mon,  7 May 2018 06:35:52 -0300
-Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
+Em Mon, 7 May 2018 11:46:50 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> escreveu:
 
-> Gets rid of those warnings and better document the parameters.
+> Hi Mauro,
+
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index 5dad59b31244..b986f94906df 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -740,8 +740,9 @@ enum nand_data_interface_type {
+> >  
+> >  /**
+> >   * struct nand_data_interface - NAND interface timing
+> > - * @type:	type of the timing
+> > - * @timings:	The timing, type according to @type
+> > + * @type:	 type of the timing
+> > + * @timings:	 The timing, type according to @type
+> > + * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.  
 > 
->   ./include/linux/mtd/rawnand.h:752: warning: Function parameter or member 'timings.sdr' not described in 'nand_data_interface'
->   ./include/linux/mtd/rawnand.h:817: warning: Function parameter or member 'buf' not described in 'nand_op_data_instr'
->   ./include/linux/mtd/rawnand.h:817: warning: Function parameter or member 'buf.in' not described in 'nand_op_data_instr'
->   ./include/linux/mtd/rawnand.h:817: warning: Function parameter or member 'buf.out' not described in 'nand_op_data_instr'
->   ./include/linux/mtd/rawnand.h:863: warning: Function parameter or member 'ctx' not described in 'nand_op_instr'
->   ./include/linux/mtd/rawnand.h:863: warning: Function parameter or member 'ctx.cmd' not described in 'nand_op_instr'
->   ./include/linux/mtd/rawnand.h:863: warning: Function parameter or member 'ctx.addr' not described in 'nand_op_instr'
->   ./include/linux/mtd/rawnand.h:863: warning: Function parameter or member 'ctx.data' not described in 'nand_op_instr'
->   ./include/linux/mtd/rawnand.h:863: warning: Function parameter or member 'ctx.waitrdy' not described in 'nand_op_instr'
->   ./include/linux/mtd/rawnand.h:1010: warning: Function parameter or member 'ctx' not described in 'nand_op_parser_pattern_elem'
->   ./include/linux/mtd/rawnand.h:1010: warning: Function parameter or member 'ctx.addr' not described in 'nand_op_parser_pattern_elem'
->   ./include/linux/mtd/rawnand.h:1010: warning: Function parameter or member 'ctx.data' not described in 'nand_op_parser_pattern_elem'
->   ./include/linux/mtd/rawnand.h:1313: warning: Function parameter or member 'manufacturer.desc' not described in 'nand_chip'
->   ./include/linux/mtd/rawnand.h:1313: warning: Function parameter or member 'manufacturer.priv' not described in 'nand_chip'
-> 
->   ./include/linux/mtd/rawnand.h:848: WARNING: Unexpected indentation.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> ---
->  include/linux/mtd/rawnand.h | 26 ++++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 5dad59b31244..b986f94906df 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -740,8 +740,9 @@ enum nand_data_interface_type {
->  
->  /**
->   * struct nand_data_interface - NAND interface timing
-> - * @type:	type of the timing
-> - * @timings:	The timing, type according to @type
-> + * @type:	 type of the timing
-> + * @timings:	 The timing, type according to @type
-> + * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.
+> Hm, really feels weird to do that. I mean, either we describe
+> timings.sdr or timings, but not both. I this case, I agree that
+> describing timings.sdr would make more sense than generically
+> describing any possible entries in the timings union.
 
-Hm, really feels weird to do that. I mean, either we describe
-timings.sdr or timings, but not both. I this case, I agree that
-describing timings.sdr would make more sense than generically
-describing any possible entries in the timings union. Is there a simple
-way we can get rid of the warning we have when not describing timings
-but all of its fields?
+This struct is funny, as the union has just one item. I assume
+that the original intend is to be ready to have more timing
+types (or you had it in the past). By the time you have a
+second value there, describing the union would make more
+sense.
 
->   */
->  struct nand_data_interface {
->  	enum nand_data_interface_type type;
-> @@ -798,8 +799,9 @@ struct nand_op_addr_instr {
->  /**
->   * struct nand_op_data_instr - Definition of a data instruction
->   * @len: number of data bytes to move
-> - * @in: buffer to fill when reading from the NAND chip
-> - * @out: buffer to read from when writing to the NAND chip
-> + * @buf: buffer to fill
-> + * @buf.in: buffer to fill when reading from the NAND chip
-> + * @buf.out: buffer to read from when writing to the NAND chip
+> Is there a simple
+> way we can get rid of the warning we have when not describing timings
+> but all of its fields?
 
-Same here. What we care about is @buf.in and @buf.out, the @buf
-description is useless...
+There's no direct way. It won't be hard to add a way to do it,
+like applying the enclosed patch with ends by declaring timings as:
 
-Regards,
+	* @timings:	 -- undescribed --
 
-Boris
+IMHO, this is uglier.
+
+The way I see is that, if the embed struct/union is not interesting
+enough to be described, the best would be to use an anonymous one like:
+
+	struct nand_data_interface {
+		enum nand_data_interface_type type;
+		union {
+			struct nand_sdr_timings sdr;
+		};
+	};
+
+With the above, kernel-doc will expect a description just for @sdr.
+
+Btw, if you want to see how nested struct/union is parsed, the
+scripts/kernel_doc logic is at dump_struct() function.
+
+When it finds an struct, it first handles private/public by simply
+removing everything that it is not public from the struct, by a
+very simple parser. Then, it converts nested struct/union into
+un-nested ones. E. g. it converts:
+
+	struct {
+		union {
+			int foo1;
+		};
+		union {
+			int foo2;
+		} bar;
+	} foobar;
+
+into this internal representation:
+
+	struct {
+		int foo1;
+		union;
+		int bar.foo2;
+		union bar;
+	};
+
+Then it runs the normal un-nested struct parser.
+
+
+Thanks,
+Mauro
+
+[PATCH] don't describe nested struct timings
+
+IMHO, this is an ugly hack, but it allows having nested
+structs (or fields) undescribed by purpose.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index b986f94906df..b724c7edf532 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -741,7 +741,7 @@ enum nand_data_interface_type {
+ /**
+  * struct nand_data_interface - NAND interface timing
+  * @type:	 type of the timing
+- * @timings:	 The timing, type according to @type
++ * @timings:	 -- undescribed --
+  * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.
+  */
+ struct nand_data_interface {
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 0057d8eafcc1..196a2107c8c1 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -390,7 +390,7 @@ my $section = $section_default;
+ my $section_context = "Context";
+ my $section_return = "Return";
+ 
+-my $undescribed = "-- undescribed --";
++my $undescribed = "-- undescribed --\n";
+ 
+ reset_state();
+ 
