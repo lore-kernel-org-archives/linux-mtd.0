@@ -1,28 +1,63 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ua0-x242.google.com ([2607:f8b0:400c:c08::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFZDw-0005wi-PP
- for linux-mtd@lists.infradead.org; Mon, 07 May 2018 06:02:14 +0000
+ id 1fFaT9-0004g0-SK
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2018 07:22:12 +0000
+Received: by mail-ua0-x242.google.com with SMTP id d4so9378557ual.10
+ for <linux-mtd@lists.infradead.org>; Mon, 07 May 2018 00:21:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 07 May 2018 11:31:58 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Archit Taneja
- <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>, linux-arm-msm
- <linux-arm-msm@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Andy Gross <andy.gross@linaro.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v2 01/14] mtd: rawnand: helper function for setting up ECC
- parameters
-In-Reply-To: <CAK7LNASWErFrvW+_6Lsw-aqO4T3=iyRZLXG21ML+ebOX=po2Zw@mail.gmail.com>
-References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
- <1525350041-22995-2-git-send-email-absahu@codeaurora.org>
- <CAK7LNASWErFrvW+_6Lsw-aqO4T3=iyRZLXG21ML+ebOX=po2Zw@mail.gmail.com>
-Message-ID: <fd8f768c78a6522e671d20e701db0f51@codeaurora.org>
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20180505094743.4d201ba0@vento.lan>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+ <1523987360-18760-13-git-send-email-geert@linux-m68k.org>
+ <20180505094743.4d201ba0@vento.lan>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 7 May 2018 09:21:47 +0200
+Message-ID: <CAMuHMdXp8u9O7Yt3W+WxuOOadYOM+_28DLOMfktwgy_WqML_0A@mail.gmail.com>
+Subject: Re: [PATCH v3 12/20] media: Remove depends on HAS_DMA in case of
+ platform dependency
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>,
+ Robin Murphy <robin.murphy@arm.com>, Felipe Balbi <balbi@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
+ Tejun Heo <tj@kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+ "David S . Miller" <davem@davemloft.net>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>,
+ Alan Tull <atull@kernel.org>, Moritz Fischer <mdf@kernel.org>,
+ Wolfram Sang <wsa@the-dreams.de>,
+ Jonathan Cameron <jic23@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+ Matias Bjorling <mb@lightnvm.io>, Jassi Brar <jassisinghbrar@gmail.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Richard Weinberger <richard@nod.at>,
+ Kalle Valo <kvalo@codeaurora.org>, Ohad Ben-Cohen <ohad@wizery.com>,
+ Bjorn Andersson <bjorn.andersson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Stefan Wahren <stefan.wahren@i2se.com>,
+ Linux IOMMU <iommu@lists.linux-foundation.org>,
+ USB list <linux-usb@vger.kernel.org>,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ linux-ide@vger.kernel.org,
+ Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+ Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+ linux1394-devel@lists.sourceforge.net,
+ linux-fpga@vger.kernel.org, Linux I2C <linux-i2c@vger.kernel.org>,
+ linux-iio@vger.kernel.org, linux-block@vger.kernel.org,
+ Linux Media Mailing List <linux-media@vger.kernel.org>,
+ Linux MMC List <linux-mmc@vger.kernel.org>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ netdev <netdev@vger.kernel.org>,
+ "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM"
+ <linux-remoteproc@vger.kernel.org>,
+ "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ driverdevel <devel@driverdev.osuosl.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,134 +67,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-05-07 09:10, Masahiro Yamada wrote:
-> 2018-05-03 21:20 GMT+09:00 Abhishek Sahu <absahu@codeaurora.org>:
->> commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
->> match, maximize ECC settings") provides generic helpers which
->> drivers can use for setting up ECC parameters.
->> 
->> Since same board can have different ECC strength nand chips so
->> following is the logic for setting up ECC strength and ECC step
->> size, which can be used by most of the drivers.
->> 
->> 1. If both ECC step size and ECC strength are already set
->>    (usually by DT) then just check whether this setting
->>    is supported by NAND controller.
->> 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
->>    supported by NAND controller.
->> 3. Otherwise, try to match the ECC step size and ECC strength closest
->>    to the chip's requirement. If available OOB size can't fit the chip
->>    requirement then select maximum ECC strength which can be fit with
->>    available OOB size with warning.
->> 
->> This patch introduces nand_ecc_param_setup function which calls the
->> required helper functions for the above logic. The drivers can use
->> this single function instead of calling the 3 helper functions
->> individually.
->> 
->> CC: Masahiro Yamada <yamada.masahiro@socionext.com>
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->> * Changes from v1:
->> 
->>   NEW PATCH
->> 
->>  drivers/mtd/nand/raw/nand_base.c | 42 
->> ++++++++++++++++++++++++++++++++++++++++
->>  include/linux/mtd/rawnand.h      |  3 +++
->>  2 files changed, 45 insertions(+)
->> 
->> diff --git a/drivers/mtd/nand/raw/nand_base.c 
->> b/drivers/mtd/nand/raw/nand_base.c
->> index 72f3a89..dd7a984 100644
->> --- a/drivers/mtd/nand/raw/nand_base.c
->> +++ b/drivers/mtd/nand/raw/nand_base.c
->> @@ -6249,6 +6249,48 @@ int nand_maximize_ecc(struct nand_chip *chip,
->>  }
->>  EXPORT_SYMBOL_GPL(nand_maximize_ecc);
->> 
->> +/**
->> + * nand_ecc_param_setup - Set the ECC strength and ECC step size
->> + * @chip: nand chip info structure
->> + * @caps: ECC engine caps info structure
->> + * @oobavail: OOB size that the ECC engine can use
->> + *
->> + * Choose the ECC strength according to following logic
->> + *
->> + * 1. If both ECC step size and ECC strength are already set (usually 
->> by DT)
->> + *    then check if it is supported by this controller.
->> + * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
->> + * 3. Otherwise, try to match the ECC step size and ECC strength 
->> closest
->> + *    to the chip's requirement. If available OOB size can't fit the 
->> chip
->> + *    requirement then fallback to the maximum ECC step size and ECC 
->> strength
->> + *    and print the warning.
->> + *
->> + * On success, the chosen ECC settings are set.
->> + */
->> +int nand_ecc_param_setup(struct nand_chip *chip,
->> +                        const struct nand_ecc_caps *caps, int 
->> oobavail)
->> +{
->> +       int ret;
->> +
->> +       if (chip->ecc.size && chip->ecc.strength)
->> +               return nand_check_ecc_caps(chip, caps, oobavail);
->> +
->> +       if (chip->ecc.options & NAND_ECC_MAXIMIZE)
->> +               return nand_maximize_ecc(chip, caps, oobavail);
->> +
->> +       if (!nand_match_ecc_req(chip, caps, oobavail))
->> +               return 0;
->> +
->> +       ret = nand_maximize_ecc(chip, caps, oobavail);
-> 
-> 
-> Why two calls for nand_maximize_ecc()?
-> 
-> My code is simpler, and does not display
-> false-positive warning.
-> 
+Hi Mauro,
 
-  Thanks Masahiro.
+On Sat, May 5, 2018 at 2:47 PM, Mauro Carvalho Chehab
+<mchehab+samsung@kernel.org> wrote:
+> Em Tue, 17 Apr 2018 19:49:12 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> escreveu:
+>
+>> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+>> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+>
+> Applying a patch like that is hard, as there are lots of churn at
+> the code. That's against latest media upstream:
 
-  Since, Now this is in moved to generic layer that's why I put
-  this warning that this function is falling back to some
-  other ECC settings which is not recommend by chip.
+[...]
 
-  If this warning seems unnecessary then I can remove this
-  and then directly your code changes can be put here
-  instead of calling nand_maximize_ecc 2 times.
+I can rebase. What's your preferred target? media-next?
 
-> 
->> +       if (!ret)
->> +               pr_warn("ECC (step, strength) = (%d, %d) not supported 
->> on this controller. Fallback to (%d, %d)\n",
->> +                       chip->ecc_step_ds, chip->ecc_strength_ds,
->> +                       chip->ecc.size, chip->ecc.strength);
-> 
-> 
-> This is annoying.
-> 
-> {ecc_step_ds, ecc_strength_ds} are not provided by Non-ONFi devices.
-> 
-> So,
->   ECC (step, strength) = (0, 0) not supported on this controller.
-> 
-> will be always displayed.
-> 
-> 
-> The strength will be checked by nand_ecc_strength_good() anyway.
-> 
+>> In most cases this other symbol is an architecture or platform specific
+>> symbol, or PCI.
+>>
+>> Generic symbols and drivers without platform dependencies keep their
+>> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+>> cannot work anyway.
+>
+> Actually, depends on HAS_DMA was introduced on media because builds
+> were failing otherwise. We started adding it before the addition
+> of COMPILE_TEST.
 
-  But for most of the non ONFI devices also, this is being calculated
-  by ID.
+Indeed. Before the 5 commits below, a missing dependency on HAS_DMA
+would cause the build to fail for NO_DMA platforms.
 
-  You can get some background for this in
-  http://lists.infradead.org/pipermail/linux-mtd/2018-April/080193.html
+    f29ab49b5388b2f8 dma-mapping: Convert NO_DMA get_dma_ops() into a real dummy
+    ab642e952f80c66c dma-coherent: Add NO_DMA dummies for managed DMA API
+    c1ce6c2beea38171 mm: Add NO_DMA dummies for DMA pool API
+    bff739b6559e2fce scsi: Add NO_DMA dummies for SCSI DMA mapping API
+    1f674e16f9ce6eb2 usb: gadget: Add NO_DMA dummies for DMA mapping API
 
-  Regards,
-  Abhishek
+> Can we just remove all HAS_DMA Kconfig dependencies as a hole from the
+> entire media subsystem, with something like:
+>
+>         $ for i in $(find drivers/media -name Kconfig) $(find drivers/staging/media -name Kconfig); do sed '/depends on HAS_DMA/d;s/ && HAS_DMA//g' -i $i; done
+>
+> Or would it cause build issues?
+
+It should not cause build issues, but it would enable lots of drivers that
+need DMA platform support on platforms where they wouldn't work, making the
+life of distro configurators harder.
+
+That's why my series removes HAS_DMA only for symbols that have a platform
+dependency.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
