@@ -1,26 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFavf-0000iC-1C
- for linux-mtd@lists.infradead.org; Mon, 07 May 2018 07:51:28 +0000
-Date: Mon, 7 May 2018 09:50:53 +0200
+ id 1fFbA9-00069m-4Q
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2018 08:06:27 +0000
+Date: Mon, 7 May 2018 10:06:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: ubifs error with marvell_nand on Armada-98DX4251 (was Re:
- [PATCH] mtd: rawnand: marvell: fix command xtype in BCH write hook)
-Message-ID: <20180507095053.249547d0@bbrezillon>
-In-Reply-To: <729567d8180a4b70ba9226dcd9eee0b4@svr-chch-ex1.atlnz.lc>
-References: <20180503100027.16229-1-miquel.raynal@bootlin.com>
- <f1b88811dd88481da1c1b84341bbc9a5@svr-chch-ex1.atlnz.lc>
- <20180504091001.3e6650d6@xps13>
- <729567d8180a4b70ba9226dcd9eee0b4@svr-chch-ex1.atlnz.lc>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, linux-mtd@lists.infradead.org, Jonas Gorski
+ <jonas.gorski@gmail.com>
+Subject: Re: [PATCH] mtd: move code adding (registering) partitions to the
+ parse_mtd_partitions()
+Message-ID: <20180507100603.178355b3@bbrezillon>
+In-Reply-To: <20180327203541.1118-1-zajec5@gmail.com>
+References: <20180327203541.1118-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,142 +29,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris,
+On Tue, 27 Mar 2018 22:35:41 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-On Mon, 7 May 2018 03:48:42 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> This commit slightly simplifies the code. Every parse_mtd_partitions()
+> caller (out of two existing ones) had to add partitions & cleanup parser
+> on its own. This moves that responsibility into the function.
+>=20
+> That change also allows dropping struct mtd_partitions argument.
+>=20
+> There is one minor behavior change caused by this cleanup. If
+> parse_mtd_partitions() fails to add partitions (add_mtd_partitions()
+> return an error) then mtd_device_parse_register() will still try to
+> add (register) fallback partitions. It's a real corner case affecting
+> one of uncommon error paths and shouldn't cause any harm.
 
-> Hi Miquel,
-> 
-> On 04/05/18 19:10, Miquel Raynal wrote:
-> > Hi Chris,
-> > 
-> > On Fri, 4 May 2018 00:06:48 +0000, Chris Packham
-> > <Chris.Packham@alliedtelesis.co.nz> wrote:  
-> >>
-> >> I do have one platform that passes the initial detection but starts to
-> >> report ubifs errors when mounted.
-> >>
-> >> Armada-98DX4251 Micron MT29F8G08ABACAWP 1024 MiB 256 KiB 4096 224
-> >>
-> >> This is probably unrelated to this particular fix. It may be as simple
-> >> as something not catering for the Armada-98DX4251 SoC or a genuine
-> >> difference between Armada-98DX4251 and Armada-385. 4.16.4 with
-> >> pxa3xx_nand works with this combination.  
-> 
-> I did spot a few problems in the pinctrl driver for this platform, but 
-> nothing that was stopping things from working (the bootloader set the 
-> MPP functions correctly). I've sent some patches for that.
-> 
-> > Can you please share more details: the device tree (at least the NAND
-> > node), the strength requested, the boot log, the errors?  
-> 
-> Here's the relevant part of the device tree
-> 
-> 	nand@d0000 {
-> 		compatible = "marvell,armada370-nand";
-> 		reg = <0xd0000 0x54>;
-> 		#address-cells = <0x1>;
-> 		#size-cells = <0x1>;
-> 		interrupts = <0x71>;
-> 		clocks = <0xc 0x0>;
-> 		status = "okay";
-> 		num-cs = <0x1>;
-> 		marvell,nand-enable-arbiter;
-> 		nand-on-flash-bbt;
-> 	};
-> 
-> 	...
-> 
-> 	dfx-server@ac000000 {
-> 		compatible = "marvell,dfx-server", "simple-bus";
-> 		#address-cells = <0x1>;
-> 		#size-cells = <0x1>;
-> 		ranges = <0x0 0x8000000 0x0 0x100000>;
-> 		reg = <0x8000000 0x0 0x100000>;
-> 		phandle = <0xe>;
-> 
-> 		corediv-clock@f8268 {
-> 			compatible = "marvell,mv98dx3236-corediv-clock";
-> 			reg = <0xf8268 0xc>;
-> 			#clock-cells = <0x1>;
-> 			clocks = <0x9>;
-> 			clock-output-names = "nand";
-> 			phandle = <0xc>;
-> 		};
-> 	};
-> 
-> Boot output
-> 
-> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd3
-> nand: Micron MT29F8G08ABACAWP
-> nand: 1024 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
-> Bad block table found at page 261952, version 0x01
-> Bad block table found at page 261888, version 0x01
-> nand_read_bbt: bad block at 0x00003ff80000
-> nand_read_bbt: bad block at 0x00003ffc0000
-> 
-> Error at mount time
-> 
-> Re-mounting file system...
-> UBIFS (ubi0:0): background thread "ubifs_bgt0_0" started, PID 1096
-> UBIFS error (ubi0:0 pid 1093): check_lpt_type.constprop.6: invalid type 
-> (0) in LPT node type 2
-> CPU: 0 PID: 1093 Comm: mount Not tainted 4.17.0-rc2-at1+ #1
-> Hardware name: Marvell Armada 370/XP (Device Tree)
-> [<80110f40>] (unwind_backtrace) from [<8010c350>] (show_stack+0x10/0x14)
-> [<8010c350>] (show_stack) from [<805c11b4>] (dump_stack+0x88/0x9c)
-> [<805c11b4>] (dump_stack) from [<802dde14>] 
-> (check_lpt_type.constprop.6+0x48/0x50)
-> [<802dde14>] (check_lpt_type.constprop.6) from [<802dfe70>] 
-> (ubifs_lpt_init+0x2cc/0x4d8)
-> [<802dfe70>] (ubifs_lpt_init) from [<802c9810>] (ubifs_mount+0x106c/0x1594)
-> [<802c9810>] (ubifs_mount) from [<801ef1dc>] (mount_fs+0x14/0xa4)
-> [<801ef1dc>] (mount_fs) from [<8020a63c>] (vfs_kern_mount+0x4c/0xf4)
-> [<8020a63c>] (vfs_kern_mount) from [<8020d7f0>] (do_mount+0x184/0xb98)
-> [<8020d7f0>] (do_mount) from [<8020e584>] (ksys_mount+0x8c/0xbc)
-> [<8020e584>] (ksys_mount) from [<80101000>] (ret_fast_syscall+0x0/0x54)
-> Exception stack(0xbda63fa8 to 0xbda63ff0)
-> 3fa0:                   00000000 00000000 7ea24f4e 7ea24f60 7ea24f48 
-> 00008010
-> 3fc0: 00000000 00000000 7ea24f48 00000015 7ea24f4e 00008010 00000000 
-> 000a5f44
-> 3fe0: 76e6b1b0 7ea24af0 00046020 76e6b1c0
-> UBIFS (ubi0:0): background thread "ubifs_bgt0_0" stops
-> mount: mounting ubi0:user on /flash failed: Invalid argument
-> 
+This sounds reasonable.
 
-Can you paste the full boot logs?
-
-> 
-> > 
-> > Are you sure Linux ECC configuration is aligned with the bootloader's?  
-> 
-> In this case the bootloader doesn't have any NAND support enabled since 
-> this board is always network booting.
-> 
-> It is likely that an older kernel has set this up with ecc-strength=4. 
-> Does flash_erase destroy the ecc data as well or is there some other 
-> mtd-util to do this from userland?
-
-There's no metadata describing the ECC setup to use. flash_erase should
-place the NAND is a clean state.
-
-> 
-> That got me thinking. I ran with the new driver but the following added 
-> to the dts
-> 
-> +       nand-ecc-strength = <4>;
-> +       nand-ecc-step-size = <512>;
-> 
-> After an erase/re-init things were working.
-> 
-> But then if I have nothing (auto-select) or nand-ecc-strength = <8> 
-> (which would be "correct" for this chip) in the dts I get the errors above.
-
-Maybe a problem with the 16bits/1024bytes layout, but what's weird is
-that the driver does not report ECC errors.
-
-Regards,
-
-Boris
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> ---
+>  drivers/mtd/mtdcore.c | 14 ++++----------
+>  drivers/mtd/mtdcore.h |  1 -
+>  drivers/mtd/mtdpart.c | 44 ++++++++++++++++----------------------------
+>  3 files changed, 20 insertions(+), 39 deletions(-)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 20d5262c5b5c..7ad9f3a16866 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -690,7 +690,6 @@ int mtd_device_parse_register(struct mtd_info *mtd, c=
+onst char * const *types,
+>  			      const struct mtd_partition *parts,
+>  			      int nr_parts)
+>  {
+> -	struct mtd_partitions parsed =3D { };
+>  	int ret;
+> =20
+>  	mtd_set_dev_defaults(mtd);
+> @@ -702,13 +701,10 @@ int mtd_device_parse_register(struct mtd_info *mtd,=
+ const char * const *types,
+>  	}
+> =20
+>  	/* Prefer parsed partitions over driver-provided fallback */
+> -	ret =3D parse_mtd_partitions(mtd, types, &parsed, parser_data);
+> -	if (!ret && parsed.nr_parts) {
+> -		parts =3D parsed.parts;
+> -		nr_parts =3D parsed.nr_parts;
+> -	}
+> -
+> -	if (nr_parts)
+> +	ret =3D parse_mtd_partitions(mtd, types, parser_data);
+> +	if (ret > 0)
+> +		ret =3D 0;
+> +	else if (nr_parts)
+>  		ret =3D add_mtd_partitions(mtd, parts, nr_parts);
+>  	else if (!device_is_registered(&mtd->dev))
+>  		ret =3D add_mtd_device(mtd);
+> @@ -734,8 +730,6 @@ int mtd_device_parse_register(struct mtd_info *mtd, c=
+onst char * const *types,
+>  	}
+> =20
+>  out:
+> -	/* Cleanup any parsed partitions */
+> -	mtd_part_parser_cleanup(&parsed);
+>  	if (ret && device_is_registered(&mtd->dev))
+>  		del_mtd_device(mtd);
+> =20
+> diff --git a/drivers/mtd/mtdcore.h b/drivers/mtd/mtdcore.h
+> index 37accfd0400e..9887bda317cd 100644
+> --- a/drivers/mtd/mtdcore.h
+> +++ b/drivers/mtd/mtdcore.h
+> @@ -15,7 +15,6 @@ int del_mtd_partitions(struct mtd_info *);
+>  struct mtd_partitions;
+> =20
+>  int parse_mtd_partitions(struct mtd_info *master, const char * const *ty=
+pes,
+> -			 struct mtd_partitions *pparts,
+>  			 struct mtd_part_parser_data *data);
+> =20
+>  void mtd_part_parser_cleanup(struct mtd_partitions *parts);
+> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> index 023516a63276..f8d3a015cdad 100644
+> --- a/drivers/mtd/mtdpart.c
+> +++ b/drivers/mtd/mtdpart.c
+> @@ -335,20 +335,7 @@ static inline void free_partition(struct mtd_part *p)
+>   */
+>  static int mtd_parse_part(struct mtd_part *slave, const char *const *typ=
+es)
+>  {
+> -	struct mtd_partitions parsed;
+> -	int err;
+> -
+> -	err =3D parse_mtd_partitions(&slave->mtd, types, &parsed, NULL);
+> -	if (err)
+> -		return err;
+> -	else if (!parsed.nr_parts)
+> -		return -ENOENT;
+> -
+> -	err =3D add_mtd_partitions(&slave->mtd, parsed.parts, parsed.nr_parts);
+> -
+> -	mtd_part_parser_cleanup(&parsed);
+> -
+> -	return err;
+> +	return parse_mtd_partitions(&slave->mtd, types, NULL);
+>  }
+> =20
+>  static struct mtd_part *allocate_partition(struct mtd_info *parent,
+> @@ -933,30 +920,27 @@ static int mtd_part_of_parse(struct mtd_info *maste=
+r,
+>  }
+> =20
+>  /**
+> - * parse_mtd_partitions - parse MTD partitions
+> + * parse_mtd_partitions - parse and register MTD partitions
+> + *
+>   * @master: the master partition (describes whole MTD device)
+>   * @types: names of partition parsers to try or %NULL
+> - * @pparts: info about partitions found is returned here
+>   * @data: MTD partition parser-specific data
+>   *
+> - * This function tries to find partition on MTD device @master. It uses =
+MTD
+> - * partition parsers, specified in @types. However, if @types is %NULL, =
+then
+> - * the default list of parsers is used. The default list contains only t=
+he
+> + * This function tries to find & register partitions on MTD device @mast=
+er. It
+> + * uses MTD partition parsers, specified in @types. However, if @types i=
+s %NULL,
+> + * then the default list of parsers is used. The default list contains o=
+nly the
+>   * "cmdlinepart" and "ofpart" parsers ATM.
+>   * Note: If there are more then one parser in @types, the kernel only ta=
+kes the
+>   * partitions parsed out by the first parser.
+>   *
+>   * This function may return:
+>   * o a negative error code in case of failure
+> - * o zero otherwise, and @pparts will describe the partitions, number of
+> - *   partitions, and the parser which parsed them. Caller must release
+> - *   resources with mtd_part_parser_cleanup() when finished with the ret=
+urned
+> - *   data.
+> + * o number of found partitions otherwise
+>   */
+>  int parse_mtd_partitions(struct mtd_info *master, const char *const *typ=
+es,
+> -			 struct mtd_partitions *pparts,
+>  			 struct mtd_part_parser_data *data)
+>  {
+> +	struct mtd_partitions pparts =3D { };
+>  	struct mtd_part_parser *parser;
+>  	int ret, err =3D 0;
+> =20
+> @@ -970,7 +954,7 @@ int parse_mtd_partitions(struct mtd_info *master, con=
+st char *const *types,
+>  		 * handled in a separated function.
+>  		 */
+>  		if (!strcmp(*types, "ofpart")) {
+> -			ret =3D mtd_part_of_parse(master, pparts);
+> +			ret =3D mtd_part_of_parse(master, &pparts);
+>  		} else {
+>  			pr_debug("%s: parsing partitions %s\n", master->name,
+>  				 *types);
+> @@ -981,13 +965,17 @@ int parse_mtd_partitions(struct mtd_info *master, c=
+onst char *const *types,
+>  				parser ? parser->name : NULL);
+>  			if (!parser)
+>  				continue;
+> -			ret =3D mtd_part_do_parse(parser, master, pparts, data);
+> +			ret =3D mtd_part_do_parse(parser, master, &pparts, data);
+>  			if (ret <=3D 0)
+>  				mtd_part_parser_put(parser);
+>  		}
+>  		/* Found partitions! */
+> -		if (ret > 0)
+> -			return 0;
+> +		if (ret > 0) {
+> +			err =3D add_mtd_partitions(master, pparts.parts,
+> +						 pparts.nr_parts);
+> +			mtd_part_parser_cleanup(&pparts);
+> +			return err ? err : pparts.nr_parts;
+> +		}
+>  		/*
+>  		 * Stash the first error we see; only report it if no parser
+>  		 * succeeds
