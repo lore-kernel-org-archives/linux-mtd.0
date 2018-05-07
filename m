@@ -1,21 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFbbp-0007DO-0p
- for linux-mtd@lists.infradead.org; Mon, 07 May 2018 08:35:02 +0000
-Date: Mon, 7 May 2018 10:34:49 +0200
+ id 1fFbh0-0002BY-PN
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2018 08:40:24 +0000
+Date: Mon, 7 May 2018 10:40:10 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Radu Pirea <radu.pirea@microchip.com>, <cyrille.pitchen@wedev4u.fr>,
- <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>, Tudor
- Ambarus - M18064 <Tudor.Ambarus@microchip.com>
-Subject: Re: [PATCH] spi-nor: Add support for Atmel Dataflash memories
-Message-ID: <20180507103449.054ea41b@bbrezillon>
-In-Reply-To: <d9b3fffd-dded-b210-e058-13a326b4fb8f@microchip.com>
-References: <1519818901-7116-1-git-send-email-radu.pirea@microchip.com>
- <20180504203844.0c09bf6d@bbrezillon>
- <d9b3fffd-dded-b210-e058-13a326b4fb8f@microchip.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Archit
+ Taneja <architt@codeaurora.org>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Andy Gross <andy.gross@linaro.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 03/14] dt-bindings: qcom_nandc: make
+ nand-ecc-strength optional
+Message-ID: <20180507104010.620a4b43@bbrezillon>
+In-Reply-To: <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
+References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+ <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,50 +30,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+On Thu,  3 May 2018 17:50:30 +0530
+Abhishek Sahu <absahu@codeaurora.org> wrote:
 
-On Mon, 7 May 2018 10:23:56 +0200
-Nicolas Ferre <nicolas.ferre@microchip.com> wrote:
-
-> On 04/05/2018 at 20:38, Boris Brezillon wrote:
-> > Hi Radu,
-> > 
-> > Sorry for the late reply.
-> > 
-> > On Wed, 28 Feb 2018 13:55:01 +0200
-> > Radu Pirea <radu.pirea@microchip.com> wrote:
-> >   
-> >> This patch add support in spi-nor for allmost all dataflash memories
-> >> supported by old mtd_dataflash driver.  
-> > 
-> > Those devices clearly use a different instruction set, so I don't think
-> > they fit in this framework. Can you tell us why you want to move
-> > dataflash support to the SPI NOR framework. I think I know why, but I'd
-> > like to get your version. My guess is that some people want to connect
-> > dataflash chips to the Atmel QSPI controller, and it's not supported
-> > right now because the Atmel QSPI controller implements the SPI-NOR
-> > interface and not the generic SPI one, thus preventing anything that
-> > is not a SPI NOR from being connected to this controller.
-> > 
-> > If I'm right, then the solution is to convert the QSPI driver to the
-> > spi-mem interface [1] and move it to drivers/spi/.  
+> Now, nand-ecc-strength is optional. If specified in DT, then
+> controller will use this ECC strength otherwise ECC strength will
+> be calculated according to chip requirement and available OOB size.
 > 
-> No, I we didn't think about this. Dataflash is not so popular those days 
-> and we don't want to revive it anyway. Our QSPI driver has already a lot 
-> of things to handle in QSPI-related topics to not mix it with oldies ;-)
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+> * Changes from v1:
 > 
-> The rationale behind this work is to get rid of the very old dataflash 
-> standalone driver and benefit from the whole spi-nor infrastructure like 
-> cache coherency management and DMA handling (which were broken in the 
-> old dataflash driver in recent kernels).
+>   NEW PATCH
+> 
+>  Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> index 73d336be..f246aa0 100644
+> --- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> +++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+> @@ -45,11 +45,13 @@ Required properties:
+>  			number (e.g., 0, 1, 2, etc.)
+>  - #address-cells:	see partition.txt
+>  - #size-cells:		see partition.txt
+> -- nand-ecc-strength:	see nand.txt
+>  - nand-ecc-step-size:	must be 512. see nand.txt for more details.
 
-Still don't think that's a good move, especially since those flashes are
-using a completely different instruction set and are not exactly
-behaving like SPI NORs. If we need some of the spi-nor logic to help
-handle dataflash chips in a more efficient/safe way, then those bits
-should be exposed as helpers at the MTD level instead of turning
-spi-nor into a Frankenstein framework.
+As mentioned in my other review, no need to specify nand-ecc-step-size
+if you don't have a choice. You can remove the property and say that
+nand-ecc-strength encodes the ECC strength for 512 bytes chunks.
 
-Regards,
-
-Boris
+>  
+>  Optional properties:
+>  - nand-bus-width:	see nand.txt
+> +- nand-ecc-strength:	see nand.txt. If not specified, then ECC strength will
+> +			be used according to chip requirement and available
+> +			OOB size.
+>  
+>  Each nandcs device node may optionally contain a 'partitions' sub-node, which
+>  further contains sub-nodes describing the flash partition mapping. See
