@@ -1,21 +1,22 @@
-Date: Mon, 7 May 2018 08:32:32 -0300
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
- Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
- Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 16/18] mtd: rawnand.h: use nested union kernel-doc markups
-Message-ID: <20180507083232.5a084ba7@vento.lan>
-In-Reply-To: <20180507114650.171edcc2@bbrezillon>
-References: <cover.1525684985.git.mchehab+samsung@kernel.org>
- <39d8d4f0e0ff5a06be0303f7f4f2eac5fb45b9ca.1525684985.git.mchehab+samsung@kernel.org>
- <20180507114650.171edcc2@bbrezillon>
+Received: from mail-he1eur01on0136.outbound.protection.outlook.com
+ ([104.47.0.136] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fFj6C-0007qE-Tg
+ for linux-mtd@lists.infradead.org; Mon, 07 May 2018 16:34:54 +0000
+From: Jane Wan <Jane.Wan@nokia.com>
+To: Boris.Brezillon@bootlin.com, miquel.raynal@bootlin.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ marek.vasut@gmail.com, yamada.masahiro@socionext.com,
+ prabhakar.kushwaha@nxp.com, shawnguo@kernel.org, jagdish.gediya@nxp.com,
+ shreeya.patel23498@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com, Jane Wan <Jane.Wan@nokia.com>
+Subject: [PATCH v3 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
+ recover the contents of ONFI parameter
+Date: Mon,  7 May 2018 09:34:15 -0700
+Message-Id: <1525710855-8159-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,123 +26,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+CRC values, the bit-wise majority may be used to recover the contents of
+the parameter pages from the parameter page copies present.
 
-Em Mon, 7 May 2018 11:46:50 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> escreveu:
+Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+---
+ drivers/mtd/nand/raw/nand_base.c |   41 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 8 deletions(-)
 
-> Hi Mauro,
-
-> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> > index 5dad59b31244..b986f94906df 100644
-> > --- a/include/linux/mtd/rawnand.h
-> > +++ b/include/linux/mtd/rawnand.h
-> > @@ -740,8 +740,9 @@ enum nand_data_interface_type {
-> >  
-> >  /**
-> >   * struct nand_data_interface - NAND interface timing
-> > - * @type:	type of the timing
-> > - * @timings:	The timing, type according to @type
-> > + * @type:	 type of the timing
-> > + * @timings:	 The timing, type according to @type
-> > + * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.  
-> 
-> Hm, really feels weird to do that. I mean, either we describe
-> timings.sdr or timings, but not both. I this case, I agree that
-> describing timings.sdr would make more sense than generically
-> describing any possible entries in the timings union.
-
-This struct is funny, as the union has just one item. I assume
-that the original intend is to be ready to have more timing
-types (or you had it in the past). By the time you have a
-second value there, describing the union would make more
-sense.
-
-> Is there a simple
-> way we can get rid of the warning we have when not describing timings
-> but all of its fields?
-
-There's no direct way. It won't be hard to add a way to do it,
-like applying the enclosed patch with ends by declaring timings as:
-
-	* @timings:	 -- undescribed --
-
-IMHO, this is uglier.
-
-The way I see is that, if the embed struct/union is not interesting
-enough to be described, the best would be to use an anonymous one like:
-
-	struct nand_data_interface {
-		enum nand_data_interface_type type;
-		union {
-			struct nand_sdr_timings sdr;
-		};
-	};
-
-With the above, kernel-doc will expect a description just for @sdr.
-
-Btw, if you want to see how nested struct/union is parsed, the
-scripts/kernel_doc logic is at dump_struct() function.
-
-When it finds an struct, it first handles private/public by simply
-removing everything that it is not public from the struct, by a
-very simple parser. Then, it converts nested struct/union into
-un-nested ones. E. g. it converts:
-
-	struct {
-		union {
-			int foo1;
-		};
-		union {
-			int foo2;
-		} bar;
-	} foobar;
-
-into this internal representation:
-
-	struct {
-		int foo1;
-		union;
-		int bar.foo2;
-		union bar;
-	};
-
-Then it runs the normal un-nested struct parser.
-
-
-Thanks,
-Mauro
-
-[PATCH] don't describe nested struct timings
-
-IMHO, this is an ugly hack, but it allows having nested
-structs (or fields) undescribed by purpose.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index b986f94906df..b724c7edf532 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -741,7 +741,7 @@ enum nand_data_interface_type {
- /**
-  * struct nand_data_interface - NAND interface timing
-  * @type:	 type of the timing
-- * @timings:	 The timing, type according to @type
-+ * @timings:	 -- undescribed --
-  * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 72f3a89..48f2dec 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5086,15 +5086,18 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+ 	return ret;
+ }
+ 
++#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
++
+ /*
+  * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
   */
- struct nand_data_interface {
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 0057d8eafcc1..196a2107c8c1 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -390,7 +390,7 @@ my $section = $section_default;
- my $section_context = "Context";
- my $section_return = "Return";
+ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct nand_onfi_params *p;
++	struct nand_onfi_params *p = NULL;
+ 	char id[4];
+-	int i, ret, val;
++	int i, ret, val, pagesize;
++	u8 *buf = NULL;
  
--my $undescribed = "-- undescribed --";
-+my $undescribed = "-- undescribed --\n";
+ 	/* Try ONFI for unknown chip or LP */
+ 	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+@@ -5102,8 +5105,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 		return 0;
  
- reset_state();
+ 	/* ONFI chip: allocate a buffer to hold its parameter page */
+-	p = kzalloc(sizeof(*p), GFP_KERNEL);
+-	if (!p)
++	pagesize = sizeof(*p);
++	buf = kzalloc((pagesize * 3), GFP_KERNEL);
++	if (!buf)
+ 		return -ENOMEM;
  
+ 	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+@@ -5113,7 +5117,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	}
+ 
+ 	for (i = 0; i < 3; i++) {
+-		ret = nand_read_data_op(chip, p, sizeof(*p), true);
++		p = (struct nand_onfi_params *)&buf[i*pagesize];
++		ret = nand_read_data_op(chip, p, pagesize, true);
+ 		if (ret) {
+ 			ret = 0;
+ 			goto free_onfi_param_page;
+@@ -5126,8 +5131,27 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	}
+ 
+ 	if (i == 3) {
+-		pr_err("Could not find valid ONFI parameter page; aborting\n");
+-		goto free_onfi_param_page;
++		int j, k, l;
++		u8 v, m;
++
++		pr_err("Could not find valid ONFI parameter page\n");
++		pr_info("Recover ONFI params with bit-wise majority\n");
++		for (j = 0; j < pagesize; j++) {
++			v = 0;
++			for (k = 0; k < 8; k++) {
++				m = 0;
++				for (l = 0; l < 3; l++)
++					m += GET_BIT(k, buf[l*pagesize + j]);
++				if (m > 1)
++					v |= BIT(k);
++			}
++			((u8 *)p)[j] = v;
++		}
++		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=
++				le16_to_cpu(p->crc)) {
++			pr_err("ONFI parameter recovery failed, aborting\n");
++			goto free_onfi_param_page;
++		}
+ 	}
+ 
+ 	/* Check version */
+@@ -5220,7 +5244,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 	       sizeof(p->vendor));
+ 
+ free_onfi_param_page:
+-	kfree(p);
++	if (buf != NULL)
++		kfree(buf);
+ 	return ret;
+ }
+ 
+-- 
+1.7.9.5
