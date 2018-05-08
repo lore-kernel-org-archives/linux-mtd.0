@@ -1,32 +1,25 @@
-Received: from mail-ot0-f195.google.com ([74.125.82.195])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG5Qo-0003t3-46
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 16:25:46 +0000
-Received: by mail-ot0-f195.google.com with SMTP id t1-v6so36730903ott.13
- for <linux-mtd@lists.infradead.org>; Tue, 08 May 2018 09:25:27 -0700 (PDT)
-Date: Tue, 8 May 2018 11:25:24 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: document Broadcom's BCM47xx
- partitions
-Message-ID: <20180508162524.GB23960@rob-hp-laptop>
-References: <20180112093354.17593-1-zajec5@gmail.com>
- <20180119214450.vhctphu5d4kagwkv@rob-hp-laptop>
- <39fbb845-784b-3e73-a9c6-0729a783930f@gmail.com>
- <CACna6rxVkV=VdUu+Q8cfRk626eCKqq9ue+=_+GBMgEWO_KTkgg@mail.gmail.com>
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.13])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fG5yS-0007jg-TB
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 17:00:27 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
+ <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
+ error
+Date: Tue, 8 May 2018 16:52:55 +0000
+Message-ID: <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508132037.152cc581@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACna6rxVkV=VdUu+Q8cfRk626eCKqq9ue+=_+GBMgEWO_KTkgg@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,164 +29,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, May 05, 2018 at 11:47:31PM +0200, Rafał Miłecki wrote:
-> Hi Rob,
-> 
-> On 29 March 2018 at 08:23, Rafał Miłecki <zajec5@gmail.com> wrote:
-> > Hi Rob & sorry for the late reply. My earlier accepted patchset adding
-> > of_match_table matching was reported to cause a regression. It had to be
-> > dropped and I had to focus on fixing that first.
-> >
-> >
-> > On 01/19/2018 10:44 PM, Rob Herring wrote:
-> >>
-> >> On Fri, Jan 12, 2018 at 10:33:53AM +0100, Rafał Miłecki wrote:
-> >>>
-> >>> From: Rafał Miłecki <rafal@milecki.pl>
-> >>>
-> >>> Broadcom based home router devices use partitions which have to be
-> >>> discovered in a specific non-standard way. As there is no partition
-> >>> table this commit adds and describes a new custom binding.
-> >>>
-> >>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> >>> ---
-> >>>  .../devicetree/bindings/mtd/partition.txt          | 46
-> >>> +++++++++++++++++++++-
-> >>>  1 file changed, 44 insertions(+), 2 deletions(-)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt
-> >>> b/Documentation/devicetree/bindings/mtd/partition.txt
-> >>> index 36f3b769a626..b201d497b618 100644
-> >>> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> >>> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> >>> @@ -14,8 +14,6 @@ method is used for a given flash device. To describe
-> >>> the method there should be
-> >>>  a subnode of the flash device that is named 'partitions'. It must have a
-> >>>  'compatible' property, which is used to identify the method to use.
-> >>>
-> >>> -We currently only document a binding for fixed layouts.
-> >>> -
-> >>>
-> >>>  Fixed Partitions
-> >>>  ================
-> >>> @@ -109,3 +107,47 @@ flash@2 {
-> >>>                 };
-> >>>         };
-> >>>  };
-> >>> +
-> >>> +
-> >>> +Broadcom BCM47xx Partitions
-> >>> +===========================
-> >>> +
-> >>> +Broadcom is one of hardware manufacturers providing SoCs (BCM47xx) used
-> >>> in
-> >>> +home routers. Their BCM947xx boards using CFE bootloader have several
-> >>> partitions
-> >>> +without any on-flash partition table. On some devices their sizes and/or
-> >>> +meanings can also vary so fixed partitioning can't be used.
-> >>> +
-> >>> +Discovering partitions on these devices is possible thanks to having a
-> >>> special
-> >>> +header and/or magic signature at the beginning of each of them. They are
-> >>> also
-> >>> +block aligned which is important for determinig a size.
-> >>> +
-> >>> +Most of partitions use ASCII text based magic for determining a type.
-> >>> More
-> >>> +complex partitions (like TRX with its HDR0 magic) may include extra
-> >>> header
-> >>> +containing some details, including a length.
-> >>> +
-> >>> +A list of supported partitions includes:
-> >>> +1) Bootloader with Broadcom's CFE (Common Firmware Environment)
-> >>> +2) NVRAM with configuration/calibration data
-> >>> +3) Device manufacturer's data with some default values (e.g. SSIDs)
-> >>> +4) TRX firmware container which can hold up to 4 subpartitions
-> >>> +5) Backup TRX firmware used after failed upgrade
-> >>> +
-> >>> +As mentioned earlier, role of some partitions may depend on extra
-> >>> configuration.
-> >>> +For example both: main firmware and backup firmware use the same TRX
-> >>> format with
-> >>> +the same header. To distinguish currently used firmware a CFE's
-> >>> environment
-> >>> +variable "bootpartition" is used.
-> >>> +
-> >>> +
-> >>> +Devices using Broadcom partitions described above should should have
-> >>> flash node
-> >>> +with a subnode named "partitions" using following properties:
-> >>> +
-> >>> +Required properties:
-> >>> +- compatible : (required) must be "brcm,bcm947xx-cfe-partitions"
-> >>
-> >>
-> >> So you can't discover you have CFE partitions, but you can discover
-> >> everything else like where partitions start?
-> >
-> >
-> > I could discover there is a CFE bootloader at the flash beginning and
-> > assume there are CFE-like partitions. It doesn't sound safe however and
-> > I believe the point of using DT + compatible properties is to avoid such
-> > /guessing/. There are too many cases, devices, "formats" to just blindly
-> > try every possible parser. That's why we agreed to use "compatible"
-> > strings.
-> >
-> > This was also described by Boris in his patchset 2+ years ago:
-> > [RFC PATCH 0/7] mtd: partitions: add of_match_table support
-> > http://lists.infradead.org/pipermail/linux-mtd/2015-December/064076.html
-> >
-> >>  (2) we can't just scan for all supported parsers (like the block system
-> >> does), since
-> >>      there is a wide diversity of "formats" (no standardization), and it
-> >> is not
-> >>      always safe or efficient to attempt to do so, particularly since many
-> >> of
-> >>      them allow their data structures to be placed anywhere on the flash,
-> >> and
-> >>      so require scanning the entire flash device to find them.
-> >
-> > I also believe this is solution you acked back then:
-> > [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
-> > http://lists.infradead.org/pipermail/linux-mtd/2015-December/064100.html
-> >
-> >> On Fri, Dec 04, 2015 at 09:19:19PM -0800, Brian Norris wrote:
-> >> > The platform description (such as the type of partition formats used on
-> >> > a given flash) should be done independently of the flash driver in use.
-> >> > However, we can't reasonably have *all* partition parsers run on all
-> >> > flash (until they find a match), so let's overload the 'partitions'
-> >> > subnode to support specifying which format(s) to try in the device tree.
-> >> >
-> >> > (...)
-> >>
-> >> Looks good to me. If you had lots of partitions, I'd agree with comments
-> >> that they should be separate files, but I doubt we'll have many 10s of
-> >> them. Plus all we really need here is a list of compatible strings.
-> >>
-> >> Acked-by: Rob Herring <robh at kernel.org>
-> >
-> > So I guess the answer is:
-> > 1) I really don't want to blindly look for CFE-like partitions. Too much
-> >    risk of false positives.
-> > 2) I don't want parser to be blindly called & use extra magic checks to
-> >    make sure I'm dealing with device using CFE bootloader.
-> > 3) Once I know I'm dealing with device using CFE bootloader I can find
-> >    partitions on the flash.
-> >
-> >
-> >> Why doesn't the kernel just probe for the partition table?
-> >
-> >
-> > If by a "partition table" you mean a single block with data using a
-> > clear structure: it doesn't exist. That's the whole point with crappy
-> > Broadcom devices.
-> 
-> Would you find a moment to review that patch again, after extra
-> explanation I provided, please?
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-I guess this is fine. Can you resend as I don't have the original patch. 
+For the word write functions it is retried for error.
+But it is not implemented to retry for the erase functions.
+To make sure for the erase functions change to retry as same.
 
-I think it should be a separate file though as partition.txt would 
-become very long if every vendor partitioning was added there.
+This is needed to prevent the flash erase error caused only once.
+It was caused by the error case of chip_good() in the do_erase_oneblock().
+Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
+But the error issue behavior is not able to reproduce at this moment.
+The flash controller is parallel Flash interface integrated on BCM53003.
 
-Rob
+Also the change is possible to resolve other erase error.
+For example the Erase suspend issue was caused on Cypress AMD NOR flash.
+  S29GL01GS / S29GL512S / S29GL256S / S29GL128S
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index 56aa6b75213d..f522a856526a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -43,6 +43,7 @@
+ #define FORCE_WORD_WRITE 0
+=20
+ #define MAX_WORD_RETRIES 3
++#define MAX_ERASE_RETRY 3
+=20
+ #define SST49LF004B	        0x0060
+ #define SST49LF040B	        0x0050
+@@ -2240,6 +2241,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	unsigned long int adr;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret =3D 0;
++	int retry_cnt =3D 0;
+=20
+ 	adr =3D cfi->addr_unlock1;
+=20
+@@ -2257,6 +2259,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+@@ -2310,6 +2313,9 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+=20
++		if (++retry_cnt <=3D MAX_ERASE_RETRY)
++			goto retry;
++
+ 		ret =3D -EIO;
+ 	}
+=20
+@@ -2329,6 +2335,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	unsigned long timeo =3D jiffies + HZ;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret =3D 0;
++	int retry_cnt =3D 0;
+=20
+ 	adr +=3D chip->start;
+=20
+@@ -2346,6 +2353,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+@@ -2402,6 +2410,9 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+=20
++		if (++retry_cnt <=3D MAX_ERASE_RETRY)
++			goto retry;
++
+ 		ret =3D -EIO;
+ 	}
+=20
+--=20
+2.16.1
