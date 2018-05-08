@@ -1,29 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG6x4-0004AA-71
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 18:03:04 +0000
-Date: Tue, 8 May 2018 20:02:36 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
- <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>,
- "Joakim Tjernlund" <joakim.tjernlund@infinera.com>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry
- for error
-Message-ID: <20180508200236.034ebb11@bbrezillon>
-In-Reply-To: <TY1PR01MB0954B3DF0974C4FC2DD04924DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508132037.152cc581@bbrezillon>
- <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508191144.5d8412b6@bbrezillon>
- <TY1PR01MB0954B3DF0974C4FC2DD04924DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: Joachim Eastwood <manabian@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>,
+ Richard Weinberger <richard@nod.at>, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ldv-project@linuxtesting.org, Julia Lawall <julia.lawall@lip6.fr>,
+ sil2review@lists.osadl.org
+Subject: [PATCH] mtd: nxp-spifi: decrement flash_np refcnt on error paths
+Date: Tue,  8 May 2018 23:47:36 +0300
+Message-Id: <1525812456-25877-1-git-send-email-khoroshilov@ispras.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,54 +20,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+nxp_spifi_probe() increments refcnt of SPI flash device node by
+of_get_next_available_child() and then it passes the node
+to mtd device in nxp_spifi_setup_flash().
+But if a failure happens before mtd_device_register() succeed,
+the refcnt is left undecremented.
 
-On Tue, 8 May 2018 17:35:48 +0000
-IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
+Found by Linux Driver Verification project (linuxtesting.org).
 
-> Hi Boris-san,
-> 
-> Thanks for your reviewing.
-> 
-> > > This is needed to prevent the flash erase error caused only once.
-> > > It was caused by the error case of chip_good() in the do_erase_oneblock().
-> > > Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-> > > But the error issue behavior is not able to reproduce at this moment.  
-> > 
-> > Hm, that's a problem. How can you be sure the retry approach fixes the
-> > issue if you can't reproduce the it?  
-> 
->   I can reproduce the flash write error by the same reproduction method.
->   And the error can be resolved by the same approach fixes as below.
->     <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080794.html>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ drivers/mtd/spi-nor/nxp-spifi.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-Hm, even the bug fix for the write path looks suspicious. BTW, you're
-only checking the last written word, so how can you be sure all other
-words have been written correctly? I don't know a lot about CFI chips,
-but are you sure this is not a timing issue (timings mis-configured on
-the controller side)?
-
->   So it seems that the erase error also can be resolved by the changes.
-
-Well, I'd be more comfortable if someone else could confirm the bug
-(ideally tested with a different controller) and validate the fix.
-
-> 
-> > > The flash controller is parallel Flash interface integrated on BCM53003.
-> > >
-> > > Also the change is possible to resolve other erase error.
-> > > For example the Erase suspend issue was caused on Cypress AMD NOR flash.
-> > >   S29GL01GS / S29GL512S / S29GL256S / S29GL128S  
-> > 
-> > Is the Erase suspend issue related to this problem?  
-> 
->   I am not sure about the issue behavior detail since the issue is not caused on my environment.
->   The issue was mentioned by Jocke-san on the following mail.
->     <http://lists.infradead.org/pipermail/linux-mtd/2018-April/080518.html>
->   Also I am asking to him to try the original patch on this thread.
-
-Ok, let's wait for Joakim's feedback then.
-
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
+index 15374216d4d9..8919e31f2ab8 100644
+--- a/drivers/mtd/spi-nor/nxp-spifi.c
++++ b/drivers/mtd/spi-nor/nxp-spifi.c
+@@ -294,7 +294,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 			break;
+ 		default:
+ 			dev_err(spifi->dev, "unsupported rx-bus-width\n");
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_node_put;
+ 		}
+ 	}
+ 
+@@ -328,7 +329,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 		break;
+ 	default:
+ 		dev_err(spifi->dev, "only mode 0 and 3 supported\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_node_put;
+ 	}
+ 
+ 	writel(ctrl, spifi->io_base + SPIFI_CTRL);
+@@ -356,22 +358,26 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+ 	ret = spi_nor_scan(&spifi->nor, NULL, &hwcaps);
+ 	if (ret) {
+ 		dev_err(spifi->dev, "device scan failed\n");
+-		return ret;
++		goto err_node_put;
+ 	}
+ 
+ 	ret = nxp_spifi_setup_memory_cmd(spifi);
+ 	if (ret) {
+ 		dev_err(spifi->dev, "memory command setup failed\n");
+-		return ret;
++		goto err_node_put;
+ 	}
+ 
+ 	ret = mtd_device_register(&spifi->nor.mtd, NULL, 0);
+ 	if (ret) {
+ 		dev_err(spifi->dev, "mtd device parse failed\n");
+-		return ret;
++		goto err_node_put;
+ 	}
+ 
+ 	return 0;
++
++err_node_put:
++	of_node_put(np);
++	return ret;
+ }
+ 
+ static int nxp_spifi_probe(struct platform_device *pdev)
+-- 
+2.7.4
