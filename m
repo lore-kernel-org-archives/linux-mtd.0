@@ -1,24 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG9v5-0006we-Du
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 21:13:13 +0000
-Date: Tue, 8 May 2018 23:12:59 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, Peter Pan
- <peterpandong@micron.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Bean Huo <beanhuo@micron.com>
-Subject: Re: [PATCH] mtd: rawnand: micron: Fix support for on-die ECC
-Message-ID: <20180508231259.10e951d4@bbrezillon>
-In-Reply-To: <20180504115835.5702710e@xps13>
-References: <20180503074908.20485-1-boris.brezillon@bootlin.com>
- <20180504115835.5702710e@xps13>
+Received: from mail-eopbgr50130.outbound.protection.outlook.com
+ ([40.107.5.130] helo=EUR03-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGA2O-0001ny-Li
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 21:20:46 +0000
+From: Jane Wan <Jane.Wan@nokia.com>
+To: Boris.Brezillon@bootlin.com, miquel.raynal@bootlin.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ marek.vasut@gmail.com, yamada.masahiro@socionext.com,
+ prabhakar.kushwaha@nxp.com, shawnguo@kernel.org, jagdish.gediya@nxp.com,
+ shreeya.patel23498@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com, Jane Wan <Jane.Wan@nokia.com>
+Subject: [PATCH v4 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to read all
+ ONFI parameter pages
+Date: Tue,  8 May 2018 14:19:53 -0700
+Message-Id: <1525814394-30067-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 4 May 2018 11:58:35 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Per ONFI specification (Rev. 4.0), if the CRC of the first parameter page
+read is not valid, the host should read redundant parameter page copies.
+Fix FSL NAND driver to read the two redundant copies which are mandatory
+in the specification.
 
-> Hi Boris,
-> 
-> On Thu,  3 May 2018 09:49:08 +0200, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> 
-> > It looks like the NAND_STATUS_FAIL bit is sticky after an ECC failure,
-> > which leads all READ operations following the failing one to report
-> > an ECC failure. Reset the chip to clear the NAND_STATUS_FAIL bit.
-> > 
-> > Note that this behavior is not document in the datasheet, but resetting
-> > the chip is the only solution we found to fix the problem.
-> > 
-> > Fixes: 9748e1d87573 ("mtd: nand: add support for Micron on-die ECC")
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-> > Cc: Bean Huo <beanhuo@micron.com>
-> > Cc: Peter Pan <peterpandong@micron.com>
-> > ---  
-> 
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+---
+ drivers/mtd/nand/raw/fsl_ifc_nand.c |   17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-Queued to mtd/master.
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 61aae02..98aac1f 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -342,9 +342,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 
+ 	case NAND_CMD_READID:
+ 	case NAND_CMD_PARAM: {
++		/*
++		 * For READID, read 8 bytes that are currently used.
++		 * For PARAM, read all 3 copies of 256-bytes pages.
++		 */
++		int len = 8;
+ 		int timing = IFC_FIR_OP_RB;
+-		if (command == NAND_CMD_PARAM)
++		if (command == NAND_CMD_PARAM) {
+ 			timing = IFC_FIR_OP_RBCD;
++			len = 256 * 3;
++		}
+ 
+ 		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+ 			  (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+@@ -354,12 +361,8 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+ 			  &ifc->ifc_nand.nand_fcr0);
+ 		ifc_out32(column, &ifc->ifc_nand.row3);
+ 
+-		/*
+-		 * although currently it's 8 bytes for READID, we always read
+-		 * the maximum 256 bytes(for PARAM)
+-		 */
+-		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
+-		ifc_nand_ctrl->read_bytes = 256;
++		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
++		ifc_nand_ctrl->read_bytes = len;
+ 
+ 		set_addr(mtd, 0, 0, 0);
+ 		fsl_ifc_run_command(mtd);
+-- 
+1.7.9.5
