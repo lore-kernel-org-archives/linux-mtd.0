@@ -1,16 +1,24 @@
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-To: Joachim Eastwood <manabian@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Alexey Khoroshilov <khoroshilov@ispras.ru>,
- Richard Weinberger <richard@nod.at>, linux-arm-kernel@lists.infradead.org,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ldv-project@linuxtesting.org, Julia Lawall <julia.lawall@lip6.fr>,
- sil2review@lists.osadl.org
-Subject: [PATCH] mtd: nxp-spifi: decrement flash_np refcnt on error paths
-Date: Tue,  8 May 2018 23:47:36 +0300
-Message-Id: <1525812456-25877-1-git-send-email-khoroshilov@ispras.ru>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fG9u3-0006dM-3N
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 21:12:08 +0000
+Date: Tue, 8 May 2018 23:11:54 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ stable@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCH v2] mtd: rawnand: Make sure we wait tWB before polling
+ the STATUS reg
+Message-ID: <20180508231154.09f4d86a@bbrezillon>
+In-Reply-To: <20180507113522.03a52da9@bbrezillon>
+References: <20180504192431.16661-1-boris.brezillon@bootlin.com>
+ <20180507113522.03a52da9@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nxp_spifi_probe() increments refcnt of SPI flash device node by
-of_get_next_available_child() and then it passes the node
-to mtd device in nxp_spifi_setup_flash().
-But if a failure happens before mtd_device_register() succeed,
-the refcnt is left undecremented.
+On Mon, 7 May 2018 11:35:22 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Found by Linux Driver Verification project (linuxtesting.org).
+> On Fri,  4 May 2018 21:24:31 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> 
+> > NAND chips require a bit of time to take the NAND operation into
+> > account and set the BUSY bit in the STATUS reg. Make sure we don't poll
+> > the STATUS reg too early in nand_soft_waitrdy().
+> > 
+> > Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> > Changes in v2:
+> > - Move the ndelay() to nand_soft_waitrdy() instead of having it in the
+> >   FSMC driver
+> > ---
+> >  drivers/mtd/nand/raw/nand_base.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 72f3a89da513..da94fcb4dd9b 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -706,12 +706,17 @@ static void nand_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
+> >   */
+> >  int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
+> >  {
+> > +	const struct nand_sdr_timings *timings;
+> >  	u8 status = 0;
+> >  	int ret;
+> >  
+> >  	if (!chip->exec_op)
+> >  		return -ENOTSUPP;
+> >  
+> > +	/* Wait tWB before polling the STATUS reg. */
+> > +	timings = nand_get_sdr_timings(&chip->data_interface);
+> > +	ndelay(PSEC_TO_NSEC(sdr->tWB_max));  
+> 
+> 			    ^ timings->tWB_max
+> 
+> And for those who wonder, yes, I compiled the code, but it seems I
+> forgot to amend the commit after fixing the bug locally :-).
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
- drivers/mtd/spi-nor/nxp-spifi.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+Queued to mtd/master after fixing the problem.
 
-diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
-index 15374216d4d9..8919e31f2ab8 100644
---- a/drivers/mtd/spi-nor/nxp-spifi.c
-+++ b/drivers/mtd/spi-nor/nxp-spifi.c
-@@ -294,7 +294,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 			break;
- 		default:
- 			dev_err(spifi->dev, "unsupported rx-bus-width\n");
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_node_put;
- 		}
- 	}
- 
-@@ -328,7 +329,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 		break;
- 	default:
- 		dev_err(spifi->dev, "only mode 0 and 3 supported\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_node_put;
- 	}
- 
- 	writel(ctrl, spifi->io_base + SPIFI_CTRL);
-@@ -356,22 +358,26 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
- 	ret = spi_nor_scan(&spifi->nor, NULL, &hwcaps);
- 	if (ret) {
- 		dev_err(spifi->dev, "device scan failed\n");
--		return ret;
-+		goto err_node_put;
- 	}
- 
- 	ret = nxp_spifi_setup_memory_cmd(spifi);
- 	if (ret) {
- 		dev_err(spifi->dev, "memory command setup failed\n");
--		return ret;
-+		goto err_node_put;
- 	}
- 
- 	ret = mtd_device_register(&spifi->nor.mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(spifi->dev, "mtd device parse failed\n");
--		return ret;
-+		goto err_node_put;
- 	}
- 
- 	return 0;
-+
-+err_node_put:
-+	of_node_put(np);
-+	return ret;
- }
- 
- static int nxp_spifi_probe(struct platform_device *pdev)
--- 
-2.7.4
+> 
+> > +
+> >  	ret = nand_status_op(chip, NULL);
+> >  	if (ret)
+> >  		return ret;  
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
