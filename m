@@ -1,21 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG9u3-0006dM-3N
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 21:12:08 +0000
-Date: Tue, 8 May 2018 23:11:54 +0200
+ id 1fG9v5-0006we-Du
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 21:13:13 +0000
+Date: Tue, 8 May 2018 23:12:59 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- stable@vger.kernel.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Subject: Re: [PATCH v2] mtd: rawnand: Make sure we wait tWB before polling
- the STATUS reg
-Message-ID: <20180508231154.09f4d86a@bbrezillon>
-In-Reply-To: <20180507113522.03a52da9@bbrezillon>
-References: <20180504192431.16661-1-boris.brezillon@bootlin.com>
- <20180507113522.03a52da9@bbrezillon>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, Peter Pan
+ <peterpandong@micron.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH] mtd: rawnand: micron: Fix support for on-die ECC
+Message-ID: <20180508231259.10e951d4@bbrezillon>
+In-Reply-To: <20180504115835.5702710e@xps13>
+References: <20180503074908.20485-1-boris.brezillon@bootlin.com>
+ <20180504115835.5702710e@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,60 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 7 May 2018 11:35:22 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Fri, 4 May 2018 11:58:35 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> On Fri,  4 May 2018 21:24:31 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> Hi Boris,
 > 
-> > NAND chips require a bit of time to take the NAND operation into
-> > account and set the BUSY bit in the STATUS reg. Make sure we don't poll
-> > the STATUS reg too early in nand_soft_waitrdy().
+> On Thu,  3 May 2018 09:49:08 +0200, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> 
+> > It looks like the NAND_STATUS_FAIL bit is sticky after an ECC failure,
+> > which leads all READ operations following the failing one to report
+> > an ECC failure. Reset the chip to clear the NAND_STATUS_FAIL bit.
 > > 
-> > Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
+> > Note that this behavior is not document in the datasheet, but resetting
+> > the chip is the only solution we found to fix the problem.
+> > 
+> > Fixes: 9748e1d87573 ("mtd: nand: add support for Micron on-die ECC")
 > > Cc: <stable@vger.kernel.org>
 > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> > Changes in v2:
-> > - Move the ndelay() to nand_soft_waitrdy() instead of having it in the
-> >   FSMC driver
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> > index 72f3a89da513..da94fcb4dd9b 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -706,12 +706,17 @@ static void nand_wait_status_ready(struct mtd_info *mtd, unsigned long timeo)
-> >   */
-> >  int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
-> >  {
-> > +	const struct nand_sdr_timings *timings;
-> >  	u8 status = 0;
-> >  	int ret;
-> >  
-> >  	if (!chip->exec_op)
-> >  		return -ENOTSUPP;
-> >  
-> > +	/* Wait tWB before polling the STATUS reg. */
-> > +	timings = nand_get_sdr_timings(&chip->data_interface);
-> > +	ndelay(PSEC_TO_NSEC(sdr->tWB_max));  
+> > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> > Cc: Bean Huo <beanhuo@micron.com>
+> > Cc: Peter Pan <peterpandong@micron.com>
+> > ---  
 > 
-> 			    ^ timings->tWB_max
-> 
-> And for those who wonder, yes, I compiled the code, but it seems I
-> forgot to amend the commit after fixing the bug locally :-).
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Queued to mtd/master after fixing the problem.
-
-> 
-> > +
-> >  	ret = nand_status_op(chip, NULL);
-> >  	if (ret)
-> >  		return ret;  
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Queued to mtd/master.
