@@ -1,7 +1,7 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.14])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.195])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG6K2-0004gT-RZ
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 17:22:44 +0000
+ id 1fG6Wy-0001tQ-Ku
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 17:36:18 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
@@ -9,13 +9,17 @@ CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
  Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
  <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: cfi_cmdset_0002: Fix coding style issues
-Date: Tue, 8 May 2018 17:22:28 +0000
-Message-ID: <TY1PR01MB09542FD6BF741E2365C898BEDC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09543004A0EDF2E03783E6D9DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508190902.32c344b7@bbrezillon>
-In-Reply-To: <20180508190902.32c344b7@bbrezillon>
+ <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, "Joakim
+ Tjernlund" <joakim.tjernlund@infinera.com>
+Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
+ error
+Date: Tue, 8 May 2018 17:35:48 +0000
+Message-ID: <TY1PR01MB0954B3DF0974C4FC2DD04924DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508132037.152cc581@bbrezillon>
+ <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508191144.5d8412b6@bbrezillon>
+In-Reply-To: <20180508191144.5d8412b6@bbrezillon>
 Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -29,149 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Hi Boris-san,
 
-This patch fixes mainly to remove unneeded spaces after '(' and before ')'.
-Also some indentation errors are fixed.
+Thanks for your reviewing.
 
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+> > This is needed to prevent the flash erase error caused only once.
+> > It was caused by the error case of chip_good() in the do_erase_oneblock=
+().
+> > Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
+> > But the error issue behavior is not able to reproduce at this moment.
+>=20
+> Hm, that's a problem. How can you be sure the retry approach fixes the
+> issue if you can't reproduce the it?
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index 56aa6b75213d..e397b80e40cc 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -44,8 +44,8 @@
-=20
- #define MAX_WORD_RETRIES 3
-=20
--#define SST49LF004B	        0x0060
--#define SST49LF040B	        0x0050
-+#define SST49LF004B		0x0060
-+#define SST49LF040B		0x0050
- #define SST49LF008A		0x005a
- #define AT49BV6416		0x00d6
-=20
-@@ -207,7 +207,7 @@ static void fixup_use_write_buffers(struct mtd_info *mt=
-d)
- 	struct map_info *map =3D mtd->priv;
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	if (cfi->cfiq->BufWriteTimeoutTyp) {
--		pr_debug("Using buffer write method\n" );
-+		pr_debug("Using buffer write method\n");
- 		mtd->_write =3D cfi_amdstd_write_buffers;
- 	}
- }
-@@ -1562,7 +1562,7 @@ static int __xipram do_write_oneword(struct map_info =
-*map, struct flchip *chip,
- 	 * depending of the conditions.	 The ' + 1' is to avoid having a
- 	 * timeout of 0 jiffies if HZ is smaller than 1000.
- 	 */
--	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+	unsigned long uWriteTimeout =3D (HZ / 1000) + 1;
- 	int ret =3D 0;
- 	map_word oldd;
- 	int retry_cnt =3D 0;
-@@ -1577,7 +1577,7 @@ static int __xipram do_write_oneword(struct map_info =
-*map, struct flchip *chip,
- 	}
-=20
- 	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
--	       __func__, adr, datum.x[0] );
-+		 __func__, adr, datum.x[0]);
-=20
- 	if (mode =3D=3D FL_OTP_WRITE)
- 		otp_enter(map, chip, adr, map_bankwidth(map));
-@@ -1643,7 +1643,7 @@ static int __xipram do_write_oneword(struct map_info =
-*map, struct flchip *chip,
- 	/* Did we succeed? */
- 	if (!chip_good(map, adr, datum)) {
- 		/* reset on all failures. */
--		map_write( map, CMD(0xF0), chip->start );
-+		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
-=20
- 		if (++retry_cnt <=3D MAX_WORD_RETRIES)
-@@ -1821,7 +1821,7 @@ static int __xipram do_write_buffer(struct map_info *=
-map, struct flchip *chip,
- 	datum =3D map_word_load(map, buf);
-=20
- 	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
--	       __func__, adr, datum.x[0] );
-+		 __func__, adr, datum.x[0]);
-=20
- 	XIP_INVAL_CACHED_RANGE(map, adr, len);
- 	ENABLE_VPP(map);
-@@ -2251,7 +2251,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
- 	}
-=20
- 	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
--	       __func__, chip->start );
-+	       __func__, chip->start);
-=20
- 	XIP_INVAL_CACHED_RANGE(map, adr, map->size);
- 	ENABLE_VPP(map);
-@@ -2297,7 +2297,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
-=20
- 		if (time_after(jiffies, timeo)) {
- 			printk(KERN_WARNING "MTD %s(): software timeout\n",
--				__func__ );
-+			       __func__);
- 			break;
- 		}
-=20
-@@ -2307,7 +2307,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
- 	/* Did we succeed? */
- 	if (!chip_good(map, adr, map_word_ff(map))) {
- 		/* reset on all failures. */
--		map_write( map, CMD(0xF0), chip->start );
-+		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
-=20
- 		ret =3D -EIO;
-@@ -2340,7 +2340,7 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 	}
-=20
- 	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
--	       __func__, adr );
-+		 __func__, adr);
-=20
- 	XIP_INVAL_CACHED_RANGE(map, adr, len);
- 	ENABLE_VPP(map);
-@@ -2389,7 +2389,7 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 		if (time_after(jiffies, timeo)) {
- 			xip_enable(map, chip, adr);
- 			printk(KERN_WARNING "MTD %s(): software timeout\n",
--				__func__ );
-+			       __func__);
- 			break;
- 		}
-=20
-@@ -2399,7 +2399,7 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 	/* Did we succeed? */
- 	if (!chip_good(map, adr, map_word_ff(map))) {
- 		/* reset on all failures. */
--		map_write( map, CMD(0xF0), chip->start );
-+		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
-=20
- 		ret =3D -EIO;
---=20
-2.16.1
+  I can reproduce the flash write error by the same reproduction method.
+  And the error can be resolved by the same approach fixes as below.
+    <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080794.html>
+  So it seems that the erase error also can be resolved by the changes.
+
+> > The flash controller is parallel Flash interface integrated on BCM53003=
+.
+> >
+> > Also the change is possible to resolve other erase error.
+> > For example the Erase suspend issue was caused on Cypress AMD NOR flash=
+.
+> >   S29GL01GS / S29GL512S / S29GL256S / S29GL128S
+>=20
+> Is the Erase suspend issue related to this problem?
+
+  I am not sure about the issue behavior detail since the issue is not caus=
+ed on my environment.
+  The issue was mentioned by Jocke-san on the following mail.
+    <http://lists.infradead.org/pipermail/linux-mtd/2018-April/080518.html>
+  Also I am asking to him to try the original patch on this thread.
+
+Regards,
+Ikegami
