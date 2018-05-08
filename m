@@ -1,7 +1,7 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.203])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.14])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fG6EN-0000qO-VK
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 17:16:54 +0000
+ id 1fG6K2-0004gT-RZ
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 17:22:44 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
@@ -10,13 +10,12 @@ CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
  <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, Cyrille Pitchen
  <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: cfi_cmdset_0002: Change definition naming to retry write
- operation
-Date: Tue, 8 May 2018 17:09:28 +0000
-Message-ID: <TY1PR01MB0954E2039F24B62068CBCF8ADC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB0954BFEE0FC7B301D19D5F3CDC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508190352.124deb07@bbrezillon>
-In-Reply-To: <20180508190352.124deb07@bbrezillon>
+Subject: [PATCH] mtd: cfi_cmdset_0002: Fix coding style issues
+Date: Tue, 8 May 2018 17:22:28 +0000
+Message-ID: <TY1PR01MB09542FD6BF741E2365C898BEDC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB09543004A0EDF2E03783E6D9DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508190902.32c344b7@bbrezillon>
+In-Reply-To: <20180508190902.32c344b7@bbrezillon>
 Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -32,8 +31,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-The definition can be used for other program and erase operations also.
-So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
+This patch fixes mainly to remove unneeded spaces after '(' and before ')'.
+Also some indentation errors are fixed.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
@@ -45,41 +44,133 @@ Cc: Richard Weinberger <richard@nod.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
 dset_0002.c
-index 56aa6b75213d..9336ef932f75 100644
+index 56aa6b75213d..e397b80e40cc 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -42,7 +42,7 @@
- #define AMD_BOOTLOC_BUG
- #define FORCE_WORD_WRITE 0
+@@ -44,8 +44,8 @@
 =20
--#define MAX_WORD_RETRIES 3
-+#define MAX_RETRIES 3
+ #define MAX_WORD_RETRIES 3
 =20
- #define SST49LF004B	        0x0060
- #define SST49LF040B	        0x0050
-@@ -1646,7 +1646,7 @@ static int __xipram do_write_oneword(struct map_info =
+-#define SST49LF004B	        0x0060
+-#define SST49LF040B	        0x0050
++#define SST49LF004B		0x0060
++#define SST49LF040B		0x0050
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
+=20
+@@ -207,7 +207,7 @@ static void fixup_use_write_buffers(struct mtd_info *mt=
+d)
+ 	struct map_info *map =3D mtd->priv;
+ 	struct cfi_private *cfi =3D map->fldrv_priv;
+ 	if (cfi->cfiq->BufWriteTimeoutTyp) {
+-		pr_debug("Using buffer write method\n" );
++		pr_debug("Using buffer write method\n");
+ 		mtd->_write =3D cfi_amdstd_write_buffers;
+ 	}
+ }
+@@ -1562,7 +1562,7 @@ static int __xipram do_write_oneword(struct map_info =
 *map, struct flchip *chip,
- 		map_write( map, CMD(0xF0), chip->start );
+ 	 * depending of the conditions.	 The ' + 1' is to avoid having a
+ 	 * timeout of 0 jiffies if HZ is smaller than 1000.
+ 	 */
+-	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
++	unsigned long uWriteTimeout =3D (HZ / 1000) + 1;
+ 	int ret =3D 0;
+ 	map_word oldd;
+ 	int retry_cnt =3D 0;
+@@ -1577,7 +1577,7 @@ static int __xipram do_write_oneword(struct map_info =
+*map, struct flchip *chip,
+ 	}
+=20
+ 	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
+-	       __func__, adr, datum.x[0] );
++		 __func__, adr, datum.x[0]);
+=20
+ 	if (mode =3D=3D FL_OTP_WRITE)
+ 		otp_enter(map, chip, adr, map_bankwidth(map));
+@@ -1643,7 +1643,7 @@ static int __xipram do_write_oneword(struct map_info =
+*map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
+-		map_write( map, CMD(0xF0), chip->start );
++		map_write(map, CMD(0xF0), chip->start);
  		/* FIXME - should have reset delay before continuing */
 =20
--		if (++retry_cnt <=3D MAX_WORD_RETRIES)
-+		if (++retry_cnt <=3D MAX_RETRIES)
- 			goto retry;
+ 		if (++retry_cnt <=3D MAX_WORD_RETRIES)
+@@ -1821,7 +1821,7 @@ static int __xipram do_write_buffer(struct map_info *=
+map, struct flchip *chip,
+ 	datum =3D map_word_load(map, buf);
+=20
+ 	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
+-	       __func__, adr, datum.x[0] );
++		 __func__, adr, datum.x[0]);
+=20
+ 	XIP_INVAL_CACHED_RANGE(map, adr, len);
+ 	ENABLE_VPP(map);
+@@ -2251,7 +2251,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	}
+=20
+ 	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
+-	       __func__, chip->start );
++	       __func__, chip->start);
+=20
+ 	XIP_INVAL_CACHED_RANGE(map, adr, map->size);
+ 	ENABLE_VPP(map);
+@@ -2297,7 +2297,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+=20
+ 		if (time_after(jiffies, timeo)) {
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+-				__func__ );
++			       __func__);
+ 			break;
+ 		}
+=20
+@@ -2307,7 +2307,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, map_word_ff(map))) {
+ 		/* reset on all failures. */
+-		map_write( map, CMD(0xF0), chip->start );
++		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
 =20
  		ret =3D -EIO;
-@@ -2105,7 +2105,7 @@ static int do_panic_write_oneword(struct map_info *ma=
-p, struct flchip *chip,
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
+@@ -2340,7 +2340,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	}
 =20
--		if (++retry_cnt <=3D MAX_WORD_RETRIES)
-+		if (++retry_cnt <=3D MAX_RETRIES)
- 			goto retry;
+ 	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
+-	       __func__, adr );
++		 __func__, adr);
+=20
+ 	XIP_INVAL_CACHED_RANGE(map, adr, len);
+ 	ENABLE_VPP(map);
+@@ -2389,7 +2389,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 		if (time_after(jiffies, timeo)) {
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+-				__func__ );
++			       __func__);
+ 			break;
+ 		}
+=20
+@@ -2399,7 +2399,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, map_word_ff(map))) {
+ 		/* reset on all failures. */
+-		map_write( map, CMD(0xF0), chip->start );
++		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
 =20
  		ret =3D -EIO;
 --=20
