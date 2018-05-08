@@ -1,25 +1,24 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.13])
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFxzK-0002KE-G1
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 08:28:48 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Brian Norris <computersforpeace@gmail.com>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, David Woodhouse
- <dwmw2@infradead.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Date: Tue, 8 May 2018 08:28:30 +0000
-Message-ID: <TY1PR01MB0954BFF431218DC5E2E8F3A2DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180508044142.4159-1-ikegami@allied-telesis.co.jp>
- <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
-In-Reply-To: <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1fFycc-0002Z7-N7
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 09:09:24 +0000
+Date: Tue, 8 May 2018 11:08:58 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
+ yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
+ shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: fsl_ifc: use bit-wise majority to
+ recover the contents of ONFI parameter
+Message-ID: <20180508110858.7b1432f5@bbrezillon>
+In-Reply-To: <1525710855-8159-1-git-send-email-Jane.Wan@nokia.com>
+References: <1525710855-8159-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +28,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNClRoaXMgcGF0Y2ggaGFzIGJlIHNlbnQgYnkgZ2l0LXNlbmQtZW1haWwuDQpBbHNvIGZv
-ciBvdXIgY29tcGFueSBtYWlsIHN5c3RlbSB0aGUgc2VuZGVyIG1haWwgYWRkcmVzcyBpcyBuZWVk
-ZWQgdG8gYmUgc2V0IGFzIHNtdHB1c2VyIDxzbXRwdXNlciBhdCBhbGxpZWQtdGVsZXNpcy5jby5q
-cD4uDQpCdXQgZG8gbm90IHJlcGx5IHRvIHRoZSBlbWFpbCBhZGRyZXNzIHNtdHB1c2VyIDxzbXRw
-dXNlciBhdCBhbGxpZWQtdGVsZXNpcy5jby5qcD4uDQpQbGVhc2UgcmVwbHkgdG8gbXkgZW1haWwg
-YWRkcmVzcyBUb2t1bm9yaSBJa2VnYW1pIDxpa2VnYW1pIGF0IGFsbGllZC10ZWxlc2lzLmNvLmpw
-PiBpZiBhbnkgY29tbWVudCBvciBwcm9ibGVtLg0KU29ycnkgZm9yIGluY29udmVuaWVudCBhYm91
-dCB0aGlzLg0KDQpUaGlzIHBhdGNoIGlzIGFsdGVybmF0aXZlIHNvbHV0aW9uIGZvciB0aGUgcGF0
-Y2ggYmVsb3cuDQogIDxodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgt
-bXRkLzIwMTgtQXByaWwvMDgwNTMwLmh0bWw+DQoNCk5vdGU6DQogIEkgYW0gdGhpbmtpbmcgdG8g
-Y2hhbmdlIHRoZSBlcmFzZSBmdW5jdGlvbnMgYWxzbyB0byByZXRyeSBmb3IgdGhlIHdyb25nIHZh
-bHVlIGNhc2UuDQogIEl0IHdpbGwgYmUgc2VudCBhcyBhbm90aGVyIHBhdGNoLg0KDQpSZWdhcmRz
-LA0KSWtlZ2FtaQ0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IHNtdHB1
-c2VyDQo+IFNlbnQ6IFR1ZXNkYXksIE1heSAwOCwgMjAxOCAxOjQ2IFBNDQo+IFRvOiBCcmlhbiBO
-b3JyaXMNCj4gQ2M6IElLRUdBTUkgVG9rdW5vcmk7IFBBQ0tIQU0gQ2hyaXM7IERhdmlkIFdvb2Ro
-b3VzZTsgQm9yaXMgQnJlemlsbG9uOw0KPiBNYXJlayBWYXN1dDsgUmljaGFyZCBXZWluYmVyZ2Vy
-OyBDeXJpbGxlIFBpdGNoZW47DQo+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1
-YmplY3Q6IFtQQVRDSF0gbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBidWZmZXIg
-dG8gY2hlY2sgY29ycmVjdA0KPiB2YWx1ZQ0KPiANCj4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8
-aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gDQo+IEZvciB0aGUgd29yZCB3cml0ZSBp
-dCBpcyBjaGVja2VkIGlmIHRoZSBjaGlwIGhhcyB0aGUgY29ycmVjdCB2YWx1ZS4NCj4gQnV0IGl0
-IGlzIG5vdCBjaGVja2VkIGZvciB0aGUgd3JpdGUgYnVmZmVyIGFzIG9ubHkgY2hlY2tlZCBpZiBy
-ZWFkeS4NCj4gVG8gbWFrZSBzdXJlIGZvciB0aGUgd3JpdGUgYnVmZmVyIGNoYW5nZSB0byBjaGVj
-ayB0aGUgdmFsdWUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBUb2t1bm9yaSBJa2VnYW1pIDxpa2Vn
-YW1pQGFsbGllZC10ZWxlc2lzLmNvLmpwPg0KPiBDYzogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFj
-a2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBp
-bmZyYWRlYWQub3JnPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJl
-ZS1lbGVjdHJvbnMuY29tPg0KPiBDYzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNv
-bT4NCj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+IENjOiBDeXJp
-bGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPg0KPiBDYzogbGludXgtbXRk
-QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21k
-c2V0XzAwMDIuYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
-ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRz
-ZXRfMDAwMi5jDQo+IGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gaW5k
-ZXggNTZhYTZiNzUyMTNkLi41ZTlmMmNhMGE2YzEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRk
-L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9j
-bWRzZXRfMDAwMi5jDQo+IEBAIC0xODc5LDcgKzE4NzksNyBAQCBzdGF0aWMgaW50IF9feGlwcmFt
-IGRvX3dyaXRlX2J1ZmZlcihzdHJ1Y3QgbWFwX2luZm8NCj4gKm1hcCwgc3RydWN0IGZsY2hpcCAq
-Y2hpcCwNCj4gIAkJaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdGltZW8pICYmICFjaGlwX3JlYWR5
-KG1hcCwgYWRyKSkNCj4gIAkJCWJyZWFrOw0KPiANCj4gLQkJaWYgKGNoaXBfcmVhZHkobWFwLCBh
-ZHIpKSB7DQo+ICsJCWlmIChjaGlwX3JlYWR5KG1hcCwgYWRyKSAmJiBjaGlwX2dvb2QobWFwLCBh
-ZHIsIGRhdHVtKSkNCj4gew0KPiAgCQkJeGlwX2VuYWJsZShtYXAsIGNoaXAsIGFkcik7DQo+ICAJ
-CQlnb3RvIG9wX2RvbmU7DQo+ICAJCX0NCj4gLS0NCj4gMi4xNi4xDQoNCg==
+On Mon,  7 May 2018 09:34:15 -0700
+Jane Wan <Jane.Wan@nokia.com> wrote:
+
+> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+> CRC values, the bit-wise majority may be used to recover the contents of
+> the parameter pages from the parameter page copies present.
+> 
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+
+I never received patch 1 of this series. When you fix something in a
+commit, please resend the whole patchset, even if other patches haven't
+changed.
+
+> ---
+>  drivers/mtd/nand/raw/nand_base.c |   41 ++++++++++++++++++++++++++++++--------
+>  1 file changed, 33 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 72f3a89..48f2dec 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5086,15 +5086,18 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+>  	return ret;
+>  }
+>  
+> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
+> +
+>  /*
+>   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>   */
+>  static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  {
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+> -	struct nand_onfi_params *p;
+> +	struct nand_onfi_params *p = NULL;
+>  	char id[4];
+> -	int i, ret, val;
+> +	int i, ret, val, pagesize;
+> +	u8 *buf = NULL;
+>  
+>  	/* Try ONFI for unknown chip or LP */
+>  	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+> @@ -5102,8 +5105,9 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  		return 0;
+>  
+>  	/* ONFI chip: allocate a buffer to hold its parameter page */
+> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> -	if (!p)
+> +	pagesize = sizeof(*p);
+> +	buf = kzalloc((pagesize * 3), GFP_KERNEL);
+
+Not sure why you have to add a new buf variable here, and pagesize is
+not needed either, just use sizeof(*p) directly.
+
+> +	if (!buf)
+>  		return -ENOMEM;
+>  
+>  	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+> @@ -5113,7 +5117,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  	}
+>  
+>  	for (i = 0; i < 3; i++) {
+> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
+> +		p = (struct nand_onfi_params *)&buf[i*pagesize];
+> +		ret = nand_read_data_op(chip, p, pagesize, true);
+>  		if (ret) {
+>  			ret = 0;
+>  			goto free_onfi_param_page;
+> @@ -5126,8 +5131,27 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  	}
+>  
+>  	if (i == 3) {
+> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> -		goto free_onfi_param_page;
+> +		int j, k, l;
+> +		u8 v, m;
+> +
+> +		pr_err("Could not find valid ONFI parameter page\n");
+> +		pr_info("Recover ONFI params with bit-wise majority\n");
+> +		for (j = 0; j < pagesize; j++) {
+> +			v = 0;
+> +			for (k = 0; k < 8; k++) {
+> +				m = 0;
+> +				for (l = 0; l < 3; l++)
+> +					m += GET_BIT(k, buf[l*pagesize + j]);
+> +				if (m > 1)
+> +					v |= BIT(k);
+> +			}
+> +			((u8 *)p)[j] = v;
+> +		}
+
+Can you move the bit-wise majority code in a separate function?
+
+> +		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) !=
+> +				le16_to_cpu(p->crc)) {
+> +			pr_err("ONFI parameter recovery failed, aborting\n");
+> +			goto free_onfi_param_page;
+> +		}
+>  	}
+>  
+>  	/* Check version */
+> @@ -5220,7 +5244,8 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  	       sizeof(p->vendor));
+>  
+>  free_onfi_param_page:
+> -	kfree(p);
+> +	if (buf != NULL)
+> +		kfree(buf);
+
+kfree() already handles the buf == NULL case, no need to check it here.
+
+>  	return ret;
+>  }
+>  
