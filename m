@@ -1,28 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.13])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fFxXO-00071b-AT
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 07:59:56 +0000
-Date: Tue, 8 May 2018 09:59:37 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: ubifs error with marvell_nand on Armada-98DX4251 (was Re:
- [PATCH] mtd: rawnand: marvell: fix command xtype in BCH write hook)
-Message-ID: <20180508095937.46678a01@bbrezillon>
-In-Reply-To: <91c282c4fe9344d88684131d1a64dcf2@svr-chch-ex1.atlnz.lc>
-References: <20180503100027.16229-1-miquel.raynal@bootlin.com>
- <f1b88811dd88481da1c1b84341bbc9a5@svr-chch-ex1.atlnz.lc>
- <20180504091001.3e6650d6@xps13>
- <729567d8180a4b70ba9226dcd9eee0b4@svr-chch-ex1.atlnz.lc>
- <20180507095053.249547d0@bbrezillon>
- <91c282c4fe9344d88684131d1a64dcf2@svr-chch-ex1.atlnz.lc>
+ id 1fFxzK-0002KE-G1
+ for linux-mtd@lists.infradead.org; Tue, 08 May 2018 08:28:48 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Brian Norris <computersforpeace@gmail.com>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, David Woodhouse
+ <dwmw2@infradead.org>, Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Tue, 8 May 2018 08:28:30 +0000
+Message-ID: <TY1PR01MB0954BFF431218DC5E2E8F3A2DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <20180508044142.4159-1-ikegami@allied-telesis.co.jp>
+ <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
+In-Reply-To: <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 May 2018 01:38:13 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-
-> Hi Boris,
-> 
-> Thanks for picking this up while Miquel is taking a break.
-
-Can you try with the following diff applied?
-
---->8---
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index db5ec4e8bde9..ebb1d141b900 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -1194,11 +1194,13 @@ static void marvell_nfc_hw_ecc_bch_read_chunk(struct nand_chip *chip, int chunk,
-                                  NDCB0_CMD2(NAND_CMD_READSTART);
- 
-        /*
--        * Trigger the naked read operation only on the last chunk.
--        * Otherwise, use monolithic read.
-+        * Trigger the monolithic read on the first chunk, then naked read on
-+        * intermediate chunks and finally a last naked read on the last chunk.
-         */
--       if (lt->nchunks == 1 || (chunk < lt->nchunks - 1))
-+       if (chunk == 0)
-                nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW);
-+       else if (chunk < lt->nchunks - 1)
-+               nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_NAKED_RW);
-        else
-                nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_LAST_NAKED_RW);
- 
+SGksDQoNClRoaXMgcGF0Y2ggaGFzIGJlIHNlbnQgYnkgZ2l0LXNlbmQtZW1haWwuDQpBbHNvIGZv
+ciBvdXIgY29tcGFueSBtYWlsIHN5c3RlbSB0aGUgc2VuZGVyIG1haWwgYWRkcmVzcyBpcyBuZWVk
+ZWQgdG8gYmUgc2V0IGFzIHNtdHB1c2VyIDxzbXRwdXNlciBhdCBhbGxpZWQtdGVsZXNpcy5jby5q
+cD4uDQpCdXQgZG8gbm90IHJlcGx5IHRvIHRoZSBlbWFpbCBhZGRyZXNzIHNtdHB1c2VyIDxzbXRw
+dXNlciBhdCBhbGxpZWQtdGVsZXNpcy5jby5qcD4uDQpQbGVhc2UgcmVwbHkgdG8gbXkgZW1haWwg
+YWRkcmVzcyBUb2t1bm9yaSBJa2VnYW1pIDxpa2VnYW1pIGF0IGFsbGllZC10ZWxlc2lzLmNvLmpw
+PiBpZiBhbnkgY29tbWVudCBvciBwcm9ibGVtLg0KU29ycnkgZm9yIGluY29udmVuaWVudCBhYm91
+dCB0aGlzLg0KDQpUaGlzIHBhdGNoIGlzIGFsdGVybmF0aXZlIHNvbHV0aW9uIGZvciB0aGUgcGF0
+Y2ggYmVsb3cuDQogIDxodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgt
+bXRkLzIwMTgtQXByaWwvMDgwNTMwLmh0bWw+DQoNCk5vdGU6DQogIEkgYW0gdGhpbmtpbmcgdG8g
+Y2hhbmdlIHRoZSBlcmFzZSBmdW5jdGlvbnMgYWxzbyB0byByZXRyeSBmb3IgdGhlIHdyb25nIHZh
+bHVlIGNhc2UuDQogIEl0IHdpbGwgYmUgc2VudCBhcyBhbm90aGVyIHBhdGNoLg0KDQpSZWdhcmRz
+LA0KSWtlZ2FtaQ0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IHNtdHB1
+c2VyDQo+IFNlbnQ6IFR1ZXNkYXksIE1heSAwOCwgMjAxOCAxOjQ2IFBNDQo+IFRvOiBCcmlhbiBO
+b3JyaXMNCj4gQ2M6IElLRUdBTUkgVG9rdW5vcmk7IFBBQ0tIQU0gQ2hyaXM7IERhdmlkIFdvb2Ro
+b3VzZTsgQm9yaXMgQnJlemlsbG9uOw0KPiBNYXJlayBWYXN1dDsgUmljaGFyZCBXZWluYmVyZ2Vy
+OyBDeXJpbGxlIFBpdGNoZW47DQo+IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1
+YmplY3Q6IFtQQVRDSF0gbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBidWZmZXIg
+dG8gY2hlY2sgY29ycmVjdA0KPiB2YWx1ZQ0KPiANCj4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8
+aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gDQo+IEZvciB0aGUgd29yZCB3cml0ZSBp
+dCBpcyBjaGVja2VkIGlmIHRoZSBjaGlwIGhhcyB0aGUgY29ycmVjdCB2YWx1ZS4NCj4gQnV0IGl0
+IGlzIG5vdCBjaGVja2VkIGZvciB0aGUgd3JpdGUgYnVmZmVyIGFzIG9ubHkgY2hlY2tlZCBpZiBy
+ZWFkeS4NCj4gVG8gbWFrZSBzdXJlIGZvciB0aGUgd3JpdGUgYnVmZmVyIGNoYW5nZSB0byBjaGVj
+ayB0aGUgdmFsdWUuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBUb2t1bm9yaSBJa2VnYW1pIDxpa2Vn
+YW1pQGFsbGllZC10ZWxlc2lzLmNvLmpwPg0KPiBDYzogQ2hyaXMgUGFja2hhbSA8Y2hyaXMucGFj
+a2hhbUBhbGxpZWR0ZWxlc2lzLmNvLm56Pg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBp
+bmZyYWRlYWQub3JnPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJl
+ZS1lbGVjdHJvbnMuY29tPg0KPiBDYzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNv
+bT4NCj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+IENjOiBDeXJp
+bGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPg0KPiBDYzogbGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gLS0tDQo+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21k
+c2V0XzAwMDIuYyB8IDIgKy0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRz
+ZXRfMDAwMi5jDQo+IGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gaW5k
+ZXggNTZhYTZiNzUyMTNkLi41ZTlmMmNhMGE2YzEgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRk
+L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9j
+bWRzZXRfMDAwMi5jDQo+IEBAIC0xODc5LDcgKzE4NzksNyBAQCBzdGF0aWMgaW50IF9feGlwcmFt
+IGRvX3dyaXRlX2J1ZmZlcihzdHJ1Y3QgbWFwX2luZm8NCj4gKm1hcCwgc3RydWN0IGZsY2hpcCAq
+Y2hpcCwNCj4gIAkJaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdGltZW8pICYmICFjaGlwX3JlYWR5
+KG1hcCwgYWRyKSkNCj4gIAkJCWJyZWFrOw0KPiANCj4gLQkJaWYgKGNoaXBfcmVhZHkobWFwLCBh
+ZHIpKSB7DQo+ICsJCWlmIChjaGlwX3JlYWR5KG1hcCwgYWRyKSAmJiBjaGlwX2dvb2QobWFwLCBh
+ZHIsIGRhdHVtKSkNCj4gew0KPiAgCQkJeGlwX2VuYWJsZShtYXAsIGNoaXAsIGFkcik7DQo+ICAJ
+CQlnb3RvIG9wX2RvbmU7DQo+ICAJCX0NCj4gLS0NCj4gMi4xNi4xDQoNCg==
