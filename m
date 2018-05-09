@@ -1,17 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGPdu-0003my-7C
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:00:41 +0000
-Date: Wed, 9 May 2018 16:00:08 +0200
+ id 1fGPgL-0005XC-VO
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:03:04 +0000
+Date: Wed, 9 May 2018 16:02:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, PACKHAM
- Chris <chris.packham@alliedtelesis.co.nz>
-Subject: Re: mtd: cfi_cmdset_0002: Read data 3 times to check write
- operation status
-Message-ID: <20180509160008.7079b73d@bbrezillon>
-In-Reply-To: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+To: NeilBrown <neil@brown.name>, Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH/RFC] mtd: spi-nor: honour max_message_size for spi-nor
+ writes.
+Message-ID: <20180509160240.23ef11f2@bbrezillon>
+In-Reply-To: <87efj1kw9u.fsf@notabene.neil.brown.name>
+References: <87efj1kw9u.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,27 +25,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Apr 2018 05:54:43 +0000
-IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
+On Fri, 27 Apr 2018 16:18:05 +1000
+NeilBrown <neil@brown.name> wrote:
 
 > Hi,
+>  I've labeled this an RFC because I'm really not sure about removing the
+>  error path from spi_nor_write() -- maybe that really matters.  But on
+>  my hardware, performing multiple small spi writes to the flash seems
+>  to work.
 > 
-> Let us consult to change mtd cfi_cmdset_0002 to read data 3 times as below patch.
-> Can we change the mtd cfi_cmdset_0002 driver like this?
-> If any comment or concern please let us know.
+>  The spi driver is drivers/staging/mt7621-spi.  Possibly this needs to
+>  use DMA instead of a FIFO (assuming the hardware can) - or maybe
+>  drivers/spi/spi-mt65xx.c can be made to work on this hardware, though
+>  that is for an ARM SOC and mt7621 is a MIPS SOC.
 > 
-> From d924822c996b9c0eccc815e5018a0c3ea6077137 Mon Sep 17 00:00:00 2001
-> From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> Date: Tue, 24 Apr 2018 13:26:37 +0900
-> Subject: [PATCH 2/2] mtd: cfi_cmdset_0002: Read data 3 times to check write
->  operation status
+>  I note that openwrt has similar patches:
+>   target/linux/generic/pending-4.14/450-mtd-spi-nor-allow-NOR-driver-to-write-fewer-bytes-th.patch
 > 
-> Cypress S29GLxxxP flash is needed to read data 3 times to check DQ6 toggles.
-> Actually the read data is sometimes changed by the 3rd reading.
-> Also this is caused on other flash device also.
-> The flash write failure is possible to be caused by the error.
-> To resolve the issue change the read number of times to 3 from 2.
+>  They also change the spi driver to do a short write, rather
+>  than change m25p80 to request a short write.
+> 
+>  Is there something horribly wrong with this?
 
-Is this patch still needed, or is [1] supposed to replace it?
+Marek, any opinion on this patch?
 
-[1]http://patchwork.ozlabs.org/patch/910857/
+> 
+> Thanks,
+> NeilBrown
+> 
+> -----------------------8<------------------------
+> 
+> m25p80 honours max_message_size and max_transfer_size
+> for reads, but not for writes.
+> I have a driver that has a max message size of 36 bytes
+> (command, address, 32 bytes data, all places in a FIFO
+> in the controller).
+> This requires m25p80_write() to honour the size limits.
+> For that to work, spi-nor needs to quietly accept partial
+> writes.
+> 
+> With this, I can successfully re-flash my device.
+> 
+> Signed-off-by: NeilBrown <neil@brown.name>
+> ---
+>  drivers/mtd/devices/m25p80.c  | 3 ++-
+>  drivers/mtd/spi-nor/spi-nor.c | 7 -------
+>  2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index a4e18f6aaa33..7ded13507604 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -117,7 +117,8 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  
+>  	t[data_idx].tx_buf = buf;
+>  	t[data_idx].tx_nbits = data_nbits;
+> -	t[data_idx].len = len;
+> +	t[data_idx].len = min3(len, spi_max_transfer_size(spi),
+> +			       spi_max_message_size(spi) - cmd_sz);
+>  	spi_message_add_tail(&t[data_idx], &m);
+>  
+>  	ret = spi_sync(spi, &m);
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 42ae9a1529bb..cfa15f2801ad 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1445,13 +1445,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  			goto write_err;
+>  		*retlen += written;
+>  		i += written;
+> -		if (written != page_remain) {
+> -			dev_err(nor->dev,
+> -				"While writing %zu bytes written %zd bytes\n",
+> -				page_remain, written);
+> -			ret = -EIO;
+> -			goto write_err;
+> -		}
+>  	}
+>  
+>  write_err:
