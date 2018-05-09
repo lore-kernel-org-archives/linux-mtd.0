@@ -1,8 +1,8 @@
 Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGQqB-0004Id-UW
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 15:17:17 +0000
-Date: Wed, 9 May 2018 17:17:00 +0200
+ id 1fGQqj-0004Rb-9R
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 15:17:51 +0000
+Date: Wed, 9 May 2018 17:17:36 +0200
 From: Johannes Thumshirn <jthumshirn@suse.de>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Jens Axboe <axboe@kernel.dk>, "Ed L. Cashin" <ed.cashin@acm.org>,
@@ -10,15 +10,15 @@ Cc: Jens Axboe <axboe@kernel.dk>, "Ed L. Cashin" <ed.cashin@acm.org>,
  Maxim Levitsky <maximlevitsky@gmail.com>,
  linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
  linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 1/7] mtip32xx: don't use block layer bounce buffers
-Message-ID: <20180509151700.aiz5tezhrt5wdrfa@linux-x5ow.site>
+Subject: Re: [PATCH 2/7] DAC960: don't use block layer bounce buffers
+Message-ID: <20180509151736.ibirnxbgpungq4xi@linux-x5ow.site>
 References: <20180509135948.20329-1-hch@lst.de>
- <20180509135948.20329-2-hch@lst.de>
+ <20180509135948.20329-3-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180509135948.20329-2-hch@lst.de>
+In-Reply-To: <20180509135948.20329-3-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
