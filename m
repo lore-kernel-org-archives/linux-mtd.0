@@ -1,22 +1,21 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.12])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGQ8u-0006Jg-O5
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:32:34 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+Subject: Re: [PATCH] mtd: nxp-spifi: decrement flash_np refcnt on error paths
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "PACKHAM
- Chris" <chris.packham@alliedtelesis.co.nz>
-Subject: RE: mtd: cfi_cmdset_0002: Read data 3 times to check write operation
- status
-Date: Wed, 9 May 2018 14:32:18 +0000
-Message-ID: <TY1PR01MB0954AFBD67B4EB8E6E7122F7DC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180509160008.7079b73d@bbrezillon>
-In-Reply-To: <20180509160008.7079b73d@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Cc: Joachim Eastwood <manabian@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, ldv-project@linuxtesting.org,
+ sil2review@lists.osadl.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+References: <1525812456-25877-1-git-send-email-khoroshilov@ispras.ru>
+ <20180509114250.120eb299@bbrezillon>
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Message-ID: <04eca940-cf53-d365-9899-336eb213e089@ispras.ru>
+Date: Wed, 9 May 2018 17:35:41 +0300
 MIME-Version: 1.0
+In-Reply-To: <20180509114250.120eb299@bbrezillon>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
+On 09.05.2018 12:42, Boris Brezillon wrote:
+> On Tue,  8 May 2018 23:47:36 +0300
+> Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
+> 
+>> nxp_spifi_probe() increments refcnt of SPI flash device node by
+>> of_get_next_available_child() and then it passes the node
+>> to mtd device in nxp_spifi_setup_flash().
+>> But if a failure happens before mtd_device_register() succeed,
+>> the refcnt is left undecremented.
+> 
+> Why not doing that in the error path of the probe function? Also, you
+> probably want to call of_node_put() in the ->remove() function.
+> 
 
-> Is this patch still needed, or is [1] supposed to replace it?
->=20
-> [1]http://patchwork.ozlabs.org/patch/910857/
 
-  No this patch is not needed and as you mentioned the patch [1] is better =
-than this I think now.
+You are right.
 
-Regards,
-Ikegami
+I believed that after successful mtd_device_register()
+the node is managed by mtd device. I missed that it calls of_node_get()
+in add_mtd_device() by itself.
+
+I will prepare v2.
+But I guess there is no need to have of_node_put() in ->remove(), since
+probe() finishes its own usage of flash_np, while mtd_device incremented
+refcnt by itself and will decrement it in ->remove() in
+mtd_device_unregister(&spifi->nor.mtd). So, I would propose
+of_node_put() on both successful and error path.
+
+Thank you,
+Alexey
