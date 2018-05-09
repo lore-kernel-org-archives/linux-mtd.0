@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGPgL-0005XC-VO
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:03:04 +0000
-Date: Wed, 9 May 2018 16:02:40 +0200
+ id 1fGPpn-00031m-M1
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:13:03 +0000
+Date: Wed, 9 May 2018 16:12:25 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: NeilBrown <neil@brown.name>, Marek Vasut <marek.vasut@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC] mtd: spi-nor: honour max_message_size for spi-nor
- writes.
-Message-ID: <20180509160240.23ef11f2@bbrezillon>
-In-Reply-To: <87efj1kw9u.fsf@notabene.neil.brown.name>
-References: <87efj1kw9u.fsf@notabene.neil.brown.name>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
+ yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
+ shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com
+Subject: Re: [PATCH v4 1/2] mtd: rawnand: fsl_ifc: fix FSL NAND driver to
+ read all ONFI parameter pages
+Message-ID: <20180509161225.218fe332@bbrezillon>
+In-Reply-To: <1525814394-30067-1-git-send-email-Jane.Wan@nokia.com>
+References: <1525814394-30067-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,82 +28,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 27 Apr 2018 16:18:05 +1000
-NeilBrown <neil@brown.name> wrote:
+On Tue,  8 May 2018 14:19:53 -0700
+Jane Wan <Jane.Wan@nokia.com> wrote:
 
-> Hi,
->  I've labeled this an RFC because I'm really not sure about removing the
->  error path from spi_nor_write() -- maybe that really matters.  But on
->  my hardware, performing multiple small spi writes to the flash seems
->  to work.
+> Per ONFI specification (Rev. 4.0), if the CRC of the first parameter page
+> read is not valid, the host should read redundant parameter page copies.
+> Fix FSL NAND driver to read the two redundant copies which are mandatory
+> in the specification.
 > 
->  The spi driver is drivers/staging/mt7621-spi.  Possibly this needs to
->  use DMA instead of a FIFO (assuming the hardware can) - or maybe
->  drivers/spi/spi-mt65xx.c can be made to work on this hardware, though
->  that is for an ARM SOC and mt7621 is a MIPS SOC.
-> 
->  I note that openwrt has similar patches:
->   target/linux/generic/pending-4.14/450-mtd-spi-nor-allow-NOR-driver-to-write-fewer-bytes-th.patch
-> 
->  They also change the spi driver to do a short write, rather
->  than change m25p80 to request a short write.
-> 
->  Is there something horribly wrong with this?
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
 
-Marek, any opinion on this patch?
+I'm gonna take this patch, but I'd like to make it clear: this is the
+last time I accept fixes touching fsl_ifc_cmdfunc() for bugs that could
+have been addressed by switching to ->exec_op() (note that I had a look
+at a freescale datasheet, and I'm now 100% sure this driver can be
+converted to ->exec_op()).
 
-> 
-> Thanks,
-> NeilBrown
-> 
-> -----------------------8<------------------------
-> 
-> m25p80 honours max_message_size and max_transfer_size
-> for reads, but not for writes.
-> I have a driver that has a max message size of 36 bytes
-> (command, address, 32 bytes data, all places in a FIFO
-> in the controller).
-> This requires m25p80_write() to honour the size limits.
-> For that to work, spi-nor needs to quietly accept partial
-> writes.
-> 
-> With this, I can successfully re-flash my device.
-> 
-> Signed-off-by: NeilBrown <neil@brown.name>
 > ---
->  drivers/mtd/devices/m25p80.c  | 3 ++-
->  drivers/mtd/spi-nor/spi-nor.c | 7 -------
->  2 files changed, 2 insertions(+), 8 deletions(-)
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c |   17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index a4e18f6aaa33..7ded13507604 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -117,7 +117,8 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+> diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> index 61aae02..98aac1f 100644
+> --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+> @@ -342,9 +342,16 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
 >  
->  	t[data_idx].tx_buf = buf;
->  	t[data_idx].tx_nbits = data_nbits;
-> -	t[data_idx].len = len;
-> +	t[data_idx].len = min3(len, spi_max_transfer_size(spi),
-> +			       spi_max_message_size(spi) - cmd_sz);
->  	spi_message_add_tail(&t[data_idx], &m);
+>  	case NAND_CMD_READID:
+>  	case NAND_CMD_PARAM: {
+> +		/*
+> +		 * For READID, read 8 bytes that are currently used.
+> +		 * For PARAM, read all 3 copies of 256-bytes pages.
+> +		 */
+> +		int len = 8;
+>  		int timing = IFC_FIR_OP_RB;
+> -		if (command == NAND_CMD_PARAM)
+> +		if (command == NAND_CMD_PARAM) {
+>  			timing = IFC_FIR_OP_RBCD;
+> +			len = 256 * 3;
+> +		}
 >  
->  	ret = spi_sync(spi, &m);
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 42ae9a1529bb..cfa15f2801ad 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1445,13 +1445,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  			goto write_err;
->  		*retlen += written;
->  		i += written;
-> -		if (written != page_remain) {
-> -			dev_err(nor->dev,
-> -				"While writing %zu bytes written %zd bytes\n",
-> -				page_remain, written);
-> -			ret = -EIO;
-> -			goto write_err;
-> -		}
->  	}
+>  		ifc_out32((IFC_FIR_OP_CW0 << IFC_NAND_FIR0_OP0_SHIFT) |
+>  			  (IFC_FIR_OP_UA  << IFC_NAND_FIR0_OP1_SHIFT) |
+> @@ -354,12 +361,8 @@ static void fsl_ifc_cmdfunc(struct mtd_info *mtd, unsigned int command,
+>  			  &ifc->ifc_nand.nand_fcr0);
+>  		ifc_out32(column, &ifc->ifc_nand.row3);
 >  
->  write_err:
+> -		/*
+> -		 * although currently it's 8 bytes for READID, we always read
+> -		 * the maximum 256 bytes(for PARAM)
+> -		 */
+> -		ifc_out32(256, &ifc->ifc_nand.nand_fbcr);
+> -		ifc_nand_ctrl->read_bytes = 256;
+> +		ifc_out32(len, &ifc->ifc_nand.nand_fbcr);
+> +		ifc_nand_ctrl->read_bytes = len;
+>  
+>  		set_addr(mtd, 0, 0, 0);
+>  		fsl_ifc_run_command(mtd);
