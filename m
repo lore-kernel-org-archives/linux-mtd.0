@@ -1,26 +1,28 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGCDq-0006aF-Ru
- for linux-mtd@lists.infradead.org; Tue, 08 May 2018 23:40:45 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGCwz-0007D4-3u
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 00:27:23 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: ubifs error with marvell_nand on Armada-98DX4251 (was Re: [PATCH]
- mtd: rawnand: marvell: fix command xtype in BCH write hook)
-Date: Tue, 8 May 2018 23:40:16 +0000
-Message-ID: <ef26d2c2b42f48e59b467163bf08d717@svr-chch-ex1.atlnz.lc>
-References: <20180503100027.16229-1-miquel.raynal@bootlin.com>
- <f1b88811dd88481da1c1b84341bbc9a5@svr-chch-ex1.atlnz.lc>
- <20180504091001.3e6650d6@xps13>
- <729567d8180a4b70ba9226dcd9eee0b4@svr-chch-ex1.atlnz.lc>
- <20180507095053.249547d0@bbrezillon>
- <91c282c4fe9344d88684131d1a64dcf2@svr-chch-ex1.atlnz.lc>
- <20180508095937.46678a01@bbrezillon>
-Content-Language: en-US
+CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
+ Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
+ <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, "Joakim
+ Tjernlund" <joakim.tjernlund@infinera.com>
+Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
+ error
+Date: Wed, 9 May 2018 00:27:05 +0000
+Message-ID: <TY1PR01MB09543E22792362C2E4C699C8DC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508132037.152cc581@bbrezillon>
+ <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508191144.5d8412b6@bbrezillon>
+ <TY1PR01MB0954B3DF0974C4FC2DD04924DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180508200236.034ebb11@bbrezillon>
+In-Reply-To: <20180508200236.034ebb11@bbrezillon>
+Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
@@ -33,57 +35,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,=0A=
-=0A=
-On 08/05/18 19:59, Boris Brezillon wrote:=0A=
-> On Tue, 8 May 2018 01:38:13 +0000=0A=
-> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
-> =0A=
->> Hi Boris,=0A=
->>=0A=
->> Thanks for picking this up while Miquel is taking a break.=0A=
-> =0A=
-> Can you try with the following diff applied?=0A=
-> =0A=
-> --->8---=0A=
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/m=
-arvell_nand.c=0A=
-> index db5ec4e8bde9..ebb1d141b900 100644=0A=
-> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
-> @@ -1194,11 +1194,13 @@ static void marvell_nfc_hw_ecc_bch_read_chunk(str=
-uct nand_chip *chip, int chunk,=0A=
->                                    NDCB0_CMD2(NAND_CMD_READSTART);=0A=
->   =0A=
->          /*=0A=
-> -        * Trigger the naked read operation only on the last chunk.=0A=
-> -        * Otherwise, use monolithic read.=0A=
-> +        * Trigger the monolithic read on the first chunk, then naked rea=
-d on=0A=
-> +        * intermediate chunks and finally a last naked read on the last =
-chunk.=0A=
->           */=0A=
-> -       if (lt->nchunks =3D=3D 1 || (chunk < lt->nchunks - 1))=0A=
-> +       if (chunk =3D=3D 0)=0A=
->                  nfc_op.ndcb[0] |=3D NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW)=
-;=0A=
-> +       else if (chunk < lt->nchunks - 1)=0A=
-> +               nfc_op.ndcb[0] |=3D NDCB0_CMD_XTYPE(XTYPE_NAKED_RW);=0A=
->          else=0A=
->                  nfc_op.ndcb[0] |=3D NDCB0_CMD_XTYPE(XTYPE_LAST_NAKED_RW)=
-;=0A=
->   =0A=
-> =0A=
-=0A=
-Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
-=0A=
-Works for:=0A=
-=0A=
-Armada-385 + Micron MT29F8G08ABACAWP=0A=
-Armada-385 + Micron MT29F2G08ABAEAWP=0A=
-Armada-385 + Macronix MX30LF2G18AC=0A=
-Armada-98DX4251 + Micron MT29F8G08ABACAWP (previously failed)=0A=
-Armada-98DX3236 + AMD/Spansion S34ML01G2=0A=
-Armada-98DX3236 + Macronix MX30LF1G18AC=0A=
-=0A=
-=0A=
+Hi Boris-san,
+
+Thanks for your comments.
+
+> >   I can reproduce the flash write error by the same reproduction method=
+.
+> >   And the error can be resolved by the same approach fixes as below.
+> >
+> <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080794.html>
+>=20
+> Hm, even the bug fix for the write path looks suspicious. BTW, you're
+> only checking the last written word, so how can you be sure all other
+> words have been written correctly?
+
+  For the write buffer I think that it is enough to check only the last wor=
+d.
+  Since it is described by the data sheets to check the operation status.
+
+> I don't know a lot about CFI chips,
+> but are you sure this is not a timing issue (timings mis-configured on
+> the controller side)?
+
+  Yes I think that this is not a timing issue by mis-configuration.
+  But it is still possible to be a timing issue but not mis-configured.
+  The write and erase errors were caused by enabling CPU external sync mode=
+.
+  For the CPU erratum workaround the sync mode is required to be enabled.
+
+> >   Also I am asking to him to try the original patch on this thread.
+>=20
+> Ok, let's wait for Joakim's feedback then.
+
+  Noted this.
+
+Regards,
+Ikegami
