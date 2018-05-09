@@ -1,29 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGNXG-0000TY-GQ
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 11:45:32 +0000
-Date: Wed, 9 May 2018 13:45:12 +0200
+ id 1fGNo1-00073K-Qf
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 12:02:55 +0000
+Date: Wed, 9 May 2018 14:02:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry
- for error
-Message-ID: <20180509134512.522be701@bbrezillon>
-In-Reply-To: <TY1PR01MB0954B6574DFF6E51E48C1F8DDC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508132037.152cc581@bbrezillon>
- <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508191144.5d8412b6@bbrezillon>
- <d0371e65130a1d64b66031d3f1ed73707ce3f079.camel@infinera.com>
- <TY1PR01MB09546705E1858D6924243F0ADC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <TY1PR01MB0954B6574DFF6E51E48C1F8DDC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Mauro Carvalho
+ Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan
+ Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 16/18] mtd: rawnand.h: use nested union kernel-doc markups
+Message-ID: <20180509140236.17d437f8@bbrezillon>
+In-Reply-To: <20180507083232.5a084ba7@vento.lan>
+References: <cover.1525684985.git.mchehab+samsung@kernel.org>
+ <39d8d4f0e0ff5a06be0303f7f4f2eac5fb45b9ca.1525684985.git.mchehab+samsung@kernel.org>
+ <20180507114650.171edcc2@bbrezillon>
+ <20180507083232.5a084ba7@vento.lan>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -36,104 +30,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 9 May 2018 10:26:22 +0000
-IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
+On Mon, 7 May 2018 08:32:32 -0300
+Mauro Carvalho Chehab <mchehab+samsung@kernel.org> wrote:
 
-> From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> Hi Boris,
 > 
-> For the word write functions it is retried for error.
-> But it is not implemented to retry for the erase functions.
-> To make sure for the erase functions change to retry as same.
+> Em Mon, 7 May 2018 11:46:50 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> escreveu:
 > 
-> This is needed to prevent the flash erase error caused only once.
-> It was caused by the error case of chip_good() in the do_erase_oneblock().
-> Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-> But the error issue behavior is not able to reproduce at this moment.
-
-Sorry, but until you've figured out what was going on here, I'm
-reluctant to apply this patch. Are you even sure it fixes the problem
-you had? Hard to tell since you're not able to reproduce the issue.
-
-> The flash controller is parallel Flash interface integrated on BCM53003.
+> > Hi Mauro,  
 > 
-> Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> Cc: linux-mtd@lists.infradead.org
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> > > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > > index 5dad59b31244..b986f94906df 100644
+> > > --- a/include/linux/mtd/rawnand.h
+> > > +++ b/include/linux/mtd/rawnand.h
+> > > @@ -740,8 +740,9 @@ enum nand_data_interface_type {
+> > >  
+> > >  /**
+> > >   * struct nand_data_interface - NAND interface timing
+> > > - * @type:	type of the timing
+> > > - * @timings:	The timing, type according to @type
+> > > + * @type:	 type of the timing
+> > > + * @timings:	 The timing, type according to @type
+> > > + * @timings.sdr: Use it when @type is %NAND_SDR_IFACE.    
+> > 
+> > Hm, really feels weird to do that. I mean, either we describe
+> > timings.sdr or timings, but not both. I this case, I agree that
+> > describing timings.sdr would make more sense than generically
+> > describing any possible entries in the timings union.  
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 56aa6b75213d..f522a856526a 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -43,6 +43,7 @@
->  #define FORCE_WORD_WRITE 0
->  
->  #define MAX_WORD_RETRIES 3
-> +#define MAX_ERASE_RETRY 3
+> This struct is funny, as the union has just one item. I assume
+> that the original intend is to be ready to have more timing
+> types (or you had it in the past). By the time you have a
+> second value there, describing the union would make more
+> sense.
+> 
+> > Is there a simple
+> > way we can get rid of the warning we have when not describing timings
+> > but all of its fields?  
+> 
+> There's no direct way. It won't be hard to add a way to do it,
+> like applying the enclosed patch with ends by declaring timings as:
+> 
+> 	* @timings:	 -- undescribed --
+> 
+> IMHO, this is uglier.
 
-You renamed it MAX_RETRY in a previous patch. Better send patches in
-the same patch series when there are dependencies.
+Yep, don't like it either. I'll just take your initial patch.
 
->  
->  #define SST49LF004B	        0x0060
->  #define SST49LF040B	        0x0050
-> @@ -2240,6 +2241,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  	unsigned long int adr;
->  	DECLARE_WAITQUEUE(wait, current);
->  	int ret = 0;
-> +	int retry_cnt = 0;
->  
->  	adr = cfi->addr_unlock1;
->  
-> @@ -2257,6 +2259,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  	ENABLE_VPP(map);
->  	xip_disable(map, chip, adr);
->  
-> + retry:
->  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-> @@ -2310,6 +2313,9 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  		map_write( map, CMD(0xF0), chip->start );
->  		/* FIXME - should have reset delay before continuing */
->  
-> +		if (++retry_cnt <= MAX_ERASE_RETRY)
-> +			goto retry;
-> +
->  		ret = -EIO;
->  	}
->  
-> @@ -2329,6 +2335,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  	unsigned long timeo = jiffies + HZ;
->  	DECLARE_WAITQUEUE(wait, current);
->  	int ret = 0;
-> +	int retry_cnt = 0;
->  
->  	adr += chip->start;
->  
-> @@ -2346,6 +2353,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  	ENABLE_VPP(map);
->  	xip_disable(map, chip, adr);
->  
-> + retry:
->  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-> @@ -2402,6 +2410,9 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  		map_write( map, CMD(0xF0), chip->start );
->  		/* FIXME - should have reset delay before continuing */
->  
-> +		if (++retry_cnt <= MAX_ERASE_RETRY)
-> +			goto retry;
-> +
->  		ret = -EIO;
->  	}
->  
+Thanks,
+
+Boris
