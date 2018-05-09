@@ -1,31 +1,19 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGCwz-0007D4-3u
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 00:27:23 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Brian Norris <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
- <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, David Woodhouse <dwmw2@infradead.org>, "Joakim
- Tjernlund" <joakim.tjernlund@infinera.com>
-Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
- error
-Date: Wed, 9 May 2018 00:27:05 +0000
-Message-ID: <TY1PR01MB09543E22792362C2E4C699C8DC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508132037.152cc581@bbrezillon>
- <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508191144.5d8412b6@bbrezillon>
- <TY1PR01MB0954B3DF0974C4FC2DD04924DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508200236.034ebb11@bbrezillon>
-In-Reply-To: <20180508200236.034ebb11@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1fGJIk-0002S2-35
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 07:14:15 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: marvell: Fix read logic for layouts with
+ ->nchunks > 2
+Date: Wed,  9 May 2018 09:13:58 +0200
+Message-Id: <20180509071358.12157-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,39 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
+The code is doing monolithic reads for all chunks except the last one
+which is wrong since a monolithic read will issue the
+READ0+ADDRS+READ_START sequence. It not only takes longer because it
+forces the NAND chip to reload the page content into its internal
+cache, but by doing that we also reset the column pointer to 0, which
+means we'll always read the first chunk instead of moving to the next
+one.
 
-Thanks for your comments.
+Rework the code to do a monolithic read only for the first chunk,
+then switch to naked reads for all intermediate chunks and finally
+issue a last naked read for the last chunk.
 
-> >   I can reproduce the flash write error by the same reproduction method=
-.
-> >   And the error can be resolved by the same approach fixes as below.
-> >
-> <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080794.html>
->=20
-> Hm, even the bug fix for the write path looks suspicious. BTW, you're
-> only checking the last written word, so how can you be sure all other
-> words have been written correctly?
+Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
+Cc: stable@vger.kernel.org
+Reported-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-  For the write buffer I think that it is enough to check only the last wor=
-d.
-  Since it is described by the data sheets to check the operation status.
-
-> I don't know a lot about CFI chips,
-> but are you sure this is not a timing issue (timings mis-configured on
-> the controller side)?
-
-  Yes I think that this is not a timing issue by mis-configuration.
-  But it is still possible to be a timing issue but not mis-configured.
-  The write and erase errors were caused by enabling CPU external sync mode=
-.
-  For the CPU erratum workaround the sync mode is required to be enabled.
-
-> >   Also I am asking to him to try the original patch on this thread.
->=20
-> Ok, let's wait for Joakim's feedback then.
-
-  Noted this.
-
-Regards,
-Ikegami
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index db5ec4e8bde9..ebb1d141b900 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1194,11 +1194,13 @@ static void marvell_nfc_hw_ecc_bch_read_chunk(struct nand_chip *chip, int chunk,
+ 				  NDCB0_CMD2(NAND_CMD_READSTART);
+ 
+ 	/*
+-	 * Trigger the naked read operation only on the last chunk.
+-	 * Otherwise, use monolithic read.
++	 * Trigger the monolithic read on the first chunk, then naked read on
++	 * intermediate chunks and finally a last naked read on the last chunk.
+ 	 */
+-	if (lt->nchunks == 1 || (chunk < lt->nchunks - 1))
++	if (chunk == 0)
+ 		nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW);
++	else if (chunk < lt->nchunks - 1)
++		nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_NAKED_RW);
+ 	else
+ 		nfc_op.ndcb[0] |= NDCB0_CMD_XTYPE(XTYPE_LAST_NAKED_RW);
+ 
+-- 
+2.14.1
