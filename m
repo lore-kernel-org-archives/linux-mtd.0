@@ -1,33 +1,26 @@
-Received: from mail-by2nam01on060d.outbound.protection.outlook.com
- ([2a01:111:f400:fe42::60d]
- helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGKJG-0006Yh-5u
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 08:18:52 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
- error
-Date: Wed, 9 May 2018 08:18:33 +0000
-Message-ID: <d0371e65130a1d64b66031d3f1ed73707ce3f079.camel@infinera.com>
-References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508132037.152cc581@bbrezillon>
- <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508191144.5d8412b6@bbrezillon>
-In-Reply-To: <20180508191144.5d8412b6@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <866DE78A9357EE469D952B91C9C5078F@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1fGKJr-0006kA-MN
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 08:19:33 +0000
+Received: by mail-lf0-x244.google.com with SMTP id z142-v6so6421699lff.5
+ for <linux-mtd@lists.infradead.org>; Wed, 09 May 2018 01:19:17 -0700 (PDT)
+From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Rob Herring <robh+dt@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V2 1/2] dt-bindings: mtd: document Broadcom's BCM47xx
+ partitions
+Date: Wed,  9 May 2018 10:17:28 +0200
+Message-Id: <20180509081729.28347-1-zajec5@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,117 +30,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAyMDE4LTA1LTA4IGF0IDE5OjExICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+ICtKb2FraW0NCj4gDQo+IE9uIFR1ZSwgOCBNYXkgMjAxOCAxNjo1Mjo1NSArMDAw
-MA0KPiBJS0VHQU1JIFRva3Vub3JpIDxpa2VnYW1pQGFsbGllZC10ZWxlc2lzLmNvLmpwPiB3cm90
-ZToNCj4gDQo+ID4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNp
-cy5jby5qcD4NCj4gPiANCj4gPiBGb3IgdGhlIHdvcmQgd3JpdGUgZnVuY3Rpb25zIGl0IGlzIHJl
-dHJpZWQgZm9yIGVycm9yLg0KPiA+IEJ1dCBpdCBpcyBub3QgaW1wbGVtZW50ZWQgdG8gcmV0cnkg
-Zm9yIHRoZSBlcmFzZSBmdW5jdGlvbnMuDQo+ID4gVG8gbWFrZSBzdXJlIGZvciB0aGUgZXJhc2Ug
-ZnVuY3Rpb25zIGNoYW5nZSB0byByZXRyeSBhcyBzYW1lLg0KPiA+IA0KPiA+IFRoaXMgaXMgbmVl
-ZGVkIHRvIHByZXZlbnQgdGhlIGZsYXNoIGVyYXNlIGVycm9yIGNhdXNlZCBvbmx5IG9uY2UuDQo+
-ID4gSXQgd2FzIGNhdXNlZCBieSB0aGUgZXJyb3IgY2FzZSBvZiBjaGlwX2dvb2QoKSBpbiB0aGUg
-ZG9fZXJhc2Vfb25lYmxvY2soKS4NCj4gPiBBbHNvIGl0IHdhcyBjb25maXJtZWQgb24gdGhlIE1B
-Q1JPTklYIGZsYXNoIGRldmljZSBNWDI5R0w1MTJGSFQySS0xMUcuDQo+ID4gQnV0IHRoZSBlcnJv
-ciBpc3N1ZSBiZWhhdmlvciBpcyBub3QgYWJsZSB0byByZXByb2R1Y2UgYXQgdGhpcyBtb21lbnQu
-DQo+IA0KPiBIbSwgdGhhdCdzIGEgcHJvYmxlbS4gSG93IGNhbiB5b3UgYmUgc3VyZSB0aGUgcmV0
-cnkgYXBwcm9hY2ggZml4ZXMgdGhlDQo+IGlzc3VlIGlmIHlvdSBjYW4ndCByZXByb2R1Y2UgdGhl
-IGl0Pw0KPiANCj4gPiBUaGUgZmxhc2ggY29udHJvbGxlciBpcyBwYXJhbGxlbCBGbGFzaCBpbnRl
-cmZhY2UgaW50ZWdyYXRlZCBvbiBCQ001MzAwMy4NCj4gPiANCj4gPiBBbHNvIHRoZSBjaGFuZ2Ug
-aXMgcG9zc2libGUgdG8gcmVzb2x2ZSBvdGhlciBlcmFzZSBlcnJvci4NCj4gPiBGb3IgZXhhbXBs
-ZSB0aGUgRXJhc2Ugc3VzcGVuZCBpc3N1ZSB3YXMgY2F1c2VkIG9uIEN5cHJlc3MgQU1EIE5PUiBm
-bGFzaC4NCj4gPiAgIFMyOUdMMDFHUyAvIFMyOUdMNTEyUyAvIFMyOUdMMjU2UyAvIFMyOUdMMTI4
-Uw0KPiANCj4gSXMgdGhlIEVyYXNlIHN1c3BlbmQgaXNzdWUgcmVsYXRlZCB0byB0aGlzIHByb2Js
-ZW0/DQo+IA0KDQpNeSBFcmFzZSBzdXNwZW5kIGlzc3VlIGlzIG5vdCByZWxhdGVkIHRvIGp1c3Qg
-cmV0cnlpbmcgdGhlIGVyYXNlLg0KV2UgaGF2ZSBzZWVuIHNldmVyYWwgdGltZXMgdGhhdCB0b28g
-bWFueSBFcmFzZSBzdXNwZW5kIGZvciBvbmUgYmxvY2sgd2lsbCBjYXVzZSA1LjUuMi42IERRNToN
-CiBFeGNlZWRlZCBUaW1pbmcgTGltaXRzDQpUaGlzIGNvbmRpdGlvbiBpcyBub3QgY2hlY2tlZCBm
-b3IsIG5vciBoYW5kbGVkIGluIGFueSB3YXkuDQpPbmNlIHRoaXMgY29uZGl0aW9uIGhhcyBvY2N1
-cnJlZCwgYSBzaW1wbGUgcmV0cnkgd29udCBmaXggaXQuIE9uZSBtdXN0DQpmaXJzdCBpc3N1ZSBh
-IGZsYXNoIHJlc2V0Og0KICBtYXBfd3JpdGUoIG1hcCwgQ01EKDB4RjApLCBjaGlwLT5pbl9wcm9n
-cmVzc19ibG9ja19hZGRyKTsgLyogUmVzZXQgKi8NCndoaWNoIHdpbGwgY2xlYXIgdGhpcyBlcnJv
-ciBjb25kaXRpb24gYW5kIHJldHVybiB0aGUgZmxhc2ggdG8gcmVhZCBhcnJheSBtb3JlLg0KTm93
-IHlvdSBjYW4gcmVzdGFydCB0aGUgZXJhc2UgYWdhaW4gYW5kIGl0IHdpbGwgcHJvYmFibHkgZmlu
-aXNoIHRoZSBlcmFzZQ0KdGhpcyB0aW1lKGF0IGxlYXN0IGluIG91ciB0ZXN0aW5nKS4NCg0KVGVz
-dGluZyBmb3IgRFE1OiBFeGNlZWRlZCBUaW1pbmcgTGltaXRzIGlzIG5vdCBzdHJhaWdodCBmb3J3
-YXJkIGluIGN1cnJlbnQgMDAwMiBkcml2ZXINCnNpbmNlIGl0IHJlcXVpcmVzIG1vcmUgdGhhbiBq
-dXN0IHRlc3RpbmcgZm9yIHRvZ2dsaW5nIGJpdHMuIEkgaGF2ZSBub3QNCm1hZGUgYW55IHByb2dy
-ZXNzIG9uIHRoaXMgZHVlIHRvIG90aGVyIG1vcmUgcHJlc3Npbmcgd29yay4NCg0KTm90ZTogSW4g
-b3VyIHRlc3Rpbmcgd2UgbmVlZGVkIG92ZXIgMzAwMDAwIHN1c3BlbmQvcmVzdW1lIGJlZm9yZSBo
-aXR0aW5nIHRoZSBEUTUNCmxpbWl0Lg0KSGVyZSBpcyBteSB0ZXN0IGhhY2sgc28gZmFyOg0KZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9t
-dGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCmluZGV4IDIzYTg5M2FiNDI2NC4uMzhiNTJlMmM2
-ZmI2IDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCisr
-KyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQpAQCAtODI5LDYgKzgyOSw3
-IEBAIHN0YXRpYyBpbnQgZ2V0X2NoaXAoc3RydWN0IG1hcF9pbmZvICptYXAsIHN0cnVjdCBmbGNo
-aXAgKmNoaXAsIHVuc2lnbmVkIGxvbmcgYWRyDQogICAgICAgICAgICAgICAgY2hpcC0+b2xkc3Rh
-dGUgPSBGTF9FUkFTSU5HOw0KICAgICAgICAgICAgICAgIGNoaXAtPnN0YXRlID0gRkxfRVJBU0Vf
-U1VTUEVORElORzsNCiAgICAgICAgICAgICAgICBjaGlwLT5lcmFzZV9zdXNwZW5kZWQgPSAxOw0K
-KyAgICAgICAgICAgICAgIGNoaXAtPmluX3Byb2dyZXNzX3N1c3BlbmRzKys7DQogICAgICAgICAg
-ICAgICAgZm9yICg7Oykgew0KICAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNoaXBfcmVhZHko
-bWFwLCBhZHIpKQ0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCkBAIC04
-MzksOCArODQwLDMzIEBAIHN0YXRpYyBpbnQgZ2V0X2NoaXAoc3RydWN0IG1hcF9pbmZvICptYXAs
-IHN0cnVjdCBmbGNoaXAgKmNoaXAsIHVuc2lnbmVkIGxvbmcgYWRyDQogICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAqIHRoZXJlIHdhcyBhbiBlcnJvciAoc28gbGVhdmUgdGhlIGVyYXNl
-DQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAqIHJvdXRpbmUgdG8gcmVjb3ZlciBm
-cm9tIGl0KSBvciB3ZSB0cnlpbmcgdG8NCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICogdXNlIHRoZSBlcmFzZS1pbi1wcm9ncmVzcyBzZWN0b3IuICovDQorICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIG1hcF93b3JkIHN0YXR1cyA9IG1hcF9yZWFkKG1hcCwgYWRyKTsNCisN
-CisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWFwX3dyaXRlKCBtYXAsIENNRCgweEYw
-KSwgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7IC8qIFJlc2V0ICovDQorI2lmIDENCisg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogUmVzdGFydCBlcmFzZSAqLw0KKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRk
-cl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFwLCBjZmksDQorICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7DQorICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNmaV9zZW5kX2dlbl9jbWQoMHg1NSwgY2ZpLT5h
-ZGRyX3VubG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaSwNCisgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmktPmRldmljZV90eXBlLCBOVUxMKTsNCisg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2ZpX3NlbmRfZ2VuX2NtZCgweDgwLCBjZmkt
-PmFkZHJfdW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLA0KKyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOw0K
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNm
-aS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFwLCBjZmksDQorICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7
-DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNmaV9zZW5kX2dlbl9jbWQoMHg1NSwg
-Y2ZpLT5hZGRyX3VubG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaSwNCisgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmktPmRldmljZV90eXBlLCBOVUxM
-KTsNCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwgY2ZpLT5z
-ZWN0b3JfZXJhc2VfY21kLCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsNCisjZW5kaWYN
-CisvLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hpcC0+b2xkc3RhdGUgPSBGTF9SRUFE
-WTsNCisvLyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hpcC0+c3RhdGUgPSBGTF9SRUFE
-WTsNCisNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcHV0X2NoaXAobWFwLCBjaGlw
-LCBhZHIpOw0KLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwcmludGsoS0VSTl9FUlIg
-Ik1URCAlcygpOiBjaGlwIG5vdCByZWFkeSBhZnRlciBlcmFzZSBzdXNwZW5kXG4iLCBfX2Z1bmNf
-Xyk7DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByaW50ayhLRVJOX0VSUiAiTVRE
-ICVzKCk6IGNoaXAgbm90IHJlYWR5IGFmdGVyIGVyYXNlIHN1c3BlbmQsIGJsb2NrX2FkZHI6MHgl
-bHgsICINCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJibG9ja19tYXNr
-OjB4JWx4LCBhZHI6MHglbHgsIHN1c3BlbmRzOiVsZCwgc3RhdHVzOjB4JWx4IFxuIiwgX19mdW5j
-X18sDQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjaGlwLT5pbl9wcm9n
-cmVzc19ibG9ja19hZGRyLCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyLCBhZHIsDQorICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjaGlwLT5pbl9wcm9ncmVzc19zdXNw
-ZW5kcywNCisgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cy54WzBd
-KTsNCisNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU87DQogICAg
-ICAgICAgICAgICAgICAgICAgICB9DQogDQpAQCAtMjI3MCw3ICsyMjk2LDcgQEAgc3RhdGljIGlu
-dCBfX3hpcHJhbSBkb19lcmFzZV9jaGlwKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxj
-aGlwICpjaGlwKQ0KICAgICAgICBjaGlwLT5lcmFzZV9zdXNwZW5kZWQgPSAwOw0KICAgICAgICBj
-aGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyID0gYWRyOw0KICAgICAgICBjaGlwLT5pbl9wcm9n
-cmVzc19ibG9ja19tYXNrID0gfihtYXAtPnNpemUgLSAxKTsNCi0NCisgICAgICAgY2hpcC0+aW5f
-cHJvZ3Jlc3Nfc3VzcGVuZHMgPSAwOw0KICAgICAgICBJTlZBTElEQVRFX0NBQ0hFX1VERUxBWSht
-YXAsIGNoaXAsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFkciwgbWFwLT5zaXpl
-LA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjaGlwLT5lcmFzZV90aW1lKjUwMCk7
-DQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvZmxhc2hjaGlwLmggYi9pbmNsdWRlL2xp
-bnV4L210ZC9mbGFzaGNoaXAuaA0KaW5kZXggMzUyOTY4M2Y2OTFlLi44ZTdiYTgyNDRjZWQgMTAw
-NjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4L210ZC9mbGFzaGNoaXAuaA0KKysrIGIvaW5jbHVkZS9s
-aW51eC9tdGQvZmxhc2hjaGlwLmgNCkBAIC04Niw2ICs4Niw3IEBAIHN0cnVjdCBmbGNoaXAgew0K
-ICAgICAgICB1bnNpZ25lZCBpbnQgZXJhc2Vfc3VzcGVuZGVkOjE7DQogICAgICAgIHVuc2lnbmVk
-IGxvbmcgaW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcjsNCiAgICAgICAgdW5zaWduZWQgbG9uZyBpbl9w
-cm9ncmVzc19ibG9ja19tYXNrOw0KKyAgICAgICB1bnNpZ25lZCBsb25nIGluX3Byb2dyZXNzX3N1
-c3BlbmRzOw0KIA0KICAgICAgICBzdHJ1Y3QgbXV0ZXggbXV0ZXg7DQogICAgICAgIHdhaXRfcXVl
-dWVfaGVhZF90IHdxOyAvKiBXYWl0IG9uIGhlcmUgd2hlbiB3ZSdyZSB3YWl0aW5nIGZvciB0aGUg
-Y2hpcA0KDQoNCldoaWNoIHByaW50ZWQod2hlbiBlcnJvciBvY2N1cnJlZCk6DQpNVEQgZ2V0X2No
-aXAoKTogY2hpcCBub3QgcmVhZHkgYWZ0ZXIgZXJhc2Ugc3VzcGVuZCwgYmxvY2tfYWRkcjoweDM0
-ODAwMDAsIGJsb2NrX21hc2s6MHgzNDgwMDAwLCBhZHI6MHgzYTdkYTg0LA0Kc3VzcGVuZHM6MzE5
-OTQxLCBzdGF0dXM6MHgyOA0KDQoNCiBKb2NrZQ==
+From: Rafał Miłecki <rafal@milecki.pl>
+
+Broadcom based home router devices use partitions which have to be
+discovered in a specific way. They are not fixed and there is not any
+standard partition table. This commit adds and describes a new custom
+binding for such devices.
+
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+---
+This commit documents a new binding for describing partitions. Just as a
+reminder: we agreed to use "compatible" for that purpose to avoid
+/guessing/. There are too many cases, devices and /formats/ to just
+blindly try every possible parser.
+
+This was e.g. described by Boris in his patchset 2+ years ago:
+[RFC PATCH 0/7] mtd: partitions: add of_match_table support
+http://lists.infradead.org/pipermail/linux-mtd/2015-December/064076.html
+
+Quote:
+>  (2) we can't just scan for all supported parsers (like the block system does), since
+>      there is a wide diversity of "formats" (no standardization), and it is not
+>      always safe or efficient to attempt to do so, particularly since many of
+>      them allow their data structures to be placed anywhere on the flash, and
+>      so require scanning the entire flash device to find them.
+
+I believe this solution was also acked back then by Rob:
+[RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
+http://lists.infradead.org/pipermail/linux-mtd/2015-December/064100.html
+
+V2: Move documentation to the new brcm,bcm947xx-cfe-partitions.txt file
+    as suggested by Rob (we don't want to bloat partition.txt).
+    Slightly update commit message.
+---
+ .../devicetree/bindings/mtd/partition.txt          |  2 +-
+ .../partitions/brcm,bcm947xx-cfe-partitions.txt    | 42 ++++++++++++++++++++++
+ 2 files changed, 43 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt
+
+diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
+index 36f3b769a626..a8f382642ba9 100644
+--- a/Documentation/devicetree/bindings/mtd/partition.txt
++++ b/Documentation/devicetree/bindings/mtd/partition.txt
+@@ -14,7 +14,7 @@ method is used for a given flash device. To describe the method there should be
+ a subnode of the flash device that is named 'partitions'. It must have a
+ 'compatible' property, which is used to identify the method to use.
+ 
+-We currently only document a binding for fixed layouts.
++Available bindings are listed in the "partitions" subdirectory.
+ 
+ 
+ Fixed Partitions
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt
+new file mode 100644
+index 000000000000..1d61a029395e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt
+@@ -0,0 +1,42 @@
++Broadcom BCM47xx Partitions
++===========================
++
++Broadcom is one of hardware manufacturers providing SoCs (BCM47xx) used in
++home routers. Their BCM947xx boards using CFE bootloader have several partitions
++without any on-flash partition table. On some devices their sizes and/or
++meanings can also vary so fixed partitioning can't be used.
++
++Discovering partitions on these devices is possible thanks to having a special
++header and/or magic signature at the beginning of each of them. They are also
++block aligned which is important for determinig a size.
++
++Most of partitions use ASCII text based magic for determining a type. More
++complex partitions (like TRX with its HDR0 magic) may include extra header
++containing some details, including a length.
++
++A list of supported partitions includes:
++1) Bootloader with Broadcom's CFE (Common Firmware Environment)
++2) NVRAM with configuration/calibration data
++3) Device manufacturer's data with some default values (e.g. SSIDs)
++4) TRX firmware container which can hold up to 4 subpartitions
++5) Backup TRX firmware used after failed upgrade
++
++As mentioned earlier, role of some partitions may depend on extra configuration.
++For example both: main firmware and backup firmware use the same TRX format with
++the same header. To distinguish currently used firmware a CFE's environment
++variable "bootpartition" is used.
++
++
++Devices using Broadcom partitions described above should should have flash node
++with a subnode named "partitions" using following properties:
++
++Required properties:
++- compatible : (required) must be "brcm,bcm947xx-cfe-partitions"
++
++Example:
++
++flash@0 {
++	partitions {
++		compatible = "brcm,bcm947xx-cfe-partitions";
++	};
++};
+-- 
+2.13.6
