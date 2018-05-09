@@ -1,14 +1,20 @@
-From: Christoph Hellwig <hch@lst.de>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: "Ed L. Cashin" <ed.cashin@acm.org>, Geoff Levand <geoff@infradead.org>,
- Maxim Levitsky <maximlevitsky@gmail.com>, linux-block@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
- sparclinux@vger.kernel.org
-Subject: [PATCH 7/7] ps3disk: handle highmem pages
-Date: Wed,  9 May 2018 15:59:48 +0200
-Message-Id: <20180509135948.20329-8-hch@lst.de>
-In-Reply-To: <20180509135948.20329-1-hch@lst.de>
-References: <20180509135948.20329-1-hch@lst.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGPdu-0003my-7C
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:00:41 +0000
+Date: Wed, 9 May 2018 16:00:08 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, PACKHAM
+ Chris <chris.packham@alliedtelesis.co.nz>
+Subject: Re: mtd: cfi_cmdset_0002: Read data 3 times to check write
+ operation status
+Message-ID: <20180509160008.7079b73d@bbrezillon>
+In-Reply-To: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB09540E30A53D361D54CEA16EDC880@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The ps3disk driver already kmaps all pages when copying from/to the
-internal bounce buffer, so it can accept highmem pages just fine.
+On Tue, 24 Apr 2018 05:54:43 +0000
+IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/block/ps3disk.c | 2 --
- 1 file changed, 2 deletions(-)
+> Hi,
+> 
+> Let us consult to change mtd cfi_cmdset_0002 to read data 3 times as below patch.
+> Can we change the mtd cfi_cmdset_0002 driver like this?
+> If any comment or concern please let us know.
+> 
+> From d924822c996b9c0eccc815e5018a0c3ea6077137 Mon Sep 17 00:00:00 2001
+> From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> Date: Tue, 24 Apr 2018 13:26:37 +0900
+> Subject: [PATCH 2/2] mtd: cfi_cmdset_0002: Read data 3 times to check write
+>  operation status
+> 
+> Cypress S29GLxxxP flash is needed to read data 3 times to check DQ6 toggles.
+> Actually the read data is sometimes changed by the 3rd reading.
+> Also this is caused on other flash device also.
+> The flash write failure is possible to be caused by the error.
+> To resolve the issue change the read number of times to 3 from 2.
 
-diff --git a/drivers/block/ps3disk.c b/drivers/block/ps3disk.c
-index 075662f2cf46..afe1508d82c6 100644
---- a/drivers/block/ps3disk.c
-+++ b/drivers/block/ps3disk.c
-@@ -465,8 +465,6 @@ static int ps3disk_probe(struct ps3_system_bus_device *_dev)
- 	priv->queue = queue;
- 	queue->queuedata = dev;
- 
--	blk_queue_bounce_limit(queue, BLK_BOUNCE_HIGH);
--
- 	blk_queue_max_hw_sectors(queue, dev->bounce_size >> 9);
- 	blk_queue_segment_boundary(queue, -1UL);
- 	blk_queue_dma_alignment(queue, dev->blk_size-1);
--- 
-2.17.0
+Is this patch still needed, or is [1] supposed to replace it?
+
+[1]http://patchwork.ozlabs.org/patch/910857/
