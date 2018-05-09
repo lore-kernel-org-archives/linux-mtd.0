@@ -1,25 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGPwb-0006pS-Oe
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:19:51 +0000
-Date: Wed, 9 May 2018 16:19:28 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jane Wan <Jane.Wan@nokia.com>
-Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
- yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
- shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ties.bos@nokia.com
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: use bit-wise majority to recover
- the contents of ONFI parameter
-Message-ID: <20180509161928.149a42a7@bbrezillon>
-In-Reply-To: <1525814394-30067-2-git-send-email-Jane.Wan@nokia.com>
-References: <1525814394-30067-1-git-send-email-Jane.Wan@nokia.com>
- <1525814394-30067-2-git-send-email-Jane.Wan@nokia.com>
+ id 1fGQ5i-0004d9-Kj
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 14:29:19 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Wed, 9 May 2018 14:28:58 +0000
+Message-ID: <TY1PR01MB0954BC7ABCE51B0B22DA09BFDC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <20180508044142.4159-1-ikegami@allied-telesis.co.jp>
+ <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
+ <TY1PR01MB0954BFF431218DC5E2E8F3A2DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <TY1PR01MB09542BAFA49897752D5A5B30DC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180509155319.170784df@bbrezillon>
+In-Reply-To: <20180509155319.170784df@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,119 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  8 May 2018 14:19:54 -0700
-Jane Wan <Jane.Wan@nokia.com> wrote:
+Hi Boris-san,
 
-> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
-> CRC values, the bit-wise majority may be used to recover the contents of
-> the parameter pages from the parameter page copies present.
-> 
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c |   49 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 44 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 72f3a89..dfc341c 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5086,6 +5086,38 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
->  	return ret;
->  }
->  
-> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
-> +
-> +/*
-> + * Recover NAND parameter page with bit-wise majority
-> + */
-> +static int onfi_recover_param(struct nand_onfi_params *p, int pages)
+Thank you so much for your support.
+Okay I will do follow the process below.
 
-I had something more generic in mind:
+> Just a few more tips regarding the submission process:
+>=20
+> - you can group several patches in a patch series when some are
+>   dependent on others. Just use 'git format-patch -<X>
+>   <last-commit>' where <X> is the number of patches you want to generate
+>   and <last-commit> is the last commit in the series. When you do that,
+>   it's generally a good practice to have a cover letter explaining what
+>   the patch series does. You can generate the cover letter with the
+>   --cover-letter option
+>=20
+> - when you send a new version of a patch or a patch series it should be
+>   prefixed with "[PATCH vX ...]". This can be done by passing -v<X> (X
+>   being the version number) to git format-patch
+>=20
+> - when you send the exact same version of a patch or patch series
+>   because the previous one has not been sent properly, you should
+>   prefix the patches with "[PATCH RESEND ...]". Again, can be done by
+>   passing --subject-prefix=3D"PATCH RESEND" to git format-patch
+>=20
+> - you should have a changelog describing what has changed between each
+>   version of the patch or patchset. The changelog can be placed in the
+>   cover-letter if you have one, or just after the "---" in the patch
+>   itself. You can also add extra information that you don't want to
+>   appear in the commit message just after this marker.
 
-static void nand_bit_wise_majority(const void **srcbufs,
-				   void *dstbuf,
-				   unsigned int nbufs,
-				   unsigned int bufsize)
-{
-	...
-}
-
-And then you do the crc check in nand_flash_detect_onfi().
-
-The reason I'm asking that is because I'm almost sure we'll re-use this
-functions for extended param pages, and also for vendor specific data
-(we already have a byte-wise majority check in the hynix driver, so I
-wouldn't be surprised if other vendors decided to use a bit-wise
-approach for some of their OTP area).
-
-> +{
-> +	int i, j, k;
-> +	u8 v, m;
-> +	u8 *buf;
-> +
-> +	buf = (u8 *)p;
-> +	for (i = 0; i < sizeof(*p); i++) {
-> +		v = 0;
-> +		for (j = 0; j < 8; j++) {
-> +			m = 0;
-> +			for (k = 0; k < pages; k++)
-> +				m += GET_BIT(j, buf[k*sizeof(*p) + i]);
-> +			if (m > pages/2)
-> +				v |= BIT(j);
-> +		}
-> +		((u8 *)p)[i] = v;
-> +	}
-> +
-> +	if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) ==
-> +			le16_to_cpu(p->crc)) {
-> +		return 1;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
->   */
-> @@ -5102,7 +5134,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  		return 0;
->  
->  	/* ONFI chip: allocate a buffer to hold its parameter page */
-> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
->  	if (!p)
->  		return -ENOMEM;
->  
-> @@ -5113,21 +5145,28 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  	}
->  
->  	for (i = 0; i < 3; i++) {
-> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
-> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
->  		if (ret) {
->  			ret = 0;
->  			goto free_onfi_param_page;
->  		}
->  
-> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
-> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
->  				le16_to_cpu(p->crc)) {
-> +			if (i)
-> +				memcpy(p, &p[i], sizeof(*p));
->  			break;
->  		}
->  	}
->  
->  	if (i == 3) {
-> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -		goto free_onfi_param_page;
-> +		pr_err("Could not find valid ONFI parameter page\n");
-> +		pr_info("Recover ONFI params with bit-wise majority\n");
-> +		ret = onfi_recover_param(p, 3);
-> +		if (ret == 0) {
-> +			pr_err("ONFI parameter recovery failed, aborting\n");
-> +			goto free_onfi_param_page;
-> +		}
->  	}
->  
->  	/* Check version */
+Regards,
+Ikegami
