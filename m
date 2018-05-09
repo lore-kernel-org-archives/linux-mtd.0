@@ -1,27 +1,37 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGPCm-0004jv-Dz
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 13:32:56 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [PATCH] mtd: cfi_cmdset_0002: Change write buffer to check correct
- value
-Date: Wed, 9 May 2018 13:32:11 +0000
-Message-ID: <TY1PR01MB09542BAFA49897752D5A5B30DC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180508044142.4159-1-ikegami@allied-telesis.co.jp>
- <20180508044534.4226-1-smtpuser@allied-telesis.co.jp>
- <TY1PR01MB0954BFF431218DC5E2E8F3A2DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-In-Reply-To: <TY1PR01MB0954BFF431218DC5E2E8F3A2DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mx2.suse.de ([195.135.220.15])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGPMc-0001UJ-55
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 13:42:39 +0000
+Date: Wed, 9 May 2018 15:42:22 +0200
+From: Michal Hocko <mhocko@kernel.org>
+To: "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Message-ID: <20180509134222.GU32366@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
+ <20180424183536.GF30619@thunk.org>
+ <20180424192542.GS17484@dhcp22.suse.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180424192542.GS17484@dhcp22.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +41,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCg0K
-Rm9yIHRoZSB3b3JkIHdyaXRlIGl0IGlzIGNoZWNrZWQgaWYgdGhlIGNoaXAgaGFzIHRoZSBjb3Jy
-ZWN0IHZhbHVlLg0KQnV0IGl0IGlzIG5vdCBjaGVja2VkIGZvciB0aGUgd3JpdGUgYnVmZmVyIGFz
-IG9ubHkgY2hlY2tlZCBpZiByZWFkeS4NClRvIG1ha2Ugc3VyZSBmb3IgdGhlIHdyaXRlIGJ1ZmZl
-ciBjaGFuZ2UgdG8gY2hlY2sgdGhlIHZhbHVlLg0KDQpJdCBpcyBlbm91Z2ggYXMgdGhpcyBwYXRj
-aCBpcyBvbmx5IGNoZWNraW5nIHRoZSBsYXN0IHdyaXR0ZW4gd29yZC4NClNpbmNlIGl0IGlzIGRl
-c2NyaWJlZCBieSBkYXRhIHNoZWV0cyB0byBjaGVjayB0aGUgb3BlcmF0aW9uIHN0YXR1cy4NCg0K
-U2lnbmVkLW9mZi1ieTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5j
-by5qcD4NCkNjOiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28u
-bno+DQpDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQpDYzog
-RGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KQ2M6IEJvcmlzIEJyZXppbGxv
-biA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT4NCkNjOiBNYXJlayBWYXN1dCA8
-bWFyZWsudmFzdXRAZ21haWwuY29tPg0KQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBu
-b2QuYXQ+DQpDYzogQ3lyaWxsZSBQaXRjaGVuIDxjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcj4N
-CkNjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KLS0tDQogZHJpdmVycy9tdGQvY2hp
-cHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAyICstDQogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9u
-KCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
-Y21kc2V0XzAwMDIuYyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQppbmRl
-eCA1NmFhNmI3NTIxM2QuLjVlOWYyY2EwYTZjMSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL2No
-aXBzL2NmaV9jbWRzZXRfMDAwMi5jDQorKysgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0
-XzAwMDIuYw0KQEAgLTE4NzksNyArMTg3OSw3IEBAIHN0YXRpYyBpbnQgX194aXByYW0gZG9fd3Jp
-dGVfYnVmZmVyKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLA0KICAg
-ICAgICAgICAgICAgIGlmICh0aW1lX2FmdGVyKGppZmZpZXMsIHRpbWVvKSAmJiAhY2hpcF9yZWFk
-eShtYXAsIGFkcikpDQogICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCg0KLSAgICAgICAg
-ICAgICAgIGlmIChjaGlwX3JlYWR5KG1hcCwgYWRyKSkgew0KKyAgICAgICAgICAgICAgIGlmIChj
-aGlwX3JlYWR5KG1hcCwgYWRyKSAmJiBjaGlwX2dvb2QobWFwLCBhZHIsIGRhdHVtKSkgew0KICAg
-ICAgICAgICAgICAgICAgICAgICAgeGlwX2VuYWJsZShtYXAsIGNoaXAsIGFkcik7DQogICAgICAg
-ICAgICAgICAgICAgICAgICBnb3RvIG9wX2RvbmU7DQogICAgICAgICAgICAgICAgfQ0KLS0NCjIu
-MTYuMQ0KDQo=
+On Tue 24-04-18 13:25:42, Michal Hocko wrote:
+[...]
+> > As a suggestion, could you take
+> > documentation about how to convert to the memalloc_nofs_{save,restore}
+> > scope api (which I think you've written about e-mails at length
+> > before), and put that into a file in Documentation/core-api?
+> 
+> I can.
+
+Does something like the below sound reasonable/helpful?
+---
+=================================
+GFP masks used from FS/IO context
+=================================
+
+:Date: Mapy, 2018
+:Author: Michal Hocko <mhocko@kernel.org>
+
+Introduction
+============
+
+FS resp. IO submitting code paths have to be careful when allocating
+memory to prevent from potential recursion deadlocks caused by direct
+memory reclaim calling back into the FS/IO path and block on already
+held resources (e.g. locks). Traditional way to avoid this problem
+is to clear __GFP_FS resp. __GFP_IO (note the later implies clearing
+the first as well) in the gfp mask when calling an allocator. GFP_NOFS
+resp. GFP_NOIO can be used as shortcut.
+
+This has been the traditional way to avoid deadlocks since ages. It
+turned out though that above approach has led to abuses when the restricted
+gfp mask is used "just in case" without a deeper consideration which leads
+to problems because an excessive use of GFP_NOFS/GFP_NOIO can lead to
+memory over-reclaim or other memory reclaim issues.
+
+New API
+=======
+
+Since 4.12 we do have a generic scope API for both NOFS and NOIO context
+``memalloc_nofs_save``, ``memalloc_nofs_restore`` resp. ``memalloc_noio_save``,
+``memalloc_noio_restore`` which allow to mark a scope to be a critical
+section from the memory reclaim recursion into FS/IO POV. Any allocation
+from that scope will inherently drop __GFP_FS resp. __GFP_IO from the given
+mask so no memory allocation can recurse back in the FS/IO.
+
+FS/IO code then simply calls the appropriate save function right at
+the layer where a lock taken from the reclaim context (e.g. shrinker)
+is taken and the corresponding restore function when the lock is
+released. All that ideally along with an explanation what is the reclaim
+context for easier maintenance.
+
+What about __vmalloc(GFP_NOFS)
+==============================
+
+vmalloc doesn't support GFP_NOFS semantic because there are hardcoded
+GFP_KERNEL allocations deep inside the allocator which are quit non-trivial
+to fix up. That means that calling ``vmalloc`` with GFP_NOFS/GFP_NOIO is
+almost always a bug. The good news is that the NOFS/NOIO semantic can be
+achieved by the scope api.
+
+In the ideal world, upper layers should already mark dangerous contexts
+and so no special care is required and vmalloc should be called without
+any problems. Sometimes if the context is not really clear or there are
+layering violations then the recommended way around that is to wrap ``vmalloc``
+by the scope API with a comment explaining the problem.
+-- 
+Michal Hocko
+SUSE Labs
