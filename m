@@ -1,38 +1,24 @@
-Received: from userp2130.oracle.com ([156.151.31.86])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGQnf-0002eS-Lg
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 15:14:41 +0000
-Date: Wed, 9 May 2018 08:13:51 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Steven Whitehouse <swhiteho@redhat.com>,
- Bob Peterson <rpeterso@redhat.com>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Anna Schumaker <anna.schumaker@netapp.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Mikulas Patocka <mpatocka@redhat.com>, linux-mtd@lists.infradead.org,
- linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: vmalloc with GFP_NOFS
-Message-ID: <20180509151351.GA4111@magnolia>
-References: <20180424162712.GL17484@dhcp22.suse.cz>
- <20180424183536.GF30619@thunk.org>
- <20180424192542.GS17484@dhcp22.suse.cz>
- <20180509134222.GU32366@dhcp22.suse.cz>
+ id 1fGQqB-0004Id-UW
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 15:17:17 +0000
+Date: Wed, 9 May 2018 17:17:00 +0200
+From: Johannes Thumshirn <jthumshirn@suse.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, "Ed L. Cashin" <ed.cashin@acm.org>,
+ Geoff Levand <geoff@infradead.org>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH 1/7] mtip32xx: don't use block layer bounce buffers
+Message-ID: <20180509151700.aiz5tezhrt5wdrfa@linux-x5ow.site>
+References: <20180509135948.20329-1-hch@lst.de>
+ <20180509135948.20329-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20180509134222.GU32366@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20180509135948.20329-2-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,99 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 09, 2018 at 03:42:22PM +0200, Michal Hocko wrote:
-> On Tue 24-04-18 13:25:42, Michal Hocko wrote:
-> [...]
-> > > As a suggestion, could you take
-> > > documentation about how to convert to the memalloc_nofs_{save,restore}
-> > > scope api (which I think you've written about e-mails at length
-> > > before), and put that into a file in Documentation/core-api?
-> > 
-> > I can.
-> 
-> Does something like the below sound reasonable/helpful?
-> ---
-> =================================
-> GFP masks used from FS/IO context
-> =================================
-> 
-> :Date: Mapy, 2018
-> :Author: Michal Hocko <mhocko@kernel.org>
-> 
-> Introduction
-> ============
-> 
-> FS resp. IO submitting code paths have to be careful when allocating
-
-Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
-
-(Or is this one of those things where this looks like plain English text
-but in reality it's some sort of markup that I'm not so familiar with?)
-
-Confused because I've seen 'resp.' used as shorthand for
-'responsible'...
-
-> memory to prevent from potential recursion deadlocks caused by direct
-> memory reclaim calling back into the FS/IO path and block on already
-> held resources (e.g. locks). Traditional way to avoid this problem
-
-'The traditional way to avoid this deadlock problem...'
-
-> is to clear __GFP_FS resp. __GFP_IO (note the later implies clearing
-> the first as well) in the gfp mask when calling an allocator. GFP_NOFS
-> resp. GFP_NOIO can be used as shortcut.
-> 
-> This has been the traditional way to avoid deadlocks since ages. It
-
-I think this sentence is a little redundant with the previous sentence,
-you could chop it out and join this paragraph to the one before it.
-
-> turned out though that above approach has led to abuses when the restricted
-> gfp mask is used "just in case" without a deeper consideration which leads
-> to problems because an excessive use of GFP_NOFS/GFP_NOIO can lead to
-> memory over-reclaim or other memory reclaim issues.
-> 
-> New API
-> =======
-> 
-> Since 4.12 we do have a generic scope API for both NOFS and NOIO context
-> ``memalloc_nofs_save``, ``memalloc_nofs_restore`` resp. ``memalloc_noio_save``,
-> ``memalloc_noio_restore`` which allow to mark a scope to be a critical
-> section from the memory reclaim recursion into FS/IO POV. Any allocation
-> from that scope will inherently drop __GFP_FS resp. __GFP_IO from the given
-> mask so no memory allocation can recurse back in the FS/IO.
-> 
-> FS/IO code then simply calls the appropriate save function right at
-> the layer where a lock taken from the reclaim context (e.g. shrinker)
-> is taken and the corresponding restore function when the lock is
-> released. All that ideally along with an explanation what is the reclaim
-> context for easier maintenance.
-> 
-> What about __vmalloc(GFP_NOFS)
-> ==============================
-> 
-> vmalloc doesn't support GFP_NOFS semantic because there are hardcoded
-> GFP_KERNEL allocations deep inside the allocator which are quit non-trivial
-
-...which are quite non-trivial...
-
-> to fix up. That means that calling ``vmalloc`` with GFP_NOFS/GFP_NOIO is
-> almost always a bug. The good news is that the NOFS/NOIO semantic can be
-> achieved by the scope api.
-> 
-> In the ideal world, upper layers should already mark dangerous contexts
-> and so no special care is required and vmalloc should be called without
-> any problems. Sometimes if the context is not really clear or there are
-> layering violations then the recommended way around that is to wrap ``vmalloc``
-> by the scope API with a comment explaining the problem.
-
-Otherwise looks ok to me based on my understanding of how all this is
-supposed to work...
-
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
-> -- 
-> Michal Hocko
-> SUSE Labs
+Looks good,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+-- 
+Johannes Thumshirn                                          Storage
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Jane Smithard, Graham Norton
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
