@@ -1,30 +1,32 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.198])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGMDE-0001Qf-QI
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 10:20:47 +0000
+ id 1fGMIw-00054k-R9
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 10:26:52 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "PACKHAM
- Chris" <chris.packham@alliedtelesis.co.nz>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>, Joakim Tjernlund
+ <Joakim.Tjernlund@infinera.com>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>
+CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>
-Subject: RE: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: [PATCH] mtd: cfi_cmdset_0002: Change erase functions to retry for
  error
-Date: Wed, 9 May 2018 10:20:27 +0000
-Message-ID: <TY1PR01MB09546705E1858D6924243F0ADC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Date: Wed, 9 May 2018 10:26:22 +0000
+Message-ID: <TY1PR01MB0954B6574DFF6E51E48C1F8DDC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 References: <TY1PR01MB0954474CBDBF98D0E3D3E648DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
  <20180508132037.152cc581@bbrezillon>
  <TY1PR01MB095425A96233A864806D0635DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
  <20180508191144.5d8412b6@bbrezillon>
  <d0371e65130a1d64b66031d3f1ed73707ce3f079.camel@infinera.com>
-In-Reply-To: <d0371e65130a1d64b66031d3f1ed73707ce3f079.camel@infinera.com>
+ <TY1PR01MB09546705E1858D6924243F0ADC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY1PR01MB09546705E1858D6924243F0ADC990@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,141 +37,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgSm9ja2Utc2FuLA0KDQogIFRoYW5rcyBmb3IgdGhlIG1haWwuDQogIEkgaGF2ZSBqdXN0IHVu
-ZGVyc3Rvb2QgYWJvdXQgdGhlIEVyYXNlIHN1c3BlbmQgaXNzdWUgaXMgbm90IHJlbGF0ZWQgdG8g
-dGhlIGNoYW5nZS4NCiAgQWxzbyBpdCBpcyBub3QgYWJsZSB0byBiZSByZXNvbHZlZCBieSB0aGUg
-Y2hhZ25lLg0KDQpIaSBCb3Jpcy1zYW4sDQoNCiAgU28gdGhlIGJlbG93IGNvbW1pdCBtZXNzYWdl
-IGlzIG5vdCBjb3JyZWN0IHNvIEkgd2lsbCB1cGRhdGUgaXQgdG8gcmVtb3ZlIHRvIGRlc2NyaWJl
-IHRoZSBsYXR0ZXIgcGFydCBhYm91dCB0aGUgRXJhc2Ugc3VzcGVuZCBpc3N1ZS4NCg0KPiA+ID4g
-QWxzbyB0aGUgY2hhbmdlIGlzIHBvc3NpYmxlIHRvIHJlc29sdmUgb3RoZXIgZXJhc2UgZXJyb3Iu
-DQo+ID4gPiBGb3IgZXhhbXBsZSB0aGUgRXJhc2Ugc3VzcGVuZCBpc3N1ZSB3YXMgY2F1c2VkIG9u
-IEN5cHJlc3MgQU1EIE5PUiBmbGFzaC4NCj4gPiA+ICAgUzI5R0wwMUdTIC8gUzI5R0w1MTJTIC8g
-UzI5R0wyNTZTIC8gUzI5R0wxMjhTIA0KDQpSZWdhcmRzLA0KSWtlZ2FtaQ0KDQo+IC0tLS0tT3Jp
-Z2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBUamVybmx1bmQgW21haWx0bzpKb2Fr
-aW0uVGplcm5sdW5kQGluZmluZXJhLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBNYXkgMDksIDIw
-MTggNToxOSBQTQ0KPiBUbzogYm9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tOyBJS0VHQU1JIFRv
-a3Vub3JpDQo+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgUEFDS0hBTSBDaHJp
-czsNCj4gY3lyaWxsZS5waXRjaGVuQHdlZGV2NHUuZnI7IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+
-IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgYm9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ry
-b25zLmNvbTsNCj4gbWFyZWsudmFzdXRAZ21haWwuY29tOyByaWNoYXJkQG5vZC5hdA0KPiBTdWJq
-ZWN0OiBSZTogW1BBVENIXSBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0
-aW9ucyB0byByZXRyeQ0KPiBmb3IgZXJyb3INCj4gDQo+IE9uIFR1ZSwgMjAxOC0wNS0wOCBhdCAx
-OToxMSArMDIwMCwgQm9yaXMgQnJlemlsbG9uIHdyb3RlOg0KPiA+IENBVVRJT046IFRoaXMgZW1h
-aWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9yZ2FuaXphdGlvbi4gRG8gbm90DQo+
-IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSByZWNvZ25pemUgdGhl
-IHNlbmRlciBhbmQga25vdw0KPiB0aGUgY29udGVudCBpcyBzYWZlLg0KPiA+DQo+ID4NCj4gPiAr
-Sm9ha2ltDQo+ID4NCj4gPiBPbiBUdWUsIDggTWF5IDIwMTggMTY6NTI6NTUgKzAwMDANCj4gPiBJ
-S0VHQU1JIFRva3Vub3JpIDxpa2VnYW1pQGFsbGllZC10ZWxlc2lzLmNvLmpwPiB3cm90ZToNCj4g
-Pg0KPiA+ID4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5j
-by5qcD4NCj4gPiA+DQo+ID4gPiBGb3IgdGhlIHdvcmQgd3JpdGUgZnVuY3Rpb25zIGl0IGlzIHJl
-dHJpZWQgZm9yIGVycm9yLg0KPiA+ID4gQnV0IGl0IGlzIG5vdCBpbXBsZW1lbnRlZCB0byByZXRy
-eSBmb3IgdGhlIGVyYXNlIGZ1bmN0aW9ucy4NCj4gPiA+IFRvIG1ha2Ugc3VyZSBmb3IgdGhlIGVy
-YXNlIGZ1bmN0aW9ucyBjaGFuZ2UgdG8gcmV0cnkgYXMgc2FtZS4NCj4gPiA+DQo+ID4gPiBUaGlz
-IGlzIG5lZWRlZCB0byBwcmV2ZW50IHRoZSBmbGFzaCBlcmFzZSBlcnJvciBjYXVzZWQgb25seSBv
-bmNlLg0KPiA+ID4gSXQgd2FzIGNhdXNlZCBieSB0aGUgZXJyb3IgY2FzZSBvZiBjaGlwX2dvb2Qo
-KSBpbiB0aGUNCj4gZG9fZXJhc2Vfb25lYmxvY2soKS4NCj4gPiA+IEFsc28gaXQgd2FzIGNvbmZp
-cm1lZCBvbiB0aGUgTUFDUk9OSVggZmxhc2ggZGV2aWNlIE1YMjlHTDUxMkZIVDJJLTExRy4NCj4g
-PiA+IEJ1dCB0aGUgZXJyb3IgaXNzdWUgYmVoYXZpb3IgaXMgbm90IGFibGUgdG8gcmVwcm9kdWNl
-IGF0IHRoaXMgbW9tZW50Lg0KPiA+DQo+ID4gSG0sIHRoYXQncyBhIHByb2JsZW0uIEhvdyBjYW4g
-eW91IGJlIHN1cmUgdGhlIHJldHJ5IGFwcHJvYWNoIGZpeGVzIHRoZQ0KPiA+IGlzc3VlIGlmIHlv
-dSBjYW4ndCByZXByb2R1Y2UgdGhlIGl0Pw0KPiA+DQo+ID4gPiBUaGUgZmxhc2ggY29udHJvbGxl
-ciBpcyBwYXJhbGxlbCBGbGFzaCBpbnRlcmZhY2UgaW50ZWdyYXRlZCBvbiBCQ001MzAwMy4NCj4g
-PiA+DQo+ID4gPiBBbHNvIHRoZSBjaGFuZ2UgaXMgcG9zc2libGUgdG8gcmVzb2x2ZSBvdGhlciBl
-cmFzZSBlcnJvci4NCj4gPiA+IEZvciBleGFtcGxlIHRoZSBFcmFzZSBzdXNwZW5kIGlzc3VlIHdh
-cyBjYXVzZWQgb24gQ3lwcmVzcyBBTUQgTk9SIGZsYXNoLg0KPiA+ID4gICBTMjlHTDAxR1MgLyBT
-MjlHTDUxMlMgLyBTMjlHTDI1NlMgLyBTMjlHTDEyOFMNCj4gPg0KPiA+IElzIHRoZSBFcmFzZSBz
-dXNwZW5kIGlzc3VlIHJlbGF0ZWQgdG8gdGhpcyBwcm9ibGVtPw0KPiA+DQo+IA0KPiBNeSBFcmFz
-ZSBzdXNwZW5kIGlzc3VlIGlzIG5vdCByZWxhdGVkIHRvIGp1c3QgcmV0cnlpbmcgdGhlIGVyYXNl
-Lg0KPiBXZSBoYXZlIHNlZW4gc2V2ZXJhbCB0aW1lcyB0aGF0IHRvbyBtYW55IEVyYXNlIHN1c3Bl
-bmQgZm9yIG9uZSBibG9jayB3aWxsDQo+IGNhdXNlIDUuNS4yLjYgRFE1Og0KPiAgRXhjZWVkZWQg
-VGltaW5nIExpbWl0cw0KPiBUaGlzIGNvbmRpdGlvbiBpcyBub3QgY2hlY2tlZCBmb3IsIG5vciBo
-YW5kbGVkIGluIGFueSB3YXkuDQo+IE9uY2UgdGhpcyBjb25kaXRpb24gaGFzIG9jY3VycmVkLCBh
-IHNpbXBsZSByZXRyeSB3b250IGZpeCBpdC4gT25lIG11c3QNCj4gZmlyc3QgaXNzdWUgYSBmbGFz
-aCByZXNldDoNCj4gICBtYXBfd3JpdGUoIG1hcCwgQ01EKDB4RjApLCBjaGlwLT5pbl9wcm9ncmVz
-c19ibG9ja19hZGRyKTsgLyogUmVzZXQgKi8NCj4gd2hpY2ggd2lsbCBjbGVhciB0aGlzIGVycm9y
-IGNvbmRpdGlvbiBhbmQgcmV0dXJuIHRoZSBmbGFzaCB0byByZWFkIGFycmF5DQo+IG1vcmUuDQo+
-IE5vdyB5b3UgY2FuIHJlc3RhcnQgdGhlIGVyYXNlIGFnYWluIGFuZCBpdCB3aWxsIHByb2JhYmx5
-IGZpbmlzaCB0aGUgZXJhc2UNCj4gdGhpcyB0aW1lKGF0IGxlYXN0IGluIG91ciB0ZXN0aW5nKS4N
-Cj4gDQo+IFRlc3RpbmcgZm9yIERRNTogRXhjZWVkZWQgVGltaW5nIExpbWl0cyBpcyBub3Qgc3Ry
-YWlnaHQgZm9yd2FyZCBpbiBjdXJyZW50DQo+IDAwMDIgZHJpdmVyDQo+IHNpbmNlIGl0IHJlcXVp
-cmVzIG1vcmUgdGhhbiBqdXN0IHRlc3RpbmcgZm9yIHRvZ2dsaW5nIGJpdHMuIEkgaGF2ZSBub3QN
-Cj4gbWFkZSBhbnkgcHJvZ3Jlc3Mgb24gdGhpcyBkdWUgdG8gb3RoZXIgbW9yZSBwcmVzc2luZyB3
-b3JrLg0KPiANCj4gTm90ZTogSW4gb3VyIHRlc3Rpbmcgd2UgbmVlZGVkIG92ZXIgMzAwMDAwIHN1
-c3BlbmQvcmVzdW1lIGJlZm9yZSBoaXR0aW5nDQo+IHRoZSBEUTUNCj4gbGltaXQuDQo+IEhlcmUg
-aXMgbXkgdGVzdCBoYWNrIHNvIGZhcjoNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBz
-L2NmaV9jbWRzZXRfMDAwMi5jDQo+IGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAy
-LmMNCj4gaW5kZXggMjNhODkzYWI0MjY0Li4zOGI1MmUyYzZmYjYgMTAwNjQ0DQo+IC0tLSBhL2Ry
-aXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL2No
-aXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+IEBAIC04MjksNiArODI5LDcgQEAgc3RhdGljIGludCBn
-ZXRfY2hpcChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZsY2hpcA0KPiAqY2hpcCwgdW5z
-aWduZWQgbG9uZyBhZHINCj4gICAgICAgICAgICAgICAgIGNoaXAtPm9sZHN0YXRlID0gRkxfRVJB
-U0lORzsNCj4gICAgICAgICAgICAgICAgIGNoaXAtPnN0YXRlID0gRkxfRVJBU0VfU1VTUEVORElO
-RzsNCj4gICAgICAgICAgICAgICAgIGNoaXAtPmVyYXNlX3N1c3BlbmRlZCA9IDE7DQo+ICsgICAg
-ICAgICAgICAgICBjaGlwLT5pbl9wcm9ncmVzc19zdXNwZW5kcysrOw0KPiAgICAgICAgICAgICAg
-ICAgZm9yICg7Oykgew0KPiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAoY2hpcF9yZWFkeSht
-YXAsIGFkcikpDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+IEBA
-IC04MzksOCArODQwLDMzIEBAIHN0YXRpYyBpbnQgZ2V0X2NoaXAoc3RydWN0IG1hcF9pbmZvICpt
-YXAsIHN0cnVjdCBmbGNoaXANCj4gKmNoaXAsIHVuc2lnbmVkIGxvbmcgYWRyDQo+ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICogdGhlcmUgd2FzIGFuIGVycm9yIChzbyBsZWF2ZSB0
-aGUgZXJhc2UNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKiByb3V0aW5lIHRv
-IHJlY292ZXIgZnJvbSBpdCkgb3Igd2UgdHJ5aW5nDQo+IHRvDQo+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICogdXNlIHRoZSBlcmFzZS1pbi1wcm9ncmVzcyBzZWN0b3IuICovDQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWFwX3dvcmQgc3RhdHVzID0gbWFwX3Jl
-YWQobWFwLCBhZHIpOw0KPiArDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbWFw
-X3dyaXRlKCBtYXAsIENNRCgweEYwKSwNCj4gY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7
-IC8qIFJlc2V0ICovDQo+ICsjaWYgMQ0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IC8qIFJlc3RhcnQgZXJhc2UgKi8NCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBj
-Zmlfc2VuZF9nZW5fY21kKDB4QUEsDQo+IGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFydCwg
-bWFwLCBjZmksDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjZmktPmRldmljZV90eXBlLA0KPiBOVUxMKTsNCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4NTUsDQo+IGNmaS0+YWRkcl91bmxvY2syLCBj
-aGlwLT5zdGFydCwgbWFwLCBjZmksDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBjZmktPmRldmljZV90eXBlLA0KPiBOVUxMKTsNCj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4ODAsDQo+IGNmaS0+YWRk
-cl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFwLCBjZmksDQo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmktPmRldmljZV90eXBlLA0KPiBOVUxMKTsN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmlfc2VuZF9nZW5fY21kKDB4QUEs
-DQo+IGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFydCwgbWFwLCBjZmksDQo+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmktPmRldmljZV90eXBl
-LA0KPiBOVUxMKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmlfc2VuZF9n
-ZW5fY21kKDB4NTUsDQo+IGNmaS0+YWRkcl91bmxvY2syLCBjaGlwLT5zdGFydCwgbWFwLCBjZmks
-DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjZmkt
-PmRldmljZV90eXBlLA0KPiBOVUxMKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBtYXBfd3JpdGUobWFwLCBjZmktPnNlY3Rvcl9lcmFzZV9jbWQsDQo+IGNoaXAtPmluX3Byb2dy
-ZXNzX2Jsb2NrX2FkZHIpOw0KPiArI2VuZGlmDQo+ICsvLyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgY2hpcC0+b2xkc3RhdGUgPSBGTF9SRUFEWTsNCj4gKy8vICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBjaGlwLT5zdGF0ZSA9IEZMX1JFQURZOw0KPiArDQo+ICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgcHV0X2NoaXAobWFwLCBjaGlwLCBhZHIpOw0KPiAtICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHByaW50ayhLRVJOX0VSUiAiTVREICVzKCk6IGNoaXAgbm90
-IHJlYWR5DQo+IGFmdGVyIGVyYXNlIHN1c3BlbmRcbiIsIF9fZnVuY19fKTsNCj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBwcmludGsoS0VSTl9FUlIgIk1URCAlcygpOiBjaGlwIG5v
-dCByZWFkeQ0KPiBhZnRlciBlcmFzZSBzdXNwZW5kLCBibG9ja19hZGRyOjB4JWx4LCAiDQo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICJibG9ja19tYXNrOjB4JWx4LCBh
-ZHI6MHglbHgsDQo+IHN1c3BlbmRzOiVsZCwgc3RhdHVzOjB4JWx4IFxuIiwgX19mdW5jX18sDQo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNoaXAtPmluX3Byb2dyZXNz
-X2Jsb2NrX2FkZHIsDQo+IGNoaXAtPmluX3Byb2dyZXNzX2Jsb2NrX2FkZHIsIGFkciwNCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hpcC0+aW5fcHJvZ3Jlc3Nfc3Vz
-cGVuZHMsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXR1cy54
-WzBdKTsNCj4gKw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRUlP
-Ow0KPiAgICAgICAgICAgICAgICAgICAgICAgICB9DQo+IA0KPiBAQCAtMjI3MCw3ICsyMjk2LDcg
-QEAgc3RhdGljIGludCBfX3hpcHJhbSBkb19lcmFzZV9jaGlwKHN0cnVjdCBtYXBfaW5mbw0KPiAq
-bWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwKQ0KPiAgICAgICAgIGNoaXAtPmVyYXNlX3N1c3BlbmRl
-ZCA9IDA7DQo+ICAgICAgICAgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkciA9IGFkcjsNCj4g
-ICAgICAgICBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19tYXNrID0gfihtYXAtPnNpemUgLSAxKTsN
-Cj4gLQ0KPiArICAgICAgIGNoaXAtPmluX3Byb2dyZXNzX3N1c3BlbmRzID0gMDsNCj4gICAgICAg
-ICBJTlZBTElEQVRFX0NBQ0hFX1VERUxBWShtYXAsIGNoaXAsDQo+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgYWRyLCBtYXAtPnNpemUsDQo+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgY2hpcC0+ZXJhc2VfdGltZSo1MDApOw0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9s
-aW51eC9tdGQvZmxhc2hjaGlwLmgNCj4gYi9pbmNsdWRlL2xpbnV4L210ZC9mbGFzaGNoaXAuaA0K
-PiBpbmRleCAzNTI5NjgzZjY5MWUuLjhlN2JhODI0NGNlZCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVk
-ZS9saW51eC9tdGQvZmxhc2hjaGlwLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9tdGQvZmxhc2hj
-aGlwLmgNCj4gQEAgLTg2LDYgKzg2LDcgQEAgc3RydWN0IGZsY2hpcCB7DQo+ICAgICAgICAgdW5z
-aWduZWQgaW50IGVyYXNlX3N1c3BlbmRlZDoxOw0KPiAgICAgICAgIHVuc2lnbmVkIGxvbmcgaW5f
-cHJvZ3Jlc3NfYmxvY2tfYWRkcjsNCj4gICAgICAgICB1bnNpZ25lZCBsb25nIGluX3Byb2dyZXNz
-X2Jsb2NrX21hc2s7DQo+ICsgICAgICAgdW5zaWduZWQgbG9uZyBpbl9wcm9ncmVzc19zdXNwZW5k
-czsNCj4gDQo+ICAgICAgICAgc3RydWN0IG11dGV4IG11dGV4Ow0KPiAgICAgICAgIHdhaXRfcXVl
-dWVfaGVhZF90IHdxOyAvKiBXYWl0IG9uIGhlcmUgd2hlbiB3ZSdyZSB3YWl0aW5nIGZvciB0aGUN
-Cj4gY2hpcA0KPiANCj4gDQo+IFdoaWNoIHByaW50ZWQod2hlbiBlcnJvciBvY2N1cnJlZCk6DQo+
-IE1URCBnZXRfY2hpcCgpOiBjaGlwIG5vdCByZWFkeSBhZnRlciBlcmFzZSBzdXNwZW5kLCBibG9j
-a19hZGRyOjB4MzQ4MDAwMCwNCj4gYmxvY2tfbWFzazoweDM0ODAwMDAsIGFkcjoweDNhN2RhODQs
-DQo+IHN1c3BlbmRzOjMxOTk0MSwgc3RhdHVzOjB4MjgNCj4gDQo+IA0KPiAgSm9ja2UNCg==
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+
+For the word write functions it is retried for error.
+But it is not implemented to retry for the erase functions.
+To make sure for the erase functions change to retry as same.
+
+This is needed to prevent the flash erase error caused only once.
+It was caused by the error case of chip_good() in the do_erase_oneblock().
+Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
+But the error issue behavior is not able to reproduce at this moment.
+The flash controller is parallel Flash interface integrated on BCM53003.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index 56aa6b75213d..f522a856526a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -43,6 +43,7 @@
+ #define FORCE_WORD_WRITE 0
+=20
+ #define MAX_WORD_RETRIES 3
++#define MAX_ERASE_RETRY 3
+=20
+ #define SST49LF004B	        0x0060
+ #define SST49LF040B	        0x0050
+@@ -2240,6 +2241,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	unsigned long int adr;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret =3D 0;
++	int retry_cnt =3D 0;
+=20
+ 	adr =3D cfi->addr_unlock1;
+=20
+@@ -2257,6 +2259,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+@@ -2310,6 +2313,9 @@ static int __xipram do_erase_chip(struct map_info *ma=
+p, struct flchip *chip)
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+=20
++		if (++retry_cnt <=3D MAX_ERASE_RETRY)
++			goto retry;
++
+ 		ret =3D -EIO;
+ 	}
+=20
+@@ -2329,6 +2335,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	unsigned long timeo =3D jiffies + HZ;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret =3D 0;
++	int retry_cnt =3D 0;
+=20
+ 	adr +=3D chip->start;
+=20
+@@ -2346,6 +2353,7 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+=20
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
+ice_type, NULL);
+@@ -2402,6 +2410,9 @@ static int __xipram do_erase_oneblock(struct map_info=
+ *map, struct flchip *chip,
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+=20
++		if (++retry_cnt <=3D MAX_ERASE_RETRY)
++			goto retry;
++
+ 		ret =3D -EIO;
+ 	}
+=20
+--=20
+2.16.1
