@@ -1,24 +1,39 @@
-Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGS8Y-0001A1-SB
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 16:40:20 +0000
-Subject: Re: support for non-uniform SPI NOR flash memories
-To: Marek Vasut <marek.vasut@gmail.com>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>
-References: <5bc6ab91-9ae3-28b1-2110-452f58fee8c7@microchip.com>
- <e9218dcf-dce6-a009-70ec-33d0cac5bc4d@gmail.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <b7cbad40-8340-0a8f-e539-932b777757d8@microchip.com>
-Date: Wed, 9 May 2018 19:40:03 +0300
+ id 1fGWGk-00007P-7M
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 21:05:04 +0000
+Date: Wed, 9 May 2018 23:04:47 +0200
+From: Michal Hocko <mhocko@kernel.org>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Message-ID: <20180509210447.GX32366@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
+ <20180424183536.GF30619@thunk.org>
+ <20180424192542.GS17484@dhcp22.suse.cz>
+ <20180509134222.GU32366@dhcp22.suse.cz>
+ <20180509151351.GA4111@magnolia>
 MIME-Version: 1.0
-In-Reply-To: <e9218dcf-dce6-a009-70ec-33d0cac5bc4d@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180509151351.GA4111@magnolia>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +43,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed 09-05-18 08:13:51, Darrick J. Wong wrote:
+> On Wed, May 09, 2018 at 03:42:22PM +0200, Michal Hocko wrote:
+> > On Tue 24-04-18 13:25:42, Michal Hocko wrote:
+> > [...]
+> > > > As a suggestion, could you take
+> > > > documentation about how to convert to the memalloc_nofs_{save,restore}
+> > > > scope api (which I think you've written about e-mails at length
+> > > > before), and put that into a file in Documentation/core-api?
+> > > 
+> > > I can.
+> > 
+> > Does something like the below sound reasonable/helpful?
+> > ---
+> > =================================
+> > GFP masks used from FS/IO context
+> > =================================
+> > 
+> > :Date: Mapy, 2018
+> > :Author: Michal Hocko <mhocko@kernel.org>
+> > 
+> > Introduction
+> > ============
+> > 
+> > FS resp. IO submitting code paths have to be careful when allocating
+> 
+> Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
+> 
+> (Or is this one of those things where this looks like plain English text
+> but in reality it's some sort of markup that I'm not so familiar with?)
+> 
+> Confused because I've seen 'resp.' used as shorthand for
+> 'responsible'...
 
-On 05/07/2018 08:14 PM, Marek Vasut wrote:
-> But indeed there are -- to my knowledge -- no flashes with interleaved
-> erase blocks. And yes, there could be improvement in erasing exactly the
-> required chunk of flash with a fitting opcode:)
+Well, I've tried to cover both. Filesystem and IO code paths which
+allocate while in sensitive context. IO submission is kinda clear but I
+am not sure what a general term for filsystem code paths would be. I
+would be greatful for any hints here.
 
-Thanks Marek.
+> 
+> > memory to prevent from potential recursion deadlocks caused by direct
+> > memory reclaim calling back into the FS/IO path and block on already
+> > held resources (e.g. locks). Traditional way to avoid this problem
+> 
+> 'The traditional way to avoid this deadlock problem...'
 
-Other improvement would be to minimize the amount of erase() calls by
-using the best sequence of erase type commands depending on alignment.
-But this will increase the number of queries.
+Done
 
-I've read again the Sector Map section of the JEDECB standard and it
-looks like "overlaid" regions are possible. Here's an example that I
-found there:
+> > is to clear __GFP_FS resp. __GFP_IO (note the later implies clearing
+> > the first as well) in the gfp mask when calling an allocator. GFP_NOFS
+> > resp. GFP_NOIO can be used as shortcut.
+> > 
+> > This has been the traditional way to avoid deadlocks since ages. It
+> 
+> I think this sentence is a little redundant with the previous sentence,
+> you could chop it out and join this paragraph to the one before it.
 
-Bottom: 8x 4KB sectors at bottom (only 4KB erase supported),
-         1x overlaid 64KB sector at bottom (only 64KB erase supported),
-         511 uniform 64KB sectors (only 64KB erase supported)
+OK
 
-That's interesting, when one wants to erase the overlaid 64KB sector, I
-guess that the 8x 4KB sectors will be erased too.
+> 
+> > turned out though that above approach has led to abuses when the restricted
+> > gfp mask is used "just in case" without a deeper consideration which leads
+> > to problems because an excessive use of GFP_NOFS/GFP_NOIO can lead to
+> > memory over-reclaim or other memory reclaim issues.
+> > 
+> > New API
+> > =======
+> > 
+> > Since 4.12 we do have a generic scope API for both NOFS and NOIO context
+> > ``memalloc_nofs_save``, ``memalloc_nofs_restore`` resp. ``memalloc_noio_save``,
+> > ``memalloc_noio_restore`` which allow to mark a scope to be a critical
+> > section from the memory reclaim recursion into FS/IO POV. Any allocation
+> > from that scope will inherently drop __GFP_FS resp. __GFP_IO from the given
+> > mask so no memory allocation can recurse back in the FS/IO.
+> > 
+> > FS/IO code then simply calls the appropriate save function right at
+> > the layer where a lock taken from the reclaim context (e.g. shrinker)
+> > is taken and the corresponding restore function when the lock is
+> > released. All that ideally along with an explanation what is the reclaim
+> > context for easier maintenance.
+> > 
+> > What about __vmalloc(GFP_NOFS)
+> > ==============================
+> > 
+> > vmalloc doesn't support GFP_NOFS semantic because there are hardcoded
+> > GFP_KERNEL allocations deep inside the allocator which are quit non-trivial
+> 
+> ...which are quite non-trivial...
 
-I'm still studying this, I'll try to come with a proposal in the next
-few days.
+fixed
 
-Cheers,
-ta
+> > to fix up. That means that calling ``vmalloc`` with GFP_NOFS/GFP_NOIO is
+> > almost always a bug. The good news is that the NOFS/NOIO semantic can be
+> > achieved by the scope api.
+> > 
+> > In the ideal world, upper layers should already mark dangerous contexts
+> > and so no special care is required and vmalloc should be called without
+> > any problems. Sometimes if the context is not really clear or there are
+> > layering violations then the recommended way around that is to wrap ``vmalloc``
+> > by the scope API with a comment explaining the problem.
+> 
+> Otherwise looks ok to me based on my understanding of how all this is
+> supposed to work...
+> 
+> Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+
+Thanks for your review!
+
+-- 
+Michal Hocko
+SUSE Labs
