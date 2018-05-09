@@ -1,28 +1,19 @@
-Received: from mail-lf0-x243.google.com ([2a00:1450:4010:c07::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGKJu-0006lk-DU
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 08:19:36 +0000
-Received: by mail-lf0-x243.google.com with SMTP id h197-v6so49663290lfg.11
- for <linux-mtd@lists.infradead.org>; Wed, 09 May 2018 01:19:19 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 2/2] mtd: bcm47xxpart: add of_match_table with a new DT
- binding
-Date: Wed,  9 May 2018 10:17:29 +0200
-Message-Id: <20180509081729.28347-2-zajec5@gmail.com>
-In-Reply-To: <20180509081729.28347-1-zajec5@gmail.com>
-References: <20180509081729.28347-1-zajec5@gmail.com>
+Date: Wed, 9 May 2018 11:42:50 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Joachim Eastwood <manabian@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, ldv-project@linuxtesting.org,
+ sil2review@lists.osadl.org, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nxp-spifi: decrement flash_np refcnt on error paths
+Message-ID: <20180509114250.120eb299@bbrezillon>
+In-Reply-To: <1525812456-25877-1-git-send-email-khoroshilov@ispras.ru>
+References: <1525812456-25877-1-git-send-email-khoroshilov@ispras.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Tue,  8 May 2018 23:47:36 +0300
+Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
 
-This allows using bcm47xxpart parser to find partitions on flash
-described in DT using the "brcm,bcm947xx-cfe-partitions" compatible
-property. It means this parser doesn't have to be explicitly selected by
-a flash driver anymore. It can be used e.g. together with a generic
-m25p80 / spi-nor if device is just properly described.
+> nxp_spifi_probe() increments refcnt of SPI flash device node by
+> of_get_next_available_child() and then it passes the node
+> to mtd device in nxp_spifi_setup_flash().
+> But if a failure happens before mtd_device_register() succeed,
+> the refcnt is left undecremented.
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-V2: Slightly update commit message.
----
- drivers/mtd/bcm47xxpart.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Why not doing that in the error path of the probe function? Also, you
+probably want to call of_node_put() in the ->remove() function.
 
-diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-index 1f0239848ebe..0f93d2239352 100644
---- a/drivers/mtd/bcm47xxpart.c
-+++ b/drivers/mtd/bcm47xxpart.c
-@@ -304,9 +304,16 @@ static int bcm47xxpart_parse(struct mtd_info *master,
- 	return curr_part;
- };
- 
-+static const struct of_device_id bcm47xxpart_of_match_table[] = {
-+	{ .compatible = "brcm,bcm947xx-cfe-partitions" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, bcm47xxpart_of_match_table);
-+
- static struct mtd_part_parser bcm47xxpart_mtd_parser = {
- 	.parse_fn = bcm47xxpart_parse,
- 	.name = "bcm47xxpart",
-+	.of_match_table = bcm47xxpart_of_match_table,
- };
- module_mtd_part_parser(bcm47xxpart_mtd_parser);
- 
--- 
-2.13.6
+> 
+> Found by Linux Driver Verification project (linuxtesting.org).
+> 
+> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+> ---
+>  drivers/mtd/spi-nor/nxp-spifi.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
+> index 15374216d4d9..8919e31f2ab8 100644
+> --- a/drivers/mtd/spi-nor/nxp-spifi.c
+> +++ b/drivers/mtd/spi-nor/nxp-spifi.c
+> @@ -294,7 +294,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+>  			break;
+>  		default:
+>  			dev_err(spifi->dev, "unsupported rx-bus-width\n");
+> -			return -EINVAL;
+> +			ret = -EINVAL;
+> +			goto err_node_put;
+>  		}
+>  	}
+>  
+> @@ -328,7 +329,8 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+>  		break;
+>  	default:
+>  		dev_err(spifi->dev, "only mode 0 and 3 supported\n");
+> -		return -EINVAL;
+> +		ret = -EINVAL;
+> +		goto err_node_put;
+>  	}
+>  
+>  	writel(ctrl, spifi->io_base + SPIFI_CTRL);
+> @@ -356,22 +358,26 @@ static int nxp_spifi_setup_flash(struct nxp_spifi *spifi,
+>  	ret = spi_nor_scan(&spifi->nor, NULL, &hwcaps);
+>  	if (ret) {
+>  		dev_err(spifi->dev, "device scan failed\n");
+> -		return ret;
+> +		goto err_node_put;
+>  	}
+>  
+>  	ret = nxp_spifi_setup_memory_cmd(spifi);
+>  	if (ret) {
+>  		dev_err(spifi->dev, "memory command setup failed\n");
+> -		return ret;
+> +		goto err_node_put;
+>  	}
+>  
+>  	ret = mtd_device_register(&spifi->nor.mtd, NULL, 0);
+>  	if (ret) {
+>  		dev_err(spifi->dev, "mtd device parse failed\n");
+> -		return ret;
+> +		goto err_node_put;
+>  	}
+>  
+>  	return 0;
+> +
+> +err_node_put:
+> +	of_node_put(np);
+> +	return ret;
+>  }
+>  
+>  static int nxp_spifi_probe(struct platform_device *pdev)
