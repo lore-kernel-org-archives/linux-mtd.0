@@ -1,40 +1,24 @@
-Received: from userp2120.oracle.com ([156.151.31.85])
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGXB6-0000Qv-JT
- for linux-mtd@lists.infradead.org; Wed, 09 May 2018 22:03:18 +0000
-Date: Wed, 9 May 2018 15:02:31 -0700
-From: "Darrick J. Wong" <darrick.wong@oracle.com>
-To: Michal Hocko <mhocko@kernel.org>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ id 1fGXZr-0001WR-7w
+ for linux-mtd@lists.infradead.org; Wed, 09 May 2018 22:28:53 +0000
+From: NeilBrown <neil@brown.name>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Date: Thu, 10 May 2018 08:28:25 +1000
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Steven Whitehouse <swhiteho@redhat.com>,
- Bob Peterson <rpeterso@redhat.com>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Anna Schumaker <anna.schumaker@netapp.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Mikulas Patocka <mpatocka@redhat.com>, linux-mtd@lists.infradead.org,
- linux-ext4@vger.kernel.org, cluster-devel@redhat.com,
- linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: vmalloc with GFP_NOFS
-Message-ID: <20180509220231.GD25312@magnolia>
-References: <20180424162712.GL17484@dhcp22.suse.cz>
- <20180424183536.GF30619@thunk.org>
- <20180424192542.GS17484@dhcp22.suse.cz>
- <20180509134222.GU32366@dhcp22.suse.cz>
- <20180509151351.GA4111@magnolia>
- <20180509210447.GX32366@dhcp22.suse.cz>
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH/RFC] mtd: spi-nor: honour max_message_size for spi-nor
+ writes.
+In-Reply-To: <20180509160240.23ef11f2@bbrezillon>
+References: <87efj1kw9u.fsf@notabene.neil.brown.name>
+ <20180509160240.23ef11f2@bbrezillon>
+Message-ID: <87vabwa2gm.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180509210447.GX32366@dhcp22.suse.cz>
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,122 +28,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 09, 2018 at 11:04:47PM +0200, Michal Hocko wrote:
-> On Wed 09-05-18 08:13:51, Darrick J. Wong wrote:
-> > On Wed, May 09, 2018 at 03:42:22PM +0200, Michal Hocko wrote:
-> > > On Tue 24-04-18 13:25:42, Michal Hocko wrote:
-> > > [...]
-> > > > > As a suggestion, could you take
-> > > > > documentation about how to convert to the memalloc_nofs_{save,restore}
-> > > > > scope api (which I think you've written about e-mails at length
-> > > > > before), and put that into a file in Documentation/core-api?
-> > > > 
-> > > > I can.
-> > > 
-> > > Does something like the below sound reasonable/helpful?
-> > > ---
-> > > =================================
-> > > GFP masks used from FS/IO context
-> > > =================================
-> > > 
-> > > :Date: Mapy, 2018
-> > > :Author: Michal Hocko <mhocko@kernel.org>
-> > > 
-> > > Introduction
-> > > ============
-> > > 
-> > > FS resp. IO submitting code paths have to be careful when allocating
-> > 
-> > Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
-> > 
-> > (Or is this one of those things where this looks like plain English text
-> > but in reality it's some sort of markup that I'm not so familiar with?)
-> > 
-> > Confused because I've seen 'resp.' used as shorthand for
-> > 'responsible'...
-> 
-> Well, I've tried to cover both. Filesystem and IO code paths which
-> allocate while in sensitive context. IO submission is kinda clear but I
-> am not sure what a general term for filsystem code paths would be. I
-> would be greatful for any hints here.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-"Code paths in the filesystem and IO stacks must be careful when
-allocating memory to prevent recursion deadlocks caused by direct memory
-reclaim calling back into the FS or IO paths and blocking on already
-held resources (e.g. locks)." ?
+On Wed, May 09 2018, Boris Brezillon wrote:
 
---D
+> On Fri, 27 Apr 2018 16:18:05 +1000
+> NeilBrown <neil@brown.name> wrote:
+>
+>> Hi,
+>>  I've labeled this an RFC because I'm really not sure about removing the
+>>  error path from spi_nor_write() -- maybe that really matters.  But on
+>>  my hardware, performing multiple small spi writes to the flash seems
+>>  to work.
+>>=20
+>>  The spi driver is drivers/staging/mt7621-spi.  Possibly this needs to
+>>  use DMA instead of a FIFO (assuming the hardware can) - or maybe
+>>  drivers/spi/spi-mt65xx.c can be made to work on this hardware, though
+>>  that is for an ARM SOC and mt7621 is a MIPS SOC.
+>>=20
+>>  I note that openwrt has similar patches:
+>>   target/linux/generic/pending-4.14/450-mtd-spi-nor-allow-NOR-driver-to-=
+write-fewer-bytes-th.patch
+>>=20
+>>  They also change the spi driver to do a short write, rather
+>>  than change m25p80 to request a short write.
+>>=20
+>>  Is there something horribly wrong with this?
+>
+> Marek, any opinion on this patch?
+>
 
-> 
-> > 
-> > > memory to prevent from potential recursion deadlocks caused by direct
-> > > memory reclaim calling back into the FS/IO path and block on already
-> > > held resources (e.g. locks). Traditional way to avoid this problem
-> > 
-> > 'The traditional way to avoid this deadlock problem...'
-> 
-> Done
-> 
-> > > is to clear __GFP_FS resp. __GFP_IO (note the later implies clearing
-> > > the first as well) in the gfp mask when calling an allocator. GFP_NOFS
-> > > resp. GFP_NOIO can be used as shortcut.
-> > > 
-> > > This has been the traditional way to avoid deadlocks since ages. It
-> > 
-> > I think this sentence is a little redundant with the previous sentence,
-> > you could chop it out and join this paragraph to the one before it.
-> 
-> OK
-> 
-> > 
-> > > turned out though that above approach has led to abuses when the restricted
-> > > gfp mask is used "just in case" without a deeper consideration which leads
-> > > to problems because an excessive use of GFP_NOFS/GFP_NOIO can lead to
-> > > memory over-reclaim or other memory reclaim issues.
-> > > 
-> > > New API
-> > > =======
-> > > 
-> > > Since 4.12 we do have a generic scope API for both NOFS and NOIO context
-> > > ``memalloc_nofs_save``, ``memalloc_nofs_restore`` resp. ``memalloc_noio_save``,
-> > > ``memalloc_noio_restore`` which allow to mark a scope to be a critical
-> > > section from the memory reclaim recursion into FS/IO POV. Any allocation
-> > > from that scope will inherently drop __GFP_FS resp. __GFP_IO from the given
-> > > mask so no memory allocation can recurse back in the FS/IO.
-> > > 
-> > > FS/IO code then simply calls the appropriate save function right at
-> > > the layer where a lock taken from the reclaim context (e.g. shrinker)
-> > > is taken and the corresponding restore function when the lock is
-> > > released. All that ideally along with an explanation what is the reclaim
-> > > context for easier maintenance.
-> > > 
-> > > What about __vmalloc(GFP_NOFS)
-> > > ==============================
-> > > 
-> > > vmalloc doesn't support GFP_NOFS semantic because there are hardcoded
-> > > GFP_KERNEL allocations deep inside the allocator which are quit non-trivial
-> > 
-> > ...which are quite non-trivial...
-> 
-> fixed
-> 
-> > > to fix up. That means that calling ``vmalloc`` with GFP_NOFS/GFP_NOIO is
-> > > almost always a bug. The good news is that the NOFS/NOIO semantic can be
-> > > achieved by the scope api.
-> > > 
-> > > In the ideal world, upper layers should already mark dangerous contexts
-> > > and so no special care is required and vmalloc should be called without
-> > > any problems. Sometimes if the context is not really clear or there are
-> > > layering violations then the recommended way around that is to wrap ``vmalloc``
-> > > by the scope API with a comment explaining the problem.
-> > 
-> > Otherwise looks ok to me based on my understanding of how all this is
-> > supposed to work...
-> > 
-> > Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-> 
-> Thanks for your review!
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+Hi,
+ thanks for following up.
+ I have since found that I don't need this patch, though maybe others
+ still do(??).
+ My hardware can only send 36 bytes and receive 32 in a single
+ transaction.  However I can run a sequence of transactions
+ to process a whole message no matter how large that message is.  As
+ long as I keep chip-select asserted, all the slave device sees is that
+ the clock period isn't quite constant, and the slave shouldn't care
+ much about that.
+ When reading from flash, I found that handling large messages with
+ multiple hardware transactions was 50% faster than breaking the
+ read down into lots of 32 byte messages.
+
+ So, I won't object if this patch is forgotten.  Thanks for
+ your time anyway.
+
+NeilBrown
+
+>>=20
+>> Thanks,
+>> NeilBrown
+>>=20
+>> -----------------------8<------------------------
+>>=20
+>> m25p80 honours max_message_size and max_transfer_size
+>> for reads, but not for writes.
+>> I have a driver that has a max message size of 36 bytes
+>> (command, address, 32 bytes data, all places in a FIFO
+>> in the controller).
+>> This requires m25p80_write() to honour the size limits.
+>> For that to work, spi-nor needs to quietly accept partial
+>> writes.
+>>=20
+>> With this, I can successfully re-flash my device.
+>>=20
+>> Signed-off-by: NeilBrown <neil@brown.name>
+>> ---
+>>  drivers/mtd/devices/m25p80.c  | 3 ++-
+>>  drivers/mtd/spi-nor/spi-nor.c | 7 -------
+>>  2 files changed, 2 insertions(+), 8 deletions(-)
+>>=20
+>> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+>> index a4e18f6aaa33..7ded13507604 100644
+>> --- a/drivers/mtd/devices/m25p80.c
+>> +++ b/drivers/mtd/devices/m25p80.c
+>> @@ -117,7 +117,8 @@ static ssize_t m25p80_write(struct spi_nor *nor, lof=
+f_t to, size_t len,
+>>=20=20
+>>  	t[data_idx].tx_buf =3D buf;
+>>  	t[data_idx].tx_nbits =3D data_nbits;
+>> -	t[data_idx].len =3D len;
+>> +	t[data_idx].len =3D min3(len, spi_max_transfer_size(spi),
+>> +			       spi_max_message_size(spi) - cmd_sz);
+>>  	spi_message_add_tail(&t[data_idx], &m);
+>>=20=20
+>>  	ret =3D spi_sync(spi, &m);
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor=
+.c
+>> index 42ae9a1529bb..cfa15f2801ad 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1445,13 +1445,6 @@ static int spi_nor_write(struct mtd_info *mtd, lo=
+ff_t to, size_t len,
+>>  			goto write_err;
+>>  		*retlen +=3D written;
+>>  		i +=3D written;
+>> -		if (written !=3D page_remain) {
+>> -			dev_err(nor->dev,
+>> -				"While writing %zu bytes written %zd bytes\n",
+>> -				page_remain, written);
+>> -			ret =3D -EIO;
+>> -			goto write_err;
+>> -		}
+>>  	}
+>>=20=20
+>>  write_err:
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlrzdgoACgkQOeye3VZi
+gbmP3A//bBZkozjrzVgiLiGqxSxJXp/fTZEQIkesVDNh0gaVGdGD+w8CqepThjZC
+qlGKJWArkE3yWwrBzSwhn2mf9tETV9AVTWsoIFcx2SJWgzb5CbkmZ0gHwMwzAcPT
+i2iD0mW+BV09NZEX1t7S8MDSgVLyG7t63gtU1000bwejPmmmd7/TXbGQfcpPkBzw
+jVEzDn7T61OeFOfoBmvteet29fIg891jykw5zpbeEd2P5xcYS/M9XqCfIyhpXSSh
+7G9XrcILxexYZKONFouFoiQISZLTh/qLSsehJspZ9B6+IzR/8DrQIAcdrtTXZv6Z
+Jj2dfNLyZRhacZ2qHG0lIXhbACJWTkQSV+XRGBA+BDhBXhJy5hdfEvElL9QEJ04P
+4dl15hX0QjpIOloWNsk4j8od3P9DHJeLcnI21P6bMHa26FkYMTnMDpntW9ANP8b7
+0HTHxVtOGoPT9/h+hPZqa/DDXr/uaDBhT6hCn5NiVuDw9ektS9NZO6JJJCciIjJk
+nqo6g+VPTNPl1cp4Ipi1rwfQciokYEPZbmVlDYHHj5/xuUf1lFObBZA5zdeq7dv3
+03KD5+XTDuwxjZ+mnUSbYF7Q1M7rDxjO7Jr7M/rlTgqdDkI8XCY7iU47gvANgW5j
+U+T0SBdm7HVHAZjCqsyNTVP3RMygPf6bmqMzOfny7wcwKIgErEU=
+=vv01
+-----END PGP SIGNATURE-----
+--=-=-=--
