@@ -1,41 +1,25 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGebB-0004P1-2x
- for linux-mtd@lists.infradead.org; Thu, 10 May 2018 05:58:42 +0000
-Date: Thu, 10 May 2018 07:58:25 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Steven Whitehouse <swhiteho@redhat.com>,
- Bob Peterson <rpeterso@redhat.com>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Anna Schumaker <anna.schumaker@netapp.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Mikulas Patocka <mpatocka@redhat.com>,
- linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: vmalloc with GFP_NOFS
-Message-ID: <20180510055825.GB32366@dhcp22.suse.cz>
-References: <20180424162712.GL17484@dhcp22.suse.cz>
- <20180424183536.GF30619@thunk.org>
- <20180424192542.GS17484@dhcp22.suse.cz>
- <20180509134222.GU32366@dhcp22.suse.cz>
- <20180509151351.GA4111@magnolia>
- <20180509210447.GX32366@dhcp22.suse.cz>
- <20180509220231.GD25312@magnolia>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGfLa-0006tl-Fo
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2018 06:46:46 +0000
+Date: Thu, 10 May 2018 08:46:14 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, Bean Huo <beanhuo@micron.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Peter
+ Pan <peterpandong@micron.com>
+Subject: Re: [PATCH] mtd: rawnand: micron: Fix support for on-die ECC
+Message-ID: <20180510084614.07b1fd9c@bbrezillon>
+In-Reply-To: <20180508231259.10e951d4@bbrezillon>
+References: <20180503074908.20485-1-boris.brezillon@bootlin.com>
+ <20180504115835.5702710e@xps13>
+ <20180508231259.10e951d4@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180509220231.GD25312@magnolia>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,31 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 09-05-18 15:02:31, Darrick J. Wong wrote:
-> On Wed, May 09, 2018 at 11:04:47PM +0200, Michal Hocko wrote:
-> > On Wed 09-05-18 08:13:51, Darrick J. Wong wrote:
-[...]
-> > > > FS resp. IO submitting code paths have to be careful when allocating
-> > > 
-> > > Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
-> > > 
-> > > (Or is this one of those things where this looks like plain English text
-> > > but in reality it's some sort of markup that I'm not so familiar with?)
-> > > 
-> > > Confused because I've seen 'resp.' used as shorthand for
-> > > 'responsible'...
-> > 
-> > Well, I've tried to cover both. Filesystem and IO code paths which
-> > allocate while in sensitive context. IO submission is kinda clear but I
-> > am not sure what a general term for filsystem code paths would be. I
-> > would be greatful for any hints here.
-> 
-> "Code paths in the filesystem and IO stacks must be careful when
-> allocating memory to prevent recursion deadlocks caused by direct memory
-> reclaim calling back into the FS or IO paths and blocking on already
-> held resources (e.g. locks)." ?
+On Tue, 8 May 2018 23:12:59 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Great, thanks!
--- 
-Michal Hocko
-SUSE Labs
+> On Fri, 4 May 2018 11:58:35 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+> > Hi Boris,
+> > 
+> > On Thu,  3 May 2018 09:49:08 +0200, Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:
+> >   
+> > > It looks like the NAND_STATUS_FAIL bit is sticky after an ECC failure,
+> > > which leads all READ operations following the failing one to report
+> > > an ECC failure. Reset the chip to clear the NAND_STATUS_FAIL bit.
+> > > 
+> > > Note that this behavior is not document in the datasheet, but resetting
+> > > the chip is the only solution we found to fix the problem.
+> > > 
+> > > Fixes: 9748e1d87573 ("mtd: nand: add support for Micron on-die ECC")
+> > > Cc: <stable@vger.kernel.org>
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > > Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> > > Cc: Bean Huo <beanhuo@micron.com>
+> > > Cc: Peter Pan <peterpandong@micron.com>
+> > > ---    
+> > 
+> > Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>  
+> 
+> Queued to mtd/master.
+
+I'm dropping this patch because I'm no longer sure this is the correct
+way to fix bug. It seems that nand_set_features_op() is checking the
+FAIL bit while the ONFI spec clearly says that FAIL bit is only valid
+after a PROGRAM, ERASE or READ-with-on-die-ECC-enabled op. That might
+explain why ->set_features() fails with -EIO after an ECC failure
+(apparently Micron only clears the FAIL bit when launching a PROGRAM,
+ERASE or READ-with-on-die-ECC-enabled op, not on a SET_FEATURES op).
