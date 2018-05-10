@@ -1,34 +1,41 @@
-Received: from mail-db5eur01on0124.outbound.protection.outlook.com
- ([104.47.2.124] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mx2.suse.de ([195.135.220.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGbgm-000833-3d
- for linux-mtd@lists.infradead.org; Thu, 10 May 2018 02:52:17 +0000
-From: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, "jagdish.gediya@nxp.com"
- <jagdish.gediya@nxp.com>, "shreeya.patel23498@gmail.com"
- <shreeya.patel23498@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "Bos, Ties (Nokia - US/Sunnyvale)"
- <ties.bos@nokia.com>
-Subject: RE: [PATCH v4 2/2] mtd: rawnand: use bit-wise majority to recover the
- contents of ONFI parameter
-Date: Thu, 10 May 2018 02:52:01 +0000
-Message-ID: <VI1PR07MB1615E6A80F9EB20DCCABE2DC81980@VI1PR07MB1615.eurprd07.prod.outlook.com>
-References: <1525814394-30067-1-git-send-email-Jane.Wan@nokia.com>
- <1525814394-30067-2-git-send-email-Jane.Wan@nokia.com>
- <20180509161928.149a42a7@bbrezillon>
-In-Reply-To: <20180509161928.149a42a7@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1fGebB-0004P1-2x
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2018 05:58:42 +0000
+Date: Thu, 10 May 2018 07:58:25 +0200
+From: Michal Hocko <mhocko@kernel.org>
+To: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Message-ID: <20180510055825.GB32366@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
+ <20180424183536.GF30619@thunk.org>
+ <20180424192542.GS17484@dhcp22.suse.cz>
+ <20180509134222.GU32366@dhcp22.suse.cz>
+ <20180509151351.GA4111@magnolia>
+ <20180509210447.GX32366@dhcp22.suse.cz>
+ <20180509220231.GD25312@magnolia>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180509220231.GD25312@magnolia>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,152 +45,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed 09-05-18 15:02:31, Darrick J. Wong wrote:
+> On Wed, May 09, 2018 at 11:04:47PM +0200, Michal Hocko wrote:
+> > On Wed 09-05-18 08:13:51, Darrick J. Wong wrote:
+[...]
+> > > > FS resp. IO submitting code paths have to be careful when allocating
+> > > 
+> > > Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
+> > > 
+> > > (Or is this one of those things where this looks like plain English text
+> > > but in reality it's some sort of markup that I'm not so familiar with?)
+> > > 
+> > > Confused because I've seen 'resp.' used as shorthand for
+> > > 'responsible'...
+> > 
+> > Well, I've tried to cover both. Filesystem and IO code paths which
+> > allocate while in sensitive context. IO submission is kinda clear but I
+> > am not sure what a general term for filsystem code paths would be. I
+> > would be greatful for any hints here.
+> 
+> "Code paths in the filesystem and IO stacks must be careful when
+> allocating memory to prevent recursion deadlocks caused by direct memory
+> reclaim calling back into the FS or IO paths and blocking on already
+> held resources (e.g. locks)." ?
 
-I've sent v5 of the patch based on your comment.
-
-Thanks.
-Jane
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Wednesday, May 09, 2018 7:19 AM
-> To: Wan, Jane (Nokia - US/Sunnyvale) <jane.wan@nokia.com>
-> Cc: miquel.raynal@bootlin.com; dwmw2@infradead.org;
-> computersforpeace@gmail.com; richard@nod.at; marek.vasut@gmail.com;
-> yamada.masahiro@socionext.com; prabhakar.kushwaha@nxp.com;
-> shawnguo@kernel.org; jagdish.gediya@nxp.com;
-> shreeya.patel23498@gmail.com; linux-mtd@lists.infradead.org; linux-
-> kernel@vger.kernel.org; Bos, Ties (Nokia - US/Sunnyvale) <ties.bos@nokia.=
-com>
-> Subject: Re: [PATCH v4 2/2] mtd: rawnand: use bit-wise majority to recove=
-r the
-> contents of ONFI parameter
->=20
-> On Tue,  8 May 2018 14:19:54 -0700
-> Jane Wan <Jane.Wan@nokia.com> wrote:
->=20
-> > Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
-> > CRC values, the bit-wise majority may be used to recover the contents
-> > of the parameter pages from the parameter page copies present.
-> >
-> > Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> > ---
-> >  drivers/mtd/nand/raw/nand_base.c |   49
-> ++++++++++++++++++++++++++++++++++----
-> >  1 file changed, 44 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c
-> > b/drivers/mtd/nand/raw/nand_base.c
-> > index 72f3a89..dfc341c 100644
-> > --- a/drivers/mtd/nand/raw/nand_base.c
-> > +++ b/drivers/mtd/nand/raw/nand_base.c
-> > @@ -5086,6 +5086,38 @@ static int
-> nand_flash_detect_ext_param_page(struct nand_chip *chip,
-> >  	return ret;
-> >  }
-> >
-> > +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
-> > +
-> > +/*
-> > + * Recover NAND parameter page with bit-wise majority  */ static int
-> > +onfi_recover_param(struct nand_onfi_params *p, int pages)
->=20
-> I had something more generic in mind:
->=20
-> static void nand_bit_wise_majority(const void **srcbufs,
-> 				   void *dstbuf,
-> 				   unsigned int nbufs,
-> 				   unsigned int bufsize)
-> {
-> 	...
-> }
->=20
-> And then you do the crc check in nand_flash_detect_onfi().
->=20
-> The reason I'm asking that is because I'm almost sure we'll re-use this f=
-unctions
-> for extended param pages, and also for vendor specific data (we already h=
-ave a
-> byte-wise majority check in the hynix driver, so I wouldn't be surprised =
-if other
-> vendors decided to use a bit-wise approach for some of their OTP area).
-
-[Jane] Modified the function as suggested in v5.
-
->=20
-> > +{
-> > +	int i, j, k;
-> > +	u8 v, m;
-> > +	u8 *buf;
-> > +
-> > +	buf =3D (u8 *)p;
-> > +	for (i =3D 0; i < sizeof(*p); i++) {
-> > +		v =3D 0;
-> > +		for (j =3D 0; j < 8; j++) {
-> > +			m =3D 0;
-> > +			for (k =3D 0; k < pages; k++)
-> > +				m +=3D GET_BIT(j, buf[k*sizeof(*p) + i]);
-> > +			if (m > pages/2)
-> > +				v |=3D BIT(j);
-> > +		}
-> > +		((u8 *)p)[i] =3D v;
-> > +	}
-> > +
-> > +	if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) =3D=3D
-> > +			le16_to_cpu(p->crc)) {
-> > +		return 1;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  /*
-> >   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 oth=
-erwise.
-> >   */
-> > @@ -5102,7 +5134,7 @@ static int nand_flash_detect_onfi(struct nand_chi=
-p
-> *chip)
-> >  		return 0;
-> >
-> >  	/* ONFI chip: allocate a buffer to hold its parameter page */
-> > -	p =3D kzalloc(sizeof(*p), GFP_KERNEL);
-> > +	p =3D kzalloc((sizeof(*p) * 3), GFP_KERNEL);
-> >  	if (!p)
-> >  		return -ENOMEM;
-> >
-> > @@ -5113,21 +5145,28 @@ static int nand_flash_detect_onfi(struct
-> nand_chip *chip)
-> >  	}
-> >
-> >  	for (i =3D 0; i < 3; i++) {
-> > -		ret =3D nand_read_data_op(chip, p, sizeof(*p), true);
-> > +		ret =3D nand_read_data_op(chip, &p[i], sizeof(*p), true);
-> >  		if (ret) {
-> >  			ret =3D 0;
-> >  			goto free_onfi_param_page;
-> >  		}
-> >
-> > -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) =3D=3D
-> > +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) =3D=3D
-> >  				le16_to_cpu(p->crc)) {
-> > +			if (i)
-> > +				memcpy(p, &p[i], sizeof(*p));
-> >  			break;
-> >  		}
-> >  	}
-> >
-> >  	if (i =3D=3D 3) {
-> > -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> > -		goto free_onfi_param_page;
-> > +		pr_err("Could not find valid ONFI parameter page\n");
-> > +		pr_info("Recover ONFI params with bit-wise majority\n");
-> > +		ret =3D onfi_recover_param(p, 3);
-> > +		if (ret =3D=3D 0) {
-> > +			pr_err("ONFI parameter recovery failed, aborting\n");
-> > +			goto free_onfi_param_page;
-> > +		}
-> >  	}
-> >
-> >  	/* Check version */
+Great, thanks!
+-- 
+Michal Hocko
+SUSE Labs
