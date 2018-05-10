@@ -1,42 +1,26 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from mail-wr0-x232.google.com ([2a00:1450:400c:c0c::232])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGfqe-0004RF-JM
- for linux-mtd@lists.infradead.org; Thu, 10 May 2018 07:18:46 +0000
-Date: Thu, 10 May 2018 09:18:25 +0200
-From: Michal Hocko <mhocko@kernel.org>
-To: "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc: "Theodore Y. Ts'o" <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andreas Dilger <adilger.kernel@dilger.ca>,
- Steven Whitehouse <swhiteho@redhat.com>,
- Bob Peterson <rpeterso@redhat.com>,
- Trond Myklebust <trond.myklebust@primarydata.com>,
- Anna Schumaker <anna.schumaker@netapp.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Philippe Ombredanne <pombredanne@nexb.com>,
- Kate Stewart <kstewart@linuxfoundation.org>,
- Mikulas Patocka <mpatocka@redhat.com>,
- linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
- cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: vmalloc with GFP_NOFS
-Message-ID: <20180510071825.GC32366@dhcp22.suse.cz>
-References: <20180424162712.GL17484@dhcp22.suse.cz>
- <20180424183536.GF30619@thunk.org>
- <20180424192542.GS17484@dhcp22.suse.cz>
- <20180509134222.GU32366@dhcp22.suse.cz>
- <20180509151351.GA4111@magnolia>
- <20180509210447.GX32366@dhcp22.suse.cz>
- <20180509220231.GD25312@magnolia>
- <20180510055825.GB32366@dhcp22.suse.cz>
+ id 1fGjpj-0006PO-6V
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2018 11:34:04 +0000
+Received: by mail-wr0-x232.google.com with SMTP id y15-v6so1659307wrg.11
+ for <linux-mtd@lists.infradead.org>; Thu, 10 May 2018 04:33:52 -0700 (PDT)
+Subject: Re: support for non-uniform SPI NOR flash memories
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>
+References: <5bc6ab91-9ae3-28b1-2110-452f58fee8c7@microchip.com>
+ <e9218dcf-dce6-a009-70ec-33d0cac5bc4d@gmail.com>
+ <b7cbad40-8340-0a8f-e539-932b777757d8@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <825117a7-0412-0558-f7e0-37e026b45db2@gmail.com>
+Date: Thu, 10 May 2018 12:19:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180510055825.GB32366@dhcp22.suse.cz>
+In-Reply-To: <b7cbad40-8340-0a8f-e539-932b777757d8@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,35 +30,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu 10-05-18 07:58:25, Michal Hocko wrote:
-> On Wed 09-05-18 15:02:31, Darrick J. Wong wrote:
-> > On Wed, May 09, 2018 at 11:04:47PM +0200, Michal Hocko wrote:
-> > > On Wed 09-05-18 08:13:51, Darrick J. Wong wrote:
-> [...]
-> > > > > FS resp. IO submitting code paths have to be careful when allocating
-> > > > 
-> > > > Not sure what 'FS resp. IO' means here -- 'FS and IO' ?
-> > > > 
-> > > > (Or is this one of those things where this looks like plain English text
-> > > > but in reality it's some sort of markup that I'm not so familiar with?)
-> > > > 
-> > > > Confused because I've seen 'resp.' used as shorthand for
-> > > > 'responsible'...
-> > > 
-> > > Well, I've tried to cover both. Filesystem and IO code paths which
-> > > allocate while in sensitive context. IO submission is kinda clear but I
-> > > am not sure what a general term for filsystem code paths would be. I
-> > > would be greatful for any hints here.
-> > 
-> > "Code paths in the filesystem and IO stacks must be careful when
-> > allocating memory to prevent recursion deadlocks caused by direct memory
-> > reclaim calling back into the FS or IO paths and blocking on already
-> > held resources (e.g. locks)." ?
+On 05/09/2018 06:40 PM, Tudor Ambarus wrote:
 > 
-> Great, thanks!
+> On 05/07/2018 08:14 PM, Marek Vasut wrote:
+>> But indeed there are -- to my knowledge -- no flashes with interleaved
+>> erase blocks. And yes, there could be improvement in erasing exactly the
+>> required chunk of flash with a fitting opcode:)
+> 
+> Thanks Marek.
+> 
+> Other improvement would be to minimize the amount of erase() calls by
+> using the best sequence of erase type commands depending on alignment.
+> But this will increase the number of queries.
+> 
+> I've read again the Sector Map section of the JEDECB standard and it
+> looks like "overlaid" regions are possible. Here's an example that I
+> found there:
+> 
+> Bottom: 8x 4KB sectors at bottom (only 4KB erase supported),
+>         1x overlaid 64KB sector at bottom (only 64KB erase supported),
+>         511 uniform 64KB sectors (only 64KB erase supported)
+> 
+> That's interesting, when one wants to erase the overlaid 64KB sector, I
+> guess that the 8x 4KB sectors will be erased too.
 
-I dared to extend the last part to "(e.g. locks - most commonly those
-used for the transaction context)"
+Ah yes, some old flashes had these few 64 kiB erase blocks at the
+beginning/end, which could either be erased as one 64 kiB block or as
+smaller 8k/4k blocks .
+
+> I'm still studying this, I'll try to come with a proposal in the next
+> few days.
+
+Cool!
+
 -- 
-Michal Hocko
-SUSE Labs
+Best regards,
+Marek Vasut
