@@ -1,26 +1,24 @@
-Received: from mx2.suse.de ([195.135.220.15])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fGkCh-0007wh-ED
- for linux-mtd@lists.infradead.org; Thu, 10 May 2018 11:57:49 +0000
-From: NeilBrown <neil@brown.name>
-To: Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Date: Thu, 10 May 2018 21:57:20 +1000
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC] mtd: spi-nor: honour max_message_size for spi-nor
- writes.
-In-Reply-To: <cb612906-3d52-66cd-fbbc-7872bd2d9a92@gmail.com>
-References: <87efj1kw9u.fsf@notabene.neil.brown.name>
- <20180509160240.23ef11f2@bbrezillon>
- <87vabwa2gm.fsf@notabene.neil.brown.name>
- <cb612906-3d52-66cd-fbbc-7872bd2d9a92@gmail.com>
-Message-ID: <87mux7afkv.fsf@notabene.neil.brown.name>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fGkI8-0001QK-QF
+ for linux-mtd@lists.infradead.org; Thu, 10 May 2018 12:03:31 +0000
+Date: Thu, 10 May 2018 14:03:11 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
+ yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
+ shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover
+ the contents of ONFI parameter
+Message-ID: <20180510140311.02805561@bbrezillon>
+In-Reply-To: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
+References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
- micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,83 +28,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Jane,
 
-On Thu, May 10 2018, Marek Vasut wrote:
+Subject prefix should be "[PATCH v5] ...", the 2/2 is no longer valid
+since you only have one patch here.
 
-> On 05/10/2018 12:28 AM, NeilBrown wrote:
->> On Wed, May 09 2018, Boris Brezillon wrote:
->>=20
->>> On Fri, 27 Apr 2018 16:18:05 +1000
->>> NeilBrown <neil@brown.name> wrote:
->>>
->>>> Hi,
->>>>  I've labeled this an RFC because I'm really not sure about removing t=
-he
->>>>  error path from spi_nor_write() -- maybe that really matters.  But on
->>>>  my hardware, performing multiple small spi writes to the flash seems
->>>>  to work.
->>>>
->>>>  The spi driver is drivers/staging/mt7621-spi.  Possibly this needs to
->>>>  use DMA instead of a FIFO (assuming the hardware can) - or maybe
->>>>  drivers/spi/spi-mt65xx.c can be made to work on this hardware, though
->>>>  that is for an ARM SOC and mt7621 is a MIPS SOC.
->>>>
->>>>  I note that openwrt has similar patches:
->>>>   target/linux/generic/pending-4.14/450-mtd-spi-nor-allow-NOR-driver-t=
-o-write-fewer-bytes-th.patch
->>>>
->>>>  They also change the spi driver to do a short write, rather
->>>>  than change m25p80 to request a short write.
->>>>
->>>>  Is there something horribly wrong with this?
->>>
->>> Marek, any opinion on this patch?
->>>
->>=20
->> Hi,
->>  thanks for following up.
->>  I have since found that I don't need this patch, though maybe others
->>  still do(??).
->>  My hardware can only send 36 bytes and receive 32 in a single
->>  transaction.  However I can run a sequence of transactions
->>  to process a whole message no matter how large that message is.  As
->>  long as I keep chip-select asserted, all the slave device sees is that
->>  the clock period isn't quite constant, and the slave shouldn't care
->>  much about that.
->>  When reading from flash, I found that handling large messages with
->>  multiple hardware transactions was 50% faster than breaking the
->>  read down into lots of 32 byte messages.
->>=20
->>  So, I won't object if this patch is forgotten.  Thanks for
->>  your time anyway.
->
-> Nice, which hardware is that ?
+On Wed,  9 May 2018 19:46:40 -0700
+Jane Wan <Jane.Wan@nokia.com> wrote:
 
-Mediatek MT7621 SOC (particularly in the gnubee.org NAS platform).
+> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+> CRC values, the bit-wise majority may be used to recover the contents of
+> the parameter pages from the parameter page copies present.
+> 
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> ---
+
+There should be a changelog here describing what has changed in each
+version of the patch.
+
+>  drivers/mtd/nand/raw/nand_base.c |   46 +++++++++++++++++++++++++++++++++-----
+>  1 file changed, 41 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 72f3a89..a7c2507 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5086,6 +5086,34 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+>  	return ret;
+>  }
+>  
+> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
+
+Not sure we need that macro, see below.
+
+> +
+> +/*
+> + * Recover data with bit-wise majority
+> + */
+> +static void nand_bit_wise_majority(const void **srcbufs,
+> +				   void *dstbuf,
+> +				   unsigned int nbufs,
+> +				   unsigned int bufsize)
+
+I'd prefer to have nbufs just after srcbufs and named nsrcbufs:
+
+static void nand_bit_wise_majority(const void **srcbufs,
+				   unsigned int nsrcbufs,
+				   void *dstbuf,
+				   unsigned int bufsize)
+
+> +{
+> +	int i, j, k;
+> +	u8 v, m;
+> +	u8 *p;
+> +
+> +	p = *(u8 **)srcbufs;
+
+Nope, I'd like to support the cases where srcbufs are not contiguous,
+so that does not work.
+
+> +	for (i = 0; i < bufsize; i++) {
+> +		v = 0;
+
+You can declare the v variable here, since its scope is limited to the
+for loop. BTW, v, m, can't we pick better names? I guess v is for val,
+but I'm not even sure what m stands for.
+
+> +		for (j = 0; j < 8; j++) {
+> +			m = 0;
+> +			for (k = 0; k < nbufs; k++)
+> +				m += GET_BIT(j, p[k*bufsize + i]);
+
+			for (k = 0; k < nbufs; k++) {
+				const u8 *srcbuf = srcbufs[j];
+
+				if (srcbuf[i] & BIT(k))
+					m++;
+			}
+
+> +			if (m > nbufs/2)
+
+Space between operands and operators please
+
+			if (m > nbufs / 2)
+
+> +				v |= BIT(j);
+> +		}
+> +		((u8 *)dstbuf)[i] = v;
+> +	}
+> +}
+> +
+>  /*
+>   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>   */
+> @@ -5102,7 +5130,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  		return 0;
+>  
+>  	/* ONFI chip: allocate a buffer to hold its parameter page */
+> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
+>  	if (!p)
+>  		return -ENOMEM;
+>  
+> @@ -5113,21 +5141,29 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  	}
+>  
+>  	for (i = 0; i < 3; i++) {
+> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
+> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
+>  		if (ret) {
+>  			ret = 0;
+>  			goto free_onfi_param_page;
+>  		}
+>  
+> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
+>  				le16_to_cpu(p->crc)) {
+> +			if (i)
+> +				memcpy(p, &p[i], sizeof(*p));
+>  			break;
+>  		}
+>  	}
+>  
+>  	if (i == 3) {
+
+		const void *srcbufs[3] = {p, p + 1, p + 2};
+
+> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> -		goto free_onfi_param_page;
+> +		pr_err("Could not find valid ONFI parameter page\n");
+> +		pr_info("Recover ONFI params with bit-wise majority\n");
+> +		nand_bit_wise_majority((const void **)&p, p, 3, sizeof(*p));
+
+		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
+				       sizeof(*p))
+
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
+> +				le16_to_cpu(p->crc)) {
+> +			pr_err("ONFI parameter recovery failed, aborting\n");
+> +			goto free_onfi_param_page;
+> +		}
+>  	}
+>  
+>  	/* Check version */
 
 Thanks,
-NeilBrown
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlr0M6AACgkQOeye3VZi
-gbnc0RAAhISafBi98oeBGi78hzSdG7XP2fL2WJ5S+qeCJt9KdEA8u5BAtl1GsCE7
-75mo3CEkgXQLhr6ynfsUbO5hVTkkVfokBUj/wfpXnpW0U9D1WBw4plDljMaW3pxG
-72L3qotPapu6oQzZ/9xNFu01bnhKKojwA5htmLkn+Mbn6EBcPUIQQUIKPZGIa9LV
-w8PJJ8tzHzIpZW/kbISgh/5cRyOc8I8+KvFVbsYvi4uXu0MDhslvW0Tx1sQTT8sn
-VhUwG9i1C2jZRKZ8ahfxBHzF190CtPMzeWtYf/f71W31TWJ3JesImIwf9Q7ztFmW
-hQDXKNBUN/3PA8Y8rMSpBOZr1gQSh3AettEy8DCpiGu0ZIzq+ovBm70JibHTL7xx
-aft6Of1qwKL7J4zmQdi9wfpWomfafeAfX0UA2BnhG6CU5VwGocCfhXTeeFyB/RTP
-Zn+oxJGW1CKpPjKWfhyxx7re4t3xan9oOZ9mK3JUJBdGeFnkiuVnk8Xy1fKy5wyh
-P9ipUNQx4aMCD+nHL74aEgpR2Zjp9hZ4i/OqaVvlawDaroGbq/PqS/Ef9zClOnJ/
-+NVOk/x+ggWSKAnSSqux+V8pXMiemYi0/4vdgc4e5KqsLOXWHIeCHeGyQc8KWQnR
-q0YRE+iQYc0fuBPp0/w6/D/rQcJPEsEJeCad8RHQq77sIAYnAWE=
-=Fsjg
------END PGP SIGNATURE-----
---=-=-=--
+Boris
