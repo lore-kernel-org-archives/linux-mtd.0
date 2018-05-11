@@ -1,16 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fH30q-0000ac-OS
- for linux-mtd@lists.infradead.org; Fri, 11 May 2018 08:02:52 +0000
-Date: Fri, 11 May 2018 10:02:27 +0200
+ id 1fH4IQ-0002rQ-PH
+ for linux-mtd@lists.infradead.org; Fri, 11 May 2018 09:25:05 +0000
+Date: Fri, 11 May 2018 11:24:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Greg Ungerer <gerg@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, gerg@linux-m68k.org
-Subject: Re: linux-4.17-rc4 marvell-nand.c driver problems
-Message-ID: <20180511100227.6e016b48@bbrezillon>
-In-Reply-To: <579454cc-ad92-8fdc-a1ac-f7c57eb56606@kernel.org>
-References: <579454cc-ad92-8fdc-a1ac-f7c57eb56606@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org
+Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH v3 9/9] spi: Get rid of the spi_flash_read() API
+Message-ID: <20180511112440.3bdc84ae@bbrezillon>
+In-Reply-To: <20180422183522.11118-10-boris.brezillon@bootlin.com>
+References: <20180422183522.11118-1-boris.brezillon@bootlin.com>
+ <20180422183522.11118-10-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,197 +32,370 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg,
+Hi Mark,
 
-On Fri, 11 May 2018 17:11:28 +1000
-Greg Ungerer <gerg@kernel.org> wrote:
+On Sun, 22 Apr 2018 20:35:22 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Hi Miquel,
+> This API has been replaced by the spi_mem_xx() one, its only user
+> (spi-nor) has been converted to spi_mem_xx() and all SPI controller
+> drivers that were implementing the ->spi_flash_xxx() hooks are also
+> implementing the spi_mem ones. So we can safely get rid of this API.
 > 
-> I have a hardware platform built around the Armada 370 using NAND flash.
-> Its old hardware, and has run pretty much every kernel version from
-> 3.10 up to 4.16 with no problems. The flash is 128Mbyte SLC from various
-> vendors (Spansion, Micron, etc).
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v3:
+> - none
 > 
-> It has always been using the pxa3xx_nand.c driver up to now. With that
-> gone in 4.17 I am trying out the marvell_nand.c driver. I am getting
-> a dump just after startup:
+> Changes in v2:
+> - none
+> ---
+>  drivers/spi/spi-bcm-qspi.c | 34 +++------------------------
 
-Can you try to cherry-pick this commit [1] (it should appear in
-4.17-rc5).
+Looks like the bcm-qspi changes got lost when you applied the patch.
+This is probably due to a conflict you had to resolve (likely caused by
+the removal of the bcm53xx driver).
 
-Thanks,
+Regards,
 
 Boris
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/mtd/nand/raw?h=next-20180511&id=a2ee41fd953e7c3ff6c55a3038c80354d191a318
-
+>  drivers/spi/spi-bcm53xx.c  | 20 +---------------
+>  drivers/spi/spi-ti-qspi.c  | 41 ---------------------------------
+>  drivers/spi/spi.c          | 57 ----------------------------------------------
+>  include/linux/spi/spi.h    | 53 ------------------------------------------
+>  5 files changed, 4 insertions(+), 201 deletions(-)
 > 
-> UBIFS (ubi0:1): background thread "ubifs_bgt0_1" started, PID 154
-> marvell-nfc d00d0000.nand: Timeout waiting for RB signal
-> ubi0 error: ubi_io_write: error -110 while writing 2048 bytes to PEB 
-> 333:16384, written 0 bytes
-> CPU: 0 PID: 153 Comm: mount Not tainted 4.17.0-rc4-dirty #4
-> Hardware name: Marvell Armada 370/XP (Device Tree)
-> [<c010d8f4>] (unwind_backtrace) from [<c010b350>] (show_stack+0x10/0x14)
-> [<c010b350>] (show_stack) from [<c03ceba0>] (ubi_io_write+0x4d0/0x664)
-> [<c03ceba0>] (ubi_io_write) from [<c03cc004>] (ubi_eba_write_leb+0x80/0x650)
-> [<c03cc004>] (ubi_eba_write_leb) from [<c03cab40>] (ubi_leb_write+0xc0/0xe4)
-> [<c03cab40>] (ubi_leb_write) from [<c0271c38>] (ubifs_leb_write+0xa0/0x130)
-> [<c0271c38>] (ubifs_leb_write) from [<c027331c>] 
-> (ubifs_write_node+0xb8/0x1b4)
-> [<c027331c>] (ubifs_write_node) from [<c0278e6c>] 
-> (ubifs_write_master+0xbc/0x150)
-> [<c0278e6c>] (ubifs_write_master) from [<c0270020>] 
-> (ubifs_mount+0xfc8/0x14ac)
-> [<c0270020>] (ubifs_mount) from [<c01a8c78>] (mount_fs+0x14/0xa4)
-> [<c01a8c78>] (mount_fs) from [<c01c088c>] (vfs_kern_mount+0x48/0xd8)
-> [<c01c088c>] (vfs_kern_mount) from [<c01c33d0>] (do_mount+0x174/0xac4)
-> [<c01c33d0>] (do_mount) from [<c01c4080>] (ksys_mount+0x8c/0xbc)
-> [<c01c4080>] (ksys_mount) from [<c0101000>] (ret_fast_syscall+0x0/0x54)
-> Exception stack(0xceb15fa8 to 0xceb15ff0)
-> 5fa0:                   00000000 befedc80 befedfae befedfba befedfa8 
-> 00008000
-> 5fc0: 00000000 befedc80 b6f3b4a0 00000015 00000000 00000000 b6f3df74 
-> 00065704
-> 5fe0: b6ec2d18 befedb8c 0002aa60 b6ec2d28
-> ubi0: dumping 2048 bytes of data from PEB 333, offset 16384
-> ubi0 warning: ubi_eba_write_leb: failed to write data to PEB 333
-> ubi0 warning: ubi_eba_write_leb: switch to read-only mode
-> CPU: 0 PID: 153 Comm: mount Not tainted 4.17.0-rc4-dirty #4
-> Hardware name: Marvell Armada 370/XP (Device Tree)
-> [<c010d8f4>] (unwind_backtrace) from [<c010b350>] (show_stack+0x10/0x14)
-> [<c010b350>] (show_stack) from [<c03cc1ac>] (ubi_eba_write_leb+0x228/0x650)
-> [<c03cc1ac>] (ubi_eba_write_leb) from [<c03cab40>] (ubi_leb_write+0xc0/0xe4)
-> [<c03cab40>] (ubi_leb_write) from [<c0271c38>] (ubifs_leb_write+0xa0/0x130)
-> [<c0271c38>] (ubifs_leb_write) from [<c027331c>] 
-> (ubifs_write_node+0xb8/0x1b4)
-> [<c027331c>] (ubifs_write_node) from [<c0278e6c>] 
-> (ubifs_write_master+0xbc/0x150)
-> [<c0278e6c>] (ubifs_write_master) from [<c0270020>] 
-> (ubifs_mount+0xfc8/0x14ac)
-> [<c0270020>] (ubifs_mount) from [<c01a8c78>] (mount_fs+0x14/0xa4)
-> [<c01a8c78>] (mount_fs) from [<c01c088c>] (vfs_kern_mount+0x48/0xd8)
-> [<c01c088c>] (vfs_kern_mount) from [<c01c33d0>] (do_mount+0x174/0xac4)
-> [<c01c33d0>] (do_mount) from [<c01c4080>] (ksys_mount+0x8c/0xbc)
-> [<c01c4080>] (ksys_mount) from [<c0101000>] (ret_fast_syscall+0x0/0x54)
-> Exception stack(0xceb15fa8 to 0xceb15ff0)
-> 5fa0:                   00000000 befedc80 befedfae befedfba befedfa8 
-> 00008000
-> 5fc0: 00000000 befedc80 b6f3b4a0 00000015 00000000 00000000 b6f3df74 
-> 00065704
-> 5fe0: b6ec2d18 befedb8c 0002aa60 b6ec2d28
-> UBIFS error (ubi0:1 pid 153): ubifs_leb_write: writing 2048 bytes to LEB 
-> 1:12288 failed, error -110
-> UBIFS warning (ubi0:1 pid 153): ubifs_ro_mode.part.0: switched to 
-> read-only mode, error -110
-> CPU: 0 PID: 153 Comm: mount Not tainted 4.17.0-rc4-dirty #4
-> Hardware name: Marvell Armada 370/XP (Device Tree)
-> [<c010d8f4>] (unwind_backtrace) from [<c010b350>] (show_stack+0x10/0x14)
-> [<c010b350>] (show_stack) from [<c0271cc4>] (ubifs_leb_write+0x12c/0x130)
-> [<c0271cc4>] (ubifs_leb_write) from [<c027331c>] 
-> (ubifs_write_node+0xb8/0x1b4)
-> [<c027331c>] (ubifs_write_node) from [<c0278e6c>] 
-> (ubifs_write_master+0xbc/0x150)
-> [<c0278e6c>] (ubifs_write_master) from [<c0270020>] 
-> (ubifs_mount+0xfc8/0x14ac)
-> [<c0270020>] (ubifs_mount) from [<c01a8c78>] (mount_fs+0x14/0xa4)
-> [<c01a8c78>] (mount_fs) from [<c01c088c>] (vfs_kern_mount+0x48/0xd8)
-> [<c01c088c>] (vfs_kern_mount) from [<c01c33d0>] (do_mount+0x174/0xac4)
-> [<c01c33d0>] (do_mount) from [<c01c4080>] (ksys_mount+0x8c/0xbc)
-> [<c01c4080>] (ksys_mount) from [<c0101000>] (ret_fast_syscall+0x0/0x54)
-> Exception stack(0xceb15fa8 to 0xceb15ff0)
-> 5fa0:                   00000000 befedc80 befedfae befedfba befedfa8 
-> 00008000
-> 5fc0: 00000000 befedc80 b6f3b4a0 00000015 00000000 00000000 b6f3df74 
-> 00065704
-> 5fe0: b6ec2d18 befedb8c 0002aa60 b6ec2d28
-> CPU: 0 PID: 153 Comm: mount Not tainted 4.17.0-rc4-dirty #4
-> Hardware name: Marvell Armada 370/XP (Device Tree)
-> [<c010d8f4>] (unwind_backtrace) from [<c010b350>] (show_stack+0x10/0x14)
-> [<c010b350>] (show_stack) from [<c0271cb0>] (ubifs_leb_write+0x118/0x130)
-> [<c0271cb0>] (ubifs_leb_write) from [<c027331c>] 
-> (ubifs_write_node+0xb8/0x1b4)
-> [<c027331c>] (ubifs_write_node) from [<c0278e6c>] 
-> (ubifs_write_master+0xbc/0x150)
-> [<c0278e6c>] (ubifs_write_master) from [<c0270020>] 
-> (ubifs_mount+0xfc8/0x14ac)
-> [<c0270020>] (ubifs_mount) from [<c01a8c78>] (mount_fs+0x14/0xa4)
-> [<c01a8c78>] (mount_fs) from [<c01c088c>] (vfs_kern_mount+0x48/0xd8)
-> [<c01c088c>] (vfs_kern_mount) from [<c01c33d0>] (do_mount+0x174/0xac4)
-> [<c01c33d0>] (do_mount) from [<c01c4080>] (ksys_mount+0x8c/0xbc)
-> [<c01c4080>] (ksys_mount) from [<c0101000>] (ret_fast_syscall+0x0/0x54)
-> Exception stack(0xceb15fa8 to 0xceb15ff0)
-> 5fa0:                   00000000 befedc80 befedfae befedfba befedfa8 
-> 00008000
-> 5fc0: 00000000 befedc80 b6f3b4a0 00000015 00000000 00000000 b6f3df74 
-> 00065704
-> 5fe0: b6ec2d18 befedb8c 0002aa60 b6ec2d28
-> 	magic          0x6101831
-> 	crc            0x3d983859
-> 	node_type      7 (master node)
-> 	group_type     0 (no node group)
-> 	sqnum          21756
-> 	len            512
-> 	highest_inum   515
-> 	commit number  638
-> 	flags          0x3
-> 	log_lnum       5
-> 	root_lnum      11
-> 	root_offs      126096
-> 	root_len       88
-> 	gc_lnum        13
-> 	ihead_lnum     11
-> 	ihead_offs     126976
-> 	index_size     1672
-> 	lpt_lnum       6
-> 	lpt_offs       36921
-> 	nhead_lnum     6
-> 	nhead_offs     38912
-> 	ltab_lnum      6
-> 	ltab_offs      36864
-> 	lsave_lnum     0
-> 	lsave_offs     0
-> 	lscan_lnum     29
-> 	leb_cnt        34
-> 	empty_lebs     16
-> 	idx_lebs       2
-> 	total_free     2314240
-> 	total_dirty    720136
-> 	total_used     11376
-> 	total_dead     0
-> 	total_dark     135168
-> UBIFS (ubi0:1): background thread "ubifs_bgt0_1" stops
-> 
-> 
-> The driver init during boot up looked good:
-> 
-> nand: device found, Manufacturer ID: 0x01, Chip ID: 0xf1
-> nand: AMD/Spansion S34ML01G1
-> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> Bad block table found at page 65472, version 0x01
-> Bad block table found at page 65408, version 0x01
-> 5 fixed-partitions partitions found on MTD device pxa3xx_nand-0
-> Creating 5 MTD partitions on "pxa3xx_nand-0":
-> 0x000000000000-0x000000200000 : "u-boot"
-> 0x000000200000-0x000000300000 : "u-boot-env"
-> 0x000000300000-0x000000500000 : "log"
-> 0x000000500000-0x000008000000 : "flash"
-> 0x000000000000-0x000008000000 : "all"
-> 
-> 
-> The kernel dump is not fatal, and I can still use the system.
-> I can dd all the flash, and otherwise use the flash and that all
-> seems to work ok. And interestingly if I try to mount that UBIFS
-> again at the command line then it succeeds and I can see the files
-> within it properly.
-> 
-> Any ideas?
-> 
-> Regards
-> Greg
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+> index 9f94268a68b5..57ceec6c6301 100644
+> --- a/drivers/spi/spi-bcm-qspi.c
+> +++ b/drivers/spi/spi-bcm-qspi.c
+> @@ -944,9 +944,10 @@ static int bcm_qspi_mspi_exec_mem_op(struct spi_device *spi,
+>  	return ret;
+>  }
+>  
+> -static int bcm_qspi_exec_mem_op(struct spi_device *spi,
+> +static int bcm_qspi_exec_mem_op(struct spi_mem *mem,
+>  				const struct spi_mem_op *op)
+>  {
+> +	struct spi_device *spi = mem->spi;
+>  	struct bcm_qspi *qspi = spi_master_get_devdata(spi->master);
+>  	int ret = 0;
+>  	bool mspi_read = false;
+> @@ -991,34 +992,6 @@ static int bcm_qspi_exec_mem_op(struct spi_device *spi,
+>  	return ret;
+>  }
+>  
+> -static int bcm_qspi_exec_mem_op_wrapper(struct spi_mem *mem,
+> -					const struct spi_mem_op *op)
+> -{
+> -	return bcm_qspi_exec_mem_op(mem->spi, op);
+> -}
+> -
+> -static int bcm_qspi_flash_read_wrapper(struct spi_device *spi,
+> -				       struct spi_flash_read_message *msg)
+> -{
+> -	int ret;
+> -	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(msg->read_opcode, 1),
+> -					  SPI_MEM_OP_ADDR(msg->addr_width,
+> -							  msg->from,
+> -							  msg->addr_nbits),
+> -					  SPI_MEM_OP_DUMMY(msg->dummy_bytes,
+> -							   msg->addr_nbits),
+> -					  SPI_MEM_OP_DATA_IN(msg->len,
+> -							     msg->buf,
+> -							     msg->data_nbits));
+> -
+> -	msg->retlen = 0;
+> -	ret = bcm_qspi_exec_mem_op(spi, &op);
+> -	if (!ret)
+> -		msg->retlen = msg->len;
+> -
+> -	return ret;
+> -}
+> -
+>  static void bcm_qspi_cleanup(struct spi_device *spi)
+>  {
+>  	struct bcm_qspi_parms *xp = spi_get_ctldata(spi);
+> @@ -1214,7 +1187,7 @@ static void bcm_qspi_hw_uninit(struct bcm_qspi *qspi)
+>  }
+>  
+>  static const struct spi_controller_mem_ops bcm_qspi_mem_ops = {
+> -	.exec_op = bcm_qspi_exec_mem_op_wrapper,
+> +	.exec_op = bcm_qspi_exec_mem_op,
+>  };
+>  
+>  static const struct of_device_id bcm_qspi_of_match[] = {
+> @@ -1259,7 +1232,6 @@ int bcm_qspi_probe(struct platform_device *pdev,
+>  	master->mode_bits = SPI_CPHA | SPI_CPOL | SPI_RX_DUAL | SPI_RX_QUAD;
+>  	master->setup = bcm_qspi_setup;
+>  	master->transfer_one = bcm_qspi_transfer_one;
+> -	master->spi_flash_read = bcm_qspi_flash_read_wrapper;
+>  	master->mem_ops = &bcm_qspi_mem_ops;
+>  	master->cleanup = bcm_qspi_cleanup;
+>  	master->dev.of_node = dev->of_node;
+> diff --git a/drivers/spi/spi-bcm53xx.c b/drivers/spi/spi-bcm53xx.c
+> index 5044e4e4a263..890b58e8645f 100644
+> --- a/drivers/spi/spi-bcm53xx.c
+> +++ b/drivers/spi/spi-bcm53xx.c
+> @@ -290,22 +290,6 @@ static const struct spi_controller_mem_ops bcm53xxspi_mem_ops = {
+>  	.exec_op = bcm53xxspi_exec_mem_op,
+>  };
+>  
+> -static int bcm53xxspi_flash_read(struct spi_device *spi,
+> -				 struct spi_flash_read_message *msg)
+> -{
+> -	struct bcm53xxspi *b53spi = spi_master_get_devdata(spi->master);
+> -	int ret = 0;
+> -
+> -	if (msg->from + msg->len > BCM53XXSPI_FLASH_WINDOW)
+> -		return -EINVAL;
+> -
+> -	bcm53xxspi_enable_bspi(b53spi);
+> -	memcpy_fromio(msg->buf, b53spi->mmio_base + msg->from, msg->len);
+> -	msg->retlen = msg->len;
+> -
+> -	return ret;
+> -}
+> -
+>  /**************************************************
+>   * BCMA
+>   **************************************************/
+> @@ -344,10 +328,8 @@ static int bcm53xxspi_bcma_probe(struct bcma_device *core)
+>  
+>  	master->dev.of_node = dev->of_node;
+>  	master->transfer_one = bcm53xxspi_transfer_one;
+> -	if (b53spi->mmio_base) {
+> +	if (b53spi->mmio_base)
+>  		master->mem_ops = &bcm53xxspi_mem_ops;
+> -		master->spi_flash_read = bcm53xxspi_flash_read;
+> -	}
+>  
+>  	bcma_set_drvdata(core, b53spi);
+>  
+> diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+> index a37db01447a7..694902dd6f70 100644
+> --- a/drivers/spi/spi-ti-qspi.c
+> +++ b/drivers/spi/spi-ti-qspi.c
+> @@ -531,44 +531,6 @@ static void ti_qspi_setup_mmap_read(struct spi_device *spi, u8 opcode,
+>  		      QSPI_SPI_SETUP_REG(spi->chip_select));
+>  }
+>  
+> -static bool ti_qspi_spi_flash_can_dma(struct spi_device *spi,
+> -				      struct spi_flash_read_message *msg)
+> -{
+> -	return virt_addr_valid(msg->buf);
+> -}
+> -
+> -static int ti_qspi_spi_flash_read(struct spi_device *spi,
+> -				  struct spi_flash_read_message *msg)
+> -{
+> -	struct ti_qspi *qspi = spi_master_get_devdata(spi->master);
+> -	int ret = 0;
+> -
+> -	mutex_lock(&qspi->list_lock);
+> -
+> -	if (!qspi->mmap_enabled)
+> -		ti_qspi_enable_memory_map(spi);
+> -	ti_qspi_setup_mmap_read(spi, msg->read_opcode, msg->data_nbits,
+> -				msg->addr_width, msg->dummy_bytes);
+> -
+> -	if (qspi->rx_chan) {
+> -		if (msg->cur_msg_mapped)
+> -			ret = ti_qspi_dma_xfer_sg(qspi, msg->rx_sg, msg->from);
+> -		else
+> -			ret = ti_qspi_dma_bounce_buffer(qspi, msg->from,
+> -							msg->buf, msg->len);
+> -		if (ret)
+> -			goto err_unlock;
+> -	} else {
+> -		memcpy_fromio(msg->buf, qspi->mmap_base + msg->from, msg->len);
+> -	}
+> -	msg->retlen = msg->len;
+> -
+> -err_unlock:
+> -	mutex_unlock(&qspi->list_lock);
+> -
+> -	return ret;
+> -}
+> -
+>  static int ti_qspi_exec_mem_op(struct spi_mem *mem,
+>  			       const struct spi_mem_op *op)
+>  {
+> @@ -727,7 +689,6 @@ static int ti_qspi_probe(struct platform_device *pdev)
+>  	master->dev.of_node = pdev->dev.of_node;
+>  	master->bits_per_word_mask = SPI_BPW_MASK(32) | SPI_BPW_MASK(16) |
+>  				     SPI_BPW_MASK(8);
+> -	master->spi_flash_read = ti_qspi_spi_flash_read;
+>  	master->mem_ops = &ti_qspi_mem_ops;
+>  
+>  	if (!of_property_read_u32(np, "num-cs", &num_cs))
+> @@ -826,7 +787,6 @@ static int ti_qspi_probe(struct platform_device *pdev)
+>  		dma_release_channel(qspi->rx_chan);
+>  		goto no_dma;
+>  	}
+> -	master->spi_flash_can_dma = ti_qspi_spi_flash_can_dma;
+>  	master->dma_rx = qspi->rx_chan;
+>  	init_completion(&qspi->transfer_complete);
+>  	if (res_mmap)
+> @@ -841,7 +801,6 @@ static int ti_qspi_probe(struct platform_device *pdev)
+>  				 "mmap failed with error %ld using PIO mode\n",
+>  				 PTR_ERR(qspi->mmap_base));
+>  			qspi->mmap_base = NULL;
+> -			master->spi_flash_read = NULL;
+>  			master->mem_ops = NULL;
+>  		}
+>  	}
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index c85b0cf7b4a9..8ee1ba13eb23 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -3055,63 +3055,6 @@ int spi_async_locked(struct spi_device *spi, struct spi_message *message)
+>  }
+>  EXPORT_SYMBOL_GPL(spi_async_locked);
+>  
+> -
+> -int spi_flash_read(struct spi_device *spi,
+> -		   struct spi_flash_read_message *msg)
+> -
+> -{
+> -	struct spi_controller *master = spi->controller;
+> -	struct device *rx_dev = NULL;
+> -	int ret;
+> -
+> -	if ((msg->opcode_nbits == SPI_NBITS_DUAL ||
+> -	     msg->addr_nbits == SPI_NBITS_DUAL) &&
+> -	    !(spi->mode & (SPI_TX_DUAL | SPI_TX_QUAD)))
+> -		return -EINVAL;
+> -	if ((msg->opcode_nbits == SPI_NBITS_QUAD ||
+> -	     msg->addr_nbits == SPI_NBITS_QUAD) &&
+> -	    !(spi->mode & SPI_TX_QUAD))
+> -		return -EINVAL;
+> -	if (msg->data_nbits == SPI_NBITS_DUAL &&
+> -	    !(spi->mode & (SPI_RX_DUAL | SPI_RX_QUAD)))
+> -		return -EINVAL;
+> -	if (msg->data_nbits == SPI_NBITS_QUAD &&
+> -	    !(spi->mode &  SPI_RX_QUAD))
+> -		return -EINVAL;
+> -
+> -	if (master->auto_runtime_pm) {
+> -		ret = pm_runtime_get_sync(master->dev.parent);
+> -		if (ret < 0) {
+> -			dev_err(&master->dev, "Failed to power device: %d\n",
+> -				ret);
+> -			return ret;
+> -		}
+> -	}
+> -
+> -	mutex_lock(&master->bus_lock_mutex);
+> -	mutex_lock(&master->io_mutex);
+> -	if (master->dma_rx && master->spi_flash_can_dma(spi, msg)) {
+> -		rx_dev = master->dma_rx->device->dev;
+> -		ret = spi_map_buf(master, rx_dev, &msg->rx_sg,
+> -				  msg->buf, msg->len,
+> -				  DMA_FROM_DEVICE);
+> -		if (!ret)
+> -			msg->cur_msg_mapped = true;
+> -	}
+> -	ret = master->spi_flash_read(spi, msg);
+> -	if (msg->cur_msg_mapped)
+> -		spi_unmap_buf(master, rx_dev, &msg->rx_sg,
+> -			      DMA_FROM_DEVICE);
+> -	mutex_unlock(&master->io_mutex);
+> -	mutex_unlock(&master->bus_lock_mutex);
+> -
+> -	if (master->auto_runtime_pm)
+> -		pm_runtime_put(master->dev.parent);
+> -
+> -	return ret;
+> -}
+> -EXPORT_SYMBOL_GPL(spi_flash_read);
+> -
+>  /*-------------------------------------------------------------------------*/
+>  
+>  /* Utility methods for SPI protocol drivers, layered on
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index a7e0bbed738c..a64235e05321 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -26,7 +26,6 @@ struct dma_chan;
+>  struct property_entry;
+>  struct spi_controller;
+>  struct spi_transfer;
+> -struct spi_flash_read_message;
+>  struct spi_controller_mem_ops;
+>  
+>  /*
+> @@ -382,11 +381,6 @@ static inline void spi_unregister_driver(struct spi_driver *sdrv)
+>   *	     controller has native support for memory like operations.
+>   * @unprepare_message: undo any work done by prepare_message().
+>   * @slave_abort: abort the ongoing transfer request on an SPI slave controller
+> - * @spi_flash_read: to support spi-controller hardwares that provide
+> - *                  accelerated interface to read from flash devices.
+> - * @spi_flash_can_dma: analogous to can_dma() interface, but for
+> - *		       controllers implementing spi_flash_read.
+> - * @flash_read_supported: spi device supports flash read
+>   * @cs_gpios: Array of GPIOs to use as chip select lines; one per CS
+>   *	number. Any individual value may be -ENOENT for CS lines that
+>   *	are not GPIOs (driven by the SPI controller itself).
+> @@ -552,11 +546,6 @@ struct spi_controller {
+>  	int (*unprepare_message)(struct spi_controller *ctlr,
+>  				 struct spi_message *message);
+>  	int (*slave_abort)(struct spi_controller *ctlr);
+> -	int (*spi_flash_read)(struct  spi_device *spi,
+> -			      struct spi_flash_read_message *msg);
+> -	bool (*spi_flash_can_dma)(struct spi_device *spi,
+> -				  struct spi_flash_read_message *msg);
+> -	bool (*flash_read_supported)(struct spi_device *spi);
+>  
+>  	/*
+>  	 * These hooks are for drivers that use a generic implementation
+> @@ -1190,48 +1179,6 @@ static inline ssize_t spi_w8r16be(struct spi_device *spi, u8 cmd)
+>  	return be16_to_cpu(result);
+>  }
+>  
+> -/**
+> - * struct spi_flash_read_message - flash specific information for
+> - * spi-masters that provide accelerated flash read interfaces
+> - * @buf: buffer to read data
+> - * @from: offset within the flash from where data is to be read
+> - * @len: length of data to be read
+> - * @retlen: actual length of data read
+> - * @read_opcode: read_opcode to be used to communicate with flash
+> - * @addr_width: number of address bytes
+> - * @dummy_bytes: number of dummy bytes
+> - * @opcode_nbits: number of lines to send opcode
+> - * @addr_nbits: number of lines to send address
+> - * @data_nbits: number of lines for data
+> - * @rx_sg: Scatterlist for receive data read from flash
+> - * @cur_msg_mapped: message has been mapped for DMA
+> - */
+> -struct spi_flash_read_message {
+> -	void *buf;
+> -	loff_t from;
+> -	size_t len;
+> -	size_t retlen;
+> -	u8 read_opcode;
+> -	u8 addr_width;
+> -	u8 dummy_bytes;
+> -	u8 opcode_nbits;
+> -	u8 addr_nbits;
+> -	u8 data_nbits;
+> -	struct sg_table rx_sg;
+> -	bool cur_msg_mapped;
+> -};
+> -
+> -/* SPI core interface for flash read support */
+> -static inline bool spi_flash_read_supported(struct spi_device *spi)
+> -{
+> -	return spi->controller->spi_flash_read &&
+> -	       (!spi->controller->flash_read_supported ||
+> -	       spi->controller->flash_read_supported(spi));
+> -}
+> -
+> -int spi_flash_read(struct spi_device *spi,
+> -		   struct spi_flash_read_message *msg);
+> -
+>  /*---------------------------------------------------------------------------*/
+>  
+>  /*
