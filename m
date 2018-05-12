@@ -1,28 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHYqr-0006LW-Oz
- for linux-mtd@lists.infradead.org; Sat, 12 May 2018 18:02:40 +0000
-Date: Sat, 12 May 2018 20:02:19 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Paul Cercueil <paul@crapouillou.net>
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fHZID-00015o-Uw
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2018 18:30:55 +0000
+Date: Sat, 12 May 2018 20:30:29 +0200
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mtd: nand: Add support for reading ooblayout from device
+ tree
+To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Mark Rutland <mark.rutland@arm.com>, David Woodhouse
  <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, Rob Herring
  <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
  devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, Boris Brezillon
  <boris.brezillon@bolin.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd: nand: Add support for reading ooblayout from
- device tree
-Message-ID: <20180512200219.6ded51a6@bbrezillon>
-In-Reply-To: <1526146969.1594.0@smtp.crapouillou.net>
+Message-Id: <1526149829.1594.1@smtp.crapouillou.net>
+In-Reply-To: <20180512200219.6ded51a6@bbrezillon>
 References: <20180512115551.56C6E20787@mail.bootlin.com>
  <20180512154223.3b81c7f7@bbrezillon>
  <1526135906.4971.0@smtp.crapouillou.net>
  <20180512170034.12779313@bbrezillon>
  <1526146969.1594.0@smtp.crapouillou.net>
+ <20180512200219.6ded51a6@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +33,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 12 May 2018 19:42:49 +0200
-Paul Cercueil <paul@crapouillou.net> wrote:
 
-> >>  >>  My motivation is to get rid of this (move it to devicetree):
-> >>  >>
-> >>  >>   
-> >> https://elixir.bootlin.com/linux/latest/source/arch/mips/jz4740/board-qi_lb60.c#L93  
-> >>  >>  And enable the support of other boards with custom OOB layouts.  
-> >>  >
-> >>  > Can you list the different layouts you have? I'm pretty sure   
-> >> there's a  
-> >>  > pattern. Maybe we can even deduce the layout from the page size   
-> >> or OOB  
-> >>  > size.  
-> >> 
-> >>  This is the other layout I have for another ingenic device:
-> >>  
-> >> http://projects.qi-hardware.com/index.php/p/qi-kernel/source/tree/od-2011-09-18/arch/mips/jz4740/board-a320.c#L125
-> >> 
-> >>  Page size and OOB size are the same between these two devices.  
-> > 
-> > Indeed. Do you know if there are other kind of layouts in the wild?  
-> 
-> I'm getting a new board in a few weeks, I'll be able to check that out.
-> 
-> > Note that <layout-id> can be a string, so if each each board is
-> > defining its own layout, you could specify the board name here.
-> > Otherwise, if you just have those 2 patterns, you can just name them
-> > "contiguous" and "interleaved".  
-> 
-> I don't like the idea of adding board-specific data inside the driver...
-> I'd prefer to use the method I used in this patch, but inside the
-> jz4740-nand driver, if you're OK with it.
 
-Please don't. Encoding such detailed description in the DT has almost
-always proven to be poor choice. Also, people are likely to get it
-wrong, and then you'll have to fix all DTs, while, with a single unique
-ID representing the layout, you can
-- re-use existing layouts easily without having to describe everything
-  again in the DT
-- fix the driver without getting in trouble with people who claim
-  that DT is a stable ABI and don't want to update their DT
+Le sam. 12 mai 2018 =E0 20:02, Boris Brezillon=20
+<boris.brezillon@bootlin.com> a =E9crit :
+> On Sat, 12 May 2018 19:42:49 +0200
+> Paul Cercueil <paul@crapouillou.net> wrote:
+>=20
+>>  >>  >>  My motivation is to get rid of this (move it to devicetree):
+>>  >>  >>
+>>  >>  >>
+>>  >>=20
+>> https://elixir.bootlin.com/linux/latest/source/arch/mips/jz4740/board-qi=
+_lb60.c#L93
+>>  >>  >>  And enable the support of other boards with custom OOB=20
+>> layouts.
+>>  >>  >
+>>  >>  > Can you list the different layouts you have? I'm pretty sure
+>>  >> there's a
+>>  >>  > pattern. Maybe we can even deduce the layout from the page=20
+>> size
+>>  >> or OOB
+>>  >>  > size.
+>>  >>
+>>  >>  This is the other layout I have for another ingenic device:
+>>  >>
+>>  >>=20
+>> http://projects.qi-hardware.com/index.php/p/qi-kernel/source/tree/od-201=
+1-09-18/arch/mips/jz4740/board-a320.c#L125
+>>  >>
+>>  >>  Page size and OOB size are the same between these two devices.
+>>  >
+>>  > Indeed. Do you know if there are other kind of layouts in the=20
+>> wild?
+>>=20
+>>  I'm getting a new board in a few weeks, I'll be able to check that=20
+>> out.
+>>=20
+>>  > Note that <layout-id> can be a string, so if each each board is
+>>  > defining its own layout, you could specify the board name here.
+>>  > Otherwise, if you just have those 2 patterns, you can just name=20
+>> them
+>>  > "contiguous" and "interleaved".
+>>=20
+>>  I don't like the idea of adding board-specific data inside the=20
+>> driver...
+>>  I'd prefer to use the method I used in this patch, but inside the
+>>  jz4740-nand driver, if you're OK with it.
+>=20
+> Please don't. Encoding such detailed description in the DT has almost
+> always proven to be poor choice. Also, people are likely to get it
+> wrong, and then you'll have to fix all DTs, while, with a single=20
+> unique
+> ID representing the layout, you can
+> - re-use existing layouts easily without having to describe everything
+>   again in the DT
+> - fix the driver without getting in trouble with people who claim
+>   that DT is a stable ABI and don't want to update their DT
+>=20
+> So, please just pick user-friendly IDs and add layout definitions in
+> the driver. If you don't want to leak board info in the driver, then
+> don't name the layout with the board name. BTW, I still hope you'll=20
+> only
+> have 2 kind of layouts (contiguous and interleaved).
 
-So, please just pick user-friendly IDs and add layout definitions in
-the driver. If you don't want to leak board info in the driver, then
-don't name the layout with the board name. BTW, I still hope you'll only
-have 2 kind of layouts (contiguous and interleaved).
+Alright. Thanks for the insights.
+
+-Paul
+=
