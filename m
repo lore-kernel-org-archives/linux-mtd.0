@@ -1,18 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHWGC-0001ZH-Sl
- for linux-mtd@lists.infradead.org; Sat, 12 May 2018 15:16:38 +0000
-Date: Sat, 12 May 2018 17:16:24 +0200
+ id 1fHWGv-0001zZ-DM
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2018 15:17:23 +0000
+Date: Sat, 12 May 2018 17:17:09 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: Fix comparison in map_word_andequal()
-Message-ID: <20180512171624.763ee6b3@bbrezillon>
-In-Reply-To: <20180510182053.GM8564@decadent.org.uk>
-References: <20180510182053.GM8564@decadent.org.uk>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Hauke Mehrtens
+ <hauke@hauke-m.de>, Richard Weinberger <richard@nod.at>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: bcm47xxpart: improve handling TRX partition size
+Message-ID: <20180512171709.77250443@bbrezillon>
+In-Reply-To: <20180512095102.58a053b9@bbrezillon>
+References: <20180412052452.11498-1-zajec5@gmail.com>
+ <20180512095102.58a053b9@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +28,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 May 2018 19:20:54 +0100
-Ben Hutchings <ben@decadent.org.uk> wrote:
+On Sat, 12 May 2018 09:51:02 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Commit 9e343e87d2c4 ("mtd: cfi: convert inline functions to macros")
-> changed map_word_andequal() into a macro, but also changed the right
-> hand side of the comparison from val3 to val2.  Change it back to use
-> val3 on the right hand side.
-> 
-> Thankfully this did not cause a regression because all callers
-> currently pass the same argument for val2 and val3.
-> 
-> Fixes: 9e343e87d2c4 ("mtd: cfi: convert inline functions to macros")
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+> On Thu, 12 Apr 2018 07:24:52 +0200
+> Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+>=20
+> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> >=20
+> > When bcm47xxpart finds a TRX partition (container) it's supposed to jump
+> > to the end of it and keep looking for more partitions. TRX and its
+> > subpartitions are handled be a separated parser. =20
+>=20
+> 			    ^ by a separate parser.
+>=20
+> No need to send a new version, I'll fix it when applying.
 
-Applied.
+Applied after fixing the typo.
 
 Thanks,
 
 Boris
 
-> ---
->  include/linux/mtd/map.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
-> index b5b43f94f311..01b990e4b228 100644
-> --- a/include/linux/mtd/map.h
-> +++ b/include/linux/mtd/map.h
-> @@ -312,7 +312,7 @@ void map_destroy(struct mtd_info *mtd);
->  ({									\
->  	int i, ret = 1;							\
->  	for (i = 0; i < map_words(map); i++) {				\
-> -		if (((val1).x[i] & (val2).x[i]) != (val2).x[i]) {	\
-> +		if (((val1).x[i] & (val2).x[i]) != (val3).x[i]) {	\
->  			ret = 0;					\
->  			break;						\
->  		}							\
+>=20
+> >=20
+> > The problem with old code was relying on the length specified in a TRX
+> > header. That isn't reliable as TRX is commonly modified to have checksum
+> > cover only non-changing subpartitions. Otherwise modifying e.g. a rootfs
+> > would result in CRC32 mismatch and bootloader refusing to boot a
+> > firmware.
+> >=20
+> > Fix it by trying better to figure out a real TRX size. We can securely
+> > assume that TRX has to cover all subpartitions and the last one is at
+> > least of a block size in size. Then compare it with a length field.
+> >=20
+> > This makes code more optimal & reliable thanks to skipping data that
+> > shouldn't be parsed. =20
+>=20
+> I didn't check the TRX parsing logic, so I'm assuming you know what you
+> do here and you've tested the modifications ;-).
+>=20
+> >=20
+> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> > ---
+> >  drivers/mtd/bcm47xxpart.c | 22 ++++++++++++++++++----
+> >  1 file changed, 18 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
+> > index fe2581d9d882..1f0239848ebe 100644
+> > --- a/drivers/mtd/bcm47xxpart.c
+> > +++ b/drivers/mtd/bcm47xxpart.c
+> > @@ -186,6 +186,8 @@ static int bcm47xxpart_parse(struct mtd_info *maste=
+r,
+> >  		/* TRX */
+> >  		if (buf[0x000 / 4] =3D=3D TRX_MAGIC) {
+> >  			struct trx_header *trx;
+> > +			uint32_t last_subpart;
+> > +			uint32_t trx_size;
+> > =20
+> >  			if (trx_num >=3D ARRAY_SIZE(trx_parts))
+> >  				pr_warn("No enough space to store another TRX found at 0x%X\n",
+> > @@ -195,11 +197,23 @@ static int bcm47xxpart_parse(struct mtd_info *mas=
+ter,
+> >  			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
+> >  					     offset, 0);
+> > =20
+> > -			/* Jump to the end of TRX */
+> > +			/*
+> > +			 * Try to find TRX size. The "length" field isn't fully
+> > +			 * reliable as it could be decreased to make CRC32 cover
+> > +			 * only part of TRX data. It's commonly used as checksum
+> > +			 * can't cover e.g. ever-changing rootfs partition.
+> > +			 * Use offsets as helpers for assuming min TRX size.
+> > +			 */
+> >  			trx =3D (struct trx_header *)buf;
+> > -			offset =3D roundup(offset + trx->length, blocksize);
+> > -			/* Next loop iteration will increase the offset */
+> > -			offset -=3D blocksize;
+> > +			last_subpart =3D max3(trx->offset[0], trx->offset[1],
+> > +					    trx->offset[2]);
+> > +			trx_size =3D max(trx->length, last_subpart + blocksize);
+> > +
+> > +			/*
+> > +			 * Skip the TRX data. Decrease offset by block size as
+> > +			 * the next loop iteration will increase it.
+> > +			 */
+> > +			offset +=3D roundup(trx_size, blocksize) - blocksize;
+> >  			continue;
+> >  		}
+> >   =20
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
