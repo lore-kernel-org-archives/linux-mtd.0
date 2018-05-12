@@ -1,24 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHPJO-0000SY-MD
- for linux-mtd@lists.infradead.org; Sat, 12 May 2018 07:51:29 +0000
-Date: Sat, 12 May 2018 09:51:02 +0200
+ id 1fHPm4-0004n4-6t
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2018 08:21:06 +0000
+Date: Sat, 12 May 2018 10:20:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Hauke Mehrtens <hauke@hauke-m.de>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: bcm47xxpart: improve handling TRX partition size
-Message-ID: <20180512095102.58a053b9@bbrezillon>
-In-Reply-To: <20180412052452.11498-1-zajec5@gmail.com>
-References: <20180412052452.11498-1-zajec5@gmail.com>
+To: Jane Wan <Jane.Wan@nokia.com>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
+ yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
+ shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ ties.bos@nokia.com
+Subject: Re: [PATCH v6] mtd: rawnand: use bit-wise majority to recover the
+ contents of ONFI parameter
+Message-ID: <20180512102040.3e5c2cbe@bbrezillon>
+In-Reply-To: <1525987717-31675-1-git-send-email-Jane.Wan@nokia.com>
+References: <1525987717-31675-1-git-send-email-Jane.Wan@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,81 +28,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Apr 2018 07:24:52 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Thu, 10 May 2018 14:28:37 -0700
+Jane Wan <Jane.Wan@nokia.com> wrote:
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> When bcm47xxpart finds a TRX partition (container) it's supposed to jump
-> to the end of it and keep looking for more partitions. TRX and its
-> subpartitions are handled be a separated parser.
-
-			    ^ by a separate parser.
-
-No need to send a new version, I'll fix it when applying.
-
->=20
-> The problem with old code was relying on the length specified in a TRX
-> header. That isn't reliable as TRX is commonly modified to have checksum
-> cover only non-changing subpartitions. Otherwise modifying e.g. a rootfs
-> would result in CRC32 mismatch and bootloader refusing to boot a
-> firmware.
->=20
-> Fix it by trying better to figure out a real TRX size. We can securely
-> assume that TRX has to cover all subpartitions and the last one is at
-> least of a block size in size. Then compare it with a length field.
->=20
-> This makes code more optimal & reliable thanks to skipping data that
-> shouldn't be parsed.
-
-I didn't check the TRX parsing logic, so I'm assuming you know what you
-do here and you've tested the modifications ;-).
-
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
+> CRC values, the bit-wise majority may be used to recover the contents of
+> the parameter pages from the parameter page copies present.
+> 
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
 > ---
->  drivers/mtd/bcm47xxpart.c | 22 ++++++++++++++++++----
->  1 file changed, 18 insertions(+), 4 deletions(-)
->=20
-> diff --git a/drivers/mtd/bcm47xxpart.c b/drivers/mtd/bcm47xxpart.c
-> index fe2581d9d882..1f0239848ebe 100644
-> --- a/drivers/mtd/bcm47xxpart.c
-> +++ b/drivers/mtd/bcm47xxpart.c
-> @@ -186,6 +186,8 @@ static int bcm47xxpart_parse(struct mtd_info *master,
->  		/* TRX */
->  		if (buf[0x000 / 4] =3D=3D TRX_MAGIC) {
->  			struct trx_header *trx;
-> +			uint32_t last_subpart;
-> +			uint32_t trx_size;
-> =20
->  			if (trx_num >=3D ARRAY_SIZE(trx_parts))
->  				pr_warn("No enough space to store another TRX found at 0x%X\n",
-> @@ -195,11 +197,23 @@ static int bcm47xxpart_parse(struct mtd_info *maste=
-r,
->  			bcm47xxpart_add_part(&parts[curr_part++], "firmware",
->  					     offset, 0);
-> =20
-> -			/* Jump to the end of TRX */
-> +			/*
-> +			 * Try to find TRX size. The "length" field isn't fully
-> +			 * reliable as it could be decreased to make CRC32 cover
-> +			 * only part of TRX data. It's commonly used as checksum
-> +			 * can't cover e.g. ever-changing rootfs partition.
-> +			 * Use offsets as helpers for assuming min TRX size.
-> +			 */
->  			trx =3D (struct trx_header *)buf;
-> -			offset =3D roundup(offset + trx->length, blocksize);
-> -			/* Next loop iteration will increase the offset */
-> -			offset -=3D blocksize;
-> +			last_subpart =3D max3(trx->offset[0], trx->offset[1],
-> +					    trx->offset[2]);
-> +			trx_size =3D max(trx->length, last_subpart + blocksize);
+> v6: support the cases that srcbufs are not contiguous
+> v5: make the bit-wise majority functon generic
+> v4: move the bit-wise majority code in a separate function
+> v3: fix warning message detected by kbuild test robot
+> v2: rebase the changes on top of v4.17-rc1
+> 
+>  drivers/mtd/nand/raw/nand_base.c |   52 ++++++++++++++++++++++++++++++++++----
+>  1 file changed, 47 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 72f3a89..acf905c 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5087,6 +5087,35 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+>  }
+>  
+>  /*
+> + * Recover data with bit-wise majority
+> + */
+> +static void nand_bit_wise_majority(const void **srcbufs,
+> +				   unsigned int nsrcbufs,
+> +				   void *dstbuf,
+> +				   unsigned int bufsize)
+> +{
+> +	int i, j, k;
 > +
-> +			/*
-> +			 * Skip the TRX data. Decrease offset by block size as
-> +			 * the next loop iteration will increase it.
-> +			 */
-> +			offset +=3D roundup(trx_size, blocksize) - blocksize;
->  			continue;
+> +	for (i = 0; i < bufsize; i++) {
+> +		u8 cnt, val;
+> +
+> +		val = 0;
+> +		for (j = 0; j < 8; j++) {
+> +			cnt = 0;
+> +			for (k = 0; k < nsrcbufs; k++) {
+> +				const u8 *srcbuf = srcbufs[k];
+> +
+> +				if (srcbuf[i] & BIT(j))
+> +					cnt++;
+> +			}
+> +			if (cnt > nsrcbufs / 2)
+> +				val |= BIT(j);
+> +		}
+> +		((u8 *)dstbuf)[i] = val;
+> +	}
+> +}
+> +
+> +/*
+>   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>   */
+>  static int nand_flash_detect_onfi(struct nand_chip *chip)
+> @@ -5102,7 +5131,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  		return 0;
+>  
+>  	/* ONFI chip: allocate a buffer to hold its parameter page */
+> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
+>  	if (!p)
+>  		return -ENOMEM;
+>  
+> @@ -5113,21 +5142,34 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  	}
+>  
+>  	for (i = 0; i < 3; i++) {
+> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
+> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
+>  		if (ret) {
+>  			ret = 0;
+>  			goto free_onfi_param_page;
 >  		}
-> =20
+>  
+> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
+>  				le16_to_cpu(p->crc)) {
+> +			if (i)
+> +				memcpy(p, &p[i], sizeof(*p));
+>  			break;
+>  		}
+>  	}
+>  
+>  	if (i == 3) {
+> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> -		goto free_onfi_param_page;
+> +		const void *srcbufs[3] = {p, p + 1, p + 2};
+> +
+> +		pr_err("Could not find valid ONFI parameter page\n");
+
+Maybe pr_warn() here
+
+> +		pr_info("Recover ONFI params with bit-wise majority\n");
+
+and maybe you can pack the 2 messages:
+
+		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it");
+
+> +
+> +		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
+> +				       sizeof(*p));
+> +
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
+> +				le16_to_cpu(p->crc)) {
+> +			pr_err("ONFI parameter recovery failed, aborting\n");
+> +			goto free_onfi_param_page;
+> +		}
+>  	}
+>  
+>  	/* Check version */
