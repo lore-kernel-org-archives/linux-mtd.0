@@ -1,24 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHPm4-0004n4-6t
- for linux-mtd@lists.infradead.org; Sat, 12 May 2018 08:21:06 +0000
-Date: Sat, 12 May 2018 10:20:40 +0200
+ id 1fHUnL-00019C-RL
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2018 13:42:46 +0000
+Date: Sat, 12 May 2018 15:42:23 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jane Wan <Jane.Wan@nokia.com>
-Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, richard@nod.at, marek.vasut@gmail.com,
- yamada.masahiro@socionext.com, prabhakar.kushwaha@nxp.com,
- shawnguo@kernel.org, jagdish.gediya@nxp.com, shreeya.patel23498@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- ties.bos@nokia.com
-Subject: Re: [PATCH v6] mtd: rawnand: use bit-wise majority to recover the
- contents of ONFI parameter
-Message-ID: <20180512102040.3e5c2cbe@bbrezillon>
-In-Reply-To: <1525987717-31675-1-git-send-email-Jane.Wan@nokia.com>
-References: <1525987717-31675-1-git-send-email-Jane.Wan@nokia.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, Rob Herring
+ <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon
+ <boris.brezillon@bolin.com>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: nand: Add support for reading ooblayout from
+ device tree
+Message-ID: <20180512154223.3b81c7f7@bbrezillon>
+In-Reply-To: <20180512115551.56C6E20787@mail.bootlin.com>
+References: <20180512115551.56C6E20787@mail.bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,117 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 10 May 2018 14:28:37 -0700
-Jane Wan <Jane.Wan@nokia.com> wrote:
+On Sat, 12 May 2018 08:55:40 -0300
+Paul Cercueil <paul@crapouillou.net> wrote:
 
-> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid
-> CRC values, the bit-wise majority may be used to recover the contents of
-> the parameter pages from the parameter page copies present.
-> 
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> ---
-> v6: support the cases that srcbufs are not contiguous
-> v5: make the bit-wise majority functon generic
-> v4: move the bit-wise majority code in a separate function
-> v3: fix warning message detected by kbuild test robot
-> v2: rebase the changes on top of v4.17-rc1
-> 
->  drivers/mtd/nand/raw/nand_base.c |   52 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 47 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 72f3a89..acf905c 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5087,6 +5087,35 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
->  }
->  
->  /*
-> + * Recover data with bit-wise majority
-> + */
-> +static void nand_bit_wise_majority(const void **srcbufs,
-> +				   unsigned int nsrcbufs,
-> +				   void *dstbuf,
-> +				   unsigned int bufsize)
-> +{
-> +	int i, j, k;
-> +
-> +	for (i = 0; i < bufsize; i++) {
-> +		u8 cnt, val;
-> +
-> +		val = 0;
-> +		for (j = 0; j < 8; j++) {
-> +			cnt = 0;
-> +			for (k = 0; k < nsrcbufs; k++) {
-> +				const u8 *srcbuf = srcbufs[k];
-> +
-> +				if (srcbuf[i] & BIT(j))
-> +					cnt++;
-> +			}
-> +			if (cnt > nsrcbufs / 2)
-> +				val |= BIT(j);
-> +		}
-> +		((u8 *)dstbuf)[i] = val;
-> +	}
-> +}
-> +
-> +/*
->   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
->   */
->  static int nand_flash_detect_onfi(struct nand_chip *chip)
-> @@ -5102,7 +5131,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  		return 0;
->  
->  	/* ONFI chip: allocate a buffer to hold its parameter page */
-> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
->  	if (!p)
->  		return -ENOMEM;
->  
-> @@ -5113,21 +5142,34 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  	}
->  
->  	for (i = 0; i < 3; i++) {
-> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
-> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
->  		if (ret) {
->  			ret = 0;
->  			goto free_onfi_param_page;
->  		}
->  
-> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
-> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
->  				le16_to_cpu(p->crc)) {
-> +			if (i)
-> +				memcpy(p, &p[i], sizeof(*p));
->  			break;
->  		}
->  	}
->  
->  	if (i == 3) {
-> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -		goto free_onfi_param_page;
-> +		const void *srcbufs[3] = {p, p + 1, p + 2};
-> +
-> +		pr_err("Could not find valid ONFI parameter page\n");
+> Hi Boris,
+>=20
+> Le 12 mai 2018 02:55, Boris Brezillon <boris.brezillon@bootlin.com> a =C3=
+=A9crit :
+> >
+> > Hi Paul,=20
+> >
+> > On Fri, 11 May 2018 23:29:12 +0200=20
+> > Paul Cercueil <paul@crapouillou.net> wrote:=20
+> > =20
+> > > By specifying the properties "mtd-oob-ecc" and "mtd-oob-free", it is=
+=20
+> > > now possible to specify from devicetree where the ECC data is located=
+=20
+> > > inside the OOB region.  =20
+> >
+> > Why would we want to do that? I mean, ECC/free regions are ECC=20
+> > controller dependent (and NAND chip dependent for the OOB size part),=20
+> > so there's no reason to describe it in the DT. And more importantly,=20
+> > people are likely to get it wrong.=20
+> >
+> > I'm curious, why do you need that?  =20
+>=20
+> Good question.
+>=20
+> The reason is that some SoCs have no ECC controller.
+> The various boards for these SoCs then all use a different layout.
 
-Maybe pr_warn() here
+Okay. Still think defining the layouts in the DT is a bad idea. We
+can add a jz4740 specific property to define the layout id
+(ingenic,nand-oob-layout =3D <layout-id>), but not a generic way to
+define custom layouts for all kind of NAND controller.
 
-> +		pr_info("Recover ONFI params with bit-wise majority\n");
+>=20
+> My motivation is to get rid of this (move it to devicetree):
+> https://elixir.bootlin.com/linux/latest/source/arch/mips/jz4740/board-qi_=
+lb60.c#L93
+> And enable the support of other boards with custom OOB layouts.
 
-and maybe you can pack the 2 messages:
-
-		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it");
-
-> +
-> +		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
-> +				       sizeof(*p));
-> +
-> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
-> +				le16_to_cpu(p->crc)) {
-> +			pr_err("ONFI parameter recovery failed, aborting\n");
-> +			goto free_onfi_param_page;
-> +		}
->  	}
->  
->  	/* Check version */
+Can you list the different layouts you have? I'm pretty sure there's a
+pattern. Maybe we can even deduce the layout from the page size or OOB
+size.
