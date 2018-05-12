@@ -1,25 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHWIh-0002Ox-SK
- for linux-mtd@lists.infradead.org; Sat, 12 May 2018 15:19:14 +0000
-Date: Sat, 12 May 2018 17:18:59 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, Richard Weinberger
- <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>, PACKHAM Chris
- <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: cfi_cmdset_0002: Fix coding style issues
-Message-ID: <20180512171859.406d8d12@bbrezillon>
-In-Reply-To: <TY1PR01MB09542FD6BF741E2365C898BEDC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09543004A0EDF2E03783E6D9DC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180508190902.32c344b7@bbrezillon>
- <TY1PR01MB09542FD6BF741E2365C898BEDC9A0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Received: from outils.crapouillou.net ([89.234.176.41] helo=crapouillou.net)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fHYYJ-0006xT-JH
+ for linux-mtd@lists.infradead.org; Sat, 12 May 2018 17:43:29 +0000
+Date: Sat, 12 May 2018 19:42:49 +0200
+From: Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mtd: nand: Add support for reading ooblayout from device
+ tree
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, Rob Herring
+ <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Boris Brezillon
+ <boris.brezillon@bolin.com>, Marek Vasut <marek.vasut@gmail.com>
+Message-Id: <1526146969.1594.0@smtp.crapouillou.net>
+In-Reply-To: <20180512170034.12779313@bbrezillon>
+References: <20180512115551.56C6E20787@mail.bootlin.com>
+ <20180512154223.3b81c7f7@bbrezillon>
+ <1526135906.4971.0@smtp.crapouillou.net>
+ <20180512170034.12779313@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,145 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 May 2018 17:22:28 +0000
-IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
 
-> From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> 
-> This patch fixes mainly to remove unneeded spaces after '(' and before ')'.
-> Also some indentation errors are fixed.
-> 
-> Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> Cc: linux-mtd@lists.infradead.org
 
-Applied.
+>>  >>  My motivation is to get rid of this (move it to devicetree):
+>>  >>
+>>  >> 
+>> https://elixir.bootlin.com/linux/latest/source/arch/mips/jz4740/board-qi_lb60.c#L93
+>>  >>  And enable the support of other boards with custom OOB layouts.
+>>  >
+>>  > Can you list the different layouts you have? I'm pretty sure 
+>> there's a
+>>  > pattern. Maybe we can even deduce the layout from the page size 
+>> or OOB
+>>  > size.
+>> 
+>>  This is the other layout I have for another ingenic device:
+>>  
+>> http://projects.qi-hardware.com/index.php/p/qi-kernel/source/tree/od-2011-09-18/arch/mips/jz4740/board-a320.c#L125
+>> 
+>>  Page size and OOB size are the same between these two devices.
+> 
+> Indeed. Do you know if there are other kind of layouts in the wild?
+
+I'm getting a new board in a few weeks, I'll be able to check that out.
+
+> Note that <layout-id> can be a string, so if each each board is
+> defining its own layout, you could specify the board name here.
+> Otherwise, if you just have those 2 patterns, you can just name them
+> "contiguous" and "interleaved".
+
+I don't like the idea of adding board-specific data inside the driver...
+I'd prefer to use the method I used in this patch, but inside the
+jz4740-nand driver, if you're OK with it.
 
 Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 26 +++++++++++++-------------
->  1 file changed, 13 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 56aa6b75213d..e397b80e40cc 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -44,8 +44,8 @@
->  
->  #define MAX_WORD_RETRIES 3
->  
-> -#define SST49LF004B	        0x0060
-> -#define SST49LF040B	        0x0050
-> +#define SST49LF004B		0x0060
-> +#define SST49LF040B		0x0050
->  #define SST49LF008A		0x005a
->  #define AT49BV6416		0x00d6
->  
-> @@ -207,7 +207,7 @@ static void fixup_use_write_buffers(struct mtd_info *mtd)
->  	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	if (cfi->cfiq->BufWriteTimeoutTyp) {
-> -		pr_debug("Using buffer write method\n" );
-> +		pr_debug("Using buffer write method\n");
->  		mtd->_write = cfi_amdstd_write_buffers;
->  	}
->  }
-> @@ -1562,7 +1562,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
->  	 * depending of the conditions.	 The ' + 1' is to avoid having a
->  	 * timeout of 0 jiffies if HZ is smaller than 1000.
->  	 */
-> -	unsigned long uWriteTimeout = ( HZ / 1000 ) + 1;
-> +	unsigned long uWriteTimeout = (HZ / 1000) + 1;
->  	int ret = 0;
->  	map_word oldd;
->  	int retry_cnt = 0;
-> @@ -1577,7 +1577,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
->  	}
->  
->  	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
-> -	       __func__, adr, datum.x[0] );
-> +		 __func__, adr, datum.x[0]);
->  
->  	if (mode == FL_OTP_WRITE)
->  		otp_enter(map, chip, adr, map_bankwidth(map));
-> @@ -1643,7 +1643,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
->  	/* Did we succeed? */
->  	if (!chip_good(map, adr, datum)) {
->  		/* reset on all failures. */
-> -		map_write( map, CMD(0xF0), chip->start );
-> +		map_write(map, CMD(0xF0), chip->start);
->  		/* FIXME - should have reset delay before continuing */
->  
->  		if (++retry_cnt <= MAX_WORD_RETRIES)
-> @@ -1821,7 +1821,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
->  	datum = map_word_load(map, buf);
->  
->  	pr_debug("MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
-> -	       __func__, adr, datum.x[0] );
-> +		 __func__, adr, datum.x[0]);
->  
->  	XIP_INVAL_CACHED_RANGE(map, adr, len);
->  	ENABLE_VPP(map);
-> @@ -2251,7 +2251,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  	}
->  
->  	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
-> -	       __func__, chip->start );
-> +	       __func__, chip->start);
->  
->  	XIP_INVAL_CACHED_RANGE(map, adr, map->size);
->  	ENABLE_VPP(map);
-> @@ -2297,7 +2297,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  
->  		if (time_after(jiffies, timeo)) {
->  			printk(KERN_WARNING "MTD %s(): software timeout\n",
-> -				__func__ );
-> +			       __func__);
->  			break;
->  		}
->  
-> @@ -2307,7 +2307,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
->  	/* Did we succeed? */
->  	if (!chip_good(map, adr, map_word_ff(map))) {
->  		/* reset on all failures. */
-> -		map_write( map, CMD(0xF0), chip->start );
-> +		map_write(map, CMD(0xF0), chip->start);
->  		/* FIXME - should have reset delay before continuing */
->  
->  		ret = -EIO;
-> @@ -2340,7 +2340,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  	}
->  
->  	pr_debug("MTD %s(): ERASE 0x%.8lx\n",
-> -	       __func__, adr );
-> +		 __func__, adr);
->  
->  	XIP_INVAL_CACHED_RANGE(map, adr, len);
->  	ENABLE_VPP(map);
-> @@ -2389,7 +2389,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  		if (time_after(jiffies, timeo)) {
->  			xip_enable(map, chip, adr);
->  			printk(KERN_WARNING "MTD %s(): software timeout\n",
-> -				__func__ );
-> +			       __func__);
->  			break;
->  		}
->  
-> @@ -2399,7 +2399,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
->  	/* Did we succeed? */
->  	if (!chip_good(map, adr, map_word_ff(map))) {
->  		/* reset on all failures. */
-> -		map_write( map, CMD(0xF0), chip->start );
-> +		map_write(map, CMD(0xF0), chip->start);
->  		/* FIXME - should have reset delay before continuing */
->  
->  		ret = -EIO;
+-Paul
