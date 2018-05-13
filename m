@@ -1,30 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fHndl-0003S4-62
- for linux-mtd@lists.infradead.org; Sun, 13 May 2018 09:50:08 +0000
-Date: Sun, 13 May 2018 11:49:39 +0200
+ id 1fHraB-0000hg-QK
+ for linux-mtd@lists.infradead.org; Sun, 13 May 2018 14:02:41 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>
-Cc: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
- "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, "jagdish.gediya@nxp.com"
- <jagdish.gediya@nxp.com>, "shreeya.patel23498@gmail.com"
- <shreeya.patel23498@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "Bos, Ties (Nokia - US/Sunnyvale)"
- <ties.bos@nokia.com>
-Subject: Re: [PATCH v7] mtd: rawnand: use bit-wise majority to recover the
- contents of ONFI parameter
-Message-ID: <20180513114939.56055241@bbrezillon>
-In-Reply-To: <VI1PR07MB1615A02B23D992E84A3B333F819D0@VI1PR07MB1615.eurprd07.prod.outlook.com>
-References: <VI1PR07MB1615A02B23D992E84A3B333F819D0@VI1PR07MB1615.eurprd07.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Geert Uytterhoeven <geert@linux-m68k.org>, linux-m68k@lists.linux-m68k.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] m68k: Implement ndelay() as an inline function to force type
+ checking/casting
+Date: Sun, 13 May 2018 16:02:12 +0200
+Message-Id: <20180513140212.3961-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,117 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied after fixing a few things (see below).
+ndelay() is supposed to take an unsigned long, but if you define
+ndelay() as a macro and the caller pass an unsigned long long instead
+of an unsigned long, the unsigned long long to unsigned long cast is
+not done and we end up with an "undefined reference to `__udivdi3'"
+error at link time.
 
-Changed the subject to "mtd: rawnand: use bit-wise majority to recover
-the ONFI param page"
+Fix that by making ndelay() an inline function and then defining dummy
+ndelay() macro that redirects to the ndelay() function (it's how most
+archs do to implement ndelay()).
 
-On Sun, 13 May 2018 04:30:02 +0000
-"Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com> wrote:
+Fixes: c8ee038bd148 ("m68k: Implement ndelay() based on the existing udelay() logic")
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Hello Geert,
 
-> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid CRC values, the bit-wise majority may be used to recover the contents of the parameter pages from the parameter page copies present.
+This patch is fixing the bug reported by kbuild test robot here [1].
+I could have patched the PSEC_TO_NSEC() macro to cast the result of
+the division on a u32, but I thought making m68k consistent with what
+other archs do would be preferable.
 
-Wrapped this line.
+Let me know if don't like the solution, and I'll patch the ndelay()
+caller instead.
 
-> 
-> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
-> ---
-> v7: change debug print messages
-> v6: support the cases that srcbufs are not contiguous
-> v5: make the bit-wise majority functon generic
-> v4: move the bit-wise majority code in a separate function
-> v3: fix warning message detected by kbuild test robot
-> v2: rebase the changes on top of v4.17-rc1
->  
-> drivers/mtd/nand/raw/nand_base.c |   50 ++++++++++++++++++++++++++++++++++----
->  1 file changed, 45 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 72f3a89..b43b784 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5087,6 +5087,35 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
->  }
->  
->  /*
-> + * Recover data with bit-wise majority
-> + */
-> +static void nand_bit_wise_majority(const void **srcbufs,
-> +				   unsigned int nsrcbufs,
-> +				   void *dstbuf,
-> +				   unsigned int bufsize)
-> +{
-> +	int i, j, k;
-> +
-> +	for (i = 0; i < bufsize; i++) {
-> +		u8 cnt, val;
+Regards,
 
-Moved declaration cnt in the for(j) loop and made it an unsigned int.
+Boris
 
-> +
-> +		val = 0;
-> +		for (j = 0; j < 8; j++) {
-> +			cnt = 0;
-> +			for (k = 0; k < nsrcbufs; k++) {
-> +				const u8 *srcbuf = srcbufs[k];
-> +
-> +				if (srcbuf[i] & BIT(j))
-> +					cnt++;
-> +			}
-> +			if (cnt > nsrcbufs / 2)
-> +				val |= BIT(j);
-> +		}
-> +		((u8 *)dstbuf)[i] = val;
-> +	}
-> +}
-> +
-> +/*
->   * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
->   */
->  static int nand_flash_detect_onfi(struct nand_chip *chip)
-> @@ -5102,7 +5131,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  		return 0;
->  
->  	/* ONFI chip: allocate a buffer to hold its parameter page */
-> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
->  	if (!p)
->  		return -ENOMEM;
->  
-> @@ -5113,21 +5142,32 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  	}
->  
->  	for (i = 0; i < 3; i++) {
-> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
-> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
->  		if (ret) {
->  			ret = 0;
->  			goto free_onfi_param_page;
->  		}
->  
-> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
-> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
->  				le16_to_cpu(p->crc)) {
-> +			if (i)
-> +				memcpy(p, &p[i], sizeof(*p));
->  			break;
->  		}
->  	}
->  
->  	if (i == 3) {
-> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> -		goto free_onfi_param_page;
-> +		const void *srcbufs[3] = {p, p + 1, p + 2};
-> +
-> +		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
-> +		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
-> +				       sizeof(*p));
-> +
-> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
-> +				le16_to_cpu(p->crc)) {
-> +			pr_err("ONFI parameter recovery failed, aborting\n");
-> +			goto free_onfi_param_page;
-> +		}
->  	}
->  
->  	/* Check version */
+[1]https://lkml.org/lkml/2018/5/13/72
+---
+ arch/m68k/include/asm/delay.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
+index 7f474121e4ca..66ba159002a3 100644
+--- a/arch/m68k/include/asm/delay.h
++++ b/arch/m68k/include/asm/delay.h
+@@ -115,6 +115,13 @@ static inline void __udelay(unsigned long usecs)
+  */
+ #define	HZSCALE		(268435456 / (1000000 / HZ))
+ 
+-#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000))
++static inline void ndelay(unsigned long nsec)
++{
++	__delay(DIV_ROUND_UP(nsec *
++			     ((((HZSCALE) >> 11) *
++			       (loops_per_jiffy >> 11)) >> 6),
++			     1000));
++}
++#define ndelay(n) ndelay(n)
+ 
+ #endif /* defined(_M68K_DELAY_H) */
+-- 
+2.14.1
