@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIBau-0003P9-F8
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 11:24:53 +0000
+ id 1fIBbC-0003cd-R0
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 11:25:09 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 5/8] ubi: fastmap: Fixup pool sizes for preseeded fastmaps
-Date: Mon, 14 May 2018 13:24:19 +0200
-Message-Id: <20180514112422.23988-6-richard@nod.at>
+Subject: [PATCH 7/8] ubi: fastmap: Relax size check
+Date: Mon, 14 May 2018 13:24:21 +0200
+Message-Id: <20180514112422.23988-8-richard@nod.at>
 In-Reply-To: <20180514112422.23988-1-richard@nod.at>
 References: <20180514112422.23988-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,36 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A preseeded fastmap has, by definition, no dirty PEBs and therefore all
-pools are empty. The creation tool can also not calculate the maximal
-pool sizes. This means we have to set them during attach.
+While attaching via fastmap we verify whether the found fastmap
+is as large as we have computed.
+With preseeded Fastmaps this assumtion can fail since ubinize cannot
+know the total size of the MTD and uses the number if used PEBs for
+the calculation.
+Therefore the found fastmap might be smaller than the kernel expects.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index f40cd2b18d4c..0d1274b69274 100644
+index 5ec14fd70c13..262497996954 100644
 --- a/drivers/mtd/ubi/fastmap.c
 +++ b/drivers/mtd/ubi/fastmap.c
-@@ -620,8 +620,15 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+@@ -1120,7 +1120,7 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+ 	}
  
- 	pool_size = be16_to_cpu(fmpl->size);
- 	wl_pool_size = be16_to_cpu(fmpl_wl->size);
--	fm->max_pool_size = be16_to_cpu(fmpl->max_size);
--	fm->max_wl_pool_size = be16_to_cpu(fmpl_wl->max_size);
-+
-+	if (fm->flags & UBI_FM_SB_PRESEEDED_FLG) {
-+		fm->max_pool_size = ubi->fm_pool.max_size;
-+		fm->max_wl_pool_size = ubi->fm_wl_pool.max_size;
-+
-+	} else {
-+		fm->max_pool_size = be16_to_cpu(fmpl->max_size);
-+		fm->max_wl_pool_size = be16_to_cpu(fmpl_wl->max_size);
-+	}
- 
- 	if (pool_size > UBI_FM_MAX_POOL_SIZE || pool_size < 0) {
- 		ubi_err(ubi, "bad pool size: %i", pool_size);
+ 	fm_size = ubi->leb_size * used_blocks;
+-	if (fm_size != ubi->fm_size) {
++	if (fm_size > ubi->fm_size) {
+ 		ubi_err(ubi, "bad fastmap size: %zi, expected: %zi",
+ 			fm_size, ubi->fm_size);
+ 		ret = UBI_BAD_FASTMAP;
 -- 
 2.13.6
