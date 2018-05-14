@@ -1,24 +1,20 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.203])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI2zo-0002sB-SM
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 02:14:00 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>, "PACKHAM
- Chris" <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: [PATCH v5 2/2] mtd: cfi_cmdset_0002: Change erase functions to retry
- for error
-Date: Mon, 14 May 2018 02:13:38 +0000
-Message-ID: <TY1PR01MB095460D54A1E6F3DBFB2FA87DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fI7Hc-0000z0-0f
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 06:48:34 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-fsdevel@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 09/15] ubifs_lookup: use d_splice_alias()
+Date: Mon, 14 May 2018 08:48:04 +0200
+Message-ID: <1895334.QZIWCTBKyO@blindfold>
+In-Reply-To: <20180513213017.31269-9-viro@ZenIV.linux.org.uk>
+References: <20180513212612.GV30522@ZenIV.linux.org.uk>
+ <20180513213017.31269-1-viro@ZenIV.linux.org.uk>
+ <20180513213017.31269-9-viro@ZenIV.linux.org.uk>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,99 +24,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Am Sonntag, 13. Mai 2018, 23:30:11 CEST schrieb Al Viro:
+> From: Al Viro <viro@zeniv.linux.org.uk>
+> 
+> Cc: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  fs/ubifs/dir.c | 43 +++++++++++++++----------------------------
+>  1 file changed, 15 insertions(+), 28 deletions(-)
+> 
+> diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+> index 9d7fb88e172e..4e267cc21c77 100644
+> --- a/fs/ubifs/dir.c
+> +++ b/fs/ubifs/dir.c
+> @@ -214,7 +214,7 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>  	int err;
+>  	union ubifs_key key;
+>  	struct inode *inode = NULL;
+> -	struct ubifs_dent_node *dent;
+> +	struct ubifs_dent_node *dent = NULL;
+>  	struct ubifs_info *c = dir->i_sb->s_fs_info;
+>  	struct fscrypt_name nm;
+>  
+> @@ -229,14 +229,14 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>  		return ERR_PTR(err);
+>  
+>  	if (fname_len(&nm) > UBIFS_MAX_NLEN) {
+> -		err = -ENAMETOOLONG;
+> -		goto out_fname;
+> +		inode = ERR_PTR(-ENAMETOOLONG);
+> +		goto done;
+>  	}
+>  
+>  	dent = kmalloc(UBIFS_MAX_DENT_NODE_SZ, GFP_NOFS);
+>  	if (!dent) {
+> -		err = -ENOMEM;
+> -		goto out_fname;
+> +		inode = ERR_PTR(-ENOMEM);
+> +		goto done;
+>  	}
+>  
+>  	if (nm.hash) {
+> @@ -250,16 +250,16 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>  	}
+>  
+>  	if (err) {
+> -		if (err == -ENOENT) {
+> +		if (err == -ENOENT)
+>  			dbg_gen("not found");
+> -			goto done;
+> -		}
+> -		goto out_dent;
+> +		else
+> +			inode = ERR_PTR(err);
+> +		goto done;
+>  	}
+>  
+>  	if (dbg_check_name(c, dent, &nm)) {
+> -		err = -EINVAL;
+> -		goto out_dent;
+> +		inode = ERR_PTR(-EINVAL);
+> +		goto done;
+>  	}
+>  
+>  	inode = ubifs_iget(dir->i_sb, le64_to_cpu(dent->inum));
+> @@ -272,7 +272,7 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>  		ubifs_err(c, "dead directory entry '%pd', error %d",
+>  			  dentry, err);
+>  		ubifs_ro_mode(c, err);
+> -		goto out_dent;
+> +		goto done;
+>  	}
+>  
+>  	if (ubifs_crypt_is_encrypted(dir) &&
+> @@ -280,27 +280,14 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
+>  	    !fscrypt_has_permitted_context(dir, inode)) {
+>  		ubifs_warn(c, "Inconsistent encryption contexts: %lu/%lu",
+>  			   dir->i_ino, inode->i_ino);
+> -		err = -EPERM;
+> -		goto out_inode;
+> +		iput(inode);
+> +		inode = ERR_PTR(-EPERM);
+>  	}
+>  
+>  done:
+>  	kfree(dent);
+>  	fscrypt_free_filename(&nm);
+> -	/*
+> -	 * Note, d_splice_alias() would be required instead if we supported
+> -	 * NFS.
+> -	 */
+> -	d_add(dentry, inode);
+> -	return NULL;
+> -
+> -out_inode:
+> -	iput(inode);
+> -out_dent:
+> -	kfree(dent);
+> -out_fname:
+> -	fscrypt_free_filename(&nm);
+> -	return ERR_PTR(err);
+> +	return d_splice_alias(inode, dentry);
+>  }
+>  
+>  static int ubifs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
+> 
 
-For the word write functions it is retried for error.
-But it is not implemented to retry for the erase functions.
-To make sure for the erase functions change to retry as same.
+Acked-by: Richard Weinberger <richard@nod.at>
 
-This change is needed to prevent the flash erase error.
-It was caused by the error case of chip_good() in the do_erase_oneblock().
-Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-The error issue behavior is able to reproduce and resolved by the change.
-The flash controller is parallel Flash interface integrated on BCM53003.
-
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
-dset_0002.c
-index b69f30b0303c..33af432926b8 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2240,6 +2240,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
- 	unsigned long int adr;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret =3D 0;
-+	int retry_cnt =3D 0;
-=20
- 	adr =3D cfi->addr_unlock1;
-=20
-@@ -2257,6 +2258,7 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
-=20
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
-@@ -2310,6 +2312,9 @@ static int __xipram do_erase_chip(struct map_info *ma=
-p, struct flchip *chip)
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
-=20
-+		if (++retry_cnt <=3D MAX_RETRIES)
-+			goto retry;
-+
- 		ret =3D -EIO;
- 	}
-=20
-@@ -2329,6 +2334,7 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 	unsigned long timeo =3D jiffies + HZ;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret =3D 0;
-+	int retry_cnt =3D 0;
-=20
- 	adr +=3D chip->start;
-=20
-@@ -2346,6 +2352,7 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
-=20
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->dev=
-ice_type, NULL);
-@@ -2402,6 +2409,9 @@ static int __xipram do_erase_oneblock(struct map_info=
- *map, struct flchip *chip,
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
-=20
-+		if (++retry_cnt <=3D MAX_RETRIES)
-+			goto retry;
-+
- 		ret =3D -EIO;
- 	}
-=20
---=20
-2.16.1
+Thanks,
+//richard
