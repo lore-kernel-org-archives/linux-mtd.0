@@ -1,23 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.199])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI9GH-0008Rj-CC
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 08:55:20 +0000
-Date: Mon, 14 May 2018 10:54:51 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1fI9W3-0001fs-SD
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 09:11:45 +0000
+Received: from JPN01-TY1-obe.outbound.protection.outlook.com
+ (mail-ty1jpn01lp0181.outbound.protection.outlook.com [23.103.139.181])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
+ 5CFFE294007
+ for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 18:11:20 +0900 (JST)
+ (envelope-from smtpuser@allied-telesis.co.jp)
+From: smtpuser <smtpuser@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Thomas
- Petazzoni <thomas.petazzoni@bootlin.com>, Bean Huo <beanhuo@micron.com>,
- Peter Pan <peterpandong@micron.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: Do not check FAIL bit when executing a
- SET_FEATURES op
-Message-ID: <20180514105451.43537aef@xps13>
-In-Reply-To: <20180511124407.7314-1-boris.brezillon@bootlin.com>
-References: <20180511124407.7314-1-boris.brezillon@bootlin.com>
+Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH RESEND v5 2/2] mtd: cfi_cmdset_0002: Change erase functions to
+ retry for error
+Date: Mon, 14 May 2018 18:10:42 +0900
+Message-Id: <20180514091042.28768-3-smtpuser@allied-telesis.co.jp>
+In-Reply-To: <20180514091042.28768-1-smtpuser@allied-telesis.co.jp>
+References: <20180514091042.28768-1-smtpuser@allied-telesis.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +36,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-On Fri, 11 May 2018 14:44:07 +0200, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+For the word write functions it is retried for error.
+But it is not implemented to retry for the erase functions.
+To make sure for the erase functions change to retry as same.
 
-> The ONFI spec clearly says that FAIL bit is only valid for PROGRAM,
-> ERASE and READ-with-on-die-ECC operations, and should be ignored
-> otherwise.
-> 
-> It seems that checking it after sending a SET_FEATURES is a bad idea
-> because a previous READ, PROGRAM or ERASE op may have failed, and
-> depending on the implementation, the FAIL bit is not cleared until a
-> new READ, PROGRAM or ERASE is started.
-> 
-> This leads to ->set_features() returning -EIO while it actually worked,
-> which can sometimes stop a batch of READ/PROGRAM ops.
-> 
-> Note that we only fix the ->exec_op() path here, because some drivers
-> are abusing the NAND_STATUS_FAIL flag in their ->waitfunc()
-> implementation to propagate other kind of errors, like
-> wait-ready-timeout or controller-related errors. Let's not try to fix
-> those drivers since they worked fine so far.
-> 
-> Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
+This change is needed to prevent the flash erase error.
+It was caused by the error case of chip_good() in the do_erase_oneblock().
+Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
+The error issue behavior is able to reproduce and resolved by the change.
+The flash controller is parallel Flash interface integrated on BCM53003.
 
-So we have no real way to know if a SET_FEATURES actually succeeded.
-I checked the ONFI spec and could not find anything. A GET_FEATURES
-will do the trick though (when supported).
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index b69f30b0303c..33af432926b8 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -2240,6 +2240,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 	unsigned long int adr;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret = 0;
++	int retry_cnt = 0;
+ 
+ 	adr = cfi->addr_unlock1;
+ 
+@@ -2257,6 +2258,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+ 
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+@@ -2310,6 +2312,9 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
++		if (++retry_cnt <= MAX_RETRIES)
++			goto retry;
++
+ 		ret = -EIO;
+ 	}
+ 
+@@ -2329,6 +2334,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	unsigned long timeo = jiffies + HZ;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int ret = 0;
++	int retry_cnt = 0;
+ 
+ 	adr += chip->start;
+ 
+@@ -2346,6 +2352,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+ 
++ retry:
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+@@ -2402,6 +2409,9 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
++		if (++retry_cnt <= MAX_RETRIES)
++			goto retry;
++
+ 		ret = -EIO;
+ 	}
+ 
+-- 
+2.16.1
