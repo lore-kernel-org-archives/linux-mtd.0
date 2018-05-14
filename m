@@ -1,14 +1,15 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIBau-0003Nt-Eo
+ id 1fIBau-0003Oc-Ew
  for linux-mtd@lists.infradead.org; Mon, 14 May 2018 11:24:51 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 2/8] ubi: fastmap: Add UBI_FM_SB_PRESEEDED_FLG flag
-Date: Mon, 14 May 2018 13:24:16 +0200
-Message-Id: <20180514112422.23988-3-richard@nod.at>
+Subject: [PATCH 4/8] ubi: fastmap: Handle bad block count for preseeded
+ fastmap case
+Date: Mon, 14 May 2018 13:24:18 +0200
+Message-Id: <20180514112422.23988-5-richard@nod.at>
 In-Reply-To: <20180514112422.23988-1-richard@nod.at>
 References: <20180514112422.23988-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,32 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This flag indicates that the fastmap was preseeded, which means
-it was created offline by a tool such as ubinize which cannot know
-the whole MTD state such as real size and bad blocks.
-As consequence UBI has to take special care to use that fastmap.
+If the fastmap is preseeded the bad block count is created while
+scanning for bad blocks in the PEB fixup code.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/ubi-media.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/fastmap.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
-index d25ced1285e2..5ebf40db922f 100644
---- a/drivers/mtd/ubi/ubi-media.h
-+++ b/drivers/mtd/ubi/ubi-media.h
-@@ -406,7 +406,11 @@ struct ubi_vtbl_record {
- #define UBI_FM_MIN_POOL_SIZE	8
- #define UBI_FM_MAX_POOL_SIZE	256
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index a351860f420a..f40cd2b18d4c 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -692,7 +692,16 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 	}
  
--#define UBI_FM_SB_FLG_MASK	0
-+enum {
-+	UBI_FM_SB_PRESEEDED_FLG	= 0x1,
-+};
+ 	ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
+-	ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
 +
-+#define UBI_FM_SB_FLG_MASK (UBI_FM_SB_PRESEEDED_FLG)
++	if (fm->flags & UBI_FM_SB_PRESEEDED_FLG) {
++		/* When we have a preseeded Fastmap cannot use the provided bad block number */
++		if (be32_to_cpu(fmhdr->bad_peb_count) != 0) {
++			ubi_err(ubi, "Bad block count in preseeded Fastmap is non-zero");
++			goto fail_bad;
++		}
++	} else {
++		ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
++	}
  
- /**
-  * struct ubi_fm_sb - UBI fastmap super block
+ 	/* Iterate over all volumes and read their EBA table */
+ 	for (i = 0; i < be32_to_cpu(fmhdr->vol_count); i++) {
 -- 
 2.13.6
