@@ -1,28 +1,18 @@
-Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI9o3-000677-8j
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 09:30:19 +0000
-Received: by mail-vk0-x242.google.com with SMTP id g72-v6so7035233vke.2
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 02:29:59 -0700 (PDT)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20180513140212.3961-1-boris.brezillon@bootlin.com>
-References: <20180513140212.3961-1-boris.brezillon@bootlin.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 14 May 2018 11:29:57 +0200
-Message-ID: <CAMuHMdVdteVYjXkmZW+PouVsvPehT_GMfvEKo7OKqs4XYdiSpA@mail.gmail.com>
-Subject: Re: [PATCH] m68k: Implement ndelay() as an inline function to force
- type checking/casting
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-m68k <linux-m68k@lists.linux-m68k.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fI8hD-0005gs-7h
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 08:19:04 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
  Richard Weinberger <richard@nod.at>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Michael Schmitz <schmitzmic@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 6/6] ubifs: lpt: Fix wrong pnode number range in comment
+Date: Mon, 14 May 2018 10:18:19 +0200
+Message-Id: <20180514081819.20921-7-s.hauer@pengutronix.de>
+In-Reply-To: <20180514081819.20921-1-s.hauer@pengutronix.de>
+References: <20180514081819.20921-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,79 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+The comment above pnode_lookup claims the range for the pnode number is
+from 0 to main_lebs - 1. This is wrong because every pnode has
+informations about UBIFS_LPT_FANOUT LEBs, thus the corrent range is
+0 to to (main_lebs - 1) / UBIFS_LPT_FANOUT.
 
-On Sun, May 13, 2018 at 4:02 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> ndelay() is supposed to take an unsigned long, but if you define
-> ndelay() as a macro and the caller pass an unsigned long long instead
-> of an unsigned long, the unsigned long long to unsigned long cast is
-> not done and we end up with an "undefined reference to `__udivdi3'"
-> error at link time.
->
-> Fix that by making ndelay() an inline function and then defining dummy
-> ndelay() macro that redirects to the ndelay() function (it's how most
-> archs do to implement ndelay()).
->
-> Fixes: c8ee038bd148 ("m68k: Implement ndelay() based on the existing udelay() logic")
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Hello Geert,
->
-> This patch is fixing the bug reported by kbuild test robot here [1].
-> I could have patched the PSEC_TO_NSEC() macro to cast the result of
-> the division on a u32, but I thought making m68k consistent with what
-> other archs do would be preferable.
->
-> Let me know if don't like the solution, and I'll patch the ndelay()
-> caller instead.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ fs/ubifs/lpt_commit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks for your patch!
-
-With the comment a few lines above removed:
-
-    - * This is a macro so that the const version can factor out the first
-    - * multiply and shift.
-
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
->
-> Regards,
->
-> Boris
->
-> [1]https://lkml.org/lkml/2018/5/13/72
-> ---
->  arch/m68k/include/asm/delay.h | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/m68k/include/asm/delay.h b/arch/m68k/include/asm/delay.h
-> index 7f474121e4ca..66ba159002a3 100644
-> --- a/arch/m68k/include/asm/delay.h
-> +++ b/arch/m68k/include/asm/delay.h
-> @@ -115,6 +115,13 @@ static inline void __udelay(unsigned long usecs)
->   */
->  #define        HZSCALE         (268435456 / (1000000 / HZ))
->
-> -#define ndelay(n) __delay(DIV_ROUND_UP((n) * ((((HZSCALE) >> 11) * (loops_per_jiffy >> 11)) >> 6), 1000))
-> +static inline void ndelay(unsigned long nsec)
-> +{
-> +       __delay(DIV_ROUND_UP(nsec *
-> +                            ((((HZSCALE) >> 11) *
-> +                              (loops_per_jiffy >> 11)) >> 6),
-> +                            1000));
-> +}
-> +#define ndelay(n) ndelay(n)
->
->  #endif /* defined(_M68K_DELAY_H) */
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index 235654c2fe89..78da65b2fb85 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -619,7 +619,7 @@ static struct ubifs_pnode *next_pnode_to_dirty(struct ubifs_info *c,
+ /**
+  * pnode_lookup - lookup a pnode in the LPT.
+  * @c: UBIFS file-system description object
+- * @i: pnode number (0 to main_lebs - 1)
++ * @i: pnode number (0 to (main_lebs - 1) / UBIFS_LPT_FANOUT))
+  *
+  * This function returns a pointer to the pnode on success or a negative
+  * error code on failure.
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2.17.0
