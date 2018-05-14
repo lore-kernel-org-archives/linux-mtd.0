@@ -1,28 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIA2Q-00081q-CZ
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 09:45:04 +0000
-Date: Mon, 14 May 2018 11:44:40 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>, Joakim
- Tjernlund <Joakim.Tjernlund@infinera.com>, "PACKHAM Chris"
- <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 0/2] mtd: cfi_cmdset_0002: Changes to retry for flash
- erase
-Message-ID: <20180514114440.54190a34@bbrezillon>
-In-Reply-To: <TY1PR01MB09540ADA613B8D72668B9E64DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09547A5F4FCDAA1FFB601C74DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180514091214.35ec45b8@bbrezillon>
- <TY1PR01MB09540ADA613B8D72668B9E64DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Received: from mail-ve1eur01on0050.outbound.protection.outlook.com
+ ([104.47.1.50] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIAWv-0002lO-NZ
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 10:17:00 +0000
+From: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
+To: linux-mtd@lists.infradead.org
+Cc: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
+ Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
+Subject: [PATCH] mtd: spi-nor: Add support for is25wp series chips
+Date: Mon, 14 May 2018 13:15:53 +0300
+Message-Id: <1526292953-9486-1-git-send-email-ext-kimmo.rautkoski@vaisala.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,48 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 May 2018 09:32:01 +0000
-IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
+Added support for is25wp032, is25wp064 and is25wp128.
 
-> Hi Boris-san,
-> 
-> Thanks for your reviewing.
-> 
-> > Can you please use git send-email when you send your patch series, so
-> > that they are properly threaded.  
-> 
->   Yes I have just resend the v5 patch series by using git send-email.
->   But the source address is set as smtpuser <smtpuser@allied-telesis.co.jp>.
->   This is required on our company mail system currently.
->   But please do not reply to the address but reply to my email address below.
->     Tokunori Ikegami <ikegami at allied-telesis.co.jp>
+Signed-off-by: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-There's still a problem: the patches do not appear as a thread. Can you
-paste the git send-email command you use?
-
-> 
->   Note: I am asking to resolve this issue to our IS department currently.
-> 
->   I have just resend the patch series so please review the last patch series.
->   Very sorry for resending the patch series many times.
-
-It seems that nothing has changed, so nothing more to review on my
-side. And I'm still not entirely convinced by the fix, but if nobody
-complains, I'll apply it. BTW, the changelog is really not clear, you
-should have something like:
-
-Changes since v4:
-- blabla
-- blablabla
-
-Changes since v3:
-- blabla
-- blablabla
-
-Changes since v2:
-- blabla
-- blablabla
-
-Changes since v1:
-- blabla
-- blablabla
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 494b7a2..cace1de 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1065,6 +1065,12 @@ static const struct flash_info spi_nor_ids[] = {
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
++	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
++	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 
+ 	/* Macronix */
+ 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+-- 
+2.1.4
