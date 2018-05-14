@@ -1,29 +1,19 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIAdo-0007uP-IY
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 10:24:12 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
- <richard@nod.at>, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>, "PACKHAM
- Chris" <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [PATCH v5 0/2] mtd: cfi_cmdset_0002: Changes to retry for flash
- erase
-Date: Mon, 14 May 2018 10:23:22 +0000
-Message-ID: <TY1PR01MB09546F0017C81BA1AE1046CDDC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB09547A5F4FCDAA1FFB601C74DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180514091214.35ec45b8@bbrezillon>
- <TY1PR01MB09540ADA613B8D72668B9E64DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180514114440.54190a34@bbrezillon>
-In-Reply-To: <20180514114440.54190a34@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from laurent.telenet-ops.be ([2a02:1800:110:4::f00:19])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIB3I-0007Sn-Hx
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 10:50:02 +0000
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ linux-m68k@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called with
+ 32-bit
+Date: Mon, 14 May 2018 12:49:37 +0200
+Message-Id: <1526294977-32303-1-git-send-email-geert@linux-m68k.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,62 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
+The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
+dividend, to select the appropriate divide-and-round-up routine.
+As the check uses the ternary operator, the result will always be
+promoted to a type that can hold both results, i.e. unsigned long long.
 
-Thanks for the comments.
+When using this result in a division on a 32-bit system, this may lead
+to link errors like:
 
-> There's still a problem: the patches do not appear as a thread. Can you
-> paste the git send-email command you use?
+    ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
 
-  The command that I used is below.
-    git send-email v5-0000-cover-letter.patch v5-0001-mtd-cfi_cmdset_0002-C=
-hange-definition-naming-to-r.patch v5-0002-mtd-cfi_cmdset_0002-Change-erase=
--functions-to-ret.patch
+Fix this by casting the result of the 64-bit division to the type of the
+dividend.
 
-  I thought that the patches are listed as a thread as below.
-    <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080950.html>
+Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+This fixes the root cause of the link failure seen with
+m68k/allmodconfig since commit 3057fcef385348fe ("mtd: rawnand: Make
+sure we wait tWB before polling the STATUS reg").
 
-  Is this not mentioned by you probably?
+An alternative mitigation was posted as "[PATCH] m68k: Implement
+ndelay() as an inline function to force type checking/casting"
+(https://lkml.org/lkml/2018/5/13/102).
+---
+ include/linux/mtd/rawnand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> It seems that nothing has changed, so nothing more to review on my side.
-
-  The changes themselves are not changed basically.
-
-> And I'm still not entirely convinced by the fix, but if nobody complains,=
- I'll apply it.
-
-  Probably my explanation or investigation are not enough for you.
-  If needed please let me know them I will do that.
-    Note: In my understanding the investigation is enough.
-
-  Anyway thank you so much for your reviewing.
-
-> BTW, the changelog is really not clear, you should have something like:
-
-  Very sorry about this let me list the change logs as below.
-  Changes since v5:
-  - Just fix the commit message of PATCH v4 2/2.
-  - No changes for the source code diff.
-
-  Changes since v4:
-  - The patch series are just rebased since the coding style fix has been a=
-pplied.
-
-  Changes since v3:
-  - Just fix the commit message of patch to retry the chip erase error.
-  - Change the definition naming to MAX_RETRIES from MAX_WRITE_RETRIES.
-
-  Changes since v2:
-  - Split the v1 patch to separate as below.
-    1. Fix coding style
-    2. Change the definition naming
-    3. Retry the erase error
-
-  Changes since v1:
-  - Initial patch to retry the chip erase error.
-
-  Note: If needed I will do resend the patch series with the change log.
-        So please let me know about this if so.
-
-Regards,
-Ikegami
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b312440a9c..d06dc428ea0102ae 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -871,7 +871,7 @@ struct nand_op_instr {
+ #define __DIVIDE(dividend, divisor) ({					\
+ 	sizeof(dividend) == sizeof(u32) ?				\
+ 		DIV_ROUND_UP(dividend, divisor) :			\
+-		DIV_ROUND_UP_ULL(dividend, divisor);			\
++		(__typeof__(dividend))DIV_ROUND_UP_ULL(dividend, divisor); \
+ 		})
+ #define PSEC_TO_NSEC(x) __DIVIDE(x, 1000)
+ #define PSEC_TO_MSEC(x) __DIVIDE(x, 1000000000)
+-- 
+2.7.4
