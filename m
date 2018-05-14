@@ -1,17 +1,29 @@
-Received: from mail-ve1eur01on0050.outbound.protection.outlook.com
- ([104.47.1.50] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIAWv-0002lO-NZ
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 10:17:00 +0000
-From: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
-To: linux-mtd@lists.infradead.org
-Cc: cyrille.pitchen@wedev4u.fr, marek.vasut@gmail.com,
- Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
-Subject: [PATCH] mtd: spi-nor: Add support for is25wp series chips
-Date: Mon, 14 May 2018 13:15:53 +0300
-Message-Id: <1526292953-9486-1-git-send-email-ext-kimmo.rautkoski@vaisala.com>
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIAdo-0007uP-IY
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 10:24:12 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, Joakim Tjernlund <Joakim.Tjernlund@infinera.com>, "PACKHAM
+ Chris" <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: RE: [PATCH v5 0/2] mtd: cfi_cmdset_0002: Changes to retry for flash
+ erase
+Date: Mon, 14 May 2018 10:23:22 +0000
+Message-ID: <TY1PR01MB09546F0017C81BA1AE1046CDDC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB09547A5F4FCDAA1FFB601C74DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180514091214.35ec45b8@bbrezillon>
+ <TY1PR01MB09540ADA613B8D72668B9E64DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <20180514114440.54190a34@bbrezillon>
+In-Reply-To: <20180514114440.54190a34@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +33,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added support for is25wp032, is25wp064 and is25wp128.
+Hi Boris-san,
 
-Signed-off-by: Kimmo Rautkoski <ext-kimmo.rautkoski@vaisala.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks for the comments.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 494b7a2..cace1de 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1065,6 +1065,12 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ) },
- 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
- 			SECT_4K | SPI_NOR_DUAL_READ) },
-+	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
--- 
-2.1.4
+> There's still a problem: the patches do not appear as a thread. Can you
+> paste the git send-email command you use?
+
+  The command that I used is below.
+    git send-email v5-0000-cover-letter.patch v5-0001-mtd-cfi_cmdset_0002-C=
+hange-definition-naming-to-r.patch v5-0002-mtd-cfi_cmdset_0002-Change-erase=
+-functions-to-ret.patch
+
+  I thought that the patches are listed as a thread as below.
+    <http://lists.infradead.org/pipermail/linux-mtd/2018-May/080950.html>
+
+  Is this not mentioned by you probably?
+
+> It seems that nothing has changed, so nothing more to review on my side.
+
+  The changes themselves are not changed basically.
+
+> And I'm still not entirely convinced by the fix, but if nobody complains,=
+ I'll apply it.
+
+  Probably my explanation or investigation are not enough for you.
+  If needed please let me know them I will do that.
+    Note: In my understanding the investigation is enough.
+
+  Anyway thank you so much for your reviewing.
+
+> BTW, the changelog is really not clear, you should have something like:
+
+  Very sorry about this let me list the change logs as below.
+  Changes since v5:
+  - Just fix the commit message of PATCH v4 2/2.
+  - No changes for the source code diff.
+
+  Changes since v4:
+  - The patch series are just rebased since the coding style fix has been a=
+pplied.
+
+  Changes since v3:
+  - Just fix the commit message of patch to retry the chip erase error.
+  - Change the definition naming to MAX_RETRIES from MAX_WRITE_RETRIES.
+
+  Changes since v2:
+  - Split the v1 patch to separate as below.
+    1. Fix coding style
+    2. Change the definition naming
+    3. Retry the erase error
+
+  Changes since v1:
+  - Initial patch to retry the chip erase error.
+
+  Note: If needed I will do resend the patch series with the change log.
+        So please let me know about this if so.
+
+Regards,
+Ikegami
