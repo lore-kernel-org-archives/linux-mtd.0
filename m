@@ -1,13 +1,13 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.199])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.207])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI9W3-0001fs-SD
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 09:11:45 +0000
+ id 1fI9W4-0001l2-99
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 09:11:48 +0000
 Received: from JPN01-TY1-obe.outbound.protection.outlook.com
  (mail-ty1jpn01lp0181.outbound.protection.outlook.com [23.103.139.181])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
  by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
- 5CFFE294007
+ 4E34D294006
  for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 18:11:20 +0900 (JST)
  (envelope-from smtpuser@allied-telesis.co.jp)
 From: smtpuser <smtpuser@allied-telesis.co.jp>
@@ -19,10 +19,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: [PATCH RESEND v5 2/2] mtd: cfi_cmdset_0002: Change erase functions to
- retry for error
-Date: Mon, 14 May 2018 18:10:42 +0900
-Message-Id: <20180514091042.28768-3-smtpuser@allied-telesis.co.jp>
+Subject: [PATCH RESEND v5 1/2] mtd: cfi_cmdset_0002: Change definition naming
+ to retry write operation
+Date: Mon, 14 May 2018 18:10:41 +0900
+Message-Id: <20180514091042.28768-2-smtpuser@allied-telesis.co.jp>
 In-Reply-To: <20180514091042.28768-1-smtpuser@allied-telesis.co.jp>
 References: <20180514091042.28768-1-smtpuser@allied-telesis.co.jp>
 MIME-Version: 1.0
@@ -38,15 +38,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-For the word write functions it is retried for error.
-But it is not implemented to retry for the erase functions.
-To make sure for the erase functions change to retry as same.
-
-This change is needed to prevent the flash erase error.
-It was caused by the error case of chip_good() in the do_erase_oneblock().
-Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-The error issue behavior is able to reproduce and resolved by the change.
-The flash controller is parallel Flash interface integrated on BCM53003.
+The definition can be used for other program and erase operations also.
+So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
@@ -58,64 +51,39 @@ Cc: Richard Weinberger <richard@nod.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index b69f30b0303c..33af432926b8 100644
+index e397b80e40cc..b69f30b0303c 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2240,6 +2240,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	unsigned long int adr;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
+@@ -42,7 +42,7 @@
+ #define AMD_BOOTLOC_BUG
+ #define FORCE_WORD_WRITE 0
  
- 	adr = cfi->addr_unlock1;
+-#define MAX_WORD_RETRIES 3
++#define MAX_RETRIES 3
  
-@@ -2257,6 +2258,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2310,6 +2312,9 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ #define SST49LF004B		0x0060
+ #define SST49LF040B		0x0050
+@@ -1646,7 +1646,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
  		map_write(map, CMD(0xF0), chip->start);
  		/* FIXME - should have reset delay before continuing */
  
+-		if (++retry_cnt <= MAX_WORD_RETRIES)
 +		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
+ 			goto retry;
+ 
  		ret = -EIO;
- 	}
- 
-@@ -2329,6 +2334,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	unsigned long timeo = jiffies + HZ;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
- 
- 	adr += chip->start;
- 
-@@ -2346,6 +2352,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2402,6 +2409,9 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+@@ -2105,7 +2105,7 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
  		map_write(map, CMD(0xF0), chip->start);
  		/* FIXME - should have reset delay before continuing */
  
+-		if (++retry_cnt <= MAX_WORD_RETRIES)
 +		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
- 	}
+ 			goto retry;
  
+ 		ret = -EIO;
 -- 
 2.16.1
