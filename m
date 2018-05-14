@@ -1,23 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI7pv-0004DE-4f
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 07:24:01 +0000
-Date: Mon, 14 May 2018 09:23:34 +0200
+ id 1fI7z9-00010l-48
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 07:33:32 +0000
+Date: Mon, 14 May 2018 09:33:07 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] m68k: Implement ndelay() as an inline function to force
- type checking/casting
-Message-ID: <20180514092334.43b5ee3c@xps13>
-In-Reply-To: <20180513140212.3961-1-boris.brezillon@bootlin.com>
-References: <20180513140212.3961-1-boris.brezillon@bootlin.com>
+To: Greg Ungerer <gerg@kernel.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd@lists.infradead.org, gerg@linux-m68k.org
+Subject: Re: linux-4.17-rc4 marvell-nand.c driver problems
+Message-ID: <20180514093307.48f1d26b@xps13>
+In-Reply-To: <e1311707-61aa-81f0-1a37-003061560acd@kernel.org>
+References: <579454cc-ad92-8fdc-a1ac-f7c57eb56606@kernel.org>
+ <20180511100227.6e016b48@bbrezillon>
+ <e1311707-61aa-81f0-1a37-003061560acd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Greg,
 
-On Sun, 13 May 2018 16:02:12 +0200, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+On Mon, 14 May 2018 09:53:26 +1000, Greg Ungerer <gerg@kernel.org>
+wrote:
 
-> ndelay() is supposed to take an unsigned long, but if you define
-> ndelay() as a macro and the caller pass an unsigned long long instead
-> of an unsigned long, the unsigned long long to unsigned long cast is
-> not done and we end up with an "undefined reference to `__udivdi3'"
-> error at link time.
-> 
-> Fix that by making ndelay() an inline function and then defining dummy
-> ndelay() macro that redirects to the ndelay() function (it's how most
-> archs do to implement ndelay()).
-> 
-> Fixes: c8ee038bd148 ("m68k: Implement ndelay() based on the existing udelay() logic")
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Hi Boris,
+>=20
+> On 11/05/18 18:02, Boris Brezillon wrote:
+> > On Fri, 11 May 2018 17:11:28 +1000
+> > Greg Ungerer <gerg@kernel.org> wrote: =20
+> >> I have a hardware platform built around the Armada 370 using NAND flas=
+h.
+> >> Its old hardware, and has run pretty much every kernel version from
+> >> 3.10 up to 4.16 with no problems. The flash is 128Mbyte SLC from vario=
+us
+> >> vendors (Spansion, Micron, etc).
+> >>
+> >> It has always been using the pxa3xx_nand.c driver up to now. With that
+> >> gone in 4.17 I am trying out the marvell_nand.c driver. I am getting
+> >> a dump just after startup:
+> > > Can you try to cherry-pick this commit [1] (it should appear in =20
+> > 4.17-rc5). =20
+>=20
+> That fixes the problem. Thanks for the quick response.
+>=20
 
-Thanks for fixing it.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Sorry for the delay, good to know it fixed your setup, sorry for the
+inconvenience.
 
+Thanks,
+Miqu=C3=A8l
 
--- 
+--=20
 Miquel Raynal, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
