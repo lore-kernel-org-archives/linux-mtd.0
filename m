@@ -1,7 +1,7 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.12])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI2y3-0002Fp-1d
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 02:12:06 +0000
+ id 1fI2yn-0002Uz-2a
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 02:12:56 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
@@ -11,9 +11,10 @@ CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
  <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
  <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: [PATCH v5 0/2] mtd: cfi_cmdset_0002: Changes to retry for flash erase
-Date: Mon, 14 May 2018 02:11:48 +0000
-Message-ID: <TY1PR01MB09547A5F4FCDAA1FFB601C74DC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Subject: [PATCH v5 1/2] mtd: cfi_cmdset_0002: Change definition naming to
+ retry write  operation
+Date: Mon, 14 May 2018 02:12:34 +0000
+Message-ID: <TY1PR01MB09540E1E2D7E0FDF7AAE194CDC9C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -29,21 +30,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-The flash erase error is caused on the Macronix flash device below.
-  MX29GL512FHT2I-11G
-Also it has been just confirmed to be able to reproduce.
-And the retry function can resolved the flash erase error correctly.
+The definition can be used for other program and erase operations also.
+So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
 
-The commit message of PATCH v4 2/2 was not correct so let me resend patches=
-.
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Tokunori Ikegami (2):
-  mtd: cfi_cmdset_0002: Change definition naming to retry write=20
-    operation
-  mtd: cfi_cmdset_0002: Change erase functions to retry for error
-
- drivers/mtd/chips/cfi_cmdset_0002.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cm=
+dset_0002.c
+index e397b80e40cc..b69f30b0303c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -42,7 +42,7 @@
+ #define AMD_BOOTLOC_BUG
+ #define FORCE_WORD_WRITE 0
+=20
+-#define MAX_WORD_RETRIES 3
++#define MAX_RETRIES 3
+=20
+ #define SST49LF004B		0x0060
+ #define SST49LF040B		0x0050
+@@ -1646,7 +1646,7 @@ static int __xipram do_write_oneword(struct map_info =
+*map, struct flchip *chip,
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+=20
+-		if (++retry_cnt <=3D MAX_WORD_RETRIES)
++		if (++retry_cnt <=3D MAX_RETRIES)
+ 			goto retry;
+=20
+ 		ret =3D -EIO;
+@@ -2105,7 +2105,7 @@ static int do_panic_write_oneword(struct map_info *ma=
+p, struct flchip *chip,
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+=20
+-		if (++retry_cnt <=3D MAX_WORD_RETRIES)
++		if (++retry_cnt <=3D MAX_RETRIES)
+ 			goto retry;
+=20
+ 		ret =3D -EIO;
 --=20
 2.16.1
