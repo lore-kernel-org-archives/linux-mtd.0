@@ -1,31 +1,28 @@
-Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
+Received: from mail-qt0-x22c.google.com ([2607:f8b0:400d:c0d::22c])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fICto-0001A8-4i
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 12:48:22 +0000
-Received: by mail-vk0-x242.google.com with SMTP id q189-v6so7391241vkb.0
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 05:48:09 -0700 (PDT)
+ id 1fIHgN-00009T-NB
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 17:54:49 +0000
+Received: by mail-qt0-x22c.google.com with SMTP id d3-v6so17260082qtp.11
+ for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 10:54:37 -0700 (PDT)
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20180514141339.43a09786@bbrezillon>
-References: <1526294977-32303-1-git-send-email-geert@linux-m68k.org>
- <20180514132324.595b63eb@bbrezillon>
- <CAMuHMdUSHc2o5zXbZje89jo2dxTYv8pzcVSz-gYWh7KdZKwQeA@mail.gmail.com>
- <20180514134607.5dfb8d51@bbrezillon>
- <CAMuHMdVhAAGiGjGMCe26kyLAPqrvTfukADhipd8apk8UNBAXiA@mail.gmail.com>
- <20180514141339.43a09786@bbrezillon>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 14 May 2018 14:48:08 +0200
-Message-ID: <CAMuHMdVVhuriVvvQqPLmf2ADA1JR=vjNMj8FDjcX0r=D9fPRhA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: nand: Fix return type of __DIVIDE() when called with
- 32-bit
+In-Reply-To: <20180510140311.02805561@bbrezillon>
+References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
+ <20180510140311.02805561@bbrezillon>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Mon, 14 May 2018 20:54:36 +0300
+Message-ID: <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover the
+ contents of ONFI parameter
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>,
+Cc: Jane Wan <Jane.Wan@nokia.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- "Linux/m68k" <linux-m68k@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, prabhakar.kushwaha@nxp.com,
+ Shawn Guo <shawnguo@kernel.org>, jagdish.gediya@nxp.com,
+ Shreeya Patel <shreeya.patel23498@gmail.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ties.bos@nokia.com
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,128 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-On Mon, May 14, 2018 at 2:13 PM, Boris Brezillon
+On Thu, May 10, 2018 at 3:03 PM, Boris Brezillon
 <boris.brezillon@bootlin.com> wrote:
-> On Mon, 14 May 2018 14:00:19 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> On Mon, May 14, 2018 at 1:46 PM, Boris Brezillon
->> <boris.brezillon@bootlin.com> wrote:
->> > On Mon, 14 May 2018 13:32:30 +0200
->> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> >> On Mon, May 14, 2018 at 1:23 PM, Boris Brezillon
->> >> <boris.brezillon@bootlin.com> wrote:
->> >> > On Mon, 14 May 2018 12:49:37 +0200
->> >> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->> >> >> The __DIVIDE() macro checks whether it is called with a 32-bit or 64-bit
->> >> >> dividend, to select the appropriate divide-and-round-up routine.
->> >> >> As the check uses the ternary operator, the result will always be
->> >> >> promoted to a type that can hold both results, i.e. unsigned long long.
->> >> >>
->> >> >> When using this result in a division on a 32-bit system, this may lead
->> >> >> to link errors like:
->> >> >>
->> >> >>     ERROR: "__udivdi3" [drivers/mtd/nand/raw/nand.ko] undefined!
->> >> >>
->> >> >> Fix this by casting the result of the 64-bit division to the type of the
->> >> >> dividend.
->> >> >>
->> >> >> Fixes: 8878b126df769831 ("mtd: nand: add ->exec_op() implementation")
->> >> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> >> >> ---
->> >> >> This fixes the root cause of the link failure seen with
->> >> >> m68k/allmodconfig since commit 3057fcef385348fe ("mtd: rawnand: Make
->> >> >> sure we wait tWB before polling the STATUS reg").
->> >> >>
->> >> >> An alternative mitigation was posted as "[PATCH] m68k: Implement
->> >> >> ndelay() as an inline function to force type checking/casting"
->> >> >> (https://lkml.org/lkml/2018/5/13/102).
->> >> >> ---
->> >> >>  include/linux/mtd/rawnand.h | 2 +-
->> >> >>  1 file changed, 1 insertion(+), 1 deletion(-)
->> >> >>
->> >> >> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
->> >> >> index 5dad59b312440a9c..d06dc428ea0102ae 100644
->> >> >> --- a/include/linux/mtd/rawnand.h
->> >> >> +++ b/include/linux/mtd/rawnand.h
->> >> >> @@ -871,7 +871,7 @@ struct nand_op_instr {
->> >> >>  #define __DIVIDE(dividend, divisor) ({                                       \
->> >> >>       sizeof(dividend) == sizeof(u32) ?                               \
->> >> >>               DIV_ROUND_UP(dividend, divisor) :                       \
->> >> >> -             DIV_ROUND_UP_ULL(dividend, divisor);                    \
->> >> >> +             (__typeof__(dividend))DIV_ROUND_UP_ULL(dividend, divisor); \
->> >> >
->> >> > Hm, it's a bit hard to follow when you place the cast here. One could
->> >> > wonder why a cast to (__typeof__(dividend)) is needed since
->> >> > DIV_ROUND_UP_ULL() already returns a (__typeof__(dividend)) type.
->> >>
->> >> DIV_ROUND_UP_ULL() does not return __typeof__(dividend), but
->> >> unsigned long long.
->> >
->> > Except if you entered this branch, that means you passed an unsigned
->> > long long dividend (AKA u64), otherwise you would go in DIV_ROUND_UP().
->> > Am I missing something?
->>
->> Sure, inside that branch, it does.
->> But the compiler considers the whole ternary operator construction, i.e.
->> both branches.
+
+>> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
 >
-> Yes, and that's my point. The (__typeof__(dividend)) when placed like
-> you did is ambiguous. It looks like you're doing a useless cast, while
-> what you're actually fixing is the case where dividend is an u32 (AKA
-> unsigned long), and from the reader PoV, the code you're fixing
-> shouldn't even be reached. Hence my suggestion to move the case one
-> level up and add a comment ;-).
+> Not sure we need that macro, see below.
 
-OK.
++1. We have too many nice helpers for bit manipulations
+(for_each_set_bit() as an example).
 
->> >> > How about:
->> >> >
->> >> >         /*
->> >> >          * Cast to type of dividend is needed here to guarantee that the
->> >> >          * result won't be an unsigned long long when the dividend is an
->> >> >          * unsigned long, which is what the compiler does when it sees a
->> >>
->> >> s/an unsigned long/32-bit/
->> >>
->> >> >          * ternary operator with 2 different return types.
->> >> >          */
->> >> >         (__typeof__(dividend))(sizeof(dividend) == sizeof(u32) ?        \
->> >
->> > To be completely safe and handle cases where dividend is an unsigned
->> > short or an unsigned, we should probably have:
->> >
->> >         (__typeof__(dividend))(sizeof(dividend) == sizeof(unsigned long long) ? \
->>
->> "> sizeof(u32)"?
->>
->> /me starts to think about uint128_t...
+
+>                         for (k = 0; k < nbufs; k++) {
+>                                 const u8 *srcbuf = srcbufs[j];
 >
->         sizeof(dividend) <= sizeof(unsigned long) ?
->         DIV_ROUND_UP(dividend, divisor) :
->         DIV_ROUND_UP_ULL(dividend, divisor);
->
-> Problem solved :-)
+>                                 if (srcbuf[i] & BIT(k))
+>                                         m++;
+>                         }
 
-BTW, this will still fail (silently) with uint128_t. But we don't care.
+...which is effectively hweightXX().
 
-And it will do the right thing when passed an unsigned long on 64-bit
-systems.
+>> -     p = kzalloc(sizeof(*p), GFP_KERNEL);
+>> +     p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
+>>       if (!p)
+>>               return -ENOMEM;
 
-> Is the following version okay?
+...which is kcalloc().
 
-I think it is.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With Best Regards,
+Andy Shevchenko
