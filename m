@@ -1,18 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fI8hB-0003OW-GZ
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 08:19:04 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 5/6] ubifs: gc: Fix typo
-Date: Mon, 14 May 2018 10:18:18 +0200
-Message-Id: <20180514081819.20921-6-s.hauer@pengutronix.de>
-In-Reply-To: <20180514081819.20921-1-s.hauer@pengutronix.de>
-References: <20180514081819.20921-1-s.hauer@pengutronix.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fI904-0000oJ-CO
+ for linux-mtd@lists.infradead.org; Mon, 14 May 2018 08:38:46 +0000
+Date: Mon, 14 May 2018 10:38:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: marvell: Fix read logic for layouts with
+ ->nchunks > 2
+Message-ID: <20180514103819.57dda077@xps13>
+In-Reply-To: <20180509071358.12157-1-boris.brezillon@bootlin.com>
+References: <20180509071358.12157-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"point of view" makes more sense than "point of few". Fix this.
+Hi Boris,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- fs/ubifs/gc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed,  9 May 2018 09:13:58 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 7b35e3d6cde7..a03a47cf880d 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -49,7 +49,7 @@
-  * maximum size. So dark watermark is the amount of free + dirty space in LEB
-  * which are guaranteed to be reclaimable. If LEB has less space, the GC might
-  * be unable to reclaim it. So, LEBs with free + dirty greater than dark
-- * watermark are "good" LEBs from GC's point of few. The other LEBs are not so
-+ * watermark are "good" LEBs from GC's point of view. The other LEBs are not so
-  * good, and GC takes extra care when moving them.
-  */
- 
--- 
-2.17.0
+> The code is doing monolithic reads for all chunks except the last one
+> which is wrong since a monolithic read will issue the
+> READ0+ADDRS+READ_START sequence. It not only takes longer because it
+> forces the NAND chip to reload the page content into its internal
+> cache, but by doing that we also reset the column pointer to 0, which
+> means we'll always read the first chunk instead of moving to the next
+> one.
+>=20
+> Rework the code to do a monolithic read only for the first chunk,
+> then switch to naked reads for all intermediate chunks and finally
+> issue a last naked read for the last chunk.
+>=20
+> Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
+> Cc: stable@vger.kernel.org
+> Reported-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+
+I'm surprised not to have spotted this while testing the 4k
+pages-8b/512B strength layout. Probably something I changed during the
+review process and forgot to test again.
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks,
+Miqu=C3=A8l
