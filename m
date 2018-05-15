@@ -1,30 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.199])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIUve-0000jM-P4
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 08:03:29 +0000
-Date: Tue, 15 May 2018 10:03:04 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Shreeya Patel <shreeya.patel23498@gmail.com>, Masahiro Yamada
- <yamada.masahiro@socionext.com>, Jane Wan <Jane.Wan@nokia.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- ties.bos@nokia.com, prabhakar.kushwaha@nxp.com, "open list:MEMORY
- TECHNOLOGY..." <linux-mtd@lists.infradead.org>, jagdish.gediya@nxp.com,
- Richard Weinberger <richard@nod.at>, Shawn Guo <shawnguo@kernel.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover
- the contents of ONFI parameter
-Message-ID: <20180515100304.3daa7929@bbrezillon>
-In-Reply-To: <CAHp75VevZCGOntYdj_B0T_SOKXFkWKLgyL2+1g2X9nRyhP5w=g@mail.gmail.com>
-References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
- <20180510140311.02805561@bbrezillon>
- <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
- <20180515093525.051856dd@bbrezillon>
- <CAHp75VevZCGOntYdj_B0T_SOKXFkWKLgyL2+1g2X9nRyhP5w=g@mail.gmail.com>
+ id 1fIVxL-0005JG-K1
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 09:09:25 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "PACKHAM
+ Chris" <chris.packham@alliedtelesis.co.nz>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "richard@nod.at"
+ <richard@nod.at>
+Subject: RE: [PATCH v3] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Tue, 15 May 2018 09:08:57 +0000
+Message-ID: <TY1PR01MB095460AF2CF409DBDA1354EFDC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <TY1PR01MB0954946451074852ED6D5C8FDC9F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <1b71023b0bee95d86739bb9c62767fa4579ceadb.camel@infinera.com>
+In-Reply-To: <1b71023b0bee95d86739bb9c62767fa4579ceadb.camel@infinera.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 May 2018 10:46:00 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> On Tue, May 15, 2018 at 10:35 AM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > On Mon, 14 May 2018 20:54:36 +0300
-> > Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> >  
-> >> On Thu, May 10, 2018 at 3:03 PM, Boris Brezillon
-> >> <boris.brezillon@bootlin.com> wrote:
-> >>  
-> >> >> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)  
-> >> >
-> >> > Not sure we need that macro, see below.  
-> >>
-> >> +1. We have too many nice helpers for bit manipulations
-> >> (for_each_set_bit() as an example).
-> >>
-> >>  
-> >> >                         for (k = 0; k < nbufs; k++) {
-> >> >                                 const u8 *srcbuf = srcbufs[j];
-> >> >
-> >> >                                 if (srcbuf[i] & BIT(k))
-> >> >                                         m++;
-> >> >                         }  
-> >>
-> >> ...which is effectively hweightXX().  
-> >
-> > No it's not.  
-> 
-> I don't see how "not". In the loop everithing except m and k are
-> invariants. What did I miss?
-
-We're not counting the number of bits set in an uXX var, but the number
-of set bits at the same position in different buffers.
-
-> 
-> The powerness of two of nbufs is another thing of _existing_
-> prototypes of hweightXX().
-> 
+SGkgSm9ja2Utc2FuLA0KDQpUaGFuayB5b3Ugc28gbXVjaCBmb3IgeW91ciBjb21tZW50cy4NCg0K
+PiBXaGF0IGdvZXMgb24gaGVyZSwgSSB0aGluaywgaXMgdGhhdCB0aGUgVG9nZ2xlIGJpdCBpcyBu
+b3QgcmVsaWFibGUgYW5kDQo+IGFkZGluZyBjaGlwX2dvb2QoKQ0KPiBiYXNpY2FsbHkgdGVzdHMg
+RFE3IHRvby4NCj4gSWYgdGhhdCBpcyB0aGUgY2FzZSwgb25lIHNob3VsZCBvbmx5IG5lZWQgY2hp
+cF9nb29kKCksIGhhdmUgeW91IHRlc3RlZA0KPiB0aGF0Pw0KPiANCj4gSW4gZ2VuZXJhbCBJIHRo
+aW5rIHRvZ2dsZSBiaXQgaXMgYXdrd2FyZCBhbmQgbW92aW5nIHRvIERRNyB3b3VsZCBzaW1wbHkN
+Cj4gdGhpbmdzIG9uY2UNCj4gdGVzdHMgZm9yIG90aGVyIHN0YXR1cyBiaXRzIGFyZSBhZGRlZC4N
+Cg0KICBZZXMgeW91IGFyZSByaWdodC4NCiAgU2luY2UgSSBoYXZlIGp1c3QgY29uZmlybWVkIHRo
+YXQgdGhlIGZsYXNoIHdyaXRlIGlzc3VlIGNhbiBiZSByZXNvbHZlZCBieSBjaGVja2luZyBjaGlw
+X2dvb2QoKSBvbmx5Lg0KICBTbyBJIHdpbGwgZG8gdXBkYXRlIHRoZSBwYXRjaCBhcyBzby4NCg0K
+UmVnYXJkcywNCklrZWdhbWkNCg0K
