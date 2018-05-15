@@ -1,14 +1,14 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.201])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIdUW-0000eB-3Z
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 17:12:02 +0000
+ id 1fIdUY-0000eL-Bi
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 17:12:04 +0000
 Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-os2jpn01lp0143.outbound.protection.outlook.com [23.103.139.143])
+ (mail-os2jpn01lp0148.outbound.protection.outlook.com [23.103.139.148])
  (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
  (No client certificate requested)
  by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
- D8857294005
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:11:44 +0900 (JST)
+ A13FC294004
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:11:49 +0900 (JST)
  (envelope-from smtpuser@allied-telesis.co.jp)
 From: smtpuser <smtpuser@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
@@ -20,9 +20,12 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase functions
-Date: Wed, 16 May 2018 02:11:15 +0900
-Message-Id: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+Subject: [PATCH v6 1/5] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Wed, 16 May 2018 02:11:16 +0900
+Message-Id: <20180515171120.5629-2-smtpuser@allied-telesis.co.jp>
+In-Reply-To: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,13 +39,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-The changes are to make sure to check the operation status.
-Actually the flash write and erase error behavior is caused on our products.
-The flash is Macronix flash device MX29GL512FHT2I-11G used by our products.
-The patch series was separated for changes of flash write and erase.
-Since those were not depended each other at the time.
-But by additional changes the changes are related more as same way currently.
-So combine patch series for the flash write and erase changes as v6.
+For the word write it is checked if the chip has the correct value.
+But it is not checked for the write buffer as only checked if ready.
+To make sure for the write buffer change to check the value.
+
+It is enough as this patch is only checking the last written word.
+Since it is described by data sheets to check the operation status.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
@@ -54,17 +56,37 @@ Cc: Marek Vasut <marek.vasut@gmail.com>
 Cc: Richard Weinberger <richard@nod.at>
 Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org
+---
+Changes since v5:
+- None since the v4 change is just combined as same series by v6.
 
-Tokunori Ikegami (5):
-  mtd: cfi_cmdset_0002: Change write buffer to check correct value
-  mtd: cfi_cmdset_0002: Change definition naming to retry write
-    operation
-  mtd: cfi_cmdset_0002: Change erase functions to retry for error
-  mtd: cfi_cmdset_0002: Change erase functions to check chip good only
-  mtd: cfi_cmdset_0002: Change erase one block to enable XIP once
+Changes since v3:
+- Removed to check if chip ready.
 
- drivers/mtd/chips/cfi_cmdset_0002.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+Changes since v2:
+- Just updated the patch to add v3 version into subject and desribe a changelog.
 
+Changes since v1:
+- Just changed to add Brian as Cc and the patch is sent to Boris-san as To
+
+Changes since v0:
+- Changed Split the part to change write buffer from the v1 patch
+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index e397b80e40cc..1d6be8c63d39 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1879,7 +1879,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+ 			break;
+ 
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, datum)) {
+ 			xip_enable(map, chip, adr);
+ 			goto op_done;
+ 		}
 -- 
 2.16.1
