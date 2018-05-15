@@ -1,37 +1,26 @@
-Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIh68-00008h-9V
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 21:03:09 +0000
-Received: by mail-qt0-x232.google.com with SMTP id j42-v6so2230724qtj.12
- for <linux-mtd@lists.infradead.org>; Tue, 15 May 2018 14:02:53 -0700 (PDT)
+ id 1fIiGp-0006m4-CF
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 22:18:12 +0000
+Received: by mail-wm0-x243.google.com with SMTP id f8-v6so3923170wmc.4
+ for <linux-mtd@lists.infradead.org>; Tue, 15 May 2018 15:18:00 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
+To: Radu Pirea <radu.pirea@microchip.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+References: <20180504155404.5285-1-radu.pirea@microchip.com>
+ <20180504204013.254d90cf@bbrezillon>
+ <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
+Date: Wed, 16 May 2018 00:17:57 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180515223516.16e907b3@bbrezillon>
-References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
- <20180510140311.02805561@bbrezillon>
- <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
- <20180515093525.051856dd@bbrezillon>
- <CAHp75VevZCGOntYdj_B0T_SOKXFkWKLgyL2+1g2X9nRyhP5w=g@mail.gmail.com>
- <20180515100304.3daa7929@bbrezillon>
- <CAHp75VeEhB=+x0toCtSvrq0zBLXVCASzN2BUDDgNParSYZc5BQ@mail.gmail.com>
- <20180515223516.16e907b3@bbrezillon>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 16 May 2018 00:02:52 +0300
-Message-ID: <CAHp75VeA4nGUHz1L+ugX_F-aDTKoheqgnZ7zJKNKQmuRZ5pD5w@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover the
- contents of ONFI parameter
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: jagdish.gediya@nxp.com, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Jane Wan <Jane.Wan@nokia.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Marek Vasut <marek.vasut@gmail.com>, ties.bos@nokia.com,
- prabhakar.kushwaha@nxp.com,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Shreeya Patel <shreeya.patel23498@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,19 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 15, 2018 at 11:35 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> On Tue, 15 May 2018 23:23:02 +0300
-> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On 05/15/2018 06:22 PM, Radu Pirea wrote:
+> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
+>> On Fri, 4 May 2018 18:54:04 +0300
+>> Radu Pirea <radu.pirea@microchip.com> wrote:
+>>
+>>> Added geometry description for Microchip 25LC256 memory.
+>>
+>> Same as for the dataflash stuff you posted a few weeks ago: I don't
+>> think this device belongs in the SPI NOR framework.
+> Hi Boris,
+> 
+> 25lc256 memory is similar with mr25h256, the only difference is the
+> page size(64 vs 256). Because mr25h256 is already in SPI NOR framework
+> I added here 25lc256.
 
-> I made a mistake in my code sample, it's
->
->                                 if (srcbuf[i] & BIT(j))
->
-> If you look at v6, you'll see it's been fixed by Jane.
-
-In this case, indeed.
+I think I must be reading the wrong datasheet, but can you show me how
+does it support things like READID opcode ?
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Best regards,
+Marek Vasut
