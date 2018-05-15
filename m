@@ -1,29 +1,33 @@
-Received: from mail-qt0-x22c.google.com ([2607:f8b0:400d:c0d::22c])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIHgN-00009T-NB
- for linux-mtd@lists.infradead.org; Mon, 14 May 2018 17:54:49 +0000
-Received: by mail-qt0-x22c.google.com with SMTP id d3-v6so17260082qtp.11
- for <linux-mtd@lists.infradead.org>; Mon, 14 May 2018 10:54:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180510140311.02805561@bbrezillon>
-References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
- <20180510140311.02805561@bbrezillon>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 14 May 2018 20:54:36 +0300
-Message-ID: <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover the
+ id 1fIRqo-0006yV-Lc
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 04:46:17 +0000
+Subject: Re: [PATCH v7] mtd: rawnand: use bit-wise majority to recover the
  contents of ONFI parameter
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Jane Wan <Jane.Wan@nokia.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, prabhakar.kushwaha@nxp.com,
- Shawn Guo <shawnguo@kernel.org>, jagdish.gediya@nxp.com,
- Shreeya Patel <shreeya.patel23498@gmail.com>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, ties.bos@nokia.com
-Content-Type: text/plain; charset="UTF-8"
+To: "Wan, Jane (Nokia - US/Sunnyvale)" <jane.wan@nokia.com>,
+ "Boris.Brezillon@bootlin.com" <Boris.Brezillon@bootlin.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "yamada.masahiro@socionext.com" <yamada.masahiro@socionext.com>,
+ "prabhakar.kushwaha@nxp.com" <prabhakar.kushwaha@nxp.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "jagdish.gediya@nxp.com" <jagdish.gediya@nxp.com>,
+ "shreeya.patel23498@gmail.com" <shreeya.patel23498@gmail.com>
+Cc: "Bos, Ties (Nokia - US/Sunnyvale)" <ties.bos@nokia.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <VI1PR07MB1615A02B23D992E84A3B333F819D0@VI1PR07MB1615.eurprd07.prod.outlook.com>
+From: Chris Moore <moore@free.fr>
+Message-ID: <ce0c8d75-b02a-cad0-7198-ffbd503427ce@free.fr>
+Date: Tue, 15 May 2018 06:45:51 +0200
+MIME-Version: 1.0
+In-Reply-To: <VI1PR07MB1615A02B23D992E84A3B333F819D0@VI1PR07MB1615.eurprd07.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +37,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 10, 2018 at 3:03 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+Hi,
 
->> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)
+Le 13/05/2018 à 06:30, Wan, Jane (Nokia - US/Sunnyvale) a écrit :
+> Per ONFI specification (Rev. 4.0), if all parameter pages have invalid CRC values, the bit-wise majority may be used to recover the contents of the parameter pages from the parameter page copies present.
 >
-> Not sure we need that macro, see below.
-
-+1. We have too many nice helpers for bit manipulations
-(for_each_set_bit() as an example).
-
-
->                         for (k = 0; k < nbufs; k++) {
->                                 const u8 *srcbuf = srcbufs[j];
+> Signed-off-by: Jane Wan <Jane.Wan@nokia.com>
+> ---
+> v7: change debug print messages
+> v6: support the cases that srcbufs are not contiguous
+> v5: make the bit-wise majority functon generic
+> v4: move the bit-wise majority code in a separate function
+> v3: fix warning message detected by kbuild test robot
+> v2: rebase the changes on top of v4.17-rc1
+>   
+> drivers/mtd/nand/raw/nand_base.c |   50 ++++++++++++++++++++++++++++++++++----
+>   1 file changed, 45 insertions(+), 5 deletions(-)
 >
->                                 if (srcbuf[i] & BIT(k))
->                                         m++;
->                         }
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 72f3a89..b43b784 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5087,6 +5087,35 @@ static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+>   }
+>   
+>   /*
+> + * Recover data with bit-wise majority
+> + */
+> +static void nand_bit_wise_majority(const void **srcbufs,
+> +				   unsigned int nsrcbufs,
+> +				   void *dstbuf,
+> +				   unsigned int bufsize)
+> +{
+> +	int i, j, k;
+> +
+> +	for (i = 0; i < bufsize; i++) {
+> +		u8 cnt, val;
+> +
+> +		val = 0;
+> +		for (j = 0; j < 8; j++) {
+> +			cnt = 0;
+> +			for (k = 0; k < nsrcbufs; k++) {
+> +				const u8 *srcbuf = srcbufs[k];
+> +
+> +				if (srcbuf[i] & BIT(j))
+> +					cnt++;
+> +			}
+> +			if (cnt > nsrcbufs / 2)
+> +				val |= BIT(j);
+> +		}
+> +		((u8 *)dstbuf)[i] = val;
+> +	}
+> +}
+> +
+> +/*
+>    * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+>    */
+>   static int nand_flash_detect_onfi(struct nand_chip *chip)
+> @@ -5102,7 +5131,7 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>   		return 0;
+>   
+>   	/* ONFI chip: allocate a buffer to hold its parameter page */
+> -	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
+>   	if (!p)
+>   		return -ENOMEM;
+>   
+> @@ -5113,21 +5142,32 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>   	}
+>   
+>   	for (i = 0; i < 3; i++) {
+> -		ret = nand_read_data_op(chip, p, sizeof(*p), true);
+> +		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
+>   		if (ret) {
+>   			ret = 0;
+>   			goto free_onfi_param_page;
+>   		}
+>   
+> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) ==
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
+>   				le16_to_cpu(p->crc)) {
+> +			if (i)
+> +				memcpy(p, &p[i], sizeof(*p));
+>   			break;
+>   		}
+>   	}
+>   
+>   	if (i == 3) {
+> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
+> -		goto free_onfi_param_page;
+> +		const void *srcbufs[3] = {p, p + 1, p + 2};
+> +
+> +		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
+> +		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
+> +				       sizeof(*p));
+> +
+> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
+> +				le16_to_cpu(p->crc)) {
+> +			pr_err("ONFI parameter recovery failed, aborting\n");
+> +			goto free_onfi_param_page;
+> +		}
+>   	}
+>   
+>   	/* Check version */
 
-...which is effectively hweightXX().
+This version is still hard coded for a three sample bitwise majority vote.
+So why not use the method which I suggested previously for v2 and which 
+I repeat below?
 
->> -     p = kzalloc(sizeof(*p), GFP_KERNEL);
->> +     p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
->>       if (!p)
->>               return -ENOMEM;
+The three sample bitwise majority can be implemented without bit level 
+manipulation using the identity:
+majority3(a, b, c) = (a & b) | (a & c) | (b & c)
+This can be factorized slightly to (a & (b | c)) | (b & c)
+This enables the operation to be performed 8, 16, 32 or even 64 bits at 
+a time depending on the hardware.
 
-...which is kcalloc().
+This method is not only faster and but also more compact.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+Cheers,
+Chris
