@@ -1,9 +1,9 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIa8B-0001Pe-R0
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 13:36:46 +0000
-Date: Tue, 15 May 2018 15:36:22 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIaL9-0001Rf-Aw
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 13:50:12 +0000
+Date: Tue, 15 May 2018 15:49:45 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Cardoen Pieter <P.Cardoen@TELEVIC.com>
 Cc: "han.xu@nxp.com" <han.xu@nxp.com>, "boris.brezillon@free-electrons.com"
  <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
@@ -13,14 +13,12 @@ Cc: "han.xu@nxp.com" <han.xu@nxp.com>, "boris.brezillon@free-electrons.com"
  <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>
 Subject: Re: GPMI nand flash ECC errors with mainline kernel
-Message-ID: <20180515153622.738a3f53@xps13>
-In-Reply-To: <HE1PR0702MB36288289EA58B7D0B5368A9FFF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
+Message-ID: <20180515154945.5006f927@bbrezillon>
+In-Reply-To: <HE1PR0702MB362877849767B637814CF9B6FF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
 References: <HE1PR0702MB362877849767B637814CF9B6FF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
- <20180515135900.3bf24b98@xps13>
- <HE1PR0702MB36288289EA58B7D0B5368A9FFF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cardoen,
+On Tue, 15 May 2018 11:46:32 +0000
+Cardoen Pieter <P.Cardoen@TELEVIC.com> wrote:
 
-First, can you please subscribe to the MTD mailing-list [1] or fix
-your mailer, it looks like your issue did not reach the community and
-only the cc:'ed people received it (It was bumped to me).
+> Dear
+> 
+> I am currently trying to use the mainline kernel on a custom imx6ul board with an SLC NAND flash device (29F4G08ABADAH4). When the rootfs is mounted, I get continuously ECC errors (see log below).
+> 
+> I am however sure that the rootfs is programmed. The device boots with an older kernel version on the same device.
 
-[1] http://www.linux-mtd.infradead.org/mail.html
+Which version works? Is this a vendor tree or a mainline kernel? Looks
+like the version that fails is 4.15. Are you sure the ECC config is
+exactly the same between the old and new kernel?
 
-> I was a little behind the current master (I started on this a month ago).=
- This commit wasn't yet applied so this couldn't be the cause of the issue.=
- I'll retried with the current master branch and had the same result.
+> 
+> I also noticed that with my previous kernel version, it used mtd->_read in function mtd_read while now it is using mtd->_read_oob.
 
-Can you please share the exact kernel version you are testing?
-Do you apply patches on top of it?
-What is your device tree?
-
-> I will revert these commits and try again but I don't think this will hel=
-p as i had it already before these patches were applied.
-
-You can test with the latest patches [2] to verify the problem is still
-there but no need to try to revert these commits if the problem was
-already present before.
-
-[2] http://git.infradead.org/linux-mtd.git/shortlog/refs/heads/master
-
-Thanks,
-Miqu=C3=A8l
+It's unlikely to be the root cause for these ECC failures.
