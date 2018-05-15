@@ -1,33 +1,33 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.204])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIdUj-0000fh-4N
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 17:12:16 +0000
-Received: from JPN01-OS2-obe.outbound.protection.outlook.com
- (mail-os2jpn01lp0151.outbound.protection.outlook.com [23.103.139.151])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
- 5AC7B29400D
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:11:55 +0900 (JST)
- (envelope-from smtpuser@allied-telesis.co.jp)
-From: smtpuser <smtpuser@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
-Subject: [PATCH v6 4/5] mtd: cfi_cmdset_0002: Change erase functions to check
- chip good only
-Date: Wed, 16 May 2018 02:11:19 +0900
-Message-Id: <20180515171120.5629-5-smtpuser@allied-telesis.co.jp>
-In-Reply-To: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
-References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+Received: from mail-dm3nam03on0085.outbound.protection.outlook.com
+ ([104.47.41.85] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIdZf-0004Db-SU
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 17:17:38 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Tue, 15 May 2018 17:17:07 +0000
+Message-ID: <51f23b5e418cf661c5241dde84622b33ede5862c.camel@infinera.com>
+References: <TY1PR01MB0954946451074852ED6D5C8FDC9F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <1b71023b0bee95d86739bb9c62767fa4579ceadb.camel@infinera.com>
+ <TY1PR01MB095460AF2CF409DBDA1354EFDC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ <2d4162ade8f4559b5ec90d4e575a593f9de32405.camel@infinera.com>
+ <TY1PR01MB0954F99A60324130F6BE4112DC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY1PR01MB0954F99A60324130F6BE4112DC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5B83647EE1E23E40AEACEA0B19D42196@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,105 +37,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-
-Currently the functions use to check both chip ready and good.
-But the chip ready is not enough to check the operation status.
-So change this to check the chip good instead of this.
-About the retry functions to make sure the error handling remain it.
-
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
----
-Changes since v5:
-- None since this change is implemented by v6 patch series.
-
- drivers/mtd/chips/cfi_cmdset_0002.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index e703900975d4..6adda4dc2007 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2294,12 +2294,13 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 			chip->erase_suspended = 0;
- 		}
- 
--		if (chip_ready(map, adr))
-+		if (chip_good(map, adr, map_word_ff(map)))
- 			break;
- 
- 		if (time_after(jiffies, timeo)) {
- 			printk(KERN_WARNING "MTD %s(): software timeout\n",
- 			       __func__);
-+			ret = -EIO;
- 			break;
- 		}
- 
-@@ -2307,15 +2308,15 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 		UDELAY(map, chip, adr, 1000000/HZ);
- 	}
- 	/* Did we succeed? */
--	if (!chip_good(map, adr, map_word_ff(map))) {
-+	if (ret) {
- 		/* reset on all failures. */
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES) {
-+			ret = 0;
- 			goto retry;
--
--		ret = -EIO;
-+		}
- 	}
- 
- 	chip->state = FL_READY;
-@@ -2388,7 +2389,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 			chip->erase_suspended = 0;
- 		}
- 
--		if (chip_ready(map, adr)) {
-+		if (chip_good(map, adr, map_word_ff(map))) {
- 			xip_enable(map, chip, adr);
- 			break;
- 		}
-@@ -2397,6 +2398,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 			xip_enable(map, chip, adr);
- 			printk(KERN_WARNING "MTD %s(): software timeout\n",
- 			       __func__);
-+			ret = -EIO;
- 			break;
- 		}
- 
-@@ -2404,15 +2406,15 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 		UDELAY(map, chip, adr, 1000000/HZ);
- 	}
- 	/* Did we succeed? */
--	if (!chip_good(map, adr, map_word_ff(map))) {
-+	if (ret) {
- 		/* reset on all failures. */
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES) {
-+			ret = 0;
- 			goto retry;
--
--		ret = -EIO;
-+		}
- 	}
- 
- 	chip->state = FL_READY;
--- 
-2.16.1
+T24gVHVlLCAyMDE4LTA1LTE1IGF0IDE2OjQ5ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3Rl
+Og0KPiANCj4gSGkgSm9ja2Utc2FuLA0KDQpIaSBJa2VnYW1pLXNhbiwNCg0KPiANCj4gPiBUaGVu
+IEkgZ290IHJlYWxseSBjdXJpb3VzLCBkb3MgdGhlIHNhbWUgd29yayBmb3IgeW91ciBlcmFzZSBw
+cm9ibGVtPw0KPiA+IFJlcGxhY2UgY2hpcF9yZWFkeSguLi4pIHdpdGggY2hpcF9nb29kKG1hcCwg
+YWRyLCBtYXBfd29yZF9mZihtYXApID8NCj4gPiBEb24ndCB5b3UgaGF2ZSBhbnkgc3RhdHVzIGJp
+dHMgd2hlbiBlcmFzZS93cml0ZSBmYWlscz8NCj4gDQo+ICAgWWVzIHRoaXMgYWxzbyB5b3UgYXJl
+IHJpZ2h0Lg0KPiAgIEkgaGF2ZSBqdXN0IHRlc3RlZCB0aGUgZWZmZWN0IGFzIGJlbG93Lg0KPiAg
+IFRoZSBmbGFzaCBlcmFzZSBlcnJvciBhbHNvIGRvZXMgbm90IG9jY3VyIGJ5IGNoZWNraW5nIGNo
+aXBfZ29vZCBpbnN0ZWFkIG9mIGNoaXBfcmVhZHkuDQo+ICAgVGhpcyBoYXMgYmVlbiB0ZXN0ZWQg
+YnkgdGhlIHNhbWUgcmVwcm9kdWN0aW9uIG1ldGhvZC4NCj4gICBJdCBsb29rcyB0aGF0IHRoZSBm
+bGFzaCBlcmFzZSBlcnJvciBpcyBhbHNvIGFibGUgdG8gYmUgcmVzb2x2ZWQgYnkgY2hpcF9nb29k
+Lg0KPiAgIFNvIEkgd2lsbCBkbyB1cGRhdGUgdGhlIHBhdGNoIHNlcmllcyB0byBjaGFuZ2UgdXNl
+IGNoaXBfZ29vZCBpbnN0ZWFkIG9mIGNoaXBfcmVhZHkuDQo+ICAgQnV0IHRvIG1ha2Ugc3VyZSBJ
+IHdvdWxkIGxpa2UgcmVtYWluIHRoZSBjaGFuZ2VzIHRvIHJldHJ5IHRoZSBlcnJvci4NCj4gICBB
+bHNvIEkgd2lsbCBjb21iaW5lIHRoZSBjaGFuZ2VzIGZvciB0aGUgZmxhc2ggd3JpdGUgZXJyb3Ig
+YWxzbyBhcyBzYW1lIHNlcmllcy4NCg0KTmljZSA6KSBJIGp1c3QgaGFkIGEgbG9vayBhdCBjaGlw
+X2dvb2QoKSBhbmQgc2F3IHRoYXQgaXQgaXMgYWN0dWFsbHkgYm90aA0KdG9nZ2xlIGFuZCBEUTcs
+IGJlbHQgYW5kIHN1c3BlbmRlcnMgOikgDQpJIHRob3VnaHQgY2hpcF9nb29kKCkgd2FzIG9ubHkg
+RFE3LCBhbnlob3csIEkgZ3Vlc3MgdGhpcyBtYWtlcyB0aGUgdGVzdCB2ZXJ5IHJvYnVzdCBidXQg
+YSBiaXQgc2xvdy4gDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IElrZWdhbWkNCj4gDQo=
