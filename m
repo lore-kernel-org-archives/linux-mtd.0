@@ -1,28 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIUUw-0001EH-Bo
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 07:35:52 +0000
-Date: Tue, 15 May 2018 09:35:25 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Shreeya Patel <shreeya.patel23498@gmail.com>, Masahiro Yamada
- <yamada.masahiro@socionext.com>, Jane Wan <Jane.Wan@nokia.com>, Miquel
- Raynal <miquel.raynal@bootlin.com>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- ties.bos@nokia.com, prabhakar.kushwaha@nxp.com, "open list:MEMORY
- TECHNOLOGY..." <linux-mtd@lists.infradead.org>, jagdish.gediya@nxp.com,
- Richard Weinberger <richard@nod.at>, Shawn Guo <shawnguo@kernel.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 2/2] mtd: rawnand: use bit-wise majority to recover
- the contents of ONFI parameter
-Message-ID: <20180515093525.051856dd@bbrezillon>
-In-Reply-To: <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
-References: <1525920400-11392-1-git-send-email-Jane.Wan@nokia.com>
- <20180510140311.02805561@bbrezillon>
- <CAHp75VcET7PZYfeRkmiP=n_xCnDzEFYS98ZLjszc1fHjdfDF2A@mail.gmail.com>
+Received: from mail-co1nam03on0054.outbound.protection.outlook.com
+ ([104.47.40.54] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIUVd-0001UO-2h
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 07:36:45 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Tue, 15 May 2018 07:36:16 +0000
+Message-ID: <1b71023b0bee95d86739bb9c62767fa4579ceadb.camel@infinera.com>
+References: <TY1PR01MB0954946451074852ED6D5C8FDC9F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+In-Reply-To: <TY1PR01MB0954946451074852ED6D5C8FDC9F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <096C156CEEDC334B82BB311D95B73834@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,27 +33,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 May 2018 20:54:36 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> On Thu, May 10, 2018 at 3:03 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> 
-> >> +#define GET_BIT(bit, val)   (((val) >> (bit)) & 0x01)  
-> >
-> > Not sure we need that macro, see below.  
-> 
-> +1. We have too many nice helpers for bit manipulations
-> (for_each_set_bit() as an example).
-> 
-> 
-> >                         for (k = 0; k < nbufs; k++) {
-> >                                 const u8 *srcbuf = srcbufs[j];
-> >
-> >                                 if (srcbuf[i] & BIT(k))
-> >                                         m++;
-> >                         }  
-> 
-> ...which is effectively hweightXX().
-
-No it's not.
+T24gRnJpLCAyMDE4LTA1LTExIGF0IDA3OjU4ICswMDAwLCBJS0VHQU1JIFRva3Vub3JpIHdyb3Rl
+Og0KPiANCj4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5j
+by5qcD4NCj4gDQo+IEZvciB0aGUgd29yZCB3cml0ZSBpdCBpcyBjaGVja2VkIGlmIHRoZSBjaGlw
+IGhhcyB0aGUgY29ycmVjdCB2YWx1ZS4NCj4gQnV0IGl0IGlzIG5vdCBjaGVja2VkIGZvciB0aGUg
+d3JpdGUgYnVmZmVyIGFzIG9ubHkgY2hlY2tlZCBpZiByZWFkeS4NCj4gVG8gbWFrZSBzdXJlIGZv
+ciB0aGUgd3JpdGUgYnVmZmVyIGNoYW5nZSB0byBjaGVjayB0aGUgdmFsdWUuDQo+IA0KPiBJdCBp
+cyBlbm91Z2ggYXMgdGhpcyBwYXRjaCBpcyBvbmx5IGNoZWNraW5nIHRoZSBsYXN0IHdyaXR0ZW4g
+d29yZC4NCj4gU2luY2UgaXQgaXMgZGVzY3JpYmVkIGJ5IGRhdGEgc2hlZXRzIHRvIGNoZWNrIHRo
+ZSBvcGVyYXRpb24gc3RhdHVzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogVG9rdW5vcmkgSWtlZ2Ft
+aSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gQ2M6IENocmlzIFBhY2toYW0gPGNo
+cmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gQ2M6IEJyaWFuIE5vcnJpcyA8Y29t
+cHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBp
+bmZyYWRlYWQub3JnPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJl
+ZS1lbGVjdHJvbnMuY29tPg0KPiBDYzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNv
+bT4NCj4gQ2M6IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+IENjOiBDeXJp
+bGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPg0KPiBDYzogbGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmcNCj4gLS0tDQo+IE5vIGRpZmZlcmVuY2UgZm9yIHRoZSBjaGFu
+Z2UgaXRzZWxmIGZyb20gdGhlIG9yaWdpbmFsIHBhdGNoIHYxLg0KPiBCdXQganVzdCB1cGRhdGVk
+IHRoZSBwYXRjaCBzdWJqZWN0IHRvIGFkZCB2ZXJzaW9uIGFzIHYzLg0KPiBGb3JtIHRoZSBvcmln
+aW5hbCBwYXRjaCB2MSBpdCBpcyBhbHNvIGNoYW5nZWQgdG8gYWRkIEJyaWFuIGFzIENjIGFuZCB0
+aGUgcGF0Y2ggaXMgc2VudCB0byBCb3Jpcy1zYW4gYXMgVG8uDQo+ICAgTm90ZTogVGhpcyB3YXMg
+Y2hhbmdlZCBmcm9tIHRoZSBzZWNvbmQgcGF0Y2ggdjIgYW5kIHRoaXMgdjMgcGF0Y2ggaXMgbm90
+IGNoYW5nZWQgYWJvdXQgdGhpcy4NCj4gDQo+IFRoaXMgZml4IGlzIHJlcXVpcmVkIHRvIHJlc29s
+dmUgdGhlIGZsYXNoIHdyaXRlIGVycm9yIGNhdXNlZCBvbiBvdXIgcHJvZHVjdHMuDQo+IA0KPiBU
+aGlzIHBhdGNoIGl0c2VsZiBpcyBub3QgZGVwZW5kZWQgdG8gb3RoZXIgcmVsYXRlZCBwYXRjaGVz
+IHRvIGZpeCBmb3IgdGhlIGZsYXNoIGVyYXNlIGVycm9yLg0KPiBUaGUgZmxhc2ggZXJhc2UgZXJy
+b3IgaXMgbm90IGFibGUgdG8gc3RpbGwgcmVwcm9kdWNlIGF0IHRoaXMgbW9tZW50Lg0KPiBTbyBJ
+IHdpbGwgZG8gZml4IHRoZSBmbGFzaCBlcmFzZSBlcnJvciBzZXBhcmF0ZWx5Lg0KPiANCj4gQnV0
+IHRoZSBmbGFzaCB3cml0ZSBlcnJvciBjYW4gYmUgcmVwcm9kdWNlZCBhbmQgdGhpcyBmaXggY2Fu
+IHJlc29sdmUgaXQuDQo+IFNvIHBsZWFzZSByZXZpZXcgdGhlIHBhdGNoIGFnYWluIGFuZCBpZiBh
+bnkgcHJvYmxlbSBwbGVhc2UgbGV0IG1lIGtub3cuDQo+IA0KPiANCj4gIGRyaXZlcnMvbXRkL2No
+aXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMiArLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0
+aW9uKCspLCAxIGRlbGV0aW9uKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIu
+Yw0KPiBpbmRleCA1NmFhNmI3NTIxM2QuLjVlOWYyY2EwYTZjMSAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gQEAgLTE4NzksNyArMTg3OSw3IEBAIHN0YXRpYyBpbnQg
+X194aXByYW0gZG9fd3JpdGVfYnVmZmVyKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxj
+aGlwICpjaGlwLA0KPiAgICAgICAgICAgICAgICAgaWYgKHRpbWVfYWZ0ZXIoamlmZmllcywgdGlt
+ZW8pICYmICFjaGlwX3JlYWR5KG1hcCwgYWRyKSkNCj4gICAgICAgICAgICAgICAgICAgICAgICAg
+YnJlYWs7DQo+IA0KPiAtICAgICAgICAgICAgICAgaWYgKGNoaXBfcmVhZHkobWFwLCBhZHIpKSB7
+DQo+ICsgICAgICAgICAgICAgICBpZiAoY2hpcF9yZWFkeShtYXAsIGFkcikgJiYgY2hpcF9nb29k
+KG1hcCwgYWRyLCBkYXR1bSkpIHsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgeGlwX2VuYWJs
+ZShtYXAsIGNoaXAsIGFkcik7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gb3BfZG9u
+ZTsNCj4gICAgICAgICAgICAgICAgIH0NCg0KV2hhdCBnb2VzIG9uIGhlcmUsIEkgdGhpbmssIGlz
+IHRoYXQgdGhlIFRvZ2dsZSBiaXQgaXMgbm90IHJlbGlhYmxlIGFuZCBhZGRpbmcgY2hpcF9nb29k
+KCkNCmJhc2ljYWxseSB0ZXN0cyBEUTcgdG9vLiANCklmIHRoYXQgaXMgdGhlIGNhc2UsIG9uZSBz
+aG91bGQgb25seSBuZWVkIGNoaXBfZ29vZCgpLCBoYXZlIHlvdSB0ZXN0ZWQgdGhhdD8NCg0KSW4g
+Z2VuZXJhbCBJIHRoaW5rIHRvZ2dsZSBiaXQgaXMgYXdrd2FyZCBhbmQgbW92aW5nIHRvIERRNyB3
+b3VsZCBzaW1wbHkgdGhpbmdzIG9uY2UNCnRlc3RzIGZvciBvdGhlciBzdGF0dXMgYml0cyBhcmUg
+YWRkZWQuDQoNCiBKb2NrZQ==
