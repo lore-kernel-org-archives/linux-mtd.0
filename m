@@ -1,26 +1,24 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIiGp-0006m4-CF
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 22:18:12 +0000
-Received: by mail-wm0-x243.google.com with SMTP id f8-v6so3923170wmc.4
- for <linux-mtd@lists.infradead.org>; Tue, 15 May 2018 15:18:00 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
-To: Radu Pirea <radu.pirea@microchip.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
- computersforpeace@gmail.com, dwmw2@infradead.org
-References: <20180504155404.5285-1-radu.pirea@microchip.com>
- <20180504204013.254d90cf@bbrezillon>
- <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
-Date: Wed, 16 May 2018 00:17:57 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIivP-0004rS-SK
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 23:00:09 +0000
+Date: Wed, 16 May 2018 00:59:51 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Peter Pan
+ <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Vignesh R <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v7 5/5] mtd: nand: spi: Add initial support for Winbond
+ W25M02GV
+Message-ID: <20180516005951.1fa26ddd@xps13>
+In-Reply-To: <20180515150825.19835-6-boris.brezillon@bootlin.com>
+References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
+ <20180515150825.19835-6-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-In-Reply-To: <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/15/2018 06:22 PM, Radu Pirea wrote:
-> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
->> On Fri, 4 May 2018 18:54:04 +0300
->> Radu Pirea <radu.pirea@microchip.com> wrote:
->>
->>> Added geometry description for Microchip 25LC256 memory.
->>
->> Same as for the dataflash stuff you posted a few weeks ago: I don't
->> think this device belongs in the SPI NOR framework.
-> Hi Boris,
-> 
-> 25lc256 memory is similar with mr25h256, the only difference is the
-> page size(64 vs 256). Because mr25h256 is already in SPI NOR framework
-> I added here 25lc256.
+Hi Boris,
 
-I think I must be reading the wrong datasheet, but can you show me how
-does it support things like READID opcode ?
+On Tue, 15 May 2018 17:08:25 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
--- 
-Best regards,
-Marek Vasut
+> From: Frieder Schrempf <frieder.schrempf@exceet.de>
+>=20
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+
+It looks like the commit message is missing?
+
+Regards,
+Miqu=C3=A8l
