@@ -1,30 +1,30 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.13])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.9])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fId8c-00085c-EN
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 16:49:25 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "PACKHAM
- Chris" <chris.packham@alliedtelesis.co.nz>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>
-Subject: RE: [PATCH v3] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Date: Tue, 15 May 2018 16:49:06 +0000
-Message-ID: <TY1PR01MB0954F99A60324130F6BE4112DC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <TY1PR01MB0954946451074852ED6D5C8FDC9F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <1b71023b0bee95d86739bb9c62767fa4579ceadb.camel@infinera.com>
- <TY1PR01MB095460AF2CF409DBDA1354EFDC930@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <2d4162ade8f4559b5ec90d4e575a593f9de32405.camel@infinera.com>
-In-Reply-To: <2d4162ade8f4559b5ec90d4e575a593f9de32405.camel@infinera.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ id 1fIdUW-0000eB-3Z
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 17:12:02 +0000
+Received: from JPN01-OS2-obe.outbound.protection.outlook.com
+ (mail-os2jpn01lp0143.outbound.protection.outlook.com [23.103.139.143])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by mo.allied-telesis-co-jp.hdemail.jp (hde-mf-postfix) with ESMTPS id
+ D8857294005
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:11:44 +0900 (JST)
+ (envelope-from smtpuser@allied-telesis.co.jp)
+From: smtpuser <smtpuser@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-mtd@lists.infradead.org
+Subject: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase functions
+Date: Wed, 16 May 2018 02:11:15 +0900
+Message-Id: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,17 +34,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgSm9ja2Utc2FuLA0KDQo+IFRoZW4gSSBnb3QgcmVhbGx5IGN1cmlvdXMsIGRvcyB0aGUgc2Ft
-ZSB3b3JrIGZvciB5b3VyIGVyYXNlIHByb2JsZW0/DQo+IFJlcGxhY2UgY2hpcF9yZWFkeSguLi4p
-IHdpdGggY2hpcF9nb29kKG1hcCwgYWRyLCBtYXBfd29yZF9mZihtYXApID8NCj4gRG9uJ3QgeW91
-IGhhdmUgYW55IHN0YXR1cyBiaXRzIHdoZW4gZXJhc2Uvd3JpdGUgZmFpbHM/DQoNCiAgWWVzIHRo
-aXMgYWxzbyB5b3UgYXJlIHJpZ2h0Lg0KICBJIGhhdmUganVzdCB0ZXN0ZWQgdGhlIGVmZmVjdCBh
-cyBiZWxvdy4NCiAgVGhlIGZsYXNoIGVyYXNlIGVycm9yIGFsc28gZG9lcyBub3Qgb2NjdXIgYnkg
-Y2hlY2tpbmcgY2hpcF9nb29kIGluc3RlYWQgb2YgY2hpcF9yZWFkeS4NCiAgVGhpcyBoYXMgYmVl
-biB0ZXN0ZWQgYnkgdGhlIHNhbWUgcmVwcm9kdWN0aW9uIG1ldGhvZC4NCiAgSXQgbG9va3MgdGhh
-dCB0aGUgZmxhc2ggZXJhc2UgZXJyb3IgaXMgYWxzbyBhYmxlIHRvIGJlIHJlc29sdmVkIGJ5IGNo
-aXBfZ29vZC4NCiAgU28gSSB3aWxsIGRvIHVwZGF0ZSB0aGUgcGF0Y2ggc2VyaWVzIHRvIGNoYW5n
-ZSB1c2UgY2hpcF9nb29kIGluc3RlYWQgb2YgY2hpcF9yZWFkeS4NCiAgQnV0IHRvIG1ha2Ugc3Vy
-ZSBJIHdvdWxkIGxpa2UgcmVtYWluIHRoZSBjaGFuZ2VzIHRvIHJldHJ5IHRoZSBlcnJvci4NCiAg
-QWxzbyBJIHdpbGwgY29tYmluZSB0aGUgY2hhbmdlcyBmb3IgdGhlIGZsYXNoIHdyaXRlIGVycm9y
-IGFsc28gYXMgc2FtZSBzZXJpZXMuDQoNClJlZ2FyZHMsDQpJa2VnYW1pDQoNCg==
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+
+The changes are to make sure to check the operation status.
+Actually the flash write and erase error behavior is caused on our products.
+The flash is Macronix flash device MX29GL512FHT2I-11G used by our products.
+The patch series was separated for changes of flash write and erase.
+Since those were not depended each other at the time.
+But by additional changes the changes are related more as same way currently.
+So combine patch series for the flash write and erase changes as v6.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+
+Tokunori Ikegami (5):
+  mtd: cfi_cmdset_0002: Change write buffer to check correct value
+  mtd: cfi_cmdset_0002: Change definition naming to retry write
+    operation
+  mtd: cfi_cmdset_0002: Change erase functions to retry for error
+  mtd: cfi_cmdset_0002: Change erase functions to check chip good only
+  mtd: cfi_cmdset_0002: Change erase one block to enable XIP once
+
+ drivers/mtd/chips/cfi_cmdset_0002.c | 36 +++++++++++++++++++++++-------------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+-- 
+2.16.1
