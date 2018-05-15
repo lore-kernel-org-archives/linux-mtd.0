@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIbZR-0005h1-DJ
- for linux-mtd@lists.infradead.org; Tue, 15 May 2018 15:08:59 +0000
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIbZQ-0008L7-47
+ for linux-mtd@lists.infradead.org; Tue, 15 May 2018 15:09:12 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -10,12 +10,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Peter Pan <peterpansjtu@gmail.com>,
  Frieder Schrempf <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>,
- Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Peter Pan <peterpandong@micron.com>
-Subject: [PATCH v7 4/5] mtd: nand: spi: Add initial support for Micron
- MT29F2G01ABAGD
-Date: Tue, 15 May 2018 17:08:24 +0200
-Message-Id: <20180515150825.19835-5-boris.brezillon@bootlin.com>
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Subject: [PATCH v7 3/5] dt-bindings: Add bindings for SPI NAND devices
+Date: Tue, 15 May 2018 17:08:23 +0200
+Message-Id: <20180515150825.19835-4-boris.brezillon@bootlin.com>
 In-Reply-To: <20180515150825.19835-1-boris.brezillon@bootlin.com>
 References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,212 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Peter Pan <peterpandong@micron.com>
+Add bindigns for SPI NAND chips.
 
-Add a basic driver for Micron SPI NANDs. Only one device is supported
-right now, but the driver will be extended to support more devices
-afterwards.
-
-Signed-off-by: Peter Pan <peterpandong@micron.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/spi/Makefile |   2 +-
- drivers/mtd/nand/spi/core.c   |  17 ++++++
- drivers/mtd/nand/spi/micron.c | 133 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |   3 +
- 4 files changed, 154 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/micron.c
+ Documentation/devicetree/bindings/mtd/spi-nand.txt | 27 ++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index feb79a1d1b46..79a1f1e79221 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,2 +1,2 @@
--spinand-objs := core.o
-+spinand-objs := core.o micron.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index faad9bc93775..a4b8906d7084 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -767,8 +767,25 @@ static const struct nand_ops spinand_ops = {
- 	.isbad = spinand_isbad,
- };
- 
-+static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&micron_spinand_manufacturer,
-+};
-+
- static int spinand_manufacturer_detect(struct spinand_device *spinand)
- {
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(spinand_manufacturers); i++) {
-+		ret = spinand_manufacturers[i]->ops->detect(spinand);
-+		if (ret > 0) {
-+			spinand->manufacturer = spinand_manufacturers[i];
-+			return 0;
-+		} else if (ret < 0) {
-+			return ret;
-+		}
-+	}
-+
- 	return -ENOTSUPP;
- }
- 
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
 new file mode 100644
-index 000000000000..9c4381d6847b
+index 000000000000..d55f80196c63
 --- /dev/null
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2016-2017 Micron Technology, Inc.
-+ *
-+ * Authors:
-+ *	Peter Pan <peterpandong@micron.com>
-+ */
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+@@ -0,0 +1,27 @@
++SPI NAND flash
 +
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
++Required properties:
++- compatible: should be "spi-nand"
++- reg: should encode the chip-select line used to access the NAND chip
 +
-+#define SPINAND_MFR_MICRON		0x2c
-+
-+#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
-+#define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-+#define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
-+#define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-+#define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int mt29f2g01abagd_ooblayout_free(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 62;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mt29f2g01abagd_ooblayout = {
-+	.ecc = mt29f2g01abagd_ooblayout_ecc,
-+	.free = mt29f2g01abagd_ooblayout_free,
-+};
-+
-+static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
-+{
-+	switch (status & MICRON_STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case MICRON_STATUS_ECC_1TO3_BITFLIPS:
-+		return 3;
-+
-+	case MICRON_STATUS_ECC_4TO6_BITFLIPS:
-+		return 6;
-+
-+	case MICRON_STATUS_ECC_7TO8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info micron_spinand_table[] = {
-+	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 2, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
-+				     mt29f2g01abagd_ecc_get_status)),
-+};
-+
-+static int micron_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * Micron SPI NAND read ID need a dummy byte,
-+	 * so the first byte in raw_id is dummy.
-+	 */
-+	if (id[1] != SPINAND_MFR_MICRON)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, micron_spinand_table,
-+				     ARRAY_SIZE(micron_spinand_table), id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
-+	.detect = micron_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer micron_spinand_manufacturer = {
-+	.id = SPINAND_MFR_MICRON,
-+	.name = "Micron",
-+	.ops = &micron_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index 17a4584c0017..11a18c1993e8 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -192,6 +192,9 @@ struct spinand_manufacturer {
- 	const struct spinand_manufacturer_ops *ops;
- };
- 
-+/* SPI NAND manufacturers */
-+extern const struct spinand_manufacturer micron_spinand_manufacturer;
-+
- /**
-  * struct spinand_op_variants - SPI NAND operation variants
-  * @ops: the list of variants for a given operation
++Optional properties
++- spi-max-frequency: maximum frequency of the SPI bus the chip can operate at.
++		     This should encode board limitations (i.e. max freq can't
++		     be achieved due to crosstalk on IO lines).
++		     When unspecified, the driver assumes the chip can run at
++		     the max frequency defined in the spec (information
++		     extracted chip detection time).
++- spi-tx-bus-width: The bus width (number of data wires) that is used for MOSI.
++		    Only encodes the board constraints (i.e. when not all IO
++		    signals are routed on the board). Device constraints are
++		    extracted when detecting the chip, and controller
++		    constraints are exposed by the SPI mem controller. If this
++		    property is missing that means no constraint at the board
++		    level.
++- spi-rx-bus-width: The bus width (number of data wires) that is used for MISO.
++		    Only encodes the board constraints (i.e. when not all IO
++		    signals are routed on the board). Device constraints are
++		    extracted when detecting the chip, and controller
++		    constraints are exposed by the SPI mem controller. If this
++		    property is missing that means no constraint at the board
++		    level.
 -- 
 2.14.1
