@@ -1,28 +1,23 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIxdX-0005Ie-GS
- for linux-mtd@lists.infradead.org; Wed, 16 May 2018 14:42:52 +0000
-Received: by mail-wm0-x241.google.com with SMTP id f8-v6so2422951wmc.4
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 07:42:29 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
-To: Radu Pirea <radu.pirea@microchip.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
- computersforpeace@gmail.com, dwmw2@infradead.org
-References: <20180504155404.5285-1-radu.pirea@microchip.com>
- <20180504204013.254d90cf@bbrezillon>
- <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
- <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
- <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <30ab9516-abc9-d2d5-79ea-266c682c5fa9@gmail.com>
-Date: Wed, 16 May 2018 15:47:15 +0200
+Date: Wed, 16 May 2018 08:08:29 -0700
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ devel@lists.orangefs.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, lustre-devel@lists.lustre.org,
+ linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 14/14] mm: turn on vm_fault_t type checking
+Message-ID: <20180516150829.GA4904@magnolia>
+References: <20180516054348.15950-1-hch@lst.de>
+ <20180516054348.15950-15-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20180516054348.15950-15-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,43 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/16/2018 12:05 PM, Radu Pirea wrote:
-> On Wed, 2018-05-16 at 00:17 +0200, Marek Vasut wrote:
->> On 05/15/2018 06:22 PM, Radu Pirea wrote:
->>> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
->>>> On Fri, 4 May 2018 18:54:04 +0300
->>>> Radu Pirea <radu.pirea@microchip.com> wrote:
->>>>
->>>>> Added geometry description for Microchip 25LC256 memory.
->>>>
->>>> Same as for the dataflash stuff you posted a few weeks ago: I
->>>> don't
->>>> think this device belongs in the SPI NOR framework.
->>>
->>> Hi Boris,
->>>
->>> 25lc256 memory is similar with mr25h256, the only difference is the
->>> page size(64 vs 256). Because mr25h256 is already in SPI NOR
->>> framework
->>> I added here 25lc256.
->>
->> I think I must be reading the wrong datasheet, but can you show me
->> how
->> does it support things like READID opcode ?
->>
-> Hi Marek,
+On Wed, May 16, 2018 at 07:43:48AM +0200, Christoph Hellwig wrote:
+> Switch vm_fault_t to point to an unsigned int with __bіtwise annotations.
+> This both catches any old ->fault or ->page_mkwrite instance with plain
+> compiler type checking, as well as finding more intricate problems with
+> sparse.
 > 
-> I read the datasheet for 25lc256 and for mr25h256 and none of them
-> supports READID. Is this required for a chip to be included in spi-nor
-> framework? I just followed the mr25h256 as an example. 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
 
-So I thought until you pointed out the MR25 devices.
+<ULTRASNIP>
 
-Does the 25LC device need erase or not ? I think the MR25s didn't, but I
-might be wrong.
+For the iomap and xfs parts,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-Maybe the framework could support the 25LC afterall.
+That said...
 
--- 
-Best regards,
-Marek Vasut
+> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> index 54f1e05ecf3e..da2b77a19911 100644
+> --- a/include/linux/mm_types.h
+> +++ b/include/linux/mm_types.h
+> @@ -22,7 +22,8 @@
+>  #endif
+>  #define AT_VECTOR_SIZE (2*(AT_VECTOR_SIZE_ARCH + AT_VECTOR_SIZE_BASE + 1))
+>  
+> -typedef int vm_fault_t;
+> +typedef unsigned __bitwise vm_fault_t;
+> +
+>  
+>  struct address_space;
+>  struct mem_cgroup;
+> @@ -619,7 +620,7 @@ struct vm_special_mapping {
+>  	 * If non-NULL, then this is called to resolve page faults
+>  	 * on the special mapping.  If used, .pages is not checked.
+>  	 */
+> -	int (*fault)(const struct vm_special_mapping *sm,
+> +	vm_fault_t (*fault)(const struct vm_special_mapping *sm,
+
+Uh, we're changing function signatures /and/ redefinining vm_fault_t?
+All in the same 90K patch?
+
+I /was/ expecting a series of "convert XXXXX and all callers/users"
+patches followed by a trivial one to switch the definition, not a giant
+pile of change.  FWIW I don't mind so much if you make a patch
+containing a change for some super-common primitive and a hojillion
+little diff hunks tree-wide, but only one logical change at a time for a
+big patch, please...
+
+I quite prefer seeing the whole series from start to finish all packaged
+up in one series, but wow this was overwhelming. :/
+
+--D
+
+<ULTRASNIP>
