@@ -1,7 +1,7 @@
-Date: Wed, 16 May 2018 15:01:59 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Christoph Hellwig <hch@lst.de>, Souptick Joarder <jrdr.linux@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+Date: Wed, 16 May 2018 06:13:04 -0700
+From: Matthew Wilcox <willy@infradead.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>, linux-fsdevel@vger.kernel.org,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  devel@lists.orangefs.org, ceph-devel@vger.kernel.org,
  linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
@@ -9,14 +9,15 @@ To: Christoph Hellwig <hch@lst.de>, Souptick Joarder <jrdr.linux@gmail.com>,
  dri-devel@lists.freedesktop.org, lustre-devel@lists.lustre.org,
  linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org
 Subject: Re: [PATCH 10/14] vgem: separate errno from VM_FAULT_* values
-Message-ID: <20180516130159.GA32454@lst.de>
+Message-ID: <20180516131304.GF20670@bombadil.infradead.org>
 References: <20180516054348.15950-1-hch@lst.de>
  <20180516054348.15950-11-hch@lst.de>
  <20180516095303.GH3438@phenom.ffwll.local>
+ <20180516130159.GA32454@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180516095303.GH3438@phenom.ffwll.local>
+In-Reply-To: <20180516130159.GA32454@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 16, 2018 at 11:53:03AM +0200, Daniel Vetter wrote:
-> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+On Wed, May 16, 2018 at 03:01:59PM +0200, Christoph Hellwig wrote:
+> On Wed, May 16, 2018 at 11:53:03AM +0200, Daniel Vetter wrote:
+> > Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > 
+> > Want me to merge this through drm-misc or plan to pick it up yourself?
 > 
-> Want me to merge this through drm-misc or plan to pick it up yourself?
+> For now I just want a honest discussion if people really actually
+> want the vm_fault_t change with the whole picture in place.
 
-For now I just want a honest discussion if people really actually
-want the vm_fault_t change with the whole picture in place.
+That discussion already happened on the -mm mailing list.  And again
+at LSFMM.  Both times the answer was yes.
