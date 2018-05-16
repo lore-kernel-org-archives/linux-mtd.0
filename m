@@ -1,34 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIsQj-0007PS-1r
- for linux-mtd@lists.infradead.org; Wed, 16 May 2018 09:09:12 +0000
-Date: Wed, 16 May 2018 11:08:39 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Chris Moore <moore@free.fr>, "Wan, Jane (Nokia - US/Sunnyvale)"
- <jane.wan@nokia.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "yamada.masahiro@socionext.com"
- <yamada.masahiro@socionext.com>, "prabhakar.kushwaha@nxp.com"
- <prabhakar.kushwaha@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "jagdish.gediya@nxp.com" <jagdish.gediya@nxp.com>,
- "shreeya.patel23498@gmail.com" <shreeya.patel23498@gmail.com>, "Bos, Ties
- (Nokia - US/Sunnyvale)" <ties.bos@nokia.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7] mtd: rawnand: use bit-wise majority to recover the
- contents of ONFI parameter
-Message-ID: <20180516110839.46e881c6@bbrezillon>
-In-Reply-To: <20180516094227.14132e74@xps13>
-References: <VI1PR07MB1615A02B23D992E84A3B333F819D0@VI1PR07MB1615.eurprd07.prod.outlook.com>
- <ce0c8d75-b02a-cad0-7198-ffbd503427ce@free.fr>
- <20180515093429.34902670@bbrezillon>
- <ca076561-5b7c-b220-d499-eb2bcad3d1b4@free.fr>
- <20180516094227.14132e74@xps13>
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fIt7W-0002zK-DO
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2018 09:53:22 +0000
+Received: by mail-wm0-x241.google.com with SMTP id a137-v6so214422wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:53:07 -0700 (PDT)
+Sender: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date: Wed, 16 May 2018 11:53:03 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>,
+ Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ devel@lists.orangefs.org, ceph-devel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
+ dri-devel@lists.freedesktop.org, lustre-devel@lists.lustre.org,
+ linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 10/14] vgem: separate errno from VM_FAULT_* values
+Message-ID: <20180516095303.GH3438@phenom.ffwll.local>
+References: <20180516054348.15950-1-hch@lst.de>
+ <20180516054348.15950-11-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180516054348.15950-11-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,137 +33,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 16 May 2018 09:42:27 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Wed, May 16, 2018 at 07:43:44AM +0200, Christoph Hellwig wrote:
+> And streamline the code in vgem_fault with early returns so that it is
+> a little bit more readable.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/vgem/vgem_drv.c | 51 +++++++++++++++------------------
+>  1 file changed, 23 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
+> index 2524ff116f00..a261e0aab83a 100644
+> --- a/drivers/gpu/drm/vgem/vgem_drv.c
+> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
+> @@ -61,12 +61,13 @@ static void vgem_gem_free_object(struct drm_gem_object *obj)
+>  	kfree(vgem_obj);
+>  }
+>  
+> -static int vgem_gem_fault(struct vm_fault *vmf)
+> +static vm_fault_t vgem_gem_fault(struct vm_fault *vmf)
+>  {
+>  	struct vm_area_struct *vma = vmf->vma;
+>  	struct drm_vgem_gem_object *obj = vma->vm_private_data;
+>  	/* We don't use vmf->pgoff since that has the fake offset */
+>  	unsigned long vaddr = vmf->address;
+> +	struct page *page;
+>  	int ret;
+>  	loff_t num_pages;
+>  	pgoff_t page_offset;
+> @@ -85,35 +86,29 @@ static int vgem_gem_fault(struct vm_fault *vmf)
+>  		ret = 0;
+>  	}
+>  	mutex_unlock(&obj->pages_lock);
+> -	if (ret) {
+> -		struct page *page;
+> -
+> -		page = shmem_read_mapping_page(
+> -					file_inode(obj->base.filp)->i_mapping,
+> -					page_offset);
+> -		if (!IS_ERR(page)) {
+> -			vmf->page = page;
+> -			ret = 0;
+> -		} else switch (PTR_ERR(page)) {
+> -			case -ENOSPC:
+> -			case -ENOMEM:
+> -				ret = VM_FAULT_OOM;
+> -				break;
+> -			case -EBUSY:
+> -				ret = VM_FAULT_RETRY;
+> -				break;
+> -			case -EFAULT:
+> -			case -EINVAL:
+> -				ret = VM_FAULT_SIGBUS;
+> -				break;
+> -			default:
+> -				WARN_ON(PTR_ERR(page));
+> -				ret = VM_FAULT_SIGBUS;
+> -				break;
+> -		}
+> +	if (!ret)
+> +		return 0;
+> +
+> +	page = shmem_read_mapping_page(file_inode(obj->base.filp)->i_mapping,
+> +			page_offset);
+> +	if (!IS_ERR(page)) {
+> +		vmf->page = page;
+> +		return 0;
+> +	}
+>  
+> +	switch (PTR_ERR(page)) {
+> +	case -ENOSPC:
+> +	case -ENOMEM:
+> +		return VM_FAULT_OOM;
+> +	case -EBUSY:
+> +		return VM_FAULT_RETRY;
+> +	case -EFAULT:
+> +	case -EINVAL:
+> +		return VM_FAULT_SIGBUS;
+> +	default:
+> +		WARN_ON(PTR_ERR(page));
+> +		return VM_FAULT_SIGBUS;
+>  	}
+> -	return ret;
 
-> Hi Chris,
->=20
-> > >>> +static void nand_bit_wise_majority(const void **srcbufs,
-> > >>> +				   unsigned int nsrcbufs,
-> > >>> +				   void *dstbuf,
-> > >>> +				   unsigned int bufsize)
-> > >>> +{
-> > >>> +	int i, j, k;
-> > >>> +
-> > >>> +	for (i =3D 0; i < bufsize; i++) {
-> > >>> +		u8 cnt, val;
-> > >>> +
-> > >>> +		val =3D 0;
-> > >>> +		for (j =3D 0; j < 8; j++) {
-> > >>> +			cnt =3D 0;
-> > >>> +			for (k =3D 0; k < nsrcbufs; k++) {
-> > >>> +				const u8 *srcbuf =3D srcbufs[k];
-> > >>> +
-> > >>> +				if (srcbuf[i] & BIT(j))
-> > >>> +					cnt++;
-> > >>> +			}
-> > >>> +			if (cnt > nsrcbufs / 2)
-> > >>> +				val |=3D BIT(j);
-> > >>> +		}
-> > >>> +		((u8 *)dstbuf)[i] =3D val;
-> > >>> +	}
-> > >>> +}
-> > >>> +
-> > >>> +/*
-> > >>>     * Check if the NAND chip is ONFI compliant, returns 1 if it is,=
- 0 otherwise.
-> > >>>     */
-> > >>>    static int nand_flash_detect_onfi(struct nand_chip *chip)
-> > >>> @@ -5102,7 +5131,7 @@ static int nand_flash_detect_onfi(struct nand=
-_chip *chip)
-> > >>>    		return 0;   =20
-> > >>>    >>>    	/* ONFI chip: allocate a buffer to hold its parameter pa=
-ge */   =20
-> > >>> -	p =3D kzalloc(sizeof(*p), GFP_KERNEL);
-> > >>> +	p =3D kzalloc((sizeof(*p) * 3), GFP_KERNEL);
-> > >>>    	if (!p)
-> > >>>    		return -ENOMEM;   =20
-> > >>>    >>> @@ -5113,21 +5142,32 @@ static int nand_flash_detect_onfi(st=
-ruct nand_chip *chip)   =20
-> > >>>    	}   =20
-> > >>>    >>>    	for (i =3D 0; i < 3; i++) {   =20
-> > >>> -		ret =3D nand_read_data_op(chip, p, sizeof(*p), true);
-> > >>> +		ret =3D nand_read_data_op(chip, &p[i], sizeof(*p), true);
-> > >>>    		if (ret) {
-> > >>>    			ret =3D 0;
-> > >>>    			goto free_onfi_param_page;
-> > >>>    		}   =20
-> > >>>    >>> -		if (onfi_crc16(ONFI_CRC_BASE, (uint8_t *)p, 254) =3D=3D  =
- =20
-> > >>> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) =3D=3D
-> > >>>    				le16_to_cpu(p->crc)) {
-> > >>> +			if (i)
-> > >>> +				memcpy(p, &p[i], sizeof(*p));
-> > >>>    			break;
-> > >>>    		}
-> > >>>    	}   =20
-> > >>>    >>>    	if (i =3D=3D 3) {   =20
-> > >>> -		pr_err("Could not find valid ONFI parameter page; aborting\n");
-> > >>> -		goto free_onfi_param_page;
-> > >>> +		const void *srcbufs[3] =3D {p, p + 1, p + 2};
-> > >>> +
-> > >>> +		pr_warn("Could not find a valid ONFI parameter page, trying bit-=
-wise majority to recover it\n");
-> > >>> +		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
-> > >>> +				       sizeof(*p));
-> > >>> +
-> > >>> +		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=3D
-> > >>> +				le16_to_cpu(p->crc)) {
-> > >>> +			pr_err("ONFI parameter recovery failed, aborting\n");
-> > >>> +			goto free_onfi_param_page;
-> > >>> +		}
-> > >>>    	}   =20
-> > >>>    >>>    	/* Check version */   =20
-> > >> This version is still hard coded for a three sample bitwise majority=
- vote.
-> > >> So why not use the method which I suggested previously for v2 and wh=
-ich
-> > >> I repeat below?   =20
-> > > Because I want the nand_bit_wise_majority() function to work with
-> > > nsrcbufs > 3 (the ONFI spec says there's at least 3 copy of the param
-> > > page, but NAND vendor can decide to put more). Also, if the X copies =
-of
-> > > the PARAM are corrupted (which is rather unlikely), that means we
-> > > already spent quite a lot of time reading the different copies and
-> > > calculating the CRC, so I think we don't care about perf optimizations
-> > > when doing bit-wise majority.
-> > >   =20
-> > >> The three sample bitwise majority can be implemented without bit lev=
-el
-> > >> manipulation using the identity:
-> > >> majority3(a, b, c) =3D (a & b) | (a & c) | (b & c)
-> > >> This can be factorized slightly to (a & (b | c)) | (b & c)
-> > >> This enables the operation to be performed 8, 16, 32 or even 64 bits=
- at
-> > >> a time depending on the hardware.
-> > >>
-> > >> This method is not only faster and but also more compact.
-> > >>   =20
-> >=20
-> > I do understand that the ONFI specifications permit more than 3 copies.
-> > However elsewhere the proposed code shows no intention of handling othe=
-r cases.
-> > The constant 3 is hard coded in the following lines extracted from the =
-proposed code:
-> > ...
-> > +=C2=A0=C2=A0=C2=A0 p =3D kzalloc((sizeof(*p) * 3), GFP_KERNEL);
-> > ...
-> >  =C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < 3; i++) {
-> > ...
-> >  =C2=A0=C2=A0=C2=A0=C2=A0 if (i =3D=3D 3) {
-> > ...
-> > +=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 const void *srcbufs[3] =3D {p, p=
- + 1, p + 2};
-> >=20
-> > Moreover the last of these is difficult to generalize. =20
->=20
-> Indeed, this is something to improve. I think Boris' request was to
-> prepare changes like this one, to avoid the situation where the code
-> does not scale (like this 'p, p + 1, p + 2').
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 
-Yep, here is a quick/untested patch [1] making ONFI param page
-detection and recovery more robust by reading more than 3 param pages if
-there are more. And that's the reason I want a generic bit-wise
-majority helper, not something that only works for 3 copies.
+Want me to merge this through drm-misc or plan to pick it up yourself?
+-Daniel
 
-[1]http://code.bulix.org/t21eys-335698
+>  }
+>  
+>  static const struct vm_operations_struct vgem_gem_vm_ops = {
+> -- 
+> 2.17.0
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
