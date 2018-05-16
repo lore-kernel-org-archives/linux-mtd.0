@@ -1,29 +1,24 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fIt7W-0002zK-DO
- for linux-mtd@lists.infradead.org; Wed, 16 May 2018 09:53:22 +0000
-Received: by mail-wm0-x241.google.com with SMTP id a137-v6so214422wme.1
- for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 02:53:07 -0700 (PDT)
-Sender: Daniel Vetter <daniel.vetter@ffwll.ch>
-Date: Wed, 16 May 2018 11:53:03 +0200
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Souptick Joarder <jrdr.linux@gmail.com>,
- Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- devel@lists.orangefs.org, ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- ocfs2-devel@oss.oracle.com, linux-mtd@lists.infradead.org,
- dri-devel@lists.freedesktop.org, lustre-devel@lists.lustre.org,
- linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 10/14] vgem: separate errno from VM_FAULT_* values
-Message-ID: <20180516095303.GH3438@phenom.ffwll.local>
-References: <20180516054348.15950-1-hch@lst.de>
- <20180516054348.15950-11-hch@lst.de>
+ id 1fItI8-00027W-CS
+ for linux-mtd@lists.infradead.org; Wed, 16 May 2018 10:04:17 +0000
+Message-ID: <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
+Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
+From: Radu Pirea <radu.pirea@microchip.com>
+To: Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>
+CC: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ <Zhiqiang.Hou@nxp.com>, <pp@emlix.com>, <richard@nod.at>,
+ <computersforpeace@gmail.com>, <dwmw2@infradead.org>
+Date: Wed, 16 May 2018 13:05:21 +0300
+In-Reply-To: <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
+References: <20180504155404.5285-1-radu.pirea@microchip.com>
+ <20180504204013.254d90cf@bbrezillon>
+ <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
+ <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="=-qBHZrjFqVyIRnkwSuzM0"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180516054348.15950-11-hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,102 +28,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 16, 2018 at 07:43:44AM +0200, Christoph Hellwig wrote:
-> And streamline the code in vgem_fault with early returns so that it is
-> a little bit more readable.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/gpu/drm/vgem/vgem_drv.c | 51 +++++++++++++++------------------
->  1 file changed, 23 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/vgem/vgem_drv.c b/drivers/gpu/drm/vgem/vgem_drv.c
-> index 2524ff116f00..a261e0aab83a 100644
-> --- a/drivers/gpu/drm/vgem/vgem_drv.c
-> +++ b/drivers/gpu/drm/vgem/vgem_drv.c
-> @@ -61,12 +61,13 @@ static void vgem_gem_free_object(struct drm_gem_object *obj)
->  	kfree(vgem_obj);
->  }
->  
-> -static int vgem_gem_fault(struct vm_fault *vmf)
-> +static vm_fault_t vgem_gem_fault(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	struct drm_vgem_gem_object *obj = vma->vm_private_data;
->  	/* We don't use vmf->pgoff since that has the fake offset */
->  	unsigned long vaddr = vmf->address;
-> +	struct page *page;
->  	int ret;
->  	loff_t num_pages;
->  	pgoff_t page_offset;
-> @@ -85,35 +86,29 @@ static int vgem_gem_fault(struct vm_fault *vmf)
->  		ret = 0;
->  	}
->  	mutex_unlock(&obj->pages_lock);
-> -	if (ret) {
-> -		struct page *page;
-> -
-> -		page = shmem_read_mapping_page(
-> -					file_inode(obj->base.filp)->i_mapping,
-> -					page_offset);
-> -		if (!IS_ERR(page)) {
-> -			vmf->page = page;
-> -			ret = 0;
-> -		} else switch (PTR_ERR(page)) {
-> -			case -ENOSPC:
-> -			case -ENOMEM:
-> -				ret = VM_FAULT_OOM;
-> -				break;
-> -			case -EBUSY:
-> -				ret = VM_FAULT_RETRY;
-> -				break;
-> -			case -EFAULT:
-> -			case -EINVAL:
-> -				ret = VM_FAULT_SIGBUS;
-> -				break;
-> -			default:
-> -				WARN_ON(PTR_ERR(page));
-> -				ret = VM_FAULT_SIGBUS;
-> -				break;
-> -		}
-> +	if (!ret)
-> +		return 0;
-> +
-> +	page = shmem_read_mapping_page(file_inode(obj->base.filp)->i_mapping,
-> +			page_offset);
-> +	if (!IS_ERR(page)) {
-> +		vmf->page = page;
-> +		return 0;
-> +	}
->  
-> +	switch (PTR_ERR(page)) {
-> +	case -ENOSPC:
-> +	case -ENOMEM:
-> +		return VM_FAULT_OOM;
-> +	case -EBUSY:
-> +		return VM_FAULT_RETRY;
-> +	case -EFAULT:
-> +	case -EINVAL:
-> +		return VM_FAULT_SIGBUS;
-> +	default:
-> +		WARN_ON(PTR_ERR(page));
-> +		return VM_FAULT_SIGBUS;
->  	}
-> -	return ret;
+--=-qBHZrjFqVyIRnkwSuzM0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+On Wed, 2018-05-16 at 00:17 +0200, Marek Vasut wrote:
+> On 05/15/2018 06:22 PM, Radu Pirea wrote:
+> > On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
+> > > On Fri, 4 May 2018 18:54:04 +0300
+> > > Radu Pirea <radu.pirea@microchip.com> wrote:
+> > >=20
+> > > > Added geometry description for Microchip 25LC256 memory.
+> > >=20
+> > > Same as for the dataflash stuff you posted a few weeks ago: I
+> > > don't
+> > > think this device belongs in the SPI NOR framework.
+> >=20
+> > Hi Boris,
+> >=20
+> > 25lc256 memory is similar with mr25h256, the only difference is the
+> > page size(64 vs 256). Because mr25h256 is already in SPI NOR
+> > framework
+> > I added here 25lc256.
+>=20
+> I think I must be reading the wrong datasheet, but can you show me
+> how
+> does it support things like READID opcode ?
+>=20
+Hi Marek,
 
-Want me to merge this through drm-misc or plan to pick it up yourself?
--Daniel
+I read the datasheet for 25lc256 and for mr25h256 and none of them
+supports READID. Is this required for a chip to be included in spi-nor
+framework? I just followed the mr25h256 as an example.=20
+--=-qBHZrjFqVyIRnkwSuzM0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
->  }
->  
->  static const struct vm_operations_struct vgem_gem_vm_ops = {
-> -- 
-> 2.17.0
-> 
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+iQIzBAABCAAdFiEEdoCq2H4M7urKoB6rrwWfQ+JrPx0FAlr8AmEACgkQrwWfQ+Jr
+Px2SEBAAjDFPBtTeDU+oT05eDSU4xKRqNHej7v33Ed3pCWl78KY5FS34xP9dnoZU
+GILWIHel95hmOmF4lduZVWXreK4sA30wFG13dJzcXNzmi3AT3KZb4wjWFlEX5rS2
+iEsWAYqL0ywjqqzbLwkukNtlRe3m1yEkoGhgunAcGPpy5lZbSP5te7s1+JZm9XZh
+7CjOJ4GY0vOLKnQlsIrGFv/ksozR8VtEnARjeRr7Q1edVmhIl5VzR3SskSY6mCbD
+jtJKMlEozSCWNizyRiN6PCd3BKraabjc5v5BaQUq6RmQWSF2rqTiGKAMyhoxmYaL
+FrTXPmgTc+HaKUWWrrG0fahsWnyYwrBXrVhYFzaCft8PACw8GAj1oZhejXi5QGhK
+shViWrgY1Ixq3AHX0Q2IQGgnnsOdYby6KQMAc/CjPkt8RStErTFVwZuhRe3hCswF
+ITcKOasH/2NaLtKgyrx4HvhbAYf6j2vgR8y8UKdHe5ynRve1aW1fXt+Qr5yNuLmi
+ybNDp8D+SHToolMOgcFzRrbw0+GD8HutNoTIQZbrAhhqKloLyMeI5mapTALvO0M1
+tBKtpAXXhAnQMeVfYUJYCq3js1KjNjnLyEhSgZqI7/TUt2wS0kL6MkyIgi0HsgTn
+tiWw/U3X/5wX8IpslolF0GN7mFgAGlVVJ+Vs7Owb9TVHO7zBDXY=
+=tXue
+-----END PGP SIGNATURE-----
+
+--=-qBHZrjFqVyIRnkwSuzM0--
