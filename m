@@ -1,15 +1,15 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJ2ri-0007VT-T4
- for linux-mtd@lists.infradead.org; Wed, 16 May 2018 20:17:41 +0000
-From: Richard Weinberger <richard@nod.at>
+ id 1fJ8jQ-000250-7x
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2018 02:33:29 +0000
+Received: by mail-pg0-x241.google.com with SMTP id a13-v6so1123420pgu.4
+ for <linux-mtd@lists.infradead.org>; Wed, 16 May 2018 19:33:17 -0700 (PDT)
+From: YuheiOKAWA <tochiro.srchack@gmail.com>
 To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org, Ben Hutchings <ben.hutchings@codethink.co.uk>,
- Martin Townsend <mtownsend1973@gmail.com>
-Subject: [PATCH] ubi: fastmap: Cancel work upon detach
-Date: Wed, 16 May 2018 22:17:03 +0200
-Message-Id: <20180516201703.2586-1-richard@nod.at>
+Cc: YuheiOKAWA <tochiro.srchack@gmail.com>
+Subject: [PATCH] mtd: spi-nor: Add support for EN25QH32
+Date: Thu, 17 May 2018 11:33:04 +0900
+Message-Id: <1526524384-30303-1-git-send-email-tochiro.srchack@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,65 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Hutchings pointed out that 29b7a6fa1ec0 ("ubi: fastmap: Don't flush
-fastmap work on detach") does not really fix the problem, it just
-reduces the risk to hit the race window where fastmap work races against
-free()'ing ubi->volumes[].
+Add support for Eon en25qh32 spi nor flash.
 
-The correct approach is making sure that no more fastmap work is in
-progress before we free ubi data structures.
-So we cancel fastmap work right after the ubi background thread is
-stopped.
-By setting ubi->thread_enabled to zero we make sure that no further work
-tries to wake the thread.
-
-Fixes: 29b7a6fa1ec0 ("ubi: fastmap: Don't flush fastmap work on detach")
-Fixes: 74cdaf24004a ("UBI: Fastmap: Fix memory leaks while closing the WL sub-system")
-Cc: stable@vger.kernel.org
-Cc: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Cc: Martin Townsend <mtownsend1973@gmail.com>
-
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Signed-off-by: YuheiOKAWA <tochiro.srchack@gmail.com>
 ---
- drivers/mtd/ubi/build.c | 3 +++
- drivers/mtd/ubi/wl.c    | 4 +---
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 6326a02e4568..0cf3356424cd 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -1100,6 +1100,9 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- 	if (ubi->bgt_thread)
- 		kthread_stop(ubi->bgt_thread);
- 
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+	cancel_work_sync(&ubi->fm_work);
-+#endif
- 	ubi_debugfs_exit_dev(ubi);
- 	uif_close(ubi);
- 
-diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index 3cc302924899..6bbb968fe9da 100644
---- a/drivers/mtd/ubi/wl.c
-+++ b/drivers/mtd/ubi/wl.c
-@@ -1505,6 +1505,7 @@ int ubi_thread(void *u)
- 	}
- 
- 	dbg_wl("background thread \"%s\" is killed", ubi->bgt_name);
-+	ubi->thread_enabled = 0;
- 	return 0;
- }
- 
-@@ -1514,9 +1515,6 @@ int ubi_thread(void *u)
-  */
- static void shutdown_work(struct ubi_device *ubi)
- {
--#ifdef CONFIG_MTD_UBI_FASTMAP
--	flush_work(&ubi->fm_work);
--#endif
- 	while (!list_empty(&ubi->works)) {
- 		struct ubi_work *wrk;
- 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5bfa36e..7bc556c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -980,6 +980,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64, 0) },
+ 	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
+ 	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
++	{ "en25ph32",   INFO(0x1c7016, 0, 64 * 1024,   64, 0) },
+ 	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256, 0) },
+ 	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
+ 	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
 -- 
-2.13.6
+2.7.4
