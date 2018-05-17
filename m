@@ -1,32 +1,29 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::10])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJG4O-00070F-Ow
- for linux-mtd@lists.infradead.org; Thu, 17 May 2018 10:23:39 +0000
-Subject: Re: [PATCH v7 0/5] mtd: Add a SPI NAND driver
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Peter Pan
- <peterpansjtu@gmail.com>, Vignesh R <vigneshr@ti.com>,
- Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Ashish Kumar <ashish.kumar@nxp.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Poonam Aggrwal <poonam.aggrwal@nxp.com>
-References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
- <VI1PR0402MB385432DF72BABAAA10EF4B2297910@VI1PR0402MB3854.eurprd04.prod.outlook.com>
- <20180517090513.005614e4@bbrezillon>
- <AM6PR0402MB3847AD1E2BC7CAA66C7AD45D97910@AM6PR0402MB3847.eurprd04.prod.outlook.com>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <53c7f7ff-144c-921b-2446-850f27ac663f@exceet.de>
-Date: Thu, 17 May 2018 12:22:56 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJIUc-0007lz-J2
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2018 12:58:52 +0000
+Date: Thu, 17 May 2018 14:58:37 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Cardoen Pieter <P.Cardoen@TELEVIC.com>
+Cc: "han.xu@nxp.com" <han.xu@nxp.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: Re: GPMI nand flash ECC errors with mainline kernel
+Message-ID: <20180517145837.18b0eb42@xps13>
+In-Reply-To: <HE1PR0702MB36280A19BA89FA74BB3AACE8FF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
+References: <HE1PR0702MB362877849767B637814CF9B6FF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
+ <20180515135900.3bf24b98@xps13>
+ <HE1PR0702MB36288289EA58B7D0B5368A9FFF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
+ <20180515153622.738a3f53@xps13>
+ <HE1PR0702MB3628CC11A1E13A0C740F1CDDFF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
+ <HE1PR0702MB36280A19BA89FA74BB3AACE8FF930@HE1PR0702MB3628.eurprd07.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR0402MB3847AD1E2BC7CAA66C7AD45D97910@AM6PR0402MB3847.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,144 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Prabhakar,
+Hi Cardoen,
 
-On 17.05.2018 12:01, Prabhakar Kushwaha wrote:
-> 
->> -----Original Message-----
->> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
->> Sent: Thursday, May 17, 2018 12:35 PM
->> To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>; Brian Norris
->> <computersforpeace@gmail.com>; Marek Vasut
->> <marek.vasut@gmail.com>; Richard Weinberger <richard@nod.at>; linux-
->> mtd@lists.infradead.org; Miquel Raynal <miquel.raynal@bootlin.com>; Peter
->> Pan <peterpansjtu@gmail.com>; Frieder Schrempf
->> <frieder.schrempf@exceet.de>; Vignesh R <vigneshr@ti.com>; Xiangsheng
->> Hou <xiangsheng.hou@mediatek.com>; Ashish Kumar
->> <ashish.kumar@nxp.com>; Yogesh Narayan Gaur
->> <yogeshnarayan.gaur@nxp.com>; Poonam Aggrwal
->> <poonam.aggrwal@nxp.com>
->> Subject: Re: [PATCH v7 0/5] mtd: Add a SPI NAND driver
->>
->> On Thu, 17 May 2018 06:33:36 +0000
->> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
->>
->>> Dear Boris,
->>>
->>>
->>>> -----Original Message-----
->>>> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On
->>>> Behalf Of Boris Brezillon
->>>> Sent: Tuesday, May 15, 2018 8:38 PM
->>>> To: David Woodhouse <dwmw2@infradead.org>; Brian Norris
->>>> <computersforpeace@gmail.com>; Boris Brezillon
->>>> <boris.brezillon@bootlin.com>; Marek Vasut <marek.vasut@gmail.com>;
->>>> Richard Weinberger <richard@nod.at>; linux-mtd@lists.infradead.org;
->>>> Miquel Raynal <miquel.raynal@bootlin.com>
->>>> Cc: Peter Pan <peterpansjtu@gmail.com>; Frieder Schrempf
->>>> <frieder.schrempf@exceet.de>; Vignesh R <vigneshr@ti.com>;
->>>> Xiangsheng Hou <xiangsheng.hou@mediatek.com>
->>>> Subject: [PATCH v7 0/5] mtd: Add a SPI NAND driver
->>>>
->>>> Hello,
->>>>
->>>> This is a brand new version of the SPI NAND framework initially
->>>> proposed by Peter. Note that this version has little in common with
->>>> the previous one, mainly because it's been reworked to use the SPI
->>>> mem interface (which allowed us to get rid of the complex NAND
->> initialization/registration logic).
->>>>
->>>> Also, this version now natively supports on-die ECC and multi-die
->>>> chips (which was required to expose the 256MB of the W25M02GV chip).
->>>> I know I initially asked Peter to not support on-die ECC in the
->>>> first version of the framework so that we can work on a proper
->>>> abstraction for ECC controllers, but I ended up implementing it,
->>>> since all the chips seem to have on-die ECC and the implementation was
->> not that complicated.
->>>>
->>>> I'm not giving up on the "ECC controller abstraction" stuff, but
->>>> with this initial implementation we at least have usable SPI NAND
->>>> support, which should give us some time for complex setups with
->> external ECC controllers.
->>>>
->>>> Just a few details about the patches in this series:
->>>>
->>>> Patch 1 is just extending the nand_page_io_req structure to pass
->>>> information about the access mode (ECC enabled/disabled) so that we
->>>> can use that in the SPI NAND framework to decide whether on-die ECC
->>>> should be enabled or not.
->>>>
->>>> Patch 2 is adding the core infrastructure to handle SPI NANDs, and
->>>> patch 3 is decribing the SPI NAND bindings.
->>>>
->>>> Patch 4 and 5 add support for 2 different chips, one from Micron and
->>>> one from Winbond.
->>>>
->>>> Comments/reviews are welcome.
->>>>
->>>> Thanks,
->>>>
->>>> Boris
->>>>
->>>> v7 changes:
->>>> - Use the spi-mem interface
->>>
->>> This is putting requirement for having controller driver in  driver/spi.
->>
->> Yes.
->>
->>> What about the controllers which are supporting NOR and NAND flash.
->> How they are going to co-exist.
->>
->> Can you give an example (with a datasheet or a detailed description) of what
->> you call a controller that supports NOR or NAND. AFAICT, all SPI controllers
->> can support NANDs and NORs, because all they do is send spi-mem
->> operations to the device, no matter if the operation is NAND or NOR related.
->>
->>>
->>> Are we supposed to have 2 flavor of driver. One in driver/mtd/spi-nor and
->> driver/spi?
->>
->> Definitely not. You should have one driver in drivers/spi/ and the SPI NOR
->> layer should access this controller through the m25p80 driver. If you need
->> features that are not yet supported by the spi-mem API, then we should
->> discuss it, 'cause the goal is to have all SPI controller drivers in drivers/spi/
->> instead of creating one interface per memory type.
->>
-> 
-> Currently NXP has fsl_qspi driver is placed in driver/mtd/spi-nor.  QSPI controller(hardware) can support both SPI NOR,  SPI NAND flashes.
-> 
-> fsl_qspi is currently supporting Serial NOR.
-> 
-> As NXP will be adding support SPI NAND with fsl_qspi driver in near future.
-> This means  a transition is required from driver/mtd/spi-nor/fsl_qspi.c to driver/spi.
+FYI your emails are still not reaching the MTD ML.
 
-I'm currently working on this transition based on Boris' PoC driver [1]. 
-I have to do some testing with SPI NOR and then I think I'm ready to 
-prepare a first version. Have you already started working on this?
+On Thu, 17 May 2018 07:45:43 +0000, Cardoen Pieter
+<P.Cardoen@TELEVIC.com> wrote:
 
-Also it would be nice to test this with hardware that uses multiple 
-(2-4) SPI NAND / SPI NOR chips on both buses and using chip selects. Do 
-you have such hardware available for testing?
+> Dear Miquel
+>=20
+>=20
+> I've been continuing debugging. When the gpmi driver is loaded, the devic=
+e gets scanned for bad blocks. In that case nand_read_oob is executed and t=
+his results in a call to nand_do_read_oob:
+>=20
+>=20
+>     if (!ops->datbuf)
+>         ret =3D nand_do_read_oob(mtd, from, ops);
+>     else
+>         ret =3D nand_do_read_ops(mtd, from, ops);
+>=20
+>=20
+> But if the nand flash gets mounted, nand_read_oob is also executed but it=
+ results in nand_do_read_ops and I don't see that the read functions of the=
+ gpmi driver are executed.
+>=20
+>=20
+> Hopefully, this can help to find the solution of this issue.
 
-> 
-> Hence driver/spi/fsl_qspi has to support both SP NOR and SP NAND under control of mtd/nand or mtd/mp2580.c driver.
+Unfortunately I doubt this is the root cause for the ECC errors neither.
 
-The new driver will use the spi-mem interface and therefore can be used 
-by mtd/nand/spi and by m25p80.c. So it doesn't need to support two 
-interfaces.
+Could you also please answer Boris's questions:
 
-Regards,
+> > Which version works? Is this a vendor tree or a mainline kernel? Looks
+> > like the version that fails is 4.15. Are you sure the ECC config is
+> > exactly the same between the old and new kernel?
 
-Frieder
-
-[1] 
-https://github.com/bbrezillon/linux-0day/blob/spi-mem/drivers/spi/spi-fsl-qspi.c
-
-> 
-> --pk
-> 
-> 
-> 
-> 
+Thanks,
+Miqu=C3=A8l
