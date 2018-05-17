@@ -1,24 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJItI-0003Q6-7s
- for linux-mtd@lists.infradead.org; Thu, 17 May 2018 13:24:22 +0000
-Date: Thu, 17 May 2018 15:24:02 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: Helmut Grohne <h.grohne@intenta.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "Boris Brezillon"
- <Boris.Brezillon@bootlin.com>
-Subject: Re: [LINUX, v8, 2/2] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Message-ID: <20180517152402.50187702@xps13>
-In-Reply-To: <DM2PR02MB1418743DD67EAB0DBBA180D0AF860@DM2PR02MB1418.namprd02.prod.outlook.com>
-References: <1521024505-30677-1-git-send-email-nagasureshkumarrelli@gmail.com>
- <20180503125600.vkv5vowdyjz5p2zt@laureti-dev>
- <20180503162530.437f147a@xps13>
- <DM2PR02MB1418743DD67EAB0DBBA180D0AF860@DM2PR02MB1418.namprd02.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-eopbgr00111.outbound.protection.outlook.com
+ ([40.107.0.111] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJJ7Q-0002Bu-Ow
+ for linux-mtd@lists.infradead.org; Thu, 17 May 2018 13:39:09 +0000
+From: Cardoen Pieter <P.Cardoen@TELEVIC.com>
+To: "richard@nod.at" <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64
+ bytes from PEB
+Date: Thu, 17 May 2018 13:38:43 +0000
+Message-ID: <AM0PR0702MB3618DC80EB44C036F19CABEBFF910@AM0PR0702MB3618.eurprd07.prod.outlook.com>
+Content-Language: nl-BE
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,75 +24,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
+Dear
 
-On Fri, 4 May 2018 06:46:50 +0000, Naga Sureshkumar Relli
-<nagasure@xilinx.com> wrote:
+I am currently trying to use the mainline kernel on a custom imx6ul board w=
+ith an SLC NAND flash device (29F4G08ABADAH4). When the rootfs is mounted, =
+I get continuously ECC errors (see log below).
 
-> Hi Miquel & Helmut,
->=20
-> Thanks for updating the latest changes.
->=20
-> > -----Original Message-----
-> > From: Miquel Raynal [mailto:miquel.raynal@bootlin.com]
-> > Sent: Thursday, May 3, 2018 7:56 PM
-> > To: Helmut Grohne <h.grohne@intenta.de>
-> > Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>; linux-mtd@lists.infra=
-dead.org; Boris
-> > Brezillon <Boris.Brezillon@bootlin.com>
-> > Subject: Re: [LINUX, v8, 2/2] mtd: rawnand: pl353: Add basic driver for=
- arm pl353 smc nand
-> > interface
-> >=20
-> > Hi Naga,
-> >=20
-> > On Thu, 3 May 2018 14:56:01 +0200, Helmut Grohne <h.grohne@intenta.de>
-> > wrote:
-> >  =20
-> > > On Wed, Mar 14, 2018 at 04:18:25PM +0530, Naga Sureshkumar Relli wrot=
-e: =20
-> > > > +	xnand->row_addr_cycles =3D nand_chip->onfi_params.addr_cycles & 0=
-xF;
-> > > > +	xnand->col_addr_cycles =3D
-> > > > +				(nand_chip->onfi_params.addr_cycles >> 4) & 0xF; =20
-> > >
-> > > Meanwhile onfi_params have been removed from the mainline and this
-> > > patch no longer builds against v4.17-rc3. Can you resend a version
-> > > that builds against with more recent kernels? =20
-> >=20
-> > Actually I'm not sure you need addr_cycles from the ONFI param page. Wh=
-at about non-
-> > ONFI chips? Anyway you won't find this entry anymore as the param page =
-is now freed after
-> > probe.
-> >=20
-> > I don't get why you need this though?
-> > Maybe you should have a look at the NAND_ROW_ADDR_3 flag? =20
->=20
-> The arm SMC pl353 controller operates in cmd phase and data phase.
-> In cmd phase it requires number of address cycles, hence we are using this
-> By reading from parameter page.
-> DOC: http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/DDI0380G_s=
-mc_pl350_series_r2p1_trm.pdf
-> if you see table2-2 NAND AXI address setup, it describes the usage of cmd
-> and data phases.
-> If we remove this onfi_params, is there an alternative to write the numbe=
-r of address cycles filed in
-> Cmd phase register?=20
-> Or can I use max value?, that means as per spec it supports max of 7 addr=
-ess cycles(it is a 3bit value).
+I am however sure that the rootfs is programmed. The device boots with an o=
+lder kernel version on the same device.
 
-In ->exec_op():
-If your operation contains address cycles, you'll get the number with
-nand_subop_get_num_addr_cyc(subop, op_id). You already retrieve
-correctly that number from your ->exec_op() implementation. I don't
-think you need anything else.
+I also noticed that with my previous kernel version, it used mtd->_read in =
+function mtd_read while now it is using mtd->_read_oob.
 
-In ->ecc.read/write*() helpers:
-The number of column cycles is 1 if mtd->writesize <=3D 512, otherwise
-it is 2. The number of row cycles is 3 if the NAND_ROW_ADDR_3 flag is
-present in chip->options, otherwise it is 2 (it won't change, just
-check it once at probe time).
+ When the gpmi driver is loaded, the device gets scanned for bad blocks. In=
+ that case nand_read_oob is executed and this results in a call to nand_do_=
+read_oob:
+=20
+    if (!ops->datbuf)
+        ret =3D nand_do_read_oob(mtd, from, ops);
+    else
+        ret =3D nand_do_read_ops(mtd, from, ops);
 
-Thanks,
-Miqu=C3=A8l
+Can someone assist me how to debug this issue?
+
+Thanks
+Pieter Cardoen
+
+
+nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xdc
+nand: Micron MT29F4G08ABADAH4
+nand: 512 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+gpmi-nand 1806000.gpmi-nand: enable the asynchronous EDO mode 5
+Bad block table not found for chip 0
+Bad block table not found for chip 0
+Scanning device for bad blocks
+Bad eraseblock 1692 at 0x00000d380000
+Bad eraseblock 1694 at 0x00000d3c0000
+Bad eraseblock 1696 at 0x00000d400000
+Bad eraseblock 1698 at 0x00000d440000
+Bad eraseblock 1700 at 0x00000d480000
+Bad eraseblock 1702 at 0x00000d4c0000
+Bad eraseblock 1704 at 0x00000d500000
+Bad block table written to 0x00001ffe0000, version 0x01
+Bad block table written to 0x00001ffc0000, version 0x01
+1 cmdlinepart partitions found on MTD device gpmi-nand
+Creating 1 MTD partitions on "gpmi-nand":
+0x000000000000-0x000020000000 : "nandflash"
+gpmi-nand 1806000.gpmi-nand: driver registered.
+ubi0: attaching mtd0
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 0:0, read only 64 bytes, retry
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 0:0, read only 64 bytes, retry
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 0:0, read only 64 bytes, retry
+ubi0 error: 0xc02d66e8: error -74 (ECC error) while reading 64 bytes from P=
+EB 0:0, read 64 bytes
+CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0+ #65
+Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+Function entered at [<c010c0a0>] from [<c010a780>]
+Function entered at [<c010a780>] from [<c02d66ec>]
+Function entered at [<c02d66ec>] from [<c02d69e0>]
+Function entered at [<c02d69e0>] from [<c02db408>]
+Function entered at [<c02db408>] from [<c02dc8c0>]
+Function entered at [<c02dc8c0>] from [<c02d114c>]
+Function entered at [<c02d114c>] from [<c051c678>]
+Function entered at [<c051c678>] from [<c01024bc>]
+Function entered at [<c01024bc>] from [<c0500c70>]
+Function entered at [<c0500c70>] from [<c0317958>]
+Function entered at [<c0317958>] from [<c01010e8>]
+Exception stack(0xdf04dfb0 to 0xdf04dff8)
+dfa0:                                     00000000 00000000 00000000 000000=
+00
+dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 000000=
+00
+dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 1:0, read only 64 bytes, retry
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 1:0, read only 64 bytes, retry
+ubi0 warning: 0xc02d6658: error -74 (ECC error) while reading 64 bytes from=
+ PEB 1:0, read only 64 bytes, retry
+ubi0 error: 0xc02d66e8: error -74 (ECC error) while reading 64 bytes from P=
+EB 1:0, read 64 bytes
+CPU: 0 PID: 1 Comm: swapper Not tainted 4.15.0+ #65
+Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+Function entered at [<c010c0a0>] from [<c010a780>]
+Function entered at [<c010a780>] from [<c02d66ec>]
+Function entered at [<c02d66ec>] from [<c02d69e0>]
+Function entered at [<c02d69e0>] from [<c02db408>]
+Function entered at [<c02db408>] from [<c02dc8c0>]
+Function entered at [<c02dc8c0>] from [<c02d114c>]
+Function entered at [<c02d114c>] from [<c051c678>]
+Function entered at [<c051c678>] from [<c01024bc>]
+Function entered at [<c01024bc>] from [<c0500c70>]
+Function entered at [<c0500c70>] from [<c0317958>]
+Function entered at [<c0317958>] from [<c01010e8>]
+Exception stack(0xdf04dfb0 to 0xdf04dff8)
