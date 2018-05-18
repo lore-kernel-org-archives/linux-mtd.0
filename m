@@ -1,19 +1,20 @@
-Date: Fri, 18 May 2018 13:21:43 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Andy Yan <andy.yan@rock-chips.com>
-Cc: cyrille.pitchen@wedev4u.fr, mchehab@kernel.org, robh+dt@kernel.org,
- linux-mtd@lists.infradead.org, shawn.lin@rock-chips.com, heiko@sntech.de,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, boris.brezillon@free-electrons.com
-Subject: Re: [PATCH v8 2/3] mtd: spi-nor: add rockchip serial flash
- controller driver
-Message-ID: <20180518132143.3105f301@bbrezillon>
-In-Reply-To: <1518092327-3827-1-git-send-email-andy.yan@rock-chips.com>
-References: <1518091958-3672-1-git-send-email-andy.yan@rock-chips.com>
- <1518092327-3827-1-git-send-email-andy.yan@rock-chips.com>
+Received: from da1vs02.rockwellcollins.com ([205.175.227.29])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJfme-0000Z5-3G
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 13:51:01 +0000
+Received: by mail-oi0-f69.google.com with SMTP id k136-v6so5143308oih.4
+ for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 06:50:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAFLxGvxSNr1MQoa3Zidg=+fhCY1qkeGQ_fhpy1X0eS51xA=4Rw@mail.gmail.com>
+References: <CADFuHZ787+cEaZ7ZT7YXZg4zBXUVpya2v29rUdq=FtJ7emv=cQ@mail.gmail.com>
+ <CAFLxGvxSNr1MQoa3Zidg=+fhCY1qkeGQ_fhpy1X0eS51xA=4Rw@mail.gmail.com>
+From: Ronak Desai <ronak.desai@rockwellcollins.com>
+Date: Fri, 18 May 2018 08:50:47 -0500
+Message-ID: <CADFuHZ5Cv-uywSPCFAoEKUUYfG-Qo1PD=XjXiOGwSQy_aFAo9w@mail.gmail.com>
+Subject: Re: Increased frequency of fastmap failure due to CRC mismatch
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andy,
+Hey Richard,
 
-Sorry for the late reply.
+On Thu, May 17, 2018 at 11:49 AM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> On Thu, May 17, 2018 at 5:47 PM, Ronak Desai
+> <ronak.desai@rockwellcollins.com> wrote:
+>> We are at kernel 4.1.8.
+>
+> Woah, this kernel is very old, did you backport _all_ ubi/fastmap fixes?
 
-On Thu,  8 Feb 2018 20:18:47 +0800
-Andy Yan <andy.yan@rock-chips.com> wrote:
+No, I did not backport all the changes in ubi/fastmap as considering
+the product state it is not feasible. This product has been tested for
+several months and I checked all the paths in NAND-MTD subsystem as
+well as in NAND controller specific driver but nothing stood out which
+can cause this. I also compared the basic routines with latest kernel
+and I don't see any major changes or fixes which I can relate to this
+failure.
 
-> From: Shawn Lin <shawn.lin@rock-chips.com>
+The only thing that bothers me is that NAND-MTD system return without
+any error except it reports that it has corrected greater or equals to
+bits on that block but still UBI finds corrupted fastmap. So, either
+there is something wrong in the ECC algorithm where it thinks it has
+corrected the bits but actually it did not or something is wrong in
+UBI fastmap. Also, as I mentioned on every power-up we see this
+fixable bit flip message on that specific block but fastmap fails only
+few times and not always.
 
-Commit message please.
+>
+> --
+> Thanks,
+> //richard
 
-> 
-> Add Rockchip SFC(serial flash controller) driver.
-> 
-> Signed-off-by: Shawn Lin <shawn.lin@rock-chips.com>
-> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
-> Acked-by: Marek Vasut <marek.vasut@gmail.com>
-> 
-> ---
-> 
-> Changes in v8:
-> - remove unused macro SFC_CMD_TRAN_BYTES_MASK
-> - set max transfer length to 15.5KB
-> - remove unnecessary buffer align check
-> - remove the duplicate logic what spi-nor.c already does for spi_nor_write
-> - add spi_nor_erase, as the SFC should get the erase address.
 
-Would you mind sending a new version addressing the problem reported by
-kbuild robots and the comments made by Ezequiel and Robin?
-
-Also, maybe it's too much work, but it would be good to check if the
-driver could use the spi_mem interface [1] so that you can move it to
-drivers/spi/ and possibly get everything ready for SPI NANDs.
-
-Thanks,
-
-Boris
-
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/tree/include/linux/spi/spi-mem.h?h=for-4.18
+-- 
+Ronak A Desai
+Sr. Software Engineer
+Airborne Information Solutions / RC Linux Platform Software
+MS 131-100, C Ave NE, Cedar Rapids, IA, 52498, USA
+Ronak.Desai@rockwellcollins.com
+https://www.rockwellcollins.com/
