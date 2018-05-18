@@ -1,16 +1,18 @@
-Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJaJD-0000Ki-4l
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 08:00:17 +0000
-Received: by mail-qt0-x232.google.com with SMTP id c2-v6so9186067qtn.9
- for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 01:00:04 -0700 (PDT)
+ id 1fJbOv-0000rB-1R
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 09:10:42 +0000
+Date: Fri, 18 May 2018 11:09:55 +0200 (CEST)
+From: David Oberhollenzer <goliath@sigma-star.at>
+To: Levente <leventelist@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Message-ID: <967434303.163429.1526634595483.JavaMail.zimbra@sigma-star.at>
+In-Reply-To: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
+References: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
+Subject: Re: mtd
 MIME-Version: 1.0
-From: Levente <leventelist@gmail.com>
-Date: Fri, 18 May 2018 10:00:02 +0200
-Message-ID: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
-Subject: mtd
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+Hi,
 
 
-I don't know if I post this to the right place, so forgive my ignorance.
+I took a look at the OpenWRT source repository and the tool you mention looks more
+like some home grown utility to me.
 
-My college discovered a possible bug in OpenWRT's mtd utility. When
-writing to jffs device, the 'mtd' utility does not skip bad blocks.
+The mtd-utils you've cloned are built by package/utils/mtd-utils/Makefile
 
-This patch seems to fix this issue.
+You may want to sort this out on the OpenWRT mailing list, unless of course the source
+of that utility has been copied from mkfs.jffs2 at some point and the later happens
+to have the same issue.
 
-
-diff --git a/package/system/mtd/src/jffs2.c b/package/system/mtd/src/jffs2.c
-index b432f64ac0..5bf3eec328 100644
---- a/package/system/mtd/src/jffs2.c
-+++ b/package/system/mtd/src/jffs2.c
-@@ -308,6 +308,16 @@ int mtd_write_jffs2(const char *mtd, const char
-*filename, const char *dir)
-        for(;;) {
-                struct jffs2_unknown_node *node = (struct
-jffs2_unknown_node *) buf;
-
-+               while (mtd_block_is_bad(outfd, mtdofs) && (mtdofs < mtdsize)) {
-+                       if (!quiet)
-+                               fprintf(stderr, "\nSkipping bad block
-at 0x%08x   ", mtdofs);
-+
-+                       mtdofs += erasesize;
-+
-+                       /* Move the file pointer along over the bad block. */
-+                       lseek(outfd, erasesize, SEEK_CUR);
-+               }
-+
-                if (read(outfd, buf, erasesize) != erasesize) {
-                        fdeof = 1;
-                        break;
+See: https://lists.openwrt.org/mailman/listinfo/openwrt-devel
 
 
-I've cloned your utility repository, but didn't find jffs2.c anywhere.
+Thanks,
 
-Best regards,
-Levente
+David
