@@ -1,36 +1,29 @@
-Subject: Re: [PATCH 05/15] mtd: nand: pxa3xx: remove the dmaengine compat need
-To: Robert Jarzmik <robert.jarzmik@free.fr>,
- Haojian Zhuang <haojian.zhuang@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>,
- Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
- linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
- linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
- devel@driverdev.osuosl.org, alsa-devel@alsa-project.org,
- Robert Jarzmik <robert.jarzmik@renault.com>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-6-robert.jarzmik@free.fr>
-From: Daniel Mack <daniel@zonque.org>
-Message-ID: <a09d80dc-e8fd-1e9a-1878-8875ddc83134@zonque.org>
-Date: Fri, 18 May 2018 23:31:02 +0200
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, Mark Brown <broonie@kernel.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-input <linux-input@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-fbdev@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
+Date: Sat, 19 May 2018 01:15:30 +0200
+Message-ID: <3427199.r4OBoDP6Xz@z50>
+In-Reply-To: <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180518210954.29044-5-jmkrzyszt@gmail.com>
+ <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20180402142656.26815-6-robert.jarzmik@free.fr>
-Content-Type: multipart/mixed; boundary="------------39EE53F47ACFCC5932325DF0"
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,92 +33,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------39EE53F47ACFCC5932325DF0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hi Robert,
-
-Thanks for this series.
-
-On Monday, April 02, 2018 04:26 PM, Robert Jarzmik wrote:
-> From: Robert Jarzmik <robert.jarzmik@renault.com>
+On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
+> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
 > 
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
+> <jmkrzyszt@gmail.com> wrote:
+> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
 > 
-> This patch simplifies the dma resource acquisition, using the more
-> generic function dma_request_slave_channel().
+> So, is it optional or not at the end?
+> If it is, why do we check for NULL?
+
+As far as I can understand, nand_chip->dev_ready() callback is optional. 
+That's why I decided to use the _optional variant of devm_gpiod_get(). In case 
+of ams-delta, the dev_ready() callback depends on availability of the 'rdy' 
+GPIO pin. As a consequence, I'm checking for both NULL and ERR in order to 
+decide if dev_ready() will be supported.
+
+I can pretty well replace it with the standard form and check for ERR only if 
+the purpose of the _optional form is different.
+
+> >                 this->dev_ready = ams_delta_nand_ready;
+> >         
+> >         } else {
+> >         
+> >                 this->dev_ready = NULL;
+> >                 pr_notice("Couldn't request gpio for Delta NAND
+> >                 ready.\n");
 > 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->   drivers/mtd/nand/pxa3xx_nand.c | 10 +---------
+> dev_notice() ?
 
-This driver was replaced by drivers/mtd/nand/raw/marvell_nand.c 
-recently, so this patch can be dropped. I attached a version for the new 
-driver which you can pick instead.
+Sure, but maybe in a separate patch? That's not a new code just being added 
+but an existing one, not the merit of the change.
 
+> >         }
+> > 
+> > +err_gpiod:
+> > +       if (err == -ENODEV || err == -ENOENT)
+> > +               err = -EPROBE_DEFER;
+> 
+> Hmm...
+
+Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not 
+availble before device init phase, unlike other crucial GPIO drivers which are 
+initialized earlier, e.g. during the postcore or at latetst the subsys phase. 
+Hence, devices which depend on GPIO pins provided by gpio-mmio must either be 
+declared late or fail softly so they get another chance of being probed 
+succesfully.
+
+I thought of replacing the gpio-mmio platform driver with bgpio functions it 
+exports but for now I haven't implemented it, not even shared the idea.
+
+Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be obtained?
 
 Thanks,
-Daniel
-
---------------39EE53F47ACFCC5932325DF0
-Content-Type: text/x-patch;
- name="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
-
->From c63bc40bdfe2d596e42919235840109a2f1b2776 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Sat, 12 May 2018 21:50:13 +0200
-Subject: [PATCH] mtd: rawnand: marvell: remove dmaengine compat code
-
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
-
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- drivers/mtd/nand/raw/marvell_nand.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..30017cd7d91c 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2612,8 +2612,6 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 						    dev);
- 	struct dma_slave_config config = {};
- 	struct resource *r;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- 	int ret;
- 
- 	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
-@@ -2632,14 +2630,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 		return -ENXIO;
- 	}
- 
--	param.drcmr = r->start;
--	param.prio = PXAD_PRIO_LOWEST;
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	nfc->dma_chan =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, nfc->dev,
--						 "data");
-+	nfc->dma_chan = dma_request_slave_channel(nfc->dev, "data");
- 	if (!nfc->dma_chan) {
- 		dev_err(nfc->dev,
- 			"Unable to request data DMA channel\n");
--- 
-2.14.3
-
-
---------------39EE53F47ACFCC5932325DF0--
+Janusz
