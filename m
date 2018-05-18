@@ -1,27 +1,24 @@
-Received: from mail-wm0-f65.google.com ([74.125.82.65])
+Received: from mxout01.bytecamp.net ([212.204.60.217])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJcFF-0000qy-38
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 10:06:17 +0000
-Received: by mail-wm0-f65.google.com with SMTP id w194-v6so13098158wmf.2
- for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 03:04:06 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
-To: Radu Pirea <radu.pirea@microchip.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
- computersforpeace@gmail.com, dwmw2@infradead.org
-References: <20180504155404.5285-1-radu.pirea@microchip.com>
- <20180504204013.254d90cf@bbrezillon>
- <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
- <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
- <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
- <30ab9516-abc9-d2d5-79ea-266c682c5fa9@gmail.com>
- <1993151b-4434-c671-8498-b6488288f5f6@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <e495fbdd-1bda-8b7e-52b5-ee51247231a8@gmail.com>
-Date: Fri, 18 May 2018 12:03:31 +0200
+ id 1fJchR-0001jf-4l
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 10:35:25 +0000
+Received: from mail.bytecamp.net (mail.bytecamp.net [212.204.60.9])
+ by mxout01.bytecamp.net (Postfix) with ESMTP id 452BF575A24
+ for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 12:26:49 +0200 (CEST)
+Subject: Re: [OpenWrt-Devel] OpenWRT mtd tooling vs mtd-utils
+To: David Oberhollenzer <goliath@sigma-star.at>,
+ Levente <leventelist@gmail.com>, openwrt-devel@lists.openwrt.org
+Cc: Richard Weinberger <richard@sigma-star.at>,
+ linux-mtd <linux-mtd@lists.infradead.org>
+References: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
+ <967434303.163429.1526634595483.JavaMail.zimbra@sigma-star.at>
+ <CACwWb3AVnJOjNW2DE6jn8CR3SRFECP=2mgr-n_rQ-4fNAOd11A@mail.gmail.com>
+ <1397936863.163523.1526636992502.JavaMail.zimbra@sigma-star.at>
+From: Jo-Philipp Wich <jo@mein.io>
+Message-ID: <73497de5-6ea1-2662-2cc1-c5047e29d865@mein.io>
+Date: Fri, 18 May 2018 12:26:48 +0200
 MIME-Version: 1.0
-In-Reply-To: <1993151b-4434-c671-8498-b6488288f5f6@microchip.com>
+In-Reply-To: <1397936863.163523.1526636992502.JavaMail.zimbra@sigma-star.at>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -34,57 +31,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/18/2018 11:50 AM, Radu Pirea wrote:
-> 
-> 
-> On 05/16/2018 04:47 PM, Marek Vasut wrote:
->> On 05/16/2018 12:05 PM, Radu Pirea wrote:
->>> On Wed, 2018-05-16 at 00:17 +0200, Marek Vasut wrote:
->>>> On 05/15/2018 06:22 PM, Radu Pirea wrote:
->>>>> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
->>>>>> On Fri, 4 May 2018 18:54:04 +0300
->>>>>> Radu Pirea <radu.pirea@microchip.com> wrote:
->>>>>>
->>>>>>> Added geometry description for Microchip 25LC256 memory.
->>>>>>
->>>>>> Same as for the dataflash stuff you posted a few weeks ago: I
->>>>>> don't
->>>>>> think this device belongs in the SPI NOR framework.
->>>>>
->>>>> Hi Boris,
->>>>>
->>>>> 25lc256 memory is similar with mr25h256, the only difference is the
->>>>> page size(64 vs 256). Because mr25h256 is already in SPI NOR
->>>>> framework
->>>>> I added here 25lc256.
->>>>
->>>> I think I must be reading the wrong datasheet, but can you show me
->>>> how
->>>> does it support things like READID opcode ?
->>>>
->>> Hi Marek,
->>>
->>> I read the datasheet for 25lc256 and for mr25h256 and none of them
->>> supports READID. Is this required for a chip to be included in spi-nor
->>> framework? I just followed the mr25h256 as an example.
->>
->> So I thought until you pointed out the MR25 devices.
->>
->> Does the 25LC device need erase or not ? I think the MR25s didn't, but I
->> might be wrong.
-> 
-> You are right. MR25s does not need erase and the same thing is true for
-> 25LC.
+Hello David,
 
-Oh. And the command set is (except for readid) comparable to SPI NOR ?
+this was actually my fault. I didn't pay close attention and assumed the
+code to be related to the kernel MTD subsystem. Only now after your mail
+I realized that it affects the OpenWrt specific formatting utility.
 
->> Maybe the framework could support the 25LC afterall.
->>
-> Yes, this was my impression too.
+I am very sorry for the confusion caused.
 
-I am still thinking that the AT25 driver might be a better fit for such
-devices. Can you take a look ?
 
--- 
-Best regards,
-Marek Vasut
+Kind regards,
+Jo
