@@ -1,26 +1,21 @@
-Received: from mail-dm3nam03on0064.outbound.protection.outlook.com
- ([104.47.41.64] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJZtz-0007HU-Vt
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 07:34:14 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Helmut Grohne <h.grohne@intenta.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Boris Brezillon
- <Boris.Brezillon@bootlin.com>
-Subject: RE: [LINUX, v8, 2/2] mtd: rawnand: pl353: Add basic driver for arm
- pl353 smc nand interface
-Date: Fri, 18 May 2018 07:33:56 +0000
-Message-ID: <MWHPR02MB26237C6FDF93840B4E2C88A1AF900@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1521024505-30677-1-git-send-email-nagasureshkumarrelli@gmail.com>
- <20180503125600.vkv5vowdyjz5p2zt@laureti-dev>	<20180503162530.437f147a@xps13>
- <DM2PR02MB1418743DD67EAB0DBBA180D0AF860@DM2PR02MB1418.namprd02.prod.outlook.com>
- <20180517152402.50187702@xps13>
-In-Reply-To: <20180517152402.50187702@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJZwN-0000UU-W2
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 07:36:42 +0000
+Date: Fri, 18 May 2018 09:36:18 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ linux-m68k@lists.linux-m68k.org, David Woodhouse <dwmw2@infradead.org>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>, Brian Norris
+ <computersforpeace@gmail.com>
+Subject: mtd: Fixes for 4.17-rc6
+Message-ID: <20180518093618.0250d922@bbrezillon>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,65 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlx
-dWVsIFJheW5hbCBbbWFpbHRvOm1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb21dDQo+IFNlbnQ6IFRo
-dXJzZGF5LCBNYXkgMTcsIDIwMTggNjo1NCBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEhlbG11dCBHcm9obmUgPGguZ3JvaG5lQGlu
-dGVudGEuZGU+OyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQm9yaXMgQnJlemlsbG9u
-DQo+IDxCb3Jpcy5CcmV6aWxsb25AYm9vdGxpbi5jb20+DQo+IFN1YmplY3Q6IFJlOiBbTElOVVgs
-IHY4LCAyLzJdIG10ZDogcmF3bmFuZDogcGwzNTM6IEFkZCBiYXNpYyBkcml2ZXIgZm9yIGFybSBw
-bDM1MyBzbWMgbmFuZA0KPiBpbnRlcmZhY2UNCj4gDQo+IEhpIE5hZ2EsDQo+IA0KPiBPbiBGcmks
-IDQgTWF5IDIwMTggMDY6NDY6NTAgKzAwMDAsIE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2Fz
-dXJlQHhpbGlueC5jb20+IHdyb3RlOg0KPiANCj4gPiBIaSBNaXF1ZWwgJiBIZWxtdXQsDQo+ID4N
-Cj4gPiBUaGFua3MgZm9yIHVwZGF0aW5nIHRoZSBsYXRlc3QgY2hhbmdlcy4NCj4gPg0KPiA+ID4g
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IE1pcXVlbCBSYXluYWwgW21h
-aWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiA+ID4gU2VudDogVGh1cnNkYXksIE1h
-eSAzLCAyMDE4IDc6NTYgUE0NCj4gPiA+IFRvOiBIZWxtdXQgR3JvaG5lIDxoLmdyb2huZUBpbnRl
-bnRhLmRlPg0KPiA+ID4gQ2M6IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlu
-eC5jb20+Ow0KPiA+ID4gbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IEJvcmlzIEJyZXpp
-bGxvbg0KPiA+ID4gPEJvcmlzLkJyZXppbGxvbkBib290bGluLmNvbT4NCj4gPiA+IFN1YmplY3Q6
-IFJlOiBbTElOVVgsIHY4LCAyLzJdIG10ZDogcmF3bmFuZDogcGwzNTM6IEFkZCBiYXNpYyBkcml2
-ZXINCj4gPiA+IGZvciBhcm0gcGwzNTMgc21jIG5hbmQgaW50ZXJmYWNlDQo+ID4gPg0KPiA+ID4g
-SGkgTmFnYSwNCj4gPiA+DQo+ID4gPiBPbiBUaHUsIDMgTWF5IDIwMTggMTQ6NTY6MDEgKzAyMDAs
-IEhlbG11dCBHcm9obmUNCj4gPiA+IDxoLmdyb2huZUBpbnRlbnRhLmRlPg0KPiA+ID4gd3JvdGU6
-DQo+ID4gPg0KPiA+ID4gPiBPbiBXZWQsIE1hciAxNCwgMjAxOCBhdCAwNDoxODoyNVBNICswNTMw
-LCBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIHdyb3RlOg0KPiA+ID4gPiA+ICsJeG5hbmQtPnJvd19h
-ZGRyX2N5Y2xlcyA9IG5hbmRfY2hpcC0+b25maV9wYXJhbXMuYWRkcl9jeWNsZXMgJiAweEY7DQo+
-ID4gPiA+ID4gKwl4bmFuZC0+Y29sX2FkZHJfY3ljbGVzID0NCj4gPiA+ID4gPiArCQkJCShuYW5k
-X2NoaXAtPm9uZmlfcGFyYW1zLmFkZHJfY3ljbGVzID4+IDQpICYgMHhGOw0KPiA+ID4gPg0KPiA+
-ID4gPiBNZWFud2hpbGUgb25maV9wYXJhbXMgaGF2ZSBiZWVuIHJlbW92ZWQgZnJvbSB0aGUgbWFp
-bmxpbmUgYW5kIHRoaXMNCj4gPiA+ID4gcGF0Y2ggbm8gbG9uZ2VyIGJ1aWxkcyBhZ2FpbnN0IHY0
-LjE3LXJjMy4gQ2FuIHlvdSByZXNlbmQgYSB2ZXJzaW9uDQo+ID4gPiA+IHRoYXQgYnVpbGRzIGFn
-YWluc3Qgd2l0aCBtb3JlIHJlY2VudCBrZXJuZWxzPw0KPiA+ID4NCj4gPiA+IEFjdHVhbGx5IEkn
-bSBub3Qgc3VyZSB5b3UgbmVlZCBhZGRyX2N5Y2xlcyBmcm9tIHRoZSBPTkZJIHBhcmFtIHBhZ2Uu
-DQo+ID4gPiBXaGF0IGFib3V0IG5vbi0gT05GSSBjaGlwcz8gQW55d2F5IHlvdSB3b24ndCBmaW5k
-IHRoaXMgZW50cnkgYW55bW9yZQ0KPiA+ID4gYXMgdGhlIHBhcmFtIHBhZ2UgaXMgbm93IGZyZWVk
-IGFmdGVyIHByb2JlLg0KPiA+ID4NCj4gPiA+IEkgZG9uJ3QgZ2V0IHdoeSB5b3UgbmVlZCB0aGlz
-IHRob3VnaD8NCj4gPiA+IE1heWJlIHlvdSBzaG91bGQgaGF2ZSBhIGxvb2sgYXQgdGhlIE5BTkRf
-Uk9XX0FERFJfMyBmbGFnPw0KPiA+DQo+ID4gVGhlIGFybSBTTUMgcGwzNTMgY29udHJvbGxlciBv
-cGVyYXRlcyBpbiBjbWQgcGhhc2UgYW5kIGRhdGEgcGhhc2UuDQo+ID4gSW4gY21kIHBoYXNlIGl0
-IHJlcXVpcmVzIG51bWJlciBvZiBhZGRyZXNzIGN5Y2xlcywgaGVuY2Ugd2UgYXJlIHVzaW5nDQo+
-ID4gdGhpcyBCeSByZWFkaW5nIGZyb20gcGFyYW1ldGVyIHBhZ2UuDQo+ID4gRE9DOg0KPiA+IGh0
-dHA6Ly9pbmZvY2VudGVyLmFybS5jb20vaGVscC90b3BpYy9jb20uYXJtLmRvYy5kZGkwMzgwZy9E
-REkwMzgwR19zbWMNCj4gPiBfcGwzNTBfc2VyaWVzX3IycDFfdHJtLnBkZiBpZiB5b3Ugc2VlIHRh
-YmxlMi0yIE5BTkQgQVhJIGFkZHJlc3Mgc2V0dXAsDQo+ID4gaXQgZGVzY3JpYmVzIHRoZSB1c2Fn
-ZSBvZiBjbWQgYW5kIGRhdGEgcGhhc2VzLg0KPiA+IElmIHdlIHJlbW92ZSB0aGlzIG9uZmlfcGFy
-YW1zLCBpcyB0aGVyZSBhbiBhbHRlcm5hdGl2ZSB0byB3cml0ZSB0aGUNCj4gPiBudW1iZXIgb2Yg
-YWRkcmVzcyBjeWNsZXMgZmlsZWQgaW4gQ21kIHBoYXNlIHJlZ2lzdGVyPw0KPiA+IE9yIGNhbiBJ
-IHVzZSBtYXggdmFsdWU/LCB0aGF0IG1lYW5zIGFzIHBlciBzcGVjIGl0IHN1cHBvcnRzIG1heCBv
-ZiA3IGFkZHJlc3MgY3ljbGVzKGl0IGlzIGENCj4gM2JpdCB2YWx1ZSkuDQo+IA0KPiBJbiAtPmV4
-ZWNfb3AoKToNCj4gSWYgeW91ciBvcGVyYXRpb24gY29udGFpbnMgYWRkcmVzcyBjeWNsZXMsIHlv
-dSdsbCBnZXQgdGhlIG51bWJlciB3aXRoDQo+IG5hbmRfc3Vib3BfZ2V0X251bV9hZGRyX2N5Yyhz
-dWJvcCwgb3BfaWQpLiBZb3UgYWxyZWFkeSByZXRyaWV2ZSBjb3JyZWN0bHkgdGhhdCBudW1iZXIN
-Cj4gZnJvbSB5b3VyIC0+ZXhlY19vcCgpIGltcGxlbWVudGF0aW9uLiBJIGRvbid0IHRoaW5rIHlv
-dSBuZWVkIGFueXRoaW5nIGVsc2UuDQo+IA0KPiBJbiAtPmVjYy5yZWFkL3dyaXRlKigpIGhlbHBl
-cnM6DQo+IFRoZSBudW1iZXIgb2YgY29sdW1uIGN5Y2xlcyBpcyAxIGlmIG10ZC0+d3JpdGVzaXpl
-IDw9IDUxMiwgb3RoZXJ3aXNlIGl0IGlzIDIuIFRoZSBudW1iZXIgb2YNCj4gcm93IGN5Y2xlcyBp
-cyAzIGlmIHRoZSBOQU5EX1JPV19BRERSXzMgZmxhZyBpcyBwcmVzZW50IGluIGNoaXAtPm9wdGlv
-bnMsIG90aGVyd2lzZSBpdCBpcw0KPiAyIChpdCB3b24ndCBjaGFuZ2UsIGp1c3QgY2hlY2sgaXQg
-b25jZSBhdCBwcm9iZSB0aW1lKS4NCj4gDQo+IFRoYW5rcywNCj4gTWlxdcOobA0KDQpUaGFua3Mg
-Zm9yIGdpdmluZyBtb3JlIGluZm8gb24gdGhpcyBhZGRyZXNzIGN5Y2xlcyBpbXBsZW1lbnRhdGlv
-bi4NCkkgYW0gY3VycmVudGx5IHVwZGF0aW5nIHRoZSBkcml2ZXIgYnkgYWRkcmVzc2luZyBhbGwg
-eW91ciBjb21tZW50cyB0aGF0IEkgZ290DQpPbiB0aGlzIHY4IHNlcmllcyBpbmNsdWRpbmcgdGhl
-IGxhdGVzdCBjb21tZW50cy4NCkkgd2lsbCBzZW5kIHRoZSBuZXh0IHNlcmllcy4NCg0KVGhhbmtz
-LA0KTmFnYSBTdXJlc2hrdW1hciBSZWxsaQ0K
+Hello Linus,
+
+Here is the MTD fixes PR for 4.17-rc6.
+
+Regards,
+
+Boris
+
+The following changes since commit 67b8d5c7081221efa252e111cd52532ec6d4266f:
+
+  Linux 4.17-rc5 (2018-05-13 16:15:17 -0700)
+
+are available in the git repository at:
+
+  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.17-rc6
+
+for you to fetch changes up to 9f825e74d761c13b0cfaa5f65344d64ff970e252:
+
+  mtd: rawnand: Fix return type of __DIVIDE() when called with 32-bit (2018-05-15 14:40:34 +0200)
+
+----------------------------------------------------------------
+NAND fixes:
+- Fix read path of the Marvell NAND driver
+- Make sure we don't pass a u64 to ndelay()
+
+CFI fixes:
+- Fix the map_word_andequal() implementation
+
+----------------------------------------------------------------
+Ben Hutchings (1):
+      mtd: Fix comparison in map_word_andequal()
+
+Boris Brezillon (1):
+      mtd: rawnand: marvell: Fix read logic for layouts with ->nchunks > 2
+
+Geert Uytterhoeven (1):
+      mtd: rawnand: Fix return type of __DIVIDE() when called with 32-bit
+
+ drivers/mtd/nand/raw/marvell_nand.c |  8 +++++---
+ include/linux/mtd/map.h             |  2 +-
+ include/linux/mtd/rawnand.h         | 16 +++++++++++-----
+ 3 files changed, 17 insertions(+), 9 deletions(-)
+
+
+-- 
+Boris Brezillon, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
