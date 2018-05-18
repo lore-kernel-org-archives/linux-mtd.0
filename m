@@ -1,20 +1,32 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJhMH-0003Xo-7B
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 15:31:55 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: Ronak Desai <ronak.desai@rockwellcollins.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: Increased frequency of fastmap failure due to CRC mismatch
-Date: Fri, 18 May 2018 17:31:38 +0200
-Message-ID: <2086742.C6Z9nvNyTh@blindfold>
-In-Reply-To: <CADFuHZ5Cv-uywSPCFAoEKUUYfG-Qo1PD=XjXiOGwSQy_aFAo9w@mail.gmail.com>
-References: <CADFuHZ787+cEaZ7ZT7YXZg4zBXUVpya2v29rUdq=FtJ7emv=cQ@mail.gmail.com>
- <CAFLxGvxSNr1MQoa3Zidg=+fhCY1qkeGQ_fhpy1X0eS51xA=4Rw@mail.gmail.com>
- <CADFuHZ5Cv-uywSPCFAoEKUUYfG-Qo1PD=XjXiOGwSQy_aFAo9w@mail.gmail.com>
+ id 1fJlQT-0003cl-Bn
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 19:52:31 +0000
+Received: by mail-wr0-x244.google.com with SMTP id w3-v6so2604004wrl.12
+ for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 12:52:18 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
+To: Radu Pirea <radu.pirea@microchip.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+References: <20180504155404.5285-1-radu.pirea@microchip.com>
+ <20180504204013.254d90cf@bbrezillon>
+ <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
+ <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
+ <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
+ <30ab9516-abc9-d2d5-79ea-266c682c5fa9@gmail.com>
+ <1993151b-4434-c671-8498-b6488288f5f6@microchip.com>
+ <e495fbdd-1bda-8b7e-52b5-ee51247231a8@gmail.com>
+ <ba6be822-b8ac-588f-ec11-d7cb5cddd1a3@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <de2c119b-36f5-a219-7a9a-65668c61353c@gmail.com>
+Date: Fri, 18 May 2018 18:25:31 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <ba6be822-b8ac-588f-ec11-d7cb5cddd1a3@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +36,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ronak,
-
-Am Freitag, 18. Mai 2018, 15:50:47 CEST schrieb Ronak Desai:
-> Hey Richard,
+On 05/18/2018 03:00 PM, Radu Pirea wrote:
 > 
-> On Thu, May 17, 2018 at 11:49 AM, Richard Weinberger
-> <richard.weinberger@gmail.com> wrote:
-> > On Thu, May 17, 2018 at 5:47 PM, Ronak Desai
-> > <ronak.desai@rockwellcollins.com> wrote:
-> >> We are at kernel 4.1.8.
-> >
-> > Woah, this kernel is very old, did you backport _all_ ubi/fastmap fixes?
 > 
-> No, I did not backport all the changes in ubi/fastmap as considering
-> the product state it is not feasible. This product has been tested for
-> several months and I checked all the paths in NAND-MTD subsystem as
-> well as in NAND controller specific driver but nothing stood out which
-> can cause this. I also compared the basic routines with latest kernel
-> and I don't see any major changes or fixes which I can relate to this
-> failure.
+> On 05/18/2018 01:03 PM, Marek Vasut wrote:
+>> On 05/18/2018 11:50 AM, Radu Pirea wrote:
+>>>
+>>>
+>>> On 05/16/2018 04:47 PM, Marek Vasut wrote:
+>>>> On 05/16/2018 12:05 PM, Radu Pirea wrote:
+>>>>> On Wed, 2018-05-16 at 00:17 +0200, Marek Vasut wrote:
+>>>>>> On 05/15/2018 06:22 PM, Radu Pirea wrote:
+>>>>>>> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
+>>>>>>>> On Fri, 4 May 2018 18:54:04 +0300
+>>>>>>>> Radu Pirea <radu.pirea@microchip.com> wrote:
+>>>>>>>>
+>>>>>>>>> Added geometry description for Microchip 25LC256 memory.
+>>>>>>>>
+>>>>>>>> Same as for the dataflash stuff you posted a few weeks ago: I
+>>>>>>>> don't
+>>>>>>>> think this device belongs in the SPI NOR framework.
+>>>>>>>
+>>>>>>> Hi Boris,
+>>>>>>>
+>>>>>>> 25lc256 memory is similar with mr25h256, the only difference is the
+>>>>>>> page size(64 vs 256). Because mr25h256 is already in SPI NOR
+>>>>>>> framework
+>>>>>>> I added here 25lc256.
+>>>>>>
+>>>>>> I think I must be reading the wrong datasheet, but can you show me
+>>>>>> how
+>>>>>> does it support things like READID opcode ?
+>>>>>>
+>>>>> Hi Marek,
+>>>>>
+>>>>> I read the datasheet for 25lc256 and for mr25h256 and none of them
+>>>>> supports READID. Is this required for a chip to be included in spi-nor
+>>>>> framework? I just followed the mr25h256 as an example.
+>>>>
+>>>> So I thought until you pointed out the MR25 devices.
+>>>>
+>>>> Does the 25LC device need erase or not ? I think the MR25s didn't,
+>>>> but I
+>>>> might be wrong.
+>>>
+>>> You are right. MR25s does not need erase and the same thing is true for
+>>> 25LC.
+>>
+>> Oh. And the command set is (except for readid) comparable to SPI NOR ?
+>>
+>>>> Maybe the framework could support the 25LC afterall.
+>>>>
+>>> Yes, this was my impression too.
+>>
+>> I am still thinking that the AT25 driver might be a better fit for such
+>> devices. Can you take a look ?
+> 
+> I tested the memory with at25 driver and it works with no line changed
+> in driver. :)
 
-Well, I can guarantee you that fastmap is broken in 4.1.
-
-> The only thing that bothers me is that NAND-MTD system return without
-> any error except it reports that it has corrected greater or equals to
-> bits on that block but still UBI finds corrupted fastmap. So, either
-> there is something wrong in the ECC algorithm where it thinks it has
-> corrected the bits but actually it did not or something is wrong in
-> UBI fastmap. Also, as I mentioned on every power-up we see this
-> fixable bit flip message on that specific block but fastmap fails only
-> few times and not always.
-
-Do mtd/ubi tests pass?
-
-Thanks,
-//richard
+So AT25 it is then ?
 
 -- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+Best regards,
+Marek Vasut
