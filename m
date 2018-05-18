@@ -1,21 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJa8s-0005DV-Tg
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 07:49:36 +0000
-Date: Fri, 18 May 2018 09:49:12 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Marek Vasut <marex@denx.de>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, Geert
- Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org"
- <linux-m68k@lists.linux-m68k.org>
-Subject: [GIT PULL]  mtd: Fixes for 4.17-rc6
-Message-ID: <20180518094912.3bddc0c5@bbrezillon>
+Received: from mail-qt0-x232.google.com ([2607:f8b0:400d:c0d::232])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJaJD-0000Ki-4l
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 08:00:17 +0000
+Received: by mail-qt0-x232.google.com with SMTP id c2-v6so9186067qtn.9
+ for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 01:00:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Levente <leventelist@gmail.com>
+Date: Fri, 18 May 2018 10:00:02 +0200
+Message-ID: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
+Subject: mtd
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
-
-Resending this email because I forgot the [GIT PULL] prefix in the
-previous one :-/ (thanks Richard for pointing it out).
-
-Here is the MTD fixes PR for 4.17-rc6.
-
-Regards,
-
-Boris
-
-The following changes since commit 67b8d5c7081221efa252e111cd52532ec6d4266f:
-
-  Linux 4.17-rc5 (2018-05-13 16:15:17 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.17-rc6
-
-for you to fetch changes up to 9f825e74d761c13b0cfaa5f65344d64ff970e252:
-
-  mtd: rawnand: Fix return type of __DIVIDE() when called with 32-bit (2018-05-15 14:40:34 +0200)
-
-----------------------------------------------------------------
-NAND fixes:
-- Fix read path of the Marvell NAND driver
-- Make sure we don't pass a u64 to ndelay()
-
-CFI fixes:
-- Fix the map_word_andequal() implementation
-
-----------------------------------------------------------------
-Ben Hutchings (1):
-      mtd: Fix comparison in map_word_andequal()
-
-Boris Brezillon (1):
-      mtd: rawnand: marvell: Fix read logic for layouts with ->nchunks > 2
-
-Geert Uytterhoeven (1):
-      mtd: rawnand: Fix return type of __DIVIDE() when called with 32-bit
-
- drivers/mtd/nand/raw/marvell_nand.c |  8 +++++---
- include/linux/mtd/map.h             |  2 +-
- include/linux/mtd/rawnand.h         | 16 +++++++++++-----
- 3 files changed, 17 insertions(+), 9 deletions(-)
+Dear all,
 
 
+I don't know if I post this to the right place, so forgive my ignorance.
 
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+My college discovered a possible bug in OpenWRT's mtd utility. When
+writing to jffs device, the 'mtd' utility does not skip bad blocks.
+
+This patch seems to fix this issue.
+
+
+diff --git a/package/system/mtd/src/jffs2.c b/package/system/mtd/src/jffs2.c
+index b432f64ac0..5bf3eec328 100644
+--- a/package/system/mtd/src/jffs2.c
++++ b/package/system/mtd/src/jffs2.c
+@@ -308,6 +308,16 @@ int mtd_write_jffs2(const char *mtd, const char
+*filename, const char *dir)
+        for(;;) {
+                struct jffs2_unknown_node *node = (struct
+jffs2_unknown_node *) buf;
+
++               while (mtd_block_is_bad(outfd, mtdofs) && (mtdofs < mtdsize)) {
++                       if (!quiet)
++                               fprintf(stderr, "\nSkipping bad block
+at 0x%08x   ", mtdofs);
++
++                       mtdofs += erasesize;
++
++                       /* Move the file pointer along over the bad block. */
++                       lseek(outfd, erasesize, SEEK_CUR);
++               }
++
+                if (read(outfd, buf, erasesize) != erasesize) {
+                        fdeof = 1;
+                        break;
+
+
+I've cloned your utility repository, but didn't find jffs2.c anywhere.
+
+Best regards,
+Levente
