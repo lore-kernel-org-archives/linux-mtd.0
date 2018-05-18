@@ -1,31 +1,22 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJlQT-0003cl-Bn
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 19:52:31 +0000
-Received: by mail-wr0-x244.google.com with SMTP id w3-v6so2604004wrl.12
- for <linux-mtd@lists.infradead.org>; Fri, 18 May 2018 12:52:18 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: add support for Microchip 25LC256
-To: Radu Pirea <radu.pirea@microchip.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Zhiqiang.Hou@nxp.com, pp@emlix.com, richard@nod.at,
- computersforpeace@gmail.com, dwmw2@infradead.org
-References: <20180504155404.5285-1-radu.pirea@microchip.com>
- <20180504204013.254d90cf@bbrezillon>
- <e2e23aa21b37754b0c84003e6d87c7cb7d5a17fe.camel@microchip.com>
- <1db092c8-95fb-5747-f7b9-f6a215b1aa5b@gmail.com>
- <a34429cf43124de623fcaa645d5d7a360c755867.camel@microchip.com>
- <30ab9516-abc9-d2d5-79ea-266c682c5fa9@gmail.com>
- <1993151b-4434-c671-8498-b6488288f5f6@microchip.com>
- <e495fbdd-1bda-8b7e-52b5-ee51247231a8@gmail.com>
- <ba6be822-b8ac-588f-ec11-d7cb5cddd1a3@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <de2c119b-36f5-a219-7a9a-65668c61353c@gmail.com>
-Date: Fri, 18 May 2018 18:25:31 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fJlZc-0007ao-9B
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 20:01:58 +0000
+Date: Fri, 18 May 2018 22:01:33 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Bin Meng <bmeng.cn@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Anthony Wong
+ <anthony.wong@canonical.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v2 1/2] spi-nor: intel-spi: Fix atomic sequence handling
+Message-ID: <20180518220133.602c9fda@bbrezillon>
+In-Reply-To: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
+References: <20180205113300.21270-1-mika.westerberg@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ba6be822-b8ac-588f-ec11-d7cb5cddd1a3@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,67 +27,215 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/18/2018 03:00 PM, Radu Pirea wrote:
-> 
-> 
-> On 05/18/2018 01:03 PM, Marek Vasut wrote:
->> On 05/18/2018 11:50 AM, Radu Pirea wrote:
->>>
->>>
->>> On 05/16/2018 04:47 PM, Marek Vasut wrote:
->>>> On 05/16/2018 12:05 PM, Radu Pirea wrote:
->>>>> On Wed, 2018-05-16 at 00:17 +0200, Marek Vasut wrote:
->>>>>> On 05/15/2018 06:22 PM, Radu Pirea wrote:
->>>>>>> On Fri, 2018-05-04 at 20:40 +0200, Boris Brezillon wrote:
->>>>>>>> On Fri, 4 May 2018 18:54:04 +0300
->>>>>>>> Radu Pirea <radu.pirea@microchip.com> wrote:
->>>>>>>>
->>>>>>>>> Added geometry description for Microchip 25LC256 memory.
->>>>>>>>
->>>>>>>> Same as for the dataflash stuff you posted a few weeks ago: I
->>>>>>>> don't
->>>>>>>> think this device belongs in the SPI NOR framework.
->>>>>>>
->>>>>>> Hi Boris,
->>>>>>>
->>>>>>> 25lc256 memory is similar with mr25h256, the only difference is the
->>>>>>> page size(64 vs 256). Because mr25h256 is already in SPI NOR
->>>>>>> framework
->>>>>>> I added here 25lc256.
->>>>>>
->>>>>> I think I must be reading the wrong datasheet, but can you show me
->>>>>> how
->>>>>> does it support things like READID opcode ?
->>>>>>
->>>>> Hi Marek,
->>>>>
->>>>> I read the datasheet for 25lc256 and for mr25h256 and none of them
->>>>> supports READID. Is this required for a chip to be included in spi-nor
->>>>> framework? I just followed the mr25h256 as an example.
->>>>
->>>> So I thought until you pointed out the MR25 devices.
->>>>
->>>> Does the 25LC device need erase or not ? I think the MR25s didn't,
->>>> but I
->>>> might be wrong.
->>>
->>> You are right. MR25s does not need erase and the same thing is true for
->>> 25LC.
->>
->> Oh. And the command set is (except for readid) comparable to SPI NOR ?
->>
->>>> Maybe the framework could support the 25LC afterall.
->>>>
->>> Yes, this was my impression too.
->>
->> I am still thinking that the AT25 driver might be a better fit for such
->> devices. Can you take a look ?
-> 
-> I tested the memory with at25 driver and it works with no line changed
-> in driver. :)
+On Mon,  5 Feb 2018 14:32:59 +0300
+Mika Westerberg <mika.westerberg@linux.intel.com> wrote:
 
-So AT25 it is then ?
+> On many older systems using SW sequencer the PREOP_OPTYPE register
+> contains two preopcodes as following:
+> 
+>   PREOP_OPTYPE=0xf2785006
+> 
+> The last two bytes are the opcodes decoded to:
+> 
+>   0x50 - Write enable for volatile status register
+>   0x06 - Write enable
+> 
+> The former is used to modify volatile bits in the status register. For
+> non-volatile bits the latter is needed. Preopcodes are used in SW
+> sequencer to send one command "atomically" without anything else
+> interfering the transfer. The sequence that gets executed is:
+> 
+>   - Send preopcode (write enable) from PREOP_OPTYPE register
+>   - Send the actual SPI command
+>   - Poll busy bit in the status register (0x05, RDSR)
+> 
+> Commit 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be
+> programmed by BIOS") enabled atomic sequence handling but because both
+> preopcodes are programmed, the following happens:
+> 
+>   if (preop >> 8)
+>   	val |= SSFSTS_CTL_SPOP;
+> 
+> Since on these systems preop >> 8 == 0x50 we end up picking volatile
+> write enable instead. Because of this the actual write command is pretty
+> much NOP unless there is a WREN latched in the chip already.
+> 
+> Furthermore we should not really just assume that WREN was issued in
+> previous call to intel_spi_write_reg() because that might not be the
+> case.
+> 
+> This updates driver to first check that the opcode is actually available
+> in PREOP_OPTYPE register and if not return error back to the spi-nor
+> core (if the controller is not locked we program it now). In addition we
+> save the opcode to ispi->atomic_preopcode field which is checked in next
+> call to intel_spi_sw_cycle() to actually enable atomic sequence using
+> the requested preopcode.
+> 
+> Fixes: 8c473dd61bb5 ("spi-nor: intel-spi: Don't assume OPMENU0/1 to be programmed by BIOS")
+> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: stable@vger.kernel.org
 
--- 
-Best regards,
-Marek Vasut
+Queued to spi-nor/next.
+
+Thanks,
+
+Boris
+
+> ---
+> Changes from v1:
+> 
+>   - Added atomic_preopcode field and only when it is set, enable atomic
+>     sequence.
+>   - Return -EINVAL if the requested WREN operation cannot be found from
+>     PREOP register instead of silently pretending it is supported.
+>   - Updated patch subject to match more closely what is being fixed.
+> 
+>  drivers/mtd/spi-nor/intel-spi.c | 76 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 67 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+> index 699951523179..8e98f4ab87c1 100644
+> --- a/drivers/mtd/spi-nor/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/intel-spi.c
+> @@ -136,6 +136,7 @@
+>   * @swseq_reg: Use SW sequencer in register reads/writes
+>   * @swseq_erase: Use SW sequencer in erase operation
+>   * @erase_64k: 64k erase supported
+> + * @atomic_preopcode: Holds preopcode when atomic sequence is requested
+>   * @opcodes: Opcodes which are supported. This are programmed by BIOS
+>   *           before it locks down the controller.
+>   */
+> @@ -153,6 +154,7 @@ struct intel_spi {
+>  	bool swseq_reg;
+>  	bool swseq_erase;
+>  	bool erase_64k;
+> +	u8 atomic_preopcode;
+>  	u8 opcodes[8];
+>  };
+>  
+> @@ -474,7 +476,7 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
+>  			      int optype)
+>  {
+>  	u32 val = 0, status;
+> -	u16 preop;
+> +	u8 atomic_preopcode;
+>  	int ret;
+>  
+>  	ret = intel_spi_opcode_index(ispi, opcode, optype);
+> @@ -484,17 +486,42 @@ static int intel_spi_sw_cycle(struct intel_spi *ispi, u8 opcode, int len,
+>  	if (len > INTEL_SPI_FIFO_SZ)
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * Always clear it after each SW sequencer operation regardless
+> +	 * of whether it is successful or not.
+> +	 */
+> +	atomic_preopcode = ispi->atomic_preopcode;
+> +	ispi->atomic_preopcode = 0;
+> +
+>  	/* Only mark 'Data Cycle' bit when there is data to be transferred */
+>  	if (len > 0)
+>  		val = ((len - 1) << SSFSTS_CTL_DBC_SHIFT) | SSFSTS_CTL_DS;
+>  	val |= ret << SSFSTS_CTL_COP_SHIFT;
+>  	val |= SSFSTS_CTL_FCERR | SSFSTS_CTL_FDONE;
+>  	val |= SSFSTS_CTL_SCGO;
+> -	preop = readw(ispi->sregs + PREOP_OPTYPE);
+> -	if (preop) {
+> -		val |= SSFSTS_CTL_ACS;
+> -		if (preop >> 8)
+> -			val |= SSFSTS_CTL_SPOP;
+> +	if (atomic_preopcode) {
+> +		u16 preop;
+> +
+> +		switch (optype) {
+> +		case OPTYPE_WRITE_NO_ADDR:
+> +		case OPTYPE_WRITE_WITH_ADDR:
+> +			/* Pick matching preopcode for the atomic sequence */
+> +			preop = readw(ispi->sregs + PREOP_OPTYPE);
+> +			if ((preop & 0xff) == atomic_preopcode)
+> +				; /* Do nothing */
+> +			else if ((preop >> 8) == atomic_preopcode)
+> +				val |= SSFSTS_CTL_SPOP;
+> +			else
+> +				return -EINVAL;
+> +
+> +			/* Enable atomic sequence */
+> +			val |= SSFSTS_CTL_ACS;
+> +			break;
+> +
+> +		default:
+> +			return -EINVAL;
+> +		}
+> +
+>  	}
+>  	writel(val, ispi->sregs + SSFSTS_CTL);
+>  
+> @@ -538,13 +565,31 @@ static int intel_spi_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+>  
+>  	/*
+>  	 * This is handled with atomic operation and preop code in Intel
+> -	 * controller so skip it here now. If the controller is not locked,
+> -	 * program the opcode to the PREOP register for later use.
+> +	 * controller so we only verify that it is available. If the
+> +	 * controller is not locked, program the opcode to the PREOP
+> +	 * register for later use.
+> +	 *
+> +	 * When hardware sequencer is used there is no need to program
+> +	 * any opcodes (it handles them automatically as part of a command).
+>  	 */
+>  	if (opcode == SPINOR_OP_WREN) {
+> -		if (!ispi->locked)
+> +		u16 preop;
+> +
+> +		if (!ispi->swseq_reg)
+> +			return 0;
+> +
+> +		preop = readw(ispi->sregs + PREOP_OPTYPE);
+> +		if ((preop & 0xff) != opcode && (preop >> 8) != opcode) {
+> +			if (ispi->locked)
+> +				return -EINVAL;
+>  			writel(opcode, ispi->sregs + PREOP_OPTYPE);
+> +		}
+>  
+> +		/*
+> +		 * This enables atomic sequence on next SW sycle. Will
+> +		 * be cleared after next operation.
+> +		 */
+> +		ispi->atomic_preopcode = opcode;
+>  		return 0;
+>  	}
+>  
+> @@ -569,6 +614,13 @@ static ssize_t intel_spi_read(struct spi_nor *nor, loff_t from, size_t len,
+>  	u32 val, status;
+>  	ssize_t ret;
+>  
+> +	/*
+> +	 * Atomic sequence is not expected with HW sequencer reads. Make
+> +	 * sure it is cleared regardless.
+> +	 */
+> +	if (WARN_ON_ONCE(ispi->atomic_preopcode))
+> +		ispi->atomic_preopcode = 0;
+> +
+>  	switch (nor->read_opcode) {
+>  	case SPINOR_OP_READ:
+>  	case SPINOR_OP_READ_FAST:
+> @@ -627,6 +679,9 @@ static ssize_t intel_spi_write(struct spi_nor *nor, loff_t to, size_t len,
+>  	u32 val, status;
+>  	ssize_t ret;
+>  
+> +	/* Not needed with HW sequencer write, make sure it is cleared */
+> +	ispi->atomic_preopcode = 0;
+> +
+>  	while (len > 0) {
+>  		block_size = min_t(size_t, len, INTEL_SPI_FIFO_SZ);
+>  
+> @@ -707,6 +762,9 @@ static int intel_spi_erase(struct spi_nor *nor, loff_t offs)
+>  		return 0;
+>  	}
+>  
+> +	/* Not needed with HW sequencer erase, make sure it is cleared */
+> +	ispi->atomic_preopcode = 0;
+> +
+>  	while (len > 0) {
+>  		writel(offs, ispi->base + FADDR);
+>  
