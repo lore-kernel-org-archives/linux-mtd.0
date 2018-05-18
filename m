@@ -1,18 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJZwN-0000UU-W2
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 07:36:42 +0000
-Date: Fri, 18 May 2018 09:36:18 +0200
+ id 1fJa8s-0005DV-Tg
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 07:49:36 +0000
+Date: Fri, 18 May 2018 09:49:12 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Linus Torvalds <torvalds@linux-foundation.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- linux-m68k@lists.linux-m68k.org, David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>, Brian Norris
- <computersforpeace@gmail.com>
-Subject: mtd: Fixes for 4.17-rc6
-Message-ID: <20180518093618.0250d922@bbrezillon>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marex@denx.de>, Richard Weinberger
+ <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>, Geert
+ Uytterhoeven <geert@linux-m68k.org>, "linux-m68k@lists.linux-m68k.org"
+ <linux-m68k@lists.linux-m68k.org>
+Subject: [GIT PULL]  mtd: Fixes for 4.17-rc6
+Message-ID: <20180518094912.3bddc0c5@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,6 +26,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hello Linus,
+
+Resending this email because I forgot the [GIT PULL] prefix in the
+previous one :-/ (thanks Richard for pointing it out).
 
 Here is the MTD fixes PR for 4.17-rc6.
 
@@ -67,6 +70,7 @@ Geert Uytterhoeven (1):
  include/linux/mtd/map.h             |  2 +-
  include/linux/mtd/rawnand.h         | 16 +++++++++++-----
  3 files changed, 17 insertions(+), 9 deletions(-)
+
 
 
 -- 
