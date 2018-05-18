@@ -1,18 +1,16 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fJlc8-0000Sm-Vm
- for linux-mtd@lists.infradead.org; Fri, 18 May 2018 20:04:35 +0000
-Date: Fri, 18 May 2018 22:04:11 +0200
+ id 1fJlcn-0000s7-Db
+ for linux-mtd@lists.infradead.org; Fri, 18 May 2018 20:05:15 +0000
+Date: Fri, 18 May 2018 22:04:52 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- prabhakar.kushwaha@nxp.com, suresh.gupta@nxp.com,
- cyrille.pitchen@wedev4u.fr, han.xu@nxp.com, computersforpeace@gmail.com,
- festevam@gmail.com
-Subject: Re: [PATCH v2] mtd: fsl-quadspi: add support for ls2080a/ls1080a
-Message-ID: <20180518220411.441936db@bbrezillon>
-In-Reply-To: <1517332798-16644-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1517332798-16644-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+To: Stephen Douthit <stephend@silicom-usa.com>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: spi-nor: Add Winbond w25q32jv support
+Message-ID: <20180518220452.4ec155d2@bbrezillon>
+In-Reply-To: <20180307235557.27108-1-stephend@silicom-usa.com>
+References: <20180307235557.27108-1-stephend@silicom-usa.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,14 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Jan 2018 22:49:58 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+On Wed,  7 Mar 2018 18:55:57 -0500
+Stephen Douthit <stephend@silicom-usa.com> wrote:
 
-> LS2080a/LS1088a supports Freescale Quad SPI controller.
-> Add fsl-quadspi driver support for ls2080a and ls1088a chip.
+> Datasheet:
+> https://www.winbond.com/resource-files/w25q32jv%20dtr%20revf%2002242017.pdf
 > 
-> Signed-off-by: Suresh Gupta <suresh.gupta@nxp.com>
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> Minimal testing done with fw_printenv/fw_setenv, test board did not
+> support dual or quad access.
+> 
+> Signed-off-by: Stephen Douthit <stephend@silicom-usa.com>
+> Tested-by: Stephen Douthit <stephend@silicom-usa.com>
 
 Queued to spi-nor/next.
 
@@ -41,56 +42,22 @@ Thanks,
 Boris
 
 > ---
-> Depends on
->  https://patchwork.ozlabs.org/project/linux-mtd/list/?series=26084
+>  drivers/mtd/spi-nor/spi-nor.c | 5 +++++
+>  1 file changed, 5 insertions(+)
 > 
-> Changes for v2:
-> - Remove void * cast of_device_id structure for ls2080a_data.
-> - Generate patch from spi-nor/next branch.
-> 
->  drivers/mtd/spi-nor/fsl-quadspi.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 035dacd..b9c5918 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -214,6 +214,7 @@ enum fsl_qspi_devtype {
->  	FSL_QUADSPI_IMX7D,
->  	FSL_QUADSPI_IMX6UL,
->  	FSL_QUADSPI_LS1021A,
-> +	FSL_QUADSPI_LS2080A,
->  };
->  
->  struct fsl_qspi_devtype_data {
-> @@ -267,6 +268,15 @@ struct fsl_qspi_devtype_data {
->  	.driver_data = 0,
->  };
->  
-> +static const struct fsl_qspi_devtype_data ls2080a_data = {
-> +	.devtype = FSL_QUADSPI_LS2080A,
-> +	.rxfifo = 128,
-> +	.txfifo = 64,
-> +	.ahb_buf_size = 1024,
-> +	.driver_data = QUADSPI_QUIRK_TKT253890,
-> +};
-> +
-> +
->  #define FSL_QSPI_MAX_CHIP	4
->  struct fsl_qspi {
->  	struct spi_nor nor[FSL_QSPI_MAX_CHIP];
-> @@ -821,6 +831,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
->  	{ .compatible = "fsl,imx7d-qspi", .data = &imx7d_data, },
->  	{ .compatible = "fsl,imx6ul-qspi", .data = &imx6ul_data, },
->  	{ .compatible = "fsl,ls1021a-qspi", .data = (void *)&ls1021a_data, },
-> +	{ .compatible = "fsl,ls2080a-qspi", .data = &ls2080a_data, },
->  	{ /* sentinel */ }
->  };
->  MODULE_DEVICE_TABLE(of, fsl_qspi_dt_ids);
-
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index d445a4d3b770..a0022549ad92 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1201,6 +1201,11 @@ static const struct flash_info spi_nor_ids[] = {
+>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>  			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+>  	},
+> +	{
+> +		"w25q32jv", INFO(0xef7016, 0, 64 * 1024,  64,
+> +			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+> +			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+> +	},
+>  	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+>  	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
+>  	{
