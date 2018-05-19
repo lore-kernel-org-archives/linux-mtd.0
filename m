@@ -1,23 +1,29 @@
-Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fK1zZ-00034C-En
- for linux-mtd@lists.infradead.org; Sat, 19 May 2018 13:33:51 +0000
-Received: by mail-pf0-x241.google.com with SMTP id a22-v6so5028049pfn.6
- for <linux-mtd@lists.infradead.org>; Sat, 19 May 2018 06:33:38 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: Add support for EN25QH32
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org
-References: <1526524384-30303-1-git-send-email-tochiro.srchack@gmail.com>
- <1526524827-30380-1-git-send-email-tochiro.srchack@gmail.com>
- <20180518220809.14071539@bbrezillon>
-From: =?UTF-8?B?77ygU1JDSEFDSy5PUkc=?= <tochiro.srchack@gmail.com>
-Message-ID: <24dc78d7-9779-4169-17fd-7bbcca69cea4@gmail.com>
-Date: Sat, 19 May 2018 22:33:41 +0900
 MIME-Version: 1.0
-In-Reply-To: <20180518220809.14071539@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <3427199.r4OBoDP6Xz@z50>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180518210954.29044-5-jmkrzyszt@gmail.com>
+ <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
+ <3427199.r4OBoDP6Xz@z50>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sat, 19 May 2018 21:00:38 +0300
+Message-ID: <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Tony Lindgren <tony@atomide.com>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ Mark Brown <broonie@kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-input <linux-input@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-fbdev@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +33,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear, Boris
-
-Thanks,
-Yes, I will.
-
-
-On 2018/05/19 5:08, Boris Brezillon wrote:
-> On Thu, 17 May 2018 11:40:27 +0900
-> YuheiOKAWA <tochiro.srchack@gmail.com> wrote:
-> 
->> Add support for Eon en25qh32 spi nor flash.
+On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+> On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
+>> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
 >>
->> Sorry, very sorry.
->> I had misspelled it. chip name is en25qh32, non en25ph32.
-> 
-> Queued to spi-nor/next after removing this sentence :-).
-> 
-> Next time you want to add extra information that you don't want
-> to appear in the commit, just put it after the "---" separator ;-).
-> 
-> Also, you should prefix your patch with "[PATCH v2]" and add a
-> changelog after the "---". Something like:
-> 
-> "
-> ---
-> Changes in v2:
-> - blablabla
-> "
-> 
-> Thanks,
-> 
-> Boris
-> 
+>> <jmkrzyszt@gmail.com> wrote:
+>> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+>> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
 >>
->> Signed-off-by: YuheiOKAWA <tochiro.srchack@gmail.com>
->> ---
->>   drivers/mtd/spi-nor/spi-nor.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index 5bfa36e..7bc556c 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -980,6 +980,7 @@ static const struct flash_info spi_nor_ids[] = {
->>   	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64, 0) },
->>   	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
->>   	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
->> +	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64, 0) },
->>   	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256, 0) },
->>   	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
->>   	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
-> 
-> 
+>> So, is it optional or not at the end?
+>> If it is, why do we check for NULL?
+>
+> As far as I can understand, nand_chip->dev_ready() callback is optional.
+> That's why I decided to use the _optional variant of devm_gpiod_get(). In case
+> of ams-delta, the dev_ready() callback depends on availability of the 'rdy'
+> GPIO pin. As a consequence, I'm checking for both NULL and ERR in order to
+> decide if dev_ready() will be supported.
+>
+> I can pretty well replace it with the standard form and check for ERR only if
+> the purpose of the _optional form is different.
 
+NULL check in practice discards the _optional part of gpiod_get(). So,
+either you use non-optional variant and decide how to handle an
+errors, or user _optional w/o NULL check.
+
+>> > +err_gpiod:
+>> > +       if (err == -ENODEV || err == -ENOENT)
+>> > +               err = -EPROBE_DEFER;
+>>
+>> Hmm...
+>
+> Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
+> availble before device init phase, unlike other crucial GPIO drivers which are
+> initialized earlier, e.g. during the postcore or at latetst the subsys phase.
+> Hence, devices which depend on GPIO pins provided by gpio-mmio must either be
+> declared late or fail softly so they get another chance of being probed
+> succesfully.
+>
+> I thought of replacing the gpio-mmio platform driver with bgpio functions it
+> exports but for now I haven't implemented it, not even shared the idea.
+>
+> Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be obtained?
+
+I'm only concerned if it would be an infinite defer in the case when
+driver will never appear.
+But I don't remember the details.
 
 -- 
-------------------------------------------------------
-＠SRCHACK.ORG
-tochiro.srchack@gmail.com
-http://www.srchack.org/
-------------------------------------------------------
+With Best Regards,
+Andy Shevchenko
