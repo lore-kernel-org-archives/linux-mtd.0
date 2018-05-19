@@ -1,29 +1,16 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Mark Brown <broonie@kernel.org>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-input <linux-input@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-fbdev@vger.kernel.org,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-Date: Sat, 19 May 2018 01:15:30 +0200
-Message-ID: <3427199.r4OBoDP6Xz@z50>
-In-Reply-To: <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180518210954.29044-5-jmkrzyszt@gmail.com>
- <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fK1ED-0002SP-1Z
+ for linux-mtd@lists.infradead.org; Sat, 19 May 2018 12:44:54 +0000
+Received: by mail-wm0-x243.google.com with SMTP id j5-v6so19520986wme.5
+ for <linux-mtd@lists.infradead.org>; Sat, 19 May 2018 05:44:41 -0700 (PDT)
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com, richard@nod.at
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH 0/1] fix OOB size decoding on SK Hynix H27UCG8T2BTR
+Date: Sat, 19 May 2018 14:44:30 +0200
+Message-Id: <20180519124431.16000-1-martin.blumenstingl@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
-> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
-> 
-> <jmkrzyszt@gmail.com> wrote:
-> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
-> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
-> 
-> So, is it optional or not at the end?
-> If it is, why do we check for NULL?
+The OOB size of the SK Hynix H27UCG8T2BTR is currently detected to be
+640 bytes, while the datasheet states that it should be 1280 bytes.
 
-As far as I can understand, nand_chip->dev_ready() callback is optional. 
-That's why I decided to use the _optional variant of devm_gpiod_get(). In case 
-of ams-delta, the dev_ready() callback depends on availability of the 'rdy' 
-GPIO pin. As a consequence, I'm checking for both NULL and ERR in order to 
-decide if dev_ready() will be supported.
+I only have one single device with a SK Hynix NAND flash, so I cannot
+say whether this fix may or may not break other chips. other datasheets
+I have checked:
+- H27UBG8T2B uses a page size of 8KiB -> not applicable
+- H27UBG8T2A also uses a page size of 8KiB -> not applicable either
 
-I can pretty well replace it with the standard form and check for ERR only if 
-the purpose of the _optional form is different.
+so I would appreciate if someone else could confirm (even if it's
+"just" by looking at a datasheet) that this patch should work for other
+SK Hynix NAND chips with 16KiB page size.
 
-> >                 this->dev_ready = ams_delta_nand_ready;
-> >         
-> >         } else {
-> >         
-> >                 this->dev_ready = NULL;
-> >                 pr_notice("Couldn't request gpio for Delta NAND
-> >                 ready.\n");
-> 
-> dev_notice() ?
+I decided not to add a "Fixes" tag because it seems H27UCG8T2BTR was
+not supported properly at any point in the past (upstream at least).
 
-Sure, but maybe in a separate patch? That's not a new code just being added 
-but an existing one, not the merit of the change.
 
-> >         }
-> > 
-> > +err_gpiod:
-> > +       if (err == -ENODEV || err == -ENOENT)
-> > +               err = -EPROBE_DEFER;
-> 
-> Hmm...
+Martin Blumenstingl (1):
+  mtd: rawnand: hynix: fix decoding the OOB size on H27UCG8T2BTR
 
-Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not 
-availble before device init phase, unlike other crucial GPIO drivers which are 
-initialized earlier, e.g. during the postcore or at latetst the subsys phase. 
-Hence, devices which depend on GPIO pins provided by gpio-mmio must either be 
-declared late or fail softly so they get another chance of being probed 
-succesfully.
+ drivers/mtd/nand/raw/nand_hynix.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I thought of replacing the gpio-mmio platform driver with bgpio functions it 
-exports but for now I haven't implemented it, not even shared the idea.
-
-Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be obtained?
-
-Thanks,
-Janusz
+-- 
+2.17.0
