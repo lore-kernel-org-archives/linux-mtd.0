@@ -1,19 +1,23 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from mail-pf0-x241.google.com ([2607:f8b0:400e:c00::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fK1EC-0002SR-VE
- for linux-mtd@lists.infradead.org; Sat, 19 May 2018 12:44:54 +0000
-Received: by mail-wr0-x244.google.com with SMTP id a15-v6so4431811wrm.0
- for <linux-mtd@lists.infradead.org>; Sat, 19 May 2018 05:44:42 -0700 (PDT)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com, richard@nod.at
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 1/1] mtd: rawnand: hynix: fix decoding the OOB size on
- H27UCG8T2BTR
-Date: Sat, 19 May 2018 14:44:31 +0200
-Message-Id: <20180519124431.16000-2-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20180519124431.16000-1-martin.blumenstingl@googlemail.com>
-References: <20180519124431.16000-1-martin.blumenstingl@googlemail.com>
+ id 1fK1zZ-00034C-En
+ for linux-mtd@lists.infradead.org; Sat, 19 May 2018 13:33:51 +0000
+Received: by mail-pf0-x241.google.com with SMTP id a22-v6so5028049pfn.6
+ for <linux-mtd@lists.infradead.org>; Sat, 19 May 2018 06:33:38 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: Add support for EN25QH32
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-mtd@lists.infradead.org
+References: <1526524384-30303-1-git-send-email-tochiro.srchack@gmail.com>
+ <1526524827-30380-1-git-send-email-tochiro.srchack@gmail.com>
+ <20180518220809.14071539@bbrezillon>
+From: =?UTF-8?B?77ygU1JDSEFDSy5PUkc=?= <tochiro.srchack@gmail.com>
+Message-ID: <24dc78d7-9779-4169-17fd-7bbcca69cea4@gmail.com>
+Date: Sat, 19 May 2018 22:33:41 +0900
+MIME-Version: 1.0
+In-Reply-To: <20180518220809.14071539@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The datasheet of the H27UCG8T2BTR states that this chip has a page size
-of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
-Device Identifier Description" indicates that bits 6, 3 and 2 are
-encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
-0x6 (110 in binary notation).
+Dear, Boris
 
-hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
-chip. Kernel boot log extract before this patch:
-nand: Could not find valid ONFI parameter page; aborting
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-nand: Hynix NAND 8GiB 3,3V 8-bit
-nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-      OOB size: 640
+Thanks,
+Yes, I will.
 
-However, based on the description in the datasheet we need to multiply
-the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
-size" and this NAND chip has a page size of 16384 (= 2 * 8192). After
-this patch the kernel boot log reports:
-nand: Could not find valid ONFI parameter page; aborting
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-nand: Hynix NAND 8GiB 3,3V 8-bit
-nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-      OOB size: 1280
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/mtd/nand/raw/nand_hynix.c | 4 ++++
- 1 file changed, 4 insertions(+)
+On 2018/05/19 5:08, Boris Brezillon wrote:
+> On Thu, 17 May 2018 11:40:27 +0900
+> YuheiOKAWA <tochiro.srchack@gmail.com> wrote:
+> 
+>> Add support for Eon en25qh32 spi nor flash.
+>>
+>> Sorry, very sorry.
+>> I had misspelled it. chip name is en25qh32, non en25ph32.
+> 
+> Queued to spi-nor/next after removing this sentence :-).
+> 
+> Next time you want to add extra information that you don't want
+> to appear in the commit, just put it after the "---" separator ;-).
+> 
+> Also, you should prefix your patch with "[PATCH v2]" and add a
+> changelog after the "---". Something like:
+> 
+> "
+> ---
+> Changes in v2:
+> - blablabla
+> "
+> 
+> Thanks,
+> 
+> Boris
+> 
+>>
+>> Signed-off-by: YuheiOKAWA <tochiro.srchack@gmail.com>
+>> ---
+>>   drivers/mtd/spi-nor/spi-nor.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index 5bfa36e..7bc556c 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -980,6 +980,7 @@ static const struct flash_info spi_nor_ids[] = {
+>>   	{ "en25q32b",   INFO(0x1c3016, 0, 64 * 1024,   64, 0) },
+>>   	{ "en25p64",    INFO(0x1c2017, 0, 64 * 1024,  128, 0) },
+>>   	{ "en25q64",    INFO(0x1c3017, 0, 64 * 1024,  128, SECT_4K) },
+>> +	{ "en25qh32",   INFO(0x1c7016, 0, 64 * 1024,   64, 0) },
+>>   	{ "en25qh128",  INFO(0x1c7018, 0, 64 * 1024,  256, 0) },
+>>   	{ "en25qh256",  INFO(0x1c7019, 0, 64 * 1024,  512, 0) },
+>>   	{ "en25s64",	INFO(0x1c3817, 0, 64 * 1024,  128, SECT_4K) },
+> 
+> 
 
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index d542908a0ebb..60d9c54b769f 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -473,6 +473,10 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
- 			WARN(1, "Invalid OOB size");
- 			break;
- 		}
-+
-+		/* Reference: H27UCG8T2BTR - "Redundant Area Size / 8KB" */
-+		if (mtd->writesize == SZ_16K)
-+			mtd->oobsize *= 2;
- 	}
- }
- 
+
 -- 
-2.17.0
+------------------------------------------------------
+＠SRCHACK.ORG
+tochiro.srchack@gmail.com
+http://www.srchack.org/
+------------------------------------------------------
