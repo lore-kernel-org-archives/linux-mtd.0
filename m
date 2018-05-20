@@ -1,22 +1,33 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKSBz-0005N7-OG
- for linux-mtd@lists.infradead.org; Sun, 20 May 2018 17:32:25 +0000
-Date: Sun, 20 May 2018 19:32:10 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- richard@nod.at, marek.vasut@gmail.com, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH 1/1] mtd: rawnand: hynix: fix decoding the OOB size on
- H27UCG8T2BTR
-Message-ID: <20180520193210.442c54d1@xps13>
-In-Reply-To: <20180519124431.16000-2-martin.blumenstingl@googlemail.com>
-References: <20180519124431.16000-1-martin.blumenstingl@googlemail.com>
- <20180519124431.16000-2-martin.blumenstingl@googlemail.com>
+Date: Sun, 20 May 2018 21:27:05 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, linux-fbdev@vger.kernel.org,
+ ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
+ Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ linux-input <linux-input@vger.kernel.org>,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [alsa-devel] [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO
+ lookup table
+Message-ID: <20180520192705.GA12883@lenoch>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <3427199.r4OBoDP6Xz@z50>
+ <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+ <5456625.lDWjtgZygK@z50>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5456625.lDWjtgZygK@z50>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +37,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Martin,
+On Sat, May 19, 2018 at 11:55:51PM +0200, Janusz Krzysztofik wrote:
+> On Saturday, May 19, 2018 8:00:38 PM CEST Andy Shevchenko wrote:
+> > On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com> 
+> wrote:
+> > > On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
+> > >> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
+> > >> 
+> > >> <jmkrzyszt@gmail.com> wrote:
+> > >> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
+> > >> > GPIOD_IN);
+> > >> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
+> > >> 
+> > >> So, is it optional or not at the end?
+> > >> If it is, why do we check for NULL?
+> > > 
+> > > As far as I can understand, nand_chip->dev_ready() callback is optional.
+> > > That's why I decided to use the _optional variant of devm_gpiod_get(). In
+> > > case of ams-delta, the dev_ready() callback depends on availability of
+> > > the 'rdy' GPIO pin. As a consequence, I'm checking for both NULL and ERR
+> > > in order to decide if dev_ready() will be supported.
+> > > 
+> > > I can pretty well replace it with the standard form and check for ERR only
+> > > if the purpose of the _optional form is different.
+> > 
+> > NULL check in practice discards the _optional part of gpiod_get(). So,
+> > either you use non-optional variant and decide how to handle an
+> > errors, or user _optional w/o NULL check.
+> 
+> OK, I'm going to use something like the below while submitting v2:
+> 
+> -	gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+> -	if (!IS_ERR_OR_NULL(gpiod_rdy)) {
+> -		this->dev_ready = ams_delta_nand_ready;
+> -	} else {
+> -		this->dev_ready = NULL;
+> -		pr_notice("Couldn't request gpio for Delta NAND ready.\n");
+> +	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
+> +						  GPIOD_IN);
+> +	if (IS_ERR(priv->gpiod_rdy)) {
+> +		err = PTR_ERR(priv->gpiod_nwp);
+??? --------------------------------^^^^^^^^^
+> +		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
+> +		goto err_gpiod;
 
-On Sat, 19 May 2018 14:44:31 +0200, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+Driver will just use worst case delay instead of RDY signal, so this
+is perhaps too strict. I will work with degraded performance.
 
-> The datasheet of the H27UCG8T2BTR states that this chip has a page size
-> of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
-> Device Identifier Description" indicates that bits 6, 3 and 2 are
-> encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
-> 0x6 (110 in binary notation).
->=20
-> hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
-> chip. Kernel boot log extract before this patch:
-> nand: Could not find valid ONFI parameter page; aborting
-> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> nand: Hynix NAND 8GiB 3,3V 8-bit
-> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
->       OOB size: 640
->=20
-> However, based on the description in the datasheet we need to multiply
-> the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
-> size" and this NAND chip has a page size of 16384 (=3D 2 * 8192). After
-> this patch the kernel boot log reports:
-> nand: Could not find valid ONFI parameter page; aborting
-> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> nand: Hynix NAND 8GiB 3,3V 8-bit
-> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
->       OOB size: 1280
->=20
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  drivers/mtd/nand/raw/nand_hynix.c | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nan=
-d_hynix.c
-> index d542908a0ebb..60d9c54b769f 100644
-> --- a/drivers/mtd/nand/raw/nand_hynix.c
-> +++ b/drivers/mtd/nand/raw/nand_hynix.c
-> @@ -473,6 +473,10 @@ static void hynix_nand_extract_oobsize(struct nand_c=
-hip *chip,
->  			WARN(1, "Invalid OOB size");
->  			break;
->  		}
-> +
-> +		/* Reference: H27UCG8T2BTR - "Redundant Area Size / 8KB" */
-> +		if (mtd->writesize =3D=3D SZ_16K)
-> +			mtd->oobsize *=3D 2;
-
-As we're not entirely sure this is the case for all Hynix 16k pages
-NAND chips, would you mind narrowing the fix to only this reference?
-Something like the following:
-
-    if (!strcmp("H27UCG8T2BTR", chip->parameters.model))
-
-with a nice comment forward explaining why you do it.
+	ladis
 
 >  	}
->  }
-> =20
-
-Thanks,
-Miqu=C3=A8l
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+>  
+> +	if (priv->gpiod_rdy)
+> +		this->dev_ready = ams_delta_nand_ready;
+> 
+> > 
+> > >> > +err_gpiod:
+> > >> > +       if (err == -ENODEV || err == -ENOENT)
+> > >> > +               err = -EPROBE_DEFER;
+> > >> 
+> > >> Hmm...
+> > > 
+> > > Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
+> > > availble before device init phase, unlike other crucial GPIO drivers which
+> > > are initialized earlier, e.g. during the postcore or at latetst the
+> > > subsys phase. Hence, devices which depend on GPIO pins provided by
+> > > gpio-mmio must either be declared late or fail softly so they get another
+> > > chance of being probed succesfully.
+> > > 
+> > > I thought of replacing the gpio-mmio platform driver with bgpio functions
+> > > it exports but for now I haven't implemented it, not even shared the
+> > > idea.
+> > > 
+> > > Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be
+> > > obtained?
+> > I'm only concerned if it would be an infinite defer in the case when
+> > driver will never appear.
+> > But I don't remember the details.
+> 
+> Deferred probes are handled effectively during late_initcall, no risk of 
+> infinite defer, see drivers/base/dd.c for details.
+> 
+> Thanks,
+> Janusz
+> 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
