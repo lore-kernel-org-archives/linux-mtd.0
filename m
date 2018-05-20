@@ -1,24 +1,19 @@
-Date: Sun, 20 May 2018 19:25:23 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fKSBz-0005N7-OG
+ for linux-mtd@lists.infradead.org; Sun, 20 May 2018 17:32:25 +0000
+Date: Sun, 20 May 2018 19:32:10 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>, Aaro Koskinen
- <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Richard
- Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry
- Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Peter Ujfalusi
- <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, linux-arm Mailing List
- <linux-arm-kernel@lists.infradead.org>, Linux OMAP Mailing List
- <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-Message-ID: <20180520192523.32dde632@xps13>
-In-Reply-To: <CAHp75Vdp5A58JMTf8vaET84QEzzZ_T7eKLUYfWV9qpWt5ptYCA@mail.gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <5456625.lDWjtgZygK@z50>
- <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
- <3505791.x6nWYTo8eb@z50>
- <CAHp75Vdp5A58JMTf8vaET84QEzzZ_T7eKLUYfWV9qpWt5ptYCA@mail.gmail.com>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ richard@nod.at, marek.vasut@gmail.com, computersforpeace@gmail.com,
+ dwmw2@infradead.org
+Subject: Re: [PATCH 1/1] mtd: rawnand: hynix: fix decoding the OOB size on
+ H27UCG8T2BTR
+Message-ID: <20180520193210.442c54d1@xps13>
+In-Reply-To: <20180519124431.16000-2-martin.blumenstingl@googlemail.com>
+References: <20180519124431.16000-1-martin.blumenstingl@googlemail.com>
+ <20180519124431.16000-2-martin.blumenstingl@googlemail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -31,39 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Martin,
 
-On Sun, 20 May 2018 19:17:04 +0300, Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Sat, 19 May 2018 14:44:31 +0200, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 
-> >> Though, I completely dislike "rdy" name of GPIO. Where is it documente=
-d? =20
-> >
-> > No documentation files for Amstrad Delta nor for its NAND driver specif=
-ically
-> > exist under Documentation/. However, there exist some for generic GPIO =
-NAND
-> > driver where the pin name "rdy" is used explicitly:
-> > Documentation/driver-api/gpio/drivers-on-gpio.rst
-> > Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
-> > You can find that mnemonic used across drivers/mtd/nand/, standalone or=
- as a
-> > suffix, including the Amstrad Delta NAND driver before the change discu=
-ssed. =20
+> The datasheet of the H27UCG8T2BTR states that this chip has a page size
+> of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
+> Device Identifier Description" indicates that bits 6, 3 and 2 are
+> encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
+> 0x6 (110 in binary notation).
 >=20
-> > To be honest, I don't like it much either, but I'm just using it instea=
-d of
-> > inventing something new. =20
+> hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
+> chip. Kernel boot log extract before this patch:
+> nand: Could not find valid ONFI parameter page; aborting
+> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
+> nand: Hynix NAND 8GiB 3,3V 8-bit
+> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
+>       OOB size: 640
 >=20
-> OK, that's what I was looking for. Since it's already in use and
-> documented, then it's fine for me.
+> However, based on the description in the datasheet we need to multiply
+> the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
+> size" and this NAND chip has a page size of 16384 (=3D 2 * 8192). After
+> this patch the kernel boot log reports:
+> nand: Could not find valid ONFI parameter page; aborting
+> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
+> nand: Hynix NAND 8GiB 3,3V 8-bit
+> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
+>       OOB size: 1280
+>=20
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  drivers/mtd/nand/raw/nand_hynix.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nan=
+d_hynix.c
+> index d542908a0ebb..60d9c54b769f 100644
+> --- a/drivers/mtd/nand/raw/nand_hynix.c
+> +++ b/drivers/mtd/nand/raw/nand_hynix.c
+> @@ -473,6 +473,10 @@ static void hynix_nand_extract_oobsize(struct nand_c=
+hip *chip,
+>  			WARN(1, "Invalid OOB size");
+>  			break;
+>  		}
+> +
+> +		/* Reference: H27UCG8T2BTR - "Redundant Area Size / 8KB" */
+> +		if (mtd->writesize =3D=3D SZ_16K)
+> +			mtd->oobsize *=3D 2;
 
-Do we actually have the possibility to rename this gpio? I guess no
-since it would break DT backward compatibility. Otherwise it would have
-been more descriptive to call it something like 'gpio-rb'.
+As we're not entirely sure this is the case for all Hynix 16k pages
+NAND chips, would you mind narrowing the fix to only this reference?
+Something like the following:
 
-Anyway, if you find the time, documentation for this controller would be
-welcome!
+    if (!strcmp("H27UCG8T2BTR", chip->parameters.model))
+
+with a nice comment forward explaining why you do it.
+
+>  	}
+>  }
+> =20
 
 Thanks,
 Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
