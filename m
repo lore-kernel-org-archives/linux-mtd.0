@@ -1,29 +1,21 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+Received: from alln-iport-7.cisco.com ([173.37.142.94])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fKFCK-0002GI-WB
+ for linux-mtd@lists.infradead.org; Sun, 20 May 2018 03:39:54 +0000
+Date: Sat, 19 May 2018 20:39:40 -0700
+From: Stefan M Schaeckeler <sschaeck@cisco.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Mark Brown <broonie@kernel.org>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-input <linux-input@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-fbdev@vger.kernel.org,
- ALSA Development Mailing List <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-Date: Sat, 19 May 2018 23:55:51 +0200
-Message-ID: <5456625.lDWjtgZygK@z50>
-In-Reply-To: <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <3427199.r4OBoDP6Xz@z50>
- <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Cc: sschaeck@cisco.com
+Subject: [PATCH] mtd: mtdoops: optionally dump boottime
+Message-ID: <20180520033940.GA35444@sjc-ads-587.cisco.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,78 +25,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday, May 19, 2018 8:00:38 PM CEST Andy Shevchenko wrote:
-> On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com> 
-wrote:
-> > On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
-> >> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
-> >> 
-> >> <jmkrzyszt@gmail.com> wrote:
-> >> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
-> >> > GPIOD_IN);
-> >> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
-> >> 
-> >> So, is it optional or not at the end?
-> >> If it is, why do we check for NULL?
-> > 
-> > As far as I can understand, nand_chip->dev_ready() callback is optional.
-> > That's why I decided to use the _optional variant of devm_gpiod_get(). In
-> > case of ams-delta, the dev_ready() callback depends on availability of
-> > the 'rdy' GPIO pin. As a consequence, I'm checking for both NULL and ERR
-> > in order to decide if dev_ready() will be supported.
-> > 
-> > I can pretty well replace it with the standard form and check for ERR only
-> > if the purpose of the _optional form is different.
-> 
-> NULL check in practice discards the _optional part of gpiod_get(). So,
-> either you use non-optional variant and decide how to handle an
-> errors, or user _optional w/o NULL check.
+Optionally dump boottime on the mtd device in the form of
 
-OK, I'm going to use something like the below while submitting v2:
+<0>[   0.000000] Boot time mm/dd/yyyy hh:mm:ss
 
--	gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
--	if (!IS_ERR_OR_NULL(gpiod_rdy)) {
--		this->dev_ready = ams_delta_nand_ready;
--	} else {
--		this->dev_ready = NULL;
--		pr_notice("Couldn't request gpio for Delta NAND ready.\n");
-+	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
-+						  GPIOD_IN);
-+	if (IS_ERR(priv->gpiod_rdy)) {
-+		err = PTR_ERR(priv->gpiod_nwp);
-+		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
-+		goto err_gpiod;
- 	}
+Time-stamps of oops messages are in seconds since boottime. Recording also
+the boottime helps correlating oopses with other events having occured at
+the same time. This correlation will be otherwise lost after (multiple)
+reboots.
+
+Signed-off-by: Stefan M Schaeckeler <sschaeck@cisco.com>
+---
+ drivers/mtd/mtdoops.c | 38 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 9f25111..11f93aa 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -54,6 +54,11 @@ module_param(dump_oops, int, 0600);
+ MODULE_PARM_DESC(dump_oops,
+ 		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
  
-+	if (priv->gpiod_rdy)
-+		this->dev_ready = ams_delta_nand_ready;
-
-> 
-> >> > +err_gpiod:
-> >> > +       if (err == -ENODEV || err == -ENOENT)
-> >> > +               err = -EPROBE_DEFER;
-> >> 
-> >> Hmm...
-> > 
-> > Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
-> > availble before device init phase, unlike other crucial GPIO drivers which
-> > are initialized earlier, e.g. during the postcore or at latetst the
-> > subsys phase. Hence, devices which depend on GPIO pins provided by
-> > gpio-mmio must either be declared late or fail softly so they get another
-> > chance of being probed succesfully.
-> > 
-> > I thought of replacing the gpio-mmio platform driver with bgpio functions
-> > it exports but for now I haven't implemented it, not even shared the
-> > idea.
-> > 
-> > Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be
-> > obtained?
-> I'm only concerned if it would be an infinite defer in the case when
-> driver will never appear.
-> But I don't remember the details.
-
-Deferred probes are handled effectively during late_initcall, no risk of 
-infinite defer, see drivers/base/dd.c for details.
-
-Thanks,
-Janusz
++static bool dump_boottime = false;
++module_param(dump_boottime, bool, 0400);
++MODULE_PARM_DESC(dump_boottime,
++		"set to 1 to dump boottime, 0 to disable (default 0)");
++
+ static struct mtdoops_context {
+ 	struct kmsg_dumper dump;
+ 
+@@ -69,6 +74,10 @@ static struct mtdoops_context {
+ 	void *oops_buf;
+ } oops_cxt;
+ 
++/* fake kernel message syslog level and monotonic timestamp */
++#define boottime_prefix "<0>[   0.000000] Boot time "
++static char boottime[100] = {0};
++
+ static void mark_page_used(struct mtdoops_context *cxt, int page)
+ {
+ 	set_bit(page, cxt->oops_page_used);
+@@ -285,13 +294,17 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+ {
+ 	struct mtdoops_context *cxt = container_of(dumper,
+ 			struct mtdoops_context, dump);
++	u8 boot_len = strlen(boottime); /* 0 if dump_boottime is not set */
+ 
+ 	/* Only dump oopses if dump_oops is set */
+ 	if (reason == KMSG_DUMP_OOPS && !dump_oops)
+ 		return;
+ 
+-	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
+-			     record_size - MTDOOPS_HEADER_SIZE, NULL);
++	strncpy(cxt->oops_buf + MTDOOPS_HEADER_SIZE, boottime, boot_len);
++
++	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE +
++			     boot_len, record_size - (MTDOOPS_HEADER_SIZE +
++			     boot_len), NULL);
+ 
+ 	/* Panics must be written immediately */
+ 	if (reason != KMSG_DUMP_OOPS)
+@@ -350,7 +363,13 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 	cxt->mtd = mtd;
+ 	cxt->oops_pages = (int)mtd->size / record_size;
+ 	find_next_position(cxt);
+-	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
++	if (dump_boottime) {
++	    printk(KERN_INFO "mtdoops: Attached to MTD device %d "
++		   "dumping boottime\n", mtd->index);
++	} else {
++	    printk(KERN_INFO "mtdoops: Attached to MTD device %d "
++		   "not dumping boottime\n", mtd->index);
++	}
+ }
+ 
+ static void mtdoops_notify_remove(struct mtd_info *mtd)
+@@ -379,6 +398,19 @@ static int __init mtdoops_init(void)
+ 	struct mtdoops_context *cxt = &oops_cxt;
+ 	int mtd_index;
+ 	char *endp;
++	struct timespec64 bt;
++	struct tm tm_val;
++
++	if (dump_boottime) {
++	    /* Precompute boot time ahead of an oops */
++	    getboottime64(&bt);
++	    time_to_tm(bt.tv_sec, 0, &tm_val);
++
++	    snprintf(boottime, sizeof(boottime),
++		     boottime_prefix "%02d/%02d/%4d %02d:%02d:%02d\n",
++		     tm_val.tm_mon + 1, tm_val.tm_mday, tm_val.tm_year + 1900,
++		     tm_val.tm_hour, tm_val.tm_min, tm_val.tm_sec);
++	}
+ 
+ 	if (strlen(mtddev) == 0) {
+ 		printk(KERN_ERR "mtdoops: mtd device (mtddev=name/number) must be supplied\n");
+-- 
+2.10.3.dirty
