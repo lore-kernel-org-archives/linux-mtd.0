@@ -1,21 +1,22 @@
-Received: from alln-iport-7.cisco.com ([173.37.142.94])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKFCK-0002GI-WB
- for linux-mtd@lists.infradead.org; Sun, 20 May 2018 03:39:54 +0000
-Date: Sat, 19 May 2018 20:39:40 -0700
-From: Stefan M Schaeckeler <sschaeck@cisco.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+ id 1fKJWw-0003iN-UT
+ for linux-mtd@lists.infradead.org; Sun, 20 May 2018 08:17:29 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Stefan M Schaeckeler <sschaeck@cisco.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Cc: sschaeck@cisco.com
-Subject: [PATCH] mtd: mtdoops: optionally dump boottime
-Message-ID: <20180520033940.GA35444@sjc-ads-587.cisco.com>
+Subject: Re: [PATCH] mtd: mtdoops: optionally dump boottime
+Date: Sun, 20 May 2018 10:17:05 +0200
+Message-ID: <2141312.dtCrDzBczl@blindfold>
+In-Reply-To: <20180520033940.GA35444@sjc-ads-587.cisco.com>
+References: <20180520033940.GA35444@sjc-ads-587.cisco.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,101 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Optionally dump boottime on the mtd device in the form of
+Stefan,
 
-<0>[   0.000000] Boot time mm/dd/yyyy hh:mm:ss
+Am Sonntag, 20. Mai 2018, 05:39:40 CEST schrieb Stefan M Schaeckeler:
+> Optionally dump boottime on the mtd device in the form of
+> 
+> <0>[   0.000000] Boot time mm/dd/yyyy hh:mm:ss
+> 
+> Time-stamps of oops messages are in seconds since boottime. Recording also
+> the boottime helps correlating oopses with other events having occured at
+> the same time. This correlation will be otherwise lost after (multiple)
+> reboots.
 
-Time-stamps of oops messages are in seconds since boottime. Recording also
-the boottime helps correlating oopses with other events having occured at
-the same time. This correlation will be otherwise lost after (multiple)
-reboots.
+I get the use-case, but why is this only for mtdoops?
+IMHO this needs to go into generic code such that all kmsg dumpers can
+benefit from it.
 
-Signed-off-by: Stefan M Schaeckeler <sschaeck@cisco.com>
----
- drivers/mtd/mtdoops.c | 38 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 35 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 9f25111..11f93aa 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -54,6 +54,11 @@ module_param(dump_oops, int, 0600);
- MODULE_PARM_DESC(dump_oops,
- 		"set to 1 to dump oopses, 0 to only dump panics (default 1)");
- 
-+static bool dump_boottime = false;
-+module_param(dump_boottime, bool, 0400);
-+MODULE_PARM_DESC(dump_boottime,
-+		"set to 1 to dump boottime, 0 to disable (default 0)");
-+
- static struct mtdoops_context {
- 	struct kmsg_dumper dump;
- 
-@@ -69,6 +74,10 @@ static struct mtdoops_context {
- 	void *oops_buf;
- } oops_cxt;
- 
-+/* fake kernel message syslog level and monotonic timestamp */
-+#define boottime_prefix "<0>[   0.000000] Boot time "
-+static char boottime[100] = {0};
-+
- static void mark_page_used(struct mtdoops_context *cxt, int page)
- {
- 	set_bit(page, cxt->oops_page_used);
-@@ -285,13 +294,17 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
- {
- 	struct mtdoops_context *cxt = container_of(dumper,
- 			struct mtdoops_context, dump);
-+	u8 boot_len = strlen(boottime); /* 0 if dump_boottime is not set */
- 
- 	/* Only dump oopses if dump_oops is set */
- 	if (reason == KMSG_DUMP_OOPS && !dump_oops)
- 		return;
- 
--	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE,
--			     record_size - MTDOOPS_HEADER_SIZE, NULL);
-+	strncpy(cxt->oops_buf + MTDOOPS_HEADER_SIZE, boottime, boot_len);
-+
-+	kmsg_dump_get_buffer(dumper, true, cxt->oops_buf + MTDOOPS_HEADER_SIZE +
-+			     boot_len, record_size - (MTDOOPS_HEADER_SIZE +
-+			     boot_len), NULL);
- 
- 	/* Panics must be written immediately */
- 	if (reason != KMSG_DUMP_OOPS)
-@@ -350,7 +363,13 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
- 	cxt->mtd = mtd;
- 	cxt->oops_pages = (int)mtd->size / record_size;
- 	find_next_position(cxt);
--	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
-+	if (dump_boottime) {
-+	    printk(KERN_INFO "mtdoops: Attached to MTD device %d "
-+		   "dumping boottime\n", mtd->index);
-+	} else {
-+	    printk(KERN_INFO "mtdoops: Attached to MTD device %d "
-+		   "not dumping boottime\n", mtd->index);
-+	}
- }
- 
- static void mtdoops_notify_remove(struct mtd_info *mtd)
-@@ -379,6 +398,19 @@ static int __init mtdoops_init(void)
- 	struct mtdoops_context *cxt = &oops_cxt;
- 	int mtd_index;
- 	char *endp;
-+	struct timespec64 bt;
-+	struct tm tm_val;
-+
-+	if (dump_boottime) {
-+	    /* Precompute boot time ahead of an oops */
-+	    getboottime64(&bt);
-+	    time_to_tm(bt.tv_sec, 0, &tm_val);
-+
-+	    snprintf(boottime, sizeof(boottime),
-+		     boottime_prefix "%02d/%02d/%4d %02d:%02d:%02d\n",
-+		     tm_val.tm_mon + 1, tm_val.tm_mday, tm_val.tm_year + 1900,
-+		     tm_val.tm_hour, tm_val.tm_min, tm_val.tm_sec);
-+	}
- 
- 	if (strlen(mtddev) == 0) {
- 		printk(KERN_ERR "mtdoops: mtd device (mtddev=name/number) must be supplied\n");
--- 
-2.10.3.dirty
+Thanks,
+//richard
