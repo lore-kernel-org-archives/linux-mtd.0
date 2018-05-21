@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKlpT-0001kv-2T
- for linux-mtd@lists.infradead.org; Mon, 21 May 2018 14:30:28 +0000
-Date: Mon, 21 May 2018 16:30:14 +0200
+ id 1fKls2-0002B5-68
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2018 14:33:07 +0000
+Date: Mon, 21 May 2018 16:32:54 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
@@ -10,14 +10,14 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
  Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Masahiro Yamada
- <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH v2 02/14] mtd: rawnand: denali: use helper function for
- ecc setup
-Message-ID: <20180521163014.355318d6@xps13>
-In-Reply-To: <1525350041-22995-3-git-send-email-absahu@codeaurora.org>
+ Taneja <architt@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 03/14] dt-bindings: qcom_nandc: make
+ nand-ecc-strength optional
+Message-ID: <20180521163254.71ade105@xps13>
+In-Reply-To: <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
- <1525350041-22995-3-git-send-email-absahu@codeaurora.org>
+ <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -32,21 +32,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Abhishek,
 
-On Thu,  3 May 2018 17:50:29 +0530, Abhishek Sahu
+On Thu,  3 May 2018 17:50:30 +0530, Abhishek Sahu
 <absahu@codeaurora.org> wrote:
 
-> Now, the NAND base layer has helper function for ecc
-> parameters setup which does the same thing.
+> Now, nand-ecc-strength is optional. If specified in DT, then
+> controller will use this ECC strength otherwise ECC strength will
+> be calculated according to chip requirement and available OOB size.
 
-Even if this message has a meaning in the series, I would prefer
-something more generic like:
-
-"Use the NAND core helper function xxx() to tune the ECC parameters
-instead of the function locally defined."
-
-With this change:
-
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Same comment as before: don't start the commit log with "now,".
 
 Thanks,
 Miqu=C3=A8l
