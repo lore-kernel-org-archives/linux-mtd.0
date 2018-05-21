@@ -1,25 +1,20 @@
-Date: Sun, 20 May 2018 13:17:10 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Mark Brown <broonie@kernel.org>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 2/6] Input: ams_delta_serio: use GPIO lookup table
-Message-ID: <20180520201710.GB119427@dtor-ws>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180518210954.29044-2-jmkrzyszt@gmail.com>
+Received: from imap.thunk.org ([74.207.234.97])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fKZ7e-0003mw-SL
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2018 00:56:24 +0000
+Date: Sun, 20 May 2018 20:55:48 -0400
+From: "Theodore Y. Ts'o" <tytso@mit.edu>
+To: Eric Biggers <ebiggers3@gmail.com>
+Cc: linux-fscrypt@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-mtd@lists.infradead.org, Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v2 00/15] fscrypt: improved logging and other cleanups
+Message-ID: <20180521005548.GB4464@thunk.org>
+References: <20180430225149.183514-1-ebiggers3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180518210954.29044-2-jmkrzyszt@gmail.com>
+In-Reply-To: <20180430225149.183514-1-ebiggers3@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,208 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
-
-On Fri, May 18, 2018 at 11:09:50PM +0200, Janusz Krzysztofik wrote:
-> Now as the Amstrad Delta board provides GPIO lookup tables, switch from
-> GPIO numbers to GPIO descriptors and use the table to locate required
-> GPIO pins.
+On Mon, Apr 30, 2018 at 03:51:34PM -0700, Eric Biggers wrote:
+> From: Eric Biggers <ebiggers@google.com>
 > 
-> Declare static variables for storing GPIO descriptors and replace
-> gpio_ functions with their gpiod_ equivalents.
+> Hello, here's yet another round of cleanups for fscrypt.  Please
+> consider for v4.18.  These are all patches I've sent out previously.
+> The series is based on v4.17-rc3.
 > 
-> Pin naming used by the driver should be followed while respective GPIO
-> lookup table is initialized by a board init code.
+> Patches 1-12 mostly remove unnecessary or redundant code from a number
+> of different places; nothing particularly noteworthy.  Note: to avoid a
+> merge conflict with f2fs/dev, I've dropped the patch
+> "fscrypt: remove WARN_ON_ONCE() when decryption fails".
 > 
-> Created and tested against linux-4.17-rc3, on top of patch 1/6 "ARM:
-> OMAP1: ams-delta: add GPIO lookup tables"
+> Patch 13 switches the existing warning and error messages in fscrypt
+> over to use a common logging function, which is ratelimited and includes
+> the filesystem name (->s_id) when available as well as a consistent
+> prefix of "fscrypt:".
 > 
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> ---
->  drivers/input/serio/ams_delta_serio.c | 98 +++++++++++++++++++----------------
->  1 file changed, 53 insertions(+), 45 deletions(-)
+> Patches 14-15 are optimizations and cleanups for key lookup and key
+> derivation.  They are extracted from the patch "fscrypt: refactor
+> finding and deriving key" I had originally sent as part of the series
+> "fscrypt: filesystem-level keyring and v2 policy support".  But I think
+> they're useful changes by themselves, so no need to wait on them.
+
+Thanks, I've applied this patch series.
+
+						- Ted
+
+> Eric Biggers (15):
+>   fs, fscrypt: only define ->s_cop when FS_ENCRYPTION is enabled
+>   fscrypt: clean up after fscrypt_prepare_lookup() conversions
+>   fscrypt: remove unnecessary NULL check when allocating skcipher
+>   fscrypt: remove error messages for skcipher_request_alloc() failure
+>   fscrypt: remove stale comment from fscrypt_d_revalidate()
+>   fscrypt: don't clear flags on crypto transform
+>   fscrypt: don't special-case EOPNOTSUPP from
+>     fscrypt_get_encryption_info()
+>   fscrypt: drop max_namelen check from fname_decrypt()
+>   fscrypt: drop empty name check from fname_decrypt()
+>   fscrypt: make fscrypt_operations.max_namelen an integer
+>   fscrypt: remove unnecessary check for non-logon key type
+>   fscrypt: remove internal key size constants
+>   fscrypt: use a common logging function
+>   fscrypt: separate key lookup from key derivation
+>   fscrypt: only derive the needed portion of the key
 > 
-> diff --git a/drivers/input/serio/ams_delta_serio.c b/drivers/input/serio/ams_delta_serio.c
-> index 3df501c3421b..dd1f8f118c08 100644
-> --- a/drivers/input/serio/ams_delta_serio.c
-> +++ b/drivers/input/serio/ams_delta_serio.c
-> @@ -20,14 +20,13 @@
->   * However, when used with the E3 mailboard that producecs non-standard
->   * scancodes, a custom key table must be prepared and loaded from userspace.
->   */
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/consumer.h>
->  #include <linux/irq.h>
->  #include <linux/serio.h>
->  #include <linux/slab.h>
->  #include <linux/module.h>
->  
->  #include <asm/mach-types.h>
-> -#include <mach/board-ams-delta.h>
->  
->  #include <mach/ams-delta-fiq.h>
->  
-> @@ -36,6 +35,10 @@ MODULE_DESCRIPTION("AMS Delta (E3) keyboard port driver");
->  MODULE_LICENSE("GPL");
->  
->  static struct serio *ams_delta_serio;
-> +static struct gpio_desc *gpiod_data;
-> +static struct gpio_desc *gpiod_clock;
-> +static struct gpio_desc *gpiod_power;
-> +static struct gpio_desc *gpiod_dataout;
-
-Since you are doing the conversion: it does not appear that all these
-are necessarily GPIOs; for example should not power be gpio-regulator
-and data be simply expressed as IRQ resource? And the driver to be
-converted into a platform driver?
-
-I think this needs to be done first, because otherwise you are
-committing to a certain binding and will have hard time changing it
-later.
-
-Thanks.
-
->  
->  static int check_data(int data)
->  {
-> @@ -92,7 +95,7 @@ static irqreturn_t ams_delta_serio_interrupt(int irq, void *dev_id)
->  static int ams_delta_serio_open(struct serio *serio)
->  {
->  	/* enable keyboard */
-> -	gpio_set_value(AMS_DELTA_GPIO_PIN_KEYBRD_PWR, 1);
-> +	gpiod_set_value(gpiod_power, 1);
->  
->  	return 0;
->  }
-> @@ -100,32 +103,9 @@ static int ams_delta_serio_open(struct serio *serio)
->  static void ams_delta_serio_close(struct serio *serio)
->  {
->  	/* disable keyboard */
-> -	gpio_set_value(AMS_DELTA_GPIO_PIN_KEYBRD_PWR, 0);
-> +	gpiod_set_value(gpiod_power, 0);
->  }
->  
-> -static const struct gpio ams_delta_gpios[] __initconst_or_module = {
-> -	{
-> -		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_DATA,
-> -		.flags	= GPIOF_DIR_IN,
-> -		.label	= "serio-data",
-> -	},
-> -	{
-> -		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_CLK,
-> -		.flags	= GPIOF_DIR_IN,
-> -		.label	= "serio-clock",
-> -	},
-> -	{
-> -		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_PWR,
-> -		.flags	= GPIOF_OUT_INIT_LOW,
-> -		.label	= "serio-power",
-> -	},
-> -	{
-> -		.gpio	= AMS_DELTA_GPIO_PIN_KEYBRD_DATAOUT,
-> -		.flags	= GPIOF_OUT_INIT_LOW,
-> -		.label	= "serio-dataout",
-> -	},
-> -};
-> -
->  static int __init ams_delta_serio_init(void)
->  {
->  	int err;
-> @@ -145,36 +125,62 @@ static int __init ams_delta_serio_init(void)
->  	strlcpy(ams_delta_serio->phys, "GPIO/serio0",
->  			sizeof(ams_delta_serio->phys));
->  
-> -	err = gpio_request_array(ams_delta_gpios,
-> -				ARRAY_SIZE(ams_delta_gpios));
-> -	if (err) {
-> -		pr_err("ams_delta_serio: Couldn't request gpio pins\n");
-> +	gpiod_data = gpiod_get(NULL, "data", GPIOD_IN);
-> +	if (IS_ERR(gpiod_data)) {
-> +		err = PTR_ERR(gpiod_data);
-> +		pr_err("%s: 'data' GPIO request failed (%d)\n", __func__,
-> +		       err);
->  		goto serio;
->  	}
-> +	gpiod_clock = gpiod_get(NULL, "clock", GPIOD_IN);
-> +	if (IS_ERR(gpiod_clock)) {
-> +		err = PTR_ERR(gpiod_clock);
-> +		pr_err("%s: 'clock' GPIO request failed (%d)\n", __func__,
-> +		       err);
-> +		goto gpio_data;
-> +	}
-> +	gpiod_power = gpiod_get(NULL, "power", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpiod_power)) {
-> +		err = PTR_ERR(gpiod_power);
-> +		pr_err("%s: 'power' GPIO request failed (%d)\n", __func__,
-> +		       err);
-> +		goto gpio_clock;
-> +	}
-> +	gpiod_dataout = gpiod_get(NULL, "dataout", GPIOD_OUT_LOW);
-> +	if (IS_ERR(gpiod_dataout)) {
-> +		err = PTR_ERR(gpiod_dataout);
-> +		pr_err("%s: 'dataout' GPIO request failed (%d)\n",
-> +		       __func__, err);
-> +		goto gpio_power;
-> +	}
->  
-> -	err = request_irq(gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK),
-> -			ams_delta_serio_interrupt, IRQ_TYPE_EDGE_RISING,
-> -			"ams-delta-serio", 0);
-> +	err = request_irq(gpiod_to_irq(gpiod_clock),
-> +			  ams_delta_serio_interrupt, IRQ_TYPE_EDGE_RISING,
-> +			  "ams-delta-serio", 0);
->  	if (err < 0) {
-> -		pr_err("ams_delta_serio: couldn't request gpio interrupt %d\n",
-> -				gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK));
-> -		goto gpio;
-> +		pr_err("%s: 'clock' GPIO interrupt request failed (%d)\n",
-> +		       __func__, err);
-> +		goto gpio_dataout;
->  	}
->  	/*
->  	 * Since GPIO register handling for keyboard clock pin is performed
->  	 * at FIQ level, switch back from edge to simple interrupt handler
->  	 * to avoid bad interaction.
->  	 */
-> -	irq_set_handler(gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK),
-> -			handle_simple_irq);
-> +	irq_set_handler(gpiod_to_irq(gpiod_clock), handle_simple_irq);
->  
->  	serio_register_port(ams_delta_serio);
->  	dev_info(&ams_delta_serio->dev, "%s\n", ams_delta_serio->name);
->  
->  	return 0;
-> -gpio:
-> -	gpio_free_array(ams_delta_gpios,
-> -			ARRAY_SIZE(ams_delta_gpios));
-> +gpio_dataout:
-> +	gpiod_put(gpiod_dataout);
-> +gpio_power:
-> +	gpiod_put(gpiod_power);
-> +gpio_clock:
-> +	gpiod_put(gpiod_clock);
-> +gpio_data:
-> +	gpiod_put(gpiod_data);
->  serio:
->  	kfree(ams_delta_serio);
->  	return err;
-> @@ -184,8 +190,10 @@ module_init(ams_delta_serio_init);
->  static void __exit ams_delta_serio_exit(void)
->  {
->  	serio_unregister_port(ams_delta_serio);
-> -	free_irq(gpio_to_irq(AMS_DELTA_GPIO_PIN_KEYBRD_CLK), 0);
-> -	gpio_free_array(ams_delta_gpios,
-> -			ARRAY_SIZE(ams_delta_gpios));
-> +	free_irq(gpiod_to_irq(gpiod_clock), 0);
-> +	gpiod_put(gpiod_dataout);
-> +	gpiod_put(gpiod_power);
-> +	gpiod_put(gpiod_clock);
-> +	gpiod_put(gpiod_data);
->  }
->  module_exit(ams_delta_serio_exit);
+>  fs/crypto/crypto.c              |  36 ++++--
+>  fs/crypto/fname.c               |  32 ++---
+>  fs/crypto/fscrypt_private.h     |  19 +--
+>  fs/crypto/hooks.c               |   5 +-
+>  fs/crypto/keyinfo.c             | 200 +++++++++++++++++---------------
+>  fs/ext4/super.c                 |   8 +-
+>  fs/f2fs/super.c                 |   8 +-
+>  fs/ubifs/crypto.c               |  10 +-
+>  include/linux/fs.h              |   4 +-
+>  include/linux/fscrypt_notsupp.h |  10 --
+>  include/linux/fscrypt_supp.h    |  16 +--
+>  11 files changed, 161 insertions(+), 187 deletions(-)
+> 
 > -- 
-> 2.16.1
+> 2.17.0.441.gb46fe60e1d-goog
 > 
-
--- 
-Dmitry
