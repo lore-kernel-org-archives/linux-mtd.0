@@ -1,27 +1,16 @@
-Date: Mon, 21 May 2018 11:05:03 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
-Message-ID: <20180521100503.GA24638@sirena.org.uk>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180518210954.29044-3-jmkrzyszt@gmail.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fKjIR-0002hH-6G
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2018 11:48:13 +0000
+To: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+From: Ritesh Harjani <riteshh@codeaurora.org>
+Subject: Selabel/selinux support in mtd-utils for ubifs
+Message-ID: <d1fc48d2-ee16-2405-bf4d-a75ea8cd5f46@codeaurora.org>
+Date: Mon, 21 May 2018 17:17:53 +0530
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
-Content-Disposition: inline
-In-Reply-To: <20180518210954.29044-3-jmkrzyszt@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello all,
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Could anyone please help whether selinux support is fully present on 
+ubifs or not?
 
-On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
-> Now as the Amstrad Delta board provides GPIO lookup tables, switch from
-> GPIO numbers to GPIO descriptors and use the table to locate required
-> GPIO pins.
+Below are my observations:-
+1. Selinux support was added in ubifs kernel via below patch
+"UBIFS: Add security.* XATTR support for the UBIFS"
 
-Acked-by: Mark Brown <broonie@kernel.org>
+2. Extended attribute support was added in mtd-utils via below patch.
+"mkfs.ubifs: Add extended attribute support"
 
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
+With above I think that selinux could be enabled but only at the boot 
+time using selinux tools.
 
------BEGIN PGP SIGNATURE-----
+But I could not see any support to add selinux labels/context 
+information while creating ubifs.img in mtd-utils. I do see below link 
+where something like above was tried but never made upstream. Could 
+anyone please give pointers on whether this support is added/ or bring 
+worked upon?
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsCmc4ACgkQJNaLcl1U
-h9DG0Af/UE7Z72qRF50Yg/UqUfLu60IQ6PX2zlv8XLEh1YdSXf0sIPdW4xsjUYKI
-B5eF5/fXlrjYYiIxMe9kNZT8jfPW7QP+lkpD07CIf2Io3+AGNHU+NuflzyEOqODX
-uJia7Umel8v7868BkFoyBpmEUVcHl8Gpo4k3e3T79PcBXvSmQusoupFWC/apcdT/
-xSKEmqpHYV5gdeiSIBBGVsb48oQ+GKlwEpsdPCGXkl63WuSg+QH5miaTIIiQyRZ8
-3q3PD70Jxv2QUvoZ6bRTStoZRk2D8PcnNauk4hJ/gKnw1FceWNNVtmAYVG7xOZwW
-bazFSdj285WRNlhe7N/Qw7x0JGBztg==
-=PRAh
------END PGP SIGNATURE-----
+http://lists.infradead.org/pipermail/linux-mtd/2014-February/052136.html
 
---envbJBWh7q8WU6mo--
+Also Whether selinux labeling support can be added in the mkfs.ubifs or 
+not? Do we see any issues with this?
+
+I would like to work upon adding selinux support in mtd-utils.
+I would appreciate if I could get some pointers on above queries and if 
+anyone has any pointers/suggestions for this.
+
+
+Regards
+Ritesh
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, 
+Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+Linux Foundation Collaborative Project.
