@@ -1,31 +1,23 @@
-MIME-Version: 1.0
-In-Reply-To: <20180520192523.32dde632@xps13>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <5456625.lDWjtgZygK@z50>
- <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
- <3505791.x6nWYTo8eb@z50>
- <CAHp75Vdp5A58JMTf8vaET84QEzzZ_T7eKLUYfWV9qpWt5ptYCA@mail.gmail.com>
- <20180520192523.32dde632@xps13>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 21 May 2018 09:44:20 +0300
-Message-ID: <CAHp75VcCVNGey1TmAR7EJ3wJL1q+KSOXpbwJ3XmoU70tKOm+Bg@mail.gmail.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>,
- Mark Brown <broonie@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Peter Ujfalusi <peter.ujfalusi@ti.com>,
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fKf0b-0003bw-GK
+ for linux-mtd@lists.infradead.org; Mon, 21 May 2018 07:13:31 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Stefan Schaeckeler <sschaeck@cisco.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
- Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mtd: mtdoops: optionally dump boottime
+Date: Mon, 21 May 2018 09:13:09 +0200
+Message-ID: <5252756.S0IrdeWEj0@blindfold>
+In-Reply-To: <20180521022924.GA33758@sjc-ads-587.cisco.com>
+References: <20180521022924.GA33758@sjc-ads-587.cisco.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,22 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, May 20, 2018 at 8:25 PM, Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> On Sun, 20 May 2018 19:17:04 +0300, Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
+Stefan,
 
-> Do we actually have the possibility to rename this gpio? I guess no
-> since it would break DT backward compatibility.
+Am Montag, 21. Mai 2018, 04:29:24 CEST schrieb Stefan Schaeckeler:
+> Hello Richard and others,
+> 
+> > I get the use-case, but why is this only for mtdoops?
+> 
+> Powerpc's nvram module also stores oops messages and does so by adding an
+> additional timestamp, as well (search for kmsg_dump_get_buffer() in
+> arch/powerpc/kernel/nvram_64.c).
 
-No we don't.
+Just one more reason to make it generic.
+ 
+> This timestamp is the number of seconds since 1970 and stored as a 64 bit
+> integer in the nvram header. Basically, the last kmesg timestamp is a few ms
+> less than this additionally stored timestamp. Recording boottime would be more
+> elegant, I guess.
+> 
+> 
+> > IMHO this needs to go into generic code such that all kmsg dumpers can
+> > benefit from it.
+> 
+> This would be not that easy:
+> 
+> #1 kmsg_dump_get_buffer(...size...) returns the most recent <size> bytes.
+> Consecutive calls return older chunks. It would be natural to return the
+> boottime as the first line, e.g. in the last call, but some clients such as
+> mtdoops call kmsg_dump_get_buffer() only once. The returned buffer may be
+> complete including boottime, or not.
+> 
+> #2 consistency with other clients: nvram_64.c has the same requirement of
+> storing a kind of wall-time but does it in a completely different way: no
+> readable ascii text timestamp preprended to the kmsg buffer but a 64 bit
+> timestamp in its header. Note, I don't think we should make mtdoops behave like
+> nvram_64.c by storing the timestamp as a 64 bit integer (in its header) b/c
+> most people do a cat or string of the mtd device /dev/mtdX and a 64 bit integer
+> would just read as garbage.
 
-> Otherwise it would have
-> been more descriptive to call it something like 'gpio-rb'.
+I think this is the perfect opportunity to talk with other kmesg dump users on
+how to add a timestamp.
+As last resort we can always do it in our own way but I think making it generic
+is at lest worth a try...
 
-"gpio" prefix, actually "gpios" suffix is a mandatory part of the
-name. For sake of convenience it's not used in API calls.
+> I hope we can have separate implementations for recording additional
+> timestamps. Later, I'll send a patch with stylistic changes unless we
+> completely disagree on how to move forward.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Both #1 and #2 aren't show-stoppers.
+
+Thanks,
+//richard
