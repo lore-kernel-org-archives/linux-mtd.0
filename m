@@ -1,25 +1,24 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKzQd-00006T-6J
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 05:01:44 +0000
-Subject: Re: [RFC PATCH] mtd: spi-nor: add support to non-uniform SPI NOR
- flash memories
-To: Marek Vasut <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <nicolas.ferre@microchip.com>, <Cristian.Birsan@microchip.com>
-References: <20180518093233.24241-1-tudor.ambarus@microchip.com>
- <89d45190-95b0-b780-b219-e6c6adcb6147@gmail.com>
- <4cd7d47a-fd56-6b54-3b38-262adf46a97f@microchip.com>
- <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <123e50da-e49e-f876-bdb4-2719f7f7640a@microchip.com>
-Date: Tue, 22 May 2018 08:01:28 +0300
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fL15d-0000vv-Gj
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 06:48:11 +0000
+Date: Tue, 22 May 2018 08:47:54 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
+ Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v2 05/14] mtd: rawnand: qcom: wait for desc completion
+ in all BAM channels
+Message-ID: <20180522084754.0c3a53a4@xps13>
+In-Reply-To: <1525350041-22995-6-git-send-email-absahu@codeaurora.org>
+References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+ <1525350041-22995-6-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,250 +29,210 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Marek,
+Hi Abhishek,
 
-On 05/21/2018 07:59 PM, Marek Vasut wrote:
-> On 05/21/2018 06:42 PM, Tudor Ambarus wrote:
->> Hi, Marek,
+On Thu,  3 May 2018 17:50:32 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
+
+> The BAM has 3 channels - tx, rx and command. command channel
+> is used for register read/writes, tx channel for data writes
+> and rx channel for data reads. Currently, the driver assumes the
+> transfer completion once it gets all the command descriptor
+> completed. Sometimes, there is race condition in data channel
+
+"Sometimes, there is a race condition between the data channel (rx/tx)
+and the command channel completion. In these cases, ..."
+
+> (tx/rx) and command channel completion and in these cases,
+> the data in buffer is not valid during the small window between
+
+           ^ present in the buffer ?
+
+> command descriptor completion and data descriptor completion.
 > 
-> [...]
-> 
->>>> This is a transitional patch: non-uniform erase maps will be used later
->>>> when initialized based on the SFDP data.
->>>
->>> What about non-SFDP non-linear flashes ?
->>
->> Non-SFDP non-uniform flashes support is not addressed with this
->> proposal, I should have told this in the commit message, thanks. But we
->> are backward compatible, if non-SFDP, the flashes are considered
->> uniform.
-> 
-> OK. btw wall-of-text description of patch isn't my fav thing.
-> 
->>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
->>>>
->>>> [tudor.ambarus@microchip.com:
->>>> - add improvements on how the erase map is handled. The map is an array
->>>> describing the boundaries of the erase regions. LSB bits of the region's
->>>> offset are used to describe the supported erase types, to indicate if
->>>> that specific region is the last region in the map and to mark if the
->>>> region is overlaid or not. When one sends an addr and len to erase a
->>>> chunk of memory, we identify in which region the address fits, we start
->>>> erasing with the best fitted erase commands and when the region ends,
->>>> continue to erase from the next region. The erase is optimal: identify
->>>> the start offset (once), then erase with the best erase command,
->>>> move forward and repeat.
->>>
->>> Is that like an R-tree ?
->>
->> Not really. I find this RFC proposal faster and neat, but I'm open for
->> suggestions and guidance.
->>
->> One wants to erase a contiguous chunk of memory and sends us the
->> starting address and the total length. The algorithm of finding the best
->> sequence of erase commands can be summarized in four steps:
->>
->> 1. Find in which region the address fits.
->> This step is done only once, at the beginning. For the non-uniform
->> SFDP-defined flashes, usually there are two or three regions defined.
->> Nevertheless, in the worst case, the maximum number of regions that can
->> be defined is on eight bits, so 255. Linear search for just 255 elements
->> in the worst case looks good for me, especially that we do this search
->> once.
->>
->> 2. Find the *best* erase command that is defined in that region.
->> Each region can define maximum 4 erase commands. *Best* is defined as
->> the largest/biggest supported erase command with which the provided
->> address is aligned and which does not erase more that what the user has
->> asked for. In case of overlaid regions, alignment does not matter. The
->> largest command will erase the remaining of the overlaid region without
->> touching the region with which it overlaps (see S25FS512S). The
->> supported erase commands are ordered by size with the biggest queried
->> first. It is desirable to erase with large erase commands so that we
->> erase as much as we can in one shoot, minimizing the erase() calls.
->>
->> 3. Erase sector with the *best* erase command and move forward in a
->> linear fashion.
->> addr += cmd->size;
->> len -= cmd->size;
->> If the new address exceeds the end of this region, move to the next.
->>
->> 4. While (len) goto step2.
->>
->> That's all. Linearity is an advantage. We find the starting region and
->> then we traverse each region in order without other queries.
->>
->>>
->>>> - order erase types by size, with the biggest erase type at BIT(0). With
->>>> this, we can iterate from the biggest supported erase type to the
->>>> smallest,
->>>> and when find one that meets all the required conditions, break the
->>>> loop.
->>>> This saves time in determining the best erase cmd.
->>>>
->>>> - minimize the amount of erase() calls by using the best sequence of
->>>> erase
->>>> type commands depending on alignment.
->>>
->>> Nice, this was long overdue
->>>
->>>> - replace spi_nor_find_uniform_erase() with
->>>> spi_nor_select_uniform_erase().
->>>> Even for the SPI NOR memories with non-uniform erase types, we can
->>>> determine
->>>> at init if there are erase types that can erase the entire memory.
->>>> Fill at
->>>> init the uniform_erase_type bitmask, to encode the erase type
->>>> commands that
->>>> can erase the entire memory.
->>>>
->>>> - clarify support for overlaid regions. Considering one of the erase
->>>> maps
->>>> of the S25FS512S memory:
->>>> Bottom: 8x 4KB sectors at bottom (only 4KB erase supported),
->>>>           1x overlaid 224KB sector at bottom (only 256KB erase
->>>> supported),
->>>>           255x 256KB sectors (only 256KB erase supported)
->>>> S25FS512S states that 'if a sector erase command is applied to a
->>>> 256KB range
->>>> that is overlaid by 4KB secors, the overlaid 4kB sectors are not
->>>> affected by
->>>> the erase'. When at init, the overlaid region size should be set to
->>>> region->size = erase_size - count; in order to not miss chunks of data
->>>> when traversing the regions.
->>>>
->>>> - backward compatibility test done on MX25L25673G.
->>>>
->>>> The 'erase with the best command, move forward and repeat' approach was
->>>> suggested by Cristian Birsan in a brainstorm session, so:
->>>> ]
->>>> Suggested-by: Cristian Birsan <cristian.birsan@microchip.com>
->>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>>> ---
->>>>    drivers/mtd/spi-nor/spi-nor.c | 281
->>>> +++++++++++++++++++++++++++++++++++++++---
->>>>    include/linux/mtd/spi-nor.h   |  89 +++++++++++++
->>>>    2 files changed, 356 insertions(+), 14 deletions(-)
->>>>
->>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
->>>> b/drivers/mtd/spi-nor/spi-nor.c
->>>> index 494b7a2..bb70664 100644
->>>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>>> @@ -260,6 +260,17 @@ static void spi_nor_set_4byte_opcodes(struct
->>>> spi_nor *nor,
->>>>        nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
->>>>        nor->program_opcode =
->>>> spi_nor_convert_3to4_program(nor->program_opcode);
->>>>        nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
->>>> +
->>>> +    if (!spi_nor_has_uniform_erase(nor)) {
->>>> +        struct spi_nor_erase_map *map = &nor->erase_map;
->>>> +        struct spi_nor_erase_command *cmd;
->>>> +        int i;
->>>> +
->>>> +        for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
->>>> +            cmd = &map->commands[i];
->>>> +            cmd->opcode = spi_nor_convert_3to4_erase(cmd->opcode);
->>>> +        }
->>>> +    }
->>>>    }
->>>>      /* Enable/disable 4-byte addressing mode. */
->>>> @@ -497,6 +508,131 @@ static int spi_nor_erase_sector(struct spi_nor
->>>> *nor, u32 addr)
->>>>        return nor->write_reg(nor, nor->erase_opcode, buf,
->>>> nor->addr_width);
->>>>    }
->>>>    +/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
->>>> +static inline u64
->>>> +spi_nor_div_by_erase_size(const struct spi_nor_erase_command *cmd,
->>>> +              u64 dividend, u32 *remainder)
->>>> +{
->>>> +    *remainder = (u32)dividend & cmd->size_mask;
->>>> +    return dividend >> cmd->size_shift;
->>>> +}
->>>> +
->>>> +static const struct spi_nor_erase_command *
->>>> +spi_nor_find_best_erase_cmd(const struct spi_nor_erase_map *map,
->>>> +                const struct spi_nor_erase_region *region, u64 addr,
->>>> +                u32 len)
->>>> +{
->>>> +    const struct spi_nor_erase_command *cmd;
->>>> +    u32 rem;
->>>> +    int i;
->>>> +    u8 cmd_mask = region->offset & SNOR_CMD_ERASE_MASK;
->>>> +
->>>> +    /*
->>>> +     * Commands are ordered by size, with the biggest erase type at
->>>> +     * index 0.
->>>> +     */
->>>> +    for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
->>>> +        /* Does the erase region support the tested erase command? */
->>>> +        if (!(cmd_mask & BIT(i)))
->>>> +            continue;
->>>> +
->>>> +        cmd = &map->commands[i];
->>>> +
->>>> +        /* Don't erase more than what the user has asked for. */
->>>> +        if (cmd->size > len)
->>>> +            continue;
->>>
->>> Are you sure checking for the full erase block length first and then
->>> checking if you can sub-erase the block is OK ?
->>
->> will respond in the next comment.
->>
->>>
->>>> +        if (!(region->offset & SNOR_OVERLAID_REGION)) {
->>>> +            /* 'addr' must be aligned to the erase size. */
->>>> +            spi_nor_div_by_erase_size(cmd, addr, &rem);
->>
->> oh, I missed the if here, this should have been confusing.
->> if (rem)
->>      continue;
->> else
->>      return cmd;
->> The else case can be merged with the one from below.
->>
->> Returning to your previous question. I iterate from the biggest erase
->> command to the smallest, because bigger is preferred, it will minimize
->> the amount of erase() calls. The biggest erase command that doesn't
->> erase more that what the user has asked for, will do. If the region is
->> not-overlaid the address must also be aligned with the erase size.
-> 
-> You can have a flash with 4k sectors which also supports 64k erase and
-> try to erase ie. 128k at offset +4k. That means you need to first erase
-> small chunks, then big chunk, then small chunks again. So I don't think
-> you can start with large chunk to see if you can erase it, since on such
-> a setup the erase will degrade to massive amount of 4k erase ops.
+> Now, the changes have been made to assign the callback for
+
+It is preferable to use a descriptive tense when you expose what the
+patch does. Something like "Change <this> to assign ..."
+
+> channel's final descriptor. The DMA will generate the callback
+> when all the descriptors have completed in that channel.
+> The NAND transfer will be completed only when all required
+> DMA channels have generated the completion callback.
 > 
 
-I'm looking for the biggest supported erase command with which the
-provided address is aligned and which does not erase more that what the
-user has asked for. In your example, 4k erase type will be used until
-reaching the 64k offset, then a 64k erase type, then a 4k type.
+It looks like this is a fix that is a good candidate for stable trees,
+you might want to add the relevant tags.
 
-> [...]
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+> * Changes from v1:
 > 
->>>> +    while (len) {
->>>> +        cmd = spi_nor_find_best_erase_cmd(map, region, addr, len);
->>>> +        if (!cmd)
->>>> +            return -EINVAL;
->>>
->>> What would happen if you realize mid-way that you cannot erase some
->>> sector , do you end up with partial erase ?
->>
->> Is this possible? In non-overlaid regions, the address is aligned with
->> at least one of the erase commands, else -EINVAL. For overlaid regions
->> alignment doesn't matter. But yes, if this is possible, in this case,
->> this proposal will do a partial erase.
+>   NONE
 > 
-> Shouldn't we fail up front instead ?
+>   1. Removed the custom logic and used the helper fuction.
+>  drivers/mtd/nand/raw/qcom_nandc.c | 55 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 54 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index a8d71ce..3d1ff54 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -213,6 +213,8 @@
+>  #define QPIC_PER_CW_CMD_SGL		32
+>  #define QPIC_PER_CW_DATA_SGL		8
+>  
+> +#define QPIC_NAND_COMPLETION_TIMEOUT	msecs_to_jiffies(2000)
 
-It will be great if we can do this without having performance penalties.
-Can we loose the conditions for the last erase command? If one wants to
-erase 80k chunk starting from offset 0 and only 32k and 64k erase type
-are supported, can we erase 96k?
+That's huge, but why not, it's a timeout anyway.
 
-Thanks,
-ta
+> +
+>  /*
+>   * Flags used in DMA descriptor preparation helper functions
+>   * (i.e. read_reg_dma/write_reg_dma/read_data_dma/write_data_dma)
+> @@ -245,6 +247,11 @@
+>   * @tx_sgl_start - start index in data sgl for tx.
+>   * @rx_sgl_pos - current index in data sgl for rx.
+>   * @rx_sgl_start - start index in data sgl for rx.
+> + * @first_chan_done - if current transfer already has got first channel
+> + *		      DMA desc completion.
+> + * @txn_done - completion for nand transfer.
+
+s/nand/NAND/
+
+> + * @last_data_desc - last DMA desc in data channel (tx/rx).
+> + * @last_cmd_desc - last DMA desc in command channel.
+>   */
+>  struct bam_transaction {
+>  	struct bam_cmd_element *bam_ce;
+> @@ -258,6 +265,10 @@ struct bam_transaction {
+>  	u32 tx_sgl_start;
+>  	u32 rx_sgl_pos;
+>  	u32 rx_sgl_start;
+> +	bool first_chan_done;
+> +	struct completion txn_done;
+> +	struct dma_async_tx_descriptor *last_data_desc;
+> +	struct dma_async_tx_descriptor *last_cmd_desc;
+>  };
+>  
+>  /*
+> @@ -504,6 +515,8 @@ static void free_bam_transaction(struct qcom_nand_controller *nandc)
+>  
+>  	bam_txn->data_sgl = bam_txn_buf;
+>  
+> +	init_completion(&bam_txn->txn_done);
+> +
+>  	return bam_txn;
+>  }
+>  
+> @@ -523,11 +536,36 @@ static void clear_bam_transaction(struct qcom_nand_controller *nandc)
+>  	bam_txn->tx_sgl_start = 0;
+>  	bam_txn->rx_sgl_pos = 0;
+>  	bam_txn->rx_sgl_start = 0;
+> +	bam_txn->last_data_desc = NULL;
+> +	bam_txn->first_chan_done = false;
+
+Are you sure you don't want to reinit last_cmd_desc here?
+
+>  
+>  	sg_init_table(bam_txn->cmd_sgl, nandc->max_cwperpage *
+>  		      QPIC_PER_CW_CMD_SGL);
+>  	sg_init_table(bam_txn->data_sgl, nandc->max_cwperpage *
+>  		      QPIC_PER_CW_DATA_SGL);
+> +
+> +	reinit_completion(&bam_txn->txn_done);
+> +}
+> +
+> +/* Callback for DMA descriptor completion */
+> +static void qpic_bam_dma_done(void *data)
+> +{
+> +	struct bam_transaction *bam_txn = data;
+> +
+> +	/*
+> +	 * In case of data transfer with NAND, 2 callbacks will be generated.
+> +	 * One for command channel and another one for data channel.
+> +	 * If current transaction has data descriptors then check if its
+> +	 * already got one DMA channel completion callback. In this case
+> +	 * make the NAND transfer complete otherwise mark first_chan_done true
+> +	 * and wait for next channel DMA completion callback.
+> +	 */
+> +	if (bam_txn->last_data_desc && !bam_txn->first_chan_done) {
+> +		bam_txn->first_chan_done = true;
+> +		return;
+> +	}
+
+There is a lot of new variables just to wait for two bam_dma_done().
+Why not just creating a boolean like "wait_second completion",
+initialize it in prepare_bam_async_desc to true when needed and
+complete txn_done when it's false, that's all:
+
+        if (bam_txn->wait_second_completion) {
+                bam_txn->wait_second_completion = false;
+                return;
+        }
+
+> +
+> +	complete(&bam_txn->txn_done);
+>  }
+>  
+>  static inline struct qcom_nand_host *to_qcom_nand_host(struct nand_chip *chip)
+> @@ -756,6 +794,12 @@ static int prepare_bam_async_desc(struct qcom_nand_controller *nandc,
+>  
+>  	desc->dma_desc = dma_desc;
+>  
+> +	/* update last data/command descriptor */
+> +	if (chan == nandc->cmd_chan)
+> +		bam_txn->last_cmd_desc = dma_desc;
+> +	else
+> +		bam_txn->last_data_desc = dma_desc;
+> +
+
+Is there a reason for the "last_" prefix? why not current_*_desc or
+just *_desc? (this is a real question :) ). Correct me if I'm wrong but
+you have a scatter-gather list of DMA transfers that are mapped to form
+one DMA descriptor, so there is no "last" descriptor, right?
+
+Otherwise, as I told you above, why not just a:
+
+        if (chan == nandc->data_chan)
+                bam_txn->wait_second_completion = true;
+
+>  	list_add_tail(&desc->node, &nandc->desc_list);
+>  
+>  	return 0;
+> @@ -1273,10 +1317,19 @@ static int submit_descs(struct qcom_nand_controller *nandc)
+>  		cookie = dmaengine_submit(desc->dma_desc);
+>  
+>  	if (nandc->props->is_bam) {
+> +		bam_txn->last_cmd_desc->callback = qpic_bam_dma_done;
+> +		bam_txn->last_cmd_desc->callback_param = bam_txn;
+> +		if (bam_txn->last_data_desc) {
+> +			bam_txn->last_data_desc->callback = qpic_bam_dma_done;
+> +			bam_txn->last_data_desc->callback_param = bam_txn;
+> +		}
+
+Why don't you do this directly in prepare_bam_async_desc?
+
+With:
+
+        dma_desc->callback = ...
+        dma_desc->callback_param = ...
+
+> +
+>  		dma_async_issue_pending(nandc->tx_chan);
+>  		dma_async_issue_pending(nandc->rx_chan);
+> +		dma_async_issue_pending(nandc->cmd_chan);
+>  
+> -		if (dma_sync_wait(nandc->cmd_chan, cookie) != DMA_COMPLETE)
+> +		if (!wait_for_completion_timeout(&bam_txn->txn_done,
+> +						 QPIC_NAND_COMPLETION_TIMEOUT))
+>  			return -ETIMEDOUT;
+>  	} else {
+>  		if (dma_sync_wait(nandc->chan, cookie) != DMA_COMPLETE)
+
+
+
+-- 
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
