@@ -1,16 +1,25 @@
-Received: from gate.crashing.org ([63.228.1.57])
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fKxoL-0003SX-Iv
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 03:19:12 +0000
-Message-ID: <00a60e88ed75601a69f6cf4b194ef9ee6b22056f.camel@kernel.crashing.org>
-Subject: Lockdep complaint in jffs2
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: linux-kernel@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org, Al
- Viro <viro@ZenIV.linux.org.uk>
-Date: Tue, 22 May 2018 13:17:20 +1000
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+ id 1fKzQd-00006T-6J
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 05:01:44 +0000
+Subject: Re: [RFC PATCH] mtd: spi-nor: add support to non-uniform SPI NOR
+ flash memories
+To: Marek Vasut <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nicolas.ferre@microchip.com>, <Cristian.Birsan@microchip.com>
+References: <20180518093233.24241-1-tudor.ambarus@microchip.com>
+ <89d45190-95b0-b780-b219-e6c6adcb6147@gmail.com>
+ <4cd7d47a-fd56-6b54-3b38-262adf46a97f@microchip.com>
+ <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <123e50da-e49e-f876-bdb4-2719f7f7640a@microchip.com>
+Date: Tue, 22 May 2018 08:01:28 +0300
+MIME-Version: 1.0
+In-Reply-To: <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,84 +30,250 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David !
+Hi, Marek,
 
-I noticed this on my BMC when building OpenBMC with Lockdep...
-something worth investigating/digging ?
+On 05/21/2018 07:59 PM, Marek Vasut wrote:
+> On 05/21/2018 06:42 PM, Tudor Ambarus wrote:
+>> Hi, Marek,
+> 
+> [...]
+> 
+>>>> This is a transitional patch: non-uniform erase maps will be used later
+>>>> when initialized based on the SFDP data.
+>>>
+>>> What about non-SFDP non-linear flashes ?
+>>
+>> Non-SFDP non-uniform flashes support is not addressed with this
+>> proposal, I should have told this in the commit message, thanks. But we
+>> are backward compatible, if non-SFDP, the flashes are considered
+>> uniform.
+> 
+> OK. btw wall-of-text description of patch isn't my fav thing.
+> 
+>>>> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+>>>>
+>>>> [tudor.ambarus@microchip.com:
+>>>> - add improvements on how the erase map is handled. The map is an array
+>>>> describing the boundaries of the erase regions. LSB bits of the region's
+>>>> offset are used to describe the supported erase types, to indicate if
+>>>> that specific region is the last region in the map and to mark if the
+>>>> region is overlaid or not. When one sends an addr and len to erase a
+>>>> chunk of memory, we identify in which region the address fits, we start
+>>>> erasing with the best fitted erase commands and when the region ends,
+>>>> continue to erase from the next region. The erase is optimal: identify
+>>>> the start offset (once), then erase with the best erase command,
+>>>> move forward and repeat.
+>>>
+>>> Is that like an R-tree ?
+>>
+>> Not really. I find this RFC proposal faster and neat, but I'm open for
+>> suggestions and guidance.
+>>
+>> One wants to erase a contiguous chunk of memory and sends us the
+>> starting address and the total length. The algorithm of finding the best
+>> sequence of erase commands can be summarized in four steps:
+>>
+>> 1. Find in which region the address fits.
+>> This step is done only once, at the beginning. For the non-uniform
+>> SFDP-defined flashes, usually there are two or three regions defined.
+>> Nevertheless, in the worst case, the maximum number of regions that can
+>> be defined is on eight bits, so 255. Linear search for just 255 elements
+>> in the worst case looks good for me, especially that we do this search
+>> once.
+>>
+>> 2. Find the *best* erase command that is defined in that region.
+>> Each region can define maximum 4 erase commands. *Best* is defined as
+>> the largest/biggest supported erase command with which the provided
+>> address is aligned and which does not erase more that what the user has
+>> asked for. In case of overlaid regions, alignment does not matter. The
+>> largest command will erase the remaining of the overlaid region without
+>> touching the region with which it overlaps (see S25FS512S). The
+>> supported erase commands are ordered by size with the biggest queried
+>> first. It is desirable to erase with large erase commands so that we
+>> erase as much as we can in one shoot, minimizing the erase() calls.
+>>
+>> 3. Erase sector with the *best* erase command and move forward in a
+>> linear fashion.
+>> addr += cmd->size;
+>> len -= cmd->size;
+>> If the new address exceeds the end of this region, move to the next.
+>>
+>> 4. While (len) goto step2.
+>>
+>> That's all. Linearity is an advantage. We find the starting region and
+>> then we traverse each region in order without other queries.
+>>
+>>>
+>>>> - order erase types by size, with the biggest erase type at BIT(0). With
+>>>> this, we can iterate from the biggest supported erase type to the
+>>>> smallest,
+>>>> and when find one that meets all the required conditions, break the
+>>>> loop.
+>>>> This saves time in determining the best erase cmd.
+>>>>
+>>>> - minimize the amount of erase() calls by using the best sequence of
+>>>> erase
+>>>> type commands depending on alignment.
+>>>
+>>> Nice, this was long overdue
+>>>
+>>>> - replace spi_nor_find_uniform_erase() with
+>>>> spi_nor_select_uniform_erase().
+>>>> Even for the SPI NOR memories with non-uniform erase types, we can
+>>>> determine
+>>>> at init if there are erase types that can erase the entire memory.
+>>>> Fill at
+>>>> init the uniform_erase_type bitmask, to encode the erase type
+>>>> commands that
+>>>> can erase the entire memory.
+>>>>
+>>>> - clarify support for overlaid regions. Considering one of the erase
+>>>> maps
+>>>> of the S25FS512S memory:
+>>>> Bottom: 8x 4KB sectors at bottom (only 4KB erase supported),
+>>>>           1x overlaid 224KB sector at bottom (only 256KB erase
+>>>> supported),
+>>>>           255x 256KB sectors (only 256KB erase supported)
+>>>> S25FS512S states that 'if a sector erase command is applied to a
+>>>> 256KB range
+>>>> that is overlaid by 4KB secors, the overlaid 4kB sectors are not
+>>>> affected by
+>>>> the erase'. When at init, the overlaid region size should be set to
+>>>> region->size = erase_size - count; in order to not miss chunks of data
+>>>> when traversing the regions.
+>>>>
+>>>> - backward compatibility test done on MX25L25673G.
+>>>>
+>>>> The 'erase with the best command, move forward and repeat' approach was
+>>>> suggested by Cristian Birsan in a brainstorm session, so:
+>>>> ]
+>>>> Suggested-by: Cristian Birsan <cristian.birsan@microchip.com>
+>>>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+>>>> ---
+>>>>    drivers/mtd/spi-nor/spi-nor.c | 281
+>>>> +++++++++++++++++++++++++++++++++++++++---
+>>>>    include/linux/mtd/spi-nor.h   |  89 +++++++++++++
+>>>>    2 files changed, 356 insertions(+), 14 deletions(-)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+>>>> b/drivers/mtd/spi-nor/spi-nor.c
+>>>> index 494b7a2..bb70664 100644
+>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>>> @@ -260,6 +260,17 @@ static void spi_nor_set_4byte_opcodes(struct
+>>>> spi_nor *nor,
+>>>>        nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
+>>>>        nor->program_opcode =
+>>>> spi_nor_convert_3to4_program(nor->program_opcode);
+>>>>        nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
+>>>> +
+>>>> +    if (!spi_nor_has_uniform_erase(nor)) {
+>>>> +        struct spi_nor_erase_map *map = &nor->erase_map;
+>>>> +        struct spi_nor_erase_command *cmd;
+>>>> +        int i;
+>>>> +
+>>>> +        for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
+>>>> +            cmd = &map->commands[i];
+>>>> +            cmd->opcode = spi_nor_convert_3to4_erase(cmd->opcode);
+>>>> +        }
+>>>> +    }
+>>>>    }
+>>>>      /* Enable/disable 4-byte addressing mode. */
+>>>> @@ -497,6 +508,131 @@ static int spi_nor_erase_sector(struct spi_nor
+>>>> *nor, u32 addr)
+>>>>        return nor->write_reg(nor, nor->erase_opcode, buf,
+>>>> nor->addr_width);
+>>>>    }
+>>>>    +/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+>>>> +static inline u64
+>>>> +spi_nor_div_by_erase_size(const struct spi_nor_erase_command *cmd,
+>>>> +              u64 dividend, u32 *remainder)
+>>>> +{
+>>>> +    *remainder = (u32)dividend & cmd->size_mask;
+>>>> +    return dividend >> cmd->size_shift;
+>>>> +}
+>>>> +
+>>>> +static const struct spi_nor_erase_command *
+>>>> +spi_nor_find_best_erase_cmd(const struct spi_nor_erase_map *map,
+>>>> +                const struct spi_nor_erase_region *region, u64 addr,
+>>>> +                u32 len)
+>>>> +{
+>>>> +    const struct spi_nor_erase_command *cmd;
+>>>> +    u32 rem;
+>>>> +    int i;
+>>>> +    u8 cmd_mask = region->offset & SNOR_CMD_ERASE_MASK;
+>>>> +
+>>>> +    /*
+>>>> +     * Commands are ordered by size, with the biggest erase type at
+>>>> +     * index 0.
+>>>> +     */
+>>>> +    for (i = 0; i < SNOR_CMD_ERASE_MAX; i++) {
+>>>> +        /* Does the erase region support the tested erase command? */
+>>>> +        if (!(cmd_mask & BIT(i)))
+>>>> +            continue;
+>>>> +
+>>>> +        cmd = &map->commands[i];
+>>>> +
+>>>> +        /* Don't erase more than what the user has asked for. */
+>>>> +        if (cmd->size > len)
+>>>> +            continue;
+>>>
+>>> Are you sure checking for the full erase block length first and then
+>>> checking if you can sub-erase the block is OK ?
+>>
+>> will respond in the next comment.
+>>
+>>>
+>>>> +        if (!(region->offset & SNOR_OVERLAID_REGION)) {
+>>>> +            /* 'addr' must be aligned to the erase size. */
+>>>> +            spi_nor_div_by_erase_size(cmd, addr, &rem);
+>>
+>> oh, I missed the if here, this should have been confusing.
+>> if (rem)
+>>      continue;
+>> else
+>>      return cmd;
+>> The else case can be merged with the one from below.
+>>
+>> Returning to your previous question. I iterate from the biggest erase
+>> command to the smallest, because bigger is preferred, it will minimize
+>> the amount of erase() calls. The biggest erase command that doesn't
+>> erase more that what the user has asked for, will do. If the region is
+>> not-overlaid the address must also be aligned with the erase size.
+> 
+> You can have a flash with 4k sectors which also supports 64k erase and
+> try to erase ie. 128k at offset +4k. That means you need to first erase
+> small chunks, then big chunk, then small chunks again. So I don't think
+> you can start with large chunk to see if you can erase it, since on such
+> a setup the erase will degrade to massive amount of 4k erase ops.
+> 
 
-Cheers,
-Ben.
+I'm looking for the biggest supported erase command with which the
+provided address is aligned and which does not erase more that what the
+user has asked for. In your example, 4k erase type will be used until
+reaching the 64k offset, then a 64k erase type, then a 4k type.
 
-  24.068677] ======================================================
-[   24.074871] WARNING: possible circular locking dependency detected
-[   24.081065] 4.13.16-01426-gaa61047 #61 Not tainted
-[   24.085858] ------------------------------------------------------
-[   24.092039] systemd-tmpfile/616 is trying to acquire lock:
-[   24.097524]  (&f->sem){+.+.+.}, at: [<802cc018>] jffs2_readpage+0x30/0x5c
-[   24.104389] 
-[   24.104389] but task is already holding lock:
-[   24.110228]  (&mm->mmap_sem){++++++}, at: [<8010d274>] do_page_fault+0xa0/0x3c0
-[   24.117588] 
-[   24.117588] which lock already depends on the new lock.
-[   24.117588] 
-[   24.125769] 
-[   24.125769] the existing dependency chain (in reverse order) is:
-[   24.133246] 
-[   24.133246] -> #1 (&mm->mmap_sem){++++++}:
-[   24.138878]        __might_fault+0x8c/0xc0
-[   24.143007]        filldir64+0x80/0x33c
-[   24.146878]        jffs2_readdir+0xd8/0x1d4
-[   24.151082]        iterate_dir+0x84/0x180
-[   24.155108]        SyS_getdents64+0x94/0x1d8
-[   24.159400]        ret_fast_syscall+0x0/0x1c
-[   24.163677] 
-[   24.163677] -> #0 (&f->sem){+.+.+.}:
-[   24.168779]        lock_acquire+0xe8/0x208
-[   24.172898]        __mutex_lock+0x90/0x660
-[   24.177007]        mutex_lock_nested+0x2c/0x34
-[   24.181472]        jffs2_readpage+0x30/0x5c
-[   24.185678]        filemap_fault+0x4e8/0x614
-[   24.189971]        __do_fault+0x28/0xd0
-[   24.193823]        handle_mm_fault+0x948/0xfb0
-[   24.198286]        do_page_fault+0x2d8/0x3c0
-[   24.202573]        do_DataAbort+0x50/0xe8
-[   24.206605]        __dabt_usr+0x44/0x60
-[   24.210456]        0x76cf9b04
-[   24.213432] 
-[   24.213432] other info that might help us debug this:
-[   24.213432] 
-[   24.221439]  Possible unsafe locking scenario:
-[   24.221439] 
-[   24.227357]        CPU0                    CPU1
-[   24.231891]        ----                    ----
-[   24.236421]   lock(&mm->mmap_sem);
-[   24.239837]                                lock(&f->sem);
-[   24.245244]                                lock(&mm->mmap_sem);
-[   24.251172]   lock(&f->sem);
-[   24.254066] 
-[   24.254066]  *** DEADLOCK ***
-[   24.254066] 
-[   24.259992] 1 lock held by systemd-tmpfile/616:
-[   24.264518]  #0:  (&mm->mmap_sem){++++++}, at: [<8010d274>] do_page_fault+0xa0/0x3c0
-[   24.272315] 
-[   24.272315] stack backtrace:
-[   24.276692] CPU: 0 PID: 616 Comm: systemd-tmpfile Not tainted 4.13.16-01426-gaa61047 #61
-[   24.284776] Hardware name: Generic DT based system
-[   24.289610] [<8010a494>] (unwind_backtrace) from [<80107510>] (show_stack+0x20/0x24)
-[   24.297402] [<80107510>] (show_stack) from [<80612710>] (dump_stack+0x20/0x28)
-[   24.304664] [<80612710>] (dump_stack) from [<80152be8>] (print_circular_bug+0x1bc/0x2fc)
-[   24.312779] [<80152be8>] (print_circular_bug) from [<80156fcc>] (__lock_acquire+0x1674/0x18b8)
-[   24.321415] [<80156fcc>] (__lock_acquire) from [<80157d5c>] (lock_acquire+0xe8/0x208)
-[   24.329273] [<80157d5c>] (lock_acquire) from [<8062ba68>] (__mutex_lock+0x90/0x660)
-[   24.336956] [<8062ba68>] (__mutex_lock) from [<8062cde4>] (mutex_lock_nested+0x2c/0x34)
-[   24.345000] [<8062cde4>] (mutex_lock_nested) from [<802cc018>] (jffs2_readpage+0x30/0x5c)
-[   24.353217] [<802cc018>] (jffs2_readpage) from [<801f81a4>] (filemap_fault+0x4e8/0x614)
-[   24.361265] [<801f81a4>] (filemap_fault) from [<802279c4>] (__do_fault+0x28/0xd0)
-[   24.368788] [<802279c4>] (__do_fault) from [<8022b198>] (handle_mm_fault+0x948/0xfb0)
-[   24.376649] [<8022b198>] (handle_mm_fault) from [<8010d4ac>] (do_page_fault+0x2d8/0x3c0)
-[   24.384764] [<8010d4ac>] (do_page_fault) from [<80101314>] (do_DataAbort+0x50/0xe8)
-[   24.392461] [<80101314>] (do_DataAbort) from [<80108724>] (__dabt_usr+0x44/0x60)
-[   24.399867] Exception stack(0x958e5fb0 to 0x958e5ff8)
-[   24.404932] 5fa0:                                     02428220 76ff62d4 76ff6000 76cf9af4
-[   24.413117] 5fc0: 02428220 76dccc8c 02428220 02427e18 0000000a 02427e18 00000000 00000000
-[   24.421305] 5fe0: fbada489 7e89b1a8 76cfba2c 76cf9b04 80000010 ffffffff
+> [...]
+> 
+>>>> +    while (len) {
+>>>> +        cmd = spi_nor_find_best_erase_cmd(map, region, addr, len);
+>>>> +        if (!cmd)
+>>>> +            return -EINVAL;
+>>>
+>>> What would happen if you realize mid-way that you cannot erase some
+>>> sector , do you end up with partial erase ?
+>>
+>> Is this possible? In non-overlaid regions, the address is aligned with
+>> at least one of the erase commands, else -EINVAL. For overlaid regions
+>> alignment doesn't matter. But yes, if this is possible, in this case,
+>> this proposal will do a partial erase.
+> 
+> Shouldn't we fail up front instead ?
+
+It will be great if we can do this without having performance penalties.
+Can we loose the conditions for the last erase command? If one wants to
+erase 80k chunk starting from offset 0 and only 32k and 64k erase type
+are supported, can we erase 96k?
+
+Thanks,
+ta
