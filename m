@@ -1,29 +1,27 @@
-Received: from mail-yb0-f193.google.com ([209.85.213.193])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLB7n-0006Yc-6y
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 17:31:04 +0000
-Received: by mail-yb0-f193.google.com with SMTP id v12-v6so6613843ybl.10
- for <linux-mtd@lists.infradead.org>; Tue, 22 May 2018 10:30:52 -0700 (PDT)
-Date: Tue, 22 May 2018 12:30:50 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: document Broadcom's BCM47xx
- partitions
-Message-ID: <20180522173050.GA9245@rob-hp-laptop>
-References: <20180509081729.28347-1-zajec5@gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLBT4-0001ZA-3Q
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 17:53:04 +0000
+Date: Tue, 22 May 2018 19:52:30 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
+ mturquette@baylibre.com, sboyd@kernel.org, dev@lynxeye.de,
+ miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [RESEND PATCH 1/5] mtd: rawnand: tegra: add devicetree binding
+Message-ID: <20180522195230.471a796e@bbrezillon>
+In-Reply-To: <8bd0f80a9db9abc7af192d1c7d449887b1392ff7.1526990589.git.stefan@agner.ch>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <8bd0f80a9db9abc7af192d1c7d449887b1392ff7.1526990589.git.stefan@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180509081729.28347-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 09, 2018 at 10:17:28AM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Broadcom based home router devices use partitions which have to be
-> discovered in a specific way. They are not fixed and there is not any
-> standard partition table. This commit adds and describes a new custom
-> binding for such devices.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> This commit documents a new binding for describing partitions. Just as a
-> reminder: we agreed to use "compatible" for that purpose to avoid
-> /guessing/. There are too many cases, devices and /formats/ to just
-> blindly try every possible parser.
-> 
-> This was e.g. described by Boris in his patchset 2+ years ago:
-> [RFC PATCH 0/7] mtd: partitions: add of_match_table support
-> http://lists.infradead.org/pipermail/linux-mtd/2015-December/064076.html
-> 
-> Quote:
-> >  (2) we can't just scan for all supported parsers (like the block system does), since
-> >      there is a wide diversity of "formats" (no standardization), and it is not
-> >      always safe or efficient to attempt to do so, particularly since many of
-> >      them allow their data structures to be placed anywhere on the flash, and
-> >      so require scanning the entire flash device to find them.
-> 
-> I believe this solution was also acked back then by Rob:
-> [RFC PATCH 3/7] doc: dt: mtd: partition: add on-flash format binding
-> http://lists.infradead.org/pipermail/linux-mtd/2015-December/064100.html
-> 
-> V2: Move documentation to the new brcm,bcm947xx-cfe-partitions.txt file
->     as suggested by Rob (we don't want to bloat partition.txt).
->     Slightly update commit message.
-> ---
->  .../devicetree/bindings/mtd/partition.txt          |  2 +-
->  .../partitions/brcm,bcm947xx-cfe-partitions.txt    | 42 ++++++++++++++++++++++
->  2 files changed, 43 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt
+Hello Stefan,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Tue, 22 May 2018 14:07:05 +0200
+Stefan Agner <stefan@agner.ch> wrote:
+
+> From: Lucas Stach <dev@lynxeye.de>
+> 
+> This adds the devicetree binding for the Tegra 2 NAND flash
+> controller.
+> 
+> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  .../bindings/mtd/nvidia,tegra20-nand.txt      | 29 +++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> new file mode 100644
+> index 000000000000..522d442937a9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+> @@ -0,0 +1,29 @@
+> +NVIDIA Tegra NAND Flash controller
+> +
+> +Required properties:
+> +- compatible: Must be one of:
+> +  - "nvidia,tegra20-nand"
+> +- reg: MMIO address range
+> +- interrupts: interrupt output of the NFC controller
+> +- clocks: Must contain an entry for each entry in clock-names.
+> +  See ../clocks/clock-bindings.txt for details.
+> +- clock-names: Must include the following entries:
+> +  - nand
+> +- resets: Must contain an entry for each entry in reset-names.
+> +  See ../reset/reset.txt for details.
+> +- reset-names: Must include the following entries:
+> +  - nand
+> +
+> +Optional properties:
+> +- nvidia,wp-gpios: GPIO used to disable write protection of the flash
+> +
+> +  Example:
+> +	nand@70008000 {
+> +		compatible = "nvidia,tegra20-nand";
+> +		reg = <0x70008000 0x100>;
+> +		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
+> +		clock-names = "nand";
+> +		resets = <&tegra_car 13>;
+> +		reset-names = "nand";
+> +	};
+
+Can you represent the controller and NAND chip separately as
+recommended here [1].
+
+Thanks,
+
+Boris
+
+[1]https://elixir.bootlin.com/linux/v4.17-rc6/source/Documentation/devicetree/bindings/mtd/nand.txt#L56
