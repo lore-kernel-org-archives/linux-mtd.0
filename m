@@ -1,19 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fL4xE-0005qJ-6D
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 10:55:48 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] mtd: devices: m25p80: Use spi_mem_set_drvdata() instead of
- spi_set_drvdata()
-Date: Tue, 22 May 2018 12:55:14 +0200
-Message-Id: <20180522105514.8145-1-boris.brezillon@bootlin.com>
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fL52L-0000sN-8W
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 11:01:07 +0000
+Subject: Re: Selabel/selinux support in mtd-utils for ubifs
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at
+References: <d1fc48d2-ee16-2405-bf4d-a75ea8cd5f46@codeaurora.org>
+ <1707195.VuFK1zXW7D@blindfold>
+From: Ritesh Harjani <riteshh@codeaurora.org>
+Message-ID: <48fb4c58-ddf4-30fe-7e2b-48d8be32ddc3@codeaurora.org>
+Date: Tue, 22 May 2018 16:30:42 +0530
+MIME-Version: 1.0
+In-Reply-To: <1707195.VuFK1zXW7D@blindfold>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SPI mem drivers should use spi_mem_set_drvdata() not spi_set_drvdata()
-to store their private data. Using spi_set_drvdata() will mess the
-spi -> spi-mem link up and cause a kernel panic at shutdown or
-device removal time.
 
-Fixes: 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
-Reported-by: Marek Vasut <marek.vasut@gmail.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Marek Vasut <marek.vasut+renesas@gmail.com> on R8A7791 Porter
----
-Hi Mark,
 
-Could you take this patch through the SPI tree? The bug has been
-introduced by 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
-which is in the spi/for-4.18 branch (I didn't pull these changes in the
-MTD tree yet, and if possible I'd like to avoid doing that unless we
-end up with a conflict between the MTD and SPI tree).
+On 5/22/2018 2:56 AM, Richard Weinberger wrote:
+> Ritesh,
+> 
+> Am Montag, 21. Mai 2018, 13:47:53 CEST schrieb Ritesh Harjani:
+>> Hello all,
+>>
+>> Could anyone please help whether selinux support is fully present on
+>> ubifs or not?
+>>
+>> Below are my observations:-
+>> 1. Selinux support was added in ubifs kernel via below patch
+>> "UBIFS: Add security.* XATTR support for the UBIFS"
+>>
+>> 2. Extended attribute support was added in mtd-utils via below patch.
+>> "mkfs.ubifs: Add extended attribute support"
+>>
+>> With above I think that selinux could be enabled but only at the boot
+>> time using selinux tools.
+> 
+> Yes.
+> 
+>> But I could not see any support to add selinux labels/context
+>> information while creating ubifs.img in mtd-utils. I do see below link
+>> where something like above was tried but never made upstream. Could
+>> anyone please give pointers on whether this support is added/ or bring
+>> worked upon?
+>>
+>> http://lists.infradead.org/pipermail/linux-mtd/2014-February/052136.html
+>>
+>> Also Whether selinux labeling support can be added in the mkfs.ubifs or
+>> not? Do we see any issues with this?
+> 
+> No, just revive the patches.
+> In 2014 the maintainer situation was different and sadly we forgot about some
+> patches.
+>   
+>> I would like to work upon adding selinux support in mtd-utils.
+> 
+> This would be wonderful!
+> 
+>> I would appreciate if I could get some pointers on above queries and if
+>> anyone has any pointers/suggestions for this.
+> 
+> Just go ahead. :-)
+Sure, thanks Richard.
+I will work on this and will post the patches.
 
-Let me know if that's not possible and I'll find another solution (wait
--rc1 or merge the spi/for-4.18 branch into the MTD tree).
 
-Thanks,
+> 
+> Thanks,
+> //richard
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
-Boris
----
- drivers/mtd/devices/m25p80.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 3dc022d3b53e..e84563d2067f 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -182,7 +182,7 @@ static int m25p_probe(struct spi_mem *spimem)
- 	spi_nor_set_flash_node(nor, spi->dev.of_node);
- 	nor->priv = flash;
- 
--	spi_set_drvdata(spi, flash);
-+	spi_mem_set_drvdata(spimem, flash);
- 	flash->spimem = spimem;
- 
- 	if (spi->mode & SPI_RX_QUAD) {
 -- 
-2.14.1
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, 
+Inc.
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
+Linux Foundation Collaborative Project.
