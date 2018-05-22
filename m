@@ -1,30 +1,16 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from sender-of-o51.zoho.com ([135.84.80.216])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fL8HT-0000kc-4v
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 14:29:04 +0000
+ id 1fL8f1-0002cG-DQ
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 14:53:12 +0000
+Date: Tue, 22 May 2018 20:22:54 +0530
+From: Siddharth Chandrasekaran <siddharth@embedjournal.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Message-ID: <1638856b945.101c6b59a6973.7576653443668587481@embedjournal.com>
+In-Reply-To: 
+Subject: NOR Flash Test Utility
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Date: Tue, 22 May 2018 16:28:37 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <0a3c683c-15fd-d05c-4aa2-5fa109c892c6@gmail.com>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <2e858be88e00e26495fe47c6cd5cd70c@agner.ch>
- <0a3c683c-15fd-d05c-4aa2-5fa109c892c6@gmail.com>
-Message-ID: <7efc2975ed8c24a708d43dec06a48ceb@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,80 +20,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22.05.2018 15:34, Dmitry Osipenko wrote:
-> On 22.05.2018 15:19, Stefan Agner wrote:
->> [review sent to my first patch sent off-ml, moving to ml thread]
->>
->> On 21.05.2018 16:05, Dmitry Osipenko wrote:
->>> Hello Stefan,
->>>
->>> I don't have expertise to review the actual NAND-related driver logic, so I only
->>> reviewed the basics. The driver code looks good to me, though I've couple minor
->>> comments.
->>>
->>> On 21.05.2018 03:16, Stefan Agner wrote:
->>>> Add support for the NAND flash controller found on NVIDIA
->>>> Tegra 2 SoCs. This implementation does not make use of the
->>>> command queue feature. Regular operations/data transfers are
->>>> done in PIO mode. Page read/writes with hardware ECC make
->>>> use of the DMA for data transfer.
->>>>
->>>> Signed-off-by: Lucas Stach <dev@lynxeye.de>
->>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
->>>> ---
+Hello,
 
-<snip>
+I'm trying to test some NOR flashes to for manufacturing defects. I see there
+is a test utility that reads and writes sequentially for NAND flash under
+`nand-utils`, but `nor-utils` doesn't seem to have anything similar.
 
->>>> +static int tegra_nand_read_page(struct mtd_info *mtd, struct nand_chip *chip,
->>>> +				uint8_t *buf, int oob_required, int page)
->>>> +{
->>>> +	struct tegra_nand *nand = to_tegra_nand(mtd);
->>>> +	u32 value, addrs;
->>>> +
->>>> +	writel(NAND_CMD_READ0, nand->regs + CMD_1);
->>>> +	writel(NAND_CMD_READSTART, nand->regs + CMD_2);
->>>> +
->>>> +	addrs = tegra_nand_fill_address(mtd, chip, page);
->>>> +
->>>> +	value = readl(nand->regs + CFG);
->>>> +	value |= CFG_HW_ECC | CFG_ERR_COR;
->>>> +	writel(value, nand->regs + CFG);
->>>> +
->>>> +	writel(mtd->writesize - 1, nand->regs + DMA_CFG_A);
->>>> +	writel(nand->data_dma, nand->regs + DATA_PTR);
->>>> +
->>>> +	if (oob_required) {
->>>> +		writel(mtd_ooblayout_count_freebytes(mtd) - 1,
->>>> +		       nand->regs + DMA_CFG_B);
->>>> +		writel(nand->oob_dma, nand->regs + TAG_PTR);
->>>> +	} else {
->>>> +		writel(0, nand->regs + DMA_CFG_B);
->>>> +		writel(0, nand->regs + TAG_PTR);
->>>> +	}
->>>> +
->>>> +	value = DMA_CTRL_GO | DMA_CTRL_IN | DMA_CTRL_PERF_EN |
->>>> +		DMA_CTRL_REUSE | DMA_CTRL_IE_DONE | DMA_CTRL_IS_DONE |
->>>> +		DMA_CTRL_BURST_8 | DMA_CTRL_EN_A;
->>>
->>> Wouldn't be more efficient to set DMA burst to 16 words? The writesize seems
->>> always aligned to at least 64 words.
->>>
->>
->> Hm, haven't tested 16 words, 8 was the setting Lucas used.
->>
->> Are you sure this is only about write size? Not sure, but isn't the ECC
->> area also DMA'd? On Colibri we use RS with t=8, hence 144 bytes parity,
->> so this would be properly aligned non the less...
->>
-> 
-> I don't know, that's up to you to figure out. Is RS stands for Reed-Solomon and
-> t=8 is the max number of redundant words?
-> 
+Where can I find one for NOR? If I have to write my own, will you be interested
+in a patch?
 
-RS = Reed-Solomon
-t=8 maximum symbol errors
-
-Will do some testing and check whether it fails.
-
---
-Stefan
+-Sid.
