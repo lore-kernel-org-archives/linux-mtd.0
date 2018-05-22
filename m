@@ -1,7 +1,7 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fL64i-0005ws-FJ
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 12:07:35 +0000
+ id 1fL64i-0005wr-FP
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 12:07:36 +0000
 From: Stefan Agner <stefan@agner.ch>
 To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
@@ -14,9 +14,11 @@ Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
  linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-clk@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [RESEND PATCH 0/5] mtd: rawnand: add NVIDIA Tegra NAND flash support
-Date: Tue, 22 May 2018 14:07:04 +0200
-Message-Id: <cover.1526990589.git.stefan@agner.ch>
+Subject: [RESEND PATCH 3/5] clk: tegra20: init NDFLASH clock to sensible rate
+Date: Tue, 22 May 2018 14:07:07 +0200
+Message-Id: <7b870e6f8ea65606d136314a34a79f63c244b13c.1526990589.git.stefan@agner.ch>
+In-Reply-To: <cover.1526990589.git.stefan@agner.ch>
+References: <cover.1526990589.git.stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[resending, this time with mailing lists in cc]
+From: Lucas Stach <dev@lynxeye.de>
 
-This picks up an older patchset written by Lucas Stach which
-adds raw NAND flash support for Tegra 2.
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063031.html
+Set up the NAND Flash controller clock to run at 150MHz
+instead of the rate set by the bootloader. This is a
+conservative rate which also yields good performance.
 
-The driver has been reworked to implement the ->exec_op callback.
-Some smaller changes and bug fixes have been applied too, but I did
-not keep track of them. Since the original patchset has been posted
-some years back already, I guess review needs to be done from scratch
-anyway.
+Signed-off-by: Lucas Stach <dev@lynxeye.de>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ drivers/clk/tegra/clk-tegra20.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---
-Stefan
-
-Lucas Stach (4):
-  mtd: rawnand: tegra: add devicetree binding
-  clk: tegra20: init NDFLASH clock to sensible rate
-  ARM: tegra: add Tegra20 NAND flash controller node
-  ARM: tegra: enable NAND flash on Colibri T20
-
-Stefan Agner (1):
-  mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
-
- .../bindings/mtd/nvidia,tegra20-nand.txt      |  29 +
- MAINTAINERS                                   |   7 +
- arch/arm/boot/dts/tegra20-colibri-512.dtsi    |   7 +
- arch/arm/boot/dts/tegra20.dtsi                |  13 +
- drivers/clk/tegra/clk-tegra20.c               |   1 +
- drivers/mtd/nand/raw/Kconfig                  |   6 +
- drivers/mtd/nand/raw/Makefile                 |   1 +
- drivers/mtd/nand/raw/tegra_nand.c             | 915 ++++++++++++++++++
- 8 files changed, 979 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
- create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
-
+diff --git a/drivers/clk/tegra/clk-tegra20.c b/drivers/clk/tegra/clk-tegra20.c
+index 0ee56dd04cec..dff8c425cd28 100644
+--- a/drivers/clk/tegra/clk-tegra20.c
++++ b/drivers/clk/tegra/clk-tegra20.c
+@@ -1049,6 +1049,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
+ 	{ TEGRA20_CLK_GR2D, TEGRA20_CLK_PLL_C, 300000000, 0 },
+ 	{ TEGRA20_CLK_GR3D, TEGRA20_CLK_PLL_C, 300000000, 0 },
+ 	{ TEGRA20_CLK_VDE, TEGRA20_CLK_CLK_MAX, 300000000, 0 },
++	{ TEGRA20_CLK_NDFLASH, TEGRA20_CLK_PLL_P, 150000000, 0 },
+ 	/* must be the last entry */
+ 	{ TEGRA20_CLK_CLK_MAX, TEGRA20_CLK_CLK_MAX, 0, 0 },
+ };
 -- 
 2.17.0
