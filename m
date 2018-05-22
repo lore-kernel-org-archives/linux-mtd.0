@@ -1,20 +1,25 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fL52L-0000sN-8W
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 11:01:07 +0000
-Subject: Re: Selabel/selinux support in mtd-utils for ubifs
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, david.oberhollenzer@sigma-star.at
-References: <d1fc48d2-ee16-2405-bf4d-a75ea8cd5f46@codeaurora.org>
- <1707195.VuFK1zXW7D@blindfold>
-From: Ritesh Harjani <riteshh@codeaurora.org>
-Message-ID: <48fb4c58-ddf4-30fe-7e2b-48d8be32ddc3@codeaurora.org>
-Date: Tue, 22 May 2018 16:30:42 +0530
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fL61l-0007k0-Ub
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 12:04:37 +0000
+Date: Tue, 22 May 2018 14:04:16 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
+ Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v2 10/14] mtd: rawnand: qcom: fix return value for raw
+ page read
+Message-ID: <20180522140416.252fb398@xps13>
+In-Reply-To: <1525350041-22995-11-git-send-email-absahu@codeaurora.org>
+References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
+ <1525350041-22995-11-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1707195.VuFK1zXW7D@blindfold>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,67 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Abhishek,
 
+On Thu,  3 May 2018 17:50:37 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-On 5/22/2018 2:56 AM, Richard Weinberger wrote:
-> Ritesh,
-> 
-> Am Montag, 21. Mai 2018, 13:47:53 CEST schrieb Ritesh Harjani:
->> Hello all,
->>
->> Could anyone please help whether selinux support is fully present on
->> ubifs or not?
->>
->> Below are my observations:-
->> 1. Selinux support was added in ubifs kernel via below patch
->> "UBIFS: Add security.* XATTR support for the UBIFS"
->>
->> 2. Extended attribute support was added in mtd-utils via below patch.
->> "mkfs.ubifs: Add extended attribute support"
->>
->> With above I think that selinux could be enabled but only at the boot
->> time using selinux tools.
-> 
-> Yes.
-> 
->> But I could not see any support to add selinux labels/context
->> information while creating ubifs.img in mtd-utils. I do see below link
->> where something like above was tried but never made upstream. Could
->> anyone please give pointers on whether this support is added/ or bring
->> worked upon?
->>
->> http://lists.infradead.org/pipermail/linux-mtd/2014-February/052136.html
->>
->> Also Whether selinux labeling support can be added in the mkfs.ubifs or
->> not? Do we see any issues with this?
-> 
-> No, just revive the patches.
-> In 2014 the maintainer situation was different and sadly we forgot about some
-> patches.
->   
->> I would like to work upon adding selinux support in mtd-utils.
-> 
-> This would be wonderful!
-> 
->> I would appreciate if I could get some pointers on above queries and if
->> anyone has any pointers/suggestions for this.
-> 
-> Just go ahead. :-)
-Sure, thanks Richard.
-I will work on this and will post the patches.
+> Currently zero is being returned for all raw page read so
+> fix the same.
 
+What about "Fix value returned by ->read_page_raw() to be the
+actual operation status, instead of always 0."?
 
-> 
-> Thanks,
-> //richard
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+>=20
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+> * Changes from v1:
+>=20
+>  NEW CHANGE
+>=20
+>  drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
+m_nandc.c
+> index f85d8ab..17b7f3af 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1900,7 +1900,7 @@ static int qcom_nandc_read_page_raw(struct mtd_info=
+ *mtd,
+> =20
+>  	free_descs(nandc);
+> =20
+> -	return 0;
+> +	return ret;
+>  }
+> =20
+>  /* implements ecc->read_oob() */
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, 
-Inc.
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a 
-Linux Foundation Collaborative Project.
+Thanks,
+Miqu=C3=A8l
+
+--=20
+Miquel Raynal, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
