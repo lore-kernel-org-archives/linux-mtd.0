@@ -1,12 +1,12 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fL7xU-00051Q-RA
- for linux-mtd@lists.infradead.org; Tue, 22 May 2018 14:08:21 +0000
+ id 1fL7yS-0005LE-Vv
+ for linux-mtd@lists.infradead.org; Tue, 22 May 2018 14:09:14 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8;
  format=flowed
 Content-Transfer-Encoding: 8bit
-Date: Tue, 22 May 2018 19:38:01 +0530
+Date: Tue, 22 May 2018 19:39:00 +0530
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
@@ -14,15 +14,15 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
  Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 03/14] dt-bindings: qcom_nandc: make nand-ecc-strength
- optional
-In-Reply-To: <20180521163254.71ade105@xps13>
+ Taneja <architt@codeaurora.org>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v2 02/14] mtd: rawnand: denali: use helper function for
+ ecc setup
+In-Reply-To: <20180521163014.355318d6@xps13>
 References: <1525350041-22995-1-git-send-email-absahu@codeaurora.org>
- <1525350041-22995-4-git-send-email-absahu@codeaurora.org>
- <20180521163254.71ade105@xps13>
-Message-ID: <66498b23730297c67604f274419931bf@codeaurora.org>
+ <1525350041-22995-3-git-send-email-absahu@codeaurora.org>
+ <20180521163014.355318d6@xps13>
+Message-ID: <952e3cf1756dc5b5aa8b85b142eb7750@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,23 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-05-21 20:02, Miquel Raynal wrote:
+On 2018-05-21 20:00, Miquel Raynal wrote:
 > Hi Abhishek,
 > 
-> On Thu,  3 May 2018 17:50:30 +0530, Abhishek Sahu
+> On Thu,  3 May 2018 17:50:29 +0530, Abhishek Sahu
 > <absahu@codeaurora.org> wrote:
 > 
->> Now, nand-ecc-strength is optional. If specified in DT, then
->> controller will use this ECC strength otherwise ECC strength will
->> be calculated according to chip requirement and available OOB size.
+>> Now, the NAND base layer has helper function for ecc
+>> parameters setup which does the same thing.
 > 
-> Same comment as before: don't start the commit log with "now,".
+> Even if this message has a meaning in the series, I would prefer
+> something more generic like:
+> 
+> "Use the NAND core helper function xxx() to tune the ECC parameters
+> instead of the function locally defined."
+> 
+
+  Sure Miquel. I will change the commit message.
+
+  Thanks,
+  Abhishek
+
+> With this change:
+> 
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > 
 > Thanks,
 > Miquèl
-
-  Thanks Miquel.
-  I will change the commit message.
-
-  Regards,
-  Abhishek
