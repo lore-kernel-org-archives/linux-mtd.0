@@ -1,32 +1,21 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Nicolas Ferre <nicolas.ferre@microchip.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Richard Weinberger <richard@nod.at>, Josh Wu <rainyfeeling@outlook.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
- <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
- <20180403091813.5fb5c18c@bbrezillon>
- <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
- <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-From: Peter Rosin <peda@axentia.se>
-Message-ID: <498f4a40-0f4b-fb32-2d6c-032b5341f2b0@axentia.se>
-Date: Tue, 22 May 2018 20:03:41 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLN96-0004PG-PK
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2018 06:21:14 +0000
+Date: Wed, 23 May 2018 08:20:47 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Atsushi Nemoto
+ <anemo@mba.ocn.ne.jp>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: cmdlinepart: Update comment for introduction of
+ OFFSET_CONTINUOUS
+Message-ID: <20180523082047.2aa9e6ac@bbrezillon>
+In-Reply-To: <1527001673-16318-1-git-send-email-geert+renesas@glider.be>
+References: <1527001673-16318-1-git-send-email-geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,24 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-04-11 17:34, Nicolas Ferre wrote:
-> On 11/04/2018 at 16:44, Peter Rosin wrote:
->> Hi Nicolas,
->>
->> Boris asked for your input on this (the datasheet difference appears to
->> have no bearing on the issue) elsewhere in the tree of messages. It's
->> now been a week or so and I'm starting to wonder if you missed this
->> altogether or if you are simply out of office or something?
-> 
-> Hi Peter,
-> 
-> I didn't dig into this issue with matrix datasheet reset values and your 
-> findings below. I'll try to move forward with your detailed explanation 
-> and with my contacts within the "product" team internally.
+On Tue, 22 May 2018 17:07:53 +0200
+Geert Uytterhoeven <geert+renesas@glider.be> wrote:
 
-Hi again, just checking in to see if there is any progress? If not, maybe
-it's time to just take the patch as-is, warts and imperfections included,
-and even if we all hate it. But what to do...
+> The comment about offset zero was not updated when changing behavior:
+>   - Automatic offset calculation is indicated by OFFSET_CONTINUOUS,
+>   - Zero really means offset zero.
+> 
+> Fixes: b175d03dd2072836 ("[PATCH] mtd cmdlinepart: allow zero offset value")
 
-Cheers,
-Peter
+Did we switch to 16bytes for the short commit ids (I usually use 12
+bytes)?
+
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/mtd/cmdlinepart.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+> index fbd5affc0acfe3fe..3ea44cff9b759e3c 100644
+> --- a/drivers/mtd/cmdlinepart.c
+> +++ b/drivers/mtd/cmdlinepart.c
+> @@ -190,7 +190,10 @@ static struct mtd_partition * newpart(char *s,
+>  		extra_mem = (unsigned char *)(parts + *num_parts);
+>  	}
+>  
+> -	/* enter this partition (offset will be calculated later if it is zero at this point) */
+> +	/*
+> +	 * enter this partition (offset will be calculated later if it is
+> +	 * OFFSET_CONTINUOUS at this point)
+> +	 */
+>  	parts[this_part].size = size;
+>  	parts[this_part].offset = offset;
+>  	parts[this_part].mask_flags = mask_flags;
