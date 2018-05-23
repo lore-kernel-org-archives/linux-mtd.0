@@ -1,26 +1,30 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wr0-f195.google.com ([209.85.128.195])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLXNP-0001Yz-9E
- for linux-mtd@lists.infradead.org; Wed, 23 May 2018 17:16:50 +0000
-Received: by mail-wm0-x244.google.com with SMTP id t11-v6so11085903wmt.0
- for <linux-mtd@lists.infradead.org>; Wed, 23 May 2018 10:16:29 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 2/2] mtd: partitions: use DT info for parsing partitions with
- specified type
-Date: Wed, 23 May 2018 19:14:48 +0200
-Message-Id: <20180523171448.26234-2-zajec5@gmail.com>
-In-Reply-To: <20180523171448.26234-1-zajec5@gmail.com>
-References: <20180523171448.26234-1-zajec5@gmail.com>
+ id 1fLXOZ-0002C7-Fs
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2018 17:18:18 +0000
+Received: by mail-wr0-f195.google.com with SMTP id l41-v6so2641695wre.7
+ for <linux-mtd@lists.infradead.org>; Wed, 23 May 2018 10:17:41 -0700 (PDT)
+Subject: Re: [RFC PATCH] mtd: spi-nor: add support to non-uniform SPI NOR
+ flash memories
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ cyrille.pitchen@microchip.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ nicolas.ferre@microchip.com, Cristian.Birsan@microchip.com
+References: <20180518093233.24241-1-tudor.ambarus@microchip.com>
+ <89d45190-95b0-b780-b219-e6c6adcb6147@gmail.com>
+ <4cd7d47a-fd56-6b54-3b38-262adf46a97f@microchip.com>
+ <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
+ <123e50da-e49e-f876-bdb4-2719f7f7640a@microchip.com>
+ <a32aa2ee-7d9e-37b6-811f-799570ce1cea@gmail.com>
+ <66b2b859-72db-33cc-75ae-2493a4aad235@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <aa083709-c3e2-f075-1a99-c31399a1cb77@gmail.com>
+Date: Wed, 23 May 2018 14:54:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <66b2b859-72db-33cc-75ae-2493a4aad235@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,88 +35,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On 05/23/2018 02:52 PM, Tudor Ambarus wrote:
+> Hi, Marek,
 
-This supports nested partitions in a DT. If selected partition has a
-"compatible" property specified it will be parsed looking for
-subpartitions.
+Hi,
 
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/mtdpart.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+> On 05/23/2018 12:56 PM, Marek Vasut wrote:
+> [...]
+>>>> [...]
+>>>>
+>>>>>>> +    while (len) {
+>>>>>>> +        cmd = spi_nor_find_best_erase_cmd(map, region, addr, len);
+>>>>>>> +        if (!cmd)
+>>>>>>> +            return -EINVAL;
+>>>>>> What would happen if you realize mid-way that you cannot erase some
+>>>>>> sector , do you end up with partial erase ?
+>>>>> Is this possible? In non-overlaid regions, the address is aligned with
+>>>>> at least one of the erase commands, else -EINVAL. For overlaid regions
+>>>>> alignment doesn't matter. But yes, if this is possible, in this case,
+>>>>> this proposal will do a partial erase.
+>>>> Shouldn't we fail up front instead ?
+>>> It will be great if we can do this without having performance penalties.
+>>> Can we loose the conditions for the last erase command? If one wants to
+>>> erase 80k chunk starting from offset 0 and only 32k and 64k erase type
+>>> are supported, can we erase 96k?
+>> No. But can you maybe build a list of erase commands to be executed once
+>> you validate that the erase can be performed for example ?
+> 
+> My second choice was an array witch saves u8 opcode and u32 erasesize.
+> There are flashes of 256MB, in the worst case scenario with 4k erase
+> type, we will end up with 64K entries.
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index f8d3a015cdad..52e2cb35fc79 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -322,22 +322,6 @@ static inline void free_partition(struct mtd_part *p)
- 	kfree(p);
- }
- 
--/**
-- * mtd_parse_part - parse MTD partition looking for subpartitions
-- *
-- * @slave: part that is supposed to be a container and should be parsed
-- * @types: NULL-terminated array with names of partition parsers to try
-- *
-- * Some partitions are kind of containers with extra subpartitions (volumes).
-- * There can be various formats of such containers. This function tries to use
-- * specified parsers to analyze given partition and registers found
-- * subpartitions on success.
-- */
--static int mtd_parse_part(struct mtd_part *slave, const char *const *types)
--{
--	return parse_mtd_partitions(&slave->mtd, types, NULL);
--}
--
- static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 			const struct mtd_partition *part, int partno,
- 			uint64_t cur_offset)
-@@ -735,8 +719,8 @@ int add_mtd_partitions(struct mtd_info *master,
- 
- 		add_mtd_device(&slave->mtd);
- 		mtd_add_partition_attrs(slave);
--		if (parts[i].types)
--			mtd_parse_part(slave, parts[i].types);
-+		/* Look for subpartitions */
-+		parse_mtd_partitions(&slave->mtd, parts[i].types, NULL);
- 
- 		cur_offset = slave->offset + slave->mtd.size;
- 	}
-@@ -812,6 +796,12 @@ static const char * const default_mtd_part_types[] = {
- 	NULL
- };
- 
-+/* Check DT only when looking for subpartitions. */
-+static const char * const default_subpartition_types[] = {
-+	"ofpart",
-+	NULL
-+};
-+
- static int mtd_part_do_parse(struct mtd_part_parser *parser,
- 			     struct mtd_info *master,
- 			     struct mtd_partitions *pparts,
-@@ -882,7 +872,9 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	const char *fixed = "fixed-partitions";
- 	int ret, err = 0;
- 
--	np = of_get_child_by_name(mtd_get_of_node(master), "partitions");
-+	np = mtd_get_of_node(master);
-+	if (!mtd_is_partition(master))
-+		np = of_get_child_by_name(np, "partitions");
- 	of_property_for_each_string(np, "compatible", prop, compat) {
- 		parser = mtd_part_get_compatible_parser(compat);
- 		if (!parser)
-@@ -945,7 +937,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 	int ret, err = 0;
- 
- 	if (!types)
--		types = default_mtd_part_types;
-+		types = mtd_is_partition(master) ? default_subpartition_types :
-+			default_mtd_part_types;
- 
- 	for ( ; *types; types++) {
- 		/*
+Some RLE encoding might help here ?
+
+> How about enforcing the length to be multiple of mtd->erasesize, like we
+> do in uniform_erase? With this, the problem disappears.
+
+What is the erase size for the 4k-sector 256MiB flash ?
+
 -- 
-2.13.6
+Best regards,
+Marek Vasut
