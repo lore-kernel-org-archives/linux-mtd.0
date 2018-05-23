@@ -1,28 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLUbE-000247-IG
- for linux-mtd@lists.infradead.org; Wed, 23 May 2018 14:18:52 +0000
-Date: Wed, 23 May 2018 16:18:10 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- mturquette@baylibre.com, sboyd@kernel.org, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180523161810.0ed9fe80@bbrezillon>
-In-Reply-To: <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLVwX-0002W6-Eb
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2018 15:44:51 +0000
+Subject: Re: [PATCH v4 6/7] mtd: spi-nor: Use the spi_mem_xx() API
+To: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, <linux-mtd@lists.infradead.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Mark Brown <broonie@kernel.org>,
+ <linux-spi@vger.kernel.org>
+CC: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Peter Pan <peterpansjtu@gmail.com>, Frieder
+ Schrempf <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+References: <20180426161820.2852-1-boris.brezillon@bootlin.com>
+ <20180426161820.2852-7-boris.brezillon@bootlin.com>
+From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Message-ID: <6a39f071-186e-7009-994d-af845ce3f75d@microchip.com>
+Date: Wed, 23 May 2018 17:44:32 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20180426161820.2852-7-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,421 +33,427 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Hi all,
 
-On Tue, 22 May 2018 14:07:06 +0200
-Stefan Agner <stefan@agner.ch> wrote:
-> +
-> +struct tegra_nand {
-> +	void __iomem *regs;
-> +	struct clk *clk;
-> +	struct gpio_desc *wp_gpio;
-> +
-> +	struct nand_chip chip;
-> +	struct device *dev;
-> +
-> +	struct completion command_complete;
-> +	struct completion dma_complete;
-> +	bool last_read_error;
-> +
-> +	dma_addr_t data_dma;
-> +	void *data_buf;
-> +	dma_addr_t oob_dma;
-> +	void *oob_buf;
-> +
-> +	int cur_chip;
-> +};
+Le 26/04/2018 à 18:18, Boris Brezillon a écrit :
+> The spi_mem_xxx() API has been introduced to replace the
+> spi_flash_read() one. Make use of it so we can get rid of
+> spi_flash_read().
+> 
+> Note that using spi_mem_xx() also simplifies the code because this API
+> takes care of using the regular spi_sync() interface when the optimized
+> ->mem_ops interface is not implemented by the controller.Hi a
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v4:
+> - none
+> 
+> Changes in v3:
+> - none
+> 
+> Changes in v2:
+> - include spi-mem.h
+> - treat op->addr.val differently since it's now an u64
+> - Replace SPI_MEM_OP_DATA_OUT() by SPI_MEM_OP_DATA_IN() in m25p80_read()
+> ---
+>  drivers/mtd/devices/Kconfig  |   1 +
+>  drivers/mtd/devices/m25p80.c | 236 +++++++++++++++----------------------------
+>  2 files changed, 80 insertions(+), 157 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
+> index 6def5445e03e..57b02c4b3f63 100644
+> --- a/drivers/mtd/devices/Kconfig
+> +++ b/drivers/mtd/devices/Kconfig
+> @@ -81,6 +81,7 @@ config MTD_DATAFLASH_OTP
+>  config MTD_M25P80
+>  	tristate "Support most SPI Flash chips (AT26DF, M25P, W25X, ...)"
+>  	depends on SPI_MASTER && MTD_SPI_NOR
+> +	select SPI_MEM
+>  	help
+>  	  This enables access to most modern SPI flash chips, used for
+>  	  program and data storage.   Series supported include Atmel AT26DF,
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index a4e18f6aaa33..3dc022d3b53e 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -24,12 +24,13 @@
+>  #include <linux/mtd/partitions.h>
+>  
+>  #include <linux/spi/spi.h>
+> +#include <linux/spi/spi-mem.h>
+>  #include <linux/spi/flash.h>
+>  #include <linux/mtd/spi-nor.h>
+>  
+>  #define	MAX_CMD_SIZE		6
+>  struct m25p {
+> -	struct spi_device	*spi;
+> +	struct spi_mem		*spimem;
+>  	struct spi_nor		spi_nor;
+>  	u8			command[MAX_CMD_SIZE];
+>  };
+> @@ -37,97 +38,68 @@ struct m25p {
+>  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+>  {
+>  	struct m25p *flash = nor->priv;
+> -	struct spi_device *spi = flash->spi;
+> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(code, 1),
+> +					  SPI_MEM_OP_NO_ADDR,
+> +					  SPI_MEM_OP_NO_DUMMY,
+> +					  SPI_MEM_OP_DATA_IN(len, val, 1));
+>  	int ret;
+>  
+> -	ret = spi_write_then_read(spi, &code, 1, val, len);
+> +	ret = spi_mem_exec_op(flash->spimem, &op);
+>  	if (ret < 0)
+> -		dev_err(&spi->dev, "error %d reading %x\n", ret, code);
+> +		dev_err(&flash->spimem->spi->dev, "error %d reading %x\n", ret,
+> +			code);
+>  
+>  	return ret;
+>  }
+>  
+> -static void m25p_addr2cmd(struct spi_nor *nor, unsigned int addr, u8 *cmd)
+> -{
+> -	/* opcode is in cmd[0] */
+> -	cmd[1] = addr >> (nor->addr_width * 8 -  8);
+> -	cmd[2] = addr >> (nor->addr_width * 8 - 16);
+> -	cmd[3] = addr >> (nor->addr_width * 8 - 24);
+> -	cmd[4] = addr >> (nor->addr_width * 8 - 32);
+> -}
+> -
+> -static int m25p_cmdsz(struct spi_nor *nor)
+> -{
+> -	return 1 + nor->addr_width;
+> -}
+> -
+>  static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+>  {
+>  	struct m25p *flash = nor->priv;
+> -	struct spi_device *spi = flash->spi;
+> -
+> -	flash->command[0] = opcode;
+> -	if (buf)
+> -		memcpy(&flash->command[1], buf, len);
+> +	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 1),
+> +					  SPI_MEM_OP_NO_ADDR,
+> +					  SPI_MEM_OP_NO_DUMMY,
 
-This struct should be split in 2 structures: one representing the NAND
-controller and one representing the NAND chip:
+I didn't test nor compiled to verify but I have some doubt:
+here the 'op' variable is allocated on the stack and both definitions
+of SPI_MEM_OP_NO_ADDR and SPI_MEM_OP_NO_DUMMY macros are { }.
 
-struct tegra_nand_controller {
-	struct nand_hw_control base;
-	void __iomem *regs;
-	struct clk *clk;
-	struct device *dev;
-	struct completion command_complete;
-	struct completion dma_complete;
-	bool last_read_error;
-	int cur_chip;
-};
+It might be some rule of the C language that I ignore but are we guaranteed
+that the .nbytes member of both structures is actually initialized to 0 ?
 
-struct tegra_nand {
-	struct nand_chip base;
-	dma_addr_t data_dma;
-	void *data_buf;
-	dma_addr_t oob_dma;
-	void *oob_buf;
-};
+I would say no: I think since the structure is allocated on the stack all
+members not being explicitly initialized are left uninitialized by the
+compiler when it generates the assembler code. However, I'm not 100% sure of
+that.
 
-> +
-> +static inline struct tegra_nand *to_tegra_nand(struct mtd_info *mtd)
-> +{
-> +	struct nand_chip *chip = mtd_to_nand(mtd);
-> +
-> +	return nand_get_controller_data(chip);
+Anyway, what about explicitly set the .nbytes member to 0 in the definition
+of SPI_MEM_OP_NO* helper macros ?
 
-then you can just do:
+> +					  SPI_MEM_OP_DATA_OUT(len, buf, 1));
+>  
+> -	return spi_write(spi, flash->command, len + 1);
+> +	return spi_mem_exec_op(flash->spimem, &op);
+>  }
+>  
+>  static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  			    const u_char *buf)
+>  {
+>  	struct m25p *flash = nor->priv;
+> -	struct spi_device *spi = flash->spi;
+> -	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> -	struct spi_transfer t[3] = {};
+> -	struct spi_message m;
+> -	int cmd_sz = m25p_cmdsz(nor);
+> -	ssize_t ret;
+> +	struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
+> +				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
+> +				   SPI_MEM_OP_DUMMY(0, 1),
 
-	return container_of(chip, struct tegra_nand, base);
+Why do you use SPI_MEM_OP_DUMMY(0, 1) here instead of SPI_MEM_OP_NO_DUMMY() ?
 
-> +}
-> +
-> +static int tegra_nand_ooblayout_16_ecc(struct mtd_info *mtd, int section,
-> +				       struct mtd_oob_region *oobregion)
-> +{
-> +	if (section > 0)
-> +		return -ERANGE;
-> +
-> +	oobregion->offset = 4;
-> +	oobregion->length = 4;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_nand_ooblayout_16_free(struct mtd_info *mtd, int section,
-> +					struct mtd_oob_region *oobregion)
-> +{
-> +	if (section > 0)
-> +		return -ERANGE;
-> +
-> +	oobregion->offset = 8;
-> +	oobregion->length = 8;
-> +
-> +	return 0;
-> +}
+Best regards,
 
-...
+Cyrille
 
-> +
-> +static int tegra_nand_ooblayout_224_ecc(struct mtd_info *mtd, int section,
-> +				       struct mtd_oob_region *oobregion)
-> +{
-> +	if (section > 0)
-> +		return -ERANGE;
-> +
-> +	oobregion->offset = 4;
-> +	oobregion->length = 144;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tegra_nand_ooblayout_224_free(struct mtd_info *mtd, int section,
-> +					struct mtd_oob_region *oobregion)
-> +{
-> +	if (section > 0)
-> +		return -ERANGE;
-> +
-> +	oobregion->offset = 148;
-> +	oobregion->length = 76;
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct mtd_ooblayout_ops tegra_nand_oob_224_ops = {
-> +	.ecc = tegra_nand_ooblayout_224_ecc,
-> +	.free = tegra_nand_ooblayout_224_free,
-> +};
-> +
-
-I'm pretty sure we can find a pattern here to avoid defining a new
-mtd_ooblayout_ops for each OOB size.
-
-> +static irqreturn_t tegra_nand_irq(int irq, void *data)
-> +{
-> +	struct tegra_nand *nand = data;
-> +	u32 isr, dma;
-> +
-> +	isr = readl(nand->regs + ISR);
-> +	dma = readl(nand->regs + DMA_CTRL);
-> +	dev_dbg(nand->dev, "isr %08x\n", isr);
-> +
-> +	if (!isr && !(dma & DMA_CTRL_IS_DONE))
-> +		return IRQ_NONE;
-> +
-> +	if (isr & ISR_CORRFAIL_ERR)
-> +		nand->last_read_error = true;
-> +
-> +	if (isr & ISR_CMD_DONE)
-> +		complete(&nand->command_complete);
-> +
-> +	if (isr & ISR_UND)
-> +		dev_dbg(nand->dev, "FIFO underrun\n");
-> +
-> +	if (isr & ISR_OVR)
-> +		dev_dbg(nand->dev, "FIFO overrun\n");
-> +
-> +	/* handle DMA interrupts */
-> +	if (dma & DMA_CTRL_IS_DONE) {
-> +		writel(dma, nand->regs + DMA_CTRL);
-> +		complete(&nand->dma_complete);
-> +	}
-> +
-> +	/* clear interrupts */
-> +	writel(isr, nand->regs + ISR);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-> +static int tegra_nand_cmd(struct nand_chip *chip,
-> +			 const struct nand_subop *subop)
-> +{
-> +	const struct nand_op_instr *instr;
-> +	const struct nand_op_instr *instr_data_in = NULL;
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct tegra_nand *nand = to_tegra_nand(mtd);
-> +	unsigned int op_id = -1, trfr_in_sz = 0, trfr_out_sz = 0, offset = 0;
-> +	bool first_cmd = true;
-> +	bool force8bit;
-> +	u32 cmd = 0;
-> +	u32 value;
-> +
-> +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-> +		unsigned int naddrs, i;
-> +		const u8 *addrs;
-> +		u32 addr1 = 0, addr2 = 0;
-> +
-> +		instr = &subop->instrs[op_id];
-> +
-> +		switch (instr->type) {
-> +		case NAND_OP_CMD_INSTR:
-> +			if (first_cmd) {
-> +				cmd |= CMD_CLE;
-> +				writel(instr->ctx.cmd.opcode, nand->regs + CMD_1);
-> +			} else {
-> +				cmd |= CMD_SEC_CMD;
-> +				writel(instr->ctx.cmd.opcode, nand->regs + CMD_2);
-> +			}
-> +			first_cmd = false;
-> +			break;
-> +		case NAND_OP_ADDR_INSTR:
-> +			offset = nand_subop_get_addr_start_off(subop, op_id);
-> +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
-> +			addrs = &instr->ctx.addr.addrs[offset];
-> +
-> +			cmd |= CMD_ALE | CMD_ALE_SIZE(naddrs);
-> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
-> +				addr1 |= *addrs++ << (8 * i);
-> +			naddrs -= i;
-> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
-> +				addr2 |= *addrs++ << (8 * i);
-> +			writel(addr1, nand->regs + ADDR_1);
-> +			writel(addr2, nand->regs + ADDR_2);
-> +			break;
-> +
-> +		case NAND_OP_DATA_IN_INSTR:
-> +			trfr_in_sz = nand_subop_get_data_len(subop, op_id);
-> +			offset = nand_subop_get_data_start_off(subop, op_id);
-> +
-> +			cmd |= CMD_TRANS_SIZE(trfr_in_sz) | CMD_PIO | CMD_RX | CMD_A_VALID;
-> +
-> +			instr_data_in = instr;
-> +			break;
-> +
-> +		case NAND_OP_DATA_OUT_INSTR:
-> +			trfr_out_sz = nand_subop_get_data_len(subop, op_id);
-> +			offset = nand_subop_get_data_start_off(subop, op_id);
-> +			trfr_out_sz = min_t(size_t, trfr_out_sz, 4);
-> +
-> +			cmd |= CMD_TRANS_SIZE(trfr_out_sz) | CMD_PIO | CMD_TX | CMD_A_VALID;
-> +
-> +			memcpy(&value, instr->ctx.data.buf.out + offset, trfr_out_sz);
-> +			writel(value, nand->regs + RESP);
-> +
-> +			break;
-> +		case NAND_OP_WAITRDY_INSTR:
-> +			cmd |= CMD_RBSY_CHK;
-> +			break;
-> +
-> +		}
-> +	}
-> +
-> +
-> +	cmd |= CMD_GO | CMD_CE(nand->cur_chip);
-> +	writel(cmd, nand->regs + CMD);
-> +	wait_for_completion(&nand->command_complete);
-> +
-> +	if (instr_data_in) {
-> +		u32 value;
-> +		size_t n = min_t(size_t, trfr_in_sz, 4);
-> +
-> +		value = readl(nand->regs + RESP);
-> +		memcpy(instr_data_in->ctx.data.buf.in + offset, &value, n);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct nand_op_parser tegra_nand_op_parser = NAND_OP_PARSER(
-> +	NAND_OP_PARSER_PATTERN(tegra_nand_cmd,
-> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
-> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
-> +	NAND_OP_PARSER_PATTERN(tegra_nand_cmd,
-> +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(false, 4)),
-> +	NAND_OP_PARSER_PATTERN(tegra_nand_cmd,
-> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 8),
-> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
-> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
-> +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, 4)),
-> +	);
-> +
-> +static int tegra_nand_exec_op(struct nand_chip *chip,
-> +			     const struct nand_operation *op,
-> +			     bool check_only)
-> +{
-> +	return nand_op_parser_exec_op(chip, &tegra_nand_op_parser, op,
-> +				      check_only);
-> +}
-
-Missing empty line here.
-
-> +static void tegra_nand_select_chip(struct mtd_info *mtd, int chip)
-> +{
-> +	struct tegra_nand *nand = to_tegra_nand(mtd);
-> +
-> +	nand->cur_chip = chip;
-> +}
-
-...
-
-> +
-> +static void tegra_nand_setup_chiptiming(struct tegra_nand *nand)
-> +{
-> +	struct nand_chip *chip = &nand->chip;
-> +	int mode;
-> +
-> +	mode = onfi_get_async_timing_mode(chip);
-> +	if (mode == ONFI_TIMING_MODE_UNKNOWN)
-> +		mode = chip->onfi_timing_mode_default;
-> +	else
-> +		mode = fls(mode);
-> +
-> +	tegra_nand_setup_timing(nand, mode);
-
-Hm, you shouldn't do that. Let the core select the timing mode for you,
-and just implement the ->setup_data_interface() hook.
-
-> +}
-> +
-> +static int tegra_nand_probe(struct platform_device *pdev)
-> +{
-> +	struct reset_control *rst;
-> +	struct tegra_nand *nand;
-> +	struct nand_chip *chip;
-> +	struct mtd_info *mtd;
-> +	struct resource *res;
-> +	unsigned long value;
-> +	int irq, err = 0;
-> +
-> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
-> +	if (!nand)
-> +		return -ENOMEM;
-> +
-> +	nand->dev = &pdev->dev;
-> +
-> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
-> +	if (IS_ERR(nand->regs))
-> +		return PTR_ERR(nand->regs);
-> +
-> +	irq = platform_get_irq(pdev, 0);
-> +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
-> +			       dev_name(&pdev->dev), nand);
-> +	if (err)
-> +		return err;
-> +
-> +	rst = devm_reset_control_get(&pdev->dev, "nand");
-> +	if (IS_ERR(rst))
-> +		return PTR_ERR(rst);
-> +
-> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
-> +	if (IS_ERR(nand->clk))
-> +		return PTR_ERR(nand->clk);
-> +
-> +	nand->wp_gpio = gpiod_get_optional(&pdev->dev, "wp-gpios",
-> +					   GPIOD_OUT_HIGH);
-> +	if (IS_ERR(nand->wp_gpio))
-> +		return PTR_ERR(nand->wp_gpio);
-> +
-> +	err = clk_prepare_enable(nand->clk);
-> +	if (err)
-> +		return err;
-> +
-> +	reset_control_assert(rst);
-> +	udelay(2);
-> +	reset_control_deassert(rst);
-> +
-> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
-> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
-> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
-> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
-> +	writel(value, nand->regs + HWSTATUS_MASK);
-> +
-> +	init_completion(&nand->command_complete);
-> +	init_completion(&nand->dma_complete);
-> +
-> +	/* clear interrupts */
-> +	value = readl(nand->regs + ISR);
-> +	writel(value, nand->regs + ISR);
-> +
-> +	writel(DMA_CTRL_IS_DONE, nand->regs + DMA_CTRL);
-> +
-> +	/* enable interrupts */
-> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
-> +	writel(value, nand->regs + IER);
-> +
-> +	/* reset config */
-> +	writel(0, nand->regs + CFG);
-> +
-> +	chip = &nand->chip;
-> +	mtd = nand_to_mtd(chip);
-> +
-> +	mtd->dev.parent = &pdev->dev;
-> +	mtd->name = "tegra_nand";
-> +	mtd->owner = THIS_MODULE;
-> +
-> +	nand_set_flash_node(chip, pdev->dev.of_node);
-> +	nand_set_controller_data(chip, nand);
-> +
-> +	chip->options = NAND_NO_SUBPAGE_WRITE;
-> +	chip->exec_op = tegra_nand_exec_op;
-> +	chip->select_chip = tegra_nand_select_chip;
-> +	tegra_nand_setup_timing(nand, 0);
-> +
-> +	err = nand_scan_ident(mtd, 1, NULL);
-> +	if (err)
-> +		goto err_disable_clk;
-> +
-> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
-> +		chip->bbt_options |= NAND_BBT_NO_OOB;
-> +
-> +	nand->data_buf = dmam_alloc_coherent(&pdev->dev, mtd->writesize,
-> +					    &nand->data_dma, GFP_KERNEL);
-> +	if (!nand->data_buf) {
-> +		err = -ENOMEM;
-> +		goto err_disable_clk;
-> +	}
-> +
-> +	nand->oob_buf = dmam_alloc_coherent(&pdev->dev, mtd->oobsize,
-> +					    &nand->oob_dma, GFP_KERNEL);
-> +	if (!nand->oob_buf) {
-> +		err = -ENOMEM;
-> +		goto err_disable_clk;
-> +	}
-> +
-> +	chip->ecc.mode = NAND_ECC_HW;
-> +	chip->ecc.size = 512;
-> +	chip->ecc.read_page = tegra_nand_read_page;
-> +	chip->ecc.write_page = tegra_nand_write_page;
-
-I'd like to have raw accessors implemented here.
-
-That was just a quick review focusing mainly on architectural issues so
-that you can start working on a v2.
-
-Regards,
-
-Boris
+> +				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
+> +	size_t remaining = len;
+> +	int ret;
+>  
+>  	/* get transfer protocols. */
+> -	inst_nbits = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+> -	addr_nbits = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+> -	data_nbits = spi_nor_get_protocol_data_nbits(nor->write_proto);
+> -
+> -	spi_message_init(&m);
+> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+> +	op.dummy.buswidth = op.addr.buswidth;
+> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+>  
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+> -		cmd_sz = 1;
+> -
+> -	flash->command[0] = nor->program_opcode;
+> -	m25p_addr2cmd(nor, to, flash->command);
+> +		op.addr.nbytes = 0;
+>  
+> -	t[0].tx_buf = flash->command;
+> -	t[0].tx_nbits = inst_nbits;
+> -	t[0].len = cmd_sz;
+> -	spi_message_add_tail(&t[0], &m);
+> -
+> -	/* split the op code and address bytes into two transfers if needed. */
+> -	data_idx = 1;
+> -	if (addr_nbits != inst_nbits) {
+> -		t[0].len = 1;
+> +	while (remaining) {
+> +		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+> +		ret = spi_mem_adjust_op_size(flash->spimem, &op);
+> +		if (ret)
+> +			return ret;
+>  
+> -		t[1].tx_buf = &flash->command[1];
+> -		t[1].tx_nbits = addr_nbits;
+> -		t[1].len = cmd_sz - 1;
+> -		spi_message_add_tail(&t[1], &m);
+> +		ret = spi_mem_exec_op(flash->spimem, &op);
+> +		if (ret)
+> +			return ret;
+>  
+> -		data_idx = 2;
+> +		op.addr.val += op.data.nbytes;
+> +		remaining -= op.data.nbytes;
+> +		op.data.buf.out += op.data.nbytes;
+>  	}
+>  
+> -	t[data_idx].tx_buf = buf;
+> -	t[data_idx].tx_nbits = data_nbits;
+> -	t[data_idx].len = len;
+> -	spi_message_add_tail(&t[data_idx], &m);
+> -
+> -	ret = spi_sync(spi, &m);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = m.actual_length - cmd_sz;
+> -	if (ret < 0)
+> -		return -EIO;
+> -	return ret;
+> +	return len;
+>  }
+>  
+>  /*
+> @@ -138,92 +110,39 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>  			   u_char *buf)
+>  {
+>  	struct m25p *flash = nor->priv;
+> -	struct spi_device *spi = flash->spi;
+> -	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> -	struct spi_transfer t[3];
+> -	struct spi_message m;
+> -	unsigned int dummy = nor->read_dummy;
+> -	ssize_t ret;
+> -	int cmd_sz;
+> +	struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->read_opcode, 1),
+> +				   SPI_MEM_OP_ADDR(nor->addr_width, from, 1),
+> +				   SPI_MEM_OP_DUMMY(nor->read_dummy, 1),
+> +				   SPI_MEM_OP_DATA_IN(len, buf, 1));
+> +	size_t remaining = len;
+> +	int ret;
+>  
+>  	/* get transfer protocols. */
+> -	inst_nbits = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+> -	addr_nbits = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+> -	data_nbits = spi_nor_get_protocol_data_nbits(nor->read_proto);
+> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->read_proto);
+> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->read_proto);
+> +	op.dummy.buswidth = op.addr.buswidth;
+> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
+>  
+>  	/* convert the dummy cycles to the number of bytes */
+> -	dummy = (dummy * addr_nbits) / 8;
+> -
+> -	if (spi_flash_read_supported(spi)) {
+> -		struct spi_flash_read_message msg;
+> -
+> -		memset(&msg, 0, sizeof(msg));
+> +	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
+>  
+> -		msg.buf = buf;
+> -		msg.from = from;
+> -		msg.len = len;
+> -		msg.read_opcode = nor->read_opcode;
+> -		msg.addr_width = nor->addr_width;
+> -		msg.dummy_bytes = dummy;
+> -		msg.opcode_nbits = inst_nbits;
+> -		msg.addr_nbits = addr_nbits;
+> -		msg.data_nbits = data_nbits;
+> -
+> -		ret = spi_flash_read(spi, &msg);
+> -		if (ret < 0)
+> +	while (remaining) {
+> +		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+> +		ret = spi_mem_adjust_op_size(flash->spimem, &op);
+> +		if (ret)
+>  			return ret;
+> -		return msg.retlen;
+> -	}
+>  
+> -	spi_message_init(&m);
+> -	memset(t, 0, (sizeof t));
+> -
+> -	flash->command[0] = nor->read_opcode;
+> -	m25p_addr2cmd(nor, from, flash->command);
+> -
+> -	t[0].tx_buf = flash->command;
+> -	t[0].tx_nbits = inst_nbits;
+> -	t[0].len = m25p_cmdsz(nor) + dummy;
+> -	spi_message_add_tail(&t[0], &m);
+> -
+> -	/*
+> -	 * Set all dummy/mode cycle bits to avoid sending some manufacturer
+> -	 * specific pattern, which might make the memory enter its Continuous
+> -	 * Read mode by mistake.
+> -	 * Based on the different mode cycle bit patterns listed and described
+> -	 * in the JESD216B specification, the 0xff value works for all memories
+> -	 * and all manufacturers.
+> -	 */
+> -	cmd_sz = t[0].len;
+> -	memset(flash->command + cmd_sz - dummy, 0xff, dummy);
+> -
+> -	/* split the op code and address bytes into two transfers if needed. */
+> -	data_idx = 1;
+> -	if (addr_nbits != inst_nbits) {
+> -		t[0].len = 1;
+> -
+> -		t[1].tx_buf = &flash->command[1];
+> -		t[1].tx_nbits = addr_nbits;
+> -		t[1].len = cmd_sz - 1;
+> -		spi_message_add_tail(&t[1], &m);
+> +		ret = spi_mem_exec_op(flash->spimem, &op);
+> +		if (ret)
+> +			return ret;
+>  
+> -		data_idx = 2;
+> +		op.addr.val += op.data.nbytes;
+> +		remaining -= op.data.nbytes;
+> +		op.data.buf.in += op.data.nbytes;
+>  	}
+>  
+> -	t[data_idx].rx_buf = buf;
+> -	t[data_idx].rx_nbits = data_nbits;
+> -	t[data_idx].len = min3(len, spi_max_transfer_size(spi),
+> -			       spi_max_message_size(spi) - cmd_sz);
+> -	spi_message_add_tail(&t[data_idx], &m);
+> -
+> -	ret = spi_sync(spi, &m);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = m.actual_length - cmd_sz;
+> -	if (ret < 0)
+> -		return -EIO;
+> -	return ret;
+> +	return len;
+>  }
+>  
+>  /*
+> @@ -231,8 +150,9 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
+>   * matches what the READ command supports, at least until this driver
+>   * understands FAST_READ (for clocks over 25 MHz).
+>   */
+> -static int m25p_probe(struct spi_device *spi)
+> +static int m25p_probe(struct spi_mem *spimem)
+>  {
+> +	struct spi_device *spi = spimem->spi;
+>  	struct flash_platform_data	*data;
+>  	struct m25p *flash;
+>  	struct spi_nor *nor;
+> @@ -244,9 +164,9 @@ static int m25p_probe(struct spi_device *spi)
+>  	char *flash_name;
+>  	int ret;
+>  
+> -	data = dev_get_platdata(&spi->dev);
+> +	data = dev_get_platdata(&spimem->spi->dev);
+>  
+> -	flash = devm_kzalloc(&spi->dev, sizeof(*flash), GFP_KERNEL);
+> +	flash = devm_kzalloc(&spimem->spi->dev, sizeof(*flash), GFP_KERNEL);
+>  	if (!flash)
+>  		return -ENOMEM;
+>  
+> @@ -258,12 +178,12 @@ static int m25p_probe(struct spi_device *spi)
+>  	nor->write_reg = m25p80_write_reg;
+>  	nor->read_reg = m25p80_read_reg;
+>  
+> -	nor->dev = &spi->dev;
+> +	nor->dev = &spimem->spi->dev;
+>  	spi_nor_set_flash_node(nor, spi->dev.of_node);
+>  	nor->priv = flash;
+>  
+>  	spi_set_drvdata(spi, flash);
+> -	flash->spi = spi;
+> +	flash->spimem = spimem;
+>  
+>  	if (spi->mode & SPI_RX_QUAD) {
+>  		hwcaps.mask |= SNOR_HWCAPS_READ_1_1_4;
+> @@ -303,9 +223,9 @@ static int m25p_probe(struct spi_device *spi)
+>  }
+>  
+>  
+> -static int m25p_remove(struct spi_device *spi)
+> +static int m25p_remove(struct spi_mem *spimem)
+>  {
+> -	struct m25p	*flash = spi_get_drvdata(spi);
+> +	struct m25p	*flash = spi_mem_get_drvdata(spimem);
+>  
+>  	spi_nor_restore(&flash->spi_nor);
+>  
+> @@ -313,9 +233,9 @@ static int m25p_remove(struct spi_device *spi)
+>  	return mtd_device_unregister(&flash->spi_nor.mtd);
+>  }
+>  
+> -static void m25p_shutdown(struct spi_device *spi)
+> +static void m25p_shutdown(struct spi_mem *spimem)
+>  {
+> -	struct m25p *flash = spi_get_drvdata(spi);
+> +	struct m25p *flash = spi_mem_get_drvdata(spimem);
+>  
+>  	spi_nor_restore(&flash->spi_nor);
+>  }
+> @@ -386,12 +306,14 @@ static const struct of_device_id m25p_of_table[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, m25p_of_table);
+>  
+> -static struct spi_driver m25p80_driver = {
+> -	.driver = {
+> -		.name	= "m25p80",
+> -		.of_match_table = m25p_of_table,
+> +static struct spi_mem_driver m25p80_driver = {
+> +	.spidrv = {
+> +		.driver = {
+> +			.name	= "m25p80",
+> +			.of_match_table = m25p_of_table,
+> +		},
+> +		.id_table	= m25p_ids,
+>  	},
+> -	.id_table	= m25p_ids,
+>  	.probe	= m25p_probe,
+>  	.remove	= m25p_remove,
+>  	.shutdown	= m25p_shutdown,
+> @@ -402,7 +324,7 @@ static struct spi_driver m25p80_driver = {
+>  	 */
+>  };
+>  
+> -module_spi_driver(m25p80_driver);
+> +module_spi_mem_driver(m25p80_driver);
+>  
+>  MODULE_LICENSE("GPL");
+>  MODULE_AUTHOR("Mike Lavender");
+> 
