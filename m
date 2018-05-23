@@ -1,9 +1,9 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLXNN-0001XB-IK
- for linux-mtd@lists.infradead.org; Wed, 23 May 2018 17:16:48 +0000
-Received: by mail-wr0-x243.google.com with SMTP id k5-v6so15771953wrn.3
- for <linux-mtd@lists.infradead.org>; Wed, 23 May 2018 10:16:26 -0700 (PDT)
+ id 1fLXNP-0001Yz-9E
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2018 17:16:50 +0000
+Received: by mail-wm0-x244.google.com with SMTP id t11-v6so11085903wmt.0
+ for <linux-mtd@lists.infradead.org>; Wed, 23 May 2018 10:16:29 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -13,9 +13,12 @@ To: Brian Norris <computersforpeace@gmail.com>,
 Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 1/2] dt-bindings: mtd: explicitly describe nesting partitions
-Date: Wed, 23 May 2018 19:14:47 +0200
-Message-Id: <20180523171448.26234-1-zajec5@gmail.com>
+Subject: [PATCH 2/2] mtd: partitions: use DT info for parsing partitions with
+ specified type
+Date: Wed, 23 May 2018 19:14:48 +0200
+Message-Id: <20180523171448.26234-2-zajec5@gmail.com>
+In-Reply-To: <20180523171448.26234-1-zajec5@gmail.com>
+References: <20180523171448.26234-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -30,95 +33,86 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-Documentation was already saying that fixed and dynamic partitioning can
-be mixed but was missing a clear description and examples. This commit
-adds a proper description of how partitions can be nested and how layout
-descriptions can be mixed.
-
-This addition is important for partitions that contain subpartitions.
-It's useful to have parent partition registered (e.g. for overwriting
-purposes) as well as children ones (for accessing data). It's also
-required when a single partition uses different partitioning method
-(e.g. vendor custom "firmware" partition with kernel + rootfs).
+This supports nested partitions in a DT. If selected partition has a
+"compatible" property specified it will be parsed looking for
+subpartitions.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
-Another example (I couldn't put in Documentation yet) could be:
+ drivers/mtd/mtdpart.c | 33 +++++++++++++--------------------
+ 1 file changed, 13 insertions(+), 20 deletions(-)
 
-flash@0 {
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
-
-		partition@0 {
-			label = "bootloader";
-			reg = <0x0000000 0x0100000>;
-			read-only;
-		};
-
-		firmware@100000 {
-			label = "firmware";
-			reg = <0x0100000 0x0800000>;
-			compatible = "brcm,trx";
-		};
-	};
-};
-
-It's probably even more realistic one, but we don't describe "brcm,trx"
-binding yet.
-
-The purpose of above description would be to:
-1) Specify fixed partitions (they never change)
-2) Tell operating system that "firmware" partition uses Broadcom's TRX
-   format which is a container for 2 or 3 subpartitions (usually: kernel
-   and rootfs).
----
- .../devicetree/bindings/mtd/partition.txt          | 25 ++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-index a8f382642ba9..2214167ce88a 100644
---- a/Documentation/devicetree/bindings/mtd/partition.txt
-+++ b/Documentation/devicetree/bindings/mtd/partition.txt
-@@ -14,6 +14,13 @@ method is used for a given flash device. To describe the method there should be
- a subnode of the flash device that is named 'partitions'. It must have a
- 'compatible' property, which is used to identify the method to use.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index f8d3a015cdad..52e2cb35fc79 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -322,22 +322,6 @@ static inline void free_partition(struct mtd_part *p)
+ 	kfree(p);
+ }
  
-+When a single partition is represented with a DT node (it depends on a used
-+format) it may also be described using above rules ('compatible' and optionally
-+some extra properties / subnodes). It allows describing more complex,
-+hierarchical (multi-level) layouts and should be used if there is some
-+significant relation between partitions or some partition internally uses
-+another partitioning method.
-+
- Available bindings are listed in the "partitions" subdirectory.
+-/**
+- * mtd_parse_part - parse MTD partition looking for subpartitions
+- *
+- * @slave: part that is supposed to be a container and should be parsed
+- * @types: NULL-terminated array with names of partition parsers to try
+- *
+- * Some partitions are kind of containers with extra subpartitions (volumes).
+- * There can be various formats of such containers. This function tries to use
+- * specified parsers to analyze given partition and registers found
+- * subpartitions on success.
+- */
+-static int mtd_parse_part(struct mtd_part *slave, const char *const *types)
+-{
+-	return parse_mtd_partitions(&slave->mtd, types, NULL);
+-}
+-
+ static struct mtd_part *allocate_partition(struct mtd_info *parent,
+ 			const struct mtd_partition *part, int partno,
+ 			uint64_t cur_offset)
+@@ -735,8 +719,8 @@ int add_mtd_partitions(struct mtd_info *master,
  
+ 		add_mtd_device(&slave->mtd);
+ 		mtd_add_partition_attrs(slave);
+-		if (parts[i].types)
+-			mtd_parse_part(slave, parts[i].types);
++		/* Look for subpartitions */
++		parse_mtd_partitions(&slave->mtd, parts[i].types, NULL);
  
-@@ -73,6 +80,24 @@ flash@0 {
- 		uimage@100000 {
- 			reg = <0x0100000 0x200000>;
- 		};
-+
-+		calibration@200000 {
-+			label = "calibration";
-+			reg = <0x0200000 0x100000>;
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				label = "wifi0";
-+				reg = <0x000000 0x080000>;
-+			};
-+
-+			partition@80000 {
-+				label = "wifi1";
-+				reg = <0x080000 0x080000>;
-+			};
-+		};
- 	};
+ 		cur_offset = slave->offset + slave->mtd.size;
+ 	}
+@@ -812,6 +796,12 @@ static const char * const default_mtd_part_types[] = {
+ 	NULL
  };
  
++/* Check DT only when looking for subpartitions. */
++static const char * const default_subpartition_types[] = {
++	"ofpart",
++	NULL
++};
++
+ static int mtd_part_do_parse(struct mtd_part_parser *parser,
+ 			     struct mtd_info *master,
+ 			     struct mtd_partitions *pparts,
+@@ -882,7 +872,9 @@ static int mtd_part_of_parse(struct mtd_info *master,
+ 	const char *fixed = "fixed-partitions";
+ 	int ret, err = 0;
+ 
+-	np = of_get_child_by_name(mtd_get_of_node(master), "partitions");
++	np = mtd_get_of_node(master);
++	if (!mtd_is_partition(master))
++		np = of_get_child_by_name(np, "partitions");
+ 	of_property_for_each_string(np, "compatible", prop, compat) {
+ 		parser = mtd_part_get_compatible_parser(compat);
+ 		if (!parser)
+@@ -945,7 +937,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
+ 	int ret, err = 0;
+ 
+ 	if (!types)
+-		types = default_mtd_part_types;
++		types = mtd_is_partition(master) ? default_subpartition_types :
++			default_mtd_part_types;
+ 
+ 	for ( ; *types; types++) {
+ 		/*
 -- 
 2.13.6
