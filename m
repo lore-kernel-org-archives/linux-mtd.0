@@ -1,31 +1,29 @@
-Received: from mail-wr0-f195.google.com ([209.85.128.195])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLXOZ-0002C7-Fs
- for linux-mtd@lists.infradead.org; Wed, 23 May 2018 17:18:18 +0000
-Received: by mail-wr0-f195.google.com with SMTP id l41-v6so2641695wre.7
- for <linux-mtd@lists.infradead.org>; Wed, 23 May 2018 10:17:41 -0700 (PDT)
-Subject: Re: [RFC PATCH] mtd: spi-nor: add support to non-uniform SPI NOR
- flash memories
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- cyrille.pitchen@microchip.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- nicolas.ferre@microchip.com, Cristian.Birsan@microchip.com
-References: <20180518093233.24241-1-tudor.ambarus@microchip.com>
- <89d45190-95b0-b780-b219-e6c6adcb6147@gmail.com>
- <4cd7d47a-fd56-6b54-3b38-262adf46a97f@microchip.com>
- <bbb9387b-4404-e6a0-b8b5-f48bcebdd474@gmail.com>
- <123e50da-e49e-f876-bdb4-2719f7f7640a@microchip.com>
- <a32aa2ee-7d9e-37b6-811f-799570ce1cea@gmail.com>
- <66b2b859-72db-33cc-75ae-2493a4aad235@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <aa083709-c3e2-f075-1a99-c31399a1cb77@gmail.com>
-Date: Wed, 23 May 2018 14:54:17 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLY9r-0002Ct-Dd
+ for linux-mtd@lists.infradead.org; Wed, 23 May 2018 18:06:46 +0000
+Date: Wed, 23 May 2018 20:06:11 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH v4 6/7] mtd: spi-nor: Use the spi_mem_xx() API
+Message-ID: <20180523200611.77cab6e5@bbrezillon>
+In-Reply-To: <6a39f071-186e-7009-994d-af845ce3f75d@microchip.com>
+References: <20180426161820.2852-1-boris.brezillon@bootlin.com>
+ <20180426161820.2852-7-boris.brezillon@bootlin.com>
+ <6a39f071-186e-7009-994d-af845ce3f75d@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <66b2b859-72db-33cc-75ae-2493a4aad235@microchip.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,44 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/23/2018 02:52 PM, Tudor Ambarus wrote:
-> Hi, Marek,
+Hi Cyrille,
 
-Hi,
+On Wed, 23 May 2018 17:44:32 +0200
+Cyrille Pitchen <cyrille.pitchen@microchip.com> wrote:
 
-> On 05/23/2018 12:56 PM, Marek Vasut wrote:
-> [...]
->>>> [...]
->>>>
->>>>>>> +    while (len) {
->>>>>>> +        cmd = spi_nor_find_best_erase_cmd(map, region, addr, len);
->>>>>>> +        if (!cmd)
->>>>>>> +            return -EINVAL;
->>>>>> What would happen if you realize mid-way that you cannot erase some
->>>>>> sector , do you end up with partial erase ?
->>>>> Is this possible? In non-overlaid regions, the address is aligned with
->>>>> at least one of the erase commands, else -EINVAL. For overlaid regions
->>>>> alignment doesn't matter. But yes, if this is possible, in this case,
->>>>> this proposal will do a partial erase.
->>>> Shouldn't we fail up front instead ?
->>> It will be great if we can do this without having performance penalties.
->>> Can we loose the conditions for the last erase command? If one wants to
->>> erase 80k chunk starting from offset 0 and only 32k and 64k erase type
->>> are supported, can we erase 96k?
->> No. But can you maybe build a list of erase commands to be executed once
->> you validate that the erase can be performed for example ?
+> > +					  SPI_MEM_OP_DATA_OUT(len, buf, 1));
+> >  
+> > -	return spi_write(spi, flash->command, len + 1);
+> > +	return spi_mem_exec_op(flash->spimem, &op);
+> >  }
+> >  
+> >  static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+> >  			    const u_char *buf)
+> >  {
+> >  	struct m25p *flash = nor->priv;
+> > -	struct spi_device *spi = flash->spi;
+> > -	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> > -	struct spi_transfer t[3] = {};
+> > -	struct spi_message m;
+> > -	int cmd_sz = m25p_cmdsz(nor);
+> > -	ssize_t ret;
+> > +	struct spi_mem_op op =
+> > +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
+> > +				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
+> > +				   SPI_MEM_OP_DUMMY(0, 1),  
 > 
-> My second choice was an array witch saves u8 opcode and u32 erasesize.
-> There are flashes of 256MB, in the worst case scenario with 4k erase
-> type, we will end up with 64K entries.
+> Why do you use SPI_MEM_OP_DUMMY(0, 1) here instead of SPI_MEM_OP_NO_DUMMY() ?
 
-Some RLE encoding might help here ?
+I guess I just copied the definition from m25p80_read() and modified
+the definition without noticing this one could be replaced by
+SPI_MEM_OP_NO_DUMMY. Not a big deal though, since SPI_MEM_OP_DUMMY(0,
+1) still means "no dummy cycles".
 
-> How about enforcing the length to be multiple of mtd->erasesize, like we
-> do in uniform_erase? With this, the problem disappears.
+Do you plan to send a patch to change that, or should I?
 
-What is the erase size for the 4k-sector 256MiB flash ?
+Regards,
 
--- 
-Best regards,
-Marek Vasut
+Boris
