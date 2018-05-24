@@ -1,24 +1,24 @@
-Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLwns-0000fg-Sw
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 20:25:42 +0000
-Received: by mail-wm0-x231.google.com with SMTP id a67-v6so8518063wmf.3
- for <linux-mtd@lists.infradead.org>; Thu, 24 May 2018 13:25:28 -0700 (PDT)
-Subject: Re: NOR Flash Test Utility
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Siddharth Chandrasekaran <siddharth@embedjournal.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- David Oberhollenzer <goliath@sigma-star.at>
-References: <1638856b945.101c6b59a6973.7576653443668587481@embedjournal.com>
- <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <df8543d1-7bf8-25be-3d85-0e94d5a157b0@gmail.com>
-Date: Thu, 24 May 2018 22:25:25 +0200
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Mark Brown <broonie@kernel.org>,
+ Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tomi Valkeinen <tomi.valkeinen@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
+ Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
+Date: Thu, 24 May 2018 22:35:04 +0200
+Message-ID: <1875447.uBIO10iqcO@z50>
+In-Reply-To: <20180523185244.GT98604@atomide.com>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180521100503.GA24638@sirena.org.uk> <20180523185244.GT98604@atomide.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/24/2018 10:19 PM, Richard Weinberger wrote:
-> Sid,
+On Wednesday, May 23, 2018 8:52:44 PM CEST Tony Lindgren wrote:
+> * Mark Brown <broonie@kernel.org> [180521 10:07]:
+> > On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
+> > > Now as the Amstrad Delta board provides GPIO lookup tables, switch from
+> > > GPIO numbers to GPIO descriptors and use the table to locate required
+> > > GPIO pins.
+> > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
 > 
-> On Tue, May 22, 2018 at 4:52 PM, Siddharth Chandrasekaran
-> <siddharth@embedjournal.com> wrote:
->> Hello,
->>
->> I'm trying to test some NOR flashes to for manufacturing defects. I see there
->> is a test utility that reads and writes sequentially for NAND flash under
->> `nand-utils`, but `nor-utils` doesn't seem to have anything similar.
->>
->> Where can I find one for NOR? If I have to write my own, will you be interested
->> in a patch?
-> 
-> I'm not aware of a NOR specific test, what properties do you want to test?
-> Non-NAND mtd tests should do the job.
-> Is it SPI-NOR?
-> 
-> Maybe Marek has some input.
-> Patches for new test tools are, of course, very welcome!
 
-I only have an FPGA board with sockets for SPI NORs for endurance
-testing, that's easy to build really.
+Hi Tony,
 
--- 
-Best regards,
-Marek Vasut
+> Thanks applying patches 1 and 3 of this series into omap-for-v4.18/soc.
+> It's kind of getting late for v4.18, but let's see if we can still make
+> it.
+
+Thank you.
+
+> Seems the others can be applied to the driver trees after no more
+> comments, then once all that is done we can apply the last patch
+> in this series.
+
+I'll be submitting v2 of 5/6 (nand) very soon. 4/6 (lcd) is still waiting for 
+Tomi to respond. I hope there will be no issues with it. Howevver, regarding 
+2/6 - serio - I have to work more on that to satisfy Dmitry's comments. So 
+let's forget about 6/6 for now and I'll resubmit it again when we are ready 
+for that. Meanwhile, I'm going to submit a few more patches against the board 
+init file to complete migration to GPIO descriptors so dynamic allocation of 
+GPIO numbers to ams-delta latches will be possible.
+
+Thanks,
+Janusz
