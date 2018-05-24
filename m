@@ -1,30 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLm3o-0004UI-91
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 08:57:36 +0000
-Date: Thu, 24 May 2018 10:56:14 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- mturquette@baylibre.com, sboyd@kernel.org, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180524105614.3c51736c@bbrezillon>
-In-Reply-To: <2d8107f0e6568512d691e9ea25a1e4e5@agner.ch>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <20180523161810.0ed9fe80@bbrezillon>
- <2d8107f0e6568512d691e9ea25a1e4e5@agner.ch>
+Date: Thu, 24 May 2018 11:30:06 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Ezequiel Garcia
+ <ezequiel.garcia@free-electrons.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam
+ Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd
+ Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org,
+ netdev@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 05/13] mtd: rawnand: marvell: remove the dmaengine
+ compat need
+Message-ID: <20180524113006.3d5f393e@xps13>
+In-Reply-To: <20180524070703.11901-6-robert.jarzmik@free.fr>
+References: <20180524070703.11901-1-robert.jarzmik@free.fr>
+ <20180524070703.11901-6-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,74 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 24 May 2018 10:46:27 +0200
-Stefan Agner <stefan@agner.ch> wrote:
+Hi Robert,
 
-> Hi Boris,
-> 
-> Thanks for the initial review! One small question below:
-> 
-> On 23.05.2018 16:18, Boris Brezillon wrote:
-> > Hi Stefan,
-> > 
-> > On Tue, 22 May 2018 14:07:06 +0200
-> > Stefan Agner <stefan@agner.ch> wrote:  
-> >> +
-> >> +struct tegra_nand {
-> >> +	void __iomem *regs;
-> >> +	struct clk *clk;
-> >> +	struct gpio_desc *wp_gpio;
-> >> +
-> >> +	struct nand_chip chip;
-> >> +	struct device *dev;
-> >> +
-> >> +	struct completion command_complete;
-> >> +	struct completion dma_complete;
-> >> +	bool last_read_error;
-> >> +
-> >> +	dma_addr_t data_dma;
-> >> +	void *data_buf;
-> >> +	dma_addr_t oob_dma;
-> >> +	void *oob_buf;
-> >> +
-> >> +	int cur_chip;
-> >> +};  
-> > 
-> > This struct should be split in 2 structures: one representing the NAND
-> > controller and one representing the NAND chip:
-> > 
-> > struct tegra_nand_controller {
-> > 	struct nand_hw_control base;
-> > 	void __iomem *regs;
-> > 	struct clk *clk;
-> > 	struct device *dev;
-> > 	struct completion command_complete;
-> > 	struct completion dma_complete;
-> > 	bool last_read_error;
-> > 	int cur_chip;
-> > };
-> > 
-> > struct tegra_nand {
-> > 	struct nand_chip base;
-> > 	dma_addr_t data_dma;
-> > 	void *data_buf;
-> > 	dma_addr_t oob_dma;
-> > 	void *oob_buf;
-> > };  
-> 
-> Is there a particular reason why you would leave DMA buffers in the chip
-> structure? It seems that is more a controller thing...
+On Thu, 24 May 2018 09:06:55 +0200, Robert Jarzmik
+<robert.jarzmik@free.fr> wrote:
 
-The size of those buffers is likely to be device dependent, so if you
-have several NANDs connected to the controller, you'll either have to
-have one buffer at the controller level which is max(all-chip-buf-size)
-or a buffer per device.
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
+>=20
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+>=20
+> Signed-off-by: Signed-off-by: Daniel Mack <daniel@zonque.org>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
+>  1 file changed, 1 insertion(+), 16 deletions(-)
+>=20
 
-Also, do you really need these buffers? The core already provide some
-which are suitable for DMA (chip->oob_poi and chip->data_buf).
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-> 
-> If I move them, then struct tegra_nand would be basically empty. Can I
-> just use struct nand_chip and have no driver specific chip abstraction?
-
-Sure.
+Thanks,
+Miqu=C3=A8l
