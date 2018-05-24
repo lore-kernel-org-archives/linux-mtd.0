@@ -1,8 +1,8 @@
 Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
  helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLkLl-0003hv-6F
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 07:07:50 +0000
+ id 1fLkLl-0003hm-7Q
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2018 07:07:51 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -18,9 +18,10 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v2 09/13] ata: pata_pxa: remove the dmaengine compat need
-Date: Thu, 24 May 2018 09:06:59 +0200
-Message-Id: <20180524070703.11901-10-robert.jarzmik@free.fr>
+Subject: [PATCH v2 05/13] mtd: rawnand: marvell: remove the dmaengine compat
+ need
+Date: Thu, 24 May 2018 09:06:55 +0200
+Message-Id: <20180524070703.11901-6-robert.jarzmik@free.fr>
 In-Reply-To: <20180524070703.11901-1-robert.jarzmik@free.fr>
 References: <20180524070703.11901-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,53 +40,46 @@ priority are not needed anymore.
 This patch simplifies the dma resource acquisition, using the more
 generic function dma_request_slave_channel().
 
+Signed-off-by: Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 ---
- drivers/ata/pata_pxa.c | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
+ 1 file changed, 1 insertion(+), 16 deletions(-)
 
-diff --git a/drivers/ata/pata_pxa.c b/drivers/ata/pata_pxa.c
-index f6c46e9a4dc0..e8b6a2e464c9 100644
---- a/drivers/ata/pata_pxa.c
-+++ b/drivers/ata/pata_pxa.c
-@@ -25,7 +25,6 @@
- #include <linux/libata.h>
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
--#include <linux/dma/pxa-dma.h>
- #include <linux/gpio.h>
- #include <linux/slab.h>
- #include <linux/completion.h>
-@@ -180,8 +179,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	struct resource *irq_res;
- 	struct pata_pxa_pdata *pdata = dev_get_platdata(&pdev->dev);
- 	struct dma_slave_config	config;
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 10e953218948..f9763be078ef 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2613,8 +2613,6 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
+ 						    dev);
+ 	struct dma_slave_config config = {};
+ 	struct resource *r;
 -	dma_cap_mask_t mask;
 -	struct pxad_param param;
- 	int ret = 0;
+ 	int ret;
  
- 	/*
-@@ -278,10 +275,6 @@ static int pxa_ata_probe(struct platform_device *pdev)
+ 	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
+@@ -2627,20 +2625,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
+ 	if (ret)
+ 		return ret;
  
- 	ap->private_data = data;
- 
+-	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
+-	if (!r) {
+-		dev_err(nfc->dev, "No resource defined for data DMA\n");
+-		return -ENXIO;
+-	}
+-
+-	param.drcmr = r->start;
+-	param.prio = PXAD_PRIO_LOWEST;
 -	dma_cap_zero(mask);
 -	dma_cap_set(DMA_SLAVE, mask);
--	param.prio = PXAD_PRIO_LOWEST;
--	param.drcmr = pdata->dma_dreq;
- 	memset(&config, 0, sizeof(config));
- 	config.src_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 	config.dst_addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
-@@ -294,8 +287,7 @@ static int pxa_ata_probe(struct platform_device *pdev)
- 	 * Request the DMA channel
- 	 */
- 	data->dma_chan =
+-	nfc->dma_chan =
 -		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &pdev->dev, "data");
-+		dma_request_slave_channel(&pdev->dev, "data");
- 	if (!data->dma_chan)
- 		return -EBUSY;
- 	ret = dmaengine_slave_config(data->dma_chan, &config);
+-						 &param, nfc->dev,
+-						 "data");
++	nfc->dma_chan =	dma_request_slave_channel(&nfc->dev, "data");
+ 	if (!nfc->dma_chan) {
+ 		dev_err(nfc->dev,
+ 			"Unable to request data DMA channel\n");
 -- 
 2.11.0
