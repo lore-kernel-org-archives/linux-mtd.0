@@ -1,37 +1,29 @@
-Received: from mail-vk0-x242.google.com ([2607:f8b0:400c:c05::242])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLkuW-0004ov-5a
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 07:43:48 +0000
-Received: by mail-vk0-x242.google.com with SMTP id x66-v6so398298vka.11
- for <linux-mtd@lists.infradead.org>; Thu, 24 May 2018 00:43:32 -0700 (PDT)
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLnzM-0006to-Jg
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2018 11:01:17 +0000
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <4ecb6215-699b-b714-cab5-cb237e883ec7@microchip.com>
-References: <20180426161820.2852-1-boris.brezillon@bootlin.com>
- <20180426161820.2852-7-boris.brezillon@bootlin.com>
- <6a39f071-186e-7009-994d-af845ce3f75d@microchip.com>
- <4ecb6215-699b-b714-cab5-cb237e883ec7@microchip.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 24 May 2018 09:43:27 +0200
-Message-ID: <CAMuHMdX1QzEu9i6mpamzUth7VMfJVLJ_0TzVcess7UJ=YvCxRg@mail.gmail.com>
-Subject: Re: [PATCH v4 6/7] mtd: spi-nor: Use the spi_mem_xx() API
-To: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>,
- Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Thu, 24 May 2018 13:00:41 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Benjamin Lindqvist <benjamin.lindqvist@endian.se>
+Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, Lucas Stach <dev@lynxeye.de>, miquel.raynal@bootlin.com,
+ richard@nod.at, marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com, Mirza
+ Krak <mirza.krak@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
+Message-ID: <d8d6cb9fcd8ce7ea5c13b227012de6d2@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,61 +33,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Cyrille,
+On 24.05.2018 09:45, Benjamin Lindqvist wrote:
+> Hi Stefan (and all),
+> 
+> First off, I apoloigize in advance if I'm deviating from common
+> kernel mailing list courtesy -- this is my first time responding.
+> I just have a comment on the NAND driver that I'd like to bring
+> to the public.
+> 
 
-On Wed, May 23, 2018 at 5:56 PM, Cyrille Pitchen
-<cyrille.pitchen@microchip.com> wrote:
-> Le 23/05/2018 =C3=A0 17:44, Cyrille Pitchen a =C3=A9crit :
->> Le 26/04/2018 =C3=A0 18:18, Boris Brezillon a =C3=A9crit :
->>>  static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, i=
-nt len)
->>>  {
->>>      struct m25p *flash =3D nor->priv;
->>> -    struct spi_device *spi =3D flash->spi;
->>> -
->>> -    flash->command[0] =3D opcode;
->>> -    if (buf)
->>> -            memcpy(&flash->command[1], buf, len);
->>> +    struct spi_mem_op op =3D SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 1),
->>> +                                      SPI_MEM_OP_NO_ADDR,
->>> +                                      SPI_MEM_OP_NO_DUMMY,
->>
->> I didn't test nor compiled to verify but I have some doubt:
->> here the 'op' variable is allocated on the stack and both definitions
->> of SPI_MEM_OP_NO_ADDR and SPI_MEM_OP_NO_DUMMY macros are { }.
->>
->> It might be some rule of the C language that I ignore but are we guarant=
-eed
->> that the .nbytes member of both structures is actually initialized to 0 =
-?
->>
->> I would say no: I think since the structure is allocated on the stack al=
-l
->> members not being explicitly initialized are left uninitialized by the
->> compiler when it generates the assembler code. However, I'm not 100% sur=
-e of
->> that.
->
-> Actually, I'm reading that with C99 extensions, "omitted field members ar=
-e
-> implicitly initialized the same as objects that have static storage durat=
-ion."
-> https://gcc.gnu.org/onlinedocs/gcc/Designated-Inits.html
+Welcome!
 
-JFTR, omitted field members are.
-But IIRC, implicit gaps due to alignment rules aren't, which mostly matters
-for leaking random data to userspace.
+>> +       switch (mtd->oobsize) {
+>> ...
+>> +       case 224:
+>> +               mtd_set_ooblayout(mtd, &tegra_nand_oob_224_ops);
+>> +               chip->ecc.strength = 8;
+>> +               chip->ecc.bytes = 18;
+>> +               value |= CFG_ECC_SEL | CFG_TVAL_8;
+>> +               break; +       case 224:
+> 
+> I am not sure how you arrived at this oobsize-based inference. I
+> have not seen any explicit relation between oob size and ECC
+> algorithm used in the reference manual. Indeed, the U-Boot I was
+> working on (a fork of the Toradex 2015.04 U-Boot) always has
+> oobsize == 224 but used either BCH[t=16] or RS[t=4]. In fact, we
+> tried choosing RS[t=8] in U-Boot but we failed to make the
+> BootROM decode this at all. So we had to use RS[t=4]. But
+> changing the algorithm did not automatically change the oobsize,
+> at least it didn't for us. So maybe you should consider if this
+> is really the way to go about deciding which algorithm is used.
 
-Gr{oetje,eeting}s,
+The oobsize based inference to set the HW ECC mode comes from the
+patchset I picked up. Typically, the size of the OOB area is such that
+it allows "good enough" error correction required for that chip. So
+using it as indicator for the ECC algorithm is not entirely off...
 
-                        Geert
+But yeah I agree we have better means, and I already started working on
+a better mechanism. Also, I worked on BCH support, and it looks pretty
+good already.
 
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+If we want to auto select mode we can use the ECC requirements from
+ONFI/JEDEC/parameter page. Or we could use device tree only. 
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Thanks for bringing up the Boot ROM issue. In fact I investigated the
+supported modes the recent days too. First off, as you mentioned, the
+boot ROM seems to probe different modes until it succeeds. By trying
+through all RS and BCH modes, it seems that it only probes some modes:
+- RS t=4
+- BCH t=8
+- BCH t=16
+
+I guess those are preferred modes in practise. Not sure if we should
+make sure the auto selection such that it only chooses from this list...
+
+> 
+> Note that we're in fact using this patch set in Linux today, but
+> we had to remove the oobsize inference part. Currently we're
+> simply hard coding it to CFG_TVAL_4, but maybe it would be
+> cleaner to add ECC algo as a board config instead, e.g. in the
+> .dts file or whatever. This seems to be done by other vendors
+> already, see for example excerpt of
+> Documentation/devicetree/bindings/mtd/gpmc-nand.txt below:
+> 
+>  - ti,nand-ecc-opt: A string setting the ECC layout to use. One of:
+> "sw" 1-bit Hamming ecc code via software
+> "hw" <deprecated> use "ham1" instead
+> "hw-romcode" <deprecated> use "ham1" instead
+> "ham1" 1-bit Hamming ecc code
+> "bch4" 4-bit BCH ecc code
+> "bch8" 8-bit BCH ecc code
+> "bch16" 16-bit BCH ECC code
+> Refer below "How to select correct ECC scheme for your device ?"
+> 
+> It seems as if this method would be equally applicable to Tegra NAND.
+
+Yeah, ideally we can reuse "nand-ecc-algo". Although, Reed-Solomon is
+not yet in the list.  So using this property would require to extend
+this standard property.
+
+--
+Stefan
