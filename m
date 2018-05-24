@@ -1,8 +1,8 @@
 Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
  helo=smtp.smtpout.orange.fr)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLkLY-000825-Sj
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 07:07:39 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLkLZ-0002o5-QT
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2018 07:07:50 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -18,9 +18,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v2 06/13] net: smc911x: remove the dmaengine compat need
-Date: Thu, 24 May 2018 09:06:56 +0200
-Message-Id: <20180524070703.11901-7-robert.jarzmik@free.fr>
+Subject: [PATCH v2 01/13] dmaengine: pxa: use a dma slave map
+Date: Thu, 24 May 2018 09:06:51 +0200
+Message-Id: <20180524070703.11901-2-robert.jarzmik@free.fr>
 In-Reply-To: <20180524070703.11901-1-robert.jarzmik@free.fr>
 References: <20180524070703.11901-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,58 +32,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
+In order to remove the specific knowledge of the dma mapping from PXA
+drivers, add a default slave map for pxa architectures.
 
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
+This won't impact MMP architecture, but is aimed only at all PXA boards.
+
+This is the first step, and once all drivers are converted,
+pxad_filter_fn() will be made static, and the DMA resources removed from
+device.c.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/net/ethernet/smsc/smc911x.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+ drivers/dma/pxa_dma.c                 | 10 +++++++++-
+ include/linux/platform_data/mmp_dma.h |  4 ++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/smsc/smc911x.c b/drivers/net/ethernet/smsc/smc911x.c
-index 05157442a980..4c3713bd5caa 100644
---- a/drivers/net/ethernet/smsc/smc911x.c
-+++ b/drivers/net/ethernet/smsc/smc911x.c
-@@ -74,7 +74,6 @@ static const char version[] =
- #include <linux/skbuff.h>
+diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
+index b53fb618bbf6..9505334f9c6e 100644
+--- a/drivers/dma/pxa_dma.c
++++ b/drivers/dma/pxa_dma.c
+@@ -179,6 +179,8 @@ static unsigned int pxad_drcmr(unsigned int line)
+ 	return 0x1000 + line * 4;
+ }
  
- #include <linux/dmaengine.h>
--#include <linux/dma/pxa-dma.h>
++bool pxad_filter_fn(struct dma_chan *chan, void *param);
++
+ /*
+  * Debug fs
+  */
+@@ -1396,9 +1398,10 @@ static int pxad_probe(struct platform_device *op)
+ {
+ 	struct pxad_device *pdev;
+ 	const struct of_device_id *of_id;
++	const struct dma_slave_map *slave_map = NULL;
+ 	struct mmp_dma_platdata *pdata = dev_get_platdata(&op->dev);
+ 	struct resource *iores;
+-	int ret, dma_channels = 0, nb_requestors = 0;
++	int ret, dma_channels = 0, nb_requestors = 0, slave_map_cnt = 0;
+ 	const enum dma_slave_buswidth widths =
+ 		DMA_SLAVE_BUSWIDTH_1_BYTE   | DMA_SLAVE_BUSWIDTH_2_BYTES |
+ 		DMA_SLAVE_BUSWIDTH_4_BYTES;
+@@ -1429,6 +1432,8 @@ static int pxad_probe(struct platform_device *op)
+ 	} else if (pdata && pdata->dma_channels) {
+ 		dma_channels = pdata->dma_channels;
+ 		nb_requestors = pdata->nb_requestors;
++		slave_map = pdata->slave_map;
++		slave_map_cnt = pdata->slave_map_cnt;
+ 	} else {
+ 		dma_channels = 32;	/* default 32 channel */
+ 	}
+@@ -1440,6 +1445,9 @@ static int pxad_probe(struct platform_device *op)
+ 	pdev->slave.device_prep_dma_memcpy = pxad_prep_memcpy;
+ 	pdev->slave.device_prep_slave_sg = pxad_prep_slave_sg;
+ 	pdev->slave.device_prep_dma_cyclic = pxad_prep_dma_cyclic;
++	pdev->slave.filter.map = slave_map;
++	pdev->slave.filter.mapcnt = slave_map_cnt;
++	pdev->slave.filter.fn = pxad_filter_fn;
  
- #include <asm/io.h>
+ 	pdev->slave.copy_align = PDMA_ALIGNMENT;
+ 	pdev->slave.src_addr_widths = widths;
+diff --git a/include/linux/platform_data/mmp_dma.h b/include/linux/platform_data/mmp_dma.h
+index d1397c8ed94e..6397b9c8149a 100644
+--- a/include/linux/platform_data/mmp_dma.h
++++ b/include/linux/platform_data/mmp_dma.h
+@@ -12,9 +12,13 @@
+ #ifndef MMP_DMA_H
+ #define MMP_DMA_H
  
-@@ -1794,8 +1793,6 @@ static int smc911x_probe(struct net_device *dev)
- 	unsigned long irq_flags;
- #ifdef SMC_USE_DMA
- 	struct dma_slave_config	config;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- #endif
++struct dma_slave_map;
++
+ struct mmp_dma_platdata {
+ 	int dma_channels;
+ 	int nb_requestors;
++	int slave_map_cnt;
++	const struct dma_slave_map *slave_map;
+ };
  
- 	DBG(SMC_DEBUG_FUNC, dev, "--> %s\n", __func__);
-@@ -1969,17 +1966,8 @@ static int smc911x_probe(struct net_device *dev)
- 
- #ifdef SMC_USE_DMA
- 
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	param.prio = PXAD_PRIO_LOWEST;
--	param.drcmr = -1UL;
--
--	lp->rxdma =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &dev->dev, "rx");
--	lp->txdma =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &dev->dev, "tx");
-+	lp->rxdma = dma_request_slave_channel(&dev->dev, "rx");
-+	lp->txdma = dma_request_slave_channel(&dev->dev, "tx");
- 	lp->rxdma_active = 0;
- 	lp->txdma_active = 0;
- 
+ #endif /* MMP_DMA_H */
 -- 
 2.11.0
