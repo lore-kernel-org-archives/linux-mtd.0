@@ -1,32 +1,27 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLpDY-00088Q-Ee
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 12:19:41 +0000
+Date: Thu, 24 May 2018 14:58:36 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Ezequiel Garcia <ezequiel.garcia@free-electrons.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Liam Girdwood <lgirdwood@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 08/13] ASoC: pxa: remove the dmaengine compat need
+Message-ID: <20180524135836.GR4828@sirena.org.uk>
+References: <20180524070703.11901-1-robert.jarzmik@free.fr>
+ <20180524070703.11901-9-robert.jarzmik@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Thu, 24 May 2018 14:19:18 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Benjamin Lindqvist <benjamin.lindqvist@endian.se>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, Lucas Stach <dev@lynxeye.de>, miquel.raynal@bootlin.com,
- richard@nod.at, marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com, Mirza
- Krak <mirza.krak@gmail.com>, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <20180524135335.6aa0b7a4@bbrezillon>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
- <d8d6cb9fcd8ce7ea5c13b227012de6d2@agner.ch>
- <CAGefG56khQ2835c2QCteit7FuL_yG+APpj6-4vRRPxztFtkAMA@mail.gmail.com>
- <20180524135335.6aa0b7a4@bbrezillon>
-Message-ID: <146a3abbbff4dcef30ad662a0fb85ff1@agner.ch>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="brdEIFGMNIjz5YJG"
+Content-Disposition: inline
+In-Reply-To: <20180524070703.11901-9-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,49 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24.05.2018 13:53, Boris Brezillon wrote:
-> Hi Benjamin,
-> 
-> On Thu, 24 May 2018 13:30:14 +0200
-> Benjamin Lindqvist <benjamin.lindqvist@endian.se> wrote:
-> 
->> Hi Stefan,
->>
->> It seems to me that a probe similar to what the BootROM does shouldn't
->> be awfully complicated to implement - just cycle through the switch
->> cases in case of an ECC error. But I guess that's more of an idea for
->> further improvements rather than a comment to the patch set under
->> review.
-> 
-> Nope, not really an option, because you're not guaranteed that the NAND
-> will be used as a boot media, and the first page or first set of pages
-> might just be erased.
-> 
 
-Yeah I did not meant probing like the Boot ROM does.
+--brdEIFGMNIjz5YJG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What I meant was using only the ECC modes which are supported by the
-Boot ROM when the driver tries to choose a viable mode. So that would
-be:
-- RS t=4
-- BCH t=8
-- BCH t=16
+On Thu, May 24, 2018 at 09:06:58AM +0200, Robert Jarzmik wrote:
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
 
-Maybe we could add a property to enable that behavior:
+Acked-by: Mark Brown <broonie@kernel.org>
 
-tegra,use-bootable-ecc-only;
+--brdEIFGMNIjz5YJG
+Content-Type: application/pgp-signature; name="signature.asc"
 
->>
->> However, I think that allowing for an override of the oobsize
->> inference would be a good idea before merging, no? This could just be
->> a trivial #ifdef (at least temporarily). If you agree but don't feel
->> like doing it yourself, I'd be happy to pitch in. Let me know.
-> 
-> That's why we have nand-ecc-xxx properties in the DT.
-> 
+-----BEGIN PGP SIGNATURE-----
 
-Yes, nand-ecc-strength is the first thing I plan to implement, that way
-strength can be defined in dt.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsGxQsACgkQJNaLcl1U
+h9AOOQf+ICndtAhAUcJYotu2F1wfe6zK/SmwQs2RaAzNMRnQTNmdgQDHaITOBSE0
+juDyVbEzdIjDwHmu3lB6bZ+mj3MDpGeJ1DPvvi6aI+pkDH/J16XMXXTchXyo3NI0
+db1lLlmXYiTbnsVGU2bO6hMCG588Us7ZyHzt2pxD0f9LqNzy3f617uD3fSQZSzrd
+a5JyJZMHQfoIhO58gKX7fQ+JVum/7BFb2S4eFv/DZPZsU9Gy96h0viVcyImmE+ri
+qS4cfZJlV/PC7m4GYIP8V23Dl6rj8wsh7YvKUUtat6tIqGRkZtHFEo6BCQedA3Ka
++7F7zfmpLYaC8VeKI0Fp8fxfDYF0Jg==
+=gxiC
+-----END PGP SIGNATURE-----
 
---
-Stefan
+--brdEIFGMNIjz5YJG--
