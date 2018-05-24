@@ -1,24 +1,33 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Mark Brown <broonie@kernel.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>,
- Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
-Date: Thu, 24 May 2018 22:35:04 +0200
-Message-ID: <1875447.uBIO10iqcO@z50>
-In-Reply-To: <20180523185244.GT98604@atomide.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180521100503.GA24638@sirena.org.uk> <20180523185244.GT98604@atomide.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fLzA0-0000LO-Hs
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2018 22:56:42 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Fri, 25 May 2018 00:56:23 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
+ mturquette@baylibre.com, sboyd@kernel.org, dev@lynxeye.de,
+ miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <20180524144134.41a71063@bbrezillon>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <20180523161810.0ed9fe80@bbrezillon>
+ <2d8107f0e6568512d691e9ea25a1e4e5@agner.ch>
+ <20180524105614.3c51736c@bbrezillon>
+ <7b3cc3991fb054130fd54c6fdfec5097@agner.ch>
+ <20180524142356.0fc68797@bbrezillon> <20180524144134.41a71063@bbrezillon>
+Message-ID: <78b7b43b4284e73cd6a3255e4e5075ed@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +37,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, May 23, 2018 8:52:44 PM CEST Tony Lindgren wrote:
-> * Mark Brown <broonie@kernel.org> [180521 10:07]:
-> > On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
-> > > Now as the Amstrad Delta board provides GPIO lookup tables, switch from
-> > > GPIO numbers to GPIO descriptors and use the table to locate required
-> > > GPIO pins.
-> > 
-> > Acked-by: Mark Brown <broonie@kernel.org>
+On 24.05.2018 14:41, Boris Brezillon wrote:
+> On Thu, 24 May 2018 14:23:56 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > 
+>> On Thu, 24 May 2018 13:09:53 +0200
+>> Stefan Agner <stefan@agner.ch> wrote:
+>>
+>> > On 24.05.2018 10:56, Boris Brezillon wrote:
+>> > > On Thu, 24 May 2018 10:46:27 +0200
+>> > > Stefan Agner <stefan@agner.ch> wrote:
+>> > >
+>> > >> Hi Boris,
+>> > >>
+>> > >> Thanks for the initial review! One small question below:
+>> > >>
+>> > >> On 23.05.2018 16:18, Boris Brezillon wrote:
+>> > >> > Hi Stefan,
+>> > >> >
+>> > >> > On Tue, 22 May 2018 14:07:06 +0200
+>> > >> > Stefan Agner <stefan@agner.ch> wrote:
+>> > >> >> +
+>> > >> >> +struct tegra_nand {
+>> > >> >> +	void __iomem *regs;
+>> > >> >> +	struct clk *clk;
+>> > >> >> +	struct gpio_desc *wp_gpio;
+>> > >> >> +
+>> > >> >> +	struct nand_chip chip;
+>> > >> >> +	struct device *dev;
+>> > >> >> +
+>> > >> >> +	struct completion command_complete;
+>> > >> >> +	struct completion dma_complete;
+>> > >> >> +	bool last_read_error;
+>> > >> >> +
+>> > >> >> +	dma_addr_t data_dma;
+>> > >> >> +	void *data_buf;
+>> > >> >> +	dma_addr_t oob_dma;
+>> > >> >> +	void *oob_buf;
+>> > >> >> +
+>> > >> >> +	int cur_chip;
+>> > >> >> +};
+>> > >> >
+>> > >> > This struct should be split in 2 structures: one representing the NAND
+>> > >> > controller and one representing the NAND chip:
+>> > >> >
+>> > >> > struct tegra_nand_controller {
+>> > >> > 	struct nand_hw_control base;
+>> > >> > 	void __iomem *regs;
+>> > >> > 	struct clk *clk;
+>> > >> > 	struct device *dev;
+>> > >> > 	struct completion command_complete;
+>> > >> > 	struct completion dma_complete;
+>> > >> > 	bool last_read_error;
+>> > >> > 	int cur_chip;
+>> > >> > };
+>> > >> >
+>> > >> > struct tegra_nand {
+>> > >> > 	struct nand_chip base;
+>> > >> > 	dma_addr_t data_dma;
+>> > >> > 	void *data_buf;
+>> > >> > 	dma_addr_t oob_dma;
+>> > >> > 	void *oob_buf;
+>> > >> > };
+>> > >>
+>> > >> Is there a particular reason why you would leave DMA buffers in the chip
+>> > >> structure? It seems that is more a controller thing...
+>> > >
+>> > > The size of those buffers is likely to be device dependent, so if you
+>> > > have several NANDs connected to the controller, you'll either have to
+>> > > have one buffer at the controller level which is max(all-chip-buf-size)
+>> > > or a buffer per device.
+>> > >
+>> > > Also, do you really need these buffers? The core already provide some
+>> > > which are suitable for DMA (chip->oob_poi and chip->data_buf).
+>> > >
+>> >
+>> > Good question, I am not sure, that was existing code.
+>> >
+>> > Are you sure data_buf it is DMA capable?
+>> >
+>> > nand_scan_tail allocates with kmalloc:
+>> >
+>> > chip->data_buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
+>>
+>> Yes, kmalloc() allocates DMA-able buffers, so those are DMA-safe.
+> 
+> Hm, that's not exactly true. It depends on the dma_mask attached to the
+> device.
 
-Hi Tony,
+It seems to work (tm).
 
-> Thanks applying patches 1 and 3 of this series into omap-for-v4.18/soc.
-> It's kind of getting late for v4.18, but let's see if we can still make
-> it.
+I am not sure how to deal with the OOB buffer. I now use the given
+pointer also for oob (offset writesize). I think mtk_nand does the same
+thing.
 
-Thank you.
+dma_len = mtd->writesize + (oob_required ? mtd->oobsize : 0);        
+dma_addr = dma_map_single(ctrl->dev, buf, dma_len, DMA_FROM_DEVICE);
 
-> Seems the others can be applied to the driver trees after no more
-> comments, then once all that is done we can apply the last patch
-> in this series.
+...
 
-I'll be submitting v2 of 5/6 (nand) very soon. 4/6 (lcd) is still waiting for 
-Tomi to respond. I hope there will be no issues with it. Howevver, regarding 
-2/6 - serio - I have to work more on that to satisfy Dmitry's comments. So 
-let's forget about 6/6 for now and I'll resubmit it again when we are ready 
-for that. Meanwhile, I'm going to submit a few more patches against the board 
-init file to complete migration to GPIO descriptors so dynamic allocation of 
-GPIO numbers to ams-delta latches will be possible.
+Is there a test which allows to test my (read|write)_page implementation
+with oob_required set?
 
-Thanks,
-Janusz
+--
+Stefan
