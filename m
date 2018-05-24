@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLpHv-00086B-9O
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 12:24:26 +0000
-Date: Thu, 24 May 2018 14:23:56 +0200
+ id 1fLpLc-0002Wj-TC
+ for linux-mtd@lists.infradead.org; Thu, 24 May 2018 12:28:04 +0000
+Date: Thu, 24 May 2018 14:27:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Stefan Agner <stefan@agner.ch>
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
@@ -16,7 +16,7 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
 Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
  controller driver
-Message-ID: <20180524142356.0fc68797@bbrezillon>
+Message-ID: <20180524142736.2ef157fe@bbrezillon>
 In-Reply-To: <7b3cc3991fb054130fd54c6fdfec5097@agner.ch>
 References: <cover.1526990589.git.stefan@agner.ch>
  <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
@@ -115,4 +115,8 @@ Stefan Agner <stefan@agner.ch> wrote:
 > 
 > chip->data_buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
 
-Yes, kmalloc() allocates DMA-able buffers, so those are DMA-safe.
+Also, you might want to set the NAND_USE_BOUNCE_BUFFER flag in
+chip->options, so that the core always pass DMA-able buffers to your
+->read/write_page[_raw] function.
+
+[1]https://elixir.bootlin.com/linux/v4.17-rc6/source/include/linux/mtd/rawnand.h#L202
