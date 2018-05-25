@@ -1,22 +1,24 @@
-Received: from mail-oi0-x242.google.com ([2607:f8b0:4003:c06::242])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fM9i9-0007PT-Cx
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 10:12:38 +0000
-Received: by mail-oi0-x242.google.com with SMTP id c203-v6so4104877oib.7
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 03:12:24 -0700 (PDT)
-MIME-Version: 1.0
-Sender: mathieu.malaterre@gmail.com
-In-Reply-To: <2323678.8uickzfJaD@blindfold>
-References: <CA+7wUsy+2AWtty+Eow3kkw5Y9XdTZFnKHp05m46zuv9HPZngrA@mail.gmail.com>
- <2323678.8uickzfJaD@blindfold>
-From: Mathieu Malaterre <malat@debian.org>
-Date: Fri, 25 May 2018 12:12:02 +0200
-Message-ID: <CA+7wUsx27-K+XFt0_TqzeAdpydQ8cr7rXbCa8S8tDhGonzO-kQ@mail.gmail.com>
-Subject: Re: ubi: refuse attaching mtd3 - MLC NAND is not supported
-To: Richard Weinberger <richard@nod.at>
-Cc: MIPS Creator CI20 Development <mips-creator-ci20-dev@googlegroups.com>,
- linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMBjR-0005lk-TU
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:22:07 +0000
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
+ Abhishek Sahu <absahu@codeaurora.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH v3 01/16] mtd: rawnand: helper function for setting up ECC
+ configuration
+Date: Fri, 25 May 2018 17:51:29 +0530
+Message-Id: <1527250904-21988-2-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,84 +28,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 24, 2018 at 9:42 PM, Richard Weinberger <richard@nod.at> wrote:
-> Mathieu,
->
-> Am Donnerstag, 24. Mai 2018, 21:28:12 CEST schrieb Mathieu Malaterre:
->> Hi Richard,
->>
->> I cannot boot my MIPS Creator CI20 system anymore. Doing a git bisect leads to:
->>
->> $ git bisect bad
->> b5094b7f135be34630e3ea8a98fa215715d0f29d is the first bad commit
->> commit b5094b7f135be34630e3ea8a98fa215715d0f29d
->> Author: Richard Weinberger <richard@nod.at>
->> Date:   Sat Mar 3 11:45:54 2018 +0100
->>
->>     ubi: Reject MLC NAND
->>
->>     While UBI and UBIFS seem to work at first sight with MLC NAND, you will
->>     most likely lose all your data upon a power-cut or due to read/write
->>     disturb.
->>     In order to protect users from bad surprises, refuse to attach to MLC
->>     NAND.
->>
->>     Cc: stable@vger.kernel.org
->>     Signed-off-by: Richard Weinberger <richard@nod.at>
->>     Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
->>     Acked-by: Artem Bityutskiy <dedekind1@gmail.com>
->>
->> :040000 040000 715242e81a7386bbc9ec5b10d0eb5138cd41ff3f
->> a2c894baaef840fc9dce4e87f3370a66731fc770 M drivers
->>
->>
->> On my system here is what I can see (screen + ttyUSB):
->>
->> ## Booting kernel from Legacy Image at 88000000 ...
->>    Image Name:   Linux-4.16.0+
->>    Image Type:   MIPS Linux Kernel Image (uncompressed)
->>    Data Size:    5890340 Bytes = 5.6 MiB
->>    Load Address: 80010000
->>    Entry Point:  80401550
->>    Verifying Checksum ... OK
->>    Loading Kernel Image ... OK
->>
->> Starting kernel [    0.155993] cacheinfo: Failed to find cpu0 device node
->> [    0.238335] ubi: refuse attaching mtd3 - MLC NAND is not supported
->> [    0.244827] UBI error: cannot attach mtd3
->> [    0.248838] ubi: refuse attaching mtd4 - MLC NAND is not supported
->> [    0.255061] UBI error: cannot attach mtd4
->> [    0.259413] Kernel panic - not syncing: VFS: Unable to mount root
->> fs on unknown-block(0,0)
->> [    0.267679] Rebooting in 10 seconds..
->>
->>
->> This has been working great so far. If I understand correctly your
->> commit, this is a sort of safe code path to avoid corrupted data upon
->> power-cut. Is there a way for me to continue booting my system as-is
->> (other than a git revert b5094b7f135be).
->
-> No. MLC is simply not supported and not safe to use.
-> With that commit we reflect the state of the code and stop giving wrong promises.
+commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+match, maximize ECC settings") provides generic helpers which
+drivers can use for setting up ECC parameters.
 
-ACK. Would you recommend an alternate filesystem then ?
+Since same board can have different ECC strength nand chips so
+following is the logic for setting up ECC strength and ECC step
+size, which can be used by most of the drivers.
 
-> I can hardly believe that it has been working great so far, did you
-> ever do power-cut tests?
-> Or are there other mechanisms on your board that make MLC usable by UBI?
-> For example SLC-emulation.
+1. If both ECC step size and ECC strength are already set
+   (usually by DT) then just check whether this setting
+   is supported by NAND controller.
+2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+   supported by NAND controller.
+3. Otherwise, try to match the ECC step size and ECC strength closest
+   to the chip's requirement. If available OOB size can't fit the chip
+   requirement then select maximum ECC strength which can be fit with
+   available OOB size.
 
-Looking quickly at the tech specs:
+This patch introduces nand_ecc_choose_conf function which calls the
+required helper functions for the above logic. The drivers can use
+this single function instead of calling the 3 helper functions
+individually.
 
-https://www.elinux.org/CI20_Hardware#ROM.2FNAND
+CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+* Changes from v2:
 
-...
-Is provided by a single Samsung K9GBG08UOA NAND flash, using an 8bit
-data interface to the SoC.
-...
+  1. Renamed function to nand_ecc_choose_conf.
+  2. Minor code reorganization to remove warning and 2 function calls
+     for nand_maximize_ecc.
 
-So my understanding is that "it just worked" so far. I've tried
-contacting some of the people involved with the design of CI20 to get
-confirmation.
+* Changes from v1:
+  NEW PATCH
 
--M
+ drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  3 +++
+ 2 files changed, 34 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 72f3a89..e52019d 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6249,6 +6249,37 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ }
+ EXPORT_SYMBOL_GPL(nand_maximize_ecc);
+ 
++/**
++ * nand_ecc_choose_conf - Set the ECC strength and ECC step size
++ * @chip: nand chip info structure
++ * @caps: ECC engine caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * Choose the ECC configuration according to following logic
++ *
++ * 1. If both ECC step size and ECC strength are already set (usually by DT)
++ *    then check if it is supported by this controller.
++ * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
++ * 3. Otherwise, try to match the ECC step size and ECC strength closest
++ *    to the chip's requirement. If available OOB size can't fit the chip
++ *    requirement then fallback to the maximum ECC step size and ECC strength.
++ *
++ * On success, the chosen ECC settings are set.
++ */
++int nand_ecc_choose_conf(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail)
++{
++	if (chip->ecc.size && chip->ecc.strength)
++		return nand_check_ecc_caps(chip, caps, oobavail);
++
++	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE) &&
++	    !nand_match_ecc_req(chip, caps, oobavail))
++		return 0;
++
++	return nand_maximize_ecc(chip, caps, oobavail);
++}
++EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
++
+ /*
+  * Check if the chip configuration meet the datasheet requirements.
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b..89889fa 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1627,6 +1627,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ int nand_maximize_ecc(struct nand_chip *chip,
+ 		      const struct nand_ecc_caps *caps, int oobavail);
+ 
++int nand_ecc_choose_conf(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail);
++
+ /* Default write_oob implementation */
+ int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
+ 
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
+is a member of Code Aurora Forum, hosted by The Linux Foundation
