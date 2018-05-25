@@ -1,30 +1,34 @@
-Received: from mail.izt-labs.de ([82.135.25.162])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fME1L-0002JN-P0
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 14:48:48 +0000
-Received: from localhost (unknown [127.0.0.1])
- by mail.izt-labs.de (Postfix) with ESMTP id C3F14A7383
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 14:48:25 +0000 (UTC)
-Received: from mail.izt-labs.de ([127.0.0.1])
- by localhost (iztmail-dmz.izt-technologies.de [127.0.0.1]) (amavisd-new,
- port 10026)
- with ESMTP id 12890-05 for <linux-mtd@lists.infradead.org>;
- Fri, 25 May 2018 16:48:16 +0200 (CEST)
-Received: from mail.izt.loc (mail.izt.loc [10.61.1.130])
- by mail.izt-labs.de (Postfix) with ESMTP id E9780A734A
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 16:48:16 +0200 (CEST)
-Received: from ppcx2.izt.loc (ppcx2.izt.loc [10.61.1.187])
- (Authenticated sender: phn)
- by mail.izt.loc (Postfix) with ESMTP id E32901D3DF
- for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 16:48:16 +0200 (CEST)
-Date: Fri, 25 May 2018 16:48:11 +0200
-From: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] new NOR flash winbond w25q16jv, jedec code 0xef7015
-Message-ID: <20180525144811.GA27270@ppcx2.izt.loc>
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+To: Nicolas Ferre <nicolas.ferre@microchip.com>, Peter Rosin
+ <peda@axentia.se>, Ludovic Desroches <ludovic.desroches@microchip.com>
+CC: Alexandre Belloni <alexandre.belloni@bootlin.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Josh Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, <linux-kernel@vger.kernel.org>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, <linux-mtd@lists.infradead.org>, Richard
+ Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Eugen Hristev
+ <eugen.hristev@microchip.com>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+ <20180402142249.7e076a64@bbrezillon>
+ <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
+ <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
+ <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
+ <20180403091813.5fb5c18c@bbrezillon>
+ <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
+ <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <a25ca617-d3da-d401-1ba9-8e5887f8a8e5@microchip.com>
+Date: Fri, 25 May 2018 17:51:36 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +38,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Copy values from jedec code 0xef4015, which is also the jedec code
-of Winbond w25q16db. w25q16jv is presented as follow up type in the
-data sheet. w25q16jv works with this patch.
+Hi, Peter,
 
-Signed-off-by: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+On 04/11/2018 06:34 PM, Nicolas Ferre wrote:
+> I'll try to move forward with your detailed explanation and with my 
+> contacts within the "product" team internally.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 5bfa36e..9bac67b 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1188,6 +1188,7 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
-+	{ "w25q16jv", INFO(0xef7015, 0, 64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
- 	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
--- 
-2.1.4
+We have talked with the hardware team, looks like there is an error in
+the description of the Master to Slave Access matrix. CPU accesses DDR2
+port0 through AXI matrix and not AHB. There is no conflict between CPU
+and LCDC DMA when accessing DDR2 ports. This explains why using CPU
+helps.
+
+The slave numbers from "Table 14-3 Master to Slave Access" are wrong.
+The 7th row  should be removed and all the other rows from below it,
+shifted up with one level (DDR2 Port 1 is Slave no 7, DDR2 port 2 is
+Slave no 8, ... , APB1 is slave no 11).
+
+We think the best way is to keep LCD on DDR Ports 2 and 3 (8th and 9th
+slaves), to have maximum bandwidth and to use DMA on DDR port 1 for NAND
+(7th slave).
+
+Also, some information about your configuration is useful. Can you
+please tell us what NAND DMA configuration did you use?  Are you using
+NAND storage for the videos that you are playing on the LCD screen?
+
+Thanks,
+ta
