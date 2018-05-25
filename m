@@ -1,21 +1,21 @@
-Received: from sender-of-o51.zoho.com ([135.84.80.216])
+Received: from mout.kundenserver.de ([212.227.126.133])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMIBm-0006h3-Re
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 19:15:48 +0000
-Date: Sat, 26 May 2018 00:45:32 +0530
-From: Siddharth Chandrasekaran <siddharth@embedjournal.com>
-To: "Richard Weinberger" <richard.weinberger@gmail.com>
-Cc: "linux-mtd" <linux-mtd@lists.infradead.org>,
- "David Oberhollenzer" <goliath@sigma-star.at>,
- "Marek Vasut" <marek.vasut@gmail.com>
-Message-ID: <16398ba3c2c.f0e4914a66261.6166838610145608343@embedjournal.com>
-In-Reply-To: <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
-References: <1638856b945.101c6b59a6973.7576653443668587481@embedjournal.com>
- <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
-Subject: Re: NOR Flash Test Utility
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+ id 1fMKXP-0006D5-Le
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 21:46:17 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] procfs: use inline functions instead of macros for
+ proc_create_single_data stub
+Date: Fri, 25 May 2018 23:45:00 +0200
+Message-Id: <20180525214548.2122779-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- > On Fri, 25 May 2018 01:49:15 +0530 Richard Weinberger 
- > <richard.weinberger@gmail.com> wrote:
- > Sid, 
- >  
- > On Tue, May 22, 2018 at 4:52 PM, Siddharth Chandrasekaran 
- > <siddharth@embedjournal.com> wrote: 
- > > Hello, 
- > > 
- > > I'm trying to test some NOR flashes to for manufacturing defects. I see there 
- > > is a test utility that reads and writes sequentially for NAND flash under 
- > > `nand-utils`, but `nor-utils` doesn't seem to have anything similar. 
- > > 
- > > Where can I find one for NOR? If I have to write my own, will you be interested 
- > > in a patch? 
- >  
- > I'm not aware of a NOR specific test, what properties do you want to test? 
+The procfs interface changes caused one warning in afs for
+a now unused function:
 
-For now, I have some basic write-and-verify operation with an option to preserve
-existing data. Do you have any particular property you might be interested in
-testing? If so, I can put that in too.
+fs/afs/proc.c:818:12: error: 'afs_proc_stats_show' defined but not used [-Werror=unused-function]
+ static int afs_proc_stats_show(struct seq_file *m, void *v)
 
- > Non-NAND mtd tests should do the job.
+This can be avoided by using an inline function instead of a macro
+to reference it, so now the compiler can silently drop the function
+after seeing that there is a reference but that it is never called.
 
-Really? can you point me to something  specific?
+Unfortunately, this change triggers another warning where a function
+is hidden and now unexpectedly referenced:
 
- > Is it SPI-NOR? 
+drivers/mtd/mtdcore.c: In function 'init_mtd':
+drivers/mtd/mtdcore.c:1878:48: error: 'mtd_proc_show' undeclared (first use in this function); did you mean 'mtd_name_show'?
 
-No, the one I have a parallel NOR.
+It seems nicer to keep using the inline function and removing the #ifdef
+here than to add an #ifdef around every single function we pass into
+proc_create_single_data(), so I'm removing the #ifdef here.
 
- >  
- > Maybe Marek has some input. 
- > Patches for new test tools are, of course, very welcome! 
- >
+After a few hundred randconfig builds, this was the only instance
+I found that caused a problem.
 
-Thanks!
+Fixes: 353861cf0594 ("afs: simplify procfs code")
+Fixes: 3f3942aca6da ("proc: introduce proc_create_single{,_data}")
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/mtd/mtdcore.c   |  3 ---
+ include/linux/proc_fs.h | 10 ++++++++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 42395df06be9..08d1e89faf9c 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -1814,8 +1814,6 @@ void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size)
+ }
+ EXPORT_SYMBOL_GPL(mtd_kmalloc_up_to);
+ 
+-#ifdef CONFIG_PROC_FS
+-
+ /*====================================================================*/
+ /* Support for /proc/mtd */
+ 
+@@ -1833,7 +1831,6 @@ static int mtd_proc_show(struct seq_file *m, void *v)
+ 	mutex_unlock(&mtd_table_mutex);
+ 	return 0;
+ }
+-#endif /* CONFIG_PROC_FS */
+ 
+ /*====================================================================*/
+ /* Init code */
+diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
+index e518352137e7..3b44c357a6e7 100644
+--- a/include/linux/proc_fs.h
++++ b/include/linux/proc_fs.h
+@@ -84,8 +84,14 @@ static inline struct proc_dir_entry *proc_mkdir_mode(const char *name,
+ #define proc_create_seq_private(name, mode, parent, ops, size, data) ({NULL;})
+ #define proc_create_seq_data(name, mode, parent, ops, data) ({NULL;})
+ #define proc_create_seq(name, mode, parent, ops) ({NULL;})
+-#define proc_create_single(name, mode, parent, show) ({NULL;})
+-#define proc_create_single_data(name, mode, parent, show, data) ({NULL;})
++static inline struct proc_dir_entry *proc_create_single_data(const char *name,
++		umode_t mode, struct proc_dir_entry *parent,
++		int (*show)(struct seq_file *, void *), void *data)
++{
++	return NULL;
++}
++#define proc_create_single(name, mode, parent, show) \
++	proc_create_single_data(name, mode, parent, show, NULL)
+ #define proc_create(name, mode, parent, proc_fops) ({NULL;})
+ #define proc_create_data(name, mode, parent, proc_fops, data) ({NULL;})
+ 
+-- 
+2.9.0
