@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMBjc-0005mF-I2
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:22:28 +0000
+ id 1fMBjo-0005rH-4U
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:22:37 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -11,12 +11,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v3 02/16] mtd: rawnand: denali: use helper function for ecc
- setup
-Date: Fri, 25 May 2018 17:51:30 +0530
-Message-Id: <1527250904-21988-3-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
+Subject: [PATCH v3 04/16] dt-bindings: qcom_nandc: remove nand-ecc-step-size
+Date: Fri, 25 May 2018 17:51:32 +0530
+Message-Id: <1527250904-21988-5-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
 References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,71 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the NAND core helper function nand_ecc_choose_conf to tune
-the ECC parameters instead of the function locally defined.
+QCOM NAND controller supports only one step size (512) but
+nand-ecc-step-size is required property in DT. This DT property
+can be removed and ecc step size can be assigned in driver with
+512 value.
 
-CC: Masahiro Yamada <yamada.masahiro@socionext.com>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
+
+Currently there is no user in mainline linux kernel for
+QPIC. Following patches for this node is in review
+
+https://patchwork.kernel.org/patch/10426405/
+https://patchwork.kernel.org/patch/10426385/
+
+If these changes got merged then I will submit another change
+to remove the nand-ecc-step-size from actual DTS.
+
 * Changes from v2:
 
-  1. Changed commit message
+ NEW CHANGE
 
-* Changes from v1:
-  NEW PATCH
+ Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 3 ---
+ 1 file changed, 3 deletions(-)
 
- drivers/mtd/nand/raw/denali.c | 30 ++----------------------------
- 1 file changed, 2 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 2a302a1..a586a1d 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1120,33 +1120,6 @@ int denali_calc_ecc_bytes(int step_size, int strength)
- }
- EXPORT_SYMBOL(denali_calc_ecc_bytes);
+diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+index f246aa0..1123cc6 100644
+--- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
++++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+@@ -45,7 +45,6 @@ Required properties:
+ 			number (e.g., 0, 1, 2, etc.)
+ - #address-cells:	see partition.txt
+ - #size-cells:		see partition.txt
+-- nand-ecc-step-size:	must be 512. see nand.txt for more details.
  
--static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
--			    struct denali_nand_info *denali)
--{
--	int oobavail = mtd->oobsize - denali->oob_skip_bytes;
--	int ret;
--
--	/*
--	 * If .size and .strength are already set (usually by DT),
--	 * check if they are supported by this controller.
--	 */
--	if (chip->ecc.size && chip->ecc.strength)
--		return nand_check_ecc_caps(chip, denali->ecc_caps, oobavail);
--
--	/*
--	 * We want .size and .strength closest to the chip's requirement
--	 * unless NAND_ECC_MAXIMIZE is requested.
--	 */
--	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
--		ret = nand_match_ecc_req(chip, denali->ecc_caps, oobavail);
--		if (!ret)
--			return 0;
--	}
--
--	/* Max ECC strength is the last thing we can do */
--	return nand_maximize_ecc(chip, denali->ecc_caps, oobavail);
--}
--
- static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *oobregion)
- {
-@@ -1317,7 +1290,8 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ Optional properties:
+ - nand-bus-width:	see nand.txt
+@@ -79,7 +78,6 @@ nand-controller@1ac00000 {
+ 		reg = <0>;
  
--	ret = denali_ecc_setup(mtd, chip, denali);
-+	ret = nand_ecc_choose_conf(chip, denali->ecc_caps,
-+				   mtd->oobsize - denali->oob_skip_bytes);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to setup ECC settings.\n");
- 		goto disable_irq;
+ 		nand-ecc-strength = <4>;
+-		nand-ecc-step-size = <512>;
+ 		nand-bus-width = <8>;
+ 
+ 		partitions {
+@@ -119,7 +117,6 @@ nand-controller@79b0000 {
+ 	nand@0 {
+ 		reg = <0>;
+ 		nand-ecc-strength = <4>;
+-		nand-ecc-step-size = <512>;
+ 		nand-bus-width = <8>;
+ 
+ 		partitions {
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
