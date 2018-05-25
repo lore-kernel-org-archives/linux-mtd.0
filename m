@@ -1,26 +1,30 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMBkL-0001lX-LJ
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:23:02 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization for
- bad block check
-Date: Fri, 25 May 2018 17:51:41 +0530
-Message-Id: <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+Received: from mail.izt-labs.de ([82.135.25.162])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fME1L-0002JN-P0
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 14:48:48 +0000
+Received: from localhost (unknown [127.0.0.1])
+ by mail.izt-labs.de (Postfix) with ESMTP id C3F14A7383
+ for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 14:48:25 +0000 (UTC)
+Received: from mail.izt-labs.de ([127.0.0.1])
+ by localhost (iztmail-dmz.izt-technologies.de [127.0.0.1]) (amavisd-new,
+ port 10026)
+ with ESMTP id 12890-05 for <linux-mtd@lists.infradead.org>;
+ Fri, 25 May 2018 16:48:16 +0200 (CEST)
+Received: from mail.izt.loc (mail.izt.loc [10.61.1.130])
+ by mail.izt-labs.de (Postfix) with ESMTP id E9780A734A
+ for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 16:48:16 +0200 (CEST)
+Received: from ppcx2.izt.loc (ppcx2.izt.loc [10.61.1.187])
+ (Authenticated sender: phn)
+ by mail.izt.loc (Postfix) with ESMTP id E32901D3DF
+ for <linux-mtd@lists.infradead.org>; Fri, 25 May 2018 16:48:16 +0200 (CEST)
+Date: Fri, 25 May 2018 16:48:11 +0200
+From: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] new NOR flash winbond w25q16jv, jedec code 0xef7015
+Message-ID: <20180525144811.GA27270@ppcx2.izt.loc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,136 +34,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The QCOM NAND controller layout is such that, the bad block byte
-offset for last codeword will come to first byte in spare area.
-Currently, the raw read for last codeword is being done with
-copy_last_cw function. It does following 2 things:
+Copy values from jedec code 0xef4015, which is also the jedec code
+of Winbond w25q16db. w25q16jv is presented as follow up type in the
+data sheet. w25q16jv works with this patch.
 
-1. Read the last codeword bytes from NAND chip to NAND
-   controller internal HW buffer.
-2. Copy all these bytes from HW buffer to actual buffer.
-
-For bad block check, maximum two bytes are required so instead of
-copying the complete bytes in step 2, only those bbm_size bytes
-can be copied.
-
-This patch does minor code reorganization for the same. After
-this, copy_last_cw function won’t be required.
-
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+Signed-off-by: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>
 ---
-* Changes from v2:
-  1. Changed commit message and comments slightly
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-* Changes from v1:
-  NEW CHANGE
-
- drivers/mtd/nand/raw/qcom_nandc.c | 66 +++++++++++++++------------------------
- 1 file changed, 25 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index d693b5f..f72bc8a 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1769,41 +1769,6 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	return parse_read_errors(host, data_buf_start, oob_buf_start);
- }
- 
--/*
-- * a helper that copies the last step/codeword of a page (containing free oob)
-- * into our local buffer
-- */
--static int copy_last_cw(struct qcom_nand_host *host, int page)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int size;
--	int ret;
--
--	clear_read_regs(nandc);
--
--	size = host->use_ecc ? host->cw_data : host->cw_size;
--
--	/* prepare a clean read buffer */
--	memset(nandc->data_buffer, 0xff, size);
--
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
--	update_rw_regs(host, 1, true);
--
--	config_nand_single_cw_page_read(nandc);
--
--	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
--
--	ret = submit_descs(nandc);
--	if (ret)
--		dev_err(nandc->dev, "failed to copy last codeword\n");
--
--	free_descs(nandc);
--
--	return ret;
--}
--
- /* implements ecc->read_page() */
- static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
-@@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int page, ret, bbpos, bad = 0;
- 	u32 flash_status;
-+	u8 *bbm_bytes_buf = chip->data_buf;
- 
- 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
- 
-@@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	 * that contains the BBM
- 	 */
- 	host->use_ecc = false;
-+	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
- 
- 	clear_bam_transaction(nandc);
--	ret = copy_last_cw(host, page);
--	if (ret)
-+	clear_read_regs(nandc);
-+
-+	set_address(host, host->cw_size * (ecc->steps - 1), page);
-+	update_rw_regs(host, 1, true);
-+
-+	/*
-+	 * The last codeword data will be copied from NAND device to NAND
-+	 * controller internal HW buffer. Copy only required BBM size bytes
-+	 * from this HW buffer to bbm_bytes_buf which is present at
-+	 * bbpos offset.
-+	 */
-+	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
-+	config_nand_single_cw_page_read(nandc);
-+	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
-+		      host->bbm_size, 0);
-+
-+	ret = submit_descs(nandc);
-+	free_descs(nandc);
-+	if (ret) {
-+		dev_err(nandc->dev, "failed to copy bad block bytes\n");
- 		goto err;
-+	}
- 
- 	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
- 
-@@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 		goto err;
- 	}
- 
--	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
--
--	bad = nandc->data_buffer[bbpos] != 0xff;
-+	bad = bbm_bytes_buf[0] != 0xff;
- 
- 	if (chip->options & NAND_BUSWIDTH_16)
--		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
-+		bad = bad || (bbm_bytes_buf[1] != 0xff);
- err:
- 	return bad;
- }
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5bfa36e..9bac67b 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1188,6 +1188,7 @@ static const struct flash_info spi_nor_ids[] = {
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
+ 	},
++	{ "w25q16jv", INFO(0xef7015, 0, 64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
+ 	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
+ 	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
-is a member of Code Aurora Forum, hosted by The Linux Foundation
+2.1.4
