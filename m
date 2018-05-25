@@ -1,33 +1,20 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Nicolas Ferre <nicolas.ferre@microchip.com>, Peter Rosin
- <peda@axentia.se>, Ludovic Desroches <ludovic.desroches@microchip.com>
-CC: Alexandre Belloni <alexandre.belloni@bootlin.com>, Marek Vasut
- <marek.vasut@gmail.com>, Josh Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, <linux-kernel@vger.kernel.org>, Boris Brezillon
- <boris.brezillon@bootlin.com>, <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Eugen Hristev
- <eugen.hristev@microchip.com>
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
- <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
- <20180403091813.5fb5c18c@bbrezillon>
- <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
- <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <a25ca617-d3da-d401-1ba9-8e5887f8a8e5@microchip.com>
-Date: Fri, 25 May 2018 17:51:36 +0300
+Received: from sender-of-o51.zoho.com ([135.84.80.216])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMIBm-0006h3-Re
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 19:15:48 +0000
+Date: Sat, 26 May 2018 00:45:32 +0530
+From: Siddharth Chandrasekaran <siddharth@embedjournal.com>
+To: "Richard Weinberger" <richard.weinberger@gmail.com>
+Cc: "linux-mtd" <linux-mtd@lists.infradead.org>,
+ "David Oberhollenzer" <goliath@sigma-star.at>,
+ "Marek Vasut" <marek.vasut@gmail.com>
+Message-ID: <16398ba3c2c.f0e4914a66261.6166838610145608343@embedjournal.com>
+In-Reply-To: <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
+References: <1638856b945.101c6b59a6973.7576653443668587481@embedjournal.com>
+ <CAFLxGvyqovAqRi957gAEe+hBzMr_im2x3CWo+M5-ptaeyMKhjg@mail.gmail.com>
+Subject: Re: NOR Flash Test Utility
 MIME-Version: 1.0
-In-Reply-To: <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,30 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Peter,
+ > On Fri, 25 May 2018 01:49:15 +0530 Richard Weinberger 
+ > <richard.weinberger@gmail.com> wrote:
+ > Sid, 
+ >  
+ > On Tue, May 22, 2018 at 4:52 PM, Siddharth Chandrasekaran 
+ > <siddharth@embedjournal.com> wrote: 
+ > > Hello, 
+ > > 
+ > > I'm trying to test some NOR flashes to for manufacturing defects. I see there 
+ > > is a test utility that reads and writes sequentially for NAND flash under 
+ > > `nand-utils`, but `nor-utils` doesn't seem to have anything similar. 
+ > > 
+ > > Where can I find one for NOR? If I have to write my own, will you be interested 
+ > > in a patch? 
+ >  
+ > I'm not aware of a NOR specific test, what properties do you want to test? 
 
-On 04/11/2018 06:34 PM, Nicolas Ferre wrote:
-> I'll try to move forward with your detailed explanation and with my 
-> contacts within the "product" team internally.
+For now, I have some basic write-and-verify operation with an option to preserve
+existing data. Do you have any particular property you might be interested in
+testing? If so, I can put that in too.
 
-We have talked with the hardware team, looks like there is an error in
-the description of the Master to Slave Access matrix. CPU accesses DDR2
-port0 through AXI matrix and not AHB. There is no conflict between CPU
-and LCDC DMA when accessing DDR2 ports. This explains why using CPU
-helps.
+ > Non-NAND mtd tests should do the job.
 
-The slave numbers from "Table 14-3 Master to Slave Access" are wrong.
-The 7th row  should be removed and all the other rows from below it,
-shifted up with one level (DDR2 Port 1 is Slave no 7, DDR2 port 2 is
-Slave no 8, ... , APB1 is slave no 11).
+Really? can you point me to something  specific?
 
-We think the best way is to keep LCD on DDR Ports 2 and 3 (8th and 9th
-slaves), to have maximum bandwidth and to use DMA on DDR port 1 for NAND
-(7th slave).
+ > Is it SPI-NOR? 
 
-Also, some information about your configuration is useful. Can you
-please tell us what NAND DMA configuration did you use?  Are you using
-NAND storage for the videos that you are playing on the LCD screen?
+No, the one I have a parallel NOR.
 
-Thanks,
-ta
+ >  
+ > Maybe Marek has some input. 
+ > Patches for new test tools are, of course, very welcome! 
+ >
+
+Thanks!
