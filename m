@@ -1,4 +1,4 @@
-Date: Fri, 25 May 2018 16:29:13 +0530
+Date: Fri, 25 May 2018 16:29:43 +0530
 From: Vinod <vkoul@kernel.org>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
 Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -14,14 +14,14 @@ Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 10/13] dmaengine: pxa: document pxad_param
-Message-ID: <20180525105913.GO26663@vkoul-mobl>
+Subject: Re: [PATCH v2 11/13] dmaengine: pxa: make the filter function internal
+Message-ID: <20180525105943.GP26663@vkoul-mobl>
 References: <20180524070703.11901-1-robert.jarzmik@free.fr>
- <20180524070703.11901-11-robert.jarzmik@free.fr>
+ <20180524070703.11901-12-robert.jarzmik@free.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20180524070703.11901-11-robert.jarzmik@free.fr>
+In-Reply-To: <20180524070703.11901-12-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,8 +32,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 24-05-18, 09:07, Robert Jarzmik wrote:
-> Add some documentation for the pxad_param structure, and describe the
-> contract behind the minimal required priority of a DMA channel.
+> As the pxa architecture and all its related drivers do not rely anymore
+> on the filter function, thanks to the slave map conversion, make
+> pxad_filter_fn() static, and remove it from the global namespace.
 
 Acked-by: Vinod Koul <vkoul@kernel.org>
 
