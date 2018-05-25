@@ -1,33 +1,28 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fLzA0-0000LO-Hs
- for linux-mtd@lists.infradead.org; Thu, 24 May 2018 22:56:42 +0000
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fM319-0007HV-H7
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 03:03:49 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+Subject: RE: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
+ functions
+Date: Fri, 25 May 2018 03:03:28 +0000
+Message-ID: <TY1PR01MB0954DBEFF399886473C1242FDC690@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+ <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+In-Reply-To: <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 25 May 2018 00:56:23 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- mturquette@baylibre.com, sboyd@kernel.org, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <20180524144134.41a71063@bbrezillon>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <20180523161810.0ed9fe80@bbrezillon>
- <2d8107f0e6568512d691e9ea25a1e4e5@agner.ch>
- <20180524105614.3c51736c@bbrezillon>
- <7b3cc3991fb054130fd54c6fdfec5097@agner.ch>
- <20180524142356.0fc68797@bbrezillon> <20180524144134.41a71063@bbrezillon>
-Message-ID: <78b7b43b4284e73cd6a3255e4e5075ed@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,107 +32,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24.05.2018 14:41, Boris Brezillon wrote:
-> On Thu, 24 May 2018 14:23:56 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> 
->> On Thu, 24 May 2018 13:09:53 +0200
->> Stefan Agner <stefan@agner.ch> wrote:
->>
->> > On 24.05.2018 10:56, Boris Brezillon wrote:
->> > > On Thu, 24 May 2018 10:46:27 +0200
->> > > Stefan Agner <stefan@agner.ch> wrote:
->> > >
->> > >> Hi Boris,
->> > >>
->> > >> Thanks for the initial review! One small question below:
->> > >>
->> > >> On 23.05.2018 16:18, Boris Brezillon wrote:
->> > >> > Hi Stefan,
->> > >> >
->> > >> > On Tue, 22 May 2018 14:07:06 +0200
->> > >> > Stefan Agner <stefan@agner.ch> wrote:
->> > >> >> +
->> > >> >> +struct tegra_nand {
->> > >> >> +	void __iomem *regs;
->> > >> >> +	struct clk *clk;
->> > >> >> +	struct gpio_desc *wp_gpio;
->> > >> >> +
->> > >> >> +	struct nand_chip chip;
->> > >> >> +	struct device *dev;
->> > >> >> +
->> > >> >> +	struct completion command_complete;
->> > >> >> +	struct completion dma_complete;
->> > >> >> +	bool last_read_error;
->> > >> >> +
->> > >> >> +	dma_addr_t data_dma;
->> > >> >> +	void *data_buf;
->> > >> >> +	dma_addr_t oob_dma;
->> > >> >> +	void *oob_buf;
->> > >> >> +
->> > >> >> +	int cur_chip;
->> > >> >> +};
->> > >> >
->> > >> > This struct should be split in 2 structures: one representing the NAND
->> > >> > controller and one representing the NAND chip:
->> > >> >
->> > >> > struct tegra_nand_controller {
->> > >> > 	struct nand_hw_control base;
->> > >> > 	void __iomem *regs;
->> > >> > 	struct clk *clk;
->> > >> > 	struct device *dev;
->> > >> > 	struct completion command_complete;
->> > >> > 	struct completion dma_complete;
->> > >> > 	bool last_read_error;
->> > >> > 	int cur_chip;
->> > >> > };
->> > >> >
->> > >> > struct tegra_nand {
->> > >> > 	struct nand_chip base;
->> > >> > 	dma_addr_t data_dma;
->> > >> > 	void *data_buf;
->> > >> > 	dma_addr_t oob_dma;
->> > >> > 	void *oob_buf;
->> > >> > };
->> > >>
->> > >> Is there a particular reason why you would leave DMA buffers in the chip
->> > >> structure? It seems that is more a controller thing...
->> > >
->> > > The size of those buffers is likely to be device dependent, so if you
->> > > have several NANDs connected to the controller, you'll either have to
->> > > have one buffer at the controller level which is max(all-chip-buf-size)
->> > > or a buffer per device.
->> > >
->> > > Also, do you really need these buffers? The core already provide some
->> > > which are suitable for DMA (chip->oob_poi and chip->data_buf).
->> > >
->> >
->> > Good question, I am not sure, that was existing code.
->> >
->> > Are you sure data_buf it is DMA capable?
->> >
->> > nand_scan_tail allocates with kmalloc:
->> >
->> > chip->data_buf = kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL);
->>
->> Yes, kmalloc() allocates DMA-able buffers, so those are DMA-safe.
-> 
-> Hm, that's not exactly true. It depends on the dma_mask attached to the
-> device.
-
-It seems to work (tm).
-
-I am not sure how to deal with the OOB buffer. I now use the given
-pointer also for oob (offset writesize). I think mtk_nand does the same
-thing.
-
-dma_len = mtd->writesize + (oob_required ? mtd->oobsize : 0);        
-dma_addr = dma_map_single(ctrl->dev, buf, dma_len, DMA_FROM_DEVICE);
-
-...
-
-Is there a test which allows to test my (read|write)_page implementation
-with oob_required set?
-
---
-Stefan
+SGkgQm9yaXMtc2FuLA0KDQpDb3VsZCB5b3UgcGxlYXNlIGFwcGx5IHRoZSBwYXRjaGVzIGlmIG5v
+IHByb2JsZW0/DQpPciBzdGlsbCBzaG91bGQgd2Ugd2FpdCBpZiBhbnkgb3RoZXIgY29tbWVudD8N
+CkxldCBtZSBjb25maXJtIHRoZXNlIHRoaW5ncyBzaW5jZSB3ZSBhcmUgd2FpdGluZyB0byBhcHBs
+eSB0aGVtIGZvciBvdXIgcHJvZHVjdCBwcm9ibGVtIGFzIHJlc29sdXRpb24uDQoNCkJ5IHRoZSB3
+YXkgSSB0aGluayB0aGF0IHRoZSBjb21taXQgbWVzc2FnZSBvZiBwYXRjaGVzIGNhbiBiZSBjaGFu
+Z2VkIHRvIEpvY2tlLXNhbiBhcyAiUmV2aWV3ZWQtYnkiIGZyb20gIkNjIiBhcyBiZWxvdy4NCiAg
+LSBDYzogSm9ha2ltIFRqZXJubHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+DQog
+ICsgUmV2aWV3ZWQtYnk6IEpvYWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRAaW5maW5l
+cmEuY29tPg0KDQpTaW5jZSBhY3R1YWxseSB0aGUgY2hhbmdlcyBoYXZlIGJlZW4gcmV2aWV3ZWQg
+YnkgaGltIGFzIHRoZSBtYWlsIGJlbG93Lg0KQWxzbyBvdXIgY29tcGFueSBtYWlsIHN5c3RlbSBo
+YXMgYmVlbiBjaGFuZ2VkIHNvIG5vdyBJIGNhbiBzZW5kIHRoZSBwYXRjaGVzIHdpdGggbXkgZW1h
+aWwgYWRkcmVzcyBhcyBzZW5kZXIgaW5zdGVhZCBvZiB0aGUgc210cHVzZXIgYWRkcmVzcy4NCklm
+IG5lZWRlZCBJIHdpbGwgcmVzZW5kIHBhdGNoZXMgb3Igc2VuZCB0aGVtIGFzIG5ldyB2ZXJzaW9u
+IHBhdGNoZXMgYWdhaW4gdG8gY2hhbmdlIHRoZSBjb21taXQgbWVzc2FnZSBhbmQgc2VuZCBhZGRy
+ZXNzLg0KDQpSZWdhcmRzLA0KSWtlZ2FtaQ0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQo+IEZyb206IEpvYWtpbSBUamVybmx1bmQgW21haWx0bzpKb2FraW0uVGplcm5sdW5kQGluZmlu
+ZXJhLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIE1heSAxNywgMjAxOCAxMDoxMiBQTQ0KPiBUbzog
+Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tDQo+IENjOiBJS0VHQU1JIFRva3Vub3JpOyBQQUNL
+SEFNIENocmlzOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsNCj4gY3lyaWxsZS5waXRj
+aGVuQHdlZGV2NHUuZnI7IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbTsgYm9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbTsNCj4gcmljaGFy
+ZEBub2QuYXQ7IG1hcmVrLnZhc3V0QGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2
+IDAvNV0gbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBhbmQgZXJhc2UNCj4gZnVu
+Y3Rpb25zDQo+IA0KPiBJIHRoaW5rIHRoZSBwYXRjaGVzIGxvb2sgZ29vZCBidXQgSSB0aGluayB0
+aGV5IHNob3VsZCBnbw0KPiB0byBzdGFibGUgYXMgd2VsbC4NCj4gDQo+ICBKb2NrZQ0KPiANCj4g
+T24gV2VkLCAyMDE4LTA1LTE2IGF0IDAyOjExICswOTAwLCBzbXRwdXNlciB3cm90ZToNCj4gPg0K
+PiA+IEZyb206IFRva3Vub3JpIElrZWdhbWkgPGlrZWdhbWlAYWxsaWVkLXRlbGVzaXMuY28uanA+
+DQo+ID4NCj4gPiBUaGUgY2hhbmdlcyBhcmUgdG8gbWFrZSBzdXJlIHRvIGNoZWNrIHRoZSBvcGVy
+YXRpb24gc3RhdHVzLg0KPiA+IEFjdHVhbGx5IHRoZSBmbGFzaCB3cml0ZSBhbmQgZXJhc2UgZXJy
+b3IgYmVoYXZpb3IgaXMgY2F1c2VkIG9uIG91cg0KPiBwcm9kdWN0cy4NCj4gPiBUaGUgZmxhc2gg
+aXMgTWFjcm9uaXggZmxhc2ggZGV2aWNlIE1YMjlHTDUxMkZIVDJJLTExRyB1c2VkIGJ5IG91cg0K
+PiBwcm9kdWN0cy4NCj4gPiBUaGUgcGF0Y2ggc2VyaWVzIHdhcyBzZXBhcmF0ZWQgZm9yIGNoYW5n
+ZXMgb2YgZmxhc2ggd3JpdGUgYW5kIGVyYXNlLg0KPiA+IFNpbmNlIHRob3NlIHdlcmUgbm90IGRl
+cGVuZGVkIGVhY2ggb3RoZXIgYXQgdGhlIHRpbWUuDQo+ID4gQnV0IGJ5IGFkZGl0aW9uYWwgY2hh
+bmdlcyB0aGUgY2hhbmdlcyBhcmUgcmVsYXRlZCBtb3JlIGFzIHNhbWUgd2F5DQo+IGN1cnJlbnRs
+eS4NCj4gPiBTbyBjb21iaW5lIHBhdGNoIHNlcmllcyBmb3IgdGhlIGZsYXNoIHdyaXRlIGFuZCBl
+cmFzZSBjaGFuZ2VzIGFzIHY2Lg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogVG9rdW5vcmkgSWtl
+Z2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gPiBDYzogSm9ha2ltIFRqZXJu
+bHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+DQo+ID4gQ2M6IENocmlzIFBhY2to
+YW0gPGNocmlzLnBhY2toYW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gPiBDYzogQnJpYW4gTm9y
+cmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQo+ID4gQ2M6IERhdmlkIFdvb2Rob3Vz
+ZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCj4gPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5i
+cmV6aWxsb25AZnJlZS1lbGVjdHJvbnMuY29tPg0KPiA+IENjOiBNYXJlayBWYXN1dCA8bWFyZWsu
+dmFzdXRAZ21haWwuY29tPg0KPiA+IENjOiBSaWNoYXJkIFdlaW5iZXJnZXIgPHJpY2hhcmRAbm9k
+LmF0Pg0KPiA+IENjOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZy
+Pg0KPiA+IENjOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+DQo+ID4gVG9rdW5v
+cmkgSWtlZ2FtaSAoNSk6DQo+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIHdyaXRl
+IGJ1ZmZlciB0byBjaGVjayBjb3JyZWN0IHZhbHVlDQo+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAw
+MjogQ2hhbmdlIGRlZmluaXRpb24gbmFtaW5nIHRvIHJldHJ5IHdyaXRlDQo+ID4gICAgIG9wZXJh
+dGlvbg0KPiA+ICAgbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSBlcmFzZSBmdW5jdGlvbnMg
+dG8gcmV0cnkgZm9yIGVycm9yDQo+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVy
+YXNlIGZ1bmN0aW9ucyB0byBjaGVjayBjaGlwIGdvb2Qgb25seQ0KPiA+ICAgbXRkOiBjZmlfY21k
+c2V0XzAwMDI6IENoYW5nZSBlcmFzZSBvbmUgYmxvY2sgdG8gZW5hYmxlIFhJUCBvbmNlDQo+ID4N
+Cj4gPiAgZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAzNg0KPiArKysrKysr
+KysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIzIGlu
+c2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gLS0NCj4gPiAyLjE2LjENCj4g
+Pg0K
