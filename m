@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMBkL-0001l9-KX
- for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:23:02 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMBk1-00062y-Mf
+ for linux-mtd@lists.infradead.org; Fri, 25 May 2018 12:24:07 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
  Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v3 11/16] mtd: rawnand: qcom: modify write_oob to remove read
- codeword part
-Date: Fri, 25 May 2018 17:51:39 +0530
-Message-Id: <1527250904-21988-12-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v3 08/16] mtd: rawnand: qcom: erased page detection for
+ uncorrectable errors only
+Date: Fri, 25 May 2018 17:51:36 +0530
+Message-Id: <1527250904-21988-9-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
 References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,71 +27,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QCOM NAND controller layout protects available OOB data bytes with
-ECC also so when ecc->write_oob() is being called then it
-can't update just OOB bytes. Currently, it first reads the last
-codeword which includes old OOB bytes. Then it updates the old OOB
-bytes with new ones and then again writes the codeword back.
-The reading codeword is unnecessary since user is responsible to
-have these bytes cleared to 0xFF.
+Following is the flow in the HW if controller tries to read erased
+page:
 
-This patch removes the read part and updates the OOB bytes with
-data area padded with OxFF.
+1. First ECC uncorrectable error will be generated from ECC engine
+   since ECC engine first calculates the ECC with all 0xff and match
+   the calculated ECC with ECC code in OOB (which is again all 0xff).
+2. After getting ECC error, erased CW detection logic will be
+   applied which is different for BCH and RS ECC
+    a. For BCH, HW checks if all the bytes in page are 0xff and then
+       it updates the status in separate register
+       NAND_ERASED_CW_DETECT_STATUS.
+    b. For RS ECC, the HW reports the same error when reading an
+       erased CW, but it notifies that it is an erased CW by
+       placing special characters at certain offsets in the
+       buffer.
+
+So the erased CW detect status should be checked only if ECC engine
+generated the uncorrectable error.
+
+Currently for all other operational errors also (like TIMEOUT, MPU
+errors, etc.), the erased CW detect logic is being applied so fix this
+and return EIO for other operational errors.
 
 Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v2:
-
-  1. Changed commit message and comments slightly
-  2. Changed host->use_ecc assignment place
+  1. Changed commit message slightly
 
 * Changes from v1:
-  NEW CHANGE
+  1. Added more detail in commit message
+  2. Added comment before each if/else
+  3. Removed redundant check for BS_UNCORRECTABLE_BIT
 
- drivers/mtd/nand/raw/qcom_nandc.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 65 ++++++++++++++++++++++++++-------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index e4b87b7..e02d752 100644
+index 7f85ef8..9a11827 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2064,11 +2064,9 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- /*
-  * implements ecc->write_oob()
-  *
-- * the NAND controller cannot write only data or only oob within a codeword,
-- * since ecc is calculated for the combined codeword. we first copy the
-- * entire contents for the last codeword(data + oob), replace the old oob
-- * with the new one in chip->oob_poi, and then write the entire codeword.
-- * this read-copy-write operation results in a slight performance loss.
-+ * the NAND controller cannot write only data or only OOB within a codeword
-+ * since ECC is calculated for the combined codeword. So update the OOB from
-+ * chip->oob_poi, and pad the data area with OxFF before writing.
-  */
- static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 				int page)
-@@ -2081,19 +2079,13 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	int ret;
+@@ -1576,6 +1576,7 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	unsigned int max_bitflips = 0;
+ 	struct read_stats *buf;
++	bool flash_op_err = false;
+ 	int i;
  
- 	host->use_ecc = true;
+ 	buf = (struct read_stats *)nandc->reg_read_buf;
+@@ -1597,8 +1598,18 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 		buffer = le32_to_cpu(buf->buffer);
+ 		erased_cw = le32_to_cpu(buf->erased_cw);
+ 
+-		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++		/*
++		 * Check ECC failure for each codeword. ECC failure can
++		 * happen in either of the following conditions
++		 * 1. If number of bitflips are greater than ECC engine
++		 *    capability.
++		 * 2. If this codeword contains all 0xff for which erased
++		 *    codeword detection check will be done.
++		 */
++		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
+ 			bool erased;
++			int ret, ecclen, extraooblen;
++			void *eccbuf;
+ 
+ 			/* ignore erased codeword errors */
+ 			if (host->bch_enabled) {
+@@ -1616,29 +1627,36 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 				continue;
+ 			}
+ 
+-			if (buffer & BS_UNCORRECTABLE_BIT) {
+-				int ret, ecclen, extraooblen;
+-				void *eccbuf;
++			eccbuf = oob_buf ? oob_buf + oob_len : NULL;
++			ecclen = oob_buf ? host->ecc_bytes_hw : 0;
++			extraooblen = oob_buf ? oob_len : 0;
+ 
+-				eccbuf = oob_buf ? oob_buf + oob_len : NULL;
+-				ecclen = oob_buf ? host->ecc_bytes_hw : 0;
+-				extraooblen = oob_buf ? oob_len : 0;
 -
--	clear_bam_transaction(nandc);
--	ret = copy_last_cw(host, page);
--	if (ret)
--		return ret;
--
--	clear_read_regs(nandc);
- 	clear_bam_transaction(nandc);
+-				/*
+-				 * make sure it isn't an erased page reported
+-				 * as not-erased by HW because of a few bitflips
+-				 */
+-				ret = nand_check_erased_ecc_chunk(data_buf,
+-					data_len, eccbuf, ecclen, oob_buf,
+-					extraooblen, ecc->strength);
+-				if (ret < 0) {
+-					mtd->ecc_stats.failed++;
+-				} else {
+-					mtd->ecc_stats.corrected += ret;
+-					max_bitflips =
+-						max_t(unsigned int, max_bitflips, ret);
+-				}
++			/*
++			 * make sure it isn't an erased page reported
++			 * as not-erased by HW because of a few bitflips
++			 */
++			ret = nand_check_erased_ecc_chunk(data_buf,
++				data_len, eccbuf, ecclen, oob_buf,
++				extraooblen, ecc->strength);
++			if (ret < 0) {
++				mtd->ecc_stats.failed++;
++			} else {
++				mtd->ecc_stats.corrected += ret;
++				max_bitflips =
++					max_t(unsigned int, max_bitflips, ret);
+ 			}
++		/*
++		 * Check if MPU or any other operational error (timeout,
++		 * device failure, etc.) happened for this codeword and
++		 * make flash_op_err true. If flash_op_err is set, then
++		 * EIO will be returned for page read.
++		 */
++		} else if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++			flash_op_err = true;
++		/*
++		 * No ECC or operational errors happened. Check the number of
++		 * bits corrected and update the ecc_stats.corrected.
++		 */
+ 		} else {
+ 			unsigned int stat;
  
- 	/* calculate the data and oob size for the last codeword/step */
- 	data_size = ecc->size - ((ecc->steps - 1) << 2);
- 	oob_size = mtd->oobavail;
+@@ -1652,6 +1670,9 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 			oob_buf += oob_len + ecc->bytes;
+ 	}
  
-+	memset(nandc->data_buffer, 0xff, host->cw_data);
- 	/* override new oob content to last codeword */
- 	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
- 				    0, mtd->oobavail);
++	if (flash_op_err)
++		return -EIO;
++
+ 	return max_bitflips;
+ }
+ 
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
