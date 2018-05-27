@@ -1,32 +1,26 @@
-Received: from mail-dm3nam03on0614.outbound.protection.outlook.com
- ([2a01:111:f400:fe49::614]
- helo=NAM03-DM3-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMzgL-0001Ea-Gc
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 17:42:16 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
- "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-Subject: Re: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
- functions
-Date: Sun, 27 May 2018 17:41:54 +0000
-Message-ID: <a05b4cd6d65f42cc2b2117abd29dc68ec0bf0650.camel@infinera.com>
-References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
- <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
- <20180527173346.7469ac93@bbrezillon>
-In-Reply-To: <20180527173346.7469ac93@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3B7B664732A3BF4BAA51C82C9412039E@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Received: from ec2-18-194-220-216.eu-central-1.compute.amazonaws.com
+ ([18.194.220.216] helo=sysam.it)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fN10B-00013E-TO
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 19:06:49 +0000
+Received: from localhost (localhost [127.0.0.1])
+ by sysam.it (Postfix) with ESMTP id 2828F218E1
+ for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 18:58:31 +0000 (UTC)
+Received: from sysam.it ([127.0.0.1])
+ by localhost (sysam.it [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id Rp5MglRaSxt4 for <linux-mtd@lists.infradead.org>;
+ Sun, 27 May 2018 18:58:30 +0000 (UTC)
+Received: from jerusalem (host126-233-dynamic.51-79-r.retail.telecomitalia.it
+ [79.51.233.126]) by sysam.it (Postfix) with ESMTPSA id DF127218DF
+ for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 18:58:29 +0000 (UTC)
+Date: Sun, 27 May 2018 20:58:29 +0200
+From: Angelo Dureghello <angelo@sysam.it>
+To: linux-mtd@lists.infradead.org
+Subject: squashfs: issue mounting with dma enabled
+Message-ID: <20180527185828.GC17528@jerusalem>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,55 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU3VuLCAyMDE4LTA1LTI3IGF0IDE3OjMzICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IEhpIEpvYWtpbSwNCj4gDQo+IE9uIFRodSwgMTcgTWF5IDIwMTggMTM6MTI6MjYg
-KzAwMDANCj4gSm9ha2ltIFRqZXJubHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+
-IHdyb3RlOg0KPiANCj4gPiBJIHRoaW5rIHRoZSBwYXRjaGVzIGxvb2sgZ29vZA0KPiANCj4gU2hv
-dWxkIEkgYWRkIHlvdXIgUmV2aWV3ZWQtYnkgdGFnIChtYXliZSBUZXN0ZWQtYnkgYXMgd2VsbCk/
-DQoNCkkgaGF2ZSBvbmx5IHJldmlld2VkIHRoZW0gc28gYWRkIGE6DQogIFJldmlld2VkLWJ5OiBK
-b2FraW0gVGplcm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4NCg0KPiANCj4g
-PiBidXQgSSB0aGluayB0aGV5IHNob3VsZCBnbyB0byBzdGFibGUgYXMgd2VsbC4NCj4gDQo+IFRo
-ZW4gSSdsbCBuZWVkIGEgdjcgd2l0aCB0aGUgIkNjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnIiB0
-YWcuIEFsc28sDQo+IHNvbWUgcGF0Y2hlcyBhcmUgY2xlYXJseSBub3QgZml4ZXMgKHBhdGNoIDIg
-YW5kIDUgYXQgbGVhc3QpLg0KDQpCdXQgdGhleSBhcmUgYWxsIG5lZWRlZCBhcyB0aGUgZml4ZXMg
-YnVpbGRzIHVwb24gdGhlbT8gU28gYWxsIGdvIHRvIHN0YWJsZSBJIHRoaW5rLg0KDQo+IA0KPiBS
-ZWdhcmRzLA0KPiANCj4gQm9yaXMNCj4gDQo+ID4gDQo+ID4gIEpvY2tlDQo+ID4gDQo+ID4gT24g
-V2VkLCAyMDE4LTA1LTE2IGF0IDAyOjExICswOTAwLCBzbXRwdXNlciB3cm90ZToNCj4gPiA+IA0K
-PiA+ID4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5q
-cD4NCj4gPiA+IA0KPiA+ID4gVGhlIGNoYW5nZXMgYXJlIHRvIG1ha2Ugc3VyZSB0byBjaGVjayB0
-aGUgb3BlcmF0aW9uIHN0YXR1cy4NCj4gPiA+IEFjdHVhbGx5IHRoZSBmbGFzaCB3cml0ZSBhbmQg
-ZXJhc2UgZXJyb3IgYmVoYXZpb3IgaXMgY2F1c2VkIG9uIG91ciBwcm9kdWN0cy4NCj4gPiA+IFRo
-ZSBmbGFzaCBpcyBNYWNyb25peCBmbGFzaCBkZXZpY2UgTVgyOUdMNTEyRkhUMkktMTFHIHVzZWQg
-Ynkgb3VyIHByb2R1Y3RzLg0KPiA+ID4gVGhlIHBhdGNoIHNlcmllcyB3YXMgc2VwYXJhdGVkIGZv
-ciBjaGFuZ2VzIG9mIGZsYXNoIHdyaXRlIGFuZCBlcmFzZS4NCj4gPiA+IFNpbmNlIHRob3NlIHdl
-cmUgbm90IGRlcGVuZGVkIGVhY2ggb3RoZXIgYXQgdGhlIHRpbWUuDQo+ID4gPiBCdXQgYnkgYWRk
-aXRpb25hbCBjaGFuZ2VzIHRoZSBjaGFuZ2VzIGFyZSByZWxhdGVkIG1vcmUgYXMgc2FtZSB3YXkg
-Y3VycmVudGx5Lg0KPiA+ID4gU28gY29tYmluZSBwYXRjaCBzZXJpZXMgZm9yIHRoZSBmbGFzaCB3
-cml0ZSBhbmQgZXJhc2UgY2hhbmdlcyBhcyB2Ni4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1i
-eTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gPiA+
-IENjOiBKb2FraW0gVGplcm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4NCj4g
-PiA+IENjOiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+
-DQo+ID4gPiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQo+
-ID4gPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KPiA+ID4gQ2M6
-IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT4NCj4g
-PiA+IENjOiBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPg0KPiA+ID4gQ2M6IFJp
-Y2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+ID4gPiBDYzogQ3lyaWxsZSBQaXRj
-aGVuIDxjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcj4NCj4gPiA+IENjOiBsaW51eC1tdGRAbGlz
-dHMuaW5mcmFkZWFkLm9yZw0KPiA+ID4gDQo+ID4gPiBUb2t1bm9yaSBJa2VnYW1pICg1KToNCj4g
-PiA+ICAgbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBidWZmZXIgdG8gY2hlY2sg
-Y29ycmVjdCB2YWx1ZQ0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGRlZmlu
-aXRpb24gbmFtaW5nIHRvIHJldHJ5IHdyaXRlDQo+ID4gPiAgICAgb3BlcmF0aW9uDQo+ID4gPiAg
-IG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2UgZXJhc2UgZnVuY3Rpb25zIHRvIHJldHJ5IGZv
-ciBlcnJvcg0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0
-aW9ucyB0byBjaGVjayBjaGlwIGdvb2Qgb25seQ0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAw
-MjogQ2hhbmdlIGVyYXNlIG9uZSBibG9jayB0byBlbmFibGUgWElQIG9uY2UNCj4gPiA+IA0KPiA+
-ID4gIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMzYgKysrKysrKysrKysr
-KysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDIzIGluc2Vy
-dGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gPiAtLQ0KPiA+ID4gMi4xNi4x
-DQo+ID4gPiANCj4gPiANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18NCj4gPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QN
-Cj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
-ZC8NCj4gDQo+IA0K
+Dear all,
+
+i am testing a new dma driver, named mcf-edma, for the
+ColdFire mcf5441x family of SoC's. The driver is still
+by the way under approval on dmaengine mailing list.
+
+https://www.spinics.net/lists/dmaengine/msg15416.html
+
+Mainly, i am testing it with fsl-dspi.c, reading by an 
+spi-nor flash.
+
+With DMA enabled, mounting a simple 200KB squashfs i get:
+
+/ # mount /dev/mtdblock2 squashfs
+[ 1186.310000] SQUASHFS error: squashfs_read_data failed to read block 0x42e7d
+[ 1186.310000] SQUASHFS error: Unable to read metadata cache entry [42e7d]
+[ 1186.320000] SQUASHFS error: Unable to read inode 0x17dc
+mount: mounting /dev/mtdblock2 on squashfs failed: Input/output error
+
+>From some traces,
+spi frame lengths seems fixed to 517, and the read length is always 517.
+
+While, with same setup (DMA enabled) if i read a predefined pattern
+by "hexdump -C -n4096 /dev/mtdblock2" i read perfectly the written
+pattern.
+
+Every help is appreciated,
+
+Regards,
+Angelo Dureghello
