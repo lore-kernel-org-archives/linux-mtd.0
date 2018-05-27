@@ -1,7 +1,7 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.11])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.15])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN56O-0007jL-HH
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 23:29:51 +0000
+ id 1fN56Q-0007jM-8Z
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 23:29:53 +0000
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
@@ -12,10 +12,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: [PATCH v7 3/5] mtd: cfi_cmdset_0002: Change erase functions to retry
- for error
-Date: Mon, 28 May 2018 08:27:59 +0900
-Message-Id: <20180527232801.1666-4-ikegami@allied-telesis.co.jp>
+Subject: [PATCH v7 4/5] mtd: cfi_cmdset_0002: Change erase functions to check
+ chip good only
+Date: Mon, 28 May 2018 08:28:00 +0900
+Message-Id: <20180527232801.1666-5-ikegami@allied-telesis.co.jp>
 In-Reply-To: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
 References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,15 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For the word write functions it is retried for error.
-But it is not implemented to retry for the erase functions.
-To make sure for the erase functions change to retry as same.
-
-This is needed to prevent the flash erase error caused only once.
-It was caused by the error case of chip_good() in the do_erase_oneblock().
-Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-But the error issue behavior is not able to reproduce at this moment.
-The flash controller is parallel Flash interface integrated on BCM53003.
+Currently the functions use to check both chip ready and good.
+But the chip ready is not enough to check the operation status.
+So change this to check the chip good instead of this.
+About the retry functions to make sure the error handling remain it.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
@@ -49,64 +44,84 @@ Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org
 Cc: stable@vger.kernel.org
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 0b67f90415fd..e703900975d4 100644
+index e703900975d4..6adda4dc2007 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2240,6 +2240,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	unsigned long int adr;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
+@@ -2294,12 +2294,13 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 			chip->erase_suspended = 0;
+ 		}
  
- 	adr = cfi->addr_unlock1;
+-		if (chip_ready(map, adr))
++		if (chip_good(map, adr, map_word_ff(map)))
+ 			break;
  
-@@ -2257,6 +2258,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
+ 		if (time_after(jiffies, timeo)) {
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 			       __func__);
++			ret = -EIO;
+ 			break;
+ 		}
  
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2310,6 +2312,9 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+@@ -2307,15 +2308,15 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
+ 		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
+ 	/* Did we succeed? */
+-	if (!chip_good(map, adr, map_word_ff(map))) {
++	if (ret) {
+ 		/* reset on all failures. */
  		map_write(map, CMD(0xF0), chip->start);
  		/* FIXME - should have reset delay before continuing */
  
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
+-		if (++retry_cnt <= MAX_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES) {
++			ret = 0;
+ 			goto retry;
+-
+-		ret = -EIO;
++		}
  	}
  
-@@ -2329,6 +2334,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	unsigned long timeo = jiffies + HZ;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
+ 	chip->state = FL_READY;
+@@ -2388,7 +2389,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 			chip->erase_suspended = 0;
+ 		}
  
- 	adr += chip->start;
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, map_word_ff(map))) {
+ 			xip_enable(map, chip, adr);
+ 			break;
+ 		}
+@@ -2397,6 +2398,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 			       __func__);
++			ret = -EIO;
+ 			break;
+ 		}
  
-@@ -2346,6 +2352,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2402,6 +2409,9 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+@@ -2404,15 +2406,15 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
+ 	/* Did we succeed? */
+-	if (!chip_good(map, adr, map_word_ff(map))) {
++	if (ret) {
+ 		/* reset on all failures. */
  		map_write(map, CMD(0xF0), chip->start);
  		/* FIXME - should have reset delay before continuing */
  
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
+-		if (++retry_cnt <= MAX_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES) {
++			ret = 0;
+ 			goto retry;
+-
+-		ret = -EIO;
++		}
  	}
  
+ 	chip->state = FL_READY;
 -- 
 2.16.1
