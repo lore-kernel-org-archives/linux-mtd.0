@@ -1,36 +1,26 @@
-Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-From: Peter Rosin <peda@axentia.se>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Josh Wu <rainyfeeling@outlook.com>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
- Eugen Hristev <eugen.hristev@microchip.com>
-References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
- <20180329154416.5c1a0013@bbrezillon>
- <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
- <20180402142249.7e076a64@bbrezillon>
- <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
- <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
- <20180403091813.5fb5c18c@bbrezillon>
- <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
- <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
- <a25ca617-d3da-d401-1ba9-8e5887f8a8e5@microchip.com>
- <024079cb-77ad-9c48-e370-e6e8f2de171b@axentia.se>
-Message-ID: <9c496531-f7b6-4b9d-dd51-0bfb68ead303@axentia.se>
-Date: Mon, 28 May 2018 00:11:07 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fN414-0001mL-PJ
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 22:19:56 +0000
+Date: Mon, 28 May 2018 00:19:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+Message-ID: <20180528001940.7f54caff@xps13>
+In-Reply-To: <20180527215442.14760-4-stefan@agner.ch>
+References: <20180527215442.14760-4-stefan@agner.ch>
 MIME-Version: 1.0
-In-Reply-To: <024079cb-77ad-9c48-e370-e6e8f2de171b@axentia.se>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,68 +31,279 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-05-27 11:18, Peter Rosin wrote:
-> On 2018-05-25 16:51, Tudor Ambarus wrote:
->> We think the best way is to keep LCD on DDR Ports 2 and 3 (8th and 9th
->> slaves), to have maximum bandwidth and to use DMA on DDR port 1 for NAND
->> (7th slave).
+Hi Stefan,
+
+A few more comments here.
+
+On Sun, 27 May 2018 23:54:39 +0200, Stefan Agner <stefan@agner.ch>
+wrote:
+
+> Add support for the NAND flash controller found on NVIDIA
+> Tegra 2 SoCs. This implementation does not make use of the
+> command queue feature. Regular operations/data transfers are
+> done in PIO mode. Page read/writes with hardware ECC make
+> use of the DMA for data transfer.
 > 
-> Exactly how do I accomplish that?
+> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  MAINTAINERS                       |   7 +
+>  drivers/mtd/nand/raw/Kconfig      |   6 +
+>  drivers/mtd/nand/raw/Makefile     |   1 +
+>  drivers/mtd/nand/raw/tegra_nand.c | 999 ++++++++++++++++++++++++++++++
+>  4 files changed, 1013 insertions(+)
+>  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
 > 
-> I can see how I can move the LCD between slave DDR port 2 and 3 by
-> selecting LCDC DMA master 8 or 9 (but according to the above it should
-> not matter). The big question is how I control what slave the NAND flash
-> is going to use? I find nothing in the datasheet, and the code is also
-> non-transparent enough for me to figure it out by myself without
-> throwing out this question first...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 58b9861ccf99..8cbbb7111742 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13844,6 +13844,13 @@ M:	Laxman Dewangan <ldewangan@nvidia.com>
+>  S:	Supported
+>  F:	drivers/input/keyboard/tegra-kbc.c
+>  
+> +TEGRA NAND DRIVER
+> +M:	Stefan Agner <stefan@agner.ch>
+> +M:	Lucas Stach <dev@lynxeye.de>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
 
-I added this:
+I think most MTD bindings use '-' instead of ','. I don't have a
+preference, it's just for coherence.
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index e686fe73159e..3b33c63d2ed4 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1991,6 +1991,9 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 		nc->dmac = dma_request_channel(mask, NULL, NULL);
- 		if (!nc->dmac)
- 			dev_err(nc->dev, "Failed to request DMA channel\n");
-+
-+		dev_info(nc->dev, "using %s for DMA transfers\n",
-+			 dma_chan_name(nc->dmac));
- 	}
- 
- 	/* We do not retrieve the SMC syscon when parsing old DTs. */
+> +F:	drivers/mtd/nand/raw/tegra_nand.c
+> +
+>  TEGRA PWM DRIVER
+>  M:	Thierry Reding <thierry.reding@gmail.com>
+>  S:	Supported
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index 19a2b283fbbe..012c63c6ab47 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -534,4 +534,10 @@ config MTD_NAND_MTK
+>  	  Enables support for NAND controller on MTK SoCs.
+>  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+>  
+> +config MTD_NAND_TEGRA
+> +	tristate "Support for NAND on NVIDIA Tegra"
+> +	depends on ARCH_TEGRA || COMPILE_TEST
+> +	help
+> +	  Enables support for NAND flash on NVIDIA Tegra SoC based boards.
 
+Please make the term "controller" appear because it's mostly a
+controller driver that you're adding.
 
+> +
+>  endif # MTD_NAND
+> diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+> index 165b7ef9e9a1..d5a5f9832b88 100644
+> --- a/drivers/mtd/nand/raw/Makefile
+> +++ b/drivers/mtd/nand/raw/Makefile
+> @@ -56,6 +56,7 @@ obj-$(CONFIG_MTD_NAND_HISI504)	        += hisi504_nand.o
+>  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
+>  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
+>  obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_ecc.o mtk_nand.o
+> +obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
+>  
+>  nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
+>  nand-objs += nand_amd.o
 
-and the output is
+[...]
 
-atmel-nand-controller 10000000.ebi:nand-controller: using dma0chan5 for DMA transfers
+> +static int tegra_nand_setup_data_interface(struct mtd_info *mtd, int csline,
+> +					   const struct nand_data_interface *conf)
+> +{
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+> +	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+> +	const struct nand_sdr_timings *timings;
+> +
+> +	timings = nand_get_sdr_timings(conf);
+> +	if (IS_ERR(timings))
+> +		return PTR_ERR(timings);
+> +
+> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
+> +		return 0;
+> +
+> +	tegra_nand_setup_timing(ctrl, timings);
 
-So, DMA controller 0 is in use. I still don't know if IF0, IF1 or IF2 is used
-or how to find out. I guess IF2 is not in use since that does not allow any
-DDR2 port as slave...
+Is this indirection really needed?
 
->From the datasheet, DMAC0/IF0 uses DDR2 Port 2, and DMAC0/IF1 uses DDR2 Port 1.
-But, by the looks of the register content in my other mail, it seems as if
-DMA0/IF1 can also use DDR2 Port 3.
+> +
+> +	return 0;
+> +}
+> +
+> +static int tegra_nand_chips_init(struct device *dev,
+> +				 struct tegra_nand_controller *ctrl)
+> +{
+> +	struct device_node *np = dev->of_node;
+> +	struct device_node *np_nand;
+> +	int nchips = of_get_child_count(np);
+> +	struct tegra_nand_chip *nand;
+> +	struct mtd_info *mtd;
+> +	struct nand_chip *chip;
+> +	unsigned long config, bch_config = 0;
+> +	int bits_per_step;
+> +	int err;
+> +
+> +	if (nchips != 1) {
+> +		dev_err(dev, "currently only one NAND chip supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	np_nand = of_get_next_child(np, NULL);
+> +
+> +	nand = devm_kzalloc(dev, sizeof(*nand), GFP_KERNEL);
+> +	if (!nand) {
+> +		dev_err(dev, "could not allocate chip structure\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	nand->wp_gpio = devm_gpiod_get_optional(dev, "wp", GPIOD_OUT_LOW);
+> +
+> +	if (IS_ERR(nand->wp_gpio)) {
+> +		err = PTR_ERR(nand->wp_gpio);
+> +		dev_err(dev, "failed to request WP GPIO: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	chip = &nand->chip;
+> +	chip->controller = &ctrl->controller;
+> +	ctrl->chip = chip;
+> +
+> +	mtd = nand_to_mtd(chip);
+> +
+> +	mtd->dev.parent = dev;
+> +	mtd->name = "tegra_nand";
+> +	mtd->owner = THIS_MODULE;
+> +
+> +	nand_set_flash_node(chip, np_nand);
+> +
+> +	chip->options = NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER;
+> +	chip->exec_op = tegra_nand_exec_op;
+> +	chip->select_chip = tegra_nand_select_chip;
+> +	chip->setup_data_interface = tegra_nand_setup_data_interface;
+> +
+> +	err = nand_scan_ident(mtd, 1, NULL);
+> +	if (err)
+> +		return err;
+> +
+> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+> +		chip->bbt_options |= NAND_BBT_NO_OOB;
+> +
+> +	chip->ecc.mode = NAND_ECC_HW;
+> +	if (!chip->ecc.size)
+> +		chip->ecc.size = 512;
+> +	if (chip->ecc.size != 512)
+> +		return -EINVAL;
 
-So, I think I want either
+This is useless. You can force ecc.size to 512 and forget about the DT
+property (please update the DT bindings).
 
-A) the NAND controller to use DMAC0/IF0 (i.e. DDR2 port 1, and possibly 3) and
-   the LCDC to use master 9 (i.e. DDR2 Port 2)
+> +
+> +	chip->ecc.read_page = tegra_nand_read_page_hwecc;
+> +	chip->ecc.write_page = tegra_nand_write_page_hwecc;
+> +	/* Not functional for unknown reason...
+> +	chip->ecc.read_page_raw = tegra_nand_read_page;
+> +	chip->ecc.write_page_raw = tegra_nand_write_page;
 
-or
+Please add the _raw suffix to these helpers.
 
-B) the NAND controller to use DMAC1/IF1 (i.e. DDR2 port 2) and the LCDC to use
-   master 8 (i.e. DDR2 Port 3)
+> +	*/
+> +	config = readl(ctrl->regs + CFG);
+> +	config |= CFG_PIPE_EN | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4;
+> +
+> +	if (chip->options & NAND_BUSWIDTH_16)
+> +		config |= CFG_BUS_WIDTH_16;
+> +
+> +	switch (chip->ecc.algo) {
+> +	case NAND_ECC_RS:
+> +		bits_per_step = BITS_PER_STEP_RS * chip->ecc.strength;
+> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_rs_ops);
+> +		switch (chip->ecc.strength) {
+> +		case 4:
+> +			config |= CFG_ECC_SEL | CFG_TVAL_4;
+> +			break;
+> +		case 6:
+> +			config |= CFG_ECC_SEL | CFG_TVAL_6;
+> +			break;
+> +		case 8:
+> +			config |= CFG_ECC_SEL | CFG_TVAL_8;
+> +			break;
+> +		default:
+> +			dev_err(dev, "ECC strength %d not supported\n",
+> +				chip->ecc.strength);
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +	case NAND_ECC_BCH:
+> +		bits_per_step = BITS_PER_STEP_BCH * chip->ecc.strength;
+> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_bch_ops);
+> +		switch (chip->ecc.strength) {
+> +		case 4:
+> +			bch_config = BCH_TVAL_4;
+> +			break;
+> +		case 8:
+> +			bch_config = BCH_TVAL_8;
+> +			break;
+> +		case 14:
+> +			bch_config = BCH_TVAL_14;
+> +			break;
+> +		case 16:
+> +			bch_config = BCH_TVAL_16;
+> +			break;
+> +		default:
+> +			dev_err(dev, "ECC strength %d not supported\n",
+> +				chip->ecc.strength);
+> +			return -EINVAL;
+> +		}
+> +		break;
+> +	default:
+> +		dev_err(dev, "ECC algorithm not supported\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	chip->ecc.bytes = DIV_ROUND_UP(bits_per_step, 8);
+> +
+> +	switch (mtd->writesize) {
+> +	case 256:
+> +		config |= CFG_PS_256;
+> +		break;
+> +	case 512:
+> +		config |= CFG_PS_512;
+> +		break;
+> +	case 1024:
+> +		config |= CFG_PS_1024;
+> +		break;
+> +	case 2048:
+> +		config |= CFG_PS_2048;
+> +		break;
+> +	case 4096:
+> +		config |= CFG_PS_4096;
+> +		break;
+> +	default:
+> +		dev_err(dev, "unhandled writesize %d\n", mtd->writesize);
+> +		return -ENODEV;
+> +	}
+> +
+> +	writel(config, ctrl->regs + CFG);
+> +	writel(bch_config, ctrl->regs + BCH_CONFIG);
+> +
+> +	err = nand_scan_tail(mtd);
+> +	if (err)
+> +		return err;
+> +
+> +	config |= CFG_TAG_BYTE_SIZE(mtd_ooblayout_count_freebytes(mtd) - 1);
+> +	writel(config, ctrl->regs + CFG);
+> +
+> +	err = mtd_device_register(mtd, NULL, 0);
+> +	if (err)
 
-But, again, how do I limit DMAC0 to either of IF0 or IF1 for NAND accesses?
+Missing nand_cleanup() in the error path.
 
-Note that I have previously tried to move LCDC DMA from master 8 (the default)
-to master 9, and it got better, but not good enough. I.e. the visual glitches
-remained, but were a little bit harder to trigger. That makes me suspect DMAC0
-uses both IF0 and IF1 for its DMAs, but that it prefers IF0.
+> +		return err;
+> +
+> +	return 0;
+> +}
+> +
 
-Cheers,
-Peter
+[...]
