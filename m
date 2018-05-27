@@ -1,26 +1,35 @@
-Received: from ec2-18-194-220-216.eu-central-1.compute.amazonaws.com
- ([18.194.220.216] helo=sysam.it)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN10B-00013E-TO
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 19:06:49 +0000
-Received: from localhost (localhost [127.0.0.1])
- by sysam.it (Postfix) with ESMTP id 2828F218E1
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 18:58:31 +0000 (UTC)
-Received: from sysam.it ([127.0.0.1])
- by localhost (sysam.it [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id Rp5MglRaSxt4 for <linux-mtd@lists.infradead.org>;
- Sun, 27 May 2018 18:58:30 +0000 (UTC)
-Received: from jerusalem (host126-233-dynamic.51-79-r.retail.telecomitalia.it
- [79.51.233.126]) by sysam.it (Postfix) with ESMTPSA id DF127218DF
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 18:58:29 +0000 (UTC)
-Date: Sun, 27 May 2018 20:58:29 +0200
-From: Angelo Dureghello <angelo@sysam.it>
-To: linux-mtd@lists.infradead.org
-Subject: squashfs: issue mounting with dma enabled
-Message-ID: <20180527185828.GC17528@jerusalem>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fN12U-0001P4-Bu
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 19:09:12 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Sun, 27 May 2018 21:08:54 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Benjamin Lindqvist
+ <benjamin.lindqvist@endian.se>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, Lucas Stach <dev@lynxeye.de>, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com, Mirza
+ Krak <mirza.krak@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <20180527183055.05c4d197@bbrezillon>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
+ <d8d6cb9fcd8ce7ea5c13b227012de6d2@agner.ch>
+ <CAGefG56khQ2835c2QCteit7FuL_yG+APpj6-4vRRPxztFtkAMA@mail.gmail.com>
+ <20180524135335.6aa0b7a4@bbrezillon>
+ <146a3abbbff4dcef30ad662a0fb85ff1@agner.ch> <20180527161832.1152be6e@xps13>
+ <20180527171337.002eeb9f@bbrezillon> <20180527175403.065a135d@xps13>
+ <20180527183055.05c4d197@bbrezillon>
+Message-ID: <3edd29f9ab353931024c1b9a4ca1c1dc@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +39,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all,
+On 27.05.2018 18:30, Boris Brezillon wrote:
+> On Sun, 27 May 2018 17:54:03 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> 
+>> Hi Boris,
+>>
+>> On Sun, 27 May 2018 17:13:37 +0200, Boris Brezillon
+>> <boris.brezillon@bootlin.com> wrote:
+>>
+>> > On Sun, 27 May 2018 16:18:32 +0200
+>> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>> >
+>> > > Hi Stefan,
+>> > >
+>> > > On Thu, 24 May 2018 14:19:18 +0200, Stefan Agner <stefan@agner.ch>
+>> > > wrote:
+>> > >
+>> > > > On 24.05.2018 13:53, Boris Brezillon wrote:
+>> > > > > Hi Benjamin,
+>> > > > >
+>> > > > > On Thu, 24 May 2018 13:30:14 +0200
+>> > > > > Benjamin Lindqvist <benjamin.lindqvist@endian.se> wrote:
+>> > > > >
+>> > > > >> Hi Stefan,
+>> > > > >>
+>> > > > >> It seems to me that a probe similar to what the BootROM does shouldn't
+>> > > > >> be awfully complicated to implement - just cycle through the switch
+>> > > > >> cases in case of an ECC error. But I guess that's more of an idea for
+>> > > > >> further improvements rather than a comment to the patch set under
+>> > > > >> review.
+>> > > > >
+>> > > > > Nope, not really an option, because you're not guaranteed that the NAND
+>> > > > > will be used as a boot media, and the first page or first set of pages
+>> > > > > might just be erased.
+>> > > > >
+>> > > >
+>> > > > Yeah I did not meant probing like the Boot ROM does.
+>> > > >
+>> > > > What I meant was using only the ECC modes which are supported by the
+>> > > > Boot ROM when the driver tries to choose a viable mode. So that would
+>> > > > be:
+>> > > > - RS t=4
+>> > > > - BCH t=8
+>> > > > - BCH t=16
+>> > > >
+>> > > > Maybe we could add a property to enable that behavior:
+>> > > >
+>> > > > tegra,use-bootable-ecc-only;
+>> > >
+>> > > I'm not sure a property is needed.
+>> > >
+>> > > As there is currently no official user of this driver, why not turning
+>> > > mandatory the nand-ecc-xxx properties?
+>> >
+>> > Not a big fan of this solution. We already have a few cases where the
+>> > NAND part was changed on a design and the new NAND had different ECC
+>> > requirements, With your suggestion, that means creating a new .dts file
+>> > for each possible NAND part.
+>> >
+>> > Note that having a solution that picks the best ECC config based on
+>> > chip->ecc_xxx_ds should be the preferred approach. nand-ecc- props are
+>> > mainly here to address the case where you need/want to assign a config
+>> > that does not match the ECC requirements exposed by the chip.
+>>
+>> Ok, that's right it's a problem.
+>>
+>> But then the driver has to choose a default algorithm if none is given.
+> 
+> Yep.
+> 
 
-i am testing a new dma driver, named mcf-edma, for the
-ColdFire mcf5441x family of SoC's. The driver is still
-by the way under approval on dmaengine mailing list.
+Our design currently uses a chip which requires 8-bit per 512 byte. But
+the downstream BSP currently uses the maximum possible strength, BCH 16.
 
-https://www.spinics.net/lists/dmaengine/msg15416.html
+I guess we could create two algorithms, one which tries to maximize ECC
+strength and one which tries to match the required strength. Both with
+and without the boot ROM restrictions...
 
-Mainly, i am testing it with fsl-dspi.c, reading by an 
-spi-nor flash.
+But then, newer chips mostly require higher ECC strength. Given that we
+already use the maximum, I think for that particular case just selecting
+BCH 16 would be fine. Therefor I planned for v2 to just implement manual
+selection...
 
-With DMA enabled, mounting a simple 200KB squashfs i get:
+>> In this case, should we select the one that fits best the NAND chip
+>> requirements, or shall we limit to the ones supported by the BootRom?
+> 
+> We should limit to the one used by the BootROM only if the NAND is used
+> as a boot medium.
+> 
+>>
+>> The underlying question is: will we add a tegra,use-bootable-ecc-only
+>> property?
+> 
+> I guess this one is fine, because it's only adding a constraint on the
+> possible ECC modes that can be used, it's not forcing a specific ECC
+> strength.
+> 
+> Note that if we want to make this property generic we could name it
+> nand-is-boot-medium.
 
-/ # mount /dev/mtdblock2 squashfs
-[ 1186.310000] SQUASHFS error: squashfs_read_data failed to read block 0x42e7d
-[ 1186.310000] SQUASHFS error: Unable to read metadata cache entry [42e7d]
-[ 1186.320000] SQUASHFS error: Unable to read inode 0x17dc
-mount: mounting /dev/mtdblock2 on squashfs failed: Input/output error
+Sounds sensible. Although, only because the boot loader needs to be
+written in that mode does not necessarily requires the rootfs to be in
+the same mode.. But it is clearly preferable.
 
->From some traces,
-spi frame lengths seems fixed to 517, and the read length is always 517.
-
-While, with same setup (DMA enabled) if i read a predefined pattern
-by "hexdump -C -n4096 /dev/mtdblock2" i read perfectly the written
-pattern.
-
-Every help is appreciated,
-
-Regards,
-Angelo Dureghello
+--
+Stefan
