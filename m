@@ -1,36 +1,24 @@
-Received: from conssluserg-03.nifty.com ([210.131.2.82])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMrxe-0004LY-AL
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 09:27:36 +0000
-Received: from mail-vk0-f54.google.com (mail-vk0-f54.google.com
- [209.85.213.54]) (authenticated)
- by conssluserg-03.nifty.com with ESMTP id w4R9QxaB023448
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 18:27:00 +0900
-Received: by mail-vk0-f54.google.com with SMTP id 200-v6so3443054vkc.0
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 02:27:00 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1527250904-21988-3-git-send-email-absahu@codeaurora.org>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-3-git-send-email-absahu@codeaurora.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Sun, 27 May 2018 18:26:18 +0900
-Message-ID: <CAK7LNASbSSM9EpJkYvz65hGUzmdUF9m7PjLg=Xw-Wn+CB1RkTA@mail.gmail.com>
-Subject: Re: [PATCH v3 02/16] mtd: rawnand: denali: use helper function for
- ecc setup
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMw6z-0000RO-9A
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 13:53:31 +0000
+Date: Sun, 27 May 2018 15:53:11 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Archit Taneja <architt@codeaurora.org>,
- Richard Weinberger <richard@nod.at>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Andy Gross <andy.gross@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
+ <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v3 15/16] mtd: rawnand: qcom: helper function for raw read
+Message-ID: <20180527155311.4c05d7ab@xps13>
+In-Reply-To: <1527250904-21988-16-git-send-email-absahu@codeaurora.org>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-16-git-send-email-absahu@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,90 +28,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-05-25 21:21 GMT+09:00 Abhishek Sahu <absahu@codeaurora.org>:
-> Use the NAND core helper function nand_ecc_choose_conf to tune
-> the ECC parameters instead of the function locally defined.
->
-> CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+Hi Abhishek,
 
-You can replace the CC with my
+On Fri, 25 May 2018 17:51:43 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
-
-
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> This patch does minor code reorganization for raw reads.
+> Currently the raw read is required for complete page but for
+> subsequent patches related with erased codeword bit flips
+> detection, only few CW should be read. So, this patch adds
+> helper function and introduces the read CW bitmask which
+> specifies which CW reads are required in complete page.
+>=20
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 > ---
 > * Changes from v2:
->
->   1. Changed commit message
->
+>   NONE
+>=20
 > * Changes from v1:
->   NEW PATCH
->
->  drivers/mtd/nand/raw/denali.c | 30 ++----------------------------
->  1 file changed, 2 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index 2a302a1..a586a1d 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -1120,33 +1120,6 @@ int denali_calc_ecc_bytes(int step_size, int strength)
+>  1. Included more detail in function comment
+>=20
+>  drivers/mtd/nand/raw/qcom_nandc.c | 197 ++++++++++++++++++++++++--------=
+------
+>  1 file changed, 123 insertions(+), 74 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
+m_nandc.c
+> index 87f900e..34143a4 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1588,6 +1588,127 @@ static int check_flash_errors(struct qcom_nand_ho=
+st *host, int cw_cnt)
 >  }
->  EXPORT_SYMBOL(denali_calc_ecc_bytes);
->
-> -static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
-> -                           struct denali_nand_info *denali)
-> -{
-> -       int oobavail = mtd->oobsize - denali->oob_skip_bytes;
-> -       int ret;
-> -
-> -       /*
-> -        * If .size and .strength are already set (usually by DT),
-> -        * check if they are supported by this controller.
-> -        */
-> -       if (chip->ecc.size && chip->ecc.strength)
-> -               return nand_check_ecc_caps(chip, denali->ecc_caps, oobavail);
-> -
-> -       /*
-> -        * We want .size and .strength closest to the chip's requirement
-> -        * unless NAND_ECC_MAXIMIZE is requested.
-> -        */
-> -       if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
-> -               ret = nand_match_ecc_req(chip, denali->ecc_caps, oobavail);
-> -               if (!ret)
-> -                       return 0;
-> -       }
-> -
-> -       /* Max ECC strength is the last thing we can do */
-> -       return nand_maximize_ecc(chip, denali->ecc_caps, oobavail);
-> -}
-> -
->  static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
->                                 struct mtd_oob_region *oobregion)
->  {
-> @@ -1317,7 +1290,8 @@ int denali_init(struct denali_nand_info *denali)
->         chip->ecc.mode = NAND_ECC_HW_SYNDROME;
->         chip->options |= NAND_NO_SUBPAGE_WRITE;
->
-> -       ret = denali_ecc_setup(mtd, chip, denali);
-> +       ret = nand_ecc_choose_conf(chip, denali->ecc_caps,
-> +                                  mtd->oobsize - denali->oob_skip_bytes);
->         if (ret) {
->                 dev_err(denali->dev, "Failed to setup ECC settings.\n");
->                 goto disable_irq;
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
-> is a member of Code Aurora Forum, hosted by The Linux Foundation
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> =20
+>  /*
+> + * Helper to perform the page raw read operation. The read_cw_mask will =
+be
+> + * used to specify the codewords (CW) for which the data should be read.=
+ The
+> + * single page contains multiple CW.
+> + *
+> + * Normally other NAND controllers store the data in main area and
+> + * ecc bytes in OOB area. So, if page size is 2048+64 then 2048
+> + * data bytes will go in main area followed by ECC bytes. The QCOM NAND
+> + * controller follows different layout in which the data+OOB is internal=
+ly
+> + * divided in 528/532 bytes CW and each CW contains 516 bytes followed by
+> + * ECC parity bytes for that CW. By this, 4 available OOB bytes per CW
+> + * will also be protected with ECC.
+> + *
+> + * For each CW read, following are the 2 steps:
+> + * 1. Read the codeword bytes from NAND chip to NAND controller internal=
+ HW
+> + *    buffer.
+> + * 2. Copy all these bytes from this HW buffer to actual buffer.
+> + *
+> + * Sometime, only few CW data is required in complete page. The read_cw_=
+mask
+> + * specifies which CW in a page needs to be read. Start address will be
+> + * determined with this CW mask to skip unnecessary data copy from NAND
+> + * flash device. Then, actual data copy from NAND controller HW internal=
+ buffer
+> + * to data buffer will be done only for the CWs, which have the mask set.
+> + */
+> +static int
+> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+> +		    u8 *data_buf, u8 *oob_buf,
+> +		    int page, unsigned long read_cw_mask)
 
+Please prefix the helper with "qcom_nandc"
 
+> +{
+> +	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
+> +	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(chip);
+> +	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
+> +	int i, ret;
+> +	int read_loc, start_step, last_step;
+> +
+> +	nand_read_page_op(chip, page, 0, NULL, 0);
+> +
+> +	host->use_ecc =3D false;
+> +	start_step =3D ffs(read_cw_mask) - 1;
+> +	last_step =3D fls(read_cw_mask);
+> +
+> +	clear_bam_transaction(nandc);
+> +	set_address(host, host->cw_size * start_step, page);
+> +	update_rw_regs(host, last_step - start_step, true);
+> +	config_nand_page_read(nandc);
+> +
+> +	for (i =3D start_step; i < last_step; i++) {
 
--- 
-Best Regards
-Masahiro Yamada
+This comment applies for both patches 15 and 16:
+
+I would really prefer having a qcom_nandc_read_cw_raw() that reads only
+one CW. From qcom_nandc_read_page_raw() you would loop over all the CW
+calling qcom_nandc_read_cw_raw() helper (it's raw reads, we don't care
+about performances) and from ->read_page_raw() you would check
+CW with uncorrectable errors for being blank with that helper. You
+would avoid the not-so-nice logic where you read all the CW between the
+first bad one and the last bad one.
+
+Thanks,
+Miqu=C3=A8l
