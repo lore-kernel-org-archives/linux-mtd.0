@@ -1,34 +1,28 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMxMm-000751-P1
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 15:13:55 +0000
-Date: Sun, 27 May 2018 17:13:37 +0200
+ id 1fMxgF-0005yC-Rg
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 15:34:02 +0000
+Date: Sun, 27 May 2018 17:33:46 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Stefan Agner <stefan@agner.ch>, Benjamin Lindqvist
- <benjamin.lindqvist@endian.se>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, Lucas Stach <dev@lynxeye.de>, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com, Mirza
- Krak <mirza.krak@gmail.com>, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180527171337.002eeb9f@bbrezillon>
-In-Reply-To: <20180527161832.1152be6e@xps13>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
- <d8d6cb9fcd8ce7ea5c13b227012de6d2@agner.ch>
- <CAGefG56khQ2835c2QCteit7FuL_yG+APpj6-4vRRPxztFtkAMA@mail.gmail.com>
- <20180524135335.6aa0b7a4@bbrezillon>
- <146a3abbbff4dcef30ad662a0fb85ff1@agner.ch>
- <20180527161832.1152be6e@xps13>
+To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "ikegami@allied-telesis.co.jp"
+ <ikegami@allied-telesis.co.jp>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
+ functions
+Message-ID: <20180527173346.7469ac93@bbrezillon>
+In-Reply-To: <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+ <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,82 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 May 2018 16:18:32 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi Joakim,
 
-> Hi Stefan,
->=20
-> On Thu, 24 May 2018 14:19:18 +0200, Stefan Agner <stefan@agner.ch>
-> wrote:
->=20
-> > On 24.05.2018 13:53, Boris Brezillon wrote: =20
-> > > Hi Benjamin,
-> > >=20
-> > > On Thu, 24 May 2018 13:30:14 +0200
-> > > Benjamin Lindqvist <benjamin.lindqvist@endian.se> wrote:
-> > >    =20
-> > >> Hi Stefan,
-> > >>
-> > >> It seems to me that a probe similar to what the BootROM does shouldn=
-'t
-> > >> be awfully complicated to implement - just cycle through the switch
-> > >> cases in case of an ECC error. But I guess that's more of an idea for
-> > >> further improvements rather than a comment to the patch set under
-> > >> review.   =20
-> > >=20
-> > > Nope, not really an option, because you're not guaranteed that the NA=
-ND
-> > > will be used as a boot media, and the first page or first set of pages
-> > > might just be erased.
-> > >    =20
-> >=20
-> > Yeah I did not meant probing like the Boot ROM does.
-> >=20
-> > What I meant was using only the ECC modes which are supported by the
-> > Boot ROM when the driver tries to choose a viable mode. So that would
-> > be:
-> > - RS t=3D4
-> > - BCH t=3D8
-> > - BCH t=3D16
-> >=20
-> > Maybe we could add a property to enable that behavior:
-> >=20
-> > tegra,use-bootable-ecc-only; =20
->=20
-> I'm not sure a property is needed.
->=20
-> As there is currently no official user of this driver, why not turning
-> mandatory the nand-ecc-xxx properties?
+On Thu, 17 May 2018 13:12:26 +0000
+Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
 
-Not a big fan of this solution. We already have a few cases where the
-NAND part was changed on a design and the new NAND had different ECC
-requirements, With your suggestion, that means creating a new .dts file
-for each possible NAND part.
+> I think the patches look good
 
-Note that having a solution that picks the best ECC config based on
-chip->ecc_xxx_ds should be the preferred approach. nand-ecc- props are
-mainly here to address the case where you need/want to assign a config
-that does not match the ECC requirements exposed by the chip.
+Should I add your Reviewed-by tag (maybe Tested-by as well)?
 
-> In the documentation you can add
-> a note saying that using other algorithms than the three above is not
-> supported by the BootROM.
->=20
-> >  =20
-> > >>
-> > >> However, I think that allowing for an override of the oobsize
-> > >> inference would be a good idea before merging, no? This could just be
-> > >> a trivial #ifdef (at least temporarily). If you agree but don't feel
-> > >> like doing it yourself, I'd be happy to pitch in. Let me know.   =20
-> > >=20
-> > > That's why we have nand-ecc-xxx properties in the DT.
-> > >    =20
-> >=20
-> > Yes, nand-ecc-strength is the first thing I plan to implement, that way
-> > strength can be defined in dt.
-> >=20
+> but I think they should go to stable as well.
+
+Then I'll need a v7 with the "Cc: stable@vger.kernel.org" tag. Also,
+some patches are clearly not fixes (patch 2 and 5 at least).
+
+Regards,
+
+Boris
+
+> 
+>  Jocke
+> 
+> On Wed, 2018-05-16 at 02:11 +0900, smtpuser wrote:
+> > 
+> > From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> > 
+> > The changes are to make sure to check the operation status.
+> > Actually the flash write and erase error behavior is caused on our products.
+> > The flash is Macronix flash device MX29GL512FHT2I-11G used by our products.
+> > The patch series was separated for changes of flash write and erase.
+> > Since those were not depended each other at the time.
+> > But by additional changes the changes are related more as same way currently.
+> > So combine patch series for the flash write and erase changes as v6.
+> > 
+> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> > Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Cc: Brian Norris <computersforpeace@gmail.com>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: Marek Vasut <marek.vasut@gmail.com>
+> > Cc: Richard Weinberger <richard@nod.at>
+> > Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> > Cc: linux-mtd@lists.infradead.org
+> > 
+> > Tokunori Ikegami (5):
+> >   mtd: cfi_cmdset_0002: Change write buffer to check correct value
+> >   mtd: cfi_cmdset_0002: Change definition naming to retry write
+> >     operation
+> >   mtd: cfi_cmdset_0002: Change erase functions to retry for error
+> >   mtd: cfi_cmdset_0002: Change erase functions to check chip good only
+> >   mtd: cfi_cmdset_0002: Change erase one block to enable XIP once
+> > 
+> >  drivers/mtd/chips/cfi_cmdset_0002.c | 36 +++++++++++++++++++++++-------------
+> >  1 file changed, 23 insertions(+), 13 deletions(-)
+> > 
 > > --
-> > Stefan =20
->=20
-> Thanks,
-> Miqu=C3=A8l
+> > 2.16.1
+> >   
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
