@@ -1,25 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMxgF-0005yC-Rg
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 15:34:02 +0000
-Date: Sun, 27 May 2018 17:33:46 +0200
+ id 1fMxlN-0007xW-7P
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 15:39:18 +0000
+Date: Sun, 27 May 2018 17:39:05 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "boris.brezillon@free-electrons.com"
- <boris.brezillon@free-electrons.com>, "ikegami@allied-telesis.co.jp"
- <ikegami@allied-telesis.co.jp>, "richard@nod.at" <richard@nod.at>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>, PACKHAM Chris
+ <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>
 Subject: Re: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
  functions
-Message-ID: <20180527173346.7469ac93@bbrezillon>
-In-Reply-To: <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+Message-ID: <20180527173905.6e9df536@bbrezillon>
+In-Reply-To: <TY1PR01MB0954DBEFF399886473C1242FDC690@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
  <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+ <TY1PR01MB0954DBEFF399886473C1242FDC690@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,64 +32,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joakim,
+On Fri, 25 May 2018 03:03:28 +0000
+IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
 
-On Thu, 17 May 2018 13:12:26 +0000
-Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+> Hi Boris-san,
+> 
+> Could you please apply the patches if no problem?
 
-> I think the patches look good
+Actually I never received your v6, and I can't find it in linux-mtd
+either. Interestingly, it's in patchwork, so maybe a problem on my side.
 
-Should I add your Reviewed-by tag (maybe Tested-by as well)?
+> Or still should we wait if any other comment?
 
-> but I think they should go to stable as well.
+Not really, maybe add the Cc:stable tag if you think this is needed.
 
-Then I'll need a v7 with the "Cc: stable@vger.kernel.org" tag. Also,
-some patches are clearly not fixes (patch 2 and 5 at least).
+> Let me confirm these things since we are waiting to apply them for our product problem as resolution.
+> 
+> By the way I think that the commit message of patches can be changed to Jocke-san as "Reviewed-by" from "Cc" as below.
+>   - Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+>   + Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> 
+> Since actually the changes have been reviewed by him as the mail below.
 
-Regards,
+Normally you should wait for an official "Reviewed-by" tag. I just
+asked Joakim.
+
+> Also our company mail system has been changed so now I can send the patches with my email address as sender instead of the smtpuser address.
+
+That's appreciated.
+
+> If needed I will resend patches or send them as new version patches again to change the commit message and send address.
+
+Yes please, send a new version.
+
+Thanks,
 
 Boris
-
-> 
->  Jocke
-> 
-> On Wed, 2018-05-16 at 02:11 +0900, smtpuser wrote:
-> > 
-> > From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > 
-> > The changes are to make sure to check the operation status.
-> > Actually the flash write and erase error behavior is caused on our products.
-> > The flash is Macronix flash device MX29GL512FHT2I-11G used by our products.
-> > The patch series was separated for changes of flash write and erase.
-> > Since those were not depended each other at the time.
-> > But by additional changes the changes are related more as same way currently.
-> > So combine patch series for the flash write and erase changes as v6.
-> > 
-> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Cc: Marek Vasut <marek.vasut@gmail.com>
-> > Cc: Richard Weinberger <richard@nod.at>
-> > Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> > Cc: linux-mtd@lists.infradead.org
-> > 
-> > Tokunori Ikegami (5):
-> >   mtd: cfi_cmdset_0002: Change write buffer to check correct value
-> >   mtd: cfi_cmdset_0002: Change definition naming to retry write
-> >     operation
-> >   mtd: cfi_cmdset_0002: Change erase functions to retry for error
-> >   mtd: cfi_cmdset_0002: Change erase functions to check chip good only
-> >   mtd: cfi_cmdset_0002: Change erase one block to enable XIP once
-> > 
-> >  drivers/mtd/chips/cfi_cmdset_0002.c | 36 +++++++++++++++++++++++-------------
-> >  1 file changed, 23 insertions(+), 13 deletions(-)
-> > 
-> > --
-> > 2.16.1
-> >   
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
