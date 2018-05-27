@@ -1,7 +1,7 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.8])
+Received: from mail1.bemta12.messagelabs.com ([216.82.251.7])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN56M-0007jK-AX
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 23:29:39 +0000
+ id 1fN56R-0007jX-GD
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 23:29:51 +0000
 From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
@@ -12,10 +12,10 @@ Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: [PATCH v7 2/5] mtd: cfi_cmdset_0002: Change definition naming to
- retry write operation
-Date: Mon, 28 May 2018 08:27:58 +0900
-Message-Id: <20180527232801.1666-3-ikegami@allied-telesis.co.jp>
+Subject: [PATCH v7 5/5] mtd: cfi_cmdset_0002: Change erase one block to enable
+ XIP once
+Date: Mon, 28 May 2018 08:28:01 +0900
+Message-Id: <20180527232801.1666-6-ikegami@allied-telesis.co.jp>
 In-Reply-To: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
 References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,8 +27,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The definition can be used for other program and erase operations also.
-So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
+To enable XIP it is executed both normal and error cases.
+This call can be moved after the for loop as same with erase chip.
 
 Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
@@ -42,39 +42,35 @@ Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
 Cc: linux-mtd@lists.infradead.org
 Cc: stable@vger.kernel.org
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1d6be8c63d39..0b67f90415fd 100644
+index 6adda4dc2007..6c681cbf2d37 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -42,7 +42,7 @@
- #define AMD_BOOTLOC_BUG
- #define FORCE_WORD_WRITE 0
+@@ -2389,13 +2389,10 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 			chip->erase_suspended = 0;
+ 		}
  
--#define MAX_WORD_RETRIES 3
-+#define MAX_RETRIES 3
+-		if (chip_good(map, adr, map_word_ff(map))) {
+-			xip_enable(map, chip, adr);
++		if (chip_good(map, adr, map_word_ff(map)))
+ 			break;
+-		}
  
- #define SST49LF004B		0x0060
- #define SST49LF040B		0x0050
-@@ -1646,7 +1646,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
+ 		if (time_after(jiffies, timeo)) {
+-			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 			       __func__);
+ 			ret = -EIO;
+@@ -2418,6 +2415,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	}
  
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
-@@ -2105,7 +2105,7 @@ static int do_panic_write_oneword(struct map_info *map, struct flchip *chip,
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
+ 	chip->state = FL_READY;
++	xip_enable(map, chip, adr);
+ 	DISABLE_VPP(map);
+ 	put_chip(map, chip, adr);
+ 	mutex_unlock(&chip->mutex);
 -- 
 2.16.1
