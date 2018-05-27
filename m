@@ -1,36 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMyZZ-0007ep-7i
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 16:31:11 +0000
-Date: Sun, 27 May 2018 18:30:55 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Stefan Agner <stefan@agner.ch>, Benjamin Lindqvist
- <benjamin.lindqvist@endian.se>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, Lucas Stach <dev@lynxeye.de>, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com, Mirza
- Krak <mirza.krak@gmail.com>, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180527183055.05c4d197@bbrezillon>
-In-Reply-To: <20180527175403.065a135d@xps13>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <CAGefG55kvShaLhNYsFznbOq0_6RNbb+eJ47DLnnU9qRRpwu-iA@mail.gmail.com>
- <d8d6cb9fcd8ce7ea5c13b227012de6d2@agner.ch>
- <CAGefG56khQ2835c2QCteit7FuL_yG+APpj6-4vRRPxztFtkAMA@mail.gmail.com>
- <20180524135335.6aa0b7a4@bbrezillon>
- <146a3abbbff4dcef30ad662a0fb85ff1@agner.ch>
- <20180527161832.1152be6e@xps13>
- <20180527171337.002eeb9f@bbrezillon>
- <20180527175403.065a135d@xps13>
+Received: from mail-dm3nam03on0614.outbound.protection.outlook.com
+ ([2a01:111:f400:fe49::614]
+ helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMzgL-0001Ea-Gc
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 17:42:16 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "ikegami@allied-telesis.co.jp" <ikegami@allied-telesis.co.jp>,
+ "chris.packham@alliedtelesis.co.nz" <chris.packham@alliedtelesis.co.nz>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "boris.brezillon@free-electrons.com"
+ <boris.brezillon@free-electrons.com>, "richard@nod.at" <richard@nod.at>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>
+Subject: Re: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
+ functions
+Date: Sun, 27 May 2018 17:41:54 +0000
+Message-ID: <a05b4cd6d65f42cc2b2117abd29dc68ec0bf0650.camel@infinera.com>
+References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
+ <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
+ <20180527173346.7469ac93@bbrezillon>
+In-Reply-To: <20180527173346.7469ac93@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3B7B664732A3BF4BAA51C82C9412039E@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,88 +36,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 May 2018 17:54:03 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Hi Boris,
-> 
-> On Sun, 27 May 2018 17:13:37 +0200, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> 
-> > On Sun, 27 May 2018 16:18:32 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > Hi Stefan,
-> > > 
-> > > On Thu, 24 May 2018 14:19:18 +0200, Stefan Agner <stefan@agner.ch>
-> > > wrote:
-> > >     
-> > > > On 24.05.2018 13:53, Boris Brezillon wrote:      
-> > > > > Hi Benjamin,
-> > > > > 
-> > > > > On Thu, 24 May 2018 13:30:14 +0200
-> > > > > Benjamin Lindqvist <benjamin.lindqvist@endian.se> wrote:
-> > > > >         
-> > > > >> Hi Stefan,
-> > > > >>
-> > > > >> It seems to me that a probe similar to what the BootROM does shouldn't
-> > > > >> be awfully complicated to implement - just cycle through the switch
-> > > > >> cases in case of an ECC error. But I guess that's more of an idea for
-> > > > >> further improvements rather than a comment to the patch set under
-> > > > >> review.        
-> > > > > 
-> > > > > Nope, not really an option, because you're not guaranteed that the NAND
-> > > > > will be used as a boot media, and the first page or first set of pages
-> > > > > might just be erased.
-> > > > >         
-> > > > 
-> > > > Yeah I did not meant probing like the Boot ROM does.
-> > > > 
-> > > > What I meant was using only the ECC modes which are supported by the
-> > > > Boot ROM when the driver tries to choose a viable mode. So that would
-> > > > be:
-> > > > - RS t=4
-> > > > - BCH t=8
-> > > > - BCH t=16
-> > > > 
-> > > > Maybe we could add a property to enable that behavior:
-> > > > 
-> > > > tegra,use-bootable-ecc-only;      
-> > > 
-> > > I'm not sure a property is needed.
-> > > 
-> > > As there is currently no official user of this driver, why not turning
-> > > mandatory the nand-ecc-xxx properties?    
-> > 
-> > Not a big fan of this solution. We already have a few cases where the
-> > NAND part was changed on a design and the new NAND had different ECC
-> > requirements, With your suggestion, that means creating a new .dts file
-> > for each possible NAND part.
-> > 
-> > Note that having a solution that picks the best ECC config based on
-> > chip->ecc_xxx_ds should be the preferred approach. nand-ecc- props are
-> > mainly here to address the case where you need/want to assign a config
-> > that does not match the ECC requirements exposed by the chip.  
-> 
-> Ok, that's right it's a problem.
-> 
-> But then the driver has to choose a default algorithm if none is given.
-
-Yep.
-
-> In this case, should we select the one that fits best the NAND chip
-> requirements, or shall we limit to the ones supported by the BootRom?
-
-We should limit to the one used by the BootROM only if the NAND is used
-as a boot medium.
-
-> 
-> The underlying question is: will we add a tegra,use-bootable-ecc-only
-> property?
-
-I guess this one is fine, because it's only adding a constraint on the
-possible ECC modes that can be used, it's not forcing a specific ECC
-strength.
-
-Note that if we want to make this property generic we could name it
-nand-is-boot-medium.
+T24gU3VuLCAyMDE4LTA1LTI3IGF0IDE3OjMzICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IEhpIEpvYWtpbSwNCj4gDQo+IE9uIFRodSwgMTcgTWF5IDIwMTggMTM6MTI6MjYg
+KzAwMDANCj4gSm9ha2ltIFRqZXJubHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+
+IHdyb3RlOg0KPiANCj4gPiBJIHRoaW5rIHRoZSBwYXRjaGVzIGxvb2sgZ29vZA0KPiANCj4gU2hv
+dWxkIEkgYWRkIHlvdXIgUmV2aWV3ZWQtYnkgdGFnIChtYXliZSBUZXN0ZWQtYnkgYXMgd2VsbCk/
+DQoNCkkgaGF2ZSBvbmx5IHJldmlld2VkIHRoZW0gc28gYWRkIGE6DQogIFJldmlld2VkLWJ5OiBK
+b2FraW0gVGplcm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4NCg0KPiANCj4g
+PiBidXQgSSB0aGluayB0aGV5IHNob3VsZCBnbyB0byBzdGFibGUgYXMgd2VsbC4NCj4gDQo+IFRo
+ZW4gSSdsbCBuZWVkIGEgdjcgd2l0aCB0aGUgIkNjOiBzdGFibGVAdmdlci5rZXJuZWwub3JnIiB0
+YWcuIEFsc28sDQo+IHNvbWUgcGF0Y2hlcyBhcmUgY2xlYXJseSBub3QgZml4ZXMgKHBhdGNoIDIg
+YW5kIDUgYXQgbGVhc3QpLg0KDQpCdXQgdGhleSBhcmUgYWxsIG5lZWRlZCBhcyB0aGUgZml4ZXMg
+YnVpbGRzIHVwb24gdGhlbT8gU28gYWxsIGdvIHRvIHN0YWJsZSBJIHRoaW5rLg0KDQo+IA0KPiBS
+ZWdhcmRzLA0KPiANCj4gQm9yaXMNCj4gDQo+ID4gDQo+ID4gIEpvY2tlDQo+ID4gDQo+ID4gT24g
+V2VkLCAyMDE4LTA1LTE2IGF0IDAyOjExICswOTAwLCBzbXRwdXNlciB3cm90ZToNCj4gPiA+IA0K
+PiA+ID4gRnJvbTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5q
+cD4NCj4gPiA+IA0KPiA+ID4gVGhlIGNoYW5nZXMgYXJlIHRvIG1ha2Ugc3VyZSB0byBjaGVjayB0
+aGUgb3BlcmF0aW9uIHN0YXR1cy4NCj4gPiA+IEFjdHVhbGx5IHRoZSBmbGFzaCB3cml0ZSBhbmQg
+ZXJhc2UgZXJyb3IgYmVoYXZpb3IgaXMgY2F1c2VkIG9uIG91ciBwcm9kdWN0cy4NCj4gPiA+IFRo
+ZSBmbGFzaCBpcyBNYWNyb25peCBmbGFzaCBkZXZpY2UgTVgyOUdMNTEyRkhUMkktMTFHIHVzZWQg
+Ynkgb3VyIHByb2R1Y3RzLg0KPiA+ID4gVGhlIHBhdGNoIHNlcmllcyB3YXMgc2VwYXJhdGVkIGZv
+ciBjaGFuZ2VzIG9mIGZsYXNoIHdyaXRlIGFuZCBlcmFzZS4NCj4gPiA+IFNpbmNlIHRob3NlIHdl
+cmUgbm90IGRlcGVuZGVkIGVhY2ggb3RoZXIgYXQgdGhlIHRpbWUuDQo+ID4gPiBCdXQgYnkgYWRk
+aXRpb25hbCBjaGFuZ2VzIHRoZSBjaGFuZ2VzIGFyZSByZWxhdGVkIG1vcmUgYXMgc2FtZSB3YXkg
+Y3VycmVudGx5Lg0KPiA+ID4gU28gY29tYmluZSBwYXRjaCBzZXJpZXMgZm9yIHRoZSBmbGFzaCB3
+cml0ZSBhbmQgZXJhc2UgY2hhbmdlcyBhcyB2Ni4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1i
+eTogVG9rdW5vcmkgSWtlZ2FtaSA8aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5jby5qcD4NCj4gPiA+
+IENjOiBKb2FraW0gVGplcm5sdW5kIDxKb2FraW0uVGplcm5sdW5kQGluZmluZXJhLmNvbT4NCj4g
+PiA+IENjOiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+
+DQo+ID4gPiBDYzogQnJpYW4gTm9ycmlzIDxjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20+DQo+
+ID4gPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KPiA+ID4gQ2M6
+IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGZyZWUtZWxlY3Ryb25zLmNvbT4NCj4g
+PiA+IENjOiBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPg0KPiA+ID4gQ2M6IFJp
+Y2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+ID4gPiBDYzogQ3lyaWxsZSBQaXRj
+aGVuIDxjeXJpbGxlLnBpdGNoZW5Ad2VkZXY0dS5mcj4NCj4gPiA+IENjOiBsaW51eC1tdGRAbGlz
+dHMuaW5mcmFkZWFkLm9yZw0KPiA+ID4gDQo+ID4gPiBUb2t1bm9yaSBJa2VnYW1pICg1KToNCj4g
+PiA+ICAgbXRkOiBjZmlfY21kc2V0XzAwMDI6IENoYW5nZSB3cml0ZSBidWZmZXIgdG8gY2hlY2sg
+Y29ycmVjdCB2YWx1ZQ0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGRlZmlu
+aXRpb24gbmFtaW5nIHRvIHJldHJ5IHdyaXRlDQo+ID4gPiAgICAgb3BlcmF0aW9uDQo+ID4gPiAg
+IG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2UgZXJhc2UgZnVuY3Rpb25zIHRvIHJldHJ5IGZv
+ciBlcnJvcg0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0
+aW9ucyB0byBjaGVjayBjaGlwIGdvb2Qgb25seQ0KPiA+ID4gICBtdGQ6IGNmaV9jbWRzZXRfMDAw
+MjogQ2hhbmdlIGVyYXNlIG9uZSBibG9jayB0byBlbmFibGUgWElQIG9uY2UNCj4gPiA+IA0KPiA+
+ID4gIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMzYgKysrKysrKysrKysr
+KysrKysrKysrKystLS0tLS0tLS0tLS0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDIzIGluc2Vy
+dGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQ0KPiA+ID4gDQo+ID4gPiAtLQ0KPiA+ID4gMi4xNi4x
+DQo+ID4gPiANCj4gPiANCj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18NCj4gPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QN
+Cj4gPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10
+ZC8NCj4gDQo+IA0K
