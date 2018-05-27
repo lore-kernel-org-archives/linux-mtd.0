@@ -1,6 +1,6 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN3d4-0006I1-KG
+ id 1fN3d4-0006I2-KF
  for linux-mtd@lists.infradead.org; Sun, 27 May 2018 21:55:10 +0000
 From: Stefan Agner <stefan@agner.ch>
 To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
@@ -14,9 +14,9 @@ Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
  linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-clk@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v2 0/6] mtd: rawnand: add NVIDIA Tegra NAND flash support
-Date: Sun, 27 May 2018 23:54:36 +0200
-Message-Id: <20180527215442.14760-1-stefan@agner.ch>
+Subject: [PATCH v2 2/6] mtd: rawnand: tegra: add devicetree binding
+Date: Sun, 27 May 2018 23:54:38 +0200
+Message-Id: <20180527215442.14760-3-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +26,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This picks up an older patchset written by Lucas Stach which
-adds raw NAND flash support for Tegra 2.
-http://lists.infradead.org/pipermail/linux-mtd/2015-November/063031.html
+From: Lucas Stach <dev@lynxeye.de>
 
-The driver has been reworked to implement the ->exec_op callback.
-Some smaller changes and bug fixes have been applied too, but I did
-not keep track of them. Since the original patchset has been posted
-some years back already, I guess review needs to be done from scratch
-anyway.
+This adds the devicetree binding for the Tegra 2 NAND flash
+controller.
 
-This second revision is a rather major overhaul again. There are some
-open issues:
-- Driver specific DMA enabled (read/write)_page_raw are non functional
-  (I am not sure why, or if this is maybe even not possible at all...)
-- OOB layout discrepancy
-  When using HW BCH support, the location of the ECC bytes changes
-  depending on whether extra OOB bytes (tag data) are transmitted or
-  not... Writing/Reading should always be with tag enabled or always
-  without. I am not sure how to solve this correctly, maybe disallow
-  using OOB data with HW ECC completely?
-
---
-Stefan
-
-Changes since v1:
-- Split controller and NAND chip structure
-- Add BCH support
-- Allow to select algorithm and strength using device tree
-- Improve HW ECC error reporting and use DEC_STATUS_BUF only
-- Use SPDX license identifier
-- Use per algorithm mtd_ooblayout_ops
-- Use setup_data_interface callback for NAND timing configuration
-
-Lucas Stach (4):
-  mtd: rawnand: tegra: add devicetree binding
-  clk: tegra20: init NDFLASH clock to sensible rate
-  ARM: tegra: add Tegra20 NAND flash controller node
-  ARM: tegra: enable NAND flash on Colibri T20
-
-Stefan Agner (2):
-  mtd: rawnand: add Reed-Solomon error correction algorithm
-  mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
-
- .../bindings/mtd/nvidia,tegra20-nand.txt      |  62 ++
- MAINTAINERS                                   |   7 +
- arch/arm/boot/dts/tegra20-colibri-512.dtsi    |  16 +
- arch/arm/boot/dts/tegra20.dtsi                |  13 +
- drivers/clk/tegra/clk-tegra20.c               |   1 +
- drivers/mtd/nand/raw/Kconfig                  |   6 +
- drivers/mtd/nand/raw/Makefile                 |   1 +
- drivers/mtd/nand/raw/nand_base.c              |   1 +
- drivers/mtd/nand/raw/tegra_nand.c             | 999 ++++++++++++++++++
- include/linux/mtd/rawnand.h                   |   1 +
- 10 files changed, 1107 insertions(+)
+Signed-off-by: Lucas Stach <dev@lynxeye.de>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ .../bindings/mtd/nvidia,tegra20-nand.txt      | 62 +++++++++++++++++++
+ 1 file changed, 62 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
- create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
 
+diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+new file mode 100644
+index 000000000000..49e472af1b39
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
+@@ -0,0 +1,62 @@
++NVIDIA Tegra NAND Flash controller
++
++Required properties:
++- compatible: Must be one of:
++  - "nvidia,tegra20-nand"
++- reg: MMIO address range
++- interrupts: interrupt output of the NFC controller
++- clocks: Must contain an entry for each entry in clock-names.
++  See ../clocks/clock-bindings.txt for details.
++- clock-names: Must include the following entries:
++  - nand
++- resets: Must contain an entry for each entry in reset-names.
++  See ../reset/reset.txt for details.
++- reset-names: Must include the following entries:
++  - nand
++
++Optional children nodes:
++Individual NAND chips are children of the NAND controller node. Currently
++only one NAND chip supported.
++
++Required children node properties:
++- reg: An integer ranging from 1 to 6 representing the CS line to use.
++
++Optional children node properties:
++- nand-ecc-mode: String, operation mode of the NAND ecc mode. "hw" by default
++- nand-ecc-algo: string, algorithm of NAND ECC.
++		 Supported values are: "rs", "bch".
++- nand-bus-width : 8 or 16 bus width if not present 8
++- nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
++- nand-ecc-strength: integer representing the number of bits to correct
++		     per ECC step. Supported strength using HW ECC modes are:
++		     - RS: 4, 6, 8
++		     - BCH: 4, 8, 14, 16
++- nand-ecc-step-size: integer representing the number of data bytes
++		      that are covered by a single ECC step. Must be 512.
++- wp-gpios: GPIO specifier for the write protect pin.
++
++Optional child node of NAND chip nodes:
++Partitions: see partition.txt
++
++  Example:
++	nand@70008000 {
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++
++		nand-chip@0 {
++			reg = <0>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			nand-bus-width = <8>;
++			nand-on-flash-bbt;
++			nand-ecc-algo = "bch";
++			nand-ecc-step-size = <512>;
++			nand-ecc-strength = <8>;
++			wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
++		};
++	};
 -- 
 2.17.0
