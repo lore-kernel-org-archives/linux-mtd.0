@@ -1,21 +1,34 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fMwFe-0004ch-4L
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 14:02:27 +0000
-Received: by mail-wr0-x243.google.com with SMTP id w7-v6so4297961wrn.6
- for <linux-mtd@lists.infradead.org>; Sun, 27 May 2018 07:02:15 -0700 (PDT)
-Subject: Re: [PATCH] new NOR flash winbond w25q16jv, jedec code 0xef7015
-To: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>,
- linux-mtd@lists.infradead.org
-References: <20180525144811.GA27270@ppcx2.izt.loc>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <d98357d1-7cdd-2a01-e1d9-06dbe3be9e36@gmail.com>
-Date: Sun, 27 May 2018 14:49:35 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fMwK8-0006TQ-8a
+ for linux-mtd@lists.infradead.org; Sun, 27 May 2018 14:07:06 +0000
+Date: Sun, 27 May 2018 16:06:48 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+Message-ID: <20180527160648.0f368563@xps13>
+In-Reply-To: <78b7b43b4284e73cd6a3255e4e5075ed@agner.ch>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <20180523161810.0ed9fe80@bbrezillon>
+ <2d8107f0e6568512d691e9ea25a1e4e5@agner.ch>
+ <20180524105614.3c51736c@bbrezillon>
+ <7b3cc3991fb054130fd54c6fdfec5097@agner.ch>
+ <20180524142356.0fc68797@bbrezillon>
+ <20180524144134.41a71063@bbrezillon>
+ <78b7b43b4284e73cd6a3255e4e5075ed@agner.ch>
 MIME-Version: 1.0
-In-Reply-To: <20180525144811.GA27270@ppcx2.izt.loc>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +38,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 05/25/2018 04:48 PM, Johannes Poehlmann wrote:
-> Copy values from jedec code 0xef4015, which is also the jedec code
-> of Winbond w25q16db. w25q16jv is presented as follow up type in the
-> data sheet. w25q16jv works with this patch.
-> 
-> Signed-off-by: Johannes Poehlmann <johannes.poehlmann@izt-labs.de>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e..9bac67b 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1188,6 +1188,7 @@ static const struct flash_info spi_nor_ids[] = {
->  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
->  			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
->  	},
-> +	{ "w25q16jv", INFO(0xef7015, 0, 64 * 1024,  32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+Hi Stefan,
 
-What about HAS_LOCK and HAS_TB ? Looks good otherwise.
+On Fri, 25 May 2018 00:56:23 +0200, Stefan Agner <stefan@agner.ch>
+wrote:
 
->  	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
->  	{ "w25q20cl", INFO(0xef4012, 0, 64 * 1024,  4, SECT_4K) },
->  	{ "w25q20bw", INFO(0xef5012, 0, 64 * 1024,  4, SECT_4K) },
-> 
+> On 24.05.2018 14:41, Boris Brezillon wrote:
+> > On Thu, 24 May 2018 14:23:56 +0200
+> > Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> >  =20
+> >> On Thu, 24 May 2018 13:09:53 +0200
+> >> Stefan Agner <stefan@agner.ch> wrote:
+> >> =20
+> >> > On 24.05.2018 10:56, Boris Brezillon wrote: =20
+> >> > > On Thu, 24 May 2018 10:46:27 +0200
+> >> > > Stefan Agner <stefan@agner.ch> wrote:
+> >> > > =20
+> >> > >> Hi Boris,
+> >> > >>
+> >> > >> Thanks for the initial review! One small question below:
+> >> > >>
+> >> > >> On 23.05.2018 16:18, Boris Brezillon wrote: =20
+> >> > >> > Hi Stefan,
+> >> > >> >
+> >> > >> > On Tue, 22 May 2018 14:07:06 +0200
+> >> > >> > Stefan Agner <stefan@agner.ch> wrote: =20
+> >> > >> >> +
+> >> > >> >> +struct tegra_nand {
+> >> > >> >> +	void __iomem *regs;
+> >> > >> >> +	struct clk *clk;
+> >> > >> >> +	struct gpio_desc *wp_gpio;
+> >> > >> >> +
+> >> > >> >> +	struct nand_chip chip;
+> >> > >> >> +	struct device *dev;
+> >> > >> >> +
+> >> > >> >> +	struct completion command_complete;
+> >> > >> >> +	struct completion dma_complete;
+> >> > >> >> +	bool last_read_error;
+> >> > >> >> +
+> >> > >> >> +	dma_addr_t data_dma;
+> >> > >> >> +	void *data_buf;
+> >> > >> >> +	dma_addr_t oob_dma;
+> >> > >> >> +	void *oob_buf;
+> >> > >> >> +
+> >> > >> >> +	int cur_chip;
+> >> > >> >> +}; =20
+> >> > >> >
+> >> > >> > This struct should be split in 2 structures: one representing t=
+he NAND
+> >> > >> > controller and one representing the NAND chip:
+> >> > >> >
+> >> > >> > struct tegra_nand_controller {
+> >> > >> > 	struct nand_hw_control base;
+> >> > >> > 	void __iomem *regs;
+> >> > >> > 	struct clk *clk;
+> >> > >> > 	struct device *dev;
+> >> > >> > 	struct completion command_complete;
+> >> > >> > 	struct completion dma_complete;
+> >> > >> > 	bool last_read_error;
+> >> > >> > 	int cur_chip;
+> >> > >> > };
+> >> > >> >
+> >> > >> > struct tegra_nand {
+> >> > >> > 	struct nand_chip base;
+> >> > >> > 	dma_addr_t data_dma;
+> >> > >> > 	void *data_buf;
+> >> > >> > 	dma_addr_t oob_dma;
+> >> > >> > 	void *oob_buf;
+> >> > >> > }; =20
+> >> > >>
+> >> > >> Is there a particular reason why you would leave DMA buffers in t=
+he chip
+> >> > >> structure? It seems that is more a controller thing... =20
+> >> > >
+> >> > > The size of those buffers is likely to be device dependent, so if =
+you
+> >> > > have several NANDs connected to the controller, you'll either have=
+ to
+> >> > > have one buffer at the controller level which is max(all-chip-buf-=
+size)
+> >> > > or a buffer per device.
+> >> > >
+> >> > > Also, do you really need these buffers? The core already provide s=
+ome
+> >> > > which are suitable for DMA (chip->oob_poi and chip->data_buf).
+> >> > > =20
+> >> >
+> >> > Good question, I am not sure, that was existing code.
+> >> >
+> >> > Are you sure data_buf it is DMA capable?
+> >> >
+> >> > nand_scan_tail allocates with kmalloc:
+> >> >
+> >> > chip->data_buf =3D kmalloc(mtd->writesize + mtd->oobsize, GFP_KERNEL=
+); =20
+> >>
+> >> Yes, kmalloc() allocates DMA-able buffers, so those are DMA-safe. =20
+> >=20
+> > Hm, that's not exactly true. It depends on the dma_mask attached to the
+> > device. =20
+>=20
+> It seems to work (tm).
+>=20
+> I am not sure how to deal with the OOB buffer. I now use the given
+> pointer also for oob (offset writesize). I think mtk_nand does the same
+> thing.
+>=20
+> dma_len =3D mtd->writesize + (oob_required ? mtd->oobsize : 0);       =20
+> dma_addr =3D dma_map_single(ctrl->dev, buf, dma_len, DMA_FROM_DEVICE);
+>=20
+> ...
+>=20
+> Is there a test which allows to test my (read|write)_page implementation
+> with oob_required set?
 
+I don't think there is a test in mtd-utils that does train both
+implementations with oob_required set, but you should be able to test
+it manually with nanddump/nandwrite --oob.
 
--- 
-Best regards,
-Marek Vasut
+Thanks,
+Miqu=C3=A8l
