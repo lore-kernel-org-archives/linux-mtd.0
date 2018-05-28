@@ -1,14 +1,21 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNOOX-0003Sr-Ju
- for linux-mtd@lists.infradead.org; Mon, 28 May 2018 20:05:37 +0000
+ id 1fNOYc-00030d-NP
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2018 20:15:56 +0000
 From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Martinbayern@outlook.com,
- Richard Weinberger <richard@nod.at>, stable@vger.kernel.org
-Subject: [PATCH 1/3] ubi: fastmap: Correctly handle interrupted erasures in EBA
-Date: Mon, 28 May 2018 22:04:32 +0200
-Message-Id: <20180528200434.19811-1-richard@nod.at>
+To: Mathieu Malaterre <malat@debian.org>
+Cc: MIPS Creator CI20 Development <mips-creator-ci20-dev@googlegroups.com>,
+ linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com
+Subject: Re: ubi: refuse attaching mtd3 - MLC NAND is not supported
+Date: Mon, 28 May 2018 22:15:35 +0200
+Message-ID: <9878779.9ArrsalhVU@blindfold>
+In-Reply-To: <CA+7wUsx27-K+XFt0_TqzeAdpydQ8cr7rXbCa8S8tDhGonzO-kQ@mail.gmail.com>
+References: <CA+7wUsy+2AWtty+Eow3kkw5Y9XdTZFnKHp05m46zuv9HPZngrA@mail.gmail.com>
+ <2323678.8uickzfJaD@blindfold>
+ <CA+7wUsx27-K+XFt0_TqzeAdpydQ8cr7rXbCa8S8tDhGonzO-kQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,137 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fastmap cannot track the LEB unmap operation, therefore it can
-happen that after an interrupted erasure the mapping still looks
-good from Fastmap's point of view, while reading from the PEB will
-cause an ECC error and confuses the upper layer.
+Mathieu,
 
-Instead of teaching users of UBI how to deal with that, we read back
-the VID header and check for errors. If the PEB is empty or shows ECC
-errors we fixup the mapping and schedule the PEB for erasure.
+Am Freitag, 25. Mai 2018, 12:12:02 CEST schrieb Mathieu Malaterre:
+> > No. MLC is simply not supported and not safe to use.
+> > With that commit we reflect the state of the code and stop giving wrong promises.
+> 
+> ACK. Would you recommend an alternate filesystem then ?
 
-Fixes: dbb7d2a88d2a ("UBI: Add fastmap core")
-Cc: <stable@vger.kernel.org>
-Reported-by: martin bayern <Martinbayern@outlook.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/eba.c | 90 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 89 insertions(+), 1 deletion(-)
+There is none.
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 250e30fac61b..593a4f9d97e3 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -490,6 +490,82 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
- 	return err;
- }
+One option you have is putting the MLC NAND into SLC mode, some support this.
+This needs to be achieved by a vendor specific command which is often undocumented.
+
+Boris and I experimented also with software SLC mode in UBI.
+If you want you can revive our work.
  
-+#ifdef CONFIG_MTD_UBI_FASTMAP
-+/**
-+ * check_mapping - check and fixup a mapping
-+ * @ubi: UBI device description object
-+ * @vol: volume description object
-+ * @lnum: logical eraseblock number
-+ * @pnum: physical eraseblock number
-+ *
-+ * Checks whether a given mapping is valid. Fastmap cannot track LEB unmap
-+ * operations, if such an operation is interrupted the mapping still looks
-+ * good, but upon first read an ECC is reported to the upper layer.
-+ * Normaly during the full-scan at attach time this is fixed, for Fastmap
-+ * we have to deal with it while reading.
-+ * If the PEB behind a LEB shows this symthom we change the mapping to
-+ * %UBI_LEB_UNMAPPED and schedule the PEB for erasure.
-+ *
-+ * Returns 0 on success, negative error code in case of failure.
-+ */
-+static int check_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
-+			 int *pnum)
-+{
-+	int err;
-+	struct ubi_vid_io_buf *vidb;
-+
-+	if (!ubi->fast_attach)
-+		return 0;
-+
-+	vidb = ubi_alloc_vid_buf(ubi, GFP_NOFS);
-+	if (!vidb)
-+		return -ENOMEM;
-+
-+	err = ubi_io_read_vid_hdr(ubi, *pnum, vidb, 0);
-+	if (err > 0 && err != UBI_IO_BITFLIPS) {
-+		int torture = 0;
-+
-+		switch (err) {
-+			case UBI_IO_FF:
-+			case UBI_IO_FF_BITFLIPS:
-+			case UBI_IO_BAD_HDR:
-+			case UBI_IO_BAD_HDR_EBADMSG:
-+				break;
-+			default:
-+				ubi_assert(0);
-+		}
-+
-+		if (err == UBI_IO_BAD_HDR_EBADMSG || err == UBI_IO_FF_BITFLIPS)
-+			torture = 1;
-+
-+		down_read(&ubi->fm_eba_sem);
-+		vol->eba_tbl->entries[lnum].pnum = UBI_LEB_UNMAPPED;
-+		up_read(&ubi->fm_eba_sem);
-+		ubi_wl_put_peb(ubi, vol->vol_id, lnum, *pnum, torture);
-+
-+		*pnum = UBI_LEB_UNMAPPED;
-+	} else if (err < 0) {
-+		ubi_err(ubi, "unable to read VID header back from PEB %i: %i",
-+			*pnum, err);
-+
-+		goto out_free;
-+	}
-+
-+	err = 0;
-+
-+out_free:
-+	ubi_free_vid_buf(vidb);
-+
-+	return err;
-+}
-+#else
-+static int check_mapping(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
-+		  int *pnum)
-+{
-+	return 0;
-+}
-+#endif
-+
- /**
-  * ubi_eba_read_leb - read data.
-  * @ubi: UBI device description object
-@@ -522,7 +598,13 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 		return err;
- 
- 	pnum = vol->eba_tbl->entries[lnum].pnum;
--	if (pnum < 0) {
-+	if (pnum >= 0) {
-+		err = check_mapping(ubi, vol, lnum, &pnum);
-+		if (err < 0)
-+			goto out_unlock;
-+	}
-+
-+	if (pnum == UBI_LEB_UNMAPPED) {
- 		/*
- 		 * The logical eraseblock is not mapped, fill the whole buffer
- 		 * with 0xFF bytes. The exception is static volumes for which
-@@ -931,6 +1013,12 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
- 
- 	pnum = vol->eba_tbl->entries[lnum].pnum;
- 	if (pnum >= 0) {
-+		err = check_mapping(ubi, vol, lnum, &pnum);
-+		if (err < 0)
-+			goto out;
-+	}
-+
-+	if (pnum >= 0) {
- 		dbg_eba("write %d bytes at offset %d of LEB %d:%d, PEB %d",
- 			len, offset, vol_id, lnum, pnum);
- 
--- 
-2.13.6
+> > I can hardly believe that it has been working great so far, did you
+> > ever do power-cut tests?
+> > Or are there other mechanisms on your board that make MLC usable by UBI?
+> > For example SLC-emulation.
+> 
+> Looking quickly at the tech specs:
+> 
+> https://www.elinux.org/CI20_Hardware#ROM.2FNAND
+> 
+> ...
+> Is provided by a single Samsung K9GBG08UOA NAND flash, using an 8bit
+> data interface to the SoC.
+> ...
+> 
+> So my understanding is that "it just worked" so far. I've tried
+> contacting some of the people involved with the design of CI20 to get
+> confirmation.
+
+"just worked" in terms of nobody gave it a decent testing, I fear. ;-\
+
+Thanks,
+//richard
