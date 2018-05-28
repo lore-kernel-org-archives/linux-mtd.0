@@ -1,29 +1,26 @@
-Received: from mail1.bemta12.messagelabs.com ([216.82.251.6])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN5FT-0003Wj-R4
- for linux-mtd@lists.infradead.org; Sun, 27 May 2018 23:38:53 +0000
+ id 1fN6vG-0001wG-GC
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2018 01:26:08 +0000
 From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>, PACKHAM Chris
- <chris.packham@alliedtelesis.co.nz>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- "richard@nod.at" <richard@nod.at>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>
-Subject: RE: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
+To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>, Boris Brezillon
+ <boris.brezillon@bootlin.com>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
+ Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>
+Subject: RE: [PATCH v7 0/5] mtd: cfi_cmdset_0002: Change write and erase
  functions
-Date: Sun, 27 May 2018 23:31:55 +0000
-Message-ID: <TY1PR01MB0954F27EB0BAC45D3D44ACC9DC6F0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180515171120.5629-1-smtpuser@allied-telesis.co.jp>
- <f74834424cb3f1f86e8803884b53be5f62d15c94.camel@infinera.com>
- <TY1PR01MB0954DBEFF399886473C1242FDC690@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180527173905.6e9df536@bbrezillon>
-In-Reply-To: <20180527173905.6e9df536@bbrezillon>
+Date: Mon, 28 May 2018 01:25:51 +0000
+Message-ID: <TY1PR01MB09548B1F947928A472359BEBDC6E0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
+In-Reply-To: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
 Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,63 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
-
-Yes I have just sent v7 version patches so please review them.
-
-Regards,
-Ikegami
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Monday, May 28, 2018 12:39 AM
-> To: IKEGAMI Tokunori
-> Cc: Joakim Tjernlund; PACKHAM Chris; linux-mtd@lists.infradead.org;
-> cyrille.pitchen@wedev4u.fr; dwmw2@infradead.org;
-> computersforpeace@gmail.com; boris.brezillon@free-electrons.com;
-> richard@nod.at; marek.vasut@gmail.com
-> Subject: Re: [PATCH v6 0/5] mtd: cfi_cmdset_0002: Change write and erase
-> functions
->=20
-> On Fri, 25 May 2018 03:03:28 +0000
-> IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
->=20
-> > Hi Boris-san,
-> >
-> > Could you please apply the patches if no problem?
->=20
-> Actually I never received your v6, and I can't find it in linux-mtd
-> either. Interestingly, it's in patchwork, so maybe a problem on my side.
->=20
-> > Or still should we wait if any other comment?
->=20
-> Not really, maybe add the Cc:stable tag if you think this is needed.
->=20
-> > Let me confirm these things since we are waiting to apply them for our
-> product problem as resolution.
-> >
-> > By the way I think that the commit message of patches can be changed to
-> Jocke-san as "Reviewed-by" from "Cc" as below.
-> >   - Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> >   + Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> >
-> > Since actually the changes have been reviewed by him as the mail below.
->=20
-> Normally you should wait for an official "Reviewed-by" tag. I just
-> asked Joakim.
->=20
-> > Also our company mail system has been changed so now I can send the pat=
-ches
-> with my email address as sender instead of the smtpuser address.
->=20
-> That's appreciated.
->=20
-> > If needed I will resend patches or send them as new version patches aga=
-in
-> to change the commit message and send address.
->=20
-> Yes please, send a new version.
->=20
-> Thanks,
->=20
-> Boris
+SGksDQoNClNvcnJ5IGNoYW5nZWxvZ3MgaGF2ZSBub3QgYmVlbiBkZXNjcmliZWQgYnkgdGhlIHY3
+IHBhdGNoZXMgc28gbGV0IG1lIHNlbmQgbWFpbCBhYm91dCB0aGlzLg0KVGhlcmUgaXMgbm8gY2hh
+bmdlIGZyb20gdGhlIHY2IHBhdGNoZXMgYnV0IGp1c3QgY2hhbmdlZCB0aGUgY29tbWl0IG1lc3Nh
+Z2VzIHRvIGNoYW5nZSBhbmQgYWRkIENDIGxpbmVzIGFzIGJlbG93Lg0KDQogIDEuIENoYW5nZQ0K
+ICAgIC0gQ2M6IEpvYWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29t
+Pg0KICAgICsgUmV2aWV3ZWQtYnk6IEpvYWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRA
+aW5maW5lcmEuY29tPg0KDQogIDIuIEFkZA0KICAgICsgQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
+cmcNCg0KUmVnYXJkcywNCklrZWdhbWkNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+PiBGcm9tOiBUb2t1bm9yaSBJa2VnYW1pIFttYWlsdG86aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5j
+by5qcF0NCj4gU2VudDogTW9uZGF5LCBNYXkgMjgsIDIwMTggODoyOCBBTQ0KPiBUbzogQm9yaXMg
+QnJlemlsbG9uDQo+IENjOiBJS0VHQU1JIFRva3Vub3JpOyBQQUNLSEFNIENocmlzOyBCcmlhbiBO
+b3JyaXM7IERhdmlkIFdvb2Rob3VzZTsgQm9yaXMNCj4gQnJlemlsbG9uOyBNYXJlayBWYXN1dDsg
+UmljaGFyZCBXZWluYmVyZ2VyOyBDeXJpbGxlIFBpdGNoZW47DQo+IGxpbnV4LW10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnOyBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFtQQVRDSCB2
+NyAwLzVdIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYW5kIGVyYXNlDQo+IGZ1
+bmN0aW9ucw0KPiANCj4gVGhlIGNoYW5nZXMgYXJlIHRvIG1ha2Ugc3VyZSB0byBjaGVjayB0aGUg
+b3BlcmF0aW9uIHN0YXR1cy4NCj4gQWN0dWFsbHkgdGhlIGZsYXNoIHdyaXRlIGFuZCBlcmFzZSBl
+cnJvciBiZWhhdmlvciBpcyBjYXVzZWQgb24gb3VyIHByb2R1Y3RzLg0KPiBUaGUgZmxhc2ggaXMg
+TWFjcm9uaXggZmxhc2ggZGV2aWNlIE1YMjlHTDUxMkZIVDJJLTExRyB1c2VkIGJ5IG91ciBwcm9k
+dWN0cy4NCj4gVGhlIHBhdGNoIHNlcmllcyB3YXMgc2VwYXJhdGVkIGZvciBjaGFuZ2VzIG9mIGZs
+YXNoIHdyaXRlIGFuZCBlcmFzZS4NCj4gU2luY2UgdGhvc2Ugd2VyZSBub3QgZGVwZW5kZWQgZWFj
+aCBvdGhlciBhdCB0aGUgdGltZS4NCj4gQnV0IGJ5IGFkZGl0aW9uYWwgY2hhbmdlcyB0aGUgY2hh
+bmdlcyBhcmUgcmVsYXRlZCBtb3JlIGFzIHNhbWUgd2F5IGN1cnJlbnRseS4NCj4gU28gY29tYmlu
+ZSBwYXRjaCBzZXJpZXMgZm9yIHRoZSBmbGFzaCB3cml0ZSBhbmQgZXJhc2UgY2hhbmdlcyBhcyB2
+Ni4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFRva3Vub3JpIElrZWdhbWkgPGlrZWdhbWlAYWxsaWVk
+LXRlbGVzaXMuY28uanA+DQo+IFJldmlld2VkLWJ5OiBKb2FraW0gVGplcm5sdW5kIDxKb2FraW0u
+VGplcm5sdW5kQGluZmluZXJhLmNvbT4NCj4gQ2M6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2to
+YW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gQ2M6IEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9y
+cGVhY2VAZ21haWwuY29tPg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQu
+b3JnPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJv
+bnMuY29tPg0KPiBDYzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNvbT4NCj4gQ2M6
+IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+IENjOiBDeXJpbGxlIFBpdGNo
+ZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcNCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gDQo+IFRva3Vub3Jp
+IElrZWdhbWkgKDUpOg0KPiAgIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYnVm
+ZmVyIHRvIGNoZWNrIGNvcnJlY3QgdmFsdWUNCj4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hh
+bmdlIGRlZmluaXRpb24gbmFtaW5nIHRvIHJldHJ5IHdyaXRlDQo+ICAgICBvcGVyYXRpb24NCj4g
+ICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0aW9ucyB0byByZXRyeSBm
+b3IgZXJyb3INCj4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0aW9u
+cyB0byBjaGVjayBjaGlwIGdvb2Qgb25seQ0KPiAgIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFu
+Z2UgZXJhc2Ugb25lIGJsb2NrIHRvIGVuYWJsZSBYSVAgb25jZQ0KPiANCj4gIGRyaXZlcnMvbXRk
+L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMzYNCj4gKysrKysrKysrKysrKysrKysrKysrKyst
+LS0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMTMgZGVs
+ZXRpb25zKC0pDQo+IA0KPiAtLQ0KPiAyLjE2LjENCg0K
