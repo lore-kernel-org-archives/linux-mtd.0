@@ -1,12 +1,12 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNBP3-0002SO-PJ
- for linux-mtd@lists.infradead.org; Mon, 28 May 2018 06:13:11 +0000
+ id 1fNBSk-0005OM-LA
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2018 06:17:00 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8;
  format=flowed
 Content-Transfer-Encoding: 8bit
-Date: Mon, 28 May 2018 11:42:57 +0530
+Date: Mon, 28 May 2018 11:46:47 +0530
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
@@ -17,11 +17,11 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
  <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
 Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
  for bad block check
-In-Reply-To: <20180526104629.74315561@xps13>
+In-Reply-To: <20180526104900.139dd19b@xps13>
 References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
  <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
- <20180526104629.74315561@xps13>
-Message-ID: <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
+ <20180526104900.139dd19b@xps13>
+Message-ID: <d48035002fc00f142edc8ed80309f8a7@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,164 +31,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-05-26 14:16, Miquel Raynal wrote:
+On 2018-05-26 14:28, Miquel Raynal wrote:
 > Hi Abhishek,
 > 
-> On Fri, 25 May 2018 17:51:41 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
 > 
->> The QCOM NAND controller layout is such that, the bad block byte
->> offset for last codeword will come to first byte in spare area.
-> 
-> "is the first spare byte"?
-> 
-> 
->> Currently, the raw read for last codeword is being done with
->> copy_last_cw function. It does following 2 things:
-> 
-> "It does the following:"
-> 
->> 
->> 1. Read the last codeword bytes from NAND chip to NAND
->>    controller internal HW buffer.
->> 2. Copy all these bytes from HW buffer to actual buffer.
->> 
->> For bad block check, maximum two bytes are required so instead of
->> copying the complete bytes in step 2, only those bbm_size bytes
->> can be copied.
->> 
->> This patch does minor code reorganization for the same. After
->> this, copy_last_cw function won’t be required.
-> 
-> "This patch does minor code reorganization to just retrieve these two
-> bytes when checking for bad blocks, allowing to remove
-> copy_last_cw() now useless."
-> 
-
-  Thanks Miquel.
-  I will update all these.
-
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->> * Changes from v2:
->>   1. Changed commit message and comments slightly
->> 
->> * Changes from v1:
->>   NEW CHANGE
->> 
->>  drivers/mtd/nand/raw/qcom_nandc.c | 66 
->> +++++++++++++++------------------------
->>  1 file changed, 25 insertions(+), 41 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
->> b/drivers/mtd/nand/raw/qcom_nandc.c
->> index d693b5f..f72bc8a 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -1769,41 +1769,6 @@ static int read_page_ecc(struct qcom_nand_host 
->> *host, u8 *data_buf,
->>  	return parse_read_errors(host, data_buf_start, oob_buf_start);
->>  }
->> 
->> -/*
->> - * a helper that copies the last step/codeword of a page (containing 
->> free oob)
->> - * into our local buffer
->> - */
->> -static int copy_last_cw(struct qcom_nand_host *host, int page)
->> -{
->> -	struct nand_chip *chip = &host->chip;
->> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> -	int size;
->> -	int ret;
->> -
->> -	clear_read_regs(nandc);
->> -
->> -	size = host->use_ecc ? host->cw_data : host->cw_size;
->> -
->> -	/* prepare a clean read buffer */
->> -	memset(nandc->data_buffer, 0xff, size);
->> -
->> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
->> -	update_rw_regs(host, 1, true);
->> -
->> -	config_nand_single_cw_page_read(nandc);
->> -
->> -	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
->> -
->> -	ret = submit_descs(nandc);
->> -	if (ret)
->> -		dev_err(nandc->dev, "failed to copy last codeword\n");
->> -
->> -	free_descs(nandc);
->> -
->> -	return ret;
->> -}
->> -
->>  /* implements ecc->read_page() */
->>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct 
->> nand_chip *chip,
->>  				uint8_t *buf, int oob_required, int page)
->> @@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_info 
->> *mtd, loff_t ofs)
->>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->>  	int page, ret, bbpos, bad = 0;
->>  	u32 flash_status;
->> +	u8 *bbm_bytes_buf = chip->data_buf;
->> 
->>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->> 
->> @@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct 
->> mtd_info *mtd, loff_t ofs)
->>  	 * that contains the BBM
->>  	 */
->>  	host->use_ecc = false;
->> +	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
-> 
-> Are we sure there is no layout with only 1 step?
-
-  All the layouts are such that, the BBM will come in
-  first byte of spare area.
-
-  For 4 bit ECC, the cw_size is 528 so for 2K page
-
-   2048 - 528 * 3 = 464
-
-  So for last CW, the 464 is BBM (i.e 2048th byte) in
-  full page.
-
-> 
->> 
->>  	clear_bam_transaction(nandc);
->> -	ret = copy_last_cw(host, page);
->> -	if (ret)
->> +	clear_read_regs(nandc);
->> +
->> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
->> +	update_rw_regs(host, 1, true);
->> +
->> +	/*
->> +	 * The last codeword data will be copied from NAND device to NAND
->> +	 * controller internal HW buffer. Copy only required BBM size bytes
->> +	 * from this HW buffer to bbm_bytes_buf which is present at
->> +	 * bbpos offset.
->> +	 */
->> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
->> +	config_nand_single_cw_page_read(nandc);
->> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
->> +		      host->bbm_size, 0);
->> +
->> +	ret = submit_descs(nandc);
->> +	free_descs(nandc);
->> +	if (ret) {
->> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
->>  		goto err;
->> +	}
->> 
->>  	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
->> 
 >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct 
 >> mtd_info *mtd, loff_t ofs)
 >>  		goto err;
@@ -199,24 +45,18 @@ On 2018-05-26 14:16, Miquel Raynal wrote:
 >> -	bad = nandc->data_buffer[bbpos] != 0xff;
 >> +	bad = bbm_bytes_buf[0] != 0xff;
 > 
-> This is suspect as it still points to the beginning of the data buffer.
-> Can you please check you did not meant bbm_bytes_buf[bbpos]?
+> BTW, as there are host->bbm_size bytes that can inform on the block
+> state, don't we need to check all of them?
 > 
 
-  The main thing here is
-  nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+  We are checking all of them.
+  host->bbm_size will be either 1 (for NAND_BUSWIDTH_8) or
+  2 (for NAND_BUSWIDTH_16).
 
-  After reading one complete CW from NAND, the data will be still
-  in NAND HW buffer.
+  
+https://elixir.bootlin.com/linux/v4.17-rc7/source/drivers/mtd/nand/raw/qcom_nandc.c#L2347
 
-  The above register tells that we need to read data from
-  bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
-  and 2 byte for 16 bus width) in bbm_bytes_buf.
-
-  So bbm_bytes_buf[0] will contain the BBM first byte.
-  and bbm_bytes_buf[1] will contain the BBM second byte.
-
-  Regards,
+  Thanks,
   Abhishek
 
 >> 
@@ -226,7 +66,6 @@ On 2018-05-26 14:16, Miquel Raynal wrote:
 >>  err:
 >>  	return bad;
 >>  }
-> 
 > 
 > Thanks,
 > Miquèl
