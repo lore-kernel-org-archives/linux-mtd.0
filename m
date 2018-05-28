@@ -1,27 +1,28 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fN6vG-0001wG-GC
- for linux-mtd@lists.infradead.org; Mon, 28 May 2018 01:26:08 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
-Subject: RE: [PATCH v7 0/5] mtd: cfi_cmdset_0002: Change write and erase
- functions
-Date: Mon, 28 May 2018 01:25:51 +0000
-Message-ID: <TY1PR01MB09548B1F947928A472359BEBDC6E0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
-In-Reply-To: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from smtp.codeaurora.org ([198.145.29.96])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fNAzR-0006le-Vu
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2018 05:46:43 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Mon, 28 May 2018 11:16:29 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
+ <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>, Masahiro
+ Yamada <yamada.masahiro@socionext.com>
+Subject: Re: [PATCH v3 01/16] mtd: rawnand: helper function for setting up ECC
+ configuration
+In-Reply-To: <20180526095807.5caf5800@xps13>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-2-git-send-email-absahu@codeaurora.org>
+ <20180526095807.5caf5800@xps13>
+Message-ID: <44d4939cf8411a0dc693b8dd11fb57c7@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +32,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNClNvcnJ5IGNoYW5nZWxvZ3MgaGF2ZSBub3QgYmVlbiBkZXNjcmliZWQgYnkgdGhlIHY3
-IHBhdGNoZXMgc28gbGV0IG1lIHNlbmQgbWFpbCBhYm91dCB0aGlzLg0KVGhlcmUgaXMgbm8gY2hh
-bmdlIGZyb20gdGhlIHY2IHBhdGNoZXMgYnV0IGp1c3QgY2hhbmdlZCB0aGUgY29tbWl0IG1lc3Nh
-Z2VzIHRvIGNoYW5nZSBhbmQgYWRkIENDIGxpbmVzIGFzIGJlbG93Lg0KDQogIDEuIENoYW5nZQ0K
-ICAgIC0gQ2M6IEpvYWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRAaW5maW5lcmEuY29t
-Pg0KICAgICsgUmV2aWV3ZWQtYnk6IEpvYWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRA
-aW5maW5lcmEuY29tPg0KDQogIDIuIEFkZA0KICAgICsgQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5v
-cmcNCg0KUmVnYXJkcywNCklrZWdhbWkNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiBGcm9tOiBUb2t1bm9yaSBJa2VnYW1pIFttYWlsdG86aWtlZ2FtaUBhbGxpZWQtdGVsZXNpcy5j
-by5qcF0NCj4gU2VudDogTW9uZGF5LCBNYXkgMjgsIDIwMTggODoyOCBBTQ0KPiBUbzogQm9yaXMg
-QnJlemlsbG9uDQo+IENjOiBJS0VHQU1JIFRva3Vub3JpOyBQQUNLSEFNIENocmlzOyBCcmlhbiBO
-b3JyaXM7IERhdmlkIFdvb2Rob3VzZTsgQm9yaXMNCj4gQnJlemlsbG9uOyBNYXJlayBWYXN1dDsg
-UmljaGFyZCBXZWluYmVyZ2VyOyBDeXJpbGxlIFBpdGNoZW47DQo+IGxpbnV4LW10ZEBsaXN0cy5p
-bmZyYWRlYWQub3JnOyBzdGFibGVAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFtQQVRDSCB2
-NyAwLzVdIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYW5kIGVyYXNlDQo+IGZ1
-bmN0aW9ucw0KPiANCj4gVGhlIGNoYW5nZXMgYXJlIHRvIG1ha2Ugc3VyZSB0byBjaGVjayB0aGUg
-b3BlcmF0aW9uIHN0YXR1cy4NCj4gQWN0dWFsbHkgdGhlIGZsYXNoIHdyaXRlIGFuZCBlcmFzZSBl
-cnJvciBiZWhhdmlvciBpcyBjYXVzZWQgb24gb3VyIHByb2R1Y3RzLg0KPiBUaGUgZmxhc2ggaXMg
-TWFjcm9uaXggZmxhc2ggZGV2aWNlIE1YMjlHTDUxMkZIVDJJLTExRyB1c2VkIGJ5IG91ciBwcm9k
-dWN0cy4NCj4gVGhlIHBhdGNoIHNlcmllcyB3YXMgc2VwYXJhdGVkIGZvciBjaGFuZ2VzIG9mIGZs
-YXNoIHdyaXRlIGFuZCBlcmFzZS4NCj4gU2luY2UgdGhvc2Ugd2VyZSBub3QgZGVwZW5kZWQgZWFj
-aCBvdGhlciBhdCB0aGUgdGltZS4NCj4gQnV0IGJ5IGFkZGl0aW9uYWwgY2hhbmdlcyB0aGUgY2hh
-bmdlcyBhcmUgcmVsYXRlZCBtb3JlIGFzIHNhbWUgd2F5IGN1cnJlbnRseS4NCj4gU28gY29tYmlu
-ZSBwYXRjaCBzZXJpZXMgZm9yIHRoZSBmbGFzaCB3cml0ZSBhbmQgZXJhc2UgY2hhbmdlcyBhcyB2
-Ni4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFRva3Vub3JpIElrZWdhbWkgPGlrZWdhbWlAYWxsaWVk
-LXRlbGVzaXMuY28uanA+DQo+IFJldmlld2VkLWJ5OiBKb2FraW0gVGplcm5sdW5kIDxKb2FraW0u
-VGplcm5sdW5kQGluZmluZXJhLmNvbT4NCj4gQ2M6IENocmlzIFBhY2toYW0gPGNocmlzLnBhY2to
-YW1AYWxsaWVkdGVsZXNpcy5jby5uej4NCj4gQ2M6IEJyaWFuIE5vcnJpcyA8Y29tcHV0ZXJzZm9y
-cGVhY2VAZ21haWwuY29tPg0KPiBDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQu
-b3JnPg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AZnJlZS1lbGVjdHJv
-bnMuY29tPg0KPiBDYzogTWFyZWsgVmFzdXQgPG1hcmVrLnZhc3V0QGdtYWlsLmNvbT4NCj4gQ2M6
-IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+DQo+IENjOiBDeXJpbGxlIFBpdGNo
-ZW4gPGN5cmlsbGUucGl0Y2hlbkB3ZWRldjR1LmZyPg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcNCj4gQ2M6IHN0YWJsZUB2Z2VyLmtlcm5lbC5vcmcNCj4gDQo+IFRva3Vub3Jp
-IElrZWdhbWkgKDUpOg0KPiAgIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFuZ2Ugd3JpdGUgYnVm
-ZmVyIHRvIGNoZWNrIGNvcnJlY3QgdmFsdWUNCj4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hh
-bmdlIGRlZmluaXRpb24gbmFtaW5nIHRvIHJldHJ5IHdyaXRlDQo+ICAgICBvcGVyYXRpb24NCj4g
-ICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0aW9ucyB0byByZXRyeSBm
-b3IgZXJyb3INCj4gICBtdGQ6IGNmaV9jbWRzZXRfMDAwMjogQ2hhbmdlIGVyYXNlIGZ1bmN0aW9u
-cyB0byBjaGVjayBjaGlwIGdvb2Qgb25seQ0KPiAgIG10ZDogY2ZpX2NtZHNldF8wMDAyOiBDaGFu
-Z2UgZXJhc2Ugb25lIGJsb2NrIHRvIGVuYWJsZSBYSVAgb25jZQ0KPiANCj4gIGRyaXZlcnMvbXRk
-L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgMzYNCj4gKysrKysrKysrKysrKysrKysrKysrKyst
-LS0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgMjMgaW5zZXJ0aW9ucygrKSwgMTMgZGVs
-ZXRpb25zKC0pDQo+IA0KPiAtLQ0KPiAyLjE2LjENCg0K
+On 2018-05-26 14:12, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> On Fri, 25 May 2018 17:51:29 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
+> 
+>> commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+>> match, maximize ECC settings") provides generic helpers which
+>> drivers can use for setting up ECC parameters.
+>> 
+>> Since same board can have different ECC strength nand chips so
+>> following is the logic for setting up ECC strength and ECC step
+>> size, which can be used by most of the drivers.
+>> 
+>> 1. If both ECC step size and ECC strength are already set
+>>    (usually by DT) then just check whether this setting
+>>    is supported by NAND controller.
+>> 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+>>    supported by NAND controller.
+>> 3. Otherwise, try to match the ECC step size and ECC strength closest
+>>    to the chip's requirement. If available OOB size can't fit the chip
+>>    requirement then select maximum ECC strength which can be fit with
+>>    available OOB size.
+>> 
+>> This patch introduces nand_ecc_choose_conf function which calls the
+>> required helper functions for the above logic. The drivers can use
+>> this single function instead of calling the 3 helper functions
+>> individually.
+>> 
+>> CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> ---
+>> * Changes from v2:
+>> 
+>>   1. Renamed function to nand_ecc_choose_conf.
+>>   2. Minor code reorganization to remove warning and 2 function calls
+>>      for nand_maximize_ecc.
+>> 
+>> * Changes from v1:
+>>   NEW PATCH
+>> 
+>>  drivers/mtd/nand/raw/nand_base.c | 42 
+>> ++++++++++++++++++++++++++++++++++++++++
+>>  drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+>>  include/linux/mtd/rawnand.h      |  3 +++
+>>  2 files changed, 34 insertions(+)
+>> 
+>> diff --git a/drivers/mtd/nand/raw/nand_base.c 
+>> b/drivers/mtd/nand/raw/nand_base.c
+>> index 72f3a89..e52019d 100644
+>> --- a/drivers/mtd/nand/raw/nand_base.c
+>> +++ b/drivers/mtd/nand/raw/nand_base.c
+>> @@ -6249,6 +6249,37 @@ int nand_maximize_ecc(struct nand_chip *chip,
+>>  }
+>>  EXPORT_SYMBOL_GPL(nand_maximize_ecc);
+>> 
+>> +/**
+>> + * nand_ecc_choose_conf - Set the ECC strength and ECC step size
+>> + * @chip: nand chip info structure
+>> + * @caps: ECC engine caps info structure
+>> + * @oobavail: OOB size that the ECC engine can use
+>> + *
+>> + * Choose the ECC configuration according to following logic
+>> + *
+>> + * 1. If both ECC step size and ECC strength are already set (usually 
+>> by DT)
+>> + *    then check if it is supported by this controller.
+>> + * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
+>> + * 3. Otherwise, try to match the ECC step size and ECC strength 
+>> closest
+>> + *    to the chip's requirement. If available OOB size can't fit the 
+>> chip
+>> + *    requirement then fallback to the maximum ECC step size and ECC 
+>> strength.
+>> + *
+>> + * On success, the chosen ECC settings are set.
+>> + */
+>> +int nand_ecc_choose_conf(struct nand_chip *chip,
+>> +			 const struct nand_ecc_caps *caps, int oobavail)
+>> +{
+>> +	if (chip->ecc.size && chip->ecc.strength)
+>> +		return nand_check_ecc_caps(chip, caps, oobavail);
+>> +
+>> +	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE) &&
+>> +	    !nand_match_ecc_req(chip, caps, oobavail))
+>> +		return 0;
+>> +
+>> +	return nand_maximize_ecc(chip, caps, oobavail);
+> 
+> I personally don't mind if nand_maximize_ecc() is called twice in
+> the function if it clarifies the logic. Maybe the following will be
+> more clear for the user?
+
+  Thanks Miquel.
+  Both the implementations are fine.
+  The above implementation (which was in Denali NAND driver) code was 
+also
+  clear. We can go for any of these implementation.
+
+  Shall I update this ?
+
+> 
+> 	if (chip->ecc.size && chip->ecc.strength)
+> 		return nand_check_ecc_caps(chip, caps, oobavail);
+> 
+> 	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+> 		return nand_maximize_ecc(chip, caps, oobavail);
+> 
+> 	if (!nand_match_ecc_req(chip, caps, oobavail))
+> 		return 0;
+> 
+> 	return nand_maximize_ecc(chip, caps, oobavail);
+> 
+> Also, I'm not sure we should just error out when nand_check_ecc_caps()
+> fails. What about something more robust, like:
+> 
+
+  But again, It will lead in overriding the DT ECC strength parameter.
+  We started our discussion from that point. :-)
+
+  Thanks,
+  Abhishek
+
+> 	int ret;
+> 
+> 	if (chip->ecc.size && chip->ecc.strength) {
+> 		ret = nand_check_ecc_caps(chip, caps, oobavail);
+> 		if (ret)
+> 			goto maximize_ecc;
+> 
+> 		return 0;
+> 	}
+> 
+> 	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+> 		goto maximize_ecc;
+> 
+> 	ret = nand_match_ecc_req(chip, caps, oobavail);
+> 	if (ret)
+> 		goto maximize_ecc;
+> 
+> 	return 0;
+> 
+> maximize_ecc:
+> 	return nand_maximize_ecc(chip, caps, oobavail);
+> 
+>> +}
+>> +EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
+>> +
+>>  /*
+>>   * Check if the chip configuration meet the datasheet requirements.
+>> 
+>> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+>> index 5dad59b..89889fa 100644
+>> --- a/include/linux/mtd/rawnand.h
+>> +++ b/include/linux/mtd/rawnand.h
+>> @@ -1627,6 +1627,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
+>>  int nand_maximize_ecc(struct nand_chip *chip,
+>>  		      const struct nand_ecc_caps *caps, int oobavail);
+>> 
+>> +int nand_ecc_choose_conf(struct nand_chip *chip,
+>> +			 const struct nand_ecc_caps *caps, int oobavail);
+>> +
+>>  /* Default write_oob implementation */
+>>  int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, 
+>> int page);
+>> 
+> 
+> Thanks,
+> Miquèl
