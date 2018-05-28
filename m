@@ -1,26 +1,27 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from hqemgate15.nvidia.com ([216.228.121.64])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNCgD-0005WU-Gv
- for linux-mtd@lists.infradead.org; Mon, 28 May 2018 07:34:59 +0000
+ id 1fND01-0006Lf-KY
+ for linux-mtd@lists.infradead.org; Mon, 28 May 2018 07:55:27 +0000
+Date: Mon, 28 May 2018 10:55:10 +0300
+From: Peter De Schrijver <pdeschrijver@nvidia.com>
+To: Stefan Agner <stefan@agner.ch>
+CC: <boris.brezillon@bootlin.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>, <robh+dt@kernel.org>,
+ <mark.rutland@arm.com>, <thierry.reding@gmail.com>,
+ <mturquette@baylibre.com>, <sboyd@kernel.org>, <dev@lynxeye.de>,
+ <miquel.raynal@bootlin.com>, <richard@nod.at>, <marcel@ziswiler.com>,
+ <krzk@kernel.org>, <digetx@gmail.com>, <benjamin.lindqvist@endian.se>,
+ <jonathanh@nvidia.com>, <pgaikwad@nvidia.com>, <mirza.krak@gmail.com>,
+ <linux-mtd@lists.infradead.org>, <linux-tegra@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v2 4/6] clk: tegra20: init NDFLASH clock to sensible rate
+Message-ID: <20180528075510.GQ6835@tbergstrom-lnx.Nvidia.com>
+References: <20180527215442.14760-5-stefan@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 28 May 2018 13:04:45 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
- <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v3 15/16] mtd: rawnand: qcom: helper function for raw read
-In-Reply-To: <20180527155311.4c05d7ab@xps13>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-16-git-send-email-absahu@codeaurora.org>
- <20180527155311.4c05d7ab@xps13>
-Message-ID: <19569fdc057754978298a7e7afc9016a@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20180527215442.14760-5-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,154 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-05-27 19:23, Miquel Raynal wrote:
-> Hi Abhishek,
+On Sun, May 27, 2018 at 11:54:40PM +0200, Stefan Agner wrote:
+> From: Lucas Stach <dev@lynxeye.de>
 > 
-> On Fri, 25 May 2018 17:51:43 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
+> Set up the NAND Flash controller clock to run at 150MHz
+> instead of the rate set by the bootloader. This is a
+> conservative rate which also yields good performance.
 > 
->> This patch does minor code reorganization for raw reads.
->> Currently the raw read is required for complete page but for
->> subsequent patches related with erased codeword bit flips
->> detection, only few CW should be read. So, this patch adds
->> helper function and introduces the read CW bitmask which
->> specifies which CW reads are required in complete page.
->> 
->> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
->> ---
->> * Changes from v2:
->>   NONE
->> 
->> * Changes from v1:
->>  1. Included more detail in function comment
->> 
->>  drivers/mtd/nand/raw/qcom_nandc.c | 197 
->> ++++++++++++++++++++++++--------------
->>  1 file changed, 123 insertions(+), 74 deletions(-)
->> 
->> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c 
->> b/drivers/mtd/nand/raw/qcom_nandc.c
->> index 87f900e..34143a4 100644
->> --- a/drivers/mtd/nand/raw/qcom_nandc.c
->> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
->> @@ -1588,6 +1588,127 @@ static int check_flash_errors(struct 
->> qcom_nand_host *host, int cw_cnt)
->>  }
->> 
->>  /*
->> + * Helper to perform the page raw read operation. The read_cw_mask 
->> will be
->> + * used to specify the codewords (CW) for which the data should be 
->> read. The
->> + * single page contains multiple CW.
->> + *
->> + * Normally other NAND controllers store the data in main area and
->> + * ecc bytes in OOB area. So, if page size is 2048+64 then 2048
->> + * data bytes will go in main area followed by ECC bytes. The QCOM 
->> NAND
->> + * controller follows different layout in which the data+OOB is 
->> internally
->> + * divided in 528/532 bytes CW and each CW contains 516 bytes 
->> followed by
->> + * ECC parity bytes for that CW. By this, 4 available OOB bytes per 
->> CW
->> + * will also be protected with ECC.
->> + *
->> + * For each CW read, following are the 2 steps:
->> + * 1. Read the codeword bytes from NAND chip to NAND controller 
->> internal HW
->> + *    buffer.
->> + * 2. Copy all these bytes from this HW buffer to actual buffer.
->> + *
->> + * Sometime, only few CW data is required in complete page. The 
->> read_cw_mask
->> + * specifies which CW in a page needs to be read. Start address will 
->> be
->> + * determined with this CW mask to skip unnecessary data copy from 
->> NAND
->> + * flash device. Then, actual data copy from NAND controller HW 
->> internal buffer
->> + * to data buffer will be done only for the CWs, which have the mask 
->> set.
->> + */
->> +static int
->> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->> +		    u8 *data_buf, u8 *oob_buf,
->> +		    int page, unsigned long read_cw_mask)
+> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  drivers/clk/tegra/clk-tegra20.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Please prefix the helper with "qcom_nandc"
+> diff --git a/drivers/clk/tegra/clk-tegra20.c b/drivers/clk/tegra/clk-tegra20.c
+> index 0ee56dd04cec..dff8c425cd28 100644
+> --- a/drivers/clk/tegra/clk-tegra20.c
+> +++ b/drivers/clk/tegra/clk-tegra20.c
+> @@ -1049,6 +1049,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
+>  	{ TEGRA20_CLK_GR2D, TEGRA20_CLK_PLL_C, 300000000, 0 },
+>  	{ TEGRA20_CLK_GR3D, TEGRA20_CLK_PLL_C, 300000000, 0 },
+>  	{ TEGRA20_CLK_VDE, TEGRA20_CLK_CLK_MAX, 300000000, 0 },
+> +	{ TEGRA20_CLK_NDFLASH, TEGRA20_CLK_PLL_P, 150000000, 0 },
+>  	/* must be the last entry */
+>  	{ TEGRA20_CLK_CLK_MAX, TEGRA20_CLK_CLK_MAX, 0, 0 },
+>  };
+> -- 
+> 2.17.0
 > 
 
-  Sure Miquel.
-  I will update that.
+Maybe better to specify this in the Tegra20 dtsi? See 
+"Assigned clock parents and rates" in Documentation/devicetree/bindings/clock/clock-bindings.txt
 
->> +{
->> +	struct qcom_nand_host *host = to_qcom_nand_host(chip);
->> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
->> +	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> +	int i, ret;
->> +	int read_loc, start_step, last_step;
->> +
->> +	nand_read_page_op(chip, page, 0, NULL, 0);
->> +
->> +	host->use_ecc = false;
->> +	start_step = ffs(read_cw_mask) - 1;
->> +	last_step = fls(read_cw_mask);
->> +
->> +	clear_bam_transaction(nandc);
->> +	set_address(host, host->cw_size * start_step, page);
->> +	update_rw_regs(host, last_step - start_step, true);
->> +	config_nand_page_read(nandc);
->> +
->> +	for (i = start_step; i < last_step; i++) {
-> 
-> This comment applies for both patches 15 and 16:
-> 
-> I would really prefer having a qcom_nandc_read_cw_raw() that reads only
-> one CW. From qcom_nandc_read_page_raw() you would loop over all the CW
-> calling qcom_nandc_read_cw_raw() helper (it's raw reads, we don't care
-> about performances)
-
-  Doing that way will degrade performances hugely.
-
-  Currently once we formed the descriptor, the DMA will take care
-  of complete page data transfer from NAND device to buffer and will
-  generate single interrupt.
-
-  Now it will form one CW descriptor and wait for it to be finished.
-  In background, the data transfer from NAND device will be also
-  split and for every CW, it will give the PAGE_READ command again,
-  which is again time consuming.
-
-  Data transfer degradation is ok but it will increase CPU time
-  and number of interrupts which will impact other peripherals
-  performance that time.
-
-  Most of the NAND parts has 4K page size i.e 8 CWs.
-
-> and from ->read_page_raw() you would check
-> CW with uncorrectable errors for being blank with that helper. You
-> would avoid the not-so-nice logic where you read all the CW between the
-> first bad one and the last bad one.
-> 
-
-  The reading b/w first CW and last CW is only from NAND device to NAND
-  HW buffers. The NAND controller has 2 HW buffers which is used to
-  optimize the traffic throughput between the NAND device and
-  system memory,in both directions. Each buffer is 544B in size: 512B
-  for data + 32B spare bytes. Throughput optimization is achieved by
-  executing internal data transfers (i.e. between NANDc buffers and
-  system memory) simultaneously with NAND device operations.
-
-  Making separate function won't help in improving performance for
-  this case either since once every thing is set for reading page
-  (descriptor formation, issue the PAGE_READ, Data transfer from
-  Flash array to data register in NAND device), the read time from
-  device to NAND HW buffer is very less. Again, we did optimization
-  in which the copying from NAND HW buffer to actual buffer is being
-  done only for those CW's only.
-
-  Again, in this case CPU time will be more.
-
-  Thanks,
-  Abhishek
+Peter.
