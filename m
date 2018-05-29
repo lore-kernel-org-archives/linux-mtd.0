@@ -1,28 +1,40 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::10])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNg6v-0008M3-1n
- for linux-mtd@lists.infradead.org; Tue, 29 May 2018 15:01:26 +0000
-Subject: Re: [PATCH v7 2/5] mtd: nand: Add core infrastructure to support SPI
- NANDs
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- Peter Pan <peterpansjtu@gmail.com>, Vignesh R <vigneshr@ti.com>,
- Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
- Peter Pan <peterpandong@micron.com>
-References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
- <20180515150825.19835-3-boris.brezillon@bootlin.com>
- <31e7dfaf-a083-e750-feb0-34f5ae930eb3@exceet.de>
- <20180529153519.393741f8@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <e3d6f44a-05bb-f854-25b9-944f07f2ce6a@exceet.de>
-Date: Tue, 29 May 2018 16:59:50 +0200
+Date: Tue, 29 May 2018 17:15:55 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Eugen Hristev <eugen.hristev@microchip.com>
+Cc: Peter Rosin <peda@axentia.se>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Josh
+ Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180529171555.19dd723f@bbrezillon>
+In-Reply-To: <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+ <20180402142249.7e076a64@bbrezillon>
+ <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
+ <20180402212843.164d5d21@bbrezillon>
+ <20180402222020.1d344c14@bbrezillon>
+ <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
+ <20180403091813.5fb5c18c@bbrezillon>
+ <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
+ <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
+ <a25ca617-d3da-d401-1ba9-8e5887f8a8e5@microchip.com>
+ <024079cb-77ad-9c48-e370-e6e8f2de171b@axentia.se>
+ <9c496531-f7b6-4b9d-dd51-0bfb68ead303@axentia.se>
+ <c3cc1894-2d7d-93b6-a9de-ed9ca4564ae9@axentia.se>
+ <19d68279-072e-7646-6fdd-8649578229ea@microchip.com>
+ <20180529164911.29820e07@bbrezillon>
+ <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20180529153519.393741f8@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,63 +45,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Tue, 29 May 2018 18:01:40 +0300
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
 
-On 29.05.2018 15:35, Boris Brezillon wrote:
-> On Tue, 29 May 2018 12:57:33 +0200
-> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+> [...]
 > 
->>> +static int spinand_init(struct spinand_device *spinand)
->>> +{
->>> +	struct device *dev = &spinand->spimem->spi->dev;
->>> +	struct mtd_info *mtd = spinand_to_mtd(spinand);
->>> +	struct nand_device *nand = mtd_to_nanddev(mtd);
->>> +	int ret, i;
->>> +
->>> +	/*
->>> +	 * We need a scratch buffer because the spi_mem interface requires that
->>> +	 * buf passed in spi_mem_op->data.buf be DMA-able.
->>> +	 */
->>> +	spinand->scratchbuf = kzalloc(SPINAND_MAX_ID_LEN, GFP_KERNEL);
->>> +	if (!spinand->scratchbuf)
->>> +		return -ENOMEM;
->>> +
->>> +	ret = spinand_detect(spinand);
->>> +	if (ret)
->>> +		goto err_free_bufs;
->>> +
->>> +	/*
->>> +	 * Use kzalloc() instead of devm_kzalloc() here, because some drivers
->>> +	 * may use this buffer for DMA access.
->>> +	 * Memory allocated by devm_ does not guarantee DMA-safe alignment.
->>> +	 */
->>> +	spinand->databuf = kzalloc(nanddev_page_size(nand) +
->>> +			       nanddev_per_page_oobsize(nand),
->>> +			       GFP_KERNEL);
->>> +	if (!spinand->databuf)
->>> +		goto err_free_bufs;
->>> +
->>> +	spinand->oobbuf = spinand->databuf + nanddev_page_size(nand);
->>> +
->>> +	ret = spinand_init_cfg_cache(spinand);
->>
->> If the SPINAND_HAS_QE_BIT bit is set, then spinand_init_quad_enable()
->> will try to use the config cache, but it hasn't been initialized at that
->> time.
 > 
-> Oops, you're right. I wonder how I could miss that one when testing it.
-> I guess you get a NULL pointer exception, right?
+> > 
+> > I think you're missing something here. We use the DMA engine in memcpy
+> > mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
+> > So there's no dmas prop defined in the DT and there should not be.
+> > 
+> > Regards,
+> > 
+> > Boris
+> >   
+> 
+> Ok, so the memcpy SRAM <-> DRAM will hog the transfer between DRAM and 
+> LCD if my understanding is correct. That's the DMA that Peter wants to 
+> disable with his patch ?
+> 
+> Then we can then try to force NFC SRAM DMA channels to use just DDR port 
+> 1 or 2 for memcpy ?
 
-Yes.
+You mean the dmaengine? According to "14.1.3 Master to Slave Access"
+that's already the case.
+
+Only DMAC0 can access the NFC SRAM and it's done through DMAC0:IF0,
+then access to DDR is going through port DDR port 1 (DMAC0:IF1) or 2
+(DMAC0:IF0).
 
 > 
->>
->> So spinand_init_cfg_cache() should probably be called earlier, before
->> spinand_detect().
-> 
-> I'd prefer to move the spinand_init_quad_enable() just after the
-> spinand_init_cfg_cache() one. Calling spinand_init_cfg_cache() does not
-> work because we don't know how many dies we have and the cfg cache has
-> one entry per die.
+> I have also received a suggestion to try to increase the porches in 
+> LCDC_LCDCFG3 .
 
-Yes true, so moving spinand_init_quad_enable() seems the way to go.
+Yep, Nicolas suggested something similar. Peter, can you try that?
