@@ -1,23 +1,36 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNemo-0002B2-TJ
- for linux-mtd@lists.infradead.org; Tue, 29 May 2018 13:35:41 +0000
-Date: Tue, 29 May 2018 15:35:19 +0200
+Date: Tue, 29 May 2018 16:49:11 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, Peter Pan <peterpansjtu@gmail.com>, Vignesh R
- <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>, Peter Pan
- <peterpandong@micron.com>
-Subject: Re: [PATCH v7 2/5] mtd: nand: Add core infrastructure to support
- SPI NANDs
-Message-ID: <20180529153519.393741f8@bbrezillon>
-In-Reply-To: <31e7dfaf-a083-e750-feb0-34f5ae930eb3@exceet.de>
-References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
- <20180515150825.19835-3-boris.brezillon@bootlin.com>
- <31e7dfaf-a083-e750-feb0-34f5ae930eb3@exceet.de>
+To: Eugen Hristev <eugen.hristev@microchip.com>
+Cc: Peter Rosin <peda@axentia.se>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Josh
+ Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180529164911.29820e07@bbrezillon>
+In-Reply-To: <19d68279-072e-7646-6fdd-8649578229ea@microchip.com>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180329153322.5e2fc1e7@bbrezillon>
+ <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
+ <20180329154416.5c1a0013@bbrezillon>
+ <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
+ <20180402142249.7e076a64@bbrezillon>
+ <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
+ <20180402212843.164d5d21@bbrezillon>
+ <20180402222020.1d344c14@bbrezillon>
+ <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
+ <20180403091813.5fb5c18c@bbrezillon>
+ <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
+ <959d826d-1a98-ca22-acee-a4548427fcd3@microchip.com>
+ <a25ca617-d3da-d401-1ba9-8e5887f8a8e5@microchip.com>
+ <024079cb-77ad-9c48-e370-e6e8f2de171b@axentia.se>
+ <9c496531-f7b6-4b9d-dd51-0bfb68ead303@axentia.se>
+ <c3cc1894-2d7d-93b6-a9de-ed9ca4564ae9@axentia.se>
+ <19d68279-072e-7646-6fdd-8649578229ea@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,55 +43,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 May 2018 12:57:33 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+Hi Eugen,
 
-> > +static int spinand_init(struct spinand_device *spinand)
-> > +{
-> > +	struct device *dev = &spinand->spimem->spi->dev;
-> > +	struct mtd_info *mtd = spinand_to_mtd(spinand);
-> > +	struct nand_device *nand = mtd_to_nanddev(mtd);
-> > +	int ret, i;
-> > +
-> > +	/*
-> > +	 * We need a scratch buffer because the spi_mem interface requires that
-> > +	 * buf passed in spi_mem_op->data.buf be DMA-able.
-> > +	 */
-> > +	spinand->scratchbuf = kzalloc(SPINAND_MAX_ID_LEN, GFP_KERNEL);
-> > +	if (!spinand->scratchbuf)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = spinand_detect(spinand);
-> > +	if (ret)
-> > +		goto err_free_bufs;
-> > +
-> > +	/*
-> > +	 * Use kzalloc() instead of devm_kzalloc() here, because some drivers
-> > +	 * may use this buffer for DMA access.
-> > +	 * Memory allocated by devm_ does not guarantee DMA-safe alignment.
-> > +	 */
-> > +	spinand->databuf = kzalloc(nanddev_page_size(nand) +
-> > +			       nanddev_per_page_oobsize(nand),
-> > +			       GFP_KERNEL);
-> > +	if (!spinand->databuf)
-> > +		goto err_free_bufs;
-> > +
-> > +	spinand->oobbuf = spinand->databuf + nanddev_page_size(nand);
-> > +
-> > +	ret = spinand_init_cfg_cache(spinand);  
+On Tue, 29 May 2018 09:30:54 +0300
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
+
+> On 28.05.2018 13:10, Peter Rosin wrote:
+> > On 2018-05-28 00:11, Peter Rosin wrote:  
+> >> On 2018-05-27 11:18, Peter Rosin wrote:  
+> >>> On 2018-05-25 16:51, Tudor Ambarus wrote:  
+> >>>> We think the best way is to keep LCD on DDR Ports 2 and 3 (8th and 9th
+> >>>> slaves), to have maximum bandwidth and to use DMA on DDR port 1 for NAND
+> >>>> (7th slave).  
+> >>>
+> >>> Exactly how do I accomplish that?
+> >>>
+> >>> I can see how I can move the LCD between slave DDR port 2 and 3 by
+> >>> selecting LCDC DMA master 8 or 9 (but according to the above it should
+> >>> not matter). The big question is how I control what slave the NAND flash
+> >>> is going to use? I find nothing in the datasheet, and the code is also
+> >>> non-transparent enough for me to figure it out by myself without
+> >>> throwing out this question first...  
 > 
-> If the SPINAND_HAS_QE_BIT bit is set, then spinand_init_quad_enable() 
-> will try to use the config cache, but it hasn't been initialized at that 
-> time.
+>  >> [...]  
+> 
+> >> and the output is
+> >>
+> >> atmel-nand-controller 10000000.ebi:nand-controller: using dma0chan5 for DMA transfers
+> >>
+> >> So, DMA controller 0 is in use. I still don't know if IF0, IF1 or IF2 is used
+> >> or how to find out. I guess IF2 is not in use since that does not allow any
+> >> DDR2 port as slave...  
+> 
+> Hello Peter,
+> 
+> Thank you for all the information, I will chip in to help a little bit.
+> The Master/channel is described in the device tree. The channel has a 
+> controller, a mem/periph interface and a periph ID, plus a FIFO 
+> configuration.
+> 
+> The dma chan number reported in the dmesg is just software. Here is an 
+> example from DT:
+> dmas = <&dma0 2 AT91_DMA_CFG_PER_ID(1)>,
+>         <&dma0 2 AT91_DMA_CFG_PER_ID(2)>;
+> 
+> you can match this with the help from 
+> Documentation/devicetree/bindings/dma/atmel-dma.txt:
+> 
+> 1. A phandle pointing to the DMA controller. 
+> 
+> 2. The memory interface (16 most significant bits), the peripheral 
+> interface
+> (16 less significant bits). 
+> 
+> 3. Parameters for the at91 DMA configuration register which are device 
+> 
+> dependent: 
+> 
+>    - bit 7-0: peripheral identifier for the hardware handshaking 
+> interface. The
+>    identifier can be different for tx and rx. 
+> 
+>    - bit 11-8: FIFO configuration. 0 for half FIFO, 1 for ALAP, 2 for ASAP.
+> 
+> 
+> So , what was Tudor asking for, is your DT for the ebi node (if you are 
+> using ebi), or, your NFC SRAM (Nand Flash Controller SRAM) DMA 
+> devicetree chunk, so, we can figure out which type of DMA are you using.
 
-Oops, you're right. I wonder how I could miss that one when testing it.
-I guess you get a NULL pointer exception, right?
+I think you're missing something here. We use the DMA engine in memcpy
+mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
+So there's no dmas prop defined in the DT and there should not be.
+
+Regards,
+
+Boris
 
 > 
-> So spinand_init_cfg_cache() should probably be called earlier, before 
-> spinand_detect().
-
-I'd prefer to move the spinand_init_quad_enable() just after the
-spinand_init_cfg_cache() one. Calling spinand_init_cfg_cache() does not
-work because we don't know how many dies we have and the cfg cache has
-one entry per die.
+> Normally, the ebi should be connected to both DMA0 and DMA1 on those 
+> interfaces specified in DT. Which ones you want to use, depends on your 
+> setup (and contention on the bus/accesses, like in your case, the HLCDC)
+> 
+> Thats why we have multiple choices, to pick the right one for each case.
+> In our vanilla DT sama5d3.dtsi we do not have DMA described for ebi 
+> interface.
+> 
+> Eugen
+> 
+>  >> [...]  
