@@ -1,22 +1,25 @@
+Date: Tue, 29 May 2018 17:46:21 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Eugen Hristev <eugen.hristev@microchip.com>
+Cc: Peter Rosin <peda@axentia.se>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Josh
+ Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, <linux-kernel@vger.kernel.org>,
+ <linux-mtd@lists.infradead.org>, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
 Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Peter Rosin
- <peda@axentia.se>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Nicolas Ferre
- <nicolas.ferre@microchip.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Josh Wu
- <rainyfeeling@outlook.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, <linux-arm-kernel@lists.infradead.org>
+Message-ID: <20180529174621.50a9001a@bbrezillon>
+In-Reply-To: <1affd186-7f78-8bb0-050e-da82143c2982@microchip.com>
 References: <20180329131054.22506-1-peda@axentia.se>
- <20180329153322.5e2fc1e7@bbrezillon>
- <ed87cf13-a69a-6115-f0a8-5f51c4957d1d@axentia.se>
  <20180329154416.5c1a0013@bbrezillon>
  <b740406a-e91c-67ad-24a3-cbdbe259d00d@axentia.se>
  <20180402142249.7e076a64@bbrezillon>
  <e0d9bd59-8031-e387-676e-dc5811170a0c@axentia.se>
- <20180402212843.164d5d21@bbrezillon> <20180402222020.1d344c14@bbrezillon>
+ <20180402212843.164d5d21@bbrezillon>
+ <20180402222020.1d344c14@bbrezillon>
  <d7e6f78d-b57b-4d0f-c07c-ca6c1930cd51@axentia.se>
  <20180403091813.5fb5c18c@bbrezillon>
  <d0afd431-6e51-a9b7-c103-ecf1f6e07c2e@axentia.se>
@@ -27,13 +30,11 @@ References: <20180329131054.22506-1-peda@axentia.se>
  <c3cc1894-2d7d-93b6-a9de-ed9ca4564ae9@axentia.se>
  <19d68279-072e-7646-6fdd-8649578229ea@microchip.com>
  <20180529164911.29820e07@bbrezillon>
-From: Eugen Hristev <eugen.hristev@microchip.com>
-Message-ID: <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
-Date: Tue, 29 May 2018 18:01:40 +0300
+ <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
+ <20180529171555.19dd723f@bbrezillon>
+ <1affd186-7f78-8bb0-050e-da82143c2982@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20180529164911.29820e07@bbrezillon>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -44,30 +45,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[...]
+On Tue, 29 May 2018 18:21:40 +0300
+Eugen Hristev <eugen.hristev@microchip.com> wrote:
 
+> On 29.05.2018 18:15, Boris Brezillon wrote:
+> > On Tue, 29 May 2018 18:01:40 +0300
+> > Eugen Hristev <eugen.hristev@microchip.com> wrote:
+> >   
+> >> [...]
+> >>
+> >>  
+> >>>
+> >>> I think you're missing something here. We use the DMA engine in memcpy
+> >>> mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
+> >>> So there's no dmas prop defined in the DT and there should not be.
+> >>>
+> >>> Regards,
+> >>>
+> >>> Boris
+> >>>      
+> >>
+> >> Ok, so the memcpy SRAM <-> DRAM will hog the transfer between DRAM and
+> >> LCD if my understanding is correct. That's the DMA that Peter wants to
+> >> disable with his patch ?
+> >>
+> >> Then we can then try to force NFC SRAM DMA channels to use just DDR port
+> >> 1 or 2 for memcpy ?  
+> > 
+> > You mean the dmaengine? According to "14.1.3 Master to Slave Access"
+> > that's already the case.
+> > 
+> > Only DMAC0 can access the NFC SRAM and it's done through DMAC0:IF0,
+> > then access to DDR is going through port DDR port 1 (DMAC0:IF1) or 2
+> > (DMAC0:IF0).  
+> 
+> If we can make NFC use port 1 only, then HLCDC could have two ports as 
+> master 8 & 9, maybe a better bandwidth.
 
-> 
-> I think you're missing something here. We use the DMA engine in memcpy
-> mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
-> So there's no dmas prop defined in the DT and there should not be.
-> 
-> Regards,
-> 
-> Boris
-> 
+Peter, can you try with the following patch?
 
-Ok, so the memcpy SRAM <-> DRAM will hog the transfer between DRAM and 
-LCD if my understanding is correct. That's the DMA that Peter wants to 
-disable with his patch ?
-
-Then we can then try to force NFC SRAM DMA channels to use just DDR port 
-1 or 2 for memcpy ?
-
-I have also received a suggestion to try to increase the porches in 
-LCDC_LCDCFG3 .
-
->>
->>   >> [...]
-> 
-> 
+--->8---
+diff --git a/drivers/dma/at_hdmac_regs.h b/drivers/dma/at_hdmac_regs.h
+index ef3f227ce3e6..2a48e870f292 100644
+--- a/drivers/dma/at_hdmac_regs.h
++++ b/drivers/dma/at_hdmac_regs.h
+@@ -124,8 +124,8 @@
+ #define        ATC_SIF(i)              (0x3 & (i))     /* Src tx done via AHB-Lite Interface i */
+ #define        ATC_DIF(i)              ((0x3 & (i)) <<  4)     /* Dst tx done via AHB-Lite Interface i */
+                                  /* Specify AHB interfaces */
+-#define AT_DMA_MEM_IF          0 /* interface 0 as memory interface */
+-#define AT_DMA_PER_IF          1 /* interface 1 as peripheral interface */
++#define AT_DMA_MEM_IF          1 /* interface 0 as memory interface */
++#define AT_DMA_PER_IF          0 /* interface 1 as peripheral interface */
+ 
+ #define        ATC_SRC_PIP             (0x1 <<  8)     /* Source Picture-in-Picture enabled */
+ #define        ATC_DST_PIP             (0x1 << 12)     /* Destination Picture-in-Picture enabled */
