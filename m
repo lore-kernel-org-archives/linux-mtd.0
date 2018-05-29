@@ -1,21 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNkAb-00086d-A2
- for linux-mtd@lists.infradead.org; Tue, 29 May 2018 19:20:35 +0000
-Date: Tue, 29 May 2018 21:20:21 +0200
+ id 1fNkKW-0003s8-Hp
+ for linux-mtd@lists.infradead.org; Tue, 29 May 2018 19:30:50 +0000
+Date: Tue, 29 May 2018 21:30:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH] procfs: use inline functions instead of macros for
- proc_create_single_data stub
-Message-ID: <20180529212021.62d06424@bbrezillon>
-In-Reply-To: <20180525214548.2122779-1-arnd@arndb.de>
-References: <20180525214548.2122779-1-arnd@arndb.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Abhishek Sahu <absahu@codeaurora.org>, Archit Taneja
+ <architt@codeaurora.org>, Marek Vasut <marek.vasut@gmail.com>, Masahiro
+ Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
+ <richard@nod.at>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Andy Gross <andy.gross@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH v3 01/16] mtd: rawnand: helper function for setting up
+ ECC configuration
+Message-ID: <20180529213036.150ed16a@bbrezillon>
+In-Reply-To: <20180526095807.5caf5800@xps13>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-2-git-send-email-absahu@codeaurora.org>
+ <20180526095807.5caf5800@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,83 +32,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 25 May 2018 23:45:00 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+On Sat, 26 May 2018 10:42:47 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> The procfs interface changes caused one warning in afs for
-> a now unused function:
+> Hi Abhishek,
 > 
-> fs/afs/proc.c:818:12: error: 'afs_proc_stats_show' defined but not used [-Werror=unused-function]
->  static int afs_proc_stats_show(struct seq_file *m, void *v)
+> On Fri, 25 May 2018 17:51:29 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
 > 
-> This can be avoided by using an inline function instead of a macro
-> to reference it, so now the compiler can silently drop the function
-> after seeing that there is a reference but that it is never called.
+> > commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+> > match, maximize ECC settings") provides generic helpers which
+> > drivers can use for setting up ECC parameters.
+> > 
+> > Since same board can have different ECC strength nand chips so
+> > following is the logic for setting up ECC strength and ECC step
+> > size, which can be used by most of the drivers.
+> > 
+> > 1. If both ECC step size and ECC strength are already set
+> >    (usually by DT) then just check whether this setting
+> >    is supported by NAND controller.
+> > 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+> >    supported by NAND controller.
+> > 3. Otherwise, try to match the ECC step size and ECC strength closest
+> >    to the chip's requirement. If available OOB size can't fit the chip
+> >    requirement then select maximum ECC strength which can be fit with
+> >    available OOB size.
+> > 
+> > This patch introduces nand_ecc_choose_conf function which calls the
+> > required helper functions for the above logic. The drivers can use
+> > this single function instead of calling the 3 helper functions
+> > individually.
+> > 
+> > CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> > ---
+> > * Changes from v2:
+> > 
+> >   1. Renamed function to nand_ecc_choose_conf.
+> >   2. Minor code reorganization to remove warning and 2 function calls
+> >      for nand_maximize_ecc.
+> > 
+> > * Changes from v1:
+> >   NEW PATCH
+> > 
+> >  drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++++++++++++++++++++
+> >  drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+> >  include/linux/mtd/rawnand.h      |  3 +++
+> >  2 files changed, 34 insertions(+)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 72f3a89..e52019d 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -6249,6 +6249,37 @@ int nand_maximize_ecc(struct nand_chip *chip,
+> >  }
+> >  EXPORT_SYMBOL_GPL(nand_maximize_ecc);
+> >  
+> > +/**
+> > + * nand_ecc_choose_conf - Set the ECC strength and ECC step size
+> > + * @chip: nand chip info structure
+> > + * @caps: ECC engine caps info structure
+> > + * @oobavail: OOB size that the ECC engine can use
+> > + *
+> > + * Choose the ECC configuration according to following logic
+> > + *
+> > + * 1. If both ECC step size and ECC strength are already set (usually by DT)
+> > + *    then check if it is supported by this controller.
+> > + * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
+> > + * 3. Otherwise, try to match the ECC step size and ECC strength closest
+> > + *    to the chip's requirement. If available OOB size can't fit the chip
+> > + *    requirement then fallback to the maximum ECC step size and ECC strength.
+> > + *
+> > + * On success, the chosen ECC settings are set.
+> > + */
+> > +int nand_ecc_choose_conf(struct nand_chip *chip,
+> > +			 const struct nand_ecc_caps *caps, int oobavail)
+> > +{
+> > +	if (chip->ecc.size && chip->ecc.strength)
+> > +		return nand_check_ecc_caps(chip, caps, oobavail);
+> > +
+> > +	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE) &&
+> > +	    !nand_match_ecc_req(chip, caps, oobavail))
+> > +		return 0;
+> > +
+> > +	return nand_maximize_ecc(chip, caps, oobavail);  
 > 
-> Unfortunately, this change triggers another warning where a function
-> is hidden and now unexpectedly referenced:
+> I personally don't mind if nand_maximize_ecc() is called twice in
+> the function if it clarifies the logic. Maybe the following will be
+> more clear for the user?
 > 
-> drivers/mtd/mtdcore.c: In function 'init_mtd':
-> drivers/mtd/mtdcore.c:1878:48: error: 'mtd_proc_show' undeclared (first use in this function); did you mean 'mtd_name_show'?
+> 	if (chip->ecc.size && chip->ecc.strength)
+> 		return nand_check_ecc_caps(chip, caps, oobavail);
 > 
-> It seems nicer to keep using the inline function and removing the #ifdef
-> here than to add an #ifdef around every single function we pass into
-> proc_create_single_data(), so I'm removing the #ifdef here.
+> 	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+> 		return nand_maximize_ecc(chip, caps, oobavail);
 > 
-> After a few hundred randconfig builds, this was the only instance
-> I found that caused a problem.
+> 	if (!nand_match_ecc_req(chip, caps, oobavail))
+> 		return 0;
 > 
-> Fixes: 353861cf0594 ("afs: simplify procfs code")
-> Fixes: 3f3942aca6da ("proc: introduce proc_create_single{,_data}")
-> Cc: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> 	return nand_maximize_ecc(chip, caps, oobavail);
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+I personally don't mind, and it seems Masahiro wanted to keep the logic
+he had used in the denali driver.
 
-> ---
->  drivers/mtd/mtdcore.c   |  3 ---
->  include/linux/proc_fs.h | 10 ++++++++--
->  2 files changed, 8 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 42395df06be9..08d1e89faf9c 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1814,8 +1814,6 @@ void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size)
->  }
->  EXPORT_SYMBOL_GPL(mtd_kmalloc_up_to);
->  
-> -#ifdef CONFIG_PROC_FS
-> -
->  /*====================================================================*/
->  /* Support for /proc/mtd */
->  
-> @@ -1833,7 +1831,6 @@ static int mtd_proc_show(struct seq_file *m, void *v)
->  	mutex_unlock(&mtd_table_mutex);
->  	return 0;
->  }
-> -#endif /* CONFIG_PROC_FS */
->  
->  /*====================================================================*/
->  /* Init code */
-> diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-> index e518352137e7..3b44c357a6e7 100644
-> --- a/include/linux/proc_fs.h
-> +++ b/include/linux/proc_fs.h
-> @@ -84,8 +84,14 @@ static inline struct proc_dir_entry *proc_mkdir_mode(const char *name,
->  #define proc_create_seq_private(name, mode, parent, ops, size, data) ({NULL;})
->  #define proc_create_seq_data(name, mode, parent, ops, data) ({NULL;})
->  #define proc_create_seq(name, mode, parent, ops) ({NULL;})
-> -#define proc_create_single(name, mode, parent, show) ({NULL;})
-> -#define proc_create_single_data(name, mode, parent, show, data) ({NULL;})
-> +static inline struct proc_dir_entry *proc_create_single_data(const char *name,
-> +		umode_t mode, struct proc_dir_entry *parent,
-> +		int (*show)(struct seq_file *, void *), void *data)
-> +{
-> +	return NULL;
-> +}
-> +#define proc_create_single(name, mode, parent, show) \
-> +	proc_create_single_data(name, mode, parent, show, NULL)
->  #define proc_create(name, mode, parent, proc_fops) ({NULL;})
->  #define proc_create_data(name, mode, parent, proc_fops, data) ({NULL;})
->  
+> Also, I'm not sure we should just error out when nand_check_ecc_caps()
+> fails. What about something more robust, like:
+> 
+> 	int ret;
+> 
+> 	if (chip->ecc.size && chip->ecc.strength) {
+> 		ret = nand_check_ecc_caps(chip, caps, oobavail);
+> 		if (ret)
+> 			goto maximize_ecc;
+
+Nope. When someone asked for a specific ECC config by passing the
+nand-ecc-xxx props we should apply it or return an erro if it's not
+supported. People passing those props should now what the ECC engine
+supports and pick one valid values.
+
+> 
+> 		return 0;
+> 	}
+> 
+> 	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+> 		goto maximize_ecc;
+> 
+> 	ret = nand_match_ecc_req(chip, caps, oobavail);
+> 	if (ret)
+> 		goto maximize_ecc;
+> 
+> 	return 0;
+> 
+> maximize_ecc:
+> 	return nand_maximize_ecc(chip, caps, oobavail);
+> 
