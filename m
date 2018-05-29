@@ -1,8 +1,9 @@
 Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Peter Rosin <peda@axentia.se>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Ludovic Desroches <ludovic.desroches@microchip.com>, Alexandre Belloni
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Peter Rosin
+ <peda@axentia.se>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>, Alexandre Belloni
  <alexandre.belloni@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Josh Wu
  <rainyfeeling@outlook.com>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Richard
@@ -26,13 +27,11 @@ References: <20180329131054.22506-1-peda@axentia.se>
  <c3cc1894-2d7d-93b6-a9de-ed9ca4564ae9@axentia.se>
  <19d68279-072e-7646-6fdd-8649578229ea@microchip.com>
  <20180529164911.29820e07@bbrezillon>
- <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
- <20180529171555.19dd723f@bbrezillon>
 From: Eugen Hristev <eugen.hristev@microchip.com>
-Message-ID: <1affd186-7f78-8bb0-050e-da82143c2982@microchip.com>
-Date: Tue, 29 May 2018 18:21:40 +0300
+Message-ID: <e3c34fb7-4881-3f49-b43b-1b07a8ab865d@microchip.com>
+Date: Tue, 29 May 2018 18:01:40 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180529171555.19dd723f@bbrezillon>
+In-Reply-To: <20180529164911.29820e07@bbrezillon>
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,46 +44,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+[...]
 
 
-On 29.05.2018 18:15, Boris Brezillon wrote:
-> On Tue, 29 May 2018 18:01:40 +0300
-> Eugen Hristev <eugen.hristev@microchip.com> wrote:
 > 
->> [...]
->>
->>
->>>
->>> I think you're missing something here. We use the DMA engine in memcpy
->>> mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
->>> So there's no dmas prop defined in the DT and there should not be.
->>>
->>> Regards,
->>>
->>> Boris
->>>    
->>
->> Ok, so the memcpy SRAM <-> DRAM will hog the transfer between DRAM and
->> LCD if my understanding is correct. That's the DMA that Peter wants to
->> disable with his patch ?
->>
->> Then we can then try to force NFC SRAM DMA channels to use just DDR port
->> 1 or 2 for memcpy ?
+> I think you're missing something here. We use the DMA engine in memcpy
+> mode (SRAM -> DRAM), not in device mode (dev -> DRAM or DRAM -> dev).
+> So there's no dmas prop defined in the DT and there should not be.
 > 
-> You mean the dmaengine? According to "14.1.3 Master to Slave Access"
-> that's already the case.
+> Regards,
 > 
-> Only DMAC0 can access the NFC SRAM and it's done through DMAC0:IF0,
-> then access to DDR is going through port DDR port 1 (DMAC0:IF1) or 2
-> (DMAC0:IF0).
+> Boris
+> 
 
-If we can make NFC use port 1 only, then HLCDC could have two ports as 
-master 8 & 9, maybe a better bandwidth.
+Ok, so the memcpy SRAM <-> DRAM will hog the transfer between DRAM and 
+LCD if my understanding is correct. That's the DMA that Peter wants to 
+disable with his patch ?
 
-> 
+Then we can then try to force NFC SRAM DMA channels to use just DDR port 
+1 or 2 for memcpy ?
+
+I have also received a suggestion to try to increase the porches in 
+LCDC_LCDCFG3 .
+
 >>
->> I have also received a suggestion to try to increase the porches in
->> LCDC_LCDCFG3 .
+>>   >> [...]
 > 
-> Yep, Nicolas suggested something similar. Peter, can you try that?
 > 
