@@ -1,34 +1,26 @@
-Received: from mail-wr0-x242.google.com ([2a00:1450:400c:c0c::242])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNdbg-0000EG-9O
- for linux-mtd@lists.infradead.org; Tue, 29 May 2018 12:20:05 +0000
-Received: by mail-wr0-x242.google.com with SMTP id w3-v6so25127297wrl.12
- for <linux-mtd@lists.infradead.org>; Tue, 29 May 2018 05:19:52 -0700 (PDT)
-Subject: Re: [PATCH v2 4/6] clk: tegra20: init NDFLASH clock to sensible rate
-To: Stefan Agner <stefan@agner.ch>,
- Peter De Schrijver <pdeschrijver@nvidia.com>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-clk@vger.kernel.org
-References: <20180527215442.14760-5-stefan@agner.ch>
- <20180528075510.GQ6835@tbergstrom-lnx.Nvidia.com>
- <5665b799f763daa82dced238fb494863@agner.ch>
- <20180529074804.GA6708@tbergstrom-lnx.Nvidia.com>
- <90180dd9fc6e60175c54b9d70e50f0e5@agner.ch>
-From: Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <04cdfdf5-33c5-b569-9cd7-dda1b9ea0baf@gmail.com>
-Date: Tue, 29 May 2018 15:19:47 +0300
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fNemo-0002B2-TJ
+ for linux-mtd@lists.infradead.org; Tue, 29 May 2018 13:35:41 +0000
+Date: Tue, 29 May 2018 15:35:19 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Peter Pan <peterpansjtu@gmail.com>, Vignesh R
+ <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>, Peter Pan
+ <peterpandong@micron.com>
+Subject: Re: [PATCH v7 2/5] mtd: nand: Add core infrastructure to support
+ SPI NANDs
+Message-ID: <20180529153519.393741f8@bbrezillon>
+In-Reply-To: <31e7dfaf-a083-e750-feb0-34f5ae930eb3@exceet.de>
+References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
+ <20180515150825.19835-3-boris.brezillon@bootlin.com>
+ <31e7dfaf-a083-e750-feb0-34f5ae930eb3@exceet.de>
 MIME-Version: 1.0
-In-Reply-To: <90180dd9fc6e60175c54b9d70e50f0e5@agner.ch>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,68 +30,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29.05.2018 15:12, Stefan Agner wrote:
-> On 29.05.2018 09:48, Peter De Schrijver wrote:
->> On Mon, May 28, 2018 at 05:53:08PM +0200, Stefan Agner wrote:
->>> On 28.05.2018 09:55, Peter De Schrijver wrote:
->>>> On Sun, May 27, 2018 at 11:54:40PM +0200, Stefan Agner wrote:
->>>>> From: Lucas Stach <dev@lynxeye.de>
->>>>>
->>>>> Set up the NAND Flash controller clock to run at 150MHz
->>>>> instead of the rate set by the bootloader. This is a
->>>>> conservative rate which also yields good performance.
->>>>>
->>>>> Signed-off-by: Lucas Stach <dev@lynxeye.de>
->>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
->>>>> ---
->>>>>  drivers/clk/tegra/clk-tegra20.c | 1 +
->>>>>  1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/drivers/clk/tegra/clk-tegra20.c b/drivers/clk/tegra/clk-tegra20.c
->>>>> index 0ee56dd04cec..dff8c425cd28 100644
->>>>> --- a/drivers/clk/tegra/clk-tegra20.c
->>>>> +++ b/drivers/clk/tegra/clk-tegra20.c
->>>>> @@ -1049,6 +1049,7 @@ static struct tegra_clk_init_table init_table[] __initdata = {
->>>>>  	{ TEGRA20_CLK_GR2D, TEGRA20_CLK_PLL_C, 300000000, 0 },
->>>>>  	{ TEGRA20_CLK_GR3D, TEGRA20_CLK_PLL_C, 300000000, 0 },
->>>>>  	{ TEGRA20_CLK_VDE, TEGRA20_CLK_CLK_MAX, 300000000, 0 },
->>>>> +	{ TEGRA20_CLK_NDFLASH, TEGRA20_CLK_PLL_P, 150000000, 0 },
->>>>>  	/* must be the last entry */
->>>>>  	{ TEGRA20_CLK_CLK_MAX, TEGRA20_CLK_CLK_MAX, 0, 0 },
->>>>>  };
->>>>> --
->>>>> 2.17.0
->>>>>
->>>>
->>>> Maybe better to specify this in the Tegra20 dtsi? See
->>>> "Assigned clock parents and rates" in
->>>> Documentation/devicetree/bindings/clock/clock-bindings.txt
->>>
->>> assigned-clocks indeed works just fine for this case. Thanks for
->>> bringing this up, will drop this patch and add the device tree
->>> properties in v3.
->>>
->>> Hm, interesting that none of the Tegra device tree make use of the
->>> feature so far. I guess there would be other cases where this would be
->>> useful as well (the one just above, VDE?).
->>>
->>
->> Yes, historically this feature wasn't available, so we used these init tables.
->> Unfortunately it's not easy to get rid of them for parent and rate
->> configuration, because new kernels should also work with existing DTBs, so we
->> can't just add assigned-clock properties and remove the existing table
->> entries. What we could do is use the CLK_IS_CRITICAL flag for all clocks which
->> are only enabled by the init table. For not yet merged blocks, this is
->> ofcourse not a concern.
-> 
-> Sure I understand.
-> 
-> Was just somewhat surprised that it isn't used at all yet (grep -r -e
-> assigned-clock arch/arm/boot/dts/tegra* returns nothing). After all,
-> assigned clocks bindings have been merged in 2014 :-)
-> 
-> At least "clk: tegra: Specify VDE clock rate" merged earlier this year
-> would have been a candidate already.
+On Tue, 29 May 2018 12:57:33 +0200
+Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
 
-I wasn't even aware of existence of the assigned-clock properties, probably just
-like others.
+> > +static int spinand_init(struct spinand_device *spinand)
+> > +{
+> > +	struct device *dev = &spinand->spimem->spi->dev;
+> > +	struct mtd_info *mtd = spinand_to_mtd(spinand);
+> > +	struct nand_device *nand = mtd_to_nanddev(mtd);
+> > +	int ret, i;
+> > +
+> > +	/*
+> > +	 * We need a scratch buffer because the spi_mem interface requires that
+> > +	 * buf passed in spi_mem_op->data.buf be DMA-able.
+> > +	 */
+> > +	spinand->scratchbuf = kzalloc(SPINAND_MAX_ID_LEN, GFP_KERNEL);
+> > +	if (!spinand->scratchbuf)
+> > +		return -ENOMEM;
+> > +
+> > +	ret = spinand_detect(spinand);
+> > +	if (ret)
+> > +		goto err_free_bufs;
+> > +
+> > +	/*
+> > +	 * Use kzalloc() instead of devm_kzalloc() here, because some drivers
+> > +	 * may use this buffer for DMA access.
+> > +	 * Memory allocated by devm_ does not guarantee DMA-safe alignment.
+> > +	 */
+> > +	spinand->databuf = kzalloc(nanddev_page_size(nand) +
+> > +			       nanddev_per_page_oobsize(nand),
+> > +			       GFP_KERNEL);
+> > +	if (!spinand->databuf)
+> > +		goto err_free_bufs;
+> > +
+> > +	spinand->oobbuf = spinand->databuf + nanddev_page_size(nand);
+> > +
+> > +	ret = spinand_init_cfg_cache(spinand);  
+> 
+> If the SPINAND_HAS_QE_BIT bit is set, then spinand_init_quad_enable() 
+> will try to use the config cache, but it hasn't been initialized at that 
+> time.
+
+Oops, you're right. I wonder how I could miss that one when testing it.
+I guess you get a NULL pointer exception, right?
+
+> 
+> So spinand_init_cfg_cache() should probably be called earlier, before 
+> spinand_detect().
+
+I'd prefer to move the spinand_init_quad_enable() just after the
+spinand_init_cfg_cache() one. Calling spinand_init_cfg_cache() does not
+work because we don't know how many dies we have and the cfg cache has
+one entry per die.
