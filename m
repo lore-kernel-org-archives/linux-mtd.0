@@ -1,7 +1,7 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::3])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fO10O-0002MH-Jb
- for linux-mtd@lists.infradead.org; Wed, 30 May 2018 13:19:47 +0000
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fO0zt-0006HH-An
+ for linux-mtd@lists.infradead.org; Wed, 30 May 2018 13:18:40 +0000
 From: Frieder Schrempf <frieder.schrempf@exceet.de>
 To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
  linux-spi@vger.kernel.org
@@ -10,15 +10,12 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
  yogeshnarayan.gaur@nxp.com, han.xu@nxp.com,
  Frieder Schrempf <frieder.schrempf@exceet.de>,
- "David S. Miller" <davem@davemloft.net>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] MAINTAINERS: Move the Freescale QSPI driver to the SPI
- framework
-Date: Wed, 30 May 2018 15:14:40 +0200
-Message-Id: <1527686082-15142-12-git-send-email-frieder.schrempf@exceet.de>
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 09/11] ARM: dts: ls1021a: Remove fsl,
+ qspi-has-second-chip as it is not used
+Date: Wed, 30 May 2018 15:14:38 +0200
+Message-Id: <1527686082-15142-10-git-send-email-frieder.schrempf@exceet.de>
 In-Reply-To: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
 References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,30 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The driver was ported to the SPI framework so it can be used as
-a generic SPI memory driver and not only for SPI NOR.
-Reflect this transition in the MAINTAINERS file.
+After switching to the new FSL QSPI driver the property
+'fsl,qspi-has-second-chip' is not needed anymore.
+
+The driver now uses the 'reg' property to determine the bus and
+the chipselect.
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
 ---
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9051a9c..22cfc8d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5732,9 +5732,9 @@ F:	Documentation/devicetree/bindings/powerpc/fsl/fman.txt
+diff --git a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts b/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
+index 6a83f30..d3a1a73 100644
+--- a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
++++ b/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
+@@ -203,7 +203,6 @@
+ };
  
- FREESCALE QUAD SPI DRIVER
- M:	Han Xu <han.xu@nxp.com>
--L:	linux-mtd@lists.infradead.org
-+L:	linux-spi@vger.kernel.org
- S:	Maintained
--F:	drivers/mtd/spi-nor/fsl-quadspi.c
-+F:	drivers/spi/spi-fsl-qspi.c
+ &qspi {
+-	fsl,qspi-has-second-chip;
+ 	status = "okay";
  
- FREESCALE QUICC ENGINE LIBRARY
- M:	Qiang Zhao <qiang.zhao@nxp.com>
+ 	flash: flash@0 {
 -- 
 2.7.4
