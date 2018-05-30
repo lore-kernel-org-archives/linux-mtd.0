@@ -1,30 +1,18 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.206])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNxZw-00038H-FB
- for linux-mtd@lists.infradead.org; Wed, 30 May 2018 09:40:46 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
-Subject: RE: [PATCH v7 5/5] mtd: cfi_cmdset_0002: Change erase one block to
- enable XIP once
-Date: Wed, 30 May 2018 09:39:21 +0000
-Message-ID: <TY1PR01MB0954816CC3761C48AD85C89BDC6C0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
- <20180527232801.1666-6-ikegami@allied-telesis.co.jp>
- <20180529205751.44b2ba92@bbrezillon>
- <TY1PR01MB095408736BF00FE88D19AC13DC6D0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180530104907.7b37cd05@bbrezillon>
-In-Reply-To: <20180530104907.7b37cd05@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fO0yH-0001Ua-Kn
+ for linux-mtd@lists.infradead.org; Wed, 30 May 2018 13:17:00 +0000
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ linux-spi@vger.kernel.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com,
+ Frieder Schrempf <frieder.schrempf@exceet.de>
+Subject: [PATCH 00/11] Port the FSL QSPI driver to the SPI framework
+Date: Wed, 30 May 2018 15:14:29 +0200
+Message-Id: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,88 +22,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
+Now that the SPI memory interface was introduced by Boris [1], it is
+possible to move drivers from mtd/spi-nor to the SPI framework in order
+to use them for different type of SPI memory chips.
 
-I have just sent v8 version patch series and it changed the 5/5 patch only.
+Patch 1 adds a function spi_mem_get_name() to the SPI memory interface,
+and patch 2 uses it in m25p80.c to make it possible for SPI controller
+drivers to provide a custom naming scheme for the flash chip.
+This is needed to avoid breaking compatibility of mtdparts when switching
+from the old to the new driver.
 
-> Then you should drop the Cc: stable tag.
+Patch 3 adds a driver for the Freescale QSPI controller to the SPI
+framework. Together with m25p80.c it can be used to interface SPI
+NOR flashes just as the old driver did. For this to work properly a few
+minor changes to the devicetrees are necessary (see patches 4,5 and 6).
 
-  Yes just dropped it from 5/5 patch only by the v8 version patch series.
+Patch 7 changes the defconfigs to use the new driver and patch 8 removes
+the old driver.
 
-> >   I have just confirmed that the xip_enable() line itself was implement=
-ed
-> by the commit 02b15e343aeef.
-> >   For this patch it is not a bug fix so I will not add the Fixes line
-> into the commit message.
->=20
-> Right.
+Patch 9 and 10 remove 'fsl,qspi-has-second-chip' from the devicetrees.
+Patch 11 adjusts the MAINTAINERS file.
 
-  I see.
+The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
+The read performance of the new driver is almost the same or even better
+than the old driver, depending on the block size.
+The write performance is a bit slower on average (~10-15%).
 
-> >   But if needed it please let me know that.
->=20
-> I checked the first patch and it seems it's one of these situation
-> where the code predates git, so no need to specify a Fixes tag.
+The new driver was also tested with the SPI NAND framework [2] and a
+Winbond W25M02GV flash.
 
-  I see so I will not change other 1/5 to 4/5 patches by the v8 version pat=
-ch series.
+If someone has a board that uses both chips selects and/or both busses,
+it would be really nice to have the driver be tested on such a setup.
 
-Regards,
-Ikegami
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/commit/?h=for-4.18&id=c36ff266dc82f4ae797a6f3513c6ffa344f7f1c7
+[2] https://patchwork.ozlabs.org/cover/913728/
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Wednesday, May 30, 2018 5:49 PM
-> To: IKEGAMI Tokunori
-> Cc: PACKHAM Chris; Brian Norris; David Woodhouse; Boris Brezillon; Marek
-> Vasut; Richard Weinberger; Cyrille Pitchen;
-> linux-mtd@lists.infradead.org; stable@vger.kernel.org
-> Subject: Re: [PATCH v7 5/5] mtd: cfi_cmdset_0002: Change erase one block
-> to enable XIP once
->=20
-> Hello,
->=20
-> On Tue, 29 May 2018 23:31:41 +0000
-> IKEGAMI Tokunori <ikegami@allied-telesis.co.jp> wrote:
->=20
-> > Hi Boris-san,
-> >
-> > Thanks for your reviewing and advices.
-> >
-> > > Is this really a bug fix? Doesn't look like a bug fix to me.
-> >
-> >   No as you mentioned it is not a bug fix but just a refactoring to red=
-uce
-> xip_enable() line.
->=20
-> Then you should drop the Cc: stable tag.
->=20
-> >
-> > > Also, every time you add Cc stable you should try to find the commit
-> > > that introduced the bug. Sometime it's not possible because the bug
-> > > existed before git was in use, but most of the time you'll find the
-> > > offending commit using git blame.
-> > >
-> > > A fixes tag should be formatted like that:
-> > >
-> > > Fixes: <commit-id> ("commit subject")
-> >
-> >   Okay I will do that in future.
-> >
-> >   This is just FYI.
-> >   I have just confirmed that the xip_enable() line itself was implement=
-ed
-> by the commit 02b15e343aeef.
-> >   For this patch it is not a bug fix so I will not add the Fixes line
-> into the commit message.
->=20
-> Right.
->=20
-> >   But if needed it please let me know that.
->=20
-> I checked the first patch and it seems it's one of these situation
-> where the code predates git, so no need to specify a Fixes tag.
->=20
-> Thanks,
->=20
-> Boris
+Frieder Schrempf (11):
+  spi: spi-mem: Extend the SPI mem interface to set a custom memory name
+  mtd: m25p80: Call spi_mem_get_name() to let controller set a custom
+    name
+  spi: Add a driver for the Freescale/NXP QuadSPI controller
+  dt-bindings: spi: Move and adjust the bindings for the fsl-qspi driver
+  ARM: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  arm64: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  ARM: defconfig: Use the new FSL QSPI driver under the SPI framework
+  mtd: fsl-quadspi: Remove the driver as it was replaced by
+    spi-fsl-qspi.c
+  ARM: dts: ls1021a: Remove fsl,qspi-has-second-chip as it is not used
+  ARM64: dts: ls1046a: Remove fsl,qspi-has-second-chip as it is not used
+  MAINTAINERS: Move the Freescale QSPI driver to the SPI framework
+
+ .../devicetree/bindings/mtd/fsl-quadspi.txt     |   65 -
+ .../devicetree/bindings/spi/spi-fsl-qspi.txt    |   69 +
+ MAINTAINERS                                     |    4 +-
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts           |    8 +-
+ arch/arm/boot/dts/imx6sx-sdb.dts                |    8 +-
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi         |    2 +
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts     |    6 +-
+ arch/arm/configs/imx_v6_v7_defconfig            |    2 +-
+ arch/arm/configs/multi_v7_defconfig             |    2 +-
+ .../boot/dts/freescale/fsl-ls1043a-qds.dts      |    3 +-
+ .../boot/dts/freescale/fsl-ls1046a-qds.dts      |    4 +-
+ .../boot/dts/freescale/fsl-ls1046a-rdb.dts      |    6 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi  |    1 -
+ .../boot/dts/freescale/fsl-ls208xa-qds.dtsi     |    4 +
+ drivers/mtd/devices/m25p80.c                    |    3 +-
+ drivers/mtd/spi-nor/Kconfig                     |    9 -
+ drivers/mtd/spi-nor/Makefile                    |    1 -
+ drivers/mtd/spi-nor/fsl-quadspi.c               | 1206 ------------------
+ drivers/spi/Kconfig                             |   11 +
+ drivers/spi/Makefile                            |    1 +
+ drivers/spi/spi-fsl-qspi.c                      |  929 ++++++++++++++
+ drivers/spi/spi-mem.c                           |   25 +
+ include/linux/spi/spi-mem.h                     |    3 +
+ 23 files changed, 1071 insertions(+), 1301 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+ delete mode 100644 drivers/mtd/spi-nor/fsl-quadspi.c
+ create mode 100644 drivers/spi/spi-fsl-qspi.c
+
+-- 
+2.7.4
