@@ -1,25 +1,25 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fO2m8-00037V-IE
- for linux-mtd@lists.infradead.org; Wed, 30 May 2018 15:12:34 +0000
-Subject: Re: [PATCH 01/11] spi: spi-mem: Extend the SPI mem interface to set a
- custom memory name
-To: Boris Brezillon <boris.brezillon@bootlin.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fO2gl-0002qj-UJ
+ for linux-mtd@lists.infradead.org; Wed, 30 May 2018 15:07:02 +0000
+Date: Wed, 30 May 2018 17:06:48 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
 Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
  david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
- yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, linux-kernel@vger.kernel.org
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 04/11] dt-bindings: spi: Move and adjust the bindings
+ for the fsl-qspi driver
+Message-ID: <20180530170648.02c6fc41@bbrezillon>
+In-Reply-To: <1527686082-15142-5-git-send-email-frieder.schrempf@exceet.de>
 References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
- <1527686082-15142-2-git-send-email-frieder.schrempf@exceet.de>
- <20180530163220.161fdb86@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <9c1cf52a-dfea-157f-a7ef-d59299e154af@exceet.de>
-Date: Wed, 30 May 2018 17:12:18 +0200
+ <1527686082-15142-5-git-send-email-frieder.schrempf@exceet.de>
 MIME-Version: 1.0
-In-Reply-To: <20180530163220.161fdb86@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,112 +30,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed, 30 May 2018 15:14:33 +0200
+Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
 
-On 30.05.2018 16:32, Boris Brezillon wrote:
-> Hi Frieder,
-> 
-> On Wed, 30 May 2018 15:14:30 +0200
-> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
-> 
->> When porting (Q)SPI controller drivers from the MTD layer to the SPI
->> layer, the naming scheme for the memory devices changes. To be able
->> to keep compatibility with the old drivers naming scheme, a function
->> is added to the SPI mem interface to let controller drivers set a
->> custom name for the memory.
->>
->> Example for the FSL QSPI driver:
->>
->> Name with the old driver: 21e0000.qspi,
->> or with multiple devices: 21e0000.qspi-0, 21e0000.qspi-1, ...
->>
->> Name with the new driver without spi_mem_get_name: spi4.0
->>
->> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
->> ---
->>   drivers/spi/spi-mem.c       | 25 +++++++++++++++++++++++++
->>   include/linux/spi/spi-mem.h |  3 +++
->>   2 files changed, 28 insertions(+)
->>
->> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
->> index 990770d..5e9af47 100644
->> --- a/drivers/spi/spi-mem.c
->> +++ b/drivers/spi/spi-mem.c
->> @@ -311,6 +311,31 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->>   EXPORT_SYMBOL_GPL(spi_mem_exec_op);
->>   
->>   /**
->> + * spi_mem_get_name() - Let drivers using the SPI mem interface specify a
->> + *			custom name for the memory to avoid compatibility
->> + *			issues with ported drivers.
->> + * @mem: the SPI memory
->> + *
->> + * When porting (Q)SPI controller drivers from the MTD layer to the SPI
->> + * layer, the naming scheme for the memory devices changes. To be able to
->> + * keep compatibility with the old drivers naming scheme, this function can
->> + * be used to get a custom name from the controller driver.
->> + * If no custom name is available, the name of the SPI device is returned.
->> + *
->> + * Return: a char array that contains the name for the flash memory
->> + */
->> +const char *spi_mem_get_name(struct spi_mem *mem)
->> +{
->> +	struct spi_controller *ctlr = mem->spi->controller;
->> +
->> +	if (ctlr->mem_ops && ctlr->mem_ops->get_name)
->> +		return ctlr->mem_ops->get_name(mem);
-> 
-> Looks like your implementation of ->get_name() in the fsl driver is
-> allocating a new string each time it's called. I guess other
-> implementations might be forced to do the same, so maybe it's better to
-> add a ->name field to struct spi_mem and only call ->get_name() once
-> when the device is probed. Then spi_mem_get_name() can just be
-> implemented like this:
-> 
-> const char *spi_mem_get_name(struct spi_mem *mem)
-> {
-> 	return mem->name;
-> }
+> Move the documentation of the old SPI NOR driver to the place of the new
+> SPI memory interface based driver and adjust the content to reflect the
+> new drivers settings.
 
-Sounds like a good proposal. I will change that.
-
-Thanks,
-
-Frieder
+Maybe it's better to do that in 2 steps so that people can easily
+identify what has changed in the bindings.
 
 > 
-> Regards,
+> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> ---
+>  .../devicetree/bindings/mtd/fsl-quadspi.txt     | 65 ------------------
+>  .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 69 ++++++++++++++++++++
+>  2 files changed, 69 insertions(+), 65 deletions(-)
 > 
-> Boris
-> 
->> +
->> +	return dev_name(&mem->spi->dev);
->> +}
->> +EXPORT_SYMBOL_GPL(spi_mem_get_name);
->> +
->> +/**
->>    * spi_mem_adjust_op_size() - Adjust the data size of a SPI mem operation to
->>    *			      match controller limitations
->>    * @mem: the SPI memory
->> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
->> index 4fa34a2..f1912d3 100644
->> --- a/include/linux/spi/spi-mem.h
->> +++ b/include/linux/spi/spi-mem.h
->> @@ -178,6 +178,7 @@ struct spi_controller_mem_ops {
->>   			    const struct spi_mem_op *op);
->>   	int (*exec_op)(struct spi_mem *mem,
->>   		       const struct spi_mem_op *op);
->> +	const char *(*get_name)(struct spi_mem *mem);
->>   };
->>   
->>   /**
->> @@ -236,6 +237,8 @@ bool spi_mem_supports_op(struct spi_mem *mem,
->>   int spi_mem_exec_op(struct spi_mem *mem,
->>   		    const struct spi_mem_op *op);
->>   
->> +const char *spi_mem_get_name(struct spi_mem *mem);
->> +
->>   int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
->>   				       struct module *owner);
->>   
-> 
+> diff --git a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt b/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+> deleted file mode 100644
+> index 483e9cf..0000000
+> --- a/Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+> +++ /dev/null
+> @@ -1,65 +0,0 @@
+> -* Freescale Quad Serial Peripheral Interface(QuadSPI)
+> -
+> -Required properties:
+> -  - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+> -		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+> -		 "fsl,ls1021a-qspi"
+> -		 or
+> -		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+> -		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+> -  - reg : the first contains the register location and length,
+> -          the second contains the memory mapping address and length
+> -  - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+> -  - interrupts : Should contain the interrupt for the device
+> -  - clocks : The clocks needed by the QuadSPI controller
+> -  - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+> -
+> -Optional properties:
+> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
+> -                              Each bus can be connected with two NOR flashes.
+> -			      Most of the time, each bus only has one NOR flash
+> -			      connected, this is the default case.
+> -			      But if there are two NOR flashes connected to the
+> -			      bus, you should enable this property.
+> -			      (Please check the board's schematic.)
+> -  - big-endian : That means the IP register is big endian
+> -
+> -Example:
+> -
+> -qspi0: quadspi@40044000 {
+> -	compatible = "fsl,vf610-qspi";
+> -	reg = <0x40044000 0x1000>, <0x20000000 0x10000000>;
+> -	reg-names = "QuadSPI", "QuadSPI-memory";
+> -	interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
+> -	clocks = <&clks VF610_CLK_QSPI0_EN>,
+> -		<&clks VF610_CLK_QSPI0>;
+> -	clock-names = "qspi_en", "qspi";
+> -
+> -	flash0: s25fl128s@0 {
+> -		....
+> -	};
+> -};
+> -
+> -Example showing the usage of two SPI NOR devices:
+> -
+> -&qspi2 {
+> -	pinctrl-names = "default";
+> -	pinctrl-0 = <&pinctrl_qspi2>;
+> -	status = "okay";
+> -
+> -	flash0: n25q256a@0 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		compatible = "micron,n25q256a", "jedec,spi-nor";
+> -		spi-max-frequency = <29000000>;
+> -		reg = <0>;
+> -	};
+> -
+> -	flash1: n25q256a@1 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		compatible = "micron,n25q256a", "jedec,spi-nor";
+> -		spi-max-frequency = <29000000>;
+> -		reg = <1>;
+> -	};
+> -};
+> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> new file mode 100644
+> index 0000000..0ee9cd8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> @@ -0,0 +1,69 @@
+> +* Freescale Quad Serial Peripheral Interface(QuadSPI)
+> +
+> +Required properties:
+> +  - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+> +		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+> +		 "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
+> +		 or
+> +		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+> +  - reg : the first contains the register location and length,
+> +          the second contains the memory mapping address and length
+> +  - reg-names: Should contain the reg names "QuadSPI" and "QuadSPI-memory"
+> +  - interrupts : Should contain the interrupt for the device
+> +  - clocks : The clocks needed by the QuadSPI controller
+> +  - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+> +
+> +Optional properties:
+> +  - big-endian : That means the IP registers format is big endian
+> +
+> +Required SPI slave node properties:
+> +  - reg: There are two buses (A and B) with two chip selects each.
+> +	 This encodes to which bus and CS the flash is connected:
+> +		<0>: Bus A, CS 0
+> +		<1>: Bus A, CS 1
+> +		<2>: Bus B, CS 0
+> +		<3>: Bus B, CS 1
+> +
+> +Example:
+> +
+> +qspi0: quadspi@40044000 {
+> +	compatible = "fsl,vf610-qspi";
+> +	reg = <0x40044000 0x1000>, <0x20000000 0x10000000>;
+> +	reg-names = "QuadSPI", "QuadSPI-memory";
+> +	interrupts = <0 24 IRQ_TYPE_LEVEL_HIGH>;
+> +	clocks = <&clks VF610_CLK_QSPI0_EN>,
+> +		<&clks VF610_CLK_QSPI0>;
+> +	clock-names = "qspi_en", "qspi";
+> +
+> +	flash0: s25fl128s@0 {
+> +		....
+> +	};
+> +};
+> +
+> +Example showing the usage of two SPI NOR devices on bus A:
+> +
+> +&qspi2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pinctrl_qspi2>;
+> +	status = "okay";
+> +
+> +	flash0: n25q256a@0 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "micron,n25q256a", "jedec,spi-nor";
+> +		spi-max-frequency = <29000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <0>;
+> +	};
+> +
+> +	flash1: n25q256a@1 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "micron,n25q256a", "jedec,spi-nor";
+> +		spi-max-frequency = <29000000>;
+> +		spi-rx-bus-width = <4>;
+> +		spi-tx-bus-width = <4>;
+> +		reg = <1>;
+> +	};
+> +};
