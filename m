@@ -1,28 +1,37 @@
-Received: from mail1.bemta8.messagelabs.com ([216.82.243.200])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fNo5u-0007cj-Rw
- for linux-mtd@lists.infradead.org; Tue, 29 May 2018 23:32:01 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, "Boris
- Brezillon" <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
-Subject: RE: [PATCH v7 5/5] mtd: cfi_cmdset_0002: Change erase one block to
- enable XIP once
-Date: Tue, 29 May 2018 23:31:41 +0000
-Message-ID: <TY1PR01MB095408736BF00FE88D19AC13DC6D0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180527232801.1666-1-ikegami@allied-telesis.co.jp>
- <20180527232801.1666-6-ikegami@allied-telesis.co.jp>
- <20180529205751.44b2ba92@bbrezillon>
-In-Reply-To: <20180529205751.44b2ba92@bbrezillon>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from conssluserg-01.nifty.com ([210.131.2.80])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fNp0F-0002JU-QA
+ for linux-mtd@lists.infradead.org; Wed, 30 May 2018 00:30:32 +0000
+Received: from mail-ua0-f179.google.com (mail-ua0-f179.google.com
+ [209.85.217.179]) (authenticated)
+ by conssluserg-01.nifty.com with ESMTP id w4U0Tces006156
+ for <linux-mtd@lists.infradead.org>; Wed, 30 May 2018 09:29:38 +0900
+Received: by mail-ua0-f179.google.com with SMTP id y8-v6so11286910ual.5
+ for <linux-mtd@lists.infradead.org>; Tue, 29 May 2018 17:29:38 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20180529213036.150ed16a@bbrezillon>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-2-git-send-email-absahu@codeaurora.org>
+ <20180526095807.5caf5800@xps13>
+ <20180529213036.150ed16a@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 30 May 2018 09:28:57 +0900
+Message-ID: <CAK7LNASW4oCekGGkMfmO3tMUviVaium0EOYan6aLFANhL0FAXw@mail.gmail.com>
+Subject: Re: [PATCH v3 01/16] mtd: rawnand: helper function for setting up ECC
+ configuration
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Archit Taneja <architt@codeaurora.org>,
+ Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Abhishek Sahu <absahu@codeaurora.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+ Andy Gross <andy.gross@linaro.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,107 +41,192 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris-san,
+Hi.
 
-Thanks for your reviewing and advices.
+2018-05-30 4:30 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> On Sat, 26 May 2018 10:42:47 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+>> Hi Abhishek,
+>>
+>> On Fri, 25 May 2018 17:51:29 +0530, Abhishek Sahu
+>> <absahu@codeaurora.org> wrote:
+>>
+>> > commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+>> > match, maximize ECC settings") provides generic helpers which
+>> > drivers can use for setting up ECC parameters.
+>> >
+>> > Since same board can have different ECC strength nand chips so
+>> > following is the logic for setting up ECC strength and ECC step
+>> > size, which can be used by most of the drivers.
+>> >
+>> > 1. If both ECC step size and ECC strength are already set
+>> >    (usually by DT) then just check whether this setting
+>> >    is supported by NAND controller.
+>> > 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+>> >    supported by NAND controller.
+>> > 3. Otherwise, try to match the ECC step size and ECC strength closest
+>> >    to the chip's requirement. If available OOB size can't fit the chip
+>> >    requirement then select maximum ECC strength which can be fit with
+>> >    available OOB size.
+>> >
+>> > This patch introduces nand_ecc_choose_conf function which calls the
+>> > required helper functions for the above logic. The drivers can use
+>> > this single function instead of calling the 3 helper functions
+>> > individually.
+>> >
+>> > CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+>> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+>> > ---
+>> > * Changes from v2:
+>> >
+>> >   1. Renamed function to nand_ecc_choose_conf.
+>> >   2. Minor code reorganization to remove warning and 2 function calls
+>> >      for nand_maximize_ecc.
+>> >
+>> > * Changes from v1:
+>> >   NEW PATCH
+>> >
+>> >  drivers/mtd/nand/raw/nand_base.c | 42 ++++++++++++++++++++++++++++++++++++++++
+>> >  drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+>> >  include/linux/mtd/rawnand.h      |  3 +++
+>> >  2 files changed, 34 insertions(+)
+>> >
+>> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+>> > index 72f3a89..e52019d 100644
+>> > --- a/drivers/mtd/nand/raw/nand_base.c
+>> > +++ b/drivers/mtd/nand/raw/nand_base.c
+>> > @@ -6249,6 +6249,37 @@ int nand_maximize_ecc(struct nand_chip *chip,
+>> >  }
+>> >  EXPORT_SYMBOL_GPL(nand_maximize_ecc);
+>> >
+>> > +/**
+>> > + * nand_ecc_choose_conf - Set the ECC strength and ECC step size
+>> > + * @chip: nand chip info structure
+>> > + * @caps: ECC engine caps info structure
+>> > + * @oobavail: OOB size that the ECC engine can use
+>> > + *
+>> > + * Choose the ECC configuration according to following logic
+>> > + *
+>> > + * 1. If both ECC step size and ECC strength are already set (usually by DT)
+>> > + *    then check if it is supported by this controller.
+>> > + * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
+>> > + * 3. Otherwise, try to match the ECC step size and ECC strength closest
+>> > + *    to the chip's requirement. If available OOB size can't fit the chip
+>> > + *    requirement then fallback to the maximum ECC step size and ECC strength.
+>> > + *
+>> > + * On success, the chosen ECC settings are set.
+>> > + */
+>> > +int nand_ecc_choose_conf(struct nand_chip *chip,
+>> > +                    const struct nand_ecc_caps *caps, int oobavail)
+>> > +{
+>> > +   if (chip->ecc.size && chip->ecc.strength)
+>> > +           return nand_check_ecc_caps(chip, caps, oobavail);
+>> > +
+>> > +   if (!(chip->ecc.options & NAND_ECC_MAXIMIZE) &&
+>> > +       !nand_match_ecc_req(chip, caps, oobavail))
+>> > +           return 0;
+>> > +
+>> > +   return nand_maximize_ecc(chip, caps, oobavail);
+>>
+>> I personally don't mind if nand_maximize_ecc() is called twice in
+>> the function if it clarifies the logic. Maybe the following will be
+>> more clear for the user?
+>>
+>>       if (chip->ecc.size && chip->ecc.strength)
+>>               return nand_check_ecc_caps(chip, caps, oobavail);
+>>
+>>       if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+>>               return nand_maximize_ecc(chip, caps, oobavail);
+>>
+>>       if (!nand_match_ecc_req(chip, caps, oobavail))
+>>               return 0;
+>>
+>>       return nand_maximize_ecc(chip, caps, oobavail);
+>
+> I personally don't mind, and it seems Masahiro wanted to keep the logic
+> he had used in the denali driver.
+>
+>>
+>> Also, I'm not sure we should just error out when nand_check_ecc_caps()
+>> fails. What about something more robust, like:
+>>
+>>       int ret;
+>>
+>>       if (chip->ecc.size && chip->ecc.strength) {
+>>               ret = nand_check_ecc_caps(chip, caps, oobavail);
+>>               if (ret)
+>>                       goto maximize_ecc;
+>
+> Nope. When someone asked for a specific ECC config by passing the
+> nand-ecc-xxx props we should apply it or return an erro if it's not
+> supported. People passing those props should now what the ECC engine
+> supports and pick one valid values.
+>
+>>
+>>               return 0;
+>>       }
+>>
+>>       if (chip->ecc.options & NAND_ECC_MAXIMIZE)
+>>               goto maximize_ecc;
+>>
+>>       ret = nand_match_ecc_req(chip, caps, oobavail);
+>>       if (ret)
+>>               goto maximize_ecc;
+>>
+>>       return 0;
+>>
+>> maximize_ecc:
+>>       return nand_maximize_ecc(chip, caps, oobavail);
+>>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-> Is this really a bug fix? Doesn't look like a bug fix to me.
 
-  No as you mentioned it is not a bug fix but just a refactoring to reduce =
-xip_enable() line.
 
-> Also, every time you add Cc stable you should try to find the commit
-> that introduced the bug. Sometime it's not possible because the bug
-> existed before git was in use, but most of the time you'll find the
-> offending commit using git blame.
->=20
-> A fixes tag should be formatted like that:
->=20
-> Fixes: <commit-id> ("commit subject")
 
-  Okay I will do that in future.
 
-  This is just FYI.
-  I have just confirmed that the xip_enable() line itself was implemented b=
-y the commit 02b15e343aeef.
-  For this patch it is not a bug fix so I will not add the Fixes line into =
-the commit message.
-  But if needed it please let me know that.
 
-Regards,
-Ikegami
+This version looks good to me.
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Wednesday, May 30, 2018 3:58 AM
-> To: IKEGAMI Tokunori
-> Cc: PACKHAM Chris; Brian Norris; David Woodhouse; Boris Brezillon; Marek
-> Vasut; Richard Weinberger; Cyrille Pitchen;
-> linux-mtd@lists.infradead.org; stable@vger.kernel.org
-> Subject: Re: [PATCH v7 5/5] mtd: cfi_cmdset_0002: Change erase one block
-> to enable XIP once
->=20
-> On Mon, 28 May 2018 08:28:01 +0900
-> Tokunori Ikegami <ikegami@allied-telesis.co.jp> wrote:
->=20
-> > To enable XIP it is executed both normal and error cases.
-> > This call can be moved after the for loop as same with erase chip.
-> >
-> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Cc: Brian Norris <computersforpeace@gmail.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Cc: Marek Vasut <marek.vasut@gmail.com>
-> > Cc: Richard Weinberger <richard@nod.at>
-> > Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> > Cc: linux-mtd@lists.infradead.org
-> > Cc: stable@vger.kernel.org
->=20
-> Is this really a bug fix? Doesn't look like a bug fix to me.
->=20
-> Also, every time you add Cc stable you should try to find the commit
-> that introduced the bug. Sometime it's not possible because the bug
-> existed before git was in use, but most of the time you'll find the
-> offending commit using git blame.
->=20
-> A fixes tag should be formatted like that:
->=20
-> Fixes: <commit-id> ("commit subject")
->=20
-> > ---
-> >  drivers/mtd/chips/cfi_cmdset_0002.c | 6 ++----
-> >  1 file changed, 2 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-> b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index 6adda4dc2007..6c681cbf2d37 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -2389,13 +2389,10 @@ static int __xipram do_erase_oneblock(struct
-> map_info *map, struct flchip *chip,
-> >  			chip->erase_suspended =3D 0;
-> >  		}
-> >
-> > -		if (chip_good(map, adr, map_word_ff(map))) {
-> > -			xip_enable(map, chip, adr);
-> > +		if (chip_good(map, adr, map_word_ff(map)))
-> >  			break;
-> > -		}
-> >
-> >  		if (time_after(jiffies, timeo)) {
-> > -			xip_enable(map, chip, adr);
-> >  			printk(KERN_WARNING "MTD %s(): software
-> timeout\n",
-> >  			       __func__);
-> >  			ret =3D -EIO;
-> > @@ -2418,6 +2415,7 @@ static int __xipram do_erase_oneblock(struct
-> map_info *map, struct flchip *chip,
-> >  	}
-> >
-> >  	chip->state =3D FL_READY;
-> > +	xip_enable(map, chip, adr);
-> >  	DISABLE_VPP(map);
-> >  	put_chip(map, chip, adr);
-> >  	mutex_unlock(&chip->mutex);
+If you want to check the error code more precisely,
+how about something like follows?
+
+
+
+int nand_ecc_choose_conf(struct nand_chip *chip,
+                        const struct nand_ecc_caps *caps, int oobavail)
+{
+       int ret;
+
+       if (chip->ecc.size && chip->ecc.strength)
+               return nand_check_ecc_caps(chip, caps, oobavail);
+
+       if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
+               ret = nand_match_ecc_req(chip, caps, oobavail);
+               if (ret != -ENOTSUPP)
+                       return ret;
+       }
+
+       return nand_maximize_ecc(chip, caps, oobavail);
+}
+
+
+Only the difference is the case
+where nand_match_ecc_req() returns a different error code
+than ENOTSUPP.
+(Currently, this happens only when insane 'oobavail' is passed.)
+
+
+ENOTSUPP means 'required ECC setting is not supported'.
+Other error code is more significant, so it is not a good reason
+to fall back to miximization, IMHO.
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
