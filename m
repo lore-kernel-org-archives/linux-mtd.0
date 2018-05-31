@@ -1,7 +1,7 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOVsW-0005ky-7m
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 22:17:12 +0000
+ id 1fOVsJ-0005gW-1w
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 22:16:55 +0000
 From: Stefan Agner <stefan@agner.ch>
 To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
@@ -13,9 +13,9 @@ Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
  stefan@agner.ch, linux-mtd@lists.infradead.org,
  linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/6] ARM: dts: tegra: enable NAND flash on Colibri T20
-Date: Fri,  1 Jun 2018 00:16:37 +0200
-Message-Id: <20180531221637.6017-7-stefan@agner.ch>
+Subject: [PATCH v3 3/6] mtd: rawnand: tegra: add devicetree binding
+Date: Fri,  1 Jun 2018 00:16:34 +0200
+Message-Id: <20180531221637.6017-4-stefan@agner.ch>
 In-Reply-To: <20180531221637.6017-1-stefan@agner.ch>
 References: <20180531221637.6017-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,26 +27,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Lucas Stach <dev@lynxeye.de>
-
-This enables the on-module ONFI conformant NAND flash.
+This adds the devicetree binding for the Tegra 2 NAND flash
+controller.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 ---
- arch/arm/boot/dts/tegra20-colibri-512.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../bindings/mtd/nvidia-tegra20-nand.txt      | 64 +++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
 
-diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-index 5c202b3e3bb1..5a80ee4557db 100644
---- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-+++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-@@ -462,6 +462,22 @@
- 		};
- 	};
- 
+diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+new file mode 100644
+index 000000000000..5cd984ef046b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+@@ -0,0 +1,64 @@
++NVIDIA Tegra NAND Flash controller
++
++Required properties:
++- compatible: Must be one of:
++  - "nvidia,tegra20-nand"
++- reg: MMIO address range
++- interrupts: interrupt output of the NFC controller
++- clocks: Must contain an entry for each entry in clock-names.
++  See ../clocks/clock-bindings.txt for details.
++- clock-names: Must include the following entries:
++  - nand
++- resets: Must contain an entry for each entry in reset-names.
++  See ../reset/reset.txt for details.
++- reset-names: Must include the following entries:
++  - nand
++
++Optional children nodes:
++Individual NAND chips are children of the NAND controller node. Currently
++only one NAND chip supported.
++
++Required children node properties:
++- reg: An integer ranging from 1 to 6 representing the CS line to use.
++
++Optional children node properties:
++- nand-ecc-mode: String, operation mode of the NAND ecc mode. Currently only
++		 "hw" is supported.
++- nand-ecc-algo: string, algorithm of NAND ECC.
++		 Supported values with "hw" ECC mode are: "rs", "bch".
++- nand-bus-width : See nand.txt
++- nand-on-flash-bbt: See nand.txt
++- nand-ecc-strength: integer representing the number of bits to correct
++		     per ECC step (always 512). Supported strength using HW ECC
++		     modes are:
++		     - RS: 4, 6, 8
++		     - BCH: 4, 8, 14, 16
++- nand-ecc-maximize: See nand.txt
++- nand-is-boot-medium: Makes sure only ECC strengths supported by the boot ROM
++		       are choosen.
++- wp-gpios: GPIO specifier for the write protect pin.
++
++Optional child node of NAND chip nodes:
++Partitions: see partition.txt
++
++  Example:
 +	nand@70008000 {
-+		status = "okay";
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
 +
 +		nand-chip@0 {
 +			reg = <0>;
@@ -55,14 +103,9 @@ index 5c202b3e3bb1..5a80ee4557db 100644
 +			nand-bus-width = <8>;
 +			nand-on-flash-bbt;
 +			nand-ecc-algo = "bch";
-+			nand-is-boot-medium;
-+			nand-ecc-maximize;
++			nand-ecc-strength = <8>;
 +			wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
 +		};
 +	};
-+
- 	usb@c5004000 {
- 		status = "okay";
- 		nvidia,phy-reset-gpio = <&gpio TEGRA_GPIO(V, 1)
 -- 
 2.17.0
