@@ -1,25 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOHI6-0002rv-8Z
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 06:42:32 +0000
-Date: Thu, 31 May 2018 08:42:05 +0200
+ id 1fOI2R-0004y4-4d
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 07:30:24 +0000
+Date: Thu, 31 May 2018 09:30:05 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Stefan Agner <stefan@agner.ch>, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] mtd: rawnand: tegra: add devicetree binding
-Message-ID: <20180531084205.38bfe90f@xps13>
-In-Reply-To: <20180531034523.GA5417@rob-hp-laptop>
-References: <20180527215442.14760-3-stefan@agner.ch>
- <20180528002354.45025afd@xps13>
- <20180531034523.GA5417@rob-hp-laptop>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Peter Pan
+ <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Vignesh R <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>,
+ Peter Pan <peterpandong@micron.com>
+Subject: Re: [PATCH v7 2/5] mtd: nand: Add core infrastructure to support
+ SPI NANDs
+Message-ID: <20180531093005.47fb5409@xps13>
+In-Reply-To: <20180515150825.19835-3-boris.brezillon@bootlin.com>
+References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
+ <20180515150825.19835-3-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -32,47 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hi Boris,
 
-On Wed, 30 May 2018 22:45:23 -0500, Rob Herring <robh@kernel.org> wrote:
+On Tue, 15 May 2018 17:08:22 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-> On Mon, May 28, 2018 at 12:23:54AM +0200, Miquel Raynal wrote:
-> > Hi Stefan,
-> >=20
-> > On Sun, 27 May 2018 23:54:38 +0200, Stefan Agner <stefan@agner.ch>
-> > wrote:
-> >  =20
-> > > From: Lucas Stach <dev@lynxeye.de>
-> > >=20
-> > > This adds the devicetree binding for the Tegra 2 NAND flash
-> > > controller.
-> > >=20
-> > > Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> > > Signed-off-by: Stefan Agner <stefan@agner.ch>
-> > > ---
-> > >  .../bindings/mtd/nvidia,tegra20-nand.txt      | 62 +++++++++++++++++=
-++
-> > >  1 file changed, 62 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia,tegr=
-a20-nand.txt
-> > >=20
-> > > diff --git a/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nan=
-d.txt b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
-> > > new file mode 100644
-> > > index 000000000000..49e472af1b39
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/mtd/nvidia,tegra20-nand.txt
-> > > @@ -0,0 +1,62 @@
-> > > +NVIDIA Tegra NAND Flash controller
-> > > +
-> > > +Required properties:
-> > > +- compatible: Must be one of: =20
-> >=20
-> > Nitpick: just put the compatible here as there is only one? =20
->=20
-> No, this is how I ask people to format it.
+> +static bool spinand_isbad(struct nand_device *nand, const struct nand_po=
+s *pos)
+> +{
+> +	struct spinand_device *spinand =3D nand_to_spinand(nand);
+> +	struct nand_page_io_req req =3D {
+> +		.pos =3D *pos,
+> +		.ooblen =3D 2,
+> +		.ooboffs =3D 0,
+> +		.oobbuf.in =3D spinand->oobbuf,
+> +		.mode =3D MTD_OPS_RAW,
+> +	};
+> +	int ret;
+> +
+> +	memset(spinand->oobbuf, 0, 2);
+> +	spinand_select_target(spinand, pos->target);
+> +	ret =3D spinand_read_page(spinand, &req, false);
 
-Oh, ok, I'll remember it for my own DT patches then :)
+I got a warning here because ret is not checked, maybe a:
+
+        if (ret) {
+                dev_err(dev, "...");
+                return false;
+        }
+
+?
+
+> +	if (spinand->oobbuf[0] !=3D 0xff || spinand->oobbuf[1] !=3D 0xff)
+> +		return true;
+> +
+> +	return false;
+> +}
 
 Thanks,
 Miqu=C3=A8l
