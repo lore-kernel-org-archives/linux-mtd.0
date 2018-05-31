@@ -1,28 +1,22 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOKJ5-00005s-0X
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 09:55:45 +0000
+ id 1fOM6g-0005lj-5E
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 11:51:06 +0000
+Date: Thu, 31 May 2018 19:49:59 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: kbuild-all@01.org, Boris Brezillon <boris.brezillon@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Ivan Djelic <ivan.djelic@parrot.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] lib/bch: Remove VLA usage
+Message-ID: <201805311902.8kOGDiKL%fengguang.wu@intel.com>
+References: <20180529224207.GA13354@beast>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Date: Thu, 31 May 2018 11:55:31 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org
-Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, jonathanh@nvidia.com, pdeschrijver@nvidia.com,
- pgaikwad@nvidia.com, mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <80eb6a514e96cdbd460c6a0937a9dff9@agner.ch>
-References: <20180527215442.14760-4-stefan@agner.ch>
- <80eb6a514e96cdbd460c6a0937a9dff9@agner.ch>
-Message-ID: <149e568a8c914c4ea861037d5d51ce94@agner.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180529224207.GA13354@beast>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,286 +26,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 31.05.2018 11:37, Stefan Agner wrote:
-> On 27.05.2018 23:54, Stefan Agner wrote:
->> Add support for the NAND flash controller found on NVIDIA
->> Tegra 2 SoCs. This implementation does not make use of the
->> command queue feature. Regular operations/data transfers are
->> done in PIO mode. Page read/writes with hardware ECC make
->> use of the DMA for data transfer.
->>
->> Signed-off-by: Lucas Stach <dev@lynxeye.de>
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> ---
->>  MAINTAINERS                       |   7 +
->>  drivers/mtd/nand/raw/Kconfig      |   6 +
->>  drivers/mtd/nand/raw/Makefile     |   1 +
->>  drivers/mtd/nand/raw/tegra_nand.c | 999 ++++++++++++++++++++++++++++++
->>  4 files changed, 1013 insertions(+)
->>  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
->>
-> [...]
->> +
->> +	chip->ecc.read_page = tegra_nand_read_page_hwecc;
->> +	chip->ecc.write_page = tegra_nand_write_page_hwecc;
->> +	/* Not functional for unknown reason...
->> +	chip->ecc.read_page_raw = tegra_nand_read_page;
->> +	chip->ecc.write_page_raw = tegra_nand_write_page;
->> +	*/
-> 
-> I am giving up on these raw read/write_page functions. Using DMA without
-> HW ECC just seems not to work.
-> 
-> I do not get the CMD_DONE interrupt as I do when using DMA with HW ECC.
-> I tried with the same settings, just not enabling DMA (HW_ECC not set,
-> HW_ERR_CORRECTION not set, and also with/without PIPELINE_EN).
+Hi Kees,
 
-s/not enabling DMA/not enabling HW ECC/
+I love your patch! Perhaps something to improve:
 
-> 
-> A register dump after a successful read with HW ECC looks like this:
-> [  196.935199] CMD: 0x66890104
-> [  196.938003] STATUS: 0x00000101
-> [  196.941049] ISR: 0x00000000
-> [  196.943865] CONFIG: 0x0084000b
-> [  196.946914] DMA_MST_CTRL: 0x15000004
-> [  196.950481] DMA_CFG_A: 0x00000fff
-> [  196.954361] DMA_CFG_B: 0x00000000
-> [  196.957670] FIFO: 0x0000aa00
-> 
-> Whereas without HW ECC completion times out (using
-> wait_for_completion_timeout already):
-> [  226.128618] tegra-nand 70008000.nand: CMD timeout, last CMD:
-> 0xe6890104                              
-> [  226.135375] CMD: 0xe6890104
-> [  226.138201] STATUS: 0x00000100
-> [  226.141280] ISR: 0x00000100
-> [  226.153372] CONFIG: 0x0084000b
-> [  226.156423] DMA_MST_CTRL: 0x95000004
-> [  226.159989] DMA_CFG_A: 0x00000fff
-> [  226.164084] DMA_CFG_B: 0x00000000
-> [  226.167393] FIFO: 0x0000aa00
-> 
-> It looks to me as if the DMA just does not start the data cycle. The
-> NAND seems to have read the page (RBSY0 is set).
-> 
-> 
-> Note that it is never explicitly stated whether DMA without HW ECC is
-> supported. There is some indication that it should: There are separated
-> bits to enable HW ECC/DMA, the reference manual states "If HW ECC is
-> enabled... " and a block diagram shows separate blocks for the ECC
-> Engine and NAND DMA control.
-> 
-> There is also indication that it does not: The chapter Restrictions
-> reads: "HW_ERR_CORRECTION = 0/1, doesn’t alter controller hardware
-> behavior. Software error correction scheme with HW_ERR_CORRECTION = 0,
-> is deprecated in Tegra 2 Processor."
-> 
-> Note that the default implementations nand_(read|write)_page_raw which
-> use exec_op do work fine! Unfortunately, the PIO mode only allows 4
-> bytes in a read cycle, hence raw read/write is slow...
-> 
-> --
-> Stefan
-> 
-> 
->> +	config = readl(ctrl->regs + CFG);
->> +	config |= CFG_PIPE_EN | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4;
->> +
->> +	if (chip->options & NAND_BUSWIDTH_16)
->> +		config |= CFG_BUS_WIDTH_16;
->> +
->> +	switch (chip->ecc.algo) {
->> +	case NAND_ECC_RS:
->> +		bits_per_step = BITS_PER_STEP_RS * chip->ecc.strength;
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_rs_ops);
->> +		switch (chip->ecc.strength) {
->> +		case 4:
->> +			config |= CFG_ECC_SEL | CFG_TVAL_4;
->> +			break;
->> +		case 6:
->> +			config |= CFG_ECC_SEL | CFG_TVAL_6;
->> +			break;
->> +		case 8:
->> +			config |= CFG_ECC_SEL | CFG_TVAL_8;
->> +			break;
->> +		default:
->> +			dev_err(dev, "ECC strength %d not supported\n",
->> +				chip->ecc.strength);
->> +			return -EINVAL;
->> +		}
->> +		break;
->> +	case NAND_ECC_BCH:
->> +		bits_per_step = BITS_PER_STEP_BCH * chip->ecc.strength;
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_bch_ops);
->> +		switch (chip->ecc.strength) {
->> +		case 4:
->> +			bch_config = BCH_TVAL_4;
->> +			break;
->> +		case 8:
->> +			bch_config = BCH_TVAL_8;
->> +			break;
->> +		case 14:
->> +			bch_config = BCH_TVAL_14;
->> +			break;
->> +		case 16:
->> +			bch_config = BCH_TVAL_16;
->> +			break;
->> +		default:
->> +			dev_err(dev, "ECC strength %d not supported\n",
->> +				chip->ecc.strength);
->> +			return -EINVAL;
->> +		}
->> +		break;
->> +	default:
->> +		dev_err(dev, "ECC algorithm not supported\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	chip->ecc.bytes = DIV_ROUND_UP(bits_per_step, 8);
->> +
->> +	switch (mtd->writesize) {
->> +	case 256:
->> +		config |= CFG_PS_256;
->> +		break;
->> +	case 512:
->> +		config |= CFG_PS_512;
->> +		break;
->> +	case 1024:
->> +		config |= CFG_PS_1024;
->> +		break;
->> +	case 2048:
->> +		config |= CFG_PS_2048;
->> +		break;
->> +	case 4096:
->> +		config |= CFG_PS_4096;
->> +		break;
->> +	default:
->> +		dev_err(dev, "unhandled writesize %d\n", mtd->writesize);
->> +		return -ENODEV;
->> +	}
->> +
->> +	writel(config, ctrl->regs + CFG);
->> +	writel(bch_config, ctrl->regs + BCH_CONFIG);
->> +
->> +	err = nand_scan_tail(mtd);
->> +	if (err)
->> +		return err;
->> +
->> +	config |= CFG_TAG_BYTE_SIZE(mtd_ooblayout_count_freebytes(mtd) - 1);
->> +	writel(config, ctrl->regs + CFG);
->> +
->> +	err = mtd_device_register(mtd, NULL, 0);
->> +	if (err)
->> +		return err;
->> +
->> +	return 0;
->> +}
->> +
->> +static int tegra_nand_probe(struct platform_device *pdev)
->> +{
->> +	struct reset_control *rst;
->> +	struct tegra_nand_controller *ctrl;
->> +	struct resource *res;
->> +	unsigned long value;
->> +	int irq, err = 0;
->> +
->> +	ctrl = devm_kzalloc(&pdev->dev, sizeof(*ctrl), GFP_KERNEL);
->> +	if (!ctrl)
->> +		return -ENOMEM;
->> +
->> +	ctrl->dev = &pdev->dev;
->> +	nand_hw_control_init(&ctrl->controller);
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	ctrl->regs = devm_ioremap_resource(&pdev->dev, res);
->> +	if (IS_ERR(ctrl->regs))
->> +		return PTR_ERR(ctrl->regs);
->> +
->> +	rst = devm_reset_control_get(&pdev->dev, "nand");
->> +	if (IS_ERR(rst))
->> +		return PTR_ERR(rst);
->> +
->> +	ctrl->clk = devm_clk_get(&pdev->dev, "nand");
->> +	if (IS_ERR(ctrl->clk))
->> +		return PTR_ERR(ctrl->clk);
->> +
->> +	err = clk_prepare_enable(ctrl->clk);
->> +	if (err)
->> +		return err;
->> +
->> +	reset_control_reset(rst);
->> +
->> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
->> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
->> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
->> +	writel(NAND_CMD_STATUS, ctrl->regs + HWSTATUS_CMD);
->> +	writel(value, ctrl->regs + HWSTATUS_MASK);
->> +
->> +	init_completion(&ctrl->command_complete);
->> +	init_completion(&ctrl->dma_complete);
->> +
->> +	/* clear interrupts */
->> +	value = readl(ctrl->regs + ISR);
->> +	writel(value, ctrl->regs + ISR);
->> +
->> +	irq = platform_get_irq(pdev, 0);
->> +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
->> +			       dev_name(&pdev->dev), ctrl);
->> +	if (err)
->> +		goto err_disable_clk;
->> +
->> +	writel(DMA_CTRL_IS_DONE, ctrl->regs + DMA_CTRL);
->> +
->> +	/* enable interrupts */
->> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
->> +	writel(value, ctrl->regs + IER);
->> +
->> +	/* reset config */
->> +	writel(0, ctrl->regs + CFG);
->> +
->> +	err = tegra_nand_chips_init(ctrl->dev, ctrl);
->> +	if (err)
->> +		goto err_disable_clk;
->> +
->> +	platform_set_drvdata(pdev, ctrl);
->> +
->> +	return 0;
->> +
->> +err_disable_clk:
->> +	clk_disable_unprepare(ctrl->clk);
->> +	return err;
->> +}
->> +
->> +static int tegra_nand_remove(struct platform_device *pdev)
->> +{
->> +	struct tegra_nand_controller *ctrl = platform_get_drvdata(pdev);
->> +
->> +	nand_release(nand_to_mtd(ctrl->chip));
->> +
->> +	clk_disable_unprepare(ctrl->clk);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id tegra_nand_of_match[] = {
->> +	{ .compatible = "nvidia,tegra20-nand" },
->> +	{ /* sentinel */ }
->> +};
->> +
->> +static struct platform_driver tegra_nand_driver = {
->> +	.driver = {
->> +		.name = "tegra-nand",
->> +		.of_match_table = tegra_nand_of_match,
->> +	},
->> +	.probe = tegra_nand_probe,
->> +	.remove = tegra_nand_remove,
->> +};
->> +module_platform_driver(tegra_nand_driver);
->> +
->> +MODULE_DESCRIPTION("NVIDIA Tegra NAND driver");
->> +MODULE_AUTHOR("Thierry Reding <thierry.reding@nvidia.com>");
->> +MODULE_AUTHOR("Lucas Stach <dev@lynxeye.de>");
->> +MODULE_AUTHOR("Stefan Agner <stefan@agner.ch>");
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_DEVICE_TABLE(of, tegra_nand_of_match);
+[auto build test WARNING on linus/master]
+[also build test WARNING on v4.17-rc7 next-20180530]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Kees-Cook/lib-bch-Remove-VLA-usage/20180531-055540
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> lib/bch.c:237:26: sparse: restricted __be32 degrades to integer
+
+vim +237 lib/bch.c
+
+437aa565 Ivan Djelic 2011-03-11  171  
+437aa565 Ivan Djelic 2011-03-11  172  /**
+437aa565 Ivan Djelic 2011-03-11  173   * encode_bch - calculate BCH ecc parity of data
+437aa565 Ivan Djelic 2011-03-11  174   * @bch:   BCH control structure
+437aa565 Ivan Djelic 2011-03-11  175   * @data:  data to encode
+437aa565 Ivan Djelic 2011-03-11  176   * @len:   data length in bytes
+437aa565 Ivan Djelic 2011-03-11  177   * @ecc:   ecc parity data, must be initialized by caller
+437aa565 Ivan Djelic 2011-03-11  178   *
+437aa565 Ivan Djelic 2011-03-11  179   * The @ecc parity array is used both as input and output parameter, in order to
+437aa565 Ivan Djelic 2011-03-11  180   * allow incremental computations. It should be of the size indicated by member
+437aa565 Ivan Djelic 2011-03-11  181   * @ecc_bytes of @bch, and should be initialized to 0 before the first call.
+437aa565 Ivan Djelic 2011-03-11  182   *
+437aa565 Ivan Djelic 2011-03-11  183   * The exact number of computed ecc parity bits is given by member @ecc_bits of
+437aa565 Ivan Djelic 2011-03-11  184   * @bch; it may be less than m*t for large values of t.
+437aa565 Ivan Djelic 2011-03-11  185   */
+437aa565 Ivan Djelic 2011-03-11  186  void encode_bch(struct bch_control *bch, const uint8_t *data,
+437aa565 Ivan Djelic 2011-03-11  187  		unsigned int len, uint8_t *ecc)
+437aa565 Ivan Djelic 2011-03-11  188  {
+437aa565 Ivan Djelic 2011-03-11  189  	const unsigned int l = BCH_ECC_WORDS(bch)-1;
+437aa565 Ivan Djelic 2011-03-11  190  	unsigned int i, mlen;
+437aa565 Ivan Djelic 2011-03-11  191  	unsigned long m;
+da5dc7be Kees Cook   2018-05-29  192  	uint32_t w;
+437aa565 Ivan Djelic 2011-03-11  193  	const uint32_t * const tab0 = bch->mod8_tab;
+437aa565 Ivan Djelic 2011-03-11  194  	const uint32_t * const tab1 = tab0 + 256*(l+1);
+437aa565 Ivan Djelic 2011-03-11  195  	const uint32_t * const tab2 = tab1 + 256*(l+1);
+437aa565 Ivan Djelic 2011-03-11  196  	const uint32_t * const tab3 = tab2 + 256*(l+1);
+437aa565 Ivan Djelic 2011-03-11  197  	const uint32_t *pdata, *p0, *p1, *p2, *p3;
+437aa565 Ivan Djelic 2011-03-11  198  
+437aa565 Ivan Djelic 2011-03-11  199  	if (ecc) {
+437aa565 Ivan Djelic 2011-03-11  200  		/* load ecc parity bytes into internal 32-bit buffer */
+437aa565 Ivan Djelic 2011-03-11  201  		load_ecc8(bch, bch->ecc_buf, ecc);
+437aa565 Ivan Djelic 2011-03-11  202  	} else {
+da5dc7be Kees Cook   2018-05-29  203  		memset(bch->ecc_work, 0, bch->ecc_bytes);
+437aa565 Ivan Djelic 2011-03-11  204  	}
+437aa565 Ivan Djelic 2011-03-11  205  
+437aa565 Ivan Djelic 2011-03-11  206  	/* process first unaligned data bytes */
+437aa565 Ivan Djelic 2011-03-11  207  	m = ((unsigned long)data) & 3;
+437aa565 Ivan Djelic 2011-03-11  208  	if (m) {
+437aa565 Ivan Djelic 2011-03-11  209  		mlen = (len < (4-m)) ? len : 4-m;
+437aa565 Ivan Djelic 2011-03-11  210  		encode_bch_unaligned(bch, data, mlen, bch->ecc_buf);
+437aa565 Ivan Djelic 2011-03-11  211  		data += mlen;
+437aa565 Ivan Djelic 2011-03-11  212  		len  -= mlen;
+437aa565 Ivan Djelic 2011-03-11  213  	}
+437aa565 Ivan Djelic 2011-03-11  214  
+437aa565 Ivan Djelic 2011-03-11  215  	/* process 32-bit aligned data words */
+437aa565 Ivan Djelic 2011-03-11  216  	pdata = (uint32_t *)data;
+437aa565 Ivan Djelic 2011-03-11  217  	mlen  = len/4;
+437aa565 Ivan Djelic 2011-03-11  218  	data += 4*mlen;
+437aa565 Ivan Djelic 2011-03-11  219  	len  -= 4*mlen;
+da5dc7be Kees Cook   2018-05-29  220  	memcpy(bch->ecc_work, bch->ecc_buf, bch->ecc_bytes);
+437aa565 Ivan Djelic 2011-03-11  221  
+437aa565 Ivan Djelic 2011-03-11  222  	/*
+437aa565 Ivan Djelic 2011-03-11  223  	 * split each 32-bit word into 4 polynomials of weight 8 as follows:
+437aa565 Ivan Djelic 2011-03-11  224  	 *
+437aa565 Ivan Djelic 2011-03-11  225  	 * 31 ...24  23 ...16  15 ... 8  7 ... 0
+437aa565 Ivan Djelic 2011-03-11  226  	 * xxxxxxxx  yyyyyyyy  zzzzzzzz  tttttttt
+437aa565 Ivan Djelic 2011-03-11  227  	 *                               tttttttt  mod g = r0 (precomputed)
+437aa565 Ivan Djelic 2011-03-11  228  	 *                     zzzzzzzz  00000000  mod g = r1 (precomputed)
+437aa565 Ivan Djelic 2011-03-11  229  	 *           yyyyyyyy  00000000  00000000  mod g = r2 (precomputed)
+437aa565 Ivan Djelic 2011-03-11  230  	 * xxxxxxxx  00000000  00000000  00000000  mod g = r3 (precomputed)
+437aa565 Ivan Djelic 2011-03-11  231  	 * xxxxxxxx  yyyyyyyy  zzzzzzzz  tttttttt  mod g = r0^r1^r2^r3
+437aa565 Ivan Djelic 2011-03-11  232  	 */
+437aa565 Ivan Djelic 2011-03-11  233  	while (mlen--) {
+da5dc7be Kees Cook   2018-05-29  234  		uint32_t *r = bch->ecc_work;
+da5dc7be Kees Cook   2018-05-29  235  
+437aa565 Ivan Djelic 2011-03-11  236  		/* input data is read in big-endian format */
+437aa565 Ivan Djelic 2011-03-11 @237  		w = r[0]^cpu_to_be32(*pdata++);
+437aa565 Ivan Djelic 2011-03-11  238  		p0 = tab0 + (l+1)*((w >>  0) & 0xff);
+437aa565 Ivan Djelic 2011-03-11  239  		p1 = tab1 + (l+1)*((w >>  8) & 0xff);
+437aa565 Ivan Djelic 2011-03-11  240  		p2 = tab2 + (l+1)*((w >> 16) & 0xff);
+437aa565 Ivan Djelic 2011-03-11  241  		p3 = tab3 + (l+1)*((w >> 24) & 0xff);
+437aa565 Ivan Djelic 2011-03-11  242  
+437aa565 Ivan Djelic 2011-03-11  243  		for (i = 0; i < l; i++)
+437aa565 Ivan Djelic 2011-03-11  244  			r[i] = r[i+1]^p0[i]^p1[i]^p2[i]^p3[i];
+437aa565 Ivan Djelic 2011-03-11  245  
+437aa565 Ivan Djelic 2011-03-11  246  		r[l] = p0[l]^p1[l]^p2[l]^p3[l];
+437aa565 Ivan Djelic 2011-03-11  247  	}
+da5dc7be Kees Cook   2018-05-29  248  	memcpy(bch->ecc_buf, bch->ecc_work, bch->ecc_bytes);
+437aa565 Ivan Djelic 2011-03-11  249  
+437aa565 Ivan Djelic 2011-03-11  250  	/* process last unaligned bytes */
+437aa565 Ivan Djelic 2011-03-11  251  	if (len)
+437aa565 Ivan Djelic 2011-03-11  252  		encode_bch_unaligned(bch, data, len, bch->ecc_buf);
+437aa565 Ivan Djelic 2011-03-11  253  
+437aa565 Ivan Djelic 2011-03-11  254  	/* store ecc parity bytes into original parity buffer */
+437aa565 Ivan Djelic 2011-03-11  255  	if (ecc)
+437aa565 Ivan Djelic 2011-03-11  256  		store_ecc8(bch, ecc, bch->ecc_buf);
+437aa565 Ivan Djelic 2011-03-11  257  }
+437aa565 Ivan Djelic 2011-03-11  258  EXPORT_SYMBOL_GPL(encode_bch);
+437aa565 Ivan Djelic 2011-03-11  259  
+
+:::::: The code at line 237 was first introduced by commit
+:::::: 437aa565e2656776a7104aaacd792fe789ea8b2d lib: add shared BCH ECC library
+
+:::::: TO: Ivan Djelic <ivan.djelic@parrot.com>
+:::::: CC: David Woodhouse <David.Woodhouse@intel.com>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
