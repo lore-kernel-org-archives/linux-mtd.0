@@ -1,28 +1,29 @@
-Received: from mail-pf0-f193.google.com ([209.85.192.193])
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOQJe-00080R-7f
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 16:20:49 +0000
-Received: by mail-pf0-f193.google.com with SMTP id h12-v6so1093820pfk.11
- for <linux-mtd@lists.infradead.org>; Thu, 31 May 2018 09:20:31 -0700 (PDT)
-Date: Thu, 31 May 2018 11:20:29 -0500
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/2] dt-bindings: mtd: explicitly describe nesting
- partitions
-Message-ID: <20180531162029.GA8242@rob-hp-laptop>
-References: <20180523171448.26234-1-zajec5@gmail.com>
+ id 1fORmO-0004Jk-LE
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 17:54:31 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180523171448.26234-1-zajec5@gmail.com>
+Date: Thu, 31 May 2018 19:54:08 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, boris.brezillon@bootlin.com,
+ robh+dt@kernel.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <20180528000422.7f18dc5f@xps13>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <20180528000422.7f18dc5f@xps13>
+Message-ID: <047a9a5e72c8db52858a505865d4f720@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,107 +33,306 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 23, 2018 at 07:14:47PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Documentation was already saying that fixed and dynamic partitioning can
-> be mixed but was missing a clear description and examples. This commit
-> adds a proper description of how partitions can be nested and how layout
-> descriptions can be mixed.
-> 
-> This addition is important for partitions that contain subpartitions.
-> It's useful to have parent partition registered (e.g. for overwriting
-> purposes) as well as children ones (for accessing data). It's also
-> required when a single partition uses different partitioning method
-> (e.g. vendor custom "firmware" partition with kernel + rootfs).
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> Another example (I couldn't put in Documentation yet) could be:
-> 
-> flash@0 {
-> 	partitions {
-> 		compatible = "fixed-partitions";
-> 		#address-cells = <1>;
-> 		#size-cells = <1>;
-> 
-> 		partition@0 {
-> 			label = "bootloader";
-> 			reg = <0x0000000 0x0100000>;
-> 			read-only;
-> 		};
-> 
-> 		firmware@100000 {
-> 			label = "firmware";
-> 			reg = <0x0100000 0x0800000>;
-> 			compatible = "brcm,trx";
-> 		};
-> 	};
-> };
-> 
-> It's probably even more realistic one, but we don't describe "brcm,trx"
-> binding yet.
+Miquel, Boris,
 
-This one makes more sense to me than the one you've added because if you 
-only have fixed partitions, it seems like most times you could just 
-flatten them to 1 level. I suppose having some levels could make doing 
-updates easier.
+[also adding Rob to to since it is DT related]
 
-> The purpose of above description would be to:
-> 1) Specify fixed partitions (they never change)
-> 2) Tell operating system that "firmware" partition uses Broadcom's TRX
->    format which is a container for 2 or 3 subpartitions (usually: kernel
->    and rootfs).
-> ---
->  .../devicetree/bindings/mtd/partition.txt          | 25 ++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
+On 28.05.2018 00:04, Miquel Raynal wrote:
+> Hi Stefan,
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Documentation/devicetree/bindings/mtd/partition.txt
-> index a8f382642ba9..2214167ce88a 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -14,6 +14,13 @@ method is used for a given flash device. To describe the method there should be
->  a subnode of the flash device that is named 'partitions'. It must have a
->  'compatible' property, which is used to identify the method to use.
->  
-> +When a single partition is represented with a DT node (it depends on a used
-> +format) it may also be described using above rules ('compatible' and optionally
-> +some extra properties / subnodes). It allows describing more complex,
-> +hierarchical (multi-level) layouts and should be used if there is some
-> +significant relation between partitions or some partition internally uses
-> +another partitioning method.
-> +
->  Available bindings are listed in the "partitions" subdirectory.
->  
->  
-> @@ -73,6 +80,24 @@ flash@0 {
->  		uimage@100000 {
->  			reg = <0x0100000 0x200000>;
->  		};
-> +
-> +		calibration@200000 {
-> +			label = "calibration";
-> +			reg = <0x0200000 0x100000>;
-> +			compatible = "fixed-partitions";
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-
-You are missing 'ranges' here.
-
-> +
-> +			partition@0 {
-> +				label = "wifi0";
-> +				reg = <0x000000 0x080000>;
-> +			};
-> +
-> +			partition@80000 {
-> +				label = "wifi1";
-> +				reg = <0x080000 0x080000>;
-> +			};
-> +		};
->  	};
->  };
->  
-> -- 
-> 2.13.6
+> I just see your v2 while I'm sending my review on the driver, will
+> probably wait for v4 then ;)
 > 
+> Thanks for the work though!
+> Miquèl
+> 
+> On Tue, 22 May 2018 14:07:06 +0200, Stefan Agner <stefan@agner.ch>
+> wrote:
+> 
+>> Add support for the NAND flash controller found on NVIDIA
+>> Tegra 2 SoCs. This implementation does not make use of the
+>> command queue feature. Regular operations/data transfers are
+>> done in PIO mode. Page read/writes with hardware ECC make
+>> use of the DMA for data transfer.
+>>
+>> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>> ---
+> 
+> [...]
+> 
+
+[...]
+
+>> +
+>> +static int tegra_nand_probe(struct platform_device *pdev)
+>> +{
+>> +	struct reset_control *rst;
+>> +	struct tegra_nand *nand;
+> 
+> Would you mind having another name for the tegra_nand structure than
+> just 'nand'? I found it confusing as, following Boris comment, it won't
+> be a 'NAND device' structure but rather more a controller structure.
+> 
+>> +	struct nand_chip *chip;
+>> +	struct mtd_info *mtd;
+>> +	struct resource *res;
+>> +	unsigned long value;
+> 
+> s/value/reg/ ? or something more explicit?
+> 
+>> +	int irq, err = 0;
+>> +
+>> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
+>> +	if (!nand)
+>> +		return -ENOMEM;
+>> +
+>> +	nand->dev = &pdev->dev;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
+>> +	if (IS_ERR(nand->regs))
+>> +		return PTR_ERR(nand->regs);
+>> +
+>> +	irq = platform_get_irq(pdev, 0);
+>> +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
+>> +			       dev_name(&pdev->dev), nand);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	rst = devm_reset_control_get(&pdev->dev, "nand");
+>> +	if (IS_ERR(rst))
+>> +		return PTR_ERR(rst);
+>> +
+>> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
+>> +	if (IS_ERR(nand->clk))
+>> +		return PTR_ERR(nand->clk);
+>> +
+>> +	nand->wp_gpio = gpiod_get_optional(&pdev->dev, "wp-gpios",
+>> +					   GPIOD_OUT_HIGH);
+>> +	if (IS_ERR(nand->wp_gpio))
+>> +		return PTR_ERR(nand->wp_gpio);
+>> +
+>> +	err = clk_prepare_enable(nand->clk);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	reset_control_assert(rst);
+>> +	udelay(2);
+>> +	reset_control_deassert(rst);
+>> +
+>> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
+>> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
+>> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
+>> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
+>> +	writel(value, nand->regs + HWSTATUS_MASK);
+>> +
+>> +	init_completion(&nand->command_complete);
+>> +	init_completion(&nand->dma_complete);
+>> +
+>> +	/* clear interrupts */
+>> +	value = readl(nand->regs + ISR);
+>> +	writel(value, nand->regs + ISR);
+>> +
+>> +	writel(DMA_CTRL_IS_DONE, nand->regs + DMA_CTRL);
+>> +
+>> +	/* enable interrupts */
+>> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
+>> +	writel(value, nand->regs + IER);
+>> +
+>> +	/* reset config */
+>> +	writel(0, nand->regs + CFG);
+>> +
+>> +	chip = &nand->chip;
+>> +	mtd = nand_to_mtd(chip);
+>> +
+>> +	mtd->dev.parent = &pdev->dev;
+>> +	mtd->name = "tegra_nand";
+> 
+> I just figured it was undocumented (yet) but you could have a label
+> string property in your nand DT node that tells you the name of the
+> MTD device instead of something too generic like tegra_nand.
+> 
+
+Using label in the NAND chip subnode actually causes current U-Boot to
+delete (!!) the chip node and create partitions on the controller node.
+
+See:
+https://elixir.bootlin.com/u-boot/latest/source/common/fdt_support.c#L757
+
+The code essentially uses the property label to detect whether its a
+NAND chip or a partition...
+
+At least this is the case when using fdt_fixup_mtdparts and passing the
+controller compatible ("nvidia,tegra20-nand") in node_info, what our
+downstream U-Boot is currently doing. Maybe we should pass the
+compatible property of the NAND chip? But afaik, chips do not have a
+compatible necessarily.
+
+So using label in the chip node is currently a no-go for me.
+
+Will send out v3 soon.
+
+--
+Stefan
+
+
+>> +	mtd->owner = THIS_MODULE;
+>> +
+>> +	nand_set_flash_node(chip, pdev->dev.of_node);
+>> +	nand_set_controller_data(chip, nand);
+>> +
+>> +	chip->options = NAND_NO_SUBPAGE_WRITE;
+>> +	chip->exec_op = tegra_nand_exec_op;
+>> +	chip->select_chip = tegra_nand_select_chip;
+>> +	tegra_nand_setup_timing(nand, 0);
+> 
+> You really should implement ->setup_data_interface() and let the core
+> handle the timings issue entirely (mind that chipnr is not the NAND
+> chip id but more the CS id asserted for the pointed NAND chip).
+>  
+>> +
+>> +	err = nand_scan_ident(mtd, 1, NULL);
+>> +	if (err)
+>> +		goto err_disable_clk;
+>> +
+>> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+>> +		chip->bbt_options |= NAND_BBT_NO_OOB;
+>> +
+>> +	nand->data_buf = dmam_alloc_coherent(&pdev->dev, mtd->writesize,
+>> +					    &nand->data_dma, GFP_KERNEL);
+> 
+> Do you need these buffers before nand_scan_tail() or could you simply
+> use the ones allocated by the core right after?
+> 
+>> +	if (!nand->data_buf) {
+>> +		err = -ENOMEM;
+>> +		goto err_disable_clk;
+>> +	}
+>> +
+>> +	nand->oob_buf = dmam_alloc_coherent(&pdev->dev, mtd->oobsize,
+>> +					    &nand->oob_dma, GFP_KERNEL);
+>> +	if (!nand->oob_buf) {
+>> +		err = -ENOMEM;
+>> +		goto err_disable_clk;
+>> +	}
+>> +
+>> +	chip->ecc.mode = NAND_ECC_HW;
+>> +	chip->ecc.size = 512;
+>> +	chip->ecc.read_page = tegra_nand_read_page;
+>> +	chip->ecc.write_page = tegra_nand_write_page;
+>> +
+>> +	value = readl(nand->regs + CFG);
+>> +	value |= CFG_PIPE_EN | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4 |
+>> +		 CFG_TAG_BYTE_SIZE(mtd_ooblayout_count_freebytes(mtd) - 1);
+>> +
+>> +	if (chip->options & NAND_BUSWIDTH_16)
+>> +		value |= CFG_BUS_WIDTH_16;
+>> +
+>> +	switch (mtd->oobsize) {
+>> +	case 16:
+>> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_16_ops);
+>> +		chip->ecc.strength = 1;
+>> +		chip->ecc.bytes = 4;
+>> +		break;
+>> +	case 64:
+>> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_64_ops);
+>> +		chip->ecc.strength = 8;
+>> +		chip->ecc.bytes = 18;
+>> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
+>> +		break;
+>> +	case 128:
+>> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_128_ops);
+>> +		chip->ecc.strength = 8;
+>> +		chip->ecc.bytes = 18;
+>> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
+>> +		break;
+>> +	case 224:
+>> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_224_ops);
+>> +		chip->ecc.strength = 8;
+>> +		chip->ecc.bytes = 18;
+>> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
+>> +		break;
+>> +	default:
+>> +		dev_err(&pdev->dev, "unhandled OOB size %d\n", mtd->oobsize);
+>> +		err = -ENODEV;
+>> +		goto err_disable_clk;
+>> +	}
+>> +
+>> +	switch (mtd->writesize) {
+>> +	case 256:
+>> +		value |= CFG_PS_256;
+>> +		break;
+>> +	case 512:
+>> +		value |= CFG_PS_512;
+>> +		break;
+>> +	case 1024:
+>> +		value |= CFG_PS_1024;
+>> +		break;
+>> +	case 2048:
+>> +		value |= CFG_PS_2048;
+>> +		break;
+>> +	case 4096:
+>> +		value |= CFG_PS_4096;
+>> +		break;
+>> +	default:
+>> +		dev_err(&pdev->dev, "unhandled writesize %d\n", mtd->writesize);
+>> +		err = -ENODEV;
+>> +		goto err_disable_clk;
+>> +	}
+>> +
+>> +	writel(value, nand->regs + CFG);
+>> +
+>> +	tegra_nand_setup_chiptiming(nand);
+>> +
+>> +	err = nand_scan_tail(mtd);
+>> +	if (err)
+>> +		goto err_disable_clk;
+>> +
+>> +	err = mtd_device_register(mtd, NULL, 0);
+>> +	if (err)
+>> +		goto err_cleanup_nand;
+>> +
+>> +	platform_set_drvdata(pdev, nand);
+>> +
+>> +	return 0;
+>> +
+>> +err_cleanup_nand:
+>> +	nand_cleanup(chip);
+>> +err_disable_clk:
+>> +	clk_disable_unprepare(nand->clk);
+>> +	return err;
+>> +}
+>> +
+>> +static int tegra_nand_remove(struct platform_device *pdev)
+>> +{
+>> +	struct tegra_nand *nand = platform_get_drvdata(pdev);
+>> +
+>> +	nand_release(nand_to_mtd(&nand->chip));
+>> +
+>> +	clk_disable_unprepare(nand->clk);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static const struct of_device_id tegra_nand_of_match[] = {
+>> +	{ .compatible = "nvidia,tegra20-nand" },
+>> +	{ /* sentinel */ }
+>> +};
+>> +
+>> +static struct platform_driver tegra_nand_driver = {
+>> +	.driver = {
+>> +		.name = "tegra-nand",
+>> +		.of_match_table = tegra_nand_of_match,
+>> +	},
+>> +	.probe = tegra_nand_probe,
+>> +	.remove = tegra_nand_remove,
+>> +};
+>> +module_platform_driver(tegra_nand_driver);
+>> +
+>> +MODULE_DESCRIPTION("NVIDIA Tegra NAND driver");
+>> +MODULE_AUTHOR("Thierry Reding <thierry.reding@nvidia.com>");
+>> +MODULE_AUTHOR("Lucas Stach <dev@lynxeye.de>");
+>> +MODULE_AUTHOR("Stefan Agner <stefan@agner.ch>");
+>> +MODULE_LICENSE("GPL v2");
+>> +MODULE_DEVICE_TABLE(of, tegra_nand_of_match);
