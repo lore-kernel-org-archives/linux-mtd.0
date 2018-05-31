@@ -1,7 +1,7 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOVsJ-0005g1-1u
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 22:16:55 +0000
+ id 1fOVsW-0005kz-7l
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 22:17:10 +0000
 From: Stefan Agner <stefan@agner.ch>
 To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
@@ -13,9 +13,11 @@ Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
  stefan@agner.ch, linux-mtd@lists.infradead.org,
  linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/6] mtd: rawnand: add NVIDIA Tegra NAND flash support
-Date: Fri,  1 Jun 2018 00:16:31 +0200
-Message-Id: <20180531221637.6017-1-stefan@agner.ch>
+Subject: [PATCH v3 5/6] ARM: dts: tegra: add Tegra20 NAND flash controller node
+Date: Fri,  1 Jun 2018 00:16:36 +0200
+Message-Id: <20180531221637.6017-6-stefan@agner.ch>
+In-Reply-To: <20180531221637.6017-1-stefan@agner.ch>
+References: <20180531221637.6017-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This third revision is again a rather major overhaul. The driver
-is now able to select a sensible ECC strenght automatically.
+From: Lucas Stach <dev@lynxeye.de>
 
-Review of the timing code uncovered few issues. Fixing them lead to
-a tighter timing which lead to a performance increase of about 35%.
-The in kernel speed test measures 11770/15058 KiB/s write/read speed.
+Add basic controller device tree node to be extended by
+individual boards. Use the assigned-clocks mechanism to set
+NDFLASH clock to a sensible default rate of 150MHz.
 
-Still open is the OOB layout discrepancy issue:
-When using HW BCH support, the location of the ECC bytes changes
-depending on whether extra OOB bytes (tag data) are transmitted or
-not... Writing/Reading should always be with tag enabled or always
-without. I am not sure how to solve this correctly, maybe disallow
-using OOB data with HW ECC completely? Or just leave as is?
+Signed-off-by: Lucas Stach <dev@lynxeye.de>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ arch/arm/boot/dts/tegra20.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
---
-Stefan
-
-Changes since v1:
-- Split controller and NAND chip structure
-- Add BCH support
-- Allow to select algorithm and strength using device tree
-- Improve HW ECC error reporting and use DEC_STATUS_BUF only
-- Use SPDX license identifier
-- Use per algorithm mtd_ooblayout_ops
-- Use setup_data_interface callback for NAND timing configuration
-
-Changes since v2:
-- Set clock rate using assigned-clocks
-- Use BIT() macro
-- Fix and improve timing calculation
-- Improve ECC error handling
-- Store OOB layout for tag area in Tegra chip structure
-- Update/fix bindings
-- Use more specific variable names (replace "value")
-- Introduce nand-is-boot-medium
-- Choose sensible ECC strenght automatically
-- Use wait_for_completion_timeout
-- Print register dump on completion timeout
-- Unify tegra_nand_(read|write)_page in tegra_nand_page_xfer
-
-Lucas Stach (2):
-  ARM: dts: tegra: add Tegra20 NAND flash controller node
-  ARM: dts: tegra: enable NAND flash on Colibri T20
-
-Stefan Agner (4):
-  mtd: rawnand: add Reed-Solomon error correction algorithm
-  mtd: rawnand: add an option to specify NAND chip as a boot device
-  mtd: rawnand: tegra: add devicetree binding
-  mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
-
- .../devicetree/bindings/mtd/nand.txt          |    4 +
- .../bindings/mtd/nvidia-tegra20-nand.txt      |   64 +
- MAINTAINERS                                   |    7 +
- arch/arm/boot/dts/tegra20-colibri-512.dtsi    |   16 +
- arch/arm/boot/dts/tegra20.dtsi                |   15 +
- drivers/mtd/nand/raw/Kconfig                  |    6 +
- drivers/mtd/nand/raw/Makefile                 |    1 +
- drivers/mtd/nand/raw/nand_base.c              |    4 +
- drivers/mtd/nand/raw/tegra_nand.c             | 1143 +++++++++++++++++
- include/linux/mtd/rawnand.h                   |    7 +
- 10 files changed, 1267 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
- create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
-
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index 0a7136462a1a..64911903ef99 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -425,6 +425,21 @@
+ 		status = "disabled";
+ 	};
+ 
++	nand: nand@70008000 {
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++		status = "disabled";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		assigned-clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		assigned-clock-rates = <150000000>;
++	};
++
+ 	pwm: pwm@7000a000 {
+ 		compatible = "nvidia,tegra20-pwm";
+ 		reg = <0x7000a000 0x100>;
 -- 
 2.17.0
