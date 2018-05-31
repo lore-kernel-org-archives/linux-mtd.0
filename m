@@ -1,24 +1,30 @@
-Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOSZx-0002eI-As
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 18:45:45 +0000
-Received: by mail-pl0-x244.google.com with SMTP id 30-v6so13725436pld.13
- for <linux-mtd@lists.infradead.org>; Thu, 31 May 2018 11:45:28 -0700 (PDT)
-Date: Thu, 31 May 2018 11:45:25 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux mtd <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3] lib/bch: Remove VLA usage
-Message-ID: <20180531184525.GA11068@beast>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fOUDf-0008HL-7e
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 20:30:49 +0000
+Date: Thu, 31 May 2018 22:30:27 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, robh+dt@kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
+ sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+Message-ID: <20180531223027.57e36d0b@bbrezillon>
+In-Reply-To: <047a9a5e72c8db52858a505865d4f720@agner.ch>
+References: <cover.1526990589.git.stefan@agner.ch>
+ <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
+ <20180528000422.7f18dc5f@xps13>
+ <047a9a5e72c8db52858a505865d4f720@agner.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,168 +34,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the quest to remove all stack VLA usage from the kernel[1], this
-allocates a fixed size stack array to cover the range needed for
-bch. This was done instead of a preallocation on the SLAB due to
-performance reasons, shown by Ivan Djelic:
+On Thu, 31 May 2018 19:54:08 +0200
+Stefan Agner <stefan@agner.ch> wrote:
 
- little-endian, type sizes: int=4 long=8 longlong=8
- cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
- calibration: iter=4.9143µs niter=2034 nsamples=200 m=13 t=4
+> >> +
+> >> +	mtd->dev.parent = &pdev->dev;
+> >> +	mtd->name = "tegra_nand";  
+> > 
+> > I just figured it was undocumented (yet) but you could have a label
+> > string property in your nand DT node that tells you the name of the
+> > MTD device instead of something too generic like tegra_nand.
+> >   
+> 
+> Using label in the NAND chip subnode actually causes current U-Boot to
+> delete (!!) the chip node and create partitions on the controller node.
+> 
+> See:
+> https://elixir.bootlin.com/u-boot/latest/source/common/fdt_support.c#L757
+> 
+> The code essentially uses the property label to detect whether its a
+> NAND chip or a partition...
 
-   Buffer allocation |  Encoding throughput (Mbit/s)
- ---------------------------------------------------
-  on-stack, VLA      |   3988
-  on-stack, fixed    |   4494
-  kmalloc            |   1967
+Why not fixing that in uboot? The representation where the NAND device
+and NAND controller are mixed in a single node called nand@xxx is just
+wrong from a HW PoV, and it seems uboot is using this representation,
+which is probably why you have a problem when trying to find the
+partition directly under the NAND controller node.
 
-So this change actually improves performance too, it seems.
+> 
+> At least this is the case when using fdt_fixup_mtdparts and passing the
+> controller compatible ("nvidia,tegra20-nand") in node_info,
 
-The resulting stack allocation can get rather large; without
-CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
-trips the stack size checking:
+Just a digression, but I recommend using
+"nvidia,tegra20-nand-controller" for the compatible, because the node
+is describing the NAND controller not the NAND chip. 
 
-lib/bch.c: In function ‘encode_bch’:
-lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than 2048 bytes [-Wframe-larger-than=]
+> what our
+> downstream U-Boot is currently doing. Maybe we should pass the
+> compatible property of the NAND chip?
 
-Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=14 and
-CONFIG_BCH_CONST_T=4) would have started throwing a warning:
+Or maybe you should search for partitions in children of the controller
+node instead of searching directly under the controller node itself.
 
-lib/bch.c: In function ‘encode_bch’:
-lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]
+> But afaik, chips do not have a
+> compatible necessarily.
 
-But this is how large it's always been; it was just hidden from
-the checker because it was a VLA. So the Makefile has been adjusted to
-silence this warning for anything smaller than 4500 bytes, which should
-provide room for normal cases, but still low enough to catch any future
-pathological situations.
+Nope, and it should stay like that.
 
-[1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
+> 
+> So using label in the chip node is currently a no-go for me.
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v3: fix r_bytes to whole-word size
-v2: switch to fixed-size stack array
----
- lib/Makefile |  1 +
- lib/bch.c    | 23 +++++++++++++++--------
- 2 files changed, 16 insertions(+), 8 deletions(-)
+I hope I'm wrong but I fear this is not the only problem you'll face
+when switching to a controller+chip representation. This is just the
+tip of the iceberg.
 
-diff --git a/lib/Makefile b/lib/Makefile
-index ce20696d5a92..24331b122d7f 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -121,6 +121,7 @@ obj-$(CONFIG_ZLIB_INFLATE) += zlib_inflate/
- obj-$(CONFIG_ZLIB_DEFLATE) += zlib_deflate/
- obj-$(CONFIG_REED_SOLOMON) += reed_solomon/
- obj-$(CONFIG_BCH) += bch.o
-+CFLAGS_bch.o := $(call cc-option,-Wframe-larger-than=4500)
- obj-$(CONFIG_LZO_COMPRESS) += lzo/
- obj-$(CONFIG_LZO_DECOMPRESS) += lzo/
- obj-$(CONFIG_LZ4_COMPRESS) += lz4/
-diff --git a/lib/bch.c b/lib/bch.c
-index bc89dfe4d1b3..7b0f2006698b 100644
---- a/lib/bch.c
-+++ b/lib/bch.c
-@@ -78,15 +78,22 @@
- #define GF_M(_p)               (CONFIG_BCH_CONST_M)
- #define GF_T(_p)               (CONFIG_BCH_CONST_T)
- #define GF_N(_p)               ((1 << (CONFIG_BCH_CONST_M))-1)
-+#define BCH_MAX_M              (CONFIG_BCH_CONST_M)
- #else
- #define GF_M(_p)               ((_p)->m)
- #define GF_T(_p)               ((_p)->t)
- #define GF_N(_p)               ((_p)->n)
-+#define BCH_MAX_M              15
- #endif
- 
-+#define BCH_MAX_T              (((1 << BCH_MAX_M) - 1) / BCH_MAX_M)
-+
- #define BCH_ECC_WORDS(_p)      DIV_ROUND_UP(GF_M(_p)*GF_T(_p), 32)
- #define BCH_ECC_BYTES(_p)      DIV_ROUND_UP(GF_M(_p)*GF_T(_p), 8)
- 
-+#define BCH_ECC_MAX_WORDS      DIV_ROUND_UP(BCH_MAX_M * BCH_MAX_T, 32)
-+#define BCH_ECC_MAX_BYTES      DIV_ROUND_UP(BCH_MAX_M * BCH_MAX_T, 8)
-+
- #ifndef dbg
- #define dbg(_fmt, args...)     do {} while (0)
- #endif
-@@ -187,7 +194,8 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
- 	const unsigned int l = BCH_ECC_WORDS(bch)-1;
- 	unsigned int i, mlen;
- 	unsigned long m;
--	uint32_t w, r[l+1];
-+	uint32_t w, r[BCH_ECC_MAX_WORDS];
-+	const size_t r_bytes = BCH_ECC_WORDS(bch) * sizeof(*r);
- 	const uint32_t * const tab0 = bch->mod8_tab;
- 	const uint32_t * const tab1 = tab0 + 256*(l+1);
- 	const uint32_t * const tab2 = tab1 + 256*(l+1);
-@@ -198,7 +206,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
- 		/* load ecc parity bytes into internal 32-bit buffer */
- 		load_ecc8(bch, bch->ecc_buf, ecc);
- 	} else {
--		memset(bch->ecc_buf, 0, sizeof(r));
-+		memset(bch->ecc_buf, 0, r_bytes);
- 	}
- 
- 	/* process first unaligned data bytes */
-@@ -215,7 +223,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
- 	mlen  = len/4;
- 	data += 4*mlen;
- 	len  -= 4*mlen;
--	memcpy(r, bch->ecc_buf, sizeof(r));
-+	memcpy(r, bch->ecc_buf, r_bytes);
- 
- 	/*
- 	 * split each 32-bit word into 4 polynomials of weight 8 as follows:
-@@ -241,7 +249,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
- 
- 		r[l] = p0[l]^p1[l]^p2[l]^p3[l];
- 	}
--	memcpy(bch->ecc_buf, r, sizeof(r));
-+	memcpy(bch->ecc_buf, r, r_bytes);
- 
- 	/* process last unaligned bytes */
- 	if (len)
-@@ -434,7 +442,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
- {
- 	const int m = GF_M(bch);
- 	unsigned int tmp, mask;
--	int rem, c, r, p, k, param[m];
-+	int rem, c, r, p, k, param[BCH_MAX_M];
- 
- 	k = 0;
- 	mask = 1 << m;
-@@ -1114,7 +1122,7 @@ static int build_deg2_base(struct bch_control *bch)
- {
- 	const int m = GF_M(bch);
- 	int i, j, r;
--	unsigned int sum, x, y, remaining, ak = 0, xi[m];
-+	unsigned int sum, x, y, remaining, ak = 0, xi[BCH_MAX_M];
- 
- 	/* find k s.t. Tr(a^k) = 1 and 0 <= k < m */
- 	for (i = 0; i < m; i++) {
-@@ -1254,7 +1262,6 @@ struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
- 	struct bch_control *bch = NULL;
- 
- 	const int min_m = 5;
--	const int max_m = 15;
- 
- 	/* default primitive polynomials */
- 	static const unsigned int prim_poly_tab[] = {
-@@ -1270,7 +1277,7 @@ struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
- 		goto fail;
- 	}
- #endif
--	if ((m < min_m) || (m > max_m))
-+	if ((m < min_m) || (m > BCH_MAX_M))
- 		/*
- 		 * values of m greater than 15 are not currently supported;
- 		 * supporting m > 15 would require changing table base type
--- 
-2.17.0
+> 
+> Will send out v3 soon.
 
-
--- 
-Kees Cook
-Pixel Security
+Sure, let's see how v3 looks.
