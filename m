@@ -1,29 +1,24 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-pl0-x244.google.com ([2607:f8b0:400e:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fORmO-0004Jk-LE
- for linux-mtd@lists.infradead.org; Thu, 31 May 2018 17:54:31 +0000
+ id 1fOSZx-0002eI-As
+ for linux-mtd@lists.infradead.org; Thu, 31 May 2018 18:45:45 +0000
+Received: by mail-pl0-x244.google.com with SMTP id 30-v6so13725436pld.13
+ for <linux-mtd@lists.infradead.org>; Thu, 31 May 2018 11:45:28 -0700 (PDT)
+Date: Thu, 31 May 2018 11:45:25 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Ivan Djelic <ivan.djelic@parrot.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] lib/bch: Remove VLA usage
+Message-ID: <20180531184525.GA11068@beast>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Date: Thu, 31 May 2018 19:54:08 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, boris.brezillon@bootlin.com,
- robh+dt@kernel.org
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- mark.rutland@arm.com, thierry.reding@gmail.com, mturquette@baylibre.com,
- sboyd@kernel.org, dev@lynxeye.de, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RESEND PATCH 2/5] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <20180528000422.7f18dc5f@xps13>
-References: <cover.1526990589.git.stefan@agner.ch>
- <86fdf19ec92b732709732fb60199f16488b4b727.1526990589.git.stefan@agner.ch>
- <20180528000422.7f18dc5f@xps13>
-Message-ID: <047a9a5e72c8db52858a505865d4f720@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,306 +28,168 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Miquel, Boris,
+In the quest to remove all stack VLA usage from the kernel[1], this
+allocates a fixed size stack array to cover the range needed for
+bch. This was done instead of a preallocation on the SLAB due to
+performance reasons, shown by Ivan Djelic:
 
-[also adding Rob to to since it is DT related]
+ little-endian, type sizes: int=4 long=8 longlong=8
+ cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
+ calibration: iter=4.9143µs niter=2034 nsamples=200 m=13 t=4
 
-On 28.05.2018 00:04, Miquel Raynal wrote:
-> Hi Stefan,
-> 
-> I just see your v2 while I'm sending my review on the driver, will
-> probably wait for v4 then ;)
-> 
-> Thanks for the work though!
-> Miquèl
-> 
-> On Tue, 22 May 2018 14:07:06 +0200, Stefan Agner <stefan@agner.ch>
-> wrote:
-> 
->> Add support for the NAND flash controller found on NVIDIA
->> Tegra 2 SoCs. This implementation does not make use of the
->> command queue feature. Regular operations/data transfers are
->> done in PIO mode. Page read/writes with hardware ECC make
->> use of the DMA for data transfer.
->>
->> Signed-off-by: Lucas Stach <dev@lynxeye.de>
->> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> ---
-> 
-> [...]
-> 
+   Buffer allocation |  Encoding throughput (Mbit/s)
+ ---------------------------------------------------
+  on-stack, VLA      |   3988
+  on-stack, fixed    |   4494
+  kmalloc            |   1967
 
-[...]
+So this change actually improves performance too, it seems.
 
->> +
->> +static int tegra_nand_probe(struct platform_device *pdev)
->> +{
->> +	struct reset_control *rst;
->> +	struct tegra_nand *nand;
-> 
-> Would you mind having another name for the tegra_nand structure than
-> just 'nand'? I found it confusing as, following Boris comment, it won't
-> be a 'NAND device' structure but rather more a controller structure.
-> 
->> +	struct nand_chip *chip;
->> +	struct mtd_info *mtd;
->> +	struct resource *res;
->> +	unsigned long value;
-> 
-> s/value/reg/ ? or something more explicit?
-> 
->> +	int irq, err = 0;
->> +
->> +	nand = devm_kzalloc(&pdev->dev, sizeof(*nand), GFP_KERNEL);
->> +	if (!nand)
->> +		return -ENOMEM;
->> +
->> +	nand->dev = &pdev->dev;
->> +
->> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	nand->regs = devm_ioremap_resource(&pdev->dev, res);
->> +	if (IS_ERR(nand->regs))
->> +		return PTR_ERR(nand->regs);
->> +
->> +	irq = platform_get_irq(pdev, 0);
->> +	err = devm_request_irq(&pdev->dev, irq, tegra_nand_irq, 0,
->> +			       dev_name(&pdev->dev), nand);
->> +	if (err)
->> +		return err;
->> +
->> +	rst = devm_reset_control_get(&pdev->dev, "nand");
->> +	if (IS_ERR(rst))
->> +		return PTR_ERR(rst);
->> +
->> +	nand->clk = devm_clk_get(&pdev->dev, "nand");
->> +	if (IS_ERR(nand->clk))
->> +		return PTR_ERR(nand->clk);
->> +
->> +	nand->wp_gpio = gpiod_get_optional(&pdev->dev, "wp-gpios",
->> +					   GPIOD_OUT_HIGH);
->> +	if (IS_ERR(nand->wp_gpio))
->> +		return PTR_ERR(nand->wp_gpio);
->> +
->> +	err = clk_prepare_enable(nand->clk);
->> +	if (err)
->> +		return err;
->> +
->> +	reset_control_assert(rst);
->> +	udelay(2);
->> +	reset_control_deassert(rst);
->> +
->> +	value = HWSTATUS_RDSTATUS_MASK(1) | HWSTATUS_RDSTATUS_VALUE(0) |
->> +		HWSTATUS_RBSY_MASK(NAND_STATUS_READY) |
->> +		HWSTATUS_RBSY_VALUE(NAND_STATUS_READY);
->> +	writel(NAND_CMD_STATUS, nand->regs + HWSTATUS_CMD);
->> +	writel(value, nand->regs + HWSTATUS_MASK);
->> +
->> +	init_completion(&nand->command_complete);
->> +	init_completion(&nand->dma_complete);
->> +
->> +	/* clear interrupts */
->> +	value = readl(nand->regs + ISR);
->> +	writel(value, nand->regs + ISR);
->> +
->> +	writel(DMA_CTRL_IS_DONE, nand->regs + DMA_CTRL);
->> +
->> +	/* enable interrupts */
->> +	value = IER_UND | IER_OVR | IER_CMD_DONE | IER_ECC_ERR | IER_GIE;
->> +	writel(value, nand->regs + IER);
->> +
->> +	/* reset config */
->> +	writel(0, nand->regs + CFG);
->> +
->> +	chip = &nand->chip;
->> +	mtd = nand_to_mtd(chip);
->> +
->> +	mtd->dev.parent = &pdev->dev;
->> +	mtd->name = "tegra_nand";
-> 
-> I just figured it was undocumented (yet) but you could have a label
-> string property in your nand DT node that tells you the name of the
-> MTD device instead of something too generic like tegra_nand.
-> 
+The resulting stack allocation can get rather large; without
+CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
+trips the stack size checking:
 
-Using label in the NAND chip subnode actually causes current U-Boot to
-delete (!!) the chip node and create partitions on the controller node.
+lib/bch.c: In function ‘encode_bch’:
+lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than 2048 bytes [-Wframe-larger-than=]
 
-See:
-https://elixir.bootlin.com/u-boot/latest/source/common/fdt_support.c#L757
+Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=14 and
+CONFIG_BCH_CONST_T=4) would have started throwing a warning:
 
-The code essentially uses the property label to detect whether its a
-NAND chip or a partition...
+lib/bch.c: In function ‘encode_bch’:
+lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]
 
-At least this is the case when using fdt_fixup_mtdparts and passing the
-controller compatible ("nvidia,tegra20-nand") in node_info, what our
-downstream U-Boot is currently doing. Maybe we should pass the
-compatible property of the NAND chip? But afaik, chips do not have a
-compatible necessarily.
+But this is how large it's always been; it was just hidden from
+the checker because it was a VLA. So the Makefile has been adjusted to
+silence this warning for anything smaller than 4500 bytes, which should
+provide room for normal cases, but still low enough to catch any future
+pathological situations.
 
-So using label in the chip node is currently a no-go for me.
+[1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
 
-Will send out v3 soon.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v3: fix r_bytes to whole-word size
+v2: switch to fixed-size stack array
+---
+ lib/Makefile |  1 +
+ lib/bch.c    | 23 +++++++++++++++--------
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
---
-Stefan
+diff --git a/lib/Makefile b/lib/Makefile
+index ce20696d5a92..24331b122d7f 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -121,6 +121,7 @@ obj-$(CONFIG_ZLIB_INFLATE) += zlib_inflate/
+ obj-$(CONFIG_ZLIB_DEFLATE) += zlib_deflate/
+ obj-$(CONFIG_REED_SOLOMON) += reed_solomon/
+ obj-$(CONFIG_BCH) += bch.o
++CFLAGS_bch.o := $(call cc-option,-Wframe-larger-than=4500)
+ obj-$(CONFIG_LZO_COMPRESS) += lzo/
+ obj-$(CONFIG_LZO_DECOMPRESS) += lzo/
+ obj-$(CONFIG_LZ4_COMPRESS) += lz4/
+diff --git a/lib/bch.c b/lib/bch.c
+index bc89dfe4d1b3..7b0f2006698b 100644
+--- a/lib/bch.c
++++ b/lib/bch.c
+@@ -78,15 +78,22 @@
+ #define GF_M(_p)               (CONFIG_BCH_CONST_M)
+ #define GF_T(_p)               (CONFIG_BCH_CONST_T)
+ #define GF_N(_p)               ((1 << (CONFIG_BCH_CONST_M))-1)
++#define BCH_MAX_M              (CONFIG_BCH_CONST_M)
+ #else
+ #define GF_M(_p)               ((_p)->m)
+ #define GF_T(_p)               ((_p)->t)
+ #define GF_N(_p)               ((_p)->n)
++#define BCH_MAX_M              15
+ #endif
+ 
++#define BCH_MAX_T              (((1 << BCH_MAX_M) - 1) / BCH_MAX_M)
++
+ #define BCH_ECC_WORDS(_p)      DIV_ROUND_UP(GF_M(_p)*GF_T(_p), 32)
+ #define BCH_ECC_BYTES(_p)      DIV_ROUND_UP(GF_M(_p)*GF_T(_p), 8)
+ 
++#define BCH_ECC_MAX_WORDS      DIV_ROUND_UP(BCH_MAX_M * BCH_MAX_T, 32)
++#define BCH_ECC_MAX_BYTES      DIV_ROUND_UP(BCH_MAX_M * BCH_MAX_T, 8)
++
+ #ifndef dbg
+ #define dbg(_fmt, args...)     do {} while (0)
+ #endif
+@@ -187,7 +194,8 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
+ 	const unsigned int l = BCH_ECC_WORDS(bch)-1;
+ 	unsigned int i, mlen;
+ 	unsigned long m;
+-	uint32_t w, r[l+1];
++	uint32_t w, r[BCH_ECC_MAX_WORDS];
++	const size_t r_bytes = BCH_ECC_WORDS(bch) * sizeof(*r);
+ 	const uint32_t * const tab0 = bch->mod8_tab;
+ 	const uint32_t * const tab1 = tab0 + 256*(l+1);
+ 	const uint32_t * const tab2 = tab1 + 256*(l+1);
+@@ -198,7 +206,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
+ 		/* load ecc parity bytes into internal 32-bit buffer */
+ 		load_ecc8(bch, bch->ecc_buf, ecc);
+ 	} else {
+-		memset(bch->ecc_buf, 0, sizeof(r));
++		memset(bch->ecc_buf, 0, r_bytes);
+ 	}
+ 
+ 	/* process first unaligned data bytes */
+@@ -215,7 +223,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
+ 	mlen  = len/4;
+ 	data += 4*mlen;
+ 	len  -= 4*mlen;
+-	memcpy(r, bch->ecc_buf, sizeof(r));
++	memcpy(r, bch->ecc_buf, r_bytes);
+ 
+ 	/*
+ 	 * split each 32-bit word into 4 polynomials of weight 8 as follows:
+@@ -241,7 +249,7 @@ void encode_bch(struct bch_control *bch, const uint8_t *data,
+ 
+ 		r[l] = p0[l]^p1[l]^p2[l]^p3[l];
+ 	}
+-	memcpy(bch->ecc_buf, r, sizeof(r));
++	memcpy(bch->ecc_buf, r, r_bytes);
+ 
+ 	/* process last unaligned bytes */
+ 	if (len)
+@@ -434,7 +442,7 @@ static int solve_linear_system(struct bch_control *bch, unsigned int *rows,
+ {
+ 	const int m = GF_M(bch);
+ 	unsigned int tmp, mask;
+-	int rem, c, r, p, k, param[m];
++	int rem, c, r, p, k, param[BCH_MAX_M];
+ 
+ 	k = 0;
+ 	mask = 1 << m;
+@@ -1114,7 +1122,7 @@ static int build_deg2_base(struct bch_control *bch)
+ {
+ 	const int m = GF_M(bch);
+ 	int i, j, r;
+-	unsigned int sum, x, y, remaining, ak = 0, xi[m];
++	unsigned int sum, x, y, remaining, ak = 0, xi[BCH_MAX_M];
+ 
+ 	/* find k s.t. Tr(a^k) = 1 and 0 <= k < m */
+ 	for (i = 0; i < m; i++) {
+@@ -1254,7 +1262,6 @@ struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
+ 	struct bch_control *bch = NULL;
+ 
+ 	const int min_m = 5;
+-	const int max_m = 15;
+ 
+ 	/* default primitive polynomials */
+ 	static const unsigned int prim_poly_tab[] = {
+@@ -1270,7 +1277,7 @@ struct bch_control *init_bch(int m, int t, unsigned int prim_poly)
+ 		goto fail;
+ 	}
+ #endif
+-	if ((m < min_m) || (m > max_m))
++	if ((m < min_m) || (m > BCH_MAX_M))
+ 		/*
+ 		 * values of m greater than 15 are not currently supported;
+ 		 * supporting m > 15 would require changing table base type
+-- 
+2.17.0
 
 
->> +	mtd->owner = THIS_MODULE;
->> +
->> +	nand_set_flash_node(chip, pdev->dev.of_node);
->> +	nand_set_controller_data(chip, nand);
->> +
->> +	chip->options = NAND_NO_SUBPAGE_WRITE;
->> +	chip->exec_op = tegra_nand_exec_op;
->> +	chip->select_chip = tegra_nand_select_chip;
->> +	tegra_nand_setup_timing(nand, 0);
-> 
-> You really should implement ->setup_data_interface() and let the core
-> handle the timings issue entirely (mind that chipnr is not the NAND
-> chip id but more the CS id asserted for the pointed NAND chip).
->  
->> +
->> +	err = nand_scan_ident(mtd, 1, NULL);
->> +	if (err)
->> +		goto err_disable_clk;
->> +
->> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
->> +		chip->bbt_options |= NAND_BBT_NO_OOB;
->> +
->> +	nand->data_buf = dmam_alloc_coherent(&pdev->dev, mtd->writesize,
->> +					    &nand->data_dma, GFP_KERNEL);
-> 
-> Do you need these buffers before nand_scan_tail() or could you simply
-> use the ones allocated by the core right after?
-> 
->> +	if (!nand->data_buf) {
->> +		err = -ENOMEM;
->> +		goto err_disable_clk;
->> +	}
->> +
->> +	nand->oob_buf = dmam_alloc_coherent(&pdev->dev, mtd->oobsize,
->> +					    &nand->oob_dma, GFP_KERNEL);
->> +	if (!nand->oob_buf) {
->> +		err = -ENOMEM;
->> +		goto err_disable_clk;
->> +	}
->> +
->> +	chip->ecc.mode = NAND_ECC_HW;
->> +	chip->ecc.size = 512;
->> +	chip->ecc.read_page = tegra_nand_read_page;
->> +	chip->ecc.write_page = tegra_nand_write_page;
->> +
->> +	value = readl(nand->regs + CFG);
->> +	value |= CFG_PIPE_EN | CFG_SKIP_SPARE | CFG_SKIP_SPARE_SIZE_4 |
->> +		 CFG_TAG_BYTE_SIZE(mtd_ooblayout_count_freebytes(mtd) - 1);
->> +
->> +	if (chip->options & NAND_BUSWIDTH_16)
->> +		value |= CFG_BUS_WIDTH_16;
->> +
->> +	switch (mtd->oobsize) {
->> +	case 16:
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_16_ops);
->> +		chip->ecc.strength = 1;
->> +		chip->ecc.bytes = 4;
->> +		break;
->> +	case 64:
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_64_ops);
->> +		chip->ecc.strength = 8;
->> +		chip->ecc.bytes = 18;
->> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
->> +		break;
->> +	case 128:
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_128_ops);
->> +		chip->ecc.strength = 8;
->> +		chip->ecc.bytes = 18;
->> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
->> +		break;
->> +	case 224:
->> +		mtd_set_ooblayout(mtd, &tegra_nand_oob_224_ops);
->> +		chip->ecc.strength = 8;
->> +		chip->ecc.bytes = 18;
->> +		value |= CFG_ECC_SEL | CFG_TVAL_8;
->> +		break;
->> +	default:
->> +		dev_err(&pdev->dev, "unhandled OOB size %d\n", mtd->oobsize);
->> +		err = -ENODEV;
->> +		goto err_disable_clk;
->> +	}
->> +
->> +	switch (mtd->writesize) {
->> +	case 256:
->> +		value |= CFG_PS_256;
->> +		break;
->> +	case 512:
->> +		value |= CFG_PS_512;
->> +		break;
->> +	case 1024:
->> +		value |= CFG_PS_1024;
->> +		break;
->> +	case 2048:
->> +		value |= CFG_PS_2048;
->> +		break;
->> +	case 4096:
->> +		value |= CFG_PS_4096;
->> +		break;
->> +	default:
->> +		dev_err(&pdev->dev, "unhandled writesize %d\n", mtd->writesize);
->> +		err = -ENODEV;
->> +		goto err_disable_clk;
->> +	}
->> +
->> +	writel(value, nand->regs + CFG);
->> +
->> +	tegra_nand_setup_chiptiming(nand);
->> +
->> +	err = nand_scan_tail(mtd);
->> +	if (err)
->> +		goto err_disable_clk;
->> +
->> +	err = mtd_device_register(mtd, NULL, 0);
->> +	if (err)
->> +		goto err_cleanup_nand;
->> +
->> +	platform_set_drvdata(pdev, nand);
->> +
->> +	return 0;
->> +
->> +err_cleanup_nand:
->> +	nand_cleanup(chip);
->> +err_disable_clk:
->> +	clk_disable_unprepare(nand->clk);
->> +	return err;
->> +}
->> +
->> +static int tegra_nand_remove(struct platform_device *pdev)
->> +{
->> +	struct tegra_nand *nand = platform_get_drvdata(pdev);
->> +
->> +	nand_release(nand_to_mtd(&nand->chip));
->> +
->> +	clk_disable_unprepare(nand->clk);
->> +
->> +	return 0;
->> +}
->> +
->> +static const struct of_device_id tegra_nand_of_match[] = {
->> +	{ .compatible = "nvidia,tegra20-nand" },
->> +	{ /* sentinel */ }
->> +};
->> +
->> +static struct platform_driver tegra_nand_driver = {
->> +	.driver = {
->> +		.name = "tegra-nand",
->> +		.of_match_table = tegra_nand_of_match,
->> +	},
->> +	.probe = tegra_nand_probe,
->> +	.remove = tegra_nand_remove,
->> +};
->> +module_platform_driver(tegra_nand_driver);
->> +
->> +MODULE_DESCRIPTION("NVIDIA Tegra NAND driver");
->> +MODULE_AUTHOR("Thierry Reding <thierry.reding@nvidia.com>");
->> +MODULE_AUTHOR("Lucas Stach <dev@lynxeye.de>");
->> +MODULE_AUTHOR("Stefan Agner <stefan@agner.ch>");
->> +MODULE_LICENSE("GPL v2");
->> +MODULE_DEVICE_TABLE(of, tegra_nand_of_match);
+-- 
+Kees Cook
+Pixel Security
