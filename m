@@ -1,25 +1,26 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOjVU-00073K-Kc
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 12:50:14 +0000
-From: Richard Weinberger <richard@sigma-star.at>
-To: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
-Cc: "Vamsi S (R&D - Telecom)" <vamsi.s@matrixcomsec.com>,
- "Rajdeep Vaghasia (Software Development - Telecom)"
- <rajdeep.vaghasia@matrixcomsec.com>,
- "Shailesh Panchal (Software Development - Telecom)"
- <shailesh.panchal@matrixcomsec.com>
-Subject: Re: UBIFS node corruption issue
-Date: Fri, 01 Jun 2018 14:49:56 +0200
-Message-ID: <2203231.iLWHeG1VOg@blindfold>
-In-Reply-To: <CAAR3sxPDomY9SzdUt=FAJsaMFUqJMpDviNc4dFbz4WZaX8f8oQ@mail.gmail.com>
-References: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
- <CAFLxGvxBF1hrr8dh5xfH3WMj3ND64OftOv_OvPjjdXYE9iBXsA@mail.gmail.com>
- <CAAR3sxPDomY9SzdUt=FAJsaMFUqJMpDviNc4dFbz4WZaX8f8oQ@mail.gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fOjab-0002EO-A5
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 12:55:31 +0000
+Date: Fri, 1 Jun 2018 14:55:16 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>
+Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Xiangsheng Hou
+ <xiangsheng.hou@mediatek.com>
+Subject: Re: [PATCH v7 1/5] mtd: nand: Pass mode information to
+ nand_page_io_req
+Message-ID: <20180601145516.54725217@bbrezillon>
+In-Reply-To: <20180515150825.19835-2-boris.brezillon@bootlin.com>
+References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
+ <20180515150825.19835-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 1. Juni 2018, 14:23:05 CEST schrieb Sourabh Jain (R&D - Telecom):
-> >> What can be the problem?
-> >
-> > Well, UBIFS' index tree seems to reference a LEB (or part of a LEB)
-> > which is empty.
-> > This can have tons of reasons. Starting from MTD drivers bugs to UBIFS bugs.
+On Tue, 15 May 2018 17:08:21 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+
+> The NAND sub-layers are likely to need the MTD_OPS_XXX mode information
+> in order to decide if they should enable/disable ECC or how they should
+> place the OOB bytes in the provided OOB buffer.
 > 
-> There is one observation, i have read all the VID header from the PEB
-> and there is
-> no header having LEB number 328, which causing problem.
-> Why there is mapping for LEB Number 328 in index tree?
-
-Depends. Maybe the PEB behind the LEB was erased by mistake.
-I have seen such driver bugs.
- 
+> Add a field to nand_page_io_req to pass this information.
 > 
-> >> How we can resolve this issue?
-> >>
-> >> Please suggest us necessary action to be taken. Also, please inform us
-> >> if any further input is required from us.
-> >
-> > Are you facing this problem on more than one target, and is it reproducible?
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+
+Applied this one to nand/next. Will send a v8 fixing the issues
+in other patches.
+
+> ---
+>  include/linux/mtd/nand.h | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> We are facing this problem in some boards.
-> there is another problem in which the root file system become read
-> only but actually it is r/w.
-
-Do you face this issues also on a recent kernel?
-
-Thanks,
-//richard
-
--- 
-sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
-ATU66964118 - FN 374287y
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index 792ea5c26329..abe975c87b90 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -86,6 +86,7 @@ struct nand_pos {
+>   * @ooboffs: the OOB offset within the page
+>   * @ooblen: the number of OOB bytes to read from/write to this page
+>   * @oobbuf: buffer to store OOB data in or get OOB data from
+> + * @mode: one of the %MTD_OPS_XXX mode
+>   *
+>   * This object is used to pass per-page I/O requests to NAND sub-layers. This
+>   * way all useful information are already formatted in a useful way and
+> @@ -106,6 +107,7 @@ struct nand_page_io_req {
+>  		const void *out;
+>  		void *in;
+>  	} oobbuf;
+> +	int mode;
+>  };
+>  
+>  /**
+> @@ -599,6 +601,7 @@ static inline void nanddev_io_iter_init(struct nand_device *nand,
+>  {
+>  	struct mtd_info *mtd = nanddev_to_mtd(nand);
+>  
+> +	iter->req.mode = req->mode;
+>  	iter->req.dataoffs = nanddev_offs_to_pos(nand, offs, &iter->req.pos);
+>  	iter->req.ooboffs = req->ooboffs;
+>  	iter->oobbytes_per_page = mtd_oobavail(mtd, req);
