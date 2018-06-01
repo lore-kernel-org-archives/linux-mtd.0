@@ -1,26 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOjab-0002EO-A5
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 12:55:31 +0000
-Date: Fri, 1 Jun 2018 14:55:16 +0200
+ id 1fOjsz-0003wO-66
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 13:14:31 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Cc: Peter Pan <peterpansjtu@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, Vignesh R <vigneshr@ti.com>, Xiangsheng Hou
- <xiangsheng.hou@mediatek.com>
-Subject: Re: [PATCH v7 1/5] mtd: nand: Pass mode information to
- nand_page_io_req
-Message-ID: <20180601145516.54725217@bbrezillon>
-In-Reply-To: <20180515150825.19835-2-boris.brezillon@bootlin.com>
-References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
- <20180515150825.19835-2-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
+Subject: [PATCH v8 2/4] dt-bindings: Add bindings for SPI NAND devices
+Date: Fri,  1 Jun 2018 15:13:58 +0200
+Message-Id: <20180601131400.17634-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20180601131400.17634-1-boris.brezillon@bootlin.com>
+References: <20180601131400.17634-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,49 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 May 2018 17:08:21 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Add bindings for SPI NAND chips.
 
-> The NAND sub-layers are likely to need the MTD_OPS_XXX mode information
-> in order to decide if they should enable/disable ECC or how they should
-> place the OOB bytes in the provided OOB buffer.
-> 
-> Add a field to nand_page_io_req to pass this information.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changes in v8:
+- Fixed a typo in the commit message
+---
+ Documentation/devicetree/bindings/mtd/spi-nand.txt | 27 ++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
 
-Applied this one to nand/next. Will send a v8 fixing the issues
-in other patches.
-
-> ---
->  include/linux/mtd/nand.h | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 792ea5c26329..abe975c87b90 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -86,6 +86,7 @@ struct nand_pos {
->   * @ooboffs: the OOB offset within the page
->   * @ooblen: the number of OOB bytes to read from/write to this page
->   * @oobbuf: buffer to store OOB data in or get OOB data from
-> + * @mode: one of the %MTD_OPS_XXX mode
->   *
->   * This object is used to pass per-page I/O requests to NAND sub-layers. This
->   * way all useful information are already formatted in a useful way and
-> @@ -106,6 +107,7 @@ struct nand_page_io_req {
->  		const void *out;
->  		void *in;
->  	} oobbuf;
-> +	int mode;
->  };
->  
->  /**
-> @@ -599,6 +601,7 @@ static inline void nanddev_io_iter_init(struct nand_device *nand,
->  {
->  	struct mtd_info *mtd = nanddev_to_mtd(nand);
->  
-> +	iter->req.mode = req->mode;
->  	iter->req.dataoffs = nanddev_offs_to_pos(nand, offs, &iter->req.pos);
->  	iter->req.ooboffs = req->ooboffs;
->  	iter->oobbytes_per_page = mtd_oobavail(mtd, req);
+diff --git a/Documentation/devicetree/bindings/mtd/spi-nand.txt b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+new file mode 100644
+index 000000000000..d55f80196c63
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+@@ -0,0 +1,27 @@
++SPI NAND flash
++
++Required properties:
++- compatible: should be "spi-nand"
++- reg: should encode the chip-select line used to access the NAND chip
++
++Optional properties
++- spi-max-frequency: maximum frequency of the SPI bus the chip can operate at.
++		     This should encode board limitations (i.e. max freq can't
++		     be achieved due to crosstalk on IO lines).
++		     When unspecified, the driver assumes the chip can run at
++		     the max frequency defined in the spec (information
++		     extracted chip detection time).
++- spi-tx-bus-width: The bus width (number of data wires) that is used for MOSI.
++		    Only encodes the board constraints (i.e. when not all IO
++		    signals are routed on the board). Device constraints are
++		    extracted when detecting the chip, and controller
++		    constraints are exposed by the SPI mem controller. If this
++		    property is missing that means no constraint at the board
++		    level.
++- spi-rx-bus-width: The bus width (number of data wires) that is used for MISO.
++		    Only encodes the board constraints (i.e. when not all IO
++		    signals are routed on the board). Device constraints are
++		    extracted when detecting the chip, and controller
++		    constraints are exposed by the SPI mem controller. If this
++		    property is missing that means no constraint at the board
++		    level.
+-- 
+2.14.1
