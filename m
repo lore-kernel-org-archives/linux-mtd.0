@@ -1,25 +1,25 @@
-Received: from mail-db5eur01on0069.outbound.protection.outlook.com
- ([104.47.2.69] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOhwC-0004Lr-HM
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 11:09:59 +0000
-Date: Fri, 1 Jun 2018 13:09:21 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux mtd <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] lib/bch: Remove VLA usage
-Message-ID: <20180601110921.GC4695@parrot.com>
-References: <20180531184525.GA11068@beast>
+ id 1fOj5S-0001u5-LL
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 12:25:04 +0000
+Received: by mail-wm0-x244.google.com with SMTP id z6-v6so5168654wma.0
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2018 05:23:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180531184525.GA11068@beast>
+In-Reply-To: <CAFLxGvxBF1hrr8dh5xfH3WMj3ND64OftOv_OvPjjdXYE9iBXsA@mail.gmail.com>
+References: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
+ <CAFLxGvxBF1hrr8dh5xfH3WMj3ND64OftOv_OvPjjdXYE9iBXsA@mail.gmail.com>
+From: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>
+Date: Fri, 1 Jun 2018 17:53:05 +0530
+Message-ID: <CAAR3sxPDomY9SzdUt=FAJsaMFUqJMpDviNc4dFbz4WZaX8f8oQ@mail.gmail.com>
+Subject: Re: UBIFS node corruption issue
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ "Vamsi S (R&D - Telecom)" <vamsi.s@matrixcomsec.com>,
+ "Rajdeep Vaghasia (Software Development - Telecom)"
+ <rajdeep.vaghasia@matrixcomsec.com>,
+ "Shailesh Panchal (Software Development - Telecom)"
+ <shailesh.panchal@matrixcomsec.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,60 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 31, 2018 at 11:45:25AM -0700, Kees Cook wrote:
-> In the quest to remove all stack VLA usage from the kernel[1], this
-> allocates a fixed size stack array to cover the range needed for
-> bch. This was done instead of a preallocation on the SLAB due to
-> performance reasons, shown by Ivan Djelic:
-> 
->  little-endian, type sizes: int=4 long=8 longlong=8
->  cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
->  calibration: iter=4.9143µs niter=2034 nsamples=200 m=13 t=4
-> 
->    Buffer allocation |  Encoding throughput (Mbit/s)
->  ---------------------------------------------------
->   on-stack, VLA      |   3988
->   on-stack, fixed    |   4494
->   kmalloc            |   1967
-> 
-> So this change actually improves performance too, it seems.
-> 
-> The resulting stack allocation can get rather large; without
-> CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
-> trips the stack size checking:
-> 
-> lib/bch.c: In function ‘encode_bch’:
-> lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than 2048 bytes [-Wframe-larger-than=]
-> 
-> Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=14 and
-> CONFIG_BCH_CONST_T=4) would have started throwing a warning:
-> 
-> lib/bch.c: In function ‘encode_bch’:
-> lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than 2048 bytes [-Wframe-larger-than=]
-> 
-> But this is how large it's always been; it was just hidden from
-> the checker because it was a VLA. So the Makefile has been adjusted to
-> silence this warning for anything smaller than 4500 bytes, which should
-> provide room for normal cases, but still low enough to catch any future
-> pathological situations.
-> 
-> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=qPXydAacU1RqZWA@mail.gmail.com
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v3: fix r_bytes to whole-word size
-> v2: switch to fixed-size stack array
-> ---
->  lib/Makefile |  1 +
->  lib/bch.c    | 23 +++++++++++++++--------
->  2 files changed, 16 insertions(+), 8 deletions(-)
- 
+Hi Richard,
 
-The patch looks good to me. It also passed my regression tests.
+On Fri, Jun 1, 2018 at 1:58 PM, Richard Weinberger
+<richard.weinberger@gmail.com> wrote:
+> Sourabh Jain,
+>
+> On Fri, Jun 1, 2018 at 6:25 AM, Sourabh Jain (R&D - Telecom)
+> <sourabh.jain@matrixcomsec.com> wrote:
+>> Hi all,
+>>
+>>
+>> We are using 3.2.54 Linux kernel. In this, we are facing one issue
+>
+> Please note that this kernel is very old.
+> At least run a recent 3.2 stable kernel.
+>
+>> related to ubifs node  corruption. Below is the core dump captured in
+>> dmesg output. Due to this node corruption, the application having pid
+>> 1374 is not able to run.
+>>
+>>
+>> This is not resolved even after reboot. It is generated every time the
+>> system starts.
+>>
+>>
+>> What can be the problem?
+>
+> Well, UBIFS' index tree seems to reference a LEB (or part of a LEB)
+> which is empty.
+> This can have tons of reasons. Starting from MTD drivers bugs to UBIFS bugs.
 
-Reviewed-by: Ivan Djelic <ivan.djelic@parrot.com>
-Tested-by: Ivan Djelic <ivan.djelic@parrot.com>
+There is one observation, i have read all the VID header from the PEB
+and there is
+no header having LEB number 328, which causing problem.
+Why there is mapping for LEB Number 328 in index tree?
 
-Thanks,
---
-Ivan
+
+>> How we can resolve this issue?
+>>
+>> Please suggest us necessary action to be taken. Also, please inform us
+>> if any further input is required from us.
+>
+> Are you facing this problem on more than one target, and is it reproducible?
+
+We are facing this problem in some boards.
+there is another problem in which the root file system become read
+only but actually it is r/w.
+
+Regards,
+Sourabh Jain
