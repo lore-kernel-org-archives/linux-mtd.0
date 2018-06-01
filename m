@@ -1,24 +1,34 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::5])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOfQh-0005LS-0v
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 08:29:00 +0000
-Received: by mail-wm0-x242.google.com with SMTP id q4-v6so5580989wmq.1
- for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2018 01:28:48 -0700 (PDT)
+ id 1fOg9Q-0001Hq-92
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 09:15:15 +0000
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, David Wolfe
+ <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
+ <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+ <DB6PR0402MB2838F1DE06025F231537DD68996C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180530162439.7b5eec2b@bbrezillon>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <a2f96430-d880-dea1-436c-191cddac431e@exceet.de>
+Date: Fri, 1 Jun 2018 11:14:52 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
-References: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 1 Jun 2018 10:28:46 +0200
-Message-ID: <CAFLxGvxBF1hrr8dh5xfH3WMj3ND64OftOv_OvPjjdXYE9iBXsA@mail.gmail.com>
-Subject: Re: UBIFS node corruption issue
-To: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- "Vamsi S (R&D - Telecom)" <vamsi.s@matrixcomsec.com>,
- "Rajdeep Vaghasia (Software Development - Telecom)"
- <rajdeep.vaghasia@matrixcomsec.com>,
- "Shailesh Panchal (Software Development - Telecom)"
- <shailesh.panchal@matrixcomsec.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20180530162439.7b5eec2b@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +38,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sourabh Jain,
+Hi Yogesh,
 
-On Fri, Jun 1, 2018 at 6:25 AM, Sourabh Jain (R&D - Telecom)
-<sourabh.jain@matrixcomsec.com> wrote:
-> Hi all,
->
->
-> We are using 3.2.54 Linux kernel. In this, we are facing one issue
+On 30.05.2018 16:24, Boris Brezillon wrote:
+> Hi Yogesh,
+> 
+> On Wed, 30 May 2018 13:50:51 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> 
+>> Hi Frieder,
+>>
+>> Thanks for migrating the fsl-quadspi.c driver on the new SPI
+>> framework. This patch is using dynamic LUT approach to create the LUT
+>> at run time instead of fixed static LUT as being used in current
+>> driver present at mtd/spi-nor/fsl-quadspi.c. I have pushed the
+>> changes for dynamic LUT on mtd/spi-nor/fsl-quadspi.c and v10 has been
+>> in review stage.
+>>
+>> Request you to please add 'signed-off' mentioned in those patches in
+>> this patch, patchwork link is
+>> https://patchwork.ozlabs.org/patch/896534/
 
-Please note that this kernel is very old.
-At least run a recent 3.2 stable kernel.
+So for reasons already given by Boris, I won't add your S-o-b tags. But 
+I can add your name (and that of Suresh Gupta?) to the file header and 
+as MODULE_AUTHOR in the next version.
 
-> related to ubifs node  corruption. Below is the core dump captured in
-> dmesg output. Due to this node corruption, the application having pid
-> 1374 is not able to run.
->
->
-> This is not resolved even after reboot. It is generated every time the
-> system starts.
->
->
-> What can be the problem?
+Regards,
 
-Well, UBIFS' index tree seems to reference a LEB (or part of a LEB)
-which is empty.
-This can have tons of reasons. Starting from MTD drivers bugs to UBIFS bugs.
+Frieder
 
-> How we can resolve this issue?
->
-> Please suggest us necessary action to be taken. Also, please inform us
-> if any further input is required from us.
-
-Are you facing this problem on more than one target, and is it reproducible?
-
--- 
-Thanks,
-//richard
+> 
+> First, I'd like to state that this work has not been based on your
+> dynamic LUT code, and I actually asked you to adapt your code to match
+> the way we were handling it in the new driver (which at that time was
+> still under development). Then, even if you want to be cited as one of
+> the author of the new code, SoB tag is not the right way to do it (see
+> [1] for an explanation on when SoB should be added). Instead, you
+> should add your name in the copyright header and maybe be add a
+> MODULE_AUTHOR():
+> 
+> /*
+>   * Copyright ...
+>   * ...
+>   * Authors:
+>   *	...
+>   *	Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+>   */
+> 
+> ...
+> 
+> MODULE_AUTHOR("Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>");
+> 
+> Regards,
+> 
+> Boris
+> 
+> [1]https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L429
+> 
