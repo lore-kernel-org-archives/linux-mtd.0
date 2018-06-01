@@ -1,30 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOkLC-000694-Ba
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 13:43:39 +0000
-Date: Fri, 1 Jun 2018 15:43:26 +0200
+ id 1fOlAK-0007Mf-VE
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 14:36:30 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, pgaikwad@nvidia.com,
- dev@lynxeye.de, mirza.krak@gmail.com, benjamin.lindqvist@endian.se,
- pdeschrijver@nvidia.com, miquel.raynal@bootlin.com,
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, jonathanh@nvidia.com,
- marek.vasut@gmail.com, thierry.reding@gmail.com,
- linux-mtd@lists.infradead.org, krzk@kernel.org, richard@nod.at,
- linux-tegra@vger.kernel.org, digetx@gmail.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, marcel@ziswiler.com
-Subject: Re: [PATCH v3 1/6] mtd: rawnand: add Reed-Solomon error correction
- algorithm
-Message-ID: <20180601154326.6c60c579@bbrezillon>
-In-Reply-To: <18ce3100aabf42059dbd514fb8c93e84@agner.ch>
-References: <20180531221637.6017-1-stefan@agner.ch>
- <20180531221637.6017-2-stefan@agner.ch>
- <20180601092600.03c14f53@bbrezillon>
- <20180601112506.2157e8b0@bbrezillon>
- <18ce3100aabf42059dbd514fb8c93e84@agner.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org
+Cc: Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [RFC PATCH 0/2] spi: spi-mem: Add a direct mapping API
+Date: Fri,  1 Jun 2018 16:36:01 +0200
+Message-Id: <20180601143603.4047-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,38 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 01 Jun 2018 15:34:33 +0200
-Stefan Agner <stefan@agner.ch> wrote:
+Hello,
 
-> On 01.06.2018 11:25, Boris Brezillon wrote:
-> > On Fri, 1 Jun 2018 09:26:00 +0200
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> >   
-> >> On Fri,  1 Jun 2018 00:16:32 +0200
-> >> Stefan Agner <stefan@agner.ch> wrote:
-> >>  
-> >> > Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
-> >> >
-> >> > Signed-off-by: Stefan Agner <stefan@agner.ch>  
-> >>
-> >> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> >>  
-> >> > ---
-> >> >  drivers/mtd/nand/raw/nand_base.c | 1 +
-> >> >  include/linux/mtd/rawnand.h      | 1 +  
-> > 
-> > Hm, you forgot to update Documentation/devicetree/bindings/mtd/nand.txt.
-> >   
-> 
-> Yeah I was not sure about that. Currently it says:
-> 
-> - nand-ecc-algo: string, algorithm of NAND ECC.                         
->                                                                    
->                  Supported values are: "hamming", "bch".
-> 
-> Is supported meant by software ECC here? I feel "supported" is a rather
-> strong word since it is clearly controller dependent whether it is
-> actually supported...
+I know this topic has come up several times during the development of
+the spi-mem layer, so I'm finally proposing something to expose this
+feature to SPI mem drivers.
 
-I guess "valid values" or "accepted values" would be more appropriate
-here.
+Right now it's a rather simple implementation where only on spi_mem_op
+operation can be attached to a direct mapping, meaning that write
+access to SPI NOR devices will still require manually sending the WR_EN
+operation before using the direct mapping, but it should still improve
+perfs overall, and should match how most SPI controller drivers describe
+direct mappings (a SPI memory operation attached to the range of memory
+that you want to directly map in the CPU address space).
+
+Feel free to comment on this implementation.
+
+Thanks,
+
+Boris
+
+Boris Brezillon (2):
+  spi: spi-mem: Add a new API to support direct mapping
+  mtd: m25p80: Use the SPI mem direct API to possibly improve
+    performances
+
+ drivers/mtd/devices/m25p80.c | 149 ++++++++++++++----------
+ drivers/spi/spi-mem.c        | 267 +++++++++++++++++++++++++++++++++++++++----
+ include/linux/spi/spi-mem.h  |  72 ++++++++++++
+ 3 files changed, 407 insertions(+), 81 deletions(-)
+
+-- 
+2.14.1
