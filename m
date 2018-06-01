@@ -1,26 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOeWD-0000sR-MT
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 07:30:39 +0000
-Date: Fri, 1 Jun 2018 09:30:25 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- benjamin.lindqvist@endian.se, pgaikwad@nvidia.com, dev@lynxeye.de,
- mirza.krak@gmail.com, richard@nod.at, pdeschrijver@nvidia.com,
- linux-kernel@vger.kernel.org, krzk@kernel.org, jonathanh@nvidia.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- marcel@ziswiler.com, miquel.raynal@bootlin.com,
- linux-tegra@vger.kernel.org, digetx@gmail.com
-Subject: Re: [PATCH v3 3/6] mtd: rawnand: tegra: add devicetree binding
-Message-ID: <20180601093025.2817ff30@bbrezillon>
-In-Reply-To: <20180531221637.6017-4-stefan@agner.ch>
-References: <20180531221637.6017-1-stefan@agner.ch>
- <20180531221637.6017-4-stefan@agner.ch>
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fOfQh-0005LS-0v
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 08:29:00 +0000
+Received: by mail-wm0-x242.google.com with SMTP id q4-v6so5580989wmq.1
+ for <linux-mtd@lists.infradead.org>; Fri, 01 Jun 2018 01:28:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
+References: <CAAR3sxP_JEXoA6JMN6FgDp8p1PsmDG9JONJXEbz-APZoOjrKBA@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 1 Jun 2018 10:28:46 +0200
+Message-ID: <CAFLxGvxBF1hrr8dh5xfH3WMj3ND64OftOv_OvPjjdXYE9iBXsA@mail.gmail.com>
+Subject: Re: UBIFS node corruption issue
+To: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ "Vamsi S (R&D - Telecom)" <vamsi.s@matrixcomsec.com>,
+ "Rajdeep Vaghasia (Software Development - Telecom)"
+ <rajdeep.vaghasia@matrixcomsec.com>,
+ "Shailesh Panchal (Software Development - Telecom)"
+ <shailesh.panchal@matrixcomsec.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,107 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  1 Jun 2018 00:16:34 +0200
-Stefan Agner <stefan@agner.ch> wrote:
+Sourabh Jain,
 
-> This adds the devicetree binding for the Tegra 2 NAND flash
-> controller.
-> 
-> Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  .../bindings/mtd/nvidia-tegra20-nand.txt      | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> new file mode 100644
-> index 000000000000..5cd984ef046b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> @@ -0,0 +1,64 @@
-> +NVIDIA Tegra NAND Flash controller
-> +
-> +Required properties:
-> +- compatible: Must be one of:
-> +  - "nvidia,tegra20-nand"
+On Fri, Jun 1, 2018 at 6:25 AM, Sourabh Jain (R&D - Telecom)
+<sourabh.jain@matrixcomsec.com> wrote:
+> Hi all,
+>
+>
+> We are using 3.2.54 Linux kernel. In this, we are facing one issue
 
-As discussed previously, I prefer "nvidia,tegra20-nand-controller" or
-"nvidia,tegra20-nfc".
+Please note that this kernel is very old.
+At least run a recent 3.2 stable kernel.
 
-> +- reg: MMIO address range
-> +- interrupts: interrupt output of the NFC controller
-> +- clocks: Must contain an entry for each entry in clock-names.
-> +  See ../clocks/clock-bindings.txt for details.
-> +- clock-names: Must include the following entries:
-> +  - nand
-> +- resets: Must contain an entry for each entry in reset-names.
-> +  See ../reset/reset.txt for details.
-> +- reset-names: Must include the following entries:
-> +  - nand
-> +
-> +Optional children nodes:
-> +Individual NAND chips are children of the NAND controller node. Currently
-> +only one NAND chip supported.
-> +
-> +Required children node properties:
-> +- reg: An integer ranging from 1 to 6 representing the CS line to use.
-> +
-> +Optional children node properties:
-> +- nand-ecc-mode: String, operation mode of the NAND ecc mode. Currently only
-> +		 "hw" is supported.
-> +- nand-ecc-algo: string, algorithm of NAND ECC.
-> +		 Supported values with "hw" ECC mode are: "rs", "bch".
-> +- nand-bus-width : See nand.txt
-> +- nand-on-flash-bbt: See nand.txt
-> +- nand-ecc-strength: integer representing the number of bits to correct
-> +		     per ECC step (always 512). Supported strength using HW ECC
-> +		     modes are:
-> +		     - RS: 4, 6, 8
-> +		     - BCH: 4, 8, 14, 16
-> +- nand-ecc-maximize: See nand.txt
-> +- nand-is-boot-medium: Makes sure only ECC strengths supported by the boot ROM
-> +		       are choosen.
-> +- wp-gpios: GPIO specifier for the write protect pin.
-> +
-> +Optional child node of NAND chip nodes:
-> +Partitions: see partition.txt
-> +
-> +  Example:
-> +	nand@70008000 {
+> related to ubifs node  corruption. Below is the core dump captured in
+> dmesg output. Due to this node corruption, the application having pid
+> 1374 is not able to run.
+>
+>
+> This is not resolved even after reboot. It is generated every time the
+> system starts.
+>
+>
+> What can be the problem?
 
-	nand-controller@70008000 {
+Well, UBIFS' index tree seems to reference a LEB (or part of a LEB)
+which is empty.
+This can have tons of reasons. Starting from MTD drivers bugs to UBIFS bugs.
 
-> +		compatible = "nvidia,tegra20-nand";
+> How we can resolve this issue?
+>
+> Please suggest us necessary action to be taken. Also, please inform us
+> if any further input is required from us.
 
-		compatible = "nvidia,tegra20-nand-controller";
+Are you facing this problem on more than one target, and is it reproducible?
 
-or
-
-		compatible = "nvidia,tegra20-nfc";
-
-> +		reg = <0x70008000 0x100>;
-> +		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
-> +		clock-names = "nand";
-> +		resets = <&tegra_car 13>;
-> +		reset-names = "nand";
-> +
-> +		nand-chip@0 {
-
-		nand@0 {
-
-> +			reg = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +			nand-bus-width = <8>;
-> +			nand-on-flash-bbt;
-> +			nand-ecc-algo = "bch";
-> +			nand-ecc-strength = <8>;
-> +			wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
-> +		};
-> +	};
-
-With this addressed,
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+-- 
+Thanks,
+//richard
