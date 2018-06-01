@@ -1,23 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOh2N-0008Dp-AF
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 10:12:00 +0000
-Date: Fri, 1 Jun 2018 12:11:44 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Peter Pan
- <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
- Vignesh R <vigneshr@ti.com>, Xiangsheng Hou <xiangsheng.hou@mediatek.com>
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::1])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fOh8Q-0008JZ-1u
+ for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 10:18:16 +0000
 Subject: Re: [PATCH v7 1/5] mtd: nand: Pass mode information to
  nand_page_io_req
-Message-ID: <20180601121144.247c03f3@xps13>
-In-Reply-To: <20180515150825.19835-2-boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Peter Pan <peterpansjtu@gmail.com>, Vignesh R <vigneshr@ti.com>,
+ Xiangsheng Hou <xiangsheng.hou@mediatek.com>
 References: <20180515150825.19835-1-boris.brezillon@bootlin.com>
  <20180515150825.19835-2-boris.brezillon@bootlin.com>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <41d6e15d-5265-69e9-f01f-b368e3940a5a@exceet.de>
+Date: Fri, 1 Jun 2018 12:17:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180515150825.19835-2-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,9 +32,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Tue, 15 May 2018 17:08:21 +0200, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-
+On 15.05.2018 17:08, Boris Brezillon wrote:
 > The NAND sub-layers are likely to need the MTD_OPS_XXX mode information
 > in order to decide if they should enable/disable ECC or how they should
 > place the OOB bytes in the provided OOB buffer.
@@ -42,4 +42,5 @@ On Tue, 15 May 2018 17:08:21 +0200, Boris Brezillon
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Tested-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+Reviewed-by: Frieder Schrempf <frieder.schrempf@exceet.de>
