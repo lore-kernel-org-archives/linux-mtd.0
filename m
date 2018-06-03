@@ -1,30 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fOrGw-0006lu-Eu
- for linux-mtd@lists.infradead.org; Fri, 01 Jun 2018 21:07:44 +0000
-Date: Fri, 1 Jun 2018 23:07:20 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v8 2/4] dt-bindings: Add bindings for SPI NAND devices
-Message-ID: <20180601230720.5619424e@bbrezillon>
-In-Reply-To: <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
-References: <20180601131400.17634-1-boris.brezillon@bootlin.com>
- <20180601131400.17634-3-boris.brezillon@bootlin.com>
- <CAMuHMdUyPoDA-7+OT_yT-g7kA+zae8Sjo6PYRFTFfFkQetUqnA@mail.gmail.com>
- <20180601190902.17cf5f6f@bbrezillon>
- <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from botnar.kaiser.cx ([176.28.20.183])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fPRHr-0002zh-Ft
+ for linux-mtd@lists.infradead.org; Sun, 03 Jun 2018 11:35:05 +0000
+From: Martin Kaiser <martin@kaiser.cx>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Martin Kaiser <martin@kaiser.cx>, stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: mxc: set spare area size register explicitly
+Date: Sun,  3 Jun 2018 13:31:35 +0200
+Message-Id: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,182 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 1 Jun 2018 19:40:00 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+The v21 version of the NAND flash controller contains a Spare Area Size
+Register (SPAS) at offset 0x10. Its setting defaults to the maximum
+spare area size of 218 bytes. The size that is set in this register is
+used by the controller when it calculates the ECC bytes internally in
+hardware.
 
-> Hi Boris,
-> 
-> On Fri, Jun 1, 2018 at 7:09 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > On Fri, 1 Jun 2018 16:42:26 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
-> >> On Fri, Jun 1, 2018 at 3:13 PM, Boris Brezillon
-> >> <boris.brezillon@bootlin.com> wrote:  
-> >> > Add bindings for SPI NAND chips.  
-> 
-> >> > --- /dev/null
-> >> > +++ b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> >> > @@ -0,0 +1,27 @@
-> >> > +SPI NAND flash
-> >> > +
-> >> > +Required properties:
-> >> > +- compatible: should be "spi-nand"
-> >> > +- reg: should encode the chip-select line used to access the NAND chip
-> >> > +
-> >> > +Optional properties
-> >> > +- spi-max-frequency: maximum frequency of the SPI bus the chip can operate at.
-> >> > +                    This should encode board limitations (i.e. max freq can't
-> >> > +                    be achieved due to crosstalk on IO lines).
-> >> > +                    When unspecified, the driver assumes the chip can run at
-> >> > +                    the max frequency defined in the spec (information
-> >> > +                    extracted chip detection time).  
-> >>
-> >> This is a standard property according to
-> >> Documentation/devicetree/bindings/spi/spi-bus.txt. Can't you just refer
-> >> to that file, or just omit it, as it applies to all SPI slaves anyway?  
-> >
-> > The thing is, the maximum frequency supported by a SPI NAND is directly
-> > encoded in the NAND device ID and can be auto-detected. Why should we
-> > define spi-max-frequency in the DT when we can automatically detect
-> > this information? The only reason one might want to override  
-> 
-> Because that's how we dealt with this traditionally. Or at least I thought so.
-> But include/linux/spi/spi.h says:
-> 
->  * @max_speed_hz: Maximum clock rate to be used with this chip
->  *      (on this board); may be changed by the device's driver.
->  *      The spi_transfer.speed_hz can override this for each transfer.
-> 
-> and many drivers seem to do so.
+Usually, this register is updated from settings in the IIM fuses when
+the system is booting from nand flash. For other boot media, however,
+the SPAS register remains at the default setting, which may not work for
+the particular flash chip on the board. The same goes for flash chips
+whose configuration cannot be set in the IIM fuses (e.g. chips with 2k
+sector size and 128 bytes spare area size can't be configured in the IIM
+fuses on imx25 systems).
 
-And that's wrong, isn't it? I mean, if you have a constraint at the
-board level, why should we allow the SPI device driver to override this
-value? We should have:
+Set the SPAS register explicitly during the preset operation. Derive the
+register value from mtd->oobsize that was detected during probe by
+decoding the flash chip's ID bytes.
 
-	max(controller_max, device_max, board_max)
+While at it, rename the define for the spare area register's offset to
+NFC_V21_RSLTSPARE_AREA. The register at offset 0x10 on v1 controllers is
+different from the register on v21 controllers.
 
-and not (this is my understanding of how SPI max-freq selection works)
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+Cc: stable@vger.kernel.org
+---
+ drivers/mtd/nand/raw/mxc_nand.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-	if (board_max)
-		max = board_max;
-	else
-		max = controller_max;
-
-	if (device_max)
-		max = device_max;
-
-> 
-> > spi-max-frequency is when the board design impose such restrictions,
-> > hence the precision I give here.  
-> 
-> Which is exactly the meaning of the standard property, isn't it?
-
-Maybe it is how people expect the max-freq selection to work, but in
-practice it doesn't seem to work like that (see spi_setup() and how the
-value passed by the device driver overrides everything without even
-checking if the controller and board constraints impose a lower freq).
-
-> 
-> So I think it can just be omitted here anyway.  If it's present, the SPI
-> core will make sure it's taken into account.
-
-Yes, I should probably just refer to spi-bus.txt here.
-
-> 
-> >> > +- spi-tx-bus-width: The bus width (number of data wires) that is used for MOSI.
-> >> > +                   Only encodes the board constraints (i.e. when not all IO
-> >> > +                   signals are routed on the board). Device constraints are
-> >> > +                   extracted when detecting the chip, and controller
-> >> > +                   constraints are exposed by the SPI mem controller. If this
-> >> > +                   property is missing that means no constraint at the board
-> >> > +                   level.
-> >> > +- spi-rx-bus-width: The bus width (number of data wires) that is used for MISO.
-> >> > +                   Only encodes the board constraints (i.e. when not all IO
-> >> > +                   signals are routed on the board). Device constraints are
-> >> > +                   extracted when detecting the chip, and controller
-> >> > +                   constraints are exposed by the SPI mem controller. If this
-> >> > +                   property is missing that means no constraint at the board
-> >> > +                   level.  
-> >>
-> >> This does not match Documentation/devicetree/bindings/spi/spi-bus.txt,
-> >> which says the default is 1.  
-> >
-> > Yes, I know.
-> >  
-> >> As these properties are handled by the SPI core in of_spi_parse_dt, why
-> >> would you want to deviate?  
-> >
-> > Because, again, this information can be extracted from the NAND ID, and
-> > the only reason we might want to override the information extracted
-> > from the NAND ID is when the board design adds extra restrictions
-> > (like, only 2 SIO lines wired on the 4 available).  
-> 
-> In struct spi_device, this is specified using the SPI_[RT]_X_{DUAL,QUAD}
-> bits in the mode field. Documentation says:
-> 
->  * @mode: The spi mode defines how data is clocked out and in.
->  *      This may be changed by the device's driver.
->  *      The "active low" default for chipselect mode can be overridden
->  *      (by specifying SPI_CS_HIGH) as can the "MSB first" default for
->  *      each word in a transfer (by specifying SPI_LSB_FIRST).
-> 
-> So this may also be specified by the device driver, but it seems no driver
-> does so for the dual/quad bits, except for drivers/mtd/spi-nor/nxp-spifi.c
-> (for rx only).
-
-Same problem as for spi-max-frequency, the driver can override the value
-that was specified in the DT, and the core does not seem to check
-if the board or controller constraint were stronger.
-
-> 
-> But here we do have the generic SPI DT bindings saying the default is 1.
-> So personally, I wouldn't go for the option of the least surprise, and
-> don't deviate from the generic bindings.
-
-I do have a problem with this approach: we are in the process of
-converting existing spi-nor controller drivers to the SPI mem model in
-order to allow the same controller to indifferently control a SPI NAND
-or a SPI NOR. Such drivers had their own bindings which most of the
-time was close to the bindings described in spi-bus.txt with a few
-exceptions. One of these exception is that drivers tend to not
-explicitly describe the bus width but still use the max buswidth
-supported by the controller (QuadSPI) to interface with NOR chips.
-
-When we convert those drivers we have 2 choices:
-1/ make existing setup work in a degraded mode (1-1-1) until they update
-   their DT to explicitly specify the spi-{rx,tx}-bus-width
-2/ consider that when spi-{rx,tx}-bus-width is missing the device should
-   work in the fastest possible mode matching the device+controller
-   constraints
-
-I went for option #2, but maybe #1 is fine. Note that spi-nand is not a
-problem here because this is a new binding, but I thought it would be
-better to clarify the meaning of these props before people start
-(ab)using them.
-
-> 
-> >> Commenting to the question in the cover letter: what would be the
-> >> purpose of spi-max-bus-width?  
-> >
-> > Defining how many IO lines are wired on the board design. If this
-> > property is missing we would assume all IO lines are wired and the
-> > restrictions would be negotiated between the controller and the device
-> > without requiring explicit description in the DT.  
-> 
-> Which is exactly the meaning of the standard property, except for the
-> default of all vs. 1.
-
-And that's a huge difference. Say you have a board design and several
-equivalence for the SPI NAND chip, one is supporting mode 1-1-4 (AKA
-QuadSPI) and the other one is supporting only mode 1-1-1 (Single SPI).
-With your solution we'd have to have 2 DTs or force all models to
-operate in 1-1-1 mode. 
-
-> 
-> I'll have to defer to Mark (broonie) for his opinion about deviating from
-> the way this is handled traditionally, and assuming different defaults...
-
-I'm not saying that we should blindly change the meaning of those
-existing props, I just wanted to start a discussion to see how the
-problem I'm mentioning here should be handled (addition of new props is
-something I'm perfectly fine with).
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 45786e7..c2f8572 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -48,7 +48,7 @@
+ #define NFC_V1_V2_CONFIG		(host->regs + 0x0a)
+ #define NFC_V1_V2_ECC_STATUS_RESULT	(host->regs + 0x0c)
+ #define NFC_V1_V2_RSLTMAIN_AREA		(host->regs + 0x0e)
+-#define NFC_V1_V2_RSLTSPARE_AREA	(host->regs + 0x10)
++#define NFC_V21_RSLTSPARE_AREA		(host->regs + 0x10)
+ #define NFC_V1_V2_WRPROT		(host->regs + 0x12)
+ #define NFC_V1_UNLOCKSTART_BLKADDR	(host->regs + 0x14)
+ #define NFC_V1_UNLOCKEND_BLKADDR	(host->regs + 0x16)
+@@ -1274,6 +1274,9 @@ static void preset_v2(struct mtd_info *mtd)
+ 	writew(config1, NFC_V1_V2_CONFIG1);
+ 	/* preset operation */
+ 
++	/* spare area size in 16bit words */
++	writew(mtd->oobsize >> 1, NFC_V21_RSLTSPARE_AREA);
++
+ 	/* Unlock the internal RAM Buffer */
+ 	writew(0x2, NFC_V1_V2_CONFIG);
+ 
+-- 
+2.1.4
