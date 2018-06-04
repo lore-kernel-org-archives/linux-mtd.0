@@ -1,16 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPlaW-0006qv-Lk
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 09:15:43 +0000
-Date: Mon, 4 Jun 2018 11:15:21 +0200
+ id 1fPmDT-00084J-9M
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 09:55:59 +0000
+Date: Mon, 4 Jun 2018 11:55:43 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Marek Vasut <marex@denx.de>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 4.18
-Message-ID: <20180604111521.7ea397dd@bbrezillon>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, H Hartley Sweeten
+ <hsweeten@visionengravers.com>, Tony Lindgren <tony@atomide.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Krzysztof Halasa <khalasa@piap.pl>, Shreeya Patel
+ <shreeya.patel23498@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 5/6 v2] mtd: rawnand: ams-delta: use GPIO lookup table
+Message-ID: <20180604115543.3be75717@bbrezillon>
+In-Reply-To: <1582841.uoaVdad1fL@z50>
+References: <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
+ <1543045.tPZatK9yHU@z50> <20180530195220.3527f0fc@bbrezillon>
+ <1582841.uoaVdad1fL@z50>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,103 +30,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, 30 May 2018 22:39:03 +0200
+Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-And now the SPI NOR PR for 4.18 which I also plan to merge in mtd/next
-later this week.
+> On Wednesday, May 30, 2018 7:52:20 PM CEST Boris Brezillon wrote:
+> > On Wed, 30 May 2018 19:43:09 +0200
+> > 
+> > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:  
+> > > On Wednesday, May 30, 2018 11:05:00 AM CEST Boris Brezillon wrote:  
+> > > > Hi Janusz,  
+> > > 
+> > > Hi Boris,
+> > >   
+> > > > On Sat, 26 May 2018 00:20:45 +0200
+> > > > 
+> > > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:  
+> > > > > ...
+> > > > > Changes since v1:
+> > > > > - fix handling of devm_gpiod_get_optional() return values - thanks to
+> > > > > 
+> > > > >   Andy Shevchenko.  
+> > > > 
+> > > > Can you put the changelog after the "---" separator so that it does not
+> > > > appear in the final commit message?  
+> > > 
+> > > Yes, sure, sorry for that.
+> > >   
+> > > > > +err_gpiod:
+> > > > > +	if (err == -ENODEV || err == -ENOENT)
+> > > > > +		err = -EPROBE_DEFER;  
+> > > > 
+> > > > Hm, isn't it better to make gpiod_find() return ERR_PTR(-EPROBE_DEFER)
+> > > > here [1]? At least, ENOENT should not be turned into EPROBE_DEFER,
+> > > > because it's returned when there's no entry matching the requested gpio
+> > > > in the lookup table, and deferring the probe won't solve this problem.  
+> > > 
+> > > ENOENT is also returned when no matching lookup table is found. That may
+> > > happen if consumer dev_name stored in the table differs from dev_name
+> > > assigned to the consumer by its bus, the platform bus in this case. For
+> > > that reason I think the consumer dev_name should be initialized in the
+> > > table after the device is registered, when its actual dev_name can be
+> > > obtained. If that device registration happens after the driver is already
+> > > registered, e.g., at late_initcall, the device is probed before its
+> > > lookup table is ready. For that reason returning EPROBE_DEFER seems
+> > > better to me even in the ENOENT case.  
+> > Sorry, I don't get it. Aren't GPIO lookup tables supposed to be declared
+> > in board files, especially if the GPIO is used by a platform device?
+> > When would you have a lookup table registered later in the init/boot
+> > process?  
+> 
+> When e.g. I'd like to register my GPIO consumer platform device at 
+> late_initcall for some reason, and I'm not sure what exact dev_name my 
+> consomer will be registered with by the platform bus.
 
-Marek, can you have a quick look and let me know if you see something
-odd in there.
+You should know the name before the device is registered.
 
-Thanks,
+> In that case I think I 
+> should assign dev_name to the lookup table after the consumer device is 
+> registered and its exact dev_name can be obtained, then register the table,
 
-Boris
-
-The following changes since commit 60cc43fc888428bb2f18f08997432d426a243338:
-
-  Linux 4.17-rc1 (2018-04-15 18:24:20 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/spi-nor/for-4.18
-
-for you to fetch changes up to 771ff17e82fac54686f149e311d4ea74a70255b1:
-
-  mtd: spi-nor: Add support for EN25QH32 (2018-05-18 13:38:53 +0200)
-
-----------------------------------------------------------------
-Core changes:
-- Add support for a bunch of SPI NOR chips
-- Clear EAR reg when switching to 3-byte addressing mode on Winbond
-  chips
-
-SPI NOR controller driver changes:
-- cadence: Add DMA support for direct mode reads
-- hisi: Prefix a few functions with hisi_
-- intel:
-  * Mark the driver as "dangerous" in Kconfig
-  * Fix atomic sequence handling
-  * Pass a 40us delay (instead of 0us) to readl_poll_timeout()
-- fsl:
-  * fix a typo in a function name
-  * add support for IP variants embedded in the ls2080a and ls1080a
-    SoCs
-- stm32: request exclusive control of the reset line
-
-----------------------------------------------------------------
-Ezequiel Garcia (1):
-      mtd: spi-nor: hisi: Avoid generic function names
-
-Hauke Mehrtens (1):
-      mtd: spi-nor: Add support for XM25QH64A and XM25QH128A
-
-Kimmo Rautkoski (1):
-      mtd: spi-nor: Add support for is25wp series chips
-
-Marek Vasut (1):
-      mtd: spi-nor: add support for ISSI is25lp256
-
-Mika Westerberg (2):
-      mtd: spi-nor: intel-spi: Fix atomic sequence handling
-      mtd: spi-nor: intel-spi: Explicitly mark the driver as dangerous in Kconfig
-
-NeilBrown (1):
-      mtd: spi-nor: clear Winbond Extended Address Reg on switch to 3-byte addressing.
-
-Nicholas Mc Guire (1):
-      mtd: spi-nor: intel: provide a range for poll_timout
-
-Philipp Zabel (1):
-      mtd: spi-nor: stm32-quadspi: explicitly request exclusive reset control
-
-Stephen Douthit (1):
-      mtd: spi-nor: Add Winbond w25q32jv support
-
-Thor Thayer (1):
-      mtd: spi-nor: Add Micron MT25QU02 support
-
-Vignesh R (1):
-      mtd: spi-nor: cadence-quadspi: Add DMA support for direct mode reads
-
-Yogesh Gaur (2):
-      mtd: spi-nor: fsl-quadspi: fix api naming typo _init_ahb_read
-      mtd: spi-nor: fsl-quadspi: add support for ls2080a/ls1080a
-
-YuheiOKAWA (1):
-      mtd: spi-nor: Add support for EN25QH32
-
- drivers/mtd/spi-nor/Kconfig           |  4 +--
- drivers/mtd/spi-nor/cadence-quadspi.c | 96 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
- drivers/mtd/spi-nor/fsl-quadspi.c     | 15 ++++++++--
- drivers/mtd/spi-nor/hisi-sfc.c        | 12 ++++----
- drivers/mtd/spi-nor/intel-spi.c       | 80 ++++++++++++++++++++++++++++++++++++++++++-------
- drivers/mtd/spi-nor/spi-nor.c         | 33 ++++++++++++++++++++
- drivers/mtd/spi-nor/stm32-quadspi.c   |  2 +-
- include/linux/mtd/spi-nor.h           |  2 ++
- 8 files changed, 220 insertions(+), 24 deletions(-)
-
-
--- 
-Boris Brezillon, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I'm pretty sure it's not supposed to work like that. Resources attached
+to a device should be defined before the device is registered, not
+after, simply because when you call platform_device_register(), the
+device might be directly bind to the driver before the
+platform_device_register() calls return, and the driver will fail to
+probe the device if it doesn't find the GPIO it needs.
