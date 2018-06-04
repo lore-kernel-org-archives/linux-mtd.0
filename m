@@ -1,15 +1,16 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPlMe-0007y4-3C
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 09:01:22 +0000
-Date: Mon, 4 Jun 2018 11:01:07 +0200
+ id 1fPlaW-0006qv-Lk
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 09:15:43 +0000
+Date: Mon, 4 Jun 2018 11:15:21 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>, Miquel Raynal
- <miquel.raynal@bootlin.com>, David Woodhouse <dwmw2@infradead.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: nand: Changes for 4.18
-Message-ID: <20180604110107.7e6e046e@bbrezillon>
+To: Marek Vasut <marex@denx.de>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
+ Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>
+Subject: [GIT PULL] mtd: spi-nor: Changes for 4.18
+Message-ID: <20180604111521.7ea397dd@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,10 +25,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi all,
 
-I'm a bit late this time, but here is the NAND PR for 4.18. Unless someone
-complains I plan to merge it in the mtd/next branch later this week.
+And now the SPI NOR PR for 4.18 which I also plan to merge in mtd/next
+later this week.
 
-Regards,
+Marek, can you have a quick look and let me know if you see something
+odd in there.
+
+Thanks,
 
 Boris
 
@@ -37,119 +41,82 @@ The following changes since commit 60cc43fc888428bb2f18f08997432d426a243338:
 
 are available in the git repository at:
 
-  git://git.infradead.org/linux-mtd.git tags/nand/for-4.18
+  git://git.infradead.org/linux-mtd.git tags/spi-nor/for-4.18
 
-for you to fetch changes up to f567c71f4f91d173795a2f46d6fc493387ce084d:
+for you to fetch changes up to 771ff17e82fac54686f149e311d4ea74a70255b1:
 
-  mtd: nand: Pass mode information to nand_page_io_req (2018-06-01 14:53:50 +0200)
+  mtd: spi-nor: Add support for EN25QH32 (2018-05-18 13:38:53 +0200)
 
 ----------------------------------------------------------------
 Core changes:
-- Add Miquel as a NAND maintainer
-- Add access mode to the nand_page_io_req struct
-- Fix kernel-doc in rawnand.h
-- Support bit-wise majority to recover from corrupted ONFI parameter
-  pages
-- Stop checking FAIL bit after a SET_FEATURES, as documented in the
-  ONFI spec
+- Add support for a bunch of SPI NOR chips
+- Clear EAR reg when switching to 3-byte addressing mode on Winbond
+  chips
 
-Raw NAND Driver changes:
-- Fix and cleanup the error path of many NAND controller drivers
-- GPMI:
-  * Cleanup/simplification of a few aspects in the driver
-  * Take ECC setup specified in the DT into account
-- sunxi: remove support for GPIO-based R/B polling
-- MTK:
-  * Use of_device_get_match_data() instead of of_match_device()
-  * Add an entry in MAINTAINERS for this driver
-  * Fix nand-ecc-step-size and nand-ecc-strength description in the DT
-    bindings doc
-- fsl_ifc: fix ->cmdfunc() to read more than one ONFI parameter page
-
-OneNAND driver changes:
-- samsung: use dev_get_drvdata() instead of platform_get_drvdata()
+SPI NOR controller driver changes:
+- cadence: Add DMA support for direct mode reads
+- hisi: Prefix a few functions with hisi_
+- intel:
+  * Mark the driver as "dangerous" in Kconfig
+  * Fix atomic sequence handling
+  * Pass a 40us delay (instead of 0us) to readl_poll_timeout()
+- fsl:
+  * fix a typo in a function name
+  * add support for IP variants embedded in the ls2080a and ls1080a
+    SoCs
+- stm32: request exclusive control of the reset line
 
 ----------------------------------------------------------------
-Boris Brezillon (4):
-      Merge tag 'nand/davinci-clock' of git://git.infradead.org/linux-mtd into HEAD
-      mtd: rawnand: sunxi: Remove support for GPIO-based Ready/Busy polling
-      mtd: rawnand: Do not check FAIL bit when executing a SET_FEATURES op
-      mtd: nand: Pass mode information to nand_page_io_req
+Ezequiel Garcia (1):
+      mtd: spi-nor: hisi: Avoid generic function names
 
-Jane Wan (1):
-      mtd: rawnand: fsl_ifc: fix FSL NAND driver to read all ONFI parameter pages
+Hauke Mehrtens (1):
+      mtd: spi-nor: Add support for XM25QH64A and XM25QH128A
 
-Jia-Ju Bai (1):
-      mtd: rawnand: diskonchip: Replace mdelay with usleep_range in doc_probe
+Kimmo Rautkoski (1):
+      mtd: spi-nor: Add support for is25wp series chips
 
-Mauro Carvalho Chehab (1):
-      mtd: rawnand.h: use nested union kernel-doc markups
+Marek Vasut (1):
+      mtd: spi-nor: add support for ISSI is25lp256
 
-Miquel Raynal (12):
-      mtd: rawnand: fsl_elbc: fix probe function error path
-      mtd: rawnand: fsl_ifc: fix probe function error path
-      mtd: rawnand: fsmc: clean the probe function style
-      mtd: rawnand: fsmc: fix the probe function error path
-      mtd: rawnand: hisi504: clean the probe function error path
-      mtd: rawnand: hisi504: fix the probe function error path
-      mtd: rawnand: lpc32xx_mlc: clean the probe function
-      mtd: rawnand: lpc32xx_mlc: fix the probe function error path
-      mtd: rawnand: lpc32xx_slc: clean the probe function
-      mtd: rawnand: lpc32xx_slc: fix the probe function error path
-      mtd: rawnand: add a way to pass an ID table with nand_scan()
-      mtd: nand: add myself as NAND co-maintainer
+Mika Westerberg (2):
+      mtd: spi-nor: intel-spi: Fix atomic sequence handling
+      mtd: spi-nor: intel-spi: Explicitly mark the driver as dangerous in Kconfig
 
-Ryder Lee (1):
-      mtd: rawnand: mtk: use of_device_get_match_data()
+NeilBrown (1):
+      mtd: spi-nor: clear Winbond Extended Address Reg on switch to 3-byte addressing.
 
-Sascha Hauer (6):
-      mtd: rawnand: gpmi: drop dma_ops_type
-      mtd: rawnand: gpmi: pass buffer and len around
-      mtd: rawnand: gpmi: put only once used functions inline
-      mtd: rawnand: gpmi: remove direct_dma_map_ok from driver data struct
-      mtd: rawnand: gpmi: return valid value from bch_set_geometry()
-      mtd: rawnand: gpmi: remove unnecessary variables
+Nicholas Mc Guire (1):
+      mtd: spi-nor: intel: provide a range for poll_timout
 
-Sekhar Nori (1):
-      mtd: rawnand: davinci: don't acquire and enable clock
+Philipp Zabel (1):
+      mtd: spi-nor: stm32-quadspi: explicitly request exclusive reset control
 
-Stefan Agner (2):
-      mtd: rawnand: gpmi: add support for specific ECC strength
-      dt-bindings: mtd: rawnand: gpmi: document specific ECC strength
+Stephen Douthit (1):
+      mtd: spi-nor: Add Winbond w25q32jv support
 
-Wan, Jane (Nokia - US/Sunnyvale) (1):
-      mtd: rawnand: use bit-wise majority to recover the ONFI param page
+Thor Thayer (1):
+      mtd: spi-nor: Add Micron MT25QU02 support
 
-Wolfram Sang (1):
-      mtd: onenand: simplify getting .drvdata
+Vignesh R (1):
+      mtd: spi-nor: cadence-quadspi: Add DMA support for direct mode reads
 
-Xiaolei Li (2):
-      MAINTAINERS: Add entry for Mediatek NAND controller driver
-      dt-bindings: mtd: mtk-nand: Update properties description
+Yogesh Gaur (2):
+      mtd: spi-nor: fsl-quadspi: fix api naming typo _init_ahb_read
+      mtd: spi-nor: fsl-quadspi: add support for ls2080a/ls1080a
 
- Documentation/devicetree/bindings/mtd/gpmi-nand.txt  |   5 ++
- Documentation/devicetree/bindings/mtd/mtk-nand.txt   |  24 ++++--
- Documentation/devicetree/bindings/mtd/sunxi-nand.txt |   2 -
- MAINTAINERS                                          |   8 ++
- drivers/mtd/nand/onenand/samsung.c                   |   6 +-
- drivers/mtd/nand/raw/davinci_nand.c                  |  25 +-----
- drivers/mtd/nand/raw/diskonchip.c                    |   4 +-
- drivers/mtd/nand/raw/fsl_elbc_nand.c                 |  13 ++-
- drivers/mtd/nand/raw/fsl_ifc_nand.c                  |  29 ++++---
- drivers/mtd/nand/raw/fsmc_nand.c                     |  27 ++++---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c            |  54 +++++++------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c           | 188 ++++++++++++++-----------------------------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h           |  25 +-----
- drivers/mtd/nand/raw/hisi504_nand.c                  |  35 +++-----
- drivers/mtd/nand/raw/lpc32xx_mlc.c                   |  38 ++++-----
- drivers/mtd/nand/raw/lpc32xx_slc.c                   |  26 +++---
- drivers/mtd/nand/raw/mtk_ecc.c                       |   7 +-
- drivers/mtd/nand/raw/mtk_nand.c                      |  10 +--
- drivers/mtd/nand/raw/nand_base.c                     |  89 +++++++++++++-------
- drivers/mtd/nand/raw/sunxi_nand.c                    |  91 ++++-----------------
- include/linux/mtd/nand.h                             |   3 +
- include/linux/mtd/rawnand.h                          |  35 +++++---
- 22 files changed, 328 insertions(+), 416 deletions(-)
+YuheiOKAWA (1):
+      mtd: spi-nor: Add support for EN25QH32
+
+ drivers/mtd/spi-nor/Kconfig           |  4 +--
+ drivers/mtd/spi-nor/cadence-quadspi.c | 96 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++--
+ drivers/mtd/spi-nor/fsl-quadspi.c     | 15 ++++++++--
+ drivers/mtd/spi-nor/hisi-sfc.c        | 12 ++++----
+ drivers/mtd/spi-nor/intel-spi.c       | 80 ++++++++++++++++++++++++++++++++++++++++++-------
+ drivers/mtd/spi-nor/spi-nor.c         | 33 ++++++++++++++++++++
+ drivers/mtd/spi-nor/stm32-quadspi.c   |  2 +-
+ include/linux/mtd/spi-nor.h           |  2 ++
+ 8 files changed, 220 insertions(+), 24 deletions(-)
 
 
 -- 
