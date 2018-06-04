@@ -1,30 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPmMJ-0003tN-I5
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 10:05:26 +0000
-Date: Mon, 4 Jun 2018 12:04:51 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, MTD Maling List
- <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Rob
- Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
- <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
- Gala <galak@codeaurora.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
- TREE BINDINGS" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v8 2/4] dt-bindings: Add bindings for SPI NAND devices
-Message-ID: <20180604120451.70fa75db@bbrezillon>
-In-Reply-To: <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
-References: <20180601131400.17634-1-boris.brezillon@bootlin.com>
- <20180601131400.17634-3-boris.brezillon@bootlin.com>
- <CAMuHMdUyPoDA-7+OT_yT-g7kA+zae8Sjo6PYRFTFfFkQetUqnA@mail.gmail.com>
- <20180601190902.17cf5f6f@bbrezillon>
- <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
+Received: from aserp2130.oracle.com ([141.146.126.79])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fPnDl-0006GN-S8
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 11:00:19 +0000
+Date: Mon, 4 Jun 2018 13:59:51 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: ext-mika.2.korhonen@nokia.com
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: [bug report] mtd: OneNAND: multiblock erase support
+Message-ID: <20180604105951.l42e6migfillhvg3@kili.mountain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,121 +20,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 1 Jun 2018 19:40:00 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Hello Mika Korhonen,
 
-> Hi Boris,
-> 
-> On Fri, Jun 1, 2018 at 7:09 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > On Fri, 1 Jun 2018 16:42:26 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
-> >> On Fri, Jun 1, 2018 at 3:13 PM, Boris Brezillon
-> >> <boris.brezillon@bootlin.com> wrote:  
-> >> > Add bindings for SPI NAND chips.  
-> 
-> >> > --- /dev/null
-> >> > +++ b/Documentation/devicetree/bindings/mtd/spi-nand.txt
-> >> > @@ -0,0 +1,27 @@
-> >> > +SPI NAND flash
-> >> > +
-> >> > +Required properties:
-> >> > +- compatible: should be "spi-nand"
-> >> > +- reg: should encode the chip-select line used to access the NAND chip
-> >> > +
-> >> > +Optional properties
-> >> > +- spi-max-frequency: maximum frequency of the SPI bus the chip can operate at.
-> >> > +                    This should encode board limitations (i.e. max freq can't
-> >> > +                    be achieved due to crosstalk on IO lines).
-> >> > +                    When unspecified, the driver assumes the chip can run at
-> >> > +                    the max frequency defined in the spec (information
-> >> > +                    extracted chip detection time).  
-> >>
-> >> This is a standard property according to
-> >> Documentation/devicetree/bindings/spi/spi-bus.txt. Can't you just refer
-> >> to that file, or just omit it, as it applies to all SPI slaves anyway?  
-> >
-> > The thing is, the maximum frequency supported by a SPI NAND is directly
-> > encoded in the NAND device ID and can be auto-detected. Why should we
-> > define spi-max-frequency in the DT when we can automatically detect
-> > this information? The only reason one might want to override  
-> 
-> Because that's how we dealt with this traditionally. Or at least I thought so.
-> But include/linux/spi/spi.h says:
-> 
->  * @max_speed_hz: Maximum clock rate to be used with this chip
->  *      (on this board); may be changed by the device's driver.
->  *      The spi_transfer.speed_hz can override this for each transfer.
-> 
-> and many drivers seem to do so.
-> 
-> > spi-max-frequency is when the board design impose such restrictions,
-> > hence the precision I give here.  
-> 
-> Which is exactly the meaning of the standard property, isn't it?
-> 
-> So I think it can just be omitted here anyway.  If it's present, the SPI
-> core will make sure it's taken into account.
-> 
-> >> > +- spi-tx-bus-width: The bus width (number of data wires) that is used for MOSI.
-> >> > +                   Only encodes the board constraints (i.e. when not all IO
-> >> > +                   signals are routed on the board). Device constraints are
-> >> > +                   extracted when detecting the chip, and controller
-> >> > +                   constraints are exposed by the SPI mem controller. If this
-> >> > +                   property is missing that means no constraint at the board
-> >> > +                   level.
-> >> > +- spi-rx-bus-width: The bus width (number of data wires) that is used for MISO.
-> >> > +                   Only encodes the board constraints (i.e. when not all IO
-> >> > +                   signals are routed on the board). Device constraints are
-> >> > +                   extracted when detecting the chip, and controller
-> >> > +                   constraints are exposed by the SPI mem controller. If this
-> >> > +                   property is missing that means no constraint at the board
-> >> > +                   level.  
-> >>
-> >> This does not match Documentation/devicetree/bindings/spi/spi-bus.txt,
-> >> which says the default is 1.  
-> >
-> > Yes, I know.
-> >  
-> >> As these properties are handled by the SPI core in of_spi_parse_dt, why
-> >> would you want to deviate?  
-> >
-> > Because, again, this information can be extracted from the NAND ID, and
-> > the only reason we might want to override the information extracted
-> > from the NAND ID is when the board design adds extra restrictions
-> > (like, only 2 SIO lines wired on the 4 available).  
-> 
-> In struct spi_device, this is specified using the SPI_[RT]_X_{DUAL,QUAD}
-> bits in the mode field. Documentation says:
-> 
->  * @mode: The spi mode defines how data is clocked out and in.
->  *      This may be changed by the device's driver.
->  *      The "active low" default for chipselect mode can be overridden
->  *      (by specifying SPI_CS_HIGH) as can the "MSB first" default for
->  *      each word in a transfer (by specifying SPI_LSB_FIRST).
-> 
-> So this may also be specified by the device driver, but it seems no driver
-> does so for the dual/quad bits, except for drivers/mtd/spi-nor/nxp-spifi.c
-> (for rx only).
-> 
-> But here we do have the generic SPI DT bindings saying the default is 1.
-> So personally, I wouldn't go for the option of the least surprise, and
-> don't deviate from the generic bindings.
-> 
-> >> Commenting to the question in the cover letter: what would be the
-> >> purpose of spi-max-bus-width?  
-> >
-> > Defining how many IO lines are wired on the board design. If this
-> > property is missing we would assume all IO lines are wired and the
-> > restrictions would be negotiated between the controller and the device
-> > without requiring explicit description in the DT.  
-> 
-> Which is exactly the meaning of the standard property, except for the
-> default of all vs. 1.
-> 
-> I'll have to defer to Mark (broonie) for his opinion about deviating from
-> the way this is handled traditionally, and assuming different defaults...
+The patch 72073027ee95: "mtd: OneNAND: multiblock erase support" from
+Oct 23, 2009, leads to the following static checker warning:
 
-I think I'll drop the extra description on spi-max-frequency and
-spi-{rx,tx}-bus-width props for now. Those are anyway not taken into
-account by the SPI NAND driver yet.
+	drivers/mtd/nand/onenand/onenand_base.c:2214 onenand_multiblock_erase()
+	warn: 'len' can be negative (type promoted to high)
+
+drivers/mtd/nand/onenand/onenand_base.c
+  2191          len = instr->len;
+  2192          addr = instr->addr;
+  2193  
+  2194          /* loop over 64 eb batches */
+  2195          while (len) {
+  2196                  struct erase_info verify_instr = *instr;
+  2197                  int max_eb_count = MB_ERASE_MAX_BLK_COUNT;
+  2198  
+  2199                  verify_instr.addr = addr;
+  2200                  verify_instr.len = 0;
+  2201  
+  2202                  /* do not cross chip boundary */
+  2203                  if (bdry_block) {
+  2204                          int this_block = (addr >> this->erase_shift);
+  2205  
+  2206                          if (this_block < bdry_block) {
+  2207                                  max_eb_count = min(max_eb_count,
+  2208                                                     (bdry_block - this_block));
+  2209                          }
+  2210                  }
+  2211  
+  2212                  eb_count = 0;
+  2213  
+  2214                  while (len > block_size && eb_count < (max_eb_count - 1)) {
+  2215                          this->command(mtd, ONENAND_CMD_MULTIBLOCK_ERASE,
+  2216                                        addr, block_size);
+  2217                          onenand_invalidate_bufferram(mtd, addr, block_size);
+  2218  
+  2219                          ret = this->wait(mtd, FL_PREPARING_ERASE);
+  2220                          if (ret) {
+  2221                                  printk(KERN_ERR "%s: Failed multiblock erase, "
+  2222                                         "block %d\n", __func__,
+  2223                                         onenand_block(this, addr));
+  2224                                  instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+  2225                                  return -EIO;
+  2226                          }
+  2227  
+  2228                          len -= block_size;
+  2229                          addr += block_size;
+  2230                          eb_count++;
+  2231                  }
+  2232  
+  2233                  /* last block of 64-eb series */
+  2234                  cond_resched();
+  2235                  this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
+  2236                  onenand_invalidate_bufferram(mtd, addr, block_size);
+  2237  
+  2238                  ret = this->wait(mtd, FL_ERASING);
+  2239                  /* Check if it is write protected */
+  2240                  if (ret) {
+  2241                          printk(KERN_ERR "%s: Failed erase, block %d\n",
+  2242                                 __func__, onenand_block(this, addr));
+  2243                          instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
+  2244                          return -EIO;
+  2245                  }
+  2246  
+  2247                  len -= block_size;
+                        ^^^^^^^^^^^^^^^^^^
+The other places check that (len >= block_size) before doing the
+subtract.  We should probably return -EINVAL or -EFAULT or something.
+
+  2248                  addr += block_size;
+  2249                  eb_count++;
+  2250  
+  2251                  /* verify */
+  2252                  verify_instr.len = eb_count * block_size;
+  2253                  if (onenand_multiblock_erase_verify(mtd, &verify_instr)) {
+  2254                          instr->fail_addr = verify_instr.fail_addr;
+  2255                          return -EIO;
+  2256                  }
+  2257  
+  2258          }
+  2259          return 0;
+  2260  }
+
+regards,
+dan carpenter
