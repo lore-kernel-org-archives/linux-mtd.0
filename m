@@ -1,16 +1,20 @@
-Received: from aserp2130.oracle.com ([141.146.126.79])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPnDl-0006GN-S8
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 11:00:19 +0000
-Date: Mon, 4 Jun 2018 13:59:51 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: ext-mika.2.korhonen@nokia.com
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: [bug report] mtd: OneNAND: multiblock erase support
-Message-ID: <20180604105951.l42e6migfillhvg3@kili.mountain>
+From: Lionel Debieve <lionel.debieve@st.com>
+To: Richard Weinberger <richard@nod.at>, Artem Bityutskiy
+ <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
+ <linux-mtd@lists.infradead.org>
+CC: <linux-arm-kernel@lists.infradead.org>, Lee Jones <lee.jones@linaro.org>,
+ <tglx@linutronix.de>, <haver@linux.vnet.ibm.com>,
+ <u.kleine-koenig@pengutronix.de>, <joel@clambassador.com>,
+ <schwarzerf@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>,
+ <paulmck@linux.vnet.ibm.com>
+Subject: [Resend PATCH 1/1] mtd: ubi: Update ubi-media.h to dual license
+Date: Mon, 4 Jun 2018 15:21:37 +0200
+Message-ID: <20180604132137.32136-2-lionel.debieve@st.com>
+In-Reply-To: <20180604132137.32136-1-lionel.debieve@st.com>
+References: <20180604132137.32136-1-lionel.debieve@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="y"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Mika Korhonen,
+Update license template using SPDX. Move the global layout
+of UBI headers to dual license helping UBI to be the standard
+solution for raw NAND management.
 
-The patch 72073027ee95: "mtd: OneNAND: multiblock erase support" from
-Oct 23, 2009, leads to the following static checker warning:
+Signed-off-by: Lionel Debieve <lionel.debieve@st.com>
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Artem Bityutskiy <dedekind1@gmail.com>
+Acked-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+---
+ drivers/mtd/ubi/ubi-media.h | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
-	drivers/mtd/nand/onenand/onenand_base.c:2214 onenand_multiblock_erase()
-	warn: 'len' can be negative (type promoted to high)
-
-drivers/mtd/nand/onenand/onenand_base.c
-  2191          len = instr->len;
-  2192          addr = instr->addr;
-  2193  
-  2194          /* loop over 64 eb batches */
-  2195          while (len) {
-  2196                  struct erase_info verify_instr = *instr;
-  2197                  int max_eb_count = MB_ERASE_MAX_BLK_COUNT;
-  2198  
-  2199                  verify_instr.addr = addr;
-  2200                  verify_instr.len = 0;
-  2201  
-  2202                  /* do not cross chip boundary */
-  2203                  if (bdry_block) {
-  2204                          int this_block = (addr >> this->erase_shift);
-  2205  
-  2206                          if (this_block < bdry_block) {
-  2207                                  max_eb_count = min(max_eb_count,
-  2208                                                     (bdry_block - this_block));
-  2209                          }
-  2210                  }
-  2211  
-  2212                  eb_count = 0;
-  2213  
-  2214                  while (len > block_size && eb_count < (max_eb_count - 1)) {
-  2215                          this->command(mtd, ONENAND_CMD_MULTIBLOCK_ERASE,
-  2216                                        addr, block_size);
-  2217                          onenand_invalidate_bufferram(mtd, addr, block_size);
-  2218  
-  2219                          ret = this->wait(mtd, FL_PREPARING_ERASE);
-  2220                          if (ret) {
-  2221                                  printk(KERN_ERR "%s: Failed multiblock erase, "
-  2222                                         "block %d\n", __func__,
-  2223                                         onenand_block(this, addr));
-  2224                                  instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-  2225                                  return -EIO;
-  2226                          }
-  2227  
-  2228                          len -= block_size;
-  2229                          addr += block_size;
-  2230                          eb_count++;
-  2231                  }
-  2232  
-  2233                  /* last block of 64-eb series */
-  2234                  cond_resched();
-  2235                  this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
-  2236                  onenand_invalidate_bufferram(mtd, addr, block_size);
-  2237  
-  2238                  ret = this->wait(mtd, FL_ERASING);
-  2239                  /* Check if it is write protected */
-  2240                  if (ret) {
-  2241                          printk(KERN_ERR "%s: Failed erase, block %d\n",
-  2242                                 __func__, onenand_block(this, addr));
-  2243                          instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-  2244                          return -EIO;
-  2245                  }
-  2246  
-  2247                  len -= block_size;
-                        ^^^^^^^^^^^^^^^^^^
-The other places check that (len >= block_size) before doing the
-subtract.  We should probably return -EINVAL or -EFAULT or something.
-
-  2248                  addr += block_size;
-  2249                  eb_count++;
-  2250  
-  2251                  /* verify */
-  2252                  verify_instr.len = eb_count * block_size;
-  2253                  if (onenand_multiblock_erase_verify(mtd, &verify_instr)) {
-  2254                          instr->fail_addr = verify_instr.fail_addr;
-  2255                          return -EIO;
-  2256                  }
-  2257  
-  2258          }
-  2259          return 0;
-  2260  }
-
-regards,
-dan carpenter
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index bfceae5a890e..195ff8ca8211 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -1,28 +1,12 @@
++/* SPDX-License-Identifier: (GPL-2.0+ OR BSD-3-Clause) */
+ /*
+- * Copyright (c) International Business Machines Corp., 2006
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+- * the GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+- *
++ * Copyright (C) International Business Machines Corp., 2006
+  * Authors: Artem Bityutskiy (Битюцкий Артём)
+  *          Thomas Gleixner
+  *          Frank Haverkamp
+  *          Oliver Lohmann
+  *          Andreas Arnez
+- */
+-
+-/*
++ *
+  * This file defines the layout of UBI headers and all the other UBI on-flash
+  * data structures.
+  */
+-- 
+2.15.1
