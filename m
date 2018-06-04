@@ -1,23 +1,27 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPmDT-00084J-9M
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 09:55:59 +0000
-Date: Mon, 4 Jun 2018 11:55:43 +0200
+ id 1fPmMJ-0003tN-I5
+ for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 10:05:26 +0000
+Date: Mon, 4 Jun 2018 12:04:51 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, Tony Lindgren <tony@atomide.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Krzysztof Halasa <khalasa@piap.pl>, Shreeya Patel
- <shreeya.patel23498@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 5/6 v2] mtd: rawnand: ams-delta: use GPIO lookup table
-Message-ID: <20180604115543.3be75717@bbrezillon>
-In-Reply-To: <1582841.uoaVdad1fL@z50>
-References: <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
- <1543045.tPZatK9yHU@z50> <20180530195220.3527f0fc@bbrezillon>
- <1582841.uoaVdad1fL@z50>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, MTD Maling List
+ <linux-mtd@lists.infradead.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi <linux-spi@vger.kernel.org>, Rob
+ Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
+ Gala <galak@codeaurora.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v8 2/4] dt-bindings: Add bindings for SPI NAND devices
+Message-ID: <20180604120451.70fa75db@bbrezillon>
+In-Reply-To: <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
+References: <20180601131400.17634-1-boris.brezillon@bootlin.com>
+ <20180601131400.17634-3-boris.brezillon@bootlin.com>
+ <CAMuHMdUyPoDA-7+OT_yT-g7kA+zae8Sjo6PYRFTFfFkQetUqnA@mail.gmail.com>
+ <20180601190902.17cf5f6f@bbrezillon>
+ <CAMuHMdWqa4++tdrpWCAsdqjqN26CHB1+eudnCtsP2vcrzmkA_w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,68 +34,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 May 2018 22:39:03 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+On Fri, 1 Jun 2018 19:40:00 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-> On Wednesday, May 30, 2018 7:52:20 PM CEST Boris Brezillon wrote:
-> > On Wed, 30 May 2018 19:43:09 +0200
-> > 
-> > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:  
-> > > On Wednesday, May 30, 2018 11:05:00 AM CEST Boris Brezillon wrote:  
-> > > > Hi Janusz,  
-> > > 
-> > > Hi Boris,
-> > >   
-> > > > On Sat, 26 May 2018 00:20:45 +0200
-> > > > 
-> > > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:  
-> > > > > ...
-> > > > > Changes since v1:
-> > > > > - fix handling of devm_gpiod_get_optional() return values - thanks to
-> > > > > 
-> > > > >   Andy Shevchenko.  
-> > > > 
-> > > > Can you put the changelog after the "---" separator so that it does not
-> > > > appear in the final commit message?  
-> > > 
-> > > Yes, sure, sorry for that.
-> > >   
-> > > > > +err_gpiod:
-> > > > > +	if (err == -ENODEV || err == -ENOENT)
-> > > > > +		err = -EPROBE_DEFER;  
-> > > > 
-> > > > Hm, isn't it better to make gpiod_find() return ERR_PTR(-EPROBE_DEFER)
-> > > > here [1]? At least, ENOENT should not be turned into EPROBE_DEFER,
-> > > > because it's returned when there's no entry matching the requested gpio
-> > > > in the lookup table, and deferring the probe won't solve this problem.  
-> > > 
-> > > ENOENT is also returned when no matching lookup table is found. That may
-> > > happen if consumer dev_name stored in the table differs from dev_name
-> > > assigned to the consumer by its bus, the platform bus in this case. For
-> > > that reason I think the consumer dev_name should be initialized in the
-> > > table after the device is registered, when its actual dev_name can be
-> > > obtained. If that device registration happens after the driver is already
-> > > registered, e.g., at late_initcall, the device is probed before its
-> > > lookup table is ready. For that reason returning EPROBE_DEFER seems
-> > > better to me even in the ENOENT case.  
-> > Sorry, I don't get it. Aren't GPIO lookup tables supposed to be declared
-> > in board files, especially if the GPIO is used by a platform device?
-> > When would you have a lookup table registered later in the init/boot
-> > process?  
+> Hi Boris,
 > 
-> When e.g. I'd like to register my GPIO consumer platform device at 
-> late_initcall for some reason, and I'm not sure what exact dev_name my 
-> consomer will be registered with by the platform bus.
+> On Fri, Jun 1, 2018 at 7:09 PM, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > On Fri, 1 Jun 2018 16:42:26 +0200
+> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
+> >> On Fri, Jun 1, 2018 at 3:13 PM, Boris Brezillon
+> >> <boris.brezillon@bootlin.com> wrote:  
+> >> > Add bindings for SPI NAND chips.  
+> 
+> >> > --- /dev/null
+> >> > +++ b/Documentation/devicetree/bindings/mtd/spi-nand.txt
+> >> > @@ -0,0 +1,27 @@
+> >> > +SPI NAND flash
+> >> > +
+> >> > +Required properties:
+> >> > +- compatible: should be "spi-nand"
+> >> > +- reg: should encode the chip-select line used to access the NAND chip
+> >> > +
+> >> > +Optional properties
+> >> > +- spi-max-frequency: maximum frequency of the SPI bus the chip can operate at.
+> >> > +                    This should encode board limitations (i.e. max freq can't
+> >> > +                    be achieved due to crosstalk on IO lines).
+> >> > +                    When unspecified, the driver assumes the chip can run at
+> >> > +                    the max frequency defined in the spec (information
+> >> > +                    extracted chip detection time).  
+> >>
+> >> This is a standard property according to
+> >> Documentation/devicetree/bindings/spi/spi-bus.txt. Can't you just refer
+> >> to that file, or just omit it, as it applies to all SPI slaves anyway?  
+> >
+> > The thing is, the maximum frequency supported by a SPI NAND is directly
+> > encoded in the NAND device ID and can be auto-detected. Why should we
+> > define spi-max-frequency in the DT when we can automatically detect
+> > this information? The only reason one might want to override  
+> 
+> Because that's how we dealt with this traditionally. Or at least I thought so.
+> But include/linux/spi/spi.h says:
+> 
+>  * @max_speed_hz: Maximum clock rate to be used with this chip
+>  *      (on this board); may be changed by the device's driver.
+>  *      The spi_transfer.speed_hz can override this for each transfer.
+> 
+> and many drivers seem to do so.
+> 
+> > spi-max-frequency is when the board design impose such restrictions,
+> > hence the precision I give here.  
+> 
+> Which is exactly the meaning of the standard property, isn't it?
+> 
+> So I think it can just be omitted here anyway.  If it's present, the SPI
+> core will make sure it's taken into account.
+> 
+> >> > +- spi-tx-bus-width: The bus width (number of data wires) that is used for MOSI.
+> >> > +                   Only encodes the board constraints (i.e. when not all IO
+> >> > +                   signals are routed on the board). Device constraints are
+> >> > +                   extracted when detecting the chip, and controller
+> >> > +                   constraints are exposed by the SPI mem controller. If this
+> >> > +                   property is missing that means no constraint at the board
+> >> > +                   level.
+> >> > +- spi-rx-bus-width: The bus width (number of data wires) that is used for MISO.
+> >> > +                   Only encodes the board constraints (i.e. when not all IO
+> >> > +                   signals are routed on the board). Device constraints are
+> >> > +                   extracted when detecting the chip, and controller
+> >> > +                   constraints are exposed by the SPI mem controller. If this
+> >> > +                   property is missing that means no constraint at the board
+> >> > +                   level.  
+> >>
+> >> This does not match Documentation/devicetree/bindings/spi/spi-bus.txt,
+> >> which says the default is 1.  
+> >
+> > Yes, I know.
+> >  
+> >> As these properties are handled by the SPI core in of_spi_parse_dt, why
+> >> would you want to deviate?  
+> >
+> > Because, again, this information can be extracted from the NAND ID, and
+> > the only reason we might want to override the information extracted
+> > from the NAND ID is when the board design adds extra restrictions
+> > (like, only 2 SIO lines wired on the 4 available).  
+> 
+> In struct spi_device, this is specified using the SPI_[RT]_X_{DUAL,QUAD}
+> bits in the mode field. Documentation says:
+> 
+>  * @mode: The spi mode defines how data is clocked out and in.
+>  *      This may be changed by the device's driver.
+>  *      The "active low" default for chipselect mode can be overridden
+>  *      (by specifying SPI_CS_HIGH) as can the "MSB first" default for
+>  *      each word in a transfer (by specifying SPI_LSB_FIRST).
+> 
+> So this may also be specified by the device driver, but it seems no driver
+> does so for the dual/quad bits, except for drivers/mtd/spi-nor/nxp-spifi.c
+> (for rx only).
+> 
+> But here we do have the generic SPI DT bindings saying the default is 1.
+> So personally, I wouldn't go for the option of the least surprise, and
+> don't deviate from the generic bindings.
+> 
+> >> Commenting to the question in the cover letter: what would be the
+> >> purpose of spi-max-bus-width?  
+> >
+> > Defining how many IO lines are wired on the board design. If this
+> > property is missing we would assume all IO lines are wired and the
+> > restrictions would be negotiated between the controller and the device
+> > without requiring explicit description in the DT.  
+> 
+> Which is exactly the meaning of the standard property, except for the
+> default of all vs. 1.
+> 
+> I'll have to defer to Mark (broonie) for his opinion about deviating from
+> the way this is handled traditionally, and assuming different defaults...
 
-You should know the name before the device is registered.
-
-> In that case I think I 
-> should assign dev_name to the lookup table after the consumer device is 
-> registered and its exact dev_name can be obtained, then register the table,
-
-I'm pretty sure it's not supposed to work like that. Resources attached
-to a device should be defined before the device is registered, not
-after, simply because when you call platform_device_register(), the
-device might be directly bind to the driver before the
-platform_device_register() calls return, and the driver will fail to
-probe the device if it doesn't find the GPIO it needs.
+I think I'll drop the extra description on spi-max-frequency and
+spi-{rx,tx}-bus-width props for now. Those are anyway not taken into
+account by the SPI NAND driver yet.
