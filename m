@@ -1,26 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fPywA-0006Fp-V2
- for linux-mtd@lists.infradead.org; Mon, 04 Jun 2018 23:30:57 +0000
-Date: Tue, 5 Jun 2018 01:30:32 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, Tony Lindgren <tony@atomide.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Krzysztof Halasa <khalasa@piap.pl>, Shreeya Patel
- <shreeya.patel23498@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 5/6 v2] mtd: rawnand: ams-delta: use GPIO lookup table
-Message-ID: <20180605013032.1b0f4de4@bbrezillon>
-In-Reply-To: <20180605010932.5c97b1de@bbrezillon>
-References: <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
- <1582841.uoaVdad1fL@z50> <20180604115543.3be75717@bbrezillon>
- <1716431.jBl9UCSIdH@z50> <20180605010932.5c97b1de@bbrezillon>
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQ11y-0004gi-1x
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 01:45:04 +0000
+Received: from mail-vk0-f44.google.com (mail-vk0-f44.google.com
+ [209.85.213.44]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id w551iUwY018349
+ for <linux-mtd@lists.infradead.org>; Tue, 5 Jun 2018 10:44:30 +0900
+Received: by mail-vk0-f44.google.com with SMTP id q135-v6so413689vkh.1
+ for <linux-mtd@lists.infradead.org>; Mon, 04 Jun 2018 18:44:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1864836.G720OGCVI0@blindfold>
+References: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
+ <20180604225117.61d2c269@bbrezillon> <38227338.JIUUFn9IOS@blindfold>
+ <1864836.G720OGCVI0@blindfold>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Tue, 5 Jun 2018 10:43:49 +0900
+Message-ID: <CAK7LNARe+h_Fj5+nnpqYS4xGVLPHqgrW5g+1bckGB0+FWh9=sA@mail.gmail.com>
+Subject: Re: DENALI: can't detect NAND chip
+To: Richard Weinberger <richard@sigma-star.at>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Philipp Rosenberger <p.rosenberger@linutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Benedikt Spranger <b.spranger@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,82 +32,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 5 Jun 2018 01:09:32 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+2018-06-05 7:01 GMT+09:00 Richard Weinberger <richard@sigma-star.at>:
+> Am Montag, 4. Juni 2018, 22:57:32 CEST schrieb Richard Weinberger:
+>> Am Montag, 4. Juni 2018, 22:51:17 CEST schrieb Boris Brezillon:
+>> > > According to the datasheet, the NAND clock rate should be 50Mhz, which is what
+>> > > is returned in both cases.
+>> > > So this does not really look invalid to me. :)
+>> >
+>> > Did you try to put a scope on the RE or WE pin? The x2 factor looks too
+>> > perfect to be just a coincidence.
+>>
+>> Not yet, but you are right the x2 factor is really interesting.
+>
+> The NFC uses two clocks, nand_x_clk and nand_clk.
+> nand_clk is nand_x_clk / 4.
+> In the device tree nand_clk is referenced, and therefore used to calculate
+> the timings. So we might need to use the 200Mhz clock instead of the 50Mhz
+> for the calculation.
+>
 
-> On Mon, 04 Jun 2018 18:48:08 +0200
-> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-> 
-> > On Monday, June 4, 2018 11:55:43 AM CEST Boris Brezillon wrote:  
-> > > On Wed, 30 May 2018 22:39:03 +0200
-> > > 
-> > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:    
-> > > > On Wednesday, May 30, 2018 7:52:20 PM CEST Boris Brezillon wrote:    
-> > > > > On Wed, 30 May 2018 19:43:09 +0200
-> > > > > 
-> > > > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:    
-> > > > > > On Wednesday, May 30, 2018 11:05:00 AM CEST Boris Brezillon wrote:    
-> > > > > > > Hi Janusz,    
-> > > > > > 
-> > > > > > Hi Boris,
-> > > > > >     
-> > > > > > > On Sat, 26 May 2018 00:20:45 +0200
-> > > > > > > 
-> > > > > > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:    
-> > > > > > > > ...
-> > > > > > > > Changes since v1:
-> > > > > > > > - fix handling of devm_gpiod_get_optional() return values - thanks
-> > > > > > > > to
-> > > > > > > > 
-> > > > > > > >   Andy Shevchenko.    
-> > > > > > > 
-> > > > > > > Can you put the changelog after the "---" separator so that it does
-> > > > > > > not
-> > > > > > > appear in the final commit message?    
-> > > > > > 
-> > > > > > Yes, sure, sorry for that.
-> > > > > >     
-> > > > > > > > +err_gpiod:
-> > > > > > > > +	if (err == -ENODEV || err == -ENOENT)
-> > > > > > > > +		err = -EPROBE_DEFER;    
-> > > > > > > 
-> > > > > > > Hm, isn't it better to make gpiod_find() return
-> > > > > > > ERR_PTR(-EPROBE_DEFER)
-> > > > > > > here [1]? At least, ENOENT should not be turned into EPROBE_DEFER,
-> > > > > > > because it's returned when there's no entry matching the requested
-> > > > > > > gpio
-> > > > > > > in the lookup table, and deferring the probe won't solve this
-> > > > > > > problem.    
-> > > > > > 
-> > > > > > ENOENT is also returned when no matching lookup table is found. That
-> > > > > > may
-> > > > > > happen if consumer dev_name stored in the table differs from dev_name
-> > > > > > assigned to the consumer by its bus, the platform bus in this case.
-> > > > > > For
-> > > > > > that reason I think the consumer dev_name should be initialized in the
-> > > > > > table after the device is registered, when its actual dev_name can be
-> > > > > > obtained. If that device registration happens after the driver is
-> > > > > > already
-> > > > > > registered, e.g., at late_initcall, the device is probed before its
-> > > > > > lookup table is ready. For that reason returning EPROBE_DEFER seems
-> > > > > > better to me even in the ENOENT case.    
-> > > > > 
-> > > > > Sorry, I don't get it. Aren't GPIO lookup tables supposed to be declared
-> > > > > in board files, especially if the GPIO is used by a platform device?
-> > > > > When would you have a lookup table registered later in the init/boot
-> > > > > process?    
-> > > > 
-> > > > When e.g. I'd like to register my GPIO consumer platform device at
-> > > > late_initcall for some reason, and I'm not sure what exact dev_name my
-> > > > consomer will be registered with by the platform bus.    
-> > > 
-> > > You should know the name before the device is registered.    
-> > 
-> > What if I use PLATFORM_DEVID_AUTO?
 
-Just had a quick look at board-ams-delta.c and you don't have a single
-device setting pdev->id to PLATFORM_DEVID_AUTO. It's either set to
-PLATFORM_DEVID_NONE (-1) or assigned a specific id, so the problem does
-not exist, really. Just set the name .dev_id to the appropriate value
-at declaration time and register the lookup tables before registering
-the pdevs.
+Yes.
+
+
+Strictly speaking, the Denali IP takes three clocks.
+
+[1] clk :     core clock
+[2] clk_x:    bus interface clock
+[3] ecc_clk:  for ECC engine
+
+
+
+Also in my SoCs (Socionext UniPhier),
+
+clk = 50MHz,
+clk_x = ecc_clk = 200MHz
+
+
+
+In this case, the ->setup_data_interface hook
+is interested in the frequency of [2] clk_x.
+
+However, clk_x is not a core clock.
+I admit this is confusing.
+
+
+If we really want to make the DT-binding precise,
+we can change the clock requirement like follows:
+
+clock-names = "clk", "clk_x", "ecc_clk";
+clocks = <...>, <...>, <...>;
+
+
+This might be an annoying churn, though...
+
+
+-- 
+Best Regards
+Masahiro Yamada
