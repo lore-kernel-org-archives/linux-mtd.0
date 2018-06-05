@@ -1,21 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQDRt-0000Uy-8F
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:01:16 +0000
-Date: Tue, 5 Jun 2018 17:00:23 +0200
+ id 1fQDft-00024c-H4
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:15:26 +0000
+Date: Tue, 5 Jun 2018 17:14:43 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
- david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
- yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Message-ID: <20180605170023.24eeaaaa@bbrezillon>
-In-Reply-To: <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
-References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
- <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: Avoid point less
+ unlocking/locking
+Message-ID: <20180605171443.29365913@bbrezillon>
+In-Reply-To: <20180605140710.8624-2-joakim.tjernlund@infinera.com>
+References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
+ <20180605140710.8624-2-joakim.tjernlund@infinera.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,29 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 May 2018 15:14:32 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+On Tue,  5 Jun 2018 16:07:10 +0200
+Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
 
-> +
-> +static void fsl_qspi_read_ahb(struct fsl_qspi *q, const struct spi_mem_op *op)
-> +{
-> +	static int seq;
-> +
-> +	/*
-> +	 * We want to avoid needing to invalidate the cache by issueing
-> +	 * a reset to the AHB and Serial Flash domain, as this needs
-> +	 * time. So we change the address on each read to trigger an
-> +	 * actual read operation on the flash. The actual address for
-> +	 * the flash memory is set by programming the LUT.
-> +	 */
-> +	memcpy_fromio(op->data.buf.in,
-> +		      q->ahb_addr +
-> +		      (seq * q->devtype_data->ahb_buf_size),
-> +		      op->data.nbytes);
-> +
-> +	seq = seq ? 0 : 1;
+> cfi_ppb_unlock() walks all flash chips when unlocking sectors.
+> This is a waste when crossing chip boundaris unaffected
 
-We should get rid of this hack. Yogesh, Han, do you know if there's an
-easy way to invalidate the AHB buffer without resetting the IP?
+				      ^ boundaries.
 
-> +}
+> by the unlock operation.
+
+AFAICT there are 2 unrelated changes in this commit:
+1/ Fix the boundary check which is broken if the unlock operation
+   crosses a chip boundary (adr is reset to 0 when that happens).
+2/ Avoid unlocking chips that are outside the requested unlock range.
+
+#1 is a fix, #2 is not. You should split that in 2 different commits,
+and tag #1 with Fixes and Cc-stable.
+
+> 
+> Fixes: 1648eaaa1575e
+> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index c74c53b886be..ee8b70e54298 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -2669,7 +2669,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>  		 * sectors shall be unlocked, so lets keep their locking
+>  		 * status at "unlocked" (locked=0) for the final re-locking.
+>  		 */
+> -		if ((adr < ofs) || (adr >= (ofs + len))) {
+> +		if ((offset < ofs) || (offset >= (ofs + len))) {
+>  			sect[sectors].chip = &cfi->chips[chipnum];
+>  			sect[sectors].adr = adr;
+>  			sect[sectors].locked = do_ppb_xxlock(
+> @@ -2685,6 +2685,8 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>  			i++;
+>  
+>  		if (adr >> cfi->chipshift) {
+> +			if (offset >= (ofs + len))
+> +				break;
+>  			adr = 0;
+>  			chipnum++;
+>  			if (chipnum >= cfi->numchips)
