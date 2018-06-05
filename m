@@ -1,19 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQDr8-0004wB-3I
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:26:43 +0000
-Date: Tue, 5 Jun 2018 17:26:07 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Received: from mail-bl2nam02on0060.outbound.protection.outlook.com
+ ([104.47.38.60] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQDyD-0006ne-3D
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:34:03 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH 1/2] mtd: cfi_cmdset_0002: fix SEGV unlocking multiple
  chips
-Message-ID: <20180605172607.50acb34f@bbrezillon>
-In-Reply-To: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
+Date: Tue, 5 Jun 2018 15:33:46 +0000
+Message-ID: <d7c937c3d2447426a97ac6799de975bf0eb133a6.camel@infinera.com>
 References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
+ <20180605172607.50acb34f@bbrezillon>
+In-Reply-To: <20180605172607.50acb34f@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E7A0C5CA77EAD94FADDEE7926D0A43D9@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,113 +27,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Joakim,
-
-On Tue,  5 Jun 2018 16:07:09 +0200
-Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
-
-> cfi_ppb_unlock() tries to relock all sectors that was locked before
-> unlocking the whole chip.
-> This locking used the chip start address + the FULL offset from the
-> first flash chip, thereby forming an illegal address. Correct by using
-> the chip offset(adr).
-> 
-> In addition, do_ppb_xxlock() failed to add chip->start when
-> quering for lock status(and chip_ready test),
-> which caused false status reports.
-> Fix by adding adr += chip->start and adjust call sites accordingly.
-
-I guess you checked that all functions that are passed adr expect an
-absolute address and not an offset relative to the chip.
-
-Also, you seem to fix 2 different problems, can you please split that in
-2 commits?
-
-Thanks,
-
-Boris
-
-> 
-> Fixes: 1648eaaa1575e
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 5e526aec66f0..c74c53b886be 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -2535,7 +2535,7 @@ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  
->  struct ppb_lock {
->  	struct flchip *chip;
-> -	loff_t offset;
-> +	unsigned long adr;
->  	int locked;
->  };
->  
-> @@ -2553,8 +2553,9 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	unsigned long timeo;
->  	int ret;
->  
-> +	adr += chip->start;
->  	mutex_lock(&chip->mutex);
-> -	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
-> +	ret = get_chip(map, chip, adr, FL_LOCKING);
->  	if (ret) {
->  		mutex_unlock(&chip->mutex);
->  		return ret;
-> @@ -2572,8 +2573,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  
->  	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
->  		chip->state = FL_LOCKING;
-> -		map_write(map, CMD(0xA0), chip->start + adr);
-> -		map_write(map, CMD(0x00), chip->start + adr);
-> +		map_write(map, CMD(0xA0), adr);
-> +		map_write(map, CMD(0x00), adr);
->  	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
->  		/*
->  		 * Unlocking of one specific sector is not supported, so we
-> @@ -2611,7 +2612,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	map_write(map, CMD(0x00), chip->start);
->  
->  	chip->state = FL_READY;
-> -	put_chip(map, chip, adr + chip->start);
-> +	put_chip(map, chip, adr);
->  	mutex_unlock(&chip->mutex);
->  
->  	return ret;
-> @@ -2670,7 +2671,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  		 */
->  		if ((adr < ofs) || (adr >= (ofs + len))) {
->  			sect[sectors].chip = &cfi->chips[chipnum];
-> -			sect[sectors].offset = offset;
-> +			sect[sectors].adr = adr;
->  			sect[sectors].locked = do_ppb_xxlock(
->  				map, &cfi->chips[chipnum], adr, 0,
->  				DO_XXLOCK_ONEBLOCK_GETLOCK);
-> @@ -2686,7 +2687,6 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  		if (adr >> cfi->chipshift) {
->  			adr = 0;
->  			chipnum++;
-> -
-
-Please drop this change from the commit.
-
->  			if (chipnum >= cfi->numchips)
->  				break;
->  		}
-> @@ -2714,7 +2714,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  	 */
->  	for (i = 0; i < sectors; i++) {
->  		if (sect[i].locked)
-> -			do_ppb_xxlock(map, sect[i].chip, sect[i].offset, 0,
-> +			do_ppb_xxlock(map, sect[i].chip, sect[i].adr, 0,
->  				      DO_XXLOCK_ONEBLOCK_LOCK);
->  	}
->  
-
-Thanks,
-
-Boris
+T24gVHVlLCAyMDE4LTA2LTA1IGF0IDE3OjI2ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IEhlbGxvIEpvYWtpbSwNCj4gDQo+IE9uIFR1ZSwgIDUgSnVuIDIwMTggMTY6MDc6
+MDkgKzAyMDANCj4gSm9ha2ltIFRqZXJubHVuZCA8am9ha2ltLnRqZXJubHVuZEBpbmZpbmVyYS5j
+b20+IHdyb3RlOg0KPiANCj4gPiBjZmlfcHBiX3VubG9jaygpIHRyaWVzIHRvIHJlbG9jayBhbGwg
+c2VjdG9ycyB0aGF0IHdhcyBsb2NrZWQgYmVmb3JlDQo+ID4gdW5sb2NraW5nIHRoZSB3aG9sZSBj
+aGlwLg0KPiA+IFRoaXMgbG9ja2luZyB1c2VkIHRoZSBjaGlwIHN0YXJ0IGFkZHJlc3MgKyB0aGUg
+RlVMTCBvZmZzZXQgZnJvbSB0aGUNCj4gPiBmaXJzdCBmbGFzaCBjaGlwLCB0aGVyZWJ5IGZvcm1p
+bmcgYW4gaWxsZWdhbCBhZGRyZXNzLiBDb3JyZWN0IGJ5IHVzaW5nDQo+ID4gdGhlIGNoaXAgb2Zm
+c2V0KGFkcikuDQo+ID4gDQo+ID4gSW4gYWRkaXRpb24sIGRvX3BwYl94eGxvY2soKSBmYWlsZWQg
+dG8gYWRkIGNoaXAtPnN0YXJ0IHdoZW4NCj4gPiBxdWVyaW5nIGZvciBsb2NrIHN0YXR1cyhhbmQg
+Y2hpcF9yZWFkeSB0ZXN0KSwNCj4gPiB3aGljaCBjYXVzZWQgZmFsc2Ugc3RhdHVzIHJlcG9ydHMu
+DQo+ID4gRml4IGJ5IGFkZGluZyBhZHIgKz0gY2hpcC0+c3RhcnQgYW5kIGFkanVzdCBjYWxsIHNp
+dGVzIGFjY29yZGluZ2x5Lg0KPiANCj4gSSBndWVzcyB5b3UgY2hlY2tlZCB0aGF0IGFsbCBmdW5j
+dGlvbnMgdGhhdCBhcmUgcGFzc2VkIGFkciBleHBlY3QgYW4NCj4gYWJzb2x1dGUgYWRkcmVzcyBh
+bmQgbm90IGFuIG9mZnNldCByZWxhdGl2ZSB0byB0aGUgY2hpcC4NCg0KWWVzIDopDQoNCj4gDQo+
+IEFsc28sIHlvdSBzZWVtIHRvIGZpeCAyIGRpZmZlcmVudCBwcm9ibGVtcywgY2FuIHlvdSBwbGVh
+c2Ugc3BsaXQgdGhhdCBpbg0KPiAyIGNvbW1pdHM/DQoNCk5vLCB0aGV5IG1pZ2h0IHNlZW0gZGlm
+ZmVyZW50IGJ1dCBteSB1bmxvY2sgcHJvYmxlbSBuZWVkcyBib3RoIG9yIEkgc2VlIGEgU0VHVi4N
+Cg0KPiANCj4gVGhhbmtzLA0KPiANCj4gQm9yaXMNCj4gDQo+ID4gDQo+ID4gRml4ZXM6IDE2NDhl
+YWFhMTU3NWUNCj4gPiBTaWduZWQtb2ZmLWJ5OiBKb2FraW0gVGplcm5sdW5kIDxqb2FraW0udGpl
+cm5sdW5kQGluZmluZXJhLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvY2hpcHMvY2Zp
+X2NtZHNldF8wMDAyLmMgfCAxNiArKysrKysrKy0tLS0tLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBh
+L2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMv
+Y2ZpX2NtZHNldF8wMDAyLmMNCj4gPiBpbmRleCA1ZTUyNmFlYzY2ZjAuLmM3NGM1M2I4ODZiZSAx
+MDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYw0KPiA+
+ICsrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ID4gQEAgLTI1MzUs
+NyArMjUzNSw3IEBAIHN0YXRpYyBpbnQgY2ZpX2F0bWVsX3VubG9jayhzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCwgbG9mZl90IG9mcywgdWludDY0X3QgbGVuKQ0KPiA+IA0KPiA+ICBzdHJ1Y3QgcHBiX2xv
+Y2sgew0KPiA+ICAgICAgIHN0cnVjdCBmbGNoaXAgKmNoaXA7DQo+ID4gLSAgICAgbG9mZl90IG9m
+ZnNldDsNCj4gPiArICAgICB1bnNpZ25lZCBsb25nIGFkcjsNCj4gPiAgICAgICBpbnQgbG9ja2Vk
+Ow0KPiA+ICB9Ow0KPiA+IA0KPiA+IEBAIC0yNTUzLDggKzI1NTMsOSBAQCBzdGF0aWMgaW50IF9f
+bWF5YmVfdW51c2VkIGRvX3BwYl94eGxvY2soc3RydWN0IG1hcF9pbmZvICptYXAsDQo+ID4gICAg
+ICAgdW5zaWduZWQgbG9uZyB0aW1lbzsNCj4gPiAgICAgICBpbnQgcmV0Ow0KPiA+IA0KPiA+ICsg
+ICAgIGFkciArPSBjaGlwLT5zdGFydDsNCj4gPiAgICAgICBtdXRleF9sb2NrKCZjaGlwLT5tdXRl
+eCk7DQo+ID4gLSAgICAgcmV0ID0gZ2V0X2NoaXAobWFwLCBjaGlwLCBhZHIgKyBjaGlwLT5zdGFy
+dCwgRkxfTE9DS0lORyk7DQo+ID4gKyAgICAgcmV0ID0gZ2V0X2NoaXAobWFwLCBjaGlwLCBhZHIs
+IEZMX0xPQ0tJTkcpOw0KPiA+ICAgICAgIGlmIChyZXQpIHsNCj4gPiAgICAgICAgICAgICAgIG11
+dGV4X3VubG9jaygmY2hpcC0+bXV0ZXgpOw0KPiA+ICAgICAgICAgICAgICAgcmV0dXJuIHJldDsN
+Cj4gPiBAQCAtMjU3Miw4ICsyNTczLDggQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBkb19w
+cGJfeHhsb2NrKHN0cnVjdCBtYXBfaW5mbyAqbWFwLA0KPiA+IA0KPiA+ICAgICAgIGlmICh0aHVu
+ayA9PSBET19YWExPQ0tfT05FQkxPQ0tfTE9DSykgew0KPiA+ICAgICAgICAgICAgICAgY2hpcC0+
+c3RhdGUgPSBGTF9MT0NLSU5HOw0KPiA+IC0gICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwgQ01E
+KDB4QTApLCBjaGlwLT5zdGFydCArIGFkcik7DQo+ID4gLSAgICAgICAgICAgICBtYXBfd3JpdGUo
+bWFwLCBDTUQoMHgwMCksIGNoaXAtPnN0YXJ0ICsgYWRyKTsNCj4gPiArICAgICAgICAgICAgIG1h
+cF93cml0ZShtYXAsIENNRCgweEEwKSwgYWRyKTsNCj4gPiArICAgICAgICAgICAgIG1hcF93cml0
+ZShtYXAsIENNRCgweDAwKSwgYWRyKTsNCj4gPiAgICAgICB9IGVsc2UgaWYgKHRodW5rID09IERP
+X1hYTE9DS19PTkVCTE9DS19VTkxPQ0spIHsNCj4gPiAgICAgICAgICAgICAgIC8qDQo+ID4gICAg
+ICAgICAgICAgICAgKiBVbmxvY2tpbmcgb2Ygb25lIHNwZWNpZmljIHNlY3RvciBpcyBub3Qgc3Vw
+cG9ydGVkLCBzbyB3ZQ0KPiA+IEBAIC0yNjExLDcgKzI2MTIsNyBAQCBzdGF0aWMgaW50IF9fbWF5
+YmVfdW51c2VkIGRvX3BwYl94eGxvY2soc3RydWN0IG1hcF9pbmZvICptYXAsDQo+ID4gICAgICAg
+bWFwX3dyaXRlKG1hcCwgQ01EKDB4MDApLCBjaGlwLT5zdGFydCk7DQo+ID4gDQo+ID4gICAgICAg
+Y2hpcC0+c3RhdGUgPSBGTF9SRUFEWTsNCj4gPiAtICAgICBwdXRfY2hpcChtYXAsIGNoaXAsIGFk
+ciArIGNoaXAtPnN0YXJ0KTsNCj4gPiArICAgICBwdXRfY2hpcChtYXAsIGNoaXAsIGFkcik7DQo+
+ID4gICAgICAgbXV0ZXhfdW5sb2NrKCZjaGlwLT5tdXRleCk7DQo+ID4gDQo+ID4gICAgICAgcmV0
+dXJuIHJldDsNCj4gPiBAQCAtMjY3MCw3ICsyNjcxLDcgQEAgc3RhdGljIGludCBfX21heWJlX3Vu
+dXNlZCBjZmlfcHBiX3VubG9jayhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcywNCj4g
+PiAgICAgICAgICAgICAgICAqLw0KPiA+ICAgICAgICAgICAgICAgaWYgKChhZHIgPCBvZnMpIHx8
+IChhZHIgPj0gKG9mcyArIGxlbikpKSB7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgIHNlY3Rb
+c2VjdG9yc10uY2hpcCA9ICZjZmktPmNoaXBzW2NoaXBudW1dOw0KPiA+IC0gICAgICAgICAgICAg
+ICAgICAgICBzZWN0W3NlY3RvcnNdLm9mZnNldCA9IG9mZnNldDsNCj4gPiArICAgICAgICAgICAg
+ICAgICAgICAgc2VjdFtzZWN0b3JzXS5hZHIgPSBhZHI7DQo+ID4gICAgICAgICAgICAgICAgICAg
+ICAgIHNlY3Rbc2VjdG9yc10ubG9ja2VkID0gZG9fcHBiX3h4bG9jaygNCj4gPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBtYXAsICZjZmktPmNoaXBzW2NoaXBudW1dLCBhZHIsIDAsDQo+
+ID4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgRE9fWFhMT0NLX09ORUJMT0NLX0dFVExP
+Q0spOw0KPiA+IEBAIC0yNjg2LDcgKzI2ODcsNiBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2Vk
+IGNmaV9wcGJfdW5sb2NrKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZzLA0KPiA+ICAg
+ICAgICAgICAgICAgaWYgKGFkciA+PiBjZmktPmNoaXBzaGlmdCkgew0KPiA+ICAgICAgICAgICAg
+ICAgICAgICAgICBhZHIgPSAwOw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICBjaGlwbnVtKys7
+DQo+ID4gLQ0KPiANCj4gUGxlYXNlIGRyb3AgdGhpcyBjaGFuZ2UgZnJvbSB0aGUgY29tbWl0Lg0K
+PiANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNoaXBudW0gPj0gY2ZpLT5udW1jaGlw
+cykNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmVhazsNCj4gPiAgICAgICAg
+ICAgICAgIH0NCj4gPiBAQCAtMjcxNCw3ICsyNzE0LDcgQEAgc3RhdGljIGludCBfX21heWJlX3Vu
+dXNlZCBjZmlfcHBiX3VubG9jayhzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IG9mcywNCj4g
+PiAgICAgICAgKi8NCj4gPiAgICAgICBmb3IgKGkgPSAwOyBpIDwgc2VjdG9yczsgaSsrKSB7DQo+
+ID4gICAgICAgICAgICAgICBpZiAoc2VjdFtpXS5sb2NrZWQpDQo+ID4gLSAgICAgICAgICAgICAg
+ICAgICAgIGRvX3BwYl94eGxvY2sobWFwLCBzZWN0W2ldLmNoaXAsIHNlY3RbaV0ub2Zmc2V0LCAw
+LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICBkb19wcGJfeHhsb2NrKG1hcCwgc2VjdFtpXS5j
+aGlwLCBzZWN0W2ldLmFkciwgMCwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBET19YWExPQ0tfT05FQkxPQ0tfTE9DSyk7DQo+ID4gICAgICAgfQ0KPiA+IA0KPiANCj4g
+VGhhbmtzLA0KPiANCj4gQm9yaXMNCg==
