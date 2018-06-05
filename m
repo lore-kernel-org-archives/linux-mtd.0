@@ -1,14 +1,14 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQDU5-0007DJ-V4
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:02:59 +0000
-Date: Tue, 5 Jun 2018 17:02:13 +0200
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQDr8-0004wB-3I
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:26:43 +0000
+Date: Tue, 5 Jun 2018 17:26:07 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
 Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
 Subject: Re: [PATCH 1/2] mtd: cfi_cmdset_0002: fix SEGV unlocking multiple
  chips
-Message-ID: <20180605170213.7c937bf4@bbrezillon>
+Message-ID: <20180605172607.50acb34f@bbrezillon>
 In-Reply-To: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
 References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
 MIME-Version: 1.0
@@ -23,6 +23,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Joakim,
+
 On Tue,  5 Jun 2018 16:07:09 +0200
 Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
 
@@ -36,15 +38,19 @@ Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
 > quering for lock status(and chip_ready test),
 > which caused false status reports.
 > Fix by adding adr += chip->start and adjust call sites accordingly.
+
+I guess you checked that all functions that are passed adr expect an
+absolute address and not an offset relative to the chip.
+
+Also, you seem to fix 2 different problems, can you please split that in
+2 commits?
+
+Thanks,
+
+Boris
+
 > 
 > Fixes: 1648eaaa1575e
-
-Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
-
-And you probably want to add
-
-Cc: stable@vger.kernel.org
-
 > Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
 > ---
 >  drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++--------
@@ -108,6 +114,9 @@ Cc: stable@vger.kernel.org
 >  			adr = 0;
 >  			chipnum++;
 > -
+
+Please drop this change from the commit.
+
 >  			if (chipnum >= cfi->numchips)
 >  				break;
 >  		}
@@ -120,3 +129,7 @@ Cc: stable@vger.kernel.org
 >  				      DO_XXLOCK_ONEBLOCK_LOCK);
 >  	}
 >  
+
+Thanks,
+
+Boris
