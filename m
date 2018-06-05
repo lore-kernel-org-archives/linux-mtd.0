@@ -1,24 +1,30 @@
-Received: from mail-sn1nam01on0077.outbound.protection.outlook.com
- ([104.47.32.77] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-pg0-f66.google.com ([74.125.83.66])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQFH5-0001dK-M9
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 16:57:52 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: Avoid point less
- unlocking/locking
-Date: Tue, 5 Jun 2018 16:57:22 +0000
-Message-ID: <6b6a8a0d50c00eb2067b019b893a2239e4c4c135.camel@infinera.com>
-References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
- <20180605140710.8624-2-joakim.tjernlund@infinera.com>
- <20180605171443.29365913@bbrezillon>
-In-Reply-To: <20180605171443.29365913@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <67C503A4F1A01C4B893B84C3205A37ED@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1fQIIW-0002QD-7O
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 20:11:17 +0000
+Received: by mail-pg0-f66.google.com with SMTP id d2-v6so1744912pga.13
+ for <linux-mtd@lists.infradead.org>; Tue, 05 Jun 2018 13:11:05 -0700 (PDT)
+Date: Tue, 5 Jun 2018 14:11:02 -0600
+From: Rob Herring <robh@kernel.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
+ miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
+ krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
+ jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
+ mirza.krak@gmail.com, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/6] mtd: rawnand: add an option to specify NAND chip
+ as a boot device
+Message-ID: <20180605201102.GA22487@rob-hp-laptop>
+References: <20180531221637.6017-1-stefan@agner.ch>
+ <20180531221637.6017-3-stefan@agner.ch>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180531221637.6017-3-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +34,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gVHVlLCAyMDE4LTA2LTA1IGF0IDE3OjE0ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IE9uIFR1ZSwgIDUgSnVuIDIwMTggMTY6MDc6MTAgKzAyMDANCj4gSm9ha2ltIFRq
-ZXJubHVuZCA8am9ha2ltLnRqZXJubHVuZEBpbmZpbmVyYS5jb20+IHdyb3RlOg0KPiANCj4gPiBj
-ZmlfcHBiX3VubG9jaygpIHdhbGtzIGFsbCBmbGFzaCBjaGlwcyB3aGVuIHVubG9ja2luZyBzZWN0
-b3JzLg0KPiA+IFRoaXMgaXMgYSB3YXN0ZSB3aGVuIGNyb3NzaW5nIGNoaXAgYm91bmRhcmlzIHVu
-YWZmZWN0ZWQNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXiBi
-b3VuZGFyaWVzLg0KPiANCj4gPiBieSB0aGUgdW5sb2NrIG9wZXJhdGlvbi4NCj4gDQo+IEFGQUlD
-VCB0aGVyZSBhcmUgMiB1bnJlbGF0ZWQgY2hhbmdlcyBpbiB0aGlzIGNvbW1pdDoNCj4gMS8gRml4
-IHRoZSBib3VuZGFyeSBjaGVjayB3aGljaCBpcyBicm9rZW4gaWYgdGhlIHVubG9jayBvcGVyYXRp
-b24NCj4gICAgY3Jvc3NlcyBhIGNoaXAgYm91bmRhcnkgKGFkciBpcyByZXNldCB0byAwIHdoZW4g
-dGhhdCBoYXBwZW5zKS4NCg0Kbm90IGJyb2tlbiwgdGhlIGRyaXZlciB3aWxsIGp1c3QgcmVsb2Nr
-IHRoZSBzYW1lIHNlY3RvciBuZWVkbGVzc2x5Lg0KSSBkaWQgbm90IG5vdGljZSBhbnl0aGluZyBi
-cmVha2luZyB3aGVuIHRoYXQgaGFwcGVuZWQuDQpUaGVzZSB0d28gY2hhbmdlcyBvcHRpbWl6ZXMg
-dGhlIHVubG9jayBvcGVyYXRpb24uDQpTdGlsbCBuZWVkIHR3byBjb21taXRzPw0KDQo+IDIvIEF2
-b2lkIHVubG9ja2luZyBjaGlwcyB0aGF0IGFyZSBvdXRzaWRlIHRoZSByZXF1ZXN0ZWQgdW5sb2Nr
-IHJhbmdlLg0KPiANCj4gIzEgaXMgYSBmaXgsICMyIGlzIG5vdC4gWW91IHNob3VsZCBzcGxpdCB0
-aGF0IGluIDIgZGlmZmVyZW50IGNvbW1pdHMsDQo+IGFuZCB0YWcgIzEgd2l0aCBGaXhlcyBhbmQg
-Q2Mtc3RhYmxlLg0KPiANCj4gPiANCj4gPiBGaXhlczogMTY0OGVhYWExNTc1ZQ0KPiA+IFNpZ25l
-ZC1vZmYtYnk6IEpvYWtpbSBUamVybmx1bmQgPGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEuY29t
-Pg0KPiA+IC0tLQ0KPiA+ICBkcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYyB8IDQg
-KysrLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0p
-DQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAw
-Mi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gPiBpbmRleCBjNzRj
-NTNiODg2YmUuLmVlOGI3MGU1NDI5OCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL210ZC9jaGlw
-cy9jZmlfY21kc2V0XzAwMDIuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRz
-ZXRfMDAwMi5jDQo+ID4gQEAgLTI2NjksNyArMjY2OSw3IEBAIHN0YXRpYyBpbnQgX19tYXliZV91
-bnVzZWQgY2ZpX3BwYl91bmxvY2soc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBvZnMsDQo+
-ID4gICAgICAgICAgICAgICAgKiBzZWN0b3JzIHNoYWxsIGJlIHVubG9ja2VkLCBzbyBsZXRzIGtl
-ZXAgdGhlaXIgbG9ja2luZw0KPiA+ICAgICAgICAgICAgICAgICogc3RhdHVzIGF0ICJ1bmxvY2tl
-ZCIgKGxvY2tlZD0wKSBmb3IgdGhlIGZpbmFsIHJlLWxvY2tpbmcuDQo+ID4gICAgICAgICAgICAg
-ICAgKi8NCj4gPiAtICAgICAgICAgICAgIGlmICgoYWRyIDwgb2ZzKSB8fCAoYWRyID49IChvZnMg
-KyBsZW4pKSkgew0KPiA+ICsgICAgICAgICAgICAgaWYgKChvZmZzZXQgPCBvZnMpIHx8IChvZmZz
-ZXQgPj0gKG9mcyArIGxlbikpKSB7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgIHNlY3Rbc2Vj
-dG9yc10uY2hpcCA9ICZjZmktPmNoaXBzW2NoaXBudW1dOw0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICBzZWN0W3NlY3RvcnNdLmFkciA9IGFkcjsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAg
-c2VjdFtzZWN0b3JzXS5sb2NrZWQgPSBkb19wcGJfeHhsb2NrKA0KPiA+IEBAIC0yNjg1LDYgKzI2
-ODUsOCBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2VkIGNmaV9wcGJfdW5sb2NrKHN0cnVjdCBt
-dGRfaW5mbyAqbXRkLCBsb2ZmX3Qgb2ZzLA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICBpKys7
-DQo+ID4gDQo+ID4gICAgICAgICAgICAgICBpZiAoYWRyID4+IGNmaS0+Y2hpcHNoaWZ0KSB7DQo+
-ID4gKyAgICAgICAgICAgICAgICAgICAgIGlmIChvZmZzZXQgPj0gKG9mcyArIGxlbikpDQo+ID4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7DQo+ID4gICAgICAgICAgICAgICAg
-ICAgICAgIGFkciA9IDA7DQo+ID4gICAgICAgICAgICAgICAgICAgICAgIGNoaXBudW0rKzsNCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgaWYgKGNoaXBudW0gPj0gY2ZpLT5udW1jaGlwcykNCj4g
-DQo+IA0K
+On Fri, Jun 01, 2018 at 12:16:33AM +0200, Stefan Agner wrote:
+> Allow to define a NAND chip as a boot device. This can be helpful
+> for the selection of the ECC algorithm and strength in case the boot
+> ROM supports only a subset of controller provided options.
+> 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> ---
+>  Documentation/devicetree/bindings/mtd/nand.txt | 4 ++++
+>  drivers/mtd/nand/raw/nand_base.c               | 3 +++
+>  include/linux/mtd/rawnand.h                    | 6 ++++++
+>  3 files changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> index 8bb11d809429..8daf81b9748c 100644
+> --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> @@ -43,6 +43,10 @@ Optional NAND chip properties:
+>  		     This is particularly useful when only the in-band area is
+>  		     used by the upper layers, and you want to make your NAND
+>  		     as reliable as possible.
+> +- nand-is-boot-medium: Whether the NAND chip is a boot medium. Drivers might use
+> +		       this information to select ECC algorithms supported by
+> +		       the boot ROM or similar restrictions.
+> +
+
+Shouldn't this be a partition level option? You could conceivably do one 
+ECC type for boot area and something else for the rest of the NAND.
+
+
+>  - nand-rb: shall contain the native Ready/Busy ids.
+>  
+>  The ECC strength and ECC step size properties define the correction capability
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 9eb5678dd6d0..c8fb7c9855e2 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5826,6 +5826,9 @@ static int nand_dt_init(struct nand_chip *chip)
+>  	if (of_get_nand_bus_width(dn) == 16)
+>  		chip->options |= NAND_BUSWIDTH_16;
+>  
+> +	if (of_property_read_bool(dn, "nand-is-boot-medium"))
+> +		chip->options |= NAND_IS_BOOT_MEDIUM;
+> +
+>  	if (of_get_nand_on_flash_bbt(dn))
+>  		chip->bbt_options |= NAND_BBT_USE_FLASH;
+>  
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index 6a82da8c44ce..8e54fcf2fa94 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -212,6 +212,12 @@ enum nand_ecc_algo {
+>   */
+>  #define NAND_WAIT_TCCS		0x00200000
+>  
+> +/*
+> + * Whether the NAND chip is a boot medium. Drivers might use this information
+> + * to select ECC algorithms supported by the boot ROM or similar restrictions.
+> + */
+> +#define NAND_IS_BOOT_MEDIUM	0x00400000
+> +
+>  /* Options set by nand scan */
+>  /* Nand scan has allocated controller struct */
+>  #define NAND_CONTROLLER_ALLOC	0x80000000
+> -- 
+> 2.17.0
+> 
