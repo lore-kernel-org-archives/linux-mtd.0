@@ -1,14 +1,24 @@
-Received: from smtp.transmode.se ([31.15.61.139])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQCkX-0000Fl-Oz
- for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 14:15:51 +0000
-From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-To: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Subject: [PATCH 1/2] mtd: cfi_cmdset_0002: fix SEGV unlocking multiple chips
-Date: Tue,  5 Jun 2018 16:07:09 +0200
-Message-Id: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQDRt-0000Uy-8F
+ for linux-mtd@lists.infradead.org; Tue, 05 Jun 2018 15:01:16 +0000
+Date: Tue, 5 Jun 2018 17:00:23 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Message-ID: <20180605170023.24eeaaaa@bbrezillon>
+In-Reply-To: <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
+ <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,92 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-cfi_ppb_unlock() tries to relock all sectors that was locked before
-unlocking the whole chip.
-This locking used the chip start address + the FULL offset from the
-first flash chip, thereby forming an illegal address. Correct by using
-the chip offset(adr).
+On Wed, 30 May 2018 15:14:32 +0200
+Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
 
-In addition, do_ppb_xxlock() failed to add chip->start when
-quering for lock status(and chip_ready test),
-which caused false status reports.
-Fix by adding adr += chip->start and adjust call sites accordingly.
+> +
+> +static void fsl_qspi_read_ahb(struct fsl_qspi *q, const struct spi_mem_op *op)
+> +{
+> +	static int seq;
+> +
+> +	/*
+> +	 * We want to avoid needing to invalidate the cache by issueing
+> +	 * a reset to the AHB and Serial Flash domain, as this needs
+> +	 * time. So we change the address on each read to trigger an
+> +	 * actual read operation on the flash. The actual address for
+> +	 * the flash memory is set by programming the LUT.
+> +	 */
+> +	memcpy_fromio(op->data.buf.in,
+> +		      q->ahb_addr +
+> +		      (seq * q->devtype_data->ahb_buf_size),
+> +		      op->data.nbytes);
+> +
+> +	seq = seq ? 0 : 1;
 
-Fixes: 1648eaaa1575e
-Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+We should get rid of this hack. Yogesh, Han, do you know if there's an
+easy way to invalidate the AHB buffer without resetting the IP?
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 5e526aec66f0..c74c53b886be 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2535,7 +2535,7 @@ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- 
- struct ppb_lock {
- 	struct flchip *chip;
--	loff_t offset;
-+	unsigned long adr;
- 	int locked;
- };
- 
-@@ -2553,8 +2553,9 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
- 	unsigned long timeo;
- 	int ret;
- 
-+	adr += chip->start;
- 	mutex_lock(&chip->mutex);
--	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
-+	ret = get_chip(map, chip, adr, FL_LOCKING);
- 	if (ret) {
- 		mutex_unlock(&chip->mutex);
- 		return ret;
-@@ -2572,8 +2573,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
- 
- 	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
- 		chip->state = FL_LOCKING;
--		map_write(map, CMD(0xA0), chip->start + adr);
--		map_write(map, CMD(0x00), chip->start + adr);
-+		map_write(map, CMD(0xA0), adr);
-+		map_write(map, CMD(0x00), adr);
- 	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
- 		/*
- 		 * Unlocking of one specific sector is not supported, so we
-@@ -2611,7 +2612,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
- 	map_write(map, CMD(0x00), chip->start);
- 
- 	chip->state = FL_READY;
--	put_chip(map, chip, adr + chip->start);
-+	put_chip(map, chip, adr);
- 	mutex_unlock(&chip->mutex);
- 
- 	return ret;
-@@ -2670,7 +2671,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
- 		 */
- 		if ((adr < ofs) || (adr >= (ofs + len))) {
- 			sect[sectors].chip = &cfi->chips[chipnum];
--			sect[sectors].offset = offset;
-+			sect[sectors].adr = adr;
- 			sect[sectors].locked = do_ppb_xxlock(
- 				map, &cfi->chips[chipnum], adr, 0,
- 				DO_XXLOCK_ONEBLOCK_GETLOCK);
-@@ -2686,7 +2687,6 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
- 		if (adr >> cfi->chipshift) {
- 			adr = 0;
- 			chipnum++;
--
- 			if (chipnum >= cfi->numchips)
- 				break;
- 		}
-@@ -2714,7 +2714,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
- 	 */
- 	for (i = 0; i < sectors; i++) {
- 		if (sect[i].locked)
--			do_ppb_xxlock(map, sect[i].chip, sect[i].offset, 0,
-+			do_ppb_xxlock(map, sect[i].chip, sect[i].adr, 0,
- 				      DO_XXLOCK_ONEBLOCK_LOCK);
- 	}
- 
--- 
-2.13.6
+> +}
