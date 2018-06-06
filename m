@@ -1,24 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQYvj-00042j-Mz
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 13:56:53 +0000
-Date: Wed, 6 Jun 2018 15:56:29 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Poonam Aggrwal
- <poonam.aggrwal@nxp.com>, Ashish Kumar <ashish.kumar@nxp.com>, Ying Zhang
- <ying.zhang22455@nxp.com>, Alban Bedel <albeu@free.fr>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>
-Subject: Re: Accessing mtd partitions from driver/i2c
-Message-ID: <20180606155629.2c2a2e45@bbrezillon>
-In-Reply-To: <VI1PR0402MB38542B5CEB150AD440FFA62B97650@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <VI1PR0402MB38545D0A442329D88E4BAF7A97650@VI1PR0402MB3854.eurprd04.prod.outlook.com>
- <20180606092250.2d600a89@bbrezillon>
- <VI1PR0402MB38542B5CEB150AD440FFA62B97650@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+Received: from mail-io0-x22f.google.com ([2607:f8b0:4001:c06::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQZb9-0006ng-PB
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 14:39:41 +0000
+Received: by mail-io0-x22f.google.com with SMTP id t5-v6so7872214ioa.8
+ for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2018 07:39:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAFwEtmo=tXCckkQFn2VDoNV4tto7MBr0Tj3xVqLroxfJzZ=Fkw@mail.gmail.com>
+In-Reply-To: <CAFwEtmo=tXCckkQFn2VDoNV4tto7MBr0Tj3xVqLroxfJzZ=Fkw@mail.gmail.com>
+From: Steve deRosier <derosier@gmail.com>
+Date: Wed, 6 Jun 2018 07:38:50 -0700
+Message-ID: <CALLGbRLLZNOOOO8k-vF20Daf_ivDU8RuWfX5e48_+pCJ-kVAeA@mail.gmail.com>
+Subject: Re: testing UBIFS with zstd
+To: michele.dionisio@gmail.com
+Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,61 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Alban and Srinivas
+Hi Michele,
 
-On Wed, 6 Jun 2018 13:44:32 +0000
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+On Wed, Jun 6, 2018 at 5:56 AM Michele Dionisio
+<michele.dionisio@gmail.com> wrote:
+>
+> I'm testing ubifs with zstd compression. In my opinion it is a good
+> idea to start to insert this "new" compression algorithem because the
+> performance is paragonable with LZ4 and the compression is much
+> better.
+>
+> I attach patches for mtd-utils and linux too
 
-> Dear Borris,
-> 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Wednesday, June 6, 2018 12:53 PM
-> > To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-> > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; Poonam
-> > Aggrwal <poonam.aggrwal@nxp.com>; Ashish Kumar
-> > <ashish.kumar@nxp.com>; Ying Zhang <ying.zhang22455@nxp.com>
-> > Subject: Re: Accessing mtd partitions from driver/i2c
-> > 
-> > Hi Prabhakar,
-> > 
-> > On Wed, 6 Jun 2018 05:02:47 +0000
-> > Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
-> >   
-> > > Hi All,
-> > >
-> > > We have a requirement of using(read/write) one mtd partition from
-> > > driver/i2c.
-> > >
-> > > As per my googling  mtd->_read, mtd->_write APIs has not been
-> > > used  
-> > anywhere other than driver/mtd layer.
-> > 
-> > It's used by at least one filesystem (JFFS2). And you should not
-> > look for mtd-  
-> > >_xxx() users but mtd_xxx() users. You should never access the mtd
-> > >hooks  
-> > directly but the wrappers that are exposed by the MTD API
-> > (mtd_read(), mtd_write(), mtd_erase(), ...).
-> >   
-> 
-> I can find it's usage in driver/firmware/ folder. Looks like it is
-> using nvram.
-> 
-> > BTW, what's your use case? If it's about reading a piece of
-> > information from a RO partition, then the work initiated by Alban
-> > [1] and exposing some MTD parts are NVMEM providers should be a
-> > better match. 
-> 
-> Currently, Linux has i2c slave framework. It is reading/writing to
-> DDR emulated as EEPROM (drivers/i2c/i2c-slave-eeprom.c). We want
-> something similar, where DDR will be replaced by MTD partitions for
-> read/write. 
-
-Then NVMEM is the solution you're looking for. Alban, Srinivas, can you
-agree on something regarding the DT bindings so that we can finally get
-this feature merged?
+When you send patches upstream, please send them in-line as plain text
+in your email instead of as attachments. They can't be reviewed and
+commented on as blobs.
+https://www.kernel.org/doc/html/v4.17/process/submitting-patches.html#no-mime-no-links-no-compression-no-attachments-just-plain-text
 
 Thanks,
-
-Boris
+- Steve
