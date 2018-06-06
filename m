@@ -1,18 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQSmm-0002Vv-3r
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 07:23:13 +0000
-Date: Wed, 6 Jun 2018 09:22:50 +0200
+ id 1fQSsK-0005jZ-UP
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 07:29:10 +0000
+Date: Wed, 6 Jun 2018 09:28:44 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Poonam Aggrwal
- <poonam.aggrwal@nxp.com>, Ashish Kumar <ashish.kumar@nxp.com>, Ying Zhang
- <ying.zhang22455@nxp.com>
-Subject: Re: Accessing mtd partitions from driver/i2c
-Message-ID: <20180606092250.2d600a89@bbrezillon>
-In-Reply-To: <VI1PR0402MB38545D0A442329D88E4BAF7A97650@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <VI1PR0402MB38545D0A442329D88E4BAF7A97650@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, mark.rutland@arm.com,
+ thierry.reding@gmail.com, dev@lynxeye.de, miquel.raynal@bootlin.com,
+ richard@nod.at, marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/6] mtd: rawnand: add an option to specify NAND chip
+ as a boot device
+Message-ID: <20180606092844.3ab746b2@bbrezillon>
+In-Reply-To: <20180605201102.GA22487@rob-hp-laptop>
+References: <20180531221637.6017-1-stefan@agner.ch>
+ <20180531221637.6017-3-stefan@agner.ch>
+ <20180605201102.GA22487@rob-hp-laptop>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,35 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Prabhakar,
+Hi Rob,
 
-On Wed, 6 Jun 2018 05:02:47 +0000
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+On Tue, 5 Jun 2018 14:11:02 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-> Hi All,
+> On Fri, Jun 01, 2018 at 12:16:33AM +0200, Stefan Agner wrote:
+> > Allow to define a NAND chip as a boot device. This can be helpful
+> > for the selection of the ECC algorithm and strength in case the boot
+> > ROM supports only a subset of controller provided options.
+> > 
+> > Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > ---
+> >  Documentation/devicetree/bindings/mtd/nand.txt | 4 ++++
+> >  drivers/mtd/nand/raw/nand_base.c               | 3 +++
+> >  include/linux/mtd/rawnand.h                    | 6 ++++++
+> >  3 files changed, 13 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+> > index 8bb11d809429..8daf81b9748c 100644
+> > --- a/Documentation/devicetree/bindings/mtd/nand.txt
+> > +++ b/Documentation/devicetree/bindings/mtd/nand.txt
+> > @@ -43,6 +43,10 @@ Optional NAND chip properties:
+> >  		     This is particularly useful when only the in-band area is
+> >  		     used by the upper layers, and you want to make your NAND
+> >  		     as reliable as possible.
+> > +- nand-is-boot-medium: Whether the NAND chip is a boot medium. Drivers might use
+> > +		       this information to select ECC algorithms supported by
+> > +		       the boot ROM or similar restrictions.
+> > +  
 > 
-> We have a requirement of using(read/write) one mtd partition from driver/i2c. 
-> 
-> As per my googling  mtd->_read, mtd->_write APIs has not been used anywhere other than driver/mtd layer.
+> Shouldn't this be a partition level option? You could conceivably do one 
+> ECC type for boot area and something else for the rest of the NAND.
 
-It's used by at least one filesystem (JFFS2). And you should not look
-for mtd->_xxx() users but mtd_xxx() users. You should never access the
-mtd hooks directly but the wrappers that are exposed by the MTD API
-(mtd_read(), mtd_write(), mtd_erase(), ...).
+I tried that a long time ago [1]. The result was far from perfect. I'm
+not saying it's impossible to do it, but it definitely requires a lot
+of work if we want to do it properly.
 
-BTW, what's your use case? If it's about reading a piece of information
-from a RO partition, then the work initiated by Alban [1] and exposing
-some MTD parts are NVMEM providers should be a better match.
-
-> Do we have any such framework/use case available in Linux which can be referred.
-> 
-> Any pointer/clue will be helpful
-
-I don't know what you want to do with the MTD device exactly, so it's
-hard to tell.
+Also, what about boards that are not defining their partitions in the
+DT but through the command line (using mtdparts)? That means patching
+the mtdparts part parser to also take the ECC setup into account.
 
 Regards,
 
 Boris
 
-[1]https://patchwork.ozlabs.org/project/linux-mtd/list/?series=35728
+[1]http://lists.infradead.org/pipermail/linux-mtd/2015-July/060600.html
