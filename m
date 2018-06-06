@@ -1,28 +1,20 @@
-Received: from smtp1-3.goneo.de ([85.220.129.32])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQbLO-0001u8-BP
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 16:31:32 +0000
-Content-Type: text/plain; charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2 53/53] kernel-doc: describe the ``literal`` syntax
-From: Markus Heiser <markus.heiser@darmarit.de>
-In-Reply-To: <5d47c31b59f6c2c7ddce0fcb1be0f85ad39a56fe.1494935649.git.mchehab@s-opensource.com>
-Date: Wed, 6 Jun 2018 18:31:05 +0200
-Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab@infradead.org>,
- linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-mtd@lists.infradead.org,
- Jani Nikula <jani.nikula@intel.com>, Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EF34D78D-738B-47F4-B188-9777440B7E70@darmarit.de>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
- <cover.1494935649.git.mchehab@s-opensource.com>
- <5d47c31b59f6c2c7ddce0fcb1be0f85ad39a56fe.1494935649.git.mchehab@s-opensource.com>
-To: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+ id 1fQcGd-0001Vb-Ur
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 17:30:42 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: Michele Dionisio <michele.dionisio@gmail.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: testing UBIFS with zstd
+Date: Wed, 06 Jun 2018 19:30:21 +0200
+Message-ID: <2382189.TlthlRu3CO@blindfold>
+In-Reply-To: <CAFwEtmpNBcKUBMFOyXs=RsTco8t7bBfLO6WS0NAZO6u1HwgteQ@mail.gmail.com>
+References: <CAFwEtmo=tXCckkQFn2VDoNV4tto7MBr0Tj3xVqLroxfJzZ=Fkw@mail.gmail.com>
+ <CAFLxGvzNoU3DETdJkQCM-oGjuy+1=dec0ocTmFSmLN3-dbE7xg@mail.gmail.com>
+ <CAFwEtmpNBcKUBMFOyXs=RsTco8t7bBfLO6WS0NAZO6u1HwgteQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,44 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mauro,
+Michele,
 
-> Am 16.05.2017 um 14:16 schrieb Mauro Carvalho Chehab =
-<mchehab@s-opensource.com>:
->=20
-> changeset b97f193abf83 ("scripts/kernel-doc: fix parser
-> for apostrophes") added support for ``literal`` inside
-> kernel-doc, in order to allow using the "%" symbol inside
-> a literal block, as this is used at printk() description.
->=20
-> Document it.
->=20
-> Fixes: b97f193abf83 ("scripts/kernel-doc: fix parser for apostrophes")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-> ---
-> Documentation/doc-guide/kernel-doc.rst | 10 ++++++++++
-> 1 file changed, 10 insertions(+)
->=20
-> diff --git a/Documentation/doc-guide/kernel-doc.rst =
-b/Documentation/doc-guide/kernel-doc.rst
-> index b32e4813ff6f..b24854b5d6be 100644
-> --- a/Documentation/doc-guide/kernel-doc.rst
-> +++ b/Documentation/doc-guide/kernel-doc.rst
-> @@ -149,6 +149,16 @@ Domain`_ references.
-> ``%CONST``
->   Name of a constant. (No cross-referencing, just formatting.)
->=20
-> +````literal````
-> +  A literal block that should be handled as-is. The output will use a
-> +  ``monospaced font``.
+Am Mittwoch, 6. Juni 2018, 18:01:17 CEST schrieb Michele Dionisio:
+> I have 2 partitions on same NAND. one with LZ4 one with ztsd. Mount option are:
 
-just nitpicking; this is not literal block, this is called an inline =
-literal [1]
+LZ4 or LZO?
+Below you write LZO...
+ 
+> root@flexaT:/# mount
+> rootfs on / type rootfs (rw)
+> ubi0:data on /opt/device/data type ubifs (rw,noatime,bulk_read)
+> ubi1:spare on /opt/device/real_spare type ubifs (rw,noatime,bulk_read)
+> 
+> I execute the following sequence of command for test
+> 
+> INFILE="/dev/zero"
+> rm -f /tmp/testfile
+> dd if=${INFILE} of=/tmp/testfile bs=16k count=1k
+> rm -f /opt/device/data/test
+> df /opt/device/data
+> sysctl -w vm.drop_caches=3
+> time dd if=/tmp/testfile of=/opt/device/data/test bs=64k count=1k
+> sync
+> sysctl -w vm.drop_caches=3
+> time dd if=/opt/device/data/test of=/dev/null bs=64k
+> df /opt/device/data
+> rm -f /opt/device/data/test
+> rm -f /opt/device/real_spare/test
+> df /opt/device/real_spare
+> sysctl -w vm.drop_caches=3
+> time dd if=/tmp/testfile of=/opt/device/real_spare/test bs=64k count=1k
+> sync
+> sysctl -w vm.drop_caches=3
+> time dd if=/opt/device/real_spare/test of=/dev/null bs=64k
+> df /opt/device/real_spare
+> rm -f /opt/device/real_spare/test
+> rm -f /tmp/testfile
+> 
+> I have that the test 2 time using INFILE="/dev/zero" and
+> INFILE="/dev/urandom". Both test is not realistic because zeros is too
+> much comprimable and random is not comprimibile. The result is:
+> 
+> ----------------------------------------------------------------------------------------
+> COMPRESSION           |  time write    | time read   |   space used
+> LZO (/dev/zero)             |  2.39          | 1.40        |   624 blocks
+> ZSTD (/dev/zero)           |  2.63          | 1.43        |   596 blocks
+> LZO (/dev/urandom)    |  13.38         | 5.88        |   16024 blocks
+> ZSTD (/dev/urandom)   |  7.89          | 5.83        |   15896 blocks
 
-To be complete: "blocks" are allways indented.
+What scale is time? ms?
+And what is block? LEBs?
 
-[1] =
-http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html#inline-=
-literals
+Thanks,
+//richard
 
---- Markus --
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
