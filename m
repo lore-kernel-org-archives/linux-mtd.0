@@ -1,14 +1,18 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQUuc-0007kt-58
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 09:39:33 +0000
-From: Ritesh Harjani <riteshh@codeaurora.org>
-To: linux-mtd@lists.infradead.org, richard@nod.at,
- david.oberhollenzer@sigma-star.at
-Cc: Ritesh Harjani <riteshh@codeaurora.org>
-Subject: [RFC PATCH 0/2] mkfs.ubifs: Implement selinux labelling support
-Date: Wed,  6 Jun 2018 15:08:58 +0530
-Message-Id: <1528277940-30919-1-git-send-email-riteshh@codeaurora.org>
+Received: from smtp.transmode.se ([31.15.61.139])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQVSH-0003vu-3N
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 10:14:15 +0000
+From: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+To: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Joakim Tjernlund <joakim.tjernlund@infinera.com>, stable@vger.kernel.org
+Subject: [PATCH v2 4/4] mtd: cfi_cmdset_0002: Avoid walking all chips when
+ unlocking.
+Date: Wed,  6 Jun 2018 12:13:30 +0200
+Message-Id: <20180606101330.11071-4-joakim.tjernlund@infinera.com>
+In-Reply-To: <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+References: <20180605172607.50acb34f@bbrezillon>
+ <20180606101330.11071-1-joakim.tjernlund@infinera.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All, 
+cfi_ppb_unlock() walks all flash chips when unlocking sectors,
+avoid walking chips unaffected by the unlock operation.
 
-This patchset implements the selinux context labelling support
-in mkfs.ubifs utility which was discussed here [1].
-Patchset is based upon previous work done by John [2].
-Commit texts should explain about the change description.
+Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
+Cc: stable@vger.kernel.org
+Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+---
+ v2 - Spilt into several patches
 
-I have tested this on my 4.9 kernel NAND based internal device with
-UBIFS and selinux enabled. With this we are able to set the
-respective selinux labels based on the input file_context provided
-in mkfs.ubifs command.
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[1]:- http://lists.infradead.org/pipermail/linux-mtd/2018-May/081138.html
-[2]:- http://lists.infradead.org/pipermail/linux-mtd/2014-February/052136.html
-
-Ritesh Harjani (2):
-  mkfs.ubifs: add_xattr is not depending on host XATTR support
-  mkfs.ubifs: Implement selinux labelling support in mkfs.ubifs.
-
- Makefile.am                         |   4 +
- configure.ac                        |  27 +++++
- ubifs-utils/Makemodule.am           |   4 +-
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 197 ++++++++++++++++++++++++++++--------
- 4 files changed, 189 insertions(+), 43 deletions(-)
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index b6273ce83de7..62cd4ee280b3 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -2686,6 +2686,8 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+ 			i++;
+ 
+ 		if (adr >> cfi->chipshift) {
++			if (offset >= (ofs + len))
++				break;
+ 			adr = 0;
+ 			chipnum++;
+ 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, 
-a Linux Foundation Collaborative Project.
+2.13.6
