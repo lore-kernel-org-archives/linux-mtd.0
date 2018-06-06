@@ -1,32 +1,29 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQVqX-0002JG-CK
- for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 10:39:19 +0000
-Received: by mail-wr0-x244.google.com with SMTP id d8-v6so5740889wro.4
- for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2018 03:39:06 -0700 (PDT)
-Date: Wed, 6 Jun 2018 12:39:03 +0200
-From: Thierry Reding <thierry.reding@gmail.com>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com,
- benjamin.lindqvist@endian.se, pgaikwad@nvidia.com, dev@lynxeye.de,
- mirza.krak@gmail.com, richard@nod.at, pdeschrijver@nvidia.com,
- linux-kernel@vger.kernel.org, krzk@kernel.org, jonathanh@nvidia.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- marcel@ziswiler.com, miquel.raynal@bootlin.com, linux-tegra@vger.kernel.org
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fQVx5-0007q5-MH
+ for linux-mtd@lists.infradead.org; Wed, 06 Jun 2018 10:46:07 +0000
+Date: Wed, 6 Jun 2018 12:45:40 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: Dmitry Osipenko <digetx@gmail.com>, Stefan Agner <stefan@agner.ch>,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, benjamin.lindqvist@endian.se,
+ pgaikwad@nvidia.com, dev@lynxeye.de, mirza.krak@gmail.com, richard@nod.at,
+ pdeschrijver@nvidia.com, linux-kernel@vger.kernel.org, krzk@kernel.org,
+ jonathanh@nvidia.com, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, marcel@ziswiler.com,
+ miquel.raynal@bootlin.com, linux-tegra@vger.kernel.org
 Subject: Re: [PATCH v3 3/6] mtd: rawnand: tegra: add devicetree binding
-Message-ID: <20180606103903.GJ11810@ulmo>
+Message-ID: <20180606124540.46bfa00b@bbrezillon>
+In-Reply-To: <20180606103903.GJ11810@ulmo>
 References: <20180531221637.6017-1-stefan@agner.ch>
  <20180531221637.6017-4-stefan@agner.ch>
  <20180601093025.2817ff30@bbrezillon>
  <faa40dac-ab2a-2d43-3a43-2d46cebcd539@gmail.com>
+ <20180606103903.GJ11810@ulmo>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="C7PTD44AewjTsiSV"
-Content-Disposition: inline
-In-Reply-To: <faa40dac-ab2a-2d43-3a43-2d46cebcd539@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,133 +33,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Thierry,
 
---C7PTD44AewjTsiSV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, 6 Jun 2018 12:39:03 +0200
+Thierry Reding <thierry.reding@gmail.com> wrote:
 
-On Tue, Jun 05, 2018 at 11:19:14PM +0300, Dmitry Osipenko wrote:
-> On 01.06.2018 10:30, Boris Brezillon wrote:
-> > On Fri,  1 Jun 2018 00:16:34 +0200
-> > Stefan Agner <stefan@agner.ch> wrote:
-> >=20
-> >> This adds the devicetree binding for the Tegra 2 NAND flash
-> >> controller.
-> >>
-> >> Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> >> ---
-> >>  .../bindings/mtd/nvidia-tegra20-nand.txt      | 64 +++++++++++++++++++
-> >>  1 file changed, 64 insertions(+)
-> >>  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra=
-20-nand.txt
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand=
-=2Etxt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> >> new file mode 100644
-> >> index 000000000000..5cd984ef046b
-> >> --- /dev/null
-> >> +++ b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> >> @@ -0,0 +1,64 @@
-> >> +NVIDIA Tegra NAND Flash controller
-> >> +
-> >> +Required properties:
-> >> +- compatible: Must be one of:
-> >> +  - "nvidia,tegra20-nand"
-> >=20
-> > As discussed previously, I prefer "nvidia,tegra20-nand-controller" or
-> > "nvidia,tegra20-nfc".
-> >=20
-> >> +- reg: MMIO address range
-> >> +- interrupts: interrupt output of the NFC controller
-> >> +- clocks: Must contain an entry for each entry in clock-names.
-> >> +  See ../clocks/clock-bindings.txt for details.
-> >> +- clock-names: Must include the following entries:
-> >> +  - nand
-> >> +- resets: Must contain an entry for each entry in reset-names.
-> >> +  See ../reset/reset.txt for details.
-> >> +- reset-names: Must include the following entries:
-> >> +  - nand
-> >> +
-> >> +Optional children nodes:
-> >> +Individual NAND chips are children of the NAND controller node. Curre=
-ntly
-> >> +only one NAND chip supported.
-> >> +
-> >> +Required children node properties:
-> >> +- reg: An integer ranging from 1 to 6 representing the CS line to use.
-> >> +
-> >> +Optional children node properties:
-> >> +- nand-ecc-mode: String, operation mode of the NAND ecc mode. Current=
-ly only
-> >> +		 "hw" is supported.
-> >> +- nand-ecc-algo: string, algorithm of NAND ECC.
-> >> +		 Supported values with "hw" ECC mode are: "rs", "bch".
-> >> +- nand-bus-width : See nand.txt
-> >> +- nand-on-flash-bbt: See nand.txt
-> >> +- nand-ecc-strength: integer representing the number of bits to corre=
-ct
-> >> +		     per ECC step (always 512). Supported strength using HW ECC
-> >> +		     modes are:
-> >> +		     - RS: 4, 6, 8
-> >> +		     - BCH: 4, 8, 14, 16
-> >> +- nand-ecc-maximize: See nand.txt
-> >> +- nand-is-boot-medium: Makes sure only ECC strengths supported by the=
- boot ROM
-> >> +		       are choosen.
-> >> +- wp-gpios: GPIO specifier for the write protect pin.
-> >> +
-> >> +Optional child node of NAND chip nodes:
-> >> +Partitions: see partition.txt
-> >> +
-> >> +  Example:
-> >> +	nand@70008000 {
-> >=20
-> > 	nand-controller@70008000 {
-> >=20
-> >> +		compatible =3D "nvidia,tegra20-nand";
-> >=20
-> > 		compatible =3D "nvidia,tegra20-nand-controller";
-> >=20
-> > or
-> >=20
-> > 		compatible =3D "nvidia,tegra20-nfc";
-> >=20
->=20
-> Maybe it's just me, but when I'm reading "nfc", my first association is t=
-he
-> "Near Field Communication". Probably an explicit
-> "nvidia,tegra20-nand-controller" variant is more preferable.
+> On Tue, Jun 05, 2018 at 11:19:14PM +0300, Dmitry Osipenko wrote:
+> > On 01.06.2018 10:30, Boris Brezillon wrote:  
+> > > On Fri,  1 Jun 2018 00:16:34 +0200
+> > > Stefan Agner <stefan@agner.ch> wrote:
+> > >   
+> > >> This adds the devicetree binding for the Tegra 2 NAND flash
+> > >> controller.
+> > >>
+> > >> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+> > >> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > >> ---
+> > >>  .../bindings/mtd/nvidia-tegra20-nand.txt      | 64 +++++++++++++++++++
+> > >>  1 file changed, 64 insertions(+)
+> > >>  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+> > >>
+> > >> diff --git a/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+> > >> new file mode 100644
+> > >> index 000000000000..5cd984ef046b
+> > >> --- /dev/null
+> > >> +++ b/Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
+> > >> @@ -0,0 +1,64 @@
+> > >> +NVIDIA Tegra NAND Flash controller
+> > >> +
+> > >> +Required properties:
+> > >> +- compatible: Must be one of:
+> > >> +  - "nvidia,tegra20-nand"  
+> > > 
+> > > As discussed previously, I prefer "nvidia,tegra20-nand-controller" or
+> > > "nvidia,tegra20-nfc".
+> > >   
+> > >> +- reg: MMIO address range
+> > >> +- interrupts: interrupt output of the NFC controller
+> > >> +- clocks: Must contain an entry for each entry in clock-names.
+> > >> +  See ../clocks/clock-bindings.txt for details.
+> > >> +- clock-names: Must include the following entries:
+> > >> +  - nand
+> > >> +- resets: Must contain an entry for each entry in reset-names.
+> > >> +  See ../reset/reset.txt for details.
+> > >> +- reset-names: Must include the following entries:
+> > >> +  - nand
+> > >> +
+> > >> +Optional children nodes:
+> > >> +Individual NAND chips are children of the NAND controller node. Currently
+> > >> +only one NAND chip supported.
+> > >> +
+> > >> +Required children node properties:
+> > >> +- reg: An integer ranging from 1 to 6 representing the CS line to use.
+> > >> +
+> > >> +Optional children node properties:
+> > >> +- nand-ecc-mode: String, operation mode of the NAND ecc mode. Currently only
+> > >> +		 "hw" is supported.
+> > >> +- nand-ecc-algo: string, algorithm of NAND ECC.
+> > >> +		 Supported values with "hw" ECC mode are: "rs", "bch".
+> > >> +- nand-bus-width : See nand.txt
+> > >> +- nand-on-flash-bbt: See nand.txt
+> > >> +- nand-ecc-strength: integer representing the number of bits to correct
+> > >> +		     per ECC step (always 512). Supported strength using HW ECC
+> > >> +		     modes are:
+> > >> +		     - RS: 4, 6, 8
+> > >> +		     - BCH: 4, 8, 14, 16
+> > >> +- nand-ecc-maximize: See nand.txt
+> > >> +- nand-is-boot-medium: Makes sure only ECC strengths supported by the boot ROM
+> > >> +		       are choosen.
+> > >> +- wp-gpios: GPIO specifier for the write protect pin.
+> > >> +
+> > >> +Optional child node of NAND chip nodes:
+> > >> +Partitions: see partition.txt
+> > >> +
+> > >> +  Example:
+> > >> +	nand@70008000 {  
+> > > 
+> > > 	nand-controller@70008000 {
+> > >   
+> > >> +		compatible = "nvidia,tegra20-nand";  
+> > > 
+> > > 		compatible = "nvidia,tegra20-nand-controller";
+> > > 
+> > > or
+> > > 
+> > > 		compatible = "nvidia,tegra20-nfc";
+> > >   
+> > 
+> > Maybe it's just me, but when I'm reading "nfc", my first association is the
+> > "Near Field Communication". Probably an explicit
+> > "nvidia,tegra20-nand-controller" variant is more preferable.  
 
-We don't really use a -controller suffix for any of the other
-controllers because it is kind of implied. "nfc" is also not something
-that is ever referred to in the technical documentation.
+I also prefer nvidia,tegra20-nand-controller.
 
-"nvidia,tegra20-nand" would be most consistent with all the rest of
-Tegra (c.f. "nvidia,tegra*-ahci", "nvidia,tegra*-pci",
-"nvidia,tegra*-hda", "nvidia,tegra*-gmi", ...).
+> 
+> We don't really use a -controller suffix for any of the other
+> controllers because it is kind of implied. "nfc" is also not something
+> that is ever referred to in the technical documentation.
+> 
+> "nvidia,tegra20-nand" would be most consistent with all the rest of
+> Tegra (c.f. "nvidia,tegra*-ahci", "nvidia,tegra*-pci",
+> "nvidia,tegra*-hda", "nvidia,tegra*-gmi", ...).
 
-Thierry
+People get confused about what this node represents when you just have
+"nvidia,tegra20-nand", and then you start seeing NAND related props or
+partition nodes being defined under the NAND controller node.
+I really prefer to have the "-controller" prefix here to avoid such
+confusions.
 
---C7PTD44AewjTsiSV
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAlsXucMACgkQ3SOs138+
-s6GOsQ/+P8gS5IrroBpzAwxFRbZlyPPj/3aDsFLrE/fNJTmO1q6w2rS+9WdTvoju
-TdVzh0ljfD/HLvav4uMBKcnDwhy4izEdL7qDE/lnU6zelFoRRayzGOKg3wrFK8LT
-2+aGutUIHrGZpLNyINDpeeRd1G2KF7nVvAb2LkBlqpgpB3Eqt6Y5LXQRsC2WzIN6
-ZYH/1QFDMtX6xj5rfvBWG+fcV86WJw032YUKaW3sWIrE3Vio9/RQ9m++BqXcCPdC
-f1m4EVSbfBMwVJRvWDngRL8pO+MdkyawNCeoTzjf/cb54GKYTdY4ENWUBf0YKNKb
-tZpe70dUBYnRB8VJIGZEoTgRvW8qqbRxk04AltmhDIKqIld6T8Zfst47/DHq44H+
-JgmBnnEKC2HYq0L0KlzRmQ7Az/4AZtmgQhLYdL3/8B5KuJrPQQE5M6GEpSp/KBQW
-LhGMMk2YDVriI4Yb3w+yt5E9ftuTQ1vrtXkrMazTkfImKQIe+qz+W4eJaX45KefV
-WhNRu68OvcE+Oa0VO8k7PKUSe0B+79yzsHEqgsyQwH4EmEwAtf7BOC0aOTrJBRMR
-dTXCvmkjK8bxSk36YT/IynfcqqJSyGlDEUqKbazxVqTWDogO7fO/zghebY9Lb+Fv
-sF7o97IyifBg5+Ow7o00oY37SaKGB3nO7Dcqv5nqWDYjqodPwec=
-=7lox
------END PGP SIGNATURE-----
-
---C7PTD44AewjTsiSV--
+Boris
