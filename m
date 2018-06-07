@@ -1,36 +1,39 @@
-Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQxzp-00067p-5H
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 16:42:47 +0000
-Date: Thu, 7 Jun 2018 18:41:55 +0200
-From: Alban <albeu@free.fr>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ id 1fQyJu-0000Wa-D7
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 17:03:32 +0000
+Received: by mail-wm0-x241.google.com with SMTP id p11-v6so20585995wmc.4
+ for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2018 10:03:19 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode for
+ the cells list
+To: Alban <albeu@free.fr>
+Cc: linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
- for the cells list
-Message-ID: <20180607184155.6da38a01@tock>
-In-Reply-To: <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
 References: <1521933899-362-1-git-send-email-albeu@free.fr>
  <1521933899-362-2-git-send-email-albeu@free.fr>
  <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
  <20180417165420.423a691b@avionic-0020>
  <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
- <20180417180040.04f53495@avionic-0020>
- <20180418134119.2e587621@avionic-0020>
+ <20180417180040.04f53495@avionic-0020> <20180418134119.2e587621@avionic-0020>
  <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
  <20180418143243.3c23493c@avionic-0020>
  <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
  <20180418153440.187ed16e@avionic-0020>
  <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
+ <20180607184155.6da38a01@tock>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
+Date: Thu, 7 Jun 2018 18:03:16 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/9Ob2lgq1f9qUa+6V9nvLT5a"; protocol="application/pgp-signature"
+In-Reply-To: <20180607184155.6da38a01@tock>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,106 +43,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/9Ob2lgq1f9qUa+6V9nvLT5a
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, 1 May 2018 17:49:03 +0100
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 
-> On 18/04/18 14:34, Alban wrote:
-> > On Wed, 18 Apr 2018 13:53:56 +0100
-> > Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> >  =20
-> >> On 18/04/18 13:32, Alban wrote: =20
-> >>>> I was also suggesting you to use nvmem-cell subnode, but make it a
-> >>>> proper nvmem provider device, rather than reusing its parent device.
-> >>>>
-> >>>> You would end up some thing like this in dt.
-> >>>>
-> >>>> flash@0 {
-> >>>> 	#address-cells =3D <1>;
-> >>>> 	#size-cells =3D <1>;
-> >>>> 	compatible =3D "s25sl064a";
-> >>>> 	reg =3D <0>;
-> >>>>
-> >>>> 	nvmem-cells {
-> >>>> 		compatible =3D "mtd-nvmem";
-> >>>> 		#address-cells =3D <1>;
-> >>>> 		#size-cells =3D <1>;
-> >>>>
-> >>>> 		calibration: calib@404 {
-> >>>> 			reg =3D <0x404 0x10>;
-> >>>> 		};
-> >>>> 	};
-> >>>> }; =20
-> >>> But the root cause is in the nvmem binding, this conflict could exist=
-s =20
-> >> No, the root cause is because of passing wrong device instance to nvmem
-> >> core. And trying to workaround is the actual issue. =20
-> >=20
-> > The data is stored on the MTD, so the nvmem provider is the MTD device.
-> > I don't think it is a good idea to have a virtual device in the DT to
-> > accommodate the nvmem API.
-> >  =20
-> Yep, I agree! this is same issue if we make nvmem-cells a child of nvmem=
-=20
-> provider too.
->=20
-> However, I would like to see this moving forward.
->=20
-> I can think of one possible solution here, which is, adding=20
-> "nvmem-mtd-cell" or "nvmem-cell" compatible string to each cell.
+On 07/06/18 17:41, Alban wrote:
+> AFAIU the only thing that we disagree on now is if the nodes
+> representing the cells should be direct children of the provider
+> or in a dedicated subnode. For the MTD case both solution would solve
+> the binding clash. I would really appreciate if the DT people could
+Am reluctant in changing the nvmem generic bindings for a special case.
 
-I would definitely use "nvmem-cell", from the binding point of view it
-doesn't matter what the underlaying storage is.
+Can you try this with your original subnode proposal:
+just pass the subnode node pointer in np of nvmem_config:
 
-> The problem you mentioned regarding #address-cells and #size-cells with=20
-> provider need to be addressed in nvmem core.
->=20
-> Currently nvmem core only support offsets of 32 bits, if you are=20
-> expecting a 64 bit offsets then we should add that as a feature to nvmem=
-=20
-> core.
->=20
-> nvmem core as it is today should work fine with 32 bit offsets for mtd=20
-> cases.
+------------------------->cut<------------------------------------
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index b05aa8e81303..c9621632bbfb 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -472,7 +472,11 @@ struct nvmem_device *nvmem_register(const struct 
+nvmem_config *config)
+         nvmem->priv = config->priv;
+         nvmem->reg_read = config->reg_read;
+         nvmem->reg_write = config->reg_write;
+-       nvmem->dev.of_node = config->dev->of_node;
++
++       if (config->np)
++               nvmem->dev.of_node = config->np;
++       else
++               nvmem->dev.of_node = config->dev->of_node;
 
-That's not what I meant, 32 bit should be more that enough for now.
-What I meant is that if a binding already has children nodes using
-unit-address, then we would end up with two different uses of the same
-"address space".
+         if (config->id == -1 && config->name) {
+                 dev_set_name(&nvmem->dev, "%s", config->name);
+diff --git a/include/linux/nvmem-provider.h b/include/linux/nvmem-provider.h
+index f89598bc4e1c..743345ffe2c8 100644
+--- a/include/linux/nvmem-provider.h
++++ b/include/linux/nvmem-provider.h
+@@ -49,6 +49,7 @@ typedef int (*nvmem_reg_write_t)(void *priv, unsigned 
+int offset,
+   */
+  struct nvmem_config {
+         struct device           *dev;
++       struct device_node      *np;
+         const char              *name;
+         int                     id;
+         struct module           *owner;
 
-> what do you think?
+------------------------->cut<------------------------------------
 
-AFAIU the only thing that we disagree on now is if the nodes
-representing the cells should be direct children of the provider
-or in a dedicated subnode. For the MTD case both solution would solve
-the binding clash. I would really appreciate if the DT people could
-chip in so that we can settle this and get the MTD support merged.
+thanks,
+srini
 
-Alban
-
---Sig_/9Ob2lgq1f9qUa+6V9nvLT5a
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJbGWBUAAoJEHSUmkuduC28HyQP/37V7eIFgwwnql9bvJM/LoQ+
-knLG6mpQ1AciuobA4k0xtid3zQk6M5EaU/fUMak72hvlLteUWEALn85ahNS1LDFN
-T19+lm97gtNywFzkD4OF1tQheLPdfMD/0N2pV3E2JNp5heDwgKp8HroCtVCnQ73S
-SaFZJNv2GmOHAeNkaHlyvVT+4P/HhQgL4nRQ0PL/7R4w36d4Jbn0Xo78GnE9whY0
-YEZpc4LWQV7NxQFUZJvNjIoWN4CKp0Snb9XQbs3LEDidtwIo8eydt424ourL7X5U
-csf3naDC5oNumYgV5rqTjbLKVsm663LY6LkdnaxtNZU44EdlQWIYhNzay/kKmkc3
-hXND24daaamwT61nujRLkQwdWESKaHvfbxAmw9RpOueagA0nMuKynInDv3Dx5PIq
-Ha8aQtdUP947HSARUDiwIrbdFJmdQsgUJfKsVAZX6FC8WBA2xPKtZ+9Vq8+HeiFI
-PewOuBWnZ8DhsmY9NuO+CYRvQVX61qQBwbrVmRvSFSRdeJ4ubMdqasVr/u5jPz9e
-8+CTAQKTRKSIloa5upcuI2oQG+PtzMzcVoykpmroq3kzhKfJ89gEKGdM+zREtSjE
-chPWiMaiv4amq+B3Asd33YuGA0KIFVW807hQJQa09E/sAVHIOsKbxiqbmRKx3ObH
-x1C64XnN3OSZYbx2qH1q
-=c3AR
------END PGP SIGNATURE-----
-
---Sig_/9Ob2lgq1f9qUa+6V9nvLT5a--
+> chip in so that we can settle this and get the MTD support merged.
