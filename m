@@ -1,26 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQuQ6-0001s0-Ot
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 12:53:56 +0000
-Date: Thu, 7 Jun 2018 14:53:26 +0200
+ id 1fQwQa-0001NW-F9
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 15:02:19 +0000
+Date: Thu, 7 Jun 2018 17:01:53 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
- <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
- for bad block check
-Message-ID: <20180607145326.339170fd@xps13>
-In-Reply-To: <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
- <20180526104629.74315561@xps13>
- <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
- <20180528090352.254022ed@xps13>
- <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Mark Brown
+ <broonie@kernel.org>, linux-spi@vger.kernel.org, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>, Vignesh R <vigneshr@ti.com>, Thomas
+ Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [RFC PATCH 1/2] spi: spi-mem: Add a new API to support direct
+ mapping
+Message-ID: <20180607170153.757ca102@xps13>
+In-Reply-To: <20180601143603.4047-2-boris.brezillon@bootlin.com>
+References: <20180601143603.4047-1-boris.brezillon@bootlin.com>
+ <20180601143603.4047-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -33,127 +29,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+Hi Boris,
 
-On Mon, 28 May 2018 15:40:52 +0530, Abhishek Sahu
-<absahu@codeaurora.org> wrote:
+On Fri,  1 Jun 2018 16:36:02 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-> On 2018-05-28 12:33, Miquel Raynal wrote:
-> > Hi Abhishek, =20
-> > >> >>  /* implements ecc->read_page() */ =20
-> >> >>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct >> na=
-nd_chip *chip,
-> >> >>  				uint8_t *buf, int oob_required, int page)
-> >> >> @@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_in=
-fo >> *mtd, loff_t ofs)
-> >> >>  	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> >> >>  	int page, ret, bbpos, bad =3D 0;
-> >> >>  	u32 flash_status;
-> >> >> +	u8 *bbm_bytes_buf =3D chip->data_buf; =20
-> >> >> >>  	page =3D (int)(ofs >> chip->page_shift) & chip->pagemask;
-> >> >> >> @@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct >=
-> mtd_info *mtd, loff_t ofs) =20
-> >> >>  	 * that contains the BBM
-> >> >>  	 */
-> >> >>  	host->use_ecc =3D false;
-> >> >> +	bbpos =3D mtd->writesize - host->cw_size * (ecc->steps - 1);
-> >> > > Are we sure there is no layout with only 1 step?
-> >> >>   All the layouts are such that, the BBM will come in =20
-> >>   first byte of spare area. =20
-> >> >>   For 4 bit ECC, the cw_size is 528 so for 2K page
-> >> >>    2048 - 528 * 3 =3D 464 =20
-> > > My question was more about small page NANDs. But I suppose it works =
-=20
-> > too if ecc->steps =3D=3D 1.
-> >  =20
->   Correct Miquel.
->=20
-> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in =20
-> >>   full page. =20
-> >> >> > >> >>  	clear_bam_transaction(nandc); =20
-> >> >> -	ret =3D copy_last_cw(host, page);
-> >> >> -	if (ret)
-> >> >> +	clear_read_regs(nandc);
-> >> >> +
-> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
-> >> >> +	update_rw_regs(host, 1, true);
-> >> >> +
-> >> >> +	/*
-> >> >> +	 * The last codeword data will be copied from NAND device to NAND
-> >> >> +	 * controller internal HW buffer. Copy only required BBM size byt=
-es
-> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
-> >> >> +	 * bbpos offset.
-> >> >> +	 */
-> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
-> >> >> +	config_nand_single_cw_page_read(nandc);
-> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
-> >> >> +		      host->bbm_size, 0);
-> >> >> +
-> >> >> +	ret =3D submit_descs(nandc);
-> >> >> +	free_descs(nandc);
-> >> >> +	if (ret) {
-> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
-> >> >>  		goto err;
-> >> >> +	} =20
-> >> >> >>  	flash_status =3D le32_to_cpu(nandc->reg_read_buf[0]);
-> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >=
-> mtd_info *mtd, loff_t ofs) =20
-> >> >>  		goto err;
-> >> >>  	} =20
-> >> >> >> -	bbpos =3D mtd->writesize - host->cw_size * (ecc->steps - 1); =
-=20
-> >> >> -
-> >> >> -	bad =3D nandc->data_buffer[bbpos] !=3D 0xff;
-> >> >> +	bad =3D bbm_bytes_buf[0] !=3D 0xff;
-> >> > > This is suspect as it still points to the beginning of the data bu=
-ffer. =20
-> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
-> >> > =20
-> >>   The main thing here is
-> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1); =20
-> >> >>   After reading one complete CW from NAND, the data will be still =
-=20
-> >>   in NAND HW buffer. =20
-> >> >>   The above register tells that we need to read data from =20
-> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
-> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
-> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then =20
-> > it's ok. =20
-> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte. =20
-> >>   and bbm_bytes_buf[1] will contain the BBM second byte. =20
-> >> >>   Regards, =20
-> >>   Abhishek =20
-> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16) =20
-> >> >> -		bad =3D bad || (nandc->data_buffer[bbpos + 1] !=3D 0xff);
-> >> >> +		bad =3D bad || (bbm_bytes_buf[1] !=3D 0xff); =20
-> > > Sorry, my mistake, I did not see the above line.
-> > > However, technically, the BBM could be located in the first, second o=
-r =20
-> > last page of the block. You should check the three of them are 0xFF
-> > before declaring the block is not bad. =20
-> > > The more I look at the function, the more I wonder if you actually ne=
-ed =20
-> > it. Why does the generic nand_block_bad() implementation in the core
-> > do not fit? =20
->=20
->   The BBM bytes can be accessed in raw mode only for QCOM NAND
->   Contoller. We started with following patch for initial patches
->=20
->   http://patchwork.ozlabs.org/patch/508565/
->=20
->   I am also not very much sure, how can we go ahead now.
->   Ideally we need to use generic function only which
->   requires raw_read.
->=20
+> Most modern QSPI controllers support can directly map a SPI memory (or
 
-I see, thanks for pointing this thread.
+s/support// ?
 
-Well for now then let's keep our driver-specific implementation.
+> a portion of the SPI memory) in the CPU address space. Most of the time
+> this brings significant performance improvements as it automates the
+> whole process of sending SPI memory operations every time a new region
+> is accessed.
+>=20
+> This new API allow SPI memory driver to create direct mappings and then
 
-I will just ask you to do a consistent check as requested above (you
-can copy code from the core) and add a comment above this function
-explaining why it is needed (what you just told me).
+s/allow/allows/
+s/driver/drivers/ ?
+
+> use them to access the memory instead of using spi_mem_exec_op().
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/spi/spi-mem.c       | 267 ++++++++++++++++++++++++++++++++++++++=
+++----
+>  include/linux/spi/spi-mem.h |  72 ++++++++++++
+>  2 files changed, 318 insertions(+), 21 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+> index 990770dfa5cf..90ea0c5263a7 100644
+> --- a/drivers/spi/spi-mem.c
+> +++ b/drivers/spi/spi-mem.c
+> @@ -175,6 +175,44 @@ bool spi_mem_supports_op(struct spi_mem *mem, const =
+struct spi_mem_op *op)
+>  }
+>  EXPORT_SYMBOL_GPL(spi_mem_supports_op);
+> =20
+> +static int spi_mem_access_start(struct spi_mem *mem)
+> +{
+> +	struct spi_controller *ctlr =3D mem->spi->controller;
+> +
+> +	/*
+> +	 * Flush the message queue before executing our SPI memory
+> +	 * operation to prevent preemption of regular SPI transfers.
+> +	 */
+> +	spi_flush_queue(ctlr);
+> +
+> +	if (ctlr->auto_runtime_pm) {
+> +		int ret;
+> +
+> +		ret =3D pm_runtime_get_sync(ctlr->dev.parent);
+> +		if (ret < 0) {
+> +			dev_err(&ctlr->dev, "Failed to power device: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	mutex_lock(&ctlr->bus_lock_mutex);
+> +	mutex_lock(&ctlr->io_mutex);
+> +
+> +	return 0;
+> +}
+> +
+> +static void spi_mem_access_end(struct spi_mem *mem)
+> +{
+> +	struct spi_controller *ctlr =3D mem->spi->controller;
+> +
+> +	mutex_unlock(&ctlr->io_mutex);
+> +	mutex_unlock(&ctlr->bus_lock_mutex);
+> +
+> +	if (ctlr->auto_runtime_pm)
+> +		pm_runtime_put(ctlr->dev.parent);
+> +}
+> +
+>  /**
+>   * spi_mem_exec_op() - Execute a memory operation
+>   * @mem: the SPI memory
+> @@ -200,30 +238,13 @@ int spi_mem_exec_op(struct spi_mem *mem, const stru=
+ct spi_mem_op *op)
+>  		return -ENOTSUPP;
+> =20
+>  	if (ctlr->mem_ops) {
+> -		/*
+> -		 * Flush the message queue before executing our SPI memory
+> -		 * operation to prevent preemption of regular SPI transfers.
+> -		 */
+> -		spi_flush_queue(ctlr);
+> -
+> -		if (ctlr->auto_runtime_pm) {
+> -			ret =3D pm_runtime_get_sync(ctlr->dev.parent);
+> -			if (ret < 0) {
+> -				dev_err(&ctlr->dev,
+> -					"Failed to power device: %d\n",
+> -					ret);
+> -				return ret;
+> -			}
+> -		}
+> +		ret =3D spi_mem_access_start(mem);
+> +		if (ret)
+> +			return ret;
+> =20
+> -		mutex_lock(&ctlr->bus_lock_mutex);
+> -		mutex_lock(&ctlr->io_mutex);
+>  		ret =3D ctlr->mem_ops->exec_op(mem, op);
+> -		mutex_unlock(&ctlr->io_mutex);
+> -		mutex_unlock(&ctlr->bus_lock_mutex);
+> =20
+> -		if (ctlr->auto_runtime_pm)
+> -			pm_runtime_put(ctlr->dev.parent);
+> +		spi_mem_access_end(mem);
+
+As this is something you tell me on a weekly basis: would you mind to
+separate the direct mapping support and the
+spi_mem_access_start/end() helpers introduction in different
+patches? :)
+
+> =20
+>  		/*
+>  		 * Some controllers only optimize specific paths (typically the
+> @@ -336,6 +357,210 @@ int spi_mem_adjust_op_size(struct spi_mem *mem, str=
+uct spi_mem_op *op)
+>  }
+>  EXPORT_SYMBOL_GPL(spi_mem_adjust_op_size);
+> =20
+
+[...]
+
+> +
+> +/**
+> + * struct spi_mem_dirmap_desc - Direct mapping descriptor
+> + * @mem: the SPI memory device this direct mapping is attached to
+> + * @info: information passed at direct mapping creation time
+> + * @nodirmap: set to true if the SPI controller does not implement
+> + *	      ->mem_ops->dirmap_create() or when this function returned an
+
+s/returned/returns/
+
+> + *	      error. If dirmap is true, all spi_mem_dirmap_{read,write}()
+> + *	      calls will use spi_mem_exec_op() to access the memory. This is a
+> + *	      degraded mode that allows higher spi_mem drivers to use the same
+> + *	      code no matter if the controller supports direct mapping or not
+> + * @priv: field pointing to controller specific data
+> + *
+> + * Common part of a direct mapping descriptor. This object is created by
+> + * spi_mem_dirmap_create() and controller implementation of ->create_dir=
+map()
+> + * can create/attach direct mapping resources to the descriptor in the -=
+>priv
+> + * field.
+> + */
+> +struct spi_mem_dirmap_desc {
+> +	struct spi_mem *mem;
+> +	struct spi_mem_dirmap_info info;
+> +	bool nodirmap;
+> +	void *priv;
+> +};
+> +
+>  /**
+>   * struct spi_mem - describes a SPI memory device
+>   * @spi: the underlying SPI device
+> @@ -167,10 +210,24 @@ static inline void *spi_mem_get_drvdata(struct spi_=
+mem *mem)
+>   *		    limitations)
+>   * @supports_op: check if an operation is supported by the controller
+>   * @exec_op: execute a SPI memory operation
+> + * @dirmap_create: create a direct mapping descriptor that can later be =
+used to
+> + *		   access the memory device. This method is optional
+
+Only *dirmap_create() is marked as optional while all are.
+
+> + * @dirmap_destroy: destroy a memory descriptor previous created by
+> + *		    ->dirmap_create()
+
+s/previous/previously/
+
+> + * @dirmap_read: read data from the memory device using the direct mappi=
+ng
+> + *		 created by ->dirmap_create().
+> + * @dirmap_write: write data to the memory device using the direct mappi=
+ng
+> + *		  created by ->dirmap_create().
+
+I think there is a better kernel-doc way to reference dirmap_create(),
+maybe with '@' (I don't remember exactly).
+
+>   *
+>   * This interface should be implemented by SPI controllers providing an
+>   * high-level interface to execute SPI memory operation, which is usuall=
+y the
+>   * case for QSPI controllers.
+> + *
+> + * Note on ->dirmap_{read,write}(): drivers should avoid accessing the d=
+irect
+> + * mapping from the CPU because doing that can stall the CPU waiting for=
+ the
+> + * SPI mem transaction to finish, and this will make real-time maintaine=
+rs
+> + * unhappy and might make your system less reactive. Instead, drivers sh=
+ould
+> + * use DMA to access this direct mapping.
+>   */
+>  struct spi_controller_mem_ops {
+>  	int (*adjust_op_size)(struct spi_mem *mem, struct spi_mem_op *op);
+> @@ -178,6 +235,12 @@ struct spi_controller_mem_ops {
+>  			    const struct spi_mem_op *op);
+>  	int (*exec_op)(struct spi_mem *mem,
+>  		       const struct spi_mem_op *op);
+> +	int (*dirmap_create)(struct spi_mem_dirmap_desc *desc);
+> +	void (*dirmap_destroy)(struct spi_mem_dirmap_desc *desc);
+> +	ssize_t (*dirmap_read)(struct spi_mem_dirmap_desc *desc,
+> +			       u64 offs, size_t len, void *buf);
+> +	ssize_t (*dirmap_write)(struct spi_mem_dirmap_desc *desc,
+> +				u64 offs, size_t len, const void *buf);
+>  };
+> =20
+>  /**
+> @@ -236,6 +299,15 @@ bool spi_mem_supports_op(struct spi_mem *mem,
+>  int spi_mem_exec_op(struct spi_mem *mem,
+>  		    const struct spi_mem_op *op);
+> =20
+> +struct spi_mem_dirmap_desc *
+> +spi_mem_dirmap_create(struct spi_mem *mem,
+> +		      const struct spi_mem_dirmap_info *info);
+> +void spi_mem_dirmap_destroy(struct spi_mem_dirmap_desc *desc);
+> +ssize_t spi_mem_dirmap_read(struct spi_mem_dirmap_desc *desc,
+> +			    u64 offs, size_t len, void *buf);
+> +ssize_t spi_mem_dirmap_write(struct spi_mem_dirmap_desc *desc,
+> +			     u64 offs, size_t len, const void *buf);
+> +
+>  int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+>  				       struct module *owner);
+> =20
+
+The rest is clear for me.
 
 Thanks,
 Miqu=C3=A8l
