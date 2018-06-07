@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fQuGo-0004tw-S7
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 12:44:05 +0000
-Date: Thu, 7 Jun 2018 14:43:50 +0200
+ id 1fQuQ6-0001s0-Ot
+ for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 12:53:56 +0000
+Date: Thu, 7 Jun 2018 14:53:26 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
@@ -11,13 +11,16 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
  Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
  <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v3 15/16] mtd: rawnand: qcom: helper function for raw read
-Message-ID: <20180607144350.1a4427a0@xps13>
-In-Reply-To: <19569fdc057754978298a7e7afc9016a@codeaurora.org>
+Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
+ for bad block check
+Message-ID: <20180607145326.339170fd@xps13>
+In-Reply-To: <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
 References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-16-git-send-email-absahu@codeaurora.org>
- <20180527155311.4c05d7ab@xps13>
- <19569fdc057754978298a7e7afc9016a@codeaurora.org>
+ <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
+ <20180526104629.74315561@xps13>
+ <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
+ <20180528090352.254022ed@xps13>
+ <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -32,160 +35,125 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Abhishek,
 
-On Mon, 28 May 2018 13:04:45 +0530, Abhishek Sahu
+On Mon, 28 May 2018 15:40:52 +0530, Abhishek Sahu
 <absahu@codeaurora.org> wrote:
 
-> On 2018-05-27 19:23, Miquel Raynal wrote:
+> On 2018-05-28 12:33, Miquel Raynal wrote:
 > > Hi Abhishek, =20
-> > > On Fri, 25 May 2018 17:51:43 +0530, Abhishek Sahu =20
-> > <absahu@codeaurora.org> wrote: =20
-> > >> This patch does minor code reorganization for raw reads. =20
-> >> Currently the raw read is required for complete page but for
-> >> subsequent patches related with erased codeword bit flips
-> >> detection, only few CW should be read. So, this patch adds
-> >> helper function and introduces the read CW bitmask which
-> >> specifies which CW reads are required in complete page. =20
-> >> >> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org> =20
-> >> ---
-> >> * Changes from v2:
-> >>   NONE =20
-> >> >> * Changes from v1: =20
-> >>  1. Included more detail in function comment =20
-> >> >>  drivers/mtd/nand/raw/qcom_nandc.c | 197 >> +++++++++++++++++++++++=
-+-------------- =20
-> >>  1 file changed, 123 insertions(+), 74 deletions(-) =20
-> >> >> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c >> b/drivers/mtd/nan=
-d/raw/qcom_nandc.c =20
-> >> index 87f900e..34143a4 100644
-> >> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> >> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> >> @@ -1588,6 +1588,127 @@ static int check_flash_errors(struct >> qcom_n=
-and_host *host, int cw_cnt)
-> >>  } =20
-> >> >>  /* =20
-> >> + * Helper to perform the page raw read operation. The read_cw_mask >>=
- will be
-> >> + * used to specify the codewords (CW) for which the data should be >>=
- read. The
-> >> + * single page contains multiple CW.
-> >> + *
-> >> + * Normally other NAND controllers store the data in main area and
-> >> + * ecc bytes in OOB area. So, if page size is 2048+64 then 2048
-> >> + * data bytes will go in main area followed by ECC bytes. The QCOM >>=
- NAND
-> >> + * controller follows different layout in which the data+OOB is >> in=
-ternally
-> >> + * divided in 528/532 bytes CW and each CW contains 516 bytes >> foll=
-owed by
-> >> + * ECC parity bytes for that CW. By this, 4 available OOB bytes per >=
-> CW
-> >> + * will also be protected with ECC.
-> >> + *
-> >> + * For each CW read, following are the 2 steps:
-> >> + * 1. Read the codeword bytes from NAND chip to NAND controller >> in=
-ternal HW
-> >> + *    buffer.
-> >> + * 2. Copy all these bytes from this HW buffer to actual buffer.
-> >> + *
-> >> + * Sometime, only few CW data is required in complete page. The >> re=
-ad_cw_mask
-> >> + * specifies which CW in a page needs to be read. Start address will =
->> be
-> >> + * determined with this CW mask to skip unnecessary data copy from >>=
- NAND
-> >> + * flash device. Then, actual data copy from NAND controller HW >> in=
-ternal buffer
-> >> + * to data buffer will be done only for the CWs, which have the mask =
->> set.
-> >> + */
-> >> +static int
-> >> +nandc_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> >> +		    u8 *data_buf, u8 *oob_buf,
-> >> +		    int page, unsigned long read_cw_mask)
-> > > Please prefix the helper with "qcom_nandc" =20
+> > >> >>  /* implements ecc->read_page() */ =20
+> >> >>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct >> na=
+nd_chip *chip,
+> >> >>  				uint8_t *buf, int oob_required, int page)
+> >> >> @@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_in=
+fo >> *mtd, loff_t ofs)
+> >> >>  	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
+> >> >>  	int page, ret, bbpos, bad =3D 0;
+> >> >>  	u32 flash_status;
+> >> >> +	u8 *bbm_bytes_buf =3D chip->data_buf; =20
+> >> >> >>  	page =3D (int)(ofs >> chip->page_shift) & chip->pagemask;
+> >> >> >> @@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct >=
+> mtd_info *mtd, loff_t ofs) =20
+> >> >>  	 * that contains the BBM
+> >> >>  	 */
+> >> >>  	host->use_ecc =3D false;
+> >> >> +	bbpos =3D mtd->writesize - host->cw_size * (ecc->steps - 1);
+> >> > > Are we sure there is no layout with only 1 step?
+> >> >>   All the layouts are such that, the BBM will come in =20
+> >>   first byte of spare area. =20
+> >> >>   For 4 bit ECC, the cw_size is 528 so for 2K page
+> >> >>    2048 - 528 * 3 =3D 464 =20
+> > > My question was more about small page NANDs. But I suppose it works =
+=20
+> > too if ecc->steps =3D=3D 1.
 > >  =20
->   Sure Miquel.
->   I will update that.
+>   Correct Miquel.
 >=20
-> >> +{
-> >> +	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
-> >> +	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(chip=
-);
-> >> +	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> >> +	int i, ret;
-> >> +	int read_loc, start_step, last_step;
-> >> +
-> >> +	nand_read_page_op(chip, page, 0, NULL, 0);
-> >> +
-> >> +	host->use_ecc =3D false;
-> >> +	start_step =3D ffs(read_cw_mask) - 1;
-> >> +	last_step =3D fls(read_cw_mask);
-> >> +
-> >> +	clear_bam_transaction(nandc);
-> >> +	set_address(host, host->cw_size * start_step, page);
-> >> +	update_rw_regs(host, last_step - start_step, true);
-> >> +	config_nand_page_read(nandc);
-> >> +
-> >> +	for (i =3D start_step; i < last_step; i++) {
-> > > This comment applies for both patches 15 and 16:
-> > > I would really prefer having a qcom_nandc_read_cw_raw() that reads on=
-ly =20
-> > one CW. From qcom_nandc_read_page_raw() you would loop over all the CW
-> > calling qcom_nandc_read_cw_raw() helper (it's raw reads, we don't care
-> > about performances) =20
+> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in =20
+> >>   full page. =20
+> >> >> > >> >>  	clear_bam_transaction(nandc); =20
+> >> >> -	ret =3D copy_last_cw(host, page);
+> >> >> -	if (ret)
+> >> >> +	clear_read_regs(nandc);
+> >> >> +
+> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
+> >> >> +	update_rw_regs(host, 1, true);
+> >> >> +
+> >> >> +	/*
+> >> >> +	 * The last codeword data will be copied from NAND device to NAND
+> >> >> +	 * controller internal HW buffer. Copy only required BBM size byt=
+es
+> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
+> >> >> +	 * bbpos offset.
+> >> >> +	 */
+> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+> >> >> +	config_nand_single_cw_page_read(nandc);
+> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
+> >> >> +		      host->bbm_size, 0);
+> >> >> +
+> >> >> +	ret =3D submit_descs(nandc);
+> >> >> +	free_descs(nandc);
+> >> >> +	if (ret) {
+> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
+> >> >>  		goto err;
+> >> >> +	} =20
+> >> >> >>  	flash_status =3D le32_to_cpu(nandc->reg_read_buf[0]);
+> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >=
+> mtd_info *mtd, loff_t ofs) =20
+> >> >>  		goto err;
+> >> >>  	} =20
+> >> >> >> -	bbpos =3D mtd->writesize - host->cw_size * (ecc->steps - 1); =
+=20
+> >> >> -
+> >> >> -	bad =3D nandc->data_buffer[bbpos] !=3D 0xff;
+> >> >> +	bad =3D bbm_bytes_buf[0] !=3D 0xff;
+> >> > > This is suspect as it still points to the beginning of the data bu=
+ffer. =20
+> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
+> >> > =20
+> >>   The main thing here is
+> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1); =20
+> >> >>   After reading one complete CW from NAND, the data will be still =
+=20
+> >>   in NAND HW buffer. =20
+> >> >>   The above register tells that we need to read data from =20
+> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
+> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
+> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then =20
+> > it's ok. =20
+> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte. =20
+> >>   and bbm_bytes_buf[1] will contain the BBM second byte. =20
+> >> >>   Regards, =20
+> >>   Abhishek =20
+> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16) =20
+> >> >> -		bad =3D bad || (nandc->data_buffer[bbpos + 1] !=3D 0xff);
+> >> >> +		bad =3D bad || (bbm_bytes_buf[1] !=3D 0xff); =20
+> > > Sorry, my mistake, I did not see the above line.
+> > > However, technically, the BBM could be located in the first, second o=
+r =20
+> > last page of the block. You should check the three of them are 0xFF
+> > before declaring the block is not bad. =20
+> > > The more I look at the function, the more I wonder if you actually ne=
+ed =20
+> > it. Why does the generic nand_block_bad() implementation in the core
+> > do not fit? =20
 >=20
->   Doing that way will degrade performances hugely.
+>   The BBM bytes can be accessed in raw mode only for QCOM NAND
+>   Contoller. We started with following patch for initial patches
 >=20
->   Currently once we formed the descriptor, the DMA will take care
->   of complete page data transfer from NAND device to buffer and will
->   generate single interrupt.
+>   http://patchwork.ozlabs.org/patch/508565/
 >=20
->   Now it will form one CW descriptor and wait for it to be finished.
->   In background, the data transfer from NAND device will be also
->   split and for every CW, it will give the PAGE_READ command again,
->   which is again time consuming.
->=20
->   Data transfer degradation is ok but it will increase CPU time
->   and number of interrupts which will impact other peripherals
->   performance that time.
->=20
->   Most of the NAND parts has 4K page size i.e 8 CWs.
->=20
-> > and from ->read_page_raw() you would check
-> > CW with uncorrectable errors for being blank with that helper. You
-> > would avoid the not-so-nice logic where you read all the CW between the
-> > first bad one and the last bad one.
-> >  =20
->   The reading b/w first CW and last CW is only from NAND device to NAND
->   HW buffers. The NAND controller has 2 HW buffers which is used to
->   optimize the traffic throughput between the NAND device and
->   system memory,in both directions. Each buffer is 544B in size: 512B
->   for data + 32B spare bytes. Throughput optimization is achieved by
->   executing internal data transfers (i.e. between NANDc buffers and
->   system memory) simultaneously with NAND device operations.
->=20
->   Making separate function won't help in improving performance for
->   this case either since once every thing is set for reading page
->   (descriptor formation, issue the PAGE_READ, Data transfer from
->   Flash array to data register in NAND device), the read time from
->   device to NAND HW buffer is very less. Again, we did optimization
->   in which the copying from NAND HW buffer to actual buffer is being
->   done only for those CW's only.
->=20
->   Again, in this case CPU time will be more.
+>   I am also not very much sure, how can we go ahead now.
+>   Ideally we need to use generic function only which
+>   requires raw_read.
 >=20
 
+I see, thanks for pointing this thread.
 
-I understand the point and thanks for detailing it. But raw access
-happen either during debug (we don't care about CPU time) or when there
-is an uncorrectable error, which is very unlikely to happen very often
-when using eg. UBI/UBIFS. So I'm still convinced it is better to have a
-_simple_ and straightforward code for this path than something way
-harder to understand and much faster.
+Well for now then let's keep our driver-specific implementation.
 
-You can add a comment to explain what would be the fastest way and
-why though.
-
+I will just ask you to do a consistent check as requested above (you
+can copy code from the core) and add a comment above this function
+explaining why it is needed (what you just told me).
 
 Thanks,
 Miqu=C3=A8l
