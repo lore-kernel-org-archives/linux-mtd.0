@@ -1,20 +1,40 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRJuv-00044e-40
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 16:07:11 +0000
-Date: Fri, 8 Jun 2018 18:06:44 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Richard
- Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>
-Subject: [GIT PULL] mtd: Changes for 4.18
-Message-ID: <20180608180644.34b1f625@bbrezillon>
+Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fRKs3-0002x2-N9
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 17:08:18 +0000
+Date: Fri, 8 Jun 2018 19:07:17 +0200
+From: Alban <albeu@free.fr>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
+ for the cells list
+Message-ID: <20180608190717.55cb185c@tock>
+In-Reply-To: <cd7a0085-66cd-308e-a950-cd0eb96db945@linaro.org>
+References: <1521933899-362-1-git-send-email-albeu@free.fr>
+ <1521933899-362-2-git-send-email-albeu@free.fr>
+ <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
+ <20180417165420.423a691b@avionic-0020>
+ <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
+ <20180417180040.04f53495@avionic-0020>
+ <20180418134119.2e587621@avionic-0020>
+ <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
+ <20180418143243.3c23493c@avionic-0020>
+ <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
+ <20180418153440.187ed16e@avionic-0020>
+ <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
+ <20180607184155.6da38a01@tock>
+ <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
+ <20180608125938.4fd457a0@tock>
+ <cd7a0085-66cd-308e-a950-cd0eb96db945@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/1vWlee8hPcRrge=jA.imybo"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,302 +44,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+--Sig_/1vWlee8hPcRrge=jA.imybo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Here is the MTD pull-request for 4.18.
+On Fri, 8 Jun 2018 12:34:12 +0100
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 
-Regards,
+> >> Can you try this with your original subnode proposal:
+> >> just pass the subnode node pointer in np of nvmem_config:
+> >> =20
+> >> ------------------------->cut<------------------------------------ =20
+> >> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> >> index b05aa8e81303..c9621632bbfb 100644
+> >> --- a/drivers/nvmem/core.c
+> >> +++ b/drivers/nvmem/core.c
+> >> @@ -472,7 +472,11 @@ struct nvmem_device *nvmem_register(const struct
+> >> nvmem_config *config)
+> >>           nvmem->priv =3D config->priv;
+> >>           nvmem->reg_read =3D config->reg_read;
+> >>           nvmem->reg_write =3D config->reg_write;
+> >> -       nvmem->dev.of_node =3D config->dev->of_node;
+> >> +
+> >> +       if (config->np)
+> >> +               nvmem->dev.of_node =3D config->np;
+> >> +       else
+> >> +               nvmem->dev.of_node =3D config->dev->of_node;
+> >>
+> >>           if (config->id =3D=3D -1 && config->name) {
+> >>                   dev_set_name(&nvmem->dev, "%s", config->name);
+> >> diff --git a/include/linux/nvmem-provider.h
+> >> b/include/linux/nvmem-provider.h index f89598bc4e1c..743345ffe2c8
+> >> 100644 --- a/include/linux/nvmem-provider.h
+> >> +++ b/include/linux/nvmem-provider.h
+> >> @@ -49,6 +49,7 @@ typedef int (*nvmem_reg_write_t)(void *priv,
+> >> unsigned int offset,nvmem_device_get(
+> >>     */
+> >>    struct nvmem_config {
+> >>           struct device           *dev;
+> >> +       struct device_node      *np;
+> >>           const char              *name;
+> >>           int                     id;
+> >>           struct module           *owner;
+> >> =20
+> >> ------------------------->cut<------------------------------------ =20
+> >=20
+> > That should work just fine to allow next to any kind of binding.
+> > I'll do a new patch using this approach for the code side and leaving
+> > the generic binding as it is. =20
+> Sure!!
+> This will give more flexibility to other provider drivers!
 
-Boris
+I looked into this. It would work fine for the cells but not so nicely
+for the nvmem device API. The phandle for the nvmem device would have
+to reference the node passed here and not the real device. We would end
+up with a DT like this:
 
-The following changes since commit 60cc43fc888428bb2f18f08997432d426a243338:
+flash@0 {
+	compatible =3D "mtd";
+	...
+	nvmem_dev: nvmem-cells {
+		compatible =3D "nvmem-cells";
+		...
+        };
+};
 
-  Linux 4.17-rc1 (2018-04-15 18:24:20 -0700)
+other-device@10 {
+	...
+	nvmem =3D <&nvmem_dev>;
+};
 
-are available in the git repository at:
+Now if there is no cell defined we have this empty child node that make
+very little sense, it is just there to accommodate the nvmem API.
 
-  git://git.infradead.org/linux-mtd.git tags/mtd/for-4.18
+What I would suggest now is to just change the wording. We don't
+deprecate the current binding, but we extend it to allow grouping the
+cells in a child node if required. The code to support this is trivial,
+(4 lines including error handling) so even if we expect very few
+bindings to make use of it it is not going to be maintenance drag.
+That would look like this:
 
-for you to fetch changes up to b771327a4530e7ff05ae173d4903cd70357bb803:
+diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Documentat=
+ion/devicetree/bindings/nvmem/nvmem.txt
+index fd06c09..085d042 100644
+--- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
++++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
+@@ -19,7 +19,10 @@ Optional properties:
+=20
+ =3D Data cells =3D
+ These are the child nodes of the provider which contain data cell
+-information like offset and size in nvmem provider.
++information like offset and size in nvmem provider. Alternatively the data
++cells can be grouped in a node that has a compatible property set to
++"nvmem-cells".
++
+=20
+ Required properties:
+ reg:   specifies the offset in byte within the storage device.
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 4e94a78..3e1369c 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -859,6 +859,14 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_nod=
+e *np,
+        if (!nvmem_np)
+                return ERR_PTR(-EINVAL);
+=20
++       /* bindings that already have anonymous child nodes can instead put
++        * their cells in a child node with an nvmem-cells compatible. */
++       if (of_device_is_compatible(nvmem_np, "nvmem-cells")) {
++               nvmem_np =3D of_get_next_parent(nvmem_np);
++               if (!nvmem_np)
++                       return ERR_PTR(-EINVAL);
++       }
++
+        nvmem =3D __nvmem_device_get(nvmem_np, NULL, NULL);
+        of_node_put(nvmem_np);
+        if (IS_ERR(nvmem))
 
-  Merge tag 'spi-nor/for-4.18' of git://git.infradead.org/linux-mtd into mt=
-d/next (2018-06-07 22:53:15 +0200)
+What about it?
 
-----------------------------------------------------------------
-MTD changes:
-  Core changes:
-  - Add a sysfs attribute to expose available OOB size
+Alban
 
-  Driver changes:
-  - Remove HAS_DMA dependency on various drivers
-  - Use dev_get_drvdata() instead of platform_get_drvdata() in docg3
-  - Replace msleep by usleep_range() in the dataflash driver
-  - Avoid VLA usage in nftl layers
-  - Remove useless .owner assignment in pismo
-  - Fix various issues in the CFI driver
-  - Improve TRX partition handling expose a DT compat for this part
-    parser
-  - Clarify OFFSET_CONTINUOUS meaning
+--Sig_/1vWlee8hPcRrge=jA.imybo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-NAND changes:
-  Core changes:
-  - Add Miquel as a NAND maintainer
-  - Add access mode to the nand_page_io_req struct
-  - Fix kernel-doc in rawnand.h
-  - Support bit-wise majority to recover from corrupted ONFI parameter
-    pages
-  - Stop checking FAIL bit after a SET_FEATURES, as documented in the
-    ONFI spec
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-  Raw NAND Driver changes:
-  - Fix and cleanup the error path of many NAND controller drivers
-  - GPMI:
-    * Cleanup/simplification of a few aspects in the driver
-    * Take ECC setup specified in the DT into account
-  - sunxi: remove support for GPIO-based R/B polling
-  - MTK:
-    * Use of_device_get_match_data() instead of of_match_device()
-    * Add an entry in MAINTAINERS for this driver
-    * Fix nand-ecc-step-size and nand-ecc-strength description in the DT
-      bindings doc
-  - fsl_ifc: fix ->cmdfunc() to read more than one ONFI parameter page
+iQIcBAEBCAAGBQJbGrfFAAoJEHSUmkuduC2858QQALNCfJfDeDgJ4UflIREPgTjM
+tOAZb2U4VRG2yYPimmsg3K9TLvIoI/xk4as0wTalJyKlT1zQBwGOZ4Wwvije9d1Q
+OHxatgrDPhA5tcvD7SadXasxkYJD8MVLjhIZCGIZ90sdikZibzWr78uFEaRYJ601
+B41dCr13rkgHlrNYdVS9zfxNrZ6liE/+Tr+q2L7q6YDC73Oz5S2lAm85AkUBbEEi
+HmwowmBPA2HPNJOhG7e6l4M+dxHGJydOWY3SDJE98OnEXvNKqgt3NGiMyhfMunm1
+nkrUSclBN/HrZh7a6tQ2TaDFUJ9drMWRwdvqnspNW5l8KpwJhWHxeXajAZkGoe/W
+MNorpVMlD8rmjTLx+73VwOby43YwAcDyG60g4E4p3hmb2Wi1sHM0ABp8hItk5lYg
+q0ioG1fO3g2GCJc5QxtCPJS1I7HP+AhPiKwz7cmRyLcxr1TRJOKW6z45gjMs++rQ
+huEQb8AD2HPBOW0VvrgBJl9OXoGxHpouV2P+sWoL/cEUj/TcljRImUcryTzxJdab
+ga6R9MXAYyDYq0hfbBfEAzACWMGez65qG5zMolMR/VcoSAX01S7xeAOisdXqdQbR
+JHVs3OGEduv8r8MgG0ISasoeAth3+MCcFu4/hD/92iI7r6kjMZdzlRe8b3X4x4wq
+I76qSh15tQeDkIaM23S8
+=xWJ5
+-----END PGP SIGNATURE-----
 
-  OneNAND driver changes:
-  - samsung: use dev_get_drvdata() instead of platform_get_drvdata()
-
-SPI NOR changes:
-  Core changes:
-  - Add support for a bunch of SPI NOR chips
-  - Clear EAR reg when switching to 3-byte addressing mode on Winbond
-    chips
-
-  SPI NOR controller driver changes:
-  - cadence: Add DMA support for direct mode reads
-  - hisi: Prefix a few functions with hisi_
-  - intel:
-    * Mark the driver as "dangerous" in Kconfig
-    * Fix atomic sequence handling
-    * Pass a 40us delay (instead of 0us) to readl_poll_timeout()
-  - fsl:
-    * fix a typo in a function name
-    * add support for IP variants embedded in the ls2080a and ls1080a
-      SoCs
-  - stm32: request exclusive control of the reset line
-
-----------------------------------------------------------------
-Aaron Sierra (2):
-      mtd: cfi: Support early CFI fixups
-      mtd: cfi: Add early fixup for S70GL02GS
-
-Boris Brezillon (6):
-      Merge tag 'nand/davinci-clock' of git://git.infradead.org/linux-mtd i=
-nto HEAD
-      mtd: rawnand: sunxi: Remove support for GPIO-based Ready/Busy polling
-      mtd: rawnand: Do not check FAIL bit when executing a SET_FEATURES op
-      mtd: nand: Pass mode information to nand_page_io_req
-      Merge tag 'nand/for-4.18' of git://git.infradead.org/linux-mtd into m=
-td/next
-      Merge tag 'spi-nor/for-4.18' of git://git.infradead.org/linux-mtd int=
-o mtd/next
-
-Ezequiel Garcia (1):
-      mtd: spi-nor: hisi: Avoid generic function names
-
-Fabio Estevam (1):
-      mtd: maps: pismo: Remove owner assignment from i2c_driver
-
-Geert Uytterhoeven (2):
-      mtd: Remove depends on HAS_DMA in case of platform dependency
-      mtd: cmdlinepart: Update comment for introduction of OFFSET_CONTINUOUS
-
-Hauke Mehrtens (1):
-      mtd: spi-nor: Add support for XM25QH64A and XM25QH128A
-
-Jane Wan (1):
-      mtd: rawnand: fsl_ifc: fix FSL NAND driver to read all ONFI parameter=
- pages
-
-Jia-Ju Bai (1):
-      mtd: rawnand: diskonchip: Replace mdelay with usleep_range in doc_pro=
-be
-
-Kees Cook (1):
-      mtd: nftl: Remove VLA usage
-
-Kimmo Rautkoski (1):
-      mtd: spi-nor: Add support for is25wp series chips
-
-Luca Ellero (1):
-      mtd: dataflash: replace msleep with usleep_range
-
-Marek Vasut (1):
-      mtd: spi-nor: add support for ISSI is25lp256
-
-Mauro Carvalho Chehab (1):
-      mtd: rawnand.h: use nested union kernel-doc markups
-
-Mika Westerberg (2):
-      mtd: spi-nor: intel-spi: Fix atomic sequence handling
-      mtd: spi-nor: intel-spi: Explicitly mark the driver as dangerous in K=
-config
-
-Miquel Raynal (12):
-      mtd: rawnand: fsl_elbc: fix probe function error path
-      mtd: rawnand: fsl_ifc: fix probe function error path
-      mtd: rawnand: fsmc: clean the probe function style
-      mtd: rawnand: fsmc: fix the probe function error path
-      mtd: rawnand: hisi504: clean the probe function error path
-      mtd: rawnand: hisi504: fix the probe function error path
-      mtd: rawnand: lpc32xx_mlc: clean the probe function
-      mtd: rawnand: lpc32xx_mlc: fix the probe function error path
-      mtd: rawnand: lpc32xx_slc: clean the probe function
-      mtd: rawnand: lpc32xx_slc: fix the probe function error path
-      mtd: rawnand: add a way to pass an ID table with nand_scan()
-      mtd: nand: add myself as NAND co-maintainer
-
-NeilBrown (1):
-      mtd: spi-nor: clear Winbond Extended Address Reg on switch to 3-byte =
-addressing.
-
-Nicholas Mc Guire (1):
-      mtd: spi-nor: intel: provide a range for poll_timout
-
-Philipp Zabel (1):
-      mtd: spi-nor: stm32-quadspi: explicitly request exclusive reset contr=
-ol
-
-Rafa=C5=82 Mi=C5=82ecki (4):
-      mtd: move code adding (registering) partitions to the parse_mtd_parti=
-tions()
-      mtd: bcm47xxpart: improve handling TRX partition size
-      dt-bindings: mtd: document Broadcom's BCM47xx partitions
-      mtd: bcm47xxpart: add of_match_table with a new DT binding
-
-Ryder Lee (1):
-      mtd: rawnand: mtk: use of_device_get_match_data()
-
-Sascha Hauer (6):
-      mtd: rawnand: gpmi: drop dma_ops_type
-      mtd: rawnand: gpmi: pass buffer and len around
-      mtd: rawnand: gpmi: put only once used functions inline
-      mtd: rawnand: gpmi: remove direct_dma_map_ok from driver data struct
-      mtd: rawnand: gpmi: return valid value from bch_set_geometry()
-      mtd: rawnand: gpmi: remove unnecessary variables
-
-Sekhar Nori (1):
-      mtd: rawnand: davinci: don't acquire and enable clock
-
-Stefan Agner (2):
-      mtd: rawnand: gpmi: add support for specific ECC strength
-      dt-bindings: mtd: rawnand: gpmi: document specific ECC strength
-
-Stephen Douthit (1):
-      mtd: spi-nor: Add Winbond w25q32jv support
-
-Thor Thayer (1):
-      mtd: spi-nor: Add Micron MT25QU02 support
-
-Tokunori Ikegami (6):
-      mtd: cfi_cmdset_0002: Fix coding style issues
-      mtd: cfi_cmdset_0002: Change write buffer to check correct value
-      mtd: cfi_cmdset_0002: Change definition naming to retry write operati=
-on
-      mtd: cfi_cmdset_0002: Change erase functions to retry for error
-      mtd: cfi_cmdset_0002: Change erase functions to check chip good only
-      mtd: cfi_cmdset_0002: Change erase one block to enable XIP once
-
-Vignesh R (1):
-      mtd: spi-nor: cadence-quadspi: Add DMA support for direct mode reads
-
-Wan, Jane (Nokia - US/Sunnyvale) (1):
-      mtd: rawnand: use bit-wise majority to recover the ONFI param page
-
-Wolfram Sang (2):
-      mtd: devices: simplify getting .drvdata
-      mtd: onenand: simplify getting .drvdata
-
-Xiaolei Li (3):
-      mtd: Add sysfs attribute for mtd OOB available size
-      MAINTAINERS: Add entry for Mediatek NAND controller driver
-      dt-bindings: mtd: mtk-nand: Update properties description
-
-Yogesh Gaur (2):
-      mtd: spi-nor: fsl-quadspi: fix api naming typo _init_ahb_read
-      mtd: spi-nor: fsl-quadspi: add support for ls2080a/ls1080a
-
-YuheiOKAWA (1):
-      mtd: spi-nor: Add support for EN25QH32
-
- Documentation/ABI/testing/sysfs-class-mtd                         |   8 ++
- Documentation/devicetree/bindings/mtd/gpmi-nand.txt               |   5 +
- Documentation/devicetree/bindings/mtd/mtk-nand.txt                |  24 ++=
-+-
- Documentation/devicetree/bindings/mtd/partition.txt               |   2 +-
- .../bindings/mtd/partitions/brcm,bcm947xx-cfe-partitions.txt      |  42 ++=
-+++++
- Documentation/devicetree/bindings/mtd/sunxi-nand.txt              |   2 -
- MAINTAINERS                                                       |   8 ++
- drivers/mtd/bcm47xxpart.c                                         |  29 ++=
-++-
- drivers/mtd/chips/cfi_cmdset_0002.c                               |  62 ++=
-+++-----
- drivers/mtd/chips/cfi_probe.c                                     |  42 ++=
-+++++
- drivers/mtd/cmdlinepart.c                                         |   5 +-
- drivers/mtd/devices/docg3.c                                       |   3 +-
- drivers/mtd/devices/mtd_dataflash.c                               |   2 +-
- drivers/mtd/inftlmount.c                                          |  23 ++=
---
- drivers/mtd/maps/pismo.c                                          |   1 -
- drivers/mtd/mtdcore.c                                             |  24 ++=
---
- drivers/mtd/mtdcore.h                                             |   1 -
- drivers/mtd/mtdpart.c                                             |  44 ++=
-+----
- drivers/mtd/nand/onenand/samsung.c                                |   6 +-
- drivers/mtd/nand/raw/Kconfig                                      |   8 +-
- drivers/mtd/nand/raw/davinci_nand.c                               |  25 +-=
---
- drivers/mtd/nand/raw/diskonchip.c                                 |   4 +-
- drivers/mtd/nand/raw/fsl_elbc_nand.c                              |  13 ++-
- drivers/mtd/nand/raw/fsl_ifc_nand.c                               |  29 ++=
-+--
- drivers/mtd/nand/raw/fsmc_nand.c                                  |  27 ++=
-+--
- drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c                         |  54 ++=
-+++----
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c                        | 188 ++=
-++++++++--------------------
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h                        |  25 +-=
---
- drivers/mtd/nand/raw/hisi504_nand.c                               |  35 ++=
-----
- drivers/mtd/nand/raw/lpc32xx_mlc.c                                |  38 ++=
-+---
- drivers/mtd/nand/raw/lpc32xx_slc.c                                |  26 ++=
-+--
- drivers/mtd/nand/raw/mtk_ecc.c                                    |   7 +-
- drivers/mtd/nand/raw/mtk_nand.c                                   |  10 +-
- drivers/mtd/nand/raw/nand_base.c                                  |  89 ++=
-+++++++-----
- drivers/mtd/nand/raw/sunxi_nand.c                                 |  91 ++=
-+------------
- drivers/mtd/nftlmount.c                                           |  23 ++=
---
- drivers/mtd/spi-nor/Kconfig                                       |   6 +-
- drivers/mtd/spi-nor/cadence-quadspi.c                             |  96 ++=
-++++++++++++-
- drivers/mtd/spi-nor/fsl-quadspi.c                                 |  15 ++-
- drivers/mtd/spi-nor/hisi-sfc.c                                    |  12 +-
- drivers/mtd/spi-nor/intel-spi.c                                   |  80 ++=
-+++++++++--
- drivers/mtd/spi-nor/spi-nor.c                                     |  33 ++=
-++++
- drivers/mtd/spi-nor/stm32-quadspi.c                               |   2 +-
- include/linux/mtd/nand.h                                          |   3 +
- include/linux/mtd/rawnand.h                                       |  35 ++=
-++--
- include/linux/mtd/spi-nor.h                                       |   2 +
- 46 files changed, 773 insertions(+), 536 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,b=
-cm947xx-cfe-partitions.txt
+--Sig_/1vWlee8hPcRrge=jA.imybo--
