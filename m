@@ -1,31 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRGrw-0003If-50
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 12:51:55 +0000
-Date: Fri, 8 Jun 2018 14:51:30 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
+Received: from mail-dm3nam03on0084.outbound.protection.outlook.com
+ ([104.47.41.84] helo=NAM03-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fRH8C-0001uL-HZ
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 13:08:55 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "wmw2@infradead.org" <wmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "f.fainelli@gmail.com"
+ <f.fainelli@gmail.com>, "mmayer@broadcom.com" <mmayer@broadcom.com>,
+ "rogerq@ti.com" <rogerq@ti.com>, "ladis@linux-mips.org"
+ <ladis@linux-mips.org>, "ada@thorsis.com" <ada@thorsis.com>,
+ "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>, David Wolfe
- <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Prabhakar
- Kushwaha <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Message-ID: <20180608145130.09f979f9@bbrezillon>
-In-Reply-To: <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
-References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
- <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
- <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
+Subject: RE: [LINUX PATCH v9 4/4] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Date: Fri, 8 Jun 2018 13:08:24 +0000
+Message-ID: <MWHPR02MB2623EF92D6498ED7D3C45DFBAF7B0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1528271382-21690-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1528271382-21690-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180607215949.58e2d15d@xps13>
+ <MWHPR02MB26238A3344D0F611D8D6B0DAAF7B0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180608143549.04400f92@xps13>
+In-Reply-To: <20180608143549.04400f92@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,282 +39,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
-
-On Fri, 8 Jun 2018 11:54:12 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-
-> Hi Frieder,
-> 
-> I have tried to validate your patch on fsl,ls2080a target having 2 Spansion NOR flash, S25FS512S, as slave device.
-> Below are my observations:
-> 
-> Observation 1:
-> In Linux boot logs after driver probing is successful, getting below log messages
-> [    1.435986] m25p80 spi0.0: found s25fl512s, expected m25p80
-> [    1.441564] m25p80 spi0.0: s25fl512s (65536 Kbytes)
-> [    1.446972] m25p80 spi0.1: found s25fl512s, expected m25p80
-> [    1.452548] m25p80 spi0.1: s25fl512s (65536 Kbytes)
-> 
-> IMHO, we need to correct message as 'found s25fl512s, expected m25p80' as final underlying connected flash device is s25fl512s.
-
-Not sure what you mean here. What would you like us to fix exactly?
-
-> 
-> Observation 2:
-> I have observed data sanity issue after performing read/write operations using MTD interface. Explained below
-> 
-> root:~# mtd_debug erase /dev/mtd0 0x1000000 0x40000
-> Erased 262144 bytes from address 0x01000000 in flash                      --> Erase at address 0x1000000 of erase size 0x40000
-> root:~# mtd_debug read /dev/mtd0 0x0 0x100 rp
-> Copied 256 bytes from address 0x00000000 in flash to rp                   --> Read 0x100 bytes from flash from address 0x0 in file rp
-> root:~# mtd_debug write /dev/mtd0 0x1000000 0x100 rp
-> Copied 256 bytes from rp to address 0x01000000 in flash                   --> Write 0x100 bytes to flash address 0x1000000 from file rp
-> root:~# mtd_debug read /dev/mtd0 0x1000000 0x100 wp
-> Copied 256 bytes from address 0x01000000 in flash to wp                  --> Read 0x100 bytes from flash from address 0x1000000 in file wp
-> root:~# diff rp wp                                                                                           --> compare both rp and wp files, if they are different output comes on console stating file are different
-> Files rp and wp differ
-> root:~# hexdump wp
-> 0000000 aa55 aa55 0000 8010 541c 4000 0040 0000
-> 0000010 0000 0000 0000 0000 0000 0000 0000 000a
-> 0000020 0000 0030 0000 0000 11a0 00a0 2580 0000
-> 0000030 0000 0000 0040 0000 005b 0000 0000 0000
-> 0000040 ffff ffff ffff ffff ffff ffff ffff ffff
-> *
-> 0000100
-> root:~# hexdump rp
-> 0000000 aa55 aa55 0000 8010 541c 4000 0040 0000
-> 0000010 0000 0000 0000 0000 0000 0000 0000 000a
-> 0000020 0000 0030 0000 0000 11a0 00a0 2580 0000
-> 0000030 0000 0000 0040 0000 005b 0000 0000 0000
-> 0000040 2403 0000 0000 0000 0000 0000 0000 0000
-> 0000050 0000 0000 0000 0000 0000 0000 0000 0000
-> *
-> 0000070 0011 0000 09e7 0000 0000 4411 9555 0050
-> 0000080 0000 0000 0000 0000 f9bc afa1 0404 31e0
-> 0000090 0000 0000 0400 31e0 0000 2010 08dc 31eb
-> 00000a0 2880 0050 1300 31eb 4e20 8010 0000 80ff
-> 00000b0 0000 0000 beef dead beef dead beef dead
-> 00000c0 beef dead beef dead beef dead beef dead
-> *
-> 0000100
-> root:~#
-> 
-> In hexdump output of the file which being read from address 0x1000000,wp, it can be observed that only first 64 bytes (0x40) are written on the flash.
-> 
-> Observation 3:
-> As we can support JFFS2 filesystem on NOR flash, so we can expect JFFS2 commands should work fine on NOR flash.
-> But with this driver change my mount command is not working.
-> 
-> In my target there are 2 flash slave devices connected, and I have given argument to create MTD partition like "mtdparts=20c0000.quadspi-1:5M(rcw),10M(test),46M(rootfs) " for 2nd flash.
-> Below is output for /proc/mtd commands
->     root@ls1012ardb:~# cat /proc/mtd
->     dev:    size   erasesize  name
->     mtd0: 04000000 00040000 "20c0000.quadspi-0"   --> First 64MB flash
->     mtd1: 00500000 00040000 "rcw"                               --> Second 64 MB flash device, 3 MTD partition are created for it.
->     mtd2: 00a00000 00040000 "test"
->     mtd3: 02e00000 00040000 "rootfs"
-> 
->     root@ls1012ardb:~# mkdir /media/ram ; flash_eraseall /dev/mtd3
->     flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; please use it
->     Erasing 256 Kibyte @ 0 --  0 % complete [   18.299929] random: crng init done
->     Erasing 256 Kibyte @ 2dc0000 -- 100 % complete
->     root@ls1012ardb:~# mount -t jffs2 /dev/mtdblock3 /media/ram/
-> 
-> This command didn't finish successfully and there are lot of messages coming on console mentioning failure in jffs2_scan_eraseblock()
->     [  187.118677] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x013c0000: 0x2886 instead
->     [  187.128159] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x013c0004: 0x7a3b instead
->     [  187.137641] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x013c0008: 0xb10f instead
-> 
-> If I remove this patch series and check with older implementation, JFFS2 mounting is working fine.
-
-Problems 2 and 3 should definitely be fixed. That's weird because I
-remember that Frieder tested the new driver with a NOR chip, maybe not
-with JFFS2 though.
-
-> 
-> Observation 4:
-> With previous driver, we can read content of flash directly using devmem command
-> Like devmem 0x20000000  "Flash is connected at this Quad-SPI address"
-> 
-> But with new driver devmem interface reporting in-correct value.
-
-This one is clearly not something we should fix. What you were doing is
-unsafe (accessing the direct mapping from userspace without making sure
-you're the only one to access the device), and making it even more
-broken is IMO a better thing. You want to access the memory from
-user-space, just use the standard MTD interface (/dev/mtdX).
-
-[...]
-
-> +
-> +static void fsl_qspi_prepare_lut(struct fsl_qspi *q,
-> +				 const struct spi_mem_op *op)
-> +{
-> +	void __iomem *base = q->iobase;
-> +	u32 lutval[4] = {};
-> +	int lutidx = 1, i;
-> +
-> +	lutval[0] |= LUT_DEF(0, LUT_CMD, LUT_PAD(op->cmd.buswidth),
-> +			     op->cmd.opcode);
-> +
-> +	/*
-> +	 * For some unknown reason, using LUT_ADDR doesn't work in some
-> +	 * cases (at least with only one byte long addresses), so
-> +	 * let's use LUT_MODE to write the address bytes one by one
-> +	 */
-> +	for (i = 0; i < op->addr.nbytes; i++) {
-> +		u8 addrbyte = op->addr.val >> (8 * (op->addr.nbytes - i - 1));
-> +
-> +		lutval[lutidx / 2] |= LUT_DEF(lutidx, LUT_MODE,
-> +					      LUT_PAD(op->addr.buswidth),
-> +					      addrbyte);
-> +		lutidx++;
-> +	}
-> +
-> 
-> For ADDR filling in LUT we should use LUT_ADDR only, needs to find out the reason for the issue and we shouldn't use LUT_MODE here.
-
-Just try with a 16-bit address and you'll see it does not work. I don't
-know why, and it's more something you should ask to someone working at
-NXP ;-).
-
-> I have few more comments regarding same, mentioned below.
-> 
-> +	if (op->dummy.nbytes) {
-> +		lutval[lutidx / 2] |= LUT_DEF(lutidx, LUT_DUMMY,
-> +					      LUT_PAD(op->dummy.buswidth),
-> +					      op->dummy.nbytes * 8 /
-> +					      op->dummy.buswidth);
-> +		lutidx++;
-> +	}
-> +
-> +	if (op->data.nbytes) {
-> +		lutval[lutidx / 2] |= LUT_DEF(lutidx,
-> +					      op->data.dir == SPI_MEM_DATA_IN ?
-> +					      LUT_FSL_READ : LUT_FSL_WRITE,
-> +					      LUT_PAD(op->data.buswidth),
-> +					      0);
-> +		lutidx++;
-> +	}
-> +
-> +	lutval[lutidx / 2] |= LUT_DEF(lutidx, LUT_STOP, 0, 0);
-> +
-> +	/* unlock LUT */
-> +	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
-> +	qspi_writel(q, QUADSPI_LCKER_UNLOCK, q->iobase + QUADSPI_LCKCR);
-> +
-> +	/* fill LUT */
-> +	for (i = 0; i < ARRAY_SIZE(lutval); i++)
-> +		qspi_writel(q, lutval[i], base + QUADSPI_LUT_REG(i));
-> +
-> +	/* lock LUT */
-> +	qspi_writel(q, QUADSPI_LUTKEY_VALUE, q->iobase + QUADSPI_LUTKEY);
-> +	qspi_writel(q, QUADSPI_LCKER_LOCK, q->iobase + QUADSPI_LCKCR); }
-> +
-
-[...]
-
-> +static int fsl_qspi_exec_op(struct spi_mem *mem, const struct 
-> +spi_mem_op *op) {
-> +	struct fsl_qspi *q = spi_controller_get_devdata(mem->spi->master);
-> +	void __iomem *base = q->iobase;
-> +	int err = 0;
-> +
-> +	mutex_lock(&q->lock);
-> +
-> +	/* wait for the controller being ready */
-> +	do {
-> +		u32 status;
-> +
-> +		status = qspi_readl(q, base + QUADSPI_SR);
-> +		if (status &
-> +		    (QUADSPI_SR_IP_ACC_MASK | QUADSPI_SR_AHB_ACC_MASK)) {
-> +			udelay(1);
-> +			dev_dbg(q->dev, "The controller is busy, 0x%x\n",
-> +				status);
-> +			continue;
-> +		}
-> +		break;
-> +	} while (1);
-> +
-> +	fsl_qspi_select_mem(q, mem->spi);
-> +
-> +	qspi_writel(q, q->memmap_phy, base + QUADSPI_SFAR);
-> 
-> SFAR should have the actual address where we are doing operation.
-
-Not with the new approach. SFAR is now automatically reconfigured at
-each access, and it works because we're not using a LUT_ADDR
-instruction but a LUT_MODE one. Sure, I'd prefer to go for the clean
-solution with a LUT_ADDR and the address passed through SFAR (+AHB
-offset), but it does not work with anything that is not 24 bits or
-32 bits wide, which means it does not work when you need to access a SPI
-NAND device (on which some addresses are 16 bits wide).
-
-> 
-> For e.g. If reading from flash-0 offset 0x100000 than SFAR should have address as 0x20100000.
-> As for 'read/write' request 'from/to' respectively been saved in struct spi_mem_op [op.val] this should be added to q->memmap_phy.
-
-You're still thinking as if the driver was only controlling a NOR
-device which can be directly addressed. This is not the case for NAND
-devices where you first have to load the data in the NAND internal cache
-and then read data from the cache.
-
-> 
-> In LUT preparation for ADDR, we should use ADDR_WIDTH as 3-byte or 4-byte addressing only.
-
-Please have a look at SPI NAND datasheets and you'll see it's simply
-not possible. So, either NXP doesn't want his QSPI controller to
-interface with anything except NORs or we have to use the trick we have
-here (LUT_MODE instead of LUT_ADDR).
-
-> Start address should be saved in SFAR register.
-> 
-> +
-> +	qspi_writel(q,
-> +		    qspi_readl(q, base + QUADSPI_MCR) |
-> +		    QUADSPI_MCR_CLR_RXF_MASK | QUADSPI_MCR_CLR_TXF_MASK,
-> +		    base + QUADSPI_MCR);
-> +
-> +	qspi_writel(q, QUADSPI_SPTRCLR_BFPTRC | QUADSPI_SPTRCLR_IPPTRC,
-> +		    base + QUADSPI_SPTRCLR);
-> +
-> +	fsl_qspi_prepare_lut(q, op);
-> +
-> +	/*
-> +	 * If we have large chunks of data, we read them through the AHB bus
-> +	 * by accessing the mapped memory. In all other cases we use
-> +	 * IP commands to access the flash.
-> +	 */
-> +	if (op->data.nbytes > (q->devtype_data->rxfifo - 4) &&
-> +	    op->data.dir == SPI_MEM_DATA_IN) {
-> +		fsl_qspi_read_ahb(q, op);
-> +	} else {
-> +		qspi_writel(q,
-> +			    QUADSPI_RBCT_WMRK_MASK | QUADSPI_RBCT_RXBRD_USEIPS,
-> +			    base + QUADSPI_RBCT);
-> +
-> +		if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_OUT)
-> +			fsl_qspi_fill_txfifo(q, op);
-> +
-> +		err = fsl_qspi_do_op(q, op);
-> +	}
-> +
-> +	mutex_unlock(&q->lock);
-> +
-> +	return err;
-> +}
-
-[...]
-
-> 
-> Also we should add more debug print messages under dev_dbg() like in func like fsl_qspi_prepare_lut() etc.
-> 
-
-Would you mind giving more details about where you'd like this traces
-to be placed exactly and what information you'd like to display?
-
-Thanks,
-
-Boris
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBGcmlk
+YXksIEp1bmUgOCwgMjAxOCA2OjA2IFBNDQo+IFRvOiBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIDxu
+YWdhc3VyZUB4aWxpbnguY29tPg0KPiBDYzogYm9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tOyBy
+aWNoYXJkQG5vZC5hdDsgd213MkBpbmZyYWRlYWQub3JnOw0KPiBjb21wdXRlcnNmb3JwZWFjZUBn
+bWFpbC5jb207IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgZi5mYWluZWxsaUBnbWFpbC5jb207DQo+
+IG1tYXllckBicm9hZGNvbS5jb207IHJvZ2VycUB0aS5jb207IGxhZGlzQGxpbnV4LW1pcHMub3Jn
+OyBhZGFAdGhvcnNpcy5jb207DQo+IGhvbmdodWkuemhhbmdAbWVkaWF0ZWsuY29tOyBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4g
+bmFnYXN1cmVzaGt1bWFycmVsbGlAZ21haWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbTElOVVggUEFU
+Q0ggdjkgNC80XSBtdGQ6IHJhd25hbmQ6IHBsMzUzOiBBZGQgYmFzaWMgZHJpdmVyIGZvciBhcm0g
+cGwzNTMNCj4gc21jIG5hbmQgaW50ZXJmYWNlDQo+IA0KPiBIaSBOYWdhLA0KPiANCj4gPiA+ID4g
+KwkJZWNjLT5yZWFkX3BhZ2UgPSBwbDM1M19uYW5kX3JlYWRfcGFnZV9od2VjYzsNCj4gPiA+ID4g
+KwkJZWNjLT5zaXplID0gUEwzNTNfTkFORF9FQ0NfU0laRTsNCj4gPiA+ID4gKwkJZWNjLT53cml0
+ZV9wYWdlID0gcGwzNTNfbmFuZF93cml0ZV9wYWdlX2h3ZWNjOw0KPiA+ID4gPiArCQlwbDM1M19z
+bWNfc2V0X2VjY19wZ19zaXplKG10ZC0+d3JpdGVzaXplKTsNCj4gPiA+ID4gKwkJc3dpdGNoICht
+dGQtPndyaXRlc2l6ZSkgew0KPiA+ID4gPiArCQljYXNlIFNaXzUxMjoNCj4gPiA+ID4gKwkJY2Fz
+ZSBTWl8xSzoNCj4gPiA+ID4gKwkJY2FzZSBTWl8ySzoNCj4gPiA+ID4gKwkJCXBsMzUzX3NtY19z
+ZXRfZWNjX21vZGUoUEwzNTNfU01DX0VDQ01PREVfQVBCKTsNCj4gPiA+ID4gKwkJCWJyZWFrOw0K
+PiA+ID4gPiArCQlkZWZhdWx0Og0KPiA+ID4gPiArCQkJLyoNCj4gPiA+ID4gKwkJCSAqIFRoZSBz
+b2Z0d2FyZSBFQ0Mgcm91dGluZXMgd29uJ3Qgd29yayB3aXRoIHRoZQ0KPiA+ID4gPiArCQkJICog
+U01DIGNvbnRyb2xsZXINCj4gPiA+ID4gKwkJCSAqLw0KPiA+ID4gPiArCQkJZWNjLT5jYWxjdWxh
+dGUgPSBuYW5kX2NhbGN1bGF0ZV9lY2M7DQo+ID4gPiA+ICsJCQllY2MtPmNvcnJlY3QgPSBuYW5k
+X2NvcnJlY3RfZGF0YTsNCj4gPiA+ID4gKwkJCWVjYy0+c2l6ZSA9IDI1NjsNCj4gPiA+ID4gKwkJ
+CWJyZWFrOw0KPiA+ID4gPiArCQl9DQo+ID4gPiA+ICsJCWlmIChtdGQtPndyaXRlc2l6ZSA8PSBT
+Wl81MTIpDQo+ID4gPiA+ICsJCQl4bmFuZC0+YWRkcl9jeWNsZXMgPSAxOw0KPiA+ID4gPiArCQll
+bHNlDQo+ID4gPiA+ICsJCQl4bmFuZC0+YWRkcl9jeWNsZXMgPSAyOw0KPiA+ID4gPiArDQo+ID4g
+PiA+ICsJCWlmIChjaGlwLT5vcHRpb25zICYgTkFORF9ST1dfQUREUl8zKQ0KPiA+ID4gPiArCQkJ
+eG5hbmQtPmFkZHJfY3ljbGVzICs9IDM7DQo+ID4gPiA+ICsJCWVsc2UNCj4gPiA+ID4gKwkJCXhu
+YW5kLT5hZGRyX2N5Y2xlcyArPSAyOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJCWlmIChtdGQtPm9v
+YnNpemUgPT0gMTYpDQo+ID4gPiA+ICsJCQltdGRfc2V0X29vYmxheW91dChtdGQsICZwbDM1M19l
+Y2Nfb29ibGF5b3V0MTZfb3BzKTsNCj4gPiA+ID4gKwkJZWxzZSBpZiAobXRkLT5vb2JzaXplID09
+IDY0KQ0KPiA+ID4gPiArCQkJbXRkX3NldF9vb2JsYXlvdXQobXRkLCAmcGwzNTNfZWNjX29vYmxh
+eW91dDY0X29wcyk7DQo+ID4gPg0KPiA+ID4gZWxzZT8NCj4gPiBZb3UgbWVhbiB0byBzYXksIGFk
+ZCBhbiBlcnJvciBjb25kaXRpb24/DQo+IA0KPiBJIGRvLg0KT2ssIEkgd2lsbCBhZGQgaXQgaW4g
+bmV4dCB2ZXJzaW9uLg0KPiANCj4gPiA+DQo+ID4gPiA+ICsJfQ0KPiA+ID4gPiArfQ0KPiA+ID4g
+PiArDQo+ID4gPiA+ICsvKioNCj4gPiA+ID4gKyAqIHBsMzUzX25hbmRfcHJvYmUgLSBQcm9iZSBt
+ZXRob2QgZm9yIHRoZSBOQU5EIGRyaXZlcg0KPiA+ID4gPiArICogQHBkZXY6CVBvaW50ZXIgdG8g
+dGhlIHBsYXRmb3JtX2RldmljZSBzdHJ1Y3R1cmUNCj4gPiA+ID4gKyAqDQo+ID4gPiA+ICsgKiBU
+aGlzIGZ1bmN0aW9uIGluaXRpYWxpemVzIHRoZSBkcml2ZXIgZGF0YSBzdHJ1Y3R1cmVzIGFuZCB0
+aGUgaGFyZHdhcmUuDQo+ID4gPiA+ICsgKg0KPiA+ID4gPiArICogUmV0dXJuOgkwIG9uIHN1Y2Nl
+c3Mgb3IgZXJyb3IgdmFsdWUgb24gZmFpbHVyZQ0KPiA+ID4gPiArICovDQo+ID4gPiA+ICtzdGF0
+aWMgaW50IHBsMzUzX25hbmRfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikgew0K
+PiA+ID4gPiArCXN0cnVjdCBwbDM1M19uYW5kX2luZm8gKnhuYW5kOw0KPiA+ID4NCj4gPiA+IHhu
+YW5kIGlzIGEgc3RyYW5nZSBuYW1lLCBtb3JlIGFuZCBtb3JlIGJlY2F1c2UgaXRzIGEgYm91dCBO
+QU5EDQo+ID4gPiBjb250cm9sbGVyIGRhdGEsIG5vdCBOQU5EIGNoaXAuDQo+ID4gV2UgYWRkZWQg
+dGhpcyBuYW1lIHRvIHJlcHJlc2VudCBYaWxpbnggTmFuZCh4bmFuZCksDQo+ID4gPg0KPiANCj4g
+SSBzZWUgd2hlcmUgdGhlIHggY29tZXMgZnJvbS4NCj4gDQo+IE1heWJlIGp1c3QgbmZjIChmb3Ig
+TkFORCBmbGFzaCBjb250cm9sbGVyKSBvciB4bmZjIGlmIHlvdSBwcmVmZXIuIFdoYXQNCj4gSSB3
+YW50IGlzIHRvIGNsZWFybHkgbWFrZSB0aGUgZGlzdGluY3Rpb24gYmV0d2VlbiB3aGF0IGlzIGEg
+TkFORCBjaGlwLA0KPiB3aGF0IGlzIGEgTkFORCBjb250cm9sbGVyLg0KT2ssIGdvdCBpdC4gSSB3
+aWxsIHVwZGF0ZSBsaWtlIHhuZmMuDQo+IA0KPiA+ID4gPiArCXN0cnVjdCBtdGRfaW5mbyAqbXRk
+Ow0KPiA+ID4gPiArCXN0cnVjdCBuYW5kX2NoaXAgKm5hbmRfY2hpcDsNCj4gPiA+DQo+ID4gPiBU
+aGlzIG9uZSB5b3UgY2FuIGNhbGwgaXQganVzdCAibmFuZCIgb3IgImNoaXAiLg0KPiA+IE9rLCBJ
+IHdpbGwgdXBkYXRlLg0KPiA+DQo+ID4gPg0KPiA+ID4gPiArCXN0cnVjdCByZXNvdXJjZSAqcmVz
+Ow0KPiA+ID4gPiArDQo+ID4gPiA+ICsJeG5hbmQgPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwg
+c2l6ZW9mKCp4bmFuZCksIEdGUF9LRVJORUwpOw0KPiA+ID4gPiArCWlmICgheG5hbmQpDQo+ID4g
+PiA+ICsJCXJldHVybiAtRU5PTUVNOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJLyogTWFwIHBoeXNp
+Y2FsIGFkZHJlc3Mgb2YgTkFORCBmbGFzaCAqLw0KPiA+ID4gPiArCXJlcyA9IHBsYXRmb3JtX2dl
+dF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7DQo+ID4gPiA+ICsJeG5hbmQtPm5h
+bmRfYmFzZSA9IGRldm1faW9yZW1hcF9yZXNvdXJjZSgmcGRldi0+ZGV2LCByZXMpOw0KPiA+ID4g
+PiArCWlmIChJU19FUlIoeG5hbmQtPm5hbmRfYmFzZSkpDQo+ID4gPiA+ICsJCXJldHVybiBQVFJf
+RVJSKHhuYW5kLT5uYW5kX2Jhc2UpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsJbmFuZF9jaGlwID0g
+JnhuYW5kLT5jaGlwOw0KPiA+ID4gPiArCW10ZCA9IG5hbmRfdG9fbXRkKG5hbmRfY2hpcCk7DQo+
+ID4gPiA+ICsJbmFuZF9jaGlwLT5leGVjX29wID0gcGwzNTNfbmZjX2V4ZWNfb3A7DQo+ID4gPiA+
+ICsJbmFuZF9zZXRfY29udHJvbGxlcl9kYXRhKG5hbmRfY2hpcCwgeG5hbmQpOw0KPiA+ID4gPiAr
+CW10ZC0+cHJpdiA9IG5hbmRfY2hpcDsNCj4gPiA+ID4gKwltdGQtPm93bmVyID0gVEhJU19NT0RV
+TEU7DQo+ID4gPiA+ICsJbXRkLT5uYW1lID0gUEwzNTNfTkFORF9EUklWRVJfTkFNRTsNCj4gPiA+
+DQo+ID4gPiBBIGxhYmVsIHByb3BlcnR5IGluIHRoZSBEVCBtaWdodCBvdmVyd3JpdGUgdGhpcyB2
+YWx1ZS4NCj4gPiBDb3VsZCB5b3UgcGxlYXNlIGV4cGxhaW4gYSBiaXQgbW9yZSA/DQo+ID4NCj4g
+DQo+IEkgbWVhbnQgc29tZXRoaW5nIGxpa2UgdGhpczoNCj4gDQo+IGh0dHBzOi8vZWxpeGlyLmJv
+b3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2UvZHJpdmVycy9tdGQvbmFuZC9yYXcvbWFydmVs
+bF9uYW5kLmMjTDI1MQ0KPiA1DQpVbmRlcnN0b29kLiBUaGFua3MuDQpJIHdpbGwgdXBkYXRlIGlu
+IG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1hciBSZWxsaS4NCj4gDQo+
+IFRoYW5rcywNCj4gTWlxdcOobA0K
