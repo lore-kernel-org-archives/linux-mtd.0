@@ -1,35 +1,38 @@
-Received: from mail-sn1nam01on0052.outbound.protection.outlook.com
- ([104.47.32.52] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
+Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRCKq-0008Lf-GX
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 08:01:39 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Miquel Raynal <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "wmw2@infradead.org" <wmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "f.fainelli@gmail.com"
- <f.fainelli@gmail.com>, "mmayer@broadcom.com" <mmayer@broadcom.com>,
- "rogerq@ti.com" <rogerq@ti.com>, "ladis@linux-mips.org"
- <ladis@linux-mips.org>, "ada@thorsis.com" <ada@thorsis.com>,
- "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
-Subject: RE: [LINUX PATCH v9 1/4] Devicetree: Add pl353 smc controller
- devicetree binding information
-Date: Fri, 8 Jun 2018 08:01:10 +0000
-Message-ID: <MWHPR02MB2623170B7B99A94EFF4C1E3AAF7B0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1528271382-21690-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1528271382-21690-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20180607174203.035f187d@xps13>
- <MWHPR02MB2623AA49F71D3D24B997C682AF7B0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <20180608075155.24915c89@bbrezillon>
-In-Reply-To: <20180608075155.24915c89@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1fRF83-0001is-Vy
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 11:00:30 +0000
+Date: Fri, 8 Jun 2018 12:59:38 +0200
+From: Alban <albeu@free.fr>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
+ for the cells list
+Message-ID: <20180608125938.4fd457a0@tock>
+In-Reply-To: <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
+References: <1521933899-362-1-git-send-email-albeu@free.fr>
+ <1521933899-362-2-git-send-email-albeu@free.fr>
+ <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
+ <20180417165420.423a691b@avionic-0020>
+ <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
+ <20180417180040.04f53495@avionic-0020>
+ <20180418134119.2e587621@avionic-0020>
+ <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
+ <20180418143243.3c23493c@avionic-0020>
+ <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
+ <20180418153440.187ed16e@avionic-0020>
+ <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
+ <20180607184155.6da38a01@tock>
+ <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/4e/V8.qtwWgCC02QHOtNyeP"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,226 +42,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+--Sig_/4e/V8.qtwWgCC02QHOtNyeP
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for letting us know the similar stuff.
-I will look into it and if any update is required, I will update as per tha=
-t.
+On Thu, 7 Jun 2018 18:03:16 +0100
+Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 
-Thanks,
-Naga Sureshkumar Relli
+> On 07/06/18 17:41, Alban wrote:
+> > AFAIU the only thing that we disagree on now is if the nodes
+> > representing the cells should be direct children of the provider
+> > or in a dedicated subnode. For the MTD case both solution would solve
+> > the binding clash. I would really appreciate if the DT people could =20
+> Am reluctant in changing the nvmem generic bindings for a special case.
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Friday, June 8, 2018 11:22 AM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>; richard@nod.at; wmw2@infra=
-dead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; f.fainelli@gmail.com;
-> mmayer@broadcom.com; rogerq@ti.com; ladis@linux-mips.org; ada@thorsis.com=
-;
-> honghui.zhang@mediatek.com; linux-mtd@lists.infradead.org; linux-kernel@v=
-ger.kernel.org;
-> nagasureshkumarrelli@gmail.com
-> Subject: Re: [LINUX PATCH v9 1/4] Devicetree: Add pl353 smc controller de=
-vicetree
-> binding information
+Where I think the generic binding is fundamentally flawed, as this
+problem will most probably appear again. But do note that my proposal
+doesn't require updating the dts using the original binding, both are
+still supported. I proposed deprecating the current binding because I
+think it is flawed, but we could also "officially" support both style.
+
+> Can you try this with your original subnode proposal:
+> just pass the subnode node pointer in np of nvmem_config:
 >=20
-> On Fri, 8 Jun 2018 05:20:33 +0000
-> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+> ------------------------->cut<------------------------------------ =20
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index b05aa8e81303..c9621632bbfb 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -472,7 +472,11 @@ struct nvmem_device *nvmem_register(const struct=20
+> nvmem_config *config)
+>          nvmem->priv =3D config->priv;
+>          nvmem->reg_read =3D config->reg_read;
+>          nvmem->reg_write =3D config->reg_write;
+> -       nvmem->dev.of_node =3D config->dev->of_node;
+> +
+> +       if (config->np)
+> +               nvmem->dev.of_node =3D config->np;
+> +       else
+> +               nvmem->dev.of_node =3D config->dev->of_node;
 >=20
-> > Hi Miquel,
-> >
-> > Thanks for the review.
-> >
-> > > -----Original Message-----
-> > > From: Miquel Raynal [mailto:miquel.raynal@bootlin.com]
-> > > Sent: Thursday, June 7, 2018 9:12 PM
-> > > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > > Cc: boris.brezillon@bootlin.com; richard@nod.at; wmw2@infradead.org;
-> > > computersforpeace@gmail.com; marek.vasut@gmail.com;
-> > > f.fainelli@gmail.com; mmayer@broadcom.com; rogerq@ti.com;
-> > > ladis@linux-mips.org; ada@thorsis.com; honghui.zhang@mediatek.com;
-> > > linux-mtd@lists.infradead.org; linux-kernel@vger.kernel.org;
-> > > nagasureshkumarrelli@gmail.com
-> > > Subject: Re: [LINUX PATCH v9 1/4] Devicetree: Add pl353 smc
-> > > controller devicetree binding information
-> > >
-> > > Hi Naga,
-> > >
-> > > On Wed, 6 Jun 2018 13:19:39 +0530, Naga Sureshkumar Relli
-> > > <naga.sureshkumar.relli@xilinx.com> wrote:
-> > >
-> > > > Add pl353 static memory controller devicetree binding information.
-> > > >
-> > > > Signed-off-by: Naga Sureshkumar Relli
-> > > > <naga.sureshkumar.relli@xilinx.com>
-> > > > ---
-> > > > Changes in v9:
-> > > >  - Addressed commens given by Randy Dunlap and Miquel Raynal
-> > >
-> > > Can you please be more specific in your next changelog? I don't
-> > > remember what I suggested a few months ago :)
-> > Ok, I will update.
-> >
-> > >
-> > > > Changes in v8:
-> > > >  - None
-> > > > Changes in v7:
-> > > > - Corrected clocks description
-> > > > - prefixed '#' for address and size cells Changes in v6:
-> > > >  - None
-> > > > Changes in v5:
-> > > >  - Removed timing properties
-> > > > Changes in v4:
-> > > >  - none
-> > > > Changes in v3:
-> > > >  - none
-> > > > Changes in v2:
-> > > >  - modified timing binding info as per onfi timing parameters
-> > > >  - add suffix nano second as timing unit
-> > > >  - modified the clock names as per the IP spec
-> > > > ---
-> > > >  .../bindings/memory-controllers/pl353-smc.txt      | 53
-> > > ++++++++++++++++++++++
-> > > >  1 file changed, 53 insertions(+)
-> > > >  create mode 100644
-> > > > Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
-> > > >
-> > > > diff --git
-> > > > a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.t
-> > > > xt
-> > > > b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.t
-> > > > xt
-> > > > new file mode 100644
-> > > > index 0000000..551e66b
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-s
-> > > > +++ mc.t
-> > > > +++ xt
-> > > > @@ -0,0 +1,53 @@
-> > > > +Device tree bindings for ARM PL353 static memory controller
-> > > > +
-> > > > +PL353 static memory controller supports two kinds of memory
-> > > > +interfaces.i.e NAND and SRAM/NOR interfaces.
-> > > > +The actual devices are instantiated from the child nodes of pl353 =
-smc node.
-> > > > +
-> > > > +Required properties:
-> > > > +- compatible		: Should be "arm,pl353-smc-r2p1"
-> > >
-> > > I thing Rob prefers:
-> > >
-> > > - compatible: Must be one of:
-> > >   * arm, pl353-smc-r2p1
-> > Are you suggesting any other compatibles?
-> > Or just a change from "should be to Must be one of"?
-> > >
-> > > > +- reg			: Controller registers map and length.
-> > > > +- clock-names		: List of input clock names - "ref_clk", "aper_clk"
-> > > > +			  (See clock bindings for details).
-> > > > +- clocks		: Clock phandles (see clock bindings for details).
-> > > > +- address-cells		: Address cells, must be 1.
-> > > > +- size-cells		: Size cells. Must be 1.
-> > >
-> > > Please avoid padding, just this is enough:
-> > >
-> > > - something: And another thing.
-> > Ok, I will update it.
-> >
-> > >
-> > > > +
-> > > > +Child nodes:
-> > > > + For NAND the "arm,pl353-nand-r2p1" and for NOR the "cfi-flash"
-> > > > +drivers are supported as child nodes.
-> > > > +
-> > > > +Mandatory timing properties for child nodes:
-> > > > +- arm,nand-cycle-t0	: Read cycle time(t_rc).
-> > > > +- arm,nand-cycle-t1	: Write cycle time(t_wc).
-> > > > +- arm,nand-cycle-t2	: re_n assertion delay(t_rea).
-> > > > +- arm,nand-cycle-t3	: we_n de-assertion delay(t_wp).
-> > > > +- arm,nand-cycle-t4	: Status read time(t_clr)
-> > > > +- arm,nand-cycle-t5	: ID read time(t_ar)
-> > > > +- arm,nand-cycle-t6	: busy to re_n(t_rr)
-> > >
-> > > I think this has nothing to do in the DT, you should handle timings
-> > > from the -
-> > > >setup_data_interface() hook. If you need, you may use different
-> > > >compatibles to distinguish
-> > > different platform data.
-> > >
-> > This controller is applicable only to Zynq platform. No other platform =
-will use this.
-> > Basically pl353-smc.c and pl353-nand.c, both are different drivers.
-> > And this data_interface hook is in nand, and to set this timings if we
-> > read it from setup_data_interface(), then We need to make call from nan=
-d to smc driver.
-> > Let me try this.
-> >
-> > > > +
-> > > > +for nand partition information please refer the below file
-> > >
-> > > s/nand/NAND/
-> > I will update in next version.
-> >
-> > >
-> > > > +Documentation/devicetree/bindings/mtd/partition.txt
-> > > > +
-> > > > +Example:
-> > > > +	pl353smcc_0: pl353smcc@e000e000 {
-> > >
-> > > Why not something more explicit with the '-flash-controller' suffix?
-> > Is this ok?
-> > smcc: memory-controller@e000e000 {}
-> >
-> > >
-> > > > +			compatible =3D "arm,pl353-smc-r2p1"
-> > > > +			clock-names =3D "memclk", "aclk";
-> > > > +			clocks =3D <&clkc 11>, <&clkc 44>;
-> > > > +			reg =3D <0xe000e000 0x1000>;
-> > > > +			#address-cells =3D <1>;
-> > > > +			#size-cells =3D <1>;
-> > > > +			ranges;
-> > > > +			nand_0: nand@e1000000 {
-> > > > +				compatible =3D "arm,pl353-nand-r2p1"
-> > >
-> > > NAND chips do not have their own compatible.
-> > As I said above, SMCC controller has two interface(NAND, NOR/SRAM).
-> > So to differentiate which interface is selected, we added the compatibl=
-e.
-> > The dts node looks below.
-> > smcc: memory-controller@e000e000 {
-> > 			#address-cells =3D <1>;
-> > 			#size-cells =3D <1>;
-> > 			clock-names =3D "memclk", "aclk";
-> > 			clocks =3D <&clkc 11>, <&clkc 44>;
-> > 			compatible =3D "arm,pl353-smc-r2p1";
-> > 			interrupt-parent =3D <&intc>;
-> > 			interrupts =3D <0 18 4>;
-> > 			ranges ;
-> > 			reg =3D <0xe000e000 0x1000>;
-> > 			nand0: flash@e1000000 {
-> > 				compatible =3D "arm,pl353-nand-r2p1";
-> > 				reg =3D <0xe1000000 0x1000000>;
-> > 				#address-cells =3D <0x1>;
-> > 				#size-cells =3D <0x1>;
-> > 			};
-> > 			nor0: flash@e2000000 {
-> > 				compatible =3D "cfi-flash";
-> > 				reg =3D <0xe2000000 0x2000000>;
-> > 				#address-cells =3D <1>;
-> > 				#size-cells =3D <1>;
-> > 			};
-> > 		};
+>          if (config->id =3D=3D -1 && config->name) {
+>                  dev_set_name(&nvmem->dev, "%s", config->name);
+> diff --git a/include/linux/nvmem-provider.h
+> b/include/linux/nvmem-provider.h index f89598bc4e1c..743345ffe2c8
+> 100644 --- a/include/linux/nvmem-provider.h
+> +++ b/include/linux/nvmem-provider.h
+> @@ -49,6 +49,7 @@ typedef int (*nvmem_reg_write_t)(void *priv,
+> unsigned int offset,nvmem_device_get(
+>    */
+>   struct nvmem_config {
+>          struct device           *dev;
+> +       struct device_node      *np;
+>          const char              *name;
+>          int                     id;
+>          struct module           *owner;
 >=20
-> This looks similar to what we have on at91 SoC with one memory controller=
- and inside this
-> memory controller a dedicated logic for NAND devices. We used a represent=
-ation where the
-> NAND controller logic is described as a subnode of the memory controller =
-and then NAND
-> chips are defined under this subnode [1].
->=20
-> [1]https://elixir.bootlin.com/linux/latest/source/Documentation/devicetre=
-e/bindings/mtd/
-> atmel-nand.txt#L84
+> ------------------------->cut<------------------------------------ =20
+
+That should work just fine to allow next to any kind of binding.
+I'll do a new patch using this approach for the code side and leaving
+the generic binding as it is.
+
+Alban
+
+--Sig_/4e/V8.qtwWgCC02QHOtNyeP
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJbGmGaAAoJEHSUmkuduC28bpsQAOMfOXhboUrCBmyohY7223ev
+QVvZKeMaCg4/9f5Ask/+nW7GE2bng9aL3CPPcp5C8zzfDJW9VPtZ6aqdQBxOS/GV
+7WwnKaIc3qzBvmIyqFWEoZal4dv2C+AUW58CpukTPSo+upgLPD+L6stoXMWTK4ek
+c1GVu4EDLCov7W2HGrdXI12sx9d/9yIEyNn8GnQtQYuYU2dZnSDuIvKIL/qeRKP1
+T9k7IDyneRHx4XIQj58wZll9UUYfE5PfkRx2mYGkxO8BttTFRHjtQIfgw9mmb3/s
+KCwVyHQGjV0r6ixja0hEdczVz4VnRxmCs/Q58dF3FZDzfmKrPuXEphWTtjlouieK
+sKZWtQ5ZcU2IcQ9YSjVojHczbO5wyWpIuhj9ZTOOsRn/BbfMKtm08+VvUlaw0s4L
+pu7LNW066bCr/PxcDdTL8OPGvImrCQJABUFAiclw/OOyF/ZL93/+vrX2uDoHUZfe
+MRhSKApkFholQ63q5pj+1Xutr4hSdEVLip500sAUVjdEz53xDqJJuHADlGHBpbu5
+NEW+ic33Tdkga+tR7mseq/JRcB9tVmkBreea7ytulSx86At1GWgfUVNx+ni/DzcT
+DNCDc5/Ia9BTKd1tuaSMXIghsdW++oIHZPh1tDi9DbC4IxdsjhMWyacAROXzoBmw
+QfvuT4yaKCg6aldCYddf
+=E5vJ
+-----END PGP SIGNATURE-----
+
+--Sig_/4e/V8.qtwWgCC02QHOtNyeP--
