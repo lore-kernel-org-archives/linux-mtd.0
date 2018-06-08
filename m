@@ -1,40 +1,34 @@
-Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
+Received: from mail-vk0-x244.google.com ([2607:f8b0:400c:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRKs3-0002x2-N9
- for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 17:08:18 +0000
-Date: Fri, 8 Jun 2018 19:07:17 +0200
-From: Alban <albeu@free.fr>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
- for the cells list
-Message-ID: <20180608190717.55cb185c@tock>
-In-Reply-To: <cd7a0085-66cd-308e-a950-cd0eb96db945@linaro.org>
-References: <1521933899-362-1-git-send-email-albeu@free.fr>
- <1521933899-362-2-git-send-email-albeu@free.fr>
- <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
- <20180417165420.423a691b@avionic-0020>
- <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
- <20180417180040.04f53495@avionic-0020>
- <20180418134119.2e587621@avionic-0020>
- <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
- <20180418143243.3c23493c@avionic-0020>
- <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
- <20180418153440.187ed16e@avionic-0020>
- <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
- <20180607184155.6da38a01@tock>
- <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
- <20180608125938.4fd457a0@tock>
- <cd7a0085-66cd-308e-a950-cd0eb96db945@linaro.org>
+ id 1fRNyo-0004XL-BI
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 20:27:28 +0000
+Received: by mail-vk0-x244.google.com with SMTP id 200-v6so9003106vkc.0
+ for <linux-mtd@lists.infradead.org>; Fri, 08 Jun 2018 13:27:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/1vWlee8hPcRrge=jA.imybo"; protocol="application/pgp-signature"
+In-Reply-To: <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
+ <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+ <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 8 Jun 2018 23:27:14 +0300
+Message-ID: <CAHp75Vesytovn1s-L0RQbEi6Tua=8qKc8a8yDkFmadgscW_UAw@mail.gmail.com>
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ David Wolfe <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,148 +38,208 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/1vWlee8hPcRrge=jA.imybo
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Fri, Jun 8, 2018 at 2:54 PM, Yogesh Narayan Gaur
+<yogeshnarayan.gaur@nxp.com> wrote:
 
-On Fri, 8 Jun 2018 12:34:12 +0100
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
+Hi Frieder,
 
-> >> Can you try this with your original subnode proposal:
-> >> just pass the subnode node pointer in np of nvmem_config:
-> >> =20
-> >> ------------------------->cut<------------------------------------ =20
-> >> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> >> index b05aa8e81303..c9621632bbfb 100644
-> >> --- a/drivers/nvmem/core.c
-> >> +++ b/drivers/nvmem/core.c
-> >> @@ -472,7 +472,11 @@ struct nvmem_device *nvmem_register(const struct
-> >> nvmem_config *config)
-> >>           nvmem->priv =3D config->priv;
-> >>           nvmem->reg_read =3D config->reg_read;
-> >>           nvmem->reg_write =3D config->reg_write;
-> >> -       nvmem->dev.of_node =3D config->dev->of_node;
-> >> +
-> >> +       if (config->np)
-> >> +               nvmem->dev.of_node =3D config->np;
-> >> +       else
-> >> +               nvmem->dev.of_node =3D config->dev->of_node;
-> >>
-> >>           if (config->id =3D=3D -1 && config->name) {
-> >>                   dev_set_name(&nvmem->dev, "%s", config->name);
-> >> diff --git a/include/linux/nvmem-provider.h
-> >> b/include/linux/nvmem-provider.h index f89598bc4e1c..743345ffe2c8
-> >> 100644 --- a/include/linux/nvmem-provider.h
-> >> +++ b/include/linux/nvmem-provider.h
-> >> @@ -49,6 +49,7 @@ typedef int (*nvmem_reg_write_t)(void *priv,
-> >> unsigned int offset,nvmem_device_get(
-> >>     */
-> >>    struct nvmem_config {
-> >>           struct device           *dev;
-> >> +       struct device_node      *np;
-> >>           const char              *name;
-> >>           int                     id;
-> >>           struct module           *owner;
-> >> =20
-> >> ------------------------->cut<------------------------------------ =20
-> >=20
-> > That should work just fine to allow next to any kind of binding.
-> > I'll do a new patch using this approach for the code side and leaving
-> > the generic binding as it is. =20
-> Sure!!
-> This will give more flexibility to other provider drivers!
+> +#define QUADSPI_MCR_RESERVED_MASK      (0xF << 16)
 
-I looked into this. It would work fine for the cells but not so nicely
-for the nvmem device API. The phandle for the nvmem device would have
-to reference the node passed here and not the real device. We would end
-up with a DT like this:
+GENMASK()
 
-flash@0 {
-	compatible =3D "mtd";
-	...
-	nvmem_dev: nvmem-cells {
-		compatible =3D "nvmem-cells";
-		...
-        };
-};
+> +#define QUADSPI_MCR_END_CFG_MASK       (0x3 << 2)
 
-other-device@10 {
-	...
-	nvmem =3D <&nvmem_dev>;
-};
+> +#define QUADSPI_BUF3CR_ADATSZ_MASK     (0xFF << QUADSPI_BUF3CR_ADATSZ_SHIFT)
 
-Now if there is no cell defined we have this empty child node that make
-very little sense, it is just there to accommodate the nvmem API.
+> +#define QUADSPI_SMPR_DDRSMP_MASK       (7 << 16)
 
-What I would suggest now is to just change the wording. We don't
-deprecate the current binding, but we extend it to allow grouping the
-cells in a child node if required. The code to support this is trivial,
-(4 lines including error handling) so even if we expect very few
-bindings to make use of it it is not going to be maintenance drag.
-That would look like this:
+> +#define QUADSPI_RBCT_WMRK_MASK         0x1F
 
-diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Documentat=
-ion/devicetree/bindings/nvmem/nvmem.txt
-index fd06c09..085d042 100644
---- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
-+++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
-@@ -19,7 +19,10 @@ Optional properties:
-=20
- =3D Data cells =3D
- These are the child nodes of the provider which contain data cell
--information like offset and size in nvmem provider.
-+information like offset and size in nvmem provider. Alternatively the data
-+cells can be grouped in a node that has a compatible property set to
-+"nvmem-cells".
-+
-=20
- Required properties:
- reg:   specifies the offset in byte within the storage device.
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 4e94a78..3e1369c 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -859,6 +859,14 @@ struct nvmem_cell *of_nvmem_cell_get(struct device_nod=
-e *np,
-        if (!nvmem_np)
-                return ERR_PTR(-EINVAL);
-=20
-+       /* bindings that already have anonymous child nodes can instead put
-+        * their cells in a child node with an nvmem-cells compatible. */
-+       if (of_device_is_compatible(nvmem_np, "nvmem-cells")) {
-+               nvmem_np =3D of_get_next_parent(nvmem_np);
-+               if (!nvmem_np)
-+                       return ERR_PTR(-EINVAL);
-+       }
-+
-        nvmem =3D __nvmem_device_get(nvmem_np, NULL, NULL);
-        of_node_put(nvmem_np);
-        if (IS_ERR(nvmem))
+Ditto.
 
-What about it?
+> +#define QUADSPI_LUT_OFFSET             (SEQID_LUT * 4 * 4)
+> +#define QUADSPI_LUT_REG(idx)           (QUADSPI_LUT_BASE + \
+> +                                       QUADSPI_LUT_OFFSET + (idx) * 4)
 
-Alban
+It looks slightly better when
 
---Sig_/1vWlee8hPcRrge=jA.imybo
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+#define FOO \
+ (BAR1 + BAR2 ...)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+> +/*
+> + * An IC bug makes it necessary to rearrange the 32-bit data.
+> + * Later chips, such as IMX6SLX, have fixed this bug.
+> + */
+> +static inline u32 fsl_qspi_endian_xchg(struct fsl_qspi *q, u32 a) {
+> +       return needs_swap_endian(q) ? __swab32(a) : a; }
 
-iQIcBAEBCAAGBQJbGrfFAAoJEHSUmkuduC2858QQALNCfJfDeDgJ4UflIREPgTjM
-tOAZb2U4VRG2yYPimmsg3K9TLvIoI/xk4as0wTalJyKlT1zQBwGOZ4Wwvije9d1Q
-OHxatgrDPhA5tcvD7SadXasxkYJD8MVLjhIZCGIZ90sdikZibzWr78uFEaRYJ601
-B41dCr13rkgHlrNYdVS9zfxNrZ6liE/+Tr+q2L7q6YDC73Oz5S2lAm85AkUBbEEi
-HmwowmBPA2HPNJOhG7e6l4M+dxHGJydOWY3SDJE98OnEXvNKqgt3NGiMyhfMunm1
-nkrUSclBN/HrZh7a6tQ2TaDFUJ9drMWRwdvqnspNW5l8KpwJhWHxeXajAZkGoe/W
-MNorpVMlD8rmjTLx+73VwOby43YwAcDyG60g4E4p3hmb2Wi1sHM0ABp8hItk5lYg
-q0ioG1fO3g2GCJc5QxtCPJS1I7HP+AhPiKwz7cmRyLcxr1TRJOKW6z45gjMs++rQ
-huEQb8AD2HPBOW0VvrgBJl9OXoGxHpouV2P+sWoL/cEUj/TcljRImUcryTzxJdab
-ga6R9MXAYyDYq0hfbBfEAzACWMGez65qG5zMolMR/VcoSAX01S7xeAOisdXqdQbR
-JHVs3OGEduv8r8MgG0ISasoeAth3+MCcFu4/hD/92iI7r6kjMZdzlRe8b3X4x4wq
-I76qSh15tQeDkIaM23S8
-=xWJ5
------END PGP SIGNATURE-----
+func()
+{
+...
+}
 
---Sig_/1vWlee8hPcRrge=jA.imybo--
+Fix this everywhere.
+
+
+
+> +static void qspi_writel(struct fsl_qspi *q, u32 val, void __iomem
+> +*addr) {
+> +       if (q->big_endian)
+> +               iowrite32be(val, addr);
+> +       else
+> +               iowrite32(val, addr);
+> +}
+> +
+> +static u32 qspi_readl(struct fsl_qspi *q, void __iomem *addr) {
+> +       if (q->big_endian)
+> +               return ioread32be(addr);
+> +       else
+> +               return ioread32(addr);
+> +}
+
+Better to define ->read() and ->write() callbacks and call them unconditionally.
+
+> +static int fsl_qspi_check_buswidth(struct fsl_qspi *q, u8 width) {
+
+> +       switch (width) {
+> +       case 1:
+> +       case 2:
+> +       case 4:
+> +               return 0;
+> +       }
+
+
+if (!is_power_of_2(width) || width >= 8)
+ return -E...;
+
+return 0;
+
+?
+
+> +
+> +       return -ENOTSUPP;
+> +}
+
+> +static int fsl_qspi_clk_prep_enable(struct fsl_qspi *q) {
+> +       int ret;
+> +
+> +       ret = clk_prepare_enable(q->clk_en);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret = clk_prepare_enable(q->clk);
+> +       if (ret) {
+
+> +               clk_disable_unprepare(q->clk_en);
+
+Is it needed here?
+
+> +               return ret;
+> +       }
+> +
+> +       if (needs_wakeup_wait_mode(q))
+> +               pm_qos_add_request(&q->pm_qos_req, PM_QOS_CPU_DMA_LATENCY, 0);
+> +
+> +       return 0;
+> +}
+
+> +               qspi_writel(q, map_addr, q->iobase + QUADSPI_SFA1AD + (i * 4));
+
+Redundant parens.
+
+
+
+> +       seq = seq ? 0 : 1;
+
+seq = (seq + 1) % 2;
+
+?
+
+> +}
+
+> +       for (i = 0; i < op->data.nbytes; i += 4) {
+> +               u32 val = 0;
+> +
+> +               memcpy(&val, op->data.buf.out + i,
+
+> +                      min_t(unsigned int, op->data.nbytes - i, 4));
+
+You may easily avoid this conditional on each iteration.
+
+> +
+> +               val = fsl_qspi_endian_xchg(q, val);
+> +               qspi_writel(q, val, base + QUADSPI_TBDR);
+> +       }
+
+> +       /* wait for the controller being ready */
+
+FOREVER! See below.
+
+> +       do {
+> +               u32 status;
+> +
+> +               status = qspi_readl(q, base + QUADSPI_SR);
+> +               if (status &
+> +                   (QUADSPI_SR_IP_ACC_MASK | QUADSPI_SR_AHB_ACC_MASK)) {
+> +                       udelay(1);
+> +                       dev_dbg(q->dev, "The controller is busy, 0x%x\n",
+> +                               status);
+> +                       continue;
+> +               }
+> +               break;
+> +       } while (1);
+
+Please, avoid infinite loops.
+
+unsigned int count = 100;
+...
+do {
+...
+} while (--count);
+
+> +       if (of_get_available_child_count(q->dev->of_node) == 1)
+> +               name = dev_name(q->dev);
+> +       else
+> +               name = devm_kasprintf(dev, GFP_KERNEL,
+> +                                     "%s-%d", dev_name(q->dev),
+> +                                     mem->spi->chip_select);
+> +
+> +       if (!name) {
+> +               dev_err(dev, "failed to get memory for custom flash name\n");
+
+> +               return dev_name(q->dev);
+
+Might it be racy if in between device gets a name assigned?
+
+> +       }
+
+> +       if (q->ahb_addr)
+> +               iounmap(q->ahb_addr);
+
+Double unmap?
+
+> +static struct platform_driver fsl_qspi_driver = {
+> +       .driver = {
+> +               .name   = "fsl-quadspi",
+> +               .of_match_table = fsl_qspi_dt_ids,
+> +       },
+> +       .probe          = fsl_qspi_probe,
+> +       .remove         = fsl_qspi_remove,
+
+> +       .suspend        = fsl_qspi_suspend,
+> +       .resume         = fsl_qspi_resume,
+
+Why not in struct dev_pm_ops?
+
+> +};
+
+
+> +MODULE_AUTHOR("Freescale Semiconductor Inc."); MODULE_AUTHOR("Boris
+> +Brezillion <boris.brezillon@bootlin.com>"); MODULE_AUTHOR("Frieder
+> +Schrempf <frieder.schrempf@exceet.de>"); MODULE_LICENSE("GPL v2");
+
+Wrong indentation.
+
+-- 
+With Best Regards,
+Andy Shevchenko
