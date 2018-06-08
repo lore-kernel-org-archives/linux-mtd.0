@@ -1,19 +1,34 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
+Received: from mail-co1nam03on0618.outbound.protection.outlook.com
+ ([2a01:111:f400:fe48::618]
+ helo=NAM03-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fR1dA-00073g-0U
- for linux-mtd@lists.infradead.org; Thu, 07 Jun 2018 20:35:37 +0000
-Received: by mail-wm0-x230.google.com with SMTP id v131-v6so21723128wma.1
- for <linux-mtd@lists.infradead.org>; Thu, 07 Jun 2018 13:35:25 -0700 (PDT)
-From: Christian Lamparter <chunkeey@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: david.oberhollenzer@sigma-star.at
-Subject: Regression due to "Return correct error number in ubi_get_vol_info1"
- in mtd-utils 2.0.1+
-Date: Thu, 07 Jun 2018 22:35:22 +0200
-Message-ID: <2542341.JDPxxHf69l@debian64>
+ id 1fR9pO-00013c-Sr
+ for linux-mtd@lists.infradead.org; Fri, 08 Jun 2018 05:20:54 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "wmw2@infradead.org" <wmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "f.fainelli@gmail.com"
+ <f.fainelli@gmail.com>, "mmayer@broadcom.com" <mmayer@broadcom.com>,
+ "rogerq@ti.com" <rogerq@ti.com>, "ladis@linux-mips.org"
+ <ladis@linux-mips.org>, "ada@thorsis.com" <ada@thorsis.com>,
+ "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
+Subject: RE: [LINUX PATCH v9 1/4] Devicetree: Add pl353 smc controller
+ devicetree binding information
+Date: Fri, 8 Jun 2018 05:20:33 +0000
+Message-ID: <MWHPR02MB2623AA49F71D3D24B997C682AF7B0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1528271382-21690-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1528271382-21690-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180607174203.035f187d@xps13>
+In-Reply-To: <20180607174203.035f187d@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,109 +38,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-the commit "Return correct error number in ubi_get_vol_info1" [0]
-causes an regression within the libubi of mtd-utils. Affected
-by this is ubinfo, ubirmvol and ubirsvol (basically all tools that
-use "ubi_get_vol_info1" and check for ENOENT error code).
-
-steps to reproduce: have mtd-utils 2.0.1 or 2.0.2
-
-0. make a bunch of ubi volumes in sequential order
-# ubimkvol /dev/ubi0 -s 64KiB -N test1
-# ubimkvol /dev/ubi0 -s 64KiB -N test2
-# ubimkvol /dev/ubi0 -s 64KiB -N test3
-# ubimkvol /dev/ubi0 -s 64KiB -N test4
-..
-
-(The idea is that the volume ID of test4 is bigger than
-of test1).
-
-1. delete the test1 volume
-
-# ubirmvol /dev/ubi0 -N test1
-(this makes a hole in the volume table)
-
-2. try an affected tool (i.e. "ubirmvol /dev/ubi0 -N test4" )
-
- |root@mr24:/# ubirmvol /dev/ubi0 -N test4
- |ubirmvol: error!: cannot find UBI volume "test4"
- |         error 19 (No such device)
-
-or "ubinfo -a"
-
- | root@mr24:/# ubinfo -a
- | UBI version:                    1
- | Count of UBI devices:           1
- | UBI control device major/minor: 10:59
- | Present UBI devices:            ubi0
- | 
- | ubi0
- | Volumes count:                           11
- | Logical eraseblock size:                 15872 bytes, 15.5 KiB
- | Total amount of logical eraseblocks:     1952 (30982144 bytes, 29.5 MiB)
- | Amount of available logical eraseblocks: 75 (1190400 bytes, 1.1 MiB)
- | Maximum count of volumes                 92
- | Count of bad physical eraseblocks:       0
- | Count of reserved physical eraseblocks:  40
- | Current maximum erase counter value:     984
- | Minimum input/output unit size:          512 bytes
- | Character device major/minor:            251:0
- | ubinfo: error!: libubi failed to probe volume 5 on ubi0
- |        error 19 (No such device)
- | Present volumes:                         0, 1, 2, 3, 4root@mr24:/# 
-
-The problem with this patch is, that it updated ubi_get_vol_info1() to
-return a different errno code (ENODEV instead of ENOENT). 
-
-|-       if (vol_get_major(lib, dev_num, vol_id, &info->major, &info->minor))
-|+       if (vol_get_major(lib, dev_num, vol_id, &info->major, &info->minor)) {
-|+               if (errno == ENOENT)
-|+                       errno = ENODEV;
-|                return -1;
-|+       }
-
-However, the patch didn't update any existing code. For example this
-loop @ line 1327 in ubi_get_vol_info1_nm() [1]
-
-|1327         for (i = dev_info.lowest_vol_id;
-|1328              i <= dev_info.highest_vol_id; i++) {
-|1329                 err = ubi_get_vol_info1(desc, dev_num, i, info);
-|1330                 if (err == -1) {
-|1331                         if (errno == ENOENT)
-|1332                                 continue;
-|1333                         return -1;
-|1334                 }
-|1335 
-|1336                 if (nlen == strlen(info->name) && !strcmp(name, info->name))
-|1337                         return 0;
-|1338         }
-
-will now fail with the aforementioned ENODEV error, instead of
-skipping deleted entry.
-
-the same is true for ubinfo [2]:
-
-| 266         for (i = dev_info.lowest_vol_id;
-| 267              i <= dev_info.highest_vol_id; i++) {
-| 268                 err = ubi_get_vol_info1(libubi, dev_info.dev_num, i, &vol_info);
-| 269                 if (err == -1) {
-| 270                         if (errno == ENOENT)
-| 271                                 continue;
-| 272 
-| 273                         return sys_errmsg("libubi failed to probe volume %d on ubi%d",
-| 274                                           i, dev_info.dev_num);
-| 275                 }
-
-reverting the patch [0] would probably be the easiest 
-way to fix the issue, but I'm not sure if that's the
-best course of action. If somebody has an idea or
-different opinion, please: hit "reply all" ;-).
-
-Regards,
-Christian Lamparter
-
-[0] <http://git.infradead.org/mtd-utils.git/commitdiff/dede98ffb706676309488d7cc660f569548d5930>
-[1] <http://git.infradead.org/mtd-utils.git/blob/bc63d36e39f389c8c17f6a8e9db47f2acc884659:/lib/libubi.c#l1327>
-[2] <http://git.infradead.org/mtd-utils.git/blob/HEAD:/ubi-utils/ubinfo.c#l268>
+SGkgTWlxdWVsLA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcuDQoNCj4gLS0tLS1PcmlnaW5hbCBN
+ZXNzYWdlLS0tLS0NCj4gRnJvbTogTWlxdWVsIFJheW5hbCBbbWFpbHRvOm1pcXVlbC5yYXluYWxA
+Ym9vdGxpbi5jb21dDQo+IFNlbnQ6IFRodXJzZGF5LCBKdW5lIDcsIDIwMTggOToxMiBQTQ0KPiBU
+bzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IGJv
+cmlzLmJyZXppbGxvbkBib290bGluLmNvbTsgcmljaGFyZEBub2QuYXQ7IHdtdzJAaW5mcmFkZWFk
+Lm9yZzsNCj4gY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOyBtYXJlay52YXN1dEBnbWFpbC5j
+b207IGYuZmFpbmVsbGlAZ21haWwuY29tOw0KPiBtbWF5ZXJAYnJvYWRjb20uY29tOyByb2dlcnFA
+dGkuY29tOyBsYWRpc0BsaW51eC1taXBzLm9yZzsgYWRhQHRob3JzaXMuY29tOw0KPiBob25naHVp
+LnpoYW5nQG1lZGlhdGVrLmNvbTsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4
+LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IG5hZ2FzdXJlc2hrdW1hcnJlbGxpQGdtYWlsLmNv
+bQ0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBBVENIIHY5IDEvNF0gRGV2aWNldHJlZTogQWRkIHBs
+MzUzIHNtYyBjb250cm9sbGVyIGRldmljZXRyZWUNCj4gYmluZGluZyBpbmZvcm1hdGlvbg0KPiAN
+Cj4gSGkgTmFnYSwNCj4gDQo+IE9uIFdlZCwgNiBKdW4gMjAxOCAxMzoxOTozOSArMDUzMCwgTmFn
+YSBTdXJlc2hrdW1hciBSZWxsaQ0KPiA8bmFnYS5zdXJlc2hrdW1hci5yZWxsaUB4aWxpbnguY29t
+PiB3cm90ZToNCj4gDQo+ID4gQWRkIHBsMzUzIHN0YXRpYyBtZW1vcnkgY29udHJvbGxlciBkZXZp
+Y2V0cmVlIGJpbmRpbmcgaW5mb3JtYXRpb24uDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBOYWdh
+IFN1cmVzaGt1bWFyIFJlbGxpDQo+ID4gPG5hZ2Euc3VyZXNoa3VtYXIucmVsbGlAeGlsaW54LmNv
+bT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGluIHY5Og0KPiA+ICAtIEFkZHJlc3NlZCBjb21tZW5z
+IGdpdmVuIGJ5IFJhbmR5IER1bmxhcCBhbmQgTWlxdWVsIFJheW5hbA0KPiANCj4gQ2FuIHlvdSBw
+bGVhc2UgYmUgbW9yZSBzcGVjaWZpYyBpbiB5b3VyIG5leHQgY2hhbmdlbG9nPyBJIGRvbid0IHJl
+bWVtYmVyIHdoYXQgSSBzdWdnZXN0ZWQgYQ0KPiBmZXcgbW9udGhzIGFnbyA6KQ0KT2ssIEkgd2ls
+bCB1cGRhdGUuDQoNCj4gDQo+ID4gQ2hhbmdlcyBpbiB2ODoNCj4gPiAgLSBOb25lDQo+ID4gQ2hh
+bmdlcyBpbiB2NzoNCj4gPiAtIENvcnJlY3RlZCBjbG9ja3MgZGVzY3JpcHRpb24NCj4gPiAtIHBy
+ZWZpeGVkICcjJyBmb3IgYWRkcmVzcyBhbmQgc2l6ZSBjZWxscyBDaGFuZ2VzIGluIHY2Og0KPiA+
+ICAtIE5vbmUNCj4gPiBDaGFuZ2VzIGluIHY1Og0KPiA+ICAtIFJlbW92ZWQgdGltaW5nIHByb3Bl
+cnRpZXMNCj4gPiBDaGFuZ2VzIGluIHY0Og0KPiA+ICAtIG5vbmUNCj4gPiBDaGFuZ2VzIGluIHYz
+Og0KPiA+ICAtIG5vbmUNCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+ICAtIG1vZGlmaWVkIHRpbWlu
+ZyBiaW5kaW5nIGluZm8gYXMgcGVyIG9uZmkgdGltaW5nIHBhcmFtZXRlcnMNCj4gPiAgLSBhZGQg
+c3VmZml4IG5hbm8gc2Vjb25kIGFzIHRpbWluZyB1bml0DQo+ID4gIC0gbW9kaWZpZWQgdGhlIGNs
+b2NrIG5hbWVzIGFzIHBlciB0aGUgSVAgc3BlYw0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3Mv
+bWVtb3J5LWNvbnRyb2xsZXJzL3BsMzUzLXNtYy50eHQgICAgICB8IDUzDQo+ICsrKysrKysrKysr
+KysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDUzIGluc2VydGlvbnMoKykNCj4gPiAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0DQo+ID4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L21lbW9yeS1jb250cm9sbGVycy9wbDM1My1zbWMudHh0DQo+ID4NCj4gPiBkaWZmIC0tZ2l0DQo+
+ID4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJz
+L3BsMzUzLXNtYy50eHQNCj4gPiBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9t
+ZW1vcnktY29udHJvbGxlcnMvcGwzNTMtc21jLnR4dA0KPiA+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0
+DQo+ID4gaW5kZXggMDAwMDAwMC4uNTUxZTY2Yg0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysg
+Yi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVtb3J5LWNvbnRyb2xsZXJzL3Bs
+MzUzLXNtYy50DQo+ID4gKysrIHh0DQo+ID4gQEAgLTAsMCArMSw1MyBAQA0KPiA+ICtEZXZpY2Ug
+dHJlZSBiaW5kaW5ncyBmb3IgQVJNIFBMMzUzIHN0YXRpYyBtZW1vcnkgY29udHJvbGxlcg0KPiA+
+ICsNCj4gPiArUEwzNTMgc3RhdGljIG1lbW9yeSBjb250cm9sbGVyIHN1cHBvcnRzIHR3byBraW5k
+cyBvZiBtZW1vcnkNCj4gPiAraW50ZXJmYWNlcy5pLmUgTkFORCBhbmQgU1JBTS9OT1IgaW50ZXJm
+YWNlcy4NCj4gPiArVGhlIGFjdHVhbCBkZXZpY2VzIGFyZSBpbnN0YW50aWF0ZWQgZnJvbSB0aGUg
+Y2hpbGQgbm9kZXMgb2YgcGwzNTMgc21jIG5vZGUuDQo+ID4gKw0KPiA+ICtSZXF1aXJlZCBwcm9w
+ZXJ0aWVzOg0KPiA+ICstIGNvbXBhdGlibGUJCTogU2hvdWxkIGJlICJhcm0scGwzNTMtc21jLXIy
+cDEiDQo+IA0KPiBJIHRoaW5nIFJvYiBwcmVmZXJzOg0KPiANCj4gLSBjb21wYXRpYmxlOiBNdXN0
+IGJlIG9uZSBvZjoNCj4gICAqIGFybSwgcGwzNTMtc21jLXIycDENCkFyZSB5b3Ugc3VnZ2VzdGlu
+ZyBhbnkgb3RoZXIgY29tcGF0aWJsZXM/DQpPciBqdXN0IGEgY2hhbmdlIGZyb20gInNob3VsZCBi
+ZSB0byBNdXN0IGJlIG9uZSBvZiI/DQo+IA0KPiA+ICstIHJlZwkJCTogQ29udHJvbGxlciByZWdp
+c3RlcnMgbWFwIGFuZCBsZW5ndGguDQo+ID4gKy0gY2xvY2stbmFtZXMJCTogTGlzdCBvZiBpbnB1
+dCBjbG9jayBuYW1lcyAtICJyZWZfY2xrIiwgImFwZXJfY2xrIg0KPiA+ICsJCQkgIChTZWUgY2xv
+Y2sgYmluZGluZ3MgZm9yIGRldGFpbHMpLg0KPiA+ICstIGNsb2NrcwkJOiBDbG9jayBwaGFuZGxl
+cyAoc2VlIGNsb2NrIGJpbmRpbmdzIGZvciBkZXRhaWxzKS4NCj4gPiArLSBhZGRyZXNzLWNlbGxz
+CQk6IEFkZHJlc3MgY2VsbHMsIG11c3QgYmUgMS4NCj4gPiArLSBzaXplLWNlbGxzCQk6IFNpemUg
+Y2VsbHMuIE11c3QgYmUgMS4NCj4gDQo+IFBsZWFzZSBhdm9pZCBwYWRkaW5nLCBqdXN0IHRoaXMg
+aXMgZW5vdWdoOg0KPiANCj4gLSBzb21ldGhpbmc6IEFuZCBhbm90aGVyIHRoaW5nLg0KT2ssIEkg
+d2lsbCB1cGRhdGUgaXQuDQoNCj4gDQo+ID4gKw0KPiA+ICtDaGlsZCBub2RlczoNCj4gPiArIEZv
+ciBOQU5EIHRoZSAiYXJtLHBsMzUzLW5hbmQtcjJwMSIgYW5kIGZvciBOT1IgdGhlICJjZmktZmxh
+c2giDQo+ID4gK2RyaXZlcnMgYXJlIHN1cHBvcnRlZCBhcyBjaGlsZCBub2Rlcy4NCj4gPiArDQo+
+ID4gK01hbmRhdG9yeSB0aW1pbmcgcHJvcGVydGllcyBmb3IgY2hpbGQgbm9kZXM6DQo+ID4gKy0g
+YXJtLG5hbmQtY3ljbGUtdDAJOiBSZWFkIGN5Y2xlIHRpbWUodF9yYykuDQo+ID4gKy0gYXJtLG5h
+bmQtY3ljbGUtdDEJOiBXcml0ZSBjeWNsZSB0aW1lKHRfd2MpLg0KPiA+ICstIGFybSxuYW5kLWN5
+Y2xlLXQyCTogcmVfbiBhc3NlcnRpb24gZGVsYXkodF9yZWEpLg0KPiA+ICstIGFybSxuYW5kLWN5
+Y2xlLXQzCTogd2VfbiBkZS1hc3NlcnRpb24gZGVsYXkodF93cCkuDQo+ID4gKy0gYXJtLG5hbmQt
+Y3ljbGUtdDQJOiBTdGF0dXMgcmVhZCB0aW1lKHRfY2xyKQ0KPiA+ICstIGFybSxuYW5kLWN5Y2xl
+LXQ1CTogSUQgcmVhZCB0aW1lKHRfYXIpDQo+ID4gKy0gYXJtLG5hbmQtY3ljbGUtdDYJOiBidXN5
+IHRvIHJlX24odF9ycikNCj4gDQo+IEkgdGhpbmsgdGhpcyBoYXMgbm90aGluZyB0byBkbyBpbiB0
+aGUgRFQsIHlvdSBzaG91bGQgaGFuZGxlIHRpbWluZ3MgZnJvbSB0aGUgLQ0KPiA+c2V0dXBfZGF0
+YV9pbnRlcmZhY2UoKSBob29rLiBJZiB5b3UgbmVlZCwgeW91IG1heSB1c2UgZGlmZmVyZW50IGNv
+bXBhdGlibGVzIHRvIGRpc3Rpbmd1aXNoDQo+IGRpZmZlcmVudCBwbGF0Zm9ybSBkYXRhLg0KPiAN
+ClRoaXMgY29udHJvbGxlciBpcyBhcHBsaWNhYmxlIG9ubHkgdG8gWnlucSBwbGF0Zm9ybS4gTm8g
+b3RoZXIgcGxhdGZvcm0gd2lsbCB1c2UgdGhpcy4NCkJhc2ljYWxseSBwbDM1My1zbWMuYyBhbmQg
+cGwzNTMtbmFuZC5jLCBib3RoIGFyZSBkaWZmZXJlbnQgZHJpdmVycy4NCkFuZCB0aGlzIGRhdGFf
+aW50ZXJmYWNlIGhvb2sgaXMgaW4gbmFuZCwgYW5kIHRvIHNldCB0aGlzIHRpbWluZ3MgaWYgd2Ug
+cmVhZCBpdCBmcm9tIHNldHVwX2RhdGFfaW50ZXJmYWNlKCksIHRoZW4NCldlIG5lZWQgdG8gbWFr
+ZSBjYWxsIGZyb20gbmFuZCB0byBzbWMgZHJpdmVyLg0KTGV0IG1lIHRyeSB0aGlzLg0KDQo+ID4g
+Kw0KPiA+ICtmb3IgbmFuZCBwYXJ0aXRpb24gaW5mb3JtYXRpb24gcGxlYXNlIHJlZmVyIHRoZSBi
+ZWxvdyBmaWxlDQo+IA0KPiBzL25hbmQvTkFORC8NCkkgd2lsbCB1cGRhdGUgaW4gbmV4dCB2ZXJz
+aW9uLg0KDQo+IA0KPiA+ICtEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3Bh
+cnRpdGlvbi50eHQNCj4gPiArDQo+ID4gK0V4YW1wbGU6DQo+ID4gKwlwbDM1M3NtY2NfMDogcGwz
+NTNzbWNjQGUwMDBlMDAwIHsNCj4gDQo+IFdoeSBub3Qgc29tZXRoaW5nIG1vcmUgZXhwbGljaXQg
+d2l0aCB0aGUgJy1mbGFzaC1jb250cm9sbGVyJyBzdWZmaXg/DQpJcyB0aGlzIG9rPw0Kc21jYzog
+bWVtb3J5LWNvbnRyb2xsZXJAZTAwMGUwMDAge30NCg0KPiANCj4gPiArCQkJY29tcGF0aWJsZSA9
+ICJhcm0scGwzNTMtc21jLXIycDEiDQo+ID4gKwkJCWNsb2NrLW5hbWVzID0gIm1lbWNsayIsICJh
+Y2xrIjsNCj4gPiArCQkJY2xvY2tzID0gPCZjbGtjIDExPiwgPCZjbGtjIDQ0PjsNCj4gPiArCQkJ
+cmVnID0gPDB4ZTAwMGUwMDAgMHgxMDAwPjsNCj4gPiArCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
+DQo+ID4gKwkJCSNzaXplLWNlbGxzID0gPDE+Ow0KPiA+ICsJCQlyYW5nZXM7DQo+ID4gKwkJCW5h
+bmRfMDogbmFuZEBlMTAwMDAwMCB7DQo+ID4gKwkJCQljb21wYXRpYmxlID0gImFybSxwbDM1My1u
+YW5kLXIycDEiDQo+IA0KPiBOQU5EIGNoaXBzIGRvIG5vdCBoYXZlIHRoZWlyIG93biBjb21wYXRp
+YmxlLg0KQXMgSSBzYWlkIGFib3ZlLCBTTUNDIGNvbnRyb2xsZXIgaGFzIHR3byBpbnRlcmZhY2Uo
+TkFORCwgTk9SL1NSQU0pLg0KU28gdG8gZGlmZmVyZW50aWF0ZSB3aGljaCBpbnRlcmZhY2UgaXMg
+c2VsZWN0ZWQsIHdlIGFkZGVkIHRoZSBjb21wYXRpYmxlLg0KVGhlIGR0cyBub2RlIGxvb2tzIGJl
+bG93Lg0Kc21jYzogbWVtb3J5LWNvbnRyb2xsZXJAZTAwMGUwMDAgew0KCQkJI2FkZHJlc3MtY2Vs
+bHMgPSA8MT47DQoJCQkjc2l6ZS1jZWxscyA9IDwxPjsNCgkJCWNsb2NrLW5hbWVzID0gIm1lbWNs
+ayIsICJhY2xrIjsNCgkJCWNsb2NrcyA9IDwmY2xrYyAxMT4sIDwmY2xrYyA0ND47DQoJCQljb21w
+YXRpYmxlID0gImFybSxwbDM1My1zbWMtcjJwMSI7DQoJCQlpbnRlcnJ1cHQtcGFyZW50ID0gPCZp
+bnRjPjsNCgkJCWludGVycnVwdHMgPSA8MCAxOCA0PjsNCgkJCXJhbmdlcyA7DQoJCQlyZWcgPSA8
+MHhlMDAwZTAwMCAweDEwMDA+Ow0KCQkJbmFuZDA6IGZsYXNoQGUxMDAwMDAwIHsNCgkJCQljb21w
+YXRpYmxlID0gImFybSxwbDM1My1uYW5kLXIycDEiOw0KCQkJCXJlZyA9IDwweGUxMDAwMDAwIDB4
+MTAwMDAwMD47DQoJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MHgxPjsNCgkJCQkjc2l6ZS1jZWxscyA9
+IDwweDE+Ow0KCQkJfTsNCgkJCW5vcjA6IGZsYXNoQGUyMDAwMDAwIHsNCgkJCQljb21wYXRpYmxl
+ID0gImNmaS1mbGFzaCI7DQoJCQkJcmVnID0gPDB4ZTIwMDAwMDAgMHgyMDAwMDAwPjsNCgkJCQkj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCgkJCQkjc2l6ZS1jZWxscyA9IDwxPjsNCgkJCX07DQoJCX07
+DQo+IA0KPiA+ICsJCQkJcmVnID0gPDB4ZTEwMDAwMDAgMHgxMDAwMDAwPjsNCj4gPiArCQkJCWFy
+bSxuYW5kLWN5Y2xlLXQwID0gPDB4ND47DQo+ID4gKwkJCQlhcm0sbmFuZC1jeWNsZS10MSA9IDww
+eDQ+Ow0KPiA+ICsJCQkJYXJtLG5hbmQtY3ljbGUtdDIgPSA8MHgxPjsNCj4gPiArCQkJCWFybSxu
+YW5kLWN5Y2xlLXQzID0gPDB4Mj47DQo+ID4gKwkJCQlhcm0sbmFuZC1jeWNsZS10NCA9IDwweDI+
+Ow0KPiA+ICsJCQkJYXJtLG5hbmQtY3ljbGUtdDUgPSA8MHgyPjsNCj4gPiArCQkJCWFybSxuYW5k
+LWN5Y2xlLXQ2ID0gPDB4ND47DQo+ID4gKwkJCQkoLi4uKQ0KPiA+ICsJCQl9Ow0KPiA+ICsJfTsN
+Cj4gDQo+IA0KPiBUaGFua3MsDQo+IE1pcXXDqGwNCg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1h
+ciBSZWxsaS4NCg==
