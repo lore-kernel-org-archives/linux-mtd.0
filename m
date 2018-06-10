@@ -1,29 +1,11 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fS2KG-0008G5-PF
- for linux-mtd@lists.infradead.org; Sun, 10 Jun 2018 15:32:19 +0000
-Date: Sun, 10 Jun 2018 17:32:02 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Dmitry Osipenko <digetx@gmail.com>
-Cc: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180610173202.680d2ee8@bbrezillon>
-In-Reply-To: <1868760.y7shk6NfjH@dimapc>
-References: <20180531221637.6017-1-stefan@agner.ch>
- <22478634.OSqaXHucyu@dimapc>
- <5751ef697130ba93ce9fb7722a1ce117@agner.ch>
- <1868760.y7shk6NfjH@dimapc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <163ea9e6ccd.giorgio.lamandini@tin.it>
+Date: Sun, 10 Jun 2018 18:54:01 +0200 (CEST)
+From: Martine DUSMOV <giorgio.lamandini@tin.it>
+Reply-To: m.dusmov@outlook.fr
+Subject: Bonjour Mr / Mme ,
+Mime-Version: 1.0
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,63 +15,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 10 Jun 2018 18:00:06 +0300
-Dmitry Osipenko <digetx@gmail.com> wrote:
+Bonjour
+Nous sommes un groupe d'investisseurs priv=C3=A9s ( DUSMOV FINANCEMENT )=20
+qui octroie des pr=C3=AAts =C3=A0 court , =C3=A0 moyen et =C3=A0 long terme=
+ =C3=A0 toutes les=20
+cat=C3=A9gories de personnes, les entreprises, tous types d'organismes=20
+professionnels, priv=C3=A9s ..., capables de rembourser avec int=C3=A9r=C3=
+=AAt au taux=20
+de 3 % par ans , Nous octroyons nos pr=C3=AAt de (5000 =E2=82=AC =C3=A0 10.=
+000.000=E2=82=AC) au=20
+del=C3=A0 m=C3=AAme parfois , si l=E2=80=99emprunteur es tr=C3=A8s s=C3=A9r=
+ieux(se). Nos conditions=20
+sont bien favorables
+Si vous aviez besoin d'un pr=C3=AAt (Un financement pour Consolider vos=20
+dettes, un pr=C3=AAt pour un usage personnel, un pr=C3=AAt de soins m=C3=A9=
+dicaux, un=20
+pr=C3=AAt auto, pr=C3=AAt hypoth=C3=A9caire, pr=C3=AAt =C3=A9tudiant, un pr=
+=C3=AAt immobilier,=20
+etc...), n'h=C3=A9sitez pas =C3=A0 nous contacter
+=C3=89mail : m.dusmov@outlook.fr
 
-> > >> That seems a lot of work for a code path I do not intend to ever use :-)  
-> > > 
-> > > Are you sure that resetting HW resets the timing and other registers
-> > > configuration? Reset implementation is HW-specific, like for example in a
-> > > case of a video decoder the registers state is re-intialized on HW reset,
-> > > but registers configuration is untouched in a case of resetting GPU. I'd
-> > > suggest to check whether NAND controller resetting affects the HW
-> > > configuration.  
-> > It seems all registers are set back to their documented reset value:
-> > 
-> > [boot loader/ROM initialized values]
-> > [    1.270253] tegra-nand 70008000.nand: Tegra NAND controller register
-> > dump
-> > [    1.277051] tegra-nand 70008000.nand: COMMAND: 0x66880104
-> > [    1.282457] tegra-nand 70008000.nand: STATUS: 0x00000101
-> > [    1.287763] tegra-nand 70008000.nand: ISR: 0x01000120
-> > [    1.292818] tegra-nand 70008000.nand: IER: 0x00000000
-> > [    1.297863] tegra-nand 70008000.nand: CONFIG: 0x00840000
-> > [    1.303181] tegra-nand 70008000.nand: TIMING: 0x05040000
-> > [    1.308486] tegra-nand 70008000.nand: TIMING2: 0x00000003
-> > [    1.313897] tegra-nand 70008000.nand: CMD_REG1: 0x00000000
-> > [    1.319377] tegra-nand 70008000.nand: CMD_REG2: 0x00000030
-> > [    1.324868] tegra-nand 70008000.nand: ADDR_REG1: 0x03000000
-> > [    1.330435] tegra-nand 70008000.nand: ADDR_REG2: 0x00000000
-> > [    1.336011] tegra-nand 70008000.nand: DMA_MST_CTRL: 0x04100004
-> > [    1.341838] tegra-nand 70008000.nand: DMA_CFG_A: 0x00000fff
-> > [    1.347415] tegra-nand 70008000.nand: DMA_CFG_B: 0x0000001b
-> > [    1.352991] tegra-nand 70008000.nand: FIFO_CTRL: 0x0000aa00
-> > [reset]
-> > [    1.358559] tegra-nand 70008000.nand: Tegra NAND controller register
-> > dump
-> > [    1.365352] tegra-nand 70008000.nand: COMMAND: 0x00800004
-> > [    1.370744] tegra-nand 70008000.nand: STATUS: 0x00000101
-> > [    1.376060] tegra-nand 70008000.nand: ISR: 0x00000100
-> > [    1.381105] tegra-nand 70008000.nand: IER: 0x00000000
-> > [    1.386161] tegra-nand 70008000.nand: CONFIG: 0x10030000
-> > [    1.391466] tegra-nand 70008000.nand: TIMING: 0x00000000
-> > [    1.396782] tegra-nand 70008000.nand: TIMING2: 0x00000000
-> > [    1.402174] tegra-nand 70008000.nand: CMD_REG1: 0x00000000
-> > [    1.407664] tegra-nand 70008000.nand: CMD_REG2: 0x00000000
-> > [    1.413156] tegra-nand 70008000.nand: ADDR_REG1: 0x00000000
-> > [    1.418722] tegra-nand 70008000.nand: ADDR_REG2: 0x00000000
-> > [    1.424297] tegra-nand 70008000.nand: DMA_MST_CTRL: 0x24000000
-> > [    1.430123] tegra-nand 70008000.nand: DMA_CFG_A: 0x00000000
-> > [    1.435698] tegra-nand 70008000.nand: DMA_CFG_B: 0x00000000
-> > [    1.441264] tegra-nand 70008000.nand: FIFO_CTRL: 0x0000aa00  
-> 
-> Alright, then indeed it's not really worth to bother with HW resetting here.  
-> Probably only a kernel module reload or a reboot will help if HW is hung. 
-> Maybe NAND controller / chip recovering is something that NAND core should be 
-> handling in a such case by providing a nand_controller_reset() hook?
-> 
-
-I don't see what the core could do to help with that. We'd end up with
-a new hook implemented by the controller that would be called by the
-controller driver when it knows it's safe to reset the controller. So,
-why bother exposing that in the core?
+Merci de me r=C3=A9pondre
+Mme Martine  DUSMOV
+" Votre Satisfaction es notre engagement "
