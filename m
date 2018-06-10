@@ -1,42 +1,25 @@
-Received: from smtp4-g21.free.fr ([2a01:e0c:1:1599::13])
+Received: from botnar.kaiser.cx ([176.28.20.183])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fRyeZ-0005TH-7X
- for linux-mtd@lists.infradead.org; Sun, 10 Jun 2018 11:37:02 +0000
-Date: Sun, 10 Jun 2018 13:36:11 +0200
-From: Alban <albeu@free.fr>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Aban Bedel <albeu@free.fr>, linux-kernel@vger.kernel.org, Rob Herring
- <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 1/3] nvmem: Update the OF binding to use a subnode
- for the cells list
-Message-ID: <20180610133611.51cf6651@tock>
-In-Reply-To: <02d3cba5-01a3-4d8f-55fc-9c7b7fd5e5c1@linaro.org>
-References: <1521933899-362-1-git-send-email-albeu@free.fr>
- <1521933899-362-2-git-send-email-albeu@free.fr>
- <344e0087-7410-aebb-8a66-c6976064df10@linaro.org>
- <20180417165420.423a691b@avionic-0020>
- <8c4b48ad-e99e-030a-a4ee-b6df0fa59c79@linaro.org>
- <20180417180040.04f53495@avionic-0020>
- <20180418134119.2e587621@avionic-0020>
- <9f7d2987-b33e-79b5-ae58-2985fd7334e4@linaro.org>
- <20180418143243.3c23493c@avionic-0020>
- <e34619a4-e9b6-9945-a1cc-a3680aac6819@linaro.org>
- <20180418153440.187ed16e@avionic-0020>
- <d30656d6-f17e-6ed0-251f-2b59d02cd202@linaro.org>
- <20180607184155.6da38a01@tock>
- <0fb0e8e9-e7b8-10c3-fcdd-399c73a33878@linaro.org>
- <20180608125938.4fd457a0@tock>
- <cd7a0085-66cd-308e-a950-cd0eb96db945@linaro.org>
- <20180608190717.55cb185c@tock>
- <02d3cba5-01a3-4d8f-55fc-9c7b7fd5e5c1@linaro.org>
+ id 1fS0DT-0005ot-VI
+ for linux-mtd@lists.infradead.org; Sun, 10 Jun 2018 13:17:10 +0000
+Date: Sun, 10 Jun 2018 15:14:40 +0200
+From: Martin Kaiser <martin@kaiser.cx>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: mxc: set spare area size register explicitly
+Message-ID: <20180610131440.GA10544@botnar.kaiser.cx>
+References: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
+ <20180607171911.7a7ee649@xps13>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/I/UIW0Advj2esUnrQ.EEXEd"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180607171911.7a7ee649@xps13>
+Sender: Martin Kaiser <martin@botnar.kaiser.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,157 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/I/UIW0Advj2esUnrQ.EEXEd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Miquel,
 
-On Sun, 10 Jun 2018 11:32:36 +0100
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
+Thus wrote Miquel Raynal (miquel.raynal@bootlin.com):
 
-> On 08/06/18 18:07, Alban wrote:
-> > On Fri, 8 Jun 2018 12:34:12 +0100
-> > Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> >  =20
-> ...
-> >=20
-> > I looked into this. It would work fine for the cells but not so nicely
-> > for the nvmem device API. The phandle for the nvmem device would have
-> > to reference the node passed here and not the real device. We would end
-> > up with a DT like this:
-> >=20
-> > flash@0 {
-> > 	compatible =3D "mtd";
-> > 	...
-> > 	nvmem_dev: nvmem-cells {
-> > 		compatible =3D "nvmem-cells";
-> > 		...
-> >          };
-> > };
-> >=20
-> > other-device@10 {
-> > 	...
-> > 	nvmem =3D <&nvmem_dev>;
-> > };
-> >=20
-> > Now if there is no cell defined we have this empty child node that make
-> > very little sense, it is just there to accommodate the nvmem API.
-> >  =20
-> NO. This just looks fine!
-> nvmem-cells is the nvmem provider node without which you would not have=20
-> any provider instance.
-> All this looks as expected!
-> Am not sure what is the problem here!
+> > Usually, this register is updated from settings in the IIM fuses when
+> > the system is booting from nand flash. For other boot media, however,
 
-The problem is that DT should represent the hardware, not the OS API.
-What should be represented is that other drivers can access data stored
-on this device. It is my understanding that this wouldn't be an
-acceptable binding as the nvmem provider node would only exists because
-of how the NVMEM API currently works, a correct binding would just
-directly reference the storage device without this extra node.
+> s/nand/NAND
 
-> > What I would suggest now is to just change the wording. We don't
-> > deprecate the current binding, but we extend it to allow grouping the
-> > cells in a child node if required. The code to support this is trivial,
-> > (4 lines including error handling) so even if we expect very few
-> > bindings to make use of it it is not going to be maintenance drag.
-> > That would look like this: =20
->=20
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/nvmem/nvmem.txt b/Docume=
-ntation/devicetree/bindings/nvmem/nvmem.txt
-> > index fd06c09..085d042 100644
-> > --- a/Documentation/devicetree/bindings/nvmem/nvmem.txt
-> > +++ b/Documentation/devicetree/bindings/nvmem/nvmem.txt
-> > @@ -19,7 +19,10 @@ Optional properties:
-> >  =20
-> >   =3D Data cells =3D
-> >   These are the child nodes of the provider which contain data cell
-> > -information like offset and size in nvmem provider.
-> > +information like offset and size in nvmem provider. Alternatively the =
-data
-> > +cells can be grouped in a node that has a compatible property set to
-> > +"nvmem-cells".
+ok
+
+> > +	/* spare area size in 16bit words */
+
+> I thought I understood the problem with your commit message but
+> then I don't get this comment. What's the link between 16-bit buses? Is
+> this preset valid for both 8 and 16-bit bus width?
+
+The register value is unrelated to the bus width.
+
+> > +	writew(mtd->oobsize >> 1, NFC_V21_RSLTSPARE_AREA);
 > > +
-> >  =20
-> >   Required properties:
-> >   reg:   specifies the offset in byte within the storage device.
-> > diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> > index 4e94a78..3e1369c 100644
-> > --- a/drivers/nvmem/core.c
-> > +++ b/drivers/nvmem/core.c
-> > @@ -859,6 +859,14 @@ struct nvmem_cell *of_nvmem_cell_get(struct device=
-_node *np,
-> >          if (!nvmem_np)
-> >                  return ERR_PTR(-EINVAL);
-> >  =20
-> > +       /* bindings that already have anonymous child nodes can instead=
- put
-> > +        * their cells in a child node with an nvmem-cells compatible. =
-*/
-> > +       if (of_device_is_compatible(nvmem_np, "nvmem-cells")) {
-> > +               nvmem_np =3D of_get_next_parent(nvmem_np);
-> > +               if (!nvmem_np)
-> > +                       return ERR_PTR(-EINVAL);
-> > +       }
-> > +
-> >          nvmem =3D __nvmem_device_get(nvmem_np, NULL, NULL);
-> >          of_node_put(nvmem_np);
-> >          if (IS_ERR(nvmem))
-> >=20
-> > What about it? =20
-> Let me repeat what I have said in my previous emails:
->=20
-> Having a subnode still sounds very fragile to me,
-> and this could be much specific case of MTD provider. We might have
-> instances where this could be sub-sub node of the the original provider
-> for other providers. Also I do not want to bring in Provider specifics=20
-> layout into nvmem bindings.
->=20
-> I can not make myself any clearer than this, Its going to be a NAK from=20
-> my side for the above reasons!
 
-I fully understand you concern but I think they are overblown. First I
-highly doubt that more layouts will ever be needed, using a compatible
-string pretty much guarantee that we won't clash with another binding.
-Furthermore even if you consider this extension "MTD specific" the
-amount of code is very small, non intrusive and only run once at
-registration time. I would understand if we were talking about pages of
-code nesting in various place, but not really when it is a single small
-if block with an obvious condition. And finally I don't see that as MTD
-specific as any other device could use this feature without any code
-change.
+> If this is for dividing per two oobsize value,
 
-> Also, patch I shared should give enough flexibility to various range of=20
-> providers which have different child node layouts without touching the=20
-> nvmem bindings. If it works please use it.
+That's exactly what I wanted to do: mtd->oobsize is in bytes, the
+register value must be in 16bit words (the specification uses the term
+half-words, I'll update the comment while at it).
 
-It works from a code POV but it break the basic guidelines of DT
-bindings. As I want to have this done, I'm going to do a patch as you
-want, but I see a high chance that the binding is going to be rejected
-by the DT maintainers and we'll be back here again.
+> I would really prefer a '/ 2' and let the compiler optimize things.
+> Unless the spec is explicit about some shifting of course.
 
-Alban
+Ok, I'll  use / 2 and resend the patch shortly.
 
---Sig_/I/UIW0Advj2esUnrQ.EEXEd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJbHQ0sAAoJEHSUmkuduC28ys4QALJsMEsnEMkMYCfxi5J/ZkkU
-Wf/2ET5FyOzgxd4JJH9z5PyANa/KNdJynUr7RH6qzUXWHYPoAaZw4zeC91meum6+
-uXIS9HX/lQ2Dcsi7d1OjymGIaHZuISqj57UDaFbwnc2STivWsW2yngLAROzaD7wA
-g384D3ytRWofdboYDic6WHu8jlxGgrSvGM+FvP4qnPB1WIsSFeYtSxttnx7Oyius
-IB8jZTQcPWIoXhq6/S/v6fHoRKq+z8WUsiBi3kFSeBVgTCB04nUSJCyg6te2UTMh
-6TORambWPeQZV6uDtS6R0RBBRfQpS5WcKglZ3HoBjW0ymb5dO00MIwhmcjYIlw19
-9P1D/Az5ZxCI0v01oeiJNVp19Zy6koNXASXUmhYIuyb+fFUNbWLJCRZqx+qfMoqN
-dn+0XaFXKd13h111kk2eW00/2V5yzCa76aSE4TPdMyd3LXNYNoEYMmOn6KJNKjh5
-R+4GhnyVLlDKDrDXE8rFNcjTv2iGrT6pNwtzcVI6wY3oQ4IJH1Y1hMMb/duCYjid
-WJSjTzTi9W96C6J/iTlyRLhLHH1SkOissCVK38578FyZ3Pzo28i2ntWzSWeMoxkr
-eYMS+Whxjx0dGP16Q3mu32ZHNNElX4Piv3OEusikFHsOofBZT/9+sRlGSF1aAI+S
-ZjBRKNnoqszwH1j+po7x
-=1UuR
------END PGP SIGNATURE-----
-
---Sig_/I/UIW0Advj2esUnrQ.EEXEd--
+Best regards,
+Martin
