@@ -1,24 +1,14 @@
-Received: from mx2.suse.de ([195.135.220.15])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSUwY-0003LA-95
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 22:06:36 +0000
-From: NeilBrown <neil@brown.name>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Date: Tue, 12 Jun 2018 08:05:13 +1000
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@free-electrons.com,
- frieder.schrempf@exceet.de, computersforpeace@gmail.com, david.wolfe@nxp.com,
- han.xu@nxp.com, festevam@gmail.com, marek.vasut@gmail.com,
- prabhakar.kushwaha@nxp.com, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: honour max_data_size for spi-nor writes
-In-Reply-To: <20180611114916.351ed272@bbrezillon>
-References: <1528708694-19407-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180611114916.351ed272@bbrezillon>
-Message-ID: <87r2ldj7xi.fsf@notabene.neil.brown.name>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
- micalg=pgp-sha256; protocol="application/pgp-signature"
+ id 1fSVgA-0007AD-CV
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 22:52:52 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] ubifs: Fix synced_i_size calculation for xattr inodes
+Date: Tue, 12 Jun 2018 00:52:28 +0200
+Message-Id: <20180611225228.28931-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,74 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---=-=-=
-Content-Type: text/plain
+In ubifs_jnl_update() we sync parent and child inodes to the flash,
+in case of xattrs, the parent inode (AKA host inode) has a non-zero
+data_len. Therefore we need to adjust synced_i_size too.
 
-On Mon, Jun 11 2018, Boris Brezillon wrote:
->
-> Also, I'd prefer to have this patch split in 2:
-> 1/ one patch removing the check in spi_nor_write()
-> 2/ and the second patch removing the while() loop in m25p80_write()
->
-> How about the following commit messages for those 2 patches:
->
-> 1:
-> "
-> mtd: spi-nor: Support controllers with limited TX FIFO size
->
-> Some SPI controllers can't write nor->page_size bytes in a single step
-> because their TX FIFO is too small.
+This issue was reported by ubifs self tests unter a xattr related work
+load.
+UBIFS error (ubi0:0 pid 1896): dbg_check_synced_i_size: ui_size is 4, synced_i_size is 0, but inode is clean
+UBIFS error (ubi0:0 pid 1896): dbg_check_synced_i_size: i_ino 65, i_mode 0x81a4, i_size 4
 
-I no longer think this is good justification for changes to m25p80 or to
-anything outside the low-level SPI driver.  The size of the FIFO is not
-related to the maximum message size.
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/journal.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-An SPI transaction involves:
- - asserting chip-select
- - sending/receiving a bunch of bits
- - deasserting chip-select
-
-That middle part of sending/receiving bits can be done:
- - one bit at a time by bit-banging GPIOs
- - 32 bytes at a time by filling a buffer, running the SPI engine, then
-    reading results out of the buffer (assuming a 32-byte buffer)
- - with one single DMA operation if the SPI engine can DMA to/from
-   main memory
-
-and there are probably other options.
-
-If your SPI engine only handles (say) 32 bytes at a time, then call it
-repeatedly, while holding chip-select asserted the whole time.  The SPI
-clock is controlled by the host and in this case it will not have a
-stable frequency for the whole transaction (occasionally pauses), but
-that doesn't matter.  The slave just watches for the clock transitions
-and don't care when they come as long as they don't come too fast.
-
-I recently modified the mt7621 spi driver (in drivers/staging) to work
-like this and got much better throughput when reading from spi-nor flash
-memory.  It handles writes of full pages (36 bytes at at time!) without
-problems.
-
-Thanks,
-NeilBrown
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlse8hoACgkQOeye3VZi
-gbnSAQ/8DZgVN/kCJ8c8UYke3tZriVzT6F0rL2RBPB3InM7UTKKXpnbDe0V++Xc6
-BVc535dvOY4cxIUK0uTqdsJUzGEA7OIjZbG9G5grv0DSNKqF3S9RmzOFEcR6hUjE
-7gdrb23ehNsgW3gaWO3dNLqGXl7D+ryvAubrFh+GzFcaIiYIKiUCQhNnBUaduGQE
-daLVmOl8YxMFV85R2stN5+Z47wHYQOe/i+P7I4CQZnlDgzcMjsZk+WhBvc4CQ29k
-PIpMVPFIS4RCJvVuSgOGWmAn27FwkgBZf3bhKVMSOGnAJRVYPnjKqpIagzOqgt06
-RnijPVaBUtbcPaTY7HmUtBS8ioPaeT/obgJnU1KxWiGoTexA0NG6pcPL9+0XidlG
-9w2JX9kF2RHzidqKZqrdUha+zZ0U2I/J71+OMY61dtCvUxQiMWgZABlf8GiOnCQK
-hra46nTojuKK5LgI1iHDChzB8qU/ZM7PNv92FTDC0DIODTpe7M9oy++BUKlZOGIA
-prITcYkofPK0rT4bPwWG+RQTH6GtAehnOMtK30vb73F0Zqhl3n6QcR2upArPPbIz
-mMez52S6js95q9iwT7DzDuXfMOMZN6siy3ZgfUKtgr8Pd2NlOMe6CkbD1NGiKMzn
-EQz4SVTTQ9K1iq4iuOtnBneBKJWK4bkhFXDuiMF7rMGuiIZXpnI=
-=t90E
------END PGP SIGNATURE-----
---=-=-=--
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 04c4ec6483e5..1fb123279bb5 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -665,6 +665,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+ 	spin_lock(&ui->ui_lock);
+ 	ui->synced_i_size = ui->ui_size;
+ 	spin_unlock(&ui->ui_lock);
++	if (xent) {
++		spin_lock(&host_ui->ui_lock);
++		host_ui->synced_i_size = host_ui->ui_size;
++		spin_unlock(&host_ui->ui_lock);
++	}
+ 	mark_inode_clean(c, ui);
+ 	mark_inode_clean(c, host_ui);
+ 	return 0;
+-- 
+2.13.6
