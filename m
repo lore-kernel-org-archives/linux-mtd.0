@@ -1,14 +1,28 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSVgA-0007AD-CV
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 22:52:52 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] ubifs: Fix synced_i_size calculation for xattr inodes
-Date: Tue, 12 Jun 2018 00:52:28 +0200
-Message-Id: <20180611225228.28931-1-richard@nod.at>
+ id 1fSVwG-0006S6-U6
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 23:09:31 +0000
+Date: Tue, 12 Jun 2018 07:08:32 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Stefan Agner <stefan@agner.ch>
+Cc: kbuild-all@01.org, boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
+ dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+Message-ID: <201806120747.RxEPI6T2%fengguang.wu@intel.com>
+References: <20180611205224.23340-5-stefan@agner.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180611205224.23340-5-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,37 +32,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In ubifs_jnl_update() we sync parent and child inodes to the flash,
-in case of xattrs, the parent inode (AKA host inode) has a non-zero
-data_len. Therefore we need to adjust synced_i_size too.
+Hi Stefan,
 
-This issue was reported by ubifs self tests unter a xattr related work
-load.
-UBIFS error (ubi0:0 pid 1896): dbg_check_synced_i_size: ui_size is 4, synced_i_size is 0, but inode is clean
-UBIFS error (ubi0:0 pid 1896): dbg_check_synced_i_size: i_ino 65, i_mode 0x81a4, i_size 4
+I love your patch! Perhaps something to improve:
 
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Richard Weinberger <richard@nod.at>
+[auto build test WARNING on mtd/nand/next]
+[also build test WARNING on v4.17 next-20180608]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Stefan-Agner/mtd-rawnand-add-NVIDIA-Tegra-NAND-flash-support/20180612-045611
+base:   git://git.infradead.org/linux-mtd.git nand/next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+   drivers/mtd/nand/raw/tegra_nand.c:422:41: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:425:41: sparse: expression using sizeof(void)
+>> drivers/mtd/nand/raw/tegra_nand.c:656:56: sparse: Using plain integer as NULL pointer
+   drivers/mtd/nand/raw/tegra_nand.c:667:56: sparse: Using plain integer as NULL pointer
+   drivers/mtd/nand/raw/tegra_nand.c:693:56: sparse: Using plain integer as NULL pointer
+   drivers/mtd/nand/raw/tegra_nand.c:759:48: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:759:48: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:762:24: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:762:24: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:792:56: sparse: Using plain integer as NULL pointer
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:814:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:818:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:823:15: sparse: expression using sizeof(void)
+   drivers/mtd/nand/raw/tegra_nand.c:823:15: sparse: expression using sizeof(void)
+
+vim +656 drivers/mtd/nand/raw/tegra_nand.c
+
+   651	
+   652	static int tegra_nand_read_page_raw(struct mtd_info *mtd,
+   653					    struct nand_chip *chip,
+   654					    uint8_t *buf, int oob_required, int page)
+   655	{
+ > 656		void *oob_buf = oob_required ? chip->oob_poi : 0;
+   657	
+   658		return tegra_nand_page_xfer(mtd, chip, buf, oob_buf,
+   659					    mtd->oobsize, page, true);
+   660	}
+   661	
+
 ---
- fs/ubifs/journal.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index 04c4ec6483e5..1fb123279bb5 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -665,6 +665,11 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
- 	spin_lock(&ui->ui_lock);
- 	ui->synced_i_size = ui->ui_size;
- 	spin_unlock(&ui->ui_lock);
-+	if (xent) {
-+		spin_lock(&host_ui->ui_lock);
-+		host_ui->synced_i_size = host_ui->ui_size;
-+		spin_unlock(&host_ui->ui_lock);
-+	}
- 	mark_inode_clean(c, ui);
- 	mark_inode_clean(c, host_ui);
- 	return 0;
--- 
-2.13.6
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
