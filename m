@@ -1,6 +1,6 @@
 Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSTo6-0001gi-JV
+ id 1fSTo6-0001gh-JU
  for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 20:53:04 +0000
 From: Stefan Agner <stefan@agner.ch>
 To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
@@ -13,9 +13,9 @@ Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
  gaireg@gaireg.de, linux-mtd@lists.infradead.org,
  linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v4 6/6] ARM: dts: tegra: enable NAND flash on Colibri T20
-Date: Mon, 11 Jun 2018 22:52:24 +0200
-Message-Id: <20180611205224.23340-7-stefan@agner.ch>
+Subject: [PATCH v4 5/6] ARM: dts: tegra: add Tegra20 NAND flash controller node
+Date: Mon, 11 Jun 2018 22:52:23 +0200
+Message-Id: <20180611205224.23340-6-stefan@agner.ch>
 In-Reply-To: <20180611205224.23340-1-stefan@agner.ch>
 References: <20180611205224.23340-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,40 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enables the on-module ONFI conformant NAND flash.
+From: Lucas Stach <dev@lynxeye.de>
+
+Add basic controller device tree node to be extended by
+individual boards. Use the assigned-clocks mechanism to set
+NDFLASH clock to a sensible default rate of 150MHz.
 
 Signed-off-by: Lucas Stach <dev@lynxeye.de>
 Signed-off-by: Stefan Agner <stefan@agner.ch>
 ---
- arch/arm/boot/dts/tegra20-colibri-512.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm/boot/dts/tegra20.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/arch/arm/boot/dts/tegra20-colibri-512.dtsi b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-index 5c202b3e3bb1..0c283fb77214 100644
---- a/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-+++ b/arch/arm/boot/dts/tegra20-colibri-512.dtsi
-@@ -462,6 +462,22 @@
- 		};
+diff --git a/arch/arm/boot/dts/tegra20.dtsi b/arch/arm/boot/dts/tegra20.dtsi
+index 0a7136462a1a..530a009086d5 100644
+--- a/arch/arm/boot/dts/tegra20.dtsi
++++ b/arch/arm/boot/dts/tegra20.dtsi
+@@ -425,6 +425,21 @@
+ 		status = "disabled";
  	};
  
 +	nand-controller@70008000 {
-+		status = "okay";
-+
-+		nand@0 {
-+			reg = <0>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			nand-bus-width = <8>;
-+			nand-on-flash-bbt;
-+			nand-ecc-algo = "bch";
-+			nand-is-boot-medium;
-+			nand-ecc-maximize;
-+			wp-gpios = <&gpio TEGRA_GPIO(S, 0) GPIO_ACTIVE_LOW>;
-+		};
++		compatible = "nvidia,tegra20-nand";
++		reg = <0x70008000 0x100>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		interrupts = <GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>;
++		clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		clock-names = "nand";
++		resets = <&tegra_car 13>;
++		reset-names = "nand";
++		assigned-clocks = <&tegra_car TEGRA20_CLK_NDFLASH>;
++		assigned-clock-rates = <150000000>;
++		status = "disabled";
 +	};
 +
- 	usb@c5004000 {
- 		status = "okay";
- 		nvidia,phy-reset-gpio = <&gpio TEGRA_GPIO(V, 1)
+ 	pwm: pwm@7000a000 {
+ 		compatible = "nvidia,tegra20-pwm";
+ 		reg = <0x7000a000 0x100>;
 -- 
 2.17.1
