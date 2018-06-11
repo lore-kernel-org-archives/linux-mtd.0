@@ -1,21 +1,30 @@
-Received: from mail-wr0-x243.google.com ([2a00:1450:400c:c0c::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSGu4-0006Xu-VH
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 07:06:15 +0000
-Received: by mail-wr0-x243.google.com with SMTP id w7-v6so19122143wrn.6
- for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2018 00:06:01 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSHND-0006ZS-EE
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 07:36:22 +0000
+Date: Mon, 11 Jun 2018 09:35:55 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Mark Brown <broonie@kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>, Vignesh R
+ <vigneshr@ti.com>, Kamal Dasu <kdasu.kdev@gmail.com>, Peter Pan
+ <peterpansjtu@gmail.com>, Frieder Schrempf <frieder.schrempf@exceet.de>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>, Sourav Poddar
+ <sourav.poddar@ti.com>
+Subject: Re: [RFC PATCH 5/6] mtd: spi-nor: Use the spi_mem_xx() API
+Message-ID: <20180611093555.50f8682d@bbrezillon>
+In-Reply-To: <DB6PR0402MB28380B10F866F08E0CDC6B6999780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+References: <20180205232120.5851-1-boris.brezillon@bootlin.com>
+ <20180205232120.5851-6-boris.brezillon@bootlin.com>
+ <DB6PR0402MB28380B10F866F08E0CDC6B6999780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <CAAR3sxP74UZxBWgEV1091QpU7hP9VyjVioOtCvWW00+TcVw53A@mail.gmail.com>
-References: <d03e8f457821494f951fabac2933bbfe@SIWEX5A.sing.micron.com>
- <CAAR3sxP74UZxBWgEV1091QpU7hP9VyjVioOtCvWW00+TcVw53A@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Mon, 11 Jun 2018 09:05:59 +0200
-Message-ID: <CAFLxGvzYS069ffcNz72BJt2gg15O+=x6F-7Vd_U8oifh-_5bBQ@mail.gmail.com>
-Subject: Re: Re: UBIFS node corruption issue
-To: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>
-Cc: "Bean Huo (beanhuo)" <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +34,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 11, 2018 at 7:19 AM, Sourabh Jain (R&D - Telecom)
-<sourabh.jain@matrixcomsec.com> wrote:
-> On Mon, Jun 4, 2018 at 4:39 PM, Bean Huo (beanhuo) <beanhuo@micron.com> wrote:
->> Resend seems delivery failed
->>
->>
->>
-> Hi Bean,
->> Eg, what kind of NAND, SLC or MLC, what happened to this NAND before this
->> issue?
->>
-> We are using SLC NAND and our system was in the field when the problem occurred.
->
-> Hi Richard,
-> We are a product based company. We have purchased SDK from a
-> semiconductor vendor. There are so many patches from vendor for that
-> particular SoC.
-> So, we can not directly use latest kernel version.
-> We are using Linux 3.2.54 kernel provided to us along with SDK, Could
-> you please suggest the most stable kernel version after Linux 3.2.54
-> kernel version which we can use with the least modifications?
+Hi Yogesh,
 
-I strongly suggest using the latest mainline kernel, 4.17, without vendor stuff.
-If we are sure that the problem is mainline specific we can start bug hunting.
+On Mon, 11 Jun 2018 06:25:02 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
--- 
-Thanks,
-//richard
+
+>  static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  			    const u_char *buf)
+>  {
+>  	struct m25p *flash = nor->priv;
+> -	struct spi_device *spi = flash->spi;
+> -	unsigned int inst_nbits, addr_nbits, data_nbits, data_idx;
+> -	struct spi_transfer t[3] = {};
+> -	struct spi_message m;
+> -	int cmd_sz = m25p_cmdsz(nor);
+> -	ssize_t ret;
+> +	u8 addrs[4];
+> +	struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
+> +				   SPI_MEM_OP_ADDRS(nor->addr_width, addrs, 1),
+> +				   SPI_MEM_OP_DUMMY(0, 1),
+> +				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
+> +	size_t remaining = len;
+> +	int ret;
+>  
+>  	/* get transfer protocols. */
+> -	inst_nbits = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+> -	addr_nbits = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+> -	data_nbits = spi_nor_get_protocol_data_nbits(nor->write_proto);
+> -
+> -	spi_message_init(&m);
+> +	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
+> +	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
+> +	op.dummy.buswidth = op.addr.buswidth;
+> +	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+>  
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+> -		cmd_sz = 1;
+> -
+> -	flash->command[0] = nor->program_opcode;
+> -	m25p_addr2cmd(nor, to, flash->command);
+> +		op.addr.nbytes = 0;
+>  
+> -	t[0].tx_buf = flash->command;
+> -	t[0].tx_nbits = inst_nbits;
+> -	t[0].len = cmd_sz;
+> -	spi_message_add_tail(&t[0], &m);
+> +	while (remaining) {
+> +		if (op.addr.nbytes)
+> +			m25p_offs2addr(nor, to, addrs);
+>  
+> -	/* split the op code and address bytes into two transfers if needed. */
+> -	data_idx = 1;
+> -	if (addr_nbits != inst_nbits) {
+> -		t[0].len = 1;
+> +		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+> +		ret = spi_mem_adjust_op_size(flash->spimem, &op);
+> +		if (ret)
+> +			return ret;
+>  
+> -		t[1].tx_buf = &flash->command[1];
+> -		t[1].tx_nbits = addr_nbits;
+> -		t[1].len = cmd_sz - 1;
+> -		spi_message_add_tail(&t[1], &m);
+> +		ret = spi_mem_exec_op(flash->spimem, &op);
+> +		if (ret)
+> +			return ret;
+>  
+> -		data_idx = 2;
+> +		to += op.data.nbytes;
+> +		remaining -= op.data.nbytes;
+> +		op.data.buf.out += op.data.nbytes;
+> 
+> For NOR flashes, WRITE command is being send in order as below
+> Write Enable command
+> Flash Write command
+> Status Register command
+> 
+> But for case when Write data size is more than op.data.nbytes then for
+> remaining data size chunk, we are just sending the FLASH WRITE Command
+> and this is the reason I am seeing failure after 64 byte data size.
+> 
+
+Hm, I guess we'll have to revive this patch [1] (see below for a
+modified version based on the spi-mem changes).
+
+Regards,
+
+Boris
+
+[1]https://patchwork.ozlabs.org/patch/905507/
+
+--->8---
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index e84563d2067f..f2403b36649c 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -84,22 +84,16 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+        if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+                op.addr.nbytes = 0;
+ 
+-       while (remaining) {
+-               op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+-               ret = spi_mem_adjust_op_size(flash->spimem, &op);
+-               if (ret)
+-                       return ret;
+-
+-               ret = spi_mem_exec_op(flash->spimem, &op);
+-               if (ret)
+-                       return ret;
++       op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
++       ret = spi_mem_adjust_op_size(flash->spimem, &op);
++       if (ret)
++               return ret;
+ 
+-               op.addr.val += op.data.nbytes;
+-               remaining -= op.data.nbytes;
+-               op.data.buf.out += op.data.nbytes;
+-       }
++       ret = spi_mem_exec_op(flash->spimem, &op);
++       if (ret)
++               return ret;
+ 
+-       return len;
++       return op.data.nbytes;
+ }
+ 
+ /*
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 5bfa36e95f35..3e635430bfde 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1431,13 +1431,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
+                        goto write_err;
+                *retlen += written;
+                i += written;
+-               if (written != page_remain) {
+-                       dev_err(nor->dev,
+-                               "While writing %zu bytes written %zd bytes\n",
+-                               page_remain, written);
+-                       ret = -EIO;
+-                       goto write_err;
+-               }
+        }
+ 
+ write_err:
