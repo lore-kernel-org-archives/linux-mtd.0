@@ -1,29 +1,31 @@
-Received: from mail-wr0-x244.google.com ([2a00:1450:400c:c0c::244])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSMaq-0000KB-5A
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 13:10:45 +0000
-Received: by mail-wr0-x244.google.com with SMTP id w7-v6so20353380wrn.6
- for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2018 06:10:32 -0700 (PDT)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Stefan Agner <stefan@agner.ch>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Date: Mon, 11 Jun 2018 16:10:21 +0300
-Message-ID: <6764263.x6FQro3A0J@dimapc>
-In-Reply-To: <20180611135013.7bb5b59b@bbrezillon>
-References: <20180531221637.6017-1-stefan@agner.ch>
- <1862022.905gDpZtpO@dimapc> <20180611135013.7bb5b59b@bbrezillon>
+ id 1fSMm8-0000sV-Gb
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 13:22:41 +0000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Mon, 11 Jun 2018 18:52:12 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
+ <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
+ for bad block check
+In-Reply-To: <20180607145326.339170fd@xps13>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
+ <20180526104629.74315561@xps13>
+ <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
+ <20180528090352.254022ed@xps13>
+ <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
+ <20180607145326.339170fd@xps13>
+Message-ID: <7179eb382dbd3d49e2066178914636fd@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,96 +35,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, 11 June 2018 14:50:13 MSK Boris Brezillon wrote:
-> On Mon, 11 Jun 2018 14:45:45 +0300
+On 2018-06-07 18:23, Miquel Raynal wrote:
+> Hi Abhishek,
 > 
-> Dmitry Osipenko <digetx@gmail.com> wrote:
-> > On Sunday, 10 June 2018 18:32:02 MSK Boris Brezillon wrote:
-> > > On Sun, 10 Jun 2018 18:00:06 +0300
-> > > 
-> > > Dmitry Osipenko <digetx@gmail.com> wrote:
-> > > > > >> That seems a lot of work for a code path I do not intend to ever
-> > > > > >> use
-> > > > > >> 
-> > > > > >> :-)
-> > > > > > 
-> > > > > > Are you sure that resetting HW resets the timing and other
-> > > > > > registers
-> > > > > > configuration? Reset implementation is HW-specific, like for
-> > > > > > example
-> > > > > > in a
-> > > > > > case of a video decoder the registers state is re-intialized on HW
-> > > > > > reset,
-> > > > > > but registers configuration is untouched in a case of resetting
-> > > > > > GPU.
-> > > > > > I'd
-> > > > > > suggest to check whether NAND controller resetting affects the HW
-> > > > > > configuration.
-> > > > > 
-> > > > > It seems all registers are set back to their documented reset value:
-> > > > > 
-> > > > > [boot loader/ROM initialized values]
-> > > > > [    1.270253] tegra-nand 70008000.nand: Tegra NAND controller
-> > > > > register
-> > > > > dump
-> > > > > [    1.277051] tegra-nand 70008000.nand: COMMAND: 0x66880104
-> > > > > [    1.282457] tegra-nand 70008000.nand: STATUS: 0x00000101
-> > > > > [    1.287763] tegra-nand 70008000.nand: ISR: 0x01000120
-> > > > > [    1.292818] tegra-nand 70008000.nand: IER: 0x00000000
-> > > > > [    1.297863] tegra-nand 70008000.nand: CONFIG: 0x00840000
-> > > > > [    1.303181] tegra-nand 70008000.nand: TIMING: 0x05040000
-> > > > > [    1.308486] tegra-nand 70008000.nand: TIMING2: 0x00000003
-> > > > > [    1.313897] tegra-nand 70008000.nand: CMD_REG1: 0x00000000
-> > > > > [    1.319377] tegra-nand 70008000.nand: CMD_REG2: 0x00000030
-> > > > > [    1.324868] tegra-nand 70008000.nand: ADDR_REG1: 0x03000000
-> > > > > [    1.330435] tegra-nand 70008000.nand: ADDR_REG2: 0x00000000
-> > > > > [    1.336011] tegra-nand 70008000.nand: DMA_MST_CTRL: 0x04100004
-> > > > > [    1.341838] tegra-nand 70008000.nand: DMA_CFG_A: 0x00000fff
-> > > > > [    1.347415] tegra-nand 70008000.nand: DMA_CFG_B: 0x0000001b
-> > > > > [    1.352991] tegra-nand 70008000.nand: FIFO_CTRL: 0x0000aa00
-> > > > > [reset]
-> > > > > [    1.358559] tegra-nand 70008000.nand: Tegra NAND controller
-> > > > > register
-> > > > > dump
-> > > > > [    1.365352] tegra-nand 70008000.nand: COMMAND: 0x00800004
-> > > > > [    1.370744] tegra-nand 70008000.nand: STATUS: 0x00000101
-> > > > > [    1.376060] tegra-nand 70008000.nand: ISR: 0x00000100
-> > > > > [    1.381105] tegra-nand 70008000.nand: IER: 0x00000000
-> > > > > [    1.386161] tegra-nand 70008000.nand: CONFIG: 0x10030000
-> > > > > [    1.391466] tegra-nand 70008000.nand: TIMING: 0x00000000
-> > > > > [    1.396782] tegra-nand 70008000.nand: TIMING2: 0x00000000
-> > > > > [    1.402174] tegra-nand 70008000.nand: CMD_REG1: 0x00000000
-> > > > > [    1.407664] tegra-nand 70008000.nand: CMD_REG2: 0x00000000
-> > > > > [    1.413156] tegra-nand 70008000.nand: ADDR_REG1: 0x00000000
-> > > > > [    1.418722] tegra-nand 70008000.nand: ADDR_REG2: 0x00000000
-> > > > > [    1.424297] tegra-nand 70008000.nand: DMA_MST_CTRL: 0x24000000
-> > > > > [    1.430123] tegra-nand 70008000.nand: DMA_CFG_A: 0x00000000
-> > > > > [    1.435698] tegra-nand 70008000.nand: DMA_CFG_B: 0x00000000
-> > > > > [    1.441264] tegra-nand 70008000.nand: FIFO_CTRL: 0x0000aa00
-> > > > 
-> > > > Alright, then indeed it's not really worth to bother with HW resetting
-> > > > here. Probably only a kernel module reload or a reboot will help if HW
-> > > > is
-> > > > hung. Maybe NAND controller / chip recovering is something that NAND
-> > > > core
-> > > > should be handling in a such case by providing a
-> > > > nand_controller_reset()
-> > > > hook?
-> > > 
-> > > I don't see what the core could do to help with that. We'd end up with
-> > > a new hook implemented by the controller that would be called by the
-> > > controller driver when it knows it's safe to reset the controller. So,
-> > > why bother exposing that in the core?
-> > 
-> > Giving a driver more flexibility is always a good thing. I'm not really
-> > familiar with mtd/ and maybe indeed it doesn't make much sense to move HW
-> > resetting to NAND core, though it looked to me that it should be always
-> > safe for NAND core to initiate HW resetting after IO failure and hence
-> > would be cleaner and nicer to have a unified HW reset management rather
-> > than to have each driver to do its own thing.
+> On Mon, 28 May 2018 15:40:52 +0530, Abhishek Sahu
+> <absahu@codeaurora.org> wrote:
 > 
-> No really, the NAND core can't know when it's appropriate to reset the
-> controller, and what this reset will do, hence it doesn't know if the
-> chips connected to the controller should also be reset.
+>> On 2018-05-28 12:33, Miquel Raynal wrote:
+>> > Hi Abhishek,
+>> > >> >>  /* implements ecc->read_page() */
+>> >> >>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct >> nand_chip *chip,
+>> >> >>  				uint8_t *buf, int oob_required, int page)
+>> >> >> @@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_info >> *mtd, loff_t ofs)
+>> >> >>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>> >> >>  	int page, ret, bbpos, bad = 0;
+>> >> >>  	u32 flash_status;
+>> >> >> +	u8 *bbm_bytes_buf = chip->data_buf;
+>> >> >> >>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
+>> >> >> >> @@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
+>> >> >>  	 * that contains the BBM
+>> >> >>  	 */
+>> >> >>  	host->use_ecc = false;
+>> >> >> +	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>> >> > > Are we sure there is no layout with only 1 step?
+>> >> >>   All the layouts are such that, the BBM will come in
+>> >>   first byte of spare area.
+>> >> >>   For 4 bit ECC, the cw_size is 528 so for 2K page
+>> >> >>    2048 - 528 * 3 = 464
+>> > > My question was more about small page NANDs. But I suppose it works
+>> > too if ecc->steps == 1.
+>> >
+>>   Correct Miquel.
+>> 
 
-Okay!
+
+>> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in
+>> >>   full page.
+>> >> >> > >> >>  	clear_bam_transaction(nandc);
+>> >> >> -	ret = copy_last_cw(host, page);
+>> >> >> -	if (ret)
+>> >> >> +	clear_read_regs(nandc);
+>> >> >> +
+>> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
+>> >> >> +	update_rw_regs(host, 1, true);
+>> >> >> +
+>> >> >> +	/*
+>> >> >> +	 * The last codeword data will be copied from NAND device to NAND
+>> >> >> +	 * controller internal HW buffer. Copy only required BBM size bytes
+>> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
+>> >> >> +	 * bbpos offset.
+>> >> >> +	 */
+>> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+>> >> >> +	config_nand_single_cw_page_read(nandc);
+>> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
+>> >> >> +		      host->bbm_size, 0);
+>> >> >> +
+>> >> >> +	ret = submit_descs(nandc);
+>> >> >> +	free_descs(nandc);
+>> >> >> +	if (ret) {
+>> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
+>> >> >>  		goto err;
+>> >> >> +	}
+>> >> >> >>  	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
+>> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
+>> >> >>  		goto err;
+>> >> >>  	}
+>> >> >> >> -	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>> >> >> -
+>> >> >> -	bad = nandc->data_buffer[bbpos] != 0xff;
+>> >> >> +	bad = bbm_bytes_buf[0] != 0xff;
+>> >> > > This is suspect as it still points to the beginning of the data buffer.
+>> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
+>> >> >
+>> >>   The main thing here is
+>> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+>> >> >>   After reading one complete CW from NAND, the data will be still
+>> >>   in NAND HW buffer.
+>> >> >>   The above register tells that we need to read data from
+>> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
+>> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
+>> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then
+>> > it's ok.
+>> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte.
+>> >>   and bbm_bytes_buf[1] will contain the BBM second byte.
+>> >> >>   Regards,
+>> >>   Abhishek
+>> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16)
+>> >> >> -		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
+>> >> >> +		bad = bad || (bbm_bytes_buf[1] != 0xff);
+>> > > Sorry, my mistake, I did not see the above line.
+>> > > However, technically, the BBM could be located in the first, second or
+>> > last page of the block. You should check the three of them are 0xFF
+>> > before declaring the block is not bad.
+>> > > The more I look at the function, the more I wonder if you actually need
+>> > it. Why does the generic nand_block_bad() implementation in the core
+>> > do not fit?
+>> 
+>>   The BBM bytes can be accessed in raw mode only for QCOM NAND
+>>   Contoller. We started with following patch for initial patches
+>> 
+>>   http://patchwork.ozlabs.org/patch/508565/
+>> 
+>>   I am also not very much sure, how can we go ahead now.
+>>   Ideally we need to use generic function only which
+>>   requires raw_read.
+>> 
+> 
+> I see, thanks for pointing this thread.
+> 
+> Well for now then let's keep our driver-specific implementation.
+> 
+> I will just ask you to do a consistent check as requested above (you
+> can copy code from the core) and add a comment above this function
+> explaining why it is needed (what you just told me).
+> 
+
+  Hi Miquel,
+
+  I explored more regarding making custom bad block functions in this
+  thread and it looks like, we can move to generic block_bad function
+  by small changes in QCOM NAND driver
+  only. The main problem was, in read page with ECC, the bad block
+  byte was skipped.
+
+  But controller is copying the bad block bytes in another register
+  with following status bytes.
+
+  BAD_BLOCK_STATUS : With every page read operation, when the controller
+  reads a page with a bad block, it writes the bad block status data into
+  this register.
+
+  We can update the BBM bytes at start of OOB data in read_oob function
+  with these status bytes. It will help in getting rid of driver-specific
+  implementation for chip->block_bad.
+
+  For chip->block_markbad, if we want to get rid of
+  driver-specific implementation then we can have
+  following logic
+
+  in write_oob function check for bad block bytes in oob
+  and do the raw write for updating BBM bytes alone in
+  flash if BBM bytes are non 0xff.
+
+  Thanks,
+  Abhishek
