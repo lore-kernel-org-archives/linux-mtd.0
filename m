@@ -1,31 +1,26 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSMm8-0000sV-Gb
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 13:22:41 +0000
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSO1c-0001BC-EC
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 14:43:18 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23990475AbeFKOmPjv0yq (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Mon, 11 Jun 2018 16:42:15 +0200
+Date: Mon, 11 Jun 2018 16:42:14 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-mtd@lists.infradead.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: atmel-nand-controller: NAND chip selects?
+Message-ID: <20180611144214.GA19449@lenoch>
+References: <20180611110425.GA4059@lenoch> <20180611132131.4f175aea@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Mon, 11 Jun 2018 18:52:12 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
- <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
- for bad block check
-In-Reply-To: <20180607145326.339170fd@xps13>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
- <20180526104629.74315561@xps13>
- <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
- <20180528090352.254022ed@xps13>
- <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
- <20180607145326.339170fd@xps13>
-Message-ID: <7179eb382dbd3d49e2066178914636fd@codeaurora.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180611132131.4f175aea@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,147 +30,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-06-07 18:23, Miquel Raynal wrote:
-> Hi Abhishek,
+On Mon, Jun 11, 2018 at 01:21:31PM +0200, Boris Brezillon wrote:
+> On Mon, 11 Jun 2018 13:04:25 +0200
+> Ladislav Michl <ladis@linux-mips.org> wrote:
 > 
-> On Mon, 28 May 2018 15:40:52 +0530, Abhishek Sahu
-> <absahu@codeaurora.org> wrote:
+> > Consider there are more NAND chips connected to the same lines and only nCE
+> > (connected to GPIO line one per each chip) is used to select them.
+> > How is driver supposed to work in such situation?
+> > Common memory region cannot be requested multiple times as well as the
+> > same gpio for R/B cannot be requested.
 > 
->> On 2018-05-28 12:33, Miquel Raynal wrote:
->> > Hi Abhishek,
->> > >> >>  /* implements ecc->read_page() */
->> >> >>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct >> nand_chip *chip,
->> >> >>  				uint8_t *buf, int oob_required, int page)
->> >> >> @@ -2118,6 +2083,7 @@ static int qcom_nandc_block_bad(struct mtd_info >> *mtd, loff_t ofs)
->> >> >>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
->> >> >>  	int page, ret, bbpos, bad = 0;
->> >> >>  	u32 flash_status;
->> >> >> +	u8 *bbm_bytes_buf = chip->data_buf;
->> >> >> >>  	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
->> >> >> >> @@ -2128,11 +2094,31 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
->> >> >>  	 * that contains the BBM
->> >> >>  	 */
->> >> >>  	host->use_ecc = false;
->> >> >> +	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
->> >> > > Are we sure there is no layout with only 1 step?
->> >> >>   All the layouts are such that, the BBM will come in
->> >>   first byte of spare area.
->> >> >>   For 4 bit ECC, the cw_size is 528 so for 2K page
->> >> >>    2048 - 528 * 3 = 464
->> > > My question was more about small page NANDs. But I suppose it works
->> > too if ecc->steps == 1.
->> >
->>   Correct Miquel.
->> 
+> I thought you could request several times the same GPIO if it's in input
+> mode, but maybe I'm wrong.
 
+Well, it does not seem to work:
+atmel-nand-controller 10000000.ebi:nand-controller: Failed to get R/B gpio (err = -16)
 
->> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in
->> >>   full page.
->> >> >> > >> >>  	clear_bam_transaction(nandc);
->> >> >> -	ret = copy_last_cw(host, page);
->> >> >> -	if (ret)
->> >> >> +	clear_read_regs(nandc);
->> >> >> +
->> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
->> >> >> +	update_rw_regs(host, 1, true);
->> >> >> +
->> >> >> +	/*
->> >> >> +	 * The last codeword data will be copied from NAND device to NAND
->> >> >> +	 * controller internal HW buffer. Copy only required BBM size bytes
->> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
->> >> >> +	 * bbpos offset.
->> >> >> +	 */
->> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
->> >> >> +	config_nand_single_cw_page_read(nandc);
->> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
->> >> >> +		      host->bbm_size, 0);
->> >> >> +
->> >> >> +	ret = submit_descs(nandc);
->> >> >> +	free_descs(nandc);
->> >> >> +	if (ret) {
->> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
->> >> >>  		goto err;
->> >> >> +	}
->> >> >> >>  	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
->> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
->> >> >>  		goto err;
->> >> >>  	}
->> >> >> >> -	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
->> >> >> -
->> >> >> -	bad = nandc->data_buffer[bbpos] != 0xff;
->> >> >> +	bad = bbm_bytes_buf[0] != 0xff;
->> >> > > This is suspect as it still points to the beginning of the data buffer.
->> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
->> >> >
->> >>   The main thing here is
->> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
->> >> >>   After reading one complete CW from NAND, the data will be still
->> >>   in NAND HW buffer.
->> >> >>   The above register tells that we need to read data from
->> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
->> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
->> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then
->> > it's ok.
->> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte.
->> >>   and bbm_bytes_buf[1] will contain the BBM second byte.
->> >> >>   Regards,
->> >>   Abhishek
->> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16)
->> >> >> -		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
->> >> >> +		bad = bad || (bbm_bytes_buf[1] != 0xff);
->> > > Sorry, my mistake, I did not see the above line.
->> > > However, technically, the BBM could be located in the first, second or
->> > last page of the block. You should check the three of them are 0xFF
->> > before declaring the block is not bad.
->> > > The more I look at the function, the more I wonder if you actually need
->> > it. Why does the generic nand_block_bad() implementation in the core
->> > do not fit?
->> 
->>   The BBM bytes can be accessed in raw mode only for QCOM NAND
->>   Contoller. We started with following patch for initial patches
->> 
->>   http://patchwork.ozlabs.org/patch/508565/
->> 
->>   I am also not very much sure, how can we go ahead now.
->>   Ideally we need to use generic function only which
->>   requires raw_read.
->> 
+> > Something as davinci_nand for
+> > memory region? Use 'ranges' property? How should one express in DT gpio
+> > is shared between child nodes?
 > 
-> I see, thanks for pointing this thread.
-> 
-> Well for now then let's keep our driver-specific implementation.
-> 
-> I will just ask you to do a consistent check as requested above (you
-> can copy code from the core) and add a comment above this function
-> explaining why it is needed (what you just told me).
-> 
+> For both problems, the solution is to reserve the resources at the NAND
+> controller level instead of the NAND level. It's pretty easy for the CS
+> memory range, because the driver can easily detect when the same CS is
+> used by different NAND chips. It's a bit more complicated for the R/B
+> pins.
 
-  Hi Miquel,
+Do you mean something like this?
 
-  I explored more regarding making custom bad block functions in this
-  thread and it looks like, we can move to generic block_bad function
-  by small changes in QCOM NAND driver
-  only. The main problem was, in read page with ECC, the bad block
-  byte was skipped.
+		ebi: ebi@10000000 {
+			status = "okay";
+			pinctrl-0 = <&pinctrl_nand_cs &pinctrl_nand_cs1 &pinctrl_nand_rb>;
+			pinctrl-names = "default";
 
-  But controller is copying the bad block bytes in another register
-  with following status bytes.
+			nand_controller: nand-controller {
+				status = "okay";
+/*				reg = <0x3 0x0 0x800000>; */
+				nand@3,0 {
+					reg = <0x3 0x0 0x800000>;
+					rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
+					cs-gpios = <&pioC 8 GPIO_ACTIVE_HIGH>;
+					nand-bus-width = <8>;
+					nand-ecc-mode = "soft";
+					nand-ecc-algo = "bch";
+					nand-ecc-strength = <8>;
+					nand-on-flash-bbt;
+					label = "atmel_nand";
+				};
+				nand@3,1 {
+					reg = <0x3 0x0 0x800000>;
+					rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
+					cs-gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
+					nand-bus-width = <8>;
+					nand-ecc-mode = "soft";
+					nand-ecc-algo = "bch";
+					nand-ecc-strength = <8>;
+					nand-on-flash-bbt;
+					label = "atmel_nand";
+				};
+			};
+		};
 
-  BAD_BLOCK_STATUS : With every page read operation, when the controller
-  reads a page with a bad block, it writes the bad block status data into
-  this register.
+Note the commented out 'reg' property. I'm not sure if you meant to actively
+compare 'reg's of nand child nodes or put 'reg' property on 'nand-controller'
+level (latter does not currently fly):
+atmel-ebi 10000000.ebi: missing or invalid timings definition in /ahb/ebi@10000000/nand-controller
+atmel-ebi 10000000.ebi: failed to configure EBI bus for /ahb/ebi@10000000/nand-controller, disabling the device
 
-  We can update the BBM bytes at start of OOB data in read_oob function
-  with these status bytes. It will help in getting rid of driver-specific
-  implementation for chip->block_bad.
-
-  For chip->block_markbad, if we want to get rid of
-  driver-specific implementation then we can have
-  following logic
-
-  in write_oob function check for bad block bytes in oob
-  and do the raw write for updating BBM bytes alone in
-  flash if BBM bytes are non 0xff.
-
-  Thanks,
-  Abhishek
+Thank you,
+	ladis
