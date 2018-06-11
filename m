@@ -1,21 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSTT8-0007it-Bf
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 20:31:18 +0000
-Date: Mon, 11 Jun 2018 22:30:51 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: linux-mtd@lists.infradead.org, Alexandre Belloni
- <alexandre.belloni@bootlin.com>, Nicolas Ferre
- <nicolas.ferre@microchip.com>
-Subject: Re: atmel-nand-controller: NAND chip selects?
-Message-ID: <20180611223051.09129302@bbrezillon>
-In-Reply-To: <20180611144214.GA19449@lenoch>
-References: <20180611110425.GA4059@lenoch> <20180611132131.4f175aea@bbrezillon>
- <20180611144214.GA19449@lenoch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSTns-0001Sk-W0
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 20:52:43 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com
+Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v4 1/6] mtd: rawnand: add Reed-Solomon error correction
+ algorithm
+Date: Mon, 11 Jun 2018 22:52:19 +0200
+Message-Id: <20180611205224.23340-2-stefan@agner.ch>
+In-Reply-To: <20180611205224.23340-1-stefan@agner.ch>
+References: <20180611205224.23340-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,120 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 11 Jun 2018 16:42:14 +0200
-Ladislav Michl <ladis@linux-mips.org> wrote:
+Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
 
-> On Mon, Jun 11, 2018 at 01:21:31PM +0200, Boris Brezillon wrote:
-> > On Mon, 11 Jun 2018 13:04:25 +0200
-> > Ladislav Michl <ladis@linux-mips.org> wrote:
-> >   
-> > > Consider there are more NAND chips connected to the same lines and only nCE
-> > > (connected to GPIO line one per each chip) is used to select them.
-> > > How is driver supposed to work in such situation?
-> > > Common memory region cannot be requested multiple times as well as the
-> > > same gpio for R/B cannot be requested.  
-> > 
-> > I thought you could request several times the same GPIO if it's in input
-> > mode, but maybe I'm wrong.  
-> 
-> Well, it does not seem to work:
-> atmel-nand-controller 10000000.ebi:nand-controller: Failed to get R/B gpio (err = -16)
-> 
-> > > Something as davinci_nand for
-> > > memory region? Use 'ranges' property? How should one express in DT gpio
-> > > is shared between child nodes?  
-> > 
-> > For both problems, the solution is to reserve the resources at the NAND
-> > controller level instead of the NAND level. It's pretty easy for the CS
-> > memory range, because the driver can easily detect when the same CS is
-> > used by different NAND chips. It's a bit more complicated for the R/B
-> > pins.  
-> 
-> Do you mean something like this?
-> 
-> 		ebi: ebi@10000000 {
-> 			status = "okay";
-> 			pinctrl-0 = <&pinctrl_nand_cs &pinctrl_nand_cs1 &pinctrl_nand_rb>;
-> 			pinctrl-names = "default";
-> 
-> 			nand_controller: nand-controller {
-> 				status = "okay";
-> /*				reg = <0x3 0x0 0x800000>; */
-> 				nand@3,0 {
-> 					reg = <0x3 0x0 0x800000>;
-> 					rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-> 					cs-gpios = <&pioC 8 GPIO_ACTIVE_HIGH>;
-> 					nand-bus-width = <8>;
-> 					nand-ecc-mode = "soft";
-> 					nand-ecc-algo = "bch";
-> 					nand-ecc-strength = <8>;
-> 					nand-on-flash-bbt;
-> 					label = "atmel_nand";
-> 				};
-> 				nand@3,1 {
-> 					reg = <0x3 0x0 0x800000>;
-> 					rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-> 					cs-gpios = <&pioC 14 GPIO_ACTIVE_HIGH>;
-> 					nand-bus-width = <8>;
-> 					nand-ecc-mode = "soft";
-> 					nand-ecc-algo = "bch";
-> 					nand-ecc-strength = <8>;
-> 					nand-on-flash-bbt;
-> 					label = "atmel_nand";
-> 				};
-> 			};
-> 		};
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
+ drivers/mtd/nand/raw/nand_base.c               | 1 +
+ include/linux/mtd/rawnand.h                    | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-I thought a bit more about your problem, and maybe we should have this
-kind of representation:
-
-	ebi: ebi@10000000 {
-		status = "okay";
-		pinctrl-0 = <&pinctrl_nand_cs &pinctrl_nand_cs1 &pinctrl_nand_rb>;
-		pinctrl-names = "default";
-
-		nand_controller: nand-controller {
-			status = "okay";
-			reg = <0x3 0x0 0x800000>;
-			rb-gpios = <&pioC 13 GPIO_ACTIVE_HIGH>;
-			cs-gpios = <&pioC 8 GPIO_ACTIVE_HIGH>,
-				   <&pioC 14 GPIO_ACTIVE_HIGH>;
-
-			#address-cells = <1>;
-			#size-cells = <0>;
-
-			cs0-ebi-id = <3>;
-			cs0-cs-gpio = <0>;
-			cs0-rb-gpio = <0>;
-			cs1-ebi-id = <3>;
-			cs1-cs-gpio = <1>;
-			cs1-rb-gpio = <0>;
-
-			nand@0 {
-				reg = <0>;
-				nand-bus-width = <8>;
-				nand-ecc-mode = "soft";
-				nand-ecc-algo = "bch";
-				nand-ecc-strength = <8>;
-				nand-on-flash-bbt;
-				label = "mynand0";
-			};
-
-			nand@1 {
-				reg = <1>;
-				nand-bus-width = <8>;
-				nand-ecc-mode = "soft";
-				nand-ecc-algo = "bch";
-				nand-ecc-strength = <8>;
-				nand-on-flash-bbt;
-				label = "mynand1";
-			};
- 		};
-	};
-
-This way we have all resources attached to the NAND controller, and a
-translation from virutal CS-ids to physical resources done through the
-csY-xxx props.
-
-Of course, that means patching the DT bindings doc and the EBI + NAND
-controller drivers to support this new representation.
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index 8bb11d809429..eaef8c657aa5 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -25,7 +25,7 @@ Optional NAND chip properties:
+ 		  Deprecated values:
+ 		  "soft_bch": use "soft" and nand-ecc-algo instead
+ - nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Supported values are: "hamming", "bch".
++		 Valid values are: "hamming", "bch", "rs".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index f28c3a555861..9eb5678dd6d0 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5744,6 +5744,7 @@ static int of_get_nand_ecc_mode(struct device_node *np)
+ static const char * const nand_ecc_algos[] = {
+ 	[NAND_ECC_HAMMING]	= "hamming",
+ 	[NAND_ECC_BCH]		= "bch",
++	[NAND_ECC_RS]		= "rs",
+ };
+ 
+ static int of_get_nand_ecc_algo(struct device_node *np)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 5dad59b31244..6a82da8c44ce 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -114,6 +114,7 @@ enum nand_ecc_algo {
+ 	NAND_ECC_UNKNOWN,
+ 	NAND_ECC_HAMMING,
+ 	NAND_ECC_BCH,
++	NAND_ECC_RS,
+ };
+ 
+ /*
+-- 
+2.17.1
