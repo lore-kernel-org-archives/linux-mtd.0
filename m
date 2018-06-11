@@ -1,25 +1,37 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSJwQ-0003z1-SC
- for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 10:20:53 +0000
-Date: Mon, 11 Jun 2018 12:20:37 +0200
-From: Quentin Schulz <quentin.schulz@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: dedekind1@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH 2/2] ubi: introduce ubi.nocheck parameter to skip CRC
- check when attaching ubi vol
-Message-ID: <20180611102037.n5kkdq4mcoixmvti@qschulz>
-References: <95e04a201ac4ef82e68ce8e0c4f548b193e51b55.1524214122.git-series.quentin.schulz@bootlin.com>
- <6551534f88b3aa77cc377c4270c4ddf7fe92cdf4.1524214122.git-series.quentin.schulz@bootlin.com>
- <2085970.qGmQXvoWho@blindfold>
+Received: from mail-eopbgr80087.outbound.protection.outlook.com ([40.107.8.87]
+ helo=EUR04-VI1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSJxA-0004W7-Jm
+ for linux-mtd@lists.infradead.org; Mon, 11 Jun 2018 10:21:52 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "broonie@kernel.org" <broonie@kernel.org>, David Wolfe <david.wolfe@nxp.com>,
+ Fabio Estevam <fabio.estevam@nxp.com>, Prabhakar Kushwaha
+ <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+Date: Mon, 11 Jun 2018 10:21:22 +0000
+Message-ID: <DB6PR0402MB28388D9DEB86629BB58DD5E499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
+ <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
+ <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180608145130.09f979f9@bbrezillon>
+ <DB6PR0402MB2838D514CF38AC5E6C004E8499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180611094616.5c8f82cf@bbrezillon>
+ <DB6PR0402MB283825171DF93AD3C8590DD799780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180611121618.40f4b609@bbrezillon>
+In-Reply-To: <20180611121618.40f4b609@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature"; boundary="3iaoyoq2ztw7sqea"
-Content-Disposition: inline
-In-Reply-To: <2085970.qGmQXvoWho@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,237 +41,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris,
 
---3iaoyoq2ztw7sqea
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+-----Original Message-----
+From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]=20
+Sent: Monday, June 11, 2018 3:46 PM
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: marek.vasut@gmail.com; Frieder Schrempf <frieder.schrempf@exceet.de>; l=
+inux-mtd@lists.infradead.org; linux-spi@vger.kernel.org; dwmw2@infradead.or=
+g; computersforpeace@gmail.com; richard@nod.at; miquel.raynal@bootlin.com; =
+broonie@kernel.org; David Wolfe <david.wolfe@nxp.com>; Fabio Estevam <fabio=
+.estevam@nxp.com>; Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Han Xu =
+<han.xu@nxp.com>; linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI =
+controller
 
-Hi Richard,
+On Mon, 11 Jun 2018 09:38:14 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-On Fri, Apr 20, 2018 at 11:37:07AM +0200, Richard Weinberger wrote:
-> Quentin,
->=20
-> Am Freitag, 20. April 2018, 10:52:41 CEST schrieb Quentin Schulz:
-> > There's already ECC on NAND pages so there may be no need for one to
-> > check the CRC of a UBI volume.
-> >=20
-> > Let's introduce a ubi.nocheck parameter that let one skip the CRC check
-> > when attaching a UBI volume.
-> >=20
-> > This also drastically speeds kernel boot by removing a potentially
-> > useless check, e.g. I gained 3.2s on boot time of a SPEAr600-based board
-> > for a ~20MB UBI volume used as rootfs.
->=20
-> You mean at *open* time of a *static* UBI volume?
-> So I guess the use case is having a read-only filesystem on top of ubiblo=
-ck?
->=20
-> > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-> > ---
-> >  drivers/mtd/ubi/kapi.c | 70 ++++++++++++++++++++++++++++++++++++++++++=
-+-
-> >  drivers/mtd/ubi/ubi.h  |  6 ++++-
-> >  drivers/mtd/ubi/vtbl.c | 24 ++++++++++++++-
-> >  3 files changed, 99 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-> > index d4b2e87..d604cd5 100644
-> > --- a/drivers/mtd/ubi/kapi.c
-> > +++ b/drivers/mtd/ubi/kapi.c
-> > @@ -28,6 +28,9 @@
-> >  #include <asm/div64.h>
-> >  #include "ubi.h"
-> > =20
-> > +struct ubivol_param ubinocheck_param[UBIVOL_MAX_DEVICES];
-> > +int ubinocheck_devs;
-> > +
-> >  /**
-> >   * ubi_do_get_device_info - get information about UBI device.
-> >   * @ubi: UBI device description object
-> > @@ -865,3 +868,70 @@ int ubi_unregister_volume_notifier(struct notifier=
-_block *nb)
-> >  	return blocking_notifier_chain_unregister(&ubi_notifiers, nb);
-> >  }
-> >  EXPORT_SYMBOL_GPL(ubi_unregister_volume_notifier);
-> > +
-> > +static int __init ubinocheckvol_set_param(const char *val,
-> > +					  const struct kernel_param *kp)
-> > +{
-> > +	int i, ret;
-> > +	size_t len;
-> > +	struct ubivol_param *param;
-> > +	char buf[UBIVOL_PARAM_LEN];
-> > +	char *pbuf =3D &buf[0];
-> > +	char *tokens[UBIVOL_PARAM_COUNT];
-> > +
-> > +	if (!val)
-> > +		return -EINVAL;
-> > +
-> > +	len =3D strnlen(val, UBIVOL_PARAM_LEN);
-> > +	if (len =3D=3D 0) {
-> > +		pr_warn("UBI: nocheck: empty 'nocheck=3D' parameter - ignored\n");
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (len =3D=3D UBIVOL_PARAM_LEN) {
-> > +		pr_err("UBI: nocheck: parameter \"%s\" is too long, max. is %d\n",
-> > +		       val, UBIVOL_PARAM_LEN);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	strcpy(buf, val);
-> > +
-> > +	/* Get rid of the final newline */
-> > +	if (buf[len - 1] =3D=3D '\n')
-> > +		buf[len - 1] =3D '\0';
-> > +
-> > +	for (i =3D 0; i < UBIVOL_PARAM_COUNT; i++)
-> > +		tokens[i] =3D strsep(&pbuf, ",");
-> > +
-> > +	param =3D &ubinocheck_param[ubinocheck_devs];
-> > +	if (tokens[1]) {
-> > +		/* Two parameters: can be 'ubi, vol_id' or 'ubi, vol_name' */
-> > +		ret =3D kstrtoint(tokens[0], 10, &param->ubi_num);
-> > +		if (ret < 0)
-> > +			return -EINVAL;
-> > +
-> > +		/* Second param can be a number or a name */
-> > +		ret =3D kstrtoint(tokens[1], 10, &param->vol_id);
-> > +		if (ret < 0) {
-> > +			param->vol_id =3D -1;
-> > +			strcpy(param->name, tokens[1]);
-> > +		}
-> > +	}
-> >
->=20
-> Do we really need this per volume? If your flash is trustworthy, it shoul=
-d not matter.
-> Having it per UBI instance instead of volume would make the code less com=
-plicated.
->=20
+> > > Observation 3:
+> > > As we can support JFFS2 filesystem on NOR flash, so we can expect JFF=
+S2 commands should work fine on NOR flash.
+> > > But with this driver change my mount command is not working.
+> > >=20
+> > > In my target there are 2 flash slave devices connected, and I have gi=
+ven argument to create MTD partition like "mtdparts=3D20c0000.quadspi-1:5M(=
+rcw),10M(test),46M(rootfs) " for 2nd flash.
+> > > Below is output for /proc/mtd commands
+> > >     root@ls1012ardb:~# cat /proc/mtd
+> > >     dev:    size   erasesize  name
+> > >     mtd0: 04000000 00040000 "20c0000.quadspi-0"   --> First 64MB flas=
+h
+> > >     mtd1: 00500000 00040000 "rcw"                               --> S=
+econd 64 MB flash device, 3 MTD partition are created for it.
+> > >     mtd2: 00a00000 00040000 "test"
+> > >     mtd3: 02e00000 00040000 "rootfs"
 
-In my opinion, yes.
+When I do mtd1 + mtd2 + mtd3, I end up with 0x3d00000 instead of 0x4000000.=
+ Is that normal? Do you reserve a bit of space at the end or is it that rcw=
+ is not starting at 0?
 
-Here is my use case: I have one "big" UBI image with different
-volumes and filesystems. One of those is a squashfs that is
-mounted/checked by dm-verity. The hash check done by dm-verity is heavy
-and makes the CRC check done by UBI useless.
+I have given partition size n bootargs as mtdparts=3D20c0000.quadspi-1:5M(r=
+cw),10M(test),46M(rootfs)
+5 + 10 + 46 =3D=3D> 61M i.e. 0x3d00000.
+I have just reserve the bit at the end, we can modify these settings also.
 
-I would like to still be able to check the CRC of the other UBI volumes
-but also have one or more volumes for which I bypass the CRC check done
-by UBI since it's useless and time consuming. By putting a flag per UBI
-image would require me to complexify the layout of my storage medium to
-have one UBI image for the volumes that don't need CRC check and one for
-the volumes that do. It's cumbersome and can be avoided IMHO.
+> > >=20
+> > >     root@ls1012ardb:~# mkdir /media/ram ; flash_eraseall /dev/mtd3
+> > >     flash_eraseall has been replaced by `flash_erase <mtddev> 0 0`; p=
+lease use it
+> > >     Erasing 256 Kibyte @ 0 --  0 % complete [   18.299929] random: cr=
+ng init done
+> > >     Erasing 256 Kibyte @ 2dc0000 -- 100 % complete
+> > >     root@ls1012ardb:~# mount -t jffs2 /dev/mtdblock3 /media/ram/
+> > >=20
+> > > This command didn't finish successfully and there are lot of messages=
+ coming on console mentioning failure in jffs2_scan_eraseblock()
+> > >     [  187.118677] jffs2: jffs2_scan_eraseblock(): Magic bitmask=20
+> > > 0x1985 not found at 0x013c0000: 0x2886 instead
 
-> > +	ubinocheck_devs++;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct kernel_param_ops ubinocheckvol_param_ops =3D {
-> > +	.set	=3D ubinocheckvol_set_param,
-> > +};
-> > +module_param_cb(nocheck, &ubinocheckvol_param_ops, NULL, 0);
-> > +MODULE_PARM_DESC(nocheck,
-> > +		 "Disable CRC check for UBI volumes. Parameter format: nocheck=3Ddev=
-,[num|name]>.\n"
-> > +		 "Multiple \"nocheck\" parameters may be specified.\n"
-> > +		 "Examples\n"
-> > +		 "Using the UBI device, and the volume name:\n"
-> > +		 "ubi.nocheck=3D0,rootfs\n"
-> > +		 "Using both UBI device number and UBI volume number:\n"
-> > +		 "ubi.nocheck=3D0,0\n");
-> > diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> > index 4cc6ec9..2bd89b4 100644
-> > --- a/drivers/mtd/ubi/ubi.h
-> > +++ b/drivers/mtd/ubi/ubi.h
-> > @@ -825,6 +825,12 @@ struct ubivol_param {
-> >  	char name[UBIVOL_PARAM_LEN + 1];
-> >  };
-> > =20
-> > +/* Numbers of elements set in the @ubinocheck_param array */
-> > +extern int ubinocheck_devs;
-> > +
-> > +/* MTD devices specification parameters */
-> > +extern struct ubivol_param ubinocheck_param[UBIVOL_MAX_DEVICES];
-> > +
-> >  #include "debug.h"
-> > =20
-> >  extern struct kmem_cache *ubi_wl_entry_slab;
-> > diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-> > index 263743e..06b6cfd 100644
-> > --- a/drivers/mtd/ubi/vtbl.c
-> > +++ b/drivers/mtd/ubi/vtbl.c
-> > @@ -534,9 +534,10 @@ static int init_volumes(struct ubi_device *ubi,
-> >  			const struct ubi_attach_info *ai,
-> >  			const struct ubi_vtbl_record *vtbl)
-> >  {
-> > -	int i, reserved_pebs =3D 0;
-> > +	int i, j, reserved_pebs =3D 0;
-> >  	struct ubi_ainf_volume *av;
-> >  	struct ubi_volume *vol;
-> > +	struct ubivol_param *param;
-> > =20
-> >  	for (i =3D 0; i < ubi->vtbl_slots; i++) {
-> >  		cond_resched();
-> > @@ -620,6 +621,27 @@ static int init_volumes(struct ubi_device *ubi,
-> >  			(long long)(vol->used_ebs - 1) * vol->usable_leb_size;
-> >  		vol->used_bytes +=3D av->last_data_size;
-> >  		vol->last_eb_bytes =3D av->last_data_size;
-> > +
-> > +		for (j =3D 0; j < ubinocheck_devs; j++) {
-> > +			param =3D &ubinocheck_param[j];
-> > +
-> > +			if (vol->ubi->ubi_num !=3D param->ubi_num)
-> > +				continue;
-> > +			if (vol->vol_id =3D=3D param->vol_id) {
-> > +				ubi_msg(vol->ubi,
-> > +					"skipping CRC check for volume %d",
-> > +					vol->vol_id);
-> > +				vol->checked =3D true;
->=20
-> Please don't abuse the checked flag.
-> A new one a la "skip_check" does not hurt.
+Did you try to create a smaller partition? Maybe we have a problem when acc=
+essing addresses higher than X with the new driver (X to be determined).
 
-I'll do that.
+Would try and update you.
 
-> But again, I don't think we need it per volume.
->=20
-> Also don't forget to add the nocheck parameter to the ioctl() interface, =
-such that
-> you can specify it also with ubiattach...
->=20
+--
+Regards
+Yogesh Gaur
 
-If we go for a per-image flag, adding nocheck to the ioctl makes sense,
-otherwise we have to find a way to select only one or more volumes for
-which the nocheck flag should be set. That being said, I'm not sure a
-per-image flag is the way we want to go.
-
-What are your thoughts on this?
-
-Thanks,
-Quentin
-
---3iaoyoq2ztw7sqea
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAABCAAGBQJbHkzyAAoJEIS4mnU+4PGjqQ0P/iWOwoyJfUEdYvMqe0Lh39Gc
-d0YmZV7bK/DSGreu6eJV8iSBg+23dcO9UopvuGOb9rmMgKMmUKuMlHLDvEZ7CUKJ
-Mtr/+RHgAoE08iV63WgzOOvp1ppTaudOMzDRmMBKHEt+KLnmsl83WxKzcUO2/BfE
-5jC/FdpCtFdZyC7dKtD2Bhhx3zZ5RER5EwxIQwqKTuAVCd55m8Z/cwBucezLvXlh
-NaD7z3sztxuEoAOrkw8doO/CVlb2txTmWn1J6cFuwKiXPJdSHXtfZTHa/WDUnkKm
-mcSPQXlAMHO9zyosEDIFXKW2D4fv8OYoMaMTujee1+7mrQUwQFH6fylr9ZY7EUQN
-AtGLKBSMaPm3FtihPPjCVgrE0aYkqQ28D7eYyhG5/1PuIpuXJJcdN169jvSqZAD4
-PJricKmWwtTH/ZYIY5IhIpCh8JPRegI02+RCSXaBGH3xbpeXzbqWh5RERAVhagGZ
-jLBcMOuvyVnNRKvskEKa3+mEf+obvNSdzK9zJX2x4VxjKMUUAAccOuTiWClNNfeO
-rdHA8KP1AUjRZZT5IZDQkZKAtS3PXlmwH+m/0YBB2y7QCk5e5eZw+/im97GDJwS2
-HAGyWQJOfcper39pDqUX/dSGLcMCmonAHtmfSCRDwWo8o9vlFHv7En8NNSKgVlfb
-GRNzsJyp3yWblxFH+6iR
-=xq7C
------END PGP SIGNATURE-----
-
---3iaoyoq2ztw7sqea--
+> > >     [  187.128159] jffs2: jffs2_scan_eraseblock(): Magic bitmask 0x19=
+85 not found at 0x013c0004: 0x7a3b instead
+> > >     [  187.137641] jffs2: jffs2_scan_eraseblock(): Magic bitmask
+> > > 0x1985 not found at 0x013c0008: 0xb10f instead
+> > >=20
