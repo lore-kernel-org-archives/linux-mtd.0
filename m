@@ -1,30 +1,14 @@
-Received: from mail-yw0-f196.google.com ([209.85.161.196])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSoAY-0003p1-Jz
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 18:37:28 +0000
-Received: by mail-yw0-f196.google.com with SMTP id p129-v6so7856115ywg.7
- for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2018 11:37:16 -0700 (PDT)
-Date: Tue, 12 Jun 2018 12:37:12 -0600
-From: Rob Herring <robh@kernel.org>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, digetx@gmail.com, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, gaireg@gaireg.de,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/6] mtd: rawnand: add Reed-Solomon error correction
- algorithm
-Message-ID: <20180612183712.GA24397@rob-hp-laptop>
-References: <20180611205224.23340-1-stefan@agner.ch>
- <20180611205224.23340-2-stefan@agner.ch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180611205224.23340-2-stefan@agner.ch>
+ id 1fSoMl-0000oe-37
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 18:51:36 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] ubifs: Fix memory leak in lprobs self-check
+Date: Tue, 12 Jun 2018 20:49:45 +0200
+Message-Id: <20180612184945.7544-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,16 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 11, 2018 at 10:52:19PM +0200, Stefan Agner wrote:
-> Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
-> 
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
+Allocate the buffer after we return early.
+Otherwise memory is being leaked.
 
-Acked-by: Rob Herring <robh@kernel.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/lprops.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
->  drivers/mtd/nand/raw/nand_base.c               | 1 +
->  include/linux/mtd/rawnand.h                    | 1 +
->  3 files changed, 3 insertions(+), 1 deletion(-)
+diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
+index f5a46844340c..8ade493a423a 100644
+--- a/fs/ubifs/lprops.c
++++ b/fs/ubifs/lprops.c
+@@ -1089,10 +1089,6 @@ static int scan_check_cb(struct ubifs_info *c,
+ 		}
+ 	}
+ 
+-	buf = __vmalloc(c->leb_size, GFP_NOFS, PAGE_KERNEL);
+-	if (!buf)
+-		return -ENOMEM;
+-
+ 	/*
+ 	 * After an unclean unmount, empty and freeable LEBs
+ 	 * may contain garbage - do not scan them.
+@@ -1111,6 +1107,10 @@ static int scan_check_cb(struct ubifs_info *c,
+ 		return LPT_SCAN_CONTINUE;
+ 	}
+ 
++	buf = __vmalloc(c->leb_size, GFP_NOFS, PAGE_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
+ 	sleb = ubifs_scan(c, lnum, 0, buf, 0);
+ 	if (IS_ERR(sleb)) {
+ 		ret = PTR_ERR(sleb);
+-- 
+2.13.6
