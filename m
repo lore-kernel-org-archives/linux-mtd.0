@@ -1,35 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSqsc-0000Ye-8y
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 21:31:08 +0000
-Date: Tue, 12 Jun 2018 23:30:44 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Stefan Agner <stefan@agner.ch>, Dmitry Osipenko <digetx@gmail.com>,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, benjamin.lindqvist@endian.se,
- jonathanh@nvidia.com, pdeschrijver@nvidia.com, pgaikwad@nvidia.com,
- mirza.krak@gmail.com, gaireg@gaireg.de, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180612233044.2dfe0886@bbrezillon>
-In-Reply-To: <7985c118-af47-624e-bfcc-cd5d8726742a@kernel.dk>
-References: <20180611205224.23340-1-stefan@agner.ch>
- <20180611205224.23340-5-stefan@agner.ch>
- <4258393.O1xtUOGbca@dimapc>
- <cb6f2ef0a5a41e001a2019caa1a18c23@agner.ch>
- <20180612102734.0ea3bfa5@bbrezillon>
- <53e36cff80e38e489959aa18471d0782@agner.ch>
- <1fcde0fa-d1e8-1cc3-8c3d-0e8c4097cb91@kernel.dk>
- <bb2b5e0de922dd928ad923c185bb5da8@agner.ch>
- <7985c118-af47-624e-bfcc-cd5d8726742a@kernel.dk>
+Received: from mx2.suse.de ([195.135.220.15])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fSrii-0007yi-LE
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 22:24:58 +0000
+From: NeilBrown <neil@brown.name>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Date: Wed, 13 Jun 2018 08:24:26 +1000
+Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, linux-mtd@lists.infradead.org,
+ boris.brezillon@free-electrons.com, frieder.schrempf@exceet.de,
+ computersforpeace@gmail.com, david.wolfe@nxp.com, han.xu@nxp.com,
+ festevam@gmail.com, marek.vasut@gmail.com, prabhakar.kushwaha@nxp.com,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: honour max_data_size for spi-nor writes
+In-Reply-To: <20180612092248.4e6a3e92@bbrezillon>
+References: <1528708694-19407-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20180611114916.351ed272@bbrezillon>
+ <87r2ldj7xi.fsf@notabene.neil.brown.name>
+ <20180612092248.4e6a3e92@bbrezillon>
+Message-ID: <87sh5riqxx.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,165 +29,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Jun 2018 15:24:41 -0600
-Jens Axboe <axboe@kernel.dk> wrote:
+--=-=-=
+Content-Type: text/plain
 
-> On 6/12/18 2:20 PM, Stefan Agner wrote:
-> > On 12.06.2018 17:24, Jens Axboe wrote:  
-> >> On 6/12/18 3:17 AM, Stefan Agner wrote:  
-> >>> [also added Jens Axboe]
-> >>>
-> >>> On 12.06.2018 10:27, Boris Brezillon wrote:  
-> >>>> On Tue, 12 Jun 2018 10:06:42 +0200
-> >>>> Stefan Agner <stefan@agner.ch> wrote:
-> >>>>  
-> >>>>> On 12.06.2018 02:03, Dmitry Osipenko wrote:  
-> >>>>>> On Monday, 11 June 2018 23:52:22 MSK Stefan Agner wrote:  
-> >>>>>>> Add support for the NAND flash controller found on NVIDIA
-> >>>>>>> Tegra 2 SoCs. This implementation does not make use of the
-> >>>>>>> command queue feature. Regular operations/data transfers are
-> >>>>>>> done in PIO mode. Page read/writes with hardware ECC make
-> >>>>>>> use of the DMA for data transfer.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> >>>>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> >>>>>>> ---
-> >>>>>>>  MAINTAINERS                       |    7 +
-> >>>>>>>  drivers/mtd/nand/raw/Kconfig      |    6 +
-> >>>>>>>  drivers/mtd/nand/raw/Makefile     |    1 +
-> >>>>>>>  drivers/mtd/nand/raw/tegra_nand.c | 1248 +++++++++++++++++++++++++++++
-> >>>>>>>  4 files changed, 1262 insertions(+)
-> >>>>>>>  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
-> >>>>>>>  
-> >>>>> [snip]  
-> >>>>>>> +static int tegra_nand_cmd(struct nand_chip *chip,
-> >>>>>>> +			 const struct nand_subop *subop)
-> >>>>>>> +{
-> >>>>>>> +	const struct nand_op_instr *instr;
-> >>>>>>> +	const struct nand_op_instr *instr_data_in = NULL;
-> >>>>>>> +	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
-> >>>>>>> +	unsigned int op_id, size = 0, offset = 0;
-> >>>>>>> +	bool first_cmd = true;
-> >>>>>>> +	u32 reg, cmd = 0;
-> >>>>>>> +	int ret;
-> >>>>>>> +
-> >>>>>>> +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
-> >>>>>>> +		unsigned int naddrs, i;
-> >>>>>>> +		const u8 *addrs;
-> >>>>>>> +		u32 addr1 = 0, addr2 = 0;
-> >>>>>>> +
-> >>>>>>> +		instr = &subop->instrs[op_id];
-> >>>>>>> +
-> >>>>>>> +		switch (instr->type) {
-> >>>>>>> +		case NAND_OP_CMD_INSTR:
-> >>>>>>> +			if (first_cmd) {
-> >>>>>>> +				cmd |= COMMAND_CLE;
-> >>>>>>> +				writel_relaxed(instr->ctx.cmd.opcode,
-> >>>>>>> +					       ctrl->regs + CMD_REG1);
-> >>>>>>> +			} else {
-> >>>>>>> +				cmd |= COMMAND_SEC_CMD;
-> >>>>>>> +				writel_relaxed(instr->ctx.cmd.opcode,
-> >>>>>>> +					       ctrl->regs + CMD_REG2);
-> >>>>>>> +			}
-> >>>>>>> +			first_cmd = false;
-> >>>>>>> +			break;
-> >>>>>>> +		case NAND_OP_ADDR_INSTR:
-> >>>>>>> +			offset = nand_subop_get_addr_start_off(subop, op_id);
-> >>>>>>> +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
-> >>>>>>> +			addrs = &instr->ctx.addr.addrs[offset];
-> >>>>>>> +
-> >>>>>>> +			cmd |= COMMAND_ALE | COMMAND_ALE_SIZE(naddrs);
-> >>>>>>> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
-> >>>>>>> +				addr1 |= *addrs++ << (BITS_PER_BYTE * i);
-> >>>>>>> +			naddrs -= i;
-> >>>>>>> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
-> >>>>>>> +				addr2 |= *addrs++ << (BITS_PER_BYTE * i);
-> >>>>>>> +			writel_relaxed(addr1, ctrl->regs + ADDR_REG1);
-> >>>>>>> +			writel_relaxed(addr2, ctrl->regs + ADDR_REG2);
-> >>>>>>> +			break;
-> >>>>>>> +
-> >>>>>>> +		case NAND_OP_DATA_IN_INSTR:
-> >>>>>>> +			size = nand_subop_get_data_len(subop, op_id);
-> >>>>>>> +			offset = nand_subop_get_data_start_off(subop, op_id);
-> >>>>>>> +
-> >>>>>>> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
-> >>>>>>> +				COMMAND_RX | COMMAND_A_VALID;
-> >>>>>>> +
-> >>>>>>> +			instr_data_in = instr;
-> >>>>>>> +			break;
-> >>>>>>> +
-> >>>>>>> +		case NAND_OP_DATA_OUT_INSTR:
-> >>>>>>> +			size = nand_subop_get_data_len(subop, op_id);
-> >>>>>>> +			offset = nand_subop_get_data_start_off(subop, op_id);
-> >>>>>>> +
-> >>>>>>> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
-> >>>>>>> +				COMMAND_TX | COMMAND_A_VALID;
-> >>>>>>> +
-> >>>>>>> +			memcpy(&reg, instr->ctx.data.buf.out + offset, size);
-> >>>>>>> +			writel_relaxed(reg, ctrl->regs + RESP);
-> >>>>>>> +
-> >>>>>>> +			break;
-> >>>>>>> +		case NAND_OP_WAITRDY_INSTR:
-> >>>>>>> +			cmd |= COMMAND_RBSY_CHK;
-> >>>>>>> +			break;
-> >>>>>>> +
-> >>>>>>> +		}
-> >>>>>>> +	}
-> >>>>>>> +
-> >>>>>>> +	cmd |= COMMAND_GO | COMMAND_CE(ctrl->cur_cs);
-> >>>>>>> +	writel_relaxed(cmd, ctrl->regs + COMMAND);
-> >>>>>>> +	ret = wait_for_completion_io_timeout(&ctrl->command_complete,
-> >>>>>>> +					     msecs_to_jiffies(500));  
-> >>>>>>
-> >>>>>> It's not obvious to me whether _io_ variant is appropriate to use here, would
-> >>>>>> be nice if somebody could clarify that. Maybe block/ already does the IO
-> >>>>>> accounting itself and hence the IO time would be counted twice in that case.  
-> >>>>>
-> >>>>> Good that you bring this up.
-> >>>>>
-> >>>>> I don't think that there is any higher layer which could take care of
-> >>>>> accounting. Usually, with raw nand there is no block layer involved
-> >>>>> anyway.
-> >>>>>
-> >>>>> In a quick test it seems that only when using wait_for_completion_io I/O
-> >>>>> is properly accounted in the "wait" section of top.
-> >>>>>
-> >>>>> So far only a single driver (omap2) used the _io variant, but I think it
-> >>>>> is the right thing to do! After all, it is I/O...
-> >>>>>
-> >>>>> Boris or any other MTD maintainer, any comment on this?  
-> >>>>
-> >>>> Given this definition of io_schedule_timeout() [1] (which is used when
-> >>>> you call wait_for_completion_io_timeout()), I'd say it's not useful to
-> >>>> use the _io_ version, simply because MTD devs are not exposed as blk
-> >>>> devices, and thus don't need the blk_schedule_flush_plug() that is done
-> >>>> is io_schedule_prepare(). But that also means MTD I/Os are not
-> >>>> accounted as I/Os :-(.  
-> >>>
-> >>> Documentation of wait_for_completion_io says:
-> >>> "The caller is accounted as waiting for IO (which traditionally means
-> >>> blkio only)."
-> >>>
-> >>> Which sounds as if it using _io is only an accounting thing...  
-> >>
-> >> Yes, you should only use it for waiting for IO off a system call
-> >> read path. So block IO, or file system IO. Don't use it for internal
-> >> IO that isn't related to that.  
-> > 
-> > I guess that would be the case here, since MTD page read/writes are
-> > typically file system IOs (e.g. UBIFS).
-> > 
-> > The problem is just that is not block related at all since it uses the
-> > MTD subsystem... And it seems that the _io variants besides accounting,
-> > also take a role in the block subsystems device plugging mechanism. What
-> > is unclear to me if using the _io variant from the MTD subsystem
-> > potentially disturbs the plugging mechanism...  
-> 
-> No, it has nothing to do with plugging at the block level. So if you're
-> doing regular user IO, then you should use the _io variants.
+On Tue, Jun 12 2018, Boris Brezillon wrote:
 
-It's a bit more complicated than that. ->exec_op() is not only used for
-read/write accesses, but also all kind of management around the NAND
-chip which can't really be considered as storage device I/Os (at least
-that's my opinion). The one in tegra_nand_page_xfer() is probably
-valid though.
+>
+> Just because you managed to solve the problem in one driver does not
+> mean the problem does not exist for others. I read this datasheet [1]
+> several times and couldn't find a way to say 'I want to keep the CS
+> asserted between 2 transactions', so I think we really need this patch.
+
+I agree that my experience doesn't necessarily generalize.  As the patch
+carried by signed-off-by (even though I only wrote little parts of it) I
+wanted to make it clear that I had no desire to promote the patch -
+maybe I stated that too strongly.
+
+Thanks for the link to the data sheet.  I had a bit of a look, but
+reading these things must be an art that I haven't fully mastered yet -
+it would probably take me a few days to really understand it.
+The Programmable Sequence Enginine (Section 10.2.5.3.1) seems
+interesting. I wouldn't be surprised that that lets you do interesting
+things.
+
+It is obviously quite a powerful unit and it is surprising - to me -
+that it might not allow arbitrarily long messages, but I cannot justify
+the time to really dig in and see if that is the case.
+Maybe you are right.  I have no particular objections to the patch, I
+just don't want to be seen as speaking in favour of it.
+
+Thanks,
+NeilBrown
+
+
+>
+> Regards,
+>
+> Boris
+>
+> [1]https://www.nxp.com/docs/en/reference-manual/VFXXXRM.pdf
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAlsgSBoACgkQOeye3VZi
+gbmEQQ/9EtAAeJYjXQHQOr4P79+wEAposchwmDGzy1RDb3R6MFeLzl8CYyCpg/ma
+ll6hRREuJ7IcLE+4weGyeNadGxTBGUFpJ87srm46QmzeJxZKv8PcJxILgfAABtet
+uI7Ru4dFpDyIGOhgzjsKtp40093RIqxlY7j4fRMQAziaAHASw/bJmz/NwZgbeQol
+/tlKcLKub2n0p2vxiDvj6DcTkMcPRElTmQw5OUQpn2kW5sSMUxg61yilXZHX9tq9
+6iuC+vJ1AywX0aXovivq+y72wk9/qjg1SnhjyRZWAYhPxpoWf9lLlRUjVK9ZjnfU
+dZr+TLQm897qLKXv0FLXUBoArrxFL5K1znLphNdqKzoeXuL80Z9qt7VDHEPzcaVR
+yvTTx8AszModPzqeMCzCijsjCRyfVIg2FfB/ap0ma70Po9GQ3+lkNWHgwlI99+Nz
+IdGXYseRPAwgwmHgpGC89Mlw6sly8ryPzwwajHEg5qTem4ZW+emKehrGlanzgr89
+3onaYEYc9tgp1+Ksj/j4Zb9OwgyE+Lzt7e4JilRmZKRHS/eXNQoWAS/ODGFI5cJf
+6aJsTI4/08aKzHLApjZDck5fDKlT48+PNu6ADQqWsWw6Yi307mNlDgg8jOPRvUhi
+SI3r2L9QCwA7YPAIDA3WGAwaMRvSeVz5zJ5eX+s4+NvWcU7+jfg=
+=19Jr
+-----END PGP SIGNATURE-----
+--=-=-=--
