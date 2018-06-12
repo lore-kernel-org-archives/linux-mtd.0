@@ -1,30 +1,23 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSfQj-0006qw-9T
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 09:17:35 +0000
+ id 1fSfUM-0001Ky-CN
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 09:21:20 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Philipp Rosenberger <p.rosenberger@linutronix.de>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Benedikt Spranger <b.spranger@linutronix.de>
+Subject: Re: DENALI: can't detect NAND chip
+Date: Tue, 12 Jun 2018 11:21:03 +0200
+Message-ID: <2538157.EbBc2oB3DW@blindfold>
+In-Reply-To: <20180605093627.03ee6a95@bbrezillon>
+References: <5461eb1c-597a-e100-c325-b0fed0eb0d10@linutronix.de>
+ <CAK7LNARe+h_Fj5+nnpqYS4xGVLPHqgrW5g+1bckGB0+FWh9=sA@mail.gmail.com>
+ <20180605093627.03ee6a95@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Tue, 12 Jun 2018 11:17:09 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, axboe@kernel.dk
-Cc: Dmitry Osipenko <digetx@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- gaireg@gaireg.de, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <20180612102734.0ea3bfa5@bbrezillon>
-References: <20180611205224.23340-1-stefan@agner.ch>
- <20180611205224.23340-5-stefan@agner.ch> <4258393.O1xtUOGbca@dimapc>
- <cb6f2ef0a5a41e001a2019caa1a18c23@agner.ch>
- <20180612102734.0ea3bfa5@bbrezillon>
-Message-ID: <53e36cff80e38e489959aa18471d0782@agner.ch>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,155 +27,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[also added Jens Axboe]
-
-On 12.06.2018 10:27, Boris Brezillon wrote:
-> On Tue, 12 Jun 2018 10:06:42 +0200
-> Stefan Agner <stefan@agner.ch> wrote:
+Am Dienstag, 5. Juni 2018, 09:36:27 CEST schrieb Boris Brezillon:
+> On Tue, 5 Jun 2018 10:43:49 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 > 
->> On 12.06.2018 02:03, Dmitry Osipenko wrote:
->> > On Monday, 11 June 2018 23:52:22 MSK Stefan Agner wrote:
->> >> Add support for the NAND flash controller found on NVIDIA
->> >> Tegra 2 SoCs. This implementation does not make use of the
->> >> command queue feature. Regular operations/data transfers are
->> >> done in PIO mode. Page read/writes with hardware ECC make
->> >> use of the DMA for data transfer.
->> >>
->> >> Signed-off-by: Lucas Stach <dev@lynxeye.de>
->> >> Signed-off-by: Stefan Agner <stefan@agner.ch>
->> >> ---
->> >>  MAINTAINERS                       |    7 +
->> >>  drivers/mtd/nand/raw/Kconfig      |    6 +
->> >>  drivers/mtd/nand/raw/Makefile     |    1 +
->> >>  drivers/mtd/nand/raw/tegra_nand.c | 1248 +++++++++++++++++++++++++++++
->> >>  4 files changed, 1262 insertions(+)
->> >>  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
->> >>
->> [snip]
->> >> +static int tegra_nand_cmd(struct nand_chip *chip,
->> >> +			 const struct nand_subop *subop)
->> >> +{
->> >> +	const struct nand_op_instr *instr;
->> >> +	const struct nand_op_instr *instr_data_in = NULL;
->> >> +	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
->> >> +	unsigned int op_id, size = 0, offset = 0;
->> >> +	bool first_cmd = true;
->> >> +	u32 reg, cmd = 0;
->> >> +	int ret;
->> >> +
->> >> +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
->> >> +		unsigned int naddrs, i;
->> >> +		const u8 *addrs;
->> >> +		u32 addr1 = 0, addr2 = 0;
->> >> +
->> >> +		instr = &subop->instrs[op_id];
->> >> +
->> >> +		switch (instr->type) {
->> >> +		case NAND_OP_CMD_INSTR:
->> >> +			if (first_cmd) {
->> >> +				cmd |= COMMAND_CLE;
->> >> +				writel_relaxed(instr->ctx.cmd.opcode,
->> >> +					       ctrl->regs + CMD_REG1);
->> >> +			} else {
->> >> +				cmd |= COMMAND_SEC_CMD;
->> >> +				writel_relaxed(instr->ctx.cmd.opcode,
->> >> +					       ctrl->regs + CMD_REG2);
->> >> +			}
->> >> +			first_cmd = false;
->> >> +			break;
->> >> +		case NAND_OP_ADDR_INSTR:
->> >> +			offset = nand_subop_get_addr_start_off(subop, op_id);
->> >> +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
->> >> +			addrs = &instr->ctx.addr.addrs[offset];
->> >> +
->> >> +			cmd |= COMMAND_ALE | COMMAND_ALE_SIZE(naddrs);
->> >> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
->> >> +				addr1 |= *addrs++ << (BITS_PER_BYTE * i);
->> >> +			naddrs -= i;
->> >> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
->> >> +				addr2 |= *addrs++ << (BITS_PER_BYTE * i);
->> >> +			writel_relaxed(addr1, ctrl->regs + ADDR_REG1);
->> >> +			writel_relaxed(addr2, ctrl->regs + ADDR_REG2);
->> >> +			break;
->> >> +
->> >> +		case NAND_OP_DATA_IN_INSTR:
->> >> +			size = nand_subop_get_data_len(subop, op_id);
->> >> +			offset = nand_subop_get_data_start_off(subop, op_id);
->> >> +
->> >> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
->> >> +				COMMAND_RX | COMMAND_A_VALID;
->> >> +
->> >> +			instr_data_in = instr;
->> >> +			break;
->> >> +
->> >> +		case NAND_OP_DATA_OUT_INSTR:
->> >> +			size = nand_subop_get_data_len(subop, op_id);
->> >> +			offset = nand_subop_get_data_start_off(subop, op_id);
->> >> +
->> >> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
->> >> +				COMMAND_TX | COMMAND_A_VALID;
->> >> +
->> >> +			memcpy(&reg, instr->ctx.data.buf.out + offset, size);
->> >> +			writel_relaxed(reg, ctrl->regs + RESP);
->> >> +
->> >> +			break;
->> >> +		case NAND_OP_WAITRDY_INSTR:
->> >> +			cmd |= COMMAND_RBSY_CHK;
->> >> +			break;
->> >> +
->> >> +		}
->> >> +	}
->> >> +
->> >> +	cmd |= COMMAND_GO | COMMAND_CE(ctrl->cur_cs);
->> >> +	writel_relaxed(cmd, ctrl->regs + COMMAND);
->> >> +	ret = wait_for_completion_io_timeout(&ctrl->command_complete,
->> >> +					     msecs_to_jiffies(500));
->> >
->> > It's not obvious to me whether _io_ variant is appropriate to use here, would
->> > be nice if somebody could clarify that. Maybe block/ already does the IO
->> > accounting itself and hence the IO time would be counted twice in that case.
->>
->> Good that you bring this up.
->>
->> I don't think that there is any higher layer which could take care of
->> accounting. Usually, with raw nand there is no block layer involved
->> anyway.
->>
->> In a quick test it seems that only when using wait_for_completion_io I/O
->> is properly accounted in the "wait" section of top.
->>
->> So far only a single driver (omap2) used the _io variant, but I think it
->> is the right thing to do! After all, it is I/O...
->>
->> Boris or any other MTD maintainer, any comment on this?
+> > 2018-06-05 7:01 GMT+09:00 Richard Weinberger <richard@sigma-star.at>:
+> > > Am Montag, 4. Juni 2018, 22:57:32 CEST schrieb Richard Weinberger:  
+> > >> Am Montag, 4. Juni 2018, 22:51:17 CEST schrieb Boris Brezillon:  
+> > >> > > According to the datasheet, the NAND clock rate should be 50Mhz, which is what
+> > >> > > is returned in both cases.
+> > >> > > So this does not really look invalid to me. :)  
+> > >> >
+> > >> > Did you try to put a scope on the RE or WE pin? The x2 factor looks too
+> > >> > perfect to be just a coincidence.  
+> > >>
+> > >> Not yet, but you are right the x2 factor is really interesting.  
+> > >
+> > > The NFC uses two clocks, nand_x_clk and nand_clk.
+> > > nand_clk is nand_x_clk / 4.
+> > > In the device tree nand_clk is referenced, and therefore used to calculate
+> > > the timings. So we might need to use the 200Mhz clock instead of the 50Mhz
+> > > for the calculation.
+> > >  
+> > 
+> > 
+> > Yes.
+> > 
+> > 
+> > Strictly speaking, the Denali IP takes three clocks.
+> > 
+> > [1] clk :     core clock
+> > [2] clk_x:    bus interface clock
+> > [3] ecc_clk:  for ECC engine
+> > 
+> > 
+> > 
+> > Also in my SoCs (Socionext UniPhier),
+> > 
+> > clk = 50MHz,
+> > clk_x = ecc_clk = 200MHz
+> > 
+> > 
+> > 
+> > In this case, the ->setup_data_interface hook
+> > is interested in the frequency of [2] clk_x.
+> > 
+> > However, clk_x is not a core clock.
+> > I admit this is confusing.
+> > 
+> > 
+> > If we really want to make the DT-binding precise,
+> > we can change the clock requirement like follows:
+> > 
+> > clock-names = "clk", "clk_x", "ecc_clk";
 > 
-> Given this definition of io_schedule_timeout() [1] (which is used when
-> you call wait_for_completion_io_timeout()), I'd say it's not useful to
-> use the _io_ version, simply because MTD devs are not exposed as blk
-> devices, and thus don't need the blk_schedule_flush_plug() that is done
-> is io_schedule_prepare(). But that also means MTD I/Os are not
-> accounted as I/Os :-(.
-
-Documentation of wait_for_completion_io says:
-"The caller is accounted as waiting for IO (which traditionally means
-blkio only)."
-
-Which sounds as if it using _io is only an accounting thing...
-
-The hint about blkio might suggest that there is more to it.
-
-Is calling blk_schedule_flush_plug a problem for MTD?
-https://elixir.bootlin.com/linux/v4.17.1/source/include/linux/blkdev.h#L1355
-
+> How about:
 > 
-> Let's go for the non-io version for now, since all drivers except omap2
-> seem to use this function.
+> clock-names = "nand", "nand_x", "ecc";
 > 
+> The clk prefix/suffix is really redundant here.
+> 
+> > clocks = <...>, <...>, <...>;
+> 
+> If the IP really takes 3 different clks in input, then it should be
+> represented like that.
+> 
+> > 
+> > 
+> > This might be an annoying churn, though...
+> > 
+> > 
+> 
+> I guess you're talking about backward compat with existing dtb. This
+> should be a problem, and we can even fix the Richard's problem for
+> those dtbs if we hardcode the nand_x_clk rate to 200Mhz when nand_x_clk
+> is missing (see below).
 
-I still think it would be nice and "the right thing" from a user
-perspective...
+[...]
 
---
-Stefan
+Masahiro, which fix do you prefer?
 
-> [1]https://elixir.bootlin.com/linux/v4.17.1/source/kernel/sched/core.c#L5164
+We could also just fix the dts file.
+e.g.
+commit c0097d0b498bdefb427c352d615432e97f1998aa
+Author: Richard Weinberger <richard@nod.at>
+Date:   Tue Jun 12 11:16:22 2018 +0200
+
+    arm: dts: socfpga: Use right denali clock
+    
+    To calculate the timing parameters a 200MHz clock is needed, in case of
+    socfpga this is nand_x_clk and not nand_clk.
+    
+    Cc: stable@kernel.org
+    Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
+    Signed-off-by: Richard Weinberger <richard@nod.at>
+
+diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
+index 486d4e7433ed..8fbddc2a5c33 100644
+--- a/arch/arm/boot/dts/socfpga.dtsi
++++ b/arch/arm/boot/dts/socfpga.dtsi
+@@ -754,7 +754,7 @@
+ 			reg-names = "nand_data", "denali_reg";
+ 			interrupts = <0x0 0x90 0x4>;
+ 			dma-mask = <0xffffffff>;
+-			clocks = <&nand_clk>;
++			clocks = <&nand_x_clk>;
+ 			status = "disabled";
+ 		};
+ 
+Thanks,
+//richard
+
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
