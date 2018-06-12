@@ -1,29 +1,35 @@
-Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
+Received: from mail-it0-x243.google.com ([2607:f8b0:4001:c0b::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSiEm-0005cC-WB
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 12:17:26 +0000
-Received: by mail-lf0-x244.google.com with SMTP id n3-v6so35655507lfe.12
- for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2018 05:17:14 -0700 (PDT)
-From: Dmitry Osipenko <digetx@gmail.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ id 1fSlA8-0007Gw-IR
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 15:24:50 +0000
+Received: by mail-it0-x243.google.com with SMTP id m194-v6so15056500itg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 12 Jun 2018 08:24:36 -0700 (PDT)
+Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+To: Stefan Agner <stefan@agner.ch>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Dmitry Osipenko <digetx@gmail.com>, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
  mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
  miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
  krzk@kernel.org, benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
  pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- gaireg@gaireg.de, linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Date: Tue, 12 Jun 2018 15:17:09 +0300
-Message-ID: <1545813.ZRopxvRBbF@dimapc>
-In-Reply-To: <20180611205224.23340-5-stefan@agner.ch>
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
 References: <20180611205224.23340-1-stefan@agner.ch>
- <20180611205224.23340-5-stefan@agner.ch>
+ <20180611205224.23340-5-stefan@agner.ch> <4258393.O1xtUOGbca@dimapc>
+ <cb6f2ef0a5a41e001a2019caa1a18c23@agner.ch>
+ <20180612102734.0ea3bfa5@bbrezillon>
+ <53e36cff80e38e489959aa18471d0782@agner.ch>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <1fcde0fa-d1e8-1cc3-8c3d-0e8c4097cb91@kernel.dk>
+Date: Tue, 12 Jun 2018 09:24:31 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <53e36cff80e38e489959aa18471d0782@agner.ch>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,84 +39,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, 11 June 2018 23:52:22 MSK Stefan Agner wrote:
-> Add support for the NAND flash controller found on NVIDIA
-> Tegra 2 SoCs. This implementation does not make use of the
-> command queue feature. Regular operations/data transfers are
-> done in PIO mode. Page read/writes with hardware ECC make
-> use of the DMA for data transfer.
+On 6/12/18 3:17 AM, Stefan Agner wrote:
+> [also added Jens Axboe]
 > 
-> Signed-off-by: Lucas Stach <dev@lynxeye.de>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
->  MAINTAINERS                       |    7 +
->  drivers/mtd/nand/raw/Kconfig      |    6 +
->  drivers/mtd/nand/raw/Makefile     |    1 +
->  drivers/mtd/nand/raw/tegra_nand.c | 1248 +++++++++++++++++++++++++++++
->  4 files changed, 1262 insertions(+)
->  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
+> On 12.06.2018 10:27, Boris Brezillon wrote:
+>> On Tue, 12 Jun 2018 10:06:42 +0200
+>> Stefan Agner <stefan@agner.ch> wrote:
+>>
+>>> On 12.06.2018 02:03, Dmitry Osipenko wrote:
+>>>> On Monday, 11 June 2018 23:52:22 MSK Stefan Agner wrote:
+>>>>> Add support for the NAND flash controller found on NVIDIA
+>>>>> Tegra 2 SoCs. This implementation does not make use of the
+>>>>> command queue feature. Regular operations/data transfers are
+>>>>> done in PIO mode. Page read/writes with hardware ECC make
+>>>>> use of the DMA for data transfer.
+>>>>>
+>>>>> Signed-off-by: Lucas Stach <dev@lynxeye.de>
+>>>>> Signed-off-by: Stefan Agner <stefan@agner.ch>
+>>>>> ---
+>>>>>  MAINTAINERS                       |    7 +
+>>>>>  drivers/mtd/nand/raw/Kconfig      |    6 +
+>>>>>  drivers/mtd/nand/raw/Makefile     |    1 +
+>>>>>  drivers/mtd/nand/raw/tegra_nand.c | 1248 +++++++++++++++++++++++++++++
+>>>>>  4 files changed, 1262 insertions(+)
+>>>>>  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
+>>>>>
+>>> [snip]
+>>>>> +static int tegra_nand_cmd(struct nand_chip *chip,
+>>>>> +			 const struct nand_subop *subop)
+>>>>> +{
+>>>>> +	const struct nand_op_instr *instr;
+>>>>> +	const struct nand_op_instr *instr_data_in = NULL;
+>>>>> +	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+>>>>> +	unsigned int op_id, size = 0, offset = 0;
+>>>>> +	bool first_cmd = true;
+>>>>> +	u32 reg, cmd = 0;
+>>>>> +	int ret;
+>>>>> +
+>>>>> +	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
+>>>>> +		unsigned int naddrs, i;
+>>>>> +		const u8 *addrs;
+>>>>> +		u32 addr1 = 0, addr2 = 0;
+>>>>> +
+>>>>> +		instr = &subop->instrs[op_id];
+>>>>> +
+>>>>> +		switch (instr->type) {
+>>>>> +		case NAND_OP_CMD_INSTR:
+>>>>> +			if (first_cmd) {
+>>>>> +				cmd |= COMMAND_CLE;
+>>>>> +				writel_relaxed(instr->ctx.cmd.opcode,
+>>>>> +					       ctrl->regs + CMD_REG1);
+>>>>> +			} else {
+>>>>> +				cmd |= COMMAND_SEC_CMD;
+>>>>> +				writel_relaxed(instr->ctx.cmd.opcode,
+>>>>> +					       ctrl->regs + CMD_REG2);
+>>>>> +			}
+>>>>> +			first_cmd = false;
+>>>>> +			break;
+>>>>> +		case NAND_OP_ADDR_INSTR:
+>>>>> +			offset = nand_subop_get_addr_start_off(subop, op_id);
+>>>>> +			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+>>>>> +			addrs = &instr->ctx.addr.addrs[offset];
+>>>>> +
+>>>>> +			cmd |= COMMAND_ALE | COMMAND_ALE_SIZE(naddrs);
+>>>>> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
+>>>>> +				addr1 |= *addrs++ << (BITS_PER_BYTE * i);
+>>>>> +			naddrs -= i;
+>>>>> +			for (i = 0; i < min_t(unsigned int, 4, naddrs); i++)
+>>>>> +				addr2 |= *addrs++ << (BITS_PER_BYTE * i);
+>>>>> +			writel_relaxed(addr1, ctrl->regs + ADDR_REG1);
+>>>>> +			writel_relaxed(addr2, ctrl->regs + ADDR_REG2);
+>>>>> +			break;
+>>>>> +
+>>>>> +		case NAND_OP_DATA_IN_INSTR:
+>>>>> +			size = nand_subop_get_data_len(subop, op_id);
+>>>>> +			offset = nand_subop_get_data_start_off(subop, op_id);
+>>>>> +
+>>>>> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
+>>>>> +				COMMAND_RX | COMMAND_A_VALID;
+>>>>> +
+>>>>> +			instr_data_in = instr;
+>>>>> +			break;
+>>>>> +
+>>>>> +		case NAND_OP_DATA_OUT_INSTR:
+>>>>> +			size = nand_subop_get_data_len(subop, op_id);
+>>>>> +			offset = nand_subop_get_data_start_off(subop, op_id);
+>>>>> +
+>>>>> +			cmd |= COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
+>>>>> +				COMMAND_TX | COMMAND_A_VALID;
+>>>>> +
+>>>>> +			memcpy(&reg, instr->ctx.data.buf.out + offset, size);
+>>>>> +			writel_relaxed(reg, ctrl->regs + RESP);
+>>>>> +
+>>>>> +			break;
+>>>>> +		case NAND_OP_WAITRDY_INSTR:
+>>>>> +			cmd |= COMMAND_RBSY_CHK;
+>>>>> +			break;
+>>>>> +
+>>>>> +		}
+>>>>> +	}
+>>>>> +
+>>>>> +	cmd |= COMMAND_GO | COMMAND_CE(ctrl->cur_cs);
+>>>>> +	writel_relaxed(cmd, ctrl->regs + COMMAND);
+>>>>> +	ret = wait_for_completion_io_timeout(&ctrl->command_complete,
+>>>>> +					     msecs_to_jiffies(500));
+>>>>
+>>>> It's not obvious to me whether _io_ variant is appropriate to use here, would
+>>>> be nice if somebody could clarify that. Maybe block/ already does the IO
+>>>> accounting itself and hence the IO time would be counted twice in that case.
+>>>
+>>> Good that you bring this up.
+>>>
+>>> I don't think that there is any higher layer which could take care of
+>>> accounting. Usually, with raw nand there is no block layer involved
+>>> anyway.
+>>>
+>>> In a quick test it seems that only when using wait_for_completion_io I/O
+>>> is properly accounted in the "wait" section of top.
+>>>
+>>> So far only a single driver (omap2) used the _io variant, but I think it
+>>> is the right thing to do! After all, it is I/O...
+>>>
+>>> Boris or any other MTD maintainer, any comment on this?
+>>
+>> Given this definition of io_schedule_timeout() [1] (which is used when
+>> you call wait_for_completion_io_timeout()), I'd say it's not useful to
+>> use the _io_ version, simply because MTD devs are not exposed as blk
+>> devices, and thus don't need the blk_schedule_flush_plug() that is done
+>> is io_schedule_prepare(). But that also means MTD I/Os are not
+>> accounted as I/Os :-(.
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 58b9861ccf99..c2e5571c85d4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -13844,6 +13844,13 @@ M:	Laxman Dewangan <ldewangan@nvidia.com>
->  S:	Supported
->  F:	drivers/input/keyboard/tegra-kbc.c
+> Documentation of wait_for_completion_io says:
+> "The caller is accounted as waiting for IO (which traditionally means
+> blkio only)."
 > 
-> +TEGRA NAND DRIVER
-> +M:	Stefan Agner <stefan@agner.ch>
-> +M:	Lucas Stach <dev@lynxeye.de>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
-> +F:	drivers/mtd/nand/raw/tegra_nand.c
-> +
->  TEGRA PWM DRIVER
->  M:	Thierry Reding <thierry.reding@gmail.com>
->  S:	Supported
-> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> index 19a2b283fbbe..e9093f52371e 100644
-> --- a/drivers/mtd/nand/raw/Kconfig
-> +++ b/drivers/mtd/nand/raw/Kconfig
-> @@ -534,4 +534,10 @@ config MTD_NAND_MTK
->  	  Enables support for NAND controller on MTK SoCs.
->  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
-> 
-> +config MTD_NAND_TEGRA
-> +	tristate "Support for NAND controller on NVIDIA Tegra"
-> +	depends on ARCH_TEGRA || COMPILE_TEST
-> +	help
-> +	  Enables support for NAND flash controller on NVIDIA Tegra SoC.
-> +
->  endif # MTD_NAND
-> diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
-> index 165b7ef9e9a1..d5a5f9832b88 100644
-> --- a/drivers/mtd/nand/raw/Makefile
-> +++ b/drivers/mtd/nand/raw/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_MTD_NAND_HISI504)	        += 
-hisi504_nand.o
->  obj-$(CONFIG_MTD_NAND_BRCMNAND)		+= brcmnand/
->  obj-$(CONFIG_MTD_NAND_QCOM)		+= qcom_nandc.o
->  obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_ecc.o mtk_nand.o
-> +obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
-> 
->  nand-objs := nand_base.o nand_bbt.o nand_timings.o nand_ids.o
->  nand-objs += nand_amd.o
-> diff --git a/drivers/mtd/nand/raw/tegra_nand.c
-> b/drivers/mtd/nand/raw/tegra_nand.c new file mode 100644
-> index 000000000000..dd23a5eb6af3
-> --- /dev/null
-> +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> @@ -0,0 +1,1248 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2018 Stefan Agner <stefan@agner.ch>
-> + * Copyright (C) 2014-2015 Lucas Stach <dev@lynxeye.de>
-> + * Copyright (C) 2012 Avionic Design GmbH
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/completion.h>
-> +#include <linux/delay.h>
+> Which sounds as if it using _io is only an accounting thing...
 
-The "delay.h" looks obsolete now, maybe you could drop it.
+Yes, you should only use it for waiting for IO off a system call
+read path. So block IO, or file system IO. Don't use it for internal
+IO that isn't related to that.
+
+-- 
+Jens Axboe
