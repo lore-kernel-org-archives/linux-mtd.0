@@ -1,20 +1,16 @@
-Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
+Received: from mail1.bemta8.messagelabs.com ([216.82.243.209])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fSZmC-0005Ur-Gx
- for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 03:15:22 +0000
-Received: by mail-pl0-x241.google.com with SMTP id a7-v6so11019200plp.3
- for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2018 20:15:09 -0700 (PDT)
-From: Zhouyang Jia <jiazhouyang09@gmail.com>
-To: 
-Cc: Zhouyang Jia <jiazhouyang09@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: gpio_flash: add error handling for ioremap_nocache
-Date: Tue, 12 Jun 2018 11:15:00 +0800
-Message-Id: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
+ id 1fScdb-0006gj-B1
+ for linux-mtd@lists.infradead.org; Tue, 12 Jun 2018 06:18:40 +0000
+From: "Lachmann, Juergen" <juergen.lachmann@harman.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: UBI Fastmap and checkmap
+Date: Tue, 12 Jun 2018 06:18:20 +0000
+Message-ID: <5123cb5c017e4316a11a0e83d1faa32d@HIMDWSMB06.ad.harman.com>
+Content-Language: de-DE
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When ioremap_nocache fails, the lack of error-handling code may
-cause unexpected results.
+We are very interested in your "Correctly handle interrupted erasures in EB=
+A" patch,=20
+since we observe occasional corruption of an UBIFS volume.
 
-This patch adds error-handling code after calling ioremap_nocache.
+Currently we are running Linux 4.4.14, but I started testing with the lates=
+t UBI code backported.
+Here I had to learn that the check_mapping() function doesn't do anything o=
+n dynamic volumes=20
+since the creation of  the checkmap by calling ubi_fastmap_init_checkmap() =
+is apparently=20
+skipped  for dynamic volumes inside init_volumes():
 
-Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
----
- drivers/mtd/maps/gpio-addr-flash.c | 3 +++
- 1 file changed, 3 insertions(+)
+585                 if (vol->vol_type =3D=3D UBI_DYNAMIC_VOLUME) {=20
+                     ...
+ 590                         continue;=20
+ 591                 }
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 385305e..7fbba02 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -242,6 +242,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	state->map.phys       = NO_XIP;
- 	state->map.map_priv_1 = (unsigned long)state;
- 
-+	if (!state->map.virt)
-+		return -ENOMEM;
-+
- 	platform_set_drvdata(pdev, state);
- 
- 	i = 0;
--- 
-2.7.4
+>From the code I see no reason why this is done. Is it intentional behavior =
+that check_mapping()=20
+only works on static volumes, and what's the reason behind?
+--
+Regards,
+J=FCrgen
+
+J=DCRGEN LACHMANN
+SW Engineer=20
+Harman/Becker Automotive Systems
