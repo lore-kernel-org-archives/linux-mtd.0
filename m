@@ -1,15 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTDFi-0004u5-O6
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2018 21:24:38 +0000
+ id 1fTDFi-0004zr-Qy
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2018 21:24:47 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 06/14] ubi: fastmap: Handle bad block count for preseeded
- fastmap case
-Date: Wed, 13 Jun 2018 23:23:36 +0200
-Message-Id: <20180613212344.11608-7-richard@nod.at>
+Subject: [PATCH 14/14] ubi: Remove experimental stigma from Fastmap
+Date: Wed, 13 Jun 2018 23:23:44 +0200
+Message-Id: <20180613212344.11608-15-richard@nod.at>
 In-Reply-To: <20180613212344.11608-1-richard@nod.at>
 References: <20180613212344.11608-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,35 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the fastmap is preseeded the bad block count is created while
-scanning for bad blocks in the PEB fixup code.
+I've hold up this a way too long. Over the last two years Fastmap gained
+many users which made it possible to sort out the last issues.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/fastmap.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ drivers/mtd/ubi/Kconfig | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 279d02874297..69b855b3cf2a 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -725,7 +725,16 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 	}
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 43d131f5ae10..4de5e4e8d4ab 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -57,12 +57,9 @@ config MTD_UBI_BEB_LIMIT
+ 	  Leave the default value if unsure.
  
- 	ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
--	ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
-+
-+	if (fm->flags & UBI_FM_SB_PRESEEDED_FLG) {
-+		/* When we have a preseeded Fastmap we cannot use the provided bad block number */
-+		if (be32_to_cpu(fmhdr->bad_peb_count) != 0) {
-+			ubi_err(ubi, "Bad block count in preseeded Fastmap is non-zero");
-+			goto fail_bad;
-+		}
-+	} else {
-+		ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
-+	}
+ config MTD_UBI_FASTMAP
+-	bool "UBI Fastmap (Experimental feature)"
++	bool "UBI Fastmap"
+ 	default n
+ 	help
+-	   Important: this feature is experimental so far and the on-flash
+-	   format for fastmap may change in the next kernel versions
+-
+ 	   Fastmap is a mechanism which allows attaching an UBI device
+ 	   in nearly constant time. Instead of scanning the whole MTD device it
+ 	   only has to locate a checkpoint (called fastmap) on the device.
+@@ -74,6 +71,8 @@ config MTD_UBI_FASTMAP
+ 	   images are still usable with UBI implementations without
+ 	   fastmap support. On typical flash devices the whole fastmap fits
+ 	   into one PEB. UBI will reserve PEBs to hold two fastmaps.
++	   While Fastmap is considered correct it weakens UBI wrt. robustness,
++	   a full scan of the MTD allows UBI to react better to bad flashes.
  
- 	/* Iterate over all volumes and read their EBA table */
- 	for (i = 0; i < be32_to_cpu(fmhdr->vol_count); i++) {
+ 	   If in doubt, say "N".
+ 
 -- 
 2.13.6
