@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTDFi-0004zs-VQ
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2018 21:25:00 +0000
+ id 1fTDFi-0004u8-Ng
+ for linux-mtd@lists.infradead.org; Wed, 13 Jun 2018 21:25:01 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 13/14] ubi: Wire up attach mode selector
-Date: Wed, 13 Jun 2018 23:23:43 +0200
-Message-Id: <20180613212344.11608-14-richard@nod.at>
+Subject: [PATCH 08/14] ubi: fastmap: Scan empty space if fastmap is preseeded
+Date: Wed, 13 Jun 2018 23:23:38 +0200
+Message-Id: <20180613212344.11608-9-richard@nod.at>
 In-Reply-To: <20180613212344.11608-1-richard@nod.at>
 References: <20180613212344.11608-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,105 +20,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now userspace can specify how UBI shall attach.
-By default UBI decides how to attach, but userspace can
-also force a full scan.
+The creation tool does not know the real size of the MTD, therefore the
+preseeded fastmap references only used PEBs.
+Free PEBs need to be discovered during the initial attach of the
+preseeded fastmap.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- drivers/mtd/ubi/build.c | 15 ++++++++++++---
- drivers/mtd/ubi/cdev.c  |  7 ++++++-
- drivers/mtd/ubi/ubi.h   |  3 ++-
- 3 files changed, 20 insertions(+), 5 deletions(-)
+ drivers/mtd/ubi/fastmap.c | 123 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 117 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 1e3f75ede985..7d08b6498b2a 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -805,6 +805,7 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * @ubi_num: number to assign to the new UBI device
-  * @vid_hdr_offset: VID header offset
-  * @max_beb_per1024: maximum expected number of bad PEB per 1024 PEBs
-+ * @attach_mode: selects how to attach
-  *
-  * This function attaches MTD device @mtd_dev to UBI and assign @ubi_num number
-  * to the newly created UBI device, unless @ubi_num is %UBI_DEV_NUM_AUTO, in
-@@ -816,10 +817,12 @@ static int autoresize(struct ubi_device *ubi, int vol_id)
-  * @ubi_devices_mutex.
-  */
- int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
--		       int vid_hdr_offset, int max_beb_per1024)
-+		       int vid_hdr_offset, int max_beb_per1024,
-+		       int attach_mode)
- {
- 	struct ubi_device *ubi;
- 	int i, err;
-+	int do_full_scan = false;
- 
- 	if (max_beb_per1024 < 0 || max_beb_per1024 > MAX_MTD_UBI_BEB_LIMIT)
- 		return -EINVAL;
-@@ -957,7 +960,12 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
- 	if (!ubi->fm_buf)
- 		goto out_free;
- #endif
--	err = ubi_attach(ubi, force_scan);
-+	if (force_scan)
-+		do_full_scan = 1;
-+	else
-+		do_full_scan = !!attach_mode;
-+
-+	err = ubi_attach(ubi, do_full_scan);
- 	if (err) {
- 		ubi_err(ubi, "failed to attach mtd%d, error %d",
- 			mtd->index, err);
-@@ -1240,7 +1248,8 @@ static int __init ubi_init(void)
- 
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, p->ubi_num,
--					 p->vid_hdr_offs, p->max_beb_per1024);
-+					 p->vid_hdr_offs, p->max_beb_per1024,
-+					 UBI_ATTACH_MODE_AUTO);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0) {
- 			pr_err("UBI error: cannot attach mtd%d\n",
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 45c329694a5e..cf9b2b00e8c5 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -1001,6 +1001,11 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 			break;
+diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+index 976d371d7cef..09a9d3a0ccf5 100644
+--- a/drivers/mtd/ubi/fastmap.c
++++ b/drivers/mtd/ubi/fastmap.c
+@@ -422,6 +422,96 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
  		}
- 
-+		if (req.attach_mode < 0 || req.attach_mode > UBI_ATTACH_MODE_MAX) {
-+			err = -EINVAL;
-+			break;
+ 	}
+ }
++/**
++ * scan_empty_space - scan empty space.
++ *
++ * @ubi: UBI device object
++ * @ai: attach info object
++ * @start: PEB number where empty space is expected to start
++ *
++ * Is is the fastmap preseeded, it references only used PEBs, the creation
++ * does not know the real MTD size. Therefore many PEBs are 0xff and unknown
++ * to the fastmap. Scan for this PEBs during attach and make them known.
++ * These PEBs are only allowed to be 0xff or have a valid EC header.
++ * EC headers are allowed because the initial scan+erase operation could be
++ * interrupted by a power cycle.
++ */
++static int scan_empty_space(struct ubi_device *ubi, struct ubi_attach_info *ai,
++			    int start)
++{
++	int pnum, err, scrub, empty, image_seq;
++	unsigned long long ec;
++	struct ubi_ec_hdr *ech = NULL;
++	struct ubi_vid_io_buf *vb = NULL;
++	struct ubi_vid_hdr *vh;
++
++	err = -ENOMEM;
++
++	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
++	if (!ech)
++		goto out;
++
++	vb = ubi_alloc_vid_buf(ubi, GFP_KERNEL);
++	if (!vb)
++		goto out;
++
++	vh = ubi_get_vid_hdr(vb);
++
++	ubi_msg(ubi, "scanning %i additional PEBs", ubi->peb_count - start);
++
++	for (pnum = start; pnum < ubi->peb_count; pnum++) {
++		if (ubi_io_is_bad(ubi, pnum))
++			continue;
++
++		scrub = empty = ec = 0;
++		err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
++		switch (err) {
++			case UBI_IO_FF_BITFLIPS:
++				scrub = 1;
++				/* fall through */
++			case UBI_IO_FF:
++				empty = 1;
++				break;
++			case UBI_IO_BITFLIPS:
++				scrub = 1;
++				/* fall through */
++			case 0:
++				ec = be64_to_cpu(ech->ec);
++				image_seq = be32_to_cpu(ech->image_seq);
++
++				if (image_seq && (image_seq != ubi->image_seq)) {
++					ubi_err(ubi, "bad image seq: 0x%x, expected: 0x%x",
++						image_seq, ubi->image_seq);
++					err = UBI_BAD_FASTMAP;
++					goto out;
++				}
++				break;
++			default:
++				ubi_err(ubi, "Unable to read EC header in empty space: %i",
++					err);
++				err = UBI_BAD_FASTMAP;
++				goto out;
 +		}
 +
- 		mtd = get_mtd_device(NULL, req.mtd_num);
- 		if (IS_ERR(mtd)) {
- 			err = PTR_ERR(mtd);
-@@ -1013,7 +1018,7 @@ static long ctrl_cdev_ioctl(struct file *file, unsigned int cmd,
- 		 */
- 		mutex_lock(&ubi_devices_mutex);
- 		err = ubi_attach_mtd_dev(mtd, req.ubi_num, req.vid_hdr_offset,
--					 req.max_beb_per1024);
-+					 req.max_beb_per1024, req.attach_mode);
- 		mutex_unlock(&ubi_devices_mutex);
- 		if (err < 0)
- 			put_mtd_device(mtd);
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 28af5115d180..0b2f79f68986 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -949,7 +949,8 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
++		err = ubi_io_read_vid_hdr(ubi, pnum, vb, 0);
++		if (err != UBI_IO_FF && err != UBI_IO_FF_BITFLIPS) {
++			ubi_err(ubi, "Unexpected data in empty space: %i", err);
++			err = UBI_BAD_FASTMAP;
++			goto out;
++		}
++
++		if (empty)
++			add_aeb(ai, &ai->erase, pnum, ec, scrub);
++		else
++			add_aeb(ai, &ai->free, pnum, ec, scrub);
++	}
++
++	err = 0;
++out:
++	kfree(ech);
++	ubi_free_vid_buf(vb);
++	return err;
++}
  
- /* build.c */
- int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num,
--		       int vid_hdr_offset, int max_beb_per1024);
-+		       int vid_hdr_offset, int max_beb_per1024,
-+		       int attach_mode);
- int ubi_detach_mtd_dev(int ubi_num, int anyway);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
+ /**
+  * scan_pool - scans a pool for changed (no longer empty PEBs).
+@@ -818,13 +908,34 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
+ 		}
+ 	}
+ 
+-	ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &free);
+-	if (ret)
+-		goto fail;
++	if (!(fm->flags & UBI_FM_SB_PRESEEDED_FLG)) {
++		ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &free);
++		if (ret)
++			goto fail;
+ 
+-	ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum, &free);
+-	if (ret)
+-		goto fail;
++		ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum, &free);
++		if (ret)
++			goto fail;
++	}
++
++	if (fm->flags & UBI_FM_SB_PRESEEDED_FLG) {
++		int empty_start = be32_to_cpu(fmhdr->used_peb_count) + \
++				  be32_to_cpu(fmhdr->erase_peb_count) + fm->used_blocks;
++
++		if (empty_start + ai->bad_peb_count > ubi->peb_count) {
++			ubi_err(ubi, "fastmap points beyond end of device!");
++			goto fail_bad;
++		} else if (empty_start + ai->bad_peb_count == ubi->peb_count) {
++			ubi_msg(ubi, "no need to scan empty space");
++		} else {
++			if (!read_pnum(ubi, ai, cpu_to_be32(empty_start), &empty_start))
++				goto fail_bad;
++
++			ret = scan_empty_space(ubi, ai, empty_start);
++			if (ret)
++				goto fail;
++		}
++	}
+ 
+ 	if (max_sqnum > ai->max_sqnum)
+ 		ai->max_sqnum = max_sqnum;
 -- 
 2.13.6
