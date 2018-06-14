@@ -1,25 +1,20 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTKYB-0004wE-3j
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 05:12:27 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@sigma-star.at>,
- Philipp Rosenberger <p.rosenberger@linutronix.de>,
- Rob Herring <robh@kernel.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 2/3] mtd: rawnand: denali_dt: add more clocks based on IP
- datasheet
-Date: Thu, 14 Jun 2018 14:11:06 +0900
-Message-Id: <1528953067-24324-3-git-send-email-yamada.masahiro@socionext.com>
-In-Reply-To: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
+ id 1fTLfh-0006OI-8t
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 06:23:51 +0000
+From: Richard Weinberger <richard@nod.at>
+To: kbuild test robot <lkp@intel.com>
+Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/14] ubi: fastmap: Read PEB numbers more carefully
+Date: Thu, 14 Jun 2018 08:23:27 +0200
+Message-ID: <191143367.e1U5rnYpgk@blindfold>
+In-Reply-To: <201806140802.6mK4vHdX%fengguang.wu@intel.com>
+References: <20180613212344.11608-2-richard@nod.at>
+ <201806140802.6mK4vHdX%fengguang.wu@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,147 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the Denali User's Guide, this IP needs three clocks:
+Am Donnerstag, 14. Juni 2018, 03:04:40 CEST schrieb kbuild test robot:
+> Hi Richard,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on mtd/master]
+> [also build test WARNING on v4.17 next-20180613]
+> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Richard-Weinberger/ubi-Fastmap-updates/20180614-052830
+> base:   git://git.infradead.org/linux-mtd.git master
+> reproduce:
+>         # apt-get install sparse
+>         make ARCH=x86_64 allmodconfig
+>         make C=1 CF=-D__CHECK_ENDIAN__
+> 
+> 
+> sparse warnings: (new ones prefixed by >>)
+> 
+> >> drivers/mtd/ubi/fastmap.c:110:14: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] pnum @@    got  [usertype] pnum @@
+>    drivers/mtd/ubi/fastmap.c:110:14:    expected restricted __be32 [usertype] pnum
+>    drivers/mtd/ubi/fastmap.c:110:14:    got unsigned int
+> >> drivers/mtd/ubi/fastmap.c:111:13: sparse: restricted __be32 degrades to integer
+> >> drivers/mtd/ubi/fastmap.c:112:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
+>    drivers/mtd/ubi/fastmap.c:112:27:    expected int [signed] <noident>
+>    drivers/mtd/ubi/fastmap.c:112:27:    got restricted __be32 [usertype] pnum
+>    drivers/mtd/ubi/fastmap.c:116:13: sparse: restricted __be32 degrades to integer
+>    drivers/mtd/ubi/fastmap.c:116:25: sparse: restricted __be32 degrades to integer
+>    drivers/mtd/ubi/fastmap.c:121:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
+>    drivers/mtd/ubi/fastmap.c:121:27:    expected int [signed] <noident>
+>    drivers/mtd/ubi/fastmap.c:121:27:    got restricted __be32 [usertype] pnum
+>    drivers/mtd/ubi/fastmap.c:604:23: sparse: incorrect type in assignment (different base types) @@    expected unsigned long long [unsigned] max_sqnum @@    got nsigned long long [unsigned] max_sqnum @@
+>    drivers/mtd/ubi/fastmap.c:604:23:    expected unsigned long long [unsigned] max_sqnum
+>    drivers/mtd/ubi/fastmap.c:604:23:    got restricted __be64 [usertype] sqnum
+>    drivers/mtd/ubi/fastmap.c:1075:17: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] tmp_crc @@    got  [usertype] tmp_crc @@
+>    drivers/mtd/ubi/fastmap.c:1075:17:    expected restricted __be32 [usertype] tmp_crc
+>    drivers/mtd/ubi/fastmap.c:1075:17:    got unsigned int
+>    drivers/mtd/ubi/fastmap.c:1077:13: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] crc @@    got  [usertype] crc @@
+>    drivers/mtd/ubi/fastmap.c:1077:13:    expected restricted __be32 [usertype] crc
+>    drivers/mtd/ubi/fastmap.c:1077:13:    got unsigned int
+>    drivers/mtd/ubi/fastmap.c:1086:22: sparse: incorrect type in assignment (different base types) @@    expected restricted __be64 [usertype] sqnum @@    got unsigned lonrestricted __be64 [usertype] sqnum @@
+>    drivers/mtd/ubi/fastmap.c:1086:22:    expected restricted __be64 [usertype] sqnum
+>    drivers/mtd/ubi/fastmap.c:1086:22:    got unsigned long long [unsigned] [assigned] sqnum
+> 
+> vim +110 drivers/mtd/ubi/fastmap.c
+> 
+>    103	
+>    104	static bool read_pnum(struct ubi_device *ubi, struct ubi_attach_info *ai,
+>    105			     __be32 pnum, int *out_pnum)
+>    106	{
+>    107		int ret = true;
+>    108		int max_pnum = ubi->peb_count;
+>    109	
+>  > 110		pnum = be32_to_cpu(pnum);
+>  > 111		if (pnum == UBI_UNKNOWN) {
+>  > 112			*out_pnum = pnum;
+>    113			goto out;
+>    114		}
 
- - clk: controller core clock
+Okay, let's use a new variable of type int instead of reusing pnum.
 
- - clk_x: bus interface clock
-
- - ecc_clk: clock at which ECC circuitry is run
-
-Currently, denali_dt.c requires a single anonymous clock and its
-frequency.  However, the driver needs to get the frequency of "clk_x"
-not "clk".  This is confusing because people tend to assume the
-anonymous clock means the core clock.
-
-Instead of the cheesy implementation, the clocks in the real hardware
-should be represented in the driver and the DT-binding.
-
-However, adding new clocks would break the existing platforms.  For the
-backward compatibility, the driver still accepts a single clock just as
-before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
-It is fine because both Altera (Intel) SOCFPGA and Socionext UniPhier
-use 200 MHz for the bus interface clock.
-
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2: split into sensible chunks
-
- .../devicetree/bindings/mtd/denali-nand.txt        |  5 +++
- drivers/mtd/nand/raw/denali_dt.c                   | 49 ++++++++++++++++++++--
- 2 files changed, 50 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index 0ee8edb..f33da87 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -8,6 +8,9 @@ Required properties:
-   - reg : should contain registers location and length for data and reg.
-   - reg-names: Should contain the reg names "nand_data" and "denali_reg"
-   - interrupts : The interrupt number.
-+  - clocks: should contain phandle of the controller core clock, the bus
-+    interface clock, and the ECC circuit clock.
-+  - clock-names: should contain "nand", "nand_x", "ecc"
- 
- Optional properties:
-   - nand-ecc-step-size: see nand.txt for details.  If present, the value must be
-@@ -31,5 +34,7 @@ nand: nand@ff900000 {
- 	compatible = "altr,socfpga-denali-nand";
- 	reg = <0xff900000 0x20>, <0xffb80000 0x1000>;
- 	reg-names = "nand_data", "denali_reg";
-+	clocks = <&nand_clk>, <&nand_x_clk>, <&nand_ecc_clk>;
-+	clock-names = "nand", "nand_x", "ecc";
- 	interrupts = <0 144 4>;
- };
-diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index d923cfa..afaae37 100644
---- a/drivers/mtd/nand/raw/denali_dt.c
-+++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -27,7 +27,9 @@
- 
- struct denali_dt {
- 	struct denali_nand_info	denali;
--	struct clk		*clk;
-+	struct clk *clk;	/* core clock */
-+	struct clk *clk_x;	/* bus interface clock */
-+	struct clk *clk_ecc;	/* ECC circuit clock */
- };
- 
- struct denali_dt_data {
-@@ -115,24 +117,61 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	if (IS_ERR(denali->host))
- 		return PTR_ERR(denali->host);
- 
--	dt->clk = devm_clk_get(dev, NULL);
-+	/*
-+	 * A single anonymous clock is supported for the backward compatibility.
-+	 * New platforms should support all the named clocks.
-+	 */
-+	dt->clk = devm_clk_get(dev, "nand");
-+	if (IS_ERR(dt->clk))
-+		dt->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(dt->clk)) {
- 		dev_err(dev, "no clk available\n");
- 		return PTR_ERR(dt->clk);
- 	}
-+
-+	dt->clk_x = devm_clk_get(dev, "nand_x");
-+	if (IS_ERR(dt->clk_x))
-+		dt->clk_x = NULL;
-+
-+	dt->clk_ecc = devm_clk_get(dev, "ecc");
-+	if (IS_ERR(dt->clk_ecc))
-+		dt->clk_ecc = NULL;
-+
- 	ret = clk_prepare_enable(dt->clk);
- 	if (ret)
- 		return ret;
- 
--	denali->clk_x_rate = clk_get_rate(dt->clk);
-+	ret = clk_prepare_enable(dt->clk_x);
-+	if (ret)
-+		goto out_disable_clk;
-+
-+	ret = clk_prepare_enable(dt->clk_ecc);
-+	if (ret)
-+		goto out_disable_clk_x;
-+
-+	if (dt->clk_x) {
-+		denali->clk_x_rate = clk_get_rate(dt->clk_x);
-+	} else {
-+		/*
-+		 * Hardcode the clock rates for the backward compatibility.
-+		 * This works for both SOCFPGA and UniPhier.
-+		 */
-+		dev_notice(dev,
-+			   "necessary clock is missing. default clock rates are used.\n");
-+		denali->clk_x_rate = 200000000;
-+	}
- 
- 	ret = denali_init(denali);
- 	if (ret)
--		goto out_disable_clk;
-+		goto out_disable_clk_ecc;
- 
- 	platform_set_drvdata(pdev, dt);
- 	return 0;
- 
-+out_disable_clk_ecc:
-+	clk_disable_unprepare(dt->clk_ecc);
-+out_disable_clk_x:
-+	clk_disable_unprepare(dt->clk_x);
- out_disable_clk:
- 	clk_disable_unprepare(dt->clk);
- 
-@@ -144,6 +183,8 @@ static int denali_dt_remove(struct platform_device *pdev)
- 	struct denali_dt *dt = platform_get_drvdata(pdev);
- 
- 	denali_remove(&dt->denali);
-+	clk_disable_unprepare(dt->clk_ecc);
-+	clk_disable_unprepare(dt->clk_x);
- 	clk_disable_unprepare(dt->clk);
- 
- 	return 0;
--- 
-2.7.4
+Thanks,
+//richard
