@@ -1,19 +1,23 @@
-Received: from mga14.intel.com ([192.55.52.115])
+Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTGi1-0001fH-QF
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 01:05:55 +0000
-Date: Thu, 14 Jun 2018 09:04:40 +0800
-From: kbuild test robot <lkp@intel.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH 01/14] ubi: fastmap: Read PEB numbers more carefully
-Message-ID: <201806140802.6mK4vHdX%fengguang.wu@intel.com>
-References: <20180613212344.11608-2-richard@nod.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180613212344.11608-2-richard@nod.at>
+ id 1fTKXr-0004q3-Gq
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 05:11:41 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@sigma-star.at>,
+ Philipp Rosenberger <p.rosenberger@linutronix.de>,
+ Rob Herring <robh@kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 0/3] mtd: rawnand: denali: add new clocks and improve
+ setup_data_interface
+Date: Thu, 14 Jun 2018 14:11:04 +0900
+Message-Id: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
 
-I love your patch! Perhaps something to improve:
+The ->setup_data_interface() hook needs to know the clock frequency.
+In fact, this IP needs three clocks, bus "which clock?" is really
+confusing.  (It is not described in the DT-binding at all.)
 
-[auto build test WARNING on mtd/master]
-[also build test WARNING on v4.17 next-20180613]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+This series adds more clocks.  In the new binding, three clocks
+are required: core clock, bus interface clock, ECC engine clock.
 
-url:    https://github.com/0day-ci/linux/commits/Richard-Weinberger/ubi-Fastmap-updates/20180614-052830
-base:   git://git.infradead.org/linux-mtd.git master
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+This series also takes care of the backward compatibility by
+providing hardcoded values in case the new clocks are missing.
+So, existing DT should work.
 
 
-sparse warnings: (new ones prefixed by >>)
+Changes in v2:
+  - Split patches into sensible chunks
 
->> drivers/mtd/ubi/fastmap.c:110:14: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] pnum @@    got  [usertype] pnum @@
-   drivers/mtd/ubi/fastmap.c:110:14:    expected restricted __be32 [usertype] pnum
-   drivers/mtd/ubi/fastmap.c:110:14:    got unsigned int
->> drivers/mtd/ubi/fastmap.c:111:13: sparse: restricted __be32 degrades to integer
->> drivers/mtd/ubi/fastmap.c:112:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
-   drivers/mtd/ubi/fastmap.c:112:27:    expected int [signed] <noident>
-   drivers/mtd/ubi/fastmap.c:112:27:    got restricted __be32 [usertype] pnum
-   drivers/mtd/ubi/fastmap.c:116:13: sparse: restricted __be32 degrades to integer
-   drivers/mtd/ubi/fastmap.c:116:25: sparse: restricted __be32 degrades to integer
-   drivers/mtd/ubi/fastmap.c:121:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
-   drivers/mtd/ubi/fastmap.c:121:27:    expected int [signed] <noident>
-   drivers/mtd/ubi/fastmap.c:121:27:    got restricted __be32 [usertype] pnum
-   drivers/mtd/ubi/fastmap.c:604:23: sparse: incorrect type in assignment (different base types) @@    expected unsigned long long [unsigned] max_sqnum @@    got nsigned long long [unsigned] max_sqnum @@
-   drivers/mtd/ubi/fastmap.c:604:23:    expected unsigned long long [unsigned] max_sqnum
-   drivers/mtd/ubi/fastmap.c:604:23:    got restricted __be64 [usertype] sqnum
-   drivers/mtd/ubi/fastmap.c:1075:17: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] tmp_crc @@    got  [usertype] tmp_crc @@
-   drivers/mtd/ubi/fastmap.c:1075:17:    expected restricted __be32 [usertype] tmp_crc
-   drivers/mtd/ubi/fastmap.c:1075:17:    got unsigned int
-   drivers/mtd/ubi/fastmap.c:1077:13: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] crc @@    got  [usertype] crc @@
-   drivers/mtd/ubi/fastmap.c:1077:13:    expected restricted __be32 [usertype] crc
-   drivers/mtd/ubi/fastmap.c:1077:13:    got unsigned int
-   drivers/mtd/ubi/fastmap.c:1086:22: sparse: incorrect type in assignment (different base types) @@    expected restricted __be64 [usertype] sqnum @@    got unsigned lonrestricted __be64 [usertype] sqnum @@
-   drivers/mtd/ubi/fastmap.c:1086:22:    expected restricted __be64 [usertype] sqnum
-   drivers/mtd/ubi/fastmap.c:1086:22:    got unsigned long long [unsigned] [assigned] sqnum
+Masahiro Yamada (3):
+  mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
+  mtd: rawnand: denali_dt: add more clocks based on IP datasheet
+  mtd: rawnand: denali: optimize timing parameters for data interface
 
-vim +110 drivers/mtd/ubi/fastmap.c
+ .../devicetree/bindings/mtd/denali-nand.txt        |  5 ++
+ drivers/mtd/nand/raw/denali.c                      | 49 ++++++++--------
+ drivers/mtd/nand/raw/denali.h                      |  1 +
+ drivers/mtd/nand/raw/denali_dt.c                   | 66 ++++++++++++++++++----
+ drivers/mtd/nand/raw/denali_pci.c                  |  1 +
+ 5 files changed, 86 insertions(+), 36 deletions(-)
 
-   103	
-   104	static bool read_pnum(struct ubi_device *ubi, struct ubi_attach_info *ai,
-   105			     __be32 pnum, int *out_pnum)
-   106	{
-   107		int ret = true;
-   108		int max_pnum = ubi->peb_count;
-   109	
- > 110		pnum = be32_to_cpu(pnum);
- > 111		if (pnum == UBI_UNKNOWN) {
- > 112			*out_pnum = pnum;
-   113			goto out;
-   114		}
-   115	
-   116		if (pnum < 0 || pnum >= max_pnum) {
-   117			ubi_err(ubi, "fastmap references PEB out of range: %i", pnum);
-   118			ret = false;
-   119			goto out;
-   120		} else {
-   121			*out_pnum = pnum;
-   122		}
-   123	
-   124	out:
-   125		return ret;
-   126	}
-   127	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+-- 
+2.7.4
