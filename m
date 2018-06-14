@@ -1,25 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTNEf-000823-N8
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 08:04:09 +0000
-Date: Thu, 14 Jun 2018 10:03:39 +0200
+ id 1fTNFc-0000BY-Om
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 08:05:31 +0000
+Date: Thu, 14 Jun 2018 10:04:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@sigma-star.at>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, linux-mtd
- <linux-mtd@lists.infradead.org>, Philipp Rosenberger
- <p.rosenberger@linutronix.de>, Rob Herring <robh@kernel.org>, DTML
- <devicetree@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2 0/3] mtd: rawnand: denali: add new clocks and improve
- setup_data_interface
-Message-ID: <20180614100339.02f1ee04@bbrezillon>
-In-Reply-To: <2214183.rYP2OkZajM@blindfold>
-References: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
- <CAK7LNASoV9nHTFax1nD_8pvkEjTzXkFpDFRf_xuoOnPPf9K23A@mail.gmail.com>
- <20180614093835.5c3bf426@bbrezillon> <2214183.rYP2OkZajM@blindfold>
+To: Richard Weinberger <richard@nod.at>
+Cc: Quentin Schulz <quentin.schulz@bootlin.com>, marek.vasut@gmail.com,
+ dedekind1@gmail.com, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org
+Subject: Re: [PATCH 2/2] ubi: introduce ubi.nocheck parameter to skip CRC
+ check when attaching ubi vol
+Message-ID: <20180614100436.40741c67@bbrezillon>
+In-Reply-To: <1588647.N1yrutfcI7@blindfold>
+References: <95e04a201ac4ef82e68ce8e0c4f548b193e51b55.1524214122.git-series.quentin.schulz@bootlin.com>
+ <2085970.qGmQXvoWho@blindfold>
+ <20180611102037.n5kkdq4mcoixmvti@qschulz>
+ <1588647.N1yrutfcI7@blindfold>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -32,51 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 14 Jun 2018 10:02:12 +0200
-Richard Weinberger <richard@sigma-star.at> wrote:
+On Thu, 14 Jun 2018 09:29:42 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-> Am Donnerstag, 14. Juni 2018, 09:38:35 CEST schrieb Boris Brezillon:
-> > On Thu, 14 Jun 2018 16:29:59 +0900
-> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> >   
-> > > Hi Richard,
-> > > 
-> > > 2018-06-14 16:25 GMT+09:00 Richard Weinberger <richard@sigma-star.at>:  
-> > > > Masahiro,
-> > > >
-> > > > Am Donnerstag, 14. Juni 2018, 07:11:04 CEST schrieb Masahiro Yamada:    
-> > > >>
-> > > >> The ->setup_data_interface() hook needs to know the clock frequency.
-> > > >> In fact, this IP needs three clocks, bus "which clock?" is really
-> > > >> confusing.  (It is not described in the DT-binding at all.)
-> > > >>
-> > > >> This series adds more clocks.  In the new binding, three clocks
-> > > >> are required: core clock, bus interface clock, ECC engine clock.
-> > > >>
-> > > >> This series also takes care of the backward compatibility by
-> > > >> providing hardcoded values in case the new clocks are missing.
-> > > >> So, existing DT should work.
-> > > >>
-> > > >>
-> > > >> Changes in v2:
-> > > >>   - Split patches into sensible chunks
-> > > >>
-> > > >> Masahiro Yamada (3):
-> > > >>   mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
-> > > >>   mtd: rawnand: denali_dt: add more clocks based on IP datasheet
-> > > >>   mtd: rawnand: denali: optimize timing parameters for data interface    
-> > > >
-> > > > This still means that we need to feed at least 2/3 and 3/3 into -stable to
-> > > > unbreak the driver.    
-> > > 
-> > > 
-> > > 3/3 is not mandatory.
-> > > 
-> > > You can only back-port 1/3 and 2/3.  
-> > 
-> > Well, patch 1 is not a fix, can we move it after patch 2 so that only
-> > patch 2 is flagged with the Fixes+Cc-stable tags?  
+> Quentin,
 > 
-> Another question, shall we fix arch/arm/boot/dts/socfpga.dtsi too?
+> Am Montag, 11. Juni 2018, 12:20:37 CEST schrieb Quentin Schulz:
+> > If we go for a per-image flag, adding nocheck to the ioctl makes sense,
+> > otherwise we have to find a way to select only one or more volumes for
+> > which the nocheck flag should be set. That being said, I'm not sure a
+> > per-image flag is the way we want to go.
+> > 
+> > What are your thoughts on this?  
+> 
+> I like that approach a lot more, please send a patch. :-)
 
-Yep.
+I don't think the approach you're talking about has been mentioned by
+Quentin in this email :-). To clarify the discussion, we're talking
+about adding a new flag to VTBL entries telling whether the CRC should
+be skipped or not.
+
+> Having a volume flag will reduce complexity a lot.
+
+That's my opinion as well.
