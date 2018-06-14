@@ -1,15 +1,15 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTRxB-00012T-Gd
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 13:06:26 +0000
-Received: by mail-wm0-x244.google.com with SMTP id e16-v6so10446910wmd.0
- for <linux-mtd@lists.infradead.org>; Thu, 14 Jun 2018 06:06:06 -0700 (PDT)
+ id 1fTWyZ-0007Bh-Qa
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 18:28:05 +0000
+Received: by mail-it0-x232.google.com with SMTP id a3-v6so10019446itd.0
+ for <linux-mtd@lists.infradead.org>; Thu, 14 Jun 2018 11:27:53 -0700 (PDT)
 MIME-Version: 1.0
-From: Raymonde DUPOUY <dupouy.ramonde@gmail.com>
-Date: Thu, 14 Jun 2018 13:06:04 +0000
-Message-ID: <CA+Z29aDU_enq=AqDZKcCDAtwTHG4bm_8yAE5q7f_kfyHjDK-kA@mail.gmail.com>
-Subject: I will definately enlighten you more as soon as I hear from you
-To: undisclosed-recipients:;
+From: Martin Townsend <mtownsend1973@gmail.com>
+Date: Thu, 14 Jun 2018 19:27:42 +0100
+Message-ID: <CABatt_x=VnG18LJS4DyWpZJPog5w+4irorgZSkqZCp0bdMJ5-Q@mail.gmail.com>
+Subject: mtdparts ro question
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,16 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good Morning,
+Hi,
 
-Although, I am not comfortable discussing the content of my mail on
-the Internet owing to lots of unsolicited/Spam mails on the net
-nowadays. However, I have made up my mind to will my late Husband's
-funds to you so you can use it for charity duties and good work to
-humanity. The amounts are relatively huge, but please get back to me
-for further information. I will definately enlighten you more as soon
-as I hear from you.
+A quick question:
 
-Best of wishes to you,
+when the ro flag is set on an MTD Partition in the mtdparts kernel
+bootargs is there a system call or ioctl or any other way that
+userspace can override this setting to make the MTD partition
+read/write.  I don't think there is but I just want to double check.
+The reason is that if I want to update the file-system on that
+partition I take it would have to reboot and remove the flag at the
+bootloader state.
 
-Mrs. Rania Hassya
+Many Thanks,
+Martin.
