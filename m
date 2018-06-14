@@ -1,6 +1,6 @@
 Received: from conuserg-10.nifty.com ([210.131.2.77])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTKXr-0004q3-Gq
+ id 1fTKXr-0004pr-KB
  for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 05:11:41 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org,
@@ -9,15 +9,16 @@ Cc: Richard Weinberger <richard@sigma-star.at>,
  Philipp Rosenberger <p.rosenberger@linutronix.de>,
  Rob Herring <robh@kernel.org>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2 0/3] mtd: rawnand: denali: add new clocks and improve
- setup_data_interface
-Date: Thu, 14 Jun 2018 14:11:04 +0900
-Message-Id: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2 1/3] mtd: rawnand: denali_dt: use dev as a shorthand of
+ &pdev->dev
+Date: Thu, 14 Jun 2018 14:11:05 +0900
+Message-Id: <1528953067-24324-2-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add 'dev' as a shorthand before adding more code that takes a
+pointer to struce device.
 
-The ->setup_data_interface() hook needs to know the clock frequency.
-In fact, this IP needs three clocks, bus "which clock?" is really
-confusing.  (It is not described in the DT-binding at all.)
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-This series adds more clocks.  In the new binding, three clocks
-are required: core clock, bus interface clock, ECC engine clock.
+Changes in v2: None
 
-This series also takes care of the backward compatibility by
-providing hardcoded values in case the new clocks are missing.
-So, existing DT should work.
+ drivers/mtd/nand/raw/denali_dt.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-
-Changes in v2:
-  - Split patches into sensible chunks
-
-Masahiro Yamada (3):
-  mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
-  mtd: rawnand: denali_dt: add more clocks based on IP datasheet
-  mtd: rawnand: denali: optimize timing parameters for data interface
-
- .../devicetree/bindings/mtd/denali-nand.txt        |  5 ++
- drivers/mtd/nand/raw/denali.c                      | 49 ++++++++--------
- drivers/mtd/nand/raw/denali.h                      |  1 +
- drivers/mtd/nand/raw/denali_dt.c                   | 66 ++++++++++++++++++----
- drivers/mtd/nand/raw/denali_pci.c                  |  1 +
- 5 files changed, 86 insertions(+), 36 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+index cfd33e6..d923cfa 100644
+--- a/drivers/mtd/nand/raw/denali_dt.c
++++ b/drivers/mtd/nand/raw/denali_dt.c
+@@ -79,44 +79,45 @@ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+ 
+ static int denali_dt_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct resource *res;
+ 	struct denali_dt *dt;
+ 	const struct denali_dt_data *data;
+ 	struct denali_nand_info *denali;
+ 	int ret;
+ 
+-	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
++	dt = devm_kzalloc(dev, sizeof(*dt), GFP_KERNEL);
+ 	if (!dt)
+ 		return -ENOMEM;
+ 	denali = &dt->denali;
+ 
+-	data = of_device_get_match_data(&pdev->dev);
++	data = of_device_get_match_data(dev);
+ 	if (data) {
+ 		denali->revision = data->revision;
+ 		denali->caps = data->caps;
+ 		denali->ecc_caps = data->ecc_caps;
+ 	}
+ 
+-	denali->dev = &pdev->dev;
++	denali->dev = dev;
+ 	denali->irq = platform_get_irq(pdev, 0);
+ 	if (denali->irq < 0) {
+-		dev_err(&pdev->dev, "no irq defined\n");
++		dev_err(dev, "no irq defined\n");
+ 		return denali->irq;
+ 	}
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "denali_reg");
+-	denali->reg = devm_ioremap_resource(&pdev->dev, res);
++	denali->reg = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(denali->reg))
+ 		return PTR_ERR(denali->reg);
+ 
+ 	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
+-	denali->host = devm_ioremap_resource(&pdev->dev, res);
++	denali->host = devm_ioremap_resource(dev, res);
+ 	if (IS_ERR(denali->host))
+ 		return PTR_ERR(denali->host);
+ 
+-	dt->clk = devm_clk_get(&pdev->dev, NULL);
++	dt->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+-		dev_err(&pdev->dev, "no clk available\n");
++		dev_err(dev, "no clk available\n");
+ 		return PTR_ERR(dt->clk);
+ 	}
+ 	ret = clk_prepare_enable(dt->clk);
 -- 
 2.7.4
