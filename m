@@ -1,16 +1,19 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTDFi-0004u8-Ng
- for linux-mtd@lists.infradead.org; Wed, 13 Jun 2018 21:25:01 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 08/14] ubi: fastmap: Scan empty space if fastmap is preseeded
-Date: Wed, 13 Jun 2018 23:23:38 +0200
-Message-Id: <20180613212344.11608-9-richard@nod.at>
-In-Reply-To: <20180613212344.11608-1-richard@nod.at>
-References: <20180613212344.11608-1-richard@nod.at>
+ id 1fTGi1-0001fH-QF
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 01:05:55 +0000
+Date: Thu, 14 Jun 2018 09:04:40 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH 01/14] ubi: fastmap: Read PEB numbers more carefully
+Message-ID: <201806140802.6mK4vHdX%fengguang.wu@intel.com>
+References: <20180613212344.11608-2-richard@nod.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180613212344.11608-2-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,157 +23,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The creation tool does not know the real size of the MTD, therefore the
-preseeded fastmap references only used PEBs.
-Free PEBs need to be discovered during the initial attach of the
-preseeded fastmap.
+Hi Richard,
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on mtd/master]
+[also build test WARNING on v4.17 next-20180613]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Richard-Weinberger/ubi-Fastmap-updates/20180614-052830
+base:   git://git.infradead.org/linux-mtd.git master
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/mtd/ubi/fastmap.c:110:14: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] pnum @@    got  [usertype] pnum @@
+   drivers/mtd/ubi/fastmap.c:110:14:    expected restricted __be32 [usertype] pnum
+   drivers/mtd/ubi/fastmap.c:110:14:    got unsigned int
+>> drivers/mtd/ubi/fastmap.c:111:13: sparse: restricted __be32 degrades to integer
+>> drivers/mtd/ubi/fastmap.c:112:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
+   drivers/mtd/ubi/fastmap.c:112:27:    expected int [signed] <noident>
+   drivers/mtd/ubi/fastmap.c:112:27:    got restricted __be32 [usertype] pnum
+   drivers/mtd/ubi/fastmap.c:116:13: sparse: restricted __be32 degrades to integer
+   drivers/mtd/ubi/fastmap.c:116:25: sparse: restricted __be32 degrades to integer
+   drivers/mtd/ubi/fastmap.c:121:27: sparse: incorrect type in assignment (different base types) @@    expected int [signed] <noident> @@    got restricted __be3int [signed] <noident> @@
+   drivers/mtd/ubi/fastmap.c:121:27:    expected int [signed] <noident>
+   drivers/mtd/ubi/fastmap.c:121:27:    got restricted __be32 [usertype] pnum
+   drivers/mtd/ubi/fastmap.c:604:23: sparse: incorrect type in assignment (different base types) @@    expected unsigned long long [unsigned] max_sqnum @@    got nsigned long long [unsigned] max_sqnum @@
+   drivers/mtd/ubi/fastmap.c:604:23:    expected unsigned long long [unsigned] max_sqnum
+   drivers/mtd/ubi/fastmap.c:604:23:    got restricted __be64 [usertype] sqnum
+   drivers/mtd/ubi/fastmap.c:1075:17: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] tmp_crc @@    got  [usertype] tmp_crc @@
+   drivers/mtd/ubi/fastmap.c:1075:17:    expected restricted __be32 [usertype] tmp_crc
+   drivers/mtd/ubi/fastmap.c:1075:17:    got unsigned int
+   drivers/mtd/ubi/fastmap.c:1077:13: sparse: incorrect type in assignment (different base types) @@    expected restricted __be32 [usertype] crc @@    got  [usertype] crc @@
+   drivers/mtd/ubi/fastmap.c:1077:13:    expected restricted __be32 [usertype] crc
+   drivers/mtd/ubi/fastmap.c:1077:13:    got unsigned int
+   drivers/mtd/ubi/fastmap.c:1086:22: sparse: incorrect type in assignment (different base types) @@    expected restricted __be64 [usertype] sqnum @@    got unsigned lonrestricted __be64 [usertype] sqnum @@
+   drivers/mtd/ubi/fastmap.c:1086:22:    expected restricted __be64 [usertype] sqnum
+   drivers/mtd/ubi/fastmap.c:1086:22:    got unsigned long long [unsigned] [assigned] sqnum
+
+vim +110 drivers/mtd/ubi/fastmap.c
+
+   103	
+   104	static bool read_pnum(struct ubi_device *ubi, struct ubi_attach_info *ai,
+   105			     __be32 pnum, int *out_pnum)
+   106	{
+   107		int ret = true;
+   108		int max_pnum = ubi->peb_count;
+   109	
+ > 110		pnum = be32_to_cpu(pnum);
+ > 111		if (pnum == UBI_UNKNOWN) {
+ > 112			*out_pnum = pnum;
+   113			goto out;
+   114		}
+   115	
+   116		if (pnum < 0 || pnum >= max_pnum) {
+   117			ubi_err(ubi, "fastmap references PEB out of range: %i", pnum);
+   118			ret = false;
+   119			goto out;
+   120		} else {
+   121			*out_pnum = pnum;
+   122		}
+   123	
+   124	out:
+   125		return ret;
+   126	}
+   127	
+
 ---
- drivers/mtd/ubi/fastmap.c | 123 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 117 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 976d371d7cef..09a9d3a0ccf5 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -422,6 +422,96 @@ static void unmap_peb(struct ubi_attach_info *ai, int pnum)
- 		}
- 	}
- }
-+/**
-+ * scan_empty_space - scan empty space.
-+ *
-+ * @ubi: UBI device object
-+ * @ai: attach info object
-+ * @start: PEB number where empty space is expected to start
-+ *
-+ * Is is the fastmap preseeded, it references only used PEBs, the creation
-+ * does not know the real MTD size. Therefore many PEBs are 0xff and unknown
-+ * to the fastmap. Scan for this PEBs during attach and make them known.
-+ * These PEBs are only allowed to be 0xff or have a valid EC header.
-+ * EC headers are allowed because the initial scan+erase operation could be
-+ * interrupted by a power cycle.
-+ */
-+static int scan_empty_space(struct ubi_device *ubi, struct ubi_attach_info *ai,
-+			    int start)
-+{
-+	int pnum, err, scrub, empty, image_seq;
-+	unsigned long long ec;
-+	struct ubi_ec_hdr *ech = NULL;
-+	struct ubi_vid_io_buf *vb = NULL;
-+	struct ubi_vid_hdr *vh;
-+
-+	err = -ENOMEM;
-+
-+	ech = kzalloc(ubi->ec_hdr_alsize, GFP_KERNEL);
-+	if (!ech)
-+		goto out;
-+
-+	vb = ubi_alloc_vid_buf(ubi, GFP_KERNEL);
-+	if (!vb)
-+		goto out;
-+
-+	vh = ubi_get_vid_hdr(vb);
-+
-+	ubi_msg(ubi, "scanning %i additional PEBs", ubi->peb_count - start);
-+
-+	for (pnum = start; pnum < ubi->peb_count; pnum++) {
-+		if (ubi_io_is_bad(ubi, pnum))
-+			continue;
-+
-+		scrub = empty = ec = 0;
-+		err = ubi_io_read_ec_hdr(ubi, pnum, ech, 0);
-+		switch (err) {
-+			case UBI_IO_FF_BITFLIPS:
-+				scrub = 1;
-+				/* fall through */
-+			case UBI_IO_FF:
-+				empty = 1;
-+				break;
-+			case UBI_IO_BITFLIPS:
-+				scrub = 1;
-+				/* fall through */
-+			case 0:
-+				ec = be64_to_cpu(ech->ec);
-+				image_seq = be32_to_cpu(ech->image_seq);
-+
-+				if (image_seq && (image_seq != ubi->image_seq)) {
-+					ubi_err(ubi, "bad image seq: 0x%x, expected: 0x%x",
-+						image_seq, ubi->image_seq);
-+					err = UBI_BAD_FASTMAP;
-+					goto out;
-+				}
-+				break;
-+			default:
-+				ubi_err(ubi, "Unable to read EC header in empty space: %i",
-+					err);
-+				err = UBI_BAD_FASTMAP;
-+				goto out;
-+		}
-+
-+		err = ubi_io_read_vid_hdr(ubi, pnum, vb, 0);
-+		if (err != UBI_IO_FF && err != UBI_IO_FF_BITFLIPS) {
-+			ubi_err(ubi, "Unexpected data in empty space: %i", err);
-+			err = UBI_BAD_FASTMAP;
-+			goto out;
-+		}
-+
-+		if (empty)
-+			add_aeb(ai, &ai->erase, pnum, ec, scrub);
-+		else
-+			add_aeb(ai, &ai->free, pnum, ec, scrub);
-+	}
-+
-+	err = 0;
-+out:
-+	kfree(ech);
-+	ubi_free_vid_buf(vb);
-+	return err;
-+}
- 
- /**
-  * scan_pool - scans a pool for changed (no longer empty PEBs).
-@@ -818,13 +908,34 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 		}
- 	}
- 
--	ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &free);
--	if (ret)
--		goto fail;
-+	if (!(fm->flags & UBI_FM_SB_PRESEEDED_FLG)) {
-+		ret = scan_pool(ubi, ai, fmpl->pebs, pool_size, &max_sqnum, &free);
-+		if (ret)
-+			goto fail;
- 
--	ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum, &free);
--	if (ret)
--		goto fail;
-+		ret = scan_pool(ubi, ai, fmpl_wl->pebs, wl_pool_size, &max_sqnum, &free);
-+		if (ret)
-+			goto fail;
-+	}
-+
-+	if (fm->flags & UBI_FM_SB_PRESEEDED_FLG) {
-+		int empty_start = be32_to_cpu(fmhdr->used_peb_count) + \
-+				  be32_to_cpu(fmhdr->erase_peb_count) + fm->used_blocks;
-+
-+		if (empty_start + ai->bad_peb_count > ubi->peb_count) {
-+			ubi_err(ubi, "fastmap points beyond end of device!");
-+			goto fail_bad;
-+		} else if (empty_start + ai->bad_peb_count == ubi->peb_count) {
-+			ubi_msg(ubi, "no need to scan empty space");
-+		} else {
-+			if (!read_pnum(ubi, ai, cpu_to_be32(empty_start), &empty_start))
-+				goto fail_bad;
-+
-+			ret = scan_empty_space(ubi, ai, empty_start);
-+			if (ret)
-+				goto fail;
-+		}
-+	}
- 
- 	if (max_sqnum > ai->max_sqnum)
- 		ai->max_sqnum = max_sqnum;
--- 
-2.13.6
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
