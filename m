@@ -1,19 +1,28 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTMlH-0006yv-3v
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 07:33:51 +0000
-Subject: Re: [RFC PATCH 0/2] mkfs.ubifs: Implement selinux labelling support
-To: Ritesh Harjani <riteshh@codeaurora.org>, linux-mtd@lists.infradead.org,
- richard@nod.at
-References: <1528277940-30919-1-git-send-email-riteshh@codeaurora.org>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <2f217641-3395-91af-7c27-ca306eb4a747@sigma-star.at>
-Date: Thu, 14 Jun 2018 09:33:18 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fTMqQ-0000za-LF
+ for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 07:39:00 +0000
+Date: Thu, 14 Jun 2018 09:38:35 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Richard Weinberger <richard@sigma-star.at>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Philipp Rosenberger
+ <p.rosenberger@linutronix.de>, Rob Herring <robh@kernel.org>, DTML
+ <devicetree@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2 0/3] mtd: rawnand: denali: add new clocks and improve
+ setup_data_interface
+Message-ID: <20180614093835.5c3bf426@bbrezillon>
+In-Reply-To: <CAK7LNASoV9nHTFax1nD_8pvkEjTzXkFpDFRf_xuoOnPPf9K23A@mail.gmail.com>
+References: <1528953067-24324-1-git-send-email-yamada.masahiro@socionext.com>
+ <6557713.S7AzxIg9TS@blindfold>
+ <CAK7LNASoV9nHTFax1nD_8pvkEjTzXkFpDFRf_xuoOnPPf9K23A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1528277940-30919-1-git-send-email-riteshh@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 14 Jun 2018 16:29:59 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
+> Hi Richard,
+> 
+> 2018-06-14 16:25 GMT+09:00 Richard Weinberger <richard@sigma-star.at>:
+> > Masahiro,
+> >
+> > Am Donnerstag, 14. Juni 2018, 07:11:04 CEST schrieb Masahiro Yamada:  
+> >>
+> >> The ->setup_data_interface() hook needs to know the clock frequency.
+> >> In fact, this IP needs three clocks, bus "which clock?" is really
+> >> confusing.  (It is not described in the DT-binding at all.)
+> >>
+> >> This series adds more clocks.  In the new binding, three clocks
+> >> are required: core clock, bus interface clock, ECC engine clock.
+> >>
+> >> This series also takes care of the backward compatibility by
+> >> providing hardcoded values in case the new clocks are missing.
+> >> So, existing DT should work.
+> >>
+> >>
+> >> Changes in v2:
+> >>   - Split patches into sensible chunks
+> >>
+> >> Masahiro Yamada (3):
+> >>   mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
+> >>   mtd: rawnand: denali_dt: add more clocks based on IP datasheet
+> >>   mtd: rawnand: denali: optimize timing parameters for data interface  
+> >
+> > This still means that we need to feed at least 2/3 and 3/3 into -stable to
+> > unbreak the driver.  
+> 
+> 
+> 3/3 is not mandatory.
+> 
+> You can only back-port 1/3 and 2/3.
 
-sorry for the delay. I was quite busy during the last week and got a litt=
-le
-less done than I expected. Also, it took me a little more time for closer
-inspection, since the patch set conflicted with another big mkfs.ubifs
-patch set that I have lying around on my end.
-
-The changes look good to me so far. I pushed it to mtd-utils.git master.
-
+Well, patch 1 is not a fix, can we move it after patch 2 so that only
+patch 2 is flagged with the Fixes+Cc-stable tags?
 
 Thanks,
 
-David
+Boris
