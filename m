@@ -1,16 +1,21 @@
-Received: from mail-it0-x232.google.com ([2607:f8b0:4001:c0b::232])
+Received: from conuserg-08.nifty.com ([210.131.2.75])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTWyZ-0007Bh-Qa
- for linux-mtd@lists.infradead.org; Thu, 14 Jun 2018 18:28:05 +0000
-Received: by mail-it0-x232.google.com with SMTP id a3-v6so10019446itd.0
- for <linux-mtd@lists.infradead.org>; Thu, 14 Jun 2018 11:27:53 -0700 (PDT)
-MIME-Version: 1.0
-From: Martin Townsend <mtownsend1973@gmail.com>
-Date: Thu, 14 Jun 2018 19:27:42 +0100
-Message-ID: <CABatt_x=VnG18LJS4DyWpZJPog5w+4irorgZSkqZCp0bdMJ5-Q@mail.gmail.com>
-Subject: mtdparts ro question
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+ id 1fTdOj-0002tW-1w
+ for linux-mtd@lists.infradead.org; Fri, 15 Jun 2018 01:19:31 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Rob Herring <robh+dt@kernel.org>, linux-kbuild@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ devicetree@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v3 0/3] mtd: rawnand: denali: add new clocks and improve
+ setup_data_interface
+Date: Fri, 15 Jun 2018 10:18:49 +0900
+Message-Id: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-A quick question:
+The ->setup_data_interface() hook needs to know the clock frequency.
+In fact, this IP needs three clocks, bus "which clock?" is really
+confusing.  (It is not described in the DT-binding at all.)
 
-when the ro flag is set on an MTD Partition in the mtdparts kernel
-bootargs is there a system call or ioctl or any other way that
-userspace can override this setting to make the MTD partition
-read/write.  I don't think there is but I just want to double check.
-The reason is that if I want to update the file-system on that
-partition I take it would have to reboot and remove the flag at the
-bootloader state.
+This series adds more clocks.  In the new binding, three clocks
+are required: core clock, bus interface clock, ECC engine clock.
 
-Many Thanks,
-Martin.
+This series also takes care of the backward compatibility by
+providing hardcoded values in case the new clocks are missing.
+So, existing DT should work.
+
+
+Changes in v3:
+  - Change the patch order so that the bug-fix one comes the first
+
+Changes in v2:
+  - Split patches into sensible chunks
+  - Split patches into sensible chunks
+
+Masahiro Yamada (3):
+  mtd: rawnand: denali_dt: add more clocks based on IP datasheet
+  mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
+  mtd: rawnand: denali: optimize timing parameters for data interface
+
+ .../devicetree/bindings/mtd/denali-nand.txt        |  5 ++
+ drivers/mtd/nand/raw/denali.c                      | 49 ++++++++--------
+ drivers/mtd/nand/raw/denali.h                      |  1 +
+ drivers/mtd/nand/raw/denali_dt.c                   | 66 ++++++++++++++++++----
+ drivers/mtd/nand/raw/denali_pci.c                  |  1 +
+ 5 files changed, 86 insertions(+), 36 deletions(-)
+
+-- 
+2.7.4
