@@ -1,25 +1,25 @@
-Received: from mail-ve1eur01on0067.outbound.protection.outlook.com
- ([104.47.1.67] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTozk-0003iU-0q
- for linux-mtd@lists.infradead.org; Fri, 15 Jun 2018 13:42:29 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "richard@nod.at" <richard@nod.at>, Prabhakar Kushwaha
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fTpCt-0003HV-SY
+ for linux-mtd@lists.infradead.org; Fri, 15 Jun 2018 13:56:05 +0000
+Date: Fri, 15 Jun 2018 15:55:41 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Fabio Estevam
+ <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Cc: "richard@nod.at" <richard@nod.at>, Prabhakar Kushwaha
  <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
  "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Frieder Schrempf
  <frieder.schrempf@exceet.de>, "broonie@kernel.org" <broonie@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: RE: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
  controller
-Date: Fri, 15 Jun 2018 13:42:12 +0000
-Message-ID: <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+Message-ID: <20180615155541.4f43e9bb@bbrezillon>
+In-Reply-To: <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
 References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
  <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
  <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
@@ -33,11 +33,10 @@ References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
  <20180612091328.67734adb@bbrezillon>
  <DB6PR0402MB28387FE79F2742C9BEBD4037997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
  <20180615145019.734f23a9@bbrezillon>
-In-Reply-To: <20180615145019.734f23a9@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,57 +46,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-I am still debugging the issue.
-With some analysis, able to check that proper values are not being written =
-for QUADSPI_SFA2AD/ QUADSPI_SFB1AD/ QUADSPI_SFB2AD register.
-
-In current code, value of map_addr are being assigned to these register.
-             map_addr =3D q->memmap_phy +
-                        2 * q->devtype_data->ahb_buf_size;
-
-     qspi_writel(q, map_addr, q->iobase + QUADSPI_SFA1AD + (i * 4));
-
-But instead of "q->devtype_data->ahb_buf_size" it should be flash size.=20
-For my case flash size is 0x4000000 and with this hard coded value I am abl=
-e to perform Write and Erase operation.
-One more change, I have to do is adding the flash_size when writing the bas=
-e_address in SFAR register for case when "mem->spi->chip_select =3D=3D 1"
-	qspi_writel(q, q->memmap_phy + 0x4000000, base + QUADSPI_SFAR);
-
-Thus, there should be mechanism or the entry in structure where we can have=
- the information of the size of the connected slave device.
-
-With both of above hardcoded changes, I am able to perform Write and Erase =
-operation on my second flash device but still facing issue in Read operatio=
-n, debugging in progress for that.
-
---
-Regards
-Yogesh Gaur
-
-
------Original Message-----
-From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]=20
-Sent: Friday, June 15, 2018 6:20 PM
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: richard@nod.at; Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Han Xu=
- <han.xu@nxp.com>; linux-kernel@vger.kernel.org; linux-spi@vger.kernel.org;=
- marek.vasut@gmail.com; Frieder Schrempf <frieder.schrempf@exceet.de>; broo=
-nie@kernel.org; linux-mtd@lists.infradead.org; miquel.raynal@bootlin.com; F=
-abio Estevam <fabio.estevam@nxp.com>; David Wolfe <david.wolfe@nxp.com>; co=
-mputersforpeace@gmail.com; dwmw2@infradead.org
-Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI =
-controller
-
-On Tue, 12 Jun 2018 08:51:25 +0000
+On Fri, 15 Jun 2018 13:42:12 +0000
 Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
->=20
-> I am working on lsxxx platform. With further debugging, I found that my e=
-rase operation for second flash device is not working properly.
-> Need to have debugging for this in Frieder Patch.
+> Hi Boris,
+> 
+> I am still debugging the issue.
+> With some analysis, able to check that proper values are not being written for QUADSPI_SFA2AD/ QUADSPI_SFB1AD/ QUADSPI_SFB2AD register.
+> 
+> In current code, value of map_addr are being assigned to these register.
+>              map_addr = q->memmap_phy +
+>                         2 * q->devtype_data->ahb_buf_size;
+> 
+>      qspi_writel(q, map_addr, q->iobase + QUADSPI_SFA1AD + (i * 4));
+> 
+> But instead of "q->devtype_data->ahb_buf_size" it should be flash size.
 
-Did you find the problem? Could it be a wrong "reg =3D <>" definition in yo=
-ur DT (Frieder changed the CS numbering scheme in the new driver)?
+No, because we're only using 2 * ->ahb_buf_size in the direct mapping
+for each device, and we're modifying the mapping dynamically based on
+the selected device. Maybe we got the logic wrong though.
+
+> For my case flash size is 0x4000000 and with this hard coded value I am able to perform Write and Erase operation.
+> One more change, I have to do is adding the flash_size when writing the base_address in SFAR register for case when "mem->spi->chip_select == 1"
+> 	qspi_writel(q, q->memmap_phy + 0x4000000, base + QUADSPI_SFAR);
+
+I don't want to expose the full device in the direct mapping yet
+(that's part of the direct-mapping API I posted here [1]). What this
+version of the driver does is, map only 2 time the ahb_size so that we
+can bypass the internal cache of the QSPI engine.
+
+> 
+> Thus, there should be mechanism or the entry in structure where we can have the information of the size of the connected slave device.
+
+Because that's exactly the kind of thing I'd like to avoid. What if the
+device is bigger than the reserved memory region? What if the sum of
+all devices does not fit in there? Here I tried to support all cases by
+just mapping the portion of memory we need.
