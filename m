@@ -1,22 +1,21 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fTj1c-0008N3-8f
- for linux-mtd@lists.infradead.org; Fri, 15 Jun 2018 07:20:02 +0000
-Received: by mail-wm0-x242.google.com with SMTP id p126-v6so1884384wmb.2
- for <linux-mtd@lists.infradead.org>; Fri, 15 Jun 2018 00:19:49 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAFLxGvz7W372kQq0xZnHRgXZpSyDKB7UhSAVEJ65FCmKS4hR3A@mail.gmail.com>
+ id 1fTj7I-0003N0-Lv
+ for linux-mtd@lists.infradead.org; Fri, 15 Jun 2018 07:25:54 +0000
+From: Richard Weinberger <richard@sigma-star.at>
+To: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>,
+ "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: UBIFS node corruption issue
+Date: Fri, 15 Jun 2018 09:25:39 +0200
+Message-ID: <11266688.7aeLSOnTp9@blindfold>
+In-Reply-To: <CAAR3sxPDGVtdTkWD23GOdqB_BAp0EACOoSUeq8zAjWB5JYSsAA@mail.gmail.com>
 References: <d03e8f457821494f951fabac2933bbfe@SIWEX5A.sing.micron.com>
- <CAAR3sxP74UZxBWgEV1091QpU7hP9VyjVioOtCvWW00+TcVw53A@mail.gmail.com>
  <CAFLxGvz7W372kQq0xZnHRgXZpSyDKB7UhSAVEJ65FCmKS4hR3A@mail.gmail.com>
-From: "Sourabh Jain (R&D - Telecom)" <sourabh.jain@matrixcomsec.com>
-Date: Fri, 15 Jun 2018 12:49:46 +0530
-Message-ID: <CAAR3sxPDGVtdTkWD23GOdqB_BAp0EACOoSUeq8zAjWB5JYSsAA@mail.gmail.com>
-Subject: Re: Re: UBIFS node corruption issue
-To: Richard Weinberger <richard.weinberger@gmail.com>
-Cc: "Bean Huo (beanhuo)" <beanhuo@micron.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ <CAAR3sxPDGVtdTkWD23GOdqB_BAp0EACOoSUeq8zAjWB5JYSsAA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 15, 2018 at 11:57 AM, Richard Weinberger
-<richard.weinberger@gmail.com> wrote:
-> On Mon, Jun 11, 2018 at 7:19 AM, Sourabh Jain (R&D - Telecom)
-> <sourabh.jain@matrixcomsec.com> wrote:
->> On Mon, Jun 4, 2018 at 4:39 PM, Bean Huo (beanhuo) <beanhuo@micron.com> wrote:
->>> Resend seems delivery failed
->>>
->>>
->>>
->> Hi Bean,
->>> Eg, what kind of NAND, SLC or MLC, what happened to this NAND before this
->>> issue?
->>>
->> We are using SLC NAND and our system was in the field when the problem occurred.
->>
->> Hi Richard,
->> We are a product based company. We have purchased SDK from a
->> semiconductor vendor. There are so many patches from vendor for that
->> particular SoC.
->> So, we can not directly use latest kernel version.
->> We are using Linux 3.2.54 kernel provided to us along with SDK, Could
->> you please suggest the most stable kernel version after Linux 3.2.54
->> kernel version which we can use with the least modifications?
->
-> BTW: is your filesystem using xattrs?
-> (Maybe due to selinux, systemd-journald, ....)
-Hi Richard,
+Am Freitag, 15. Juni 2018, 09:19:46 CEST schrieb Sourabh Jain (R&D - Telecom):
+> We did not enabled the xattr in the ubifs filesystem in kernel configuration.
 
-We did not enabled the xattr in the ubifs filesystem in kernel configuration.
+Ok.
+ 
+> Also, we had kept a setup with integck utility of mtd-utils to stress
+> test ubifs. In this case, we found a separate error of "corrupt empty
+> space at some index LEB". Due to this, the mtd partition was not
+> mount.
+> So, in which portion (UBIFS, UBI Driver, MTD drivers or NAND Driver?)
+> we should work to resolve this problem?
 
-Also, we had kept a setup with integck utility of mtd-utils to stress
-test ubifs. In this case, we found a separate error of "corrupt empty
-space at some index LEB". Due to this, the mtd partition was not
-mount.
-So, in which portion (UBIFS, UBI Driver, MTD drivers or NAND Driver?)
-we should work to resolve this problem?
+At the MTD layer. In recent kernels we made sure that MTD drivers don't
+report ECC errors to UBI when an empty page has bitflips.
 
-Regards,
-Sourabh
+See gpmi-nand.
 
-> --
-> Thanks,
-> //richard
+Thanks,
+//richard
+
+
+-- 
+sigma star gmbh - Eduard-Bodem-Gasse 6 - 6020 Innsbruck - Austria
+ATU66964118 - FN 374287y
