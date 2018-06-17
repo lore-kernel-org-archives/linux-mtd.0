@@ -1,8 +1,8 @@
 Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
  helo=smtp.smtpout.orange.fr)
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUb5D-0006zJ-Tg
- for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:21 +0000
+ id 1fUb5D-0006yI-TY
+ for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:23 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -23,9 +23,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 12/14] dmaengine: pxa: make the filter function internal
-Date: Sun, 17 Jun 2018 19:02:15 +0200
-Message-Id: <20180617170217.24177-13-robert.jarzmik@free.fr>
+Subject: [PATCH v3 07/14] net: smc911x: remove the dmaengine compat need
+Date: Sun, 17 Jun 2018 19:02:10 +0200
+Message-Id: <20180617170217.24177-8-robert.jarzmik@free.fr>
 In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
 References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,68 +37,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As the pxa architecture and all its related drivers do not rely anymore
-on the filter function, thanks to the slave map conversion, make
-pxad_filter_fn() static, and remove it from the global namespace.
+As the pxa architecture switched towards the dmaengine slave map, the
+old compatibility mechanism to acquire the dma requestor line number and
+priority are not needed anymore.
+
+This patch simplifies the dma resource acquisition, using the more
+generic function dma_request_slave_channel().
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
-Since v1: added Vinod's ack
+Since v2: converted to NULL filter function and NULL dma parameter call
 ---
- drivers/dma/pxa_dma.c       |  5 ++---
- include/linux/dma/pxa-dma.h | 11 -----------
- 2 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/net/ethernet/smsc/smc911x.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-index b31c28b67ad3..0db29bd1b096 100644
---- a/drivers/dma/pxa_dma.c
-+++ b/drivers/dma/pxa_dma.c
-@@ -179,7 +179,7 @@ static unsigned int pxad_drcmr(unsigned int line)
- 	return 0x1000 + line * 4;
- }
+diff --git a/drivers/net/ethernet/smsc/smc911x.c b/drivers/net/ethernet/smsc/smc911x.c
+index 05157442a980..b1b53f6c452f 100644
+--- a/drivers/net/ethernet/smsc/smc911x.c
++++ b/drivers/net/ethernet/smsc/smc911x.c
+@@ -74,7 +74,6 @@ static const char version[] =
+ #include <linux/skbuff.h>
  
--bool pxad_filter_fn(struct dma_chan *chan, void *param);
-+static bool pxad_filter_fn(struct dma_chan *chan, void *param);
+ #include <linux/dmaengine.h>
+-#include <linux/dma/pxa-dma.h>
  
- /*
-  * Debug fs
-@@ -1501,7 +1501,7 @@ static struct platform_driver pxad_driver = {
- 	.remove		= pxad_remove,
- };
+ #include <asm/io.h>
  
--bool pxad_filter_fn(struct dma_chan *chan, void *param)
-+static bool pxad_filter_fn(struct dma_chan *chan, void *param)
- {
- 	struct pxad_chan *c = to_pxad_chan(chan);
- 	struct pxad_param *p = param;
-@@ -1514,7 +1514,6 @@ bool pxad_filter_fn(struct dma_chan *chan, void *param)
+@@ -1795,7 +1794,6 @@ static int smc911x_probe(struct net_device *dev)
+ #ifdef SMC_USE_DMA
+ 	struct dma_slave_config	config;
+ 	dma_cap_mask_t mask;
+-	struct pxad_param param;
+ #endif
  
- 	return true;
- }
--EXPORT_SYMBOL_GPL(pxad_filter_fn);
+ 	DBG(SMC_DEBUG_FUNC, dev, "--> %s\n", __func__);
+@@ -1971,15 +1969,8 @@ static int smc911x_probe(struct net_device *dev)
  
- module_platform_driver(pxad_driver);
- 
-diff --git a/include/linux/dma/pxa-dma.h b/include/linux/dma/pxa-dma.h
-index 9fc594f69eff..fceb5df07097 100644
---- a/include/linux/dma/pxa-dma.h
-+++ b/include/linux/dma/pxa-dma.h
-@@ -23,15 +23,4 @@ struct pxad_param {
- 	enum pxad_chan_prio prio;
- };
- 
--struct dma_chan;
+ 	dma_cap_zero(mask);
+ 	dma_cap_set(DMA_SLAVE, mask);
+-	param.prio = PXAD_PRIO_LOWEST;
+-	param.drcmr = -1UL;
 -
--#ifdef CONFIG_PXA_DMA
--bool pxad_filter_fn(struct dma_chan *chan, void *param);
--#else
--static inline bool pxad_filter_fn(struct dma_chan *chan, void *param)
--{
--	return false;
--}
--#endif
--
- #endif /* _PXA_DMA_H_ */
+-	lp->rxdma =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &param, &dev->dev, "rx");
+-	lp->txdma =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &param, &dev->dev, "tx");
++	lp->rxdma = dma_request_channel(mask, NULL, NULL);
++	lp->txdma = dma_request_channel(mask, NULL, NULL);
+ 	lp->rxdma_active = 0;
+ 	lp->txdma_active = 0;
+ 
 -- 
 2.11.0
