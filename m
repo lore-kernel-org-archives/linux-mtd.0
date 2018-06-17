@@ -1,7 +1,7 @@
 Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
  helo=smtp.smtpout.orange.fr)
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUb5D-0006yI-TY
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUb5G-00068i-Eu
  for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:23 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -23,9 +23,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 07/14] net: smc911x: remove the dmaengine compat need
-Date: Sun, 17 Jun 2018 19:02:10 +0200
-Message-Id: <20180617170217.24177-8-robert.jarzmik@free.fr>
+Subject: [PATCH v3 11/14] dmaengine: pxa: document pxad_param
+Date: Sun, 17 Jun 2018 19:02:14 +0200
+Message-Id: <20180617170217.24177-12-robert.jarzmik@free.fr>
 In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
 References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,57 +37,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
-
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
+Add some documentation for the pxad_param structure, and describe the
+contract behind the minimal required priority of a DMA channel.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
-Since v2: converted to NULL filter function and NULL dma parameter call
+Since v1: added Vinod's ack
 ---
- drivers/net/ethernet/smsc/smc911x.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ include/linux/dma/pxa-dma.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/net/ethernet/smsc/smc911x.c b/drivers/net/ethernet/smsc/smc911x.c
-index 05157442a980..b1b53f6c452f 100644
---- a/drivers/net/ethernet/smsc/smc911x.c
-+++ b/drivers/net/ethernet/smsc/smc911x.c
-@@ -74,7 +74,6 @@ static const char version[] =
- #include <linux/skbuff.h>
+diff --git a/include/linux/dma/pxa-dma.h b/include/linux/dma/pxa-dma.h
+index e56ec7af4fd7..9fc594f69eff 100644
+--- a/include/linux/dma/pxa-dma.h
++++ b/include/linux/dma/pxa-dma.h
+@@ -9,6 +9,15 @@ enum pxad_chan_prio {
+ 	PXAD_PRIO_LOWEST,
+ };
  
- #include <linux/dmaengine.h>
--#include <linux/dma/pxa-dma.h>
- 
- #include <asm/io.h>
- 
-@@ -1795,7 +1794,6 @@ static int smc911x_probe(struct net_device *dev)
- #ifdef SMC_USE_DMA
- 	struct dma_slave_config	config;
- 	dma_cap_mask_t mask;
--	struct pxad_param param;
- #endif
- 
- 	DBG(SMC_DEBUG_FUNC, dev, "--> %s\n", __func__);
-@@ -1971,15 +1969,8 @@ static int smc911x_probe(struct net_device *dev)
- 
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
--	param.prio = PXAD_PRIO_LOWEST;
--	param.drcmr = -1UL;
--
--	lp->rxdma =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &dev->dev, "rx");
--	lp->txdma =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, &dev->dev, "tx");
-+	lp->rxdma = dma_request_channel(mask, NULL, NULL);
-+	lp->txdma = dma_request_channel(mask, NULL, NULL);
- 	lp->rxdma_active = 0;
- 	lp->txdma_active = 0;
- 
++/**
++ * struct pxad_param - dma channel request parameters
++ * @drcmr: requestor line number
++ * @prio: minimal mandatory priority of the channel
++ *
++ * If a requested channel is granted, its priority will be at least @prio,
++ * ie. if PXAD_PRIO_LOW is required, the requested channel will be either
++ * PXAD_PRIO_LOW, PXAD_PRIO_NORMAL or PXAD_PRIO_HIGHEST.
++ */
+ struct pxad_param {
+ 	unsigned int drcmr;
+ 	enum pxad_chan_prio prio;
 -- 
 2.11.0
