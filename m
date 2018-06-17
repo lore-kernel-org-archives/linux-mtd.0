@@ -1,8 +1,8 @@
 Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
  helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUb5G-00068i-Eu
- for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:23 +0000
+ id 1fUb5G-00068V-Gb
+ for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:24 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -23,9 +23,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 11/14] dmaengine: pxa: document pxad_param
-Date: Sun, 17 Jun 2018 19:02:14 +0200
-Message-Id: <20180617170217.24177-12-robert.jarzmik@free.fr>
+Subject: [PATCH v3 05/14] media: pxa_camera: remove the dmaengine compat need
+Date: Sun, 17 Jun 2018 19:02:08 +0200
+Message-Id: <20180617170217.24177-6-robert.jarzmik@free.fr>
 In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
 References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,36 +37,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add some documentation for the pxad_param structure, and describe the
-contract behind the minimal required priority of a DMA channel.
+As the pxa architecture switched towards the dmaengine slave map, the
+old compatibility mechanism to acquire the dma requestor line number and
+priority are not needed anymore.
+
+This patch simplifies the dma resource acquisition, using the more
+generic function dma_request_slave_channel().
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Acked-by: Hans Verkuil <hans.verkuil@cisco.com>
+Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 ---
-Since v1: added Vinod's ack
----
- include/linux/dma/pxa-dma.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/media/platform/pxa_camera.c | 22 +++-------------------
+ 1 file changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/include/linux/dma/pxa-dma.h b/include/linux/dma/pxa-dma.h
-index e56ec7af4fd7..9fc594f69eff 100644
---- a/include/linux/dma/pxa-dma.h
-+++ b/include/linux/dma/pxa-dma.h
-@@ -9,6 +9,15 @@ enum pxad_chan_prio {
- 	PXAD_PRIO_LOWEST,
- };
+diff --git a/drivers/media/platform/pxa_camera.c b/drivers/media/platform/pxa_camera.c
+index c71a00736541..4c82d1880753 100644
+--- a/drivers/media/platform/pxa_camera.c
++++ b/drivers/media/platform/pxa_camera.c
+@@ -2357,8 +2357,6 @@ static int pxa_camera_probe(struct platform_device *pdev)
+ 		.src_maxburst = 8,
+ 		.direction = DMA_DEV_TO_MEM,
+ 	};
+-	dma_cap_mask_t mask;
+-	struct pxad_param params;
+ 	char clk_name[V4L2_CLK_NAME_SIZE];
+ 	int irq;
+ 	int err = 0, i;
+@@ -2432,34 +2430,20 @@ static int pxa_camera_probe(struct platform_device *pdev)
+ 	pcdev->base = base;
  
-+/**
-+ * struct pxad_param - dma channel request parameters
-+ * @drcmr: requestor line number
-+ * @prio: minimal mandatory priority of the channel
-+ *
-+ * If a requested channel is granted, its priority will be at least @prio,
-+ * ie. if PXAD_PRIO_LOW is required, the requested channel will be either
-+ * PXAD_PRIO_LOW, PXAD_PRIO_NORMAL or PXAD_PRIO_HIGHEST.
-+ */
- struct pxad_param {
- 	unsigned int drcmr;
- 	enum pxad_chan_prio prio;
+ 	/* request dma */
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	dma_cap_set(DMA_PRIVATE, mask);
+-
+-	params.prio = 0;
+-	params.drcmr = 68;
+-	pcdev->dma_chans[0] =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &params, &pdev->dev, "CI_Y");
++	pcdev->dma_chans[0] = dma_request_slave_channel(&pdev->dev, "CI_Y");
+ 	if (!pcdev->dma_chans[0]) {
+ 		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+ 		return -ENODEV;
+ 	}
+ 
+-	params.drcmr = 69;
+-	pcdev->dma_chans[1] =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &params, &pdev->dev, "CI_U");
++	pcdev->dma_chans[1] = dma_request_slave_channel(&pdev->dev, "CI_U");
+ 	if (!pcdev->dma_chans[1]) {
+ 		dev_err(&pdev->dev, "Can't request DMA for Y\n");
+ 		err = -ENODEV;
+ 		goto exit_free_dma_y;
+ 	}
+ 
+-	params.drcmr = 70;
+-	pcdev->dma_chans[2] =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &params, &pdev->dev, "CI_V");
++	pcdev->dma_chans[2] = dma_request_slave_channel(&pdev->dev, "CI_V");
+ 	if (!pcdev->dma_chans[2]) {
+ 		dev_err(&pdev->dev, "Can't request DMA for V\n");
+ 		err = -ENODEV;
 -- 
 2.11.0
