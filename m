@@ -1,7 +1,7 @@
 Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
  helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUb53-0006tZ-6K
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUb5D-0006zJ-Tg
  for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:21 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
@@ -23,9 +23,11 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Date: Sun, 17 Jun 2018 19:02:03 +0200
-Message-Id: <20180617170217.24177-1-robert.jarzmik@free.fr>
+Subject: [PATCH v3 12/14] dmaengine: pxa: make the filter function internal
+Date: Sun, 17 Jun 2018 19:02:15 +0200
+Message-Id: <20180617170217.24177-13-robert.jarzmik@free.fr>
+In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,58 +37,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As I gathered almost all the required acks, this is an information only post
-before queuing to the PXA tree.
+As the pxa architecture and all its related drivers do not rely anymore
+on the filter function, thanks to the slave map conversion, make
+pxad_filter_fn() static, and remove it from the global namespace.
 
-The only missing part is for netdev, for which I'd like an ack from netdev
-people for patches 0007 and 0008, but that won't prevent me from queuing all the
-other patches (excepting the patch 0012 which can only be applied once 0007 and
-0008 are queued).
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Vinod Koul <vkoul@kernel.org>
+---
+Since v1: added Vinod's ack
+---
+ drivers/dma/pxa_dma.c       |  5 ++---
+ include/linux/dma/pxa-dma.h | 11 -----------
+ 2 files changed, 2 insertions(+), 14 deletions(-)
 
-Cheers.
-
---
-Robert
-
-Robert Jarzmik (14):
-  dmaengine: pxa: use a dma slave map
-  ARM: pxa: add dma slave map
-  dmaengine: pxa: add a default requestor policy
-  mmc: pxamci: remove the dmaengine compat need
-  media: pxa_camera: remove the dmaengine compat need
-  mtd: rawnand: marvell: remove the dmaengine compat need
-  net: smc911x: remove the dmaengine compat need
-  net: smc91x: remove the dmaengine compat need
-  ASoC: pxa: remove the dmaengine compat need
-  ata: pata_pxa: remove the dmaengine compat need
-  dmaengine: pxa: document pxad_param
-  dmaengine: pxa: make the filter function internal
-  ARM: pxa: remove the DMA IO resources
-  ARM: pxa: change SSP DMA channels allocation
-
- arch/arm/mach-pxa/devices.c           | 148 +---------------------------------
- arch/arm/mach-pxa/devices.h           |   6 +-
- arch/arm/mach-pxa/pxa25x.c            |  38 ++++++++-
- arch/arm/mach-pxa/pxa27x.c            |  39 ++++++++-
- arch/arm/mach-pxa/pxa3xx.c            |  41 +++++++++-
- arch/arm/plat-pxa/ssp.c               |  47 -----------
- drivers/ata/pata_pxa.c                |  10 +--
- drivers/dma/pxa_dma.c                 |  18 ++++-
- drivers/media/platform/pxa_camera.c   |  22 +----
- drivers/mmc/host/pxamci.c             |  29 +------
- drivers/mtd/nand/raw/marvell_nand.c   |  17 +---
- drivers/net/ethernet/smsc/smc911x.c   |  13 +--
- drivers/net/ethernet/smsc/smc91x.c    |   9 +--
- drivers/net/ethernet/smsc/smc91x.h    |   1 -
- include/linux/dma/pxa-dma.h           |  20 +++--
- include/linux/platform_data/mmp_dma.h |   4 +
- include/linux/pxa2xx_ssp.h            |   2 -
- sound/arm/pxa2xx-ac97.c               |  14 +---
- sound/arm/pxa2xx-pcm-lib.c            |   6 +-
- sound/soc/pxa/pxa-ssp.c               |   5 +-
- sound/soc/pxa/pxa2xx-ac97.c           |  32 ++------
- sound/soc/pxa/pxa2xx-i2s.c            |   6 +-
- 22 files changed, 176 insertions(+), 351 deletions(-)
-
+diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
+index b31c28b67ad3..0db29bd1b096 100644
+--- a/drivers/dma/pxa_dma.c
++++ b/drivers/dma/pxa_dma.c
+@@ -179,7 +179,7 @@ static unsigned int pxad_drcmr(unsigned int line)
+ 	return 0x1000 + line * 4;
+ }
+ 
+-bool pxad_filter_fn(struct dma_chan *chan, void *param);
++static bool pxad_filter_fn(struct dma_chan *chan, void *param);
+ 
+ /*
+  * Debug fs
+@@ -1501,7 +1501,7 @@ static struct platform_driver pxad_driver = {
+ 	.remove		= pxad_remove,
+ };
+ 
+-bool pxad_filter_fn(struct dma_chan *chan, void *param)
++static bool pxad_filter_fn(struct dma_chan *chan, void *param)
+ {
+ 	struct pxad_chan *c = to_pxad_chan(chan);
+ 	struct pxad_param *p = param;
+@@ -1514,7 +1514,6 @@ bool pxad_filter_fn(struct dma_chan *chan, void *param)
+ 
+ 	return true;
+ }
+-EXPORT_SYMBOL_GPL(pxad_filter_fn);
+ 
+ module_platform_driver(pxad_driver);
+ 
+diff --git a/include/linux/dma/pxa-dma.h b/include/linux/dma/pxa-dma.h
+index 9fc594f69eff..fceb5df07097 100644
+--- a/include/linux/dma/pxa-dma.h
++++ b/include/linux/dma/pxa-dma.h
+@@ -23,15 +23,4 @@ struct pxad_param {
+ 	enum pxad_chan_prio prio;
+ };
+ 
+-struct dma_chan;
+-
+-#ifdef CONFIG_PXA_DMA
+-bool pxad_filter_fn(struct dma_chan *chan, void *param);
+-#else
+-static inline bool pxad_filter_fn(struct dma_chan *chan, void *param)
+-{
+-	return false;
+-}
+-#endif
+-
+ #endif /* _PXA_DMA_H_ */
 -- 
 2.11.0
