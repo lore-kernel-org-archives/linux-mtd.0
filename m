@@ -1,8 +1,8 @@
 Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
  helo=smtp.smtpout.orange.fr)
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUb5G-00068X-Fk
- for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:23 +0000
+ id 1fUb5G-00068c-IY
+ for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:25 +0000
 From: Robert Jarzmik <robert.jarzmik@free.fr>
 To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
  Robert Jarzmik <robert.jarzmik@free.fr>,
@@ -23,10 +23,9 @@ Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
  linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
  linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
  alsa-devel@alsa-project.org
-Subject: [PATCH v3 06/14] mtd: rawnand: marvell: remove the dmaengine compat
- need
-Date: Sun, 17 Jun 2018 19:02:09 +0200
-Message-Id: <20180617170217.24177-7-robert.jarzmik@free.fr>
+Subject: [PATCH v3 08/14] net: smc91x: remove the dmaengine compat need
+Date: Sun, 17 Jun 2018 19:02:11 +0200
+Message-Id: <20180617170217.24177-9-robert.jarzmik@free.fr>
 In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
 References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,47 +44,48 @@ priority are not needed anymore.
 This patch simplifies the dma resource acquisition, using the more
 generic function dma_request_slave_channel().
 
-Signed-off-by: Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+Since v2: converted to NULL filter function and NULL dma parameter call
+---
+ drivers/net/ethernet/smsc/smc91x.c | 9 +--------
+ drivers/net/ethernet/smsc/smc91x.h | 1 -
+ 2 files changed, 1 insertion(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 10e953218948..64618254d6de 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2613,8 +2613,6 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 						    dev);
- 	struct dma_slave_config config = {};
- 	struct resource *r;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- 	int ret;
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index 080428762858..b944828f9ea3 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -2019,17 +2019,10 @@ static int smc_probe(struct net_device *dev, void __iomem *ioaddr,
+ #  endif
+ 	if (lp->cfg.flags & SMC91X_USE_DMA) {
+ 		dma_cap_mask_t mask;
+-		struct pxad_param param;
  
- 	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
-@@ -2627,20 +2625,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 	if (ret)
- 		return ret;
- 
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!r) {
--		dev_err(nfc->dev, "No resource defined for data DMA\n");
--		return -ENXIO;
--	}
+ 		dma_cap_zero(mask);
+ 		dma_cap_set(DMA_SLAVE, mask);
+-		param.prio = PXAD_PRIO_LOWEST;
+-		param.drcmr = -1UL;
 -
--	param.drcmr = r->start;
--	param.prio = PXAD_PRIO_LOWEST;
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	nfc->dma_chan =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, nfc->dev,
--						 "data");
-+	nfc->dma_chan =	dma_request_slave_channel(nfc->dev, "data");
- 	if (!nfc->dma_chan) {
- 		dev_err(nfc->dev,
- 			"Unable to request data DMA channel\n");
+-		lp->dma_chan =
+-			dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-							 &param, &dev->dev,
+-							 "data");
++		lp->dma_chan = dma_request_channel(mask, NULL, NULL);
+ 	}
+ #endif
+ 
+diff --git a/drivers/net/ethernet/smsc/smc91x.h b/drivers/net/ethernet/smsc/smc91x.h
+index b337ee97e0c0..a27352229fc2 100644
+--- a/drivers/net/ethernet/smsc/smc91x.h
++++ b/drivers/net/ethernet/smsc/smc91x.h
+@@ -301,7 +301,6 @@ struct smc_local {
+  * as RX which can overrun memory and lose packets.
+  */
+ #include <linux/dma-mapping.h>
+-#include <linux/dma/pxa-dma.h>
+ 
+ #ifdef SMC_insl
+ #undef SMC_insl
 -- 
 2.11.0
