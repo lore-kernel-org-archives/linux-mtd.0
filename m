@@ -1,30 +1,33 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUazv-000529-1n
- for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 16:57:53 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Sun, 17 Jun 2018 18:57:33 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Dmitry Osipenko <digetx@gmail.com>, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- miquel.raynal@bootlin.com, richard@nod.at, marcel@ziswiler.com,
- krzk@kernel.org, benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- gaireg@gaireg.de, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-In-Reply-To: <20180612101319.528da20c@bbrezillon>
-References: <20180611205224.23340-1-stefan@agner.ch>
- <20180611205224.23340-5-stefan@agner.ch> <2945591.o6hPPARSMh@dimapc>
- <fd15fcac50d25281fa8f7d97a738bf6a@agner.ch>
- <20180612101319.528da20c@bbrezillon>
-Message-ID: <0be3de74809d0ebe32a808eebfd61dcd@agner.ch>
+ id 1fUb53-0006tu-6H
+ for linux-mtd@lists.infradead.org; Sun, 17 Jun 2018 17:03:11 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Nicolas Pitre <nico@fluxnic.net>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: [PATCH v3 01/14] dmaengine: pxa: use a dma slave map
+Date: Sun, 17 Jun 2018 19:02:04 +0200
+Message-Id: <20180617170217.24177-2-robert.jarzmik@free.fr>
+In-Reply-To: <20180617170217.24177-1-robert.jarzmik@free.fr>
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,141 +37,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12.06.2018 10:13, Boris Brezillon wrote:
-> On Tue, 12 Jun 2018 10:02:12 +0200
-> Stefan Agner <stefan@agner.ch> wrote:
-> 
->> >> +static int tegra_nand_read_page_hwecc(struct mtd_info *mtd,
->> >> +				      struct nand_chip *chip,
->> >> +				      uint8_t *buf, int oob_required, int page)
->> >> +{
->> >> +	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
->> >> +	struct tegra_nand_chip *nand = to_tegra_chip(chip);
->> >> +	void *oob_buf = oob_required ? chip->oob_poi : 0;
->> >> +	u32 dec_stat, max_corr_cnt;
->> >> +	unsigned long fail_sec_flag;
->> >> +	int ret;
->> >> +
->> >> +	tegra_nand_hw_ecc(ctrl, chip, true);
->> >> +	ret = tegra_nand_page_xfer(mtd, chip, buf, oob_buf, nand->tag.length,
->> >> +				   page, true);
->> >> +	tegra_nand_hw_ecc(ctrl, chip, false);
->> >> +	if (ret)
->> >> +		return ret;
->> >> +
->> >> +	/* No correctable or un-correctable errors, page must have 0 bitflips */
->> >> +	if (!ctrl->last_read_error)
->> >> +		return 0;
->> >> +
->> >> +	/*
->> >> +	 * Correctable or un-correctable errors occurred. Use DEC_STAT_BUF
->> >> +	 * which contains information for all ECC selections.
->> >> +	 *
->> >> +	 * Note that since we do not use Command Queues DEC_RESULT does not
->> >> +	 * state the number of pages we can read from the DEC_STAT_BUF. But
->> >> +	 * since CORRFAIL_ERR did occur during page read we do have a valid
->> >> +	 * result in DEC_STAT_BUF.
->> >> +	 */
->> >> +	ctrl->last_read_error = false;
->> >> +	dec_stat = readl_relaxed(ctrl->regs + DEC_STAT_BUF);
->> >> +
->> >> +	fail_sec_flag = (dec_stat & DEC_STAT_BUF_FAIL_SEC_FLAG_MASK) >>
->> >> +			DEC_STAT_BUF_FAIL_SEC_FLAG_SHIFT;
->> >> +
->> >> +	max_corr_cnt = (dec_stat & DEC_STAT_BUF_MAX_CORR_CNT_MASK) >>
->> >> +		       DEC_STAT_BUF_MAX_CORR_CNT_SHIFT;
->> >> +
->> >> +	if (fail_sec_flag) {
->> >> +		int bit, max_bitflips = 0;
->> >> +
->> >> +		/*
->> >> +		 * Check if all sectors in a page failed. If only some failed
->> >> +		 * its definitly not an erased page and we can return error
->> >> +		 * stats right away.
->> >> +		 *
->> >> +		 * E.g. controller might return fail_sec_flag with 0x4, which
->> >> +		 * would mean only the third sector failed to correct.
-> 
-> That works because you have NAND_NO_SUBPAGE_WRITE set (i.e. no partial
-> page programming), probably something you should state here.
-> 
+In order to remove the specific knowledge of the dma mapping from PXA
+drivers, add a default slave map for pxa architectures.
 
-Ok, will add a note.
+This won't impact MMP architecture, but is aimed only at all PXA boards.
 
->> >> +		 */
->> >> +		if (fail_sec_flag ^ GENMASK(chip->ecc.steps - 1, 0)) {
->> >> +			mtd->ecc_stats.failed += hweight8(fail_sec_flag);
->> >> +			return max_corr_cnt;
->> >> +		}
->> >> +
->> >> +		/*
->> >> +		 * All sectors failed to correct, but the ECC isn't smart
->> >> +		 * enough to figure out if a page is really completely erased.
->> >> +		 * We check the read data here to figure out if it's a
->> >> +		 * legitimate ECC error or only an erased page.
->> >> +		 */
->> >> +		for_each_set_bit(bit, &fail_sec_flag, chip->ecc.steps) {
->> >> +			u8 *data = buf + (chip->ecc.size * bit);
->> >> +
->> >> +			ret = nand_check_erased_ecc_chunk(data, chip->ecc.size,
->> >> +							  NULL, 0,
-> 
-> You should also check that the ECC bytes are 0xff here, otherwise you
-> won't detect corruption of pages almost filled 0xff but with a few bits
-> set to 0.
-> 
-> When you use nand_check_erased_ecc_chunk(), it's important to always
-> pass the data along with its associated ECC bytes.
-> 
+This is the first step, and once all drivers are converted,
+pxad_filter_fn() will be made static, and the DMA resources removed from
+device.c.
 
-Hm, I see this is important in case bitflips accumulate in OOB area
-only.
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Vinod Koul <vkoul@kernel.org>
+---
+ drivers/dma/pxa_dma.c                 | 10 +++++++++-
+ include/linux/platform_data/mmp_dma.h |  4 ++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
->> >> +							  NULL, 0,
-> 
-> If you support writing extra OOB bytes, you should also pass them here.
-> 
-
-I see. OOB bytes handled together with the last subpage.
-
->> >> +							  chip->ecc.strength);
->> >> +			if (ret < 0)
->> >> +				mtd->ecc_stats.failed++;
->> >> +			else
->> >> +				max_bitflips = max(ret, max_bitflips);
-
-I guess I should also increment ecc_stats.corrected here.
-
-Is it correct that I increment for every step?
-
-So if I have an ECC strength of 16, an empty page could have 8 bitflips
-in the first step, and 12 in the second, I would increment
-mtd->ecc_stats.corrected by 20 but return 12 (maximum number of bitflips
-per step)?
-
---
-Stefan
-
->> >> +		}
->> >> +
->> >> +		return max_t(unsigned int, max_corr_cnt, max_bitflips);
->> >> +	} else {
->> >> +		int corr_sec_flag;
->> >> +
->> >> +		corr_sec_flag = (dec_stat & DEC_STAT_BUF_CORR_SEC_FLAG_MASK) >>
->> >> +				DEC_STAT_BUF_CORR_SEC_FLAG_SHIFT;
->> >> +
->> >> +		/*
->> >> +		 * The value returned in the register is the maximum of
->> >> +		 * bitflips encountered in any of the ECC regions. As there is
->> >> +		 * no way to get the number of bitflips in a specific regions
->> >> +		 * we are not able to deliver correct stats but instead
->> >> +		 * overestimate the number of corrected bitflips by assuming
->> >> +		 * that all regions where errors have been corrected
->> >> +		 * encountered the maximum number of bitflips.
->> >> +		 */
->> >> +		mtd->ecc_stats.corrected += max_corr_cnt * hweight8(corr_sec_flag);
->> >> +
->> >> +		return max_corr_cnt;
->> >> +	}
->> >> +
+diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
+index b53fb618bbf6..9505334f9c6e 100644
+--- a/drivers/dma/pxa_dma.c
++++ b/drivers/dma/pxa_dma.c
+@@ -179,6 +179,8 @@ static unsigned int pxad_drcmr(unsigned int line)
+ 	return 0x1000 + line * 4;
+ }
+ 
++bool pxad_filter_fn(struct dma_chan *chan, void *param);
++
+ /*
+  * Debug fs
+  */
+@@ -1396,9 +1398,10 @@ static int pxad_probe(struct platform_device *op)
+ {
+ 	struct pxad_device *pdev;
+ 	const struct of_device_id *of_id;
++	const struct dma_slave_map *slave_map = NULL;
+ 	struct mmp_dma_platdata *pdata = dev_get_platdata(&op->dev);
+ 	struct resource *iores;
+-	int ret, dma_channels = 0, nb_requestors = 0;
++	int ret, dma_channels = 0, nb_requestors = 0, slave_map_cnt = 0;
+ 	const enum dma_slave_buswidth widths =
+ 		DMA_SLAVE_BUSWIDTH_1_BYTE   | DMA_SLAVE_BUSWIDTH_2_BYTES |
+ 		DMA_SLAVE_BUSWIDTH_4_BYTES;
+@@ -1429,6 +1432,8 @@ static int pxad_probe(struct platform_device *op)
+ 	} else if (pdata && pdata->dma_channels) {
+ 		dma_channels = pdata->dma_channels;
+ 		nb_requestors = pdata->nb_requestors;
++		slave_map = pdata->slave_map;
++		slave_map_cnt = pdata->slave_map_cnt;
+ 	} else {
+ 		dma_channels = 32;	/* default 32 channel */
+ 	}
+@@ -1440,6 +1445,9 @@ static int pxad_probe(struct platform_device *op)
+ 	pdev->slave.device_prep_dma_memcpy = pxad_prep_memcpy;
+ 	pdev->slave.device_prep_slave_sg = pxad_prep_slave_sg;
+ 	pdev->slave.device_prep_dma_cyclic = pxad_prep_dma_cyclic;
++	pdev->slave.filter.map = slave_map;
++	pdev->slave.filter.mapcnt = slave_map_cnt;
++	pdev->slave.filter.fn = pxad_filter_fn;
+ 
+ 	pdev->slave.copy_align = PDMA_ALIGNMENT;
+ 	pdev->slave.src_addr_widths = widths;
+diff --git a/include/linux/platform_data/mmp_dma.h b/include/linux/platform_data/mmp_dma.h
+index d1397c8ed94e..6397b9c8149a 100644
+--- a/include/linux/platform_data/mmp_dma.h
++++ b/include/linux/platform_data/mmp_dma.h
+@@ -12,9 +12,13 @@
+ #ifndef MMP_DMA_H
+ #define MMP_DMA_H
+ 
++struct dma_slave_map;
++
+ struct mmp_dma_platdata {
+ 	int dma_channels;
+ 	int nb_requestors;
++	int slave_map_cnt;
++	const struct dma_slave_map *slave_map;
+ };
+ 
+ #endif /* MMP_DMA_H */
+-- 
+2.11.0
