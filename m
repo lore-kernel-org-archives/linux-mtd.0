@@ -1,24 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUt76-0005SS-Ot
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 12:18:29 +0000
-Date: Mon, 18 Jun 2018 14:18:00 +0200
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUtqf-0005ai-UH
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:05:41 +0000
+Date: Mon, 18 Jun 2018 15:05:21 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, Masahiro Yamada
- <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org, Rob Herring
- <robh+dt@kernel.org>, linux-kbuild@vger.kernel.org, "linux-stable #4 . 14+"
- <stable@vger.kernel.org>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based
- on IP datasheet
-Message-ID: <20180618141800.2b8b9721@xps13>
-In-Reply-To: <20180618094636.0e40c518@bbrezillon>
-References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
- <5816516.AqyscFuYxX@blindfold> <20180618094636.0e40c518@bbrezillon>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
+ Vasut <marek.vasut@gmail.com>
+Subject: Re: [RFC PATCH 1/2] mtd: rawnand: handle ONFI revision number field
+ being 0
+Message-ID: <20180618150521.067ef156@xps13>
+In-Reply-To: <20180618045255.8015-2-chris.packham@alliedtelesis.co.nz>
+References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
+ <20180618045255.8015-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -31,65 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Chris,
 
-On Mon, 18 Jun 2018 09:46:36 +0200, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+On Mon, 18 Jun 2018 16:52:54 +1200, Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
 
-> On Mon, 18 Jun 2018 09:09:02 +0200
-> Richard Weinberger <richard@nod.at> wrote:
+> Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
+> revision number field of the ONFI parameter page. Rather than rejecting
+> these outright assume ONFI version 1.0 if the revision number is 00 00.
 >=20
-> > Am Freitag, 15. Juni 2018, 03:18:50 CEST schrieb Masahiro Yamada: =20
-> > > According to the Denali User's Guide, this IP needs three clocks:
-> > >=20
-> > >  - clk: controller core clock
-> > >=20
-> > >  - clk_x: bus interface clock
-> > >=20
-> > >  - ecc_clk: clock at which ECC circuitry is run
-> > >=20
-> > > Currently, denali_dt.c requires a single anonymous clock and its
-> > > frequency.  However, the driver needs to get the frequency of "clk_x"
-> > > not "clk".  This is confusing because people tend to assume the
-> > > anonymous clock means the core clock.  In fact, I got a report of
-> > > SOCFPGA breakage because the timing parameters are calculated based
-> > > on a wrong frequency.
-> > >=20
-> > > Instead of the cheesy implementation, the clocks in the real hardware
-> > > should be represented in the driver and the DT-binding.
-> > >=20
-> > > However, adding new clocks would break the existing platforms.  For t=
-he
-> > > backward compatibility, the driver still accepts a single clock just =
-as
-> > > before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
-> > > This is fine for existing DT of Socionext UniPhier, and also fixes the
-> > > issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
-> > > the bus interface clock.
-> > >=20
-> > > Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by =
-setup_data_interface()")
-> > > Cc: linux-stable <stable@vger.kernel.org> #4.14+
-> > > Reported-by: Richard Weinberger <richard@nod.at>
-> > > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>   =20
-> >=20
-> > Reviewed-by: Richard Weinberger <richard@nod.at> =20
->=20
-> Maybe a
->=20
-> Tested-by: Richard Weinberger <richard@nod.at>
->=20
-> ?
->=20
-> > Reported-by: Philipp Rosenberger <p.rosenberger@linutronix.de> =20
->=20
-> Should I replace your Reported-by by this one or simply add it?
->=20
-> Miquel, I'll take this patch in mtd/fixes, and let you take the 2
-> others in nand/next. That means you'll have to back merge v4.18-rc2
-> into the nand/next tree, or base your tree on v4.18-rc2 instead of
-> v4.18-rc1.
 
-Sure.
+Thanks for getting your hands into this.
 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> At the moment I haven't qualified this check on anything, I should
+> probably at least include vendor =3D=3D MICRON.
+
+The more I think about it the more I convince myself that this is not
+needed. If the 4 first bytes are "ONFI", then the chip is ONFI...
+
+Then what you do below is simple and readable and (sadly) probably
+right.
+
+>=20
+> As far as I can tell revision number =3D=3D 0 is not permitted by the ONFI
+> spec but this wouldn't be the first time a vendor has ignored a spec. On
+> the other hand maybe I'm reading the spec wrong and someone here will
+> say "oh 0 means ...".
+>=20
+>  drivers/mtd/nand/raw/nand_base.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand=
+_base.c
+> index 0cd3e216b95c..1691c7005ae4 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5184,6 +5184,8 @@ static int nand_flash_detect_onfi(struct nand_chip =
+*chip)
+>  		chip->parameters.onfi.version =3D 20;
+>  	else if (val & (1 << 1))
+>  		chip->parameters.onfi.version =3D 10;
+> +	else if (val =3D=3D 0)
+> +		chip->parameters.onfi.version =3D 10;
+> =20
+>  	if (!chip->parameters.onfi.version) {
+>  		pr_info("unsupported ONFI version: %d\n", val);
+
+Regards,
 Miqu=C3=A8l
