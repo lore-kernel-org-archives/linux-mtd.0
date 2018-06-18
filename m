@@ -1,45 +1,23 @@
-Received: from mail-db5eur01on0040.outbound.protection.outlook.com
- ([104.47.2.40] helo=EUR01-DB5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUuGx-0002zb-6L
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:33:04 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Fabio Estevam
- <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-CC: "richard@nod.at" <richard@nod.at>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, Han Xu <han.xu@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-Subject: RE: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-Date: Mon, 18 Jun 2018 13:32:27 +0000
-Message-ID: <DB6PR0402MB2838C4F67D17337ADBC5D5F899710@DB6PR0402MB2838.eurprd04.prod.outlook.com>
-References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
- <1527686082-15142-4-git-send-email-frieder.schrempf@exceet.de>
- <DB6PR0402MB283845A1A98672FE63C89550997B0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180608145130.09f979f9@bbrezillon>
- <DB6PR0402MB2838D514CF38AC5E6C004E8499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180611094616.5c8f82cf@bbrezillon>
- <DB6PR0402MB283825171DF93AD3C8590DD799780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180611121618.40f4b609@bbrezillon>
- <DB6PR0402MB28388D9DEB86629BB58DD5E499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <DB6PR0402MB2838563F1BA71A9A21ABBE01997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180612091328.67734adb@bbrezillon>
- <DB6PR0402MB28387FE79F2742C9BEBD4037997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180615145019.734f23a9@bbrezillon>
- <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180615155541.4f43e9bb@bbrezillon>
-In-Reply-To: <20180615155541.4f43e9bb@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUuLL-00070F-BD
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:37:17 +0000
+Date: Mon, 18 Jun 2018 15:37:03 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
+ Vasut <marek.vasut@gmail.com>
+Subject: Re: [RFC PATCH 2/2] mtd: rawnand: marvell: Support page size of
+ 2048 with 8-bit ECC
+Message-ID: <20180618153703.77bc01c1@xps13>
+In-Reply-To: <20180618045255.8015-3-chris.packham@alliedtelesis.co.nz>
+References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
+ <20180618045255.8015-3-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,75 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Chris,
 
+On Mon, 18 Jun 2018 16:52:55 +1200, Chris Packham
+<chris.packham@alliedtelesis.co.nz> wrote:
 
------Original Message-----
-From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]=20
-Sent: Friday, June 15, 2018 7:26 PM
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; Fabio Estevam <fabio.=
-estevam@nxp.com>; David Wolfe <david.wolfe@nxp.com>; dwmw2@infradead.org
-Cc: richard@nod.at; Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Han Xu=
- <han.xu@nxp.com>; linux-kernel@vger.kernel.org; linux-spi@vger.kernel.org;=
- marek.vasut@gmail.com; Frieder Schrempf <frieder.schrempf@exceet.de>; broo=
-nie@kernel.org; linux-mtd@lists.infradead.org; miquel.raynal@bootlin.com; c=
-omputersforpeace@gmail.com
-Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI =
-controller
-
-On Fri, 15 Jun 2018 13:42:12 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-
-> Hi Boris,
+> The MT29F1G08ABAFAWP-ITE:F chip has 2048 byte pages and requires a
+> minimum ECC strength of 8-bits. Allow for this combination of
+> requirements using the marvell_nand controller.
 >=20
-> I am still debugging the issue.
-> With some analysis, able to check that proper values are not being writte=
-n for QUADSPI_SFA2AD/ QUADSPI_SFB1AD/ QUADSPI_SFB2AD register.
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> I've tried to follow the recommended AN-379 from Marvell. They do seem
+> to have information that covers this particular set of chip requirements
+> but I'm not confident I've translated their code correctly into the
+> current marvell_nand implementation.
 >=20
-> In current code, value of map_addr are being assigned to these register.
->              map_addr =3D q->memmap_phy +
->                         2 * q->devtype_data->ahb_buf_size;
+> This is enough to make the nand_scan work but ubi/ubifs fails to initiali=
+se
+> and/or mount so I may have something completely wrong. This may also be
+> because this chip has internal ECC enabled which cannot be disabled. I
+> turned up an old thread on this from April last year[1] but I didn't see
+> anything resulting from this. Can this combination of ECC
+> implementations even co-exist?
 >=20
->      qspi_writel(q, map_addr, q->iobase + QUADSPI_SFA1AD + (i * 4));
+> [1] - http://lists.infradead.org/pipermail/linux-mtd/2017-April/073370.ht=
+ml
 >=20
-> But instead of "q->devtype_data->ahb_buf_size" it should be flash size.
-
-No, because we're only using 2 * ->ahb_buf_size in the direct mapping for e=
-ach device, and we're modifying the mapping dynamically based on the select=
-ed device. Maybe we got the logic wrong though.
-
-Yes, for register QUADSPI_SFA2AD/ QUADSPI_SFB1AD/ QUADSPI_SFB2AD, we need t=
-o save starting actual address from where this flash is getting started.
-Thus, if my first flash size is 64MB, then register QUADSPI_SFA2AD would ha=
-ve value of q->memmap_phy + 0x4000000 i.e. (QUADSPI_SFA1AD + sizeof First F=
-lash)
-If second flash is of size 32MB, then register QUADSPI_SFB1AD would have va=
-lue of value of QUADSPI_SFA2AD + sizeof second flash.
-
-> For my case flash size is 0x4000000 and with this hard coded value I am a=
-ble to perform Write and Erase operation.
-> One more change, I have to do is adding the flash_size when writing the b=
-ase_address in SFAR register for case when "mem->spi->chip_select =3D=3D 1"
-> 	qspi_writel(q, q->memmap_phy + 0x4000000, base + QUADSPI_SFAR);
-
-I don't want to expose the full device in the direct mapping yet (that's pa=
-rt of the direct-mapping API I posted here [1]). What this version of the d=
-river does is, map only 2 time the ahb_size so that we can bypass the inter=
-nal cache of the QSPI engine.
-
-To perform any operation on second flash, we need to provide it's base addr=
-ess should be saved in SFAR register for this particular operation.
-Exposing only 2 time of ahb_size is design decision but value in SFAR regis=
-ter should be correct.
-
+>  drivers/mtd/nand/raw/marvell_nand.c | 1 +
+>  1 file changed, 1 insertion(+)
 >=20
-> Thus, there should be mechanism or the entry in structure where we can ha=
-ve the information of the size of the connected slave device.
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/m=
+arvell_nand.c
+> index ebb1d141b900..5712df553a8e 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -217,6 +217,7 @@ static const struct marvell_hw_ecc_layout marvell_nfc=
+_layouts[] =3D {
+>  	MARVELL_LAYOUT(  512,   512,  1,  1,  1,  512,  8,  8,  0,  0,  0),
+>  	MARVELL_LAYOUT( 2048,   512,  1,  1,  1, 2048, 40, 24,  0,  0,  0),
+>  	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
+> +	MARVELL_LAYOUT( 2048,   512,  8,  1,  1, 1024, 0, 30,  1024,  32,  30),
 
-Because that's exactly the kind of thing I'd like to avoid. What if the dev=
-ice is bigger than the reserved memory region? What if the sum of all devic=
-es does not fit in there? Here I tried to support all cases by just mapping=
- the portion of memory we need.
+I suppose you should not use HW_ECC for this chip. Hence this line is
+useless. However I think it should be:
 
-So IMO, there should be mechanism to have value of start address of each sl=
-ave device. This might can be done from DTS entry of each slave device conn=
-ected to the controller.
+	MARVELL_LAYOUT( 2048,   512,  8,  2,  1, 1024, 0, 30, 1024, 32,	30),
+
+                                          ^
+
+>  	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
+>  	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
+>  };
+
+Regards,
+Miqu=C3=A8l
