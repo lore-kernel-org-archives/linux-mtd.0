@@ -1,24 +1,17 @@
-Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUqfO-0003nF-RI
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 09:41:48 +0000
-Received: by mail-pg0-x244.google.com with SMTP id p21-v6so7254239pgd.11
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2018 02:41:32 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: m25p80: Use SPI_MEM_OP_NO_DUMMY instead of
- SPI_MEM_OP_DUMMY(0, x)
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-References: <20180601100325.11165-1-boris.brezillon@bootlin.com>
- <20180601100325.11165-2-boris.brezillon@bootlin.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <b091249b-81b9-8924-73ac-6fdf4a9ecec7@gmail.com>
-Date: Mon, 18 Jun 2018 11:41:15 +0200
+Date: Mon, 18 Jun 2018 11:49:20 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: atmel-quadspi: add suspend/resume hooks
+Message-ID: <20180618114920.654647c0@bbrezillon>
+In-Reply-To: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20180601100325.11165-2-boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,47 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/01/2018 12:03 PM, Boris Brezillon wrote:
-> SPI_MEM_OP_DUMMY(0, x) means there's 0 dummy bytes to send, which is
-> similar to SPI_MEM_OP_NO_DUMMY except it's less clear. Use
-> SPI_MEM_OP_NO_DUMMY instead of SPI_MEM_OP_DUMMY(0, x) in
-> m25p80_write().
-> Also stop updating op.dummy.buswidth since this value is only
-> meaningful if you have dummy bytes.
+Hi Claudiu,
+
+The subject prefix should be "mtd: spi-nor: atmel-quadspi: ". No need
+to send a new version just for that, I'll fix it when applying the
+patch.
+
+Looks good otherwise. Marek, any objection? If not, can you add your
+Acked-by?
+
+Thanks,
+
+Boris
+
+On Mon, 4 Jun 2018 11:46:33 +0300
+Claudiu Beznea <claudiu.beznea@microchip.com> wrote:
+
+> Implement suspend/resume hooks.
 > 
-> Reported-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
-
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 73dd74330227..1dd5f0420b5a 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -68,7 +68,7 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  	struct spi_mem_op op =
->  			SPI_MEM_OP(SPI_MEM_OP_CMD(nor->program_opcode, 1),
->  				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
-> -				   SPI_MEM_OP_DUMMY(0, 1),
-> +				   SPI_MEM_OP_NO_DUMMY,
->  				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
->  	size_t remaining = len;
->  	int ret;
-> @@ -76,7 +76,6 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
->  	/* get transfer protocols. */
->  	op.cmd.buswidth = spi_nor_get_protocol_inst_nbits(nor->write_proto);
->  	op.addr.buswidth = spi_nor_get_protocol_addr_nbits(nor->write_proto);
-> -	op.dummy.buswidth = op.addr.buswidth;
->  	op.data.buswidth = spi_nor_get_protocol_data_nbits(nor->write_proto);
+> Changes in v2:
+> - use __maybe_unused instead of #ifdef CONFIG_PM_SLEEP
+> 
+>  drivers/mtd/spi-nor/atmel-quadspi.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+> index 6c5708bacad8..ceaaef47f02e 100644
+> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
+> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+> @@ -737,6 +737,26 @@ static int atmel_qspi_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
 >  
->  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
-> 
-
-
--- 
-Best regards,
-Marek Vasut
+> +static int __maybe_unused atmel_qspi_suspend(struct device *dev)
+> +{
+> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(aq->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused atmel_qspi_resume(struct device *dev)
+> +{
+> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
+> +
+> +	clk_prepare_enable(aq->clk);
+> +
+> +	return atmel_qspi_init(aq);
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(atmel_qspi_pm_ops, atmel_qspi_suspend,
+> +			 atmel_qspi_resume);
+>  
+>  static const struct of_device_id atmel_qspi_dt_ids[] = {
+>  	{ .compatible = "atmel,sama5d2-qspi" },
+> @@ -749,6 +769,7 @@ static struct platform_driver atmel_qspi_driver = {
+>  	.driver = {
+>  		.name	= "atmel_qspi",
+>  		.of_match_table	= atmel_qspi_dt_ids,
+> +		.pm	= &atmel_qspi_pm_ops,
+>  	},
+>  	.probe		= atmel_qspi_probe,
+>  	.remove		= atmel_qspi_remove,
