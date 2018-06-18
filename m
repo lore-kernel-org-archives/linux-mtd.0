@@ -1,21 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUotU-0001w8-Pk
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 07:48:09 +0000
-Date: Mon, 18 Jun 2018 09:47:32 +0200
+Date: Mon, 18 Jun 2018 10:39:08 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>, Miquel
- Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org, Marek
- Vasut <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v3 2/3] mtd: rawnand: denali_dt: use dev as a shorthand
- of &pdev->dev
-Message-ID: <20180618094732.4864f16b@bbrezillon>
-In-Reply-To: <1529025532-22087-3-git-send-email-yamada.masahiro@socionext.com>
-References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-3-git-send-email-yamada.masahiro@socionext.com>
+To: Peter Rosin <peda@axentia.se>
+Cc: linux-kernel@vger.kernel.org, Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180618103908.17a04679@bbrezillon>
+In-Reply-To: <20180329131054.22506-1-peda@axentia.se>
+References: <20180329131054.22506-1-peda@axentia.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,105 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Jun 2018 10:18:51 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Thu, 29 Mar 2018 15:10:54 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
-> The probe function references &pdev->dev many times.  Add 'dev' as
-> a shorthand.
+> On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+> flash accesses have a tendency to cause display disturbances. Add a
+> module param to disable DMA from the NAND controller, since that fixes
+> the display problem for me.
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Signed-off-by: Peter Rosin <peda@axentia.se>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
+Miquel, can you queue this one to nand/next.
+
 > ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> Changes in v3: None
-> Changes in v2: None
-> 
->  drivers/mtd/nand/raw/denali_dt.c | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-> index ce6239d..afaae37 100644
-> --- a/drivers/mtd/nand/raw/denali_dt.c
-> +++ b/drivers/mtd/nand/raw/denali_dt.c
-> @@ -81,38 +81,39 @@ MODULE_DEVICE_TABLE(of, denali_nand_dt_ids);
+> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> index b2f00b398490..2ff7a77c7b8e 100644
+> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> @@ -129,6 +129,11 @@
+>  #define DEFAULT_TIMEOUT_MS			1000
+>  #define MIN_DMA_LEN				128
 >  
->  static int denali_dt_probe(struct platform_device *pdev)
->  {
-> +	struct device *dev = &pdev->dev;
->  	struct resource *res;
->  	struct denali_dt *dt;
->  	const struct denali_dt_data *data;
->  	struct denali_nand_info *denali;
->  	int ret;
->  
-> -	dt = devm_kzalloc(&pdev->dev, sizeof(*dt), GFP_KERNEL);
-> +	dt = devm_kzalloc(dev, sizeof(*dt), GFP_KERNEL);
->  	if (!dt)
->  		return -ENOMEM;
->  	denali = &dt->denali;
->  
-> -	data = of_device_get_match_data(&pdev->dev);
-> +	data = of_device_get_match_data(dev);
->  	if (data) {
->  		denali->revision = data->revision;
->  		denali->caps = data->caps;
->  		denali->ecc_caps = data->ecc_caps;
+> +static bool atmel_nand_avoid_dma __read_mostly;
+> +
+> +MODULE_PARM_DESC(avoiddma, "Avoid using DMA");
+> +module_param_named(avoiddma, atmel_nand_avoid_dma, bool, 0400);
+> +
+>  enum atmel_nand_rb_type {
+>  	ATMEL_NAND_NO_RB,
+>  	ATMEL_NAND_NATIVE_RB,
+> @@ -1977,7 +1982,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+>  		return ret;
 >  	}
 >  
-> -	denali->dev = &pdev->dev;
-> +	denali->dev = dev;
->  	denali->irq = platform_get_irq(pdev, 0);
->  	if (denali->irq < 0) {
-> -		dev_err(&pdev->dev, "no irq defined\n");
-> +		dev_err(dev, "no irq defined\n");
->  		return denali->irq;
->  	}
+> -	if (nc->caps->has_dma) {
+> +	if (nc->caps->has_dma && !atmel_nand_avoid_dma) {
+>  		dma_cap_mask_t mask;
 >  
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "denali_reg");
-> -	denali->reg = devm_ioremap_resource(&pdev->dev, res);
-> +	denali->reg = devm_ioremap_resource(dev, res);
->  	if (IS_ERR(denali->reg))
->  		return PTR_ERR(denali->reg);
->  
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "nand_data");
-> -	denali->host = devm_ioremap_resource(&pdev->dev, res);
-> +	denali->host = devm_ioremap_resource(dev, res);
->  	if (IS_ERR(denali->host))
->  		return PTR_ERR(denali->host);
->  
-> @@ -120,19 +121,19 @@ static int denali_dt_probe(struct platform_device *pdev)
->  	 * A single anonymous clock is supported for the backward compatibility.
->  	 * New platforms should support all the named clocks.
->  	 */
-> -	dt->clk = devm_clk_get(&pdev->dev, "nand");
-> +	dt->clk = devm_clk_get(dev, "nand");
->  	if (IS_ERR(dt->clk))
-> -		dt->clk = devm_clk_get(&pdev->dev, NULL);
-> +		dt->clk = devm_clk_get(dev, NULL);
->  	if (IS_ERR(dt->clk)) {
-> -		dev_err(&pdev->dev, "no clk available\n");
-> +		dev_err(dev, "no clk available\n");
->  		return PTR_ERR(dt->clk);
->  	}
->  
-> -	dt->clk_x = devm_clk_get(&pdev->dev, "nand_x");
-> +	dt->clk_x = devm_clk_get(dev, "nand_x");
->  	if (IS_ERR(dt->clk_x))
->  		dt->clk_x = NULL;
->  
-> -	dt->clk_ecc = devm_clk_get(&pdev->dev, "ecc");
-> +	dt->clk_ecc = devm_clk_get(dev, "ecc");
->  	if (IS_ERR(dt->clk_ecc))
->  		dt->clk_ecc = NULL;
->  
-> @@ -155,7 +156,7 @@ static int denali_dt_probe(struct platform_device *pdev)
->  		 * Hardcode the clock rates for the backward compatibility.
->  		 * This works for both SOCFPGA and UniPhier.
->  		 */
-> -		dev_notice(&pdev->dev,
-> +		dev_notice(dev,
->  			   "necessary clock is missing. default clock rates are used.\n");
->  		denali->clk_x_rate = 200000000;
->  	}
+>  		dma_cap_zero(mask);
