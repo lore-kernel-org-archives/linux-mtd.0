@@ -1,19 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUq5k-0005Fl-5b
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 09:04:53 +0000
-Date: Mon, 18 Jun 2018 11:04:30 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Received: from mail-pg0-x243.google.com ([2607:f8b0:400e:c05::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUqfL-0003nC-0a
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 09:41:40 +0000
+Received: by mail-pg0-x243.google.com with SMTP id e11-v6so7269776pgq.0
+ for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2018 02:41:28 -0700 (PDT)
 Subject: Re: [PATCH 1/2] mtd: m25p80: Remove unneeded m25p->command field
-Message-ID: <20180618110430.5fff1052@bbrezillon>
-In-Reply-To: <20180601100325.11165-1-boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
 References: <20180601100325.11165-1-boris.brezillon@bootlin.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <44d7bade-19c9-3929-4e79-e501877e7e61@gmail.com>
+Date: Mon, 18 Jun 2018 11:40:41 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180601100325.11165-1-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,21 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
-
-Can you add your Acked-by or Reviewed-by if you're okay with these
-changes?
-
-Thanks,
-
-Boris
-
-On Fri,  1 Jun 2018 12:03:24 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-
+On 06/01/2018 12:03 PM, Boris Brezillon wrote:
 > The ->command field is no longer used, remove it.
 > 
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+
+Acked-by: Marek Vasut <marek.vasut@gmail.com>
+
 > ---
 >  drivers/mtd/devices/m25p80.c | 2 --
 >  1 file changed, 2 deletions(-)
@@ -59,3 +54,9 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 >  };
 >  
 >  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+> 
+
+
+-- 
+Best regards,
+Marek Vasut
