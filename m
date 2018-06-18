@@ -1,21 +1,25 @@
-Subject: Re: [PATCH v2] mtd: atmel-quadspi: add suspend/resume hooks
-To: Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>,
- <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>
-References: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
- <20180618114920.654647c0@bbrezillon>
- <8474a744-5552-932f-7ba8-85b7d95368ea@gmail.com>
-From: Claudiu Beznea <Claudiu.Beznea@microchip.com>
-Message-ID: <0be344a2-9878-2b92-9436-bc2f4d4fd6e0@microchip.com>
-Date: Mon, 18 Jun 2018 15:00:06 +0300
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUt3e-0007gj-Li
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 12:14:56 +0000
+Date: Mon, 18 Jun 2018 14:14:31 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@sigma-star.at>,
+ Philipp Rosenberger <p.rosenberger@linutronix.de>, Rob Herring
+ <robh@kernel.org>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/2] mtd: rawnand: denali_dt: use dev as a shorthand of
+ &pdev->dev
+Message-ID: <20180618141431.68ca434e@xps13>
+In-Reply-To: <20180618135410.5a480ccd@xps13>
+References: <1528799515-1356-1-git-send-email-yamada.masahiro@socionext.com>
+ <20180618135410.5a480ccd@xps13>
 MIME-Version: 1.0
-In-Reply-To: <8474a744-5552-932f-7ba8-85b7d95368ea@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,93 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Masahiro,
 
+On Mon, 18 Jun 2018 13:54:10 +0200, Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
 
-On 18.06.2018 12:53, Marek Vasut wrote:
-> On 06/18/2018 11:49 AM, Boris Brezillon wrote:
->> Hi Claudiu,
->>
->> The subject prefix should be "mtd: spi-nor: atmel-quadspi: ". No need
->> to send a new version just for that, I'll fix it when applying the
->> patch.
->>
-Hi Boris,
+> Hi Masahiro,
+>=20
+> On Tue, 12 Jun 2018 19:31:54 +0900, Masahiro Yamada
+> <yamada.masahiro@socionext.com> wrote:
+>=20
+> > Add 'dev' as a shorthand before adding more code that takes a
+> > pointer to struce device. =20
+>=20
+> s/struce/a struct/?
+>=20
+> >=20
+> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com> =20
+>=20
+> With this fixed:
+>=20
+> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Thank you!
+I missed the two next versions with Boris/Richard reviews, forget about
+this one.
 
->> Looks good otherwise. Marek, any objection? If not, can you add your
->> Acked-by?
-> 
-> Will this work if you have ie. ubifs mounted on that QSPI NOR and you
-> suspect and resume during IO ? I think it would, but just curious if
-> there could be some problem.
-
-Hi Marek,
-
-I tested only with read/writes while suspending, simple scripts, but not
-having ubifs mounted on QSPI NOR. I will double check also with ubifs
-mounted on QSPI NOR and come back with the results.
-
-Thank you,
-Claudiu
-
-> 
->> Thanks,
->>
->> Boris
->>
->> On Mon, 4 Jun 2018 11:46:33 +0300
->> Claudiu Beznea <claudiu.beznea@microchip.com> wrote:
->>
->>> Implement suspend/resume hooks.
->>>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
->>> ---
->>>
->>> Changes in v2:
->>> - use __maybe_unused instead of #ifdef CONFIG_PM_SLEEP
->>>
->>>  drivers/mtd/spi-nor/atmel-quadspi.c | 21 +++++++++++++++++++++
->>>  1 file changed, 21 insertions(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
->>> index 6c5708bacad8..ceaaef47f02e 100644
->>> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
->>> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
->>> @@ -737,6 +737,26 @@ static int atmel_qspi_remove(struct platform_device *pdev)
->>>  	return 0;
->>>  }
->>>  
->>> +static int __maybe_unused atmel_qspi_suspend(struct device *dev)
->>> +{
->>> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
->>> +
->>> +	clk_disable_unprepare(aq->clk);
->>> +
->>> +	return 0;
->>> +}
->>> +
->>> +static int __maybe_unused atmel_qspi_resume(struct device *dev)
->>> +{
->>> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
->>> +
->>> +	clk_prepare_enable(aq->clk);
->>> +
->>> +	return atmel_qspi_init(aq);
->>> +}
->>> +
->>> +static SIMPLE_DEV_PM_OPS(atmel_qspi_pm_ops, atmel_qspi_suspend,
->>> +			 atmel_qspi_resume);
->>>  
->>>  static const struct of_device_id atmel_qspi_dt_ids[] = {
->>>  	{ .compatible = "atmel,sama5d2-qspi" },
->>> @@ -749,6 +769,7 @@ static struct platform_driver atmel_qspi_driver = {
->>>  	.driver = {
->>>  		.name	= "atmel_qspi",
->>>  		.of_match_table	= atmel_qspi_dt_ids,
->>> +		.pm	= &atmel_qspi_pm_ops,
->>>  	},
->>>  	.probe		= atmel_qspi_probe,
->>>  	.remove		= atmel_qspi_remove,
-> 
-> 
+Sorry for the inconvenience,
+Miqu=C3=A8l
