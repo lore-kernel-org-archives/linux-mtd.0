@@ -1,28 +1,21 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUut9-0007qh-Dg
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 14:12:13 +0000
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUvdl-0002t3-C1
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 15:00:27 +0000
+Date: Mon, 18 Jun 2018 17:00:08 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Sam Lefebvre <sam.lefebvre@essensium.com>
+Cc: linux-mtd@lists.infradead.org, Arnout Vandecapelle <arnout@mind.be>,
+ Dries Staelens <dries.staelens@barco.com>, Han Xu <han.xu@nxp.com>
+Subject: Re: [PATCH 07/13] mtd: rawnand: gpmi: set aggregate ready/busy
+ signalling
+Message-ID: <20180618170008.791d1b1b@xps13>
+In-Reply-To: <20180426154134.8270-8-sam.lefebvre@essensium.com>
+References: <20180426154134.8270-1-sam.lefebvre@essensium.com>
+ <20180426154134.8270-8-sam.lefebvre@essensium.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Mon, 18 Jun 2018 16:11:54 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, jonathanh@nvidia.com, pdeschrijver@nvidia.com,
- pgaikwad@nvidia.com, mirza.krak@gmail.com, gaireg@gaireg.de,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/6] mtd: rawnand: add NVIDIA Tegra NAND flash support
-In-Reply-To: <20180618135935.5a41ec6f@bbrezillon>
-References: <20180617204605.4648-1-stefan@agner.ch>
- <20180618115806.7be25499@bbrezillon>
- <95279b61ce2630c1276669359b163933@agner.ch>
- <20180618135935.5a41ec6f@bbrezillon>
-Message-ID: <40244fa25ef2d90a750bf8044d46c845@agner.ch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,160 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hello Han,
 
-On 18.06.2018 13:59, Boris Brezillon wrote:
-> Hi Stefan,
-> 
-> On Mon, 18 Jun 2018 12:51:52 +0200
-> Stefan Agner <stefan@agner.ch> wrote:
-> 
->> On 18.06.2018 11:58, Boris Brezillon wrote:
->> > On Sun, 17 Jun 2018 22:45:59 +0200
->> > Stefan Agner <stefan@agner.ch> wrote:
->> >
->> >> Changes definitly calm down, most noteably probably the changes
->> >> around checking whether a page is empty if the stack reports ECC
->> >> errors.. I verified the code using raw nandwrites with OOB to
->> >> simulate an empty page which has some bits flipped in the OOB area,
->> >> everthing seems to work as I would expect it.
->> >>
->> >> For now I do not check extra OOB bytes since those are at variable
->> >> locations depending on algorithm.
->> >
->> > Hm, if you expose them as free OOB bytes, you should also check them,
->> > otherwise you might end up with corrupted data without noticing it. Note
->> > that, depending on whether those free OOB bytes are ECC-protected or
->> > not, you should change the way you do the check:
->> >
->> > - non-protected OOB bytes: all bytes should be 0xff (no bitflips
->> >   allowed)
->> > - data+free OOB bytes protected by the same ECC bytes: you should pass
->> >   the free OOB bytes buffer to nand_check_erased_ecc_chunk() along with
->> >   the data and ECC buffers
->> > - free OOB bytes have their own ECC bytes: call
->> >   nand_check_erased_ecc_chunk() separately and pass it the ECC + free
->> >   OOB buffers.
->>
->> This graphic taken from the public Tegra 2 Technical Reference Manual is
->> quite useful:
->> https://imgur.com/a/0Hqzbkc
-> 
-> Thanks for sharing this doc.
-> 
->>
->> Tegra basically has all of the above, which makes the whole business
->> really tricky...
-> 
-> I'm not sure. Are "Skip bytes" protected by "main data parity bytes"?
-> 
-> AFAICT, you have "Tag bytes" that fall in case #3 and "Remaining spare
-> bytes" that fall in case #1. If "Skip bytes" are protected by the "main
-> data parity bytes", then it falls in case #2, otherwise it probably
-> goes in case #1.
-> 
+Could we have your input on this patch, please?
 
-Skip bytes are not protected. I think they are mainly meant to skip the
-bad block marker. Only 4, 8, 12 or 16 bytes are supported.
+On Thu, 26 Apr 2018 17:41:28 +0200, Sam Lefebvre
+<sam.lefebvre@essensium.com> wrote:
 
->>
->> I am not sure if we really could do variant 1, non-protected OOB, but
->> since we have the option of protected OOB, we probably anyway would do
->> that.
-> 
-> That's up to you, but in this case, you should not declare those bytes
-> as free (didn't check what is currently done in the driver).
-> 
->>
->> RS/Hamming implements variant 3.
-> 
-> It seems to be a mix of #1 and #3, but I'm not sure (see above).
-> 
->>
->> BCH implements variant 2.
-> 
-> I'd say it's a mix of #1 (skip + remaining bytes) and #2(tag bytes).
-> 
->> OOB is protected with the last data buffer.
-> 
-> That would be weird, but maybe you're right. HW ECC engine usually
-> split the OOB area in X portions, X being the number of ECC steps needed
-> to cover a NAND page, and then have ECC bytes cover a sub-portion of
-> data+OOB.
-> 
-> For example, for a NAND page of 2k with 64 bytes of OOB, and assuming
-> the ECC step is 512bytes, you usually have something like:
-> 
-> [512(data)+8(protected-oob)+8(ecc)] x 4
-> 
+> The GPMI block by default decouples the ready/busy signal (which is
+> shared between all chip-selects) to separate internal signals per
+> chip-select. However, since the gpmi-nand driver uses DMA0 for all
+> chip-selects, DMA transfers will not be able to see the ready/busy
+> status for any chip-select other than 0.
+>=20
+> Currently, this happens to work because nand_command() ends with an
+> explicit nand_wait_ready() and the driver only sets up a single command
+> in a DMA chain. nand_wait_ready() polls for the chip-select specific
+> ready/busy status bit. Future patches, however, will set up a DMA chain
+> with several commands, so these will have to wait correctly in the DMA
+> chain itself.
+>=20
+> To fix this, set the GANGED_RDYBUSY bit in the control1 register. This
+> ties all internal ready/busy signals together, so DMA0 will also see
+> the ready/busy status of chip selects 1-2-3. It's a bit silly that this
+> isn't implied in hardware by the DECOUPLE_CS bit.
+>=20
+> Signed-off-by: Sam Lefebvre <sam.lefebvre@essensium.com>
+> Signed-off-by: Arnout Vandecappelle (Essensium/Mind) <arnout@mind.be>
+> Cc: Han Xu <han.xu@nxp.com>
+> ---
+> Tested on an i.MX6Q with two identical chips on CS0 and CS1.
+> ---
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c  | 3 +++
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h | 1 +
+>  2 files changed, 4 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c b/drivers/mtd/nand=
+/raw/gpmi-nand/gpmi-lib.c
+> index 83697b8df871..1858afdb400d 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c
+> @@ -193,6 +193,9 @@ int gpmi_init(struct gpmi_nand_data *this)
+>  	 */
+>  	writel(BM_GPMI_CTRL1_DECOUPLE_CS, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+> =20
+> +	/* Aggregate ready busy signalling. */
+> +	writel(BM_GPMI_CTRL1_GANGED_RDYBUSY, r->gpmi_regs + HW_GPMI_CTRL1_SET);
+> +
+>  	gpmi_disable_clk(this);
+>  	return 0;
+>  err_out:
+> diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h b/drivers/mtd/nan=
+d/raw/gpmi-nand/gpmi-regs.h
+> index d92bf32221ca..e341802c90ac 100644
+> --- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
+> +++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-regs.h
+> @@ -120,6 +120,7 @@
+>  #define BV_GPMI_CTRL1_WRN_DLY_SEL_7_TO_12NS		0x2
+>  #define BV_GPMI_CTRL1_WRN_DLY_SEL_NO_DELAY		0x3
+> =20
+> +#define BM_GPMI_CTRL1_GANGED_RDYBUSY		(1 << 19)
+>  #define BM_GPMI_CTRL1_BCH_MODE				(1 << 18)
+> =20
+>  #define BP_GPMI_CTRL1_DLL_ENABLE			17
 
-The TRM explicitly states so:
-
-"BCH mode Error correction
-- Error correction with involving spare only transfers is not supported.
-ECC calculation of last sub-page includes tag data in spare area.
-- Error correction with Main only transfers is supported.
-- Maximum possible length of Tag data size is 252 bytes."
-
-
->>
->> So this would require a algorithm depending implementation, which is
->> probably not a big deal.
-> 
-> True.
-> 
->>
->> But there is one more issue with BCH: Only if extra data are actually
->> transferred, tag space is actually allocated. If no tag bytes are
->> transferred, parity follows immediately skip bytes. As far as I know the
->> MTD stacks OOB layout assumes that is always the same layout, no matter
->> whether we write extra OOB data or not. For the Tegra NAND controller
->> this would mean that we have to always transfer tag bytes and therefor
->> penalize the use case we are most interested in (which is no extra OOB
->> bytes, since UBI does not make use of it)...
-> 
-> Hm, given the amount of tag bytes I don't think you'll have a huge
-> penalty, so I'd recommend always sending those bytes. Alternatively,
-> you could decide that you never want to have those tag bytes and expose
-> none of them.
-> 
->>
->> Furthermore I realized that testing is not easily possible since
->> nandwrite with --oob seems not to make use of "oob_required" in the main
->> page write but issues a separate OOB write command. I did not found a
->> way to issue a write from user space which sets oob_required...
-> 
-> Maybe it's time to patch those tools. The ioctl exists, so it's just a
-> matter of using it in nandwrite/mtd-utils.
-> 
->>
->> Due to all this I rather prefer to not implement extra OOB support at
->> this point.
-> 
-> I'm fine with that, but that means no JFFS2 support, as I think JFFS2
-> wants to place some of its metadata in the OOB area. Also, I fear it
-> will be a mess to add support for that kind of things without breaking
-> existing setup afterwards, so, by taking this decision you're pretty
-> much saying that this controller will never expose free OOB bytes.
-> That's not a problem from my PoV, but I want you to be aware of that.
-> 
-
-We already operate without extra OOB byte support in our downstream BSP.
-I'd rather have a easy upgrade path today...
-
-Another issue I just realized: The boot ROM only supports BCH without
-tag bytes... So at least the boot loader has to be written without tag
-bytes.
-
->>
->> How do I do this properly? Set mtd_ooblayout_ops.free to NULL?
-> 
-> Just implement a dummy function that returns -ERANGE.
-> 
-
-Ok, I will go with this then.
-
-Also, thanks for all your valuable feedback, really appreciated!
-
---
-Stefan
+Thanks,
+Miqu=C3=A8l
