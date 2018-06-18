@@ -1,19 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUufZ-0008JD-J3
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:58:11 +0000
-Date: Mon, 18 Jun 2018 15:57:57 +0200
+Date: Mon, 18 Jun 2018 16:00:23 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, <stable@vger.kernel.org>
-Subject: Re: [PATCH] mtd: rawnand: fix return value check for bad block status
-Message-ID: <20180618155757.6cbe0fae@xps13>
-In-Reply-To: <1528880556-20348-1-git-send-email-absahu@codeaurora.org>
-References: <1528880556-20348-1-git-send-email-absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Peter Rosin <peda@axentia.se>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180618160023.3380fade@xps13>
+In-Reply-To: <20180618103908.17a04679@bbrezillon>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180618103908.17a04679@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,43 +28,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Boris,
 
-On Wed, 13 Jun 2018 14:32:36 +0530, Abhishek Sahu
-<absahu@codeaurora.org> wrote:
+On Mon, 18 Jun 2018 10:39:08 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-> Positive return value from read_oob() is making false BAD
-> blocks. For some of the NAND controllers, OOB bytes will be
-> protected with ECC and read_oob() will return number of bitflips.
-> If there is any bitflip in ECC protected OOB bytes for BAD block
-> status page, then that block is getting treated as BAD.
+> On Thu, 29 Mar 2018 15:10:54 +0200
+> Peter Rosin <peda@axentia.se> wrote:
 >=20
-> Fixes: c120e75e0e7d ("mtd: nand: use read_oob() instead of cmdfunc() for =
-bad block check")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+> > flash accesses have a tendency to cause display disturbances. Add a
+> > module param to disable DMA from the NAND controller, since that fixes
+> > the display problem for me.
+> >=20
+> > Signed-off-by: Peter Rosin <peda@axentia.se> =20
 >=20
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand=
-_base.c
-> index f28c3a5..4a73f73 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -440,7 +440,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_=
-t ofs)
-> =20
->  	for (; page < page_end; page++) {
->  		res =3D chip->ecc.read_oob(mtd, chip, page);
-> -		if (res)
-> +		if (res < 0)
->  			return res;
-> =20
->  		bad =3D chip->oob_poi[chip->badblockpos];
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+>=20
+> Miquel, can you queue this one to nand/next.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Yes of course.
 
-I suppose this patch is a good candidate to be part of a future
-mtd/fixes PR?
+I'll just change the subject to "mtd: rawnand: atmel:".
 
-Regards,
+Thanks,
 Miqu=C3=A8l
