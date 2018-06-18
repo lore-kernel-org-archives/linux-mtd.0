@@ -1,22 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV0Or-0000nY-AQ
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 20:05:19 +0000
-Date: Mon, 18 Jun 2018 22:04:55 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Message-ID: <20180618220455.1810f2a5@bbrezillon>
-In-Reply-To: <87d0wnrhqz.fsf@belgarion.home>
-References: <20180617170217.24177-1-robert.jarzmik@free.fr>
- <20180618104159.24b9fffb@bbrezillon>
- <87d0wnrhqz.fsf@belgarion.home>
+Received: from botnar.kaiser.cx ([176.28.20.183])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fV0vs-0004EA-SK
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 20:39:26 +0000
+Date: Mon, 18 Jun 2018 22:36:56 +0200
+From: Martin Kaiser <martin@kaiser.cx>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: mxc: set spare area size register
+ explicitly
+Message-ID: <20180618203656.GA1926@botnar.kaiser.cx>
+References: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
+ <1528637487-25172-1-git-send-email-martin@kaiser.cx>
+ <20180618160929.421bee73@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180618160929.421bee73@bbrezillon>
+Sender: Martin Kaiser <martin@botnar.kaiser.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +31,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Jun 2018 21:56:20 +0200
-Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+Hi Boris,
 
-> Boris Brezillon <boris.brezillon@bootlin.com> writes:
-> 
-> > Hi Robert,
-> >
-> > On Sun, 17 Jun 2018 19:02:03 +0200
-> > Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> >  
-> >> As I gathered almost all the required acks, this is an information only post
-> >> before queuing to the PXA tree.  
-> >
-> > We'll need an immutable branch/tag containing those changes, just in
-> > case other conflicting changes get submitted to the NAND driver.  
-> Sure, this branch will be usable from next Wednesday onward, here :
->  - git fetch https://github.com/rjarzmik/linux.git
->    tags/pxa-for-4.19-dma_slave_map
-> 
-> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
-> checker to be fully covered, and I'd like as well to know which tree the ASoC
-> patch will take, ie. if Mark commits to take it, or rather wants to pull from
-> the imutable branch.
-> 
-> Until Wednesday, even if the branch exist, consider it doesn't please, and
-> Thursday morning you can pull if you wish.
+Thus wrote Boris Brezillon (boris.brezillon@bootlin.com):
 
-Don't worry, we're not planning to merge it unless it happens to be
-required (Stephen Rothwell reporting a merge conflict in next), and we
-don't have conflicting changes in the pipeline so far.
+> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> > Reviewed-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > Cc: stable@vger.kernel.org
+
+> Hm, a Cc-stable tag without its associated Fixes tag, I don't like that.
+> Can you find which commit introduced this bug?
+
+the particular corner case that I fixed has never really worked. As my
+fix updates the preset operation, I'd suggest adding a Fixes tag pointing
+at the first commit that introduced the preset operation.
+
+I'll resend my patch with this tag added.
+
+Best regards,
+
+   Martin
