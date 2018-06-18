@@ -1,34 +1,22 @@
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUucH-0006Q1-52
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:54:47 +0000
-Received: from mail-vk0-f53.google.com (mail-vk0-f53.google.com
- [209.85.213.53]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id w5IDrwCV002182
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2018 22:53:58 +0900
-Received: by mail-vk0-f53.google.com with SMTP id b134-v6so9544674vke.13
- for <linux-mtd@lists.infradead.org>; Mon, 18 Jun 2018 06:53:58 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fUufZ-0008JD-J3
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 13:58:11 +0000
+Date: Mon, 18 Jun 2018 15:57:57 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, <stable@vger.kernel.org>
+Subject: Re: [PATCH] mtd: rawnand: fix return value check for bad block status
+Message-ID: <20180618155757.6cbe0fae@xps13>
+In-Reply-To: <1528880556-20348-1-git-send-email-absahu@codeaurora.org>
+References: <1528880556-20348-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <34780659.LX1KsSZy9L@blindfold>
-References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-4-git-send-email-yamada.masahiro@socionext.com>
- <34780659.LX1KsSZy9L@blindfold>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 18 Jun 2018 22:53:17 +0900
-Message-ID: <CAK7LNAR8QTP6nMuR9j5-+Yxg5yzP2Dyq-rKGN-MaYg8xgr-3Ng@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] mtd: rawnand: denali: optimize timing parameters
- for data interface
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,75 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi Boris,
 
+On Wed, 13 Jun 2018 14:32:36 +0530, Abhishek Sahu
+<absahu@codeaurora.org> wrote:
 
-2018-06-18 16:22 GMT+09:00 Richard Weinberger <richard@nod.at>:
-> Am Freitag, 15. Juni 2018, 03:18:52 CEST schrieb Masahiro Yamada:
->> This commit improves the ->setup_data_interface() hook.
->>
->> The denali_setup_data_interface() needs the frequency of clk_x
->> and the ratio of clk_x / clk.
->>
->> The latter is currently hardcoded in the driver, like this:
->>
->>   #define DENALI_CLK_X_MULT       6
->>
->> The IP datasheet requires that clk_x / clk be 4, 5, or 6.  I just
->> chose 6 because it is the most defensive value, but it is not optimal.
->> By getting the clock rate of both "clk" and "clk_x", the driver can
->> compute the timing values more precisely.
->
-> What datasheet do you have, is it public?
+> Positive return value from read_oob() is making false BAD
+> blocks. For some of the NAND controllers, OOB bytes will be
+> protected with ECC and read_oob() will return number of bitflips.
+> If there is any bitflip in ECC protected OOB bytes for BAD block
+> status page, then that block is getting treated as BAD.
+>=20
+> Fixes: c120e75e0e7d ("mtd: nand: use read_oob() instead of cmdfunc() for =
+bad block check")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>  drivers/mtd/nand/raw/nand_base.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand=
+_base.c
+> index f28c3a5..4a73f73 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -440,7 +440,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_=
+t ofs)
+> =20
+>  	for (; page < page_end; page++) {
+>  		res =3D chip->ecc.read_oob(mtd, chip, page);
+> -		if (res)
+> +		if (res < 0)
+>  			return res;
+> =20
+>  		bad =3D chip->oob_poi[chip->badblockpos];
 
-No.  Not available in public.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-I got the datasheet
-because Socionext (formerly, Panasonic) bought this IP.
+I suppose this patch is a good candidate to be part of a future
+mtd/fixes PR?
 
-
-> Mine clearly states that the factor is 4.
-> "The frequency of nand_x_clk is four times the frequency of nand_clk."
-
-I checked
-"Denali NAND Flash Memory Controller User's Guide"
-released by Denali.
-
-I also get access to a newer version
-"Cadence Design IP - NAND Flash Memory Controller User's Guide"
-because Cadence acquired Denali.
-
-
-My datasheet says:
-"clk_x - Cadence NAND Flash Memory Controller bus
-interface clock. This runs at a configured
-multiple of clk as is phase aligned. Configured
-multiple can be between 4-6 times."
-
-
-
-Various parts of this IP are configurable.
-Is yours talking about this IP,
-or about a particular configuration for SOCFPGA?
-
-
-
->> To not break the existing platforms, the fallback value, 50 MHz is
->> provided.  It is true for all upstreamed platforms.
->>
->> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->
-> Reviewed-by: Richard Weinberger <richard@nod.at>
->
-> Thanks,
-> //richard
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kbuild" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Regards,
+Miqu=C3=A8l
