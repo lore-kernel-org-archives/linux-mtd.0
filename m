@@ -1,20 +1,27 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fUmAY-0003Rj-Tt
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 04:53:39 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [RFC PATCH 2/2] mtd: rawnand: marvell: Support page size of 2048 with
- 8-bit ECC
-Date: Mon, 18 Jun 2018 16:52:55 +1200
-Message-Id: <20180618045255.8015-3-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
-References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
+ id 1fUoHz-0003wS-GY
+ for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 07:09:25 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-kbuild@vger.kernel.org,
+ "linux-stable #4 . 14+" <stable@vger.kernel.org>, devicetree@vger.kernel.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based on
+ IP datasheet
+Date: Mon, 18 Jun 2018 09:09:02 +0200
+Message-ID: <5816516.AqyscFuYxX@blindfold>
+In-Reply-To: <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
+References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
+ <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The MT29F1G08ABAFAWP-ITE:F chip has 2048 byte pages and requires a
-minimum ECC strength of 8-bits. Allow for this combination of
-requirements using the marvell_nand controller.
+Am Freitag, 15. Juni 2018, 03:18:50 CEST schrieb Masahiro Yamada:
+> According to the Denali User's Guide, this IP needs three clocks:
+> 
+>  - clk: controller core clock
+> 
+>  - clk_x: bus interface clock
+> 
+>  - ecc_clk: clock at which ECC circuitry is run
+> 
+> Currently, denali_dt.c requires a single anonymous clock and its
+> frequency.  However, the driver needs to get the frequency of "clk_x"
+> not "clk".  This is confusing because people tend to assume the
+> anonymous clock means the core clock.  In fact, I got a report of
+> SOCFPGA breakage because the timing parameters are calculated based
+> on a wrong frequency.
+> 
+> Instead of the cheesy implementation, the clocks in the real hardware
+> should be represented in the driver and the DT-binding.
+> 
+> However, adding new clocks would break the existing platforms.  For the
+> backward compatibility, the driver still accepts a single clock just as
+> before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
+> This is fine for existing DT of Socionext UniPhier, and also fixes the
+> issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
+> the bus interface clock.
+> 
+> Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
+> Cc: linux-stable <stable@vger.kernel.org> #4.14+
+> Reported-by: Richard Weinberger <richard@nod.at>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-I've tried to follow the recommended AN-379 from Marvell. They do seem
-to have information that covers this particular set of chip requirements
-but I'm not confident I've translated their code correctly into the
-current marvell_nand implementation.
+Reviewed-by: Richard Weinberger <richard@nod.at>
+Reported-by: Philipp Rosenberger <p.rosenberger@linutronix.de>
 
-This is enough to make the nand_scan work but ubi/ubifs fails to initialise
-and/or mount so I may have something completely wrong. This may also be
-because this chip has internal ECC enabled which cannot be disabled. I
-turned up an old thread on this from April last year[1] but I didn't see
-anything resulting from this. Can this combination of ECC
-implementations even co-exist?
-
-[1] - http://lists.infradead.org/pipermail/linux-mtd/2017-April/073370.html
-
- drivers/mtd/nand/raw/marvell_nand.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..5712df553a8e 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -217,6 +217,7 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
- 	MARVELL_LAYOUT(  512,   512,  1,  1,  1,  512,  8,  8,  0,  0,  0),
- 	MARVELL_LAYOUT( 2048,   512,  1,  1,  1, 2048, 40, 24,  0,  0,  0),
- 	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
-+	MARVELL_LAYOUT( 2048,   512,  8,  1,  1, 1024, 0, 30,  1024,  32,  30),
- 	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
- 	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
- };
--- 
-2.17.1
+Thanks,
+//richard
