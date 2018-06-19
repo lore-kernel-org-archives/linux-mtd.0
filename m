@@ -1,20 +1,23 @@
-Received: from botnar.kaiser.cx ([176.28.20.183])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV0z9-00061e-IW
- for linux-mtd@lists.infradead.org; Mon, 18 Jun 2018 20:42:49 +0000
-From: Martin Kaiser <martin@kaiser.cx>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Martin Kaiser <martin@kaiser.cx>, stable@vger.kernel.org
-Subject: [PATCH v3] mtd: rawnand: mxc: set spare area size register explicitly
-Date: Mon, 18 Jun 2018 22:41:03 +0200
-Message-Id: <1529354463-23526-1-git-send-email-martin@kaiser.cx>
-In-Reply-To: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
-References: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
+ id 1fV4cU-0006Il-GS
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 00:35:41 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 0/2] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
+Date: Tue, 19 Jun 2018 00:35:00 +0000
+Message-ID: <f16525ea6b534123bda64b09e818ce6d@svr-chch-ex1.atlnz.lc>
+References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
+ <20180618151450.3e740270@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +27,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The v21 version of the NAND flash controller contains a Spare Area Size
-Register (SPAS) at offset 0x10. Its setting defaults to the maximum
-spare area size of 218 bytes. The size that is set in this register is
-used by the controller when it calculates the ECC bytes internally in
-hardware.
-
-Usually, this register is updated from settings in the IIM fuses when
-the system is booting from NAND flash. For other boot media, however,
-the SPAS register remains at the default setting, which may not work for
-the particular flash chip on the board. The same goes for flash chips
-whose configuration cannot be set in the IIM fuses (e.g. chips with 2k
-sector size and 128 bytes spare area size can't be configured in the IIM
-fuses on imx25 systems).
-
-Set the SPAS register explicitly during the preset operation. Derive the
-register value from mtd->oobsize that was detected during probe by
-decoding the flash chip's ID bytes.
-
-While at it, rename the define for the spare area register's offset to
-NFC_V21_RSLTSPARE_AREA. The register at offset 0x10 on v1 controllers is
-different from the register on v21 controllers.
-
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-Cc: stable@vger.kernel.org
-Fixes: d484018 ("mtd: mxc_nand: set NFC registers after reset")
----
-changes in v3
-   - add a Fixes tag pointing to the commit that introduced the
-     preset() operation
-
-changes in v2
-   - fix the commit message
-   - use '/ 2' instead of shift operator for division
-
- drivers/mtd/nand/raw/mxc_nand.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 45786e7..26cef21 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -48,7 +48,7 @@
- #define NFC_V1_V2_CONFIG		(host->regs + 0x0a)
- #define NFC_V1_V2_ECC_STATUS_RESULT	(host->regs + 0x0c)
- #define NFC_V1_V2_RSLTMAIN_AREA		(host->regs + 0x0e)
--#define NFC_V1_V2_RSLTSPARE_AREA	(host->regs + 0x10)
-+#define NFC_V21_RSLTSPARE_AREA		(host->regs + 0x10)
- #define NFC_V1_V2_WRPROT		(host->regs + 0x12)
- #define NFC_V1_UNLOCKSTART_BLKADDR	(host->regs + 0x14)
- #define NFC_V1_UNLOCKEND_BLKADDR	(host->regs + 0x16)
-@@ -1274,6 +1274,9 @@ static void preset_v2(struct mtd_info *mtd)
- 	writew(config1, NFC_V1_V2_CONFIG1);
- 	/* preset operation */
- 
-+	/* spare area size in 16-bit half-words */
-+	writew(mtd->oobsize / 2, NFC_V21_RSLTSPARE_AREA);
-+
- 	/* Unlock the internal RAM Buffer */
- 	writew(0x2, NFC_V1_V2_CONFIG);
- 
--- 
-2.1.4
+On 19/06/18 01:15, Miquel Raynal wrote:=0A=
+> Hi Chris,=0A=
+> =0A=
+> On Mon, 18 Jun 2018 16:52:53 +1200, Chris Packham=0A=
+> <chris.packham@alliedtelesis.co.nz> wrote:=0A=
+> =0A=
+>> Hi,=0A=
+>>=0A=
+>> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chip=
+=0A=
+>> to one of our boards which uses the Marvell NFCv2 controller.=0A=
+>>=0A=
+>> This particular chip is a bit odd in that the datasheet states support=
+=0A=
+>> for ONFI 1.0 but the revision number field is 00 00. It also is marked=
+=0A=
+>> ABAFA but reports internally as ABAGA. Finally it has internal 8-bit ECC=
+=0A=
+>> which cannot be disabled.=0A=
+> =0A=
+> Boris and I agree that in this case, the chip should not be probed if=0A=
+> ecc->type !=3D ON_DIE (and eventually NONE).=0A=
+> =0A=
+> This should be handled in the Micron driver.=0A=
+> =0A=
+> Also, what is the returned value of micron_supports_on_die_ecc() (with=0A=
+> patch 1/2)?=0A=
+=0A=
+micron_supports_on_die_ecc() returns MICRON_ON_DIE_UNSUPPORTED. =0A=
+Technically this chip should be MICRON_ON_DIE_MANDATORY since it can't =0A=
+be disabled but that wouldn't be much help since that would still result =
+=0A=
+in -EINVAL. I'll dig into micron_supports_on_die_ecc() and see if I can =0A=
+find something in the datasheet to use.=0A=
+=0A=
+> =0A=
+> Regards,=0A=
+> Miqu=E8l=0A=
+> =0A=
+=0A=
