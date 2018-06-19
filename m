@@ -1,16 +1,27 @@
-Received: from mout.kundenserver.de ([217.72.192.73])
+Received: from mail-sn1nam02on062e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe44::62e]
+ helo=NAM02-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVJ2m-00013a-Qp
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 15:59:47 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] jffs2: use unsigned 32-bit timstamps consistently
-Date: Tue, 19 Jun 2018 17:59:04 +0200
-Message-Id: <20180619155925.4107498-2-arnd@arndb.de>
-In-Reply-To: <20180619155925.4107498-1-arnd@arndb.de>
-References: <20180619155925.4107498-1-arnd@arndb.de>
+ id 1fVKLt-0006pS-T8
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 17:23:35 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: Avoid point less
+ unlocking/locking
+Date: Tue, 19 Jun 2018 17:23:20 +0000
+Message-ID: <816dab421b9553e0884db976c4dd587267250dc1.camel@infinera.com>
+References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
+ <20180605140710.8624-2-joakim.tjernlund@infinera.com>
+ <20180605171443.29365913@bbrezillon>
+ <6b6a8a0d50c00eb2067b019b893a2239e4c4c135.camel@infinera.com>
+ <ddda35a7de31c272a8006b4f1ccfcc07730faf70.camel@infinera.com>
+In-Reply-To: <ddda35a7de31c272a8006b4f1ccfcc07730faf70.camel@infinera.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0570C248BC7C7C42B949E687917AAE05@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most users of jffs2 are 32-bit systems that traditionally only support
-timestamps using a 32-bit signed time_t, in the range from years 1902 to
-2038. On 64-bit systems, jffs2 however interpreted the same timestamps
-as unsigned values, reading back negative times (before 1970) as times
-between 2038 and 2106.
-
-Now that Linux supports 64-bit inode timestamps even on 32-bit systems,
-let's use the second interpretation everywhere to allow jffs2 to be
-used on 32-bit systems beyond 2038 without a fundamental change to the
-inode format.
-
-This has a slight risk of regressions, when existing files with timestamps
-before 1970 are present in file system images and are now interpreted
-as future time stamps. I considered moving the wraparound point a bit,
-e.g. to 1960, in order to deal with timestamps that ended up on Dec 31,
-1969 due to incorrect timezone handling. However, this would complicate
-the implementation unnecessarily, so I went with the simplest possible
-method of extending the timestamps.
-
-Writing files with timestamps before 1970 or after 2106 now results
-in those times being clamped in the file system.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/jffs2/os-linux.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index acbe1f722f2d..a2dbbb3f4c74 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -31,13 +31,13 @@ struct kvec;
- #define JFFS2_F_I_GID(f) (i_gid_read(OFNI_EDONI_2SFFJ(f)))
- #define JFFS2_F_I_RDEV(f) (OFNI_EDONI_2SFFJ(f)->i_rdev)
- 
--#define ITIME(sec) ((struct timespec64){(int32_t)sec, 0})
--#define JFFS2_NOW() (ktime_get_real_seconds())
--#define I_SEC(tv) ((tv).tv_sec)
--#define JFFS2_F_I_CTIME(f) (OFNI_EDONI_2SFFJ(f)->i_ctime.tv_sec)
--#define JFFS2_F_I_MTIME(f) (OFNI_EDONI_2SFFJ(f)->i_mtime.tv_sec)
--#define JFFS2_F_I_ATIME(f) (OFNI_EDONI_2SFFJ(f)->i_atime.tv_sec)
--
-+#define JFFS2_CLAMP_TIME(t) ((uint32_t)clamp_t(time64_t, (t), 0, U32_MAX))
-+#define ITIME(sec) ((struct timespec64){sec, 0})
-+#define JFFS2_NOW() JFFS2_CLAMP_TIME(ktime_get_real_seconds())
-+#define I_SEC(tv) JFFS2_CLAMP_TIME((tv).tv_sec)
-+#define JFFS2_F_I_CTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_ctime)
-+#define JFFS2_F_I_MTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_mtime)
-+#define JFFS2_F_I_ATIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_atime)
- #define sleep_on_spinunlock(wq, s)				\
- 	do {							\
- 		DECLARE_WAITQUEUE(__wait, current);		\
--- 
-2.9.0
+T24gV2VkLCAyMDE4LTA2LTA2IGF0IDEyOjE1ICswMjAwLCBKb2FraW0gVGplcm5sdW5kIHdyb3Rl
+Og0KPiBPbiBUdWUsIDIwMTgtMDYtMDUgYXQgMTg6NTcgKzAyMDAsIEpvYWtpbSBUamVybmx1bmQg
+d3JvdGU6DQo+ID4gT24gVHVlLCAyMDE4LTA2LTA1IGF0IDE3OjE0ICswMjAwLCBCb3JpcyBCcmV6
+aWxsb24gd3JvdGU6DQo+ID4gPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBv
+dXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0
+dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNv
+bnRlbnQgaXMgc2FmZS4NCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiBPbiBUdWUsICA1IEp1biAyMDE4
+IDE2OjA3OjEwICswMjAwDQo+ID4gPiBKb2FraW0gVGplcm5sdW5kIDxqb2FraW0udGplcm5sdW5k
+QGluZmluZXJhLmNvbT4gd3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gY2ZpX3BwYl91bmxvY2soKSB3
+YWxrcyBhbGwgZmxhc2ggY2hpcHMgd2hlbiB1bmxvY2tpbmcgc2VjdG9ycy4NCj4gPiA+ID4gVGhp
+cyBpcyBhIHdhc3RlIHdoZW4gY3Jvc3NpbmcgY2hpcCBib3VuZGFyaXMgdW5hZmZlY3RlZA0KPiA+
+ID4gDQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4gYm91bmRh
+cmllcy4NCj4gPiA+IA0KPiA+ID4gPiBieSB0aGUgdW5sb2NrIG9wZXJhdGlvbi4NCj4gPiA+IA0K
+PiA+ID4gQUZBSUNUIHRoZXJlIGFyZSAyIHVucmVsYXRlZCBjaGFuZ2VzIGluIHRoaXMgY29tbWl0
+Og0KPiA+ID4gMS8gRml4IHRoZSBib3VuZGFyeSBjaGVjayB3aGljaCBpcyBicm9rZW4gaWYgdGhl
+IHVubG9jayBvcGVyYXRpb24NCj4gPiA+ICAgIGNyb3NzZXMgYSBjaGlwIGJvdW5kYXJ5IChhZHIg
+aXMgcmVzZXQgdG8gMCB3aGVuIHRoYXQgaGFwcGVucykuDQo+ID4gDQo+ID4gbm90IGJyb2tlbiwg
+dGhlIGRyaXZlciB3aWxsIGp1c3QgcmVsb2NrIHRoZSBzYW1lIHNlY3RvciBuZWVkbGVzc2x5Lg0K
+PiA+IEkgZGlkIG5vdCBub3RpY2UgYW55dGhpbmcgYnJlYWtpbmcgd2hlbiB0aGF0IGhhcHBlbmVk
+Lg0KPiA+IFRoZXNlIHR3byBjaGFuZ2VzIG9wdGltaXplcyB0aGUgdW5sb2NrIG9wZXJhdGlvbi4N
+Cj4gPiBTdGlsbCBuZWVkIHR3byBjb21taXRzPw0KPiANCj4gSSBqdXN0IGFzc3VtZWQgeW91IGRp
+ZCBhbmQgcmVzZXQgYm90aCBwYXRjaGVzIHNwbGl0IHVwIGludG8gNC4NCj4gDQo+ICBKb2NrZQ0K
+DQpEaWQgdGhpcyBnZXQgbG9zdD8gSXQgaXMgYSBzb21ld2hhdCBuYXN0eSBidWcgd2hlbiBpdCBo
+aXRzLCB5b3UgZ2V0KGFuZCB0aGVuIGtlcm5lbCBmcmVlemVzKToNCg0KWyAgIDM4LjQ2MjYwN10g
+VW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgZm9yIGRhdGEgYXQgYWRkcmVz
+cyAweGQ5MWEwMDAwDQpbICAgMzguNDcwMDgyXSBGYXVsdGluZyBpbnN0cnVjdGlvbiBhZGRyZXNz
+OiAweGMwMWI2ZmVjDQpbICAgMzguNDc1MDQwXSBPb3BzOiBLZXJuZWwgYWNjZXNzIG9mIGJhZCBh
+cmVhLCBzaWc6IDExIFsjMV0NClsgICAzOC40ODA0MThdIFRNQ1VUVQ0KWyAgIDM4LjQ4MjQyNl0g
+TW9kdWxlcyBsaW5rZWQgaW46DQpbICAgMzguNDg1NDkzXSBDUFU6IDAgUElEOiA0MzcgQ29tbTog
+Zndfc2V0ZW52IE5vdCB0YWludGVkIDQuMS40MysgIzM4DQpbICAgMzguNDkxNzQ4XSB0YXNrOiBj
+ZWMwZTA3MCB0aTogY2Y4YzgwMDAgdGFzay50aTogY2Y4YzgwMDANClsgICAzOC40OTcxMzNdIE5J
+UDogYzAxYjZmZWMgTFI6IGMwMWIwYjA0IENUUjogYzAxYjZmZTQNClsgICAzOC41MDIwODddIFJF
+R1M6IGNmOGM5YzIwIFRSQVA6IDAzMDAgICBOb3QgdGFpbnRlZCAgKDQuMS40MyspDQpbICAgMzgu
+NTA3ODk5XSBNU1I6IDAwMDA5MDMyIDxFRSxNRSxJUixEUixSST4gIENSOiAyMjAyMjQyOCAgWEVS
+OiAyMDAwMDAwMA0KWyAgIDM4LjUxNDUzOV0gREFSOiBkOTFhMDAwMCBEU0lTUjogMjIwMDAwMDAg
+DQpHUFIwMDogYzAxYjA3ZWMgY2Y4YzljZDAgY2VjMGUwNzAgY2Y4OWEyMWMgY2Y4YzljZDggMDgw
+YTAwMDAgMDAwMDAwMGYgMDAwMDAwMDEgDQpHUFIwODogYzAxYjZmZTQgZDExMDAwMDAgMDAwMDAw
+YTAgMDQwMDAwMDAgMjIwMjI0MjIgMTAwMWI3MDQgMDAwMDAzZmYgMDAwMDAwMDIgDQpHUFIxNjog
+MDAwMDAwMDAgMDQwMDAwMDAgMDAwMDAwMDIgY2VjNDMwOTAgMDAwMDAwMDAgMDAwMjAwMDAgMDAw
+MDAwMDAgMDAwMjAwMDAgDQpHUFIyNDogMDAwMDAwMDAgY2Y4YzljZDggY2Y5M2YyODggMDAwMDAw
+MDEgY2Y5M2YyMDAgMDQwYTAwMDAgY2Y4OWEyMWMgY2Y5M2YyYTQgDQpbICAgMzguNTQ2OTAzXSBO
+SVAgW2MwMWI2ZmVjXSBzaW1wbGVfbWFwX3dyaXRlKzB4OC8weDE0DQpbICAgMzguNTUxODgyXSBM
+UiBbYzAxYjBiMDRdIGRvX3BwYl94eGxvY2srMHgzNjAvMHg0NjgNClsgICAzOC41NTY3NDNdIENh
+bGwgVHJhY2U6DQpbICAgMzguNTU5MjAyXSBbY2Y4YzljZDBdIFtjMDFiMDdlY10gZG9fcHBiX3h4
+bG9jaysweDQ4LzB4NDY4ICh1bnJlbGlhYmxlKQ0KWyAgIDM4LjU2NTgxN10gW2NmOGM5ZDAwXSBb
+YzAxYjBlNzRdIGNmaV9wcGJfdW5sb2NrKzB4MjY4LzB4MzYwDQpbICAgMzguNTcxNDc0XSBbY2Y4
+YzlkOTBdIFtjMDFhODdjNF0gbXRkY2hhcl9pb2N0bCsweDc1MC8weDExMmMNClsgICAzOC41Nzcx
+MzFdIFtjZjhjOWViMF0gW2MwMWE5MWRjXSBtdGRjaGFyX3VubG9ja2VkX2lvY3RsKzB4M2MvMHg2
+MA0KWyAgIDM4LjU4MzMwNF0gW2NmOGM5ZWQwXSBbYzAwYzM5NDhdIGRvX3Zmc19pb2N0bCsweDNh
+NC8weDY1OA0KWyAgIDM4LjU4ODc4NF0gW2NmOGM5ZjIwXSBbYzAwYzNjM2NdIFN5U19pb2N0bCsw
+eDQwLzB4NzQNClsgICAzOC41OTM4NDddIFtjZjhjOWY0MF0gW2MwMDBlNTY0XSByZXRfZnJvbV9z
+eXNjYWxsKzB4MC8weDM4DQpbICAgMzguNTk5NDE1XSAtLS0gaW50ZXJydXB0OiBjMDEgYXQgMHhm
+ZjUwMmY4DQpbICAgMzguNTk5NDE1XSAgICAgTFIgPSAweGZmZWNhNzgNClsgICAzOC42MDY2MTZd
+IEluc3RydWN0aW9uIGR1bXA6DQpbICAgMzguNjA5NTc5XSA4MTNjMDAwNCA3ZmUzZmI3OCA5MTNm
+MDAwYyAzOTIwMDAwMCA5MTNmMDAwOCA0YmZmZmYyYyA4MTI0MDAwYyA3ZDI5MmEyZSANClsgICAz
+OC42MTczNDNdIDkxMjMwMDAwIDRlODAwMDIwIGExNDQwMDAyIDgxMjMwMDBjIDw3ZDQ5MmIyZT4g
+N2MwMDA0YWMgNGU4MDAwMjAgODEyMzAwMTggDQpbICAgMzguNjI1Mjg4XSAtLS1bIGVuZCB0cmFj
+ZSBkNWM0NjZiM2JkNTY0MTQwIF0tLS0=
