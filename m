@@ -1,17 +1,28 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVFQU-0006rb-9w
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 12:08:05 +0000
-From: Richard Weinberger <richard@nod.at>
-To: devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- dinguyen@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
- marek.vasut@gmail.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- yamada.masahiro@socionext.com, Richard Weinberger <richard@nod.at>
-Subject: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-Date: Tue, 19 Jun 2018 14:07:19 +0200
-Message-Id: <20180619120719.26921-1-richard@nod.at>
+Date: Tue, 19 Jun 2018 16:15:06 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Piotr Bugalski <bugalski.piotr@gmail.com>
+Cc: linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: Re: [RFC PATCH 1/2] spi: Add QuadSPI driver for Atmel SAMA5D2
+Message-ID: <20180619151506.GG11230@sirena.org.uk>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180618162124.21749-2-bugalski.piotr@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="O8XZ+2Hy8Kj8wLPZ"
+Content-Disposition: inline
+In-Reply-To: <20180618162124.21749-2-bugalski.piotr@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +32,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The denali NAND flash controller needs at least two clocks to operate,
-nand_clk and nand_x_clk.
-Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
-setup_data_interface()") nand_x_clk is used to derive timing settings.
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
-Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
-is not present on this SoC.
-But my SoCFPGA knowledge is very limited.
+--O8XZ+2Hy8Kj8wLPZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-//richard
----
- arch/arm/boot/dts/socfpga.dtsi | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Mon, Jun 18, 2018 at 06:21:23PM +0200, Piotr Bugalski wrote:
 
-diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-index 486d4e7433ed..562f7b375bbd 100644
---- a/arch/arm/boot/dts/socfpga.dtsi
-+++ b/arch/arm/boot/dts/socfpga.dtsi
-@@ -754,7 +754,8 @@
- 			reg-names = "nand_data", "denali_reg";
- 			interrupts = <0x0 0x90 0x4>;
- 			dma-mask = <0xffffffff>;
--			clocks = <&nand_clk>;
-+			clocks = <&nand_clk>, <&nand_x_clk>;
-+			clock-names = "nand", "nand_x";
- 			status = "disabled";
- 		};
- 
--- 
-2.17.1
+> +static int atmel_qspi_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> +{
+> +	return 0;
+> +}
+
+If this can be empty should we adjust the callers to allow it to just be
+omitted?
+
+> +static int atmel_qspi_remove(struct platform_device *pdev)
+> +{
+> +	struct spi_controller *ctrl = platform_get_drvdata(pdev);
+> +	struct atmel_qspi *aq = spi_controller_get_devdata(ctrl);
+> +
+> +	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIDIS);
+> +	clk_disable_unprepare(aq->clk);
+> +
+> +	spi_unregister_controller(ctrl);
+> +
+> +	return 0;
+> +}
+
+You should unregister the controller before disabling the hardware,
+otherwise something could come in and try to start an operation on the
+controller (or already be running one) while the hardware is disabled
+which might blow up.
+
+--O8XZ+2Hy8Kj8wLPZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlspHfkACgkQJNaLcl1U
+h9Cymgf+MbrO5iP90HOZ4RRfuC7+k40zc4d09EiG7izyzvJ2/tYUEuSN13tnVCnS
+kLf/EzOTei8n+cWU4jsetP27cVnhFSwAWAlnFQFYtd7yUV/e9bkoLIhuNTPs8RA7
+pDtsc8bwrYqfxq0G/KoH2kUqa60fFnCRxxRkcTkaldu7oKe8m4i8pEdYVp52CSkl
+1KHxfemgHnx40BFB9Aw2jS1UR5S812PVth6m9XV+qwphuUvlSkquORFe0uv0rNum
+4AOK+w4QXvcZp/B9W1nEcwcsccDBJ082oMsI/kUj1rbCy7DlE8gI2OHufN9AlM/R
+UXvlT50vdrssQaiicBHXd8Riqf18CA==
+=2QLs
+-----END PGP SIGNATURE-----
+
+--O8XZ+2Hy8Kj8wLPZ--
