@@ -1,23 +1,22 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV4cU-0006Il-GS
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 00:35:41 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 0/2] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
-Date: Tue, 19 Jun 2018 00:35:00 +0000
-Message-ID: <f16525ea6b534123bda64b09e818ce6d@svr-chch-ex1.atlnz.lc>
-References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
- <20180618151450.3e740270@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] mtd: atmel-quadspi: add suspend/resume hooks
+To: Claudiu Beznea <Claudiu.Beznea@microchip.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, richard@nod.at,
+ nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+References: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
+ <20180618114920.654647c0@bbrezillon>
+ <8474a744-5552-932f-7ba8-85b7d95368ea@gmail.com>
+ <0be344a2-9878-2b92-9436-bc2f4d4fd6e0@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <5b66cafe-782e-43a9-c221-cf0a1528f382@gmail.com>
+Date: Tue, 19 Jun 2018 03:28:19 +0200
 MIME-Version: 1.0
+In-Reply-To: <0be344a2-9878-2b92-9436-bc2f4d4fd6e0@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19/06/18 01:15, Miquel Raynal wrote:=0A=
-> Hi Chris,=0A=
-> =0A=
-> On Mon, 18 Jun 2018 16:52:53 +1200, Chris Packham=0A=
-> <chris.packham@alliedtelesis.co.nz> wrote:=0A=
-> =0A=
->> Hi,=0A=
->>=0A=
->> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chip=
-=0A=
->> to one of our boards which uses the Marvell NFCv2 controller.=0A=
->>=0A=
->> This particular chip is a bit odd in that the datasheet states support=
-=0A=
->> for ONFI 1.0 but the revision number field is 00 00. It also is marked=
-=0A=
->> ABAFA but reports internally as ABAGA. Finally it has internal 8-bit ECC=
-=0A=
->> which cannot be disabled.=0A=
-> =0A=
-> Boris and I agree that in this case, the chip should not be probed if=0A=
-> ecc->type !=3D ON_DIE (and eventually NONE).=0A=
-> =0A=
-> This should be handled in the Micron driver.=0A=
-> =0A=
-> Also, what is the returned value of micron_supports_on_die_ecc() (with=0A=
-> patch 1/2)?=0A=
-=0A=
-micron_supports_on_die_ecc() returns MICRON_ON_DIE_UNSUPPORTED. =0A=
-Technically this chip should be MICRON_ON_DIE_MANDATORY since it can't =0A=
-be disabled but that wouldn't be much help since that would still result =
-=0A=
-in -EINVAL. I'll dig into micron_supports_on_die_ecc() and see if I can =0A=
-find something in the datasheet to use.=0A=
-=0A=
-> =0A=
-> Regards,=0A=
-> Miqu=E8l=0A=
-> =0A=
-=0A=
+On 06/18/2018 02:00 PM, Claudiu Beznea wrote:
+> 
+> 
+> On 18.06.2018 12:53, Marek Vasut wrote:
+>> On 06/18/2018 11:49 AM, Boris Brezillon wrote:
+>>> Hi Claudiu,
+>>>
+>>> The subject prefix should be "mtd: spi-nor: atmel-quadspi: ". No need
+>>> to send a new version just for that, I'll fix it when applying the
+>>> patch.
+>>>
+> Hi Boris,
+> 
+> Thank you!
+> 
+>>> Looks good otherwise. Marek, any objection? If not, can you add your
+>>> Acked-by?
+>>
+>> Will this work if you have ie. ubifs mounted on that QSPI NOR and you
+>> suspect and resume during IO ? I think it would, but just curious if
+>> there could be some problem.
+> 
+> Hi Marek,
+> 
+> I tested only with read/writes while suspending, simple scripts, but not
+> having ubifs mounted on QSPI NOR. I will double check also with ubifs
+> mounted on QSPI NOR and come back with the results.
+
+Thanks. I think it's gonna be OK, but let's just be sure.
+Make sure to disable 4K sector support when fiddling with UBI/UBIFS on
+QSPI NOR.
+
+-- 
+Best regards,
+Marek Vasut
