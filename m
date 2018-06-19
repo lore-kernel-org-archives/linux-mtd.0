@@ -1,22 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV9r3-0001Ro-3H
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 06:11:03 +0000
-Date: Tue, 19 Jun 2018 08:09:59 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ id 1fVAVn-0001Ik-F8
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 06:53:09 +0000
+Date: Tue, 19 Jun 2018 08:52:44 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>, dwmw2@infradead.org,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
  Vasut <marek.vasut@gmail.com>
-Subject: Re: [RFC PATCH v2 6/6] mtd: rawnand: micron: support 8/512 on-die ECC
-Message-ID: <20180619080959.3e0416f8@bbrezillon>
-In-Reply-To: <20180619053125.16792-7-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [RFC PATCH v2 5/6] mtd: rawnand: micron: add
+ ONFI_FEATURE_ON_DIE_ECC to supported features
+Message-ID: <20180619085244.77790406@xps13>
+In-Reply-To: <20180619074056.420d5560@bbrezillon>
 References: <20180619053125.16792-1-chris.packham@alliedtelesis.co.nz>
- <20180619053125.16792-7-chris.packham@alliedtelesis.co.nz>
+ <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
+ <20180619074056.420d5560@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Jun 2018 17:31:25 +1200
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+Hi Boris, Chris,
 
-> Micron MT29F1G08ABAFAWP-ITE:F supports an on-die ECC with 8 bits
-> per 512 bytes. Add support for this combination.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
-> This seems deceptively easy so I've probably missed something. I have
-> tested with running some of the ubifs stress tests from mtd-utils and
-> things seem OK.
-> 
-> Changes in v2:
-> - New
-> 
->  drivers/mtd/nand/raw/nand_micron.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> index d1e8f57544a0..2164dd112f5c 100644
-> --- a/drivers/mtd/nand/raw/nand_micron.c
-> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> @@ -240,9 +240,9 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
->  
->  	/*
->  	 * Some Micron NANDs have an on-die ECC of 4/512, some other
-> -	 * 8/512. We only support the former.
-> +	 * 8/512.
->  	 */
-> -	if (chip->ecc_strength_ds != 4)
-> +	if (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
->  		return MICRON_ON_DIE_UNSUPPORTED;
+On Tue, 19 Jun 2018 07:40:56 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-I remember that chips with 8bits/512bytes on-die ECC had an extra
-command to query a more precise number of bitflips (see this
-discussion [1]). It's probably worth implementing that, since those
-chips are more likely to have bitflips than the 4bit/512 versions, and
-you don't want to move the data around as soon as you have one bitflip. 
+> On Tue, 19 Jun 2018 17:31:24 +1200
+> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+>=20
+> > Add ONFI_FEATURE_ON_DIE_ECC to the set/get features list for Micron
+> > NAND flash.
+> > =20
+>=20
+> Fixes: 789157e41a06 ("mtd: rawnand: allow vendors to declare (un)supporte=
+d features")
 
->  
->  	return MICRON_ON_DIE_SUPPORTED;
-> @@ -274,9 +274,9 @@ static int micron_nand_init(struct nand_chip *chip)
->  			return -EINVAL;
->  		}
->  
-> -		chip->ecc.bytes = 8;
-> +		chip->ecc.bytes = chip->ecc_strength_ds * 2;
->  		chip->ecc.size = 512;
-> -		chip->ecc.strength = 4;
-> +		chip->ecc.strength = chip->ecc_strength_ds;
->  		chip->ecc.algo = NAND_ECC_BCH;
->  		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
->  		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+Sorry for breaking it in my previous series.
 
-[1]http://lists.infradead.org/pipermail/linux-mtd/2017-March/072974.html
+> Cc: <stable@vger.kernel.org>
+>=20
+> No need to send a new version, I'll add that when queuing the patch.
+>=20
+> Miquel, if you're okay, I'm gonna take this patch in the mtd/fixes branch
+> and let you deal with other patches in this series.
+
+Yes please, take this one.
+
+* Chris, I'll take patches 1, 2, 3 with Boris comments.
+* Patch 4 I think I'll just drop it as nobody can test it (and it's a
+  oneliner). I prefer people requesting a feature than complaining
+  about a bug :)
+* Boris will take patch 5 in the mtd/fixes branch.
+* I'll let you write a v3 for patch 6 only.
+
+Thanks,
+Miqu=C3=A8l
