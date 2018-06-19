@@ -1,27 +1,20 @@
-Received: from mail-sn1nam02on062e.outbound.protection.outlook.com
- ([2a01:111:f400:fe44::62e]
- helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mga03.intel.com ([134.134.136.65])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVKLt-0006pS-T8
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 17:23:35 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/2] mtd: cfi_cmdset_0002: Avoid point less
- unlocking/locking
-Date: Tue, 19 Jun 2018 17:23:20 +0000
-Message-ID: <816dab421b9553e0884db976c4dd587267250dc1.camel@infinera.com>
-References: <20180605140710.8624-1-joakim.tjernlund@infinera.com>
- <20180605140710.8624-2-joakim.tjernlund@infinera.com>
- <20180605171443.29365913@bbrezillon>
- <6b6a8a0d50c00eb2067b019b893a2239e4c4c135.camel@infinera.com>
- <ddda35a7de31c272a8006b4f1ccfcc07730faf70.camel@infinera.com>
-In-Reply-To: <ddda35a7de31c272a8006b4f1ccfcc07730faf70.camel@infinera.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0570C248BC7C7C42B949E687917AAE05@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ id 1fVNtb-0003Di-LS
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 21:10:37 +0000
+Date: Wed, 20 Jun 2018 05:09:26 +0800
+From: kbuild test robot <lkp@intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: kbuild-all@01.org, David Woodhouse <dwmw2@infradead.org>,
+ Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] jffs2: use unsigned 32-bit timstamps consistently
+Message-ID: <201806200530.EiSnqUgV%fengguang.wu@intel.com>
+References: <20180619155925.4107498-2-arnd@arndb.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180619155925.4107498-2-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +24,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCAyMDE4LTA2LTA2IGF0IDEyOjE1ICswMjAwLCBKb2FraW0gVGplcm5sdW5kIHdyb3Rl
-Og0KPiBPbiBUdWUsIDIwMTgtMDYtMDUgYXQgMTg6NTcgKzAyMDAsIEpvYWtpbSBUamVybmx1bmQg
-d3JvdGU6DQo+ID4gT24gVHVlLCAyMDE4LTA2LTA1IGF0IDE3OjE0ICswMjAwLCBCb3JpcyBCcmV6
-aWxsb24gd3JvdGU6DQo+ID4gPiBDQVVUSU9OOiBUaGlzIGVtYWlsIG9yaWdpbmF0ZWQgZnJvbSBv
-dXRzaWRlIG9mIHRoZSBvcmdhbml6YXRpb24uIERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0
-dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVjb2duaXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNv
-bnRlbnQgaXMgc2FmZS4NCj4gPiA+IA0KPiA+ID4gDQo+ID4gPiBPbiBUdWUsICA1IEp1biAyMDE4
-IDE2OjA3OjEwICswMjAwDQo+ID4gPiBKb2FraW0gVGplcm5sdW5kIDxqb2FraW0udGplcm5sdW5k
-QGluZmluZXJhLmNvbT4gd3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gY2ZpX3BwYl91bmxvY2soKSB3
-YWxrcyBhbGwgZmxhc2ggY2hpcHMgd2hlbiB1bmxvY2tpbmcgc2VjdG9ycy4NCj4gPiA+ID4gVGhp
-cyBpcyBhIHdhc3RlIHdoZW4gY3Jvc3NpbmcgY2hpcCBib3VuZGFyaXMgdW5hZmZlY3RlZA0KPiA+
-ID4gDQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF4gYm91bmRh
-cmllcy4NCj4gPiA+IA0KPiA+ID4gPiBieSB0aGUgdW5sb2NrIG9wZXJhdGlvbi4NCj4gPiA+IA0K
-PiA+ID4gQUZBSUNUIHRoZXJlIGFyZSAyIHVucmVsYXRlZCBjaGFuZ2VzIGluIHRoaXMgY29tbWl0
-Og0KPiA+ID4gMS8gRml4IHRoZSBib3VuZGFyeSBjaGVjayB3aGljaCBpcyBicm9rZW4gaWYgdGhl
-IHVubG9jayBvcGVyYXRpb24NCj4gPiA+ICAgIGNyb3NzZXMgYSBjaGlwIGJvdW5kYXJ5IChhZHIg
-aXMgcmVzZXQgdG8gMCB3aGVuIHRoYXQgaGFwcGVucykuDQo+ID4gDQo+ID4gbm90IGJyb2tlbiwg
-dGhlIGRyaXZlciB3aWxsIGp1c3QgcmVsb2NrIHRoZSBzYW1lIHNlY3RvciBuZWVkbGVzc2x5Lg0K
-PiA+IEkgZGlkIG5vdCBub3RpY2UgYW55dGhpbmcgYnJlYWtpbmcgd2hlbiB0aGF0IGhhcHBlbmVk
-Lg0KPiA+IFRoZXNlIHR3byBjaGFuZ2VzIG9wdGltaXplcyB0aGUgdW5sb2NrIG9wZXJhdGlvbi4N
-Cj4gPiBTdGlsbCBuZWVkIHR3byBjb21taXRzPw0KPiANCj4gSSBqdXN0IGFzc3VtZWQgeW91IGRp
-ZCBhbmQgcmVzZXQgYm90aCBwYXRjaGVzIHNwbGl0IHVwIGludG8gNC4NCj4gDQo+ICBKb2NrZQ0K
-DQpEaWQgdGhpcyBnZXQgbG9zdD8gSXQgaXMgYSBzb21ld2hhdCBuYXN0eSBidWcgd2hlbiBpdCBo
-aXRzLCB5b3UgZ2V0KGFuZCB0aGVuIGtlcm5lbCBmcmVlemVzKToNCg0KWyAgIDM4LjQ2MjYwN10g
-VW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgZm9yIGRhdGEgYXQgYWRkcmVz
-cyAweGQ5MWEwMDAwDQpbICAgMzguNDcwMDgyXSBGYXVsdGluZyBpbnN0cnVjdGlvbiBhZGRyZXNz
-OiAweGMwMWI2ZmVjDQpbICAgMzguNDc1MDQwXSBPb3BzOiBLZXJuZWwgYWNjZXNzIG9mIGJhZCBh
-cmVhLCBzaWc6IDExIFsjMV0NClsgICAzOC40ODA0MThdIFRNQ1VUVQ0KWyAgIDM4LjQ4MjQyNl0g
-TW9kdWxlcyBsaW5rZWQgaW46DQpbICAgMzguNDg1NDkzXSBDUFU6IDAgUElEOiA0MzcgQ29tbTog
-Zndfc2V0ZW52IE5vdCB0YWludGVkIDQuMS40MysgIzM4DQpbICAgMzguNDkxNzQ4XSB0YXNrOiBj
-ZWMwZTA3MCB0aTogY2Y4YzgwMDAgdGFzay50aTogY2Y4YzgwMDANClsgICAzOC40OTcxMzNdIE5J
-UDogYzAxYjZmZWMgTFI6IGMwMWIwYjA0IENUUjogYzAxYjZmZTQNClsgICAzOC41MDIwODddIFJF
-R1M6IGNmOGM5YzIwIFRSQVA6IDAzMDAgICBOb3QgdGFpbnRlZCAgKDQuMS40MyspDQpbICAgMzgu
-NTA3ODk5XSBNU1I6IDAwMDA5MDMyIDxFRSxNRSxJUixEUixSST4gIENSOiAyMjAyMjQyOCAgWEVS
-OiAyMDAwMDAwMA0KWyAgIDM4LjUxNDUzOV0gREFSOiBkOTFhMDAwMCBEU0lTUjogMjIwMDAwMDAg
-DQpHUFIwMDogYzAxYjA3ZWMgY2Y4YzljZDAgY2VjMGUwNzAgY2Y4OWEyMWMgY2Y4YzljZDggMDgw
-YTAwMDAgMDAwMDAwMGYgMDAwMDAwMDEgDQpHUFIwODogYzAxYjZmZTQgZDExMDAwMDAgMDAwMDAw
-YTAgMDQwMDAwMDAgMjIwMjI0MjIgMTAwMWI3MDQgMDAwMDAzZmYgMDAwMDAwMDIgDQpHUFIxNjog
-MDAwMDAwMDAgMDQwMDAwMDAgMDAwMDAwMDIgY2VjNDMwOTAgMDAwMDAwMDAgMDAwMjAwMDAgMDAw
-MDAwMDAgMDAwMjAwMDAgDQpHUFIyNDogMDAwMDAwMDAgY2Y4YzljZDggY2Y5M2YyODggMDAwMDAw
-MDEgY2Y5M2YyMDAgMDQwYTAwMDAgY2Y4OWEyMWMgY2Y5M2YyYTQgDQpbICAgMzguNTQ2OTAzXSBO
-SVAgW2MwMWI2ZmVjXSBzaW1wbGVfbWFwX3dyaXRlKzB4OC8weDE0DQpbICAgMzguNTUxODgyXSBM
-UiBbYzAxYjBiMDRdIGRvX3BwYl94eGxvY2srMHgzNjAvMHg0NjgNClsgICAzOC41NTY3NDNdIENh
-bGwgVHJhY2U6DQpbICAgMzguNTU5MjAyXSBbY2Y4YzljZDBdIFtjMDFiMDdlY10gZG9fcHBiX3h4
-bG9jaysweDQ4LzB4NDY4ICh1bnJlbGlhYmxlKQ0KWyAgIDM4LjU2NTgxN10gW2NmOGM5ZDAwXSBb
-YzAxYjBlNzRdIGNmaV9wcGJfdW5sb2NrKzB4MjY4LzB4MzYwDQpbICAgMzguNTcxNDc0XSBbY2Y4
-YzlkOTBdIFtjMDFhODdjNF0gbXRkY2hhcl9pb2N0bCsweDc1MC8weDExMmMNClsgICAzOC41Nzcx
-MzFdIFtjZjhjOWViMF0gW2MwMWE5MWRjXSBtdGRjaGFyX3VubG9ja2VkX2lvY3RsKzB4M2MvMHg2
-MA0KWyAgIDM4LjU4MzMwNF0gW2NmOGM5ZWQwXSBbYzAwYzM5NDhdIGRvX3Zmc19pb2N0bCsweDNh
-NC8weDY1OA0KWyAgIDM4LjU4ODc4NF0gW2NmOGM5ZjIwXSBbYzAwYzNjM2NdIFN5U19pb2N0bCsw
-eDQwLzB4NzQNClsgICAzOC41OTM4NDddIFtjZjhjOWY0MF0gW2MwMDBlNTY0XSByZXRfZnJvbV9z
-eXNjYWxsKzB4MC8weDM4DQpbICAgMzguNTk5NDE1XSAtLS0gaW50ZXJydXB0OiBjMDEgYXQgMHhm
-ZjUwMmY4DQpbICAgMzguNTk5NDE1XSAgICAgTFIgPSAweGZmZWNhNzgNClsgICAzOC42MDY2MTZd
-IEluc3RydWN0aW9uIGR1bXA6DQpbICAgMzguNjA5NTc5XSA4MTNjMDAwNCA3ZmUzZmI3OCA5MTNm
-MDAwYyAzOTIwMDAwMCA5MTNmMDAwOCA0YmZmZmYyYyA4MTI0MDAwYyA3ZDI5MmEyZSANClsgICAz
-OC42MTczNDNdIDkxMjMwMDAwIDRlODAwMDIwIGExNDQwMDAyIDgxMjMwMDBjIDw3ZDQ5MmIyZT4g
-N2MwMDA0YWMgNGU4MDAwMjAgODEyMzAwMTggDQpbICAgMzguNjI1Mjg4XSAtLS1bIGVuZCB0cmFj
-ZSBkNWM0NjZiM2JkNTY0MTQwIF0tLS0=
+Hi Arnd,
+
+I love your patch! Perhaps something to improve:
+
+[auto build test WARNING on linus/master]
+[also build test WARNING on v4.18-rc1 next-20180619]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Arnd-Bergmann/jffs2-use-64-bit-intermediate-timestamps/20180620-015800
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+>> fs/jffs2/dir.c:263:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:230:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:403:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:546:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:591:24: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:715:22: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+   fs/jffs2/dir.c:800:15: sparse: expression using sizeof(void)
+--
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+>> fs/jffs2/fs.c:115:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:116:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:117:21: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   fs/jffs2/fs.c:476:45: sparse: expression using sizeof(void)
+   include/linux/slab.h:631:13: sparse: undefined identifier '__builtin_mul_overflow'
+   include/linux/slab.h:631:13: sparse: call with no type!
+
+vim +263 fs/jffs2/dir.c
+
+^1da177e Linus Torvalds      2005-04-16  241  
+^1da177e Linus Torvalds      2005-04-16  242  
+^1da177e Linus Torvalds      2005-04-16  243  static int jffs2_link (struct dentry *old_dentry, struct inode *dir_i, struct dentry *dentry)
+^1da177e Linus Torvalds      2005-04-16  244  {
+fc64005c Al Viro             2016-04-10  245  	struct jffs2_sb_info *c = JFFS2_SB_INFO(old_dentry->d_sb);
+2b0143b5 David Howells       2015-03-17  246  	struct jffs2_inode_info *f = JFFS2_INODE_INFO(d_inode(old_dentry));
+^1da177e Linus Torvalds      2005-04-16  247  	struct jffs2_inode_info *dir_f = JFFS2_INODE_INFO(dir_i);
+^1da177e Linus Torvalds      2005-04-16  248  	int ret;
+^1da177e Linus Torvalds      2005-04-16  249  	uint8_t type;
+3a69e0cd Artem B. Bityutskiy 2005-08-17  250  	uint32_t now;
+^1da177e Linus Torvalds      2005-04-16  251  
+^1da177e Linus Torvalds      2005-04-16  252  	/* Don't let people make hard links to bad inodes. */
+^1da177e Linus Torvalds      2005-04-16  253  	if (!f->inocache)
+^1da177e Linus Torvalds      2005-04-16  254  		return -EIO;
+^1da177e Linus Torvalds      2005-04-16  255  
+e36cb0b8 David Howells       2015-01-29  256  	if (d_is_dir(old_dentry))
+^1da177e Linus Torvalds      2005-04-16  257  		return -EPERM;
+^1da177e Linus Torvalds      2005-04-16  258  
+^1da177e Linus Torvalds      2005-04-16  259  	/* XXX: This is ugly */
+2b0143b5 David Howells       2015-03-17  260  	type = (d_inode(old_dentry)->i_mode & S_IFMT) >> 12;
+^1da177e Linus Torvalds      2005-04-16  261  	if (!type) type = DT_REG;
+^1da177e Linus Torvalds      2005-04-16  262  
+a7cab044 Arnd Bergmann       2018-06-19 @263  	now = JFFS2_NOW();
+3a69e0cd Artem B. Bityutskiy 2005-08-17  264  	ret = jffs2_do_link(c, dir_f, f->inocache->ino, type, dentry->d_name.name, dentry->d_name.len, now);
+^1da177e Linus Torvalds      2005-04-16  265  
+^1da177e Linus Torvalds      2005-04-16  266  	if (!ret) {
+ced22070 David Woodhouse     2008-04-22  267  		mutex_lock(&f->sem);
+2b0143b5 David Howells       2015-03-17  268  		set_nlink(d_inode(old_dentry), ++f->inocache->pino_nlink);
+ced22070 David Woodhouse     2008-04-22  269  		mutex_unlock(&f->sem);
+2b0143b5 David Howells       2015-03-17  270  		d_instantiate(dentry, d_inode(old_dentry));
+a7cab044 Arnd Bergmann       2018-06-19  271  		dir_i->i_mtime = dir_i->i_ctime = ITIME(now);
+2b0143b5 David Howells       2015-03-17  272  		ihold(d_inode(old_dentry));
+^1da177e Linus Torvalds      2005-04-16  273  	}
+^1da177e Linus Torvalds      2005-04-16  274  	return ret;
+^1da177e Linus Torvalds      2005-04-16  275  }
+^1da177e Linus Torvalds      2005-04-16  276  
+
+:::::: The code at line 263 was first introduced by commit
+:::::: a7cab044350466ac53107fa859f1f2cbc4d5112b jffs2: use 64-bit intermediate timestamps
+
+:::::: TO: Arnd Bergmann <arnd@arndb.de>
+:::::: CC: 0day robot <lkp@intel.com>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
