@@ -1,20 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV9OA-0002YB-DA
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 05:41:11 +0000
-Date: Tue, 19 Jun 2018 07:40:56 +0200
+ id 1fV9SA-0003xG-9q
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 05:45:19 +0000
+Date: Tue, 19 Jun 2018 07:45:06 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
- Vasut <marek.vasut@gmail.com>
-Subject: Re: [RFC PATCH v2 5/6] mtd: rawnand: micron: add
- ONFI_FEATURE_ON_DIE_ECC to supported features
-Message-ID: <20180619074056.420d5560@bbrezillon>
-In-Reply-To: <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
-References: <20180619053125.16792-1-chris.packham@alliedtelesis.co.nz>
- <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
+To: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: m25p80: Remove unneeded m25p->command field
+Message-ID: <20180619074506.3720aa85@bbrezillon>
+In-Reply-To: <20180601100325.11165-1-boris.brezillon@bootlin.com>
+References: <20180601100325.11165-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,40 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Jun 2018 17:31:24 +1200
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+On Fri,  1 Jun 2018 12:03:24 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Add ONFI_FEATURE_ON_DIE_ECC to the set/get features list for Micron
-> NAND flash.
->
+> The ->command field is no longer used, remove it.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Fixes: 789157e41a06 ("mtd: rawnand: allow vendors to declare (un)supported features")
-Cc: <stable@vger.kernel.org>
+Applied both patches to spi-nor/next.
 
-No need to send a new version, I'll add that when queuing the patch.
-
-Miquel, if you're okay, I'm gonna take this patch in the mtd/fixes branch
-and let you deal with other patches in this series.
-
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 > ---
-> Changes in v2:
-> - New
+>  drivers/mtd/devices/m25p80.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
->  drivers/mtd/nand/raw/nand_micron.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> index e582c9e61715..d1e8f57544a0 100644
-> --- a/drivers/mtd/nand/raw/nand_micron.c
-> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> @@ -66,7 +66,9 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 3dc022d3b53e..73dd74330227 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -28,11 +28,9 @@
+>  #include <linux/spi/flash.h>
+>  #include <linux/mtd/spi-nor.h>
 >  
->  	if (p->supports_set_get_features) {
->  		set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->set_feature_list);
-> +		set_bit(ONFI_FEATURE_ON_DIE_ECC, p->set_feature_list);
->  		set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->get_feature_list);
-> +		set_bit(ONFI_FEATURE_ON_DIE_ECC, p->get_feature_list);
->  	}
+> -#define	MAX_CMD_SIZE		6
+>  struct m25p {
+>  	struct spi_mem		*spimem;
+>  	struct spi_nor		spi_nor;
+> -	u8			command[MAX_CMD_SIZE];
+>  };
 >  
->  	return 0;
+>  static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
