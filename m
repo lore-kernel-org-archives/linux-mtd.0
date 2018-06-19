@@ -1,20 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV9hs-0004w9-K9
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 06:01:42 +0000
-Date: Tue, 19 Jun 2018 08:01:10 +0200
+ id 1fV9j3-0005ZB-Sb
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 06:02:48 +0000
+Date: Tue, 19 Jun 2018 08:02:24 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
  Vasut <marek.vasut@gmail.com>
-Subject: Re: [RFC PATCH v2 2/6] mtd: rawnand: add manufacturer fixup for
- ONFI parameter page
-Message-ID: <20180619080110.633b9077@bbrezillon>
-In-Reply-To: <20180619053125.16792-3-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [RFC PATCH v2 3/6] mtd: rawnand: micron: add fixup for ONFI
+ revision
+Message-ID: <20180619080224.3bc1efa3@bbrezillon>
+In-Reply-To: <20180619053125.16792-4-chris.packham@alliedtelesis.co.nz>
 References: <20180619053125.16792-1-chris.packham@alliedtelesis.co.nz>
- <20180619053125.16792-3-chris.packham@alliedtelesis.co.nz>
+ <20180619053125.16792-4-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,49 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Jun 2018 17:31:21 +1200
+On Tue, 19 Jun 2018 17:31:22 +1200
 Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-> This is called after the ONFI parameter page checksum is verified
-> and allows us to override the contents of the parameter page.
+> Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
+> revision number field of the ONFI parameter page. Rather than rejecting
+> these outright assume ONFI version 1.0 if the revision number is 00 00.
 > 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> ---
+> This is now qualified on vendor == MICRON. I haven't qualified this
+> based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
+> documented to have this behaviour.
+> 
+> Changes in v2:
+> - use fixup_onfi_param_page
+> 
+>  drivers/mtd/nand/raw/nand_micron.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> index 0af45b134c0c..e582c9e61715 100644
+> --- a/drivers/mtd/nand/raw/nand_micron.c
+> +++ b/drivers/mtd/nand/raw/nand_micron.c
+> @@ -287,6 +287,14 @@ static int micron_nand_init(struct nand_chip *chip)
+>  	return 0;
+>  }
+>  
+> +static void micron_fixup_onfi_param_page(struct nand_chip *chip,
+> +					 struct nand_onfi_params *p)
+> +{
+
+Could you add a comment repeating what you have in your commit message
+here?
+
+With this addressed
 
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-> ---
-> Changes in v2:
-> - New
-> 
->  drivers/mtd/nand/raw/nand_base.c | 4 ++++
->  include/linux/mtd/rawnand.h      | 1 +
->  2 files changed, 5 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 0cd3e216b95c..65250308c82d 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5172,6 +5172,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
->  		}
->  	}
->  
-> +	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
-> +	    chip->manufacturer.desc->ops->fixup_onfi_param_page)
-> +		chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
+> +	if (le16_to_cpu(p->revision) == 0)
+> +		p->revision = cpu_to_le16(1 << 1);
+> +}
 > +
->  	/* Check version */
->  	val = le16_to_cpu(p->revision);
->  	if (val & (1 << 5))
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 3e8ec3b8a39c..6db42091ee5e 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -783,6 +783,7 @@ struct nand_manufacturer_ops {
->  	void (*detect)(struct nand_chip *chip);
->  	int (*init)(struct nand_chip *chip);
->  	void (*cleanup)(struct nand_chip *chip);
-> +	void (*fixup_onfi_param_page)(struct nand_chip *chip, struct nand_onfi_params *p);
+>  const struct nand_manufacturer_ops micron_nand_manuf_ops = {
+>  	.init = micron_nand_init,
+> +	.fixup_onfi_param_page = micron_fixup_onfi_param_page,
 >  };
->  
->  /**
