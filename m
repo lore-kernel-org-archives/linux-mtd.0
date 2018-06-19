@@ -1,26 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVCjC-0005Fc-CC
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 09:15:09 +0000
-Date: Tue, 19 Jun 2018 11:14:44 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVE9f-0008W2-Vl
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 10:46:34 +0000
+From: Richard Weinberger <richard@nod.at>
 To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@bootlin.com>, Rob Herring <robh+dt@kernel.org>,
- linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Rob Herring <robh+dt@kernel.org>,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
  "linux-stable #4 . 14+" <stable@vger.kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based
- on IP datasheet
-Message-ID: <20180619111444.5303c8ed@xps13>
-In-Reply-To: <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
+ DTML <devicetree@vger.kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based on
+ IP datasheet
+Date: Tue, 19 Jun 2018 12:46:04 +0200
+Message-ID: <2133216.znqypcnggC@blindfold>
+In-Reply-To: <CAK7LNASCKhxtoOc3QdECF6p8BaBjab7Ed2y9Og+8LhvX4O83-Q@mail.gmail.com>
 References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
+ <20180618094636.0e40c518@bbrezillon>
+ <CAK7LNASCKhxtoOc3QdECF6p8BaBjab7Ed2y9Og+8LhvX4O83-Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +33,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 15 Jun 2018 10:18:50 +0900, Masahiro Yamada
-<yamada.masahiro@socionext.com> wrote:
+Am Dienstag, 19. Juni 2018, 10:07:26 CEST schrieb Masahiro Yamada:
+> Hi Boris,
+> 
+> 
+> 2018-06-18 16:46 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> > On Mon, 18 Jun 2018 09:09:02 +0200
+> > Richard Weinberger <richard@nod.at> wrote:
+> >
+> >> Am Freitag, 15. Juni 2018, 03:18:50 CEST schrieb Masahiro Yamada:
+> >> > According to the Denali User's Guide, this IP needs three clocks:
+> >> >
+> >> >  - clk: controller core clock
+> >> >
+> >> >  - clk_x: bus interface clock
+> >> >
+> >> >  - ecc_clk: clock at which ECC circuitry is run
+> >> >
+> >> > Currently, denali_dt.c requires a single anonymous clock and its
+> >> > frequency.  However, the driver needs to get the frequency of "clk_x"
+> >> > not "clk".  This is confusing because people tend to assume the
+> >> > anonymous clock means the core clock.  In fact, I got a report of
+> >> > SOCFPGA breakage because the timing parameters are calculated based
+> >> > on a wrong frequency.
+> >> >
+> >> > Instead of the cheesy implementation, the clocks in the real hardware
+> >> > should be represented in the driver and the DT-binding.
+> >> >
+> >> > However, adding new clocks would break the existing platforms.  For the
+> >> > backward compatibility, the driver still accepts a single clock just as
+> >> > before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
+> >> > This is fine for existing DT of Socionext UniPhier, and also fixes the
+> >> > issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
+> >> > the bus interface clock.
+> >> >
+> >> > Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
+> >> > Cc: linux-stable <stable@vger.kernel.org> #4.14+
+> >> > Reported-by: Richard Weinberger <richard@nod.at>
+> >> > Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> >>
+> >> Reviewed-by: Richard Weinberger <richard@nod.at>
+> >
+> > Maybe a
+> >
+> > Tested-by: Richard Weinberger <richard@nod.at>
+> >
+> > ?
+> >
+> >> Reported-by: Philipp Rosenberger <p.rosenberger@linutronix.de>
+> >
+> > Should I replace your Reported-by by this one or simply add it?
 
-> According to the Denali User's Guide, this IP needs three clocks:
->=20
->  - clk: controller core clock
->=20
->  - clk_x: bus interface clock
->=20
->  - ecc_clk: clock at which ECC circuitry is run
->=20
-> Currently, denali_dt.c requires a single anonymous clock and its
-> frequency.  However, the driver needs to get the frequency of "clk_x"
-> not "clk".  This is confusing because people tend to assume the
-> anonymous clock means the core clock.  In fact, I got a report of
-> SOCFPGA breakage because the timing parameters are calculated based
-> on a wrong frequency.
->=20
-> Instead of the cheesy implementation, the clocks in the real hardware
-> should be represented in the driver and the DT-binding.
->=20
-> However, adding new clocks would break the existing platforms.  For the
-> backward compatibility, the driver still accepts a single clock just as
-> before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
-> This is fine for existing DT of Socionext UniPhier, and also fixes the
-> issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
-> the bus interface clock.
->=20
-> Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setu=
-p_data_interface()")
-> Cc: linux-stable <stable@vger.kernel.org> #4.14+
-> Reported-by: Richard Weinberger <richard@nod.at>
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-> ---
->=20
+Philipp deserves the Reported-by. :)
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> 
+> I think it is good to have Reported-by
+> both from Philipp and Richard.
+
+Patch 1/3 unbreaks v4.14.x on my board.
+
+Tested-by: Richard Weinberger <richard@nod.at>
 
 Thanks,
-Miqu=C3=A8l
+//richard
