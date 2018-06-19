@@ -1,24 +1,25 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fV5hZ-0004WA-FZ
- for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 01:44:59 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fV8ga-0001gT-Me
+ for linux-mtd@lists.infradead.org; Tue, 19 Jun 2018 04:56:13 +0000
+Date: Tue, 19 Jun 2018 06:55:55 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
  <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
  <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>
 Subject: Re: [RFC PATCH 0/2] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
-Date: Tue, 19 Jun 2018 01:44:24 +0000
-Message-ID: <0caaea1b4f5a4b45b436833424c4c8c8@svr-chch-ex1.atlnz.lc>
+Message-ID: <20180619065555.1900487c@bbrezillon>
+In-Reply-To: <0caaea1b4f5a4b45b436833424c4c8c8@svr-chch-ex1.atlnz.lc>
 References: <20180618045255.8015-1-chris.packham@alliedtelesis.co.nz>
  <20180618151450.3e740270@xps13>
  <f16525ea6b534123bda64b09e818ce6d@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <0caaea1b4f5a4b45b436833424c4c8c8@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +29,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 19/06/18 12:35, Chris Packham wrote:=0A=
-> On 19/06/18 01:15, Miquel Raynal wrote:=0A=
->> Hi Chris,=0A=
->>=0A=
->> On Mon, 18 Jun 2018 16:52:53 +1200, Chris Packham=0A=
->> <chris.packham@alliedtelesis.co.nz> wrote:=0A=
->>=0A=
->>> Hi,=0A=
->>>=0A=
->>> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chi=
-p=0A=
->>> to one of our boards which uses the Marvell NFCv2 controller.=0A=
->>>=0A=
->>> This particular chip is a bit odd in that the datasheet states support=
-=0A=
->>> for ONFI 1.0 but the revision number field is 00 00. It also is marked=
-=0A=
->>> ABAFA but reports internally as ABAGA. Finally it has internal 8-bit EC=
-C=0A=
->>> which cannot be disabled.=0A=
->>=0A=
->> Boris and I agree that in this case, the chip should not be probed if=0A=
->> ecc->type !=3D ON_DIE (and eventually NONE).=0A=
->>=0A=
->> This should be handled in the Micron driver.=0A=
->>=0A=
->> Also, what is the returned value of micron_supports_on_die_ecc() (with=
-=0A=
->> patch 1/2)?=0A=
-> =0A=
-> micron_supports_on_die_ecc() returns MICRON_ON_DIE_UNSUPPORTED.=0A=
-> Technically this chip should be MICRON_ON_DIE_MANDATORY since it can't=0A=
-> be disabled but that wouldn't be much help since that would still result=
-=0A=
-> in -EINVAL. I'll dig into micron_supports_on_die_ecc() and see if I can=
-=0A=
-> find something in the datasheet to use.=0A=
-> =0A=
-=0A=
-Some further debugging. Nothing (in 4.17) calls =0A=
-set_bit(ONFI_FEATURE_ON_DIE_ECC) so I don't think =0A=
-micron_supports_on_die_ecc() can return anything other than =0A=
-MICRON_ON_DIE_UNSUPPORTED, unless I'm missing something for how the =0A=
-{get,set}_feature_list is populated.=0A=
-=0A=
-With the onfi.version fix and the following=0A=
-=0A=
---- a/drivers/mtd/nand/raw/nand_micron.c=0A=
-+++ b/drivers/mtd/nand/raw/nand_micron.c=0A=
-@@ -66,7 +66,9 @@ static int micron_nand_onfi_init(struct nand_chip *chip)=
-=0A=
-=0A=
-         if (p->supports_set_get_features) {=0A=
-                 set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->set_feature_list)=
-;=0A=
-+               set_bit(ONFI_FEATURE_ON_DIE_ECC, p->set_feature_list);=0A=
-                 set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->get_feature_list)=
-;=0A=
-+               set_bit(ONFI_FEATURE_ON_DIE_ECC, p->get_feature_list);=0A=
-         }=0A=
-@@ -240,7 +246,7 @@ static int micron_supports_on_die_ecc(struct =0A=
-nand_chip *chip)=0A=
-          * Some Micron NANDs have an on-die ECC of 4/512, some other=0A=
--         * 8/512. We only support the former.=0A=
-+         * 8/512.=0A=
-          */=0A=
--       if (chip->ecc_strength_ds !=3D 4)=0A=
-+       if (chip->ecc_strength_ds !=3D 4 && chip->ecc_strength_ds !=3D 8)=
-=0A=
-                 return MICRON_ON_DIE_UNSUPPORTED;=0A=
-=0A=
-I can get micron_supports_on_die_ecc() to return MICRON_ON_DIE_SUPPORTED.=
-=0A=
-=0A=
-Then I run into a problem with the marvell_nand.c which currently =0A=
-doesn't handle NAND_ECC_ON_DIE which is easily fixed.=0A=
-=0A=
-But then I have the issue that I need to handle systems with either type =
-=0A=
-of ECC scheme ("on-die" or "hw") which I'm not sure is even possible =0A=
-within the dts.=0A=
-=0A=
-I'll re-base against 4.18-rc1 and send what I have so-far.=0A=
+Hi Chris,
+
+On Tue, 19 Jun 2018 01:44:24 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+
+> On 19/06/18 12:35, Chris Packham wrote:
+> > On 19/06/18 01:15, Miquel Raynal wrote:  
+> >> Hi Chris,
+> >>
+> >> On Mon, 18 Jun 2018 16:52:53 +1200, Chris Packham
+> >> <chris.packham@alliedtelesis.co.nz> wrote:
+> >>  
+> >>> Hi,
+> >>>
+> >>> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chip
+> >>> to one of our boards which uses the Marvell NFCv2 controller.
+> >>>
+> >>> This particular chip is a bit odd in that the datasheet states support
+> >>> for ONFI 1.0 but the revision number field is 00 00. It also is marked
+> >>> ABAFA but reports internally as ABAGA. Finally it has internal 8-bit ECC
+> >>> which cannot be disabled.  
+> >>
+> >> Boris and I agree that in this case, the chip should not be probed if
+> >> ecc->type != ON_DIE (and eventually NONE).
+> >>
+> >> This should be handled in the Micron driver.
+> >>
+> >> Also, what is the returned value of micron_supports_on_die_ecc() (with
+> >> patch 1/2)?  
+> > 
+> > micron_supports_on_die_ecc() returns MICRON_ON_DIE_UNSUPPORTED.
+> > Technically this chip should be MICRON_ON_DIE_MANDATORY since it can't
+> > be disabled but that wouldn't be much help since that would still result
+> > in -EINVAL. I'll dig into micron_supports_on_die_ecc() and see if I can
+> > find something in the datasheet to use.
+> >   
+> 
+> Some further debugging. Nothing (in 4.17) calls 
+> set_bit(ONFI_FEATURE_ON_DIE_ECC) so I don't think 
+> micron_supports_on_die_ecc() can return anything other than 
+> MICRON_ON_DIE_UNSUPPORTED, unless I'm missing something for how the 
+> {get,set}_feature_list is populated.
+
+Nope you're not. Looks like we broke Micron on-die ECC in 4.17.
+
+> 
+> With the onfi.version fix and the following
+> 
+> --- a/drivers/mtd/nand/raw/nand_micron.c
+> +++ b/drivers/mtd/nand/raw/nand_micron.c
+> @@ -66,7 +66,9 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
+> 
+>          if (p->supports_set_get_features) {
+>                  set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->set_feature_list);
+> +               set_bit(ONFI_FEATURE_ON_DIE_ECC, p->set_feature_list);
+>                  set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->get_feature_list);
+> +               set_bit(ONFI_FEATURE_ON_DIE_ECC, p->get_feature_list);
+>          }
+
+Can you send a patch containing only the above changes with the
+Cc-stable and Fixes tags?
+
+> @@ -240,7 +246,7 @@ static int micron_supports_on_die_ecc(struct 
+> nand_chip *chip)
+>           * Some Micron NANDs have an on-die ECC of 4/512, some other
+> -         * 8/512. We only support the former.
+> +         * 8/512.
+>           */
+> -       if (chip->ecc_strength_ds != 4)
+> +       if (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
+>                  return MICRON_ON_DIE_UNSUPPORTED;
+>
+
+This should be done in a separate patch.
+ 
+> I can get micron_supports_on_die_ecc() to return MICRON_ON_DIE_SUPPORTED.
+> 
+
+That's weird. You should have MICRON_ON_DIE_MANDATORY here. Could it be
+that the ONFI_FEATURE_ON_DIE_ECC_EN bit does not really reflect the ECC
+engine state? If that's the case, we'll have to change the way we
+detect if on-die ECC is supported/mandatory/not-supported (based on the
+model name stored in the ONFI param page?).
+
+> Then I run into a problem with the marvell_nand.c which currently 
+> doesn't handle NAND_ECC_ON_DIE which is easily fixed.
+
+Yep, adding that to the new driver should be pretty easy.
+
+> 
+> But then I have the issue that I need to handle systems with either type 
+> of ECC scheme ("on-die" or "hw") which I'm not sure is even possible 
+> within the dts.
+
+You mean having the same dts for both setup. Indeed, that's not
+supported right now.
+
+> 
+> I'll re-base against 4.18-rc1 and send what I have so-far.
+
+Cool. I'm particularly interested by the SET/GET_FEATURE(ECC) fix.
+
+Thanks,
+
+Boris
