@@ -1,19 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVaBJ-0004RY-Pl
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 10:17:43 +0000
-Date: Wed, 20 Jun 2018 12:17:20 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 01/14] ubi: fastmap: Read PEB numbers more carefully
-Message-ID: <20180620121720.22ad75c9@bbrezillon>
-In-Reply-To: <20180613212344.11608-2-richard@nod.at>
-References: <20180613212344.11608-1-richard@nod.at>
- <20180613212344.11608-2-richard@nod.at>
+Received: from mail-bn3nam01on0069.outbound.protection.outlook.com
+ ([104.47.33.69] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVb0R-0002k2-Fe
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 11:10:33 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Use right chip in
+ do_ppb_xxlock()
+Date: Wed, 20 Jun 2018 11:10:17 +0000
+Message-ID: <3501a7cbd7ce6e5ab17aa65d89aa0f5c38634737.camel@infinera.com>
+References: <20180605172607.50acb34f@bbrezillon>
+ <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+ <20180620110315.2af69cfe@bbrezillon>
+In-Reply-To: <20180620110315.2af69cfe@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <F601C4925729E342B21A0F0E287D45F2@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,166 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Jun 2018 23:23:31 +0200
-Richard Weinberger <richard@nod.at> wrote:
-
-> PEB numbers can be used as indices, make sure that they
-> are within bounds.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
->  drivers/mtd/ubi/fastmap.c | 71 ++++++++++++++++++++++++++++++++++++++---------
->  1 file changed, 58 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-> index 462526a10537..768fa8a76867 100644
-> --- a/drivers/mtd/ubi/fastmap.c
-> +++ b/drivers/mtd/ubi/fastmap.c
-> @@ -101,6 +101,29 @@ size_t ubi_calc_fm_size(struct ubi_device *ubi)
->  	return roundup(size, ubi->leb_size);
->  }
->  
-> +static bool read_pnum(struct ubi_device *ubi, struct ubi_attach_info *ai,
-> +		     __be32 pnum, int *out_pnum)
-
-Why not returning an int here, with negative values meaning that
-pnum is invalid and positive values encoding the actual PEB number?
-Also, I think check_pnum(), validate_pnum() or decode_pnum() would be
-better names than read_pnum().
-
-
-> +{
-> +	int ret = true;
-> +	int max_pnum = ubi->peb_count;
-> +
-> +	pnum = be32_to_cpu(pnum);
-> +	if (pnum == UBI_UNKNOWN) {
-> +		*out_pnum = pnum;
-> +		goto out;
-> +	}
-> +
-> +	if (pnum < 0 || pnum >= max_pnum) {
-> +		ubi_err(ubi, "fastmap references PEB out of range: %i", pnum);
-> +		ret = false;
-> +		goto out;
-> +	} else {
-> +		*out_pnum = pnum;
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
->  
->  /**
->   * new_fm_vhdr - allocate a new volume header for fastmap usage.
-> @@ -438,7 +461,10 @@ static int scan_pool(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  		int scrub = 0;
->  		int image_seq;
->  
-> -		pnum = be32_to_cpu(pebs[i]);
-> +		if (!read_pnum(ubi, ai, pebs[i], &pnum)) {
-> +			ret = UBI_BAD_FASTMAP;
-> +			goto out;
-> +		}
->  
->  		if (ubi_io_is_bad(ubi, pnum)) {
->  			ubi_err(ubi, "bad PEB in fastmap pool!");
-> @@ -565,7 +591,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  	struct ubi_fm_ec *fmec;
->  	struct ubi_fm_volhdr *fmvhdr;
->  	struct ubi_fm_eba *fm_eba;
-> -	int ret, i, j, pool_size, wl_pool_size;
-> +	int ret, i, j, pool_size, wl_pool_size, pnum;
->  	size_t fm_pos = 0, fm_size = ubi->fm_size;
->  	unsigned long long max_sqnum = 0;
->  	void *fm_raw = ubi->fm_buf;
-> @@ -647,8 +673,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  		if (fm_pos >= fm_size)
->  			goto fail_bad;
->  
-> -		add_aeb(ai, &ai->free, be32_to_cpu(fmec->pnum),
-> -			be32_to_cpu(fmec->ec), 0);
-> +		if (!read_pnum(ubi, ai, fmec->pnum, &pnum))
-> +			goto fail_bad;
-> +
-> +		add_aeb(ai, &ai->free, pnum, be32_to_cpu(fmec->ec), 0);
->  	}
->  
->  	/* read EC values from used list */
-> @@ -658,8 +686,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  		if (fm_pos >= fm_size)
->  			goto fail_bad;
->  
-> -		add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
-> -			be32_to_cpu(fmec->ec), 0);
-> +		if (!read_pnum(ubi, ai, fmec->pnum, &pnum))
-> +			goto fail_bad;
-> +
-> +		add_aeb(ai, &used, pnum, be32_to_cpu(fmec->ec), 0);
->  	}
->  
->  	/* read EC values from scrub list */
-> @@ -669,8 +699,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  		if (fm_pos >= fm_size)
->  			goto fail_bad;
->  
-> -		add_aeb(ai, &used, be32_to_cpu(fmec->pnum),
-> -			be32_to_cpu(fmec->ec), 1);
-> +		if (!read_pnum(ubi, ai, fmec->pnum, &pnum))
-> +			goto fail_bad;
-> +
-> +		add_aeb(ai, &used, pnum, be32_to_cpu(fmec->ec), 1);
->  	}
->  
->  	/* read EC values from erase list */
-> @@ -680,8 +712,10 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  		if (fm_pos >= fm_size)
->  			goto fail_bad;
->  
-> -		add_aeb(ai, &ai->erase, be32_to_cpu(fmec->pnum),
-> -			be32_to_cpu(fmec->ec), 1);
-> +		if (!read_pnum(ubi, ai, fmec->pnum, &pnum))
-> +			goto fail_bad;
-> +
-> +		add_aeb(ai, &ai->erase, pnum, be32_to_cpu(fmec->ec), 1);
->  	}
->  
->  	ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
-> @@ -731,7 +765,8 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
->  		}
->  
->  		for (j = 0; j < be32_to_cpu(fm_eba->reserved_pebs); j++) {
-> -			int pnum = be32_to_cpu(fm_eba->pnum[j]);
-> +			if (!read_pnum(ubi, ai, fm_eba->pnum[j], &pnum))
-> +				goto fail_bad;
->  
->  			if (pnum < 0)
->  				continue;
-> @@ -954,7 +989,10 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  	for (i = 0; i < used_blocks; i++) {
->  		int image_seq;
->  
-> -		pnum = be32_to_cpu(fmsb->block_loc[i]);
-> +		if (!read_pnum(ubi, ai, fmsb->block_loc[i], &pnum)) {
-> +			ret = UBI_BAD_FASTMAP;
-> +			goto free_hdr;
-> +		}
->  
->  		if (ubi_io_is_bad(ubi, pnum)) {
->  			ret = UBI_BAD_FASTMAP;
-> @@ -1068,7 +1106,14 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
->  			goto free_hdr;
->  		}
->  
-> -		e->pnum = be32_to_cpu(fmsb2->block_loc[i]);
-> +		if (!read_pnum(ubi, ai, fmsb2->block_loc[i], &e->pnum)) {
-> +			while (i--)
-> +				kmem_cache_free(ubi_wl_entry_slab, fm->e[i]);
-> +
-> +			ret = -ENOMEM;
-> +			goto free_hdr;
-> +		}
-> +
->  		e->ec = be32_to_cpu(fmsb2->block_ec[i]);
->  		fm->e[i] = e;
->  	}
+T24gV2VkLCAyMDE4LTA2LTIwIGF0IDExOjAzICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IE9uIFdlZCwgIDYgSnVuIDIwMTggMTI6MTM6MjcgKzAyMDANCj4gSm9ha2ltIFRq
+ZXJubHVuZCA8am9ha2ltLnRqZXJubHVuZEBpbmZpbmVyYS5jb20+IHdyb3RlOg0KPiANCj4gPiBk
+b19wcGJfeHhsb2NrKCkgZmFpbHMgdG8gYWRkIGNoaXAtPnN0YXJ0IHdoZW4NCj4gPiBxdWVyaW5n
+IGZvciBsb2NrIHN0YXR1cyhhbmQgY2hpcF9yZWFkeSB0ZXN0KSwNCj4gDQo+ICAgXiBxdWVyeWlu
+Zz8NCj4gDQo+ID4gd2hpY2ggY2F1c2VkIGZhbHNlIHN0YXR1cyByZXBvcnRzLg0KPiANCj4gVGhl
+IDMgYWJvdmUgbGluZXMgYXJlIHdyYXBwZWQgYXQgbGVzcyB0aGFuIDUwIGNoYXJzLCBpcyB0aGlz
+IG5vcm1hbD8NCg0KSSBhY3R1YWxseSBoaXQgcmV0dXJuIGV2ZXJ5IG5vdyBhbmQgdGhlbiB3aGVu
+IEkgdHlwZSwgc29tZXRpbWVzIHRoZQ0KbGluZXMgbWlnaHQgYmVjb21lIGEgYml0IHNob3J0LCBi
+dXQgeWVzLCB0aGlzIGlzIG5vcm1hbCBmb3IgbWUuDQoNCj4gDQo+ID4gRml4IGJ5IGFkZGluZyBh
+ZHIgKz0gY2hpcC0+c3RhcnQgYW5kIGFkanVzdCBjYWxsIHNpdGVzIGFjY29yZGluZ2x5Lg0KPiA+
+IA0KPiA+IEZpeGVzOiAxNjQ4ZWFhYTE1NzUgKCJtdGQ6IGNmaV9jbWRzZXRfMDAwMjogU3VwcG9y
+dCBQZXJzaXN0ZW50IFByb3RlY3Rpb24gQml0cyAoUFBCKSBsb2NraW5nIikNCj4gPiBDYzogc3Rh
+YmxlQHZnZXIua2VybmVsLm9yZw0KPiA+IFNpZ25lZC1vZmYtYnk6IEpvYWtpbSBUamVybmx1bmQg
+PGpvYWtpbS50amVybmx1bmRAaW5maW5lcmEuY29tPg0KPiA+IC0tLQ0KPiA+IA0KPiA+ICB2MiAt
+IFNwaWx0IGludG8gc2V2ZXJhbCBwYXRjaGVzDQo+ID4gDQo+ID4gIGRyaXZlcnMvbXRkL2NoaXBz
+L2NmaV9jbWRzZXRfMDAwMi5jIHwgOSArKysrKy0tLS0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDUg
+aW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
+Y21kc2V0XzAwMDIuYw0KPiA+IGluZGV4IDUzYTk3NmE4ZTYxNC4uODY0OGIxYWRjY2Q1IDEwMDY0
+NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo+ID4gKysr
+IGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMNCj4gPiBAQCAtMjU1NCw4ICsy
+NTU0LDkgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBkb19wcGJfeHhsb2NrKHN0cnVjdCBt
+YXBfaW5mbyAqbWFwLA0KPiA+ICAgICAgIHVuc2lnbmVkIGxvbmcgdGltZW87DQo+ID4gICAgICAg
+aW50IHJldDsNCj4gPiANCj4gPiArICAgICBhZHIgKz0gY2hpcC0+c3RhcnQ7DQo+ID4gICAgICAg
+bXV0ZXhfbG9jaygmY2hpcC0+bXV0ZXgpOw0KPiA+IC0gICAgIHJldCA9IGdldF9jaGlwKG1hcCwg
+Y2hpcCwgYWRyICsgY2hpcC0+c3RhcnQsIEZMX0xPQ0tJTkcpOw0KPiA+ICsgICAgIHJldCA9IGdl
+dF9jaGlwKG1hcCwgY2hpcCwgYWRyLCBGTF9MT0NLSU5HKTsNCj4gPiAgICAgICBpZiAocmV0KSB7
+DQo+ID4gICAgICAgICAgICAgICBtdXRleF91bmxvY2soJmNoaXAtPm11dGV4KTsNCj4gPiAgICAg
+ICAgICAgICAgIHJldHVybiByZXQ7DQo+ID4gQEAgLTI1NzMsOCArMjU3NCw4IEBAIHN0YXRpYyBp
+bnQgX19tYXliZV91bnVzZWQgZG9fcHBiX3h4bG9jayhzdHJ1Y3QgbWFwX2luZm8gKm1hcCwNCj4g
+PiANCj4gPiAgICAgICBpZiAodGh1bmsgPT0gRE9fWFhMT0NLX09ORUJMT0NLX0xPQ0spIHsNCj4g
+PiAgICAgICAgICAgICAgIGNoaXAtPnN0YXRlID0gRkxfTE9DS0lORzsNCj4gPiAtICAgICAgICAg
+ICAgIG1hcF93cml0ZShtYXAsIENNRCgweEEwKSwgY2hpcC0+c3RhcnQgKyBhZHIpOw0KPiA+IC0g
+ICAgICAgICAgICAgbWFwX3dyaXRlKG1hcCwgQ01EKDB4MDApLCBjaGlwLT5zdGFydCArIGFkcik7
+DQo+ID4gKyAgICAgICAgICAgICBtYXBfd3JpdGUobWFwLCBDTUQoMHhBMCksIGFkcik7DQo+ID4g
+KyAgICAgICAgICAgICBtYXBfd3JpdGUobWFwLCBDTUQoMHgwMCksIGFkcik7DQo+ID4gICAgICAg
+fSBlbHNlIGlmICh0aHVuayA9PSBET19YWExPQ0tfT05FQkxPQ0tfVU5MT0NLKSB7DQo+ID4gICAg
+ICAgICAgICAgICAvKg0KPiA+ICAgICAgICAgICAgICAgICogVW5sb2NraW5nIG9mIG9uZSBzcGVj
+aWZpYyBzZWN0b3IgaXMgbm90IHN1cHBvcnRlZCwgc28gd2UNCj4gPiBAQCAtMjYxMiw3ICsyNjEz
+LDcgQEAgc3RhdGljIGludCBfX21heWJlX3VudXNlZCBkb19wcGJfeHhsb2NrKHN0cnVjdCBtYXBf
+aW5mbyAqbWFwLA0KPiA+ICAgICAgIG1hcF93cml0ZShtYXAsIENNRCgweDAwKSwgY2hpcC0+c3Rh
+cnQpOw0KPiA+IA0KPiA+ICAgICAgIGNoaXAtPnN0YXRlID0gRkxfUkVBRFk7DQo+ID4gLSAgICAg
+cHV0X2NoaXAobWFwLCBjaGlwLCBhZHIgKyBjaGlwLT5zdGFydCk7DQo+ID4gKyAgICAgcHV0X2No
+aXAobWFwLCBjaGlwLCBhZHIpOw0KPiA+ICAgICAgIG11dGV4X3VubG9jaygmY2hpcC0+bXV0ZXgp
+Ow0KPiA+IA0KPiA+ICAgICAgIHJldHVybiByZXQ7DQo+IA0KPiANCg==
