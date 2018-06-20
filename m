@@ -1,17 +1,22 @@
-Received: from mout.kundenserver.de ([217.72.192.74])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVYaM-0006Lw-7z
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 08:37:26 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-Cc: y2038@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
- Deepa Dinamani <deepa.kernel@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: [PATCH] ubifs: tnc: use monotonic znode timestamp
-Date: Wed, 20 Jun 2018 10:29:11 +0200
-Message-Id: <20180620082937.719067-1-arnd@arndb.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVZ5C-0003Au-4o
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:07:19 +0000
+Date: Wed, 20 Jun 2018 11:06:55 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] mtd: cfi_cmdset_0002: fix SEGV unlocking
+ multiple chips
+Message-ID: <20180620110655.42ce6c1a@bbrezillon>
+In-Reply-To: <20180606101330.11071-2-joakim.tjernlund@infinera.com>
+References: <20180605172607.50acb34f@bbrezillon>
+ <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+ <20180606101330.11071-2-joakim.tjernlund@infinera.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,82 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The tnc uses get_seconds() based timestamps to check the age of a znode,
-which has two problems: on 32-bit architectures this may overflow in
-2038 or 2106, and it gives incorrect information when the system time
-is updated using settimeofday().
+On Wed,  6 Jun 2018 12:13:28 +0200
+Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
 
-Using montonic timestamps with ktime_get_seconds() solves both thes
-problems.
+> cfi_ppb_unlock() tries to relock all sectors that was locked before
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/ubifs/shrinker.c | 2 +-
- fs/ubifs/tnc.c      | 4 ++--
- fs/ubifs/tnc_misc.c | 2 +-
- fs/ubifs/ubifs.h    | 2 +-
- 4 files changed, 5 insertions(+), 5 deletions(-)
+						    ^ were
 
-diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
-index 9a9fb94a41c6..9d10cbdec2cc 100644
---- a/fs/ubifs/shrinker.c
-+++ b/fs/ubifs/shrinker.c
-@@ -71,7 +71,7 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
- {
- 	int total_freed = 0;
- 	struct ubifs_znode *znode, *zprev;
--	int time = get_seconds();
-+	time64_t time = ktime_get_seconds();
- 
- 	ubifs_assert(mutex_is_locked(&c->umount_mutex));
- 	ubifs_assert(mutex_is_locked(&c->tnc_mutex));
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index 4a21e7f75e7a..6c497fb48b98 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -1179,7 +1179,7 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
- {
- 	int err, exact;
- 	struct ubifs_znode *znode;
--	unsigned long time = get_seconds();
-+	time64_t time = ktime_get_seconds();
- 
- 	dbg_tnck(key, "search key ");
- 	ubifs_assert(key_type(c, key) < UBIFS_INVALID_KEY);
-@@ -1315,7 +1315,7 @@ static int lookup_level0_dirty(struct ubifs_info *c, const union ubifs_key *key,
- {
- 	int err, exact;
- 	struct ubifs_znode *znode;
--	unsigned long time = get_seconds();
-+	time64_t time = ktime_get_seconds();
- 
- 	dbg_tnck(key, "search and dirty key ");
- 
-diff --git a/fs/ubifs/tnc_misc.c b/fs/ubifs/tnc_misc.c
-index 93f5b7859e6f..49f647bc88f0 100644
---- a/fs/ubifs/tnc_misc.c
-+++ b/fs/ubifs/tnc_misc.c
-@@ -435,7 +435,7 @@ struct ubifs_znode *ubifs_load_znode(struct ubifs_info *c,
- 
- 	zbr->znode = znode;
- 	znode->parent = parent;
--	znode->time = get_seconds();
-+	znode->time = ktime_get_seconds();
- 	znode->iip = iip;
- 
- 	return znode;
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 04bf84d71e7b..54fb6b1cd042 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -758,7 +758,7 @@ struct ubifs_znode {
- 	struct ubifs_znode *parent;
- 	struct ubifs_znode *cnext;
- 	unsigned long flags;
--	unsigned long time;
-+	time64_t time;
- 	int level;
- 	int child_cnt;
- 	int iip;
--- 
-2.9.0
+> unlocking the whole chip.
+> This locking used the chip start address + the FULL offset from the
+> first flash chip, thereby forming an illegal address. Correct by using
+
+							Fix/Correct that by... ?
+
+> the chip offset(adr).
+> 
+> Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> ---
+> 
+>  v2 - Spilt into several patches
+>  
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 8648b1adccd5..cb85cccc48c1 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -2536,7 +2536,7 @@ static int cfi_atmel_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  
+>  struct ppb_lock {
+>  	struct flchip *chip;
+> -	loff_t offset;
+> +	unsigned long adr;
+>  	int locked;
+>  };
+>  
+> @@ -2672,7 +2672,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>  		 */
+>  		if ((adr < ofs) || (adr >= (ofs + len))) {
+>  			sect[sectors].chip = &cfi->chips[chipnum];
+> -			sect[sectors].offset = offset;
+> +			sect[sectors].adr = adr;
+>  			sect[sectors].locked = do_ppb_xxlock(
+>  				map, &cfi->chips[chipnum], adr, 0,
+>  				DO_XXLOCK_ONEBLOCK_GETLOCK);
+> @@ -2716,7 +2716,7 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
+>  	 */
+>  	for (i = 0; i < sectors; i++) {
+>  		if (sect[i].locked)
+> -			do_ppb_xxlock(map, sect[i].chip, sect[i].offset, 0,
+> +			do_ppb_xxlock(map, sect[i].chip, sect[i].adr, 0,
+>  				      DO_XXLOCK_ONEBLOCK_LOCK);
+>  	}
+>  
