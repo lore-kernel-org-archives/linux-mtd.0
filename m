@@ -1,27 +1,25 @@
-Received: from mail-yw0-x242.google.com ([2607:f8b0:4002:c05::242])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVhea-0000PB-77
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 18:16:25 +0000
-Received: by mail-yw0-x242.google.com with SMTP id v131-v6so184025ywg.2
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jun 2018 11:16:13 -0700 (PDT)
-MIME-Version: 1.0
-Sender: keescook@google.com
-In-Reply-To: <20180620093805.6d9c602e@bbrezillon>
-References: <20180531184525.GA11068@beast> <20180601110921.GC4695@parrot.com>
- <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
- <20180620093805.6d9c602e@bbrezillon>
-From: Kees Cook <keescook@chromium.org>
-Date: Wed, 20 Jun 2018 11:16:11 -0700
-Message-ID: <CAGXu5j+A4jXuf_TO0UF0zp-7kHUEFP8FZY=+mat96CaQ-a87LQ@mail.gmail.com>
-Subject: Re: [PATCH v3] lib/bch: Remove VLA usage
+ id 1fVkO1-00049s-FG
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 21:11:31 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Linux mtd <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Marek
+ Vasut" <marek.vasut@gmail.com>
+Subject: Re: [PATCH v3 1/4] mtd: rawnand: marvell: Handle on-die ECC
+Date: Wed, 20 Jun 2018 21:10:56 +0000
+Message-ID: <0bf16d760f6a468ebe4417bacc9fc6b4@svr-chch-ex1.atlnz.lc>
+References: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
+ <20180620050544.31549-2-chris.packham@alliedtelesis.co.nz>
+ <20180620094654.4280caeb@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,88 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 20, 2018 at 12:38 AM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Hi Kees,
->
-> On Tue, 19 Jun 2018 16:48:17 -0700
-> Kees Cook <keescook@chromium.org> wrote:
->
->> On Fri, Jun 1, 2018 at 4:09 AM, Ivan Djelic <ivan.djelic@parrot.com> wro=
-te:
->> > On Thu, May 31, 2018 at 11:45:25AM -0700, Kees Cook wrote:
->> >> In the quest to remove all stack VLA usage from the kernel[1], this
->> >> allocates a fixed size stack array to cover the range needed for
->> >> bch. This was done instead of a preallocation on the SLAB due to
->> >> performance reasons, shown by Ivan Djelic:
->> >>
->> >>  little-endian, type sizes: int=3D4 long=3D8 longlong=3D8
->> >>  cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
->> >>  calibration: iter=3D4.9143=C2=B5s niter=3D2034 nsamples=3D200 m=3D13=
- t=3D4
->> >>
->> >>    Buffer allocation |  Encoding throughput (Mbit/s)
->> >>  ---------------------------------------------------
->> >>   on-stack, VLA      |   3988
->> >>   on-stack, fixed    |   4494
->> >>   kmalloc            |   1967
->> >>
->> >> So this change actually improves performance too, it seems.
->> >>
->> >> The resulting stack allocation can get rather large; without
->> >> CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
->> >> trips the stack size checking:
->> >>
->> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
->> >> lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than=
- 2048 bytes [-Wframe-larger-than=3D]
->> >>
->> >> Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=3D1=
-4 and
->> >> CONFIG_BCH_CONST_T=3D4) would have started throwing a warning:
->> >>
->> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
->> >> lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than=
- 2048 bytes [-Wframe-larger-than=3D]
->> >>
->> >> But this is how large it's always been; it was just hidden from
->> >> the checker because it was a VLA. So the Makefile has been adjusted t=
-o
->> >> silence this warning for anything smaller than 4500 bytes, which shou=
-ld
->> >> provide room for normal cases, but still low enough to catch any futu=
-re
->> >> pathological situations.
->> >>
->> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=3Dq=
-PXydAacU1RqZWA@mail.gmail.com
->> >>
->> >> Signed-off-by: Kees Cook <keescook@chromium.org>
->> >> ---
->> >> v3: fix r_bytes to whole-word size
->> >> v2: switch to fixed-size stack array
->> >> ---
->> >>  lib/Makefile |  1 +
->> >>  lib/bch.c    | 23 +++++++++++++++--------
->> >>  2 files changed, 16 insertions(+), 8 deletions(-)
->> >
->> >
->> > The patch looks good to me. It also passed my regression tests.
->> >
->> > Reviewed-by: Ivan Djelic <ivan.djelic@parrot.com>
->> > Tested-by: Ivan Djelic <ivan.djelic@parrot.com>
->>
->> Thanks for the review and testing!
->>
->> Who's the best person to carry this patch?
->
-> Looks like all users of this lib are in drivers/mtd, so I can take the
-> patches if you want, but I can also let you take them if you prefer.
-
-I'd love it if you could take it; thank you!
-
--Kees
-
---=20
-Kees Cook
-Pixel Security
+On 20/06/18 19:47, Boris Brezillon wrote:=0A=
+> Hi Chris,=0A=
+> =0A=
+> On Wed, 20 Jun 2018 17:05:41 +1200=0A=
+> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:=0A=
+> =0A=
+>>  From the controllers point of view this is the same as no or=0A=
+>> software only ECC.=0A=
+>>=0A=
+>> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>=0A=
+> =0A=
+> I'm nitpicking, but we usually put the R-b/A-b tags after the author=0A=
+> SoB.=0A=
+=0A=
+Yeah sorry force of habit from using gerrit internally. I'll try to =0A=
+re-train my fingers.=0A=
+=0A=
+>> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+>> ---=0A=
+>> Changes in v2:=0A=
+>> - New=0A=
+>> Changes in v3:=0A=
+>> - Add review from Boris=0A=
+>>=0A=
+>>   drivers/mtd/nand/raw/marvell_nand.c | 1 +=0A=
+>>   1 file changed, 1 insertion(+)=0A=
+>>=0A=
+>> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/=
+marvell_nand.c=0A=
+>> index ebb1d141b900..ba6889bbe802 100644=0A=
+>> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
+>> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
+>> @@ -2157,6 +2157,7 @@ static int marvell_nand_ecc_init(struct mtd_info *=
+mtd,=0A=
+>>   		break;=0A=
+>>   	case NAND_ECC_NONE:=0A=
+>>   	case NAND_ECC_SOFT:=0A=
+>> +	case NAND_ECC_ON_DIE:=0A=
+>>   		if (!nfc->caps->is_nfcv2 && mtd->writesize !=3D SZ_512 &&=0A=
+>>   		    mtd->writesize !=3D SZ_2K) {=0A=
+>>   			dev_err(nfc->dev, "NFCv1 cannot write %d bytes pages\n",=0A=
+> =0A=
+> =0A=
+=0A=
