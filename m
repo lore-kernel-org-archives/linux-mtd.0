@@ -1,19 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXhD-0007jv-Sj
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:38:30 +0000
-Date: Wed, 20 Jun 2018 09:38:05 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Linux
- mtd <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] lib/bch: Remove VLA usage
-Message-ID: <20180620093805.6d9c602e@bbrezillon>
-In-Reply-To: <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
-References: <20180531184525.GA11068@beast> <20180601110921.GC4695@parrot.com>
- <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
+ id 1fVXmf-0001XM-0Q
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:44:06 +0000
+Date: Wed, 20 Jun 2018 09:43:42 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Richard Weinberger <richard@nod.at>, "Marek
+ Vasut" <marek.vasut@gmail.com>
+Subject: Re: [RFC PATCH v2 5/6] mtd: rawnand: micron: add
+ ONFI_FEATURE_ON_DIE_ECC to supported features
+Message-ID: <20180620094342.6689f0d4@xps13>
+In-Reply-To: <b7bfe97c079e4e83bc108625224c2b16@svr-chch-ex1.atlnz.lc>
+References: <20180619053125.16792-1-chris.packham@alliedtelesis.co.nz>
+ <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
+ <20180619074056.420d5560@bbrezillon>
+ <20180619085244.77790406@xps13>
+ <b7bfe97c079e4e83bc108625224c2b16@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,85 +32,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kees,
+Hi Chris,
 
-On Tue, 19 Jun 2018 16:48:17 -0700
-Kees Cook <keescook@chromium.org> wrote:
+On Tue, 19 Jun 2018 21:22:00 +0000, Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
 
-> On Fri, Jun 1, 2018 at 4:09 AM, Ivan Djelic <ivan.djelic@parrot.com> wrot=
-e:
-> > On Thu, May 31, 2018 at 11:45:25AM -0700, Kees Cook wrote: =20
-> >> In the quest to remove all stack VLA usage from the kernel[1], this
-> >> allocates a fixed size stack array to cover the range needed for
-> >> bch. This was done instead of a preallocation on the SLAB due to
-> >> performance reasons, shown by Ivan Djelic:
+> On 19/06/18 18:53, Miquel Raynal wrote:
+> > Hi Boris, Chris,
+> >=20
+> > On Tue, 19 Jun 2018 07:40:56 +0200, Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:
+> >  =20
+> >> On Tue, 19 Jun 2018 17:31:24 +1200
+> >> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+> >> =20
+> >>> Add ONFI_FEATURE_ON_DIE_ECC to the set/get features list for Micron
+> >>> NAND flash.
+> >>>    =20
 > >>
-> >>  little-endian, type sizes: int=3D4 long=3D8 longlong=3D8
-> >>  cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
-> >>  calibration: iter=3D4.9143=C2=B5s niter=3D2034 nsamples=3D200 m=3D13 =
-t=3D4
+> >> Fixes: 789157e41a06 ("mtd: rawnand: allow vendors to declare (un)suppo=
+rted features") =20
+> >=20
+> > Sorry for breaking it in my previous series.
+> >  =20
+> >> Cc: <stable@vger.kernel.org>
 > >>
-> >>    Buffer allocation |  Encoding throughput (Mbit/s)
-> >>  ---------------------------------------------------
-> >>   on-stack, VLA      |   3988
-> >>   on-stack, fixed    |   4494
-> >>   kmalloc            |   1967
+> >> No need to send a new version, I'll add that when queuing the patch.
 > >>
-> >> So this change actually improves performance too, it seems.
-> >>
-> >> The resulting stack allocation can get rather large; without
-> >> CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
-> >> trips the stack size checking:
-> >>
-> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
-> >> lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than =
-2048 bytes [-Wframe-larger-than=3D]
-> >>
-> >> Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=3D14=
- and
-> >> CONFIG_BCH_CONST_T=3D4) would have started throwing a warning:
-> >>
-> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
-> >> lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than =
-2048 bytes [-Wframe-larger-than=3D]
-> >>
-> >> But this is how large it's always been; it was just hidden from
-> >> the checker because it was a VLA. So the Makefile has been adjusted to
-> >> silence this warning for anything smaller than 4500 bytes, which should
-> >> provide room for normal cases, but still low enough to catch any future
-> >> pathological situations.
-> >>
-> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=3DqP=
-XydAacU1RqZWA@mail.gmail.com
-> >>
-> >> Signed-off-by: Kees Cook <keescook@chromium.org>
-> >> ---
-> >> v3: fix r_bytes to whole-word size
-> >> v2: switch to fixed-size stack array
-> >> ---
-> >>  lib/Makefile |  1 +
-> >>  lib/bch.c    | 23 +++++++++++++++--------
-> >>  2 files changed, 16 insertions(+), 8 deletions(-) =20
-> >
-> >
-> > The patch looks good to me. It also passed my regression tests.
-> >
-> > Reviewed-by: Ivan Djelic <ivan.djelic@parrot.com>
-> > Tested-by: Ivan Djelic <ivan.djelic@parrot.com> =20
+> >> Miquel, if you're okay, I'm gonna take this patch in the mtd/fixes bra=
+nch
+> >> and let you deal with other patches in this series. =20
+> >=20
+> > Yes please, take this one.
+> >=20
+> > * Chris, I'll take patches 1, 2, 3 with Boris comments. =20
 >=20
-> Thanks for the review and testing!
+> OK.
 >=20
-> Who's the best person to carry this patch?
+> I also got a kbuild report on
+>=20
+> include/linux/mtd/rawnand.h:788: warning: Function parameter or member=20
+> 'fixup_onfi_param_page' not described in 'nand_manufacturer_ops'
+>=20
+> Do you want me to send a v3 for that? (given our timezones I'll just=20
+> send it anyway and you can choose to take it or just stick with v2).
 
-Looks like all users of this lib are in drivers/mtd, so I can take the
-patches if you want, but I can also let you take them if you prefer.
+I'll take v3 for sure, thanks for already sending it.
 
-Here is my
+>=20
+> > * Patch 4 I think I'll just drop it as nobody can test it (and it's a
+> >    oneliner). I prefer people requesting a feature than complaining
+> >    about a bug :) =20
+>=20
+> Agreed. It's in the mailing list archive now if someone needs it we can=20
+> resurrect it from there
+>=20
+> > * Boris will take patch 5 in the mtd/fixes branch. =20
+>=20
+> Thanks all. Sorry our emails crossed so I couldn't just send #5 as a fix=
+=20
+> on it's own.
+>=20
+> > * I'll let you write a v3 for patch 6 only. =20
+>=20
+> I'll have a read through the old thread and see if I can make sense of it.
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Thanks!
 
-in case you were waiting for it.
-
-Regards,
-
-Boris
+Miqu=C3=A8l
