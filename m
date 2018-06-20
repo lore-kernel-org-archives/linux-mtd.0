@@ -1,23 +1,28 @@
-Date: Wed, 20 Jun 2018 16:54:38 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Piotr Bugalski <bugalski.piotr@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: Re: [RFC PATCH 0/2] New QuadSPI driver for Atmel SAMA5D2
-Message-ID: <20180620165438.39608554@bbrezillon>
-In-Reply-To: <20180618162124.21749-1-bugalski.piotr@gmail.com>
-References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+Received: from mail-eopbgr700076.outbound.protection.outlook.com
+ ([40.107.70.76] helo=NAM04-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVehl-0007bG-Rg
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 15:07:32 +0000
+From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>
+CC: "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH v2 4/4] mtd: cfi_cmdset_0002: Avoid walking all chips when
+ unlocking.
+Date: Wed, 20 Jun 2018 15:07:14 +0000
+Message-ID: <1438716ca7bc08bbbf0a48d42ff7eca05c098133.camel@infinera.com>
+References: <20180605172607.50acb34f@bbrezillon>
+ <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+ <20180606101330.11071-4-joakim.tjernlund@infinera.com>
+ <20180620112503.26572cf1@bbrezillon>
+ <c5c50ddf2e99950dd790a264a5f40eb6e1647a83.camel@infinera.com>
+ <20180620141936.1f79cd10@bbrezillon>
+In-Reply-To: <20180620141936.1f79cd10@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EE0821558A242C4892A285C3CE51A250@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,78 +32,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Piotr,
-
-On Mon, 18 Jun 2018 18:21:22 +0200
-Piotr Bugalski <bugalski.piotr@gmail.com> wrote:
-
-> Hello,
-> 
-> Atmel SAMA5D2 is equipped with two QSPI interfaces. These interfaces can
-> work as in SPI-compatible mode or use two / four lines to improve
-> communication speed. At the moment there is QSPI driver strongly tied to
-> NOR-flash memory and MTD subsystem.
-> Intention of this change is to provide new driver which will not be tied
-> to MTD and allows using QSPI with NAND-flash memory or other peripherals
-> New spi-mem API provides abstraction layer which can disconnect QSPI
-> from MTD. This driver doesn't support regular SPI interface, it should
-> be used with spi-mem interface only.
-
-Glad to see that people are starting to convert their SPI NOR
-controller drivers to the SPI mem approach.
-
-> Unfortunately SAMA5D2 hardware by default supports only NOR-flash
-> memory. It allows 24- and 32-bit addressing while NAND-flash requires
-> 16-bit long. To workaround hardware limitation driver is a bit more
-> complicated.
-> 
-> Request to spi-mem contains three fiels: opcode (command), address,
-> dummy bytes. SAMA5D2 QSPI hardware supports opcode, address, dummy and
-> option byte where address field can only be 24- or 32- bytes long.
-> Handling 8-bits long addresses is done using option field. For 16-bits
-> address behaviour depends of number of requested dummy bits. If there
-> are 8 or more dummy cycles, address is shifted and sent with first dummy
-> byte. Otherwise opcode is disabled and first byte of address contains
-> command opcode (works only if opcode and address use the same buswidth).
-> The limitation is when 16-bit address is used without enough dummy
-> cycles and opcode is using different buswidth than address. Other modes
-> are supported with described workaround.
-> 
-> It looks like hardware has some limitation in performance. The same issue
-> exists in current QSPI driver (MTD/nor-flash) and soft-pack (bare-metal
-> library from Atmel). Without using DMA read speed is much worse than
-> maximum bandwidth (efficiency 30-40%). Any help with performance
-> improvement is highly welcome, especially for NAND-flash memories which
-> offers higher capacity than NOR-flash used with previous driver.
-> 
-> Best Regards,
-> Piotr
-> 
-> Piotr Bugalski (2):
->   spi: Add QuadSPI driver for Atmel SAMA5D2
->   dt-bindings: spi: QuadSPI driver for Atmel SAMA5D2 documentation
-> 
->  .../devicetree/bindings/spi/spi_atmel-qspi.txt     |  41 ++
->  drivers/spi/Kconfig                                |   9 +
->  drivers/spi/Makefile                               |   1 +
->  drivers/spi/spi-atmel-qspi.c                       | 480 +++++++++++++++++++++
-
-I'd like a solution where we remove the old driver. I definitely don't
-want to have both in parallel. Did you test the new driver with a SPI
-NOR to check if it still works correctly? If you did, then I'd suggest
-that you add a patch updating defconfigs where the SPI_ATMEL_QUADSPI is
-selected and another patch removing the old driver.
-
->  4 files changed, 531 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt
-
-This should be a simple mv from
-Documentation/devicetree/bindings/mtd/atmel-quadspi.txt to
-Documentation/devicetree/bindings/spi/spi-atmel-qspi.txt
-
->  create mode 100644 drivers/spi/spi-atmel-qspi.c
-> 
-
-Thanks,
-
-Boris
+T24gV2VkLCAyMDE4LTA2LTIwIGF0IDE0OjE5ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
+IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
+PiANCj4gDQo+IE9uIFdlZCwgMjAgSnVuIDIwMTggMTE6MTA6NDkgKzAwMDANCj4gSm9ha2ltIFRq
+ZXJubHVuZCA8Sm9ha2ltLlRqZXJubHVuZEBpbmZpbmVyYS5jb20+IHdyb3RlOg0KPiANCj4gPiBP
+biBXZWQsIDIwMTgtMDYtMjAgYXQgMTE6MjUgKzAyMDAsIEJvcmlzIEJyZXppbGxvbiB3cm90ZToN
+Cj4gPiA+IA0KPiA+ID4gDQo+ID4gPiBPbiBXZWQsICA2IEp1biAyMDE4IDEyOjEzOjMwICswMjAw
+DQo+ID4gPiBKb2FraW0gVGplcm5sdW5kIDxqb2FraW0udGplcm5sdW5kQGluZmluZXJhLmNvbT4g
+d3JvdGU6DQo+ID4gPiANCj4gPiA+ID4gY2ZpX3BwYl91bmxvY2soKSB3YWxrcyBhbGwgZmxhc2gg
+Y2hpcHMgd2hlbiB1bmxvY2tpbmcgc2VjdG9ycywNCj4gPiA+ID4gYXZvaWQgd2Fsa2luZyBjaGlw
+cyB1bmFmZmVjdGVkIGJ5IHRoZSB1bmxvY2sgb3BlcmF0aW9uLg0KPiA+ID4gPiANCj4gPiA+ID4g
+Rml4ZXM6IDE2NDhlYWFhMTU3NSAoIm10ZDogY2ZpX2NtZHNldF8wMDAyOiBTdXBwb3J0IFBlcnNp
+c3RlbnQgUHJvdGVjdGlvbiBCaXRzIChQUEIpIGxvY2tpbmciKQ0KPiA+ID4gPiBDYzogc3RhYmxl
+QHZnZXIua2VybmVsLm9yZw0KPiA+ID4gDQo+ID4gPiBUaGF0J3MgY2xlYXJseSBub3QgYSBmaXgs
+IGp1c3QgYW4gb3B0aW1pemF0aW9uLiBZb3Ugc2hvdWxkIGRyb3AgdGhlDQo+ID4gPiBGaXhlcyBh
+bmQgQ2Mtc3RhYmxlIHRhZ3MuDQo+ID4gDQo+ID4gSXQgc3VyZSBJUyEgVGhlIGNvZGUgbmV2ZXIg
+aW50ZW5kZWQgdG8gZG8gdGhpcyBhbmQgaXQgaXMganVzdCBiYWQgbHVjayB0aGF0IG5vdGhpbmcg
+YmFkDQo+ID4gaGFwcGVuZWQgYW5kIEkgc3VyZSBkb24ndCB3YW50IHRvIHdhbGsgYWxsIDQgY2hp
+cHMgd2UgaGF2ZSwgc3RlYWxpbmcgQ1BVIGFuZCBrZWVwaW5nIHRoZQ0KPiA+IGZsYXNoIGJ1c3kg
+anVzdCBiZWNhdXNlIEkgYW0gdXNpbmcgc3RhYmxlLg0KPiANCj4gRXhjZXB0IGl0J3MgbGlrZSB0
+aGF0IGZyb20gdGhlIGJlZ2lubmluZywgc28gdGhhdCdzIG5vdCBhIHJlZ3Jlc3Npb24NCj4geW91
+J3JlIGZpeGluZyBub3IgaXQgaXMgYSByZWFsIGJ1ZyBwcmV2ZW50aW5nIHlvdSBmcm9tIHVzaW5n
+IHRoZSBkcml2ZXINCj4gb24geW91ciBwbGF0Zm9ybS4gSSdtIG5vdCBtYWtpbmcgdGhlIHJ1bGVz
+IG9mIHdoYXQgaXMgYXBwcm9wcmlhdGUgdG8gYmUNCj4gYmFja3BvcnRlZCBhbmQgd2hhdCBpcyBu
+b3QsIGJ1dCBJJ3ZlIGJlZW4gdG9sZCBzZXZlcmFsIHRpbWVzIHRoYXQgb25seQ0KPiBwYXRjaGVz
+IGZpeGluZyBidWdzIG9yIHBlcmYgcmVncmVzc2lvbnMgYXJlIHN1cHBvc2VkIHRvIGJlIGJhY2tw
+b3J0ZWQsDQo+IGFuZCB0aGF0J3Mgbm90IHRoZSBjYXNlIGhlcmUuDQoNCkkgdGhpbmsgeW91IGFy
+ZSBvdmVyc2ltcGxpZnlpbmcgdGhpbmdzLCBsb29rIGF0IA0KIGh0dHBzOi8vZ2l0Lmtlcm5lbC5v
+cmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9saW51eC1zdGFibGUuZ2l0L2NvbW1p
+dC8/aD1saW51eC00LjE0LnkmaWQ9MDU4ZGQyMzNiNTU5M2ExYTVmYWU0YjhkZjZjYjQ0Y2JjZGNj
+YjUzNw0KaXQgZG9lcyBub3QgYWN0dWFsbHkgZml4IGFueXRoaW5nLCB5ZXQgaXQgaXMgaW4gc3Rh
+YmxlLiANCj4gDQo+ID4gDQo+ID4gR2l2ZW4gSSBoYXZlIG1vdmVkIG9uIG5vdyBhbmQgd2UgZGlz
+YWdyZWUsIEkgd2lsbCBub3QgcmV3b3JkIGFuZCByZXN1Ym1pdCBhbnkNCj4gPiB0aW1lIHNvb24u
+IEZlZWwgZnJlZSB0byBkbyBuZWVkZWQgZWRpdHMgdGhvdWdoLg0KPiANCj4gSSdtIHNvcnJ5LCBt
+YXliZSB5b3UgZG9uJ3QgbGlrZSBpdCBidXQgdGhhdCdzIHRoZSBwcm9jZXNzLiBJIHVuZGVyc3Rh
+bmQNCj4gdGhhdCBpdCdzIG5vdCBwbGVhc2FudCB0byBoYXZlIHRvIHNlbmQgYSBuZXcgdmVyc2lv
+biBvZiBwYXRjaGVzIHRoYXQNCj4geW91IHRob3VnaHQgd2VyZSBnb29kIGVub3VnaCB0byBnbyB1
+cHN0cmVhbSwgYnV0IGl0J3MgbGlrZSB0aGF0LiBJZiBJDQo+IGRvbid0IGFwcGx5IHRoaXMgcnVs
+ZSB0byB5b3UsIHdoeSBzaG91bGQgaXQgYXBwbHkgdG8gb3RoZXJzLg0KDQpDb21lIG9uLCB5b3Ug
+YXJlIG5pdHBpY2tpbmcgbGF0ZSBhbmQgd2FudCBtZSB0byBkbyBjaGFuZ2VzIEkgZG9uJ3QgYWdy
+ZWUgd2l0aC4NCkkgZG9uJ3QgaGF2ZSB0byBkbyB3aGF0IHlvdSBhc2sgYW5kIEkgYW0gdGlyZWQg
+b2YgdGhpcyBkZWJhdGUuDQpPbmNlIGFnYWluLCBjaG9vc2UgeW91cnNlbGYuIElmIHRoaXMgbGFz
+dCBwYXRjaCBib3RoZXJzIHlvdSwganVzdCBkcm9wIHRoYXQgcGF0Y2ggdGhlbi4NCg0KIEpvY2tl
+DQo=
