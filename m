@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXXM-0001Cv-2R
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:28:32 +0000
+ id 1fVXXY-0001MV-SE
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:28:53 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -11,12 +11,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: [PATCH v4 03/15] dt-bindings: qcom_nandc: update for ECC strength and
- step size
-Date: Wed, 20 Jun 2018 12:57:30 +0530
-Message-Id: <1529479662-4026-4-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v4 07/15] mtd: rawnand: qcom: erased page detection for
+ uncorrectable errors only
+Date: Wed, 20 Jun 2018 12:57:34 +0530
+Message-Id: <1529479662-4026-8-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,68 +27,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-1. If nand-ecc-strength specified in DT, then controller will use
-   this ECC strength otherwise ECC strength will be calculated
-   according to chip requirement and available OOB size.
+Following is the flow in the HW if controller tries to read erased
+page:
 
-2. QCOM NAND controller supports only one step size (512 bytes) but
-   nand-ecc-step-size is required property in DT. This DT property
-   can be removed and ecc step size can be assigned in driver with
-   512 bytes value.
+1. First ECC uncorrectable error will be generated from ECC engine
+   since ECC engine first calculates the ECC with all 0xff and match
+   the calculated ECC with ECC code in OOB (which is again all 0xff).
+2. After getting ECC error, erased CW detection logic will be
+   applied which is different for BCH and RS ECC
+    a. For BCH, HW checks if all the bytes in page are 0xff and then
+       it updates the status in separate register
+       NAND_ERASED_CW_DETECT_STATUS.
+    b. For RS ECC, the HW reports the same error when reading an
+       erased CW, but it notifies that it is an erased CW by
+       placing special characters at certain offsets in the
+       buffer.
 
+So the erased CW detect status should be checked only if ECC engine
+generated the uncorrectable error.
+
+Currently for all other operational errors also (like TIMEOUT, MPU
+errors, etc.), the erased CW detect logic is being applied so fix this
+and return EIO for other operational errors.
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
-
 * Changes from v3:
-
-1. Clubbed following 2 patches into one
-   https://patchwork.ozlabs.org/patch/920465/
-   https://patchwork.ozlabs.org/patch/920467/
-
-* Changes from v2:
   NONE
 
+* Changes from v2:
+  1. Changed commit message slightly
+
 * Changes from v1:
-  NEW PATCH
+  1. Added more detail in commit message
+  2. Added comment before each if/else
+  3. Removed redundant check for BS_UNCORRECTABLE_BIT
 
- Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 65 ++++++++++++++++++++++++++-------------
+ 1 file changed, 43 insertions(+), 22 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-index 73d336be..1123cc6 100644
---- a/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-+++ b/Documentation/devicetree/bindings/mtd/qcom_nandc.txt
-@@ -45,11 +45,12 @@ Required properties:
- 			number (e.g., 0, 1, 2, etc.)
- - #address-cells:	see partition.txt
- - #size-cells:		see partition.txt
--- nand-ecc-strength:	see nand.txt
--- nand-ecc-step-size:	must be 512. see nand.txt for more details.
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index fc20149..0d931d5 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -1576,6 +1576,7 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+ 	unsigned int max_bitflips = 0;
+ 	struct read_stats *buf;
++	bool flash_op_err = false;
+ 	int i;
  
- Optional properties:
- - nand-bus-width:	see nand.txt
-+- nand-ecc-strength:	see nand.txt. If not specified, then ECC strength will
-+			be used according to chip requirement and available
-+			OOB size.
+ 	buf = (struct read_stats *)nandc->reg_read_buf;
+@@ -1597,8 +1598,18 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 		buffer = le32_to_cpu(buf->buffer);
+ 		erased_cw = le32_to_cpu(buf->erased_cw);
  
- Each nandcs device node may optionally contain a 'partitions' sub-node, which
- further contains sub-nodes describing the flash partition mapping. See
-@@ -77,7 +78,6 @@ nand-controller@1ac00000 {
- 		reg = <0>;
+-		if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++		/*
++		 * Check ECC failure for each codeword. ECC failure can
++		 * happen in either of the following conditions
++		 * 1. If number of bitflips are greater than ECC engine
++		 *    capability.
++		 * 2. If this codeword contains all 0xff for which erased
++		 *    codeword detection check will be done.
++		 */
++		if ((flash & FS_OP_ERR) && (buffer & BS_UNCORRECTABLE_BIT)) {
+ 			bool erased;
++			int ret, ecclen, extraooblen;
++			void *eccbuf;
  
- 		nand-ecc-strength = <4>;
--		nand-ecc-step-size = <512>;
- 		nand-bus-width = <8>;
+ 			/* ignore erased codeword errors */
+ 			if (host->bch_enabled) {
+@@ -1616,29 +1627,36 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 				continue;
+ 			}
  
- 		partitions {
-@@ -117,7 +117,6 @@ nand-controller@79b0000 {
- 	nand@0 {
- 		reg = <0>;
- 		nand-ecc-strength = <4>;
--		nand-ecc-step-size = <512>;
- 		nand-bus-width = <8>;
+-			if (buffer & BS_UNCORRECTABLE_BIT) {
+-				int ret, ecclen, extraooblen;
+-				void *eccbuf;
++			eccbuf = oob_buf ? oob_buf + oob_len : NULL;
++			ecclen = oob_buf ? host->ecc_bytes_hw : 0;
++			extraooblen = oob_buf ? oob_len : 0;
  
- 		partitions {
+-				eccbuf = oob_buf ? oob_buf + oob_len : NULL;
+-				ecclen = oob_buf ? host->ecc_bytes_hw : 0;
+-				extraooblen = oob_buf ? oob_len : 0;
+-
+-				/*
+-				 * make sure it isn't an erased page reported
+-				 * as not-erased by HW because of a few bitflips
+-				 */
+-				ret = nand_check_erased_ecc_chunk(data_buf,
+-					data_len, eccbuf, ecclen, oob_buf,
+-					extraooblen, ecc->strength);
+-				if (ret < 0) {
+-					mtd->ecc_stats.failed++;
+-				} else {
+-					mtd->ecc_stats.corrected += ret;
+-					max_bitflips =
+-						max_t(unsigned int, max_bitflips, ret);
+-				}
++			/*
++			 * make sure it isn't an erased page reported
++			 * as not-erased by HW because of a few bitflips
++			 */
++			ret = nand_check_erased_ecc_chunk(data_buf,
++				data_len, eccbuf, ecclen, oob_buf,
++				extraooblen, ecc->strength);
++			if (ret < 0) {
++				mtd->ecc_stats.failed++;
++			} else {
++				mtd->ecc_stats.corrected += ret;
++				max_bitflips =
++					max_t(unsigned int, max_bitflips, ret);
+ 			}
++		/*
++		 * Check if MPU or any other operational error (timeout,
++		 * device failure, etc.) happened for this codeword and
++		 * make flash_op_err true. If flash_op_err is set, then
++		 * EIO will be returned for page read.
++		 */
++		} else if (flash & (FS_OP_ERR | FS_MPU_ERR)) {
++			flash_op_err = true;
++		/*
++		 * No ECC or operational errors happened. Check the number of
++		 * bits corrected and update the ecc_stats.corrected.
++		 */
+ 		} else {
+ 			unsigned int stat;
+ 
+@@ -1652,6 +1670,9 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
+ 			oob_buf += oob_len + ecc->bytes;
+ 	}
+ 
++	if (flash_op_err)
++		return -EIO;
++
+ 	return max_bitflips;
+ }
+ 
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
