@@ -1,23 +1,26 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVVel-000747-49
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:27:49 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, dinguyen@kernel.org, robh+dt@kernel.org,
- mark.rutland@arm.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- yamada.masahiro@socionext.com, "See, Chin Liang" <chin.liang.see@intel.com>
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-Date: Wed, 20 Jun 2018 07:27:27 +0200
-Message-ID: <1846662.BtIxBD6EoV@blindfold>
-In-Reply-To: <ba7b5ee8-c9f0-45a1-67ec-3d1f510f6c24@gmail.com>
-References: <20180619120719.26921-1-richard@nod.at>
- <ba7b5ee8-c9f0-45a1-67ec-3d1f510f6c24@gmail.com>
+ id 1fVVpQ-0003Pc-9p
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:38:49 +0000
+Received: by mail-wm0-x241.google.com with SMTP id r125-v6so4349268wmg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2018 22:38:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1281343974.18398.13.camel@wall-e.seibold.net>
+References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
+ <1281343038.12908.25.camel@localhost>
+ <1281343974.18398.13.camel@wall-e.seibold.net>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Wed, 20 Jun 2018 07:38:35 +0200
+Message-ID: <CAFLxGvyHVhEfxa0Qm=sivMgisB1N71HGymT4zpVSrQ4zOnrjNA@mail.gmail.com>
+Subject: Re: [PATCH] Add quick erase format option
+To: Stefani Seibold <stefani@seibold.net>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+ "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Marek,
+On Mon, Aug 9, 2010 at 10:52 AM, Stefani Seibold <stefani@seibold.net> wrote:
+> Am Montag, den 09.08.2010, 09:37 +0100 schrieb David Woodhouse:
+>> On Mon, 2010-08-09 at 09:25 +0100, stefani@seibold.net wrote:
+>> > From: Stefani Seibold <stefani@seibold.net>
+>> >
+>> > This patch add a quick format option which skips erasing of already erased
+>> > flash blocks. This is useful for first time production environments where
+>> > the flash arrived erased.
+>> >
+>> > Signed-off-by: Stefani Seibold <stefani@seibold.net>
+>>
+>> This scares me, given the lengths we had to go to in JFFS2 to cope with
+>> blocks which *look* like they're erased, but which actually start losing
+>> data as soon as you start writing to them because the erase didn't
+>> complete.
+>>
+>
+> I know the drawback. This is why it is only an option which must be
+> enabled. And in most use cases there is a subsequent ubimkvol, which
+> will fail if the flash is not correct initialized.
+>
+> Flash are normally delivered erased. So this save in our production
+> environment (Nokia Siemens Networks) about 5 minutes per device (256 MB
+> NOR CFI Flash).
+>
+> The old JFFS2 was very fast to install the first time on a flash, it was
+> only a simple mount of the MTD partition.
+>
+> Which the quick format option i have now only a slightly first time
+> installation overhead compared to JFFS2. Without this option the
+> overhead is more than 5 minutes.
 
-Am Mittwoch, 20. Juni 2018, 06:52:09 CEST schrieb Marek Vasut:
-> On 06/19/2018 02:07 PM, Richard Weinberger wrote:
-> > The denali NAND flash controller needs at least two clocks to operate,
-> > nand_clk and nand_x_clk.
-> > Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
-> > setup_data_interface()") nand_x_clk is used to derive timing settings.
-> > 
-> > Signed-off-by: Richard Weinberger <richard@nod.at>
-> > ---
-> > Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
-> > is not present on this SoC.
-> > But my SoCFPGA knowledge is very limited.
-> > 
-> > Thanks,
-> > //richard
-> 
-> It looks sane, but I cannot test it right now, since I'm on vacation.
-> I hope Dinh/Chin can jump in.
+This mail arrived now?!
+David, was it delayed by mailman for 8 years?
 
-The patch was tested by me. So, at least it is not completely untested.
-BTW: I forgot to mention that it depends on Masahiro's Denali fixes.
-
+-- 
 Thanks,
 //richard
