@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXX9-0001Bg-Ed
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:28:05 +0000
+ id 1fVXX9-0001Ba-Ec
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:28:07 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -11,11 +11,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 02/15] mtd: rawnand: denali: use helper function for ecc
- setup
-Date: Wed, 20 Jun 2018 12:57:29 +0530
-Message-Id: <1529479662-4026-3-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH v4 01/15] mtd: rawnand: helper function for setting up ECC
+ configuration
+Date: Wed, 20 Jun 2018 12:57:28 +0530
+Message-Id: <1529479662-4026-2-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,74 +28,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the NAND core helper function nand_ecc_choose_conf to tune
-the ECC parameters instead of the function locally defined.
+commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
+match, maximize ECC settings") provides generic helpers which
+drivers can use for setting up ECC parameters.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Since same board can have different ECC strength nand chips so
+following is the logic for setting up ECC strength and ECC step
+size, which can be used by most of the drivers.
+
+1. If both ECC step size and ECC strength are already set
+   (usually by DT) then just check whether this setting
+   is supported by NAND controller.
+2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
+   supported by NAND controller.
+3. Otherwise, try to match the ECC step size and ECC strength closest
+   to the chip's requirement. If available OOB size can't fit the chip
+   requirement then select maximum ECC strength which can be fit with
+   available OOB size.
+
+This patch introduces nand_ecc_choose_conf function which calls the
+required helper functions for the above logic. The drivers can use
+this single function instead of calling the 3 helper functions
+individually.
+
+CC: Masahiro Yamada <yamada.masahiro@socionext.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v3:
- NONE
+  1. call nand_maximize_ecc() 2 times to make code more clear.
 
 * Changes from v2:
 
-  1. Changed commit message
+  1. Renamed function to nand_ecc_choose_conf.
+  2. Minor code reorganization to remove warning and 2 function calls
+     for nand_maximize_ecc.
 
 * Changes from v1:
   NEW PATCH
 
- drivers/mtd/nand/raw/denali.c | 30 ++----------------------------
- 1 file changed, 2 insertions(+), 28 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 33 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  3 +++
+ 2 files changed, 36 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index 2a302a1..a586a1d 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1120,33 +1120,6 @@ int denali_calc_ecc_bytes(int step_size, int strength)
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 10c4f991..c64e3fc 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6287,6 +6287,39 @@ int nand_maximize_ecc(struct nand_chip *chip,
  }
- EXPORT_SYMBOL(denali_calc_ecc_bytes);
+ EXPORT_SYMBOL_GPL(nand_maximize_ecc);
  
--static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
--			    struct denali_nand_info *denali)
--{
--	int oobavail = mtd->oobsize - denali->oob_skip_bytes;
--	int ret;
--
--	/*
--	 * If .size and .strength are already set (usually by DT),
--	 * check if they are supported by this controller.
--	 */
--	if (chip->ecc.size && chip->ecc.strength)
--		return nand_check_ecc_caps(chip, denali->ecc_caps, oobavail);
--
--	/*
--	 * We want .size and .strength closest to the chip's requirement
--	 * unless NAND_ECC_MAXIMIZE is requested.
--	 */
--	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
--		ret = nand_match_ecc_req(chip, denali->ecc_caps, oobavail);
--		if (!ret)
--			return 0;
--	}
--
--	/* Max ECC strength is the last thing we can do */
--	return nand_maximize_ecc(chip, denali->ecc_caps, oobavail);
--}
--
- static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
- 				struct mtd_oob_region *oobregion)
- {
-@@ -1317,7 +1290,8 @@ int denali_init(struct denali_nand_info *denali)
- 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
- 	chip->options |= NAND_NO_SUBPAGE_WRITE;
++/**
++ * nand_ecc_choose_conf - Set the ECC strength and ECC step size
++ * @chip: nand chip info structure
++ * @caps: ECC engine caps info structure
++ * @oobavail: OOB size that the ECC engine can use
++ *
++ * Choose the ECC configuration according to following logic
++ *
++ * 1. If both ECC step size and ECC strength are already set (usually by DT)
++ *    then check if it is supported by this controller.
++ * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
++ * 3. Otherwise, try to match the ECC step size and ECC strength closest
++ *    to the chip's requirement. If available OOB size can't fit the chip
++ *    requirement then fallback to the maximum ECC step size and ECC strength.
++ *
++ * On success, the chosen ECC settings are set.
++ */
++int nand_ecc_choose_conf(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail)
++{
++	if (chip->ecc.size && chip->ecc.strength)
++		return nand_check_ecc_caps(chip, caps, oobavail);
++
++	if (chip->ecc.options & NAND_ECC_MAXIMIZE)
++		return nand_maximize_ecc(chip, caps, oobavail);
++
++	if (!nand_match_ecc_req(chip, caps, oobavail))
++		return 0;
++
++	return nand_maximize_ecc(chip, caps, oobavail);
++}
++EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
++
+ /*
+  * Check if the chip configuration meet the datasheet requirements.
  
--	ret = denali_ecc_setup(mtd, chip, denali);
-+	ret = nand_ecc_choose_conf(chip, denali->ecc_caps,
-+				   mtd->oobsize - denali->oob_skip_bytes);
- 	if (ret) {
- 		dev_err(denali->dev, "Failed to setup ECC settings.\n");
- 		goto disable_irq;
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3e8ec3b..03a0061 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1650,6 +1650,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ int nand_maximize_ecc(struct nand_chip *chip,
+ 		      const struct nand_ecc_caps *caps, int oobavail);
+ 
++int nand_ecc_choose_conf(struct nand_chip *chip,
++			 const struct nand_ecc_caps *caps, int oobavail);
++
+ /* Default write_oob implementation */
+ int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
+ 
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
