@@ -1,24 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVc5U-0006Sp-IW
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 12:20:35 +0000
-Date: Wed, 20 Jun 2018 14:19:36 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v2 4/4] mtd: cfi_cmdset_0002: Avoid walking all chips
- when unlocking.
-Message-ID: <20180620141936.1f79cd10@bbrezillon>
-In-Reply-To: <c5c50ddf2e99950dd790a264a5f40eb6e1647a83.camel@infinera.com>
-References: <20180605172607.50acb34f@bbrezillon>
- <20180606101330.11071-1-joakim.tjernlund@infinera.com>
- <20180606101330.11071-4-joakim.tjernlund@infinera.com>
- <20180620112503.26572cf1@bbrezillon>
- <c5c50ddf2e99950dd790a264a5f40eb6e1647a83.camel@infinera.com>
+From: Piotr Bugalski <bugalski.piotr@gmail.com>
+Date: Wed, 20 Jun 2018 16:31:13 +0200 (CEST)
+To: Mark Brown <broonie@kernel.org>
+cc: Piotr Bugalski <bugalski.piotr@gmail.com>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: Re: [RFC PATCH 1/2] spi: Add QuadSPI driver for Atmel SAMA5D2
+In-Reply-To: <20180619151506.GG11230@sirena.org.uk>
+Message-ID: <alpine.DEB.2.20.1806201627330.26137@carbonite>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180618162124.21749-2-bugalski.piotr@gmail.com>
+ <20180619151506.GG11230@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Jun 2018 11:10:49 +0000
-Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+Hi Mark,
 
-> On Wed, 2018-06-20 at 11:25 +0200, Boris Brezillon wrote:
-> > 
-> > 
-> > On Wed,  6 Jun 2018 12:13:30 +0200
-> > Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
-> >   
-> > > cfi_ppb_unlock() walks all flash chips when unlocking sectors,
-> > > avoid walking chips unaffected by the unlock operation.
-> > > 
-> > > Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
-> > > Cc: stable@vger.kernel.org  
-> > 
-> > That's clearly not a fix, just an optimization. You should drop the
-> > Fixes and Cc-stable tags.  
-> 
-> It sure IS! The code never intended to do this and it is just bad luck that nothing bad
-> happened and I sure don't want to walk all 4 chips we have, stealing CPU and keeping the
-> flash busy just because I am using stable.
+Thank you very much for quick answer.
 
-Except it's like that from the beginning, so that's not a regression
-you're fixing nor it is a real bug preventing you from using the driver
-on your platform. I'm not making the rules of what is appropriate to be
-backported and what is not, but I've been told several times that only
-patches fixing bugs or perf regressions are supposed to be backported,
-and that's not the case here.
+On Tue, 19 Jun 2018, Mark Brown wrote:
 
-> 
-> Given I have moved on now and we disagree, I will not reword and resubmit any
-> time soon. Feel free to do needed edits though.
+> On Mon, Jun 18, 2018 at 06:21:23PM +0200, Piotr Bugalski wrote:
+>
+>> +static int atmel_qspi_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+>> +{
+>> +	return 0;
+>> +}
+>
+> If this can be empty should we adjust the callers to allow it to just be
+> omitted?
+>
 
-I'm sorry, maybe you don't like it but that's the process. I understand
-that it's not pleasant to have to send a new version of patches that
-you thought were good enough to go upstream, but it's like that. If I
-don't apply this rule to you, why should it apply to others.
+If I remember well some commits ago spi-mem required even empty 
+adjust_op_size. Now it seems unnecessary, but I forgot to remove the 
+code. I will fix it in next version.
+
+>> +static int atmel_qspi_remove(struct platform_device *pdev)
+>> +{
+>> +	struct spi_controller *ctrl = platform_get_drvdata(pdev);
+>> +	struct atmel_qspi *aq = spi_controller_get_devdata(ctrl);
+>> +
+>> +	qspi_writel(aq, QSPI_CR, QSPI_CR_QSPIDIS);
+>> +	clk_disable_unprepare(aq->clk);
+>> +
+>> +	spi_unregister_controller(ctrl);
+>> +
+>> +	return 0;
+>> +}
+>
+> You should unregister the controller before disabling the hardware,
+> otherwise something could come in and try to start an operation on the
+> controller (or already be running one) while the hardware is disabled
+> which might blow up.
+>
+
+Sure, deinit should be done in reverse order of init, you are perfectly 
+right, just my mistake. I'll fix it in next version.
+
+Best Regards,
+Piotr
