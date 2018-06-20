@@ -1,24 +1,22 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXY7-0001dc-NV
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:30:26 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
- Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: [PATCH v4 15/15] mtd: rawnand: provide only single helper function
- for ECC conf
-Date: Wed, 20 Jun 2018 12:57:42 +0530
-Message-Id: <1529479662-4026-16-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
-References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVXhD-0007jv-Sj
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:38:30 +0000
+Date: Wed, 20 Jun 2018 09:38:05 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Kees Cook <keescook@chromium.org>
+Cc: Ivan Djelic <ivan.djelic@parrot.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Linux
+ mtd <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] lib/bch: Remove VLA usage
+Message-ID: <20180620093805.6d9c602e@bbrezillon>
+In-Reply-To: <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
+References: <20180531184525.GA11068@beast> <20180601110921.GC4695@parrot.com>
+ <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,164 +26,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Function nand_ecc_choose_conf() will be help for all the cases, so
-other helper functions can be made static.
+Hi Kees,
 
-nand_check_ecc_caps(): Invoke nand_ecc_choose_conf() with
-                       both chip->ecc.size and chip->ecc.strength
-                       value set.
+On Tue, 19 Jun 2018 16:48:17 -0700
+Kees Cook <keescook@chromium.org> wrote:
 
-nand_maximize_ecc(): Invoke nand_ecc_choose_conf() with
-                     NAND_ECC_MAXIMIZE flag.
+> On Fri, Jun 1, 2018 at 4:09 AM, Ivan Djelic <ivan.djelic@parrot.com> wrot=
+e:
+> > On Thu, May 31, 2018 at 11:45:25AM -0700, Kees Cook wrote: =20
+> >> In the quest to remove all stack VLA usage from the kernel[1], this
+> >> allocates a fixed size stack array to cover the range needed for
+> >> bch. This was done instead of a preallocation on the SLAB due to
+> >> performance reasons, shown by Ivan Djelic:
+> >>
+> >>  little-endian, type sizes: int=3D4 long=3D8 longlong=3D8
+> >>  cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
+> >>  calibration: iter=3D4.9143=C2=B5s niter=3D2034 nsamples=3D200 m=3D13 =
+t=3D4
+> >>
+> >>    Buffer allocation |  Encoding throughput (Mbit/s)
+> >>  ---------------------------------------------------
+> >>   on-stack, VLA      |   3988
+> >>   on-stack, fixed    |   4494
+> >>   kmalloc            |   1967
+> >>
+> >> So this change actually improves performance too, it seems.
+> >>
+> >> The resulting stack allocation can get rather large; without
+> >> CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
+> >> trips the stack size checking:
+> >>
+> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
+> >> lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger than =
+2048 bytes [-Wframe-larger-than=3D]
+> >>
+> >> Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=3D14=
+ and
+> >> CONFIG_BCH_CONST_T=3D4) would have started throwing a warning:
+> >>
+> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
+> >> lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger than =
+2048 bytes [-Wframe-larger-than=3D]
+> >>
+> >> But this is how large it's always been; it was just hidden from
+> >> the checker because it was a VLA. So the Makefile has been adjusted to
+> >> silence this warning for anything smaller than 4500 bytes, which should
+> >> provide room for normal cases, but still low enough to catch any future
+> >> pathological situations.
+> >>
+> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=3DqP=
+XydAacU1RqZWA@mail.gmail.com
+> >>
+> >> Signed-off-by: Kees Cook <keescook@chromium.org>
+> >> ---
+> >> v3: fix r_bytes to whole-word size
+> >> v2: switch to fixed-size stack array
+> >> ---
+> >>  lib/Makefile |  1 +
+> >>  lib/bch.c    | 23 +++++++++++++++--------
+> >>  2 files changed, 16 insertions(+), 8 deletions(-) =20
+> >
+> >
+> > The patch looks good to me. It also passed my regression tests.
+> >
+> > Reviewed-by: Ivan Djelic <ivan.djelic@parrot.com>
+> > Tested-by: Ivan Djelic <ivan.djelic@parrot.com> =20
+>=20
+> Thanks for the review and testing!
+>=20
+> Who's the best person to carry this patch?
 
-nand_match_ecc_req(): Invoke nand_ecc_choose_conf() with either
-                      chip->ecc.size or chip->ecc.strength value
-                      set and without NAND_ECC_MAXIMIZE flag.
+Looks like all users of this lib are in drivers/mtd, so I can take the
+patches if you want, but I can also let you take them if you prefer.
 
-CC: Masahiro Yamada <yamada.masahiro@socionext.com>
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
-Changes from v3:
+Here is my
 
-NEW PATCH
+Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
- drivers/mtd/nand/raw/nand_base.c | 39 +++++++++++++++------------------------
- include/linux/mtd/rawnand.h      |  9 ---------
- 2 files changed, 15 insertions(+), 33 deletions(-)
+in case you were waiting for it.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index c64e3fc..f620236 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -6077,24 +6077,17 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
-  * by the controller and the calculated ECC bytes fit within the chip's OOB.
-  * On success, the calculated ECC bytes is set.
-  */
--int nand_check_ecc_caps(struct nand_chip *chip,
--			const struct nand_ecc_caps *caps, int oobavail)
-+static int
-+nand_check_ecc_caps(struct nand_chip *chip,
-+		    const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	const struct nand_ecc_step_info *stepinfo;
- 	int preset_step = chip->ecc.size;
- 	int preset_strength = chip->ecc.strength;
--	int nsteps, ecc_bytes;
-+	int ecc_bytes, nsteps = mtd->writesize / preset_step;
- 	int i, j;
- 
--	if (WARN_ON(oobavail < 0))
--		return -EINVAL;
--
--	if (!preset_step || !preset_strength)
--		return -ENODATA;
--
--	nsteps = mtd->writesize / preset_step;
--
- 	for (i = 0; i < caps->nstepinfos; i++) {
- 		stepinfo = &caps->stepinfos[i];
- 
-@@ -6127,7 +6120,6 @@ int nand_check_ecc_caps(struct nand_chip *chip,
- 
- 	return -ENOTSUPP;
- }
--EXPORT_SYMBOL_GPL(nand_check_ecc_caps);
- 
- /**
-  * nand_match_ecc_req - meet the chip's requirement with least ECC bytes
-@@ -6139,8 +6131,9 @@ int nand_check_ecc_caps(struct nand_chip *chip,
-  * number of ECC bytes (i.e. with the largest number of OOB-free bytes).
-  * On success, the chosen ECC settings are set.
-  */
--int nand_match_ecc_req(struct nand_chip *chip,
--		       const struct nand_ecc_caps *caps, int oobavail)
-+static int
-+nand_match_ecc_req(struct nand_chip *chip,
-+		   const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	const struct nand_ecc_step_info *stepinfo;
-@@ -6151,9 +6144,6 @@ int nand_match_ecc_req(struct nand_chip *chip,
- 	int best_ecc_bytes_total = INT_MAX;
- 	int i, j;
- 
--	if (WARN_ON(oobavail < 0))
--		return -EINVAL;
--
- 	/* No information provided by the NAND chip */
- 	if (!req_step || !req_strength)
- 		return -ENOTSUPP;
-@@ -6212,7 +6202,6 @@ int nand_match_ecc_req(struct nand_chip *chip,
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(nand_match_ecc_req);
- 
- /**
-  * nand_maximize_ecc - choose the max ECC strength available
-@@ -6223,8 +6212,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
-  * Choose the max ECC strength that is supported on the controller, and can fit
-  * within the chip's OOB.  On success, the chosen ECC settings are set.
-  */
--int nand_maximize_ecc(struct nand_chip *chip,
--		      const struct nand_ecc_caps *caps, int oobavail)
-+static int
-+nand_maximize_ecc(struct nand_chip *chip,
-+		  const struct nand_ecc_caps *caps, int oobavail)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	const struct nand_ecc_step_info *stepinfo;
-@@ -6234,9 +6224,6 @@ int nand_maximize_ecc(struct nand_chip *chip,
- 	int best_strength, best_ecc_bytes;
- 	int i, j;
- 
--	if (WARN_ON(oobavail < 0))
--		return -EINVAL;
--
- 	for (i = 0; i < caps->nstepinfos; i++) {
- 		stepinfo = &caps->stepinfos[i];
- 		step_size = stepinfo->stepsize;
-@@ -6285,7 +6272,6 @@ int nand_maximize_ecc(struct nand_chip *chip,
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(nand_maximize_ecc);
- 
- /**
-  * nand_ecc_choose_conf - Set the ECC strength and ECC step size
-@@ -6307,6 +6293,11 @@ int nand_maximize_ecc(struct nand_chip *chip,
- int nand_ecc_choose_conf(struct nand_chip *chip,
- 			 const struct nand_ecc_caps *caps, int oobavail)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	if (WARN_ON(oobavail < 0 || oobavail > mtd->oobsize))
-+		return -EINVAL;
-+
- 	if (chip->ecc.size && chip->ecc.strength)
- 		return nand_check_ecc_caps(chip, caps, oobavail);
- 
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 03a0061..0945868 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1641,15 +1641,6 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
- 				void *extraoob, int extraooblen,
- 				int threshold);
- 
--int nand_check_ecc_caps(struct nand_chip *chip,
--			const struct nand_ecc_caps *caps, int oobavail);
--
--int nand_match_ecc_req(struct nand_chip *chip,
--		       const struct nand_ecc_caps *caps,  int oobavail);
--
--int nand_maximize_ecc(struct nand_chip *chip,
--		      const struct nand_ecc_caps *caps, int oobavail);
--
- int nand_ecc_choose_conf(struct nand_chip *chip,
- 			 const struct nand_ecc_caps *caps, int oobavail);
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
-is a member of Code Aurora Forum, hosted by The Linux Foundation
+Regards,
+
+Boris
