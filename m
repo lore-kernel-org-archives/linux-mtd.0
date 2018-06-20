@@ -1,18 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVZ1h-0001Mu-Fv
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:03:47 +0000
-Date: Wed, 20 Jun 2018 11:03:15 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Use right chip in
- do_ppb_xxlock()
-Message-ID: <20180620110315.2af69cfe@bbrezillon>
-In-Reply-To: <20180606101330.11071-1-joakim.tjernlund@infinera.com>
-References: <20180605172607.50acb34f@bbrezillon>
- <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVa5R-0002FY-Up
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 10:11:39 +0000
+Date: Wed, 20 Jun 2018 12:11:22 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Julien
+ Su <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
+ <zhengxunli@mxic.com.tw>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: rawnand: All AC chips have a broken
+ GET_FEATURES(TIMINGS).
+Message-ID: <20180620121122.65631b14@xps13>
+In-Reply-To: <20180620094630.10212-1-boris.brezillon@bootlin.com>
+References: <20180620094630.10212-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,62 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  6 Jun 2018 12:13:27 +0200
-Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
+Hi Boris,
 
-> do_ppb_xxlock() fails to add chip->start when
-> quering for lock status(and chip_ready test),
+On Wed, 20 Jun 2018 11:46:30 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-  ^ querying?
-
-> which caused false status reports.
-
-The 3 above lines are wrapped at less than 50 chars, is this normal?
-
-> Fix by adding adr += chip->start and adjust call sites accordingly.
+> From: Mason Yang <masonccyang@mxic.com.tw>
 > 
-> Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> Make sure we flag all broken chips as not supporting this feature.
+> Also move this logic to a new function to keep things readable.
+> 
+> Fixes: 34c5c01e0c8c ("mtd: rawnand: macronix: nack the support of changing timings for one chip")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
-> 
->  v2 - Spilt into several patches
->  
->  drivers/mtd/chips/cfi_cmdset_0002.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 53a976a8e614..8648b1adccd5 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -2554,8 +2554,9 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	unsigned long timeo;
->  	int ret;
->  
-> +	adr += chip->start;
->  	mutex_lock(&chip->mutex);
-> -	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
-> +	ret = get_chip(map, chip, adr, FL_LOCKING);
->  	if (ret) {
->  		mutex_unlock(&chip->mutex);
->  		return ret;
-> @@ -2573,8 +2574,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  
->  	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
->  		chip->state = FL_LOCKING;
-> -		map_write(map, CMD(0xA0), chip->start + adr);
-> -		map_write(map, CMD(0x00), chip->start + adr);
-> +		map_write(map, CMD(0xA0), adr);
-> +		map_write(map, CMD(0x00), adr);
->  	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
->  		/*
->  		 * Unlocking of one specific sector is not supported, so we
-> @@ -2612,7 +2613,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	map_write(map, CMD(0x00), chip->start);
->  
->  	chip->state = FL_READY;
-> -	put_chip(map, chip, adr + chip->start);
-> +	put_chip(map, chip, adr);
->  	mutex_unlock(&chip->mutex);
->  
->  	return ret;
+> Changes in v2:
+> - Add Fixes and Cc-stable tags
+
+Thank you ;)
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
