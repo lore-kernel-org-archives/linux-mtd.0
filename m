@@ -1,24 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVZc8-0002wT-Af
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:41:28 +0000
-Date: Wed, 20 Jun 2018 11:41:08 +0200
+ id 1fVZdS-0003KV-QL
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:42:44 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Martin Kaiser <martin@kaiser.cx>, David Woodhouse <dwmw2@infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam
- <fabio.estevam@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3] mtd: rawnand: mxc: set spare area size register
- explicitly
-Message-ID: <20180620114108.4ef7ab58@bbrezillon>
-In-Reply-To: <20180619110741.32e4a5d8@xps13>
-References: <1528025495-14443-1-git-send-email-martin@kaiser.cx>
- <1529354463-23526-1-git-send-email-martin@kaiser.cx>
- <20180619110741.32e4a5d8@xps13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Julien Su <juliensu@mxic.com.tw>,
+ Mason Yang <masonccyang@mxic.com.tw>, <zhengxunli@mxic.com.tw>
+Subject: [PATCH] mtd: rawnand: All AC chips have a broken
+ GET_FEATURES(TIMINGS).
+Date: Wed, 20 Jun 2018 11:42:28 +0200
+Message-Id: <20180620094228.10693-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 19 Jun 2018 11:07:41 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+From: Mason Yang <masonccyang@mxic.com.tw>
 
-> On Mon, 18 Jun 2018 22:41:03 +0200, Martin Kaiser <martin@kaiser.cx>
-> wrote:
-> 
-> > The v21 version of the NAND flash controller contains a Spare Area Size
-> > Register (SPAS) at offset 0x10. Its setting defaults to the maximum
-> > spare area size of 218 bytes. The size that is set in this register is
-> > used by the controller when it calculates the ECC bytes internally in
-> > hardware.
-> > 
-> > Usually, this register is updated from settings in the IIM fuses when
-> > the system is booting from NAND flash. For other boot media, however,
-> > the SPAS register remains at the default setting, which may not work for
-> > the particular flash chip on the board. The same goes for flash chips
-> > whose configuration cannot be set in the IIM fuses (e.g. chips with 2k
-> > sector size and 128 bytes spare area size can't be configured in the IIM
-> > fuses on imx25 systems).
-> > 
-> > Set the SPAS register explicitly during the preset operation. Derive the
-> > register value from mtd->oobsize that was detected during probe by
-> > decoding the flash chip's ID bytes.
-> > 
-> > While at it, rename the define for the spare area register's offset to
-> > NFC_V21_RSLTSPARE_AREA. The register at offset 0x10 on v1 controllers is
-> > different from the register on v21 controllers.
-> > 
-> > Signed-off-by: Martin Kaiser <martin@kaiser.cx>
-> > Cc: stable@vger.kernel.org
-> > Fixes: d484018 ("mtd: mxc_nand: set NFC registers after reset")  
-> 
-> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Make sure we flag all broken chips as not supporting this feature.
+Also move this logic to a new function to keep things readable.
 
-Applied.
+Signed-off-by: Mason Yang <masonccyang@mxic.com.tw>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_macronix.c | 48 +++++++++++++++++++++++++++---------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
 
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
+index 7ed1f87e742a..49c546c97c6f 100644
+--- a/drivers/mtd/nand/raw/nand_macronix.c
++++ b/drivers/mtd/nand/raw/nand_macronix.c
+@@ -17,23 +17,47 @@
+ 
+ #include <linux/mtd/rawnand.h>
+ 
++/*
++ * Macronix AC series does not support using SET/GET_FEATURES to change
++ * the timings unlike what is declared in the parameter page. Unflag
++ * this feature to avoid unnecessary downturns.
++ */
++static void macronix_nand_fix_broken_get_timings(struct nand_chip *chip)
++{
++	unsigned int i;
++	static const char * const broken_get_timings[] = {
++		"MX30LF1G18AC",
++		"MX30LF1G28AC",
++		"MX30LF2G18AC",
++		"MX30LF2G28AC",
++		"MX30LF4G18AC",
++		"MX30LF4G28AC",
++		"MX60LF8G18AC",
++	};
++
++	if (!chip->parameters.supports_set_get_features)
++		return;
++
++	for (i = 0; i < ARRAY_SIZE(broken_get_timings); i++) {
++		if (!strcmp(broken_get_timings[i], chip->parameters.model))
++			break;
++	}
++
++	if (i == ARRAY_SIZE(broken_get_timings))
++		return;
++
++	bitmap_clear(chip->parameters.get_feature_list,
++		     ONFI_FEATURE_ADDR_TIMING_MODE, 1);
++	bitmap_clear(chip->parameters.set_feature_list,
++		     ONFI_FEATURE_ADDR_TIMING_MODE, 1);
++}
++
+ static int macronix_nand_init(struct nand_chip *chip)
+ {
+ 	if (nand_is_slc(chip))
+ 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
+ 
+-	/*
+-	 * MX30LF2G18AC chip does not support using SET/GET_FEATURES to change
+-	 * the timings unlike what is declared in the parameter page. Unflag
+-	 * this feature to avoid unnecessary downturns.
+-	 */
+-	if (chip->parameters.supports_set_get_features &&
+-	    !strcmp("MX30LF2G18AC", chip->parameters.model)) {
+-		bitmap_clear(chip->parameters.get_feature_list,
+-			     ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+-		bitmap_clear(chip->parameters.set_feature_list,
+-			     ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+-	}
++	macronix_nand_fix_broken_get_timings(chip);
+ 
+ 	return 0;
+ }
+-- 
+2.14.1
