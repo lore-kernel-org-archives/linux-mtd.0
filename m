@@ -1,20 +1,23 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVVJv-0003uO-MG
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:06:19 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v3 2/4] mtd: rawnand: add manufacturer fixup for ONFI
- parameter page
-Date: Wed, 20 Jun 2018 17:05:42 +1200
-Message-Id: <20180620050544.31549-3-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
-References: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
+ id 1fVVel-000747-49
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:27:49 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, dinguyen@kernel.org, robh+dt@kernel.org,
+ mark.rutland@arm.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
+ yamada.masahiro@socionext.com, "See, Chin Liang" <chin.liang.see@intel.com>
+Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
+Date: Wed, 20 Jun 2018 07:27:27 +0200
+Message-ID: <1846662.BtIxBD6EoV@blindfold>
+In-Reply-To: <ba7b5ee8-c9f0-45a1-67ec-3d1f510f6c24@gmail.com>
+References: <20180619120719.26921-1-richard@nod.at>
+ <ba7b5ee8-c9f0-45a1-67ec-3d1f510f6c24@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is called after the ONFI parameter page checksum is verified
-and allows us to override the contents of the parameter page.
+Marek,
 
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v2:
-- New
-Changes in v3:
-- Add doc comment and review from Boris
+Am Mittwoch, 20. Juni 2018, 06:52:09 CEST schrieb Marek Vasut:
+> On 06/19/2018 02:07 PM, Richard Weinberger wrote:
+> > The denali NAND flash controller needs at least two clocks to operate,
+> > nand_clk and nand_x_clk.
+> > Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
+> > setup_data_interface()") nand_x_clk is used to derive timing settings.
+> > 
+> > Signed-off-by: Richard Weinberger <richard@nod.at>
+> > ---
+> > Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
+> > is not present on this SoC.
+> > But my SoCFPGA knowledge is very limited.
+> > 
+> > Thanks,
+> > //richard
+> 
+> It looks sane, but I cannot test it right now, since I'm on vacation.
+> I hope Dinh/Chin can jump in.
 
- drivers/mtd/nand/raw/nand_base.c | 4 ++++
- include/linux/mtd/rawnand.h      | 3 +++
- 2 files changed, 7 insertions(+)
+The patch was tested by me. So, at least it is not completely untested.
+BTW: I forgot to mention that it depends on Masahiro's Denali fixes.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0cd3e216b95c..65250308c82d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5172,6 +5172,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 		}
- 	}
- 
-+	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
-+	    chip->manufacturer.desc->ops->fixup_onfi_param_page)
-+		chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
-+
- 	/* Check version */
- 	val = le16_to_cpu(p->revision);
- 	if (val & (1 << 5))
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 3e8ec3b8a39c..ef7e3b4e91ea 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -778,11 +778,14 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *	  implementation) if any.
-  * @cleanup: the ->init() function may have allocated resources, ->cleanup()
-  *	     is here to let vendor specific code release those resources.
-+ * @fixup_onfi_param_page: apply vendor specific fixups to the ONFI
-+ *	parameter page. This is called after the checksum is verified.
-  */
- struct nand_manufacturer_ops {
- 	void (*detect)(struct nand_chip *chip);
- 	int (*init)(struct nand_chip *chip);
- 	void (*cleanup)(struct nand_chip *chip);
-+	void (*fixup_onfi_param_page)(struct nand_chip *chip, struct nand_onfi_params *p);
- };
- 
- /**
--- 
-2.17.1
+Thanks,
+//richard
