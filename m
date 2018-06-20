@@ -1,26 +1,33 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVVpQ-0003Pc-9p
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:38:49 +0000
-Received: by mail-wm0-x241.google.com with SMTP id r125-v6so4349268wmg.2
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2018 22:38:37 -0700 (PDT)
+ id 1fVXA5-0000Kj-TY
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:04:15 +0000
 MIME-Version: 1.0
-In-Reply-To: <1281343974.18398.13.camel@wall-e.seibold.net>
-References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
- <1281343038.12908.25.camel@localhost>
- <1281343974.18398.13.camel@wall-e.seibold.net>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 20 Jun 2018 07:38:35 +0200
-Message-ID: <CAFLxGvyHVhEfxa0Qm=sivMgisB1N71HGymT4zpVSrQ4zOnrjNA@mail.gmail.com>
-Subject: Re: [PATCH] Add quick erase format option
-To: Stefani Seibold <stefani@seibold.net>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
- "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date: Wed, 20 Jun 2018 12:34:01 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
+ Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
+ <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
+ for bad block check
+In-Reply-To: <20180618133556.06e9a16a@xps13>
+References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
+ <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
+ <20180526104629.74315561@xps13>
+ <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
+ <20180528090352.254022ed@xps13>
+ <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
+ <20180607145326.339170fd@xps13>
+ <7179eb382dbd3d49e2066178914636fd@codeaurora.org>
+ <20180618133556.06e9a16a@xps13>
+Message-ID: <db708d224bbb793f057e2cbc194abbd2@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +37,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 9, 2010 at 10:52 AM, Stefani Seibold <stefani@seibold.net> wrote:
-> Am Montag, den 09.08.2010, 09:37 +0100 schrieb David Woodhouse:
->> On Mon, 2010-08-09 at 09:25 +0100, stefani@seibold.net wrote:
->> > From: Stefani Seibold <stefani@seibold.net>
+On 2018-06-18 17:05, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> Boris, one question for you below :)
+> 
+>> >> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in
+>> >> >>   full page.
+>> >> >> >> > >> >>  	clear_bam_transaction(nandc);
+>> >> >> >> -	ret = copy_last_cw(host, page);
+>> >> >> >> -	if (ret)
+>> >> >> >> +	clear_read_regs(nandc);
+>> >> >> >> +
+>> >> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
+>> >> >> >> +	update_rw_regs(host, 1, true);
+>> >> >> >> +
+>> >> >> >> +	/*
+>> >> >> >> +	 * The last codeword data will be copied from NAND device to NAND
+>> >> >> >> +	 * controller internal HW buffer. Copy only required BBM size bytes
+>> >> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
+>> >> >> >> +	 * bbpos offset.
+>> >> >> >> +	 */
+>> >> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+>> >> >> >> +	config_nand_single_cw_page_read(nandc);
+>> >> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
+>> >> >> >> +		      host->bbm_size, 0);
+>> >> >> >> +
+>> >> >> >> +	ret = submit_descs(nandc);
+>> >> >> >> +	free_descs(nandc);
+>> >> >> >> +	if (ret) {
+>> >> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
+>> >> >> >>  		goto err;
+>> >> >> >> +	}
+>> >> >> >> >>  	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
+>> >> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
+>> >> >> >>  		goto err;
+>> >> >> >>  	}
+>> >> >> >> >> -	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>> >> >> >> -
+>> >> >> >> -	bad = nandc->data_buffer[bbpos] != 0xff;
+>> >> >> >> +	bad = bbm_bytes_buf[0] != 0xff;
+>> >> >> > > This is suspect as it still points to the beginning of the data buffer.
+>> >> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
+>> >> >> >
+>> >> >>   The main thing here is
+>> >> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
+>> >> >> >>   After reading one complete CW from NAND, the data will be still
+>> >> >>   in NAND HW buffer.
+>> >> >> >>   The above register tells that we need to read data from
+>> >> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
+>> >> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
+>> >> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then
+>> >> > it's ok.
+>> >> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte.
+>> >> >>   and bbm_bytes_buf[1] will contain the BBM second byte.
+>> >> >> >>   Regards,
+>> >> >>   Abhishek
+>> >> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16)
+>> >> >> >> -		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
+>> >> >> >> +		bad = bad || (bbm_bytes_buf[1] != 0xff);
+>> >> > > Sorry, my mistake, I did not see the above line.
+>> >> > > However, technically, the BBM could be located in the first, second or
+>> >> > last page of the block. You should check the three of them are 0xFF
+>> >> > before declaring the block is not bad.
+>> >> > > The more I look at the function, the more I wonder if you actually need
+>> >> > it. Why does the generic nand_block_bad() implementation in the core
+>> >> > do not fit?
+>> >> >>   The BBM bytes can be accessed in raw mode only for QCOM NAND
+>> >>   Contoller. We started with following patch for initial patches
+>> >> >>   http://patchwork.ozlabs.org/patch/508565/
+>> >> >>   I am also not very much sure, how can we go ahead now.
+>> >>   Ideally we need to use generic function only which
+>> >>   requires raw_read.
+>> >> > > I see, thanks for pointing this thread.
+>> > > Well for now then let's keep our driver-specific implementation.
+>> > > I will just ask you to do a consistent check as requested above (you
+>> > can copy code from the core) and add a comment above this function
+>> > explaining why it is needed (what you just told me).
 >> >
->> > This patch add a quick format option which skips erasing of already erased
->> > flash blocks. This is useful for first time production environments where
->> > the flash arrived erased.
->> >
->> > Signed-off-by: Stefani Seibold <stefani@seibold.net>
->>
->> This scares me, given the lengths we had to go to in JFFS2 to cope with
->> blocks which *look* like they're erased, but which actually start losing
->> data as soon as you start writing to them because the erase didn't
->> complete.
->>
->
-> I know the drawback. This is why it is only an option which must be
-> enabled. And in most use cases there is a subsequent ubimkvol, which
-> will fail if the flash is not correct initialized.
->
-> Flash are normally delivered erased. So this save in our production
-> environment (Nokia Siemens Networks) about 5 minutes per device (256 MB
-> NOR CFI Flash).
->
-> The old JFFS2 was very fast to install the first time on a flash, it was
-> only a simple mount of the MTD partition.
->
-> Which the quick format option i have now only a slightly first time
-> installation overhead compared to JFFS2. Without this option the
-> overhead is more than 5 minutes.
+>>   Hi Miquel,
+>> 
+>>   I explored more regarding making custom bad block functions in this
+>>   thread and it looks like, we can move to generic block_bad function
+>>   by small changes in QCOM NAND driver
+>>   only. The main problem was, in read page with ECC, the bad block
+>>   byte was skipped.
+>> 
+>>   But controller is copying the bad block bytes in another register
+>>   with following status bytes.
+>> 
+>>   BAD_BLOCK_STATUS : With every page read operation, when the 
+>> controller
+>>   reads a page with a bad block, it writes the bad block status data 
+>> into
+>>   this register.
+>> 
+>>   We can update the BBM bytes at start of OOB data in read_oob 
+>> function
+>>   with these status bytes. It will help in getting rid of 
+>> driver-specific
+>>   implementation for chip->block_bad.
+> 
+> If think this is acceptable.
+> 
+>> 
+>>   For chip->block_markbad, if we want to get rid of
+>>   driver-specific implementation then we can have
+>>   following logic
+>> 
+>>   in write_oob function check for bad block bytes in oob
+>>   and do the raw write for updating BBM bytes alone in
+>>   flash if BBM bytes are non 0xff.
+> 
+> Ok but this will have to be properly explained in a descriptive 
+> comment!
+> 
+> Maybe Boris can give its point of view on the subject. Is it worth
+> adding the above 'hacks' in the qcom driver and get rid of the
+> driver-specific ->is_bad()/->mark_bad() impementations?
 
-This mail arrived now?!
-David, was it delayed by mailman for 8 years?
+  Thanks Miquel.
 
--- 
-Thanks,
-//richard
+  I will remove this patch from this patch series and will send
+  separate patch series for all bad block handling related changes
+  once things are finalized.
+
+  Regards,
+  Abhishek
