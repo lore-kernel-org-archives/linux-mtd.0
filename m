@@ -1,25 +1,19 @@
-Received: from mail-pg0-x241.google.com ([2607:f8b0:400e:c05::241])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVV6e-0007Bj-Jz
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 04:52:34 +0000
-Received: by mail-pg0-x241.google.com with SMTP id m5-v6so893216pgd.3
- for <linux-mtd@lists.infradead.org>; Tue, 19 Jun 2018 21:52:22 -0700 (PDT)
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Richard Weinberger <richard@nod.at>, devicetree@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- dinguyen@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, miquel.raynal@bootlin.com,
- boris.brezillon@bootlin.com, yamada.masahiro@socionext.com,
- "See, Chin Liang" <chin.liang.see@intel.com>
-References: <20180619120719.26921-1-richard@nod.at>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <ba7b5ee8-c9f0-45a1-67ec-3d1f510f6c24@gmail.com>
-Date: Wed, 20 Jun 2018 06:52:09 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180619120719.26921-1-richard@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1fVVJv-0003uP-MF
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 05:06:17 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH v3 3/4] mtd: rawnand: micron: add fixup for ONFI revision
+Date: Wed, 20 Jun 2018 17:05:43 +1200
+Message-Id: <20180620050544.31549-4-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
+References: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/19/2018 02:07 PM, Richard Weinberger wrote:
-> The denali NAND flash controller needs at least two clocks to operate,
-> nand_clk and nand_x_clk.
-> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
-> setup_data_interface()") nand_x_clk is used to derive timing settings.
-> 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
-> is not present on this SoC.
-> But my SoCFPGA knowledge is very limited.
-> 
-> Thanks,
-> //richard
+Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
+revision number field of the ONFI parameter page. Rather than rejecting
+these outright assume ONFI version 1.0 if the revision number is 00 00.
 
-It looks sane, but I cannot test it right now, since I'm on vacation.
-I hope Dinh/Chin can jump in.
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+This is now qualified on vendor == MICRON. I haven't qualified this
+based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
+documented to have this behaviour.
 
-> ---
->  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-> index 486d4e7433ed..562f7b375bbd 100644
-> --- a/arch/arm/boot/dts/socfpga.dtsi
-> +++ b/arch/arm/boot/dts/socfpga.dtsi
-> @@ -754,7 +754,8 @@
->  			reg-names = "nand_data", "denali_reg";
->  			interrupts = <0x0 0x90 0x4>;
->  			dma-mask = <0xffffffff>;
-> -			clocks = <&nand_clk>;
-> +			clocks = <&nand_clk>, <&nand_x_clk>;
-> +			clock-names = "nand", "nand_x";
->  			status = "disabled";
->  		};
->  
-> 
+Changes in v2:
+- use fixup_onfi_param_page
+Changes in v3:
+- add code comment next to workaround
 
+ drivers/mtd/nand/raw/nand_micron.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 5ec4c90a637d..5cec79372181 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -289,6 +289,19 @@ static int micron_nand_init(struct nand_chip *chip)
+ 	return 0;
+ }
+ 
++static void micron_fixup_onfi_param_page(struct nand_chip *chip,
++					 struct nand_onfi_params *p)
++{
++	/*
++	 * MT29F1G08ABAFAWP-ITE:F and possibly others report 00 00 for the
++	 * revision number field of the ONFI parameter page. Assume ONFI
++	 * version 1.0 if the revision number is 00 00.
++	 */
++	if (le16_to_cpu(p->revision) == 0)
++		p->revision = cpu_to_le16(1 << 1);
++}
++
+ const struct nand_manufacturer_ops micron_nand_manuf_ops = {
+ 	.init = micron_nand_init,
++	.fixup_onfi_param_page = micron_fixup_onfi_param_page,
+ };
 -- 
-Best regards,
-Marek Vasut
+2.17.1
