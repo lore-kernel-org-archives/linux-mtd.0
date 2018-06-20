@@ -1,19 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVZMZ-0003QH-9I
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:25:17 +0000
-Date: Wed, 20 Jun 2018 11:25:03 +0200
+ id 1fVZbR-0002cM-Tn
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 09:40:40 +0000
+Date: Wed, 20 Jun 2018 11:40:25 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] mtd: cfi_cmdset_0002: Avoid walking all chips
- when unlocking.
-Message-ID: <20180620112503.26572cf1@bbrezillon>
-In-Reply-To: <20180606101330.11071-4-joakim.tjernlund@infinera.com>
-References: <20180605172607.50acb34f@bbrezillon>
- <20180606101330.11071-1-joakim.tjernlund@infinera.com>
- <20180606101330.11071-4-joakim.tjernlund@infinera.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
+ Vasut <marek.vasut@gmail.com>
+Subject: Re: [RFC PATCH v2 5/6] mtd: rawnand: micron: add
+ ONFI_FEATURE_ON_DIE_ECC to supported features
+Message-ID: <20180620114025.0b18b22f@bbrezillon>
+In-Reply-To: <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
+References: <20180619053125.16792-1-chris.packham@alliedtelesis.co.nz>
+ <20180619053125.16792-6-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,35 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  6 Jun 2018 12:13:30 +0200
-Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
+On Tue, 19 Jun 2018 17:31:24 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-> cfi_ppb_unlock() walks all flash chips when unlocking sectors,
-> avoid walking chips unaffected by the unlock operation.
+> Add ONFI_FEATURE_ON_DIE_ECC to the set/get features list for Micron
+> NAND flash.
 > 
-> Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
-> Cc: stable@vger.kernel.org
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-That's clearly not a fix, just an optimization. You should drop the
-Fixes and Cc-stable tags.
+Queued to master (AKA mtd/fixes).
 
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Thanks,
+
+Boris
+
 > ---
->  v2 - Spilt into several patches
+> Changes in v2:
+> - New
 > 
->  drivers/mtd/chips/cfi_cmdset_0002.c | 2 ++
+>  drivers/mtd/nand/raw/nand_micron.c | 2 ++
 >  1 file changed, 2 insertions(+)
 > 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index b6273ce83de7..62cd4ee280b3 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -2686,6 +2686,8 @@ static int __maybe_unused cfi_ppb_unlock(struct mtd_info *mtd, loff_t ofs,
->  			i++;
+> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> index e582c9e61715..d1e8f57544a0 100644
+> --- a/drivers/mtd/nand/raw/nand_micron.c
+> +++ b/drivers/mtd/nand/raw/nand_micron.c
+> @@ -66,7 +66,9 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
 >  
->  		if (adr >> cfi->chipshift) {
-> +			if (offset >= (ofs + len))
-> +				break;
->  			adr = 0;
->  			chipnum++;
+>  	if (p->supports_set_get_features) {
+>  		set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->set_feature_list);
+> +		set_bit(ONFI_FEATURE_ON_DIE_ECC, p->set_feature_list);
+>  		set_bit(ONFI_FEATURE_ADDR_READ_RETRY, p->get_feature_list);
+> +		set_bit(ONFI_FEATURE_ON_DIE_ECC, p->get_feature_list);
+>  	}
 >  
+>  	return 0;
