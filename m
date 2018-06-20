@@ -1,33 +1,23 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXA5-0000Kj-TY
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:04:15 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date: Wed, 20 Jun 2018 12:34:01 +0530
+ id 1fVXX9-0001Bg-Ed
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:28:05 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille
- Pitchen <cyrille.pitchen@wedev4u.fr>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, Andy Gross
- <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v3 13/16] mtd: rawnand: qcom: minor code reorganization
- for bad block check
-In-Reply-To: <20180618133556.06e9a16a@xps13>
-References: <1527250904-21988-1-git-send-email-absahu@codeaurora.org>
- <1527250904-21988-14-git-send-email-absahu@codeaurora.org>
- <20180526104629.74315561@xps13>
- <90ae248edf8a06a1d35e2da458f75af5@codeaurora.org>
- <20180528090352.254022ed@xps13>
- <53caff8799d30b6a81ac10f63a7c56c4@codeaurora.org>
- <20180607145326.339170fd@xps13>
- <7179eb382dbd3d49e2066178914636fd@codeaurora.org>
- <20180618133556.06e9a16a@xps13>
-Message-ID: <db708d224bbb793f057e2cbc194abbd2@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
+ Archit Taneja <architt@codeaurora.org>,
+ Abhishek Sahu <absahu@codeaurora.org>
+Subject: [PATCH v4 02/15] mtd: rawnand: denali: use helper function for ecc
+ setup
+Date: Wed, 20 Jun 2018 12:57:29 +0530
+Message-Id: <1529479662-4026-3-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
+References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,130 +27,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-06-18 17:05, Miquel Raynal wrote:
-> Hi Abhishek,
-> 
-> Boris, one question for you below :)
-> 
->> >> >> >>   So for last CW, the 464 is BBM (i.e 2048th byte) in
->> >> >>   full page.
->> >> >> >> > >> >>  	clear_bam_transaction(nandc);
->> >> >> >> -	ret = copy_last_cw(host, page);
->> >> >> >> -	if (ret)
->> >> >> >> +	clear_read_regs(nandc);
->> >> >> >> +
->> >> >> >> +	set_address(host, host->cw_size * (ecc->steps - 1), page);
->> >> >> >> +	update_rw_regs(host, 1, true);
->> >> >> >> +
->> >> >> >> +	/*
->> >> >> >> +	 * The last codeword data will be copied from NAND device to NAND
->> >> >> >> +	 * controller internal HW buffer. Copy only required BBM size bytes
->> >> >> >> +	 * from this HW buffer to bbm_bytes_buf which is present at
->> >> >> >> +	 * bbpos offset.
->> >> >> >> +	 */
->> >> >> >> +	nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
->> >> >> >> +	config_nand_single_cw_page_read(nandc);
->> >> >> >> +	read_data_dma(nandc, FLASH_BUF_ACC + bbpos, bbm_bytes_buf,
->> >> >> >> +		      host->bbm_size, 0);
->> >> >> >> +
->> >> >> >> +	ret = submit_descs(nandc);
->> >> >> >> +	free_descs(nandc);
->> >> >> >> +	if (ret) {
->> >> >> >> +		dev_err(nandc->dev, "failed to copy bad block bytes\n");
->> >> >> >>  		goto err;
->> >> >> >> +	}
->> >> >> >> >>  	flash_status = le32_to_cpu(nandc->reg_read_buf[0]);
->> >> >> >> >> @@ -2141,12 +2127,10 @@ static int qcom_nandc_block_bad(struct >> mtd_info *mtd, loff_t ofs)
->> >> >> >>  		goto err;
->> >> >> >>  	}
->> >> >> >> >> -	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
->> >> >> >> -
->> >> >> >> -	bad = nandc->data_buffer[bbpos] != 0xff;
->> >> >> >> +	bad = bbm_bytes_buf[0] != 0xff;
->> >> >> > > This is suspect as it still points to the beginning of the data buffer.
->> >> >> > Can you please check you did not meant bbm_bytes_buf[bbpos]?
->> >> >> >
->> >> >>   The main thing here is
->> >> >>   nandc_set_read_loc(nandc, 0, bbpos, host->bbm_size, 1);
->> >> >> >>   After reading one complete CW from NAND, the data will be still
->> >> >>   in NAND HW buffer.
->> >> >> >>   The above register tells that we need to read data from
->> >> >>   bbpos of size host->bbm_size (which is 1 byte for 8 bus witdh
->> >> >>   and 2 byte for 16 bus width) in bbm_bytes_buf.
->> >> > > I see: idx 0 in bbm_bytes_buf is the data at offset bbpos. Then
->> >> > it's ok.
->> >> > >> >>   So bbm_bytes_buf[0] will contain the BBM first byte.
->> >> >>   and bbm_bytes_buf[1] will contain the BBM second byte.
->> >> >> >>   Regards,
->> >> >>   Abhishek
->> >> >> >> >> >>  	if (chip->options & NAND_BUSWIDTH_16)
->> >> >> >> -		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
->> >> >> >> +		bad = bad || (bbm_bytes_buf[1] != 0xff);
->> >> > > Sorry, my mistake, I did not see the above line.
->> >> > > However, technically, the BBM could be located in the first, second or
->> >> > last page of the block. You should check the three of them are 0xFF
->> >> > before declaring the block is not bad.
->> >> > > The more I look at the function, the more I wonder if you actually need
->> >> > it. Why does the generic nand_block_bad() implementation in the core
->> >> > do not fit?
->> >> >>   The BBM bytes can be accessed in raw mode only for QCOM NAND
->> >>   Contoller. We started with following patch for initial patches
->> >> >>   http://patchwork.ozlabs.org/patch/508565/
->> >> >>   I am also not very much sure, how can we go ahead now.
->> >>   Ideally we need to use generic function only which
->> >>   requires raw_read.
->> >> > > I see, thanks for pointing this thread.
->> > > Well for now then let's keep our driver-specific implementation.
->> > > I will just ask you to do a consistent check as requested above (you
->> > can copy code from the core) and add a comment above this function
->> > explaining why it is needed (what you just told me).
->> >
->>   Hi Miquel,
->> 
->>   I explored more regarding making custom bad block functions in this
->>   thread and it looks like, we can move to generic block_bad function
->>   by small changes in QCOM NAND driver
->>   only. The main problem was, in read page with ECC, the bad block
->>   byte was skipped.
->> 
->>   But controller is copying the bad block bytes in another register
->>   with following status bytes.
->> 
->>   BAD_BLOCK_STATUS : With every page read operation, when the 
->> controller
->>   reads a page with a bad block, it writes the bad block status data 
->> into
->>   this register.
->> 
->>   We can update the BBM bytes at start of OOB data in read_oob 
->> function
->>   with these status bytes. It will help in getting rid of 
->> driver-specific
->>   implementation for chip->block_bad.
-> 
-> If think this is acceptable.
-> 
->> 
->>   For chip->block_markbad, if we want to get rid of
->>   driver-specific implementation then we can have
->>   following logic
->> 
->>   in write_oob function check for bad block bytes in oob
->>   and do the raw write for updating BBM bytes alone in
->>   flash if BBM bytes are non 0xff.
-> 
-> Ok but this will have to be properly explained in a descriptive 
-> comment!
-> 
-> Maybe Boris can give its point of view on the subject. Is it worth
-> adding the above 'hacks' in the qcom driver and get rid of the
-> driver-specific ->is_bad()/->mark_bad() impementations?
+Use the NAND core helper function nand_ecc_choose_conf to tune
+the ECC parameters instead of the function locally defined.
 
-  Thanks Miquel.
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+* Changes from v3:
+ NONE
 
-  I will remove this patch from this patch series and will send
-  separate patch series for all bad block handling related changes
-  once things are finalized.
+* Changes from v2:
 
-  Regards,
-  Abhishek
+  1. Changed commit message
+
+* Changes from v1:
+  NEW PATCH
+
+ drivers/mtd/nand/raw/denali.c | 30 ++----------------------------
+ 1 file changed, 2 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index 2a302a1..a586a1d 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1120,33 +1120,6 @@ int denali_calc_ecc_bytes(int step_size, int strength)
+ }
+ EXPORT_SYMBOL(denali_calc_ecc_bytes);
+ 
+-static int denali_ecc_setup(struct mtd_info *mtd, struct nand_chip *chip,
+-			    struct denali_nand_info *denali)
+-{
+-	int oobavail = mtd->oobsize - denali->oob_skip_bytes;
+-	int ret;
+-
+-	/*
+-	 * If .size and .strength are already set (usually by DT),
+-	 * check if they are supported by this controller.
+-	 */
+-	if (chip->ecc.size && chip->ecc.strength)
+-		return nand_check_ecc_caps(chip, denali->ecc_caps, oobavail);
+-
+-	/*
+-	 * We want .size and .strength closest to the chip's requirement
+-	 * unless NAND_ECC_MAXIMIZE is requested.
+-	 */
+-	if (!(chip->ecc.options & NAND_ECC_MAXIMIZE)) {
+-		ret = nand_match_ecc_req(chip, denali->ecc_caps, oobavail);
+-		if (!ret)
+-			return 0;
+-	}
+-
+-	/* Max ECC strength is the last thing we can do */
+-	return nand_maximize_ecc(chip, denali->ecc_caps, oobavail);
+-}
+-
+ static int denali_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 				struct mtd_oob_region *oobregion)
+ {
+@@ -1317,7 +1290,8 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE;
+ 
+-	ret = denali_ecc_setup(mtd, chip, denali);
++	ret = nand_ecc_choose_conf(chip, denali->ecc_caps,
++				   mtd->oobsize - denali->oob_skip_bytes);
+ 	if (ret) {
+ 		dev_err(denali->dev, "Failed to setup ECC settings.\n");
+ 		goto disable_irq;
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
+is a member of Code Aurora Forum, hosted by The Linux Foundation
