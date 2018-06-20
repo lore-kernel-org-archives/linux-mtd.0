@@ -1,30 +1,23 @@
-Received: from mail-yb0-f194.google.com ([209.85.213.194])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVfYN-0007QK-49
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 16:01:52 +0000
-Received: by mail-yb0-f194.google.com with SMTP id q62-v6so28864ybg.5
- for <linux-mtd@lists.infradead.org>; Wed, 20 Jun 2018 09:01:38 -0700 (PDT)
-Date: Wed, 20 Jun 2018 10:01:30 -0600
-From: Rob Herring <robh@kernel.org>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-arm-msm@vger.kernel.org,
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVgaa-000065-OQ
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 17:08:14 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>,
  linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- Andy Gross <andy.gross@linaro.org>, Archit Taneja <architt@codeaurora.org>,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 03/15] dt-bindings: qcom_nandc: update for ECC
- strength and step size
-Message-ID: <20180620160130.GA21296@rob-hp-laptop>
-References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
- <1529479662-4026-4-git-send-email-absahu@codeaurora.org>
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+ <20180618104159.24b9fffb@bbrezillon> <87d0wnrhqz.fsf@belgarion.home>
+ <20180618220455.1810f2a5@bbrezillon>
+Date: Wed, 20 Jun 2018 19:07:53 +0200
+In-Reply-To: <20180618220455.1810f2a5@bbrezillon> (Boris Brezillon's message
+ of "Mon, 18 Jun 2018 22:04:55 +0200")
+Message-ID: <87tvpxpes6.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1529479662-4026-4-git-send-email-absahu@codeaurora.org>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,32 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 20, 2018 at 12:57:30PM +0530, Abhishek Sahu wrote:
-> 1. If nand-ecc-strength specified in DT, then controller will use
->    this ECC strength otherwise ECC strength will be calculated
->    according to chip requirement and available OOB size.
-> 
-> 2. QCOM NAND controller supports only one step size (512 bytes) but
->    nand-ecc-step-size is required property in DT. This DT property
->    can be removed and ecc step size can be assigned in driver with
->    512 bytes value.
-> 
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
-> 
-> * Changes from v3:
-> 
-> 1. Clubbed following 2 patches into one
->    https://patchwork.ozlabs.org/patch/920465/
->    https://patchwork.ozlabs.org/patch/920467/
-> 
-> * Changes from v2:
->   NONE
-> 
-> * Changes from v1:
->   NEW PATCH
-> 
->  Documentation/devicetree/bindings/mtd/qcom_nandc.txt | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+Boris Brezillon <boris.brezillon@bootlin.com> writes:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> Don't worry, we're not planning to merge it unless it happens to be
+> required (Stephen Rothwell reporting a merge conflict in next), and we
+> don't have conflicting changes in the pipeline so far.
+Ok, great.
+
+We're good to go, no screaming from 0-day, my internal testbench is happy,
+everything looks fine, the tag is unmutable until v4.19.
+
+Cheers.
+
+-- 
+Robert
