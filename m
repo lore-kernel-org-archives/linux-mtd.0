@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXXk-0001Qh-9V
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:29:55 +0000
+ id 1fVXY7-0001dc-NV
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:30:26 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -11,11 +11,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 09/15] mtd: rawnand: qcom: parse read errors for read oob
- also
-Date: Wed, 20 Jun 2018 12:57:36 +0530
-Message-Id: <1529479662-4026-10-git-send-email-absahu@codeaurora.org>
+ Abhishek Sahu <absahu@codeaurora.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>
+Subject: [PATCH v4 15/15] mtd: rawnand: provide only single helper function
+ for ECC conf
+Date: Wed, 20 Jun 2018 12:57:42 +0530
+Message-Id: <1529479662-4026-16-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,101 +28,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-read_page and read_oob both calls the read_page_ecc function.
-The QCOM NAND controller protect the OOB available bytes with
-ECC so read errors should be checked for read_oob also.
-This patch moves the error checking code inside read_page_ecc
-so caller does not have to check explicitly for read errors.
+Function nand_ecc_choose_conf() will be help for all the cases, so
+other helper functions can be made static.
 
-Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+nand_check_ecc_caps(): Invoke nand_ecc_choose_conf() with
+                       both chip->ecc.size and chip->ecc.strength
+                       value set.
+
+nand_maximize_ecc(): Invoke nand_ecc_choose_conf() with
+                     NAND_ECC_MAXIMIZE flag.
+
+nand_match_ecc_req(): Invoke nand_ecc_choose_conf() with either
+                      chip->ecc.size or chip->ecc.strength value
+                      set and without NAND_ECC_MAXIMIZE flag.
+
+CC: Masahiro Yamada <yamada.masahiro@socionext.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
-* Changes from v3:
-  NONE
+Changes from v3:
 
-* Changes from v2:
-  NONE
+NEW PATCH
 
-* Changes from v1:
-  1. Minor code change for return early in case of error
+ drivers/mtd/nand/raw/nand_base.c | 39 +++++++++++++++------------------------
+ include/linux/mtd/rawnand.h      |  9 ---------
+ 2 files changed, 15 insertions(+), 33 deletions(-)
 
- drivers/mtd/nand/raw/qcom_nandc.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index a831f9c..285b2ad3 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1698,6 +1698,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
- 	int i, ret;
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index c64e3fc..f620236 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6077,24 +6077,17 @@ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+  * by the controller and the calculated ECC bytes fit within the chip's OOB.
+  * On success, the calculated ECC bytes is set.
+  */
+-int nand_check_ecc_caps(struct nand_chip *chip,
+-			const struct nand_ecc_caps *caps, int oobavail)
++static int
++nand_check_ecc_caps(struct nand_chip *chip,
++		    const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	const struct nand_ecc_step_info *stepinfo;
+ 	int preset_step = chip->ecc.size;
+ 	int preset_strength = chip->ecc.strength;
+-	int nsteps, ecc_bytes;
++	int ecc_bytes, nsteps = mtd->writesize / preset_step;
+ 	int i, j;
  
- 	config_nand_page_read(nandc);
-@@ -1758,12 +1759,14 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	}
+-	if (WARN_ON(oobavail < 0))
+-		return -EINVAL;
+-
+-	if (!preset_step || !preset_strength)
+-		return -ENODATA;
+-
+-	nsteps = mtd->writesize / preset_step;
+-
+ 	for (i = 0; i < caps->nstepinfos; i++) {
+ 		stepinfo = &caps->stepinfos[i];
  
- 	ret = submit_descs(nandc);
--	if (ret)
-+	free_descs(nandc);
+@@ -6127,7 +6120,6 @@ int nand_check_ecc_caps(struct nand_chip *chip,
+ 
+ 	return -ENOTSUPP;
+ }
+-EXPORT_SYMBOL_GPL(nand_check_ecc_caps);
+ 
+ /**
+  * nand_match_ecc_req - meet the chip's requirement with least ECC bytes
+@@ -6139,8 +6131,9 @@ int nand_check_ecc_caps(struct nand_chip *chip,
+  * number of ECC bytes (i.e. with the largest number of OOB-free bytes).
+  * On success, the chosen ECC settings are set.
+  */
+-int nand_match_ecc_req(struct nand_chip *chip,
+-		       const struct nand_ecc_caps *caps, int oobavail)
++static int
++nand_match_ecc_req(struct nand_chip *chip,
++		   const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	const struct nand_ecc_step_info *stepinfo;
+@@ -6151,9 +6144,6 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ 	int best_ecc_bytes_total = INT_MAX;
+ 	int i, j;
+ 
+-	if (WARN_ON(oobavail < 0))
+-		return -EINVAL;
+-
+ 	/* No information provided by the NAND chip */
+ 	if (!req_step || !req_strength)
+ 		return -ENOTSUPP;
+@@ -6212,7 +6202,6 @@ int nand_match_ecc_req(struct nand_chip *chip,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(nand_match_ecc_req);
+ 
+ /**
+  * nand_maximize_ecc - choose the max ECC strength available
+@@ -6223,8 +6212,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
+  * Choose the max ECC strength that is supported on the controller, and can fit
+  * within the chip's OOB.  On success, the chosen ECC settings are set.
+  */
+-int nand_maximize_ecc(struct nand_chip *chip,
+-		      const struct nand_ecc_caps *caps, int oobavail)
++static int
++nand_maximize_ecc(struct nand_chip *chip,
++		  const struct nand_ecc_caps *caps, int oobavail)
+ {
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	const struct nand_ecc_step_info *stepinfo;
+@@ -6234,9 +6224,6 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ 	int best_strength, best_ecc_bytes;
+ 	int i, j;
+ 
+-	if (WARN_ON(oobavail < 0))
+-		return -EINVAL;
+-
+ 	for (i = 0; i < caps->nstepinfos; i++) {
+ 		stepinfo = &caps->stepinfos[i];
+ 		step_size = stepinfo->stepsize;
+@@ -6285,7 +6272,6 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(nand_maximize_ecc);
+ 
+ /**
+  * nand_ecc_choose_conf - Set the ECC strength and ECC step size
+@@ -6307,6 +6293,11 @@ int nand_maximize_ecc(struct nand_chip *chip,
+ int nand_ecc_choose_conf(struct nand_chip *chip,
+ 			 const struct nand_ecc_caps *caps, int oobavail)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
 +
-+	if (ret) {
- 		dev_err(nandc->dev, "failure to read page/oob\n");
-+		return ret;
-+	}
++	if (WARN_ON(oobavail < 0 || oobavail > mtd->oobsize))
++		return -EINVAL;
++
+ 	if (chip->ecc.size && chip->ecc.strength)
+ 		return nand_check_ecc_caps(chip, caps, oobavail);
  
--	free_descs(nandc);
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 03a0061..0945868 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1641,15 +1641,6 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ 				void *extraoob, int extraooblen,
+ 				int threshold);
+ 
+-int nand_check_ecc_caps(struct nand_chip *chip,
+-			const struct nand_ecc_caps *caps, int oobavail);
 -
--	return ret;
-+	return parse_read_errors(host, data_buf_start, oob_buf_start);
- }
- 
- /*
-@@ -1808,20 +1811,14 @@ static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	u8 *data_buf, *oob_buf = NULL;
--	int ret;
- 
- 	nand_read_page_op(chip, page, 0, NULL, 0);
- 	data_buf = buf;
- 	oob_buf = oob_required ? chip->oob_poi : NULL;
- 
- 	clear_bam_transaction(nandc);
--	ret = read_page_ecc(host, data_buf, oob_buf);
--	if (ret) {
--		dev_err(nandc->dev, "failure to read page\n");
--		return ret;
--	}
- 
--	return parse_read_errors(host, data_buf, oob_buf);
-+	return read_page_ecc(host, data_buf, oob_buf);
- }
- 
- /* implements ecc->read_page_raw() */
-@@ -1911,7 +1908,6 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int ret;
- 
- 	clear_read_regs(nandc);
- 	clear_bam_transaction(nandc);
-@@ -1920,11 +1916,7 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	set_address(host, 0, page);
- 	update_rw_regs(host, ecc->steps, true);
- 
--	ret = read_page_ecc(host, NULL, chip->oob_poi);
--	if (ret)
--		dev_err(nandc->dev, "failure to read oob\n");
+-int nand_match_ecc_req(struct nand_chip *chip,
+-		       const struct nand_ecc_caps *caps,  int oobavail);
 -
--	return ret;
-+	return read_page_ecc(host, NULL, chip->oob_poi);
- }
+-int nand_maximize_ecc(struct nand_chip *chip,
+-		      const struct nand_ecc_caps *caps, int oobavail);
+-
+ int nand_ecc_choose_conf(struct nand_chip *chip,
+ 			 const struct nand_ecc_caps *caps, int oobavail);
  
- /* implements ecc->write_page() */
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
