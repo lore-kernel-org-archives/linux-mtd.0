@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVXXk-0001Rz-9W
- for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:29:43 +0000
+ id 1fVXXk-0001Qh-9V
+ for linux-mtd@lists.infradead.org; Wed, 20 Jun 2018 07:29:55 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Archit Taneja <architt@codeaurora.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH v4 10/15] mtd: rawnand: qcom: modify write_oob to remove read
- codeword part
-Date: Wed, 20 Jun 2018 12:57:37 +0530
-Message-Id: <1529479662-4026-11-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH v4 09/15] mtd: rawnand: qcom: parse read errors for read oob
+ also
+Date: Wed, 20 Jun 2018 12:57:36 +0530
+Message-Id: <1529479662-4026-10-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,74 +27,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QCOM NAND controller layout protects available OOB data bytes with
-ECC also so when ecc->write_oob() is being called then it
-can't update just OOB bytes. Currently, it first reads the last
-codeword which includes old OOB bytes. Then it updates the old OOB
-bytes with new ones and then again writes the codeword back.
-The reading codeword is unnecessary since user is responsible to
-have these bytes cleared to 0xFF.
+read_page and read_oob both calls the read_page_ecc function.
+The QCOM NAND controller protect the OOB available bytes with
+ECC so read errors should be checked for read_oob also.
+This patch moves the error checking code inside read_page_ecc
+so caller does not have to check explicitly for read errors.
 
-This patch removes the read part and updates the OOB bytes with
-data area padded with OxFF.
-
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
 * Changes from v3:
   NONE
 
 * Changes from v2:
-
-  1. Changed commit message and comments slightly
-  2. Changed host->use_ecc assignment place
+  NONE
 
 * Changes from v1:
-  NEW CHANGE
+  1. Minor code change for return early in case of error
 
- drivers/mtd/nand/raw/qcom_nandc.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 285b2ad3..28361b5 100644
+index a831f9c..285b2ad3 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2064,11 +2064,9 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- /*
-  * implements ecc->write_oob()
-  *
-- * the NAND controller cannot write only data or only oob within a codeword,
-- * since ecc is calculated for the combined codeword. we first copy the
-- * entire contents for the last codeword(data + oob), replace the old oob
-- * with the new one in chip->oob_poi, and then write the entire codeword.
-- * this read-copy-write operation results in a slight performance loss.
-+ * the NAND controller cannot write only data or only OOB within a codeword
-+ * since ECC is calculated for the combined codeword. So update the OOB from
-+ * chip->oob_poi, and pad the data area with OxFF before writing.
-  */
- static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 				int page)
-@@ -2081,19 +2079,13 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	int ret;
+@@ -1698,6 +1698,7 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	struct nand_chip *chip = &host->chip;
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
++	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+ 	int i, ret;
  
- 	host->use_ecc = true;
--
--	clear_bam_transaction(nandc);
--	ret = copy_last_cw(host, page);
+ 	config_nand_page_read(nandc);
+@@ -1758,12 +1759,14 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+ 	}
+ 
+ 	ret = submit_descs(nandc);
 -	if (ret)
--		return ret;
++	free_descs(nandc);
++
++	if (ret) {
+ 		dev_err(nandc->dev, "failure to read page/oob\n");
++		return ret;
++	}
+ 
+-	free_descs(nandc);
 -
--	clear_read_regs(nandc);
+-	return ret;
++	return parse_read_errors(host, data_buf_start, oob_buf_start);
+ }
+ 
+ /*
+@@ -1808,20 +1811,14 @@ static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	u8 *data_buf, *oob_buf = NULL;
+-	int ret;
+ 
+ 	nand_read_page_op(chip, page, 0, NULL, 0);
+ 	data_buf = buf;
+ 	oob_buf = oob_required ? chip->oob_poi : NULL;
+ 
  	clear_bam_transaction(nandc);
+-	ret = read_page_ecc(host, data_buf, oob_buf);
+-	if (ret) {
+-		dev_err(nandc->dev, "failure to read page\n");
+-		return ret;
+-	}
  
- 	/* calculate the data and oob size for the last codeword/step */
- 	data_size = ecc->size - ((ecc->steps - 1) << 2);
- 	oob_size = mtd->oobavail;
+-	return parse_read_errors(host, data_buf, oob_buf);
++	return read_page_ecc(host, data_buf, oob_buf);
+ }
  
-+	memset(nandc->data_buffer, 0xff, host->cw_data);
- 	/* override new oob content to last codeword */
- 	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
- 				    0, mtd->oobavail);
+ /* implements ecc->read_page_raw() */
+@@ -1911,7 +1908,6 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-	int ret;
+ 
+ 	clear_read_regs(nandc);
+ 	clear_bam_transaction(nandc);
+@@ -1920,11 +1916,7 @@ static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	set_address(host, 0, page);
+ 	update_rw_regs(host, ecc->steps, true);
+ 
+-	ret = read_page_ecc(host, NULL, chip->oob_poi);
+-	if (ret)
+-		dev_err(nandc->dev, "failure to read oob\n");
+-
+-	return ret;
++	return read_page_ecc(host, NULL, chip->oob_poi);
+ }
+ 
+ /* implements ecc->write_page() */
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
