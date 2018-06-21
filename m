@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVxPu-0001Lf-5c
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 11:06:20 +0000
-Date: Thu, 21 Jun 2018 13:05:54 +0200
+ id 1fVxa6-0004tH-Tt
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 11:16:52 +0000
+Date: Thu, 21 Jun 2018 13:16:28 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
  computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
  Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH v4 3/6] mtd: rawnand: add defines for ONFI version bits
-Message-ID: <20180621130554.43900e2f@bbrezillon>
-In-Reply-To: <20180621103328.28206-4-chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH v4 5/6] mtd: rawnand: micron: support 8/512 on-die ECC
+Message-ID: <20180621131628.07220d31@bbrezillon>
+In-Reply-To: <20180621103328.28206-6-chris.packham@alliedtelesis.co.nz>
 References: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
- <20180621103328.28206-4-chris.packham@alliedtelesis.co.nz>
+ <20180621103328.28206-6-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,68 +26,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Jun 2018 22:33:25 +1200
+On Thu, 21 Jun 2018 22:33:27 +1200
 Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-> Add defines for the ONFI version bits and use them in
-> nand_flash_detect_onfi().
+> Micron MT29F1G08ABAFAWP-ITE:F supports an on-die ECC with 8 bits
+> per 512 bytes. Add support for this combination.
 > 
 > Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
 > ---
-> Changes in v4:
+> Changes in v2:
 > - New
+> Changes in v3:
+> - Handle reporting of corrected errors that don't require a rewrite, expand
+>   comment for the ECC status bits.
+> Changes in v4:
+> - Use a switch statement for handling ECC status
+> - Update ecc_stats.corrected
 > 
->  drivers/mtd/nand/raw/nand_base.c | 10 +++++-----
->  include/linux/mtd/rawnand.h      | 11 +++++++++++
->  2 files changed, 16 insertions(+), 5 deletions(-)
+>  drivers/mtd/nand/raw/nand_micron.c | 68 ++++++++++++++++++++----------
+>  1 file changed, 46 insertions(+), 22 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 65250308c82d..36048e0cf1f5 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -5178,15 +5178,15 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> index d30bd4df9b12..f1ecd4986b50 100644
+> --- a/drivers/mtd/nand/raw/nand_micron.c
+> +++ b/drivers/mtd/nand/raw/nand_micron.c
+> @@ -18,10 +18,28 @@
+>  #include <linux/mtd/rawnand.h>
 >  
->  	/* Check version */
->  	val = le16_to_cpu(p->revision);
-> -	if (val & (1 << 5))
-> +	if (val & ONFI_VERSION_2_3)
->  		chip->parameters.onfi.version = 23;
-> -	else if (val & (1 << 4))
-> +	else if (val & ONFI_VERSION_2_2)
->  		chip->parameters.onfi.version = 22;
-> -	else if (val & (1 << 3))
-> +	else if (val & ONFI_VERSION_2_1)
->  		chip->parameters.onfi.version = 21;
-> -	else if (val & (1 << 2))
-> +	else if (val & ONFI_VERSION_2_0)
->  		chip->parameters.onfi.version = 20;
-> -	else if (val & (1 << 1))
-> +	else if (val & ONFI_VERSION_1_0)
->  		chip->parameters.onfi.version = 10;
+>  /*
+> - * Special Micron status bit that indicates when the block has been
+> - * corrected by on-die ECC and should be rewritten
+> + * Special Micron status bit 3 indicates that the block has been
+> + * corrected by on-die ECC and should be rewritten.
+> + *
+> + * On chips with 8-bit ECC and additional bit can be used to distinguish
+> + * cases where a errors were corrected without needing a rewrite
+> + *
+> + * Bit 4 Bit 3 Bit 0 Description
+> + * ----- ----- ----- -----------
+> + * 0     0     0     No Errors
+> + * 0     0     1     Multiple uncorrected errors
+> + * 0     1     0     4 - 6 errors corrected, recommend rewrite
+> + * 0     1     1     Reserved
+> + * 1     0     0     1 - 3 errors corrected
+> + * 1     0     1     Reserved
+> + * 1     1     0     7 - 8 errors corrected, recommend rewrite
+>   */
+> -#define NAND_STATUS_WRITE_RECOMMENDED	BIT(3)
+> +#define NAND_STATUS_MASK		(BIT(4) | BIT(3) | BIT(0))
+> +#define NAND_STATUS_NO_ERRORS		0
+> +#define NAND_STATUS_UNCORRECTABLE	BIT(0)
+> +#define NAND_STATUS_4_6_CORRECTED	BIT(3)
+> +#define NAND_STATUS_1_3_CORRECTED	BIT(4)
+> +#define NAND_STATUS_7_8_CORRECTED	(BIT(4) | BIT(3))
+
+NAND_ECC_STATUS_ prefix would be better than NAND_STATUS_
+
 >  
->  	if (!chip->parameters.onfi.version) {
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index ef7e3b4e91ea..015bc3f2fc13 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -230,6 +230,17 @@ enum nand_ecc_algo {
->  /* Keep gcc happy */
->  struct nand_chip;
+>  struct nand_onfi_vendor_micron {
+>  	u8 two_plane_read;
+> @@ -137,18 +155,31 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
+>  	if (ret)
+>  		goto out;
 >  
-> +/* ONFI version bits */
-> +#define ONFI_VERSION_1_0		BIT(1)
-> +#define ONFI_VERSION_2_0		BIT(2)
-> +#define ONFI_VERSION_2_1		BIT(3)
-> +#define ONFI_VERSION_2_2		BIT(4)
-> +#define ONFI_VERSION_2_3		BIT(5)
-> +#define ONFI_VERSION_3_0		BIT(6)
-> +#define ONFI_VERSION_3_1		BIT(7)
-> +#define ONFI_VERSION_3_2		BIT(8)
-> +#define ONFI_VERSION_4_0		BIT(9)
-> +
->  /* ONFI features */
->  #define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
->  #define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
+> -	if (status & NAND_STATUS_FAIL) {
+> +	/*
+> +	 * The internal ECC doesn't tell us the number of bitflips
+> +	 * that have been corrected, but tells us if it recommends to
+> +	 * rewrite the block. If it's the case, then we pretend we had
+> +	 * a number of bitflips equal to the ECC strength, which will
+> +	 * hint the NAND core to rewrite the block.
+> +	 */
+> +	switch (status & NAND_STATUS_MASK) {
+> +	case NAND_STATUS_UNCORRECTABLE:
+
+I'd recommend handling 8bit and 4bit on-die ECC separately (create on
+subfunction per kind of ECC), and not using the same _MASK, just in
+case unused bits value have a different meaning or are simply not set
+to 0 by default.
+
+>  		mtd->ecc_stats.failed++;
+> -	} else if (status & NAND_STATUS_WRITE_RECOMMENDED) {
+> -		/*
+> -		 * The internal ECC doesn't tell us the number of bitflips
+> -		 * that have been corrected, but tells us if it recommends to
+> -		 * rewrite the block. If it's the case, then we pretend we had
+> -		 * a number of bitflips equal to the ECC strength, which will
+> -		 * hint the NAND core to rewrite the block.
+> -		 */
+> -		mtd->ecc_stats.corrected += chip->ecc.strength;
+> +		break;
+> +	case NAND_STATUS_1_3_CORRECTED:
+> +		mtd->ecc_stats.corrected++;
+> +		max_bitflips = 1;
+
+Should you always take the max of the range, so here:
+
+		mtd->ecc_stats.corrected += 3;
+		max_bitflips = 3;
+
+> +		break;
+> +	case NAND_STATUS_4_6_CORRECTED:
+> +		mtd->ecc_stats.corrected += 4;
+
+					 += 6;
+
+> +		/* rewrite recommended */
+> +		max_bitflips = chip->ecc.strength;
+
+Here it should be 6, not chip->ecc.strength.
+
+> +		break;
+> +	case NAND_STATUS_7_8_CORRECTED:
+> +		mtd->ecc_stats.corrected += 7;
+
+					 += 8;
+
+> +		/* rewrite recommended */
+>  		max_bitflips = chip->ecc.strength;
+> +		break;
+>  	}
+>  
+>  	ret = nand_read_data_op(chip, buf, mtd->writesize, false);
+> @@ -239,13 +270,6 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+>  	if (feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN)
+>  		return MICRON_ON_DIE_MANDATORY;
+>  
+> -	/*
+> -	 * Some Micron NANDs have an on-die ECC of 4/512, some other
+> -	 * 8/512. We only support the former.
+> -	 */
+> -	if (chip->ecc_strength_ds != 4)
+> -		return MICRON_ON_DIE_UNSUPPORTED;
+
+I'd prefer to keep an explicit check here rather than accepting
+everything. See how 8 and 4 bit ECC differ, it's likely to be the case
+if Micron ever has a 16bit ECC.
+
+> -
+>  	return MICRON_ON_DIE_SUPPORTED;
+>  }
+>  
+> @@ -275,9 +299,9 @@ static int micron_nand_init(struct nand_chip *chip)
+>  			return -EINVAL;
+>  		}
+>  
+> -		chip->ecc.bytes = 8;
+> +		chip->ecc.bytes = chip->ecc_strength_ds * 2;
+>  		chip->ecc.size = 512;
+> -		chip->ecc.strength = 4;
+> +		chip->ecc.strength = chip->ecc_strength_ds;
+>  		chip->ecc.algo = NAND_ECC_BCH;
+>  		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
+>  		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
