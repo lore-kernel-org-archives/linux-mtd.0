@@ -1,19 +1,24 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVwv7-0003n8-EG
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 10:34:35 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v4 3/6] mtd: rawnand: add defines for ONFI version bits
-Date: Thu, 21 Jun 2018 22:33:25 +1200
-Message-Id: <20180621103328.28206-4-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
-References: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
+From: Piotr Bugalski <bugalski.piotr@gmail.com>
+Date: Thu, 21 Jun 2018 12:52:07 +0200 (CEST)
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+cc: Piotr Bugalski <bugalski.piotr@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [RFC PATCH 0/2] New QuadSPI driver for Atmel SAMA5D2
+In-Reply-To: <20180620165438.39608554@bbrezillon>
+Message-ID: <alpine.DEB.2.20.1806211239590.28763@carbonite>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180620165438.39608554@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +28,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add defines for the ONFI version bits and use them in
-nand_flash_detect_onfi().
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-Changes in v4:
-- New
+Hi Boris,
 
- drivers/mtd/nand/raw/nand_base.c | 10 +++++-----
- include/linux/mtd/rawnand.h      | 11 +++++++++++
- 2 files changed, 16 insertions(+), 5 deletions(-)
+Thank you very much for quick response.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 65250308c82d..36048e0cf1f5 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5178,15 +5178,15 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 
- 	/* Check version */
- 	val = le16_to_cpu(p->revision);
--	if (val & (1 << 5))
-+	if (val & ONFI_VERSION_2_3)
- 		chip->parameters.onfi.version = 23;
--	else if (val & (1 << 4))
-+	else if (val & ONFI_VERSION_2_2)
- 		chip->parameters.onfi.version = 22;
--	else if (val & (1 << 3))
-+	else if (val & ONFI_VERSION_2_1)
- 		chip->parameters.onfi.version = 21;
--	else if (val & (1 << 2))
-+	else if (val & ONFI_VERSION_2_0)
- 		chip->parameters.onfi.version = 20;
--	else if (val & (1 << 1))
-+	else if (val & ONFI_VERSION_1_0)
- 		chip->parameters.onfi.version = 10;
- 
- 	if (!chip->parameters.onfi.version) {
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index ef7e3b4e91ea..015bc3f2fc13 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -230,6 +230,17 @@ enum nand_ecc_algo {
- /* Keep gcc happy */
- struct nand_chip;
- 
-+/* ONFI version bits */
-+#define ONFI_VERSION_1_0		BIT(1)
-+#define ONFI_VERSION_2_0		BIT(2)
-+#define ONFI_VERSION_2_1		BIT(3)
-+#define ONFI_VERSION_2_2		BIT(4)
-+#define ONFI_VERSION_2_3		BIT(5)
-+#define ONFI_VERSION_3_0		BIT(6)
-+#define ONFI_VERSION_3_1		BIT(7)
-+#define ONFI_VERSION_3_2		BIT(8)
-+#define ONFI_VERSION_4_0		BIT(9)
-+
- /* ONFI features */
- #define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
- #define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
--- 
-2.17.1
+On Wed, 20 Jun 2018, Boris Brezillon wrote:
+
+> Hi Piotr,
+>
+> On Mon, 18 Jun 2018 18:21:22 +0200
+> Piotr Bugalski <bugalski.piotr@gmail.com> wrote:
+>
+>> Hello,
+>>
+>> Atmel SAMA5D2 is equipped with two QSPI interfaces. These interfaces can
+>> work as in SPI-compatible mode or use two / four lines to improve
+>> communication speed. At the moment there is QSPI driver strongly tied to
+>> NOR-flash memory and MTD subsystem.
+>> Intention of this change is to provide new driver which will not be tied
+>> to MTD and allows using QSPI with NAND-flash memory or other peripherals
+>> New spi-mem API provides abstraction layer which can disconnect QSPI
+>> from MTD. This driver doesn't support regular SPI interface, it should
+>> be used with spi-mem interface only.
+>
+> Glad to see that people are starting to convert their SPI NOR
+> controller drivers to the SPI mem approach.
+>
+>> Unfortunately SAMA5D2 hardware by default supports only NOR-flash
+>> memory. It allows 24- and 32-bit addressing while NAND-flash requires
+>> 16-bit long. To workaround hardware limitation driver is a bit more
+>> complicated.
+>>
+>> Request to spi-mem contains three fiels: opcode (command), address,
+>> dummy bytes. SAMA5D2 QSPI hardware supports opcode, address, dummy and
+>> option byte where address field can only be 24- or 32- bytes long.
+>> Handling 8-bits long addresses is done using option field. For 16-bits
+>> address behaviour depends of number of requested dummy bits. If there
+>> are 8 or more dummy cycles, address is shifted and sent with first dummy
+>> byte. Otherwise opcode is disabled and first byte of address contains
+>> command opcode (works only if opcode and address use the same buswidth).
+>> The limitation is when 16-bit address is used without enough dummy
+>> cycles and opcode is using different buswidth than address. Other modes
+>> are supported with described workaround.
+>>
+>> It looks like hardware has some limitation in performance. The same issue
+>> exists in current QSPI driver (MTD/nor-flash) and soft-pack (bare-metal
+>> library from Atmel). Without using DMA read speed is much worse than
+>> maximum bandwidth (efficiency 30-40%). Any help with performance
+>> improvement is highly welcome, especially for NAND-flash memories which
+>> offers higher capacity than NOR-flash used with previous driver.
+>>
+>> Best Regards,
+>> Piotr
+>>
+>> Piotr Bugalski (2):
+>>   spi: Add QuadSPI driver for Atmel SAMA5D2
+>>   dt-bindings: spi: QuadSPI driver for Atmel SAMA5D2 documentation
+>>
+>>  .../devicetree/bindings/spi/spi_atmel-qspi.txt     |  41 ++
+>>  drivers/spi/Kconfig                                |   9 +
+>>  drivers/spi/Makefile                               |   1 +
+>>  drivers/spi/spi-atmel-qspi.c                       | 480 +++++++++++++++++++++
+>
+> I'd like a solution where we remove the old driver. I definitely don't
+> want to have both in parallel. Did you test the new driver with a SPI
+> NOR to check if it still works correctly? If you did, then I'd suggest
+> that you add a patch updating defconfigs where the SPI_ATMEL_QUADSPI is
+> selected and another patch removing the old driver.
+>
+
+I misunderstood a bit your idea. My main concern was NAND-flash with
+QSPI interface and I expected original nor-flash driver to stay
+untouched - at least now. However idea of replacement older driver
+with spi-mem approach makes a lot of sense to me.
+I'll test nor-flash with new driver first, it should work but I prefer
+to be sure. In next version I'll follow your suggestion and replace
+old nor-flash driver.
+
+>>  4 files changed, 531 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt
+>
+> This should be a simple mv from
+> Documentation/devicetree/bindings/mtd/atmel-quadspi.txt to
+> Documentation/devicetree/bindings/spi/spi-atmel-qspi.txt
+>
+>>  create mode 100644 drivers/spi/spi-atmel-qspi.c
+>>
+>
+> Thanks,
+>
+> Boris
+>
+
+Thank you for comments,
+Piotr
