@@ -1,26 +1,37 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVtoI-0008Qx-J1
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 07:15:16 +0000
-Date: Thu, 21 Jun 2018 09:14:51 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-Cc: Richard Weinberger <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v3 3/4] mtd: rawnand: micron: add fixup for ONFI revision
-Message-ID: <20180621091451.1a0226de@bbrezillon>
-In-Reply-To: <5e3b8f2f896f44aaab97086dceb2a69b@svr-chch-ex1.atlnz.lc>
-References: <20180620050544.31549-1-chris.packham@alliedtelesis.co.nz>
- <20180620050544.31549-4-chris.packham@alliedtelesis.co.nz>
- <20180620095410.664091d8@bbrezillon>
- <5e3b8f2f896f44aaab97086dceb2a69b@svr-chch-ex1.atlnz.lc>
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVvIS-0007hw-Bp
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 08:50:30 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mark Brown <broonie@kernel.org>,  Daniel Mack <daniel@zonque.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Nicolas Pitre <nico@fluxnic.net>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-ide@vger.kernel.org, dmaengine@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 09/14] ASoC: pxa: remove the dmaengine compat need
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+ <20180617170217.24177-10-robert.jarzmik@free.fr>
+ <1984a4a7-e33b-6349-31f3-6f85ff1582b8@zonque.org>
+Date: Thu, 21 Jun 2018 10:50:03 +0200
+In-Reply-To: <1984a4a7-e33b-6349-31f3-6f85ff1582b8@zonque.org> (Daniel Mack's
+ message of "Sun, 17 Jun 2018 20:17:09 +0200")
+Message-ID: <87muvoo75w.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,66 +41,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Jun 2018 21:12:02 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+Daniel Mack <daniel@zonque.org> writes:
 
-> On 20/06/18 19:54, Boris Brezillon wrote:
-> > On Wed, 20 Jun 2018 17:05:43 +1200
-> > Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
-> >   
-> >> Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
-> >> revision number field of the ONFI parameter page. Rather than rejecting
-> >> these outright assume ONFI version 1.0 if the revision number is 00 00.
-> >>
-> >> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> >> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> >> ---
-> >> This is now qualified on vendor == MICRON. I haven't qualified this
-> >> based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
-> >> documented to have this behaviour.
-> >>
-> >> Changes in v2:
-> >> - use fixup_onfi_param_page
-> >> Changes in v3:
-> >> - add code comment next to workaround
-> >>
-> >>   drivers/mtd/nand/raw/nand_micron.c | 13 +++++++++++++
-> >>   1 file changed, 13 insertions(+)
-> >>
-> >> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> >> index 5ec4c90a637d..5cec79372181 100644
-> >> --- a/drivers/mtd/nand/raw/nand_micron.c
-> >> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> >> @@ -289,6 +289,19 @@ static int micron_nand_init(struct nand_chip *chip)
-> >>   	return 0;
-> >>   }
-> >>   
-> >> +static void micron_fixup_onfi_param_page(struct nand_chip *chip,
-> >> +					 struct nand_onfi_params *p)
-> >> +{
-> >> +	/*
-> >> +	 * MT29F1G08ABAFAWP-ITE:F and possibly others report 00 00 for the
-> >> +	 * revision number field of the ONFI parameter page. Assume ONFI
-> >> +	 * version 1.0 if the revision number is 00 00.
-> >> +	 */
-> >> +	if (le16_to_cpu(p->revision) == 0)
-> >> +		p->revision = cpu_to_le16(1 << 1);  
-> > 
-> > Would be better to have macros defining all version numbers in rawnand.h
-> > 
-> > #define ONFI_VERSION_1_0		BIT(1)
-> > #define ONFI_VERSION_2_0		BIT(2)
-> > #define ONFI_VERSION_2_1		BIT(3)
-> > #define ONFI_VERSION_2_2		BIT(4)
-> > #define ONFI_VERSION_2_3		BIT(5)
-> > #define ONFI_VERSION_3_0		BIT(6)
-> > #define ONFI_VERSION_3_1		BIT(7)
-> > #define ONFI_VERSION_3_2		BIT(8)
-> > #define ONFI_VERSION_4_0		BIT(9)
-> >   
-> 
-> Make sense. Do you want me to do so in a v4 or send a new patch and 
-> clean up the other uses?
+> Hi Mark,
+>
+> I prepared a series of patches for 4.18 that conflict with this one. Instead of
+> letting other people resolve this down the road, I'd prefer if this one went
+> through the ASoC tree, if you don't mind.
+>
+> I've talked to Robert off-list, and he's fine with this approach.
+That's right.
 
-It can be part of your v4, but yes, the idea is to first introduce the
-macros and patch existing users, and then use it in this patch.
+I'll tentativaly queue this patch to my pxa/for-next tree. As soon as I hear
+that Mark queued it up in his tree, I'll drop it from mine.
+
+Cheers.
+
+--
+Robert
