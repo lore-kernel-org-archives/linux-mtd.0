@@ -1,7 +1,7 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fVwuw-0003lU-LM
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 10:34:21 +0000
+ id 1fVwuw-0003lV-Kh
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 10:34:22 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
  dwmw2@infradead.org, computersforpeace@gmail.com,
@@ -9,9 +9,9 @@ To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
 Cc: linux-kernel@vger.kernel.org,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v4 1/6] mtd: rawnand: marvell: Handle on-die ECC
-Date: Thu, 21 Jun 2018 22:33:23 +1200
-Message-Id: <20180621103328.28206-2-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v4 6/6] mtd: rawnand: micron: detect forced on-die ECC
+Date: Thu, 21 Jun 2018 22:33:28 +1200
+Message-Id: <20180621103328.28206-7-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
 References: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,33 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From the controllers point of view this is the same as no or
-software only ECC.
+Some Micron NAND chips have on-die ECC forceably enabled. The detect
+these based on chip ID as there seems to be no other way of
+distinguishing these chips from those that have optional support for
+on-die ECC.
+
+When a chip with mandatory on-die ECC is detected change the current ECC
+mode to on-die.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
-Changes in v2:
-- New
-Changes in v3:
-- Add review from Boris
+I'm not convinced that just changing chip->ecc.mode is sensible. An
+alternative I considered was only proceeding if the ecc.mode is set to
+ON_DIE.
+
 Changes in v4:
-- None
+- New
 
- drivers/mtd/nand/raw/marvell_nand.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/nand_micron.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..ba6889bbe802 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2157,6 +2157,7 @@ static int marvell_nand_ecc_init(struct mtd_info *mtd,
- 		break;
- 	case NAND_ECC_NONE:
- 	case NAND_ECC_SOFT:
-+	case NAND_ECC_ON_DIE:
- 		if (!nfc->caps->is_nfcv2 && mtd->writesize != SZ_512 &&
- 		    mtd->writesize != SZ_2K) {
- 			dev_err(nfc->dev, "NFCv1 cannot write %d bytes pages\n",
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index f1ecd4986b50..9ba9007a9a06 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -227,6 +227,14 @@ enum {
+ 	MICRON_ON_DIE_MANDATORY,
+ };
+ 
++/*
++ * These parts are known to have on-die ECC forceably enabled
++ */
++static u8 micron_on_die_ecc[] = {
++	0xd1, /* MT29F1G08ABAFA */
++	0xa1, /* MT29F1G08ABBFA */
++};
++
+ /*
+  * Try to detect if the NAND support on-die ECC. To do this, we enable
+  * the feature, and read back if it has been enabled as expected. We
+@@ -241,6 +249,11 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ {
+ 	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
+ 	int ret;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(micron_on_die_ecc); i++)
++		if (chip->id.data[1] == micron_on_die_ecc[i])
++			return MICRON_ON_DIE_MANDATORY;
+ 
+ 	if (!chip->parameters.onfi.version)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+@@ -289,8 +302,8 @@ static int micron_nand_init(struct nand_chip *chip)
+ 	ondie = micron_supports_on_die_ecc(chip);
+ 
+ 	if (ondie == MICRON_ON_DIE_MANDATORY) {
+-		pr_err("On-die ECC forcefully enabled, not supported\n");
+-		return -EINVAL;
++		pr_info("On-die ECC forcefully enabled\n");
++		chip->ecc.mode = NAND_ECC_ON_DIE;
+ 	}
+ 
+ 	if (chip->ecc.mode == NAND_ECC_ON_DIE) {
 -- 
 2.17.1
