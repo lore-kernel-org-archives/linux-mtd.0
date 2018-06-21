@@ -1,23 +1,24 @@
-From: Claudiu Beznea <Claudiu.Beznea@microchip.com>
-Subject: Re: [PATCH v2] mtd: atmel-quadspi: add suspend/resume hooks
-To: Marek Vasut <marek.vasut@gmail.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>,
- <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>
-References: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
- <20180618114920.654647c0@bbrezillon>
- <8474a744-5552-932f-7ba8-85b7d95368ea@gmail.com>
- <0be344a2-9878-2b92-9436-bc2f4d4fd6e0@microchip.com>
- <5b66cafe-782e-43a9-c221-cf0a1528f382@gmail.com>
-Message-ID: <e0259cda-2334-946f-fc3f-25c64a4f721b@microchip.com>
-Date: Thu, 21 Jun 2018 16:16:24 +0300
-MIME-Version: 1.0
-In-Reply-To: <5b66cafe-782e-43a9-c221-cf0a1528f382@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fW6FP-0005i6-Oo
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 20:32:06 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com
+Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v6 1/6] mtd: rawnand: add Reed-Solomon error correction
+ algorithm
+Date: Thu, 21 Jun 2018 22:31:40 +0200
+Message-Id: <20180621203145.7628-2-stefan@agner.ch>
+In-Reply-To: <20180621203145.7628-1-stefan@agner.ch>
+References: <20180621203145.7628-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,96 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
+Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
 
-On 19.06.2018 04:28, Marek Vasut wrote:
-> On 06/18/2018 02:00 PM, Claudiu Beznea wrote:
->>
->>
->> On 18.06.2018 12:53, Marek Vasut wrote:
->>> On 06/18/2018 11:49 AM, Boris Brezillon wrote:
->>>> Hi Claudiu,
->>>>
->>>> The subject prefix should be "mtd: spi-nor: atmel-quadspi: ". No need
->>>> to send a new version just for that, I'll fix it when applying the
->>>> patch.
->>>>
->> Hi Boris,
->>
->> Thank you!
->>
->>>> Looks good otherwise. Marek, any objection? If not, can you add your
->>>> Acked-by?
->>>
->>> Will this work if you have ie. ubifs mounted on that QSPI NOR and you
->>> suspect and resume during IO ? I think it would, but just curious if
->>> there could be some problem.
->>
->> Hi Marek,
->>
->> I tested only with read/writes while suspending, simple scripts, but not
->> having ubifs mounted on QSPI NOR. I will double check also with ubifs
->> mounted on QSPI NOR and come back with the results.
-> 
-> Thanks. I think it's gonna be OK, but let's just be sure.
-> Make sure to disable 4K sector support when fiddling with UBI/UBIFS on
-> QSPI NOR.
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
+ drivers/mtd/nand/raw/nand_base.c               | 1 +
+ include/linux/mtd/rawnand.h                    | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-I did the following to test this patch with ubifs:
-1. disabled CONFIG_MTD_SPI_NOR_USE_4K_SECTORS and build kernel
-
-2. create a ubifs image:
-mkfs.ubifs -r /mnt/ubifs-sama5d2-rootfs -m 1 -e 65408 -c 3739 \
- -o /mnt/sama5d2-xplained-ubifs.img
-
-3. boot the board and check partitions:
-cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00010000 00010000 "at91bootstrap"
-mtd1: 00010000 00010000 "bootloader env"
-mtd2: 00050000 00010000 "bootloader"
-mtd3: 00010000 00010000 "device tree"
-mtd4: 00380000 00010000 "kernel"
-mtd5: 01c00000 00010000 "rootfs"
-mtd6: 00400000 00010000 "spi32766.0"
-
-4. ubiformat /dev/mtd5
-5. ubiattach -p /dev/mtd5
-6. ubimkvol /dev/ubi0 -N test -s 28910336
-7. ubiupdatevol /dev/ubi0_0 /sama5d2-xplained-buildroot-ubifs.img
-8. mount -t ubifs ubi0:test /mnt
-9. cd /mnt/; ls /mnt/
-bin      lib      media    proc     sbin     usr
-dev      lib32    mnt      root     sys      var
-etc      linuxrc  opt      run      tmp
-
-10. Create a file with dd on ubifs partition:
-dd if=/dev/urandom of=test.bin bs=1024 count=8K
-
-11. compute md5sum on this file:
-md5sum test.bin > test.md5
-
-12. Measure how much will take to copy that file (to be sure the copy
-operation is not done before suspending):
-
-date; cp test.bin test-pm.bin; date
-Wed Jun 20 13:20:34 UTC 2018
-Wed Jun 20 13:21:14 UTC 2018
-
-13. Copy, sync, and switch to suspend-to-mem:
-
-cp test.bin test-pm.bin &
-sync &
-echo mem > /sys/power/state
-
-14. Check md5sum of test-pm.bin and compare it with md5sum of test.bin:
-md5sum test-pm.bin > test-pm.md5
-cat test.md5
-b5338647572b9665f24c61db98601522  test.bin
-cat test-pm.md5
-b5338647572b9665f24c61db98601522  test-pm.bin
-
-Please let me know if this is enough!
-
-Thank you,
-Claudiu Beznea
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index 8bb11d809429d..eaef8c657aa5c 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -25,7 +25,7 @@ Optional NAND chip properties:
+ 		  Deprecated values:
+ 		  "soft_bch": use "soft" and nand-ecc-algo instead
+ - nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Supported values are: "hamming", "bch".
++		 Valid values are: "hamming", "bch", "rs".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 10c4f9919850c..47e9cb9063da4 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5777,6 +5777,7 @@ static int of_get_nand_ecc_mode(struct device_node *np)
+ static const char * const nand_ecc_algos[] = {
+ 	[NAND_ECC_HAMMING]	= "hamming",
+ 	[NAND_ECC_BCH]		= "bch",
++	[NAND_ECC_RS]		= "rs",
+ };
+ 
+ static int of_get_nand_ecc_algo(struct device_node *np)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3e8ec3b8a39c7..2d9cb7acbc3d8 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -121,6 +121,7 @@ enum nand_ecc_algo {
+ 	NAND_ECC_UNKNOWN,
+ 	NAND_ECC_HAMMING,
+ 	NAND_ECC_BCH,
++	NAND_ECC_RS,
+ };
+ 
+ /*
+-- 
+2.17.1
