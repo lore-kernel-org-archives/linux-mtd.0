@@ -1,27 +1,22 @@
-From: Piotr Bugalski <bugalski.piotr@gmail.com>
-Date: Thu, 21 Jun 2018 12:56:50 +0200 (CEST)
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-cc: Piotr Bugalski <bugalski.piotr@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Piotr Bugalski <pbu@cryptera.com>
-Subject: Re: [RFC PATCH 2/2] dt-bindings: spi: QuadSPI driver for Atmel
- SAMA5D2 documentation
-In-Reply-To: <20180620164741.2a8da424@bbrezillon>
-Message-ID: <alpine.DEB.2.20.1806211252390.28763@carbonite>
-References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
- <20180618162124.21749-3-bugalski.piotr@gmail.com>
- <20180620164741.2a8da424@bbrezillon>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fVxPu-0001Lf-5c
+ for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 11:06:20 +0000
+Date: Thu, 21 Jun 2018 13:05:54 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
+ Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH v4 3/6] mtd: rawnand: add defines for ONFI version bits
+Message-ID: <20180621130554.43900e2f@bbrezillon>
+In-Reply-To: <20180621103328.28206-4-chris.packham@alliedtelesis.co.nz>
+References: <20180621103328.28206-1-chris.packham@alliedtelesis.co.nz>
+ <20180621103328.28206-4-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,108 +26,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 21 Jun 2018 22:33:25 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
 
-Hi Boris,
+> Add defines for the ONFI version bits and use them in
+> nand_flash_detect_onfi().
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-On Wed, 20 Jun 2018, Boris Brezillon wrote:
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-> Hi Piotr,
->
-> On Mon, 18 Jun 2018 18:21:24 +0200
-> Piotr Bugalski <bugalski.piotr@gmail.com> wrote:
->
->> Documentation for DT-binding change.
->>
->> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
->
-> I'm pretty sure I didn't make a single suggestion about the DT
-> bindings you use here ;-).
->
-
-Ok, I misunderstood a bit your idea, but I think from next release this
-field will be in good place. So it was just prepared for the future ;-)
-
->> Signed-off-by: Piotr Bugalski <pbu@cryptera.com>
->>
->> ---
->>  .../devicetree/bindings/spi/spi_atmel-qspi.txt     | 41 ++++++++++++++++++++++
->>  1 file changed, 41 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt
->
-> I'll comment on this aspect in more details when replying to the cover
-> letter, but I think you should re-use the bindings defined in
-> Documentation/devicetree/bindings/mtd/atmel-quadspi.txt (IOW, move the
-> existing file to the Documentation/devicetree/bindings/spi directory).
->
-> It's the same HW block, and just because you develop a new driver to
-> replace the old one doesn't mean you should have 2 different bindings in
-> parallel.
-
-I'll change it in next version.
-
->
->>
->> diff --git a/Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt b/Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt
->> new file mode 100644
->> index 000000000000..d52b534c9c2b
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/spi_atmel-qspi.txt
->> @@ -0,0 +1,41 @@
->> +* Atmel Quad Serial Peripheral Interface (QSPI)
->> +
->> +Required properties:
->> +- compatible:     Should be "atmel,sama5d2-spi-qspi".
->> +- reg:            Should contain the locations and lengths of the base registers
->> +                  and the mapped memory.
->> +- reg-names:      Should contain the resource reg names:
->> +                  - qspi_base: configuration register address space
->> +                  - qspi_mmap: memory mapped address space
->> +- interrupts:     Should contain the interrupt for the device.
->> +- clocks:         The phandle of the clock needed by the QSPI controller.
->> +- #address-cells: Should be <1>.
->> +- #size-cells:    Should be <0>.
->> +
->> +Example:
->> +
->> +qspi1: spi@f0024000 {
->> +	compatible = "atmel,sama5d2-spi-qspi";
->> +	reg = <0xf0024000 0x100>, <0xd8000000 0x08000000>;
->> +	reg-names = "qspi_base", "qspi_mmap";
->> +	interrupts = <53 IRQ_TYPE_LEVEL_HIGH 7>;
->> +	clocks = <&qspi1_clk>;
->> +	#address-cells = <1>;
->> +	#size-cells = <0>;
->> +	pinctrl-names = "default";
->> +	pinctrl-0 = <&pinctrl_qspi1_default>;
->> +	status = "okay";
->> +
->> +	flash@0 {
->> +		#address-cells = <1>;
->> +		#size-cells = <1>;
->> +		compatible = "winbond,w25m02gv", "spi-nand";
->
-> "winbond,w25m02gv" is undocumented and unnecessary since SPI NANDs are
-> automatically detected. Also, maybe you should declare a SPI NOR in the
-> example since SPI NAND support has not yet been merged.
->
-
-I was mainly focusing on NAND-flash with QSPI inteface so I took
-example from tested configuration. Next time I'll use NOR-flash.
-
->> +		reg = <0>;
->> +		spi-max-frequency = <83000000>;
->> +		spi-rx-bus-width = <4>;
->> +		spi-tx-bus-width = <4>;
->> +
->> +		...
->> +	};
->> +};
->> +
->
-> Regards,
->
-> Boris
->
-
-Thanks,
-Piotr
+> ---
+> Changes in v4:
+> - New
+> 
+>  drivers/mtd/nand/raw/nand_base.c | 10 +++++-----
+>  include/linux/mtd/rawnand.h      | 11 +++++++++++
+>  2 files changed, 16 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 65250308c82d..36048e0cf1f5 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5178,15 +5178,15 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+>  
+>  	/* Check version */
+>  	val = le16_to_cpu(p->revision);
+> -	if (val & (1 << 5))
+> +	if (val & ONFI_VERSION_2_3)
+>  		chip->parameters.onfi.version = 23;
+> -	else if (val & (1 << 4))
+> +	else if (val & ONFI_VERSION_2_2)
+>  		chip->parameters.onfi.version = 22;
+> -	else if (val & (1 << 3))
+> +	else if (val & ONFI_VERSION_2_1)
+>  		chip->parameters.onfi.version = 21;
+> -	else if (val & (1 << 2))
+> +	else if (val & ONFI_VERSION_2_0)
+>  		chip->parameters.onfi.version = 20;
+> -	else if (val & (1 << 1))
+> +	else if (val & ONFI_VERSION_1_0)
+>  		chip->parameters.onfi.version = 10;
+>  
+>  	if (!chip->parameters.onfi.version) {
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index ef7e3b4e91ea..015bc3f2fc13 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -230,6 +230,17 @@ enum nand_ecc_algo {
+>  /* Keep gcc happy */
+>  struct nand_chip;
+>  
+> +/* ONFI version bits */
+> +#define ONFI_VERSION_1_0		BIT(1)
+> +#define ONFI_VERSION_2_0		BIT(2)
+> +#define ONFI_VERSION_2_1		BIT(3)
+> +#define ONFI_VERSION_2_2		BIT(4)
+> +#define ONFI_VERSION_2_3		BIT(5)
+> +#define ONFI_VERSION_3_0		BIT(6)
+> +#define ONFI_VERSION_3_1		BIT(7)
+> +#define ONFI_VERSION_3_2		BIT(8)
+> +#define ONFI_VERSION_4_0		BIT(9)
+> +
+>  /* ONFI features */
+>  #define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
+>  #define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
