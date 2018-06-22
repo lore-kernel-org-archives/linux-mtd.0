@@ -1,27 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWKTA-00027P-3S
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 11:43:29 +0000
-Date: Fri, 22 Jun 2018 13:42:35 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- linux-kbuild@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, "linux-stable #4 . 14+"
- <stable@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based
- on IP datasheet
-Message-ID: <20180622134235.5ab76325@bbrezillon>
-In-Reply-To: <20180619132811.45bf6454@bbrezillon>
-References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
- <20180619132811.45bf6454@bbrezillon>
+Received: from 3.mo5.mail-out.ovh.net ([46.105.40.108])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fWKxt-0004QC-TJ
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 12:15:00 +0000
+Received: from player792.ha.ovh.net (unknown [10.109.120.107])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id C7C1F1C49E5
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 14:14:38 +0200 (CEST)
+From: =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+To: linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-aspeed@lists.ozlabs.org,
+ Joel Stanley <joel@jms.id.au>, Andrew Jeffery <andrew@aj.id.au>,
+ =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>
+Subject: [PATCH 0/4] mtd: spi-nor: aspeed: introduce optimized settings for
+ fast reads
+Date: Fri, 22 Jun 2018 14:14:13 +0200
+Message-Id: <20180622121417.6762-1-clg@kaod.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,52 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Masahiro,
+Hello,
 
-On Tue, 19 Jun 2018 13:28:11 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+This series adds support for faster reads on the Aspeed SoC SMC (FMC
+and SPI) controllers using a SPI timing calibration sequence to select
+the best settings.
+ 
+Thanks,
 
-> Hi Masahiro,
-> 
-> On Fri, 15 Jun 2018 10:18:50 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-> 
-> > According to the Denali User's Guide, this IP needs three clocks:
-> > 
-> >  - clk: controller core clock
-> > 
-> >  - clk_x: bus interface clock
-> > 
-> >  - ecc_clk: clock at which ECC circuitry is run
-> > 
-> > Currently, denali_dt.c requires a single anonymous clock and its
-> > frequency.  However, the driver needs to get the frequency of "clk_x"
-> > not "clk".  This is confusing because people tend to assume the
-> > anonymous clock means the core clock.  In fact, I got a report of
-> > SOCFPGA breakage because the timing parameters are calculated based
-> > on a wrong frequency.
-> > 
-> > Instead of the cheesy implementation, the clocks in the real hardware
-> > should be represented in the driver and the DT-binding.
-> > 
-> > However, adding new clocks would break the existing platforms.  For the
-> > backward compatibility, the driver still accepts a single clock just as
-> > before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
-> > This is fine for existing DT of Socionext UniPhier, and also fixes the
-> > issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
-> > the bus interface clock.
-> > 
-> > Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")  
-> 
-> Sorry for changing my mind, but I think this patch is doing more than
-> just fixing a bug. The bugfix should IMO be limited to unconditionally
-> setting ->clk_x_rate to 200000000 since this is what was done before
-> commit 1bb88666775e. And the remaining changes should go in nand/next.
+C.
 
-Do you want me to write this patch? Note that I can't really take this
-patch since Rob asked for a new version with DT bindings changes placed
-in a separate patch.
+ Changes since last time this was discussed (06/2017)
 
-Regards,
+ - the "spi-max-frequency" property is now used to cap the results
+ - chips on FMC controllers are also covered
 
-Boris
+Cédric Le Goater (4):
+  mtd: spi-nor: aspeed: use command mode for reads
+  mtd: spi-nor: aspeed: add support for SPI dual IO read mode
+  mtd: spi-nor: aspeed: retrieve the ABH clock frequency
+  mtd: spi-nor: aspeed: introduce optimized settings for fast reads
+
+ drivers/mtd/spi-nor/aspeed-smc.c | 294 +++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 281 insertions(+), 13 deletions(-)
+
+-- 
+2.13.6
