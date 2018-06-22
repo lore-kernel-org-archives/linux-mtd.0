@@ -1,32 +1,18 @@
-Received: from conssluserg-06.nifty.com ([210.131.2.91])
+Received: from botnar.kaiser.cx ([176.28.20.183])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWNCp-0002Q8-Dr
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 14:38:33 +0000
-Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
- [209.85.217.177]) (authenticated)
- by conssluserg-06.nifty.com with ESMTP id w5MEc2X5003532
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 23:38:03 +0900
-Received: by mail-ua0-f177.google.com with SMTP id k14-v6so4407377uao.12
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 07:38:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180619120719.26921-1-richard@nod.at>
-References: <20180619120719.26921-1-richard@nod.at>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 22 Jun 2018 23:37:21 +0900
-Message-ID: <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Richard Weinberger <richard@nod.at>
-Cc: DTML <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
+ id 1fWNR0-0007Ry-45
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 14:53:14 +0000
+From: Martin Kaiser <martin@kaiser.cx>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH] mtd: rawnand: mxc: remove __init qualifier from mxcnd_probe_dt
+Date: Fri, 22 Jun 2018 16:50:25 +0200
+Message-Id: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,72 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+mxcnd_probe_dt is called from mxcnd_probe, which is not marked as __init.
 
+Using the sysfs unbind, bind nodes, mxcnd_probe and mxcnd_probe_dt can
+potentially be called at any time. After the __init functions are cleaned,
+mxcnd_probe_dt is no longer available. Calling it anyway causes a crash.
 
-2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
-> The denali NAND flash controller needs at least two clocks to operate,
-> nand_clk and nand_x_clk.
-> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
-> setup_data_interface()") nand_x_clk is used to derive timing settings.
->
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-> ---
-> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
-> is not present on this SoC.
-> But my SoCFPGA knowledge is very limited.
->
-> Thanks,
-> //richard
-> ---
->  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
-> index 486d4e7433ed..562f7b375bbd 100644
-> --- a/arch/arm/boot/dts/socfpga.dtsi
-> +++ b/arch/arm/boot/dts/socfpga.dtsi
-> @@ -754,7 +754,8 @@
->                         reg-names = "nand_data", "denali_reg";
->                         interrupts = <0x0 0x90 0x4>;
->                         dma-mask = <0xffffffff>;
-> -                       clocks = <&nand_clk>;
-> +                       clocks = <&nand_clk>, <&nand_x_clk>;
-> +                       clock-names = "nand", "nand_x";
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+---
+I hope that my understanding is correct.
 
+In practice, I could not get the kernel to crash, my compiler would
+inline mxcnd_probe_dt into mxcnd_probe and ignore the __init.
 
-IMHO, this should be
+If I marked mxcnd_probe_dt as noinline, I could trigger a crash as
+follows
 
-                          clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
-                          clock-names = "nand", "nand_x", "ecc";
+[root@host ]# echo bb000000.nand > /sys/bus/platform/drivers/mxc_nand/unbind
+[root@host ]# echo bb000000.nand > /sys/bus/platform/drivers/mxc_nand/bind
+Internal error: Oops - undefined instruction: 0 [#1] ARM
+...
 
+ drivers/mtd/nand/raw/mxc_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-A clock consumer (Denali in this case) should generally
-take the same number of clocks across SoCs.
-
-It is just some SoCs tie clocks together.
-
-It is the case for my UniPhier platform;
-"nand_x" and "ecc" are tied up because they are both 200MHz.
-
-
-SOCFPGA supports HW ECC correction, thus it surely needs ecc clock.
-
-
->                         status = "disabled";
->                 };
->
-> --
-> 2.17.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
+diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
+index 26cef21..90cfb5e 100644
+--- a/drivers/mtd/nand/raw/mxc_nand.c
++++ b/drivers/mtd/nand/raw/mxc_nand.c
+@@ -1686,7 +1686,7 @@ static const struct of_device_id mxcnd_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
+ 
+-static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
++static int mxcnd_probe_dt(struct mxc_nand_host *host)
+ {
+ 	struct device_node *np = host->dev->of_node;
+ 	const struct of_device_id *of_id =
+@@ -1700,7 +1700,7 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+ 	return 0;
+ }
+ #else
+-static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
++static int mxcnd_probe_dt(struct mxc_nand_host *host)
+ {
+ 	return 1;
+ }
 -- 
-Best Regards
-Masahiro Yamada
+2.1.4
