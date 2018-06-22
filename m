@@ -1,6 +1,6 @@
 Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWAsl-0005jc-Tc
+ id 1fWAsl-0005jh-Tf
  for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:29:02 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
@@ -9,10 +9,9 @@ To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
 Cc: linux-kernel@vger.kernel.org,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v5 2/6] mtd: rawnand: add manufacturer fixup for ONFI
- parameter page
-Date: Fri, 22 Jun 2018 13:28:31 +1200
-Message-Id: <20180622012835.17874-3-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v5 4/6] mtd: rawnand: micron: add fixup for ONFI revision
+Date: Fri, 22 Jun 2018 13:28:33 +1200
+Message-Id: <20180622012835.17874-5-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
 References: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,61 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is called after the ONFI parameter page checksum is verified
-and allows us to override the contents of the parameter page.
+Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
+revision number field of the ONFI parameter page. Rather than rejecting
+these outright assume ONFI version 1.0 if the revision number is 00 00.
 
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 
 Notes:
+    This is now qualified on vendor == MICRON. I haven't qualified this
+    based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
+    documented to have this behaviour.
+    
     Changes in v2:
-    - New
+    - use fixup_onfi_param_page
     Changes in v3:
-    - Add doc comment and review from Boris
+    - add code comment next to workaround
     Changes in v4:
-    - None
+    - use define for ONFI_VERSION
     Changes in v5:
     - None
 
- drivers/mtd/nand/raw/nand_base.c | 4 ++++
- include/linux/mtd/rawnand.h      | 3 +++
- 2 files changed, 7 insertions(+)
+ drivers/mtd/nand/raw/nand_micron.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0cd3e216b95c..65250308c82d 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -5172,6 +5172,10 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
- 		}
- 	}
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index 203faba0a9c1..d30bd4df9b12 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -290,6 +290,19 @@ static int micron_nand_init(struct nand_chip *chip)
+ 	return 0;
+ }
  
-+	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
-+	    chip->manufacturer.desc->ops->fixup_onfi_param_page)
-+		chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
++static void micron_fixup_onfi_param_page(struct nand_chip *chip,
++					 struct nand_onfi_params *p)
++{
++	/*
++	 * MT29F1G08ABAFAWP-ITE:F and possibly others report 00 00 for the
++	 * revision number field of the ONFI parameter page. Assume ONFI
++	 * version 1.0 if the revision number is 00 00.
++	 */
++	if (le16_to_cpu(p->revision) == 0)
++		p->revision = cpu_to_le16(ONFI_VERSION_1_0);
++}
 +
- 	/* Check version */
- 	val = le16_to_cpu(p->revision);
- 	if (val & (1 << 5))
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 3e8ec3b8a39c..ef7e3b4e91ea 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -778,11 +778,14 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
-  *	  implementation) if any.
-  * @cleanup: the ->init() function may have allocated resources, ->cleanup()
-  *	     is here to let vendor specific code release those resources.
-+ * @fixup_onfi_param_page: apply vendor specific fixups to the ONFI
-+ *	parameter page. This is called after the checksum is verified.
-  */
- struct nand_manufacturer_ops {
- 	void (*detect)(struct nand_chip *chip);
- 	int (*init)(struct nand_chip *chip);
- 	void (*cleanup)(struct nand_chip *chip);
-+	void (*fixup_onfi_param_page)(struct nand_chip *chip, struct nand_onfi_params *p);
+ const struct nand_manufacturer_ops micron_nand_manuf_ops = {
+ 	.init = micron_nand_init,
++	.fixup_onfi_param_page = micron_fixup_onfi_param_page,
  };
- 
- /**
 -- 
 2.17.1
