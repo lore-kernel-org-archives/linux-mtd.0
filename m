@@ -1,30 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWLBM-0007wv-5T
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 12:28:56 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fWM4s-0004ip-9u
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 13:26:16 +0000
+Received: from mail-vk0-f54.google.com (mail-vk0-f54.google.com
+ [209.85.213.54]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id w5MDPbSx031882
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 22:25:38 +0900
+Received: by mail-vk0-f54.google.com with SMTP id o138-v6so3898373vkd.3
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 06:25:38 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180622134235.5ab76325@bbrezillon>
+References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
+ <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
+ <20180619132811.45bf6454@bbrezillon> <20180622134235.5ab76325@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 22 Jun 2018 22:24:56 +0900
+Message-ID: <CAK7LNAQdfEF3j69DnmpwTMnuBQJ+f4x-1Di9TZ1f5hvVmPDwmw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based on
+ IP datasheet
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
  David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-spi@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
- Ian Campbell <ijc+devicetree@hellion.org.uk>,
- Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
- Piotr Bugalski <Piotr.Bugalski@cryptera.com>,
- Peter Pan <peterpansjtu@gmail.com>,
- Frieder Schrempf <frieder.schrempf@exceet.de>,
- Julien Su <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
- <zhengxunli@mxic.com.tw>, Peter Pan <peterpandong@micron.com>
-Subject: [PATCH v9 3/6] mtd: spinand: Add initial support for Micron
- MT29F2G01ABAGD
-Date: Fri, 22 Jun 2018 14:28:25 +0200
-Message-Id: <20180622122828.12939-4-boris.brezillon@bootlin.com>
-In-Reply-To: <20180622122828.12939-1-boris.brezillon@bootlin.com>
-References: <20180622122828.12939-1-boris.brezillon@bootlin.com>
+ Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
+ Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ "linux-stable #4 . 14+" <stable@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,216 +39,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Peter Pan <peterpandong@micron.com>
+2018-06-22 20:42 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> Hi Masahiro,
+>
+> On Tue, 19 Jun 2018 13:28:11 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>
+>> Hi Masahiro,
+>>
+>> On Fri, 15 Jun 2018 10:18:50 +0900
+>> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>>
+>> > According to the Denali User's Guide, this IP needs three clocks:
+>> >
+>> >  - clk: controller core clock
+>> >
+>> >  - clk_x: bus interface clock
+>> >
+>> >  - ecc_clk: clock at which ECC circuitry is run
+>> >
+>> > Currently, denali_dt.c requires a single anonymous clock and its
+>> > frequency.  However, the driver needs to get the frequency of "clk_x"
+>> > not "clk".  This is confusing because people tend to assume the
+>> > anonymous clock means the core clock.  In fact, I got a report of
+>> > SOCFPGA breakage because the timing parameters are calculated based
+>> > on a wrong frequency.
+>> >
+>> > Instead of the cheesy implementation, the clocks in the real hardware
+>> > should be represented in the driver and the DT-binding.
+>> >
+>> > However, adding new clocks would break the existing platforms.  For the
+>> > backward compatibility, the driver still accepts a single clock just as
+>> > before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
+>> > This is fine for existing DT of Socionext UniPhier, and also fixes the
+>> > issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
+>> > the bus interface clock.
+>> >
+>> > Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
+>>
+>> Sorry for changing my mind, but I think this patch is doing more than
+>> just fixing a bug. The bugfix should IMO be limited to unconditionally
+>> setting ->clk_x_rate to 200000000 since this is what was done before
+>> commit 1bb88666775e. And the remaining changes should go in nand/next.
+>
+> Do you want me to write this patch? Note that I can't really take this
+> patch since Rob asked for a new version with DT bindings changes placed
+> in a separate patch.
 
-Add a basic driver for Micron SPI NANDs. Only one device is supported
-right now, but the driver will be extended to support more devices
-afterwards.
 
-Signed-off-by: Peter Pan <peterpandong@micron.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Changes in v8:
-- Changed the subject prefix
----
- drivers/mtd/nand/spi/Makefile |   2 +-
- drivers/mtd/nand/spi/core.c   |  17 ++++++
- drivers/mtd/nand/spi/micron.c | 133 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/spinand.h   |   3 +
- 4 files changed, 154 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mtd/nand/spi/micron.c
+Sorry for the delay.  I was traveling.
 
-diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
-index 2c473b765027..a1df25398f20 100644
---- a/drivers/mtd/nand/spi/Makefile
-+++ b/drivers/mtd/nand/spi/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
--spinand-objs := core.o
-+spinand-objs := core.o micron.o
- obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 425570f1b0c8..3b7b4dd21d44 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -778,8 +778,25 @@ static const struct nand_ops spinand_ops = {
- 	.isbad = spinand_isbad,
- };
- 
-+static const struct spinand_manufacturer *spinand_manufacturers[] = {
-+	&micron_spinand_manufacturer,
-+};
-+
- static int spinand_manufacturer_detect(struct spinand_device *spinand)
- {
-+	unsigned int i;
-+	int ret;
-+
-+	for (i = 0; i < ARRAY_SIZE(spinand_manufacturers); i++) {
-+		ret = spinand_manufacturers[i]->ops->detect(spinand);
-+		if (ret > 0) {
-+			spinand->manufacturer = spinand_manufacturers[i];
-+			return 0;
-+		} else if (ret < 0) {
-+			return ret;
-+		}
-+	}
-+
- 	return -ENOTSUPP;
- }
- 
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-new file mode 100644
-index 000000000000..9c4381d6847b
---- /dev/null
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2016-2017 Micron Technology, Inc.
-+ *
-+ * Authors:
-+ *	Peter Pan <peterpandong@micron.com>
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/kernel.h>
-+#include <linux/mtd/spinand.h>
-+
-+#define SPINAND_MFR_MICRON		0x2c
-+
-+#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
-+#define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
-+#define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
-+#define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
-+#define MICRON_STATUS_ECC_7TO8_BITFLIPS	(5 << 4)
-+
-+static SPINAND_OP_VARIANTS(read_cache_variants,
-+		SPINAND_PAGE_READ_FROM_CACHE_QUADIO_OP(0, 2, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_DUALIO_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
-+		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(write_cache_variants,
-+		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(true, 0, NULL, 0));
-+
-+static SPINAND_OP_VARIANTS(update_cache_variants,
-+		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
-+		SPINAND_PROG_LOAD(false, 0, NULL, 0));
-+
-+static int mt29f2g01abagd_ooblayout_ecc(struct mtd_info *mtd, int section,
-+					struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	region->offset = 64;
-+	region->length = 64;
-+
-+	return 0;
-+}
-+
-+static int mt29f2g01abagd_ooblayout_free(struct mtd_info *mtd, int section,
-+					 struct mtd_oob_region *region)
-+{
-+	if (section)
-+		return -ERANGE;
-+
-+	/* Reserve 2 bytes for the BBM. */
-+	region->offset = 2;
-+	region->length = 62;
-+
-+	return 0;
-+}
-+
-+static const struct mtd_ooblayout_ops mt29f2g01abagd_ooblayout = {
-+	.ecc = mt29f2g01abagd_ooblayout_ecc,
-+	.free = mt29f2g01abagd_ooblayout_free,
-+};
-+
-+static int mt29f2g01abagd_ecc_get_status(struct spinand_device *spinand,
-+					 u8 status)
-+{
-+	switch (status & MICRON_STATUS_ECC_MASK) {
-+	case STATUS_ECC_NO_BITFLIPS:
-+		return 0;
-+
-+	case STATUS_ECC_UNCOR_ERROR:
-+		return -EBADMSG;
-+
-+	case MICRON_STATUS_ECC_1TO3_BITFLIPS:
-+		return 3;
-+
-+	case MICRON_STATUS_ECC_4TO6_BITFLIPS:
-+		return 6;
-+
-+	case MICRON_STATUS_ECC_7TO8_BITFLIPS:
-+		return 8;
-+
-+	default:
-+		break;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static const struct spinand_info micron_spinand_table[] = {
-+	SPINAND_INFO("MT29F2G01ABAGD", 0x24,
-+		     NAND_MEMORG(1, 2048, 128, 64, 2048, 2, 1, 1),
-+		     NAND_ECCREQ(8, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&mt29f2g01abagd_ooblayout,
-+				     mt29f2g01abagd_ecc_get_status)),
-+};
-+
-+static int micron_spinand_detect(struct spinand_device *spinand)
-+{
-+	u8 *id = spinand->id.data;
-+	int ret;
-+
-+	/*
-+	 * Micron SPI NAND read ID need a dummy byte,
-+	 * so the first byte in raw_id is dummy.
-+	 */
-+	if (id[1] != SPINAND_MFR_MICRON)
-+		return 0;
-+
-+	ret = spinand_match_and_init(spinand, micron_spinand_table,
-+				     ARRAY_SIZE(micron_spinand_table), id[2]);
-+	if (ret)
-+		return ret;
-+
-+	return 1;
-+}
-+
-+static const struct spinand_manufacturer_ops micron_spinand_manuf_ops = {
-+	.detect = micron_spinand_detect,
-+};
-+
-+const struct spinand_manufacturer micron_spinand_manufacturer = {
-+	.id = SPINAND_MFR_MICRON,
-+	.name = "Micron",
-+	.ops = &micron_spinand_manuf_ops,
-+};
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index d3efe62dc9de..717b272940f1 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -193,6 +193,9 @@ struct spinand_manufacturer {
- 	const struct spinand_manufacturer_ops *ops;
- };
- 
-+/* SPI NAND manufacturers */
-+extern const struct spinand_manufacturer micron_spinand_manufacturer;
-+
- /**
-  * struct spinand_op_variants - SPI NAND operation variants
-  * @ops: the list of variants for a given operation
+Now I am back home, and started to flush my TODO queue.
+
+V4 will be soon.
+
+
+
+
 -- 
-2.14.1
+Best Regards
+Masahiro Yamada
