@@ -1,34 +1,31 @@
-Received: from conssluserg-05.nifty.com ([210.131.2.90])
+Received: from conssluserg-06.nifty.com ([210.131.2.91])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWM4s-0004ip-9u
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 13:26:16 +0000
-Received: from mail-vk0-f54.google.com (mail-vk0-f54.google.com
- [209.85.213.54]) (authenticated)
- by conssluserg-05.nifty.com with ESMTP id w5MDPbSx031882
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 22:25:38 +0900
-Received: by mail-vk0-f54.google.com with SMTP id o138-v6so3898373vkd.3
- for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 06:25:38 -0700 (PDT)
+ id 1fWNCp-0002Q8-Dr
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 14:38:33 +0000
+Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
+ [209.85.217.177]) (authenticated)
+ by conssluserg-06.nifty.com with ESMTP id w5MEc2X5003532
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 23:38:03 +0900
+Received: by mail-ua0-f177.google.com with SMTP id k14-v6so4407377uao.12
+ for <linux-mtd@lists.infradead.org>; Fri, 22 Jun 2018 07:38:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180622134235.5ab76325@bbrezillon>
-References: <1529025532-22087-1-git-send-email-yamada.masahiro@socionext.com>
- <1529025532-22087-2-git-send-email-yamada.masahiro@socionext.com>
- <20180619132811.45bf6454@bbrezillon> <20180622134235.5ab76325@bbrezillon>
+In-Reply-To: <20180619120719.26921-1-richard@nod.at>
+References: <20180619120719.26921-1-richard@nod.at>
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Fri, 22 Jun 2018 22:24:56 +0900
-Message-ID: <CAK7LNAQdfEF3j69DnmpwTMnuBQJ+f4x-1Di9TZ1f5hvVmPDwmw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: denali_dt: add more clocks based on
- IP datasheet
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
+Date: Fri, 22 Jun 2018 23:37:21 +0900
+Message-ID: <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
+Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
+To: Richard Weinberger <richard@nod.at>
+Cc: DTML <devicetree@vger.kernel.org>,
  Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- "linux-stable #4 . 14+" <stable@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,60 +36,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-06-22 20:42 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> Hi Masahiro,
+Hi Richard,
+
+
+2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
+> The denali NAND flash controller needs at least two clocks to operate,
+> nand_clk and nand_x_clk.
+> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
+> setup_data_interface()") nand_x_clk is used to derive timing settings.
 >
-> On Tue, 19 Jun 2018 13:28:11 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> Signed-off-by: Richard Weinberger <richard@nod.at>
+> ---
+> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
+> is not present on this SoC.
+> But my SoCFPGA knowledge is very limited.
 >
->> Hi Masahiro,
->>
->> On Fri, 15 Jun 2018 10:18:50 +0900
->> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->>
->> > According to the Denali User's Guide, this IP needs three clocks:
->> >
->> >  - clk: controller core clock
->> >
->> >  - clk_x: bus interface clock
->> >
->> >  - ecc_clk: clock at which ECC circuitry is run
->> >
->> > Currently, denali_dt.c requires a single anonymous clock and its
->> > frequency.  However, the driver needs to get the frequency of "clk_x"
->> > not "clk".  This is confusing because people tend to assume the
->> > anonymous clock means the core clock.  In fact, I got a report of
->> > SOCFPGA breakage because the timing parameters are calculated based
->> > on a wrong frequency.
->> >
->> > Instead of the cheesy implementation, the clocks in the real hardware
->> > should be represented in the driver and the DT-binding.
->> >
->> > However, adding new clocks would break the existing platforms.  For the
->> > backward compatibility, the driver still accepts a single clock just as
->> > before.  If clk_x is missing, clk_x_rate is set to a hardcoded value.
->> > This is fine for existing DT of Socionext UniPhier, and also fixes the
->> > issue of Altera (Intel) SOCFPGA because both platforms use 200 MHz for
->> > the bus interface clock.
->> >
->> > Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
->>
->> Sorry for changing my mind, but I think this patch is doing more than
->> just fixing a bug. The bugfix should IMO be limited to unconditionally
->> setting ->clk_x_rate to 200000000 since this is what was done before
->> commit 1bb88666775e. And the remaining changes should go in nand/next.
+> Thanks,
+> //richard
+> ---
+>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> Do you want me to write this patch? Note that I can't really take this
-> patch since Rob asked for a new version with DT bindings changes placed
-> in a separate patch.
+> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
+> index 486d4e7433ed..562f7b375bbd 100644
+> --- a/arch/arm/boot/dts/socfpga.dtsi
+> +++ b/arch/arm/boot/dts/socfpga.dtsi
+> @@ -754,7 +754,8 @@
+>                         reg-names = "nand_data", "denali_reg";
+>                         interrupts = <0x0 0x90 0x4>;
+>                         dma-mask = <0xffffffff>;
+> -                       clocks = <&nand_clk>;
+> +                       clocks = <&nand_clk>, <&nand_x_clk>;
+> +                       clock-names = "nand", "nand_x";
 
 
-Sorry for the delay.  I was traveling.
+IMHO, this should be
 
-Now I am back home, and started to flush my TODO queue.
+                          clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
+                          clock-names = "nand", "nand_x", "ecc";
 
-V4 will be soon.
 
+
+A clock consumer (Denali in this case) should generally
+take the same number of clocks across SoCs.
+
+It is just some SoCs tie clocks together.
+
+It is the case for my UniPhier platform;
+"nand_x" and "ecc" are tied up because they are both 200MHz.
+
+
+SOCFPGA supports HW ECC correction, thus it surely needs ecc clock.
+
+
+>                         status = "disabled";
+>                 };
+>
+> --
+> 2.17.1
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
 
