@@ -1,21 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWKMQ-0006mH-CT
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 11:36:17 +0000
-Date: Fri, 22 Jun 2018 13:35:48 +0200
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fWKNY-0008Ga-5G
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 11:37:25 +0000
+Date: Fri, 22 Jun 2018 13:37:02 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] mtd: cfi_cmdset_0002: Use right chip in
- do_ppb_xxlock()
-Message-ID: <20180622133548.1e3a6b8c@bbrezillon>
-In-Reply-To: <20180606101330.11071-1-joakim.tjernlund@infinera.com>
-References: <20180605172607.50acb34f@bbrezillon>
- <20180606101330.11071-1-joakim.tjernlund@infinera.com>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: dataflash: Use ULL suffix for 64-bit constants
+Message-ID: <20180622133702.73698862@bbrezillon>
+In-Reply-To: <20180622070425.26573-1-geert@linux-m68k.org>
+References: <20180622070425.26573-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  6 Jun 2018 12:13:27 +0200
-Joakim Tjernlund <joakim.tjernlund@infinera.com> wrote:
+On Fri, 22 Jun 2018 09:04:25 +0200
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 
-> do_ppb_xxlock() fails to add chip->start when
-> quering for lock status(and chip_ready test),
-> which caused false status reports.
-> Fix by adding adr += chip->start and adjust call sites accordingly.
-> 
-> Fixes: 1648eaaa1575 ("mtd: cfi_cmdset_0002: Support Persistent Protection Bits (PPB) locking")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+> With gcc 4.1.2 when compiling for 32-bit:
+>=20
+>     drivers/mtd/devices/mtd_dataflash.c:736: warning: integer constant is=
+ too large for =E2=80=98long=E2=80=99 type
+>     drivers/mtd/devices/mtd_dataflash.c:737: warning: integer constant is=
+ too large for =E2=80=98long=E2=80=99 type
+>=20
+> Add the missing "ULL" suffixes to fix this.
+>=20
+> Fixes: 67e4145ebf2c161d ("mtd: dataflash: Add flash_info for AT45DB641E")
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Acked-by: Andrey Smirnov <andrew.smirnov@gmail.com>
 
-Applied all patches of this series.
+Applied.
+
+Thanks,
+
+Boris
 
 > ---
-> 
->  v2 - Spilt into several patches
->  
->  drivers/mtd/chips/cfi_cmdset_0002.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 53a976a8e614..8648b1adccd5 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -2554,8 +2554,9 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	unsigned long timeo;
->  	int ret;
->  
-> +	adr += chip->start;
->  	mutex_lock(&chip->mutex);
-> -	ret = get_chip(map, chip, adr + chip->start, FL_LOCKING);
-> +	ret = get_chip(map, chip, adr, FL_LOCKING);
->  	if (ret) {
->  		mutex_unlock(&chip->mutex);
->  		return ret;
-> @@ -2573,8 +2574,8 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  
->  	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
->  		chip->state = FL_LOCKING;
-> -		map_write(map, CMD(0xA0), chip->start + adr);
-> -		map_write(map, CMD(0x00), chip->start + adr);
-> +		map_write(map, CMD(0xA0), adr);
-> +		map_write(map, CMD(0x00), adr);
->  	} else if (thunk == DO_XXLOCK_ONEBLOCK_UNLOCK) {
->  		/*
->  		 * Unlocking of one specific sector is not supported, so we
-> @@ -2612,7 +2613,7 @@ static int __maybe_unused do_ppb_xxlock(struct map_info *map,
->  	map_write(map, CMD(0x00), chip->start);
->  
->  	chip->state = FL_READY;
-> -	put_chip(map, chip, adr + chip->start);
-> +	put_chip(map, chip, adr);
->  	mutex_unlock(&chip->mutex);
->  
->  	return ret;
+> v2:
+>   - Add Acked-by.
+> ---
+>  drivers/mtd/devices/mtd_dataflash.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mt=
+d_dataflash.c
+> index 3a6f450d1093c4c5..53febe8a68c3cdfa 100644
+> --- a/drivers/mtd/devices/mtd_dataflash.c
+> +++ b/drivers/mtd/devices/mtd_dataflash.c
+> @@ -733,8 +733,8 @@ static struct flash_info dataflash_data[] =3D {
+>  	{ "AT45DB642x",  0x1f2800, 8192, 1056, 11, SUP_POW2PS},
+>  	{ "at45db642d",  0x1f2800, 8192, 1024, 10, SUP_POW2PS | IS_POW2PS},
+> =20
+> -	{ "AT45DB641E",  0x1f28000100, 32768, 264, 9, SUP_EXTID | SUP_POW2PS},
+> -	{ "at45db641e",  0x1f28000100, 32768, 256, 8, SUP_EXTID | SUP_POW2PS | =
+IS_POW2PS},
+> +	{ "AT45DB641E",  0x1f28000100ULL, 32768, 264, 9, SUP_EXTID | SUP_POW2PS=
+},
+> +	{ "at45db641e",  0x1f28000100ULL, 32768, 256, 8, SUP_EXTID | SUP_POW2PS=
+ | IS_POW2PS},
+>  };
+> =20
+>  static struct flash_info *jedec_lookup(struct spi_device *spi,
