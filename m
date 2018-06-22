@@ -1,7 +1,7 @@
 Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWAsl-0005jh-Tf
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:29:02 +0000
+ id 1fWAsy-0005lk-Il
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:29:18 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
  dwmw2@infradead.org, computersforpeace@gmail.com,
@@ -9,9 +9,9 @@ To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
 Cc: linux-kernel@vger.kernel.org,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v5 4/6] mtd: rawnand: micron: add fixup for ONFI revision
-Date: Fri, 22 Jun 2018 13:28:33 +1200
-Message-Id: <20180622012835.17874-5-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v5 6/6] mtd: rawnand: micron: detect forced on-die ECC
+Date: Fri, 22 Jun 2018 13:28:35 +1200
+Message-Id: <20180622012835.17874-7-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
 References: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,54 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
-revision number field of the ONFI parameter page. Rather than rejecting
-these outright assume ONFI version 1.0 if the revision number is 00 00.
+Some Micron NAND chips have on-die ECC forceably enabled. The detect
+these based on chip ID as there seems to be no other way of
+distinguishing these chips from those that have optional support for
+on-die ECC.
+
+When a chip with mandatory on-die ECC is detected change the current ECC
+mode to on-die.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
 
 Notes:
-    This is now qualified on vendor == MICRON. I haven't qualified this
-    based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
-    documented to have this behaviour.
-    
-    Changes in v2:
-    - use fixup_onfi_param_page
-    Changes in v3:
-    - add code comment next to workaround
     Changes in v4:
-    - use define for ONFI_VERSION
+    - New
     Changes in v5:
-    - None
+    - fail if on-die ECC is mandatory and the current ecc.mode is not
+      NAND_ECC_ON_DIE.
 
- drivers/mtd/nand/raw/nand_micron.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/mtd/nand/raw/nand_micron.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 203faba0a9c1..d30bd4df9b12 100644
+index f83053562925..35fa6880a799 100644
 --- a/drivers/mtd/nand/raw/nand_micron.c
 +++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -290,6 +290,19 @@ static int micron_nand_init(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static void micron_fixup_onfi_param_page(struct nand_chip *chip,
-+					 struct nand_onfi_params *p)
-+{
-+	/*
-+	 * MT29F1G08ABAFAWP-ITE:F and possibly others report 00 00 for the
-+	 * revision number field of the ONFI parameter page. Assume ONFI
-+	 * version 1.0 if the revision number is 00 00.
-+	 */
-+	if (le16_to_cpu(p->revision) == 0)
-+		p->revision = cpu_to_le16(ONFI_VERSION_1_0);
-+}
-+
- const struct nand_manufacturer_ops micron_nand_manuf_ops = {
- 	.init = micron_nand_init,
-+	.fixup_onfi_param_page = micron_fixup_onfi_param_page,
+@@ -255,6 +255,14 @@ enum {
+ 	MICRON_ON_DIE_MANDATORY,
  };
+ 
++/*
++ * These parts are known to have on-die ECC forceably enabled
++ */
++static u8 micron_on_die_ecc[] = {
++	0xd1, /* MT29F1G08ABAFA */
++	0xa1, /* MT29F1G08ABBFA */
++};
++
+ /*
+  * Try to detect if the NAND support on-die ECC. To do this, we enable
+  * the feature, and read back if it has been enabled as expected. We
+@@ -269,6 +277,11 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ {
+ 	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
+ 	int ret;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(micron_on_die_ecc); i++)
++		if (chip->id.data[1] == micron_on_die_ecc[i])
++			return MICRON_ON_DIE_MANDATORY;
+ 
+ 	if (!chip->parameters.onfi.version)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+@@ -322,7 +335,8 @@ static int micron_nand_init(struct nand_chip *chip)
+ 
+ 	ondie = micron_supports_on_die_ecc(chip);
+ 
+-	if (ondie == MICRON_ON_DIE_MANDATORY) {
++	if (ondie == MICRON_ON_DIE_MANDATORY &&
++	    chip->ecc.mode != NAND_ECC_ON_DIE) {
+ 		pr_err("On-die ECC forcefully enabled, not supported\n");
+ 		return -EINVAL;
+ 	}
 -- 
 2.17.1
