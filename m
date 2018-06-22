@@ -1,7 +1,7 @@
 Received: from conuserg-12.nifty.com ([210.131.2.79])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWOak-0005q3-TV
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 16:07:23 +0000
+ id 1fWOak-0005q2-TY
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 16:07:24 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>
@@ -9,14 +9,13 @@ Cc: Rob Herring <robh+dt@kernel.org>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
  Masahiro Yamada <yamada.masahiro@socionext.com>,
- "linux-stable #4 . 14+" <stable@vger.kernel.org>,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v4 1/5] mtd: rawnand: denali_dt: set clk_x_rate to 200 MHz
- unconditionally
-Date: Sat, 23 Jun 2018 01:06:34 +0900
-Message-Id: <1529683598-25783-2-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH v4 4/5] mtd: rawnand: denali_dt: add more clocks based on IP
+ datasheet
+Date: Sat, 23 Jun 2018 01:06:37 +0900
+Message-Id: <1529683598-25783-5-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1529683598-25783-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1529683598-25783-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,48 +27,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since commit 1bb88666775e ("mtd: nand: denali: handle timing parameters
-by setup_data_interface()"), denali_dt.c gets the clock rate from the
-clock driver.  The driver expects the frequency of the bus interface
-clock, whereas the clock driver of SOCFPGA provides the core clock.
-Thus, the setup_data_interface() hook calculates timing parameters
-based on a wrong frequency.
+Currently, denali_dt.c requires a single anonymous clock, but
+the Denali User's Guide requires three clocks for this IP:
 
-To make it work without relying on the clock driver, hard-code the clock
-frequency, 200MHz.  This is fine for existing DT of UniPhier, and also
-fixes the issue of SOCFPGA because both platforms use 200 MHz for the
-bus interface clock.
+ - clk: controller core clock
 
-Fixes: 1bb88666775e ("mtd: nand: denali: handle timing parameters by setup_data_interface()")
-Cc: linux-stable <stable@vger.kernel.org> #4.14+
-Reported-by: Philipp Rosenberger <p.rosenberger@linutronix.de>
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+ - clk_x: bus interface clock
+
+ - ecc_clk: clock at which ECC circuitry is run
+
+This commit supports these named clocks to represent the real hardware.
+
+For the backward compatibility, the driver still accepts a single clock
+just as before.  The clk_x_rate is taken from the clock driver again if
+the named clock "clk_x" is available.  This will happen only for future
+DT, hence the existing DT files are not affected.
+
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Richard Weinberger <richard@nod.at>
 Tested-by: Richard Weinberger <richard@nod.at>
 ---
 
-Changes in v4:
-  - split into a very simple patch for backport candiate
+Changes in v4: None
+Changes in v3:
+  - Change the patch order so that the bug-fix one comes the first
 
- drivers/mtd/nand/raw/denali_dt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Changes in v2:
+  - Split patches into sensible chunks
+
+ drivers/mtd/nand/raw/denali_dt.c | 53 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 45 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index cfd33e6..5869e90 100644
+index 6b4bd16..afaae37 100644
 --- a/drivers/mtd/nand/raw/denali_dt.c
 +++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -123,7 +123,11 @@ static int denali_dt_probe(struct platform_device *pdev)
+@@ -27,7 +27,9 @@
+ 
+ struct denali_dt {
+ 	struct denali_nand_info	denali;
+-	struct clk		*clk;
++	struct clk *clk;	/* core clock */
++	struct clk *clk_x;	/* bus interface clock */
++	struct clk *clk_ecc;	/* ECC circuit clock */
+ };
+ 
+ struct denali_dt_data {
+@@ -115,28 +117,61 @@ static int denali_dt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(denali->host))
+ 		return PTR_ERR(denali->host);
+ 
+-	dt->clk = devm_clk_get(dev, NULL);
++	/*
++	 * A single anonymous clock is supported for the backward compatibility.
++	 * New platforms should support all the named clocks.
++	 */
++	dt->clk = devm_clk_get(dev, "nand");
++	if (IS_ERR(dt->clk))
++		dt->clk = devm_clk_get(dev, NULL);
+ 	if (IS_ERR(dt->clk)) {
+ 		dev_err(dev, "no clk available\n");
+ 		return PTR_ERR(dt->clk);
+ 	}
++
++	dt->clk_x = devm_clk_get(dev, "nand_x");
++	if (IS_ERR(dt->clk_x))
++		dt->clk_x = NULL;
++
++	dt->clk_ecc = devm_clk_get(dev, "ecc");
++	if (IS_ERR(dt->clk_ecc))
++		dt->clk_ecc = NULL;
++
+ 	ret = clk_prepare_enable(dt->clk);
  	if (ret)
  		return ret;
  
--	denali->clk_x_rate = clk_get_rate(dt->clk);
-+	/*
-+	 * Hardcode the clock rate for the backward compatibility.
-+	 * This works for both SOCFPGA and UniPhier.
-+	 */
-+	denali->clk_x_rate = 200000000;
+-	/*
+-	 * Hardcode the clock rate for the backward compatibility.
+-	 * This works for both SOCFPGA and UniPhier.
+-	 */
+-	denali->clk_x_rate = 200000000;
++	ret = clk_prepare_enable(dt->clk_x);
++	if (ret)
++		goto out_disable_clk;
++
++	ret = clk_prepare_enable(dt->clk_ecc);
++	if (ret)
++		goto out_disable_clk_x;
++
++	if (dt->clk_x) {
++		denali->clk_x_rate = clk_get_rate(dt->clk_x);
++	} else {
++		/*
++		 * Hardcode the clock rates for the backward compatibility.
++		 * This works for both SOCFPGA and UniPhier.
++		 */
++		dev_notice(dev,
++			   "necessary clock is missing. default clock rates are used.\n");
++		denali->clk_x_rate = 200000000;
++	}
  
  	ret = denali_init(denali);
  	if (ret)
+-		goto out_disable_clk;
++		goto out_disable_clk_ecc;
+ 
+ 	platform_set_drvdata(pdev, dt);
+ 	return 0;
+ 
++out_disable_clk_ecc:
++	clk_disable_unprepare(dt->clk_ecc);
++out_disable_clk_x:
++	clk_disable_unprepare(dt->clk_x);
+ out_disable_clk:
+ 	clk_disable_unprepare(dt->clk);
+ 
+@@ -148,6 +183,8 @@ static int denali_dt_remove(struct platform_device *pdev)
+ 	struct denali_dt *dt = platform_get_drvdata(pdev);
+ 
+ 	denali_remove(&dt->denali);
++	clk_disable_unprepare(dt->clk_ecc);
++	clk_disable_unprepare(dt->clk_x);
+ 	clk_disable_unprepare(dt->clk);
+ 
+ 	return 0;
 -- 
 2.7.4
