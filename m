@@ -1,20 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fW7xM-0004qY-CL
- for linux-mtd@lists.infradead.org; Thu, 21 Jun 2018 22:21:33 +0000
-Date: Fri, 22 Jun 2018 00:21:09 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Zhouyang Jia <jiazhouyang09@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: gpio_flash: add error handling for ioremap_nocache
-Message-ID: <20180622002109.0cffb249@bbrezillon>
-In-Reply-To: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
-References: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fWAsk-0005jg-RU
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:29:00 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH v5 3/6] mtd: rawnand: add defines for ONFI version bits
+Date: Fri, 22 Jun 2018 13:28:32 +1200
+Message-Id: <20180622012835.17874-4-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
+References: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Jun 2018 11:15:00 +0800
-Zhouyang Jia <jiazhouyang09@gmail.com> wrote:
+Add defines for the ONFI version bits and use them in
+nand_flash_detect_onfi().
 
-> When ioremap_nocache fails, the lack of error-handling code may
-> cause unexpected results.
-> 
-> This patch adds error-handling code after calling ioremap_nocache.
-> 
-> Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
-> ---
->  drivers/mtd/maps/gpio-addr-flash.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-> index 385305e..7fbba02 100644
-> --- a/drivers/mtd/maps/gpio-addr-flash.c
-> +++ b/drivers/mtd/maps/gpio-addr-flash.c
-> @@ -242,6 +242,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
->  	state->map.phys       = NO_XIP;
->  	state->map.map_priv_1 = (unsigned long)state;
->  
-> +	if (!state->map.virt)
-> +		return -ENOMEM;
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
 
-Please move the test just after the ioremap_nocache() call. Also, I see
-that iounmap() is never called. Probably a good opportunity to switch
-to devm_ funcs.
+Notes:
+    Changes in v4:
+    - New
+    Changes in v5:
+    - Add review from Boris
 
-> +
->  	platform_set_drvdata(pdev, state);
->  
->  	i = 0;
+ drivers/mtd/nand/raw/nand_base.c | 10 +++++-----
+ include/linux/mtd/rawnand.h      | 11 +++++++++++
+ 2 files changed, 16 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 65250308c82d..36048e0cf1f5 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5178,15 +5178,15 @@ static int nand_flash_detect_onfi(struct nand_chip *chip)
+ 
+ 	/* Check version */
+ 	val = le16_to_cpu(p->revision);
+-	if (val & (1 << 5))
++	if (val & ONFI_VERSION_2_3)
+ 		chip->parameters.onfi.version = 23;
+-	else if (val & (1 << 4))
++	else if (val & ONFI_VERSION_2_2)
+ 		chip->parameters.onfi.version = 22;
+-	else if (val & (1 << 3))
++	else if (val & ONFI_VERSION_2_1)
+ 		chip->parameters.onfi.version = 21;
+-	else if (val & (1 << 2))
++	else if (val & ONFI_VERSION_2_0)
+ 		chip->parameters.onfi.version = 20;
+-	else if (val & (1 << 1))
++	else if (val & ONFI_VERSION_1_0)
+ 		chip->parameters.onfi.version = 10;
+ 
+ 	if (!chip->parameters.onfi.version) {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index ef7e3b4e91ea..015bc3f2fc13 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -230,6 +230,17 @@ enum nand_ecc_algo {
+ /* Keep gcc happy */
+ struct nand_chip;
+ 
++/* ONFI version bits */
++#define ONFI_VERSION_1_0		BIT(1)
++#define ONFI_VERSION_2_0		BIT(2)
++#define ONFI_VERSION_2_1		BIT(3)
++#define ONFI_VERSION_2_2		BIT(4)
++#define ONFI_VERSION_2_3		BIT(5)
++#define ONFI_VERSION_3_0		BIT(6)
++#define ONFI_VERSION_3_1		BIT(7)
++#define ONFI_VERSION_3_2		BIT(8)
++#define ONFI_VERSION_4_0		BIT(9)
++
+ /* ONFI features */
+ #define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
+ #define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
+-- 
+2.17.1
