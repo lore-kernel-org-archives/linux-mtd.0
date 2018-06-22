@@ -1,19 +1,22 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mail-pg0-x244.google.com ([2607:f8b0:400e:c05::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWAsl-0005jY-Te
- for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:29:02 +0000
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v5 1/6] mtd: rawnand: marvell: Handle on-die ECC
-Date: Fri, 22 Jun 2018 13:28:30 +1200
-Message-Id: <20180622012835.17874-2-chris.packham@alliedtelesis.co.nz>
-In-Reply-To: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
-References: <20180622012835.17874-1-chris.packham@alliedtelesis.co.nz>
+ id 1fWBFl-0006fD-3g
+ for linux-mtd@lists.infradead.org; Fri, 22 Jun 2018 01:52:46 +0000
+Received: by mail-pg0-x244.google.com with SMTP id m5-v6so2237547pgd.3
+ for <linux-mtd@lists.infradead.org>; Thu, 21 Jun 2018 18:52:33 -0700 (PDT)
+From: Zhouyang Jia <jiazhouyang09@gmail.com>
+To: 
+Cc: Zhouyang Jia <jiazhouyang09@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] mtd: gpio_flash: add error handling for ioremap_nocache
+Date: Fri, 22 Jun 2018 09:52:20 +0800
+Message-Id: <1529632343-70907-1-git-send-email-jiazhouyang09@gmail.com>
+In-Reply-To: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
+References: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From the controllers point of view this is the same as no or
-software only ECC.
+When ioremap_nocache fails, the lack of error-handling code may
+cause unexpected results.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+This patch adds error-handling code after calling ioremap_nocache.
+
+Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
 ---
+v1->v2:
+- Move the test just after the ioremap_nocache() call.
+---
+ drivers/mtd/maps/gpio-addr-flash.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Notes:
-    Changes in v2:
-    - New
-    Changes in v3:
-    - Add review from Boris
-    Changes in v4:
-    - None
-    Changes in v5:
-    - None
-
- drivers/mtd/nand/raw/marvell_nand.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..ba6889bbe802 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2157,6 +2157,7 @@ static int marvell_nand_ecc_init(struct mtd_info *mtd,
- 		break;
- 	case NAND_ECC_NONE:
- 	case NAND_ECC_SOFT:
-+	case NAND_ECC_ON_DIE:
- 		if (!nfc->caps->is_nfcv2 && mtd->writesize != SZ_512 &&
- 		    mtd->writesize != SZ_2K) {
- 			dev_err(nfc->dev, "NFCv1 cannot write %d bytes pages\n",
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 385305e..9d97236 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -239,6 +239,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	state->map.bankwidth  = pdata->width;
+ 	state->map.size       = state->win_size * (1 << state->gpio_count);
+ 	state->map.virt       = ioremap_nocache(memory->start, state->map.size);
++	if (!state->map.virt)
++		return -ENOMEM;
++
+ 	state->map.phys       = NO_XIP;
+ 	state->map.map_priv_1 = (unsigned long)state;
+ 
 -- 
-2.17.1
+2.7.4
