@@ -1,18 +1,22 @@
-Received: from mta1.aarogyasri.gov.in ([124.124.103.66])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fWnnw-0001zA-HP
- for linux-mtd@lists.infradead.org; Sat, 23 Jun 2018 19:02:41 +0000
-Date: Sun, 24 Jun 2018 00:14:32 +0530 (IST)
-From: "I have a donation for you of $4, 600, 000.00,
- as charity" <tg_c230@aarogyasri.gov.in>
-Reply-To: "I have a donation for you of $4, 600, 000.00,
- as charity" <kirkdouglasfoundationk@gmail.com>
-Message-ID: <526636351.310180.1529779472852.JavaMail.root@aarogyasri.gov.in>
-Subject: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-To: undisclosed-recipients:;
+References: <20180613161314.14894-1-yixun.lan@amlogic.com>
+ <20180613161314.14894-2-yixun.lan@amlogic.com>
+In-Reply-To: <20180613161314.14894-2-yixun.lan@amlogic.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Sun, 24 Jun 2018 00:46:59 +0200
+Message-ID: <CAFBinCBeyXf6LNaZzAw6WnsxzDAv8E=Yp2eem0xCPWMEUi6pnQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: nand: meson: add Amlogic NAND controller
+ driver
+To: yixun.lan@amlogic.com
+Cc: linux-mtd@lists.infradead.org, robh@kernel.org,
+ boris.brezillon@bootlin.com, richard@nod.at,
+ Neil Armstrong <narmstrong@baylibre.com>, linux-kernel@vger.kernel.org,
+ marek.vasut@gmail.com, devicetree@vger.kernel.org, liang.yang@amlogic.com,
+ jian.hu@amlogic.com, khilman@baylibre.com, carlo@caione.org,
+ linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
+ dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
+ jbrunet@baylibre.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,7 +26,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Yixun, Hello Liang,
+
+I have a few small comments inline below
+additionally I tried to explain the reason behind
+"amlogic,mmc-syscon", clkin0 and clkin1 so Rob (or the devicetree
+maintainers in general) can give feedback. feel free to correct me
+wherever I'm wrong or provide additional notes in case I missed
+something!
+
+On Wed, Jun 13, 2018 at 10:17 AM Yixun Lan <yixun.lan@amlogic.com> wrote:
+>
+> From: Liang Yang <liang.yang@amlogic.com>
+>
+> Add Amlogic NAND controller dt-bindings for Meson SoC,
+> Current this driver support GXBB/GXL/AXG platform.
+>
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+> ---
+>  .../bindings/mtd/amlogic,meson-nand.txt       | 118 ++++++++++++++++++
+>  1 file changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>
+> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> new file mode 100644
+> index 000000000000..eac9f9433d5d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> @@ -0,0 +1,118 @@
+> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+> +
+> +This file documents the properties in addition to those available in
+> +the MTD NAND bindings.
+> +
+> +Required properties:
+> +- compatible : contains one of:
+> +  - "amlogic,meson-gxl-nfc"
+> +  - "amlogic,meson-axg-nfc"
+the patch description states that GXBB/GXL/AXG are supported
+shouldn't you add a compatible string for GXBB as well?
+
+> +- clocks     :
+> +       A list of phandle + clock-specifier pairs for the clocks listed
+> +       in clock-names.
+> +
+> +- clock-names: Should contain the following:
+> +       "core" - NFC module gate clock
+> +       "clkin0" - Parent clock of internal mux
+> +       "clkin1" - Other parent clock of internal mux
+to give the devicetree maintainers some context on clkin0 and clkin1:
+
+older SoCs (Meson8, Meson8b - not supported by this binding/driver
+yet) had a dedicated NAND clock. there neither clkin0 or clkin1 would
+be used, instead we just had a "nand" or "interface" clock (I'm not
+aware of the actual naming in Amlogic's internal datasheets)
+
+newer SoCs do NOT have a dedicated NAND "interface" clock anymore.
+instead they are sharing the clock with the "sd_emmc_c" controller (I
+*believe* the reason for this is because sd_emmc_c and the NAND
+controller use the same pads on the SoC, pinctrl muxing controls where
+these pads are routed -> NAND and sd_emmc_c cannot be used at the same
+time, so SoC designers probably decided to re-use the clock)
+
+unfortunately the sd_emmc_c clock is not provided by the "main" clock
+controller on these newer SoCs
+instead the clock is part of the MMC controller's register space (see
+the SD_EMMC_CLOCK register in drivers/mmc/host/meson-gx-mmc.c)
+even worse: the SD_EMMC_CLOCK contains more than just clock settings
+(bit 25 enables the SDIO interrupt, which is currently not supported
+by the meson-gx-mmc driver though)
+
+the SD_EMMC_CLOCK register has a mux (CLK_SRC_MASK) to choose from
+clkin0 and clkin1 which are passed here
+the "amlogic,mmc-syscon" property is used to get a phandle to the
+sd_emmc_c syscon register space
+thus there is a bit of code duplication in the MMC and NAND drivers
+with this binding (because both need to configure the SD_EMMC_CLOCK
+register)
+
+> +
+> +- pins     : Select pins which NFC need.
+> +- nand_pins: Detail NAND pins information.
+> +               nand_pins: nand {
+> +                       mux {
+> +                               groups = "emmc_nand_d0",
+> +                                       "emmc_nand_d1",
+> +                                       "emmc_nand_d2",
+> +                                       "emmc_nand_d3",
+> +                                       "emmc_nand_d4",
+> +                                       "emmc_nand_d5",
+> +                                       "emmc_nand_d6",
+> +                                       "emmc_nand_d7",
+> +                                       "nand_ce0",
+> +                                       "nand_rb0",
+> +                                       "nand_ale",
+> +                                       "nand_cle",
+> +                                       "nand_wen_clk",
+> +                                       "nand_ren_wr";
+> +                               function = "nand";
+> +                       };
+> +               };
+> +
+> +- amlogic,mmc-syscon   : Required for NAND clocks, it's shared with SD/eMMC
+> +                               controller port C
+> +
+> +Optional children nodes:
+> +Children nodes represent the available nand chips.
+> +
+> +Optional properties:
+> +- meson-nand-user-mode :
+> +       only set 2 or 16 which mean the way of reading OOB bytes by NFC.
+as far as I know vendor specific properties should follow the naming
+schema "vendor,purpose"
+in this case this would be "amlogic,nand-user-mode"
+
+maybe Rob can comment on this?
+
+> +- meson-nand-ran-mode :
+> +       setting 0 or 1, means disable/enable scrambler which keeps the balence
+> +       of 0 and 1
+I assume 0 and 1 are the only possible values.
+to use of_property_read_bool in the driver the property would be either:
+- (absent) = scrambler is disabled
+- amlogic,nand-enable-scrambler (without any value - also same comment
+as above for the value) = scrambler is enabled
 
 
--- 
-Hello Dearest One, I have a donation for you of $4,600,000.00, as charity to help the less privileged and orphans in your community. Please responds back For more details contact via e-mail: kirkdouglasfoundationk@gmail.com
+Regards
+Martin
