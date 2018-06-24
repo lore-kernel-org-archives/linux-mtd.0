@@ -1,21 +1,19 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXCXs-0005i9-WE
- for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 21:27:46 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com
-Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- gaireg@gaireg.de, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH v8 0/6] mtd: rawnand: add NVIDIA Tegra NAND flash support
-Date: Sun, 24 Jun 2018 23:27:21 +0200
-Message-Id: <20180624212727.21672-1-stefan@agner.ch>
+ id 1fXDl9-0003sN-Vk
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 22:45:30 +0000
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH v6 6/6] mtd: rawnand: micron: detect forced on-die ECC
+Date: Mon, 25 Jun 2018 10:44:48 +1200
+Message-Id: <20180624224448.21872-7-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
+References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,87 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Eigth and hopefully final revision gets rid of nand_release() as
-suggested by Boris.
+Some Micron NAND chips have on-die ECC forceably enabled. Detect these
+based on chip ID as there seems to be no other way of distinguishing
+these chips from those that have optional support for on-die ECC.
 
---
-Stefan
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changes in v4:
+- New
+Changes in v5:
+- fail if on-die ECC is mandatory and the current ecc.mode is not
+  NAND_ECC_ON_DIE.
+Changes in v6:
+- Update commit message, add review from Boris
 
-Changes since v1:
-- Split controller and NAND chip structure
-- Add BCH support
-- Allow to select algorithm and strength using device tree
-- Improve HW ECC error reporting and use DEC_STATUS_BUF only
-- Use SPDX license identifier
-- Use per algorithm mtd_ooblayout_ops
-- Use setup_data_interface callback for NAND timing configuration
+ drivers/mtd/nand/raw/nand_micron.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
 
-Changes since v2:
-- Set clock rate using assigned-clocks
-- Use BIT() macro
-- Fix and improve timing calculation
-- Improve ECC error handling
-- Store OOB layout for tag area in Tegra chip structure
-- Update/fix bindings
-- Use more specific variable names (replace "value")
-- Introduce nand-is-boot-medium
-- Choose sensible ECC strenght automatically
-- Use wait_for_completion_timeout
-- Print register dump on completion timeout
-- Unify tegra_nand_(read|write)_page in tegra_nand_page_xfer
-
-Changes since v3:
-- Implement tegra_nand_(read|write)_raw using DMA
-- Implement tegra_nand_(read|write)_oob using DMA
-- Name registers according to Tegra 2 Technical Reference Manual (v02p)
-- Use wait_for_completion_io_timeout to account for IO
-- Get chip select id from device tree reg property
-- Clear interrupts and reinit wait queues in case command/DMA times out
-- Set default MTD name after nand_set_flash_node
-- Move MODULE_DEVICE_TABLE after declaration of tegra_nand_of_match
-- Make (rs|bch)_strength static
-
-Changes since v4:
-- Pass OOB area to nand_check_erased_ecc_chunk
-- Pass algorithm specific bits_per_step to tegra_nand_get_strength
-- Store ECC layout in chip structure
-- Fix pointer assignment (use NULL)
-- Removed obsolete header delay.h
-- Fixed newlines
-- Use non-_io variant of wait_for_completion_timeout
-
-Changes since v5:
-- Drop extra OOB bytes support
-
-Changes since v6:
-- checkpatch.pl fixes
-
-Changes since v7:
-- Replace nand_release() with mtd_device_unregister() + nand_cleanup()
-
-Lucas Stach (1):
-  ARM: dts: tegra: add Tegra20 NAND flash controller node
-
-Stefan Agner (5):
-  mtd: rawnand: add Reed-Solomon error correction algorithm
-  mtd: rawnand: add an option to specify NAND chip as a boot device
-  mtd: rawnand: tegra: add devicetree binding
-  mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
-  ARM: dts: tegra: enable NAND flash on Colibri T20
-
- .../devicetree/bindings/mtd/nand.txt          |    6 +-
- .../bindings/mtd/nvidia-tegra20-nand.txt      |   64 +
- MAINTAINERS                                   |    7 +
- arch/arm/boot/dts/tegra20-colibri-512.dtsi    |   16 +
- arch/arm/boot/dts/tegra20.dtsi                |   15 +
- drivers/mtd/nand/raw/Kconfig                  |   10 +
- drivers/mtd/nand/raw/Makefile                 |    1 +
- drivers/mtd/nand/raw/nand_base.c              |    4 +
- drivers/mtd/nand/raw/tegra_nand.c             | 1230 +++++++++++++++++
- include/linux/mtd/rawnand.h                   |    7 +
- 10 files changed, 1359 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-nand.txt
- create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
-
+diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+index f83053562925..35fa6880a799 100644
+--- a/drivers/mtd/nand/raw/nand_micron.c
++++ b/drivers/mtd/nand/raw/nand_micron.c
+@@ -255,6 +255,14 @@ enum {
+ 	MICRON_ON_DIE_MANDATORY,
+ };
+ 
++/*
++ * These parts are known to have on-die ECC forceably enabled
++ */
++static u8 micron_on_die_ecc[] = {
++	0xd1, /* MT29F1G08ABAFA */
++	0xa1, /* MT29F1G08ABBFA */
++};
++
+ /*
+  * Try to detect if the NAND support on-die ECC. To do this, we enable
+  * the feature, and read back if it has been enabled as expected. We
+@@ -269,6 +277,11 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
+ {
+ 	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
+ 	int ret;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(micron_on_die_ecc); i++)
++		if (chip->id.data[1] == micron_on_die_ecc[i])
++			return MICRON_ON_DIE_MANDATORY;
+ 
+ 	if (!chip->parameters.onfi.version)
+ 		return MICRON_ON_DIE_UNSUPPORTED;
+@@ -322,7 +335,8 @@ static int micron_nand_init(struct nand_chip *chip)
+ 
+ 	ondie = micron_supports_on_die_ecc(chip);
+ 
+-	if (ondie == MICRON_ON_DIE_MANDATORY) {
++	if (ondie == MICRON_ON_DIE_MANDATORY &&
++	    chip->ecc.mode != NAND_ECC_ON_DIE) {
+ 		pr_err("On-die ECC forcefully enabled, not supported\n");
+ 		return -EINVAL;
+ 	}
 -- 
-2.17.1
+2.18.0
