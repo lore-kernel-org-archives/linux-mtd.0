@@ -1,19 +1,27 @@
-Date: Sun, 24 Jun 2018 23:03:57 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, yixun.lan@amlogic.com,
- marek.vasut@gmail.com, liang.yang@amlogic.com, miquel.raynal@bootlin.com,
- linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH v2 1/1] mtd: rawnand: hynix: fix decoding the OOB size
- on H27UCG8T2BTR
-Message-ID: <20180624230357.401fd38e@bbrezillon>
-In-Reply-To: <20180624205355.20060-2-martin.blumenstingl@googlemail.com>
-References: <20180624205355.20060-1-martin.blumenstingl@googlemail.com>
- <20180624205355.20060-2-martin.blumenstingl@googlemail.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXCNO-0001o7-8A
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 21:16:51 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Sun, 24 Jun 2018 23:16:30 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
+ benjamin.lindqvist@endian.se, pgaikwad@nvidia.com, dev@lynxeye.de,
+ mirza.krak@gmail.com, richard@nod.at, pdeschrijver@nvidia.com,
+ linux-kernel@vger.kernel.org, krzk@kernel.org, jonathanh@nvidia.com,
+ devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
+ marcel@ziswiler.com, miquel.raynal@bootlin.com, linux-tegra@vger.kernel.org,
+ digetx@gmail.com, gaireg@gaireg.de
+Subject: Re: [PATCH v7 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+In-Reply-To: <20180624215014.3249b382@bbrezillon>
+References: <20180624192230.4674-1-stefan@agner.ch>
+ <20180624192230.4674-5-stefan@agner.ch> <20180624215014.3249b382@bbrezillon>
+Message-ID: <fa42ef544b3ad7f5be4ebdd115d99a59@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,68 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 24 Jun 2018 22:53:55 +0200
-Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
-
-> The datasheet of the H27UCG8T2BTR states that this chip has a page size
-> of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
-> Device Identifier Description" indicates that bits 6, 3 and 2 are
-> encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
-> 0x6 (110 in binary notation).
+On 24.06.2018 21:50, Boris Brezillon wrote:
+> On Sun, 24 Jun 2018 21:22:28 +0200
+> Stefan Agner <stefan@agner.ch> wrote:
 > 
-> hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
-> chip. Kernel boot log extract before this patch:
-> nand: Could not find valid ONFI parameter page; aborting
-> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> nand: Hynix NAND 8GiB 3,3V 8-bit
-> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
->       OOB size: 640
+>> +
+>> +static int tegra_nand_remove(struct platform_device *pdev)
+>> +{
+>> +	struct tegra_nand_controller *ctrl = platform_get_drvdata(pdev);
+>> +
+>> +	nand_release(nand_to_mtd(ctrl->chip));
 > 
-> However, based on the description in the datasheet we need to multiply
-> the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
-> size" and this NAND chip has a page size of 16384 (= 2 * 8192). After
-> this patch the kernel boot log reports:
-> nand: Could not find valid ONFI parameter page; aborting
-> nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> nand: Hynix NAND 8GiB 3,3V 8-bit
-> nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
->       OOB size: 1280
+> I still see nand_release() being used here. As I said in my review of
+> v6, it's not safe. Please use mtd_device_unregister() + nand_cleanup()
+> instead, and check the return code of mtd_device_unregister().
+
+Whoops missed that one. Will send v8.
+
+--
+Stefan
+
 > 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-
-LGTM.
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-Just out of curiosity, what do you plan to put on your MLC chip? I
-guess you already know that UBI/UBIFS are not supporting MLC chips. Do
-you use another FS or an FTL + a block FS?
-
-> ---
->  drivers/mtd/nand/raw/nand_hynix.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+> With this addressed
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-> index d542908a0ebb..8cbe77f447c7 100644
-> --- a/drivers/mtd/nand/raw/nand_hynix.c
-> +++ b/drivers/mtd/nand/raw/nand_hynix.c
-> @@ -473,6 +473,19 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
->  			WARN(1, "Invalid OOB size");
->  			break;
->  		}
-> +
-> +		/*
-> +		 * The datasheet of H27UCG8T2BTR mentions that the "Redundant
-> +		 * Area Size" is encoded "per 8KB" (page size). This chip uses
-> +		 * a page size of 16KiB. The datasheet mentions an OOB size of
-> +		 * 1.280 bytes, but the OOB size encoded in the ID bytes (using
-> +		 * the existing logic above) is 640 bytes.
-> +		 * Update the OOB size for this chip by taking the value
-> +		 * determined above and scaling it to the actual page size (so
-> +		 * the actual OOB size for this chip is: 640 * 16k / 8k).
-> +		 */
-> +		if (chip->id.data[1] == 0xde)
-> +			mtd->oobsize *= mtd->writesize / SZ_8K;
->  	}
->  }
->  
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> 
+>> +
+>> +	clk_disable_unprepare(ctrl->clk);
+>> +
+>> +	return 0;
+>> +}
+>> +
