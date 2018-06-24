@@ -1,24 +1,24 @@
-Date: Sun, 24 Jun 2018 15:57:27 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yixun Lan <yixun.lan@amlogic.com>
-Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
- Armstrong <narmstrong@baylibre.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: nand: meson: add Amlogic NAND
- controller driver
-Message-ID: <20180624155727.322c02b2@bbrezillon>
-In-Reply-To: <20180613161314.14894-2-yixun.lan@amlogic.com>
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-2-yixun.lan@amlogic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXAb8-0004zd-HV
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 19:22:56 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com
+Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v7 1/6] mtd: rawnand: add Reed-Solomon error correction
+ algorithm
+Date: Sun, 24 Jun 2018 21:22:25 +0200
+Message-Id: <20180624192230.4674-2-stefan@agner.ch>
+In-Reply-To: <20180624192230.4674-1-stefan@agner.ch>
+References: <20180624192230.4674-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,174 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yixun,
+Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
 
-On Wed, 13 Jun 2018 16:13:13 +0000
-Yixun Lan <yixun.lan@amlogic.com> wrote:
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
+ drivers/mtd/nand/raw/nand_base.c               | 1 +
+ include/linux/mtd/rawnand.h                    | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-> From: Liang Yang <liang.yang@amlogic.com>
-> 
-> Add Amlogic NAND controller dt-bindings for Meson SoC,
-> Current this driver support GXBB/GXL/AXG platform.
-> 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
-> ---
->  .../bindings/mtd/amlogic,meson-nand.txt       | 118 ++++++++++++++++++
->  1 file changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> new file mode 100644
-> index 000000000000..eac9f9433d5d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> @@ -0,0 +1,118 @@
-> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> +
-> +This file documents the properties in addition to those available in
-> +the MTD NAND bindings.
-> +
-> +Required properties:
-> +- compatible : contains one of:
-> +  - "amlogic,meson-gxl-nfc"
-> +  - "amlogic,meson-axg-nfc"
-> +- clocks     :
-> +	A list of phandle + clock-specifier pairs for the clocks listed
-> +	in clock-names.
-> +
-> +- clock-names: Should contain the following:
-> +	"core" - NFC module gate clock
-> +	"clkin0" - Parent clock of internal mux
-> +	"clkin1" - Other parent clock of internal mux
-> +
-> +- pins     : Select pins which NFC need.
-> +- nand_pins: Detail NAND pins information.
-> +		nand_pins: nand {
-> +			mux {
-> +				groups = "emmc_nand_d0",
-> +					"emmc_nand_d1",
-> +					"emmc_nand_d2",
-> +					"emmc_nand_d3",
-> +					"emmc_nand_d4",
-> +					"emmc_nand_d5",
-> +					"emmc_nand_d6",
-> +					"emmc_nand_d7",
-> +					"nand_ce0",
-> +					"nand_rb0",
-> +					"nand_ale",
-> +					"nand_cle",
-> +					"nand_wen_clk",
-> +					"nand_ren_wr";
-> +				function = "nand";
-> +			};
-> +		};
-
-Not sure, but I think you can drop the pinmux description.
-
-> +
-> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
-> +				controller port C
-> +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
-> +
-> +Optional properties:
-> +- meson-nand-user-mode :
-> +	only set 2 or 16 which mean the way of reading OOB bytes by NFC.
-
-I haven't checked the driver but this prop looks like a reg field value
-you're directly copying in the reg at init time. We usually avoid
-exposing such details in the DT. I'm not even sure you should have a
-property to select how you want to read OOB (need to check the driver
-before giving a definitive answer on this aspect).
-
-> +- meson-nand-ran-mode :
-> +	setting 0 or 1, means disable/enable scrambler which keeps the balence
-> +	of 0 and 1
-
-You don't need that one. The NAND chip will tell you whether it requires
-scrambling or not (see NAND_NEED_SCRAMBLING [1]).
-
-> +
-> +Other properties:
-> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
-> +
-> +Example demonstrate on AXG SoC:
-> +
-> +	sd_emmc_c: mmc@7000 {
-> +		compatible = "simple-bus", "syscon";
-> +		reg = <0x0 0x7000 0x0 0x800>;
-> +		status = "okay";
-> +	};
-> +
-> +	nand: nfc@7800 {
-> +		compatible = "amlogic,meson-axg-nfc";
-> +		reg = <0x0 0x7800 0x0 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +		status = "disabled";
-> +		clocks = <&clkc CLKID_SD_EMMC_C>,
-> +				<&clkc CLKID_SD_EMMC_C_CLK0>,
-> +				<&clkc CLKID_FCLK_DIV2>;
-> +		clock-names = "core", "clkin0", "clkin1";
-> +		amlogic,mmc-syscon = <&sd_mmc_c>;
-> +
-> +		status = "okay";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&nand_pins>;
-> +
-> +		nand@0 {
-> +			reg = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			nand-on-flash-bbt;
-> +			nand-ecc-mode = "hw";
-> +			nand-ecc-strength = <8>;
-> +			nand-ecc-step-size = <1024>;
-> +
-> +			meson-nand-user-mode = <2>;
-> +			meson-nand-ran-mode = <1>;
-> +
-> +			partition@0 {
-> +				label = "boot";
-> +				reg = <0x00000000 0x00200000>;
-> +				read-only;
-> +			};
-> +			partition@200000 {
-> +				label = "env";
-> +				reg = <0x00200000 0x00400000>;
-> +			};
-> +			partition@600000 {
-> +				label = "system";
-> +				reg = <0x00600000 0x00a00000>;
-> +			};
-> +			partition@1000000 {
-> +				label = "rootfs";
-> +				reg = <0x01000000 0x03000000>;
-> +			};
-> +			partition@4000000 {
-> +				label = "media";
-> +				reg = <0x04000000 0x8000000>;
-> +			};
-
-Partitions should be places in a "partitions" subnode:
-
-			partitions {
-				compatible = "fixed-partitions";
-
-				...
-			};
-
-Also, I'm not sure you need to put that in your example.
-
-> +		};
-> +	};
-
-
-Regards,
-
-Boris
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index 8bb11d809429d..eaef8c657aa5c 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -25,7 +25,7 @@ Optional NAND chip properties:
+ 		  Deprecated values:
+ 		  "soft_bch": use "soft" and nand-ecc-algo instead
+ - nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Supported values are: "hamming", "bch".
++		 Valid values are: "hamming", "bch", "rs".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 10c4f9919850c..47e9cb9063da4 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5777,6 +5777,7 @@ static int of_get_nand_ecc_mode(struct device_node *np)
+ static const char * const nand_ecc_algos[] = {
+ 	[NAND_ECC_HAMMING]	= "hamming",
+ 	[NAND_ECC_BCH]		= "bch",
++	[NAND_ECC_RS]		= "rs",
+ };
+ 
+ static int of_get_nand_ecc_algo(struct device_node *np)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3e8ec3b8a39c7..2d9cb7acbc3d8 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -121,6 +121,7 @@ enum nand_ecc_algo {
+ 	NAND_ECC_UNKNOWN,
+ 	NAND_ECC_HAMMING,
+ 	NAND_ECC_BCH,
++	NAND_ECC_RS,
+ };
+ 
+ /*
+-- 
+2.17.1
