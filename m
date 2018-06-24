@@ -1,19 +1,24 @@
-MIME-Version: 1.0
-References: <20180624205355.20060-1-martin.blumenstingl@googlemail.com>
- <20180624205355.20060-2-martin.blumenstingl@googlemail.com>
- <20180624230357.401fd38e@bbrezillon>
-In-Reply-To: <20180624230357.401fd38e@bbrezillon>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sun, 24 Jun 2018 23:16:37 +0200
-Message-ID: <CAFBinCDzF744Mcr8kkyR4mAWzxhWJhOo6QNmPoqqQTxvvUW0MA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mtd: rawnand: hynix: fix decoding the OOB size on
- H27UCG8T2BTR
-To: boris.brezillon@bootlin.com
-Cc: linux-mtd@lists.infradead.org, richard@nod.at, yixun.lan@amlogic.com,
- marek.vasut@gmail.com, liang.yang@amlogic.com, miquel.raynal@bootlin.com,
- linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXCXs-0005iA-WD
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 21:27:44 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: boris.brezillon@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
+ mark.rutland@arm.com, thierry.reding@gmail.com
+Cc: dev@lynxeye.de, miquel.raynal@bootlin.com, richard@nod.at,
+ marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
+ benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
+ pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
+ gaireg@gaireg.de, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
+Subject: [PATCH v8 1/6] mtd: rawnand: add Reed-Solomon error correction
+ algorithm
+Date: Sun, 24 Jun 2018 23:27:22 +0200
+Message-Id: <20180624212727.21672-2-stefan@agner.ch>
+In-Reply-To: <20180624212727.21672-1-stefan@agner.ch>
+References: <20180624212727.21672-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Add Reed-Solomon (RS) to the enumeration of ECC algorithms.
 
-On Sun, Jun 24, 2018 at 11:03 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Sun, 24 Jun 2018 22:53:55 +0200
-> Martin Blumenstingl <martin.blumenstingl@googlemail.com> wrote:
->
-> > The datasheet of the H27UCG8T2BTR states that this chip has a page size
-> > of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
-> > Device Identifier Description" indicates that bits 6, 3 and 2 are
-> > encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
-> > 0x6 (110 in binary notation).
-> >
-> > hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
-> > chip. Kernel boot log extract before this patch:
-> > nand: Could not find valid ONFI parameter page; aborting
-> > nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> > nand: Hynix NAND 8GiB 3,3V 8-bit
-> > nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-> >       OOB size: 640
-> >
-> > However, based on the description in the datasheet we need to multiply
-> > the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
-> > size" and this NAND chip has a page size of 16384 (= 2 * 8192). After
-> > this patch the kernel boot log reports:
-> > nand: Could not find valid ONFI parameter page; aborting
-> > nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-> > nand: Hynix NAND 8GiB 3,3V 8-bit
-> > nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-> >       OOB size: 1280
-> >
-> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
->
-> LGTM.
->
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-thank you for reviewing this!
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/mtd/nand.txt | 2 +-
+ drivers/mtd/nand/raw/nand_base.c               | 1 +
+ include/linux/mtd/rawnand.h                    | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
-> Just out of curiosity, what do you plan to put on your MLC chip? I
-> guess you already know that UBI/UBIFS are not supporting MLC chips. Do
-> you use another FS or an FTL + a block FS?
-my first goal is to get something (preferably a full backup) *from*
-the chip, rather than putting something onto it
-this MLC chip is part of a TV box I have which uses an Amlogic S812
-(Meson8m2) SoC
-
-you reviewed the first version of Amlogic's NAND driver today
-I may add support for older SoCs to this driver later on (should be
-fairly simple)
-
-apart from that I have no specific plans yet
-
-
-Regards
-Martin
+diff --git a/Documentation/devicetree/bindings/mtd/nand.txt b/Documentation/devicetree/bindings/mtd/nand.txt
+index 8bb11d809429d..eaef8c657aa5c 100644
+--- a/Documentation/devicetree/bindings/mtd/nand.txt
++++ b/Documentation/devicetree/bindings/mtd/nand.txt
+@@ -25,7 +25,7 @@ Optional NAND chip properties:
+ 		  Deprecated values:
+ 		  "soft_bch": use "soft" and nand-ecc-algo instead
+ - nand-ecc-algo: string, algorithm of NAND ECC.
+-		 Supported values are: "hamming", "bch".
++		 Valid values are: "hamming", "bch", "rs".
+ - nand-bus-width : 8 or 16 bus width if not present 8
+ - nand-on-flash-bbt: boolean to enable on flash bbt option if not present false
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 10c4f9919850c..47e9cb9063da4 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5777,6 +5777,7 @@ static int of_get_nand_ecc_mode(struct device_node *np)
+ static const char * const nand_ecc_algos[] = {
+ 	[NAND_ECC_HAMMING]	= "hamming",
+ 	[NAND_ECC_BCH]		= "bch",
++	[NAND_ECC_RS]		= "rs",
+ };
+ 
+ static int of_get_nand_ecc_algo(struct device_node *np)
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 3e8ec3b8a39c7..2d9cb7acbc3d8 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -121,6 +121,7 @@ enum nand_ecc_algo {
+ 	NAND_ECC_UNKNOWN,
+ 	NAND_ECC_HAMMING,
+ 	NAND_ECC_BCH,
++	NAND_ECC_RS,
+ };
+ 
+ /*
+-- 
+2.17.1
