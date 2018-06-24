@@ -4,12 +4,9 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  miquel.raynal@bootlin.com, liang.yang@amlogic.com, yixun.lan@amlogic.com,
  linux-amlogic@lists.infradead.org,
  Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v2 1/1] mtd: rawnand: hynix: fix decoding the OOB size on
- H27UCG8T2BTR
-Date: Sun, 24 Jun 2018 22:53:55 +0200
-Message-Id: <20180624205355.20060-2-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20180624205355.20060-1-martin.blumenstingl@googlemail.com>
-References: <20180624205355.20060-1-martin.blumenstingl@googlemail.com>
+Subject: [PATCH v2 0/1] fix OOB size decoding on SK Hynix H27UCG8T2BTR
+Date: Sun, 24 Jun 2018 22:53:54 +0200
+Message-Id: <20180624205355.20060-1-martin.blumenstingl@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,58 +16,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The datasheet of the H27UCG8T2BTR states that this chip has a page size
-of "16,384 + 1,280(Spare) bytes". The description of the "4th Byte of
-Device Identifier Description" indicates that bits 6, 3 and 2 are
-encoding the "Redundant Area Size / 8KB", where 640 bytes is a value of
-0x6 (110 in binary notation).
+The OOB size of the SK Hynix H27UCG8T2BTR is currently detected to be
+640 bytes, while the datasheet states that it should be 1280 bytes.
 
-hynix_nand_extract_oobsize decodes an OOB size of 640 bytes for this
-chip. Kernel boot log extract before this patch:
-nand: Could not find valid ONFI parameter page; aborting
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-nand: Hynix NAND 8GiB 3,3V 8-bit
-nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-      OOB size: 640
+I only have one single device with a SK Hynix NAND flash, so I cannot
+say whether this fix may or may not break other chips. other datasheets
+I have checked:
+- H27UBG8T2B uses a page size of 8KiB -> not applicable
+- H27UBG8T2A also uses a page size of 8KiB -> not applicable either
 
-However, based on the description in the datasheet we need to multiply
-the OOB size with 2, because it's "640 spare bytes per 8192 bytes page
-size" and this NAND chip has a page size of 16384 (= 2 * 8192). After
-this patch the kernel boot log reports:
-nand: Could not find valid ONFI parameter page; aborting
-nand: device found, Manufacturer ID: 0xad, Chip ID: 0xde
-nand: Hynix NAND 8GiB 3,3V 8-bit
-nand: 8192 MiB, MLC, erase size: 4096 KiB, page size: 16384,
-      OOB size: 1280
+so I would appreciate if someone else could confirm (even if it's
+"just" by looking at a datasheet) that this patch should work for other
+SK Hynix NAND chips with 16KiB page size.
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
+I decided not to add a "Fixes" tag because it seems H27UCG8T2BTR was
+not supported properly at any point in the past (upstream at least).
+
+
+changes since v1 at [0]:
+- don't apply the fix for all Hynix chips with 16KiB page size as
+  suggested by Miquel Raynal
+- added an inline comment what the new logic is supposed to do
+- I asked Hynix for feedback on my initial patch, unfortunately it
+  seems that they cannot disclose any information from the datasheets
+  publicly
+
+
+[0] https://patchwork.ozlabs.org/cover/916836/
+
+
+Martin Blumenstingl (1):
+  mtd: rawnand: hynix: fix decoding the OOB size on H27UCG8T2BTR
+
  drivers/mtd/nand/raw/nand_hynix.c | 13 +++++++++++++
  1 file changed, 13 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index d542908a0ebb..8cbe77f447c7 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -473,6 +473,19 @@ static void hynix_nand_extract_oobsize(struct nand_chip *chip,
- 			WARN(1, "Invalid OOB size");
- 			break;
- 		}
-+
-+		/*
-+		 * The datasheet of H27UCG8T2BTR mentions that the "Redundant
-+		 * Area Size" is encoded "per 8KB" (page size). This chip uses
-+		 * a page size of 16KiB. The datasheet mentions an OOB size of
-+		 * 1.280 bytes, but the OOB size encoded in the ID bytes (using
-+		 * the existing logic above) is 640 bytes.
-+		 * Update the OOB size for this chip by taking the value
-+		 * determined above and scaling it to the actual page size (so
-+		 * the actual OOB size for this chip is: 640 * 16k / 8k).
-+		 */
-+		if (chip->id.data[1] == 0xde)
-+			mtd->oobsize *= mtd->writesize / SZ_8K;
- 	}
- }
- 
 -- 
 2.18.0
