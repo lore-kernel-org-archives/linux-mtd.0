@@ -1,16 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fX4ou-0007IO-C3
- for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 13:12:45 +0000
-Date: Sun, 24 Jun 2018 15:12:32 +0200
+Date: Sun, 24 Jun 2018 15:57:27 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/14] ubi: uapi: Add mode selector to attach request
-Message-ID: <20180624151232.4f175fc9@bbrezillon>
-In-Reply-To: <20180613212344.11608-13-richard@nod.at>
-References: <20180613212344.11608-1-richard@nod.at>
- <20180613212344.11608-13-richard@nod.at>
+To: Yixun Lan <yixun.lan@amlogic.com>
+Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: nand: meson: add Amlogic NAND
+ controller driver
+Message-ID: <20180624155727.322c02b2@bbrezillon>
+In-Reply-To: <20180613161314.14894-2-yixun.lan@amlogic.com>
+References: <20180613161314.14894-1-yixun.lan@amlogic.com>
+ <20180613161314.14894-2-yixun.lan@amlogic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,63 +28,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Jun 2018 23:23:42 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Hi Yixun,
 
-> This allows userspace, ubiattach, to force a full scan.
+On Wed, 13 Jun 2018 16:13:13 +0000
+Yixun Lan <yixun.lan@amlogic.com> wrote:
+
+> From: Liang Yang <liang.yang@amlogic.com>
 > 
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+> Add Amlogic NAND controller dt-bindings for Meson SoC,
+> Current this driver support GXBB/GXL/AXG platform.
+> 
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
 > ---
->  include/uapi/mtd/ubi-user.h | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
+>  .../bindings/mtd/amlogic,meson-nand.txt       | 118 ++++++++++++++++++
+>  1 file changed, 118 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
 > 
-> diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
-> index 5b04a494d139..cc0e54cfa7f9 100644
-> --- a/include/uapi/mtd/ubi-user.h
-> +++ b/include/uapi/mtd/ubi-user.h
-> @@ -235,12 +235,19 @@ enum {
->  	UBI_VOL_PROP_DIRECT_WRITE = 1,
->  };
->  
-> +enum {
-> +	UBI_ATTACH_MODE_AUTO = 0x0,
-> +	UBI_ATTACH_MODE_SCAN = 0x1,
-> +	UBI_ATTACH_MODE_MAX = UBI_ATTACH_MODE_SCAN,
-> +};
+> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> new file mode 100644
+> index 000000000000..eac9f9433d5d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> @@ -0,0 +1,118 @@
+> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
 > +
->  /**
->   * struct ubi_attach_req - attach MTD device request.
->   * @ubi_num: UBI device number to create
->   * @mtd_num: MTD device number to attach
->   * @vid_hdr_offset: VID header offset (use defaults if %0)
->   * @max_beb_per1024: maximum expected number of bad PEB per 1024 PEBs
-> + * @attach_mode: selects the attach mode
->   * @padding: reserved for future, not used, has to be zeroed
->   *
->   * This data structure is used to specify MTD device UBI has to attach and the
-> @@ -276,13 +283,18 @@ enum {
->   * eraseblocks for new bad eraseblocks, but attempts to use available
->   * eraseblocks (if any). The accepted range is 0-768. If 0 is given, the
->   * default kernel value of %CONFIG_MTD_UBI_BEB_LIMIT will be used.
-> + *
-> + * @attach_mode is %UBI_ATTACH_MODE_AUTO by default, and let's the UBI
-> + * implementation decide how to attach. If %UBI_ATTACH_MODE_SCAN is selected
-> + * a full scan is forced.
->   */
->  struct ubi_attach_req {
->  	__s32 ubi_num;
->  	__s32 mtd_num;
->  	__s32 vid_hdr_offset;
->  	__s16 max_beb_per1024;
-> -	__s8 padding[10];
-> +	__s8 attach_mode;
-> +	__s8 padding[9];
->  };
+> +This file documents the properties in addition to those available in
+> +the MTD NAND bindings.
+> +
+> +Required properties:
+> +- compatible : contains one of:
+> +  - "amlogic,meson-gxl-nfc"
+> +  - "amlogic,meson-axg-nfc"
+> +- clocks     :
+> +	A list of phandle + clock-specifier pairs for the clocks listed
+> +	in clock-names.
+> +
+> +- clock-names: Should contain the following:
+> +	"core" - NFC module gate clock
+> +	"clkin0" - Parent clock of internal mux
+> +	"clkin1" - Other parent clock of internal mux
+> +
+> +- pins     : Select pins which NFC need.
+> +- nand_pins: Detail NAND pins information.
+> +		nand_pins: nand {
+> +			mux {
+> +				groups = "emmc_nand_d0",
+> +					"emmc_nand_d1",
+> +					"emmc_nand_d2",
+> +					"emmc_nand_d3",
+> +					"emmc_nand_d4",
+> +					"emmc_nand_d5",
+> +					"emmc_nand_d6",
+> +					"emmc_nand_d7",
+> +					"nand_ce0",
+> +					"nand_rb0",
+> +					"nand_ale",
+> +					"nand_cle",
+> +					"nand_wen_clk",
+> +					"nand_ren_wr";
+> +				function = "nand";
+> +			};
+> +		};
 
-Looks like the force full-scan is just a flag, and we might need other
-flags to encode things that are not related to attach mode, so how
-about creating an __u16 flags field here and defining
+Not sure, but I think you can drop the pinmux description.
 
-#define UBI_ATTACH_FLG_FORCE_FULL_SCAN		0x1
+> +
+> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+> +				controller port C
+> +
+> +Optional children nodes:
+> +Children nodes represent the available nand chips.
+> +
+> +Optional properties:
+> +- meson-nand-user-mode :
+> +	only set 2 or 16 which mean the way of reading OOB bytes by NFC.
 
-?
+I haven't checked the driver but this prop looks like a reg field value
+you're directly copying in the reg at init time. We usually avoid
+exposing such details in the DT. I'm not even sure you should have a
+property to select how you want to read OOB (need to check the driver
+before giving a definitive answer on this aspect).
+
+> +- meson-nand-ran-mode :
+> +	setting 0 or 1, means disable/enable scrambler which keeps the balence
+> +	of 0 and 1
+
+You don't need that one. The NAND chip will tell you whether it requires
+scrambling or not (see NAND_NEED_SCRAMBLING [1]).
+
+> +
+> +Other properties:
+> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+> +
+> +Example demonstrate on AXG SoC:
+> +
+> +	sd_emmc_c: mmc@7000 {
+> +		compatible = "simple-bus", "syscon";
+> +		reg = <0x0 0x7000 0x0 0x800>;
+> +		status = "okay";
+> +	};
+> +
+> +	nand: nfc@7800 {
+> +		compatible = "amlogic,meson-axg-nfc";
+> +		reg = <0x0 0x7800 0x0 0x100>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+> +		status = "disabled";
+> +		clocks = <&clkc CLKID_SD_EMMC_C>,
+> +				<&clkc CLKID_SD_EMMC_C_CLK0>,
+> +				<&clkc CLKID_FCLK_DIV2>;
+> +		clock-names = "core", "clkin0", "clkin1";
+> +		amlogic,mmc-syscon = <&sd_mmc_c>;
+> +
+> +		status = "okay";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&nand_pins>;
+> +
+> +		nand@0 {
+> +			reg = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			nand-on-flash-bbt;
+> +			nand-ecc-mode = "hw";
+> +			nand-ecc-strength = <8>;
+> +			nand-ecc-step-size = <1024>;
+> +
+> +			meson-nand-user-mode = <2>;
+> +			meson-nand-ran-mode = <1>;
+> +
+> +			partition@0 {
+> +				label = "boot";
+> +				reg = <0x00000000 0x00200000>;
+> +				read-only;
+> +			};
+> +			partition@200000 {
+> +				label = "env";
+> +				reg = <0x00200000 0x00400000>;
+> +			};
+> +			partition@600000 {
+> +				label = "system";
+> +				reg = <0x00600000 0x00a00000>;
+> +			};
+> +			partition@1000000 {
+> +				label = "rootfs";
+> +				reg = <0x01000000 0x03000000>;
+> +			};
+> +			partition@4000000 {
+> +				label = "media";
+> +				reg = <0x04000000 0x8000000>;
+> +			};
+
+Partitions should be places in a "partitions" subnode:
+
+			partitions {
+				compatible = "fixed-partitions";
+
+				...
+			};
+
+Also, I'm not sure you need to put that in your example.
+
+> +		};
+> +	};
+
+
+Regards,
+
+Boris
