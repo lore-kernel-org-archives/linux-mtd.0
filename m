@@ -1,22 +1,19 @@
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fX4TB-0004h8-O0
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 12:50:20 +0000
+Date: Sun, 24 Jun 2018 14:49:49 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/14] ubi: fastmap: Add support for flags
+Message-ID: <20180624144949.13411483@bbrezillon>
+In-Reply-To: <20180613212344.11608-4-richard@nod.at>
+References: <20180613212344.11608-1-richard@nod.at>
+ <20180613212344.11608-4-richard@nod.at>
 MIME-Version: 1.0
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-2-yixun.lan@amlogic.com>
-In-Reply-To: <20180613161314.14894-2-yixun.lan@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Sun, 24 Jun 2018 00:46:59 +0200
-Message-ID: <CAFBinCBeyXf6LNaZzAw6WnsxzDAv8E=Yp2eem0xCPWMEUi6pnQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: nand: meson: add Amlogic NAND controller
- driver
-To: yixun.lan@amlogic.com
-Cc: linux-mtd@lists.infradead.org, robh@kernel.org,
- boris.brezillon@bootlin.com, richard@nod.at,
- Neil Armstrong <narmstrong@baylibre.com>, linux-kernel@vger.kernel.org,
- marek.vasut@gmail.com, devicetree@vger.kernel.org, liang.yang@amlogic.com,
- jian.hu@amlogic.com, khilman@baylibre.com, carlo@caione.org,
- linux-amlogic@lists.infradead.org, computersforpeace@gmail.com,
- dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
- jbrunet@baylibre.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,132 +23,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Yixun, Hello Liang,
+On Wed, 13 Jun 2018 23:23:33 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-I have a few small comments inline below
-additionally I tried to explain the reason behind
-"amlogic,mmc-syscon", clkin0 and clkin1 so Rob (or the devicetree
-maintainers in general) can give feedback. feel free to correct me
-wherever I'm wrong or provide additional notes in case I missed
-something!
-
-On Wed, Jun 13, 2018 at 10:17 AM Yixun Lan <yixun.lan@amlogic.com> wrote:
->
-> From: Liang Yang <liang.yang@amlogic.com>
->
-> Add Amlogic NAND controller dt-bindings for Meson SoC,
-> Current this driver support GXBB/GXL/AXG platform.
->
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+> With version 2 of fastmap, flags are supported.
+> We fall back to scanning mode if unsupported flags are found.
+> 
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->  .../bindings/mtd/amlogic,meson-nand.txt       | 118 ++++++++++++++++++
->  1 file changed, 118 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> new file mode 100644
-> index 000000000000..eac9f9433d5d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> @@ -0,0 +1,118 @@
-> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+>  drivers/mtd/ubi/fastmap.c   | 24 ++++++++++++++++++++----
+>  drivers/mtd/ubi/ubi-media.h | 11 +++++++++--
+>  drivers/mtd/ubi/ubi.h       |  2 ++
+>  3 files changed, 31 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
+> index 768fa8a76867..1ebb5d15ab1a 100644
+> --- a/drivers/mtd/ubi/fastmap.c
+> +++ b/drivers/mtd/ubi/fastmap.c
+> @@ -949,9 +949,24 @@ int ubi_scan_fastmap(struct ubi_device *ubi, struct ubi_attach_info *ai,
+>  		goto free_fm_sb;
+>  	}
+>  
+> -	if (fmsb->version != UBI_FM_FMT_VERSION) {
+> -		ubi_err(ubi, "bad fastmap version: %i, expected: %i",
+> -			fmsb->version, UBI_FM_FMT_VERSION);
+> +	fm->flags = be32_to_cpu(fmsb->flags);
 > +
-> +This file documents the properties in addition to those available in
-> +the MTD NAND bindings.
+> +	if (fmsb->version == 1) {
+> +		if (fm->flags != 0) {
+> +			ubi_err(ubi, "fastmap flags are non-zero: %#x",
+> +				fm->flags);
+> +			ret = UBI_BAD_FASTMAP;
+> +			goto free_fm_sb;
+> +		}
+> +	} else if (fmsb->version == 2) {
+> +		if ((fm->flags & UBI_FM_SB_FLG_MASK) != UBI_FM_SB_FLG_MASK) {
+
+Do you mean
+
+		if (fm->flags & ~UBI_FM_SB_FLG_MASK) {
+
+?
+
+Because you test will return an error if at least one of all the
+possible flags are not set, which I guess is a valid case.
+
+> +			ubi_err(ubi, "unsupported fastmap flags present: %#x",
+> +				fm->flags);
+> +			ret = UBI_BAD_FASTMAP;
+> +			goto free_fm_sb;
+> +		}
+
+Is there really a point in supporting FM v2 so early in the patch
+series? I mean, the new thing in v2 is flag support, and here you fail
+when ->flags != 0. Better add support for at least one flag before
+saying you support v2 IMO.
+
+> +	} else {
+> +		ubi_err(ubi, "bad fastmap version: %i", fmsb->version);
+>  		ret = UBI_BAD_FASTMAP;
+>  		goto free_fm_sb;
+>  	}
+> @@ -1229,10 +1244,11 @@ static int ubi_write_fastmap(struct ubi_device *ubi,
+>  	ubi_assert(fm_pos <= ubi->fm_size);
+>  
+>  	fmsb->magic = cpu_to_be32(UBI_FM_SB_MAGIC);
+> -	fmsb->version = UBI_FM_FMT_VERSION;
+> +	fmsb->version = UBI_FM_FMT_WRITE_VERSION;
+>  	fmsb->used_blocks = cpu_to_be32(new_fm->used_blocks);
+>  	/* the max sqnum will be filled in while *reading* the fastmap */
+>  	fmsb->sqnum = 0;
+> +	fmsb->flags = 0;
+>  
+>  	fmh->magic = cpu_to_be32(UBI_FM_HDR_MAGIC);
+>  	free_peb_count = 0;
+> diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+> index 195ff8ca8211..6136a97f4844 100644
+> --- a/drivers/mtd/ubi/ubi-media.h
+> +++ b/drivers/mtd/ubi/ubi-media.h
+> @@ -365,7 +365,10 @@ struct ubi_vtbl_record {
+>  #define UBI_FM_DATA_VOLUME_ID	(UBI_LAYOUT_VOLUME_ID + 2)
+>  
+>  /* fastmap on-flash data structure format version */
+> -#define UBI_FM_FMT_VERSION	1
+> +#define UBI_FM_FMT_VERSION		2
+
+How about renaming that one UBI_FM_MAX_SUPPORTED_VERSION or something
+like that.
+
 > +
-> +Required properties:
-> +- compatible : contains one of:
-> +  - "amlogic,meson-gxl-nfc"
-> +  - "amlogic,meson-axg-nfc"
-the patch description states that GXBB/GXL/AXG are supported
-shouldn't you add a compatible string for GXBB as well?
+> +/* this implementation writes always version 1 */
+> +#define UBI_FM_FMT_WRITE_VERSION	1
 
-> +- clocks     :
-> +       A list of phandle + clock-specifier pairs for the clocks listed
-> +       in clock-names.
-> +
-> +- clock-names: Should contain the following:
-> +       "core" - NFC module gate clock
-> +       "clkin0" - Parent clock of internal mux
-> +       "clkin1" - Other parent clock of internal mux
-to give the devicetree maintainers some context on clkin0 and clkin1:
+It really feels weird to hardcode that. What if you're reading a
+fastmap volume that has version 2 set, and need to update it? Does that
+mean you'll downgrade the FM to version 1 or will you prevent updating
+the it?
 
-older SoCs (Meson8, Meson8b - not supported by this binding/driver
-yet) had a dedicated NAND clock. there neither clkin0 or clkin1 would
-be used, instead we just had a "nand" or "interface" clock (I'm not
-aware of the actual naming in Amlogic's internal datasheets)
+>  
+>  #define UBI_FM_SB_MAGIC		0x7B11D69F
+>  #define UBI_FM_HDR_MAGIC	0xD4B82EF7
+> @@ -387,6 +390,8 @@ struct ubi_vtbl_record {
+>  #define UBI_FM_MIN_POOL_SIZE	8
+>  #define UBI_FM_MAX_POOL_SIZE	256
+>  
+> +#define UBI_FM_SB_FLG_MASK	0
 
-newer SoCs do NOT have a dedicated NAND "interface" clock anymore.
-instead they are sharing the clock with the "sd_emmc_c" controller (I
-*believe* the reason for this is because sd_emmc_c and the NAND
-controller use the same pads on the SoC, pinctrl muxing controls where
-these pads are routed -> NAND and sd_emmc_c cannot be used at the same
-time, so SoC designers probably decided to re-use the clock)
-
-unfortunately the sd_emmc_c clock is not provided by the "main" clock
-controller on these newer SoCs
-instead the clock is part of the MMC controller's register space (see
-the SD_EMMC_CLOCK register in drivers/mmc/host/meson-gx-mmc.c)
-even worse: the SD_EMMC_CLOCK contains more than just clock settings
-(bit 25 enables the SDIO interrupt, which is currently not supported
-by the meson-gx-mmc driver though)
-
-the SD_EMMC_CLOCK register has a mux (CLK_SRC_MASK) to choose from
-clkin0 and clkin1 which are passed here
-the "amlogic,mmc-syscon" property is used to get a phandle to the
-sd_emmc_c syscon register space
-thus there is a bit of code duplication in the MMC and NAND drivers
-with this binding (because both need to configure the SD_EMMC_CLOCK
-register)
+How about naming that one UBI_FM_SB_SUPPORTED_FLG_MASK since you seem
+to add new flags afterwards without changing the version number.
 
 > +
-> +- pins     : Select pins which NFC need.
-> +- nand_pins: Detail NAND pins information.
-> +               nand_pins: nand {
-> +                       mux {
-> +                               groups = "emmc_nand_d0",
-> +                                       "emmc_nand_d1",
-> +                                       "emmc_nand_d2",
-> +                                       "emmc_nand_d3",
-> +                                       "emmc_nand_d4",
-> +                                       "emmc_nand_d5",
-> +                                       "emmc_nand_d6",
-> +                                       "emmc_nand_d7",
-> +                                       "nand_ce0",
-> +                                       "nand_rb0",
-> +                                       "nand_ale",
-> +                                       "nand_cle",
-> +                                       "nand_wen_clk",
-> +                                       "nand_ren_wr";
-> +                               function = "nand";
-> +                       };
-> +               };
-> +
-> +- amlogic,mmc-syscon   : Required for NAND clocks, it's shared with SD/eMMC
-> +                               controller port C
-> +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
-> +
-> +Optional properties:
-> +- meson-nand-user-mode :
-> +       only set 2 or 16 which mean the way of reading OOB bytes by NFC.
-as far as I know vendor specific properties should follow the naming
-schema "vendor,purpose"
-in this case this would be "amlogic,nand-user-mode"
-
-maybe Rob can comment on this?
-
-> +- meson-nand-ran-mode :
-> +       setting 0 or 1, means disable/enable scrambler which keeps the balence
-> +       of 0 and 1
-I assume 0 and 1 are the only possible values.
-to use of_property_read_bool in the driver the property would be either:
-- (absent) = scrambler is disabled
-- amlogic,nand-enable-scrambler (without any value - also same comment
-as above for the value) = scrambler is enabled
-
-
-Regards
-Martin
+>  /**
+>   * struct ubi_fm_sb - UBI fastmap super block
+>   * @magic: fastmap super block magic number (%UBI_FM_SB_MAGIC)
+> @@ -396,6 +401,7 @@ struct ubi_vtbl_record {
+>   * @block_loc: an array containing the location of all PEBs of the fastmap
+>   * @block_ec: the erase counter of each used PEB
+>   * @sqnum: highest sequence number value at the time while taking the fastmap
+> + * @flags: fastmap specific flags, only used with @version > 1, zero otherwise
+>   *
+>   */
+>  struct ubi_fm_sb {
+> @@ -407,7 +413,8 @@ struct ubi_fm_sb {
+>  	__be32 block_loc[UBI_FM_MAX_BLOCKS];
+>  	__be32 block_ec[UBI_FM_MAX_BLOCKS];
+>  	__be64 sqnum;
+> -	__u8 padding2[32];
+> +	__be32 flags;
+> +	__u8 padding2[28];
+>  } __packed;
+>  
+>  /**
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index f5ba97c46160..4fab3790733b 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -249,6 +249,7 @@ struct ubi_volume_desc;
+>   * @used_blocks: number of used PEBs
+>   * @max_pool_size: maximal size of the user pool
+>   * @max_wl_pool_size: maximal size of the pool used by the WL sub-system
+> + * @flags: fastmap flags
+>   */
+>  struct ubi_fastmap_layout {
+>  	struct ubi_wl_entry *e[UBI_FM_MAX_BLOCKS];
+> @@ -256,6 +257,7 @@ struct ubi_fastmap_layout {
+>  	int used_blocks;
+>  	int max_pool_size;
+>  	int max_wl_pool_size;
+> +	int flags;
+>  };
+>  
+>  /**
