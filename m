@@ -1,24 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXB1n-0001w4-0Y
- for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 19:50:29 +0000
-Date: Sun, 24 Jun 2018 21:50:14 +0200
+ id 1fXBBH-0005pW-Se
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 20:00:17 +0000
+Date: Sun, 24 Jun 2018 22:00:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- robh+dt@kernel.org, mark.rutland@arm.com, thierry.reding@gmail.com,
- benjamin.lindqvist@endian.se, pgaikwad@nvidia.com, dev@lynxeye.de,
- mirza.krak@gmail.com, richard@nod.at, pdeschrijver@nvidia.com,
- linux-kernel@vger.kernel.org, krzk@kernel.org, jonathanh@nvidia.com,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- marcel@ziswiler.com, miquel.raynal@bootlin.com,
- linux-tegra@vger.kernel.org, digetx@gmail.com, gaireg@gaireg.de
-Subject: Re: [PATCH v7 4/6] mtd: rawnand: add NVIDIA Tegra NAND Flash
- controller driver
-Message-ID: <20180624215014.3249b382@bbrezillon>
-In-Reply-To: <20180624192230.4674-5-stefan@agner.ch>
-References: <20180624192230.4674-1-stefan@agner.ch>
- <20180624192230.4674-5-stefan@agner.ch>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>, <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Cristian.Birsan@microchip.com, nicolas.ferre@microchip.com
+Subject: Re: [PATCH] mtd: spi-nor: add support to non-uniform SFDP SPI NOR
+ flash memories
+Message-ID: <20180624220003.5faaae8c@bbrezillon>
+In-Reply-To: <20180608134818.21387-2-tudor.ambarus@microchip.com>
+References: <20180608134818.21387-1-tudor.ambarus@microchip.com>
+ <20180608134818.21387-2-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,27 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 24 Jun 2018 21:22:28 +0200
-Stefan Agner <stefan@agner.ch> wrote:
+Hi Tudor,
 
-> +
-> +static int tegra_nand_remove(struct platform_device *pdev)
-> +{
-> +	struct tegra_nand_controller *ctrl = platform_get_drvdata(pdev);
-> +
-> +	nand_release(nand_to_mtd(ctrl->chip));
+Just one minor comment, I'll let Marek review the patch in more details.
 
-I still see nand_release() being used here. As I said in my review of
-v6, it's not safe. Please use mtd_device_unregister() + nand_cleanup()
-instead, and check the return code of mtd_device_unregister().
+On Fri, 8 Jun 2018 16:48:18 +0300
+Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
 
-With this addressed
+>  /*
+>   * Erase an address range on the nor chip.  The address range may extend
+>   * one or more erase sectors.  Return an error is there is a problem erasing.
+> @@ -511,9 +721,11 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
+>  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
+>  			(long long)instr->len);
+>  
+> -	div_u64_rem(instr->len, mtd->erasesize, &rem);
+> -	if (rem)
+> -		return -EINVAL;
+> +	if (likely(spi_nor_has_uniform_erase(nor))) {
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+To be honest, I don't think the likely() makes any difference here,
+given the time it takes to actually erase the block. Can we just drop
+it?
 
-> +
-> +	clk_disable_unprepare(ctrl->clk);
-> +
-> +	return 0;
-> +}
-> +
+> +		div_u64_rem(instr->len, mtd->erasesize, &rem);
+> +		if (rem)
+> +			return -EINVAL;
+> +	}
+
+Regards,
+
+Boris
