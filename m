@@ -1,25 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXBNn-0002Ar-1m
- for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 20:13:13 +0000
-Date: Sun, 24 Jun 2018 22:12:59 +0200
+ id 1fXBoA-0004wr-KH
+ for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 20:40:29 +0000
+Date: Sun, 24 Jun 2018 22:40:14 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Richard Weinberger <richard@nod.at>, LKML
- <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Linux
- mtd <linux-mtd@lists.infradead.org>, Ivan Djelic <ivan.djelic@parrot.com>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v3] lib/bch: Remove VLA usage
-Message-ID: <20180624221259.3c39c77e@bbrezillon>
-In-Reply-To: <CAGXu5j+A4jXuf_TO0UF0zp-7kHUEFP8FZY=+mat96CaQ-a87LQ@mail.gmail.com>
-References: <20180531184525.GA11068@beast> <20180601110921.GC4695@parrot.com>
- <CAGXu5jJVX5tk3w5etreTPJpoEzXfF9bFD4GNNW69yRHZTEBYiA@mail.gmail.com>
- <20180620093805.6d9c602e@bbrezillon>
- <CAGXu5j+A4jXuf_TO0UF0zp-7kHUEFP8FZY=+mat96CaQ-a87LQ@mail.gmail.com>
+To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+Cc: <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>, <f.fainelli@gmail.com>, <mmayer@broadcom.com>,
+ <rogerq@ti.com>, <ladis@linux-mips.org>, <ada@thorsis.com>,
+ <honghui.zhang@mediatek.com>, <miquel.raynal@bootlin.com>,
+ nagasureshkumarrelli@gmail.com, michals@xilinx.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [[LINUX PATCH v10] 1/4] Devicetree: Add pl353 smc controller
+ devicetree binding information
+Message-ID: <20180624224014.125cf0bc@bbrezillon>
+In-Reply-To: <1529563351-2241-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,91 +29,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 Jun 2018 11:16:11 -0700
-Kees Cook <keescook@chromium.org> wrote:
+Hi Naga,
 
-> On Wed, Jun 20, 2018 at 12:38 AM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > Hi Kees,
-> >
-> > On Tue, 19 Jun 2018 16:48:17 -0700
-> > Kees Cook <keescook@chromium.org> wrote:
-> > =20
-> >> On Fri, Jun 1, 2018 at 4:09 AM, Ivan Djelic <ivan.djelic@parrot.com> w=
-rote: =20
-> >> > On Thu, May 31, 2018 at 11:45:25AM -0700, Kees Cook wrote: =20
-> >> >> In the quest to remove all stack VLA usage from the kernel[1], this
-> >> >> allocates a fixed size stack array to cover the range needed for
-> >> >> bch. This was done instead of a preallocation on the SLAB due to
-> >> >> performance reasons, shown by Ivan Djelic:
-> >> >>
-> >> >>  little-endian, type sizes: int=3D4 long=3D8 longlong=3D8
-> >> >>  cpu: Intel(R) Core(TM) i5 CPU         650  @ 3.20GHz
-> >> >>  calibration: iter=3D4.9143=C2=B5s niter=3D2034 nsamples=3D200 m=3D=
-13 t=3D4
-> >> >>
-> >> >>    Buffer allocation |  Encoding throughput (Mbit/s)
-> >> >>  ---------------------------------------------------
-> >> >>   on-stack, VLA      |   3988
-> >> >>   on-stack, fixed    |   4494
-> >> >>   kmalloc            |   1967
-> >> >>
-> >> >> So this change actually improves performance too, it seems.
-> >> >>
-> >> >> The resulting stack allocation can get rather large; without
-> >> >> CONFIG_BCH_CONST_PARAMS, it will allocate 4096 bytes, which
-> >> >> trips the stack size checking:
-> >> >>
-> >> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
-> >> >> lib/bch.c:261:1: warning: the frame size of 4432 bytes is larger th=
-an 2048 bytes [-Wframe-larger-than=3D]
-> >> >>
-> >> >> Even the default case for "allmodconfig" (with CONFIG_BCH_CONST_M=
-=3D14 and
-> >> >> CONFIG_BCH_CONST_T=3D4) would have started throwing a warning:
-> >> >>
-> >> >> lib/bch.c: In function =E2=80=98encode_bch=E2=80=99:
-> >> >> lib/bch.c:261:1: warning: the frame size of 2288 bytes is larger th=
-an 2048 bytes [-Wframe-larger-than=3D]
-> >> >>
-> >> >> But this is how large it's always been; it was just hidden from
-> >> >> the checker because it was a VLA. So the Makefile has been adjusted=
- to
-> >> >> silence this warning for anything smaller than 4500 bytes, which sh=
-ould
-> >> >> provide room for normal cases, but still low enough to catch any fu=
-ture
-> >> >> pathological situations.
-> >> >>
-> >> >> [1] https://lkml.kernel.org/r/CA+55aFzCG-zNmZwX4A2FQpadafLfEzK6CC=
-=3DqPXydAacU1RqZWA@mail.gmail.com
-> >> >>
-> >> >> Signed-off-by: Kees Cook <keescook@chromium.org>
-> >> >> ---
-> >> >> v3: fix r_bytes to whole-word size
-> >> >> v2: switch to fixed-size stack array
-> >> >> ---
-> >> >>  lib/Makefile |  1 +
-> >> >>  lib/bch.c    | 23 +++++++++++++++--------
-> >> >>  2 files changed, 16 insertions(+), 8 deletions(-) =20
-> >> >
-> >> >
-> >> > The patch looks good to me. It also passed my regression tests.
-> >> >
-> >> > Reviewed-by: Ivan Djelic <ivan.djelic@parrot.com>
-> >> > Tested-by: Ivan Djelic <ivan.djelic@parrot.com> =20
-> >>
-> >> Thanks for the review and testing!
-> >>
-> >> Who's the best person to carry this patch? =20
-> >
-> > Looks like all users of this lib are in drivers/mtd, so I can take the
-> > patches if you want, but I can also let you take them if you prefer. =20
->=20
-> I'd love it if you could take it; thank you!
+Subject prefix should be "dt-bindings: memory: " not "Devicetree: ".
 
-Applied to mtd/next.
+On Thu, 21 Jun 2018 12:12:28 +0530
+Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
 
-Thanks,
+> Add pl353 static memory controller devicetree binding information.
+> 
+> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> ---
+> Changes in v10:
+>  - Corrected the typos like "should be" to "Must be" and nand to NAND etc..
+>  - Removed padding to describe size-cells and address-cells
+>  - Removed timing parameters from DT, and added ->setup_data_interface() hook
+>    to the driver to read the SDR timings
+>  - Modified label name from "pl353smcc_0: pl353smcc@e000e000" to
+>    "smcc: memory-controller@e000e000" as suggested by Miquel
+> Changes in v9:
+>  - Addressed below comments given by Randy Dunlap and Miquel Raynal
+>  - Typos
+>  - Added extra documentation that explains the HW ECC limitation with SMC
+>    (Comments given to v8: https://lkml.org/lkml/2018/3/22/23)
+> Changes in v8:
+>  - None
+> Changes in v7:
+>  - Corrected clocks description
+>  - prefixed '#' for address and size cells
+> Changes in v6:
+>  - None
+> Changes in v5:
+>  - Removed timing properties
+> Changes in v4:
+>  - none
+> Changes in v3:
+>  - none
+> Changes in v2:
+>  - modified timing binding info as per onfi timing parameters
+>  - add suffix nano second as timing unit
+>  - modified the clock names as per the IP spec
+> ---
+>  .../bindings/memory-controllers/pl353-smc.txt      | 41 ++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> new file mode 100644
+> index 0000000..8b4c65e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+> @@ -0,0 +1,41 @@
+> +Device tree bindings for ARM PL353 static memory controller
+> +
+> +PL353 static memory controller supports two kinds of memory
+> +interfaces.i.e NAND and SRAM/NOR interfaces.
+> +The actual devices are instantiated from the child nodes of pl353 smc node.
+> +
+> +Required properties:
+> +- compatible		: Must be "arm,pl353-smc-r2p1"
+> +- reg			: Controller registers map and length.
+> +- clock-names		: List of input clock names - "ref_clk", "aper_clk"
+> +			  (See clock bindings for details).
+> +- clocks		: Clock phandles (see clock bindings for details).
+> +- address-cells		: Must be 1.
+> +- size-cells		: Must be 1.
+> +
+> +Child nodes:
+> + For NAND the "arm,pl353-nand-r2p1" and for NOR the "cfi-flash" drivers are
+> +supported as child nodes.
+> +
+> +for NAND partition information please refer the below file
+> +Documentation/devicetree/bindings/mtd/partition.txt
+> +
+> +Example:
+> +	smcc: memory-controller@e000e000
+> +			compatible = "arm,pl353-smc-r2p1"
+> +			clock-names = "memclk", "aclk";
+> +			clocks = <&clkc 11>, <&clkc 44>;
+> +			reg = <0xe000e000 0x1000>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			ranges;
+> +			nand_0: flash@e1000000 {
+> +				compatible = "arm,pl353-nand-r2p1"
+> +				reg = <0xe1000000 0x1000000>;
+> +				(...)
+> +			};
+> +			nor0: flash@e2000000 {
+> +				compatible = "cfi-flash";
+> +				reg = <0xe2000000 0x2000000>;
+> +			};
+> +	};
+
+I had a look at the PL353 TRM, and the block diagram looks very similar
+to the atmel EBI/SMC one. AHB/AXI memory ranges that are used to
+interact with the memories are assigned CS ids, which can then be used
+to configure the timings (and other kind of stuff). I think you should
+have #address-cells = <2>, the first cell encoding the CS id, and the
+second one, the memory offset within the reserved range for this CS id.
+See the atmel,ebi binding [1].
+
+Regards,
 
 Boris
+
+[1]https://elixir.bootlin.com/linux/v4.18-rc2/source/Documentation/devicetree/bindings/memory-controllers/atmel,ebi.txt
