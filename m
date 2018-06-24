@@ -1,6 +1,6 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXDlB-0003sJ-T5
+ id 1fXDlB-0003sQ-TB
  for linux-mtd@lists.infradead.org; Sun, 24 Jun 2018 22:45:32 +0000
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
@@ -9,9 +9,9 @@ To: miquel.raynal@bootlin.com, boris.brezillon@bootlin.com,
 Cc: linux-kernel@vger.kernel.org,
  Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH v6 4/6] mtd: rawnand: micron: add fixup for ONFI revision
-Date: Mon, 25 Jun 2018 10:44:46 +1200
-Message-Id: <20180624224448.21872-5-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v6 1/6] mtd: rawnand: marvell: Handle on-die ECC
+Date: Mon, 25 Jun 2018 10:44:43 +1200
+Message-Id: <20180624224448.21872-2-chris.packham@alliedtelesis.co.nz>
 In-Reply-To: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
 References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,54 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some Micron NAND chips (MT29F1G08ABAFAWP-ITE:F) report 00 00 for the
-revision number field of the ONFI parameter page. Rather than rejecting
-these outright assume ONFI version 1.0 if the revision number is 00 00.
+>From the controllers point of view this is the same as no or
+software only ECC.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
-This is now qualified on vendor == MICRON. I haven't qualified this
-based on specific chips the ABAFA (id=d1) and ABBFA (id=a1) variants are
-documented to have this behaviour.
-
 Changes in v2:
-- use fixup_onfi_param_page
+- New
 Changes in v3:
-- add code comment next to workaround
+- Add review from Boris
 Changes in v4:
-- use define for ONFI_VERSION
+- None
 Changes in v5:
 - None
 Changes in v6:
 - None
 
- drivers/mtd/nand/raw/nand_micron.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/mtd/nand/raw/marvell_nand.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 203faba0a9c1..d30bd4df9b12 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -290,6 +290,19 @@ static int micron_nand_init(struct nand_chip *chip)
- 	return 0;
- }
- 
-+static void micron_fixup_onfi_param_page(struct nand_chip *chip,
-+					 struct nand_onfi_params *p)
-+{
-+	/*
-+	 * MT29F1G08ABAFAWP-ITE:F and possibly others report 00 00 for the
-+	 * revision number field of the ONFI parameter page. Assume ONFI
-+	 * version 1.0 if the revision number is 00 00.
-+	 */
-+	if (le16_to_cpu(p->revision) == 0)
-+		p->revision = cpu_to_le16(ONFI_VERSION_1_0);
-+}
-+
- const struct nand_manufacturer_ops micron_nand_manuf_ops = {
- 	.init = micron_nand_init,
-+	.fixup_onfi_param_page = micron_fixup_onfi_param_page,
- };
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index ebb1d141b900..ba6889bbe802 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2157,6 +2157,7 @@ static int marvell_nand_ecc_init(struct mtd_info *mtd,
+ 		break;
+ 	case NAND_ECC_NONE:
+ 	case NAND_ECC_SOFT:
++	case NAND_ECC_ON_DIE:
+ 		if (!nfc->caps->is_nfcv2 && mtd->writesize != SZ_512 &&
+ 		    mtd->writesize != SZ_2K) {
+ 			dev_err(nfc->dev, "NFCv1 cannot write %d bytes pages\n",
 -- 
 2.18.0
