@@ -1,23 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXQhl-0007kx-FK
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 12:35:23 +0000
-Date: Mon, 25 Jun 2018 14:34:37 +0200
+ id 1fXQj3-0001CN-5O
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 12:36:31 +0000
+Date: Mon, 25 Jun 2018 14:35:57 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, robh+dt@kernel.org,
- mark.rutland@arm.com, thierry.reding@gmail.com, dev@lynxeye.de,
- richard@nod.at, marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, jonathanh@nvidia.com,
- pdeschrijver@nvidia.com, pgaikwad@nvidia.com, mirza.krak@gmail.com,
- gaireg@gaireg.de, linux-mtd@lists.infradead.org,
- linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 0/6] mtd: rawnand: add NVIDIA Tegra NAND flash support
-Message-ID: <20180625143437.24f71e7e@xps13>
-In-Reply-To: <20180624212727.21672-1-stefan@agner.ch>
-References: <20180624212727.21672-1-stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: micron: Update ecc_stats.corrected
+Message-ID: <20180625143557.29d52b59@xps13>
+In-Reply-To: <20180620100444.4f60f8dd@bbrezillon>
+References: <20180620074443.30235-1-boris.brezillon@bootlin.com>
+ <20180620095843.7ec30e67@xps13>
+ <20180620100444.4f60f8dd@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -30,97 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Hi Boris,
 
-On Sun, 24 Jun 2018 23:27:21 +0200, Stefan Agner <stefan@agner.ch>
-wrote:
+On Wed, 20 Jun 2018 10:04:44 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-> Eigth and hopefully final revision gets rid of nand_release() as
-> suggested by Boris.
+> On Wed, 20 Jun 2018 09:58:43 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >=20
-> --
-> Stefan
+> > Hi Boris,
+> >=20
+> > On Wed, 20 Jun 2018 09:44:43 +0200, Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:
+> >  =20
+> > > Even if we can't update ecc_stats.corrected with an accurate value we
+> > > should at least increase the number of bitflips so that MTD users can
+> > > know that there was some bitflips.
+> > >=20
+> > > Just add chip->ecc.strength to mtd->ecc_stats.corrected which should
+> > > account for the worst case situation.
+> > >=20
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > > ---   =20
+> >=20
+> > Shouldn't we consider this change as a fix? =20
 >=20
-> Changes since v1:
-> - Split controller and NAND chip structure
-> - Add BCH support
-> - Allow to select algorithm and strength using device tree
-> - Improve HW ECC error reporting and use DEC_STATUS_BUF only
-> - Use SPDX license identifier
-> - Use per algorithm mtd_ooblayout_ops
-> - Use setup_data_interface callback for NAND timing configuration
->=20
-> Changes since v2:
-> - Set clock rate using assigned-clocks
-> - Use BIT() macro
-> - Fix and improve timing calculation
-> - Improve ECC error handling
-> - Store OOB layout for tag area in Tegra chip structure
-> - Update/fix bindings
-> - Use more specific variable names (replace "value")
-> - Introduce nand-is-boot-medium
-> - Choose sensible ECC strenght automatically
-> - Use wait_for_completion_timeout
-> - Print register dump on completion timeout
-> - Unify tegra_nand_(read|write)_page in tegra_nand_page_xfer
->=20
-> Changes since v3:
-> - Implement tegra_nand_(read|write)_raw using DMA
-> - Implement tegra_nand_(read|write)_oob using DMA
-> - Name registers according to Tegra 2 Technical Reference Manual (v02p)
-> - Use wait_for_completion_io_timeout to account for IO
-> - Get chip select id from device tree reg property
-> - Clear interrupts and reinit wait queues in case command/DMA times out
-> - Set default MTD name after nand_set_flash_node
-> - Move MODULE_DEVICE_TABLE after declaration of tegra_nand_of_match
-> - Make (rs|bch)_strength static
->=20
-> Changes since v4:
-> - Pass OOB area to nand_check_erased_ecc_chunk
-> - Pass algorithm specific bits_per_step to tegra_nand_get_strength
-> - Store ECC layout in chip structure
-> - Fix pointer assignment (use NULL)
-> - Removed obsolete header delay.h
-> - Fixed newlines
-> - Use non-_io variant of wait_for_completion_timeout
->=20
-> Changes since v5:
-> - Drop extra OOB bytes support
->=20
-> Changes since v6:
-> - checkpatch.pl fixes
->=20
-> Changes since v7:
-> - Replace nand_release() with mtd_device_unregister() + nand_cleanup()
->=20
-> Lucas Stach (1):
->   ARM: dts: tegra: add Tegra20 NAND flash controller node
->=20
-> Stefan Agner (5):
->   mtd: rawnand: add Reed-Solomon error correction algorithm
->   mtd: rawnand: add an option to specify NAND chip as a boot device
->   mtd: rawnand: tegra: add devicetree binding
->   mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
->   ARM: dts: tegra: enable NAND flash on Colibri T20
->=20
->  .../devicetree/bindings/mtd/nand.txt          |    6 +-
->  .../bindings/mtd/nvidia-tegra20-nand.txt      |   64 +
->  MAINTAINERS                                   |    7 +
->  arch/arm/boot/dts/tegra20-colibri-512.dtsi    |   16 +
->  arch/arm/boot/dts/tegra20.dtsi                |   15 +
->  drivers/mtd/nand/raw/Kconfig                  |   10 +
->  drivers/mtd/nand/raw/Makefile                 |    1 +
->  drivers/mtd/nand/raw/nand_base.c              |    4 +
->  drivers/mtd/nand/raw/tegra_nand.c             | 1230 +++++++++++++++++
->  include/linux/mtd/rawnand.h                   |    7 +
->  10 files changed, 1359 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/mtd/nvidia-tegra20-=
-nand.txt
->  create mode 100644 drivers/mtd/nand/raw/tegra_nand.c
+> It's not really fixing a bug, in that ecc_stats.corrected are already
+> not accurate, they just give a hint about how often you fix bitflips
+> on a NAND device. But if you think it should be backported, I can add
+> the Fixes and Cc-stable tags.
 >=20
 
-Series applied to nand/next. I just changed the subject of patch3/6 to
-be "dt-bindings: mtd: add tegra NAND controller binding".
+It's fine for me.
+
+Applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
