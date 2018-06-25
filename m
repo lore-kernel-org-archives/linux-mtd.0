@@ -1,24 +1,35 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXRDI-0001lz-HC
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 13:07:25 +0000
-Date: Mon, 25 Jun 2018 14:07:04 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Message-ID: <20180625130704.GQ9413@sirena.org.uk>
-References: <20180617170217.24177-1-robert.jarzmik@free.fr>
- <20180618104159.24b9fffb@bbrezillon>
- <87d0wnrhqz.fsf@belgarion.home>
+Received: from mail-yw0-f195.google.com ([209.85.161.195])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXSkd-0005B6-Tr
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 14:46:02 +0000
+Received: by mail-yw0-f195.google.com with SMTP id m201-v6so898214ywd.4
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 07:45:45 -0700 (PDT)
+Date: Mon, 25 Jun 2018 08:45:41 -0600
+From: Rob Herring <robh@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>,
+ Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
+ Geert Uytterhoeven <geert@linux-m68k.org>,
+ Piotr Bugalski <Piotr.Bugalski@cryptera.com>,
+ Peter Pan <peterpansjtu@gmail.com>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Julien Su <juliensu@mxic.com.tw>,
+ Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw
+Subject: Re: [PATCH v9 2/6] dt-bindings: Add bindings for SPI NAND devices
+Message-ID: <20180625144541.GA8597@rob-hp-laptop>
+References: <20180622122828.12939-1-boris.brezillon@bootlin.com>
+ <20180622122828.12939-3-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="Vsi50HYs5tPfr+1I"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87d0wnrhqz.fsf@belgarion.home>
+In-Reply-To: <20180622122828.12939-3-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +39,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Jun 22, 2018 at 02:28:24PM +0200, Boris Brezillon wrote:
+> Add bindings for SPI NAND chips.
+> 
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v9:
+> - Do not describe generic SPI device properties, and more importantly
+>   do not change their meaning
+> 
+> Changes in v8:
+> - Fixed a typo in the commit message
+> ---
+>  Documentation/devicetree/bindings/mtd/spi-nand.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
 
---Vsi50HYs5tPfr+1I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
-
-> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
-> checker to be fully covered, and I'd like as well to know which tree the ASoC
-> patch will take, ie. if Mark commits to take it, or rather wants to pull from
-> the imutable branch.
-
-I'll pull the branch in (a signed tag would've been nicer but it's not
-the end of the world).
-
---Vsi50HYs5tPfr+1I
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw6PcACgkQJNaLcl1U
-h9DjMAf/af5+btMq4R9XHetdh/iAvu2jYHAw4/iyHWOKMS8MDABxBEz/3eB2XlUA
-35JbCDcC7RYyk41csobZ7/CnhgkTM5HOjyLVHs8OOYhAOSrmFK0sDoGg884OvlAp
-F5WNWOsmiqGfJEUoiSh7SoHtVi+cN3snsAcgX2yJtPlmyMcRodxvSMdXxjACwDoE
-092a9LGzs4WYoPqdk8zszqY+2cu2HLH2aXvB1oplkwbcyJYB3VkO4Q0O+7o9AvMM
-26QSPG26ufIJY+/ZxrO5BWsZrs8QlOAAhLjI65FITchHfVEoBxqryQbGk4MjpG3G
-VAOCzizL4A454dl/xHPD8erqdXCmVw==
-=EUsN
------END PGP SIGNATURE-----
-
---Vsi50HYs5tPfr+1I--
+Reviewed-by: Rob Herring <robh@kernel.org>
