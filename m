@@ -1,15 +1,22 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXPVb-0006A1-Ao
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 11:18:12 +0000
-Received: by mail-wm0-x244.google.com with SMTP id x6-v6so8777161wmc.3
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 04:18:00 -0700 (PDT)
-From: Robert Marko <robimarko@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: Add Winbond w25q128jv support
-Date: Mon, 25 Jun 2018 13:17:48 +0200
-Message-Id: <20180625111748.5108-1-robimarko@gmail.com>
+Date: Mon, 25 Jun 2018 14:31:21 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Peter Rosin <peda@axentia.se>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, linux-kernel@vger.kernel.org, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] mtd: nand: raw: atmel: add module param to avoid using dma
+Message-ID: <20180625143121.0104a671@xps13>
+In-Reply-To: <20180618103908.17a04679@bbrezillon>
+References: <20180329131054.22506-1-peda@axentia.se>
+ <20180618103908.17a04679@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Datasheet:
-http://www.winbond.com/resource-files/w25q128jv%20revf%2003272018%20plus.pdf
+Hi Peter,
 
-Testing done on Mikrotik Routerboard  wAP R board.
-It does not support Dual or Quad modes.
+On Mon, 18 Jun 2018 10:39:08 +0200, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
+> On Thu, 29 Mar 2018 15:10:54 +0200
+> Peter Rosin <peda@axentia.se> wrote:
+>=20
+> > On a sama5d31 with a Full-HD dual LVDS panel (132MHz pixel clock) NAND
+> > flash accesses have a tendency to cause display disturbances. Add a
+> > module param to disable DMA from the NAND controller, since that fixes
+> > the display problem for me.
+> >=20
+> > Signed-off-by: Peter Rosin <peda@axentia.se> =20
+>=20
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+>=20
+> Miquel, can you queue this one to nand/next.
+>=20
 
-Changes in v2:
-	- Correct the title
----
- drivers/mtd/spi-nor/spi-nor.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Applied to nand/next with the prefix changed to "mtd: rawnand: atmel:".
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c44194..3501dddc3167 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1239,6 +1239,11 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
- 			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
- 	},
-+	{
-+		"w25q128jv", INFO(0xef7018, 0, 64 * 1024, 256,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-+	},
- 	{ "w25q80", INFO(0xef5014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q80bl", INFO(0xef4014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25q128", INFO(0xef4018, 0, 64 * 1024, 256, SECT_4K) },
--- 
-2.17.1
+Thanks,
+Miqu=C3=A8l
