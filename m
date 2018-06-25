@@ -1,9 +1,9 @@
-Received: from mail-lf0-x241.google.com ([2a00:1450:4010:c07::241])
+Received: from mail-lf0-x244.google.com ([2a00:1450:4010:c07::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXZe7-0005MP-LZ
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 22:07:41 +0000
-Received: by mail-lf0-x241.google.com with SMTP id i15-v6so15696661lfc.2
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 15:07:28 -0700 (PDT)
+ id 1fXZeA-0005Mg-Id
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 22:07:45 +0000
+Received: by mail-lf0-x244.google.com with SMTP id v17-v6so8680346lfe.13
+ for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 15:07:31 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>,
  David Woodhouse <dwmw2@infradead.org>,
@@ -14,12 +14,13 @@ To: Brian Norris <computersforpeace@gmail.com>,
 Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
  devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 1/2] dt-bindings: mtd: document Broadcom's TRX firmware
- format binding
-Date: Tue, 26 Jun 2018 00:05:07 +0200
-Message-Id: <20180625220508.21242-1-zajec5@gmail.com>
-In-Reply-To: <20180612104434.15232-1-zajec5@gmail.com>
+Subject: [PATCH V2 2/2] mtd: parsers: trx: add of_match_table with the new DT
+ binding
+Date: Tue, 26 Jun 2018 00:05:08 +0200
+Message-Id: <20180625220508.21242-2-zajec5@gmail.com>
+In-Reply-To: <20180625220508.21242-1-zajec5@gmail.com>
 References: <20180612104434.15232-1-zajec5@gmail.com>
+ <20180625220508.21242-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -34,61 +35,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-Broadcom based home router devices use TRX firmware format. It's a
-container that can hold few partitions. If operating system is expected
-to access them it has to understand that format and parse flash data
-accordingly.
+This allows using TRX parser to find TRX partitions on flash device
+described in DT using a proper binding. It's useful for devices storing
+firmware on a separated flash and having rootfs partition in it.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
-V2: Drop unneeded "brcm,trx-v1" and "brcm,trx-v2" bindings.
+V2: Update to support only the "brcm,trx" binding
 ---
- .../bindings/mtd/partitions/brcm,trx.txt           | 37 ++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt
+ drivers/mtd/parsers/parser_trx.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt
-new file mode 100644
-index 000000000000..b677147ca4e1
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt
-@@ -0,0 +1,37 @@
-+Broadcom TRX Container Partition
-+================================
-+
-+TRX is Broadcom's official firmware format for the BCM947xx boards. It's used by
-+most of the vendors building devices based on Broadcom's BCM47xx SoCs and is
-+supported by the CFE bootloader.
-+
-+Design of the TRX format is very minimalistic. Its header contains
-+identification fields, CRC32 checksum and the locations of embedded partitions.
-+Its purpose is to store a few partitions in a format that can be distributed as
-+a standalone file and written in a flash memory.
-+
-+Container can hold up to 4 partitions. The first partition has to contain a
-+device executable binary (e.g. a kernel) as it's what the CFE bootloader starts
-+executing. Other partitions can be used for operating system purposes. This is
-+useful for systems that keep kernel and rootfs separated.
-+
-+TRX doesn't enforce any strict partition boundaries or size limits. All
-+partitions have to be less than the 4GiB max size limit.
-+
-+There are two existing/known TRX variants:
-+1) v1 which contains 3 partitions
-+2) v2 which contains 4 partitions
-+
-+There aren't separated compatible bindings for them as version can be trivialy
-+detected by a software parsing TRX header.
-+
-+Required properties:
-+- compatible : (required) must be "brcm,trx"
-+
-+Example:
-+
-+flash@0 {
-+	partitions {
-+		compatible = "brcm,trx";
-+	};
+diff --git a/drivers/mtd/parsers/parser_trx.c b/drivers/mtd/parsers/parser_trx.c
+index df360a75e1eb..f580a41a52b8 100644
+--- a/drivers/mtd/parsers/parser_trx.c
++++ b/drivers/mtd/parsers/parser_trx.c
+@@ -116,9 +116,16 @@ static int parser_trx_parse(struct mtd_info *mtd,
+ 	return i;
+ };
+ 
++static const struct of_device_id mtd_parser_trx_of_match_table[] = {
++	{ .compatible = "brcm,trx" },
++	{},
 +};
++MODULE_DEVICE_TABLE(of, mtd_parser_trx_of_match_table);
++
+ static struct mtd_part_parser mtd_parser_trx = {
+ 	.parse_fn = parser_trx_parse,
+ 	.name = "trx",
++	.of_match_table = mtd_parser_trx_of_match_table,
+ };
+ module_mtd_part_parser(mtd_parser_trx);
+ 
 -- 
 2.13.7
