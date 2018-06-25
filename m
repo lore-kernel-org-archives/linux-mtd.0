@@ -1,34 +1,34 @@
-Received: from conssluserg-06.nifty.com ([210.131.2.91])
+Received: from mail-eopbgr720044.outbound.protection.outlook.com
+ ([40.107.72.44] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXHBf-0008Vw-I0
- for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 02:25:07 +0000
-Received: from mail-ua0-f171.google.com (mail-ua0-f171.google.com
- [209.85.217.171]) (authenticated)
- by conssluserg-06.nifty.com with ESMTP id w5P2OTsv007426
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 11:24:29 +0900
-Received: by mail-ua0-f171.google.com with SMTP id v15-v6so767108ual.11
- for <linux-mtd@lists.infradead.org>; Sun, 24 Jun 2018 19:24:29 -0700 (PDT)
+ id 1fXNIy-0005Q9-2N
+ for linux-mtd@lists.infradead.org; Mon, 25 Jun 2018 08:57:06 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com" <rogerq@ti.com>,
+ "ladis@linux-mips.org" <ladis@linux-mips.org>, "ada@thorsis.com"
+ <ada@thorsis.com>, "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>, Michal
+ Simek <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [[LINUX PATCH v10] 3/4] Documentation: nand: pl353: Add
+ documentation for controller and driver
+Date: Mon, 25 Jun 2018 08:56:41 +0000
+Message-ID: <MWHPR02MB26234FD1B68C2B5ECC6B87F6AF4A0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180624225427.67c4d9c3@bbrezillon>
+In-Reply-To: <20180624225427.67c4d9c3@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <1529479662-4026-2-git-send-email-absahu@codeaurora.org>
-References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
- <1529479662-4026-2-git-send-email-absahu@codeaurora.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 25 Jun 2018 11:23:48 +0900
-Message-ID: <CAK7LNAQirQO7MCsVa-MeSCj2J2_jW_2fV5HUAhss9pWHHAPNVg@mail.gmail.com>
-Subject: Re: [PATCH v4 01/15] mtd: rawnand: helper function for setting up ECC
- configuration
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Archit Taneja <architt@codeaurora.org>,
- linux-arm-msm <linux-arm-msm@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, Andy Gross <andy.gross@linaro.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,126 +38,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-06-20 16:27 GMT+09:00 Abhishek Sahu <absahu@codeaurora.org>:
-> commit 2c8f8afa7f92 ("mtd: nand: add generic helpers to check,
-> match, maximize ECC settings") provides generic helpers which
-> drivers can use for setting up ECC parameters.
->
-> Since same board can have different ECC strength nand chips so
-> following is the logic for setting up ECC strength and ECC step
-> size, which can be used by most of the drivers.
->
-> 1. If both ECC step size and ECC strength are already set
->    (usually by DT) then just check whether this setting
->    is supported by NAND controller.
-> 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength
->    supported by NAND controller.
-> 3. Otherwise, try to match the ECC step size and ECC strength closest
->    to the chip's requirement. If available OOB size can't fit the chip
->    requirement then select maximum ECC strength which can be fit with
->    available OOB size.
->
-> This patch introduces nand_ecc_choose_conf function which calls the
-> required helper functions for the above logic. The drivers can use
-> this single function instead of calling the 3 helper functions
-> individually.
->
-> CC: Masahiro Yamada <yamada.masahiro@socionext.com>
+Hi Boris,
 
-You can replace the CC with my
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, June 25, 2018 2:24 AM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: richard@nod.at; dwmw2@infradead.org; computersforpeace@gmail.com;
+> marek.vasut@gmail.com; f.fainelli@gmail.com; mmayer@broadcom.com; rogerq@=
+ti.com;
+> ladis@linux-mips.org; ada@thorsis.com; honghui.zhang@mediatek.com;
+> miquel.raynal@bootlin.com; nagasureshkumarrelli@gmail.com; Michal Simek
+> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
+rnel.org
+> Subject: Re: [[LINUX PATCH v10] 3/4] Documentation: nand: pl353: Add docu=
+mentation
+> for controller and driver
+>=20
+> On Thu, 21 Jun 2018 12:12:30 +0530
+> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+>=20
+> > Added notes about the controller and driver.
+> >
+> > Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.co=
+m>
+> > ---
+> > Changes in v10:
+> >  - None
+> > Changes in v9:
+> >  - Addressed the comments given by Miquel and Randy
+> > Changes in v8
+> >  - None
+> > Changes in v7:
+> > - None
+> > Changes in v6:
+> > - None
+> > Changes in v5:
+> > - Fixed the review comments
+> > Changes in v4:
+> > - None
+> > ---
+> >  Documentation/mtd/nand/pl353-nand.txt | 99
+> +++++++++++++++++++++++++++++++++++
+> >  1 file changed, 99 insertions(+)
+> >  create mode 100644 Documentation/mtd/nand/pl353-nand.txt
+>=20
+> Can we put these information directly in the driver instead of having
+> yet another place where we have things partially documented? I just
+> discovered a doc for the pxa NAND controller in this directory because
+> of this patch, which kind of proves my point :-).
+Ok, but could you please explain where to put in driver?
+Do you mean, as comments inside drivers/mtd/raw/pl353-nand.c?
 
-Reviewed-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+>=20
+> >
+> > diff --git a/Documentation/mtd/nand/pl353-nand.txt b/Documentation/mtd/=
+nand/pl353-
+> nand.txt
+> > new file mode 100644
+> > index 0000000..c352c87
+> > --- /dev/null
+> > +++ b/Documentation/mtd/nand/pl353-nand.txt
+> > @@ -0,0 +1,99 @@
+> > +This document provides some notes about the ARM pl353 SMC controller u=
+sed in
+> > +Zynq SOC and confined to NAND specific details.
+> > +
+> > +Overview of the controller
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
+> > +	The SMC (PL353) supports two memory interfaces:
+> > +	Interface 0 type SRAM.
+> > +	Interface 1 type NAND.
+> > +	This configuration supports the following configurable options:
+> > +	   . 32-bit or 64-bit AXI data width
+> > +	   . 8-bit, 16-bit, or 32-bit memory data width for interface 0
+> > +	   . 8-bit, or 16-bit memory data width for interface 1
+> > +	   . 1-4 chip selects on each interface
+> > +	   . SLC ECC block for interface 1
+> > +
+> > +For more information, refer the below link for TRM
+> >
+> +http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/DDI0380G_smc_p=
+l350_series
+> _r2p1_trm.pdf
+> > +
+> > +NAND memory accesses
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +	. Two phase NAND accesses
+> > +	. NAND command phase transfers
+> > +	. NAND data phase transfers
+> > +
+> > +Two phase NAND accesses
+> > +	The SMC defines two phases of commands when transferring data to or f=
+rom
+> > +NAND flash.
+> > +
+> > +Command phase
+> > +	Commands and optional address information are written to the NAND fla=
+sh.
+> > +The command and address can be associated with either a data phase ope=
+ration to
+> > +write to or read from the array, or a status/ID register transfer.
+> > +
+> > +Data phase
+> > + Data is either written to or read from the NAND flash. This data can =
+be either
+> > +data transferred to or from the array, or status/ID register informati=
+on.
+> > +
+> > +NAND AXI address setup
+> > +       AXI address      Command phase      Data phase
+> > +	[31:24]         Chip address       Chip address
+> > +	[23]            NoOfAddCycles_2    Reserved
+> > +	[22]            NoOfAddCycles_1    Reserved
+> > +	[21]            NoOfAddCycles_0    ClearCS
+> > +	[20]            End command valid  End command valid
+> > +	[19]            0                  1
+> > +	[18:11]         End command        End command
+> > +	[10:3]          Start command      [10] ECC Last
+> > +					   [9:3] Reserved
+> > +	[2:0]           Reserved           Reserved
+> > +
+> > +ECC
+> > +=3D=3D=3D
+> > +    It operates on a number of 512 byte blocks of NAND memory and can =
+be
+> > +programmed to store the ECC codes after the data in memory. For writes=
+,
+> > +the ECC is written to the spare area of the page. For reads, the resul=
+t of
+> > +a block ECC check are made available to the device driver.
+> > +
+> > +----------------------------------------------------------------------=
+--
+> > +|               n * 512 blocks                  | extra  | ecc    |   =
+  |
+> > +|                                               | block  | codes  |   =
+  |
+> > +----------------------------------------------------------------------=
+--
+> > +
+> > +The ECC calculation uses a simple Hamming code, using 1-bit correction=
+ 2-bit
+> > +detection. It starts when a valid read or write command with a 512 byt=
+e aligned
+> > +address is detected on the memory interface.
+> > +
+> > +Driver details
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +	The NAND driver has dependency with the pl353_smc memory controller
+> > +driver for initializing the NAND timing parameters, bus width, ECC mod=
+es,
+> > +control and status information.
+> > +
+> > +Since the controller expects that the chip select bit would be cleared=
+ for the
+> > +last data transfer i.e last 4 data bytes, the existing nand page
+> > +read/write routines for soft ECC and ECC none modes will not work. So,=
+ in order
+> > +to make this driver work, it always updates the ECC mode as HW ECC and
+> > +implements the page read/write functions for supporting the SW ECC.
+> > +i.e. There is a limitation in SMC controller, that we must set ECC LAS=
+T on
+> > +last data phase access, to tell ECC block not to expect any data furth=
+er.
+> > +Ex:  When number of ECC STEPS are 4, then till 3 we will write to flas=
+h
+> > +using SMC with HW ECC enabled. And for the last ECC STEP, we will subt=
+ract
+> > +4bytes from page size, and will initiate a transfer. And the remaining=
+ 4 as
+> > +one more transfer with ECC_LAST bit set in NAND data phase register to=
+ notify
+> > +ECC block not to expect any more data. The last block should be align =
+with end
+> > +of 512 byte block. Because of this limitation, we are not using core r=
+outines.
+> > +
+> > +HW ECC mode:
+> > +	Up to 2K page size is supported and beyond that it returns
+> > +-ENOTSUPPORT error. If the flash has on-die ECC controller then the
+> > +priority is given to the on-die ECC controller. Also the current
+> > +implementation has support for up to 64 bytes of OOB data.
+> > +
+> > +SW ECC mode:
+> > +	It supports all the page sizes. But since, Zynq SOC bootrom uses
+> > +HW ECC for the devices that have page <=3D 2K. so, When the kernel is =
+not
+> > +aware of the ECC mode, it uses HW ECC by default.
+> > +
+> > +For devicetree binding information please refer to the below dt bindin=
+g file
+> > +Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt.
 
-Thanks.
-
-
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
-> * Changes from v3:
->   1. call nand_maximize_ecc() 2 times to make code more clear.
->
-> * Changes from v2:
->
->   1. Renamed function to nand_ecc_choose_conf.
->   2. Minor code reorganization to remove warning and 2 function calls
->      for nand_maximize_ecc.
->
-> * Changes from v1:
->   NEW PATCH
->
->  drivers/mtd/nand/raw/nand_base.c | 33 +++++++++++++++++++++++++++++++++
->  include/linux/mtd/rawnand.h      |  3 +++
->  2 files changed, 36 insertions(+)
->
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 10c4f991..c64e3fc 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -6287,6 +6287,39 @@ int nand_maximize_ecc(struct nand_chip *chip,
->  }
->  EXPORT_SYMBOL_GPL(nand_maximize_ecc);
->
-> +/**
-> + * nand_ecc_choose_conf - Set the ECC strength and ECC step size
-> + * @chip: nand chip info structure
-> + * @caps: ECC engine caps info structure
-> + * @oobavail: OOB size that the ECC engine can use
-> + *
-> + * Choose the ECC configuration according to following logic
-> + *
-> + * 1. If both ECC step size and ECC strength are already set (usually by DT)
-> + *    then check if it is supported by this controller.
-> + * 2. If NAND_ECC_MAXIMIZE is set, then select maximum ECC strength.
-> + * 3. Otherwise, try to match the ECC step size and ECC strength closest
-> + *    to the chip's requirement. If available OOB size can't fit the chip
-> + *    requirement then fallback to the maximum ECC step size and ECC strength.
-> + *
-> + * On success, the chosen ECC settings are set.
-> + */
-> +int nand_ecc_choose_conf(struct nand_chip *chip,
-> +                        const struct nand_ecc_caps *caps, int oobavail)
-> +{
-> +       if (chip->ecc.size && chip->ecc.strength)
-> +               return nand_check_ecc_caps(chip, caps, oobavail);
-> +
-> +       if (chip->ecc.options & NAND_ECC_MAXIMIZE)
-> +               return nand_maximize_ecc(chip, caps, oobavail);
-> +
-> +       if (!nand_match_ecc_req(chip, caps, oobavail))
-> +               return 0;
-> +
-> +       return nand_maximize_ecc(chip, caps, oobavail);
-> +}
-> +EXPORT_SYMBOL_GPL(nand_ecc_choose_conf);
-> +
->  /*
->   * Check if the chip configuration meet the datasheet requirements.
->
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 3e8ec3b..03a0061 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1650,6 +1650,9 @@ int nand_match_ecc_req(struct nand_chip *chip,
->  int nand_maximize_ecc(struct nand_chip *chip,
->                       const struct nand_ecc_caps *caps, int oobavail);
->
-> +int nand_ecc_choose_conf(struct nand_chip *chip,
-> +                        const struct nand_ecc_caps *caps, int oobavail);
-> +
->  /* Default write_oob implementation */
->  int nand_write_oob_std(struct mtd_info *mtd, struct nand_chip *chip, int page);
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
-> is a member of Code Aurora Forum, hosted by The Linux Foundation
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Naga Sureshkumar Relli.
