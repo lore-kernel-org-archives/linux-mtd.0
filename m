@@ -1,24 +1,45 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXiX8-0005kG-29
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 07:37:19 +0000
-Date: Tue, 26 Jun 2018 09:36:50 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Martin Kaiser <martin@kaiser.cx>, David Woodhouse <dwmw2@infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam
- <fabio.estevam@nxp.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: mxc: remove __init qualifier from
- mxcnd_probe_dt
-Message-ID: <20180626093650.5835593b@xps13>
-In-Reply-To: <20180626092413.703249c8@bbrezillon>
-References: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
- <20180626091005.08d56b2a@xps13>
- <20180626092413.703249c8@bbrezillon>
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::7])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXjoi-0004u4-Ag
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 08:59:19 +0000
+Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
+ controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "broonie@kernel.org" <broonie@kernel.org>,
+ Fabio Estevam <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "richard@nod.at"
+ <richard@nod.at>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Han Xu <han.xu@nxp.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>
+References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
+ <20180611121618.40f4b609@bbrezillon>
+ <DB6PR0402MB28388D9DEB86629BB58DD5E499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <DB6PR0402MB2838563F1BA71A9A21ABBE01997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180612091328.67734adb@bbrezillon>
+ <DB6PR0402MB28387FE79F2742C9BEBD4037997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180615145019.734f23a9@bbrezillon>
+ <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180615155541.4f43e9bb@bbrezillon>
+ <DB6PR0402MB2838C4F67D17337ADBC5D5F899710@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180618211536.0bf44f55@bbrezillon>
+ <VI1PR0402MB2845767966A437E0D376219799700@VI1PR0402MB2845.eurprd04.prod.outlook.com>
+ <20180619092832.3b6c8f22@bbrezillon>
+ <DB6PR0402MB2838FAF5CF0B0883EFAA3A9B99700@DB6PR0402MB2838.eurprd04.prod.outlook.com>
+ <20180619104627.31cfd22e@bbrezillon>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <bc772ef1-5f3b-518b-3a02-ffcf7143d36d@exceet.de>
+Date: Tue, 26 Jun 2018 10:58:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20180619104627.31cfd22e@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +49,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Boris, hi Yogesh,
 
-On Tue, 26 Jun 2018 09:24:13 +0200, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
+first, thank you for testing and debugging the new driver.
 
-> On Tue, 26 Jun 2018 09:10:05 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> > Hi Martin, Boris,
-> >=20
-> > On Fri, 22 Jun 2018 16:50:25 +0200, Martin Kaiser <martin@kaiser.cx>
-> > wrote:
-> >  =20
-> > > mxcnd_probe_dt is called from mxcnd_probe, which is not marked as __i=
-nit.
-> > >    =20
-> >=20
-> > I think this line is just a side note and should be at the end of the
-> > commit log.
-> >  =20
-> > > Using the sysfs unbind, bind nodes, mxcnd_probe and mxcnd_probe_dt can
-> > > potentially be called at any time. After the __init functions are cle=
-aned,
-> > > mxcnd_probe_dt is no longer available. Calling it anyway causes a cra=
-sh.   =20
-> >=20
-> > The above paragraph explains the problem and the solution, you can just
-> > add something like "mcvnd_probe is untouched because it is already not
-> > marked as __init" instead of the first line.
-> >  =20
-> > >=20
-> > > Signed-off-by: Martin Kaiser <martin@kaiser.cx>   =20
-> >=20
-> > Boris, do you think this patch is a good candidate for stable?
-> >=20
-> > If yes, Martin, could you please add a couple of stable/fixes tags above
-> > your SoB? =20
->=20
-> We should at least have a Fixes tag. For the stable one, I'm not so
-> sure because the bug does not exist in practice (the compiler always
-> inline mxcnd_probe_dt()).
+On 19.06.2018 10:46, Boris Brezillon wrote:
+> On Tue, 19 Jun 2018 08:31:25 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>
+[...]
+>>>
+>>> On Tue, 19 Jun 2018 07:10:37 +0000
+>>> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>>>    
+>>>> Let us take below layout of memory address space map.
+>>>> QuadSPI Controller can access range from 0x2000_0000 -
+>>>> 0x2FFF_FFFF i.e. 256
+>>> MB address space reserved and it is having 4 slave devices
+>>> connected.
+>>>> These slave devices[of size 64MB, 64MB, 32MB and 64MB ] are
+>>>> connected at below address 0x2000_0000, 0x2400_0000, 0x2A00_0000,
+>>>> 0x2C00_0000 i.e. there is gap of 32MB from 0x2800_0000 to
+>>>> 0x29FF_FFFF.
+>>>
+>>> Okay, I'm fine with pre-reserving 32MB per chip select.
+>>>    
+>>>>
+>>>> As per my understanding of the controller, flash XX top address,
+>>>> register should
+>>> have below values:
+>>>>    QUADSPI_SFA1AD - 0x0
+>>>>    QUADSPI_SFA2AD - 0x400_0000
+>>>>    QUADSPI_SFB1AD - 0xA00_0000
+>>>>    QUADSPI_SFB2AD - 0xC00_0000
+>>>> And Register QUADSPI_SFAR should point to the range for the flash
+>>>> in which
+>>> operation is happening.
+>>
+>> My mistake values of these register would be for said case are:
+>> QUADSPI_SFA1AD - 0x400_0000
+>> QUADSPI_SFA2AD - 0x800_0000
+>> QUADSPI_SFB1AD - 0xC00_0000
+>> QUADSPI_SFB2AD - 0x1000_0000
+>>
+>> i.e. as per controller each register is having the Top address for
+>> serial flash connected at A1/A2/B1/B2 respectively.
+> 
+> This is still wrong ;-). I guess you mean:
+> 
+> QUADSPI_SFA1AD - 0x2400_0000
+> QUADSPI_SFA2AD - 0x2800_0000
+> QUADSPI_SFB1AD - 0x2C00_0000
+> QUADSPI_SFB2AD - 0x3000_0000
+> 
+>>
+>>>
+>>> Wait, I thought it was supposed to be an absolute address, not one
+>>> relative to the 0x20000000 offset.
+>>>    
+>>>>
+>>>> Please check Table10-32, page 1657, in [1] for more details on
+>>>> flash address
+>>> assignment.
+>>>
+>>> Yes, I still don't see where it says that having one of the range
+>>> with a zero size is forbidden, or anything mentioning a required
+>>> alignment.
+>>>>
+>>>> But say if I assign address to register QUADSPI_SFA2AD as "0 + 2
+>>>> * -
+>>>> ahb_buf_size" then this address value is not correct as per the
+>>>> value range
+>>> explained in above mentioned table.
+>>>
+>>> Why? If the SFA1AD is set to zero, that should not, right?
+>> What this table says that for TOP_ADDR_MEMA1 defines the top address
+>> for flash connected at A1 and any address space between
+>> TOP_ADDR_MEMA1 and QSPI_AMBA_BASE will be routed to Serial Flash A1.
+>> In my example case TOP_ADDR_MEMA1 is 0x400_0000 If assign value to
+>> SFAR register is "0 + 2 * ->ahb_buf_size", then this would lie in
+>> access range of Serial Flash A1 and access happens to A1 flash
+>> whereas we want access to A2 flash.
+> 
+> No, not if SFA1AD is 0x20000000, because then the address range for CS0
+> would be 0x20000000 -> 0x20000000.
+> 
+> If you look at the code, you'll see that I adjust the CS mapping
+> dynamically, making the one being access use the range
+> 0x20000000 -> (0x20000000 + 2 * ->ahb_buf_size) and assigning a 0-size
+> range for the other ones (either 0x20000000 -> 0x20000000 or
+> (0x20000000 + 2 * ->ahb_buf_size) -> (0x20000000 + 2 * ->ahb_buf_size))
+> 
+>>
+>> For access of serial flash A2, any address space access between
+>> TOP_ADDR_MEMA2 and TOP_ADDR_MEMA1 would be routed to serial flash A2.
+>> Thus to access A2 flash, SFAR would be in range from 0x400_0000 and
+>> 0x800_0000
+> 
+> I understand what you're explaining, what I don't get is why the QSPI
+> IP doesn't cope with a 0-size range. If you have SFA1AD set to
+> 0x20000000 and SFA2AD set so 0x20000800, I would except any access to
+> the 0x20000000 -> 0x20000800 range to be routed to CS1 not CS0. But
+> apparently it's not working like that.
 
-Fine, then a Fixes tag will be enough and I will take it into
-nand/next as it is not urgent at all to have it in the main tree.
+But it should definitely be possible to have 0-size ranges in the 
+mapping. At least the RM for the i.MX6UL says:
 
+"In case single die flash devices, TOP_ADDR_MEMA2 and
+TOP_ADDR_MEMB2 should be initialized/programmed to
+TOP_ADDR_MEMA1 and TOP_ADDR_MEMB1
+respectively- in effect, setting the size of these devices to 0.
+This would ensure that the complete memory map is assigned
+to only one flash device."
 
-Miqu=C3=A8l
+Yogesh, can you test if it works with the fixed mapping proposed above, 
+reserving a fixed range of 2 * ahb_buf_size for each chip?
+
+Thanks,
+Frieder
