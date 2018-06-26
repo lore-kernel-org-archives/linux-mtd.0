@@ -1,45 +1,25 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::7])
+Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXjoi-0004u4-Ag
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 08:59:19 +0000
-Subject: Re: [PATCH 03/11] spi: Add a driver for the Freescale/NXP QuadSPI
- controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- Fabio Estevam <fabio.estevam@nxp.com>, David Wolfe <david.wolfe@nxp.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "richard@nod.at"
- <richard@nod.at>, Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Han Xu <han.xu@nxp.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>
-References: <1527686082-15142-1-git-send-email-frieder.schrempf@exceet.de>
- <20180611121618.40f4b609@bbrezillon>
- <DB6PR0402MB28388D9DEB86629BB58DD5E499780@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <DB6PR0402MB2838563F1BA71A9A21ABBE01997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180612091328.67734adb@bbrezillon>
- <DB6PR0402MB28387FE79F2742C9BEBD4037997F0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180615145019.734f23a9@bbrezillon>
- <DB6PR0402MB28382767652782E0CC6C14A0997C0@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180615155541.4f43e9bb@bbrezillon>
- <DB6PR0402MB2838C4F67D17337ADBC5D5F899710@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180618211536.0bf44f55@bbrezillon>
- <VI1PR0402MB2845767966A437E0D376219799700@VI1PR0402MB2845.eurprd04.prod.outlook.com>
- <20180619092832.3b6c8f22@bbrezillon>
- <DB6PR0402MB2838FAF5CF0B0883EFAA3A9B99700@DB6PR0402MB2838.eurprd04.prod.outlook.com>
- <20180619104627.31cfd22e@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <bc772ef1-5f3b-518b-3a02-ffcf7143d36d@exceet.de>
-Date: Tue, 26 Jun 2018 10:58:24 +0200
+ id 1fXlBb-0004tD-D8
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 10:27:35 +0000
+From: Colin King <colin.king@canonical.com>
+To: Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, linux-mtd@lists.infradead.org,
+ linux-tegra@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] mtd: rawnand: fix a couple of spelling mistakes
+Date: Tue, 26 Jun 2018 11:26:29 +0100
+Message-Id: <20180626102629.31083-1-colin.king@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20180619104627.31cfd22e@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,121 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris, hi Yogesh,
+From: Colin Ian King <colin.king@canonical.com>
 
-first, thank you for testing and debugging the new driver.
+Trival fix of two spelling mistakes in dev_err error messages:
+"supportes" -> "supports" and "strenght" -> "strength"
 
-On 19.06.2018 10:46, Boris Brezillon wrote:
-> On Tue, 19 Jun 2018 08:31:25 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->
-[...]
->>>
->>> On Tue, 19 Jun 2018 07:10:37 +0000
->>> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->>>    
->>>> Let us take below layout of memory address space map.
->>>> QuadSPI Controller can access range from 0x2000_0000 -
->>>> 0x2FFF_FFFF i.e. 256
->>> MB address space reserved and it is having 4 slave devices
->>> connected.
->>>> These slave devices[of size 64MB, 64MB, 32MB and 64MB ] are
->>>> connected at below address 0x2000_0000, 0x2400_0000, 0x2A00_0000,
->>>> 0x2C00_0000 i.e. there is gap of 32MB from 0x2800_0000 to
->>>> 0x29FF_FFFF.
->>>
->>> Okay, I'm fine with pre-reserving 32MB per chip select.
->>>    
->>>>
->>>> As per my understanding of the controller, flash XX top address,
->>>> register should
->>> have below values:
->>>>    QUADSPI_SFA1AD - 0x0
->>>>    QUADSPI_SFA2AD - 0x400_0000
->>>>    QUADSPI_SFB1AD - 0xA00_0000
->>>>    QUADSPI_SFB2AD - 0xC00_0000
->>>> And Register QUADSPI_SFAR should point to the range for the flash
->>>> in which
->>> operation is happening.
->>
->> My mistake values of these register would be for said case are:
->> QUADSPI_SFA1AD - 0x400_0000
->> QUADSPI_SFA2AD - 0x800_0000
->> QUADSPI_SFB1AD - 0xC00_0000
->> QUADSPI_SFB2AD - 0x1000_0000
->>
->> i.e. as per controller each register is having the Top address for
->> serial flash connected at A1/A2/B1/B2 respectively.
-> 
-> This is still wrong ;-). I guess you mean:
-> 
-> QUADSPI_SFA1AD - 0x2400_0000
-> QUADSPI_SFA2AD - 0x2800_0000
-> QUADSPI_SFB1AD - 0x2C00_0000
-> QUADSPI_SFB2AD - 0x3000_0000
-> 
->>
->>>
->>> Wait, I thought it was supposed to be an absolute address, not one
->>> relative to the 0x20000000 offset.
->>>    
->>>>
->>>> Please check Table10-32, page 1657, in [1] for more details on
->>>> flash address
->>> assignment.
->>>
->>> Yes, I still don't see where it says that having one of the range
->>> with a zero size is forbidden, or anything mentioning a required
->>> alignment.
->>>>
->>>> But say if I assign address to register QUADSPI_SFA2AD as "0 + 2
->>>> * -
->>>> ahb_buf_size" then this address value is not correct as per the
->>>> value range
->>> explained in above mentioned table.
->>>
->>> Why? If the SFA1AD is set to zero, that should not, right?
->> What this table says that for TOP_ADDR_MEMA1 defines the top address
->> for flash connected at A1 and any address space between
->> TOP_ADDR_MEMA1 and QSPI_AMBA_BASE will be routed to Serial Flash A1.
->> In my example case TOP_ADDR_MEMA1 is 0x400_0000 If assign value to
->> SFAR register is "0 + 2 * ->ahb_buf_size", then this would lie in
->> access range of Serial Flash A1 and access happens to A1 flash
->> whereas we want access to A2 flash.
-> 
-> No, not if SFA1AD is 0x20000000, because then the address range for CS0
-> would be 0x20000000 -> 0x20000000.
-> 
-> If you look at the code, you'll see that I adjust the CS mapping
-> dynamically, making the one being access use the range
-> 0x20000000 -> (0x20000000 + 2 * ->ahb_buf_size) and assigning a 0-size
-> range for the other ones (either 0x20000000 -> 0x20000000 or
-> (0x20000000 + 2 * ->ahb_buf_size) -> (0x20000000 + 2 * ->ahb_buf_size))
-> 
->>
->> For access of serial flash A2, any address space access between
->> TOP_ADDR_MEMA2 and TOP_ADDR_MEMA1 would be routed to serial flash A2.
->> Thus to access A2 flash, SFAR would be in range from 0x400_0000 and
->> 0x800_0000
-> 
-> I understand what you're explaining, what I don't get is why the QSPI
-> IP doesn't cope with a 0-size range. If you have SFA1AD set to
-> 0x20000000 and SFA2AD set so 0x20000800, I would except any access to
-> the 0x20000000 -> 0x20000800 range to be routed to CS1 not CS0. But
-> apparently it's not working like that.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/mtd/nand/raw/tegra_nand.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-But it should definitely be possible to have 0-size ranges in the 
-mapping. At least the RM for the i.MX6UL says:
-
-"In case single die flash devices, TOP_ADDR_MEMA2 and
-TOP_ADDR_MEMB2 should be initialized/programmed to
-TOP_ADDR_MEMA1 and TOP_ADDR_MEMB1
-respectively- in effect, setting the size of these devices to 0.
-This would ensure that the complete memory map is assigned
-to only one flash device."
-
-Yogesh, can you test if it works with the fixed mapping proposed above, 
-reserving a fixed range of 2 * ahb_buf_size for each chip?
-
-Thanks,
-Frieder
+diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+index 4daa88d81413..9f7de36be893 100644
+--- a/drivers/mtd/nand/raw/tegra_nand.c
++++ b/drivers/mtd/nand/raw/tegra_nand.c
+@@ -1002,14 +1002,14 @@ static int tegra_nand_chips_init(struct device *dev,
+ 	}
+ 
+ 	if (chip->ecc.algo == NAND_ECC_BCH && mtd->writesize < 2048) {
+-		dev_err(dev, "BCH supportes 2K or 4K page size only\n");
++		dev_err(dev, "BCH supports 2K or 4K page size only\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (!chip->ecc.strength) {
+ 		ret = tegra_nand_select_strength(chip, mtd->oobsize);
+ 		if (ret < 0) {
+-			dev_err(dev, "No valid strenght found, minimum %d\n",
++			dev_err(dev, "No valid strength found, minimum %d\n",
+ 				chip->ecc_strength_ds);
+ 			return ret;
+ 		}
+-- 
+2.17.1
