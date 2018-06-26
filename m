@@ -1,35 +1,22 @@
-Received: from conssluserg-02.nifty.com ([210.131.2.81])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXdtJ-0000b1-Ti
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 02:39:40 +0000
-Received: from mail-ua0-f173.google.com (mail-ua0-f173.google.com
- [209.85.217.173]) (authenticated)
- by conssluserg-02.nifty.com with ESMTP id w5Q2d2BN031551
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2018 11:39:03 +0900
-Received: by mail-ua0-f173.google.com with SMTP id r18-v6so3958815ual.13
- for <linux-mtd@lists.infradead.org>; Mon, 25 Jun 2018 19:39:02 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fXi7o-0002yf-DL
+ for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 07:10:54 +0000
+Date: Tue, 26 Jun 2018 09:10:05 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Martin Kaiser <martin@kaiser.cx>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam
+ <fabio.estevam@nxp.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: mxc: remove __init qualifier from
+ mxcnd_probe_dt
+Message-ID: <20180626091005.08d56b2a@xps13>
+In-Reply-To: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
+References: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <20180625165506.484e025f@bbrezillon>
-References: <20180619120719.26921-1-richard@nod.at>
- <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
- <3320422.EJ8D6C0VHL@blindfold>
- <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
- <20180625165506.484e025f@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Tue, 26 Jun 2018 11:38:21 +0900
-Message-ID: <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, Richard Weinberger <richard@nod.at>,
- DTML <devicetree@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,93 +26,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> On Mon, 25 Jun 2018 09:50:18 -0500
-> Dinh Nguyen <dinguyen@kernel.org> wrote:
->
->> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
->> > Masahiro,
->> >
->> > Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
->> >> Hi Richard,
->> >>
->> >>
->> >> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
->> >>> The denali NAND flash controller needs at least two clocks to operate,
->> >>> nand_clk and nand_x_clk.
->> >>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
->> >>> setup_data_interface()") nand_x_clk is used to derive timing settings.
->> >>>
->> >>> Signed-off-by: Richard Weinberger <richard@nod.at>
->> >>> ---
->> >>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
->> >>> is not present on this SoC.
->> >>> But my SoCFPGA knowledge is very limited.
->> >>>
->> >>> Thanks,
->> >>> //richard
->> >>> ---
->> >>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
->> >>>
->> >>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
->> >>> index 486d4e7433ed..562f7b375bbd 100644
->> >>> --- a/arch/arm/boot/dts/socfpga.dtsi
->> >>> +++ b/arch/arm/boot/dts/socfpga.dtsi
->> >>> @@ -754,7 +754,8 @@
->> >>>                         reg-names = "nand_data", "denali_reg";
->> >>>                         interrupts = <0x0 0x90 0x4>;
->> >>>                         dma-mask = <0xffffffff>;
->> >>> -                       clocks = <&nand_clk>;
->> >>> +                       clocks = <&nand_clk>, <&nand_x_clk>;
->> >>> +                       clock-names = "nand", "nand_x";
->> >>
->> >>
->> >> IMHO, this should be
->> >>
->> >>                           clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
->> >>                           clock-names = "nand", "nand_x", "ecc";
->>
->> No, it should be just the nand_x and ecc.
->>
->> There's already a patch to use the nand_x_clk and not the nand_clk.
+Hi Martin, Boris,
 
+On Fri, 22 Jun 2018 16:50:25 +0200, Martin Kaiser <martin@kaiser.cx>
+wrote:
 
-Different people try to fix the problem in different ways.
+> mxcnd_probe_dt is called from mxcnd_probe, which is not marked as __init.
+>=20
 
-I think it is due to miscommunication across sub-systems.
+I think this line is just a side note and should be at the end of the
+commit log.
 
+> Using the sysfs unbind, bind nodes, mxcnd_probe and mxcnd_probe_dt can
+> potentially be called at any time. After the __init functions are cleaned,
+> mxcnd_probe_dt is no longer available. Calling it anyway causes a crash.
 
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/dinguyen/linux.git/commit/?h=socfpga_for_next_v4.19_fixes_v1&id=1709ab58eb79b19bceb2287d111bf1bd2df1cf6d
+The above paragraph explains the problem and the solution, you can just
+add something like "mcvnd_probe is untouched because it is already not
+marked as __init" instead of the first line.
 
+>=20
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 
-This does not break your board.
-However, it is not helpful any more.
+Boris, do you think this patch is a good candidate for stable?
 
-I already fix the Denali driver
-to use the hard-coded clock frequency
-if the old binding is used.
+If yes, Martin, could you please add a couple of stable/fixes tags above
+your SoB?
 
+Thanks,
+Miqu=C3=A8l
 
-BTW, Marek issued Reviewed-by to this patch.
-
-
-
-> Hm, are you sure this is accurate? I might be wrong but I find it weird
-> that the denali NAND controller IP has been adapted by Xilinx to only
-
-Xilinx?
-
-Do you mean Altera (Intel)?
-
-
-> take one clk. Isn't that the same clk is feeding all clk inputs of the
-> denali block?
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> ---
+> I hope that my understanding is correct.
+>=20
+> In practice, I could not get the kernel to crash, my compiler would
+> inline mxcnd_probe_dt into mxcnd_probe and ignore the __init.
+>=20
+> If I marked mxcnd_probe_dt as noinline, I could trigger a crash as
+> follows
+>=20
+> [root@host ]# echo bb000000.nand > /sys/bus/platform/drivers/mxc_nand/unb=
+ind
+> [root@host ]# echo bb000000.nand > /sys/bus/platform/drivers/mxc_nand/bind
+> Internal error: Oops - undefined instruction: 0 [#1] ARM
+> ...
+>=20
+>  drivers/mtd/nand/raw/mxc_nand.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_n=
+and.c
+> index 26cef21..90cfb5e 100644
+> --- a/drivers/mtd/nand/raw/mxc_nand.c
+> +++ b/drivers/mtd/nand/raw/mxc_nand.c
+> @@ -1686,7 +1686,7 @@ static const struct of_device_id mxcnd_dt_ids[] =3D=
+ {
+>  };
+>  MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
+> =20
+> -static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+> +static int mxcnd_probe_dt(struct mxc_nand_host *host)
+>  {
+>  	struct device_node *np =3D host->dev->of_node;
+>  	const struct of_device_id *of_id =3D
+> @@ -1700,7 +1700,7 @@ static int __init mxcnd_probe_dt(struct mxc_nand_ho=
+st *host)
+>  	return 0;
+>  }
+>  #else
+> -static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
+> +static int mxcnd_probe_dt(struct mxc_nand_host *host)
+>  {
+>  	return 1;
+>  }
