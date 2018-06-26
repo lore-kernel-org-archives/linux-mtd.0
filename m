@@ -1,37 +1,28 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fXoqi-0006pq-60
- for linux-mtd@lists.infradead.org; Tue, 26 Jun 2018 14:21:41 +0000
-Received: from mail-io0-f174.google.com (mail-io0-f174.google.com
- [209.85.223.174])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E8B74257C5
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2018 14:21:28 +0000 (UTC)
-Received: by mail-io0-f174.google.com with SMTP id r24-v6so16120237ioh.9
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2018 07:21:28 -0700 (PDT)
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [RFC PATCH 1/2] spi: Add QuadSPI driver for Atmel SAMA5D2
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Piotr Bugalski
+ <bugalski.piotr@gmail.com>
+CC: Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>, Piotr Bugalski <pbu@cryptera.com>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180618162124.21749-2-bugalski.piotr@gmail.com>
+ <20180621233321.0f25f572@bbrezillon>
+ <alpine.DEB.2.20.1806220719190.21824@carbonite>
+ <20180622093905.62a3b936@bbrezillon>
+Message-ID: <455adb76-530a-1fd5-303c-cfa158ad7870@microchip.com>
+Date: Tue, 26 Jun 2018 17:44:26 +0300
 MIME-Version: 1.0
-References: <20180612104434.15232-1-zajec5@gmail.com>
- <20180625220508.21242-1-zajec5@gmail.com>
-In-Reply-To: <20180625220508.21242-1-zajec5@gmail.com>
-From: Rob Herring <robh+dt@kernel.org>
-Date: Tue, 26 Jun 2018 08:21:16 -0600
-Message-ID: <CAL_JsqJV9c0QsPKeXvfbDrGDsFsTVOvBbCoGFetK5OPVgn+0Ng@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: document Broadcom's TRX firmware
- format binding
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris BREZILLON <boris.brezillon@free-electrons.com>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Mark Rutland <mark.rutland@arm.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20180622093905.62a3b936@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,24 +32,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jun 25, 2018 at 4:07 PM Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> =
-wrote:
->
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->
-> Broadcom based home router devices use TRX firmware format. It's a
-> container that can hold few partitions. If operating system is expected
-> to access them it has to understand that format and parse flash data
-> accordingly.
->
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> ---
-> V2: Drop unneeded "brcm,trx-v1" and "brcm,trx-v2" bindings.
-> ---
->  .../bindings/mtd/partitions/brcm,trx.txt           | 37 ++++++++++++++++=
-++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm=
-,trx.txt
+Hi, Piotr,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+General things to consider for the limitation in performance:
+- is the serial flash memory operating in Quad SPI?
+- QSCLK should be as high as possible
+- transfer delays - I checked them, they have default values, we should be good.
+- use DMA, as you suggested
+
+On 06/22/2018 10:39 AM, Boris Brezillon wrote:
+> [...]
+> 
+>>>> +/*
+>>>> + * Atmel SAMA5D2 QuadSPI driver.
+>>>> + *
+>>>> + * Copyright (C) 2018 Cryptera A/S  
+>>>
+>>> A non-negligible portion of this code has been copied from the existing
+>>> driver. Please keep the existing copyright (you can still add Cryptera's
+>>> one).
+>>>  
+>>
+>> Technically this driver were written from scratch, with spi-fsl-qspi
+>> as example of new interface. Hence the name and code structure.
+>> But it's the same peripheral as Atmel's driver uses so code looks
+>> similar. I can unify the code to make comparsion even simpler and
+>> then update copyright.
+> 
+> Hm, ok. Some constructs really looked like they were copied
+> from the old driver, hence my comment. I'll let Nicolas give his
+> opinion on this aspect.
+
+This driver will be a conversion of the legacy one to the spi-mem interface. I
+would keep the legacy copyright and add Cryptera's below, as Boris suggested.
+
+[...]
+
+>>>> +#define QSPI_SR_CMD_COMPLETED           (QSPI_SR_INSTRE | QSPI_SR_CSR)  
+>>>
+>>> Do you really to wait for both INSTRE and CSR to consider the command
+>>> as complete?
+>>>  
+>>
+>> This part were really copied from Atmel driver. I wasn't sure so I
+>> used tested solution.
+> 
+> Okay. I guess that's a question for Cyrille and/or Tudor then.
+
+We have to wait for both INSTRE and CSR.
+
+Best,
+ta
