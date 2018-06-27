@@ -1,37 +1,20 @@
-Received: from conssluserg-03.nifty.com ([210.131.2.82])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fY0aL-0002zs-EN
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 02:53:59 +0000
-Received: from mail-ua0-f174.google.com (mail-ua0-f174.google.com
- [209.85.217.174]) (authenticated)
- by conssluserg-03.nifty.com with ESMTP id w5R2r3Mp013284
- for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2018 11:53:03 +0900
-Received: by mail-ua0-f174.google.com with SMTP id u21-v6so326410uao.0
- for <linux-mtd@lists.infradead.org>; Tue, 26 Jun 2018 19:53:03 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fY4KE-0005BJ-UH
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 06:53:12 +0000
+Date: Wed, 27 Jun 2018 08:52:57 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>, Dmitry
+ Osipenko <digetx@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+ linux-mtd@lists.infradead.org
+Subject: Re: mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
+Message-ID: <20180627085257.67aa1eb8@xps13>
+In-Reply-To: <993e40ac-1f06-c2ee-e9fb-4523df368cb7@canonical.com>
+References: <993e40ac-1f06-c2ee-e9fb-4523df368cb7@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20180626200928.29aca979@xps13>
-References: <20180619120719.26921-1-richard@nod.at>
- <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
- <3320422.EJ8D6C0VHL@blindfold>
- <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
- <20180625165506.484e025f@bbrezillon>
- <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
- <20180626200928.29aca979@xps13>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Wed, 27 Jun 2018 11:52:22 +0900
-Message-ID: <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -42,110 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-06-27 3:09 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
-> Hi Masahiro,
->
-> On Tue, 26 Jun 2018 11:38:21 +0900, Masahiro Yamada
-> <yamada.masahiro@socionext.com> wrote:
->
->> 2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>=
-:
->> > On Mon, 25 Jun 2018 09:50:18 -0500
->> > Dinh Nguyen <dinguyen@kernel.org> wrote:
->> >
->> >> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
->> >> > Masahiro,
->> >> >
->> >> > Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
->> >> >> Hi Richard,
->> >> >>
->> >> >>
->> >> >> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
->> >> >>> The denali NAND flash controller needs at least two clocks to ope=
-rate,
->> >> >>> nand_clk and nand_x_clk.
->> >> >>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters =
-by
->> >> >>> setup_data_interface()") nand_x_clk is used to derive timing sett=
-ings.
->> >> >>>
->> >> >>> Signed-off-by: Richard Weinberger <richard@nod.at>
->> >> >>> ---
->> >> >>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a cl=
-ock
->> >> >>> is not present on this SoC.
->> >> >>> But my SoCFPGA knowledge is very limited.
->> >> >>>
->> >> >>> Thanks,
->> >> >>> //richard
->> >> >>> ---
->> >> >>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->> >> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
->> >> >>>
->> >> >>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/s=
-ocfpga.dtsi
->> >> >>> index 486d4e7433ed..562f7b375bbd 100644
->> >> >>> --- a/arch/arm/boot/dts/socfpga.dtsi
->> >> >>> +++ b/arch/arm/boot/dts/socfpga.dtsi
->> >> >>> @@ -754,7 +754,8 @@
->> >> >>>                         reg-names =3D "nand_data", "denali_reg";
->> >> >>>                         interrupts =3D <0x0 0x90 0x4>;
->> >> >>>                         dma-mask =3D <0xffffffff>;
->> >> >>> -                       clocks =3D <&nand_clk>;
->> >> >>> +                       clocks =3D <&nand_clk>, <&nand_x_clk>;
->> >> >>> +                       clock-names =3D "nand", "nand_x";
->> >> >>
->> >> >>
->> >> >> IMHO, this should be
->> >> >>
->> >> >>                           clocks =3D <&nand_clk>, <&nand_x_clk>, <=
-&nand_x_clk>;
->> >> >>                           clock-names =3D "nand", "nand_x", "ecc";
->> >>
->> >> No, it should be just the nand_x and ecc.
->> >>
->> >> There's already a patch to use the nand_x_clk and not the nand_clk.
->>
->>
->> Different people try to fix the problem in different ways.
->>
->> I think it is due to miscommunication across sub-systems.
->
-> Is the series named
->
->         mtd: rawnand: denali: add new clocks and improve
->                               setup_data_interface
->
-> still valid?
+Hi Colin, Stefan,
 
-Yes.
-I believe V4 is valid.
++linux-mtd
 
+Thanks Colin for the report.
 
-Information for Dinh Nguyen:
+On Tue, 26 Jun 2018 16:18:29 +0100, Colin Ian King
+<colin.king@canonical.com> wrote:
 
-http://patchwork.ozlabs.org/patch/933507/
-http://patchwork.ozlabs.org/patch/933487/
-http://patchwork.ozlabs.org/patch/933494/
-http://patchwork.ozlabs.org/patch/933506/
+> Hi there,
+>=20
+> Static analysis with CoverityScan reported a potential issue with the
+> following commit:
+>=20
+> commit 0f7b126ca91101d02d525f7cc880e8c71202a2b7
+> Author: Stefan Agner <stefan@agner.ch>
+> Date:   Sun Jun 24 23:27:25 2018 +0200
+>=20
+>     mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
+>=20
+>=20
+> in function tegra_nand_cmd it looks like there maybe potential to pass a
+> negative value in size into memcpy():
+>=20
+>         case NAND_OP_DATA_OUT_INSTR:
+>=20
+> negative_return_fn: Function nand_subop_get_data_len(subop, op_id)
+> returns a negative number.
+>=20
+> var_assign: Assigning: unsigned variable size =3D nand_subop_get_data_len.
+>=20
+>                 size =3D nand_subop_get_data_len(subop, op_id);
+>                 offset =3D nand_subop_get_data_start_off(subop, op_id);
 
+Stefan,
 
-If he is not convinced, I am open to discussion, though.
+I thought a bit about this and I don't think the right place for such a
+fix are the NAND controller drivers (marvell and vf610 have the same
+issue). Both nand_subop_get_data/addr_len/start_off() are core helpers
+and their result is predictable in a manner that only a bug in your
+parsing function would trigger an error value. I think this is safe for
+the four helpers to have WARN_ON() on the error conditions to catch
+the developer's attention and just return (unsigned int) 0 in this case.
 
+I will propose something soon.
 
-
-> I am about to apply it (patches 2/5 to 5/5) but it looks like the
-> discussion is still ongoing.
->
-> Thanks,
-> Miqu=C3=A8l
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
---=20
-Best Regards
-Masahiro Yamada
+Thanks,
+Miqu=C3=A8l
