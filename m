@@ -1,18 +1,23 @@
-Received: from mga04.intel.com ([192.55.52.120])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fY9II-0005aH-F8
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 12:11:33 +0000
-From: Mika Westerberg <mika.westerberg@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+From: Piotr Bugalski <bugalski.piotr@gmail.com>
+To: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Mika Westerberg <mika.westerberg@linux.intel.com>
-Subject: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI serial
- flash
-Date: Wed, 27 Jun 2018 15:11:17 +0300
-Message-Id: <20180627121117.85004-1-mika.westerberg@linux.intel.com>
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Piotr Bugalski <bugalski.piotr@gmail.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: [RFC PATCH v2 5/6] spi: Add QuadSPI driver for Atmel SAMA5D2
+Date: Wed, 27 Jun 2018 15:16:08 +0200
+Message-Id: <20180627131609.13681-6-bugalski.piotr@gmail.com>
+In-Reply-To: <20180627131609.13681-1-bugalski.piotr@gmail.com>
+References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +27,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Intel Ice Lake exposes the SPI serial flash controller as a PCI device
-in the same way than Intel Denverton. Add Ice Lake SPI serial flash PCI
-ID to the driver list of supported devices.
+Kernel contains QSPI driver strongly tied to MTD and nor-flash memory.
+New spi-mem interface allows usage also other memory types, especially
+much larger NAND with SPI interface. This driver works as SPI controller
+and is not related to MTD, however can work with NAND-flash or other
+peripherals using spi-mem interface.
 
-Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Piotr Bugalski <pbu@cryptera.com>
 ---
- drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/spi-nor/Kconfig                  | 9 ---------
+ drivers/mtd/spi-nor/Makefile                 | 1 -
+ drivers/spi/Kconfig                          | 9 +++++++++
+ drivers/spi/Makefile                         | 1 +
+ drivers/{mtd/spi-nor => spi}/atmel-quadspi.c | 0
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+ rename drivers/{mtd/spi-nor => spi}/atmel-quadspi.c (100%)
 
-diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
-index c0976f2e3dd1..872b40922608 100644
---- a/drivers/mtd/spi-nor/intel-spi-pci.c
-+++ b/drivers/mtd/spi-nor/intel-spi-pci.c
-@@ -65,6 +65,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
- static const struct pci_device_id intel_spi_pci_ids[] = {
- 	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
-+	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
- 	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
- 	{ },
+diff --git a/drivers/mtd/spi-nor/Kconfig b/drivers/mtd/spi-nor/Kconfig
+index 6cc9c929ff57..44fe8018733c 100644
+--- a/drivers/mtd/spi-nor/Kconfig
++++ b/drivers/mtd/spi-nor/Kconfig
+@@ -39,15 +39,6 @@ config SPI_ASPEED_SMC
+ 	  and support for the SPI flash memory controller (SPI) for
+ 	  the host firmware. The implementation only supports SPI NOR.
+ 
+-config SPI_ATMEL_QUADSPI
+-	tristate "Atmel Quad SPI Controller"
+-	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
+-	depends on OF && HAS_IOMEM
+-	help
+-	  This enables support for the Quad SPI controller in master mode.
+-	  This driver does not support generic SPI. The implementation only
+-	  supports SPI NOR.
+-
+ config SPI_CADENCE_QUADSPI
+ 	tristate "Cadence Quad SPI controller"
+ 	depends on OF && (ARM || ARM64 || COMPILE_TEST)
+diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
+index f4c61d282abd..a552efd22958 100644
+--- a/drivers/mtd/spi-nor/Makefile
++++ b/drivers/mtd/spi-nor/Makefile
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ obj-$(CONFIG_MTD_SPI_NOR)	+= spi-nor.o
+ obj-$(CONFIG_SPI_ASPEED_SMC)	+= aspeed-smc.o
+-obj-$(CONFIG_SPI_ATMEL_QUADSPI)	+= atmel-quadspi.o
+ obj-$(CONFIG_SPI_CADENCE_QUADSPI)	+= cadence-quadspi.o
+ obj-$(CONFIG_SPI_FSL_QUADSPI)	+= fsl-quadspi.o
+ obj-$(CONFIG_SPI_HISI_SFC)	+= hisi-sfc.o
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index ad5d68e1dab7..88f9c007d825 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -83,6 +83,15 @@ config SPI_ATMEL
+ 	  This selects a driver for the Atmel SPI Controller, present on
+ 	  many AT91 ARM chips.
+ 
++config SPI_ATMEL_QUADSPI
++	tristate "Atmel Quad SPI Controller"
++	depends on ARCH_AT91 || (ARM && COMPILE_TEST)
++	depends on OF && HAS_IOMEM
++	help
++	  This enables support for the Quad SPI controller in master mode.
++	  This driver does not support generic SPI. The implementation only
++	  supports spi-mem interface.
++
+ config SPI_AU1550
+ 	tristate "Au1550/Au1200/Au1300 SPI Controller"
+ 	depends on MIPS_ALCHEMY
+diff --git a/drivers/spi/Makefile b/drivers/spi/Makefile
+index cb1f4378b87c..1a08e5bfcee9 100644
+--- a/drivers/spi/Makefile
++++ b/drivers/spi/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_SPI_LOOPBACK_TEST)		+= spi-loopback-test.o
+ obj-$(CONFIG_SPI_ALTERA)		+= spi-altera.o
+ obj-$(CONFIG_SPI_ARMADA_3700)		+= spi-armada-3700.o
+ obj-$(CONFIG_SPI_ATMEL)			+= spi-atmel.o
++obj-$(CONFIG_SPI_ATMEL_QUADSPI)		+= atmel-quadspi.o
+ obj-$(CONFIG_SPI_ATH79)			+= spi-ath79.o
+ obj-$(CONFIG_SPI_AU1550)		+= spi-au1550.o
+ obj-$(CONFIG_SPI_AXI_SPI_ENGINE)	+= spi-axi-spi-engine.o
+diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+similarity index 100%
+rename from drivers/mtd/spi-nor/atmel-quadspi.c
+rename to drivers/spi/atmel-quadspi.c
 -- 
-2.18.0
+2.11.0
