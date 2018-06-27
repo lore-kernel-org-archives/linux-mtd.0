@@ -1,21 +1,23 @@
-Received: from botnar.kaiser.cx ([176.28.20.183])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYHPD-0001YR-Kr
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 20:51:13 +0000
-From: Martin Kaiser <martin@kaiser.cx>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v3] mtd: rawnand: mxc: remove __init qualifier from
- mxcnd_probe_dt
-Date: Wed, 27 Jun 2018 22:47:44 +0200
-Message-Id: <1530132464-8210-1-git-send-email-martin@kaiser.cx>
-In-Reply-To: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
-References: <1529679025-5735-1-git-send-email-martin@kaiser.cx>
+Received: from mail.bugwerft.de ([46.23.86.59])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fYHbA-0007mV-Af
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 21:03:33 +0000
+Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Mark Brown <broonie@kernel.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+ alsa-devel@alsa-project.org
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+ <20180618104159.24b9fffb@bbrezillon> <87d0wnrhqz.fsf@belgarion.home>
+ <20180625130704.GQ9413@sirena.org.uk> <87r2ksl0wa.fsf@belgarion.home>
+From: Daniel Mack <daniel@zonque.org>
+Message-ID: <45a4e773-aaa3-6d43-f02d-5056a2a265d4@zonque.org>
+Date: Wed, 27 Jun 2018 23:03:16 +0200
+MIME-Version: 1.0
+In-Reply-To: <87r2ksl0wa.fsf@belgarion.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Using the sysfs unbind, bind nodes, mxcnd_probe and mxcnd_probe_dt can
-potentially be called at any time. After the __init functions are cleaned,
-mxcnd_probe_dt is no longer available. Calling it anyway causes a crash.
+On Wednesday, June 27, 2018 05:11 PM, Robert Jarzmik wrote:
+> Mark Brown <broonie@kernel.org> writes:
+> 
+>> On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
+>>
+>>> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
+>>> checker to be fully covered, and I'd like as well to know which tree the ASoC
+>>> patch will take, ie. if Mark commits to take it, or rather wants to pull from
+>>> the imutable branch.
+>>
+>> I'll pull the branch in (a signed tag would've been nicer but it's not
+>> the end of the world).
+> Yeah, I realised that too ... late.
+> 
+> Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
+> pxa: remove the dmaengine compat need", and up to my better understanding
+> neither does your for-next branch.
+> 
+> So until I see it in your branch it will dwelve happily in pxa/for-next. If it
+> has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
+> like to know at -rc4 time so that I drop it from my pxa/for-next branch.
 
-mxcnd_probe used to be marked as __init, this was removed years ago.
-Remove the __init qualifier from from mxcnd_probe_dt as well.
-
-Fixes: 06f255106923 ("mtd: remove use of __devinit")
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-changes in v3
-   - show the first 12 characters of the SHA-1 ID in the Fixes: tag
-
-changes in v2
-   - rephrased the commit message
-   - added a Fixes: tag
-
- drivers/mtd/nand/raw/mxc_nand.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index 26cef218bb43..90cfb5e730aa 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1686,7 +1686,7 @@ static const struct of_device_id mxcnd_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxcnd_dt_ids);
- 
--static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
-+static int mxcnd_probe_dt(struct mxc_nand_host *host)
- {
- 	struct device_node *np = host->dev->of_node;
- 	const struct of_device_id *of_id =
-@@ -1700,7 +1700,7 @@ static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
- 	return 0;
- }
- #else
--static int __init mxcnd_probe_dt(struct mxc_nand_host *host)
-+static int mxcnd_probe_dt(struct mxc_nand_host *host)
- {
- 	return 1;
- }
--- 
-2.1.4
+Ah, yes. The series I just posted depends on that.
