@@ -1,34 +1,22 @@
-Received: from mail.kernel.org ([198.145.29.99])
+Received: from smtp07.smtpout.orange.fr ([80.12.242.129]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYBrg-0003bv-QM
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 14:56:15 +0000
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, =?UTF-8?Q?Marek_Va=c5=a1ut?=
- <marek.vasut@gmail.com>
-References: <20180619120719.26921-1-richard@nod.at>
- <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
- <3320422.EJ8D6C0VHL@blindfold>
- <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
- <20180625165506.484e025f@bbrezillon>
- <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
- <20180626200928.29aca979@xps13>
- <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
-From: Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
-Date: Wed, 27 Jun 2018 09:55:59 -0500
+ id 1fYC70-0003XF-Td
+ for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 15:12:08 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+ <20180618104159.24b9fffb@bbrezillon> <87d0wnrhqz.fsf@belgarion.home>
+ <20180625130704.GQ9413@sirena.org.uk>
+Date: Wed, 27 Jun 2018 17:11:49 +0200
+In-Reply-To: <20180625130704.GQ9413@sirena.org.uk> (Mark Brown's message of
+ "Mon, 25 Jun 2018 14:07:04 +0100")
+Message-ID: <87r2ksl0wa.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,98 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Masahiro,
+Mark Brown <broonie@kernel.org> writes:
 
-On 06/26/2018 09:52 PM, Masahiro Yamada wrote:
-> 2018-06-27 3:09 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
->> Hi Masahiro,
->>
->> On Tue, 26 Jun 2018 11:38:21 +0900, Masahiro Yamada
->> <yamada.masahiro@socionext.com> wrote:
->>
->>> 2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->>>> On Mon, 25 Jun 2018 09:50:18 -0500
->>>> Dinh Nguyen <dinguyen@kernel.org> wrote:
->>>>
->>>>> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
->>>>>> Masahiro,
->>>>>>
->>>>>> Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
->>>>>>> Hi Richard,
->>>>>>>
->>>>>>>
->>>>>>> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
->>>>>>>> The denali NAND flash controller needs at least two clocks to operate,
->>>>>>>> nand_clk and nand_x_clk.
->>>>>>>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
->>>>>>>> setup_data_interface()") nand_x_clk is used to derive timing settings.
->>>>>>>>
->>>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>>>>> ---
->>>>>>>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
->>>>>>>> is not present on this SoC.
->>>>>>>> But my SoCFPGA knowledge is very limited.
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> //richard
->>>>>>>> ---
->>>>>>>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>> index 486d4e7433ed..562f7b375bbd 100644
->>>>>>>> --- a/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>> +++ b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>> @@ -754,7 +754,8 @@
->>>>>>>>                         reg-names = "nand_data", "denali_reg";
->>>>>>>>                         interrupts = <0x0 0x90 0x4>;
->>>>>>>>                         dma-mask = <0xffffffff>;
->>>>>>>> -                       clocks = <&nand_clk>;
->>>>>>>> +                       clocks = <&nand_clk>, <&nand_x_clk>;
->>>>>>>> +                       clock-names = "nand", "nand_x";
->>>>>>>
->>>>>>>
->>>>>>> IMHO, this should be
->>>>>>>
->>>>>>>                           clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
->>>>>>>                           clock-names = "nand", "nand_x", "ecc";
->>>>>
->>>>> No, it should be just the nand_x and ecc.
->>>>>
->>>>> There's already a patch to use the nand_x_clk and not the nand_clk.
->>>
->>>
->>> Different people try to fix the problem in different ways.
->>>
->>> I think it is due to miscommunication across sub-systems.
->>
->> Is the series named
->>
->>         mtd: rawnand: denali: add new clocks and improve
->>                               setup_data_interface
->>
->> still valid?
-> 
-> Yes.
-> I believe V4 is valid.
-> 
-> 
-> Information for Dinh Nguyen:
-> 
-> http://patchwork.ozlabs.org/patch/933507/
-> http://patchwork.ozlabs.org/patch/933487/
-> http://patchwork.ozlabs.org/patch/933494/
-> http://patchwork.ozlabs.org/patch/933506/
-> 
-> 
-> If he is not convinced, I am open to discussion, though.
+> On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
+>
+>> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
+>> checker to be fully covered, and I'd like as well to know which tree the ASoC
+>> patch will take, ie. if Mark commits to take it, or rather wants to pull from
+>> the imutable branch.
+>
+> I'll pull the branch in (a signed tag would've been nicer but it's not
+> the end of the world).
+Yeah, I realised that too ... late.
 
-I wasn't aware of these patches. This patch is staged to go into
-v4.17-rc3 through the arm-soc:
+Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
+pxa: remove the dmaengine compat need", and up to my better understanding
+neither does your for-next branch.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git/commit/arch/arm/boot/dts/socfpga.dtsi?h=fixes&id=4eda9b766b042ea38d84df91581b03f6145a2ab0
+So until I see it in your branch it will dwelve happily in pxa/for-next. If it
+has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
+like to know at -rc4 time so that I drop it from my pxa/for-next branch.
 
-I think your patch will handle a case where only 1 clock is passed in,
-so it should be okay right?
+Cheers.
 
-Dinh
+-- 
+Robert
