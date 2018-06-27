@@ -1,21 +1,29 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fY4KE-0005BJ-UH
- for linux-mtd@lists.infradead.org; Wed, 27 Jun 2018 06:53:12 +0000
-Date: Wed, 27 Jun 2018 08:52:57 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Stefan Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>, Dmitry
- Osipenko <digetx@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
- "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
-Message-ID: <20180627085257.67aa1eb8@xps13>
-In-Reply-To: <993e40ac-1f06-c2ee-e9fb-4523df368cb7@canonical.com>
-References: <993e40ac-1f06-c2ee-e9fb-4523df368cb7@canonical.com>
+From: Piotr Bugalski <bugalski.piotr@gmail.com>
+Date: Wed, 27 Jun 2018 09:52:00 +0200 (CEST)
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Piotr Bugalski <bugalski.piotr@gmail.com>, Mark Brown <broonie@kernel.org>,
+ linux-spi@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: Re: [RFC PATCH 1/2] spi: Add QuadSPI driver for Atmel SAMA5D2
+In-Reply-To: <455adb76-530a-1fd5-303c-cfa158ad7870@microchip.com>
+Message-ID: <alpine.DEB.2.20.1806270940500.32198@carbonite>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180618162124.21749-2-bugalski.piotr@gmail.com>
+ <20180621233321.0f25f572@bbrezillon>
+ <alpine.DEB.2.20.1806220719190.21824@carbonite>
+ <20180622093905.62a3b936@bbrezillon>
+ <455adb76-530a-1fd5-303c-cfa158ad7870@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +33,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Colin, Stefan,
 
-+linux-mtd
+Hi Tudor,
 
-Thanks Colin for the report.
+Thank you very much for comments.
 
-On Tue, 26 Jun 2018 16:18:29 +0100, Colin Ian King
-<colin.king@canonical.com> wrote:
+On Tue, 26 Jun 2018, Tudor Ambarus wrote:
 
-> Hi there,
->=20
-> Static analysis with CoverityScan reported a potential issue with the
-> following commit:
->=20
-> commit 0f7b126ca91101d02d525f7cc880e8c71202a2b7
-> Author: Stefan Agner <stefan@agner.ch>
-> Date:   Sun Jun 24 23:27:25 2018 +0200
->=20
->     mtd: rawnand: add NVIDIA Tegra NAND Flash controller driver
->=20
->=20
-> in function tegra_nand_cmd it looks like there maybe potential to pass a
-> negative value in size into memcpy():
->=20
->         case NAND_OP_DATA_OUT_INSTR:
->=20
-> negative_return_fn: Function nand_subop_get_data_len(subop, op_id)
-> returns a negative number.
->=20
-> var_assign: Assigning: unsigned variable size =3D nand_subop_get_data_len.
->=20
->                 size =3D nand_subop_get_data_len(subop, op_id);
->                 offset =3D nand_subop_get_data_start_off(subop, op_id);
+> Hi, Piotr,
+>
+> General things to consider for the limitation in performance:
+> - is the serial flash memory operating in Quad SPI?
 
-Stefan,
+Yes, I've checked signal using logic analyzer, data is transferred using
+all four lines.
 
-I thought a bit about this and I don't think the right place for such a
-fix are the NAND controller drivers (marvell and vf610 have the same
-issue). Both nand_subop_get_data/addr_len/start_off() are core helpers
-and their result is predictable in a manner that only a bug in your
-parsing function would trigger an error value. I think this is safe for
-the four helpers to have WARN_ON() on the error conditions to catch
-the developer's attention and just return (unsigned int) 0 in this case.
+> - QSCLK should be as high as possible
 
-I will propose something soon.
+Sure, but when we are using lower frequency CPU impact should be
+negligible while efficiency is crap on every speed.
 
-Thanks,
-Miqu=C3=A8l
+> - transfer delays - I checked them, they have default values, we should be good.
+> - use DMA, as you suggested
+>
+
+I don't understand one thing. While CPU is not busy and during my tests
+100% of CPU can be used for communication, efficiency is still very low.
+Why DMA has such impact?
+
+It is very interesting to observe signals using logic analyzer.
+When CPU is used for communication, there are long delays after
+every byte transferred. These delays are  much longer than it 
+should be only because of writing next value by CPU.
+I tried to change SPI frequency. If delay were CPU related,
+delay time should stay the same. Unfortunately results were different -
+lowering SPI freqency extends delay time.
+Using DMA makes these delays to disappear, but how to acheive CPU
+communication without delays?
+
+> On 06/22/2018 10:39 AM, Boris Brezillon wrote:
+>> [...]
+>>
+>>>>> +/*
+>>>>> + * Atmel SAMA5D2 QuadSPI driver.
+>>>>> + *
+>>>>> + * Copyright (C) 2018 Cryptera A/S
+>>>>
+>>>> A non-negligible portion of this code has been copied from the existing
+>>>> driver. Please keep the existing copyright (you can still add Cryptera's
+>>>> one).
+>>>>
+>>>
+>>> Technically this driver were written from scratch, with spi-fsl-qspi
+>>> as example of new interface. Hence the name and code structure.
+>>> But it's the same peripheral as Atmel's driver uses so code looks
+>>> similar. I can unify the code to make comparsion even simpler and
+>>> then update copyright.
+>>
+>> Hm, ok. Some constructs really looked like they were copied
+>> from the old driver, hence my comment. I'll let Nicolas give his
+>> opinion on this aspect.
+>
+> This driver will be a conversion of the legacy one to the spi-mem interface. I
+> would keep the legacy copyright and add Cryptera's below, as Boris suggested.
+>
+> [...]
+>
+>>>>> +#define QSPI_SR_CMD_COMPLETED           (QSPI_SR_INSTRE | QSPI_SR_CSR)
+>>>>
+>>>> Do you really to wait for both INSTRE and CSR to consider the command
+>>>> as complete?
+>>>>
+>>>
+>>> This part were really copied from Atmel driver. I wasn't sure so I
+>>> used tested solution.
+>>
+>> Okay. I guess that's a question for Cyrille and/or Tudor then.
+>
+> We have to wait for both INSTRE and CSR.
+>
+
+I've also found that information in datasheet, good we have this
+solution then.
+
+> Best,
+> ta
+>
+
+Best Regards,
+Piotr
