@@ -1,32 +1,18 @@
-Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRar-0004jP-OJ
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:44:26 +0000
-Received: by mail-io0-x244.google.com with SMTP id e13-v6so4314771iof.6
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2018 00:43:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
-In-Reply-To: <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 28 Jun 2018 09:43:30 +0200
-Message-ID: <CACRpkdaEsEAiGpieJK1AA8HHLzZc7Tdc932rhdayg06rFU1hNA@mail.gmail.com>
-Subject: Re: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
- arm pl353 smc nand interface
-To: naga.sureshkumar.relli@xilinx.com
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Vasut <marek.vasut@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Markus Mayer <mmayer@broadcom.com>, Roger Quadros <rogerq@ti.com>,
- Ladislav Michl <ladis@linux-mips.org>, ada@thorsis.com,
- honghui.zhang@mediatek.com,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- nagasureshkumarrelli@gmail.com, michals@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fYRbY-00053y-Mj
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:45:38 +0000
+From: Quentin Schulz <quentin.schulz@bootlin.com>
+To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com,
+ marek.vasut@gmail.com
+Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
+ david.oberhollenzer@sigma-star.at,
+ Quentin Schulz <quentin.schulz@bootlin.com>
+Subject: [PATCH v2 0/4] ubi-utils: add possibility to flag a static volume to
+ skip CRC check when opening
+Date: Thu, 28 Jun 2018 09:43:40 +0200
+Message-Id: <20180628074344.10249-1-quentin.schulz@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,22 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 21, 2018 at 8:43 AM Naga Sureshkumar Relli
-<naga.sureshkumar.relli@xilinx.com> wrote:
+Some users of static UBI volumes implement their own integrity check,
+thus making the volume CRC check done at open time by the kernel
+useless. For instance, this is the case when one use the ubiblock +
+dm-verity + squashfs combination, where dm-verity already checks
+integrity of the block device but this time at the block granularity
+instead of verifying the whole volume.
 
-Thank you for your patch!
+Skipping this test drastically improves the boot-time.
 
-> Add driver for arm pl353 static memory controller nand interface with HW ECC
-> support. This controller is used in Xilinx Zynq SoC for interfacing the NAND
-> flash memory.
->
-> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+This patch adds the CRC check skip flagging of a volume to ubinize and ubimkvol.
 
-This driver has the same problem as the other patches:
-use the ARM_AMBA primecell magic numbers detection, and
-the PrimeCell bus.
+This patch series requires the following patches in the Linux kernel to work:
+https://lkml.org/lkml/2018/6/28/138 ("ubi: add possibility to skip CRC check for
+static UBI volumes")
 
-Otherwise it looks good to me!
+Thanks,
+Quentin
 
-Yours,
-Linus Walleij
+v2:
+  - fix a few typos,
+  - split big patch in several patches,
+  - add comment in ubinize for parsing vol_flags (very simple implementation
+  based on autoresize and skip-check flags (the only supported flags to date)
+  to be incompatible),
+
+Quentin Schulz (4):
+  UBI: update ubi-user.h and ubi-media.h
+  libubi: add volume flags to ubi_mkvol_request
+  ubi-utils: ubimkvol: add support for skipping CRC check of a static
+    volume when opening
+  ubi-utils: ubinize: add support for skipping CRC check of a static
+    volume when opening
+
+ include/libubi.h        |  2 ++
+ include/mtd/ubi-media.h |  6 ++++++
+ include/mtd/ubi-user.h  | 16 ++++++++++++++--
+ lib/libubi.c            |  1 +
+ ubi-utils/ubimkvol.c    | 19 ++++++++++++++++---
+ ubi-utils/ubinize.c     | 16 ++++++++++++++++
+ 6 files changed, 55 insertions(+), 5 deletions(-)
+
+-- 
+2.14.1
