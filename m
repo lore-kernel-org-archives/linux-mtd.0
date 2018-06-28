@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRhc-0000rd-Tj
+ id 1fYRhc-0000rL-Tl
  for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:50:54 +0000
-Date: Thu, 28 Jun 2018 09:50:40 +0200
+Date: Thu, 28 Jun 2018 09:50:31 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Quentin Schulz <quentin.schulz@bootlin.com>
 Cc: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, marek.vasut@gmail.com,
  linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
  david.oberhollenzer@sigma-star.at
-Subject: Re: [PATCH v2 2/4] libubi: add volume flags to ubi_mkvol_request
-Message-ID: <20180628095040.1c1b1ea2@bbrezillon>
-In-Reply-To: <20180628074344.10249-3-quentin.schulz@bootlin.com>
+Subject: Re: [PATCH v2 1/4] UBI: update ubi-user.h and ubi-media.h
+Message-ID: <20180628095031.1cc8ae67@bbrezillon>
+In-Reply-To: <20180628074344.10249-2-quentin.schulz@bootlin.com>
 References: <20180628074344.10249-1-quentin.schulz@bootlin.com>
- <20180628074344.10249-3-quentin.schulz@bootlin.com>
+ <20180628074344.10249-2-quentin.schulz@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,13 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 28 Jun 2018 09:43:42 +0200
+On Thu, 28 Jun 2018 09:43:41 +0200
 Quentin Schulz <quentin.schulz@bootlin.com> wrote:
 
-> Now that we have per-UBI volume flags (for instance for skipping CRC
-> check when opening it) from the Linux header, let's add it to the
-> ubi_mkvol_request in libubi and assign the flags to ubi_mkvol_req from
-> the Linux header from ubi_mkvol.
+> Update both header files to add support for flag specifying whether to
+> skip the CRC check for static UBI volumes.
+> 
+> Taken from the kernel headers.
+> 
+> Some users of static UBI volumes implement their own integrity check,
+> thus making the volume CRC check done at open time useless. For
+> instance, this is the case when one use the ubiblock + dm-verity +
+> squashfs combination, where dm-verity already checks integrity of the
+> block device but this time at the block granularity instead of verifying
+> the whole volume.
+> 
+> Skipping this test drastically improves the boot-time.
 > 
 > Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
@@ -40,39 +49,72 @@ Quentin Schulz <quentin.schulz@bootlin.com> wrote:
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
 > ---
->  include/libubi.h | 2 ++
->  lib/libubi.c     | 1 +
->  2 files changed, 3 insertions(+)
+>  include/mtd/ubi-media.h |  6 ++++++
+>  include/mtd/ubi-user.h  | 16 ++++++++++++++--
+>  2 files changed, 20 insertions(+), 2 deletions(-)
 > 
-> diff --git a/include/libubi.h b/include/libubi.h
-> index 4d6a7ee..46596a3 100644
-> --- a/include/libubi.h
-> +++ b/include/libubi.h
-> @@ -69,6 +69,7 @@ struct ubi_attach_request
->   * @bytes: volume size in bytes
->   * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
->   * @name: volume name
-> + * @flags: volume flags
+> diff --git a/include/mtd/ubi-media.h b/include/mtd/ubi-media.h
+> index 08bec3e..132cc24 100644
+> --- a/include/mtd/ubi-media.h
+> +++ b/include/mtd/ubi-media.h
+> @@ -61,6 +61,11 @@ enum {
+>   * Volume flags used in the volume table record.
+>   *
+>   * @UBI_VTBL_AUTORESIZE_FLG: auto-resize this volume
+> + * @UBI_VTBL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
+> + *				 open time. Should only be set on volumes that
+> + *				 are used by upper layers doing this kind of
+> + *				 check. Main use-case for this flag is
+> + *				 boot-time reduction
+>   *
+>   * %UBI_VTBL_AUTORESIZE_FLG flag can be set only for one volume in the volume
+>   * table. UBI automatically re-sizes the volume which has this flag and makes
+> @@ -92,6 +97,7 @@ enum {
 >   */
->  struct ubi_mkvol_request
->  {
-> @@ -77,6 +78,7 @@ struct ubi_mkvol_request
->  	long long bytes;
->  	int vol_type;
->  	const char *name;
-> +	uint8_t flags;
+>  enum {
+>  	UBI_VTBL_AUTORESIZE_FLG = 0x01,
+> +	UBI_VTBL_SKIP_CRC_CHECK_FLG = 0x02,
 >  };
 >  
->  /**
-> diff --git a/lib/libubi.c b/lib/libubi.c
-> index 978b433..4322a19 100644
-> --- a/lib/libubi.c
-> +++ b/lib/libubi.c
-> @@ -1000,6 +1000,7 @@ int ubi_mkvol(libubi_t desc, const char *node, struct ubi_mkvol_request *req)
->  	r.alignment = req->alignment;
->  	r.bytes = req->bytes;
->  	r.vol_type = req->vol_type;
-> +	r.flags = req->flags;
+>  /*
+> diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+> index 2b50dad..707c4f2 100644
+> --- a/include/mtd/ubi-user.h
+> +++ b/include/mtd/ubi-user.h
+> @@ -279,6 +279,18 @@ struct ubi_attach_req {
+>  	int8_t  padding[10];
+>  };
 >  
->  	n = strlen(req->name);
->  	if (n > UBI_MAX_VOLUME_NAME)
+> +/*
+> + * UBI volume flags.
+> + *
+> + * @UBI_VOL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
+> + *				open time. Only valid for static volumes and
+> + *				should only be used if the volume user has a
+> + *				way to verify data integrity
+> + */
+> +enum {
+> +	UBI_VOL_SKIP_CRC_CHECK_FLG = 0x1,
+> +};
+> +
+>  /**
+>   * struct ubi_mkvol_req - volume description data structure used in
+>   *                        volume creation requests.
+> @@ -286,7 +298,7 @@ struct ubi_attach_req {
+>   * @alignment: volume alignment
+>   * @bytes: volume size in bytes
+>   * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
+> - * @padding1: reserved for future, not used, has to be zeroed
+> + * @flags: volume flags (%UBI_VOL_SKIP_CRC_CHECK_FLG)
+>   * @name_len: volume name length
+>   * @padding2: reserved for future, not used, has to be zeroed
+>   * @name: volume name
+> @@ -315,7 +327,7 @@ struct ubi_mkvol_req {
+>  	int32_t alignment;
+>  	int64_t bytes;
+>  	int8_t vol_type;
+> -	int8_t padding1;
+> +	uint8_t flags;
+>  	int16_t name_len;
+>  	int8_t padding2[4];
+>  	char name[UBI_MAX_VOLUME_NAME + 1];
