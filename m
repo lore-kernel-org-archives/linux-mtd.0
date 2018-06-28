@@ -1,27 +1,32 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYVU0-0004jt-Ma
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 11:53:06 +0000
-Date: Thu, 28 Jun 2018 12:52:50 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Daniel Mack <daniel@zonque.org>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>,
+From: Piotr Bugalski <bugalski.piotr@gmail.com>
+Date: Thu, 28 Jun 2018 14:02:19 +0200 (CEST)
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+cc: Piotr Bugalski <bugalski.piotr@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
- alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Message-ID: <20180628115250.GE14040@sirena.org.uk>
-References: <20180617170217.24177-1-robert.jarzmik@free.fr>
- <20180618104159.24b9fffb@bbrezillon>
- <87d0wnrhqz.fsf@belgarion.home>
- <20180625130704.GQ9413@sirena.org.uk>
- <87r2ksl0wa.fsf@belgarion.home>
- <45a4e773-aaa3-6d43-f02d-5056a2a265d4@zonque.org>
+ Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: Re: [RFC PATCH 1/2] spi: Add QuadSPI driver for Atmel SAMA5D2
+In-Reply-To: <1d736934-b3e7-7b23-0f34-1d22d36b2b18@microchip.com>
+Message-ID: <alpine.DEB.2.20.1806281352590.22837@carbonite>
+References: <20180618162124.21749-1-bugalski.piotr@gmail.com>
+ <20180618162124.21749-2-bugalski.piotr@gmail.com>
+ <20180621233321.0f25f572@bbrezillon>
+ <alpine.DEB.2.20.1806220719190.21824@carbonite>
+ <20180622093905.62a3b936@bbrezillon>
+ <455adb76-530a-1fd5-303c-cfa158ad7870@microchip.com>
+ <alpine.DEB.2.20.1806270940500.32198@carbonite>
+ <1d736934-b3e7-7b23-0f34-1d22d36b2b18@microchip.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
-Content-Disposition: inline
-In-Reply-To: <45a4e773-aaa3-6d43-f02d-5056a2a265d4@zonque.org>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,40 +37,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---qFgkTsE6LiHkLPZw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Hi Tudor,
 
-On Wed, Jun 27, 2018 at 11:03:16PM +0200, Daniel Mack wrote:
-> On Wednesday, June 27, 2018 05:11 PM, Robert Jarzmik wrote:
-> > Mark Brown <broonie@kernel.org> writes:
+On Thu, 28 Jun 2018, Tudor Ambarus wrote:
 
-> > Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
-> > pxa: remove the dmaengine compat need", and up to my better understanding
-> > neither does your for-next branch.
+> Hi, Piotr,
+>
+> On 06/27/2018 10:52 AM, Piotr Bugalski wrote:
+>>
+>>> General things to consider for the limitation in performance:
+>>> - is the serial flash memory operating in Quad SPI?
+>>
+>> Yes, I've checked signal using logic analyzer, data is transferred using
+>> all four lines.
+>>
+>>> - QSCLK should be as high as possible
+>>
+>> Sure, but when we are using lower frequency CPU impact should be
+>> negligible while efficiency is crap on every speed.
+>>
+>>> - transfer delays - I checked them, they have default values, we should be good.
+>>> - use DMA, as you suggested
+>>>
+>>
+>> I don't understand one thing. While CPU is not busy and during my tests
+>> 100% of CPU can be used for communication, efficiency is still very low.
+>> Why DMA has such impact?
+>>
+>> It is very interesting to observe signals using logic analyzer.
+>> When CPU is used for communication, there are long delays after
+>> every byte transferred. These delays are  much longer than it should be only because of writing next value by CPU.
+>
+> Are those consecutive transfers (same peripheral without removing chip select)?
+> The delays between consecutive transfers can be set just in SPI mode. It would
+> be strange to see this kind of delays in serial memory mode.
+>
 
-> > So until I see it in your branch it will dwelve happily in pxa/for-next. If it
-> > has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
-> > like to know at -rc4 time so that I drop it from my pxa/for-next branch.
+Yes, it's just single block transfer so no CS changes occurs.
+I find this delays strange also, but I have no idea how to avoid them.
+The same behaviour exists even when DMA is used in APB mode (write
+to registers). Only using SMM with DMA helps.
 
-> Ah, yes. The series I just posted depends on that.
+>> I tried to change SPI frequency. If delay were CPU related,
+>> delay time should stay the same. Unfortunately results were different -
+>> lowering SPI freqency extends delay time.
+>
+> If QSCK is less than f-perif-clock/2, then setting DLYBS to 1 will shorten the
+> DLYBS delay, but this is peanuts.
+>
 
-Ugh, please resend this patch so I know what's going on :(  My
-understanding was that I was pulling a tag with the dependencies.
+I have DLYBS, DLYCS and DLYBCT set to zeros. I can try DLYBS=1 if
+you wish.
 
---qFgkTsE6LiHkLPZw
-Content-Type: application/pgp-signature; name="signature.asc"
+> Thanks,
+> ta
+>
+>> Using DMA makes these delays to disappear, but how to acheive CPU
+>> communication without delays?
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls0zBEACgkQJNaLcl1U
-h9CqMAf/YnJSuYfkDLsMJj+Ma+azKxHUUSNo2TTk7zLNL2f7sFayIkYng3Go7cw4
-KcZhV5KILOySk00mHN8RmO+kW/j1sipOD9MaNoQfr3omL0upYyaa9gTs5SHm1e7o
-s5yeLUrFCn1V0gSsuIsgEHDS0tA7h9V8p9ATAMRZcs94Zho490r/VeKya9Ouqxhw
-qVYrApADDxxyvoiZ0W7SdfWYvottnqzNzZFAmTtEmbj7AAQcKI0fcn6tTlAZUcuj
-fW9A4GdAvv+xZGHgD496oLaIe3yP4rhGpz6gIvmtFxBMJCU0BAEL5Rc/JVh7d/gG
-RGrTKKeFKpwFciY7VgyEDzR/QQfJEQ==
-=OPKL
------END PGP SIGNATURE-----
-
---qFgkTsE6LiHkLPZw--
+Thank you for comments,
+Piotr
