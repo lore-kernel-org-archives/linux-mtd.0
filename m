@@ -1,16 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRe2-00079p-OH
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:47:12 +0000
-Date: Thu, 28 Jun 2018 09:46:49 +0200
+ id 1fYRhc-0000rd-Tj
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:50:54 +0000
+Date: Thu, 28 Jun 2018 09:50:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Marek Vasut
- <marex@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [GIT PULL] mtd: Fixes for 4.18-rc3
-Message-ID: <20180628094649.2cf04f1f@bbrezillon>
+To: Quentin Schulz <quentin.schulz@bootlin.com>
+Cc: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
+ david.oberhollenzer@sigma-star.at
+Subject: Re: [PATCH v2 2/4] libubi: add volume flags to ubi_mkvol_request
+Message-ID: <20180628095040.1c1b1ea2@bbrezillon>
+In-Reply-To: <20180628074344.10249-3-quentin.schulz@bootlin.com>
+References: <20180628074344.10249-1-quentin.schulz@bootlin.com>
+ <20180628074344.10249-3-quentin.schulz@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,73 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+On Thu, 28 Jun 2018 09:43:42 +0200
+Quentin Schulz <quentin.schulz@bootlin.com> wrote:
 
-Here is the MTD fixes PR for 4.18-rc3.
+> Now that we have per-UBI volume flags (for instance for skipping CRC
+> check when opening it) from the Linux header, let's add it to the
+> ubi_mkvol_request in libubi and assign the flags to ubi_mkvol_req from
+> the Linux header from ubi_mkvol.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
 
-Regards,
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Boris
-
-The following changes since commit ce397d215ccd07b8ae3f71db689aedb85d56ab40:
-
-  Linux 4.18-rc1 (2018-06-17 08:04:49 +0900)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.18-rc3
-
-for you to fetch changes up to 3f6e6986045d47f87bd982910821b7ab9758487e:
-
-  mtd: rawnand: denali_dt: set clk_x_rate to 200 MHz unconditionally (2018-06-22 18:47:56 +0200)
-
-----------------------------------------------------------------
-NAND fixes:
-- Add a quirk for a bunch of broken Macronix chips
-- Fix nand_block_bad() when chip->ecc.read_oob() returns a positive
-  value encoding the number of bitflips
-- Fix OOB handling in the MXC driver fo V2.1 controllers
-- Flag the ONFI_FEATURE_ON_DIE_ECC as supported in the Micron driver
-- Hardcode clk rate in the denali_dt driver to address a bad DT
-  representation (the proper fix will be queued for 4.19)
-
-SPI NOR fixes:
-- Add an ULL constant to some ID definitions so that the ID is not
-  truncated on 32-bit platforms
-
-MTD fixes:
-- Fix the sector unlocking logic in the CFI driver
-
-----------------------------------------------------------------
-Abhishek Sahu (1):
-      mtd: rawnand: fix return value check for bad block status
-
-Chris Packham (1):
-      mtd: rawnand: micron: add ONFI_FEATURE_ON_DIE_ECC to supported features
-
-Geert Uytterhoeven (1):
-      mtd: dataflash: Use ULL suffix for 64-bit constants
-
-Joakim Tjernlund (4):
-      mtd: cfi_cmdset_0002: Use right chip in do_ppb_xxlock()
-      mtd: cfi_cmdset_0002: fix SEGV unlocking multiple chips
-      mtd: cfi_cmdset_0002: Fix unlocking requests crossing a chip boudary
-      mtd: cfi_cmdset_0002: Avoid walking all chips when unlocking.
-
-Martin Kaiser (1):
-      mtd: rawnand: mxc: set spare area size register explicitly
-
-Masahiro Yamada (1):
-      mtd: rawnand: denali_dt: set clk_x_rate to 200 MHz unconditionally
-
-Mason Yang (1):
-      mtd: rawnand: All AC chips have a broken GET_FEATURES(TIMINGS).
-
- drivers/mtd/chips/cfi_cmdset_0002.c  | 19 +++++++++++--------
- drivers/mtd/devices/mtd_dataflash.c  |  4 ++--
- drivers/mtd/nand/raw/denali_dt.c     |  6 +++++-
- drivers/mtd/nand/raw/mxc_nand.c      |  5 ++++-
- drivers/mtd/nand/raw/nand_base.c     |  2 +-
- drivers/mtd/nand/raw/nand_macronix.c | 48 ++++++++++++++++++++++++++++++++++++------------
- drivers/mtd/nand/raw/nand_micron.c   |  2 ++
- 7 files changed, 61 insertions(+), 25 deletions(-)
+> ---
+>  include/libubi.h | 2 ++
+>  lib/libubi.c     | 1 +
+>  2 files changed, 3 insertions(+)
+> 
+> diff --git a/include/libubi.h b/include/libubi.h
+> index 4d6a7ee..46596a3 100644
+> --- a/include/libubi.h
+> +++ b/include/libubi.h
+> @@ -69,6 +69,7 @@ struct ubi_attach_request
+>   * @bytes: volume size in bytes
+>   * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
+>   * @name: volume name
+> + * @flags: volume flags
+>   */
+>  struct ubi_mkvol_request
+>  {
+> @@ -77,6 +78,7 @@ struct ubi_mkvol_request
+>  	long long bytes;
+>  	int vol_type;
+>  	const char *name;
+> +	uint8_t flags;
+>  };
+>  
+>  /**
+> diff --git a/lib/libubi.c b/lib/libubi.c
+> index 978b433..4322a19 100644
+> --- a/lib/libubi.c
+> +++ b/lib/libubi.c
+> @@ -1000,6 +1000,7 @@ int ubi_mkvol(libubi_t desc, const char *node, struct ubi_mkvol_request *req)
+>  	r.alignment = req->alignment;
+>  	r.bytes = req->bytes;
+>  	r.vol_type = req->vol_type;
+> +	r.flags = req->flags;
+>  
+>  	n = strlen(req->name);
+>  	if (n > UBI_MAX_VOLUME_NAME)
