@@ -1,20 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRbY-00028o-No
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:44:37 +0000
+ id 1fYRZD-00021J-M0
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:42:12 +0000
 From: Quentin Schulz <quentin.schulz@bootlin.com>
 To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, boris.brezillon@bootlin.com,
  marek.vasut@gmail.com
-Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
- david.oberhollenzer@sigma-star.at,
- Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: [PATCH v2 3/4] ubi-utils: ubimkvol: add support for skipping CRC
- check of a static volume when opening
-Date: Thu, 28 Jun 2018 09:43:43 +0200
-Message-Id: <20180628074344.10249-4-quentin.schulz@bootlin.com>
-In-Reply-To: <20180628074344.10249-1-quentin.schulz@bootlin.com>
-References: <20180628074344.10249-1-quentin.schulz@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
+Subject: [PATCH v3 1/2] ubi: provide a way to skip CRC checks
+Date: Thu, 28 Jun 2018 09:40:52 +0200
+Message-Id: <3f9cef553d4f5da3fe2d76113d79ada1f0fe5224.1530169759.git-series.quentin.schulz@bootlin.com>
+In-Reply-To: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+In-Reply-To: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,96 +24,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's let the user create static UBI volume with CRC checking at opening
-disabled if desired.
+Some users of static UBI volumes implement their own integrity check,
+thus making the volume CRC check done at open time useless. For
+instance, this is the case when one use the ubiblock + dm-verity +
+squashfs combination, where dm-verity already checks integrity of the
+block device but this time at the block granularity instead of verifying
+the whole volume.
 
-Introduce the `--skipcheck` or `-k` option for such feature.
+Skipping this test drastically improves the boot-time.
 
 Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
 Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- ubi-utils/ubimkvol.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/kapi.c      |  2 +-
+ drivers/mtd/ubi/ubi-media.h |  6 ++++++
+ drivers/mtd/ubi/ubi.h       |  4 ++++
+ drivers/mtd/ubi/vmt.c       |  9 +++++++++
+ drivers/mtd/ubi/vtbl.c      |  3 +++
+ 5 files changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/ubi-utils/ubimkvol.c b/ubi-utils/ubimkvol.c
-index b81fc99..6c641e5 100644
---- a/ubi-utils/ubimkvol.c
-+++ b/ubi-utils/ubimkvol.c
-@@ -44,6 +44,7 @@ struct args {
- 	const char *name;
- 	const char *node;
- 	int maxavs;
-+	int skipcheck;
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index d4b2e87..e9e9ecb 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -202,7 +202,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ 	desc->mode = mode;
+ 
+ 	mutex_lock(&ubi->ckvol_mutex);
+-	if (!vol->checked) {
++	if (!vol->checked && !vol->skip_check) {
+ 		/* This is the first open - check the volume */
+ 		err = ubi_check_volume(ubi, vol_id);
+ 		if (err < 0) {
+diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
+index 195ff8c..b5fe8f8 100644
+--- a/drivers/mtd/ubi/ubi-media.h
++++ b/drivers/mtd/ubi/ubi-media.h
+@@ -45,6 +45,11 @@ enum {
+  * Volume flags used in the volume table record.
+  *
+  * @UBI_VTBL_AUTORESIZE_FLG: auto-resize this volume
++ * @UBI_VTBL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
++ *				 open time. Should only be set on volumes that
++ *				 are used by upper layers doing this kind of
++ *				 check. Main use-case for this flag is
++ *				 boot-time reduction
+  *
+  * %UBI_VTBL_AUTORESIZE_FLG flag can be set only for one volume in the volume
+  * table. UBI automatically re-sizes the volume which has this flag and makes
+@@ -76,6 +81,7 @@ enum {
+  */
+ enum {
+ 	UBI_VTBL_AUTORESIZE_FLG = 0x01,
++	UBI_VTBL_SKIP_CRC_CHECK_FLG = 0x02,
  };
  
- static struct args args = {
-@@ -68,16 +69,17 @@ static const char optionsstr[] =
- "                              eraseblocks\n"
- "-m, --maxavsize               set volume size to maximum available size\n"
- "-t, --type=<static|dynamic>   volume type (dynamic, static), default is dynamic\n"
-+"-k, --skipcheck               skip the CRC check done at volume open time\n"
- "-h, -?, --help                print help message\n"
- "-V, --version                 print program version";
+ /*
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index f5ba97c..d47b9e4 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -327,6 +327,9 @@ struct ubi_eba_leb_desc {
+  *           atomic LEB change
+  *
+  * @eba_tbl: EBA table of this volume (LEB->PEB mapping)
++ * @skip_check: %1 if CRC check of this static volume should be skipped.
++ *		Directly reflects the presence of the
++ *		%UBI_VTBL_SKIP_CRC_CHECK_FLG flag in the vtbl entry
+  * @checked: %1 if this static volume was checked
+  * @corrupted: %1 if the volume is corrupted (static volumes only)
+  * @upd_marker: %1 if the update marker is set for this volume
+@@ -374,6 +377,7 @@ struct ubi_volume {
+ 	void *upd_buf;
  
- 
- static const char usage[] =
- "Usage: " PROGRAM_NAME " <UBI device node file name> [-h] [-a <alignment>] [-n <volume ID>] [-N <name>]\n"
--"\t\t\t[-s <bytes>] [-S <LEBs>] [-t <static|dynamic>] [-V] [-m]\n"
-+"\t\t\t[-s <bytes>] [-S <LEBs>] [-t <static|dynamic>] [-V] [-m] [-k]\n"
- "\t\t\t[--alignment=<alignment>][--vol_id=<volume ID>] [--name=<name>]\n"
- "\t\t\t[--size=<bytes>] [--lebs=<LEBs>] [--type=<static|dynamic>] [--help]\n"
--"\t\t\t[--version] [--maxavsize]\n\n"
-+"\t\t\t[--version] [--maxavsize] --[skipcheck]\n\n"
- "Example: " PROGRAM_NAME " /dev/ubi0 -s 20MiB -N config_data - create a 20 Megabytes volume\n"
- "         named \"config_data\" on UBI device /dev/ubi0.";
- 
-@@ -91,6 +93,7 @@ static const struct option long_options[] = {
- 	{ .name = "help",      .has_arg = 0, .flag = NULL, .val = 'h' },
- 	{ .name = "version",   .has_arg = 0, .flag = NULL, .val = 'V' },
- 	{ .name = "maxavsize", .has_arg = 0, .flag = NULL, .val = 'm' },
-+	{ .name = "skipcheck", .has_arg = 0, .flag = NULL, .val = 'k' },
- 	{ NULL, 0, NULL, 0},
- };
- 
-@@ -113,6 +116,9 @@ static int param_sanity_check(void)
- 	if (len > UBI_MAX_VOLUME_NAME)
- 		return errmsg("too long name (%d symbols), max is %d", len, UBI_MAX_VOLUME_NAME);
- 
-+	if (args.skipcheck && args.vol_type != UBI_STATIC_VOLUME)
-+		return errmsg("skipcheck is only valid for static volumes");
+ 	struct ubi_eba_table *eba_tbl;
++	unsigned int skip_check:1;
+ 	unsigned int checked:1;
+ 	unsigned int corrupted:1;
+ 	unsigned int upd_marker:1;
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 0be5167..e2606a4 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -299,6 +299,10 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 		vtbl_rec.vol_type = UBI_VID_DYNAMIC;
+ 	else
+ 		vtbl_rec.vol_type = UBI_VID_STATIC;
 +
- 	return 0;
- }
- 
-@@ -121,7 +127,7 @@ static int parse_opt(int argc, char * const argv[])
- 	while (1) {
- 		int key, error = 0;
- 
--		key = getopt_long(argc, argv, "a:n:N:s:S:t:h?Vm", long_options, NULL);
-+		key = getopt_long(argc, argv, "a:n:N:s:S:t:h?Vmk", long_options, NULL);
- 		if (key == -1)
- 			break;
- 
-@@ -183,6 +189,10 @@ static int parse_opt(int argc, char * const argv[])
- 			args.maxavs = 1;
- 			break;
- 
-+		case 'k':
-+			args.skipcheck = 1;
-+			break;
++	if (vol->skip_check)
++		vtbl_rec.flags |= UBI_VTBL_SKIP_CRC_CHECK_FLG;
 +
- 		case ':':
- 			return errmsg("parameter is missing");
+ 	memcpy(vtbl_rec.name, vol->name, vol->name_len);
  
-@@ -266,6 +276,9 @@ int main(int argc, char * const argv[])
- 	req.vol_type = args.vol_type;
- 	req.name = args.name;
- 
-+	if (args.skipcheck)
-+		req.flags |= UBI_VOL_SKIP_CRC_CHECK_FLG;
+ 	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
+@@ -733,6 +737,11 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
+ 			ubi_err(ubi, "bad used_bytes");
+ 			goto fail;
+ 		}
 +
- 	err = ubi_mkvol(libubi, args.node, &req);
- 	if (err < 0) {
- 		sys_errmsg("cannot UBI create volume");
++		if (vol->skip_check) {
++			ubi_err(ubi, "bad skip_check");
++			goto fail;
++		}
+ 	} else {
+ 		if (vol->used_ebs < 0 || vol->used_ebs > vol->reserved_pebs) {
+ 			ubi_err(ubi, "bad used_ebs");
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 94d7a86..2c133cd 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -560,6 +560,9 @@ static int init_volumes(struct ubi_device *ubi,
+ 		vol->name[vol->name_len] = '\0';
+ 		vol->vol_id = i;
+ 
++		if (vtbl[i].flags & UBI_VTBL_SKIP_CRC_CHECK_FLG)
++			vol->skip_check = 1;
++
+ 		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
+ 			/* Auto re-size flag may be set only for one volume */
+ 			if (ubi->autoresize_vol_id != -1) {
 -- 
-2.14.1
+git-series 0.9.1
