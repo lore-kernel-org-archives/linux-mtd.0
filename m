@@ -1,20 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRbX-0004eH-Ti
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:44:37 +0000
+ id 1fYRZ5-0004KE-7Y
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:42:05 +0000
 From: Quentin Schulz <quentin.schulz@bootlin.com>
 To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
  computersforpeace@gmail.com, boris.brezillon@bootlin.com,
  marek.vasut@gmail.com
-Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
- david.oberhollenzer@sigma-star.at,
- Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: [PATCH v2 4/4] ubi-utils: ubinize: add support for skipping CRC check
- of a static volume when opening
-Date: Thu, 28 Jun 2018 09:43:44 +0200
-Message-Id: <20180628074344.10249-5-quentin.schulz@bootlin.com>
-In-Reply-To: <20180628074344.10249-1-quentin.schulz@bootlin.com>
-References: <20180628074344.10249-1-quentin.schulz@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
+Subject: [PATCH v3 0/2] ubi: add possibility to skip CRC check for static UBI
+ volumes
+Date: Thu, 28 Jun 2018 09:40:51 +0200
+Message-Id: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's let the user configure static UBI volume with CRC checking at
-opening disabled if desired.
+Some users of static UBI volumes implement their own integrity check, thus
+making the volume CRC check done at open time useless. For instance, this
+is the case when one use the ubiblock + dm-verity + squashfs combination,
+where dm-verity already checks integrity of the block device but this time
+at the block granularity instead of verifying the whole volume.
 
-Introduce the skip-check setting for vol_flags configuration of a
-volume.
+Skipping this test drastically improves the boot-time.
 
-There is no point in having both autoresize and skip-check set as
-skip-check is reserved for static volumes only and it's useless to have
-a static volume's size set to autoresize.
+Patches for mtd-utils will be available as well.
 
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
----
- ubi-utils/ubinize.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Thanks,
+Quentin
 
-diff --git a/ubi-utils/ubinize.c b/ubi-utils/ubinize.c
-index c85ff9b..b603638 100644
---- a/ubi-utils/ubinize.c
-+++ b/ubi-utils/ubinize.c
-@@ -385,9 +385,21 @@ static int read_section(const struct ubigen_info *ui, const char *sname,
- 	sprintf(buf, "%s:vol_flags", sname);
- 	p = iniparser_getstring(args.dict, buf, NULL);
- 	if (p) {
-+		/*
-+		 * For now, the flag can be either autoresize or skip-check, as
-+		 * skip-check is reserved for static volumes and autoresize for
-+		 * such a volume makes no sense.
-+		 * Once we add another flag that isn't incompatible with each
-+		 * and every existing flag, we'll have to implement a solution
-+		 * that allows multiple flags to be set at the same time in
-+		 * vol_flags setting of the section.
-+		 */
- 		if (!strcmp(p, "autoresize")) {
- 			verbose(args.verbose, "autoresize flags found");
- 			vi->flags |= UBI_VTBL_AUTORESIZE_FLG;
-+		} else if (!strcmp(p, "skip-check")) {
-+			verbose(args.verbose, "skip-check flag found");
-+			vi->flags |= UBI_VTBL_SKIP_CRC_CHECK_FLG;
- 		} else {
- 			return errmsg("unknown flags \"%s\" in section \"%s\"",
- 				      p, sname);
-@@ -523,6 +535,10 @@ int main(int argc, char * const argv[])
- 			}
- 		}
- 
-+		if (vi[i].flags & UBI_VTBL_SKIP_CRC_CHECK_FLG &&
-+		    vi[i].type != UBI_VID_STATIC)
-+			return errmsg("skip-check is only valid for static volumes");
-+
- 		if (vi[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
- 			if (autoresize_was_already)
- 				return errmsg("only one volume is allowed "
+v3:
+  - fix a few typos,
+
+v2:
+  - use volume flags instead of arguments on the kernel command line as
+  suggested by Richard,
+
+Quentin Schulz (2):
+  ubi: provide a way to skip CRC checks
+  ubi: expose the volume CRC check skip flag
+
+ drivers/mtd/ubi/cdev.c      |  4 ++++
+ drivers/mtd/ubi/kapi.c      |  2 +-
+ drivers/mtd/ubi/ubi-media.h |  6 ++++++
+ drivers/mtd/ubi/ubi.h       |  4 ++++
+ drivers/mtd/ubi/vmt.c       | 12 ++++++++++++
+ drivers/mtd/ubi/vtbl.c      |  3 +++
+ include/uapi/mtd/ubi-user.h | 16 ++++++++++++++--
+ 7 files changed, 44 insertions(+), 3 deletions(-)
+
+base-commit: 6dfa2c9bfb5f4b33861de2d8ea9c58086ce17215
 -- 
-2.14.1
+git-series 0.9.1
