@@ -1,20 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRZC-00021C-6x
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:42:11 +0000
-From: Quentin Schulz <quentin.schulz@bootlin.com>
-To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
-Date: Thu, 28 Jun 2018 09:40:53 +0200
-Message-Id: <0ace6202bddb495ae0e632ae2fd0346f99fcdab4.1530169759.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
-References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
-References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+Received: from albert.telenet-ops.be ([2a02:1800:110:4::f00:1a])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fYSAm-00010l-Lf
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 08:21:03 +0000
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] mtd: Use kasprintf() instead of fixed buffer formatting
+Date: Thu, 28 Jun 2018 10:20:11 +0200
+Message-Id: <20180628082011.19553-1-geert+renesas@glider.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,94 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that we have the logic for skipping CRC check for static UBI volumes
-in the core, let's expose it to users.
+Using "%4.4X" in the calculation of the buffer size is misleading, as
+the format string literal has no relation to the actual size needed.
+Hence this is fragile w.r.t. future modification.
 
-This makes use of a padding byte in the volume description data
-structure as a flag. This flag only tell for now whether we should skip
-the CRC check of a volume.
+As this is not a hot path, fix this by replacing the formatting in a
+fixed buffer by kasprintf().
 
-This checks the UBI volume for which we are trying to skip the CRC check
-is static.
-
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/mtd/ubi/cdev.c      |  4 ++++
- drivers/mtd/ubi/vmt.c       |  3 +++
- include/uapi/mtd/ubi-user.h | 16 ++++++++++++++--
- 3 files changed, 21 insertions(+), 2 deletions(-)
+Compile-tested only.
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 45c3296..3eea1df 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
- 	    req->vol_type != UBI_STATIC_VOLUME)
- 		goto bad;
+Interestingly, this decreases code size (by 16 resp. 24 bytes on arm32
+resp. arm64).
+---
+ drivers/mtd/chips/gen_probe.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 879bebf9d8b12038..837b04ab96a9c526 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -202,16 +202,19 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	__u16 type = primary?cfi->cfiq->P_ID:cfi->cfiq->A_ID;
+ #ifdef CONFIG_MODULES
+-	char probename[sizeof("cfi_cmdset_%4.4X")];
+ 	cfi_cmdset_fn_t *probe_function;
++	char *probename;
  
-+	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
-+	    req->vol_type != UBI_STATIC_VOLUME)
-+		goto bad;
-+
- 	if (req->alignment > ubi->leb_size)
- 		goto bad;
+-	sprintf(probename, "cfi_cmdset_%4.4X", type);
++	probename = kasprintf(GFP_KERNEL, "cfi_cmdset_%4.4X", type);
++	if (!probename)
++		return NULL;
  
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index e2606a4..729588b 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -174,6 +174,9 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	vol->dev.class = &ubi_class;
- 	vol->dev.groups = volume_dev_groups;
+ 	probe_function = __symbol_get(probename);
+ 	if (!probe_function) {
+ 		request_module("cfi_cmdset_%4.4X", type);
+ 		probe_function = __symbol_get(probename);
+ 	}
++	kfree(probename);
  
-+	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG)
-+		vol->skip_check = 1;
-+
- 	spin_lock(&ubi->volumes_lock);
- 	if (vol_id == UBI_VOL_NUM_AUTO) {
- 		/* Find unused volume ID */
-diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
-index 5b04a49..6e5ded5 100644
---- a/include/uapi/mtd/ubi-user.h
-+++ b/include/uapi/mtd/ubi-user.h
-@@ -285,6 +285,18 @@ struct ubi_attach_req {
- 	__s8 padding[10];
- };
- 
-+/*
-+ * UBI volume flags.
-+ *
-+ * @UBI_VOL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
-+ *				open time. Only valid for static volumes and
-+ *				should only be used if the volume user has a
-+ *				way to verify data integrity
-+ */
-+enum {
-+	UBI_VOL_SKIP_CRC_CHECK_FLG = 0x1,
-+};
-+
- /**
-  * struct ubi_mkvol_req - volume description data structure used in
-  *                        volume creation requests.
-@@ -292,7 +304,7 @@ struct ubi_attach_req {
-  * @alignment: volume alignment
-  * @bytes: volume size in bytes
-  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
-- * @padding1: reserved for future, not used, has to be zeroed
-+ * @flags: volume flags (%UBI_VOL_SKIP_CRC_CHECK_FLG)
-  * @name_len: volume name length
-  * @padding2: reserved for future, not used, has to be zeroed
-  * @name: volume name
-@@ -321,7 +333,7 @@ struct ubi_mkvol_req {
- 	__s32 alignment;
- 	__s64 bytes;
- 	__s8 vol_type;
--	__s8 padding1;
-+	__u8 flags;
- 	__s16 name_len;
- 	__s8 padding2[4];
- 	char name[UBI_MAX_VOLUME_NAME + 1];
+ 	if (probe_function) {
+ 		struct mtd_info *mtd;
 -- 
-git-series 0.9.1
+2.17.1
