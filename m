@@ -1,18 +1,18 @@
 Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYQkQ-0002kK-U7
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 06:49:44 +0000
-Received: by mail-it0-x242.google.com with SMTP id p185-v6so10921438itp.4
- for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2018 23:49:31 -0700 (PDT)
+ id 1fYQoz-0004uX-5T
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 06:54:26 +0000
+Received: by mail-it0-x242.google.com with SMTP id u4-v6so11143412itg.0
+ for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2018 23:54:14 -0700 (PDT)
 MIME-Version: 1.0
 References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1529563351-2241-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
-In-Reply-To: <1529563351-2241-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+In-Reply-To: <1529563351-2241-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 28 Jun 2018 08:49:18 +0200
-Message-ID: <CACRpkdZiY2vAXQSuAgjKfHKtYT_UZD-apEbpS1RT5ZGFutYQeA@mail.gmail.com>
-Subject: Re: [[LINUX PATCH v10] 2/4] memory: pl353: Add driver for arm pl353
- static memory controller
+Date: Thu, 28 Jun 2018 08:54:02 +0200
+Message-ID: <CACRpkdaX8KrZ=3GwFUje05kYV61bRfTSJQ9fCQwVk5ot3cxvpQ@mail.gmail.com>
+Subject: Re: [[LINUX PATCH v10] 1/4] Devicetree: Add pl353 smc controller
+ devicetree binding information
 To: naga.sureshkumar.relli@xilinx.com
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -39,41 +39,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Thu, Jun 21, 2018 at 8:43 AM Naga Sureshkumar Relli
 <naga.sureshkumar.relli@xilinx.com> wrote:
 
-> Add driver for arm pl353 static memory controller. This controller is used in
-> Xilinx Zynq SoC for interfacing the NAND and NOR/SRAM memory devices.
+Thanks for your patch!
+
+> Add pl353 static memory controller devicetree binding information.
 >
 > Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+> +Device tree bindings for ARM PL353 static memory controller
+> +
+> +PL353 static memory controller supports two kinds of memory
+> +interfaces.i.e NAND and SRAM/NOR interfaces.
+> +The actual devices are instantiated from the child nodes of pl353 smc node.
 
-(...)
-
-> +config PL353_SMC
-> +       tristate "ARM PL35X Static Memory Controller(SMC) driver"
-> +       default y
-> +       depends on ARM
-> +       depends on ARCH_ZYNQ
-
-depends on ARM_AMBA
-
-> +#include <linux/platform_device.h>
-
-This is a PrimeCell with the ARM primecell ID registers
-specified, so it should not use platform device.
-
-Use <linux/amba/bus.h>
-
-It further needs to match on these magic values (found in
-0xfe0 etc) and use the name "apb_pclk" for the peripheral
-(silicon) clock.
-
-See examples such as:
-drivers/mmc/host/mmci.c
-drivers/tty/serial/amba-pl011.c
-drivers/video/fbdev/amba-clcd.c
-drivers/hwtracing/coresight/*
-etc for examples.
-
-Also see and reference the special PrimeCell DT bindings:
+See and reference the special PrimeCell DT bindings:
 Documentation/devicetree/bindings/arm/primecell.txt
+
+> +Required properties:
+> +- compatible           : Must be "arm,pl353-smc-r2p1"
+
+Should be:
+
+"arm,pl353-smc-r2p1", "arm,primecell";
+
+It will be possible for the Linux AMBA core to probe the device
+from just reading out the primecell ID registers, so the first
+compatible string will not even be used by many OS:es.
+
+> +- reg                  : Controller registers map and length.
+> +- clock-names          : List of input clock names - "ref_clk", "aper_clk"
+> +                         (See clock bindings for details).
+
+The AMBA primecell peripheral clock (clocking the silicon)
+must be named "apb_pclk".
+
+> +- clocks               : Clock phandles (see clock bindings for details).
+> +- address-cells                : Must be 1.
+> +- size-cells           : Must be 1.
+> +
+> +Child nodes:
+> + For NAND the "arm,pl353-nand-r2p1" and for NOR the "cfi-flash" drivers are
+> +supported as child nodes.
+> +
+> +for NAND partition information please refer the below file
+> +Documentation/devicetree/bindings/mtd/partition.txt
+> +
+> +Example:
+> +       smcc: memory-controller@e000e000
+> +                       compatible = "arm,pl353-smc-r2p1"
+
+Add , "arm,primecell";
+
+> +                       clock-names = "memclk", "aclk";
+
+This doesn't even have the same name as in the bindings
+above, I think the latter should be named "apb_pclk".
+
+Otherwise it looks good!
 
 Yours,
 Linus Walleij
