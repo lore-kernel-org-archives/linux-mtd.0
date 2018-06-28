@@ -1,34 +1,19 @@
-Received: from mail-sn1nam02on060d.outbound.protection.outlook.com
- ([2a01:111:f400:fe44::60d]
- helo=NAM02-SN1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYRnj-0004b1-0F
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:58:06 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>, Florian
- Fainelli <f.fainelli@gmail.com>, Markus Mayer <mmayer@broadcom.com>, Roger
- Quadros <rogerq@ti.com>, Ladislav Michl <ladis@linux-mips.org>,
- "ada@thorsis.com" <ada@thorsis.com>, "honghui.zhang@mediatek.com"
- <honghui.zhang@mediatek.com>, =?utf-8?B?TWlxdcOobCBSYXluYWw=?=
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
-Subject: RE: [[LINUX PATCH v10] 1/4] Devicetree: Add pl353 smc controller
- devicetree binding information
-Date: Thu, 28 Jun 2018 07:56:55 +0000
-Message-ID: <MWHPR02MB2623D909645D0AEB426C205CAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1529563351-2241-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <CACRpkdaX8KrZ=3GwFUje05kYV61bRfTSJQ9fCQwVk5ot3cxvpQ@mail.gmail.com>
-In-Reply-To: <CACRpkdaX8KrZ=3GwFUje05kYV61bRfTSJQ9fCQwVk5ot3cxvpQ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fYRbY-00028n-Nm
+ for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 07:44:37 +0000
+From: Quentin Schulz <quentin.schulz@bootlin.com>
+To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com,
+ marek.vasut@gmail.com
+Cc: linux-mtd@lists.infradead.org, thomas.petazzoni@bootlin.com,
+ david.oberhollenzer@sigma-star.at,
+ Quentin Schulz <quentin.schulz@bootlin.com>
+Subject: [PATCH v2 2/4] libubi: add volume flags to ubi_mkvol_request
+Date: Thu, 28 Jun 2018 09:43:42 +0200
+Message-Id: <20180628074344.10249-3-quentin.schulz@bootlin.com>
+In-Reply-To: <20180628074344.10249-1-quentin.schulz@bootlin.com>
+References: <20180628074344.10249-1-quentin.schulz@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,63 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTGludXMsDQoNClRoYW5rcyBmb3IgdGhlIHJldmlldy4NCg0KPiAtLS0tLU9yaWdpbmFsIE1l
-c3NhZ2UtLS0tLQ0KPiBGcm9tOiBMaW51cyBXYWxsZWlqIFttYWlsdG86bGludXMud2FsbGVpakBs
-aW5hcm8ub3JnXQ0KPiBTZW50OiBUaHVyc2RheSwgSnVuZSAyOCwgMjAxOCAxMjoyNCBQTQ0KPiBU
-bzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJv
-cmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9uQGJvb3RsaW4uY29tPjsgUmljaGFyZCBXZWlu
-YmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD47DQo+IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFk
-ZWFkLm9yZz47IEJyaWFuIE5vcnJpcw0KPiA8Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPjsg
-TWFyayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPjsgRmxvcmlhbiBGYWluZWxsaQ0KPiA8
-Zi5mYWluZWxsaUBnbWFpbC5jb20+OyBNYXJrdXMgTWF5ZXIgPG1tYXllckBicm9hZGNvbS5jb20+
-OyBSb2dlciBRdWFkcm9zDQo+IDxyb2dlcnFAdGkuY29tPjsgTGFkaXNsYXYgTWljaGwgPGxhZGlz
-QGxpbnV4LW1pcHMub3JnPjsgYWRhQHRob3JzaXMuY29tOw0KPiBob25naHVpLnpoYW5nQG1lZGlh
-dGVrLmNvbTsgTWlxdcOobCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+OyBsaW51
-eC0NCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5v
-cmc7IG5hZ2FzdXJlc2hrdW1hcnJlbGxpQGdtYWlsLmNvbTsNCj4gTWljaGFsIFNpbWVrIDxtaWNo
-YWxzQHhpbGlueC5jb20+DQo+IFN1YmplY3Q6IFJlOiBbW0xJTlVYIFBBVENIIHYxMF0gMS80XSBE
-ZXZpY2V0cmVlOiBBZGQgcGwzNTMgc21jIGNvbnRyb2xsZXIgZGV2aWNldHJlZQ0KPiBiaW5kaW5n
-IGluZm9ybWF0aW9uDQo+IA0KPiBPbiBUaHUsIEp1biAyMSwgMjAxOCBhdCA4OjQzIEFNIE5hZ2Eg
-U3VyZXNoa3VtYXIgUmVsbGkNCj4gPG5hZ2Euc3VyZXNoa3VtYXIucmVsbGlAeGlsaW54LmNvbT4g
-d3JvdGU6DQo+IA0KPiBUaGFua3MgZm9yIHlvdXIgcGF0Y2ghDQo+IA0KPiA+IEFkZCBwbDM1MyBz
-dGF0aWMgbWVtb3J5IGNvbnRyb2xsZXIgZGV2aWNldHJlZSBiaW5kaW5nIGluZm9ybWF0aW9uLg0K
-PiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTmFnYSBTdXJlc2hrdW1hciBSZWxsaQ0KPiA+IDxuYWdh
-LnN1cmVzaGt1bWFyLnJlbGxpQHhpbGlueC5jb20+DQo+ID4gK0RldmljZSB0cmVlIGJpbmRpbmdz
-IGZvciBBUk0gUEwzNTMgc3RhdGljIG1lbW9yeSBjb250cm9sbGVyDQo+ID4gKw0KPiA+ICtQTDM1
-MyBzdGF0aWMgbWVtb3J5IGNvbnRyb2xsZXIgc3VwcG9ydHMgdHdvIGtpbmRzIG9mIG1lbW9yeQ0K
-PiA+ICtpbnRlcmZhY2VzLmkuZSBOQU5EIGFuZCBTUkFNL05PUiBpbnRlcmZhY2VzLg0KPiA+ICtU
-aGUgYWN0dWFsIGRldmljZXMgYXJlIGluc3RhbnRpYXRlZCBmcm9tIHRoZSBjaGlsZCBub2RlcyBv
-ZiBwbDM1MyBzbWMgbm9kZS4NCj4gDQo+IFNlZSBhbmQgcmVmZXJlbmNlIHRoZSBzcGVjaWFsIFBy
-aW1lQ2VsbCBEVCBiaW5kaW5nczoNCj4gRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L2FybS9wcmltZWNlbGwudHh0DQo+IA0KPiA+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ICst
-IGNvbXBhdGlibGUgICAgICAgICAgIDogTXVzdCBiZSAiYXJtLHBsMzUzLXNtYy1yMnAxIg0KPiAN
-Cj4gU2hvdWxkIGJlOg0KPiANCj4gImFybSxwbDM1My1zbWMtcjJwMSIsICJhcm0scHJpbWVjZWxs
-IjsNCj4gDQo+IEl0IHdpbGwgYmUgcG9zc2libGUgZm9yIHRoZSBMaW51eCBBTUJBIGNvcmUgdG8g
-cHJvYmUgdGhlIGRldmljZSBmcm9tIGp1c3QgcmVhZGluZyBvdXQgdGhlDQo+IHByaW1lY2VsbCBJ
-RCByZWdpc3RlcnMsIHNvIHRoZSBmaXJzdCBjb21wYXRpYmxlIHN0cmluZyB3aWxsIG5vdCBldmVu
-IGJlIHVzZWQgYnkgbWFueSBPUzplcy4NClRoYW5rcyBmb3IgcG9pbnRpbmcgdGhlIHByaW1lY2Vs
-bC50eHQsIHdpbGwgYXBwZW5kIHRoZSAiYXJtLHByaW1lY2VsbCIgZW50cnkgaW4gbmV4dCB2ZXJz
-aW9uLg0KPiANCj4gPiArLSByZWcgICAgICAgICAgICAgICAgICA6IENvbnRyb2xsZXIgcmVnaXN0
-ZXJzIG1hcCBhbmQgbGVuZ3RoLg0KPiA+ICstIGNsb2NrLW5hbWVzICAgICAgICAgIDogTGlzdCBv
-ZiBpbnB1dCBjbG9jayBuYW1lcyAtICJyZWZfY2xrIiwgImFwZXJfY2xrIg0KPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgKFNlZSBjbG9jayBiaW5kaW5ncyBmb3IgZGV0YWlscykuDQo+IA0K
-PiBUaGUgQU1CQSBwcmltZWNlbGwgcGVyaXBoZXJhbCBjbG9jayAoY2xvY2tpbmcgdGhlIHNpbGlj
-b24pIG11c3QgYmUgbmFtZWQgImFwYl9wY2xrIi4NCk9rLCB3aWxsIHVwZGF0ZSBpbiBuZXh0IHZl
-cnNpb24uDQo+IA0KPiA+ICstIGNsb2NrcyAgICAgICAgICAgICAgIDogQ2xvY2sgcGhhbmRsZXMg
-KHNlZSBjbG9jayBiaW5kaW5ncyBmb3IgZGV0YWlscykuDQo+ID4gKy0gYWRkcmVzcy1jZWxscyAg
-ICAgICAgICAgICAgICA6IE11c3QgYmUgMS4NCj4gPiArLSBzaXplLWNlbGxzICAgICAgICAgICA6
-IE11c3QgYmUgMS4NCj4gPiArDQo+ID4gK0NoaWxkIG5vZGVzOg0KPiA+ICsgRm9yIE5BTkQgdGhl
-ICJhcm0scGwzNTMtbmFuZC1yMnAxIiBhbmQgZm9yIE5PUiB0aGUgImNmaS1mbGFzaCINCj4gPiAr
-ZHJpdmVycyBhcmUgc3VwcG9ydGVkIGFzIGNoaWxkIG5vZGVzLg0KPiA+ICsNCj4gPiArZm9yIE5B
-TkQgcGFydGl0aW9uIGluZm9ybWF0aW9uIHBsZWFzZSByZWZlciB0aGUgYmVsb3cgZmlsZQ0KPiA+
-ICtEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbXRkL3BhcnRpdGlvbi50eHQNCj4g
-PiArDQo+ID4gK0V4YW1wbGU6DQo+ID4gKyAgICAgICBzbWNjOiBtZW1vcnktY29udHJvbGxlckBl
-MDAwZTAwMA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAiYXJtLHBs
-MzUzLXNtYy1yMnAxIg0KPiANCj4gQWRkICwgImFybSxwcmltZWNlbGwiOw0KT2suIFdpbGwgdXBk
-YXRlIGluIG5leHQgdmVyc2lvbi4NCj4gDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xv
-Y2stbmFtZXMgPSAibWVtY2xrIiwgImFjbGsiOw0KPiANCj4gVGhpcyBkb2Vzbid0IGV2ZW4gaGF2
-ZSB0aGUgc2FtZSBuYW1lIGFzIGluIHRoZSBiaW5kaW5ncyBhYm92ZSwgSSB0aGluayB0aGUgbGF0
-dGVyIHNob3VsZCBiZQ0KPiBuYW1lZCAiYXBiX3BjbGsiLg0KT2ssIGl04oCZcyBhIG1pc3Rha2Us
-IEkgd2lsbCBjb3JyZWN0IGl0IGluIG5leHQgdmVyc2lvbi4NCj4gDQo+IE90aGVyd2lzZSBpdCBs
-b29rcyBnb29kIQ0KPiANCj4gWW91cnMsDQo+IExpbnVzIFdhbGxlaWoNCg0KVGhhbmtzIGZvciB5
-b3VyIHJldmlldy4NCg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hrdW1hciBSZWxsaQ0K
+Now that we have per-UBI volume flags (for instance for skipping CRC
+check when opening it) from the Linux header, let's add it to the
+ubi_mkvol_request in libubi and assign the flags to ubi_mkvol_req from
+the Linux header from ubi_mkvol.
+
+Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+---
+ include/libubi.h | 2 ++
+ lib/libubi.c     | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/include/libubi.h b/include/libubi.h
+index 4d6a7ee..46596a3 100644
+--- a/include/libubi.h
++++ b/include/libubi.h
+@@ -69,6 +69,7 @@ struct ubi_attach_request
+  * @bytes: volume size in bytes
+  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
+  * @name: volume name
++ * @flags: volume flags
+  */
+ struct ubi_mkvol_request
+ {
+@@ -77,6 +78,7 @@ struct ubi_mkvol_request
+ 	long long bytes;
+ 	int vol_type;
+ 	const char *name;
++	uint8_t flags;
+ };
+ 
+ /**
+diff --git a/lib/libubi.c b/lib/libubi.c
+index 978b433..4322a19 100644
+--- a/lib/libubi.c
++++ b/lib/libubi.c
+@@ -1000,6 +1000,7 @@ int ubi_mkvol(libubi_t desc, const char *node, struct ubi_mkvol_request *req)
+ 	r.alignment = req->alignment;
+ 	r.bytes = req->bytes;
+ 	r.vol_type = req->vol_type;
++	r.flags = req->flags;
+ 
+ 	n = strlen(req->name);
+ 	if (n > UBI_MAX_VOLUME_NAME)
+-- 
+2.14.1
