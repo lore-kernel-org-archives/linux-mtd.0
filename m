@@ -1,32 +1,35 @@
-Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
+Received: from mail-sn1nam01on0081.outbound.protection.outlook.com
+ ([104.47.32.81] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fYgc3-0004dH-6d
- for linux-mtd@lists.infradead.org; Thu, 28 Jun 2018 23:46:09 +0000
-Received: by mail-pl0-x243.google.com with SMTP id d10-v6so3512066plo.5
- for <linux-mtd@lists.infradead.org>; Thu, 28 Jun 2018 16:45:56 -0700 (PDT)
-From: Kevin Hilman <khilman@baylibre.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Yixun Lan <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>,
- Liang Yang <liang.yang@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
- Carlo Caione <carlo@caione.org>, Rob Herring <robh@kernel.org>,
- Jian Hu <jian.hu@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-3-yixun.lan@amlogic.com>
- <20180624213844.2207ca6f@bbrezillon> <7ha7rfiz3c.fsf@baylibre.com>
- <20180628090034.0637a062@xps13>
-Date: Thu, 28 Jun 2018 16:45:53 -0700
-In-Reply-To: <20180628090034.0637a062@xps13> (Miquel Raynal's message of "Thu,
- 28 Jun 2018 09:00:34 +0200")
-Message-ID: <7hr2kqfpam.fsf@baylibre.com>
+ id 1fYkos-0003q7-GS
+ for linux-mtd@lists.infradead.org; Fri, 29 Jun 2018 04:15:40 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>, Florian
+ Fainelli <f.fainelli@gmail.com>, Markus Mayer <mmayer@broadcom.com>, Roger
+ Quadros <rogerq@ti.com>, Ladislav Michl <ladis@linux-mips.org>,
+ "ada@thorsis.com" <ada@thorsis.com>, "honghui.zhang@mediatek.com"
+ <honghui.zhang@mediatek.com>, =?utf-8?B?TWlxdcOobCBSYXluYWw=?=
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
+Subject: RE: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Date: Fri, 29 Jun 2018 04:15:24 +0000
+Message-ID: <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CACRpkdaEsEAiGpieJK1AA8HHLzZc7Tdc932rhdayg06rFU1hNA@mail.gmail.com>
+ <MWHPR02MB26232270DED605627B2CF22FAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <CACRpkdZb6NMHtai1DBa+7m2ieZJZiAB7d1vSuP376rHQKpOf+A@mail.gmail.com>
+In-Reply-To: <CACRpkdZb6NMHtai1DBa+7m2ieZJZiAB7d1vSuP376rHQKpOf+A@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,222 +39,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
-
-Miquel Raynal <miquel.raynal@bootlin.com> writes:
-
-> On Wed, 27 Jun 2018 16:33:43 -0700, Kevin Hilman <khilman@baylibre.com>
-> wrote:
->
->> Hi Boris,
->> 
->> Boris Brezillon <boris.brezillon@bootlin.com> writes:
->> 
->> > Hi Yixun,
->> >
->> > On Wed, 13 Jun 2018 16:13:14 +0000
->> > Yixun Lan <yixun.lan@amlogic.com> wrote:
->> >  
->> >> From: Liang Yang <liang.yang@amlogic.com>
->> >> 
->> >> Add initial support for the Amlogic NAND flash controller which found
->> >> in the Meson-GXBB/GXL/AXG SoCs.
->> >> 
->> >> Singed-off-by: Liang Yang <liang.yang@amlogic.com>
->> >> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
->> >> ---
->> >>  drivers/mtd/nand/raw/Kconfig      |    8 +
->> >>  drivers/mtd/nand/raw/Makefile     |    3 +
->> >>  drivers/mtd/nand/raw/meson_nand.c | 1422 +++++++++++++++++++++++++++++
->> >>  3 files changed, 1433 insertions(+)
->> >>  create mode 100644 drivers/mtd/nand/raw/meson_nand.c  
->> >
->> > Can you run checkpatch.pl --strict and fix the coding style issues?
->> >  
->> >> 
->> >> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
->> >> index 19a2b283fbbe..b3c17a3ca8f4 100644
->> >> --- a/drivers/mtd/nand/raw/Kconfig
->> >> +++ b/drivers/mtd/nand/raw/Kconfig
->> >> @@ -534,4 +534,12 @@ config MTD_NAND_MTK
->> >>  	  Enables support for NAND controller on MTK SoCs.
->> >>  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
->> >>  
->> >> +config MTD_NAND_MESON
->> >> +	tristate "Support for NAND flash controller on Amlogic's Meson SoCs"
->> >> +	depends on ARCH_MESON || COMPILE_TEST
->> >> +	select COMMON_CLK_REGMAP_MESON
->> >> +	select MFD_SYSCON
->> >> +	help
->> >> +	  Enables support for NAND controller on Amlogic's Meson SoCs.
->> >> +
->> >>  endif # MTD_NAND
->> >> diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
->> >> index 165b7ef9e9a1..cdf6162f38c3 100644
->> >> --- a/drivers/mtd/nand/raw/Makefile
->> >> +++ b/drivers/mtd/nand/raw/Makefile
->> >> @@ -1,5 +1,7 @@
->> >>  # SPDX-License-Identifier: GPL-2.0
->> >>  
->> >> +ccflags-$(CONFIG_MTD_NAND_MESON) += -I$(srctree)/drivers/clk/meson  
->> >
->> > Please don't do that. If you need to expose common regs, put them
->> > in include/linux/soc/meson/. I'm also not sure why you need to access
->> > the clk regs directly. Why can't you expose the MMC/NAND clk as a clk
->> > provider whose driver would be placed in drivers/clk and which would use
->> > the mmc syscon. This way the same clk driver could be used for both
->> > MMC and NAND clk indifferently, and the NAND driver would be much
->> > simpler.  
->> 
->> [...]
->> 
->> >> +
->> >> +	return 0;
->> >> +}
->> >> +
->> >> +static const char * sd_emmc_ext_clk0_parent_names[MUX_CLK_NUM_PARENTS];
->> >> +
->> >> +static struct clk_regmap sd_emmc_c_ext_clk0_sel = {
->> >> +	.data = &(struct clk_regmap_mux_data){
->> >> +		.offset = SD_EMMC_CLOCK,
->> >> +		.mask = 0x3,
->> >> +		.shift = 6,
->> >> +	},
->> >> +	.hw.init = &(struct clk_init_data) {
->> >> +		.name = "sd_emmc_c_nand_clk_mux",
->> >> +		.ops = &clk_regmap_mux_ops,
->> >> +		.parent_names = sd_emmc_ext_clk0_parent_names,
->> >> +		.num_parents = ARRAY_SIZE(sd_emmc_ext_clk0_parent_names),
->> >> +		.flags = CLK_SET_RATE_PARENT,
->> >> +	},
->> >> +};
->> >> +
->> >> +static struct clk_regmap sd_emmc_c_ext_clk0_div = {
->> >> +	.data = &(struct clk_regmap_div_data){
->> >> +		.offset = SD_EMMC_CLOCK,
->> >> +		.shift = 0,
->> >> +		.width = 6,
->> >> +		.flags = CLK_DIVIDER_ROUND_CLOSEST | CLK_DIVIDER_ONE_BASED,
->> >> +	},
->> >> +	.hw.init = &(struct clk_init_data) {
->> >> +		.name = "sd_emmc_c_nand_clk_div",
->> >> +		.ops = &clk_regmap_divider_ops,
->> >> +		.parent_names = (const char *[]){ "sd_emmc_c_nand_clk_mux" },
->> >> +		.num_parents = 1,
->> >> +		.flags = CLK_SET_RATE_PARENT,
->> >> +	},
->> >> +};
->> >> +
->> >> +static int meson_nfc_clk_init(struct meson_nfc *nfc)
->> >> +{
->> >> +	struct clk_regmap *mux = &sd_emmc_c_ext_clk0_sel;
->> >> +	struct clk_regmap *div = &sd_emmc_c_ext_clk0_div;
->> >> +	struct clk *clk;
->> >> +	int i, ret;
->> >> +
->> >> +	/* request core clock */
->> >> +	nfc->core_clk = devm_clk_get(nfc->dev, "core");
->> >> +	if (IS_ERR(nfc->core_clk)) {
->> >> +		dev_err(nfc->dev, "failed to get core clk\n");
->> >> +		return PTR_ERR(nfc->core_clk);
->> >> +	}
->> >> +
->> >> +	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
->> >> +	regmap_update_bits(nfc->reg_clk, 0,
->> >> +			CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK,
->> >> +			CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK);
->> >> +
->> >> +	/* get the mux parents */
->> >> +	for (i = 0; i < MUX_CLK_NUM_PARENTS; i++) {
->> >> +		char name[16];
->> >> +
->> >> +		snprintf(name, sizeof(name), "clkin%d", i);
->> >> +		clk = devm_clk_get(nfc->dev, name);
->> >> +		if (IS_ERR(clk)) {
->> >> +			if (clk != ERR_PTR(-EPROBE_DEFER))
->> >> +				dev_err(nfc->dev, "Missing clock %s\n", name);
->> >> +			return PTR_ERR(clk);
->> >> +		}
->> >> +
->> >> +		sd_emmc_ext_clk0_parent_names[i] = __clk_get_name(clk);
->> >> +	}
->> >> +
->> >> +	mux->map = nfc->reg_clk;
->> >> +	clk = devm_clk_register(nfc->dev, &mux->hw);
->> >> +	if (WARN_ON(IS_ERR(clk)))
->> >> +		return PTR_ERR(clk);
->> >> +
->> >> +	div->map = nfc->reg_clk;
->> >> +	nfc->device_clk = devm_clk_register(nfc->dev, &div->hw);
->> >> +	if (WARN_ON(IS_ERR(nfc->device_clk)))
->> >> +		return PTR_ERR(nfc->device_clk);
->> >> +
->> >> +	ret = clk_prepare_enable(nfc->core_clk);
->> >> +	if (ret) {
->> >> +		dev_err(nfc->dev, "failed to enable core clk\n");
->> >> +		return ret;
->> >> +	}
->> >> +
->> >> +	ret = clk_prepare_enable(nfc->device_clk);
->> >> +	if (ret) {
->> >> +		dev_err(nfc->dev, "failed to enable device clk\n");
->> >> +		clk_disable_unprepare(nfc->core_clk);
->> >> +		return ret;
->> >> +	}
->> >> +
->> >> +	return 0;
->> >> +}  
->> >
->> >
->> > As said above, I don't like having a clk driver here, especially since
->> > the registers you're accessing are not part of the NAND controller
->> > registers. Please try to create a driver in drivers/clk/ for that.  
->> 
->> We went back and forth on this one on some off-list reviews.
->> 
->> Had we known that the NAND controller was (re)using the clock registers
->> internal to the MMC IP block from the beginning, we would have written a
->> clock provider in drivers/clk for this, and shared it.
->> 
->> However, when I wrote the MMC driver[1] (already upstream) along with
->> the bindings[2], we did not fathom that the internal mux and divider
->> would be "borrowed" by another device. :(
->> 
->> We only recently found out that the NAND controller "borrows" one of the
->> MMC clocks, whose registers are inside the MMC range.  Taking the clock
->> out of the MMC driver and into its own clock-provider implies redoing
->> the MMC driver, as well as its bindings, which we wanted to avoid
->> (especially the binding changes.)
->> 
->> We (I can take the blame) decided that since the MMC and NAND are
->> mutually exclusive (they also share pins), that allowing NAND to reuse
->> the MMC range would be a good compromise.  The DT still accurately
->> describes the hardware, but we don't have to throw a large wrench into
->> the DT bindings just for a newly discovered shared clock.
->> 
->> I agree, it's not the prettiest thing, but when we cannot know the full
->> details of the hardware when we start, sometimes we end up in a bit of a
->> mess that requires some compromise.
->
-> I totally understand your situation but as MMC and NAND are mutually
-> exclusive, how is this a problem to have a dedicated clock driver used
-> only by the NAND controller (as maybe a first step)? I mean, if you
-> don't change the MMC bindings, then the MMC driver will still use its
-> own 'local' clock driver, right?
-
-Yeah, I think you're right.  That would work too.
-
-> I don't know if you can have two nodes reserving the same address
-> range though.
-
-You can, but it's a race who gets to claim the region.
-
-You'd have to have the new clock-controler disabled by default, and have
-any boards that use the NAND disable the MMC and enable the clock
-controller node.
-
-But I think that should work.
-
-Yixun, can you give this approach a try?
-
-Kevin
+SGkgTGludXMsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXMg
+V2FsbGVpaiBbbWFpbHRvOmxpbnVzLndhbGxlaWpAbGluYXJvLm9yZ10NCj4gU2VudDogVGh1cnNk
+YXksIEp1bmUgMjgsIDIwMTggMTE6NDQgUE0NCj4gVG86IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkg
+PG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXpp
+bGxvbkBib290bGluLmNvbT47IFJpY2hhcmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+Ow0K
+PiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBCcmlhbiBOb3JyaXMNCj4g
+PGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT47IE1hcmsgVmFzdXQgPG1hcmVrLnZhc3V0QGdt
+YWlsLmNvbT47IEZsb3JpYW4gRmFpbmVsbGkNCj4gPGYuZmFpbmVsbGlAZ21haWwuY29tPjsgTWFy
+a3VzIE1heWVyIDxtbWF5ZXJAYnJvYWRjb20uY29tPjsgUm9nZXIgUXVhZHJvcw0KPiA8cm9nZXJx
+QHRpLmNvbT47IExhZGlzbGF2IE1pY2hsIDxsYWRpc0BsaW51eC1taXBzLm9yZz47IGFkYUB0aG9y
+c2lzLmNvbTsNCj4gaG9uZ2h1aS56aGFuZ0BtZWRpYXRlay5jb207IE1pcXXDqGwgUmF5bmFsIDxt
+aXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQu
+b3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBuYWdhc3VyZXNoa3VtYXJyZWxsaUBn
+bWFpbC5jb207DQo+IE1pY2hhbCBTaW1layA8bWljaGFsc0B4aWxpbnguY29tPg0KPiBTdWJqZWN0
+OiBSZTogW1tMSU5VWCBQQVRDSCB2MTBdIDQvNF0gbXRkOiByYXduYW5kOiBwbDM1MzogQWRkIGJh
+c2ljIGRyaXZlciBmb3IgYXJtDQo+IHBsMzUzIHNtYyBuYW5kIGludGVyZmFjZQ0KPiANCj4gT24g
+VGh1LCBKdW4gMjgsIDIwMTggYXQgMjoxMyBQTSBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIDxuYWdh
+c3VyZUB4aWxpbnguY29tPiB3cm90ZToNCj4gDQo+IA0KPiA+ID4gVGhpcyBkcml2ZXIgaGFzIHRo
+ZSBzYW1lIHByb2JsZW0gYXMgdGhlIG90aGVyIHBhdGNoZXM6DQo+ID4gPiB1c2UgdGhlIEFSTV9B
+TUJBIHByaW1lY2VsbCBtYWdpYyBudW1iZXJzIGRldGVjdGlvbiwgYW5kIHRoZSBQcmltZUNlbGwg
+YnVzLg0KPiA+DQo+ID4gSGVyZSB0aGUgY2hpbGQgaXMgTkFORCBjb250cm9sbGVyIGFuZCB0aGUg
+cGFyZW50IGlzIFBMMzUzIFNNQywgc28gZG8NCj4gPiB3ZSBuZWVkIHRvIHVwZGF0ZSB0aGlzIGFs
+c28gYXMgQU1CQSBkcml2ZXI/DQo+IA0KPiBObywgc29ycnkuIFRoZSBwYXJlbnQgaXMgc3Bhd25p
+bmcgYW5vdGhlciBkZXZpY2UgYW5kIHlvdSBzaG91bGQgaW5kZWVkIHVzZSBhIHBsYXRmb3JtIGRl
+dmljZQ0KPiBmb3IgdGhhdC4NCj4gDQpPaywgeW91IG1lYW4gcGxhdGZvcm0gZHJpdmVyIG1vZGVs
+IGlzIHN1ZmZpY2llbnQgZm9yIGJvdGggcGwzNTMtc21jLmMgYW5kIHBsMzUzX25hbmQuYyBkcml2
+ZXJzPw0KT3IgQU1CQSBtb2RlbCBpcyBmb3IgcGwzNTMtc21jIGFuZCBwbGF0Zm9ybSBkcml2ZXIg
+bW9kZWwgaXMgZm9yIHBsMzUzLW5hbmQ/DQoNClRoYW5rcywNCk5hZ2EgU3VyZXNoa3VtYXIgUmVs
+bGkuDQoNCj4gRm9yZ2V0IHRoaXMgY29tbWVudC4NCj4gDQo+IFlvdXJzLA0KPiBMaW51cyBXYWxs
+ZWlqDQo=
