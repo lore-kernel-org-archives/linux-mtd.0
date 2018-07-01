@@ -1,9 +1,9 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZZOs-000371-UB
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 10:16:13 +0000
+ id 1fZZQD-0003od-6h
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 10:17:35 +0000
 Subject: Patch "mtd: cfi_cmdset_0002: Change erase functions to retry for
- error" has been added to the 4.4-stable tree
+ error" has been added to the 4.9-stable tree
 To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
  computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
@@ -11,8 +11,8 @@ To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Sun, 01 Jul 2018 12:09:48 +0200
-Message-ID: <1530439788226249@kroah.com>
+Date: Sun, 01 Jul 2018 12:10:10 +0200
+Message-ID: <153043981064185@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -30,12 +30,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: cfi_cmdset_0002: Change erase functions to retry for error
 
-to the 4.4-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -80,7 +80,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2239,6 +2239,7 @@ static int __xipram do_erase_chip(struct
+@@ -2237,6 +2237,7 @@ static int __xipram do_erase_chip(struct
  	unsigned long int adr;
  	DECLARE_WAITQUEUE(wait, current);
  	int ret = 0;
@@ -88,7 +88,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	adr = cfi->addr_unlock1;
  
-@@ -2256,6 +2257,7 @@ static int __xipram do_erase_chip(struct
+@@ -2254,6 +2255,7 @@ static int __xipram do_erase_chip(struct
  	ENABLE_VPP(map);
  	xip_disable(map, chip, adr);
  
@@ -96,7 +96,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2310,6 +2312,9 @@ static int __xipram do_erase_chip(struct
+@@ -2308,6 +2310,9 @@ static int __xipram do_erase_chip(struct
  		map_write( map, CMD(0xF0), chip->start );
  		/* FIXME - should have reset delay before continuing */
  
@@ -106,7 +106,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  		ret = -EIO;
  	}
  
-@@ -2329,6 +2334,7 @@ static int __xipram do_erase_oneblock(st
+@@ -2327,6 +2332,7 @@ static int __xipram do_erase_oneblock(st
  	unsigned long timeo = jiffies + HZ;
  	DECLARE_WAITQUEUE(wait, current);
  	int ret = 0;
@@ -114,7 +114,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  
  	adr += chip->start;
  
-@@ -2346,6 +2352,7 @@ static int __xipram do_erase_oneblock(st
+@@ -2344,6 +2350,7 @@ static int __xipram do_erase_oneblock(st
  	ENABLE_VPP(map);
  	xip_disable(map, chip, adr);
  
@@ -122,7 +122,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2403,6 +2410,9 @@ static int __xipram do_erase_oneblock(st
+@@ -2401,6 +2408,9 @@ static int __xipram do_erase_oneblock(st
  		map_write( map, CMD(0xF0), chip->start );
  		/* FIXME - should have reset delay before continuing */
  
@@ -136,6 +136,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
 
-queue-4.4/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-queue-4.4/mtd-cfi_cmdset_0002-change-write-buffer-to-check-correct-value.patch
-queue-4.4/mips-bcm47xx-enable-74k-core-externalsync-for-pcie-erratum.patch
+queue-4.9/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
+queue-4.9/mtd-cfi_cmdset_0002-change-write-buffer-to-check-correct-value.patch
+queue-4.9/mips-bcm47xx-enable-74k-core-externalsync-for-pcie-erratum.patch
