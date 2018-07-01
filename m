@@ -1,17 +1,26 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from smtprelay0215.hostedemail.com ([216.40.44.215]
+ helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZjmW-0000vY-7q
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 21:21:18 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- Kees Cook <keescook@chromium.org>, Silvio Cesare <silvio.cesare@gmail.com>,
- stable@vger.kernel.org
-Subject: [PATCH 2/2] ubifs: Check data node size before truncate
-Date: Sun,  1 Jul 2018 23:20:51 +0200
-Message-Id: <20180701212051.29486-2-richard@nod.at>
-In-Reply-To: <20180701212051.29486-1-richard@nod.at>
-References: <20180701212051.29486-1-richard@nod.at>
+ id 1fZk4D-0007na-Rh
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 21:39:35 +0000
+Message-ID: <6d3fb517adb8880d9f7642d185405590dc9f7e83.camel@perches.com>
+Subject: Re: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
+From: Joe Perches <joe@perches.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Quentin Schulz
+ <quentin.schulz@bootlin.com>, dedekind1@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com
+Date: Sun, 01 Jul 2018 14:39:17 -0700
+In-Reply-To: <2098416.O8QMNZQyoz@blindfold>
+References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+ <20180701223347.2cef133b@bbrezillon>
+ <cdc8383433a1f67f4d5f5d9c528e116ee10c7466.camel@perches.com>
+ <2098416.O8QMNZQyoz@blindfold>
+Content-Type: text/plain; charset="ISO-8859-1"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +30,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Check whether the size is within bounds before using it.
-If the size is not correct, abort and dump the bad data node.
+On Sun, 2018-07-01 at 23:01 +0200, Richard Weinberger wrote:
+> Am Sonntag, 1. Juli 2018, 22:54:32 CEST schrieb Joe Perches:
+> > On Sun, 2018-07-01 at 22:33 +0200, Boris Brezillon wrote:
+> > > On Sun, 01 Jul 2018 21:35:57 +0200 Richard Weinberger <richard@nod.at> wrote:
+> > > > Am Donnerstag, 28. Juni 2018, 09:40:53 CEST schrieb Quentin Schulz:
+> > > > > Now that we have the logic for skipping CRC check for static UBI volumes
+> > > > > in the core, let's expose it to users.
+> > []
+> > > > > diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+> > []
+> > > > > @@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
+> > > > >  	    req->vol_type != UBI_STATIC_VOLUME)
+> > > > >  		goto bad;
+> > > > >  
+> > > > > +	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
+> > > 
+> > > Oops, missed that req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG check was
+> > > missing parens (checkpatch --strict should complain about that).
+> > 
+> > Why should checkpatch complain?
+> > & has higher precedence than &&.
+> 
+> The code is more readable.
 
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Silvio Cesare <silvio.cesare@gmail.com>
-Cc: stable@vger.kernel.org
-Fixes: 1e51764a3c2ac ("UBIFS: add new flash file system")
-Reported-by: Silvio Cesare <silvio.cesare@gmail.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/journal.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+IYO.  checkpatch doesn't care and I think it's unnecessary.
 
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index da8afdfccaa6..eea12d25a58b 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -1387,7 +1387,16 @@ int ubifs_jnl_truncate(struct ubifs_info *c, const struct inode *inode,
- 		else if (err)
- 			goto out_free;
- 		else {
--			if (le32_to_cpu(dn->size) <= dlen)
-+			int dn_len = le32_to_cpu(dn->size);
-+
-+			if (dn_len <= 0 || dn_len > UBIFS_BLOCK_SIZE) {
-+				ubifs_err(c, "bad data node (block %u, inode %lu)",
-+					  blk, inode->i_ino);
-+				ubifs_dump_node(c, dn);
-+				goto out_free;
-+			}
-+
-+			if (dn_len <= dlen)
- 				dlen = 0; /* Nothing to do */
- 			else {
- 				err = truncate_data_node(c, inode, blk, dn, &dlen);
--- 
-2.18.0
+Just fyi:
+
+checkpatch does suggest parenthesis removal with --strict
+when using
+	== or !=
+with
+	&& or ||
+
+e.g.:
+
+$ cat -n foo.c
+     1	bool function(void)
+     2	{
+     3		if (foo & 1 && bar & 2)
+     4			return true;
+     5		if ((foo & 1) && (bar && 2))
+     6			return true;
+     7		if (foo == 1 && bar != 2)
+     8			return true;
+     9		if ((foo == 1) && (bar != 2))
+    10			return true;
+    11		return false;
+    12	}
+
+$ ./scripts/checkpatch.pl -f --strict foo.c
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+#1: FILE: foo.c:1:
++bool function(void)
+
+CHECK: Unnecessary parentheses around 'foo == 1'
+#9: FILE: foo.c:9:
++	if ((foo == 1) && (bar != 2))
+
+CHECK: Unnecessary parentheses around 'bar != 2'
+#9: FILE: foo.c:9:
++	if ((foo == 1) && (bar != 2))
+
+total: 0 errors, 1 warnings, 2 checks, 12 lines checked
+
+NOTE: For some of the reported defects, checkpatch may be able to
+      mechanically convert to the typical style using --fix or --fix-inplace.
+
+foo.c has style problems, please review.
+
+NOTE: If any of the errors are false positives, please report
+      them to the maintainer, see CHECKPATCH in MAINTAINERS.
