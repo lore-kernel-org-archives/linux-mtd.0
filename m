@@ -1,20 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZgne-0002Dz-Mj
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 18:10:27 +0000
-Date: Sun, 1 Jul 2018 20:09:59 +0200
+ id 1fZgp2-0003xF-Uf
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 18:11:43 +0000
+Date: Sun, 1 Jul 2018 20:11:27 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v4 00/15] Update for QCOM NAND driver
-Message-ID: <20180701200959.2edb3306@xps13>
-In-Reply-To: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
-References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Mark
+ Brown <broonie@kernel.org>, linux-spi@vger.kernel.org, Rob Herring
+ <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
+ <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
+ Gala <galak@codeaurora.org>, devicetree@vger.kernel.org, Geert Uytterhoeven
+ <geert@linux-m68k.org>, Piotr Bugalski <Piotr.Bugalski@cryptera.com>, Peter
+ Pan <peterpansjtu@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>, Julien Su <juliensu@mxic.com.tw>, Mason Yang
+ <masonccyang@mxic.com.tw>, <zhengxunli@mxic.com.tw>
+Subject: Re: [PATCH v9 0/6] mtd: Add a SPI NAND driver
+Message-ID: <20180701201127.551d969c@xps13>
+In-Reply-To: <20180622122828.12939-1-boris.brezillon@bootlin.com>
+References: <20180622122828.12939-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,109 +32,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+Hi Boris,
 
-Abhishek Sahu <absahu@codeaurora.org> wrote on Wed, 20 Jun 2018
-12:57:27 +0530:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri, 22 Jun 2018
+14:28:22 +0200:
 
-> * v4:
+> Hello,
 >=20
-> 1. Added patch to make other ECC configurations function static.
-> 2. Clubbed the DT update patches.
-> 3. Removed the bad block related patch. Discussion is going on
->    related with for proper solution so planning to submit separate
->    patch series for all bad block related changes.
-> 4. Made the single codeword raw read function and used the same
->    for raw page read.
-> 5. Changes in erased codeword detection to raw read function.
+> Not much has changed in this v9 except for the addition of the macronix
+> driver. I mainly fixed bugs/issues reported by Miquel.
 >=20
-> * v3:
+> Mark, Rob, Geert, I dropped the controversial changes in the DT
+> bindings patch, since it's not something specific to SPI NAND, this
+> applies to SPI memory devices in general.
 >=20
-> 1. Addressed all review comments in v2.
-> 2. Added patch for removing redundant nand-ecc-step-size DT property.
-> 3. Renamed ECC configuration setup function with minor code changes.
-> 4. Modified comments and commit message for few patches.
+> Thanks,
 >=20
-> * v2:
+> Boris
 >=20
-> 1. Addressed all review comments in v1.
-> 1. Make the generic helper function for NAND ECC parameters setup
->    and used this helper function for QCOM and Denali nand driver
->    for ECC setup.
-> 2. Modified commit message for some of the patches and added more
->    comments.
-> 3. Added new patch for fixing =E2=80=98return 0=E2=80=99 for raw read.
-> 4. Removed the read last codeword part for nand oob write.
-> 5. Reorganized bad block check function and removed the
->    read_last_cw function completely.
+> v9 changes:
+> - add support for 2 SPI NANDs from Macronix
+> - a few fixes and improvements (see the changelog in each patch)
+> - drop the doc describing generic SPI device props in the DT binding
 >=20
-> * v1:
+> v8 changes:
+> - dropped patch 1 which has been applied
+> - fix various bugs in the core (see changelog in patch 1)
+> - add a commit message to patch 4
 >=20
-> This patch series mainly deals with error handling and erased page
-> bitflip detection for QCOM NAND driver.
+> v7 changes:
+> - Use the spi-mem interface
+> - Add support for on-die ECC
+> - Add support for Winbond W25M02GV chip
 >=20
-> 1. The error handling was missing for some of the cases so fixed
->    the same.
+> v6 changes:
+> - includes generic NAND framework patches in series
+> - rebase on nand/next (commit 6076fd1e9d879521f7082a5e22185b71e480b777)
+> - remove on-die ECC support
+> - remove devm_free() since everything allocated by devm_kmalloc() will be
+>   automatically freed when device is released
+> - add comment header for structs in spinand.h
+> - remove spinand_register()/unregister(), call spinand_detect() in
+>   spinand_init() and only expose spinand_init()/cleanup()
+> - add nand_release_bbt() in bbt.c and use it in nand_cleanup() and
+>   spinand_cleanup()
+> - use BIT(n) instead (1 << n) in macro of spinand.h
+> - rename spinand_alloc() to devm_spinand_alloc()
+> - name lables in better way
+> - fix some typos
+> - add empty lines between code blocks
 >=20
-> 2. Add the support for taking ECC strength from ONFI parameter.
->    The earlier QCOM boards were coming with 4-bit ECC chip but
->    now the same boards are coming with 8-bit ECC chip since the
->    earlier 4-bit parts are obsolete from some vendors.
+> v5 changes:
+> - rebase patch on nand/next with Boris's generic NAND framework patches[3]
+> - replace pr_xxx() with dev_xxx()
+> - replace kzalloc()i/kfree() with devm_kzalloc()/devm_kfree()
+> - rename spinand_op_init() to spinand_init_op() for consistency
+> - remove command opcode in function comments
+> - use BIT(n) instead (1 << n) in macro
+> - remove manufactures.c and put spinand_manufacturers table in core.c
+> - change spinand_write_reg() u8 *buf argument to u8 value,
+>   since the length is always 1
+> - remove spinand_manufacture->detect() check, since it is always !=3D NULL
+> - alloc spinand_ecc_engine struct in vendor.c when using on-die ECC
+>   (for hardware ECC, it should be in controllers/*.c)
+> - add comment header for struct spinand_op
+> - fix timeout bug in spinand_wait(), thanks for Arnaud's debug
+> - make spinand_manufacturers const
+> - add ecc_engine_ops pointer in struct micron_spinand_info
+> - make controller->cap assignment right with SPI_TX/RX_QUAD/DUAL flag
 >=20
-> 3. We got few issues related with NAND erased page bitflips. The
->    QCOM NAND controller can=E2=80=99t detect the bitflip in completely er=
-ased
->    page so added the support to detect the same. It implemented the
->    logic mentioned in patch [1] which didn=E2=80=99t go in mainline and l=
-ater
->    the generic functions were provided [2] to count the number of
->    bitflips and make all 0xff. This patch series did some optimization
->    logic to prevent the unnecessary full page raw read and data copy
->    from QCOM NAND controller to DMA.
+> v4 changes:
+> - initialize struct mtd_oob_ops to 0 in bbt.c
+> - rename new added helper in nand.h to nand_check_xxxx()
+> - add struct mtd_oob_ops consistency check in nand_check_oob_ops()
+> - add dataleft in struct nand_page_iter instead of offs
+> - remove spinand_manufacturers->ops->detect() check since it is mandatory
+> - remove spinand_set_manufacturer_ops() and do the job in
+>   spinand_manufacturer_detect()
+> - move .priv out of struct spinand_controller
+> - add spinand_alloc/free/register/unregister() and make
+>   spinand_detect/init() static
+> - make BBT be configured by device tree
+> - chip->id.data stores raw ID directly
+> - refine device info print message after detect success
+> - add struct mtd_layout_ops pointer in struct micron_spinand_info
+> - remove micron_spinand_init() and do its job in micron_spinand_detect()
+> - fix BBT block cannot be erased bug
 >=20
-> 4. Following are the testing done for these patches in QCOM IPQ8074
->    HK01 (4-bit and 8-bit ECC chip) and IPQ806x AP148 boards.
->     a. Run all mtd test and check if it passes
->     b. Introduce custom bitflips in erased page and check if it
->        returns no error/EUCLEAN/EBADMSG depending upon number of
->        bitflips and position.
->     c. Introduce failure condition for operational failure and
->        check if it detects the same.
+> v3 changes:
+> - rebase patch on 4.11-rc1[2]
+> - change read ID method. read 4 bytes ID out then let ->detect() of each
+>   manufacutre driver to decode ID and detect the device.
+> - make SPI NAND id table private to each manufacutre driver
+> - fix coding style to make checkpatch.pl happy
+> - update the MAINTAINERS file for spi nand code
+> - add nand_size() helper in nand.h
+> - use nand_for_each_page() helper in spinand_do_read/write_ops()
+> - create helper to check boundaries in generic NAND code and use it
+>   in SPI NAND core
+> - rename spinand_base.c to core.c
+> - manufactures' drivers expose spinand_manufacturer struct instead of
+>   spinand_manufacturer_ops struct to keep Manufacture ID macro in
+>   manufactures' drivers and rename spinand_ids.c to manufacture.c
+> - rename spinand_micron.c to micron.c
+> - rename chips/ directory to controllers/
+> - rename generic_spi.c to generic-spi.c
+> - replace ->build_column_addr() and ->get_dummy() hooks with ->prepare_op=
+() in
+>   spinand_manufacturer_ops struct
+> - rename __spinand_erase() to spinand_erase()
+> - rename spinand_erase() to spinand_erase_skip_bbt()
+> - rename spinand_scan_ident() to spinand_detect()
+> - rename spinand_scan_tail() to spinand_init()
+> - move non detect related code from spinand_detect() to spinand_init()
+> - remove spinand_fill_nandd, assign nand->ops in spinand_detect()
+> - merge v2 patch 3(bad block support) and patch 4(BBT support)
+> - drop getchip parameter, remove spinand_get/remove_device(), take the lo=
+ck
+>   by caller directly
+> - fix function comment headers
+> - use nand_bbt_is_initialized() helper
+> - replace spinand_ecc_engine and spinand_controller object in spinand_dev=
+ice
+>   struct with pointer
+> - replace struct spinand_manufacturer_ops pointer in spinand_device struct
+>   with spinand_manufacturer struct
 >=20
-> [1]: https://patchwork.ozlabs.org/patch/328994/
-> [2]: https://patchwork.ozlabs.org/patch/509970/
+> v2 changes:
+> - replace "spi_nand" with "spinand".
+> - rename spi nand related structs for better understanding.
+> - introduce spi nand controller, manufacturer and ecc_engine struct.
+> - add spi nand manufacturer initialization function refer to Boris's
+>   manuf-init branch.
+> - remove NAND_SKIP_BBTSCAN from series. Add it later when enabling HW ECC.
+> - reorganize series according to Boris's suggestion.
 >=20
-> Abhishek Sahu (15):
->   mtd: rawnand: helper function for setting up ECC configuration
->   mtd: rawnand: denali: use helper function for ecc setup
->   dt-bindings: qcom_nandc: update for ECC strength and step size
->   mtd: rawnand: qcom: remove dt property nand-ecc-step-size
->   mtd: rawnand: qcom: use the ecc strength from device parameter
->   mtd: rawnand: qcom: wait for desc completion in all BAM channels
->   mtd: rawnand: qcom: erased page detection for uncorrectable errors
->     only
->   mtd: rawnand: qcom: fix null pointer access for erased page detection
->   mtd: rawnand: qcom: parse read errors for read oob also
->   mtd: rawnand: qcom: modify write_oob to remove read codeword part
->   mtd: rawnand: qcom: fix return value for raw page read
->   mtd: rawnand: qcom: check for operation errors in case of raw read
->   mtd: rawnand: qcom: code reorganization for raw read
->   mtd: rawnand: qcom: erased page bitflips detection
->   mtd: rawnand: provide only single helper function for ECC conf
+> Boris Brezillon (2):
+>   dt-bindings: Add bindings for SPI NAND devices
+>   mtd: spinand: Add initial support for the MX35LF1GE4AB chip
 >=20
->  .../devicetree/bindings/mtd/qcom_nandc.txt         |   7 +-
->  drivers/mtd/nand/raw/denali.c                      |  30 +-
->  drivers/mtd/nand/raw/nand_base.c                   |  72 ++-
->  drivers/mtd/nand/raw/qcom_nandc.c                  | 491 ++++++++++++++-=
-------
->  include/linux/mtd/rawnand.h                        |  10 +-
->  5 files changed, 380 insertions(+), 230 deletions(-)
+> Frieder Schrempf (1):
+>   mtd: spinand: Add initial support for Winbond W25M02GV
+>=20
+> Miquel Raynal (1):
+>   mtd: spinand: macronix: Add support for MX35LF2GE4AB
+>=20
+> Peter Pan (2):
+>   mtd: nand: Add core infrastructure to support SPI NANDs
+>   mtd: spinand: Add initial support for Micron MT29F2G01ABAGD
+>=20
+>  Documentation/devicetree/bindings/mtd/spi-nand.txt |    5 +
+>  drivers/mtd/nand/Kconfig                           |    1 +
+>  drivers/mtd/nand/Makefile                          |    1 +
+>  drivers/mtd/nand/spi/Kconfig                       |    7 +
+>  drivers/mtd/nand/spi/Makefile                      |    3 +
+>  drivers/mtd/nand/spi/core.c                        | 1168 ++++++++++++++=
+++++++
+>  drivers/mtd/nand/spi/macronix.c                    |  144 +++
+>  drivers/mtd/nand/spi/micron.c                      |  133 +++
+>  drivers/mtd/nand/spi/winbond.c                     |  141 +++
+>  include/linux/mtd/spinand.h                        |  421 +++++++
+>  include/linux/spi/spi-mem.h                        |    4 +-
+>  11 files changed, 2027 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/spi-nand.txt
+>  create mode 100644 drivers/mtd/nand/spi/Kconfig
+>  create mode 100644 drivers/mtd/nand/spi/Makefile
+>  create mode 100644 drivers/mtd/nand/spi/core.c
+>  create mode 100644 drivers/mtd/nand/spi/macronix.c
+>  create mode 100644 drivers/mtd/nand/spi/micron.c
+>  create mode 100644 drivers/mtd/nand/spi/winbond.c
+>  create mode 100644 include/linux/mtd/spinand.h
 >=20
 
-Thank you very much for the series and the changes you have done.
+Series applied.
 
-Applied all patches but "erased page bitflips detection" because I'm
-waiting for one small modification on this one.
-
-Thanks,
+Thank you very much!
 Miqu=C3=A8l
