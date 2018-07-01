@@ -1,7 +1,7 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZf0P-0000US-8m
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 16:15:19 +0000
+ id 1fZf2P-00026A-CC
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 16:17:23 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
@@ -15,12 +15,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH 3.18 63/85] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Date: Sun,  1 Jul 2018 18:02:21 +0200
-Message-Id: <20180701153124.878218112@linuxfoundation.org>
-In-Reply-To: <20180701153122.365061142@linuxfoundation.org>
-References: <20180701153122.365061142@linuxfoundation.org>
+Subject: [PATCH 4.4 052/105] mtd: cfi_cmdset_0002: Change write buffer to
+ check correct value
+Date: Sun,  1 Jul 2018 18:02:02 +0200
+Message-Id: <20180701153153.235749272@linuxfoundation.org>
+In-Reply-To: <20180701153149.382300170@linuxfoundation.org>
+References: <20180701153149.382300170@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,7 +32,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.18-stable review patch.  If anyone has any objections, please let me know.
+4.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
