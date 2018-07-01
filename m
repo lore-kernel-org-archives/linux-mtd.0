@@ -1,7 +1,7 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZfCA-0006Kl-Ll
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 16:27:28 +0000
+ id 1fZfJD-0002rH-6M
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 16:34:45 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
@@ -15,12 +15,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH 4.9 040/101] mtd: cfi_cmdset_0002: Change write buffer to
+Subject: [PATCH 4.14 072/157] mtd: cfi_cmdset_0002: Change write buffer to
  check correct value
-Date: Sun,  1 Jul 2018 18:21:26 +0200
-Message-Id: <20180701160758.767802165@linuxfoundation.org>
-In-Reply-To: <20180701160757.138608453@linuxfoundation.org>
-References: <20180701160757.138608453@linuxfoundation.org>
+Date: Sun,  1 Jul 2018 18:22:24 +0200
+Message-Id: <20180701160856.211329521@linuxfoundation.org>
+In-Reply-To: <20180701160852.287307684@linuxfoundation.org>
+References: <20180701160852.287307684@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,7 +32,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-4.9-stable review patch.  If anyone has any objections, please let me know.
+4.14-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -67,7 +67,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1876,7 +1876,7 @@ static int __xipram do_write_buffer(stru
+@@ -1880,7 +1880,7 @@ static int __xipram do_write_buffer(stru
  		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
  			break;
  
