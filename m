@@ -1,24 +1,16 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZjTg-0000Ms-Ry
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 21:01:50 +0000
+ id 1fZjmW-0000vX-7r
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 21:21:18 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Joe Perches <joe@perches.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Quentin Schulz <quentin.schulz@bootlin.com>, dedekind1@gmail.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
-Date: Sun, 01 Jul 2018 23:01:30 +0200
-Message-ID: <2098416.O8QMNZQyoz@blindfold>
-In-Reply-To: <cdc8383433a1f67f4d5f5d9c528e116ee10c7466.camel@perches.com>
-References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
- <20180701223347.2cef133b@bbrezillon>
- <cdc8383433a1f67f4d5f5d9c528e116ee10c7466.camel@perches.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ Kees Cook <keescook@chromium.org>, Silvio Cesare <silvio.cesare@gmail.com>,
+ stable@vger.kernel.org
+Subject: [PATCH 1/2] Revert "UBIFS: Fix potential integer overflow in
+ allocation"
+Date: Sun,  1 Jul 2018 23:20:50 +0200
+Message-Id: <20180701212051.29486-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, 1. Juli 2018, 22:54:32 CEST schrieb Joe Perches:
-> On Sun, 2018-07-01 at 22:33 +0200, Boris Brezillon wrote:
-> > On Sun, 01 Jul 2018 21:35:57 +0200 Richard Weinberger <richard@nod.at> wrote:
-> > > Am Donnerstag, 28. Juni 2018, 09:40:53 CEST schrieb Quentin Schulz:
-> > > > Now that we have the logic for skipping CRC check for static UBI volumes
-> > > > in the core, let's expose it to users.
-> []
-> > > > diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-> []
-> > > > @@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
-> > > >  	    req->vol_type != UBI_STATIC_VOLUME)
-> > > >  		goto bad;
-> > > >  
-> > > > +	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
-> > 
-> > Oops, missed that req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG check was
-> > missing parens (checkpatch --strict should complain about that).
-> 
-> Why should checkpatch complain?
-> & has higher precedence than &&.
+This reverts commit 353748a359f1821ee934afc579cf04572406b420.
+It bypassed the linux-mtd review process and fixes the issue not as it
+should.
 
-The code is more readable.
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Silvio Cesare <silvio.cesare@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/journal.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Thanks,
-//richard
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 07b4956e0425..da8afdfccaa6 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -1282,11 +1282,10 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
+ 			      int *new_len)
+ {
+ 	void *buf;
+-	int err, compr_type;
+-	u32 dlen, out_len, old_dlen;
++	int err, dlen, compr_type, out_len, old_dlen;
+ 
+ 	out_len = le32_to_cpu(dn->size);
+-	buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
++	buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+-- 
+2.18.0
