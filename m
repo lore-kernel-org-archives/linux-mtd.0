@@ -1,20 +1,21 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZXdy-0003H9-Nh
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 08:23:40 +0000
-From: Richard Weinberger <richard@nod.at>
-To: xiaolei li <xiaolei.li@mediatek.com>
-Cc: leqiao.peng@valeo.com, casey@schaufler-ca.com,
- linux-mtd@lists.infradead.org
-Subject: Re: UBIFS assert when create new sub-dir under a transmute enabled
- dir with Smack enabled
-Date: Sun, 01 Jul 2018 10:23:18 +0200
-Message-ID: <4639941.AxKdOeJuIX@blindfold>
-In-Reply-To: <1529571876.14673.77.camel@mhfsdcap03>
-References: <1529571876.14673.77.camel@mhfsdcap03>
+ id 1fZZAm-0005NX-L9
+ for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 10:01:38 +0000
+Subject: Patch "mtd: cfi_cmdset_0002: Change write buffer to check correct
+ value" has been added to the 3.18-stable tree
+To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
+ boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
+ computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
+ gregkh@linuxfoundation.org, ikegami@allied-telesis.co.jp,
+ linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
+Cc: <stable-commits@vger.kernel.org>
+From: <gregkh@linuxfoundation.org>
+Date: Sun, 01 Jul 2018 12:01:10 +0200
+Message-ID: <15304392704669@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Xiaolei Li,
 
-Am Donnerstag, 21. Juni 2018, 11:04:36 CEST schrieb xiaolei li:
-> Hi Richard,
-> 
-> I ever committed one patch[1] to fix ubifs assert in ubifs_xattr_set()
-> if Smack is enabled.
+This is a note to let you know that I've just added the patch titled
 
-Ohh, that patch was missed. Sorry for that.
+    mtd: cfi_cmdset_0002: Change write buffer to check correct value
 
-> It almost always runs OK except "creating new sub-dir under a transmute
-> enabled dir" which is found by Mr.Leqiao Peng. For this special case,
-> there still has ubifs assert problem.
-> 
-> With patch[1], this problem can be reproduced by these steps ( assume
-> that the Smack has been enabled and the Smack userspace tool also
-> installed ):
-> 1). Add new smack rule in which the "aaa" for process object, "bbb" for
-> file or directory object.  "xwt" for the permission "execute, write and
-> transmute"
-> 
-> echo "aaa bbb xwt" | smackload
-> 
-> 2). Apply the label "aaa" to current sh process.   Verify the effect by
-> "ps -Z" 
-> 
-> echo aaa > /proc/self/attr/current
-> 
-> 3) Create a directory "test_dir" and assign the "bbb" label and enable
-> the transmute feature upon the new directory. 
-> Verify this by "chsmack test_dir". 
-> 
-> mkdir test_dir
-> chsmack -a "bbb" -t test_dir
-> 
-> 4) Create a new directory "newDir" under the "test_dir". 
-> 
-> mkdir test_dir/newDir
-> 
-> 
-> Then, ubifs assert happens, and the stack trace is:
-> 
-> UBIFS assert failed in __ubifs_setxattr at 284 (pid 4041)
-> CPU: 2 PID: 4041 Comm: mkdir Tainted: G S      W       4.9.90 #1
-> Call trace:
-> [<ffffff8008089ff8>] dump_backtrace+0x0/0x1d8
-> [<ffffff800808a254>] show_stack+0x24/0x30
-> [<ffffff800845f074>] dump_stack+0x94/0xb8
-> [<ffffff80083cdd78>] __ubifs_setxattr+0x358/0x5f8
-> [<ffffff80083ce384>] ubifs_xattr_set+0x64/0x3d0
-> [<ffffff800826c3bc>] __vfs_setxattr+0x7c/0x98
-> [<ffffff8008416d64>] smack_d_instantiate+0x304/0x350
-> [<ffffff800840cdec>] security_d_instantiate+0x4c/0x78
-> [<ffffff800825ca1c>] d_instantiate+0x3c/0x70
-> [<ffffff80083ab158>] ubifs_mkdir+0x1d8/0x1e0
-> [<ffffff800824f140>] vfs_mkdir2+0x128/0x1b0
-> [<ffffff8008254738>] SyS_mkdirat+0x80/0xf0
-> [<ffffff800808378c>] __sys_trace_return+0x0/0x4
-> 
-> Mr. Schaufler (original developer of SMACK) has analyzed the possible
-> root cause:
-> "I have confirmed this behavior. The issue is that the inode isn't
-> locked during inode instantiation. It doesn't need to be, because until
-> instatiation is complete the inode doesn't really exist and isn't
-> accessible to any other task. The assertion in the ubifs code is not
-> appropriate. I suggest that you contact the ubifs maintainers.
-> Please CC me, and I will answer any questions they may have. Thank you
-> for the report."
+to the 3.18-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
-Yeah, this is the same case as with encrypted files. The assert makes
-no sense here. Thanks for reporting!
+The filename of the patch is:
+     mtd-cfi_cmdset_0002-change-write-buffer-to-check-correct-value.patch
+and it can be found in the queue-3.18 subdirectory.
 
-Does your patch from 2017 still apply and work?
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
 
-Thanks,
-//richard
+
+>From dfeae1073583dc35c33b32150e18b7048bbb37e6 Mon Sep 17 00:00:00 2001
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Date: Wed, 30 May 2018 18:32:26 +0900
+Subject: mtd: cfi_cmdset_0002: Change write buffer to check correct value
+
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+
+commit dfeae1073583dc35c33b32150e18b7048bbb37e6 upstream.
+
+For the word write it is checked if the chip has the correct value.
+But it is not checked for the write buffer as only checked if ready.
+To make sure for the write buffer change to check the value.
+
+It is enough as this patch is only checking the last written word.
+Since it is described by data sheets to check the operation status.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1878,7 +1878,7 @@ static int __xipram do_write_buffer(stru
+ 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+ 			break;
+ 
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, datum)) {
+ 			xip_enable(map, chip, adr);
+ 			goto op_done;
+ 		}
+
+
+Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
+
+queue-3.18/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
+queue-3.18/mtd-cfi_cmdset_0002-change-write-buffer-to-check-correct-value.patch
+queue-3.18/mips-bcm47xx-enable-74k-core-externalsync-for-pcie-erratum.patch
