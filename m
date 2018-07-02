@@ -1,20 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZvO3-0001xr-6i
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 09:44:51 +0000
-From: Quentin Schulz <quentin.schulz@bootlin.com>
-To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: [PATCH v5 2/2] ubi: expose the volume CRC check skip flag
-Date: Mon,  2 Jul 2018 11:43:51 +0200
-Message-Id: <5a524ff8217f180e2baba534c2df90b821e7eebc.1530524405.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
-References: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
-References: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
+ id 1fZxx0-0002cx-TJ
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 12:29:05 +0000
+Date: Mon, 2 Jul 2018 14:28:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Rob Herring <robh+dt@kernel.org>, Richard
+ Weinberger <richard@nod.at>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v4 0/5] mtd: rawnand: denali: add new clocks and improve
+ setup_data_interface
+Message-ID: <20180702142840.42801396@xps13>
+In-Reply-To: <1529683598-25783-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1529683598-25783-1-git-send-email-yamada.masahiro@socionext.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,117 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that we have the logic for skipping CRC check for static UBI volumes
-in the core, let's expose it to users.
+Hi Masahiro,
 
-This makes use of a padding byte in the volume description data
-structure as a flag. This flag only tell for now whether we should skip
-the CRC check of a volume.
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Sat, 23 Jun
+2018 01:06:33 +0900:
 
-This checks the UBI volume for which we are trying to skip the CRC check
-is static.
+> The ->setup_data_interface() hook needs to know the clock frequency.
+> In fact, this IP needs three clocks, but the current driver does not
+> represent it.  Thus, it is hard to understand what is the correct
+> clock frequency.
+> (at least, clock property is not described in the DT-binding at all.)
+>=20
+> This series adds more clocks based on the IP datasheet, and document
+> it in the DT binding.
+> In the new binding, three clocks are required: core clock, bus interface
+> clock, ECC engine clock.
+>=20
+> 1/5 is a backport candidate to fix SOCFPGA.
+>=20
+>=20
+> Masahiro Yamada (5):
+>   mtd: rawnand: denali_dt: set clk_x_rate to 200 MHz unconditionally
+>   mtd: rawnand: denali_dt: use dev as a shorthand of &pdev->dev
+>   dt-binding: mtd: denali_dt: document clock property
+>   mtd: rawnand: denali_dt: add more clocks based on IP datasheet
+>   mtd: rawnand: denali: optimize timing parameters for data interface
 
-Let's also make sure that the flags passed to verify_mkvol_req are
-valid.
+Applied patches 2-5/5 to nand/next on top of v4-18.rc3 (to have the fix
+1/5).
 
-We voluntarily do not take into account the skip_check flag in
-vol_cdev_write() as we want to make sure what we wrote was correctly
-written.
-
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/ubi/cdev.c      | 11 +++++++++++
- drivers/mtd/ubi/vmt.c       |  3 +++
- include/uapi/mtd/ubi-user.h | 18 ++++++++++++++++--
- 3 files changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 45c3296..22547d7 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -367,6 +367,10 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
- 			return count;
- 		}
- 
-+		/*
-+		 * We voluntarily do not take into account the skip_check flag
-+		 * as we want to make sure what we wrote was correctly written.
-+		 */
- 		err = ubi_check_volume(ubi, vol->vol_id);
- 		if (err < 0)
- 			return err;
-@@ -622,6 +626,13 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
- 	    req->vol_type != UBI_STATIC_VOLUME)
- 		goto bad;
- 
-+	if (req->flags & ~UBI_VOL_VALID_FLGS)
-+		goto bad;
-+
-+	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
-+	    req->vol_type != UBI_STATIC_VOLUME)
-+		goto bad;
-+
- 	if (req->alignment > ubi->leb_size)
- 		goto bad;
- 
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index e2606a4..729588b 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -174,6 +174,9 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 	vol->dev.class = &ubi_class;
- 	vol->dev.groups = volume_dev_groups;
- 
-+	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG)
-+		vol->skip_check = 1;
-+
- 	spin_lock(&ubi->volumes_lock);
- 	if (vol_id == UBI_VOL_NUM_AUTO) {
- 		/* Find unused volume ID */
-diff --git a/include/uapi/mtd/ubi-user.h b/include/uapi/mtd/ubi-user.h
-index 5b04a49..aad3b62 100644
---- a/include/uapi/mtd/ubi-user.h
-+++ b/include/uapi/mtd/ubi-user.h
-@@ -285,6 +285,20 @@ struct ubi_attach_req {
- 	__s8 padding[10];
- };
- 
-+/*
-+ * UBI volume flags.
-+ *
-+ * @UBI_VOL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
-+ *				open time. Only valid for static volumes and
-+ *				should only be used if the volume user has a
-+ *				way to verify data integrity
-+ */
-+enum {
-+	UBI_VOL_SKIP_CRC_CHECK_FLG = 0x1,
-+};
-+
-+#define UBI_VOL_VALID_FLGS	(UBI_VOL_SKIP_CRC_CHECK_FLG)
-+
- /**
-  * struct ubi_mkvol_req - volume description data structure used in
-  *                        volume creation requests.
-@@ -292,7 +306,7 @@ struct ubi_attach_req {
-  * @alignment: volume alignment
-  * @bytes: volume size in bytes
-  * @vol_type: volume type (%UBI_DYNAMIC_VOLUME or %UBI_STATIC_VOLUME)
-- * @padding1: reserved for future, not used, has to be zeroed
-+ * @flags: volume flags (%UBI_VOL_SKIP_CRC_CHECK_FLG)
-  * @name_len: volume name length
-  * @padding2: reserved for future, not used, has to be zeroed
-  * @name: volume name
-@@ -321,7 +335,7 @@ struct ubi_mkvol_req {
- 	__s32 alignment;
- 	__s64 bytes;
- 	__s8 vol_type;
--	__s8 padding1;
-+	__u8 flags;
- 	__s16 name_len;
- 	__s8 padding2[4];
- 	char name[UBI_MAX_VOLUME_NAME + 1];
--- 
-git-series 0.9.1
+Thanks,
+Miqu=C3=A8l
