@@ -1,27 +1,24 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZsBc-0006pB-8p
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 06:19:46 +0000
-Date: Mon, 2 Jul 2018 08:19:29 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Message-ID: <20180702061929.GA7611@kroah.com>
-References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
- <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZsZt-0002U9-Dl
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 06:44:51 +0000
+Date: Mon, 2 Jul 2018 08:44:33 +0200
+From: Quentin Schulz <quentin.schulz@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, dedekind1@gmail.com,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com
+Subject: Re: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
+Message-ID: <20180702064433.kvxcacdhuenzk5j3@qschulz>
+References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+ <382648641.QZzOm4Mo72@blindfold>
+ <20180701223347.2cef133b@bbrezillon> <3709236.JAAyN4mQyL@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature"; boundary="umuyord74gyaitbc"
 Content-Disposition: inline
-In-Reply-To: <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
+In-Reply-To: <3709236.JAAyN4mQyL@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +28,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 02, 2018 at 11:50:42AM +0900, Tokunori Ikegami wrote:
-> For the word write it is checked if the chip has the correct value.
-> But it is not checked for the write buffer as only checked if ready.
-> To make sure for the write buffer change to check the value.
-> 
-> It is enough as this patch is only checking the last written word.
-> Since it is described by data sheets to check the operation status.
-> 
-> Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 
-What are the git commit ids for all of these patches, and what stable
-tree do they need to go to?
+--umuyord74gyaitbc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
+Hi Richard, Boris,
 
-greg k-h
+On Sun, Jul 01, 2018 at 10:50:41PM +0200, Richard Weinberger wrote:
+> Am Sonntag, 1. Juli 2018, 22:33:47 CEST schrieb Boris Brezillon:
+> > On Sun, 01 Jul 2018 21:35:57 +0200
+> > Richard Weinberger <richard@nod.at> wrote:
+> >=20
+> > > Quentin,
+> > >=20
+> > > Am Donnerstag, 28. Juni 2018, 09:40:53 CEST schrieb Quentin Schulz:
+> > > > Now that we have the logic for skipping CRC check for static UBI vo=
+lumes
+> > > > in the core, let's expose it to users.
+> > > >=20
+> > > > This makes use of a padding byte in the volume description data
+> > > > structure as a flag. This flag only tell for now whether we should =
+skip
+> > > > the CRC check of a volume.
+> > > >=20
+> > > > This checks the UBI volume for which we are trying to skip the CRC =
+check
+> > > > is static.
+> > > >=20
+> > > > Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > > > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
+> > > > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > > > ---
+> > > >  drivers/mtd/ubi/cdev.c      |  4 ++++
+> > > >  drivers/mtd/ubi/vmt.c       |  3 +++
+> > > >  include/uapi/mtd/ubi-user.h | 16 ++++++++++++++--
+> > > >  3 files changed, 21 insertions(+), 2 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+> > > > index 45c3296..3eea1df 100644
+> > > > --- a/drivers/mtd/ubi/cdev.c
+> > > > +++ b/drivers/mtd/ubi/cdev.c
+> > > > @@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_d=
+evice *ubi,
+> > > >  	    req->vol_type !=3D UBI_STATIC_VOLUME)
+> > > >  		goto bad;
+> > > > =20
+> > > > +	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
+> >=20
+> > Oops, missed that req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG check was
+> > missing parens (checkpatch --strict should complain about that).
+>=20
+> Latest when building my local branch or in linux-next we had noticed.
+> No need to worry.
+> =20
+> > > > +	    req->vol_type !=3D UBI_STATIC_VOLUME)
+> > > > +		goto bad; =20
+> > >=20
+> > > We should also reject unknown flags here.
+> >=20
+> > I agree.
+
+Should I send another version of my patches for it? Same for
+parenthesis around the flags masking above?
+
+Quentin
+
+--umuyord74gyaitbc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAABCAAGBQJbOcnNAAoJEIS4mnU+4PGjkQcP/ia7t3xzmpc5fWaU9F0h78g3
+D7Q9OS6VLBcLpzdLiCpWaVvDTnfrKjr/YlBSvNOHwr3df7KCEstn6pqCyZUjYHbJ
+f/NLenL+52hlLYnIqRIO35wh78gXx+xdTQ7vl8igmfwpFaboOvyOkuLR45lEYkWX
+YA1GZyLNPUp+b+Pyqsyj5AfMbcrB2+hua7Gp3gGCG4j4NATNtzmXiVNaeJgKj0wB
+BxB8O1gWKndVGcyX6K5PSxzTgU/DMvRPGTMB1PEM98UrxnDh3EYTdQGQsG00vapl
+Xu77OxVetlHNjMHJ2jwRJXro49aKArPpBb9r8sBG9Olzg76mFs8fb0Pd+lRp3G/u
+B/Zw5N7wYjTffFXxiHeAKMDW1W3SonrQi6xgIK/DNItW8ZJgby9sCphMO//o572p
+KPclsVF43xfwRoH4Hj2VwEvSC09yNnjEr/AspO0hVRY+r2rqkwr2mUs0LpshYFj3
+usWc5CeeTUleoKDrmjNQ1RTUjcdqnrBDFb2so30kfTeX9Fj0WUY35HT6BuwimsoR
+V/6NYGuhXb26RnzG35/VTilNxPAHzwkjzBTMvA5QUH76TFRxPYWcsr7SDucYATgT
+oWov77/B+n5UiTy5SaAnDDBtYE7hbdXv1yZrlWkXRdAm4fSmNirSDbSEfMifSroC
+q5yeS9WO18+mFe2YWCbl
+=mvqu
+-----END PGP SIGNATURE-----
+
+--umuyord74gyaitbc--
