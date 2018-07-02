@@ -1,24 +1,30 @@
-Received: from mail1.bemta23.messagelabs.com ([67.219.246.114])
+Received: from mail1.bemta24.messagelabs.com ([67.219.250.112])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZox1-00034C-6J
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 02:52:42 +0000
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH 3/4] mtd: cfi_cmdset_0002: Change erase functions to retry for
- error
-Date: Mon,  2 Jul 2018 11:50:44 +0900
-Message-Id: <20180702025045.29896-4-ikegami@allied-telesis.co.jp>
-In-Reply-To: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
-References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
+ id 1fZp3Z-0006Jd-B9
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 02:59:15 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Greg KH
+ <gregkh@linuxfoundation.org>
+CC: "Joakim.Tjernlund@infinera.com" <Joakim.Tjernlund@infinera.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "stable-commits@vger.kernel.org" <stable-commits@vger.kernel.org>
+Subject: RE: Patch "mtd: cfi_cmdset_0002: Change erase functions to retry for
+ error" has been added to the 4.17-stable tree
+Date: Mon, 2 Jul 2018 02:58:58 +0000
+Message-ID: <TY1PR01MB0954A71DC52090DB84576889DC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <1530439761164133@kroah.com>	<20180701102205.GA30410@kroah.com>
+ <20180701153403.6ea52135@bbrezillon>
+In-Reply-To: <20180701153403.6ea52135@bbrezillon>
+Content-Language: ja-JP
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,87 +34,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For the word write functions it is retried for error.
-But it is not implemented to retry for the erase functions.
-To make sure for the erase functions change to retry as same.
+Hi Greg-san and Boris-san,
 
-This is needed to prevent the flash erase error caused only once.
-It was caused by the error case of chip_good() in the do_erase_oneblock().
-Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-But the error issue behavior is not able to reproduce at this moment.
-The flash controller is parallel Flash interface integrated on BCM53003.
+Sorry for the error caused.
+I have just sent the patches revised for the stable branches separately to =
+Greg-san by git send-emal.
+If you are okay please applied the patches.
+  Note: The patch series includes the patch below already applied in stable=
+-queue.git as PATCH 1/4.
+          mtd-cfi_cmdset_0002-change-write-buffer-to-check-correct-value.pa=
+tch
 
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+If any problem or concern please let me know.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 29913eeac5fb..13ce64362db8 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2241,6 +2241,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	unsigned long int adr;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
- 
- 	adr = cfi->addr_unlock1;
- 
-@@ -2258,6 +2259,7 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2312,6 +2314,9 @@ static int __xipram do_erase_chip(struct map_info *map, struct flchip *chip)
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
- 	}
- 
-@@ -2331,6 +2336,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	unsigned long timeo = jiffies + HZ;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
- 
- 	adr += chip->start;
- 
-@@ -2348,6 +2354,7 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2405,6 +2412,9 @@ static int __xipram do_erase_oneblock(struct map_info *map, struct flchip *chip,
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
- 	}
- 
--- 
-2.16.1
+Regards,
+Ikegami
+
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Sunday, July 01, 2018 10:34 PM
+> To: Greg KH
+> Cc: Joakim.Tjernlund@infinera.com;
+> boris.brezillon@free-electrons.com; PACKHAM Chris;
+> computersforpeace@gmail.com; cyrille.pitchen@wedev4u.fr;
+> dwmw2@infradead.org; IKEGAMI Tokunori; linux-mtd@lists.infradead.org;
+> marek.vasut@gmail.com; richard@nod.at; stable-commits@vger.kernel.org
+> Subject: Re: Patch "mtd: cfi_cmdset_0002: Change erase functions to
+> retry for error" has been added to the 4.17-stable tree
+>=20
+> Hi Greg,
+>=20
+> On Sun, 1 Jul 2018 12:22:05 +0200
+> Greg KH <gregkh@linuxfoundation.org> wrote:
+>=20
+> > On Sun, Jul 01, 2018 at 12:09:21PM +0200, gregkh@linuxfoundation.org
+> wrote:
+> > >
+> > > This is a note to let you know that I've just added the patch titled
+> > >
+> > >     mtd: cfi_cmdset_0002: Change erase functions to retry for error
+> > >
+> > > to the 4.17-stable tree which can be found at:
+> > >
+> http://www.kernel.org/git/?p=3Dlinux/kernel/git/stable/stable-queue.gi
+> t;a=3Dsummary
+> >
+> > Nope, this broke the build everywhere, so I've dropped it from all tree=
+s
+> > now.  If you want this backported, please provide a working version.
+>=20
+> That's not surprising, this patch depends on "mtd: cfi_cmdset_0002:
+> Change definition naming to retry write" which did not apply cleanly on
+> 4.17.
+>=20
+> To be honest, I was not convinced those 2 patches deserved to be
+> backported to stable releases, but Joakim and Ikegami thought they were
+> good candidate. I'll let Ikegami propose a revised version of those 2
+> patches that apply cleanly on 4.17 if he wants.
+>=20
+> Sorry for the inconvenience.
+>=20
+> Regards,
+>=20
+> Boris
