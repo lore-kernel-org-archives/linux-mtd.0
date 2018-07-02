@@ -1,21 +1,23 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-yb0-x243.google.com ([2607:f8b0:4002:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZzki-00053Y-IX
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 14:24:29 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, y2038@lists.linaro.org,
- Deepa Dinamani <deepa.kernel@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubifs: tnc: use monotonic znode timestamp
-Date: Mon, 02 Jul 2018 16:24:15 +0200
-Message-ID: <31916482.81kKL2104G@blindfold>
-In-Reply-To: <20180620082937.719067-1-arnd@arndb.de>
-References: <20180620082937.719067-1-arnd@arndb.de>
+ id 1fa1FU-00054i-5h
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 16:00:23 +0000
+Received: by mail-yb0-x243.google.com with SMTP id y11-v6so1770408ybm.7
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2018 09:00:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Sender: keescook@google.com
+In-Reply-To: <20180701212051.29486-1-richard@nod.at>
+References: <20180701212051.29486-1-richard@nod.at>
+From: Kees Cook <keescook@chromium.org>
+Date: Mon, 2 Jul 2018 09:00:05 -0700
+Message-ID: <CAGXu5jJyeoKdqo86+tWoq1n34sELSAXQu8LSBpEbiu2oFg2JPQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Revert "UBIFS: Fix potential integer overflow in
+ allocation"
+To: Richard Weinberger <richard@nod.at>
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Silvio Cesare <silvio.cesare@gmail.com>, "# 3.4.x" <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnd,
+On Sun, Jul 1, 2018 at 2:20 PM, Richard Weinberger <richard@nod.at> wrote:
+> This reverts commit 353748a359f1821ee934afc579cf04572406b420.
+> It bypassed the linux-mtd review process and fixes the issue not as it
+> should.
 
-Am Mittwoch, 20. Juni 2018, 10:29:11 CEST schrieb Arnd Bergmann:
-> The tnc uses get_seconds() based timestamps to check the age of a znode,
-> which has two problems: on 32-bit architectures this may overflow in
-> 2038 or 2106, and it gives incorrect information when the system time
-> is updated using settimeofday().
-> 
-> Using montonic timestamps with ktime_get_seconds() solves both thes
-> problems.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Ah, sorry, I thought you were CCed on the original report.
+
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Silvio Cesare <silvio.cesare@gmail.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 > ---
->  fs/ubifs/shrinker.c | 2 +-
->  fs/ubifs/tnc.c      | 4 ++--
->  fs/ubifs/tnc_misc.c | 2 +-
->  fs/ubifs/ubifs.h    | 2 +-
->  4 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
-> index 9a9fb94a41c6..9d10cbdec2cc 100644
-> --- a/fs/ubifs/shrinker.c
-> +++ b/fs/ubifs/shrinker.c
-> @@ -71,7 +71,7 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
+>  fs/ubifs/journal.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index 07b4956e0425..da8afdfccaa6 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -1282,11 +1282,10 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
+>                               int *new_len)
 >  {
->  	int total_freed = 0;
->  	struct ubifs_znode *znode, *zprev;
-> -	int time = get_seconds();
-> +	time64_t time = ktime_get_seconds();
+>         void *buf;
+> -       int err, compr_type;
+> -       u32 dlen, out_len, old_dlen;
+> +       int err, dlen, compr_type, out_len, old_dlen;
 
-ubifs does
-	abs(time - znode->time) >= age) {
+What's wrong with making these unsigned?
 
-Is this still legit with time64_t?
+>
+>         out_len = le32_to_cpu(dn->size);
+> -       buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
+> +       buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
+>         if (!buf)
+>                 return -ENOMEM;
 
-Thanks,
-//richard
+Please leave the kmalloc() -> kmalloc_array() change, as that has
+happened treewide already. We don't want to have any multiplications
+in the size argument for the allocators (i.e. they should use 2-factor
+arg version like here, or use array_size() for things like vmalloc()).
+
+Thanks!
+
+-Kees
+
+-- 
+Kees Cook
+Pixel Security
