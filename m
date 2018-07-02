@@ -1,26 +1,40 @@
-Received: from smtprelay0215.hostedemail.com ([216.40.44.215]
- helo=smtprelay.hostedemail.com)
+Received: from conssluserg-04.nifty.com ([210.131.2.83])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZk4D-0007na-Rh
- for linux-mtd@lists.infradead.org; Sun, 01 Jul 2018 21:39:35 +0000
-Message-ID: <6d3fb517adb8880d9f7642d185405590dc9f7e83.camel@perches.com>
-Subject: Re: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
-From: Joe Perches <joe@perches.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Quentin Schulz
- <quentin.schulz@bootlin.com>, dedekind1@gmail.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Date: Sun, 01 Jul 2018 14:39:17 -0700
-In-Reply-To: <2098416.O8QMNZQyoz@blindfold>
-References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
- <20180701223347.2cef133b@bbrezillon>
- <cdc8383433a1f67f4d5f5d9c528e116ee10c7466.camel@perches.com>
- <2098416.O8QMNZQyoz@blindfold>
-Content-Type: text/plain; charset="ISO-8859-1"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1fZnlf-0002Up-QV
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 01:36:42 +0000
+Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
+ [209.85.213.43]) (authenticated)
+ by conssluserg-04.nifty.com with ESMTP id w621a41J004096
+ for <linux-mtd@lists.infradead.org>; Mon, 2 Jul 2018 10:36:04 +0900
+Received: by mail-vk0-f43.google.com with SMTP id o138-v6so8268445vkd.3
+ for <linux-mtd@lists.infradead.org>; Sun, 01 Jul 2018 18:36:04 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
+References: <20180619120719.26921-1-richard@nod.at>
+ <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
+ <3320422.EJ8D6C0VHL@blindfold>
+ <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
+ <20180625165506.484e025f@bbrezillon>
+ <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
+ <20180626200928.29aca979@xps13>
+ <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
+ <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Mon, 2 Jul 2018 10:35:22 +0900
+Message-ID: <CAK7LNATuCqs5ofKnNCSEYhWanD+u2+5NzB7asaYhqb7BVUW_Fw@mail.gmail.com>
+Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
+To: Dinh Nguyen <dinguyen@kernel.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,75 +44,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2018-07-01 at 23:01 +0200, Richard Weinberger wrote:
-> Am Sonntag, 1. Juli 2018, 22:54:32 CEST schrieb Joe Perches:
-> > On Sun, 2018-07-01 at 22:33 +0200, Boris Brezillon wrote:
-> > > On Sun, 01 Jul 2018 21:35:57 +0200 Richard Weinberger <richard@nod.at> wrote:
-> > > > Am Donnerstag, 28. Juni 2018, 09:40:53 CEST schrieb Quentin Schulz:
-> > > > > Now that we have the logic for skipping CRC check for static UBI volumes
-> > > > > in the core, let's expose it to users.
-> > []
-> > > > > diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-> > []
-> > > > > @@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
-> > > > >  	    req->vol_type != UBI_STATIC_VOLUME)
-> > > > >  		goto bad;
-> > > > >  
-> > > > > +	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&
-> > > 
-> > > Oops, missed that req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG check was
-> > > missing parens (checkpatch --strict should complain about that).
-> > 
-> > Why should checkpatch complain?
-> > & has higher precedence than &&.
-> 
-> The code is more readable.
+Hi Dinh,
 
-IYO.  checkpatch doesn't care and I think it's unnecessary.
+2018-06-27 23:55 GMT+09:00 Dinh Nguyen <dinguyen@kernel.org>:
+> Hi Masahiro,
+>
+> On 06/26/2018 09:52 PM, Masahiro Yamada wrote:
+>> 2018-06-27 3:09 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
+>>> Hi Masahiro,
+>>>
+>>> On Tue, 26 Jun 2018 11:38:21 +0900, Masahiro Yamada
+>>> <yamada.masahiro@socionext.com> wrote:
+>>>
+>>>> 2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+>>>>> On Mon, 25 Jun 2018 09:50:18 -0500
+>>>>> Dinh Nguyen <dinguyen@kernel.org> wrote:
+>>>>>
+>>>>>> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
+>>>>>>> Masahiro,
+>>>>>>>
+>>>>>>> Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
+>>>>>>>> Hi Richard,
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
+>>>>>>>>> The denali NAND flash controller needs at least two clocks to operate,
+>>>>>>>>> nand_clk and nand_x_clk.
+>>>>>>>>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
+>>>>>>>>> setup_data_interface()") nand_x_clk is used to derive timing settings.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
+>>>>>>>>> ---
+>>>>>>>>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
+>>>>>>>>> is not present on this SoC.
+>>>>>>>>> But my SoCFPGA knowledge is very limited.
+>>>>>>>>>
+>>>>>>>>> Thanks,
+>>>>>>>>> //richard
+>>>>>>>>> ---
+>>>>>>>>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
+>>>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
+>>>>>>>>> index 486d4e7433ed..562f7b375bbd 100644
+>>>>>>>>> --- a/arch/arm/boot/dts/socfpga.dtsi
+>>>>>>>>> +++ b/arch/arm/boot/dts/socfpga.dtsi
+>>>>>>>>> @@ -754,7 +754,8 @@
+>>>>>>>>>                         reg-names = "nand_data", "denali_reg";
+>>>>>>>>>                         interrupts = <0x0 0x90 0x4>;
+>>>>>>>>>                         dma-mask = <0xffffffff>;
+>>>>>>>>> -                       clocks = <&nand_clk>;
+>>>>>>>>> +                       clocks = <&nand_clk>, <&nand_x_clk>;
+>>>>>>>>> +                       clock-names = "nand", "nand_x";
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> IMHO, this should be
+>>>>>>>>
+>>>>>>>>                           clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
+>>>>>>>>                           clock-names = "nand", "nand_x", "ecc";
+>>>>>>
+>>>>>> No, it should be just the nand_x and ecc.
+>>>>>>
+>>>>>> There's already a patch to use the nand_x_clk and not the nand_clk.
+>>>>
+>>>>
+>>>> Different people try to fix the problem in different ways.
+>>>>
+>>>> I think it is due to miscommunication across sub-systems.
+>>>
+>>> Is the series named
+>>>
+>>>         mtd: rawnand: denali: add new clocks and improve
+>>>                               setup_data_interface
+>>>
+>>> still valid?
+>>
+>> Yes.
+>> I believe V4 is valid.
+>>
+>>
+>> Information for Dinh Nguyen:
+>>
+>> http://patchwork.ozlabs.org/patch/933507/
+>> http://patchwork.ozlabs.org/patch/933487/
+>> http://patchwork.ozlabs.org/patch/933494/
+>> http://patchwork.ozlabs.org/patch/933506/
+>>
+>>
+>> If he is not convinced, I am open to discussion, though.
+>
+> I wasn't aware of these patches. This patch is staged to go into
+> v4.17-rc3 through the arm-soc:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git/commit/arch/arm/boot/dts/socfpga.dtsi?h=fixes&id=4eda9b766b042ea38d84df91581b03f6145a2ab0
+>
+> I think your patch will handle a case where only 1 clock is passed in,
+> so it should be okay right?
+>
 
-Just fyi:
+I should be OK,
+but please consider the proper fix for v4.19
+as Boris suggested.
 
-checkpatch does suggest parenthesis removal with --strict
-when using
-	== or !=
-with
-	&& or ||
 
-e.g.:
 
-$ cat -n foo.c
-     1	bool function(void)
-     2	{
-     3		if (foo & 1 && bar & 2)
-     4			return true;
-     5		if ((foo & 1) && (bar && 2))
-     6			return true;
-     7		if (foo == 1 && bar != 2)
-     8			return true;
-     9		if ((foo == 1) && (bar != 2))
-    10			return true;
-    11		return false;
-    12	}
-
-$ ./scripts/checkpatch.pl -f --strict foo.c
-WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-#1: FILE: foo.c:1:
-+bool function(void)
-
-CHECK: Unnecessary parentheses around 'foo == 1'
-#9: FILE: foo.c:9:
-+	if ((foo == 1) && (bar != 2))
-
-CHECK: Unnecessary parentheses around 'bar != 2'
-#9: FILE: foo.c:9:
-+	if ((foo == 1) && (bar != 2))
-
-total: 0 errors, 1 warnings, 2 checks, 12 lines checked
-
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-inplace.
-
-foo.c has style problems, please review.
-
-NOTE: If any of the errors are false positives, please report
-      them to the maintainer, see CHECKPATCH in MAINTAINERS.
+-- 
+Best Regards
+Masahiro Yamada
