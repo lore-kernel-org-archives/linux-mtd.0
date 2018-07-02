@@ -1,36 +1,36 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZyk3-0006wT-6V
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 13:19:45 +0000
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- =?UTF-8?Q?Marek_Va=c5=a1ut?= <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-References: <20180619120719.26921-1-richard@nod.at>
- <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
- <3320422.EJ8D6C0VHL@blindfold>
- <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
- <20180625165506.484e025f@bbrezillon>
- <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
- <20180626200928.29aca979@xps13>
- <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
- <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
- <CAK7LNATuCqs5ofKnNCSEYhWanD+u2+5NzB7asaYhqb7BVUW_Fw@mail.gmail.com>
-From: Dinh Nguyen <dinguyen@kernel.org>
-Message-ID: <ff8ad078-1e98-9e4f-0f9c-64981caad8c9@kernel.org>
-Date: Mon, 2 Jul 2018 08:19:26 -0500
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZzBV-0007or-SR
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 13:48:11 +0000
+Received: by mail-it0-x242.google.com with SMTP id 16-v6so12171674itl.5
+ for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2018 06:47:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAK7LNATuCqs5ofKnNCSEYhWanD+u2+5NzB7asaYhqb7BVUW_Fw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CACRpkdaEsEAiGpieJK1AA8HHLzZc7Tdc932rhdayg06rFU1hNA@mail.gmail.com>
+ <MWHPR02MB26232270DED605627B2CF22FAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <CACRpkdZb6NMHtai1DBa+7m2ieZJZiAB7d1vSuP376rHQKpOf+A@mail.gmail.com>
+ <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
+In-Reply-To: <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 2 Jul 2018 15:47:42 +0200
+Message-ID: <CACRpkdZp+8ZFRF2c+pAy47ZSWjavu3Qo5fz6A41zDty444MWCg@mail.gmail.com>
+Subject: Re: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+To: nagasure@xilinx.com
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Mark Vasut <marek.vasut@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Markus Mayer <mmayer@broadcom.com>, Roger Quadros <rogerq@ti.com>,
+ Ladislav Michl <ladis@linux-mips.org>, ada@thorsis.com,
+ honghui.zhang@mediatek.com,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ nagasureshkumarrelli@gmail.com, michals@xilinx.com
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,112 +40,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Jun 29, 2018 at 6:15 AM Naga Sureshkumar Relli
+<nagasure@xilinx.com> wrote:
+> > On Thu, Jun 28, 2018 at 2:13 PM Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+> >
+> >
+> > > > This driver has the same problem as the other patches:
+> > > > use the ARM_AMBA primecell magic numbers detection, and the PrimeCell bus.
+> > >
+> > > Here the child is NAND controller and the parent is PL353 SMC, so do
+> > > we need to update this also as AMBA driver?
+> >
+> > No, sorry. The parent is spawning another device and you should indeed use a platform device
+> > for that.
+> >
+> Ok, you mean platform driver model is sufficient for both pl353-smc.c and pl353_nand.c drivers?
+> Or AMBA model is for pl353-smc and platform driver model is for pl353-nand?
 
+The latter, AMBA primecell bus for pl353-smc and platform device for the
+nand subdevice.
 
-On 07/01/2018 08:35 PM, Masahiro Yamada wrote:
-> Hi Dinh,
-> 
-> 2018-06-27 23:55 GMT+09:00 Dinh Nguyen <dinguyen@kernel.org>:
->> Hi Masahiro,
->>
->> On 06/26/2018 09:52 PM, Masahiro Yamada wrote:
->>> 2018-06-27 3:09 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
->>>> Hi Masahiro,
->>>>
->>>> On Tue, 26 Jun 2018 11:38:21 +0900, Masahiro Yamada
->>>> <yamada.masahiro@socionext.com> wrote:
->>>>
->>>>> 2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->>>>>> On Mon, 25 Jun 2018 09:50:18 -0500
->>>>>> Dinh Nguyen <dinguyen@kernel.org> wrote:
->>>>>>
->>>>>>> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
->>>>>>>> Masahiro,
->>>>>>>>
->>>>>>>> Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
->>>>>>>>> Hi Richard,
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
->>>>>>>>>> The denali NAND flash controller needs at least two clocks to operate,
->>>>>>>>>> nand_clk and nand_x_clk.
->>>>>>>>>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
->>>>>>>>>> setup_data_interface()") nand_x_clk is used to derive timing settings.
->>>>>>>>>>
->>>>>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>>>>>>> ---
->>>>>>>>>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
->>>>>>>>>> is not present on this SoC.
->>>>>>>>>> But my SoCFPGA knowledge is very limited.
->>>>>>>>>>
->>>>>>>>>> Thanks,
->>>>>>>>>> //richard
->>>>>>>>>> ---
->>>>>>>>>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->>>>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>>>>>>
->>>>>>>>>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>>> index 486d4e7433ed..562f7b375bbd 100644
->>>>>>>>>> --- a/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>>> +++ b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>>> @@ -754,7 +754,8 @@
->>>>>>>>>>                         reg-names = "nand_data", "denali_reg";
->>>>>>>>>>                         interrupts = <0x0 0x90 0x4>;
->>>>>>>>>>                         dma-mask = <0xffffffff>;
->>>>>>>>>> -                       clocks = <&nand_clk>;
->>>>>>>>>> +                       clocks = <&nand_clk>, <&nand_x_clk>;
->>>>>>>>>> +                       clock-names = "nand", "nand_x";
->>>>>>>>>
->>>>>>>>>
->>>>>>>>> IMHO, this should be
->>>>>>>>>
->>>>>>>>>                           clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
->>>>>>>>>                           clock-names = "nand", "nand_x", "ecc";
->>>>>>>
->>>>>>> No, it should be just the nand_x and ecc.
->>>>>>>
->>>>>>> There's already a patch to use the nand_x_clk and not the nand_clk.
->>>>>
->>>>>
->>>>> Different people try to fix the problem in different ways.
->>>>>
->>>>> I think it is due to miscommunication across sub-systems.
->>>>
->>>> Is the series named
->>>>
->>>>         mtd: rawnand: denali: add new clocks and improve
->>>>                               setup_data_interface
->>>>
->>>> still valid?
->>>
->>> Yes.
->>> I believe V4 is valid.
->>>
->>>
->>> Information for Dinh Nguyen:
->>>
->>> http://patchwork.ozlabs.org/patch/933507/
->>> http://patchwork.ozlabs.org/patch/933487/
->>> http://patchwork.ozlabs.org/patch/933494/
->>> http://patchwork.ozlabs.org/patch/933506/
->>>
->>>
->>> If he is not convinced, I am open to discussion, though.
->>
->> I wasn't aware of these patches. This patch is staged to go into
->> v4.17-rc3 through the arm-soc:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git/commit/arch/arm/boot/dts/socfpga.dtsi?h=fixes&id=4eda9b766b042ea38d84df91581b03f6145a2ab0
->>
->> I think your patch will handle a case where only 1 clock is passed in,
->> so it should be okay right?
->>
-> 
-> I should be OK,
-> but please consider the proper fix for v4.19
-> as Boris suggested.
-> 
+Platform device is for anything that cannot be autodetected with e.g.
+magic hardare numbers, and the first device can be autodetected as a
+prime cell but not the subdevice.
 
-Yes, I will spin up a patch.
-
-Dinh
+Yours,
+Linus Walleij
