@@ -1,20 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZuHO-0001ho-Kf
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 08:33:54 +0000
-From: Quentin Schulz <quentin.schulz@bootlin.com>
-To: dedekind1@gmail.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com, Quentin Schulz <quentin.schulz@bootlin.com>
-Subject: [PATCH v4 1/2] ubi: provide a way to skip CRC checks
-Date: Mon,  2 Jul 2018 10:32:57 +0200
-Message-Id: <328390941d1e1d3cbd94a9a36622809f8ab4d483.1530519426.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.99f8f464b3a02f65080962001abf6fd1f8dff0e0.1530519426.git-series.quentin.schulz@bootlin.com>
-References: <cover.99f8f464b3a02f65080962001abf6fd1f8dff0e0.1530519426.git-series.quentin.schulz@bootlin.com>
-In-Reply-To: <cover.99f8f464b3a02f65080962001abf6fd1f8dff0e0.1530519426.git-series.quentin.schulz@bootlin.com>
-References: <cover.99f8f464b3a02f65080962001abf6fd1f8dff0e0.1530519426.git-series.quentin.schulz@bootlin.com>
+Received: from mga14.intel.com ([192.55.52.115])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZvGF-000641-7F
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 09:37:19 +0000
+Message-ID: <1530524174.469.95.camel@gmail.com>
+Subject: Re: [PATCH v3 1/2] ubi: provide a way to skip CRC checks
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Quentin Schulz <quentin.schulz@bootlin.com>, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com
+Date: Mon, 02 Jul 2018 12:36:14 +0300
+In-Reply-To: <20180702095121.67bc61ef@bbrezillon>
+References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
+ <3f9cef553d4f5da3fe2d76113d79ada1f0fe5224.1530169759.git-series.quentin.schulz@bootlin.com>
+ <1530516625.469.82.camel@gmail.com> <20180702095121.67bc61ef@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,126 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some users of static UBI volumes implement their own integrity check,
-thus making the volume CRC check done at open time useless. For
-instance, this is the case when one use the ubiblock + dm-verity +
-squashfs combination, where dm-verity already checks integrity of the
-block device but this time at the block granularity instead of verifying
-the whole volume.
+On Mon, 2018-07-02 at 09:51 +0200, Boris Brezillon wrote:
+> Well, I thought checking the CRC just after updating the volume made
+> sense, just to make sure things were written correctly on the medium.
+> Let's add a comment explaining why we keep the check here, unless you
+> see a strong reason to get rid of this check in the update path.
 
-Skipping this test drastically improves the boot-time.
-
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Reviewed-by: Richard Weinberger <richard@nod.at>
----
- drivers/mtd/ubi/kapi.c      |  2 +-
- drivers/mtd/ubi/ubi-media.h |  6 ++++++
- drivers/mtd/ubi/ubi.h       |  4 ++++
- drivers/mtd/ubi/vmt.c       |  9 +++++++++
- drivers/mtd/ubi/vtbl.c      |  3 +++
- 5 files changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index d4b2e87..e9e9ecb 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -202,7 +202,7 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
- 	desc->mode = mode;
- 
- 	mutex_lock(&ubi->ckvol_mutex);
--	if (!vol->checked) {
-+	if (!vol->checked && !vol->skip_check) {
- 		/* This is the first open - check the volume */
- 		err = ubi_check_volume(ubi, vol_id);
- 		if (err < 0) {
-diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
-index 195ff8c..b5fe8f8 100644
---- a/drivers/mtd/ubi/ubi-media.h
-+++ b/drivers/mtd/ubi/ubi-media.h
-@@ -45,6 +45,11 @@ enum {
-  * Volume flags used in the volume table record.
-  *
-  * @UBI_VTBL_AUTORESIZE_FLG: auto-resize this volume
-+ * @UBI_VTBL_SKIP_CRC_CHECK_FLG: skip the CRC check done on a static volume at
-+ *				 open time. Should only be set on volumes that
-+ *				 are used by upper layers doing this kind of
-+ *				 check. Main use-case for this flag is
-+ *				 boot-time reduction
-  *
-  * %UBI_VTBL_AUTORESIZE_FLG flag can be set only for one volume in the volume
-  * table. UBI automatically re-sizes the volume which has this flag and makes
-@@ -76,6 +81,7 @@ enum {
-  */
- enum {
- 	UBI_VTBL_AUTORESIZE_FLG = 0x01,
-+	UBI_VTBL_SKIP_CRC_CHECK_FLG = 0x02,
- };
- 
- /*
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index f5ba97c..d47b9e4 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -327,6 +327,9 @@ struct ubi_eba_leb_desc {
-  *           atomic LEB change
-  *
-  * @eba_tbl: EBA table of this volume (LEB->PEB mapping)
-+ * @skip_check: %1 if CRC check of this static volume should be skipped.
-+ *		Directly reflects the presence of the
-+ *		%UBI_VTBL_SKIP_CRC_CHECK_FLG flag in the vtbl entry
-  * @checked: %1 if this static volume was checked
-  * @corrupted: %1 if the volume is corrupted (static volumes only)
-  * @upd_marker: %1 if the update marker is set for this volume
-@@ -374,6 +377,7 @@ struct ubi_volume {
- 	void *upd_buf;
- 
- 	struct ubi_eba_table *eba_tbl;
-+	unsigned int skip_check:1;
- 	unsigned int checked:1;
- 	unsigned int corrupted:1;
- 	unsigned int upd_marker:1;
-diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
-index 0be5167..e2606a4 100644
---- a/drivers/mtd/ubi/vmt.c
-+++ b/drivers/mtd/ubi/vmt.c
-@@ -299,6 +299,10 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
- 		vtbl_rec.vol_type = UBI_VID_DYNAMIC;
- 	else
- 		vtbl_rec.vol_type = UBI_VID_STATIC;
-+
-+	if (vol->skip_check)
-+		vtbl_rec.flags |= UBI_VTBL_SKIP_CRC_CHECK_FLG;
-+
- 	memcpy(vtbl_rec.name, vol->name, vol->name_len);
- 
- 	err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
-@@ -733,6 +737,11 @@ static int self_check_volume(struct ubi_device *ubi, int vol_id)
- 			ubi_err(ubi, "bad used_bytes");
- 			goto fail;
- 		}
-+
-+		if (vol->skip_check) {
-+			ubi_err(ubi, "bad skip_check");
-+			goto fail;
-+		}
- 	} else {
- 		if (vol->used_ebs < 0 || vol->used_ebs > vol->reserved_pebs) {
- 			ubi_err(ubi, "bad used_ebs");
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 94d7a86..2c133cd 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -560,6 +560,9 @@ static int init_volumes(struct ubi_device *ubi,
- 		vol->name[vol->name_len] = '\0';
- 		vol->vol_id = i;
- 
-+		if (vtbl[i].flags & UBI_VTBL_SKIP_CRC_CHECK_FLG)
-+			vol->skip_check = 1;
-+
- 		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
- 			/* Auto re-size flag may be set only for one volume */
- 			if (ubi->autoresize_vol_id != -1) {
--- 
-git-series 0.9.1
+I am fine with this, thanks.
