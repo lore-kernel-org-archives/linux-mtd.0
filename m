@@ -1,21 +1,30 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZt8V-0004XI-JV
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 07:20:45 +0000
-Date: Mon, 2 Jul 2018 09:20:14 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Boris Brezillon
- <boris.brezillon@bootlin.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: marvell_nand driver fails to suspend
-Message-ID: <20180702092014.0006fee0@xps13>
-In-Reply-To: <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
-References: <68ab4512-58f2-1ade-6754-616de8d8c8d5@zonque.org>
- <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZtBE-0006Fn-Dq
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 07:23:30 +0000
+Date: Mon, 2 Jul 2018 09:23:11 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+Cc: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: Re: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Message-ID: <20180702072311.GA4817@kroah.com>
+References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
+ <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
+ <20180702061929.GA7611@kroah.com>
+ <TY1PR01MB095431D99EEBB4D53459354BDC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <TY1PR01MB095431D99EEBB4D53459354BDC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +34,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
+On Mon, Jul 02, 2018 at 07:16:47AM +0000, IKEGAMI Tokunori wrote:
+> Hi Greg-san,
+> 
+> The commit IDs on mainline are below.
+> 
+>   1. dfeae1073583 mtd: cfi_cmdset_0002: Change write buffer to check correct value
+>   2. 85a82e28b023 mtd: cfi_cmdset_0002: Change definition naming to retry write operation
+>   3. 45f75b8a919a mtd: cfi_cmdset_0002: Change erase functions to retry for error
+>   4. 79ca484b6130 mtd: cfi_cmdset_0002: Change erase functions to check chip good only
+> 
+> Note:
+>   The patches just sent today as revised are only existing with commit IDs on my local environment.
+>   Also the patches are existing on the Linux MTD development patchwork as below but the commit IDs are not assigned.
+>     <https://patchwork.ozlabs.org/project/linux-mtd/list/?series=53133>
+> 
+>   If those revised patches should be applied anywhere to have commit IDs at first please let me know.
+>   Probably it should be consulted with the MTD maintainer Boris-san.
 
-Daniel Mack <daniel@zonque.org> wrote on Sun, 1 Jul 2018 21:04:58 +0200:
+And what stable tree(s) do you want to see these applied to?
 
-> Hi,
->=20
-> On Sunday, July 01, 2018 12:18 PM, Daniel Mack wrote:
-> > I'm seeing the below error when trying to suspend and resume a PXA3xx
-> > machine booted from devicetree with the new nand driver. This used to
-> > work fine with the old driver, but admittedly, the only kernel I
-> > currently have for reference testing is very old (3.0.4), and many other
-> > things regarding nand/mtd have also changed since then. =20
-> > > The suspend/resume implementation in the old driver used to call into=
- =20
-> > the ->suspend() and ->resume() functions of its mtd_info children
-> > directly, but looking at other drivers, it seems this is no longer
-> > needed or wanted. It also cleared all interrupts during resume, but that
-> > alone doesn't fix it in my tests. =20
-> > > I haven't followed the development in that area, so I'd appreciate an=
-y =20
-> > hint on how to fix this regression. I'm happy to test patches. =20
->=20
-> I think I figured it out. Will send a patch.
+thanks,
 
-Good to see you figured it out. Indeed there are no more suspend/resume
-callbacks, waiting for your patches to fix this.
-
-Thanks,
-Miqu=C3=A8l
+greg k-h
