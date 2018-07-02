@@ -1,40 +1,24 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZnlf-0002Up-QV
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 01:36:42 +0000
-Received: from mail-vk0-f43.google.com (mail-vk0-f43.google.com
- [209.85.213.43]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id w621a41J004096
- for <linux-mtd@lists.infradead.org>; Mon, 2 Jul 2018 10:36:04 +0900
-Received: by mail-vk0-f43.google.com with SMTP id o138-v6so8268445vkd.3
- for <linux-mtd@lists.infradead.org>; Sun, 01 Jul 2018 18:36:04 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
-References: <20180619120719.26921-1-richard@nod.at>
- <CAK7LNASgPa4D0Siyo3mvK_AJ2zaECDXGaMEn-iNzQ9PFXFir+w@mail.gmail.com>
- <3320422.EJ8D6C0VHL@blindfold>
- <d4fdcd1d-db20-1837-a037-0982a042d357@kernel.org>
- <20180625165506.484e025f@bbrezillon>
- <CAK7LNATyo+7gauyQcRmNfCs8CagU1XdpHHgREMeTvf4rqxpeNQ@mail.gmail.com>
- <20180626200928.29aca979@xps13>
- <CAK7LNATbmNadK=xPcaQ+seRS_YvH5ZP5SX8z74iOyYcJ0Soicw@mail.gmail.com>
- <333ae81b-af62-ec2e-3311-5487b1cc90c1@kernel.org>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Mon, 2 Jul 2018 10:35:22 +0900
-Message-ID: <CAK7LNATuCqs5ofKnNCSEYhWanD+u2+5NzB7asaYhqb7BVUW_Fw@mail.gmail.com>
-Subject: Re: [PATCH] arm: dts: socfpga: denali needs nand_x_clk too
-To: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
+Received: from mail1.bemta24.messagelabs.com ([67.219.250.211])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZowu-00033F-L4
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 02:52:23 +0000
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Mon,  2 Jul 2018 11:50:42 +0900
+Message-Id: <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
+In-Reply-To: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
+References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,110 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Dinh,
+For the word write it is checked if the chip has the correct value.
+But it is not checked for the write buffer as only checked if ready.
+To make sure for the write buffer change to check the value.
 
-2018-06-27 23:55 GMT+09:00 Dinh Nguyen <dinguyen@kernel.org>:
-> Hi Masahiro,
->
-> On 06/26/2018 09:52 PM, Masahiro Yamada wrote:
->> 2018-06-27 3:09 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
->>> Hi Masahiro,
->>>
->>> On Tue, 26 Jun 2018 11:38:21 +0900, Masahiro Yamada
->>> <yamada.masahiro@socionext.com> wrote:
->>>
->>>> 2018-06-25 23:55 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->>>>> On Mon, 25 Jun 2018 09:50:18 -0500
->>>>> Dinh Nguyen <dinguyen@kernel.org> wrote:
->>>>>
->>>>>> On 06/22/2018 10:58 AM, Richard Weinberger wrote:
->>>>>>> Masahiro,
->>>>>>>
->>>>>>> Am Freitag, 22. Juni 2018, 16:37:21 CEST schrieb Masahiro Yamada:
->>>>>>>> Hi Richard,
->>>>>>>>
->>>>>>>>
->>>>>>>> 2018-06-19 21:07 GMT+09:00 Richard Weinberger <richard@nod.at>:
->>>>>>>>> The denali NAND flash controller needs at least two clocks to operate,
->>>>>>>>> nand_clk and nand_x_clk.
->>>>>>>>> Since 1bb88666775e ("mtd: nand: denali: handle timing parameters by
->>>>>>>>> setup_data_interface()") nand_x_clk is used to derive timing settings.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Richard Weinberger <richard@nod.at>
->>>>>>>>> ---
->>>>>>>>> Strictly speaking denali needs a ecc_clk too, but AFAIK such a clock
->>>>>>>>> is not present on this SoC.
->>>>>>>>> But my SoCFPGA knowledge is very limited.
->>>>>>>>>
->>>>>>>>> Thanks,
->>>>>>>>> //richard
->>>>>>>>> ---
->>>>>>>>>  arch/arm/boot/dts/socfpga.dtsi | 3 ++-
->>>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
->>>>>>>>>
->>>>>>>>> diff --git a/arch/arm/boot/dts/socfpga.dtsi b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>> index 486d4e7433ed..562f7b375bbd 100644
->>>>>>>>> --- a/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>> +++ b/arch/arm/boot/dts/socfpga.dtsi
->>>>>>>>> @@ -754,7 +754,8 @@
->>>>>>>>>                         reg-names = "nand_data", "denali_reg";
->>>>>>>>>                         interrupts = <0x0 0x90 0x4>;
->>>>>>>>>                         dma-mask = <0xffffffff>;
->>>>>>>>> -                       clocks = <&nand_clk>;
->>>>>>>>> +                       clocks = <&nand_clk>, <&nand_x_clk>;
->>>>>>>>> +                       clock-names = "nand", "nand_x";
->>>>>>>>
->>>>>>>>
->>>>>>>> IMHO, this should be
->>>>>>>>
->>>>>>>>                           clocks = <&nand_clk>, <&nand_x_clk>, <&nand_x_clk>;
->>>>>>>>                           clock-names = "nand", "nand_x", "ecc";
->>>>>>
->>>>>> No, it should be just the nand_x and ecc.
->>>>>>
->>>>>> There's already a patch to use the nand_x_clk and not the nand_clk.
->>>>
->>>>
->>>> Different people try to fix the problem in different ways.
->>>>
->>>> I think it is due to miscommunication across sub-systems.
->>>
->>> Is the series named
->>>
->>>         mtd: rawnand: denali: add new clocks and improve
->>>                               setup_data_interface
->>>
->>> still valid?
->>
->> Yes.
->> I believe V4 is valid.
->>
->>
->> Information for Dinh Nguyen:
->>
->> http://patchwork.ozlabs.org/patch/933507/
->> http://patchwork.ozlabs.org/patch/933487/
->> http://patchwork.ozlabs.org/patch/933494/
->> http://patchwork.ozlabs.org/patch/933506/
->>
->>
->> If he is not convinced, I am open to discussion, though.
->
-> I wasn't aware of these patches. This patch is staged to go into
-> v4.17-rc3 through the arm-soc:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/arm/arm-soc.git/commit/arch/arm/boot/dts/socfpga.dtsi?h=fixes&id=4eda9b766b042ea38d84df91581b03f6145a2ab0
->
-> I think your patch will handle a case where only 1 clock is passed in,
-> so it should be okay right?
->
+It is enough as this patch is only checking the last written word.
+Since it is described by data sheets to check the operation status.
 
-I should be OK,
-but please consider the proper fix for v4.19
-as Boris suggested.
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 692902df2598..9ab521d25ea2 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -1880,7 +1880,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+ 			break;
+ 
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, datum)) {
+ 			xip_enable(map, chip, adr);
+ 			goto op_done;
+ 		}
 -- 
-Best Regards
-Masahiro Yamada
+2.16.1
