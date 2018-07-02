@@ -1,36 +1,23 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+Received: from mga05.intel.com ([192.55.52.43])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZzBV-0007or-SR
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 13:48:11 +0000
-Received: by mail-it0-x242.google.com with SMTP id 16-v6so12171674itl.5
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2018 06:47:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <CACRpkdaEsEAiGpieJK1AA8HHLzZc7Tdc932rhdayg06rFU1hNA@mail.gmail.com>
- <MWHPR02MB26232270DED605627B2CF22FAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
- <CACRpkdZb6NMHtai1DBa+7m2ieZJZiAB7d1vSuP376rHQKpOf+A@mail.gmail.com>
- <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
-In-Reply-To: <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 2 Jul 2018 15:47:42 +0200
-Message-ID: <CACRpkdZp+8ZFRF2c+pAy47ZSWjavu3Qo5fz6A41zDty444MWCg@mail.gmail.com>
-Subject: Re: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
- arm pl353 smc nand interface
-To: nagasure@xilinx.com
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Mark Vasut <marek.vasut@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
- Markus Mayer <mmayer@broadcom.com>, Roger Quadros <rogerq@ti.com>,
- Ladislav Michl <ladis@linux-mips.org>, ada@thorsis.com,
- honghui.zhang@mediatek.com,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- nagasureshkumarrelli@gmail.com, michals@xilinx.com
+ id 1fZzDd-0000yV-Nn
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 13:50:45 +0000
+Message-ID: <1530539396.469.98.camel@gmail.com>
+Subject: Re: [PATCH v5 0/2] ubi: add possibility to skip CRC check for
+ static UBI volumes
+From: Artem Bityutskiy <dedekind1@gmail.com>
+Reply-To: dedekind1@gmail.com
+To: Quentin Schulz <quentin.schulz@bootlin.com>, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com,  marek.vasut@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ thomas.petazzoni@bootlin.com
+Date: Mon, 02 Jul 2018 16:49:56 +0300
+In-Reply-To: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
+References: <cover.ab725a3c64626915f8184e28937870f36684db61.1530524405.git-series.quentin.schulz@bootlin.com>
 Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,29 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 29, 2018 at 6:15 AM Naga Sureshkumar Relli
-<nagasure@xilinx.com> wrote:
-> > On Thu, Jun 28, 2018 at 2:13 PM Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-> >
-> >
-> > > > This driver has the same problem as the other patches:
-> > > > use the ARM_AMBA primecell magic numbers detection, and the PrimeCell bus.
-> > >
-> > > Here the child is NAND controller and the parent is PL353 SMC, so do
-> > > we need to update this also as AMBA driver?
-> >
-> > No, sorry. The parent is spawning another device and you should indeed use a platform device
-> > for that.
-> >
-> Ok, you mean platform driver model is sufficient for both pl353-smc.c and pl353_nand.c drivers?
-> Or AMBA model is for pl353-smc and platform driver model is for pl353-nand?
+On Mon, 2018-07-02 at 11:43 +0200, Quentin Schulz wrote:
+> Some users of static UBI volumes implement their own integrity check, thus
+> making the volume CRC check done at open time useless. For instance, this
+> is the case when one use the ubiblock + dm-verity + squashfs combination,
+> where dm-verity already checks integrity of the block device but this time
+> at the block granularity instead of verifying the whole volume.
+> 
+> Skipping this test drastically improves the boot-time.
+> 
+> mtd-utils patches are already merged. See:
+> http://git.infradead.org/mtd-utils.git/commit/9095d213f536aec0f3c37f6666177f3b907afde7
+> http://git.infradead.org/mtd-utils.git/commit/7b4a65a27d2621b58c634d02c6a068ed9562383c
+> http://git.infradead.org/mtd-utils.git/commit/5e9bc0daa41d84ce5de81c4a1665d65f51893c10
+> http://git.infradead.org/mtd-utils.git/commit/8ba21ab75b41a1f9a6e27eed3ea80c9829669c5a
 
-The latter, AMBA primecell bus for pl353-smc and platform device for the
-nand subdevice.
+For the whole patch-set,
 
-Platform device is for anything that cannot be autodetected with e.g.
-magic hardare numbers, and the first device can be autodetected as a
-prime cell but not the subdevice.
-
-Yours,
-Linus Walleij
+Reviewed-by: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
