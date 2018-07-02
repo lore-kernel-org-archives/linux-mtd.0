@@ -1,27 +1,21 @@
-Subject: Re: [PATCH 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Kevin Hilman <khilman@baylibre.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-3-yixun.lan@amlogic.com>
- <20180624213844.2207ca6f@bbrezillon> <7ha7rfiz3c.fsf@baylibre.com>
- <20180628090034.0637a062@xps13> <7hr2kqfpam.fsf@baylibre.com>
-CC: <yixun.lan@amlogic.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Carlo Caione <carlo@caione.org>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-From: Yixun Lan <yixun.lan@amlogic.com>
-Message-ID: <3afe2a61-d15d-63e8-ef59-b36d891dbfb7@amlogic.com>
-Date: Mon, 2 Jul 2018 15:17:36 +0800
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZt8V-0004XI-JV
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 07:20:45 +0000
+Date: Mon, 2 Jul 2018 09:20:14 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: marvell_nand driver fails to suspend
+Message-ID: <20180702092014.0006fee0@xps13>
+In-Reply-To: <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
+References: <68ab4512-58f2-1ade-6754-616de8d8c8d5@zonque.org>
+ <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
 MIME-Version: 1.0
-In-Reply-To: <7hr2kqfpam.fsf@baylibre.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,232 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI Kevin
+Hi Daniel,
 
-On 06/29/18 07:45, Kevin Hilman wrote:
-> Hi Miquel,
-> 
-> Miquel Raynal <miquel.raynal@bootlin.com> writes:
-> 
->> On Wed, 27 Jun 2018 16:33:43 -0700, Kevin Hilman <khilman@baylibre.com>
->> wrote:
->>
->>> Hi Boris,
->>>
->>> Boris Brezillon <boris.brezillon@bootlin.com> writes:
->>>
->>>> Hi Yixun,
->>>>
->>>> On Wed, 13 Jun 2018 16:13:14 +0000
->>>> Yixun Lan <yixun.lan@amlogic.com> wrote:
->>>>  
->>>>> From: Liang Yang <liang.yang@amlogic.com>
->>>>>
->>>>> Add initial support for the Amlogic NAND flash controller which found
->>>>> in the Meson-GXBB/GXL/AXG SoCs.
->>>>>
->>>>> Singed-off-by: Liang Yang <liang.yang@amlogic.com>
->>>>> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
->>>>> ---
->>>>>  drivers/mtd/nand/raw/Kconfig      |    8 +
->>>>>  drivers/mtd/nand/raw/Makefile     |    3 +
->>>>>  drivers/mtd/nand/raw/meson_nand.c | 1422 +++++++++++++++++++++++++++++
->>>>>  3 files changed, 1433 insertions(+)
->>>>>  create mode 100644 drivers/mtd/nand/raw/meson_nand.c  
->>>>
->>>> Can you run checkpatch.pl --strict and fix the coding style issues?
->>>>  
->>>>>
->>>>> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
->>>>> index 19a2b283fbbe..b3c17a3ca8f4 100644
->>>>> --- a/drivers/mtd/nand/raw/Kconfig
->>>>> +++ b/drivers/mtd/nand/raw/Kconfig
->>>>> @@ -534,4 +534,12 @@ config MTD_NAND_MTK
->>>>>  	  Enables support for NAND controller on MTK SoCs.
->>>>>  	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
->>>>>  
->>>>> +config MTD_NAND_MESON
->>>>> +	tristate "Support for NAND flash controller on Amlogic's Meson SoCs"
->>>>> +	depends on ARCH_MESON || COMPILE_TEST
->>>>> +	select COMMON_CLK_REGMAP_MESON
->>>>> +	select MFD_SYSCON
->>>>> +	help
->>>>> +	  Enables support for NAND controller on Amlogic's Meson SoCs.
->>>>> +
->>>>>  endif # MTD_NAND
->>>>> diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
->>>>> index 165b7ef9e9a1..cdf6162f38c3 100644
->>>>> --- a/drivers/mtd/nand/raw/Makefile
->>>>> +++ b/drivers/mtd/nand/raw/Makefile
->>>>> @@ -1,5 +1,7 @@
->>>>>  # SPDX-License-Identifier: GPL-2.0
->>>>>  
->>>>> +ccflags-$(CONFIG_MTD_NAND_MESON) += -I$(srctree)/drivers/clk/meson  
->>>>
->>>> Please don't do that. If you need to expose common regs, put them
->>>> in include/linux/soc/meson/. I'm also not sure why you need to access
->>>> the clk regs directly. Why can't you expose the MMC/NAND clk as a clk
->>>> provider whose driver would be placed in drivers/clk and which would use
->>>> the mmc syscon. This way the same clk driver could be used for both
->>>> MMC and NAND clk indifferently, and the NAND driver would be much
->>>> simpler.  
->>>
->>> [...]
->>>
->>>>> +
->>>>> +	return 0;
->>>>> +}
->>>>> +
->>>>> +static const char * sd_emmc_ext_clk0_parent_names[MUX_CLK_NUM_PARENTS];
->>>>> +
->>>>> +static struct clk_regmap sd_emmc_c_ext_clk0_sel = {
->>>>> +	.data = &(struct clk_regmap_mux_data){
->>>>> +		.offset = SD_EMMC_CLOCK,
->>>>> +		.mask = 0x3,
->>>>> +		.shift = 6,
->>>>> +	},
->>>>> +	.hw.init = &(struct clk_init_data) {
->>>>> +		.name = "sd_emmc_c_nand_clk_mux",
->>>>> +		.ops = &clk_regmap_mux_ops,
->>>>> +		.parent_names = sd_emmc_ext_clk0_parent_names,
->>>>> +		.num_parents = ARRAY_SIZE(sd_emmc_ext_clk0_parent_names),
->>>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>> +	},
->>>>> +};
->>>>> +
->>>>> +static struct clk_regmap sd_emmc_c_ext_clk0_div = {
->>>>> +	.data = &(struct clk_regmap_div_data){
->>>>> +		.offset = SD_EMMC_CLOCK,
->>>>> +		.shift = 0,
->>>>> +		.width = 6,
->>>>> +		.flags = CLK_DIVIDER_ROUND_CLOSEST | CLK_DIVIDER_ONE_BASED,
->>>>> +	},
->>>>> +	.hw.init = &(struct clk_init_data) {
->>>>> +		.name = "sd_emmc_c_nand_clk_div",
->>>>> +		.ops = &clk_regmap_divider_ops,
->>>>> +		.parent_names = (const char *[]){ "sd_emmc_c_nand_clk_mux" },
->>>>> +		.num_parents = 1,
->>>>> +		.flags = CLK_SET_RATE_PARENT,
->>>>> +	},
->>>>> +};
->>>>> +
->>>>> +static int meson_nfc_clk_init(struct meson_nfc *nfc)
->>>>> +{
->>>>> +	struct clk_regmap *mux = &sd_emmc_c_ext_clk0_sel;
->>>>> +	struct clk_regmap *div = &sd_emmc_c_ext_clk0_div;
->>>>> +	struct clk *clk;
->>>>> +	int i, ret;
->>>>> +
->>>>> +	/* request core clock */
->>>>> +	nfc->core_clk = devm_clk_get(nfc->dev, "core");
->>>>> +	if (IS_ERR(nfc->core_clk)) {
->>>>> +		dev_err(nfc->dev, "failed to get core clk\n");
->>>>> +		return PTR_ERR(nfc->core_clk);
->>>>> +	}
->>>>> +
->>>>> +	/* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
->>>>> +	regmap_update_bits(nfc->reg_clk, 0,
->>>>> +			CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK,
->>>>> +			CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK);
->>>>> +
->>>>> +	/* get the mux parents */
->>>>> +	for (i = 0; i < MUX_CLK_NUM_PARENTS; i++) {
->>>>> +		char name[16];
->>>>> +
->>>>> +		snprintf(name, sizeof(name), "clkin%d", i);
->>>>> +		clk = devm_clk_get(nfc->dev, name);
->>>>> +		if (IS_ERR(clk)) {
->>>>> +			if (clk != ERR_PTR(-EPROBE_DEFER))
->>>>> +				dev_err(nfc->dev, "Missing clock %s\n", name);
->>>>> +			return PTR_ERR(clk);
->>>>> +		}
->>>>> +
->>>>> +		sd_emmc_ext_clk0_parent_names[i] = __clk_get_name(clk);
->>>>> +	}
->>>>> +
->>>>> +	mux->map = nfc->reg_clk;
->>>>> +	clk = devm_clk_register(nfc->dev, &mux->hw);
->>>>> +	if (WARN_ON(IS_ERR(clk)))
->>>>> +		return PTR_ERR(clk);
->>>>> +
->>>>> +	div->map = nfc->reg_clk;
->>>>> +	nfc->device_clk = devm_clk_register(nfc->dev, &div->hw);
->>>>> +	if (WARN_ON(IS_ERR(nfc->device_clk)))
->>>>> +		return PTR_ERR(nfc->device_clk);
->>>>> +
->>>>> +	ret = clk_prepare_enable(nfc->core_clk);
->>>>> +	if (ret) {
->>>>> +		dev_err(nfc->dev, "failed to enable core clk\n");
->>>>> +		return ret;
->>>>> +	}
->>>>> +
->>>>> +	ret = clk_prepare_enable(nfc->device_clk);
->>>>> +	if (ret) {
->>>>> +		dev_err(nfc->dev, "failed to enable device clk\n");
->>>>> +		clk_disable_unprepare(nfc->core_clk);
->>>>> +		return ret;
->>>>> +	}
->>>>> +
->>>>> +	return 0;
->>>>> +}  
->>>>
->>>>
->>>> As said above, I don't like having a clk driver here, especially since
->>>> the registers you're accessing are not part of the NAND controller
->>>> registers. Please try to create a driver in drivers/clk/ for that.  
->>>
->>> We went back and forth on this one on some off-list reviews.
->>>
->>> Had we known that the NAND controller was (re)using the clock registers
->>> internal to the MMC IP block from the beginning, we would have written a
->>> clock provider in drivers/clk for this, and shared it.
->>>
->>> However, when I wrote the MMC driver[1] (already upstream) along with
->>> the bindings[2], we did not fathom that the internal mux and divider
->>> would be "borrowed" by another device. :(
->>>
->>> We only recently found out that the NAND controller "borrows" one of the
->>> MMC clocks, whose registers are inside the MMC range.  Taking the clock
->>> out of the MMC driver and into its own clock-provider implies redoing
->>> the MMC driver, as well as its bindings, which we wanted to avoid
->>> (especially the binding changes.)
->>>
->>> We (I can take the blame) decided that since the MMC and NAND are
->>> mutually exclusive (they also share pins), that allowing NAND to reuse
->>> the MMC range would be a good compromise.  The DT still accurately
->>> describes the hardware, but we don't have to throw a large wrench into
->>> the DT bindings just for a newly discovered shared clock.
->>>
->>> I agree, it's not the prettiest thing, but when we cannot know the full
->>> details of the hardware when we start, sometimes we end up in a bit of a
->>> mess that requires some compromise.
->>
->> I totally understand your situation but as MMC and NAND are mutually
->> exclusive, how is this a problem to have a dedicated clock driver used
->> only by the NAND controller (as maybe a first step)? I mean, if you
->> don't change the MMC bindings, then the MMC driver will still use its
->> own 'local' clock driver, right?
-> 
-> Yeah, I think you're right.  That would work too.
-> 
->> I don't know if you can have two nodes reserving the same address
->> range though.
-> 
-> You can, but it's a race who gets to claim the region.
-> 
-> You'd have to have the new clock-controler disabled by default, and have
-> any boards that use the NAND disable the MMC and enable the clock
-> controller node.
-> 
-> But I think that should work.
-> 
-> Yixun, can you give this approach a try?
-Yes, It actually works here, I'll send out the clock patches later for
-review.
+Daniel Mack <daniel@zonque.org> wrote on Sun, 1 Jul 2018 21:04:58 +0200:
 
-Thanks everyone for the suggestion
-> 
-> Kevin
-> 
-> .
-> 
+> Hi,
+>=20
+> On Sunday, July 01, 2018 12:18 PM, Daniel Mack wrote:
+> > I'm seeing the below error when trying to suspend and resume a PXA3xx
+> > machine booted from devicetree with the new nand driver. This used to
+> > work fine with the old driver, but admittedly, the only kernel I
+> > currently have for reference testing is very old (3.0.4), and many other
+> > things regarding nand/mtd have also changed since then. =20
+> > > The suspend/resume implementation in the old driver used to call into=
+ =20
+> > the ->suspend() and ->resume() functions of its mtd_info children
+> > directly, but looking at other drivers, it seems this is no longer
+> > needed or wanted. It also cleared all interrupts during resume, but that
+> > alone doesn't fix it in my tests. =20
+> > > I haven't followed the development in that area, so I'd appreciate an=
+y =20
+> > hint on how to fix this regression. I'm happy to test patches. =20
+>=20
+> I think I figured it out. Will send a patch.
+
+Good to see you figured it out. Indeed there are no more suspend/resume
+callbacks, waiting for your patches to fix this.
+
+Thanks,
+Miqu=C3=A8l
