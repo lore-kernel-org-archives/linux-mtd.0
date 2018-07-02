@@ -1,22 +1,18 @@
 Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZzgr-0002OR-5T
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 14:20:31 +0000
+ id 1fZzki-00053Y-IX
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 14:24:29 +0000
 From: Richard Weinberger <richard@nod.at>
 To: Arnd Bergmann <arnd@arndb.de>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>,
  Adrian Hunter <adrian.hunter@intel.com>, y2038@lists.linaro.org,
- Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
- Deepa Dinamani <deepa.kernel@gmail.com>,
- Souptick Joarder <jrdr.linux@gmail.com>,
- =?ISO-8859-1?Q?J=E9r=F4me?= Glisse <jglisse@redhat.com>,
- Hyunchul Lee <cheol.lee@lge.com>, linux-mtd@lists.infradead.org,
+ Deepa Dinamani <deepa.kernel@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ubifs: use timespec64 for inode timestamps
-Date: Mon, 02 Jul 2018 16:20:04 +0200
-Message-ID: <61251850.EbJPfQiGNC@blindfold>
-In-Reply-To: <20180620081311.126158-1-arnd@arndb.de>
-References: <20180620081311.126158-1-arnd@arndb.de>
+Subject: Re: [PATCH] ubifs: tnc: use monotonic znode timestamp
+Date: Mon, 02 Jul 2018 16:24:15 +0200
+Message-ID: <31916482.81kKL2104G@blindfold>
+In-Reply-To: <20180620082937.719067-1-arnd@arndb.de>
+References: <20180620082937.719067-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -29,82 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 20. Juni 2018, 10:12:58 CEST schrieb Arnd Bergmann:
-> Both vfs and the on-disk inode structures can deal with fine-grained
-> timestamps now, so this is the last missing piece to make ubifs
-> y2038-safe on 32-bit architectures.
+Arnd,
+
+Am Mittwoch, 20. Juni 2018, 10:29:11 CEST schrieb Arnd Bergmann:
+> The tnc uses get_seconds() based timestamps to check the age of a znode,
+> which has two problems: on 32-bit architectures this may overflow in
+> 2038 or 2106, and it gives incorrect information when the system time
+> is updated using settimeofday().
+> 
+> Using montonic timestamps with ktime_get_seconds() solves both thes
+> problems.
 > 
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  fs/ubifs/file.c | 11 +++++------
->  fs/ubifs/sb.c   |  6 +++---
->  2 files changed, 8 insertions(+), 9 deletions(-)
+>  fs/ubifs/shrinker.c | 2 +-
+>  fs/ubifs/tnc.c      | 4 ++--
+>  fs/ubifs/tnc_misc.c | 2 +-
+>  fs/ubifs/ubifs.h    | 2 +-
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-> index fd7eb6fe9090..02fab5c322c7 100644
-> --- a/fs/ubifs/file.c
-> +++ b/fs/ubifs/file.c
-> @@ -1365,11 +1365,10 @@ int ubifs_fsync(struct file *file, loff_t start, loff_t end, int datasync)
->   * granularity, they are not updated. This is an optimization.
->   */
->  static inline int mctime_update_needed(const struct inode *inode,
-> -				       const struct timespec *now)
-> +				       const struct timespec64 *now)
+> diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+> index 9a9fb94a41c6..9d10cbdec2cc 100644
+> --- a/fs/ubifs/shrinker.c
+> +++ b/fs/ubifs/shrinker.c
+> @@ -71,7 +71,7 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
 >  {
-> -	struct timespec64 now64 = timespec_to_timespec64(*now);
-> -	if (!timespec64_equal(&inode->i_mtime, &now64) ||
-> -	    !timespec64_equal(&inode->i_ctime, &now64))
-> +	if (!timespec64_equal(&inode->i_mtime, now) ||
-> +	    !timespec64_equal(&inode->i_ctime, now))
->  		return 1;
->  	return 0;
->  }
-> @@ -1425,7 +1424,7 @@ int ubifs_update_time(struct inode *inode, struct timespec64 *time,
->   */
->  static int update_mctime(struct inode *inode)
->  {
-> -	struct timespec now = timespec64_to_timespec(current_time(inode));
-> +	struct timespec64 now = current_time(inode);
->  	struct ubifs_inode *ui = ubifs_inode(inode);
->  	struct ubifs_info *c = inode->i_sb->s_fs_info;
->  
-> @@ -1519,7 +1518,7 @@ static vm_fault_t ubifs_vm_page_mkwrite(struct vm_fault *vmf)
->  	struct page *page = vmf->page;
->  	struct inode *inode = file_inode(vmf->vma->vm_file);
->  	struct ubifs_info *c = inode->i_sb->s_fs_info;
-> -	struct timespec now = timespec64_to_timespec(current_time(inode));
-> +	struct timespec64 now = current_time(inode);
->  	struct ubifs_budget_req req = { .new_page = 1 };
->  	int err, update_time;
->  
-> diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-> index 8c25081a5109..fa0a982a6797 100644
-> --- a/fs/ubifs/sb.c
-> +++ b/fs/ubifs/sb.c
-> @@ -85,7 +85,7 @@ static int create_default_filesystem(struct ubifs_info *c)
->  	long long tmp64, main_bytes;
->  	__le64 tmp_le64;
->  	__le32 tmp_le32;
-> -	struct timespec ts;
-> +	struct timespec64 ts;
->  
->  	/* Some functions called from here depend on the @c->key_len filed */
->  	c->key_len = UBIFS_SK_LEN;
-> @@ -301,8 +301,8 @@ static int create_default_filesystem(struct ubifs_info *c)
->  	ino->creat_sqnum = cpu_to_le64(++c->max_sqnum);
->  	ino->nlink = cpu_to_le32(2);
->  
-> -	ktime_get_real_ts(&ts);
-> -	ts = timespec_trunc(ts, DEFAULT_TIME_GRAN);
-> +	ktime_get_real_ts64(&ts);
-> +	ts = timespec64_trunc(ts, DEFAULT_TIME_GRAN);
->  	tmp_le64 = cpu_to_le64(ts.tv_sec);
->  	ino->atime_sec   = tmp_le64;
->  	ino->ctime_sec   = tmp_le64;
+>  	int total_freed = 0;
+>  	struct ubifs_znode *znode, *zprev;
+> -	int time = get_seconds();
+> +	time64_t time = ktime_get_seconds();
 
-Acked-by: Richard Weinberger <richard@nod.at>
+ubifs does
+	abs(time - znode->time) >= age) {
 
-Shall this patch go through the ubifs tree?
+Is this still legit with time64_t?
 
 Thanks,
 //richard
