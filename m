@@ -1,23 +1,28 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fZsjF-0007ns-LN
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 06:54:32 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Quentin Schulz <quentin.schulz@bootlin.com>, dedekind1@gmail.com,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- thomas.petazzoni@bootlin.com
-Subject: Re: [PATCH v3 2/2] ubi: expose the volume CRC check skip flag
-Date: Mon, 02 Jul 2018 08:54:09 +0200
-Message-ID: <2109705.Xvz1DYdJuj@blindfold>
-In-Reply-To: <20180702085227.2b418264@bbrezillon>
-References: <cover.6d66955e7c1848c8255870deb42eddb69bd276f3.1530169759.git-series.quentin.schulz@bootlin.com>
- <20180702064433.kvxcacdhuenzk5j3@qschulz>
- <20180702085227.2b418264@bbrezillon>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Received: from mail1.bemta23.messagelabs.com ([67.219.246.2])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fZt58-0002TT-2v
+ for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 07:17:13 +0000
+From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
+ <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>, Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: RE: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
+ correct value
+Date: Mon, 2 Jul 2018 07:16:47 +0000
+Message-ID: <TY1PR01MB095431D99EEBB4D53459354BDC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
+ <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
+ <20180702061929.GA7611@kroah.com>
+In-Reply-To: <20180702061929.GA7611@kroah.com>
+Content-Language: ja-JP
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,84 +32,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 2. Juli 2018, 08:52:27 CEST schrieb Boris Brezillon:
-> On Mon, 2 Jul 2018 08:44:33 +0200
-> Quentin Schulz <quentin.schulz@bootlin.com> wrote:
-> 
-> > Hi Richard, Boris,
-> > 
-> > On Sun, Jul 01, 2018 at 10:50:41PM +0200, Richard Weinberger wrote:
-> > > Am Sonntag, 1. Juli 2018, 22:33:47 CEST schrieb Boris Brezillon:  
-> > > > On Sun, 01 Jul 2018 21:35:57 +0200
-> > > > Richard Weinberger <richard@nod.at> wrote:
-> > > >   
-> > > > > Quentin,
-> > > > > 
-> > > > > Am Donnerstag, 28. Juni 2018, 09:40:53 CEST schrieb Quentin Schulz:  
-> > > > > > Now that we have the logic for skipping CRC check for static UBI volumes
-> > > > > > in the core, let's expose it to users.
-> > > > > > 
-> > > > > > This makes use of a padding byte in the volume description data
-> > > > > > structure as a flag. This flag only tell for now whether we should skip
-> > > > > > the CRC check of a volume.
-> > > > > > 
-> > > > > > This checks the UBI volume for which we are trying to skip the CRC check
-> > > > > > is static.
-> > > > > > 
-> > > > > > Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > > > > Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-> > > > > > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > > > > ---
-> > > > > >  drivers/mtd/ubi/cdev.c      |  4 ++++
-> > > > > >  drivers/mtd/ubi/vmt.c       |  3 +++
-> > > > > >  include/uapi/mtd/ubi-user.h | 16 ++++++++++++++--
-> > > > > >  3 files changed, 21 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-> > > > > > index 45c3296..3eea1df 100644
-> > > > > > --- a/drivers/mtd/ubi/cdev.c
-> > > > > > +++ b/drivers/mtd/ubi/cdev.c
-> > > > > > @@ -622,6 +622,10 @@ static int verify_mkvol_req(const struct ubi_device *ubi,
-> > > > > >  	    req->vol_type != UBI_STATIC_VOLUME)
-> > > > > >  		goto bad;
-> > > > > >  
-> > > > > > +	if (req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG &&  
-> > > > 
-> > > > Oops, missed that req->flags & UBI_VOL_SKIP_CRC_CHECK_FLG check was
-> > > > missing parens (checkpatch --strict should complain about that).  
-> > > 
-> > > Latest when building my local branch or in linux-next we had noticed.
-> > > No need to worry.
-> > >    
-> > > > > > +	    req->vol_type != UBI_STATIC_VOLUME)
-> > > > > > +		goto bad;    
-> > > > > 
-> > > > > We should also reject unknown flags here.  
-> > > > 
-> > > > I agree.  
-> > 
-> > Should I send another version of my patches for it?
+Hi Greg-san,
 
-Yes. Please.
+The commit IDs on mainline are below.
 
-> Yes please, respin your series with this additional check. Just define
-> 
-> #define UBI_VOL_VALID_FLGS	(UBI_VOL_SKIP_CRC_CHECK_FLG)
-> 
-> and then, in verify_mkvol_req() add
-> 
-> 	if (req->flags & ~UBI_VOL_VALID_FLGS)
-> 		goto bad;
+  1. dfeae1073583 mtd: cfi_cmdset_0002: Change write buffer to check correc=
+t value
+  2. 85a82e28b023 mtd: cfi_cmdset_0002: Change definition naming to retry w=
+rite operation
+  3. 45f75b8a919a mtd: cfi_cmdset_0002: Change erase functions to retry for=
+ error
+  4. 79ca484b6130 mtd: cfi_cmdset_0002: Change erase functions to check chi=
+p good only
 
-Yep.
- 
-> > Same for
-> > parenthesis around the flags masking above?
-> 
-> No need to fix that one (unless Richard cares), as it seems I had it
-> wrong.
+Note:
+  The patches just sent today as revised are only existing with commit IDs =
+on my local environment.
+  Also the patches are existing on the Linux MTD development patchwork as b=
+elow but the commit IDs are not assigned.
+    <https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D53133>
 
-Nah. If both gcc and checkpatch don't complain, let's keep it as-is.
+  If those revised patches should be applied anywhere to have commit IDs at=
+ first please let me know.
+  Probably it should be consulted with the MTD maintainer Boris-san.
 
-Thanks,
-//richard
+Regards,
+Ikegami
+
+> -----Original Message-----
+> From: Greg Kroah-Hartman [mailto:gregkh@linuxfoundation.org]
+> Sent: Monday, July 02, 2018 3:19 PM
+> To: IKEGAMI Tokunori
+> Cc: PACKHAM Chris; Brian Norris; David Woodhouse; Boris Brezillon; Marek
+> Vasut; Richard Weinberger; Cyrille Pitchen;
+> linux-mtd@lists.infradead.org; stable@vger.kernel.org; Boris
+> Brezillon
+> Subject: Re: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to
+> check correct value
+>=20
+> On Mon, Jul 02, 2018 at 11:50:42AM +0900, Tokunori Ikegami wrote:
+> > For the word write it is checked if the chip has the correct value.
+> > But it is not checked for the write buffer as only checked if ready.
+> > To make sure for the write buffer change to check the value.
+> >
+> > It is enough as this patch is only checking the last written word.
+> > Since it is described by data sheets to check the operation status.
+> >
+> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+> > Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+> > Cc: Brian Norris <computersforpeace@gmail.com>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+> > Cc: Marek Vasut <marek.vasut@gmail.com>
+> > Cc: Richard Weinberger <richard@nod.at>
+> > Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> > Cc: linux-mtd@lists.infradead.org
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> >  drivers/mtd/chips/cfi_cmdset_0002.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> What are the git commit ids for all of these patches, and what stable
+> tree do they need to go to?
+>=20
+> thanks,
+>=20
+> greg k-h
