@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 30/32] mtd: rawnand: jz4740: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:27 +0200
-Message-Id: <20180703220029.19565-31-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 21/32] mtd: rawnand: sh_flctl: convert driver to nand_scan()
+Date: Wed,  4 Jul 2018 00:00:18 +0200
+Message-Id: <20180703220029.19565-22-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,118 +42,43 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/jz4740_nand.c | 42 +++++++++++++++++++++++---------------
- 1 file changed, 25 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/raw/sh_flctl.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 613b00a9604b..2e95b618dc47 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -59,6 +59,7 @@
- 
- struct jz_nand {
- 	struct nand_chip chip;
-+	struct platform_device *pdev;
- 	void __iomem *base;
- 	struct resource *mem;
- 
-@@ -329,8 +330,8 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
- 	writel(ctrl, nand->base + JZ_REG_NAND_CTRL);
- 
- 	if (chipnr == 0) {
--		/* Detect first chip. */
--		ret = nand_scan_ident(mtd, 1, NULL);
-+		/* Detect the first chip and register it */
-+		ret = nand_scan(mtd, 1);
- 		if (ret)
- 			goto notfound_id;
- 
-@@ -367,6 +368,21 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
- 	return ret;
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index d37d1d3ccbf9..959eb6f5f269 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -1002,10 +1002,10 @@ static void flctl_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 	flctl->index += len;
  }
  
-+static int jz_nand_attach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct jz_nand *nand = mtd_to_jz_nand(mtd);
-+	struct device *dev = mtd->dev.parent;
-+	struct jz_nand_platform_data *pdata = dev_get_platdata(dev);
-+
-+	if (pdata && pdata->ident_callback) {
-+		pdata->ident_callback(nand->pdev, mtd, &pdata->partitions,
-+				      &pdata->num_partitions);
-+	}
-+
-+	return 0;
-+}
-+
- static int jz_nand_probe(struct platform_device *pdev)
+-static int flctl_chip_init_tail(struct mtd_info *mtd)
++static int flctl_chip_attach_chip(struct nand_chip *chip)
  {
- 	int ret;
-@@ -397,6 +413,7 @@ static int jz_nand_probe(struct platform_device *pdev)
- 	mtd		= nand_to_mtd(chip);
- 	mtd->dev.parent = &pdev->dev;
- 	mtd->name	= "jz4740-nand";
-+	nand->pdev	= pdev;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+-	struct nand_chip *chip = &flctl->chip;
  
- 	chip->ecc.hwctl		= jz_nand_hwctl;
- 	chip->ecc.calculate	= jz_nand_calculate_ecc_rs;
-@@ -410,6 +427,7 @@ static int jz_nand_probe(struct platform_device *pdev)
- 	chip->chip_delay = 50;
- 	chip->cmd_ctrl = jz_nand_cmd_ctrl;
- 	chip->select_chip = jz_nand_select_chip;
-+	chip->hwcontrol.attach_chip = jz_nand_attach_chip;
+ 	if (chip->options & NAND_BUSWIDTH_16) {
+ 		/*
+@@ -1200,15 +1200,8 @@ static int flctl_probe(struct platform_device *pdev)
  
- 	if (nand->busy_gpio)
- 		chip->dev_ready = jz_nand_dev_ready;
-@@ -450,20 +468,10 @@ static int jz_nand_probe(struct platform_device *pdev)
- 		else
- 			nand->banks[chipnr] = 0;
- 	}
-+
- 	if (chipnr == 0) {
- 		dev_err(&pdev->dev, "No NAND chips found\n");
--		goto err_iounmap_mmio;
--	}
+ 	flctl_setup_dma(flctl);
+ 
+-	ret = nand_scan_ident(flctl_mtd, 1, NULL);
+-	if (ret)
+-		goto err_chip;
 -
--	if (pdata && pdata->ident_callback) {
--		pdata->ident_callback(pdev, mtd, &pdata->partitions,
--					&pdata->num_partitions);
--	}
+-	ret = flctl_chip_init_tail(flctl_mtd);
+-	if (ret)
+-		goto err_chip;
 -
--	ret = nand_scan_tail(mtd);
--	if (ret) {
--		dev_err(&pdev->dev,  "Failed to scan NAND\n");
--		goto err_unclaim_banks;
-+		goto err_nand_release;
- 	}
+-	ret = nand_scan_tail(flctl_mtd);
++	nand->hwcontrol.attach_chip = flctl_chip_attach_chip;
++	ret = nand_scan(flctl_mtd, 1);
+ 	if (ret)
+ 		goto err_chip;
  
- 	ret = mtd_device_parse_register(mtd, NULL, NULL,
-@@ -472,15 +480,13 @@ static int jz_nand_probe(struct platform_device *pdev)
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to add mtd device\n");
--		goto err_nand_release;
-+		goto err_unclaim_banks;
- 	}
- 
- 	dev_info(&pdev->dev, "Successfully registered JZ4740 NAND driver\n");
- 
- 	return 0;
- 
--err_nand_release:
--	nand_release(mtd);
- err_unclaim_banks:
- 	while (chipnr--) {
- 		unsigned char bank = nand->banks[chipnr];
-@@ -488,6 +494,8 @@ static int jz_nand_probe(struct platform_device *pdev)
- 					 nand->bank_base[bank - 1]);
- 	}
- 	writel(0, nand->base + JZ_REG_NAND_CTRL);
-+err_nand_release:
-+	nand_release(mtd);
- err_iounmap_mmio:
- 	jz_nand_iounmap_resource(nand->mem, nand->base);
- err_free:
 -- 
 2.14.1
