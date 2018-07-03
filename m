@@ -1,23 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faFO7-0008Fw-Or
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 07:06:50 +0000
-Date: Tue, 3 Jul 2018 09:05:57 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Boris Brezillon
- <boris.brezillon@bootlin.com>, David Woodhouse <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: marvell_nand driver fails to suspend
-Message-ID: <20180703090557.0ec5cd20@xps13>
-In-Reply-To: <01ca9c4b-dc20-47fa-ae3c-983b3f47b28d@zonque.org>
-References: <68ab4512-58f2-1ade-6754-616de8d8c8d5@zonque.org>
- <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
- <20180702092014.0006fee0@xps13>
- <01ca9c4b-dc20-47fa-ae3c-983b3f47b28d@zonque.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1faFeS-0002qd-Re
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 07:23:06 +0000
+From: Richard Weinberger <richard@nod.at>
+To: xiaolei li <xiaolei.li@mediatek.com>
+Cc: leqiao.peng@valeo.com, casey@schaufler-ca.com,
+ linux-mtd@lists.infradead.org
+Subject: Re: UBIFS assert when create new sub-dir under a transmute enabled
+ dir with Smack enabled
+Date: Tue, 03 Jul 2018 09:22:52 +0200
+Message-ID: <3818822.lxJep7IjOv@blindfold>
+In-Reply-To: <1530597947.10234.6.camel@mhfsdcap03>
+References: <1529571876.14673.77.camel@mhfsdcap03>
+ <4639941.AxKdOeJuIX@blindfold> <1530597947.10234.6.camel@mhfsdcap03>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,59 +25,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
+Am Dienstag, 3. Juli 2018, 08:05:47 CEST schrieb xiaolei li:
+> Hi, Richard,
+> 
+> On Sun, 2018-07-01 at 10:23 +0200, Richard Weinberger wrote:
+> > Xiaolei Li,
+> > 
+> > Am Donnerstag, 21. Juni 2018, 11:04:36 CEST schrieb xiaolei li:
+> > > Hi Richard,
+> > > 
+> > > I ever committed one patch[1] to fix ubifs assert in ubifs_xattr_set()
+> > > if Smack is enabled.
+> > 
+> > Ohh, that patch was missed. Sorry for that.
+> > 
+> > > It almost always runs OK except "creating new sub-dir under a transmute
+> > > enabled dir" which is found by Mr.Leqiao Peng. For this special case,
+> > > there still has ubifs assert problem.
+> > > 
+> > > With patch[1], this problem can be reproduced by these steps ( assume
+> > > that the Smack has been enabled and the Smack userspace tool also
+> > > installed ):
+> > > 1). Add new smack rule in which the "aaa" for process object, "bbb" for
+> > > file or directory object.  "xwt" for the permission "execute, write and
+> > > transmute"
+> > > 
+> > > echo "aaa bbb xwt" | smackload
+> > > 
+> > > 2). Apply the label "aaa" to current sh process.   Verify the effect by
+> > > "ps -Z" 
+> > > 
+> > > echo aaa > /proc/self/attr/current
+> > > 
+> > > 3) Create a directory "test_dir" and assign the "bbb" label and enable
+> > > the transmute feature upon the new directory. 
+> > > Verify this by "chsmack test_dir". 
+> > > 
+> > > mkdir test_dir
+> > > chsmack -a "bbb" -t test_dir
+> > > 
+> > > 4) Create a new directory "newDir" under the "test_dir". 
+> > > 
+> > > mkdir test_dir/newDir
+> > > 
+> > > 
+> > > Then, ubifs assert happens, and the stack trace is:
+> > > 
+> > > UBIFS assert failed in __ubifs_setxattr at 284 (pid 4041)
+> > > CPU: 2 PID: 4041 Comm: mkdir Tainted: G S      W       4.9.90 #1
+> > > Call trace:
+> > > [<ffffff8008089ff8>] dump_backtrace+0x0/0x1d8
+> > > [<ffffff800808a254>] show_stack+0x24/0x30
+> > > [<ffffff800845f074>] dump_stack+0x94/0xb8
+> > > [<ffffff80083cdd78>] __ubifs_setxattr+0x358/0x5f8
+> > > [<ffffff80083ce384>] ubifs_xattr_set+0x64/0x3d0
+> > > [<ffffff800826c3bc>] __vfs_setxattr+0x7c/0x98
+> > > [<ffffff8008416d64>] smack_d_instantiate+0x304/0x350
+> > > [<ffffff800840cdec>] security_d_instantiate+0x4c/0x78
+> > > [<ffffff800825ca1c>] d_instantiate+0x3c/0x70
+> > > [<ffffff80083ab158>] ubifs_mkdir+0x1d8/0x1e0
+> > > [<ffffff800824f140>] vfs_mkdir2+0x128/0x1b0
+> > > [<ffffff8008254738>] SyS_mkdirat+0x80/0xf0
+> > > [<ffffff800808378c>] __sys_trace_return+0x0/0x4
+> > > 
+> > > Mr. Schaufler (original developer of SMACK) has analyzed the possible
+> > > root cause:
+> > > "I have confirmed this behavior. The issue is that the inode isn't
+> > > locked during inode instantiation. It doesn't need to be, because until
+> > > instatiation is complete the inode doesn't really exist and isn't
+> > > accessible to any other task. The assertion in the ubifs code is not
+> > > appropriate. I suggest that you contact the ubifs maintainers.
+> > > Please CC me, and I will answer any questions they may have. Thank you
+> > > for the report."
+> > 
+> > Yeah, this is the same case as with encrypted files. The assert makes
+> > no sense here. Thanks for reporting!
+> > 
+> > Does your patch from 2017 still apply and work?
+> 
+> My patch is applied, but can not resolve the problem here.
+> 
+> The root cause is that the inode isn't locked during inode instantiation
+> (from Mr.Schaufler), but we check whether inode is locked in
+> xattr_set.  
 
-Daniel Mack <daniel@zonque.org> wrote on Mon, 2 Jul 2018 09:48:01 +0200:
-
-> Hi Miquel,
->=20
-> On Monday, July 02, 2018 09:20 AM, Miquel Raynal wrote:
-> > Daniel Mack <daniel@zonque.org> wrote on Sun, 1 Jul 2018 21:04:58 +0200=
-: =20
-> >> On Sunday, July 01, 2018 12:18 PM, Daniel Mack wrote: =20
-> >>> I'm seeing the below error when trying to suspend and resume a PXA3xx
-> >>> machine booted from devicetree with the new nand driver. This used to
-> >>> work fine with the old driver, but admittedly, the only kernel I
-> >>> currently have for reference testing is very old (3.0.4), and many ot=
-her
-> >>> things regarding nand/mtd have also changed since then. =20
-> >>>> The suspend/resume implementation in the old driver used to call int=
-o =20
-> >>> the ->suspend() and ->resume() functions of its mtd_info children
-> >>> directly, but looking at other drivers, it seems this is no longer
-> >>> needed or wanted. It also cleared all interrupts during resume, but t=
-hat
-> >>> alone doesn't fix it in my tests. =20
-> >>>> I haven't followed the development in that area, so I'd appreciate a=
-ny =20
-> >>> hint on how to fix this regression. I'm happy to test patches. =20
-> >>
-> >> I think I figured it out. Will send a patch.
-> > > Good to see you figured it out. Indeed there are no more suspend/resu=
-me =20
-> > callbacks, waiting for your patches to fix this. =20
->=20
-> Hmm, I got confused in my test setup last night, so no, I haven't figured=
- it out yet. I've pasted the current version of the callbacks below, but th=
-at doesn't cut it.
->=20
-> The issue is easy to reproduce:
->=20
-> # echo mem >/sys/power/state
-> [wake up the device]
-> # sync
->=20
-> I'll give it a spin in a couple of days again, but if anything comes to y=
-our mind, please let me know.
->=20
-> And FTR, the device node has keep-config set for this board.
-
-Can you try without? It should work anyway, but it would allow us to
-see if it's a timing issue.
-
-Also, can you try with the mtd-utils directly (without UBI/UBIFS) with
-nanddump flash_erase and nandwrite to see what are the errors raised by
-the controller driver.
+Care to send a massaged patch for this?
 
 Thanks,
-Miqu=C3=A8l
+//richard
