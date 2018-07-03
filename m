@@ -1,22 +1,20 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faNBg-0000NY-8n
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 15:25:54 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Casey Schaufler <casey@schaufler-ca.com>
-Cc: xiaolei li <xiaolei.li@mediatek.com>, leqiao.peng@valeo.com,
- linux-mtd@lists.infradead.org
-Subject: Re: UBIFS assert when create new sub-dir under a transmute enabled
- dir with Smack enabled
-Date: Tue, 03 Jul 2018 17:25:29 +0200
-Message-ID: <1779495.8Qfuh5Rb3p@blindfold>
-In-Reply-To: <a8dc6814-2fd4-b3de-21fb-f57af7792d7d@schaufler-ca.com>
-References: <1529571876.14673.77.camel@mhfsdcap03>
- <3818822.lxJep7IjOv@blindfold>
- <a8dc6814-2fd4-b3de-21fb-f57af7792d7d@schaufler-ca.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1faRXd-0007j9-Te
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 20:04:51 +0000
+Date: Tue, 3 Jul 2018 22:04:24 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stefan@agner.ch, linux-tegra@vger.kernel.org, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [bug report] mtd: rawnand: add NVIDIA Tegra NAND Flash
+ controller driver
+Message-ID: <20180703220424.52c3d8f2@bbrezillon>
+In-Reply-To: <20180703141957.j27w6efnkhij5blz@kili.mountain>
+References: <20180703141957.j27w6efnkhij5blz@kili.mountain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 3. Juli 2018, 17:22:30 CEST schrieb Casey Schaufler:
-> >> The root cause is that the inode isn't locked during inode instantiation
-> >> (from Mr.Schaufler), but we check whether inode is locked in
-> >> xattr_set.
+On Tue, 3 Jul 2018 17:19:57 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
+
+> Hello Stefan Agner,
 > 
-> There is no need to do this check as all that
-> gets done with the decision is to print the warning.
-> The problem is the assumption that the inode is locked,
-> which is doesn't have to be during instantiation.
+> The patch d7d9f8ec77fe: "mtd: rawnand: add NVIDIA Tegra NAND Flash
+> controller driver" from Jun 24, 2018, leads to the following static
+> checker warning:
+> 
+> 	drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
+> 	warn: array off by one? 'nand->cs[die_nr]'
+> 
+> drivers/mtd/nand/raw/tegra_nand.c
+>    465  static void tegra_nand_select_chip(struct mtd_info *mtd, int die_nr)
+>    466  {
+>    467          struct nand_chip *chip = mtd_to_nand(mtd);
+>    468          struct tegra_nand_chip *nand = to_tegra_chip(chip);
+>    469          struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+>    470  
+>    471          if (die_nr < 0 || die_nr > 1) {
+>    472                  ctrl->cur_cs = -1;
+>    473                  return;
+>    474          }
+>    475  
+>    476          ctrl->cur_cs = nand->cs[die_nr];
+>    477  }
+> 
+> The story is that nand->cs[] is a one element array.  Some people use
+> one element arrays like this as variable size arrays.  It's better to
+> use a zero size array, but I think that might be a GCC feature and not
+> everyone knows you can do that.  Smatch treats this one as unknown size
+> because apparently it can't tie it back to the kmalloc().
+> 
+> But it really is a one element array and the condition is off by one.
 
-I agree. Historically ubifs has a lot of (very good) asserts.
-Some of them turn out to be too paranoid, like this one.
+I don't see where it's off by one? With the above test, die_nr is
+guaranteed to be 0 when you reach the
+"ctrl->cur_cs = nand->cs[die_nr];" statement, right? Am I missing
+something?
 
-Thanks,
-//richard
+> 
+> But really one element arrays are super weird.  Why not just use a
+> pointer?
+
+The controller supports more than 1 CS, and I guess the plan was to
+extend the array when the driver is ready to support this use case. I
+guess we could make ->cs a single integer instead of an array of size
+1 if that helps.
