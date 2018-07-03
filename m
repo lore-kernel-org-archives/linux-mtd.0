@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 19/32] mtd: rawnand: s3c2410: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:16 +0200
-Message-Id: <20180703220029.19565-20-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 24/32] mtd: rawnand: txx9ndfmc: convert driver to
+ nand_scan()
+Date: Wed,  4 Jul 2018 00:00:21 +0200
+Message-Id: <20180703220029.19565-25-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,58 +43,61 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/s3c2410.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
+ drivers/mtd/nand/raw/txx9ndfmc.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index 19661c5d3220..d656ea3a9ffe 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -915,20 +915,19 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+index b567d212fe7d..cac22dda799e 100644
+--- a/drivers/mtd/nand/raw/txx9ndfmc.c
++++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+@@ -254,21 +254,17 @@ static void txx9ndfmc_initialize(struct platform_device *dev)
+ #define TXX9NDFMC_NS_TO_CYC(gbusclk, ns) \
+ 	DIV_ROUND_UP((ns) * DIV_ROUND_UP(gbusclk, 1000), 1000000)
+ 
+-static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
++static int txx9ndfmc_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (!ret) {
+-		if (mtd->writesize >= 512) {
+-			/* Hardware ECC 6 byte ECC per 512 Byte data */
+-			chip->ecc.size = 512;
+-			chip->ecc.bytes = 6;
+-		}
+-		ret = nand_scan_tail(mtd);
++	if (mtd->writesize >= 512) {
++		/* Hardware ECC 6 byte ECC per 512 Byte data */
++		chip->ecc.size = 512;
++		chip->ecc.bytes = 6;
+ 	}
+-	return ret;
++
++	return 0;
  }
  
- /**
-- * s3c2410_nand_update_chip - post probe update
-- * @info: The controller instance.
-- * @nmtd: The driver version of the MTD instance.
-+ * s3c2410_nand_attach_chip - Init the ECC engine after NAND scan
-+ * @chip: The NAND chip
-  *
-- * This routine is called after the chip probe has successfully completed
-- * and the relevant per-chip information updated. This call ensure that
-+ * This hook is called by the core after the identification of the NAND chip,
-+ * once the relevant per-chip information is up to date.. This call ensure that
-  * we update the internal state accordingly.
-  *
-  * The internal state is currently limited to the ECC state information.
- */
--static int s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
--				    struct s3c2410_nand_mtd *nmtd)
-+static int s3c2410_nand_attach_chip(struct nand_chip *chip)
- {
--	struct nand_chip *chip = &nmtd->chip;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+ static int __init txx9ndfmc_probe(struct platform_device *dev)
+@@ -332,7 +328,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		chip->ecc.correct = txx9ndfmc_correct_data;
+ 		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
+ 		chip->ecc.mode = NAND_ECC_HW;
+-		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
++		/* nand_scan() will overwrite ecc.size and ecc.bytes */
+ 		chip->ecc.size = 256;
+ 		chip->ecc.bytes = 3;
+ 		chip->ecc.strength = 1;
+@@ -359,7 +355,8 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		if (plat->wide_mask & (1 << i))
+ 			chip->options |= NAND_BUSWIDTH_16;
  
- 	switch (chip->ecc.mode) {
- 
-@@ -1161,15 +1160,8 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		mtd->dev.parent = &pdev->dev;
- 		s3c2410_nand_init_chip(info, nmtd, sets);
- 
--		err = nand_scan_ident(mtd, (sets) ? sets->nr_chips : 1, NULL);
--		if (err)
--			goto exit_error;
--
--		err = s3c2410_nand_update_chip(info, nmtd);
--		if (err < 0)
--			goto exit_error;
--
--		err = nand_scan_tail(mtd);
-+		nmtd->chip.controller->attach_chip = s3c2410_nand_attach_chip;
-+		err = nand_scan(mtd, sets ? sets->nr_chips : 1);
- 		if (err)
- 			goto exit_error;
- 
+-		if (txx9ndfmc_nand_scan(mtd)) {
++		chip->controller->attach_chip = txx9ndfmc_attach_chip;
++		if (nand_scan(mtd, 1)) {
+ 			kfree(txx9_priv->mtdname);
+ 			kfree(txx9_priv);
+ 			continue;
 -- 
 2.14.1
