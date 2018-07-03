@@ -1,28 +1,31 @@
-Date: Tue, 3 Jul 2018 16:45:54 -0600
-From: Rob Herring <robh@kernel.org>
-To: Piotr Bugalski <bugalski.piotr@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
  Nicolas Ferre <nicolas.ferre@microchip.com>,
  Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>,
- Piotr Bugalski <pbu@cryptera.com>
-Subject: Re: [RFC PATCH v2 6/6] dt-bindings: spi: QuadSPI driver for Atmel
- SAMA5D2
-Message-ID: <20180703224554.GA13754@rob-hp-laptop>
-References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
- <20180627131609.13681-7-bugalski.piotr@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180627131609.13681-7-bugalski.piotr@gmail.com>
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org
+Subject: [PATCH v2 23/32] mtd: rawnand: tango: convert driver to nand_scan()
+Date: Wed,  4 Jul 2018 00:00:20 +0200
+Message-Id: <20180703220029.19565-24-miquel.raynal@bootlin.com>
+In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
+References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,24 +35,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 27, 2018 at 03:16:09PM +0200, Piotr Bugalski wrote:
-> Atmel SAMA5D2 QuadSPI driver was moved from mtd to spi subsystem,
-> this change is just moving DT-binding documentation.
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Piotr Bugalski <pbu@cryptera.com>
-> ---
->  Documentation/devicetree/bindings/{mtd => spi}/atmel-quadspi.txt | 0
->  1 file changed, 0 insertions(+), 0 deletions(-)
->  rename Documentation/devicetree/bindings/{mtd => spi}/atmel-quadspi.txt (100%)
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/tango_nand.c | 36 ++++++++++++++++++++----------------
+ 1 file changed, 20 insertions(+), 16 deletions(-)
 
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/atmel-quadspi.txt b/Documentation/devicetree/bindings/spi/atmel-quadspi.txt
-> similarity index 100%
-> rename from Documentation/devicetree/bindings/mtd/atmel-quadspi.txt
-> rename to Documentation/devicetree/bindings/spi/atmel-quadspi.txt
-> -- 
-> 2.11.0
-> 
+diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
+index f2052fae21c7..fb41e66e9b60 100644
+--- a/drivers/mtd/nand/raw/tango_nand.c
++++ b/drivers/mtd/nand/raw/tango_nand.c
+@@ -517,6 +517,24 @@ static int tango_set_timings(struct mtd_info *mtd, int csline,
+ 	return 0;
+ }
+ 
++static int tango_attach_chip(struct nand_chip *chip)
++{
++	struct nand_ecc_ctrl *ecc = &chip->ecc;
++
++	ecc->mode = NAND_ECC_HW;
++	ecc->algo = NAND_ECC_BCH;
++	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
++
++	ecc->read_page_raw = tango_read_page_raw;
++	ecc->write_page_raw = tango_write_page_raw;
++	ecc->read_page = tango_read_page;
++	ecc->write_page = tango_write_page;
++	ecc->read_oob = tango_read_oob;
++	ecc->write_oob = tango_write_oob;
++
++	return 0;
++}
++
+ static int chip_init(struct device *dev, struct device_node *np)
+ {
+ 	u32 cs;
+@@ -566,22 +584,8 @@ static int chip_init(struct device *dev, struct device_node *np)
+ 	mtd_set_ooblayout(mtd, &tango_nand_ooblayout_ops);
+ 	mtd->dev.parent = dev;
+ 
+-	err = nand_scan_ident(mtd, 1, NULL);
+-	if (err)
+-		return err;
+-
+-	ecc->mode = NAND_ECC_HW;
+-	ecc->algo = NAND_ECC_BCH;
+-	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
+-
+-	ecc->read_page_raw = tango_read_page_raw;
+-	ecc->write_page_raw = tango_write_page_raw;
+-	ecc->read_page = tango_read_page;
+-	ecc->write_page = tango_write_page;
+-	ecc->read_oob = tango_read_oob;
+-	ecc->write_oob = tango_write_oob;
+-
+-	err = nand_scan_tail(mtd);
++	chip->controller->attach_chip = tango_attach_chip;
++	err = nand_scan(mtd, 1);
+ 	if (err)
+ 		return err;
+ 
+-- 
+2.14.1
