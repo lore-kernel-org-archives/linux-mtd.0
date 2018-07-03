@@ -1,18 +1,18 @@
 Received: from youngberry.canonical.com ([91.189.89.112])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faFyh-0005Ue-VN
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 07:44:01 +0000
+ id 1faGQF-00078K-Oj
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 08:12:33 +0000
 From: Colin King <colin.king@canonical.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+To: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
 Cc: kernel-janitors@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: cfi_cmdset_0002: remove redundant variable timeo
-Date: Tue,  3 Jul 2018 08:43:39 +0100
-Message-Id: <20180703074339.29989-1-colin.king@canonical.com>
+Subject: [PATCH] mtd: rawnand: gpmi: remove redundant variable payload_virt
+Date: Tue,  3 Jul 2018 09:12:14 +0100
+Message-Id: <20180703081214.32754-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -27,36 +27,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Variable is_local is being assigned but is never used hence it is
+Variable payload_virt is being assigned but is never used hence it is
 redundant and can be removed.
 
 Cleans up clang warning:
-warning: variable 'timeo' set but not used [-Wunused-but-set-variable]
+warning: variable 'payload_virt' set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1b64ac8c5bc8..72428b6bfc47 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -1216,7 +1216,6 @@ static inline int do_read_secsi_onechip(struct map_info *map,
- 					size_t grouplen)
- {
- 	DECLARE_WAITQUEUE(wait, current);
--	unsigned long timeo = jiffies + HZ;
+diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+index f6aa358a3452..58d4e4a93a93 100644
+--- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
+@@ -957,7 +957,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
+ 	struct bch_geometry *nfc_geo = &this->bch_geometry;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+-	void          *payload_virt;
+ 	dma_addr_t    payload_phys;
+ 	unsigned int  i;
+ 	unsigned char *status;
+@@ -967,7 +966,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
  
-  retry:
- 	mutex_lock(&chip->mutex);
-@@ -1229,7 +1228,6 @@ static inline int do_read_secsi_onechip(struct map_info *map,
+ 	dev_dbg(this->dev, "page number is : %d\n", page);
  
- 		schedule();
- 		remove_wait_queue(&chip->wq, &wait);
--		timeo = jiffies + HZ;
+-	payload_virt = this->payload_virt;
+ 	payload_phys = this->payload_phys;
  
- 		goto retry;
- 	}
+ 	if (virt_addr_valid(buf)) {
+@@ -976,7 +974,6 @@ static int gpmi_ecc_read_page_data(struct nand_chip *chip,
+ 		dest_phys = dma_map_single(this->dev, buf, nfc_geo->payload_size,
+ 					   DMA_FROM_DEVICE);
+ 		if (!dma_mapping_error(this->dev, dest_phys)) {
+-			payload_virt = buf;
+ 			payload_phys = dest_phys;
+ 			direct = true;
+ 		}
 -- 
 2.17.1
