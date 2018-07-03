@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 06/32] mtd: rawnand: fsl_elbc: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:03 +0200
-Message-Id: <20180703220029.19565-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 19/32] mtd: rawnand: s3c2410: convert driver to nand_scan()
+Date: Wed,  4 Jul 2018 00:00:16 +0200
+Message-Id: <20180703220029.19565-20-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,42 +42,58 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/fsl_elbc_nand.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/s3c2410.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index 51f0b340bc0d..e535c8440f63 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -637,9 +637,9 @@ static int fsl_elbc_wait(struct mtd_info *mtd, struct nand_chip *chip)
- 	return (elbc_fcm_ctrl->mdr & 0xff) | NAND_STATUS_WP;
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index 19661c5d3220..d656ea3a9ffe 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -915,20 +915,19 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
  }
  
--static int fsl_elbc_chip_init_tail(struct mtd_info *mtd)
-+static int fsl_elbc_attach_chip(struct nand_chip *chip)
+ /**
+- * s3c2410_nand_update_chip - post probe update
+- * @info: The controller instance.
+- * @nmtd: The driver version of the MTD instance.
++ * s3c2410_nand_attach_chip - Init the ECC engine after NAND scan
++ * @chip: The NAND chip
+  *
+- * This routine is called after the chip probe has successfully completed
+- * and the relevant per-chip information updated. This call ensure that
++ * This hook is called by the core after the identification of the NAND chip,
++ * once the relevant per-chip information is up to date.. This call ensure that
+  * we update the internal state accordingly.
+  *
+  * The internal state is currently limited to the ECC state information.
+ */
+-static int s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+-				    struct s3c2410_nand_mtd *nmtd)
++static int s3c2410_nand_attach_chip(struct nand_chip *chip)
  {
--	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct nand_chip *chip = &nmtd->chip;
 +	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct fsl_elbc_mtd *priv = nand_get_controller_data(chip);
- 	struct fsl_lbc_ctrl *ctrl = priv->ctrl;
- 	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
-@@ -910,15 +910,8 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err;
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
  
--	ret = nand_scan_ident(mtd, 1, NULL);
--	if (ret)
--		goto err;
+ 	switch (chip->ecc.mode) {
+ 
+@@ -1161,15 +1160,8 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 		mtd->dev.parent = &pdev->dev;
+ 		s3c2410_nand_init_chip(info, nmtd, sets);
+ 
+-		err = nand_scan_ident(mtd, (sets) ? sets->nr_chips : 1, NULL);
+-		if (err)
+-			goto exit_error;
 -
--	ret = fsl_elbc_chip_init_tail(mtd);
--	if (ret)
--		goto err;
+-		err = s3c2410_nand_update_chip(info, nmtd);
+-		if (err < 0)
+-			goto exit_error;
 -
--	ret = nand_scan_tail(mtd);
-+	priv->chip->controller->attach_chip = fsl_elbc_attach_chip;
-+	ret = nand_scan(mtd, 1);
- 	if (ret)
- 		goto err;
+-		err = nand_scan_tail(mtd);
++		nmtd->chip.controller->attach_chip = s3c2410_nand_attach_chip;
++		err = nand_scan(mtd, sets ? sets->nr_chips : 1);
+ 		if (err)
+ 			goto exit_error;
  
 -- 
 2.14.1
