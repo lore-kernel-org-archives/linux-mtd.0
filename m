@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faKG1-00085u-7B
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 12:18:11 +0000
+ id 1faKIL-0001IK-W2
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 12:20:36 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -11,8 +11,8 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Bean Huo <beanhuo@micron.com>,
  Chris Packham <chris.packham@alliedtelesis.co.nz>
 Subject: [PATCH 0/3] mtd: rawnand: micron: Get the actual number of bitflips
-Date: Tue,  3 Jul 2018 14:17:37 +0200
-Message-Id: <20180703121737.29797-1-boris.brezillon@bootlin.com>
+Date: Tue,  3 Jul 2018 14:20:06 +0200
+Message-Id: <20180703122009.29914-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -54,8 +54,7 @@ Regards,
 Boris
 
 Boris Brezillon (3):
-  mtd: rawnand: micron: Stop passing an mtd_info object to ecc_status
-    funcs
+  mtd: rawnand: micron: Stop passing mtd to ecc_status() funcs
   mtd: rawnand: micron: Disable ECC earlier in the read path
   mtd: rawnand: micron: Get the actual number of bitflips
 
