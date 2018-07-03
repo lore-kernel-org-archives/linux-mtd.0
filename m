@@ -1,25 +1,38 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-co1nam05on062f.outbound.protection.outlook.com
+ ([2a01:111:f400:fe50::62f]
+ helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faC1A-0004u5-7q
- for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 03:30:18 +0000
+ id 1faCmZ-00076m-GX
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 04:19:18 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>, Florian
+ Fainelli <f.fainelli@gmail.com>, Markus Mayer <mmayer@broadcom.com>, Roger
+ Quadros <rogerq@ti.com>, Ladislav Michl <ladis@linux-mips.org>,
+ "ada@thorsis.com" <ada@thorsis.com>, "honghui.zhang@mediatek.com"
+ <honghui.zhang@mediatek.com>, =?utf-8?B?TWlxdcOobCBSYXluYWw=?=
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
+Subject: RE: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Date: Tue, 3 Jul 2018 04:19:00 +0000
+Message-ID: <MWHPR02MB26231E0F420D423E60196452AF420@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CACRpkdaEsEAiGpieJK1AA8HHLzZc7Tdc932rhdayg06rFU1hNA@mail.gmail.com>
+ <MWHPR02MB26232270DED605627B2CF22FAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <CACRpkdZb6NMHtai1DBa+7m2ieZJZiAB7d1vSuP376rHQKpOf+A@mail.gmail.com>
+ <MWHPR02MB26239876530B0F5C95289A56AF4E0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <CACRpkdZp+8ZFRF2c+pAy47ZSWjavu3Qo5fz6A41zDty444MWCg@mail.gmail.com>
+In-Reply-To: <CACRpkdZp+8ZFRF2c+pAy47ZSWjavu3Qo5fz6A41zDty444MWCg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date: Tue, 03 Jul 2018 09:00:04 +0530
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v4 00/15] Update for QCOM NAND driver
-In-Reply-To: <20180701200959.2edb3306@xps13>
-References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
- <20180701200959.2edb3306@xps13>
-Message-ID: <275b38646a2b629ad7122f4cb4348371@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,115 +42,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2018-07-01 23:39, Miquel Raynal wrote:
-> Hi Abhishek,
-> 
-> Abhishek Sahu <absahu@codeaurora.org> wrote on Wed, 20 Jun 2018
-> 12:57:27 +0530:
-> 
->> * v4:
->> 
->> 1. Added patch to make other ECC configurations function static.
->> 2. Clubbed the DT update patches.
->> 3. Removed the bad block related patch. Discussion is going on
->>    related with for proper solution so planning to submit separate
->>    patch series for all bad block related changes.
->> 4. Made the single codeword raw read function and used the same
->>    for raw page read.
->> 5. Changes in erased codeword detection to raw read function.
->> 
->> * v3:
->> 
->> 1. Addressed all review comments in v2.
->> 2. Added patch for removing redundant nand-ecc-step-size DT property.
->> 3. Renamed ECC configuration setup function with minor code changes.
->> 4. Modified comments and commit message for few patches.
->> 
->> * v2:
->> 
->> 1. Addressed all review comments in v1.
->> 1. Make the generic helper function for NAND ECC parameters setup
->>    and used this helper function for QCOM and Denali nand driver
->>    for ECC setup.
->> 2. Modified commit message for some of the patches and added more
->>    comments.
->> 3. Added new patch for fixing ‘return 0’ for raw read.
->> 4. Removed the read last codeword part for nand oob write.
->> 5. Reorganized bad block check function and removed the
->>    read_last_cw function completely.
->> 
->> * v1:
->> 
->> This patch series mainly deals with error handling and erased page
->> bitflip detection for QCOM NAND driver.
->> 
->> 1. The error handling was missing for some of the cases so fixed
->>    the same.
->> 
->> 2. Add the support for taking ECC strength from ONFI parameter.
->>    The earlier QCOM boards were coming with 4-bit ECC chip but
->>    now the same boards are coming with 8-bit ECC chip since the
->>    earlier 4-bit parts are obsolete from some vendors.
->> 
->> 3. We got few issues related with NAND erased page bitflips. The
->>    QCOM NAND controller can’t detect the bitflip in completely erased
->>    page so added the support to detect the same. It implemented the
->>    logic mentioned in patch [1] which didn’t go in mainline and later
->>    the generic functions were provided [2] to count the number of
->>    bitflips and make all 0xff. This patch series did some optimization
->>    logic to prevent the unnecessary full page raw read and data copy
->>    from QCOM NAND controller to DMA.
->> 
->> 4. Following are the testing done for these patches in QCOM IPQ8074
->>    HK01 (4-bit and 8-bit ECC chip) and IPQ806x AP148 boards.
->>     a. Run all mtd test and check if it passes
->>     b. Introduce custom bitflips in erased page and check if it
->>        returns no error/EUCLEAN/EBADMSG depending upon number of
->>        bitflips and position.
->>     c. Introduce failure condition for operational failure and
->>        check if it detects the same.
->> 
->> [1]: https://patchwork.ozlabs.org/patch/328994/
->> [2]: https://patchwork.ozlabs.org/patch/509970/
->> 
->> Abhishek Sahu (15):
->>   mtd: rawnand: helper function for setting up ECC configuration
->>   mtd: rawnand: denali: use helper function for ecc setup
->>   dt-bindings: qcom_nandc: update for ECC strength and step size
->>   mtd: rawnand: qcom: remove dt property nand-ecc-step-size
->>   mtd: rawnand: qcom: use the ecc strength from device parameter
->>   mtd: rawnand: qcom: wait for desc completion in all BAM channels
->>   mtd: rawnand: qcom: erased page detection for uncorrectable errors
->>     only
->>   mtd: rawnand: qcom: fix null pointer access for erased page 
->> detection
->>   mtd: rawnand: qcom: parse read errors for read oob also
->>   mtd: rawnand: qcom: modify write_oob to remove read codeword part
->>   mtd: rawnand: qcom: fix return value for raw page read
->>   mtd: rawnand: qcom: check for operation errors in case of raw read
->>   mtd: rawnand: qcom: code reorganization for raw read
->>   mtd: rawnand: qcom: erased page bitflips detection
->>   mtd: rawnand: provide only single helper function for ECC conf
->> 
->>  .../devicetree/bindings/mtd/qcom_nandc.txt         |   7 +-
->>  drivers/mtd/nand/raw/denali.c                      |  30 +-
->>  drivers/mtd/nand/raw/nand_base.c                   |  72 ++-
->>  drivers/mtd/nand/raw/qcom_nandc.c                  | 491 
->> ++++++++++++++-------
->>  include/linux/mtd/rawnand.h                        |  10 +-
->>  5 files changed, 380 insertions(+), 230 deletions(-)
->> 
-> 
-> Thank you very much for the series and the changes you have done.
-> 
-
-  Thanks a lot Miquel for your great support and help in
-  reviewing and merging these patches :-)
-
-> Applied all patches but "erased page bitflips detection" because I'm
-> waiting for one small modification on this one.
-
-  Sure. I will send that updated patch.
-
-  Regards,
-  Abhishek
+SGkgTGludXMsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTGludXMg
+V2FsbGVpaiBbbWFpbHRvOmxpbnVzLndhbGxlaWpAbGluYXJvLm9yZ10NCj4gU2VudDogTW9uZGF5
+LCBKdWx5IDIsIDIwMTggNzoxOCBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFn
+YXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJlemlsbG9u
+QGJvb3RsaW4uY29tPjsgUmljaGFyZCBXZWluYmVyZ2VyIDxyaWNoYXJkQG5vZC5hdD47DQo+IERh
+dmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz47IEJyaWFuIE5vcnJpcw0KPiA8Y29t
+cHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tPjsgTWFyayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwu
+Y29tPjsgRmxvcmlhbiBGYWluZWxsaQ0KPiA8Zi5mYWluZWxsaUBnbWFpbC5jb20+OyBNYXJrdXMg
+TWF5ZXIgPG1tYXllckBicm9hZGNvbS5jb20+OyBSb2dlciBRdWFkcm9zDQo+IDxyb2dlcnFAdGku
+Y29tPjsgTGFkaXNsYXYgTWljaGwgPGxhZGlzQGxpbnV4LW1pcHMub3JnPjsgYWRhQHRob3JzaXMu
+Y29tOw0KPiBob25naHVpLnpoYW5nQG1lZGlhdGVrLmNvbTsgTWlxdcOobCBSYXluYWwgPG1pcXVl
+bC5yYXluYWxAYm9vdGxpbi5jb20+OyBsaW51eC0NCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG5hZ2FzdXJlc2hrdW1hcnJlbGxpQGdtYWls
+LmNvbTsNCj4gTWljaGFsIFNpbWVrIDxtaWNoYWxzQHhpbGlueC5jb20+DQo+IFN1YmplY3Q6IFJl
+OiBbW0xJTlVYIFBBVENIIHYxMF0gNC80XSBtdGQ6IHJhd25hbmQ6IHBsMzUzOiBBZGQgYmFzaWMg
+ZHJpdmVyIGZvciBhcm0NCj4gcGwzNTMgc21jIG5hbmQgaW50ZXJmYWNlDQo+IA0KPiBPbiBGcmks
+IEp1biAyOSwgMjAxOCBhdCA2OjE1IEFNIE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJl
+QHhpbGlueC5jb20+IHdyb3RlOg0KPiA+ID4gT24gVGh1LCBKdW4gMjgsIDIwMTggYXQgMjoxMyBQ
+TSBOYWdhIFN1cmVzaGt1bWFyIFJlbGxpIDxuYWdhc3VyZUB4aWxpbnguY29tPg0KPiB3cm90ZToN
+Cj4gPiA+DQo+ID4gPg0KPiA+ID4gPiA+IFRoaXMgZHJpdmVyIGhhcyB0aGUgc2FtZSBwcm9ibGVt
+IGFzIHRoZSBvdGhlciBwYXRjaGVzOg0KPiA+ID4gPiA+IHVzZSB0aGUgQVJNX0FNQkEgcHJpbWVj
+ZWxsIG1hZ2ljIG51bWJlcnMgZGV0ZWN0aW9uLCBhbmQgdGhlIFByaW1lQ2VsbCBidXMuDQo+ID4g
+PiA+DQo+ID4gPiA+IEhlcmUgdGhlIGNoaWxkIGlzIE5BTkQgY29udHJvbGxlciBhbmQgdGhlIHBh
+cmVudCBpcyBQTDM1MyBTTUMsIHNvDQo+ID4gPiA+IGRvIHdlIG5lZWQgdG8gdXBkYXRlIHRoaXMg
+YWxzbyBhcyBBTUJBIGRyaXZlcj8NCj4gPiA+DQo+ID4gPiBObywgc29ycnkuIFRoZSBwYXJlbnQg
+aXMgc3Bhd25pbmcgYW5vdGhlciBkZXZpY2UgYW5kIHlvdSBzaG91bGQNCj4gPiA+IGluZGVlZCB1
+c2UgYSBwbGF0Zm9ybSBkZXZpY2UgZm9yIHRoYXQuDQo+ID4gPg0KPiA+IE9rLCB5b3UgbWVhbiBw
+bGF0Zm9ybSBkcml2ZXIgbW9kZWwgaXMgc3VmZmljaWVudCBmb3IgYm90aCBwbDM1My1zbWMuYyBh
+bmQgcGwzNTNfbmFuZC5jDQo+IGRyaXZlcnM/DQo+ID4gT3IgQU1CQSBtb2RlbCBpcyBmb3IgcGwz
+NTMtc21jIGFuZCBwbGF0Zm9ybSBkcml2ZXIgbW9kZWwgaXMgZm9yIHBsMzUzLW5hbmQ/DQo+IA0K
+PiBUaGUgbGF0dGVyLCBBTUJBIHByaW1lY2VsbCBidXMgZm9yIHBsMzUzLXNtYyBhbmQgcGxhdGZv
+cm0gZGV2aWNlIGZvciB0aGUgbmFuZCBzdWJkZXZpY2UuDQo+IA0KPiBQbGF0Zm9ybSBkZXZpY2Ug
+aXMgZm9yIGFueXRoaW5nIHRoYXQgY2Fubm90IGJlIGF1dG9kZXRlY3RlZCB3aXRoIGUuZy4NCj4g
+bWFnaWMgaGFyZGFyZSBudW1iZXJzLCBhbmQgdGhlIGZpcnN0IGRldmljZSBjYW4gYmUgYXV0b2Rl
+dGVjdGVkIGFzIGEgcHJpbWUgY2VsbCBidXQgbm90IHRoZQ0KPiBzdWJkZXZpY2UuDQpUaGFua3Mg
+Zm9yIHlvdXIgaW5wdXRzLCBJIGFscmVhZHkgc3RhcnRlZCB1cGRhdGluZyB0aGlzLg0KSSB3aWxs
+IHNlbmQgdjExLg0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0KPiANCj4gWW91
+cnMsDQo+IExpbnVzIFdhbGxlaWoNCg==
