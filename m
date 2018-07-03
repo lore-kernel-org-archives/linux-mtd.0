@@ -21,10 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 20/32] mtd: rawnand: sh_flctl: move all NAND chip related
- setup in one function
-Date: Wed,  4 Jul 2018 00:00:17 +0200
-Message-Id: <20180703220029.19565-21-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 08/32] mtd: rawnand: fsmc: convert driver to nand_scan()
+Date: Wed,  4 Jul 2018 00:00:05 +0200
+Message-Id: <20180703220029.19565-9-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -36,121 +35,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Prepare the conversion of the sh_flctl driver to nand_scan() by moving
-all the configuration that must be made after nand_scan_ident() in one
-single function. Create a pdata entry in the controller structure for
-that.
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sh_flctl.c | 38 +++++++++++++++++++-------------------
- include/linux/mtd/sh_flctl.h    |  1 +
- 2 files changed, 20 insertions(+), 19 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 144 ++++++++++++++++++++-------------------
+ 1 file changed, 74 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index c7abceffcc40..d37d1d3ccbf9 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1007,6 +1007,16 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
- 	struct nand_chip *chip = &flctl->chip;
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index f4a5a317d4ae..f8b505ce7b98 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -918,6 +918,78 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
+ 	return 0;
+ }
  
-+	if (chip->options & NAND_BUSWIDTH_16) {
-+		/*
-+		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
-+		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
-+		 * flctl->flcmncr_base to pdata->flcmncr_val.
-+		 */
-+		flctl->pdata->flcmncr_val |= SEL_16BIT;
-+		flctl->flcmncr_base = flctl->pdata->flcmncr_val;
++static int fsmc_nand_attach_chip(struct nand_chip *nand)
++{
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	struct fsmc_nand_data *host = mtd_to_fsmc(mtd);
++
++	if (AMBA_REV_BITS(host->pid) >= 8) {
++		switch (mtd->oobsize) {
++		case 16:
++		case 64:
++		case 128:
++		case 224:
++		case 256:
++			break;
++		default:
++			dev_warn(host->dev,
++				 "No oob scheme defined for oobsize %d\n",
++				 mtd->oobsize);
++			return -EINVAL;
++		}
++
++		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
++
++		return 0;
 +	}
 +
- 	if (mtd->writesize == 512) {
- 		flctl->page_size = 0;
- 		if (chip->chipsize > (32 << 20)) {
-@@ -1122,7 +1132,6 @@ static int flctl_probe(struct platform_device *pdev)
- 	struct sh_flctl *flctl;
- 	struct mtd_info *flctl_mtd;
- 	struct nand_chip *nand;
--	struct sh_flctl_platform_data *pdata;
- 	int ret;
- 	int irq;
- 
-@@ -1150,11 +1159,11 @@ static int flctl_probe(struct platform_device *pdev)
- 	}
- 
- 	if (pdev->dev.of_node)
--		pdata = flctl_parse_dt(&pdev->dev);
-+		flctl->pdata = flctl_parse_dt(&pdev->dev);
- 	else
--		pdata = dev_get_platdata(&pdev->dev);
-+		flctl->pdata = dev_get_platdata(&pdev->dev);
- 
--	if (!pdata) {
-+	if (!flctl->pdata) {
- 		dev_err(&pdev->dev, "no setup data defined\n");
- 		return -EINVAL;
- 	}
-@@ -1165,9 +1174,9 @@ static int flctl_probe(struct platform_device *pdev)
- 	nand_set_flash_node(nand, pdev->dev.of_node);
- 	flctl_mtd->dev.parent = &pdev->dev;
- 	flctl->pdev = pdev;
--	flctl->hwecc = pdata->has_hwecc;
--	flctl->holden = pdata->use_holden;
--	flctl->flcmncr_base = pdata->flcmncr_val;
-+	flctl->hwecc = flctl->pdata->has_hwecc;
-+	flctl->holden = flctl->pdata->use_holden;
-+	flctl->flcmncr_base = flctl->pdata->flcmncr_val;
- 	flctl->flintdmacr_base = flctl->hwecc ? (STERINTE | ECERB) : STERINTE;
- 
- 	/* Set address of hardware control function */
-@@ -1183,7 +1192,7 @@ static int flctl_probe(struct platform_device *pdev)
- 	nand->set_features = nand_get_set_features_notsupp;
- 	nand->get_features = nand_get_set_features_notsupp;
- 
--	if (pdata->flcmncr_val & SEL_16BIT)
-+	if (flctl->pdata->flcmncr_val & SEL_16BIT)
- 		nand->options |= NAND_BUSWIDTH_16;
- 
- 	pm_runtime_enable(&pdev->dev);
-@@ -1195,16 +1204,6 @@ static int flctl_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_chip;
- 
--	if (nand->options & NAND_BUSWIDTH_16) {
--		/*
--		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
--		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
--		 * flctl->flcmncr_base to pdata->flcmncr_val.
--		 */
--		pdata->flcmncr_val |= SEL_16BIT;
--		flctl->flcmncr_base = pdata->flcmncr_val;
++	switch (nand->ecc.mode) {
++	case NAND_ECC_HW:
++		dev_info(host->dev, "Using 1-bit HW ECC scheme\n");
++		nand->ecc.calculate = fsmc_read_hwecc_ecc1;
++		nand->ecc.correct = nand_correct_data;
++		nand->ecc.bytes = 3;
++		nand->ecc.strength = 1;
++		break;
++
++	case NAND_ECC_SOFT:
++		if (nand->ecc.algo == NAND_ECC_BCH) {
++			dev_info(host->dev,
++				 "Using 4-bit SW BCH ECC scheme\n");
++			break;
++		}
++
++	case NAND_ECC_ON_DIE:
++		break;
++
++	default:
++		dev_err(host->dev, "Unsupported ECC mode!\n");
++		return -ENOTSUPP;
++	}
++
++	/*
++	 * Don't set layout for BCH4 SW ECC. This will be
++	 * generated later in nand_bch_init() later.
++	 */
++	if (nand->ecc.mode == NAND_ECC_HW) {
++		switch (mtd->oobsize) {
++		case 16:
++		case 64:
++		case 128:
++			mtd_set_ooblayout(mtd,
++					  &fsmc_ecc1_ooblayout_ops);
++			break;
++		default:
++			dev_warn(host->dev,
++				 "No oob scheme defined for oobsize %d\n",
++				 mtd->oobsize);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
+ /*
+  * fsmc_nand_probe - Probe function
+  * @pdev:       platform device structure
+@@ -1047,76 +1119,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	/*
+ 	 * Scan to find existence of the device
+ 	 */
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (ret) {
+-		dev_err(&pdev->dev, "No NAND Device found!\n");
+-		goto release_dma_write_chan;
 -	}
 -
- 	ret = flctl_chip_init_tail(flctl_mtd);
+-	if (AMBA_REV_BITS(host->pid) >= 8) {
+-		switch (mtd->oobsize) {
+-		case 16:
+-		case 64:
+-		case 128:
+-		case 224:
+-		case 256:
+-			break;
+-		default:
+-			dev_warn(&pdev->dev, "No oob scheme defined for oobsize %d\n",
+-				 mtd->oobsize);
+-			ret = -EINVAL;
+-			goto release_dma_write_chan;
+-		}
+-
+-		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
+-	} else {
+-		switch (nand->ecc.mode) {
+-		case NAND_ECC_HW:
+-			dev_info(&pdev->dev, "Using 1-bit HW ECC scheme\n");
+-			nand->ecc.calculate = fsmc_read_hwecc_ecc1;
+-			nand->ecc.correct = nand_correct_data;
+-			nand->ecc.bytes = 3;
+-			nand->ecc.strength = 1;
+-			break;
+-
+-		case NAND_ECC_SOFT:
+-			if (nand->ecc.algo == NAND_ECC_BCH) {
+-				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
+-				break;
+-			}
+-
+-		case NAND_ECC_ON_DIE:
+-			break;
+-
+-		default:
+-			dev_err(&pdev->dev, "Unsupported ECC mode!\n");
+-			goto release_dma_write_chan;
+-		}
+-
+-		/*
+-		 * Don't set layout for BCH4 SW ECC. This will be
+-		 * generated later in nand_bch_init() later.
+-		 */
+-		if (nand->ecc.mode == NAND_ECC_HW) {
+-			switch (mtd->oobsize) {
+-			case 16:
+-			case 64:
+-			case 128:
+-				mtd_set_ooblayout(mtd,
+-						  &fsmc_ecc1_ooblayout_ops);
+-				break;
+-			default:
+-				dev_warn(&pdev->dev,
+-					 "No oob scheme defined for oobsize %d\n",
+-					 mtd->oobsize);
+-				ret = -EINVAL;
+-				goto release_dma_write_chan;
+-			}
+-		}
+-	}
+-
+-	/* Second stage of scan to fill MTD data-structures */
+-	ret = nand_scan_tail(mtd);
++	nand->hwcontrol.attach_chip = fsmc_nand_attach_chip;
++	ret = nand_scan(mtd, 1);
  	if (ret)
- 		goto err_chip;
-@@ -1213,7 +1212,8 @@ static int flctl_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err_chip;
+ 		goto release_dma_write_chan;
  
--	ret = mtd_device_register(flctl_mtd, pdata->parts, pdata->nr_parts);
-+	ret = mtd_device_register(flctl_mtd, flctl->pdata->parts,
-+				  flctl->pdata->nr_parts);
- 	if (ret)
- 		goto cleanup_nand;
- 
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index c759d403cbc0..c9f486c6c019 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -148,6 +148,7 @@ struct sh_flctl {
- 	struct dev_pm_qos_request pm_qos;
- 	void __iomem		*reg;
- 	resource_size_t		fifo;
-+	struct sh_flctl_platform_data *pdata;
- 
- 	uint8_t	done_buff[2048 + 64];	/* max size 2048 + 64 */
- 	int	read_bytes;
 -- 
 2.14.1
