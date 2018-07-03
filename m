@@ -1,26 +1,36 @@
-Date: Tue, 3 Jul 2018 14:52:24 +0200
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Piotr Bugalski <bugalski.piotr@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Cyrille Pitchen <cyrille.pitchen@microchip.com>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: Re: [RFC PATCH v2 1/6] mtd: spi-nor: atmel-quaspi: Typo fix
-Message-ID: <20180703125224.GC14626@piout.net>
-References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
- <20180627131609.13681-2-bugalski.piotr@gmail.com>
+Received: from mail-co1nam03on0074.outbound.protection.outlook.com
+ ([104.47.40.74] helo=NAM03-CO1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1faKvh-0003C7-50
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 13:01:38 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com" <rogerq@ti.com>,
+ "ladis@linux-mips.org" <ladis@linux-mips.org>, "ada@thorsis.com"
+ <ada@thorsis.com>, "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>, Michal
+ Simek <michals@xilinx.com>
+Subject: RE: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Date: Tue, 3 Jul 2018 13:00:55 +0000
+Message-ID: <MWHPR02MB262302F2D504A4783CF60832AF420@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180627172249.72f878a2@xps13>
+ <MWHPR02MB26236BEABAAF0213B49EC21EAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180628091450.25bd54e5@xps13>
+In-Reply-To: <20180628091450.25bd54e5@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180627131609.13681-2-bugalski.piotr@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +40,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 27/06/2018 15:16:04+0200, Piotr Bugalski wrote:
-> Just minor typo fix. Fixed in preparation of new driver.
-> 
-> Signed-off: Piotr Bugalski <pbu@cryptera.com>
-
-This SoB line must match the author. It doesn't matter which one you
-change. note that you can still submit your patch from an address
-different from your work address if necessary (git format-patch will
-insert the proper From line).
-
--- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBUaHVy
+c2RheSwgSnVuZSAyOCwgMjAxOCAxMjo0NSBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
+aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IGJvcmlzLmJyZXppbGxvbkBib290bGluLmNv
+bTsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBl
+YWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBmLmZhaW5lbGxpQGdtYWlsLmNv
+bTsNCj4gbW1heWVyQGJyb2FkY29tLmNvbTsgcm9nZXJxQHRpLmNvbTsgbGFkaXNAbGludXgtbWlw
+cy5vcmc7IGFkYUB0aG9yc2lzLmNvbTsNCj4gaG9uZ2h1aS56aGFuZ0BtZWRpYXRlay5jb207IGxp
+bnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+Ow0KPiBuYWdhc3VyZXNoa3VtYXJyZWxsaUBnbWFpbC5jb207IE1pY2hhbCBTaW1layA8bWljaGFs
+c0B4aWxpbnguY29tPg0KPiBTdWJqZWN0OiBSZTogW1tMSU5VWCBQQVRDSCB2MTBdIDQvNF0gbXRk
+OiByYXduYW5kOiBwbDM1MzogQWRkIGJhc2ljIGRyaXZlciBmb3IgYXJtDQo+IHBsMzUzIHNtYyBu
+YW5kIGludGVyZmFjZQ0KPiANCj4gSGkgTmFnYSwNCj4gDQo+ID4gPiA+ICsvKioNCj4gPiA+ID4g
+KyAqIHBsMzUzX25hbmRfcmVhZF9wYWdlX2h3ZWNjIC0gSGFyZHdhcmUgRUNDIGJhc2VkIHBhZ2Ug
+cmVhZCBmdW5jdGlvbg0KPiA+ID4gPiArICogQG10ZDoJCVBvaW50ZXIgdG8gdGhlIG10ZCBpbmZv
+IHN0cnVjdHVyZQ0KPiA+ID4gPiArICogQGNoaXA6CQlQb2ludGVyIHRvIHRoZSBOQU5EIGNoaXAg
+aW5mbyBzdHJ1Y3R1cmUNCj4gPiA+ID4gKyAqIEBidWY6CQlQb2ludGVyIHRvIHRoZSBidWZmZXIg
+dG8gc3RvcmUgcmVhZCBkYXRhDQo+ID4gPiA+ICsgKiBAb29iX3JlcXVpcmVkOglDYWxsZXIgcmVx
+dWlyZXMgT09CIGRhdGEgcmVhZCB0byBjaGlwLT5vb2JfcG9pDQo+ID4gPiA+ICsgKiBAcGFnZToJ
+CVBhZ2UgbnVtYmVyIHRvIHJlYWQNCj4gPiA+ID4gKyAqDQo+ID4gPiA+ICsgKiBUaGlzIGZ1bmN0
+aW9ucyByZWFkcyBkYXRhIGFuZCBjaGVja3MgdGhlIGRhdGEgaW50ZWdyaXR5IGJ5DQo+ID4gPiA+
+ICtjb21wYXJpbmcgaGFyZHdhcmUNCj4gPiA+ID4gKyAqIGdlbmVyYXRlZCBFQ0MgdmFsdWVzIGFu
+ZCByZWFkIEVDQyB2YWx1ZXMgZnJvbSBzcGFyZSBhcmVhLg0KPiA+ID4gPiArICoNCj4gPiA+ID4g
+KyAqIFJldHVybjoJMCBhbHdheXMgYW5kIHVwZGF0ZXMgRUNDIG9wZXJhdGlvbiBzdGF0dXMgaW4g
+dG8gTVREIHN0cnVjdHVyZQ0KPiA+ID4gPiArICovDQo+ID4gPiA+ICtzdGF0aWMgaW50IHBsMzUz
+X25hbmRfcmVhZF9wYWdlX2h3ZWNjKHN0cnVjdCBtdGRfaW5mbyAqbXRkLA0KPiA+ID4gPiArCQkJ
+CSAgICAgIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsDQo+ID4gPiA+ICsJCQkJICAgICAgdTggKmJ1
+ZiwgaW50IG9vYl9yZXF1aXJlZCwgaW50IHBhZ2UpIHsNCj4gPiA+ID4gKwlpbnQgaSwgc3RhdCwg
+ZWNjc2l6ZSA9IGNoaXAtPmVjYy5zaXplOw0KPiA+ID4gPiArCWludCBlY2NieXRlcyA9IGNoaXAt
+PmVjYy5ieXRlczsNCj4gPiA+ID4gKwlpbnQgZWNjc3RlcHMgPSBjaGlwLT5lY2Muc3RlcHM7DQo+
+ID4gPiA+ICsJdTggKnAgPSBidWY7DQo+ID4gPiA+ICsJdTggKmVjY19jYWxjID0gY2hpcC0+ZWNj
+LmNhbGNfYnVmOw0KPiA+ID4gPiArCXU4ICplY2MgPSBjaGlwLT5lY2MuY29kZV9idWY7DQo+ID4g
+PiA+ICsJdW5zaWduZWQgaW50IG1heF9iaXRmbGlwcyA9IDA7DQo+ID4gPiA+ICsJdTggKm9vYl9w
+dHI7DQo+ID4gPiA+ICsJdTMyIHJldDsNCj4gPiA+ID4gKwl1bnNpZ25lZCBsb25nIGRhdGFfcGhh
+c2VfYWRkcjsNCj4gPiA+ID4gKwlzdHJ1Y3QgcGwzNTNfbmFuZF9pbmZvICp4bmZjID0NCj4gPiA+
+ID4gKwkJY29udGFpbmVyX29mKGNoaXAsIHN0cnVjdCBwbDM1M19uYW5kX2luZm8sIGNoaXApOw0K
+PiA+ID4gPiArCXVuc2lnbmVkIGxvbmcgbmFuZF9vZmZzZXQgPSAodW5zaWduZWQgbG9uZw0KPiA+
+ID4gPiArX19mb3JjZSl4bmZjLT5uYW5kX2Jhc2U7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKwlwbDM1
+M19wcmVwYXJlX2NtZChtdGQsIGNoaXAsIHBhZ2UsIDAsIE5BTkRfQ01EX1JFQUQwLA0KPiA+ID4g
+PiArCQkJICBOQU5EX0NNRF9SRUFEU1RBUlQsIDEpOw0KPiA+ID4gPiArCW5kZWxheSgxMDApOw0K
+PiA+ID4NCj4gPiA+IFdoYXQgaXMgdGhpcyBkZWxheSBmb3I/DQo+ID4gV2UgaGF2ZSBzZWVuIGZh
+aWx1cmVzIHdpdGggb3V0IHRoaXMgZGVsYXksIHdpdGggb2xkZXIgY29kZS4NCj4gPiBCdXQgaSB3
+aWxsIGNoZWNrIHRoaXMgYnkgcmVtb3ZpbmcgdGhpcyBkZWxheSwgaW4gdGhpcyBuZXcgZHJpdmVy
+Lg0KPiANCj4gUGxlYXNlIGNoZWNrIGFsbCBvZiB0aGVtLiBXZSBzaG91bGQgZ2V0IHJpZCBvZiBy
+YW5kb20gZGVsYXlzIGxpa2UgdGhhdC4NCj4gRWl0aGVyIHRoZXJlIGlzIHNvbWV0aGluZyB0byBw
+b2xsLCBvciB0aGVyZSBpcyBhIHNwZWNpZmljIHZhbHVlIHRvIHVzZSAoeW91IGNhbiBnZXQgdGhl
+bSBmcm9tIHRoZQ0KPiBTRFIgaW50ZXJmYWNlIHN0cnVjdHVyZSkuDQo+IA0KPiBbLi4uXQ0KPiAN
+Cj4gPiA+ID4gKw0KPiA+ID4gPiArCWlmIChjc2xpbmUgPT0gTkFORF9EQVRBX0lGQUNFX0NIRUNL
+X09OTFkpDQo+ID4gPiA+ICsJCXJldHVybiAtRUlOVkFMOw0KPiA+ID4NCj4gPiA+IFdoeT8NCj4g
+PiBJdCBpcyBzaW1pbGFyIHRvDQo+ID4gaWYgKGNoaXBuciA8IDApDQo+ID4gCXJldHVybiAwOw0K
+PiANCj4gTW1tbW1oLCBubz8NCj4gDQo+IChyZXR1cm4gMCkgIT0gKHJldHVybiAtRUlOVkFMKQ0K
+PiANCj4gVGhlIGNvcmUgaXMgYXNraW5nIHlvdSB0byBjaGVjayBpZiB0aGUgY29udHJvbGxlciBk
+cml2ZXIgc3VwcG9ydCBwYXJ0aWN1bGFyIHRpbWluZ3MgKHVzdWFsbHkNCj4gT05GSSBtb2RlcyAx
+LTUpLiBSZXR1cm5pbmcgYW4gZXJyb3IgbWVhbnMgIkkgb25seSBzdXBwb3J0IHRoZSBzbG93ZXN0
+IHRpbWluZ3MiIHdoaWNoLCBJDQo+IHN1cHBvc2UsIGlzIHdyb25nLiBQbGVhc2UgZml4IHRoaXMg
+YW5kIGNvbXBhcmUgdGhlIHNwZWVkcy4NCkkgdHJpZWQgdXBkYXRpbmcgdGhlIGRyaXZlciBhcyBw
+ZXIgeW91ciBjb21tZW50cy4NCkJ1dCBJIGFtIGZhY2luZyBhbiBpc3N1ZSBoZXJlLg0KVGhlIHBh
+cnQgSSBhbSB1c2luZyBpcyBodHRwOi8vd3d3LmN5cHJlc3MuY29tL2ZpbGUvMjA3NTIxL2Rvd25s
+b2FkLg0KVGhpcyBwYXJ0IGRvZXNuJ3Qgc3VwcG9ydCBnZXQvc2V0IGZlYXR1cmVzLiBCdXQgdGhl
+IGNvbnRyb2xsZXIgc3VwcG9ydHMgaXQuDQpJbiB0aGlzIGNhc2UsIHRoZSBmcmFtZSB3b3JrIGlz
+IGRvaW5nIGxpa2UgdGhpcw0KSWYgY2hpcCBzdXBwb3J0cyBzZXRfZmVhdHVyZXMsIHRoZW4gaXQg
+aXNzdWVzIHRoZSBPTkZJX0ZFQVRVUkVfQUREUl9USU1JTkdfTU9ERSBvdGhlciB3aXNlIG5vdC4N
+CkluIG91ciBjYXNlIGl0IHdvbid0IGFuZCB0aGVuIG5leHQgaXQgc2ltcGx5IGNoYW5nZXMgdGhl
+IGNvbnRyb2xsZXIgbW9kZS4gSGVuY2UgYm90aCBhcmUgaW4gZGlmZmVyZW50IHRpbWluZyBtb2Rl
+IGFuZCBub3QNCkFibGUgdG8gY29tbXVuaWNhdGUgd2l0aCB0aGUgbmFuZCBmbGFzaCBkZXZpY2Uu
+DQpodHRwczovL2VsaXhpci5ib290bGluLmNvbS9saW51eC92NC4xOC1yYzMvc291cmNlL2RyaXZl
+cnMvbXRkL25hbmQvcmF3L25hbmRfYmFzZS5jI0wxMjg1DQpBbSBJIG1pc3Npbmcgc29tZXRoaW5n
+Pw0KQ291bGQgeW91IHBsZWFzZSBoZWxwIG9uIHRoaXMuDQoNClRoZSBjb2RlIHNuaXBwZXQgaXMg
+bGlrZSB0aGlzDQp0YXRpYyBpbnQgcGwzNTNfc2V0dXBfZGF0YV9pbnRlcmZhY2Uoc3RydWN0IG10
+ZF9pbmZvICptdGQsIGludCBjc2xpbmUsDQoJCQkJICAgICAgIGNvbnN0IHN0cnVjdCBuYW5kX2Rh
+dGFfaW50ZXJmYWNlICpjb25mKQ0Kew0KCXNkciA9IG5hbmRfZ2V0X3Nkcl90aW1pbmdzKGNvbmYp
+Ow0KCWlmIChJU19FUlIoc2RyKSkgew0KDQoJCXJldHVybiBQVFJfRVJSKHNkcik7DQoJfQ0KCWlm
+IChjc2xpbmUgPT0gTkFORF9EQVRBX0lGQUNFX0NIRUNLX09OTFkpIHsNCgkJcmV0dXJuIDA7DQoJ
+fQ0KfQ0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0K
