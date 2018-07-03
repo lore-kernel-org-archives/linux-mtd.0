@@ -1,21 +1,25 @@
-Received: from mail-yw0-x241.google.com ([2607:f8b0:4002:c05::241])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fa6g8-0006Mv-6O
- for linux-mtd@lists.infradead.org; Mon, 02 Jul 2018 21:48:13 +0000
-Received: by mail-yw0-x241.google.com with SMTP id p129-v6so7187894ywg.7
- for <linux-mtd@lists.infradead.org>; Mon, 02 Jul 2018 14:48:01 -0700 (PDT)
+ id 1faC1A-0004u5-7q
+ for linux-mtd@lists.infradead.org; Tue, 03 Jul 2018 03:30:18 +0000
 MIME-Version: 1.0
-Sender: keescook@google.com
-In-Reply-To: <20180702214713.2769-1-richard@nod.at>
-References: <20180702214713.2769-1-richard@nod.at>
-From: Kees Cook <keescook@chromium.org>
-Date: Mon, 2 Jul 2018 14:48:00 -0700
-Message-ID: <CAGXu5j+mJzhzXMg8F+stScfSqcquVofB_D8DHgpbUww8OOs05w@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Use kmalloc_array()
-To: Richard Weinberger <richard@nod.at>
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Tue, 03 Jul 2018 09:00:04 +0530
+From: Abhishek Sahu <absahu@codeaurora.org>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
+ Taneja <architt@codeaurora.org>
+Subject: Re: [PATCH v4 00/15] Update for QCOM NAND driver
+In-Reply-To: <20180701200959.2edb3306@xps13>
+References: <1529479662-4026-1-git-send-email-absahu@codeaurora.org>
+ <20180701200959.2edb3306@xps13>
+Message-ID: <275b38646a2b629ad7122f4cb4348371@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +29,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 2, 2018 at 2:47 PM, Richard Weinberger <richard@nod.at> wrote:
-> Since commit 6da2ec56059c ("treewide: kmalloc() -> kmalloc_array()")
-> we use kmalloc_array() for kmalloc() that computes the length with
-> a multiplication.
->
-> Cc: Kees Cook <keescook@chromium.org>
-> Suggested-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+On 2018-07-01 23:39, Miquel Raynal wrote:
+> Hi Abhishek,
+> 
+> Abhishek Sahu <absahu@codeaurora.org> wrote on Wed, 20 Jun 2018
+> 12:57:27 +0530:
+> 
+>> * v4:
+>> 
+>> 1. Added patch to make other ECC configurations function static.
+>> 2. Clubbed the DT update patches.
+>> 3. Removed the bad block related patch. Discussion is going on
+>>    related with for proper solution so planning to submit separate
+>>    patch series for all bad block related changes.
+>> 4. Made the single codeword raw read function and used the same
+>>    for raw page read.
+>> 5. Changes in erased codeword detection to raw read function.
+>> 
+>> * v3:
+>> 
+>> 1. Addressed all review comments in v2.
+>> 2. Added patch for removing redundant nand-ecc-step-size DT property.
+>> 3. Renamed ECC configuration setup function with minor code changes.
+>> 4. Modified comments and commit message for few patches.
+>> 
+>> * v2:
+>> 
+>> 1. Addressed all review comments in v1.
+>> 1. Make the generic helper function for NAND ECC parameters setup
+>>    and used this helper function for QCOM and Denali nand driver
+>>    for ECC setup.
+>> 2. Modified commit message for some of the patches and added more
+>>    comments.
+>> 3. Added new patch for fixing ‘return 0’ for raw read.
+>> 4. Removed the read last codeword part for nand oob write.
+>> 5. Reorganized bad block check function and removed the
+>>    read_last_cw function completely.
+>> 
+>> * v1:
+>> 
+>> This patch series mainly deals with error handling and erased page
+>> bitflip detection for QCOM NAND driver.
+>> 
+>> 1. The error handling was missing for some of the cases so fixed
+>>    the same.
+>> 
+>> 2. Add the support for taking ECC strength from ONFI parameter.
+>>    The earlier QCOM boards were coming with 4-bit ECC chip but
+>>    now the same boards are coming with 8-bit ECC chip since the
+>>    earlier 4-bit parts are obsolete from some vendors.
+>> 
+>> 3. We got few issues related with NAND erased page bitflips. The
+>>    QCOM NAND controller can’t detect the bitflip in completely erased
+>>    page so added the support to detect the same. It implemented the
+>>    logic mentioned in patch [1] which didn’t go in mainline and later
+>>    the generic functions were provided [2] to count the number of
+>>    bitflips and make all 0xff. This patch series did some optimization
+>>    logic to prevent the unnecessary full page raw read and data copy
+>>    from QCOM NAND controller to DMA.
+>> 
+>> 4. Following are the testing done for these patches in QCOM IPQ8074
+>>    HK01 (4-bit and 8-bit ECC chip) and IPQ806x AP148 boards.
+>>     a. Run all mtd test and check if it passes
+>>     b. Introduce custom bitflips in erased page and check if it
+>>        returns no error/EUCLEAN/EBADMSG depending upon number of
+>>        bitflips and position.
+>>     c. Introduce failure condition for operational failure and
+>>        check if it detects the same.
+>> 
+>> [1]: https://patchwork.ozlabs.org/patch/328994/
+>> [2]: https://patchwork.ozlabs.org/patch/509970/
+>> 
+>> Abhishek Sahu (15):
+>>   mtd: rawnand: helper function for setting up ECC configuration
+>>   mtd: rawnand: denali: use helper function for ecc setup
+>>   dt-bindings: qcom_nandc: update for ECC strength and step size
+>>   mtd: rawnand: qcom: remove dt property nand-ecc-step-size
+>>   mtd: rawnand: qcom: use the ecc strength from device parameter
+>>   mtd: rawnand: qcom: wait for desc completion in all BAM channels
+>>   mtd: rawnand: qcom: erased page detection for uncorrectable errors
+>>     only
+>>   mtd: rawnand: qcom: fix null pointer access for erased page 
+>> detection
+>>   mtd: rawnand: qcom: parse read errors for read oob also
+>>   mtd: rawnand: qcom: modify write_oob to remove read codeword part
+>>   mtd: rawnand: qcom: fix return value for raw page read
+>>   mtd: rawnand: qcom: check for operation errors in case of raw read
+>>   mtd: rawnand: qcom: code reorganization for raw read
+>>   mtd: rawnand: qcom: erased page bitflips detection
+>>   mtd: rawnand: provide only single helper function for ECC conf
+>> 
+>>  .../devicetree/bindings/mtd/qcom_nandc.txt         |   7 +-
+>>  drivers/mtd/nand/raw/denali.c                      |  30 +-
+>>  drivers/mtd/nand/raw/nand_base.c                   |  72 ++-
+>>  drivers/mtd/nand/raw/qcom_nandc.c                  | 491 
+>> ++++++++++++++-------
+>>  include/linux/mtd/rawnand.h                        |  10 +-
+>>  5 files changed, 380 insertions(+), 230 deletions(-)
+>> 
+> 
+> Thank you very much for the series and the changes you have done.
+> 
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+  Thanks a lot Miquel for your great support and help in
+  reviewing and merging these patches :-)
 
-Thanks!
+> Applied all patches but "erased page bitflips detection" because I'm
+> waiting for one small modification on this one.
 
--Kees
+  Sure. I will send that updated patch.
 
-> ---
->  fs/ubifs/journal.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> index eea12d25a58b..95acc0c04bca 100644
-> --- a/fs/ubifs/journal.c
-> +++ b/fs/ubifs/journal.c
-> @@ -1285,7 +1285,7 @@ static int truncate_data_node(const struct ubifs_info *c, const struct inode *in
->         int err, dlen, compr_type, out_len, old_dlen;
->
->         out_len = le32_to_cpu(dn->size);
-> -       buf = kmalloc(out_len * WORST_COMPR_FACTOR, GFP_NOFS);
-> +       buf = kmalloc_array(out_len, WORST_COMPR_FACTOR, GFP_NOFS);
->         if (!buf)
->                 return -ENOMEM;
->
-> --
-> 2.18.0
->
-
-
-
--- 
-Kees Cook
-Pixel Security
+  Regards,
+  Abhishek
