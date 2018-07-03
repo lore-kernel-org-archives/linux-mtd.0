@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 07/32] mtd: rawnand: fsl_ifc: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:04 +0200
-Message-Id: <20180703220029.19565-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 11/32] mtd: rawnand: jz4780: convert driver to nand_scan()
+Date: Wed,  4 Jul 2018 00:00:08 +0200
+Message-Id: <20180703220029.19565-12-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -41,43 +41,84 @@ these hooks and convert the driver to just use nand_scan() instead of
 both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Harvey Hunt <harveyhuntnexus@gmail.com>
 ---
- drivers/mtd/nand/raw/fsl_ifc_nand.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/jz4780_nand.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 382b67e97174..faefa186e9d3 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -714,9 +714,9 @@ static int fsl_ifc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	return nand_prog_page_end_op(chip);
+diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+index e69f6ae4c539..dd8c2facdef5 100644
+--- a/drivers/mtd/nand/raw/jz4780_nand.c
++++ b/drivers/mtd/nand/raw/jz4780_nand.c
+@@ -157,9 +157,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
+ 	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
  }
  
--static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
-+static int fsl_ifc_attach_chip(struct nand_chip *chip)
+-static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
++static int jz4780_nand_attach_chip(struct nand_chip *chip)
  {
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct fsl_ifc_mtd *priv = nand_get_controller_data(chip);
+-	struct nand_chip *chip = &nand->chip;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+ 	int eccbytes;
+@@ -170,7 +169,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	switch (chip->ecc.mode) {
+ 	case NAND_ECC_HW:
+ 		if (!nfc->bch) {
+-			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
++			dev_err(nfc->dev,
++				"HW BCH selected, but BCH controller not found\n");
+ 			return -ENODEV;
+ 		}
  
- 	dev_dbg(priv->dev, "%s: nand->numchips = %d\n", __func__,
-@@ -1046,15 +1046,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	if (ret)
- 		goto err;
+@@ -179,15 +179,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 		chip->ecc.correct = jz4780_nand_ecc_correct;
+ 		/* fall through */
+ 	case NAND_ECC_SOFT:
+-		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+-			(nfc->bch) ? "hardware BCH" : "software ECC",
+-			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
++		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
++			 (nfc->bch) ? "hardware BCH" : "software ECC",
++			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+ 		break;
+ 	case NAND_ECC_NONE:
+-		dev_info(dev, "not using ECC\n");
++		dev_info(nfc->dev, "not using ECC\n");
+ 		break;
+ 	default:
+-		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
++		dev_err(nfc->dev, "ECC mode %d not supported\n",
++			chip->ecc.mode);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -199,7 +200,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+ 	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+ 
+ 	if (eccbytes > mtd->oobsize - 2) {
+-		dev_err(dev,
++		dev_err(nfc->dev,
+ 			"invalid ECC config: required %d ECC bytes, but only %d are available",
+ 			eccbytes, mtd->oobsize - 2);
+ 		return -EINVAL;
+@@ -279,15 +280,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+ 	chip->controller = &nfc->controller;
+ 	nand_set_flash_node(chip, np);
  
 -	ret = nand_scan_ident(mtd, 1, NULL);
 -	if (ret)
--		goto err;
+-		return ret;
 -
--	ret = fsl_ifc_chip_init_tail(mtd);
+-	ret = jz4780_nand_init_ecc(nand, dev);
 -	if (ret)
--		goto err;
+-		return ret;
 -
 -	ret = nand_scan_tail(mtd);
-+	priv->chip.controller->attach_chip = fsl_ifc_attach_chip;
++	chip->controller->attach_chip = jz4780_nand_attach_chip;
 +	ret = nand_scan(mtd, 1);
  	if (ret)
- 		goto err;
+ 		return ret;
  
 -- 
 2.14.1
