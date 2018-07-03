@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 22/32] mtd: rawnand: sunxi: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:19 +0200
-Message-Id: <20180703220029.19565-23-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 13/32] mtd: rawnand: lpc32xx_slc: convert driver to
+ nand_scan()
+Date: Wed,  4 Jul 2018 00:00:10 +0200
+Message-Id: <20180703220029.19565-14-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,70 +43,99 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 38 ++++++++++++++------------------------
- 1 file changed, 14 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/raw/lpc32xx_slc.c | 73 ++++++++++++++++++++------------------
+ 1 file changed, 38 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index d831a141a196..38bef2ad90a3 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1816,12 +1816,21 @@ static void sunxi_nand_ecc_cleanup(struct nand_ecc_ctrl *ecc)
- 	}
+diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+index 42820aa1abab..c31efac1f9f5 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_slc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+@@ -779,6 +779,42 @@ static struct lpc32xx_nand_cfg_slc *lpc32xx_parse_dt(struct device *dev)
+ 	return ncfg;
  }
  
--static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
--			       struct device_node *np)
-+static int sunxi_nand_attach_chip(struct nand_chip *nand)
- {
--	struct nand_chip *nand = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(nand);
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	struct device_node *np = nand_get_flash_node(nand);
- 	int ret;
- 
-+	if (nand->bbt_options & NAND_BBT_USE_FLASH)
-+		nand->bbt_options |= NAND_BBT_NO_OOB;
++static int lpc32xx_nand_attach_chip(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
 +
-+	if (nand->options & NAND_NEED_SCRAMBLING)
-+		nand->options |= NAND_NO_SUBPAGE_WRITE;
++	/* OOB and ECC CPU and DMA work areas */
++	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
 +
-+	nand->options |= NAND_SUBPAGE_READ;
++	/*
++	 * Small page FLASH has a unique OOB layout, but large and huge
++	 * page FLASH use the standard layout. Small page FLASH uses a
++	 * custom BBT marker layout.
++	 */
++	if (mtd->writesize <= 512)
++		mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
 +
- 	if (!ecc->size) {
- 		ecc->size = nand->ecc_step_ds;
- 		ecc->strength = nand->ecc_strength_ds;
-@@ -1927,30 +1936,11 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	mtd = nand_to_mtd(nand);
- 	mtd->dev.parent = dev;
++	/* These sizes remain the same regardless of page size */
++	chip->ecc.size = 256;
++	chip->ecc.bytes = LPC32XX_SLC_DEV_ECC_BYTES;
++	chip->ecc.prepad = 0;
++	chip->ecc.postpad = 0;
++
++	/*
++	 * Use a custom BBT marker setup for small page FLASH that
++	 * won't interfere with the ECC layout. Large and huge page
++	 * FLASH use the standard layout.
++	 */
++	if ((chip->bbt_options & NAND_BBT_USE_FLASH) &&
++	    mtd->writesize <= 512) {
++		chip->bbt_td = &bbt_smallpage_main_descr;
++		chip->bbt_md = &bbt_smallpage_mirror_descr;
++	}
++
++	return 0;
++}
++
+ /*
+  * Probe for NAND controller
+  */
+@@ -884,41 +920,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+ 	}
  
--	ret = nand_scan_ident(mtd, nsels, NULL);
-+	nand->controller->attach_chip = sunxi_nand_attach_chip;
-+	ret = nand_scan(mtd, nsels);
- 	if (ret)
- 		return ret;
- 
--	if (nand->bbt_options & NAND_BBT_USE_FLASH)
--		nand->bbt_options |= NAND_BBT_NO_OOB;
+ 	/* Find NAND device */
+-	res = nand_scan_ident(mtd, 1, NULL);
+-	if (res)
+-		goto release_dma;
 -
--	if (nand->options & NAND_NEED_SCRAMBLING)
--		nand->options |= NAND_NO_SUBPAGE_WRITE;
+-	/* OOB and ECC CPU and DMA work areas */
+-	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
 -
--	nand->options |= NAND_SUBPAGE_READ;
+-	/*
+-	 * Small page FLASH has a unique OOB layout, but large and huge
+-	 * page FLASH use the standard layout. Small page FLASH uses a
+-	 * custom BBT marker layout.
+-	 */
+-	if (mtd->writesize <= 512)
+-		mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
 -
--	ret = sunxi_nand_ecc_init(mtd, &nand->ecc, np);
--	if (ret) {
--		dev_err(dev, "ECC init failed: %d\n", ret);
--		return ret;
+-	/* These sizes remain the same regardless of page size */
+-	chip->ecc.size = 256;
+-	chip->ecc.bytes = LPC32XX_SLC_DEV_ECC_BYTES;
+-	chip->ecc.prepad = chip->ecc.postpad = 0;
+-
+-	/*
+-	 * Use a custom BBT marker setup for small page FLASH that
+-	 * won't interfere with the ECC layout. Large and huge page
+-	 * FLASH use the standard layout.
+-	 */
+-	if ((chip->bbt_options & NAND_BBT_USE_FLASH) &&
+-	    mtd->writesize <= 512) {
+-		chip->bbt_td = &bbt_smallpage_main_descr;
+-		chip->bbt_md = &bbt_smallpage_mirror_descr;
 -	}
 -
--	ret = nand_scan_tail(mtd);
--	if (ret) {
--		dev_err(dev, "nand_scan_tail failed: %d\n", ret);
--		return ret;
--	}
--
- 	ret = mtd_device_register(mtd, NULL, 0);
- 	if (ret) {
- 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+-	/*
+-	 * Fills out all the uninitialized function pointers with the defaults
+-	 */
+-	res = nand_scan_tail(mtd);
++	chip->hwcontrol.attach_chip = lpc32xx_nand_attach_chip;
++	res = nand_scan(mtd, 1);
+ 	if (res)
+ 		goto release_dma;
+ 
 -- 
 2.14.1
