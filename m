@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 14/32] mtd: rawnand: marvell: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:11 +0200
-Message-Id: <20180703220029.19565-15-miquel.raynal@bootlin.com>
+Subject: [PATCH v2 20/32] mtd: rawnand: sh_flctl: move all NAND chip related
+ setup in one function
+Date: Wed,  4 Jul 2018 00:00:17 +0200
+Message-Id: <20180703220029.19565-21-miquel.raynal@bootlin.com>
 In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,236 +36,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+Prepare the conversion of the sh_flctl driver to nand_scan() by moving
+all the configuration that must be made after nand_scan_ident() in one
+single function. Create a pdata entry in the controller structure for
+that.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 201 +++++++++++++++++++-----------------
- 1 file changed, 104 insertions(+), 97 deletions(-)
+ drivers/mtd/nand/raw/sh_flctl.c | 38 +++++++++++++++++++-------------------
+ include/linux/mtd/sh_flctl.h    |  1 +
+ 2 files changed, 20 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ba6889bbe802..ed4a0419962a 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2295,6 +2295,107 @@ static int marvell_nfc_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 	return 0;
- }
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index c7abceffcc40..d37d1d3ccbf9 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -1007,6 +1007,16 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
+ 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+ 	struct nand_chip *chip = &flctl->chip;
  
-+static int marvell_nand_attach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct marvell_nand_chip *marvell_nand = to_marvell_nand(chip);
-+	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-+	struct pxa3xx_nand_platform_data *pdata = dev_get_platdata(nfc->dev);
-+	int ret;
-+
-+	if (pdata && pdata->flash_bbt)
-+		chip->bbt_options |= NAND_BBT_USE_FLASH;
-+
-+	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
++	if (chip->options & NAND_BUSWIDTH_16) {
 +		/*
-+		 * We'll use a bad block table stored in-flash and don't
-+		 * allow writing the bad block marker to the flash.
++		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
++		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
++		 * flctl->flcmncr_base to pdata->flcmncr_val.
 +		 */
-+		chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
-+		chip->bbt_td = &bbt_main_descr;
-+		chip->bbt_md = &bbt_mirror_descr;
++		flctl->pdata->flcmncr_val |= SEL_16BIT;
++		flctl->flcmncr_base = flctl->pdata->flcmncr_val;
 +	}
 +
-+	/* Save the chip-specific fields of NDCR */
-+	marvell_nand->ndcr = NDCR_PAGE_SZ(mtd->writesize);
-+	if (chip->options & NAND_BUSWIDTH_16)
-+		marvell_nand->ndcr |= NDCR_DWIDTH_M | NDCR_DWIDTH_C;
-+
-+	/*
-+	 * On small page NANDs, only one cycle is needed to pass the
-+	 * column address.
-+	 */
-+	if (mtd->writesize <= 512) {
-+		marvell_nand->addr_cyc = 1;
-+	} else {
-+		marvell_nand->addr_cyc = 2;
-+		marvell_nand->ndcr |= NDCR_RA_START;
-+	}
-+
-+	/*
-+	 * Now add the number of cycles needed to pass the row
-+	 * address.
-+	 *
-+	 * Addressing a chip using CS 2 or 3 should also need the third row
-+	 * cycle but due to inconsistance in the documentation and lack of
-+	 * hardware to test this situation, this case is not supported.
-+	 */
-+	if (chip->options & NAND_ROW_ADDR_3)
-+		marvell_nand->addr_cyc += 3;
-+	else
-+		marvell_nand->addr_cyc += 2;
-+
-+	if (pdata) {
-+		chip->ecc.size = pdata->ecc_step_size;
-+		chip->ecc.strength = pdata->ecc_strength;
-+	}
-+
-+	ret = marvell_nand_ecc_init(mtd, &chip->ecc);
-+	if (ret) {
-+		dev_err(nfc->dev, "ECC init failed: %d\n", ret);
-+		return ret;
-+	}
-+
-+	if (chip->ecc.mode == NAND_ECC_HW) {
-+		/*
-+		 * Subpage write not available with hardware ECC, prohibit also
-+		 * subpage read as in userspace subpage access would still be
-+		 * allowed and subpage write, if used, would lead to numerous
-+		 * uncorrectable ECC errors.
-+		 */
-+		chip->options |= NAND_NO_SUBPAGE_WRITE;
-+	}
-+
-+	if (pdata || nfc->caps->legacy_of_bindings) {
-+		/*
-+		 * We keep the MTD name unchanged to avoid breaking platforms
-+		 * where the MTD cmdline parser is used and the bootloader
-+		 * has not been updated to use the new naming scheme.
-+		 */
-+		mtd->name = "pxa3xx_nand-0";
-+	} else if (!mtd->name) {
-+		/*
-+		 * If the new bindings are used and the bootloader has not been
-+		 * updated to pass a new mtdparts parameter on the cmdline, you
-+		 * should define the following property in your NAND node, ie:
-+		 *
-+		 *	label = "main-storage";
-+		 *
-+		 * This way, mtd->name will be set by the core when
-+		 * nand_set_flash_node() is called.
-+		 */
-+		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
-+					   "%s:nand.%d", dev_name(nfc->dev),
-+					   marvell_nand->sels[0].cs);
-+		if (!mtd->name) {
-+			dev_err(nfc->dev, "Failed to allocate mtd->name\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
- 				  struct device_node *np)
- {
-@@ -2437,105 +2538,11 @@ static int marvell_nand_chip_init(struct device *dev, struct marvell_nfc *nfc,
- 	marvell_nand->ndtr1 = readl_relaxed(nfc->regs + NDTR1);
+ 	if (mtd->writesize == 512) {
+ 		flctl->page_size = 0;
+ 		if (chip->chipsize > (32 << 20)) {
+@@ -1122,7 +1132,6 @@ static int flctl_probe(struct platform_device *pdev)
+ 	struct sh_flctl *flctl;
+ 	struct mtd_info *flctl_mtd;
+ 	struct nand_chip *nand;
+-	struct sh_flctl_platform_data *pdata;
+ 	int ret;
+ 	int irq;
  
- 	chip->options |= NAND_BUSWIDTH_AUTO;
--	ret = nand_scan_ident(mtd, marvell_nand->nsels, NULL);
--	if (ret) {
--		dev_err(dev, "could not identify the nand chip\n");
--		return ret;
--	}
--
--	if (pdata && pdata->flash_bbt)
--		chip->bbt_options |= NAND_BBT_USE_FLASH;
--
--	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
--		/*
--		 * We'll use a bad block table stored in-flash and don't
--		 * allow writing the bad block marker to the flash.
--		 */
--		chip->bbt_options |= NAND_BBT_NO_OOB_BBM;
--		chip->bbt_td = &bbt_main_descr;
--		chip->bbt_md = &bbt_mirror_descr;
--	}
--
--	/* Save the chip-specific fields of NDCR */
--	marvell_nand->ndcr = NDCR_PAGE_SZ(mtd->writesize);
--	if (chip->options & NAND_BUSWIDTH_16)
--		marvell_nand->ndcr |= NDCR_DWIDTH_M | NDCR_DWIDTH_C;
--
--	/*
--	 * On small page NANDs, only one cycle is needed to pass the
--	 * column address.
--	 */
--	if (mtd->writesize <= 512) {
--		marvell_nand->addr_cyc = 1;
--	} else {
--		marvell_nand->addr_cyc = 2;
--		marvell_nand->ndcr |= NDCR_RA_START;
--	}
--
--	/*
--	 * Now add the number of cycles needed to pass the row
--	 * address.
--	 *
--	 * Addressing a chip using CS 2 or 3 should also need the third row
--	 * cycle but due to inconsistance in the documentation and lack of
--	 * hardware to test this situation, this case is not supported.
--	 */
--	if (chip->options & NAND_ROW_ADDR_3)
--		marvell_nand->addr_cyc += 3;
--	else
--		marvell_nand->addr_cyc += 2;
--
--	if (pdata) {
--		chip->ecc.size = pdata->ecc_step_size;
--		chip->ecc.strength = pdata->ecc_strength;
--	}
--
--	ret = marvell_nand_ecc_init(mtd, &chip->ecc);
--	if (ret) {
--		dev_err(dev, "ECC init failed: %d\n", ret);
--		return ret;
--	}
--
--	if (chip->ecc.mode == NAND_ECC_HW) {
--		/*
--		 * Subpage write not available with hardware ECC, prohibit also
--		 * subpage read as in userspace subpage access would still be
--		 * allowed and subpage write, if used, would lead to numerous
--		 * uncorrectable ECC errors.
--		 */
--		chip->options |= NAND_NO_SUBPAGE_WRITE;
--	}
--
--	if (pdata || nfc->caps->legacy_of_bindings) {
--		/*
--		 * We keep the MTD name unchanged to avoid breaking platforms
--		 * where the MTD cmdline parser is used and the bootloader
--		 * has not been updated to use the new naming scheme.
--		 */
--		mtd->name = "pxa3xx_nand-0";
--	} else if (!mtd->name) {
--		/*
--		 * If the new bindings are used and the bootloader has not been
--		 * updated to pass a new mtdparts parameter on the cmdline, you
--		 * should define the following property in your NAND node, ie:
--		 *
--		 *	label = "main-storage";
--		 *
--		 * This way, mtd->name will be set by the core when
--		 * nand_set_flash_node() is called.
--		 */
--		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
--					   "%s:nand.%d", dev_name(nfc->dev),
--					   marvell_nand->sels[0].cs);
--		if (!mtd->name) {
--			dev_err(nfc->dev, "Failed to allocate mtd->name\n");
--			return -ENOMEM;
--		}
--	}
- 
--	ret = nand_scan_tail(mtd);
-+	chip->controller->attach_chip = marvell_nand_attach_chip;
-+	ret = nand_scan(mtd, marvell_nand->nsels);
- 	if (ret) {
--		dev_err(dev, "nand_scan_tail failed: %d\n", ret);
-+		dev_err(dev, "could not scan the nand chip\n");
- 		return ret;
+@@ -1150,11 +1159,11 @@ static int flctl_probe(struct platform_device *pdev)
  	}
  
+ 	if (pdev->dev.of_node)
+-		pdata = flctl_parse_dt(&pdev->dev);
++		flctl->pdata = flctl_parse_dt(&pdev->dev);
+ 	else
+-		pdata = dev_get_platdata(&pdev->dev);
++		flctl->pdata = dev_get_platdata(&pdev->dev);
+ 
+-	if (!pdata) {
++	if (!flctl->pdata) {
+ 		dev_err(&pdev->dev, "no setup data defined\n");
+ 		return -EINVAL;
+ 	}
+@@ -1165,9 +1174,9 @@ static int flctl_probe(struct platform_device *pdev)
+ 	nand_set_flash_node(nand, pdev->dev.of_node);
+ 	flctl_mtd->dev.parent = &pdev->dev;
+ 	flctl->pdev = pdev;
+-	flctl->hwecc = pdata->has_hwecc;
+-	flctl->holden = pdata->use_holden;
+-	flctl->flcmncr_base = pdata->flcmncr_val;
++	flctl->hwecc = flctl->pdata->has_hwecc;
++	flctl->holden = flctl->pdata->use_holden;
++	flctl->flcmncr_base = flctl->pdata->flcmncr_val;
+ 	flctl->flintdmacr_base = flctl->hwecc ? (STERINTE | ECERB) : STERINTE;
+ 
+ 	/* Set address of hardware control function */
+@@ -1183,7 +1192,7 @@ static int flctl_probe(struct platform_device *pdev)
+ 	nand->set_features = nand_get_set_features_notsupp;
+ 	nand->get_features = nand_get_set_features_notsupp;
+ 
+-	if (pdata->flcmncr_val & SEL_16BIT)
++	if (flctl->pdata->flcmncr_val & SEL_16BIT)
+ 		nand->options |= NAND_BUSWIDTH_16;
+ 
+ 	pm_runtime_enable(&pdev->dev);
+@@ -1195,16 +1204,6 @@ static int flctl_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_chip;
+ 
+-	if (nand->options & NAND_BUSWIDTH_16) {
+-		/*
+-		 * NAND_BUSWIDTH_16 may have been set by nand_scan_ident().
+-		 * Add the SEL_16BIT flag in pdata->flcmncr_val and re-assign
+-		 * flctl->flcmncr_base to pdata->flcmncr_val.
+-		 */
+-		pdata->flcmncr_val |= SEL_16BIT;
+-		flctl->flcmncr_base = pdata->flcmncr_val;
+-	}
+-
+ 	ret = flctl_chip_init_tail(flctl_mtd);
+ 	if (ret)
+ 		goto err_chip;
+@@ -1213,7 +1212,8 @@ static int flctl_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		goto err_chip;
+ 
+-	ret = mtd_device_register(flctl_mtd, pdata->parts, pdata->nr_parts);
++	ret = mtd_device_register(flctl_mtd, flctl->pdata->parts,
++				  flctl->pdata->nr_parts);
+ 	if (ret)
+ 		goto cleanup_nand;
+ 
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index c759d403cbc0..c9f486c6c019 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -148,6 +148,7 @@ struct sh_flctl {
+ 	struct dev_pm_qos_request pm_qos;
+ 	void __iomem		*reg;
+ 	resource_size_t		fifo;
++	struct sh_flctl_platform_data *pdata;
+ 
+ 	uint8_t	done_buff[2048 + 64];	/* max size 2048 + 64 */
+ 	int	read_bytes;
 -- 
 2.14.1
