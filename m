@@ -1,14 +1,23 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faeHF-0002HS-3G
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 09:41:38 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] ubifs: log: Don't leak kernel memory to the MTD
-Date: Wed,  4 Jul 2018 11:40:25 +0200
-Message-Id: <20180704094025.26789-1-richard@nod.at>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1faehU-0003AD-7T
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 10:07:56 +0000
+Date: Wed, 4 Jul 2018 12:07:39 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>
+Subject: Re: [PATCH v3 01/11] mtd: rawnand: docg4: fix the probe function
+ error path
+Message-ID: <20180704120739.52fc75a1@xps13>
+In-Reply-To: <20180421180043.18366-2-miquel.raynal@bootlin.com>
+References: <20180421180043.18366-1-miquel.raynal@bootlin.com>
+ <20180421180043.18366-2-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubifs_log_start_commit() allocates a buffer with kmalloc(),
-this buffer is used to build UBIFS CS and REF nodes, all structure
-attributes get set, except for the padding field in the ubifs_ref_node.
-That way we leak 28 bytes of kernel memory to the MTD.
-Fix it by using kzalloc().
+Hello,
 
-Cc: stable@vger.kernel.org
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sat, 21 Apr 2018
+20:00:33 +0200:
 
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index 7cffa120a750..60d49c6dd470 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -369,7 +369,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
- 
- 	max_len = UBIFS_CS_NODE_SZ + c->jhead_cnt * UBIFS_REF_NODE_SZ;
- 	max_len = ALIGN(max_len, c->min_io_size);
--	buf = cs = kmalloc(max_len, GFP_NOFS);
-+	buf = cs = kzalloc(max_len, GFP_NOFS);
- 	if (!buf)
- 		return -ENOMEM;
- 
--- 
-2.18.0
+> nand_release() should not be called on an MTD device that has not been
+> registered. While it should work thanks to the checks done in
+> mtd_device_unregister() it's a bad practice to cleanup/release
+> something that has not previously been initialized/allocated.
+>=20
+> Rework the error path to follow this rule.
+>=20
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+
+This patch is marked applied in patchwork while it is not present
+anywhere in the official trees and has probably been forgotten. Applied
+on nand/next.
+
+Regards,
+Miqu=C3=A8l
