@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fah72-0004Hr-F3
+ id 1fah72-0004Hx-F7
  for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 12:42:34 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 07/25] ubifs: Store read superblock node
-Date: Wed,  4 Jul 2018 14:41:19 +0200
-Message-Id: <20180704124137.13396-8-s.hauer@pengutronix.de>
+Subject: [PATCH 09/25] ubifs: add separate functions to init/crc a node
+Date: Wed,  4 Jul 2018 14:41:21 +0200
+Message-Id: <20180704124137.13396-10-s.hauer@pengutronix.de>
 In-Reply-To: <20180704124137.13396-1-s.hauer@pengutronix.de>
 References: <20180704124137.13396-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,151 +21,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The superblock node is read/modified/written several times throughout
-the UBIFS code. Instead of reading it from the device each time just
-keep a copy in memory and write back the modified copy when necessary.
-This patch helps for authentication support, here we not only have to
-read the superblock node, but also have to authenticate it, which
-is easier if we do it once during initialization.
+When adding authentication support we will embed a HMAC into some
+nodes. To prepare these nodes we have to first initialize the nodes,
+then add a HMAC and finally add a CRC. To accomplish this add separate
+ubifs_init_node/ubifs_crc_node functions.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/sb.c    | 19 +++++--------------
- fs/ubifs/super.c |  8 +-------
- fs/ubifs/ubifs.h |  3 ++-
- 3 files changed, 8 insertions(+), 22 deletions(-)
+ fs/ubifs/io.c    | 42 +++++++++++++++++++++++++++---------------
+ fs/ubifs/ubifs.h |  2 ++
+ 2 files changed, 29 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index a32408f2f5c3..2fabd441d74a 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -497,7 +497,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
-  * code. Note, the user of this function is responsible of kfree()'ing the
-  * returned superblock buffer.
-  */
--struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
-+static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
- {
- 	struct ubifs_sb_node *sup;
- 	int err;
-@@ -554,6 +554,8 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	if (IS_ERR(sup))
- 		return PTR_ERR(sup);
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index fe77e9625e84..eeb8fb073d33 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -365,20 +365,8 @@ static unsigned long long next_sqnum(struct ubifs_info *c)
+ 	return sqnum;
+ }
  
-+	c->superblock = sup;
+-/**
+- * ubifs_prepare_node - prepare node to be written to flash.
+- * @c: UBIFS file-system description object
+- * @node: the node to pad
+- * @len: node length
+- * @pad: if the buffer has to be padded
+- *
+- * This function prepares node at @node to be written to the media - it
+- * calculates node CRC, fills the common header, and adds proper padding up to
+- * the next minimum I/O unit if @pad is not zero.
+- */
+-void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
++void ubifs_init_node(struct ubifs_info *c, void *node, int len, int pad)
+ {
+-	uint32_t crc;
+ 	struct ubifs_ch *ch = node;
+ 	unsigned long long sqnum = next_sqnum(c);
+ 
+@@ -389,8 +377,6 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+ 	ch->group_type = UBIFS_NO_NODE_GROUP;
+ 	ch->sqnum = cpu_to_le64(sqnum);
+ 	ch->padding[0] = ch->padding[1] = 0;
+-	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
+-	ch->crc = cpu_to_le32(crc);
+ 
+ 	if (pad) {
+ 		len = ALIGN(len, 8);
+@@ -399,6 +385,32 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+ 	}
+ }
+ 
++void ubifs_crc_node(struct ubifs_info *c, void *node, int len)
++{
++	struct ubifs_ch *ch = node;
++	uint32_t crc;
 +
- 	c->fmt_version = le32_to_cpu(sup->fmt_version);
- 	c->ro_compat_version = le32_to_cpu(sup->ro_compat_version);
- 
-@@ -685,7 +687,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 
- 	err = validate_sb(c, sup);
- out:
--	kfree(sup);
- 	return err;
- }
- 
-@@ -814,7 +815,7 @@ static int fixup_free_space(struct ubifs_info *c)
- int ubifs_fixup_free_space(struct ubifs_info *c)
- {
- 	int err;
--	struct ubifs_sb_node *sup;
-+	struct ubifs_sb_node *sup = c->superblock;
- 
- 	ubifs_assert(c->space_fixup);
- 	ubifs_assert(!c->ro_mount);
-@@ -825,16 +826,11 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- 	if (err)
- 		return err;
- 
--	sup = ubifs_read_sb_node(c);
--	if (IS_ERR(sup))
--		return PTR_ERR(sup);
--
- 	/* Free-space fixup is no longer required */
- 	c->space_fixup = 0;
- 	sup->flags &= cpu_to_le32(~UBIFS_FLG_SPACE_FIXUP);
- 
- 	err = ubifs_write_sb_node(c, sup);
--	kfree(sup);
- 	if (err)
- 		return err;
- 
-@@ -845,7 +841,7 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- int ubifs_enable_encryption(struct ubifs_info *c)
- {
- 	int err;
--	struct ubifs_sb_node *sup;
-+	struct ubifs_sb_node *sup = c->superblock;
- 
- 	if (c->encrypted)
- 		return 0;
-@@ -858,16 +854,11 @@ int ubifs_enable_encryption(struct ubifs_info *c)
- 		return -EINVAL;
- 	}
- 
--	sup = ubifs_read_sb_node(c);
--	if (IS_ERR(sup))
--		return PTR_ERR(sup);
--
- 	sup->flags |= cpu_to_le32(UBIFS_FLG_ENCRYPTION);
- 
- 	err = ubifs_write_sb_node(c, sup);
- 	if (!err)
- 		c->encrypted = 1;
--	kfree(sup);
- 
- 	return err;
- }
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index c5466c70d620..9e44baec30a3 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1580,16 +1580,10 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 		goto out;
- 
- 	if (c->old_leb_cnt != c->leb_cnt) {
--		struct ubifs_sb_node *sup;
-+		struct ubifs_sb_node *sup = c->superblock;
- 
--		sup = ubifs_read_sb_node(c);
--		if (IS_ERR(sup)) {
--			err = PTR_ERR(sup);
--			goto out;
--		}
- 		sup->leb_cnt = cpu_to_le32(c->leb_cnt);
- 		err = ubifs_write_sb_node(c, sup);
--		kfree(sup);
- 		if (err)
- 			goto out;
- 	}
++	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
++	ch->crc = cpu_to_le32(crc);
++}
++
++/**
++ * ubifs_prepare_node - prepare node to be written to flash.
++ * @c: UBIFS file-system description object
++ * @node: the node to pad
++ * @len: node length
++ * @pad: if the buffer has to be padded
++ *
++ * This function prepares node at @node to be written to the media - it
++ * calculates node CRC, fills the common header, and adds proper padding up to
++ * the next minimum I/O unit if @pad is not zero.
++ */
++void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
++{
++	ubifs_init_node(c, node, len, pad);
++	ubifs_crc_node(c, node, len);
++}
++
+ /**
+  * ubifs_prep_grp_node - prepare node of a group to be written to flash.
+  * @c: UBIFS file-system description object
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 83c5e75ed3b6..92574045e030 100644
+index 92574045e030..485de4e27f96 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -971,6 +971,7 @@ struct ubifs_debug_info;
-  * struct ubifs_info - UBIFS file-system description data structure
-  * (per-superblock).
-  * @vfs_sb: VFS @struct super_block object
-+ * @superblock: The super block node as read from the device
-  *
-  * @highest_inum: highest used inode number
-  * @max_sqnum: current global sequence number
-@@ -1217,6 +1218,7 @@ struct ubifs_debug_info;
-  */
- struct ubifs_info {
- 	struct super_block *vfs_sb;
-+	struct ubifs_sb_node *superblock;
- 
- 	ino_t highest_inum;
- 	unsigned long long max_sqnum;
-@@ -1647,7 +1649,6 @@ int ubifs_write_master(struct ubifs_info *c);
- 
- /* sb.c */
- int ubifs_read_superblock(struct ubifs_info *c);
--struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c);
- int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup);
- int ubifs_fixup_free_space(struct ubifs_info *c);
- int ubifs_enable_encryption(struct ubifs_info *c);
+@@ -1480,6 +1480,8 @@ int ubifs_write_node(struct ubifs_info *c, void *node, int len, int lnum,
+ 		     int offs);
+ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
+ 		     int offs, int quiet, int must_chk_crc);
++void ubifs_init_node(struct ubifs_info *c, void *buf, int len, int pad);
++void ubifs_crc_node(struct ubifs_info *c, void *buf, int len);
+ void ubifs_prepare_node(struct ubifs_info *c, void *buf, int len, int pad);
+ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last);
+ int ubifs_io_init(struct ubifs_info *c);
 -- 
 2.18.0
