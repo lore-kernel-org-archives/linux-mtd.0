@@ -1,23 +1,14 @@
-Received: from [45.249.212.32] (helo=huawei.com)
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fadyd-0001Oj-ID
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 09:21:32 +0000
-From: Wei Yongjun <weiyongjun1@huawei.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
- Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>
-CC: Wei Yongjun <weiyongjun1@huawei.com>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next v3] mtd: spinand: fix missing unlock on error
-Date: Wed, 4 Jul 2018 09:30:27 +0000
-Message-ID: <1530696627-84879-1-git-send-email-weiyongjun1@huawei.com>
-In-Reply-To: <1530696061-76467-1-git-send-email-weiyongjun1@huawei.com>
-References: <1530696061-76467-1-git-send-email-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
+ id 1faeHF-0002HS-3G
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 09:41:38 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+ stable@vger.kernel.org
+Subject: [PATCH] ubifs: log: Don't leak kernel memory to the MTD
+Date: Wed,  4 Jul 2018 11:40:25 +0200
+Message-Id: <20180704094025.26789-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the missing unlock before return from function
-spinand_mtd_(read|write) in the error handling case.
+ubifs_log_start_commit() allocates a buffer with kmalloc(),
+this buffer is used to build UBIFS CS and REF nodes, all structure
+attributes get set, except for the padding field in the ubifs_ref_node.
+That way we leak 28 bytes of kernel memory to the MTD.
+Fix it by using kzalloc().
 
-Fixes: c898e0526fb6 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: stable@vger.kernel.org
+Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
-v2 -> v3: remove blank line
-v1 -> v2: using break instead of return
----
- drivers/mtd/nand/spi/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/ubifs/log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 17d207a..8998dca 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -561,11 +561,11 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
- 	nanddev_io_for_each_page(nand, from, ops, &iter) {
- 		ret = spinand_select_target(spinand, iter.req.pos.target);
- 		if (ret)
--			return ret;
-+			break;
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 7cffa120a750..60d49c6dd470 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -369,7 +369,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
  
- 		ret = spinand_ecc_enable(spinand, enable_ecc);
- 		if (ret)
--			return ret;
-+			break;
+ 	max_len = UBIFS_CS_NODE_SZ + c->jhead_cnt * UBIFS_REF_NODE_SZ;
+ 	max_len = ALIGN(max_len, c->min_io_size);
+-	buf = cs = kmalloc(max_len, GFP_NOFS);
++	buf = cs = kzalloc(max_len, GFP_NOFS);
+ 	if (!buf)
+ 		return -ENOMEM;
  
- 		ret = spinand_read_page(spinand, &iter.req, enable_ecc);
- 		if (ret < 0 && ret != -EBADMSG)
-@@ -609,11 +609,11 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
- 	nanddev_io_for_each_page(nand, to, ops, &iter) {
- 		ret = spinand_select_target(spinand, iter.req.pos.target);
- 		if (ret)
--			return ret;
-+			break;
- 
- 		ret = spinand_ecc_enable(spinand, enable_ecc);
- 		if (ret)
--			return ret;
-+			break;
- 
- 		ret = spinand_write_page(spinand, &iter.req);
- 		if (ret)
+-- 
+2.18.0
