@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fah74-0004I0-8N
+ id 1fah72-0004Hz-F4
  for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 12:42:42 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 20/25] ubifs: authentication: Authenticate super block node
-Date: Wed,  4 Jul 2018 14:41:32 +0200
-Message-Id: <20180704124137.13396-21-s.hauer@pengutronix.de>
+Subject: [PATCH 08/25] ubifs: Format changes for authentication support
+Date: Wed,  4 Jul 2018 14:41:20 +0200
+Message-Id: <20180704124137.13396-9-s.hauer@pengutronix.de>
 In-Reply-To: <20180704124137.13396-1-s.hauer@pengutronix.de>
 References: <20180704124137.13396-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,102 +21,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds a HMAC covering the super block node and adds the logic that
-decides if a filesystem shall be mounted unauthenticated or
-authenticated.
+This patch adds the changes to the on disk format needed for
+authentication support. We'll add:
+
+* a HMAC covering super block node
+* a HMAC covering the master node
+* a hash over the root index node to the master node
+* a hash over the LPT to the master node
+* a flag to the filesystem flag indicating the filesystem is
+  authenticated
+* an authentication node necessary to authenticate the nodes written
+  to the journal heads while they are written.
+* a HMAC of a well known message to the super block node to be able
+  to check if the correct key is provided
+
+And finally, not visible in this patch, nevertheless explained here:
+
+* hashes over the referenced child nodes in each branch of a index node
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/sb.c | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 62 insertions(+), 1 deletion(-)
+ fs/ubifs/debug.c       |  6 ++++++
+ fs/ubifs/super.c       |  1 +
+ fs/ubifs/ubifs-media.h | 46 +++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 50 insertions(+), 3 deletions(-)
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index 155480f62fac..2e814b5fb5d1 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -517,6 +517,62 @@ static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
- 	return sup;
- }
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 7cd8a7b95299..249c9e71252c 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -165,6 +165,8 @@ const char *dbg_ntype(int type)
+ 		return "commit start node";
+ 	case UBIFS_ORPH_NODE:
+ 		return "orphan node";
++	case UBIFS_AUTH_NODE:
++		return "auth node";
+ 	default:
+ 		return "unknown node";
+ 	}
+@@ -542,6 +544,10 @@ void ubifs_dump_node(const struct ubifs_info *c, const void *node)
+ 			       (unsigned long long)le64_to_cpu(orph->inos[i]));
+ 		break;
+ 	}
++	case UBIFS_AUTH_NODE:
++	{
++		break;
++	}
+ 	default:
+ 		pr_err("node type %d was not recognized\n",
+ 		       (int)ch->node_type);
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 9e44baec30a3..6b2d80391111 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -577,6 +577,7 @@ static int init_constants_early(struct ubifs_info *c)
+ 	c->ranges[UBIFS_REF_NODE].len  = UBIFS_REF_NODE_SZ;
+ 	c->ranges[UBIFS_TRUN_NODE].len = UBIFS_TRUN_NODE_SZ;
+ 	c->ranges[UBIFS_CS_NODE].len   = UBIFS_CS_NODE_SZ;
++	c->ranges[UBIFS_AUTH_NODE].len = UBIFS_AUTH_NODE_SZ;
  
-+static int authenticate_sb_node(struct ubifs_info *c,
-+				const struct ubifs_sb_node *sup)
-+{
-+	unsigned int sup_flags = le32_to_cpu(sup->flags);
-+	u8 hmac_wkm[UBIFS_MAX_HMAC_LEN];
-+	int authenticated = !!(sup_flags & UBIFS_FLG_AUTHENTICATION);
-+	int hash_algo;
-+	int err;
+ 	c->ranges[UBIFS_INO_NODE].min_len  = UBIFS_INO_NODE_SZ;
+ 	c->ranges[UBIFS_INO_NODE].max_len  = UBIFS_MAX_INO_NODE_SZ;
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index e8c23c9d4f4a..8b7c1844014f 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -286,6 +286,7 @@ enum {
+ #define UBIFS_IDX_NODE_SZ  sizeof(struct ubifs_idx_node)
+ #define UBIFS_CS_NODE_SZ   sizeof(struct ubifs_cs_node)
+ #define UBIFS_ORPH_NODE_SZ sizeof(struct ubifs_orph_node)
++#define UBIFS_AUTH_NODE_SZ sizeof(struct ubifs_auth_node)
+ /* Extended attribute entry nodes are identical to directory entry nodes */
+ #define UBIFS_XENT_NODE_SZ UBIFS_DENT_NODE_SZ
+ /* Only this does not have to be multiple of 8 bytes */
+@@ -300,6 +301,12 @@ enum {
+ /* The largest UBIFS node */
+ #define UBIFS_MAX_NODE_SZ UBIFS_MAX_INO_NODE_SZ
+ 
++/* The maxmimum size of a hash, enough for sha512 */
++#define UBIFS_MAX_HASH_LEN 64
 +
-+	if (c->authenticated && !authenticated) {
-+		ubifs_err(c, "authenticated FS forced, but found FS without authentication");
-+		return -EINVAL;
-+	}
++/* The maxmimum size of a hmac, enough for hmac(sha512) */
++#define UBIFS_MAX_HMAC_LEN 64
 +
-+	if (!c->authenticated && authenticated) {
-+		ubifs_err(c, "authenticated FS found, but no key given");
-+		return -EINVAL;
-+	}
-+
-+	ubifs_msg(c, "Mounting in %sauthenticated mode",
-+		  c->authenticated ? "" : "un");
-+
-+	if (!c->authenticated)
-+		return 0;
-+
-+	if (!IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION))
-+		return -EOPNOTSUPP;
-+
-+	hash_algo = le16_to_cpu(sup->hash_algo);
-+	if (hash_algo >= HASH_ALGO__LAST) {
-+		ubifs_err(c, "superblock uses unknown hash algo %d",
-+			  hash_algo);
-+		return -EINVAL;
-+	}
-+
-+	if (strcmp(hash_algo_name[hash_algo], c->auth_hash_name)) {
-+		ubifs_err(c, "This filesystem uses %s for hashing,"
-+			     " but %s is specified", hash_algo_name[hash_algo],
-+			     c->auth_hash_name);
-+		return -EINVAL;
-+	}
-+
-+	ubifs_hmac_wkm(c, hmac_wkm);
-+	if (ubifs_check_hmac(c, hmac_wkm, sup->hmac_wkm)) {
-+		ubifs_err(c, "provided key does not fit");
-+		return -ENOKEY;
-+	}
-+
-+	err = ubifs_node_verify_hmac(c, sup, sizeof(*sup),
-+				     offsetof(struct ubifs_sb_node, hmac));
-+	if (err)
-+		ubifs_err(c, "Failed to authenticate superblock: %d", err);
-+
-+	return err;
-+}
+ /*
+  * xattr name of UBIFS encryption context, we don't use a prefix
+  * nor a long name to not waste space on the flash.
+@@ -365,6 +372,7 @@ enum {
+  * UBIFS_IDX_NODE: index node
+  * UBIFS_CS_NODE: commit start node
+  * UBIFS_ORPH_NODE: orphan node
++ * UBIFS_AUTH_NODE: authentication node
+  * UBIFS_NODE_TYPES_CNT: count of supported node types
+  *
+  * Note, we index arrays by these numbers, so keep them low and contiguous.
+@@ -384,6 +392,7 @@ enum {
+ 	UBIFS_IDX_NODE,
+ 	UBIFS_CS_NODE,
+ 	UBIFS_ORPH_NODE,
++	UBIFS_AUTH_NODE,
+ 	UBIFS_NODE_TYPES_CNT,
+ };
+ 
+@@ -421,15 +430,19 @@ enum {
+  * UBIFS_FLG_DOUBLE_HASH: store a 32bit cookie in directory entry nodes to
+  *			  support 64bit cookies for lookups by hash
+  * UBIFS_FLG_ENCRYPTION: this filesystem contains encrypted files
++ * UBIFS_FLG_AUTHENTICATION: this filesystem contains hashes for authentication
+  */
+ enum {
+ 	UBIFS_FLG_BIGLPT = 0x02,
+ 	UBIFS_FLG_SPACE_FIXUP = 0x04,
+ 	UBIFS_FLG_DOUBLE_HASH = 0x08,
+ 	UBIFS_FLG_ENCRYPTION = 0x10,
++	UBIFS_FLG_AUTHENTICATION = 0x20,
+ };
+ 
+-#define UBIFS_FLG_MASK (UBIFS_FLG_BIGLPT|UBIFS_FLG_SPACE_FIXUP|UBIFS_FLG_DOUBLE_HASH|UBIFS_FLG_ENCRYPTION)
++#define UBIFS_FLG_MASK (UBIFS_FLG_BIGLPT | UBIFS_FLG_SPACE_FIXUP | \
++		UBIFS_FLG_DOUBLE_HASH | UBIFS_FLG_ENCRYPTION | \
++		UBIFS_FLG_AUTHENTICATION)
+ 
+ /**
+  * struct ubifs_ch - common header node.
+@@ -633,6 +646,10 @@ struct ubifs_pad_node {
+  * @time_gran: time granularity in nanoseconds
+  * @uuid: UUID generated when the file system image was created
+  * @ro_compat_version: UBIFS R/O compatibility version
++ * @hmac: HMAC to authenticate the superblock node
++ * @hmac_wkm: HMAC of a well known message (the string "UBIFS") as a convenience
++ *            to the user to check if the correct key is passed.
++ * @hash_algo: The hash algo used for this filesystem (one of enum hash_algo)
+  */
+ struct ubifs_sb_node {
+ 	struct ubifs_ch ch;
+@@ -660,7 +677,10 @@ struct ubifs_sb_node {
+ 	__le32 time_gran;
+ 	__u8 uuid[16];
+ 	__le32 ro_compat_version;
+-	__u8 padding2[3968];
++	__u8 hmac[UBIFS_MAX_HMAC_LEN];
++	__u8 hmac_wkm[UBIFS_MAX_HMAC_LEN];
++	__le16 hash_algo;
++	__u8 padding2[3838];
+ } __packed;
+ 
+ /**
+@@ -695,6 +715,9 @@ struct ubifs_sb_node {
+  * @empty_lebs: number of empty logical eraseblocks
+  * @idx_lebs: number of indexing logical eraseblocks
+  * @leb_cnt: count of LEBs used by file-system
++ * @hash_root_idx: the hash of the root index node
++ * @hash_lpt: the hash of the LPT
++ * @hmac: HMAC to authenticate the master node
+  * @padding: reserved for future, zeroes
+  */
+ struct ubifs_mst_node {
+@@ -727,7 +750,10 @@ struct ubifs_mst_node {
+ 	__le32 empty_lebs;
+ 	__le32 idx_lebs;
+ 	__le32 leb_cnt;
+-	__u8 padding[344];
++	__u8 hash_root_idx[UBIFS_MAX_HASH_LEN];
++	__u8 hash_lpt[UBIFS_MAX_HASH_LEN];
++	__u8 hmac[UBIFS_MAX_HMAC_LEN];
++	__u8 padding[152];
+ } __packed;
+ 
+ /**
+@@ -746,12 +772,26 @@ struct ubifs_ref_node {
+ 	__u8 padding[28];
+ } __packed;
+ 
++/**
++ * struct ubifs_auth_node - node for authenticating other nodes
++ * @ch: common header
++ * @hmac: The HMAC
++ */
++struct ubifs_auth_node {
++	struct ubifs_ch ch;
++	__u8 hmac[];
++} __packed;
 +
  /**
-  * ubifs_write_sb_node - write superblock node.
-  * @c: UBIFS file-system description object
-@@ -528,7 +584,8 @@ int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup)
- {
- 	int len = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
- 
--	ubifs_prepare_node(c, sup, UBIFS_SB_NODE_SZ, 1);
-+	ubifs_prepare_node_hmac(c, sup, UBIFS_SB_NODE_SZ,
-+				offsetof(struct ubifs_sb_node, hmac), 1);
- 	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len);
- }
- 
-@@ -642,6 +699,10 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	c->double_hash = !!(sup_flags & UBIFS_FLG_DOUBLE_HASH);
- 	c->encrypted = !!(sup_flags & UBIFS_FLG_ENCRYPTION);
- 
-+	err = authenticate_sb_node(c, sup);
-+	if (err)
-+		goto out;
-+
- 	if ((sup_flags & ~UBIFS_FLG_MASK) != 0) {
- 		ubifs_err(c, "Unknown feature flags found: %#x",
- 			  sup_flags & ~UBIFS_FLG_MASK);
+  * struct ubifs_branch - key/reference/length branch
+  * @lnum: LEB number of the target node
+  * @offs: offset within @lnum
+  * @len: target node length
+  * @key: key
++ *
++ * In an authenticated UBIFS we have the hash of the referenced node after @key.
++ * This can't be added to the struct type definition because @key is a
++ * dynamically sized element already.
+  */
+ struct ubifs_branch {
+ 	__le32 lnum;
 -- 
 2.18.0
