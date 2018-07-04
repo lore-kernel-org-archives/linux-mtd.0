@@ -1,19 +1,23 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from [45.249.212.32] (helo=huawei.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fadqt-0004nx-Jx
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 09:13:36 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: boris.brezillon@bootlin.com,
-	miquel.raynal@bootlin.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- dan.carpenter@oracle.com, dev@lynxeye.de, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, mirza.krak@gmail.com, gaireg@gaireg.de,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH] mtd: rawnand: tegra: check bounds of die_nr properly
-Date: Wed,  4 Jul 2018 11:13:10 +0200
-Message-Id: <20180704091310.22003-1-stefan@agner.ch>
+ id 1fadyd-0001Oj-ID
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 09:21:32 +0000
+From: Wei Yongjun <weiyongjun1@huawei.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, "David
+ Woodhouse" <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Frieder Schrempf
+ <frieder.schrempf@exceet.de>
+CC: Wei Yongjun <weiyongjun1@huawei.com>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next v3] mtd: spinand: fix missing unlock on error
+Date: Wed, 4 Jul 2018 09:30:27 +0000
+Message-ID: <1530696627-84879-1-git-send-email-weiyongjun1@huawei.com>
+In-Reply-To: <1530696061-76467-1-git-send-email-weiyongjun1@huawei.com>
+References: <1530696061-76467-1-git-send-email-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Tegra driver currently only support a single chip select, hence
-check boundaries accordingly. This fixes a off by one issue catched
-with Smatch:
-    drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
-    warn: array off by one? 'nand->cs[die_nr]'
+Add the missing unlock before return from function
+spinand_mtd_(read|write) in the error handling case.
 
-Also warn in case the stack asks for a chip select we currently do
-not support.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
+Fixes: c898e0526fb6 ("mtd: nand: Add core infrastructure to support SPI NANDs")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- drivers/mtd/nand/raw/tegra_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+v2 -> v3: remove blank line
+v1 -> v2: using break instead of return
+---
+ drivers/mtd/nand/spi/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 4daa88d814134..e65ef584df0b9 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -468,7 +468,9 @@ static void tegra_nand_select_chip(struct mtd_info *mtd, int die_nr)
- 	struct tegra_nand_chip *nand = to_tegra_chip(chip);
- 	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 17d207a..8998dca 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -561,11 +561,11 @@ static int spinand_mtd_read(struct mtd_info *mtd, loff_t from,
+ 	nanddev_io_for_each_page(nand, from, ops, &iter) {
+ 		ret = spinand_select_target(spinand, iter.req.pos.target);
+ 		if (ret)
+-			return ret;
++			break;
  
--	if (die_nr < 0 || die_nr > 1) {
-+	WARN_ON(die_nr >= ARRAY_SIZE(nand->cs));
-+
-+	if (die_nr < 0 || die_nr > 0) {
- 		ctrl->cur_cs = -1;
- 		return;
- 	}
--- 
-2.18.0
+ 		ret = spinand_ecc_enable(spinand, enable_ecc);
+ 		if (ret)
+-			return ret;
++			break;
+ 
+ 		ret = spinand_read_page(spinand, &iter.req, enable_ecc);
+ 		if (ret < 0 && ret != -EBADMSG)
+@@ -609,11 +609,11 @@ static int spinand_mtd_write(struct mtd_info *mtd, loff_t to,
+ 	nanddev_io_for_each_page(nand, to, ops, &iter) {
+ 		ret = spinand_select_target(spinand, iter.req.pos.target);
+ 		if (ret)
+-			return ret;
++			break;
+ 
+ 		ret = spinand_ecc_enable(spinand, enable_ecc);
+ 		if (ret)
+-			return ret;
++			break;
+ 
+ 		ret = spinand_write_page(spinand, &iter.req);
+ 		if (ret)
