@@ -1,23 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fad9f-0001tT-16
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 08:28:54 +0000
-Date: Wed, 4 Jul 2018 10:28:29 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, "David Woodhouse" <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Peter
- Pan <peterpandong@micron.com>, Frieder Schrempf
- <frieder.schrempf@exceet.de>, <linux-mtd@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH -next] mtd: spinand: Fix error return code in
- spinand_init()
-Message-ID: <20180704102829.6b29c6cb@bbrezillon>
-In-Reply-To: <1530693298-14271-1-git-send-email-weiyongjun1@huawei.com>
-References: <1530693298-14271-1-git-send-email-weiyongjun1@huawei.com>
+Subject: Re: [PATCH v2] mtd: atmel-quadspi: add suspend/resume hooks
+To: Claudiu Beznea <claudiu.beznea@microchip.com>, <marek.vasut@gmail.com>,
+ <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <boris.brezillon@bootlin.com>, <richard@nod.at>,
+ <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>
+References: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <d2264ba9-78db-a3e8-fe4d-5c04f241468c@microchip.com>
+Date: Wed, 4 Jul 2018 11:42:25 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1528101993-4772-1-git-send-email-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,34 +23,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Jul 2018 08:34:58 +0000
-Wei Yongjun <weiyongjun1@huawei.com> wrote:
+Hi, Claudiu,
 
-> Fix to return error code -ENOMEM from the kzalloc() error handling
-> case instead of 0, as done elsewhere in this function.
+On 06/04/2018 11:46 AM, Claudiu Beznea wrote:
+> Implement suspend/resume hooks.
 > 
-> Fixes: c898e0526fb6 ("mtd: nand: Add core infrastructure to support SPI NANDs")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 > ---
->  drivers/mtd/nand/spi/core.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-> index 17d207a..011683e 100644
-> --- a/drivers/mtd/nand/spi/core.c
-> +++ b/drivers/mtd/nand/spi/core.c
-> @@ -985,8 +985,10 @@ static int spinand_init(struct spinand_device *spinand)
->  	spinand->databuf = kzalloc(nanddev_page_size(nand) +
->  			       nanddev_per_page_oobsize(nand),
->  			       GFP_KERNEL);
-> -	if (!spinand->databuf)
-> +	if (!spinand->databuf) {
-> +		ret = -ENOMEM;
->  		goto err_free_bufs;
-> +	}
+> Changes in v2:
+> - use __maybe_unused instead of #ifdef CONFIG_PM_SLEEP
+> 
+>  drivers/mtd/spi-nor/atmel-quadspi.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+> index 6c5708bacad8..ceaaef47f02e 100644
+> --- a/drivers/mtd/spi-nor/atmel-quadspi.c
+> +++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+> @@ -737,6 +737,26 @@ static int atmel_qspi_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
 >  
->  	spinand->oobbuf = spinand->databuf + nanddev_page_size(nand);
+> +static int __maybe_unused atmel_qspi_suspend(struct device *dev)
+> +{
+> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
+> +
+> +	clk_disable_unprepare(aq->clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused atmel_qspi_resume(struct device *dev)
+> +{
+> +	struct atmel_qspi *aq = dev_get_drvdata(dev);
+> +
+> +	clk_prepare_enable(aq->clk);
+
+You missed to verify the return value of clk_prepare_enable. Otherwise looks
+good. I've also looked over the test with suspending while copying on a ubifs
+mounted on QSPI NOR, looks good too.
+
+After checking the return value, please add:
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+Best,
+ta
+
+> +
+> +	return atmel_qspi_init(aq);
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(atmel_qspi_pm_ops, atmel_qspi_suspend,
+> +			 atmel_qspi_resume);
+>  
+>  static const struct of_device_id atmel_qspi_dt_ids[] = {
+>  	{ .compatible = "atmel,sama5d2-qspi" },
+> @@ -749,6 +769,7 @@ static struct platform_driver atmel_qspi_driver = {
+>  	.driver = {
+>  		.name	= "atmel_qspi",
+>  		.of_match_table	= atmel_qspi_dt_ids,
+> +		.pm	= &atmel_qspi_pm_ops,
+>  	},
+>  	.probe		= atmel_qspi_probe,
+>  	.remove		= atmel_qspi_remove,
 > 
