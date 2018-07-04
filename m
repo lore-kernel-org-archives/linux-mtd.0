@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fah72-0004Hz-F4
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 12:42:42 +0000
+ id 1fah72-0004I3-F5
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 12:42:44 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 08/25] ubifs: Format changes for authentication support
-Date: Wed,  4 Jul 2018 14:41:20 +0200
-Message-Id: <20180704124137.13396-9-s.hauer@pengutronix.de>
+Subject: [PATCH 16/25] ubifs: authenticate replayed journal
+Date: Wed,  4 Jul 2018 14:41:28 +0200
+Message-Id: <20180704124137.13396-17-s.hauer@pengutronix.de>
 In-Reply-To: <20180704124137.13396-1-s.hauer@pengutronix.de>
 References: <20180704124137.13396-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,200 +21,214 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds the changes to the on disk format needed for
-authentication support. We'll add:
+Make sure that during replay all buds can be authenticated. To do
+this we calculate the hash chain until we find an authentication
+node and check the HMAC in that node against the current status
+of the hash chain.
 
-* a HMAC covering super block node
-* a HMAC covering the master node
-* a hash over the root index node to the master node
-* a hash over the LPT to the master node
-* a flag to the filesystem flag indicating the filesystem is
-  authenticated
-* an authentication node necessary to authenticate the nodes written
-  to the journal heads while they are written.
-* a HMAC of a well known message to the super block node to be able
-  to check if the correct key is provided
-
-And finally, not visible in this patch, nevertheless explained here:
-
-* hashes over the referenced child nodes in each branch of a index node
+After a power cut it can happen that some nodes have been written, but
+not yet the authentication node for them. These nodes have to be
+discarded during replay.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/debug.c       |  6 ++++++
- fs/ubifs/super.c       |  1 +
- fs/ubifs/ubifs-media.h | 46 +++++++++++++++++++++++++++++++++++++++---
- 3 files changed, 50 insertions(+), 3 deletions(-)
+ fs/ubifs/replay.c | 116 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 114 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 7cd8a7b95299..249c9e71252c 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -165,6 +165,8 @@ const char *dbg_ntype(int type)
- 		return "commit start node";
- 	case UBIFS_ORPH_NODE:
- 		return "orphan node";
-+	case UBIFS_AUTH_NODE:
-+		return "auth node";
- 	default:
- 		return "unknown node";
- 	}
-@@ -542,6 +544,10 @@ void ubifs_dump_node(const struct ubifs_info *c, const void *node)
- 			       (unsigned long long)le64_to_cpu(orph->inos[i]));
- 		break;
- 	}
-+	case UBIFS_AUTH_NODE:
-+	{
-+		break;
-+	}
- 	default:
- 		pr_err("node type %d was not recognized\n",
- 		       (int)ch->node_type);
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 9e44baec30a3..6b2d80391111 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -577,6 +577,7 @@ static int init_constants_early(struct ubifs_info *c)
- 	c->ranges[UBIFS_REF_NODE].len  = UBIFS_REF_NODE_SZ;
- 	c->ranges[UBIFS_TRUN_NODE].len = UBIFS_TRUN_NODE_SZ;
- 	c->ranges[UBIFS_CS_NODE].len   = UBIFS_CS_NODE_SZ;
-+	c->ranges[UBIFS_AUTH_NODE].len = UBIFS_AUTH_NODE_SZ;
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 07a66ae90e89..45da17d1a74e 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -34,6 +34,8 @@
  
- 	c->ranges[UBIFS_INO_NODE].min_len  = UBIFS_INO_NODE_SZ;
- 	c->ranges[UBIFS_INO_NODE].max_len  = UBIFS_MAX_INO_NODE_SZ;
-diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
-index e8c23c9d4f4a..8b7c1844014f 100644
---- a/fs/ubifs/ubifs-media.h
-+++ b/fs/ubifs/ubifs-media.h
-@@ -286,6 +286,7 @@ enum {
- #define UBIFS_IDX_NODE_SZ  sizeof(struct ubifs_idx_node)
- #define UBIFS_CS_NODE_SZ   sizeof(struct ubifs_cs_node)
- #define UBIFS_ORPH_NODE_SZ sizeof(struct ubifs_orph_node)
-+#define UBIFS_AUTH_NODE_SZ sizeof(struct ubifs_auth_node)
- /* Extended attribute entry nodes are identical to directory entry nodes */
- #define UBIFS_XENT_NODE_SZ UBIFS_DENT_NODE_SZ
- /* Only this does not have to be multiple of 8 bytes */
-@@ -300,6 +301,12 @@ enum {
- /* The largest UBIFS node */
- #define UBIFS_MAX_NODE_SZ UBIFS_MAX_INO_NODE_SZ
- 
-+/* The maxmimum size of a hash, enough for sha512 */
-+#define UBIFS_MAX_HASH_LEN 64
-+
-+/* The maxmimum size of a hmac, enough for hmac(sha512) */
-+#define UBIFS_MAX_HMAC_LEN 64
-+
- /*
-  * xattr name of UBIFS encryption context, we don't use a prefix
-  * nor a long name to not waste space on the flash.
-@@ -365,6 +372,7 @@ enum {
-  * UBIFS_IDX_NODE: index node
-  * UBIFS_CS_NODE: commit start node
-  * UBIFS_ORPH_NODE: orphan node
-+ * UBIFS_AUTH_NODE: authentication node
-  * UBIFS_NODE_TYPES_CNT: count of supported node types
-  *
-  * Note, we index arrays by these numbers, so keep them low and contiguous.
-@@ -384,6 +392,7 @@ enum {
- 	UBIFS_IDX_NODE,
- 	UBIFS_CS_NODE,
- 	UBIFS_ORPH_NODE,
-+	UBIFS_AUTH_NODE,
- 	UBIFS_NODE_TYPES_CNT,
- };
- 
-@@ -421,15 +430,19 @@ enum {
-  * UBIFS_FLG_DOUBLE_HASH: store a 32bit cookie in directory entry nodes to
-  *			  support 64bit cookies for lookups by hash
-  * UBIFS_FLG_ENCRYPTION: this filesystem contains encrypted files
-+ * UBIFS_FLG_AUTHENTICATION: this filesystem contains hashes for authentication
-  */
- enum {
- 	UBIFS_FLG_BIGLPT = 0x02,
- 	UBIFS_FLG_SPACE_FIXUP = 0x04,
- 	UBIFS_FLG_DOUBLE_HASH = 0x08,
- 	UBIFS_FLG_ENCRYPTION = 0x10,
-+	UBIFS_FLG_AUTHENTICATION = 0x20,
- };
- 
--#define UBIFS_FLG_MASK (UBIFS_FLG_BIGLPT|UBIFS_FLG_SPACE_FIXUP|UBIFS_FLG_DOUBLE_HASH|UBIFS_FLG_ENCRYPTION)
-+#define UBIFS_FLG_MASK (UBIFS_FLG_BIGLPT | UBIFS_FLG_SPACE_FIXUP | \
-+		UBIFS_FLG_DOUBLE_HASH | UBIFS_FLG_ENCRYPTION | \
-+		UBIFS_FLG_AUTHENTICATION)
+ #include "ubifs.h"
+ #include <linux/list_sort.h>
++#include <crypto/hash.h>
++#include <crypto/algapi.h>
  
  /**
-  * struct ubifs_ch - common header node.
-@@ -633,6 +646,10 @@ struct ubifs_pad_node {
-  * @time_gran: time granularity in nanoseconds
-  * @uuid: UUID generated when the file system image was created
-  * @ro_compat_version: UBIFS R/O compatibility version
-+ * @hmac: HMAC to authenticate the superblock node
-+ * @hmac_wkm: HMAC of a well known message (the string "UBIFS") as a convenience
-+ *            to the user to check if the correct key is passed.
-+ * @hash_algo: The hash algo used for this filesystem (one of enum hash_algo)
-  */
- struct ubifs_sb_node {
- 	struct ubifs_ch ch;
-@@ -660,7 +677,10 @@ struct ubifs_sb_node {
- 	__le32 time_gran;
- 	__u8 uuid[16];
- 	__le32 ro_compat_version;
--	__u8 padding2[3968];
-+	__u8 hmac[UBIFS_MAX_HMAC_LEN];
-+	__u8 hmac_wkm[UBIFS_MAX_HMAC_LEN];
-+	__le16 hash_algo;
-+	__u8 padding2[3838];
- } __packed;
- 
- /**
-@@ -695,6 +715,9 @@ struct ubifs_sb_node {
-  * @empty_lebs: number of empty logical eraseblocks
-  * @idx_lebs: number of indexing logical eraseblocks
-  * @leb_cnt: count of LEBs used by file-system
-+ * @hash_root_idx: the hash of the root index node
-+ * @hash_lpt: the hash of the LPT
-+ * @hmac: HMAC to authenticate the master node
-  * @padding: reserved for future, zeroes
-  */
- struct ubifs_mst_node {
-@@ -727,7 +750,10 @@ struct ubifs_mst_node {
- 	__le32 empty_lebs;
- 	__le32 idx_lebs;
- 	__le32 leb_cnt;
--	__u8 padding[344];
-+	__u8 hash_root_idx[UBIFS_MAX_HASH_LEN];
-+	__u8 hash_lpt[UBIFS_MAX_HASH_LEN];
-+	__u8 hmac[UBIFS_MAX_HMAC_LEN];
-+	__u8 padding[152];
- } __packed;
- 
- /**
-@@ -746,12 +772,26 @@ struct ubifs_ref_node {
- 	__u8 padding[28];
- } __packed;
+  * struct replay_entry - replay list entry.
+@@ -530,6 +532,79 @@ static int is_last_bud(struct ubifs_info *c, struct ubifs_bud *bud)
+ 	return data == 0xFFFFFFFF;
+ }
  
 +/**
-+ * struct ubifs_auth_node - node for authenticating other nodes
-+ * @ch: common header
-+ * @hmac: The HMAC
++ * authenticate_sleb - authenticate one scan LEB
++ * @c: UBIFS file-system description object
++ * @sleb: the scan LEB to authenticate
++ * @log_hash:
++ * @is_last: if true, this is is the last LEB
++ *
++ * This function iterates over the buds of a single LEB authenticating all buds
++ * with the authentication nodes on this LEB. Authentication nodes are written
++ * after some buds and contain a HMAC covering the authentication node itself
++ * and the buds between the last authentication node and the current
++ * authentication node. It can happen that the last buds cannot be authenticated
++ * because a powercut happened when some nodes were written but not the
++ * corresponding authentication node. This function returns the number of nodes
++ * that could be authenticated or a negative error code.
 + */
-+struct ubifs_auth_node {
-+	struct ubifs_ch ch;
-+	__u8 hmac[];
-+} __packed;
++static int authenticate_sleb(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
++			     struct shash_desc *log_hash, int is_last)
++{
++	int n_not_auth = 0;
++	struct ubifs_scan_node *snod;
++	int n_nodes = 0;
++	int err;
++
++	if (!ubifs_authenticated(c))
++		return sleb->nodes_cnt;
++
++	list_for_each_entry(snod, &sleb->nodes, list) {
++
++		n_nodes++;
++
++		if (snod->type == UBIFS_AUTH_NODE) {
++			struct ubifs_auth_node *auth = snod->node;
++			SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
++			u8 hash[crypto_shash_descsize(c->hash_tfm)];
++			SHASH_DESC_ON_STACK(hmac_desc, c->hmac_tfm);
++			u8 hmac[c->hmac_desc_len];
++
++			hash_desc->tfm = c->hash_tfm;
++			hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
++
++			ubifs_shash_copy_state(c, log_hash, hash_desc);
++			crypto_shash_final(hash_desc, hash);
++
++			hmac_desc->tfm = c->hmac_tfm;
++			hmac_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
++			crypto_shash_digest(hmac_desc, hash, c->hash_len, hmac);
++
++			err = ubifs_check_hmac(c, auth->hmac, hmac);
++			if (err) {
++				err = -EPERM;
++				goto out;
++			}
++			n_not_auth = 0;
++		} else {
++			crypto_shash_update(log_hash, snod->node, snod->len);
++			n_not_auth++;
++		}
++	}
++
++	/*
++	 * A powercut can happen when some nodes were written, but not yet
++	 * the corresponding authentication node. This may only happen on
++	 * the last bud though.
++	 */
++	if (n_not_auth && !is_last)
++		err = -EPERM;
++	else
++		err = 0;
++out:
++	return err ? err : n_nodes - n_not_auth;
++}
 +
  /**
-  * struct ubifs_branch - key/reference/length branch
-  * @lnum: LEB number of the target node
-  * @offs: offset within @lnum
-  * @len: target node length
-  * @key: key
-+ *
-+ * In an authenticated UBIFS we have the hash of the referenced node after @key.
-+ * This can't be added to the struct type definition because @key is a
-+ * dynamically sized element already.
-  */
- struct ubifs_branch {
- 	__le32 lnum;
+  * replay_bud - replay a bud logical eraseblock.
+  * @c: UBIFS file-system description object
+@@ -543,6 +618,7 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ {
+ 	int is_last = is_last_bud(c, b->bud);
+ 	int err = 0, used = 0, lnum = b->bud->lnum, offs = b->bud->start;
++	int n_nodes, n = 0;
+ 	struct ubifs_scan_leb *sleb;
+ 	struct ubifs_scan_node *snod;
+ 
+@@ -562,6 +638,15 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ 	if (IS_ERR(sleb))
+ 		return PTR_ERR(sleb);
+ 
++	n_nodes = authenticate_sleb(c, sleb, b->bud->log_hash, is_last);
++	if (n_nodes < 0) {
++		err = n_nodes;
++		goto out;
++	}
++
++	ubifs_shash_copy_state(c, b->bud->log_hash,
++			       c->jheads[b->bud->jhead].log_hash);
++
+ 	/*
+ 	 * The bud does not have to start from offset zero - the beginning of
+ 	 * the 'lnum' LEB may contain previously committed data. One of the
+@@ -675,6 +760,10 @@ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ 		}
+ 		if (err)
+ 			goto out;
++
++		n++;
++		if (n == n_nodes)
++			break;
+ 	}
+ 
+ 	ubifs_assert(ubifs_search_bud(c, lnum));
+@@ -753,6 +842,7 @@ static int add_replay_bud(struct ubifs_info *c, int lnum, int offs, int jhead,
+ {
+ 	struct ubifs_bud *bud;
+ 	struct bud_entry *b;
++	int err;
+ 
+ 	dbg_mnt("add replay bud LEB %d:%d, head %d", lnum, offs, jhead);
+ 
+@@ -762,13 +852,21 @@ static int add_replay_bud(struct ubifs_info *c, int lnum, int offs, int jhead,
+ 
+ 	b = kmalloc(sizeof(struct bud_entry), GFP_KERNEL);
+ 	if (!b) {
+-		kfree(bud);
+-		return -ENOMEM;
++		err = -ENOMEM;
++		goto out;
+ 	}
+ 
+ 	bud->lnum = lnum;
+ 	bud->start = offs;
+ 	bud->jhead = jhead;
++	bud->log_hash = ubifs_hash_get_desc(c);
++	if (IS_ERR(bud->log_hash)) {
++		err = PTR_ERR(bud->log_hash);
++		goto out;
++	}
++
++	ubifs_shash_copy_state(c, c->log_hash, bud->log_hash);
++
+ 	ubifs_add_bud(c, bud);
+ 
+ 	b->bud = bud;
+@@ -776,6 +874,11 @@ static int add_replay_bud(struct ubifs_info *c, int lnum, int offs, int jhead,
+ 	list_add_tail(&b->list, &c->replay_buds);
+ 
+ 	return 0;
++out:
++	kfree(bud);
++	kfree(b);
++
++	return err;
+ }
+ 
+ /**
+@@ -881,6 +984,12 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 
+ 		c->cs_sqnum = le64_to_cpu(node->ch.sqnum);
+ 		dbg_mnt("commit start sqnum %llu", c->cs_sqnum);
++
++		if (c->authenticated) {
++			crypto_shash_init(c->log_hash);
++			crypto_shash_update(c->log_hash, (void *)node,
++					    UBIFS_CS_NODE_SZ);
++		}
+ 	}
+ 
+ 	if (snod->sqnum < c->cs_sqnum) {
+@@ -928,6 +1037,9 @@ static int replay_log_leb(struct ubifs_info *c, int lnum, int offs, void *sbuf)
+ 			if (err)
+ 				goto out_dump;
+ 
++			ubifs_shash_update(c, c->log_hash, (void *)ref,
++					   UBIFS_REF_NODE_SZ);
++
+ 			err = add_replay_bud(c, le32_to_cpu(ref->lnum),
+ 					     le32_to_cpu(ref->offs),
+ 					     le32_to_cpu(ref->jhead),
 -- 
 2.18.0
