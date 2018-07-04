@@ -1,31 +1,21 @@
-Date: Wed, 4 Jul 2018 09:14:12 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
- <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
- Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
- Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v2 02/32] mtd: rawnand: brcmnand: convert driver to
- nand_scan()
-Message-ID: <20180704091412.1118c857@bbrezillon>
-In-Reply-To: <20180703220029.19565-3-miquel.raynal@bootlin.com>
-References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
- <20180703220029.19565-3-miquel.raynal@bootlin.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1facSC-0000q1-KM
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 07:43:58 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Wed, 04 Jul 2018 09:43:44 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, linux-tegra@vger.kernel.org,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [bug report] mtd: rawnand: add NVIDIA Tegra NAND Flash controller
+ driver
+In-Reply-To: <20180703220424.52c3d8f2@bbrezillon>
+References: <20180703141957.j27w6efnkhij5blz@kili.mountain>
+ <20180703220424.52c3d8f2@bbrezillon>
+Message-ID: <97dad372225961450773b9375920d806@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,88 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  3 Jul 2018 23:59:59 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Two helpers have been added to the core to make ECC-related
-> configuration between the detection phase and the final NAND scan. Use
-> these hooks and convert the driver to just use nand_scan() instead of
-> both nand_scan_ident() and nand_scan_tail().
+On 03.07.2018 22:04, Boris Brezillon wrote:
+> On Tue, 3 Jul 2018 17:19:57 +0300
+> Dan Carpenter <dan.carpenter@oracle.com> wrote:
 > 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 43 ++++++++++++++++++--------------
->  1 file changed, 24 insertions(+), 19 deletions(-)
+>> Hello Stefan Agner,
+>>
+>> The patch d7d9f8ec77fe: "mtd: rawnand: add NVIDIA Tegra NAND Flash
+>> controller driver" from Jun 24, 2018, leads to the following static
+>> checker warning:
+>>
+>> 	drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
+>> 	warn: array off by one? 'nand->cs[die_nr]'
+>>
+>> drivers/mtd/nand/raw/tegra_nand.c
+>>    465  static void tegra_nand_select_chip(struct mtd_info *mtd, int die_nr)
+>>    466  {
+>>    467          struct nand_chip *chip = mtd_to_nand(mtd);
+>>    468          struct tegra_nand_chip *nand = to_tegra_chip(chip);
+>>    469          struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+>>    470
+>>    471          if (die_nr < 0 || die_nr > 1) {
+>>    472                  ctrl->cur_cs = -1;
+>>    473                  return;
+>>    474          }
+>>    475
+>>    476          ctrl->cur_cs = nand->cs[die_nr];
+>>    477  }
+>>
+>> The story is that nand->cs[] is a one element array.  Some people use
+>> one element arrays like this as variable size arrays.  It's better to
+>> use a zero size array, but I think that might be a GCC feature and not
+>> everyone knows you can do that.  Smatch treats this one as unknown size
+>> because apparently it can't tie it back to the kmalloc().
+>>
+>> But it really is a one element array and the condition is off by one.
 > 
-> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> index 1306aaa7a8bf..99ab7b93756c 100644
-> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> @@ -2208,6 +2208,28 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
->  	return 0;
->  }
->  
-> +static int brcmnand_attach_chip(struct nand_chip *chip)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct brcmnand_host *host = nand_get_controller_data(chip);
-> +	int ret;
-> +
-> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
-> +		chip->bbt_options |= NAND_BBT_NO_OOB;
-> +
-> +	if (brcmnand_setup_dev(host))
-> +		return -ENXIO;
-> +
-> +	chip->ecc.size = host->hwcfg.sector_size_1k ? 1024 : 512;
-> +
-> +	/* only use our internal HW threshold */
-> +	mtd->bitflip_threshold = 1;
-> +
-> +	ret = brcmstb_choose_ecc_layout(host);
-> +
-> +	return ret;
-> +}
-> +
->  static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
->  {
->  	struct brcmnand_controller *ctrl = host->ctrl;
-> @@ -2267,10 +2289,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
->  	nand_writereg(ctrl, cfg_offs,
->  		      nand_readreg(ctrl, cfg_offs) & ~CFG_BUS_WIDTH);
->  
-> -	ret = nand_scan_ident(mtd, 1, NULL);
-> -	if (ret)
-> -		return ret;
-> -
->  	chip->options |= NAND_NO_SUBPAGE_WRITE;
->  	/*
->  	 * Avoid (for instance) kmap()'d buffers from JFFS2, which we can't DMA
-> @@ -2279,21 +2297,8 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
->  	 */
->  	chip->options |= NAND_USE_BOUNCE_BUFFER;
->  
-> -	if (chip->bbt_options & NAND_BBT_USE_FLASH)
-> -		chip->bbt_options |= NAND_BBT_NO_OOB;
-> -
-> -	if (brcmnand_setup_dev(host))
-> -		return -ENXIO;
-> -
-> -	chip->ecc.size = host->hwcfg.sector_size_1k ? 1024 : 512;
-> -	/* only use our internal HW threshold */
-> -	mtd->bitflip_threshold = 1;
-> -
-> -	ret = brcmstb_choose_ecc_layout(host);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = nand_scan_tail(mtd);
-> +	chip->controller->attach_chip = brcmnand_attach_chip;
+> I don't see where it's off by one? With the above test, die_nr is
+> guaranteed to be 0 when you reach the
+> "ctrl->cur_cs = nand->cs[die_nr];" statement, right? Am I missing
+> something?
+> 
 
-Hm, this assignment should be done once, when initializing the
-controller (in brcmnand_probe()), not every time you add a NAND chip.
+Yeah I had to look twice too. But die_nr can be 1 according to this
+code...
 
-> +	ret = nand_scan(mtd, 1);
->  	if (ret)
->  		return ret;
->  
+It should be:
+if (die_nr < 0 || die_nr >= 1) {
+
+>>
+>> But really one element arrays are super weird.  Why not just use a
+>> pointer?
+> 
+> The controller supports more than 1 CS, and I guess the plan was to
+> extend the array when the driver is ready to support this use case. I
+> guess we could make ->cs a single integer instead of an array of size
+> 1 if that helps.
+
+Exactly, and using the array also aligns with other drivers. I prefer to
+fix the issue above and leave it an array.
+
+I'll send a patch.
+
+--
+Stefan
