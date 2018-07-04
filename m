@@ -1,31 +1,21 @@
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Wenyou Yang <wenyou.yang@microchip.com>,
- Josh Wu <rainyfeeling@outlook.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fabYX-0003aR-HZ
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 06:46:27 +0000
+From: Colin King <colin.king@canonical.com>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
- Stefan Agner <stefan@agner.ch>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org
-Subject: [PATCH v2 17/32] mtd: rawnand: nandsim: convert driver to nand_scan()
-Date: Wed,  4 Jul 2018 00:00:14 +0200
-Message-Id: <20180703220029.19565-18-miquel.raynal@bootlin.com>
-In-Reply-To: <20180703220029.19565-1-miquel.raynal@bootlin.com>
-References: <20180703220029.19565-1-miquel.raynal@bootlin.com>
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: nftl: remove redundant variable nb_erases
+Date: Wed,  4 Jul 2018 07:46:09 +0100
+Message-Id: <20180704064609.13369-1-colin.king@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,112 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Variable nb_erases is being assigned but is never used hence it is
+redundant and can be removed.
+
+Cleans up clang warning:
+warning: variable 'nb_erases' set but not used [-Wunused-but-set-variable]
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 78 ++++++++++++++++++++++--------------------
- 1 file changed, 41 insertions(+), 37 deletions(-)
+ drivers/mtd/nftlmount.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index f8edacde49ab..fa9d1c05fc45 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2192,6 +2192,44 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- 	return;
- }
+diff --git a/drivers/mtd/nftlmount.c b/drivers/mtd/nftlmount.c
+index 27184e3874db..91b7fb326f9a 100644
+--- a/drivers/mtd/nftlmount.c
++++ b/drivers/mtd/nftlmount.c
+@@ -577,7 +577,7 @@ static int get_fold_mark(struct NFTLrecord *nftl, unsigned int block)
+ int NFTL_mount(struct NFTLrecord *s)
+ {
+ 	int i;
+-	unsigned int first_logical_block, logical_block, rep_block, nb_erases, erase_mark;
++	unsigned int first_logical_block, logical_block, rep_block, erase_mark;
+ 	unsigned int block, first_block, is_first_block;
+ 	int chain_length, do_format_chain;
+ 	struct nftl_uci0 h0;
+@@ -621,7 +621,6 @@ int NFTL_mount(struct NFTLrecord *s)
  
-+static int ns_attach_chip(struct nand_chip *chip)
-+{
-+	unsigned int eccsteps, eccbytes;
-+
-+	if (!bch)
-+		return 0;
-+
-+	if (!mtd_nand_has_bch()) {
-+		NS_ERR("BCH ECC support is disabled\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Use 512-byte ecc blocks */
-+	eccsteps = nsmtd->writesize / 512;
-+	eccbytes = ((bch * 13) + 7) / 8;
-+
-+	/* Do not bother supporting small page devices */
-+	if (nsmtd->oobsize < 64 || !eccsteps) {
-+		NS_ERR("BCH not available on small page devices\n");
-+		return -EINVAL;
-+	}
-+
-+	if (((eccbytes * eccsteps) + 2) > nsmtd->oobsize) {
-+		NS_ERR("Invalid BCH value %u\n", bch);
-+		return -EINVAL;
-+	}
-+
-+	chip->ecc.mode = NAND_ECC_SOFT;
-+	chip->ecc.algo = NAND_ECC_BCH;
-+	chip->ecc.size = 512;
-+	chip->ecc.strength = bch;
-+	chip->ecc.bytes = eccbytes;
-+
-+	NS_INFO("Using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
-+
-+	return 0;
-+}
-+
- /*
-  * Module initialization function
-  */
-@@ -2276,44 +2314,10 @@ static int __init ns_init_module(void)
- 	if ((retval = parse_gravepages()) != 0)
- 		goto error;
+ 				logical_block = le16_to_cpu ((h0.VirtUnitNum | h0.SpareVirtUnitNum));
+ 				rep_block = le16_to_cpu ((h0.ReplUnitNum | h0.SpareReplUnitNum));
+-				nb_erases = le32_to_cpu (h1.WearInfo);
+ 				erase_mark = le16_to_cpu ((h1.EraseMark | h1.EraseMark1));
  
--	retval = nand_scan_ident(nsmtd, 1, NULL);
-+	chip->hwcontrol.attach_chip = ns_attach_chip;
-+	retval = nand_scan(nsmtd, 1);
- 	if (retval) {
--		NS_ERR("cannot scan NAND Simulator device\n");
--		goto error;
--	}
--
--	if (bch) {
--		unsigned int eccsteps, eccbytes;
--		if (!mtd_nand_has_bch()) {
--			NS_ERR("BCH ECC support is disabled\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		/* use 512-byte ecc blocks */
--		eccsteps = nsmtd->writesize/512;
--		eccbytes = (bch*13+7)/8;
--		/* do not bother supporting small page devices */
--		if ((nsmtd->oobsize < 64) || !eccsteps) {
--			NS_ERR("bch not available on small page devices\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
--			NS_ERR("invalid bch value %u\n", bch);
--			retval = -EINVAL;
--			goto error;
--		}
--		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_BCH;
--		chip->ecc.size = 512;
--		chip->ecc.strength = bch;
--		chip->ecc.bytes = eccbytes;
--		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
--	}
--
--	retval = nand_scan_tail(nsmtd);
--	if (retval) {
--		NS_ERR("can't register NAND Simulator\n");
-+		NS_ERR("Could not scan NAND Simulator device\n");
- 		goto error;
- 	}
- 
+ 				is_first_block = !(logical_block >> 15);
 -- 
-2.14.1
+2.17.1
