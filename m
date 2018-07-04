@@ -1,22 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1faibv-0001CM-F5
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 14:18:25 +0000
-Date: Wed, 4 Jul 2018 16:18:01 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1falZc-0006Ca-Ni
+ for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 17:28:14 +0000
+Received: by mail-pf0-x242.google.com with SMTP id s21-v6so3149786pfm.6
+ for <linux-mtd@lists.infradead.org>; Wed, 04 Jul 2018 10:28:01 -0700 (PDT)
+Date: Wed, 4 Jul 2018 10:27:59 -0700
+From: Kees Cook <keescook@chromium.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: hynix: Use ->exec_op() in
- hynix_nand_reg_write_op()
-Message-ID: <20180704161801.4db69955@xps13>
-In-Reply-To: <20180704140858.28424-1-boris.brezillon@bootlin.com>
-References: <20180704140858.28424-1-boris.brezillon@bootlin.com>
+Cc: Peter Pan <peterpandong@micron.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: spinand: Use 2-factor allocator calls
+Message-ID: <20180704172759.GA33591@beast>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+As already done treewide, switch from open-coded multiplication to using
+2-factor allocator helpers.
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed,  4 Jul 2018
-16:08:58 +0200:
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/mtd/nand/spi/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Modern NAND controller drivers implement ->exec_op() instead of
-> ->cmdfunc(), make sure we don't end up with a NULL pointer dereference =20
-> when hynix_nand_reg_write_op() is called.
->=20
-> Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 17d207a49cb9..fed9211c6f19 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -159,9 +159,9 @@ static int spinand_init_cfg_cache(struct spinand_device *spinand)
+ 	unsigned int target;
+ 	int ret;
+ 
+-	spinand->cfg_cache = devm_kzalloc(dev,
+-					  sizeof(*spinand->cfg_cache) *
++	spinand->cfg_cache = devm_kcalloc(dev,
+ 					  nand->memorg.ntargets,
++					  sizeof(*spinand->cfg_cache),
+ 					  GFP_KERNEL);
+ 	if (!spinand->cfg_cache)
+ 		return -ENOMEM;
+-- 
+2.17.1
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Thanks,
-Miqu=C3=A8l
+-- 
+Kees Cook
+Pixel Security
