@@ -1,29 +1,22 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::7])
+Received: from mail-yb0-x244.google.com ([2607:f8b0:4002:c09::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb3xi-0004AN-Gp
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 13:06:20 +0000
-Subject: Re: [PATCH v2 02/12] mtd: m25p80: Call spi_mem_get_name() to let
- controller set a custom name
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
- david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
- yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, Philipp Puschmann <pp@emlix.com>,
- linux-kernel@vger.kernel.org
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-3-git-send-email-frieder.schrempf@exceet.de>
- <20180705145628.57a48e87@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <abcd1bc3-9ce7-0402-86f6-d43dacad0fb5@exceet.de>
-Date: Thu, 5 Jul 2018 15:06:01 +0200
+ id 1fb6cE-0001TK-35
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 15:56:19 +0000
+Received: by mail-yb0-x244.google.com with SMTP id y11-v6so3393578ybm.7
+ for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2018 08:56:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180705145628.57a48e87@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sender: keescook@google.com
+In-Reply-To: <20180705090312.1ca9ed5a@xps13>
+References: <20180704172759.GA33591@beast> <20180705090312.1ca9ed5a@xps13>
+From: Kees Cook <keescook@chromium.org>
+Date: Thu, 5 Jul 2018 08:56:03 -0700
+Message-ID: <CAGXu5j+U67bo0fKf=75yi+X48bqydoq6CeYTJh5_o=rZpgUXZQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: spinand: Use 2-factor allocator calls
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Peter Pan <peterpandong@micron.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,56 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-On 05.07.2018 14:56, Boris Brezillon wrote:
-> On Thu,  5 Jul 2018 13:14:58 +0200
-> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
-> 
->> By calling spi_mem_get_name(), the driver of the (Q)SPI controller can
->> set a custom name for the memory device if necessary.
->> This is useful to keep mtdparts compatible when controller drivers are
->> ported from the MTD to the SPI layer.
+On Thu, Jul 5, 2018 at 12:03 AM, Miquel Raynal
+<miquel.raynal@bootlin.com> wrote:
+> Hello,
+>
+> Kees Cook <keescook@chromium.org> wrote on Wed, 4 Jul 2018 10:27:59
+> -0700:
+>
+>> As already done treewide, switch from open-coded multiplication to using
+>> 2-factor allocator helpers.
 >>
->> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
 >> ---
->>   drivers/mtd/devices/m25p80.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index e84563d..482f0ef 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -199,8 +199,7 @@ static int m25p_probe(struct spi_mem *spimem)
->>   			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
->>   	}
->>   
->> -	if (data && data->name)
->> -		nor->mtd.name = data->name;
->> +	nor->mtd.name = spi_mem_get_name(spimem);
-> 
-> Hm, not sure you can do that without breaking setup that pass a
-> flash_platform_data object with a name.
-> 
-> Also, you should keep the name extracted from the label property if any
-> (this is done earlier, when spi_nor_set_flash_node() is called).
-> 
-> 	if (data && data->name)
-> 		nor->mtd.name = data->name;
-> 
-> 	if (!nor->mtd.name)
-> 		nor->mtd.name = spi_mem_get_name(spimem);
+>
+> Indeed, we'll be more careful about this in the future.
+>
+> As this code has not been merged upstream yet, do you mind if I
+> squash this with the initial patch?
 
-I missed both facts, that data could be passed with a name assigned 
-already and that spi_nor_set_flash_node() might assign a name from dt.
-I should have looked at the code more closely.
+Totally fine by me! Thanks! :)
 
-Thanks for pointing that out. I'll fix it.
+-Kees
 
-Frieder
 
-> 
->>   
->>   	/* For some (historical?) reason many platforms provide two different
->>   	 * names in flash_platform_data: "name" and "type". Quite often name is
-> 
+-- 
+Kees Cook
+Pixel Security
