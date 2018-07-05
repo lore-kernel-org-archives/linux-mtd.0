@@ -1,22 +1,26 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb8es-0005gn-SJ
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 18:07:12 +0000
-Date: Thu, 5 Jul 2018 20:06:57 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: stable@vger.kernel.org, linux-mtd@lists.infradead.org,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [BACKPORT PATCH] mtd: nand: fix return value check for bad block
- status
-Message-ID: <20180705180657.GF29836@kroah.com>
-References: <1530624845-28319-1-git-send-email-absahu@codeaurora.org>
- <20180705180353.GE29836@kroah.com>
+ id 1fb9zm-0000nK-9Z
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 19:32:52 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 8/8] mtd: rawnand: plat_nand: Kill pdata->ctrl.{hwcontrol,
+ read_byte}()
+References: <20180705102733.29673-1-boris.brezillon@bootlin.com>
+ <20180705102733.29673-9-boris.brezillon@bootlin.com>
+Date: Thu, 05 Jul 2018 21:32:31 +0200
+In-Reply-To: <20180705102733.29673-9-boris.brezillon@bootlin.com> (Boris
+ Brezillon's message of "Thu, 5 Jul 2018 12:27:33 +0200")
+Message-ID: <878t6ph41c.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180705180353.GE29836@kroah.com>
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 05, 2018 at 08:03:53PM +0200, Greg KH wrote:
-> On Tue, Jul 03, 2018 at 07:04:05PM +0530, Abhishek Sahu wrote:
-> > commit e9893e6fa932f42c90c4ac5849fa9aa0f0f00a34 upstream.
-> 
-> No it is not :(
-> 
-> Please fix up and resend.
+Boris Brezillon <boris.brezillon@bootlin.com> writes:
 
-Ugh, my fault, nevermind, now queued up.
+> None of the board files are overloading those hooks, so let's drop them
+> from struct platform_nand_ctrl.
+>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+For mach-pxa :
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-greg k-h
+Cheers.
+
+--
+Robert
