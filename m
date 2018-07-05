@@ -1,20 +1,23 @@
-Received: from mail-pf0-x242.google.com ([2607:f8b0:400e:c00::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1falZc-0006Ca-Ni
- for linux-mtd@lists.infradead.org; Wed, 04 Jul 2018 17:28:14 +0000
-Received: by mail-pf0-x242.google.com with SMTP id s21-v6so3149786pfm.6
- for <linux-mtd@lists.infradead.org>; Wed, 04 Jul 2018 10:28:01 -0700 (PDT)
-Date: Wed, 4 Jul 2018 10:27:59 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Peter Pan <peterpandong@micron.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: spinand: Use 2-factor allocator calls
-Message-ID: <20180704172759.GA33591@beast>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fayFF-0000OZ-4b
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 07:00:07 +0000
+Date: Thu, 5 Jul 2018 08:59:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, "David Woodhouse" <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Frieder
+ Schrempf <frieder.schrempf@exceet.de>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: Re: [PATCH -next v3] mtd: spinand: fix missing unlock on error
+Message-ID: <20180705085936.38f6c374@xps13>
+In-Reply-To: <1530696627-84879-1-git-send-email-weiyongjun1@huawei.com>
+References: <1530696061-76467-1-git-send-email-weiyongjun1@huawei.com>
+ <1530696627-84879-1-git-send-email-weiyongjun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As already done treewide, switch from open-coded multiplication to using
-2-factor allocator helpers.
+Hi Wei,
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/mtd/nand/spi/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Wei Yongjun <weiyongjun1@huawei.com> wrote on Wed, 4 Jul 2018 09:30:27
++0000:
 
-diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
-index 17d207a49cb9..fed9211c6f19 100644
---- a/drivers/mtd/nand/spi/core.c
-+++ b/drivers/mtd/nand/spi/core.c
-@@ -159,9 +159,9 @@ static int spinand_init_cfg_cache(struct spinand_device *spinand)
- 	unsigned int target;
- 	int ret;
- 
--	spinand->cfg_cache = devm_kzalloc(dev,
--					  sizeof(*spinand->cfg_cache) *
-+	spinand->cfg_cache = devm_kcalloc(dev,
- 					  nand->memorg.ntargets,
-+					  sizeof(*spinand->cfg_cache),
- 					  GFP_KERNEL);
- 	if (!spinand->cfg_cache)
- 		return -ENOMEM;
--- 
-2.17.1
+> Add the missing unlock before return from function
+> spinand_mtd_(read|write) in the error handling case.
+>=20
+> Fixes: c898e0526fb6 ("mtd: nand: Add core infrastructure to support SPI N=
+ANDs")
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
 
+Thanks for the two fixes over the spinand work. As this code is not
+yet upstream, do you mind if I fold those fixes directly with the
+initial patch?
 
--- 
-Kees Cook
-Pixel Security
+Thanks,
+Miqu=C3=A8l
