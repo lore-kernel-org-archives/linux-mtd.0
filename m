@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0q3-00007c-TW
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:18 +0000
+ id 1fb0px-00007w-VF
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:11 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -11,10 +11,10 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 20/27] mtd: rawnand: fsl_ifc: Allow selection of this driver
+Subject: [PATCH 15/27] mtd: rawnand: sunxi: Allow selection of this driver
  when COMPILE_TEST=y
-Date: Thu,  5 Jul 2018 11:45:15 +0200
-Message-Id: <20180705094522.12138-21-boris.brezillon@bootlin.com>
+Date: Thu,  5 Jul 2018 11:45:10 +0200
+Message-Id: <20180705094522.12138-16-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,12 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It just makes maintainers' life easier by allowing them to compile-test
-this driver without having FSL_SOC, ARCH_LAYERSCAPE or SOC_LS1021A
-enabled.
+It just makes NAND maintainers' life easier by allowing them to
+compile-test this driver without having ARCH_SUNXI enabled.
 
-We also need to add a dependency on HAS_IOMEM to make sure the
-driver compiles correctly.
+We also need to add a dependency on HAS_IOMEM to make sure the driver
+compiles correctly.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
@@ -39,18 +38,18 @@ Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 5a24b0fc03f1..3e74e4ef2678 100644
+index c3aa1d79781b..a5edd76e29db 100644
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -408,7 +408,8 @@ config MTD_NAND_FSL_ELBC
+@@ -517,7 +517,8 @@ config MTD_NAND_XWAY
  
- config MTD_NAND_FSL_IFC
- 	tristate "NAND support for Freescale IFC controller"
--	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
-+	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || COMPILE_TEST
+ config MTD_NAND_SUNXI
+ 	tristate "Support for NAND on Allwinner SoCs"
+-	depends on ARCH_SUNXI
++	depends on ARCH_SUNXI || COMPILE_TEST
 +	depends on HAS_IOMEM
- 	select FSL_IFC
- 	select MEMORY
  	help
+ 	  Enables support for NAND Flash chips on Allwinner SoCs.
+ 
 -- 
 2.14.1
