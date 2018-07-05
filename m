@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0qF-0004SJ-AJ
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:24 +0000
+ id 1fb0qF-0004SK-A8
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:23 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -11,10 +11,9 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 24/27] MIPS: jz4740: Move jz4740_nand.h header to
- include/linux/platform_data/jz4740
-Date: Thu,  5 Jul 2018 11:45:19 +0200
-Message-Id: <20180705094522.12138-25-boris.brezillon@bootlin.com>
+Subject: [PATCH 26/27] mtd: rawnand: jz4780: Drop the dependency on MACH_JZ4780
+Date: Thu,  5 Jul 2018 11:45:21 +0200
+Message-Id: <20180705094522.12138-27-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,64 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This way we will be able to compile the jz4740_nand driver when
-COMPILE_TEST=y.
+This MACH_JZ4780 dependency is taken care of by JZ4780_NEMC, no need
+to repeat it here.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- arch/mips/jz4740/board-qi_lb60.c                                      | 3 ++-
- drivers/mtd/nand/raw/jz4740_nand.c                                    | 2 +-
- .../mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h  | 4 ++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
- rename {arch/mips/include/asm/mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h (91%)
+ drivers/mtd/nand/raw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
-index 60f0767507c6..af0c8ace0141 100644
---- a/arch/mips/jz4740/board-qi_lb60.c
-+++ b/arch/mips/jz4740/board-qi_lb60.c
-@@ -29,10 +29,11 @@
- #include <linux/power/gpio-charger.h>
- #include <linux/pwm.h>
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index cd2c9f887270..81cb96622e9e 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -499,7 +499,7 @@ config MTD_NAND_JZ4740
  
-+#include <linux/platform_data/jz4740/jz4740_nand.h>
-+
- #include <asm/mach-jz4740/gpio.h>
- #include <asm/mach-jz4740/jz4740_fb.h>
- #include <asm/mach-jz4740/jz4740_mmc.h>
--#include <asm/mach-jz4740/jz4740_nand.h>
- 
- #include <linux/regulator/fixed.h>
- #include <linux/regulator/machine.h>
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 613b00a9604b..a0254461812d 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -25,7 +25,7 @@
- 
- #include <linux/gpio.h>
- 
--#include <asm/mach-jz4740/jz4740_nand.h>
-+#include <linux/platform_data/jz4740/jz4740_nand.h>
- 
- #define JZ_REG_NAND_CTRL	0x50
- #define JZ_REG_NAND_ECC_CTRL	0x100
-diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/include/linux/platform_data/jz4740/jz4740_nand.h
-similarity index 91%
-rename from arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-rename to include/linux/platform_data/jz4740/jz4740_nand.h
-index f381d465e768..bc571f6d5ced 100644
---- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-+++ b/include/linux/platform_data/jz4740/jz4740_nand.h
-@@ -13,8 +13,8 @@
-  *
-  */
- 
--#ifndef __ASM_MACH_JZ4740_JZ4740_NAND_H__
--#define __ASM_MACH_JZ4740_JZ4740_NAND_H__
-+#ifndef __JZ4740_NAND_H__
-+#define __JZ4740_NAND_H__
- 
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
+ config MTD_NAND_JZ4780
+ 	tristate "Support for NAND on JZ4780 SoC"
+-	depends on MACH_JZ4780 && JZ4780_NEMC
++	depends on JZ4780_NEMC
+ 	help
+ 	  Enables support for NAND Flash connected to the NEMC on JZ4780 SoC
+ 	  based boards, using the BCH controller for hardware error correction.
 -- 
 2.14.1
