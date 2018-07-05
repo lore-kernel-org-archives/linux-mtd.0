@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0pf-0002FQ-Pz
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:45:49 +0000
+ id 1fb0pf-0002FO-Qb
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:45:51 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -11,10 +11,9 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 04/27] mtd: rawnand: omap2: Allow selection of this driver
- when COMPILE_TEST=y
-Date: Thu,  5 Jul 2018 11:44:59 +0200
-Message-Id: <20180705094522.12138-5-boris.brezillon@bootlin.com>
+Subject: [PATCH 02/27] mtd: rawnand: Add 'depends on HAS_IOMEM' where missing
+Date: Thu,  5 Jul 2018 11:44:57 +0200
+Message-Id: <20180705094522.12138-3-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,31 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It just makes NAND maintainers' life easier by allowing them to
-compile-test this driver without having ARCH_OMAP2PLUS or ARCH_KEYSTONE
-enabled.
-
-We also need to add a dependency on HAS_IOMEM to make sure the driver
-compiles correctly.
+When COMPILE_TEST is allowed and the platform needs uses the iomem API
+we need to add an explicit dependency on HAS_IOMEM to avoid selection
+of these drivers when building for an arch that has no iomem support
+(this is the case of arch/um).
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 52a1aa42eacf..c6764992cdfc 100644
+index 58dad80eb174..bfd28c1b72a3 100644
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -77,7 +77,8 @@ config MTD_NAND_AMS_DELTA
- 
- config MTD_NAND_OMAP2
- 	tristate "NAND Flash device on OMAP2, OMAP3, OMAP4 and Keystone"
--	depends on (ARCH_OMAP2PLUS || ARCH_KEYSTONE)
-+	depends on ARCH_OMAP2PLUS || ARCH_KEYSTONE || COMPILE_TEST
+@@ -152,6 +152,7 @@ config MTD_NAND_S3C2410_CLKSTOP
+ config MTD_NAND_TANGO
+ 	tristate "NAND Flash support for Tango chips"
+ 	depends on ARCH_TANGO || COMPILE_TEST
 +	depends on HAS_IOMEM
  	help
-           Support for NAND flash on Texas Instruments OMAP2, OMAP3, OMAP4
- 	  and Keystone platforms.
+ 	  Enables the NAND Flash controller on Tango chips.
+ 
+@@ -513,6 +514,7 @@ config MTD_NAND_SUNXI
+ config MTD_NAND_HISI504
+ 	tristate "Support for NAND controller on Hisilicon SoC Hip04"
+ 	depends on ARCH_HISI || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for NAND controller on Hisilicon SoC Hip04.
+ 
+@@ -526,6 +528,7 @@ config MTD_NAND_QCOM
+ config MTD_NAND_MTK
+ 	tristate "Support for NAND controller on MTK SoCs"
+ 	depends on ARCH_MEDIATEK || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for NAND controller on MTK SoCs.
+ 	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
+@@ -533,6 +536,7 @@ config MTD_NAND_MTK
+ config MTD_NAND_TEGRA
+ 	tristate "Support for NAND controller on NVIDIA Tegra"
+ 	depends on ARCH_TEGRA || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 	  Enables support for NAND flash controller on NVIDIA Tegra SoC.
+ 	  The driver has been developed and tested on a Tegra 2 SoC. DMA
 -- 
 2.14.1
