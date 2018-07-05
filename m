@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0q3-00007O-Tx
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:15 +0000
+ id 1fb0q3-00007c-TW
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:18 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -11,10 +11,10 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 19/27] memory: fsl_ifc: Allow selection of this driver when
- COMPILE_TEST=y
-Date: Thu,  5 Jul 2018 11:45:14 +0200
-Message-Id: <20180705094522.12138-20-boris.brezillon@bootlin.com>
+Subject: [PATCH 20/27] mtd: rawnand: fsl_ifc: Allow selection of this driver
+ when COMPILE_TEST=y
+Date: Thu,  5 Jul 2018 11:45:15 +0200
+Message-Id: <20180705094522.12138-21-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,22 +35,22 @@ driver compiles correctly.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/memory/Kconfig | 3 ++-
+ drivers/mtd/nand/raw/Kconfig | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/memory/Kconfig b/drivers/memory/Kconfig
-index 8d731d6c3e54..78457ab2cbc4 100644
---- a/drivers/memory/Kconfig
-+++ b/drivers/memory/Kconfig
-@@ -116,7 +116,8 @@ config FSL_CORENET_CF
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index 5a24b0fc03f1..3e74e4ef2678 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -408,7 +408,8 @@ config MTD_NAND_FSL_ELBC
  
- config FSL_IFC
- 	bool
+ config MTD_NAND_FSL_IFC
+ 	tristate "NAND support for Freescale IFC controller"
 -	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
 +	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || COMPILE_TEST
 +	depends on HAS_IOMEM
- 
- config JZ4780_NEMC
- 	bool "Ingenic JZ4780 SoC NEMC driver"
+ 	select FSL_IFC
+ 	select MEMORY
+ 	help
 -- 
 2.14.1
