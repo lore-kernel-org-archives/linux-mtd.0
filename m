@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0pf-0002FO-Qb
+ id 1fb0pf-0002FN-QA
  for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:45:51 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
@@ -11,9 +11,10 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 02/27] mtd: rawnand: Add 'depends on HAS_IOMEM' where missing
-Date: Thu,  5 Jul 2018 11:44:57 +0200
-Message-Id: <20180705094522.12138-3-boris.brezillon@bootlin.com>
+Subject: [PATCH 01/27] mtd: rawnand: gpmi: Remove useless dependency on
+ MTD_NAND
+Date: Thu,  5 Jul 2018 11:44:56 +0200
+Message-Id: <20180705094522.12138-2-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,51 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When COMPILE_TEST is allowed and the platform needs uses the iomem API
-we need to add an explicit dependency on HAS_IOMEM to avoid selection
-of these drivers when building for an arch that has no iomem support
-(this is the case of arch/um).
+The MTD_NAND_GPMI_NAND entry is already defined in an 'if MTD_NAND'
+block, no need to add an extra "depends on MTD_NAND".
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 58dad80eb174..bfd28c1b72a3 100644
+index 6074a946708a..58dad80eb174 100644
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -152,6 +152,7 @@ config MTD_NAND_S3C2410_CLKSTOP
- config MTD_NAND_TANGO
- 	tristate "NAND Flash support for Tango chips"
- 	depends on ARCH_TANGO || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  Enables the NAND Flash controller on Tango chips.
+@@ -340,7 +340,7 @@ config MTD_NAND_NANDSIM
  
-@@ -513,6 +514,7 @@ config MTD_NAND_SUNXI
- config MTD_NAND_HISI504
- 	tristate "Support for NAND controller on Hisilicon SoC Hip04"
- 	depends on ARCH_HISI || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  Enables support for NAND controller on Hisilicon SoC Hip04.
- 
-@@ -526,6 +528,7 @@ config MTD_NAND_QCOM
- config MTD_NAND_MTK
- 	tristate "Support for NAND controller on MTK SoCs"
- 	depends on ARCH_MEDIATEK || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  Enables support for NAND controller on MTK SoCs.
- 	  This controller is found on mt27xx, mt81xx, mt65xx SoCs.
-@@ -533,6 +536,7 @@ config MTD_NAND_MTK
- config MTD_NAND_TEGRA
- 	tristate "Support for NAND controller on NVIDIA Tegra"
- 	depends on ARCH_TEGRA || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  Enables support for NAND flash controller on NVIDIA Tegra SoC.
- 	  The driver has been developed and tested on a Tegra 2 SoC. DMA
+ config MTD_NAND_GPMI_NAND
+         tristate "GPMI NAND Flash Controller driver"
+-        depends on MTD_NAND && MXS_DMA
++        depends on MXS_DMA
+         help
+ 	 Enables NAND Flash support for IMX23, IMX28 or IMX6.
+ 	 The GPMI controller is very powerful, with the help of BCH
 -- 
 2.14.1
