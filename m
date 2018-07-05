@@ -1,18 +1,23 @@
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fb0tT-0004go-7u
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:49:44 +0000
+Date: Thu, 5 Jul 2018 11:49:21 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Han Xu <han.xu@nxp.com>,
- linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 6/8] mtd: rawnand: Kill the chip->scan_bbt() hook
-Date: Thu,  5 Jul 2018 12:27:31 +0200
-Message-Id: <20180705102733.29673-7-boris.brezillon@bootlin.com>
-In-Reply-To: <20180705102733.29673-1-boris.brezillon@bootlin.com>
-References: <20180705102733.29673-1-boris.brezillon@bootlin.com>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-wireless@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 00/27] mtd: rawnand: Improve compile-test coverage
+Message-ID: <20180705114921.4bb66185@bbrezillon>
+In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,112 +27,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-None of the existing drivers are overloading the ->scan_bbt() method,
-let's get rid of it and replace calls to ->scan_bbt() by
-nand_create_bbt() ones.
++Geert since I have a question for you
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/raw/diskonchip.c          | 4 ++--
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 2 +-
- drivers/mtd/nand/raw/nand_base.c           | 9 +--------
- drivers/mtd/nand/raw/nandsim.c             | 2 +-
- include/linux/mtd/rawnand.h                | 1 -
- 5 files changed, 5 insertions(+), 13 deletions(-)
+On Thu,  5 Jul 2018 11:44:55 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 8d10061abb4b..3c46188dd6d2 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -1291,7 +1291,7 @@ static int __init nftl_scan_bbt(struct mtd_info *mtd)
- 		this->bbt_md = NULL;
- 	}
- 
--	ret = this->scan_bbt(mtd);
-+	ret = nand_create_bbt(this);
- 	if (ret)
- 		return ret;
- 
-@@ -1338,7 +1338,7 @@ static int __init inftl_scan_bbt(struct mtd_info *mtd)
- 		this->bbt_md->pattern = "TBB_SYSM";
- 	}
- 
--	ret = this->scan_bbt(mtd);
-+	ret = nand_create_bbt(this);
- 	if (ret)
- 		return ret;
- 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index f6aa358a3452..fd2da2eaa225 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1947,7 +1947,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	ret = nand_boot_init(this);
- 	if (ret)
- 		goto err_nand_cleanup;
--	ret = chip->scan_bbt(mtd);
-+	ret = nand_create_bbt(chip);
- 	if (ret)
- 		goto err_nand_cleanup;
- 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0476e13d47b1..4fa5e20d9690 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4924,11 +4924,6 @@ static void nand_shutdown(struct mtd_info *mtd)
- 	nand_get_device(mtd, FL_PM_SUSPENDED);
- }
- 
--static int nand_default_bbt(struct mtd_info *mtd)
--{
--	return nand_create_bbt(mtd_to_nand(mtd));
--}
--
- /* Set default functions */
- static void nand_set_defaults(struct nand_chip *chip)
- {
-@@ -4970,8 +4965,6 @@ static void nand_set_defaults(struct nand_chip *chip)
- 		chip->write_byte = busw ? nand_write_byte16 : nand_write_byte;
- 	if (!chip->read_buf || chip->read_buf == nand_read_buf)
- 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
--	if (!chip->scan_bbt)
--		chip->scan_bbt = nand_default_bbt;
- 
- 	if (!chip->controller) {
- 		chip->controller = &chip->hwcontrol;
-@@ -6673,7 +6666,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 		return 0;
- 
- 	/* Build bad block table */
--	ret = chip->scan_bbt(mtd);
-+	ret = nand_create_bbt(chip);
- 	if (ret)
- 		goto err_nand_manuf_cleanup;
- 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index f8edacde49ab..8a3b36cfe5ea 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2337,7 +2337,7 @@ static int __init ns_init_module(void)
- 	if ((retval = init_nandsim(nsmtd)) != 0)
- 		goto err_exit;
- 
--	if ((retval = chip->scan_bbt(nsmtd)) != 0)
-+	if ((retval = nand_create_bbt(chip)) != 0)
- 		goto err_exit;
- 
- 	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 186f9fb1e7eb..5848e01459b0 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1292,7 +1292,6 @@ struct nand_chip {
- 		       const struct nand_operation *op,
- 		       bool check_only);
- 	int (*erase)(struct mtd_info *mtd, int page);
--	int (*scan_bbt)(struct mtd_info *mtd);
- 	int (*set_features)(struct mtd_info *mtd, struct nand_chip *chip,
- 			    int feature_addr, uint8_t *subfeature_para);
- 	int (*get_features)(struct mtd_info *mtd, struct nand_chip *chip,
--- 
-2.14.1
+> Hello,
+> 
+> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
+> drivers that have no compile-time dependencies on arch
+> features/headers.
+> 
+> This will hopefully help us (NAND/MTD maintainers) in detecting build
+> issues earlier. Unfortunately we still have a few drivers that can't
+> easily be modified to be arch independent.
+> 
+> I tried to put all patches that only touch the NAND subsystem first,
+> so that they can be applied even if other patches are being discussed.
+> 
+> Don't hesitate to point any missing dependencies when compiled with
+> COMPILE_TEST. I didn't have any problem when compiling, but that might
+> be because the dependencies were already selected.
+> 
+> I have Question for Geert. I know you worked on HAS_DMA removal when
+> combined with COMPILE_TEST, do you plan to do something similar with
+> HAS_IOMEM?
+
+just here :).
+
+> 
+> Regards,
+> 
+> Boris
+> 
+> Boris Brezillon (27):
+>   mtd: rawnand: gpmi: Remove useless dependency on MTD_NAND
+>   mtd: rawnand: Add 'depends on HAS_IOMEM' where missing
+>   mtd: rawnand: atmel: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: omap2: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: s3c2410: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: sharpsl: Remove inclusion of mach and asm headers
+>   mtd: rawnand: sharpsl: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: lpc32xx: Allow selection of these drivers when
+>     COMPILE_TEST=y
+>   mtd: rawnand: brcmnand: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: orion: Avoid direct inclusion of asm headers
+>   mtd: rawnand: orion: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: mxc: Avoid inclusion of asm/mach headers
+>   mtd: rawnand: mxc: Allow selection of this driver when COMPILE_TEST=y
+>   mtd: rawnand: davinci: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: sunxi: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: qcom: Allow selection of this driver when COMPILE_TEST=y
+>   mtd: rawnand: fsmc: Allow selection of this driver when COMPILE_TEST=y
+>   mtd: rawnand: nuc900: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   memory: fsl_ifc: Allow selection of this driver when COMPILE_TEST=y
+>   mtd: rawnand: fsl_ifc: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   bcma: Allow selection of this driver when COMPILE_TEST=y
+>   MIPS: txx9: Move the ndfc.h header to include/linux/platform_data/txx9
+>   mtd: rawnand: txx9ndfmc: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   MIPS: jz4740: Move jz4740_nand.h header to
+>     include/linux/platform_data/jz4740
+>   mtd: rawnand: jz4740: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: jz4780: Drop the dependency on MACH_JZ4780
+>   memory: jz4780-nemc: Allow selection of this driver when
+>     COMPILE_TEST=y
+> 
+>  arch/mips/jz4740/board-qi_lb60.c                   |  3 +-
+>  arch/mips/txx9/generic/setup.c                     |  2 +-
+>  arch/mips/txx9/generic/setup_tx4938.c              |  2 +-
+>  arch/mips/txx9/generic/setup_tx4939.c              |  2 +-
+>  drivers/bcma/Kconfig                               |  3 +-
+>  drivers/memory/Kconfig                             |  6 ++-
+>  drivers/mtd/nand/raw/Kconfig                       | 61 +++++++++++++++-------
+>  drivers/mtd/nand/raw/jz4740_nand.c                 |  2 +-
+>  drivers/mtd/nand/raw/mxc_nand.c                    |  2 -
+>  drivers/mtd/nand/raw/orion_nand.c                  |  2 +-
+>  drivers/mtd/nand/raw/sharpsl.c                     |  5 +-
+>  drivers/mtd/nand/raw/txx9ndfmc.c                   |  2 +-
+>  .../linux/platform_data/jz4740}/jz4740_nand.h      |  4 +-
+>  .../linux/platform_data}/txx9/ndfmc.h              |  6 +--
+>  14 files changed, 61 insertions(+), 41 deletions(-)
+>  rename {arch/mips/include/asm/mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h (91%)
+>  rename {arch/mips/include/asm => include/linux/platform_data}/txx9/ndfmc.h (91%)
+> 
