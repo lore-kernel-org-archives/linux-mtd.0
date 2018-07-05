@@ -1,22 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0qC-0004S0-9W
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:21 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 18/27] mtd: rawnand: nuc900: Allow selection of this driver
- when COMPILE_TEST=y
-Date: Thu,  5 Jul 2018 11:45:13 +0200
-Message-Id: <20180705094522.12138-19-boris.brezillon@bootlin.com>
-In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
-References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::3])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fb2Gg-00010j-Cq
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 11:17:54 +0000
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ linux-spi@vger.kernel.org
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
+ richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
+ david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 01/12] spi: spi-mem: Extend the SPI mem interface to set a
+ custom memory name
+Date: Thu,  5 Jul 2018 13:14:57 +0200
+Message-Id: <1530789310-16254-2-git-send-email-frieder.schrempf@exceet.de>
+In-Reply-To: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +25,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It just makes NAND maintainers' life easier by allowing them to
-compile-test this driver without having ARCH_W90X900 enabled.
+When porting (Q)SPI controller drivers from the MTD layer to the SPI
+layer, the naming scheme for the memory devices changes. To be able
+to keep compatibility with the old drivers naming scheme, a function
+is added to the SPI mem interface to let controller drivers set a
+custom name for the memory.
 
-We also need to add a dependency on HAS_IOMEM to make sure the driver
-compiles correctly.
+Example for the FSL QSPI driver:
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Name with the old driver: 21e0000.qspi,
+or with multiple devices: 21e0000.qspi-0, 21e0000.qspi-1, ...
+
+Name with the new driver without spi_mem_get_name: spi4.0
+
+Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
 ---
- drivers/mtd/nand/raw/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes in v2:
+==============
+* Add a name field to struct spi_mem and fill it while probing
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 245f1b56b94f..5a24b0fc03f1 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -482,7 +482,8 @@ config MTD_NAND_SOCRATES
+ drivers/spi/spi-mem.c       | 30 ++++++++++++++++++++++++++++++
+ include/linux/spi/spi-mem.h |  7 ++++++-
+ 2 files changed, 36 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 990770d..048101c 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -311,6 +311,26 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ EXPORT_SYMBOL_GPL(spi_mem_exec_op);
  
- config MTD_NAND_NUC900
- 	tristate "Support for NAND on Nuvoton NUC9xx/w90p910 evaluation boards."
--	depends on ARCH_W90X900
-+	depends on ARCH_W90X900 || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  This enables the driver for the NAND Flash on evaluation board based
- 	  on w90p910 / NUC9xx.
+ /**
++ * spi_mem_get_name() - Let drivers using the SPI mem interface specify a
++ *			custom name for the memory to avoid compatibility
++ *			issues with ported drivers.
++ * @mem: the SPI memory
++ *
++ * When porting (Q)SPI controller drivers from the MTD layer to the SPI
++ * layer, the naming scheme for the memory devices changes. To be able to
++ * keep compatibility with the old drivers naming scheme, this function can
++ * be used to get a custom name from the controller driver.
++ * If no custom name is available, the name of the SPI device is returned.
++ *
++ * Return: a char array that contains the name for the flash memory
++ */
++const char *spi_mem_get_name(struct spi_mem *mem)
++{
++	return mem->name;
++}
++EXPORT_SYMBOL_GPL(spi_mem_get_name);
++
++/**
+  * spi_mem_adjust_op_size() - Adjust the data size of a SPI mem operation to
+  *			      match controller limitations
+  * @mem: the SPI memory
+@@ -344,6 +364,7 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
+ static int spi_mem_probe(struct spi_device *spi)
+ {
+ 	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
++	struct spi_controller *ctlr = spi->controller;
+ 	struct spi_mem *mem;
+ 
+ 	mem = devm_kzalloc(&spi->dev, sizeof(*mem), GFP_KERNEL);
+@@ -351,6 +372,15 @@ static int spi_mem_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 
+ 	mem->spi = spi;
++
++	if (ctlr->mem_ops && ctlr->mem_ops->get_name)
++		mem->name = ctlr->mem_ops->get_name(mem);
++	else
++		mem->name = dev_name(&spi->dev);
++
++	if (IS_ERR_OR_NULL(mem->name))
++		return PTR_ERR(mem->name);
++
+ 	spi_set_drvdata(spi, mem);
+ 
+ 	return memdrv->probe(mem);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 4fa34a2..c3f82d1 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -124,7 +124,8 @@ struct spi_mem_op {
+ /**
+  * struct spi_mem - describes a SPI memory device
+  * @spi: the underlying SPI device
+- * @drvpriv: spi_mem_drviver private data
++ * @drvpriv: spi_mem_driver private data
++ * @name: name of the SPI memory device
+  *
+  * Extra information that describe the SPI memory device and may be needed by
+  * the controller to properly handle this device should be placed here.
+@@ -135,6 +136,7 @@ struct spi_mem_op {
+ struct spi_mem {
+ 	struct spi_device *spi;
+ 	void *drvpriv;
++	char *name;
+ };
+ 
+ /**
+@@ -178,6 +180,7 @@ struct spi_controller_mem_ops {
+ 			    const struct spi_mem_op *op);
+ 	int (*exec_op)(struct spi_mem *mem,
+ 		       const struct spi_mem_op *op);
++	const char *(*get_name)(struct spi_mem *mem);
+ };
+ 
+ /**
+@@ -236,6 +239,8 @@ bool spi_mem_supports_op(struct spi_mem *mem,
+ int spi_mem_exec_op(struct spi_mem *mem,
+ 		    const struct spi_mem_op *op);
+ 
++const char *spi_mem_get_name(struct spi_mem *mem);
++
+ int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
+ 				       struct module *owner);
+ 
 -- 
-2.14.1
+2.7.4
