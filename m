@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb0ps-0002IN-5O
+ id 1fb0ps-0002L4-5L
  for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 09:46:14 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
@@ -11,10 +11,10 @@ To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: [PATCH 08/27] mtd: rawnand: lpc32xx: Allow selection of these drivers
- when COMPILE_TEST=y
-Date: Thu,  5 Jul 2018 11:45:03 +0200
-Message-Id: <20180705094522.12138-9-boris.brezillon@bootlin.com>
+Subject: [PATCH 13/27] mtd: rawnand: mxc: Allow selection of this driver when
+ COMPILE_TEST=y
+Date: Thu,  5 Jul 2018 11:45:08 +0200
+Message-Id: <20180705094522.12138-14-boris.brezillon@bootlin.com>
 In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,39 +27,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 It just makes NAND maintainers' life easier by allowing them to
-compile-test these drivers without having ARCH_LPC32XX enabled.
+compile-test this driver without having ARCH_MXC enabled.
 
-We also need to add a dependency on HAS_IOMEM to make sure the driver
-compiles correctly.
+We also need to add a dependency on HAS_IOMEM to make sure the
+driver compiles correctly.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 4ff21c8e05d4..d396bb69d515 100644
+index a28ffc4013b6..71e7542b6522 100644
 --- a/drivers/mtd/nand/raw/Kconfig
 +++ b/drivers/mtd/nand/raw/Kconfig
-@@ -299,7 +299,8 @@ config MTD_NAND_MARVELL
+@@ -446,7 +446,8 @@ config MTD_NAND_VF610_NFC
  
- config MTD_NAND_SLC_LPC32XX
- 	tristate "NXP LPC32xx SLC Controller"
--	depends on ARCH_LPC32XX
-+	depends on ARCH_LPC32XX || COMPILE_TEST
+ config MTD_NAND_MXC
+ 	tristate "MXC NAND support"
+-	depends on ARCH_MXC
++	depends on ARCH_MXC || COMPILE_TEST
 +	depends on HAS_IOMEM
  	help
- 	  Enables support for NXP's LPC32XX SLC (i.e. for Single Level Cell
- 	  chips) NAND controller. This is the default for the PHYTEC 3250
-@@ -310,7 +311,8 @@ config MTD_NAND_SLC_LPC32XX
- 
- config MTD_NAND_MLC_LPC32XX
- 	tristate "NXP LPC32xx MLC Controller"
--	depends on ARCH_LPC32XX
-+	depends on ARCH_LPC32XX || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	help
- 	  Uses the LPC32XX MLC (i.e. for Multi Level Cell chips) NAND
- 	  controller. This is the default for the WORK92105 controller
+ 	  This enables the driver for the NAND flash controller on the
+ 	  MXC processors.
 -- 
 2.14.1
