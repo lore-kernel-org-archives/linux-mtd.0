@@ -1,3 +1,7 @@
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fb2H6-0001Az-Ez
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 11:18:49 +0000
 From: Frieder Schrempf <frieder.schrempf@exceet.de>
 To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
  linux-spi@vger.kernel.org
@@ -6,15 +10,13 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
  yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
  Frieder Schrempf <frieder.schrempf@exceet.de>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- NXP Linux Team <linux-imx@nxp.com>, Rob Herring <robh+dt@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 06/12] ARM: dts: Reflect change of FSL QSPI driver and
- remove unused properties
-Date: Thu,  5 Jul 2018 13:15:02 +0200
-Message-Id: <1530789310-16254-7-git-send-email-frieder.schrempf@exceet.de>
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Hou Zhiqiang <Zhiqiang.Hou@nxp.com>, Philipp Puschmann <pp@emlix.com>,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v2 02/12] mtd: m25p80: Call spi_mem_get_name() to let
+ controller set a custom name
+Date: Thu,  5 Jul 2018 13:14:58 +0200
+Message-Id: <1530789310-16254-3-git-send-email-frieder.schrempf@exceet.de>
 In-Reply-To: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
 References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,115 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The FSL QSPI driver was moved to the SPI framework and it now
-acts as a SPI controller. Therefore the subnodes need to set
-spi-[rx/tx]-bus-width = <4>, so quad mode is used just as before.
-
-Also the properties 'bus-num', 'fsl,spi-num-chipselects' and
-'fsl,spi-flash-chipselects' were never read by the driver and
-can be removed.
-
-The 'reg' properties are adjusted to reflect the what bus and
-chipselect the flash is connected to, as the new driver needs
-this information.
-
-The property 'fsl,qspi-has-second-chip' is not needed anymore
-and will be removed after the old driver was disabled to avoid
-breaking ls1021a-moxa-uc-8410a.dts.
+By calling spi_mem_get_name(), the driver of the (Q)SPI controller can
+set a custom name for the memory device if necessary.
+This is useful to keep mtdparts compatible when controller drivers are
+ported from the MTD to the SPI layer.
 
 Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
 ---
- arch/arm/boot/dts/imx6sx-sdb-reva.dts       | 8 ++++++--
- arch/arm/boot/dts/imx6sx-sdb.dts            | 8 ++++++--
- arch/arm/boot/dts/imx6ul-14x14-evk.dtsi     | 2 ++
- arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts | 5 ++---
- 4 files changed, 16 insertions(+), 7 deletions(-)
+ drivers/mtd/devices/m25p80.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6sx-sdb-reva.dts b/arch/arm/boot/dts/imx6sx-sdb-reva.dts
-index e3533e7..1a6f680 100644
---- a/arch/arm/boot/dts/imx6sx-sdb-reva.dts
-+++ b/arch/arm/boot/dts/imx6sx-sdb-reva.dts
-@@ -131,13 +131,17 @@
- 		#size-cells = <1>;
- 		compatible = "spansion,s25fl128s", "jedec,spi-nor";
- 		spi-max-frequency = <66000000>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
- 	};
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index e84563d..482f0ef 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -199,8 +199,7 @@ static int m25p_probe(struct spi_mem *spimem)
+ 			hwcaps.mask |= SNOR_HWCAPS_READ_1_2_2;
+ 	}
  
--	flash1: s25fl128s@1 {
--		reg = <1>;
-+	flash1: s25fl128s@2 {
-+		reg = <2>;
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "spansion,s25fl128s", "jedec,spi-nor";
- 		spi-max-frequency = <66000000>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
- 	};
- };
-diff --git a/arch/arm/boot/dts/imx6sx-sdb.dts b/arch/arm/boot/dts/imx6sx-sdb.dts
-index 6dd9beb..9acfda8 100644
---- a/arch/arm/boot/dts/imx6sx-sdb.dts
-+++ b/arch/arm/boot/dts/imx6sx-sdb.dts
-@@ -117,15 +117,19 @@
- 		#size-cells = <1>;
- 		compatible = "micron,n25q256a", "jedec,spi-nor";
- 		spi-max-frequency = <29000000>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
- 		reg = <0>;
- 	};
+-	if (data && data->name)
+-		nor->mtd.name = data->name;
++	nor->mtd.name = spi_mem_get_name(spimem);
  
--	flash1: n25q256a@1 {
-+	flash1: n25q256a@2 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		compatible = "micron,n25q256a", "jedec,spi-nor";
- 		spi-max-frequency = <29000000>;
--		reg = <1>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
-+		reg = <2>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-index 32a0723..c2c9a2a 100644
---- a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-@@ -176,6 +176,8 @@
- 		#size-cells = <1>;
- 		compatible = "micron,n25q256a";
- 		spi-max-frequency = <29000000>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
- 		reg = <0>;
- 	};
- };
-diff --git a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts b/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
-index d01f64b..6a83f30 100644
---- a/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
-+++ b/arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts
-@@ -203,9 +203,6 @@
- };
- 
- &qspi {
--	bus-num = <0>;
--	fsl,spi-num-chipselects = <2>;
--	fsl,spi-flash-chipselects = <0>;
- 	fsl,qspi-has-second-chip;
- 	status = "okay";
- 
-@@ -214,6 +211,8 @@
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		spi-max-frequency = <20000000>;
-+		spi-rx-bus-width = <4>;
-+		spi-tx-bus-width = <4>;
- 		reg = <0>;
- 
- 		partitions@0 {
+ 	/* For some (historical?) reason many platforms provide two different
+ 	 * names in flash_platform_data: "name" and "type". Quite often name is
 -- 
 2.7.4
