@@ -1,6 +1,6 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::3])
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::8])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb2Gg-00010j-Cq
+ id 1fb2Gg-00010C-Dp
  for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 11:17:54 +0000
 From: Frieder Schrempf <frieder.schrempf@exceet.de>
 To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
@@ -9,13 +9,10 @@ Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
  richard@nod.at, miquel.raynal@bootlin.com, broonie@kernel.org,
  david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
  yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
- Frieder Schrempf <frieder.schrempf@exceet.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 01/12] spi: spi-mem: Extend the SPI mem interface to set a
- custom memory name
-Date: Thu,  5 Jul 2018 13:14:57 +0200
-Message-Id: <1530789310-16254-2-git-send-email-frieder.schrempf@exceet.de>
-In-Reply-To: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ Frieder Schrempf <frieder.schrempf@exceet.de>
+Subject: [PATCH v2 00/12] Port the FSL QSPI driver to the SPI framework
+Date: Thu,  5 Jul 2018 13:14:56 +0200
+Message-Id: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,122 +22,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When porting (Q)SPI controller drivers from the MTD layer to the SPI
-layer, the naming scheme for the memory devices changes. To be able
-to keep compatibility with the old drivers naming scheme, a function
-is added to the SPI mem interface to let controller drivers set a
-custom name for the memory.
+Now that the SPI memory interface was introduced by Boris [1], it is
+possible to move drivers from mtd/spi-nor to the SPI framework in order
+to use them for different type of SPI memory chips.
 
-Example for the FSL QSPI driver:
+Patch 1 adds a function spi_mem_get_name() to the SPI memory interface
+and a ->name field to struct spi_mem.
+Patch 2 uses it in m25p80.c to make it possible for SPI controller
+drivers to provide a custom naming scheme for the flash chip.
+This is needed to avoid breaking compatibility of mtdparts when switching
+from the old to the new driver.
 
-Name with the old driver: 21e0000.qspi,
-or with multiple devices: 21e0000.qspi-0, 21e0000.qspi-1, ...
+Patch 3 adds a driver for the Freescale QSPI controller to the SPI
+framework. Together with m25p80.c it can be used to interface SPI
+NOR flashes just as the old driver did. For this to work properly a few
+minor changes to the devicetrees are necessary (see patches 5 to 7).
 
-Name with the new driver without spi_mem_get_name: spi4.0
+Patch 8 changes the defconfigs to use the new driver and patch 9 removes
+the old driver.
 
-Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
----
+Patch 10 and 11 remove 'fsl,qspi-has-second-chip' from the devicetrees.
+Patch 12 adjusts the MAINTAINERS file.
+
+The new driver was tested with i.MX6UL and a Micron SPI NOR @ 60MHz.
+The read performance of the new driver is almost the same or even better
+than the old driver, depending on the block size.
+The write performance is a bit slower on average (~10-15%).
+
+The new driver was also tested with the SPI NAND framework [2] and a
+Winbond W25M02GV flash.
+
+If someone has a board that uses both chips selects and/or both busses,
+it would be really nice to have the driver be tested on such a setup.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/commit/?h=for-4.18&id=c36ff266dc82f4ae797a6f3513c6ffa344f7f1c7
+[2] https://patchwork.ozlabs.org/cover/913728/
+
 Changes in v2:
 ==============
+* Rebase on top of nand/next
 * Add a name field to struct spi_mem and fill it while probing
+* Add Yogesh Gaur and Suresh Gupta as authors
+* Use GENMASK() for generating bitmasks
+* Use callback functions for read/write of registers
+* Attach the seq variable to the selected CS
+* Avoid using conditional in read/write loop
+* Avoid infinite loop and use a timeout instead
+* Return error pointer when allocation in fsl_qspi_get_name() fails
+* Remove redundant iounmap()
+* Put suspend()/resume() in struct dev_pm_ops instead of struct platform_driver
+* Split the moving and editing of the dt-bindings in two patches
 
- drivers/spi/spi-mem.c       | 30 ++++++++++++++++++++++++++++++
- include/linux/spi/spi-mem.h |  7 ++++++-
- 2 files changed, 36 insertions(+), 1 deletion(-)
+Frieder Schrempf (12):
+  spi: spi-mem: Extend the SPI mem interface to set a custom memory name
+  mtd: m25p80: Call spi_mem_get_name() to let controller set a custom
+    name
+  spi: Add a driver for the Freescale/NXP QuadSPI controller
+  dt-bindings: spi: Move the bindings for the FSL QSPI driver
+  dt-bindings: spi: Adjust the bindings for the FSL QSPI driver
+  ARM: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  arm64: dts: Reflect change of FSL QSPI driver and remove unused
+    properties
+  ARM: defconfig: Use the new FSL QSPI driver under the SPI framework
+  mtd: fsl-quadspi: Remove the driver as it was replaced by
+    spi-fsl-qspi.c
+  ARM: dts: ls1021a: Remove fsl,qspi-has-second-chip as it is not used
+  ARM64: dts: ls1046a: Remove fsl,qspi-has-second-chip as it is not used
+  MAINTAINERS: Move the Freescale QSPI driver to the SPI framework
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 990770d..048101c 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -311,6 +311,26 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- EXPORT_SYMBOL_GPL(spi_mem_exec_op);
- 
- /**
-+ * spi_mem_get_name() - Let drivers using the SPI mem interface specify a
-+ *			custom name for the memory to avoid compatibility
-+ *			issues with ported drivers.
-+ * @mem: the SPI memory
-+ *
-+ * When porting (Q)SPI controller drivers from the MTD layer to the SPI
-+ * layer, the naming scheme for the memory devices changes. To be able to
-+ * keep compatibility with the old drivers naming scheme, this function can
-+ * be used to get a custom name from the controller driver.
-+ * If no custom name is available, the name of the SPI device is returned.
-+ *
-+ * Return: a char array that contains the name for the flash memory
-+ */
-+const char *spi_mem_get_name(struct spi_mem *mem)
-+{
-+	return mem->name;
-+}
-+EXPORT_SYMBOL_GPL(spi_mem_get_name);
-+
-+/**
-  * spi_mem_adjust_op_size() - Adjust the data size of a SPI mem operation to
-  *			      match controller limitations
-  * @mem: the SPI memory
-@@ -344,6 +364,7 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
- static int spi_mem_probe(struct spi_device *spi)
- {
- 	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-+	struct spi_controller *ctlr = spi->controller;
- 	struct spi_mem *mem;
- 
- 	mem = devm_kzalloc(&spi->dev, sizeof(*mem), GFP_KERNEL);
-@@ -351,6 +372,15 @@ static int spi_mem_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 
- 	mem->spi = spi;
-+
-+	if (ctlr->mem_ops && ctlr->mem_ops->get_name)
-+		mem->name = ctlr->mem_ops->get_name(mem);
-+	else
-+		mem->name = dev_name(&spi->dev);
-+
-+	if (IS_ERR_OR_NULL(mem->name))
-+		return PTR_ERR(mem->name);
-+
- 	spi_set_drvdata(spi, mem);
- 
- 	return memdrv->probe(mem);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 4fa34a2..c3f82d1 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -124,7 +124,8 @@ struct spi_mem_op {
- /**
-  * struct spi_mem - describes a SPI memory device
-  * @spi: the underlying SPI device
-- * @drvpriv: spi_mem_drviver private data
-+ * @drvpriv: spi_mem_driver private data
-+ * @name: name of the SPI memory device
-  *
-  * Extra information that describe the SPI memory device and may be needed by
-  * the controller to properly handle this device should be placed here.
-@@ -135,6 +136,7 @@ struct spi_mem_op {
- struct spi_mem {
- 	struct spi_device *spi;
- 	void *drvpriv;
-+	char *name;
- };
- 
- /**
-@@ -178,6 +180,7 @@ struct spi_controller_mem_ops {
- 			    const struct spi_mem_op *op);
- 	int (*exec_op)(struct spi_mem *mem,
- 		       const struct spi_mem_op *op);
-+	const char *(*get_name)(struct spi_mem *mem);
- };
- 
- /**
-@@ -236,6 +239,8 @@ bool spi_mem_supports_op(struct spi_mem *mem,
- int spi_mem_exec_op(struct spi_mem *mem,
- 		    const struct spi_mem_op *op);
- 
-+const char *spi_mem_get_name(struct spi_mem *mem);
-+
- int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
- 				       struct module *owner);
- 
+ .../devicetree/bindings/mtd/fsl-quadspi.txt     |   65 -
+ .../devicetree/bindings/spi/spi-fsl-qspi.txt    |   65 +
+ MAINTAINERS                                     |    4 +-
+ arch/arm/boot/dts/imx6sx-sdb-reva.dts           |    8 +-
+ arch/arm/boot/dts/imx6sx-sdb.dts                |    8 +-
+ arch/arm/boot/dts/imx6ul-14x14-evk.dtsi         |    2 +
+ arch/arm/boot/dts/ls1021a-moxa-uc-8410a.dts     |    6 +-
+ arch/arm/configs/imx_v6_v7_defconfig            |    2 +-
+ arch/arm/configs/multi_v7_defconfig             |    2 +-
+ .../boot/dts/freescale/fsl-ls1043a-qds.dts      |    3 +-
+ .../boot/dts/freescale/fsl-ls1046a-qds.dts      |    4 +-
+ .../boot/dts/freescale/fsl-ls1046a-rdb.dts      |    6 +-
+ arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi  |    1 -
+ .../boot/dts/freescale/fsl-ls208xa-qds.dtsi     |    4 +
+ drivers/mtd/devices/m25p80.c                    |    3 +-
+ drivers/mtd/spi-nor/Kconfig                     |    9 -
+ drivers/mtd/spi-nor/Makefile                    |    1 -
+ drivers/mtd/spi-nor/fsl-quadspi.c               | 1217 ------------------
+ drivers/spi/Kconfig                             |   11 +
+ drivers/spi/Makefile                            |    1 +
+ drivers/spi/spi-fsl-qspi.c                      |  954 ++++++++++++++
+ drivers/spi/spi-mem.c                           |   30 +
+ include/linux/spi/spi-mem.h                     |    7 +-
+ 23 files changed, 1100 insertions(+), 1313 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/mtd/fsl-quadspi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+ delete mode 100644 drivers/mtd/spi-nor/fsl-quadspi.c
+ create mode 100644 drivers/spi/spi-fsl-qspi.c
+
 -- 
 2.7.4
