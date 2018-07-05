@@ -1,22 +1,21 @@
-Received: from mail-yb0-x244.google.com ([2607:f8b0:4002:c09::244])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fb6cE-0001TK-35
- for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 15:56:19 +0000
-Received: by mail-yb0-x244.google.com with SMTP id y11-v6so3393578ybm.7
- for <linux-mtd@lists.infradead.org>; Thu, 05 Jul 2018 08:56:05 -0700 (PDT)
+ id 1fb8bv-0003Uu-Bg
+ for linux-mtd@lists.infradead.org; Thu, 05 Jul 2018 18:04:08 +0000
+Date: Thu, 5 Jul 2018 20:03:53 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: stable@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-arm-msm@vger.kernel.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: Re: [BACKPORT PATCH] mtd: nand: fix return value check for bad block
+ status
+Message-ID: <20180705180353.GE29836@kroah.com>
+References: <1530624845-28319-1-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
-Sender: keescook@google.com
-In-Reply-To: <20180705090312.1ca9ed5a@xps13>
-References: <20180704172759.GA33591@beast> <20180705090312.1ca9ed5a@xps13>
-From: Kees Cook <keescook@chromium.org>
-Date: Thu, 5 Jul 2018 08:56:03 -0700
-Message-ID: <CAGXu5j+U67bo0fKf=75yi+X48bqydoq6CeYTJh5_o=rZpgUXZQ@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spinand: Use 2-factor allocator calls
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Peter Pan <peterpandong@micron.com>,
- Linux mtd <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1530624845-28319-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 5, 2018 at 12:03 AM, Miquel Raynal
-<miquel.raynal@bootlin.com> wrote:
-> Hello,
->
-> Kees Cook <keescook@chromium.org> wrote on Wed, 4 Jul 2018 10:27:59
-> -0700:
->
->> As already done treewide, switch from open-coded multiplication to using
->> 2-factor allocator helpers.
->>
->> Signed-off-by: Kees Cook <keescook@chromium.org>
->> ---
->
-> Indeed, we'll be more careful about this in the future.
->
-> As this code has not been merged upstream yet, do you mind if I
-> squash this with the initial patch?
+On Tue, Jul 03, 2018 at 07:04:05PM +0530, Abhishek Sahu wrote:
+> commit e9893e6fa932f42c90c4ac5849fa9aa0f0f00a34 upstream.
 
-Totally fine by me! Thanks! :)
+No it is not :(
 
--Kees
+Please fix up and resend.
 
-
--- 
-Kees Cook
-Pixel Security
+greg k-h
