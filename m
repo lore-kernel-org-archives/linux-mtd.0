@@ -1,18 +1,20 @@
-Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbVQt-0005Xp-Tl
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 18:26:17 +0000
-Received: by mail-it0-x230.google.com with SMTP id a195-v6so17670236itd.3
- for <linux-mtd@lists.infradead.org>; Fri, 06 Jul 2018 11:26:05 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbWOJ-0008C0-HU
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 19:27:43 +0000
+Date: Fri, 6 Jul 2018 21:27:20 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Subject: Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
+Message-ID: <20180706212720.0e9dacb8@bbrezillon>
+In-Reply-To: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
+References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <CABatt_xYR1OXfmoK=gUS2ny67U3q0hg6Q_woRmuDQ=U4By3POg@mail.gmail.com>
-In-Reply-To: <CABatt_xYR1OXfmoK=gUS2ny67U3q0hg6Q_woRmuDQ=U4By3POg@mail.gmail.com>
-From: Martin Townsend <mtownsend1973@gmail.com>
-Date: Fri, 6 Jul 2018 19:25:52 +0100
-Message-ID: <CABatt_wadds+7xKLr_+MqmVazHDnm50_viLV5KaqYNKwTxFavw@mail.gmail.com>
-Subject: Re: UBI on small SPI-NOR device
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,154 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 6, 2018 at 6:25 PM Martin Townsend <mtownsend1973@gmail.com> wrote:
->
+On Mon, 25 Jun 2018 10:44:42 +1200
+Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+
 > Hi,
->
-> I'm trying to get UBI working on a small SPI-NOR flash device, it's
-> working great on the NAND but for some reason I can't get it working
-> on the SPI-NOR.
->
-> It's very small as you can see and only needs to store several small files.
->
-> mtd3: 000a0000 00008000 "u-boot"
-> mtd4: 00160000 00008000 "nvmem"
->
-> I've set the device up so it has a 32KiB Sector Size.  But when I
-> erase the mtd partition and then attach to it I see UBI Erase Blocks
-> every 64KiB even though the output looks ok
->
-> root@mach-cw-rnet-ppm-1717:~# flash_erase /dev/mtd4 0 0
-> Erasing 32 Kibyte @ 6400158000 -- -1 % complete
-> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
-> UBI device number 0, total 44 LEBs (1436160 bytes, 1.4 MiB), available
-> 38 LEBs (1240320 bytes, 1.2 MiB), LEB size 32640 bytes (31.9 KiB)
-> root@mach-cw-rnet-ppm-1717:~# ubinfo /dev/ubi0
-> ubi0
-> Volumes count:                           0
-> Logical eraseblock size:                 32640 bytes, 31.9 KiB
-> Total amount of logical eraseblocks:     44 (1436160 bytes, 1.4 MiB)
-> Amount of available logical eraseblocks: 38 (1240320 bytes, 1.2 MiB)
-> Maximum count of volumes                 128
-> Count of bad physical eraseblocks:       0
-> Count of reserved physical eraseblocks:  0
-> Current maximum erase counter value:     1
-> Minimum input/output unit size:          1 byte
-> Character device major/minor:            245:0
->
-> Yet a Hexdump of /dev/mtd4 shows what I'm assuming erase blocks every 64KiB
->
-> 00138000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00138010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
-> 00138020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-> 00138030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
-> 00138040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-> *
-> 00148000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00148010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
-> 00148020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-> 00148030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
-> 00148040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-> *
-> 00158000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00158010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
-> 00158020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
-> 00158030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
-> 00158040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
->
-> root@mach-cw-rnet-ppm-1717:~# hexdump -C /dev/mtd4 | grep UBI#
-> 00008000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00018000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00028000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00038000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00048000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00058000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00068000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00078000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00088000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00098000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000a8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000b8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000c8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000d8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000e8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 000f8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00108000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00118000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00128000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00138000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00148000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
-> 00158000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
->
-> I count 22 eraseblocks and not 44 which again suggests that 64KiB has been used.
->
-> Here's the entry from the spi_nor_ids
-> { "is25lp016", INFO(0x9d6015, 0, 32 * 1024,  64, SPI_NOR_DUAL_READ |
-> SPI_NOR_QUAD_READ) },
->
-> which I have added.
->
-> I've tried using 64KiB Erase blocks but then there aren't enough when
-> mounting the UBI volume.
->
-> I can actually create a volume and mount it but when I detach and
-> re-attach a couple of times it fails
->
-> root@mach-cw-rnet-ppm-1717:~# ubimkvol /dev/ubi0 -N nvmem -m
-> Set volume size to 1240320
-> Volume ID 0, size 38 LEBs (1240320 bytes, 1.2 MiB), LEB size 32640
-> bytes (31.9 KiB), dynamic, name "nvmem", alignment 1
-> root@mach-cw-rnet-ppm-1717:~# mount -t ubifs ubi0:nvmem /mnt
-> root@mach-cw-rnet-ppm-1717:~# df -h /mnt
-> Filesystem                Size      Used Available Use% Mounted on
-> ubi0:nvmem              588.0K     20.0K    524.0K   4% /mnt
-> root@mach-cw-rnet-ppm-1717:~# echo test > /mnt/test.txt
-> root@mach-cw-rnet-ppm-1717:~# df -h /mnt
-> Filesystem                Size      Used Available Use% Mounted on
-> ubi0:nvmem              588.0K     24.0K    520.0K   4% /mnt
-> root@mach-cw-rnet-ppm-1717:~# umount /mnt
-> root@mach-cw-rnet-ppm-1717:~# ubidetach -p /dev/mtd4
-> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
-> ubi0 warning: ubi_read_volume_table: volume table copy #2 is corrupted
-> UBI device number 0, total 44 LEBs (1436160 bytes, 1.4 MiB), available
-> 0 LEBs (0 bytes), LEB size 32640 bytes (31.9 KiB)
-> root@mach-cw-rnet-ppm-1717:~# ubidetach -p /dev/mtd4
-> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
-> ubi0 error: ubi_read_volume_table: the layout volume was not found
-> ubi0 error: ubi_attach_mtd_dev: failed to attach mtd4, error -22
-> ubiattach: error!: cannot attach "/dev/mtd4"
->            error 22 (Invalid argument)
->
->
-> Kernel is 4.9 and UBI is working absolutely fine on the NAND device we
-> also have on this board.
->
-> Any help would be greatly appreciated,
-> Martin.
+> 
+> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chip
 
-I checked the data sheet again and it supports 32K Block Erase in with
-instruction 0x52, the source code has
+Hm, it's even worse than I thought. The model name does not include the
+-ITE suffix (E means ECC can't be disabled), which means we have no way
+to detect the version with forced on-die ECC.
 
-#define SPINOR_OP_BE_32K 0x52 /* Erase 32KiB block */
-in the file
-/include/linux/mtd/spi-nor.h
+I see 2 solutions to this problem:
+1/ Bean provides us a solution to reliably detect when ECC can be
+   de-actived and when it can't
+2/ We only ever expose 64 bytes of OOB to the user and consider that
+   ECC can be disabled, even if it can't in reality
 
-But I can't find any use of it in the 4.9 kernel but it is used in later kernels
+I wonder when NAND vendors will care about this sort of stuff. It's
+really a mess to deal with all these quirks, and it's even worse when
+we have no way to detect when the quirks are needed and when they're
+not. Device detection is broken in so many ways, and each new chip
+brings with it its own brokenness.
 
-static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
-{
-static const u8 spi_nor_3to4_erase[][2] = {
-{ SPINOR_OP_BE_4K, SPINOR_OP_BE_4K_4B },
-{ SPINOR_OP_BE_32K, SPINOR_OP_BE_32K_4B },
-{ SPINOR_OP_SE, SPINOR_OP_SE_4B },
-};
-
-return spi_nor_convert_opcode(opcode, spi_nor_3to4_erase,
-     ARRAY_SIZE(spi_nor_3to4_erase));
-}
-
-
-I'll see if I can find the commit for this as I think this may be the
-problem I'm seeing where the underlying spinor driver is actually
-performing 64K Block Erasures which would explain the hexdumps I'm
-seeing.
+> to one of our boards which uses the Marvell NFCv2 controller.
+> 
+> This particular chip is a bit odd in that the datasheet states support
+> for ONFI 1.0 but the revision number field is 00 00. It also is marked
+> ABAFA but reports internally as ABAGA. Finally it has internal 8-bit ECC
+> which cannot be disabled.
+> 
+> The existing test in micron_supports_on_die_ecc() determines that on-die
+> ECC is supported but not mandatory but I know for this chip it is
+> mandatory despite what set_features returns.
+> 
+> In order for this to work I need to set nand-ecc-mode = "on-die" in my
+> dts. Ideally I'd like it to be automatic based on what the hardware can
+> support but that may be asking too much at the moment.
+> 
+> Here's a dump of the parameter page from the chip I have
+> 
+> 00000000: 4f 4e 46 49 00 00 18 00 3f 00 00 00 00 00 00 00 ONFI....?.......
+> 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 00000020: 4d 49 43 52 4f 4e 20 20 20 20 20 20 4d 54 32 39  MICRON MT29
+> 00000030: 46 31 47 30 38 41 42 41 47 41 57 50 20 20 20 20  F1G08ABAGAWP    
+> 00000040: 2c 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ,...............
+> 00000050: 00 08 00 00 80 00 00 02 00 00 20 00 40 00 00 00  ..........  .@...
+> 00000060: 00 04 00 00 01 22 01 14 00 01 05 08 00 00 04 00 ....."..........
+> 00000070: 08 01 0e 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 00000080: 08 3f 00 3f 00 58 02 10 27 46 00 64 00 00 00 00 .?.?.X..'F.d....
+> 00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 000000a0: 00 00 00 00 01 00 00 00 00 02 04 80 01 81 04 03 ................
+> 000000b0: 02 01 1e 90 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+> 000000f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 85 a6 ................
+> 
+> Series changes in v3:
+> - No longer RFC
+> - dropped "mtd: rawnand: micron: add ONFI_FEATURE_ON_DIE_ECC to supported
+>   features" which Boris has already picked up
+> - dropped "mtd: rawnand: marvell: Support page size of 2048 with 8-bit ECC"
+>   since I can't test it.
+> 
+> Series changes in v4:
+> - based on top of http://patchwork.ozlabs.org/patch/932006/
+> 
+> Series changes in v5:
+> - address review comments from Boris on patches 5 and 6
+> 
+> Series changes in v6:
+> - Update commit message on 6/6
+> 
+> Chris Packham (6):
+>   mtd: rawnand: marvell: Handle on-die ECC
+>   mtd: rawnand: add manufacturer fixup for ONFI parameter page
+>   mtd: rawnand: add defines for ONFI version bits
+>   mtd: rawnand: micron: add fixup for ONFI revision
+>   mtd: rawnand: micron: support 8/512 on-die ECC
+>   mtd: rawnand: micron: detect forced on-die ECC
+> 
+>  drivers/mtd/nand/raw/marvell_nand.c |   1 +
+>  drivers/mtd/nand/raw/nand_base.c    |  14 +--
+>  drivers/mtd/nand/raw/nand_micron.c  | 129 +++++++++++++++++++++++-----
+>  include/linux/mtd/rawnand.h         |  14 +++
+>  4 files changed, 131 insertions(+), 27 deletions(-)
+> 
