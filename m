@@ -1,26 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbRrr-0000b4-OK
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 14:37:53 +0000
-Date: Fri, 6 Jul 2018 16:37:28 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Kalle Valo <kvalo@codeaurora.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 21/27] bcma: Allow selection of this driver when
- COMPILE_TEST=y
-Message-ID: <20180706163728.30485acd@bbrezillon>
-In-Reply-To: <87zhz4tox9.fsf@purkki.adurom.net>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbRv4-0002X8-Cr
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 14:41:12 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Ralf Baechle <ralf@linux-mips.org>,
+ Linux MIPS Mailing List <linux-mips@linux-mips.org>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 00/27] mtd: rawnand: Improve compile-test coverage
+Date: Fri, 06 Jul 2018 16:40:43 +0200
+Message-ID: <7117646.l97x2Qa6kB@blindfold>
+In-Reply-To: <CAMuHMdU2pFmhWvR6ZvvjmL6FdTWKQysJ31SW-FEvcdbi5mQhGA@mail.gmail.com>
 References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
- <20180705094522.12138-22-boris.brezillon@bootlin.com>
- <87zhz4tox9.fsf@purkki.adurom.net>
+ <CAMuHMdU2pFmhWvR6ZvvjmL6FdTWKQysJ31SW-FEvcdbi5mQhGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +32,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 06 Jul 2018 17:32:50 +0300
-Kalle Valo <kvalo@codeaurora.org> wrote:
-
-> Boris Brezillon <boris.brezillon@bootlin.com> writes:
+Am Donnerstag, 5. Juli 2018, 12:25:42 CEST schrieb Geert Uytterhoeven:
+> Hi Boris,
 > 
-> > This allows us to increase compile-test coverage without having to build
-> > a kernel for MIPS.  That's particularly interesting for subsystem
-> > maintainers that want to test as many drivers as possible in a single
-> > build.
+> On Thu, Jul 5, 2018 at 12:09 PM Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > This is an attempt at adding "depends || COMPILE_TEST" to all NAND
+> > drivers that have no compile-time dependencies on arch
+> > features/headers.
 > >
-> > We also add a dependency on HAS_IOMEM in BCMA_HOST_SOC to make sure the
-> > driver is not selected when the arch does not implement IO accessors.
+> > This will hopefully help us (NAND/MTD maintainers) in detecting build
+> > issues earlier. Unfortunately we still have a few drivers that can't
+> > easily be modified to be arch independent.
 > >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  drivers/bcma/Kconfig | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)  
+> > I tried to put all patches that only touch the NAND subsystem first,
+> > so that they can be applied even if other patches are being discussed.
+> >
+> > Don't hesitate to point any missing dependencies when compiled with
+> > COMPILE_TEST. I didn't have any problem when compiling, but that might
+> > be because the dependencies were already selected.
+> >
+> > I have Question for Geert. I know you worked on HAS_DMA removal when
+> > combined with COMPILE_TEST, do you plan to do something similar with
+> > HAS_IOMEM?
 > 
-> Acked-by: Kalle Valo <kvalo@codeaurora.org>
+> No plans for that.
 > 
-> I assume this patch will go via some other tree and I can drop it.
-> 
+> NO_IOMEM is Richard's itch, now s390 has gained PCI support.
 
-Yep. We can create an immutable tag if needed.
+Since COMPILE_TEST depends on !UML not so much anymore :-)
+
+> NO_DMA matters for UML and Sun-3.
+
+Yeah.
+
+Thanks,
+//richard
