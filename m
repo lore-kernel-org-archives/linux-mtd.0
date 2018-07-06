@@ -1,22 +1,25 @@
-Received: from smtp.codeaurora.org ([198.145.29.96])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbLXh-00044W-3o
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 07:52:48 +0000
-From: Abhishek Sahu <absahu@codeaurora.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
- Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 5/5] mtd: rawnand: qcom: reorganization by removing read/write
- helpers
-Date: Fri,  6 Jul 2018 13:21:59 +0530
-Message-Id: <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
-In-Reply-To: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
-References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbM5y-0004x8-T4
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 08:28:04 +0000
+Date: Fri, 6 Jul 2018 10:27:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: marvell_nand driver fails to suspend
+Message-ID: <20180706102740.4e7558a2@xps13>
+In-Reply-To: <98a6c329-d0a4-72c7-bb06-34b80738c475@zonque.org>
+References: <68ab4512-58f2-1ade-6754-616de8d8c8d5@zonque.org>
+ <9de339a6-01f9-d3a9-0271-f33933ede35b@zonque.org>
+ <20180702092014.0006fee0@xps13>
+ <01ca9c4b-dc20-47fa-ae3c-983b3f47b28d@zonque.org>
+ <20180703090557.0ec5cd20@xps13>
+ <98a6c329-d0a4-72c7-bb06-34b80738c475@zonque.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,424 +29,228 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Driver does not send the commands to NAND device for page
-read/write operations in ->cmdfunc(). It just does some
-minor variable initialization and rest of the things
-are being done in actual ->read/write_oob[_raw].
+Hi Daniel,
 
-The generic helper function calls for invoking commands during
-page read/write are making this driver complicated. For QCOM NAND
-driver, ->cmdfunc() does minor part of initialization and rest of
-the initialization is performed by actual page read/write
-functions. Also, ->read/write_oob() does not calls helper
-function and all the initialization is being done in
-->read/write_oob() itself.
+Daniel Mack <daniel@zonque.org> wrote on Thu, 5 Jul 2018 10:22:29 +0200:
 
-Since after 'commit 25f815f66a14 ("mtd: nand: force drivers to
-explicitly send READ/PROG commands")', sending of commands has
-been moved to driver for page read/write, so this patch does
-following changes to make code more readable:
+> Hi Miquel,
+>=20
+> On Tuesday, July 03, 2018 09:05 AM, Miquel Raynal wrote:
+> > Daniel Mack <daniel@zonque.org> wrote on Mon, 2 Jul 2018 09:48:01 +0200=
+: =20
+>=20
+> >> I'll give it a spin in a couple of days again, but if anything comes t=
+o your mind, please let me know.
+> >>
+> >> And FTR, the device node has keep-config set for this board.
+> > > Can you try without? It should work anyway, but it would allow us to =
+=20
+> > see if it's a timing issue. =20
+>=20
+> I can't easily, because I don't have the individual timing parameters at =
+hand. I could of course re-engineer them from the NDTR0/NDTR1 values the bo=
+otloader sets, but that would only lead to these registers being restored t=
+o the same value as they currently have. And as they're read during probe()=
+ anyway and re-used in marvell_nfc_select_chip(), I don't think that's the =
+problem.
 
-1. Introduce qcom_nand_init_page_op() and qcom_nand_start_page_op()
-   helper functions which helps in removing code duplication in each
-   operation.
+I do agree with the second part of your statement. However I don't
+understand why you talk about re-engineering the timings. This
+"keep-config" DT property was just an ugly hack to avoid implementing
+->setup_data_interface() and rely on the Bootloader's setup. While this
+work at the slowest speed, it is clearly not as efficient as tuning the
+timings at probe time depending on the NAND chip. I recently changed
+the DT NAND nodes to 1/ separate the controller and the NAND chip and
+2/ remove superfluous properties like this one. If you are against NAND
+throughput, I suggest you to test without it :)
 
-2. After issuing PROGRAM PAGE/BLOCK ERASE, QCOM NAND
-   controller waits for BUSY signal to be de asserted and
-   automatically issues the READ STATUS command. Currently, driver
-   is storing this status privately and returns the same when status
-   command comes from helper function after program/erase operation.
-   Now, for write operations, the status can be returned from main
-   function itself, so storing status can be removed for program
-   operations.
+>=20
+> Btw - the comment in that function doesn't quite make sense; the register=
+s are written unconditionally and regardless of keep-config:
+>=20
+> 	/*
+> 	 * Do not change the timing registers when using the DT property
+> 	 * marvell,nand-keep-config; in that case ->ndtr0 and ->ndtr1 from the
+> 	 * marvell_nand structure are supposedly empty.
+> 	 */
+> 	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
+> 	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
+>=20
+> I have a patch to fix that.
 
-Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 222 ++++++++++++++++----------------------
- 1 file changed, 91 insertions(+), 131 deletions(-)
+This comment should not be there anymore. The logic described in the
+first sentence is true and already handled in marvell_nand_chip_init().
+But at any moment ->ndtr[0|1] are clearly not supposed to be empty
+(anymore).
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 6fb85d3..f73ee0e 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -1382,39 +1382,37 @@ static void pre_command(struct qcom_nand_host *host, int command)
- 	host->last_command = command;
- 
- 	clear_read_regs(nandc);
--
--	if (command == NAND_CMD_RESET || command == NAND_CMD_READID ||
--	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
--		clear_bam_transaction(nandc);
-+	clear_bam_transaction(nandc);
- }
- 
- /*
-- * this is called after NAND_CMD_PAGEPROG and NAND_CMD_ERASE1 to set our
-- * privately maintained status byte, this status byte can be read after
-- * NAND_CMD_STATUS is called
-+ * QCOM NAND controller by default issues READ STATUS command after PROGRAM
-+ * PAGE/BLOCK ERASE operation and updates the same in its internal status
-+ * register for last codeword. This function parses status for each CW and
-+ * return actual status byte for write/erase operation.
-  */
--static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
-+static u8 parse_erase_write_errors(struct qcom_nand_host *host, int num_cw)
- {
- 	struct nand_chip *chip = &host->chip;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int num_cw;
- 	int i;
-+	u8 status = 0;
- 
--	num_cw = command == NAND_CMD_PAGEPROG ? ecc->steps : 1;
- 	nandc_read_buffer_sync(nandc, true);
- 
- 	for (i = 0; i < num_cw; i++) {
- 		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
- 
- 		if (flash_status & FS_MPU_ERR)
--			host->status &= ~NAND_STATUS_WP;
-+			status &= ~NAND_STATUS_WP;
- 
- 		if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
- 						 (flash_status &
- 						  FS_DEVICE_STS_ERR)))
--			host->status |= NAND_STATUS_FAIL;
-+			status |= NAND_STATUS_FAIL;
- 	}
-+
-+	return status;
- }
- 
- static void post_command(struct qcom_nand_host *host, int command)
-@@ -1428,9 +1426,12 @@ static void post_command(struct qcom_nand_host *host, int command)
- 		memcpy(nandc->data_buffer, nandc->reg_read_buf,
- 		       nandc->buf_count);
- 		break;
--	case NAND_CMD_PAGEPROG:
- 	case NAND_CMD_ERASE1:
--		parse_erase_write_errors(host, command);
-+		/*
-+		 * update privately maintained status byte, this status byte can
-+		 * be read after NAND_CMD_STATUS is called.
-+		 */
-+		host->status = parse_erase_write_errors(host, 1);
- 		break;
- 	default:
- 		break;
-@@ -1448,7 +1449,6 @@ static void qcom_nandc_command(struct mtd_info *mtd, unsigned int command,
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	bool wait = false;
- 	int ret = 0;
-@@ -1477,23 +1477,6 @@ static void qcom_nandc_command(struct mtd_info *mtd, unsigned int command,
- 		wait = true;
- 		break;
- 
--	case NAND_CMD_READ0:
--		/* we read the entire page for now */
--		WARN_ON(column != 0);
--
--		host->use_ecc = true;
--		set_address(host, 0, page_addr);
--		update_rw_regs(host, ecc->steps, true);
--		break;
--
--	case NAND_CMD_SEQIN:
--		WARN_ON(column != 0);
--		set_address(host, 0, page_addr);
--		break;
--
--	case NAND_CMD_PAGEPROG:
--	case NAND_CMD_STATUS:
--	case NAND_CMD_NONE:
- 	default:
- 		break;
- 	}
-@@ -1589,6 +1572,61 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
- 	return 0;
- }
- 
-+/* check if page write is successful */
-+static int check_write_errors(struct qcom_nand_host *host, int cw_cnt)
-+{
-+	u8 status = parse_erase_write_errors(host, cw_cnt);
-+
-+	return (status & NAND_STATUS_FAIL) ? -EIO : 0;
-+}
-+
-+/* performs the common init for page read/write operations */
-+static void
-+qcom_nand_init_page_op(struct qcom_nand_host *host, int num_cw, int page,
-+		       u16 addr, bool read)
-+{
-+	struct nand_chip *chip = &host->chip;
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+
-+	clear_read_regs(nandc);
-+	clear_bam_transaction(nandc);
-+	set_address(host, addr, page);
-+	update_rw_regs(host, num_cw, read);
-+	if (read)
-+		config_nand_page_read(nandc);
-+	else
-+		config_nand_page_write(nandc);
-+}
-+
-+/*
-+ * Performs the page operation by submitting DMA descriptors and checks
-+ * the errors. For read with ecc, the read function needs to do erased
-+ * page detection so skips the error check.
-+ */
-+static int
-+qcom_nand_start_page_op(struct qcom_nand_host *host, int num_cw, bool read)
-+{
-+	struct nand_chip *chip = &host->chip;
-+	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
-+	int ret;
-+
-+	ret = submit_descs(nandc);
-+	free_descs(nandc);
-+	if (ret) {
-+		dev_err(nandc->dev, "%s operation failure\n",
-+			read ? "READ" : "WRITE");
-+		return ret;
-+	}
-+
-+	if (!read)
-+		return check_write_errors(host, num_cw);
-+
-+	if (!host->use_ecc)
-+		return check_flash_errors(host, num_cw);
-+
-+	return 0;
-+}
-+
- /* performs raw read for one codeword */
- static int
- qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1598,15 +1636,10 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	int data_size1, data_size2, oob_size1, oob_size2;
--	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
-+	int reg_off = FLASH_BUF_ACC, read_loc = 0;
- 
--	nand_read_page_op(chip, page, 0, NULL, 0);
- 	host->use_ecc = false;
--
--	clear_bam_transaction(nandc);
--	set_address(host, host->cw_size * cw, page);
--	update_rw_regs(host, 1, true);
--	config_nand_page_read(nandc);
-+	qcom_nand_init_page_op(host, 1, page, host->cw_size * cw, true);
- 
- 	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
- 	oob_size1 = host->bbm_size;
-@@ -1647,14 +1680,7 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
- 
- 	read_data_dma(nandc, reg_off, oob_buf + oob_size1, oob_size2, 0);
- 
--	ret = submit_descs(nandc);
--	free_descs(nandc);
--	if (ret) {
--		dev_err(nandc->dev, "failure to read raw cw %d\n", cw);
--		return ret;
--	}
--
--	return check_flash_errors(host, 1);
-+	return qcom_nand_start_page_op(host, 1, true);
- }
- 
- /*
-@@ -1857,7 +1883,8 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
- 	int i, ret;
- 
--	config_nand_page_read(nandc);
-+	host->use_ecc = true;
-+	qcom_nand_init_page_op(host, ecc->steps, page, 0, true);
- 
- 	/* queue cmd descs for each codeword */
- 	for (i = 0; i < ecc->steps; i++) {
-@@ -1914,13 +1941,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 			oob_buf += oob_size;
- 	}
- 
--	ret = submit_descs(nandc);
--	free_descs(nandc);
--
--	if (ret) {
--		dev_err(nandc->dev, "failure to read page/oob\n");
-+	ret = qcom_nand_start_page_op(host, ecc->steps, true);
-+	if (ret)
- 		return ret;
--	}
- 
- 	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
- }
-@@ -1929,17 +1952,8 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
- {
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	u8 *data_buf, *oob_buf = NULL;
--
--	nand_read_page_op(chip, page, 0, NULL, 0);
--	data_buf = buf;
--	oob_buf = oob_required ? chip->oob_poi : NULL;
--
--	clear_bam_transaction(nandc);
--
--	return read_page_ecc(host, data_buf, oob_buf, page);
-+	return read_page_ecc(to_qcom_nand_host(chip), buf,
-+			     oob_required ? chip->oob_poi : NULL, page);
- }
- 
- /* implements ecc->read_page_raw() */
-@@ -1969,18 +1983,8 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
- static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 			       int page)
- {
--	struct qcom_nand_host *host = to_qcom_nand_host(chip);
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--
--	clear_read_regs(nandc);
--	clear_bam_transaction(nandc);
--
--	host->use_ecc = true;
--	set_address(host, 0, page);
--	update_rw_regs(host, ecc->steps, true);
--
--	return read_page_ecc(host, NULL, chip->oob_poi, page);
-+	return read_page_ecc(to_qcom_nand_host(chip), NULL,
-+			     chip->oob_poi, page);
- }
- 
- /* implements ecc->write_page() */
-@@ -1991,19 +1995,12 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u8 *data_buf, *oob_buf;
--	int i, ret;
--
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
--
--	clear_read_regs(nandc);
--	clear_bam_transaction(nandc);
-+	int i;
- 
- 	data_buf = (u8 *)buf;
- 	oob_buf = chip->oob_poi;
--
- 	host->use_ecc = true;
--	update_rw_regs(host, ecc->steps, false);
--	config_nand_page_write(nandc);
-+	qcom_nand_init_page_op(host, ecc->steps, page, 0, false);
- 
- 	for (i = 0; i < ecc->steps; i++) {
- 		int data_size, oob_size;
-@@ -2041,16 +2038,7 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 		oob_buf += oob_size;
- 	}
- 
--	ret = submit_descs(nandc);
--	if (ret)
--		dev_err(nandc->dev, "failure to write page\n");
--
--	free_descs(nandc);
--
--	if (!ret)
--		ret = nand_prog_page_end_op(chip);
--
--	return ret;
-+	return qcom_nand_start_page_op(host, ecc->steps, false);
- }
- 
- /* implements ecc->write_page_raw() */
-@@ -2062,18 +2050,13 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u8 *data_buf, *oob_buf;
--	int i, ret;
--
--	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
--	clear_read_regs(nandc);
--	clear_bam_transaction(nandc);
-+	int i;
- 
- 	data_buf = (u8 *)buf;
- 	oob_buf = chip->oob_poi;
- 
- 	host->use_ecc = false;
--	update_rw_regs(host, ecc->steps, false);
--	config_nand_page_write(nandc);
-+	qcom_nand_init_page_op(host, ecc->steps, page, 0, false);
- 
- 	for (i = 0; i < ecc->steps; i++) {
- 		int data_size1, data_size2, oob_size1, oob_size2;
-@@ -2113,16 +2096,7 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
- 		config_nand_cw_write(nandc);
- 	}
- 
--	ret = submit_descs(nandc);
--	if (ret)
--		dev_err(nandc->dev, "failure to write raw page\n");
--
--	free_descs(nandc);
--
--	if (!ret)
--		ret = nand_prog_page_end_op(chip);
--
--	return ret;
-+	return qcom_nand_start_page_op(host, ecc->steps, false);
- }
- 
- /*
-@@ -2140,9 +2114,6 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
- 	u8 *oob = chip->oob_poi, bbm_byte;
- 	int data_size, oob_size, bbm_offset, write_size;
--	int ret;
--
--	clear_bam_transaction(nandc);
- 
- 	/*
- 	 * The NAND base layer calls ecc->write_oob() by setting bytes at
-@@ -2183,24 +2154,13 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
- 		write_size = data_size + oob_size;
- 	}
- 
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
--	update_rw_regs(host, 1, false);
--
--	config_nand_page_write(nandc);
-+	qcom_nand_init_page_op(host, 1, page,
-+			       host->cw_size * (ecc->steps - 1), false);
- 	write_data_dma(nandc, FLASH_BUF_ACC,
- 		       nandc->data_buffer, write_size, 0);
- 	config_nand_cw_write(nandc);
- 
--	ret = submit_descs(nandc);
--
--	free_descs(nandc);
--
--	if (ret) {
--		dev_err(nandc->dev, "failure to write oob\n");
--		return -EIO;
--	}
--
--	return nand_prog_page_end_op(chip);
-+	return qcom_nand_start_page_op(host, 1, false);
- }
- 
- /*
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
-is a member of Code Aurora Forum, hosted by The Linux Foundation
+>=20
+> > Also, can you try with the mtd-utils directly (without UBI/UBIFS) with
+> > nanddump flash_erase and nandwrite to see what are the errors raised by
+> > the controller driver. =20
+>=20
+> The effect is that the controller does not get any interrupts anymore aft=
+er the resume. My test setup now executes the following command sequence:
+>=20
+>    # nandtest /dev/mtd2
+>    # echo mem >/sys/power/state
+>    [make the hardware resume]
+>    # echo "RESUMED!"
+>    # nandtest /dev/mtd2
+>=20
+> The first nandtest works, the second fails. I've added some printks in se=
+lect_chip() and a WARN_ON(!ret) in marvell_nfc_wait_op() to get a stack tra=
+ce, and this is the output after resume:
+>=20
+> > [   43.358823] marvell_nfc_select_chip(): 0016271c 0f3d00f2
+> > [   44.417980] ------------[ cut here ]------------
+> > [   44.422678] WARNING: CPU: 0 PID: 1297 at drivers/mtd/nand/raw/marvel=
+l_nand.c:629 marvell_nfc_wait_op+0x88/0xb8 [marvell_nand]
+> > [   44.433994] Modules linked in: marvell_nand pxamci
+> > [   44.438853] CPU: 0 PID: 1297 Comm: nandtest Not tainted 4.18.0-rc3+ =
+#392
+> > [   44.445510] Hardware name: Marvell PXA3xx (Device Tree Support)
+> > [   44.451450] Backtrace: > [   44.453938] [<c0106458>] (dump_backtrace=
+) from [<c0106718>] (show_stack+0x18/0x1c)
+> > [   44.461533]  r7:00000009 r6:00000000 r5:bf008e87 r4:00000000
+> > [   44.467185] [<c0106700>] (show_stack) from [<c066f5e0>] (dump_stack+=
+0x20/0x28)
+> > [   44.474468] [<c066f5c0>] (dump_stack) from [<c0111f9c>] (__warn+0xe8=
+/0x104)
+> > [   44.481479] [<c0111eb4>] (__warn) from [<c01120d4>] (warn_slowpath_n=
+ull+0x44/0x50)
+> > [   44.489077]  r9:00000004 r8:bf0094e4 r7:000003e8 r6:bf0075cc r5:0000=
+0275 r4:bf008e87
+> > [   44.496810] [<c0112090>] (warn_slowpath_null) from [<bf0075cc>] (mar=
+vell_nfc_wait_op+0x88/0xb8 [marvell_nand])
+> > [   44.506814]  r6:c66ba80c r5:c66ba7f0 r4:00000000
+> > [   44.511503] [<bf007544>] (marvell_nfc_wait_op [marvell_nand]) from [=
+<bf0079e0>] (marvell_nfc_erase_cmd_type_exec+0x74/0xa8 [marvell_nand])
+> > [   44.523919]  r7:0000000c r6:00000000 r5:c66bc810 r4:c0a03008
+> > [   44.529647] [<bf00796c>] (marvell_nfc_erase_cmd_type_exec [marvell_n=
+and]) from [<c04382c8>] (nand_op_parser_exec_op+0x148/0x25c)
+> > [   44.541214]  r6:00000001 r5:bf008760 r4:c67c3c30
+> > [   44.545839] [<c0438180>] (nand_op_parser_exec_op) from [<bf007500>] =
+(marvell_nfc_exec_op+0x30/0x3c [marvell_nand])
+> > [   44.556195]  r10:00000001 r9:ffffffff r8:c0a03008 r7:89705f41 r6:36b=
+4a597 r5:c67c3c38
+> > [   44.564023]  r4:c66bc810
+> > [   44.566577] [<bf0074d0>] (marvell_nfc_exec_op [marvell_nand]) from [=
+<c0437dd4>] (nand_erase_op+0x148/0x1f4)
+> > [   44.576330] [<c0437c8c>] (nand_erase_op) from [<c04383fc>] (single_e=
+rase+0x20/0x24)
+> > [   44.584000]  r8:00000180 r7:00000040 r6:c6815900 r5:00000000 r4:c66b=
+c810
+> > [   44.590745] [<c04383dc>] (single_erase) from [<c043f544>] (nand_eras=
+e_nand+0x1b0/0x23c)
+> > [   44.598781] [<c043f394>] (nand_erase_nand) from [<c043f6e8>] (nand_e=
+rase+0x14/0x18)
+> > [   44.606399]  r10:c0a03008 r9:00000000 r8:00000000 r7:00000000 r6:000=
+c0000 r5:c67b5670
+> > [   44.614237]  r4:c6815900
+> > [   44.616794] [<c043f6d4>] (nand_erase) from [<c04300ac>] (part_erase+=
+0x34/0x74)
+> > [   44.624051] [<c0430078>] (part_erase) from [<c042c794>] (mtd_erase+0=
+x74/0x9c)
+> > [   44.631215]  r7:00000000 r6:00020000 r5:00000000 r4:00060000
+> > [   44.636854] [<c042c720>] (mtd_erase) from [<c0432c4c>] (mtdchar_ioct=
+l+0x1188/0x11b0)
+> > [   44.644618]  r9:c67c2000 r8:00000051 r7:c6815900 r6:00000000 r5:c67b=
+5400 r4:bee7dd08
+> > [   44.652396] [<c0431ac4>] (mtdchar_ioctl) from [<c0432ca8>] (mtdchar_=
+unlocked_ioctl+0x34/0x4c)
+> > [   44.660947]  r10:c0a03008 r9:c67c2000 r8:bee7dd08 r7:bee7dd08 r6:400=
+84d02 r5:c6650280
+> > [   44.668784]  r4:c0a227c0
+> > [   44.671339] [<c0432c74>] (mtdchar_unlocked_ioctl) from [<c01d17d4>] =
+(vfs_ioctl+0x28/0x3c)
+> > [   44.679533]  r7:40084d02 r6:c6650280 r5:c6679c28 r4:bee7dd08
+> > [   44.685174] [<c01d17ac>] (vfs_ioctl) from [<c01d19c4>] (do_vfs_ioctl=
++0x98/0x904)
+> > [   44.692604] [<c01d192c>] (do_vfs_ioctl) from [<c01d2270>] (ksys_ioct=
+l+0x40/0x5c)
+> > [   44.700033]  r10:00020000 r9:c67c2000 r8:bee7dd08 r7:40084d02 r6:c66=
+50280 r5:00000003
+> > [   44.707805]  r4:c6650280
+> > [   44.710398] [<c01d2230>] (ksys_ioctl) from [<c01d229c>] (sys_ioctl+0=
+x10/0x14)
+> > [   44.717494]  r9:c67c2000 r8:c01011e4 r7:00000036 r6:00000000 r5:0002=
+2098 r4:000220c0
+> > [   44.725265] [<c01d228c>] (sys_ioctl) from [<c0101000>] (ret_fast_sys=
+call+0x0/0x50)
+> > [   44.732855] Exception stack(0xc67c3fa8 to 0xc67c3ff0)
+> > [   44.737954] 3fa0:                   000220c0 00022098 00000003 40084=
+d02 bee7dd08 00020000
+> > [   44.746087] 3fc0: 000220c0 00022098 00000000 00000036 00022084 b6d5a=
+008 b6d5a008 b6d5a008
+> > [   44.754273] 3fe0: 00022024 bee7dcec 00010e34 b6e67dbc
+> > [   44.759363] ---[ end trace b29035065663519d ]---
+> > [   44.763970] marvell-nfc 43100000.nand-controller: Timeout waiting fo=
+r RB signal
+> > MEMERASE: Input/output error
+> > [   44.771960] marvell_nfc_select_chip(): 0016271c 0f3d00f2
+> > 00020000: erasing... [   44.812608] marvell_nfc_select_chip(): 0016271c=
+ 0f3d00f2
+> > [   45.857970] ------------[ cut here ]------------ =20
+>=20
+> FWIW, my suspend/resume routines gained some more flesh now, but somethin=
+g is still missing I suppose:
+>=20
+> > static int __maybe_unused marvell_nfc_suspend(struct device *dev)
+> > {
+> > 	struct marvell_nfc *nfc =3D dev_get_drvdata(dev);
+> > 	struct marvell_nand_chip *chip; =20
+> > > 	list_for_each_entry(chip, &nfc->chips, node) =20
+> > 		marvell_nfc_wait_ndrun(&chip->chip); =20
+> > > 	clk_disable_unprepare(nfc->core_clk);
+> > > 	return 0; =20
+> > } =20
+> > > static int __maybe_unused marvell_nfc_resume(struct device *dev) =20
+> > {
+> > 	struct marvell_nfc *nfc =3D dev_get_drvdata(dev);
+> > 	int ret; =20
+> > > 	ret =3D clk_prepare_enable(nfc->core_clk); =20
+> > 	if (ret < 0)
+> > 		return ret; =20
+> > > 	/* =20
+> > 	 * Reset nfc->selected_chip so the next command will cause the timing
+> > 	 * registers to be restored in marvell_nfc_select_chip().
+> > 	 */
+> > 	nfc->selected_chip =3D NULL; =20
+> > > 	writel_relaxed(NDCR_ALL_INT | NDCR_ND_ARB_EN | NDCR_SPARE_EN | =20
+> > 		       NDCR_RD_ID_CNT(NFCV1_READID_LEN), nfc->regs + NDCR);
+> > 	writel_relaxed(0xFFFFFFFF, nfc->regs + NDSR);
+> > 	writel_relaxed(0, nfc->regs + NDECCCTRL); =20
+> > > 	return 0; =20
+> > } =20
+>=20
+> The controller loses all its state after resume, but I don't see which re=
+gister is not re-initialized after that, but I might miss something.
+
+I suppose you are good with the above hooks.
+
+Maybe you can add traces in the IRQ handler and also dump NDSR on
+timeout. Let's check:
+- If the IRQ is fired or not
+- If the right bit is set or not
+
+I don't have more fresh ideas right now...
+
+>=20
+> I'll get back to this in a couple of days, because I have to do this in m=
+y spare time. Miquel, do you have any platform with such a controller that =
+is suspend-able? It might still be an issue outside of this driver, after a=
+ll.
+
+If it worked with the pxa3xx_nand.c driver, then it's probably a driver
+issue... Can you test with the pxa3xx_nand.c driver with the same
+kernel version? You'll have to revert at least:
+7576594c8e69 mtd: nand: remove useless fields from pxa3xx NAND platform data
+cc396436c24d mtd: nand: remove deprecated pxa3xx_nand driver
+925d5e426861 ARM: dts: armada-38x: update NAND node with new bindings
+
+I have some platforms with such controller but I never used
+suspend/resume on them, I'll have to check.
+
+
+Thanks,
+Miqu=C3=A8l
