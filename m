@@ -1,7 +1,7 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbLXT-000411-8x
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 07:52:24 +0000
+ id 1fbLXT-00041V-Cw
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 07:52:26 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
@@ -11,12 +11,11 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 0/5] Update for removing driver specific BBM functions
-Date: Fri,  6 Jul 2018 13:21:54 +0530
-Message-Id: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 3/5] mtd: rawnand: qcom: fix NAND register write errors
+Date: Fri,  6 Jul 2018 13:21:57 +0530
+Message-Id: <1530863519-5564-4-git-send-email-absahu@codeaurora.org>
+In-Reply-To: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
+References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch series deals mainly with removing driver specific bad block
-functions and some minor fixing/cleanup.
+Fix the following NAND register write errors which will
+be generated if access protection is enabled.
 
-1. When initial support for this driver was added [1], then the
-   plan was to remove these driver specific functions when NAND base
-   layer has support for doing raw read/write for bad block related
-   things. Moving to raw read/write seems to take more time so this patch
-   series implemented alternate logic for reading/writing bad block with
-   normal read/write itself. This alternate logic relies on some
-   assumption which seems to be better than driver specific functions and
-   provide more functionality. Some discussion regarding it has already
-   happened in [2].
+1. SFLASHC_BURST_CFG register is not available for supported
+   NAND contollers by this driver, so this can be removed.
+2. NAND_CTRL is operational register and register writes to
+   operational registers should always be done through
+   command descriptors if BAM_MODE is already enabled.
+   With full boot chain, bootloader already enables
+   BAM_MODE so read the NAND_CTRL register value and write
+   only if BAM_MODE is not set.
 
-2. Some part of code is duplicated in every read/write function
-   so clean up the code by making helper function.
+Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+---
+ drivers/mtd/nand/raw/qcom_nandc.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-3. Bootloaders does access protection for some of the NAND
-   registers which generates few write errors if it is enabled.
-
-4. Create RAM based BBT table. Flash based BBT table can’t be
-   used since our bootloader does not have support for the same.
-
-**This patch series is rebased over linux-next with PATCH [3]
-
-[1]: http://patchwork.ozlabs.org/patch/508565/
-[2]: https://patchwork.ozlabs.org/patch/920563/
-[3]: https://patchwork.ozlabs.org/patch/938631/
-
-Abhishek Sahu (5):
-  mtd: rawnand: qcom: remove driver specific bad block check function
-  mtd: rawnand: qcom: remove driver specific block_markbad function
-  mtd: rawnand: qcom: fix NAND register write errors
-  mtd: rawnand: qcom: update BBT related flags
-  mtd: rawnand: qcom: reorganization by removing read/write helpers
-
- drivers/mtd/nand/raw/qcom_nandc.c | 439 ++++++++++++++------------------------
- 1 file changed, 162 insertions(+), 277 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+index df12cf3..9e6b383 100644
+--- a/drivers/mtd/nand/raw/qcom_nandc.c
++++ b/drivers/mtd/nand/raw/qcom_nandc.c
+@@ -2693,15 +2693,20 @@ static int qcom_nandc_setup(struct qcom_nand_controller *nandc)
+ {
+ 	u32 nand_ctrl;
+ 
+-	/* kill onenand */
+-	nandc_write(nandc, SFLASHC_BURST_CFG, 0);
+ 	nandc_write(nandc, dev_cmd_reg_addr(nandc, NAND_DEV_CMD_VLD),
+ 		    NAND_DEV_CMD_VLD_VAL);
+ 
+ 	/* enable ADM or BAM DMA */
+ 	if (nandc->props->is_bam) {
+ 		nand_ctrl = nandc_read(nandc, NAND_CTRL);
+-		nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
++		/*
++		 * Once BAM_MODE_EN bit is set then QPIC_NAND_CTRL register
++		 * should be written with BAM instead of writel.
++		 * Check if BAM_MODE_EN is already set by bootloader and write
++		 * only if this bit is not set.
++		 */
++		if (!(nand_ctrl & BAM_MODE_EN))
++			nandc_write(nandc, NAND_CTRL, nand_ctrl | BAM_MODE_EN);
+ 	} else {
+ 		nandc_write(nandc, NAND_FLASH_CHIP_SELECT, DM_EN);
+ 	}
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
