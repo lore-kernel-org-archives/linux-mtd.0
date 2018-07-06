@@ -1,6 +1,6 @@
 Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbLXT-000412-An
+ id 1fbLXT-00041D-DE
  for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 07:52:26 +0000
 From: Abhishek Sahu <absahu@codeaurora.org>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -11,15 +11,12 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>,
  Abhishek Sahu <absahu@codeaurora.org>
-Subject: [PATCH 1/5] mtd: rawnand: qcom: remove driver specific bad block
- check function
-Date: Fri,  6 Jul 2018 13:21:55 +0530
-Message-Id: <1530863519-5564-2-git-send-email-absahu@codeaurora.org>
+Subject: [PATCH 2/5] mtd: rawnand: qcom: remove driver specific block_markbad
+ function
+Date: Fri,  6 Jul 2018 13:21:56 +0530
+Message-Id: <1530863519-5564-3-git-send-email-absahu@codeaurora.org>
 In-Reply-To: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
 References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,211 +26,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The QCOM NAND controller skips the bad block bytes when reading
-with ECC enabled. The NAND base layer invokes ->read_oob() function
-for bad block check which expects the BBM bytes to be copied at
-badblockpos offset in OOB buffer. When initial support for this
-driver was added, the driver specific function was added
-temporarily for bad block check with assumption to change
-for raw read in NAND base layer. Moving to raw read for bad block
-check seems to take more time so this patch removes driver specific
-bad block check function and uses following logic.
+The NAND base layer calls write_oob() by setting bytes at
+chip->badblockpos with value non 0xFF for updating bad block status.
+The QCOM NAND controller skips the bad block bytes while doing normal
+write with ECC enabled. When initial support for this driver was
+added, the driver specific function was added temporarily for
+block_markbad() with assumption to change for raw read in NAND base
+layer. Moving to raw read for block_markbad() seems to take more time
+so this patch removes driver specific block_markbad() function by
+using following HACK in write_oob() function.
 
-The QCOM NAND controller updates the BAD_BLOCK_STATUS bits value in
-NAND_BUFFER_STATUS register with every page read operation. The OOB
-buffer can be updated with this value while checking the status for
-last codeword.
-
-QCOM NAND controller layout does not support BBM byte at offset
-other than zero so check the chip’s badblockpos and return probe
-failure for all these chips.
+Check for BBM bytes in OOB and accordingly do raw write for updating
+BBM bytes in NAND flash or normal write for updating available OOB
+bytes.
 
 Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 ---
- drivers/mtd/nand/raw/qcom_nandc.c | 118 ++++++++++----------------------------
- 1 file changed, 31 insertions(+), 87 deletions(-)
+ drivers/mtd/nand/raw/qcom_nandc.c | 103 +++++++++++++++-----------------------
+ 1 file changed, 40 insertions(+), 63 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 994f980..ea253ac 100644
+index ea253ac..df12cf3 100644
 --- a/drivers/mtd/nand/raw/qcom_nandc.c
 +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -80,6 +80,8 @@
- /* NAND_BUFFER_STATUS bits */
- #define	BS_UNCORRECTABLE_BIT		BIT(8)
- #define	BS_CORRECTABLE_ERR_MSK		0x1f
-+#define BAD_BLK_STATUS			16
-+#define BAD_BLK_STATUS_2		24
+@@ -2138,28 +2138,57 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+ 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+-	u8 *oob = chip->oob_poi;
+-	int data_size, oob_size;
++	u8 *oob = chip->oob_poi, bbm_byte;
++	int data_size, oob_size, bbm_offset, write_size;
+ 	int ret;
  
- /* NAND_DEVn_CFG0 bits */
- #define	DISABLE_STATUS_AFTER_WRITE	4
-@@ -1742,16 +1744,14 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
- 	unsigned int max_bitflips = 0, uncorrectable_cws = 0;
- 	struct read_stats *buf;
- 	bool flash_op_err = false, erased;
--	int i;
-+	int i, data_len, oob_len;
-+	u32 flash, erased_cw, buffer = 0;
- 	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+-	host->use_ecc = true;
+ 	clear_bam_transaction(nandc);
  
- 	buf = (struct read_stats *)nandc->reg_read_buf;
- 	nandc_read_buffer_sync(nandc, true);
- 
- 	for (i = 0; i < ecc->steps; i++, buf++) {
--		u32 flash, buffer, erased_cw;
--		int data_len, oob_len;
--
- 		if (i == (ecc->steps - 1)) {
- 			data_len = ecc->size - ((ecc->steps - 1) << 2);
- 			oob_len = ecc->steps << 2;
-@@ -1824,12 +1824,24 @@ static int parse_read_errors(struct qcom_nand_host *host, u8 *data_buf,
- 	if (flash_op_err)
- 		return -EIO;
- 
--	if (!uncorrectable_cws)
--		return max_bitflips;
-+	if (uncorrectable_cws) {
-+		max_bitflips = check_for_erased_page(host, data_buf_start,
-+					oob_buf_start, uncorrectable_cws,
-+					page, max_bitflips);
-+	}
- 
--	return check_for_erased_page(host, data_buf_start, oob_buf_start,
--				     uncorrectable_cws, page,
--				     max_bitflips);
+-	/* calculate the data and oob size for the last codeword/step */
+-	data_size = ecc->size - ((ecc->steps - 1) << 2);
+-	oob_size = mtd->oobavail;
 +	/*
-+	 * Updates the BBM bytes in OOB buffer with BAD_BLK_STATUS bits value
-+	 * of NAND_BUFFER_STATUS register. With every page read operation,
-+	 * controller updates the bad block status data into this register.
++	 * The NAND base layer calls ecc->write_oob() by setting bytes at
++	 * chip->badblockpos (chip->badblockpos will be 0 for QCOM NAND
++	 * controller layout) in OOB buffer with value other that 0xFF
++	 * for updating bad block status. QCOM NAND controller skips
++	 * BBM bytes while writing with ECC, so following HACK has been
++	 * added in this function for using generic block_markbad() function.
++	 *
++	 * Check for BBM bytes in OOB and accordingly do raw write for
++	 * updating BBM bytes in NAND flash or normal write with ECC for
++	 * updating available OOB bytes.
 +	 */
-+	if (oob_buf_start) {
-+		oob_buf_start[0] = (buffer >> BAD_BLK_STATUS) & 0xff;
-+		if (chip->options & NAND_BUSWIDTH_16)
-+			oob_buf_start[1] = (buffer >> BAD_BLK_STATUS_2) & 0xff;
-+	}
++	bbm_byte = oob[0];
++	if (chip->options & NAND_BUSWIDTH_16)
++		bbm_byte &= oob[1];
+ 
+-	memset(nandc->data_buffer, 0xff, host->cw_data);
+-	/* override new oob content to last codeword */
+-	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
+-				    0, mtd->oobavail);
++	/* Write BBM bytes by doing raw write. */
++	if (bbm_byte != 0xff) {
++		host->use_ecc = false;
++		memset(nandc->data_buffer, 0xff, host->cw_size);
++		/* Determine the BBM bytes position and update the same */
++		bbm_offset = mtd->writesize - host->cw_size * (ecc->steps - 1);
++		memcpy(nandc->data_buffer + bbm_offset, oob, host->bbm_size);
++		write_size = host->cw_size;
++	/* Write OOB bytes by doing normal write with ECC */
++	} else {
++		host->use_ecc = true;
++		/* calculate the data and oob size for the last codeword/step */
++		data_size = ecc->size - ((ecc->steps - 1) << 2);
++		oob_size = mtd->oobavail;
 +
-+	return max_bitflips;
- }
++		memset(nandc->data_buffer, 0xff, host->cw_data);
++		/* override new oob content to last codeword */
++		mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size,
++					    oob, 0, mtd->oobavail);
++
++		write_size = data_size + oob_size;
++	}
  
- /*
-@@ -1913,41 +1925,6 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
- 	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
- }
+ 	set_address(host, host->cw_size * (ecc->steps - 1), page);
+ 	update_rw_regs(host, 1, false);
  
--/*
-- * a helper that copies the last step/codeword of a page (containing free oob)
-- * into our local buffer
-- */
--static int copy_last_cw(struct qcom_nand_host *host, int page)
--{
--	struct nand_chip *chip = &host->chip;
--	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
--	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int size;
--	int ret;
--
--	clear_read_regs(nandc);
--
--	size = host->use_ecc ? host->cw_data : host->cw_size;
--
--	/* prepare a clean read buffer */
--	memset(nandc->data_buffer, 0xff, size);
--
--	set_address(host, host->cw_size * (ecc->steps - 1), page);
--	update_rw_regs(host, 1, true);
--
--	config_nand_single_cw_page_read(nandc, host->use_ecc);
--
--	read_data_dma(nandc, FLASH_BUF_ACC, nandc->data_buffer, size, 0);
--
--	ret = submit_descs(nandc);
--	if (ret)
--		dev_err(nandc->dev, "failed to copy last codeword\n");
--
--	free_descs(nandc);
--
--	return ret;
--}
--
- /* implements ecc->read_page() */
- static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
- 				uint8_t *buf, int oob_required, int page)
-@@ -2197,44 +2174,6 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+ 	config_nand_page_write(nandc);
+ 	write_data_dma(nandc, FLASH_BUF_ACC,
+-		       nandc->data_buffer, data_size + oob_size, 0);
++		       nandc->data_buffer, write_size, 0);
+ 	config_nand_cw_write(nandc);
+ 
+ 	ret = submit_descs(nandc);
+@@ -2174,48 +2203,6 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
  	return nand_prog_page_end_op(chip);
  }
  
--static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
+-static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
 -{
 -	struct nand_chip *chip = mtd_to_nand(mtd);
 -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
 -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
 -	struct nand_ecc_ctrl *ecc = &chip->ecc;
--	int page, ret, bbpos, bad = 0;
+-	int page, ret;
+-
+-	clear_read_regs(nandc);
+-	clear_bam_transaction(nandc);
+-
+-	/*
+-	 * to mark the BBM as bad, we flash the entire last codeword with 0s.
+-	 * we don't care about the rest of the content in the codeword since
+-	 * we aren't going to use this block again
+-	 */
+-	memset(nandc->data_buffer, 0x00, host->cw_size);
 -
 -	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
 -
--	/*
--	 * configure registers for a raw sub page read, the address is set to
--	 * the beginning of the last codeword, we don't care about reading ecc
--	 * portion of oob. we just want the first few bytes from this codeword
--	 * that contains the BBM
--	 */
+-	/* prepare write */
 -	host->use_ecc = false;
+-	set_address(host, host->cw_size * (ecc->steps - 1), page);
+-	update_rw_regs(host, 1, false);
 -
--	clear_bam_transaction(nandc);
--	ret = copy_last_cw(host, page);
--	if (ret)
--		goto err;
+-	config_nand_page_write(nandc);
+-	write_data_dma(nandc, FLASH_BUF_ACC,
+-		       nandc->data_buffer, host->cw_size, 0);
+-	config_nand_cw_write(nandc);
 -
--	if (check_flash_errors(host, 1)) {
--		dev_warn(nandc->dev, "error when trying to read BBM\n");
--		goto err;
+-	ret = submit_descs(nandc);
+-
+-	free_descs(nandc);
+-
+-	if (ret) {
+-		dev_err(nandc->dev, "failure to update BBM\n");
+-		return -EIO;
 -	}
 -
--	bbpos = mtd->writesize - host->cw_size * (ecc->steps - 1);
--
--	bad = nandc->data_buffer[bbpos] != 0xff;
--
--	if (chip->options & NAND_BUSWIDTH_16)
--		bad = bad || (nandc->data_buffer[bbpos + 1] != 0xff);
--err:
--	return bad;
+-	return nand_prog_page_end_op(chip);
 -}
 -
- static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
-@@ -2501,6 +2440,12 @@ static int qcom_nand_host_setup(struct qcom_nand_host *host)
- 		return ret;
- 	}
- 
-+	if (chip->badblockpos != 0) {
-+		dev_err(nandc->dev, "BBM at %d offset is not supported\n",
-+			chip->badblockpos);
-+		return -ENOTSUPP;
-+	}
-+
- 	if (ecc->strength >= 8) {
- 		/* 8 bit ECC defaults to BCH ECC on all platforms */
- 		host->bch_enabled = true;
-@@ -2813,14 +2758,13 @@ static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+ /*
+  * the three functions below implement chip->read_byte(), chip->read_buf()
+  * and chip->write_buf() respectively. these aren't used for
+@@ -2757,16 +2744,6 @@ static int qcom_nand_host_init(struct qcom_nand_controller *nandc,
+ 	chip->set_features	= nand_get_set_features_notsupp;
  	chip->get_features	= nand_get_set_features_notsupp;
  
- 	/*
--	 * the bad block marker is readable only when we read the last codeword
-+	 * the bad block marker is writable only when we write the last codeword
- 	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
--	 * helpers don't allow us to read BB from a nand chip with ECC
--	 * disabled (MTD_OPS_PLACE_OOB is set by default). use the block_bad
--	 * and block_markbad helpers until we permanently switch to using
-+	 * helpers don't allow us to write BB from a nand chip with ECC
-+	 * disabled (MTD_OPS_PLACE_OOB is set by default). use the block_markbad
-+	 * helpers until we permanently switch to using
- 	 * MTD_OPS_RAW for all drivers (with the help of badblockbits)
- 	 */
--	chip->block_bad		= qcom_nandc_block_bad;
- 	chip->block_markbad	= qcom_nandc_block_markbad;
- 
+-	/*
+-	 * the bad block marker is writable only when we write the last codeword
+-	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
+-	 * helpers don't allow us to write BB from a nand chip with ECC
+-	 * disabled (MTD_OPS_PLACE_OOB is set by default). use the block_markbad
+-	 * helpers until we permanently switch to using
+-	 * MTD_OPS_RAW for all drivers (with the help of badblockbits)
+-	 */
+-	chip->block_markbad	= qcom_nandc_block_markbad;
+-
  	chip->controller = &nandc->controller;
+ 	chip->options |= NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER |
+ 			 NAND_SKIP_BBTSCAN;
 -- 
 QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc.
 is a member of Code Aurora Forum, hosted by The Linux Foundation
