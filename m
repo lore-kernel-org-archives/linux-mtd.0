@@ -1,22 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbUff-00071W-C3
- for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 17:37:29 +0000
-Date: Fri, 6 Jul 2018 19:37:15 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: miquel.raynal@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
- Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH v6 5/6] mtd: rawnand: micron: support 8/512 on-die ECC
-Message-ID: <20180706193715.5b2d8bdd@bbrezillon>
-In-Reply-To: <20180624224448.21872-6-chris.packham@alliedtelesis.co.nz>
-References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
- <20180624224448.21872-6-chris.packham@alliedtelesis.co.nz>
+Received: from mail-it0-x230.google.com ([2607:f8b0:4001:c0b::230])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbVQt-0005Xp-Tl
+ for linux-mtd@lists.infradead.org; Fri, 06 Jul 2018 18:26:17 +0000
+Received: by mail-it0-x230.google.com with SMTP id a195-v6so17670236itd.3
+ for <linux-mtd@lists.infradead.org>; Fri, 06 Jul 2018 11:26:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CABatt_xYR1OXfmoK=gUS2ny67U3q0hg6Q_woRmuDQ=U4By3POg@mail.gmail.com>
+In-Reply-To: <CABatt_xYR1OXfmoK=gUS2ny67U3q0hg6Q_woRmuDQ=U4By3POg@mail.gmail.com>
+From: Martin Townsend <mtownsend1973@gmail.com>
+Date: Fri, 6 Jul 2018 19:25:52 +0100
+Message-ID: <CABatt_wadds+7xKLr_+MqmVazHDnm50_viLV5KaqYNKwTxFavw@mail.gmail.com>
+Subject: Re: UBI on small SPI-NOR device
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,177 +22,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 25 Jun 2018 10:44:47 +1200
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+On Fri, Jul 6, 2018 at 6:25 PM Martin Townsend <mtownsend1973@gmail.com> wrote:
+>
+> Hi,
+>
+> I'm trying to get UBI working on a small SPI-NOR flash device, it's
+> working great on the NAND but for some reason I can't get it working
+> on the SPI-NOR.
+>
+> It's very small as you can see and only needs to store several small files.
+>
+> mtd3: 000a0000 00008000 "u-boot"
+> mtd4: 00160000 00008000 "nvmem"
+>
+> I've set the device up so it has a 32KiB Sector Size.  But when I
+> erase the mtd partition and then attach to it I see UBI Erase Blocks
+> every 64KiB even though the output looks ok
+>
+> root@mach-cw-rnet-ppm-1717:~# flash_erase /dev/mtd4 0 0
+> Erasing 32 Kibyte @ 6400158000 -- -1 % complete
+> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
+> UBI device number 0, total 44 LEBs (1436160 bytes, 1.4 MiB), available
+> 38 LEBs (1240320 bytes, 1.2 MiB), LEB size 32640 bytes (31.9 KiB)
+> root@mach-cw-rnet-ppm-1717:~# ubinfo /dev/ubi0
+> ubi0
+> Volumes count:                           0
+> Logical eraseblock size:                 32640 bytes, 31.9 KiB
+> Total amount of logical eraseblocks:     44 (1436160 bytes, 1.4 MiB)
+> Amount of available logical eraseblocks: 38 (1240320 bytes, 1.2 MiB)
+> Maximum count of volumes                 128
+> Count of bad physical eraseblocks:       0
+> Count of reserved physical eraseblocks:  0
+> Current maximum erase counter value:     1
+> Minimum input/output unit size:          1 byte
+> Character device major/minor:            245:0
+>
+> Yet a Hexdump of /dev/mtd4 shows what I'm assuming erase blocks every 64KiB
+>
+> 00138000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00138010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
+> 00138020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00138030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
+> 00138040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+> *
+> 00148000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00148010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
+> 00148020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00148030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
+> 00148040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+> *
+> 00158000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00158010  00 00 00 40 00 00 00 80  5c 6f 29 43 00 00 00 00  |...@....\o)C....|
+> 00158020  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+> 00158030  00 00 00 00 00 00 00 00  00 00 00 00 e6 a6 98 04  |................|
+> 00158040  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
+>
+> root@mach-cw-rnet-ppm-1717:~# hexdump -C /dev/mtd4 | grep UBI#
+> 00008000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00018000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00028000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00038000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00048000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00058000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00068000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00078000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00088000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00098000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000a8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000b8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000c8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000d8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000e8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 000f8000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00108000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00118000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00128000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00138000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00148000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+> 00158000  55 42 49 23 01 00 00 00  00 00 00 00 00 00 00 01  |UBI#............|
+>
+> I count 22 eraseblocks and not 44 which again suggests that 64KiB has been used.
+>
+> Here's the entry from the spi_nor_ids
+> { "is25lp016", INFO(0x9d6015, 0, 32 * 1024,  64, SPI_NOR_DUAL_READ |
+> SPI_NOR_QUAD_READ) },
+>
+> which I have added.
+>
+> I've tried using 64KiB Erase blocks but then there aren't enough when
+> mounting the UBI volume.
+>
+> I can actually create a volume and mount it but when I detach and
+> re-attach a couple of times it fails
+>
+> root@mach-cw-rnet-ppm-1717:~# ubimkvol /dev/ubi0 -N nvmem -m
+> Set volume size to 1240320
+> Volume ID 0, size 38 LEBs (1240320 bytes, 1.2 MiB), LEB size 32640
+> bytes (31.9 KiB), dynamic, name "nvmem", alignment 1
+> root@mach-cw-rnet-ppm-1717:~# mount -t ubifs ubi0:nvmem /mnt
+> root@mach-cw-rnet-ppm-1717:~# df -h /mnt
+> Filesystem                Size      Used Available Use% Mounted on
+> ubi0:nvmem              588.0K     20.0K    524.0K   4% /mnt
+> root@mach-cw-rnet-ppm-1717:~# echo test > /mnt/test.txt
+> root@mach-cw-rnet-ppm-1717:~# df -h /mnt
+> Filesystem                Size      Used Available Use% Mounted on
+> ubi0:nvmem              588.0K     24.0K    520.0K   4% /mnt
+> root@mach-cw-rnet-ppm-1717:~# umount /mnt
+> root@mach-cw-rnet-ppm-1717:~# ubidetach -p /dev/mtd4
+> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
+> ubi0 warning: ubi_read_volume_table: volume table copy #2 is corrupted
+> UBI device number 0, total 44 LEBs (1436160 bytes, 1.4 MiB), available
+> 0 LEBs (0 bytes), LEB size 32640 bytes (31.9 KiB)
+> root@mach-cw-rnet-ppm-1717:~# ubidetach -p /dev/mtd4
+> root@mach-cw-rnet-ppm-1717:~# ubiattach /dev/ubi_ctrl -p /dev/mtd4
+> ubi0 error: ubi_read_volume_table: the layout volume was not found
+> ubi0 error: ubi_attach_mtd_dev: failed to attach mtd4, error -22
+> ubiattach: error!: cannot attach "/dev/mtd4"
+>            error 22 (Invalid argument)
+>
+>
+> Kernel is 4.9 and UBI is working absolutely fine on the NAND device we
+> also have on this board.
+>
+> Any help would be greatly appreciated,
+> Martin.
 
-> Micron MT29F1G08ABAFAWP-ITE:F supports an on-die ECC with 8 bits
-> per 512 bytes. Add support for this combination.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Changes in v2:
-> - New
-> Changes in v3:
-> - Handle reporting of corrected errors that don't require a rewrite, expand
->   comment for the ECC status bits.
-> Changes in v4:
-> - Use a switch statement for handling ECC status
-> - Update ecc_stats.corrected
-> Changes in v5:
-> - Move status checking to different routines for 4/512 and 8/512 assume
->   the highest number of bit flips for a given status value.
-> Changes in v6:
-> - Add review from Boris
-> 
->  drivers/mtd/nand/raw/nand_micron.c | 100 +++++++++++++++++++++++------
->  1 file changed, 79 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> index d30bd4df9b12..f83053562925 100644
-> --- a/drivers/mtd/nand/raw/nand_micron.c
-> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> @@ -18,10 +18,30 @@
->  #include <linux/mtd/rawnand.h>
->  
->  /*
-> - * Special Micron status bit that indicates when the block has been
-> - * corrected by on-die ECC and should be rewritten
-> + * Special Micron status bit 3 indicates that the block has been
-> + * corrected by on-die ECC and should be rewritten.
->   */
-> -#define NAND_STATUS_WRITE_RECOMMENDED	BIT(3)
-> +#define NAND_ECC_STATUS_WRITE_RECOMMENDED	BIT(3)
-> +
-> +/*
-> + * On chips with 8-bit ECC and additional bit can be used to distinguish
-> + * cases where a errors were corrected without needing a rewrite
-> + *
-> + * Bit 4 Bit 3 Bit 0 Description
-> + * ----- ----- ----- -----------
-> + * 0     0     0     No Errors
-> + * 0     0     1     Multiple uncorrected errors
-> + * 0     1     0     4 - 6 errors corrected, recommend rewrite
-> + * 0     1     1     Reserved
-> + * 1     0     0     1 - 3 errors corrected
-> + * 1     0     1     Reserved
-> + * 1     1     0     7 - 8 errors corrected, recommend rewrite
-> + */
-> +#define NAND_ECC_STATUS_MASK		(BIT(4) | BIT(3) | BIT(0))
-> +#define NAND_ECC_STATUS_UNCORRECTABLE	BIT(0)
-> +#define NAND_ECC_STATUS_4_6_CORRECTED	BIT(3)
-> +#define NAND_ECC_STATUS_1_3_CORRECTED	BIT(4)
-> +#define NAND_ECC_STATUS_7_8_CORRECTED	(BIT(4) | BIT(3))
->  
->  struct nand_onfi_vendor_micron {
->  	u8 two_plane_read;
-> @@ -113,6 +133,54 @@ static int micron_nand_on_die_ecc_setup(struct nand_chip *chip, bool enable)
->  	return nand_set_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
->  }
->  
-> +
-> +static int micron_nand_on_die_ecc_status_4(struct mtd_info *mtd,
-> +					   struct nand_chip *chip, u8 status)
-> +{
-> +	/*
-> +	 * The internal ECC doesn't tell us the number of bitflips
-> +	 * that have been corrected, but tells us if it recommends to
-> +	 * rewrite the block. If it's the case, then we pretend we had
-> +	 * a number of bitflips equal to the ECC strength, which will
-> +	 * hint the NAND core to rewrite the block.
-> +	 */
-> +	if (status & NAND_STATUS_FAIL) {
-> +		mtd->ecc_stats.failed++;
-> +	} else if (status & NAND_ECC_STATUS_WRITE_RECOMMENDED) {
-> +		mtd->ecc_stats.corrected += chip->ecc.strength;
-> +		return chip->ecc.strength;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int micron_nand_on_die_ecc_status_8(struct mtd_info *mtd,
-> +					   struct nand_chip *chip, u8 status)
-> +{
-> +	/*
-> +	 * With 8/512 we have more information but still don't know precisely
-> +	 * how many bit-flips were seen.
-> +	 */
-> +	switch (status & NAND_ECC_STATUS_MASK) {
-> +	case NAND_ECC_STATUS_UNCORRECTABLE:
-> +		mtd->ecc_stats.failed++;
-> +		return 0;
-> +	case NAND_ECC_STATUS_1_3_CORRECTED:
-> +		mtd->ecc_stats.corrected += 3;
-> +		return 3;
-> +	case NAND_ECC_STATUS_4_6_CORRECTED:
-> +		mtd->ecc_stats.corrected += 6;
-> +		/* rewrite recommended */
-> +		return 6;
-> +	case NAND_ECC_STATUS_7_8_CORRECTED:
-> +		mtd->ecc_stats.corrected += 8;
-> +		/* rewrite recommended */
-> +		return 8;
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
->  static int
->  micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
->  				 uint8_t *buf, int oob_required,
-> @@ -137,19 +205,10 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
->  	if (ret)
->  		goto out;
->  
-> -	if (status & NAND_STATUS_FAIL) {
-> -		mtd->ecc_stats.failed++;
-> -	} else if (status & NAND_STATUS_WRITE_RECOMMENDED) {
-> -		/*
-> -		 * The internal ECC doesn't tell us the number of bitflips
-> -		 * that have been corrected, but tells us if it recommends to
-> -		 * rewrite the block. If it's the case, then we pretend we had
-> -		 * a number of bitflips equal to the ECC strength, which will
-> -		 * hint the NAND core to rewrite the block.
-> -		 */
-> -		mtd->ecc_stats.corrected += chip->ecc.strength;
-> -		max_bitflips = chip->ecc.strength;
-> -	}
-> +	if (chip->ecc.strength == 4)
-> +		max_bitflips = micron_nand_on_die_ecc_status_4(mtd, chip, status);
-> +	else
-> +		max_bitflips = micron_nand_on_die_ecc_status_8(mtd, chip, status);
->  
->  	ret = nand_read_data_op(chip, buf, mtd->writesize, false);
->  	if (!ret && oob_required)
-> @@ -240,10 +299,9 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
->  		return MICRON_ON_DIE_MANDATORY;
->  
->  	/*
-> -	 * Some Micron NANDs have an on-die ECC of 4/512, some other
-> -	 * 8/512. We only support the former.
-> +	 * We only support on-die ECC of 4/512 or 8/512
->  	 */
-> -	if (chip->ecc_strength_ds != 4)
-> +	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
->  		return MICRON_ON_DIE_UNSUPPORTED;
->  
->  	return MICRON_ON_DIE_SUPPORTED;
-> @@ -275,9 +333,9 @@ static int micron_nand_init(struct nand_chip *chip)
->  			return -EINVAL;
->  		}
->  
-> -		chip->ecc.bytes = 8;
-> +		chip->ecc.bytes = chip->ecc_strength_ds * 2;
+I checked the data sheet again and it supports 32K Block Erase in with
+instruction 0x52, the source code has
 
-Just had a quick look at the MT29F1G08ABAFAWP datasheet, and the layout
-is different: you have all ECC bytes placed at the end of OOB area (64
-bytes), and all the free bytes placed at the beginning (64 bytes). You
-should define a new mtd_ooblayout_ops for this case.
+#define SPINOR_OP_BE_32K 0x52 /* Erase 32KiB block */
+in the file
+/include/linux/mtd/spi-nor.h
 
->  		chip->ecc.size = 512;
-> -		chip->ecc.strength = 4;
-> +		chip->ecc.strength = chip->ecc_strength_ds;
->  		chip->ecc.algo = NAND_ECC_BCH;
->  		chip->ecc.read_page = micron_nand_read_page_on_die_ecc;
->  		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+But I can't find any use of it in the 4.9 kernel but it is used in later kernels
+
+static inline u8 spi_nor_convert_3to4_erase(u8 opcode)
+{
+static const u8 spi_nor_3to4_erase[][2] = {
+{ SPINOR_OP_BE_4K, SPINOR_OP_BE_4K_4B },
+{ SPINOR_OP_BE_32K, SPINOR_OP_BE_32K_4B },
+{ SPINOR_OP_SE, SPINOR_OP_SE_4B },
+};
+
+return spi_nor_convert_opcode(opcode, spi_nor_3to4_erase,
+     ARRAY_SIZE(spi_nor_3to4_erase));
+}
+
+
+I'll see if I can find the commit for this as I think this may be the
+problem I'm seeing where the underlying spinor driver is actually
+performing 64K Block Erasures which would explain the hexdumps I'm
+seeing.
