@@ -1,23 +1,22 @@
-Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbj82-0005s2-1I
- for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 09:03:43 +0000
-Received: by mail-oi0-x243.google.com with SMTP id w126-v6so27733125oie.7
- for <linux-mtd@lists.infradead.org>; Sat, 07 Jul 2018 02:03:29 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbk00-0000Gg-JW
+ for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 09:59:30 +0000
+Date: Sat, 7 Jul 2018 11:59:16 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Zhouyang Jia <jiazhouyang09@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mtd: gpio_flash: add error handling for ioremap_nocache
+Message-ID: <20180707115916.1bbe954c@bbrezillon>
+In-Reply-To: <1529632343-70907-1-git-send-email-jiazhouyang09@gmail.com>
+References: <1528773302-37265-1-git-send-email-jiazhouyang09@gmail.com>
+ <1529632343-70907-1-git-send-email-jiazhouyang09@gmail.com>
 MIME-Version: 1.0
-References: <20180707033722.219468-1-jannh@google.com>
- <20180707104412.1580a285@bbrezillon>
-In-Reply-To: <20180707104412.1580a285@bbrezillon>
-From: Jann Horn <jannh@google.com>
-Date: Sat, 7 Jul 2018 11:03:00 +0200
-Message-ID: <CAG48ez3MUm=0iJSY21BNOFBJt=gWgGAQTwM8cz5d_wNwpMyQeg@mail.gmail.com>
-Subject: Re: [PATCH] mtdchar: fix overflows in adjustment of `count`
-To: boris.brezillon@bootlin.com
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, linux-mtd@lists.infradead.org,
- kernel list <linux-kernel@vger.kernel.org>,
- Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,89 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+cc linux-api
+On Fri, 22 Jun 2018 09:52:20 +0800
+Zhouyang Jia <jiazhouyang09@gmail.com> wrote:
 
-On Sat, Jul 7, 2018 at 10:44 AM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Sat,  7 Jul 2018 05:37:22 +0200
-> Jann Horn <jannh@google.com> wrote:
->
-> > The first checks in mtdchar_read() and mtdchar_write() attempt to limit
-> > `count` such that `*ppos + count <= mtd->size`. However, they ignore the
-> > possibility of `*ppos > mtd->size`, allowing the calculation of `count` to
-> > wrap around. `mtdchar_lseek()` prevents seeking beyond mtd->size, but the
-> > pread/pwrite syscalls bypass this.
-> >
-> > I haven't found any codepath on which this actually causes dangerous
-> > behavior, but it seems like a sensible change anyway.
-> >
-> > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > Signed-off-by: Jann Horn <jannh@google.com>
-> > ---
-> >  drivers/mtd/mtdchar.c | 10 +++++++---
-> >  1 file changed, 7 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> > index cd67c85cc87d..02389528f622 100644
-> > --- a/drivers/mtd/mtdchar.c
-> > +++ b/drivers/mtd/mtdchar.c
-> > @@ -160,8 +160,12 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
-> >
-> >       pr_debug("MTD_read\n");
-> >
-> > -     if (*ppos + count > mtd->size)
-> > -             count = mtd->size - *ppos;
-> > +     if (*ppos + count > mtd->size) {
-> > +             if (*ppos < mtd->size)
-> > +                     count = mtd->size - *ppos;
-> > +             else
-> > +                     count = 0;
-> > +     }
->
-> Hm, shouldn't we return -ERANGE or -EINVAL if *ppos >= mtd->size?
+> When ioremap_nocache fails, the lack of error-handling code may
+> cause unexpected results.
+> 
+> This patch adds error-handling code after calling ioremap_nocache.
+> 
+> Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
 
-Hmm, good question.
-The pread() manpage says that pread() can return the same errors as
-lseek(), and the lseek() manpage says that -EINVAL is for when you're
-trying to seek beyond the end of a seekable device. So from the
-documentation, it sounds as if you're right.
-But testing pread() beyond end of file for various things on my
-machine seems to just return 0:
+Applied.
 
-# cat pread.c
-#include <unistd.h>
-#include <stdlib.h>
-int main(int argc, char **argv) {
-  char buf[0x1000];
-  off_t off = strtoul(argv[1], NULL, 0);
-  pread(0, buf, 0x1000, off);
-}
-# gcc -o pread pread.c
-# strace -e trace=pread64 ./pread 200000000 < /dev/sda1
-pread64(0, "", 4096, 200000000)         = 0
-+++ exited with 0 +++
-# strace -e trace=pread64 ./pread 100000 <
-/sys/kernel/debug/x86/tlb_single_page_flush_ceiling
-pread64(0, "", 4096, 100000)            = 0
-+++ exited with 0 +++
-# strace -e trace=pread64 ./pread 20000000000 < /dev/dm-2
-pread64(0, "", 4096, 20000000000)       = 0
-+++ exited with 0 +++
+Thanks,
 
-Do you know of precedent for returning -EINVAL if *ppos is beyond the
-end of the device?
+Boris
 
-> >
-> >       if (!count)
-> >               return 0;
-> > @@ -246,7 +250,7 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
-> >
-> >       pr_debug("MTD_write\n");
-> >
-> > -     if (*ppos == mtd->size)
-> > +     if (*ppos >= mtd->size)
-> >               return -ENOSPC;
-> >
-> >       if (*ppos + count > mtd->size)
->
+> ---
+> v1->v2:
+> - Move the test just after the ioremap_nocache() call.
+> ---
+>  drivers/mtd/maps/gpio-addr-flash.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+> index 385305e..9d97236 100644
+> --- a/drivers/mtd/maps/gpio-addr-flash.c
+> +++ b/drivers/mtd/maps/gpio-addr-flash.c
+> @@ -239,6 +239,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
+>  	state->map.bankwidth  = pdata->width;
+>  	state->map.size       = state->win_size * (1 << state->gpio_count);
+>  	state->map.virt       = ioremap_nocache(memory->start, state->map.size);
+> +	if (!state->map.virt)
+> +		return -ENOMEM;
+> +
+>  	state->map.phys       = NO_XIP;
+>  	state->map.map_priv_1 = (unsigned long)state;
+>  
