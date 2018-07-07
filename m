@@ -1,16 +1,18 @@
-Date: Sat, 7 Jul 2018 08:58:22 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fbipW-0005qo-LI
+ for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 08:44:37 +0000
+Date: Sat, 7 Jul 2018 10:44:12 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: Joachim Eastwood <manabian@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org, Julia Lawall
- <julia.lawall@lip6.fr>, sil2review@lists.osadl.org
-Subject: Re: [PATCH v3] mtd: nxp-spifi: release flash_np in nxp_spifi_probe()
-Message-ID: <20180707085822.0daad388@bbrezillon>
-In-Reply-To: <1525878680-22005-1-git-send-email-khoroshilov@ispras.ru>
-References: <20180509170310.65d19c49@bbrezillon>
- <1525878680-22005-1-git-send-email-khoroshilov@ispras.ru>
+To: Jann Horn <jannh@google.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtdchar: fix overflows in adjustment of `count`
+Message-ID: <20180707104412.1580a285@bbrezillon>
+In-Reply-To: <20180707033722.219468-1-jannh@google.com>
+References: <20180707033722.219468-1-jannh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -23,34 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed,  9 May 2018 18:11:20 +0300
-Alexey Khoroshilov <khoroshilov@ispras.ru> wrote:
+On Sat,  7 Jul 2018 05:37:22 +0200
+Jann Horn <jannh@google.com> wrote:
 
-> nxp_spifi_probe() increments refcnt of SPI flash device node by
-> of_get_next_available_child() and leaves it undecremented on both
-> successful and error paths.
+> The first checks in mtdchar_read() and mtdchar_write() attempt to limit
+> `count` such that `*ppos + count <= mtd->size`. However, they ignore the
+> possibility of `*ppos > mtd->size`, allowing the calculation of `count` to
+> wrap around. `mtdchar_lseek()` prevents seeking beyond mtd->size, but the
+> pread/pwrite syscalls bypass this.
 > 
-> Found by Linux Driver Verification project (linuxtesting.org).
+> I haven't found any codepath on which this actually causes dangerous
+> behavior, but it seems like a sensible change anyway.
 > 
-> Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-
-Applied after fixing the subject prefix.
-
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> Signed-off-by: Jann Horn <jannh@google.com>
 > ---
-> v3: Move of_node_put() before return value check as Boris Brezillon suggested.
+>  drivers/mtd/mtdchar.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
 > 
->  drivers/mtd/spi-nor/nxp-spifi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/nxp-spifi.c b/drivers/mtd/spi-nor/nxp-spifi.c
-> index 15374216d4d9..0c9094ec5966 100644
-> --- a/drivers/mtd/spi-nor/nxp-spifi.c
-> +++ b/drivers/mtd/spi-nor/nxp-spifi.c
-> @@ -436,6 +436,7 @@ static int nxp_spifi_probe(struct platform_device *pdev)
->  	}
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index cd67c85cc87d..02389528f622 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -160,8 +160,12 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
 >  
->  	ret = nxp_spifi_setup_flash(spifi, flash_np);
-> +	of_node_put(flash_np);
->  	if (ret) {
->  		dev_err(&pdev->dev, "unable to setup flash chip\n");
->  		goto dis_clks;
+>  	pr_debug("MTD_read\n");
+>  
+> -	if (*ppos + count > mtd->size)
+> -		count = mtd->size - *ppos;
+> +	if (*ppos + count > mtd->size) {
+> +		if (*ppos < mtd->size)
+> +			count = mtd->size - *ppos;
+> +		else
+> +			count = 0;
+> +	}
+
+Hm, shouldn't we return -ERANGE or -EINVAL if *ppos >= mtd->size?
+
+>  
+>  	if (!count)
+>  		return 0;
+> @@ -246,7 +250,7 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
+>  
+>  	pr_debug("MTD_write\n");
+>  
+> -	if (*ppos == mtd->size)
+> +	if (*ppos >= mtd->size)
+>  		return -ENOSPC;
+>  
+>  	if (*ppos + count > mtd->size)
