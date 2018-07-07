@@ -1,19 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbk2G-0002GV-Mk
- for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 10:01:50 +0000
-Date: Sat, 7 Jul 2018 12:01:37 +0200
+ id 1fbk4L-0002zv-45
+ for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 10:03:58 +0000
+Date: Sat, 7 Jul 2018 12:03:45 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
+To: Colin King <colin.king@canonical.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Masahiro Yamada
- <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: Use kasprintf() instead of fixed buffer formatting
-Message-ID: <20180707120137.00220db0@bbrezillon>
-In-Reply-To: <20180628082011.19553-1-geert+renesas@glider.be>
-References: <20180628082011.19553-1-geert+renesas@glider.be>
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: cfi_cmdset_0002: remove redundant variable timeo
+Message-ID: <20180707120345.2996a124@bbrezillon>
+In-Reply-To: <20180703074339.29989-1-colin.king@canonical.com>
+References: <20180703074339.29989-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,17 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 28 Jun 2018 10:20:11 +0200
-Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+On Tue,  3 Jul 2018 08:43:39 +0100
+Colin King <colin.king@canonical.com> wrote:
 
-> Using "%4.4X" in the calculation of the buffer size is misleading, as
-> the format string literal has no relation to the actual size needed.
-> Hence this is fragile w.r.t. future modification.
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> As this is not a hot path, fix this by replacing the formatting in a
-> fixed buffer by kasprintf().
+> Variable is_local is being assigned but is never used hence it is
+> redundant and can be removed.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cleans up clang warning:
+> warning: variable 'timeo' set but not used [-Wunused-but-set-variable]
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
 Applied.
 
@@ -45,37 +45,26 @@ Thanks,
 Boris
 
 > ---
-> Compile-tested only.
+>  drivers/mtd/chips/cfi_cmdset_0002.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> Interestingly, this decreases code size (by 16 resp. 24 bytes on arm32
-> resp. arm64).
-> ---
->  drivers/mtd/chips/gen_probe.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-> index 879bebf9d8b12038..837b04ab96a9c526 100644
-> --- a/drivers/mtd/chips/gen_probe.c
-> +++ b/drivers/mtd/chips/gen_probe.c
-> @@ -202,16 +202,19 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	__u16 type = primary?cfi->cfiq->P_ID:cfi->cfiq->A_ID;
->  #ifdef CONFIG_MODULES
-> -	char probename[sizeof("cfi_cmdset_%4.4X")];
->  	cfi_cmdset_fn_t *probe_function;
-> +	char *probename;
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 1b64ac8c5bc8..72428b6bfc47 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -1216,7 +1216,6 @@ static inline int do_read_secsi_onechip(struct map_info *map,
+>  					size_t grouplen)
+>  {
+>  	DECLARE_WAITQUEUE(wait, current);
+> -	unsigned long timeo = jiffies + HZ;
 >  
-> -	sprintf(probename, "cfi_cmdset_%4.4X", type);
-> +	probename = kasprintf(GFP_KERNEL, "cfi_cmdset_%4.4X", type);
-> +	if (!probename)
-> +		return NULL;
+>   retry:
+>  	mutex_lock(&chip->mutex);
+> @@ -1229,7 +1228,6 @@ static inline int do_read_secsi_onechip(struct map_info *map,
 >  
->  	probe_function = __symbol_get(probename);
->  	if (!probe_function) {
->  		request_module("cfi_cmdset_%4.4X", type);
->  		probe_function = __symbol_get(probename);
+>  		schedule();
+>  		remove_wait_queue(&chip->wq, &wait);
+> -		timeo = jiffies + HZ;
+>  
+>  		goto retry;
 >  	}
-> +	kfree(probename);
->  
->  	if (probe_function) {
->  		struct mtd_info *mtd;
