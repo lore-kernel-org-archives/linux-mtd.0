@@ -1,27 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbk1j-0001zb-QY
- for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 10:01:17 +0000
-Date: Sat, 7 Jul 2018 12:01:04 +0200
+ id 1fbk2G-0002GV-Mk
+ for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 10:01:50 +0000
+Date: Sat, 7 Jul 2018 12:01:37 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: document Broadcom's TRX
- firmware format binding
-Message-ID: <20180707120104.34687f91@bbrezillon>
-In-Reply-To: <20180625220508.21242-1-zajec5@gmail.com>
-References: <20180612104434.15232-1-zajec5@gmail.com>
- <20180625220508.21242-1-zajec5@gmail.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Masahiro Yamada
+ <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: Use kasprintf() instead of fixed buffer formatting
+Message-ID: <20180707120137.00220db0@bbrezillon>
+In-Reply-To: <20180628082011.19553-1-geert+renesas@glider.be>
+References: <20180628082011.19553-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,83 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 Jun 2018 00:05:07 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Thu, 28 Jun 2018 10:20:11 +0200
+Geert Uytterhoeven <geert+renesas@glider.be> wrote:
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> Broadcom based home router devices use TRX firmware format. It's a
-> container that can hold few partitions. If operating system is expected
-> to access them it has to understand that format and parse flash data
-> accordingly.
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> Using "%4.4X" in the calculation of the buffer size is misleading, as
+> the format string literal has no relation to the actual size needed.
+> Hence this is fragile w.r.t. future modification.
+> 
+> As this is not a hot path, fix this by replacing the formatting in a
+> fixed buffer by kasprintf().
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Applied both patches.
+Applied.
 
 Thanks,
 
 Boris
 
 > ---
-> V2: Drop unneeded "brcm,trx-v1" and "brcm,trx-v2" bindings.
+> Compile-tested only.
+> 
+> Interestingly, this decreases code size (by 16 resp. 24 bytes on arm32
+> resp. arm64).
 > ---
->  .../bindings/mtd/partitions/brcm,trx.txt           | 37 ++++++++++++++++=
-++++++
->  1 file changed, 37 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm=
-,trx.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.tx=
-t b/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt
-> new file mode 100644
-> index 000000000000..b677147ca4e1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,trx.txt
-> @@ -0,0 +1,37 @@
-> +Broadcom TRX Container Partition
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +TRX is Broadcom's official firmware format for the BCM947xx boards. It's=
- used by
-> +most of the vendors building devices based on Broadcom's BCM47xx SoCs an=
-d is
-> +supported by the CFE bootloader.
-> +
-> +Design of the TRX format is very minimalistic. Its header contains
-> +identification fields, CRC32 checksum and the locations of embedded part=
-itions.
-> +Its purpose is to store a few partitions in a format that can be distrib=
-uted as
-> +a standalone file and written in a flash memory.
-> +
-> +Container can hold up to 4 partitions. The first partition has to contai=
-n a
-> +device executable binary (e.g. a kernel) as it's what the CFE bootloader=
- starts
-> +executing. Other partitions can be used for operating system purposes. T=
-his is
-> +useful for systems that keep kernel and rootfs separated.
-> +
-> +TRX doesn't enforce any strict partition boundaries or size limits. All
-> +partitions have to be less than the 4GiB max size limit.
-> +
-> +There are two existing/known TRX variants:
-> +1) v1 which contains 3 partitions
-> +2) v2 which contains 4 partitions
-> +
-> +There aren't separated compatible bindings for them as version can be tr=
-ivialy
-> +detected by a software parsing TRX header.
-> +
-> +Required properties:
-> +- compatible : (required) must be "brcm,trx"
-> +
-> +Example:
-> +
-> +flash@0 {
-> +	partitions {
-> +		compatible =3D "brcm,trx";
-> +	};
-> +};
+>  drivers/mtd/chips/gen_probe.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+> index 879bebf9d8b12038..837b04ab96a9c526 100644
+> --- a/drivers/mtd/chips/gen_probe.c
+> +++ b/drivers/mtd/chips/gen_probe.c
+> @@ -202,16 +202,19 @@ static inline struct mtd_info *cfi_cmdset_unknown(struct map_info *map,
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  	__u16 type = primary?cfi->cfiq->P_ID:cfi->cfiq->A_ID;
+>  #ifdef CONFIG_MODULES
+> -	char probename[sizeof("cfi_cmdset_%4.4X")];
+>  	cfi_cmdset_fn_t *probe_function;
+> +	char *probename;
+>  
+> -	sprintf(probename, "cfi_cmdset_%4.4X", type);
+> +	probename = kasprintf(GFP_KERNEL, "cfi_cmdset_%4.4X", type);
+> +	if (!probename)
+> +		return NULL;
+>  
+>  	probe_function = __symbol_get(probename);
+>  	if (!probe_function) {
+>  		request_module("cfi_cmdset_%4.4X", type);
+>  		probe_function = __symbol_get(probename);
+>  	}
+> +	kfree(probename);
+>  
+>  	if (probe_function) {
+>  		struct mtd_info *mtd;
