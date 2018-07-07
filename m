@@ -1,17 +1,20 @@
 Received: from mail.bugwerft.de ([2a03:6000:1011::59])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbgiY-0006Oh-61
- for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 06:29:16 +0000
-From: Daniel Mack <daniel@zonque.org>
+ id 1fbgjs-0000Dg-Dw
+ for linux-mtd@lists.infradead.org; Sat, 07 Jul 2018 06:30:38 +0000
+Subject: Re: [PATCH v2 1/3] mtd: rawnand: marvell: add suspend and resume hooks
 To: miquel.raynal@bootlin.com
 Cc: robert.jarzmik@free.fr, boris.brezillon@bootlin.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, Daniel Mack <daniel@zonque.org>
-Subject: [PATCH v2 2/3] mtd: rawnand: marvell: remove bogus comment in
- marvell_nfc_select_chip()
-Date: Sat,  7 Jul 2018 08:28:51 +0200
-Message-Id: <20180707062852.26261-2-daniel@zonque.org>
-In-Reply-To: <20180707062852.26261-1-daniel@zonque.org>
+ linux-mtd@lists.infradead.org, stable@ivger.kernel.org
 References: <20180707062852.26261-1-daniel@zonque.org>
+From: Daniel Mack <daniel@zonque.org>
+Message-ID: <2dc14044-3013-eacd-6ed8-d40f2c38f962@zonque.org>
+Date: Sat, 7 Jul 2018 08:30:25 +0200
+MIME-Version: 1.0
+In-Reply-To: <20180707062852.26261-1-daniel@zonque.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +24,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The comment in marvell_nfc_select_chip() about ndtr0 and ndtr1 didn't
-reflect what the driver was doing.
+On Saturday, July 07, 2018 08:28 AM, Daniel Mack wrote:
+> This patch restores the suspend and resume hooks that the old driver used
+> to have. Apart from stopping and starting the clocks, the resume callback
+> also nullifies the selected_chip pointer, so the next command that is issued
+> will re-select the chip and thereby restore the timing registers.
+> 
+> Without this patch, a PXA3xx based system would cough up an error similar to
+> the one below after resume.
+> 
+> [   44.660162] marvell-nfc 43100000.nand-controller: Timeout waiting for  RB signal
+> [   44.671492] ubi0 error: ubi_io_write: error -110 while writing 2048 bytes to PEB 102:38912, written 0 bytes
+> [   44.682887] CPU: 0 PID: 1417 Comm: remote-control Not tainted 4.18.0-rc2+ #344
+> [   44.691197] Hardware name: Marvell PXA3xx (Device Tree Support)
+> [   44.697111] Backtrace:
+> [   44.699593] [<c0106458>] (dump_backtrace) from [<c0106718>] (show_stack+0x18/0x1c)
+> [   44.708931]  r7:00000800 r6:00009800 r5:00000066 r4:c6139000
+> [   44.715833] [<c0106700>] (show_stack) from [<c0678a60>] (dump_stack+0x20/0x28)
+> [   44.724206] [<c0678a40>] (dump_stack) from [<c0456cbc>] (ubi_io_write+0x3d4/0x630)
+> [   44.732925] [<c04568e8>] (ubi_io_write) from [<c0454428>] (ubi_eba_write_leb+0x690/0x6fc)
+> ...
+> 
+> Signed-off-by: Daniel Mack <daniel@zonque.org>
+> Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
+> Cc: stable@ivger.kernel.org
+              ^
 
-The values of NDTR0 and NDTR1 are read from the registers at probe time
-and a copy is retained in 'struct marvell_nand_chip'. If keep-config is
-set in the DT properties, there are no other writers of these timing
-variables so they can safely be used when the chip is selected.
+Ah, snap. Can you fix the typo here when applying please?
 
-As suggested by Miquel Raynal, simply remove the comment.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- drivers/mtd/nand/raw/marvell_nand.c | 5 -----
- 1 file changed, 5 deletions(-)
+Thanks,
+Daniel
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 4644f6e3b930..e72070fe8af9 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -650,11 +650,6 @@ static void marvell_nfc_select_chip(struct mtd_info *mtd, int die_nr)
- 		return;
- 	}
- 
--	/*
--	 * Do not change the timing registers when using the DT property
--	 * marvell,nand-keep-config; in that case ->ndtr0 and ->ndtr1 from the
--	 * marvell_nand structure are supposedly empty.
--	 */
- 	writel_relaxed(marvell_nand->ndtr0, nfc->regs + NDTR0);
- 	writel_relaxed(marvell_nand->ndtr1, nfc->regs + NDTR1);
- 
--- 
-2.17.1
+
+
+> ---
+>   drivers/mtd/nand/raw/marvell_nand.c | 49 +++++++++++++++++++++++++++++
+>   1 file changed, 49 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index 00d9f29bbdb6..4644f6e3b930 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -2825,6 +2825,54 @@ static int marvell_nfc_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>   
+> +static int __maybe_unused marvell_nfc_suspend(struct device *dev)
+> +{
+> +	struct marvell_nfc *nfc = dev_get_drvdata(dev);
+> +	struct marvell_nand_chip *chip;
+> +
+> +	list_for_each_entry(chip, &nfc->chips, node)
+> +		marvell_nfc_wait_ndrun(&chip->chip);
+> +
+> +	clk_disable_unprepare(nfc->reg_clk);
+> +	clk_disable_unprepare(nfc->core_clk);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused marvell_nfc_resume(struct device *dev)
+> +{
+> +	struct marvell_nfc *nfc = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(nfc->core_clk);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	if (!IS_ERR(nfc->reg_clk)) {
+> +		ret = clk_prepare_enable(nfc->reg_clk);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	/*
+> +	 * Reset nfc->selected_chip so the next command will cause the timing
+> +	 * registers to be restored in marvell_nfc_select_chip().
+> +	 */
+> +	nfc->selected_chip = NULL;
+> +
+> +	/* Reset registers that have lots its contents */
+> +	writel_relaxed(NDCR_ALL_INT | NDCR_ND_ARB_EN | NDCR_SPARE_EN |
+> +		       NDCR_RD_ID_CNT(NFCV1_READID_LEN), nfc->regs + NDCR);
+> +	writel_relaxed(0xFFFFFFFF, nfc->regs + NDSR);
+> +	writel_relaxed(0, nfc->regs + NDECCCTRL);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops marvell_nfc_pm_ops = {
+> +	SET_SYSTEM_SLEEP_PM_OPS(marvell_nfc_suspend, marvell_nfc_resume)
+> +};
+> +
+>   static const struct marvell_nfc_caps marvell_armada_8k_nfc_caps = {
+>   	.max_cs_nb = 4,
+>   	.max_rb_nb = 2,
+> @@ -2909,6 +2957,7 @@ static struct platform_driver marvell_nfc_driver = {
+>   	.driver	= {
+>   		.name		= "marvell-nfc",
+>   		.of_match_table = marvell_nfc_of_ids,
+> +		.pm		= &marvell_nfc_pm_ops,
+>   	},
+>   	.id_table = marvell_nfc_platform_ids,
+>   	.probe = marvell_nfc_probe,
+> 
