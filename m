@@ -1,21 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHsx-0004rP-4l
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 22:10:29 +0000
-Date: Mon, 9 Jul 2018 00:10:14 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Cc: robert.jarzmik@free.fr, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: marvell: add suspend and resume hooks
-Message-ID: <20180709001014.1f725add@xps13>
-In-Reply-To: <4a3d847e-16c4-f53a-1e36-7f891823a0ba@zonque.org>
-References: <20180707064631.799-1-daniel@zonque.org>
- <20180708140439.75170f37@xps13>
- <4a3d847e-16c4-f53a-1e36-7f891823a0ba@zonque.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcJYj-0005CR-33
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 23:57:43 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "Bean Huo (beanhuo)"
+ <beanhuo@micron.com>
+Subject: Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
+Date: Sun, 8 Jul 2018 23:56:52 +0000
+Message-ID: <da6f03d541e24e008f84f6f18fc8e77a@svr-chch-ex1.atlnz.lc>
+References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
+ <20180706212720.0e9dacb8@bbrezillon> <20180706233701.05da0666@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
-
-Daniel Mack <daniel@zonque.org> wrote on Sun, 8 Jul 2018 22:13:36 +0200:
-
-> On Sunday, July 08, 2018 02:04 PM, Miquel Raynal wrote:
-> > Do you mind if I apply all the patches to nand/next? This fix will only
-> > appear in mainline after the merge window (in a few weeks). Otherwise
-> > I'll have to apply patches 2 and 3 for the next-next-release
-> > (supposedly 4.20). =20
->=20
-> I don't quite understand the options, but the thing that's important for =
-me is that 1/3 lands for 4.19. I don't care for the other two really, as th=
-ey have no functional impact.
-
-Usually, accepted fixes are part of a specific pull request that can be
-sent at any time during the -rc's cycles, this is the fixes branch.
-Otherwise, for regular patches (or "features"), only one pull request
-is sent at the time of the merge window, this is the "next" branch.
-
-Fixes are based on the last -rc while features are usually based only
-on -rc1. Problem is, when a fix and another change are done on the
-same code section, this would produce a merge conflict in Linus's
-tree. To avoid it, two solutions:
-- take all the patches (including non-urgent fixes) in the -next branch
-- rebase/merge the -rc that contains the fix before applying the other
-  patches.=20
-
-In this case, series applied to nand/next (will be out for 4.19).
-
-Thanks,
-Miqu=C3=A8l
+Hi Boris,=0A=
+=0A=
+On 07/07/18 09:37, Boris Brezillon wrote:=0A=
+> On Fri, 6 Jul 2018 21:27:20 +0200=0A=
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:=0A=
+> =0A=
+>> On Mon, 25 Jun 2018 10:44:42 +1200=0A=
+>> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:=0A=
+>>=0A=
+>>> Hi,=0A=
+>>>=0A=
+>>> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chi=
+p=0A=
+>>=0A=
+>> Hm, it's even worse than I thought. The model name does not include the=
+=0A=
+>> -ITE suffix (E means ECC can't be disabled), which means we have no way=
+=0A=
+>> to detect the version with forced on-die ECC.=0A=
+>>=0A=
+>> I see 2 solutions to this problem:=0A=
+>> 1/ Bean provides us a solution to reliably detect when ECC can be=0A=
+>>     de-actived and when it can't=0A=
+>> 2/ We only ever expose 64 bytes of OOB to the user and consider that=0A=
+>>     ECC can be disabled, even if it can't in reality=0A=
+>>=0A=
+> =0A=
+> After reading the doc again, I forgot one thing you can try before=0A=
+> deciding to go for option #2.=0A=
+> =0A=
+> 8th bit in byte 5 of READID's result encodes whether the on-die ECC=0A=
+> state (enabled or not). I remember we had a discussion with Bean where=0A=
+> he told us this was a runtime status reflecting the on-die ECC state,=0A=
+> which is crazy, since READID might return different values depending on=
+=0A=
+> the NAND state, and most of the code in the core assumes READID=0A=
+> provides a fixed ID that encodes the chip characteristics/capabilities,=
+=0A=
+> not its state.=0A=
+> =0A=
+> Anyway, if this bit is actually reflecting the on-die ECC state and=0A=
+> on-die cannot be disabled on your chip, it should stay at 1 even after=0A=
+> you have sent the SET_FEATURES(DISABLE_ECC) command. Let's hope this=0A=
+> works as I expect, otherwise we're back to option #2 until Bean suggest=
+=0A=
+> something else.=0A=
+> =0A=
+=0A=
+I'm away from work this week so I don't have access to that system. But =0A=
+I can take a look when I get back. From memory though there was very =0A=
+little that you could tell from the id/params on this chip (FYI we've =0A=
+decided to use a chip from a different vendor for production).=0A=
