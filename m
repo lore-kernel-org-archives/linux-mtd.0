@@ -1,20 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fc94n-0002vi-Qh
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 12:46:07 +0000
-Date: Sun, 8 Jul 2018 14:45:53 +0200
+ id 1fc9Om-0003Sx-GO
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 13:06:46 +0000
+Date: Sun, 8 Jul 2018 15:06:30 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jann Horn <jannh@google.com>
-Cc: richard@nod.at, kernel list <linux-kernel@vger.kernel.org>,
- marek.vasut@gmail.com, linux-mtd@lists.infradead.org, Linux API
- <linux-api@vger.kernel.org>, computersforpeace@gmail.com,
- dwmw2@infradead.org
-Subject: Re: [PATCH] mtdchar: fix overflows in adjustment of `count`
-Message-ID: <20180708144553.4cfac318@bbrezillon>
-In-Reply-To: <CAG48ez3MUm=0iJSY21BNOFBJt=gWgGAQTwM8cz5d_wNwpMyQeg@mail.gmail.com>
-References: <20180707033722.219468-1-jannh@google.com>
- <20180707104412.1580a285@bbrezillon>
- <CAG48ez3MUm=0iJSY21BNOFBJt=gWgGAQTwM8cz5d_wNwpMyQeg@mail.gmail.com>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH 17/27] mtd: rawnand: fsmc: Allow selection of this
+ driver when COMPILE_TEST=y
+Message-ID: <20180708150630.06367498@bbrezillon>
+In-Reply-To: <20180705094522.12138-18-boris.brezillon@bootlin.com>
+References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+ <20180705094522.12138-18-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,100 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 7 Jul 2018 11:03:00 +0200
-Jann Horn <jannh@google.com> wrote:
+On Thu,  5 Jul 2018 11:45:12 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> +cc linux-api
+> It just makes NAND maintainers' life easier by allowing them to
+> compile-test this driver without having PLAT_SPEAR, ARCH_NOMADIK,
+> ARCH_U8500 or MACH_U300 enabled.
 > 
-> On Sat, Jul 7, 2018 at 10:44 AM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> >
-> > On Sat,  7 Jul 2018 05:37:22 +0200
-> > Jann Horn <jannh@google.com> wrote:
-> >  
-> > > The first checks in mtdchar_read() and mtdchar_write() attempt to limit
-> > > `count` such that `*ppos + count <= mtd->size`. However, they ignore the
-> > > possibility of `*ppos > mtd->size`, allowing the calculation of `count` to
-> > > wrap around. `mtdchar_lseek()` prevents seeking beyond mtd->size, but the
-> > > pread/pwrite syscalls bypass this.
-> > >
-> > > I haven't found any codepath on which this actually causes dangerous
-> > > behavior, but it seems like a sensible change anyway.
-> > >
-> > > Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> > > Signed-off-by: Jann Horn <jannh@google.com>
-> > > ---
-> > >  drivers/mtd/mtdchar.c | 10 +++++++---
-> > >  1 file changed, 7 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> > > index cd67c85cc87d..02389528f622 100644
-> > > --- a/drivers/mtd/mtdchar.c
-> > > +++ b/drivers/mtd/mtdchar.c
-> > > @@ -160,8 +160,12 @@ static ssize_t mtdchar_read(struct file *file, char __user *buf, size_t count,
-> > >
-> > >       pr_debug("MTD_read\n");
-> > >
-> > > -     if (*ppos + count > mtd->size)
-> > > -             count = mtd->size - *ppos;
-> > > +     if (*ppos + count > mtd->size) {
-> > > +             if (*ppos < mtd->size)
-> > > +                     count = mtd->size - *ppos;
-> > > +             else
-> > > +                     count = 0;
-> > > +     }  
-> >
-> > Hm, shouldn't we return -ERANGE or -EINVAL if *ppos >= mtd->size?  
+> We also need to add a dependency on HAS_IOMEM to make sure the driver
+> compiles correctly.
 > 
-> Hmm, good question.
-> The pread() manpage says that pread() can return the same errors as
-> lseek(), and the lseek() manpage says that -EINVAL is for when you're
-> trying to seek beyond the end of a seekable device. So from the
-> documentation, it sounds as if you're right.
-> But testing pread() beyond end of file for various things on my
-> machine seems to just return 0:
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/Kconfig | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> # cat pread.c
-> #include <unistd.h>
-> #include <stdlib.h>
-> int main(int argc, char **argv) {
->   char buf[0x1000];
->   off_t off = strtoul(argv[1], NULL, 0);
->   pread(0, buf, 0x1000, off);
-> }
-> # gcc -o pread pread.c
-> # strace -e trace=pread64 ./pread 200000000 < /dev/sda1
-> pread64(0, "", 4096, 200000000)         = 0
-> +++ exited with 0 +++
-> # strace -e trace=pread64 ./pread 100000 <
-> /sys/kernel/debug/x86/tlb_single_page_flush_ceiling
-> pread64(0, "", 4096, 100000)            = 0
-> +++ exited with 0 +++
-> # strace -e trace=pread64 ./pread 20000000000 < /dev/dm-2
-> pread64(0, "", 4096, 20000000000)       = 0
-> +++ exited with 0 +++
-> 
-> Do you know of precedent for returning -EINVAL if *ppos is beyond the
-> end of the device?
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index b89bd94a654c..245f1b56b94f 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -502,8 +502,9 @@ config MTD_NAND_JZ4780
+>  
+>  config MTD_NAND_FSMC
+>  	tristate "Support for NAND on ST Micros FSMC"
+> -	depends on OF
+> -	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300
+> +	depends on OF && HAS_IOMEM
+> +	depends on PLAT_SPEAR || ARCH_NOMADIK || ARCH_U8500 || MACH_U300 || \
+> +		   COMPILE_TEST
 
-Nope, it just made more sense to me than returning 0. Anyway, let's
-keep the most common behavior, even if it's not documented this way ;-).
+Looks like we have a conflict on the PC definition when compiling a
+MIPS kernel. I'll add a patch suffixing PC with FSMC_ to avoid that.
+Please don't apply this patch yet. 
 
-> 
-> > >
-> > >       if (!count)
-> > >               return 0;
-> > > @@ -246,7 +250,7 @@ static ssize_t mtdchar_write(struct file *file, const char __user *buf, size_t c
-> > >
-> > >       pr_debug("MTD_write\n");
-> > >
-> > > -     if (*ppos == mtd->size)
-> > > +     if (*ppos >= mtd->size)
-> > >               return -ENOSPC;
-> > >
-> > >       if (*ppos + count > mtd->size)  
-> >  
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>  	help
+>  	  Enables support for NAND Flash chips on the ST Microelectronics
+>  	  Flexible Static Memory Controller (FSMC)
