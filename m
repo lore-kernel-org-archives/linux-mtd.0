@@ -1,16 +1,18 @@
-Date: Sun, 8 Jul 2018 23:58:17 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcHja-00016E-Fk
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 22:00:50 +0000
+Date: Mon, 9 Jul 2018 00:00:34 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
- <han.xu@nxp.com>, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/8] mtd: rawnand: Bunch of cleanup
-Message-ID: <20180708235817.3a06abad@xps13>
-In-Reply-To: <20180705102733.29673-1-boris.brezillon@bootlin.com>
-References: <20180705102733.29673-1-boris.brezillon@bootlin.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: boris.brezillon@bootlin.com, Fabio Estevam <fabio.estevam@nxp.com>, Han
+ Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: gpmi: Switch to SPDX identifier
+Message-ID: <20180709000034.5d0920c5@xps13>
+In-Reply-To: <CAOMZO5CU7EkPOsaneMm5cBsUvHD8diW8MLb+aD-Jaw-_G9AbYA@mail.gmail.com>
+References: <1530898103-27125-1-git-send-email-festevam@gmail.com>
+ <20180707190059.4f9837b0@xps13>
+ <CAOMZO5CU7EkPOsaneMm5cBsUvHD8diW8MLb+aD-Jaw-_G9AbYA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -23,34 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Fabio,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu,  5 Jul 2018
-12:27:25 +0200:
+Fabio Estevam <festevam@gmail.com> wrote on Sat, 7 Jul 2018 14:16:48
+-0300:
 
-> Hello,
+> Hi Miquel,
 >=20
-> These are just random cleanups that I did while working on the raw NAND
-> API sanitization (see here [1] for a preview of the upcoming changes).
+> On Sat, Jul 7, 2018 at 2:00 PM, Miquel Raynal <miquel.raynal@bootlin.com>=
+ wrote:
 >=20
-> Regards,
+> >> +// SPDX-License-Identifier: GPL-2.0+
+> >> +//
+> >> +// Freescale GPMI NAND Flash Driver
+> >> +//
+> >> +// Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
+> >> +// Copyright (C) 2008 Embedded Alley Solutions, Inc. =20
+> >
+> > Maybe I'm not aware of something recent but I thought only the SPDX
+> > license tag was supposed to use '//' comments while the other lines
+> > should be still using '/* */' like any other comments in the code? =20
 >=20
-> Boris
->=20
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/api-cleanup
->=20
-> Boris Brezillon (8):
->   mtd: rawnand: Kill cafe_nand_bug()
->   mtd: rawnand: Remove nand_do_read() prototype from rawnand.h
->   mtd: rawnand: Remove forward declaration of mtd_info
->   mtd: rawnand: Remove forward declaration of device_node
->   mtd: rawnand: Rename nand_default_bbt() into nand_create_bbt()
->   mtd: rawnand: Kill the chip->scan_bbt() hook
->   mtd: rawnand: orion_nand: Kill orion_nand_data.dev_ready()
->   mtd: rawnand: plat_nand: Kill pdata->ctrl.{hwcontrol,read_byte}()
->=20
+> There are some subsystem maintainers (and also Linus) that prefer
+> putting everything in // style:
+> https://lkml.org/lkml/2017/11/25/133
 
-Series applied to nand/next,
+Thanks for the thread!
+
+Well then, next time, just choose your favourite one.
+
+v2 (with the two patches) applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
