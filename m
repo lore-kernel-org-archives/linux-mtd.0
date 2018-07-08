@@ -1,21 +1,21 @@
-Received: from mga18.intel.com ([134.134.136.126])
+Received: from mga01.intel.com ([192.55.52.88])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fbzwF-0004hZ-FJ
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 03:00:41 +0000
-Date: Sun, 8 Jul 2018 10:59:16 +0800
+ id 1fc2sP-0008Rm-3F
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 06:08:54 +0000
+Date: Sun, 8 Jul 2018 14:08:06 +0800
 From: kbuild test robot <lkp@intel.com>
 To: Sascha Hauer <s.hauer@pengutronix.de>
 Cc: kbuild-all@01.org, linux-mtd@lists.infradead.org,
  David Gstir <david@sigma-star.at>,
  Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
  linux-kernel@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 14/25] ubifs: Add authentication nodes to journal
-Message-ID: <201807080848.ELMwnwwS%fengguang.wu@intel.com>
-References: <20180704124137.13396-15-s.hauer@pengutronix.de>
+Subject: Re: [PATCH 16/25] ubifs: authenticate replayed journal
+Message-ID: <201807081301.LDLU47ft%fengguang.wu@intel.com>
+References: <20180704124137.13396-17-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="IS0zKkzwUGydFO0o"
+Content-Type: multipart/mixed; boundary="VbJkn9YxBvnuCH5J"
 Content-Disposition: inline
-In-Reply-To: <20180704124137.13396-15-s.hauer@pengutronix.de>
+In-Reply-To: <20180704124137.13396-17-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,7 +26,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---IS0zKkzwUGydFO0o
+--VbJkn9YxBvnuCH5J
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -49,19 +49,21 @@ reproduce:
 
 All errors (new ones prefixed by >>):
 
+   fs/ubifs/replay.o: In function `ubifs_replay_journal':
+>> replay.c:(.text+0x794): undefined reference to `crypto_shash_update'
    fs/ubifs/log.o: In function `ubifs_log_start_commit':
->> log.c:(.text+0x9ac): undefined reference to `crypto_shash_update'
+   log.c:(.text+0x9ac): undefined reference to `crypto_shash_update'
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---IS0zKkzwUGydFO0o
+--VbJkn9YxBvnuCH5J
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICGRQQVsAAy5jb25maWcAlDxdc9u2su/9FZx05k47Z9JYsp3Y944fQBCUUJEEQ5CS7BeO
+H4sICLGYQVsAAy5jb25maWcAlDxdc9u2su/9FZx05k47Z9JYsp3Y944fQBCUUJEEQ5CS7BeO
 YjOJprbkI8lt8+/vLkCJAAWw52SSiYVdAAtgv3fln3/6OSBvh+3L6rB+XD0//wi+NZtmtzo0
 T8HX9XPzf0EkgkyUAYt4+RsgJ+vN298fVruX4Oq30c1vF+93j5fBrNltmueAbjdf19/eYPZ6
 u/np55/g788w+PIKC+3+N4BJ759x+vtvm7dm9WX9/tvjY/BL1HxZrzbBp9/GsNpo9Kv+CeZS
@@ -365,4 +367,4 @@ pT6v3lqEQcLwdQDQpG6m+eZRtos4VuxJ/l4zcp8Hqke1/j/UeFEU6F4K1SgKLbvufcJtQu62
 bSJGIH/AW4FJ3wf06tppgz1JW4J5Lu+wtUEo9XlTrYmPLF1vAIXJg//Emora/wMKq47hCAYB
 AA==
 
---IS0zKkzwUGydFO0o--
+--VbJkn9YxBvnuCH5J--
