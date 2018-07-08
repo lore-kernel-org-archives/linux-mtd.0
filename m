@@ -1,22 +1,49 @@
-From: primitiva@email.com (primitiva at email.com)
-Date: Sun, 08 Jul 2018 01:06:17 -0700
-Subject: INFO
-Message-ID: <mailman.3.1531037533.25353.linux-mtd@lists.infradead.org>
+From: hch@infradead.org (Christoph Hellwig)
+Date: Sun, 08 Jul 2018 14:15:17 -0600
+Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit
+Message-ID: <mailman.5.1531080918.25353.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Wir m?chten Sie dar?ber informieren, dass das Amt f?r nicht beanspruchte Preise in Spanien unsere Anwaltskanzlei als Rechtsberater bei der Bearbeitung und Auszahlung eines auf Ihren Namen gutgeschriebenen Preisgeldes beauftragt hat, das seit ?ber zwei Jahren nicht mehr beansprucht wird.
+We proudly announce the second Alpine Linux Persistence and Storage
+Summit (ALPSS), which will be held September 11-14 at the Lizumerhuette
+[1][2] in Austria .
 
-Anbei finden Sie die wichtige Nachricht.
-Die angeh?ngte Datei ist sicher und scannt die PDF-Datei.
-Bitte lade es herunter.
+The goal of this conference is to discuss the hot topics in Linux storage
+and file systems, such as persistent memory, NVMe, multi-pathing, raw or
+open channel flash and I/O scheduling in a cool and relaxed setting with
+spectacular views in the Austrian alps.
 
-Danke vielmals
-Carlos Sanchez
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: REF.52018.PDF
-Type: application/pdf
-Size: 638196 bytes
-Desc: not available
-URL: <http://lists.infradead.org/pipermail/linux-mtd/attachments/20180708/df808fe7/attachment.pdf>
+We plan to have a small selection of short and to the point talks with
+lots of room for discussion in small groups, as well as ample downtime
+to enjoy the surrounding.
+
+Attendance is free except for the accommodation and food at the lodge [3],
+but the number of seats is strictly limited.  If you are interested in
+attending please reserve a seat by mailing your favorite topic(s) to:
+
+	alpss-pc at lists.infradead.org
+
+If you are interested in giving a short and crisp talk please also send
+an abstract to the same address.
+
+Note: The Lizumerhuette is an Alpine Society lodge in a high alpine
+environment.  A hike of approximately 2 hours is required to the lodge,
+and no other accommodations are available within walking distance.
+
+More details will eventually be available on our website:
+
+        http://www.alpss.at/
+
+Thank you on behalf of the program committee:
+
+    Stephen Bates
+    Sagi Grimberg
+    Christoph Hellwig
+    Johannes Thumshirn
+    Richard Weinberger
+
+[1] http://www.tyrol.com/things-to-do/sports/hiking/refuge-huts/a-lizumer-hut
+[2] https://www.glungezer.at/l-i-z-u-m-e-r-h-%C3%BC-t-t-e/
+[3] approx. EUR 40-60 per person and night, depending on the room
+    category
