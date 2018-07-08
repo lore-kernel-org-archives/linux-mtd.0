@@ -1,19 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHeZ-00074c-Sr
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:55:37 +0000
-Date: Sun, 8 Jul 2018 23:55:23 +0200
+Date: Sun, 8 Jul 2018 23:58:17 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
-Subject: Re: [PATCH 00/27] mtd: rawnand: Improve compile-test coverage
-Message-ID: <20180708235523.30faa860@xps13>
-In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
-References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Han Xu
+ <han.xu@nxp.com>, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/8] mtd: rawnand: Bunch of cleanup
+Message-ID: <20180708235817.3a06abad@xps13>
+In-Reply-To: <20180705102733.29673-1-boris.brezillon@bootlin.com>
+References: <20180705102733.29673-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,40 +26,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Boris,
 
 Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu,  5 Jul 2018
-11:44:55 +0200:
+12:27:25 +0200:
 
 > Hello,
 >=20
-> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
-> drivers that have no compile-time dependencies on arch
-> features/headers.
->=20
-> This will hopefully help us (NAND/MTD maintainers) in detecting build
-> issues earlier. Unfortunately we still have a few drivers that can't
-> easily be modified to be arch independent.
->=20
-> I tried to put all patches that only touch the NAND subsystem first,
-> so that they can be applied even if other patches are being discussed.
->=20
-> Don't hesitate to point any missing dependencies when compiled with
-> COMPILE_TEST. I didn't have any problem when compiling, but that might
-> be because the dependencies were already selected.
->=20
-> I have Question for Geert. I know you worked on HAS_DMA removal when
-> combined with COMPILE_TEST, do you plan to do something similar with
-> HAS_IOMEM?
+> These are just random cleanups that I did while working on the raw NAND
+> API sanitization (see here [1] for a preview of the upcoming changes).
 >=20
 > Regards,
 >=20
 > Boris
 >=20
+> [1]https://github.com/bbrezillon/linux-0day/commits/nand/api-cleanup
+>=20
+> Boris Brezillon (8):
+>   mtd: rawnand: Kill cafe_nand_bug()
+>   mtd: rawnand: Remove nand_do_read() prototype from rawnand.h
+>   mtd: rawnand: Remove forward declaration of mtd_info
+>   mtd: rawnand: Remove forward declaration of device_node
+>   mtd: rawnand: Rename nand_default_bbt() into nand_create_bbt()
+>   mtd: rawnand: Kill the chip->scan_bbt() hook
+>   mtd: rawnand: orion_nand: Kill orion_nand_data.dev_ready()
+>   mtd: rawnand: plat_nand: Kill pdata->ctrl.{hwcontrol,read_byte}()
+>=20
 
-Thanks for the cleanup.
-
-Applied patches 1-4, 6-9, 12-16, 18 and 21 to nand/next.
-
-Waiting a v2 for patches 5 (s3c), 10-11 (orion), 17 (fsmc), and acks
-for the others 19-20, 22-27.
+Series applied to nand/next,
 
 Thanks,
 Miqu=C3=A8l
