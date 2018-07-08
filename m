@@ -1,19 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fc8Qu-0004JY-DN
+ id 1fc8Qu-0004K7-DP
  for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 12:04:54 +0000
-Date: Sun, 8 Jul 2018 14:04:39 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Cc: robert.jarzmik@free.fr, boris.brezillon@bootlin.com,
- dwmw2@infradead.org, linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: marvell: add suspend and resume hooks
-Message-ID: <20180708140439.75170f37@xps13>
-In-Reply-To: <20180707064631.799-1-daniel@zonque.org>
-References: <20180707064631.799-1-daniel@zonque.org>
+Date: Sun, 8 Jul 2018 14:04:49 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Sergey Larin <cerg2010cerg2010@mail.ru>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mtd: rawnand: docg4: specify bits_per_cell
+Message-ID: <20180708140449.31efdc59@bbrezillon>
+In-Reply-To: <48cec9b431a42375cd9033b225f3573002574f17.1531045014.git.cerg2010cerg2010@mail.ru>
+References: <cover.1531045014.git.cerg2010cerg2010@mail.ru>
+ <48cec9b431a42375cd9033b225f3573002574f17.1531045014.git.cerg2010cerg2010@mail.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +25,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Daniel,
+On Sun,  8 Jul 2018 14:29:24 +0300
+Sergey Larin <cerg2010cerg2010@mail.ru> wrote:
 
-Thanks for all the changes.
+> This fixes WARN() in nand_is_slc().
+> 
+> DoC G4 is 2-bit MLC, so set bits_per_cell value according to this.
 
-Daniel Mack <daniel@zonque.org> wrote on Sat,  7 Jul 2018 08:46:29
-+0200:
+What you do here implies "no UBI on docg4". To be honest, I'm pretty
+sure there's an FTL in there, which clearly does not make it a good
+candidate for the raw NAND framework. Not to mention that it's not even
+using the same instruction set which forced developers of this driver
+to guess what the core was trying to do in the ->cmdfunc()
+implementation and convert it to docg4 operations. This approach is
+going against the recent evolution of the raw NAND framework
+(deprecating ->cmdfunc() in favor of ->exec_op()).
 
-> This patch restores the suspend and resume hooks that the old driver used
-> to have. Apart from stopping and starting the clocks, the resume callback
-> also nullifies the selected_chip pointer, so the next command that is iss=
-ued
-> will re-select the chip and thereby restore the timing registers.
->=20
-> Without this patch, a PXA3xx based system would cough up an error similar=
- to
-> the one below after resume.
->=20
-> [   44.660162] marvell-nfc 43100000.nand-controller: Timeout waiting for =
- RB signal
-> [   44.671492] ubi0 error: ubi_io_write: error -110 while writing 2048 by=
-tes to PEB 102:38912, written 0 bytes
-> [   44.682887] CPU: 0 PID: 1417 Comm: remote-control Not tainted 4.18.0-r=
-c2+ #344
-> [   44.691197] Hardware name: Marvell PXA3xx (Device Tree Support)
-> [   44.697111] Backtrace:
-> [   44.699593] [<c0106458>] (dump_backtrace) from [<c0106718>] (show_stac=
-k+0x18/0x1c)
-> [   44.708931]  r7:00000800 r6:00009800 r5:00000066 r4:c6139000
-> [   44.715833] [<c0106700>] (show_stack) from [<c0678a60>] (dump_stack+0x=
-20/0x28)
-> [   44.724206] [<c0678a40>] (dump_stack) from [<c0456cbc>] (ubi_io_write+=
-0x3d4/0x630)
-> [   44.732925] [<c04568e8>] (ubi_io_write) from [<c0454428>] (ubi_eba_wri=
-te_leb+0x690/0x6fc)
-> ...
->=20
-> Signed-off-by: Daniel Mack <daniel@zonque.org>
-> Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller dri=
-ver")
-> Cc: stable@vger.kernel.org
+I'd really like to see this driver moved outside of
+drivers/mtd/nand/raw/. If it really has NAND constraints, you could
+re-use the interface agnostic NAND framework (include/linux/nand.h) and
+add a new driver under drivers/mtd/nand/diskonchip/docg4.c.
+
+That's the very reason I asked if you if you had access to this HW. I
+can help you with the development part, but I can't test.
+
+> 
+> Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
 > ---
-
-Do you mind if I apply all the patches to nand/next? This fix will only
-appear in mainline after the merge window (in a few weeks). Otherwise
-I'll have to apply patches 2 and 3 for the next-next-release
-(supposedly 4.20).
-
-Thanks,
-Miqu=C3=A8l
+>  drivers/mtd/nand/raw/docg4.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+> index bbed8ea7858c..82d97a16e246 100644
+> --- a/drivers/mtd/nand/raw/docg4.c
+> +++ b/drivers/mtd/nand/raw/docg4.c
+> @@ -1250,6 +1250,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+>  	nand->pagemask = 0x3ffff;
+>  	nand->badblockpos = NAND_LARGE_BADBLOCK_POS;
+>  	nand->badblockbits = 8;
+> +	nand->bits_per_cell = 2;
+>  	nand->ecc.mode = NAND_ECC_HW_SYNDROME;
+>  	nand->ecc.size = DOCG4_PAGE_SIZE;
+>  	nand->ecc.prepad = 8;
