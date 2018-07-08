@@ -1,18 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHja-00016E-Fk
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 22:00:50 +0000
-Date: Mon, 9 Jul 2018 00:00:34 +0200
+ id 1fcHsx-0004rP-4l
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 22:10:29 +0000
+Date: Mon, 9 Jul 2018 00:10:14 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: boris.brezillon@bootlin.com, Fabio Estevam <fabio.estevam@nxp.com>, Han
- Xu <han.xu@nxp.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: gpmi: Switch to SPDX identifier
-Message-ID: <20180709000034.5d0920c5@xps13>
-In-Reply-To: <CAOMZO5CU7EkPOsaneMm5cBsUvHD8diW8MLb+aD-Jaw-_G9AbYA@mail.gmail.com>
-References: <1530898103-27125-1-git-send-email-festevam@gmail.com>
- <20180707190059.4f9837b0@xps13>
- <CAOMZO5CU7EkPOsaneMm5cBsUvHD8diW8MLb+aD-Jaw-_G9AbYA@mail.gmail.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: robert.jarzmik@free.fr, boris.brezillon@bootlin.com,
+ dwmw2@infradead.org, linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] mtd: rawnand: marvell: add suspend and resume hooks
+Message-ID: <20180709001014.1f725add@xps13>
+In-Reply-To: <4a3d847e-16c4-f53a-1e36-7f891823a0ba@zonque.org>
+References: <20180707064631.799-1-daniel@zonque.org>
+ <20180708140439.75170f37@xps13>
+ <4a3d847e-16c4-f53a-1e36-7f891823a0ba@zonque.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,36 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Fabio,
+Hi Daniel,
 
-Fabio Estevam <festevam@gmail.com> wrote on Sat, 7 Jul 2018 14:16:48
--0300:
+Daniel Mack <daniel@zonque.org> wrote on Sun, 8 Jul 2018 22:13:36 +0200:
 
-> Hi Miquel,
+> On Sunday, July 08, 2018 02:04 PM, Miquel Raynal wrote:
+> > Do you mind if I apply all the patches to nand/next? This fix will only
+> > appear in mainline after the merge window (in a few weeks). Otherwise
+> > I'll have to apply patches 2 and 3 for the next-next-release
+> > (supposedly 4.20). =20
 >=20
-> On Sat, Jul 7, 2018 at 2:00 PM, Miquel Raynal <miquel.raynal@bootlin.com>=
- wrote:
->=20
-> >> +// SPDX-License-Identifier: GPL-2.0+
-> >> +//
-> >> +// Freescale GPMI NAND Flash Driver
-> >> +//
-> >> +// Copyright (C) 2008-2011 Freescale Semiconductor, Inc.
-> >> +// Copyright (C) 2008 Embedded Alley Solutions, Inc. =20
-> >
-> > Maybe I'm not aware of something recent but I thought only the SPDX
-> > license tag was supposed to use '//' comments while the other lines
-> > should be still using '/* */' like any other comments in the code? =20
->=20
-> There are some subsystem maintainers (and also Linus) that prefer
-> putting everything in // style:
-> https://lkml.org/lkml/2017/11/25/133
+> I don't quite understand the options, but the thing that's important for =
+me is that 1/3 lands for 4.19. I don't care for the other two really, as th=
+ey have no functional impact.
 
-Thanks for the thread!
+Usually, accepted fixes are part of a specific pull request that can be
+sent at any time during the -rc's cycles, this is the fixes branch.
+Otherwise, for regular patches (or "features"), only one pull request
+is sent at the time of the merge window, this is the "next" branch.
 
-Well then, next time, just choose your favourite one.
+Fixes are based on the last -rc while features are usually based only
+on -rc1. Problem is, when a fix and another change are done on the
+same code section, this would produce a merge conflict in Linus's
+tree. To avoid it, two solutions:
+- take all the patches (including non-urgent fixes) in the -next branch
+- rebase/merge the -rc that contains the fix before applying the other
+  patches.=20
 
-v2 (with the two patches) applied to nand/next.
+In this case, series applied to nand/next (will be out for 4.19).
 
 Thanks,
 Miqu=C3=A8l
