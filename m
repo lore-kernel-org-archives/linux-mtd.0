@@ -1,21 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHaq-0003DU-I8
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:51:46 +0000
-Date: Sun, 8 Jul 2018 23:51:31 +0200
+ id 1fcHeZ-00074c-Sr
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:55:37 +0000
+Date: Sun, 8 Jul 2018 23:55:23 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: boris.brezillon@bootlin.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- dan.carpenter@oracle.com, dev@lynxeye.de, richard@nod.at,
- marcel@ziswiler.com, krzk@kernel.org, digetx@gmail.com,
- benjamin.lindqvist@endian.se, mirza.krak@gmail.com, gaireg@gaireg.de,
- linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: tegra: check bounds of die_nr properly
-Message-ID: <20180708235131.348f95f9@xps13>
-In-Reply-To: <20180704091310.22003-1-stefan@agner.ch>
-References: <20180704091310.22003-1-stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org
+Subject: Re: [PATCH 00/27] mtd: rawnand: Improve compile-test coverage
+Message-ID: <20180708235523.30faa860@xps13>
+In-Reply-To: <20180705094522.12138-1-boris.brezillon@bootlin.com>
+References: <20180705094522.12138-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,24 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+Hi Boris,
 
-Stefan Agner <stefan@agner.ch> wrote on Wed,  4 Jul 2018 11:13:10 +0200:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu,  5 Jul 2018
+11:44:55 +0200:
 
-> The Tegra driver currently only support a single chip select, hence
-> check boundaries accordingly. This fixes a off by one issue catched
-> with Smatch:
->     drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
->     warn: array off by one? 'nand->cs[die_nr]'
+> Hello,
 >=20
-> Also warn in case the stack asks for a chip select we currently do
-> not support.
+> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
+> drivers that have no compile-time dependencies on arch
+> features/headers.
 >=20
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> ---
+> This will hopefully help us (NAND/MTD maintainers) in detecting build
+> issues earlier. Unfortunately we still have a few drivers that can't
+> easily be modified to be arch independent.
+>=20
+> I tried to put all patches that only touch the NAND subsystem first,
+> so that they can be applied even if other patches are being discussed.
+>=20
+> Don't hesitate to point any missing dependencies when compiled with
+> COMPILE_TEST. I didn't have any problem when compiling, but that might
+> be because the dependencies were already selected.
+>=20
+> I have Question for Geert. I know you worked on HAS_DMA removal when
+> combined with COMPILE_TEST, do you plan to do something similar with
+> HAS_IOMEM?
+>=20
+> Regards,
+>=20
+> Boris
+>=20
 
-Applied to nand/next.
+Thanks for the cleanup.
+
+Applied patches 1-4, 6-9, 12-16, 18 and 21 to nand/next.
+
+Waiting a v2 for patches 5 (s3c), 10-11 (orion), 17 (fsmc), and acks
+for the others 19-20, 22-27.
 
 Thanks,
 Miqu=C3=A8l
