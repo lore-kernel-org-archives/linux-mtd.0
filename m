@@ -1,21 +1,35 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fc8Qu-0004K7-DP
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 12:04:54 +0000
-Date: Sun, 8 Jul 2018 14:04:49 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Sergey Larin <cerg2010cerg2010@mail.ru>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mtd: rawnand: docg4: specify bits_per_cell
-Message-ID: <20180708140449.31efdc59@bbrezillon>
-In-Reply-To: <48cec9b431a42375cd9033b225f3573002574f17.1531045014.git.cerg2010cerg2010@mail.ru>
-References: <cover.1531045014.git.cerg2010cerg2010@mail.ru>
- <48cec9b431a42375cd9033b225f3573002574f17.1531045014.git.cerg2010cerg2010@mail.ru>
+ id 1fc8xl-0007nc-Q3
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 12:38:51 +0000
+Date: Sun, 8 Jul 2018 14:38:36 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com"
+ <rogerq@ti.com>, "ladis@linux-mips.org" <ladis@linux-mips.org>,
+ "ada@thorsis.com" <ada@thorsis.com>, "honghui.zhang@mediatek.com"
+ <honghui.zhang@mediatek.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
+Subject: Re: [[LINUX PATCH v10] 4/4] mtd: rawnand: pl353: Add basic driver
+ for arm pl353 smc nand interface
+Message-ID: <20180708143836.3eb4af31@xps13>
+In-Reply-To: <MWHPR02MB262302F2D504A4783CF60832AF420@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1529563351-2241-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1529563351-2241-5-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180627172249.72f878a2@xps13>
+ <MWHPR02MB26236BEABAAF0213B49EC21EAF4F0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180628091450.25bd54e5@xps13>
+ <MWHPR02MB262302F2D504A4783CF60832AF420@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +39,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun,  8 Jul 2018 14:29:24 +0300
-Sergey Larin <cerg2010cerg2010@mail.ru> wrote:
+Hi Naga,
 
-> This fixes WARN() in nand_is_slc().
-> 
-> DoC G4 is 2-bit MLC, so set bits_per_cell value according to this.
+[...]
 
-What you do here implies "no UBI on docg4". To be honest, I'm pretty
-sure there's an FTL in there, which clearly does not make it a good
-candidate for the raw NAND framework. Not to mention that it's not even
-using the same instruction set which forced developers of this driver
-to guess what the core was trying to do in the ->cmdfunc()
-implementation and convert it to docg4 operations. This approach is
-going against the recent evolution of the raw NAND framework
-(deprecating ->cmdfunc() in favor of ->exec_op()).
+> > > > > +
+> > > > > +	if (csline =3D=3D NAND_DATA_IFACE_CHECK_ONLY)
+> > > > > +		return -EINVAL; =20
+> > > >
+> > > > Why? =20
+> > > It is similar to
+> > > if (chipnr < 0)
+> > > 	return 0; =20
+> >=20
+> > Mmmmmh, no?
+> >=20
+> > (return 0) !=3D (return -EINVAL)
+> >=20
+> > The core is asking you to check if the controller driver support partic=
+ular timings (usually
+> > ONFI modes 1-5). Returning an error means "I only support the slowest t=
+imings" which, I
+> > suppose, is wrong. Please fix this and compare the speeds. =20
+> I tried updating the driver as per your comments.
+> But I am facing an issue here.
+> The part I am using is http://www.cypress.com/file/207521/download.
+> This part doesn't support get/set features. But the controller supports i=
+t.
+> In this case, the frame work is doing like this
+> If chip supports set_features, then it issues the ONFI_FEATURE_ADDR_TIMIN=
+G_MODE other wise not.
 
-I'd really like to see this driver moved outside of
-drivers/mtd/nand/raw/. If it really has NAND constraints, you could
-re-use the interface agnostic NAND framework (include/linux/nand.h) and
-add a new driver under drivers/mtd/nand/diskonchip/docg4.c.
+Yes because some NAND parts are broken and do not support set feature
+while working naturally at an higher rate than the slowest default one.
 
-That's the very reason I asked if you if you had access to this HW. I
-can help you with the development part, but I can't test.
+> In our case it won't and then next it simply changes the controller mode.=
+ Hence both are in different timing mode and not
 
-> 
-> Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
-> ---
->  drivers/mtd/nand/raw/docg4.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-> index bbed8ea7858c..82d97a16e246 100644
-> --- a/drivers/mtd/nand/raw/docg4.c
-> +++ b/drivers/mtd/nand/raw/docg4.c
-> @@ -1250,6 +1250,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
->  	nand->pagemask = 0x3ffff;
->  	nand->badblockpos = NAND_LARGE_BADBLOCK_POS;
->  	nand->badblockbits = 8;
-> +	nand->bits_per_cell = 2;
->  	nand->ecc.mode = NAND_ECC_HW_SYNDROME;
->  	nand->ecc.size = DOCG4_PAGE_SIZE;
->  	nand->ecc.prepad = 8;
+If you look at the table 3.4 of your NAND part specification, you can
+see that it supports mode 0-4. Hence the core will suppose it can
+switch the controller timings to mode 4. Now, is your controller able
+to support these speeds? Maybe it only supports non-EDO modes (0-3)
+and mode 4 cannot be achieved?
+
+> Able to communicate with the nand flash device.
+> https://elixir.bootlin.com/linux/v4.18-rc3/source/drivers/mtd/nand/raw/na=
+nd_base.c#L1285
+> Am I missing something?
+> Could you please help on this.
+>=20
+> The code snippet is like this
+> tatic int pl353_setup_data_interface(struct mtd_info *mtd, int csline,
+> 				       const struct nand_data_interface *conf)
+> {
+> 	sdr =3D nand_get_sdr_timings(conf);
+> 	if (IS_ERR(sdr)) {
+>=20
+> 		return PTR_ERR(sdr);
+> 	}
+> 	if (csline =3D=3D NAND_DATA_IFACE_CHECK_ONLY) {
+> 		return 0;
+> 	}
+> }
+>=20
+> Thanks,
+> Naga Sureshkumar Relli.
+
+Thanks,
+Miqu=C3=A8l
