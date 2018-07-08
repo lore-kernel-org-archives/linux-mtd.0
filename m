@@ -1,20 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHX8-0008W7-B0
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:47:55 +0000
-Date: Sun, 8 Jul 2018 23:47:42 +0200
+ id 1fcHXt-0000OH-Ca
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:48:42 +0000
+Date: Sun, 8 Jul 2018 23:48:29 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>, Archit
- Taneja <architt@codeaurora.org>
-Subject: Re: [PATCH v5] mtd: rawnand: qcom: erased page bitflips detection
-Message-ID: <20180708234742.0d86b9d1@xps13>
-In-Reply-To: <1530619563-24712-1-git-send-email-absahu@codeaurora.org>
-References: <1530619563-24712-1-git-send-email-absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Bean
+ Huo <beanhuo@micron.com>, Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: Re: [PATCH 0/3] mtd: rawnand: micron: Get the actual number of
+ bitflips
+Message-ID: <20180708234829.0d8b4f7e@xps13>
+In-Reply-To: <20180703122009.29914-1-boris.brezillon@bootlin.com>
+References: <20180703122009.29914-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,74 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+Hi Boris,
 
-Abhishek Sahu <absahu@codeaurora.org> wrote on Tue,  3 Jul 2018
-17:36:03 +0530:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  3 Jul 2018
+14:20:06 +0200:
 
-> NAND parts can have bitflips in an erased page due to the
-> process technology used. In this case, QCOM NAND controller
-> is not able to identify that page as an erased page.
-> Currently the driver calls nand_check_erased_ecc_chunk() for
-> identifying the erased pages but this won=E2=80=99t work always since the
-> checking is being with ECC engine returned data. In case of
-> bitflips, the ECC engine tries to correct the data and then it
-> generates the uncorrectable error. Now, this data is not equal to
-> original raw data. For erased CW identification, the raw data
-> should be read again from NAND device and this
-> nand_check_erased_ecc_chunk function() should be called for raw
-> data only.
+> Hello,
 >=20
-> Now following logic is being added to identify the erased
-> codeword bitflips.
+> Back when support for Micron 4bit/512byte on-die ECC was added, we
+> decided that it wasn't worth retrieving the real number of bitflips
+> when the chip was returning WRITE_RECOMMENDED and instead decided to
+> always return the maximum value (ECC strength).
 >=20
-> 1. In most of the cases, not all the codewords will have bitflips
->    and only single CW will have bitflips. So, there is no need to
->    read the complete raw page data. The NAND raw read can be
->    scheduled for any CW in page. The NAND controller works on CW
->    basis and it will update the status register after each CW read.
->    Maintain the bitmask for the CW which generated the uncorrectable
->    error.
-> 2. Do raw read for all the CW's which generated the uncorrectable
->    error.
-> 3. Both DATA and OOB need to be checked for number of 0. The
->    top-level API can be called with only data buf or OOB buf so use
->    chip->databuf if data buf is null and chip->oob_poi if
->    OOB buf is null for copying the raw bytes temporarily.
-> 4. For each CW, check the number of 0 in cw_data and usable
->    oob bytes, The bbm and spare (unused) bytes bit flip won=E2=80=99t
->    affect the ECC so don=E2=80=99t check the number of bitflips in this a=
-rea.
+> This decision leads to UBI moving eraseblocks around as soon as 1
+> bitflip is present, which is far from optimal, and might wear the NAND
+> out faster than if we get the actual number of bitflips by re-reading
+> the page in raw mode and comparing its content to the corrected
+> version.
 >=20
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
-> * Changes from v4:
+> IIRC, Bean warned us about that, but it seems we didn't listen, so now
+> is time to revisit the implementation and implement what Bean initially
+> suggested.
 >=20
->  1. Used for_each_set_bit for determining CW=E2=80=99s which generated
->     uncorrectable errors.
->  2. Introduced cw_data_buf and cw_oob_buf which will have starting
->     buffer address for current codeword and used the same in helper
->     functions.
->  3. Added new line before calling of nand_check_erased_ecc_chunk for
->     better code readability.
+> This implementation has been tested on an MT29F2G08ABAEAH4, and seems
+> to work as expected (nandbiterrs works fine, and the real number of
+> bitflips is now returned).
 >=20
-> * Changes from v3:
+> Here are some details about these patches:
+> Patch 1 is just a cleanup to avoid passing parameters we don't need to
+> the ecc_status() functions. Patch 2 is preparing things for the actual
+> changes by reworking the ordering in the read function, and patch 3 is
+> implementing the read-in-raw-mode-and-compare logic.
 >=20
->  1. Major changes in erased codeword detection for
->     raw read function
+> Regards,
 >=20
-> * Changes from v2:
->   NONE
+> Boris
 >=20
-> * Changes from v1:
->  1. Minor change in commit message
->  2. invalidate pagebuf if databuf or oob_poi is used
+> Boris Brezillon (3):
+>   mtd: rawnand: micron: Stop passing mtd to ecc_status() funcs
+>   mtd: rawnand: micron: Disable ECC earlier in the read path
+>   mtd: rawnand: micron: Get the actual number of bitflips
 >=20
->  drivers/mtd/nand/raw/qcom_nandc.c | 126 +++++++++++++++++++++++++++-----=
+>  drivers/mtd/nand/raw/nand_micron.c | 145 ++++++++++++++++++++++++++++++-=
 ------
->  1 file changed, 89 insertions(+), 37 deletions(-)
+>  1 file changed, 120 insertions(+), 25 deletions(-)
+>=20
 
-Applied to nand/next.
+
+Series applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
