@@ -1,21 +1,15 @@
-Received: from mail.bugwerft.de ([2a03:6000:1011::59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcG45-0005CC-PW
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 20:13:51 +0000
-Subject: Re: [PATCH v3 1/3] mtd: rawnand: marvell: add suspend and resume hooks
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: robert.jarzmik@free.fr, boris.brezillon@bootlin.com, dwmw2@infradead.org,
- linux-mtd@lists.infradead.org, stable@vger.kernel.org
-References: <20180707064631.799-1-daniel@zonque.org>
- <20180708140439.75170f37@xps13>
-From: Daniel Mack <daniel@zonque.org>
-Message-ID: <4a3d847e-16c4-f53a-1e36-7f891823a0ba@zonque.org>
-Date: Sun, 8 Jul 2018 22:13:36 +0200
+Received: from [208.118.126.250] (helo=localhost)
+ by bombadil.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcGFL-0002NY-A6
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 20:25:27 +0000
+Date: Sun, 8 Jul 2018 14:25:26 -0600
+From: Christoph Hellwig <hch@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: [ANNOUNCE] Alpine Linux Persistence and Storage Summit
+Message-ID: <20180708202526.GA18140@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20180708140439.75170f37@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +19,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday, July 08, 2018 02:04 PM, Miquel Raynal wrote:
-> Do you mind if I apply all the patches to nand/next? This fix will only
-> appear in mainline after the merge window (in a few weeks). Otherwise
-> I'll have to apply patches 2 and 3 for the next-next-release
-> (supposedly 4.20).
+We proudly announce the second Alpine Linux Persistence and Storage
+Summit (ALPSS), which will be held September 11-14 at the Lizumerhuette
+[1][2] in Austria .
 
-I don't quite understand the options, but the thing that's important for 
-me is that 1/3 lands for 4.19. I don't care for the other two really, as 
-they have no functional impact.
+The goal of this conference is to discuss the hot topics in Linux storage
+and file systems, such as persistent memory, NVMe, multi-pathing, raw or
+open channel flash and I/O scheduling in a cool and relaxed setting with
+spectacular views in the Austrian alps.
 
+We plan to have a small selection of short and to the point talks with
+lots of room for discussion in small groups, as well as ample downtime
+to enjoy the surrounding.
 
-Thanks,
-Daniel
+Attendance is free except for the accommodation and food at the lodge [3],
+but the number of seats is strictly limited.  If you are interested in
+attending please reserve a seat by mailing your favorite topic(s) to:
+
+	alpss-pc@lists.infradead.org
+
+If you are interested in giving a short and crisp talk please also send
+an abstract to the same address.
+
+Note: The Lizumerhuette is an Alpine Society lodge in a high alpine
+environment.  A hike of approximately 2 hours is required to the lodge,
+and no other accommodations are available within walking distance.
+
+More details will eventually be available on our website:
+
+        http://www.alpss.at/
+
+Thank you on behalf of the program committee:
+
+    Stephen Bates
+    Sagi Grimberg
+    Christoph Hellwig
+    Johannes Thumshirn
+    Richard Weinberger
+
+[1] http://www.tyrol.com/things-to-do/sports/hiking/refuge-huts/a-lizumer-hut
+[2] https://www.glungezer.at/l-i-z-u-m-e-r-h-%C3%BC-t-t-e/
+[3] approx. EUR 40-60 per person and night, depending on the room
+    category
