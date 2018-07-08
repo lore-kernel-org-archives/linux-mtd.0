@@ -1,14 +1,22 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcHJO-0002hf-Vb
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:33:44 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>,
- stable@vger.kernel.org
-Subject: [PATCH] ubifs: xattr: Don't operate on deleted inodes
-Date: Sun,  8 Jul 2018 23:33:25 +0200
-Message-Id: <20180708213325.24941-1-richard@nod.at>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcHWI-0008B9-7I
+ for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 21:47:04 +0000
+Date: Sun, 8 Jul 2018 23:46:47 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Colin King <colin.king@canonical.com>
+Cc: Han Xu <han.xu@nxp.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: gpmi: remove redundant variable payload_virt
+Message-ID: <20180708234647.28137d8c@xps13>
+In-Reply-To: <20180703081214.32754-1-colin.king@canonical.com>
+References: <20180703081214.32754-1-colin.king@canonical.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,94 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-xattr operations can race with unlink and the following assert triggers:
-UBIFS assert failed in ubifs_jnl_change_xattr at 1606 (pid 6256)
+Hi Colin,
 
-Fix this by checking i_nlink before working on the host inode.
+Colin King <colin.king@canonical.com> wrote on Tue,  3 Jul 2018
+09:12:14 +0100:
 
-Cc: <stable@vger.kernel.org>
-Fixes: 1e51764a3c2a ("UBIFS: add new flash file system")
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/xattr.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Variable payload_virt is being assigned but is never used hence it is
+> redundant and can be removed.
+>=20
+> Cleans up clang warning:
+> warning: variable 'payload_virt' set but not used [-Wunused-but-set-varia=
+ble]
+>=20
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
 
-diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-index 6f720fdf5020..09e37e63bddd 100644
---- a/fs/ubifs/xattr.c
-+++ b/fs/ubifs/xattr.c
-@@ -152,6 +152,12 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	ui->data_len = size;
- 
- 	mutex_lock(&host_ui->ui_mutex);
-+
-+	if (!host->i_nlink) {
-+		err = -ENOENT;
-+		goto out_noent;
-+	}
-+
- 	host->i_ctime = current_time(host);
- 	host_ui->xattr_cnt += 1;
- 	host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
-@@ -184,6 +190,7 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(size);
- 	host_ui->xattr_names -= fname_len(nm);
- 	host_ui->flags &= ~UBIFS_CRYPT_FL;
-+out_noent:
- 	mutex_unlock(&host_ui->ui_mutex);
- out_free:
- 	make_bad_inode(inode);
-@@ -235,6 +242,12 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- 	mutex_unlock(&ui->ui_mutex);
- 
- 	mutex_lock(&host_ui->ui_mutex);
-+
-+	if (!host->i_nlink) {
-+		err = -ENOENT;
-+		goto out_noent;
-+	}
-+
- 	host->i_ctime = current_time(host);
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(old_size);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(size);
-@@ -256,6 +269,7 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
- out_cancel:
- 	host_ui->xattr_size -= CALC_XATTR_BYTES(size);
- 	host_ui->xattr_size += CALC_XATTR_BYTES(old_size);
-+out_noent:
- 	mutex_unlock(&host_ui->ui_mutex);
- 	make_bad_inode(inode);
- out_free:
-@@ -482,6 +496,12 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
- 		return err;
- 
- 	mutex_lock(&host_ui->ui_mutex);
-+
-+	if (!host->i_nlink) {
-+		err = -ENOENT;
-+		goto out_noent;
-+	}
-+
- 	host->i_ctime = current_time(host);
- 	host_ui->xattr_cnt -= 1;
- 	host_ui->xattr_size -= CALC_DENT_SIZE(fname_len(nm));
-@@ -501,6 +521,7 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
- 	host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
- 	host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
- 	host_ui->xattr_names += fname_len(nm);
-+out_noent:
- 	mutex_unlock(&host_ui->ui_mutex);
- 	ubifs_release_budget(c, &req);
- 	make_bad_inode(inode);
-@@ -540,6 +561,9 @@ static int ubifs_xattr_remove(struct inode *host, const char *name)
- 
- 	ubifs_assert(inode_is_locked(host));
- 
-+	if (!host->i_nlink)
-+		return -ENOENT;
-+
- 	if (fname_len(&nm) > UBIFS_MAX_NLEN)
- 		return -ENAMETOOLONG;
- 
--- 
-2.18.0
+Applied to nand/next.
+
+Thanks,
+Miqu=C3=A8l
