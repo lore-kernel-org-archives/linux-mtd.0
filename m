@@ -1,24 +1,22 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcJYj-0005CR-33
- for linux-mtd@lists.infradead.org; Sun, 08 Jul 2018 23:57:43 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcQo8-0007dT-V2
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 07:42:06 +0000
+Date: Mon, 9 Jul 2018 09:41:52 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "Bean Huo (beanhuo)"
- <beanhuo@micron.com>
-Subject: Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
-Date: Sun, 8 Jul 2018 23:56:52 +0000
-Message-ID: <da6f03d541e24e008f84f6f18fc8e77a@svr-chch-ex1.atlnz.lc>
-References: <20180624224448.21872-1-chris.packham@alliedtelesis.co.nz>
- <20180706212720.0e9dacb8@bbrezillon> <20180706233701.05da0666@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: hynix: Use ->exec_op() in
+ hynix_nand_reg_write_op()
+Message-ID: <20180709094152.006ff9ab@xps13>
+In-Reply-To: <20180704140858.28424-1-boris.brezillon@bootlin.com>
+References: <20180704140858.28424-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,=0A=
-=0A=
-On 07/07/18 09:37, Boris Brezillon wrote:=0A=
-> On Fri, 6 Jul 2018 21:27:20 +0200=0A=
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:=0A=
-> =0A=
->> On Mon, 25 Jun 2018 10:44:42 +1200=0A=
->> Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:=0A=
->>=0A=
->>> Hi,=0A=
->>>=0A=
->>> I'm looking at adding support for the Micron MT29F1G08ABAFAWP-ITE:F chi=
-p=0A=
->>=0A=
->> Hm, it's even worse than I thought. The model name does not include the=
-=0A=
->> -ITE suffix (E means ECC can't be disabled), which means we have no way=
-=0A=
->> to detect the version with forced on-die ECC.=0A=
->>=0A=
->> I see 2 solutions to this problem:=0A=
->> 1/ Bean provides us a solution to reliably detect when ECC can be=0A=
->>     de-actived and when it can't=0A=
->> 2/ We only ever expose 64 bytes of OOB to the user and consider that=0A=
->>     ECC can be disabled, even if it can't in reality=0A=
->>=0A=
-> =0A=
-> After reading the doc again, I forgot one thing you can try before=0A=
-> deciding to go for option #2.=0A=
-> =0A=
-> 8th bit in byte 5 of READID's result encodes whether the on-die ECC=0A=
-> state (enabled or not). I remember we had a discussion with Bean where=0A=
-> he told us this was a runtime status reflecting the on-die ECC state,=0A=
-> which is crazy, since READID might return different values depending on=
-=0A=
-> the NAND state, and most of the code in the core assumes READID=0A=
-> provides a fixed ID that encodes the chip characteristics/capabilities,=
-=0A=
-> not its state.=0A=
-> =0A=
-> Anyway, if this bit is actually reflecting the on-die ECC state and=0A=
-> on-die cannot be disabled on your chip, it should stay at 1 even after=0A=
-> you have sent the SET_FEATURES(DISABLE_ECC) command. Let's hope this=0A=
-> works as I expect, otherwise we're back to option #2 until Bean suggest=
-=0A=
-> something else.=0A=
-> =0A=
-=0A=
-I'm away from work this week so I don't have access to that system. But =0A=
-I can take a look when I get back. From memory though there was very =0A=
-little that you could tell from the id/params on this chip (FYI we've =0A=
-decided to use a chip from a different vendor for production).=0A=
+Hi Boris,
+
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed,  4 Jul 2018
+16:08:58 +0200:
+
+> Modern NAND controller drivers implement ->exec_op() instead of
+> ->cmdfunc(), make sure we don't end up with a NULL pointer dereference =20
+> when hynix_nand_reg_write_op() is called.
+>=20
+> Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/nand_hynix.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nan=
+d_hynix.c
+> index 8cbe77f447c7..4ffbb26e76d6 100644
+> --- a/drivers/mtd/nand/raw/nand_hynix.c
+> +++ b/drivers/mtd/nand/raw/nand_hynix.c
+> @@ -100,6 +100,16 @@ static int hynix_nand_reg_write_op(struct nand_chip =
+*chip, u8 addr, u8 val)
+>  	struct mtd_info *mtd =3D nand_to_mtd(chip);
+>  	u16 column =3D ((u16)addr << 8) | addr;
+> =20
+> +	if (chip->exec_op) {
+> +		struct nand_op_instr instrs[] =3D {
+> +			NAND_OP_ADDR(1, &addr, 0),
+> +			NAND_OP_8BIT_DATA_OUT(1, &val, 0),
+> +		};
+> +		struct nand_operation op =3D NAND_OPERATION(instrs);
+> +
+> +		return nand_exec_op(chip, &op);
+> +	}
+> +
+>  	chip->cmdfunc(mtd, NAND_CMD_NONE, column, -1);
+>  	chip->write_byte(mtd, val);
+> =20
+
+Applied to nand/next.
+
+Thanks,
+Miqu=C3=A8l
