@@ -1,19 +1,17 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcctF-00082x-N3
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:36:11 +0000
-Received: by mail-lj1-x241.google.com with SMTP id 203-v6so4037143ljj.13
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2018 13:35:59 -0700 (PDT)
+ id 1fcd2p-0003f0-7g
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:46:04 +0000
+Received: by mail-lj1-x244.google.com with SMTP id t21-v6so15089489lji.0
+ for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2018 13:45:52 -0700 (PDT)
 MIME-Version: 1.0
 Sender: arndbergmann@gmail.com
-In-Reply-To: <20180709200945.30116-12-boris.brezillon@bootlin.com>
+In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
- <20180709200945.30116-12-boris.brezillon@bootlin.com>
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 9 Jul 2018 22:35:56 +0200
-Message-ID: <CAK8P3a1Ndys3MMxLqL-hTFVDSZGm5ASEnQ7K+8dScvFrp=RTdA@mail.gmail.com>
-Subject: Re: [PATCH v2 11/24] mtd: rawnand: sunxi: Make sure ret is
- initialized in sunxi_nfc_read_byte()
+Date: Mon, 9 Jul 2018 22:45:50 +0200
+Message-ID: <CAK8P3a2zUvr958ZDV9DeGd7y28TFi4A1eYG79rb8cZaPLvN0ng@mail.gmail.com>
+Subject: Re: [PATCH v2 00/24] mtd: rawnand: Improve compile-test coverage
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Ralf Baechle <ralf@linux-mips.org>,
  "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
@@ -35,29 +33,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Mon, Jul 9, 2018 at 10:09 PM, Boris Brezillon
 <boris.brezillon@bootlin.com> wrote:
-> Fixes the following smatch warning:
+> Hello,
 >
-> drivers/mtd/nand/raw/sunxi_nand.c:551 sunxi_nfc_read_byte() error: uninitialized symbol 'ret'.
+> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
+> drivers that have no compile-time dependencies on arch
+> features/headers.
 >
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> This will hopefully help us (NAND/MTD maintainers) in detecting build
+> issues earlier. Unfortunately we still have a few drivers that can't
+> easily be modified to be arch independent.
 >
-> diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-> index 99043c3a4fa7..4b11cd4a79be 100644
-> --- a/drivers/mtd/nand/raw/sunxi_nand.c
-> +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-> @@ -544,7 +544,7 @@ static void sunxi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
+> I tried to put all patches that only touch the NAND subsystem first,
+> so that they can be applied even if other patches are being discussed.
 >
->  static uint8_t sunxi_nfc_read_byte(struct mtd_info *mtd)
->  {
-> -       uint8_t ret;
-> +       uint8_t ret = 0;
->
->         sunxi_nfc_read_buf(mtd, &ret, 1);
->
+> Don't hesitate to point any missing dependencies when compiled with
+> COMPILE_TEST. I didn't have any problem when compiling, but that might
+> be because the dependencies were already selected.
 
-Should there perhaps be a warning when no data was returned after a timeout?
+Looks good to me overall.
 
-      Arnd
+> In this v2, I tried to fix all warnings/errors reported by kbuild/0day
+> robots. The only remaining ones are those in omap_elm.c which seems to
+> do some weird cpu_to_be32() conversions. I guess I could replace those
+> by iowrite32be() calls (or just add (__force __u32)), but I don't want
+> to risk a regression on this driver, so I'm just leaving it for someone
+> else to fix :P.
+
+Agreed, this is definedly very odd code. It looks like the intention
+is to write all the bits in reverse order, but four bytes at a time. I'm
+fairly sure the current implementation cannot work on big-endian,
+in particularly this line:
+
+val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
+
+Since shifting a number after the byteswap is not well-defined.
+It's probably correct on little-endian, but it's not clear what the
+best way would be to write this is an endian-neutral way.
+
+        Arnd
