@@ -1,22 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcQo8-0007dT-V2
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 07:42:06 +0000
-Date: Mon, 9 Jul 2018 09:41:52 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: hynix: Use ->exec_op() in
- hynix_nand_reg_write_op()
-Message-ID: <20180709094152.006ff9ab@xps13>
-In-Reply-To: <20180704140858.28424-1-boris.brezillon@bootlin.com>
-References: <20180704140858.28424-1-boris.brezillon@bootlin.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcT9S-0001op-O6
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 10:12:16 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: UBIFS question: Power-cuts after ubifs_leb_unmap()
+Date: Mon, 09 Jul 2018 12:11:51 +0200
+Message-ID: <1756392.9dNXh6ho7o@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +21,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Artem, Adrian,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed,  4 Jul 2018
-16:08:58 +0200:
+While playing with a new UBI/UBIFS test framework I managed to hit this error, 
+with lprops self-checks enabled:
 
-> Modern NAND controller drivers implement ->exec_op() instead of
-> ->cmdfunc(), make sure we don't end up with a NULL pointer dereference =20
-> when hynix_nand_reg_write_op() is called.
->=20
-> Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/nand_hynix.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->=20
-> diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nan=
-d_hynix.c
-> index 8cbe77f447c7..4ffbb26e76d6 100644
-> --- a/drivers/mtd/nand/raw/nand_hynix.c
-> +++ b/drivers/mtd/nand/raw/nand_hynix.c
-> @@ -100,6 +100,16 @@ static int hynix_nand_reg_write_op(struct nand_chip =
-*chip, u8 addr, u8 val)
->  	struct mtd_info *mtd =3D nand_to_mtd(chip);
->  	u16 column =3D ((u16)addr << 8) | addr;
-> =20
-> +	if (chip->exec_op) {
-> +		struct nand_op_instr instrs[] =3D {
-> +			NAND_OP_ADDR(1, &addr, 0),
-> +			NAND_OP_8BIT_DATA_OUT(1, &val, 0),
-> +		};
-> +		struct nand_operation op =3D NAND_OPERATION(instrs);
-> +
-> +		return nand_exec_op(chip, &op);
-> +	}
-> +
->  	chip->cmdfunc(mtd, NAND_CMD_NONE, column, -1);
->  	chip->write_byte(mtd, val);
-> =20
+[ 2412.268964] UBIFS error (ubi0:0 pid 708): scan_check_cb: bad accounting of 
+LEB 11: free 0, dirty 118072 flags 0x1, should be free 126976, dirty 0
 
-Applied to nand/next.
+LEB 11 is unmapped but LPT still thinks that some data is used,
+lp->free + lp >dirty < leb-size.
+Even without lprobs self-checks, the same filesystem will later hit this 
+assertion in ubifs_garbage_collect_leb():
+
+ubifs_assert(!list_empty(&sleb->nodes));
+
+The assert makes sure that the LEB actually contains nodes.
+ubifs_garbage_collect_leb() handles the special case lp->free + lp->dirty == 
+c->leb_size.
+But not lp->free + lp->dirty < leb-size.
+
+Now I'm not sure where to fix that, maybe you can remember some design 
+decisions.
+1. Shall we massage ubifs_garbage_collect_leb() to deal with this special case 
+too?
+2. Is it already a bug when this case happens?
+
+>From reviewing the code, I think the said situation can arise when we face 
+power-cut
+in ubifs_garbage_collect_leb():
+
+if (snod->type == UBIFS_IDX_NODE) {
+	...
+} else {
+	...
+
+	err = ubifs_change_one_lp(c, lnum, c->leb_size, 0, 0, 0, 0);
+
+	...
+
+	err = ubifs_leb_unmap(c, lnum);
+
+	// POWER CUT
+}
+
+We mark the LEB as free and unmap it.
+ubifs_change_one_lp() does not immediately write a new LPT, if we lose power 
+right after ubifs_leb_unmap() it can happen that the LEB already got erased 
+but the LPT has the old accounting information.
+UBIFS seems to expect such situations only for
+lp->free + lp->dirty == c->leb_size
+
+What do you think?
 
 Thanks,
-Miqu=C3=A8l
+//richard
