@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcdPt-00045N-1u
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:09:55 +0000
+ id 1fcdPt-00045K-1t
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:09:56 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -11,9 +11,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 2/2] mtd: rawnand: micron: Fix on-die ECC detection logic
-Date: Mon,  9 Jul 2018 23:09:37 +0200
-Message-Id: <20180709210937.30150-3-boris.brezillon@bootlin.com>
+Subject: [PATCH 1/2] mtd: rawnand: micron: Define the proper layout for
+ 8bit/512bytes on-die ECC
+Date: Mon,  9 Jul 2018 23:09:36 +0200
+Message-Id: <20180709210937.30150-2-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709210937.30150-1-boris.brezillon@bootlin.com>
 References: <20180709210937.30150-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,114 +26,112 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Basing the "mandatory on-die" detection on ID byte 2 does not work,
-because Micron has plenty of NANDs using the same device ID code, and
-not all of them have forcibly enabled on-die ECC.
+The MT29F1G08ABAFAWP datasheet says that all ECC bytes are placed at the
+end of the OOB area.
 
-Since the "Array Operation" feature does not provide the "ECC
-enabled/disabled" bit when the ECC can't be disabled, let's try to use
-the "ECC enabled/disabled" bit in the READ_ID bytes.
-
-It seems that this bit is dynamically updated on NANDs where on-die ECC
-can freely be enabled/disabled, so let's hope it stays at one when we
-have a NAND with on-die ECC forcibly enabled.
-
-Fixes: 51f3b3970a8c ("mtd: rawnand: micron: detect forced on-die ECC")
+Fixes: 386fc2609d15 ("mtd: rawnand: micron: support 8/512 on-die ECC")
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_micron.c | 51 +++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 26 deletions(-)
+ drivers/mtd/nand/raw/nand_micron.c | 59 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 50 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 00a965ad7ab2..6ae708fbbd3a 100644
+index 754e9cdd44ac..00a965ad7ab2 100644
 --- a/drivers/mtd/nand/raw/nand_micron.c
 +++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -345,13 +345,8 @@ enum {
- 	MICRON_ON_DIE_MANDATORY,
- };
- 
--/*
-- * These parts are known to have on-die ECC forceably enabled
-- */
--static u8 micron_on_die_ecc[] = {
--	0xd1, /* MT29F1G08ABAFA */
--	0xa1, /* MT29F1G08ABBFA */
--};
-+#define MICRON_ID_INTERNAL_ECC_MASK	GENMASK(1, 0)
-+#define MICRON_ID_ECC_ENABLED		BIT(7)
- 
- /*
-  * Try to detect if the NAND support on-die ECC. To do this, we enable
-@@ -366,12 +361,8 @@ static u8 micron_on_die_ecc[] = {
- static int micron_supports_on_die_ecc(struct nand_chip *chip)
- {
- 	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
-+	u8 id[5];
- 	int ret;
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(micron_on_die_ecc); i++)
--		if (chip->id.data[1] == micron_on_die_ecc[i])
--			return MICRON_ON_DIE_MANDATORY;
- 
- 	if (!chip->parameters.onfi.version)
- 		return MICRON_ON_DIE_UNSUPPORTED;
-@@ -379,34 +370,42 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
- 	if (chip->bits_per_cell != 1)
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
-+	/*
-+	 * We only support on-die ECC of 4/512 or 8/512
-+	 */
-+	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
-+		return MICRON_ON_DIE_UNSUPPORTED;
-+
-+	/*
-+	 * We don't know what INTERNAL_ECC means, but it seems that 0x2 matches
-+	 * all NANDs with on-die ECC.
-+	 */
-+	if (chip->id.len != 5 ||
-+	    (chip->id.data[4] & MICRON_ID_INTERNAL_ECC_MASK) != 0x2)
-+		return MICRON_ON_DIE_UNSUPPORTED;
-+
- 	ret = micron_nand_on_die_ecc_setup(chip, true);
- 	if (ret)
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	ret = nand_get_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
--	if (ret < 0)
--		return ret;
-+	ret = nand_readid_op(chip, 0, id, sizeof(id));
-+	if (ret)
-+		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	if ((feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN) == 0)
-+	if (!(id[4] & MICRON_ID_ECC_ENABLED))
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
- 	ret = micron_nand_on_die_ecc_setup(chip, false);
- 	if (ret)
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	ret = nand_get_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
--	if (ret < 0)
--		return ret;
-+	ret = nand_readid_op(chip, 0, id, sizeof(id));
-+	if (ret)
-+		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	if (feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN)
-+	if (id[4] & MICRON_ID_ECC_ENABLED)
- 		return MICRON_ON_DIE_MANDATORY;
- 
--	/*
--	 * We only support on-die ECC of 4/512 or 8/512
--	 */
--	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
--		return MICRON_ON_DIE_UNSUPPORTED;
--
- 	return MICRON_ON_DIE_SUPPORTED;
+@@ -103,8 +103,9 @@ static int micron_nand_onfi_init(struct nand_chip *chip)
+ 	return 0;
  }
  
+-static int micron_nand_on_die_ooblayout_ecc(struct mtd_info *mtd, int section,
+-					    struct mtd_oob_region *oobregion)
++static int micron_nand_on_die_4_ooblayout_ecc(struct mtd_info *mtd,
++					      int section,
++					      struct mtd_oob_region *oobregion)
+ {
+ 	if (section >= 4)
+ 		return -ERANGE;
+@@ -115,8 +116,9 @@ static int micron_nand_on_die_ooblayout_ecc(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
+-static int micron_nand_on_die_ooblayout_free(struct mtd_info *mtd, int section,
+-					     struct mtd_oob_region *oobregion)
++static int micron_nand_on_die_4_ooblayout_free(struct mtd_info *mtd,
++					       int section,
++					       struct mtd_oob_region *oobregion)
+ {
+ 	if (section >= 4)
+ 		return -ERANGE;
+@@ -127,9 +129,44 @@ static int micron_nand_on_die_ooblayout_free(struct mtd_info *mtd, int section,
+ 	return 0;
+ }
+ 
+-static const struct mtd_ooblayout_ops micron_nand_on_die_ooblayout_ops = {
+-	.ecc = micron_nand_on_die_ooblayout_ecc,
+-	.free = micron_nand_on_die_ooblayout_free,
++static const struct mtd_ooblayout_ops micron_nand_on_die_4_ooblayout_ops = {
++	.ecc = micron_nand_on_die_4_ooblayout_ecc,
++	.free = micron_nand_on_die_4_ooblayout_free,
++};
++
++static int micron_nand_on_die_8_ooblayout_ecc(struct mtd_info *mtd,
++					      int section,
++					      struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = mtd->oobsize - chip->ecc.total;
++	oobregion->length = chip->ecc.total;
++
++	return 0;
++}
++
++static int micron_nand_on_die_8_ooblayout_free(struct mtd_info *mtd,
++					       int section,
++					       struct mtd_oob_region *oobregion)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++
++	if (section)
++		return -ERANGE;
++
++	oobregion->offset = 2;
++	oobregion->length = mtd->oobsize - chip->ecc.total - 2;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops micron_nand_on_die_8_ooblayout_ops = {
++	.ecc = micron_nand_on_die_8_ooblayout_ecc,
++	.free = micron_nand_on_die_8_ooblayout_free,
+ };
+ 
+ static int micron_nand_on_die_ecc_setup(struct nand_chip *chip, bool enable)
+@@ -425,6 +462,12 @@ static int micron_nand_init(struct nand_chip *chip)
+ 				ret = -ENOMEM;
+ 				goto err_free_manuf_data;
+ 			}
++
++			mtd_set_ooblayout(mtd,
++					  &micron_nand_on_die_4_ooblayout_ops);
++		} else {
++			mtd_set_ooblayout(mtd,
++					  &micron_nand_on_die_8_ooblayout_ops);
+ 		}
+ 
+ 		chip->ecc.bytes = chip->ecc_strength_ds * 2;
+@@ -435,8 +478,6 @@ static int micron_nand_init(struct nand_chip *chip)
+ 		chip->ecc.write_page = micron_nand_write_page_on_die_ecc;
+ 		chip->ecc.read_page_raw = nand_read_page_raw;
+ 		chip->ecc.write_page_raw = nand_write_page_raw;
+-
+-		mtd_set_ooblayout(mtd, &micron_nand_on_die_ooblayout_ops);
+ 	}
+ 
+ 	return 0;
 -- 
 2.14.1
