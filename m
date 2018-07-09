@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fccUN-000165-W2
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:43 +0000
+ id 1fccUY-00016E-7W
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:53 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 07/24] mtd: rawnand: davinci: Stop doing iomem pointer <->
- u32 conversions
-Date: Mon,  9 Jul 2018 22:09:28 +0200
-Message-Id: <20180709200945.30116-8-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 21/24] MIPS: jz4740: Move jz4740_nand.h header to
+ include/linux/platform_data/jz4740
+Date: Mon,  9 Jul 2018 22:09:42 +0200
+Message-Id: <20180709200945.30116-22-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,86 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is no point in doing this sort of conversion since pointers can
-we can replace |= by += operations which are perfectly valid on
-pointers.
+This way we will be able to compile the jz4740_nand driver when
+COMPILE_TEST=y.
 
-This is done in preparation of COMPILE_TEST addition to the NAND_DAVINCI
-Kconfig entry, since building for x86 generates a several warnings
-because of inappropriate u32 <-> void * conversions (pointers are 64bits
-large on x86_64).
-
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/davinci_nand.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+ arch/mips/jz4740/board-qi_lb60.c                                      | 3 ++-
+ drivers/mtd/nand/raw/jz4740_nand.c                                    | 2 +-
+ .../mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h  | 4 ++--
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+ rename {arch/mips/include/asm/mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h (91%)
 
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index cd12e5abafde..9cd36a750965 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -60,8 +60,7 @@ struct davinci_nand_info {
- 	void __iomem		*base;
- 	void __iomem		*vaddr;
+diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
+index 60f0767507c6..af0c8ace0141 100644
+--- a/arch/mips/jz4740/board-qi_lb60.c
++++ b/arch/mips/jz4740/board-qi_lb60.c
+@@ -29,10 +29,11 @@
+ #include <linux/power/gpio-charger.h>
+ #include <linux/pwm.h>
  
--	uint32_t		ioaddr;
--	uint32_t		current_cs;
-+	void __iomem		*current_cs;
- 
- 	uint32_t		mask_chipsel;
- 	uint32_t		mask_ale;
-@@ -102,17 +101,17 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
- 				   unsigned int ctrl)
- {
- 	struct davinci_nand_info	*info = to_davinci_nand(mtd);
--	uint32_t			addr = info->current_cs;
-+	void __iomem			*addr = info->current_cs;
- 	struct nand_chip		*nand = mtd_to_nand(mtd);
- 
- 	/* Did the control lines change? */
- 	if (ctrl & NAND_CTRL_CHANGE) {
- 		if ((ctrl & NAND_CTRL_CLE) == NAND_CTRL_CLE)
--			addr |= info->mask_cle;
-+			addr += info->mask_cle;
- 		else if ((ctrl & NAND_CTRL_ALE) == NAND_CTRL_ALE)
--			addr |= info->mask_ale;
-+			addr += info->mask_ale;
- 
--		nand->IO_ADDR_W = (void __iomem __force *)addr;
-+		nand->IO_ADDR_W = addr;
- 	}
- 
- 	if (cmd != NAND_CMD_NONE)
-@@ -122,14 +121,14 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
- static void nand_davinci_select_chip(struct mtd_info *mtd, int chip)
- {
- 	struct davinci_nand_info	*info = to_davinci_nand(mtd);
--	uint32_t			addr = info->ioaddr;
++#include <linux/platform_data/jz4740/jz4740_nand.h>
 +
-+	info->current_cs = info->vaddr;
+ #include <asm/mach-jz4740/gpio.h>
+ #include <asm/mach-jz4740/jz4740_fb.h>
+ #include <asm/mach-jz4740/jz4740_mmc.h>
+-#include <asm/mach-jz4740/jz4740_nand.h>
  
- 	/* maybe kick in a second chipselect */
- 	if (chip > 0)
--		addr |= info->mask_chipsel;
--	info->current_cs = addr;
-+		info->current_cs += info->mask_chipsel;
+ #include <linux/regulator/fixed.h>
+ #include <linux/regulator/machine.h>
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index 613b00a9604b..a0254461812d 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -25,7 +25,7 @@
  
--	info->chip.IO_ADDR_W = (void __iomem __force *)addr;
-+	info->chip.IO_ADDR_W = info->current_cs;
- 	info->chip.IO_ADDR_R = info->chip.IO_ADDR_W;
- }
+ #include <linux/gpio.h>
  
-@@ -680,9 +679,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 	info->chip.bbt_md	= pdata->bbt_md;
- 	info->timing		= pdata->timing;
+-#include <asm/mach-jz4740/jz4740_nand.h>
++#include <linux/platform_data/jz4740/jz4740_nand.h>
  
--	info->ioaddr		= (uint32_t __force) vaddr;
--
--	info->current_cs	= info->ioaddr;
-+	info->current_cs	= info->vaddr;
- 	info->core_chipsel	= pdata->core_chipsel;
- 	info->mask_chipsel	= pdata->mask_chipsel;
+ #define JZ_REG_NAND_CTRL	0x50
+ #define JZ_REG_NAND_ECC_CTRL	0x100
+diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/include/linux/platform_data/jz4740/jz4740_nand.h
+similarity index 91%
+rename from arch/mips/include/asm/mach-jz4740/jz4740_nand.h
+rename to include/linux/platform_data/jz4740/jz4740_nand.h
+index f381d465e768..bc571f6d5ced 100644
+--- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
++++ b/include/linux/platform_data/jz4740/jz4740_nand.h
+@@ -13,8 +13,8 @@
+  *
+  */
  
+-#ifndef __ASM_MACH_JZ4740_JZ4740_NAND_H__
+-#define __ASM_MACH_JZ4740_JZ4740_NAND_H__
++#ifndef __JZ4740_NAND_H__
++#define __JZ4740_NAND_H__
+ 
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
 -- 
 2.14.1
