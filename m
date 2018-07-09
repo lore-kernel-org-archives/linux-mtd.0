@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fccUN-000166-Vs
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:38 +0000
+ id 1fccUN-000165-W2
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:43 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 08/24] mtd: rawnand: davinci: Use uintptr_t casts instead
- of unsigned ones
-Date: Mon,  9 Jul 2018 22:09:29 +0200
-Message-Id: <20180709200945.30116-9-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 07/24] mtd: rawnand: davinci: Stop doing iomem pointer <->
+ u32 conversions
+Date: Mon,  9 Jul 2018 22:09:28 +0200
+Message-Id: <20180709200945.30116-8-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,54 +27,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-uintptr_t should be used when casting a pointer to an unsigned int so
-that the code compiles without warnings even on 64-bit architectures.
+There is no point in doing this sort of conversion since pointers can
+we can replace |= by += operations which are perfectly valid on
+pointers.
 
-This is needed if we want to allow selection of this driver when
-COMPILE_TEST=y.
+This is done in preparation of COMPILE_TEST addition to the NAND_DAVINCI
+Kconfig entry, since building for x86 generates a several warnings
+because of inappropriate u32 <-> void * conversions (pointers are 64bits
+large on x86_64).
 
 Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/davinci_nand.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c | 23 ++++++++++-------------
+ 1 file changed, 10 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index 9cd36a750965..e79ed0f60ade 100644
+index cd12e5abafde..9cd36a750965 100644
 --- a/drivers/mtd/nand/raw/davinci_nand.c
 +++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -318,7 +318,7 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	/* Unpack ten bytes into eight 10 bit values.  We know we're
- 	 * little-endian, and use type punning for less shifting/masking.
- 	 */
--	if (WARN_ON(0x01 & (unsigned) ecc_code))
-+	if (WARN_ON(0x01 & (uintptr_t)ecc_code))
- 		return -EINVAL;
- 	ecc16 = (unsigned short *)ecc_code;
+@@ -60,8 +60,7 @@ struct davinci_nand_info {
+ 	void __iomem		*base;
+ 	void __iomem		*vaddr;
  
-@@ -440,9 +440,9 @@ static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+-	uint32_t		ioaddr;
+-	uint32_t		current_cs;
++	void __iomem		*current_cs;
+ 
+ 	uint32_t		mask_chipsel;
+ 	uint32_t		mask_ale;
+@@ -102,17 +101,17 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
+ 				   unsigned int ctrl)
  {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct davinci_nand_info	*info = to_davinci_nand(mtd);
+-	uint32_t			addr = info->current_cs;
++	void __iomem			*addr = info->current_cs;
+ 	struct nand_chip		*nand = mtd_to_nand(mtd);
  
--	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-+	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
- 		ioread32_rep(chip->IO_ADDR_R, buf, len >> 2);
--	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-+	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
- 		ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
- 	else
- 		ioread8_rep(chip->IO_ADDR_R, buf, len);
-@@ -453,9 +453,9 @@ static void nand_davinci_write_buf(struct mtd_info *mtd,
+ 	/* Did the control lines change? */
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+ 		if ((ctrl & NAND_CTRL_CLE) == NAND_CTRL_CLE)
+-			addr |= info->mask_cle;
++			addr += info->mask_cle;
+ 		else if ((ctrl & NAND_CTRL_ALE) == NAND_CTRL_ALE)
+-			addr |= info->mask_ale;
++			addr += info->mask_ale;
+ 
+-		nand->IO_ADDR_W = (void __iomem __force *)addr;
++		nand->IO_ADDR_W = addr;
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE)
+@@ -122,14 +121,14 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
+ static void nand_davinci_select_chip(struct mtd_info *mtd, int chip)
  {
- 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct davinci_nand_info	*info = to_davinci_nand(mtd);
+-	uint32_t			addr = info->ioaddr;
++
++	info->current_cs = info->vaddr;
  
--	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-+	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
- 		iowrite32_rep(chip->IO_ADDR_R, buf, len >> 2);
--	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-+	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
- 		iowrite16_rep(chip->IO_ADDR_R, buf, len >> 1);
- 	else
- 		iowrite8_rep(chip->IO_ADDR_R, buf, len);
+ 	/* maybe kick in a second chipselect */
+ 	if (chip > 0)
+-		addr |= info->mask_chipsel;
+-	info->current_cs = addr;
++		info->current_cs += info->mask_chipsel;
+ 
+-	info->chip.IO_ADDR_W = (void __iomem __force *)addr;
++	info->chip.IO_ADDR_W = info->current_cs;
+ 	info->chip.IO_ADDR_R = info->chip.IO_ADDR_W;
+ }
+ 
+@@ -680,9 +679,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	info->chip.bbt_md	= pdata->bbt_md;
+ 	info->timing		= pdata->timing;
+ 
+-	info->ioaddr		= (uint32_t __force) vaddr;
+-
+-	info->current_cs	= info->ioaddr;
++	info->current_cs	= info->vaddr;
+ 	info->core_chipsel	= pdata->core_chipsel;
+ 	info->mask_chipsel	= pdata->mask_chipsel;
+ 
 -- 
 2.14.1
