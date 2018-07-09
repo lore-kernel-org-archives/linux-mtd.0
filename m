@@ -1,25 +1,23 @@
-Received: from mail-eopbgr00123.outbound.protection.outlook.com
- ([40.107.0.123] helo=EUR02-AM5-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcYk3-0006qe-5A
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 16:10:24 +0000
-Received: from fihe3nok0734.emea.nsn-net.net (localhost [127.0.0.1])
- by fihe3nok0734.emea.nsn-net.net (8.14.9/8.14.5) with ESMTP id w69G9rgq013404
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
- for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2018 19:09:53 +0300
-Received: from [10.151.72.141] ([10.151.72.141])
- by fihe3nok0734.emea.nsn-net.net (8.14.9/8.14.5) with ESMTP id w69G9roc013360
- for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2018 19:09:53 +0300
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcYlx-0000FZ-KJ
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 16:12:23 +0000
+Date: Mon, 9 Jul 2018 18:12:06 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Sekhar
+ Nori <nsekhar@ti.com>, Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, Bartosz Golaszewski
+ <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 1/3] mtd: rawnand: davinci: fix build testing on 64-bit
-To: <linux-mtd@lists.infradead.org>
-References: <20180709155730.2422841-1-arnd@arndb.de>
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <faef5f04-5754-1390-4020-46415da461a0@nokia.com>
-Date: Mon, 9 Jul 2018 18:07:38 +0200
-MIME-Version: 1.0
+Message-ID: <20180709181206.3422a8fb@bbrezillon>
 In-Reply-To: <20180709155730.2422841-1-arnd@arndb.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+References: <20180709155730.2422841-1-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,9 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Arnd!
+Hi Arnd,
 
-On 09/07/18 17:57, Arnd Bergmann wrote:
+On Mon,  9 Jul 2018 17:57:02 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
+
 > Now that we can build this driver everywhere, we run into a couple
 > of warnings like:
 > 
@@ -45,7 +45,17 @@ On 09/07/18 17:57, Arnd Bergmann wrote:
 > Fixes: 347af8918e8a ("mtd: rawnand: davinci: Allow selection of this driver when COMPILE_TEST=y")
 > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Actually, I have all those fixes in my nand/api-cleanup branch [1]. I
+was planning on sending a v2 of my COMPILE_TEST series to address
+those problems before activating COMPILE_TEST on those drivers (Miquel
+already dropped the patches activating COMPILE_TEST on sunxi, davinci
+and atmel).
+
+Regards,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux-0day/commits/nand/api-cleanup
 
 > ---
 >  drivers/mtd/nand/raw/davinci_nand.c | 16 ++++++++--------
@@ -115,7 +125,3 @@ Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 >  
 >  	info->current_cs	= info->ioaddr;
 >  	info->core_chipsel	= pdata->core_chipsel;
-
--- 
-Best regards,
-Alexander Sverdlin.
