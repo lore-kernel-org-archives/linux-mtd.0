@@ -1,27 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcdGh-0000ye-Us
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:00:25 +0000
-Date: Mon, 9 Jul 2018 23:00:11 +0200
+ id 1fcdPt-00045I-1r
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:09:55 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Ralf Baechle <ralf@linux-mips.org>, "open list:RALINK MIPS ARCHITECTURE"
- <linux-mips@linux-mips.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-wireless <linux-wireless@vger.kernel.org>
-Subject: Re: [PATCH v2 11/24] mtd: rawnand: sunxi: Make sure ret is
- initialized in sunxi_nfc_read_byte()
-Message-ID: <20180709230011.1ca3f9ce@bbrezillon>
-In-Reply-To: <CAK8P3a1Ndys3MMxLqL-hTFVDSZGm5ASEnQ7K+8dScvFrp=RTdA@mail.gmail.com>
-References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
- <20180709200945.30116-12-boris.brezillon@bootlin.com>
- <CAK8P3a1Ndys3MMxLqL-hTFVDSZGm5ASEnQ7K+8dScvFrp=RTdA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ "Bean Huo (beanhuo)" <beanhuo@micron.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH 0/2] mtd: rawnand: micron: Fix on-die ECC
+Date: Mon,  9 Jul 2018 23:09:35 +0200
+Message-Id: <20180709210937.30150-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 9 Jul 2018 22:35:56 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+Chris, Bean,
 
-> On Mon, Jul 9, 2018 at 10:09 PM, Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > Fixes the following smatch warning:
-> >
-> > drivers/mtd/nand/raw/sunxi_nand.c:551 sunxi_nfc_read_byte() error: uninitialized symbol 'ret'.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-> > index 99043c3a4fa7..4b11cd4a79be 100644
-> > --- a/drivers/mtd/nand/raw/sunxi_nand.c
-> > +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-> > @@ -544,7 +544,7 @@ static void sunxi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
-> >
-> >  static uint8_t sunxi_nfc_read_byte(struct mtd_info *mtd)
-> >  {
-> > -       uint8_t ret;
-> > +       uint8_t ret = 0;
-> >
-> >         sunxi_nfc_read_buf(mtd, &ret, 1);
-> >  
-> 
-> Should there perhaps be a warning when no data was returned after a timeout?
+Here are 2 patches for you to review/test. The first one is fixing
+the layout definition, and unless I missed something it should be
+correct.
 
-We're planning to move this driver to ->exec_op() soon, and with
-->exec_op() errors are properly propagated to the core. I guess we can
-live with this lack of dev_warn() for a bit longer :-).
+The second one is just my understanding of how byte 5 of READ_ID works
+based on our experience with the 4bit/512 on-die ECC chip we have
+worked on and the other datasheet I had a look at.
+I'm not 100% sure this will work for all chips, but might work for the
+2 chips we support right now.
+So please test and/or review it and let me know if this approach works.
+
+Regards,
+
+Boris
+
+Boris Brezillon (2):
+  mtd: rawnand: micron: Define the proper layout for 8bit/512bytes
+    on-die ECC
+  mtd: rawnand: micron: Fix on-die ECC detection logic
+
+ drivers/mtd/nand/raw/nand_micron.c | 110 +++++++++++++++++++++++++------------
+ 1 file changed, 75 insertions(+), 35 deletions(-)
+
+-- 
+2.14.1
