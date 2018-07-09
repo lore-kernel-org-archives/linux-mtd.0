@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fccUS-00016J-Pj
+ id 1fccUN-00016M-W1
  for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:42 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 18/24] mtd: rawnand: fsl_ifc: Allow selection of this
- driver when COMPILE_TEST=y
-Date: Mon,  9 Jul 2018 22:09:39 +0200
-Message-Id: <20180709200945.30116-19-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 13/24] mtd: rawnand: fscm: Avoid collision on PC def when
+ compiling for MIPS
+Date: Mon,  9 Jul 2018 22:09:34 +0200
+Message-Id: <20180709200945.30116-14-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,31 +27,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It just makes maintainers' life easier by allowing them to compile-test
-this driver without having FSL_SOC, ARCH_LAYERSCAPE or SOC_LS1021A
-enabled.
+We want to allow this driver to be selected when COMPILE_TEST=y, this
+means the driver can be compiled for any arch, including MIPS. When
+compiling this driver for MIPS, we end up with a collision on the 'PC'
+macro definition (also defined in arch/mips/include/asm/ptrace.h).
 
-We also need to add a dependency on HAS_IOMEM to make sure the
-driver compiles correctly.
+Prefix the fsmc one with FSMC_ to avoid this problem.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-index 29d360f984c9..dc6c5aff4172 100644
---- a/drivers/mtd/nand/raw/Kconfig
-+++ b/drivers/mtd/nand/raw/Kconfig
-@@ -408,7 +408,8 @@ config MTD_NAND_FSL_ELBC
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index f4a5a317d4ae..d71c49f50e77 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -62,7 +62,7 @@
+ 						reg)
  
- config MTD_NAND_FSL_IFC
- 	tristate "NAND support for Freescale IFC controller"
--	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A
-+	depends on FSL_SOC || ARCH_LAYERSCAPE || SOC_LS1021A || COMPILE_TEST
-+	depends on HAS_IOMEM
- 	select FSL_IFC
- 	select MEMORY
- 	help
+ /* fsmc controller registers for NAND flash */
+-#define PC			0x00
++#define FSMC_PC			0x00
+ 	/* pc register definitions */
+ 	#define FSMC_RESET		(1 << 0)
+ 	#define FSMC_WAITON		(1 << 1)
+@@ -273,12 +273,13 @@ static void fsmc_nand_setup(struct fsmc_nand_data *host,
+ 	tset = (tims->tset & FSMC_TSET_MASK) << FSMC_TSET_SHIFT;
+ 
+ 	if (host->nand.options & NAND_BUSWIDTH_16)
+-		writel_relaxed(value | FSMC_DEVWID_16, host->regs_va + PC);
++		writel_relaxed(value | FSMC_DEVWID_16,
++			       host->regs_va + FSMC_PC);
+ 	else
+-		writel_relaxed(value | FSMC_DEVWID_8, host->regs_va + PC);
++		writel_relaxed(value | FSMC_DEVWID_8, host->regs_va + FSMC_PC);
+ 
+-	writel_relaxed(readl(host->regs_va + PC) | tclr | tar,
+-		       host->regs_va + PC);
++	writel_relaxed(readl(host->regs_va + FSMC_PC) | tclr | tar,
++		       host->regs_va + FSMC_PC);
+ 	writel_relaxed(thiz | thold | twait | tset, host->regs_va + COMM);
+ 	writel_relaxed(thiz | thold | twait | tset, host->regs_va + ATTRIB);
+ }
+@@ -371,12 +372,12 @@ static void fsmc_enable_hwecc(struct mtd_info *mtd, int mode)
+ {
+ 	struct fsmc_nand_data *host = mtd_to_fsmc(mtd);
+ 
+-	writel_relaxed(readl(host->regs_va + PC) & ~FSMC_ECCPLEN_256,
+-		       host->regs_va + PC);
+-	writel_relaxed(readl(host->regs_va + PC) & ~FSMC_ECCEN,
+-		       host->regs_va + PC);
+-	writel_relaxed(readl(host->regs_va + PC) | FSMC_ECCEN,
+-		       host->regs_va + PC);
++	writel_relaxed(readl(host->regs_va + FSMC_PC) & ~FSMC_ECCPLEN_256,
++		       host->regs_va + FSMC_PC);
++	writel_relaxed(readl(host->regs_va + FSMC_PC) & ~FSMC_ECCEN,
++		       host->regs_va + FSMC_PC);
++	writel_relaxed(readl(host->regs_va + FSMC_PC) | FSMC_ECCEN,
++		       host->regs_va + FSMC_PC);
+ }
+ 
+ /*
+@@ -618,11 +619,11 @@ static void fsmc_select_chip(struct mtd_info *mtd, int chipnr)
+ 	if (chipnr > 0)
+ 		return;
+ 
+-	pc = readl(host->regs_va + PC);
++	pc = readl(host->regs_va + FSMC_PC);
+ 	if (chipnr < 0)
+-		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + PC);
++		writel_relaxed(pc & ~FSMC_ENABLE, host->regs_va + FSMC_PC);
+ 	else
+-		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + PC);
++		writel_relaxed(pc | FSMC_ENABLE, host->regs_va + FSMC_PC);
+ 
+ 	/* nCE line must be asserted before starting any operation */
+ 	mb();
 -- 
 2.14.1
