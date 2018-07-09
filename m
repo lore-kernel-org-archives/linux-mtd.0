@@ -1,27 +1,27 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcd2p-0003f0-7g
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:46:04 +0000
-Received: by mail-lj1-x244.google.com with SMTP id t21-v6so15089489lji.0
- for <linux-mtd@lists.infradead.org>; Mon, 09 Jul 2018 13:45:52 -0700 (PDT)
-MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
-References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 9 Jul 2018 22:45:50 +0200
-Message-ID: <CAK8P3a2zUvr958ZDV9DeGd7y28TFi4A1eYG79rb8cZaPLvN0ng@mail.gmail.com>
-Subject: Re: [PATCH v2 00/24] mtd: rawnand: Improve compile-test coverage
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>,
- "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcdGh-0000ye-Us
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:00:25 +0000
+Date: Mon, 9 Jul 2018 23:00:11 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Ralf Baechle <ralf@linux-mips.org>, "open list:RALINK MIPS ARCHITECTURE"
+ <linux-mips@linux-mips.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  linux-wireless <linux-wireless@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 11/24] mtd: rawnand: sunxi: Make sure ret is
+ initialized in sunxi_nfc_read_byte()
+Message-ID: <20180709230011.1ca3f9ce@bbrezillon>
+In-Reply-To: <CAK8P3a1Ndys3MMxLqL-hTFVDSZGm5ASEnQ7K+8dScvFrp=RTdA@mail.gmail.com>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
+ <20180709200945.30116-12-boris.brezillon@bootlin.com>
+ <CAK8P3a1Ndys3MMxLqL-hTFVDSZGm5ASEnQ7K+8dScvFrp=RTdA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Jul 9, 2018 at 10:09 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Hello,
->
-> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
-> drivers that have no compile-time dependencies on arch
-> features/headers.
->
-> This will hopefully help us (NAND/MTD maintainers) in detecting build
-> issues earlier. Unfortunately we still have a few drivers that can't
-> easily be modified to be arch independent.
->
-> I tried to put all patches that only touch the NAND subsystem first,
-> so that they can be applied even if other patches are being discussed.
->
-> Don't hesitate to point any missing dependencies when compiled with
-> COMPILE_TEST. I didn't have any problem when compiling, but that might
-> be because the dependencies were already selected.
+On Mon, 9 Jul 2018 22:35:56 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Looks good to me overall.
+> On Mon, Jul 9, 2018 at 10:09 PM, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > Fixes the following smatch warning:
+> >
+> > drivers/mtd/nand/raw/sunxi_nand.c:551 sunxi_nfc_read_byte() error: uninitialized symbol 'ret'.
+> >
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> >  drivers/mtd/nand/raw/sunxi_nand.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
+> > index 99043c3a4fa7..4b11cd4a79be 100644
+> > --- a/drivers/mtd/nand/raw/sunxi_nand.c
+> > +++ b/drivers/mtd/nand/raw/sunxi_nand.c
+> > @@ -544,7 +544,7 @@ static void sunxi_nfc_write_buf(struct mtd_info *mtd, const uint8_t *buf,
+> >
+> >  static uint8_t sunxi_nfc_read_byte(struct mtd_info *mtd)
+> >  {
+> > -       uint8_t ret;
+> > +       uint8_t ret = 0;
+> >
+> >         sunxi_nfc_read_buf(mtd, &ret, 1);
+> >  
+> 
+> Should there perhaps be a warning when no data was returned after a timeout?
 
-> In this v2, I tried to fix all warnings/errors reported by kbuild/0day
-> robots. The only remaining ones are those in omap_elm.c which seems to
-> do some weird cpu_to_be32() conversions. I guess I could replace those
-> by iowrite32be() calls (or just add (__force __u32)), but I don't want
-> to risk a regression on this driver, so I'm just leaving it for someone
-> else to fix :P.
-
-Agreed, this is definedly very odd code. It looks like the intention
-is to write all the bits in reverse order, but four bytes at a time. I'm
-fairly sure the current implementation cannot work on big-endian,
-in particularly this line:
-
-val = cpu_to_be32(*(u32 *) &ecc[0]) >> 12;
-
-Since shifting a number after the byteswap is not well-defined.
-It's probably correct on little-endian, but it's not clear what the
-best way would be to write this is an endian-neutral way.
-
-        Arnd
+We're planning to move this driver to ->exec_op() soon, and with
+->exec_op() errors are properly propagated to the core. I guess we can
+live with this lack of dev_warn() for a bit longer :-).
