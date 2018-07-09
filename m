@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fccUX-00016N-N1
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:53 +0000
+ id 1fccUN-000164-Vr
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:38 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 19/24] MIPS: txx9: Move the ndfc.h header to
- include/linux/platform_data/txx9
-Date: Mon,  9 Jul 2018 22:09:40 +0200
-Message-Id: <20180709200945.30116-20-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 05/24] mtd: rawnand: orion: Avoid direct inclusion of asm
+ headers
+Date: Mon,  9 Jul 2018 22:09:26 +0200
+Message-Id: <20180709200945.30116-6-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,113 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This way we will be able to compile the ndfmc driver when
-COMPILE_TEST=y.
+Include linux/sizes.h instead of asm/sizes.h to make code completely
+arch independent.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- arch/mips/txx9/generic/setup.c                                      | 2 +-
- arch/mips/txx9/generic/setup_tx4938.c                               | 2 +-
- arch/mips/txx9/generic/setup_tx4939.c                               | 2 +-
- drivers/mtd/nand/raw/txx9ndfmc.c                                    | 2 +-
- {arch/mips/include/asm => include/linux/platform_data}/txx9/ndfmc.h | 6 +++---
- 5 files changed, 7 insertions(+), 7 deletions(-)
- rename {arch/mips/include/asm => include/linux/platform_data}/txx9/ndfmc.h (91%)
+ drivers/mtd/nand/raw/orion_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/txx9/generic/setup.c b/arch/mips/txx9/generic/setup.c
-index 1791a44ee570..aa47932abd28 100644
---- a/arch/mips/txx9/generic/setup.c
-+++ b/arch/mips/txx9/generic/setup.c
-@@ -20,6 +20,7 @@
+diff --git a/drivers/mtd/nand/raw/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
+index 1a4828442675..27cc902545f3 100644
+--- a/drivers/mtd/nand/raw/orion_nand.c
++++ b/drivers/mtd/nand/raw/orion_nand.c
+@@ -18,7 +18,7 @@
+ #include <linux/clk.h>
  #include <linux/err.h>
- #include <linux/gpio/driver.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_data/txx9/ndfmc.h>
- #include <linux/serial_core.h>
- #include <linux/mtd/physmap.h>
- #include <linux/leds.h>
-@@ -35,7 +36,6 @@
- #include <asm/txx9/generic.h>
- #include <asm/txx9/pci.h>
- #include <asm/txx9tmr.h>
--#include <asm/txx9/ndfmc.h>
- #include <asm/txx9/dmac.h>
- #ifdef CONFIG_CPU_TX49XX
- #include <asm/txx9/tx4938.h>
-diff --git a/arch/mips/txx9/generic/setup_tx4938.c b/arch/mips/txx9/generic/setup_tx4938.c
-index 85d1795652da..17395d5d15ca 100644
---- a/arch/mips/txx9/generic/setup_tx4938.c
-+++ b/arch/mips/txx9/generic/setup_tx4938.c
-@@ -17,13 +17,13 @@
- #include <linux/ptrace.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_data/txx9/ndfmc.h>
- #include <asm/reboot.h>
- #include <asm/traps.h>
- #include <asm/txx9irq.h>
- #include <asm/txx9tmr.h>
- #include <asm/txx9pio.h>
- #include <asm/txx9/generic.h>
--#include <asm/txx9/ndfmc.h>
- #include <asm/txx9/dmac.h>
- #include <asm/txx9/tx4938.h>
- 
-diff --git a/arch/mips/txx9/generic/setup_tx4939.c b/arch/mips/txx9/generic/setup_tx4939.c
-index 274928987a21..360c388f4c82 100644
---- a/arch/mips/txx9/generic/setup_tx4939.c
-+++ b/arch/mips/txx9/generic/setup_tx4939.c
-@@ -21,13 +21,13 @@
- #include <linux/ptrace.h>
- #include <linux/mtd/physmap.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_data/txx9/ndfmc.h>
- #include <asm/bootinfo.h>
- #include <asm/reboot.h>
- #include <asm/traps.h>
- #include <asm/txx9irq.h>
- #include <asm/txx9tmr.h>
- #include <asm/txx9/generic.h>
--#include <asm/txx9/ndfmc.h>
- #include <asm/txx9/dmac.h>
- #include <asm/txx9/tx4939.h>
- 
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index b567d212fe7d..04d57474ef97 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -20,7 +20,7 @@
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/partitions.h>
  #include <linux/io.h>
--#include <asm/txx9/ndfmc.h>
-+#include <linux/platform_data/txx9/ndfmc.h>
+-#include <asm/sizes.h>
++#include <linux/sizes.h>
+ #include <linux/platform_data/mtd-orion_nand.h>
  
- /* TXX9 NDFMC Registers */
- #define TXX9_NDFDTR	0x00
-diff --git a/arch/mips/include/asm/txx9/ndfmc.h b/include/linux/platform_data/txx9/ndfmc.h
-similarity index 91%
-rename from arch/mips/include/asm/txx9/ndfmc.h
-rename to include/linux/platform_data/txx9/ndfmc.h
-index fa67f3df78fc..fc172627d54e 100644
---- a/arch/mips/include/asm/txx9/ndfmc.h
-+++ b/include/linux/platform_data/txx9/ndfmc.h
-@@ -5,8 +5,8 @@
-  *
-  * (C) Copyright TOSHIBA CORPORATION 2007
-  */
--#ifndef __ASM_TXX9_NDFMC_H
--#define __ASM_TXX9_NDFMC_H
-+#ifndef __TXX9_NDFMC_H
-+#define __TXX9_NDFMC_H
- 
- #define NDFMC_PLAT_FLAG_USE_BSPRT	0x01
- #define NDFMC_PLAT_FLAG_NO_RSTR		0x02
-@@ -27,4 +27,4 @@ struct txx9ndfmc_platform_data {
- void txx9_ndfmc_init(unsigned long baseaddr,
- 		     const struct txx9ndfmc_platform_data *plat_data);
- 
--#endif /* __ASM_TXX9_NDFMC_H */
-+#endif /* __TXX9_NDFMC_H */
+ struct orion_nand_info {
 -- 
 2.14.1
