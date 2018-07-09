@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fccUY-00016E-7W
+ id 1fccUY-000164-Gy
  for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 20:10:53 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
@@ -12,10 +12,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v2 21/24] MIPS: jz4740: Move jz4740_nand.h header to
- include/linux/platform_data/jz4740
-Date: Mon,  9 Jul 2018 22:09:42 +0200
-Message-Id: <20180709200945.30116-22-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 22/24] mtd: rawnand: jz4740: Allow selection of this driver
+ when COMPILE_TEST=y
+Date: Mon,  9 Jul 2018 22:09:43 +0200
+Message-Id: <20180709200945.30116-23-boris.brezillon@bootlin.com>
 In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,64 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This way we will be able to compile the jz4740_nand driver when
-COMPILE_TEST=y.
+It just makes NAND maintainers' life easier by allowing them to
+compile-test this driver without having MACH_JZ4740 enabled.
+
+We also need to add a dependency on HAS_IOMEM to make sure the driver
+compiles correctly.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- arch/mips/jz4740/board-qi_lb60.c                                      | 3 ++-
- drivers/mtd/nand/raw/jz4740_nand.c                                    | 2 +-
- .../mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h  | 4 ++--
- 3 files changed, 5 insertions(+), 4 deletions(-)
- rename {arch/mips/include/asm/mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h (91%)
+ drivers/mtd/nand/raw/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/jz4740/board-qi_lb60.c b/arch/mips/jz4740/board-qi_lb60.c
-index 60f0767507c6..af0c8ace0141 100644
---- a/arch/mips/jz4740/board-qi_lb60.c
-+++ b/arch/mips/jz4740/board-qi_lb60.c
-@@ -29,10 +29,11 @@
- #include <linux/power/gpio-charger.h>
- #include <linux/pwm.h>
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index f4bbc90ee250..7b5e97719c25 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -492,7 +492,8 @@ config MTD_NAND_NUC900
  
-+#include <linux/platform_data/jz4740/jz4740_nand.h>
-+
- #include <asm/mach-jz4740/gpio.h>
- #include <asm/mach-jz4740/jz4740_fb.h>
- #include <asm/mach-jz4740/jz4740_mmc.h>
--#include <asm/mach-jz4740/jz4740_nand.h>
+ config MTD_NAND_JZ4740
+ 	tristate "Support for JZ4740 SoC NAND controller"
+-	depends on MACH_JZ4740
++	depends on MACH_JZ4740 || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 		Enables support for NAND Flash on JZ4740 SoC based boards.
  
- #include <linux/regulator/fixed.h>
- #include <linux/regulator/machine.h>
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 613b00a9604b..a0254461812d 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -25,7 +25,7 @@
- 
- #include <linux/gpio.h>
- 
--#include <asm/mach-jz4740/jz4740_nand.h>
-+#include <linux/platform_data/jz4740/jz4740_nand.h>
- 
- #define JZ_REG_NAND_CTRL	0x50
- #define JZ_REG_NAND_ECC_CTRL	0x100
-diff --git a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h b/include/linux/platform_data/jz4740/jz4740_nand.h
-similarity index 91%
-rename from arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-rename to include/linux/platform_data/jz4740/jz4740_nand.h
-index f381d465e768..bc571f6d5ced 100644
---- a/arch/mips/include/asm/mach-jz4740/jz4740_nand.h
-+++ b/include/linux/platform_data/jz4740/jz4740_nand.h
-@@ -13,8 +13,8 @@
-  *
-  */
- 
--#ifndef __ASM_MACH_JZ4740_JZ4740_NAND_H__
--#define __ASM_MACH_JZ4740_JZ4740_NAND_H__
-+#ifndef __JZ4740_NAND_H__
-+#define __JZ4740_NAND_H__
- 
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
 -- 
 2.14.1
