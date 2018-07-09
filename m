@@ -1,21 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcYlx-0000FZ-KJ
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 16:12:23 +0000
-Date: Mon, 9 Jul 2018 18:12:06 +0200
+ id 1fcZ4b-0000xW-2B
+ for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 16:31:43 +0000
+Date: Mon, 9 Jul 2018 18:31:24 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Sekhar
- Nori <nsekhar@ti.com>, Gregory CLEMENT <gregory.clement@bootlin.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>, Bartosz Golaszewski
- <bgolaszewski@baylibre.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mtd: rawnand: davinci: fix build testing on 64-bit
-Message-ID: <20180709181206.3422a8fb@bbrezillon>
-In-Reply-To: <20180709155730.2422841-1-arnd@arndb.de>
-References: <20180709155730.2422841-1-arnd@arndb.de>
+To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
+Message-ID: <20180709183124.22f39f1b@bbrezillon>
+In-Reply-To: <c27f10f9efc14fed817c1a343d8b67d4@SIWEX5A.sing.micron.com>
+References: <c27f10f9efc14fed817c1a343d8b67d4@SIWEX5A.sing.micron.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,100 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Hi Bean,
 
-On Mon,  9 Jul 2018 17:57:02 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+On Mon, 9 Jul 2018 15:54:11 +0000
+"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
 
-> Now that we can build this driver everywhere, we run into a couple
-> of warnings like:
+> Hi, Boris and Chris
 > 
-> drivers/mtd/nand/raw/davinci_nand.c: In function 'nand_davinci_correct_4bit':
-> drivers/mtd/nand/raw/davinci_nand.c:322:21: error: cast from pointer to integer of different size [-Werror=pointer-to-int-cast]
+> >>
+> >> I see 2 solutions to this problem:
+> >> 1/ Bean provides us a solution to reliably detect when ECC can be
+> >>    de-actived and when it can't
+> >> 2/ We only ever expose 64 bytes of OOB to the user and consider that
+> >>    ECC can be disabled, even if it can't in reality
+> >>  
+> >
+> >After reading the doc again, I forgot one thing you can try before deciding to
+> >go for option #2.
+> >
+> >8th bit in byte 5 of READID's result encodes whether the on-die ECC state
+> >(enabled or not). I remember we had a discussion with Bean where he told us
+> >this was a runtime status reflecting the on-die ECC state, which is crazy, since
+> >READID might return different values depending on the NAND state, and most
+> >of the code in the core assumes READID provides a fixed ID that encodes the
+> >chip characteristics/capabilities, not its state.
+> >
+> >Anyway, if this bit is actually reflecting the on-die ECC state and on-die
+> >cannot be disabled on your chip, it should stay at 1 even after you have sent
+> >the SET_FEATURES(DISABLE_ECC) command. Let's hope this works as I expect,
+> >otherwise we're back to option #2 until Bean suggest something else.  
 > 
-> In all cases, this is harmless and we just need to cast to an uintptr_t
-> rather than an unsigned 32-bit integer.
-> 
-> Fixes: 347af8918e8a ("mtd: rawnand: davinci: Allow selection of this driver when COMPILE_TEST=y")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> MT29F1G08ABAFAWP-ITE:F is Micron 70s SLC NAND with on-die ECC.
+> If the bit7 in the byte 5 of READID default is 1(ECC Enabled), it is true on-die ECC
+> Cannot be disabled by SET Feature command.
+> In case sending Set Feature command, you can check previous command is success or not by
+> Get Feature
 
-Actually, I have all those fixes in my nand/api-cleanup branch [1]. I
-was planning on sending a v2 of my COMPILE_TEST series to address
-those problems before activating COMPILE_TEST on those drivers (Miquel
-already dropped the patches activating COMPILE_TEST on sunxi, davinci
-and atmel).
+Chris tried that already and it didn't work. GET_FEATURES(ECC) returns a
+value with the bit cleared (meaning that ECC is supposedly disabled)
+after SET_FEATURES(ECC, DISABLE) has been sent. Are you sure that
+GET_FEATURES(ECC) is supposed to return the actual state of the ECC
+engine and not the last value you wrote in the internal reg (would be
+the case if this reg is just a dummy reg when on-die ECC is forcibly
+enabled).
+
+> or check this bit7 in byte 5 of READID later.
+
+This, we'll have to test.
+
+> 
+> To check if this device supports on-die ECC or not, you can use inter ECC level (bit 0 and bit1 in byte 5 of READID)  
+> http://lists.infradead.org/pipermail/linux-mtd/2017-April/073370.html
+
+Okay, I think we already had this discussion, but I'm asking it again.
+What are the possible values for that field and what do they mean?
+Also, is it even used to encode the fact that the NAND has on-die ECC
+on all your NANDs? We already had the problem of incompatible ID
+schemes, so I wouldn't be surprised if that was the case here, hence my
+initial suggestion to base the detection on the model name.
+
+Bean, can you check that on a few different NAND parts before giving a
+definitive answer, because, at least for the SET_FEATURES(ECC), we
+don't see what you describe, and that's not the first time you suggest
+things that do not work in real life.
 
 Regards,
 
 Boris
-
-[1]https://github.com/bbrezillon/linux-0day/commits/nand/api-cleanup
-
-> ---
->  drivers/mtd/nand/raw/davinci_nand.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-> index cd12e5abafde..c638bd60eb0b 100644
-> --- a/drivers/mtd/nand/raw/davinci_nand.c
-> +++ b/drivers/mtd/nand/raw/davinci_nand.c
-> @@ -102,7 +102,7 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
->  				   unsigned int ctrl)
->  {
->  	struct davinci_nand_info	*info = to_davinci_nand(mtd);
-> -	uint32_t			addr = info->current_cs;
-> +	uintptr_t			addr = info->current_cs;
->  	struct nand_chip		*nand = mtd_to_nand(mtd);
->  
->  	/* Did the control lines change? */
-> @@ -122,7 +122,7 @@ static void nand_davinci_hwcontrol(struct mtd_info *mtd, int cmd,
->  static void nand_davinci_select_chip(struct mtd_info *mtd, int chip)
->  {
->  	struct davinci_nand_info	*info = to_davinci_nand(mtd);
-> -	uint32_t			addr = info->ioaddr;
-> +	uintptr_t			addr = info->ioaddr;
->  
->  	/* maybe kick in a second chipselect */
->  	if (chip > 0)
-> @@ -319,7 +319,7 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
->  	/* Unpack ten bytes into eight 10 bit values.  We know we're
->  	 * little-endian, and use type punning for less shifting/masking.
->  	 */
-> -	if (WARN_ON(0x01 & (unsigned) ecc_code))
-> +	if (WARN_ON(0x01 & (uintptr_t)ecc_code))
->  		return -EINVAL;
->  	ecc16 = (unsigned short *)ecc_code;
->  
-> @@ -441,9 +441,9 @@ static void nand_davinci_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
-> -	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-> +	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
->  		ioread32_rep(chip->IO_ADDR_R, buf, len >> 2);
-> -	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-> +	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
->  		ioread16_rep(chip->IO_ADDR_R, buf, len >> 1);
->  	else
->  		ioread8_rep(chip->IO_ADDR_R, buf, len);
-> @@ -454,9 +454,9 @@ static void nand_davinci_write_buf(struct mtd_info *mtd,
->  {
->  	struct nand_chip *chip = mtd_to_nand(mtd);
->  
-> -	if ((0x03 & ((unsigned)buf)) == 0 && (0x03 & len) == 0)
-> +	if ((0x03 & ((uintptr_t)buf)) == 0 && (0x03 & len) == 0)
->  		iowrite32_rep(chip->IO_ADDR_R, buf, len >> 2);
-> -	else if ((0x01 & ((unsigned)buf)) == 0 && (0x01 & len) == 0)
-> +	else if ((0x01 & ((uintptr_t)buf)) == 0 && (0x01 & len) == 0)
->  		iowrite16_rep(chip->IO_ADDR_R, buf, len >> 1);
->  	else
->  		iowrite8_rep(chip->IO_ADDR_R, buf, len);
-> @@ -680,7 +680,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
->  	info->chip.bbt_md	= pdata->bbt_md;
->  	info->timing		= pdata->timing;
->  
-> -	info->ioaddr		= (uint32_t __force) vaddr;
-> +	info->ioaddr		= (uintptr_t __force) vaddr;
->  
->  	info->current_cs	= info->ioaddr;
->  	info->core_chipsel	= pdata->core_chipsel;
