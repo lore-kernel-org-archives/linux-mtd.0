@@ -1,28 +1,26 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcxLJ-0006Nz-Bc
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 18:26:34 +0000
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: linux-kernel@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
- Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
- Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
- Chris Packham <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
+Received: from mail-eopbgr710125.outbound.protection.outlook.com
+ ([40.107.71.125] helo=NAM05-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcxjv-0001VU-IA
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 18:51:56 +0000
+Date: Tue, 10 Jul 2018 11:51:38 -0700
+From: Paul Burton <paul.burton@mips.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH 3.18 20/23] mtd: cfi_cmdset_0002: Change definition naming to
- retry write operation
-Date: Tue, 10 Jul 2018 20:24:53 +0200
-Message-Id: <20180710182309.749850723@linuxfoundation.org>
-In-Reply-To: <20180710182308.877332304@linuxfoundation.org>
-References: <20180710182308.877332304@linuxfoundation.org>
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org,
+ Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 00/24] mtd: rawnand: Improve compile-test coverage
+Message-ID: <20180710185138.mh564eehyfoaggsu@pburton-laptop>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180709200945.30116-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,61 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.18-stable review patch.  If anyone has any objections, please let me know.
+Hi Boris,
 
-------------------
+On Mon, Jul 09, 2018 at 10:09:21PM +0200, Boris Brezillon wrote:
+>   MIPS: txx9: Move the ndfc.h header to include/linux/platform_data/txx9
+>   mtd: rawnand: txx9ndfmc: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   MIPS: jz4740: Move jz4740_nand.h header to
+>     include/linux/platform_data/jz4740
+>   mtd: rawnand: jz4740: Allow selection of this driver when
+>     COMPILE_TEST=y
+>   mtd: rawnand: jz4780: Drop the dependency on MACH_JZ4780
+>   memory: jz4780-nemc: Allow selection of this driver when
+>     COMPILE_TEST=y
+> 
+>  arch/mips/jz4740/board-qi_lb60.c                   |  3 +-
+>  arch/mips/txx9/generic/setup.c                     |  2 +-
+>  arch/mips/txx9/generic/setup_tx4938.c              |  2 +-
+>  arch/mips/txx9/generic/setup_tx4939.c              |  2 +-
+>  drivers/memory/Kconfig                             |  6 ++--
+>  drivers/mtd/nand/raw/Kconfig                       | 33 ++++++++++++++--------
+>  drivers/mtd/nand/raw/jz4740_nand.c                 |  2 +-
+>  drivers/mtd/nand/raw/txx9ndfmc.c                   |  2 +-
+>  .../linux/platform_data/jz4740}/jz4740_nand.h      |  4 +--
+>  .../linux/platform_data}/txx9/ndfmc.h              |  6 ++--
+>  rename {arch/mips/include/asm/mach-jz4740 => include/linux/platform_data/jz4740}/jz4740_nand.h (91%)
+>  rename {arch/mips/include/asm => include/linux/platform_data}/txx9/ndfmc.h (91%)
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+For the MIPS-related patches 19-24:
 
-commit 85a82e28b023de9b259a86824afbd6ba07bd6475 upstream.
+    Acked-by: Paul Burton <paul.burton@mips.com>
 
-The definition can be used for other program and erase operations also.
-So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
-
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -42,7 +42,7 @@
- #define AMD_BOOTLOC_BUG
- #define FORCE_WORD_WRITE 0
- 
--#define MAX_WORD_RETRIES 3
-+#define MAX_RETRIES 3
- 
- #define SST49LF004B	        0x0060
- #define SST49LF040B	        0x0050
-@@ -1645,7 +1645,7 @@ static int __xipram do_write_oneword(str
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
-@@ -2104,7 +2104,7 @@ retry:
- 		map_write(map, CMD(0xF0), chip->start);
- 		/* FIXME - should have reset delay before continuing */
- 
--		if (++retry_cnt <= MAX_WORD_RETRIES)
-+		if (++retry_cnt <= MAX_RETRIES)
- 			goto retry;
- 
- 		ret = -EIO;
+Thanks,
+    Paul
