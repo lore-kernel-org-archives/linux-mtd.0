@@ -1,9 +1,9 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fctzL-0000VE-06
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:51:42 +0000
+ id 1fctzb-0000kd-Dy
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:52:04 +0000
 Subject: Patch "mtd: cfi_cmdset_0002: Change erase functions to retry for
- error" has been added to the 4.14-stable tree
+ error" has been added to the 4.17-stable tree
 To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
  computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
@@ -11,8 +11,8 @@ To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 10 Jul 2018 16:51:14 +0200
-Message-ID: <1531234274134169@kroah.com>
+Date: Tue, 10 Jul 2018 16:51:32 +0200
+Message-ID: <1531234292187193@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -30,12 +30,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: cfi_cmdset_0002: Change erase functions to retry for error
 
-to the 4.14-stable tree which can be found at:
+to the 4.17-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-and it can be found in the queue-4.14 subdirectory.
+and it can be found in the queue-4.17 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -136,6 +136,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
 
-queue-4.14/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-queue-4.14/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
-queue-4.14/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
