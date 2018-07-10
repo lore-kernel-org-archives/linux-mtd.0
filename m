@@ -1,22 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcs0G-0004k7-Fl
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 12:44:27 +0000
-Date: Tue, 10 Jul 2018 14:44:01 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Chris Packham
- <chris.packham@alliedtelesis.co.nz>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
-Message-ID: <20180710144401.64ebef79@xps13>
-In-Reply-To: <1df9a5d95c44408ab42b34948f956351@SIWEX5A.sing.micron.com>
-References: <1df9a5d95c44408ab42b34948f956351@SIWEX5A.sing.micron.com>
+Received: from gateway24.websitewelcome.com ([192.185.50.71])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcshv-0005o5-FW
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 13:29:32 +0000
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+ by gateway24.websitewelcome.com (Postfix) with ESMTP id A671B4E54
+ for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2018 08:29:08 -0500 (CDT)
+Date: Tue, 10 Jul 2018 08:29:02 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Wan ZongShun <mcuos.com@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: nuc900_nand: mark expected switch fall-through
+Message-ID: <20180710132902.GA13541@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-> I encounter one question as below when I reply the email of linux-mtd, bu=
-t If I reply other mail list=20
-> Such as scsi mail list, mmc mail list, no any problem. Do you know why?=20
->=20
->=20
-> Your mail to 'linux-mtd' with the subject
->=20
->     Re: [PATCH v6 0/6] mtd: rawnand: support MT29F1G08ABAFAWP-ITE:F
->=20
-> Is being held until the list moderator can review it for approval.
->=20
-> The reason it is being held:
->=20
->     Message has a suspicious header
+Addresses-Coverity-ID: 1471717 ("Missing break in switch")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/nand/raw/nuc900_nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Linus recently reported to a contributor that one of his patches got
-marked as SPAM by the kernel ML because it failed the DKIM signature.
-This was caused by a bad handling somewhere of the 'To:' field that
-ended-up being empty. While this is an arguable handling from mailman,
-it might be related to your problems.
-
-Otherwise you could share the headers, but as this message passed
-through the mailing list filter, I suspect it's not a severe issue.
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/nand/raw/nuc900_nand.c b/drivers/mtd/nand/raw/nuc900_nand.c
+index af5b32c9..53a9f6c 100644
+--- a/drivers/mtd/nand/raw/nuc900_nand.c
++++ b/drivers/mtd/nand/raw/nuc900_nand.c
+@@ -191,8 +191,9 @@ static void nuc900_nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 		return;
+ 
+ 	case NAND_CMD_READ0:
+-
+ 		write_cmd_reg(nand, NAND_CMD_READSTART);
++		/* fall through */
++
+ 	default:
+ 
+ 		if (!chip->dev_ready) {
+-- 
+2.7.4
