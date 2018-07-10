@@ -1,22 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcdns-0005lG-PC
- for linux-mtd@lists.infradead.org; Mon, 09 Jul 2018 21:34:43 +0000
-Date: Mon, 9 Jul 2018 23:34:27 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, frieder.schrempf@exceet.de,
- computersforpeace@gmail.com, david.wolfe@nxp.com, han.xu@nxp.com,
- festevam@gmail.com, marek.vasut@gmail.com, prabhakar.kushwaha@nxp.com,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, Fabio Estevam
- <fabio.estevam@nxp.com>
-Subject: Re: [PATCH] mtd: spi-nor: Support controllers with limited TX FIFO
- size
-Message-ID: <20180709233427.1a714de7@bbrezillon>
-In-Reply-To: <1528870092-14526-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1528870092-14526-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mga04.intel.com ([192.55.52.120])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcmdF-0000fC-Sb
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 07:00:20 +0000
+Subject: Re: UBIFS question: Power-cuts after ubifs_leb_unmap()
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>,
+ linux-mtd@lists.infradead.org
+References: <1756392.9dNXh6ho7o@blindfold>
+ <6f88e3c1-4f27-cb59-5ab4-b3553d20ce27@intel.com>
+ <3206844.7NrM75eRyS@blindfold>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Message-ID: <b922b5df-1693-bd65-bc19-9987e1bd885f@intel.com>
+Date: Tue, 10 Jul 2018 09:58:22 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <3206844.7NrM75eRyS@blindfold>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,79 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Fabio
+On 09/07/18 16:11, Richard Weinberger wrote:
+> Am Montag, 9. Juli 2018, 14:21:33 CEST schrieb Adrian Hunter:
+>> On 09/07/18 13:11, Richard Weinberger wrote:
+>>> Artem, Adrian,
+>>>
+>>> While playing with a new UBI/UBIFS test framework I managed to hit this error, 
+>>> with lprops self-checks enabled:
+>>>
+>>> [ 2412.268964] UBIFS error (ubi0:0 pid 708): scan_check_cb: bad accounting of 
+>>> LEB 11: free 0, dirty 118072 flags 0x1, should be free 126976, dirty 0
+>>>
+>>> LEB 11 is unmapped but LPT still thinks that some data is used,
+>>> lp->free + lp >dirty < leb-size.
+>>> Even without lprobs self-checks, the same filesystem will later hit this 
+>>> assertion in ubifs_garbage_collect_leb():
+>>>
+>>> ubifs_assert(!list_empty(&sleb->nodes));
+>>>
+>>> The assert makes sure that the LEB actually contains nodes.
+>>> ubifs_garbage_collect_leb() handles the special case lp->free + lp->dirty == 
+>>> c->leb_size.
+>>> But not lp->free + lp->dirty < leb-size.
+>>>
+>>> Now I'm not sure where to fix that, maybe you can remember some design 
+>>> decisions.
+>>> 1. Shall we massage ubifs_garbage_collect_leb() to deal with this special case 
+>>> too?
+>>> 2. Is it already a bug when this case happens?
 
-Hi Yogesh,
+If it is caused by a power-cut then the error would appear during the next
+mount, probably due to a failure in the replay to correctly account for the
+dirty space.
 
-On Wed, 13 Jun 2018 11:38:12 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+The downside of papering over the problem in GC is the possibility that that
+then hides a real problem.
 
-> Some SPI controllers can't write nor->page_size bytes in a single
-> step because their TX FIFO is too small.
+>>>
+>>> >From reviewing the code, I think the said situation can arise when we face 
+>>> power-cut
+>>> in ubifs_garbage_collect_leb():
+>>>
+>>> if (snod->type == UBIFS_IDX_NODE) {
+>>> 	...
+>>> } else {
+>>> 	...
+>>>
+>>> 	err = ubifs_change_one_lp(c, lnum, c->leb_size, 0, 0, 0, 0);
+>>>
+>>> 	...
+>>>
+>>> 	err = ubifs_leb_unmap(c, lnum);
+>>>
+>>> 	// POWER CUT
+>>> }
+>>>
+>>> We mark the LEB as free and unmap it.
+>>> ubifs_change_one_lp() does not immediately write a new LPT, if we lose power 
+>>> right after ubifs_leb_unmap() it can happen that the LEB already got erased 
+>>> but the LPT has the old accounting information.
+>>
+>> Doesn't GC copy the nodes into the journal, so after the journal is
+>> replayed, the old nodes will be dirtied and lprops will be correct again.
 > 
-> Allow nor->write() to return a size that is smaller than the requested
-> write size to gracefully handle this case.
-
-There's been a discussion between Marek and I regarding this patch and
-patch "mtd: devices: m25p80: Make sure WRITE_EN is issued before each
-write". Marek would like to avoid letting drivers do non-aligned page
-writes when the MTD user requested full page writes.
-
-So, the question is, is the FSL QSPI engine capable of handling that
-when the NOR page is being than the TX FIFO? According to the current
-implementation it's not [1], but it looks like we have a way to
-know when the TX FIFO is not full so we could potentially refill the
-FIFO either from the CPU or using DMA if that's possible (not sure the
-eDMA engine can fill the QSPI TX FIFO directly).
-
-What I find worrisome with this solution is this particular statement
-in the datasheet:
-
-"
-When the QuadSPI module tries to pull data out of an empty TX Buffer
-the TX Buffer underrun is signaled by the QSPI_FR[TBUF] flag. The
-current IP Command leading to the underrun condition is continued until
-the specified number of bytes has been sent to the serial flash device,
-in the underrun condition when QuadSPI module tries to pull out data of
-empty TX buffer, the data transferred is undefined i.e. once the
-underrun flag is set, it will return the garbage value until the
-required number of bytes are not sent.
-"
-
-If we fail to fill the TX FIFO fast enough for any reasons (contention
-on the APB/AHB/AXI bus in case of DMA, task being scheduled out in
-case of PIO access), that means we transfer garbage to the NOR...
-Clearly something we should avoid at any cost.
-
-Yogesh, Fabio, Han, any comment on this?
-
-Thanks,
-
-Boris
-
-[1]https://elixir.bootlin.com/linux/v4.18-rc4/source/drivers/mtd/spi-nor/fsl-quadspi.c#L1117
-
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 7 -------
->  1 file changed, 7 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e..3e63543 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1431,13 +1431,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  			goto write_err;
->  		*retlen += written;
->  		i += written;
-> -		if (written != page_remain) {
-> -			dev_err(nor->dev,
-> -				"While writing %zu bytes written %zd bytes\n",
-> -				page_remain, written);
-> -			ret = -EIO;
-> -			goto write_err;
-> -		}
->  	}
->  
->  write_err:
+> Yes, this is the theory. But the assert proves that something is not as we expect it. ;-\
