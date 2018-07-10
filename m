@@ -1,21 +1,27 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcu0E-00060M-A9
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:52:31 +0000
-Subject: Patch "mtd: cfi_cmdset_0002: Change erase functions to retry for
- error" has been added to the 4.9-stable tree
-To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
- boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
- computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
- gregkh@linuxfoundation.org, ikegami@allied-telesis.co.jp,
- linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Tue, 10 Jul 2018 16:52:07 +0200
-Message-ID: <153123432722025@kroah.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcw9W-0000bE-8c
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 17:10:16 +0000
+Date: Tue, 10 Jul 2018 19:10:00 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS
+ <linux-mips@linux-mips.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org, Arnd
+ Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 23/24] mtd: rawnand: jz4780: Drop the dependency on
+ MACH_JZ4780
+Message-ID: <20180710191000.2b7c95bb@bbrezillon>
+In-Reply-To: <CANc+2y5vjUpM_ikegaoKTtqehSmBY3y_r+1E6y93AoivRQqmfg@mail.gmail.com>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
+ <20180709200945.30116-24-boris.brezillon@bootlin.com>
+ <CANc+2y5vjUpM_ikegaoKTtqehSmBY3y_r+1E6y93AoivRQqmfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,117 +31,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi PrasannaKumar,
 
-This is a note to let you know that I've just added the patch titled
+On Tue, 10 Jul 2018 22:16:50 +0530
+PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
 
-    mtd: cfi_cmdset_0002: Change erase functions to retry for error
+> Hi Boris,
+> 
+> On 10 July 2018 at 01:39, Boris Brezillon <boris.brezillon@bootlin.com>
+> wrote:
+> 
+> > This MACH_JZ4780 dependency is taken care of by JZ4780_NEMC, no need
+> > to repeat it here.
+> >
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> >  drivers/mtd/nand/raw/Kconfig | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> > index 7b5e97719c25..d9cd9608bc2d 100644
+> > --- a/drivers/mtd/nand/raw/Kconfig
+> > +++ b/drivers/mtd/nand/raw/Kconfig
+> > @@ -499,7 +499,7 @@ config MTD_NAND_JZ4740
+> >
+> >  config MTD_NAND_JZ4780
+> >         tristate "Support for NAND on JZ4780 SoC"
+> > -       depends on MACH_JZ4780 && JZ4780_NEMC
+> > +       depends on JZ4780_NEMC
+> >         help
+> >           Enables support for NAND Flash connected to the NEMC on JZ4780
+> > SoC
+> >           based boards, using the BCH controller for hardware error
+> > correction.
+> > --
+> > 2.14.1
+> >
+> >
+> >  
+> JZ4780 has MLC NAND.
 
-to the 4.9-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+Hm, the NAND controller supports both MLC and SLC NANDs. Maybe there
+are only boards with MLC NANDs, but that doesn't mean we should remove
+the driver for the controller. 
 
-The filename of the patch is:
-     mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-and it can be found in the queue-4.9 subdirectory.
+> As MLC NAND is not supported in mainline do you think
+> this patch is required? Even wondering if the driver is required at all.
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+The fact that MLC NANDs are not supported by UBI is not necessarily
+definitive. I have a branch with all the work we've done to add MLC
+support to UBI [1]. If you have time to invest in it, feel free to take
+over this work.
 
+Anyway, the decision to remove this driver is not mine, and this patch
+allows me to at least compile-test this driver.
 
->From 45f75b8a919a4255f52df454f1ffdee0e42443b2 Mon Sep 17 00:00:00 2001
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Date: Wed, 30 May 2018 18:32:28 +0900
-Subject: mtd: cfi_cmdset_0002: Change erase functions to retry for error
+Regards,
 
-From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Boris
 
-commit 45f75b8a919a4255f52df454f1ffdee0e42443b2 upstream.
-
-For the word write functions it is retried for error.
-But it is not implemented to retry for the erase functions.
-To make sure for the erase functions change to retry as same.
-
-This is needed to prevent the flash erase error caused only once.
-It was caused by the error case of chip_good() in the do_erase_oneblock().
-Also it was confirmed on the MACRONIX flash device MX29GL512FHT2I-11G.
-But the error issue behavior is not able to reproduce at this moment.
-The flash controller is parallel Flash interface integrated on BCM53003.
-
-Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Cc: linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
-
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -2237,6 +2237,7 @@ static int __xipram do_erase_chip(struct
- 	unsigned long int adr;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
- 
- 	adr = cfi->addr_unlock1;
- 
-@@ -2254,6 +2255,7 @@ static int __xipram do_erase_chip(struct
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2308,6 +2310,9 @@ static int __xipram do_erase_chip(struct
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
- 	}
- 
-@@ -2327,6 +2332,7 @@ static int __xipram do_erase_oneblock(st
- 	unsigned long timeo = jiffies + HZ;
- 	DECLARE_WAITQUEUE(wait, current);
- 	int ret = 0;
-+	int retry_cnt = 0;
- 
- 	adr += chip->start;
- 
-@@ -2344,6 +2350,7 @@ static int __xipram do_erase_oneblock(st
- 	ENABLE_VPP(map);
- 	xip_disable(map, chip, adr);
- 
-+ retry:
- 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -2401,6 +2408,9 @@ static int __xipram do_erase_oneblock(st
- 		map_write( map, CMD(0xF0), chip->start );
- 		/* FIXME - should have reset delay before continuing */
- 
-+		if (++retry_cnt <= MAX_RETRIES)
-+			goto retry;
-+
- 		ret = -EIO;
- 	}
- 
-
-
-Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
-
-queue-4.9/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-queue-4.9/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
-queue-4.9/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
+[1]https://github.com/bbrezillon/linux/commits/nand/mlc
