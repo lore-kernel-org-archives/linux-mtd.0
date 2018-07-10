@@ -1,9 +1,9 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fctzG-0005xC-OJ
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:51:31 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fctzL-0000Vx-0F
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:51:40 +0000
 Subject: Patch "mtd: cfi_cmdset_0002: Change definition naming to retry write
- operation" has been added to the 4.14-stable tree
+ operation" has been added to the 4.17-stable tree
 To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
  computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
@@ -11,8 +11,8 @@ To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
  linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Tue, 10 Jul 2018 16:51:13 +0200
-Message-ID: <153123427324075@kroah.com>
+Date: Tue, 10 Jul 2018 16:51:31 +0200
+Message-ID: <15312342910139@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -30,12 +30,12 @@ This is a note to let you know that I've just added the patch titled
 
     mtd: cfi_cmdset_0002: Change definition naming to retry write operation
 
-to the 4.14-stable tree which can be found at:
+to the 4.17-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
-and it can be found in the queue-4.14 subdirectory.
+and it can be found in the queue-4.17 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
@@ -104,6 +104,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
 
-queue-4.14/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
-queue-4.14/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
-queue-4.14/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
+queue-4.17/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
