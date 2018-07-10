@@ -1,27 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcw9W-0000bE-8c
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 17:10:16 +0000
-Date: Tue, 10 Jul 2018 19:10:00 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
-Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS
- <linux-mips@linux-mips.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-wireless@vger.kernel.org, Arnd
- Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2 23/24] mtd: rawnand: jz4780: Drop the dependency on
- MACH_JZ4780
-Message-ID: <20180710191000.2b7c95bb@bbrezillon>
-In-Reply-To: <CANc+2y5vjUpM_ikegaoKTtqehSmBY3y_r+1E6y93AoivRQqmfg@mail.gmail.com>
-References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
- <20180709200945.30116-24-boris.brezillon@bootlin.com>
- <CANc+2y5vjUpM_ikegaoKTtqehSmBY3y_r+1E6y93AoivRQqmfg@mail.gmail.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcxLN-0002h6-TI
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 18:26:35 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ Tokunori Ikegami <ikegami@allied-telesis.co.jp>,
+ Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ Chris Packham <chris.packham@alliedtelesis.co.nz>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: [PATCH 3.18 22/23] mtd: cfi_cmdset_0002: Change erase functions to
+ check chip good only
+Date: Tue, 10 Jul 2018 20:24:55 +0200
+Message-Id: <20180710182309.822119900@linuxfoundation.org>
+In-Reply-To: <20180710182308.877332304@linuxfoundation.org>
+References: <20180710182308.877332304@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,63 +32,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi PrasannaKumar,
+3.18-stable review patch.  If anyone has any objections, please let me know.
 
-On Tue, 10 Jul 2018 22:16:50 +0530
-PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+------------------
 
-> Hi Boris,
-> 
-> On 10 July 2018 at 01:39, Boris Brezillon <boris.brezillon@bootlin.com>
-> wrote:
-> 
-> > This MACH_JZ4780 dependency is taken care of by JZ4780_NEMC, no need
-> > to repeat it here.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  drivers/mtd/nand/raw/Kconfig | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
-> > index 7b5e97719c25..d9cd9608bc2d 100644
-> > --- a/drivers/mtd/nand/raw/Kconfig
-> > +++ b/drivers/mtd/nand/raw/Kconfig
-> > @@ -499,7 +499,7 @@ config MTD_NAND_JZ4740
-> >
-> >  config MTD_NAND_JZ4780
-> >         tristate "Support for NAND on JZ4780 SoC"
-> > -       depends on MACH_JZ4780 && JZ4780_NEMC
-> > +       depends on JZ4780_NEMC
-> >         help
-> >           Enables support for NAND Flash connected to the NEMC on JZ4780
-> > SoC
-> >           based boards, using the BCH controller for hardware error
-> > correction.
-> > --
-> > 2.14.1
-> >
-> >
-> >  
-> JZ4780 has MLC NAND.
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
 
-Hm, the NAND controller supports both MLC and SLC NANDs. Maybe there
-are only boards with MLC NANDs, but that doesn't mean we should remove
-the driver for the controller. 
+commit 79ca484b613041ca223f74b34608bb6f5221724b upstream.
 
-> As MLC NAND is not supported in mainline do you think
-> this patch is required? Even wondering if the driver is required at all.
+Currently the functions use to check both chip ready and good.
+But the chip ready is not enough to check the operation status.
+So change this to check the chip good instead of this.
+About the retry functions to make sure the error handling remain it.
 
-The fact that MLC NANDs are not supported by UBI is not necessarily
-definitive. I have a branch with all the work we've done to add MLC
-support to UBI [1]. If you have time to invest in it, feel free to take
-over this work.
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Anyway, the decision to remove this driver is not mine, and this patch
-allows me to at least compile-test this driver.
 
-Regards,
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-Boris
-
-[1]https://github.com/bbrezillon/linux/commits/nand/mlc
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -2294,12 +2294,13 @@ static int __xipram do_erase_chip(struct
+ 			chip->erase_suspended = 0;
+ 		}
+ 
+-		if (chip_ready(map, adr))
++		if (chip_good(map, adr, map_word_ff(map)))
+ 			break;
+ 
+ 		if (time_after(jiffies, timeo)) {
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 				__func__ );
++			ret = -EIO;
+ 			break;
+ 		}
+ 
+@@ -2307,15 +2308,15 @@ static int __xipram do_erase_chip(struct
+ 		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
+ 	/* Did we succeed? */
+-	if (!chip_good(map, adr, map_word_ff(map))) {
++	if (ret) {
+ 		/* reset on all failures. */
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+ 
+-		if (++retry_cnt <= MAX_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES) {
++			ret = 0;
+ 			goto retry;
+-
+-		ret = -EIO;
++		}
+ 	}
+ 
+ 	chip->state = FL_READY;
+@@ -2389,7 +2390,7 @@ static int __xipram do_erase_oneblock(st
+ 			chip->erase_suspended = 0;
+ 		}
+ 
+-		if (chip_ready(map, adr)) {
++		if (chip_good(map, adr, map_word_ff(map))) {
+ 			xip_enable(map, chip, adr);
+ 			break;
+ 		}
+@@ -2398,6 +2399,7 @@ static int __xipram do_erase_oneblock(st
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 				__func__ );
++			ret = -EIO;
+ 			break;
+ 		}
+ 
+@@ -2405,15 +2407,15 @@ static int __xipram do_erase_oneblock(st
+ 		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
+ 	/* Did we succeed? */
+-	if (!chip_good(map, adr, map_word_ff(map))) {
++	if (ret) {
+ 		/* reset on all failures. */
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+ 
+-		if (++retry_cnt <= MAX_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES) {
++			ret = 0;
+ 			goto retry;
+-
+-		ret = -EIO;
++		}
+ 	}
+ 
+ 	chip->state = FL_READY;
