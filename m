@@ -1,7 +1,7 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fcxLM-00089B-5J
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 18:26:36 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fcxNS-0003aU-MQ
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 18:28:44 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
@@ -15,12 +15,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
  Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: [PATCH 3.18 21/23] mtd: cfi_cmdset_0002: Change erase functions to
+Subject: [PATCH 4.4 44/47] mtd: cfi_cmdset_0002: Change erase functions to
  retry for error
-Date: Tue, 10 Jul 2018 20:24:54 +0200
-Message-Id: <20180710182309.783834066@linuxfoundation.org>
-In-Reply-To: <20180710182308.877332304@linuxfoundation.org>
-References: <20180710182308.877332304@linuxfoundation.org>
+Date: Tue, 10 Jul 2018 20:25:08 +0200
+Message-Id: <20180710182339.059078008@linuxfoundation.org>
+In-Reply-To: <20180710182337.047502999@linuxfoundation.org>
+References: <20180710182337.047502999@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,7 +32,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.18-stable review patch.  If anyone has any objections, please let me know.
+4.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
