@@ -1,32 +1,21 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fctty-0004hr-Vz
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:46:13 +0000
-Date: Tue, 10 Jul 2018 16:45:49 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-Cc: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: Re: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Message-ID: <20180710144549.GW1123@kroah.com>
-References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
- <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
- <20180702061929.GA7611@kroah.com>
- <TY1PR01MB095431D99EEBB4D53459354BDC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180702072311.GA4817@kroah.com>
- <TY1PR01MB095429D459916B87806557F8DC470@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+ id 1fctya-00089x-3R
+ for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 14:50:49 +0000
+Subject: Patch "mtd: cfi_cmdset_0002: Change definition naming to retry write
+ operation" has been added to the 3.18-stable tree
+To: Joakim.Tjernlund@infinera.com, boris.brezillon@bootlin.com,
+ boris.brezillon@free-electrons.com, chris.packham@alliedtelesis.co.nz,
+ computersforpeace@gmail.com, cyrille.pitchen@wedev4u.fr, dwmw2@infradead.org,
+ gregkh@linuxfoundation.org, ikegami@allied-telesis.co.jp,
+ linux-mtd@lists.infradead.org, marek.vasut@gmail.com, richard@nod.at
+Cc: <stable-commits@vger.kernel.org>
+From: <gregkh@linuxfoundation.org>
+Date: Tue, 10 Jul 2018 16:50:34 +0200
+Message-ID: <153123423445159@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <TY1PR01MB095429D459916B87806557F8DC470@TY1PR01MB0954.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,31 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 06, 2018 at 10:11:39AM +0000, IKEGAMI Tokunori wrote:
-> Hi Greg-san,
-> 
-> Let me confirm below.
-> About the patches 2, 3 and 4 below still should I prepare the commit IDs for revised version?
-> Or those can be added to the stable trees next time without commit IDs?
-> 
-> >   Patch: 2. 85a82e28b023 mtd: cfi_cmdset_0002: Change definition naming
-> > to retry write operation
-> >          3. 45f75b8a919a mtd: cfi_cmdset_0002: Change erase functions
-> > to retry for error
-> >          4. 79ca484b6130 mtd: cfi_cmdset_0002: Change erase functions
-> > to check chip good only
-> > 
-> >   Note: The commit IDs are on mainline so there are not existed for
-> > revised version patches.
-> 
-> I think that the patches revised version are still existing on the linux-mtd Patchwork without commit IDs.
->   <https://patchwork.ozlabs.org/project/linux-mtd/list/?series=53133&state=*>
-> 
-> Sorry for this confirmation but I am not sure how to resolve this to apply these revised version patches to stable trees.
 
-Ok, I think I have it figured out now.  Look at what I have queued up to
-the stable queues to verify I got it correct.
+This is a note to let you know that I've just added the patch titled
 
-thanks,
+    mtd: cfi_cmdset_0002: Change definition naming to retry write operation
 
-greg k-h
+to the 3.18-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+
+The filename of the patch is:
+     mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
+and it can be found in the queue-3.18 subdirectory.
+
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
+
+
+>From 85a82e28b023de9b259a86824afbd6ba07bd6475 Mon Sep 17 00:00:00 2001
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Date: Wed, 30 May 2018 18:32:27 +0900
+Subject: mtd: cfi_cmdset_0002: Change definition naming to retry write operation
+
+From: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+
+commit 85a82e28b023de9b259a86824afbd6ba07bd6475 upstream.
+
+The definition can be used for other program and erase operations also.
+So change the naming to MAX_RETRIES from MAX_WORD_RETRIES.
+
+Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
+Reviewed-by: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
+Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Cc: linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -42,7 +42,7 @@
+ #define AMD_BOOTLOC_BUG
+ #define FORCE_WORD_WRITE 0
+ 
+-#define MAX_WORD_RETRIES 3
++#define MAX_RETRIES 3
+ 
+ #define SST49LF004B	        0x0060
+ #define SST49LF040B	        0x0050
+@@ -1645,7 +1645,7 @@ static int __xipram do_write_oneword(str
+ 		map_write( map, CMD(0xF0), chip->start );
+ 		/* FIXME - should have reset delay before continuing */
+ 
+-		if (++retry_cnt <= MAX_WORD_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES)
+ 			goto retry;
+ 
+ 		ret = -EIO;
+@@ -2104,7 +2104,7 @@ retry:
+ 		map_write(map, CMD(0xF0), chip->start);
+ 		/* FIXME - should have reset delay before continuing */
+ 
+-		if (++retry_cnt <= MAX_WORD_RETRIES)
++		if (++retry_cnt <= MAX_RETRIES)
+ 			goto retry;
+ 
+ 		ret = -EIO;
+
+
+Patches currently in stable-queue which might be from ikegami@allied-telesis.co.jp are
+
+queue-3.18/mtd-cfi_cmdset_0002-change-erase-functions-to-retry-for-error.patch
+queue-3.18/mtd-cfi_cmdset_0002-change-erase-functions-to-check-chip-good-only.patch
+queue-3.18/mtd-cfi_cmdset_0002-change-definition-naming-to-retry-write-operation.patch
