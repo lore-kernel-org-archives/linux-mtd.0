@@ -1,29 +1,28 @@
-Received: from mail-oi0-f68.google.com ([209.85.218.68])
+Received: from mail-pl0-x241.google.com ([2607:f8b0:400e:c01::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdHcW-0004VX-36
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 16:05:40 +0000
-Received: by mail-oi0-f68.google.com with SMTP id k81-v6so50201404oib.4
- for <linux-mtd@lists.infradead.org>; Wed, 11 Jul 2018 09:05:25 -0700 (PDT)
-Date: Wed, 11 Jul 2018 10:05:21 -0600
-From: Rob Herring <robh@kernel.org>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- linux-spi@vger.kernel.org, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- miquel.raynal@bootlin.com, broonie@kernel.org, david.wolfe@nxp.com,
- fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
- yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org,
- Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/12] dt-bindings: spi: Adjust the bindings for the
- FSL QSPI driver
-Message-ID: <20180711160521.GA16884@rob-hp-laptop>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-6-git-send-email-frieder.schrempf@exceet.de>
+ id 1fdIrH-00076x-Ho
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 17:24:57 +0000
+Received: by mail-pl0-x241.google.com with SMTP id s24-v6so9455608plq.6
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jul 2018 10:24:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1530789310-16254-6-git-send-email-frieder.schrempf@exceet.de>
+In-Reply-To: <20180710191000.2b7c95bb@bbrezillon>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
+ <20180709200945.30116-24-boris.brezillon@bootlin.com>
+ <CANc+2y5vjUpM_ikegaoKTtqehSmBY3y_r+1E6y93AoivRQqmfg@mail.gmail.com>
+ <20180710191000.2b7c95bb@bbrezillon>
+From: PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com>
+Date: Wed, 11 Jul 2018 22:54:43 +0530
+Message-ID: <CANc+2y4RpTTJxh+jWjkWgFpuuJRZbtjKgLxXbRAg_M6L1yQ4Jg@mail.gmail.com>
+Subject: Re: [PATCH v2 23/24] mtd: rawnand: jz4780: Drop the dependency on
+ MACH_JZ4780
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>, Linux-MIPS <linux-mips@linux-mips.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-wireless@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,83 +32,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 05, 2018 at 01:15:01PM +0200, Frieder Schrempf wrote:
-> Adjust the documentation of the new SPI memory interface based
-> driver to reflect the new drivers settings.
+On 10 July 2018 at 22:40, Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> Hi PrasannaKumar,
+>
+> On Tue, 10 Jul 2018 22:16:50 +0530
+> PrasannaKumar Muralidharan <prasannatsmkumar@gmail.com> wrote:
+>
+>> Hi Boris,
+>>
+>> On 10 July 2018 at 01:39, Boris Brezillon <boris.brezillon@bootlin.com>
+>> wrote:
+>>
+>> > This MACH_JZ4780 dependency is taken care of by JZ4780_NEMC, no need
+>> > to repeat it here.
+>> >
+>> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+>> > ---
+>> >  drivers/mtd/nand/raw/Kconfig | 2 +-
+>> >  1 file changed, 1 insertion(+), 1 deletion(-)
+>> >
+>> > diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+>> > index 7b5e97719c25..d9cd9608bc2d 100644
+>> > --- a/drivers/mtd/nand/raw/Kconfig
+>> > +++ b/drivers/mtd/nand/raw/Kconfig
+>> > @@ -499,7 +499,7 @@ config MTD_NAND_JZ4740
+>> >
+>> >  config MTD_NAND_JZ4780
+>> >         tristate "Support for NAND on JZ4780 SoC"
+>> > -       depends on MACH_JZ4780 && JZ4780_NEMC
+>> > +       depends on JZ4780_NEMC
+>> >         help
+>> >           Enables support for NAND Flash connected to the NEMC on JZ4780
+>> > SoC
+>> >           based boards, using the BCH controller for hardware error
+>> > correction.
+>> > --
+>> > 2.14.1
+>> >
+>> >
+>> >
+>> JZ4780 has MLC NAND.
+>
+> Hm, the NAND controller supports both MLC and SLC NANDs. Maybe there
+> are only boards with MLC NANDs, but that doesn't mean we should remove
+> the driver for the controller.
 
-Bindings shouldn't change (other than new properties) due to driver 
-changes.
+Creator CI20 board which uses JZ4780 SoC is supported by upstream as
+of now. It has MLC NAND.
 
-> 
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
-> ---
-> Changes in v2:
-> ==============
-> * Split the moving and editing of the dt-bindings in two patches
-> 
->  .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 22 ++++++++++----------
->  1 file changed, 11 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-> index 483e9cf..8b4eed7 100644
-> --- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
-> @@ -3,9 +3,8 @@
->  Required properties:
->    - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
->  		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
-> -		 "fsl,ls1021a-qspi"
-> +		 "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
->  		 or
-> -		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
->  		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+But I agree that removing the driver is too extreme.
 
-So the 2080a h/w was compatible with the 1021a h/w, but now it is not? 
-How did the h/w change?
+>> As MLC NAND is not supported in mainline do you think
+>> this patch is required? Even wondering if the driver is required at all.
+>
+> The fact that MLC NANDs are not supported by UBI is not necessarily
+> definitive. I have a branch with all the work we've done to add MLC
+> support to UBI [1]. If you have time to invest in it, feel free to take
+> over this work.
 
->    - reg : the first contains the register location and length,
->            the second contains the memory mapping address and length
-> @@ -15,14 +14,15 @@ Required properties:
->    - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
->  
->  Optional properties:
-> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
-> -                              Each bus can be connected with two NOR flashes.
-> -			      Most of the time, each bus only has one NOR flash
-> -			      connected, this is the default case.
-> -			      But if there are two NOR flashes connected to the
-> -			      bus, you should enable this property.
-> -			      (Please check the board's schematic.)
+I am afraid I don't have time as well as knowledge to work on it yet.
 
-You can't just remove properties without explanation. Why is this no 
-longer needed? What about backwards compatibility with existing dtbs?
+> Anyway, the decision to remove this driver is not mine, and this patch
+> allows me to at least compile-test this driver.
+>
+> Regards,
+>
+> Boris
+>
+> [1]https://github.com/bbrezillon/linux/commits/nand/mlc
 
-> -  - big-endian : That means the IP register is big endian
-> +  - big-endian : That means the IP registers format is big endian
-
-This is a standard property so it doesn't really need to be redefined 
-here, but just reference the definition.
-
-> +
-> +Required SPI slave node properties:
-> +  - reg: There are two buses (A and B) with two chip selects each.
-> +	 This encodes to which bus and CS the flash is connected:
-> +		<0>: Bus A, CS 0
-> +		<1>: Bus A, CS 1
-> +		<2>: Bus B, CS 0
-> +		<3>: Bus B, CS 1
->  
->  Example:
->  
-> @@ -40,7 +40,7 @@ qspi0: quadspi@40044000 {
->  	};
->  };
->  
-> -Example showing the usage of two SPI NOR devices:
-> +Example showing the usage of two SPI NOR devices on bus A:
->  
->  &qspi2 {
->  	pinctrl-names = "default";
-> -- 
-> 2.7.4
-> 
+Thanks,
+PrasannaKumar
