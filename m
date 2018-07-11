@@ -1,20 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdCQ2-0006YZ-7A
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 10:32:25 +0000
-Date: Wed, 11 Jul 2018 12:32:09 +0200
+ id 1fdD72-0003uy-3N
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 11:16:49 +0000
+Date: Wed, 11 Jul 2018 13:16:26 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "Chris Packham"
- <chris.packham@alliedtelesis.co.nz>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>
-Subject: Re:  [PATCH 2/2] mtd: rawnand: micron: Fix on-die ECC detection logic
-Message-ID: <20180711123209.5271d411@bbrezillon>
-In-Reply-To: <1be1ede4dcf14f24b68b8497b167c1b3@SIWEX5A.sing.micron.com>
-References: <1be1ede4dcf14f24b68b8497b167c1b3@SIWEX5A.sing.micron.com>
+To: Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 04/24] mtd: rawnand: s3c2410: Allow selection of this
+ driver when COMPILE_TEST=y
+Message-ID: <20180711131626.732967be@bbrezillon>
+In-Reply-To: <20180709200945.30116-5-boris.brezillon@bootlin.com>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
+ <20180709200945.30116-5-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,53 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bean,
+On Mon,  9 Jul 2018 22:09:25 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-On Wed, 11 Jul 2018 10:05:06 +0000
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+> It just makes NAND maintainers' life easier by allowing them to
+> compile-test this driver without having ARCH_S3C24XX or ARCH_S3C64XX
+> enabled.
+> 
+> We add a dependency on HAS_IOMEM to make sure the driver compiles
+> correctly, and a dependency on !IA64 because the {read,write}s{bwl}()
+> accessors are not defined for this architecture.
+
+I see that SPARC does not define those accessors either. So I guess we
+should add depends on !SPARC.
+
+Arnd, any other way to know when the platform implements
+{read,write}s{bwl}() accessors?
 
 > 
-> >+	if (chip->id.len != 5 ||
-> >+	    (chip->id.data[4] & MICRON_ID_INTERNAL_ECC_MASK) != 0x2)
-> >+		return MICRON_ON_DIE_UNSUPPORTED;
-> >+  
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> I think, we should firstly check if by default internal ECC is on.
-> If default is off, then can try to enable through set/get feature command.
-> if default is on, there is no need to set up completely.
-
-No, see my comment below.
-
->   
-> 
-> > 	ret = micron_nand_on_die_ecc_setup(chip, true);
-> > 	if (ret)
-> > 		return MICRON_ON_DIE_UNSUPPORTED;
-> >  
-> 
-> >-	ret = nand_get_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
-> >-	if (ret < 0)
-> >-		return ret;
-> >+	ret = nand_readid_op(chip, 0, id, sizeof(id));
-> >+	if (ret)
-> >+		return MICRON_ON_DIE_UNSUPPORTED;
-> >
-> >-	if ((feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN) == 0)
-> >+	if (!(id[4] & MICRON_ID_ECC_ENABLED))
-> > 		return MICRON_ON_DIE_UNSUPPORTED;
-> >  
-> 
-> Here I say for sure, the value of Bit7 in byte 4 of READID is permanent. It is a reflection of
-> the default state of the device. it cannot change by set feature.
-
-That's not what the board I have on my desk says. I have a
-MT29F2G08ABAEAH4, and I can tell you for sure this bit changes when I
-enable/disable on-die ECC. Do the test, and you'll see...
-
-See, that's what I'm complaining about. You keep saying things that
-appear to be untrue when when we check on real HW parts. So, either we
-have NANDs that are buggy, or you didn't check yourself.
-
-Regards,
-
-Boris
+> diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+> index 1488ad0a0199..e01b3da726c0 100644
+> --- a/drivers/mtd/nand/raw/Kconfig
+> +++ b/drivers/mtd/nand/raw/Kconfig
+> @@ -119,7 +119,8 @@ config MTD_NAND_AU1550
+>  
+>  config MTD_NAND_S3C2410
+>  	tristate "NAND Flash support for Samsung S3C SoCs"
+> -	depends on ARCH_S3C24XX || ARCH_S3C64XX
+> +	depends on ARCH_S3C24XX || ARCH_S3C64XX || COMPILE_TEST
+> +	depends on HAS_IOMEM && !IA64
+>  	help
+>  	  This enables the NAND flash controller on the S3C24xx and S3C64xx
+>  	  SoCs
