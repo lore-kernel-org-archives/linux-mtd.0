@@ -1,26 +1,33 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdDV5-0002aw-Ui
- for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 11:41:48 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Chris Packham
- <chris.packham@alliedtelesis.co.nz>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>
-Subject: RE: [EXT] Re:  [PATCH 2/2] mtd: rawnand: micron: Fix on-die ECC
- detection logic
-Date: Wed, 11 Jul 2018 11:41:01 +0000
-Message-ID: <63aabb45edfe4d17b00ce8eed5f53f49@SIWEX5A.sing.micron.com>
-References: <1be1ede4dcf14f24b68b8497b167c1b3@SIWEX5A.sing.micron.com>
- <20180711123209.5271d411@bbrezillon>
-In-Reply-To: <20180711123209.5271d411@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ id 1fdDw4-0003VI-TY
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 12:09:36 +0000
+Received: by mail-lf0-x242.google.com with SMTP id n96-v6so21072967lfi.1
+ for <linux-mtd@lists.infradead.org>; Wed, 11 Jul 2018 05:09:21 -0700 (PDT)
 MIME-Version: 1.0
+Sender: arndbergmann@gmail.com
+In-Reply-To: <20180711133236.67726256@bbrezillon>
+References: <20180709200945.30116-1-boris.brezillon@bootlin.com>
+ <20180709200945.30116-5-boris.brezillon@bootlin.com>
+ <20180711131626.732967be@bbrezillon>
+ <CAK8P3a1CR_sN2KW4fZjADHrbKyB1ZSi=6+hPAPYoVeAeLGK_3g@mail.gmail.com>
+ <20180711133236.67726256@bbrezillon>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 11 Jul 2018 14:09:19 +0200
+Message-ID: <CAK8P3a2Ar0itsfXBMDoJwq106KBYT-mx55znVF5cd478FqzJsQ@mail.gmail.com>
+Subject: Re: [PATCH v2 04/24] mtd: rawnand: s3c2410: Allow selection of this
+ driver when COMPILE_TEST=y
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>,
+ "open list:RALINK MIPS ARCHITECTURE" <linux-mips@linux-mips.org>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ linux-wireless <linux-wireless@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +37,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Here I say for sure, the value of Bit7 in byte 4 of READID is
->> permanent. It is a reflection of the default state of the device. it can=
-not
->change by set feature.
+On Wed, Jul 11, 2018 at 1:32 PM, Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> On Wed, 11 Jul 2018 13:27:53 +0200
+> Arnd Bergmann <arnd@arndb.de> wrote:
 >
->That's not what the board I have on my desk says. I have a
->MT29F2G08ABAEAH4, and I can tell you for sure this bit changes when I
->enable/disable on-die ECC. Do the test, and you'll see...
+>> On Wed, Jul 11, 2018 at 1:16 PM, Boris Brezillon
+>> <boris.brezillon@bootlin.com> wrote:
+>> > On Mon,  9 Jul 2018 22:09:25 +0200
+>> > Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>> >
+>> >> It just makes NAND maintainers' life easier by allowing them to
+>> >> compile-test this driver without having ARCH_S3C24XX or ARCH_S3C64XX
+>> >> enabled.
+>> >>
+>> >> We add a dependency on HAS_IOMEM to make sure the driver compiles
+>> >> correctly, and a dependency on !IA64 because the {read,write}s{bwl}()
+>> >> accessors are not defined for this architecture.
+>> >
+>> > I see that SPARC does not define those accessors either. So I guess we
+>> > should add depends on !SPARC.
+>> >
+>> > Arnd, any other way to know when the platform implements
+>> > {read,write}s{bwl}() accessors?
+>>
+>> I'd just consider that a bug, and send a patch to fix sparc64 if it's broken.
+>> sparc32 appears to have these, and when Thierry sent the patch
+>> to implement them everywhere[1], he said that he tested sparc64 as
+>> well, so either something regressed since then, or his testing
+>> was incomplete. Either way, the correct answer IMHO would be to
+>> make it work rather than to add infrastructure around the broken
+>> configurations.
 >
-This is very interesting. MT29F2G08ABAEAH4 is 60s NAND, unfortunately, I do=
-n't have 60s sample.
-I will check, and back you.
+> I guess the same goes for IA64 then.
 
->See, that's what I'm complaining about. You keep saying things that appear=
- to
->be untrue when when we check on real HW parts. So, either we have NANDs
->that are buggy, or you didn't check yourself.
->
->Regards,
->
->Boris
+Right. FWIW, I just tried it out and sent the respective arch patches.
+
+      Arnd
