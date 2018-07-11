@@ -1,32 +1,24 @@
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.4])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fd1vp-0002Sk-MA
- for linux-mtd@lists.infradead.org; Tue, 10 Jul 2018 23:20:32 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: PACKHAM Chris <chris.packham@alliedtelesis.co.nz>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>, Boris Brezillon <boris.brezillon@bootlin.com>
-Subject: RE: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to check
- correct value
-Date: Tue, 10 Jul 2018 23:20:05 +0000
-Message-ID: <TY1PR01MB0954B7ABF7E74D4622AF7CF4DC5B0@TY1PR01MB0954.jpnprd01.prod.outlook.com>
-References: <20180702025045.29896-1-ikegami@allied-telesis.co.jp>
- <20180702025045.29896-2-ikegami@allied-telesis.co.jp>
- <20180702061929.GA7611@kroah.com>
- <TY1PR01MB095431D99EEBB4D53459354BDC430@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180702072311.GA4817@kroah.com>
- <TY1PR01MB095429D459916B87806557F8DC470@TY1PR01MB0954.jpnprd01.prod.outlook.com>
- <20180710144549.GW1123@kroah.com>
-In-Reply-To: <20180710144549.GW1123@kroah.com>
-Content-Language: ja-JP
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-sn1nam04on062e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe4c::62e]
+ helo=NAM04-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fd9gk-000124-Fm
+ for linux-mtd@lists.infradead.org; Wed, 11 Jul 2018 07:37:28 +0000
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
+ <f.fainelli@gmail.com>, <mmayer@broadcom.com>, <rogerq@ti.com>,
+ <ladis@linux-mips.org>, <ada@thorsis.co>, <honghui.zhang@mediatek.com>,
+ <miquel.raynal@bootlin.com>, <linus.walleij@linaro.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nagasureshkumarrelli@gmail.com>, <michals@xilinx.com>, Naga Sureshkumar
+ Relli <naga.sureshkumar.relli@xilinx.com>
+Subject: [LINUX PATCH v11 0/3] Add arm pl353 smc memory and nand driver for
+ xilinx zynq soc
+Date: Wed, 11 Jul 2018 13:06:49 +0530
+Message-ID: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,63 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg-san,
+The following patches add arm pl353 static memory controller driver and NAND
+driver for Xilinx Zynq SoC. The arm pl353 smc supports two interfaces
+i.e nand and NOR/SRAM memory interfaces. The current implementation supports
+only a single SMC instance and nand specific configuration.
 
-Thank you so much for the mail.
-I have just confirmed that the queued patches are correct.
+Xilinx Zynq TRM link:
+http://www.xilinx.com/support/documentation/user_guides/ug585-Zynq-7000-TRM.pdf
 
-Regards,
-Ikegami
+ARM pl353 smc TRM link:
+http://infocenter.arm.com/help/topic/com.arm.doc.ddi0380g/DDI0380G_smc_pl350_series_r2p1_trm.pdf
 
-> -----Original Message-----
-> From: stable-owner@vger.kernel.org [mailto:stable-owner@vger.kernel.org] =
-On
-> Behalf Of Greg Kroah-Hartman
-> Sent: Tuesday, July 10, 2018 11:46 PM
-> To: IKEGAMI Tokunori
-> Cc: PACKHAM Chris; Brian Norris; David Woodhouse; Boris Brezillon; Marek
-> Vasut; Richard Weinberger; Cyrille Pitchen; linux-mtd@lists.infradead.org=
-;
-> stable@vger.kernel.org; Boris Brezillon
-> Subject: Re: [PATCH 1/4] mtd: cfi_cmdset_0002: Change write buffer to che=
-ck
-> correct value
->=20
-> On Fri, Jul 06, 2018 at 10:11:39AM +0000, IKEGAMI Tokunori wrote:
-> > Hi Greg-san,
-> >
-> > Let me confirm below.
-> > About the patches 2, 3 and 4 below still should I prepare the commit ID=
-s
-> for revised version?
-> > Or those can be added to the stable trees next time without commit IDs?
-> >
-> > >   Patch: 2. 85a82e28b023 mtd: cfi_cmdset_0002: Change definition nami=
-ng
-> > > to retry write operation
-> > >          3. 45f75b8a919a mtd: cfi_cmdset_0002: Change erase functions
-> > > to retry for error
-> > >          4. 79ca484b6130 mtd: cfi_cmdset_0002: Change erase functions
-> > > to check chip good only
-> > >
-> > >   Note: The commit IDs are on mainline so there are not existed for
-> > > revised version patches.
-> >
-> > I think that the patches revised version are still existing on the linu=
-x-mtd
-> Patchwork without commit IDs.
-> >
-> <https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D53133&stat=
-e=3D
-> *>
-> >
-> > Sorry for this confirmation but I am not sure how to resolve this to ap=
-ply
-> these revised version patches to stable trees.
->=20
-> Ok, I think I have it figured out now.  Look at what I have queued up to
-> the stable queues to verify I got it correct.
->=20
-> thanks,
->=20
-> greg k-h
+Tested Micron MT29F2G08ABAEAWP (On-die capable) and AMD/Spansion S34ML01G1.
+This latest series make use of ->exec_op().
+
+Naga Sureshkumar Relli (3):
+  dt-bindings: memory: Add pl353 smc controller devicetree binding
+    information
+  memory: pl353: Add driver for arm pl353 static memory controller
+  mtd: rawnand: pl353: Add basic driver for arm pl353 smc nand interface
+
+ .../bindings/memory-controllers/pl353-smc.txt      |   47 +
+ drivers/memory/Kconfig                             |   10 +
+ drivers/memory/Makefile                            |    1 +
+ drivers/memory/pl353-smc.c                         |  468 +++++++
+ drivers/mtd/nand/raw/Kconfig                       |    7 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/pl353_nand.c                  | 1314 ++++++++++++++++++++
+ include/linux/pl353-smc.h                          |   30 +
+ 8 files changed, 1878 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/memory-controllers/pl353-smc.txt
+ create mode 100644 drivers/memory/pl353-smc.c
+ create mode 100644 drivers/mtd/nand/raw/pl353_nand.c
+ create mode 100644 include/linux/pl353-smc.h
+
+-- 
+2.7.4
