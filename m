@@ -1,26 +1,14 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdXPu-0004o7-Qt
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 08:57:40 +0000
-Date: Thu, 12 Jul 2018 10:57:15 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Chris Packham
- <chris.packham@alliedtelesis.co.nz>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>
-Subject: Re: [EXT] Re:  [PATCH 2/2] mtd: rawnand: micron: Fix on-die ECC
- detection logic
-Message-ID: <20180712105715.3574016d@bbrezillon>
-In-Reply-To: <81218b8d34df4881af81bb36fa55bf44@SIWEX5A.sing.micron.com>
-References: <1be1ede4dcf14f24b68b8497b167c1b3@SIWEX5A.sing.micron.com>
- <20180711123209.5271d411@bbrezillon>
- <81218b8d34df4881af81bb36fa55bf44@SIWEX5A.sing.micron.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fdZMu-0007lQ-DH
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 11:02:42 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH 0/5] ubifs: Rework assert code
+Date: Thu, 12 Jul 2018 13:01:55 +0200
+Message-Id: <20180712110200.13054-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +18,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 12 Jul 2018 08:40:33 +0000
-"Bean Huo (beanhuo)" <beanhuo@micron.com> wrote:
+This series changes the UBIFS assert code such that users can specify what
+do to upon a failed assert. The new mount option "assert=" controls these
+actions. Currently three actions are supported:
+- report: Just report the assertion
+- panic: Panic the kernel
+- read-only: Switch to read-only mode
 
-> Hi, Boris
-> It is true. Bit7 of byte4 in READID changes after enable/disable internal ECC in case of  its default value is 0. 
-> Also this bit value  is volatile. After power cyling, it resets to default value.
+>From now on the default action is read-only.
 
-That's actually a good thing that ECC status get resets on PoR. I'd
-wish that would be the case when issuing a SW reset (RESET command),
-but unfortunately it's not.
+Richard Weinberger (5):
+  ubifs: Turn two ubifs_assert() into a WARN_ON()
+  ubifs: Pass struct ubifs_info to ubifs_assert()
+  ubifs: Rework ubifs_assert()
+  ubifs: Allow setting assert action as mount parameter
+  ubifs: Set default assert action to read-only
 
-> I don't know if
-> this condition will be changed or kept since maybe it was a specific design request from customers.
-> But GET Feature is still the preferred way to determine the state of ECC, we recommend using this way. 
-> If internal ECC is default on, we don't do anything, and if default is off, then SET feature and GET feature.
-> This always makes sense.
+ fs/ubifs/budget.c     |  68 ++++++++++++-------------
+ fs/ubifs/commit.c     |   8 +--
+ fs/ubifs/crypto.c     |   4 +-
+ fs/ubifs/debug.c      |  42 ++++++++++++----
+ fs/ubifs/debug.h      |  14 +++---
+ fs/ubifs/dir.c        |  35 ++++++-------
+ fs/ubifs/file.c       |  47 ++++++++++--------
+ fs/ubifs/find.c       |  54 ++++++++++----------
+ fs/ubifs/gc.c         |  64 ++++++++++++------------
+ fs/ubifs/io.c         |  97 ++++++++++++++++++------------------
+ fs/ubifs/journal.c    |  52 ++++++++++----------
+ fs/ubifs/key.h        |  14 +++---
+ fs/ubifs/log.c        |  12 ++---
+ fs/ubifs/lprops.c     |  86 ++++++++++++++++----------------
+ fs/ubifs/lpt.c        | 112 +++++++++++++++++++++---------------------
+ fs/ubifs/lpt_commit.c |  50 ++++++++++---------
+ fs/ubifs/master.c     |   2 +-
+ fs/ubifs/misc.c       |  11 +++++
+ fs/ubifs/misc.h       |  16 +++---
+ fs/ubifs/orphan.c     |  26 +++++-----
+ fs/ubifs/recovery.c   |  14 +++---
+ fs/ubifs/replay.c     |  13 ++---
+ fs/ubifs/sb.c         |  12 ++---
+ fs/ubifs/scan.c       |   2 +-
+ fs/ubifs/shrinker.c   |  10 ++--
+ fs/ubifs/super.c      |  74 +++++++++++++++++++---------
+ fs/ubifs/tnc.c        | 107 ++++++++++++++++++++--------------------
+ fs/ubifs/tnc_commit.c |  28 +++++------
+ fs/ubifs/tnc_misc.c   |  38 ++++++++------
+ fs/ubifs/ubifs.h      |  31 +++++++++---
+ fs/ubifs/xattr.c      |  16 +++---
+ 31 files changed, 632 insertions(+), 527 deletions(-)
 
-No, it doesn't work. When Linux acquires control on the NAND, we don't
-know what was done before (maybe u-boot enabled ECC and didn't disable
-it), so checking READID[4].bit7 only does not work. We need to first
-disable the ECC through the SET_FEATURES(DIS_ECC) and then check the
-READID bytes.
-
-Also, using GET_FEATURES() does not work either, because Micron NANDs
-with "forced on-die ECC" do not expose the ECC status in the 0x90
-(Array Operation Mode) feature reg. So if we do that we report ECC as
-always disabled which means "not supported"
-
-> 
-> I am still digging into why this doesn't depict in datasheet and whether this will be kept in coming design.
-> As long I have new update, I will back to you.
-
-Arrrggg! Please don't change that in future designs. We seem to have
-something that works to detect whether on-die ECC is supported and if
-it can be disabled.
+-- 
+2.18.0
