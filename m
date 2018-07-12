@@ -1,28 +1,26 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::2])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdWjq-000811-NV
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 08:14:13 +0000
-Subject: Re: [PATCH v2 05/12] dt-bindings: spi: Adjust the bindings for the
- FSL QSPI driver
-To: Rob Herring <robh@kernel.org>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- linux-spi@vger.kernel.org, dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, richard@nod.at, miquel.raynal@bootlin.com,
- broonie@kernel.org, david.wolfe@nxp.com, fabio.estevam@nxp.com,
- prabhakar.kushwaha@nxp.com, yogeshnarayan.gaur@nxp.com, han.xu@nxp.com,
- shawnguo@kernel.org, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-6-git-send-email-frieder.schrempf@exceet.de>
- <20180711160521.GA16884@rob-hp-laptop>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <9fd871dd-3d10-044c-db80-d65df161a7d9@exceet.de>
-Date: Thu, 12 Jul 2018 10:13:57 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180711160521.GA16884@rob-hp-laptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ id 1fdXA9-0006HE-M1
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 08:41:27 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Chris Packham
+ <chris.packham@alliedtelesis.co.nz>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>
+Subject: RE: [EXT] Re:  [PATCH 2/2] mtd: rawnand: micron: Fix on-die ECC
+ detection logic
+Date: Thu, 12 Jul 2018 08:40:33 +0000
+Message-ID: <81218b8d34df4881af81bb36fa55bf44@SIWEX5A.sing.micron.com>
+References: <1be1ede4dcf14f24b68b8497b167c1b3@SIWEX5A.sing.micron.com>
+ <20180711123209.5271d411@bbrezillon>
+In-Reply-To: <20180711123209.5271d411@bbrezillon>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,134 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hi, Boris
+It is true. Bit7 of byte4 in READID changes after enable/disable internal E=
+CC in case of  its default value is 0.=20
+Also this bit value  is volatile. After power cyling, it resets to default =
+value. I don't know if
+this condition will be changed or kept since maybe it was a specific design=
+ request from customers.
+But GET Feature is still the preferred way to determine the state of ECC, w=
+e recommend using this way.=20
+If internal ECC is default on, we don't do anything, and if default is off,=
+ then SET feature and GET feature.
+This always makes sense.
 
-On 11.07.2018 18:05, Rob Herring wrote:
-> On Thu, Jul 05, 2018 at 01:15:01PM +0200, Frieder Schrempf wrote:
->> Adjust the documentation of the new SPI memory interface based
->> driver to reflect the new drivers settings.
-> 
-> Bindings shouldn't change (other than new properties) due to driver
-> changes.
+I am still digging into why this doesn't depict in datasheet and whether th=
+is will be kept in coming design.
+As long I have new update, I will back to you.
 
-Right, I added an explanation below, why I think the changes are necessary.
-
-> 
->>
->> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
->> ---
->> Changes in v2:
->> ==============
->> * Split the moving and editing of the dt-bindings in two patches
->>
->>   .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 22 ++++++++++----------
->>   1 file changed, 11 insertions(+), 11 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
->> index 483e9cf..8b4eed7 100644
->> --- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
->> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
->> @@ -3,9 +3,8 @@
->>   Required properties:
->>     - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
->>   		 "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
->> -		 "fsl,ls1021a-qspi"
->> +		 "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
->>   		 or
->> -		 "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
->>   		 "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
-> 
-> So the 2080a h/w was compatible with the 1021a h/w, but now it is not?
-> How did the h/w change?
-
-I guess this should be posted as a separate fix. Formerly there was only 
-"fsl,ls1021a-qspi" handled in the driver and the bindings here claimed 
-that "fsl,ls2080a-qspi" is compatible.
-
-Some time ago a separate entry for "fsl,ls2080a-qspi" was added to the 
-driver [1] and it adds a quirk, that is not set for "fsl,ls1021a-qspi". 
-That's why I concluded, that these two are actually not compatible.
-
-> 
->>     - reg : the first contains the register location and length,
->>             the second contains the memory mapping address and length
->> @@ -15,14 +14,15 @@ Required properties:
->>     - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
->>   
->>   Optional properties:
->> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
->> -                              Each bus can be connected with two NOR flashes.
->> -			      Most of the time, each bus only has one NOR flash
->> -			      connected, this is the default case.
->> -			      But if there are two NOR flashes connected to the
->> -			      bus, you should enable this property.
->> -			      (Please check the board's schematic.)
-> 
-> You can't just remove properties without explanation. Why is this no
-> longer needed? What about backwards compatibility with existing dtbs?
-
-You're right, the explanation is missing here.
-
-The "old" driver was using this property to select one of two dual chip 
-setups (two chips on one bus or two chips on separate buses). And it 
-used the order in which the subnodes are defined in the dt to select the 
-CS, the chip is connected to.
-
-Both methods are wrong and in fact the "reg" property should be used to 
-determine which bus and CS a chip is connected to. This also enables us 
-to use different setups than just single chip, or symmetric dual chip.
-
-So the porting of the driver from the MTD to the SPI framework actually 
-enforces the use of the "reg" properties and makes 
-"fsl,qspi-has-second-chip" superfluous.
-
-As all boards that have "fsl,qspi-has-second-chip" set, also have 
-correct "reg" properties, the removal of this property shouldn't lead to 
-any incompatibilities.
-
-The only compatibility issues I can see are with imx6sx-sdb.dts and 
-imx6sx-sdb-reva.dts, which have their reg properties set incorrectly 
-(see explanation here: [2]), all other boards should stay compatible.
-
-> 
->> -  - big-endian : That means the IP register is big endian
->> +  - big-endian : That means the IP registers format is big endian
-> 
-> This is a standard property so it doesn't really need to be redefined
-> here, but just reference the definition.
-
-So I will change that to:
-
-	big-endian : See common-properties.txt for a definition
-
-Thanks,
-Frieder
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/drivers/mtd/spi-nor/fsl-quadspi.c?h=v4.18-rc4&id=d728a7ea9037c2df085bf9494d56e90d0ff69d7d
-[2] https://patchwork.ozlabs.org/patch/922817/#1925445
-
-> 
->> +
->> +Required SPI slave node properties:
->> +  - reg: There are two buses (A and B) with two chip selects each.
->> +	 This encodes to which bus and CS the flash is connected:
->> +		<0>: Bus A, CS 0
->> +		<1>: Bus A, CS 1
->> +		<2>: Bus B, CS 0
->> +		<3>: Bus B, CS 1
->>   
->>   Example:
->>   
->> @@ -40,7 +40,7 @@ qspi0: quadspi@40044000 {
->>   	};
->>   };
->>   
->> -Example showing the usage of two SPI NOR devices:
->> +Example showing the usage of two SPI NOR devices on bus A:
->>   
->>   &qspi2 {
->>   	pinctrl-names = "default";
->> -- 
->> 2.7.4
->>
+>
+>That's not what the board I have on my desk says. I have a
+>MT29F2G08ABAEAH4, and I can tell you for sure this bit changes when I
+>enable/disable on-die ECC. Do the test, and you'll see...
+>
+>See, that's what I'm complaining about. You keep saying things that appear=
+ to
+>be untrue when when we check on real HW parts. So, either we have NANDs
+>that are buggy, or you didn't check yourself.
+>
+>Regards,
+>
+>Boris
