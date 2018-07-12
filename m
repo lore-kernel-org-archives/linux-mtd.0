@@ -1,18 +1,21 @@
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
- <Cristian.Birsan@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 1/3] mtd: spi-nor: add support to non-uniform SFDP SPI NOR
- flash memories
-Date: Thu, 12 Jul 2018 20:32:33 +0300
-Message-ID: <20180712173235.7901-2-tudor.ambarus@microchip.com>
-In-Reply-To: <20180712173235.7901-1-tudor.ambarus@microchip.com>
-References: <20180712173235.7901-1-tudor.ambarus@microchip.com>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fdiez-0007KG-8X
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 20:58:01 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Thu, 12 Jul 2018 22:57:37 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: miquel.raynal@free-electrons.com, boris.brezillon@free-electrons.com
+Cc: computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
+ cyrille.pitchen@wedev4u.fr, richard@nod.at, bpringlemeir@gmail.com,
+ marcel.ziswiler@toradex.com, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v8 1/3] mtd: rawnand: vf610_nfc: make use of ->exec_op()
+In-Reply-To: <20180318155929.16561-2-stefan@agner.ch>
+References: <20180318155929.16561-1-stefan@agner.ch>
+ <20180318155929.16561-2-stefan@agner.ch>
+Message-ID: <14d062b2c92a70f2b16e0837696e0ff2@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,779 +25,687 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Based on Cyrille Pitchen's patch https://lkml.org/lkml/2017/3/22/935.
+On 18.03.2018 16:59, Stefan Agner wrote:
+> This reworks the driver to make use of ->exec_op() callback. The
+> command sequencer of the VF610 NFC aligns well with the new ops
+> interface.
+> 
+> The operations are translated to a NFC command code while filling
+> the necessary registers. Instead of using the special status and
+> read ID command codes (which require to read status/ID from
+> special registers instead of the regular data area) the driver
+> now now uses the main data buffer for all commands. This
+> simplifies the driver as no special casing is needed.
+> 
+> For control data (status byte, id bytes and parameter page) the
+> driver needs to reverse byte order for little endian CPUs since
+> the controller seems to store the bytes in big endian order in
+> the data buffer.
+> 
+> The current state seems to pass MTD tests on a Colibri VF61.
 
-This patch is a transitional patch in introducing  the support of
-SFDP SPI memories with non-uniform erase sizes like Spansion s25fs512s.
-Non-uniform erase maps will be used later when initialized based on the
-SFDP data.
+It turns out that after around 50-200 boots this leads to a kernel
+lockup. Reverting this patch seems to help:
 
-Introduce the memory erase map which splits the memory array into one
-or many erase regions. Each erase region supports up to 4 erase types,
-as defined by the JEDEC JESD216B (SFDP) specification.
+[    4.327685] ubi0: default fastmap pool size: 50
+[    4.332709] ubi0: default fastmap WL pool size: 25
+[    4.338201] ubi0: attaching mtd3
+[    4.409501] random: fast init done
+[    4.615404] ubi0: attached by fastmap
+[    4.619563] ubi0: fastmap pool size: 50
+[    4.623631] ubi0: fastmap WL pool size: 25
+[    4.662871] ubi0: attached mtd3 (name "ubi", size 126 MiB)
+[    4.669108] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    4.676681] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    4.683852] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    4.691528] ubi0: good PEBs: 1001, bad PEBs: 7, corrupted PEBs: 0
+[    4.698231] ubi0: user volume: 1, internal volumes: 1, max. volumes count: 128
+[    4.706157] ubi0: max/mean erase counter: 1/0, WL threshold: 4096, image sequence number: 1281767328
+[    4.716037] ubi0: available PEBs: 0, total reserved PEBs: 1001, PEBs reserved for bad PEB handling: 13
+[    4.726666] ubi0: background thread "ubi_bgt0d" started, PID 60
+[    4.743297] rtc-ds1307 0-0068: setting system clock to 2001-01-01 00:06:44 UTC (978307604)
+[    4.756117] cfg80211: Loading compiled-in X.509 certificates for regulatory database
+[    4.777983] cfg80211: Loaded X.509 cert 'sforshee: 00b28ddf47aef9cea7'
+[    4.830932] hrtimer: interrupt took 30379848 ns
+[   12.135872] ALSA device list:
+[   12.555474]   No soundcards found.
+[   47.420730] INFO: rcu_sched self-detected stall on CPU
+[   47.446162]  0-...!: (2592 ticks this GP) idle=3c2/1/1073741826 softirq=70/70 fqs=0 
+[   47.464623]   (t=2600 jiffies g=-242 c=-243 q=2)
+[   47.475431] rcu_sched kthread starved for 2600 jiffies! g4294967054 c4294967053 f0x0 RCU_GP_WAIT_FQS(3) ->state=0x402 ->cpu=0
+[   47.489822] RCU grace-period kthread stack dump:
+[   47.497199] rcu_sched       I    0    10      2 0x00000000
+[   47.506163] Backtrace: 
+[   47.514811] [<c0bd47a0>] (__schedule) from [<c0bd52f0>] (schedule+0x48/0xac)
+[   47.525962]  r10:c10b26d9 r9:c1005900 r8:c7cdd500 r7:c10088c8 r6:c7cdd500 r5:c4129ec4
+[   47.536345]  r4:ffffe000
+[   47.542663] [<c0bd52a8>] (schedule) from [<c0bda574>] (schedule_timeout+0xa0/0x564)
+[   47.553692]  r5:c4129ec4 r4:ffff932e
+[   47.563375] [<c0bda4d4>] (schedule_timeout) from [<c01a6eac>] (rcu_gp_kthread+0x670/0x189c)
+[   47.575609]  r10:c101ce78 r9:c101cbc0 r8:c1005900 r7:ffffe000 r6:00000402 r5:c101ce50
+[   47.585966]  r4:00000001
+[   47.592163] [<c01a683c>] (rcu_gp_kthread) from [<c0151448>] (kthread+0x154/0x16c)
+[   47.603068]  r7:c4128000
+[   47.608760] [<c01512f4>] (kthread) from [<c01010b4>] (ret_from_fork+0x14/0x20)
+[   47.619396] Exception stack(0xc4129fb0 to 0xc4129ff8)
+[   47.627264] 9fa0:                                     00000000 00000000 00000000 00000000
+[   47.638076] 9fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[   47.648825] 9fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[   47.658059]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c01512f4
+[   47.668567]  r4:c40f7100
+[   47.682794] NMI backtrace for cpu 0
+[   47.692049] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 4.18.0-rc4 #120
+[   47.701839] Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
+[   47.710436] Backtrace: 
+[   47.717705] [<c010e814>] (dump_backtrace) from [<c010eac4>] (show_stack+0x20/0x24)
+[   47.728904]  r7:00000000 r6:60000193 r5:00000000 r4:c10abff4
+[   47.738832] [<c010eaa4>] (show_stack) from [<c0bbd144>] (dump_stack+0xb4/0xec)
+[   47.750608] [<c0bbd090>] (dump_stack) from [<c0bc3ca0>] (nmi_cpu_backtrace+0x10c/0x120)
+[   47.762041]  r10:80000193 r9:c1008970 r8:c0c02be8 r7:00000000 r6:00000000 r5:00000000
+[   47.772442]  r4:c182d928 r3:b15a9cad
+[   47.778946] [<c0bc3b94>] (nmi_cpu_backtrace) from [<c0bc3d88>] (nmi_trigger_cpumask_backtrace+0xd4/0x128)
+[   47.791492]  r7:00000000 r6:c01105f4 r5:c100bef0 r4:00000000
+[   47.800780] [<c0bc3cb4>] (nmi_trigger_cpumask_backtrace) from [<c011146c>] (arch_trigger_cpumask_backtrace+0x1c/0x24)
+[   47.814575]  r9:c1008970 r8:00000240 r7:c0c02be4 r6:c10088f4 r5:c101cbc0 r4:c101cbc0
+[   47.826007] [<c0111450>] (arch_trigger_cpumask_backtrace) from [<c01adfd4>] (rcu_dump_cpu_stacks+0xb4/0xf4)
+[   47.839338] [<c01adf20>] (rcu_dump_cpu_stacks) from [<c01acc44>] (rcu_check_callbacks+0x7ec/0xaa4)
+[   47.851266]  r10:c1008e38 r9:c1008968 r8:c101cbc0 r7:06d21000 r6:c7ce2d00 r5:c0fc1d00
+[   47.861815]  r4:c101cbc0
+[   47.868917] [<c01ac458>] (rcu_check_callbacks) from [<c01b58f8>] (update_process_times+0x40/0x6c)
+[   47.881573]  r10:c10088ec r9:c7cde600 r8:c01cb8f4 r7:0000000b r6:00000000 r5:c4108000
+[   47.891955]  r4:ffffe000
+[   47.898511] [<c01b58b8>] (update_process_times) from [<c01cb68c>] (tick_sched_handle+0x64/0x68)
+[   47.910900]  r7:0000000b r6:09f63806 r5:c4103d38 r4:c7cdea98
+[   47.919562] [<c01cb628>] (tick_sched_handle) from [<c01cb960>] (tick_sched_timer+0x6c/0xd0)
+[   47.932061] [<c01cb8f4>] (tick_sched_timer) from [<c01b66e0>] (__hrtimer_run_queues+0x194/0x634)
+[   47.944036]  r7:c10416d4 r6:00000000 r5:c7cdea98 r4:c7cde660
+[   47.952849] [<c01b654c>] (__hrtimer_run_queues) from [<c01b7e70>] (hrtimer_interrupt+0x124/0x2ec)
+[   47.964708]  r10:c7cde740 r9:ffffffff r8:7fffffff r7:c7cde700 r6:00000003 r5:20000193
+[   47.975066]  r4:c7cde600
+[   47.980799] [<c01b7d4c>] (hrtimer_interrupt) from [<c087f068>] (gt_clockevent_interrupt+0x4c/0x68)
+[   47.992829]  r10:c10b26ac r9:00000010 r8:c1008e38 r7:c10088ec r6:c800c200 r5:c7ce3b00
+[   48.003230]  r4:00000001
+[   48.010306] [<c087f01c>] (gt_clockevent_interrupt) from [<c01970e8>] (handle_percpu_devid_irq+0xec/0x430)
+[   48.023497]  r7:c10088ec r6:c100905c r5:c40dc680 r4:c40c9a00
+[   48.032720] [<c0196ffc>] (handle_percpu_devid_irq) from [<c0191a68>] (generic_handle_irq+0x30/0x44)
+[   48.045102]  r10:c1041928 r9:c401a400 r8:00000001 r7:00000000 r6:c1008e38 r5:00000010
+[   48.055221]  r4:c0fc112c
+[   48.060592] [<c0191a38>] (generic_handle_irq) from [<c0191af0>] (__handle_domain_irq+0x74/0xf0)
+[   48.073419] [<c0191a7c>] (__handle_domain_irq) from [<c01023dc>] (gic_handle_irq+0x68/0xcc)
+[   48.084801]  r9:c4103d38 r8:c100905c r7:c8002100 r6:000003ff r5:000003eb r4:c800210c
+[   48.095734] [<c0102374>] (gic_handle_irq) from [<c0101a30>] (__irq_svc+0x70/0x98)
+[   48.106321] Exception stack(0xc4103d38 to 0xc4103d80)
+[   48.113845] 3d20:                                                       00000001 00000001
+[   48.124357] 3d40: 00000000 c4108000 c7ce2600 00000000 c102d7f8 c410e400 00000000 c0bd4a6c
+[   48.134917] 3d60: c4108000 c4103d9c 00000000 c4103d88 c0180a74 c0bdb778 20000013 ffffffff
+[   48.145628]  r10:c4108000 r9:c4102000 r8:00000000 r7:c4103d6c r6:ffffffff r5:20000013
+[   48.155699]  r4:c0bdb778
+[   48.163614] [<c0bdb740>] (_raw_spin_unlock_irq) from [<c015a310>] (finish_task_switch+0xbc/0x274)
+[   48.176306]  r5:00000000 r4:c7ce2600
+[   48.183676] [<c015a254>] (finish_task_switch) from [<c0bd4a6c>] (__schedule+0x2cc/0xad4)
+[   48.195315]  r10:c10b3ae0 r9:c102d7f8 r8:00000000 r7:c7ce2610 r6:c42a8000 r5:c4108000
+[   48.205648]  r4:c7ce2600
+[   48.210929] [<c0bd47a0>] (__schedule) from [<c0bd528c>] (preempt_schedule_common+0x18/0x34)
+[   48.222162]  r10:c10b7d00 r9:c40dd3c0 r8:c02a7900 r7:c1008f84 r6:ffffff9c r5:006000c0
+[   48.232651]  r4:ffffe000
+[   48.237849] [<c0bd5274>] (preempt_schedule_common) from [<c0bd54bc>] (_cond_resched+0x50/0x58)
+[   48.249555]  r5:006000c0 r4:00000001
+[   48.257127] [<c0bd546c>] (_cond_resched) from [<c028f728>] (kmem_cache_alloc+0x1f0/0x31c)
+[   48.268169]  r5:006000c0 r4:006000c0
+[   48.275478] [<c028f538>] (kmem_cache_alloc) from [<c02a7900>] (getname_flags+0x30/0x160)
+[   48.286767]  r10:c10b7d00 r9:00000000 r8:00000000 r7:c1008f84 r6:ffffff9c r5:c0e0560c
+[   48.297226]  r4:00000002
+[   48.302911] [<c02a78d0>] (getname_flags) from [<c02a7a50>] (getname+0x20/0x24)
+[   48.313300]  r10:c10b7d00 r9:c10088ec r8:c0f7c85c r7:00000000 r6:ffffff9c r5:c10088c8
+[   48.323768]  r4:00000002 r3:00000002
+[   48.330039] [<c02a7a30>] (getname) from [<c029854c>] (do_sys_open+0xfc/0x21c)
+[   48.341558] [<c0298450>] (do_sys_open) from [<c0f01878>] (kernel_init_freeable+0x3a4/0x460)
+[   48.352809]  r10:c10b7d00 r9:c10088ec r8:c0f7c85c r7:c10b7d00 r6:c10b3900 r5:c0fb7140
+[   48.363206]  r4:00000008
+[   48.370025] [<c0f014d4>] (kernel_init_freeable) from [<c0bd2704>] (kernel_init+0x18/0x128)
+[   48.381584]  r10:00000000 r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:c0bd26ec
+[   48.392130]  r4:00000000
+[   48.397585] [<c0bd26ec>] (kernel_init) from [<c01010b4>] (ret_from_fork+0x14/0x20)
+[   48.407874] Exception stack(0xc4103fb0 to 0xc4103ff8)
+[   48.415229] 3fa0:                                     00000000 00000000 00000000 00000000
+[   48.425675] 3fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+[   48.436255] 3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[   48.445286]  r5:c0bd26ec r4:00000000
 
-To be backward compatible, the erase map of uniform SPI NOR flash memories
-is initialized so it contains only one erase region and this erase region
-supports only one erase command. Hence a single size is used to erase any
-sector/block of the memory.
 
-Besides, since the algorithm used to erase sectors on non-uniform SPI NOR
-flash memories is quite expensive, when possible, the erase map is tuned
-to come back to the uniform case.
+Still need to investigate further, but if anybody has an idea/spot can
+spot the potential problem, I am all ears :-)
 
-The 'erase with the best command, move forward and repeat' approach was
-suggested by Cristian Birsan in a brainstorm session, so:
+--
+Stefan
 
-Suggested-by: Cristian Birsan <cristian.birsan@microchip.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 475 ++++++++++++++++++++++++++++++++++++++----
- include/linux/mtd/spi-nor.h   | 109 ++++++++++
- 2 files changed, 542 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c..899b8c1 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -18,6 +18,7 @@
- #include <linux/math64.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
-+#include <linux/sort.h>
- 
- #include <linux/mtd/mtd.h>
- #include <linux/of_platform.h>
-@@ -260,6 +261,18 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
- 	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
- 	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
- 	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
-+
-+	if (!spi_nor_has_uniform_erase(nor)) {
-+		struct spi_nor_erase_map *map = &nor->erase_map;
-+		struct spi_nor_erase_type *erase;
-+		int i;
-+
-+		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+			erase = &map->erase_type[i];
-+			erase->opcode =
-+				spi_nor_convert_3to4_erase(erase->opcode);
-+		}
-+	}
- }
- 
- /* Enable/disable 4-byte addressing mode. */
-@@ -497,6 +510,206 @@ static int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)
- 	return nor->write_reg(nor, nor->erase_opcode, buf, nor->addr_width);
- }
- 
-+/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
-+static inline u64
-+spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
-+			  u64 dividend, u32 *remainder)
-+{
-+	*remainder = (u32)dividend & erase->size_mask;
-+	return dividend >> erase->size_shift;
-+}
-+
-+static const struct spi_nor_erase_type *
-+spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
-+			     const struct spi_nor_erase_region *region,
-+			     u64 addr, u32 len)
-+{
-+	const struct spi_nor_erase_type *erase;
-+	u32 rem;
-+	int i;
-+	u8 erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
-+
-+	/*
-+	 * Erase types are ordered by size, with the biggest erase type at
-+	 * index 0.
-+	 */
-+	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-+		/* Does the erase region support the tested erase type? */
-+		if (!(erase_mask & BIT(i)))
-+			continue;
-+
-+		erase = &map->erase_type[i];
-+
-+		/* Don't erase more than what the user has asked for. */
-+		if (erase->size > len)
-+			continue;
-+
-+		/* Alignment is not mandatory for overlaid regions */
-+		if (region->offset & SNOR_OVERLAID_REGION)
-+			return erase;
-+
-+		spi_nor_div_by_erase_size(erase, addr, &rem);
-+		if (rem)
-+			continue;
-+		else
-+			return erase;
-+	}
-+
-+	return NULL;
-+}
-+
-+static struct spi_nor_erase_region *
-+spi_nor_region_next(struct spi_nor_erase_region *region)
-+{
-+	if (spi_nor_region_is_last(region))
-+		return NULL;
-+	return ++region;
-+}
-+
-+static struct spi_nor_erase_region *
-+spi_nor_find_erase_region(const struct spi_nor_erase_map *map, u64 addr,
-+			  u32 len)
-+{
-+	struct spi_nor_erase_region *region = map->regions;
-+	u64 region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
-+	u64 region_end = region_start + region->size;
-+
-+	while (addr < region_start || addr >= region_end) {
-+		region = spi_nor_region_next(region);
-+		if (!region)
-+			return ERR_PTR(-EINVAL);
-+
-+		region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
-+		region_end = region_start + region->size;
-+	}
-+
-+	return region;
-+}
-+
-+static struct spi_nor_erase_command *
-+spi_nor_init_erase_cmd(const struct spi_nor_erase_region *region,
-+		       const struct spi_nor_erase_type *erase, u64 addr)
-+{
-+	struct spi_nor_erase_command *cmd;
-+
-+	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
-+	if (!cmd)
-+		return ERR_PTR(-ENOMEM);
-+
-+	INIT_LIST_HEAD(&cmd->list);
-+	cmd->opcode = erase->opcode;
-+	cmd->count = 1;
-+
-+	if (region->offset & SNOR_OVERLAID_REGION)
-+		cmd->size = region->size;
-+	else
-+		cmd->size = erase->size;
-+
-+	return cmd;
-+}
-+
-+static void spi_nor_destroy_erase_cmd_list(struct list_head *erase_list)
-+{
-+	struct spi_nor_erase_command *cmd, *next;
-+
-+	list_for_each_entry_safe(cmd, next, erase_list, list) {
-+		list_del(&cmd->list);
-+		kfree(cmd);
-+	}
-+}
-+
-+static int spi_nor_init_erase_cmd_list(struct spi_nor *nor,
-+				       struct list_head *erase_list,
-+				       u64 addr, u32 len)
-+{
-+	const struct spi_nor_erase_map *map = &nor->erase_map;
-+	const struct spi_nor_erase_type *erase, *prev_erase = NULL;
-+	struct spi_nor_erase_region *region;
-+	struct spi_nor_erase_command *cmd = NULL;
-+	u64 region_end;
-+	int ret = -EINVAL;
-+
-+	region = spi_nor_find_erase_region(map, addr, len);
-+	if (IS_ERR(region))
-+		return PTR_ERR(region);
-+
-+	region_end = spi_nor_region_end(region);
-+
-+	while (len) {
-+		erase = spi_nor_find_best_erase_type(map, region, addr, len);
-+		if (!erase)
-+			goto destroy_erase_cmd_list;
-+
-+		if (prev_erase != erase ||
-+		    region->offset & SNOR_OVERLAID_REGION) {
-+			cmd = spi_nor_init_erase_cmd(region, erase, addr);
-+			if (IS_ERR(cmd)) {
-+				ret = PTR_ERR(cmd);
-+				goto destroy_erase_cmd_list;
-+			}
-+
-+			list_add_tail(&cmd->list, erase_list);
-+		} else {
-+			cmd->count++;
-+		}
-+
-+		addr += cmd->size;
-+		len -= cmd->size;
-+
-+		if (len && addr >= region_end) {
-+			region = spi_nor_region_next(region);
-+			if (!region)
-+				goto destroy_erase_cmd_list;
-+			region_end = spi_nor_region_end(region);
-+		}
-+
-+		prev_erase = erase;
-+	}
-+
-+	return 0;
-+
-+destroy_erase_cmd_list:
-+	spi_nor_destroy_erase_cmd_list(erase_list);
-+	return ret;
-+}
-+
-+static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr, u32 len)
-+{
-+	LIST_HEAD(erase_list);
-+	struct spi_nor_erase_command *cmd, *next;
-+	int ret;
-+
-+	ret = spi_nor_init_erase_cmd_list(nor, &erase_list, addr, len);
-+	if (ret)
-+		return ret;
-+
-+	list_for_each_entry_safe(cmd, next, &erase_list, list) {
-+		nor->erase_opcode = cmd->opcode;
-+		while (cmd->count) {
-+			write_enable(nor);
-+
-+			ret = spi_nor_erase_sector(nor, addr);
-+			if (ret)
-+				goto destroy_erase_cmd_list;
-+
-+			addr += cmd->size;
-+			cmd->count--;
-+
-+			ret = spi_nor_wait_till_ready(nor);
-+			if (ret)
-+				goto destroy_erase_cmd_list;
-+		}
-+		list_del(&cmd->list);
-+		kfree(cmd);
-+	}
-+
-+	return 0;
-+
-+destroy_erase_cmd_list:
-+	spi_nor_destroy_erase_cmd_list(&erase_list);
-+	return ret;
-+}
-+
- /*
-  * Erase an address range on the nor chip.  The address range may extend
-  * one or more erase sectors.  Return an error is there is a problem erasing.
-@@ -511,9 +724,11 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
- 			(long long)instr->len);
- 
--	div_u64_rem(instr->len, mtd->erasesize, &rem);
--	if (rem)
--		return -EINVAL;
-+	if (spi_nor_has_uniform_erase(nor)) {
-+		div_u64_rem(instr->len, mtd->erasesize, &rem);
-+		if (rem)
-+			return -EINVAL;
-+	}
- 
- 	addr = instr->addr;
- 	len = instr->len;
-@@ -552,7 +767,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	 */
- 
- 	/* "sector"-at-a-time erase */
--	} else {
-+	} else if (spi_nor_has_uniform_erase(nor)) {
- 		while (len) {
- 			write_enable(nor);
- 
-@@ -567,6 +782,12 @@ static int spi_nor_erase(struct mtd_info *mtd, struct erase_info *instr)
- 			if (ret)
- 				goto erase_err;
- 		}
-+
-+	/* erase multiple sectors */
-+	} else {
-+		ret = spi_nor_erase_multi_sectors(nor, addr, len);
-+		if (ret)
-+			goto erase_err;
- 	}
- 
- 	write_disable(nor);
-@@ -2165,6 +2386,83 @@ static const struct sfdp_bfpt_erase sfdp_bfpt_erases[] = {
- 
- static int spi_nor_hwcaps_read2cmd(u32 hwcaps);
- 
-+/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
-+static inline void
-+spi_nor_set_erase_type(struct spi_nor_erase_type *erase,  u32 size, u8 opcode)
-+{
-+	erase->size = size;
-+	erase->opcode = opcode;
-+	erase->size_shift = ffs(erase->size) - 1;
-+	erase->size_mask = (1 << erase->size_shift) - 1;
-+}
-+
-+static inline void
-+spi_nor_set_erase_settings_from_bfpt(struct spi_nor_erase_type *erase,
-+				     u32 size, u8 opcode, u8 i)
-+{
-+	/*
-+	 * The supported Erase Types will be sorted at init in ascending order,
-+	 * with the smallest Erase Type size being the first member
-+	 * in the erase_type array of the spi_nor_erase_map structure.
-+	 * Save the Erase Type index as sorted in the Basic Flash Parameter
-+	 * Table since it will be used later on to synchronize with the
-+	 * supported Erase Types defined in SFDP optional tables.
-+	 */
-+	erase->idx = i;
-+	spi_nor_set_erase_type(erase, size, opcode);
-+}
-+
-+static int spi_nor_cmp_erase_type(const void *a, const void *b)
-+{
-+	const struct spi_nor_erase_type *erase1 = a;
-+	const struct spi_nor_erase_type *erase2 = b;
-+
-+	return erase1->size - erase2->size;
-+}
-+
-+static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
-+{
-+	struct spi_nor_erase_region *region = map->regions;
-+	struct spi_nor_erase_type *erase_type = map->erase_type;
-+	int i;
-+	u8 region_erase_mask, ordered_erase_mask;
-+
-+	/*
-+	 * Sort each region's Erase Types in ascending order with the smallest
-+	 * Erase Type size starting at BIT(0).
-+	 */
-+	while (region) {
-+		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
-+
-+		/*
-+		 * The region's erase mask indicates which erase types are
-+		 * supported from the erase types defined in the map.
-+		 */
-+		ordered_erase_mask = 0;
-+		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
-+			if (erase_type[i].size &&
-+			    region_erase_mask & BIT(erase_type[i].idx))
-+				ordered_erase_mask |= BIT(i);
-+
-+		/* Overwrite erase mask. */
-+		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
-+				 ordered_erase_mask;
-+
-+		region = spi_nor_region_next(region);
-+	}
-+}
-+
-+static inline void
-+spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
-+			       u8 erase_mask, u64 flash_size)
-+{
-+	map->uniform_region.offset = SNOR_ERASE_FLAGS_OFFSET(erase_mask, 1, 0,
-+							     0);
-+	map->uniform_region.size = flash_size;
-+	map->regions = &map->uniform_region;
-+	map->uniform_erase_type = erase_mask;
-+}
-+
- /**
-  * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -2199,12 +2497,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 			      const struct sfdp_parameter_header *bfpt_header,
- 			      struct spi_nor_flash_parameter *params)
- {
--	struct mtd_info *mtd = &nor->mtd;
-+	struct spi_nor_erase_map *map = &nor->erase_map;
-+	struct spi_nor_erase_type *erase_type = map->erase_type;
- 	struct sfdp_bfpt bfpt;
- 	size_t len;
- 	int i, cmd, err;
- 	u32 addr;
- 	u16 half;
-+	u8 erase_mask;
- 
- 	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
- 	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216)
-@@ -2273,7 +2573,12 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
- 	}
- 
--	/* Sector Erase settings. */
-+	/*
-+	 * Sector Erase settings. Reinitialize the uniform erase map using the
-+	 * Erase Types defined in the bfpt table.
-+	 */
-+	erase_mask = 0;
-+	memset(&nor->erase_map, 0, sizeof(nor->erase_map));
- 	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
- 		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
- 		u32 erasesize;
-@@ -2288,18 +2593,18 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
- 
- 		erasesize = 1U << erasesize;
- 		opcode = (half >> 8) & 0xff;
--#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
--		if (erasesize == SZ_4K) {
--			nor->erase_opcode = opcode;
--			mtd->erasesize = erasesize;
--			break;
--		}
--#endif
--		if (!mtd->erasesize || mtd->erasesize < erasesize) {
--			nor->erase_opcode = opcode;
--			mtd->erasesize = erasesize;
--		}
-+		erase_mask |= BIT(i);
-+		spi_nor_set_erase_settings_from_bfpt(&erase_type[i], erasesize,
-+						     opcode, i);
- 	}
-+	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
-+	/*
-+	 * Sort all the map's Erase Types in ascending order with the smallest
-+	 * erase size being the first member in the erase_type array.
-+	 */
-+	sort(erase_type, SNOR_ERASE_TYPE_MAX, sizeof(erase_type[0]),
-+	     spi_nor_cmp_erase_type, NULL);
-+	spi_nor_regions_sort_erase_types(map);
- 
- 	/* Stop here if not JESD216 rev A or later. */
- 	if (bfpt_header->length < BFPT_DWORD_MAX)
-@@ -2455,6 +2760,9 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 			       const struct flash_info *info,
- 			       struct spi_nor_flash_parameter *params)
- {
-+	struct spi_nor_erase_map *map = &nor->erase_map;
-+	u8 i, erase_mask;
-+
- 	/* Set legacy flash parameters as default. */
- 	memset(params, 0, sizeof(*params));
- 
-@@ -2494,6 +2802,28 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
- 				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
- 
-+	/*
-+	 * Sector Erase settings. Sort Erase Types in ascending order, with the
-+	 * smallest erase size starting at BIT(0).
-+	 */
-+	erase_mask = 0;
-+	i = 0;
-+	if (info->flags & SECT_4K_PMC) {
-+		erase_mask |= BIT(i);
-+		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
-+				       SPINOR_OP_BE_4K_PMC);
-+		i++;
-+	} else if (info->flags & SECT_4K) {
-+		erase_mask |= BIT(i);
-+		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
-+				       SPINOR_OP_BE_4K);
-+		i++;
-+	}
-+	erase_mask |= BIT(i);
-+	spi_nor_set_erase_type(&map->erase_type[i], info->sector_size,
-+			       SPINOR_OP_SE);
-+	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
-+
- 	/* Select the procedure to set the Quad Enable bit. */
- 	if (params->hwcaps.mask & (SNOR_HWCAPS_READ_QUAD |
- 				   SNOR_HWCAPS_PP_QUAD)) {
-@@ -2521,20 +2851,20 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 			params->quad_enable = info->quad_enable;
- 	}
- 
--	/* Override the parameters with data read from SFDP tables. */
--	nor->addr_width = 0;
--	nor->mtd.erasesize = 0;
- 	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
- 	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
- 		struct spi_nor_flash_parameter sfdp_params;
-+		struct spi_nor_erase_map prev_map;
- 
- 		memcpy(&sfdp_params, params, sizeof(sfdp_params));
--		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
--			nor->addr_width = 0;
--			nor->mtd.erasesize = 0;
--		} else {
-+		memcpy(&prev_map, &nor->erase_map, sizeof(prev_map));
-+
-+		if (spi_nor_parse_sfdp(nor, &sfdp_params))
-+			/* restore previous erase map */
-+			memcpy(&nor->erase_map, &prev_map,
-+			       sizeof(nor->erase_map));
-+		else
- 			memcpy(params, &sfdp_params, sizeof(*params));
--		}
- 	}
- 
- 	return 0;
-@@ -2643,29 +2973,90 @@ static int spi_nor_select_pp(struct spi_nor *nor,
- 	return 0;
- }
- 
--static int spi_nor_select_erase(struct spi_nor *nor,
--				const struct flash_info *info)
-+static const struct spi_nor_erase_type *
-+spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
-+			     const u32 sector_size)
- {
--	struct mtd_info *mtd = &nor->mtd;
-+	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
-+	int i;
-+	u8 uniform_erase_type = map->uniform_erase_type;
- 
--	/* Do nothing if already configured from SFDP. */
--	if (mtd->erasesize)
--		return 0;
-+	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-+		if (!(uniform_erase_type & BIT(i)))
-+			continue;
-+
-+		tested_erase = &map->erase_type[i];
-+
-+		/*
-+		 * If the current erase size is the one, stop here:
-+		 * we have found the right uniform Sector Erase command.
-+		 */
-+		if (tested_erase->size == sector_size) {
-+			erase = tested_erase;
-+			break;
-+		}
-+
-+		/*
-+		 * Otherwise, the current erase size is still a valid canditate.
-+		 * Select the biggest valid candidate.
-+		 */
-+		if (!erase && tested_erase->size)
-+			erase = tested_erase;
-+	}
- 
-+	if (!erase)
-+		return ERR_PTR(-EINVAL);
-+
-+	/* Disable all other Sector Erase commands. */
-+	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
-+	map->uniform_erase_type |= BIT(erase - map->erase_type);
-+	return erase;
-+}
-+
-+static int spi_nor_select_erase(struct spi_nor *nor, u32 sector_size)
-+{
-+	struct spi_nor_erase_map *map = &nor->erase_map;
-+	const struct spi_nor_erase_type *erase = NULL;
-+	struct mtd_info *mtd = &nor->mtd;
-+	int i;
-+
-+	/*
-+	 * The previous implementation handling Sector Erase commands assumed
-+	 * that the SPI flash memory has an uniform layout then used only one
-+	 * of the supported erase sizes for all Sector Erase commands.
-+	 * So to be backward compatible, the new implementation also tries to
-+	 * manage the SPI flash memory as uniform with a single erase sector
-+	 * size, when possible.
-+	 */
- #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
- 	/* prefer "small sector" erase if possible */
--	if (info->flags & SECT_4K) {
--		nor->erase_opcode = SPINOR_OP_BE_4K;
--		mtd->erasesize = 4096;
--	} else if (info->flags & SECT_4K_PMC) {
--		nor->erase_opcode = SPINOR_OP_BE_4K_PMC;
--		mtd->erasesize = 4096;
--	} else
-+	sector_size = 4096u;
- #endif
--	{
--		nor->erase_opcode = SPINOR_OP_SE;
--		mtd->erasesize = info->sector_size;
-+
-+	if (spi_nor_has_uniform_erase(nor)) {
-+		erase = spi_nor_select_uniform_erase(map, sector_size);
-+		if (IS_ERR(erase))
-+			return PTR_ERR(erase);
-+		nor->erase_opcode = erase->opcode;
-+		mtd->erasesize = erase->size;
-+		return 0;
- 	}
-+
-+	/*
-+	 * For non-uniform SPI flash memory, set mtd->erasesize to the
-+	 * maximum erase sector size. No need to set nor->erase_opcode.
-+	 */
-+	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
-+		if (map->erase_type[i].size) {
-+			erase = &map->erase_type[i];
-+			break;
-+		}
-+	}
-+
-+	if (!erase)
-+		return -EINVAL;
-+
-+	mtd->erasesize = erase->size;
- 	return 0;
- }
- 
-@@ -2712,7 +3103,7 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
- 	}
- 
- 	/* Select the Sector Erase command. */
--	err = spi_nor_select_erase(nor, info);
-+	err = spi_nor_select_erase(nor, info->sector_size);
- 	if (err) {
- 		dev_err(nor->dev,
- 			"can't select erase settings supported by both the SPI controller and memory.\n");
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e60da0d..2131963 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -238,6 +238,101 @@ enum spi_nor_option_flags {
- };
- 
- /**
-+ * struct spi_nor_erase_type - Structure to describe a SPI NOR erase type
-+ * @size:		the size of the sector/block erased by the erase type.
-+ *			JEDEC JESD216B imposes erase sizes to be a power of 2.
-+ * @size_shift:		@size is a power of 2, the shift is stored in
-+ *			@size_shift.
-+ * @size_mask:		the size mask based on @size_shift.
-+ * @opcode:		the SPI command op code to erase the sector/block.
-+ * @idx:		Erase Type index as sorted in the Basic Flash Parameter
-+ *			Table. It will be used to synchronize the supported
-+ *			Erase Types with the ones identified in the SFDP
-+ *			optional tables.
-+ */
-+struct spi_nor_erase_type {
-+	u32	size;
-+	u32	size_shift;
-+	u32	size_mask;
-+	u8	opcode;
-+	u8	idx;
-+};
-+
-+/**
-+ * struct spi_nor_erase_command - Used for non-uniform erases
-+ * The structure is used to describe a list of erase commands to be executed
-+ * once we validate that the erase can be performed. The elements in the list
-+ * are run-length encoded.
-+ * @list:		for inclusion into the list of erase commands.
-+ * @count:		how many times the same erase command should be
-+ *			consecutively used.
-+ * @size:		the size of the sector/block erased by the command.
-+ * @opcode:		the SPI command op code to erase the sector/block.
-+ */
-+struct spi_nor_erase_command {
-+	struct list_head	list;
-+	u32			count;
-+	u32			size;
-+	u8			opcode;
-+};
-+
-+/**
-+ * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
-+ * @offset:		the offset in the data array of erase region start.
-+ *			LSB bits are used as a bitmask encoding flags to
-+ *			determine if this region is overlaid, if this region is
-+ *			the last in the SPI NOR flash memory and to indicate
-+ *			all the supported erase commands inside this region.
-+ *			The erase types are sorted in ascending order with the
-+ *			smallest Erase Type size being at BIT(0).
-+ * @size:		the size of the region in bytes.
-+ */
-+struct spi_nor_erase_region {
-+	u64		offset;
-+	u64		size;
-+};
-+
-+#define SNOR_ERASE_TYPE_MAX	4
-+#define SNOR_ERASE_TYPE_MASK	GENMASK_ULL(SNOR_ERASE_TYPE_MAX - 1, 0)
-+
-+#define SNOR_LAST_REGION	BIT(4)
-+#define SNOR_OVERLAID_REGION	BIT(5)
-+
-+#define SNOR_ERASE_FLAGS_MAX	6
-+#define SNOR_ERASE_FLAGS_MASK	GENMASK_ULL(SNOR_ERASE_FLAGS_MAX - 1, 0)
-+
-+#define SNOR_ERASE_FLAGS_OFFSET(_cmd_mask, _last_region, _overlaid_region, \
-+				_offset)				\
-+	((((u64)(_offset)) & ~SNOR_ERASE_FLAGS_MASK)	|		\
-+	 (((u64)(_cmd_mask)) & SNOR_ERASE_TYPE_MASK)	|		\
-+	 (((u64)(_last_region)) & SNOR_LAST_REGION)	|		\
-+	 (((u64)(_overlaid_region)) & SNOR_OVERLAID_REGION))
-+
-+/**
-+ * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
-+ * @regions:		array of erase regions. The regions are consecutive in
-+ *			address space. Walking through the regions is done
-+ *			incrementally.
-+ * @uniform_region:	a pre-allocated erase region for SPI NOR with a uniform
-+ *			sector size (legacy implementation).
-+ * @erase_type:		an array of erase types shared by all the regions.
-+ *			The erase types are sorted in ascending order, with the
-+ *			smallest Erase Type size being the first member in the
-+ *			erase_type array.
-+ * @uniform_erase_type:	bitmask encoding erase types that can erase the
-+ *			entire memory. This member is completed at init by
-+ *			uniform and non-uniform SPI NOR flash memories if they
-+ *			support at least one erase type that can erase the
-+ *			entire memory.
-+ */
-+struct spi_nor_erase_map {
-+	struct spi_nor_erase_region	*regions;
-+	struct spi_nor_erase_region	uniform_region;
-+	struct spi_nor_erase_type	erase_type[SNOR_ERASE_TYPE_MAX];
-+	u8				uniform_erase_type;
-+};
-+
-+/**
-  * struct flash_info - Forward declaration of a structure used internally by
-  *		       spi_nor_scan()
-  */
-@@ -261,6 +356,7 @@ struct flash_info;
-  * @write_proto:	the SPI protocol for write operations
-  * @reg_proto		the SPI protocol for read_reg/write_reg/erase operations
-  * @cmd_buf:		used by the write_reg
-+ * @erase_map:		the erase map of the SPI NOR
-  * @prepare:		[OPTIONAL] do some preparations for the
-  *			read/write/erase/lock/unlock operations
-  * @unprepare:		[OPTIONAL] do some post work after the
-@@ -296,6 +392,7 @@ struct spi_nor {
- 	bool			sst_write_second;
- 	u32			flags;
- 	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
-+	struct spi_nor_erase_map	erase_map;
- 
- 	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
- 	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops);
-@@ -316,6 +413,18 @@ struct spi_nor {
- 	void *priv;
- };
- 
-+#define spi_nor_region_is_last(region)  (region->offset & SNOR_LAST_REGION)
-+
-+static inline u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
-+{
-+	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
-+}
-+
-+static inline bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
-+{
-+	return !!nor->erase_map.uniform_erase_type;
-+}
-+
- static inline void spi_nor_set_flash_node(struct spi_nor *nor,
- 					  struct device_node *np)
- {
--- 
-2.9.4
+> 
+> Signed-off-by: Stefan Agner <stefan@agner.ch>
+> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/vf610_nfc.c | 423 +++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 411 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+> index 5d7a1f8f580f..c027a3a6a005 100644
+> --- a/drivers/mtd/nand/raw/vf610_nfc.c
+> +++ b/drivers/mtd/nand/raw/vf610_nfc.c
+> @@ -74,6 +74,22 @@
+>  #define RESET_CMD_CODE			0x4040
+>  #define STATUS_READ_CMD_CODE		0x4068
+>  
+> +/* NFC_CMD2[CODE] controller cycle bit masks */
+> +#define COMMAND_CMD_BYTE1		BIT(14)
+> +#define COMMAND_CAR_BYTE1		BIT(13)
+> +#define COMMAND_CAR_BYTE2		BIT(12)
+> +#define COMMAND_RAR_BYTE1		BIT(11)
+> +#define COMMAND_RAR_BYTE2		BIT(10)
+> +#define COMMAND_RAR_BYTE3		BIT(9)
+> +#define COMMAND_NADDR_BYTES(x)		GENMASK(13, 13 - (x) + 1)
+> +#define COMMAND_WRITE_DATA		BIT(8)
+> +#define COMMAND_CMD_BYTE2		BIT(7)
+> +#define COMMAND_RB_HANDSHAKE		BIT(6)
+> +#define COMMAND_READ_DATA		BIT(5)
+> +#define COMMAND_CMD_BYTE3		BIT(4)
+> +#define COMMAND_READ_STATUS		BIT(3)
+> +#define COMMAND_READ_ID			BIT(2)
+> +
+>  /* NFC ECC mode define */
+>  #define ECC_BYPASS			0
+>  #define ECC_45_BYTE			6
+> @@ -97,10 +113,13 @@
+>  /* NFC_COL_ADDR Field */
+>  #define COL_ADDR_MASK				0x0000FFFF
+>  #define COL_ADDR_SHIFT				0
+> +#define COL_ADDR(pos, val)			(((val) & 0xFF) << (8 * (pos)))
+>  
+>  /* NFC_ROW_ADDR Field */
+>  #define ROW_ADDR_MASK				0x00FFFFFF
+>  #define ROW_ADDR_SHIFT				0
+> +#define ROW_ADDR(pos, val)			(((val) & 0xFF) << (8 * (pos)))
+> +
+>  #define ROW_ADDR_CHIP_SEL_RB_MASK		0xF0000000
+>  #define ROW_ADDR_CHIP_SEL_RB_SHIFT		28
+>  #define ROW_ADDR_CHIP_SEL_MASK			0x0F000000
+> @@ -165,6 +184,12 @@ struct vf610_nfc {
+>  	enum vf610_nfc_variant variant;
+>  	struct clk *clk;
+>  	bool use_hw_ecc;
+> +	/*
+> +	 * Indicate that user data is accessed (full page/oob). This is
+> +	 * useful to indicate the driver whether to swap byte endianness.
+> +	 * See comments in vf610_nfc_rd_from_sram/vf610_nfc_wr_to_sram.
+> +	 */
+> +	bool data_access;
+>  	u32 ecc_mode;
+>  };
+>  
+> @@ -173,6 +198,11 @@ static inline struct vf610_nfc *mtd_to_nfc(struct mtd_info *mtd)
+>  	return container_of(mtd_to_nand(mtd), struct vf610_nfc, chip);
+>  }
+>  
+> +static inline struct vf610_nfc *chip_to_nfc(struct nand_chip *chip)
+> +{
+> +	return container_of(chip, struct vf610_nfc, chip);
+> +}
+> +
+>  static inline u32 vf610_nfc_read(struct vf610_nfc *nfc, uint reg)
+>  {
+>  	return readl(nfc->regs + reg);
+> @@ -214,6 +244,86 @@ static inline void vf610_nfc_memcpy(void *dst, const void __iomem *src,
+>  	memcpy(dst, src, n);
+>  }
+>  
+> +static inline bool vf610_nfc_kernel_is_little_endian(void)
+> +{
+> +#ifdef __LITTLE_ENDIAN
+> +	return true;
+> +#else
+> +	return false;
+> +#endif
+> +}
+> +
+> +/**
+> + * Read accessor for internal SRAM buffer
+> + * @dst: destination address in regular memory
+> + * @src: source address in SRAM buffer
+> + * @len: bytes to copy
+> + * @fix_endian: Fix endianness if required
+> + *
+> + * Use this accessor for the internal SRAM buffers. On the ARM
+> + * Freescale Vybrid SoC it's known that the driver can treat
+> + * the SRAM buffer as if it's memory. Other platform might need
+> + * to treat the buffers differently.
+> + *
+> + * The controller stores bytes from the NAND chip internally in big
+> + * endianness. On little endian platforms such as Vybrid this leads
+> + * to reversed byte order.
+> + * For performance reason (and earlier probably due to unawareness)
+> + * the driver avoids correcting endianness where it has control over
+> + * write and read side (e.g. page wise data access).
+> + */
+> +static inline void vf610_nfc_rd_from_sram(void *dst, const void __iomem *src,
+> +					  size_t len, bool fix_endian)
+> +{
+> +	if (vf610_nfc_kernel_is_little_endian() && fix_endian) {
+> +		unsigned int i;
+> +
+> +		for (i = 0; i < len; i += 4) {
+> +			u32 val = be32_to_cpu(__raw_readl(src + i));
+> +
+> +			memcpy(dst + i, &val, min(sizeof(val), len - i));
+> +		}
+> +	} else {
+> +		memcpy_fromio(dst, src, len);
+> +	}
+> +}
+> +
+> +/**
+> + * Write accessor for internal SRAM buffer
+> + * @dst: destination address in SRAM buffer
+> + * @src: source address in regular memory
+> + * @len: bytes to copy
+> + * @fix_endian: Fix endianness if required
+> + *
+> + * Use this accessor for the internal SRAM buffers. On the ARM
+> + * Freescale Vybrid SoC it's known that the driver can treat
+> + * the SRAM buffer as if it's memory. Other platform might need
+> + * to treat the buffers differently.
+> + *
+> + * The controller stores bytes from the NAND chip internally in big
+> + * endianness. On little endian platforms such as Vybrid this leads
+> + * to reversed byte order.
+> + * For performance reason (and earlier probably due to unawareness)
+> + * the driver avoids correcting endianness where it has control over
+> + * write and read side (e.g. page wise data access).
+> + */
+> +static inline void vf610_nfc_wr_to_sram(void __iomem *dst, const void *src,
+> +					size_t len, bool fix_endian)
+> +{
+> +	if (vf610_nfc_kernel_is_little_endian() && fix_endian) {
+> +		unsigned int i;
+> +
+> +		for (i = 0; i < len; i += 4) {
+> +			u32 val;
+> +
+> +			memcpy(&val, src + i, min(sizeof(val), len - i));
+> +			__raw_writel(cpu_to_be32(val), dst + i);
+> +		}
+> +	} else {
+> +		memcpy_toio(dst, src, len);
+> +	}
+> +}
+> +
+>  /* Clear flags for upcoming command */
+>  static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
+>  {
+> @@ -489,6 +599,164 @@ static int vf610_nfc_dev_ready(struct mtd_info *mtd)
+>  	return 1;
+>  }
+>  
+> +static inline void vf610_nfc_run(struct vf610_nfc *nfc, u32 col, u32 row,
+> +				 u32 cmd1, u32 cmd2, u32 trfr_sz)
+> +{
+> +	vf610_nfc_set_field(nfc, NFC_COL_ADDR, COL_ADDR_MASK,
+> +			    COL_ADDR_SHIFT, col);
+> +
+> +	vf610_nfc_set_field(nfc, NFC_ROW_ADDR, ROW_ADDR_MASK,
+> +			    ROW_ADDR_SHIFT, row);
+> +
+> +	vf610_nfc_write(nfc, NFC_SECTOR_SIZE, trfr_sz);
+> +	vf610_nfc_write(nfc, NFC_FLASH_CMD1, cmd1);
+> +	vf610_nfc_write(nfc, NFC_FLASH_CMD2, cmd2);
+> +
+> +	dev_dbg(nfc->dev,
+> +		"col 0x%04x, row 0x%08x, cmd1 0x%08x, cmd2 0x%08x, len %d\n",
+> +		col, row, cmd1, cmd2, trfr_sz);
+> +
+> +	vf610_nfc_done(nfc);
+> +}
+> +
+> +static inline const struct nand_op_instr *
+> +vf610_get_next_instr(const struct nand_subop *subop, int *op_id)
+> +{
+> +	if (*op_id + 1 >= subop->ninstrs)
+> +		return NULL;
+> +
+> +	(*op_id)++;
+> +
+> +	return &subop->instrs[*op_id];
+> +}
+> +
+> +static int vf610_nfc_cmd(struct nand_chip *chip,
+> +			 const struct nand_subop *subop)
+> +{
+> +	const struct nand_op_instr *instr;
+> +	struct vf610_nfc *nfc = chip_to_nfc(chip);
+> +	int op_id = -1, trfr_sz = 0, offset;
+> +	u32 col = 0, row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+> +	bool force8bit = false;
+> +
+> +	/*
+> +	 * Some ops are optional, but the hardware requires the operations
+> +	 * to be in this exact order.
+> +	 * The op parser enforces the order and makes sure that there isn't
+> +	 * a read and write element in a single operation.
+> +	 */
+> +	instr = vf610_get_next_instr(subop, &op_id);
+> +	if (!instr)
+> +		return -EINVAL;
+> +
+> +	if (instr && instr->type == NAND_OP_CMD_INSTR) {
+> +		cmd2 |= instr->ctx.cmd.opcode << CMD_BYTE1_SHIFT;
+> +		code |= COMMAND_CMD_BYTE1;
+> +
+> +		instr = vf610_get_next_instr(subop, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type == NAND_OP_ADDR_INSTR) {
+> +		int naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+> +		int i = nand_subop_get_addr_start_off(subop, op_id);
+> +
+> +		for (; i < naddrs; i++) {
+> +			u8 val = instr->ctx.addr.addrs[i];
+> +
+> +			if (i < 2)
+> +				col |= COL_ADDR(i, val);
+> +			else
+> +				row |= ROW_ADDR(i - 2, val);
+> +		}
+> +		code |= COMMAND_NADDR_BYTES(naddrs);
+> +
+> +		instr = vf610_get_next_instr(subop, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type == NAND_OP_DATA_OUT_INSTR) {
+> +		trfr_sz = nand_subop_get_data_len(subop, op_id);
+> +		offset = nand_subop_get_data_start_off(subop, op_id);
+> +		force8bit = instr->ctx.data.force_8bit;
+> +
+> +		/*
+> +		 * Don't fix endianness on page access for historical reasons.
+> +		 * See comment in vf610_nfc_wr_to_sram
+> +		 */
+> +		vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0) + offset,
+> +				     instr->ctx.data.buf.out + offset,
+> +				     trfr_sz, !nfc->data_access);
+> +		code |= COMMAND_WRITE_DATA;
+> +
+> +		instr = vf610_get_next_instr(subop, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type == NAND_OP_CMD_INSTR) {
+> +		cmd1 |= instr->ctx.cmd.opcode << CMD_BYTE2_SHIFT;
+> +		code |= COMMAND_CMD_BYTE2;
+> +
+> +		instr = vf610_get_next_instr(subop, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type == NAND_OP_WAITRDY_INSTR) {
+> +		code |= COMMAND_RB_HANDSHAKE;
+> +
+> +		instr = vf610_get_next_instr(subop, &op_id);
+> +	}
+> +
+> +	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
+> +		trfr_sz = nand_subop_get_data_len(subop, op_id);
+> +		offset = nand_subop_get_data_start_off(subop, op_id);
+> +		force8bit = instr->ctx.data.force_8bit;
+> +
+> +		code |= COMMAND_READ_DATA;
+> +	}
+> +
+> +	if (force8bit && (chip->options & NAND_BUSWIDTH_16))
+> +		vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_16BIT);
+> +
+> +	cmd2 |= code << CMD_CODE_SHIFT;
+> +
+> +	vf610_nfc_run(nfc, col, row, cmd1, cmd2, trfr_sz);
+> +
+> +	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
+> +		/*
+> +		 * Don't fix endianness on page access for historical reasons.
+> +		 * See comment in vf610_nfc_rd_from_sram
+> +		 */
+> +		vf610_nfc_rd_from_sram(instr->ctx.data.buf.in + offset,
+> +				       nfc->regs + NFC_MAIN_AREA(0) + offset,
+> +				       trfr_sz, !nfc->data_access);
+> +	}
+> +
+> +	if (force8bit && (chip->options & NAND_BUSWIDTH_16))
+> +		vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_16BIT);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct nand_op_parser vf610_nfc_op_parser = NAND_OP_PARSER(
+> +	NAND_OP_PARSER_PATTERN(vf610_nfc_cmd,
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
+> +		NAND_OP_PARSER_PAT_DATA_OUT_ELEM(true, PAGE_2K + OOB_MAX),
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true)),
+> +	NAND_OP_PARSER_PATTERN(vf610_nfc_cmd,
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_ADDR_ELEM(true, 5),
+> +		NAND_OP_PARSER_PAT_CMD_ELEM(true),
+> +		NAND_OP_PARSER_PAT_WAITRDY_ELEM(true),
+> +		NAND_OP_PARSER_PAT_DATA_IN_ELEM(true, PAGE_2K + OOB_MAX)),
+> +	);
+> +
+> +static int vf610_nfc_exec_op(struct nand_chip *chip,
+> +			     const struct nand_operation *op,
+> +			     bool check_only)
+> +{
+> +	return nand_op_parser_exec_op(chip, &vf610_nfc_op_parser, op,
+> +				      check_only);
+> +}
+> +
+>  /*
+>   * This function supports Vybrid only (MPC5125 would have full RB and four CS)
+>   */
+> @@ -526,9 +794,9 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+>  	if (!(ecc_status & ECC_STATUS_MASK))
+>  		return ecc_count;
+>  
+> -	/* Read OOB without ECC unit enabled */
+> -	vf610_nfc_command(mtd, NAND_CMD_READOOB, 0, page);
+> -	vf610_nfc_read_buf(mtd, oob, mtd->oobsize);
+> +	nfc->data_access = true;
+> +	nand_read_oob_op(&nfc->chip, page, 0, oob, mtd->oobsize);
+> +	nfc->data_access = false;
+>  
+>  	/*
+>  	 * On an erased page, bit count (including OOB) should be zero or
+> @@ -539,15 +807,51 @@ static inline int vf610_nfc_correct_data(struct mtd_info *mtd, uint8_t *dat,
+>  					   flips_threshold);
+>  }
+>  
+> +static void vf610_nfc_fill_row(struct nand_chip *chip, int page, u32 *code,
+> +			       u32 *row)
+> +{
+> +	*row = ROW_ADDR(0, page & 0xff) | ROW_ADDR(1, page >> 8);
+> +	*code |= COMMAND_RAR_BYTE1 | COMMAND_RAR_BYTE2;
+> +
+> +	if (chip->options & NAND_ROW_ADDR_3) {
+> +		*row |= ROW_ADDR(2, page >> 16);
+> +		*code |= COMMAND_RAR_BYTE3;
+> +	}
+> +}
+> +
+>  static int vf610_nfc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				uint8_t *buf, int oob_required, int page)
+>  {
+> -	int eccsize = chip->ecc.size;
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int trfr_sz = mtd->writesize + mtd->oobsize;
+> +	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+>  	int stat;
+>  
+> -	nand_read_page_op(chip, page, 0, buf, eccsize);
+> +	cmd2 |= NAND_CMD_READ0 << CMD_BYTE1_SHIFT;
+> +	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
+> +
+> +	vf610_nfc_fill_row(chip, page, &code, &row);
+> +
+> +	cmd1 |= NAND_CMD_READSTART << CMD_BYTE2_SHIFT;
+> +	code |= COMMAND_CMD_BYTE2 | COMMAND_RB_HANDSHAKE | COMMAND_READ_DATA;
+> +
+> +	cmd2 |= code << CMD_CODE_SHIFT;
+> +
+> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> +	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
+> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> +
+> +	/*
+> +	 * Don't fix endianness on page access for historical reasons.
+> +	 * See comment in vf610_nfc_rd_from_sram
+> +	 */
+> +	vf610_nfc_rd_from_sram(buf, nfc->regs + NFC_MAIN_AREA(0),
+> +			       mtd->writesize, false);
+>  	if (oob_required)
+> -		vf610_nfc_read_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +		vf610_nfc_rd_from_sram(chip->oob_poi,
+> +				       nfc->regs + NFC_MAIN_AREA(0) +
+> +						   mtd->writesize,
+> +				       mtd->oobsize, false);
+>  
+>  	stat = vf610_nfc_correct_data(mtd, buf, chip->oob_poi, page);
+>  
+> @@ -564,14 +868,103 @@ static int vf610_nfc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				const uint8_t *buf, int oob_required, int page)
+>  {
+>  	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int trfr_sz = mtd->writesize + mtd->oobsize;
+> +	u32 row = 0, cmd1 = 0, cmd2 = 0, code = 0;
+> +	u8 status;
+> +	int ret;
+>  
+> -	nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+> -	if (oob_required)
+> -		vf610_nfc_write_buf(mtd, chip->oob_poi, mtd->oobsize);
+> +	cmd2 |= NAND_CMD_SEQIN << CMD_BYTE1_SHIFT;
+> +	code |= COMMAND_CMD_BYTE1 | COMMAND_CAR_BYTE1 | COMMAND_CAR_BYTE2;
+> +
+> +	vf610_nfc_fill_row(chip, page, &code, &row);
+> +
+> +	cmd1 |= NAND_CMD_PAGEPROG << CMD_BYTE2_SHIFT;
+> +	code |= COMMAND_CMD_BYTE2 | COMMAND_WRITE_DATA;
+> +
+> +	/*
+> +	 * Don't fix endianness on page access for historical reasons.
+> +	 * See comment in vf610_nfc_wr_to_sram
+> +	 */
+> +	vf610_nfc_wr_to_sram(nfc->regs + NFC_MAIN_AREA(0), buf,
+> +			     mtd->writesize, false);
+> +
+> +	code |= COMMAND_RB_HANDSHAKE;
+> +	cmd2 |= code << CMD_CODE_SHIFT;
+> +
+> +	vf610_nfc_ecc_mode(nfc, nfc->ecc_mode);
+> +	vf610_nfc_run(nfc, 0, row, cmd1, cmd2, trfr_sz);
+> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+> +
+> +	ret = nand_status_op(chip, &status);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (status & NAND_STATUS_FAIL)
+> +		return -EIO;
+> +
+> +	return 0;
+> +}
+> +
+> +static int vf610_nfc_read_page_raw(struct mtd_info *mtd,
+> +				   struct nand_chip *chip, u8 *buf,
+> +				   int oob_required, int page)
+> +{
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int ret;
+> +
+> +	nfc->data_access = true;
+> +	ret = nand_read_page_raw(mtd, chip, buf, oob_required, page);
+> +	nfc->data_access = false;
+> +
+> +	return ret;
+> +}
+> +
+> +static int vf610_nfc_write_page_raw(struct mtd_info *mtd,
+> +				    struct nand_chip *chip, const u8 *buf,
+> +				    int oob_required, int page)
+> +{
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int ret;
+> +
+> +	nfc->data_access = true;
+> +	ret = nand_prog_page_begin_op(chip, page, 0, buf, mtd->writesize);
+> +	if (!ret && oob_required)
+> +		ret = nand_write_data_op(chip, chip->oob_poi, mtd->oobsize,
+> +					 false);
+> +	nfc->data_access = false;
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	return nand_prog_page_end_op(chip);
+> +}
+> +
+> +static int vf610_nfc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+> +			      int page)
+> +{
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int ret;
+> +
+> +	nfc->data_access = true;
+> +	ret = nand_read_oob_std(mtd, chip, page);
+> +	nfc->data_access = false;
+> +
+> +	return ret;
+> +}
+> +
+> +static int vf610_nfc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+> +			       int page)
+> +{
+> +	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
+> +	int ret;
+> +
+> +	nfc->data_access = true;
+> +	ret = nand_prog_page_begin_op(chip, page, mtd->writesize,
+> +				      chip->oob_poi, mtd->oobsize);
+> +	nfc->data_access = false;
+>  
+> -	/* Always write whole page including OOB due to HW ECC */
+> -	nfc->use_hw_ecc = true;
+> -	nfc->write_sz = mtd->writesize + mtd->oobsize;
+> +	if (ret)
+> +		return ret;
+>  
+>  	return nand_prog_page_end_op(chip);
+>  }
+> @@ -590,6 +983,7 @@ static void vf610_nfc_preinit_controller(struct vf610_nfc *nfc)
+>  	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_BOOT_MODE_BIT);
+>  	vf610_nfc_clear(nfc, NFC_FLASH_CONFIG, CONFIG_DMA_REQ_BIT);
+>  	vf610_nfc_set(nfc, NFC_FLASH_CONFIG, CONFIG_FAST_FLASH_BIT);
+> +	vf610_nfc_ecc_mode(nfc, ECC_BYPASS);
+>  
+>  	/* Disable virtual pages, only one elementary transfer unit */
+>  	vf610_nfc_set_field(nfc, NFC_FLASH_CONFIG, CONFIG_PAGE_CNT_MASK,
+> @@ -686,6 +1080,7 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  	chip->read_word = vf610_nfc_read_word;
+>  	chip->read_buf = vf610_nfc_read_buf;
+>  	chip->write_buf = vf610_nfc_write_buf;
+> +	chip->exec_op = vf610_nfc_exec_op;
+>  	chip->select_chip = vf610_nfc_select_chip;
+>  	chip->onfi_set_features = nand_onfi_get_set_features_notsupp;
+>  	chip->onfi_get_features = nand_onfi_get_set_features_notsupp;
+> @@ -755,6 +1150,10 @@ static int vf610_nfc_probe(struct platform_device *pdev)
+>  
+>  		chip->ecc.read_page = vf610_nfc_read_page;
+>  		chip->ecc.write_page = vf610_nfc_write_page;
+> +		chip->ecc.read_page_raw = vf610_nfc_read_page_raw;
+> +		chip->ecc.write_page_raw = vf610_nfc_write_page_raw;
+> +		chip->ecc.read_oob = vf610_nfc_read_oob;
+> +		chip->ecc.write_oob = vf610_nfc_write_oob;
+>  
+>  		chip->ecc.size = PAGE_2K;
+>  	}
