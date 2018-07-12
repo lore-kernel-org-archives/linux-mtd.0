@@ -1,33 +1,43 @@
-Received: from aserp2120.oracle.com ([141.146.126.78])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdbuh-00073K-CR
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 13:45:45 +0000
-Date: Thu, 12 Jul 2018 16:44:21 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Cc: "stefan@agner.ch" <stefan@agner.ch>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "krzk@kernel.org" <krzk@kernel.org>, "dev@lynxeye.de" <dev@lynxeye.de>,
- "benjamin.lindqvist@endian.se" <benjamin.lindqvist@endian.se>,
- "digetx@gmail.com" <digetx@gmail.com>,
- "mirza.krak@gmail.com" <mirza.krak@gmail.com>,
- "gaireg@gaireg.de" <gaireg@gaireg.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH] mtd: rawnand: tegra: check bounds of die_nr properly
-Message-ID: <20180712134421.unczwgmvfdhezq3v@mwanda>
-References: <20180704091310.22003-1-stefan@agner.ch>
- <1531402315.1390.6.camel@toradex.com>
+ id 1fddP2-0005cQ-VP
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 15:21:10 +0000
+Received: from mail-io0-f169.google.com (mail-io0-f169.google.com
+ [209.85.223.169])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 3647121480
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2018 15:20:58 +0000 (UTC)
+Received: by mail-io0-f169.google.com with SMTP id q19-v6so28558400ioh.11
+ for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2018 08:20:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1531402315.1390.6.camel@toradex.com>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ <1530789310-16254-6-git-send-email-frieder.schrempf@exceet.de>
+ <20180711160521.GA16884@rob-hp-laptop>
+ <9fd871dd-3d10-044c-db80-d65df161a7d9@exceet.de>
+In-Reply-To: <9fd871dd-3d10-044c-db80-d65df161a7d9@exceet.de>
+From: Rob Herring <robh@kernel.org>
+Date: Thu, 12 Jul 2018 09:20:45 -0600
+Message-ID: <CAL_JsqLYiiLNabGWnriL7UoUpVmYfAii+3y-o8od6wU7=xpz1A@mail.gmail.com>
+Subject: Re: [PATCH v2 05/12] dt-bindings: spi: Adjust the bindings for the
+ FSL QSPI driver
+To: Schrempf Frieder <frieder.schrempf@exceet.de>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?B?TWFyZWsgVmHFoXV0?= <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, david.wolfe@nxp.com,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Han Xu <han.xu@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,61 +47,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 12, 2018 at 01:31:57PM +0000, Marcel Ziswiler wrote:
-> On Wed, 2018-07-04 at 11:13 +0200, Stefan Agner wrote:
-> > The Tegra driver currently only support a single chip select, hence
-> > check boundaries accordingly. This fixes a off by one issue catched
-> > with Smatch:
-> >     drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
-> >     warn: array off by one? 'nand->cs[die_nr]'
-> > 
-> > Also warn in case the stack asks for a chip select we currently do
-> > not support.
-> > 
-> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: Stefan Agner <stefan@agner.ch>
-> > ---
-> >  drivers/mtd/nand/raw/tegra_nand.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/tegra_nand.c
-> > b/drivers/mtd/nand/raw/tegra_nand.c
-> > index 4daa88d814134..e65ef584df0b9 100644
-> > --- a/drivers/mtd/nand/raw/tegra_nand.c
-> > +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> > @@ -468,7 +468,9 @@ static void tegra_nand_select_chip(struct
-> > mtd_info *mtd, int die_nr)
-> >  	struct tegra_nand_chip *nand = to_tegra_chip(chip);
-> >  	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip-
-> > >controller);
-> >  
-> > -	if (die_nr < 0 || die_nr > 1) {
-> > +	WARN_ON(die_nr >= ARRAY_SIZE(nand->cs));
-> 
-> Unfortunately, that has a tiny little issue as die_nr is a signed
-> integer and ARRAY_SIZE of course is unsigned. While I could have sworn
-> my shirt off that the compiler would have to promote this to signed
-> this is not quite what happens and upon deselecting with -1 this
-> warning gets triggered!
+On Thu, Jul 12, 2018 at 2:14 AM Frieder Schrempf
+<frieder.schrempf@exceet.de> wrote:
+>
+> Hi Rob,
+>
+> On 11.07.2018 18:05, Rob Herring wrote:
+> > On Thu, Jul 05, 2018 at 01:15:01PM +0200, Frieder Schrempf wrote:
+> >> Adjust the documentation of the new SPI memory interface based
+> >> driver to reflect the new drivers settings.
+> >
+> > Bindings shouldn't change (other than new properties) due to driver
+> > changes.
+>
+> Right, I added an explanation below, why I think the changes are necessary.
+>
+> >
+> >>
+> >> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> >> ---
+> >> Changes in v2:
+> >> ==============
+> >> * Split the moving and editing of the dt-bindings in two patches
+> >>
+> >>   .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 22 ++++++++++----------
+> >>   1 file changed, 11 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> >> index 483e9cf..8b4eed7 100644
+> >> --- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> >> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+> >> @@ -3,9 +3,8 @@
+> >>   Required properties:
+> >>     - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+> >>               "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+> >> -             "fsl,ls1021a-qspi"
+> >> +             "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
+> >>               or
+> >> -             "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+> >>               "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+> >
+> > So the 2080a h/w was compatible with the 1021a h/w, but now it is not?
+> > How did the h/w change?
+>
+> I guess this should be posted as a separate fix. Formerly there was only
+> "fsl,ls1021a-qspi" handled in the driver and the bindings here claimed
+> that "fsl,ls2080a-qspi" is compatible.
+>
+> Some time ago a separate entry for "fsl,ls2080a-qspi" was added to the
+> driver [1] and it adds a quirk, that is not set for "fsl,ls1021a-qspi".
+> That's why I concluded, that these two are actually not compatible.
 
-Sorry, I didn't realize we were passing -1 as die_nr.  I should have
-reviewed the code more carefully.
+So before the driver change, the driver didn't work at all on the
+ls2080a? If so, then removing is appropriate. If not, then removing
+breaks all kernel versions before the change if you use a newer DT.
 
-The type is promoted to the which ever side has more positive bits or
-a minimum of int.  So if you compare an int to a long long it gets
-promoted to long long.  If you compare an int to unsigned int, it is
-promoted to unsigned int.  If both sides are smaller than int then it
-is type promoted to int.
 
-For compares, I can't think how type promoting to int can be a problem
-but where it might matter is that that people sometimes want 0xfe and
-they do "~(char)0x1" but it becomes 0xfffffffe.
+> >>     - reg : the first contains the register location and length,
+> >>             the second contains the memory mapping address and length
+> >> @@ -15,14 +14,15 @@ Required properties:
+> >>     - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+> >>
+> >>   Optional properties:
+> >> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
+> >> -                              Each bus can be connected with two NOR flashes.
+> >> -                          Most of the time, each bus only has one NOR flash
+> >> -                          connected, this is the default case.
+> >> -                          But if there are two NOR flashes connected to the
+> >> -                          bus, you should enable this property.
+> >> -                          (Please check the board's schematic.)
+> >
+> > You can't just remove properties without explanation. Why is this no
+> > longer needed? What about backwards compatibility with existing dtbs?
+>
+> You're right, the explanation is missing here.
+>
+> The "old" driver was using this property to select one of two dual chip
+> setups (two chips on one bus or two chips on separate buses). And it
+> used the order in which the subnodes are defined in the dt to select the
+> CS, the chip is connected to.
+>
+> Both methods are wrong and in fact the "reg" property should be used to
+> determine which bus and CS a chip is connected to. This also enables us
+> to use different setups than just single chip, or symmetric dual chip.
+>
+> So the porting of the driver from the MTD to the SPI framework actually
+> enforces the use of the "reg" properties and makes
+> "fsl,qspi-has-second-chip" superfluous.
+>
+> As all boards that have "fsl,qspi-has-second-chip" set, also have
+> correct "reg" properties, the removal of this property shouldn't lead to
+> any incompatibilities.
+>
+> The only compatibility issues I can see are with imx6sx-sdb.dts and
+> imx6sx-sdb-reva.dts, which have their reg properties set incorrectly
+> (see explanation here: [2]), all other boards should stay compatible.
 
-The other trickiness is that x << shift is type x.  Sometime people
-think if they make shift a u64 and x an int, the result will be u64 but
-it's still int.
+Add this to the commit msg.
 
-I think that's basically everything with type promotion.
+> >> -  - big-endian : That means the IP register is big endian
+> >> +  - big-endian : That means the IP registers format is big endian
+> >
+> > This is a standard property so it doesn't really need to be redefined
+> > here, but just reference the definition.
+>
+> So I will change that to:
+>
+>         big-endian : See common-properties.txt for a definition
 
-regards,
-dan carpenter
+You can drop "for a definition"
+
+Rob
