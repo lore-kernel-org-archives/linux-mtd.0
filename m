@@ -1,34 +1,33 @@
-Received: from mail-he1eur04on0703.outbound.protection.outlook.com
- ([2a01:111:f400:fe0d::703]
- helo=EUR04-HE1-obe.outbound.protection.outlook.com)
+Received: from aserp2120.oracle.com ([141.146.126.78])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdbhj-0000IE-BE
- for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 13:32:21 +0000
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-To: "stefan@agner.ch" <stefan@agner.ch>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ id 1fdbuh-00073K-CR
+ for linux-mtd@lists.infradead.org; Thu, 12 Jul 2018 13:45:45 +0000
+Date: Thu, 12 Jul 2018 16:44:21 +0300
+From: Dan Carpenter <dan.carpenter@oracle.com>
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: "stefan@agner.ch" <stefan@agner.ch>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "dan.carpenter@oracle.com" <dan.carpenter@oracle.com>, "krzk@kernel.org"
- <krzk@kernel.org>, "dev@lynxeye.de" <dev@lynxeye.de>,
+ "krzk@kernel.org" <krzk@kernel.org>, "dev@lynxeye.de" <dev@lynxeye.de>,
  "benjamin.lindqvist@endian.se" <benjamin.lindqvist@endian.se>,
- "digetx@gmail.com" <digetx@gmail.com>, "mirza.krak@gmail.com"
- <mirza.krak@gmail.com>, "gaireg@gaireg.de" <gaireg@gaireg.de>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-tegra@vger.kernel.org"
- <linux-tegra@vger.kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>
+ "digetx@gmail.com" <digetx@gmail.com>,
+ "mirza.krak@gmail.com" <mirza.krak@gmail.com>,
+ "gaireg@gaireg.de" <gaireg@gaireg.de>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>
 Subject: Re: [PATCH] mtd: rawnand: tegra: check bounds of die_nr properly
-Date: Thu, 12 Jul 2018 13:31:57 +0000
-Message-ID: <1531402315.1390.6.camel@toradex.com>
+Message-ID: <20180712134421.unczwgmvfdhezq3v@mwanda>
 References: <20180704091310.22003-1-stefan@agner.ch>
-In-Reply-To: <20180704091310.22003-1-stefan@agner.ch>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9B4C462F86C8A84DB5B35B481971228B@eurprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <1531402315.1390.6.camel@toradex.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1531402315.1390.6.camel@toradex.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,33 +37,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCAyMDE4LTA3LTA0IGF0IDExOjEzICswMjAwLCBTdGVmYW4gQWduZXIgd3JvdGU6DQo+
-IFRoZSBUZWdyYSBkcml2ZXIgY3VycmVudGx5IG9ubHkgc3VwcG9ydCBhIHNpbmdsZSBjaGlwIHNl
-bGVjdCwgaGVuY2UNCj4gY2hlY2sgYm91bmRhcmllcyBhY2NvcmRpbmdseS4gVGhpcyBmaXhlcyBh
-IG9mZiBieSBvbmUgaXNzdWUgY2F0Y2hlZA0KPiB3aXRoIFNtYXRjaDoNCj4gICAgIGRyaXZlcnMv
-bXRkL25hbmQvcmF3L3RlZ3JhX25hbmQuYzo0NzYgdGVncmFfbmFuZF9zZWxlY3RfY2hpcCgpDQo+
-ICAgICB3YXJuOiBhcnJheSBvZmYgYnkgb25lPyAnbmFuZC0+Y3NbZGllX25yXScNCj4gDQo+IEFs
-c28gd2FybiBpbiBjYXNlIHRoZSBzdGFjayBhc2tzIGZvciBhIGNoaXAgc2VsZWN0IHdlIGN1cnJl
-bnRseSBkbw0KPiBub3Qgc3VwcG9ydC4NCj4gDQo+IFJlcG9ydGVkLWJ5OiBEYW4gQ2FycGVudGVy
-IDxkYW4uY2FycGVudGVyQG9yYWNsZS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFN0ZWZhbiBBZ25l
-ciA8c3RlZmFuQGFnbmVyLmNoPg0KPiAtLS0NCj4gIGRyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3Jh
-X25hbmQuYyB8IDQgKysrLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMSBk
-ZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3Jh
-X25hbmQuYw0KPiBiL2RyaXZlcnMvbXRkL25hbmQvcmF3L3RlZ3JhX25hbmQuYw0KPiBpbmRleCA0
-ZGFhODhkODE0MTM0Li5lNjVlZjU4NGRmMGI5IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL210ZC9u
-YW5kL3Jhdy90ZWdyYV9uYW5kLmMNCj4gKysrIGIvZHJpdmVycy9tdGQvbmFuZC9yYXcvdGVncmFf
-bmFuZC5jDQo+IEBAIC00NjgsNyArNDY4LDkgQEAgc3RhdGljIHZvaWQgdGVncmFfbmFuZF9zZWxl
-Y3RfY2hpcChzdHJ1Y3QNCj4gbXRkX2luZm8gKm10ZCwgaW50IGRpZV9ucikNCj4gIAlzdHJ1Y3Qg
-dGVncmFfbmFuZF9jaGlwICpuYW5kID0gdG9fdGVncmFfY2hpcChjaGlwKTsNCj4gIAlzdHJ1Y3Qg
-dGVncmFfbmFuZF9jb250cm9sbGVyICpjdHJsID0gdG9fdGVncmFfY3RybChjaGlwLQ0KPiA+Y29u
-dHJvbGxlcik7DQo+ICANCj4gLQlpZiAoZGllX25yIDwgMCB8fCBkaWVfbnIgPiAxKSB7DQo+ICsJ
-V0FSTl9PTihkaWVfbnIgPj0gQVJSQVlfU0laRShuYW5kLT5jcykpOw0KDQpVbmZvcnR1bmF0ZWx5
-LCB0aGF0IGhhcyBhIHRpbnkgbGl0dGxlIGlzc3VlIGFzIGRpZV9uciBpcyBhIHNpZ25lZA0KaW50
-ZWdlciBhbmQgQVJSQVlfU0laRSBvZiBjb3Vyc2UgaXMgdW5zaWduZWQuIFdoaWxlIEkgY291bGQg
-aGF2ZSBzd29ybg0KbXkgc2hpcnQgb2ZmIHRoYXQgdGhlIGNvbXBpbGVyIHdvdWxkIGhhdmUgdG8g
-cHJvbW90ZSB0aGlzIHRvIHNpZ25lZA0KdGhpcyBpcyBub3QgcXVpdGUgd2hhdCBoYXBwZW5zIGFu
-ZCB1cG9uIGRlc2VsZWN0aW5nIHdpdGggLTEgdGhpcw0Kd2FybmluZyBnZXRzIHRyaWdnZXJlZCEN
-Cg0KSSB3aWxsIHNlbmQgYW4gdXBkYXRlZCBwYXRjaCBleHBsaWNpdGx5IGNhc3RpbmcgdGhlIEFS
-UkFZX1NJWkUgc2lkZSB0bw0KaW50IGFzIHdlbGwgc2hvcnRseS4NCg0KPiArDQo+ICsJaWYgKGRp
-ZV9uciA8IDAgfHwgZGllX25yID4gMCkgew0KPiAgCQljdHJsLT5jdXJfY3MgPSAtMTsNCj4gIAkJ
-cmV0dXJuOw0KPiAgCX0=
+On Thu, Jul 12, 2018 at 01:31:57PM +0000, Marcel Ziswiler wrote:
+> On Wed, 2018-07-04 at 11:13 +0200, Stefan Agner wrote:
+> > The Tegra driver currently only support a single chip select, hence
+> > check boundaries accordingly. This fixes a off by one issue catched
+> > with Smatch:
+> >     drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
+> >     warn: array off by one? 'nand->cs[die_nr]'
+> > 
+> > Also warn in case the stack asks for a chip select we currently do
+> > not support.
+> > 
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > Signed-off-by: Stefan Agner <stefan@agner.ch>
+> > ---
+> >  drivers/mtd/nand/raw/tegra_nand.c | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/tegra_nand.c
+> > b/drivers/mtd/nand/raw/tegra_nand.c
+> > index 4daa88d814134..e65ef584df0b9 100644
+> > --- a/drivers/mtd/nand/raw/tegra_nand.c
+> > +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> > @@ -468,7 +468,9 @@ static void tegra_nand_select_chip(struct
+> > mtd_info *mtd, int die_nr)
+> >  	struct tegra_nand_chip *nand = to_tegra_chip(chip);
+> >  	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip-
+> > >controller);
+> >  
+> > -	if (die_nr < 0 || die_nr > 1) {
+> > +	WARN_ON(die_nr >= ARRAY_SIZE(nand->cs));
+> 
+> Unfortunately, that has a tiny little issue as die_nr is a signed
+> integer and ARRAY_SIZE of course is unsigned. While I could have sworn
+> my shirt off that the compiler would have to promote this to signed
+> this is not quite what happens and upon deselecting with -1 this
+> warning gets triggered!
+
+Sorry, I didn't realize we were passing -1 as die_nr.  I should have
+reviewed the code more carefully.
+
+The type is promoted to the which ever side has more positive bits or
+a minimum of int.  So if you compare an int to a long long it gets
+promoted to long long.  If you compare an int to unsigned int, it is
+promoted to unsigned int.  If both sides are smaller than int then it
+is type promoted to int.
+
+For compares, I can't think how type promoting to int can be a problem
+but where it might matter is that that people sometimes want 0xfe and
+they do "~(char)0x1" but it becomes 0xfffffffe.
+
+The other trickiness is that x << shift is type x.  Sometime people
+think if they make shift a u64 and x an int, the result will be u64 but
+it's still int.
+
+I think that's basically everything with type promotion.
+
+regards,
+dan carpenter
