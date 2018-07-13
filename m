@@ -1,24 +1,21 @@
-Received: from mail-lf0-x242.google.com ([2a00:1450:4010:c07::242])
+Received: from mail-lj1-x232.google.com ([2a00:1450:4864:20::232])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdtFZ-0002TO-MU
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 08:16:27 +0000
-Received: by mail-lf0-x242.google.com with SMTP id y200-v6so26479400lfd.7
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 01:16:14 -0700 (PDT)
+ id 1fduNH-0007Qa-6B
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 09:28:28 +0000
+Received: by mail-lj1-x232.google.com with SMTP id q5-v6so24052941ljh.12
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 02:28:16 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@free-electrons.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>,
- Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>,
- Cyril Bur <cyrilbur@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linuxppc-dev@lists.ozlabs.org,
- Timothy Pearson <tpearson@raptorengineering.com>,
+Cc: Kyungmin Park <kyungmin.park@samsung.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH] mtd: powernv_flash: set of_node in mtd's dev
-Date: Fri, 13 Jul 2018 10:15:59 +0200
-Message-Id: <20180713081559.4373-1-zajec5@gmail.com>
+Subject: [PATCH 0/4] mtd: use mtd_device_register() where applicable
+Date: Fri, 13 Jul 2018 11:27:30 +0200
+Message-Id: <20180713092734.16408-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -33,26 +30,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-This enables some features implemented in mtd subsystem like reading
-label and partitioning info from DT.
+This is a tiny cleanup making code use mtd_device_register() helper
+macro.
 
-Reported-by: Timothy Pearson <tpearson@raptorengineering.com>
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
- drivers/mtd/devices/powernv_flash.c | 1 +
- 1 file changed, 1 insertion(+)
+It makes checking which drivers (may) specify custom list of parsers
+just a bit easier.
 
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-index c1312b141ae0..33593122e49b 100644
---- a/drivers/mtd/devices/powernv_flash.c
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -223,6 +223,7 @@ static int powernv_flash_set_driver_info(struct device *dev,
- 	mtd->_read = powernv_flash_read;
- 	mtd->_write = powernv_flash_write;
- 	mtd->dev.parent = dev;
-+	mtd_set_of_node(mtd, dev->of_node);
- 	return 0;
- }
- 
+Rafał Miłecki (4):
+  mtd: rawnand: use mtd_device_register() where applicable
+  mtd: onenand: use mtd_device_register() where applicable
+  mtd: maps: use mtd_device_register() where applicable
+  mtd: sst25l: use mtd_device_register()
+
+ drivers/mtd/devices/sst25l.c        | 5 ++---
+ drivers/mtd/maps/impa7.c            | 5 ++---
+ drivers/mtd/maps/intel_vr_nor.c     | 2 +-
+ drivers/mtd/maps/latch-addr-flash.c | 5 ++---
+ drivers/mtd/maps/rbtx4939-flash.c   | 3 +--
+ drivers/mtd/nand/onenand/generic.c  | 5 ++---
+ drivers/mtd/nand/onenand/samsung.c  | 5 ++---
+ drivers/mtd/nand/raw/cmx270_nand.c  | 4 ++--
+ drivers/mtd/nand/raw/cs553x_nand.c  | 3 +--
+ drivers/mtd/nand/raw/davinci_nand.c | 3 +--
+ drivers/mtd/nand/raw/jz4740_nand.c  | 5 ++---
+ drivers/mtd/nand/raw/mtk_nand.c     | 2 +-
+ drivers/mtd/nand/raw/s3c2410.c      | 4 ++--
+ drivers/mtd/nand/raw/txx9ndfmc.c    | 2 +-
+ 14 files changed, 22 insertions(+), 31 deletions(-)
+
 -- 
 2.13.7
