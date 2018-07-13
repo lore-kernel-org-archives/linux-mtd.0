@@ -1,27 +1,25 @@
-Received: from mail-wm0-x230.google.com ([2a00:1450:400c:c09::230])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdumc-000168-2L
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 09:54:39 +0000
-Received: by mail-wm0-x230.google.com with SMTP id s13-v6so4099205wmc.1
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 02:54:27 -0700 (PDT)
+Subject: Re: [PATCH 2/3] mtd: atmel nand: fix build warning on 64-bit
+To: Arnd Bergmann <arnd@arndb.de>, Boris Brezillon
+ <boris.brezillon@bootlin.com>
+CC: Alexandre Belloni <alexandre.belloni@bootlin.com>, Wenyou Yang
+ <wenyou.yang@microchip.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Richard Weinberger <richard@nod.at>, Gregory CLEMENT
+ <gregory.clement@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ <linux-mtd@lists.infradead.org>, Josh Wu <rainyfeeling@outlook.com>, Romain
+ Izard <romain.izard.pro@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Peter
+ Rosin <peda@axentia.se>, <linux-arm-kernel@lists.infradead.org>
+References: <20180709155730.2422841-1-arnd@arndb.de>
+ <20180709155730.2422841-2-arnd@arndb.de>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <0b4ee469-8c37-9002-9067-f37f8dde869e@microchip.com>
+Date: Fri, 13 Jul 2018 12:56:01 +0300
 MIME-Version: 1.0
-References: <CACwWb3DnyxqTrQF-5UpuU+rUDRGrS2XM8+yQEf45miCbJ5nrpw@mail.gmail.com>
- <967434303.163429.1526634595483.JavaMail.zimbra@sigma-star.at>
- <CACwWb3AVnJOjNW2DE6jn8CR3SRFECP=2mgr-n_rQ-4fNAOd11A@mail.gmail.com>
- <1397936863.163523.1526636992502.JavaMail.zimbra@sigma-star.at>
- <73497de5-6ea1-2662-2cc1-c5047e29d865@mein.io>
- <351822581.163754.1526642132964.JavaMail.zimbra@sigma-star.at>
-In-Reply-To: <351822581.163754.1526642132964.JavaMail.zimbra@sigma-star.at>
-From: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Date: Fri, 13 Jul 2018 11:54:14 +0200
-Message-ID: <CACna6ryBnAxUUVKkCbkbDgCOxPzvE0=AB+w14aPrAyF=jojn4w@mail.gmail.com>
-Subject: Re: [OpenWrt-Devel] OpenWRT mtd tooling vs mtd-utils
-To: goliath@sigma-star.at
-Cc: Jo-Philipp Wich <jo@mein.io>,
- OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
- linux-mtd@lists.infradead.org, richard@sigma-star.at,
- Lev <leventelist@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20180709155730.2422841-2-arnd@arndb.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,15 +29,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 May 2018 at 13:16, David Oberhollenzer <goliath@sigma-star.at> wrote:
-> Thanks for the clarification!
->
-> Just out of curiosity, is there a specific reason why OpenWRT uses its
-> own formatting utility here instead of using the tools from mtd-utils?
+Hi, Arnd,
 
-It's probably because it includes some features that upstream
-developers/maintaners would probably find too hacky.
+On 07/09/2018 06:57 PM, Arnd Bergmann wrote:
+> +	nc->ebi_csa_offs = (uintptr_t)match->data;
 
-In OpenWrt's mtd there is support for some magic deadc0de marker,
-appending JFFS2 data, handling vendor specific formats like TRX and
-Seama.
+I guess we should declare ebi_csa_offs as size_t, right?
+
+Best,
+ta
