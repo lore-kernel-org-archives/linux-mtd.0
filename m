@@ -1,19 +1,18 @@
-Received: from mout.kundenserver.de ([212.227.126.135])
+Received: from mout.kundenserver.de ([217.72.192.73])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdzLl-00081Z-Qu
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:47:15 +0000
+ id 1fdzMZ-0008Ji-LZ
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:48:05 +0000
 From: Arnd Bergmann <arnd@arndb.de>
 To: Andrew Morton <akpm@linux-foundation.org>,
  Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: y2038@lists.linaro.org, linux-fsdevel@vger.kernel.org,
  Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Andreas Dilger <adilger@dilger.ca>,
  Deepa Dinamani <deepa.kernel@gmail.com>, Jan Kara <jack@suse.cz>,
  Richard Weinberger <richard@nod.at>, David Howells <dhowells@redhat.com>,
  linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] [PATCHES] jffs2: use 64-bit intermediate timestamps
-Date: Fri, 13 Jul 2018 16:46:20 +0200
-Message-Id: <20180713144649.3149573-1-arnd@arndb.de>
+Subject: [PATCH 1/2] [RESEND] jffs2: use 64-bit intermediate timestamps
+Date: Fri, 13 Jul 2018 16:47:16 +0200
+Message-Id: <20180713144739.3150217-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
