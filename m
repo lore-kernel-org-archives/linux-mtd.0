@@ -1,27 +1,19 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mout.kundenserver.de ([212.227.17.10])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdz7s-0000F0-QV
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:32:54 +0000
-Received: by mail-lj1-x244.google.com with SMTP id 1-v6so24636477ljv.9
- for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 07:32:42 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH V2 2/2] mtd: partitions: use DT info for parsing partitions
- with "compatible" prop
-Date: Fri, 13 Jul 2018 16:32:21 +0200
-Message-Id: <20180713143221.8474-2-zajec5@gmail.com>
-In-Reply-To: <20180713143221.8474-1-zajec5@gmail.com>
-References: <20180713143221.8474-1-zajec5@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+ id 1fdz83-0000Fd-BH
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:33:08 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: y2038@lists.linaro.org, Arnd Bergmann <arnd@arndb.de>,
+ Deepa Dinamani <deepa.kernel@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] [RESEND] ubifs: tnc: use monotonic znode timestamp
+Date: Fri, 13 Jul 2018 16:31:56 +0200
+Message-Id: <20180713143212.3142541-2-arnd@arndb.de>
+In-Reply-To: <20180713143212.3142541-1-arnd@arndb.de>
+References: <20180713143212.3142541-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,103 +23,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+The tnc uses get_seconds() based timestamps to check the age of a znode,
+which has two problems: on 32-bit architectures this may overflow in
+2038 or 2106, and it gives incorrect information when the system time
+is updated using settimeofday().
 
-So far only flash devices could be described in DT regarding partitions
-parsing. That could be done with "partitions" subnode and a proper
-"compatible" string.
+Using montonic timestamps with ktime_get_seconds() solves both thes
+problems.
 
-Some devices may use hierarchical (multi-level) layouts and may mix used
-layouts (fixed and dynamic). Describing that in DT is done by specifying
-"compatible" for DT-represented partition plus optionally more
-properties and/or subnodes.
-
-To support such layouts each DT partition has to be checked for
-additional description.
-
-Please note this implementation will work in parallel with support for
-partition type specified for non-DT setups. That already works since
-commit 1a0915be1926 ("mtd: partitions: add support for partition
-parsers").
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-V2: Updated commit message (more details + info about non-DT cases)
----
- drivers/mtd/mtdpart.c | 33 +++++++++++++--------------------
- 1 file changed, 13 insertions(+), 20 deletions(-)
+ fs/ubifs/shrinker.c | 2 +-
+ fs/ubifs/tnc.c      | 4 ++--
+ fs/ubifs/tnc_misc.c | 2 +-
+ fs/ubifs/ubifs.h    | 2 +-
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index f8d3a015cdad..52e2cb35fc79 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -322,22 +322,6 @@ static inline void free_partition(struct mtd_part *p)
- 	kfree(p);
- }
+diff --git a/fs/ubifs/shrinker.c b/fs/ubifs/shrinker.c
+index 9a9fb94a41c6..9d10cbdec2cc 100644
+--- a/fs/ubifs/shrinker.c
++++ b/fs/ubifs/shrinker.c
+@@ -71,7 +71,7 @@ static int shrink_tnc(struct ubifs_info *c, int nr, int age, int *contention)
+ {
+ 	int total_freed = 0;
+ 	struct ubifs_znode *znode, *zprev;
+-	int time = get_seconds();
++	time64_t time = ktime_get_seconds();
  
--/**
-- * mtd_parse_part - parse MTD partition looking for subpartitions
-- *
-- * @slave: part that is supposed to be a container and should be parsed
-- * @types: NULL-terminated array with names of partition parsers to try
-- *
-- * Some partitions are kind of containers with extra subpartitions (volumes).
-- * There can be various formats of such containers. This function tries to use
-- * specified parsers to analyze given partition and registers found
-- * subpartitions on success.
-- */
--static int mtd_parse_part(struct mtd_part *slave, const char *const *types)
--{
--	return parse_mtd_partitions(&slave->mtd, types, NULL);
--}
--
- static struct mtd_part *allocate_partition(struct mtd_info *parent,
- 			const struct mtd_partition *part, int partno,
- 			uint64_t cur_offset)
-@@ -735,8 +719,8 @@ int add_mtd_partitions(struct mtd_info *master,
+ 	ubifs_assert(mutex_is_locked(&c->umount_mutex));
+ 	ubifs_assert(mutex_is_locked(&c->tnc_mutex));
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 4a21e7f75e7a..6c497fb48b98 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1179,7 +1179,7 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
+ {
+ 	int err, exact;
+ 	struct ubifs_znode *znode;
+-	unsigned long time = get_seconds();
++	time64_t time = ktime_get_seconds();
  
- 		add_mtd_device(&slave->mtd);
- 		mtd_add_partition_attrs(slave);
--		if (parts[i].types)
--			mtd_parse_part(slave, parts[i].types);
-+		/* Look for subpartitions */
-+		parse_mtd_partitions(&slave->mtd, parts[i].types, NULL);
+ 	dbg_tnck(key, "search key ");
+ 	ubifs_assert(key_type(c, key) < UBIFS_INVALID_KEY);
+@@ -1315,7 +1315,7 @@ static int lookup_level0_dirty(struct ubifs_info *c, const union ubifs_key *key,
+ {
+ 	int err, exact;
+ 	struct ubifs_znode *znode;
+-	unsigned long time = get_seconds();
++	time64_t time = ktime_get_seconds();
  
- 		cur_offset = slave->offset + slave->mtd.size;
- 	}
-@@ -812,6 +796,12 @@ static const char * const default_mtd_part_types[] = {
- 	NULL
- };
+ 	dbg_tnck(key, "search and dirty key ");
  
-+/* Check DT only when looking for subpartitions. */
-+static const char * const default_subpartition_types[] = {
-+	"ofpart",
-+	NULL
-+};
-+
- static int mtd_part_do_parse(struct mtd_part_parser *parser,
- 			     struct mtd_info *master,
- 			     struct mtd_partitions *pparts,
-@@ -882,7 +872,9 @@ static int mtd_part_of_parse(struct mtd_info *master,
- 	const char *fixed = "fixed-partitions";
- 	int ret, err = 0;
+diff --git a/fs/ubifs/tnc_misc.c b/fs/ubifs/tnc_misc.c
+index 93f5b7859e6f..49f647bc88f0 100644
+--- a/fs/ubifs/tnc_misc.c
++++ b/fs/ubifs/tnc_misc.c
+@@ -435,7 +435,7 @@ struct ubifs_znode *ubifs_load_znode(struct ubifs_info *c,
  
--	np = of_get_child_by_name(mtd_get_of_node(master), "partitions");
-+	np = mtd_get_of_node(master);
-+	if (!mtd_is_partition(master))
-+		np = of_get_child_by_name(np, "partitions");
- 	of_property_for_each_string(np, "compatible", prop, compat) {
- 		parser = mtd_part_get_compatible_parser(compat);
- 		if (!parser)
-@@ -945,7 +937,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 	int ret, err = 0;
+ 	zbr->znode = znode;
+ 	znode->parent = parent;
+-	znode->time = get_seconds();
++	znode->time = ktime_get_seconds();
+ 	znode->iip = iip;
  
- 	if (!types)
--		types = default_mtd_part_types;
-+		types = mtd_is_partition(master) ? default_subpartition_types :
-+			default_mtd_part_types;
- 
- 	for ( ; *types; types++) {
- 		/*
+ 	return znode;
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 04bf84d71e7b..54fb6b1cd042 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -758,7 +758,7 @@ struct ubifs_znode {
+ 	struct ubifs_znode *parent;
+ 	struct ubifs_znode *cnext;
+ 	unsigned long flags;
+-	unsigned long time;
++	time64_t time;
+ 	int level;
+ 	int child_cnt;
+ 	int iip;
 -- 
-2.13.7
+2.9.0
