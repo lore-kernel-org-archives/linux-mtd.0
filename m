@@ -1,18 +1,20 @@
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdzMc-0008Ju-7A
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:48:08 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-To: Andrew Morton <akpm@linux-foundation.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: y2038@lists.linaro.org, linux-fsdevel@vger.kernel.org,
- Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] [RESEND] jffs2: use unsigned 32-bit timstamps consistently
-Date: Fri, 13 Jul 2018 16:47:17 +0200
-Message-Id: <20180713144739.3150217-2-arnd@arndb.de>
-In-Reply-To: <20180713144739.3150217-1-arnd@arndb.de>
-References: <20180713144739.3150217-1-arnd@arndb.de>
+ id 1fe4rE-0008GR-L2
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 20:40:06 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id h10-v6so26278533wre.6
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 13:39:53 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <b90d2024-6b20-7b94-65f8-d5e1547ab001@lassacher.co.at>
+References: <b90d2024-6b20-7b94-65f8-d5e1547ab001@lassacher.co.at>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 13 Jul 2018 22:39:51 +0200
+Message-ID: <CAFLxGvyrm6rqOVV1U70A9DXgpzSRqdCQYjeci7gZB7bzrGOZNg@mail.gmail.com>
+Subject: Re: Writing to UBIFS leads to all threads accessing files are stuck
+ in nand_get_device
+To: Sebastian Lassacher <sebastian@lassacher.co.at>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most users of jffs2 are 32-bit systems that traditionally only support
-timestamps using a 32-bit signed time_t, in the range from years 1902 to
-2038. On 64-bit systems, jffs2 however interpreted the same timestamps
-as unsigned values, reading back negative times (before 1970) as times
-between 2038 and 2106.
+Sebastian,
 
-Now that Linux supports 64-bit inode timestamps even on 32-bit systems,
-let's use the second interpretation everywhere to allow jffs2 to be
-used on 32-bit systems beyond 2038 without a fundamental change to the
-inode format.
+On Fri, Jul 13, 2018 at 1:04 PM, Sebastian Lassacher
+<sebastian@lassacher.co.at> wrote:
+> Hi there,
+>
+> I ran into troubles when writing files on an UBIFS volume.
+> This happens on three different systems with similar conditions.
+> Since they where installed on customer sides I'm not sure what caused
+> the problems in the first place.
+> My theory is that all three suffered from a power cut.
+>
+> As reported by the command df there should be enough space:
+> Filesystem                Size      Used Available Use% Mounted on
+> none                     26.5M         0     26.5M   0% /dev
+> ubi0:root               441.6M    101.4M    340.2M  23% /mnt/images
+>
+> But when I write to to the UBIFS, some processes get stuck, for instance:
+> From ash inside an initramfs those commands working fine and no errors
+> are reported:
+> $ mount -t ubifs -o noatime,nodiratime,chk_data_crc ubi0:root /mnt/images
+> $ ls -l /mnt/images/test
+> $ dd if=/dev/urandom of=/mnt/images/test/urandom_1k bs=1k count=1
+>
+> After a few minutes I ran to be sure the the background sync has already
+> started:
+> $ ls -l /mnt/images/test
+> and it did not return which later on got me this:
+> [  480.130000] INFO: task ls:149 blocked for more than 120 seconds.
+> [  480.130000]       Not tainted 4.4.66-SEM #15
+> [  480.140000] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+> disables this message.
+> [  480.140000] ls              D c044cc28     0   149      1 0x00000000
+> [  480.150000] Backtrace:
+> [  480.150000] [<c044ca14>] (__schedule) from [<c044cf9c>]
+> (schedule+0xa0/0xb8)
+> [  480.160000]  r10:c2312000 r9:c25b9aa8 r8:c22b4a98 r7:00000015
+> r6:ffffe000 r5:c20fa818
+> [  480.170000]  r4:c25b8000
+> [  480.170000] [<c044cefc>] (schedule) from [<c02e5ec8>]
+> (nand_get_device+0xf8/0x110)
+> [  480.180000]  r5:c20fa818 r4:c22b4a90
+> [  480.180000] [<c02e5dd0>] (nand_get_device) from [<c02ea410>]
+> (nand_read+0x28/0x84)
+> [  480.190000]  r9:00000000 r8:01400000 r7:00000000 r6:08c06000
+> r5:c25b9af4 r4:c20fab70
+> [  480.200000] [<c02ea3e8>] (nand_read) from [<c02df6fc>]
+> (part_read+0x50/0x88)
+> [  480.200000]  r7:000001e0 r6:00000000 r5:00000000 r4:c2312000
+> [  480.210000] [<c02df6ac>] (part_read) from [<c02dcca0>]
+> (mtd_read+0x6c/0xa4)
+> [  480.220000]  r9:00000000 r8:07806000 r6:00000043 r5:00000000 r4:173fa000
+> [  480.220000] [<c02dcc34>] (mtd_read) from [<c02dcd28>]
+> (mtd_read_slc_mode+0x50/0xe0)
+> [  480.230000]  r10:c25b9c24 r9:00000000 r8:07806000 r7:000001e0
+> r6:00000043 r5:00000043
+> [  480.240000]  r4:c2312000
+> [  480.240000] [<c02dccd8>] (mtd_read_slc_mode) from [<c02fe8fc>]
 
-This has a slight risk of regressions, when existing files with timestamps
-before 1970 are present in file system images and are now interpreted
-as future time stamps. I considered moving the wraparound point a bit,
-e.g. to 1960, in order to deal with timestamps that ended up on Dec 31,
-1969 due to incorrect timezone handling. However, this would complicate
-the implementation unnecessarily, so I went with the simplest possible
-method of extending the timestamps.
+Huh?
+This function is not part of mainline.
 
-Writing files with timestamps before 1970 or after 2106 now results
-in those times being clamped in the file system.
+Does the problem also arise on a pristine kernel?
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/jffs2/os-linux.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index acbe1f722f2d..a2dbbb3f4c74 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -31,13 +31,13 @@ struct kvec;
- #define JFFS2_F_I_GID(f) (i_gid_read(OFNI_EDONI_2SFFJ(f)))
- #define JFFS2_F_I_RDEV(f) (OFNI_EDONI_2SFFJ(f)->i_rdev)
- 
--#define ITIME(sec) ((struct timespec64){(int32_t)sec, 0})
--#define JFFS2_NOW() (ktime_get_real_seconds())
--#define I_SEC(tv) ((tv).tv_sec)
--#define JFFS2_F_I_CTIME(f) (OFNI_EDONI_2SFFJ(f)->i_ctime.tv_sec)
--#define JFFS2_F_I_MTIME(f) (OFNI_EDONI_2SFFJ(f)->i_mtime.tv_sec)
--#define JFFS2_F_I_ATIME(f) (OFNI_EDONI_2SFFJ(f)->i_atime.tv_sec)
--
-+#define JFFS2_CLAMP_TIME(t) ((uint32_t)clamp_t(time64_t, (t), 0, U32_MAX))
-+#define ITIME(sec) ((struct timespec64){sec, 0})
-+#define JFFS2_NOW() JFFS2_CLAMP_TIME(ktime_get_real_seconds())
-+#define I_SEC(tv) JFFS2_CLAMP_TIME((tv).tv_sec)
-+#define JFFS2_F_I_CTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_ctime)
-+#define JFFS2_F_I_MTIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_mtime)
-+#define JFFS2_F_I_ATIME(f) I_SEC(OFNI_EDONI_2SFFJ(f)->i_atime)
- #define sleep_on_spinunlock(wq, s)				\
- 	do {							\
- 		DECLARE_WAITQUEUE(__wait, current);		\
 -- 
-2.9.0
+Thanks,
+//richard
