@@ -1,20 +1,28 @@
-Received: from mail-eopbgr20097.outbound.protection.outlook.com ([40.107.2.97]
- helo=EUR02-VE1-obe.outbound.protection.outlook.com)
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fdxnV-0006Xl-Sp
- for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 13:07:47 +0000
-From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
-To: linux-mtd@lists.infradead.org
-Cc: Alexander Sverdlin <alexander.sverdlin@nokia.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] mtd: spi-nor: Add support for mx25u12835f
-Date: Fri, 13 Jul 2018 15:06:46 +0200
-Message-Id: <20180713130646.30523-1-alexander.sverdlin@nokia.com>
+ id 1fdz5K-0007Fw-Qs
+ for linux-mtd@lists.infradead.org; Fri, 13 Jul 2018 14:30:16 +0000
+Received: by mail-lj1-x243.google.com with SMTP id l15-v6so4548588lji.6
+ for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2018 07:30:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: arndbergmann@gmail.com
+In-Reply-To: <61251850.EbJPfQiGNC@blindfold>
+References: <20180620081311.126158-1-arnd@arndb.de>
+ <61251850.EbJPfQiGNC@blindfold>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 13 Jul 2018 16:30:01 +0200
+Message-ID: <CAK8P3a1bfy0xDninx0Er-L-2bbEh5-5ZOE6g2ZAVa-UcLNZMAA@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: use timespec64 for inode timestamps
+To: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ y2038 Mailman List <y2038@lists.linaro.org>, Eric Biggers <ebiggers@google.com>,
+ Jan Kara <jack@suse.cz>, Deepa Dinamani <deepa.kernel@gmail.com>,
+ Souptick Joarder <jrdr.linux@gmail.com>,
+ =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+ Hyunchul Lee <cheol.lee@lge.com>, linux-mtd <linux-mtd@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This chip supports dual and quad read and uniform 4K-byte erase.
+On Mon, Jul 2, 2018 at 4:20 PM, Richard Weinberger <richard@nod.at> wrote:
+> Am Mittwoch, 20. Juni 2018, 10:12:58 CEST schrieb Arnd Bergmann:
+>> Both vfs and the on-disk inode structures can deal with fine-grained
+>> timestamps now, so this is the last missing piece to make ubifs
+>> y2038-safe on 32-bit architectures.
+>
+> Acked-by: Richard Weinberger <richard@nod.at>
+>
+> Shall this patch go through the ubifs tree?
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 1 +
- 1 file changed, 1 insertion(+)
+Sorry I missed the question earlier. Yes, it would be nice if you could pick
+it up there. I'm resending both patches now for your convenience.
 
-Based on spi-nor/next branch of git://git.infradead.org/l2-mtd.git
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c44194..f9832293b689 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1088,6 +1088,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
- 	{ "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-+	{ "mx25u12835f", INFO(0xc22538, 0, 64 * 1024, 256, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
--- 
-2.18.0
+       Arnd
