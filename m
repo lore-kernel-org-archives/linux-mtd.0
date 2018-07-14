@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feKd1-000747-H0
- for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:30:29 +0000
+ id 1feKd1-00074D-Gx
+ for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:30:30 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -9,9 +9,11 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
  stable@vger.kernel.org
-Subject: [PATCH 1/4] mtd: rawnand: add missing error handling in subop helpers
-Date: Sat, 14 Jul 2018 15:30:00 +0200
-Message-Id: <20180714133003.25187-1-miquel.raynal@bootlin.com>
+Subject: [PATCH 4/4] mtd: rawnand: vf610: fix error handling of subop helpers
+Date: Sat, 14 Jul 2018 15:30:03 +0200
+Message-Id: <20180714133003.25187-4-miquel.raynal@bootlin.com>
+In-Reply-To: <20180714133003.25187-1-miquel.raynal@bootlin.com>
+References: <20180714133003.25187-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +29,49 @@ helpers could error out only in case of a software bug in driver code,
 not because of a runtime/hardware error but in any cases it is safer
 to handle these errors properly.
 
-Before fixing the drivers, let's add some consistency and fix these
-helpers error handling.
+Fix the VF610 NAND controller driver implementation by checking
+potential negative error values coming from these helpers.
 
-Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
+Fixes: 1cbe30b0ddc7 ("mtd: rawnand: vf610_nfc: make use of ->exec_op()")
 Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mtd/nand/raw/vf610_nfc.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 10c4f9919850..51f68203aa63 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -2720,6 +2720,8 @@ int nand_subop_get_num_addr_cyc(const struct nand_subop *subop,
- 		return -EINVAL;
+diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
+index d5a22fc96878..cc88ed758685 100644
+--- a/drivers/mtd/nand/raw/vf610_nfc.c
++++ b/drivers/mtd/nand/raw/vf610_nfc.c
+@@ -398,6 +398,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 		int naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
+ 		int i = nand_subop_get_addr_start_off(subop, op_id);
  
- 	start_off = nand_subop_get_addr_start_off(subop, instr_idx);
-+	if (start_off < 0)
-+		return start_off;
++		if (naddrs < 0 || i < 0)
++			return -EINVAL;
++
+ 		for (; i < naddrs; i++) {
+ 			u8 val = instr->ctx.addr.addrs[i];
  
- 	if (instr_idx == subop->ninstrs - 1 &&
- 	    subop->last_instr_end_off)
-@@ -2774,6 +2776,8 @@ int nand_subop_get_data_len(const struct nand_subop *subop,
- 		return -EINVAL;
+@@ -414,6 +417,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 	if (instr && instr->type == NAND_OP_DATA_OUT_INSTR) {
+ 		trfr_sz = nand_subop_get_data_len(subop, op_id);
+ 		offset = nand_subop_get_data_start_off(subop, op_id);
++		if (trfr_sz < 0 || offset < 0)
++			return -EINVAL;
++
+ 		force8bit = instr->ctx.data.force_8bit;
  
- 	start_off = nand_subop_get_data_start_off(subop, instr_idx);
-+	if (start_off < 0)
-+		return start_off;
+ 		/*
+@@ -444,6 +450,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
+ 	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
+ 		trfr_sz = nand_subop_get_data_len(subop, op_id);
+ 		offset = nand_subop_get_data_start_off(subop, op_id);
++		if (trfr_sz < 0 || offset < 0)
++			return -EINVAL;
++
+ 		force8bit = instr->ctx.data.force_8bit;
  
- 	if (instr_idx == subop->ninstrs - 1 &&
- 	    subop->last_instr_end_off)
+ 		code |= COMMAND_READ_DATA;
 -- 
 2.14.1
