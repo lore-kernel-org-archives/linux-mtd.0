@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feHil-0002Rg-03
- for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 10:24:13 +0000
+ id 1feJjE-0003SU-FH
+ for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 12:32:50 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -9,9 +9,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2] mtd: rawnand: add default values for dynamic timings
-Date: Sat, 14 Jul 2018 12:23:54 +0200
-Message-Id: <20180714102354.12323-1-miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: remove stale comment in mtd_oob_ops structure
+Date: Sat, 14 Jul 2018 14:32:34 +0200
+Message-Id: <20180714123234.16127-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,87 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some timings like tBERS (block erase time), tCCs (change column setup
-time), tPROG (page program time) and tR (page read time) are derived
-from the ONFI parameter page. They are set in the SDR interface only
-if the chip is ONFI compliant.
+A comment in the kernel doc of the mtd_oob_ops structure tells that it
+is not possible to write more than one page with OOB. This was
+probably true at some time in the past but today it is entirely wrong.
 
-It makes these timings unreliable and prevent the driver to use one of
-these four values with a non-ONFI chip.
-
-Fix this situation by taking the highest possible value (or a default
-one) value for each missing timing (stored as unsigned 16-bit entries in
-the parameter page).
-
-This makes tBERS and tPROG being ~65ms while typical values are at most
-a few milliseconds. As these are timeouts, it is not impacting at all
-the performances in nominal use.
-
-tR maximum time and tCCS minimum time (delay to wait after a change
-column) are set, according to the ONFI specification, to default 'slow'
-values; respectively 200us and 500ns.
+As one can see for instance in the nand_do_write_ops() helper available
+in the NAND core, this implementation called by mtd->_write_oob()
+simply loops over the pages until everything has been written.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
+ include/linux/mtd/mtd.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Changes since v1
-================
-* Remove in the commit message a wrong assertion on which the problem
-  depicted above happened when no ->setup_data_inferface() hook was set.
-* The missing timings were set, for each timing mode, in the
-  onfi_sdr_timings structure, not it is done in an else block in
-  onfi_fill_data_interface() once.
-* Changed tR and tCCS to be 'timing mode 0' values by default (should
-  limit the impact of such a change in throughputs).
-
-
- drivers/mtd/nand/raw/nand_timings.c | 20 +++++++++++++++++++-
- 1 file changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-index 7c4e4a371bbc..9bb599106a31 100644
---- a/drivers/mtd/nand/raw/nand_timings.c
-+++ b/drivers/mtd/nand/raw/nand_timings.c
-@@ -13,6 +13,8 @@
- #include <linux/export.h>
- #include <linux/mtd/rawnand.h>
- 
-+#define ONFI_DYN_TIMING_MAX U16_MAX
-+
- static const struct nand_data_interface onfi_sdr_timings[] = {
- 	/* Mode 0 */
- 	{
-@@ -303,7 +305,7 @@ int onfi_fill_data_interface(struct nand_chip *chip,
- 
- 	/*
- 	 * Initialize timings that cannot be deduced from timing mode:
--	 * tR, tPROG, tCCS, ...
-+	 * tPROG, tBERS, tR and tCCS.
- 	 * These information are part of the ONFI parameter page.
- 	 */
- 	if (chip->parameters.onfi.version) {
-@@ -317,6 +319,22 @@ int onfi_fill_data_interface(struct nand_chip *chip,
- 
- 		/* nanoseconds -> picoseconds */
- 		timings->tCCS_min = 1000UL * params->onfi.tCCS;
-+	} else {
-+		struct nand_sdr_timings *timings = &iface->timings.sdr;
-+		/*
-+		 * For non-ONFI chips we use the highest possible value for
-+		 * tPROG and tBERS. tR and tCCS will take the default values
-+		 * precised in the ONFI specification for timing mode 0,
-+		 * respectively 200us and 500ns.
-+		 */
-+
-+		/* microseconds -> picoseconds */
-+		timings->tPROG_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
-+		timings->tBERS_max = 1000000ULL * ONFI_DYN_TIMING_MAX;
-+		timings->tR_max = 1000000ULL * 200000000ULL;
-+
-+		/* nanoseconds -> picoseconds */
-+		timings->tCCS_min = 1000UL * 500000;
- 	}
- 
- 	return 0;
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a86c4fa93115..59578aab277a 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -66,10 +66,6 @@ struct mtd_erase_region_info {
+  *		mode = MTD_OPS_PLACE_OOB or MTD_OPS_RAW)
+  * @datbuf:	data buffer - if NULL only oob data are read/written
+  * @oobbuf:	oob data buffer
+- *
+- * Note, it is allowed to read more than one OOB area at one go, but not write.
+- * The interface assumes that the OOB write requests program only one page's
+- * OOB area.
+  */
+ struct mtd_oob_ops {
+ 	unsigned int	mode;
 -- 
 2.14.1
