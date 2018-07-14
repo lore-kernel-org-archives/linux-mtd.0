@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feJsM-0007jf-69
- for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 12:42:15 +0000
+ id 1feKd1-00074C-Gy
+ for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:30:29 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: Fallback to ->_read/write() when ->_read/write_oob() is
- missing
-Date: Sat, 14 Jul 2018 14:42:00 +0200
-Message-Id: <20180714124200.17148-1-miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ stable@vger.kernel.org
+Subject: [PATCH 3/4] mtd: rawnand: marvell: fix error handling of subop helpers
+Date: Sat, 14 Jul 2018 15:30:02 +0200
+Message-Id: <20180714133003.25187-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20180714133003.25187-1-miquel.raynal@bootlin.com>
+References: <20180714133003.25187-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some MTD sublayers/drivers are implementing ->_read/write() and
-not ->_read/write_oob().
+A report from Colin Ian King pointed a CoverityScan issue where error
+values on these helpers where not checked in the drivers. These
+helpers could error out only in case of a software bug in driver code,
+not because of a runtime/hardware error but in any cases it is safer
+to handle these errors properly.
 
-While for NAND devices both are usually valid, for NOR devices, using
-the _oob variant has no real meaning. But, as the MTD layer is supposed
-to hide as much as possible the flash complexity to the user, there is
-no reason to error out while it is just a matter of rewritting things
-internally.
+Fix the Marvell NAND controller driver implementation by checking
+potential negative error values.
 
-Add a fallback on mtd->_read() (resp. mtd->_write()) when the user calls
-mtd_read_oob() (resp. mtd_write_oob()) while mtd->_read_oob() (resp.
-mtd->_write_oob) is not implemented. There is already a fallback on the
-_oob variant if the former is used.
-
+Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
+Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/mtdcore.c | 28 ++++++++++++++++++++++------
- 1 file changed, 22 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 42395df06be9..97ac219c082e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -1155,21 +1155,29 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
- {
- 	int ret_code;
- 	ops->retlen = ops->oobretlen = 0;
--	if (!mtd->_read_oob)
--		return -EOPNOTSUPP;
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 07b8a2677c10..1bb0cf6c945f 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1554,6 +1554,9 @@ static int marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 		const u8 *addrs;
+ 		int len = nand_subop_get_data_len(subop, op_id);
  
- 	ret_code = mtd_check_oob_ops(mtd, from, ops);
- 	if (ret_code)
- 		return ret_code;
++		if (len < 0)
++			return -EINVAL;
++
+ 		instr = &subop->instrs[op_id];
  
- 	ledtrig_mtd_activity();
+ 		switch (instr->type) {
+@@ -1573,6 +1576,9 @@ static int marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 		case NAND_OP_ADDR_INSTR:
+ 			offset = nand_subop_get_addr_start_off(subop, op_id);
+ 			naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
++			if (offset < 0 || naddrs < 0)
++				return -EINVAL;
 +
-+	/* Check the validity of a potential fallback on mtd->_read */
-+	if (!mtd->_read_oob && (!mtd->_read || ops->oobbuf))
-+		return -EOPNOTSUPP;
-+
-+	if (mtd->_read_oob)
-+		ret_code = mtd->_read_oob(mtd, from, ops);
-+	else
-+		ret_code = mtd->_read(mtd, from, ops->len, &ops->retlen,
-+				      ops->datbuf);
-+
- 	/*
- 	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
- 	 * similar to mtd->_read(), returning a non-negative integer
- 	 * representing max bitflips. In other cases, mtd->_read_oob() may
- 	 * return -EUCLEAN. In all cases, perform similar logic to mtd_read().
- 	 */
--	ret_code = mtd->_read_oob(mtd, from, ops);
- 	if (unlikely(ret_code < 0))
- 		return ret_code;
- 	if (mtd->ecc_strength == 0)
-@@ -1184,8 +1192,7 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
+ 			addrs = &instr->ctx.addr.addrs[offset];
+ 
+ 			nfc_op->ndcb[0] |= NDCB0_ADDR_CYC(naddrs);
+@@ -1638,6 +1644,9 @@ static int marvell_nfc_xfer_data_pio(struct nand_chip *chip,
+ 	bool reading = (instr->type == NAND_OP_DATA_IN_INSTR);
  	int ret;
  
- 	ops->retlen = ops->oobretlen = 0;
--	if (!mtd->_write_oob)
--		return -EOPNOTSUPP;
++	if (len < 0 || offset < 0)
++		return -EINVAL;
 +
- 	if (!(mtd->flags & MTD_WRITEABLE))
- 		return -EROFS;
- 
-@@ -1194,7 +1201,16 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
- 		return ret;
- 
- 	ledtrig_mtd_activity();
--	return mtd->_write_oob(mtd, to, ops);
-+
-+	/* Check the validity of a potential fallback on mtd->_write */
-+	if (!mtd->_write_oob && (!mtd->_write || ops->oobbuf))
-+		return -EOPNOTSUPP;
-+
-+	if (mtd->_write_oob)
-+		return mtd->_write_oob(mtd, to, ops);
-+	else
-+		return mtd->_write(mtd, to, ops->len, &ops->retlen,
-+				   ops->datbuf);
- }
- EXPORT_SYMBOL_GPL(mtd_write_oob);
+ 	if (instr->ctx.data.force_8bit)
+ 		marvell_nfc_force_byte_access(chip, true);
  
 -- 
 2.14.1
