@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feKd1-00074B-Gz
- for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:30:30 +0000
+ id 1feL0W-0006Gd-Ua
+ for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:54:46 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -9,12 +9,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 2/4] mtd: rawnand: marvell: add a return code to the parsing
- function
-Date: Sat, 14 Jul 2018 15:30:01 +0200
-Message-Id: <20180714133003.25187-2-miquel.raynal@bootlin.com>
-In-Reply-To: <20180714133003.25187-1-miquel.raynal@bootlin.com>
-References: <20180714133003.25187-1-miquel.raynal@bootlin.com>
+Subject: [PATCH 1/2] mtd: rawnand: marvell: document a bit more the driver
+Date: Sat, 14 Jul 2018 15:54:27 +0200
+Message-Id: <20180714135428.26955-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,122 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Prepare the fact that this function could error out in a future change.
-In this patch, just treat the returned value from this function and
-error out if needed in the calling functions.
+A stale document about the old pxa3cc_nand.c driver is available in
+Documentation/mtd/nand/. Rewrite the parts that explain the IP itself
+and some non-trivial choices made in the driver directly in
+marvell_nand.c to then be able to remove this file.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 41 ++++++++++++++++++++++++++++---------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 31 +++++++++++++++++++++++++++++++
+ 1 file changed, 31 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..07b8a2677c10 100644
+index ba6889bbe802..a50ea47baa4f 100644
 --- a/drivers/mtd/nand/raw/marvell_nand.c
 +++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -1536,9 +1536,9 @@ static int marvell_nfc_hw_ecc_bch_write_oob(struct mtd_info *mtd,
- }
+@@ -5,6 +5,37 @@
+  * Copyright (C) 2017 Marvell
+  * Author: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+  *
++ *
++ * This NAND controller driver handles two versions of the hardware,
++ * one is called NFCv1 and is available on PXA SoCs and the other is
++ * called NFCv2 and is available on almost all the Armada SoCs.
++ *
++ * The main differences are that the NFCv1 has DMA support and only
++ * has Hamming ECC capabilities, while NFCv2 does not support DMA but
++ * has hardware BCH support.
++ *
++ * The internal ECC operations are depicted in details in Marvell
++ * AN-379.
++ *
++ * The controller has certain limitations that are handled by the
++ * driver:
++ *   - It can only read 2k at a time. To overcome this limitation, the
++ *     driver makes use of 'naked' operations.
++ *   - The ECC strength in BCH mode cannot be tuned easily. It is a
++ *     fixed 16 bytes. What can be tuned is the area on which this
++ *     correction occurs. Hence, using 2048B ECC chunks makes the
++ *     strength to be 4b/512B.
++ *   - The controller will always treat data bytes, spare bytes and
++ *     ECC bytes in that order, no matter the real factory layout
++ *     (which is usually all data then all OOB bytes). But depending
++ *     on the chosen layout, the areas of each section may vary or be
++ *     absent. The same data/spare/ecc layout is repeated until the
++ *     next chunk were each section may be different again. The
++ *     marvell_nfc_layouts array below contains the currently
++ *     supported layouts.
++ *   - Because of these weird layouts, the Bad Block Markers can be
++ *     located in data. In this case, the NAND_BBT_NO_OOB_BBM option
++ *     must be set.
+  */
  
- /* NAND framework ->exec_op() hooks and related helpers */
--static void marvell_nfc_parse_instructions(struct nand_chip *chip,
--					   const struct nand_subop *subop,
--					   struct marvell_nfc_op *nfc_op)
-+static int marvell_nfc_parse_instructions(struct nand_chip *chip,
-+					  const struct nand_subop *subop,
-+					  struct marvell_nfc_op *nfc_op)
- {
- 	const struct nand_op_instr *instr = NULL;
- 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
-@@ -1622,6 +1622,8 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
- 			break;
- 		}
- 	}
-+
-+	return 0;
- }
- 
- static int marvell_nfc_xfer_data_pio(struct nand_chip *chip,
-@@ -1662,7 +1664,10 @@ static int marvell_nfc_monolithic_access_exec(struct nand_chip *chip,
- 	bool reading;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
-+
- 	reading = (nfc_op.data_instr->type == NAND_OP_DATA_IN_INSTR);
- 
- 	ret = marvell_nfc_prepare_cmd(chip);
-@@ -1725,7 +1730,9 @@ static int marvell_nfc_naked_access_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
- 
- 	/*
- 	 * Naked access are different in that they need to be flagged as naked
-@@ -1797,7 +1804,9 @@ static int marvell_nfc_naked_waitrdy_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
- 
- 	ret = marvell_nfc_wait_op(chip, nfc_op.rdy_timeout_ms);
- 	cond_delay(nfc_op.rdy_delay_ns);
-@@ -1811,7 +1820,10 @@ static int marvell_nfc_read_id_type_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
-+
- 	nfc_op.ndcb[0] &= ~NDCB0_CMD_TYPE(TYPE_READ);
- 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_READ_ID);
- 
-@@ -1851,7 +1863,10 @@ static int marvell_nfc_read_status_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
-+
- 	nfc_op.ndcb[0] &= ~NDCB0_CMD_TYPE(TYPE_READ);
- 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_STATUS);
- 
-@@ -1891,7 +1906,10 @@ static int marvell_nfc_reset_cmd_type_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
-+
- 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_RESET);
- 
- 	ret = marvell_nfc_prepare_cmd(chip);
-@@ -1920,7 +1938,10 @@ static int marvell_nfc_erase_cmd_type_exec(struct nand_chip *chip,
- 	struct marvell_nfc_op nfc_op;
- 	int ret;
- 
--	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
-+	if (ret)
-+		return ret;
-+
- 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_ERASE);
- 
- 	ret = marvell_nfc_prepare_cmd(chip);
+ #include <linux/module.h>
 -- 
 2.14.1
