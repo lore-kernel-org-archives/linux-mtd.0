@@ -1,17 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feKd1-00074D-Gx
+ id 1feKd1-00074B-Gz
  for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 13:30:30 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- stable@vger.kernel.org
-Subject: [PATCH 4/4] mtd: rawnand: vf610: fix error handling of subop helpers
-Date: Sat, 14 Jul 2018 15:30:03 +0200
-Message-Id: <20180714133003.25187-4-miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 2/4] mtd: rawnand: marvell: add a return code to the parsing
+ function
+Date: Sat, 14 Jul 2018 15:30:01 +0200
+Message-Id: <20180714133003.25187-2-miquel.raynal@bootlin.com>
 In-Reply-To: <20180714133003.25187-1-miquel.raynal@bootlin.com>
 References: <20180714133003.25187-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,55 +24,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A report from Colin Ian King pointed a CoverityScan issue where error
-values on these helpers where not checked in the drivers. These
-helpers could error out only in case of a software bug in driver code,
-not because of a runtime/hardware error but in any cases it is safer
-to handle these errors properly.
+Prepare the fact that this function could error out in a future change.
+In this patch, just treat the returned value from this function and
+error out if needed in the calling functions.
 
-Fix the VF610 NAND controller driver implementation by checking
-potential negative error values coming from these helpers.
-
-Fixes: 1cbe30b0ddc7 ("mtd: rawnand: vf610_nfc: make use of ->exec_op()")
-Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/vf610_nfc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mtd/nand/raw/marvell_nand.c | 41 ++++++++++++++++++++++++++++---------
+ 1 file changed, 31 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index d5a22fc96878..cc88ed758685 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -398,6 +398,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
- 		int naddrs = nand_subop_get_num_addr_cyc(subop, op_id);
- 		int i = nand_subop_get_addr_start_off(subop, op_id);
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index ebb1d141b900..07b8a2677c10 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1536,9 +1536,9 @@ static int marvell_nfc_hw_ecc_bch_write_oob(struct mtd_info *mtd,
+ }
  
-+		if (naddrs < 0 || i < 0)
-+			return -EINVAL;
+ /* NAND framework ->exec_op() hooks and related helpers */
+-static void marvell_nfc_parse_instructions(struct nand_chip *chip,
+-					   const struct nand_subop *subop,
+-					   struct marvell_nfc_op *nfc_op)
++static int marvell_nfc_parse_instructions(struct nand_chip *chip,
++					  const struct nand_subop *subop,
++					  struct marvell_nfc_op *nfc_op)
+ {
+ 	const struct nand_op_instr *instr = NULL;
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+@@ -1622,6 +1622,8 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 			break;
+ 		}
+ 	}
 +
- 		for (; i < naddrs; i++) {
- 			u8 val = instr->ctx.addr.addrs[i];
++	return 0;
+ }
  
-@@ -414,6 +417,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
- 	if (instr && instr->type == NAND_OP_DATA_OUT_INSTR) {
- 		trfr_sz = nand_subop_get_data_len(subop, op_id);
- 		offset = nand_subop_get_data_start_off(subop, op_id);
-+		if (trfr_sz < 0 || offset < 0)
-+			return -EINVAL;
+ static int marvell_nfc_xfer_data_pio(struct nand_chip *chip,
+@@ -1662,7 +1664,10 @@ static int marvell_nfc_monolithic_access_exec(struct nand_chip *chip,
+ 	bool reading;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
 +
- 		force8bit = instr->ctx.data.force_8bit;
+ 	reading = (nfc_op.data_instr->type == NAND_OP_DATA_IN_INSTR);
  
- 		/*
-@@ -444,6 +450,9 @@ static int vf610_nfc_cmd(struct nand_chip *chip,
- 	if (instr && instr->type == NAND_OP_DATA_IN_INSTR) {
- 		trfr_sz = nand_subop_get_data_len(subop, op_id);
- 		offset = nand_subop_get_data_start_off(subop, op_id);
-+		if (trfr_sz < 0 || offset < 0)
-+			return -EINVAL;
+ 	ret = marvell_nfc_prepare_cmd(chip);
+@@ -1725,7 +1730,9 @@ static int marvell_nfc_naked_access_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
+ 
+ 	/*
+ 	 * Naked access are different in that they need to be flagged as naked
+@@ -1797,7 +1804,9 @@ static int marvell_nfc_naked_waitrdy_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
+ 
+ 	ret = marvell_nfc_wait_op(chip, nfc_op.rdy_timeout_ms);
+ 	cond_delay(nfc_op.rdy_delay_ns);
+@@ -1811,7 +1820,10 @@ static int marvell_nfc_read_id_type_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
 +
- 		force8bit = instr->ctx.data.force_8bit;
+ 	nfc_op.ndcb[0] &= ~NDCB0_CMD_TYPE(TYPE_READ);
+ 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_READ_ID);
  
- 		code |= COMMAND_READ_DATA;
+@@ -1851,7 +1863,10 @@ static int marvell_nfc_read_status_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
++
+ 	nfc_op.ndcb[0] &= ~NDCB0_CMD_TYPE(TYPE_READ);
+ 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_STATUS);
+ 
+@@ -1891,7 +1906,10 @@ static int marvell_nfc_reset_cmd_type_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
++
+ 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_RESET);
+ 
+ 	ret = marvell_nfc_prepare_cmd(chip);
+@@ -1920,7 +1938,10 @@ static int marvell_nfc_erase_cmd_type_exec(struct nand_chip *chip,
+ 	struct marvell_nfc_op nfc_op;
+ 	int ret;
+ 
+-	marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	ret = marvell_nfc_parse_instructions(chip, subop, &nfc_op);
++	if (ret)
++		return ret;
++
+ 	nfc_op.ndcb[0] |= NDCB0_CMD_TYPE(TYPE_ERASE);
+ 
+ 	ret = marvell_nfc_prepare_cmd(chip);
 -- 
 2.14.1
