@@ -1,21 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ff0ih-0007t4-99
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 10:27:09 +0000
-Date: Mon, 16 Jul 2018 12:26:43 +0200
+ id 1ff0nY-0003Ib-Ha
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 10:32:09 +0000
+Date: Mon, 16 Jul 2018 12:31:47 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
  linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 2/2] Documentation: mtd: remove stale pxa3xx NAND
- controller documentation
-Message-ID: <20180716122643.0049fa4c@xps13>
-In-Reply-To: <20180714224612.1477269b@windsurf>
+Subject: Re: [PATCH 1/2] mtd: rawnand: marvell: document a bit more the driver
+Message-ID: <20180716123147.77e2fe77@xps13>
+In-Reply-To: <20180714224648.310bedec@windsurf>
 References: <20180714135428.26955-1-miquel.raynal@bootlin.com>
- <20180714135428.26955-2-miquel.raynal@bootlin.com>
- <20180714224612.1477269b@windsurf>
+ <20180714224648.310bedec@windsurf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -31,26 +29,22 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Thomas,
 
 Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote on Sat, 14 Jul
-2018 22:46:12 +0200:
+2018 22:46:48 +0200:
 
 > Hello,
 >=20
-> On Sat, 14 Jul 2018 15:54:28 +0200, Miquel Raynal wrote:
-> > It is preferred to have the documentation about the drivers directly
-> > embedded in the driver itself. Remove this file now that the most
-> > important information from this file have been re-written in
-> > marvell_nand.c.
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com> =20
+> On Sat, 14 Jul 2018 15:54:27 +0200, Miquel Raynal wrote:
 >=20
-> I agree with moving the documentation to the driver itself, but the
-> documentation you've added in PATCH 1/2 into the driver is much, much
-> more limited than the documentation present in this file.
+> > + * The internal ECC operations are depicted in details in Marvell
+> > + * AN-379. =20
+>=20
+> AN-379 is as far as I know not publicly available, so I'm not sure if it
+> makes a lot of sense to mention it here.
 
-I think you are right on the fact that showing how data/spare/ecc bytes
-might be exposed by the controller is something useful.
-
-I will add the example given in the doc.
+No it's not, but I think it's not the first time this AN is quoted in
+the ML and it might be useful to know about it for people having access
+to Marvell specifications. At least in this file all layouts are
+explained in details.
 
 Thanks,
 Miqu=C3=A8l
