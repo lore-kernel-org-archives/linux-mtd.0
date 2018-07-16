@@ -1,22 +1,23 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ff1Va-0008W8-FD
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 11:17:39 +0000
-Received: by mail-lj1-x244.google.com with SMTP id q127-v6so28995248ljq.11
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2018 04:17:28 -0700 (PDT)
-From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org,
- =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH RFC API ONLY] mtd: get parsers from lookup table
-Date: Mon, 16 Jul 2018 13:17:12 +0200
-Message-Id: <20180716111712.7636-1-zajec5@gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ff65p-0002Ww-Eb
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 16:11:23 +0000
+Date: Mon, 16 Jul 2018 18:10:57 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, "Bean Huo" <beanhuo@micron.com>
+Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
+Message-ID: <20180716181057.65d78303@bbrezillon>
+In-Reply-To: <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
+References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
+ <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,97 +27,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Rafał Miłecki <rafal@milecki.pl>
+On Mon, 16 Jul 2018 09:00:59 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
 
-Existing implementation of specifying flash device parsers became a bit
-hacky and needs a cleanup. Currently it requires:
-1) Passing parsers in a custom platform data by arch code
-or
-2) Hardcoding parsers table in a flash driver
+> Hi Boris,
+> 
+> On 04/07/18 00:20, Boris Brezillon wrote:
+> > We are about to support extracting the real number of bitflips for
+> > 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading
+> > the page in raw mode to compare it to the corrected version, and this
+> > logic will be placed in micron_nand_on_die_ecc_status_4().
+> > 
+> > Moving the micron_nand_on_die_ecc_setup() will allow us to disable
+> > ECC only once.
+> > 
+> > As a result, we have to rework the exit path and add an error path
+> > where the ECC is disabled.
+> > 
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>  
+> 
+> As I said on the other thread this appears to cause a problem for me on 
+> the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find 
+> the BBT, not sure if that is symptom or cause. If I revert this I can 
+> successfully mount and access data on the chip.
+> 
+> Here's some output from dmesg:
+> 
+> nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xd1
+> nand: Micron MT29F1G08ABAGAWP
+> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
+> nand: timing mode 5 not acknowledged by the NAND chip
+> Bad block table not found for chip 0
+> Bad block table not found for chip 0
+> Scanning device for bad blocks
+> random: fast init done
+> Bad block table written to 0x000007fe0000, version 0x01
+> Bad block table written to 0x000007fc0000, version 0x01
+> 3 fixed-partitions partitions found on MTD device pxa3xx_nand-0
+> Creating 3 MTD partitions on "pxa3xx_nand-0":
+> 0x000000000000-0x000007000000 : "user"
+> 0x000007000000-0x000007800000 : "errlog"
+> mtdoops: Attached to MTD device 1
+> mtdoops: ready 0, 1
+> 0x000007800000-0x000008000000 : "nand-bbt"
+> 
+> And from my attempt to mount:
+> 
+> [root@linuxbox ~]# umount /flash && ubiattach -p /dev/mtd0 && mount -t 
+> ubifs ubi
+> 0:user -o sync /flash
+> ubi0: attaching mtd0
+> ubi0: scanning is finished
+> ubi0 error: ubi_read_volume_table: the layout volume was not found
+> ubi0 error: ubi_attach_mtd_dev: failed to attach mtd0, error -22
+> ubiattach: error!: cannot attach "/dev/mtd0"
+>             error 22 (Invalid argument)
+> [root@linuxbox ~]#
+> 
+> 
+> > ---
+> >   drivers/mtd/nand/raw/nand_micron.c | 25 ++++++++++++++++---------
+> >   1 file changed, 16 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> > index 63ac98a36ed7..b9cbaf125a98 100644
+> > --- a/drivers/mtd/nand/raw/nand_micron.c
+> > +++ b/drivers/mtd/nand/raw/nand_micron.c
+> > @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
+> >   
+> >   	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+> >   	if (ret)
+> > -		goto out;
+> > +		goto err_disable_ecc;
+> >   
+> >   	ret = nand_status_op(chip, &status);
+> >   	if (ret)
+> > -		goto out;
+> > +		goto err_disable_ecc;
+> >   
+> >   	ret = nand_exit_status_op(chip);
+> >   	if (ret)
+> > -		goto out;
+> > +		goto err_disable_ecc;
+> >   
+> > -	if (chip->ecc.strength == 4)
+> > -		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status);
+> > -	else
+> > -		max_bitflips = micron_nand_on_die_ecc_status_8(chip, status);
+> > +	micron_nand_on_die_ecc_setup(chip, false);
 
-The purpose of the new implementation is to:
-1) Clean up flash drivers
-2) Have a generic solution
-3) Avoid code duplication
+Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)
+call just before nand_exit_status_op()?
 
-That new implementation assigns table of parsers to a MTD's parent
-device. That way flash driver doesn't have to take care of passing
-parsers. It's inspired by GPIO lookup table.
-
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
----
-It's obviously a RFC patch only. It doesn't really implement anything.
-It DOESN'T COMPILE.
-
-I'd like to know if you like this idea and if it's worth for me to
-actually spend time implementing it.
----
- arch/arm/mach-pxa/corgi.c | 21 +++++++++++++--------
- drivers/mtd/mtdpart.c     |  4 ++++
- 2 files changed, 17 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
-index 9a5a35e90769..0ff77e078d2b 100644
---- a/arch/arm/mach-pxa/corgi.c
-+++ b/arch/arm/mach-pxa/corgi.c
-@@ -615,16 +615,8 @@ static struct nand_bbt_descr sharpsl_bbt = {
- 	.pattern = scan_ff_pattern
- };
- 
--static const char * const probes[] = {
--	"cmdlinepart",
--	"ofpart",
--	"sharpslpart",
--	NULL,
--};
--
- static struct sharpsl_nand_platform_data sharpsl_nand_platform_data = {
- 	.badblock_pattern	= &sharpsl_bbt,
--	.part_parsers		= probes,
- };
- 
- static struct resource sharpsl_nand_resources[] = {
-@@ -688,6 +680,16 @@ static struct i2c_board_info __initdata corgi_i2c_devices[] = {
- 	{ I2C_BOARD_INFO("wm8731", 0x1b) },
- };
- 
-+static struct mtd_parser_lookup_table corgi_mtd_parser_lookup_table = {
-+	.dev_name = NULL, /* Set with registered name */
-+	.table = {
-+		{ .parser = "cmdlinepart" },
-+		{ .parser = "ofpart" },
-+		{ .parser = "sharpslpart" },
-+		{ },
-+	},
-+};
-+
- static void corgi_poweroff(void)
- {
- 	if (!machine_is_corgi())
-@@ -740,6 +742,9 @@ static void __init corgi_init(void)
- 
- 	platform_add_devices(devices, ARRAY_SIZE(devices));
- 
-+	corgi_mtd_parser_lookup_table.dev_name = dev_name(&sharpsl_nand_device.dev);
-+	mtd_parsers_add_lookup_table(corgi_mtd_parser_lookup_table);
-+
- 	regulator_has_full_constraints();
- }
- 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 52e2cb35fc79..0d96857a57d0 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -936,6 +936,10 @@ int parse_mtd_partitions(struct mtd_info *master, const char *const *types,
- 	struct mtd_part_parser *parser;
- 	int ret, err = 0;
- 
-+	if (!types) {
-+		types = mtd_parsers_get(master->dev.parent);
-+	}
-+
- 	if (!types)
- 		types = mtd_is_partition(master) ? default_subpartition_types :
- 			default_mtd_part_types;
--- 
-2.13.7
+> >   
+> >   	ret = nand_read_data_op(chip, buf, mtd->writesize, false);
+> >   	if (!ret && oob_required)
+> >   		ret = nand_read_data_op(chip, chip->oob_poi, mtd->oobsize,
+> >   					false);
+> >   
+> > -out:
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	if (chip->ecc.strength == 4)
+> > +		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status);
+> > +	else
+> > +		max_bitflips = micron_nand_on_die_ecc_status_8(chip, status);
+> > +
+> > +	return max_bitflips;
+> > +
+> > +err_disable_ecc:
+> >   	micron_nand_on_die_ecc_setup(chip, false);
+> >   
+> > -	return ret ? ret : max_bitflips;
+> > +	return ret;
+> >   }
+> >   
+> >   static int
+> >   
+> 
