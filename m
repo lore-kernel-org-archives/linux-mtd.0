@@ -1,28 +1,24 @@
-Received: from mail-yw0-f193.google.com ([209.85.161.193])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ff7kZ-0005Ah-R7
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 17:57:33 +0000
-Received: by mail-yw0-f193.google.com with SMTP id j68-v6so14498174ywg.1
- for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2018 10:57:20 -0700 (PDT)
-Date: Mon, 16 Jul 2018 11:57:17 -0600
-From: Rob Herring <robh@kernel.org>
-To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
- =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: explicitly document nesting
- partitions descriptions
-Message-ID: <20180716175717.GA14348@rob-hp-laptop>
-References: <20180713143221.8474-1-zajec5@gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffAXK-0005dq-Lo
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 20:56:04 +0000
+Date: Mon, 16 Jul 2018 22:55:38 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, "Bean Huo" <beanhuo@micron.com>
+Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
+Message-ID: <20180716225538.542cb096@bbrezillon>
+In-Reply-To: <20180716181057.65d78303@bbrezillon>
+References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
+ <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
+ <20180716181057.65d78303@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20180713143221.8474-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +28,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 13, 2018 at 04:32:20PM +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> Documentation was already saying that fixed and dynamic partitioning can
-> be mixed but was missing a clear description and examples. This commit
-> adds a proper documentation of how descriptions can be nested and how
-> layouts can be mixed.
-> 
-> This addition is important for partitions that contain subpartitions.
-> In such cases partitions have to be properly described in order to let
-> system handle them correctly.
-> 
-> Depending on situation, nesting descriptions may provide more accurate
-> logic/structure and/or allow mixing partitioning types (various
-> "compatible" values).
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
-> V2: Rewrote example: I can include "brcm,trx" now as its Documentation
->     has been pushed into mtd git tree.
->     Updated commit message.
-> ---
->  .../devicetree/bindings/mtd/partition.txt          | 46 ++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
+On Mon, 16 Jul 2018 18:10:57 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> On Mon, 16 Jul 2018 09:00:59 +0000
+> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> 
+> > Hi Boris,
+> > 
+> > On 04/07/18 00:20, Boris Brezillon wrote:  
+> > > We are about to support extracting the real number of bitflips for
+> > > 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading
+> > > the page in raw mode to compare it to the corrected version, and this
+> > > logic will be placed in micron_nand_on_die_ecc_status_4().
+> > > 
+> > > Moving the micron_nand_on_die_ecc_setup() will allow us to disable
+> > > ECC only once.
+> > > 
+> > > As a result, we have to rework the exit path and add an error path
+> > > where the ECC is disabled.
+> > > 
+> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>    
+> > 
+> > As I said on the other thread this appears to cause a problem for me on 
+> > the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find 
+> > the BBT, not sure if that is symptom or cause.
+
+It's most likely the symptom, not the cause.
+
+> > > 
+> > > diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
+> > > index 63ac98a36ed7..b9cbaf125a98 100644
+> > > --- a/drivers/mtd/nand/raw/nand_micron.c
+> > > +++ b/drivers/mtd/nand/raw/nand_micron.c
+> > > @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
+> > >   
+> > >   	ret = nand_read_page_op(chip, page, 0, NULL, 0);
+> > >   	if (ret)
+> > > -		goto out;
+> > > +		goto err_disable_ecc;
+> > >   
+> > >   	ret = nand_status_op(chip, &status);
+> > >   	if (ret)
+> > > -		goto out;
+> > > +		goto err_disable_ecc;
+> > >   
+> > >   	ret = nand_exit_status_op(chip);
+> > >   	if (ret)
+> > > -		goto out;
+> > > +		goto err_disable_ecc;
+> > >   
+> > > -	if (chip->ecc.strength == 4)
+> > > -		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status);
+> > > -	else
+> > > -		max_bitflips = micron_nand_on_die_ecc_status_8(chip, status);
+> > > +	micron_nand_on_die_ecc_setup(chip, false);  
+> 
+> Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)
+> call just before nand_exit_status_op()?
+> 
+
+Just pushed a branch fixing that [1]. Can you test it? If it works,
+I'll ask Miquel to drop the initial set of patches and instead pick the
+fixed ones so that we don't break bisectibility.
+
+[1]https://github.com/bbrezillon/linux-0day/commits/nand/next
