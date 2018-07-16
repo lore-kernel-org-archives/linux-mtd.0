@@ -1,24 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffAmo-0003ib-AX
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 21:12:03 +0000
-Date: Mon, 16 Jul 2018 23:11:49 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH RFC API ONLY] mtd: get parsers from lookup table
-Message-ID: <20180716231149.0704591f@bbrezillon>
-In-Reply-To: <1b51d369d433ae0093ba4dac1062c9e0@milecki.pl>
-References: <20180716111712.7636-1-zajec5@gmail.com>
- <20180716182312.74fc55a9@bbrezillon>
- <1b51d369d433ae0093ba4dac1062c9e0@milecki.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffCD8-0001Rc-1L
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 22:43:20 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>, "Brian
+ Norris" <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Bean Huo <beanhuo@micron.com>
+Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
+Date: Mon, 16 Jul 2018 22:42:54 +0000
+Message-ID: <afe826dcb4934dea9795541ee0385542@svr-chch-ex1.atlnz.lc>
+References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
+ <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
+ <20180716181057.65d78303@bbrezillon> <20180716225538.542cb096@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +28,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 Jul 2018 22:58:19 +0200
-Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl> wrote:
-
-> On 2018-07-16 18:23, Boris Brezillon wrote:
-> > Hi Rafal,
-> >=20
-> > On Mon, 16 Jul 2018 13:17:12 +0200
-> > Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
-> >  =20
-> >> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >>=20
-> >> Existing implementation of specifying flash device parsers became a=20
-> >> bit
-> >> hacky and needs a cleanup. Currently it requires:
-> >> 1) Passing parsers in a custom platform data by arch code
-> >> or
-> >> 2) Hardcoding parsers table in a flash driver
-> >>=20
-> >> The purpose of the new implementation is to:
-> >> 1) Clean up flash drivers
-> >> 2) Have a generic solution
-> >> 3) Avoid code duplication
-> >>=20
-> >> That new implementation assigns table of parsers to a MTD's parent
-> >> device. That way flash driver doesn't have to take care of passing
-> >> parsers. It's inspired by GPIO lookup table.
-> >>=20
-> >> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >> ---
-> >> It's obviously a RFC patch only. It doesn't really implement anything.
-> >> It DOESN'T COMPILE.
-> >>=20
-> >> I'd like to know if you like this idea and if it's worth for me to
-> >> actually spend time implementing it. =20
-> >=20
-> > I love the idea. Actually, I'd like to extend that to fixed partition
-> > definitions (those passed to mtd_device_register()) so that they can be
-> > parsed by the fixed-partition parser (the one already taking care of
-> > compatible =3D "fixed-partitions"). =20
->=20
-> That was something I planned to handle next, so it's great to hear we
-> share the ideas for further improvements! That will extremely simplify
-> mtd_device_register().
-
-Cool!
-
->=20
-> In 99% cases there is only one place in the code registering a given
-> platform device. As there is only one place registering "sharpsl-nand"
-> device, we can assume the resulting name will be "sharpsl-nand.0".
->=20
-> If there was another code doing the same, you couldn't know if you
-> should expect "sharpsl-nand.0" or "sharpsl-nand.1".
-
-It's only true if you use platform_device->id =3D PLATFORM_DEVID_AUTO,
-and I think we can assume linking a lookup table to a device with ->id
-=3D PLATFORM_DEVID_AUTO is broken. In other cases, the id defined at
-platform_device definition time (either PLATFORM_DEVID_NONE or a
-statically assigned id).
-
->=20
-> I believe we should be fine guessing in these 99% cases and only depend
-> on order (semi-risking a race) in that 1% (or less).
+On 17/07/18 08:55, Boris Brezillon wrote:=0A=
+> On Mon, 16 Jul 2018 18:10:57 +0200=0A=
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:=0A=
+> =0A=
+>> On Mon, 16 Jul 2018 09:00:59 +0000=0A=
+>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
+>>=0A=
+>>> Hi Boris,=0A=
+>>>=0A=
+>>> On 04/07/18 00:20, Boris Brezillon wrote:=0A=
+>>>> We are about to support extracting the real number of bitflips for=0A=
+>>>> 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading=
+=0A=
+>>>> the page in raw mode to compare it to the corrected version, and this=
+=0A=
+>>>> logic will be placed in micron_nand_on_die_ecc_status_4().=0A=
+>>>>=0A=
+>>>> Moving the micron_nand_on_die_ecc_setup() will allow us to disable=0A=
+>>>> ECC only once.=0A=
+>>>>=0A=
+>>>> As a result, we have to rework the exit path and add an error path=0A=
+>>>> where the ECC is disabled.=0A=
+>>>>=0A=
+>>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>=0A=
+>>>=0A=
+>>> As I said on the other thread this appears to cause a problem for me on=
+=0A=
+>>> the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find=
+=0A=
+>>> the BBT, not sure if that is symptom or cause.=0A=
+> =0A=
+> It's most likely the symptom, not the cause.=0A=
+> =0A=
+>>>>=0A=
+>>>> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw=
+/nand_micron.c=0A=
+>>>> index 63ac98a36ed7..b9cbaf125a98 100644=0A=
+>>>> --- a/drivers/mtd/nand/raw/nand_micron.c=0A=
+>>>> +++ b/drivers/mtd/nand/raw/nand_micron.c=0A=
+>>>> @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info=
+ *mtd, struct nand_chip *chip,=0A=
+>>>>    =0A=
+>>>>    	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);=0A=
+>>>>    	if (ret)=0A=
+>>>> -		goto out;=0A=
+>>>> +		goto err_disable_ecc;=0A=
+>>>>    =0A=
+>>>>    	ret =3D nand_status_op(chip, &status);=0A=
+>>>>    	if (ret)=0A=
+>>>> -		goto out;=0A=
+>>>> +		goto err_disable_ecc;=0A=
+>>>>    =0A=
+>>>>    	ret =3D nand_exit_status_op(chip);=0A=
+>>>>    	if (ret)=0A=
+>>>> -		goto out;=0A=
+>>>> +		goto err_disable_ecc;=0A=
+>>>>    =0A=
+>>>> -	if (chip->ecc.strength =3D=3D 4)=0A=
+>>>> -		max_bitflips =3D micron_nand_on_die_ecc_status_4(chip, status);=0A=
+>>>> -	else=0A=
+>>>> -		max_bitflips =3D micron_nand_on_die_ecc_status_8(chip, status);=0A=
+>>>> +	micron_nand_on_die_ecc_setup(chip, false);=0A=
+>>=0A=
+>> Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)=0A=
+>> call just before nand_exit_status_op()?=0A=
+>>=0A=
+> =0A=
+> Just pushed a branch fixing that [1]. Can you test it? If it works,=0A=
+> I'll ask Miquel to drop the initial set of patches and instead pick the=
+=0A=
+> fixed ones so that we don't break bisectibility.=0A=
+> =0A=
+> [1]https://github.com/bbrezillon/linux-0day/commits/nand/next=0A=
+> =0A=
+=0A=
+Still appears to have the same problem.=0A=
+=0A=
+I'm guessing that since you can't actually disable ecc on this chip =0A=
+calling micron_nand_on_die_ecc_setup(chip, false); before reading the =0A=
+oob data interferes with it somehow (if I call it after there is no =0A=
+problem).=0A=
+=0A=
+We could add code to qualify the attempt to disable ecc early based on =0A=
+it being optional/mandatory or just stick with it being disabled late.=0A=
