@@ -1,21 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feRRe-0001DX-GW
- for linux-mtd@lists.infradead.org; Sat, 14 Jul 2018 20:47:11 +0000
-Date: Sat, 14 Jul 2018 22:46:48 +0200
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: rawnand: marvell: document a bit more the driver
-Message-ID: <20180714224648.310bedec@windsurf>
-In-Reply-To: <20180714135428.26955-1-miquel.raynal@bootlin.com>
-References: <20180714135428.26955-1-miquel.raynal@bootlin.com>
+Received: from [1.203.163.81] (helo=mailgw02.mediatek.com)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1feubk-0001Tf-1J
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 03:55:34 +0000
+Message-ID: <1531713309.10234.7.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/4] mtd: rawnand: use mtd_device_register() where
+ applicable
+From: xiaolei li <xiaolei.li@mediatek.com>
+To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ <linux-mtd@lists.infradead.org>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
+ <rafal@milecki.pl>
+Date: Mon, 16 Jul 2018 11:55:09 +0800
+In-Reply-To: <20180713092734.16408-2-zajec5@gmail.com>
+References: <20180713092734.16408-1-zajec5@gmail.com>
+ <20180713092734.16408-2-zajec5@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +30,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Fri, 2018-07-13 at 11:27 +0200, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> If driver doesn't specify parsers it can use that little helper.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>  drivers/mtd/nand/raw/cmx270_nand.c  | 4 ++--
+>  drivers/mtd/nand/raw/cs553x_nand.c  | 3 +--
+>  drivers/mtd/nand/raw/davinci_nand.c | 3 +--
+>  drivers/mtd/nand/raw/jz4740_nand.c  | 5 ++---
+>  drivers/mtd/nand/raw/mtk_nand.c     | 2 +-
+>  drivers/mtd/nand/raw/s3c2410.c      | 4 ++--
+>  drivers/mtd/nand/raw/txx9ndfmc.c    | 2 +-
+>  7 files changed, 10 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
+> index 02d6751e9efe..b66e254b6802 100644
+> --- a/drivers/mtd/nand/raw/cmx270_nand.c
+> +++ b/drivers/mtd/nand/raw/cmx270_nand.c
+> @@ -200,8 +200,8 @@ static int __init cmx270_init(void)
+>  	}
+>  
+>  	/* Register the partitions */
+> -	ret = mtd_device_parse_register(cmx270_nand_mtd, NULL, NULL,
+> -					partition_info, NUM_PARTITIONS);
+> +	ret = mtd_device_register(cmx270_nand_mtd, partition_info,
+> +				  NUM_PARTITIONS);
+>  	if (ret)
+>  		goto err_scan;
+>  
+> diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
+> index 82269fde9e66..beafad62e7d5 100644
+> --- a/drivers/mtd/nand/raw/cs553x_nand.c
+> +++ b/drivers/mtd/nand/raw/cs553x_nand.c
+> @@ -310,8 +310,7 @@ static int __init cs553x_init(void)
+>  	for (i = 0; i < NR_CS553X_CONTROLLERS; i++) {
+>  		if (cs553x_mtd[i]) {
+>  			/* If any devices registered, return success. Else the last error. */
+> -			mtd_device_parse_register(cs553x_mtd[i], NULL, NULL,
+> -						  NULL, 0);
+> +			mtd_device_register(cs553x_mtd[i], NULL, 0);
+>  			err = 0;
+>  		}
+>  	}
+> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+> index cd12e5abafde..451abe3ad749 100644
+> --- a/drivers/mtd/nand/raw/davinci_nand.c
+> +++ b/drivers/mtd/nand/raw/davinci_nand.c
+> @@ -803,8 +803,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+>  		goto err;
+>  
+>  	if (pdata->parts)
+> -		ret = mtd_device_parse_register(mtd, NULL, NULL,
+> -					pdata->parts, pdata->nr_parts);
+> +		ret = mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
+>  	else
+>  		ret = mtd_device_register(mtd, NULL, 0);
+>  	if (ret < 0)
+> diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+> index 613b00a9604b..e04597a764a8 100644
+> --- a/drivers/mtd/nand/raw/jz4740_nand.c
+> +++ b/drivers/mtd/nand/raw/jz4740_nand.c
+> @@ -466,9 +466,8 @@ static int jz_nand_probe(struct platform_device *pdev)
+>  		goto err_unclaim_banks;
+>  	}
+>  
+> -	ret = mtd_device_parse_register(mtd, NULL, NULL,
+> -					pdata ? pdata->partitions : NULL,
+> -					pdata ? pdata->num_partitions : 0);
+> +	ret = mtd_device_register(mtd, pdata ? pdata->partitions : NULL,
+> +				  pdata ? pdata->num_partitions : 0);
+>  
+>  	if (ret) {
+>  		dev_err(&pdev->dev, "Failed to add mtd device\n");
+> diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
+> index 75c845adb050..e6b14b79c8a8 100644
+> --- a/drivers/mtd/nand/raw/mtk_nand.c
+> +++ b/drivers/mtd/nand/raw/mtk_nand.c
+> @@ -1357,7 +1357,7 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+> +	ret = mtd_device_register(mtd, NULL, 0);
+>  	if (ret) {
+>  		dev_err(dev, "mtd parse partition error\n");
+>  		nand_release(mtd);
 
-On Sat, 14 Jul 2018 15:54:27 +0200, Miquel Raynal wrote:
+Acked-by: Xiaolei Li <xiaolei.li@mediatek.com>
 
-> + * The internal ECC operations are depicted in details in Marvell
-> + * AN-379.
+Thanks very much!
+Xiaolei
 
-AN-379 is as far as I know not publicly available, so I'm not sure if it
-makes a lot of sense to mention it here.
-
-Best regards,
-
-Thomas
--- 
-Thomas Petazzoni, CTO, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+> index 19661c5d3220..10d81f367d26 100644
+> --- a/drivers/mtd/nand/raw/s3c2410.c
+> +++ b/drivers/mtd/nand/raw/s3c2410.c
+> @@ -802,8 +802,8 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+>  
+>  		mtdinfo->name = set->name;
+>  
+> -		return mtd_device_parse_register(mtdinfo, NULL, NULL,
+> -					 set->partitions, set->nr_partitions);
+> +		return mtd_device_register(mtdinfo, set->partitions,
+> +					   set->nr_partitions);
+>  	}
+>  
+>  	return -ENODEV;
+> diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+> index b567d212fe7d..fe954e2222f5 100644
+> --- a/drivers/mtd/nand/raw/txx9ndfmc.c
+> +++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+> @@ -366,7 +366,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+>  		}
+>  		mtd->name = txx9_priv->mtdname;
+>  
+> -		mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
+> +		mtd_device_register(mtd, NULL, 0);
+>  		drvdata->mtds[i] = mtd;
+>  	}
+>  
