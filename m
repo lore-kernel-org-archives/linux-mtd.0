@@ -1,26 +1,37 @@
-Received: from [1.203.163.81] (helo=mailgw02.mediatek.com)
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1feubk-0001Tf-1J
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 03:55:34 +0000
-Message-ID: <1531713309.10234.7.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/4] mtd: rawnand: use mtd_device_register() where
- applicable
-From: xiaolei li <xiaolei.li@mediatek.com>
-To: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-CC: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Kyungmin Park
- <kyungmin.park@samsung.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- <linux-mtd@lists.infradead.org>, =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>
-Date: Mon, 16 Jul 2018 11:55:09 +0800
-In-Reply-To: <20180713092734.16408-2-zajec5@gmail.com>
-References: <20180713092734.16408-1-zajec5@gmail.com>
- <20180713092734.16408-2-zajec5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::10])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fexYc-0000Vv-Ol
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 07:04:33 +0000
+Subject: Re: [PATCH v2 05/12] dt-bindings: spi: Adjust the bindings for the
+ FSL QSPI driver
+To: Rob Herring <robh@kernel.org>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ linux-spi <linux-spi@vger.kernel.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ =?UTF-8?Q?Marek_Va=c5=a1ut?= <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ =?UTF-8?Q?Miqu=c3=a8l_Raynal?= <miquel.raynal@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, david.wolfe@nxp.com,
+ Fabio Estevam <fabio.estevam@nxp.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Han Xu <han.xu@nxp.com>,
+ Shawn Guo <shawnguo@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ devicetree@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ <1530789310-16254-6-git-send-email-frieder.schrempf@exceet.de>
+ <20180711160521.GA16884@rob-hp-laptop>
+ <9fd871dd-3d10-044c-db80-d65df161a7d9@exceet.de>
+ <CAL_JsqLYiiLNabGWnriL7UoUpVmYfAii+3y-o8od6wU7=xpz1A@mail.gmail.com>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <ef0e2cba-a060-0495-98ac-7a78b480281e@exceet.de>
+Date: Mon, 16 Jul 2018 09:04:12 +0200
 MIME-Version: 1.0
+In-Reply-To: <CAL_JsqLYiiLNabGWnriL7UoUpVmYfAii+3y-o8od6wU7=xpz1A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,125 +41,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2018-07-13 at 11:27 +0200, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> If driver doesn't specify parsers it can use that little helper.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-> ---
->  drivers/mtd/nand/raw/cmx270_nand.c  | 4 ++--
->  drivers/mtd/nand/raw/cs553x_nand.c  | 3 +--
->  drivers/mtd/nand/raw/davinci_nand.c | 3 +--
->  drivers/mtd/nand/raw/jz4740_nand.c  | 5 ++---
->  drivers/mtd/nand/raw/mtk_nand.c     | 2 +-
->  drivers/mtd/nand/raw/s3c2410.c      | 4 ++--
->  drivers/mtd/nand/raw/txx9ndfmc.c    | 2 +-
->  7 files changed, 10 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
-> index 02d6751e9efe..b66e254b6802 100644
-> --- a/drivers/mtd/nand/raw/cmx270_nand.c
-> +++ b/drivers/mtd/nand/raw/cmx270_nand.c
-> @@ -200,8 +200,8 @@ static int __init cmx270_init(void)
->  	}
->  
->  	/* Register the partitions */
-> -	ret = mtd_device_parse_register(cmx270_nand_mtd, NULL, NULL,
-> -					partition_info, NUM_PARTITIONS);
-> +	ret = mtd_device_register(cmx270_nand_mtd, partition_info,
-> +				  NUM_PARTITIONS);
->  	if (ret)
->  		goto err_scan;
->  
-> diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-> index 82269fde9e66..beafad62e7d5 100644
-> --- a/drivers/mtd/nand/raw/cs553x_nand.c
-> +++ b/drivers/mtd/nand/raw/cs553x_nand.c
-> @@ -310,8 +310,7 @@ static int __init cs553x_init(void)
->  	for (i = 0; i < NR_CS553X_CONTROLLERS; i++) {
->  		if (cs553x_mtd[i]) {
->  			/* If any devices registered, return success. Else the last error. */
-> -			mtd_device_parse_register(cs553x_mtd[i], NULL, NULL,
-> -						  NULL, 0);
-> +			mtd_device_register(cs553x_mtd[i], NULL, 0);
->  			err = 0;
->  		}
->  	}
-> diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-> index cd12e5abafde..451abe3ad749 100644
-> --- a/drivers/mtd/nand/raw/davinci_nand.c
-> +++ b/drivers/mtd/nand/raw/davinci_nand.c
-> @@ -803,8 +803,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
->  		goto err;
->  
->  	if (pdata->parts)
-> -		ret = mtd_device_parse_register(mtd, NULL, NULL,
-> -					pdata->parts, pdata->nr_parts);
-> +		ret = mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
->  	else
->  		ret = mtd_device_register(mtd, NULL, 0);
->  	if (ret < 0)
-> diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-> index 613b00a9604b..e04597a764a8 100644
-> --- a/drivers/mtd/nand/raw/jz4740_nand.c
-> +++ b/drivers/mtd/nand/raw/jz4740_nand.c
-> @@ -466,9 +466,8 @@ static int jz_nand_probe(struct platform_device *pdev)
->  		goto err_unclaim_banks;
->  	}
->  
-> -	ret = mtd_device_parse_register(mtd, NULL, NULL,
-> -					pdata ? pdata->partitions : NULL,
-> -					pdata ? pdata->num_partitions : 0);
-> +	ret = mtd_device_register(mtd, pdata ? pdata->partitions : NULL,
-> +				  pdata ? pdata->num_partitions : 0);
->  
->  	if (ret) {
->  		dev_err(&pdev->dev, "Failed to add mtd device\n");
-> diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-> index 75c845adb050..e6b14b79c8a8 100644
-> --- a/drivers/mtd/nand/raw/mtk_nand.c
-> +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> @@ -1357,7 +1357,7 @@ static int mtk_nfc_nand_chip_init(struct device *dev, struct mtk_nfc *nfc,
->  	if (ret)
->  		return ret;
->  
-> -	ret = mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-> +	ret = mtd_device_register(mtd, NULL, 0);
->  	if (ret) {
->  		dev_err(dev, "mtd parse partition error\n");
->  		nand_release(mtd);
+Hi Rob,
 
-Acked-by: Xiaolei Li <xiaolei.li@mediatek.com>
+On 12.07.2018 17:20, Rob Herring wrote:
+> On Thu, Jul 12, 2018 at 2:14 AM Frieder Schrempf
+> <frieder.schrempf@exceet.de> wrote:
+>>
+>> Hi Rob,
+>>
+>> On 11.07.2018 18:05, Rob Herring wrote:
+>>> On Thu, Jul 05, 2018 at 01:15:01PM +0200, Frieder Schrempf wrote:
+>>>> Adjust the documentation of the new SPI memory interface based
+>>>> driver to reflect the new drivers settings.
+>>>
+>>> Bindings shouldn't change (other than new properties) due to driver
+>>> changes.
+>>
+>> Right, I added an explanation below, why I think the changes are necessary.
+>>
+>>>
+>>>>
+>>>> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+>>>> ---
+>>>> Changes in v2:
+>>>> ==============
+>>>> * Split the moving and editing of the dt-bindings in two patches
+>>>>
+>>>>    .../devicetree/bindings/spi/spi-fsl-qspi.txt    | 22 ++++++++++----------
+>>>>    1 file changed, 11 insertions(+), 11 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+>>>> index 483e9cf..8b4eed7 100644
+>>>> --- a/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+>>>> +++ b/Documentation/devicetree/bindings/spi/spi-fsl-qspi.txt
+>>>> @@ -3,9 +3,8 @@
+>>>>    Required properties:
+>>>>      - compatible : Should be "fsl,vf610-qspi", "fsl,imx6sx-qspi",
+>>>>                "fsl,imx7d-qspi", "fsl,imx6ul-qspi",
+>>>> -             "fsl,ls1021a-qspi"
+>>>> +             "fsl,ls1021a-qspi", "fsl,ls2080a-qspi"
+>>>>                or
+>>>> -             "fsl,ls2080a-qspi" followed by "fsl,ls1021a-qspi",
+>>>>                "fsl,ls1043a-qspi" followed by "fsl,ls1021a-qspi"
+>>>
+>>> So the 2080a h/w was compatible with the 1021a h/w, but now it is not?
+>>> How did the h/w change?
+>>
+>> I guess this should be posted as a separate fix. Formerly there was only
+>> "fsl,ls1021a-qspi" handled in the driver and the bindings here claimed
+>> that "fsl,ls2080a-qspi" is compatible.
+>>
+>> Some time ago a separate entry for "fsl,ls2080a-qspi" was added to the
+>> driver [1] and it adds a quirk, that is not set for "fsl,ls1021a-qspi".
+>> That's why I concluded, that these two are actually not compatible.
+> 
+> So before the driver change, the driver didn't work at all on the
+> ls2080a? If so, then removing is appropriate. If not, then removing
+> breaks all kernel versions before the change if you use a newer DT.
 
-Thanks very much!
-Xiaolei
+Before the driver change it couldn't work fully on the ls2080a, as the 
+quirk was missing. At least that's what I deduce from the driver.
 
-> diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-> index 19661c5d3220..10d81f367d26 100644
-> --- a/drivers/mtd/nand/raw/s3c2410.c
-> +++ b/drivers/mtd/nand/raw/s3c2410.c
-> @@ -802,8 +802,8 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
->  
->  		mtdinfo->name = set->name;
->  
-> -		return mtd_device_parse_register(mtdinfo, NULL, NULL,
-> -					 set->partitions, set->nr_partitions);
-> +		return mtd_device_register(mtdinfo, set->partitions,
-> +					   set->nr_partitions);
->  	}
->  
->  	return -ENODEV;
-> diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-> index b567d212fe7d..fe954e2222f5 100644
-> --- a/drivers/mtd/nand/raw/txx9ndfmc.c
-> +++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-> @@ -366,7 +366,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
->  		}
->  		mtd->name = txx9_priv->mtdname;
->  
-> -		mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-> +		mtd_device_register(mtd, NULL, 0);
->  		drvdata->mtds[i] = mtd;
->  	}
->  
+> 
+> 
+>>>>      - reg : the first contains the register location and length,
+>>>>              the second contains the memory mapping address and length
+>>>> @@ -15,14 +14,15 @@ Required properties:
+>>>>      - clock-names : Should contain the name of the clocks: "qspi_en" and "qspi".
+>>>>
+>>>>    Optional properties:
+>>>> -  - fsl,qspi-has-second-chip: The controller has two buses, bus A and bus B.
+>>>> -                              Each bus can be connected with two NOR flashes.
+>>>> -                          Most of the time, each bus only has one NOR flash
+>>>> -                          connected, this is the default case.
+>>>> -                          But if there are two NOR flashes connected to the
+>>>> -                          bus, you should enable this property.
+>>>> -                          (Please check the board's schematic.)
+>>>
+>>> You can't just remove properties without explanation. Why is this no
+>>> longer needed? What about backwards compatibility with existing dtbs?
+>>
+>> You're right, the explanation is missing here.
+>>
+>> The "old" driver was using this property to select one of two dual chip
+>> setups (two chips on one bus or two chips on separate buses). And it
+>> used the order in which the subnodes are defined in the dt to select the
+>> CS, the chip is connected to.
+>>
+>> Both methods are wrong and in fact the "reg" property should be used to
+>> determine which bus and CS a chip is connected to. This also enables us
+>> to use different setups than just single chip, or symmetric dual chip.
+>>
+>> So the porting of the driver from the MTD to the SPI framework actually
+>> enforces the use of the "reg" properties and makes
+>> "fsl,qspi-has-second-chip" superfluous.
+>>
+>> As all boards that have "fsl,qspi-has-second-chip" set, also have
+>> correct "reg" properties, the removal of this property shouldn't lead to
+>> any incompatibilities.
+>>
+>> The only compatibility issues I can see are with imx6sx-sdb.dts and
+>> imx6sx-sdb-reva.dts, which have their reg properties set incorrectly
+>> (see explanation here: [2]), all other boards should stay compatible.
+> 
+> Add this to the commit msg.
+
+Ok.
+
+> 
+>>>> -  - big-endian : That means the IP register is big endian
+>>>> +  - big-endian : That means the IP registers format is big endian
+>>>
+>>> This is a standard property so it doesn't really need to be redefined
+>>> here, but just reference the definition.
+>>
+>> So I will change that to:
+>>
+>>          big-endian : See common-properties.txt for a definition
+> 
+> You can drop "for a definition"
+
+Ok.
+
+Thanks,
+Frieder
