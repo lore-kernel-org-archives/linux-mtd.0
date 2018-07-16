@@ -1,24 +1,27 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffAXK-0005dq-Lo
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 20:56:04 +0000
-Date: Mon, 16 Jul 2018 22:55:38 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, "Bean Huo" <beanhuo@micron.com>
-Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
-Message-ID: <20180716225538.542cb096@bbrezillon>
-In-Reply-To: <20180716181057.65d78303@bbrezillon>
-References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
- <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
- <20180716181057.65d78303@bbrezillon>
+Received: from 11.mo7.mail-out.ovh.net ([87.98.173.157])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffAa5-00078k-C4
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 20:58:55 +0000
+Received: from player693.ha.ovh.net (unknown [10.109.160.54])
+ by mo7.mail-out.ovh.net (Postfix) with ESMTP id 7C970B8F94
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2018 22:58:31 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Mon, 16 Jul 2018 22:58:19 +0200
+From: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
+ Brezillon <boris.brezillon@free-electrons.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH RFC API ONLY] mtd: get parsers from lookup table
+In-Reply-To: <20180716182312.74fc55a9@bbrezillon>
+References: <20180716111712.7636-1-zajec5@gmail.com>
+ <20180716182312.74fc55a9@bbrezillon>
+Message-ID: <1b51d369d433ae0093ba4dac1062c9e0@milecki.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,68 +31,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 Jul 2018 18:10:57 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-
-> On Mon, 16 Jul 2018 09:00:59 +0000
-> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+On 2018-07-16 18:23, Boris Brezillon wrote:
+> Hi Rafal,
 > 
-> > Hi Boris,
-> > 
-> > On 04/07/18 00:20, Boris Brezillon wrote:  
-> > > We are about to support extracting the real number of bitflips for
-> > > 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading
-> > > the page in raw mode to compare it to the corrected version, and this
-> > > logic will be placed in micron_nand_on_die_ecc_status_4().
-> > > 
-> > > Moving the micron_nand_on_die_ecc_setup() will allow us to disable
-> > > ECC only once.
-> > > 
-> > > As a result, we have to rework the exit path and add an error path
-> > > where the ECC is disabled.
-> > > 
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>    
-> > 
-> > As I said on the other thread this appears to cause a problem for me on 
-> > the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find 
-> > the BBT, not sure if that is symptom or cause.
-
-It's most likely the symptom, not the cause.
-
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> > > index 63ac98a36ed7..b9cbaf125a98 100644
-> > > --- a/drivers/mtd/nand/raw/nand_micron.c
-> > > +++ b/drivers/mtd/nand/raw/nand_micron.c
-> > > @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
-> > >   
-> > >   	ret = nand_read_page_op(chip, page, 0, NULL, 0);
-> > >   	if (ret)
-> > > -		goto out;
-> > > +		goto err_disable_ecc;
-> > >   
-> > >   	ret = nand_status_op(chip, &status);
-> > >   	if (ret)
-> > > -		goto out;
-> > > +		goto err_disable_ecc;
-> > >   
-> > >   	ret = nand_exit_status_op(chip);
-> > >   	if (ret)
-> > > -		goto out;
-> > > +		goto err_disable_ecc;
-> > >   
-> > > -	if (chip->ecc.strength == 4)
-> > > -		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status);
-> > > -	else
-> > > -		max_bitflips = micron_nand_on_die_ecc_status_8(chip, status);
-> > > +	micron_nand_on_die_ecc_setup(chip, false);  
+> On Mon, 16 Jul 2018 13:17:12 +0200
+> Rafał Miłecki <zajec5@gmail.com> wrote:
 > 
-> Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)
-> call just before nand_exit_status_op()?
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>> 
+>> Existing implementation of specifying flash device parsers became a 
+>> bit
+>> hacky and needs a cleanup. Currently it requires:
+>> 1) Passing parsers in a custom platform data by arch code
+>> or
+>> 2) Hardcoding parsers table in a flash driver
+>> 
+>> The purpose of the new implementation is to:
+>> 1) Clean up flash drivers
+>> 2) Have a generic solution
+>> 3) Avoid code duplication
+>> 
+>> That new implementation assigns table of parsers to a MTD's parent
+>> device. That way flash driver doesn't have to take care of passing
+>> parsers. It's inspired by GPIO lookup table.
+>> 
+>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>> ---
+>> It's obviously a RFC patch only. It doesn't really implement anything.
+>> It DOESN'T COMPILE.
+>> 
+>> I'd like to know if you like this idea and if it's worth for me to
+>> actually spend time implementing it.
 > 
+> I love the idea. Actually, I'd like to extend that to fixed partition
+> definitions (those passed to mtd_device_register()) so that they can be
+> parsed by the fixed-partition parser (the one already taking care of
+> compatible = "fixed-partitions").
 
-Just pushed a branch fixing that [1]. Can you test it? If it works,
-I'll ask Miquel to drop the initial set of patches and instead pick the
-fixed ones so that we don't break bisectibility.
+That was something I planned to handle next, so it's great to hear we
+share the ideas for further improvements! That will extremely simplify
+mtd_device_register().
 
-[1]https://github.com/bbrezillon/linux-0day/commits/nand/next
+
+> One comment below.
+> 
+>> ---
+>>  arch/arm/mach-pxa/corgi.c | 21 +++++++++++++--------
+>>  drivers/mtd/mtdpart.c     |  4 ++++
+>>  2 files changed, 17 insertions(+), 8 deletions(-)
+>> 
+>> diff --git a/arch/arm/mach-pxa/corgi.c b/arch/arm/mach-pxa/corgi.c
+>> index 9a5a35e90769..0ff77e078d2b 100644
+>> --- a/arch/arm/mach-pxa/corgi.c
+>> +++ b/arch/arm/mach-pxa/corgi.c
+>> @@ -615,16 +615,8 @@ static struct nand_bbt_descr sharpsl_bbt = {
+>>  	.pattern = scan_ff_pattern
+>>  };
+>> 
+>> -static const char * const probes[] = {
+>> -	"cmdlinepart",
+>> -	"ofpart",
+>> -	"sharpslpart",
+>> -	NULL,
+>> -};
+>> -
+>>  static struct sharpsl_nand_platform_data sharpsl_nand_platform_data = 
+>> {
+>>  	.badblock_pattern	= &sharpsl_bbt,
+>> -	.part_parsers		= probes,
+>>  };
+>> 
+>>  static struct resource sharpsl_nand_resources[] = {
+>> @@ -688,6 +680,16 @@ static struct i2c_board_info __initdata 
+>> corgi_i2c_devices[] = {
+>>  	{ I2C_BOARD_INFO("wm8731", 0x1b) },
+>>  };
+>> 
+>> +static struct mtd_parser_lookup_table corgi_mtd_parser_lookup_table = 
+>> {
+>> +	.dev_name = NULL, /* Set with registered name */
+> 
+> Can't you guess the device name? It's really weird that you have to
+> register the lookup table after the device has been registered. I
+> already had a similar discussion on GPIO lookup tables registration on
+> ams-delta here [1], and I think my comments apply to this case as well.
+> 
+> (...)
+> 
+> [1]https://patchwork.ozlabs.org/patch/920798/
+
+Thanks for link to that discussion!
+
+I saw a possible race problem regarding registering lookup table and
+probing a platform (?) device/driver. I thought we can just depend on
+arch code being executed very early.
+
+Your solution with guessing device name should work in 99% of cases. If
+you ls /sys/devices/platform/, you'll see that names are assigned using
+name.<index> pattern.
+
+In 99% cases there is only one place in the code registering a given
+platform device. As there is only one place registering "sharpsl-nand"
+device, we can assume the resulting name will be "sharpsl-nand.0".
+
+If there was another code doing the same, you couldn't know if you
+should expect "sharpsl-nand.0" or "sharpsl-nand.1".
+
+I believe we should be fine guessing in these 99% cases and only depend
+on order (semi-risking a race) in that 1% (or less).
