@@ -1,22 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ff6hk-0001e6-E7
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 16:50:34 +0000
-Date: Mon, 16 Jul 2018 18:50:18 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v4 12/14] arm64: dts: marvell: add AP806 SEI subnode
-Message-ID: <20180716185018.3846a619@xps13>
-In-Reply-To: <20180716153158.GA8527@rob-hp-laptop>
-References: <20180714135428.26955-1-miquel.raynal@bootlin.com>
- <20180716153158.GA8527@rob-hp-laptop>
+Received: from mail-yw0-f193.google.com ([209.85.161.193])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ff7kZ-0005Ah-R7
+ for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 17:57:33 +0000
+Received: by mail-yw0-f193.google.com with SMTP id j68-v6so14498174ywg.1
+ for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2018 10:57:20 -0700 (PDT)
+Date: Mon, 16 Jul 2018 11:57:17 -0600
+From: Rob Herring <robh@kernel.org>
+To: =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Mark Rutland <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ devicetree@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+ =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: explicitly document nesting
+ partitions descriptions
+Message-ID: <20180716175717.GA14348@rob-hp-laptop>
+References: <20180713143221.8474-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20180713143221.8474-1-zajec5@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +32,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+On Fri, Jul 13, 2018 at 04:32:20PM +0200, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Documentation was already saying that fixed and dynamic partitioning can
+> be mixed but was missing a clear description and examples. This commit
+> adds a proper documentation of how descriptions can be nested and how
+> layouts can be mixed.
+> 
+> This addition is important for partitions that contain subpartitions.
+> In such cases partitions have to be properly described in order to let
+> system handle them correctly.
+> 
+> Depending on situation, nesting descriptions may provide more accurate
+> logic/structure and/or allow mixing partitioning types (various
+> "compatible" values).
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+> V2: Rewrote example: I can include "brcm,trx" now as its Documentation
+>     has been pushed into mtd git tree.
+>     Updated commit message.
+> ---
+>  .../devicetree/bindings/mtd/partition.txt          | 46 ++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
 
-Rob Herring <robh@kernel.org> wrote on Mon, 16 Jul 2018 09:31:58 -0600:
-
-> On Thu, Jul 05, 2018 at 02:40:09PM +0200, Miquel Raynal wrote:
-> > Add the System Error Interrupt node, representing an IRQ chip which is
-> > part of the GIC. The SEI node has two subnodes, one for each interrupt
-> > domain: wired (from the AP) and not-wired (MSIs from the CPs). =20
->=20
-> Where are the 2 sub-nodes?
-
-Indeed I did not update the commit log.
-
-[...]
-
-> > +			sei: interrupt-controller@3f0200 {
-> > +				compatible =3D "marvell,armada-8k-sei";
-> > +				reg =3D <0x3f0200 0x40>;
-> > +				interrupts =3D <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> > +				marvell,sei-ap-ranges =3D <0 21>;
-> > +				marvell,sei-cp-ranges =3D <21 43>;
-
-After more discussion, these ranges seems to be only related to the
-IP internal organization itself and should not appear in the device
-tree at all. Instead, I could probably have a more meaningful
-compatible string, like "marvell,ap806-sei". Next time an AP has a
-different internal distribution, we'll just add a different compatible
-and handle the differences in the driver directly.
-
-This does not have a big impact on the rest of the driver, I should
-probably let Marc review this version first.
-
-Thanks,
-Miqu=C3=A8l
+Reviewed-by: Rob Herring <robh@kernel.org>
