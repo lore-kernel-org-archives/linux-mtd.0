@@ -1,30 +1,26 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffWbr-0003lP-Rn
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 20:30:13 +0000
-Received: by mail-lj1-x243.google.com with SMTP id s12-v6so2121520ljj.0
- for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2018 13:30:01 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffWdJ-0005O0-0X
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 20:31:42 +0000
+Date: Tue, 17 Jul 2018 22:31:29 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>, Tony Lindgren <tony@atomide.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Krzysztof Kozlowski
+ <krzk@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Shreeya Patel
+ <shreeya.patel23498@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH RESEND v3] mtd: rawnand: ams-delta: use GPIO lookup table
+Message-ID: <20180717223129.5e999c50@bbrezillon>
+In-Reply-To: <20180717170552.17735-1-jmkrzyszt@gmail.com>
+References: <20180709193850.20191-1-jmkrzyszt@gmail.com>
+ <20180717170552.17735-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
-Sender: arndbergmann@gmail.com
-In-Reply-To: <20180717220136.2782fc5d@bbrezillon>
-References: <20180711122709.358159-1-arnd@arndb.de>
- <20180711150449.4152333c@bbrezillon>
- <CAK8P3a1M4v1hMduAX3y39DEjBiT=70xm-+qJ8CPLZHQwKOzJ1g@mail.gmail.com>
- <20180717220136.2782fc5d@bbrezillon>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 17 Jul 2018 22:29:58 +0200
-Message-ID: <CAK8P3a1Pa1U+RsmhSk=iJErAdj0tKKh967X1dAqbA+Vz-nKCeg@mail.gmail.com>
-Subject: Re: [PATCH] nand: ranw: qcom_nand: stop using phys_to_dma()
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Abhishek Sahu <absahu@codeaurora.org>,
- Archit Taneja <architt@codeaurora.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,44 +30,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 17, 2018 at 10:01 PM, Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Hi Arnd,
->
-> On Wed, 11 Jul 2018 16:26:31 +0200
-> Arnd Bergmann <arnd@arndb.de> wrote:
->
->> On Wed, Jul 11, 2018 at 3:04 PM, Boris Brezillon
->> <boris.brezillon@bootlin.com> wrote:
->> > On Wed, 11 Jul 2018 14:26:58 +0200
->> > Arnd Bergmann <arnd@arndb.de> wrote:
->> >
->> >> Compile-testing this driver on x86 caused a link error:
->> >>
->> >> ERROR: "__phys_to_dma" [drivers/mtd/nand/raw/qcom_nandc.ko] undefined!
->> >>
->> >> The problem here is that the driver attempts to convert the physical
->> >> address into the DMA controller as a dma_addr_t and calls phys_to_dma()
->> >> to do the conversion.
->> >>
->> >> However, there is no generic way to convert a phys_addr_t into a dma_addr_t
->> >> for anything other than RAM (which should use the dma-mapping API instead).
->> >> The only correct use of phys_to_dma() instead is inside of the dma-mapping
->> >> implementation.
->> >
->> > Should we use dma_map_resource() to do the phys_addr_t to dma_addr_t
->> > conversion?
->>
->> I had not seen that interface before, but yes, that does seem like the best
->> way to do it here.
->
-> Do you plan to send a new version using dma_map_resource()?
++Tony
 
-I somehow thought you were going to do that yourself, but have now
-posted a new version of the patch the way you suggested.
+On Tue, 17 Jul 2018 19:05:52 +0200
+Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-> BTW, there's typo in the subject prefix (s/ranw/rawnand/).
+> Now as Amstrad Delta board - the only user of this driver - provides
+> GPIO lookup tables, switch from GPIO numbers to GPIO descriptors and
+> use the table to locate required GPIO pins.
+> 
+> Declare static variables for storing GPIO descriptors and replace
+> gpio_ function calls with their gpiod_ equivalents.
+> 
+> Pin naming used by the driver should be followed while respective GPIO
+> lookup table is initialized by a board init code.
+> 
+> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
-Hmm, missed that again in v2. Can you fix it up when applying?
+Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-     Arnd
+Just a minor comment below (nothing important, just a coding style
+preference).
+
+Also, if it goes through the omap tree (I guess it will target 4.20),
+I'll need an immutable tag, because I have changes touching this driver
+in the pipe (that's more a request for Tony).
+
+
+> @@ -230,9 +205,42 @@ static int ams_delta_init(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, io_base);
+>  
+>  	/* Set chip enabled, but  */
+> -	err = gpio_request_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+> -	if (err)
+> -		goto out_gpio;
+> +	gpiod_nwp = devm_gpiod_get(&pdev->dev, "nwp", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gpiod_nwp)) {
+> +		err = PTR_ERR(gpiod_nwp);
+> +		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+
+Can you add a blank line after each if (IS_ERR(gpiod_nwp)) { } block.
+
+> +	gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gpiod_nce)) {
+> +		err = PTR_ERR(gpiod_nce);
+> +		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+> +	gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gpiod_nre)) {
+> +		err = PTR_ERR(gpiod_nre);
+> +		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+> +	gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_HIGH);
+> +	if (IS_ERR(gpiod_nwe)) {
+> +		err = PTR_ERR(gpiod_nwe);
+> +		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+> +	gpiod_ale = devm_gpiod_get(&pdev->dev, "ale", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gpiod_ale)) {
+> +		err = PTR_ERR(gpiod_ale);
+> +		dev_err(&pdev->dev, "ALE GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+> +	gpiod_cle = devm_gpiod_get(&pdev->dev, "cle", GPIOD_OUT_LOW);
+> +	if (IS_ERR(gpiod_cle)) {
+> +		err = PTR_ERR(gpiod_cle);
+> +		dev_err(&pdev->dev, "CLE GPIO request failed (%d)\n", err);
+> +		goto out_mtd;
+> +	}
+>  
+>  	/* Scan to find existence of the device */
+>  	err = nand_scan(ams_delta_mtd, 1);
