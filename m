@@ -1,21 +1,20 @@
-Received: from bastet.se.axis.com ([195.60.68.11])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffOmv-0008DY-H9
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:09:07 +0000
-From: =?iso-8859-1?Q?Per_F=F6rlin?= <per.forlin@axis.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Artem
- Bityutskiy" <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: Add volume read and write statistics
-Date: Tue, 17 Jul 2018 12:08:51 +0000
-Message-ID: <1531829331815.70807@axis.com>
-References: <1531823419-8665-1-git-send-email-perfn@axis.com>,
- <1986554.RvkB0gC8kI@blindfold>
-In-Reply-To: <1986554.RvkB0gC8kI@blindfold>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffOnZ-00005q-MA
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:09:47 +0000
+Date: Tue, 17 Jul 2018 14:09:23 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] mtd: rawnand: marvell: document a bit more the driver
+Message-ID: <20180717140923.7da8837d@bbrezillon>
+In-Reply-To: <20180714135428.26955-1-miquel.raynal@bootlin.com>
+References: <20180714135428.26955-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> To: Per F=F6rlin=0A=
-> Cc: linux-mtd@lists.infradead.org; Artem Bityutskiy; Per F=F6rlin=0A=
-> Subject: Re: [PATCH] UBI: Add volume read and write statistics=0A=
-> =0A=
-> Am Dienstag, 17. Juli 2018, 12:30:19 CEST schrieb Per Forlin:=0A=
-> > Simple read and write statistics.=0A=
-> > * Bytes read=0A=
-> > * Bytes written=0A=
-> > * Number of reads=0A=
-> > * Number of writes=0A=
-> >=0A=
-> > This is useful to find out how the storage is being utilized.=0A=
-> > For block devices this already exists via /proc/diskstats.=0A=
-> > The intention of this patch is to add similar stats=0A=
-> > for UBI as well.=0A=
-> =0A=
-> Why on UBI level and not MTD?=0A=
-In my case I wanted to evaluate the performance per volume. I have one MTD=
-=0A=
-device with several UBI volumes. It would be sufficient to have it on=0A=
-an MTD level to see the overall storage usage.=0A=
-This would still be very helpful for me.=0A=
-=0A=
-Having it on an MTD level is of course more general.=0A=
-I wouldn't mind changing the patch to add the stats in mtdcore=0A=
-for mtd_read() and mtd_write()=0A=
-=0A=
-In case of MTD block devices the stats will be somewhat redundant with=0A=
-/proc/diskstats.=0A=
-=0A=
-Do you think I should update the patch to add MTD stats instead?=0A=
+On Sat, 14 Jul 2018 15:54:27 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> A stale document about the old pxa3cc_nand.c driver is available in
+> Documentation/mtd/nand/. Rewrite the parts that explain the IP itself
+> and some non-trivial choices made in the driver directly in
+> marvell_nand.c to then be able to remove this file.
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/marvell_nand.c | 31 +++++++++++++++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index ba6889bbe802..a50ea47baa4f 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -5,6 +5,37 @@
+>   * Copyright (C) 2017 Marvell
+>   * Author: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+>   *
+> + *
+> + * This NAND controller driver handles two versions of the hardware,
+> + * one is called NFCv1 and is available on PXA SoCs and the other is
+> + * called NFCv2 and is available on almost all the Armada SoCs.
+> + *
+> + * The main differences are that the NFCv1 has DMA support and only
+> + * has Hamming ECC capabilities, while NFCv2 does not support DMA but
+> + * has hardware BCH support.
+> + *
+> + * The internal ECC operations are depicted in details in Marvell
+> + * AN-379.
+> + *
+> + * The controller has certain limitations that are handled by the
+> + * driver:
+> + *   - It can only read 2k at a time. To overcome this limitation, the
+> + *     driver makes use of 'naked' operations.
+> + *   - The ECC strength in BCH mode cannot be tuned easily. It is a
+> + *     fixed 16 bytes. What can be tuned is the area on which this
+
+		   ^ bits
+
+> + *     correction occurs. Hence, using 2048B ECC chunks makes the
+> + *     strength to be 4b/512B.
+
+I'd mention that max ECC step size is 2k here. So you can actually
+choose something between 512 and 2k based on the chip requirements.
+
+> + *   - The controller will always treat data bytes, spare bytes and
+
+Some people call OOB bytes, spare bytes, what you refer to here are
+free OOB bytes. I think it's worth clarifying that somewhere.
+
+> + *     ECC bytes in that order, no matter the real factory layout
+> + *     (which is usually all data then all OOB bytes). But depending
+> + *     on the chosen layout, the areas of each section may vary or be
+> + *     absent. The same data/spare/ecc layout is repeated until the
+> + *     next chunk were each section may be different again. The
+> + *     marvell_nfc_layouts array below contains the currently
+> + *     supported layouts.
+> + *   - Because of these weird layouts, the Bad Block Markers can be
+> + *     located in data. In this case, the NAND_BBT_NO_OOB_BBM option
+> + *     must be set.
+>   */
+>  
+>  #include <linux/module.h>
