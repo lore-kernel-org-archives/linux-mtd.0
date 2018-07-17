@@ -1,28 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffXZd-0005iQ-U7
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 21:32:00 +0000
-Date: Tue, 17 Jul 2018 23:31:43 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
- "Brian Norris" <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Bean Huo <beanhuo@micron.com>
-Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
-Message-ID: <20180717233143.030b9935@bbrezillon>
-In-Reply-To: <16b088c3887b4f1b84bd1002b0de75cb@svr-chch-ex1.atlnz.lc>
-References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
- <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
- <20180716181057.65d78303@bbrezillon>
- <20180716225538.542cb096@bbrezillon>
- <afe826dcb4934dea9795541ee0385542@svr-chch-ex1.atlnz.lc>
- <20180717134156.3d8e016c@bbrezillon>
- <16b088c3887b4f1b84bd1002b0de75cb@svr-chch-ex1.atlnz.lc>
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffY0J-0005Eg-RH
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 21:59:34 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Dinh Nguyen
+ <dinguyen@kernel.org>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ "thor.thayer@linux.intel.com" <thor.thayer@linux.intel.com>, Marek Vasut
+ <marex@denx.de>
+Subject: Re: [BUG] mtd: rawnand: mircon: Cannot detect chip with commit
+ 51f3b3970a8c
+Date: Tue, 17 Jul 2018 21:59:16 +0000
+Message-ID: <db049be9e08943b984c41733167cfec7@svr-chch-ex1.atlnz.lc>
+References: <c3419bce-ecdb-b587-5e79-f75e34e7ef6c@kernel.org>
+ <20180706192058.2464d86c@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,120 +28,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 17 Jul 2018 21:27:26 +0000
-Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-
-> Hi Boris,
-> 
-> On 17/07/18 23:42, Boris Brezillon wrote:
-> > On Mon, 16 Jul 2018 22:42:54 +0000
-> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >   
-> >> On 17/07/18 08:55, Boris Brezillon wrote:  
-> >>> On Mon, 16 Jul 2018 18:10:57 +0200
-> >>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> >>>      
-> >>>> On Mon, 16 Jul 2018 09:00:59 +0000
-> >>>> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
-> >>>>     
-> >>>>> Hi Boris,
-> >>>>>
-> >>>>> On 04/07/18 00:20, Boris Brezillon wrote:  
-> >>>>>> We are about to support extracting the real number of bitflips for
-> >>>>>> 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading
-> >>>>>> the page in raw mode to compare it to the corrected version, and this
-> >>>>>> logic will be placed in micron_nand_on_die_ecc_status_4().
-> >>>>>>
-> >>>>>> Moving the micron_nand_on_die_ecc_setup() will allow us to disable
-> >>>>>> ECC only once.
-> >>>>>>
-> >>>>>> As a result, we have to rework the exit path and add an error path
-> >>>>>> where the ECC is disabled.
-> >>>>>>
-> >>>>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>  
-> >>>>>
-> >>>>> As I said on the other thread this appears to cause a problem for me on
-> >>>>> the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find
-> >>>>> the BBT, not sure if that is symptom or cause.  
-> >>>
-> >>> It's most likely the symptom, not the cause.
-> >>>      
-> >>>>>>
-> >>>>>> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-> >>>>>> index 63ac98a36ed7..b9cbaf125a98 100644
-> >>>>>> --- a/drivers/mtd/nand/raw/nand_micron.c
-> >>>>>> +++ b/drivers/mtd/nand/raw/nand_micron.c
-> >>>>>> @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info *mtd, struct nand_chip *chip,
-> >>>>>>     
-> >>>>>>     	ret = nand_read_page_op(chip, page, 0, NULL, 0);
-> >>>>>>     	if (ret)
-> >>>>>> -		goto out;
-> >>>>>> +		goto err_disable_ecc;
-> >>>>>>     
-> >>>>>>     	ret = nand_status_op(chip, &status);
-> >>>>>>     	if (ret)
-> >>>>>> -		goto out;
-> >>>>>> +		goto err_disable_ecc;
-> >>>>>>     
-> >>>>>>     	ret = nand_exit_status_op(chip);
-> >>>>>>     	if (ret)
-> >>>>>> -		goto out;
-> >>>>>> +		goto err_disable_ecc;
-> >>>>>>     
-> >>>>>> -	if (chip->ecc.strength == 4)
-> >>>>>> -		max_bitflips = micron_nand_on_die_ecc_status_4(chip, status);
-> >>>>>> -	else
-> >>>>>> -		max_bitflips = micron_nand_on_die_ecc_status_8(chip, status);
-> >>>>>> +	micron_nand_on_die_ecc_setup(chip, false);  
-> >>>>
-> >>>> Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)
-> >>>> call just before nand_exit_status_op()?
-> >>>>     
-> >>>
-> >>> Just pushed a branch fixing that [1]. Can you test it? If it works,
-> >>> I'll ask Miquel to drop the initial set of patches and instead pick the
-> >>> fixed ones so that we don't break bisectibility.
-> >>>
-> >>> [1]https://github.com/bbrezillon/linux-0day/commits/nand/next
-> >>>      
-> >>
-> >> Still appears to have the same problem.
-> >>
-> >> I'm guessing that since you can't actually disable ecc on this chip
-> >> calling micron_nand_on_die_ecc_setup(chip, false); before reading the
-> >> oob data interferes with it somehow (if I call it after there is no
-> >> problem).
-> >>
-> >> We could add code to qualify the attempt to disable ecc early based on
-> >> it being optional/mandatory or just stick with it being disabled late.  
-> > 
-> > Okay. I gave up on disabling ECC earlier and instead implemented what
-> > you suggested. Can you test
-> > https://github.com/bbrezillon/linux-0day/commits/nand/next again and
-> > let me know if it works for you?  
-> 
-> Yes that works for me. Feel free to add
-> 
-> Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> 
-> to
-> 
-> 88240e244026 mtd: rawnand: micron: Make ECC activation stateful
-> 6ae7f205cec0 mtd: rawnand: micron: Avoid enabling/disabling ECC when it 
-> can't be disabled
-
-Okay, cool.
-
-Miquel, can you drop:
-
-683ca8a70738 mtd: rawnand: micron: Get the actual number of bitflips
-d73e5d29aa29 mtd: rawnand: micron: Disable ECC earlier in the read path
-db2d37331813 mtd: rawnand: micron: Stop passing mtd to ecc_status() funcs
-51f3b3970a8c mtd: rawnand: micron: detect forced on-die ECC
-386fc2609d15 mtd: rawnand: micron: support 8/512 on-die ECC
-
-I'll send a new patch series soon.
-
-Thanks,
-
-Boris
+Hi Dinh, Boris,=0A=
+=0A=
+On 07/07/18 05:21, Boris Brezillon wrote:=0A=
+> On Fri, 6 Jul 2018 12:03:49 -0500=0A=
+> Dinh Nguyen <dinguyen@kernel.org> wrote:=0A=
+> =0A=
+>> Hi,=0A=
+>>=0A=
+>> It looks like commit: "51f3b3970a8c mtd: rawnand: micron: detect forced=
+=0A=
+>> on-die ECC" is causing the NAND chip on the SoCFPGA Arria10 devkit to=0A=
+>> stop working on linux-next.=0A=
+>>=0A=
+>> If I revert the commit, then the NAND driver is able to detect the NAND=
+=0A=
+>> chip.=0A=
+>>=0A=
+>> The NAND chip is a Micron MT29F1G08ABBEAH4 part.=0A=
+>>=0A=
+>>=0A=
+>> [    0.741984] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xa1=
+=0A=
+>> [    0.748336] nand: Micron MT29F1G08ABBEAH4=0A=
+>> [    0.752330] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048,=
+=0A=
+>> OOB siz=0A=
+>> e: 64=0A=
+>>   [    0.763358] ecc.mode =3D 3=0A=
+>> [    0.766312] On-die ECC forcefully enabled, not supported=0A=
+>> [    0.771654] denali-nand-dt: probe of ffb90000.nand failed with error =
+-22=0A=
+>>=0A=
+>> With commit reverted:=0A=
+>>=0A=
+>> [    0.742481] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xa1=
+=0A=
+>> [    0.748833] nand: Micron MT29F1G08ABBEAH4=0A=
+>> [    0.752828] nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048,=
+=0A=
+>> OOB siz=0A=
+>> e: 64=0A=
+>> [    0.760610] Bad block table found at page 65472, version 0x01=0A=
+>> [    0.766433] Bad block table found at page 65408, version 0x01=0A=
+>> [    0.772464] 2 fixed-partitions partitions found on MTD device denali-=
+nand=0A=
+>> [    0.779247] Creating 2 MTD partitions on "denali-nand":=0A=
+>> [    0.784453] 0x000000000000-0x000001c00000 : "Boot and fpga data"=0A=
+>> [    0.791241] 0x000001c00000-0x000008000000 : "Root Filesystem - JFFS2"=
+=0A=
+>>=0A=
+>> Looks like if I comment out this part of the patch in=0A=
+>> drivers/mtd/nand/raw/nand_micron.c=0A=
+>>=0A=
+>> +#if 0=0A=
+>>          for (i =3D 0; i < ARRAY_SIZE(micron_on_die_ecc); i++)=0A=
+>>                  if (chip->id.data[1] =3D=3D micron_on_die_ecc[i])=0A=
+>>                          return MICRON_ON_DIE_MANDATORY;=0A=
+>> -=0A=
+>> +#endif=0A=
+> =0A=
+> Oops, I overlooked that detail. Testing only the ID bytes is not=0A=
+> enough, because it does not encode whether the NAND has on-die ECC or=0A=
+> not. We should really test the model name here...=0A=
+> =0A=
+> Chris, can you prepare a fixup for that?=0A=
+> =0A=
+=0A=
+With the latest set of changes is there anything left to do for this? I =0A=
+think we now have on-die ECC detection that doesn't require checking the ID=
+.=0A=
