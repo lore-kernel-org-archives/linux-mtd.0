@@ -1,21 +1,19 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffRd9-0000T5-Vj
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 15:11:13 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Steve deRosier <derosier@gmail.com>
-Cc: per.forlin@axis.com, linux-mtd@lists.infradead.org,
- Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: Add volume read and write statistics
-Date: Tue, 17 Jul 2018 17:10:59 +0200
-Message-ID: <1886978.5HXsB66B85@blindfold>
-In-Reply-To: <CALLGbRLOwfcHtDjZYDvKnzQ+-RbpgNF0qMjH+O8K=ktd42x6RA@mail.gmail.com>
-References: <1531823419-8665-1-git-send-email-perfn@axis.com>
- <1531839678791.88043@axis.com>
- <CALLGbRLOwfcHtDjZYDvKnzQ+-RbpgNF0qMjH+O8K=ktd42x6RA@mail.gmail.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>
+CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <anuragku@xilinx.com>,
+ <cyrille.pitchen@microchip.com>, <nicolas.ferre@microchip.com>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: [PATCH 3/3] mtd: spi-nor: add support for Microchip SST26 QSPI flash
+ memories
+Date: Tue, 17 Jul 2018 19:28:31 +0300
+Message-ID: <20180717162831.17947-3-tudor.ambarus@microchip.com>
+In-Reply-To: <20180717162831.17947-1-tudor.ambarus@microchip.com>
+References: <20180717162831.17947-1-tudor.ambarus@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 17. Juli 2018, 17:06:12 CEST schrieb Steve deRosier:
-> > > While having a cup of coffee I thought more about this.
-> > > Actually both, MTD and UBI makes sense.
-> > > The most important issue is that you integrate it with the existing diskstats.
-> > > So instead of having our own interface feeding MTD/UBI stats into diskstats
-> > > would be nice. Did you look into that? I'm not sure how much work this would be.
-> > > That way users can use existing tools such as iostat...
-> > I actually started out looking for the information under diskstats,
-> > then I learned it's only for block devices. I took a quick glance at
-> > it before I went for the sys implementation instead. diskstats is
-> > separated from the MTD and UBI stuff and I don't know if one can make a
-> > connection to MTD/UBI somehow. I will take a closer look at this.
-> 
-> Perhaps it was "only for block devices" because no one ever
-> implemented the necessary hooks in MTD or UBI?  I don't know the
-> history, nor the information you found, just making a stab in the
-> dark.
-> 
-> If UBI and/or MTD can provide the statistics that diskstats needs in a
-> interpretation that makes sense, why not go that way?
+The flash memories are write-protected by default at power-on and
+must be unlocked first, before being erased, then programmed.
 
-Yeah, that's what I have in mind. Maybe we can easily teach diskstats
-about MTD.
+The erase block sizes are not uniform. The memory layout is uniform
+just for the 4K sector blocks.
 
-Thanks,
-//richard
+Based on initial work done by Cyrille Pitchen.
+
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index eddf09f..06d7023 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1164,10 +1164,30 @@ static const struct flash_info spi_nor_ids[] = {
+ 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
+ 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
+ 	{
++		"sst26vf016b", INFO(0xbf2641, 0, 64 * 1024, 32,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			UNLOCK_GLOBAL_BLOCK)
++	},
++	{
++		"sst26vf032b", INFO(0xbf2642, 0, 64 * 1024, 64,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			UNLOCK_GLOBAL_BLOCK)
++	},
++	{
+ 		"sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			UNLOCK_GLOBAL_BLOCK)
+ 	},
++	{
++		"sst26vf040b", INFO(0xbf2654, 0, 64 * 1024, 8,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			UNLOCK_GLOBAL_BLOCK)
++	},
++	{
++		"sst26vf080b", INFO(0xbf2658, 0, 64 * 1024, 16,
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			UNLOCK_GLOBAL_BLOCK)
++	},
+ 
+ 	/* ST Microelectronics -- newer production may have feature updates */
+ 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+-- 
+2.9.4
