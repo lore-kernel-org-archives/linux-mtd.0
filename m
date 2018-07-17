@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffPBY-0007cx-EF
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:34:34 +0000
-Date: Tue, 17 Jul 2018 14:34:05 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
+ id 1ffPFv-00014d-2r
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:39:04 +0000
+Date: Tue, 17 Jul 2018 14:38:41 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: remove stale comment in mtd_oob_ops structure
-Message-ID: <20180717143405.25d1ad85@xps13>
-In-Reply-To: <20180717142524.434972e6@bbrezillon>
-References: <20180714123234.16127-1-miquel.raynal@bootlin.com>
- <20180717142524.434972e6@bbrezillon>
+Subject: Re: [PATCH] mtd: rawnand: tegra: fix error handling of subop helpers
+Message-ID: <20180717143841.3e8cbd88@bbrezillon>
+In-Reply-To: <20180717142254.61998c98@xps13>
+References: <20180714163251.7773-1-miquel.raynal@bootlin.com>
+ <20180717141733.61bc9c71@bbrezillon>
+ <20180717142254.61998c98@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,64 +26,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Tue, 17 Jul 2018 14:22:54 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
-14:25:24 +0200:
-
-> On Sat, 14 Jul 2018 14:32:34 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> Hi Boris,
 >=20
-> > A comment in the kernel doc of the mtd_oob_ops structure tells that it
-> > is not possible to write more than one page with OOB. This was
-> > probably true at some time in the past but today it is entirely wrong.
-> >=20
-> > As one can see for instance in the nand_do_write_ops() helper available
-> > in the NAND core, this implementation called by mtd->_write_oob()
-> > simply loops over the pages until everything has been written.
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > ---
-> >  include/linux/mtd/mtd.h | 4 ----
-> >  1 file changed, 4 deletions(-)
-> >=20
-> > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> > index a86c4fa93115..59578aab277a 100644
-> > --- a/include/linux/mtd/mtd.h
-> > +++ b/include/linux/mtd/mtd.h
-> > @@ -66,10 +66,6 @@ struct mtd_erase_region_info {
-> >   *		mode =3D MTD_OPS_PLACE_OOB or MTD_OPS_RAW)
-> >   * @datbuf:	data buffer - if NULL only oob data are read/written
-> >   * @oobbuf:	oob data buffer
-> > - *
-> > - * Note, it is allowed to read more than one OOB area at one go, but n=
-ot write.
-> > - * The interface assumes that the OOB write requests program only one =
-page's
-> > - * OOB area. =20
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
+> 14:17:33 +0200:
 >=20
-> Hm, I wouldn't be so prompt at nuking this comment since some
-> implementations (like onenand) really have this limitation. How about
-
-Didn't know/see.
-
-> adjusting the comment to reflect the fact that this limitation is
-> implementation dependent?
+> > On Sat, 14 Jul 2018 18:32:51 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> >  =20
+> > > A report from Colin Ian King pointed a CoverityScan issue where error
+> > > values on these helpers where not checked in the drivers. These
+> > > helpers could error out only in case of a software bug in driver code,
+> > > not because of a runtime/hardware error but in any cases it is safer
+> > > to handle these errors properly.
+> > >=20
+> > > Fix the Tegra NAND controller driver implementation by checking
+> > > potential negative error values coming from these helpers.   =20
+> >=20
+> > Hm, ok. I thought you were opting for a return 0 + WARN_ON() approach,
+> > what made you change your mind? =20
 >=20
-> "
-> Note, some MTD drivers do not allow you to write more than one OOB area
-> at one go. If you try to do that on such an MTD device, -EINVAL will be
-> returned. If you want to make your implementation portable on all kind
-> of MTD devices you should split the write request into several
-> sub-requests when the request crosses a page boundary.
-> "
+> Wise people told me WARN_ON() should be avoided as much as possible.
 
-Fine by me.
+I think I mentioned BUG_ON(), not WARN_ON() :P.
 
-However, for a future work, I would think that it's something that we
-should handle at MTD level (or even in the onenand driver), not at user
-level, and simplify the ABI.
+> Hence after more discussion with myself I choose to implement the most
+> standard C solution: check the returned value...
+>=20
+> But if you think a return 0 + WARN_ON() would be better I'm ready to
+> change this as it was my initial idea :)
 
+Well, if this cannot happen without a SW bug, then I'd recommend the
+WARN_ON() + unsigned int ret approach. That should force people debug
+their implementation while keeping drivers code simple.
 
-Thanks,
-Miqu=C3=A8l
+>=20
+> >  =20
+> > >=20
+> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > > ---
+> > >=20
+> > > This patch should have been part of the following series:
+> > > http://lists.infradead.org/pipermail/linux-mtd/2018-July/082654.html
+> > > It will be squashed with original commit introducing this driver.
+> > >=20
+> > > Thanks,
+> > > Miqu=C3=A8l
+> > >=20
+> > > drivers/mtd/nand/raw/tegra_nand.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >=20
+> > > diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw=
+/tegra_nand.c
+> > > index 22d6a7f9ff80..59ead8f41718 100644
+> > > --- a/drivers/mtd/nand/raw/tegra_nand.c
+> > > +++ b/drivers/mtd/nand/raw/tegra_nand.c
+> > > @@ -379,6 +379,9 @@ static int tegra_nand_cmd(struct nand_chip *chip,
+> > >  		case NAND_OP_ADDR_INSTR:
+> > >  			offset =3D nand_subop_get_addr_start_off(subop, op_id);
+> > >  			naddrs =3D nand_subop_get_num_addr_cyc(subop, op_id);
+> > > +			if (offset < 0 || naddrs < 0)
+> > > +				return -EINVAL;
+> > > +
+> > >  			addrs =3D &instr->ctx.addr.addrs[offset];
+> > > =20
+> > >  			cmd |=3D COMMAND_ALE | COMMAND_ALE_SIZE(naddrs);
+> > > @@ -395,6 +398,8 @@ static int tegra_nand_cmd(struct nand_chip *chip,
+> > >  		case NAND_OP_DATA_IN_INSTR:
+> > >  			size =3D nand_subop_get_data_len(subop, op_id);
+> > >  			offset =3D nand_subop_get_data_start_off(subop, op_id);
+> > > +			if (size < 0 || offset < 0)
+> > > +				return -EINVAL;
+> > > =20
+> > >  			cmd |=3D COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
+> > >  				COMMAND_RX | COMMAND_A_VALID;
+> > > @@ -405,6 +410,8 @@ static int tegra_nand_cmd(struct nand_chip *chip,
+> > >  		case NAND_OP_DATA_OUT_INSTR:
+> > >  			size =3D nand_subop_get_data_len(subop, op_id);
+> > >  			offset =3D nand_subop_get_data_start_off(subop, op_id);
+> > > +			if (size < 0 || offset < 0)
+> > > +				return -EINVAL;
+> > > =20
+> > >  			cmd |=3D COMMAND_TRANS_SIZE(size) | COMMAND_PIO |
+> > >  				COMMAND_TX | COMMAND_A_VALID;   =20
+> >  =20
+>=20
+>=20
+>=20
