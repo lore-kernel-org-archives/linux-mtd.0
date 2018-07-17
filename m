@@ -1,24 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffOjv-0007aM-Ur
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:06:01 +0000
-Date: Tue, 17 Jul 2018 14:05:38 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 1/3] mtd: rawnand: better name for the controller
- structure
-Message-ID: <20180717140538.532320a8@bbrezillon>
-In-Reply-To: <20180717135837.29afdbde@xps13>
-References: <20180717095454.27935-1-miquel.raynal@bootlin.com>
- <20180717095454.27935-2-miquel.raynal@bootlin.com>
- <20180717134950.69b59136@bbrezillon>
- <20180717135837.29afdbde@xps13>
+Received: from bastet.se.axis.com ([195.60.68.11])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffOmv-0008DY-H9
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:09:07 +0000
+From: =?iso-8859-1?Q?Per_F=F6rlin?= <per.forlin@axis.com>
+To: Richard Weinberger <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "Artem
+ Bityutskiy" <dedekind1@gmail.com>
+Subject: Re: [PATCH] UBI: Add volume read and write statistics
+Date: Tue, 17 Jul 2018 12:08:51 +0000
+Message-ID: <1531829331815.70807@axis.com>
+References: <1531823419-8665-1-git-send-email-perfn@axis.com>,
+ <1986554.RvkB0gC8kI@blindfold>
+In-Reply-To: <1986554.RvkB0gC8kI@blindfold>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 17 Jul 2018 13:58:37 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
-> 13:49:50 +0200:
-> 
-> > On Tue, 17 Jul 2018 11:54:52 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > In the raw NAND core, a NAND chip is described by a nand_chip structure,
-> > > while a NAND controller is described with a nand_hw_control structure
-> > > which is not very meaningful. 'control' is misleading and 'hw' has no
-> > > meaning here has it refers to hardware ECC operations only,    
-> > 
-> > I don't think hw refers to hardware ECC, but I agree that
-> > nand_controller is a better name for this structure.
-> > 
-> > How about dropping the last sentence?  
-> 
-> Do you mean, removing
-> "'control' is misleading [...] which is too restrictive"
-> or
-> "Rename this structure nand_controller"
-> ?
-
-The former.
+> To: Per F=F6rlin=0A=
+> Cc: linux-mtd@lists.infradead.org; Artem Bityutskiy; Per F=F6rlin=0A=
+> Subject: Re: [PATCH] UBI: Add volume read and write statistics=0A=
+> =0A=
+> Am Dienstag, 17. Juli 2018, 12:30:19 CEST schrieb Per Forlin:=0A=
+> > Simple read and write statistics.=0A=
+> > * Bytes read=0A=
+> > * Bytes written=0A=
+> > * Number of reads=0A=
+> > * Number of writes=0A=
+> >=0A=
+> > This is useful to find out how the storage is being utilized.=0A=
+> > For block devices this already exists via /proc/diskstats.=0A=
+> > The intention of this patch is to add similar stats=0A=
+> > for UBI as well.=0A=
+> =0A=
+> Why on UBI level and not MTD?=0A=
+In my case I wanted to evaluate the performance per volume. I have one MTD=
+=0A=
+device with several UBI volumes. It would be sufficient to have it on=0A=
+an MTD level to see the overall storage usage.=0A=
+This would still be very helpful for me.=0A=
+=0A=
+Having it on an MTD level is of course more general.=0A=
+I wouldn't mind changing the patch to add the stats in mtdcore=0A=
+for mtd_read() and mtd_write()=0A=
+=0A=
+In case of MTD block devices the stats will be somewhat redundant with=0A=
+/proc/diskstats.=0A=
+=0A=
+Do you think I should update the patch to add MTD stats instead?=0A=
