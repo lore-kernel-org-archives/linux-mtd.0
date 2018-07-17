@@ -1,23 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffVnN-0000Ak-Cy
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 19:38:02 +0000
-Date: Tue, 17 Jul 2018 21:37:36 +0200
+ id 1ffW44-000885-6E
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 19:55:17 +0000
+Date: Tue, 17 Jul 2018 21:54:53 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Krzysztof Kozlowski <krzk@kernel.org>, Vladimir Zapolskiy <vz@mleia.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>, Shreeya Patel
- <shreeya.patel23498@gmail.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3] mtd: rawnand: ams-delta: use GPIO lookup table
-Message-ID: <20180717213736.3cd0a747@bbrezillon>
-In-Reply-To: <20180709193850.20191-1-jmkrzyszt@gmail.com>
-References: <20180525222046.11200-1-jmkrzyszt@gmail.com>
- <20180709193850.20191-1-jmkrzyszt@gmail.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
+ y2038@lists.linaro.org, linux-kernel@vger.kernel.org, David Howells
+ <dhowells@redhat.com>, linux-mtd@lists.infradead.org, Alexander Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Andrew Morton
+ <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>, Deepa
+ Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH 1/2] [RESEND] jffs2: use 64-bit intermediate timestamps
+Message-ID: <20180717215453.04509003@bbrezillon>
+In-Reply-To: <2205649.NecG7tB80L@blindfold>
+References: <20180713144739.3150217-1-arnd@arndb.de>
+ <2205649.NecG7tB80L@blindfold>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,43 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
+On Fri, 13 Jul 2018 22:47:13 +0200
+Richard Weinberger <richard@nod.at> wrote:
 
-On Mon,  9 Jul 2018 21:38:50 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-
-> Now as Amstrad Delta board - the only user of this driver - provides
-> GPIO lookup tables, switch from GPIO numbers to GPIO descriptors and
-> use the table to locate required GPIO pins.
+> Am Freitag, 13. Juli 2018, 16:47:16 CEST schrieb Arnd Bergmann:
+> > The VFS now uses timespec64 timestamps consistently, but jffs2 still
+> > converts them to 32-bit numbers on the storage medium. As the helper
+> > functions for the conversion (get_seconds() and timespec_to_timespec64())
+> > are now deprecated, let's change them over to the more modern
+> > replacements.
+> > 
+> > This keeps the traditional interpretation of those values, where
+> > the on-disk 32-bit numbers are taken to be negative numbers, i.e.
+> > dates before 1970, on 32-bit machines, but future numbers past 2038
+> > on 64-bit machines.
+> > 
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> > I originally sent these two patches on Jun 19, but got no reply aside
+> > from a harmless sparse warning reported by the kbuild test robot.
+> > 
+> > Looking at the git history for jffs2, it seems that David Woodhouse
+> > hasn't applied any patches for over two years, so I suppose he's
+> > not taking these either.
+> > 
+> > Al or Andrew, could you pick these up instead?  
 > 
-> Declare static variables for storing GPIO descriptors and replace
-> gpio_ function calls with their gpiod_ equivalents.
-> 
-> Pin naming used by the driver should be followed while respective GPIO
-> lookup table is initialized by a board init code.
-> 
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> ---
-> Changlog:
-> v1: Fix handling of devm_gpiod_get_optional() return values - thanks to
->     Andy Shevchenko.
-> v2: Remove problematic error code conversion, no longer needed if used
->     on top of commit d08605a64e67 ("ARM: OMAP1: ams-delta: move late
->     devices back to init_machine") already in linux-next and commit
->     8853daf3b4ac ("gpiolib: Defer on non-DT find_chip_by_name()
->     failure") just applied to linux-gpio/devel.
+> We can carry it also via the MTD tree.
 
-Sorry, but we can't apply this patch now because of the dependency on
-those 2 commits. I guess it's not a big issue if we defer it to 4.20.
-Alternatively, we could consider queuing it to mtd/fixes after 4.19-rc1
-is out, but we'll need a good reason to do that (like a regression
-that this patch is supposed to fix). Note for your future contributions:
-for this kind of cross-subsystem changes, it's better to let everything
-go through a single tree (usually done by sending all patches in a
-single series and explaining the dependencies between the patches in
-the cover letter), but it's already too late here (I guess d08605a64e67
-is in the omap tree and 8853daf3b4ac in the gpio one).
+I'll queue them to mtd/next.
 
-Regards,
+Thanks,
 
 Boris
