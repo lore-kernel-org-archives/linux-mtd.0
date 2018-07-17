@@ -1,23 +1,36 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffPIl-0003Bj-66
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:42:01 +0000
-Date: Tue, 17 Jul 2018 14:41:24 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: tegra: fix error handling of subop helpers
-Message-ID: <20180717144124.4a22e133@xps13>
-In-Reply-To: <20180717143841.3e8cbd88@bbrezillon>
-References: <20180714163251.7773-1-miquel.raynal@bootlin.com>
- <20180717141733.61bc9c71@bbrezillon>
- <20180717142254.61998c98@xps13>
- <20180717143841.3e8cbd88@bbrezillon>
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffPNx-00066i-0N
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 12:47:22 +0000
+Date: Tue, 17 Jul 2018 14:47:03 +0200
+From: Michal Hocko <mhocko@kernel.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Steven Whitehouse <swhiteho@redhat.com>,
+ Bob Peterson <rpeterso@redhat.com>,
+ Trond Myklebust <trond.myklebust@primarydata.com>,
+ Anna Schumaker <anna.schumaker@netapp.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Philippe Ombredanne <pombredanne@nexb.com>,
+ Kate Stewart <kstewart@linuxfoundation.org>,
+ Mikulas Patocka <mpatocka@redhat.com>,
+ linux-mtd@lists.infradead.org, linux-ext4@vger.kernel.org,
+ cluster-devel@redhat.com, linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: vmalloc with GFP_NOFS
+Message-ID: <20180717124703.GA30926@dhcp22.suse.cz>
+References: <20180424162712.GL17484@dhcp22.suse.cz>
+ <3732370.1623zxSvNg@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3732370.1623zxSvNg@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +40,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Tue 24-04-18 21:03:43, Richard Weinberger wrote:
+> Am Dienstag, 24. April 2018, 18:27:12 CEST schrieb Michal Hocko:
+> > fs/ubifs/debug.c
+> 
+> This one is just for debugging.
+> So, preallocating + locking would not hurt much.
+> 
+> > fs/ubifs/lprops.c
+> 
+> Ditto.
+> 
+> > fs/ubifs/lpt_commit.c
+> 
+> Here we use it also only in debugging mode and in one case for
+> fatal error reporting.
+> No hot paths.
+> 
+> > fs/ubifs/orphan.c
+> 
+> Also only for debugging.
+> Getting rid of vmalloc with GFP_NOFS in UBIFS is no big problem.
+> I can prepare a patch.
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
-14:38:41 +0200:
-
-> On Tue, 17 Jul 2018 14:22:54 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> > Hi Boris,
-> >=20
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
-> > 14:17:33 +0200:
-> >  =20
-> > > On Sat, 14 Jul 2018 18:32:51 +0200
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >    =20
-> > > > A report from Colin Ian King pointed a CoverityScan issue where err=
-or
-> > > > values on these helpers where not checked in the drivers. These
-> > > > helpers could error out only in case of a software bug in driver co=
-de,
-> > > > not because of a runtime/hardware error but in any cases it is safer
-> > > > to handle these errors properly.
-> > > >=20
-> > > > Fix the Tegra NAND controller driver implementation by checking
-> > > > potential negative error values coming from these helpers.     =20
-> > >=20
-> > > Hm, ok. I thought you were opting for a return 0 + WARN_ON() approach,
-> > > what made you change your mind?   =20
-> >=20
-> > Wise people told me WARN_ON() should be avoided as much as possible. =20
->=20
-> I think I mentioned BUG_ON(), not WARN_ON() :P.
-
-I've never been a good listener :)
-
->=20
-> > Hence after more discussion with myself I choose to implement the most
-> > standard C solution: check the returned value...
-> >=20
-> > But if you think a return 0 + WARN_ON() would be better I'm ready to
-> > change this as it was my initial idea :) =20
->=20
-> Well, if this cannot happen without a SW bug, then I'd recommend the
-> WARN_ON() + unsigned int ret approach. That should force people debug
-> their implementation while keeping drivers code simple.
-
-I'm fine with this approach, I'll send a v2.
-
-Thanks,
-Miqu=C3=A8l
+Hi Richard, I have just got back to this and noticed that the vmalloc
+NOFS usage is still there. Do you have any plans to push changes to
+remove it?
+-- 
+Michal Hocko
+SUSE Labs
