@@ -1,19 +1,22 @@
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <anuragku@xilinx.com>,
- <cyrille.pitchen@microchip.com>, <nicolas.ferre@microchip.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: [PATCH 2/3] mtd: spi-nor: unlock global block protection on
- sst26vf064b
-Date: Tue, 17 Jul 2018 19:28:30 +0300
-Message-ID: <20180717162831.17947-2-tudor.ambarus@microchip.com>
-In-Reply-To: <20180717162831.17947-1-tudor.ambarus@microchip.com>
-References: <20180717162831.17947-1-tudor.ambarus@microchip.com>
+Received: from gateway23.websitewelcome.com ([192.185.49.180])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffTI8-0007yP-HD
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 16:57:37 +0000
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+ by gateway23.websitewelcome.com (Postfix) with ESMTP id 374EED147
+ for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2018 11:57:14 -0500 (CDT)
+Date: Tue, 17 Jul 2018 11:56:43 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] UBIFS: use swap macro in swap_dirty_idx
+Message-ID: <20180717165643.GA19225@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-To avoid inadvertent writes during power-up, sst26vf064b is
-write-protected by default after a power-on reset cycle.
-Unlock the serial flash memory by using the Global Block Protection
-Unlock command - it offers a single command cycle that unlocks
-the entire memory array.
+Make use of the swap macro and remove unnecessary variable *t*. This
+makes the code easier to read and maintain.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+This code was detected with the help of Coccinelle.
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/ubifs/find.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 6648251..eddf09f 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1163,7 +1163,11 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
--	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{
-+		"sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128,
-+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-+			UNLOCK_GLOBAL_BLOCK)
-+	},
+diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
+index 9571616..36198f8 100644
+--- a/fs/ubifs/find.c
++++ b/fs/ubifs/find.c
+@@ -750,10 +750,7 @@ static int cmp_dirty_idx(const struct ubifs_lprops **a,
+ static void swap_dirty_idx(struct ubifs_lprops **a, struct ubifs_lprops **b,
+ 			   int size)
+ {
+-	struct ubifs_lprops *t = *a;
+-
+-	*a = *b;
+-	*b = t;
++	swap(*a, *b);
+ }
  
- 	/* ST Microelectronics -- newer production may have feature updates */
- 	{ "m25p05",  INFO(0x202010,  0,  32 * 1024,   2, 0) },
+ /**
 -- 
-2.9.4
+2.7.4
