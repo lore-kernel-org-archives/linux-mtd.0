@@ -1,20 +1,20 @@
-Received: from mout.perfora.net ([74.208.4.197])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffLdV-0006uE-9W
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 08:47:15 +0000
-From: Marcel Ziswiler <marcel@ziswiler.com>
-To: linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- boris.brezillon@bootlin.com, miquel.raynal@bootlin.com
-Cc: dev@lynxeye.de, mirza.krak@gmail.com, benjamin.lindqvist@endian.se,
- krzk@kernel.org, marek.vasut@gmail.com, richard@nod.at, digetx@gmail.com,
- computersforpeace@gmail.com, dwmw2@infradead.org, dan.carpenter@oracle.com,
- Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v2] mtd: rawnand: tegra: check bounds of die_nr properly
-Date: Tue, 17 Jul 2018 10:46:18 +0200
-Message-Id: <20180717084618.25249-1-marcel@ziswiler.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffMhZ-0005dQ-5j
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 09:55:26 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [RFC PATCH 0/3] Changes in the internal raw NAND API
+Date: Tue, 17 Jul 2018 11:54:51 +0200
+Message-Id: <20180717095454.27935-1-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Stefan Agner <stefan@agner.ch>
+Hello,
 
-The Tegra driver currently only support a single chip select, hence
-check boundaries accordingly. This fixes a off by one issue catched
-with Smatch:
-    drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
-    warn: array off by one? 'nand->cs[die_nr]'
+After having sent two versions of a series removing the
+nand_scan_ident/nand_scan_tail limitation that prevents us to allocate
+memory at critical moments, we are still discussing the internal API.
 
-Also warn in case the stack asks for a chip select we currently do
-not support.
+To avoid sending again more than 20 patches, this is an RFC of the
+internal changes prior to the above modifications in each driver:
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+1/ Rename struct nand_hw_control -> struct nand_controller which is
+   much more meaningful.
+2/ Rename the function initializing the above structure
+   nand_hw_control_init() -> nand_controller_init().
+3/ Create a nand_controller_ops structure which will be embedded in the
+   nand_controller structure. These operations are:
+   int (*attach_chip)(struct nand_chip *) and
+   void (*detach_chip)(struct nand_chip *).
 
----
+If we agree on this, I could merge them first and then send the bunch of
+patches making use of these API changes.
 
-Changes in v2:
-- Fixed comparison between signed integer die_nr and unsigned ARRAY_SIZE.
+Thanks,
+Miquèl
 
- drivers/mtd/nand/raw/tegra_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 9f7de36be893..56c0aa1bc81f 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -468,7 +468,9 @@ static void tegra_nand_select_chip(struct mtd_info *mtd, int die_nr)
- 	struct tegra_nand_chip *nand = to_tegra_chip(chip);
- 	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
- 
--	if (die_nr < 0 || die_nr > 1) {
-+	WARN_ON(die_nr >= (int)ARRAY_SIZE(nand->cs));
-+
-+	if (die_nr < 0 || die_nr > 0) {
- 		ctrl->cur_cs = -1;
- 		return;
- 	}
+Miquel Raynal (3):
+  mtd: rawnand: better name for the controller structure
+  mtd: rawnand: update the controller structure initialization function
+    name
+  mtd: rawnand: add hooks that may be called during nand_scan()
+
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 10 +++++-----
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c     |  4 ++--
+ drivers/mtd/nand/raw/docg4.c                 |  2 +-
+ drivers/mtd/nand/raw/fsl_elbc_nand.c         |  4 ++--
+ drivers/mtd/nand/raw/fsl_ifc_nand.c          |  4 ++--
+ drivers/mtd/nand/raw/jz4780_nand.c           |  7 ++++---
+ drivers/mtd/nand/raw/marvell_nand.c          |  6 +++---
+ drivers/mtd/nand/raw/mtk_nand.c              |  2 +-
+ drivers/mtd/nand/raw/nand_base.c             | 23 ++++++++++++++++++++---
+ drivers/mtd/nand/raw/ndfc.c                  |  4 ++--
+ drivers/mtd/nand/raw/omap2.c                 |  2 +-
+ drivers/mtd/nand/raw/oxnas_nand.c            |  4 ++--
+ drivers/mtd/nand/raw/qcom_nandc.c            |  4 ++--
+ drivers/mtd/nand/raw/s3c2410.c               |  4 ++--
+ drivers/mtd/nand/raw/sunxi_nand.c            |  6 +++---
+ drivers/mtd/nand/raw/tango_nand.c            |  4 ++--
+ drivers/mtd/nand/raw/tegra_nand.c            |  6 +++---
+ drivers/mtd/nand/raw/txx9ndfmc.c             |  4 ++--
+ include/linux/mtd/rawnand.h                  | 27 ++++++++++++++++++++++-----
+ 19 files changed, 81 insertions(+), 46 deletions(-)
+
 -- 
-2.14.4
+2.14.1
