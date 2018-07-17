@@ -1,24 +1,20 @@
-Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
+Received: from mout.perfora.net ([74.208.4.197])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffCD8-0001Rc-1L
- for linux-mtd@lists.infradead.org; Mon, 16 Jul 2018 22:43:20 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Marek Vasut <marek.vasut@gmail.com>, "Brian
- Norris" <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Bean Huo <beanhuo@micron.com>
-Subject: Re: [2/3] mtd: rawnand: micron: Disable ECC earlier in the read path
-Date: Mon, 16 Jul 2018 22:42:54 +0000
-Message-ID: <afe826dcb4934dea9795541ee0385542@svr-chch-ex1.atlnz.lc>
-References: <20180703122009.29914-3-boris.brezillon@bootlin.com>
- <a01b89d899504e8596da9e416d22b1f7@svr-chch-ex1.atlnz.lc>
- <20180716181057.65d78303@bbrezillon> <20180716225538.542cb096@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1ffLdV-0006uE-9W
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 08:47:15 +0000
+From: Marcel Ziswiler <marcel@ziswiler.com>
+To: linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+ boris.brezillon@bootlin.com, miquel.raynal@bootlin.com
+Cc: dev@lynxeye.de, mirza.krak@gmail.com, benjamin.lindqvist@endian.se,
+ krzk@kernel.org, marek.vasut@gmail.com, richard@nod.at, digetx@gmail.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, dan.carpenter@oracle.com,
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>
+Subject: [PATCH v2] mtd: rawnand: tegra: check bounds of die_nr properly
+Date: Tue, 17 Jul 2018 10:46:18 +0200
+Message-Id: <20180717084618.25249-1-marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,87 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17/07/18 08:55, Boris Brezillon wrote:=0A=
-> On Mon, 16 Jul 2018 18:10:57 +0200=0A=
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:=0A=
-> =0A=
->> On Mon, 16 Jul 2018 09:00:59 +0000=0A=
->> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
->>=0A=
->>> Hi Boris,=0A=
->>>=0A=
->>> On 04/07/18 00:20, Boris Brezillon wrote:=0A=
->>>> We are about to support extracting the real number of bitflips for=0A=
->>>> 4-bits ECC when WRITE_RECOMMEND is returned. This requires re-reading=
-=0A=
->>>> the page in raw mode to compare it to the corrected version, and this=
-=0A=
->>>> logic will be placed in micron_nand_on_die_ecc_status_4().=0A=
->>>>=0A=
->>>> Moving the micron_nand_on_die_ecc_setup() will allow us to disable=0A=
->>>> ECC only once.=0A=
->>>>=0A=
->>>> As a result, we have to rework the exit path and add an error path=0A=
->>>> where the ECC is disabled.=0A=
->>>>=0A=
->>>> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>=0A=
->>>=0A=
->>> As I said on the other thread this appears to cause a problem for me on=
-=0A=
->>> the MT29F1G08ABAFAWP-ITE setup I have. I notice we're not able to find=
-=0A=
->>> the BBT, not sure if that is symptom or cause.=0A=
-> =0A=
-> It's most likely the symptom, not the cause.=0A=
-> =0A=
->>>>=0A=
->>>> diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw=
-/nand_micron.c=0A=
->>>> index 63ac98a36ed7..b9cbaf125a98 100644=0A=
->>>> --- a/drivers/mtd/nand/raw/nand_micron.c=0A=
->>>> +++ b/drivers/mtd/nand/raw/nand_micron.c=0A=
->>>> @@ -197,30 +197,37 @@ micron_nand_read_page_on_die_ecc(struct mtd_info=
- *mtd, struct nand_chip *chip,=0A=
->>>>    =0A=
->>>>    	ret =3D nand_read_page_op(chip, page, 0, NULL, 0);=0A=
->>>>    	if (ret)=0A=
->>>> -		goto out;=0A=
->>>> +		goto err_disable_ecc;=0A=
->>>>    =0A=
->>>>    	ret =3D nand_status_op(chip, &status);=0A=
->>>>    	if (ret)=0A=
->>>> -		goto out;=0A=
->>>> +		goto err_disable_ecc;=0A=
->>>>    =0A=
->>>>    	ret =3D nand_exit_status_op(chip);=0A=
->>>>    	if (ret)=0A=
->>>> -		goto out;=0A=
->>>> +		goto err_disable_ecc;=0A=
->>>>    =0A=
->>>> -	if (chip->ecc.strength =3D=3D 4)=0A=
->>>> -		max_bitflips =3D micron_nand_on_die_ecc_status_4(chip, status);=0A=
->>>> -	else=0A=
->>>> -		max_bitflips =3D micron_nand_on_die_ecc_status_8(chip, status);=0A=
->>>> +	micron_nand_on_die_ecc_setup(chip, false);=0A=
->>=0A=
->> Hm, can you try to move the micron_nand_on_die_ecc_setup(chip, false)=0A=
->> call just before nand_exit_status_op()?=0A=
->>=0A=
-> =0A=
-> Just pushed a branch fixing that [1]. Can you test it? If it works,=0A=
-> I'll ask Miquel to drop the initial set of patches and instead pick the=
-=0A=
-> fixed ones so that we don't break bisectibility.=0A=
-> =0A=
-> [1]https://github.com/bbrezillon/linux-0day/commits/nand/next=0A=
-> =0A=
-=0A=
-Still appears to have the same problem.=0A=
-=0A=
-I'm guessing that since you can't actually disable ecc on this chip =0A=
-calling micron_nand_on_die_ecc_setup(chip, false); before reading the =0A=
-oob data interferes with it somehow (if I call it after there is no =0A=
-problem).=0A=
-=0A=
-We could add code to qualify the attempt to disable ecc early based on =0A=
-it being optional/mandatory or just stick with it being disabled late.=0A=
+From: Stefan Agner <stefan@agner.ch>
+
+The Tegra driver currently only support a single chip select, hence
+check boundaries accordingly. This fixes a off by one issue catched
+with Smatch:
+    drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
+    warn: array off by one? 'nand->cs[die_nr]'
+
+Also warn in case the stack asks for a chip select we currently do
+not support.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+---
+
+Changes in v2:
+- Fixed comparison between signed integer die_nr and unsigned ARRAY_SIZE.
+
+ drivers/mtd/nand/raw/tegra_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
+index 9f7de36be893..56c0aa1bc81f 100644
+--- a/drivers/mtd/nand/raw/tegra_nand.c
++++ b/drivers/mtd/nand/raw/tegra_nand.c
+@@ -468,7 +468,9 @@ static void tegra_nand_select_chip(struct mtd_info *mtd, int die_nr)
+ 	struct tegra_nand_chip *nand = to_tegra_chip(chip);
+ 	struct tegra_nand_controller *ctrl = to_tegra_ctrl(chip->controller);
+ 
+-	if (die_nr < 0 || die_nr > 1) {
++	WARN_ON(die_nr >= (int)ARRAY_SIZE(nand->cs));
++
++	if (die_nr < 0 || die_nr > 0) {
+ 		ctrl->cur_cs = -1;
+ 		return;
+ 	}
+-- 
+2.14.4
