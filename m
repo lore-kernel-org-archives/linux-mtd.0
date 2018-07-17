@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffOUU-0008Bm-JI
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 11:50:04 +0000
-Date: Tue, 17 Jul 2018 13:49:50 +0200
+ id 1ffOVi-0001Md-58
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 11:51:20 +0000
+Date: Tue, 17 Jul 2018 13:51:06 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 1/3] mtd: rawnand: better name for the controller
- structure
-Message-ID: <20180717134950.69b59136@bbrezillon>
-In-Reply-To: <20180717095454.27935-2-miquel.raynal@bootlin.com>
+Subject: Re: [RFC PATCH 2/3] mtd: rawnand: update the controller structure
+ initialization function name
+Message-ID: <20180717135106.492dbb3d@bbrezillon>
+In-Reply-To: <20180717095454.27935-3-miquel.raynal@bootlin.com>
 References: <20180717095454.27935-1-miquel.raynal@bootlin.com>
- <20180717095454.27935-2-miquel.raynal@bootlin.com>
+ <20180717095454.27935-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,360 +26,259 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 17 Jul 2018 11:54:52 +0200
+On Tue, 17 Jul 2018 11:54:53 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> In the raw NAND core, a NAND chip is described by a nand_chip structure,
-> while a NAND controller is described with a nand_hw_control structure
-> which is not very meaningful. 'control' is misleading and 'hw' has no
-> meaning here has it refers to hardware ECC operations only,
-
-I don't think hw refers to hardware ECC, but I agree that
-nand_controller is a better name for this structure.
-
-How about dropping the last sentence?
-
-> which is too
-> restrictive.
-> 
-> Rename this structure nand_controller.
+> After the rename of the structure nand_hw_control -> nand_controller,
+> let's also rename the core function initializing it from
+> nand_hw_control_init() to nand_controller_init().
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+I think this should go with patch 1, no need to split that in 2
+patches IMO.
+
+Other than that, I'm okay with the change, so my ack on the first patch
+stands.
 
 > ---
->  drivers/mtd/nand/raw/atmel/nand-controller.c |  8 ++++----
->  drivers/mtd/nand/raw/brcmnand/brcmnand.c     |  2 +-
->  drivers/mtd/nand/raw/fsl_elbc_nand.c         |  2 +-
->  drivers/mtd/nand/raw/fsl_ifc_nand.c          |  2 +-
->  drivers/mtd/nand/raw/jz4780_nand.c           |  5 +++--
->  drivers/mtd/nand/raw/marvell_nand.c          |  4 ++--
->  drivers/mtd/nand/raw/mtk_nand.c              |  2 +-
->  drivers/mtd/nand/raw/ndfc.c                  |  2 +-
->  drivers/mtd/nand/raw/omap2.c                 |  2 +-
->  drivers/mtd/nand/raw/oxnas_nand.c            |  2 +-
->  drivers/mtd/nand/raw/qcom_nandc.c            |  2 +-
->  drivers/mtd/nand/raw/s3c2410.c               |  2 +-
->  drivers/mtd/nand/raw/sunxi_nand.c            |  4 ++--
->  drivers/mtd/nand/raw/tango_nand.c            |  2 +-
->  drivers/mtd/nand/raw/tegra_nand.c            |  4 ++--
->  drivers/mtd/nand/raw/txx9ndfmc.c             |  2 +-
->  include/linux/mtd/rawnand.h                  | 11 ++++++-----
->  17 files changed, 30 insertions(+), 28 deletions(-)
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 2 +-
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c     | 2 +-
+>  drivers/mtd/nand/raw/docg4.c                 | 2 +-
+>  drivers/mtd/nand/raw/fsl_elbc_nand.c         | 2 +-
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c          | 2 +-
+>  drivers/mtd/nand/raw/jz4780_nand.c           | 2 +-
+>  drivers/mtd/nand/raw/marvell_nand.c          | 2 +-
+>  drivers/mtd/nand/raw/nand_base.c             | 2 +-
+>  drivers/mtd/nand/raw/ndfc.c                  | 2 +-
+>  drivers/mtd/nand/raw/oxnas_nand.c            | 2 +-
+>  drivers/mtd/nand/raw/qcom_nandc.c            | 2 +-
+>  drivers/mtd/nand/raw/s3c2410.c               | 2 +-
+>  drivers/mtd/nand/raw/sunxi_nand.c            | 2 +-
+>  drivers/mtd/nand/raw/tango_nand.c            | 2 +-
+>  drivers/mtd/nand/raw/tegra_nand.c            | 2 +-
+>  drivers/mtd/nand/raw/txx9ndfmc.c             | 2 +-
+>  include/linux/mtd/rawnand.h                  | 2 +-
+>  17 files changed, 17 insertions(+), 17 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> index e686fe73159e..8fcb66df10ea 100644
+> index 8fcb66df10ea..1a9b871d01c9 100644
 > --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
 > +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> @@ -216,7 +216,7 @@ struct atmel_nand_controller_caps {
->  };
+> @@ -1966,7 +1966,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+>  	struct device_node *np = dev->of_node;
+>  	int ret;
 >  
->  struct atmel_nand_controller {
-> -	struct nand_hw_control base;
-> +	struct nand_controller base;
->  	const struct atmel_nand_controller_caps *caps;
->  	struct device *dev;
->  	struct regmap *smc;
-> @@ -227,7 +227,7 @@ struct atmel_nand_controller {
->  };
->  
->  static inline struct atmel_nand_controller *
-> -to_nand_controller(struct nand_hw_control *ctl)
-> +to_nand_controller(struct nand_controller *ctl)
->  {
->  	return container_of(ctl, struct atmel_nand_controller, base);
->  }
-> @@ -239,7 +239,7 @@ struct atmel_smc_nand_controller {
->  };
->  
->  static inline struct atmel_smc_nand_controller *
-> -to_smc_nand_controller(struct nand_hw_control *ctl)
-> +to_smc_nand_controller(struct nand_controller *ctl)
->  {
->  	return container_of(to_nand_controller(ctl),
->  			    struct atmel_smc_nand_controller, base);
-> @@ -263,7 +263,7 @@ struct atmel_hsmc_nand_controller {
->  };
->  
->  static inline struct atmel_hsmc_nand_controller *
-> -to_hsmc_nand_controller(struct nand_hw_control *ctl)
-> +to_hsmc_nand_controller(struct nand_controller *ctl)
->  {
->  	return container_of(to_nand_controller(ctl),
->  			    struct atmel_hsmc_nand_controller, base);
+> -	nand_hw_control_init(&nc->base);
+> +	nand_controller_init(&nc->base);
+>  	INIT_LIST_HEAD(&nc->chips);
+>  	nc->dev = dev;
+>  	nc->caps = caps;
 > diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> index 1306aaa7a8bf..2c8e3d3977c0 100644
+> index 2c8e3d3977c0..2e5efa0f9ea2 100644
 > --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
 > +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-> @@ -114,7 +114,7 @@ enum {
+> @@ -2433,7 +2433,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
 >  
->  struct brcmnand_controller {
->  	struct device		*dev;
-> -	struct nand_hw_control	controller;
-> +	struct nand_controller	controller;
->  	void __iomem		*nand_base;
->  	void __iomem		*nand_fc; /* flash cache */
->  	void __iomem		*flash_dma_base;
+>  	init_completion(&ctrl->done);
+>  	init_completion(&ctrl->dma_done);
+> -	nand_hw_control_init(&ctrl->controller);
+> +	nand_controller_init(&ctrl->controller);
+>  	INIT_LIST_HEAD(&ctrl->host_list);
+>  
+>  	/* NAND register range */
+> diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+> index bb96cb33cd6b..02778292e1a6 100644
+> --- a/drivers/mtd/nand/raw/docg4.c
+> +++ b/drivers/mtd/nand/raw/docg4.c
+> @@ -1258,7 +1258,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+>  	nand->options = NAND_BUSWIDTH_16 | NAND_NO_SUBPAGE_WRITE;
+>  	nand->IO_ADDR_R = nand->IO_ADDR_W = doc->virtadr + DOC_IOSPACE_DATA;
+>  	nand->controller = &nand->hwcontrol;
+> -	nand_hw_control_init(nand->controller);
+> +	nand_controller_init(nand->controller);
+>  
+>  	/* methods */
+>  	nand->cmdfunc = docg4_command;
 > diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-> index 51f0b340bc0d..756431ec055b 100644
+> index 756431ec055b..0aa54a949653 100644
 > --- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
 > +++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-> @@ -61,7 +61,7 @@ struct fsl_elbc_mtd {
->  /* Freescale eLBC FCM controller information */
+> @@ -879,7 +879,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
+>  		}
+>  		elbc_fcm_ctrl->counter++;
 >  
->  struct fsl_elbc_fcm_ctrl {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct fsl_elbc_mtd *chips[MAX_BANKS];
->  
->  	u8 __iomem *addr;        /* Address of assigned FCM buffer        */
+> -		nand_hw_control_init(&elbc_fcm_ctrl->controller);
+> +		nand_controller_init(&elbc_fcm_ctrl->controller);
+>  		fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl;
+>  	} else {
+>  		elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
 > diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-> index 382b67e97174..92b8b63a8b75 100644
+> index 92b8b63a8b75..73a5245bddd1 100644
 > --- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
 > +++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-> @@ -51,7 +51,7 @@ struct fsl_ifc_mtd {
+> @@ -1004,7 +1004,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
+>  		ifc_nand_ctrl->addr = NULL;
+>  		fsl_ifc_ctrl_dev->nand = ifc_nand_ctrl;
 >  
->  /* overview of the fsl ifc controller */
->  struct fsl_ifc_nand_ctrl {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct fsl_ifc_mtd *chips[FSL_IFC_BANK_COUNT];
->  
->  	void __iomem *addr;	/* Address of assigned IFC buffer	*/
+> -		nand_hw_control_init(&ifc_nand_ctrl->controller);
+> +		nand_controller_init(&ifc_nand_ctrl->controller);
+>  	} else {
+>  		ifc_nand_ctrl = fsl_ifc_ctrl_dev->nand;
+>  	}
 > diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-> index e69f6ae4c539..b9afd41132ac 100644
+> index b9afd41132ac..49841dad347c 100644
 > --- a/drivers/mtd/nand/raw/jz4780_nand.c
 > +++ b/drivers/mtd/nand/raw/jz4780_nand.c
-> @@ -44,7 +44,7 @@ struct jz4780_nand_cs {
->  struct jz4780_nand_controller {
->  	struct device *dev;
->  	struct jz4780_bch *bch;
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	unsigned int num_banks;
->  	struct list_head chips;
->  	int selected;
-> @@ -65,7 +65,8 @@ static inline struct jz4780_nand_chip *to_jz4780_nand_chip(struct mtd_info *mtd)
->  	return container_of(mtd_to_nand(mtd), struct jz4780_nand_chip, chip);
->  }
+> @@ -369,7 +369,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+>  	nfc->dev = dev;
+>  	nfc->num_banks = num_banks;
 >  
-> -static inline struct jz4780_nand_controller *to_jz4780_nand_controller(struct nand_hw_control *ctrl)
-> +static inline struct jz4780_nand_controller
-> +*to_jz4780_nand_controller(struct nand_controller *ctrl)
->  {
->  	return container_of(ctrl, struct jz4780_nand_controller, controller);
->  }
+> -	nand_hw_control_init(&nfc->controller);
+> +	nand_controller_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
+>  
+>  	ret = jz4780_nand_init_chips(nfc, pdev);
 > diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index 80a074cccb82..fa7d284ac8af 100644
+> index fa7d284ac8af..bd5f9a4b7b16 100644
 > --- a/drivers/mtd/nand/raw/marvell_nand.c
 > +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -318,7 +318,7 @@ struct marvell_nfc_caps {
->   * @dma_buf:		32-bit aligned buffer for DMA transfers (NFCv1 only)
->   */
->  struct marvell_nfc {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct device *dev;
->  	void __iomem *regs;
->  	struct clk *core_clk;
-> @@ -335,7 +335,7 @@ struct marvell_nfc {
->  	u8 *dma_buf;
->  };
+> @@ -2745,7 +2745,7 @@ static int marvell_nfc_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
 >  
-> -static inline struct marvell_nfc *to_marvell_nfc(struct nand_hw_control *ctrl)
-> +static inline struct marvell_nfc *to_marvell_nfc(struct nand_controller *ctrl)
->  {
->  	return container_of(ctrl, struct marvell_nfc, controller);
->  }
-> diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-> index 75c845adb050..254ee76d354d 100644
-> --- a/drivers/mtd/nand/raw/mtk_nand.c
-> +++ b/drivers/mtd/nand/raw/mtk_nand.c
-> @@ -145,7 +145,7 @@ struct mtk_nfc_clk {
->  };
+>  	nfc->dev = dev;
+> -	nand_hw_control_init(&nfc->controller);
+> +	nand_controller_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
 >  
->  struct mtk_nfc {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct mtk_ecc_config ecc_cfg;
->  	struct mtk_nfc_clk clk;
->  	struct mtk_ecc *ecc;
+>  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 4fa5e20d9690..e21f03ee3251 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -4968,7 +4968,7 @@ static void nand_set_defaults(struct nand_chip *chip)
+>  
+>  	if (!chip->controller) {
+>  		chip->controller = &chip->hwcontrol;
+> -		nand_hw_control_init(chip->controller);
+> +		nand_controller_init(chip->controller);
+>  	}
+>  
+>  	if (!chip->buf_align)
 > diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-> index d8a806894937..fdc55fda5db6 100644
+> index fdc55fda5db6..540fa1a0ea24 100644
 > --- a/drivers/mtd/nand/raw/ndfc.c
 > +++ b/drivers/mtd/nand/raw/ndfc.c
-> @@ -39,7 +39,7 @@ struct ndfc_controller {
->  	void __iomem *ndfcbase;
->  	struct nand_chip chip;
->  	int chip_select;
-> -	struct nand_hw_control ndfc_control;
-> +	struct nand_controller ndfc_control;
->  };
+> @@ -218,7 +218,7 @@ static int ndfc_probe(struct platform_device *ofdev)
+>  	ndfc = &ndfc_ctrl[cs];
+>  	ndfc->chip_select = cs;
 >  
->  static struct ndfc_controller ndfc_ctrl[NDFC_MAX_CS];
-> diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-> index e50c64adc3c8..e943b2e5a5e2 100644
-> --- a/drivers/mtd/nand/raw/omap2.c
-> +++ b/drivers/mtd/nand/raw/omap2.c
-> @@ -145,7 +145,7 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
->  static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+> -	nand_hw_control_init(&ndfc->ndfc_control);
+> +	nand_controller_init(&ndfc->ndfc_control);
+>  	ndfc->ofdev = ofdev;
+>  	dev_set_drvdata(&ofdev->dev, ndfc);
 >  
->  /* Shared among all NAND instances to synchronize access to the ECC Engine */
-> -static struct nand_hw_control omap_gpmc_controller = {
-> +static struct nand_controller omap_gpmc_controller = {
->  	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
->  	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
->  };
 > diff --git a/drivers/mtd/nand/raw/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
-> index d649d5944826..3621c29e7221 100644
+> index 3621c29e7221..01b00bb69c1e 100644
 > --- a/drivers/mtd/nand/raw/oxnas_nand.c
 > +++ b/drivers/mtd/nand/raw/oxnas_nand.c
-> @@ -32,7 +32,7 @@
->  #define OXNAS_NAND_MAX_CHIPS	1
+> @@ -96,7 +96,7 @@ static int oxnas_nand_probe(struct platform_device *pdev)
+>  	if (!oxnas)
+>  		return -ENOMEM;
 >  
->  struct oxnas_nand_ctrl {
-> -	struct nand_hw_control base;
-> +	struct nand_controller base;
->  	void __iomem *io_base;
->  	struct clk *clk;
->  	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
+> -	nand_hw_control_init(&oxnas->base);
+> +	nand_controller_init(&oxnas->base);
+>  
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	oxnas->io_base = devm_ioremap_resource(&pdev->dev, res);
 > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-> index 994f980c6d86..98800a26b2c7 100644
+> index 98800a26b2c7..cbad0980d890 100644
 > --- a/drivers/mtd/nand/raw/qcom_nandc.c
 > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -365,7 +365,7 @@ struct nandc_regs {
->   *				from all connected NAND devices pagesize
->   */
->  struct qcom_nand_controller {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct list_head host_list;
+> @@ -2728,7 +2728,7 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
+>  	INIT_LIST_HEAD(&nandc->desc_list);
+>  	INIT_LIST_HEAD(&nandc->host_list);
 >  
->  	struct device *dev;
+> -	nand_hw_control_init(&nandc->controller);
+> +	nand_controller_init(&nandc->controller);
+>  
+>  	return 0;
+>  }
 > diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-> index 19661c5d3220..aee043dd4fa9 100644
+> index aee043dd4fa9..f7a5fc7daa57 100644
 > --- a/drivers/mtd/nand/raw/s3c2410.c
 > +++ b/drivers/mtd/nand/raw/s3c2410.c
-> @@ -162,7 +162,7 @@ enum s3c_nand_clk_state {
->   */
->  struct s3c2410_nand_info {
->  	/* mtd info */
-> -	struct nand_hw_control		controller;
-> +	struct nand_controller		controller;
->  	struct s3c2410_nand_mtd		*mtds;
->  	struct s3c2410_platform_nand	*platform;
+> @@ -1094,7 +1094,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, info);
+>  
+> -	nand_hw_control_init(&info->controller);
+> +	nand_controller_init(&info->controller);
+>  
+>  	/* get the clock source and enable it */
 >  
 > diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-> index d831a141a196..de19c81a1789 100644
+> index de19c81a1789..41bd66a9166a 100644
 > --- a/drivers/mtd/nand/raw/sunxi_nand.c
 > +++ b/drivers/mtd/nand/raw/sunxi_nand.c
-> @@ -234,7 +234,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
->   *			controller events
->   */
->  struct sunxi_nfc {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct device *dev;
->  	void __iomem *regs;
->  	struct clk *ahb_clk;
-> @@ -247,7 +247,7 @@ struct sunxi_nfc {
->  	struct dma_chan *dmac;
->  };
+> @@ -2012,7 +2012,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
 >  
-> -static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_hw_control *ctrl)
-> +static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_controller *ctrl)
->  {
->  	return container_of(ctrl, struct sunxi_nfc, controller);
->  }
+>  	nfc->dev = dev;
+> -	nand_hw_control_init(&nfc->controller);
+> +	nand_controller_init(&nfc->controller);
+>  	INIT_LIST_HEAD(&nfc->chips);
+>  
+>  	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
 > diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-> index f2052fae21c7..94c8e9ac20b6 100644
+> index 94c8e9ac20b6..dd7a26efdf4f 100644
 > --- a/drivers/mtd/nand/raw/tango_nand.c
 > +++ b/drivers/mtd/nand/raw/tango_nand.c
-> @@ -83,7 +83,7 @@
->  #define MAX_CS		4
+> @@ -654,7 +654,7 @@ static int tango_nand_probe(struct platform_device *pdev)
+>  		return PTR_ERR(nfc->chan);
 >  
->  struct tango_nfc {
-> -	struct nand_hw_control hw;
-> +	struct nand_controller hw;
->  	void __iomem *reg_base;
->  	void __iomem *mem_base;
->  	void __iomem *pbus_base;
+>  	platform_set_drvdata(pdev, nfc);
+> -	nand_hw_control_init(&nfc->hw);
+> +	nand_controller_init(&nfc->hw);
+>  	nfc->freq_kHz = clk_get_rate(clk) / 1000;
+>  
+>  	for_each_child_of_node(pdev->dev.of_node, np) {
 > diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-> index 22d6a7f9ff80..1d5a646ca1e5 100644
+> index 1d5a646ca1e5..06402c0cbd32 100644
 > --- a/drivers/mtd/nand/raw/tegra_nand.c
 > +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> @@ -164,7 +164,7 @@
->  				HWSTATUS_RBSY_VALUE(NAND_STATUS_READY))
+> @@ -1136,7 +1136,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
+>  		return -ENOMEM;
 >  
->  struct tegra_nand_controller {
-> -	struct nand_hw_control controller;
-> +	struct nand_controller controller;
->  	struct device *dev;
->  	void __iomem *regs;
->  	int irq;
-> @@ -187,7 +187,7 @@ struct tegra_nand_chip {
->  };
+>  	ctrl->dev = &pdev->dev;
+> -	nand_hw_control_init(&ctrl->controller);
+> +	nand_controller_init(&ctrl->controller);
 >  
->  static inline struct tegra_nand_controller *
-> -			to_tegra_ctrl(struct nand_hw_control *hw_ctrl)
-> +			to_tegra_ctrl(struct nand_controller *hw_ctrl)
->  {
->  	return container_of(hw_ctrl, struct tegra_nand_controller, controller);
->  }
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	ctrl->regs = devm_ioremap_resource(&pdev->dev, res);
 > diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-> index b567d212fe7d..89ec8d4c4e83 100644
+> index 89ec8d4c4e83..dd232d8740a2 100644
 > --- a/drivers/mtd/nand/raw/txx9ndfmc.c
 > +++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-> @@ -73,7 +73,7 @@ struct txx9ndfmc_drvdata {
->  	void __iomem *base;
->  	unsigned char hold;	/* in gbusclock */
->  	unsigned char spw;	/* in gbusclock */
-> -	struct nand_hw_control hw_control;
-> +	struct nand_controller hw_control;
->  };
+> @@ -303,7 +303,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+>  	dev_info(&dev->dev, "CLK:%ldMHz HOLD:%d SPW:%d\n",
+>  		 (gbusclk + 500000) / 1000000, hold, spw);
 >  
->  static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
+> -	nand_hw_control_init(&drvdata->hw_control);
+> +	nand_controller_init(&drvdata->hw_control);
+>  
+>  	platform_set_drvdata(dev, drvdata);
+>  	txx9ndfmc_initialize(dev);
 > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index e383c7f32574..cfe39fc18417 100644
+> index cfe39fc18417..f5fb9caf6dca 100644
 > --- a/include/linux/mtd/rawnand.h
 > +++ b/include/linux/mtd/rawnand.h
-> @@ -510,20 +510,21 @@ struct nand_id {
->  };
->  
->  /**
-> - * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-> + * struct nand_controller - Control structure for hardware controller
-> + *                          shared among independent devices
->   * @lock:               protection lock
->   * @active:		the mtd device which holds the controller currently
->   * @wq:			wait queue to sleep on if a NAND operation is in
->   *			progress used instead of the per chip wait queue
->   *			when a hw controller is available.
->   */
-> -struct nand_hw_control {
-> +struct nand_controller {
->  	spinlock_t lock;
->  	struct nand_chip *active;
+> @@ -524,7 +524,7 @@ struct nand_controller {
 >  	wait_queue_head_t wq;
 >  };
 >  
-> -static inline void nand_hw_control_init(struct nand_hw_control *nfc)
-> +static inline void nand_hw_control_init(struct nand_controller *nfc)
+> -static inline void nand_hw_control_init(struct nand_controller *nfc)
+> +static inline void nand_controller_init(struct nand_controller *nfc)
 >  {
 >  	nfc->active = NULL;
 >  	spin_lock_init(&nfc->lock);
-> @@ -1334,11 +1335,11 @@ struct nand_chip {
->  	flstate_t state;
->  
->  	uint8_t *oob_poi;
-> -	struct nand_hw_control *controller;
-> +	struct nand_controller *controller;
->  
->  	struct nand_ecc_ctrl ecc;
->  	unsigned long buf_align;
-> -	struct nand_hw_control hwcontrol;
-> +	struct nand_controller hwcontrol;
->  
->  	uint8_t *bbt;
->  	struct nand_bbt_descr *bbt_td;
