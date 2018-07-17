@@ -1,21 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffW44-000885-6E
- for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 19:55:17 +0000
-Date: Tue, 17 Jul 2018 21:54:53 +0200
+ id 1ffWB4-00063I-8k
+ for linux-mtd@lists.infradead.org; Tue, 17 Jul 2018 20:02:34 +0000
+Date: Tue, 17 Jul 2018 22:01:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Richard Weinberger <richard@nod.at>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
- y2038@lists.linaro.org, linux-kernel@vger.kernel.org, David Howells
- <dhowells@redhat.com>, linux-mtd@lists.infradead.org, Alexander Viro
- <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Andrew Morton
- <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>, Deepa
- Dinamani <deepa.kernel@gmail.com>
-Subject: Re: [PATCH 1/2] [RESEND] jffs2: use 64-bit intermediate timestamps
-Message-ID: <20180717215453.04509003@bbrezillon>
-In-Reply-To: <2205649.NecG7tB80L@blindfold>
-References: <20180713144739.3150217-1-arnd@arndb.de>
- <2205649.NecG7tB80L@blindfold>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Abhishek Sahu <absahu@codeaurora.org>, Archit Taneja
+ <architt@codeaurora.org>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] nand: ranw: qcom_nand: stop using phys_to_dma()
+Message-ID: <20180717220136.2782fc5d@bbrezillon>
+In-Reply-To: <CAK8P3a1M4v1hMduAX3y39DEjBiT=70xm-+qJ8CPLZHQwKOzJ1g@mail.gmail.com>
+References: <20180711122709.358159-1-arnd@arndb.de>
+ <20180711150449.4152333c@bbrezillon>
+ <CAK8P3a1M4v1hMduAX3y39DEjBiT=70xm-+qJ8CPLZHQwKOzJ1g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,36 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jul 2018 22:47:13 +0200
-Richard Weinberger <richard@nod.at> wrote:
+Hi Arnd,
 
-> Am Freitag, 13. Juli 2018, 16:47:16 CEST schrieb Arnd Bergmann:
-> > The VFS now uses timespec64 timestamps consistently, but jffs2 still
-> > converts them to 32-bit numbers on the storage medium. As the helper
-> > functions for the conversion (get_seconds() and timespec_to_timespec64())
-> > are now deprecated, let's change them over to the more modern
-> > replacements.
-> > 
-> > This keeps the traditional interpretation of those values, where
-> > the on-disk 32-bit numbers are taken to be negative numbers, i.e.
-> > dates before 1970, on 32-bit machines, but future numbers past 2038
-> > on 64-bit machines.
-> > 
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> > ---
-> > I originally sent these two patches on Jun 19, but got no reply aside
-> > from a harmless sparse warning reported by the kbuild test robot.
-> > 
-> > Looking at the git history for jffs2, it seems that David Woodhouse
-> > hasn't applied any patches for over two years, so I suppose he's
-> > not taking these either.
-> > 
-> > Al or Andrew, could you pick these up instead?  
+On Wed, 11 Jul 2018 16:26:31 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
+
+> On Wed, Jul 11, 2018 at 3:04 PM, Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> > On Wed, 11 Jul 2018 14:26:58 +0200
+> > Arnd Bergmann <arnd@arndb.de> wrote:
+> >  
+> >> Compile-testing this driver on x86 caused a link error:
+> >>
+> >> ERROR: "__phys_to_dma" [drivers/mtd/nand/raw/qcom_nandc.ko] undefined!
+> >>
+> >> The problem here is that the driver attempts to convert the physical
+> >> address into the DMA controller as a dma_addr_t and calls phys_to_dma()
+> >> to do the conversion.
+> >>
+> >> However, there is no generic way to convert a phys_addr_t into a dma_addr_t
+> >> for anything other than RAM (which should use the dma-mapping API instead).
+> >> The only correct use of phys_to_dma() instead is inside of the dma-mapping
+> >> implementation.  
+> >
+> > Should we use dma_map_resource() to do the phys_addr_t to dma_addr_t
+> > conversion?  
 > 
-> We can carry it also via the MTD tree.
+> I had not seen that interface before, but yes, that does seem like the best
+> way to do it here.
 
-I'll queue them to mtd/next.
+Do you plan to send a new version using dma_map_resource()? BTW,
+there's typo in the subject prefix (s/ranw/rawnand/).
 
-Thanks,
+Regards,
 
 Boris
