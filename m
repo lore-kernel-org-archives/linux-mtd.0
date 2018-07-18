@@ -1,22 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffh9y-0003qS-Dc
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:46:07 +0000
-Date: Wed, 18 Jul 2018 09:45:44 +0200
+ id 1ffhAk-00049M-8N
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:46:55 +0000
+Date: Wed, 18 Jul 2018 09:46:32 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Marcel Ziswiler <marcel@ziswiler.com>
-Cc: linux-mtd@lists.infradead.org, linux-tegra@vger.kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- boris.brezillon@bootlin.com, dev@lynxeye.de, mirza.krak@gmail.com,
- benjamin.lindqvist@endian.se, krzk@kernel.org, marek.vasut@gmail.com,
- richard@nod.at, digetx@gmail.com, computersforpeace@gmail.com,
- dwmw2@infradead.org, dan.carpenter@oracle.com, Marcel Ziswiler
- <marcel.ziswiler@toradex.com>, Thierry Reding <thierry.reding@gmail.com>,
- Jonathan Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2] mtd: rawnand: tegra: check bounds of die_nr properly
-Message-ID: <20180718094544.76607c0f@xps13>
-In-Reply-To: <20180717084618.25249-1-marcel@ziswiler.com>
-References: <20180717084618.25249-1-marcel@ziswiler.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] mtd: rawnand: add default values for dynamic timings
+Message-ID: <20180718094632.1105861e@xps13>
+In-Reply-To: <20180717142621.380adf1e@bbrezillon>
+References: <20180714102354.12323-1-miquel.raynal@bootlin.com>
+ <20180717142621.380adf1e@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,29 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marcel,
-
-Marcel Ziswiler <marcel@ziswiler.com> wrote on Tue, 17 Jul 2018
-10:46:18 +0200:
-
-> From: Stefan Agner <stefan@agner.ch>
+> On Sat, 14 Jul 2018 12:23:54 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 >=20
-> The Tegra driver currently only support a single chip select, hence
-> check boundaries accordingly. This fixes a off by one issue catched
-> with Smatch:
->     drivers/mtd/nand/raw/tegra_nand.c:476 tegra_nand_select_chip()
->     warn: array off by one? 'nand->cs[die_nr]'
+> > Some timings like tBERS (block erase time), tCCs (change column setup
+> > time), tPROG (page program time) and tR (page read time) are derived
+> > from the ONFI parameter page. They are set in the SDR interface only
+> > if the chip is ONFI compliant.
+> >=20
+> > It makes these timings unreliable and prevent the driver to use one of
+> > these four values with a non-ONFI chip.
+> >=20
+> > Fix this situation by taking the highest possible value (or a default
+> > one) value for each missing timing (stored as unsigned 16-bit entries in
+> > the parameter page).
+> >=20
+> > This makes tBERS and tPROG being ~65ms while typical values are at most
+> > a few milliseconds. As these are timeouts, it is not impacting at all
+> > the performances in nominal use.
+> >=20
+> > tR maximum time and tCCS minimum time (delay to wait after a change
+> > column) are set, according to the ONFI specification, to default 'slow'
+> > values; respectively 200us and 500ns.
+> >=20
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com> =20
 >=20
-> Also warn in case the stack asks for a chip select we currently do
-> not support.
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 >=20
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Stefan Agner <stefan@agner.ch>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-Applied on nand/next in place of the previous one (with my SoB after
-yours).
+Applied to nand/next.
 
-Thanks,
 Miqu=C3=A8l
