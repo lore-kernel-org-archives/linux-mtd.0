@@ -1,21 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffhC8-0004Uu-FF
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:48:22 +0000
-Date: Wed, 18 Jul 2018 09:47:58 +0200
+ id 1ffhD7-0004wV-Kg
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:49:23 +0000
+Date: Wed, 18 Jul 2018 09:48:44 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Abhishek Sahu
- <absahu@codeaurora.org>, Archit Taneja <architt@codeaurora.org>, Masahiro
- Yamada <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] nand: ranw: qcom_nand: stop using phys_to_dma()
-Message-ID: <20180718094758.785ea21f@xps13>
-In-Reply-To: <20180717223359.43dc5dfb@bbrezillon>
-References: <20180717202759.2288076-1-arnd@arndb.de>
- <20180717223359.43dc5dfb@bbrezillon>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Xiaolei Li <xiaolei.li@mediatek.com>,
+ linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH 0/4] mtd: use mtd_device_register() where applicable
+Message-ID: <20180718094844.01f814ac@xps13>
+In-Reply-To: <20180713092734.16408-1-zajec5@gmail.com>
+References: <20180713092734.16408-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,34 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Rafa=C5=82,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
-22:33:59 +0200:
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote on Fri, 13 Jul 2018 11:27:=
+30
++0200:
 
-> On Tue, 17 Jul 2018 22:27:42 +0200
-> Arnd Bergmann <arnd@arndb.de> wrote:
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >=20
-> > Compile-testing this driver on x86 caused a link error:
-> >=20
-> > ERROR: "__phys_to_dma" [drivers/mtd/nand/raw/qcom_nandc.ko] undefined!
-> >=20
-> > The problem here is that the driver attempts to convert the physical
-> > address into the DMA controller as a dma_addr_t and calls phys_to_dma()
-> > to do the conversion.
-> >=20
-> > The correct way to do the conversion is using the dma mapping interface=
-s.
-> >=20
-> > Fixes: c76b78d8ec05 ("mtd: nand: Qualcomm NAND controller driver")
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
+> This is a tiny cleanup making code use mtd_device_register() helper
+> macro.
 >=20
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> It makes checking which drivers (may) specify custom list of parsers
+> just a bit easier.
 >=20
-> Miquel, can you fix the subject prefix when applying?
+> Rafa=C5=82 Mi=C5=82ecki (4):
+>   mtd: rawnand: use mtd_device_register() where applicable
+>   mtd: onenand: use mtd_device_register() where applicable
+>   mtd: maps: use mtd_device_register() where applicable
+>   mtd: sst25l: use mtd_device_register()
+>=20
+>  drivers/mtd/devices/sst25l.c        | 5 ++---
+>  drivers/mtd/maps/impa7.c            | 5 ++---
+>  drivers/mtd/maps/intel_vr_nor.c     | 2 +-
+>  drivers/mtd/maps/latch-addr-flash.c | 5 ++---
+>  drivers/mtd/maps/rbtx4939-flash.c   | 3 +--
+>  drivers/mtd/nand/onenand/generic.c  | 5 ++---
+>  drivers/mtd/nand/onenand/samsung.c  | 5 ++---
+>  drivers/mtd/nand/raw/cmx270_nand.c  | 4 ++--
+>  drivers/mtd/nand/raw/cs553x_nand.c  | 3 +--
+>  drivers/mtd/nand/raw/davinci_nand.c | 3 +--
+>  drivers/mtd/nand/raw/jz4740_nand.c  | 5 ++---
+>  drivers/mtd/nand/raw/mtk_nand.c     | 2 +-
+>  drivers/mtd/nand/raw/s3c2410.c      | 4 ++--
+>  drivers/mtd/nand/raw/txx9ndfmc.c    | 2 +-
+>  14 files changed, 22 insertions(+), 31 deletions(-)
+>=20
 
-Applied to nand/next with the subject prefix being:
-"mtd: rawnand: qcom:"
+NAND patches (1 and 2) applied to nand/next.
 
-Thanks
+Thanks,
 Miqu=C3=A8l
