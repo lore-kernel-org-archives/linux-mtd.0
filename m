@@ -1,21 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffu1Q-0001v6-9H
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:30:09 +0000
-Date: Wed, 18 Jul 2018 23:29:45 +0200
+ id 1ffu7q-0006Em-3K
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:36:47 +0000
+Date: Wed, 18 Jul 2018 23:36:33 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>
-Subject: Re: [PATCH 5/5] mtd: rawnand: qcom: reorganization by removing
- read/write helpers
-Message-ID: <20180718232945.407e22de@xps13>
-In-Reply-To: <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
-References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
- <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Stop using chip->read_buf()
+Message-ID: <20180718233633.3416f720@xps13>
+In-Reply-To: <20180718082814.17203-1-boris.brezillon@bootlin.com>
+References: <20180718082814.17203-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,54 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Abhishek,
+Hi Boris,
 
-Abhishek Sahu <absahu@codeaurora.org> wrote on Fri,  6 Jul 2018
-13:21:59 +0530:
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 18 Jul 2018
+10:28:14 +0200:
 
-> Driver does not send the commands to NAND device for page
-> read/write operations in ->cmdfunc(). It just does some
-> minor variable initialization and rest of the things
-> are being done in actual ->read/write_oob[_raw].
+> chip->read_buf is left unassigned since commit 4da712e70294 ("mtd: nand:
+> fsmc: use ->exec_op()"), leading to a NULL pointer dereference when it's
+> called from fsmc_read_page_hwecc(). Fix that by using the appropriate
+> helper to read data out of the NAND.
+>=20
+> Fixes: 4da712e70294 ("mtd: nand: fsmc: use ->exec_op()")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---,
 
-Thank you for cleaning actively this driver. I think you are comfortable
-enough now to switch to start the migration to ->exec_op().
+Thanks for the fix.
 
-I will take this patch as I think it shrinks a bit the driver (which is
-inordinately huge) but I would like to get rid of any kind of hackish
-->cmdfunc() implementation. Boris and I can help you doing that, you
-can grep for drivers already converted and observe they structure
-(marvell, fsmc, vf610).
-
->=20
-> The generic helper function calls for invoking commands during
-> page read/write are making this driver complicated. For QCOM NAND
-> driver, ->cmdfunc() does minor part of initialization and rest of
-> the initialization is performed by actual page read/write
-> functions. Also, ->read/write_oob() does not calls helper
-> function and all the initialization is being done in
-> ->read/write_oob() itself. =20
->=20
-> Since after 'commit 25f815f66a14 ("mtd: nand: force drivers to
-> explicitly send READ/PROG commands")', sending of commands has
-> been moved to driver for page read/write, so this patch does
-> following changes to make code more readable:
->=20
-> 1. Introduce qcom_nand_init_page_op() and qcom_nand_start_page_op()
->    helper functions which helps in removing code duplication in each
->    operation.
->=20
-> 2. After issuing PROGRAM PAGE/BLOCK ERASE, QCOM NAND
->    controller waits for BUSY signal to be de asserted and
->    automatically issues the READ STATUS command. Currently, driver
->    is storing this status privately and returns the same when status
->    command comes from helper function after program/erase operation.
->    Now, for write operations, the status can be returned from main
->    function itself, so storing status can be removed for program
->    operations.
->=20
-> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
-> ---
+As nobody complained I don't think it is urgent to get it
+merged so I applied it to nand/next.
 
 Thanks,
 Miqu=C3=A8l
