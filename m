@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffu7q-0006Em-3K
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:36:47 +0000
-Date: Wed, 18 Jul 2018 23:36:33 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Stop using chip->read_buf()
-Message-ID: <20180718233633.3416f720@xps13>
-In-Reply-To: <20180718082814.17203-1-boris.brezillon@bootlin.com>
-References: <20180718082814.17203-1-boris.brezillon@bootlin.com>
+ id 1ffu7r-0006En-Cs
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:36:48 +0000
+Date: Wed, 18 Jul 2018 23:36:37 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Abhishek Sahu <absahu@codeaurora.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>
+Subject: Re: [PATCH 4/5] mtd: rawnand: qcom: update BBT related flags
+Message-ID: <20180718233637.49a39751@bbrezillon>
+In-Reply-To: <20180718231526.38046099@xps13>
+References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
+ <1530863519-5564-5-git-send-email-absahu@codeaurora.org>
+ <20180718231526.38046099@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,25 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed, 18 Jul 2018 23:15:26 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 18 Jul 2018
-10:28:14 +0200:
-
-> chip->read_buf is left unassigned since commit 4da712e70294 ("mtd: nand:
-> fsmc: use ->exec_op()"), leading to a NULL pointer dereference when it's
-> called from fsmc_read_page_hwecc(). Fix that by using the appropriate
-> helper to read data out of the NAND.
+> Hi Abhishek,
 >=20
-> Fixes: 4da712e70294 ("mtd: nand: fsmc: use ->exec_op()")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---,
+> Abhishek Sahu <absahu@codeaurora.org> wrote on Fri,  6 Jul 2018
+> 13:21:58 +0530:
+>=20
+> > Remove the NAND_SKIP_BBTSCAN to use RAM based BBT. =20
+>=20
+> Unless I am understanding it the wrong way, NAND_SKIP_BBTSCAN will skip
+> the scan of the on-chip BBT and will scan every block to construct a
+> RAM, based BBT thanks to the BBM.
+>=20
+> So flash based BBT is already unused and removing this flag is a
+> mistake, right?
 
-Thanks for the fix.
+->scan_bbt() is also taking care of building the in-RAM BBT based on
+BBM when no on-flash BBT is provided, so I think it's the right thing
+to do.
 
-As nobody complained I don't think it is urgent to get it
-merged so I applied it to nand/next.
-
-Thanks,
-Miqu=C3=A8l
+>=20
+> > Flash based BBT is not used since bootloaders
+> > doesn't have support for the same.
+> >=20
+> > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> > --- =20
+>=20
+> Thanks,
+> Miqu=C3=A8l
+>=20
