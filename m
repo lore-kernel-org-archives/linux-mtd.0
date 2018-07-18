@@ -1,20 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffvAg-0002FN-TT
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:43:48 +0000
-Date: Thu, 19 Jul 2018 00:43:35 +0200
+ id 1ffvDc-00040Y-Et
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:46:50 +0000
+Date: Thu, 19 Jul 2018 00:46:36 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: make subop helpers return unsigned values
-Message-ID: <20180719004335.3f92a927@bbrezillon>
-In-Reply-To: <20180719004211.4829aa8a@xps13>
-References: <20180718220912.7758-1-miquel.raynal@bootlin.com>
- <20180719003134.3512f18e@bbrezillon>
- <20180719004211.4829aa8a@xps13>
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: add hooks that may be called
+ during nand_scan()
+Message-ID: <20180719004636.4a85644a@bbrezillon>
+In-Reply-To: <20180719004225.438ea90f@bbrezillon>
+References: <20180718215056.1242-1-miquel.raynal@bootlin.com>
+ <20180718215056.1242-3-miquel.raynal@bootlin.com>
+ <20180719004225.438ea90f@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,31 +27,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Jul 2018 00:42:58 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Thu, 19 Jul 2018 00:42:25 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Hi Boris,
+> On Wed, 18 Jul 2018 23:50:56 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > 
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 19 Jul 2018
-> 00:31:34 +0200:
-> 
-> > On Thu, 19 Jul 2018 00:09:12 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > A report from Colin Ian King pointed a CoverityScan issue where error
-> > > values on these helpers where not checked in the drivers. These
-> > > helpers can error out only in case of a software bug in driver code,
-> > > not because of a runtime/hardware error. Hence, let's WARN_ON() in this
-> > > case and return 0 which is harmless anyway.
-> > > 
-> > > Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> > > Cc: stable@vger.kernel.org    
+> > In order to remove the limitation that forbids dynamic allocation in
+> > nand_scan_ident(), we must create a path that will be the same for all
+> > controller drivers. The idea is to use nand_scan() instead of the widely
+> > used nand_scan_ident()/nand_scan_tail() couple. In order to achieve
+> > this, controller drivers will need to adjust some parameters between
+> > these two functions depending on the NAND chip wired on them.
 > > 
-> > Is it really worth backporting this patch? I mean, the bug does not
-> > exist, it's just a potential problem that can only arise when
-> > drivers/core are buggy, which AFAICT is not the case yet :-).  
+> > For that, a hook called ->attach_chip() is created as part of the
+> > nand_controller_ops structure, itself embedded in the nand_controller
+> > structure. The later may be referenced by two ways:
+> > 1/ if the driver does not implement its own controller, the
+> >    chip->controller hook is not populated before nand_scan() so it
+> >    cannot be dereferenced: use chip->dummy_controller instead (which is
+> >    statically allocated and will be referenced later by chip->controller
+> >    anyway).
+> > 2/ through chip->controller if the driver implements its own controller.
+> > 
+> > Another hook, ->detach_chip() is also introduced in order to clean the
+> > controller driver's potential allocations in case of failure of
+> > nand_scan_tail(). There is no need for the controller driver to call the  
+> > ->detach_chip() hook directly upon error after a successful nand_scan().    
+> > In this situation, calling nand_release() as before is enough.
+> > 
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> > ---
+> >  drivers/mtd/nand/raw/nand_base.c | 32 ++++++++++++++++++++++++++++++--
+> >  include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
+> >  2 files changed, 46 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> > index 0aef0299f4f2..a64a344bf7a9 100644
+> > --- a/drivers/mtd/nand/raw/nand_base.c
+> > +++ b/drivers/mtd/nand/raw/nand_base.c
+> > @@ -6697,6 +6697,20 @@ EXPORT_SYMBOL(nand_scan_tail);
+> >  	is_module_text_address((unsigned long)__builtin_return_address(0))
+> >  #endif
+> >  
+> > +static int nand_attach(struct nand_chip *chip)
+> > +{
+> > +	if (chip->controller->ops && chip->controller->ops->attach_chip)
+> > +		return chip->controller->ops->attach_chip(chip);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void nand_detach(struct nand_chip *chip)
+> > +{
+> > +	if (chip->controller->ops && chip->controller->ops->detach_chip)
+> > +		chip->controller->ops->detach_chip(chip);
+> > +}
+> > +
+> >  /**
+> >   * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
+> >   * @mtd: MTD device structure
+> > @@ -6710,11 +6724,21 @@ EXPORT_SYMBOL(nand_scan_tail);
+> >  int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+> >  		       struct nand_flash_dev *ids)
+> >  {
+> > +	struct nand_chip *chip = mtd_to_nand(mtd);
+> >  	int ret;
+> >  
+> >  	ret = nand_scan_ident(mtd, maxchips, ids);
+> > -	if (!ret)
+> > -		ret = nand_scan_tail(mtd);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = nand_attach(chip);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = nand_scan_tail(mtd);
+> > +	if (ret)
+> > +		nand_detach(chip);
+> > +
+> >  	return ret;
+> >  }
+> >  EXPORT_SYMBOL(nand_scan_with_ids);
+> > @@ -6742,7 +6766,11 @@ void nand_cleanup(struct nand_chip *chip)
+> >  
+> >  	/* Free manufacturer priv data. */
+> >  	nand_manufacturer_cleanup(chip);
+> > +
+> > +	/* Free controller specific allocations after chip identification */
+> > +	nand_detach(chip);
+> >  }
+> > +
+> >  EXPORT_SYMBOL_GPL(nand_cleanup);
+> >  
+> >  /**
+> > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> > index eb5a053fd06b..d046b3a61205 100644
+> > --- a/include/linux/mtd/rawnand.h
+> > +++ b/include/linux/mtd/rawnand.h
+> > @@ -509,6 +509,19 @@ struct nand_id {
+> >  	int len;
+> >  };
+> >  
+> > +/**
+> > + * struct nand_controller_ops - Controller operations
+> > + *
+> > + * @attach_chip:	Callback that may be called between nand_detect() and
+> > + *			nand_scan_tail() during nand_scan() (optional).
+> > + * @detach_chip:	Callback that may be called if nand_scan_tail() fails
+> > + *			(optional).
+> > + */
+> > +struct nand_controller_ops {
+> > +	int (*attach_chip)(struct nand_chip *chip);
+> > +	void (*detach_chip)(struct nand_chip *chip);
+> > +};
+> > +
+> >  /**
+> >   * struct nand_controller - Control structure for hardware controller
+> >   *                          shared among independent devices
+> > @@ -517,11 +530,13 @@ struct nand_id {
+> >   * @wq:			wait queue to sleep on if a NAND operation is in
+> >   *			progress used instead of the per chip wait queue
+> >   *			when a hw controller is available.
+> > + * @ops:		NAND controller operations.
+> >   */
+> >  struct nand_controller {
+> >  	spinlock_t lock;
+> >  	struct nand_chip *active;
+> >  	wait_queue_head_t wq;
+> > +	const struct nand_controller_ops *ops;
+> >  };
+> >  
+> >  static inline void nand_controller_init(struct nand_controller *nfc)
+> > @@ -529,6 +544,7 @@ static inline void nand_controller_init(struct nand_controller *nfc)
+> >  	nfc->active = NULL;
+> >  	spin_lock_init(&nfc->lock);
+> >  	init_waitqueue_head(&nfc->wq);
+> > +	nfc->ops = NULL;  
 > 
-> Ok, I'll remove the Cc: stable tag but I guess I can keep the Fixes
-> one.
+> Hm, actually it does not work for all dummy controllers since this
+> function is called from nand_set_defaults() which is called from
+> nand_scan_ident(). That means the previous chip->dummy_controller.ops
+> assignment you might have done before calling nand_scan() is gone.
+> 
+> Looks like we'll have to patch all drivers to call
+> nand_controller_init(&chip->dummy_controller), unless you see a better
+> option.
 
-Sure.
+Alternatively, we could assume that the nand_controller object is
+always zeroed at allocation time, and simply not assign nfc->ops from
+nand_controller_init() so that dummy controller drivers that need to
+pass non-NULL ops can do so before calling nand_scan().
