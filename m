@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffuz3-0006CV-Sq
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:31:47 +0000
-Date: Thu, 19 Jul 2018 00:31:34 +0200
+ id 1ffv9b-0001hr-4u
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:42:41 +0000
+Date: Thu, 19 Jul 2018 00:42:25 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: make subop helpers return unsigned values
-Message-ID: <20180719003134.3512f18e@bbrezillon>
-In-Reply-To: <20180718220912.7758-1-miquel.raynal@bootlin.com>
-References: <20180718220912.7758-1-miquel.raynal@bootlin.com>
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] mtd: rawnand: add hooks that may be called
+ during nand_scan()
+Message-ID: <20180719004225.438ea90f@bbrezillon>
+In-Reply-To: <20180718215056.1242-3-miquel.raynal@bootlin.com>
+References: <20180718215056.1242-1-miquel.raynal@bootlin.com>
+ <20180718215056.1242-3-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,156 +26,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Jul 2018 00:09:12 +0200
+On Wed, 18 Jul 2018 23:50:56 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> A report from Colin Ian King pointed a CoverityScan issue where error
-> values on these helpers where not checked in the drivers. These
-> helpers can error out only in case of a software bug in driver code,
-> not because of a runtime/hardware error. Hence, let's WARN_ON() in this
-> case and return 0 which is harmless anyway.
+> In order to remove the limitation that forbids dynamic allocation in
+> nand_scan_ident(), we must create a path that will be the same for all
+> controller drivers. The idea is to use nand_scan() instead of the widely
+> used nand_scan_ident()/nand_scan_tail() couple. In order to achieve
+> this, controller drivers will need to adjust some parameters between
+> these two functions depending on the NAND chip wired on them.
 > 
-> Fixes: 8878b126df76 ("mtd: nand: add ->exec_op() implementation")
-> Cc: stable@vger.kernel.org
-
-Is it really worth backporting this patch? I mean, the bug does not
-exist, it's just a potential problem that can only arise when
-drivers/core are buggy, which AFAICT is not the case yet :-).
-
+> For that, a hook called ->attach_chip() is created as part of the
+> nand_controller_ops structure, itself embedded in the nand_controller
+> structure. The later may be referenced by two ways:
+> 1/ if the driver does not implement its own controller, the
+>    chip->controller hook is not populated before nand_scan() so it
+>    cannot be dereferenced: use chip->dummy_controller instead (which is
+>    statically allocated and will be referenced later by chip->controller
+>    anyway).
+> 2/ through chip->controller if the driver implements its own controller.
+> 
+> Another hook, ->detach_chip() is also introduced in order to clean the
+> controller driver's potential allocations in case of failure of
+> nand_scan_tail(). There is no need for the controller driver to call the
+> ->detach_chip() hook directly upon error after a successful nand_scan().  
+> In this situation, calling nand_release() as before is enough.
+> 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
+> Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
-> 
-> Changes since v1:
-> =================
-> * At first I decided to continue returning negative errors and
->   handling these cases in the drivers. Not sure this was the right thing
->   to do as reported by Boris so now the core WARN_ON() on error (only
->   due to some bug in a controller driver) and return an harmless
->   value. The drivers are not touched anymore, hence this patch is alone
->   now. 
-> 
->  drivers/mtd/nand/raw/nand_base.c | 44 ++++++++++++++++++++--------------------
->  include/linux/mtd/rawnand.h      | 16 +++++++--------
->  2 files changed, 30 insertions(+), 30 deletions(-)
+>  drivers/mtd/nand/raw/nand_base.c | 32 ++++++++++++++++++++++++++++++--
+>  include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
+>  2 files changed, 46 insertions(+), 2 deletions(-)
 > 
 > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 4fa5e20d9690..9bb76ddff4be 100644
+> index 0aef0299f4f2..a64a344bf7a9 100644
 > --- a/drivers/mtd/nand/raw/nand_base.c
 > +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -2668,8 +2668,8 @@ static bool nand_subop_instr_is_valid(const struct nand_subop *subop,
->  	return subop && instr_idx < subop->ninstrs;
+> @@ -6697,6 +6697,20 @@ EXPORT_SYMBOL(nand_scan_tail);
+>  	is_module_text_address((unsigned long)__builtin_return_address(0))
+>  #endif
+>  
+> +static int nand_attach(struct nand_chip *chip)
+> +{
+> +	if (chip->controller->ops && chip->controller->ops->attach_chip)
+> +		return chip->controller->ops->attach_chip(chip);
+> +
+> +	return 0;
+> +}
+> +
+> +static void nand_detach(struct nand_chip *chip)
+> +{
+> +	if (chip->controller->ops && chip->controller->ops->detach_chip)
+> +		chip->controller->ops->detach_chip(chip);
+> +}
+> +
+>  /**
+>   * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
+>   * @mtd: MTD device structure
+> @@ -6710,11 +6724,21 @@ EXPORT_SYMBOL(nand_scan_tail);
+>  int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+>  		       struct nand_flash_dev *ids)
+>  {
+> +	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	int ret;
+>  
+>  	ret = nand_scan_ident(mtd, maxchips, ids);
+> -	if (!ret)
+> -		ret = nand_scan_tail(mtd);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nand_attach(chip);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = nand_scan_tail(mtd);
+> +	if (ret)
+> +		nand_detach(chip);
+> +
+>  	return ret;
 >  }
+>  EXPORT_SYMBOL(nand_scan_with_ids);
+> @@ -6742,7 +6766,11 @@ void nand_cleanup(struct nand_chip *chip)
 >  
-> -static int nand_subop_get_start_off(const struct nand_subop *subop,
-> -				    unsigned int instr_idx)
-> +static unsigned int nand_subop_get_start_off(const struct nand_subop *subop,
-> +					     unsigned int instr_idx)
->  {
->  	if (instr_idx)
->  		return 0;
-> @@ -2688,12 +2688,12 @@ static int nand_subop_get_start_off(const struct nand_subop *subop,
->   *
->   * Given an address instruction, returns the offset of the first cycle to issue.
->   */
-> -int nand_subop_get_addr_start_off(const struct nand_subop *subop,
-> -				  unsigned int instr_idx)
-> +unsigned int nand_subop_get_addr_start_off(const struct nand_subop *subop,
-> +					   unsigned int instr_idx)
->  {
-> -	if (!nand_subop_instr_is_valid(subop, instr_idx) ||
-> -	    subop->instrs[instr_idx].type != NAND_OP_ADDR_INSTR)
-> -		return -EINVAL;
-> +	if (WARN_ON(!nand_subop_instr_is_valid(subop, instr_idx) ||
-> +		    subop->instrs[instr_idx].type != NAND_OP_ADDR_INSTR))
-> +		return 0;
->  
->  	return nand_subop_get_start_off(subop, instr_idx);
+>  	/* Free manufacturer priv data. */
+>  	nand_manufacturer_cleanup(chip);
+> +
+> +	/* Free controller specific allocations after chip identification */
+> +	nand_detach(chip);
 >  }
-> @@ -2710,14 +2710,14 @@ EXPORT_SYMBOL_GPL(nand_subop_get_addr_start_off);
->   *
->   * Given an address instruction, returns the number of address cycle to issue.
->   */
-> -int nand_subop_get_num_addr_cyc(const struct nand_subop *subop,
-> -				unsigned int instr_idx)
-> +unsigned int nand_subop_get_num_addr_cyc(const struct nand_subop *subop,
-> +					 unsigned int instr_idx)
->  {
->  	int start_off, end_off;
->  
-> -	if (!nand_subop_instr_is_valid(subop, instr_idx) ||
-> -	    subop->instrs[instr_idx].type != NAND_OP_ADDR_INSTR)
-> -		return -EINVAL;
-> +	if (WARN_ON(!nand_subop_instr_is_valid(subop, instr_idx) ||
-> +		    subop->instrs[instr_idx].type != NAND_OP_ADDR_INSTR))
-> +		return 0;
->  
->  	start_off = nand_subop_get_addr_start_off(subop, instr_idx);
->  
-> @@ -2742,12 +2742,12 @@ EXPORT_SYMBOL_GPL(nand_subop_get_num_addr_cyc);
->   *
->   * Given a data instruction, returns the offset to start from.
->   */
-> -int nand_subop_get_data_start_off(const struct nand_subop *subop,
-> -				  unsigned int instr_idx)
-> +unsigned int nand_subop_get_data_start_off(const struct nand_subop *subop,
-> +					   unsigned int instr_idx)
->  {
-> -	if (!nand_subop_instr_is_valid(subop, instr_idx) ||
-> -	    !nand_instr_is_data(&subop->instrs[instr_idx]))
-> -		return -EINVAL;
-> +	if (WARN_ON(!nand_subop_instr_is_valid(subop, instr_idx) ||
-> +		    !nand_instr_is_data(&subop->instrs[instr_idx])))
-> +		return 0;
->  
->  	return nand_subop_get_start_off(subop, instr_idx);
->  }
-> @@ -2764,14 +2764,14 @@ EXPORT_SYMBOL_GPL(nand_subop_get_data_start_off);
->   *
->   * Returns the length of the chunk of data to send/receive.
->   */
-> -int nand_subop_get_data_len(const struct nand_subop *subop,
-> -			    unsigned int instr_idx)
-> +unsigned int nand_subop_get_data_len(const struct nand_subop *subop,
-> +				     unsigned int instr_idx)
->  {
->  	int start_off = 0, end_off;
->  
-> -	if (!nand_subop_instr_is_valid(subop, instr_idx) ||
-> -	    !nand_instr_is_data(&subop->instrs[instr_idx]))
-> -		return -EINVAL;
-> +	if (WARN_ON(!nand_subop_instr_is_valid(subop, instr_idx) ||
-> +		    !nand_instr_is_data(&subop->instrs[instr_idx])))
-> +		return 0;
->  
->  	start_off = nand_subop_get_data_start_off(subop, instr_idx);
->  
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index e383c7f32574..876a9dd47e74 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1007,14 +1007,14 @@ struct nand_subop {
->  	unsigned int last_instr_end_off;
->  };
->  
-> -int nand_subop_get_addr_start_off(const struct nand_subop *subop,
-> -				  unsigned int op_id);
-> -int nand_subop_get_num_addr_cyc(const struct nand_subop *subop,
-> -				unsigned int op_id);
-> -int nand_subop_get_data_start_off(const struct nand_subop *subop,
-> -				  unsigned int op_id);
-> -int nand_subop_get_data_len(const struct nand_subop *subop,
-> -			    unsigned int op_id);
-> +unsigned int nand_subop_get_addr_start_off(const struct nand_subop *subop,
-> +					   unsigned int op_id);
-> +unsigned int nand_subop_get_num_addr_cyc(const struct nand_subop *subop,
-> +					 unsigned int op_id);
-> +unsigned int nand_subop_get_data_start_off(const struct nand_subop *subop,
-> +					   unsigned int op_id);
-> +unsigned int nand_subop_get_data_len(const struct nand_subop *subop,
-> +				     unsigned int op_id);
+> +
+>  EXPORT_SYMBOL_GPL(nand_cleanup);
 >  
 >  /**
->   * struct nand_op_parser_addr_constraints - Constraints for address instructions
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index eb5a053fd06b..d046b3a61205 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -509,6 +509,19 @@ struct nand_id {
+>  	int len;
+>  };
+>  
+> +/**
+> + * struct nand_controller_ops - Controller operations
+> + *
+> + * @attach_chip:	Callback that may be called between nand_detect() and
+> + *			nand_scan_tail() during nand_scan() (optional).
+> + * @detach_chip:	Callback that may be called if nand_scan_tail() fails
+> + *			(optional).
+> + */
+> +struct nand_controller_ops {
+> +	int (*attach_chip)(struct nand_chip *chip);
+> +	void (*detach_chip)(struct nand_chip *chip);
+> +};
+> +
+>  /**
+>   * struct nand_controller - Control structure for hardware controller
+>   *                          shared among independent devices
+> @@ -517,11 +530,13 @@ struct nand_id {
+>   * @wq:			wait queue to sleep on if a NAND operation is in
+>   *			progress used instead of the per chip wait queue
+>   *			when a hw controller is available.
+> + * @ops:		NAND controller operations.
+>   */
+>  struct nand_controller {
+>  	spinlock_t lock;
+>  	struct nand_chip *active;
+>  	wait_queue_head_t wq;
+> +	const struct nand_controller_ops *ops;
+>  };
+>  
+>  static inline void nand_controller_init(struct nand_controller *nfc)
+> @@ -529,6 +544,7 @@ static inline void nand_controller_init(struct nand_controller *nfc)
+>  	nfc->active = NULL;
+>  	spin_lock_init(&nfc->lock);
+>  	init_waitqueue_head(&nfc->wq);
+> +	nfc->ops = NULL;
+
+Hm, actually it does not work for all dummy controllers since this
+function is called from nand_set_defaults() which is called from
+nand_scan_ident(). That means the previous chip->dummy_controller.ops
+assignment you might have done before calling nand_scan() is gone.
+
+Looks like we'll have to patch all drivers to call
+nand_controller_init(&chip->dummy_controller), unless you see a better
+option.
+
+>  }
+>  
+>  /**
