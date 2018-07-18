@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffi2f-0000nn-Sk
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 08:42:39 +0000
+ id 1ffi2f-0000nj-So
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 08:42:40 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -9,9 +9,12 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 1/7] mtd: rawnand: micron: Fix on-die ECC detection logic
-Date: Wed, 18 Jul 2018 10:42:15 +0200
-Message-Id: <20180718084221.27821-1-boris.brezillon@bootlin.com>
+Subject: [PATCH 3/7] mtd: rawnand: Expose _notsupp() helpers for raw page
+ accessors
+Date: Wed, 18 Jul 2018 10:42:17 +0200
+Message-Id: <20180718084221.27821-3-boris.brezillon@bootlin.com>
+In-Reply-To: <20180718084221.27821-1-boris.brezillon@bootlin.com>
+References: <20180718084221.27821-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,93 +24,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Basing the "mandatory on-die" detection on ID byte 2 does not work,
-because Micron has plenty of NANDs using the same device ID code, and
-not all of them have forcibly enabled on-die ECC.
+Some implementations simply can't disable their ECC engine. Expose
+helpers returning -ENOTSUPP so that the caller knows that raw accesses
+are not supported instead of silently falling back to non-raw
+accessors.
 
-Since the "Array Operation" feature does not provide the "ECC
-enabled/disabled" bit when the ECC can't be disabled, let's try to use
-the "ECC enabled/disabled" bit in the READ_ID bytes.
-
-It seems that this bit is dynamically updated on NANDs where on-die ECC
-can freely be enabled/disabled, so let's hope it stays at one when we
-have a NAND with on-die ECC forcibly enabled.
-
-Fixes: 51f3b3970a8c ("mtd: rawnand: micron: detect forced on-die ECC")
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 ---
- drivers/mtd/nand/raw/nand_micron.c | 32 +++++++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 33 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  4 ++++
+ 2 files changed, 37 insertions(+)
 
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index d30bd4df9b12..d85bb4d42686 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -196,6 +196,9 @@ enum {
- 	MICRON_ON_DIE_MANDATORY,
- };
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 4fa5e20d9690..323a900f3697 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -2966,6 +2966,23 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
+ }
+ EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
  
-+#define MICRON_ID_INTERNAL_ECC_MASK	GENMASK(1, 0)
-+#define MICRON_ID_ECC_ENABLED		BIT(7)
++/**
++ * nand_read_page_raw_notsupp - dummy read raw page function
++ * @mtd: mtd info structure
++ * @chip: nand chip info structure
++ * @buf: buffer to store read data
++ * @oob_required: caller requires OOB data read to chip->oob_poi
++ * @page: page number to read
++ *
++ * Returns -ENOTSUPP unconditionally.
++ */
++int nand_read_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
++			       u8 *buf, int oob_required, int page)
++{
++	return -ENOTSUPP;
++}
++EXPORT_SYMBOL(nand_read_page_raw_notsupp);
 +
- /*
-  * Try to detect if the NAND support on-die ECC. To do this, we enable
-  * the feature, and read back if it has been enabled as expected. We
-@@ -208,7 +211,7 @@ enum {
-  */
- static int micron_supports_on_die_ecc(struct nand_chip *chip)
- {
--	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = { 0, };
-+	u8 id[5];
- 	int ret;
+ /**
+  * nand_read_page_raw - [INTERN] read raw page data without ecc
+  * @mtd: mtd info structure
+@@ -3960,6 +3977,22 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 	return ret;
+ }
  
- 	if (!chip->parameters.onfi.version)
-@@ -217,26 +220,37 @@ static int micron_supports_on_die_ecc(struct nand_chip *chip)
- 	if (chip->bits_per_cell != 1)
- 		return MICRON_ON_DIE_UNSUPPORTED;
++/**
++ * nand_write_page_raw - dummy raw page write function
++ * @mtd: mtd info structure
++ * @chip: nand chip info structure
++ * @buf: data buffer
++ * @oob_required: must write chip->oob_poi to OOB
++ * @page: page number to write
++ *
++ * Returns -ENOTSUPP unconditionally.
++ */
++int nand_write_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
++				const u8 *buf, int oob_required, int page)
++{
++	return -ENOTSUPP;
++}
++EXPORT_SYMBOL(nand_write_page_raw_notsupp);
  
-+	/*
-+	 * We only support on-die ECC of 4/512 or 8/512
-+	 */
-+	if  (chip->ecc_strength_ds != 4 && chip->ecc_strength_ds != 8)
-+		return MICRON_ON_DIE_UNSUPPORTED;
-+
-+	/* 0x2 means on-die ECC is available. */
-+	if (chip->id.len != 5 ||
-+	    (chip->id.data[4] & MICRON_ID_INTERNAL_ECC_MASK) != 0x2)
-+		return MICRON_ON_DIE_UNSUPPORTED;
-+
- 	ret = micron_nand_on_die_ecc_setup(chip, true);
- 	if (ret)
- 		return MICRON_ON_DIE_UNSUPPORTED;
+ /**
+  * nand_write_page_raw - [INTERN] raw page write function
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index 11c2426fc363..f60fad29eae6 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1681,10 +1681,14 @@ int nand_get_set_features_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
+ /* Default read_page_raw implementation */
+ int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 		       uint8_t *buf, int oob_required, int page);
++int nand_read_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
++			       u8 *buf, int oob_required, int page);
  
--	ret = nand_get_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
--	if (ret < 0)
--		return ret;
-+	ret = nand_readid_op(chip, 0, id, sizeof(id));
-+	if (ret)
-+		return MICRON_ON_DIE_UNSUPPORTED;
+ /* Default write_page_raw implementation */
+ int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
+ 			const uint8_t *buf, int oob_required, int page);
++int nand_write_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
++				const u8 *buf, int oob_required, int page);
  
--	if ((feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN) == 0)
-+	if (!(id[4] & MICRON_ID_ECC_ENABLED))
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
- 	ret = micron_nand_on_die_ecc_setup(chip, false);
- 	if (ret)
- 		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	ret = nand_get_features(chip, ONFI_FEATURE_ON_DIE_ECC, feature);
--	if (ret < 0)
--		return ret;
-+	ret = nand_readid_op(chip, 0, id, sizeof(id));
-+	if (ret)
-+		return MICRON_ON_DIE_UNSUPPORTED;
- 
--	if (feature[0] & ONFI_FEATURE_ON_DIE_ECC_EN)
-+	if (id[4] & MICRON_ID_ECC_ENABLED)
- 		return MICRON_ON_DIE_MANDATORY;
- 
- 	/*
+ /* Reset and initialize a NAND device */
+ int nand_reset(struct nand_chip *chip, int chipnr);
 -- 
 2.14.1
