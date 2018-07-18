@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffhAk-00049M-8N
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:46:55 +0000
-Date: Wed, 18 Jul 2018 09:46:32 +0200
+ id 1ffhC8-0004Uu-FF
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:48:22 +0000
+Date: Wed, 18 Jul 2018 09:47:58 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: rawnand: add default values for dynamic timings
-Message-ID: <20180718094632.1105861e@xps13>
-In-Reply-To: <20180717142621.380adf1e@bbrezillon>
-References: <20180714102354.12323-1-miquel.raynal@bootlin.com>
- <20180717142621.380adf1e@bbrezillon>
+Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Abhishek Sahu
+ <absahu@codeaurora.org>, Archit Taneja <architt@codeaurora.org>, Masahiro
+ Yamada <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] nand: ranw: qcom_nand: stop using phys_to_dma()
+Message-ID: <20180718094758.785ea21f@xps13>
+In-Reply-To: <20180717223359.43dc5dfb@bbrezillon>
+References: <20180717202759.2288076-1-arnd@arndb.de>
+ <20180717223359.43dc5dfb@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,34 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Sat, 14 Jul 2018 12:23:54 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi Boris,
+
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
+22:33:59 +0200:
+
+> On Tue, 17 Jul 2018 22:27:42 +0200
+> Arnd Bergmann <arnd@arndb.de> wrote:
 >=20
-> > Some timings like tBERS (block erase time), tCCs (change column setup
-> > time), tPROG (page program time) and tR (page read time) are derived
-> > from the ONFI parameter page. They are set in the SDR interface only
-> > if the chip is ONFI compliant.
+> > Compile-testing this driver on x86 caused a link error:
 > >=20
-> > It makes these timings unreliable and prevent the driver to use one of
-> > these four values with a non-ONFI chip.
+> > ERROR: "__phys_to_dma" [drivers/mtd/nand/raw/qcom_nandc.ko] undefined!
 > >=20
-> > Fix this situation by taking the highest possible value (or a default
-> > one) value for each missing timing (stored as unsigned 16-bit entries in
-> > the parameter page).
+> > The problem here is that the driver attempts to convert the physical
+> > address into the DMA controller as a dma_addr_t and calls phys_to_dma()
+> > to do the conversion.
 > >=20
-> > This makes tBERS and tPROG being ~65ms while typical values are at most
-> > a few milliseconds. As these are timeouts, it is not impacting at all
-> > the performances in nominal use.
+> > The correct way to do the conversion is using the dma mapping interface=
+s.
 > >=20
-> > tR maximum time and tCCS minimum time (delay to wait after a change
-> > column) are set, according to the ONFI specification, to default 'slow'
-> > values; respectively 200us and 500ns.
-> >=20
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com> =20
+> > Fixes: c76b78d8ec05 ("mtd: nand: Qualcomm NAND controller driver")
+> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
 >=20
 > Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 >=20
+> Miquel, can you fix the subject prefix when applying?
 
-Applied to nand/next.
+Applied to nand/next with the subject prefix being:
+"mtd: rawnand: qcom:"
 
+Thanks
 Miqu=C3=A8l
