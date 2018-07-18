@@ -1,30 +1,24 @@
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Shreeya Patel <shreeya.patel23498@gmail.com>,
- Arvind Yadav <arvind.yadav.cs@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Krzysztof Halasa <khalasa@piap.pl>, Arnd Bergmann <arnd@arndb.de>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v2 0/3] ARM: OMAP1: ams-delta: Complete driver gpiod
- migration
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180717231448.14958-1-jmkrzyszt@gmail.com>
-Date: Wed, 18 Jul 2018 16:18:04 +0200
-In-Reply-To: <20180717231448.14958-1-jmkrzyszt@gmail.com> (Janusz
- Krzysztofik's message of "Wed, 18 Jul 2018 01:14:45 +0200")
-Message-ID: <87a7qoaaqr.fsf@bootlin.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ffnaJ-0005At-8V
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 14:37:46 +0000
+Date: Wed, 18 Jul 2018 16:37:21 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Kyungmin Park
+ <kyungmin.park@samsung.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>, linux-mtd@lists.infradead.org,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH 0/4] mtd: use mtd_device_register() where applicable
+Message-ID: <20180718163721.6ec49edf@bbrezillon>
+In-Reply-To: <20180713092734.16408-1-zajec5@gmail.com>
+References: <20180713092734.16408-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,63 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
- 
- On mer., juil. 18 2018, Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+On Fri, 13 Jul 2018 11:27:30 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-> This is a follow up of initial submission of a series consisted of 
-> 6 changes, 3 of which have been already applied or reworkeed.
->
-> V2 changelog:
-> [PATCH 1/6] ARM: OMAP1: ams-delta: add GPIO lookup tables
-> 	- already in mainline, commit 68e62a15a914
-> [PATCH 2/6] Input: ams_delta_serio: use GPIO lookup table
-> 	- reworked and submitted as a series, already in linux-omap,
-> 	  commit 68e62a15a914 ("ARM: OMAP1: ams-delta: drop GPIO lookup
-> 	  table for serio device") followed by 9 more
-> [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
-> 	- already in mainline, commit d65777d1a2cd
-> [PATCH 4/6] fbdev: omapfb: lcd_ams_delta: use GPIO lookup table
-> 	- resubmitting as [PATCH v2 1/3 v2]
-> 	v2: Remove problematic error code conversion no longer
-> 	    needed if used on top of commit d08605a64e67 ("ARM: OMAP1:
-> 	    ams-delta: move late devices back to init_machine")
-> 	    and commit 8853daf3b4ac ("gpiolib: Defer on non-DT
-> 	    find_chip_by_name() failure") already in linux-next
-> [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-> 	- resubmitting as [PATCH v2 2/3 v4]
-> 	v2: Fix handling of devm_gpiod_get_optional() return values -
-> 	    thanks to Andy Shevchenko.
-> 	v3: Remove problematic error code conversion no longer needed
-> 	    if used on top of commit d08605a64e67 ("ARM: OMAP1:
-> 	    ams-delta: move late devices back to init_machine") and
-> 	    commit 8853daf3b4ac ("gpiolib: Defer on non-DT
-> 	    find_chip_by_name() failure") already in linux-next - thanks
-> 	    to Boris Brezillon
-> 	v4: fix style issue - thanks to Boris Brezillon
-> [PATCH 6/6] ARM: OMAP1: ams-delta: make board header file local to
-> 	mach-omap1
-> 	- resending as [PATCH v2 3/3]
->
-> Dependency on commit 8853daf3b4ac ("gpiolib: Defer on non-DT
-> find_chip_by_name() failure") is not critical - it is not needed for
-> clean build or run, it only prevents from potential future changes to
-> driver initializaton order during device_initcall.
->
-> I'm submitting the three patches in series because the last one depends
-> on the other two.
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> This is a tiny cleanup making code use mtd_device_register() helper
+> macro.
+>=20
+> It makes checking which drivers (may) specify custom list of parsers
+> just a bit easier.
+>=20
+> Rafa=C5=82 Mi=C5=82ecki (4):
+>   mtd: rawnand: use mtd_device_register() where applicable
+>   mtd: onenand: use mtd_device_register() where applicable
+>   mtd: maps: use mtd_device_register() where applicable
+>   mtd: sst25l: use mtd_device_register()
+>=20
+>  drivers/mtd/devices/sst25l.c        | 5 ++---
+>  drivers/mtd/maps/impa7.c            | 5 ++---
+>  drivers/mtd/maps/intel_vr_nor.c     | 2 +-
+>  drivers/mtd/maps/latch-addr-flash.c | 5 ++---
+>  drivers/mtd/maps/rbtx4939-flash.c   | 3 +--
+>  drivers/mtd/nand/onenand/generic.c  | 5 ++---
+>  drivers/mtd/nand/onenand/samsung.c  | 5 ++---
+>  drivers/mtd/nand/raw/cmx270_nand.c  | 4 ++--
+>  drivers/mtd/nand/raw/cs553x_nand.c  | 3 +--
+>  drivers/mtd/nand/raw/davinci_nand.c | 3 +--
+>  drivers/mtd/nand/raw/jz4740_nand.c  | 5 ++---
+>  drivers/mtd/nand/raw/mtk_nand.c     | 2 +-
+>  drivers/mtd/nand/raw/s3c2410.c      | 4 ++--
+>  drivers/mtd/nand/raw/txx9ndfmc.c    | 2 +-
 
-I think that being in CC in this series is a mistake as I don't see
-anything related what I have done in this series.
+Looks like there's also:
 
-Gregory
+	drivers/mtd/lpddr/lpddr2_nvm.c
+	drivers/mtd/spi-nor/intel-spi.c
 
->
-> Thanks,
-> Janusz
->
+Do you mind sending 2 patches to replace
+mtd_device_parse_register() by mtd_device_register() there?
 
--- 
-Gregory Clement, Bootlin (formerly Free Electrons)
+
+--=20
+Boris Brezillon, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
-http://bootlin.com
+https://bootlin.com
