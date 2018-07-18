@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffuM8-0006Ty-C4
+ id 1ffuM8-0006Tz-C7
  for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:51:34 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -9,12 +9,12 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>
 Cc: linux-mtd@lists.infradead.org,
 	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 0/2] Changes in the internal raw NAND API
-Date: Wed, 18 Jul 2018 23:50:54 +0200
-Message-Id: <20180718215056.1242-1-miquel.raynal@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2 2/2] mtd: rawnand: add hooks that may be called during
+ nand_scan()
+Date: Wed, 18 Jul 2018 23:50:56 +0200
+Message-Id: <20180718215056.1242-3-miquel.raynal@bootlin.com>
+In-Reply-To: <20180718215056.1242-1-miquel.raynal@bootlin.com>
+References: <20180718215056.1242-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +24,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+In order to remove the limitation that forbids dynamic allocation in
+nand_scan_ident(), we must create a path that will be the same for all
+controller drivers. The idea is to use nand_scan() instead of the widely
+used nand_scan_ident()/nand_scan_tail() couple. In order to achieve
+this, controller drivers will need to adjust some parameters between
+these two functions depending on the NAND chip wired on them.
 
-After having sent two versions of a series removing the
-nand_scan_ident/nand_scan_tail limitation that prevents us to allocate
-memory at critical moments, we are still discussing the internal API.
+For that, a hook called ->attach_chip() is created as part of the
+nand_controller_ops structure, itself embedded in the nand_controller
+structure. The later may be referenced by two ways:
+1/ if the driver does not implement its own controller, the
+   chip->controller hook is not populated before nand_scan() so it
+   cannot be dereferenced: use chip->dummy_controller instead (which is
+   statically allocated and will be referenced later by chip->controller
+   anyway).
+2/ through chip->controller if the driver implements its own controller.
 
-To avoid sending again more than 20 patches, this is an RFC of the
-internal changes prior to the above modifications in each driver:
+Another hook, ->detach_chip() is also introduced in order to clean the
+controller driver's potential allocations in case of failure of
+nand_scan_tail(). There is no need for the controller driver to call the
+->detach_chip() hook directly upon error after a successful nand_scan().
+In this situation, calling nand_release() as before is enough.
 
-1/ Rename struct nand_hw_control -> struct nand_controller which is
-   much more meaningful.
-2/ Rename the function initializing the above structure
-   nand_hw_control_init() -> nand_controller_init().
-3/ Rename the dummy controller implementation in the nand_chip structure
-   hwcontrol -> dummy_controller.
-3/ Create a nand_controller_ops structure which will be embedded in the
-   nand_controller structure. These operations are:
-   int (*attach_chip)(struct nand_chip *) and
-   void (*detach_chip)(struct nand_chip *).
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 32 ++++++++++++++++++++++++++++++--
+ include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
+ 2 files changed, 46 insertions(+), 2 deletions(-)
 
-If we agree on this, I could merge them first and then send the bunch of
-patches making use of these API changes.
-
-Thanks,
-Miquèl
-
-Changes since v1 (RFC):
-=======================
-* Added Acked-by tags from Boris.
-* Updated the commit logs as commented.
-* Squashed the 2 patches about nand_hw_control and
-  nand_init_hw_control().
-* Also added the rename of hwcontrol in patch 1.
-* Added helpers to 1/ check the controller operations are present and
-  2/ ->attach_chip() or ->detach_chip() is available, as suggested by
-  Boris.
-
-
-Miquel Raynal (2):
-  mtd: rawnand: better name for the controller structure
-  mtd: rawnand: add hooks that may be called during nand_scan()
-
- drivers/mtd/nand/raw/atmel/nand-controller.c | 10 ++++----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c     |  4 ++--
- drivers/mtd/nand/raw/docg4.c                 |  4 ++--
- drivers/mtd/nand/raw/fsl_elbc_nand.c         |  4 ++--
- drivers/mtd/nand/raw/fsl_ifc_nand.c          |  4 ++--
- drivers/mtd/nand/raw/jz4780_nand.c           |  7 +++---
- drivers/mtd/nand/raw/marvell_nand.c          |  6 ++---
- drivers/mtd/nand/raw/mtk_nand.c              |  2 +-
- drivers/mtd/nand/raw/nand_base.c             | 36 ++++++++++++++++++++++++----
- drivers/mtd/nand/raw/ndfc.c                  |  4 ++--
- drivers/mtd/nand/raw/omap2.c                 |  2 +-
- drivers/mtd/nand/raw/oxnas_nand.c            |  4 ++--
- drivers/mtd/nand/raw/qcom_nandc.c            |  4 ++--
- drivers/mtd/nand/raw/s3c2410.c               |  4 ++--
- drivers/mtd/nand/raw/sunxi_nand.c            |  6 ++---
- drivers/mtd/nand/raw/tango_nand.c            |  4 ++--
- drivers/mtd/nand/raw/tegra_nand.c            |  6 ++---
- drivers/mtd/nand/raw/txx9ndfmc.c             |  4 ++--
- include/linux/mtd/rawnand.h                  | 30 ++++++++++++++++++-----
- 19 files changed, 96 insertions(+), 49 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 0aef0299f4f2..a64a344bf7a9 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6697,6 +6697,20 @@ EXPORT_SYMBOL(nand_scan_tail);
+ 	is_module_text_address((unsigned long)__builtin_return_address(0))
+ #endif
+ 
++static int nand_attach(struct nand_chip *chip)
++{
++	if (chip->controller->ops && chip->controller->ops->attach_chip)
++		return chip->controller->ops->attach_chip(chip);
++
++	return 0;
++}
++
++static void nand_detach(struct nand_chip *chip)
++{
++	if (chip->controller->ops && chip->controller->ops->detach_chip)
++		chip->controller->ops->detach_chip(chip);
++}
++
+ /**
+  * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
+  * @mtd: MTD device structure
+@@ -6710,11 +6724,21 @@ EXPORT_SYMBOL(nand_scan_tail);
+ int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+ 		       struct nand_flash_dev *ids)
+ {
++	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	int ret;
+ 
+ 	ret = nand_scan_ident(mtd, maxchips, ids);
+-	if (!ret)
+-		ret = nand_scan_tail(mtd);
++	if (ret)
++		return ret;
++
++	ret = nand_attach(chip);
++	if (ret)
++		return ret;
++
++	ret = nand_scan_tail(mtd);
++	if (ret)
++		nand_detach(chip);
++
+ 	return ret;
+ }
+ EXPORT_SYMBOL(nand_scan_with_ids);
+@@ -6742,7 +6766,11 @@ void nand_cleanup(struct nand_chip *chip)
+ 
+ 	/* Free manufacturer priv data. */
+ 	nand_manufacturer_cleanup(chip);
++
++	/* Free controller specific allocations after chip identification */
++	nand_detach(chip);
+ }
++
+ EXPORT_SYMBOL_GPL(nand_cleanup);
+ 
+ /**
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index eb5a053fd06b..d046b3a61205 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -509,6 +509,19 @@ struct nand_id {
+ 	int len;
+ };
+ 
++/**
++ * struct nand_controller_ops - Controller operations
++ *
++ * @attach_chip:	Callback that may be called between nand_detect() and
++ *			nand_scan_tail() during nand_scan() (optional).
++ * @detach_chip:	Callback that may be called if nand_scan_tail() fails
++ *			(optional).
++ */
++struct nand_controller_ops {
++	int (*attach_chip)(struct nand_chip *chip);
++	void (*detach_chip)(struct nand_chip *chip);
++};
++
+ /**
+  * struct nand_controller - Control structure for hardware controller
+  *                          shared among independent devices
+@@ -517,11 +530,13 @@ struct nand_id {
+  * @wq:			wait queue to sleep on if a NAND operation is in
+  *			progress used instead of the per chip wait queue
+  *			when a hw controller is available.
++ * @ops:		NAND controller operations.
+  */
+ struct nand_controller {
+ 	spinlock_t lock;
+ 	struct nand_chip *active;
+ 	wait_queue_head_t wq;
++	const struct nand_controller_ops *ops;
+ };
+ 
+ static inline void nand_controller_init(struct nand_controller *nfc)
+@@ -529,6 +544,7 @@ static inline void nand_controller_init(struct nand_controller *nfc)
+ 	nfc->active = NULL;
+ 	spin_lock_init(&nfc->lock);
+ 	init_waitqueue_head(&nfc->wq);
++	nfc->ops = NULL;
+ }
+ 
+ /**
 -- 
 2.14.1
