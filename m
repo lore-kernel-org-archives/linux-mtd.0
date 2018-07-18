@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fftvg-0008R1-OX
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:24:15 +0000
-Date: Wed, 18 Jul 2018 23:23:50 +0200
+ id 1ffu1Q-0001v6-9H
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:30:09 +0000
+Date: Wed, 18 Jul 2018 23:29:45 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Abhishek Sahu <absahu@codeaurora.org>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
@@ -10,12 +10,12 @@ Cc: Boris Brezillon <boris.brezillon@bootlin.com>, David Woodhouse
  Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>
-Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: remove driver specific
- block_markbad function
-Message-ID: <20180718232350.3eaade9a@xps13>
-In-Reply-To: <1530863519-5564-3-git-send-email-absahu@codeaurora.org>
+Subject: Re: [PATCH 5/5] mtd: rawnand: qcom: reorganization by removing
+ read/write helpers
+Message-ID: <20180718232945.407e22de@xps13>
+In-Reply-To: <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
 References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
- <1530863519-5564-3-git-send-email-absahu@codeaurora.org>
+ <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,187 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Boris,
-
-Can you please check the change in qcom_nandc_write_oob() is
-valid? I think it is but as this is a bit of a hack I prefer double checkin=
-g.
-
-Thanks,
-Miqu=C3=A8l
-
+Hi Abhishek,
 
 Abhishek Sahu <absahu@codeaurora.org> wrote on Fri,  6 Jul 2018
-13:21:56 +0530:
+13:21:59 +0530:
 
-> The NAND base layer calls write_oob() by setting bytes at
-> chip->badblockpos with value non 0xFF for updating bad block status.
-> The QCOM NAND controller skips the bad block bytes while doing normal
-> write with ECC enabled. When initial support for this driver was
-> added, the driver specific function was added temporarily for
-> block_markbad() with assumption to change for raw read in NAND base
-> layer. Moving to raw read for block_markbad() seems to take more time
-> so this patch removes driver specific block_markbad() function by
-> using following HACK in write_oob() function.
+> Driver does not send the commands to NAND device for page
+> read/write operations in ->cmdfunc(). It just does some
+> minor variable initialization and rest of the things
+> are being done in actual ->read/write_oob[_raw].
+
+Thank you for cleaning actively this driver. I think you are comfortable
+enough now to switch to start the migration to ->exec_op().
+
+I will take this patch as I think it shrinks a bit the driver (which is
+inordinately huge) but I would like to get rid of any kind of hackish
+->cmdfunc() implementation. Boris and I can help you doing that, you
+can grep for drivers already converted and observe they structure
+(marvell, fsmc, vf610).
+
 >=20
-> Check for BBM bytes in OOB and accordingly do raw write for updating
-> BBM bytes in NAND flash or normal write for updating available OOB
-> bytes.
+> The generic helper function calls for invoking commands during
+> page read/write are making this driver complicated. For QCOM NAND
+> driver, ->cmdfunc() does minor part of initialization and rest of
+> the initialization is performed by actual page read/write
+> functions. Also, ->read/write_oob() does not calls helper
+> function and all the initialization is being done in
+> ->read/write_oob() itself. =20
+>=20
+> Since after 'commit 25f815f66a14 ("mtd: nand: force drivers to
+> explicitly send READ/PROG commands")', sending of commands has
+> been moved to driver for page read/write, so this patch does
+> following changes to make code more readable:
+>=20
+> 1. Introduce qcom_nand_init_page_op() and qcom_nand_start_page_op()
+>    helper functions which helps in removing code duplication in each
+>    operation.
+>=20
+> 2. After issuing PROGRAM PAGE/BLOCK ERASE, QCOM NAND
+>    controller waits for BUSY signal to be de asserted and
+>    automatically issues the READ STATUS command. Currently, driver
+>    is storing this status privately and returns the same when status
+>    command comes from helper function after program/erase operation.
+>    Now, for write operations, the status can be returned from main
+>    function itself, so storing status can be removed for program
+>    operations.
 >=20
 > Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
 > ---
->  drivers/mtd/nand/raw/qcom_nandc.c | 103 +++++++++++++++-----------------=
-------
->  1 file changed, 40 insertions(+), 63 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qco=
-m_nandc.c
-> index ea253ac..df12cf3 100644
-> --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> @@ -2138,28 +2138,57 @@ static int qcom_nandc_write_oob(struct mtd_info *=
-mtd, struct nand_chip *chip,
->  	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
->  	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(chip);
->  	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> -	u8 *oob =3D chip->oob_poi;
-> -	int data_size, oob_size;
-> +	u8 *oob =3D chip->oob_poi, bbm_byte;
-> +	int data_size, oob_size, bbm_offset, write_size;
->  	int ret;
-> =20
-> -	host->use_ecc =3D true;
->  	clear_bam_transaction(nandc);
-> =20
-> -	/* calculate the data and oob size for the last codeword/step */
-> -	data_size =3D ecc->size - ((ecc->steps - 1) << 2);
-> -	oob_size =3D mtd->oobavail;
-> +	/*
-> +	 * The NAND base layer calls ecc->write_oob() by setting bytes at
-> +	 * chip->badblockpos (chip->badblockpos will be 0 for QCOM NAND
-> +	 * controller layout) in OOB buffer with value other that 0xFF
-> +	 * for updating bad block status. QCOM NAND controller skips
-> +	 * BBM bytes while writing with ECC, so following HACK has been
-> +	 * added in this function for using generic block_markbad() function.
-> +	 *
-> +	 * Check for BBM bytes in OOB and accordingly do raw write for
-> +	 * updating BBM bytes in NAND flash or normal write with ECC for
-> +	 * updating available OOB bytes.
-> +	 */
-> +	bbm_byte =3D oob[0];
-> +	if (chip->options & NAND_BUSWIDTH_16)
-> +		bbm_byte &=3D oob[1];
-> =20
-> -	memset(nandc->data_buffer, 0xff, host->cw_data);
-> -	/* override new oob content to last codeword */
-> -	mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size, oob,
-> -				    0, mtd->oobavail);
-> +	/* Write BBM bytes by doing raw write. */
-> +	if (bbm_byte !=3D 0xff) {
-> +		host->use_ecc =3D false;
-> +		memset(nandc->data_buffer, 0xff, host->cw_size);
-> +		/* Determine the BBM bytes position and update the same */
-> +		bbm_offset =3D mtd->writesize - host->cw_size * (ecc->steps - 1);
-> +		memcpy(nandc->data_buffer + bbm_offset, oob, host->bbm_size);
-> +		write_size =3D host->cw_size;
-> +	/* Write OOB bytes by doing normal write with ECC */
-> +	} else {
-> +		host->use_ecc =3D true;
-> +		/* calculate the data and oob size for the last codeword/step */
-> +		data_size =3D ecc->size - ((ecc->steps - 1) << 2);
-> +		oob_size =3D mtd->oobavail;
-> +
-> +		memset(nandc->data_buffer, 0xff, host->cw_data);
-> +		/* override new oob content to last codeword */
-> +		mtd_ooblayout_get_databytes(mtd, nandc->data_buffer + data_size,
-> +					    oob, 0, mtd->oobavail);
-> +
-> +		write_size =3D data_size + oob_size;
-> +	}
-> =20
->  	set_address(host, host->cw_size * (ecc->steps - 1), page);
->  	update_rw_regs(host, 1, false);
-> =20
->  	config_nand_page_write(nandc);
->  	write_data_dma(nandc, FLASH_BUF_ACC,
-> -		       nandc->data_buffer, data_size + oob_size, 0);
-> +		       nandc->data_buffer, write_size, 0);
->  	config_nand_cw_write(nandc);
-> =20
->  	ret =3D submit_descs(nandc);
-> @@ -2174,48 +2203,6 @@ static int qcom_nandc_write_oob(struct mtd_info *m=
-td, struct nand_chip *chip,
->  	return nand_prog_page_end_op(chip);
->  }
-> =20
-> -static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
-> -{
-> -	struct nand_chip *chip =3D mtd_to_nand(mtd);
-> -	struct qcom_nand_host *host =3D to_qcom_nand_host(chip);
-> -	struct qcom_nand_controller *nandc =3D get_qcom_nand_controller(chip);
-> -	struct nand_ecc_ctrl *ecc =3D &chip->ecc;
-> -	int page, ret;
-> -
-> -	clear_read_regs(nandc);
-> -	clear_bam_transaction(nandc);
-> -
-> -	/*
-> -	 * to mark the BBM as bad, we flash the entire last codeword with 0s.
-> -	 * we don't care about the rest of the content in the codeword since
-> -	 * we aren't going to use this block again
-> -	 */
-> -	memset(nandc->data_buffer, 0x00, host->cw_size);
-> -
-> -	page =3D (int)(ofs >> chip->page_shift) & chip->pagemask;
-> -
-> -	/* prepare write */
-> -	host->use_ecc =3D false;
-> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
-> -	update_rw_regs(host, 1, false);
-> -
-> -	config_nand_page_write(nandc);
-> -	write_data_dma(nandc, FLASH_BUF_ACC,
-> -		       nandc->data_buffer, host->cw_size, 0);
-> -	config_nand_cw_write(nandc);
-> -
-> -	ret =3D submit_descs(nandc);
-> -
-> -	free_descs(nandc);
-> -
-> -	if (ret) {
-> -		dev_err(nandc->dev, "failure to update BBM\n");
-> -		return -EIO;
-> -	}
-> -
-> -	return nand_prog_page_end_op(chip);
-> -}
-> -
->  /*
->   * the three functions below implement chip->read_byte(), chip->read_buf=
-()
->   * and chip->write_buf() respectively. these aren't used for
-> @@ -2757,16 +2744,6 @@ static int qcom_nand_host_init(struct qcom_nand_co=
-ntroller *nandc,
->  	chip->set_features	=3D nand_get_set_features_notsupp;
->  	chip->get_features	=3D nand_get_set_features_notsupp;
-> =20
-> -	/*
-> -	 * the bad block marker is writable only when we write the last codeword
-> -	 * of a page with ECC disabled. currently, the nand_base and nand_bbt
-> -	 * helpers don't allow us to write BB from a nand chip with ECC
-> -	 * disabled (MTD_OPS_PLACE_OOB is set by default). use the block_markbad
-> -	 * helpers until we permanently switch to using
-> -	 * MTD_OPS_RAW for all drivers (with the help of badblockbits)
-> -	 */
-> -	chip->block_markbad	=3D qcom_nandc_block_markbad;
-> -
->  	chip->controller =3D &nandc->controller;
->  	chip->options |=3D NAND_NO_SUBPAGE_WRITE | NAND_USE_BOUNCE_BUFFER |
->  			 NAND_SKIP_BBTSCAN;
 
-
-
---=20
-Miquel Raynal, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Thanks,
+Miqu=C3=A8l
