@@ -1,23 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffvDc-00040Y-Et
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:46:50 +0000
-Date: Thu, 19 Jul 2018 00:46:36 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
+ id 1ffvLq-0007n9-M6
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 22:55:20 +0000
+Date: Thu, 19 Jul 2018 00:55:05 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
  Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH v2 2/2] mtd: rawnand: add hooks that may be called
  during nand_scan()
-Message-ID: <20180719004636.4a85644a@bbrezillon>
+Message-ID: <20180719005505.002e0b24@xps13>
 In-Reply-To: <20180719004225.438ea90f@bbrezillon>
 References: <20180718215056.1242-1-miquel.raynal@bootlin.com>
  <20180718215056.1242-3-miquel.raynal@bootlin.com>
  <20180719004225.438ea90f@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Jul 2018 00:42:25 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hi Boris,
+
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 19 Jul 2018
+00:42:25 +0200:
 
 > On Wed, 18 Jul 2018 23:50:56 +0200
 > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
+>=20
 > > In order to remove the limitation that forbids dynamic allocation in
 > > nand_scan_ident(), we must create a path that will be the same for all
 > > controller drivers. The idea is to use nand_scan() instead of the widely
 > > used nand_scan_ident()/nand_scan_tail() couple. In order to achieve
 > > this, controller drivers will need to adjust some parameters between
 > > these two functions depending on the NAND chip wired on them.
-> > 
+> >=20
 > > For that, a hook called ->attach_chip() is created as part of the
 > > nand_controller_ops structure, itself embedded in the nand_controller
 > > structure. The later may be referenced by two ways:
@@ -49,28 +51,31 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > >    statically allocated and will be referenced later by chip->controller
 > >    anyway).
 > > 2/ through chip->controller if the driver implements its own controller.
-> > 
+> >=20
 > > Another hook, ->detach_chip() is also introduced in order to clean the
 > > controller driver's potential allocations in case of failure of
-> > nand_scan_tail(). There is no need for the controller driver to call the  
-> > ->detach_chip() hook directly upon error after a successful nand_scan().    
+> > nand_scan_tail(). There is no need for the controller driver to call th=
+e =20
+> > ->detach_chip() hook directly upon error after a successful nand_scan()=
+.   =20
 > > In this situation, calling nand_release() as before is enough.
-> > 
+> >=20
 > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > > Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > > ---
 > >  drivers/mtd/nand/raw/nand_base.c | 32 ++++++++++++++++++++++++++++++--
 > >  include/linux/mtd/rawnand.h      | 16 ++++++++++++++++
 > >  2 files changed, 46 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> >=20
+> > diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/na=
+nd_base.c
 > > index 0aef0299f4f2..a64a344bf7a9 100644
 > > --- a/drivers/mtd/nand/raw/nand_base.c
 > > +++ b/drivers/mtd/nand/raw/nand_base.c
 > > @@ -6697,6 +6697,20 @@ EXPORT_SYMBOL(nand_scan_tail);
 > >  	is_module_text_address((unsigned long)__builtin_return_address(0))
 > >  #endif
-> >  
+> > =20
 > > +static int nand_attach(struct nand_chip *chip)
 > > +{
 > > +	if (chip->controller->ops && chip->controller->ops->attach_chip)
@@ -92,20 +97,20 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > >  int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
 > >  		       struct nand_flash_dev *ids)
 > >  {
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
+> > +	struct nand_chip *chip =3D mtd_to_nand(mtd);
 > >  	int ret;
-> >  
-> >  	ret = nand_scan_ident(mtd, maxchips, ids);
+> > =20
+> >  	ret =3D nand_scan_ident(mtd, maxchips, ids);
 > > -	if (!ret)
-> > -		ret = nand_scan_tail(mtd);
+> > -		ret =3D nand_scan_tail(mtd);
 > > +	if (ret)
 > > +		return ret;
 > > +
-> > +	ret = nand_attach(chip);
+> > +	ret =3D nand_attach(chip);
 > > +	if (ret)
 > > +		return ret;
 > > +
-> > +	ret = nand_scan_tail(mtd);
+> > +	ret =3D nand_scan_tail(mtd);
 > > +	if (ret)
 > > +		nand_detach(chip);
 > > +
@@ -113,7 +118,7 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > >  }
 > >  EXPORT_SYMBOL(nand_scan_with_ids);
 > > @@ -6742,7 +6766,11 @@ void nand_cleanup(struct nand_chip *chip)
-> >  
+> > =20
 > >  	/* Free manufacturer priv data. */
 > >  	nand_manufacturer_cleanup(chip);
 > > +
@@ -122,7 +127,7 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > >  }
 > > +
 > >  EXPORT_SYMBOL_GPL(nand_cleanup);
-> >  
+> > =20
 > >  /**
 > > diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
 > > index eb5a053fd06b..d046b3a61205 100644
@@ -131,7 +136,7 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > > @@ -509,6 +509,19 @@ struct nand_id {
 > >  	int len;
 > >  };
-> >  
+> > =20
 > > +/**
 > > + * struct nand_controller_ops - Controller operations
 > > + *
@@ -160,24 +165,26 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > >  	wait_queue_head_t wq;
 > > +	const struct nand_controller_ops *ops;
 > >  };
-> >  
+> > =20
 > >  static inline void nand_controller_init(struct nand_controller *nfc)
-> > @@ -529,6 +544,7 @@ static inline void nand_controller_init(struct nand_controller *nfc)
-> >  	nfc->active = NULL;
+> > @@ -529,6 +544,7 @@ static inline void nand_controller_init(struct nand=
+_controller *nfc)
+> >  	nfc->active =3D NULL;
 > >  	spin_lock_init(&nfc->lock);
 > >  	init_waitqueue_head(&nfc->wq);
-> > +	nfc->ops = NULL;  
-> 
+> > +	nfc->ops =3D NULL; =20
+>=20
 > Hm, actually it does not work for all dummy controllers since this
 > function is called from nand_set_defaults() which is called from
 > nand_scan_ident(). That means the previous chip->dummy_controller.ops
 > assignment you might have done before calling nand_scan() is gone.
-> 
+>=20
 > Looks like we'll have to patch all drivers to call
 > nand_controller_init(&chip->dummy_controller), unless you see a better
 > option.
 
-Alternatively, we could assume that the nand_controller object is
-always zeroed at allocation time, and simply not assign nfc->ops from
-nand_controller_init() so that dummy controller drivers that need to
-pass non-NULL ops can do so before calling nand_scan().
+Well, if all drivers that allocate the nand_chip structure
+initialize it correctly (or use kzalloc for this purpose), then this
+extra initialization is not needed.
+
+Miqu=C3=A8l
