@@ -1,19 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffuM8-0006U0-C5
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:51:36 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v2 1/2] mtd: rawnand: better name for the controller structure
-Date: Wed, 18 Jul 2018 23:50:55 +0200
-Message-Id: <20180718215056.1242-2-miquel.raynal@bootlin.com>
-In-Reply-To: <20180718215056.1242-1-miquel.raynal@bootlin.com>
-References: <20180718215056.1242-1-miquel.raynal@bootlin.com>
+ id 1ffuOt-0007LY-3b
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:54:25 +0000
+Date: Wed, 18 Jul 2018 23:54:01 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Abhishek Sahu <absahu@codeaurora.org>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>
+Subject: Re: [PATCH 5/5] mtd: rawnand: qcom: reorganization by removing
+ read/write helpers
+Message-ID: <20180718235401.5ef2ce74@bbrezillon>
+In-Reply-To: <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
+References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
+ <1530863519-5564-6-git-send-email-absahu@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,525 +28,436 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the raw NAND core, a NAND chip is described by a nand_chip structure,
-while a NAND controller is described with a nand_hw_control structure
-which is not very meaningful.
+On Fri,  6 Jul 2018 13:21:59 +0530
+Abhishek Sahu <absahu@codeaurora.org> wrote:
 
-Rename this structure nand_controller.
+> Driver does not send the commands to NAND device for page
+> read/write operations in ->cmdfunc(). It just does some
+> minor variable initialization and rest of the things
+> are being done in actual ->read/write_oob[_raw].
+> 
+> The generic helper function calls for invoking commands during
+> page read/write are making this driver complicated. For QCOM NAND
+> driver, ->cmdfunc() does minor part of initialization and rest of
+> the initialization is performed by actual page read/write
+> functions. Also, ->read/write_oob() does not calls helper
+> function and all the initialization is being done in
+> ->read/write_oob() itself.  
 
-As the structure gets renamed, it is logical to also rename the core
-function initializing it from nand_hw_control_init() to
-nand_controller_init().
+This sounds hazardous in the long run. Some vendor specific commands
+are re-using the READ0/READSTART semantic to read particular
+registers/OTP sections programmed at flash production time. For these
+operations, we don't want to go through the regular
+chip->ecc.read_page[_raw]() hooks, and instead use
+->cmdfunc()/->exec_op(). You probably don't have setups with such
+NANDs yet, but that might be the case at some point.
 
-Lastly, the 'hwcontrol' entry of the nand_chip structure is not
-meaningful neither while it has the role of fallback when no controller
-structure is provided by the driver (the controller driver is dumb and
-can only control a single chip). Thus, it is renamed dummy_controller.
+As already suggested by Miqule, I strongly recommend that you work on
+supporting ->exec_op() instead of trying to clean things up prematurely.
 
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/raw/atmel/nand-controller.c | 10 +++++-----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c     |  4 ++--
- drivers/mtd/nand/raw/docg4.c                 |  4 ++--
- drivers/mtd/nand/raw/fsl_elbc_nand.c         |  4 ++--
- drivers/mtd/nand/raw/fsl_ifc_nand.c          |  4 ++--
- drivers/mtd/nand/raw/jz4780_nand.c           |  7 ++++---
- drivers/mtd/nand/raw/marvell_nand.c          |  6 +++---
- drivers/mtd/nand/raw/mtk_nand.c              |  2 +-
- drivers/mtd/nand/raw/nand_base.c             |  4 ++--
- drivers/mtd/nand/raw/ndfc.c                  |  4 ++--
- drivers/mtd/nand/raw/omap2.c                 |  2 +-
- drivers/mtd/nand/raw/oxnas_nand.c            |  4 ++--
- drivers/mtd/nand/raw/qcom_nandc.c            |  4 ++--
- drivers/mtd/nand/raw/s3c2410.c               |  4 ++--
- drivers/mtd/nand/raw/sunxi_nand.c            |  6 +++---
- drivers/mtd/nand/raw/tango_nand.c            |  4 ++--
- drivers/mtd/nand/raw/tegra_nand.c            |  6 +++---
- drivers/mtd/nand/raw/txx9ndfmc.c             |  4 ++--
- include/linux/mtd/rawnand.h                  | 14 ++++++++------
- 19 files changed, 50 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index e686fe73159e..1a9b871d01c9 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -216,7 +216,7 @@ struct atmel_nand_controller_caps {
- };
- 
- struct atmel_nand_controller {
--	struct nand_hw_control base;
-+	struct nand_controller base;
- 	const struct atmel_nand_controller_caps *caps;
- 	struct device *dev;
- 	struct regmap *smc;
-@@ -227,7 +227,7 @@ struct atmel_nand_controller {
- };
- 
- static inline struct atmel_nand_controller *
--to_nand_controller(struct nand_hw_control *ctl)
-+to_nand_controller(struct nand_controller *ctl)
- {
- 	return container_of(ctl, struct atmel_nand_controller, base);
- }
-@@ -239,7 +239,7 @@ struct atmel_smc_nand_controller {
- };
- 
- static inline struct atmel_smc_nand_controller *
--to_smc_nand_controller(struct nand_hw_control *ctl)
-+to_smc_nand_controller(struct nand_controller *ctl)
- {
- 	return container_of(to_nand_controller(ctl),
- 			    struct atmel_smc_nand_controller, base);
-@@ -263,7 +263,7 @@ struct atmel_hsmc_nand_controller {
- };
- 
- static inline struct atmel_hsmc_nand_controller *
--to_hsmc_nand_controller(struct nand_hw_control *ctl)
-+to_hsmc_nand_controller(struct nand_controller *ctl)
- {
- 	return container_of(to_nand_controller(ctl),
- 			    struct atmel_hsmc_nand_controller, base);
-@@ -1966,7 +1966,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 	struct device_node *np = dev->of_node;
- 	int ret;
- 
--	nand_hw_control_init(&nc->base);
-+	nand_controller_init(&nc->base);
- 	INIT_LIST_HEAD(&nc->chips);
- 	nc->dev = dev;
- 	nc->caps = caps;
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 1306aaa7a8bf..2e5efa0f9ea2 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -114,7 +114,7 @@ enum {
- 
- struct brcmnand_controller {
- 	struct device		*dev;
--	struct nand_hw_control	controller;
-+	struct nand_controller	controller;
- 	void __iomem		*nand_base;
- 	void __iomem		*nand_fc; /* flash cache */
- 	void __iomem		*flash_dma_base;
-@@ -2433,7 +2433,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
- 
- 	init_completion(&ctrl->done);
- 	init_completion(&ctrl->dma_done);
--	nand_hw_control_init(&ctrl->controller);
-+	nand_controller_init(&ctrl->controller);
- 	INIT_LIST_HEAD(&ctrl->host_list);
- 
- 	/* NAND register range */
-diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-index bb96cb33cd6b..4dccdfba6140 100644
---- a/drivers/mtd/nand/raw/docg4.c
-+++ b/drivers/mtd/nand/raw/docg4.c
-@@ -1257,8 +1257,8 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 	nand->ecc.strength = DOCG4_T;
- 	nand->options = NAND_BUSWIDTH_16 | NAND_NO_SUBPAGE_WRITE;
- 	nand->IO_ADDR_R = nand->IO_ADDR_W = doc->virtadr + DOC_IOSPACE_DATA;
--	nand->controller = &nand->hwcontrol;
--	nand_hw_control_init(nand->controller);
-+	nand->controller = &nand->dummy_controller;
-+	nand_controller_init(nand->controller);
- 
- 	/* methods */
- 	nand->cmdfunc = docg4_command;
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index 51f0b340bc0d..0aa54a949653 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -61,7 +61,7 @@ struct fsl_elbc_mtd {
- /* Freescale eLBC FCM controller information */
- 
- struct fsl_elbc_fcm_ctrl {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct fsl_elbc_mtd *chips[MAX_BANKS];
- 
- 	u8 __iomem *addr;        /* Address of assigned FCM buffer        */
-@@ -879,7 +879,7 @@ static int fsl_elbc_nand_probe(struct platform_device *pdev)
- 		}
- 		elbc_fcm_ctrl->counter++;
- 
--		nand_hw_control_init(&elbc_fcm_ctrl->controller);
-+		nand_controller_init(&elbc_fcm_ctrl->controller);
- 		fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl;
- 	} else {
- 		elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 382b67e97174..73a5245bddd1 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -51,7 +51,7 @@ struct fsl_ifc_mtd {
- 
- /* overview of the fsl ifc controller */
- struct fsl_ifc_nand_ctrl {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct fsl_ifc_mtd *chips[FSL_IFC_BANK_COUNT];
- 
- 	void __iomem *addr;	/* Address of assigned IFC buffer	*/
-@@ -1004,7 +1004,7 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 		ifc_nand_ctrl->addr = NULL;
- 		fsl_ifc_ctrl_dev->nand = ifc_nand_ctrl;
- 
--		nand_hw_control_init(&ifc_nand_ctrl->controller);
-+		nand_controller_init(&ifc_nand_ctrl->controller);
- 	} else {
- 		ifc_nand_ctrl = fsl_ifc_ctrl_dev->nand;
- 	}
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-index e69f6ae4c539..49841dad347c 100644
---- a/drivers/mtd/nand/raw/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/jz4780_nand.c
-@@ -44,7 +44,7 @@ struct jz4780_nand_cs {
- struct jz4780_nand_controller {
- 	struct device *dev;
- 	struct jz4780_bch *bch;
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	unsigned int num_banks;
- 	struct list_head chips;
- 	int selected;
-@@ -65,7 +65,8 @@ static inline struct jz4780_nand_chip *to_jz4780_nand_chip(struct mtd_info *mtd)
- 	return container_of(mtd_to_nand(mtd), struct jz4780_nand_chip, chip);
- }
- 
--static inline struct jz4780_nand_controller *to_jz4780_nand_controller(struct nand_hw_control *ctrl)
-+static inline struct jz4780_nand_controller
-+*to_jz4780_nand_controller(struct nand_controller *ctrl)
- {
- 	return container_of(ctrl, struct jz4780_nand_controller, controller);
- }
-@@ -368,7 +369,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
- 	nfc->dev = dev;
- 	nfc->num_banks = num_banks;
- 
--	nand_hw_control_init(&nfc->controller);
-+	nand_controller_init(&nfc->controller);
- 	INIT_LIST_HEAD(&nfc->chips);
- 
- 	ret = jz4780_nand_init_chips(nfc, pdev);
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 80a074cccb82..bd5f9a4b7b16 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -318,7 +318,7 @@ struct marvell_nfc_caps {
-  * @dma_buf:		32-bit aligned buffer for DMA transfers (NFCv1 only)
-  */
- struct marvell_nfc {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct device *dev;
- 	void __iomem *regs;
- 	struct clk *core_clk;
-@@ -335,7 +335,7 @@ struct marvell_nfc {
- 	u8 *dma_buf;
- };
- 
--static inline struct marvell_nfc *to_marvell_nfc(struct nand_hw_control *ctrl)
-+static inline struct marvell_nfc *to_marvell_nfc(struct nand_controller *ctrl)
- {
- 	return container_of(ctrl, struct marvell_nfc, controller);
- }
-@@ -2745,7 +2745,7 @@ static int marvell_nfc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	nfc->dev = dev;
--	nand_hw_control_init(&nfc->controller);
-+	nand_controller_init(&nfc->controller);
- 	INIT_LIST_HEAD(&nfc->chips);
- 
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/drivers/mtd/nand/raw/mtk_nand.c b/drivers/mtd/nand/raw/mtk_nand.c
-index 75c845adb050..254ee76d354d 100644
---- a/drivers/mtd/nand/raw/mtk_nand.c
-+++ b/drivers/mtd/nand/raw/mtk_nand.c
-@@ -145,7 +145,7 @@ struct mtk_nfc_clk {
- };
- 
- struct mtk_nfc {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct mtk_ecc_config ecc_cfg;
- 	struct mtk_nfc_clk clk;
- 	struct mtk_ecc *ecc;
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 4fa5e20d9690..0aef0299f4f2 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -4967,8 +4967,8 @@ static void nand_set_defaults(struct nand_chip *chip)
- 		chip->read_buf = busw ? nand_read_buf16 : nand_read_buf;
- 
- 	if (!chip->controller) {
--		chip->controller = &chip->hwcontrol;
--		nand_hw_control_init(chip->controller);
-+		chip->controller = &chip->dummy_controller;
-+		nand_controller_init(chip->controller);
- 	}
- 
- 	if (!chip->buf_align)
-diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-index d8a806894937..540fa1a0ea24 100644
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -39,7 +39,7 @@ struct ndfc_controller {
- 	void __iomem *ndfcbase;
- 	struct nand_chip chip;
- 	int chip_select;
--	struct nand_hw_control ndfc_control;
-+	struct nand_controller ndfc_control;
- };
- 
- static struct ndfc_controller ndfc_ctrl[NDFC_MAX_CS];
-@@ -218,7 +218,7 @@ static int ndfc_probe(struct platform_device *ofdev)
- 	ndfc = &ndfc_ctrl[cs];
- 	ndfc->chip_select = cs;
- 
--	nand_hw_control_init(&ndfc->ndfc_control);
-+	nand_controller_init(&ndfc->ndfc_control);
- 	ndfc->ofdev = ofdev;
- 	dev_set_drvdata(&ofdev->dev, ndfc);
- 
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index e50c64adc3c8..e943b2e5a5e2 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -145,7 +145,7 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
- static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
- 
- /* Shared among all NAND instances to synchronize access to the ECC Engine */
--static struct nand_hw_control omap_gpmc_controller = {
-+static struct nand_controller omap_gpmc_controller = {
- 	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
- 	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
- };
-diff --git a/drivers/mtd/nand/raw/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
-index d649d5944826..01b00bb69c1e 100644
---- a/drivers/mtd/nand/raw/oxnas_nand.c
-+++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -32,7 +32,7 @@
- #define OXNAS_NAND_MAX_CHIPS	1
- 
- struct oxnas_nand_ctrl {
--	struct nand_hw_control base;
-+	struct nand_controller base;
- 	void __iomem *io_base;
- 	struct clk *clk;
- 	struct nand_chip *chips[OXNAS_NAND_MAX_CHIPS];
-@@ -96,7 +96,7 @@ static int oxnas_nand_probe(struct platform_device *pdev)
- 	if (!oxnas)
- 		return -ENOMEM;
- 
--	nand_hw_control_init(&oxnas->base);
-+	nand_controller_init(&oxnas->base);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	oxnas->io_base = devm_ioremap_resource(&pdev->dev, res);
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 994f980c6d86..cbad0980d890 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -365,7 +365,7 @@ struct nandc_regs {
-  *				from all connected NAND devices pagesize
-  */
- struct qcom_nand_controller {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct list_head host_list;
- 
- 	struct device *dev;
-@@ -2728,7 +2728,7 @@ static int qcom_nandc_alloc(struct qcom_nand_controller *nandc)
- 	INIT_LIST_HEAD(&nandc->desc_list);
- 	INIT_LIST_HEAD(&nandc->host_list);
- 
--	nand_hw_control_init(&nandc->controller);
-+	nand_controller_init(&nandc->controller);
- 
- 	return 0;
- }
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index 19661c5d3220..f7a5fc7daa57 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -162,7 +162,7 @@ enum s3c_nand_clk_state {
-  */
- struct s3c2410_nand_info {
- 	/* mtd info */
--	struct nand_hw_control		controller;
-+	struct nand_controller		controller;
- 	struct s3c2410_nand_mtd		*mtds;
- 	struct s3c2410_platform_nand	*platform;
- 
-@@ -1094,7 +1094,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, info);
- 
--	nand_hw_control_init(&info->controller);
-+	nand_controller_init(&info->controller);
- 
- 	/* get the clock source and enable it */
- 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index d831a141a196..41bd66a9166a 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -234,7 +234,7 @@ static inline struct sunxi_nand_chip *to_sunxi_nand(struct nand_chip *nand)
-  *			controller events
-  */
- struct sunxi_nfc {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct device *dev;
- 	void __iomem *regs;
- 	struct clk *ahb_clk;
-@@ -247,7 +247,7 @@ struct sunxi_nfc {
- 	struct dma_chan *dmac;
- };
- 
--static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_hw_control *ctrl)
-+static inline struct sunxi_nfc *to_sunxi_nfc(struct nand_controller *ctrl)
- {
- 	return container_of(ctrl, struct sunxi_nfc, controller);
- }
-@@ -2012,7 +2012,7 @@ static int sunxi_nfc_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	nfc->dev = dev;
--	nand_hw_control_init(&nfc->controller);
-+	nand_controller_init(&nfc->controller);
- 	INIT_LIST_HEAD(&nfc->chips);
- 
- 	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index f2052fae21c7..dd7a26efdf4f 100644
---- a/drivers/mtd/nand/raw/tango_nand.c
-+++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -83,7 +83,7 @@
- #define MAX_CS		4
- 
- struct tango_nfc {
--	struct nand_hw_control hw;
-+	struct nand_controller hw;
- 	void __iomem *reg_base;
- 	void __iomem *mem_base;
- 	void __iomem *pbus_base;
-@@ -654,7 +654,7 @@ static int tango_nand_probe(struct platform_device *pdev)
- 		return PTR_ERR(nfc->chan);
- 
- 	platform_set_drvdata(pdev, nfc);
--	nand_hw_control_init(&nfc->hw);
-+	nand_controller_init(&nfc->hw);
- 	nfc->freq_kHz = clk_get_rate(clk) / 1000;
- 
- 	for_each_child_of_node(pdev->dev.of_node, np) {
-diff --git a/drivers/mtd/nand/raw/tegra_nand.c b/drivers/mtd/nand/raw/tegra_nand.c
-index 22d6a7f9ff80..06402c0cbd32 100644
---- a/drivers/mtd/nand/raw/tegra_nand.c
-+++ b/drivers/mtd/nand/raw/tegra_nand.c
-@@ -164,7 +164,7 @@
- 				HWSTATUS_RBSY_VALUE(NAND_STATUS_READY))
- 
- struct tegra_nand_controller {
--	struct nand_hw_control controller;
-+	struct nand_controller controller;
- 	struct device *dev;
- 	void __iomem *regs;
- 	int irq;
-@@ -187,7 +187,7 @@ struct tegra_nand_chip {
- };
- 
- static inline struct tegra_nand_controller *
--			to_tegra_ctrl(struct nand_hw_control *hw_ctrl)
-+			to_tegra_ctrl(struct nand_controller *hw_ctrl)
- {
- 	return container_of(hw_ctrl, struct tegra_nand_controller, controller);
- }
-@@ -1136,7 +1136,7 @@ static int tegra_nand_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	ctrl->dev = &pdev->dev;
--	nand_hw_control_init(&ctrl->controller);
-+	nand_controller_init(&ctrl->controller);
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	ctrl->regs = devm_ioremap_resource(&pdev->dev, res);
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index b567d212fe7d..dd232d8740a2 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -73,7 +73,7 @@ struct txx9ndfmc_drvdata {
- 	void __iomem *base;
- 	unsigned char hold;	/* in gbusclock */
- 	unsigned char spw;	/* in gbusclock */
--	struct nand_hw_control hw_control;
-+	struct nand_controller hw_control;
- };
- 
- static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
-@@ -303,7 +303,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 	dev_info(&dev->dev, "CLK:%ldMHz HOLD:%d SPW:%d\n",
- 		 (gbusclk + 500000) / 1000000, hold, spw);
- 
--	nand_hw_control_init(&drvdata->hw_control);
-+	nand_controller_init(&drvdata->hw_control);
- 
- 	platform_set_drvdata(dev, drvdata);
- 	txx9ndfmc_initialize(dev);
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index e383c7f32574..eb5a053fd06b 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -510,20 +510,21 @@ struct nand_id {
- };
- 
- /**
-- * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
-+ * struct nand_controller - Control structure for hardware controller
-+ *                          shared among independent devices
-  * @lock:               protection lock
-  * @active:		the mtd device which holds the controller currently
-  * @wq:			wait queue to sleep on if a NAND operation is in
-  *			progress used instead of the per chip wait queue
-  *			when a hw controller is available.
-  */
--struct nand_hw_control {
-+struct nand_controller {
- 	spinlock_t lock;
- 	struct nand_chip *active;
- 	wait_queue_head_t wq;
- };
- 
--static inline void nand_hw_control_init(struct nand_hw_control *nfc)
-+static inline void nand_controller_init(struct nand_controller *nfc)
- {
- 	nfc->active = NULL;
- 	spin_lock_init(&nfc->lock);
-@@ -1197,7 +1198,8 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  *			setting the read-retry mode. Mostly needed for MLC NAND.
-  * @ecc:		[BOARDSPECIFIC] ECC control structure
-  * @buf_align:		minimum buffer alignment required by a platform
-- * @hwcontrol:		platform-specific hardware control structure
-+ * @dummy_controller:	dummy controller implementation for drivers that can
-+ *			only control a single chip
-  * @erase:		[REPLACEABLE] erase function
-  * @scan_bbt:		[REPLACEABLE] function to scan bad block table
-  * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transferring
-@@ -1334,11 +1336,11 @@ struct nand_chip {
- 	flstate_t state;
- 
- 	uint8_t *oob_poi;
--	struct nand_hw_control *controller;
-+	struct nand_controller *controller;
- 
- 	struct nand_ecc_ctrl ecc;
- 	unsigned long buf_align;
--	struct nand_hw_control hwcontrol;
-+	struct nand_controller dummy_controller;
- 
- 	uint8_t *bbt;
- 	struct nand_bbt_descr *bbt_td;
--- 
-2.14.1
+> 
+> Since after 'commit 25f815f66a14 ("mtd: nand: force drivers to
+> explicitly send READ/PROG commands")', sending of commands has
+> been moved to driver for page read/write, so this patch does
+> following changes to make code more readable:
+> 
+> 1. Introduce qcom_nand_init_page_op() and qcom_nand_start_page_op()
+>    helper functions which helps in removing code duplication in each
+>    operation.
+> 
+> 2. After issuing PROGRAM PAGE/BLOCK ERASE, QCOM NAND
+>    controller waits for BUSY signal to be de asserted and
+>    automatically issues the READ STATUS command. Currently, driver
+>    is storing this status privately and returns the same when status
+>    command comes from helper function after program/erase operation.
+>    Now, for write operations, the status can be returned from main
+>    function itself, so storing status can be removed for program
+>    operations.
+> 
+> Signed-off-by: Abhishek Sahu <absahu@codeaurora.org>
+> ---
+>  drivers/mtd/nand/raw/qcom_nandc.c | 222 ++++++++++++++++----------------------
+>  1 file changed, 91 insertions(+), 131 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
+> index 6fb85d3..f73ee0e 100644
+> --- a/drivers/mtd/nand/raw/qcom_nandc.c
+> +++ b/drivers/mtd/nand/raw/qcom_nandc.c
+> @@ -1382,39 +1382,37 @@ static void pre_command(struct qcom_nand_host *host, int command)
+>  	host->last_command = command;
+>  
+>  	clear_read_regs(nandc);
+> -
+> -	if (command == NAND_CMD_RESET || command == NAND_CMD_READID ||
+> -	    command == NAND_CMD_PARAM || command == NAND_CMD_ERASE1)
+> -		clear_bam_transaction(nandc);
+> +	clear_bam_transaction(nandc);
+>  }
+>  
+>  /*
+> - * this is called after NAND_CMD_PAGEPROG and NAND_CMD_ERASE1 to set our
+> - * privately maintained status byte, this status byte can be read after
+> - * NAND_CMD_STATUS is called
+> + * QCOM NAND controller by default issues READ STATUS command after PROGRAM
+> + * PAGE/BLOCK ERASE operation and updates the same in its internal status
+> + * register for last codeword. This function parses status for each CW and
+> + * return actual status byte for write/erase operation.
+>   */
+> -static void parse_erase_write_errors(struct qcom_nand_host *host, int command)
+> +static u8 parse_erase_write_errors(struct qcom_nand_host *host, int num_cw)
+>  {
+>  	struct nand_chip *chip = &host->chip;
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> -	int num_cw;
+>  	int i;
+> +	u8 status = 0;
+>  
+> -	num_cw = command == NAND_CMD_PAGEPROG ? ecc->steps : 1;
+>  	nandc_read_buffer_sync(nandc, true);
+>  
+>  	for (i = 0; i < num_cw; i++) {
+>  		u32 flash_status = le32_to_cpu(nandc->reg_read_buf[i]);
+>  
+>  		if (flash_status & FS_MPU_ERR)
+> -			host->status &= ~NAND_STATUS_WP;
+> +			status &= ~NAND_STATUS_WP;
+>  
+>  		if (flash_status & FS_OP_ERR || (i == (num_cw - 1) &&
+>  						 (flash_status &
+>  						  FS_DEVICE_STS_ERR)))
+> -			host->status |= NAND_STATUS_FAIL;
+> +			status |= NAND_STATUS_FAIL;
+>  	}
+> +
+> +	return status;
+>  }
+>  
+>  static void post_command(struct qcom_nand_host *host, int command)
+> @@ -1428,9 +1426,12 @@ static void post_command(struct qcom_nand_host *host, int command)
+>  		memcpy(nandc->data_buffer, nandc->reg_read_buf,
+>  		       nandc->buf_count);
+>  		break;
+> -	case NAND_CMD_PAGEPROG:
+>  	case NAND_CMD_ERASE1:
+> -		parse_erase_write_errors(host, command);
+> +		/*
+> +		 * update privately maintained status byte, this status byte can
+> +		 * be read after NAND_CMD_STATUS is called.
+> +		 */
+> +		host->status = parse_erase_write_errors(host, 1);
+>  		break;
+>  	default:
+>  		break;
+> @@ -1448,7 +1449,6 @@ static void qcom_nandc_command(struct mtd_info *mtd, unsigned int command,
+>  {
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	bool wait = false;
+>  	int ret = 0;
+> @@ -1477,23 +1477,6 @@ static void qcom_nandc_command(struct mtd_info *mtd, unsigned int command,
+>  		wait = true;
+>  		break;
+>  
+> -	case NAND_CMD_READ0:
+> -		/* we read the entire page for now */
+> -		WARN_ON(column != 0);
+> -
+> -		host->use_ecc = true;
+> -		set_address(host, 0, page_addr);
+> -		update_rw_regs(host, ecc->steps, true);
+> -		break;
+> -
+> -	case NAND_CMD_SEQIN:
+> -		WARN_ON(column != 0);
+> -		set_address(host, 0, page_addr);
+> -		break;
+> -
+> -	case NAND_CMD_PAGEPROG:
+> -	case NAND_CMD_STATUS:
+> -	case NAND_CMD_NONE:
+>  	default:
+>  		break;
+>  	}
+> @@ -1589,6 +1572,61 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+>  	return 0;
+>  }
+>  
+> +/* check if page write is successful */
+> +static int check_write_errors(struct qcom_nand_host *host, int cw_cnt)
+> +{
+> +	u8 status = parse_erase_write_errors(host, cw_cnt);
+> +
+> +	return (status & NAND_STATUS_FAIL) ? -EIO : 0;
+> +}
+> +
+> +/* performs the common init for page read/write operations */
+> +static void
+> +qcom_nand_init_page_op(struct qcom_nand_host *host, int num_cw, int page,
+> +		       u16 addr, bool read)
+> +{
+> +	struct nand_chip *chip = &host->chip;
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +
+> +	clear_read_regs(nandc);
+> +	clear_bam_transaction(nandc);
+> +	set_address(host, addr, page);
+> +	update_rw_regs(host, num_cw, read);
+> +	if (read)
+> +		config_nand_page_read(nandc);
+> +	else
+> +		config_nand_page_write(nandc);
+> +}
+> +
+> +/*
+> + * Performs the page operation by submitting DMA descriptors and checks
+> + * the errors. For read with ecc, the read function needs to do erased
+> + * page detection so skips the error check.
+> + */
+> +static int
+> +qcom_nand_start_page_op(struct qcom_nand_host *host, int num_cw, bool read)
+> +{
+> +	struct nand_chip *chip = &host->chip;
+> +	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> +	int ret;
+> +
+> +	ret = submit_descs(nandc);
+> +	free_descs(nandc);
+> +	if (ret) {
+> +		dev_err(nandc->dev, "%s operation failure\n",
+> +			read ? "READ" : "WRITE");
+> +		return ret;
+> +	}
+> +
+> +	if (!read)
+> +		return check_write_errors(host, num_cw);
+> +
+> +	if (!host->use_ecc)
+> +		return check_flash_errors(host, num_cw);
+> +
+> +	return 0;
+> +}
+> +
+>  /* performs raw read for one codeword */
+>  static int
+>  qcom_nandc_read_cw_raw(struct mtd_info *mtd, struct nand_chip *chip,
+> @@ -1598,15 +1636,10 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	int data_size1, data_size2, oob_size1, oob_size2;
+> -	int ret, reg_off = FLASH_BUF_ACC, read_loc = 0;
+> +	int reg_off = FLASH_BUF_ACC, read_loc = 0;
+>  
+> -	nand_read_page_op(chip, page, 0, NULL, 0);
+>  	host->use_ecc = false;
+> -
+> -	clear_bam_transaction(nandc);
+> -	set_address(host, host->cw_size * cw, page);
+> -	update_rw_regs(host, 1, true);
+> -	config_nand_page_read(nandc);
+> +	qcom_nand_init_page_op(host, 1, page, host->cw_size * cw, true);
+>  
+>  	data_size1 = mtd->writesize - host->cw_size * (ecc->steps - 1);
+>  	oob_size1 = host->bbm_size;
+> @@ -1647,14 +1680,7 @@ static int check_flash_errors(struct qcom_nand_host *host, int cw_cnt)
+>  
+>  	read_data_dma(nandc, reg_off, oob_buf + oob_size1, oob_size2, 0);
+>  
+> -	ret = submit_descs(nandc);
+> -	free_descs(nandc);
+> -	if (ret) {
+> -		dev_err(nandc->dev, "failure to read raw cw %d\n", cw);
+> -		return ret;
+> -	}
+> -
+> -	return check_flash_errors(host, 1);
+> +	return qcom_nand_start_page_op(host, 1, true);
+>  }
+>  
+>  /*
+> @@ -1857,7 +1883,8 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  	u8 *data_buf_start = data_buf, *oob_buf_start = oob_buf;
+>  	int i, ret;
+>  
+> -	config_nand_page_read(nandc);
+> +	host->use_ecc = true;
+> +	qcom_nand_init_page_op(host, ecc->steps, page, 0, true);
+>  
+>  	/* queue cmd descs for each codeword */
+>  	for (i = 0; i < ecc->steps; i++) {
+> @@ -1914,13 +1941,9 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  			oob_buf += oob_size;
+>  	}
+>  
+> -	ret = submit_descs(nandc);
+> -	free_descs(nandc);
+> -
+> -	if (ret) {
+> -		dev_err(nandc->dev, "failure to read page/oob\n");
+> +	ret = qcom_nand_start_page_op(host, ecc->steps, true);
+> +	if (ret)
+>  		return ret;
+> -	}
+>  
+>  	return parse_read_errors(host, data_buf_start, oob_buf_start, page);
+>  }
+> @@ -1929,17 +1952,8 @@ static int read_page_ecc(struct qcom_nand_host *host, u8 *data_buf,
+>  static int qcom_nandc_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  				uint8_t *buf, int oob_required, int page)
+>  {
+> -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> -	u8 *data_buf, *oob_buf = NULL;
+> -
+> -	nand_read_page_op(chip, page, 0, NULL, 0);
+> -	data_buf = buf;
+> -	oob_buf = oob_required ? chip->oob_poi : NULL;
+> -
+> -	clear_bam_transaction(nandc);
+> -
+> -	return read_page_ecc(host, data_buf, oob_buf, page);
+> +	return read_page_ecc(to_qcom_nand_host(chip), buf,
+> +			     oob_required ? chip->oob_poi : NULL, page);
+>  }
+>  
+>  /* implements ecc->read_page_raw() */
+> @@ -1969,18 +1983,8 @@ static int qcom_nandc_read_page_raw(struct mtd_info *mtd,
+>  static int qcom_nandc_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  			       int page)
+>  {
+> -	struct qcom_nand_host *host = to_qcom_nand_host(chip);
+> -	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+> -	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> -
+> -	clear_read_regs(nandc);
+> -	clear_bam_transaction(nandc);
+> -
+> -	host->use_ecc = true;
+> -	set_address(host, 0, page);
+> -	update_rw_regs(host, ecc->steps, true);
+> -
+> -	return read_page_ecc(host, NULL, chip->oob_poi, page);
+> +	return read_page_ecc(to_qcom_nand_host(chip), NULL,
+> +			     chip->oob_poi, page);
+>  }
+>  
+>  /* implements ecc->write_page() */
+> @@ -1991,19 +1995,12 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	u8 *data_buf, *oob_buf;
+> -	int i, ret;
+> -
+> -	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> -
+> -	clear_read_regs(nandc);
+> -	clear_bam_transaction(nandc);
+> +	int i;
+>  
+>  	data_buf = (u8 *)buf;
+>  	oob_buf = chip->oob_poi;
+> -
+>  	host->use_ecc = true;
+> -	update_rw_regs(host, ecc->steps, false);
+> -	config_nand_page_write(nandc);
+> +	qcom_nand_init_page_op(host, ecc->steps, page, 0, false);
+>  
+>  	for (i = 0; i < ecc->steps; i++) {
+>  		int data_size, oob_size;
+> @@ -2041,16 +2038,7 @@ static int qcom_nandc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+>  		oob_buf += oob_size;
+>  	}
+>  
+> -	ret = submit_descs(nandc);
+> -	if (ret)
+> -		dev_err(nandc->dev, "failure to write page\n");
+> -
+> -	free_descs(nandc);
+> -
+> -	if (!ret)
+> -		ret = nand_prog_page_end_op(chip);
+> -
+> -	return ret;
+> +	return qcom_nand_start_page_op(host, ecc->steps, false);
+>  }
+>  
+>  /* implements ecc->write_page_raw() */
+> @@ -2062,18 +2050,13 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
+>  	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	u8 *data_buf, *oob_buf;
+> -	int i, ret;
+> -
+> -	nand_prog_page_begin_op(chip, page, 0, NULL, 0);
+> -	clear_read_regs(nandc);
+> -	clear_bam_transaction(nandc);
+> +	int i;
+>  
+>  	data_buf = (u8 *)buf;
+>  	oob_buf = chip->oob_poi;
+>  
+>  	host->use_ecc = false;
+> -	update_rw_regs(host, ecc->steps, false);
+> -	config_nand_page_write(nandc);
+> +	qcom_nand_init_page_op(host, ecc->steps, page, 0, false);
+>  
+>  	for (i = 0; i < ecc->steps; i++) {
+>  		int data_size1, data_size2, oob_size1, oob_size2;
+> @@ -2113,16 +2096,7 @@ static int qcom_nandc_write_page_raw(struct mtd_info *mtd,
+>  		config_nand_cw_write(nandc);
+>  	}
+>  
+> -	ret = submit_descs(nandc);
+> -	if (ret)
+> -		dev_err(nandc->dev, "failure to write raw page\n");
+> -
+> -	free_descs(nandc);
+> -
+> -	if (!ret)
+> -		ret = nand_prog_page_end_op(chip);
+> -
+> -	return ret;
+> +	return qcom_nand_start_page_op(host, ecc->steps, false);
+>  }
+>  
+>  /*
+> @@ -2140,9 +2114,6 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+>  	u8 *oob = chip->oob_poi, bbm_byte;
+>  	int data_size, oob_size, bbm_offset, write_size;
+> -	int ret;
+> -
+> -	clear_bam_transaction(nandc);
+>  
+>  	/*
+>  	 * The NAND base layer calls ecc->write_oob() by setting bytes at
+> @@ -2183,24 +2154,13 @@ static int qcom_nandc_write_oob(struct mtd_info *mtd, struct nand_chip *chip,
+>  		write_size = data_size + oob_size;
+>  	}
+>  
+> -	set_address(host, host->cw_size * (ecc->steps - 1), page);
+> -	update_rw_regs(host, 1, false);
+> -
+> -	config_nand_page_write(nandc);
+> +	qcom_nand_init_page_op(host, 1, page,
+> +			       host->cw_size * (ecc->steps - 1), false);
+>  	write_data_dma(nandc, FLASH_BUF_ACC,
+>  		       nandc->data_buffer, write_size, 0);
+>  	config_nand_cw_write(nandc);
+>  
+> -	ret = submit_descs(nandc);
+> -
+> -	free_descs(nandc);
+> -
+> -	if (ret) {
+> -		dev_err(nandc->dev, "failure to write oob\n");
+> -		return -EIO;
+> -	}
+> -
+> -	return nand_prog_page_end_op(chip);
+> +	return qcom_nand_start_page_op(host, 1, false);
+>  }
+>  
+>  /*
