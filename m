@@ -1,17 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffuA3-0007GZ-H4
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:39:05 +0000
-Date: Wed, 18 Jul 2018 23:38:51 +0200
+ id 1ffuBK-0000M1-Oj
+ for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 21:40:24 +0000
+Date: Wed, 18 Jul 2018 23:40:10 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH 1/7] mtd: rawnand: micron: Fix on-die ECC detection logic
-Message-ID: <20180718233851.5884696b@xps13>
-In-Reply-To: <20180718084221.27821-1-boris.brezillon@bootlin.com>
-References: <20180718084221.27821-1-boris.brezillon@bootlin.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Arnd
+ Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v3 0/4] mtd: rawnand: Improve compile-test coverage
+Message-ID: <20180718234010.18e1036b@xps13>
+In-Reply-To: <20180718085652.30391-1-boris.brezillon@bootlin.com>
+References: <20180718085652.30391-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,28 +28,46 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Boris,
 
 Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 18 Jul 2018
-10:42:15 +0200:
+10:56:48 +0200:
 
-> Basing the "mandatory on-die" detection on ID byte 2 does not work,
-> because Micron has plenty of NANDs using the same device ID code, and
-> not all of them have forcibly enabled on-die ECC.
+> Hello,
 >=20
-> Since the "Array Operation" feature does not provide the "ECC
-> enabled/disabled" bit when the ECC can't be disabled, let's try to use
-> the "ECC enabled/disabled" bit in the READ_ID bytes.
+> This is an attempt at adding "depends || COMPILE_TEST" to all NAND
+> drivers that have no compile-time dependencies on arch
+> features/headers.
 >=20
-> It seems that this bit is dynamically updated on NANDs where on-die ECC
-> can freely be enabled/disabled, so let's hope it stays at one when we
-> have a NAND with on-die ECC forcibly enabled.
+> This will hopefully help us (NAND/MTD maintainers) in detecting build
+> issues earlier. Unfortunately we still have a few drivers that can't
+> easily be modified to be arch independent.
 >=20
-> Fixes: 51f3b3970a8c ("mtd: rawnand: micron: detect forced on-die ECC")
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
+> Regards,
+>=20
+> Boris
+>=20
+> Changes in v2:
+> - Fix a few problems reported by kbuild robots and Stephen Rothwell
+>=20
+> Changes in v3:
+> - Drop depends on !IA64 since Arnd has added {read,write}s{b,w,l}()
+>   accessors to this arch
+> - Make sure the orion driver compiles when __LINUX_ARM_ARCH__ is not
+>   defined
+>=20
+> Boris Brezillon (4):
+>   mtd: rawnand: s3c2410: Allow selection of this driver when
+>     COMPILE_TEST=3Dy
+>   mtd: rawnand: orion: Avoid direct inclusion of asm headers
+>   mtd: rawnand: orion: Handle cases where __LINUX_ARM_ARCH__ is not
+>     defined
+>   mtd: rawnand: orion: Allow selection of this driver when
+>     COMPILE_TEST=3Dy
+>=20
+>  drivers/mtd/nand/raw/Kconfig      | 6 ++++--
+>  drivers/mtd/nand/raw/orion_nand.c | 6 +++---
+>  2 files changed, 7 insertions(+), 5 deletions(-)
+>=20
 
-Series applied to nand/next in place of the previous -buggy- series,
-with your SoB added. Actually as you answered the patches with it,
-patchwork/git-pwc added it by itself!
+Series applied to nand/next, thanks for this work that will speed up
+our local tests.
 
-Thanks,
 Miqu=C3=A8l
