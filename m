@@ -1,18 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffrD1-0005uE-07
+ id 1ffrD1-0005uA-05
  for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 18:29:56 +0000
-Date: Wed, 18 Jul 2018 20:29:32 +0200
+Date: Wed, 18 Jul 2018 20:28:51 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: Fallback to ->_read/write() when
- ->_read/write_oob() is missing
-Message-ID: <20180718202932.50880e48@bbrezillon>
-In-Reply-To: <20180714124200.17148-1-miquel.raynal@bootlin.com>
-References: <20180714124200.17148-1-miquel.raynal@bootlin.com>
+To: Richard Weinberger <richard@nod.at>
+Cc: Jan Kara <jack@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
+ y2038@lists.linaro.org, linux-kernel@vger.kernel.org, David Howells
+ <dhowells@redhat.com>, linux-mtd@lists.infradead.org, Alexander Viro
+ <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org, Andrew Morton
+ <akpm@linux-foundation.org>, David Woodhouse <dwmw2@infradead.org>, Deepa
+ Dinamani <deepa.kernel@gmail.com>
+Subject: Re: [PATCH 1/2] [RESEND] jffs2: use 64-bit intermediate timestamps
+Message-ID: <20180718202851.1011fb4e@bbrezillon>
+In-Reply-To: <20180717215453.04509003@bbrezillon>
+References: <20180713144739.3150217-1-arnd@arndb.de>
+ <2205649.NecG7tB80L@blindfold> <20180717215453.04509003@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -25,24 +28,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 14 Jul 2018 14:42:00 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+On Tue, 17 Jul 2018 21:54:53 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> Some MTD sublayers/drivers are implementing ->_read/write() and
-> not ->_read/write_oob().
+> On Fri, 13 Jul 2018 22:47:13 +0200
+> Richard Weinberger <richard@nod.at> wrote:
 > 
-> While for NAND devices both are usually valid, for NOR devices, using
-> the _oob variant has no real meaning. But, as the MTD layer is supposed
-> to hide as much as possible the flash complexity to the user, there is
-> no reason to error out while it is just a matter of rewritting things
-> internally.
+> > Am Freitag, 13. Juli 2018, 16:47:16 CEST schrieb Arnd Bergmann:  
+> > > The VFS now uses timespec64 timestamps consistently, but jffs2 still
+> > > converts them to 32-bit numbers on the storage medium. As the helper
+> > > functions for the conversion (get_seconds() and timespec_to_timespec64())
+> > > are now deprecated, let's change them over to the more modern
+> > > replacements.
+> > > 
+> > > This keeps the traditional interpretation of those values, where
+> > > the on-disk 32-bit numbers are taken to be negative numbers, i.e.
+> > > dates before 1970, on 32-bit machines, but future numbers past 2038
+> > > on 64-bit machines.
+> > > 
+> > > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> > > ---
+> > > I originally sent these two patches on Jun 19, but got no reply aside
+> > > from a harmless sparse warning reported by the kbuild test robot.
+> > > 
+> > > Looking at the git history for jffs2, it seems that David Woodhouse
+> > > hasn't applied any patches for over two years, so I suppose he's
+> > > not taking these either.
+> > > 
+> > > Al or Andrew, could you pick these up instead?    
+> > 
+> > We can carry it also via the MTD tree.  
 > 
-> Add a fallback on mtd->_read() (resp. mtd->_write()) when the user calls
-> mtd_read_oob() (resp. mtd_write_oob()) while mtd->_read_oob() (resp.
-> mtd->_write_oob) is not implemented. There is already a fallback on the
-> _oob variant if the former is used.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> I'll queue them to mtd/next.
 
 Applied.
 
@@ -50,72 +67,11 @@ Thanks,
 
 Boris
 
-> ---
->  drivers/mtd/mtdcore.c | 28 ++++++++++++++++++++++------
->  1 file changed, 22 insertions(+), 6 deletions(-)
 > 
-> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> index 42395df06be9..97ac219c082e 100644
-> --- a/drivers/mtd/mtdcore.c
-> +++ b/drivers/mtd/mtdcore.c
-> @@ -1155,21 +1155,29 @@ int mtd_read_oob(struct mtd_info *mtd, loff_t from, struct mtd_oob_ops *ops)
->  {
->  	int ret_code;
->  	ops->retlen = ops->oobretlen = 0;
-> -	if (!mtd->_read_oob)
-> -		return -EOPNOTSUPP;
->  
->  	ret_code = mtd_check_oob_ops(mtd, from, ops);
->  	if (ret_code)
->  		return ret_code;
->  
->  	ledtrig_mtd_activity();
-> +
-> +	/* Check the validity of a potential fallback on mtd->_read */
-> +	if (!mtd->_read_oob && (!mtd->_read || ops->oobbuf))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (mtd->_read_oob)
-> +		ret_code = mtd->_read_oob(mtd, from, ops);
-> +	else
-> +		ret_code = mtd->_read(mtd, from, ops->len, &ops->retlen,
-> +				      ops->datbuf);
-> +
->  	/*
->  	 * In cases where ops->datbuf != NULL, mtd->_read_oob() has semantics
->  	 * similar to mtd->_read(), returning a non-negative integer
->  	 * representing max bitflips. In other cases, mtd->_read_oob() may
->  	 * return -EUCLEAN. In all cases, perform similar logic to mtd_read().
->  	 */
-> -	ret_code = mtd->_read_oob(mtd, from, ops);
->  	if (unlikely(ret_code < 0))
->  		return ret_code;
->  	if (mtd->ecc_strength == 0)
-> @@ -1184,8 +1192,7 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
->  	int ret;
->  
->  	ops->retlen = ops->oobretlen = 0;
-> -	if (!mtd->_write_oob)
-> -		return -EOPNOTSUPP;
-> +
->  	if (!(mtd->flags & MTD_WRITEABLE))
->  		return -EROFS;
->  
-> @@ -1194,7 +1201,16 @@ int mtd_write_oob(struct mtd_info *mtd, loff_t to,
->  		return ret;
->  
->  	ledtrig_mtd_activity();
-> -	return mtd->_write_oob(mtd, to, ops);
-> +
-> +	/* Check the validity of a potential fallback on mtd->_write */
-> +	if (!mtd->_write_oob && (!mtd->_write || ops->oobbuf))
-> +		return -EOPNOTSUPP;
-> +
-> +	if (mtd->_write_oob)
-> +		return mtd->_write_oob(mtd, to, ops);
-> +	else
-> +		return mtd->_write(mtd, to, ops->len, &ops->retlen,
-> +				   ops->datbuf);
->  }
->  EXPORT_SYMBOL_GPL(mtd_write_oob);
->  
+> Thanks,
+> 
+> Boris
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
