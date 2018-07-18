@@ -1,19 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffhEN-0006ph-Bj
- for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 07:50:40 +0000
-Date: Wed, 18 Jul 2018 09:50:17 +0200
+Date: Wed, 18 Jul 2018 10:03:09 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: nand/raw: MTD_NAND_BCM47XXNFLASH needs CONFIG_BCMA
-Message-ID: <20180718095017.4efa2b37@xps13>
-In-Reply-To: <20180711104446.69af988a@bbrezillon>
-References: <20180711084010.57950-1-arnd@arndb.de>
- <20180711104446.69af988a@bbrezillon>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Wan ZongShun <mcuos.com@gmail.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: nuc900_nand: mark expected switch fall-through
+Message-ID: <20180718100309.49c5452a@xps13>
+In-Reply-To: <20180710132902.GA13541@embeddedor.com>
+References: <20180710132902.GA13541@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,33 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Hi Gustavo,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 11 Jul 2018
-10:44:46 +0200:
+Prefix should be "mtd: rawnand: nuc900:"
 
-> On Wed, 11 Jul 2018 10:39:44 +0200
-> Arnd Bergmann <arnd@arndb.de> wrote:
->=20
-> > We already have a dependency on BCMA_NFLASH, which in turn depends on
-> > BCMA, but since BCMA is a tristate option and BCMA_NFLASH is bool,
-> > we can run into an invalid configuration with MTD_NAND_BCM47XXNFLASH=3Dy
-> > and BCMA=3Dm:
-> >=20
-> > drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.o: In function `bcm47xxn=
-flash_ops_bcm4706_init':
-> > ops_bcm4706.c:(.text+0x790): undefined reference to `bcma_chipco_pll_re=
-ad'
-> >=20
-> > Adding the dependency here forces MTD_NAND_BCM47XXNFLASH to only be
-> > configured =3Dm here so it can link against the BCMA driver.
-> >=20
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de> =20
->=20
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
->=20
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Tue, 10 Jul
+2018 08:29:02 -0500:
 
-Applied with prefix changed to "mtd: rawnand:".
+> In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+> where we are expecting to fall through.
+>=20
+> Addresses-Coverity-ID: 1471717 ("Missing break in switch")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  drivers/mtd/nand/raw/nuc900_nand.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/nuc900_nand.c b/drivers/mtd/nand/raw/nu=
+c900_nand.c
+> index af5b32c9..53a9f6c 100644
+> --- a/drivers/mtd/nand/raw/nuc900_nand.c
+> +++ b/drivers/mtd/nand/raw/nuc900_nand.c
+> @@ -191,8 +191,9 @@ static void nuc900_nand_command_lp(struct mtd_info *m=
+td, unsigned int command,
+>  		return;
+> =20
+>  	case NAND_CMD_READ0:
+> -
+>  		write_cmd_reg(nand, NAND_CMD_READSTART);
+> +		/* fall through */
+
+Have you checked this is actually the right thing to do?
 
 Thanks,
 Miqu=C3=A8l
