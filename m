@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ffiGs-00082Z-FU
+ id 1ffiGs-00082a-FY
  for linux-mtd@lists.infradead.org; Wed, 18 Jul 2018 08:57:21 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -9,9 +9,12 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>, Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v3 0/4] mtd: rawnand: Improve compile-test coverage
-Date: Wed, 18 Jul 2018 10:56:48 +0200
-Message-Id: <20180718085652.30391-1-boris.brezillon@bootlin.com>
+Subject: [PATCH v3 1/4] mtd: rawnand: s3c2410: Allow selection of this driver
+ when COMPILE_TEST=y
+Date: Wed, 18 Jul 2018 10:56:49 +0200
+Message-Id: <20180718085652.30391-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20180718085652.30391-1-boris.brezillon@bootlin.com>
+References: <20180718085652.30391-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+It just makes NAND maintainers' life easier by allowing them to
+compile-test this driver without having ARCH_S3C24XX or ARCH_S3C64XX
+enabled.
 
-This is an attempt at adding "depends || COMPILE_TEST" to all NAND
-drivers that have no compile-time dependencies on arch
-features/headers.
+We add a dependency on HAS_IOMEM to make sure the driver compiles
+correctly.
 
-This will hopefully help us (NAND/MTD maintainers) in detecting build
-issues earlier. Unfortunately we still have a few drivers that can't
-easily be modified to be arch independent.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Regards,
-
-Boris
-
-Changes in v2:
-- Fix a few problems reported by kbuild robots and Stephen Rothwell
-
-Changes in v3:
-- Drop depends on !IA64 since Arnd has added {read,write}s{b,w,l}()
-  accessors to this arch
-- Make sure the orion driver compiles when __LINUX_ARM_ARCH__ is not
-  defined
-
-Boris Brezillon (4):
-  mtd: rawnand: s3c2410: Allow selection of this driver when
-    COMPILE_TEST=y
-  mtd: rawnand: orion: Avoid direct inclusion of asm headers
-  mtd: rawnand: orion: Handle cases where __LINUX_ARM_ARCH__ is not
-    defined
-  mtd: rawnand: orion: Allow selection of this driver when
-    COMPILE_TEST=y
-
- drivers/mtd/nand/raw/Kconfig      | 6 ++++--
- drivers/mtd/nand/raw/orion_nand.c | 6 +++---
- 2 files changed, 7 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/Kconfig b/drivers/mtd/nand/raw/Kconfig
+index b6738ece16f1..03314ab8cd4d 100644
+--- a/drivers/mtd/nand/raw/Kconfig
++++ b/drivers/mtd/nand/raw/Kconfig
+@@ -119,7 +119,8 @@ config MTD_NAND_AU1550
+ 
+ config MTD_NAND_S3C2410
+ 	tristate "NAND Flash support for Samsung S3C SoCs"
+-	depends on ARCH_S3C24XX || ARCH_S3C64XX
++	depends on ARCH_S3C24XX || ARCH_S3C64XX || COMPILE_TEST
++	depends on HAS_IOMEM
+ 	help
+ 	  This enables the NAND flash controller on the S3C24xx and S3C64xx
+ 	  SoCs
 -- 
 2.14.1
