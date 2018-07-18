@@ -1,29 +1,29 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Shreeya Patel <shreeya.patel23498@gmail.com>,
- Arvind Yadav <arvind.yadav.cs@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- Krzysztof Halasa <khalasa@piap.pl>, Arnd Bergmann <arnd@arndb.de>,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Andy Shevchenko <andy.shevchenko@gmail.com>,
- Tomi Valkeinen <tomi.valkeinen@ti.com>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 3/3] ARM: OMAP1: ams-delta: make board header file local to
- mach-omap1
-Date: Wed, 18 Jul 2018 01:14:48 +0200
-Message-Id: <20180717231448.14958-4-jmkrzyszt@gmail.com>
-In-Reply-To: <20180717231448.14958-1-jmkrzyszt@gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180717231448.14958-1-jmkrzyszt@gmail.com>
+Date: Wed, 18 Jul 2018 08:56:25 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Wenyou Yang <wenyou.yang@microchip.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Richard Weinberger
+ <richard@nod.at>, Gregory CLEMENT <gregory.clement@bootlin.com>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd <linux-mtd@lists.infradead.org>, Josh Wu
+ <rainyfeeling@outlook.com>, Romain Izard <romain.izard.pro@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Peter Rosin <peda@axentia.se>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 2/3] mtd: atmel nand: fix build warning on 64-bit
+Message-ID: <20180718085625.436958fc@xps13>
+In-Reply-To: <20180717230839.3fc2264e@bbrezillon>
+References: <20180709155730.2422841-1-arnd@arndb.de>
+ <20180709155730.2422841-2-arnd@arndb.de>
+ <0b4ee469-8c37-9002-9067-f37f8dde869e@microchip.com>
+ <CAK8P3a3NbrRVC-7HW8NiNQw+E3n_-r746AFTc2dftagTYLYDtw@mail.gmail.com>
+ <20180717230523.7005ca91@xps13>
+ <20180717230839.3fc2264e@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,85 +33,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now as board header file is no longer included by drivers, move it to
-the root directory of mach-omap1.
+Hi Boris,
 
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
-Depends on patches 1/3 and 2/3 of the series.
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 17 Jul 2018
+23:08:39 +0200:
 
- arch/arm/mach-omap1/ams-delta-fiq-handler.S              | 2 +-
- arch/arm/mach-omap1/ams-delta-fiq.c                      | 3 +--
- arch/arm/mach-omap1/board-ams-delta.c                    | 2 +-
- arch/arm/mach-omap1/{include/mach => }/board-ams-delta.h | 2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
- rename arch/arm/mach-omap1/{include/mach => }/board-ams-delta.h (98%)
+> On Tue, 17 Jul 2018 23:05:23 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>=20
+> > Hi Arnd,
+> >=20
+> > Arnd Bergmann <arnd@arndb.de> wrote on Fri, 13 Jul 2018 12:16:09 +0200:
+> >  =20
+> > > On Fri, Jul 13, 2018 at 11:56 AM, Tudor Ambarus
+> > > <tudor.ambarus@microchip.com> wrote:   =20
+> > > > Hi, Arnd,
+> > > >
+> > > > On 07/09/2018 06:57 PM, Arnd Bergmann wrote:     =20
+> > > >> +     nc->ebi_csa_offs =3D (uintptr_t)match->data;     =20
+> > > >
+> > > > I guess we should declare ebi_csa_offs as size_t, right?     =20
+> > >=20
+> > > Yes, that would make sense, though it doesn't change the behavior.
+> > >    =20
+> >=20
+> > Do you plan to send a new version? I don't want to mess with
+> > improvised casts :) =20
+>=20
+> This fix is already part of my COMPILE_TEST series (v2), and I don't
+> thing declaring ->ebi_csa_offs as a size_t is useful.
 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq-handler.S b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-index ddc27638ba2a..2e2a17364dc9 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-+++ b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-@@ -17,9 +17,9 @@
- #include <linux/platform_data/ams-delta-fiq.h>
- 
- #include <asm/assembler.h>
--#include <mach/board-ams-delta.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- #include "iomap.h"
- #include "soc.h"
- 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq.c b/arch/arm/mach-omap1/ams-delta-fiq.c
-index b0dc7ddf5877..14c3d3f5255e 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq.c
-+++ b/arch/arm/mach-omap1/ams-delta-fiq.c
-@@ -22,11 +22,10 @@
- #include <linux/platform_data/ams-delta-fiq.h>
- #include <linux/platform_device.h>
- 
--#include <mach/board-ams-delta.h>
--
- #include <asm/fiq.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- 
- static struct fiq_handler fh = {
- 	.name	= "ams-delta-fiq"
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index dd28d2614d7f..34cb63ff45b3 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -36,7 +36,6 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
- 
--#include <mach/board-ams-delta.h>
- #include <linux/platform_data/keypad-omap.h>
- #include <mach/mux.h>
- 
-@@ -45,6 +44,7 @@
- #include <mach/usb.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- #include "iomap.h"
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/include/mach/board-ams-delta.h b/arch/arm/mach-omap1/board-ams-delta.h
-similarity index 98%
-rename from arch/arm/mach-omap1/include/mach/board-ams-delta.h
-rename to arch/arm/mach-omap1/board-ams-delta.h
-index ad6f865d1f16..1fbada29431a 100644
---- a/arch/arm/mach-omap1/include/mach/board-ams-delta.h
-+++ b/arch/arm/mach-omap1/board-ams-delta.h
-@@ -1,5 +1,5 @@
- /*
-- * arch/arm/plat-omap/include/mach/board-ams-delta.h
-+ * arch/arm/mach-omap1/board-ams-delta.h
-  *
-  * Copyright (C) 2006 Jonathan McDowell <noodles@earth.li>
-  *
--- 
-2.16.4
+I missed that, ok.
+
+Thanks,
+Miqu=C3=A8l
