@@ -1,17 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgFqG-000884-Da
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 20:48:06 +0000
+ id 1fgFwE-0002Cp-Vl
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 20:54:19 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
  Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH] mtd: rawnand: Remove unused caller_is_module() definition
-Date: Thu, 19 Jul 2018 22:47:38 +0200
-Message-Id: <20180719204738.9564-1-boris.brezillon@bootlin.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH v2] mtd: rawnand: s3c2410: Error out when ->nrsets < 0 or
+ ->sets == NULL
+Date: Thu, 19 Jul 2018 22:53:50 +0200
+Message-Id: <20180719205350.16655-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Commit 260e89a6e0d6 ("mtd: core: tone down suggestion that dev.parent
-should be set") removed the only user of caller_is_module() but forgot
-to remove the definition itself. Let's remove it now.
+All of the code in the probe path assumes ->sets != NULL and
+->nrsets > 0. Error out if that's not the case to avoid dereferencing a
+NULL pointer.
 
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 12 ------------
- 1 file changed, 12 deletions(-)
+Hello,
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 323a900f3697..99d67d7d2f94 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -6718,18 +6718,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- }
- EXPORT_SYMBOL(nand_scan_tail);
+I intentionally did not Cc stable because nobody complained so far.
+Also didn't add a Fixes tag because it's hard to tell when people
+started to dereferencing ->sets without checking its value.
+
+Regards,
+
+Boris
+
+Changes in v2:
+- Kill an unneeded 'sets != NULL' test (reported by Dan)
+---
+ drivers/mtd/nand/raw/s3c2410.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index 10d81f367d26..5a4a68790653 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -1134,8 +1134,13 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
  
--/*
-- * is_module_text_address() isn't exported, and it's mostly a pointless
-- * test if this is a module _anyway_ -- they'd have to try _really_ hard
-- * to call us from in-kernel code if the core NAND support is modular.
-- */
--#ifdef MODULE
--#define caller_is_module() (1)
--#else
--#define caller_is_module() \
--	is_module_text_address((unsigned long)__builtin_return_address(0))
--#endif
+ 	dev_dbg(&pdev->dev, "mapped registers at %p\n", info->regs);
+ 
+-	sets = (plat != NULL) ? plat->sets : NULL;
+-	nr_sets = (plat != NULL) ? plat->nr_sets : 1;
++	if (!plat->sets || plat->nr_sets < 1) {
++		err = -EINVAL;
++		goto exit_error;
++	}
++
++	sets = plat->sets;
++	nr_sets = plat->nr_sets;
+ 
+ 	info->mtd_count = nr_sets;
+ 
+@@ -1152,7 +1157,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 
+ 	nmtd = info->mtds;
+ 
+-	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
++	for (setno = 0; setno < nr_sets; setno++, nmtd++, sets++) {
+ 		struct mtd_info *mtd = nand_to_mtd(&nmtd->chip);
+ 
+ 		pr_debug("initialising set %d (%p, info %p)\n",
+@@ -1174,9 +1179,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 			goto exit_error;
+ 
+ 		s3c2410_nand_add_partition(info, nmtd, sets);
 -
- /**
-  * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
-  * @mtd: MTD device structure
+-		if (sets != NULL)
+-			sets++;
+ 	}
+ 
+ 	/* initialise the hardware */
 -- 
 2.14.1
