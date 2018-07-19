@@ -1,19 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg5RX-0002Ch-RD
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 09:41:53 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
+From: Yixun Lan <yixun.lan@amlogic.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] mtd: rawnand: s3c2410: Error out when ->nrsets < 0 or ->sets
- == NULL
-Date: Thu, 19 Jul 2018 11:41:37 +0200
-Message-Id: <20180719094137.22893-1-boris.brezillon@bootlin.com>
+ <linux-mtd@lists.infradead.org>
+CC: Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
+ <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Liang Yang
+ <liang.yang@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: [RFC PATCH v2 0/2] mtd: rawnand: meson: add Amlogic NAND driver
+ support
+Date: Thu, 19 Jul 2018 17:46:10 +0800
+Message-ID: <20180719094612.5833-1-yixun.lan@amlogic.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All of the code in the probe path assumes ->sets != NULL and
-->nrsets > 0. Error out if that's not the case to avoid dereferencing a
-NULL pointer.
+  These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-Hello,
+  Note this patch series actually depend on the eMMC clkc patch[2] which
+still not merged.
 
-I intentionally did not Cc stable because nobody complained so far.
-Also didn't add a Fixes tag because it's hard to tell when people
-started to dereferencing ->sets without checking its value.
+Changes since v1 at [1]:
+   - adopt property amlogic,nand-enable-scrambler - thanks Martin
+   - drop nand pins in DT
+   - convert clk access to emmc clkc model 
+   - fix regiser field definition alignment
+   - convert devm_kmalloc to kmalloc API
+   - drop nand-user-mode 
+   - parse cs id from DT
+   - rework n2m, m2n function
+   - explain why insert two "IDLE" command
+   - implement exec_op()
+   - drop meson_nfc_get_nand_chip_dts()
+   - release resource once error occur in meson_nfc_nand_chips_init(), 
+   - call nand_cleanup(nand) once mtd_device_register fail
 
-Regards,
+Items not addressed in this version:
+   - convert to ECC conf helper() 
+   - how to construct mtd->name
 
-Boris
----
- drivers/mtd/nand/raw/s3c2410.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
 
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index 10d81f367d26..5a4a68790653 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -1134,8 +1134,13 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 
- 	dev_dbg(&pdev->dev, "mapped registers at %p\n", info->regs);
- 
--	sets = (plat != NULL) ? plat->sets : NULL;
--	nr_sets = (plat != NULL) ? plat->nr_sets : 1;
-+	if (!plat->sets || plat->nr_sets < 1) {
-+		err = -EINVAL;
-+		goto exit_error;
-+	}
-+
-+	sets = plat->sets;
-+	nr_sets = plat->nr_sets;
- 
- 	info->mtd_count = nr_sets;
- 
-@@ -1152,7 +1157,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 
- 	nmtd = info->mtds;
- 
--	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
-+	for (setno = 0; setno < nr_sets; setno++, nmtd++, sets++) {
- 		struct mtd_info *mtd = nand_to_mtd(&nmtd->chip);
- 
- 		pr_debug("initialising set %d (%p, info %p)\n",
-@@ -1174,9 +1179,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 			goto exit_error;
- 
- 		s3c2410_nand_add_partition(info, nmtd, sets);
--
--		if (sets != NULL)
--			sets++;
- 	}
- 
- 	/* initialise the hardware */
+Liang Yang (1):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+
+Yixun Lan (1):
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
+
+ .../bindings/mtd/amlogic,meson-nand.txt       |   95 ++
+ drivers/mtd/nand/raw/Kconfig                  |   10 +
+ drivers/mtd/nand/raw/Makefile                 |    1 +
+ drivers/mtd/nand/raw/meson_nand.c             | 1333 +++++++++++++++++
+ 4 files changed, 1439 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
+
 -- 
-2.14.1
+2.18.0
