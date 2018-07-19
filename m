@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgAmT-00068Q-TR
+ id 1fgAmT-00068t-TU
  for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 15:23:51 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -14,12 +14,11 @@ Cc: linux-mtd@lists.infradead.org,
  Maxime Chevallier <maxime.chevallier@bootlin.com>,
  Nadav Haklai <nadavh@marvell.com>, Ofer Heifetz <oferh@marvell.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 0/3] mtd: rawnand: marvell: add new layout
-Date: Thu, 19 Jul 2018 17:23:34 +0200
-Message-Id: <20180719152337.6372-1-miquel.raynal@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH 3/3] mtd: rawnand: marvell: speed-up hamming failure path
+Date: Thu, 19 Jul 2018 17:23:37 +0200
+Message-Id: <20180719152337.6372-4-miquel.raynal@bootlin.com>
+In-Reply-To: <20180719152337.6372-1-miquel.raynal@bootlin.com>
+References: <20180719152337.6372-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,47 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+When a read triggers an ECC error it might have two causes:
+* Either there was too much bitflips and the data cannot be sanitized.
+* Or the page is empty.
 
-This series is an attempt at supporting a new layout for Marvell NAND
-controller: NAND chips using 2kiB pages, requesting at least 8
-correctable bits per 512-byte chunks.
+For the latter case, we need to re-read the page in raw mode to check
+for the ECC bytes to be 0xFF. This is done with a call to
+marvell_nfc_hw_ecc_hmg_do_read_page() which will trigger a new read
+inside the NAND chip and implies strong delays. As the data is already
+laying in the NAND cache, let's just retrieve it with the ECC engine
+turned off.
 
-While this could have been trivial by the simple addition of this
-layout in the marvell_nfc_layout table as described in Marvell (not
-public) AN-379, actual testing shown a strange error. With this
-layout, one bitflip appears on the second chunk of every erased page
-when we read with BCH ECC engine activated.
+As we are only reading a small section of the page, we can write
+directly in the OOB buffer at the right offset, there is no need to
+allocate a buffer for that.
 
-It has been experimentally checked that using 64 free OOB bytes
-instead of 32 in the second chunk cancels this bitflip. However, this
-is not a viable solution as the BootROM would not find the ECC bytes
-at the right place and would declare bad any block written with this
-layout.
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
 
-The solution found was to re-read in raw mode the whole page instead
-of just the ECC bytes when an ECC error occurs to check if the entire
-page is empty or not.
-
-Also, with this layout, Bad Block Markers (BBM) are expected to be
-within the data area. Prevent any use of the BBM in this case.
-
-The first patch reworks the ECC failure path of the BCH read function,
-the second patch adds support for the new layout with the above
-problems addressed and the last patch is just an optimization of the
-same ECC failure path for the Hamming read function.
-
-Thanks,
-Miquèl
-
-
-Miquel Raynal (3):
-  mtd: rawnand: marvell: rework BCH engine failure path
-  mtd: rawnand: marvell: support 8b/512B strength for 2kiB pages layout
-  mtd: rawnand: marvell: speed-up hamming failure path
-
- drivers/mtd/nand/raw/marvell_nand.c | 123 +++++++++++++++++++++++-------------
- 1 file changed, 79 insertions(+), 44 deletions(-)
-
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 83bb4ef9baa6..29cb3d2e121f 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -974,9 +974,7 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct mtd_info *mtd,
+ 					    int page)
+ {
+ 	const struct marvell_hw_ecc_layout *lt = to_marvell_nand(chip)->layout;
+-	unsigned int full_sz = lt->data_bytes + lt->spare_bytes + lt->ecc_bytes;
+ 	int max_bitflips = 0, ret;
+-	u8 *raw_buf;
+ 
+ 	marvell_nfc_enable_hw_ecc(chip);
+ 	marvell_nfc_hw_ecc_hmg_do_read_page(chip, buf, chip->oob_poi, false,
+@@ -988,18 +986,16 @@ static int marvell_nfc_hw_ecc_hmg_read_page(struct mtd_info *mtd,
+ 		return max_bitflips;
+ 
+ 	/*
+-	 * When ECC failures are detected, check if the full page has been
+-	 * written or not. Ignore the failure if it is actually empty.
++	 * When ECC failures are detected, check if the page has been
++	 * written or not by re-reading the ECC bytes in raw mode.
++	 * Ignore the failure if it is actually empty.
+ 	 */
+-	raw_buf = kmalloc(full_sz, GFP_KERNEL);
+-	if (!raw_buf)
+-		return -ENOMEM;
+-
+-	marvell_nfc_hw_ecc_hmg_do_read_page(chip, raw_buf, raw_buf +
+-					    lt->data_bytes, true, page);
+-	marvell_nfc_check_empty_chunk(chip, raw_buf, full_sz, NULL, 0, NULL, 0,
++	nand_change_read_column_op(chip, lt->data_bytes + lt->spare_bytes,
++				   chip->oob_poi + lt->spare_bytes,
++				   lt->ecc_bytes, false);
++	marvell_nfc_check_empty_chunk(chip, buf, lt->data_bytes, chip->oob_poi,
++				      lt->spare_bytes + lt->ecc_bytes, NULL, 0,
+ 				      &max_bitflips);
+-	kfree(raw_buf);
+ 
+ 	return max_bitflips;
+ }
 -- 
 2.14.1
