@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 16/33] mtd: rawnand: nandsim: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 01:00:09 +0200
-Message-Id: <20180719230026.8741-17-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 23/33] mtd: rawnand: txx9ndfmc: rename nand controller
+ internal structure
+Date: Fri, 20 Jul 2018 01:00:16 +0200
+Message-Id: <20180719230026.8741-24-miquel.raynal@bootlin.com>
 In-Reply-To: <20180719230026.8741-1-miquel.raynal@bootlin.com>
 References: <20180719230026.8741-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,116 +36,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+As already done in the core, calling a struct nand_controller
+'hw_control' is misleading. Use the same name as in nand_base.c:
+'controller'.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/nandsim.c | 82 +++++++++++++++++++++++-------------------
- 1 file changed, 45 insertions(+), 37 deletions(-)
+ drivers/mtd/nand/raw/txx9ndfmc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index 8a3b36cfe5ea..62162b4f223c 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -2192,6 +2192,48 @@ static void ns_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- 	return;
- }
+diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+index 8f5bbbac4612..9019022774f7 100644
+--- a/drivers/mtd/nand/raw/txx9ndfmc.c
++++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+@@ -73,7 +73,7 @@ struct txx9ndfmc_drvdata {
+ 	void __iomem *base;
+ 	unsigned char hold;	/* in gbusclock */
+ 	unsigned char spw;	/* in gbusclock */
+-	struct nand_controller hw_control;
++	struct nand_controller controller;
+ };
  
-+static int ns_attach_chip(struct nand_chip *chip)
-+{
-+	unsigned int eccsteps, eccbytes;
-+
-+	if (!bch)
-+		return 0;
-+
-+	if (!mtd_nand_has_bch()) {
-+		NS_ERR("BCH ECC support is disabled\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Use 512-byte ecc blocks */
-+	eccsteps = nsmtd->writesize / 512;
-+	eccbytes = ((bch * 13) + 7) / 8;
-+
-+	/* Do not bother supporting small page devices */
-+	if (nsmtd->oobsize < 64 || !eccsteps) {
-+		NS_ERR("BCH not available on small page devices\n");
-+		return -EINVAL;
-+	}
-+
-+	if (((eccbytes * eccsteps) + 2) > nsmtd->oobsize) {
-+		NS_ERR("Invalid BCH value %u\n", bch);
-+		return -EINVAL;
-+	}
-+
-+	chip->ecc.mode = NAND_ECC_SOFT;
-+	chip->ecc.algo = NAND_ECC_BCH;
-+	chip->ecc.size = 512;
-+	chip->ecc.strength = bch;
-+	chip->ecc.bytes = eccbytes;
-+
-+	NS_INFO("Using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
-+
-+	return 0;
-+}
-+
-+static struct nand_controller_ops ns_controller_ops = {
-+	.attach_chip = ns_attach_chip,
-+};
-+
- /*
-  * Module initialization function
-  */
-@@ -2276,44 +2318,10 @@ static int __init ns_init_module(void)
- 	if ((retval = parse_gravepages()) != 0)
- 		goto error;
+ static struct platform_device *mtd_to_platdev(struct mtd_info *mtd)
+@@ -303,7 +303,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 	dev_info(&dev->dev, "CLK:%ldMHz HOLD:%d SPW:%d\n",
+ 		 (gbusclk + 500000) / 1000000, hold, spw);
  
--	retval = nand_scan_ident(nsmtd, 1, NULL);
-+	chip->dummy_controller.ops = &ns_controller_ops;
-+	retval = nand_scan(nsmtd, 1);
- 	if (retval) {
--		NS_ERR("cannot scan NAND Simulator device\n");
--		goto error;
--	}
--
--	if (bch) {
--		unsigned int eccsteps, eccbytes;
--		if (!mtd_nand_has_bch()) {
--			NS_ERR("BCH ECC support is disabled\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		/* use 512-byte ecc blocks */
--		eccsteps = nsmtd->writesize/512;
--		eccbytes = (bch*13+7)/8;
--		/* do not bother supporting small page devices */
--		if ((nsmtd->oobsize < 64) || !eccsteps) {
--			NS_ERR("bch not available on small page devices\n");
--			retval = -EINVAL;
--			goto error;
--		}
--		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
--			NS_ERR("invalid bch value %u\n", bch);
--			retval = -EINVAL;
--			goto error;
--		}
--		chip->ecc.mode = NAND_ECC_SOFT;
--		chip->ecc.algo = NAND_ECC_BCH;
--		chip->ecc.size = 512;
--		chip->ecc.strength = bch;
--		chip->ecc.bytes = eccbytes;
--		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
--	}
--
--	retval = nand_scan_tail(nsmtd);
--	if (retval) {
--		NS_ERR("can't register NAND Simulator\n");
-+		NS_ERR("Could not scan NAND Simulator device\n");
- 		goto error;
- 	}
+-	nand_controller_init(&drvdata->hw_control);
++	nand_controller_init(&drvdata->controller);
  
+ 	platform_set_drvdata(dev, drvdata);
+ 	txx9ndfmc_initialize(dev);
+@@ -337,7 +337,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		chip->ecc.bytes = 3;
+ 		chip->ecc.strength = 1;
+ 		chip->chip_delay = 100;
+-		chip->controller = &drvdata->hw_control;
++		chip->controller = &drvdata->controller;
+ 
+ 		nand_set_controller_data(chip, txx9_priv);
+ 		txx9_priv->dev = dev;
 -- 
 2.14.1
