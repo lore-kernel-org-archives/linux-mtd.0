@@ -1,28 +1,24 @@
-Subject: Re: [PATCH 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-3-yixun.lan@amlogic.com>
- <20180624213844.2207ca6f@bbrezillon>
- <76d428ff-376a-dce3-cb51-d238564b7c3e@amlogic.com>
- <20180718210849.493f0087@bbrezillon>
- <45c1a96c-0d14-dece-37cf-ac428bb98621@amlogic.com>
- <20180719103953.26164eb6@bbrezillon>
-CC: <yixun.lan@amlogic.com>, Rob Herring <robh@kernel.org>, Neil Armstrong
- <narmstrong@baylibre.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, <linux-kernel@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Liang Yang
- <liang.yang@amlogic.com>, <linux-mtd@lists.infradead.org>, Kevin Hilman
- <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
- <linux-amlogic@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
-From: Yixun Lan <yixun.lan@amlogic.com>
-Message-ID: <ffa5a2ce-932b-700d-25ee-723db3cbd163@amlogic.com>
-Date: Thu, 19 Jul 2018 17:53:24 +0800
+Date: Thu, 19 Jul 2018 11:57:51 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yixun Lan <yixun.lan@amlogic.com>
+Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Jerome Brunet <jbrunet@baylibre.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>,
+ Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 1/2] dt-bindings: nand: meson: add Amlogic NAND
+ controller driver
+Message-ID: <20180719115751.34ff1a51@bbrezillon>
+In-Reply-To: <20180719094612.5833-2-yixun.lan@amlogic.com>
+References: <20180719094612.5833-1-yixun.lan@amlogic.com>
+ <20180719094612.5833-2-yixun.lan@amlogic.com>
 MIME-Version: 1.0
-In-Reply-To: <20180719103953.26164eb6@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,141 +29,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 19 Jul 2018 17:46:11 +0800
+Yixun Lan <yixun.lan@amlogic.com> wrote:
 
-HI Boris
+> From: Liang Yang <liang.yang@amlogic.com>
+> 
+> Add Amlogic NAND controller dt-bindings for Meson SoC,
+> Current this driver support GXBB/GXL/AXG platform.
+> 
+> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+> ---
+>  .../bindings/mtd/amlogic,meson-nand.txt       | 95 +++++++++++++++++++
+>  1 file changed, 95 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> new file mode 100644
+> index 000000000000..31f910dcd27a
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> @@ -0,0 +1,95 @@
+> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+> +
+> +This file documents the properties in addition to those available in
+> +the MTD NAND bindings.
+> +
+> +Required properties:
+> +- compatible : contains one of:
+> +  - "amlogic,meson-gxl-nfc"
+> +  - "amlogic,meson-axg-nfc"
+> +- clocks     :
+> +	A list of phandle + clock-specifier pairs for the clocks listed
+> +	in clock-names.
+> +
+> +- clock-names: Should contain the following:
+> +	"core" - NFC module gate clock
+> +	"device" - device clock from eMMC sub clock controller
+> +
+> +- pins     : Select pins which NFC need.
+> +- nand_pins: Detail NAND pins information.
 
+You should document pinctrl-0 and pinctrl-names, not pins and nand_pins.
 
-On 07/19/18 16:39, Boris Brezillon wrote:
-> Hi Yixun,
-> 
-> On Thu, 19 Jul 2018 16:13:47 +0800
-> Yixun Lan <yixun.lan@amlogic.com> wrote:
-> 
->>>>> You're doing DMA on those buffers, and devm_kzalloc() is not
->>>>> DMA-friendly (returned buffers are not aligned on a cache line). Also,
->>>>> you don't have to allocate your own buffers because the core already
->>>>> allocate them (chip->data_buf, chip->oob_poi). All you need to do is
->>>>> set the NAND_USE_BOUNCE_BUFFER flag in chip->options to make sure
->>>>> you're always passed a DMA-able buffer.
->>>>>     
->>>>
->>>> thanks for the suggestion, we've migrated to use the
->>>> dmam_alloc_coherent() API  
->>>
->>> kzalloc() should be just fine, no need to alloc a DMA coherent region. 
->>>   
->>
->> we're a little bit confused here, isn't devm_kzalloc (previously we are
->> using) a variant of kzalloc? and since the NAND controller is doing DMA
->> here, using DMA coherent API is more proper way?
-> 
-> Well, making buffers DMA coherent might be expensive, especially if you
-> access them a lot (unless you have a coherency unit and the cache is
-> kept enabled).
-> 
-> Regarding the "why is devm_kzalloc() is not DMA-safe?" question, I'd
-> recommend that you read this discussion [1].
-> 
-great, thanks for the info.
+> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+> +				controller port C
 
-we fixed this in patch v2
+Are you sure this is still needed, even after exposing MMC/NAND clks
+through the CCF?
 
->>>>>> +	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
->>>>>> +				   "%s:nand", dev_name(dev));
->>>>>> +	if (!mtd->name) {
->>>>>> +		dev_err(nfc->dev, "Failed to allocate mtd->name\n");
->>>>>> +		return -ENOMEM;
->>>>>> +	}    
->>>>>
->>>>> You set the name after nand_scan_ident() and make it conditional (only
->>>>> if ->name == NULL) so that the label property defined in the DT takes
->>>>> precedence over the default name.    
->>>>  
->> for setting mtd->name conditional, do you mean doing something like this?
->>
->> if (!mtd->name)
->> 	mtd->name = devm_kasprintf(..)
-> 
-> Yes, that's what I meant.
-> 
->>
->> but we found mtd->name = "ffe07800.nfc" after function
->> nand_scan_ident(), which is same value as dev_name(dev)..
->> and there is no cs information encoded there.
-> 
-> Hm, that shouldn't be the case. Maybe you can add traces to find out
-> who is setting mtd->name to this value.
-> 
-will trace this, then get back to you
->>
->>>>  
->>>>> Also, I recommend suffixing this name
->>>>> with the CS id, just in case you ever need to support connecting several
->>>>> chips to the same controller. 
->>>>>     
->>>>
->>>> we actually didn't get the point here, cs is about chip selection with
->>>> multiple nand chip? and how to get this information?  
->>>
->>> Well, you currently seem to only support one chip per controller, but I
->>> guess the IP can handle several CS lines. So my recommendation is about
->>> choosing a name so that you can later easily add support for multiple
->>> chips without breaking setups where mtdparts is used.
->>>
->>> To sum-up, assuming your NAND chip is always connected to CS0 (on the
->>> controller side), I'd suggest doing:
->>>   
->> yes, this is exactly how the hardware connected.
->>> 	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
->>> 				   "%s:nand.%d", dev_name(dev), cs_id);
->>>
->>> where cs_id is the value you extracted from the reg property of the
->>> NAND node.
->>>   
->> Ok, you right.
->> current, the NAND chip is only use one CS (which CE0) for now, what's in
->> the DT is
->>
->> nand@0 {
->>  reg = < 0 >;
->>  ..
->> };
->>
->> so for the multiple chips it would something like this in DT?
->>
->> nand@0 {
->>   reg = < 0 >;
->> };
->>
->> nand@1 {
->>   reg = < 1 >;
->> };
-> 
-> Yep, that's for 2 single-die chips.
-> 
->>
->> or even
->> nand@0 {
->>   reg = < 0 2 >;
->> };
->>
->> nand@1 {
-> 
-> nand@3 {
-> 
->>   reg = < 3 4 >;
->> };
-> 
-> And this is describing 2 dual-die chips.
-> 
->>
->> do we need to encode all the cs information here? not sure if we
->> understand this correctly, but could send out the patch for review..
-> 
-> Yes, reg should contain an array of controller-side CS lines used to
-> select the chip (or a specific die in a chip, the index in the reg
-> table being the id of the die).
->
-much clear about this, thanks
+You forgot
+- #address-cells
+- #size-cells
+- reg
+- interrupts
+- 
 
-Yixun
+> +
+> +Optional children nodes:
+> +Children nodes represent the available nand chips.
+> +
+> +Optional properties:
+> +- amlogic,nand-enable-scrambler: enable the NAND scrambler feature.
+> +	- (absent) = scrambler is disabled
+> +	- (present) = scrambler is enabled
+
+I keep thinking this is not needed if you have the NAND chip properly
+defined (NAND_NEED_SCRAMBLING flag set in chip->options).
+
+> +
+> +
+> +Other properties:
+> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+> +
+> +Example demonstrate on AXG SoC:
+> +
+> +	sd_emmc_c_clkc: mmc@7000 {
+> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
+> +		reg = <0x0 0x7000 0x0 0x800>;
+> +		status = "okay";
+> +	};
+> +
+> +	nand: nfc@7800 {
+> +		compatible = "amlogic,meson-axg-nfc";
+> +		reg = <0x0 0x7800 0x0 0x100>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+> +		status = "disabled";
+> +
+> +		clocks = <&clkc CLKID_SD_EMMC_C>,
+> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
+> +		clock-names = "core", "device";
+> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
+> +
+> +		status = "okay";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&nand_pins>;
+> +
+> +		nand@0 {
+> +			reg = <0>;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			nand-on-flash-bbt;
+> +			nand-ecc-mode = "hw";
+> +			nand-ecc-strength = <8>;
+> +			nand-ecc-step-size = <1024>;
+
+I'd recommend not forcing a specific ECC config in the example.
+
+> +
+> +			amlogic,nand-enable-scrambler;
+> +
+> +			partition@0 {
+> +				label = "boot";
+> +				reg = <0x00000000 0x00200000>;
+> +				read-only;
+> +			};
+
+Blank line here.
+
+> +			partition@200000 {
+> +				label = "env";
+> +				reg = <0x00200000 0x00400000>;
+> +			};
+> +			partition@600000 {
+> +				label = "system";
+> +				reg = <0x00600000 0x00a00000>;
+> +			};
+> +			partition@1000000 {
+> +				label = "rootfs";
+> +				reg = <0x01000000 0x03000000>;
+> +			};
+> +			partition@4000000 {
+> +				label = "media";
+> +				reg = <0x04000000 0x8000000>;
+> +			};
+> +		};
+> +	};
