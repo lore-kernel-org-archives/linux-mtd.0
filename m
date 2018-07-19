@@ -1,10 +1,10 @@
-Received: from gateway33.websitewelcome.com ([192.185.145.190])
+Received: from gateway20.websitewelcome.com ([192.185.59.4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgBVD-0005X9-VA
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 16:10:05 +0000
-Received: from cm14.websitewelcome.com (cm14.websitewelcome.com [100.42.49.7])
- by gateway33.websitewelcome.com (Postfix) with ESMTP id DB8BD3AEA8
- for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2018 11:09:39 -0500 (CDT)
+ id 1fgBfj-00045O-3C
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 16:20:56 +0000
+Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
+ by gateway20.websitewelcome.com (Postfix) with ESMTP id 82BDD400C579B
+ for <linux-mtd@lists.infradead.org>; Thu, 19 Jul 2018 11:20:43 -0500 (CDT)
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Wan ZongShun <mcuos.com@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -16,8 +16,8 @@ References: <20180710132902.GA13541@embeddedor.com>
  <20180718100309.49c5452a@xps13>
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 Subject: Re: [PATCH] mtd: nuc900_nand: mark expected switch fall-through
-Message-ID: <c789531d-809b-a921-252e-7c38c7821b55@embeddedor.com>
-Date: Thu, 19 Jul 2018 11:09:37 -0500
+Message-ID: <ad24ee3a-0212-0762-87c4-9a93faecbeef@embeddedor.com>
+Date: Thu, 19 Jul 2018 11:20:08 -0500
 MIME-Version: 1.0
 In-Reply-To: <20180718100309.49c5452a@xps13>
 Content-Type: text/plain; charset=utf-8
@@ -40,7 +40,7 @@ On 07/18/2018 03:03 AM, Miquel Raynal wrote:
 > Prefix should be "mtd: rawnand: nuc900:"
 > 
 
-Oh OK. I'll fix it.
+Oh OK. I'll fix it. Thanks.
 
 > "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Tue, 10 Jul
 > 2018 08:29:02 -0500:
@@ -69,13 +69,14 @@ Oh OK. I'll fix it.
 > Have you checked this is actually the right thing to do?
 > 
 
-Actually, no. My first impression was that due to the time this code has been
-there, this might be a missing-break false positive. But, now that I'm double
-checking, it may well be that this is an actual missing-break bug.
+Actually, no. My first impression was that due to the long time this code has been there,
+this might be a missing-break-in-switch false positive. But, due to your comments and a
+double check at the code, it may well be that this is an actual bug and that a return
+statement should be added after calling write_cmd_reg. Similar to the cases above.
 
-I can send a patch to fix this, but as I'm not familiar with the code, it'd be
-of great help if someone could help me to verify this.
+I can send a patch to fix this, but it would be great if someone could help me to verify
+this first. :)
 
-Thanks for the feedback.
+Thanks for the feedback!
 --
 Gustavo
