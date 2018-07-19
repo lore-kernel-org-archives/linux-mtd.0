@@ -1,17 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg4Em-00086b-7l
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 08:24:38 +0000
-Date: Thu, 19 Jul 2018 10:24:24 +0200
+Date: Thu, 19 Jul 2018 10:39:53 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: miquel.raynal@bootlin.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: nand: toshiba: Add support for ->exec_op()
-Message-ID: <20180719102424.30ffa07e@bbrezillon>
-In-Reply-To: <1531986827-18743-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
-References: <1531986827-18743-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+To: Yixun Lan <yixun.lan@amlogic.com>
+Cc: Rob Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Liang Yang
+ <liang.yang@amlogic.com>, <linux-mtd@lists.infradead.org>, Kevin Hilman
+ <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
+ <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet
+ <jbrunet@baylibre.com>
+Subject: Re: [PATCH 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+Message-ID: <20180719103953.26164eb6@bbrezillon>
+In-Reply-To: <45c1a96c-0d14-dece-37cf-ac428bb98621@amlogic.com>
+References: <20180613161314.14894-1-yixun.lan@amlogic.com>
+ <20180613161314.14894-3-yixun.lan@amlogic.com>
+ <20180624213844.2207ca6f@bbrezillon>
+ <76d428ff-376a-dce3-cb51-d238564b7c3e@amlogic.com>
+ <20180718210849.493f0087@bbrezillon>
+ <45c1a96c-0d14-dece-37cf-ac428bb98621@amlogic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,180 +33,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Jul 2018 16:53:47 +0900
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
+Hi Yixun,
 
-> This patch is a patch to support TOSHIBA MEMORY CORPORATION BENAND
-> memory devices.  This use vendor specific command
-> (TOSHIBA_NAND_CMD_ECC_STATUS) to know the exact bitflips.  However, I
-> could not test this patch because I do not have a platform that
-> supports chip-> exec_op.  Therefore, I post this patch as RFC.
+On Thu, 19 Jul 2018 16:13:47 +0800
+Yixun Lan <yixun.lan@amlogic.com> wrote:
+
+> >>> You're doing DMA on those buffers, and devm_kzalloc() is not
+> >>> DMA-friendly (returned buffers are not aligned on a cache line). Also,
+> >>> you don't have to allocate your own buffers because the core already
+> >>> allocate them (chip->data_buf, chip->oob_poi). All you need to do is
+> >>> set the NAND_USE_BOUNCE_BUFFER flag in chip->options to make sure
+> >>> you're always passed a DMA-able buffer.
+> >>>     
+> >>
+> >> thanks for the suggestion, we've migrated to use the
+> >> dmam_alloc_coherent() API  
+> > 
+> > kzalloc() should be just fine, no need to alloc a DMA coherent region. 
+> >   
 > 
-> As soon as I get a platform that supports chip-> exec_op, I would like
-> to test and re-post.
+> we're a little bit confused here, isn't devm_kzalloc (previously we are
+> using) a variant of kzalloc? and since the NAND controller is doing DMA
+> here, using DMA coherent API is more proper way?
+
+Well, making buffers DMA coherent might be expensive, especially if you
+access them a lot (unless you have a coherency unit and the cache is
+kept enabled).
+
+Regarding the "why is devm_kzalloc() is not DMA-safe?" question, I'd
+recommend that you read this discussion [1].
+
+> >>>> +	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
+> >>>> +				   "%s:nand", dev_name(dev));
+> >>>> +	if (!mtd->name) {
+> >>>> +		dev_err(nfc->dev, "Failed to allocate mtd->name\n");
+> >>>> +		return -ENOMEM;
+> >>>> +	}    
+> >>>
+> >>> You set the name after nand_scan_ident() and make it conditional (only
+> >>> if ->name == NULL) so that the label property defined in the DT takes
+> >>> precedence over the default name.    
+> >>  
+> for setting mtd->name conditional, do you mean doing something like this?
 > 
-> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-> ---
->  drivers/mtd/nand/raw/nand_toshiba.c | 76
-> +++++++++++++++++++++++++++++-------- 1 file changed, 61
-> insertions(+), 15 deletions(-)
+> if (!mtd->name)
+> 	mtd->name = devm_kasprintf(..)
+
+Yes, that's what I meant.
+
 > 
-> diff --git a/drivers/mtd/nand/raw/nand_toshiba.c
-> b/drivers/mtd/nand/raw/nand_toshiba.c index 6cec923..12218cd 100644
-> --- a/drivers/mtd/nand/raw/nand_toshiba.c
-> +++ b/drivers/mtd/nand/raw/nand_toshiba.c
-> @@ -17,28 +17,74 @@
->  
->  #include <linux/mtd/rawnand.h>
->  
-> +/* ECC Status Read Command for BENAND */
-> +#define TOSHIBA_NAND_CMD_ECC_STATUS_READ	0x7A
-> +
-> +/* ECC Status Mask for BENAND */
-> +#define TOSHIBA_NAND_ECC_STATUS_MASK	0x0F
-> +
->  /* Recommended to rewrite for BENAND */
->  #define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
->  
-> +static int toshiba_nand_benand_read_eccstatus_op(struct nand_chip
-> *chip,
-> +						 u8 *buf)
-> +{
-> +	u8 *ecc_status = buf;
-> +
+> but we found mtd->name = "ffe07800.nfc" after function
+> nand_scan_ident(), which is same value as dev_name(dev)..
+> and there is no cs information encoded there.
 
-How about letting this function return -ENOTSUPP when ->exec_op() is
-not implemented?
+Hm, that shouldn't be the case. Maybe you can add traces to find out
+who is setting mtd->name to this value.
 
-	if (!chip->exec_op)
-		return -ENOTSUPP;
+> 
+> >>  
+> >>> Also, I recommend suffixing this name
+> >>> with the CS id, just in case you ever need to support connecting several
+> >>> chips to the same controller. 
+> >>>     
+> >>
+> >> we actually didn't get the point here, cs is about chip selection with
+> >> multiple nand chip? and how to get this information?  
+> > 
+> > Well, you currently seem to only support one chip per controller, but I
+> > guess the IP can handle several CS lines. So my recommendation is about
+> > choosing a name so that you can later easily add support for multiple
+> > chips without breaking setups where mtdparts is used.
+> > 
+> > To sum-up, assuming your NAND chip is always connected to CS0 (on the
+> > controller side), I'd suggest doing:
+> >   
+> yes, this is exactly how the hardware connected.
+> > 	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
+> > 				   "%s:nand.%d", dev_name(dev), cs_id);
+> > 
+> > where cs_id is the value you extracted from the reg property of the
+> > NAND node.
+> >   
+> Ok, you right.
+> current, the NAND chip is only use one CS (which CE0) for now, what's in
+> the DT is
+> 
+> nand@0 {
+>  reg = < 0 >;
+>  ..
+> };
+> 
+> so for the multiple chips it would something like this in DT?
+> 
+> nand@0 {
+>   reg = < 0 >;
+> };
+> 
+> nand@1 {
+>   reg = < 1 >;
+> };
 
-> +	const struct nand_sdr_timings *sdr =
-> +		nand_get_sdr_timings(&chip->data_interface);
-> +	struct nand_op_instr instrs[] = {
-> +		NAND_OP_CMD(TOSHIBA_NAND_CMD_ECC_STATUS_READ,
-> +			    PSEC_TO_NSEC(sdr->tADL_min)),
-> +		NAND_OP_8BIT_DATA_IN(chip->ecc.steps, ecc_status, 0),
-> +	};
-> +	struct nand_operation op = NAND_OPERATION(instrs);
-> +
-> +	/* Drop the DATA_IN instruction if chip->ecc.steps is set to
-> 0. */
-> +	if (!chip->ecc.steps)
+Yep, that's for 2 single-die chips.
 
-Can this really happen? I hope not.
+> 
+> or even
+> nand@0 {
+>   reg = < 0 2 >;
+> };
+> 
+> nand@1 {
 
-> +		op.ninstrs--;
-> +
-> +	return nand_exec_op(chip, &op);
-> +}
-> +
->  static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
->  					 struct nand_chip *chip)
->  {
-> -	int ret;
-> +	int ret, i;
->  	unsigned int max_bitflips = 0;
-> -	u8 status;
-> -
-> -	/* Check Status */
-> -	ret = nand_status_op(chip, &status);
-> -	if (ret)
-> -		return ret;
-> -
-> -	if (status & NAND_STATUS_FAIL) {
-> -		/* uncorrected */
-> -		mtd->ecc_stats.failed++;
-> -	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED)
-> {
-> -		/* corrected */
-> -		max_bitflips = mtd->bitflip_threshold;
-> -		mtd->ecc_stats.corrected += max_bitflips;
-> +	u8 status, bitflips, ecc_status[8];
-> +
-> +	if (chip->exec_op) {
-> +		/* Check ECC Status */
-> +		ret = toshiba_nand_benand_read_eccstatus_op(chip,
-> ecc_status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		for (i = 0; i < chip->ecc.steps; i++) {
-> +			bitflips = (ecc_status[i] &
-> +				    TOSHIBA_NAND_ECC_STATUS_MASK);
+nand@3 {
 
-Unneeded parens.
+>   reg = < 3 4 >;
+> };
 
-> +			if (bitflips == 0x0F) {
+And this is describing 2 dual-die chips.
 
-Please define a macro for the UNCORRECTABLE (0xf) value.
+> 
+> do we need to encode all the cs information here? not sure if we
+> understand this correctly, but could send out the patch for review..
 
-> +				mtd->ecc_stats.failed++;
-> +			} else {
-> +				mtd->ecc_stats.corrected += bitflips;
-> +				max_bitflips = max_t(unsigned int,
-> +						     max_bitflips,
-> bitflips);
+Yes, reg should contain an array of controller-side CS lines used to
+select the chip (or a specific die in a chip, the index in the reg
+table being the id of the die).
 
-Declare bitflips as an unsigned int, so that you can use max() instead
-of max_t().
+Regards,
 
-> +			}
-> +		}
-> +	} else {
-> +		/* Check Status */
-> +		ret = nand_status_op(chip, &status);
-> +		if (ret)
-> +			return ret;
-> +
-> +		if (status & NAND_STATUS_FAIL) {
-> +			/* uncorrected */
-> +			mtd->ecc_stats.failed++;
-> +		} else if (status &
-> TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
-> +			/* corrected */
-> +			max_bitflips = mtd->bitflip_threshold;
-> +			mtd->ecc_stats.corrected += max_bitflips;
-> +		}
->  	}
+Boris
 
-If you go for the "toshiba_nand_benand_read_eccstatus_op() returns
--ENOTSUPP solution", you could replace the above section by:
-
-	ret = toshiba_nand_benand_read_eccstatus_op(chip, ecc_status);
-	if (!ret) {
-		u8 ecc_status[8];
-		unsigned int i;
-
-		for (i = 0; i < chip->ecc.steps; i++) {
-			bitflips = ecc_status[i] & TOSHIBA_NAND_ECC_STATUS_MASK;
-			if (bitflips == TOSHIBA_NAND_ECC_STATUS_UNCORR) {
-				mtd->ecc_stats.failed++;
-			} else {
-				mtd->ecc_stats.corrected += bitflips;
-				max_bitflips = max(max_bitflips,bitflips);
-			}
-		}
-
-		return max_bitflips;
-	}
-
-	/*
-	 * Fallback to regular status check if
-	 * toshiba_nand_benand_read_eccstatus_op() failed.
-	 */
-	ret = nand_status_op(chip, &status);
-	if (ret)
-		return ret;
-
-	if (status & NAND_STATUS_FAIL) {
-		/* uncorrected */
-		mtd->ecc_stats.failed++;
-	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
-		/* corrected */
-		max_bitflips = mtd->bitflip_threshold;
-		mtd->ecc_stats.corrected += max_bitflips;
-	}
- 
- 	return max_bitflips;
-}
+[1]http://linux-arm-kernel.infradead.narkive.com/vyJqy0RQ/question-devm-kmalloc-for-dma
