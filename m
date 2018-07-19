@@ -1,25 +1,19 @@
-Date: Thu, 19 Jul 2018 08:47:49 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fg3Vb-0001B4-U7
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 07:37:59 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Tony Lindgren
- <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Grygorii Strashko
- <grygorii.strashko@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>, Kevin
- Hilman <khilman@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>
-Subject: Re: [RFC PATCH 8/8] mtd: rawnand: ams-delta: Use GPIO callbacks for
- data I/O
-Message-ID: <20180719084749.25ca96a6@bbrezillon>
-In-Reply-To: <20180718235710.18242-9-jmkrzyszt@gmail.com>
-References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180718235710.18242-9-jmkrzyszt@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] mtd: rawnand: jz4740: Use the proper format specifier to
+ print chipnr
+Date: Thu, 19 Jul 2018 09:37:20 +0200
+Message-Id: <20180719073720.19887-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 Jul 2018 01:57:10 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+In jz_nand_detect_bank(), chipnr is a size_t argument. Use %zu instead
+of %i when printing it.
 
-> Don't readw()/writew() data directly from/to GPIO port which is under
-> control of gpio-omap driver, use GPIO chip callbacks instead.
-> 
-> Thanks to utilization of get/set_multiple() callbacks, performance
-> degrade is minor for typical data transfers.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/jz4740_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Same comment here, don't use the gpio_chip hooks directly, use the
-consumer API instead.
-
-> 
-> The driver should now work with any 8+-bit bidirectional GPIO port,
-> not only OMAP.
-> 
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> 
-> # Conflicts:
-> #	drivers/mtd/nand/raw/ams-delta.c
-
-Oh, some leftovers from a conflict resolution :).
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index 1f7aff04ad8a..9bb8a89e09f9 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -355,7 +355,7 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
+ 		mtd->size += chip->chipsize;
+ 	}
+ 
+-	dev_info(&pdev->dev, "Found chip %i on bank %i\n", chipnr, bank);
++	dev_info(&pdev->dev, "Found chip %zu on bank %i\n", chipnr, bank);
+ 	return 0;
+ 
+ notfound_id:
+-- 
+2.14.1
