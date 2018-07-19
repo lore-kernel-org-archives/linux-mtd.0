@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 08/33] mtd: rawnand: gpmi: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 01:00:01 +0200
-Message-Id: <20180719230026.8741-9-miquel.raynal@bootlin.com>
+Subject: [PATCH v3 07/33] mtd: rawnand: fsmc: convert driver to nand_scan()
+Date: Fri, 20 Jul 2018 01:00:00 +0200
+Message-Id: <20180719230026.8741-8-miquel.raynal@bootlin.com>
 In-Reply-To: <20180719230026.8741-1-miquel.raynal@bootlin.com>
 References: <20180719230026.8741-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,89 +42,174 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c | 56 ++++++++++++++++++------------
- 1 file changed, 33 insertions(+), 23 deletions(-)
+ drivers/mtd/nand/raw/fsmc_nand.c | 148 +++++++++++++++++++++------------------
+ 1 file changed, 78 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index 6294d018df65..5da2fd6e37cc 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -744,9 +744,9 @@ static int gpmi_alloc_dma_buffer(struct gpmi_nand_data *this)
- 	 * [2] Allocate a read/write data buffer.
- 	 *     The gpmi_alloc_dma_buffer can be called twice.
- 	 *     We allocate a PAGE_SIZE length buffer if gpmi_alloc_dma_buffer
--	 *     is called before the nand_scan_ident; and we allocate a buffer
--	 *     of the real NAND page size when the gpmi_alloc_dma_buffer is
--	 *     called after the nand_scan_ident.
-+	 *     is called before the NAND identification; and we allocate a
-+	 *     buffer of the real NAND page size when the gpmi_alloc_dma_buffer
-+	 *     is called after.
- 	 */
- 	this->data_buffer_dma = kzalloc(mtd->writesize ?: PAGE_SIZE,
- 					GFP_DMA | GFP_KERNEL);
-@@ -1865,6 +1865,34 @@ static int gpmi_init_last(struct gpmi_nand_data *this)
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 59524d181bfe..020495e6cd55 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -919,6 +919,82 @@ static int fsmc_nand_probe_config_dt(struct platform_device *pdev,
  	return 0;
  }
  
-+static int gpmi_nand_attach_chip(struct nand_chip *chip)
++static int fsmc_nand_attach_chip(struct nand_chip *nand)
 +{
-+	struct gpmi_nand_data *this = nand_get_controller_data(chip);
-+	int ret;
++	struct mtd_info *mtd = nand_to_mtd(nand);
++	struct fsmc_nand_data *host = mtd_to_fsmc(mtd);
 +
-+	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
-+		chip->bbt_options |= NAND_BBT_NO_OOB;
++	if (AMBA_REV_BITS(host->pid) >= 8) {
++		switch (mtd->oobsize) {
++		case 16:
++		case 64:
++		case 128:
++		case 224:
++		case 256:
++			break;
++		default:
++			dev_warn(host->dev,
++				 "No oob scheme defined for oobsize %d\n",
++				 mtd->oobsize);
++			return -EINVAL;
++		}
 +
-+		if (of_property_read_bool(this->dev->of_node,
-+					  "fsl,no-blockmark-swap"))
-+			this->swap_block_mark = false;
++		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
++
++		return 0;
 +	}
-+	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
-+		this->swap_block_mark ? "en" : "dis");
 +
-+	ret = gpmi_init_last(this);
-+	if (ret)
-+		return ret;
++	switch (nand->ecc.mode) {
++	case NAND_ECC_HW:
++		dev_info(host->dev, "Using 1-bit HW ECC scheme\n");
++		nand->ecc.calculate = fsmc_read_hwecc_ecc1;
++		nand->ecc.correct = nand_correct_data;
++		nand->ecc.bytes = 3;
++		nand->ecc.strength = 1;
++		break;
 +
-+	chip->options |= NAND_SKIP_BBTSCAN;
++	case NAND_ECC_SOFT:
++		if (nand->ecc.algo == NAND_ECC_BCH) {
++			dev_info(host->dev,
++				 "Using 4-bit SW BCH ECC scheme\n");
++			break;
++		}
++
++	case NAND_ECC_ON_DIE:
++		break;
++
++	default:
++		dev_err(host->dev, "Unsupported ECC mode!\n");
++		return -ENOTSUPP;
++	}
++
++	/*
++	 * Don't set layout for BCH4 SW ECC. This will be
++	 * generated later in nand_bch_init() later.
++	 */
++	if (nand->ecc.mode == NAND_ECC_HW) {
++		switch (mtd->oobsize) {
++		case 16:
++		case 64:
++		case 128:
++			mtd_set_ooblayout(mtd,
++					  &fsmc_ecc1_ooblayout_ops);
++			break;
++		default:
++			dev_warn(host->dev,
++				 "No oob scheme defined for oobsize %d\n",
++				 mtd->oobsize);
++			return -EINVAL;
++		}
++	}
 +
 +	return 0;
 +}
 +
-+static struct nand_controller_ops gpmi_nand_controller_ops = {
-+	.attach_chip = gpmi_nand_attach_chip,
++static struct nand_controller_ops fsmc_nand_controller_ops = {
++	.attach_chip = fsmc_nand_attach_chip,
 +};
 +
- static int gpmi_nand_init(struct gpmi_nand_data *this)
- {
- 	struct nand_chip *chip = &this->nand;
-@@ -1905,26 +1933,8 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	if (ret)
- 		goto err_out;
- 
--	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
--	if (ret)
--		goto err_out;
--
--	if (chip->bbt_options & NAND_BBT_USE_FLASH) {
--		chip->bbt_options |= NAND_BBT_NO_OOB;
--
--		if (of_property_read_bool(this->dev->of_node,
--						"fsl,no-blockmark-swap"))
--			this->swap_block_mark = false;
+ /*
+  * fsmc_nand_probe - Probe function
+  * @pdev:       platform device structure
+@@ -1048,76 +1124,8 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	/*
+ 	 * Scan to find existence of the device
+ 	 */
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (ret) {
+-		dev_err(&pdev->dev, "No NAND Device found!\n");
+-		goto release_dma_write_chan;
 -	}
--	dev_dbg(this->dev, "Blockmark swapping %sabled\n",
--		this->swap_block_mark ? "en" : "dis");
 -
--	ret = gpmi_init_last(this);
--	if (ret)
--		goto err_out;
+-	if (AMBA_REV_BITS(host->pid) >= 8) {
+-		switch (mtd->oobsize) {
+-		case 16:
+-		case 64:
+-		case 128:
+-		case 224:
+-		case 256:
+-			break;
+-		default:
+-			dev_warn(&pdev->dev, "No oob scheme defined for oobsize %d\n",
+-				 mtd->oobsize);
+-			ret = -EINVAL;
+-			goto release_dma_write_chan;
+-		}
 -
--	chip->options |= NAND_SKIP_BBTSCAN;
+-		mtd_set_ooblayout(mtd, &fsmc_ecc4_ooblayout_ops);
+-	} else {
+-		switch (nand->ecc.mode) {
+-		case NAND_ECC_HW:
+-			dev_info(&pdev->dev, "Using 1-bit HW ECC scheme\n");
+-			nand->ecc.calculate = fsmc_read_hwecc_ecc1;
+-			nand->ecc.correct = nand_correct_data;
+-			nand->ecc.bytes = 3;
+-			nand->ecc.strength = 1;
+-			break;
+-
+-		case NAND_ECC_SOFT:
+-			if (nand->ecc.algo == NAND_ECC_BCH) {
+-				dev_info(&pdev->dev, "Using 4-bit SW BCH ECC scheme\n");
+-				break;
+-			}
+-
+-		case NAND_ECC_ON_DIE:
+-			break;
+-
+-		default:
+-			dev_err(&pdev->dev, "Unsupported ECC mode!\n");
+-			goto release_dma_write_chan;
+-		}
+-
+-		/*
+-		 * Don't set layout for BCH4 SW ECC. This will be
+-		 * generated later in nand_bch_init() later.
+-		 */
+-		if (nand->ecc.mode == NAND_ECC_HW) {
+-			switch (mtd->oobsize) {
+-			case 16:
+-			case 64:
+-			case 128:
+-				mtd_set_ooblayout(mtd,
+-						  &fsmc_ecc1_ooblayout_ops);
+-				break;
+-			default:
+-				dev_warn(&pdev->dev,
+-					 "No oob scheme defined for oobsize %d\n",
+-					 mtd->oobsize);
+-				ret = -EINVAL;
+-				goto release_dma_write_chan;
+-			}
+-		}
+-	}
+-
+-	/* Second stage of scan to fill MTD data-structures */
 -	ret = nand_scan_tail(mtd);
-+	chip->dummy_controller.ops = &gpmi_nand_controller_ops;
-+	ret = nand_scan(mtd, GPMI_IS_MX6(this) ? 2 : 1);
++	nand->dummy_controller.ops = &fsmc_nand_controller_ops;
++	ret = nand_scan(mtd, 1);
  	if (ret)
- 		goto err_out;
+ 		goto release_dma_write_chan;
  
 -- 
 2.14.1
