@@ -1,26 +1,19 @@
-Subject: Re: [PATCH 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-References: <20180613161314.14894-1-yixun.lan@amlogic.com>
- <20180613161314.14894-3-yixun.lan@amlogic.com>
- <20180624213844.2207ca6f@bbrezillon>
- <76d428ff-376a-dce3-cb51-d238564b7c3e@amlogic.com>
- <20180718210849.493f0087@bbrezillon>
-CC: <yixun.lan@amlogic.com>, Rob Herring <robh@kernel.org>, Neil Armstrong
- <narmstrong@baylibre.com>, Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, <linux-kernel@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Liang Yang
- <liang.yang@amlogic.com>, <linux-mtd@lists.infradead.org>, Kevin Hilman
- <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
- <linux-amlogic@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
-From: Yixun Lan <yixun.lan@amlogic.com>
-Message-ID: <45c1a96c-0d14-dece-37cf-ac428bb98621@amlogic.com>
-Date: Thu, 19 Jul 2018 16:13:47 +0800
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fg4Em-00086b-7l
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 08:24:38 +0000
+Date: Thu, 19 Jul 2018 10:24:24 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: miquel.raynal@bootlin.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: nand: toshiba: Add support for ->exec_op()
+Message-ID: <20180719102424.30ffa07e@bbrezillon>
+In-Reply-To: <1531986827-18743-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1531986827-18743-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
-In-Reply-To: <20180718210849.493f0087@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,327 +24,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI Boris:
+On Thu, 19 Jul 2018 16:53:47 +0900
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote:
 
-thanks for the quick response.
+> This patch is a patch to support TOSHIBA MEMORY CORPORATION BENAND
+> memory devices.  This use vendor specific command
+> (TOSHIBA_NAND_CMD_ECC_STATUS) to know the exact bitflips.  However, I
+> could not test this patch because I do not have a platform that
+> supports chip-> exec_op.  Therefore, I post this patch as RFC.
+> 
+> As soon as I get a platform that supports chip-> exec_op, I would like
+> to test and re-post.
+> 
+> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> ---
+>  drivers/mtd/nand/raw/nand_toshiba.c | 76
+> +++++++++++++++++++++++++++++-------- 1 file changed, 61
+> insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_toshiba.c
+> b/drivers/mtd/nand/raw/nand_toshiba.c index 6cec923..12218cd 100644
+> --- a/drivers/mtd/nand/raw/nand_toshiba.c
+> +++ b/drivers/mtd/nand/raw/nand_toshiba.c
+> @@ -17,28 +17,74 @@
+>  
+>  #include <linux/mtd/rawnand.h>
+>  
+> +/* ECC Status Read Command for BENAND */
+> +#define TOSHIBA_NAND_CMD_ECC_STATUS_READ	0x7A
+> +
+> +/* ECC Status Mask for BENAND */
+> +#define TOSHIBA_NAND_ECC_STATUS_MASK	0x0F
+> +
+>  /* Recommended to rewrite for BENAND */
+>  #define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
+>  
+> +static int toshiba_nand_benand_read_eccstatus_op(struct nand_chip
+> *chip,
+> +						 u8 *buf)
+> +{
+> +	u8 *ecc_status = buf;
+> +
 
-On 07/19/18 03:08, Boris Brezillon wrote:
-> Hi Yixun,
-> 
-> On Wed, 18 Jul 2018 17:38:56 +0800
-> Yixun Lan <yixun.lan@amlogic.com> wrote:
-> 
->>>> +
->>>> +#define NFC_REG_CMD		0x00
->>>> +#define NFC_REG_CFG		0x04
->>>> +#define NFC_REG_DADR		0x08
->>>> +#define NFC_REG_IADR		0x0c
->>>> +#define NFC_REG_BUF		0x10
->>>> +#define NFC_REG_INFO		0x14
->>>> +#define NFC_REG_DC		0x18
->>>> +#define NFC_REG_ADR		0x1c
->>>> +#define NFC_REG_DL		0x20
->>>> +#define NFC_REG_DH		0x24
->>>> +#define NFC_REG_CADR		0x28
->>>> +#define NFC_REG_SADR		0x2c
->>>> +#define NFC_REG_PINS		0x30
->>>> +#define NFC_REG_VER		0x38
->>>> +  
->>>
->>> Can you put the reg offsets next to their field definitions?
->>>   
->> actually, we would prefer to put all the CMD definition below the reg
->> offset, so it will better reflect what's it belong to.
-> 
-> Just to be clear, I meant something like:
-> 
-> #define NFC_CMD				0x00
-> #define NFC_CMD_DRD			(0x8 << 14)
-> #define NFC_CMD_IDLE			(0xc << 14)
-> ...
-> 
-> #define NFC_CFG				0x04
-> #define NFC_CFG_XXX			xxx
-> ...
-> 
-> I find it easier to guess which register the fields are attached to when
-> it's defined like that, but I won't block the driver for such a tiny
-> detail. 
-> 
-yes, this is exactly what I mean
+How about letting this function return -ENOTSUPP when ->exec_op() is
+not implemented?
 
->>>> +static void meson_nfc_cmd_ctrl(struct mtd_info *mtd,
->>>> +					int cmd, unsigned int ctrl)  
->>>   
->>> ->cmd_ctrl() has recently been deprecated in favor of ->exec_op(). You  
->>> can have a look at the marvell, v610 or fsmc drivers if you want to
->>> have an idea of how ->exec_op() should be implemented. Miquel and I are
->>> also here to help if you have any questions.
->>>   
->>
->> follow your suggestion, we have implemented the exec_op() interface,
->> we'd really appreciate if you can help to review this ..
-> 
-> Sure, just send a v2 and we'll review it.
-> 
-> 
->>>> +
->>>> +static void meson_nfc_cmd_m2n(struct meson_nfc *nfc, int raw)  
->>>
->>> n2m -> nand2mem ?
->>>   
->> yes, it is
-> 
-> Then please use nand2mem, it's clearer.
-we end at dropping the n2m function. by converting them into
+	if (!chip->exec_op)
+		return -ENOTSUPP;
 
-static void
-meson_nfc_cmd_access(
-struct meson_nfc *nfc,
-struct mtd_info *mtd, int raw, bool dir)
+> +	const struct nand_sdr_timings *sdr =
+> +		nand_get_sdr_timings(&chip->data_interface);
+> +	struct nand_op_instr instrs[] = {
+> +		NAND_OP_CMD(TOSHIBA_NAND_CMD_ECC_STATUS_READ,
+> +			    PSEC_TO_NSEC(sdr->tADL_min)),
+> +		NAND_OP_8BIT_DATA_IN(chip->ecc.steps, ecc_status, 0),
+> +	};
+> +	struct nand_operation op = NAND_OPERATION(instrs);
+> +
+> +	/* Drop the DATA_IN instruction if chip->ecc.steps is set to
+> 0. */
+> +	if (!chip->ecc.steps)
 
+Can this really happen? I hope not.
 
-> 
->>>> +static int meson_nfc_wait_dma_finish(struct meson_nfc *nfc)
->>>> +{
->>>> +	meson_nfc_cmd_idle(nfc, 0);
->>>> +	meson_nfc_cmd_idle(nfc, 0);  
->>>
->>> Two calls to cmd_idle(), is this expected or a copy&paste error? If
->>> that's expected it definitely deserves a comment explaining why?
->>>   
->>
->> yes, it is intentional
->>
->> we will put these comments into the function.
->> 	/*
->>          * The Nand flash controller is designed as two stages pipleline -
->>          *  a) fetch and b) excute.
->>          * So, there might be cases when the driver see command queue is
->> empty,
->>          * but the Nand flash controller still has two commands buffered,
->>          * one is fetched into NFC request queue (ready to run), and another
->>          * is actively executing.
->>          */
->>
-> 
-> So pushing 2 "IDLE" commands guarantees that the pipeline is emptied,
-> right? The comment looks incomplete, you should explain what those
-> meson_nfc_cmd_idle() are for.
-> 
-thanks
+> +		op.ninstrs--;
+> +
+> +	return nand_exec_op(chip, &op);
+> +}
+> +
+>  static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
+>  					 struct nand_chip *chip)
+>  {
+> -	int ret;
+> +	int ret, i;
+>  	unsigned int max_bitflips = 0;
+> -	u8 status;
+> -
+> -	/* Check Status */
+> -	ret = nand_status_op(chip, &status);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (status & NAND_STATUS_FAIL) {
+> -		/* uncorrected */
+> -		mtd->ecc_stats.failed++;
+> -	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED)
+> {
+> -		/* corrected */
+> -		max_bitflips = mtd->bitflip_threshold;
+> -		mtd->ecc_stats.corrected += max_bitflips;
+> +	u8 status, bitflips, ecc_status[8];
+> +
+> +	if (chip->exec_op) {
+> +		/* Check ECC Status */
+> +		ret = toshiba_nand_benand_read_eccstatus_op(chip,
+> ecc_status);
+> +		if (ret)
+> +			return ret;
+> +
+> +		for (i = 0; i < chip->ecc.steps; i++) {
+> +			bitflips = (ecc_status[i] &
+> +				    TOSHIBA_NAND_ECC_STATUS_MASK);
 
-the meson_nfc_cmd_idle() function itself is quite straightforward, and
-we feel explain that inserting 2 "IDLE" commands to drain out the
-pipeline is enough.
+Unneeded parens.
 
->>>> +static int meson_nfc_ecc_init(struct device *dev, struct mtd_info *mtd)
->>>> +{
->>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
->>>> +	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	struct meson_nand_ecc *meson_ecc = nfc->data->ecc;
->>>> +	int num = nfc->data->ecc_num;
->>>> +	int nsectors, i, bytes;
->>>> +
->>>> +	/* support only ecc hw mode */
->>>> +	if (nand->ecc.mode != NAND_ECC_HW) {  
->>>
->>> Given that you support raw accesses, I'm pretty sure you can support
->>> ECC_NONE, ECC_SOFT and ECC_ON_DIE with zero effort.
->>>   
->>
->> is this a block for this driver to be accepted by upstream?
-> 
-> Nope.
-> 
->> otherwise we'd like to implement this feature later in separate patch.
->>
-> 
-> That's fine.
-> 
->>>> +	nsectors = mtd->writesize / nand->ecc.size;
->>>> +	bytes =(meson_chip->user_mode == NFC_USER2_OOB_BYTES) ? nsectors * 2 : 16;
->>>> +	if (mtd->oobsize < (nand->ecc.bytes * nsectors + bytes))
->>>> +		return -EINVAL;  
->>>
->>> It's probably worth looking at what is being proposed here [2] for the
->>> ECC config selection logic.
->>>   
->>
->> sure, we'd happy to adopt the ECC config helper function, and seems it
->> is possible ;-)
->>
->> sounds the proposed ECC config patch is still under review, and we
->> would like to adjust our code once it's ready (probably we will still
->> keep this version in patch v2, then address it in v3 later)
-> 
-> It's been merged, and should be available in the nand/next branch [1].
-> 
-em... I'd leave this to Liang Yang to implement this, so it's not fixed
-in next PATCH v2, but will address this in v3.
+> +			if (bitflips == 0x0F) {
 
-thanks
+Please define a macro for the UNCORRECTABLE (0xf) value.
 
->>>> +static int meson_nfc_buffer_init(struct mtd_info *mtd)
->>>> +{
->>>> +	struct nand_chip *nand = mtd_to_nand(mtd);
->>>> +	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
->>>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
->>>> +	struct device *dev = nfc->dev;
->>>> +	int info_bytes, page_bytes;
->>>> +	int nsectors;
->>>> +
->>>> +	nsectors = mtd->writesize / nand->ecc.size;
->>>> +	info_bytes = nsectors * PER_INFO_BYTE;
->>>> +	page_bytes = mtd->writesize + mtd->oobsize;
->>>> +
->>>> +	if ((meson_chip->data_buf) && (meson_chip->info_buf))
->>>> +		return 0;
->>>> +
->>>> +	meson_chip->data_buf = devm_kzalloc(dev, page_bytes, GFP_KERNEL);
->>>> +	if (!meson_chip->data_buf)
->>>> +		return  -ENOMEM;
->>>> +
->>>> +	meson_chip->info_buf = devm_kzalloc(dev, info_bytes, GFP_KERNEL);
->>>> +	if (!meson_chip->info_buf)
->>>> +		return  -ENOMEM;  
->>>
->>> You're doing DMA on those buffers, and devm_kzalloc() is not
->>> DMA-friendly (returned buffers are not aligned on a cache line). Also,
->>> you don't have to allocate your own buffers because the core already
->>> allocate them (chip->data_buf, chip->oob_poi). All you need to do is
->>> set the NAND_USE_BOUNCE_BUFFER flag in chip->options to make sure
->>> you're always passed a DMA-able buffer.
->>>   
->>
->> thanks for the suggestion, we've migrated to use the
->> dmam_alloc_coherent() API
-> 
-> kzalloc() should be just fine, no need to alloc a DMA coherent region. 
-> 
+> +				mtd->ecc_stats.failed++;
+> +			} else {
+> +				mtd->ecc_stats.corrected += bitflips;
+> +				max_bitflips = max_t(unsigned int,
+> +						     max_bitflips,
+> bitflips);
 
-we're a little bit confused here, isn't devm_kzalloc (previously we are
-using) a variant of kzalloc? and since the NAND controller is doing DMA
-here, using DMA coherent API is more proper way?
+Declare bitflips as an unsigned int, so that you can use max() instead
+of max_t().
 
-> 
->>
->>>> +	nand->setup_data_interface = meson_nfc_setup_data_interface;
->>>> +
->>>> +	nand->chip_delay = 200;  
->>>
->>> This should not be needed if you implement ->exec_op() and  
->>> ->setup_data_interface().  
->>>   
->> will drop this
->>
->>>> +	nand->ecc.mode = NAND_ECC_HW;
->>>> +
->>>> +	nand->ecc.write_page_raw = meson_nfc_write_page_raw;
->>>> +	nand->ecc.write_page = meson_nfc_write_page_hwecc;
->>>> +	nand->ecc.write_oob_raw = nand_write_oob_std;
->>>> +	nand->ecc.write_oob = nand_write_oob_std;
->>>> +
->>>> +	nand->ecc.read_page_raw = meson_nfc_read_page_raw;
->>>> +	nand->ecc.read_page = meson_nfc_read_page_hwecc;
->>>> +	nand->ecc.read_oob_raw = meson_nfc_read_oob_raw;
->>>> +	nand->ecc.read_oob = meson_nfc_read_oob;
->>>> +
->>>> +	mtd = nand_to_mtd(nand);
->>>> +	mtd->owner = THIS_MODULE;
->>>> +	mtd->dev.parent = dev;
->>>> +	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
->>>> +				   "%s:nand", dev_name(dev));
->>>> +	if (!mtd->name) {
->>>> +		dev_err(nfc->dev, "Failed to allocate mtd->name\n");
->>>> +		return -ENOMEM;
->>>> +	}  
->>>
->>> You set the name after nand_scan_ident() and make it conditional (only
->>> if ->name == NULL) so that the label property defined in the DT takes
->>> precedence over the default name.  
->>
-for setting mtd->name conditional, do you mean doing something like this?
+> +			}
+> +		}
+> +	} else {
+> +		/* Check Status */
+> +		ret = nand_status_op(chip, &status);
+> +		if (ret)
+> +			return ret;
+> +
+> +		if (status & NAND_STATUS_FAIL) {
+> +			/* uncorrected */
+> +			mtd->ecc_stats.failed++;
+> +		} else if (status &
+> TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
+> +			/* corrected */
+> +			max_bitflips = mtd->bitflip_threshold;
+> +			mtd->ecc_stats.corrected += max_bitflips;
+> +		}
+>  	}
 
-if (!mtd->name)
-	mtd->name = devm_kasprintf(..)
+If you go for the "toshiba_nand_benand_read_eccstatus_op() returns
+-ENOTSUPP solution", you could replace the above section by:
 
-but we found mtd->name = "ffe07800.nfc" after function
-nand_scan_ident(), which is same value as dev_name(dev)..
-and there is no cs information encoded there.
+	ret = toshiba_nand_benand_read_eccstatus_op(chip, ecc_status);
+	if (!ret) {
+		u8 ecc_status[8];
+		unsigned int i;
 
+		for (i = 0; i < chip->ecc.steps; i++) {
+			bitflips = ecc_status[i] & TOSHIBA_NAND_ECC_STATUS_MASK;
+			if (bitflips == TOSHIBA_NAND_ECC_STATUS_UNCORR) {
+				mtd->ecc_stats.failed++;
+			} else {
+				mtd->ecc_stats.corrected += bitflips;
+				max_bitflips = max(max_bitflips,bitflips);
+			}
+		}
 
->> we can do this, but as second consideration, we'd prefer simply to drop
->> this customization of mtd->name here (we didn't understand your next cs
->> id suggestion).
-> 
-> No, you really should set a well-known name, so that people can pass
-> mtdparts on the kernel command line.
-> 
-ok
+		return max_bitflips;
+	}
 
->>
->>> Also, I recommend suffixing this name
->>> with the CS id, just in case you ever need to support connecting several
->>> chips to the same controller. 
->>>   
->>
->> we actually didn't get the point here, cs is about chip selection with
->> multiple nand chip? and how to get this information?
-> 
-> Well, you currently seem to only support one chip per controller, but I
-> guess the IP can handle several CS lines. So my recommendation is about
-> choosing a name so that you can later easily add support for multiple
-> chips without breaking setups where mtdparts is used.
-> 
-> To sum-up, assuming your NAND chip is always connected to CS0 (on the
-> controller side), I'd suggest doing:
-> 
-yes, this is exactly how the hardware connected.
-> 	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
-> 				   "%s:nand.%d", dev_name(dev), cs_id);
-> 
-> where cs_id is the value you extracted from the reg property of the
-> NAND node.
-> 
-Ok, you right.
-current, the NAND chip is only use one CS (which CE0) for now, what's in
-the DT is
+	/*
+	 * Fallback to regular status check if
+	 * toshiba_nand_benand_read_eccstatus_op() failed.
+	 */
+	ret = nand_status_op(chip, &status);
+	if (ret)
+		return ret;
 
-nand@0 {
- reg = < 0 >;
- ..
-};
-
-so for the multiple chips it would something like this in DT?
-
-nand@0 {
-  reg = < 0 >;
-};
-
-nand@1 {
-  reg = < 1 >;
-};
-
-or even
-nand@0 {
-  reg = < 0 2 >;
-};
-
-nand@1 {
-  reg = < 3 4 >;
-};
-
-do we need to encode all the cs information here? not sure if we
-understand this correctly, but could send out the patch for review..
-
-
-> Regards,
-> 
-> Boris
-> 
-> [1]http://git.infradead.org/linux-mtd.git/shortlog/refs/heads/nand/next
-> 
-> .
-> 
+	if (status & NAND_STATUS_FAIL) {
+		/* uncorrected */
+		mtd->ecc_stats.failed++;
+	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
+		/* corrected */
+		max_bitflips = mtd->bitflip_threshold;
+		mtd->ecc_stats.corrected += max_bitflips;
+	}
+ 
+ 	return max_bitflips;
+}
