@@ -1,4 +1,4 @@
-Date: Thu, 19 Jul 2018 08:15:08 +0200
+Date: Thu, 19 Jul 2018 08:17:28 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Tony Lindgren
@@ -11,11 +11,11 @@ Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Tony Lindgren
  linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
  linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Artem Bityutskiy
  <artem.bityutskiy@linux.intel.com>
-Subject: Re: [RFC PATCH 0/8] mtd: rawnand: ams-delta: Use gpio-omap
- accessors for data I/O
-Message-ID: <20180719081508.5dafebde@bbrezillon>
-In-Reply-To: <20180718235710.18242-1-jmkrzyszt@gmail.com>
+Subject: Re: [RFC PATCH 1/8] mtd: rawnand: ams-delta: Use private structure
+Message-ID: <20180719081728.46eb7ab5@bbrezillon>
+In-Reply-To: <20180718235710.18242-2-jmkrzyszt@gmail.com>
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
+ <20180718235710.18242-2-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,27 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
-
-On Thu, 19 Jul 2018 01:57:02 +0200
+On Thu, 19 Jul 2018 01:57:03 +0200
 Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-> Implement the idea suggested by Artem Bityutskiy and Tony Lindgren
-> described in commit b027274d2e3a ("mtd: ams-delta: fix
-> request_mem_region() failure").
+> Introduce a driver private structure and allocate it on device probe.
+> Use it for storing nand_chip structure, GPIO descriptors prevoiusly
+> stored in static variables as well as io_base pointer previously passed
+> as nand controller data or platform driver data.
 
-Thanks for doing that. I'll review the patches, but I already have a
-extra request: can you convert this driver to ->exec_op()? It does not
-necessarily have to be done in this patchset, but, that'd be great to
-have one more driver converted to the new interface.
+That's a good thing. Thanks for doing that.
 
-BTW, there seems to be a nand_gpio driver, maybe we should merge
-ams-delta code into nand_gpio after it's been patched to use the GPIO
-consumer API.
-
+> Subsequent patches
+> may populate the structure with more members as needed.
 > 
->  arch/arm/mach-omap1/board-ams-delta.c |   22 -
->  drivers/gpio/gpio-omap.c              |   88 ++++++
->  drivers/mtd/nand/raw/ams-delta.c      |  436 +++++++++++++++++++++-------------
->  3 files changed, 376 insertions(+), 170 deletions(-)
-> 
+> While at it, fix missing mtd->dev.parent and drop useless mtd->owner.
+
+I'd prefer to have it done in a separate patch if you don't mind.
