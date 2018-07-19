@@ -1,18 +1,17 @@
-Received: from mo-csw1115.securemx.jp ([210.130.202.157]
+Received: from mo-csw1114.securemx.jp ([210.130.202.156]
  helo=mo-csw.securemx.jp)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg3lj-0008Vf-TS
+ id 1fg3ll-0008Ve-4s
  for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 07:54:42 +0000
 Content-Transfer-Encoding: 7bit
 From: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 To: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
  dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- yoshitake.kobayashi@toshiba.co.jp
-Subject: [PATCH v5] mtd: nand: toshiba: Add support for Toshiba Memory BENAND
- (Built-in ECC NAND)
-Date: Thu, 19 Jul 2018 16:53:33 +0900
-Message-Id: <1531986813-18701-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+ KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Subject: [RFC PATCH] mtd: nand: toshiba: Add support for ->exec_op()
+Date: Thu, 19 Jul 2018 16:53:47 +0900
+Message-Id: <1531986827-18743-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,121 +21,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: yoshitake.kobayashi@toshiba.co.jp
-
 This patch is a patch to support TOSHIBA MEMORY CORPORATION BENAND
-memory devices.  Check the status of the built-in ECC with the Read
-Status command without using the vendor specific command.  The Read
-Status command only knows whether there was bitflips above the
-threshold and can not get accurate bitflips.  For now, I set
-max_bitflips mtd->bitflip_threshold.
+memory devices.  This use vendor specific command
+(TOSHIBA_NAND_CMD_ECC_STATUS) to know the exact bitflips.  However, I
+could not test this patch because I do not have a platform that
+supports chip-> exec_op.  Therefore, I post this patch as RFC.
+
+As soon as I get a platform that supports chip-> exec_op, I would like
+to test and re-post.
 
 Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 ---
- drivers/mtd/nand/raw/nand_toshiba.c | 84 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+ drivers/mtd/nand/raw/nand_toshiba.c | 76 +++++++++++++++++++++++++++++--------
+ 1 file changed, 61 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index ab43f02..6cec923 100644
+index 6cec923..12218cd 100644
 --- a/drivers/mtd/nand/raw/nand_toshiba.c
 +++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -17,6 +17,86 @@
+@@ -17,28 +17,74 @@
  
  #include <linux/mtd/rawnand.h>
  
-+/* Recommended to rewrite for BENAND */
-+#define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
++/* ECC Status Read Command for BENAND */
++#define TOSHIBA_NAND_CMD_ECC_STATUS_READ	0x7A
 +
-+static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
-+					 struct nand_chip *chip)
++/* ECC Status Mask for BENAND */
++#define TOSHIBA_NAND_ECC_STATUS_MASK	0x0F
++
+ /* Recommended to rewrite for BENAND */
+ #define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
+ 
++static int toshiba_nand_benand_read_eccstatus_op(struct nand_chip *chip,
++						 u8 *buf)
 +{
-+	int ret;
-+	unsigned int max_bitflips = 0;
-+	u8 status;
++	u8 *ecc_status = buf;
 +
-+	/* Check Status */
-+	ret = nand_status_op(chip, &status);
-+	if (ret)
-+		return ret;
++	const struct nand_sdr_timings *sdr =
++		nand_get_sdr_timings(&chip->data_interface);
++	struct nand_op_instr instrs[] = {
++		NAND_OP_CMD(TOSHIBA_NAND_CMD_ECC_STATUS_READ,
++			    PSEC_TO_NSEC(sdr->tADL_min)),
++		NAND_OP_8BIT_DATA_IN(chip->ecc.steps, ecc_status, 0),
++	};
++	struct nand_operation op = NAND_OPERATION(instrs);
 +
-+	if (status & NAND_STATUS_FAIL) {
-+		/* uncorrected */
-+		mtd->ecc_stats.failed++;
-+	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
-+		/* corrected */
-+		max_bitflips = mtd->bitflip_threshold;
-+		mtd->ecc_stats.corrected += max_bitflips;
-+	}
++	/* Drop the DATA_IN instruction if chip->ecc.steps is set to 0. */
++	if (!chip->ecc.steps)
++		op.ninstrs--;
 +
-+	return max_bitflips;
++	return nand_exec_op(chip, &op);
 +}
 +
-+static int
-+toshiba_nand_read_page_benand(struct mtd_info *mtd,
-+			      struct nand_chip *chip, uint8_t *buf,
-+			      int oob_required, int page)
-+{
-+	int ret;
-+
-+	ret = nand_read_page_raw(mtd, chip, buf, oob_required, page);
-+	if (ret)
-+		return ret;
-+
-+	return toshiba_nand_benand_eccstatus(mtd, chip);
-+}
-+
-+static int
-+toshiba_nand_read_subpage_benand(struct mtd_info *mtd,
-+				 struct nand_chip *chip, uint32_t data_offs,
-+				 uint32_t readlen, uint8_t *bufpoi, int page)
-+{
-+	int ret;
-+
-+	ret = nand_read_page_op(chip, page, data_offs,
-+				bufpoi + data_offs, readlen);
-+	if (ret)
-+		return ret;
-+
-+	return toshiba_nand_benand_eccstatus(mtd, chip);
-+}
-+
-+static void toshiba_nand_benand_init(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+
-+	/*
-+	 * On BENAND, the entire OOB region can be used by the MTD user.
-+	 * The calculated ECC bytes are stored into other isolated
-+	 * area which is not accessible to users.
-+	 * This is why chip->ecc.bytes = 0.
-+	 */
-+	chip->ecc.bytes = 0;
-+	chip->ecc.size = 512;
-+	chip->ecc.strength = 8;
-+	chip->ecc.read_page = toshiba_nand_read_page_benand;
-+	chip->ecc.read_subpage = toshiba_nand_read_subpage_benand;
-+	chip->ecc.write_page = nand_write_page_raw;
-+	chip->ecc.read_page_raw = nand_read_page_raw;
-+	chip->ecc.write_page_raw = nand_write_page_raw;
-+
-+	chip->options |= NAND_SUBPAGE_READ;
-+
-+	mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
-+}
-+
- static void toshiba_nand_decode_id(struct nand_chip *chip)
+ static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
+ 					 struct nand_chip *chip)
  {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
-@@ -68,6 +148,10 @@ static int toshiba_nand_init(struct nand_chip *chip)
- 	if (nand_is_slc(chip))
- 		chip->bbt_options |= NAND_BBT_SCAN2NDPAGE;
- 
-+	if (nand_is_slc(chip) && (chip->id.data[4] & 0x80) /* BENAND */ &&
-+	    (chip->ecc.mode == NAND_ECC_ON_DIE))
-+		toshiba_nand_benand_init(chip);
+-	int ret;
++	int ret, i;
+ 	unsigned int max_bitflips = 0;
+-	u8 status;
+-
+-	/* Check Status */
+-	ret = nand_status_op(chip, &status);
+-	if (ret)
+-		return ret;
+-
+-	if (status & NAND_STATUS_FAIL) {
+-		/* uncorrected */
+-		mtd->ecc_stats.failed++;
+-	} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
+-		/* corrected */
+-		max_bitflips = mtd->bitflip_threshold;
+-		mtd->ecc_stats.corrected += max_bitflips;
++	u8 status, bitflips, ecc_status[8];
 +
- 	return 0;
- }
++	if (chip->exec_op) {
++		/* Check ECC Status */
++		ret = toshiba_nand_benand_read_eccstatus_op(chip, ecc_status);
++		if (ret)
++			return ret;
++
++		for (i = 0; i < chip->ecc.steps; i++) {
++			bitflips = (ecc_status[i] &
++				    TOSHIBA_NAND_ECC_STATUS_MASK);
++			if (bitflips == 0x0F) {
++				mtd->ecc_stats.failed++;
++			} else {
++				mtd->ecc_stats.corrected += bitflips;
++				max_bitflips = max_t(unsigned int,
++						     max_bitflips, bitflips);
++			}
++		}
++	} else {
++		/* Check Status */
++		ret = nand_status_op(chip, &status);
++		if (ret)
++			return ret;
++
++		if (status & NAND_STATUS_FAIL) {
++			/* uncorrected */
++			mtd->ecc_stats.failed++;
++		} else if (status & TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED) {
++			/* corrected */
++			max_bitflips = mtd->bitflip_threshold;
++			mtd->ecc_stats.corrected += max_bitflips;
++		}
+ 	}
  
+ 	return max_bitflips;
 -- 
 2.7.4
