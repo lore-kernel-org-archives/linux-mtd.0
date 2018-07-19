@@ -1,20 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgGHd-0004nf-Tj
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 21:16:23 +0000
-Date: Thu, 19 Jul 2018 23:16:00 +0200
+ id 1fgHZ7-0006NY-Vr
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 22:38:31 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2] mtd: adapt misleading comment in mtd_oob_ops structure
-Message-ID: <20180719231600.1bff62a5@bbrezillon>
-In-Reply-To: <20180718203302.5666-1-miquel.raynal@bootlin.com>
-References: <20180718203302.5666-1-miquel.raynal@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH] mtd: rawnand: jz4740: Include gpio/consumer.h instead of
+ gpio.h
+Date: Fri, 20 Jul 2018 00:38:13 +0200
+Message-Id: <20180719223813.14351-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Jul 2018 22:33:02 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+GPIO consumers should no longer include <linux/gpio.h>, and instead
+include <linux/gpio/consumer.h>.
 
-> A comment in the kernel doc of the mtd_oob_ops structure tells that it
-> is not possible to write more than one page with OOB. This is actually
-> true for only a few MTD devices like 'onenand' but it is definitely not
-> a general limitation. While this would benefit to be handled elsewhere
-> either by the MTD layer or by the limited drivers, let's update this
-> comment to reflect the reality.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Also, explicitly include <include/io.h> since it seems to be missing
+after switching to <linux/gpio/consumer.h>.
 
-Applied.
+This fixes a build error when selecting the driver without selecting
+GPIOLIB, which can happen when COMPILE_TEST=y.
 
-Thanks,
+Fixes: 6968e07e8169 ("mtd: rawnand: jz4740: Allow selection of this driver when COMPILE_TEST=y")
+Reported-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/jz4740_nand.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Boris
-
-> ---
-> 
-> Changes since v1:
-> =================
-> * Boris pointed out that this comment was not entirely false but rather
->   too much restrictive compared to the reality and proposed an
->   alternative that I simply copied there.
-> 
-> 
->  include/linux/mtd/mtd.h | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index a86c4fa93115..cd0be91bdefa 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -67,9 +67,11 @@ struct mtd_erase_region_info {
->   * @datbuf:	data buffer - if NULL only oob data are read/written
->   * @oobbuf:	oob data buffer
->   *
-> - * Note, it is allowed to read more than one OOB area at one go, but not write.
-> - * The interface assumes that the OOB write requests program only one page's
-> - * OOB area.
-> + * Note, some MTD drivers do not allow you to write more than one OOB area at
-> + * one go. If you try to do that on such an MTD device, -EINVAL will be
-> + * returned. If you want to make your implementation portable on all kind of MTD
-> + * devices you should split the write request into several sub-requests when the
-> + * request crosses a page boundary.
->   */
->  struct mtd_oob_ops {
->  	unsigned int	mode;
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index da01d967dcc3..d5c226298b91 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -13,6 +13,7 @@
+  *
+  */
+ 
++#include <linux/io.h>
+ #include <linux/ioport.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+@@ -23,7 +24,7 @@
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+ 
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <linux/platform_data/jz4740/jz4740_nand.h>
+ 
+-- 
+2.14.1
