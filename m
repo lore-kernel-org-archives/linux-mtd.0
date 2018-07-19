@@ -1,23 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fg58o-0002n3-3w
- for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 09:22:32 +0000
-Date: Thu, 19 Jul 2018 11:22:17 +0200
+ id 1fg5RX-0002Ch-RD
+ for linux-mtd@lists.infradead.org; Thu, 19 Jul 2018 09:41:53 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH 3/7] mtd: rawnand: Expose _notsupp() helpers for raw
- page accessors
-Message-ID: <20180719112217.592b6484@bbrezillon>
-In-Reply-To: <20180718084221.27821-3-boris.brezillon@bootlin.com>
-References: <20180718084221.27821-1-boris.brezillon@bootlin.com>
- <20180718084221.27821-3-boris.brezillon@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] mtd: rawnand: s3c2410: Error out when ->nrsets < 0 or ->sets
+ == NULL
+Date: Thu, 19 Jul 2018 11:41:37 +0200
+Message-Id: <20180719094137.22893-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,90 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 18 Jul 2018 10:42:17 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+All of the code in the probe path assumes ->sets != NULL and
+->nrsets > 0. Error out if that's not the case to avoid dereferencing a
+NULL pointer.
 
-> Some implementations simply can't disable their ECC engine. Expose
-> helpers returning -ENOTSUPP so that the caller knows that raw accesses
-> are not supported instead of silently falling back to non-raw
-> accessors.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/nand_base.c | 33 +++++++++++++++++++++++++++++++++
->  include/linux/mtd/rawnand.h      |  4 ++++
->  2 files changed, 37 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-> index 4fa5e20d9690..323a900f3697 100644
-> --- a/drivers/mtd/nand/raw/nand_base.c
-> +++ b/drivers/mtd/nand/raw/nand_base.c
-> @@ -2966,6 +2966,23 @@ int nand_check_erased_ecc_chunk(void *data, int datalen,
->  }
->  EXPORT_SYMBOL(nand_check_erased_ecc_chunk);
->  
-> +/**
-> + * nand_read_page_raw_notsupp - dummy read raw page function
-> + * @mtd: mtd info structure
-> + * @chip: nand chip info structure
-> + * @buf: buffer to store read data
-> + * @oob_required: caller requires OOB data read to chip->oob_poi
-> + * @page: page number to read
-> + *
-> + * Returns -ENOTSUPP unconditionally.
-> + */
-> +int nand_read_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
-> +			       u8 *buf, int oob_required, int page)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +EXPORT_SYMBOL(nand_read_page_raw_notsupp);
-> +
->  /**
->   * nand_read_page_raw - [INTERN] read raw page data without ecc
->   * @mtd: mtd info structure
-> @@ -3960,6 +3977,22 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
->  	return ret;
->  }
->  
-> +/**
-> + * nand_write_page_raw - dummy raw page write function
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Hello,
 
-Crap, I forgot to add the _notsupp suffix in the doc.
+I intentionally did not Cc stable because nobody complained so far.
+Also didn't add a Fixes tag because it's hard to tell when people
+started to dereferencing ->sets without checking its value.
 
-> + * @mtd: mtd info structure
-> + * @chip: nand chip info structure
-> + * @buf: data buffer
-> + * @oob_required: must write chip->oob_poi to OOB
-> + * @page: page number to write
-> + *
-> + * Returns -ENOTSUPP unconditionally.
-> + */
-> +int nand_write_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
-> +				const u8 *buf, int oob_required, int page)
-> +{
-> +	return -ENOTSUPP;
-> +}
-> +EXPORT_SYMBOL(nand_write_page_raw_notsupp);
->  
->  /**
->   * nand_write_page_raw - [INTERN] raw page write function
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index 11c2426fc363..f60fad29eae6 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -1681,10 +1681,14 @@ int nand_get_set_features_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
->  /* Default read_page_raw implementation */
->  int nand_read_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  		       uint8_t *buf, int oob_required, int page);
-> +int nand_read_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
-> +			       u8 *buf, int oob_required, int page);
->  
->  /* Default write_page_raw implementation */
->  int nand_write_page_raw(struct mtd_info *mtd, struct nand_chip *chip,
->  			const uint8_t *buf, int oob_required, int page);
-> +int nand_write_page_raw_notsupp(struct mtd_info *mtd, struct nand_chip *chip,
-> +				const u8 *buf, int oob_required, int page);
->  
->  /* Reset and initialize a NAND device */
->  int nand_reset(struct nand_chip *chip, int chipnr);
+Regards,
+
+Boris
+---
+ drivers/mtd/nand/raw/s3c2410.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index 10d81f367d26..5a4a68790653 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -1134,8 +1134,13 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 
+ 	dev_dbg(&pdev->dev, "mapped registers at %p\n", info->regs);
+ 
+-	sets = (plat != NULL) ? plat->sets : NULL;
+-	nr_sets = (plat != NULL) ? plat->nr_sets : 1;
++	if (!plat->sets || plat->nr_sets < 1) {
++		err = -EINVAL;
++		goto exit_error;
++	}
++
++	sets = plat->sets;
++	nr_sets = plat->nr_sets;
+ 
+ 	info->mtd_count = nr_sets;
+ 
+@@ -1152,7 +1157,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 
+ 	nmtd = info->mtds;
+ 
+-	for (setno = 0; setno < nr_sets; setno++, nmtd++) {
++	for (setno = 0; setno < nr_sets; setno++, nmtd++, sets++) {
+ 		struct mtd_info *mtd = nand_to_mtd(&nmtd->chip);
+ 
+ 		pr_debug("initialising set %d (%p, info %p)\n",
+@@ -1174,9 +1179,6 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+ 			goto exit_error;
+ 
+ 		s3c2410_nand_add_partition(info, nmtd, sets);
+-
+-		if (sets != NULL)
+-			sets++;
+ 	}
+ 
+ 	/* initialise the hardware */
+-- 
+2.14.1
