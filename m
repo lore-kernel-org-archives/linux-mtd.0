@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 22/35] mtd: rawnand: tango: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 17:15:14 +0200
-Message-Id: <20180720151527.16038-23-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 27/35] mtd: rawnand: sm_common: convert driver to
+ nand_scan_with_ids()
+Date: Fri, 20 Jul 2018 17:15:19 +0200
+Message-Id: <20180720151527.16038-28-miquel.raynal@bootlin.com>
 In-Reply-To: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,77 +38,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Two helpers have been added to the core to make ECC-related
 configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
+these hooks and convert the driver to just use nand_scan_with_ids()
+(alternative to nand_scan() for passing a flash IDs table) instead of
 both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/tango_nand.c | 40 +++++++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/sm_common.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/tango_nand.c b/drivers/mtd/nand/raw/tango_nand.c
-index dd7a26efdf4f..a448d0797cd5 100644
---- a/drivers/mtd/nand/raw/tango_nand.c
-+++ b/drivers/mtd/nand/raw/tango_nand.c
-@@ -517,6 +517,28 @@ static int tango_set_timings(struct mtd_info *mtd, int csline,
- 	return 0;
- }
+diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
+index 7f5044a79f01..d05e3f976a5e 100644
+--- a/drivers/mtd/nand/raw/sm_common.c
++++ b/drivers/mtd/nand/raw/sm_common.c
+@@ -160,19 +160,9 @@ static struct nand_flash_dev nand_xd_flash_ids[] = {
+ 	{NULL}
+ };
  
-+static int tango_attach_chip(struct nand_chip *chip)
-+{
-+	struct nand_ecc_ctrl *ecc = &chip->ecc;
-+
-+	ecc->mode = NAND_ECC_HW;
-+	ecc->algo = NAND_ECC_BCH;
-+	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
-+
-+	ecc->read_page_raw = tango_read_page_raw;
-+	ecc->write_page_raw = tango_write_page_raw;
-+	ecc->read_page = tango_read_page;
-+	ecc->write_page = tango_write_page;
-+	ecc->read_oob = tango_read_oob;
-+	ecc->write_oob = tango_write_oob;
-+
+-int sm_register_device(struct mtd_info *mtd, int smartmedia)
++static int sm_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
+-
+-	chip->options |= NAND_SKIP_BBTSCAN;
+-
+-	/* Scan for card properties */
+-	ret = nand_scan_ident(mtd, 1, smartmedia ?
+-		nand_smartmedia_flash_ids : nand_xd_flash_ids);
+-
+-	if (ret)
+-		return ret;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 
+ 	/* Bad block marker position */
+ 	chip->badblockpos = 0x05;
+@@ -187,12 +177,33 @@ int sm_register_device(struct mtd_info *mtd, int smartmedia)
+ 	else
+ 		return -ENODEV;
+ 
+-	ret = nand_scan_tail(mtd);
 +	return 0;
 +}
-+
-+static const struct nand_controller_ops tango_controller_ops = {
-+	.attach_chip = tango_attach_chip,
+ 
++static const struct nand_controller_ops sm_controller_ops = {
++	.attach_chip = sm_attach_chip,
 +};
 +
- static int chip_init(struct device *dev, struct device_node *np)
- {
- 	u32 cs;
-@@ -560,28 +582,14 @@ static int chip_init(struct device *dev, struct device_node *np)
- 			NAND_NO_SUBPAGE_WRITE |
- 			NAND_WAIT_TCCS;
- 	chip->controller = &nfc->hw;
-+	chip->controller->ops = &tango_controller_ops;
- 	tchip->base = nfc->pbus_base + (cs * 256);
++int sm_register_device(struct mtd_info *mtd, int smartmedia)
++{
++	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct nand_flash_dev *flash_ids;
++	int ret;
++
++	chip->options |= NAND_SKIP_BBTSCAN;
++
++	/* Scan for card properties */
++	chip->dummy_controller.ops = &sm_controller_ops;
++	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
++	ret = nand_scan_with_ids(mtd, 1, flash_ids);
+ 	if (ret)
+ 		return ret;
  
- 	nand_set_flash_node(chip, np);
- 	mtd_set_ooblayout(mtd, &tango_nand_ooblayout_ops);
- 	mtd->dev.parent = dev;
- 
--	err = nand_scan_ident(mtd, 1, NULL);
--	if (err)
--		return err;
--
--	ecc->mode = NAND_ECC_HW;
--	ecc->algo = NAND_ECC_BCH;
--	ecc->bytes = DIV_ROUND_UP(ecc->strength * FIELD_ORDER, BITS_PER_BYTE);
--
--	ecc->read_page_raw = tango_read_page_raw;
--	ecc->write_page_raw = tango_write_page_raw;
--	ecc->read_page = tango_read_page;
--	ecc->write_page = tango_write_page;
--	ecc->read_oob = tango_read_oob;
--	ecc->write_oob = tango_write_oob;
--
--	err = nand_scan_tail(mtd);
-+	err = nand_scan(mtd, 1);
- 	if (err)
- 		return err;
+-	return mtd_device_register(mtd, NULL, 0);
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret)
++		nand_release(mtd);
++
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(sm_register_device);
  
 -- 
 2.14.1
