@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgSAd-00068q-Sa
+ id 1fgSAd-00068r-Sf
  for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 09:57:57 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -9,9 +9,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 3/4] mtd: rawnand: au1550nd: Remove unneeded gpio.h inclusion
-Date: Fri, 20 Jul 2018 11:57:40 +0200
-Message-Id: <20180720095741.6313-4-boris.brezillon@bootlin.com>
+Subject: [PATCH 4/4] mtd: spi-nor: atmel-qspi: Include gpio/consumer.h instead
+ of gpio.h
+Date: Fri, 20 Jul 2018 11:57:41 +0200
+Message-Id: <20180720095741.6313-5-boris.brezillon@bootlin.com>
 In-Reply-To: <20180720095741.6313-1-boris.brezillon@bootlin.com>
 References: <20180720095741.6313-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,25 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We don't use the GPIO API in this driver, let's just remove the
-<linux/gpio.h> inclusion.
+GPIO consumers now include <linux/gpio/consumer.h> instead of
+<linux/gpio.h> if they can.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/au1550nd.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/mtd/spi-nor/atmel-quadspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
-index df0ef1f1e2f5..35f5c84cd331 100644
---- a/drivers/mtd/nand/raw/au1550nd.c
-+++ b/drivers/mtd/nand/raw/au1550nd.c
-@@ -8,7 +8,6 @@
-  */
+diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
+index 6c5708bacad8..ce65c2b53ac1 100644
+--- a/drivers/mtd/spi-nor/atmel-quadspi.c
++++ b/drivers/mtd/spi-nor/atmel-quadspi.c
+@@ -34,7 +34,7 @@
+ #include <linux/of.h>
  
- #include <linux/slab.h>
+ #include <linux/io.h>
 -#include <linux/gpio.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
++#include <linux/gpio/consumer.h>
+ 
+ /* QSPI register offsets */
+ #define QSPI_CR      0x0000  /* Control Register */
 -- 
 2.14.1
