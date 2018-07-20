@@ -21,9 +21,10 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 06/35] mtd: rawnand: fsl_ifc: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 17:14:58 +0200
-Message-Id: <20180720151527.16038-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 33/35] mtd: rawnand: do not export nand_scan_[ident|tail]()
+ anymore
+Date: Fri, 20 Jul 2018 17:15:25 +0200
+Message-Id: <20180720151527.16038-34-miquel.raynal@bootlin.com>
 In-Reply-To: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,60 +36,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to make ECC-related
-configuration between the detection phase and the final NAND scan. Use
-these hooks and convert the driver to just use nand_scan() instead of
-both nand_scan_ident() and nand_scan_tail().
+Both nand_scan_ident() and nand_scan_tail() helpers used to be called
+directly from controller drivers that needed to tweak some ECC-related
+parameters before nand_scan_tail(). This separation prevented dynamic
+allocations during the phase of NAND identification, which was
+inconvenient.
+
+All controller drivers have been moved to use nand_scan(), in
+conjunction with the chip->ecc.[attach|detach]_chip() hooks that
+actually do the required tweaking sequence between both ident/tail
+calls, allowing programmers to use dynamic allocation as they need all
+across the scanning sequence.
+
+Declare nand_scan_[ident|tail]() statically now.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/fsl_ifc_nand.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 16 +++++++++-------
+ include/linux/mtd/rawnand.h      |  9 ++-------
+ 2 files changed, 11 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index 96130d91e32c..24f59d0066af 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -714,9 +714,9 @@ static int fsl_ifc_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	return nand_prog_page_end_op(chip);
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index e7f135c100c2..da99232702a4 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5924,7 +5924,7 @@ static int nand_dt_init(struct nand_chip *chip)
  }
  
--static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
-+static int fsl_ifc_attach_chip(struct nand_chip *chip)
+ /**
+- * nand_scan_ident - [NAND Interface] Scan for the NAND device
++ * nand_scan_ident - Scan for the NAND device
+  * @mtd: MTD device structure
+  * @maxchips: number of chips to scan for, returns immediately if 0
+  * @table: alternative NAND ID table
+@@ -5932,9 +5932,13 @@ static int nand_dt_init(struct nand_chip *chip)
+  * This is the first phase of the normal nand_scan() function. It reads the
+  * flash ID and sets up MTD fields accordingly.
+  *
++ * This helper used to be called directly from controller drivers that needed
++ * to tweak some ECC-related parameters before nand_scan_tail(). This separation
++ * prevented dynamic allocations during this phase which was unconvenient and
++ * as been banned for the benefit of the ->init_ecc()/cleanup_ecc() hooks.
+  */
+-int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+-		    struct nand_flash_dev *table)
++static int nand_scan_ident(struct mtd_info *mtd, int maxchips,
++			   struct nand_flash_dev *table)
  {
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct fsl_ifc_mtd *priv = nand_get_controller_data(chip);
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+@@ -6016,7 +6020,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
  
- 	dev_dbg(priv->dev, "%s: nand->numchips = %d\n", __func__,
-@@ -757,6 +757,10 @@ static int fsl_ifc_chip_init_tail(struct mtd_info *mtd)
  	return 0;
  }
+-EXPORT_SYMBOL(nand_scan_ident);
  
-+static const struct nand_controller_ops fsl_ifc_controller_ops = {
-+	.attach_chip = fsl_ifc_attach_chip,
-+};
-+
- static void fsl_ifc_sram_init(struct fsl_ifc_mtd *priv)
+ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
  {
- 	struct fsl_ifc_ctrl *ctrl = priv->ctrl;
-@@ -1046,15 +1050,8 @@ static int fsl_ifc_nand_probe(struct platform_device *dev)
- 	if (ret)
- 		goto err;
+@@ -6393,14 +6396,14 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
+ }
  
--	ret = nand_scan_ident(mtd, 1, NULL);
--	if (ret)
--		goto err;
--
--	ret = fsl_ifc_chip_init_tail(mtd);
--	if (ret)
--		goto err;
--
--	ret = nand_scan_tail(mtd);
-+	priv->chip.controller->ops = &fsl_ifc_controller_ops;
-+	ret = nand_scan(mtd, 1);
- 	if (ret)
- 		goto err;
+ /**
+- * nand_scan_tail - [NAND Interface] Scan for the NAND device
++ * nand_scan_tail - Scan for the NAND device
+  * @mtd: MTD device structure
+  *
+  * This is the second phase of the normal nand_scan() function. It fills out
+  * all the uninitialized function pointers with the defaults and scans for a
+  * bad block table if appropriate.
+  */
+-int nand_scan_tail(struct mtd_info *mtd)
++static int nand_scan_tail(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+@@ -6724,7 +6727,6 @@ int nand_scan_tail(struct mtd_info *mtd)
  
+ 	return ret;
+ }
+-EXPORT_SYMBOL(nand_scan_tail);
+ 
+ static int nand_attach(struct nand_chip *chip)
+ {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index a20c78e25878..a928771a7ae4 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -36,14 +36,9 @@ static inline int nand_scan(struct mtd_info *mtd, int max_chips)
+ }
+ 
+ /*
+- * Separate phases of nand_scan(), allowing board driver to intervene
+- * and override command or ECC setup according to flash type.
++ * Unregister the MTD device and free resources held by the NAND device, must be
++ * called on error after a successful nand_scan().
+  */
+-int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+-			   struct nand_flash_dev *table);
+-int nand_scan_tail(struct mtd_info *mtd);
+-
+-/* Unregister the MTD device and free resources held by the NAND device */
+ void nand_release(struct mtd_info *mtd);
+ 
+ /* Internal helper for board drivers which need to override command function */
 -- 
 2.14.1
