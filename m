@@ -1,24 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgOpG-0003uq-9o
- for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 06:23:40 +0000
-Date: Fri, 20 Jul 2018 08:23:25 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: jz4740: Use the proper format specifier
- to print chipnr
-Message-ID: <20180720082325.5d7ae688@bbrezillon>
-In-Reply-To: <20180720145628.6cd61fc6@canb.auug.org.au>
-References: <20180719073720.19887-1-boris.brezillon@bootlin.com>
- <20180719231156.2d3c53ee@xps13>
- <20180720145628.6cd61fc6@canb.auug.org.au>
+Date: Fri, 20 Jul 2018 09:12:07 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
+ <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
+ Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v3 01/33] mtd: rawnand: brcmnand: convert driver to
+ nand_scan()
+Message-ID: <20180720091207.7828147d@xps13>
+In-Reply-To: <20180720011719.7545fbb9@bbrezillon>
+References: <20180719230026.8741-1-miquel.raynal@bootlin.com>
+ <20180719230026.8741-2-miquel.raynal@bootlin.com>
+ <20180720011719.7545fbb9@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +36,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jul 2018 14:56:28 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Hi Boris,
 
-> Hi all,
-> 
-> On Thu, 19 Jul 2018 23:11:56 +0200 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Thu, 19 Jul 2018
-> > 09:37:20 +0200:
-> >   
-> > > In jz_nand_detect_bank(), chipnr is a size_t argument. Use %zu instead
-> > > of %i when printing it.
-> > > 
-> > > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > > ---
-> > >  drivers/mtd/nand/raw/jz4740_nand.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-> > > index 1f7aff04ad8a..9bb8a89e09f9 100644
-> > > --- a/drivers/mtd/nand/raw/jz4740_nand.c
-> > > +++ b/drivers/mtd/nand/raw/jz4740_nand.c
-> > > @@ -355,7 +355,7 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
-> > >  		mtd->size += chip->chipsize;
-> > >  	}
-> > >  
-> > > -	dev_info(&pdev->dev, "Found chip %i on bank %i\n", chipnr, bank);
-> > > +	dev_info(&pdev->dev, "Found chip %zu on bank %i\n", chipnr, bank);
-> > >  	return 0;
-> > >  
-> > >  notfound_id:    
-> > 
-> > Applied to nand/next.  
-> 
-> It might be a better fix to ask why chipnr is a size_t at all ... it is
-> only used as an index, so should probably be int ...
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri, 20 Jul 2018
+01:17:19 +0200:
 
-I considered this option, and then I had a look at the rest of the file
-and found a few other places where size_t could be replaced by an
-unsigned int, so I just gave up on this solution and went for the
-one-liner changing the format specifier :-).
+> On Fri, 20 Jul 2018 00:59:54 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>=20
+> > +
+> > +static struct nand_controller_ops brcmnand_controller_ops =3D { =20
+>=20
+> static const ...
+
+Mmmh right, I'll constify every controller_ops definition.
+
+>=20
+> The same comment applies to all patches of this series.
+>=20
+> > +	.attach_chip =3D brcmnand_attach_chip,
+> > +}; =20
+>=20
+
+
+Miqu=C3=A8l
