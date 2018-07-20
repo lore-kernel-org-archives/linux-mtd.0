@@ -1,33 +1,19 @@
-Date: Fri, 20 Jul 2018 09:35:40 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
- <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
- Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
- Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v3 28/33] mtd: rawnand: docg4: convert driver to
- nand_scan()
-Message-ID: <20180720093540.1fd211dd@bbrezillon>
-In-Reply-To: <20180720091745.7b1de031@xps13>
-References: <20180719230026.8741-1-miquel.raynal@bootlin.com>
- <20180719230026.8741-29-miquel.raynal@bootlin.com>
- <20180720012732.3753e0ef@bbrezillon>
- <20180720091745.7b1de031@xps13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mout.perfora.net ([74.208.4.197])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fgQEi-0006lT-Ng
+ for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 07:54:04 +0000
+From: Marcel Ziswiler <marcel@ziswiler.com>
+To: linux-mtd@lists.infradead.org
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ H Hartley Sweeten <hsweeten@visionengravers.com>,
+ linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+ linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Vladimir Zapolskiy <vz@mleia.com>
+Subject: [PATCH] mtd: nand: fix spelling in driver api documentation
+Date: Fri, 20 Jul 2018 09:53:33 +0200
+Message-Id: <20180720075334.24254-1-marcel@ziswiler.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,118 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jul 2018 09:17:45 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri, 20 Jul 2018
-> 01:27:32 +0200:
-> 
-> > On Fri, 20 Jul 2018 01:00:21 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > Two helpers have been added to the core to make ECC-related
-> > > configuration between the detection phase and the final NAND scan. Use
-> > > these hooks and convert the driver to just use nand_scan() instead of
-> > > both nand_scan_ident() and nand_scan_tail().
-> > > 
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  drivers/mtd/nand/raw/docg4.c | 55 ++++++++++++++++++++++++++------------------
-> > >  1 file changed, 32 insertions(+), 23 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-> > > index 4dccdfba6140..2f6fcd4efab2 100644
-> > > --- a/drivers/mtd/nand/raw/docg4.c
-> > > +++ b/drivers/mtd/nand/raw/docg4.c
-> > > @@ -1227,10 +1227,9 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
-> > >  	 * required within a nand driver because they are performed by the nand
-> > >  	 * infrastructure code as part of nand_scan().  In this case they need
-> > >  	 * to be initialized here because we skip call to nand_scan_ident() (the
-> > > -	 * first half of nand_scan()).  The call to nand_scan_ident() is skipped
-> > > -	 * because for this device the chip id is not read in the manner of a
-> > > -	 * standard nand device.  Unfortunately, nand_scan_ident() does other
-> > > -	 * things as well, such as call nand_set_defaults().
-> > > +	 * first half of nand_scan()).  The call to nand_scan_ident() could be
-> > > +	 * skipped because for this device the chip id is not read in the manner
-> > > +	 * of a standard nand device.
-> > >  	 */
-> > >  
-> > >  	struct nand_chip *nand = mtd_to_nand(mtd);
-> > > @@ -1315,6 +1314,27 @@ static int __init read_id_reg(struct mtd_info *mtd)
-> > >  
-> > >  static char const *part_probes[] = { "cmdlinepart", "saftlpart", NULL };
-> > >  
-> > > +static int docg4_attach_chip(struct nand_chip *chip)
-> > > +{
-> > > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > > +	struct docg4_priv *doc = (struct docg4_priv *)(chip + 1);
-> > > +
-> > > +	init_mtd_structs(mtd);
-> > > +
-> > > +	/* Initialize kernel BCH algorithm */
-> > > +	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
-> > > +	if (!doc->bch)
-> > > +		return -EINVAL;
-> > > +
-> > > +	reset(mtd);
-> > > +
-> > > +	return read_id_reg(mtd);
-> > > +}
-> > > +
-> > > +static struct nand_controller_ops docg4_controller_ops = {
-> > > +	.attach_chip = docg4_attach_chip,
-> > > +};
-> > > +
-> > >  static int __init probe_docg4(struct platform_device *pdev)
-> > >  {
-> > >  	struct mtd_info *mtd;
-> > > @@ -1350,26 +1370,16 @@ static int __init probe_docg4(struct platform_device *pdev)
-> > >  	mtd->dev.parent = &pdev->dev;
-> > >  	doc->virtadr = virtadr;
-> > >  	doc->dev = dev;
-> > > -
-> > > -	init_mtd_structs(mtd);
-> > > -
-> > > -	/* initialize kernel bch algorithm */
-> > > -	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
-> > > -	if (doc->bch == NULL) {
-> > > -		retval = -EINVAL;
-> > > -		goto free_nand;
-> > > -	}
-> > > -
-> > >  	platform_set_drvdata(pdev, doc);
-> > >  
-> > > -	reset(mtd);
-> > > -	retval = read_id_reg(mtd);
-> > > -	if (retval == -ENODEV) {
-> > > -		dev_warn(dev, "No diskonchip G4 device found.\n");
-> > > -		goto free_bch;
-> > > -	}
-> > > -
-> > > -	retval = nand_scan_tail(mtd);
-> > > +	/*
-> > > +	 * Asking for 0 chips is useless here but it warns the user that the use
-> > > +	 * of the nand_scan() function is a bit abused here because the
-> > > +	 * initialization is actually a bit specific and re-handled again in the
-> > > +	 * ->attach_chip() hook. It will probably leak some memory though.
-> > > +	 */
-> > > +	nand->dummy_controller.ops = &docg4_controller_ops;
-> > > +	retval = nand_scan(mtd, 0);
-> > >  	if (retval)
-> > >  		goto free_bch;    
-> > 
-> > Hm, not sure this works. The driver only calls nand_scan_tail(), but
-> > you replace that by a call to nand_scan(), which will call both
-> > nand_scan_ident() and nand_scan_tail(), and I'm pretty sure
-> > nand_scan_ident() will fail here.  
-> 
-> I know docg4 is a bit specific and could maybe be moved out of the raw/
-> subdirectory. But in the meantime I don't want to block the series for
-> this. The better I can propose right now (open to other ideas as
-> well) would be to return 0 in nand_scan_ident() if the maxchip parameter
-> is 0 which is the case only in this driver AFAIS.
+This fixes some spelling mistakes.
 
-Sounds good. Just document this particular case in nand_scan_ident()
-kernel-doc header.
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+
+---
+
+ Documentation/driver-api/mtdnand.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
+index dcd63599f700..c55a6034c397 100644
+--- a/Documentation/driver-api/mtdnand.rst
++++ b/Documentation/driver-api/mtdnand.rst
+@@ -374,7 +374,7 @@ The nand driver supports three different types of hardware ECC.
+ 
+ -  NAND_ECC_HW8_512
+ 
+-   Hardware ECC generator providing 6 bytes ECC per 512 byte.
++   Hardware ECC generator providing 8 bytes ECC per 512 byte.
+ 
+ If your hardware generator has a different functionality add it at the
+ appropriate place in nand_base.c
+@@ -889,7 +889,7 @@ Use these constants to select the ECC algorithm::
+     #define NAND_ECC_HW3_512    3
+     /* Hardware ECC 6 byte ECC per 512 Byte data */
+     #define NAND_ECC_HW6_512    4
+-    /* Hardware ECC 6 byte ECC per 512 Byte data */
++    /* Hardware ECC 8 byte ECC per 512 Byte data */
+     #define NAND_ECC_HW8_512    6
+ 
+ 
+-- 
+2.14.4
