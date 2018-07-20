@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgSAd-00068r-Sf
- for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 09:57:57 +0000
+ id 1fgSAd-00068o-Sc
+ for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 09:57:59 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -9,12 +9,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 4/4] mtd: spi-nor: atmel-qspi: Include gpio/consumer.h instead
- of gpio.h
-Date: Fri, 20 Jul 2018 11:57:41 +0200
-Message-Id: <20180720095741.6313-5-boris.brezillon@bootlin.com>
-In-Reply-To: <20180720095741.6313-1-boris.brezillon@bootlin.com>
-References: <20180720095741.6313-1-boris.brezillon@bootlin.com>
+Subject: [PATCH 0/4] mtd: Remove gpio.h inclusions where we can
+Date: Fri, 20 Jul 2018 11:57:37 +0200
+Message-Id: <20180720095741.6313-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPIO consumers now include <linux/gpio/consumer.h> instead of
-<linux/gpio.h> if they can.
+Hello,
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/spi-nor/atmel-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The fix I sent here [1] lead me to look at other places including gpio.h
+in the MTD subsystem. While some inclusions are valid, some of them can
+be removed of replaced by gpio/consumer.h.
 
-diff --git a/drivers/mtd/spi-nor/atmel-quadspi.c b/drivers/mtd/spi-nor/atmel-quadspi.c
-index 6c5708bacad8..ce65c2b53ac1 100644
---- a/drivers/mtd/spi-nor/atmel-quadspi.c
-+++ b/drivers/mtd/spi-nor/atmel-quadspi.c
-@@ -34,7 +34,7 @@
- #include <linux/of.h>
- 
- #include <linux/io.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- 
- /* QSPI register offsets */
- #define QSPI_CR      0x0000  /* Control Register */
+All these changes have been compile-tested.
+
+Regards,
+
+Boris
+
+[1]http://patchwork.ozlabs.org/patch/946614/
+
+Boris Brezillon (4):
+  mtd: rawnand: sunxi: Remove gpio.h and of_gpio.h inclusions
+  mtd: rawnand: atmel: Stop including gpio.h
+  mtd: rawnand: au1550nd: Remove unneeded gpio.h inclusion
+  mtd: spi-nor: atmel-qspi: Include gpio/consumer.h instead of gpio.h
+
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 1 -
+ drivers/mtd/nand/raw/au1550nd.c              | 1 -
+ drivers/mtd/nand/raw/sunxi_nand.c            | 2 --
+ drivers/mtd/spi-nor/atmel-quadspi.c          | 2 +-
+ 4 files changed, 1 insertion(+), 5 deletions(-)
+
 -- 
 2.14.1
