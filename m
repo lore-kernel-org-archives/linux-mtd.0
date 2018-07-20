@@ -1,19 +1,22 @@
-Received: from mout.perfora.net ([74.208.4.197])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgQEi-0006lT-Ng
- for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 07:54:04 +0000
-From: Marcel Ziswiler <marcel@ziswiler.com>
-To: linux-mtd@lists.infradead.org
-Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>,
- Gregory CLEMENT <gregory.clement@bootlin.com>,
- H Hartley Sweeten <hsweeten@visionengravers.com>,
- linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Vladimir Zapolskiy <vz@mleia.com>
-Subject: [PATCH] mtd: nand: fix spelling in driver api documentation
-Date: Fri, 20 Jul 2018 09:53:33 +0200
-Message-Id: <20180720075334.24254-1-marcel@ziswiler.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fgQhb-0001ac-7r
+ for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 08:23:52 +0000
+Date: Fri, 20 Jul 2018 10:23:39 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: "David S. Miller" <davem@davemloft.net>, linux-ia64@vger.kernel.org,
+ linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/2] sparc64: add reads{b,w,l}/writes{b,w,l}
+Message-ID: <20180720102339.22c9aa57@bbrezillon>
+In-Reply-To: <20180711120824.3882108-2-arnd@arndb.de>
+References: <20180711120824.3882108-1-arnd@arndb.de>
+ <20180711120824.3882108-2-arnd@arndb.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +26,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
++Miquel who's in charge of the NAND tree for this release
 
-This fixes some spelling mistakes.
+On Wed, 11 Jul 2018 14:08:06 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> Some drivers need these for compile-testing. On most architectures
+> they come from asm-generic/io.h, but not on sparc64, which has its
+> own definitions.
+> 
+> Since we already have ioread*_rep()/iowrite*_rep() that have the
+> same behavior on sparc64 (i.e. all PCI I/O space is memory mapped),
+> we can rename the existing helpers and add macros to define them
+> to the same implementation.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
----
+I tried to compile a sparc64 kernel with COMPILE_TEST=y plus the
+orion and s3c2410 NAND drivers enabled and it compiles fine (it does
+without this patch). So it seems to fix the compilation error reported
+by kbuild robots.
 
- Documentation/driver-api/mtdnand.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Tested-by: Boris Brezillon <boris.brezillon@bootlin>
+(only compile-tested)
 
-diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
-index dcd63599f700..c55a6034c397 100644
---- a/Documentation/driver-api/mtdnand.rst
-+++ b/Documentation/driver-api/mtdnand.rst
-@@ -374,7 +374,7 @@ The nand driver supports three different types of hardware ECC.
- 
- -  NAND_ECC_HW8_512
- 
--   Hardware ECC generator providing 6 bytes ECC per 512 byte.
-+   Hardware ECC generator providing 8 bytes ECC per 512 byte.
- 
- If your hardware generator has a different functionality add it at the
- appropriate place in nand_base.c
-@@ -889,7 +889,7 @@ Use these constants to select the ECC algorithm::
-     #define NAND_ECC_HW3_512    3
-     /* Hardware ECC 6 byte ECC per 512 Byte data */
-     #define NAND_ECC_HW6_512    4
--    /* Hardware ECC 6 byte ECC per 512 Byte data */
-+    /* Hardware ECC 8 byte ECC per 512 Byte data */
-     #define NAND_ECC_HW8_512    6
- 
- 
--- 
-2.14.4
+Dave gave his A-b, so, if everyone is okay with that, I'd like this
+patch to go trough the NAND tree.
+
+Thanks,
+
+Boris
+
+> ---
+>  arch/sparc/include/asm/io_64.h | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
+> index 9a1e9cbc7e6d..b162c23ae8c2 100644
+> --- a/arch/sparc/include/asm/io_64.h
+> +++ b/arch/sparc/include/asm/io_64.h
+> @@ -243,35 +243,42 @@ void insb(unsigned long, void *, unsigned long);
+>  void insw(unsigned long, void *, unsigned long);
+>  void insl(unsigned long, void *, unsigned long);
+>  
+> -static inline void ioread8_rep(void __iomem *port, void *buf, unsigned long count)
+> +static inline void readsb(void __iomem *port, void *buf, unsigned long count)
+>  {
+>  	insb((unsigned long __force)port, buf, count);
+>  }
+> -static inline void ioread16_rep(void __iomem *port, void *buf, unsigned long count)
+> +static inline void readsw(void __iomem *port, void *buf, unsigned long count)
+>  {
+>  	insw((unsigned long __force)port, buf, count);
+>  }
+>  
+> -static inline void ioread32_rep(void __iomem *port, void *buf, unsigned long count)
+> +static inline void readsl(void __iomem *port, void *buf, unsigned long count)
+>  {
+>  	insl((unsigned long __force)port, buf, count);
+>  }
+>  
+> -static inline void iowrite8_rep(void __iomem *port, const void *buf, unsigned long count)
+> +static inline void writesb(void __iomem *port, const void *buf, unsigned long count)
+>  {
+>  	outsb((unsigned long __force)port, buf, count);
+>  }
+>  
+> -static inline void iowrite16_rep(void __iomem *port, const void *buf, unsigned long count)
+> +static inline void writesw(void __iomem *port, const void *buf, unsigned long count)
+>  {
+>  	outsw((unsigned long __force)port, buf, count);
+>  }
+>  
+> -static inline void iowrite32_rep(void __iomem *port, const void *buf, unsigned long count)
+> +static inline void writesl(void __iomem *port, const void *buf, unsigned long count)
+>  {
+>  	outsl((unsigned long __force)port, buf, count);
+>  }
+>  
+> +#define ioread8_rep(p,d,l)	readsb(p,d,l)
+> +#define ioread16_rep(p,d,l)	readsw(p,d,l)
+> +#define ioread32_rep(p,d,l)	readsl(p,d,l)
+> +#define iowrite8_rep(p,d,l)	writesb(p,d,l)
+> +#define iowrite16_rep(p,d,l)	writesw(p,d,l)
+> +#define iowrite32_rep(p,d,l)	writesl(p,d,l)
+> +
+>  /* Valid I/O Space regions are anywhere, because each PCI bus supported
+>   * can live in an arbitrary area of the physical address range.
+>   */
