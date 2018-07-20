@@ -1,22 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgQhb-0001ac-7r
- for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 08:23:52 +0000
-Date: Fri, 20 Jul 2018 10:23:39 +0200
+ id 1fgSAd-00068q-Sa
+ for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 09:57:57 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: "David S. Miller" <davem@davemloft.net>, linux-ia64@vger.kernel.org,
- linux-alpha@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-kernel@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/2] sparc64: add reads{b,w,l}/writes{b,w,l}
-Message-ID: <20180720102339.22c9aa57@bbrezillon>
-In-Reply-To: <20180711120824.3882108-2-arnd@arndb.de>
-References: <20180711120824.3882108-1-arnd@arndb.de>
- <20180711120824.3882108-2-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH 3/4] mtd: rawnand: au1550nd: Remove unneeded gpio.h inclusion
+Date: Fri, 20 Jul 2018 11:57:40 +0200
+Message-Id: <20180720095741.6313-4-boris.brezillon@bootlin.com>
+In-Reply-To: <20180720095741.6313-1-boris.brezillon@bootlin.com>
+References: <20180720095741.6313-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,91 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Miquel who's in charge of the NAND tree for this release
+We don't use the GPIO API in this driver, let's just remove the
+<linux/gpio.h> inclusion.
 
-On Wed, 11 Jul 2018 14:08:06 +0200
-Arnd Bergmann <arnd@arndb.de> wrote:
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/au1550nd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-> Some drivers need these for compile-testing. On most architectures
-> they come from asm-generic/io.h, but not on sparc64, which has its
-> own definitions.
-> 
-> Since we already have ioread*_rep()/iowrite*_rep() that have the
-> same behavior on sparc64 (i.e. all PCI I/O space is memory mapped),
-> we can rename the existing helpers and add macros to define them
-> to the same implementation.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-I tried to compile a sparc64 kernel with COMPILE_TEST=y plus the
-orion and s3c2410 NAND drivers enabled and it compiles fine (it does
-without this patch). So it seems to fix the compilation error reported
-by kbuild robots.
-
-Tested-by: Boris Brezillon <boris.brezillon@bootlin>
-(only compile-tested)
-
-Dave gave his A-b, so, if everyone is okay with that, I'd like this
-patch to go trough the NAND tree.
-
-Thanks,
-
-Boris
-
-> ---
->  arch/sparc/include/asm/io_64.h | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-> index 9a1e9cbc7e6d..b162c23ae8c2 100644
-> --- a/arch/sparc/include/asm/io_64.h
-> +++ b/arch/sparc/include/asm/io_64.h
-> @@ -243,35 +243,42 @@ void insb(unsigned long, void *, unsigned long);
->  void insw(unsigned long, void *, unsigned long);
->  void insl(unsigned long, void *, unsigned long);
->  
-> -static inline void ioread8_rep(void __iomem *port, void *buf, unsigned long count)
-> +static inline void readsb(void __iomem *port, void *buf, unsigned long count)
->  {
->  	insb((unsigned long __force)port, buf, count);
->  }
-> -static inline void ioread16_rep(void __iomem *port, void *buf, unsigned long count)
-> +static inline void readsw(void __iomem *port, void *buf, unsigned long count)
->  {
->  	insw((unsigned long __force)port, buf, count);
->  }
->  
-> -static inline void ioread32_rep(void __iomem *port, void *buf, unsigned long count)
-> +static inline void readsl(void __iomem *port, void *buf, unsigned long count)
->  {
->  	insl((unsigned long __force)port, buf, count);
->  }
->  
-> -static inline void iowrite8_rep(void __iomem *port, const void *buf, unsigned long count)
-> +static inline void writesb(void __iomem *port, const void *buf, unsigned long count)
->  {
->  	outsb((unsigned long __force)port, buf, count);
->  }
->  
-> -static inline void iowrite16_rep(void __iomem *port, const void *buf, unsigned long count)
-> +static inline void writesw(void __iomem *port, const void *buf, unsigned long count)
->  {
->  	outsw((unsigned long __force)port, buf, count);
->  }
->  
-> -static inline void iowrite32_rep(void __iomem *port, const void *buf, unsigned long count)
-> +static inline void writesl(void __iomem *port, const void *buf, unsigned long count)
->  {
->  	outsl((unsigned long __force)port, buf, count);
->  }
->  
-> +#define ioread8_rep(p,d,l)	readsb(p,d,l)
-> +#define ioread16_rep(p,d,l)	readsw(p,d,l)
-> +#define ioread32_rep(p,d,l)	readsl(p,d,l)
-> +#define iowrite8_rep(p,d,l)	writesb(p,d,l)
-> +#define iowrite16_rep(p,d,l)	writesw(p,d,l)
-> +#define iowrite32_rep(p,d,l)	writesl(p,d,l)
-> +
->  /* Valid I/O Space regions are anywhere, because each PCI bus supported
->   * can live in an arbitrary area of the physical address range.
->   */
+diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
+index df0ef1f1e2f5..35f5c84cd331 100644
+--- a/drivers/mtd/nand/raw/au1550nd.c
++++ b/drivers/mtd/nand/raw/au1550nd.c
+@@ -8,7 +8,6 @@
+  */
+ 
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/mtd/mtd.h>
+-- 
+2.14.1
