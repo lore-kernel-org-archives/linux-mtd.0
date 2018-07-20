@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 21/35] mtd: rawnand: sunxi: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 17:15:13 +0200
-Message-Id: <20180720151527.16038-22-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 09/35] mtd: rawnand: hisi504: convert driver to nand_scan()
+Date: Fri, 20 Jul 2018 17:15:01 +0200
+Message-Id: <20180720151527.16038-10-miquel.raynal@bootlin.com>
 In-Reply-To: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,80 +42,100 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sunxi_nand.c | 43 +++++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/raw/hisi504_nand.c | 78 +++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 07f3ff9a28f2..a4d23381003d 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1816,12 +1816,21 @@ static void sunxi_nand_ecc_cleanup(struct nand_ecc_ctrl *ecc)
- 	}
- }
- 
--static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
--			       struct device_node *np)
-+static int sunxi_nand_attach_chip(struct nand_chip *nand)
- {
--	struct nand_chip *nand = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(nand);
-+	struct nand_ecc_ctrl *ecc = &nand->ecc;
-+	struct device_node *np = nand_get_flash_node(nand);
- 	int ret;
- 
-+	if (nand->bbt_options & NAND_BBT_USE_FLASH)
-+		nand->bbt_options |= NAND_BBT_NO_OOB;
-+
-+	if (nand->options & NAND_NEED_SCRAMBLING)
-+		nand->options |= NAND_NO_SUBPAGE_WRITE;
-+
-+	nand->options |= NAND_SUBPAGE_READ;
-+
- 	if (!ecc->size) {
- 		ecc->size = nand->ecc_step_ds;
- 		ecc->strength = nand->ecc_strength_ds;
-@@ -1846,6 +1855,10 @@ static int sunxi_nand_ecc_init(struct mtd_info *mtd, struct nand_ecc_ctrl *ecc,
+diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
+index a1e009c8e556..950dc7789296 100644
+--- a/drivers/mtd/nand/raw/hisi504_nand.c
++++ b/drivers/mtd/nand/raw/hisi504_nand.c
+@@ -709,9 +709,50 @@ static int hisi_nfc_ecc_probe(struct hinfc_host *host)
  	return 0;
  }
  
-+static const struct nand_controller_ops sunxi_nand_controller_ops = {
-+	.attach_chip = sunxi_nand_attach_chip,
++static int hisi_nfc_attach_chip(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct hinfc_host *host = nand_get_controller_data(chip);
++	int flag;
++
++	host->buffer = dmam_alloc_coherent(host->dev,
++					   mtd->writesize + mtd->oobsize,
++					   &host->dma_buffer, GFP_KERNEL);
++	if (!host->buffer)
++		return -ENOMEM;
++
++	host->dma_oob = host->dma_buffer + mtd->writesize;
++	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
++
++	flag = hinfc_read(host, HINFC504_CON);
++	flag &= ~(HINFC504_CON_PAGESIZE_MASK << HINFC504_CON_PAGEISZE_SHIFT);
++	switch (mtd->writesize) {
++	case 2048:
++		flag |= (0x001 << HINFC504_CON_PAGEISZE_SHIFT);
++		break;
++	/*
++	 * TODO: add more pagesize support,
++	 * default pagesize has been set in hisi_nfc_host_init
++	 */
++	default:
++		dev_err(host->dev, "NON-2KB page size nand flash\n");
++		return -EINVAL;
++	}
++	hinfc_write(host, flag, HINFC504_CON);
++
++	if (chip->ecc.mode == NAND_ECC_HW)
++		hisi_nfc_ecc_probe(host);
++
++	return 0;
++}
++
++static const struct nand_controller_ops hisi_nfc_controller_ops = {
++	.attach_chip = hisi_nfc_attach_chip,
 +};
 +
- static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 				struct device_node *np)
+ static int hisi_nfc_probe(struct platform_device *pdev)
  {
-@@ -1911,6 +1924,8 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
- 	nand->chip_delay = 200;
- 	nand->controller = &nfc->controller;
-+	nand->controller->ops = &sunxi_nand_controller_ops;
-+
- 	/*
- 	 * Set the ECC mode to the default value in case nothing is specified
- 	 * in the DT.
-@@ -1927,30 +1942,10 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 	mtd = nand_to_mtd(nand);
- 	mtd->dev.parent = dev;
+-	int ret = 0, irq, flag, max_chips = HINFC504_MAX_CHIP;
++	int ret = 0, irq, max_chips = HINFC504_MAX_CHIP;
+ 	struct device *dev = &pdev->dev;
+ 	struct hinfc_host *host;
+ 	struct nand_chip  *chip;
+@@ -769,42 +810,11 @@ static int hisi_nfc_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
--	ret = nand_scan_ident(mtd, nsels, NULL);
-+	ret = nand_scan(mtd, nsels);
+-	ret = nand_scan_ident(mtd, max_chips, NULL);
++	chip->dummy_controller.ops = &hisi_nfc_controller_ops;
++	ret = nand_scan(mtd, max_chips);
  	if (ret)
  		return ret;
  
--	if (nand->bbt_options & NAND_BBT_USE_FLASH)
--		nand->bbt_options |= NAND_BBT_NO_OOB;
+-	host->buffer = dmam_alloc_coherent(dev, mtd->writesize + mtd->oobsize,
+-		&host->dma_buffer, GFP_KERNEL);
+-	if (!host->buffer)
+-		return -ENOMEM;
 -
--	if (nand->options & NAND_NEED_SCRAMBLING)
--		nand->options |= NAND_NO_SUBPAGE_WRITE;
+-	host->dma_oob = host->dma_buffer + mtd->writesize;
+-	memset(host->buffer, 0xff, mtd->writesize + mtd->oobsize);
 -
--	nand->options |= NAND_SUBPAGE_READ;
--
--	ret = sunxi_nand_ecc_init(mtd, &nand->ecc, np);
--	if (ret) {
--		dev_err(dev, "ECC init failed: %d\n", ret);
--		return ret;
+-	flag = hinfc_read(host, HINFC504_CON);
+-	flag &= ~(HINFC504_CON_PAGESIZE_MASK << HINFC504_CON_PAGEISZE_SHIFT);
+-	switch (mtd->writesize) {
+-	case 2048:
+-		flag |= (0x001 << HINFC504_CON_PAGEISZE_SHIFT); break;
+-	/*
+-	 * TODO: add more pagesize support,
+-	 * default pagesize has been set in hisi_nfc_host_init
+-	 */
+-	default:
+-		dev_err(dev, "NON-2KB page size nand flash\n");
+-		return -EINVAL;
 -	}
+-	hinfc_write(host, flag, HINFC504_CON);
+-
+-	if (chip->ecc.mode == NAND_ECC_HW)
+-		hisi_nfc_ecc_probe(host);
 -
 -	ret = nand_scan_tail(mtd);
 -	if (ret) {
@@ -125,6 +145,6 @@ index 07f3ff9a28f2..a4d23381003d 100644
 -
  	ret = mtd_device_register(mtd, NULL, 0);
  	if (ret) {
- 		dev_err(dev, "failed to register mtd device: %d\n", ret);
+ 		dev_err(dev, "Err MTD partition=%d\n", ret);
 -- 
 2.14.1
