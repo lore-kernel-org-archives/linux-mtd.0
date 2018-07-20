@@ -21,9 +21,9 @@ To: Wenyou Yang <wenyou.yang@microchip.com>,
 Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: [PATCH v4 20/35] mtd: rawnand: sh_flctl: convert driver to nand_scan()
-Date: Fri, 20 Jul 2018 17:15:12 +0200
-Message-Id: <20180720151527.16038-21-miquel.raynal@bootlin.com>
+Subject: [PATCH v4 26/35] mtd: rawnand: atmel: convert driver to nand_scan()
+Date: Fri, 20 Jul 2018 17:15:18 +0200
+Message-Id: <20180720151527.16038-27-miquel.raynal@bootlin.com>
 In-Reply-To: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,54 +42,173 @@ both nand_scan_ident() and nand_scan_tail().
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/sh_flctl.c | 19 ++++++++-----------
- 1 file changed, 8 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 83 ++++++++++++++--------------
+ 1 file changed, 40 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index d37d1d3ccbf9..663c75005ac9 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1002,10 +1002,10 @@ static void flctl_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	flctl->index += len;
- }
- 
--static int flctl_chip_init_tail(struct mtd_info *mtd)
-+static int flctl_chip_attach_chip(struct nand_chip *chip)
- {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
--	struct nand_chip *chip = &flctl->chip;
- 
- 	if (chip->options & NAND_BUSWIDTH_16) {
- 		/*
-@@ -1073,6 +1073,10 @@ static int flctl_chip_init_tail(struct mtd_info *mtd)
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index 855cc7729c43..0bc7e2abc885 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -202,7 +202,7 @@ struct atmel_nand_controller_ops {
+ 	int (*remove)(struct atmel_nand_controller *nc);
+ 	void (*nand_init)(struct atmel_nand_controller *nc,
+ 			  struct atmel_nand *nand);
+-	int (*ecc_init)(struct atmel_nand *nand);
++	int (*ecc_init)(struct nand_chip *chip);
+ 	int (*setup_data_interface)(struct atmel_nand *nand, int csline,
+ 				    const struct nand_data_interface *conf);
+ };
+@@ -1133,9 +1133,8 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
  	return 0;
  }
  
-+static const struct nand_controller_ops flctl_nand_controller_ops = {
-+	.attach_chip = flctl_chip_attach_chip,
+-static int atmel_nand_ecc_init(struct atmel_nand *nand)
++static int atmel_nand_ecc_init(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = &nand->base;
+ 	struct atmel_nand_controller *nc;
+ 	int ret;
+ 
+@@ -1170,12 +1169,11 @@ static int atmel_nand_ecc_init(struct atmel_nand *nand)
+ 	return 0;
+ }
+ 
+-static int atmel_hsmc_nand_ecc_init(struct atmel_nand *nand)
++static int atmel_hsmc_nand_ecc_init(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = &nand->base;
+ 	int ret;
+ 
+-	ret = atmel_nand_ecc_init(nand);
++	ret = atmel_nand_ecc_init(chip);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1558,22 +1556,6 @@ static void atmel_hsmc_nand_init(struct atmel_nand_controller *nc,
+ 	chip->select_chip = atmel_hsmc_nand_select_chip;
+ }
+ 
+-static int atmel_nand_detect(struct atmel_nand *nand)
+-{
+-	struct nand_chip *chip = &nand->base;
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct atmel_nand_controller *nc;
+-	int ret;
+-
+-	nc = to_nand_controller(chip->controller);
+-
+-	ret = nand_scan_ident(mtd, nand->numcs, NULL);
+-	if (ret)
+-		dev_err(nc->dev, "nand_scan_ident() failed: %d\n", ret);
+-
+-	return ret;
+-}
+-
+ static int atmel_nand_unregister(struct atmel_nand *nand)
+ {
+ 	struct nand_chip *chip = &nand->base;
+@@ -1595,7 +1577,6 @@ static int atmel_nand_register(struct atmel_nand *nand)
+ 	struct nand_chip *chip = &nand->base;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	struct atmel_nand_controller *nc;
+-	int ret;
+ 
+ 	nc = to_nand_controller(chip->controller);
+ 
+@@ -1626,21 +1607,6 @@ static int atmel_nand_register(struct atmel_nand *nand)
+ 		}
+ 	}
+ 
+-	ret = nand_scan_tail(mtd);
+-	if (ret) {
+-		dev_err(nc->dev, "nand_scan_tail() failed: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = mtd_device_register(mtd, NULL, 0);
+-	if (ret) {
+-		dev_err(nc->dev, "Failed to register mtd device: %d\n", ret);
+-		nand_cleanup(chip);
+-		return ret;
+-	}
+-
+-	list_add_tail(&nand->node, &nc->chips);
+-
+ 	return 0;
+ }
+ 
+@@ -1755,6 +1721,8 @@ static int
+ atmel_nand_controller_add_nand(struct atmel_nand_controller *nc,
+ 			       struct atmel_nand *nand)
+ {
++	struct nand_chip *chip = &nand->base;
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int ret;
+ 
+ 	/* No card inserted, skip this NAND. */
+@@ -1765,15 +1733,30 @@ atmel_nand_controller_add_nand(struct atmel_nand_controller *nc,
+ 
+ 	nc->caps->ops->nand_init(nc, nand);
+ 
+-	ret = atmel_nand_detect(nand);
+-	if (ret)
++	ret = nand_scan(mtd, nand->numcs);
++	if (ret) {
++		dev_err(nc->dev, "NAND scan failed: %d\n", ret);
+ 		return ret;
++	}
+ 
+-	ret = nc->caps->ops->ecc_init(nand);
++	ret = atmel_nand_register(nand);
+ 	if (ret)
+-		return ret;
++		goto cleanup_nand;
++
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret) {
++		dev_err(nc->dev, "Failed to register mtd device: %d\n", ret);
++		goto cleanup_nand;
++	}
++
++	list_add_tail(&nand->node, &nc->chips);
++
++	return 0;
++
++cleanup_nand:
++	nand_cleanup(chip);
+ 
+-	return atmel_nand_register(nand);
++	return ret;
+ }
+ 
+ static int
+@@ -1958,6 +1941,19 @@ static const struct of_device_id atmel_matrix_of_ids[] = {
+ 	{ /* sentinel */ },
+ };
+ 
++static int atmel_nand_attach_chip(struct nand_chip *chip)
++{
++	struct atmel_nand_controller *nc;
++
++	nc = to_nand_controller(chip->controller);
++
++	return nc->caps->ops->ecc_init(chip);
++}
++
++static const struct nand_controller_ops atmel_nand_controller_ops = {
++	.attach_chip = atmel_nand_attach_chip,
 +};
 +
- static irqreturn_t flctl_handle_flste(int irq, void *dev_id)
- {
- 	struct sh_flctl *flctl = dev_id;
-@@ -1200,15 +1204,8 @@ static int flctl_probe(struct platform_device *pdev)
+ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+ 				struct platform_device *pdev,
+ 				const struct atmel_nand_controller_caps *caps)
+@@ -1967,6 +1963,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
+ 	int ret;
  
- 	flctl_setup_dma(flctl);
- 
--	ret = nand_scan_ident(flctl_mtd, 1, NULL);
--	if (ret)
--		goto err_chip;
--
--	ret = flctl_chip_init_tail(flctl_mtd);
--	if (ret)
--		goto err_chip;
--
--	ret = nand_scan_tail(flctl_mtd);
-+	nand->dummy_controller.ops = &flctl_nand_controller_ops;
-+	ret = nand_scan(flctl_mtd, 1);
- 	if (ret)
- 		goto err_chip;
- 
+ 	nand_controller_init(&nc->base);
++	nc->base.ops = &atmel_nand_controller_ops;
+ 	INIT_LIST_HEAD(&nc->chips);
+ 	nc->dev = dev;
+ 	nc->caps = caps;
 -- 
 2.14.1
