@@ -1,27 +1,31 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgV4k-0003iJ-Ej
- for linux-mtd@lists.infradead.org; Fri, 20 Jul 2018 13:04:04 +0000
-Date: Fri, 20 Jul 2018 15:03:48 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Abhishek Sahu <absahu@codeaurora.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org, Andy Gross <andy.gross@linaro.org>
-Subject: Re: [PATCH 2/5] mtd: rawnand: qcom: remove driver specific
- block_markbad function
-Message-ID: <20180720150348.592c8984@bbrezillon>
-In-Reply-To: <7ab0be154272b71f9beb2a7fb830c7be@codeaurora.org>
-References: <1530863519-5564-1-git-send-email-absahu@codeaurora.org>
- <1530863519-5564-3-git-send-email-absahu@codeaurora.org>
- <20180718232350.3eaade9a@xps13>
- <20180718234358.6bb5e8a0@bbrezillon>
- <7ab0be154272b71f9beb2a7fb830c7be@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Wenyou Yang <wenyou.yang@microchip.com>,
+ Josh Wu <rainyfeeling@outlook.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
+ Stefan Agner <stefan@agner.ch>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org
+Subject: [PATCH v4 03/35] mtd: rawnand: davinci: convert driver to nand_scan()
+Date: Fri, 20 Jul 2018 17:14:55 +0200
+Message-Id: <20180720151527.16038-4-miquel.raynal@bootlin.com>
+In-Reply-To: <20180720151527.16038-1-miquel.raynal@bootlin.com>
+References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,78 +35,258 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jul 2018 17:46:38 +0530
-Abhishek Sahu <absahu@codeaurora.org> wrote:
+Two helpers have been added to the core to make ECC-related
+configuration between the detection phase and the final NAND scan. Use
+these hooks and convert the driver to just use nand_scan() instead of
+both nand_scan_ident() and nand_scan_tail().
 
-> Hi Boris,
->=20
-> On 2018-07-19 03:13, Boris Brezillon wrote:
-> > On Wed, 18 Jul 2018 23:23:50 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >  =20
-> >> Boris,
-> >>=20
-> >> Can you please check the change in qcom_nandc_write_oob() is
-> >> valid? I think it is but as this is a bit of a hack I prefer double=20
-> >> checking. =20
-> >=20
-> > Indeed, it's hack-ish.
-> >  =20
-> >>=20
-> >> Thanks,
-> >> Miqu=C3=A8l
-> >>=20
-> >>=20
-> >> Abhishek Sahu <absahu@codeaurora.org> wrote on Fri,  6 Jul 2018
-> >> 13:21:56 +0530:
-> >>  =20
-> >> > The NAND base layer calls write_oob() by setting bytes at
-> >> > chip->badblockpos with value non 0xFF for updating bad block status.
-> >> > The QCOM NAND controller skips the bad block bytes while doing normal
-> >> > write with ECC enabled. When initial support for this driver was
-> >> > added, the driver specific function was added temporarily for
-> >> > block_markbad() with assumption to change for raw read in NAND base
-> >> > layer. Moving to raw read for block_markbad() seems to take more time
-> >> > so this patch removes driver specific block_markbad() function by
-> >> > using following HACK in write_oob() function.
-> >> >
-> >> > Check for BBM bytes in OOB and accordingly do raw write for updating
-> >> > BBM bytes in NAND flash or normal write for updating available OOB
-> >> > bytes. =20
-> >=20
-> > Why don't we change that instead of patching the qcom driver to guess
-> > when the core tries to mark a block bad? If you're afraid of breaking
-> > existing drivers that might rely on the "write/read BBM in non-raw
-> > mode" solution (I'm sure some drivers are), you can always add a new
-> > flag in chip->options (NAND_ACCESS_BBM_IN_RAW_MODE) and only use raw
-> > accessors when this flag is set.
-> >  =20
->=20
->   We started with that Only
->=20
->   http://patchwork.ozlabs.org/patch/508565/
->=20
->   and since we didn't conclude, we went for driver
->   specific bad block check and mark bad block functions.
->=20
->   Now, we wanted to get rid of driver specific functions
->=20
->   1. For bad block check, we found the way to get the BBM bytes
->      with ECC read. Controller updates BBM in separate register
->      which we can read and update the same in OOB. Patch #1 of
->      series does the same.
->=20
->   2. For bad block mark, there is no way to update in ECC mode
->      that's why we went for HACK to get rid of driver specific
->      function.
->=20
->   If adding flag is fine now then this HACK won't be required.
+Also change the unused "struct device *dev" parameter of the driver
+structure into a platform device to reuse it in the ->attach_chip()
+hook.
 
-Yep. I'm fine with that. Can you rebase the patch you pointed out on top
-of nand/next and move the flag to chip->options instead of
-chip->bbt_options + prefix it with NAND_ instead of NAND_BBT_?
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/davinci_nand.c | 195 +++++++++++++++++++-----------------
+ 1 file changed, 102 insertions(+), 93 deletions(-)
 
-
->   Moving to RAW mode for every one still looks risky.
-
-I agree.
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index 626c9363e460..40145e206a6b 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -53,7 +53,7 @@
+ struct davinci_nand_info {
+ 	struct nand_chip	chip;
+ 
+-	struct device		*dev;
++	struct platform_device	*pdev;
+ 
+ 	bool			is_readmode;
+ 
+@@ -605,6 +605,104 @@ static struct davinci_nand_pdata
+ }
+ #endif
+ 
++static int davinci_nand_attach_chip(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct davinci_nand_info *info = to_davinci_nand(mtd);
++	struct davinci_nand_pdata *pdata = nand_davinci_get_pdata(info->pdev);
++	int ret = 0;
++
++	if (IS_ERR(pdata))
++		return PTR_ERR(pdata);
++
++	switch (info->chip.ecc.mode) {
++	case NAND_ECC_NONE:
++		pdata->ecc_bits = 0;
++		break;
++	case NAND_ECC_SOFT:
++		pdata->ecc_bits = 0;
++		/*
++		 * This driver expects Hamming based ECC when ecc_mode is set
++		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_HAMMING to
++		 * avoid adding an extra ->ecc_algo field to
++		 * davinci_nand_pdata.
++		 */
++		info->chip.ecc.algo = NAND_ECC_HAMMING;
++		break;
++	case NAND_ECC_HW:
++		if (pdata->ecc_bits == 4) {
++			/*
++			 * No sanity checks:  CPUs must support this,
++			 * and the chips may not use NAND_BUSWIDTH_16.
++			 */
++
++			/* No sharing 4-bit hardware between chipselects yet */
++			spin_lock_irq(&davinci_nand_lock);
++			if (ecc4_busy)
++				ret = -EBUSY;
++			else
++				ecc4_busy = true;
++			spin_unlock_irq(&davinci_nand_lock);
++
++			if (ret == -EBUSY)
++				return ret;
++
++			info->chip.ecc.calculate = nand_davinci_calculate_4bit;
++			info->chip.ecc.correct = nand_davinci_correct_4bit;
++			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
++			info->chip.ecc.bytes = 10;
++			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
++			info->chip.ecc.algo = NAND_ECC_BCH;
++		} else {
++			/* 1bit ecc hamming */
++			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
++			info->chip.ecc.correct = nand_davinci_correct_1bit;
++			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
++			info->chip.ecc.bytes = 3;
++			info->chip.ecc.algo = NAND_ECC_HAMMING;
++		}
++		info->chip.ecc.size = 512;
++		info->chip.ecc.strength = pdata->ecc_bits;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	/*
++	 * Update ECC layout if needed ... for 1-bit HW ECC, the default
++	 * is OK, but it allocates 6 bytes when only 3 are needed (for
++	 * each 512 bytes).  For the 4-bit HW ECC, that default is not
++	 * usable:  10 bytes are needed, not 6.
++	 */
++	if (pdata->ecc_bits == 4) {
++		int chunks = mtd->writesize / 512;
++
++		if (!chunks || mtd->oobsize < 16) {
++			dev_dbg(&info->pdev->dev, "too small\n");
++			return -EINVAL;
++		}
++
++		/* For small page chips, preserve the manufacturer's
++		 * badblock marking data ... and make sure a flash BBT
++		 * table marker fits in the free bytes.
++		 */
++		if (chunks == 1) {
++			mtd_set_ooblayout(mtd, &hwecc4_small_ooblayout_ops);
++		} else if (chunks == 4 || chunks == 8) {
++			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
++			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
++		} else {
++			return -EIO;
++		}
++	}
++
++	return ret;
++}
++
++static const struct nand_controller_ops davinci_nand_controller_ops = {
++	.attach_chip = davinci_nand_attach_chip,
++};
++
+ static int nand_davinci_probe(struct platform_device *pdev)
+ {
+ 	struct davinci_nand_pdata	*pdata;
+@@ -658,7 +756,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 		return -EADDRNOTAVAIL;
+ 	}
+ 
+-	info->dev		= &pdev->dev;
++	info->pdev		= pdev;
+ 	info->base		= base;
+ 	info->vaddr		= vaddr;
+ 
+@@ -708,97 +806,13 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ 	spin_unlock_irq(&davinci_nand_lock);
+ 
+ 	/* Scan to find existence of the device(s) */
+-	ret = nand_scan_ident(mtd, pdata->mask_chipsel ? 2 : 1, NULL);
++	info->chip.dummy_controller.ops = &davinci_nand_controller_ops;
++	ret = nand_scan(mtd, pdata->mask_chipsel ? 2 : 1);
+ 	if (ret < 0) {
+ 		dev_dbg(&pdev->dev, "no NAND chip(s) found\n");
+ 		return ret;
+ 	}
+ 
+-	switch (info->chip.ecc.mode) {
+-	case NAND_ECC_NONE:
+-		pdata->ecc_bits = 0;
+-		break;
+-	case NAND_ECC_SOFT:
+-		pdata->ecc_bits = 0;
+-		/*
+-		 * This driver expects Hamming based ECC when ecc_mode is set
+-		 * to NAND_ECC_SOFT. Force ecc.algo to NAND_ECC_HAMMING to
+-		 * avoid adding an extra ->ecc_algo field to
+-		 * davinci_nand_pdata.
+-		 */
+-		info->chip.ecc.algo = NAND_ECC_HAMMING;
+-		break;
+-	case NAND_ECC_HW:
+-		if (pdata->ecc_bits == 4) {
+-			/* No sanity checks:  CPUs must support this,
+-			 * and the chips may not use NAND_BUSWIDTH_16.
+-			 */
+-
+-			/* No sharing 4-bit hardware between chipselects yet */
+-			spin_lock_irq(&davinci_nand_lock);
+-			if (ecc4_busy)
+-				ret = -EBUSY;
+-			else
+-				ecc4_busy = true;
+-			spin_unlock_irq(&davinci_nand_lock);
+-
+-			if (ret == -EBUSY)
+-				return ret;
+-
+-			info->chip.ecc.calculate = nand_davinci_calculate_4bit;
+-			info->chip.ecc.correct = nand_davinci_correct_4bit;
+-			info->chip.ecc.hwctl = nand_davinci_hwctl_4bit;
+-			info->chip.ecc.bytes = 10;
+-			info->chip.ecc.options = NAND_ECC_GENERIC_ERASED_CHECK;
+-			info->chip.ecc.algo = NAND_ECC_BCH;
+-		} else {
+-			/* 1bit ecc hamming */
+-			info->chip.ecc.calculate = nand_davinci_calculate_1bit;
+-			info->chip.ecc.correct = nand_davinci_correct_1bit;
+-			info->chip.ecc.hwctl = nand_davinci_hwctl_1bit;
+-			info->chip.ecc.bytes = 3;
+-			info->chip.ecc.algo = NAND_ECC_HAMMING;
+-		}
+-		info->chip.ecc.size = 512;
+-		info->chip.ecc.strength = pdata->ecc_bits;
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	/* Update ECC layout if needed ... for 1-bit HW ECC, the default
+-	 * is OK, but it allocates 6 bytes when only 3 are needed (for
+-	 * each 512 bytes).  For the 4-bit HW ECC, that default is not
+-	 * usable:  10 bytes are needed, not 6.
+-	 */
+-	if (pdata->ecc_bits == 4) {
+-		int	chunks = mtd->writesize / 512;
+-
+-		if (!chunks || mtd->oobsize < 16) {
+-			dev_dbg(&pdev->dev, "too small\n");
+-			ret = -EINVAL;
+-			goto err;
+-		}
+-
+-		/* For small page chips, preserve the manufacturer's
+-		 * badblock marking data ... and make sure a flash BBT
+-		 * table marker fits in the free bytes.
+-		 */
+-		if (chunks == 1) {
+-			mtd_set_ooblayout(mtd, &hwecc4_small_ooblayout_ops);
+-		} else if (chunks == 4 || chunks == 8) {
+-			mtd_set_ooblayout(mtd, &nand_ooblayout_lp_ops);
+-			info->chip.ecc.mode = NAND_ECC_HW_OOB_FIRST;
+-		} else {
+-			ret = -EIO;
+-			goto err;
+-		}
+-	}
+-
+-	ret = nand_scan_tail(mtd);
+-	if (ret < 0)
+-		goto err;
+-
+ 	if (pdata->parts)
+ 		ret = mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
+ 	else
+@@ -815,11 +829,6 @@ static int nand_davinci_probe(struct platform_device *pdev)
+ err_cleanup_nand:
+ 	nand_cleanup(&info->chip);
+ 
+-err:
+-	spin_lock_irq(&davinci_nand_lock);
+-	if (info->chip.ecc.mode == NAND_ECC_HW_SYNDROME)
+-		ecc4_busy = false;
+-	spin_unlock_irq(&davinci_nand_lock);
+ 	return ret;
+ }
+ 
+-- 
+2.14.1
