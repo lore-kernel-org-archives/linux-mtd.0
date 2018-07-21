@@ -1,4 +1,4 @@
-Date: Sat, 21 Jul 2018 19:54:38 +0200
+Date: Sat, 21 Jul 2018 20:04:04 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
@@ -19,7 +19,7 @@ Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
  linux-mediatek@lists.infradead.org
 Subject: Re: [PATCH v4 24/35] mtd: rawnand: txx9ndfmc: convert driver to
  nand_scan()
-Message-ID: <20180721195438.03e092b1@bbrezillon>
+Message-ID: <20180721200404.419fad90@bbrezillon>
 In-Reply-To: <20180720151527.16038-25-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
  <20180720151527.16038-25-miquel.raynal@bootlin.com>
@@ -44,9 +44,6 @@ Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > both nand_scan_ident() and nand_scan_tail().
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
 > ---
 >  drivers/mtd/nand/raw/txx9ndfmc.c | 29 +++++++++++++++--------------
 >  1 file changed, 15 insertions(+), 14 deletions(-)
@@ -107,6 +104,13 @@ Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > +		/* nand_scan() will overwrite ecc.size and ecc.bytes */
 >  		chip->ecc.size = 256;
 >  		chip->ecc.bytes = 3;
+
+I had a hard time understanding what was the point of assigning
+values that would later be overwritten. Actually the comment is
+inaccurate, it's only overwritten if mtd->writesize >= 512. Can you had
+a patch that moves this block in txx9ndfmc_nand_scan() before doing the
+->attach_chip() conversion?
+
 >  		chip->ecc.strength = 1;
 > @@ -359,7 +360,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
 >  		if (plat->wide_mask & (1 << i))
