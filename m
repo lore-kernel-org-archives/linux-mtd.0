@@ -1,23 +1,28 @@
-Date: Fri, 20 Jul 2018 21:48:08 +0200
+Date: Sat, 21 Jul 2018 08:23:32 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Tony Lindgren
- <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Grygorii Strashko
- <grygorii.strashko@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>, Kevin
- Hilman <khilman@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
+ <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>
-Subject: Re: [RFC PATCH 8/8] mtd: rawnand: ams-delta: Use GPIO callbacks for
- data I/O
-Message-ID: <20180720214808.0c19234e@bbrezillon>
-In-Reply-To: <2165137.iTHcPHRtIn@z50>
-References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180718235710.18242-9-jmkrzyszt@gmail.com>
- <20180719084749.25ca96a6@bbrezillon> <2165137.iTHcPHRtIn@z50>
+ <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
+ Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v4 01/35] mtd: rawnand: brcmnand: convert driver to
+ nand_scan()
+Message-ID: <20180721082332.4c098adb@bbrezillon>
+In-Reply-To: <20180720151527.16038-2-miquel.raynal@bootlin.com>
+References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
+ <20180720151527.16038-2-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,58 +35,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Janusz,
+On Fri, 20 Jul 2018 17:14:53 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-On Fri, 20 Jul 2018 20:38:15 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-
-> On Thursday, July 19, 2018 8:47:49 AM CEST Boris Brezillon wrote:
-> > On Thu, 19 Jul 2018 01:57:10 +0200
-> > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-> >   
-> > > Don't readw()/writew() data directly from/to GPIO port which is under
-> > > control of gpio-omap driver, use GPIO chip callbacks instead.
-> > > 
-> > > Thanks to utilization of get/set_multiple() callbacks, performance
-> > > degrade is minor for typical data transfers.  
-> > 
-> > Same comment here, don't use the gpio_chip hooks directly, use the
-> > consumer API instead.  
+> Two helpers have been added to the core to make ECC-related
+> configuration between the detection phase and the final NAND scan. Use
+> these hooks and convert the driver to just use nand_scan() instead of
+> both nand_scan_ident() and nand_scan_tail().
 > 
-> I tired but performance was not acceptable.
-
-You tried to use gpiod_{get,set}_array_value(), right? Did you
-investigate on where the overhead comes from?
-
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> ---
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 47 +++++++++++++++++++-------------
+>  1 file changed, 28 insertions(+), 19 deletions(-)
 > 
-> I see your point but please understand, what I'm trying to do here is not to 
-> develop a shiny general purpose fully GPIO based NAND driver, I'm trying to 
-> resolve issues with NAND driver for Amstrad Delta I like to play with, without 
-> loosing much performance.
+> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> index 2e5efa0f9ea2..071f09af56dc 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> @@ -2208,6 +2208,32 @@ static int brcmnand_setup_dev(struct brcmnand_host *host)
+>  	return 0;
+>  }
+>  
+> +static int brcmnand_attach_chip(struct nand_chip *chip)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct brcmnand_host *host = nand_get_controller_data(chip);
+> +	int ret;
+> +
+> +	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+> +		chip->bbt_options |= NAND_BBT_NO_OOB;
+> +
+> +	if (brcmnand_setup_dev(host))
+> +		return -ENXIO;
+> +
+> +	chip->ecc.size = host->hwcfg.sector_size_1k ? 1024 : 512;
+> +
+> +	/* only use our internal HW threshold */
+> +	mtd->bitflip_threshold = 1;
+> +
+> +	ret = brcmstb_choose_ecc_layout(host);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct nand_controller_ops brcmnand_controller_ops = {
+> +	.attach_chip = brcmnand_attach_chip,
+> +};
+> +
+>  static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+>  {
+>  	struct brcmnand_controller *ctrl = host->ctrl;
+> @@ -2267,10 +2293,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+>  	nand_writereg(ctrl, cfg_offs,
+>  		      nand_readreg(ctrl, cfg_offs) & ~CFG_BUS_WIDTH);
+>  
+> -	ret = nand_scan_ident(mtd, 1, NULL);
+> -	if (ret)
+> -		return ret;
+> -
+>  	chip->options |= NAND_NO_SUBPAGE_WRITE;
+>  	/*
+>  	 * Avoid (for instance) kmap()'d buffers from JFFS2, which we can't DMA
+> @@ -2279,21 +2301,7 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+>  	 */
+>  	chip->options |= NAND_USE_BOUNCE_BUFFER;
+>  
 
-That's not a reason to violate the consumer/driver separation provided
-by the GPIO framework. I'm not saying the current consumer APIs are
-good enough for what you want to do (bit-bang a parallel data bus in
-an efficient way), but bypassing the GPIO core like you do is
-definitely not a good thing. Maybe you should discuss with Linus the
-possibility of introducing a gpio_bitbang API that would provide you
-some guarantees on the access time by making sure the pins all belong
-to the same bank (and can thus be accessed in an atomic way). And maybe
-provide a way to read/write several bytes by defining a delay between
-each access, the size of the bus and the control pin if any (in
-our case NRE/NWE). 
+Any reason for not moving the above chunk in brcmnand_attach_chip()?
 
-> 
-> I'm going to reconsider all possible options, not only doing data I/O over 
-> GPIO inside the driver, to have the task completed.  Once done,  I can get 
-> back to the GPIO based code I developed so far and create a new generic driver 
-> as my free time permits, or anyone can do that if needed, the code is open 
-> source after all.
+Since ->attach_chip() is called between nand_scan_ident() and
+nand_scan_tail() in nand_scan(), I'd recommend simply copying all the
+code found between those 2 calls (applies to all drivers).
 
-Let's forget the generic nand-gpio driver for now. All I'm asking is
-that you do not bypass the GPIO framework like you intend do in this
-patch.
-
-Regards,
-
-Boris
+> -	if (chip->bbt_options & NAND_BBT_USE_FLASH)
+> -		chip->bbt_options |= NAND_BBT_NO_OOB;
+> -
+> -	if (brcmnand_setup_dev(host))
+> -		return -ENXIO;
+> -
+> -	chip->ecc.size = host->hwcfg.sector_size_1k ? 1024 : 512;
+> -	/* only use our internal HW threshold */
+> -	mtd->bitflip_threshold = 1;
+> -
+> -	ret = brcmstb_choose_ecc_layout(host);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = nand_scan_tail(mtd);
+> +	ret = nand_scan(mtd, 1);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -2434,6 +2442,7 @@ int brcmnand_probe(struct platform_device *pdev, struct brcmnand_soc *soc)
+>  	init_completion(&ctrl->done);
+>  	init_completion(&ctrl->dma_done);
+>  	nand_controller_init(&ctrl->controller);
+> +	ctrl->controller.ops = &brcmnand_controller_ops;
+>  	INIT_LIST_HEAD(&ctrl->host_list);
+>  
+>  	/* NAND register range */
