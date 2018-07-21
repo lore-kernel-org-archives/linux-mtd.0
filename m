@@ -1,20 +1,31 @@
-Received: from www.osadl.org ([62.245.132.105])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgsqG-0000fZ-3S
- for linux-mtd@lists.infradead.org; Sat, 21 Jul 2018 14:26:41 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH 2/2] mtd: spi-nor: cadence-quadspi: fix return type to fit
- wait_for_completion_timeout
-Date: Sat, 21 Jul 2018 16:21:52 +0200
-Message-Id: <1532182912-3674-2-git-send-email-hofrat@osadl.org>
-In-Reply-To: <1532182912-3674-1-git-send-email-hofrat@osadl.org>
-References: <1532182912-3674-1-git-send-email-hofrat@osadl.org>
+Date: Sat, 21 Jul 2018 17:23:19 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
+ <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
+ Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
+ <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
+ Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+ linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v4 10/35] mtd: rawnand: jz4780: convert driver to
+ nand_scan()
+Message-ID: <20180721172250.723b4fd2@bbrezillon>
+In-Reply-To: <20180720151527.16038-11-miquel.raynal@bootlin.com>
+References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
+ <20180720151527.16038-11-miquel.raynal@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +35,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- wait_for_completion_timeout returns an unsigned long not int. declare a
-suitably type timeout and fix up assignment and check.
+On Fri, 20 Jul 2018 17:15:02 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+> Two helpers have been added to the core to make ECC-related
+> configuration between the detection phase and the final NAND scan. Use
+> these hooks and convert the driver to just use nand_scan() instead of
+> both nand_scan_ident() and nand_scan_tail().
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Acked-by: Harvey Hunt <harveyhuntnexus@gmail.com>
 
-Found during code review.
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Given that CQSPI_READ_TIMEOUT_MS is < INT_MAX the type conversion is safe
-here but it is cleaner to use proper types.
-
-Patch was compile tested with: socfpga_defconfig (implies
-CONFIG_SPI_CADENCE_QUADSPI=y)
-
-Patch is against 4.18-rc5 (localversion-next is next-20180720)
-
- drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-index d7e10b3..f0c3b0f 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -511,6 +511,7 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 	unsigned int bytes_to_read = 0;
- 	u8 *rxbuf_end = rxbuf + n_rx;
- 	int ret = 0;
-+	unsigned long timeout;
- 
- 	writel(from_addr, reg_base + CQSPI_REG_INDIRECTRDSTARTADDR);
- 	writel(remaining, reg_base + CQSPI_REG_INDIRECTRDBYTES);
-@@ -525,13 +526,13 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
- 	       reg_base + CQSPI_REG_INDIRECTRD);
- 
- 	while (remaining > 0) {
--		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
--						  msecs_to_jiffies
--						  (CQSPI_READ_TIMEOUT_MS));
-+		timeout = wait_for_completion_timeout(&cqspi->transfer_complete,
-+						      msecs_to_jiffies
-+						      (CQSPI_READ_TIMEOUT_MS));
- 
- 		bytes_to_read = cqspi_get_rd_sram_level(cqspi);
- 
--		if (!ret && bytes_to_read == 0) {
-+		if (!timeout && bytes_to_read == 0) {
- 			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
- 			ret = -ETIMEDOUT;
- 			goto failrd;
--- 
-2.1.4
+> ---
+>  drivers/mtd/nand/raw/jz4780_nand.c | 34 ++++++++++++++++------------------
+>  1 file changed, 16 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+> index 49841dad347c..db4fa60bd52a 100644
+> --- a/drivers/mtd/nand/raw/jz4780_nand.c
+> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+> @@ -158,9 +158,8 @@ static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
+>  	return jz4780_bch_correct(nfc->bch, &params, dat, read_ecc);
+>  }
+>  
+> -static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *dev)
+> +static int jz4780_nand_attach_chip(struct nand_chip *chip)
+>  {
+> -	struct nand_chip *chip = &nand->chip;
+>  	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(chip->controller);
+>  	int eccbytes;
+> @@ -171,7 +170,8 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  	switch (chip->ecc.mode) {
+>  	case NAND_ECC_HW:
+>  		if (!nfc->bch) {
+> -			dev_err(dev, "HW BCH selected, but BCH controller not found\n");
+> +			dev_err(nfc->dev,
+> +				"HW BCH selected, but BCH controller not found\n");
+>  			return -ENODEV;
+>  		}
+>  
+> @@ -180,15 +180,16 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  		chip->ecc.correct = jz4780_nand_ecc_correct;
+>  		/* fall through */
+>  	case NAND_ECC_SOFT:
+> -		dev_info(dev, "using %s (strength %d, size %d, bytes %d)\n",
+> -			(nfc->bch) ? "hardware BCH" : "software ECC",
+> -			chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+> +		dev_info(nfc->dev, "using %s (strength %d, size %d, bytes %d)\n",
+> +			 (nfc->bch) ? "hardware BCH" : "software ECC",
+> +			 chip->ecc.strength, chip->ecc.size, chip->ecc.bytes);
+>  		break;
+>  	case NAND_ECC_NONE:
+> -		dev_info(dev, "not using ECC\n");
+> +		dev_info(nfc->dev, "not using ECC\n");
+>  		break;
+>  	default:
+> -		dev_err(dev, "ECC mode %d not supported\n", chip->ecc.mode);
+> +		dev_err(nfc->dev, "ECC mode %d not supported\n",
+> +			chip->ecc.mode);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -200,7 +201,7 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  	eccbytes = mtd->writesize / chip->ecc.size * chip->ecc.bytes;
+>  
+>  	if (eccbytes > mtd->oobsize - 2) {
+> -		dev_err(dev,
+> +		dev_err(nfc->dev,
+>  			"invalid ECC config: required %d ECC bytes, but only %d are available",
+>  			eccbytes, mtd->oobsize - 2);
+>  		return -EINVAL;
+> @@ -211,6 +212,10 @@ static int jz4780_nand_init_ecc(struct jz4780_nand_chip *nand, struct device *de
+>  	return 0;
+>  }
+>  
+> +static const struct nand_controller_ops jz4780_nand_controller_ops = {
+> +	.attach_chip = jz4780_nand_attach_chip,
+> +};
+> +
+>  static int jz4780_nand_init_chip(struct platform_device *pdev,
+>  				struct jz4780_nand_controller *nfc,
+>  				struct device_node *np,
+> @@ -280,15 +285,8 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
+>  	chip->controller = &nfc->controller;
+>  	nand_set_flash_node(chip, np);
+>  
+> -	ret = nand_scan_ident(mtd, 1, NULL);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = jz4780_nand_init_ecc(nand, dev);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = nand_scan_tail(mtd);
+> +	chip->controller->ops = &jz4780_nand_controller_ops;
+> +	ret = nand_scan(mtd, 1);
+>  	if (ret)
+>  		return ret;
+>  
