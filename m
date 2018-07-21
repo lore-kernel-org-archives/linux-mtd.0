@@ -1,4 +1,4 @@
-Date: Sat, 21 Jul 2018 19:34:46 +0200
+Date: Sat, 21 Jul 2018 19:38:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
@@ -17,12 +17,12 @@ Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
  linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
  linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v4 17/35] mtd: rawnand: omap2: convert driver to
+Subject: Re: [PATCH v4 18/35] mtd: rawnand: s3c2410: convert driver to
  nand_scan()
-Message-ID: <20180721193446.499c2d7d@bbrezillon>
-In-Reply-To: <20180720151527.16038-18-miquel.raynal@bootlin.com>
+Message-ID: <20180721193840.05fa4e4f@bbrezillon>
+In-Reply-To: <20180720151527.16038-19-miquel.raynal@bootlin.com>
 References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
- <20180720151527.16038-18-miquel.raynal@bootlin.com>
+ <20180720151527.16038-19-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -35,33 +35,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jul 2018 17:15:09 +0200
+On Fri, 20 Jul 2018 17:15:10 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
->  static int omap_nand_probe(struct platform_device *pdev)
+> Two helpers have been added to the core to make ECC-related
+> configuration between the detection phase and the final NAND scan. Use
+> these hooks and convert the driver to just use nand_scan() instead of
+> both nand_scan_ident() and nand_scan_tail().
+> 
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+
+> ---
+>  drivers/mtd/nand/raw/s3c2410.c | 30 +++++++++++++-----------------
+>  1 file changed, 13 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+> index e8bf64832213..c21e8892394a 100644
+> --- a/drivers/mtd/nand/raw/s3c2410.c
+> +++ b/drivers/mtd/nand/raw/s3c2410.c
+> @@ -915,20 +915,19 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+>  }
+>  
+>  /**
+> - * s3c2410_nand_update_chip - post probe update
+> - * @info: The controller instance.
+> - * @nmtd: The driver version of the MTD instance.
+> + * s3c2410_nand_attach_chip - Init the ECC engine after NAND scan
+> + * @chip: The NAND chip
+>   *
+> - * This routine is called after the chip probe has successfully completed
+> - * and the relevant per-chip information updated. This call ensure that
+> + * This hook is called by the core after the identification of the NAND chip,
+> + * once the relevant per-chip information is up to date.. This call ensure that
+>   * we update the internal state accordingly.
+>   *
+>   * The internal state is currently limited to the ECC state information.
+>  */
+> -static int s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+> -				    struct s3c2410_nand_mtd *nmtd)
+> +static int s3c2410_nand_attach_chip(struct nand_chip *chip)
 >  {
->  	struct omap_nand_info		*info;
->  	struct mtd_info			*mtd;
->  	struct nand_chip		*nand_chip;
->  	int				err;
-> -	dma_cap_mask_t			mask;
->  	struct resource			*res;
->  	struct device			*dev = &pdev->dev;
-> -	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
-> -	int				oobbytes_per_step;
+> -	struct nand_chip *chip = &nmtd->chip;
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
 >  
->  	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
->  				GFP_KERNEL);
-> @@ -1967,6 +2221,7 @@ static int omap_nand_probe(struct platform_device *pdev)
->  	info->phys_base = res->start;
+>  	switch (chip->ecc.mode) {
 >  
->  	nand_chip->controller = &omap_gpmc_controller;
-> +	nand_chip->controller->ops = &omap_nand_controller_ops;
-
-Move this assignment here [1].
-
+> @@ -998,6 +997,10 @@ static int s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
+>  	return 0;
+>  }
 >  
->  	nand_chip->IO_ADDR_W = nand_chip->IO_ADDR_R;
->  	nand_chip->cmd_ctrl  = omap_hwcontrol;
-
-[1]https://elixir.bootlin.com/linux/v4.18-rc5/source/drivers/mtd/nand/raw/omap2.c#L148
+> +static const struct nand_controller_ops s3c24xx_nand_controller_ops = {
+> +	.attach_chip = s3c2410_nand_attach_chip,
+> +};
+> +
+>  static const struct of_device_id s3c24xx_nand_dt_ids[] = {
+>  	{
+>  		.compatible = "samsung,s3c2410-nand",
+> @@ -1095,6 +1098,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+>  	platform_set_drvdata(pdev, info);
+>  
+>  	nand_controller_init(&info->controller);
+> +	info->controller.ops = &s3c24xx_nand_controller_ops;
+>  
+>  	/* get the clock source and enable it */
+>  
+> @@ -1166,15 +1170,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
+>  		mtd->dev.parent = &pdev->dev;
+>  		s3c2410_nand_init_chip(info, nmtd, sets);
+>  
+> -		err = nand_scan_ident(mtd, (sets) ? sets->nr_chips : 1, NULL);
+> -		if (err)
+> -			goto exit_error;
+> -
+> -		err = s3c2410_nand_update_chip(info, nmtd);
+> -		if (err < 0)
+> -			goto exit_error;
+> -
+> -		err = nand_scan_tail(mtd);
+> +		err = nand_scan(mtd, sets ? sets->nr_chips : 1);
+>  		if (err)
+>  			goto exit_error;
+>  
