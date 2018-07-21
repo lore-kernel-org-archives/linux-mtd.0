@@ -1,30 +1,24 @@
-Date: Sat, 21 Jul 2018 17:27:49 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Wenyou Yang <wenyou.yang@microchip.com>, Josh Wu
- <rainyfeeling@outlook.com>, Tudor Ambarus <Tudor.Ambarus@microchip.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
- Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
- Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH v4 12/35] mtd: rawnand: lpc32xx_slc: convert driver to
- nand_scan()
-Message-ID: <20180721172749.05529c8f@bbrezillon>
-In-Reply-To: <20180720151527.16038-13-miquel.raynal@bootlin.com>
-References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
- <20180720151527.16038-13-miquel.raynal@bootlin.com>
+Received: from fllv0015.ext.ti.com ([198.47.19.141])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fgu1h-0003yX-Az
+ for linux-mtd@lists.infradead.org; Sat, 21 Jul 2018 15:42:34 +0000
+Subject: Re: [PATCH 1/2] mtd: spi-nor: cadence-quadspi: fix timeout handling
+ in wait_for_completion_timeout
+To: Nicholas Mc Guire <hofrat@osadl.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <1532182912-3674-1-git-send-email-hofrat@osadl.org>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <a0644f99-b997-2a94-01ac-dcc2656e984b@ti.com>
+Date: Sat, 21 Jul 2018 21:11:51 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1532182912-3674-1-git-send-email-hofrat@osadl.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -35,114 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 Jul 2018 17:15:04 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi,
 
-> Two helpers have been added to the core to make ECC-related
-> configuration between the detection phase and the final NAND scan. Use
-> these hooks and convert the driver to just use nand_scan() instead of
-> both nand_scan_ident() and nand_scan_tail().
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+On 21-Jul-18 7:51 PM, Nicholas Mc Guire wrote:
+> wait_for_completion_timeout returns unsigned long not int so a variable of
+> proper type is introduced. Further the check for <= 0 is ambiguous and should
+> be == 0 here.
+>
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Oops, my bad. Thanks for the fix! I see you have fixed similar bug in
+cqspi_indirect_read_execute(). There is similar code in
+cqspi_indirect_write_execute(). Could you fix that as well?
 
+Regards
+Vignesh
+
+
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> Fixes: ffa639e069fb ("mtd: spi-nor: cadence-quadspi: Add DMA support for direct mode reads")
 > ---
->  drivers/mtd/nand/raw/lpc32xx_slc.c | 77 +++++++++++++++++++++-----------------
->  1 file changed, 42 insertions(+), 35 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-> index 42820aa1abab..a4e8b7e75135 100644
-> --- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-> +++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-> @@ -779,6 +779,46 @@ static struct lpc32xx_nand_cfg_slc *lpc32xx_parse_dt(struct device *dev)
->  	return ncfg;
->  }
->  
-> +static int lpc32xx_nand_attach_chip(struct nand_chip *chip)
-> +{
-> +	struct mtd_info *mtd = nand_to_mtd(chip);
-> +	struct lpc32xx_nand_host *host = nand_get_controller_data(chip);
-> +
-> +	/* OOB and ECC CPU and DMA work areas */
-> +	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-> +
-> +	/*
-> +	 * Small page FLASH has a unique OOB layout, but large and huge
-> +	 * page FLASH use the standard layout. Small page FLASH uses a
-> +	 * custom BBT marker layout.
-> +	 */
-> +	if (mtd->writesize <= 512)
-> +		mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
-> +
-> +	/* These sizes remain the same regardless of page size */
-> +	chip->ecc.size = 256;
-> +	chip->ecc.bytes = LPC32XX_SLC_DEV_ECC_BYTES;
-> +	chip->ecc.prepad = 0;
-> +	chip->ecc.postpad = 0;
-> +
-> +	/*
-> +	 * Use a custom BBT marker setup for small page FLASH that
-> +	 * won't interfere with the ECC layout. Large and huge page
-> +	 * FLASH use the standard layout.
-> +	 */
-> +	if ((chip->bbt_options & NAND_BBT_USE_FLASH) &&
-> +	    mtd->writesize <= 512) {
-> +		chip->bbt_td = &bbt_smallpage_main_descr;
-> +		chip->bbt_md = &bbt_smallpage_mirror_descr;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct nand_controller_ops lpc32xx_nand_controller_ops = {
-> +	.attach_chip = lpc32xx_nand_attach_chip,
-> +};
-> +
->  /*
->   * Probe for NAND controller
->   */
-> @@ -884,41 +924,8 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
+> Patch found by experimental coccinelle API conformance checker
+>> Patch was compile tested with: socfpga_defconfig (implies
+> CONFIG_SPI_CADENCE_QUADSPI=y)
+> 
+> Patch is against 4.18-rc5 (localversion-next is next-20180720)
+> 
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index d7e10b3..79f6a54 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -953,6 +953,7 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
+>  	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
+>  	dma_addr_t dma_src = (dma_addr_t)cqspi->mmap_phys_base + from;
+>  	int ret = 0;
+> +	unsigned long timeout;
+>  	struct dma_async_tx_descriptor *tx;
+>  	dma_cookie_t cookie;
+>  	dma_addr_t dma_dst;
+> @@ -988,9 +989,9 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
 >  	}
 >  
->  	/* Find NAND device */
-> -	res = nand_scan_ident(mtd, 1, NULL);
-> -	if (res)
-> -		goto release_dma;
-> -
-> -	/* OOB and ECC CPU and DMA work areas */
-> -	host->ecc_buf = (uint32_t *)(host->data_buf + LPC32XX_DMA_DATA_SIZE);
-> -
-> -	/*
-> -	 * Small page FLASH has a unique OOB layout, but large and huge
-> -	 * page FLASH use the standard layout. Small page FLASH uses a
-> -	 * custom BBT marker layout.
-> -	 */
-> -	if (mtd->writesize <= 512)
-> -		mtd_set_ooblayout(mtd, &lpc32xx_ooblayout_ops);
-> -
-> -	/* These sizes remain the same regardless of page size */
-> -	chip->ecc.size = 256;
-> -	chip->ecc.bytes = LPC32XX_SLC_DEV_ECC_BYTES;
-> -	chip->ecc.prepad = chip->ecc.postpad = 0;
-> -
-> -	/*
-> -	 * Use a custom BBT marker setup for small page FLASH that
-> -	 * won't interfere with the ECC layout. Large and huge page
-> -	 * FLASH use the standard layout.
-> -	 */
-> -	if ((chip->bbt_options & NAND_BBT_USE_FLASH) &&
-> -	    mtd->writesize <= 512) {
-> -		chip->bbt_td = &bbt_smallpage_main_descr;
-> -		chip->bbt_md = &bbt_smallpage_mirror_descr;
-> -	}
-> -
-> -	/*
-> -	 * Fills out all the uninitialized function pointers with the defaults
-> -	 */
-> -	res = nand_scan_tail(mtd);
-> +	chip->dummy_controller.ops = &lpc32xx_nand_controller_ops;
-> +	res = nand_scan(mtd, 1);
->  	if (res)
->  		goto release_dma;
->  
+>  	dma_async_issue_pending(cqspi->rx_chan);
+> -	ret = wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> -					  msecs_to_jiffies(len));
+> -	if (ret <= 0) {
+> +	timeout = wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> +					      msecs_to_jiffies(len));
+> +	if (timeout == 0) {
+>  		dmaengine_terminate_sync(cqspi->rx_chan);
+>  		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
+>  		ret = -ETIMEDOUT;
+> 
