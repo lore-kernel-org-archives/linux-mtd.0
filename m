@@ -1,9 +1,9 @@
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fgqUA-0006Nf-Ly
- for linux-mtd@lists.infradead.org; Sat, 21 Jul 2018 11:55:44 +0000
-Received: by mail-lf1-x142.google.com with SMTP id a134-v6so3474627lfe.6
- for <linux-mtd@lists.infradead.org>; Sat, 21 Jul 2018 04:55:31 -0700 (PDT)
+ id 1fgqaI-00088W-99
+ for linux-mtd@lists.infradead.org; Sat, 21 Jul 2018 12:02:03 +0000
+Received: by mail-lf1-x144.google.com with SMTP id j143-v6so3474471lfj.12
+ for <linux-mtd@lists.infradead.org>; Sat, 21 Jul 2018 05:01:51 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
  Bert Kenward <bkenward@solarflare.com>, linux-mtd@lists.infradead.org,
  =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: [PATCH 1/2] mtd: lpddr: use mtd_device_register()
-Date: Sat, 21 Jul 2018 13:55:09 +0200
-Message-Id: <20180721115510.24078-1-zajec5@gmail.com>
+Subject: [PATCH 2/2] mtd: spi-nor: intel-spi: use mtd_device_register()
+Date: Sat, 21 Jul 2018 13:55:10 +0200
+Message-Id: <20180721115510.24078-2-zajec5@gmail.com>
+In-Reply-To: <20180721115510.24078-1-zajec5@gmail.com>
+References: <20180721115510.24078-1-zajec5@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -33,21 +35,21 @@ This driver doesn't specify parsers so it can use that little helper.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- drivers/mtd/lpddr/lpddr2_nvm.c | 2 +-
+ drivers/mtd/spi-nor/intel-spi.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/lpddr/lpddr2_nvm.c b/drivers/mtd/lpddr/lpddr2_nvm.c
-index 5d73db2a496d..c950c880ad59 100644
---- a/drivers/mtd/lpddr/lpddr2_nvm.c
-+++ b/drivers/mtd/lpddr/lpddr2_nvm.c
-@@ -476,7 +476,7 @@ static int lpddr2_nvm_probe(struct platform_device *pdev)
- 		return -EINVAL;
- 	}
- 	/* Parse partitions and register the MTD device */
--	return mtd_device_parse_register(mtd, NULL, NULL, NULL, 0);
-+	return mtd_device_register(mtd, NULL, 0);
- }
+diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-spi.c
+index d2cbfc27826e..af0a22019516 100644
+--- a/drivers/mtd/spi-nor/intel-spi.c
++++ b/drivers/mtd/spi-nor/intel-spi.c
+@@ -908,7 +908,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+ 	if (!ispi->writeable || !writeable)
+ 		ispi->nor.mtd.flags &= ~MTD_WRITEABLE;
  
- /*
+-	ret = mtd_device_parse_register(&ispi->nor.mtd, NULL, NULL, &part, 1);
++	ret = mtd_device_register(&ispi->nor.mtd, &part, 1);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
 -- 
 2.13.7
