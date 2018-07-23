@@ -1,17 +1,36 @@
-Received: from mail.rptsys.com ([192.119.205.245])
+Received: from mail-eopbgr680067.outbound.protection.outlook.com
+ ([40.107.68.67] helo=NAM04-BN3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhWjl-0000ZF-JC
- for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 09:02:39 +0000
-Date: Mon, 23 Jul 2018 04:02:19 -0500 (CDT)
-From: Timothy Pearson <tpearson@raptorengineering.com>
-To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Stewart Smith <stewart@linux.vnet.ibm.com>,
- Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Message-ID: <1959109367.8330026.1532336539584.JavaMail.zimbra@raptorengineeringinc.com>
-Subject: [PATCH] mtd/powernv_flash: Enable partition support
+ id 1fhWmy-0002tJ-6z
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 09:05:58 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com" <rogerq@ti.com>,
+ "ladis@linux-mips.org" <ladis@linux-mips.org>, "ada@thorsis.co"
+ <ada@thorsis.co>, "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
+ "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>, Michal
+ Simek <michals@xilinx.com>
+Subject: RE: [LINUX PATCH v11 3/3] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Date: Mon, 23 Jul 2018 09:05:39 +0000
+Message-ID: <MWHPR02MB262381A5BE3BE24EEF060F41AF560@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1531294612-29526-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB2623DFB0D13FF25DECC16027AF570@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180723093038.5f6933d3@xps13>
+In-Reply-To: <20180723093038.5f6933d3@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +40,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On certain systems, such as the Talos II, skiboot emits a partition
-table for the main PNOR MTD device in the generated device tree.
-
-Allow this partition table to be parsed and the partitions to be
-exposed via MTD device partition nodes.
-
-Signed-off-by: Timothy Pearson <tpearson@raptorengineering.com>
----
- drivers/mtd/devices/powernv_flash.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
-index c1312b141ae0..a2c6b30925c4 100644
---- a/drivers/mtd/devices/powernv_flash.c
-+++ b/drivers/mtd/devices/powernv_flash.c
-@@ -2,6 +2,7 @@
-  * OPAL PNOR flash MTD abstraction
-  *
-  * Copyright IBM 2015
-+ * Copyright Raptor Engineering, LLC 2018
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -259,8 +260,10 @@ static int powernv_flash_probe(struct platform_device *pdev)
- 	/*
- 	 * The current flash that skiboot exposes is one contiguous flash chip
- 	 * with an ffs partition at the start, it should prove easier for users
--	 * to deal with partitions or not as they see fit
-+	 * to deal with partitions or not as they see fit.  skiboot places this
-+	 * on the first MTD partition.
- 	 */
-+	mtd_set_of_node(&data->mtd, dev->of_node);
- 	return mtd_device_register(&data->mtd, NULL, 0);
- }
- 
--- 
-2.18.0
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBNb25k
+YXksIEp1bHkgMjMsIDIwMTggMTowMSBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8
+bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbTsg
+cmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7DQo+IGNvbXB1dGVyc2ZvcnBlYWNl
+QGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBmLmZhaW5lbGxpQGdtYWlsLmNvbTsN
+Cj4gbW1heWVyQGJyb2FkY29tLmNvbTsgcm9nZXJxQHRpLmNvbTsgbGFkaXNAbGludXgtbWlwcy5v
+cmc7IGFkYUB0aG9yc2lzLmNvOw0KPiBob25naHVpLnpoYW5nQG1lZGlhdGVrLmNvbTsgbGludXMu
+d2FsbGVpakBsaW5hcm8ub3JnOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXgt
+DQo+IGtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG5hZ2FzdXJlc2hrdW1hcnJlbGxpQGdtYWlsLmNv
+bTsgTWljaGFsIFNpbWVrDQo+IDxtaWNoYWxzQHhpbGlueC5jb20+DQo+IFN1YmplY3Q6IFJlOiBb
+TElOVVggUEFUQ0ggdjExIDMvM10gbXRkOiByYXduYW5kOiBwbDM1MzogQWRkIGJhc2ljIGRyaXZl
+ciBmb3IgYXJtIHBsMzUzDQo+IHNtYyBuYW5kIGludGVyZmFjZQ0KPiANCj4gSGkgTmFnYSwNCj4g
+DQo+IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlIG9u
+IFN1biwgMjIgSnVsIDIwMTgNCj4gMDc6MDQ6NDEgKzAwMDA6DQo+IA0KPiA+IEhpIE1pcXVlbCwN
+Cj4gPg0KPiA+IENvdWxkIHlvdSBwbGVhc2UgcHJvdmlkZSB5b3VyIHJldmlldyBjb21tZW50cz8N
+Cj4gPiBJIHdpbGwgYWRkcmVzcyBpZiBhbnkuDQo+IA0KPiBXZSBhcmUgYWxtb3N0IGF0IHRoZSBl
+bmQgb2YgYSBwcmV0dHkgYmlnIHJlbGVhc2UsIEkgcmFuIG91dCBvZiB0aW1lIHRvIGRvIGFub3Ro
+ZXIgcmV2aWV3IG9mIHlvdXINCj4gc2VyaWVzLCBzb3JyeSBmb3IgdGhlIGRlbGF5Lg0KTm8gcHJv
+YmxlbSwgYW5kIHRoYW5rcyBmb3IgeW91ciByZXBseS4NCg0KVGhhbmtzLA0KTmFnYSBTdXJlc2hr
+dW1hciBSZWxsaQ0KPiANCj4gUmVnYXJkcywNCj4gTWlxdcOobA0K
