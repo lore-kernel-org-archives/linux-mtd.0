@@ -1,20 +1,33 @@
-To: LKML <linux-kernel@vger.kernel.org>,
- Linux-sh list <linux-sh@vger.kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>,
- Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH v2] mtd/maps: fix solutionengine.c printk format warnings
-Message-ID: <0ca72308-0551-97dc-dc74-11e1d8dac5b1@infradead.org>
-Date: Sun, 22 Jul 2018 16:28:52 -0700
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fhVJ9-0006yA-AQ
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 07:31:05 +0000
+Date: Mon, 23 Jul 2018 09:30:38 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+ "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com"
+ <rogerq@ti.com>, "ladis@linux-mips.org" <ladis@linux-mips.org>,
+ "ada@thorsis.co" <ada@thorsis.co>, "honghui.zhang@mediatek.com"
+ <honghui.zhang@mediatek.com>, "linus.walleij@linaro.org"
+ <linus.walleij@linaro.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
+Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: pl353: Add basic driver for
+ arm pl353 smc nand interface
+Message-ID: <20180723093038.5f6933d3@xps13>
+In-Reply-To: <MWHPR02MB2623DFB0D13FF25DECC16027AF570@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1531294612-29526-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <MWHPR02MB2623DFB0D13FF25DECC16027AF570@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +37,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Hi Naga,
 
-Fix 2 printk format warnings (this driver is currently only used by
-arch/sh/) by using "%pap" instead of "%lx".
-(or we could just cast the physical addresses to unsigned int)
+Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Sun, 22 Jul 2018
+07:04:41 +0000:
 
-Fixes these build warnings:
+> Hi Miquel,
+>=20
+> Could you please provide your review comments?
+> I will address if any.
 
-../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
-                                                  ~~~~^
-                                                  %08x
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
-                                                                    ~~~~^
-                                                                    %08x
+We are almost at the end of a pretty big release, I ran out of time to
+do another review of your series, sorry for the delay.
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
-v2: indent all lines inside the new block
-
- drivers/mtd/maps/solutionengine.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
---- linux-next-20180717.orig/drivers/mtd/maps/solutionengine.c
-+++ linux-next-20180717/drivers/mtd/maps/solutionengine.c
-@@ -59,9 +59,14 @@ static int __init init_soleng_maps(void)
- 			return -ENXIO;
- 		}
- 	}
--	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
--	       soleng_flash_map.phys & 0x1fffffff,
--	       soleng_eprom_map.phys & 0x1fffffff);
-+	{
-+		resource_size_t fl_phys = soleng_flash_map.phys & 0x1fffffff;
-+		resource_size_t ep_phys = soleng_eprom_map.phys & 0x1fffffff;
-+
-+		printk(KERN_NOTICE
-+		       "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
-+	       	       &fl_phys, &ep_phys);
-+	}
- 	flash_mtd->owner = THIS_MODULE;
- 
- 	eprom_mtd = do_map_probe("map_rom", &soleng_eprom_map);
+Regards,
+Miqu=C3=A8l
