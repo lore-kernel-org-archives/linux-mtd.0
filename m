@@ -1,20 +1,20 @@
-Received: from mailout.micron.com ([137.201.242.129])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhaqq-0005VX-Hb
- for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 13:26:14 +0000
-From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
-To: Richard Weinberger <richard@nod.at>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: RE: [EXT] Re: UBIFS file has zeroes at the end after an unclean reboot
-Date: Mon, 23 Jul 2018 13:25:49 +0000
-Message-ID: <2d969635723b4aa3abf59b2d5da7ab3e@SIWEX5A.sing.micron.com>
+ id 1fhbLM-0004u9-45
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 13:57:48 +0000
+From: Richard Weinberger <richard@nod.at>
+To: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [EXT] Re: UBIFS file has zeroes at the end after an unclean reboot
+Date: Mon, 23 Jul 2018 15:57:30 +0200
+Message-ID: <7190735.ucvf7OJQ7J@blindfold>
+In-Reply-To: <2d969635723b4aa3abf59b2d5da7ab3e@SIWEX5A.sing.micron.com>
 References: <8f54ca9aee0947d49e7e99dd11f33a74@SIWEX5A.sing.micron.com>
  <1929018.rLX3MmPisr@blindfold>
-In-Reply-To: <1929018.rLX3MmPisr@blindfold>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <2d969635723b4aa3abf59b2d5da7ab3e@SIWEX5A.sing.micron.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksUmljaGFyZA0KVGhhbmtzLiAgDQppdCBpcyBBc3luYyBtb2RlIHViaWZzICBtb3VudGVkLiBB
-ZnRlciByYW5kb20gcG93ZXJsb3NzIHRlc3RpbmcsIGZvdW5kIHRoYXQgdGhlcmUgaXMgb25lIGZp
-bGUgY29udGFpbnMgaHVnZSB6ZXJvZXMgZGF0YS4NCkJ1dCBVQklGUyBkaWRuJ3QgY3Jhc2ggYW5k
-IG5vIEVDQy9DUkMgZXJyb3IuDQoNCkFzIGZvciB0aGUgYmVsb3cgcGF0Y2gsIGRvZXNu4oCZdCBl
-eGlzdCwgd2Ugd2lsbCB0cnkgdGhhdC4NClRoYW5rcyBhZ2Fpbi4NCg0KPkFtIE1vbnRhZywgMjMu
-IEp1bGkgMjAxOCwgMTM6MTI6MDkgQ0VTVCBzY2hyaWViIEJlYW4gSHVvIChiZWFuaHVvKToNCj4+
-IEhpLCBSaWNoYXJkDQo+PiBEbyB5b3UgaGF2ZSBnb29kIHN1Z2dlc3Rpb25zIGFib3V0IGhvdyB0
-byBwcmV2ZW50IHRoaXMgY29uZGljaXRvbjoNCj5odHRwOi8vd3d3LmxpbnV4LW10ZC5pbmZyYWRl
-YWQub3JnL2ZhcS91Ymlmcy5odG1sI0xfZW5kX2hvbGUgPw0KPg0KPldlbGwsIEknZCBzdGFydCB3
-aXRoIG1ha2luZyBzdXJlIHRoYXQgdXNlcnNwYWNlcyBkb2VzIHRoZSByaWdodCB0aGluZyh0bSkg
-YW5kDQo+dG8gYmUgdmVyeSBzdXJlIHdoYXQga2luZCBvZiBwcm9ibGVtIHRoZSB1c2VyIGlzIGZh
-Y2luZy4NCj5EaWQgeW91IHZlcmlmeSB3aGV0aGVyIHRoZSBhZmZlY3RlZCBwcm9ncmFtIGlzIHVz
-aW5nIGZzeW5jL2ZkYXRhc3luYz8NCj4NCj5Eb2VzIHlvdXIga2VybmVsIGluY2x1ZGUNCj5jb21t
-aXQgMWI3ZmMyYzAwNjlmMzg2NGEzZGRhMTU0MzBiN2FkZWQzMWMwYmZjYw0KPkF1dGhvcjogUmFm
-YcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPg0KPkRhdGU6ICAgVHVlIFNlcCAyMCAxMDoz
-NjoxNSAyMDE2ICswMjAwDQo+DQo+ICAgIHViaWZzOiBVc2UgZGlydHlfd3JpdGViYWNrX2ludGVy
-dmFsIHZhbHVlIGZvciB3YnVmIHRpbWVyDQo+DQo+ICAgIFJpZ2h0IG5vdyB3YnVmIHRpbWVyIGhh
-cyBoYXJkY29kZWQgdGltZW91dHMgYW5kIHRoZXJlIGlzIG5vIHBsYWNlIGZvcg0KPiAgICBtYW51
-YWwgYWRqdXN0bWVudHMuIFNvbWUgcHJvamVjdHMgLyBjYXNlcyBtYW55IG5lZWQgdGhhdCB0aG91
-Z2guIEZldw0KPiAgICBmaWxlIHN5c3RlbXMgYWxsb3cgZG9pbmcgdGhhdCBieSByZXNwZWN0aW5n
-IGRpcnR5X3dyaXRlYmFja19pbnRlcnZhbA0KPiAgICB0aGF0IGNhbiBiZSBzZXQgdXNpbmcgc3lz
-Y3RsIChkaXJ0eV93cml0ZWJhY2tfY2VudGlzZWNzKS4NCj4NCj4gICAgTG93ZXJpbmcgZGlydHlf
-d3JpdGViYWNrX2ludGVydmFsIGNvdWxkIGJlIHNvbWUgd2F5IG9mIGRlYWxpbmcgd2l0aCB1c2Vy
-DQo+ICAgIHNwYWNlIGFwcHMgbGFja2luZyBwcm9wZXIgZnN5bmNzLiBUaGlzIGlzIGRlZmluaXRl
-bHkgKm5vdCogYSBwZXJmZWN0DQo+ICAgIHNvbHV0aW9uIGJ1dCB3ZSBkb24ndCBoYXZlIGlkZWFs
-ICh1c2VyIHNwYWNlKSB3b3JsZC4gVGhlcmUgd2VyZSBhbHJlYWR5DQo+ICAgIGFkdmFuY2VkIGRp
-c2N1c3Npb25zIG9uIHRoaXMgbWF0dGVyLCBtb3N0bHkgd2hlbiBleHQ0IHdhcyBpbnRyb2R1Y2Vk
-IGFuZA0KPiAgICBpdCB3YXNuJ3QgYmVoYXZpbmcgYXMgZXh0My4gQW55d2F5LCB0aGUgZmluYWwg
-ZGVjaXNpb24gd2FzIHRvIGFkZCBzb21lDQo+ICAgIGhhY2tzIHRvIHRoZSBleHQ0LCBhcyB0cnlp
-bmcgdG8gZml4IHdob2xlIHVzZXIgc3BhY2Ugb3IgYWRkaW5nIG5ldyBBUEkNCj4gICAgd2FzIHBv
-aW50bGVzcy4NCj4NCj4gICAgV2UgY2FuJ3QgKGFuZCBzaG91bGRuJ3Q/KSBqdXN0IGZvbGxvdyBl
-eHQ0LiBXZSBjYW4ndCBlLmcuIHN5bmMgb24gY2xvc2UNCj4gICAgYXMgdGhpcyB3b3VsZCBjYXVz
-ZSB0b28gbWFueSBjb21taXRzIGFuZCBmbGFzaCB3ZWFyaW5nLiBPbiB0aGUgb3RoZXINCj4gICAg
-aGFuZCB3ZSBzdGlsbCBzaG91bGQgYWxsb3cgc29tZSB0cmFkZS1vZmYgYmV0d2VlbiAtbyBzeW5j
-IGFuZCBkZWZhdWx0DQo+ICAgIHdidWYgdGltZW91dC4gUmVzcGVjdGluZyBkaXJ0eV93cml0ZWJh
-Y2tfaW50ZXJ2YWwgc2hvdWxkIGFsbG93IHNvbWUgc2FuZQ0KPiAgICBjdXRvbWl6YXRpb25zIGlm
-IHVzZWQgd2FyaWx5Lg0KPg0KPiAgICBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJh
-ZmFsQG1pbGVja2kucGw+DQo+ICAgIFJldmlld2VkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
-LmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb20+DQo+ICAgIFNpZ25lZC1vZmYtYnk6IFJpY2hh
-cmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ID8NCj4NCj5UaGFua3MsDQo+Ly9yaWNoYXJk
-DQo=
+Bean,
+
+Am Montag, 23. Juli 2018, 15:25:49 CEST schrieb Bean Huo (beanhuo):
+> Hi,Richard
+> Thanks.  
+> it is Async mode ubifs  mounted. After random powerloss testing, found that there is one file contains huge zeroes data.
+> But UBIFS didn't crash and no ECC/CRC error.
+
+Well, if the application changed the file while the power-cut happens, such situation can happen on all
+kind of filesystems.
+That's why I asked whether the application does the right thing. :)
+
+Thanks,
+//richard
