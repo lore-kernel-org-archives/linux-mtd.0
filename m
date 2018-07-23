@@ -1,27 +1,20 @@
-Received: from mail-qk0-x243.google.com ([2607:f8b0:400d:c09::243])
+Received: from mailout.micron.com ([137.201.242.129])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhZlR-0000eG-Mo
- for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 12:16:35 +0000
-Received: by mail-qk0-x243.google.com with SMTP id 26-v6so221604qks.9
- for <linux-mtd@lists.infradead.org>; Mon, 23 Jul 2018 05:16:23 -0700 (PDT)
+ id 1fhaqq-0005VX-Hb
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 13:26:14 +0000
+From: "Bean Huo (beanhuo)" <beanhuo@micron.com>
+To: Richard Weinberger <richard@nod.at>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [EXT] Re: UBIFS file has zeroes at the end after an unclean reboot
+Date: Mon, 23 Jul 2018 13:25:49 +0000
+Message-ID: <2d969635723b4aa3abf59b2d5da7ab3e@SIWEX5A.sing.micron.com>
+References: <8f54ca9aee0947d49e7e99dd11f33a74@SIWEX5A.sing.micron.com>
+ <1929018.rLX3MmPisr@blindfold>
+In-Reply-To: <1929018.rLX3MmPisr@blindfold>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Sender: joel.stan@gmail.com
-In-Reply-To: <20180622121417.6762-5-clg@kaod.org>
-References: <20180622121417.6762-1-clg@kaod.org>
- <20180622121417.6762-5-clg@kaod.org>
-From: Joel Stanley <joel@jms.id.au>
-Date: Mon, 23 Jul 2018 21:46:01 +0930
-Message-ID: <CACPK8Xd0KeTpP+hbHXUDnu5-XzywX_ngCx_N-1Qcokavk5cw7w@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mtd: spi-nor: aspeed: introduce optimized settings
- for fast reads
-To: =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>
-Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-aspeed@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 22 June 2018 at 21:44, C=C3=A9dric Le Goater <clg@kaod.org> wrote:
-> Better settings for fast reads are looked for by implementing a SPI
-> timing calibration sequence described in the Aspeed SoC specification
-> document. The code is based on the OpenPOWER pflash tool and a similar
-> sequence using DMAs can be found in the SDK U-Boot.
->
-> The SPI calibration performs a loop on different SPI clock rates
-> (dividers of the AHB clock rates) and on different input delay cycles
-> for each SPI clock rates. The successive read results are compared to
-> a golden buffer, read at low speed, to select the safest and fastest
-> read settings for the chip.
->
-> The "spi-max-frequency" property is used to cap the optimize read
-> algorithm on some devices or controllers for which we want a "really"
-> safe setting, on the FMC controller chips for instance.
->
-> It can also be deactivated at boot time with a kernel parameter
-> 'optimize_read', but that was never used on the field.
->
-> Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
-
-Reviewed-by: Joel Stanley <joel@jms.id.au>
-
-I have also been running these applied to a 4.17 base on ast2400 and
-ast2500 systems for the past few months. This week I gave them a spin
-on top of linux-next too.
-
-They have looked good so far, so I would encourage the series to me
-merged for 4.19 so we can reduce the number of out of tree we use in
-OpenBMC systems.
-
-For the series:
-
-Tested-by: Joel Stanley <joel@jms.id.au>
-
-Cheers,
-
-Joel
+SGksUmljaGFyZA0KVGhhbmtzLiAgDQppdCBpcyBBc3luYyBtb2RlIHViaWZzICBtb3VudGVkLiBB
+ZnRlciByYW5kb20gcG93ZXJsb3NzIHRlc3RpbmcsIGZvdW5kIHRoYXQgdGhlcmUgaXMgb25lIGZp
+bGUgY29udGFpbnMgaHVnZSB6ZXJvZXMgZGF0YS4NCkJ1dCBVQklGUyBkaWRuJ3QgY3Jhc2ggYW5k
+IG5vIEVDQy9DUkMgZXJyb3IuDQoNCkFzIGZvciB0aGUgYmVsb3cgcGF0Y2gsIGRvZXNu4oCZdCBl
+eGlzdCwgd2Ugd2lsbCB0cnkgdGhhdC4NClRoYW5rcyBhZ2Fpbi4NCg0KPkFtIE1vbnRhZywgMjMu
+IEp1bGkgMjAxOCwgMTM6MTI6MDkgQ0VTVCBzY2hyaWViIEJlYW4gSHVvIChiZWFuaHVvKToNCj4+
+IEhpLCBSaWNoYXJkDQo+PiBEbyB5b3UgaGF2ZSBnb29kIHN1Z2dlc3Rpb25zIGFib3V0IGhvdyB0
+byBwcmV2ZW50IHRoaXMgY29uZGljaXRvbjoNCj5odHRwOi8vd3d3LmxpbnV4LW10ZC5pbmZyYWRl
+YWQub3JnL2ZhcS91Ymlmcy5odG1sI0xfZW5kX2hvbGUgPw0KPg0KPldlbGwsIEknZCBzdGFydCB3
+aXRoIG1ha2luZyBzdXJlIHRoYXQgdXNlcnNwYWNlcyBkb2VzIHRoZSByaWdodCB0aGluZyh0bSkg
+YW5kDQo+dG8gYmUgdmVyeSBzdXJlIHdoYXQga2luZCBvZiBwcm9ibGVtIHRoZSB1c2VyIGlzIGZh
+Y2luZy4NCj5EaWQgeW91IHZlcmlmeSB3aGV0aGVyIHRoZSBhZmZlY3RlZCBwcm9ncmFtIGlzIHVz
+aW5nIGZzeW5jL2ZkYXRhc3luYz8NCj4NCj5Eb2VzIHlvdXIga2VybmVsIGluY2x1ZGUNCj5jb21t
+aXQgMWI3ZmMyYzAwNjlmMzg2NGEzZGRhMTU0MzBiN2FkZWQzMWMwYmZjYw0KPkF1dGhvcjogUmFm
+YcWCIE1pxYJlY2tpIDxyYWZhbEBtaWxlY2tpLnBsPg0KPkRhdGU6ICAgVHVlIFNlcCAyMCAxMDoz
+NjoxNSAyMDE2ICswMjAwDQo+DQo+ICAgIHViaWZzOiBVc2UgZGlydHlfd3JpdGViYWNrX2ludGVy
+dmFsIHZhbHVlIGZvciB3YnVmIHRpbWVyDQo+DQo+ICAgIFJpZ2h0IG5vdyB3YnVmIHRpbWVyIGhh
+cyBoYXJkY29kZWQgdGltZW91dHMgYW5kIHRoZXJlIGlzIG5vIHBsYWNlIGZvcg0KPiAgICBtYW51
+YWwgYWRqdXN0bWVudHMuIFNvbWUgcHJvamVjdHMgLyBjYXNlcyBtYW55IG5lZWQgdGhhdCB0aG91
+Z2guIEZldw0KPiAgICBmaWxlIHN5c3RlbXMgYWxsb3cgZG9pbmcgdGhhdCBieSByZXNwZWN0aW5n
+IGRpcnR5X3dyaXRlYmFja19pbnRlcnZhbA0KPiAgICB0aGF0IGNhbiBiZSBzZXQgdXNpbmcgc3lz
+Y3RsIChkaXJ0eV93cml0ZWJhY2tfY2VudGlzZWNzKS4NCj4NCj4gICAgTG93ZXJpbmcgZGlydHlf
+d3JpdGViYWNrX2ludGVydmFsIGNvdWxkIGJlIHNvbWUgd2F5IG9mIGRlYWxpbmcgd2l0aCB1c2Vy
+DQo+ICAgIHNwYWNlIGFwcHMgbGFja2luZyBwcm9wZXIgZnN5bmNzLiBUaGlzIGlzIGRlZmluaXRl
+bHkgKm5vdCogYSBwZXJmZWN0DQo+ICAgIHNvbHV0aW9uIGJ1dCB3ZSBkb24ndCBoYXZlIGlkZWFs
+ICh1c2VyIHNwYWNlKSB3b3JsZC4gVGhlcmUgd2VyZSBhbHJlYWR5DQo+ICAgIGFkdmFuY2VkIGRp
+c2N1c3Npb25zIG9uIHRoaXMgbWF0dGVyLCBtb3N0bHkgd2hlbiBleHQ0IHdhcyBpbnRyb2R1Y2Vk
+IGFuZA0KPiAgICBpdCB3YXNuJ3QgYmVoYXZpbmcgYXMgZXh0My4gQW55d2F5LCB0aGUgZmluYWwg
+ZGVjaXNpb24gd2FzIHRvIGFkZCBzb21lDQo+ICAgIGhhY2tzIHRvIHRoZSBleHQ0LCBhcyB0cnlp
+bmcgdG8gZml4IHdob2xlIHVzZXIgc3BhY2Ugb3IgYWRkaW5nIG5ldyBBUEkNCj4gICAgd2FzIHBv
+aW50bGVzcy4NCj4NCj4gICAgV2UgY2FuJ3QgKGFuZCBzaG91bGRuJ3Q/KSBqdXN0IGZvbGxvdyBl
+eHQ0LiBXZSBjYW4ndCBlLmcuIHN5bmMgb24gY2xvc2UNCj4gICAgYXMgdGhpcyB3b3VsZCBjYXVz
+ZSB0b28gbWFueSBjb21taXRzIGFuZCBmbGFzaCB3ZWFyaW5nLiBPbiB0aGUgb3RoZXINCj4gICAg
+aGFuZCB3ZSBzdGlsbCBzaG91bGQgYWxsb3cgc29tZSB0cmFkZS1vZmYgYmV0d2VlbiAtbyBzeW5j
+IGFuZCBkZWZhdWx0DQo+ICAgIHdidWYgdGltZW91dC4gUmVzcGVjdGluZyBkaXJ0eV93cml0ZWJh
+Y2tfaW50ZXJ2YWwgc2hvdWxkIGFsbG93IHNvbWUgc2FuZQ0KPiAgICBjdXRvbWl6YXRpb25zIGlm
+IHVzZWQgd2FyaWx5Lg0KPg0KPiAgICBTaWduZWQtb2ZmLWJ5OiBSYWZhxYIgTWnFgmVja2kgPHJh
+ZmFsQG1pbGVja2kucGw+DQo+ICAgIFJldmlld2VkLWJ5OiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
+LmJyZXppbGxvbkBmcmVlLWVsZWN0cm9ucy5jb20+DQo+ICAgIFNpZ25lZC1vZmYtYnk6IFJpY2hh
+cmQgV2VpbmJlcmdlciA8cmljaGFyZEBub2QuYXQ+ID8NCj4NCj5UaGFua3MsDQo+Ly9yaWNoYXJk
+DQo=
