@@ -1,33 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhVJ9-0006yA-AQ
- for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 07:31:05 +0000
-Date: Mon, 23 Jul 2018 09:30:38 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
- "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com"
- <rogerq@ti.com>, "ladis@linux-mips.org" <ladis@linux-mips.org>,
- "ada@thorsis.co" <ada@thorsis.co>, "honghui.zhang@mediatek.com"
- <honghui.zhang@mediatek.com>, "linus.walleij@linaro.org"
- <linus.walleij@linaro.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
-Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: pl353: Add basic driver for
- arm pl353 smc nand interface
-Message-ID: <20180723093038.5f6933d3@xps13>
-In-Reply-To: <MWHPR02MB2623DFB0D13FF25DECC16027AF570@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1531294612-29526-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <MWHPR02MB2623DFB0D13FF25DECC16027AF570@MWHPR02MB2623.namprd02.prod.outlook.com>
+Received: from mail.rptsys.com ([192.119.205.245])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fhWjl-0000ZF-JC
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 09:02:39 +0000
+Date: Mon, 23 Jul 2018 04:02:19 -0500 (CDT)
+From: Timothy Pearson <tpearson@raptorengineering.com>
+To: =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Stewart Smith <stewart@linux.vnet.ibm.com>,
+ Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Message-ID: <1959109367.8330026.1532336539584.JavaMail.zimbra@raptorengineeringinc.com>
+Subject: [PATCH] mtd/powernv_flash: Enable partition support
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,18 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
 
-Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Sun, 22 Jul 2018
-07:04:41 +0000:
+On certain systems, such as the Talos II, skiboot emits a partition
+table for the main PNOR MTD device in the generated device tree.
 
-> Hi Miquel,
->=20
-> Could you please provide your review comments?
-> I will address if any.
+Allow this partition table to be parsed and the partitions to be
+exposed via MTD device partition nodes.
 
-We are almost at the end of a pretty big release, I ran out of time to
-do another review of your series, sorry for the delay.
+Signed-off-by: Timothy Pearson <tpearson@raptorengineering.com>
+---
+ drivers/mtd/devices/powernv_flash.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Regards,
-Miqu=C3=A8l
+diff --git a/drivers/mtd/devices/powernv_flash.c b/drivers/mtd/devices/powernv_flash.c
+index c1312b141ae0..a2c6b30925c4 100644
+--- a/drivers/mtd/devices/powernv_flash.c
++++ b/drivers/mtd/devices/powernv_flash.c
+@@ -2,6 +2,7 @@
+  * OPAL PNOR flash MTD abstraction
+  *
+  * Copyright IBM 2015
++ * Copyright Raptor Engineering, LLC 2018
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -259,8 +260,10 @@ static int powernv_flash_probe(struct platform_device *pdev)
+ 	/*
+ 	 * The current flash that skiboot exposes is one contiguous flash chip
+ 	 * with an ffs partition at the start, it should prove easier for users
+-	 * to deal with partitions or not as they see fit
++	 * to deal with partitions or not as they see fit.  skiboot places this
++	 * on the first MTD partition.
+ 	 */
++	mtd_set_of_node(&data->mtd, dev->of_node);
+ 	return mtd_device_register(&data->mtd, NULL, 0);
+ }
+ 
+-- 
+2.18.0
