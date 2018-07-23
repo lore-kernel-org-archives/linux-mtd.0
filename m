@@ -1,24 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhdYX-0006ty-DC
- for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 16:19:31 +0000
-Date: Mon, 23 Jul 2018 18:19:15 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: Marcel Ziswiler <marcel@ziswiler.com>, linux-mtd@lists.infradead.org,
- Marcel Ziswiler <marcel.ziswiler@toradex.com>, Gregory CLEMENT
- <gregory.clement@bootlin.com>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
- Vladimir Zapolskiy <vz@mleia.com>, Miquel Raynal
- <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd: nand: fix spelling in driver api documentation
-Message-ID: <20180723181915.5f35f668@bbrezillon>
-In-Reply-To: <20180723093924.04af0e2f@lwn.net>
-References: <20180720075334.24254-1-marcel@ziswiler.com>
- <20180723093924.04af0e2f@lwn.net>
+Received: from sonic314-13.consmr.mail.bf2.yahoo.com ([74.6.132.123])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fheKT-0004T2-22
+ for linux-mtd@lists.infradead.org; Mon, 23 Jul 2018 17:09:02 +0000
+Received: from CPE000db93f888c-CM001404556d28.cpe.net.cable.rogers.com (EHLO
+ [10.11.12.90]) ([99.246.128.134])
+ by smtp426.mail.bf1.yahoo.com (Oath Hermes SMTP Server) with ESMTPA ID
+ 5b8528084500be222f489aea2e119507 for <linux-mtd@lists.infradead.org>;
+ Mon, 23 Jul 2018 17:08:46 +0000 (UTC)
+To: linux-mtd@lists.infradead.org
+From: Martin Vuille <jpmv27@yahoo.com>
+Subject: UBIFS: Shrinking in place
+Message-ID: <9744d48a-398d-3329-ca57-9df72fb26cc5@yahoo.com>
+Date: Mon, 23 Jul 2018 13:08:45 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,48 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jonathan,
+I need to shrink an existing UBIFS filesystem "in place" as a
+prelude to shrinking the underlying UBI volume.
 
-On Mon, 23 Jul 2018 09:39:24 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+Back in 2010 (http://lists.infradead.org/pipermail/linux-mtd/2010-January/028667.html)
+it was stated on this list that this is not supported.
 
-> On Fri, 20 Jul 2018 09:53:33 +0200
-> Marcel Ziswiler <marcel@ziswiler.com> wrote:
-> 
-> > From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> > 
-> > This fixes some spelling mistakes.  
-> 
-> So I hate to complain about a documentation improvement, but...
-> 
-> > 
-> > Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> > 
-> > ---
-> > 
-> >  Documentation/driver-api/mtdnand.rst | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
-> > index dcd63599f700..c55a6034c397 100644
-> > --- a/Documentation/driver-api/mtdnand.rst
-> > +++ b/Documentation/driver-api/mtdnand.rst
-> > @@ -374,7 +374,7 @@ The nand driver supports three different types of hardware ECC.
-> >  
-> >  -  NAND_ECC_HW8_512
-> >  
-> > -   Hardware ECC generator providing 6 bytes ECC per 512 byte.
-> > +   Hardware ECC generator providing 8 bytes ECC per 512 byte.  
-> 
-> That's not a spelling mistake, that's a factual change.  I'll apply the
-> patch since it appears to be correct, but will be tweaking the changelog.
+Wondering whether anything has changed since then?
 
-I think Miquel had planned to apply this patch to the NAND tree, but we
-don't seem to have conflicting changes on this file, so feel free to
-take it in the doc tree.
+If still not supported, I would like to consider undertaking
+that work, and I'm looking for some guidance how best to
+approach it.
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-Regards,
-
-Boris
+MV
