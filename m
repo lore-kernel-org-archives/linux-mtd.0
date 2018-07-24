@@ -1,19 +1,33 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fi4OS-00084X-V0
- for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 20:58:54 +0000
-Date: Tue, 24 Jul 2018 22:58:40 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: John Crispin <john@phrozen.org>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Christian Lamparter <chunkeey@gmail.com>
-Subject: Re: [PATCH] mtd: nand: add Winbond manufacturer and chip
-Message-ID: <20180724225840.685d49d5@bbrezillon>
-In-Reply-To: <20180724140914.15986-1-john@phrozen.org>
-References: <20180724140914.15986-1-john@phrozen.org>
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fi5Ai-0000Cc-MH
+ for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 21:48:46 +0000
+From: NeilBrown <neilb@suse.com>
+To: Brian Norris <computersforpeace@gmail.com>
+Date: Wed, 25 Jul 2018 07:48:21 +1000
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
+ Linux Kernel <linux-kernel@vger.kernel.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Subject: Re: [PATCHv3 2/2] mtd: m25p80: restore the status of SPI flash when
+ exiting
+In-Reply-To: <20180724194110.GA190016@ban.mtv.corp.google.com>
+References: <20171206025342.7266-1-Zhiqiang.Hou@nxp.com>
+ <20171206025342.7266-3-Zhiqiang.Hou@nxp.com>
+ <20180723181350.GA58212@ban.mtv.corp.google.com>
+ <20180723221002.736e0830@bbrezillon>
+ <CAN8TOE904WXMScHo1b2jhusz-L8eGBK=gzUUX079ZVfiFk+HoQ@mail.gmail.com>
+ <87in55po3a.fsf@notabene.neil.brown.name>
+ <20180724012226.307f578d@bbrezillon>
+ <87fu09pfii.fsf@notabene.neil.brown.name>
+ <20180724194110.GA190016@ban.mtv.corp.google.com>
+Message-ID: <877elkpaoq.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="=-=-=";
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +37,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi John,
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 24 Jul 2018 16:09:14 +0200
-John Crispin <john@phrozen.org> wrote:
+On Tue, Jul 24 2018, Brian Norris wrote:
 
-> From: Christian Lamparter <chunkeey@gmail.com>
-> 
-> This patch adds the W25N01GV NAND to the table of
-> known devices. Without this patch the device gets detected:
-> 
-> nand: device found, Manufacturer ID: 0xef, Chip ID: 0xaa
-> nand: Unknown NAND 256MiB 1,8V 8-bit
-> nand: 256 MiB, SLC, erase size: 64 KiB, page size: 1024, OOB size : 16
+> Hi,
+>
+> On Tue, Jul 24, 2018 at 11:51:49AM +1000, NeilBrown wrote:
+>> On Tue, Jul 24 2018, Boris Brezillon wrote:
+>> > On Tue, 24 Jul 2018 08:46:33 +1000
+>> > NeilBrown <neilb@suse.com> wrote:
+>> >> One possibility that occurred to me when I was exploring this issue is
+>> >> to revert to 3-byte mode whenever 4-byte was not actively in use.
+>> >> So any access beyond 16Meg is:
+>> >>  switch-to-4-byte ; perform IO ; switch to 3-byte
+>> >> or similar.  On my hardware it would be more efficient to
+>> >> use the 4-byte opcode to perform the IO, then reset the cached
+>> >> 4th address byte that the NOR chip transparently remembered.
+>
+> Do these chips cache the last 4th-byte used? I don't recall reading
+> that, but that would be interesting. It also sounds like that would make
+> things even more difficult to do robustly.
 
-Nice try! You're trying to add support for a SPI NAND in a subsystem
-that is supposed to only deal with parallel/raw NANDs :-). I guess
-you're using the MT29F driver that lies in staging (or a modified
-version of this driver).
+That is how the Winbond W25Q256FV appears to behave in my experiments.
+Any time you use a 4-byte address, the high byte is saved.  Any time you
+use a 3-byte address, the saved high-byte is used.
+The data sheet seems to support this understanding, as detailed in
 
-> 
-> Whereas the u-boot identifies it as:
-> spi_nand: spi_nand_flash_probe SF NAND ID 00:ef:aa:21
-> SF: Detected W25N01GV with page size 2 KiB, total 128 MiB
+Commit: f134fbbb4ff8 ("mtd: spi-nor: clear Winbond Extended Address Reg on =
+switch to 3-byte addressing.")
 
-I'm also surprised you made it work in u-boot using the spi-flash
-layer, which, AFAIR, is only supporting SPI NORs.
 
-> 
-> Due to the page size discrepancy, it's impossible to attach
-> ubi volumes on the device.
-> 
-> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
-> Signed-off-by: John Crispin <john@phrozen.org>
-> ---
->  drivers/mtd/nand/raw/nand_ids.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-> index 5423c3bb388e..1610e1cb6bfc 100644
-> --- a/drivers/mtd/nand/raw/nand_ids.c
-> +++ b/drivers/mtd/nand/raw/nand_ids.c
-> @@ -54,6 +54,10 @@ struct nand_flash_dev nand_flash_ids[] = {
->  		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
->  		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
->  		  NAND_ECC_INFO(40, SZ_1K), 4 },
-> +	{"W25N01GV 1G 3.3V 8-bit",
-> +		{ .id = {0xef, 0xaa} },
-> +		  SZ_2K, SZ_128, SZ_128K, NAND_NO_SUBPAGE_WRITE,
-> +		  2, 64, NAND_ECC_INFO(1, SZ_512) },
->  
+>
+>> >> This adds a little overhead, but should be fairly robust.
+>> >> It doesn't help if something goes terribly wrong while IO is happenin=
+g,
+>> >> but I don't think any other software solution does either.
+>> >>=20
+>> >> How would you see that approach?
+>> >
+>> > I think the problem stands: people that have proper HW mitigation for
+>> > this problem (NOR chip is reset when the Processor is reset) don't want
+>> > to pay the overhead. So, even if we go for this approach, we probably
+>> > want to only do that for broken HW.
+>
+> If it actually saves bytes on the wire to stay in 3-byte mode more
+> often, then that could be helpful to all systems. But otherwise, yes, it
+> doesn't really belong on a properly-designed system.
 
-So, obviously that's a nack on this change, but you're lucky, we just
-added the SPI NAND framework, so you should be able to add an entry
-here [1].
+I'm not sure exactly what you encompass by the term "properly-designed",
+but with the SOC that I have (mt7621) and the flash chip (Winbond
+W25Q256FV) it is not possible to wire them up in any way that will work
+reliably without software support for leaving 3-byte mode.
 
->  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
->  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+The SOC does not have an out-going reset line that signals a general
+system reset - it only has one that signals watchdog reset.
+The flash chip has an incoming reset line, but it shares a pin with
+"hold", and that is the default use.  So we would need to program the
+flash to listen for reset, and it would only catch a watchdog reset.
+For any other reset, the CPU is (should be) in complete control (even
+after a panic!) and it needs to reprogram the flash chip before
+resetting the system.
+But maybe you think either the SOC and/or the flash chip is not
+"properly-designed" - and you may be correct..
 
-Regards,
+Thanks,
+NeilBrown
 
-Boris
 
-[1]http://git.infradead.org/linux-mtd.git/blob/refs/heads/nand/next:/drivers/mtd/nand/spi/winbond.c#l77
+>
+>> I agree that a "my-hardware-is-suboptimal" flag is appropriate.
+>> I was addressing the suggestion that the current approach doesn't handle
+>> all corner cases and was suggesting a different approach that might
+>> handle more corner-cases.  I should have been more explicit about that.
+>
+> If you want to talk about optimizing the broken-hardware hack, then
+> fine. That's not my interest at all.
+>
+> Brian
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAltXnqUACgkQOeye3VZi
+gbmiuA/9H8mS8aFt06/b6+cmc0dWBRSie5z+JJoYPKRInHzyurNk4HwJ23L0kQyG
+MmKQsshhjN1umgOVDz4vaCF88CF18fuVoKGAC2T9orpwYG5nBMHaZwk6MIGp3Tbw
+s2LULda57ueWQUbpdEu0JqR/S4pzsIloL+s7w9EBUVqr7J6qrSlI9TWAtdq5ec7d
+lKUkzI/l7AVellh/wTb2lIju0z8r30Wl17hNKd134+5auxqmlN2ZAlRfFRe+dTiS
+mlBFDyFk0FzGFoK/2UvOaew8kG55LvkuctsJ2hLw0HQbiNqcwztL01RjNoCwg1O6
+KDCiNbdqWoKZSUMQRhxW62lpO1Ok7LWam8JQS9aiHOzeyL9q9b7PJh/RhMj90ZKV
+KvYxpjj3CIFd3yJHM80BtOuZiCUkgYjg1a3tr8sC2FJ+UxfboyZ3HsgRA4XGSyat
+l79oChpL0VKMbj56UBYs7FEC+7hy3u+5omXQBdf7Op4iDJGV9GadLjcJKf7HwuC3
+9ISflAwP6255fX2iT8G3o/5iKx+lm5ymXjJiDRnuFPD2O/AGMbzLDO8HYjCT+TC3
+zdudZsGB/Ew5u9TDidL39N1TE6MI0m1uWG34/6tM2Eqq/j3fq868kMgVtjutfE4W
+sK4hfQqoYFE7kfQzU7iWgdvX0Hoh/jwflmI4K7HqK/8k0u5eymI=
+=p7vQ
+-----END PGP SIGNATURE-----
+--=-=-=--
