@@ -1,20 +1,19 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhsGb-0005gA-9z
- for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 08:01:58 +0000
-Message-ID: <1532419290.469.452.camel@linux.intel.com>
-Subject: Re: UBIFS question: Power-cuts after ubifs_leb_unmap()
-From: Artem Bityutskiy <artem.bityutskiy@linux.intel.com>
-Reply-To: artem.bityutskiy@linux.intel.com
-To: Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>
-Cc: linux-mtd@lists.infradead.org
-Date: Tue, 24 Jul 2018 11:01:30 +0300
-In-Reply-To: <1756392.9dNXh6ho7o@blindfold>
-References: <1756392.9dNXh6ho7o@blindfold>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+ id 1fhsXQ-0006LN-Jq
+ for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 08:19:25 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Per Forlin <per.forlin@axis.com>, linux-block@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+ derosier@gmail.com, Per Forlin <perfn@axis.com>
+Subject: Re: [PATCH v2] UBI: Add volume read and write statistics
+Date: Tue, 24 Jul 2018 10:19:07 +0200
+Message-ID: <1633152.d3eLNIHx7g@blindfold>
+In-Reply-To: <1532360342-52055-1-git-send-email-perfn@axis.com>
+References: <1532360342-52055-1-git-send-email-perfn@axis.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +23,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, I looked at this quickly and talked to Adrian. I cannot solve this
-for you but here are some thoughts.
+[Adding linux-block]
 
-On Mon, 2018-07-09 at 12:11 +0200, Richard Weinberger wrote:
-> Artem, Adrian,
+Am Montag, 23. Juli 2018, 17:39:02 CEST schrieb Per Forlin:
+> Simple read and write statistics.
+> * Number of reads
+> * Number of writes
+> * Bytes read
+> * Bytes written
 > 
-> While playing with a new UBI/UBIFS test framework I managed to hit
-> this error, 
-> with lprops self-checks enabled:
+> This is useful to find out how the storage is being utilized.
+> For block devices this already exists here:
+> /sys/class/block/<device>/stat
 > 
-> [ 2412.268964] UBIFS error (ubi0:0 pid 708): scan_check_cb: bad
-> accounting of 
-> LEB 11: free 0, dirty 118072 flags 0x1, should be free 126976, dirty
-> 0
+> For UBI it now exists here:
+> /sys/class/ubi/<volume>/stat
 
-So it has 126976 - 118072 = 8904 of used space.
+Please document it also in Documentation/ABI/stable/sysfs-class-ubi.
 
-> LEB 11 is unmapped but LPT still thinks that some data is used,
-> lp->free + lp >dirty < leb-size.
-
-And the problem is this used space. We think that most probably the bug
-is in replay and these 9804 bytes should have been marked as dirty
-during replay, but they were not. If they were marked as dirty, we
-probably would not have problem.
-
-It is unlikely this is a bug in GC. The recovery path is the most
-tricky thing, and recovery happens in slightly different order, and if
-we were expecting a but, we'd suspect the recovery replay.
-
-> Even without lprobs self-checks, the same filesystem will later hit
-> this 
-> assertion in ubifs_garbage_collect_leb():
+> Example:
+> /sys/class/ubi/ubi0_21/stat
+> 864 0 3106756 0 1057 0 2144256 0 0 0 0
 > 
-> ubifs_assert(!list_empty(&sleb->nodes));
+> The output format is same as for block devices
+> except that not all metrics are supported yet.
+> Unsupported values are set to 0.
+
+Let's ask block folks what they think about.
+Per, did you check, which tools use the stats file in /sys?
+I checked iostat, it seems to consume only /proc/diskstats.
+
+To give more context, UBI and MTD devices offer access to raw flash
+storage. So, we have filesystems on top of it.
+Since these devices are not block devices, almost no tool know
+about these.
+With this patch we'd like to offer a interface to userspace such that
+tools will also discover UBI devices.
+Maybe MTD devices later too.
+
+> ---
+> Changelog:
 > 
-> The assert makes sure that the LEB actually contains nodes.
-> ubifs_garbage_collect_leb() handles the special case lp->free + lp-
-> >dirty == 
-> c->leb_size.
-> But not lp->free + lp->dirty < leb-size.
+> v2
+> * Question: Translate bytes to sectors? iostats format expects sector unit.
 
-> Now I'm not sure where to fix that, maybe you can remember some
-> design 
-> decisions.
-> 1. Shall we massage ubifs_garbage_collect_leb() to deal with this
-> special case 
-> too?
+Not sure. I'd wait for input from userspace and block folks.
 
-lp->free + lp->dirty < leb-size means there is used data, and we GC by
-moving. So this is not a special case.
-
-> 2. Is it already a bug when this case happens?
-
-I do not think so.
-
-> From reviewing the code, I think the said situation can arise when we
-> face 
-> power-cut
-> in ubifs_garbage_collect_leb():
+> * Align with iostats format
+> * Only count successful reads and writes
 > 
-> if (snod->type == UBIFS_IDX_NODE) {
-> 	...
-> } else {
-> 	...
+>  drivers/mtd/ubi/eba.c | 11 ++++++++++-
+>  drivers/mtd/ubi/ubi.h | 19 +++++++++++++++++++
+>  drivers/mtd/ubi/vmt.c |  8 ++++++++
+>  3 files changed, 37 insertions(+), 1 deletion(-)
 > 
+> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+> index b98481b..c9a88b2 100644
+> --- a/drivers/mtd/ubi/eba.c
+> +++ b/drivers/mtd/ubi/eba.c
+> @@ -731,6 +731,11 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+>  		}
+>  	}
+>  
+> +	if (!err) {
+> +		vol->stat.rcount++;
+> +		vol->stat.rbytes += len;
 
-OK, we are here. This means that lprops in memory belives this LEB has
-no used data, only dirt and free space. It can be recycled.
+Can we please have a helper function for that?
 
-Now, if we have power cut right here, next time we'll go to recovery
-replay. If the replay is correct, we'll end up with same lprops in
-memory, and we'll recycle the LEB anyway.
+> +	}
+> +
+>  	if (scrub)
+>  		err = ubi_wl_scrub_peb(ubi, pnum);
+>  
+> @@ -1091,8 +1096,12 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+>  	ubi_free_vid_buf(vidb);
+>  
+>  out:
+> -	if (err)
+> +	if (err) {
+>  		ubi_ro_mode(ubi);
+> +	} else {
+> +		vol->stat.wcount++;
+> +		vol->stat.wbytes += len;
 
-> 	err = ubifs_change_one_lp(c, lnum, c->leb_size, 0, 0, 0, 0);
+Same.
 
-We change lprops in memory.
+> +	}
+>  
+>  	leb_write_unlock(ubi, vol_id, lnum);
+>  
+> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+> index f5ba97c..0cb00f0 100644
+> --- a/drivers/mtd/ubi/ubi.h
+> +++ b/drivers/mtd/ubi/ubi.h
+> @@ -293,6 +293,23 @@ struct ubi_eba_leb_desc {
+>  };
+>  
+>  /**
+> + * struct ubi_volume_stat - Volume statistics
+> + * @rbytes: the number of bytes read
+> + * @wbytes: the number of bytes written
+> + * @rcount: the number of read requests
+> + * @wcount: the number of write requests
+> + *
+> + * This structure contains read and write statistics.
+> + *
+> + */
+> +struct ubi_volume_stat {
+> +	u64 rbytes;
+> +	u64 wbytes;
+> +	u32 rcount;
+> +	u32 wcount;
 
-> 
-> 	...
-> 
-> 	err = ubifs_leb_unmap(c, lnum);
-> 
-> 	// POWER CUT
-> }
-> 
-> We mark the LEB as free and unmap it.
-> ubifs_change_one_lp() does not immediately write a new LPT, if we
-> lose power 
-> right after ubifs_leb_unmap() it can happen that the LEB already got
-> erased 
-> but the LPT has the old accounting information.
+Does the wide of these integers also match with block devices?
 
-Yes, and during recovery we'll notice that lprops says an LEB is
-freeable (has no used data), and we'll adjust lprops and probably re-
-unmap the LEB (I not remember 100%).
-
-In the error you showed - there is 8K of used, and this is the problem.
-
-> What do you think?
-
-1. If you believe some specific place like the one you pointed contains
-a bug, then emulate a power cut in that place and try to reproduce the
-bug.
-
-2. Try to focus on recovery replay, this is the main suspect. Try to
-figure out what is that used space in that LEB?
-
--- 
-Best Regards,
-Artem Bityutskiy
+Thanks,
+//richard
