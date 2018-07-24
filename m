@@ -1,20 +1,16 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fi4Cf-0002nq-Di
- for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 20:46:43 +0000
-Date: Tue, 24 Jul 2018 22:46:26 +0200
+ id 1fi4OS-00084X-V0
+ for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 20:58:54 +0000
+Date: Tue, 24 Jul 2018 22:58:40 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: Graham Moore <grmoore@opensource.altera.com>, Vignesh R
- <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: make return type fit
- wait_for_completion_timeout
-Message-ID: <20180724224626.777149ce@bbrezillon>
-In-Reply-To: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
-References: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
+To: John Crispin <john@phrozen.org>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Christian Lamparter <chunkeey@gmail.com>
+Subject: Re: [PATCH] mtd: nand: add Winbond manufacturer and chip
+Message-ID: <20180724225840.685d49d5@bbrezillon>
+In-Reply-To: <20180724140914.15986-1-john@phrozen.org>
+References: <20180724140914.15986-1-john@phrozen.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,60 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 21 Jul 2018 18:08:13 +0200
-Nicholas Mc Guire <hofrat@osadl.org> wrote:
+Hi John,
 
-> wait_for_completion_timeout returns an unsigned long not int. declare a
-> suitably type timeout and fix up assignment and check.
+On Tue, 24 Jul 2018 16:09:14 +0200
+John Crispin <john@phrozen.org> wrote:
+
+> From: Christian Lamparter <chunkeey@gmail.com>
 > 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> Reported-by: Vignesh R <vigneshr@ti.com>
-> Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")
+> This patch adds the W25N01GV NAND to the table of
+> known devices. Without this patch the device gets detected:
+> 
+> nand: device found, Manufacturer ID: 0xef, Chip ID: 0xaa
+> nand: Unknown NAND 256MiB 1,8V 8-bit
+> nand: 256 MiB, SLC, erase size: 64 KiB, page size: 1024, OOB size : 16
 
-If you don't mind, I'd like to squash all wait_for_completion_timeout()
-fixes into a single commit.
+Nice try! You're trying to add support for a SPI NAND in a subsystem
+that is supposed to only deal with parallel/raw NANDs :-). I guess
+you're using the MT29F driver that lies in staging (or a modified
+version of this driver).
 
-Thanks,
+> 
+> Whereas the u-boot identifies it as:
+> spi_nand: spi_nand_flash_probe SF NAND ID 00:ef:aa:21
+> SF: Detected W25N01GV with page size 2 KiB, total 128 MiB
+
+I'm also surprised you made it work in u-boot using the spi-flash
+layer, which, AFAIR, is only supporting SPI NORs.
+
+> 
+> Due to the page size discrepancy, it's impossible to attach
+> ubi volumes on the device.
+> 
+> Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+> Signed-off-by: John Crispin <john@phrozen.org>
+> ---
+>  drivers/mtd/nand/raw/nand_ids.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+> index 5423c3bb388e..1610e1cb6bfc 100644
+> --- a/drivers/mtd/nand/raw/nand_ids.c
+> +++ b/drivers/mtd/nand/raw/nand_ids.c
+> @@ -54,6 +54,10 @@ struct nand_flash_dev nand_flash_ids[] = {
+>  		{ .id = {0xad, 0xde, 0x94, 0xda, 0x74, 0xc4} },
+>  		  SZ_8K, SZ_8K, SZ_2M, NAND_NEED_SCRAMBLING, 6, 640,
+>  		  NAND_ECC_INFO(40, SZ_1K), 4 },
+> +	{"W25N01GV 1G 3.3V 8-bit",
+> +		{ .id = {0xef, 0xaa} },
+> +		  SZ_2K, SZ_128, SZ_128K, NAND_NO_SUBPAGE_WRITE,
+> +		  2, 64, NAND_ECC_INFO(1, SZ_512) },
+>  
+
+So, obviously that's a nack on this change, but you're lucky, we just
+added the SPI NAND framework, so you should be able to add an entry
+here [1].
+
+>  	LEGACY_ID_NAND("NAND 4MiB 5V 8-bit",   0x6B, 4, SZ_8K, SP_OPTIONS),
+>  	LEGACY_ID_NAND("NAND 4MiB 3,3V 8-bit", 0xE3, 4, SZ_8K, SP_OPTIONS),
+
+Regards,
 
 Boris
 
-> ---
-> 
-> Given that CQSPI_TIMEOUT_MS is < INT_MAX the type conversion is actually safe
-> here but it is cleaner to use proper types.
-> 
-> Patch was compile tested with: socfpga_defconfig (implies
-> CONFIG_SPI_CADENCE_QUADSPI=y)
-> 
-> Patch is against 4.18-rc5 (localversion-next is next-20180720)
-> 
->  drivers/mtd/spi-nor/cadence-quadspi.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
-> index d7e10b3..ce5f840 100644
-> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
-> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-> @@ -622,6 +622,7 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
->  	unsigned int remaining = n_tx;
->  	unsigned int write_bytes;
->  	int ret;
-> +	unsigned long timeout;
->  
->  	writel(to_addr, reg_base + CQSPI_REG_INDIRECTWRSTARTADDR);
->  	writel(remaining, reg_base + CQSPI_REG_INDIRECTWRBYTES);
-> @@ -649,10 +650,10 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
->  		iowrite32_rep(cqspi->ahb_base, txbuf,
->  			      DIV_ROUND_UP(write_bytes, 4));
->  
-> -		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
-> -						  msecs_to_jiffies
-> -						  (CQSPI_TIMEOUT_MS));
-> -		if (!ret) {
-> +		timeout = wait_for_completion_timeout(&cqspi->transfer_complete,
-> +						      msecs_to_jiffies
-> +						      (CQSPI_TIMEOUT_MS));
-> +		if (!timeout) {
->  			dev_err(nor->dev, "Indirect write timeout\n");
->  			ret = -ETIMEDOUT;
->  			goto failwr;
+[1]http://git.infradead.org/linux-mtd.git/blob/refs/heads/nand/next:/drivers/mtd/nand/spi/winbond.c#l77
