@@ -1,19 +1,25 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fhsXQ-0006LN-Jq
- for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 08:19:25 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Per Forlin <per.forlin@axis.com>, linux-block@vger.kernel.org
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
- derosier@gmail.com, Per Forlin <perfn@axis.com>
-Subject: Re: [PATCH v2] UBI: Add volume read and write statistics
-Date: Tue, 24 Jul 2018 10:19:07 +0200
-Message-ID: <1633152.d3eLNIHx7g@blindfold>
-In-Reply-To: <1532360342-52055-1-git-send-email-perfn@axis.com>
-References: <1532360342-52055-1-git-send-email-perfn@axis.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fhsu5-0003EN-TS
+ for linux-mtd@lists.infradead.org; Tue, 24 Jul 2018 08:42:47 +0000
+Date: Tue, 24 Jul 2018 10:42:24 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Bert Kenward <bkenward@solarflare.com>,
+ linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>
+Subject: Re: [PATCH 2/2] mtd: spi-nor: intel-spi: use mtd_device_register()
+Message-ID: <20180724104224.0f66f93d@bbrezillon>
+In-Reply-To: <20180721115510.24078-2-zajec5@gmail.com>
+References: <20180721115510.24078-1-zajec5@gmail.com>
+ <20180721115510.24078-2-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,120 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Adding linux-block]
+On Sat, 21 Jul 2018 13:55:10 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-Am Montag, 23. Juli 2018, 17:39:02 CEST schrieb Per Forlin:
-> Simple read and write statistics.
-> * Number of reads
-> * Number of writes
-> * Bytes read
-> * Bytes written
-> 
-> This is useful to find out how the storage is being utilized.
-> For block devices this already exists here:
-> /sys/class/block/<device>/stat
-> 
-> For UBI it now exists here:
-> /sys/class/ubi/<volume>/stat
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> This driver doesn't specify parsers so it can use that little helper.
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-Please document it also in Documentation/ABI/stable/sysfs-class-ubi.
-
-> Example:
-> /sys/class/ubi/ubi0_21/stat
-> 864 0 3106756 0 1057 0 2144256 0 0 0 0
-> 
-> The output format is same as for block devices
-> except that not all metrics are supported yet.
-> Unsupported values are set to 0.
-
-Let's ask block folks what they think about.
-Per, did you check, which tools use the stats file in /sys?
-I checked iostat, it seems to consume only /proc/diskstats.
-
-To give more context, UBI and MTD devices offer access to raw flash
-storage. So, we have filesystems on top of it.
-Since these devices are not block devices, almost no tool know
-about these.
-With this patch we'd like to offer a interface to userspace such that
-tools will also discover UBI devices.
-Maybe MTD devices later too.
+Applied to spi-nor/next.
 
 > ---
-> Changelog:
-> 
-> v2
-> * Question: Translate bytes to sectors? iostats format expects sector unit.
-
-Not sure. I'd wait for input from userspace and block folks.
-
-> * Align with iostats format
-> * Only count successful reads and writes
-> 
->  drivers/mtd/ubi/eba.c | 11 ++++++++++-
->  drivers/mtd/ubi/ubi.h | 19 +++++++++++++++++++
->  drivers/mtd/ubi/vmt.c |  8 ++++++++
->  3 files changed, 37 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-> index b98481b..c9a88b2 100644
-> --- a/drivers/mtd/ubi/eba.c
-> +++ b/drivers/mtd/ubi/eba.c
-> @@ -731,6 +731,11 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
->  		}
->  	}
->  
-> +	if (!err) {
-> +		vol->stat.rcount++;
-> +		vol->stat.rbytes += len;
-
-Can we please have a helper function for that?
-
-> +	}
-> +
->  	if (scrub)
->  		err = ubi_wl_scrub_peb(ubi, pnum);
->  
-> @@ -1091,8 +1096,12 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
->  	ubi_free_vid_buf(vidb);
->  
->  out:
-> -	if (err)
-> +	if (err) {
->  		ubi_ro_mode(ubi);
-> +	} else {
-> +		vol->stat.wcount++;
-> +		vol->stat.wbytes += len;
-
-Same.
-
-> +	}
->  
->  	leb_write_unlock(ubi, vol_id, lnum);
->  
-> diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-> index f5ba97c..0cb00f0 100644
-> --- a/drivers/mtd/ubi/ubi.h
-> +++ b/drivers/mtd/ubi/ubi.h
-> @@ -293,6 +293,23 @@ struct ubi_eba_leb_desc {
->  };
->  
->  /**
-> + * struct ubi_volume_stat - Volume statistics
-> + * @rbytes: the number of bytes read
-> + * @wbytes: the number of bytes written
-> + * @rcount: the number of read requests
-> + * @wcount: the number of write requests
-> + *
-> + * This structure contains read and write statistics.
-> + *
-> + */
-> +struct ubi_volume_stat {
-> +	u64 rbytes;
-> +	u64 wbytes;
-> +	u32 rcount;
-> +	u32 wcount;
-
-Does the wide of these integers also match with block devices?
-
-Thanks,
-//richard
+>  drivers/mtd/spi-nor/intel-spi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/spi-nor/intel-spi.c b/drivers/mtd/spi-nor/intel-=
+spi.c
+> index d2cbfc27826e..af0a22019516 100644
+> --- a/drivers/mtd/spi-nor/intel-spi.c
+> +++ b/drivers/mtd/spi-nor/intel-spi.c
+> @@ -908,7 +908,7 @@ struct intel_spi *intel_spi_probe(struct device *dev,
+>  	if (!ispi->writeable || !writeable)
+>  		ispi->nor.mtd.flags &=3D ~MTD_WRITEABLE;
+> =20
+> -	ret =3D mtd_device_parse_register(&ispi->nor.mtd, NULL, NULL, &part, 1);
+> +	ret =3D mtd_device_register(&ispi->nor.mtd, &part, 1);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+> =20
