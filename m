@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiMAW-0007wP-09
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 15:57:41 +0000
-Date: Wed, 25 Jul 2018 17:57:09 +0200
+ id 1fiMCb-00008f-08
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 15:59:50 +0000
+Date: Wed, 25 Jul 2018 17:59:27 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
@@ -10,12 +10,12 @@ Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
  Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Wenyou Yang
  <wenyou.yang@microchip.com>, Josh Wu <rainyfeeling@outlook.com>, Stefan
  Agner <stefan@agner.ch>, Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH v5 13/17] mtd: rawnand: txx9ndfmc: clarify ECC
- parameters assignation
-Message-ID: <20180725175709.4ad7541e@bbrezillon>
-In-Reply-To: <20180725133152.30898-14-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v5 15/17] mtd: rawnand: do not export
+ nand_scan_[ident|tail]() anymore
+Message-ID: <20180725175927.67337ede@bbrezillon>
+In-Reply-To: <20180725133152.30898-16-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
- <20180725133152.30898-14-miquel.raynal@bootlin.com>
+ <20180725133152.30898-16-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -28,49 +28,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 25 Jul 2018 15:31:48 +0200
+On Wed, 25 Jul 2018 15:31:50 +0200
 Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> A comment in the probe declares that values are assigned to ecc.size
-> and ecc.bytes, but these values will be overwritten. This is not
-> entirely right as they are overwritten only if
-> mtd->writesize >= 512. Let's clarify this by moving these assignations
-> to txx9ndfmc_nand_scan().
+> Both nand_scan_ident() and nand_scan_tail() helpers used to be called
+> directly from controller drivers that needed to tweak some ECC-related
+> parameters before nand_scan_tail(). This separation prevented dynamic
+> allocations during the phase of NAND identification, which was
+> inconvenient.
+> 
+> All controller drivers have been moved to use nand_scan(), in
+> conjunction with the chip->ecc.[attach|detach]_chip() hooks that
+> actually do the required tweaking sequence between both ident/tail
+> calls, allowing programmers to use dynamic allocation as they need all
+> across the scanning sequence.
+> 
+> Declare nand_scan_[ident|tail]() statically now.
 > 
 > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
 > ---
->  drivers/mtd/nand/raw/txx9ndfmc.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>  drivers/mtd/nand/raw/nand_base.c | 16 +++++++++-------
+>  include/linux/mtd/rawnand.h      | 18 ++++++------------
+>  2 files changed, 15 insertions(+), 19 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-> index 9019022774f7..9808b18b15e2 100644
-> --- a/drivers/mtd/nand/raw/txx9ndfmc.c
-> +++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-> @@ -262,10 +262,13 @@ static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
->  	ret = nand_scan_ident(mtd, 1, NULL);
->  	if (!ret) {
->  		if (mtd->writesize >= 512) {
-> -			/* Hardware ECC 6 byte ECC per 512 Byte data */
->  			chip->ecc.size = 512;
->  			chip->ecc.bytes = 6;
-> +		} else {
-> +			chip->ecc.size = 256;
-> +			chip->ecc.bytes = 3;
->  		}
-> +
->  		ret = nand_scan_tail(mtd);
->  	}
+> diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+> index 42a7a934a17b..34ea44f90fd8 100644
+> --- a/drivers/mtd/nand/raw/nand_base.c
+> +++ b/drivers/mtd/nand/raw/nand_base.c
+> @@ -5924,7 +5924,7 @@ static int nand_dt_init(struct nand_chip *chip)
+>  }
+>  
+>  /**
+> - * nand_scan_ident - [NAND Interface] Scan for the NAND device
+> + * nand_scan_ident - Scan for the NAND device
+>   * @mtd: MTD device structure
+>   * @maxchips: number of chips to scan for
+>   * @table: alternative NAND ID table
+> @@ -5932,9 +5932,13 @@ static int nand_dt_init(struct nand_chip *chip)
+>   * This is the first phase of the normal nand_scan() function. It reads the
+>   * flash ID and sets up MTD fields accordingly.
+>   *
+> + * This helper used to be called directly from controller drivers that needed
+> + * to tweak some ECC-related parameters before nand_scan_tail(). This separation
+> + * prevented dynamic allocations during this phase which was unconvenient and
+> + * as been banned for the benefit of the ->init_ecc()/cleanup_ecc() hooks.
+>   */
+> -int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+> -		    struct nand_flash_dev *table)
+> +static int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+> +			   struct nand_flash_dev *table)
+>  {
+>  	int i, nand_maf_id, nand_dev_id;
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+> @@ -6008,7 +6012,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+>  
+>  	return 0;
+>  }
+> -EXPORT_SYMBOL(nand_scan_ident);
+>  
+>  static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
+>  {
+> @@ -6385,14 +6388,14 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
+>  }
+>  
+>  /**
+> - * nand_scan_tail - [NAND Interface] Scan for the NAND device
+> + * nand_scan_tail - Scan for the NAND device
+>   * @mtd: MTD device structure
+>   *
+>   * This is the second phase of the normal nand_scan() function. It fills out
+>   * all the uninitialized function pointers with the defaults and scans for a
+>   * bad block table if appropriate.
+>   */
+> -int nand_scan_tail(struct mtd_info *mtd)
+> +static int nand_scan_tail(struct mtd_info *mtd)
+>  {
+>  	struct nand_chip *chip = mtd_to_nand(mtd);
+>  	struct nand_ecc_ctrl *ecc = &chip->ecc;
+> @@ -6716,7 +6719,6 @@ int nand_scan_tail(struct mtd_info *mtd)
+>  
 >  	return ret;
-> @@ -332,9 +335,6 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
->  		chip->ecc.correct = txx9ndfmc_correct_data;
->  		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
->  		chip->ecc.mode = NAND_ECC_HW;
-> -		/* txx9ndfmc_nand_scan will overwrite ecc.size and ecc.bytes */
-> -		chip->ecc.size = 256;
-> -		chip->ecc.bytes = 3;
->  		chip->ecc.strength = 1;
->  		chip->chip_delay = 100;
->  		chip->controller = &drvdata->controller;
+>  }
+> -EXPORT_SYMBOL(nand_scan_tail);
+>  
+>  static int nand_attach(struct nand_chip *chip)
+>  {
+> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+> index a20c78e25878..eaf000b09222 100644
+> --- a/include/linux/mtd/rawnand.h
+> +++ b/include/linux/mtd/rawnand.h
+> @@ -35,17 +35,6 @@ static inline int nand_scan(struct mtd_info *mtd, int max_chips)
+>  	return nand_scan_with_ids(mtd, max_chips, NULL);
+>  }
+>  
+> -/*
+> - * Separate phases of nand_scan(), allowing board driver to intervene
+> - * and override command or ECC setup according to flash type.
+> - */
+> -int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+> -			   struct nand_flash_dev *table);
+> -int nand_scan_tail(struct mtd_info *mtd);
+> -
+> -/* Unregister the MTD device and free resources held by the NAND device */
+> -void nand_release(struct mtd_info *mtd);
+> -
+>  /* Internal helper for board drivers which need to override command function */
+>  void nand_wait_ready(struct mtd_info *mtd);
+>  
+> @@ -1739,8 +1728,13 @@ int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
+>  int nand_write_data_op(struct nand_chip *chip, const void *buf,
+>  		       unsigned int len, bool force_8bit);
+>  
+> -/* Free resources held by the NAND device */
+> +/*
+> + * Free resources held by the NAND device, must be called on error after a
+
+								      ^ and
+
+> + * sucessful nand_scan().
+> + */
+>  void nand_cleanup(struct nand_chip *chip);
+> +/* Unregister the MTD device and calls nand_cleanup() */
+> +void nand_release(struct mtd_info *mtd);
+>  
+>  /* Default extended ID decoding function */
+>  void nand_decode_ext_id(struct nand_chip *chip);
