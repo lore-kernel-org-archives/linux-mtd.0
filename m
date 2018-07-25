@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJu4-0000LI-Tl
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:42 +0000
+ id 1fiJu4-0000Km-Tr
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:43 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 14/17] mtd: rawnand: txx9ndfmc: convert driver to
- nand_scan()
-Date: Wed, 25 Jul 2018 15:31:49 +0200
-Message-Id: <20180725133152.30898-15-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 08/17] mtd: rawnand: docg4: convert driver to nand_scan()
+Date: Wed, 25 Jul 2018 15:31:43 +0200
+Message-Id: <20180725133152.30898-9-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,72 +31,114 @@ to just use nand_scan() instead of the nand_scan_ident() +
 nand_scan_tail() pair.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/txx9ndfmc.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/raw/docg4.c | 70 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 45 insertions(+), 25 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index 9808b18b15e2..4d61a14fcb65 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -254,26 +254,25 @@ static void txx9ndfmc_initialize(struct platform_device *dev)
- #define TXX9NDFMC_NS_TO_CYC(gbusclk, ns) \
- 	DIV_ROUND_UP((ns) * DIV_ROUND_UP(gbusclk, 1000), 1000000)
+diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
+index 4dccdfba6140..b69a36842605 100644
+--- a/drivers/mtd/nand/raw/docg4.c
++++ b/drivers/mtd/nand/raw/docg4.c
+@@ -1227,10 +1227,9 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
+ 	 * required within a nand driver because they are performed by the nand
+ 	 * infrastructure code as part of nand_scan().  In this case they need
+ 	 * to be initialized here because we skip call to nand_scan_ident() (the
+-	 * first half of nand_scan()).  The call to nand_scan_ident() is skipped
+-	 * because for this device the chip id is not read in the manner of a
+-	 * standard nand device.  Unfortunately, nand_scan_ident() does other
+-	 * things as well, such as call nand_set_defaults().
++	 * first half of nand_scan()).  The call to nand_scan_ident() could be
++	 * skipped because for this device the chip id is not read in the manner
++	 * of a standard nand device.
+ 	 */
  
--static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
-+static int txx9ndfmc_attach_chip(struct nand_chip *chip)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
--	int ret;
+ 	struct nand_chip *nand = mtd_to_nand(mtd);
+@@ -1315,6 +1314,40 @@ static int __init read_id_reg(struct mtd_info *mtd)
+ 
+ static char const *part_probes[] = { "cmdlinepart", "saftlpart", NULL };
+ 
++static int docg4_attach_chip(struct nand_chip *chip)
++{
 +	struct mtd_info *mtd = nand_to_mtd(chip);
- 
--	ret = nand_scan_ident(mtd, 1, NULL);
--	if (!ret) {
--		if (mtd->writesize >= 512) {
--			chip->ecc.size = 512;
--			chip->ecc.bytes = 6;
--		} else {
--			chip->ecc.size = 256;
--			chip->ecc.bytes = 3;
--		}
--
--		ret = nand_scan_tail(mtd);
-+	if (mtd->writesize >= 512) {
-+		chip->ecc.size = 512;
-+		chip->ecc.bytes = 6;
-+	} else {
-+		chip->ecc.size = 256;
-+		chip->ecc.bytes = 3;
- 	}
--	return ret;
++	struct docg4_priv *doc = (struct docg4_priv *)(chip + 1);
++	int ret;
 +
-+	return 0;
- }
- 
-+static const struct nand_controller_ops txx9ndfmc_controller_ops = {
-+	.attach_chip = txx9ndfmc_attach_chip,
++	init_mtd_structs(mtd);
++
++	/* Initialize kernel BCH algorithm */
++	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
++	if (!doc->bch)
++		return -EINVAL;
++
++	reset(mtd);
++
++	ret = read_id_reg(mtd);
++	if (ret)
++		free_bch(doc->bch);
++
++	return ret;
++}
++
++static void docg4_detach_chip(struct nand_chip *chip)
++{
++	struct docg4_priv *doc = (struct docg4_priv *)(chip + 1);
++
++	free_bch(doc->bch);
++}
++
++static const struct nand_controller_ops docg4_controller_ops = {
++	.attach_chip = docg4_attach_chip,
++	.detach_chip = docg4_detach_chip,
 +};
 +
- static int __init txx9ndfmc_probe(struct platform_device *dev)
+ static int __init probe_docg4(struct platform_device *pdev)
  {
- 	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
-@@ -307,6 +306,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		 (gbusclk + 500000) / 1000000, hold, spw);
+ 	struct mtd_info *mtd;
+@@ -1350,28 +1383,17 @@ static int __init probe_docg4(struct platform_device *pdev)
+ 	mtd->dev.parent = &pdev->dev;
+ 	doc->virtadr = virtadr;
+ 	doc->dev = dev;
+-
+-	init_mtd_structs(mtd);
+-
+-	/* initialize kernel bch algorithm */
+-	doc->bch = init_bch(DOCG4_M, DOCG4_T, DOCG4_PRIMITIVE_POLY);
+-	if (doc->bch == NULL) {
+-		retval = -EINVAL;
+-		goto free_nand;
+-	}
+-
+ 	platform_set_drvdata(pdev, doc);
  
- 	nand_controller_init(&drvdata->controller);
-+	drvdata->controller.ops = &txx9ndfmc_controller_ops;
+-	reset(mtd);
+-	retval = read_id_reg(mtd);
+-	if (retval == -ENODEV) {
+-		dev_warn(dev, "No diskonchip G4 device found.\n");
+-		goto free_bch;
+-	}
+-
+-	retval = nand_scan_tail(mtd);
++	/*
++	 * Running nand_scan() with maxchips == 0 will skip nand_scan_ident(),
++	 * which is a specific operation with this driver and done in the
++	 * ->attach_chip callback.
++	 */
++	nand->dummy_controller.ops = &docg4_controller_ops;
++	retval = nand_scan(mtd, 0);
+ 	if (retval)
+-		goto free_bch;
++		goto free_nand;
  
- 	platform_set_drvdata(dev, drvdata);
- 	txx9ndfmc_initialize(dev);
-@@ -359,7 +359,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		if (plat->wide_mask & (1 << i))
- 			chip->options |= NAND_BUSWIDTH_16;
+ 	retval = read_factory_bbt(mtd);
+ 	if (retval)
+@@ -1387,8 +1409,6 @@ static int __init probe_docg4(struct platform_device *pdev)
  
--		if (txx9ndfmc_nand_scan(mtd)) {
-+		if (nand_scan(mtd, 1)) {
- 			kfree(txx9_priv->mtdname);
- 			kfree(txx9_priv);
- 			continue;
+ cleanup_nand:
+ 	nand_cleanup(nand);
+-free_bch:
+-	free_bch(doc->bch);
+ free_nand:
+ 	kfree(nand);
+ unmap:
 -- 
 2.14.1
