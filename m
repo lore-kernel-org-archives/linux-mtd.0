@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJtr-0000It-Di
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:23 +0000
+ id 1fiJtr-0000Iw-Dh
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:24 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,9 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 02/17] mtd: rawnand: cafe: convert driver to nand_scan()
-Date: Wed, 25 Jul 2018 15:31:37 +0200
-Message-Id: <20180725133152.30898-3-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 04/17] mtd: rawnand: omap2: convert driver to nand_scan()
+Date: Wed, 25 Jul 2018 15:31:39 +0200
+Message-Id: <20180725133152.30898-5-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,208 +32,575 @@ nand_scan_tail() pair.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c | 135 ++++++++++++++++++++++-----------------
- 1 file changed, 78 insertions(+), 57 deletions(-)
+ drivers/mtd/nand/raw/omap2.c | 533 +++++++++++++++++++++----------------------
+ 1 file changed, 265 insertions(+), 268 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index ac0be933a490..1dbe43adcfe7 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -67,6 +67,7 @@ struct cafe_priv {
- 	int nr_data;
- 	int data_pos;
- 	int page_addr;
-+	bool usedma;
- 	dma_addr_t dmaaddr;
- 	unsigned char *dmabuf;
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index e943b2e5a5e2..4546ac0bed4a 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -144,12 +144,6 @@ static u_char bch8_vector[] = {0xf3, 0xdb, 0x14, 0x16, 0x8b, 0xd2, 0xbe, 0xcc,
+ 	0xac, 0x6b, 0xff, 0x99, 0x7b};
+ static u_char bch4_vector[] = {0x00, 0x6b, 0x31, 0xdd, 0x41, 0xbc, 0x10};
+ 
+-/* Shared among all NAND instances to synchronize access to the ECC Engine */
+-static struct nand_controller omap_gpmc_controller = {
+-	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
+-	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
+-};
+-
+ struct omap_nand_info {
+ 	struct nand_chip		nand;
+ 	struct platform_device		*pdev;
+@@ -1915,17 +1909,278 @@ static const struct mtd_ooblayout_ops omap_sw_ooblayout_ops = {
+ 	.free = omap_sw_ooblayout_free,
  };
-@@ -121,7 +122,7 @@ static void cafe_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct cafe_priv *cafe = nand_get_controller_data(chip);
  
--	if (usedma)
-+	if (cafe->usedma)
- 		memcpy(cafe->dmabuf + cafe->datalen, buf, len);
- 	else
- 		memcpy_toio(cafe->mmio + CAFE_NAND_WRITE_DATA + cafe->datalen, buf, len);
-@@ -137,7 +138,7 @@ static void cafe_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct cafe_priv *cafe = nand_get_controller_data(chip);
- 
--	if (usedma)
-+	if (cafe->usedma)
- 		memcpy(buf, cafe->dmabuf + cafe->datalen, len);
- 	else
- 		memcpy_fromio(buf, cafe->mmio + CAFE_NAND_READ_DATA + cafe->datalen, len);
-@@ -253,7 +254,7 @@ static void cafe_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 	/* NB: The datasheet lies -- we really should be subtracting 1 here */
- 	cafe_writel(cafe, cafe->datalen, NAND_DATA_LEN);
- 	cafe_writel(cafe, 0x90000000, NAND_IRQ);
--	if (usedma && (ctl1 & (3<<25))) {
-+	if (cafe->usedma && (ctl1 & (3<<25))) {
- 		uint32_t dmactl = 0xc0000000 + cafe->datalen;
- 		/* If WR or RD bits set, set up DMA */
- 		if (ctl1 & (1<<26)) {
-@@ -593,6 +594,76 @@ static int cafe_mul(int x)
- 	return gf4096_mul(x, 0xe01);
- }
- 
-+static int cafe_nand_attach_chip(struct nand_chip *chip)
++static int omap_nand_attach_chip(struct nand_chip *chip)
 +{
 +	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct cafe_priv *cafe = nand_get_controller_data(chip);
-+	int err = 0;
++	struct omap_nand_info *info = mtd_to_omap(mtd);
++	struct device *dev = &info->pdev->dev;
++	int min_oobbytes = BADBLOCK_MARKER_LENGTH;
++	int oobbytes_per_step;
++	dma_cap_mask_t mask;
++	int err;
 +
-+	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112,
-+					  &cafe->dmaaddr, GFP_KERNEL);
-+	if (!cafe->dmabuf)
-+		return -ENOMEM;
++	if (chip->bbt_options & NAND_BBT_USE_FLASH)
++		chip->bbt_options |= NAND_BBT_NO_OOB;
++	else
++		chip->options |= NAND_SKIP_BBTSCAN;
 +
-+	/* Set up DMA address */
-+	cafe_writel(cafe, lower_32_bits(cafe->dmaaddr), NAND_DMA_ADDR0);
-+	cafe_writel(cafe, upper_32_bits(cafe->dmaaddr), NAND_DMA_ADDR1);
++	/* Re-populate low-level callbacks based on xfer modes */
++	switch (info->xfer_type) {
++	case NAND_OMAP_PREFETCH_POLLED:
++		chip->read_buf = omap_read_buf_pref;
++		chip->write_buf = omap_write_buf_pref;
++		break;
 +
-+	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
-+		     cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
++	case NAND_OMAP_POLLED:
++		/* Use nand_base defaults for {read,write}_buf */
++		break;
 +
-+	/* Restore the DMA flag */
-+	cafe->usedma = usedma;
++	case NAND_OMAP_PREFETCH_DMA:
++		dma_cap_zero(mask);
++		dma_cap_set(DMA_SLAVE, mask);
++		info->dma = dma_request_chan(dev, "rxtx");
 +
-+	cafe->ctl2 = BIT(27); /* Reed-Solomon ECC */
-+	if (mtd->writesize == 2048)
-+		cafe->ctl2 |= BIT(29); /* 2KiB page size */
++		if (IS_ERR(info->dma)) {
++			dev_err(dev, "DMA engine request failed\n");
++			return PTR_ERR(info->dma);
++		} else {
++			struct dma_slave_config cfg;
 +
-+	/* Set up ECC according to the type of chip we found */
-+	mtd_set_ooblayout(mtd, &cafe_ooblayout_ops);
-+	if (mtd->writesize == 2048) {
-+		cafe->nand.bbt_td = &cafe_bbt_main_descr_2048;
-+		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_2048;
-+	} else if (mtd->writesize == 512) {
-+		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
-+		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
-+	} else {
-+		dev_warn(&cafe->pdev->dev,
-+			 "Unexpected NAND flash writesize %d. Aborting\n",
-+			 mtd->writesize);
-+		err = -ENOTSUPP;
-+		goto out_free_dma;
++			memset(&cfg, 0, sizeof(cfg));
++			cfg.src_addr = info->phys_base;
++			cfg.dst_addr = info->phys_base;
++			cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++			cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++			cfg.src_maxburst = 16;
++			cfg.dst_maxburst = 16;
++			err = dmaengine_slave_config(info->dma, &cfg);
++			if (err) {
++				dev_err(dev,
++					"DMA engine slave config failed: %d\n",
++					err);
++				return err;
++			}
++			chip->read_buf = omap_read_buf_dma_pref;
++			chip->write_buf = omap_write_buf_dma_pref;
++		}
++		break;
++
++	case NAND_OMAP_PREFETCH_IRQ:
++		info->gpmc_irq_fifo = platform_get_irq(info->pdev, 0);
++		if (info->gpmc_irq_fifo <= 0) {
++			dev_err(dev, "Error getting fifo IRQ\n");
++			return -ENODEV;
++		}
++		err = devm_request_irq(dev, info->gpmc_irq_fifo,
++				       omap_nand_irq, IRQF_SHARED,
++				       "gpmc-nand-fifo", info);
++		if (err) {
++			dev_err(dev, "Requesting IRQ %d, error %d\n",
++				info->gpmc_irq_fifo, err);
++			info->gpmc_irq_fifo = 0;
++			return err;
++		}
++
++		info->gpmc_irq_count = platform_get_irq(info->pdev, 1);
++		if (info->gpmc_irq_count <= 0) {
++			dev_err(dev, "Error getting IRQ count\n");
++			return -ENODEV;
++		}
++		err = devm_request_irq(dev, info->gpmc_irq_count,
++				       omap_nand_irq, IRQF_SHARED,
++				       "gpmc-nand-count", info);
++		if (err) {
++			dev_err(dev, "Requesting IRQ %d, error %d\n",
++				info->gpmc_irq_count, err);
++			info->gpmc_irq_count = 0;
++			return err;
++		}
++
++		chip->read_buf = omap_read_buf_irq_pref;
++		chip->write_buf = omap_write_buf_irq_pref;
++
++		break;
++
++	default:
++		dev_err(dev, "xfer_type %d not supported!\n", info->xfer_type);
++		return -EINVAL;
 +	}
 +
-+	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
-+	cafe->nand.ecc.size = mtd->writesize;
-+	cafe->nand.ecc.bytes = 14;
-+	cafe->nand.ecc.strength = 4;
-+	cafe->nand.ecc.write_page = cafe_nand_write_page_lowlevel;
-+	cafe->nand.ecc.write_oob = cafe_nand_write_oob;
-+	cafe->nand.ecc.read_page = cafe_nand_read_page;
-+	cafe->nand.ecc.read_oob = cafe_nand_read_oob;
++	if (!omap2_nand_ecc_check(info))
++		return -EINVAL;
++
++	/*
++	 * Bail out earlier to let NAND_ECC_SOFT code create its own
++	 * ooblayout instead of using ours.
++	 */
++	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_SW) {
++		chip->ecc.mode = NAND_ECC_SOFT;
++		chip->ecc.algo = NAND_ECC_HAMMING;
++		return 0;
++	}
++
++	/* Populate MTD interface based on ECC scheme */
++	switch (info->ecc_opt) {
++	case OMAP_ECC_HAM1_CODE_HW:
++		dev_info(dev, "nand: using OMAP_ECC_HAM1_CODE_HW\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.bytes		= 3;
++		chip->ecc.size		= 512;
++		chip->ecc.strength	= 1;
++		chip->ecc.calculate	= omap_calculate_ecc;
++		chip->ecc.hwctl		= omap_enable_hwecc;
++		chip->ecc.correct	= omap_correct_data;
++		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
++		oobbytes_per_step	= chip->ecc.bytes;
++
++		if (!(chip->options & NAND_BUSWIDTH_16))
++			min_oobbytes	= 1;
++
++		break;
++
++	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
++		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW_DETECTION_SW\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.size		= 512;
++		chip->ecc.bytes		= 7;
++		chip->ecc.strength	= 4;
++		chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		chip->ecc.correct	= nand_bch_correct_data;
++		chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
++		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
++		/* Reserve one byte for the OMAP marker */
++		oobbytes_per_step	= chip->ecc.bytes + 1;
++		/* Software BCH library is used for locating errors */
++		chip->ecc.priv		= nand_bch_init(mtd);
++		if (!chip->ecc.priv) {
++			dev_err(dev, "Unable to use BCH library\n");
++			return -EINVAL;
++		}
++		break;
++
++	case OMAP_ECC_BCH4_CODE_HW:
++		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW ECC scheme\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.size		= 512;
++		/* 14th bit is kept reserved for ROM-code compatibility */
++		chip->ecc.bytes		= 7 + 1;
++		chip->ecc.strength	= 4;
++		chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		chip->ecc.correct	= omap_elm_correct_data;
++		chip->ecc.read_page	= omap_read_page_bch;
++		chip->ecc.write_page	= omap_write_page_bch;
++		chip->ecc.write_subpage	= omap_write_subpage_bch;
++		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
++		oobbytes_per_step	= chip->ecc.bytes;
++
++		err = elm_config(info->elm_dev, BCH4_ECC,
++				 mtd->writesize / chip->ecc.size,
++				 chip->ecc.size, chip->ecc.bytes);
++		if (err < 0)
++			return err;
++		break;
++
++	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
++		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.size		= 512;
++		chip->ecc.bytes		= 13;
++		chip->ecc.strength	= 8;
++		chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		chip->ecc.correct	= nand_bch_correct_data;
++		chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
++		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
++		/* Reserve one byte for the OMAP marker */
++		oobbytes_per_step	= chip->ecc.bytes + 1;
++		/* Software BCH library is used for locating errors */
++		chip->ecc.priv		= nand_bch_init(mtd);
++		if (!chip->ecc.priv) {
++			dev_err(dev, "unable to use BCH library\n");
++			return -EINVAL;
++		}
++		break;
++
++	case OMAP_ECC_BCH8_CODE_HW:
++		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.size		= 512;
++		/* 14th bit is kept reserved for ROM-code compatibility */
++		chip->ecc.bytes		= 13 + 1;
++		chip->ecc.strength	= 8;
++		chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		chip->ecc.correct	= omap_elm_correct_data;
++		chip->ecc.read_page	= omap_read_page_bch;
++		chip->ecc.write_page	= omap_write_page_bch;
++		chip->ecc.write_subpage	= omap_write_subpage_bch;
++		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
++		oobbytes_per_step	= chip->ecc.bytes;
++
++		err = elm_config(info->elm_dev, BCH8_ECC,
++				 mtd->writesize / chip->ecc.size,
++				 chip->ecc.size, chip->ecc.bytes);
++		if (err < 0)
++			return err;
++
++		break;
++
++	case OMAP_ECC_BCH16_CODE_HW:
++		pr_info("Using OMAP_ECC_BCH16_CODE_HW ECC scheme\n");
++		chip->ecc.mode		= NAND_ECC_HW;
++		chip->ecc.size		= 512;
++		chip->ecc.bytes		= 26;
++		chip->ecc.strength	= 16;
++		chip->ecc.hwctl		= omap_enable_hwecc_bch;
++		chip->ecc.correct	= omap_elm_correct_data;
++		chip->ecc.read_page	= omap_read_page_bch;
++		chip->ecc.write_page	= omap_write_page_bch;
++		chip->ecc.write_subpage	= omap_write_subpage_bch;
++		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
++		oobbytes_per_step	= chip->ecc.bytes;
++
++		err = elm_config(info->elm_dev, BCH16_ECC,
++				 mtd->writesize / chip->ecc.size,
++				 chip->ecc.size, chip->ecc.bytes);
++		if (err < 0)
++			return err;
++
++		break;
++	default:
++		dev_err(dev, "Invalid or unsupported ECC scheme\n");
++		return -EINVAL;
++	}
++
++	/* Check if NAND device's OOB is enough to store ECC signatures */
++	min_oobbytes += (oobbytes_per_step *
++			 (mtd->writesize / chip->ecc.size));
++	if (mtd->oobsize < min_oobbytes) {
++		dev_err(dev,
++			"Not enough OOB bytes: required = %d, available=%d\n",
++			min_oobbytes, mtd->oobsize);
++		return -EINVAL;
++	}
 +
 +	return 0;
-+
-+ out_free_dma:
-+	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-+
-+	return err;
 +}
 +
-+static void cafe_nand_detach_chip(struct nand_chip *chip)
-+{
-+	struct cafe_priv *cafe = nand_get_controller_data(chip);
-+
-+	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-+}
-+
-+static const struct nand_controller_ops cafe_nand_controller_ops = {
-+	.attach_chip = cafe_nand_attach_chip,
-+	.detach_chip = cafe_nand_detach_chip,
++static const struct nand_controller_ops omap_nand_controller_ops = {
++	.attach_chip = omap_nand_attach_chip,
 +};
 +
- static int cafe_nand_probe(struct pci_dev *pdev,
- 				     const struct pci_device_id *ent)
++/* Shared among all NAND instances to synchronize access to the ECC Engine */
++static struct nand_controller omap_gpmc_controller = {
++	.lock = __SPIN_LOCK_UNLOCKED(omap_gpmc_controller.lock),
++	.wq = __WAIT_QUEUE_HEAD_INITIALIZER(omap_gpmc_controller.wq),
++	.ops = &omap_nand_controller_ops,
++};
++
+ static int omap_nand_probe(struct platform_device *pdev)
  {
-@@ -600,7 +671,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	struct cafe_priv *cafe;
- 	uint32_t ctrl;
- 	int err = 0;
--	int old_dma;
+ 	struct omap_nand_info		*info;
+ 	struct mtd_info			*mtd;
+ 	struct nand_chip		*nand_chip;
+ 	int				err;
+-	dma_cap_mask_t			mask;
+ 	struct resource			*res;
+ 	struct device			*dev = &pdev->dev;
+-	int				min_oobbytes = BADBLOCK_MARKER_LENGTH;
+-	int				oobbytes_per_step;
  
- 	/* Very old versions shared the same PCI ident for all three
- 	   functions on the chip. Verify the class too... */
-@@ -708,62 +778,15 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 		cafe_readl(cafe, GLOBAL_CTRL),
- 		cafe_readl(cafe, GLOBAL_IRQ_MASK));
+ 	info = devm_kzalloc(&pdev->dev, sizeof(struct omap_nand_info),
+ 				GFP_KERNEL);
+@@ -1998,266 +2253,8 @@ static int omap_nand_probe(struct platform_device *pdev)
  
--	/* Do not use the DMA for the nand_scan_ident() */
--	old_dma = usedma;
--	usedma = 0;
-+	/* Do not use the DMA during the NAND identification */
-+	cafe->usedma = 0;
+ 	/* scan NAND device connected to chip controller */
+ 	nand_chip->options |= info->devsize & NAND_BUSWIDTH_16;
+-	err = nand_scan_ident(mtd, 1, NULL);
+-	if (err) {
+-		dev_err(&info->pdev->dev,
+-			"scan failed, may be bus-width mismatch\n");
+-		goto return_error;
+-	}
  
- 	/* Scan to find existence of the device */
--	err = nand_scan_ident(mtd, 2, NULL);
-+	cafe->nand.dummy_controller.ops = &cafe_nand_controller_ops;
-+	err = nand_scan(mtd, 2);
- 	if (err)
- 		goto out_irq;
- 
--	cafe->dmabuf = dma_alloc_coherent(&cafe->pdev->dev, 2112,
--					  &cafe->dmaaddr, GFP_KERNEL);
--	if (!cafe->dmabuf) {
--		err = -ENOMEM;
--		goto out_irq;
+-	if (nand_chip->bbt_options & NAND_BBT_USE_FLASH)
+-		nand_chip->bbt_options |= NAND_BBT_NO_OOB;
+-	else
+-		nand_chip->options |= NAND_SKIP_BBTSCAN;
+-
+-	/* re-populate low-level callbacks based on xfer modes */
+-	switch (info->xfer_type) {
+-	case NAND_OMAP_PREFETCH_POLLED:
+-		nand_chip->read_buf   = omap_read_buf_pref;
+-		nand_chip->write_buf  = omap_write_buf_pref;
+-		break;
+-
+-	case NAND_OMAP_POLLED:
+-		/* Use nand_base defaults for {read,write}_buf */
+-		break;
+-
+-	case NAND_OMAP_PREFETCH_DMA:
+-		dma_cap_zero(mask);
+-		dma_cap_set(DMA_SLAVE, mask);
+-		info->dma = dma_request_chan(pdev->dev.parent, "rxtx");
+-
+-		if (IS_ERR(info->dma)) {
+-			dev_err(&pdev->dev, "DMA engine request failed\n");
+-			err = PTR_ERR(info->dma);
+-			goto return_error;
+-		} else {
+-			struct dma_slave_config cfg;
+-
+-			memset(&cfg, 0, sizeof(cfg));
+-			cfg.src_addr = info->phys_base;
+-			cfg.dst_addr = info->phys_base;
+-			cfg.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-			cfg.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
+-			cfg.src_maxburst = 16;
+-			cfg.dst_maxburst = 16;
+-			err = dmaengine_slave_config(info->dma, &cfg);
+-			if (err) {
+-				dev_err(&pdev->dev, "DMA engine slave config failed: %d\n",
+-					err);
+-				goto return_error;
+-			}
+-			nand_chip->read_buf   = omap_read_buf_dma_pref;
+-			nand_chip->write_buf  = omap_write_buf_dma_pref;
+-		}
+-		break;
+-
+-	case NAND_OMAP_PREFETCH_IRQ:
+-		info->gpmc_irq_fifo = platform_get_irq(pdev, 0);
+-		if (info->gpmc_irq_fifo <= 0) {
+-			dev_err(&pdev->dev, "error getting fifo irq\n");
+-			err = -ENODEV;
+-			goto return_error;
+-		}
+-		err = devm_request_irq(&pdev->dev, info->gpmc_irq_fifo,
+-					omap_nand_irq, IRQF_SHARED,
+-					"gpmc-nand-fifo", info);
+-		if (err) {
+-			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
+-						info->gpmc_irq_fifo, err);
+-			info->gpmc_irq_fifo = 0;
+-			goto return_error;
+-		}
+-
+-		info->gpmc_irq_count = platform_get_irq(pdev, 1);
+-		if (info->gpmc_irq_count <= 0) {
+-			dev_err(&pdev->dev, "error getting count irq\n");
+-			err = -ENODEV;
+-			goto return_error;
+-		}
+-		err = devm_request_irq(&pdev->dev, info->gpmc_irq_count,
+-					omap_nand_irq, IRQF_SHARED,
+-					"gpmc-nand-count", info);
+-		if (err) {
+-			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
+-						info->gpmc_irq_count, err);
+-			info->gpmc_irq_count = 0;
+-			goto return_error;
+-		}
+-
+-		nand_chip->read_buf  = omap_read_buf_irq_pref;
+-		nand_chip->write_buf = omap_write_buf_irq_pref;
+-
+-		break;
+-
+-	default:
+-		dev_err(&pdev->dev,
+-			"xfer_type(%d) not supported!\n", info->xfer_type);
+-		err = -EINVAL;
+-		goto return_error;
 -	}
 -
--	/* Set up DMA address */
--	cafe_writel(cafe, lower_32_bits(cafe->dmaaddr), NAND_DMA_ADDR0);
--	cafe_writel(cafe, upper_32_bits(cafe->dmaaddr), NAND_DMA_ADDR1);
--
--	cafe_dev_dbg(&cafe->pdev->dev, "Set DMA address to %x (virt %p)\n",
--		cafe_readl(cafe, NAND_DMA_ADDR0), cafe->dmabuf);
--
--	/* Restore the DMA flag */
--	usedma = old_dma;
--
--	cafe->ctl2 = 1<<27; /* Reed-Solomon ECC */
--	if (mtd->writesize == 2048)
--		cafe->ctl2 |= 1<<29; /* 2KiB page size */
--
--	/* Set up ECC according to the type of chip we found */
--	mtd_set_ooblayout(mtd, &cafe_ooblayout_ops);
--	if (mtd->writesize == 2048) {
--		cafe->nand.bbt_td = &cafe_bbt_main_descr_2048;
--		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_2048;
--	} else if (mtd->writesize == 512) {
--		cafe->nand.bbt_td = &cafe_bbt_main_descr_512;
--		cafe->nand.bbt_md = &cafe_bbt_mirror_descr_512;
--	} else {
--		pr_warn("Unexpected NAND flash writesize %d. Aborting\n",
--			mtd->writesize);
--		goto out_free_dma;
+-	if (!omap2_nand_ecc_check(info)) {
+-		err = -EINVAL;
+-		goto return_error;
 -	}
--	cafe->nand.ecc.mode = NAND_ECC_HW_SYNDROME;
--	cafe->nand.ecc.size = mtd->writesize;
--	cafe->nand.ecc.bytes = 14;
--	cafe->nand.ecc.strength = 4;
--	cafe->nand.ecc.write_page = cafe_nand_write_page_lowlevel;
--	cafe->nand.ecc.write_oob = cafe_nand_write_oob;
--	cafe->nand.ecc.read_page = cafe_nand_read_page;
--	cafe->nand.ecc.read_oob = cafe_nand_read_oob;
 -
+-	/*
+-	 * Bail out earlier to let NAND_ECC_SOFT code create its own
+-	 * ooblayout instead of using ours.
+-	 */
+-	if (info->ecc_opt == OMAP_ECC_HAM1_CODE_SW) {
+-		nand_chip->ecc.mode = NAND_ECC_SOFT;
+-		nand_chip->ecc.algo = NAND_ECC_HAMMING;
+-		goto scan_tail;
+-	}
+-
+-	/* populate MTD interface based on ECC scheme */
+-	switch (info->ecc_opt) {
+-	case OMAP_ECC_HAM1_CODE_HW:
+-		pr_info("nand: using OMAP_ECC_HAM1_CODE_HW\n");
+-		nand_chip->ecc.mode             = NAND_ECC_HW;
+-		nand_chip->ecc.bytes            = 3;
+-		nand_chip->ecc.size             = 512;
+-		nand_chip->ecc.strength         = 1;
+-		nand_chip->ecc.calculate        = omap_calculate_ecc;
+-		nand_chip->ecc.hwctl            = omap_enable_hwecc;
+-		nand_chip->ecc.correct          = omap_correct_data;
+-		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+-		oobbytes_per_step		= nand_chip->ecc.bytes;
+-
+-		if (!(nand_chip->options & NAND_BUSWIDTH_16))
+-			min_oobbytes		= 1;
+-
+-		break;
+-
+-	case OMAP_ECC_BCH4_CODE_HW_DETECTION_SW:
+-		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW_DETECTION_SW\n");
+-		nand_chip->ecc.mode		= NAND_ECC_HW;
+-		nand_chip->ecc.size		= 512;
+-		nand_chip->ecc.bytes		= 7;
+-		nand_chip->ecc.strength		= 4;
+-		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		nand_chip->ecc.correct		= nand_bch_correct_data;
+-		nand_chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
+-		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
+-		/* Reserve one byte for the OMAP marker */
+-		oobbytes_per_step		= nand_chip->ecc.bytes + 1;
+-		/* software bch library is used for locating errors */
+-		nand_chip->ecc.priv		= nand_bch_init(mtd);
+-		if (!nand_chip->ecc.priv) {
+-			dev_err(&info->pdev->dev, "unable to use BCH library\n");
+-			err = -EINVAL;
+-			goto return_error;
+-		}
+-		break;
+-
+-	case OMAP_ECC_BCH4_CODE_HW:
+-		pr_info("nand: using OMAP_ECC_BCH4_CODE_HW ECC scheme\n");
+-		nand_chip->ecc.mode		= NAND_ECC_HW;
+-		nand_chip->ecc.size		= 512;
+-		/* 14th bit is kept reserved for ROM-code compatibility */
+-		nand_chip->ecc.bytes		= 7 + 1;
+-		nand_chip->ecc.strength		= 4;
+-		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.read_page	= omap_read_page_bch;
+-		nand_chip->ecc.write_page	= omap_write_page_bch;
+-		nand_chip->ecc.write_subpage	= omap_write_subpage_bch;
+-		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+-		oobbytes_per_step		= nand_chip->ecc.bytes;
+-
+-		err = elm_config(info->elm_dev, BCH4_ECC,
+-				 mtd->writesize / nand_chip->ecc.size,
+-				 nand_chip->ecc.size, nand_chip->ecc.bytes);
+-		if (err < 0)
+-			goto return_error;
+-		break;
+-
+-	case OMAP_ECC_BCH8_CODE_HW_DETECTION_SW:
+-		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW\n");
+-		nand_chip->ecc.mode		= NAND_ECC_HW;
+-		nand_chip->ecc.size		= 512;
+-		nand_chip->ecc.bytes		= 13;
+-		nand_chip->ecc.strength		= 8;
+-		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		nand_chip->ecc.correct		= nand_bch_correct_data;
+-		nand_chip->ecc.calculate	= omap_calculate_ecc_bch_sw;
+-		mtd_set_ooblayout(mtd, &omap_sw_ooblayout_ops);
+-		/* Reserve one byte for the OMAP marker */
+-		oobbytes_per_step		= nand_chip->ecc.bytes + 1;
+-		/* software bch library is used for locating errors */
+-		nand_chip->ecc.priv		= nand_bch_init(mtd);
+-		if (!nand_chip->ecc.priv) {
+-			dev_err(&info->pdev->dev, "unable to use BCH library\n");
+-			err = -EINVAL;
+-			goto return_error;
+-		}
+-		break;
+-
+-	case OMAP_ECC_BCH8_CODE_HW:
+-		pr_info("nand: using OMAP_ECC_BCH8_CODE_HW ECC scheme\n");
+-		nand_chip->ecc.mode		= NAND_ECC_HW;
+-		nand_chip->ecc.size		= 512;
+-		/* 14th bit is kept reserved for ROM-code compatibility */
+-		nand_chip->ecc.bytes		= 13 + 1;
+-		nand_chip->ecc.strength		= 8;
+-		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.read_page	= omap_read_page_bch;
+-		nand_chip->ecc.write_page	= omap_write_page_bch;
+-		nand_chip->ecc.write_subpage	= omap_write_subpage_bch;
+-		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+-		oobbytes_per_step		= nand_chip->ecc.bytes;
+-
+-		err = elm_config(info->elm_dev, BCH8_ECC,
+-				 mtd->writesize / nand_chip->ecc.size,
+-				 nand_chip->ecc.size, nand_chip->ecc.bytes);
+-		if (err < 0)
+-			goto return_error;
+-
+-		break;
+-
+-	case OMAP_ECC_BCH16_CODE_HW:
+-		pr_info("using OMAP_ECC_BCH16_CODE_HW ECC scheme\n");
+-		nand_chip->ecc.mode		= NAND_ECC_HW;
+-		nand_chip->ecc.size		= 512;
+-		nand_chip->ecc.bytes		= 26;
+-		nand_chip->ecc.strength		= 16;
+-		nand_chip->ecc.hwctl		= omap_enable_hwecc_bch;
+-		nand_chip->ecc.correct		= omap_elm_correct_data;
+-		nand_chip->ecc.read_page	= omap_read_page_bch;
+-		nand_chip->ecc.write_page	= omap_write_page_bch;
+-		nand_chip->ecc.write_subpage	= omap_write_subpage_bch;
+-		mtd_set_ooblayout(mtd, &omap_ooblayout_ops);
+-		oobbytes_per_step		= nand_chip->ecc.bytes;
+-
+-		err = elm_config(info->elm_dev, BCH16_ECC,
+-				 mtd->writesize / nand_chip->ecc.size,
+-				 nand_chip->ecc.size, nand_chip->ecc.bytes);
+-		if (err < 0)
+-			goto return_error;
+-
+-		break;
+-	default:
+-		dev_err(&info->pdev->dev, "invalid or unsupported ECC scheme\n");
+-		err = -EINVAL;
+-		goto return_error;
+-	}
+-
+-	/* check if NAND device's OOB is enough to store ECC signatures */
+-	min_oobbytes += (oobbytes_per_step *
+-			 (mtd->writesize / nand_chip->ecc.size));
+-	if (mtd->oobsize < min_oobbytes) {
+-		dev_err(&info->pdev->dev,
+-			"not enough OOB bytes required = %d, available=%d\n",
+-			min_oobbytes, mtd->oobsize);
+-		err = -EINVAL;
+-		goto return_error;
+-	}
+-
+-scan_tail:
+-	/* second phase scan */
 -	err = nand_scan_tail(mtd);
--	if (err)
--		goto out_free_dma;
--
- 	pci_set_drvdata(pdev, mtd);
++	err = nand_scan(mtd, 1);
+ 	if (err)
+ 		goto return_error;
  
- 	mtd->name = "cafe_nand";
-@@ -775,8 +798,6 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 
-  out_cleanup_nand:
- 	nand_cleanup(&cafe->nand);
-- out_free_dma:
--	dma_free_coherent(&cafe->pdev->dev, 2112, cafe->dmabuf, cafe->dmaaddr);
-  out_irq:
- 	/* Disable NAND IRQ in global IRQ mask register */
- 	cafe_writel(cafe, ~1 & cafe_readl(cafe, GLOBAL_IRQ_MASK), GLOBAL_IRQ_MASK);
 -- 
 2.14.1
