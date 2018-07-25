@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJu4-0000Kx-Tm
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:40 +0000
+ id 1fiJu4-0000Kl-Th
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:41 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 09/17] mtd: rawnand: jz4740: fix probe function error path
-Date: Wed, 25 Jul 2018 15:31:44 +0200
-Message-Id: <20180725133152.30898-10-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 07/17] mtd: rawnand: do not execute nand_scan_ident() if
+ maxchips is zero
+Date: Wed, 25 Jul 2018 15:31:42 +0200
+Message-Id: <20180725133152.30898-8-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,37 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-An error after nand_scan_tail() should trigger a nand_cleanup(), not a
-nand_release() as mtd_device_register() (or one of its variants) has not
-been called and there is no need to deregister any MTD device yet.
+Some driver (eg. docg4) will need to handle themselves the
+identification phase. As part of the migration to use nand_scan()
+everywhere (which will unconditionnaly call nand_scan_ident()), we add
+a condition at the start of nand_scan_with_ids() to jump over
+nand_scan_ident() if the maxchips parameters is zero, meaning that the
+driver does not want the core to handle this phase.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/jz4740_nand.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index a4052b03249c..3abf87420c10 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -472,15 +472,15 @@ static int jz_nand_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index dea41fa25be1..42a7a934a17b 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -6735,7 +6735,9 @@ static void nand_detach(struct nand_chip *chip)
+ /**
+  * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
+  * @mtd: MTD device structure
+- * @maxchips: number of chips to scan for
++ * @maxchips: number of chips to scan for. @nand_scan_ident() will not be run if
++ *	      this parameter is zero (useful for specific drivers that must
++ *	      handle this part of the process themselves, e.g docg4).
+  * @ids: optional flash IDs table
+  *
+  * This fills out all the uninitialized function pointers with the defaults.
+@@ -6748,9 +6750,11 @@ int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	int ret;
  
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to add mtd device\n");
--		goto err_nand_release;
-+		goto err_cleanup_nand;
- 	}
+-	ret = nand_scan_ident(mtd, maxchips, ids);
+-	if (ret)
+-		return ret;
++	if (maxchips) {
++		ret = nand_scan_ident(mtd, maxchips, ids);
++		if (ret)
++			return ret;
++	}
  
- 	dev_info(&pdev->dev, "Successfully registered JZ4740 NAND driver\n");
- 
- 	return 0;
- 
--err_nand_release:
--	nand_release(mtd);
-+err_cleanup_nand:
-+	nand_cleanup(chip);
- err_unclaim_banks:
- 	while (chipnr--) {
- 		unsigned char bank = nand->banks[chipnr];
+ 	ret = nand_attach(chip);
+ 	if (ret)
 -- 
 2.14.1
