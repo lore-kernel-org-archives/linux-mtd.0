@@ -1,27 +1,38 @@
-Received: from ms.lwn.net ([45.79.88.28])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiKa7-0000kp-V1
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 14:16:01 +0000
-Date: Wed, 25 Jul 2018 08:15:47 -0600
-From: Jonathan Corbet <corbet@lwn.net>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Marcel Ziswiler
- <marcel@ziswiler.com>, linux-mtd@lists.infradead.org, Marcel Ziswiler
- <marcel.ziswiler@toradex.com>, Gregory CLEMENT
- <gregory.clement@bootlin.com>, H Hartley Sweeten
- <hsweeten@visionengravers.com>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
- Vladimir Zapolskiy <vz@mleia.com>
-Subject: Re: [PATCH] mtd: nand: fix spelling in driver api documentation
-Message-ID: <20180725081547.21ea6597@lwn.net>
-In-Reply-To: <20180725092928.243bf07f@xps13>
-References: <20180720075334.24254-1-marcel@ziswiler.com>
- <20180723093924.04af0e2f@lwn.net>
- <20180723181915.5f35f668@bbrezillon>
- <20180725092928.243bf07f@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20180725144717.604d3197@xps13>
+References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
+ <20180720151527.16038-5-miquel.raynal@bootlin.com>
+ <CAK7LNASmJRWM7Gj9qqqZqwenPkoRFeA8tupx+3PKPXC6OxD_eA@mail.gmail.com>
+ <20180725115116.1fb38fe3@bbrezillon> <20180725144717.604d3197@xps13>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Wed, 25 Jul 2018 23:16:40 +0900
+Message-ID: <CAK7LNASmSOi9mygxD2PLmYJ=br2qdK_UtECYZXFNavmUc4OA1Q@mail.gmail.com>
+Subject: Re: [PATCH v4 04/35] mtd: rawnand: denali: convert to nand_scan()
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Mans Rullgard <mans@mansr.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Stefan Agner <stefan@agner.ch>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Kamal Dasu <kdasu.kdev@gmail.com>, Josh Wu <rainyfeeling@outlook.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>,
+ Broadcom Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Wenyou Yang <wenyou.yang@microchip.com>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, Vladimir Zapolskiy <vz@mleia.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>,
+ "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Han Xu <han.xu@nxp.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Richard Weinberger <richard@nod.at>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +42,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 25 Jul 2018 09:29:28 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+2018-07-25 21:47 GMT+09:00 Miquel Raynal <miquel.raynal@bootlin.com>:
+> Hi Boris,
+>
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 25 Jul 2018
+> 11:51:16 +0200:
+>
+>> On Wed, 25 Jul 2018 18:42:44 +0900
+>> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>>
+>> >
+>> > You need to remove kfree(denali->buf)
+>> > from denali_remove(), right?
+>>
+>> Absolutely.
+>>
+>> >
+>> > void denali_remove(struct denali_nand_info *denali)
+>> > {
+>> >         struct mtd_info *mtd =3D nand_to_mtd(&denali->nand);
+>> >
+>> >         nand_release(mtd);
+>> >         kfree(denali->buf);       <---- REMOVE !!
+>> >         denali_disable_irq(denali);
+>> > }
+>> >
+>> >
+>> > Otherwise, denali_remove() will free denali->buf twice
+>> > because kfree(denali->buf) is called from denali_detach_chip().
+>>
+>
+> Absolutely, thanks for reviewing!
+>
+> I'll apply with this changed.
+>
+> Miqu=C3=A8l
 
-> > > That's not a spelling mistake, that's a factual change.  I'll apply the
-> > > patch since it appears to be correct, but will be tweaking the changelog.    
-> > 
-> > I think Miquel had planned to apply this patch to the NAND tree, but we
-> > don't seem to have conflicting changes on this file, so feel free to
-> > take it in the doc tree.
-> > 
-> > Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>  
-> 
-> Can you confirm you will take this patch?
 
-Yeah, that's what the "I'll apply the patch" part above means :)  It's
-already in docs-next.
+Assuming you will fix this,
 
-Thanks,
+Acked-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-jon
+
+--=20
+Best Regards
+Masahiro Yamada
