@@ -1,19 +1,33 @@
-Subject: Re: [PATCH 1/3] mtd: spi-nor: add Global Block Unlock support
-To: Tudor Ambarus <tudor.ambarus@microchip.com>, <marek.vasut@gmail.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <anuragku@xilinx.com>,
- <nicolas.ferre@microchip.com>
-References: <20180717162831.17947-1-tudor.ambarus@microchip.com>
-From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-Message-ID: <8e0ff8be-34d1-7de9-6120-a067540a75d2@microchip.com>
-Date: Wed, 25 Jul 2018 14:26:36 +0200
+Date: Wed, 25 Jul 2018 14:47:17 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, Mans Rullgard <mans@mansr.com>, Maxime
+ Ripard <maxime.ripard@bootlin.com>, Stefan Agner <stefan@agner.ch>, Linux
+ Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-mtd
+ <linux-mtd@lists.infradead.org>, Kamal Dasu <kdasu.kdev@gmail.com>, Josh Wu
+ <rainyfeeling@outlook.com>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Marek
+ Vasut <marek.vasut@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Broadcom
+ Kernel Feedback List <bcm-kernel-feedback-list@broadcom.com>, Sylvain
+ Lemieux <slemieux.tyco@gmail.com>, Wenyou Yang <wenyou.yang@microchip.com>,
+ Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vladimir Zapolskiy
+ <vz@mleia.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, "moderated
+ list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>, Han Xu <han.xu@nxp.com>, Xiaolei
+ Li <xiaolei.li@mediatek.com>, linux-arm-kernel
+ <linux-arm-kernel@lists.infradead.org>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 04/35] mtd: rawnand: denali: convert to nand_scan()
+Message-ID: <20180725144717.604d3197@xps13>
+In-Reply-To: <20180725115116.1fb38fe3@bbrezillon>
+References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
+ <20180720151527.16038-5-miquel.raynal@bootlin.com>
+ <CAK7LNASmJRWM7Gj9qqqZqwenPkoRFeA8tupx+3PKPXC6OxD_eA@mail.gmail.com>
+ <20180725115116.1fb38fe3@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20180717162831.17947-1-tudor.ambarus@microchip.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,90 +37,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tudor,
+Hi Boris,
 
-Le 17/07/2018 à 18:28, Tudor Ambarus a écrit :
-> We can't determine this purely by manufacturer type and it's not
-> autodetectable by anything like SFDP, so make a new flag for it:
-> UNLOCK_GLOBAL_BLOCK.
-> 
-> Note that the Global Block Unlock command has different names
-> depending on the manufacturer, but always the same command value:
-> 0x98. Macronix's MX25U12835F names it Gang Block Unlock,
-> Winbound's W25Q128FV names it Global Block Unlock and
-> Microchip's SST26VF064B names it Global Block Protection Unlock.
-> 
-> Based on initial work done by Anurag Kumar Vulisha:
-> https://patchwork.kernel.org/patch/7611271/
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Wed, 25 Jul 2018
+11:51:16 +0200:
 
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+> On Wed, 25 Jul 2018 18:42:44 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>=20
+> >=20
+> > You need to remove kfree(denali->buf)
+> > from denali_remove(), right? =20
+>=20
+> Absolutely.
+>=20
+> >=20
+> > void denali_remove(struct denali_nand_info *denali)
+> > {
+> >         struct mtd_info *mtd =3D nand_to_mtd(&denali->nand);
+> >=20
+> >         nand_release(mtd);
+> >         kfree(denali->buf);       <---- REMOVE !!
+> >         denali_disable_irq(denali);
+> > }
+> >=20
+> >=20
+> > Otherwise, denali_remove() will free denali->buf twice
+> > because kfree(denali->buf) is called from denali_detach_chip(). =20
+>=20
 
-Best regards,
+Absolutely, thanks for reviewing!
 
-Cyrille
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++++++++++++
->  include/linux/mtd/spi-nor.h   |  1 +
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index d9c368c..6648251 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -89,6 +89,7 @@ struct flash_info {
->  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
->  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
->  #define USE_CLSR		BIT(14)	/* use CLSR command */
-> +#define UNLOCK_GLOBAL_BLOCK	BIT(15)	/* Unlock global block protection */
->  
->  	int	(*quad_enable)(struct spi_nor *nor);
->  };
-> @@ -2730,6 +2731,17 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
->  	return 0;
->  }
->  
-> +static int spi_nor_unlock_global_block_protection(struct spi_nor *nor)
-> +{
-> +	int ret;
-> +
-> +	write_enable(nor);
-> +	ret = nor->write_reg(nor, SPINOR_OP_GBULK, NULL, 0);
-> +	if (ret < 0)
-> +		return ret;
-> +	return spi_nor_wait_till_ready(nor);
-> +}
-> +
->  static int spi_nor_init(struct spi_nor *nor)
->  {
->  	int err;
-> @@ -2747,6 +2759,15 @@ static int spi_nor_init(struct spi_nor *nor)
->  		spi_nor_wait_till_ready(nor);
->  	}
->  
-> +	if (nor->info->flags & UNLOCK_GLOBAL_BLOCK) {
-> +		err = spi_nor_unlock_global_block_protection(nor);
-> +		if (err) {
-> +			dev_err(nor->dev,
-> +				"Cannot unlock the global block protection\n");
-> +			return err;
-> +		}
-> +	}
-> +
->  	if (nor->quad_enable) {
->  		err = nor->quad_enable(nor);
->  		if (err) {
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index e60da0d..e8dd11d 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -64,6 +64,7 @@
->  #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
->  #define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
->  #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
-> +#define SPINOR_OP_GBULK		0x98	/* Global Block Unlock Protection */
->  
->  /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
->  #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
-> 
+I'll apply with this changed.
+
+Miqu=C3=A8l
