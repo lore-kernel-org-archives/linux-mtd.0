@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJu4-0000Ke-Tp
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:47 +0000
+ id 1fiJu9-0000Kz-3x
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:49 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 06/17] mtd: rawnand: atmel: convert driver to nand_scan()
-Date: Wed, 25 Jul 2018 15:31:41 +0200
-Message-Id: <20180725133152.30898-7-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 15/17] mtd: rawnand: do not export nand_scan_[ident|tail]()
+ anymore
+Date: Wed, 25 Jul 2018 15:31:50 +0200
+Message-Id: <20180725133152.30898-16-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,194 +25,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to do all kind of controller
-side configuration/initialization between the detection phase and the
-final NAND scan. Implement these hooks so that we can convert the driver
-to just use nand_scan() instead of the nand_scan_ident() +
-nand_scan_tail() pair.
+Both nand_scan_ident() and nand_scan_tail() helpers used to be called
+directly from controller drivers that needed to tweak some ECC-related
+parameters before nand_scan_tail(). This separation prevented dynamic
+allocations during the phase of NAND identification, which was
+inconvenient.
+
+All controller drivers have been moved to use nand_scan(), in
+conjunction with the chip->ecc.[attach|detach]_chip() hooks that
+actually do the required tweaking sequence between both ident/tail
+calls, allowing programmers to use dynamic allocation as they need all
+across the scanning sequence.
+
+Declare nand_scan_[ident|tail]() statically now.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/atmel/nand-controller.c | 113 +++++++++++++--------------
- 1 file changed, 54 insertions(+), 59 deletions(-)
+ drivers/mtd/nand/raw/nand_base.c | 16 +++++++++-------
+ include/linux/mtd/rawnand.h      | 18 ++++++------------
+ 2 files changed, 15 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index 143d029710f0..a068b214ebaa 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -201,7 +201,7 @@ struct atmel_nand_controller_ops {
- 	int (*remove)(struct atmel_nand_controller *nc);
- 	void (*nand_init)(struct atmel_nand_controller *nc,
- 			  struct atmel_nand *nand);
--	int (*ecc_init)(struct atmel_nand *nand);
-+	int (*ecc_init)(struct nand_chip *chip);
- 	int (*setup_data_interface)(struct atmel_nand *nand, int csline,
- 				    const struct nand_data_interface *conf);
- };
-@@ -1132,9 +1132,8 @@ static int atmel_nand_pmecc_init(struct nand_chip *chip)
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 42a7a934a17b..34ea44f90fd8 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -5924,7 +5924,7 @@ static int nand_dt_init(struct nand_chip *chip)
+ }
+ 
+ /**
+- * nand_scan_ident - [NAND Interface] Scan for the NAND device
++ * nand_scan_ident - Scan for the NAND device
+  * @mtd: MTD device structure
+  * @maxchips: number of chips to scan for
+  * @table: alternative NAND ID table
+@@ -5932,9 +5932,13 @@ static int nand_dt_init(struct nand_chip *chip)
+  * This is the first phase of the normal nand_scan() function. It reads the
+  * flash ID and sets up MTD fields accordingly.
+  *
++ * This helper used to be called directly from controller drivers that needed
++ * to tweak some ECC-related parameters before nand_scan_tail(). This separation
++ * prevented dynamic allocations during this phase which was unconvenient and
++ * as been banned for the benefit of the ->init_ecc()/cleanup_ecc() hooks.
+  */
+-int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+-		    struct nand_flash_dev *table)
++static int nand_scan_ident(struct mtd_info *mtd, int maxchips,
++			   struct nand_flash_dev *table)
+ {
+ 	int i, nand_maf_id, nand_dev_id;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+@@ -6008,7 +6012,6 @@ int nand_scan_ident(struct mtd_info *mtd, int maxchips,
+ 
  	return 0;
  }
+-EXPORT_SYMBOL(nand_scan_ident);
  
--static int atmel_nand_ecc_init(struct atmel_nand *nand)
-+static int atmel_nand_ecc_init(struct nand_chip *chip)
+ static int nand_set_ecc_soft_ops(struct mtd_info *mtd)
  {
--	struct nand_chip *chip = &nand->base;
- 	struct atmel_nand_controller *nc;
- 	int ret;
- 
-@@ -1169,12 +1168,11 @@ static int atmel_nand_ecc_init(struct atmel_nand *nand)
- 	return 0;
+@@ -6385,14 +6388,14 @@ static bool nand_ecc_strength_good(struct mtd_info *mtd)
  }
  
--static int atmel_hsmc_nand_ecc_init(struct atmel_nand *nand)
-+static int atmel_hsmc_nand_ecc_init(struct nand_chip *chip)
+ /**
+- * nand_scan_tail - [NAND Interface] Scan for the NAND device
++ * nand_scan_tail - Scan for the NAND device
+  * @mtd: MTD device structure
+  *
+  * This is the second phase of the normal nand_scan() function. It fills out
+  * all the uninitialized function pointers with the defaults and scans for a
+  * bad block table if appropriate.
+  */
+-int nand_scan_tail(struct mtd_info *mtd)
++static int nand_scan_tail(struct mtd_info *mtd)
  {
--	struct nand_chip *chip = &nand->base;
- 	int ret;
+ 	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_ecc_ctrl *ecc = &chip->ecc;
+@@ -6716,7 +6719,6 @@ int nand_scan_tail(struct mtd_info *mtd)
  
--	ret = atmel_nand_ecc_init(nand);
-+	ret = atmel_nand_ecc_init(chip);
- 	if (ret)
- 		return ret;
+ 	return ret;
+ }
+-EXPORT_SYMBOL(nand_scan_tail);
  
-@@ -1557,22 +1555,6 @@ static void atmel_hsmc_nand_init(struct atmel_nand_controller *nc,
- 	chip->select_chip = atmel_hsmc_nand_select_chip;
+ static int nand_attach(struct nand_chip *chip)
+ {
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index a20c78e25878..eaf000b09222 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -35,17 +35,6 @@ static inline int nand_scan(struct mtd_info *mtd, int max_chips)
+ 	return nand_scan_with_ids(mtd, max_chips, NULL);
  }
  
--static int atmel_nand_detect(struct atmel_nand *nand)
--{
--	struct nand_chip *chip = &nand->base;
--	struct mtd_info *mtd = nand_to_mtd(chip);
--	struct atmel_nand_controller *nc;
--	int ret;
+-/*
+- * Separate phases of nand_scan(), allowing board driver to intervene
+- * and override command or ECC setup according to flash type.
+- */
+-int nand_scan_ident(struct mtd_info *mtd, int max_chips,
+-			   struct nand_flash_dev *table);
+-int nand_scan_tail(struct mtd_info *mtd);
 -
--	nc = to_nand_controller(chip->controller);
+-/* Unregister the MTD device and free resources held by the NAND device */
+-void nand_release(struct mtd_info *mtd);
 -
--	ret = nand_scan_ident(mtd, nand->numcs, NULL);
--	if (ret)
--		dev_err(nc->dev, "nand_scan_ident() failed: %d\n", ret);
--
--	return ret;
--}
--
- static int atmel_nand_controller_remove_nand(struct atmel_nand *nand)
- {
- 	struct nand_chip *chip = &nand->base;
-@@ -1700,6 +1682,8 @@ static int
- atmel_nand_controller_add_nand(struct atmel_nand_controller *nc,
- 			       struct atmel_nand *nand)
- {
-+	struct nand_chip *chip = &nand->base;
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int ret;
+ /* Internal helper for board drivers which need to override command function */
+ void nand_wait_ready(struct mtd_info *mtd);
  
- 	/* No card inserted, skip this NAND. */
-@@ -1710,44 +1694,9 @@ atmel_nand_controller_add_nand(struct atmel_nand_controller *nc,
+@@ -1739,8 +1728,13 @@ int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
+ int nand_write_data_op(struct nand_chip *chip, const void *buf,
+ 		       unsigned int len, bool force_8bit);
  
- 	nc->caps->ops->nand_init(nc, nand);
+-/* Free resources held by the NAND device */
++/*
++ * Free resources held by the NAND device, must be called on error after a
++ * sucessful nand_scan().
++ */
+ void nand_cleanup(struct nand_chip *chip);
++/* Unregister the MTD device and calls nand_cleanup() */
++void nand_release(struct mtd_info *mtd);
  
--	ret = atmel_nand_detect(nand);
--	if (ret)
--		return ret;
--
--	ret = nc->caps->ops->ecc_init(nand);
--	if (ret)
--		return ret;
--
--	if (nc->caps->legacy_of_bindings || !nc->dev->of_node) {
--		/*
--		 * We keep the MTD name unchanged to avoid breaking platforms
--		 * where the MTD cmdline parser is used and the bootloader
--		 * has not been updated to use the new naming scheme.
--		 */
--		mtd->name = "atmel_nand";
--	} else if (!mtd->name) {
--		/*
--		 * If the new bindings are used and the bootloader has not been
--		 * updated to pass a new mtdparts parameter on the cmdline, you
--		 * should define the following property in your nand node:
--		 *
--		 *	label = "atmel_nand";
--		 *
--		 * This way, mtd->name will be set by the core when
--		 * nand_set_flash_node() is called.
--		 */
--		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
--					   "%s:nand.%d", dev_name(nc->dev),
--					   nand->cs[0].id);
--		if (!mtd->name) {
--			dev_err(nc->dev, "Failed to allocate mtd->name\n");
--			return -ENOMEM;
--		}
--	}
--
--	ret = nand_scan_tail(mtd);
-+	ret = nand_scan(mtd, nand->numcs);
- 	if (ret) {
--		dev_err(nc->dev, "nand_scan_tail() failed: %d\n", ret);
-+		dev_err(nc->dev, "NAND scan failed: %d\n", ret);
- 		return ret;
- 	}
- 
-@@ -1945,6 +1894,51 @@ static const struct of_device_id atmel_matrix_of_ids[] = {
- 	{ /* sentinel */ },
- };
- 
-+static int atmel_nand_attach_chip(struct nand_chip *chip)
-+{
-+	struct atmel_nand_controller *nc = to_nand_controller(chip->controller);
-+	struct atmel_nand *nand = to_atmel_nand(chip);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	int ret;
-+
-+	ret = nc->caps->ops->ecc_init(chip);
-+	if (ret)
-+		return ret;
-+
-+	if (nc->caps->legacy_of_bindings || !nc->dev->of_node) {
-+		/*
-+		 * We keep the MTD name unchanged to avoid breaking platforms
-+		 * where the MTD cmdline parser is used and the bootloader
-+		 * has not been updated to use the new naming scheme.
-+		 */
-+		mtd->name = "atmel_nand";
-+	} else if (!mtd->name) {
-+		/*
-+		 * If the new bindings are used and the bootloader has not been
-+		 * updated to pass a new mtdparts parameter on the cmdline, you
-+		 * should define the following property in your nand node:
-+		 *
-+		 *	label = "atmel_nand";
-+		 *
-+		 * This way, mtd->name will be set by the core when
-+		 * nand_set_flash_node() is called.
-+		 */
-+		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
-+					   "%s:nand.%d", dev_name(nc->dev),
-+					   nand->cs[0].id);
-+		if (!mtd->name) {
-+			dev_err(nc->dev, "Failed to allocate mtd->name\n");
-+			return -ENOMEM;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct nand_controller_ops atmel_nand_controller_ops = {
-+	.attach_chip = atmel_nand_attach_chip,
-+};
-+
- static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 				struct platform_device *pdev,
- 				const struct atmel_nand_controller_caps *caps)
-@@ -1954,6 +1948,7 @@ static int atmel_nand_controller_init(struct atmel_nand_controller *nc,
- 	int ret;
- 
- 	nand_controller_init(&nc->base);
-+	nc->base.ops = &atmel_nand_controller_ops;
- 	INIT_LIST_HEAD(&nc->chips);
- 	nc->dev = dev;
- 	nc->caps = caps;
+ /* Default extended ID decoding function */
+ void nand_decode_ext_id(struct nand_chip *chip);
 -- 
 2.14.1
