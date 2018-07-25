@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJu4-0000Kl-Th
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:41 +0000
+ id 1fiJu4-0000LI-Tl
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:42 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,10 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 07/17] mtd: rawnand: do not execute nand_scan_ident() if
- maxchips is zero
-Date: Wed, 25 Jul 2018 15:31:42 +0200
-Message-Id: <20180725133152.30898-8-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 14/17] mtd: rawnand: txx9ndfmc: convert driver to
+ nand_scan()
+Date: Wed, 25 Jul 2018 15:31:49 +0200
+Message-Id: <20180725133152.30898-15-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,47 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some driver (eg. docg4) will need to handle themselves the
-identification phase. As part of the migration to use nand_scan()
-everywhere (which will unconditionnaly call nand_scan_ident()), we add
-a condition at the start of nand_scan_with_ids() to jump over
-nand_scan_ident() if the maxchips parameters is zero, meaning that the
-driver does not want the core to handle this phase.
+Two helpers have been added to the core to do all kind of controller
+side configuration/initialization between the detection phase and the
+final NAND scan. Implement these hooks so that we can convert the driver
+to just use nand_scan() instead of the nand_scan_ident() +
+nand_scan_tail() pair.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/nand_base.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/raw/txx9ndfmc.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index dea41fa25be1..42a7a934a17b 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -6735,7 +6735,9 @@ static void nand_detach(struct nand_chip *chip)
- /**
-  * nand_scan_with_ids - [NAND Interface] Scan for the NAND device
-  * @mtd: MTD device structure
-- * @maxchips: number of chips to scan for
-+ * @maxchips: number of chips to scan for. @nand_scan_ident() will not be run if
-+ *	      this parameter is zero (useful for specific drivers that must
-+ *	      handle this part of the process themselves, e.g docg4).
-  * @ids: optional flash IDs table
-  *
-  * This fills out all the uninitialized function pointers with the defaults.
-@@ -6748,9 +6750,11 @@ int nand_scan_with_ids(struct mtd_info *mtd, int maxchips,
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 	int ret;
+diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+index 9808b18b15e2..4d61a14fcb65 100644
+--- a/drivers/mtd/nand/raw/txx9ndfmc.c
++++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+@@ -254,26 +254,25 @@ static void txx9ndfmc_initialize(struct platform_device *dev)
+ #define TXX9NDFMC_NS_TO_CYC(gbusclk, ns) \
+ 	DIV_ROUND_UP((ns) * DIV_ROUND_UP(gbusclk, 1000), 1000000)
  
--	ret = nand_scan_ident(mtd, maxchips, ids);
--	if (ret)
--		return ret;
-+	if (maxchips) {
-+		ret = nand_scan_ident(mtd, maxchips, ids);
-+		if (ret)
-+			return ret;
-+	}
+-static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
++static int txx9ndfmc_attach_chip(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+-	int ret;
++	struct mtd_info *mtd = nand_to_mtd(chip);
  
- 	ret = nand_attach(chip);
- 	if (ret)
+-	ret = nand_scan_ident(mtd, 1, NULL);
+-	if (!ret) {
+-		if (mtd->writesize >= 512) {
+-			chip->ecc.size = 512;
+-			chip->ecc.bytes = 6;
+-		} else {
+-			chip->ecc.size = 256;
+-			chip->ecc.bytes = 3;
+-		}
+-
+-		ret = nand_scan_tail(mtd);
++	if (mtd->writesize >= 512) {
++		chip->ecc.size = 512;
++		chip->ecc.bytes = 6;
++	} else {
++		chip->ecc.size = 256;
++		chip->ecc.bytes = 3;
+ 	}
+-	return ret;
++
++	return 0;
+ }
+ 
++static const struct nand_controller_ops txx9ndfmc_controller_ops = {
++	.attach_chip = txx9ndfmc_attach_chip,
++};
++
+ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ {
+ 	struct txx9ndfmc_platform_data *plat = dev_get_platdata(&dev->dev);
+@@ -307,6 +306,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		 (gbusclk + 500000) / 1000000, hold, spw);
+ 
+ 	nand_controller_init(&drvdata->controller);
++	drvdata->controller.ops = &txx9ndfmc_controller_ops;
+ 
+ 	platform_set_drvdata(dev, drvdata);
+ 	txx9ndfmc_initialize(dev);
+@@ -359,7 +359,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
+ 		if (plat->wide_mask & (1 << i))
+ 			chip->options |= NAND_BUSWIDTH_16;
+ 
+-		if (txx9ndfmc_nand_scan(mtd)) {
++		if (nand_scan(mtd, 1)) {
+ 			kfree(txx9_priv->mtdname);
+ 			kfree(txx9_priv);
+ 			continue;
 -- 
 2.14.1
