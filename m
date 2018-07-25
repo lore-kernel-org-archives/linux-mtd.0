@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiJu4-0000Kz-Tk
- for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:36 +0000
+ id 1fiJu4-0000Kf-UD
+ for linux-mtd@lists.infradead.org; Wed, 25 Jul 2018 13:32:48 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
@@ -10,9 +10,10 @@ To: Boris Brezillon <boris.brezillon@bootlin.com>,
 Cc: linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
  Josh Wu <rainyfeeling@outlook.com>, Stefan Agner <stefan@agner.ch>,
  Lucas Stach <dev@lynxeye.de>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH v5 11/17] mtd: rawnand: jz4740: convert driver to nand_scan()
-Date: Wed, 25 Jul 2018 15:31:46 +0200
-Message-Id: <20180725133152.30898-12-miquel.raynal@bootlin.com>
+Subject: [PATCH v5 05/17] mtd: rawnand: atmel: clarify NAND addition/removal
+ paths
+Date: Wed, 25 Jul 2018 15:31:40 +0200
+Message-Id: <20180725133152.30898-6-miquel.raynal@bootlin.com>
 In-Reply-To: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,83 +25,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Two helpers have been added to the core to do all kind of controller
-side configuration/initialization between the detection phase and the
-final NAND scan. Implement these hooks so that we can convert the driver
-to just use nand_scan() instead of the nand_scan_ident() +
-nand_scan_tail() pair.
+No need for an atmel_nand_register() function, let's move the code in
+it directly where the function was called: in
+atmel_nand_controller_add_nand(). Also, for more coherence, rename
+atmel_nand_unregister() as atmel_nand_controller_remove_nand(), as
+opposed as the previously mentioned function.
 
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/jz4740_nand.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 102 ++++++++++++---------------
+ 1 file changed, 45 insertions(+), 57 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 09541608a45f..3816d56b0d01 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -309,7 +309,6 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
- 			       size_t chipnr, uint8_t *nand_maf_id,
- 			       uint8_t *nand_dev_id)
- {
--	struct jz_nand_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 	int ret;
- 	char res_name[6];
- 	uint32_t ctrl;
-@@ -332,20 +331,10 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
- 
- 	if (chipnr == 0) {
- 		/* Detect first chip. */
--		ret = nand_scan_ident(mtd, 1, NULL);
-+		ret = nand_scan(mtd, 1);
- 		if (ret)
- 			goto notfound_id;
- 
--		if (pdata && pdata->ident_callback)
--			pdata->ident_callback(pdev, mtd, &pdata->partitions,
--					      &pdata->num_partitions);
--
--		ret = nand_scan_tail(mtd);
--		if (ret) {
--			dev_err(&pdev->dev,  "Failed to scan NAND\n");
--			goto notfound_id;
--		}
--
- 		/* Retrieve the IDs from the first chip. */
- 		chip->select_chip(mtd, 0);
- 
-@@ -380,6 +369,24 @@ static int jz_nand_detect_bank(struct platform_device *pdev,
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index 4d27401f1299..143d029710f0 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -1573,7 +1573,7 @@ static int atmel_nand_detect(struct atmel_nand *nand)
  	return ret;
  }
  
-+static int jz_nand_attach_chip(struct nand_chip *chip)
-+{
-+	struct mtd_info *mtd = nand_to_mtd(chip);
-+	struct device *dev = mtd->dev.parent;
-+	struct jz_nand_platform_data *pdata = dev_get_platdata(dev);
-+	struct platform_device *pdev = to_platform_device(dev);
+-static int atmel_nand_unregister(struct atmel_nand *nand)
++static int atmel_nand_controller_remove_nand(struct atmel_nand *nand)
+ {
+ 	struct nand_chip *chip = &nand->base;
+ 	struct mtd_info *mtd = nand_to_mtd(chip);
+@@ -1589,60 +1589,6 @@ static int atmel_nand_unregister(struct atmel_nand *nand)
+ 	return 0;
+ }
+ 
+-static int atmel_nand_register(struct atmel_nand *nand)
+-{
+-	struct nand_chip *chip = &nand->base;
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct atmel_nand_controller *nc;
+-	int ret;
+-
+-	nc = to_nand_controller(chip->controller);
+-
+-	if (nc->caps->legacy_of_bindings || !nc->dev->of_node) {
+-		/*
+-		 * We keep the MTD name unchanged to avoid breaking platforms
+-		 * where the MTD cmdline parser is used and the bootloader
+-		 * has not been updated to use the new naming scheme.
+-		 */
+-		mtd->name = "atmel_nand";
+-	} else if (!mtd->name) {
+-		/*
+-		 * If the new bindings are used and the bootloader has not been
+-		 * updated to pass a new mtdparts parameter on the cmdline, you
+-		 * should define the following property in your nand node:
+-		 *
+-		 *	label = "atmel_nand";
+-		 *
+-		 * This way, mtd->name will be set by the core when
+-		 * nand_set_flash_node() is called.
+-		 */
+-		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
+-					   "%s:nand.%d", dev_name(nc->dev),
+-					   nand->cs[0].id);
+-		if (!mtd->name) {
+-			dev_err(nc->dev, "Failed to allocate mtd->name\n");
+-			return -ENOMEM;
+-		}
+-	}
+-
+-	ret = nand_scan_tail(mtd);
+-	if (ret) {
+-		dev_err(nc->dev, "nand_scan_tail() failed: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = mtd_device_register(mtd, NULL, 0);
+-	if (ret) {
+-		dev_err(nc->dev, "Failed to register mtd device: %d\n", ret);
+-		nand_cleanup(chip);
+-		return ret;
+-	}
+-
+-	list_add_tail(&nand->node, &nc->chips);
+-
+-	return 0;
+-}
+-
+ static struct atmel_nand *atmel_nand_create(struct atmel_nand_controller *nc,
+ 					    struct device_node *np,
+ 					    int reg_cells)
+@@ -1772,7 +1718,49 @@ atmel_nand_controller_add_nand(struct atmel_nand_controller *nc,
+ 	if (ret)
+ 		return ret;
+ 
+-	return atmel_nand_register(nand);
++	if (nc->caps->legacy_of_bindings || !nc->dev->of_node) {
++		/*
++		 * We keep the MTD name unchanged to avoid breaking platforms
++		 * where the MTD cmdline parser is used and the bootloader
++		 * has not been updated to use the new naming scheme.
++		 */
++		mtd->name = "atmel_nand";
++	} else if (!mtd->name) {
++		/*
++		 * If the new bindings are used and the bootloader has not been
++		 * updated to pass a new mtdparts parameter on the cmdline, you
++		 * should define the following property in your nand node:
++		 *
++		 *	label = "atmel_nand";
++		 *
++		 * This way, mtd->name will be set by the core when
++		 * nand_set_flash_node() is called.
++		 */
++		mtd->name = devm_kasprintf(nc->dev, GFP_KERNEL,
++					   "%s:nand.%d", dev_name(nc->dev),
++					   nand->cs[0].id);
++		if (!mtd->name) {
++			dev_err(nc->dev, "Failed to allocate mtd->name\n");
++			return -ENOMEM;
++		}
++	}
 +
-+	if (pdata && pdata->ident_callback)
-+		pdata->ident_callback(pdev, mtd, &pdata->partitions,
-+				      &pdata->num_partitions);
++	ret = nand_scan_tail(mtd);
++	if (ret) {
++		dev_err(nc->dev, "nand_scan_tail() failed: %d\n", ret);
++		return ret;
++	}
++
++	ret = mtd_device_register(mtd, NULL, 0);
++	if (ret) {
++		dev_err(nc->dev, "Failed to register mtd device: %d\n", ret);
++		nand_cleanup(chip);
++		return ret;
++	}
++
++	list_add_tail(&nand->node, &nc->chips);
 +
 +	return 0;
-+}
-+
-+static const struct nand_controller_ops jz_nand_controller_ops = {
-+	.attach_chip = jz_nand_attach_chip,
-+};
-+
- static int jz_nand_probe(struct platform_device *pdev)
- {
- 	int ret;
-@@ -423,6 +430,7 @@ static int jz_nand_probe(struct platform_device *pdev)
- 	chip->chip_delay = 50;
- 	chip->cmd_ctrl = jz_nand_cmd_ctrl;
- 	chip->select_chip = jz_nand_select_chip;
-+	chip->dummy_controller.ops = &jz_nand_controller_ops;
+ }
  
- 	if (nand->busy_gpio)
- 		chip->dev_ready = jz_nand_dev_ready;
+ static int
+@@ -1782,7 +1770,7 @@ atmel_nand_controller_remove_nands(struct atmel_nand_controller *nc)
+ 	int ret;
+ 
+ 	list_for_each_entry_safe(nand, tmp, &nc->chips, node) {
+-		ret = atmel_nand_unregister(nand);
++		ret = atmel_nand_controller_remove_nand(nand);
+ 		if (ret)
+ 			return ret;
+ 	}
 -- 
 2.14.1
