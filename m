@@ -1,32 +1,25 @@
-Date: Thu, 26 Jul 2018 21:06:55 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fimAT-000715-4G
+ for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 19:43:22 +0000
+Date: Thu, 26 Jul 2018 21:42:58 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, Mans Rullgard
- <mans@mansr.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Stefan Agner
- <stefan@agner.ch>, linux-kernel@vger.kernel.org, Masahiro Yamada
- <yamada.masahiro@socionext.com>, linux-mtd@lists.infradead.org, Kamal Dasu
- <kdasu.kdev@gmail.com>, Josh Wu <rainyfeeling@outlook.com>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Marek Vasut <marek.vasut@gmail.com>, Chen-Yu
- Tsai <wens@csie.org>, bcm-kernel-feedback-list@broadcom.com, Sylvain
- Lemieux <slemieux.tyco@gmail.com>, Wenyou Yang <wenyou.yang@microchip.com>,
- Tudor Ambarus <Tudor.Ambarus@microchip.com>, Vladimir Zapolskiy
- <vz@mleia.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- linux-mediatek@lists.infradead.org, Matthias Brugger
- <matthias.bgg@gmail.com>, Han Xu <han.xu@nxp.com>, Xiaolei Li
- <xiaolei.li@mediatek.com>, linux-arm-kernel@lists.infradead.org, Nicolas
- Ferre <nicolas.ferre@microchip.com>, Richard Weinberger <richard@nod.at>,
- Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 27/35] mtd: rawnand: sm_common: convert driver to
- nand_scan_with_ids()
-Message-ID: <20180726210655.03eca681@bbrezillon>
-In-Reply-To: <20180722084432.61b579b1@bbrezillon>
-References: <20180720151527.16038-1-miquel.raynal@bootlin.com>
- <20180720151527.16038-28-miquel.raynal@bootlin.com>
- <20180722084432.61b579b1@bbrezillon>
+To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Boris Brezillon
+ <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark
+ Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+ linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <rafal@milecki.pl>, Jonas Gorski <jonas.gorski@gmail.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: explicitly document nesting
+ partitions descriptions
+Message-ID: <20180726214258.733ca90d@bbrezillon>
+In-Reply-To: <20180713143221.8474-1-zajec5@gmail.com>
+References: <20180713143221.8474-1-zajec5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,94 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 22 Jul 2018 08:44:32 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Fri, 13 Jul 2018 16:32:20 +0200
+Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
 
-> On Fri, 20 Jul 2018 17:15:19 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> 
-> > Two helpers have been added to the core to make ECC-related
-> > configuration between the detection phase and the final NAND scan. Use
-> > these hooks and convert the driver to just use nand_scan_with_ids()
-> > (alternative to nand_scan() for passing a flash IDs table) instead of
-> > both nand_scan_ident() and nand_scan_tail().
-> > 
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>  
-> 
-> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> 
-> > ---
-> >  drivers/mtd/nand/raw/sm_common.c | 39 +++++++++++++++++++++++++--------------
-> >  1 file changed, 25 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-> > index 7f5044a79f01..d05e3f976a5e 100644
-> > --- a/drivers/mtd/nand/raw/sm_common.c
-> > +++ b/drivers/mtd/nand/raw/sm_common.c
-> > @@ -160,19 +160,9 @@ static struct nand_flash_dev nand_xd_flash_ids[] = {
-> >  	{NULL}
-> >  };
-> >  
-> > -int sm_register_device(struct mtd_info *mtd, int smartmedia)
-> > +static int sm_attach_chip(struct nand_chip *chip)
-> >  {
-> > -	struct nand_chip *chip = mtd_to_nand(mtd);
-> > -	int ret;
-> > -
-> > -	chip->options |= NAND_SKIP_BBTSCAN;
-> > -
-> > -	/* Scan for card properties */
-> > -	ret = nand_scan_ident(mtd, 1, smartmedia ?
-> > -		nand_smartmedia_flash_ids : nand_xd_flash_ids);
-> > -
-> > -	if (ret)
-> > -		return ret;
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >  
-> >  	/* Bad block marker position */
-> >  	chip->badblockpos = 0x05;
-> > @@ -187,12 +177,33 @@ int sm_register_device(struct mtd_info *mtd, int smartmedia)
-> >  	else
-> >  		return -ENODEV;
-> >  
-> > -	ret = nand_scan_tail(mtd);
-> > +	return 0;
-> > +}
-> >  
-> > +static const struct nand_controller_ops sm_controller_ops = {
-> > +	.attach_chip = sm_attach_chip,
-> > +};
-> > +
-> > +int sm_register_device(struct mtd_info *mtd, int smartmedia)
-> > +{
-> > +	struct nand_chip *chip = mtd_to_nand(mtd);
-> > +	struct nand_flash_dev *flash_ids;
-> > +	int ret;
-> > +
-> > +	chip->options |= NAND_SKIP_BBTSCAN;
-> > +
-> > +	/* Scan for card properties */
-> > +	chip->dummy_controller.ops = &sm_controller_ops;
-> > +	flash_ids = smartmedia ? nand_smartmedia_flash_ids : nand_xd_flash_ids;
-> > +	ret = nand_scan_with_ids(mtd, 1, flash_ids);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > -	return mtd_device_register(mtd, NULL, 0);
-> > +	ret = mtd_device_register(mtd, NULL, 0);
-> > +	if (ret)
-> > +		nand_release(mtd);
+> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+>=20
+> Documentation was already saying that fixed and dynamic partitioning can
+> be mixed but was missing a clear description and examples. This commit
+> adds a proper documentation of how descriptions can be nested and how
+> layouts can be mixed.
+>=20
+> This addition is important for partitions that contain subpartitions.
+> In such cases partitions have to be properly described in order to let
+> system handle them correctly.
+>=20
+> Depending on situation, nesting descriptions may provide more accurate
+> logic/structure and/or allow mixing partitioning types (various
+> "compatible" values).
+>=20
+> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 
-Didn't notice that while reviewing, but it would have been better to
-use nand_cleanup() and do this change separately.
+Applied both patches.
 
-> > +
-> > +	return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(sm_register_device);
-> >    
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Thanks,
+
+Boris
+
+> ---
+> V2: Rewrote example: I can include "brcm,trx" now as its Documentation
+>     has been pushed into mtd git tree.
+>     Updated commit message.
+> ---
+>  .../devicetree/bindings/mtd/partition.txt          | 46 ++++++++++++++++=
+++++++
+>  1 file changed, 46 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Docume=
+ntation/devicetree/bindings/mtd/partition.txt
+> index a8f382642ba9..afbbd870496d 100644
+> --- a/Documentation/devicetree/bindings/mtd/partition.txt
+> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
+> @@ -14,6 +14,13 @@ method is used for a given flash device. To describe t=
+he method there should be
+>  a subnode of the flash device that is named 'partitions'. It must have a
+>  'compatible' property, which is used to identify the method to use.
+> =20
+> +When a single partition is represented with a DT node (it depends on a u=
+sed
+> +format) it may also be described using above rules ('compatible' and opt=
+ionally
+> +some extra properties / subnodes). It allows describing more complex,
+> +hierarchical (multi-level) layouts and should be used if there is some
+> +significant relation between partitions or some partition internally uses
+> +another partitioning method.
+> +
+>  Available bindings are listed in the "partitions" subdirectory.
+> =20
+> =20
+> @@ -109,3 +116,42 @@ flash@2 {
+>  		};
+>  	};
+>  };
+> +
+> +flash@3 {
+> +	partitions {
+> +		compatible =3D "fixed-partitions";
+> +		#address-cells =3D <1>;
+> +		#size-cells =3D <1>;
+> +
+> +		partition@0 {
+> +			label =3D "bootloader";
+> +			reg =3D <0x000000 0x100000>;
+> +			read-only;
+> +		};
+> +
+> +		firmware@100000 {
+> +			label =3D "firmware";
+> +			reg =3D <0x100000 0xe00000>;
+> +			compatible =3D "brcm,trx";
+> +		};
+> +
+> +		calibration@f00000 {
+> +			label =3D "calibration";
+> +			reg =3D <0xf00000 0x100000>;
+> +			compatible =3D "fixed-partitions";
+> +			ranges =3D <0 0xf00000 0x100000>;
+> +			#address-cells =3D <1>;
+> +			#size-cells =3D <1>;
+> +
+> +			partition@0 {
+> +				label =3D "wifi0";
+> +				reg =3D <0x000000 0x080000>;
+> +			};
+> +
+> +			partition@80000 {
+> +				label =3D "wifi1";
+> +				reg =3D <0x080000 0x080000>;
+> +			};
+> +		};
+> +	};
+> +};
