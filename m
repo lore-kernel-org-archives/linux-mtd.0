@@ -1,23 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fimB3-0007dl-45
- for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 19:43:59 +0000
-Date: Thu, 26 Jul 2018 21:43:35 +0200
+ id 1fima7-0001Sn-PF
+ for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 20:09:54 +0000
+Date: Thu, 26 Jul 2018 22:09:28 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, linux-sh@vger.kernel.org,
- linux-mtd@lists.infradead.org, Rich Felker <dalias@libc.org>, Sergei
- Shtylyov <sergei.shtylyov@cogentembedded.com>, Yoshinori Sato
- <ysato@users.sourceforge.jp>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v3] mtd/maps: fix solutionengine.c printk format warnings
-Message-ID: <20180726214335.047e877e@bbrezillon>
-In-Reply-To: <578dd079-80d0-939a-fbfd-ae101da1dc29@infradead.org>
-References: <578dd079-80d0-939a-fbfd-ae101da1dc29@infradead.org>
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>, Graham Moore
+ <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>, Richard
+ Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: make return type fit
+ wait_for_completion_timeout
+Message-ID: <20180726220928.710f6276@bbrezillon>
+In-Reply-To: <20180725063137.GB7194@osadl.at>
+References: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
+ <20180724224626.777149ce@bbrezillon>
+ <20180725063137.GB7194@osadl.at>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +29,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 Jul 2018 11:29:01 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
+On Wed, 25 Jul 2018 06:31:37 +0000
+Nicholas Mc Guire <der.herr@hofr.at> wrote:
 
-> From: Randy Dunlap <rdunlap@infradead.org>
-> 
-> Fix 2 printk format warnings (this driver is currently only used by
-> arch/sh/) by using "%pap" instead of "%lx".
-> 
-> Fixes these build warnings:
-> 
-> ../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
-> ../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-> ../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined here
->   printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
->                                                   ~~~~^
->                                                   %08x
-> ../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-> ../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined here
->   printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
->                                                                     ~~~~^
->                                                                     %08x
-> 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: linux-mtd@lists.infradead.org
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: linux-sh@vger.kernel.org
-> Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> On Tue, Jul 24, 2018 at 10:46:26PM +0200, Boris Brezillon wrote:
+> > On Sat, 21 Jul 2018 18:08:13 +0200
+> > Nicholas Mc Guire <hofrat@osadl.org> wrote:
+> >  =20
+> > > wait_for_completion_timeout returns an unsigned long not int. declare=
+ a
+> > > suitably type timeout and fix up assignment and check.
+> > >=20
+> > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > > Reported-by: Vignesh R <vigneshr@ti.com>
+> > > Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI F=
+lash Controller") =20
+> >=20
+> > If you don't mind, I'd like to squash all wait_for_completion_timeout()
+> > fixes into a single commit.
+> > =20
+> makes sense - no objections to that at all.
 
-Applied.
+
+I also dropped the timeout vars and checked the return of
+wait_for_completion_timeout() directly + removed the Fixes tag since
+it's no longer possible to attach the fix to a single commit and also,
+I'm sure the bug really existed (no overflow possible since the timeout
+values are small enough to fit in a signed int).
+
+Here is the resulting patch. Let me know if you're okay with this version.
 
 Thanks,
 
 Boris
 
-> ---
-> v3: drop anding the phys addresses with 0x1fffffff since the only
->     phys addresses are 0 or 0x01000000.
-> 
->  drivers/mtd/maps/solutionengine.c |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> --- linux-next-20180717.orig/drivers/mtd/maps/solutionengine.c
-> +++ linux-next-20180717/drivers/mtd/maps/solutionengine.c
-> @@ -59,9 +59,9 @@ static int __init init_soleng_maps(void)
->  			return -ENXIO;
->  		}
->  	}
-> -	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
-> -	       soleng_flash_map.phys & 0x1fffffff,
-> -	       soleng_eprom_map.phys & 0x1fffffff);
-> +	printk(KERN_NOTICE "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
-> +	       &soleng_flash_map.phys,
-> +	       &soleng_eprom_map.phys);
->  	flash_mtd->owner = THIS_MODULE;
->  
->  	eprom_mtd = do_map_probe("map_rom", &soleng_eprom_map);
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--->8---
+=46rom 69edac4ef4d1c8dac519b6d12afd4097ce72a54e Mon Sep 17 00:00:00 2001
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Date: Sat, 21 Jul 2018 16:21:51 +0200
+Subject: [PATCH] mtd: spi-nor: cadence-quadspi: fix timeout handling
+
+wait_for_completion_timeout returns an unsigned long not an int, so
+let's check its return value directly instead of storing it in ret,
+and avoid checking for negative values since this cannot happen.
+
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/spi-nor/cadence-quadspi.c | 20 ++++++++------------
+ 1 file changed, 8 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/ca=
+dence-quadspi.c
+index c3f7aaa5d18f..7a19dae717fa 100644
+--- a/drivers/mtd/spi-nor/cadence-quadspi.c
++++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+@@ -525,15 +525,14 @@ static int cqspi_indirect_read_execute(struct spi_nor=
+ *nor, u8 *rxbuf,
+ 	       reg_base + CQSPI_REG_INDIRECTRD);
+=20
+ 	while (remaining > 0) {
+-		ret =3D wait_for_completion_timeout(&cqspi->transfer_complete,
+-						  msecs_to_jiffies
+-						  (CQSPI_READ_TIMEOUT_MS));
++		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
++				msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
++			ret =3D -ETIMEDOUT;
+=20
+ 		bytes_to_read =3D cqspi_get_rd_sram_level(cqspi);
+=20
+-		if (!ret && bytes_to_read =3D=3D 0) {
++		if (ret && bytes_to_read =3D=3D 0) {
+ 			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
+-			ret =3D -ETIMEDOUT;
+ 			goto failrd;
+ 		}
+=20
+@@ -649,10 +648,8 @@ static int cqspi_indirect_write_execute(struct spi_nor=
+ *nor, loff_t to_addr,
+ 		iowrite32_rep(cqspi->ahb_base, txbuf,
+ 			      DIV_ROUND_UP(write_bytes, 4));
+=20
+-		ret =3D wait_for_completion_timeout(&cqspi->transfer_complete,
+-						  msecs_to_jiffies
+-						  (CQSPI_TIMEOUT_MS));
+-		if (!ret) {
++		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
++					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
+ 			dev_err(nor->dev, "Indirect write timeout\n");
+ 			ret =3D -ETIMEDOUT;
+ 			goto failwr;
+@@ -986,9 +983,8 @@ static int cqspi_direct_read_execute(struct spi_nor *no=
+r, u_char *buf,
+ 	}
+=20
+ 	dma_async_issue_pending(cqspi->rx_chan);
+-	ret =3D wait_for_completion_timeout(&cqspi->rx_dma_complete,
+-					  msecs_to_jiffies(len));
+-	if (ret <=3D 0) {
++	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
++					 msecs_to_jiffies(len))) {
+ 		dmaengine_terminate_sync(cqspi->rx_chan);
+ 		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
+ 		ret =3D -ETIMEDOUT;
