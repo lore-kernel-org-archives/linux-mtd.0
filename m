@@ -1,22 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fika6-0003hi-La
- for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 18:01:44 +0000
-Date: Thu, 26 Jul 2018 20:01:20 +0200
+ id 1fiklN-00081x-U6
+ for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 18:13:23 +0000
+Date: Thu, 26 Jul 2018 20:12:59 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Stefan Agner <stefan@agner.ch>
 Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>,
- Josh Wu <rainyfeeling@outlook.com>, Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH v5 12/17] mtd: rawnand: tegra: convert driver to
- nand_scan()
-Message-ID: <20180726200120.0dd4bcb7@bbrezillon>
-In-Reply-To: <b7eded62209b18d8d0143fefbfa95905@agner.ch>
-References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
- <20180725133152.30898-13-miquel.raynal@bootlin.com>
- <b7eded62209b18d8d0143fefbfa95905@agner.ch>
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: add hooks that may be called
+ during nand_scan()
+Message-ID: <20180726201259.3dda70ec@bbrezillon>
+In-Reply-To: <cf9e65608733ecf1d0e3728e42df1acc@agner.ch>
+References: <20180718231234.8534-1-miquel.raynal@bootlin.com>
+ <20180718231234.8534-3-miquel.raynal@bootlin.com>
+ <cf9e65608733ecf1d0e3728e42df1acc@agner.ch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,26 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 26 Jul 2018 18:29:36 +0200
+On Thu, 26 Jul 2018 18:22:10 +0200
 Stefan Agner <stefan@agner.ch> wrote:
-
-> On 25.07.2018 15:31, Miquel Raynal wrote:
-> > Two helpers have been added to the core to do all kind of controller
-> > side configuration/initialization between the detection phase and the
-> > final NAND scan. Implement these hooks so that we can convert the driver
-> > to just use nand_scan() instead of the nand_scan_ident() +
-> > nand_scan_tail() pair.
-> >   
+> > +/**
+> > + * struct nand_controller_ops - Controller operations
+> > + *
+> > + * @attach_chip: Callback that will be called between nand_detect() and
+> > + *		 nand_scan_tail() during nand_scan() (optional).
+> > + * @detach_chip: Callback that will be called from nand_cleanup() or if
+> > + *		 nand_scan_tail() fails (optional).  
 > 
-> While the patch looks technically correct, I wonder whether the driver
-> now does what we expect it from attach logically...
+> This documentation reads not very helpful to me.
 > 
-> E.g. shouldn't we get the wp_gpio in attach?
+> It would be useful if it is written more from the driver developers
+> perspective, e.g. what those callbacks ideally are supposed to do...
+> 
 
-Well, this series does things mechanically to avoid breaking drivers (we
-just move all the code between ident and tail into the attach hook),
-but any resource that is not needed for the identification phase and is
-tied to the NAND chip could/should be requested in the attach hook (the
-WP pin is such a resource).
+Indeed. How about:
 
-Feel free to send a patch to change that.
+	@attach_chip: this method is called between after the NAND
+		      detection phase to let controller driver
+		      tweak/customize the configuration based on the
+		      NAND properties (page size, OOB size, ECC
+		      requirements, ...).
+		      Typically used to chose the appropriate ECC
+		      config and allocate associated resources.
+		      This hook is optional.
+	@detach_chip: free all resources allocated/claimed in
+		      nand_controller_ops->detach_chip().
+		      This hook is optional.
