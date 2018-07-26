@@ -1,25 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fimAT-000715-4G
- for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 19:43:22 +0000
-Date: Thu, 26 Jul 2018 21:42:58 +0200
+ id 1fimB3-0007dl-45
+ for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 19:43:59 +0000
+Date: Thu, 26 Jul 2018 21:43:35 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Boris Brezillon
- <boris.brezillon@free-electrons.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Rob Herring <robh+dt@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
- linux-mtd@lists.infradead.org, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <rafal@milecki.pl>, Jonas Gorski <jonas.gorski@gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: mtd: explicitly document nesting
- partitions descriptions
-Message-ID: <20180726214258.733ca90d@bbrezillon>
-In-Reply-To: <20180713143221.8474-1-zajec5@gmail.com>
-References: <20180713143221.8474-1-zajec5@gmail.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, linux-sh@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Rich Felker <dalias@libc.org>, Sergei
+ Shtylyov <sergei.shtylyov@cogentembedded.com>, Yoshinori Sato
+ <ysato@users.sourceforge.jp>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v3] mtd/maps: fix solutionengine.c printk format warnings
+Message-ID: <20180726214335.047e877e@bbrezillon>
+In-Reply-To: <578dd079-80d0-939a-fbfd-ae101da1dc29@infradead.org>
+References: <578dd079-80d0-939a-fbfd-ae101da1dc29@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,103 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 13 Jul 2018 16:32:20 +0200
-Rafa=C5=82 Mi=C5=82ecki <zajec5@gmail.com> wrote:
+On Tue, 24 Jul 2018 11:29:01 -0700
+Randy Dunlap <rdunlap@infradead.org> wrote:
 
-> From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->=20
-> Documentation was already saying that fixed and dynamic partitioning can
-> be mixed but was missing a clear description and examples. This commit
-> adds a proper documentation of how descriptions can be nested and how
-> layouts can be mixed.
->=20
-> This addition is important for partitions that contain subpartitions.
-> In such cases partitions have to be properly described in order to let
-> system handle them correctly.
->=20
-> Depending on situation, nesting descriptions may provide more accurate
-> logic/structure and/or allow mixing partitioning types (various
-> "compatible" values).
->=20
-> Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Fix 2 printk format warnings (this driver is currently only used by
+> arch/sh/) by using "%pap" instead of "%lx".
+> 
+> Fixes these build warnings:
+> 
+> ../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
+> ../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
+> ../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined here
+>   printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+>                                                   ~~~~^
+>                                                   %08x
+> ../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
+> ../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined here
+>   printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+>                                                                     ~~~~^
+>                                                                     %08x
+> 
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>
+> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: linux-mtd@lists.infradead.org
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: Rich Felker <dalias@libc.org>
+> Cc: linux-sh@vger.kernel.org
+> Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 
-Applied both patches.
+Applied.
 
 Thanks,
 
 Boris
 
 > ---
-> V2: Rewrote example: I can include "brcm,trx" now as its Documentation
->     has been pushed into mtd git tree.
->     Updated commit message.
-> ---
->  .../devicetree/bindings/mtd/partition.txt          | 46 ++++++++++++++++=
-++++++
->  1 file changed, 46 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/mtd/partition.txt b/Docume=
-ntation/devicetree/bindings/mtd/partition.txt
-> index a8f382642ba9..afbbd870496d 100644
-> --- a/Documentation/devicetree/bindings/mtd/partition.txt
-> +++ b/Documentation/devicetree/bindings/mtd/partition.txt
-> @@ -14,6 +14,13 @@ method is used for a given flash device. To describe t=
-he method there should be
->  a subnode of the flash device that is named 'partitions'. It must have a
->  'compatible' property, which is used to identify the method to use.
-> =20
-> +When a single partition is represented with a DT node (it depends on a u=
-sed
-> +format) it may also be described using above rules ('compatible' and opt=
-ionally
-> +some extra properties / subnodes). It allows describing more complex,
-> +hierarchical (multi-level) layouts and should be used if there is some
-> +significant relation between partitions or some partition internally uses
-> +another partitioning method.
-> +
->  Available bindings are listed in the "partitions" subdirectory.
-> =20
-> =20
-> @@ -109,3 +116,42 @@ flash@2 {
->  		};
->  	};
->  };
-> +
-> +flash@3 {
-> +	partitions {
-> +		compatible =3D "fixed-partitions";
-> +		#address-cells =3D <1>;
-> +		#size-cells =3D <1>;
-> +
-> +		partition@0 {
-> +			label =3D "bootloader";
-> +			reg =3D <0x000000 0x100000>;
-> +			read-only;
-> +		};
-> +
-> +		firmware@100000 {
-> +			label =3D "firmware";
-> +			reg =3D <0x100000 0xe00000>;
-> +			compatible =3D "brcm,trx";
-> +		};
-> +
-> +		calibration@f00000 {
-> +			label =3D "calibration";
-> +			reg =3D <0xf00000 0x100000>;
-> +			compatible =3D "fixed-partitions";
-> +			ranges =3D <0 0xf00000 0x100000>;
-> +			#address-cells =3D <1>;
-> +			#size-cells =3D <1>;
-> +
-> +			partition@0 {
-> +				label =3D "wifi0";
-> +				reg =3D <0x000000 0x080000>;
-> +			};
-> +
-> +			partition@80000 {
-> +				label =3D "wifi1";
-> +				reg =3D <0x080000 0x080000>;
-> +			};
-> +		};
-> +	};
-> +};
+> v3: drop anding the phys addresses with 0x1fffffff since the only
+>     phys addresses are 0 or 0x01000000.
+> 
+>  drivers/mtd/maps/solutionengine.c |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> --- linux-next-20180717.orig/drivers/mtd/maps/solutionengine.c
+> +++ linux-next-20180717/drivers/mtd/maps/solutionengine.c
+> @@ -59,9 +59,9 @@ static int __init init_soleng_maps(void)
+>  			return -ENXIO;
+>  		}
+>  	}
+> -	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+> -	       soleng_flash_map.phys & 0x1fffffff,
+> -	       soleng_eprom_map.phys & 0x1fffffff);
+> +	printk(KERN_NOTICE "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
+> +	       &soleng_flash_map.phys,
+> +	       &soleng_eprom_map.phys);
+>  	flash_mtd->owner = THIS_MODULE;
+>  
+>  	eprom_mtd = do_map_probe("map_rom", &soleng_eprom_map);
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
