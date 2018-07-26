@@ -1,25 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fima7-0001Sn-PF
- for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 20:09:54 +0000
-Date: Thu, 26 Jul 2018 22:09:28 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Cc: Nicholas Mc Guire <hofrat@osadl.org>, Graham Moore
- <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>, Richard
- Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: make return type fit
- wait_for_completion_timeout
-Message-ID: <20180726220928.710f6276@bbrezillon>
-In-Reply-To: <20180725063137.GB7194@osadl.at>
-References: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
- <20180724224626.777149ce@bbrezillon>
- <20180725063137.GB7194@osadl.at>
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fiodB-0007Yk-CV
+ for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 22:21:11 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+Date: Fri, 27 Jul 2018 00:20:50 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v3 2/2] mtd: rawnand: add hooks that may be called during
+ nand_scan()
+In-Reply-To: <20180726201259.3dda70ec@bbrezillon>
+References: <20180718231234.8534-1-miquel.raynal@bootlin.com>
+ <20180718231234.8534-3-miquel.raynal@bootlin.com>
+ <cf9e65608733ecf1d0e3728e42df1acc@agner.ch>
+ <20180726201259.3dda70ec@bbrezillon>
+Message-ID: <4c4a20c8496b60ab051a0756f150ee7a@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,106 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 25 Jul 2018 06:31:37 +0000
-Nicholas Mc Guire <der.herr@hofr.at> wrote:
+On 26.07.2018 20:12, Boris Brezillon wrote:
+> On Thu, 26 Jul 2018 18:22:10 +0200
+> Stefan Agner <stefan@agner.ch> wrote:
+>> > +/**
+>> > + * struct nand_controller_ops - Controller operations
+>> > + *
+>> > + * @attach_chip: Callback that will be called between nand_detect() and
+>> > + *		 nand_scan_tail() during nand_scan() (optional).
+>> > + * @detach_chip: Callback that will be called from nand_cleanup() or if
+>> > + *		 nand_scan_tail() fails (optional).
+>>
+>> This documentation reads not very helpful to me.
+>>
+>> It would be useful if it is written more from the driver developers
+>> perspective, e.g. what those callbacks ideally are supposed to do...
+>>
+> 
+> Indeed. How about:
+> 
+> 	@attach_chip: this method is called between after the NAND
 
-> On Tue, Jul 24, 2018 at 10:46:26PM +0200, Boris Brezillon wrote:
-> > On Sat, 21 Jul 2018 18:08:13 +0200
-> > Nicholas Mc Guire <hofrat@osadl.org> wrote:
-> >  =20
-> > > wait_for_completion_timeout returns an unsigned long not int. declare=
- a
-> > > suitably type timeout and fix up assignment and check.
-> > >=20
-> > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> > > Reported-by: Vignesh R <vigneshr@ti.com>
-> > > Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI F=
-lash Controller") =20
-> >=20
-> > If you don't mind, I'd like to squash all wait_for_completion_timeout()
-> > fixes into a single commit.
-> > =20
-> makes sense - no objections to that at all.
+I guess just after.
+
+> 		      detection phase to let controller driver
+> 		      tweak/customize the configuration based on the
+> 		      NAND properties (page size, OOB size, ECC
+> 		      requirements, ...).
+
+Maybe explicitly state that NAND flash parameters are available in this
+call, e.g.
+
+	@attach_chip: this method is called after the NAND detection 
+		      phase after flash ID and MTD fields such as
+		      erase size, page size and OOB size have been
+		      set up. ECC requirements are available if
+		      provided by the NAND chip or device tree.
+		      Typically used to chose the appropriate ECC
+		      config and allocate associated resources.
+		      This hook is optional.
 
 
-I also dropped the timeout vars and checked the return of
-wait_for_completion_timeout() directly + removed the Fixes tag since
-it's no longer possible to attach the fix to a single commit and also,
-I'm sure the bug really existed (no overflow possible since the timeout
-values are small enough to fit in a signed int).
+> 	@detach_chip: free all resources allocated/claimed in
+> 		      nand_controller_ops->detach_chip().
 
-Here is the resulting patch. Let me know if you're okay with this version.
+That probably should read nand_controller_ops->attach_chip().
 
-Thanks,
+> 		      This hook is optional.
 
-Boris
-
---->8---
-=46rom 69edac4ef4d1c8dac519b6d12afd4097ce72a54e Mon Sep 17 00:00:00 2001
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Date: Sat, 21 Jul 2018 16:21:51 +0200
-Subject: [PATCH] mtd: spi-nor: cadence-quadspi: fix timeout handling
-
-wait_for_completion_timeout returns an unsigned long not an int, so
-let's check its return value directly instead of storing it in ret,
-and avoid checking for negative values since this cannot happen.
-
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/spi-nor/cadence-quadspi.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/ca=
-dence-quadspi.c
-index c3f7aaa5d18f..7a19dae717fa 100644
---- a/drivers/mtd/spi-nor/cadence-quadspi.c
-+++ b/drivers/mtd/spi-nor/cadence-quadspi.c
-@@ -525,15 +525,14 @@ static int cqspi_indirect_read_execute(struct spi_nor=
- *nor, u8 *rxbuf,
- 	       reg_base + CQSPI_REG_INDIRECTRD);
-=20
- 	while (remaining > 0) {
--		ret =3D wait_for_completion_timeout(&cqspi->transfer_complete,
--						  msecs_to_jiffies
--						  (CQSPI_READ_TIMEOUT_MS));
-+		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
-+				msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
-+			ret =3D -ETIMEDOUT;
-=20
- 		bytes_to_read =3D cqspi_get_rd_sram_level(cqspi);
-=20
--		if (!ret && bytes_to_read =3D=3D 0) {
-+		if (ret && bytes_to_read =3D=3D 0) {
- 			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
--			ret =3D -ETIMEDOUT;
- 			goto failrd;
- 		}
-=20
-@@ -649,10 +648,8 @@ static int cqspi_indirect_write_execute(struct spi_nor=
- *nor, loff_t to_addr,
- 		iowrite32_rep(cqspi->ahb_base, txbuf,
- 			      DIV_ROUND_UP(write_bytes, 4));
-=20
--		ret =3D wait_for_completion_timeout(&cqspi->transfer_complete,
--						  msecs_to_jiffies
--						  (CQSPI_TIMEOUT_MS));
--		if (!ret) {
-+		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
-+					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
- 			dev_err(nor->dev, "Indirect write timeout\n");
- 			ret =3D -ETIMEDOUT;
- 			goto failwr;
-@@ -986,9 +983,8 @@ static int cqspi_direct_read_execute(struct spi_nor *no=
-r, u_char *buf,
- 	}
-=20
- 	dma_async_issue_pending(cqspi->rx_chan);
--	ret =3D wait_for_completion_timeout(&cqspi->rx_dma_complete,
--					  msecs_to_jiffies(len));
--	if (ret <=3D 0) {
-+	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
-+					 msecs_to_jiffies(len))) {
- 		dmaengine_terminate_sync(cqspi->rx_chan);
- 		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
- 		ret =3D -ETIMEDOUT;
+--
+Stefan
