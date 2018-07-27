@@ -1,25 +1,21 @@
-Received: from mail-pl0-x243.google.com ([2607:f8b0:400e:c01::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fj84C-0006HT-G2
- for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 19:06:22 +0000
-Received: by mail-pl0-x243.google.com with SMTP id 31-v6so2705511plc.4
- for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2018 12:06:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 27 Jul 2018 12:06:06 -0700
-From: Guenter Roeck <linux@roeck-us.net>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fj8y0-0002PT-LI
+ for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 20:04:02 +0000
+Date: Fri, 27 Jul 2018 22:03:37 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
- Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, linux-mtd@lists.infradead.org,
- NeilBrown <neilb@suse.com>
-Subject: Re: mtd: spi-nor: only apply reset hacks to broken hardware
-Message-ID: <20180727190606.GA4653@roeck-us.net>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger
+ <richard@nod.at>, Rob Herring <robh+dt@kernel.org>,
+ <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org, Zhiqiang Hou
+ <Zhiqiang.Hou@nxp.com>, NeilBrown <neilb@suse.com>
+Subject: Re: [PATCH] mtd: spi-nor: only apply reset hacks to broken hardware
+Message-ID: <20180727220337.1b3375ca@bbrezillon>
+In-Reply-To: <20180727183313.137943-1-computersforpeace@gmail.com>
 References: <20180727183313.137943-1-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180727183313.137943-1-computersforpeace@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,7 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 27, 2018 at 11:33:13AM -0700, Brian Norris wrote:
+On Fri, 27 Jul 2018 11:33:13 -0700
+Brian Norris <computersforpeace@gmail.com> wrote:
+
 > Commit 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when
 > exiting") is the latest from a long history of attempts to add reboot
 > handling to handle stateful addressing modes on SPI flash. Some prior
@@ -78,13 +76,20 @@ On Fri, Jul 27, 2018 at 11:33:13AM -0700, Brian Norris wrote:
 > a loud warning) only in this case.
 > 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
 > ---
 > Note that I intentionall didn't split the documentation patch. It seems
 > clearer to do these together IMO, but if it's *really* important to
 > someone...I can resend
+
+I'm fine with that.
+
+I'll leave Neil some time to review/test/comment on the patch before
+queuing it, but it looks good to me.
+
+Thanks,
+
+Boris
+
 > ---
 >  .../devicetree/bindings/mtd/jedec,spi-nor.txt  |  9 +++++++++
 >  drivers/mtd/spi-nor/spi-nor.c                  | 18 ++++++++++++++++--
