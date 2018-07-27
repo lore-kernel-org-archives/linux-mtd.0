@@ -1,19 +1,27 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fixQd-0000bL-Fj
- for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 07:44:50 +0000
+ id 1fixTl-0003pE-2h
+ for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 07:48:02 +0000
+Date: Fri, 27 Jul 2018 09:47:39 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Subject: [PATCH 2/2] mtd: rawnand: Add the nand_wait_rdy_op() helper and use it
-Date: Fri, 27 Jul 2018 09:44:18 +0200
-Message-Id: <20180727074418.32384-3-boris.brezillon@bootlin.com>
-In-Reply-To: <20180727074418.32384-1-boris.brezillon@bootlin.com>
-References: <20180727074418.32384-1-boris.brezillon@bootlin.com>
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>, Graham Moore
+ <grmoore@opensource.altera.com>, Vignesh R <vigneshr@ti.com>, Richard
+ Weinberger <richard@nod.at>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: make return type fit
+ wait_for_completion_timeout
+Message-ID: <20180727094739.10429824@bbrezillon>
+In-Reply-To: <20180727052149.GA7462@osadl.at>
+References: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
+ <20180724224626.777149ce@bbrezillon>
+ <20180725063137.GB7194@osadl.at>
+ <20180726220928.710f6276@bbrezillon>
+ <20180727052149.GA7462@osadl.at>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,69 +31,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In order to make sure we use ->exec_op() to wait for chip readiness
-when it's available we provide an helper that does the selection
-between ->exec_op(), udelay(chip->chip_delay) and nand_wait_ready()
-based on what's implemented by the controller driver.
+On Fri, 27 Jul 2018 05:21:49 +0000
+Nicholas Mc Guire <der.herr@hofr.at> wrote:
 
-We then use it in nand_wait_readrdy().
+> On Thu, Jul 26, 2018 at 10:09:28PM +0200, Boris Brezillon wrote:
+> > On Wed, 25 Jul 2018 06:31:37 +0000
+> > Nicholas Mc Guire <der.herr@hofr.at> wrote:
+> >   
+> > > On Tue, Jul 24, 2018 at 10:46:26PM +0200, Boris Brezillon wrote:  
+> > > > On Sat, 21 Jul 2018 18:08:13 +0200
+> > > > Nicholas Mc Guire <hofrat@osadl.org> wrote:
+> > > >     
+> > > > > wait_for_completion_timeout returns an unsigned long not int. declare a
+> > > > > suitably type timeout and fix up assignment and check.
+> > > > > 
+> > > > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > > > > Reported-by: Vignesh R <vigneshr@ti.com>
+> > > > > Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")    
+> > > > 
+> > > > If you don't mind, I'd like to squash all wait_for_completion_timeout()
+> > > > fixes into a single commit.
+> > > >    
+> > > makes sense - no objections to that at all.  
+> > 
+> > 
+> > I also dropped the timeout vars and checked the return of
+> > wait_for_completion_timeout() directly + removed the Fixes tag since
+> > it's no longer possible to attach the fix to a single commit and also,
+> > I'm sure the bug really existed (no overflow possible since the timeout
+> > values are small enough to fit in a signed int).
+> > 
+> > Here is the resulting patch. Let me know if you're okay with this version.
+> >  
+> 
+> looks good to me - quit a bit simpler than what I did - thanks !
+> 
+> thx!
+> hofrat
+>  
+> > Thanks,
+> > 
+> > Boris
+> >   
+> > --->8---  
+> > From 69edac4ef4d1c8dac519b6d12afd4097ce72a54e Mon Sep 17 00:00:00 2001
+> > From: Nicholas Mc Guire <hofrat@osadl.org>
+> > Date: Sat, 21 Jul 2018 16:21:51 +0200
+> > Subject: [PATCH] mtd: spi-nor: cadence-quadspi: fix timeout handling
+> > 
+> > wait_for_completion_timeout returns an unsigned long not an int, so
+> > let's check its return value directly instead of storing it in ret,
+> > and avoid checking for negative values since this cannot happen.
+> > 
+> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/raw/nand_base.c | 31 ++++++++++++++++++++++++++-----
- 1 file changed, 26 insertions(+), 5 deletions(-)
+Applied this version.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 21a04b7b918c..e591410cddc9 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -2246,6 +2246,28 @@ static int nand_get_features_op(struct nand_chip *chip, u8 feature,
- 	return 0;
- }
- 
-+static int nand_wait_rdy_op(struct nand_chip *chip, unsigned int timeout_ms,
-+			    unsigned int delay_ns)
-+{
-+	if (chip->exec_op) {
-+		struct nand_op_instr instrs[] = {
-+			NAND_OP_WAIT_RDY(PSEC_TO_MSEC(timeout_ms),
-+					 PSEC_TO_NSEC(delay_ns)),
-+		};
-+		struct nand_operation op = NAND_OPERATION(instrs);
-+
-+		return nand_exec_op(chip, &op);
-+	}
-+
-+	/* Apply delay or wait for ready/busy pin */
-+	if (!chip->dev_ready)
-+		udelay(chip->chip_delay);
-+	else
-+		nand_wait_ready(nand_to_mtd(chip));
-+
-+	return 0;
-+}
-+
- /**
-  * nand_reset_op - Do a reset operation
-  * @chip: The NAND chip
-@@ -3526,14 +3548,13 @@ static int nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
- 
- static void nand_wait_readrdy(struct nand_chip *chip)
- {
-+	const struct nand_sdr_timings *sdr;
-+
- 	if (!(chip->options & NAND_NEED_READRDY))
- 		return;
- 
--	/* Apply delay or wait for ready/busy pin */
--	if (!chip->dev_ready)
--		udelay(chip->chip_delay);
--	else
--		nand_wait_ready(nand_to_mtd(chip));
-+	sdr = nand_get_sdr_timings(&chip->data_interface);
-+	WARN_ON(nand_wait_rdy_op(chip, PSEC_TO_MSEC(sdr->tR_max), 0));
- }
- 
- /**
--- 
-2.14.1
+Thanks,
+
+Boris
+
+> > ---
+> >  drivers/mtd/spi-nor/cadence-quadspi.c | 20 ++++++++------------
+> >  1 file changed, 8 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> > index c3f7aaa5d18f..7a19dae717fa 100644
+> > --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> > +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> > @@ -525,15 +525,14 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+> >  	       reg_base + CQSPI_REG_INDIRECTRD);
+> >  
+> >  	while (remaining > 0) {
+> > -		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> > -						  msecs_to_jiffies
+> > -						  (CQSPI_READ_TIMEOUT_MS));
+> > +		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+> > +				msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
+> > +			ret = -ETIMEDOUT;
+> >  
+> >  		bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+> >  
+> > -		if (!ret && bytes_to_read == 0) {
+> > +		if (ret && bytes_to_read == 0) {
+> >  			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
+> > -			ret = -ETIMEDOUT;
+> >  			goto failrd;
+> >  		}
+> >  
+> > @@ -649,10 +648,8 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+> >  		iowrite32_rep(cqspi->ahb_base, txbuf,
+> >  			      DIV_ROUND_UP(write_bytes, 4));
+> >  
+> > -		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> > -						  msecs_to_jiffies
+> > -						  (CQSPI_TIMEOUT_MS));
+> > -		if (!ret) {
+> > +		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+> > +					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
+> >  			dev_err(nor->dev, "Indirect write timeout\n");
+> >  			ret = -ETIMEDOUT;
+> >  			goto failwr;
+> > @@ -986,9 +983,8 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
+> >  	}
+> >  
+> >  	dma_async_issue_pending(cqspi->rx_chan);
+> > -	ret = wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> > -					  msecs_to_jiffies(len));
+> > -	if (ret <= 0) {
+> > +	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> > +					 msecs_to_jiffies(len))) {
+> >  		dmaengine_terminate_sync(cqspi->rx_chan);
+> >  		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
+> >  		ret = -ETIMEDOUT;  
