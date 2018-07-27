@@ -1,26 +1,20 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiwwG-0005gl-Tp
- for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 07:13:26 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 27 Jul 2018 09:13:09 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>, Josh
- Wu <rainyfeeling@outlook.com>, Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH v5 12/17] mtd: rawnand: tegra: convert driver to
- nand_scan()
-In-Reply-To: <20180726200120.0dd4bcb7@bbrezillon>
-References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
- <20180725133152.30898-13-miquel.raynal@bootlin.com>
- <b7eded62209b18d8d0143fefbfa95905@agner.ch>
- <20180726200120.0dd4bcb7@bbrezillon>
-Message-ID: <81b38ddf26e981adf6a0564708d2954e@agner.ch>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fixQd-0000bK-Fl
+ for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 07:44:49 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [PATCH 1/2] mtd: rawnand: Add the nand_wait_readrdy() helper and use
+ it
+Date: Fri, 27 Jul 2018 09:44:17 +0200
+Message-Id: <20180727074418.32384-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20180727074418.32384-1-boris.brezillon@bootlin.com>
+References: <20180727074418.32384-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 26.07.2018 20:01, Boris Brezillon wrote:
-> On Thu, 26 Jul 2018 18:29:36 +0200
-> Stefan Agner <stefan@agner.ch> wrote:
-> 
->> On 25.07.2018 15:31, Miquel Raynal wrote:
->> > Two helpers have been added to the core to do all kind of controller
->> > side configuration/initialization between the detection phase and the
->> > final NAND scan. Implement these hooks so that we can convert the driver
->> > to just use nand_scan() instead of the nand_scan_ident() +
->> > nand_scan_tail() pair.
->> >
->>
->> While the patch looks technically correct, I wonder whether the driver
->> now does what we expect it from attach logically...
->>
->> E.g. shouldn't we get the wp_gpio in attach?
-> 
-> Well, this series does things mechanically to avoid breaking drivers (we
-> just move all the code between ident and tail into the attach hook),
-> but any resource that is not needed for the identification phase and is
-> tied to the NAND chip could/should be requested in the attach hook (the
-> WP pin is such a resource).
+The logic to wait for chip readiness after a page read has been
+duplicated in nand_do_read_ops() and nand_do_read_oob(). Provide an
+helper that does the right thing and call it where appropriate.
 
-Ok, that makes completely sense and I agree with that approach! However,
-it is not obvious when looking at the series.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_base.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
-Can we mention that fact in the commit log, e.g. something like:
-
-"To avoid breaking this patch converts the driver mechanically by just
-moving all the code between ...ident and ..tail into the attach hook.
-Ideally driver should request all resources tied to the NAND chip in the
-attach hook."
-
---
-Stefan
-
-> 
-> Feel free to send a patch to change that.
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index d527e448ce19..21a04b7b918c 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -3524,6 +3524,18 @@ static int nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
+ 	return chip->setup_read_retry(mtd, retry_mode);
+ }
+ 
++static void nand_wait_readrdy(struct nand_chip *chip)
++{
++	if (!(chip->options & NAND_NEED_READRDY))
++		return;
++
++	/* Apply delay or wait for ready/busy pin */
++	if (!chip->dev_ready)
++		udelay(chip->chip_delay);
++	else
++		nand_wait_ready(nand_to_mtd(chip));
++}
++
+ /**
+  * nand_do_read_ops - [INTERN] Read data with ECC
+  * @mtd: MTD device structure
+@@ -3631,13 +3643,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 				}
+ 			}
+ 
+-			if (chip->options & NAND_NEED_READRDY) {
+-				/* Apply delay or wait for ready/busy pin */
+-				if (!chip->dev_ready)
+-					udelay(chip->chip_delay);
+-				else
+-					nand_wait_ready(mtd);
+-			}
++			nand_wait_readrdy(chip);
+ 
+ 			if (mtd->ecc_stats.failed - ecc_failures) {
+ 				if (retry_mode + 1 < chip->read_retries) {
+@@ -3908,13 +3914,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 		len = min(len, readlen);
+ 		buf = nand_transfer_oob(mtd, buf, ops, len);
+ 
+-		if (chip->options & NAND_NEED_READRDY) {
+-			/* Apply delay or wait for ready/busy pin */
+-			if (!chip->dev_ready)
+-				udelay(chip->chip_delay);
+-			else
+-				nand_wait_ready(mtd);
+-		}
++		nand_wait_readrdy(chip);
+ 
+ 		max_bitflips = max_t(unsigned int, max_bitflips, ret);
+ 
+-- 
+2.14.1
