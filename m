@@ -1,25 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
+Received: from 178.115.242.59.static.drei.at ([178.115.242.59]
+ helo=mail.osadl.at)
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fipoX-0003dZ-Id
- for linux-mtd@lists.infradead.org; Thu, 26 Jul 2018 23:36:59 +0000
-Date: Fri, 27 Jul 2018 01:36:34 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Josh Wu
- <rainyfeeling@outlook.com>, linux-kernel@vger.kernel.org, Nicolas Ferre
- <nicolas.ferre@microchip.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MAINTAINERS: drop Wenyou Yang from Atmel NAND driver
- support
-Message-ID: <20180727013634.74f87455@xps13>
-In-Reply-To: <20180725192805.GF3539@piout.net>
-References: <20180725145628.6625-1-miquel.raynal@bootlin.com>
- <20180725203823.19a56d23@bbrezillon>
- <20180725192805.GF3539@piout.net>
+ id 1fivE9-0006Wj-Jo
+ for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 05:23:48 +0000
+Date: Fri, 27 Jul 2018 05:21:49 +0000
+From: Nicholas Mc Guire <der.herr@hofr.at>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>,
+ Graham Moore <grmoore@opensource.altera.com>,
+ Vignesh R <vigneshr@ti.com>, Richard Weinberger <richard@nod.at>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: make return type fit
+ wait_for_completion_timeout
+Message-ID: <20180727052149.GA7462@osadl.at>
+References: <1532189293-5975-1-git-send-email-hofrat@osadl.org>
+ <20180724224626.777149ce@bbrezillon>
+ <20180725063137.GB7194@osadl.at>
+ <20180726220928.710f6276@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180726220928.710f6276@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +32,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexandre,
+On Thu, Jul 26, 2018 at 10:09:28PM +0200, Boris Brezillon wrote:
+> On Wed, 25 Jul 2018 06:31:37 +0000
+> Nicholas Mc Guire <der.herr@hofr.at> wrote:
+> 
+> > On Tue, Jul 24, 2018 at 10:46:26PM +0200, Boris Brezillon wrote:
+> > > On Sat, 21 Jul 2018 18:08:13 +0200
+> > > Nicholas Mc Guire <hofrat@osadl.org> wrote:
+> > >   
+> > > > wait_for_completion_timeout returns an unsigned long not int. declare a
+> > > > suitably type timeout and fix up assignment and check.
+> > > > 
+> > > > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > > > Reported-by: Vignesh R <vigneshr@ti.com>
+> > > > Fixes: 140623410536 ("mtd: spi-nor: Add driver for Cadence Quad SPI Flash Controller")  
+> > > 
+> > > If you don't mind, I'd like to squash all wait_for_completion_timeout()
+> > > fixes into a single commit.
+> > >  
+> > makes sense - no objections to that at all.
+> 
+> 
+> I also dropped the timeout vars and checked the return of
+> wait_for_completion_timeout() directly + removed the Fixes tag since
+> it's no longer possible to attach the fix to a single commit and also,
+> I'm sure the bug really existed (no overflow possible since the timeout
+> values are small enough to fit in a signed int).
+> 
+> Here is the resulting patch. Let me know if you're okay with this version.
+>
 
-Alexandre Belloni <alexandre.belloni@bootlin.com> wrote on Wed, 25 Jul
-2018 21:28:05 +0200:
+looks good to me - quit a bit simpler than what I did - thanks !
 
-> On 25/07/2018 20:38:23+0200, Boris Brezillon wrote:
-> > On Wed, 25 Jul 2018 16:56:28 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >  =20
-> > > Mails to wenyou.yang@microchip.com are not deliverable.
-> > > Drop him as Microchip/Atmel NAND controller driver maintainer.
-> > >=20
-> > > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > > ---
-> > >  MAINTAINERS | 1 -
-> > >  1 file changed, 1 deletion(-)
-> > >=20
-> > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > index 07d1576fc766..1e7bbd5843f1 100644
-> > > --- a/MAINTAINERS
-> > > +++ b/MAINTAINERS
-> > > @@ -9345,7 +9345,6 @@ F:	drivers/media/platform/atmel/atmel-isc-regs.h
-> > >  F:	devicetree/bindings/media/atmel-isc.txt
-> > > =20
-> > >  MICROCHIP / ATMEL NAND DRIVER
-> > > -M:	Wenyou Yang <wenyou.yang@microchip.com>
-> > >  M:	Josh Wu <rainyfeeling@outlook.com> =20
-> >=20
-> > Hm, actually you can remove the entry completely. I doubt Josh will
-> > keep maintaining this driver since he's no longer working at Microchip.
-> >  =20
->=20
-> I think Nicolas' plan is to replace Wenyou so the entry may stay
-
-Patch applied to nand/next to avoid receiving delivery errors.
-
-We'll wait for Nicolas' input to replace Josh.
-
-Thanks,
-Miqu=C3=A8l
+thx!
+hofrat
+ 
+> Thanks,
+> 
+> Boris
+> 
+> --->8---
+> From 69edac4ef4d1c8dac519b6d12afd4097ce72a54e Mon Sep 17 00:00:00 2001
+> From: Nicholas Mc Guire <hofrat@osadl.org>
+> Date: Sat, 21 Jul 2018 16:21:51 +0200
+> Subject: [PATCH] mtd: spi-nor: cadence-quadspi: fix timeout handling
+> 
+> wait_for_completion_timeout returns an unsigned long not an int, so
+> let's check its return value directly instead of storing it in ret,
+> and avoid checking for negative values since this cannot happen.
+> 
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 20 ++++++++------------
+>  1 file changed, 8 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index c3f7aaa5d18f..7a19dae717fa 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -525,15 +525,14 @@ static int cqspi_indirect_read_execute(struct spi_nor *nor, u8 *rxbuf,
+>  	       reg_base + CQSPI_REG_INDIRECTRD);
+>  
+>  	while (remaining > 0) {
+> -		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> -						  msecs_to_jiffies
+> -						  (CQSPI_READ_TIMEOUT_MS));
+> +		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+> +				msecs_to_jiffies(CQSPI_READ_TIMEOUT_MS)))
+> +			ret = -ETIMEDOUT;
+>  
+>  		bytes_to_read = cqspi_get_rd_sram_level(cqspi);
+>  
+> -		if (!ret && bytes_to_read == 0) {
+> +		if (ret && bytes_to_read == 0) {
+>  			dev_err(nor->dev, "Indirect read timeout, no bytes\n");
+> -			ret = -ETIMEDOUT;
+>  			goto failrd;
+>  		}
+>  
+> @@ -649,10 +648,8 @@ static int cqspi_indirect_write_execute(struct spi_nor *nor, loff_t to_addr,
+>  		iowrite32_rep(cqspi->ahb_base, txbuf,
+>  			      DIV_ROUND_UP(write_bytes, 4));
+>  
+> -		ret = wait_for_completion_timeout(&cqspi->transfer_complete,
+> -						  msecs_to_jiffies
+> -						  (CQSPI_TIMEOUT_MS));
+> -		if (!ret) {
+> +		if (!wait_for_completion_timeout(&cqspi->transfer_complete,
+> +					msecs_to_jiffies(CQSPI_TIMEOUT_MS))) {
+>  			dev_err(nor->dev, "Indirect write timeout\n");
+>  			ret = -ETIMEDOUT;
+>  			goto failwr;
+> @@ -986,9 +983,8 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
+>  	}
+>  
+>  	dma_async_issue_pending(cqspi->rx_chan);
+> -	ret = wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> -					  msecs_to_jiffies(len));
+> -	if (ret <= 0) {
+> +	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
+> +					 msecs_to_jiffies(len))) {
+>  		dmaengine_terminate_sync(cqspi->rx_chan);
+>  		dev_err(nor->dev, "DMA wait_for_completion_timeout\n");
+>  		ret = -ETIMEDOUT;
