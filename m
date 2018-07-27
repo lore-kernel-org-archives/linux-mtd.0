@@ -1,27 +1,21 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fiyC4-0005C3-6H
- for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 08:33:49 +0000
+ id 1fj7YX-0008Nw-8M
+ for linux-mtd@lists.infradead.org; Fri, 27 Jul 2018 18:33:39 +0000
+Received: by mail-pg1-x541.google.com with SMTP id a11-v6so3704017pgw.6
+ for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2018 11:33:26 -0700 (PDT)
+From: Brian Norris <computersforpeace@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Rob Herring <robh+dt@kernel.org>
+Cc: <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
+ Zhiqiang Hou <Zhiqiang.Hou@nxp.com>, NeilBrown <neilb@suse.com>
+Subject: [PATCH] mtd: spi-nor: only apply reset hacks to broken hardware
+Date: Fri, 27 Jul 2018 11:33:13 -0700
+Message-Id: <20180727183313.137943-1-computersforpeace@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Date: Fri, 27 Jul 2018 10:33:29 +0200
-From: Stefan Agner <stefan@agner.ch>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Wenyou Yang <wenyou.yang@microchip.com>, Josh
- Wu <rainyfeeling@outlook.com>, Lucas Stach <dev@lynxeye.de>
-Subject: Re: [PATCH v5 12/17] mtd: rawnand: tegra: convert driver to
- nand_scan()
-In-Reply-To: <20180727100640.715d6cce@xps13>
-References: <20180725133152.30898-1-miquel.raynal@bootlin.com>
- <20180725133152.30898-13-miquel.raynal@bootlin.com>
- <b7eded62209b18d8d0143fefbfa95905@agner.ch>
- <20180726200120.0dd4bcb7@bbrezillon>
- <81b38ddf26e981adf6a0564708d2954e@agner.ch> <20180727100640.715d6cce@xps13>
-Message-ID: <e55073734d79d0263cebe4ed32124b49@agner.ch>
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +25,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27.07.2018 10:06, Miquel Raynal wrote:
-> Hi Stefan,
-> 
-> Stefan Agner <stefan@agner.ch> wrote on Fri, 27 Jul 2018 09:13:09 +0200:
-> 
->> On 26.07.2018 20:01, Boris Brezillon wrote:
->> > On Thu, 26 Jul 2018 18:29:36 +0200
->> > Stefan Agner <stefan@agner.ch> wrote:
->> >
->> >> On 25.07.2018 15:31, Miquel Raynal wrote:
->> >> > Two helpers have been added to the core to do all kind of controller
->> >> > side configuration/initialization between the detection phase and the
->> >> > final NAND scan. Implement these hooks so that we can convert the driver
->> >> > to just use nand_scan() instead of the nand_scan_ident() +
->> >> > nand_scan_tail() pair.
->> >> >
->> >>
->> >> While the patch looks technically correct, I wonder whether the driver
->> >> now does what we expect it from attach logically...
->> >>
->> >> E.g. shouldn't we get the wp_gpio in attach?
->> >
->> > Well, this series does things mechanically to avoid breaking drivers (we
->> > just move all the code between ident and tail into the attach hook),
->> > but any resource that is not needed for the identification phase and is
->> > tied to the NAND chip could/should be requested in the attach hook (the
->> > WP pin is such a resource).
->>
->> Ok, that makes completely sense and I agree with that approach! However,
->> it is not obvious when looking at the series.
->>
->> Can we mention that fact in the commit log, e.g. something like:
->>
->> "To avoid breaking this patch converts the driver mechanically by just
->> moving all the code between ...ident and ..tail into the attach hook.
->> Ideally driver should request all resources tied to the NAND chip in the
->> attach hook."
-> 
-> As Boris said, the whole change was somehow mechanic, I already had a
-> hard time understanding what each driver wanted to achieve between
-> those two functions, I did not dig any further as it was already very
-> time consuming. A cleanup of many drivers would be appreciated though.
+Commit 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when
+exiting") is the latest from a long history of attempts to add reboot
+handling to handle stateful addressing modes on SPI flash. Some prior
+mostly-related discussions:
 
-Yeah sure, and your work is very much appreciated!
+http://lists.infradead.org/pipermail/linux-mtd/2013-March/046343.html
+[PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing commands
 
-Until closer look and Boris' confirmation it really wasn't clear to me
-whether things are on purpose the way they are or because this patch is
-seen as a first (mechanical) step...
+http://lists.infradead.org/pipermail/barebox/2014-September/020682.html
+[RFC] MTD m25p80 3-byte addressing and boot problem
 
-> 
-> As this would apply to the 30 patches of the series and because I
-> already merged all of them, I think I'll pass for this one, even if I
-> completely agree with the request.
+http://lists.infradead.org/pipermail/linux-mtd/2015-February/057683.html
+[PATCH 2/2] m25p80: if supported put chip to deep power down if not used
 
-Ok, at least it is documented on the ML now :-)
+Previously, attempts to add reboot-time software reset handling were
+rejected, but the latest attempt was not.
 
---
-Stefan
+Quick summary of the problem:
+Some systems (e.g., boot ROM or bootloader) assume that they can read
+initial boot code from their SPI flash using 3-byte addressing. If the
+flash is left in 4-byte mode after reset, these systems won't boot. The
+above patch provided a shutdown/remove hook to attempt to reset the
+addressing mode before we reboot. Notably, this patch misses out on
+huge classes of unexpected reboots (e.g., crashes, watchdog resets).
+
+Unfortunately, it is essentially impossible to solve this problem 100%:
+if your system doesn't know how to reset the SPI flash to power-on
+defaults at initialization time, no amount of software can really rescue
+you -- there will always be a chance of some unexpected reset that
+leaves your flash in an addressing mode that your boot sequence didn't
+expect.
+
+While it is not directly harmful to perform hacks like the
+aforementioned commit on all 4-byte addressing flash, a
+properly-designed system should not need the hack -- and in fact,
+providing this hack may mask the fact that a given system is indeed
+broken. So this patch attempts to apply this unsound hack more narrowly,
+providing a strong suggestion to developers and system designers that
+this is truly a hack. With luck, system designers can catch their errors
+early on in their development cycle, rather than applying this hack long
+term. But apparently enough systems are out in the wild that we still
+have to provide this hack.
+
+Document a new device tree property to denote systems that do not have a
+proper hardware (or software) reset mechanism, and apply the hack (with
+a loud warning) only in this case.
+
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+Note that I intentionall didn't split the documentation patch. It seems
+clearer to do these together IMO, but if it's *really* important to
+someone...I can resend
+---
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt  |  9 +++++++++
+ drivers/mtd/spi-nor/spi-nor.c                  | 18 ++++++++++++++++--
+ include/linux/mtd/spi-nor.h                    |  1 +
+ 3 files changed, 26 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+index 956bb046e599..f03be904d3c2 100644
+--- a/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
++++ b/Documentation/devicetree/bindings/mtd/jedec,spi-nor.txt
+@@ -69,6 +69,15 @@ Optional properties:
+                    all chips and support for it can not be detected at runtime.
+                    Refer to your chips' datasheet to check if this is supported
+                    by your chip.
++- broken-flash-reset : Some flash devices utilize stateful addressing modes
++		   (e.g., for 32-bit addressing) which need to be managed
++		   carefully by a system. Because these sorts of flash don't
++		   have a standardized software reset command, and because some
++		   systems don't toggle the flash RESET# pin upon system reset
++		   (if the pin even exists at all), there are systems which
++		   cannot reboot properly if the flash is left in the "wrong"
++		   state. This boolean flag can be used on such systems, to
++		   denote the absence of a reliable reset mechanism.
+ 
+ Example:
+ 
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d9c368c44194..f028277fb1ce 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2757,8 +2757,18 @@ static int spi_nor_init(struct spi_nor *nor)
+ 
+ 	if ((nor->addr_width == 4) &&
+ 	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+-	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
++	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
++		/*
++		 * If the RESET# pin isn't hooked up properly, or the system
++		 * otherwise doesn't perform a reset command in the boot
++		 * sequence, it's impossible to 100% protect against unexpected
++		 * reboots (e.g., crashes). Warn the user (or hopefully, system
++		 * designer) that this is bad.
++		 */
++		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
++			  "enabling reset hack; may not recover from unexpected reboots\n");
+ 		set_4byte(nor, nor->info, 1);
++	}
+ 
+ 	return 0;
+ }
+@@ -2781,7 +2791,8 @@ void spi_nor_restore(struct spi_nor *nor)
+ 	/* restore the addressing mode */
+ 	if ((nor->addr_width == 4) &&
+ 	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
+-	    !(nor->info->flags & SPI_NOR_4B_OPCODES))
++	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
++	    (nor->flags & SNOR_F_BROKEN_RESET))
+ 		set_4byte(nor, nor->info, 0);
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+@@ -2911,6 +2922,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 		params.hwcaps.mask |= SNOR_HWCAPS_READ_FAST;
+ 	}
+ 
++	if (of_property_read_bool(np, "broken-flash-reset"))
++		nor->flags |= SNOR_F_BROKEN_RESET;
++
+ 	/* Some devices cannot do fast-read, no matter what DT tells us */
+ 	if (info->flags & SPI_NOR_NO_FR)
+ 		params.hwcaps.mask &= ~SNOR_HWCAPS_READ_FAST;
+diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+index e60da0d34cc1..c922e97f205a 100644
+--- a/include/linux/mtd/spi-nor.h
++++ b/include/linux/mtd/spi-nor.h
+@@ -235,6 +235,7 @@ enum spi_nor_option_flags {
+ 	SNOR_F_S3AN_ADDR_DEFAULT = BIT(3),
+ 	SNOR_F_READY_XSR_RDY	= BIT(4),
+ 	SNOR_F_USE_CLSR		= BIT(5),
++	SNOR_F_BROKEN_RESET	= BIT(6),
+ };
+ 
+ /**
+-- 
+2.18.0.345.g5c9ce644c3-goog
