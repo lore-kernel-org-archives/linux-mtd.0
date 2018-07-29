@@ -1,24 +1,25 @@
 Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fjsJl-0008TW-B4
- for linux-mtd@lists.infradead.org; Sun, 29 Jul 2018 20:29:30 +0000
-Received: by mail-it0-x241.google.com with SMTP id h20-v6so14123873itf.2
- for <linux-mtd@lists.infradead.org>; Sun, 29 Jul 2018 13:29:18 -0700 (PDT)
+ id 1fjsOI-0001y1-Tu
+ for linux-mtd@lists.infradead.org; Sun, 29 Jul 2018 20:34:12 +0000
+Received: by mail-it0-x241.google.com with SMTP id q20-v6so14159636ith.0
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Jul 2018 13:34:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180718235710.18242-7-jmkrzyszt@gmail.com>
-In-Reply-To: <20180718235710.18242-7-jmkrzyszt@gmail.com>
+ <20180718235710.18242-8-jmkrzyszt@gmail.com>
+In-Reply-To: <20180718235710.18242-8-jmkrzyszt@gmail.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 29 Jul 2018 22:29:05 +0200
-Message-ID: <CACRpkdbH9Vu12RckQPKhGgyJnyxaQ04d5qa9srHwneP3SS6FAA@mail.gmail.com>
-Subject: Re: [RFC PATCH 6/8] gpio: omap: Add get/set_multiple() callbacks
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Santosh Shilimkar <ssantosh@kernel.org>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- ext Tony Lindgren <tony@atomide.com>, Kevin Hilman <khilman@kernel.org>
+Date: Sun, 29 Jul 2018 22:33:48 +0200
+Message-ID: <CACRpkdZ316o4rwCftOWsRMNd3B+4v0mWGbdMFvp1mm7yaFsccA@mail.gmail.com>
+Subject: Re: [RFC PATCH 7/8] mtd: rawnand: ams-delta: Check sanity of data
+ GPIO resource
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>,
+ ext Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ Santosh Shilimkar <ssantosh@kernel.org>,
+ Kevin Hilman <khilman@kernel.org>, Richard Weinberger <richard@nod.at>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Mark Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
@@ -37,15 +38,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 19, 2018 at 1:56 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+Hi Janusz!
 
-> This should make applications utilizing whole banks work faster.
->
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Nice work overall! Some feedback:
 
-This patch looks good to me and I have an urge to just apply it.
+On Thu, Jul 19, 2018 at 1:57 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-Can we get some feedback from the maintainers?
+> +#include <linux/gpio/driver.h>
+
+Let's skip that.
+
+> +       /*
+> +        * For acceptable performance require the data GPIO
+> +        * chip to support get/set_multiple() callbacks.
+> +        */
+> +       if (!data_gpioc->get_multiple || !data_gpioc->set_multiple) {
+> +               err = -EINVAL;
+> +               dev_err(&pdev->dev,
+> +                       "data GPIO chip does not support get/set_multiple()\n");
+> +               goto out_mtd;
+> +       }
+
+Since we know which platform it is, we know that we applied the previous
+get/set multiple patch, so we need not check this if the patches are
+applied in sequence.
+
+As long as all patches go in the same merge window, no problem.
+
+I'm BTW ready to apply the get/set multiple patch already.
 
 Yours,
 Linus Walleij
