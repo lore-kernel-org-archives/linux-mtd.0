@@ -1,20 +1,21 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-io0-x242.google.com ([2607:f8b0:4001:c06::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fjsOI-0001y1-Tu
- for linux-mtd@lists.infradead.org; Sun, 29 Jul 2018 20:34:12 +0000
-Received: by mail-it0-x241.google.com with SMTP id q20-v6so14159636ith.0
- for <linux-mtd@lists.infradead.org>; Sun, 29 Jul 2018 13:34:00 -0700 (PDT)
+ id 1fjsRD-0003r1-NK
+ for linux-mtd@lists.infradead.org; Sun, 29 Jul 2018 20:37:13 +0000
+Received: by mail-io0-x242.google.com with SMTP id l14-v6so8215019iob.7
+ for <linux-mtd@lists.infradead.org>; Sun, 29 Jul 2018 13:37:01 -0700 (PDT)
 MIME-Version: 1.0
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
  <20180718235710.18242-8-jmkrzyszt@gmail.com>
-In-Reply-To: <20180718235710.18242-8-jmkrzyszt@gmail.com>
+ <20180719084447.239a1b92@bbrezillon>
+In-Reply-To: <20180719084447.239a1b92@bbrezillon>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Sun, 29 Jul 2018 22:33:48 +0200
-Message-ID: <CACRpkdZ316o4rwCftOWsRMNd3B+4v0mWGbdMFvp1mm7yaFsccA@mail.gmail.com>
+Date: Sun, 29 Jul 2018 22:36:49 +0200
+Message-ID: <CACRpkdZfiCN3U57s-7hGnbO9W-=pOjt0mL0w=Jv_+5WBdkEuig@mail.gmail.com>
 Subject: Re: [RFC PATCH 7/8] mtd: rawnand: ams-delta: Check sanity of data
  GPIO resource
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>,
  =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
  ext Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
  Grygorii Strashko <grygorii.strashko@ti.com>,
@@ -38,34 +39,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz!
+On Thu, Jul 19, 2018 at 8:44 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-Nice work overall! Some feedback:
+> I guess you'd prefer to have the pin values in a bitmap instead of an
+> array of integers. That's probably something you can discuss with
+> Linus, see if he would accept to change the prototype of
+> gpiod_get_raw_array_value().
 
-On Thu, Jul 19, 2018 at 1:57 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+I am not so smart as to see the overall effects but if what
+you're saying is that we shouldn't have designed these functions
+and callbacks using arrays of integers (or longs) and instead
+pass bitmaps, you may be just right. It intuitively sounds better.
+But I'm not good with bitmaps.
 
-> +#include <linux/gpio/driver.h>
-
-Let's skip that.
-
-> +       /*
-> +        * For acceptable performance require the data GPIO
-> +        * chip to support get/set_multiple() callbacks.
-> +        */
-> +       if (!data_gpioc->get_multiple || !data_gpioc->set_multiple) {
-> +               err = -EINVAL;
-> +               dev_err(&pdev->dev,
-> +                       "data GPIO chip does not support get/set_multiple()\n");
-> +               goto out_mtd;
-> +       }
-
-Since we know which platform it is, we know that we applied the previous
-get/set multiple patch, so we need not check this if the patches are
-applied in sequence.
-
-As long as all patches go in the same merge window, no problem.
-
-I'm BTW ready to apply the get/set multiple patch already.
+We would have to refactor the world though.
 
 Yours,
 Linus Walleij
