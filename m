@@ -1,29 +1,19 @@
-Date: Sun, 29 Jul 2018 23:16:19 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>, =?UTF-8?B?TWlxdcOobA==?=
- Raynal <miquel.raynal@bootlin.com>, ext Tony Lindgren <tony@atomide.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Grygorii Strashko
- <grygorii.strashko@ti.com>, Santosh Shilimkar <ssantosh@kernel.org>, Kevin
- Hilman <khilman@kernel.org>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, Linux ARM
- <linux-arm-kernel@lists.infradead.org>, Linux-OMAP
- <linux-omap@vger.kernel.org>, "open list:GPIO SUBSYSTEM"
- <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Artem Bityutskiy
- <artem.bityutskiy@linux.intel.com>
-Subject: Re: [RFC PATCH 7/8] mtd: rawnand: ams-delta: Check sanity of data
- GPIO resource
-Message-ID: <20180729231422.0264f971@bbrezillon>
-In-Reply-To: <CACRpkdZfiCN3U57s-7hGnbO9W-=pOjt0mL0w=Jv_+5WBdkEuig@mail.gmail.com>
-References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180718235710.18242-8-jmkrzyszt@gmail.com>
- <20180719084447.239a1b92@bbrezillon>
- <CACRpkdZfiCN3U57s-7hGnbO9W-=pOjt0mL0w=Jv_+5WBdkEuig@mail.gmail.com>
+Received: from mga04.intel.com ([192.55.52.120])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fk27K-0005gr-9R
+ for linux-mtd@lists.infradead.org; Mon, 30 Jul 2018 06:57:19 +0000
+Subject: Re: UBIFS question: Power-cuts after ubifs_leb_unmap()
+To: Richard Weinberger <richard@nod.at>, artem.bityutskiy@linux.intel.com
+Cc: linux-mtd@lists.infradead.org
+References: <1756392.9dNXh6ho7o@blindfold>
+ <1532419290.469.452.camel@linux.intel.com> <2255423.z5H1mqHeVL@blindfold>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Message-ID: <0c744441-3ebc-9d7b-7c74-70d65a85c6fd@intel.com>
+Date: Mon, 30 Jul 2018 09:55:24 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <2255423.z5H1mqHeVL@blindfold>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,32 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 29 Jul 2018 22:36:49 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
-
-> On Thu, Jul 19, 2018 at 8:44 AM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
+On 26/07/18 01:29, Richard Weinberger wrote:
+> Artem, Adrian,
 > 
-> > I guess you'd prefer to have the pin values in a bitmap instead of an
-> > array of integers. That's probably something you can discuss with
-> > Linus, see if he would accept to change the prototype of
-> > gpiod_get_raw_array_value().  
+> Am Dienstag, 24. Juli 2018, 10:01:30 CEST schrieb Artem Bityutskiy:
+>> Hi, I looked at this quickly and talked to Adrian. I cannot solve this
+>> for you but here are some thoughts.
 > 
-> I am not so smart as to see the overall effects but if what
-> you're saying is that we shouldn't have designed these functions
-> and callbacks using arrays of integers (or longs) and instead
-> pass bitmaps, you may be just right. It intuitively sounds better.
-
-Maybe, maybe not. Only an real evaluation of where the overhead is can
-tell us. So I'd suggest trying to use the existing interface and doing
-the int_array -> u8 conversion in the NAND driver first, and see how
-much moving to a bitmap imprsoves things.
-
-> But I'm not good with bitmaps.
+> Both of your thoughts are much appreciated!
 > 
-> We would have to refactor the world though.
+>> On Mon, 2018-07-09 at 12:11 +0200, Richard Weinberger wrote:
+>>> Artem, Adrian,
+>>>
+>>> While playing with a new UBI/UBIFS test framework I managed to hit
+>>> this error, 
+>>> with lprops self-checks enabled:
+>>>
+>>> [ 2412.268964] UBIFS error (ubi0:0 pid 708): scan_check_cb: bad
+>>> accounting of 
+>>> LEB 11: free 0, dirty 118072 flags 0x1, should be free 126976, dirty
+>>> 0
+>>
+>> So it has 126976 - 118072 = 8904 of used space.
+>>
+> 
+> [...]
+> 
+>> 1. If you believe some specific place like the one you pointed contains
+>> a bug, then emulate a power cut in that place and try to reproduce the
+>> bug.
+>>
+>> 2. Try to focus on recovery replay, this is the main suspect. Try to
+>> figure out what is that used space in that LEB?
+> 
+> After spending the third night in a row staring at hexdumps, I think I know
+> what is going on.
+> 
+> I see that LEB 11 recently got unmapped, but the LPT still accounts 8904 bytes
+> as used.
+> To double check that value I've analyzed the index tree. To my surprise it was 
+> referencing nodes at LEB 11!
+> Summing up the length of these nodes is exactly 8904. So, the LPT is correct.
+> 
+> All nodes on LEB 11 that are referenced by the index tree are of type 
+> UBIFS_INO_NODE and have UBIFS_XATTR_FL set.
+> So, our problem is xattr related. We forget xattr inodes and the free space 
+> accounting goes nuts sooner or later.
+> 
+> Inspecting the journal gave more details. Only buds of head type BASEHD and 
+> DATAHD are present. No GCHD. Therefore GC was not interrupted.
+> With the IO transaction log from before the power-cut I was able to figure 
+> where the orphaned xattr inodes belong to.
+> And indeed, the host inode of said xattr is in the journal for deletion.
+> 
+> In theory during replay, removal of the host inode should also remove all
+> xattr inodes and we are good.
+> So the question is, why fails UBIFS to remove the xattr inodes even if we have 
+> the host inode in the journal?
+> 
+> Another round of digging though the index uncovered the problem. The 
+> UBIFS_XENT_NODE nodes for all orphaned xattr inodes sat on LEB 11.
+> This means upon replay, when UBIFS tries to locate all xattr entries
+> of the host inode, it faces the dangling branch case and the loop in 
+> ubifs_tnc_remove_ino() terminates with -ENOENT. The host inode will be 
+> removed, but the xattr inodes stay.
+> 
+> Therefore the root of the problem is that UBIFS places only the host inode 
+> into the journal upon removal of a file with xattrs and assumes that upon 
+> replay we can discover all xattr inodes. That will fail if due to GC the LEB 
+> got already unmapped.
+> 
+> As intermediate solution I suggest adding also xattr inodes to the journal
+> upon unlink. This will make unlink more expensive but for now it is IMHO ok
+> until a more sophisticated solution is found.
+> Files usually have only a few xattr, so the cost is not that bad.
+> 
+> What do you guys think? Does my analysis make sense to you?
 
-I checked and, AFAICT, there are no external users of this API (only
-core code is using those funcs, for ioctls I guess). Anyway, I think
-we should wait for real numbers before we consider doing this change
-(It's not unusual to get this sort of things wrong).
+It doesn't seem like there is a way to avoid adding more information to the
+journal upon deletion, but you probably need to cater for the possibility
+that there is a power cut while writing that information e.g. it wouldn't be
+good to remove half the xattrs but leave the rest
