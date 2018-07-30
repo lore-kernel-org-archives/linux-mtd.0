@@ -1,21 +1,20 @@
-Received: from mga18.intel.com ([134.134.136.126])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fk3Ez-0003qq-Qn
- for linux-mtd@lists.infradead.org; Mon, 30 Jul 2018 08:09:19 +0000
-Subject: Re: UBIFS question: Power-cuts after ubifs_leb_unmap()
-To: Richard Weinberger <richard@nod.at>
-Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org
-References: <1756392.9dNXh6ho7o@blindfold> <2255423.z5H1mqHeVL@blindfold>
- <0c744441-3ebc-9d7b-7c74-70d65a85c6fd@intel.com>
- <3508570.fEnza5EDYF@blindfold>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Message-ID: <086b1694-a182-5873-a4c2-c754d8bf3cda@intel.com>
-Date: Mon, 30 Jul 2018 11:07:25 +0300
-MIME-Version: 1.0
-In-Reply-To: <3508570.fEnza5EDYF@blindfold>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fk3nI-0004yk-VP
+ for linux-mtd@lists.infradead.org; Mon, 30 Jul 2018 08:44:46 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Richard Henderson <rth@twiddle.net>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, linux-alpha@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Subject: [RFC PATCH] alpha: io: add reads{b,w,l,q}/writes{b,w,l,q}
+Date: Mon, 30 Jul 2018 10:44:30 +0200
+Message-Id: <20180730084430.23861-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,104 +24,143 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 30/07/18 10:28, Richard Weinberger wrote:
-> Am Montag, 30. Juli 2018, 08:55:24 CEST schrieb Adrian Hunter:
->> On 26/07/18 01:29, Richard Weinberger wrote:
->>> Artem, Adrian,
->>>
->>> Am Dienstag, 24. Juli 2018, 10:01:30 CEST schrieb Artem Bityutskiy:
->>>> Hi, I looked at this quickly and talked to Adrian. I cannot solve this
->>>> for you but here are some thoughts.
->>>
->>> Both of your thoughts are much appreciated!
->>>
->>>> On Mon, 2018-07-09 at 12:11 +0200, Richard Weinberger wrote:
->>>>> Artem, Adrian,
->>>>>
->>>>> While playing with a new UBI/UBIFS test framework I managed to hit
->>>>> this error, 
->>>>> with lprops self-checks enabled:
->>>>>
->>>>> [ 2412.268964] UBIFS error (ubi0:0 pid 708): scan_check_cb: bad
->>>>> accounting of 
->>>>> LEB 11: free 0, dirty 118072 flags 0x1, should be free 126976, dirty
->>>>> 0
->>>>
->>>> So it has 126976 - 118072 = 8904 of used space.
->>>>
->>>
->>> [...]
->>>
->>>> 1. If you believe some specific place like the one you pointed contains
->>>> a bug, then emulate a power cut in that place and try to reproduce the
->>>> bug.
->>>>
->>>> 2. Try to focus on recovery replay, this is the main suspect. Try to
->>>> figure out what is that used space in that LEB?
->>>
->>> After spending the third night in a row staring at hexdumps, I think I know
->>> what is going on.
->>>
->>> I see that LEB 11 recently got unmapped, but the LPT still accounts 8904 bytes
->>> as used.
->>> To double check that value I've analyzed the index tree. To my surprise it was 
->>> referencing nodes at LEB 11!
->>> Summing up the length of these nodes is exactly 8904. So, the LPT is correct.
->>>
->>> All nodes on LEB 11 that are referenced by the index tree are of type 
->>> UBIFS_INO_NODE and have UBIFS_XATTR_FL set.
->>> So, our problem is xattr related. We forget xattr inodes and the free space 
->>> accounting goes nuts sooner or later.
->>>
->>> Inspecting the journal gave more details. Only buds of head type BASEHD and 
->>> DATAHD are present. No GCHD. Therefore GC was not interrupted.
->>> With the IO transaction log from before the power-cut I was able to figure 
->>> where the orphaned xattr inodes belong to.
->>> And indeed, the host inode of said xattr is in the journal for deletion.
->>>
->>> In theory during replay, removal of the host inode should also remove all
->>> xattr inodes and we are good.
->>> So the question is, why fails UBIFS to remove the xattr inodes even if we have 
->>> the host inode in the journal?
->>>
->>> Another round of digging though the index uncovered the problem. The 
->>> UBIFS_XENT_NODE nodes for all orphaned xattr inodes sat on LEB 11.
->>> This means upon replay, when UBIFS tries to locate all xattr entries
->>> of the host inode, it faces the dangling branch case and the loop in 
->>> ubifs_tnc_remove_ino() terminates with -ENOENT. The host inode will be 
->>> removed, but the xattr inodes stay.
->>>
->>> Therefore the root of the problem is that UBIFS places only the host inode 
->>> into the journal upon removal of a file with xattrs and assumes that upon 
->>> replay we can discover all xattr inodes. That will fail if due to GC the LEB 
->>> got already unmapped.
->>>
->>> As intermediate solution I suggest adding also xattr inodes to the journal
->>> upon unlink. This will make unlink more expensive but for now it is IMHO ok
->>> until a more sophisticated solution is found.
->>> Files usually have only a few xattr, so the cost is not that bad.
->>>
->>> What do you guys think? Does my analysis make sense to you?
->>
->> It doesn't seem like there is a way to avoid adding more information to the
->> journal upon deletion, but you probably need to cater for the possibility
->> that there is a power cut while writing that information e.g. it wouldn't be
->> good to remove half the xattrs but leave the rest
-> 
-> With grouped nodes a power-cut is okay, the bigger problem is the number of xattrs.
-> We support up to 2^16. Do delete an inode via journal we need UBIFS_INO_NODE_SZ bytes
-> in the journal.
-> So, in worst case we need to write 2^16 times UBIFS_INO_NODE_SZ bytes to the journal.
-> I'm still looking into this option right now, just to be sure that this is really the
-> solution to the problem I see. Finding a stable reproducer is also not easy...
-> 
-> Another possibility is playing with ubifs_tnc_remove_ino(), upon unlink() it removes
-> all entries from the TNC and marks them as dirty.
-> The problem is that also all xattr inodes are marked as dirty.
-> If we manage to find a way that these get marked only as dirty when we are sure that
-> they are gone the GC will no longer unmap a "used" LEB.
-> But that all is very tricky.
+Some drivers need these for compile-testing. On most architectures
+they come from asm-generic/io.h, but not on sparc64, which has its
+own definitions.
 
-What about: add the inode to be deleted to orphans, then delete the xattrs
-one at a time, then when they are all gone, delete the inode and remove it
-from orphans.
+Copy the generic implementation here.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Note that I tried to instead include asm-generic/io.h + a bunch a
+#define xxx xxx to prevent asm-generic/io.h from redefining things
+already implemented by the driver, but I faced prototypes mismatch
+between asm-generic/io.h and asm-generic/iomap.h ('void __iomem *' vs
+'const volatile void __iomem *') which I didn't expect because
+asm-generic/io.h includes asm-generic/iomap.h when CONFIG_GENERIC_IOMAP
+is defined.
+
+Making prototypes consistent that should be doable, but it involves
+checking that the prototype modification is not breaking other users.
+Since that's not the problem I was initially trying to fix (my goal is
+to make 2 NAND drivers using readsl to compile correctly on all archs
+when enabled through COMPILE_TEST=y), I just ended copying the
+reads{b,w,l,q}/writes{b,w,l,q} definitions in
+arch/alpha/include/asm/io.h.
+
+Let me know if that's a problem.
+---
+ arch/alpha/include/asm/io.h | 98 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 98 insertions(+)
+
+diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
+index 4c533fc94d62..0b9cf320f39f 100644
+--- a/arch/alpha/include/asm/io.h
++++ b/arch/alpha/include/asm/io.h
+@@ -267,6 +267,104 @@ extern void		__raw_writew(u16 b, volatile void __iomem *addr);
+ extern void		__raw_writel(u32 b, volatile void __iomem *addr);
+ extern void		__raw_writeq(u64 b, volatile void __iomem *addr);
+ 
++static inline void readsb(const volatile void __iomem *addr, void *buffer,
++			  unsigned int count)
++{
++	if (count) {
++		u8 *buf = buffer;
++
++		do {
++			u8 x = __raw_readb(addr);
++			*buf++ = x;
++		} while (--count);
++	}
++}
++
++static inline void readsw(const volatile void __iomem *addr, void *buffer,
++			  unsigned int count)
++{
++	if (count) {
++		u16 *buf = buffer;
++
++		do {
++			u16 x = __raw_readw(addr);
++			*buf++ = x;
++		} while (--count);
++	}
++}
++
++static inline void readsl(const volatile void __iomem *addr, void *buffer,
++			  unsigned int count)
++{
++	if (count) {
++		u32 *buf = buffer;
++
++		do {
++			u32 x = __raw_readl(addr);
++			*buf++ = x;
++		} while (--count);
++	}
++}
++
++static inline void readsq(const volatile void __iomem *addr, void *buffer,
++			  unsigned int count)
++{
++	if (count) {
++		u64 *buf = buffer;
++
++		do {
++			u64 x = __raw_readq(addr);
++			*buf++ = x;
++		} while (--count);
++	}
++}
++static inline void writesb(volatile void __iomem *addr, const void *buffer,
++			   unsigned int count)
++{
++	if (count) {
++		const u8 *buf = buffer;
++
++		do {
++			__raw_writeb(*buf++, addr);
++		} while (--count);
++	}
++}
++
++static inline void writesw(volatile void __iomem *addr, const void *buffer,
++			   unsigned int count)
++{
++	if (count) {
++		const u16 *buf = buffer;
++
++		do {
++			__raw_writew(*buf++, addr);
++		} while (--count);
++	}
++}
++static inline void writesl(volatile void __iomem *addr, const void *buffer,
++			   unsigned int count)
++{
++	if (count) {
++		const u32 *buf = buffer;
++
++		do {
++			__raw_writel(*buf++, addr);
++		} while (--count);
++	}
++}
++
++static inline void writesq(volatile void __iomem *addr, const void *buffer,
++			   unsigned int count)
++{
++	if (count) {
++		const u64 *buf = buffer;
++
++		do {
++			__raw_writeq(*buf++, addr);
++		} while (--count);
++	}
++}
++
+ /*
+  * Mapping from port numbers to __iomem space is pretty easy.
+  */
+-- 
+2.14.1
