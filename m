@@ -1,24 +1,16 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkQ5g-00078D-Uy
- for linux-mtd@lists.infradead.org; Tue, 31 Jul 2018 08:33:15 +0000
-Date: Tue, 31 Jul 2018 10:32:59 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Mike
- Dunn <mikedunn@newsguy.com>, Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: Re: [RFC PATCH] mtd: rawnand: Remove docg4
-Message-ID: <20180731103259.7ec1be8d@bbrezillon>
-In-Reply-To: <20180731102035.018ad7d0@xps13>
-References: <20180730201341.17365-1-boris.brezillon@bootlin.com>
- <20180731102035.018ad7d0@xps13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkUT6-0003ET-UP
+ for linux-mtd@lists.infradead.org; Tue, 31 Jul 2018 13:13:42 +0000
+From: Stefan Agner <stefan@agner.ch>
+To: richard@nod.at,
+	dedekind1@gmail.com,
+	adrian.hunter@intel.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Stefan Agner <stefan@agner.ch>
+Subject: [PATCH] fs: ubifs: introduce Kconfig symbol for xattr support
+Date: Tue, 31 Jul 2018 15:13:20 +0200
+Message-Id: <20180731131320.21087-1-stefan@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,72 +20,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 31 Jul 2018 10:20:35 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Allow to disable extended attribute support.
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 30 Jul 2018
-> 22:13:41 +0200:
-> 
-> > The diskonchip G4 driver does not fit very well in the raw/parallel
-> > NAND framework simply because such chips have an internal controller
-> > translating DoC-specific commands into NAND ones.
-> > 
-> > Keeping such a driver in the raw NAND framework is a real burden for
-> > NAND maintainers.
-> > 
-> > Not to mention that some part in this drivers are a bit worrisome:
-> > 
-> > - writes are done by subpages, even though we're interfacing with an MLC
-> >   chip which are known to not support subpage writes very well (it might
-> >   be that the FTL handles the complexity for us though)
-> > 
-> > - some part of the code are simply ignoring return codes of function that
-> >   can fail in a few occasions
-> > 
-> > - there's a hack to support OOB writes when no data is provided. This
-> >   operation is not supported by the chip and should have been rejected,
-> >   and nandwrite and other userspace tools should have been patched to
-> >   deal with such devices
-> > 
-> > - the driver is apparently broken when ignore_badblocks module param
-> >   is not set to 1 and nobody noticed that (don't know since when this
-> >   is the case, but it's not a recent change)
-> >   http://lists.infradead.org/pipermail/linux-mtd/2018-July/082472.html
-> > 
-> > Add to that the fact that we already have a docg3 driver in
-> > drivers/mtd/devices/docg3.c and, looking at the code (and regs), it
-> > seems docg3 and docg4 have a lot in common (even the author of this
-> > driver seemed to have realized that interfacing with the raw NAND
-> > framework might have been a bad idea
-> > http://lists.infradead.org/pipermail/linux-mtd/2012-January/039517.html).
-> > 
-> > For all these reasons, I'm proposing to remove this driver. If anyone
-> > ever wants to add support for this chip back, I'd suggest extending
-> > the docg3 driver instead of adding a completely new driver.
-> > 
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > Cc: Mike Dunn <mikedunn@newsguy.com>
-> > Cc: Robert Jarzmik <robert.jarzmik@free.fr>
-> > Cc: Sergey Larin <cerg2010cerg2010@mail.ru>
-> > ---  
-> 
-> I do agree in removing this driver.
-> 
-> I just checked for docg4 references and it looks like palmeo.c board
-> file has some code related to it, enclosed in a
-> 
->         #if IS_ENABLED(CONFIG_MTD_NAND_DOCG4)
-> 
-> Besides the fact that it is the only user, that's probably something
-> we should also remove.
-> 
-> Plus, I recently added a mention to the docg4 driver in nand_base.c
-> during the conversion to nand_scan() (to skip nand_scan_ident()). It
-> might be worth removing the extra code or at least the reference in the
-> comment.
+This aids in reliability testing, especially since some xattr
+related bugs have surfaced.
 
-Yep. Let's wait for more feedback, and if we all agree that this driver
-should be removed I'll send a new version with 2 new patches to remove
-the unused code.
+Also an embedded system might not need it, so this allows for a
+slightly smaller kernel (about 4KiB).
+
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+---
+ fs/ubifs/Kconfig  | 15 +++++++++++++--
+ fs/ubifs/Makefile |  3 ++-
+ fs/ubifs/dir.c    |  2 ++
+ fs/ubifs/file.c   |  4 ++++
+ fs/ubifs/super.c  |  2 ++
+ fs/ubifs/ubifs.h  |  6 ++++++
+ 6 files changed, 29 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index 83a961bf7280..bbc78549be4c 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -51,9 +51,20 @@ config UBIFS_ATIME_SUPPORT
+ 
+ 	  If unsure, say 'N'
+ 
++config UBIFS_FS_XATTR
++	bool "UBIFS XATTR support"
++	depends on UBIFS_FS
++	default y
++	help
++	  Saying Y here includes support for extended attributes (xattrs).
++	  Xattrs are name:value pairs associated with inodes by
++	  the kernel or by users (see the attr(5) manual page).
++
++	  If unsure, say Y.
++
+ config UBIFS_FS_ENCRYPTION
+ 	bool "UBIFS Encryption"
+-	depends on UBIFS_FS && BLOCK
++	depends on UBIFS_FS && UBIFS_FS_XATTR && BLOCK
+ 	select FS_ENCRYPTION
+ 	default n
+ 	help
+@@ -64,7 +75,7 @@ config UBIFS_FS_ENCRYPTION
+ 
+ config UBIFS_FS_SECURITY
+ 	bool "UBIFS Security Labels"
+-	depends on UBIFS_FS
++	depends on UBIFS_FS && UBIFS_FS_XATTR
+ 	default y
+ 	help
+ 	  Security labels provide an access control facility to support Linux
+diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
+index 9758f709c736..6197d7e539e4 100644
+--- a/fs/ubifs/Makefile
++++ b/fs/ubifs/Makefile
+@@ -4,6 +4,7 @@ obj-$(CONFIG_UBIFS_FS) += ubifs.o
+ ubifs-y += shrinker.o journal.o file.o dir.o super.o sb.o io.o
+ ubifs-y += tnc.o master.o scan.o replay.o log.o commit.o gc.o orphan.o
+ ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
+-ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
++ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o debug.o
+ ubifs-y += misc.o
+ ubifs-$(CONFIG_UBIFS_FS_ENCRYPTION) += crypto.o
++ubifs-$(CONFIG_UBIFS_FS_XATTR) += xattr.o
+diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
+index 9da224d4f2da..dc875886f11f 100644
+--- a/fs/ubifs/dir.c
++++ b/fs/ubifs/dir.c
+@@ -1647,7 +1647,9 @@ const struct inode_operations ubifs_dir_inode_operations = {
+ 	.rename      = ubifs_rename,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
++#ifdef CONFIG_UBIFS_FS_XATTR
+ 	.listxattr   = ubifs_listxattr,
++#endif
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index fd7eb6fe9090..b8b3962eb449 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1654,7 +1654,9 @@ const struct address_space_operations ubifs_file_address_operations = {
+ const struct inode_operations ubifs_file_inode_operations = {
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
++#ifdef CONFIG_UBIFS_FS_XATTR
+ 	.listxattr   = ubifs_listxattr,
++#endif
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
+@@ -1664,7 +1666,9 @@ const struct inode_operations ubifs_symlink_inode_operations = {
+ 	.get_link    = ubifs_get_link,
+ 	.setattr     = ubifs_setattr,
+ 	.getattr     = ubifs_getattr,
++#ifdef CONFIG_UBIFS_FS_XATTR
+ 	.listxattr   = ubifs_listxattr,
++#endif
+ #ifdef CONFIG_UBIFS_ATIME_SUPPORT
+ 	.update_time = ubifs_update_time,
+ #endif
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index c5466c70d620..564a131afc56 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2053,7 +2053,9 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (c->max_inode_sz > MAX_LFS_FILESIZE)
+ 		sb->s_maxbytes = c->max_inode_sz = MAX_LFS_FILESIZE;
+ 	sb->s_op = &ubifs_super_operations;
++#ifdef CONFIG_UBIFS_FS_XATTR
+ 	sb->s_xattr = ubifs_xattr_handlers;
++#endif
+ #ifdef CONFIG_UBIFS_FS_ENCRYPTION
+ 	sb->s_cop = &ubifs_crypt_operations;
+ #endif
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 04bf84d71e7b..6aab759f0f9d 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1755,7 +1755,13 @@ int ubifs_xattr_set(struct inode *host, const char *name, const void *value,
+ 		    size_t size, int flags, bool check_lock);
+ ssize_t ubifs_xattr_get(struct inode *host, const char *name, void *buf,
+ 			size_t size);
++
++#ifdef CONFIG_UBIFS_FS_XATTR
+ void ubifs_evict_xattr_inode(struct ubifs_info *c, ino_t xattr_inum);
++#else
++static inline void ubifs_evict_xattr_inode(struct ubifs_info *c,
++					   ino_t xattr_inum) { }
++#endif
+ 
+ #ifdef CONFIG_UBIFS_FS_SECURITY
+ extern int ubifs_init_security(struct inode *dentry, struct inode *inode,
+-- 
+2.18.0
