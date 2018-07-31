@@ -1,23 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkb1Y-0000oK-18
- for linux-mtd@lists.infradead.org; Tue, 31 Jul 2018 20:13:42 +0000
-Date: Tue, 31 Jul 2018 22:12:55 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: NeilBrown <neilb@suse.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Zhiqiang Hou <Zhiqiang.Hou@nxp.com>,
- Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: only apply reset hacks to broken hardware
-Message-ID: <20180731221255.3e65c1fa@bbrezillon>
-In-Reply-To: <87wotcrz94.fsf@notabene.neil.brown.name>
-References: <20180727183313.137943-1-computersforpeace@gmail.com>
- <20180727220337.1b3375ca@bbrezillon>
- <87wotcrz94.fsf@notabene.neil.brown.name>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkcCV-0005F4-TX
+ for linux-mtd@lists.infradead.org; Tue, 31 Jul 2018 21:29:05 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Adrian Hunter <adrian.hunter@intel.com>
+Cc: artem.bityutskiy@linux.intel.com, linux-mtd@lists.infradead.org
+Subject: Re: UBIFS question: Power-cuts after ubifs_leb_unmap()
+Date: Tue, 31 Jul 2018 23:28:50 +0200
+Message-ID: <4560343.Ej1RjlWijI@blindfold>
+In-Reply-To: <086b1694-a182-5873-a4c2-c754d8bf3cda@intel.com>
+References: <1756392.9dNXh6ho7o@blindfold> <3508570.fEnza5EDYF@blindfold>
+ <086b1694-a182-5873-a4c2-c754d8bf3cda@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,109 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 31 Jul 2018 11:05:11 +1000
-NeilBrown <neilb@suse.com> wrote:
+Am Montag, 30. Juli 2018, 10:07:25 CEST schrieb Adrian Hunter:
+> > With grouped nodes a power-cut is okay, the bigger problem is the number of xattrs.
+> > We support up to 2^16. Do delete an inode via journal we need UBIFS_INO_NODE_SZ bytes
+> > in the journal.
+> > So, in worst case we need to write 2^16 times UBIFS_INO_NODE_SZ bytes to the journal.
+> > I'm still looking into this option right now, just to be sure that this is really the
+> > solution to the problem I see. Finding a stable reproducer is also not easy...
+> > 
+> > Another possibility is playing with ubifs_tnc_remove_ino(), upon unlink() it removes
+> > all entries from the TNC and marks them as dirty.
+> > The problem is that also all xattr inodes are marked as dirty.
+> > If we manage to find a way that these get marked only as dirty when we are sure that
+> > they are gone the GC will no longer unmap a "used" LEB.
+> > But that all is very tricky.
+> 
+> What about: add the inode to be deleted to orphans, then delete the xattrs
+> one at a time, then when they are all gone, delete the inode and remove it
+> from orphans.
 
-> On Fri, Jul 27 2018, Boris Brezillon wrote:
-> 
-> > On Fri, 27 Jul 2018 11:33:13 -0700
-> > Brian Norris <computersforpeace@gmail.com> wrote:
-> >  
-> >> Commit 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when
-> >> exiting") is the latest from a long history of attempts to add reboot
-> >> handling to handle stateful addressing modes on SPI flash. Some prior
-> >> mostly-related discussions:
-> >> 
-> >> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046343.html
-> >> [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing commands
-> >> 
-> >> http://lists.infradead.org/pipermail/barebox/2014-September/020682.html
-> >> [RFC] MTD m25p80 3-byte addressing and boot problem
-> >> 
-> >> http://lists.infradead.org/pipermail/linux-mtd/2015-February/057683.html
-> >> [PATCH 2/2] m25p80: if supported put chip to deep power down if not used
-> >> 
-> >> Previously, attempts to add reboot-time software reset handling were
-> >> rejected, but the latest attempt was not.
-> >> 
-> >> Quick summary of the problem:
-> >> Some systems (e.g., boot ROM or bootloader) assume that they can read
-> >> initial boot code from their SPI flash using 3-byte addressing. If the
-> >> flash is left in 4-byte mode after reset, these systems won't boot. The
-> >> above patch provided a shutdown/remove hook to attempt to reset the
-> >> addressing mode before we reboot. Notably, this patch misses out on
-> >> huge classes of unexpected reboots (e.g., crashes, watchdog resets).
-> >> 
-> >> Unfortunately, it is essentially impossible to solve this problem 100%:
-> >> if your system doesn't know how to reset the SPI flash to power-on
-> >> defaults at initialization time, no amount of software can really rescue
-> >> you -- there will always be a chance of some unexpected reset that
-> >> leaves your flash in an addressing mode that your boot sequence didn't
-> >> expect.
-> >> 
-> >> While it is not directly harmful to perform hacks like the
-> >> aforementioned commit on all 4-byte addressing flash, a
-> >> properly-designed system should not need the hack -- and in fact,
-> >> providing this hack may mask the fact that a given system is indeed
-> >> broken. So this patch attempts to apply this unsound hack more narrowly,
-> >> providing a strong suggestion to developers and system designers that
-> >> this is truly a hack. With luck, system designers can catch their errors
-> >> early on in their development cycle, rather than applying this hack long
-> >> term. But apparently enough systems are out in the wild that we still
-> >> have to provide this hack.
-> >> 
-> >> Document a new device tree property to denote systems that do not have a
-> >> proper hardware (or software) reset mechanism, and apply the hack (with
-> >> a loud warning) only in this case.
-> >> 
-> >> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> >> ---
-> >> Note that I intentionall didn't split the documentation patch. It seems
-> >> clearer to do these together IMO, but if it's *really* important to
-> >> someone...I can resend  
-> >
-> > I'm fine with that.
-> >
-> > I'll leave Neil some time to review/test/comment on the patch before
-> > queuing it, but it looks good to me.  
-> 
-> Thanks.
-> I can confirm that if I apply this patch, my system won't reboot
-> properly (as expected), and if I then add
-> 
-> 		broken-flash-reset;
-> 
-> to the jedec,spi-nor device, it starts functioning correctly again.
-> 
-> I don't like the pejorative "broken", and it also suggests that a thing
-> used to work, but something happened to break it - this is not
-> accurate.
-> I would prefer something like "reset-not-connected" which is an accurate
-> description of the state of the hardware.
-> 
-> I also think that having a WARN_ON is an over-reaction.  Certainly a
-> warning could be appropriate, but just one pr_warn() should be enough.
-> The "problem" is unlikely in practice, and loudly warning people that an
-> asteroid might kill them isn't particularly helpful.
-> 
-> I genuinely think that if the system fails to reboot, then Linux is at
-> fault. I accept that changing Linux to be completely robust might be
-> more trouble than it is worth, but I don't accept that it is impossible.
-> 
-> But I don't intend to fight either of these battles.
+Hmm, deleting one at a time still means that UBIFS has to write up to 2^16 times
+to the journal.
+But I agree this approach is better than allocating space for 2^16 inodes at once
+in the journal.
+Using the orphan list we can make sure that deletion still is atomic.
 
-Does that mean you're accepting this change? Brian, any comment on what
-Neil said?
-
-To be honest, I hate being in the middle of this discussion without
-having been involved in the first decision to accept such workarounds.
-I keep thinking that making boards that do not have reset properly
-wired less likely to fail rebooting is a wise decision, but I also
-agree with Brian when he says we should inform people that their design
-is unreliable.
-The main problem I see here, is that adding this prop won't help people
-figuring out what is wrong with their design, it will just help them
-workaround the problem when they find out, and it might already be to
-late to fix the HW design. But maybe it's not what we're trying to do
-here. Maybe we just want to warn users that rebooting such boards is a
-risky procedure.
+Thanks,
+//richard
