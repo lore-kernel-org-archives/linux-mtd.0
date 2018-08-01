@@ -1,28 +1,23 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fkqsv-0002pU-H1
- for linux-mtd@lists.infradead.org; Wed, 01 Aug 2018 13:09:51 +0000
-Received: by mail-wm0-x244.google.com with SMTP id f21-v6so6920022wmc.5
- for <linux-mtd@lists.infradead.org>; Wed, 01 Aug 2018 06:09:39 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: only apply reset hacks to broken hardware
-To: NeilBrown <neilb@suse.com>, Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Zhiqiang Hou <Zhiqiang.Hou@nxp.com>,
- Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org
-References: <20180727183313.137943-1-computersforpeace@gmail.com>
- <20180727220337.1b3375ca@bbrezillon>
- <87wotcrz94.fsf@notabene.neil.brown.name>
- <20180731221255.3e65c1fa@bbrezillon>
- <a74ea3ee-894d-3129-ec15-e44261e0c11c@gmail.com>
- <87muu6rkb7.fsf@notabene.neil.brown.name>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <3f29b079-6061-53f5-69bb-6e162f648d61@gmail.com>
-Date: Wed, 1 Aug 2018 10:24:48 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkrZh-0005eW-Vb
+ for linux-mtd@lists.infradead.org; Wed, 01 Aug 2018 13:54:04 +0000
+Date: Wed, 1 Aug 2018 15:53:48 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Ofer Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH] mtd: nand: use regmap_update_bits() in marvell_nand for
+ syscon access
+Message-ID: <20180801155348.35080ae8@xps13>
+In-Reply-To: <20180801143417.34600a30@windsurf>
+References: <20180801102505.18383-1-thomas.petazzoni@bootlin.com>
+ <20180801142741.66102538@xps13> <20180801143417.34600a30@windsurf>
 MIME-Version: 1.0
-In-Reply-To: <87muu6rkb7.fsf@notabene.neil.brown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,122 +27,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/01/2018 02:40 AM, NeilBrown wrote:
-> On Wed, Aug 01 2018, Marek Vasut wrote:
-> 
->> On 07/31/2018 10:12 PM, Boris Brezillon wrote:
->>> On Tue, 31 Jul 2018 11:05:11 +1000
->>> NeilBrown <neilb@suse.com> wrote:
->>>
->>>> On Fri, Jul 27 2018, Boris Brezillon wrote:
->>>>
->>>>> On Fri, 27 Jul 2018 11:33:13 -0700
->>>>> Brian Norris <computersforpeace@gmail.com> wrote:
->>>>>  
->>>>>> Commit 59b356ffd0b0 ("mtd: m25p80: restore the status of SPI flash when
->>>>>> exiting") is the latest from a long history of attempts to add reboot
->>>>>> handling to handle stateful addressing modes on SPI flash. Some prior
->>>>>> mostly-related discussions:
->>>>>>
->>>>>> http://lists.infradead.org/pipermail/linux-mtd/2013-March/046343.html
->>>>>> [PATCH 1/3] mtd: m25p80: utilize dedicated 4-byte addressing commands
->>>>>>
->>>>>> http://lists.infradead.org/pipermail/barebox/2014-September/020682.html
->>>>>> [RFC] MTD m25p80 3-byte addressing and boot problem
->>>>>>
->>>>>> http://lists.infradead.org/pipermail/linux-mtd/2015-February/057683.html
->>>>>> [PATCH 2/2] m25p80: if supported put chip to deep power down if not used
->>>>>>
->>>>>> Previously, attempts to add reboot-time software reset handling were
->>>>>> rejected, but the latest attempt was not.
->>>>>>
->>>>>> Quick summary of the problem:
->>>>>> Some systems (e.g., boot ROM or bootloader) assume that they can read
->>>>>> initial boot code from their SPI flash using 3-byte addressing. If the
->>>>>> flash is left in 4-byte mode after reset, these systems won't boot. The
->>>>>> above patch provided a shutdown/remove hook to attempt to reset the
->>>>>> addressing mode before we reboot. Notably, this patch misses out on
->>>>>> huge classes of unexpected reboots (e.g., crashes, watchdog resets).
->>>>>>
->>>>>> Unfortunately, it is essentially impossible to solve this problem 100%:
->>>>>> if your system doesn't know how to reset the SPI flash to power-on
->>>>>> defaults at initialization time, no amount of software can really rescue
->>>>>> you -- there will always be a chance of some unexpected reset that
->>>>>> leaves your flash in an addressing mode that your boot sequence didn't
->>>>>> expect.
->>>>>>
->>>>>> While it is not directly harmful to perform hacks like the
->>>>>> aforementioned commit on all 4-byte addressing flash, a
->>>>>> properly-designed system should not need the hack -- and in fact,
->>>>>> providing this hack may mask the fact that a given system is indeed
->>>>>> broken. So this patch attempts to apply this unsound hack more narrowly,
->>>>>> providing a strong suggestion to developers and system designers that
->>>>>> this is truly a hack. With luck, system designers can catch their errors
->>>>>> early on in their development cycle, rather than applying this hack long
->>>>>> term. But apparently enough systems are out in the wild that we still
->>>>>> have to provide this hack.
->>>>>>
->>>>>> Document a new device tree property to denote systems that do not have a
->>>>>> proper hardware (or software) reset mechanism, and apply the hack (with
->>>>>> a loud warning) only in this case.
->>>>>>
->>>>>> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
->>>>>> ---
->>>>>> Note that I intentionall didn't split the documentation patch. It seems
->>>>>> clearer to do these together IMO, but if it's *really* important to
->>>>>> someone...I can resend  
->>>>>
->>>>> I'm fine with that.
->>>>>
->>>>> I'll leave Neil some time to review/test/comment on the patch before
->>>>> queuing it, but it looks good to me.  
->>>>
->>>> Thanks.
->>>> I can confirm that if I apply this patch, my system won't reboot
->>>> properly (as expected), and if I then add
->>>>
->>>> 		broken-flash-reset;
->>>>
->>>> to the jedec,spi-nor device, it starts functioning correctly again.
->>>>
->>>> I don't like the pejorative "broken", and it also suggests that a thing
->>>> used to work, but something happened to break it - this is not
->>>> accurate.
->>>> I would prefer something like "reset-not-connected" which is an accurate
->>>> description of the state of the hardware.
->>>>
->>>> I also think that having a WARN_ON is an over-reaction.  Certainly a
->>>> warning could be appropriate, but just one pr_warn() should be enough.
->>>> The "problem" is unlikely in practice, and loudly warning people that an
->>>> asteroid might kill them isn't particularly helpful.
->>>>
->>>> I genuinely think that if the system fails to reboot, then Linux is at
->>>> fault. I accept that changing Linux to be completely robust might be
->>>> more trouble than it is worth, but I don't accept that it is impossible.
->>>>
->>>> But I don't intend to fight either of these battles.
->>>
->>> Does that mean you're accepting this change? Brian, any comment on what
->>> Neil said?
->>>
->>> To be honest, I hate being in the middle of this discussion without
->>> having been involved in the first decision to accept such workarounds.
->>> I keep thinking that making boards that do not have reset properly
->>> wired less likely to fail rebooting is a wise decision, but I also
->>> agree with Brian when he says we should inform people that their design
->>> is unreliable.
->>
->> Hiding the issue in most cases only leads to vendors making more such
->> crippled boards and never learning.
-> 
-> And you think that printing a loud warning would be likely to get vendor
-> to make fewer crappy boards?
-> I think it would just annoy people who aren't in a position to do
-> anything about it.
+Hi Thomas,
 
-If your hardware is broken and it cannot be properly worked around by
-software, what do you do ?
+Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote on Wed, 1 Aug
+2018 14:34:17 +0200:
 
--- 
-Best regards,
-Marek Vasut
+> Hello,
+>=20
+> On Wed, 1 Aug 2018 14:27:41 +0200, Miquel Raynal wrote:
+>=20
+> > Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote on Wed,  1 Aug
+> > 2018 12:25:05 +0200:
+> >  =20
+> > > The marvell_nfc_init() function fiddles with some bits of a system
+> > > controller on Armada 7K/8K. However:
+> > >=20
+> > >  - It does a regmap_write() on GENCONF_SOC_DEVICE_MUX, potentially
+> > >    losing other bits that might have been set by other drivers.   =20
+> >=20
+> > AFAIR, this was done on purpose. In the aim of being as independent as
+> > possible from the earlier stages, we set here the full configuration of
+> > register 0xF2440208 "SoC Device Multiplex Register". Bits are either
+> > reserved or NAND controller related, nobody else is supposed to poke
+> > here. I'm not sure using regmap_update_bits() here is relevant? =20
+>=20
+> Well, using regmap_update_bits() still makes you "independent from the
+> earlier stages", as long as you set/clear all the bits that you think
+> should be set/clear. I'm not sure it's very wise to ruthlessly
+> overwrite those reserved bits.
+
+I'm not sure my regmap knowledge is enough to understand the depth of
+the above comment. This is what (I think) I know, please correct me:
+
+Overwriting reserved bits (ie. writing 0 to them) is what we always do.
+Even if reserved these bits are not in the regmap mask, as the regmap is
+defined to do 32-bit access only, I suppose a regmap_update_bits() will
+just read these bytes (all should be 0, tells the spec) then rewrite
+them (still 0). Other fields being at this time initialized to 0 or 1.
+So if we want to use regmap_update_bits() here then we should probably
+mask all bits but the one reserved?
+
+I'm really not against this change, but I don't think I get the
+impact/difference of this change with "just writing" the register.
+
+>=20
+> > > -		regmap_read(sysctrl_base, GENCONF_ND_CLK_CTRL, &reg);
+> > > -		reg |=3D GENCONF_ND_CLK_CTRL_EN;
+> > > -		regmap_write(sysctrl_base, GENCONF_ND_CLK_CTRL, reg);
+> > > +		mask =3D GENCONF_SOC_DEVICE_MUX_NFC_EN |
+> > > +			GENCONF_SOC_DEVICE_MUX_ECC_CLK_RST |
+> > > +			GENCONF_SOC_DEVICE_MUX_ECC_CORE_RST |
+> > > +			GENCONF_SOC_DEVICE_MUX_NFC_INT_EN;   =20
+> >=20
+> > Minor nit: indentation looks wrong here? =20
+>=20
+> This is what Emacs did, so it must be correct ? :-)
+
+Hehe, I do have the same setup. If you find out how to fix it, please
+share :)
+
+>=20
+> I'll fix up in v2, once we agree about the GENCONF_SOC_DEVICE_MUX
+> register situation.
+>=20
+> Thanks!
+>=20
+> Thomas
+
+Thanks,
+Miqu=C3=A8l
