@@ -1,25 +1,16 @@
-Date: Wed, 1 Aug 2018 21:57:33 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Piotr Bugalski <bugalski.piotr@gmail.com>, linux-spi@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, Tudor Ambarus
- <tudor.ambarus@microchip.com>, Piotr Bugalski <pbu@cryptera.com>
-Subject: Re: [RFC PATCH v2 5/6] spi: Add QuadSPI driver for Atmel SAMA5D2
-Message-ID: <20180801215733.4dfa3a95@bbrezillon>
-In-Reply-To: <20180801172747.GJ5509@sirena.org.uk>
-References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
- <20180627131609.13681-6-bugalski.piotr@gmail.com>
- <20180801172747.GJ5509@sirena.org.uk>
+Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fkygt-0003Gq-A1
+ for linux-mtd@lists.infradead.org; Wed, 01 Aug 2018 21:29:56 +0000
+Received: by mail-oi0-x234.google.com with SMTP id d189-v6so123175oib.6
+ for <linux-mtd@lists.infradead.org>; Wed, 01 Aug 2018 14:29:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Raphael Pereira <raphaelpereira@gmail.com>
+Date: Wed, 1 Aug 2018 18:29:32 -0300
+Message-ID: <CAAN9NvdvscL1MOKTXuH=Esf0NjC__QVH745n-h3R_hFfeqT9jw@mail.gmail.com>
+Subject: Suport for gf_len 14 in gpmi-nand for i.MX23 using Software BCH ECC
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+Hi,
 
-On Wed, 1 Aug 2018 18:27:47 +0100
-Mark Brown <broonie@kernel.org> wrote:
+I would like to know if it is possible to use the Software BCH ECC
+implementation to support a GF14 (ECC size == 1024) 40 bit ECC strengh
+flash (MT29F32G08CBADA) on a GF13 (ECC size == 512) 20 bit ECC strengh
+only i.MX23 processor.
 
-> On Wed, Jun 27, 2018 at 03:16:08PM +0200, Piotr Bugalski wrote:
-> > Kernel contains QSPI driver strongly tied to MTD and nor-flash memory.
-> > New spi-mem interface allows usage also other memory types, especially
-> > much larger NAND with SPI interface. This driver works as SPI controller
-> > and is not related to MTD, however can work with NAND-flash or other
-> > peripherals using spi-mem interface.  
-> 
-> This is fine from a SPI point of view
+I know this processor uses gpmi-nand driver and it seems this driver
+doesn't support software ECC implementation. What I want to know is if
+it is possible to change the driver to use the current Software BCH
+ECC implementation available on Linux when it detects the
+configuration above which is not hardware supported and switch it to a
+software implementation. Considering most flashes has a 1-bit ECC on
+block 0 that would allow me to boot then switch to software ECC after
+kernel load.
 
-Cool. There are still 2 things I think should be addressed before
-merging the driver:
-1/ Fixing the SoB tag to match the author (problem reported by
-   Alexandre)
-2/ Getting this patch [1] merged and implementing the ->get_name() hook
-   in this driver so that SPI NOR devs declared to the MTD layer keep
-   the same name after the transition to spi-mem and mtdparts= passed on
-   the cmdline keep working. Without this in place we're likely to
-   break a few setups :-/.
-
-> but I'd like to apply it directly
-> to the SPI tree rather than ack it for merge via the MTD tree - can we
-> work something out with a shared branch or something?
-
-Sure, I can provide an immutable tag for you to pull and I'll add my
-acks on those patches once the 2 things I mentioned above are
-addressed.
-
-Regards,
-
-Boris
-
-[1]https://patchwork.kernel.org/patch/10508693/ 
+Best Regards,
+-- 
+Raphael Derosso Pereira
