@@ -1,19 +1,30 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fl9Pr-0007lk-JK
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 08:57:05 +0000
-From: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
+Date: Thu, 2 Aug 2018 11:17:42 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Piotr Bugalski <bugalski.piotr@gmail.com>, linux-spi@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
  Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>
-Cc: Ofer Heifetz <oferh@marvell.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v2] mtd: nand: use regmap_update_bits() in marvell_nand for
- syscon access
-Date: Thu,  2 Aug 2018 10:56:25 +0200
-Message-Id: <20180802085625.29635-1-thomas.petazzoni@bootlin.com>
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Cyrille Pitchen <cyrille.pitchen@microchip.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Piotr Bugalski <pbu@cryptera.com>
+Subject: Re: [RFC PATCH v2 5/6] spi: Add QuadSPI driver for Atmel SAMA5D2
+Message-ID: <20180802101742.GF9117@sirena.org.uk>
+References: <20180627131609.13681-1-bugalski.piotr@gmail.com>
+ <20180627131609.13681-6-bugalski.piotr@gmail.com>
+ <20180801172747.GJ5509@sirena.org.uk>
+ <20180801215733.4dfa3a95@bbrezillon>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="0hHDr/TIsw4o3iPK"
+Content-Disposition: inline
+In-Reply-To: <20180801215733.4dfa3a95@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +34,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The marvell_nfc_init() function fiddles with some bits of a system
-controller on Armada 7K/8K. However, it does a read/modify/write
-sequence on GENCONF_CLK_GATING_CTRL and GENCONF_ND_CLK_CTRL, which
-isn't safe from a concurrency point of view, as the regmap lock isn't
-taken accross the read/modify/write sequence. To solve this issue, use
-regmap_update_bits().
 
-While at it, since the "reg" variable is no longer needed for the
-read/modify/write sequences, get rid of it for the regmap_write() to
-GENCONF_SOC_DEVICE_MUX, and directly pass the value to be written as
-argument.
+--0hHDr/TIsw4o3iPK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller driver")
-Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
----
-Changes since v1:
- - Add Fixes: tag
- - Drop the regmap_update_bits() for GENCONF_SOC_DEVICE_MUX, and keep
-   regmap_write().
+On Wed, Aug 01, 2018 at 09:57:33PM +0200, Boris Brezillon wrote:
+> Mark Brown <broonie@kernel.org> wrote:
 
-This patch is not Cc'ed to stable, because it doesn't qualify
-according to the rule "It must fix a real bug that bothers people (not
-a, "This could be a problem..." type thing)" mentioned in
-Documentation/process/stable-kernel-rules.rst.
----
- drivers/mtd/nand/raw/marvell_nand.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+> 2/ Getting this patch [1] merged and implementing the ->get_name() hook
+>    in this driver so that SPI NOR devs declared to the MTD layer keep
+>    the same name after the transition to spi-mem and mtdparts=3D passed on
+>    the cmdline keep working. Without this in place we're likely to
+>    break a few setups :-/.
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..65aadbfa1fe8 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2691,24 +2691,23 @@ static int marvell_nfc_init(struct marvell_nfc *nfc)
- 		struct regmap *sysctrl_base =
- 			syscon_regmap_lookup_by_phandle(np,
- 							"marvell,system-controller");
--		u32 reg;
- 
- 		if (IS_ERR(sysctrl_base))
- 			return PTR_ERR(sysctrl_base);
- 
--		reg = GENCONF_SOC_DEVICE_MUX_NFC_EN |
--		      GENCONF_SOC_DEVICE_MUX_ECC_CLK_RST |
--		      GENCONF_SOC_DEVICE_MUX_ECC_CORE_RST |
--		      GENCONF_SOC_DEVICE_MUX_NFC_INT_EN;
--		regmap_write(sysctrl_base, GENCONF_SOC_DEVICE_MUX, reg);
-+		regmap_write(sysctrl_base, GENCONF_SOC_DEVICE_MUX,
-+			     GENCONF_SOC_DEVICE_MUX_NFC_EN |
-+			     GENCONF_SOC_DEVICE_MUX_ECC_CLK_RST |
-+			     GENCONF_SOC_DEVICE_MUX_ECC_CORE_RST |
-+			     GENCONF_SOC_DEVICE_MUX_NFC_INT_EN);
- 
--		regmap_read(sysctrl_base, GENCONF_CLK_GATING_CTRL, &reg);
--		reg |= GENCONF_CLK_GATING_CTRL_ND_GATE;
--		regmap_write(sysctrl_base, GENCONF_CLK_GATING_CTRL, reg);
-+		regmap_update_bits(sysctrl_base, GENCONF_CLK_GATING_CTRL,
-+				   GENCONF_CLK_GATING_CTRL_ND_GATE,
-+				   GENCONF_CLK_GATING_CTRL_ND_GATE);
- 
--		regmap_read(sysctrl_base, GENCONF_ND_CLK_CTRL, &reg);
--		reg |= GENCONF_ND_CLK_CTRL_EN;
--		regmap_write(sysctrl_base, GENCONF_ND_CLK_CTRL, reg);
-+		regmap_update_bits(sysctrl_base, GENCONF_ND_CLK_CTRL,
-+				   GENCONF_ND_CLK_CTRL_EN,
-+				   GENCONF_ND_CLK_CTRL_EN);
- 	}
- 
- 	/* Configure the DMA if appropriate */
--- 
-2.14.4
+> [1]https://patchwork.kernel.org/patch/10508693/=20
+
+I don't seem to have a copy of this patch...  not sure it was sent to
+me?
+
+--0hHDr/TIsw4o3iPK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlti2kUACgkQJNaLcl1U
+h9BcOAgAgAz5lMpc2flvBJhdnlT29tzROXqSpM6wz1kpJM0vXKIBnD1f+CVqWg5x
+isd9zCSCYinC8A8qNtC8KeRZNWDWsuSc0oiizuFp8G5Nf/ep6iIoxlKV8FMwmOVm
+DITz7SZUqd/Ej1peuGNsE3/3dGd2sT0TKnjrrJT7ZjAjfH4OwfWkUS9lshgp0H+y
+l7HDz5Z5JAmEkkCbe97AHnZQv0jths9imXVpaAJJl6uYRkxM3zIAp6vRKf71MSSz
+ubaV2h3gejoYUviXa6zp4+o373AwNwSV/2JSV93wt4ogLkuECl3PMTzm74d+jlJq
+vRr2BQqeV9RkMdcDJmrV27AxH4TvsA==
+=R9Tx
+-----END PGP SIGNATURE-----
+
+--0hHDr/TIsw4o3iPK--
