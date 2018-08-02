@@ -1,20 +1,25 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::12])
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::11])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flD81-0006oJ-QM
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 12:54:57 +0000
+ id 1flDM8-0007yR-Kf
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 13:09:31 +0000
+Subject: Re: Questions about the Freescale/NXP QuadSPI controller
 From: Frieder Schrempf <frieder.schrempf@exceet.de>
-To: dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, marek.vasut@gmail.com, richard@nod.at,
- broonie@kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org
-Cc: cyrille.pitchen@wedev4u.fr, frieder.schrempf@exceet.de, pp@emlix.com,
- Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/3] spi: spi-mem: Extend the SPI mem interface to set a
- custom memory name
-Date: Thu,  2 Aug 2018 14:53:53 +0200
-Message-Id: <1533214434-28761-3-git-send-email-frieder.schrempf@exceet.de>
-In-Reply-To: <1533214434-28761-1-git-send-email-frieder.schrempf@exceet.de>
-References: <1533214434-28761-1-git-send-email-frieder.schrempf@exceet.de>
+To: david.wolfe@nxp.com, fabio.estevam@nxp.com, prabhakar.kushwaha@nxp.com,
+ yogeshnarayan.gaur@nxp.com, han.xu@nxp.com, shawnguo@kernel.org
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ linux-spi@vger.kernel.org, dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, richard@nod.at, miquel.raynal@bootlin.com,
+ broonie@kernel.org
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
+ <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
+Message-ID: <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
+Date: Thu, 2 Aug 2018 15:09:03 +0200
+MIME-Version: 1.0
+In-Reply-To: <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,129 +29,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When porting (Q)SPI controller drivers from the MTD layer to the SPI
-layer, the naming scheme for the memory devices changes. To be able
-to keep compatibility with the old drivers naming scheme, a name
-field is added to struct spi_mem and a hook is added to let controller
-drivers set a custom name for the memory device.
+Ping.
 
-Example for the FSL QSPI driver:
+I'm not sure if my message below went out to you at all. At least I 
+can't find it in the ML archive.
 
-Name with the old driver: 21e0000.qspi,
-or with multiple devices: 21e0000.qspi-0, 21e0000.qspi-1, ...
+I still hope someone can help with the questions below.
 
-Name with the new driver without spi_mem_get_name: spi4.0
+Meanwhile for the second point I did some tests myself with one chip on 
+each of the two buses and it worked fine with my latest v2 patches.
+So I'm not sure at all why Yogesh has problems with his setup (two chips 
+on the first bus).
 
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
----
- drivers/spi/spi-mem.c       | 28 ++++++++++++++++++++++++++++
- include/linux/spi/spi-mem.h | 12 ++++++++++++
- 2 files changed, 40 insertions(+)
+Thanks,
+Frieder
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index 990770d..e43842c 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -311,6 +311,24 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- EXPORT_SYMBOL_GPL(spi_mem_exec_op);
- 
- /**
-+ * spi_mem_get_name() - Return the SPI mem device name to be used by the
-+ *			upper layer if necessary
-+ * @mem: the SPI memory
-+ *
-+ * This function allows SPI mem users to retrieve the SPI mem device name.
-+ * It is useful if the upper layer needs to expose a custom name for
-+ * compatibility reasons.
-+ *
-+ * Return: a string containing the name of the memory device to be used
-+ *	   by the SPI mem user
-+ */
-+const char *spi_mem_get_name(struct spi_mem *mem)
-+{
-+	return mem->name;
-+}
-+EXPORT_SYMBOL_GPL(spi_mem_get_name);
-+
-+/**
-  * spi_mem_adjust_op_size() - Adjust the data size of a SPI mem operation to
-  *			      match controller limitations
-  * @mem: the SPI memory
-@@ -344,6 +362,7 @@ static inline struct spi_mem_driver *to_spi_mem_drv(struct device_driver *drv)
- static int spi_mem_probe(struct spi_device *spi)
- {
- 	struct spi_mem_driver *memdrv = to_spi_mem_drv(spi->dev.driver);
-+	struct spi_controller *ctlr = spi->controller;
- 	struct spi_mem *mem;
- 
- 	mem = devm_kzalloc(&spi->dev, sizeof(*mem), GFP_KERNEL);
-@@ -351,6 +370,15 @@ static int spi_mem_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 
- 	mem->spi = spi;
-+
-+	if (ctlr->mem_ops && ctlr->mem_ops->get_name)
-+		mem->name = ctlr->mem_ops->get_name(mem);
-+	else
-+		mem->name = dev_name(&spi->dev);
-+
-+	if (IS_ERR_OR_NULL(mem->name))
-+		return PTR_ERR(mem->name);
-+
- 	spi_set_drvdata(spi, mem);
- 
- 	return memdrv->probe(mem);
-diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
-index 72cc9bc..0d41826 100644
---- a/include/linux/spi/spi-mem.h
-+++ b/include/linux/spi/spi-mem.h
-@@ -125,6 +125,7 @@ struct spi_mem_op {
-  * struct spi_mem - describes a SPI memory device
-  * @spi: the underlying SPI device
-  * @drvpriv: spi_mem_driver private data
-+ * @name: name of the SPI memory device
-  *
-  * Extra information that describe the SPI memory device and may be needed by
-  * the controller to properly handle this device should be placed here.
-@@ -135,6 +136,7 @@ struct spi_mem_op {
- struct spi_mem {
- 	struct spi_device *spi;
- 	void *drvpriv;
-+	char *name;
- };
- 
- /**
-@@ -167,6 +169,13 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
-  *		    limitations)
-  * @supports_op: check if an operation is supported by the controller
-  * @exec_op: execute a SPI memory operation
-+ * @get_name: get a custom name for the SPI mem device from the controller.
-+ *	      This might be needed if the controller driver has been ported
-+ *	      to use the SPI mem layer and a custom name is used to keep
-+ *	      mtdparts compatible.
-+ *	      Note that if the implementation of this function allocates memory
-+ *	      dynamically, then it should do so with devm_xxx(), as we don't
-+ *	      have a ->free_name() function.
-  *
-  * This interface should be implemented by SPI controllers providing an
-  * high-level interface to execute SPI memory operation, which is usually the
-@@ -178,6 +187,7 @@ struct spi_controller_mem_ops {
- 			    const struct spi_mem_op *op);
- 	int (*exec_op)(struct spi_mem *mem,
- 		       const struct spi_mem_op *op);
-+	const char *(*get_name)(struct spi_mem *mem);
- };
- 
- /**
-@@ -236,6 +246,8 @@ bool spi_mem_supports_op(struct spi_mem *mem,
- int spi_mem_exec_op(struct spi_mem *mem,
- 		    const struct spi_mem_op *op);
- 
-+const char *spi_mem_get_name(struct spi_mem *mem);
-+
- int spi_mem_driver_register_with_owner(struct spi_mem_driver *drv,
- 				       struct module *owner);
- 
--- 
-2.7.4
+On 11.07.2018 14:13, Frieder Schrempf wrote:
+> Hi guys from NXP,
+> 
+> we still have some issues/questions concerning the FSL QSPI IP, that 
+> somehow block the new driver under the SPI memory framework [1].
+> 
+> If anyone of you could comment on these, or help finding solutions, this 
+> would be very much appreciated.
+> 
+> 1. The SPI NOR driver was using a reset of the flash and AHB domain to 
+> invalidate the AHB buffer [2]. But this needs quite a lot of time, so we 
+> have a hack to use two regions in memory and switch between them 
+> alternately to invalidate the cache [3]. As this is not so nice, do you 
+> know of any other possibility to invalidate the flash?
+> 
+> 2. We tried to reuse the mapped memory to access different chips on 
+> different CS, by switching the QUADSPI_SFA1AD, QUADSPI_SFA2AD, etc. 
+> accordingly [4]. This doesn't work as expected, but Yogesh found out, 
+> that it works with a fixed memory map for each CS and by adding a 
+> ioremap(), as the SPI NOR driver does [5]. Can someone explain this 
+> behavior and why the ioremap is needed?
+> 
+> 3. In case of a NOR page program operation, the driver is expected to 
+> write the full page, even if it's larger than the TX buffer size. Boris 
+> explained this here: [6].
+> So we need to find a way of triggering a refill of the TX buffer by CPU 
+> or DMA if possible.
+> 
+> Thank you in advance for your help,
+> 
+> Frieder
+> 
+> [1] https://patchwork.ozlabs.org/cover/939864/
+> [2] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mtd/spi-nor/fsl-quadspi.c?h=v4.18-rc4#n591 
+> 
+> [3] 
+> https://github.com/fschrempf/linux/blob/fsl-qspi-next-2/drivers/spi/spi-fsl-qspi.c#L511 
+> 
+> [4] 
+> https://github.com/fschrempf/linux/blob/fsl-qspi-next-2/drivers/spi/spi-fsl-qspi.c#L476 
+> 
+> [5] 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mtd/spi-nor/fsl-quadspi.c?h=v4.18-rc4#n906 
+> 
+> [6] https://patchwork.ozlabs.org/patch/928677/#1950278
