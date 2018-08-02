@@ -1,24 +1,25 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::5])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flDpa-00066v-LO
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 13:39:56 +0000
-Subject: Re: [PATCH v3 1/3] spi: spi-mem: Fix a typo in the documentation of
- struct spi_mem
-To: Boris Brezillon <boris.brezillon@bootlin.com>, broonie@kernel.org
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
- cyrille.pitchen@wedev4u.fr, pp@emlix.com, Zhiqiang.Hou@nxp.com,
- linux-kernel@vger.kernel.org
-References: <1533214434-28761-1-git-send-email-frieder.schrempf@exceet.de>
- <1533214434-28761-2-git-send-email-frieder.schrempf@exceet.de>
- <20180802150945.44cc8328@bbrezillon>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <8a365fb9-ab9b-b8f1-6dbe-587c6b9b8ad2@exceet.de>
-Date: Thu, 2 Aug 2018 15:39:18 +0200
+Subject: Re: [RFC PATCH v2 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+References: <20180719094612.5833-1-yixun.lan@amlogic.com>
+ <20180719094612.5833-3-yixun.lan@amlogic.com>
+ <20180801235045.5b4d8211@bbrezillon>
+CC: <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>, Rob Herring
+ <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Richard Weinberger
+ <richard@nod.at>, <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Liang Yang <liang.yang@amlogic.com>, Jian Hu
+ <jian.hu@amlogic.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione
+ <carlo@caione.org>, <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>,
+ Jianxin Pan <jianxin.pan@amlogic.com>
+From: Yixun Lan <yixun.lan@amlogic.com>
+Message-ID: <5f28cbcc-1de7-81df-3d28-9092d2f859c2@amlogic.com>
+Date: Thu, 2 Aug 2018 22:04:59 +0800
 MIME-Version: 1.0
-In-Reply-To: <20180802150945.44cc8328@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20180801235045.5b4d8211@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,49 +30,446 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris, hi Mark,
+Hi Boris
 
-On 02.08.2018 15:09, Boris Brezillon wrote:
-> On Thu,  2 Aug 2018 14:53:52 +0200
-> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
-> 
-> We usually try to avoid empty commit message, even if this one is
-> pretty obvious, I'd suggest adding something here.
-> 
-> "
-> Fix a typo in the @drvpriv description.
-> "
-> 
-> ?
 
-Forgot the commit message, sorry.
+On 08/02/2018 05:50 AM, Boris Brezillon wrote:
+> Hi Yixun,
+> 
+> On Thu, 19 Jul 2018 17:46:12 +0800
+> Yixun Lan <yixun.lan@amlogic.com> wrote:
+> 
+> I haven't finished reviewing the driver yet (I'll try to do that later
+> this week), but I already pointed a few things to fix/improve.
+> 
 
-Mark, can you add it when you apply the patch or should I send a new 
-version?
+thanks for the fully review, we really appreciate your time ;-)
 
-Thanks,
-Frieder
+I will comment on a few general items first, then clarify others after
+talking to the NAND/ASIC team
 
+>> +
+>> +static int meson_nfc_exec_op(struct nand_chip *chip,
+>> +			     const struct nand_operation *op, bool check_only)
+>> +{
+>> +
+>> +static int meson_nfc_buffer_init(struct mtd_info *mtd)
+>> +{
+>> +	struct nand_chip *nand = mtd_to_nand(mtd);
+>> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
+>> +	int info_bytes, page_bytes;
+>> +	int nsectors;
+>> +
+>> +	nsectors = mtd->writesize / nand->ecc.size;
+>> +	info_bytes = nsectors * PER_INFO_BYTE;
+>> +	page_bytes = mtd->writesize + mtd->oobsize;
+>> +
+>> +	if (nfc->data_buf && nfc->info_buf)
+>> +		return 0;
+>> +
+>> +	nfc->data_buf = kmalloc(page_bytes, GFP_KERNEL);
 > 
->> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> I'm pretty sure that does not work if you have several chips. Either
+> you have one buffer tied to the NFC, and it has to be large enough to
+> handle the NAND with the largest page, or you have one buffer per chip.
 > 
-> Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+em, we will fix this in next version,
+
+>> +	if (!nfc->data_buf)
+>> +		return -ENOMEM;
+>> +
+>> +	nfc->info_buf = kmalloc(info_bytes, GFP_KERNEL);
+>> +	if (!nfc->info_buf) {
+>> +		kfree(nfc->data_buf);
+>> +		return -ENOMEM;
+>> +	}
+>> +
 > 
->> ---
->>   include/linux/spi/spi-mem.h | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
->> index 4fa34a2..72cc9bc 100644
->> --- a/include/linux/spi/spi-mem.h
->> +++ b/include/linux/spi/spi-mem.h
->> @@ -124,7 +124,7 @@ struct spi_mem_op {
->>   /**
->>    * struct spi_mem - describes a SPI memory device
->>    * @spi: the underlying SPI device
->> - * @drvpriv: spi_mem_drviver private data
->> + * @drvpriv: spi_mem_driver private data
->>    *
->>    * Extra information that describe the SPI memory device and may be needed by
->>    * the controller to properly handle this device should be placed here.
+> Those buffers are not removed in the cleanup/error path.
 > 
+indeed, thanks for pointing out.
+we actually realized this error after sent out this patch ..
+>> +	return 0;
+>> +}
+>> +
+>> +static int meson_nfc_calc_set_timing(struct meson_nfc *nfc,
+>> +				     int rc_min, int rea_max, int rhoh_min)
+..
+
+>> +
+>> +static int
+>> +meson_nfc_nand_chip_init(struct device *dev,
+>> +			 struct meson_nfc *nfc, struct device_node *np)
+>> +{
+>> +	struct meson_nfc_nand_chip *chip;
+>> +	struct nand_chip *nand;
+>> +	struct mtd_info *mtd;
+>> +	int ret, nsels, i, len = 0;
+>> +	char cs_id[16];
+>> +	u32 tmp;
+>> +
+>> +	if (!of_get_property(np, "reg", &nsels))
+>> +		return -EINVAL;
+>> +
+>> +	nsels /= sizeof(u32);
+>> +	if (!nsels || nsels > MAX_CE_NUM) {
+>> +		dev_err(dev, "invalid reg property size\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	chip = devm_kzalloc(dev, sizeof(*chip) + (nsels * sizeof(u8)),
+>> +			    GFP_KERNEL);
+>> +	if (!chip)
+>> +		return -ENOMEM;
+>> +
+>> +	chip->nsels = nsels;
+>> +
+>> +	for (i = 0; i < nsels; i++) {
+>> +		ret = of_property_read_u32_index(np, "reg", i, &tmp);
+>> +		if (ret) {
+>> +			dev_err(dev, "could not retrieve reg property: %d\n",
+>> +				ret);
+>> +			return ret;
+>> +		}
+>> +		chip->sels[i] = tmp;
+> 
+> You should probably keep track of all the already assigned CS lines, to
+> prevent situations where the same controller-CS is used twice
+> (copy&paste error when writing the DT).
+> 
+
+will do in next version, we would consider to use a bitmap for tracking
+this ..
+>> +		len += snprintf(cs_id + len, 16, "%s%d", i ? "-" : ".", tmp);
+> 
+> Hm, do we really need to be that accurate? I'd suggest using the first
+> CS only.
+> 
+ok, this would much simple..
+thanks for the suggestion and the detail sample code in the following
+section ;-)
+>> +	}
+>> +
+>> +	chip->is_scramble =
+>> +		of_property_read_bool(np, "amlogic,nand-enable-scrambler");
+> 
+> I think I already complained about that :P. If you think this is still
+> needed (meaning that the autodetection + NAND_NEED_SCRAMBLING flag are
+> not enough), I'll need a detailed explanation ;-).
+> 
+
+yes, we saw this kind comment in DT patch already, we will try to fix this..
+>> +
+>> +	nand = &chip->nand;
+>> +	nand_set_flash_node(nand, np);
+>> +	nand_set_controller_data(nand, nfc);
+>> +
+>> +	nand->options |= NAND_USE_BOUNCE_BUFFER;
+>> +	nand->select_chip = meson_nfc_select_chip;
+>> +	nand->exec_op = meson_nfc_exec_op;
+>> +	nand->setup_data_interface = meson_nfc_setup_data_interface;
+>> +
+>> +	nand->ecc.mode = NAND_ECC_HW;
+>> +
+>> +	nand->ecc.write_page_raw = meson_nfc_write_page_raw;
+>> +	nand->ecc.write_page = meson_nfc_write_page_hwecc;
+>> +	nand->ecc.write_oob_raw = nand_write_oob_std;
+>> +	nand->ecc.write_oob = nand_write_oob_std;
+>> +
+>> +	nand->ecc.read_page_raw = meson_nfc_read_page_raw;
+>> +	nand->ecc.read_page = meson_nfc_read_page_hwecc;
+>> +	nand->ecc.read_oob_raw = meson_nfc_read_oob_raw;
+>> +	nand->ecc.read_oob = meson_nfc_read_oob;
+> 
+> We usually setup the ECC fields after the identification phase. This
+> way, if you ever want/need to support SW ECC, the code is already
+> properly placed.
+> 
+>> +
+>> +	mtd = nand_to_mtd(nand);
+>> +	mtd->owner = THIS_MODULE;
+>> +	mtd->dev.parent = dev;
+>> +
+>> +	ret = nand_scan_ident(mtd, 1, NULL);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to can ident\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL, "%s:nand%s",
+>> +				   dev_name(dev), cs_id);
+> 
+> So, if you follow my suggestion, it should be:
+> 
+> 
+> You should make that conditional, because the core might have retrieved
+> a user-friendly from the DT (label prop defined to the NAND chip node).
+> 
+> So, if you follow my suggestion to just use the first CS for the nand
+> id, that gives:
+> 
+> 	if (!mtd->name) {
+> 		mtd->name = devm_kasprintf(nfc->dev, GFP_KERNEL,
+> 					   "%s:nand%d",
+> 					   dev_name(dev),
+> 					   chip->sels[i]);
+> 		if (!mtd->name)
+> 			return -ENOMEM;
+> 	}
+sure
+>> +
+>> +	/* store bbt magic in page, cause OOB is not protected */
+>> +	if (nand->bbt_options & NAND_BBT_USE_FLASH)
+>> +		nand->bbt_options |= NAND_BBT_NO_OOB;
+>> +
+>> +	nand->options |= NAND_NO_SUBPAGE_WRITE;
+>> +
+>> +	ret = meson_nfc_ecc_init(dev, mtd);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to ecc init\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (nand->options & NAND_BUSWIDTH_16) {
+>> +		dev_err(dev, "16bits buswidth not supported");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = meson_nfc_buffer_init(mtd);
+>> +	if (ret)
+>> +		return -ENOMEM;
+>> +
+>> +	ret = nand_scan_tail(mtd);
+> 
+> Miquel has reworked the nand_scan() infrastructure recently. Now you
+> have to use nand_scan() and define ->attach_chip() hook to do all the
+> init that happens between nand_scan_ident() and nand_scan_tail() in
+> your code. And of course, all resources allocated in the
+> ->attach_chip() hook should be freed in ->detach_chip().
+> 
+thanks, will look into this
+
+>> +	if (ret)
+>> +		return -ENODEV;
+>> +
+>> +	ret = mtd_device_register(mtd, NULL, 0);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to register mtd device: %d\n", ret);
+>> +		nand_cleanup(nand);
+>> +		return ret;
+>> +	}
+>> +
+>> +	list_add_tail(&chip->node, &nfc->chips);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int meson_nfc_nand_chip_cleanup(struct meson_nfc *nfc)
+> 
+> 			     ^ chips
+> 
+sure
+
+>> +{
+>> +	struct meson_nfc_nand_chip *chip;
+>> +	struct mtd_info *mtd;
+>> +	int ret;
+>> +
+>> +	while (!list_empty(&nfc->chips)) {
+>> +		chip = list_first_entry(&nfc->chips, struct meson_nfc_nand_chip,
+>> +					node);
+>> +		mtd = nand_to_mtd(&chip->nand);
+>> +		ret = mtd_device_unregister(mtd);
+>> +		if (ret)
+>> +			return ret;
+>> +
+>> +		nand_cleanup(&chip->nand);
+>> +		list_del(&chip->node);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int meson_nfc_nand_chips_init(struct device *dev, struct meson_nfc *nfc)
+>> +{
+>> +	struct device_node *np = dev->of_node;
+>> +	struct device_node *nand_np;
+>> +	int ret;
+>> +
+>> +	for_each_child_of_node(np, nand_np) {
+>> +		ret = meson_nfc_nand_chip_init(dev, nfc, nand_np);
+>> +		if (ret) {
+>> +			meson_nfc_nand_chip_cleanup(nfc);
+>> +			return ret;
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static irqreturn_t meson_nfc_irq(int irq, void *id)
+>> +{
+>> +	struct meson_nfc *nfc = id;
+>> +	u32 cfg;
+>> +
+>> +	cfg = readl(nfc->reg_base + NFC_REG_CFG);
+>> +	cfg |= (1 << 21);
+>> +	writel(cfg, nfc->reg_base + NFC_REG_CFG);
+>> +
+>> +	complete(&nfc->completion);
+>> +	return IRQ_HANDLED;
+> 
+> Can you check if at least one event has been generated, and if not
+> return IRQ_NONE?
+> 
+sure, will address this in next version
+>> +}
+>> +
+>> +static const struct meson_nfc_data meson_gxl_data = {
+>> +	.short_bch	= NFC_ECC_BCH60_1K,
+>> +	.ecc		= meson_gxl_ecc,
+>> +	.ecc_num	= ARRAY_SIZE(meson_gxl_ecc),
+>> +};
+>> +
+>> +static const struct meson_nfc_data meson_axg_data = {
+>> +	.short_bch	= NFC_ECC_BCH8_1K,
+>> +	.ecc		= meson_axg_ecc,
+>> +	.ecc_num	= ARRAY_SIZE(meson_axg_ecc),
+>> +};
+>> +
+>> +static const struct of_device_id meson_nfc_id_table[] = {
+>> +	{
+>> +		.compatible = "amlogic,meson-gxl-nfc",
+>> +		.data = &meson_gxl_data,
+>> +	}, {
+>> +		.compatible = "amlogic,meson-axg-nfc",
+>> +		.data = &meson_axg_data,
+>> +	},
+>> +	{}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, meson_nfc_id_table);
+>> +
+>> +static int meson_nfc_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct meson_nfc *nfc;
+>> +	struct resource *res;
+>> +	int ret, irq;
+>> +
+>> +	nfc = devm_kzalloc(dev, sizeof(*nfc), GFP_KERNEL);
+>> +	if (!nfc)
+>> +		return -ENOMEM;
+>> +
+>> +	nfc->data =
+>> +		(struct meson_nfc_data *)of_device_get_match_data(&pdev->dev);
+> 
+> You don't need the cast if you declare nfc->data as const in the struct
+> def.
+> 
+ok
+
+>> +	if (!nfc->data)
+>> +		return -ENODEV;
+>> +
+>> +	spin_lock_init(&nfc->controller.lock);
+>> +	init_waitqueue_head(&nfc->controller.wq);
+> 
+> There's a helper for that (nand_controller_init()).
+> 
+ok
+>> +	INIT_LIST_HEAD(&nfc->chips);
+>> +
+>> +	nfc->dev = dev;
+>> +
+>> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +	if (!res) {
+>> +		dev_err(dev, "Failed to nfc reg resource\n");
+>> +		return -EINVAL;
+>> +	}
+> 
+> No need to do this check, just pass res to devm_ioremap_resource() and
+> it will do the check for you.
+> 
+>> +
+>> +	nfc->reg_base = devm_ioremap_resource(dev, res);
+>> +	if (IS_ERR(nfc->reg_base)) {
+>> +		dev_err(dev, "Failed to lookup nfi reg base\n");
+> 
+> This error message is not needed, devm_ioremap_resource() complains
+> already.
+> 
+> Just do:
+> 
+> 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> 	nfc->reg_base = devm_ioremap_resource(dev, res);
+> 	if (IS_ERR(nfc->reg_base))
+> 		return PTR_ERR(nfc->reg_base);
+> 
+
+em.. indeed, thanks
+
+
+>> +		return PTR_ERR(nfc->reg_base);
+>> +	}
+>> +
+>> +	nfc->reg_clk =
+>> +		syscon_regmap_lookup_by_phandle(dev->of_node,
+>> +						"amlogic,mmc-syscon");
+>> +	if (IS_ERR(nfc->reg_clk)) {
+>> +		dev_err(dev, "Failed to lookup clock base\n");
+>> +		return PTR_ERR(nfc->reg_clk);
+>> +	}
+>> +
+>> +	irq = platform_get_irq(pdev, 0);
+>> +	if (irq < 0) {
+>> +		dev_err(dev, "no nfi irq resource\n");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	ret = meson_nfc_clk_init(nfc);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to initialize nand clk\n");
+>> +		goto err_clk;
+>> +	}
+>> +
+>> +	ret = devm_request_irq(dev, irq, meson_nfc_irq, 0, dev_name(dev), nfc);
+> 
+> You should make sure all irqs are masked/cleared before setting up your
+> irq handler.
+> 
+ok, will do
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to request nfi irq\n");
+>> +		ret = -EINVAL;
+>> +		goto err_clk;
+>> +	}
+>> +
+>> +	ret = dma_set_mask(dev, DMA_BIT_MASK(32));
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to set dma mask\n");
+>> +		goto err_clk;
+>> +	}
+>> +
+>> +	platform_set_drvdata(pdev, nfc);
+>> +
+>> +	ret = meson_nfc_nand_chips_init(dev, nfc);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to init nand chips\n");
+>> +		goto err_clk;
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +err_clk:
+>> +	meson_nfc_disable_clk(nfc);
+>> +	return ret;
+>> +}
+> 
+> Regards,
+> 
+> Boris
+> 
+> .
+> 
+
+Yixun
