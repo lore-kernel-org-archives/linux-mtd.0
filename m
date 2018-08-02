@@ -1,22 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flDRF-0003Zf-TG
- for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 13:14:47 +0000
-Date: Thu, 2 Aug 2018 15:14:34 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::5])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1flDpa-00066v-LO
+ for linux-mtd@lists.infradead.org; Thu, 02 Aug 2018 13:39:56 +0000
+Subject: Re: [PATCH v3 1/3] spi: spi-mem: Fix a typo in the documentation of
+ struct spi_mem
+To: Boris Brezillon <boris.brezillon@bootlin.com>, broonie@kernel.org
 Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, broonie@kernel.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, cyrille.pitchen@wedev4u.fr, pp@emlix.com,
- Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] mtd: m25p80: Call spi_mem_get_name() to let
- controller set a custom name
-Message-ID: <20180802151434.6c978937@bbrezillon>
-In-Reply-To: <1533214434-28761-4-git-send-email-frieder.schrempf@exceet.de>
+ richard@nod.at, linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ cyrille.pitchen@wedev4u.fr, pp@emlix.com, Zhiqiang.Hou@nxp.com,
+ linux-kernel@vger.kernel.org
 References: <1533214434-28761-1-git-send-email-frieder.schrempf@exceet.de>
- <1533214434-28761-4-git-send-email-frieder.schrempf@exceet.de>
+ <1533214434-28761-2-git-send-email-frieder.schrempf@exceet.de>
+ <20180802150945.44cc8328@bbrezillon>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <8a365fb9-ab9b-b8f1-6dbe-587c6b9b8ad2@exceet.de>
+Date: Thu, 2 Aug 2018 15:39:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180802150945.44cc8328@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,34 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  2 Aug 2018 14:53:54 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+Hi Boris, hi Mark,
 
-> By calling spi_mem_get_name(), the driver of the (Q)SPI controller can
-> set a custom name for the memory device if necessary.
-> This is useful to keep mtdparts compatible when controller drivers are
-> ported from the MTD to the SPI layer.
+On 02.08.2018 15:09, Boris Brezillon wrote:
+> On Thu,  2 Aug 2018 14:53:52 +0200
+> Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
 > 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
-
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
->  drivers/mtd/devices/m25p80.c | 3 +++
->  1 file changed, 3 insertions(+)
+> We usually try to avoid empty commit message, even if this one is
+> pretty obvious, I'd suggest adding something here.
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index e84563d..aac48800 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -202,6 +202,9 @@ static int m25p_probe(struct spi_mem *spimem)
->  	if (data && data->name)
->  		nor->mtd.name = data->name;
->  
-> +	if (!nor->mtd.name)
-> +		nor->mtd.name = spi_mem_get_name(spimem);
-> +
->  	/* For some (historical?) reason many platforms provide two different
->  	 * names in flash_platform_data: "name" and "type". Quite often name is
->  	 * set to "m25p80" and then "type" provides a real chip name.
+> "
+> Fix a typo in the @drvpriv description.
+> "
+> 
+> ?
+
+Forgot the commit message, sorry.
+
+Mark, can you add it when you apply the patch or should I send a new 
+version?
+
+Thanks,
+Frieder
+
+> 
+>> Signed-off-by: Frieder Schrempf <frieder.schrempf@exceet.de>
+> 
+> Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> 
+>> ---
+>>   include/linux/spi/spi-mem.h | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+>> index 4fa34a2..72cc9bc 100644
+>> --- a/include/linux/spi/spi-mem.h
+>> +++ b/include/linux/spi/spi-mem.h
+>> @@ -124,7 +124,7 @@ struct spi_mem_op {
+>>   /**
+>>    * struct spi_mem - describes a SPI memory device
+>>    * @spi: the underlying SPI device
+>> - * @drvpriv: spi_mem_drviver private data
+>> + * @drvpriv: spi_mem_driver private data
+>>    *
+>>    * Extra information that describe the SPI memory device and may be needed by
+>>    * the controller to properly handle this device should be placed here.
+> 
