@@ -1,34 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fltIA-0002t9-1N
- for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 09:56:11 +0000
-Date: Sat, 4 Aug 2018 11:56:02 +0200
+ id 1fltJf-0003gB-NR
+ for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 09:57:45 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
- "mmayer@broadcom.com" <mmayer@broadcom.com>, "rogerq@ti.com"
- <rogerq@ti.com>, "ladis@linux-mips.org" <ladis@linux-mips.org>,
- "ada@thorsis.co" <ada@thorsis.co>, "honghui.zhang@mediatek.com"
- <honghui.zhang@mediatek.com>, "linus.walleij@linaro.org"
- <linus.walleij@linaro.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>
-Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: pl353: Add basic driver for
- arm pl353 smc nand interface
-Message-ID: <20180804115602.2f44c007@xps13>
-In-Reply-To: <MWHPR02MB26231B9223265E914250FACCAF2E0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1531294612-29526-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20180729211532.58c80a20@xps13>
- <MWHPR02MB26231B9223265E914250FACCAF2E0@MWHPR02MB2623.namprd02.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v3 2/2] Documentation: mtd: remove stale pxa3xx NAND
+ controller documentation
+Date: Sat,  4 Aug 2018 11:57:17 +0200
+Message-Id: <20180804095717.8089-2-miquel.raynal@bootlin.com>
+In-Reply-To: <20180804095717.8089-1-miquel.raynal@bootlin.com>
+References: <20180804095717.8089-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,154 +24,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
+It is preferred to have the documentation about the drivers directly
+embedded in the driver itself. Remove this file now that the most
+important information from this file have been re-written in
+marvell_nand.c.
 
-> > > +/**
-> > > + * pl353_nand_read_data_op - read chip data into buffer
-> > > + * @chip:	Pointer to the NAND chip info structure
-> > > + * @in:		Pointer to the buffer to store read data
-> > > + * @len:	Number of bytes to read
-> > > + * Return:	Always return zero
-> > > + */
-> > > +static int pl353_nand_read_data_op(struct nand_chip *chip,
-> > > +				   u8 *in,
-> > > +				   unsigned int len)
-> > > +{
-> > > +	int i;
-> > > +	struct pl353_nand_info *xnfc =3D
-> > > +		container_of(chip, struct pl353_nand_info, chip);
-> > > +
-> > > +	if (IS_ALIGNED((uint32_t)in, sizeof(uint32_t)) &&
-> > > +	    IS_ALIGNED(len, sizeof(uint32_t))) {
-> > > +		u32 *ptr =3D (u32 *)in;
-> > > +
-> > > +		len /=3D 4;
-> > > +		for (i =3D 0; i < len; i++)
-> > > +			ptr[i] =3D readl(xnfc->nandaddr);
-> > > +	} else {
-> > > +		for (i =3D 0; i < len; i++)
-> > > +			in[i] =3D readb(xnfc->nandaddr);
-> > > +	} =20
-> >=20
-> > What about reading 0-3 bytes with readb if the driver is not aligned, t=
-hen doing aligned
-> > access with readl until readb must be used again for the last 0-3 bytes=
-? =20
-> The else case is handling that right?
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
 
-No it's not. The else case reads byte per byte, always.
+Changes since v1/v2:
+====================
+* None.
 
-[...]
+ Documentation/mtd/nand/pxa3xx-nand.txt | 113 ---------------------------------
+ 1 file changed, 113 deletions(-)
+ delete mode 100644 Documentation/mtd/nand/pxa3xx-nand.txt
 
-> > > +static int pl353_nand_calculate_hwecc(struct mtd_info *mtd,
-> > > +				      const u8 *data, u8 *ecc)
-> > > +{
-> > > +	u32 ecc_value;
-> > > +	u8 ecc_reg, ecc_byte, ecc_status;
-> > > +	unsigned long timeout =3D jiffies + PL353_NAND_ECC_BUSY_TIMEOUT;
-> > > +
-> > > +	/* Wait till the ECC operation is complete or timeout */
-> > > +	do {
-> > > +		if (pl353_smc_ecc_is_busy())
-> > > +			cpu_relax();
-> > > +		else
-> > > +			break;
-> > > +	} while (!time_after_eq(jiffies, timeout));
-> > > +
-> > > +	if (time_after_eq(jiffies, timeout)) {
-> > > +		pr_err("%s timed out\n", __func__);
-> > > +		return -ETIMEDOUT;
-> > > +	} =20
-> >=20
-> > All of this should be done by the function calling nand_calculate_hwecc=
-(), not here. =20
-> Ok, I will update it.
-> >=20
-> > Plus, it should deserve a function on its own. =20
-> Ok, will add new one.
-> >  =20
-> > > +
-> > > +	for (ecc_reg =3D 0; ecc_reg < 4; ecc_reg++) {
-> > > +		/* Read ECC value for each block */ =20
-> >=20
-> > So you assume here that there are 4, and only 4 "blocks" (I prefer "ECC=
- chunks" or
-> > "subpages"). Is it always the case? Or is it just how it works in your =
-situation? I would rather
-> > prefer a to define this value anyway. =20
-> Sure, I will define a macro as ECC chunks to represent 4.
-> And there are always 4 ECC registers as per the controller. And there is =
-no assumption here.
-
-What about smaller or larger NAND chips? Maybe there are some
-limitations in what chips are actually supported, then they should be
-rejected.
-
-
-[...]
-
-> > > +static void pl353_prepare_cmd(struct mtd_info *mtd, struct
-nand_chip *chip,
-> > > +			      int page, int column, int start_cmd, int end_cmd,
-> > > +			      bool read)
-> > > +{
-> > > +	unsigned long data_phase_addr;
-> > > +	u32 end_cmd_valid =3D 0;
-> > > +	unsigned long cmd_phase_addr =3D 0, cmd_data =3D 0;
-> > > +
-> > > +	struct pl353_nand_info *xnfc =3D
-> > > +		container_of(chip, struct pl353_nand_info, chip);
-> > > +
-> > > +	end_cmd_valid =3D read ? 1 : 0;
-> > > +
-> > > +	cmd_phase_addr =3D (unsigned long __force)xnfc->nand_base + =20
-> >=20
-> > do you really need this cast? =20
-> As I said above, during command and data phases, we have to update the AX=
-I Read/Write addresses with cycles, start command, end command
-> And some extra info. Hence I am converting it to a value and then adding =
-the above values and then again converting back as an
-> Address.
->=20
-> >  =20
-> > > +			 ((xnfc->addr_cycles
-> > > +			 << ADDR_CYCLES_SHIFT) |
-> > > +			 (end_cmd_valid << END_CMD_VALID_SHIFT) |
-> > > +			 (COMMAND_PHASE) |
-> > > +			 (end_cmd << END_CMD_SHIFT) |
-> > > +			 (start_cmd << START_CMD_SHIFT)); =20
-> >=20
-> > So the number of address cycles changes the address where you should wr=
-ite the address
-> > cycles? that's weird, no? =20
-> I agree, but the implementation of PL353 is like that.
-> As I pointed the spec above, for every transfer we have to frame AXI Writ=
-e address and Read address.
->=20
-> >  =20
-> > > +
-> > > +	/* Get the data phase address */
-> > > +	data_phase_addr =3D (unsigned long __force)xnfc->nand_base +
-> > > +			  ((0x0 << CLEAR_CS_SHIFT) |
-> > > +			  (0 << END_CMD_VALID_SHIFT) |
-> > > +			  (DATA_PHASE) |
-> > > +			  (end_cmd << END_CMD_SHIFT) |
-> > > +			  (0x0 << ECC_LAST_SHIFT));
-> > > + =20
-> > Same question here?
-> >  =20
-> > > +	xnfc->nandaddr =3D (void __iomem * __force)data_phase_addr; =20
-> >=20
-> > This should be done only once in the probe =20
-> No, as explained above, once we frame the Axi Write address/Read address =
-with valid data, then we
-> Are converting back as memory address with the casting.
-> Do you see any issues with that?
-> Let me know, is there an alternative to achieve the same.=20
-> All is about, constructing AXI Write address and Read address during comm=
-and and data phases.
-
-Ok, I'll ask Boris to also review your next version, once -rc1 is out.
-
-Thanks,
-Miqu=C3=A8l
+diff --git a/Documentation/mtd/nand/pxa3xx-nand.txt b/Documentation/mtd/nand/pxa3xx-nand.txt
+deleted file mode 100644
+index 1074cbc67ec6..000000000000
+--- a/Documentation/mtd/nand/pxa3xx-nand.txt
++++ /dev/null
+@@ -1,113 +0,0 @@
+-
+-About this document
+-===================
+-
+-Some notes about Marvell's NAND controller available in PXA and Armada 370/XP
+-SoC (aka NFCv1 and NFCv2), with an emphasis on the latter.
+-
+-NFCv2 controller background
+-===========================
+-
+-The controller has a 2176 bytes FIFO buffer. Therefore, in order to support
+-larger pages, I/O operations on 4 KiB and 8 KiB pages is done with a set of
+-chunked transfers.
+-
+-For instance, if we choose a 2048 data chunk and set "BCH" ECC (see below)
+-we'll have this layout in the pages:
+-
+-  ------------------------------------------------------------------------------
+-  | 2048B data | 32B spare | 30B ECC || 2048B data | 32B spare | 30B ECC | ... |
+-  ------------------------------------------------------------------------------
+-
+-The driver reads the data and spare portions independently and builds an internal
+-buffer with this layout (in the 4 KiB page case):
+-
+-  ------------------------------------------
+-  |     4096B data     |     64B spare     |
+-  ------------------------------------------
+-
+-Also, for the READOOB command the driver disables the ECC and reads a 'spare + ECC'
+-OOB, one per chunk read.
+-
+-  -------------------------------------------------------------------
+-  |     4096B data     |  32B spare | 30B ECC | 32B spare | 30B ECC |
+-  -------------------------------------------------------------------
+-
+-So, in order to achieve reading (for instance), we issue several READ0 commands
+-(with some additional controller-specific magic) and read two chunks of 2080B
+-(2048 data + 32 spare) each.
+-The driver accommodates this data to expose the NAND core a contiguous buffer
+-(4096 data + spare) or (4096 + spare + ECC + spare + ECC).
+-
+-ECC
+-===
+-
+-The controller has built-in hardware ECC capabilities. In addition it is
+-configurable between two modes: 1) Hamming, 2) BCH.
+-
+-Note that the actual BCH mode: BCH-4 or BCH-8 will depend on the way
+-the controller is configured to transfer the data.
+-
+-In the BCH mode the ECC code will be calculated for each transferred chunk
+-and expected to be located (when reading/programming) right after the spare
+-bytes as the figure above shows.
+-
+-So, repeating the above scheme, a 2048B data chunk will be followed by 32B
+-spare, and then the ECC controller will read/write the ECC code (30B in
+-this case):
+-
+-  ------------------------------------
+-  | 2048B data | 32B spare | 30B ECC |
+-  ------------------------------------
+-
+-If the ECC mode is 'BCH' then the ECC is *always* 30 bytes long.
+-If the ECC mode is 'Hamming' the ECC is 6 bytes long, for each 512B block.
+-So in Hamming mode, a 2048B page will have a 24B ECC.
+-
+-Despite all of the above, the controller requires the driver to only read or
+-write in multiples of 8-bytes, because the data buffer is 64-bits.
+-
+-OOB
+-===
+-
+-Because of the above scheme, and because the "spare" OOB is really located in
+-the middle of a page, spare OOB cannot be read or write independently of the
+-data area. In other words, in order to read the OOB (aka READOOB), the entire
+-page (aka READ0) has to be read.
+-
+-In the same sense, in order to write to the spare OOB the driver has to write
+-an *entire* page.
+-
+-Factory bad blocks handling
+-===========================
+-
+-Given the ECC BCH requires to layout the device's pages in a split
+-data/OOB/data/OOB way, the controller has a view of the flash page that's
+-different from the specified (aka the manufacturer's) view. In other words,
+-
+-Factory view:
+-
+-  -----------------------------------------------
+-  |                    Data           |x  OOB   |
+-  -----------------------------------------------
+-
+-Driver's view:
+-
+-  -----------------------------------------------
+-  |      Data      | OOB |      Data   x  | OOB |
+-  -----------------------------------------------
+-
+-It can be seen from the above, that the factory bad block marker must be
+-searched within the 'data' region, and not in the usual OOB region.
+-
+-In addition, this means under regular usage the driver will write such
+-position (since it belongs to the data region) and every used block is
+-likely to be marked as bad.
+-
+-For this reason, marking the block as bad in the OOB is explicitly
+-disabled by using the NAND_BBT_NO_OOB_BBM option in the driver. The rationale
+-for this is that there's no point in marking a block as bad, because good
+-blocks are also 'marked as bad' (in the OOB BBM sense) under normal usage.
+-
+-Instead, the driver relies on the bad block table alone, and should only perform
+-the bad block scan on the very first time (when the device hasn't been used).
+-- 
+2.14.1
