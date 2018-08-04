@@ -1,17 +1,20 @@
-Received: from mail-pg1-x541.google.com ([2607:f8b0:4864:20::541])
+Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fllhu-0004yG-4Z
- for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 01:50:15 +0000
-Received: by mail-pg1-x541.google.com with SMTP id h12-v6so3632125pgs.3
- for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2018 18:50:03 -0700 (PDT)
-Subject: [PATCH] spi-nor: add support for is25wp256d
-Date: Fri,  3 Aug 2018 18:49:47 -0700
-Message-Id: <20180804014947.24601-1-palmer@sifive.com>
-Cc: marek.vasut@gmail.com, dwmw2@infradead.org, computersforpeace@gmail.com,
- boris.brezillon@bootlin.com, richard@nod.at, linux-kernel@vger.kernel.org,
- "Wesley W. Terpstra" <wesley@sifive.com>, Palmer Dabbelt <palmer@sifive.com>
+ id 1flllJ-0006Mt-J5
+ for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 01:53:47 +0000
+Received: by mail-pf1-x443.google.com with SMTP id l9-v6so4116328pff.9
+ for <linux-mtd@lists.infradead.org>; Fri, 03 Aug 2018 18:53:34 -0700 (PDT)
+Date: Fri, 03 Aug 2018 18:53:33 -0700 (PDT)
+Subject: Re: upstreaming spi-nor: add support for is25wp{32,64,128,256}
+In-Reply-To: <1955523.Qt66yi4IIu@blindfold>
+CC: Wesley Terpstra <wesley@sifive.com>, linux-mtd@lists.infradead.org,
+ marek.vasut@gmail.com
 From: Palmer Dabbelt <palmer@sifive.com>
-To: linux-mtd@lists.infradead.org
+To: richard@nod.at
+Message-ID: <mhng-eed7b1ed-ba6c-4f95-9728-f236c77e4601@palmer-si-x1c4>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,115 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "Wesley W. Terpstra" <wesley@sifive.com>
+On Wed, 01 Aug 2018 07:11:31 PDT (-0700), richard@nod.at wrote:
+> Hi guys,
+>
+> can you please upstream this patch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/palmer/riscv-linux.git/commit/?h=riscv-all&id=c6e4a154bd008655dd69a850275d5cb082a7304b
+>
+> From Marek's and my POV it is ready for mainline.
+> Expect for the prints in issi_unlock().
 
-This is used of the HiFive Unleashed development board.
-
-Signed-off-by: Wesley W. Terpstra <wesley@sifive.com>
-Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 47 ++++++++++++++++++++++++++++++++++++++++++-
- include/linux/mtd/spi-nor.h   |  2 ++
- 2 files changed, 48 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c44194..e9a3557a3c23 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1072,6 +1072,9 @@ static const struct flash_info spi_nor_ids[] = {
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
- 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
-+	                SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES)
-+	},
- 
- 	/* Macronix */
- 	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
-@@ -1515,6 +1518,45 @@ static int macronix_quad_enable(struct spi_nor *nor)
- 	return 0;
- }
- 
-+/**
-+ * issi_unlock() - clear BP[0123] write-protection.
-+ * @nor:	pointer to a 'struct spi_nor'
-+ *
-+ * Bits [2345] of the Status Register are BP[0123].
-+ * ISSI chips use a different block protection scheme than other chips.
-+ * Just disable the write-protect unilaterally.
-+ *
-+ * Return: 0 on success, -errno otherwise.
-+ */
-+static int issi_unlock(struct spi_nor *nor)
-+{
-+	int ret, val;
-+	u8 mask = SR_BP0 | SR_BP1 | SR_BP2 | SR_BP3;
-+
-+	val = read_sr(nor);
-+	if (val < 0)
-+		return val;
-+	if (!(val & mask))
-+		return 0;
-+
-+	write_enable(nor);
-+
-+	write_sr(nor, val & ~mask);
-+
-+	ret = spi_nor_wait_till_ready(nor);
-+	if (ret)
-+		return ret;
-+
-+	ret = read_sr(nor);
-+	if (ret > 0 && !(ret & mask)) {
-+		dev_info(nor->dev, "ISSI Block Protection Bits cleared\n");
-+		return 0;
-+	} else {
-+		dev_err(nor->dev, "ISSI Block Protection Bits not cleared\n");
-+		return -EINVAL;
-+	}
-+}
-+
- /*
-  * Write status Register and configuration register with 2 bytes
-  * The first byte will be written to the status register, while the
-@@ -2747,6 +2789,9 @@ static int spi_nor_init(struct spi_nor *nor)
- 		spi_nor_wait_till_ready(nor);
- 	}
- 
-+	if (JEDEC_MFR(nor->info) == SNOR_MFR_ISSI)
-+		issi_unlock(nor);
-+
- 	if (nor->quad_enable) {
- 		err = nor->quad_enable(nor);
- 		if (err) {
-@@ -2926,7 +2971,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	if (ret)
- 		return ret;
- 
--	if (nor->addr_width) {
-+	if (nor->addr_width && JEDEC_MFR(info) != SNOR_MFR_ISSI) {
- 		/* already configured from SFDP */
- 	} else if (info->addr_width) {
- 		nor->addr_width = info->addr_width;
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index e60da0d34cc1..da422a37d383 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -23,6 +23,7 @@
- #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
- #define SNOR_MFR_GIGADEVICE	0xc8
- #define SNOR_MFR_INTEL		CFI_MFR_INTEL
-+#define SNOR_MFR_ISSI		0x9d
- #define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
- #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
- #define SNOR_MFR_SPANSION	CFI_MFR_AMD
-@@ -121,6 +122,7 @@
- #define SR_BP0			BIT(2)	/* Block protect 0 */
- #define SR_BP1			BIT(3)	/* Block protect 1 */
- #define SR_BP2			BIT(4)	/* Block protect 2 */
-+#define SR_BP3			BIT(5)  /* Block protect 3 (on ISSI chips) */
- #define SR_TB			BIT(5)	/* Top/Bottom protect */
- #define SR_SRWD			BIT(7)	/* SR write protect */
- /* Spansion/Cypress specific status bits */
--- 
-2.16.4
+Thanks.  I was waiting until I could properly vet it before send it upstream, 
+but I guess maybe it's best to just send out the patch.  It should be on the 
+mailing list now.
