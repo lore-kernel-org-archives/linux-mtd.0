@@ -1,32 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1flwkh-0002Ul-LZ
- for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 13:37:53 +0000
-Date: Sat, 4 Aug 2018 15:37:28 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Han Xu <han.xu@nxp.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, David Wolfe
- <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Prabhakar
- Kushwaha <prabhakar.kushwaha@nxp.com>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-Message-ID: <20180804153728.0a99d28f@bbrezillon>
-In-Reply-To: <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
- <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
- <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
- <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+ id 1fm0Ql-0002SF-NX
+ for linux-mtd@lists.infradead.org; Sat, 04 Aug 2018 17:33:33 +0000
+Date: Sat, 4 Aug 2018 19:33:07 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Raphael Pereira <raphaelpereira@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Suport for gf_len 14 in gpmi-nand for i.MX23 using Software BCH
+ ECC
+Message-ID: <20180804193307.0ca82318@xps13>
+In-Reply-To: <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
+References: <CAAN9NvdvscL1MOKTXuH=Esf0NjC__QVH745n-h3R_hFfeqT9jw@mail.gmail.com>
+ <20180804115555.667b3fb8@xps13>
+ <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,74 +25,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
+Hi Raphael,
 
-On Thu, 2 Aug 2018 21:58:48 +0000
-Han Xu <han.xu@nxp.com> wrote:
+Raphael Pereira <raphaelpereira@gmail.com> wrote on Sat, 4 Aug 2018
+08:22:24 -0300:
 
-> > -----Original Message-----
-> > From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
-> > Sent: Thursday, August 2, 2018 8:09 AM
-> > To: David Wolfe <david.wolfe@nxp.com>; Fabio Estevam
-> > <fabio.estevam@nxp.com>; Prabhakar Kushwaha
-> > <prabhakar.kushwaha@nxp.com>; Yogesh Narayan Gaur
-> > <yogeshnarayan.gaur@nxp.com>; Han Xu <han.xu@nxp.com>;
-> > shawnguo@kernel.org
-> > Cc: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com; linux-
-> > spi@vger.kernel.org; dwmw2@infradead.org;
-> > computersforpeace@gmail.com; marek.vasut@gmail.com; richard@nod.at;
-> > miquel.raynal@bootlin.com; broonie@kernel.org
-> > Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-> > 
-> > Ping.
-> > 
-> > I'm not sure if my message below went out to you at all. At least I can't find it
-> > in the ML archive.
-> > 
-> > I still hope someone can help with the questions below.
-> > 
-> > Meanwhile for the second point I did some tests myself with one chip on
-> > each of the two buses and it worked fine with my latest v2 patches.
-> > So I'm not sure at all why Yogesh has problems with his setup (two chips on
-> > the first bus).  
-> 
-> Tried to test the v2 patch set on i.MX6SX SDB board but get the memory map failure.
-> 
-> [    1.298633] fsl-quadspi 21e4000.qspi: ioremap failed for resource [mem 0x70000000-0x7fffffff]
-> [    1.307330] fsl-quadspi 21e4000.qspi: Freescale QuadSPI probe failed
-> [    1.313922] fsl-quadspi: probe of 21e4000.qspi failed with error -12
-> 
-> This is the reason why dynamic ioremap added in previous driver, please refer to
->  https://patchwork.ozlabs.org/patch/503655/
+> Hi Miqu=C3=A8l,
+>=20
+> First thanks for the response. Second, I apologize for the ignorance
+> on the matter, I should have studied a little more before asking for
+> help. I am not fully aware on how these works but I will try to
+> express myself better. I might still say incorrect things (:
 
-We can reduce the size of the iomap to 2k * 4, since this is all we use
-currently. Can you try to change the size of the ioremap call to 16k and
-tell us if it works.
+No problem!
 
-Unrelated to this issue, we still have 2 questions left unanswered:
+>=20
+> I have a custom board with a i.MX23 processor. My board uses a 4Gb
+> (512Mx8) flash which has an ECC requirement that is supported by the
+> hardware and by the gpmi-nand driver. The gpmi-nand driver reports it
+> as stated below:
+>=20
+> nand: 512 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
 
-1/ is there an easy way to invalidate AHB buffers? I mean, not
-   something that implies a full reset + several milliseconds of delay
-   after the reset. Right now we trick the caching logic by mapping a
-   portion that is twice the size of the buffer and switching from one
-   sub-portion to this other to trigger a real read on each read
-   access, but that's hack-ish, and I'd be surprised if HW
-   engineers hadn't planned for this "manual AHB buffer flush" case.
+Ok.
 
-2/ if we use DMA, do you know what happens when the TX FIFO runs out
-   of data while the TX request is not finished yet. In PIO mode, it
-   seems the engine sends garbage on the bus when that happens, and we
-   definitely don't want that.
+>=20
+> In a more recent production we chose a 64Gb (4Gx8) flash and it is report=
+ed as:
+>=20
+> nand: 4096 MiB, MLC, erase size: 2048 KiB, page size: 8192, OOB size: 744
 
-While #1 is not blocking us, #2 is if we don't have those patches
-[1][2] applied, and Marek wanted to be sure there was no other
-ways to solve the "TX FIFO starvation" issue before considering these
-changes. So that'd be great if someone from NXP could have a look/ask
-around and give us answers to those 2 questions.
+                  ^
+
+You have to know that Linux does not support MLC. While the controller
+driver should work, there is no support *at all* with UBI/UBIFS.
+
+> gpmi-nand 8000c000.gpmi-nand: ecc strength: 52 cannot be supported by
+> the controller (20)
+> gpmi-nand 8000c000.gpmi-nand: failed gpmi_check_ecc. ecc bits: 40, ecc
+> size: 1024
+> gpmi-nand 8000c000.gpmi-nand: Error setting BCH geometry : 1
+>=20
+> And it fails to probe. I looked at the code and found the following:
+>=20
+> gpmi-nand.c
+>=20
+> /*
+>  * If we can get the ECC information from the nand chip, we do not
+>  * need to calculate them ourselves.
+>  *
+>  * We may have available oob space in this case.
+>  */
+> static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> {
+>         struct bch_geometry *geo =3D &this->bch_geometry;
+>         struct nand_chip *chip =3D &this->nand;
+>         struct mtd_info *mtd =3D nand_to_mtd(chip);
+>         unsigned int block_mark_bit_offset;
+>=20
+>         if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+>                 return -EINVAL;
+>=20
+>         switch (chip->ecc_step_ds) {
+>         case SZ_512:
+>                 geo->gf_len =3D 13;
+>                 break;
+>         case SZ_1K:
+>                 geo->gf_len =3D 14;
+>                 break;
+>         default:
+>                 dev_err(this->dev,
+>                         "unsupported nand chip. ecc bits : %d, ecc size :=
+ %d\n",
+>                         chip->ecc_strength_ds, chip->ecc_step_ds);
+>                 return -EINVAL;
+>         }
+>         geo->ecc_chunk_size =3D chip->ecc_step_ds;
+>         geo->ecc_strength =3D round_up(chip->ecc_strength_ds, 2);
+>         if (!gpmi_check_ecc(this))
+>                 return -EINVAL;
+> ...
+>=20
+> and a little bit before that:
+>=20
+> static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+> {
+>         struct bch_geometry *geo =3D &this->bch_geometry;
+>=20
+>         /* Do the sanity check. */
+>         if (GPMI_IS_MX23(this) || GPMI_IS_MX28(this)) {
+>                 /* The mx23/mx28 only support the GF13. */
+>                 if (geo->gf_len =3D=3D 14)
+>                         return false;
+>         }
+>         return geo->ecc_strength <=3D this->devdata->bch_max_ecc_strength;
+> }
+>=20
+> That is where it is falling.
+>=20
+> My questions are:
+>=20
+> 1. Is there any possibility to use a lower ECC strength on this flash
+> that is supported by the hardware (at the expense of getting a lower
+> device lifetime as I understand)?
+
+For SLC, yes. For MLC, I'm not sure it is wise to do it as the number
+of expected bitlips is much more higher.
+
+Does your NAND chip supports SLC mode?
+=20
+> 2. If positive, what changes (and literature) do you recommend me to impl=
+ement?
+> 3. If positive, will I be able to boot using this flash (will ROM boot
+> code be able to load data from this part)?
+
+Only if your Boot ROM supports it, which is very likely not to be the
+case with an iMX23.
+
+> 4. If negative, can I implement support for the software BCH stack in
+> this driver? And will I be able to boot using this approach?
+
+If your Boot ROM does not support this kind of flash, then no, you
+won't boot from it. However if you manage to boot, Linux can interact
+with the chip with soft ECC if you can setup the chip to use SLC
+mode (half of the capacity).=20
+
+> 5. In both cases, do I need to change kobs-ng in order to implement
+> the same approach?
+
+I didn't know about kobs-ng. We usually use the mtd-utils userspace
+package for NAND testing.
 
 Thanks,
-
-Boris
-
-[1]http://patchwork.ozlabs.org/patch/928677/
-[2]http://patchwork.ozlabs.org/patch/928678/
+Miqu=C3=A8l
