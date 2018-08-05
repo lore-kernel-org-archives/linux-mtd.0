@@ -1,21 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmF6V-0006uu-Ss
- for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 09:13:37 +0000
-Date: Sun, 5 Aug 2018 11:13:23 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Raphael Pereira <raphaelpereira@gmail.com>
-Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org
-Subject: Re: Suport for gf_len 14 in gpmi-nand for i.MX23 using Software BCH
- ECC
-Message-ID: <20180805111323.51f0a4a7@bbrezillon>
-In-Reply-To: <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
-References: <CAAN9NvdvscL1MOKTXuH=Esf0NjC__QVH745n-h3R_hFfeqT9jw@mail.gmail.com>
- <20180804115555.667b3fb8@xps13>
- <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+ id 1fmKPC-0005UD-R7
+ for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 14:53:18 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH v4 1/2] mtd: rawnand: marvell: document a bit more the driver
+Date: Sun,  5 Aug 2018 16:52:56 +0200
+Message-Id: <20180805145257.15256-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,134 +21,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Raphael,
+A stale document about the old pxa3cc_nand.c driver is available in
+Documentation/mtd/nand/. Rewrite the parts that explain the IP itself
+and some non-trivial choices made in the driver directly in
+marvell_nand.c to then be able to remove this file.
 
-On Sat, 4 Aug 2018 08:22:24 -0300
-Raphael Pereira <raphaelpereira@gmail.com> wrote:
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
 
-> Hi Miqu=C3=A8l,
->=20
-> First thanks for the response. Second, I apologize for the ignorance
-> on the matter, I should have studied a little more before asking for
-> help. I am not fully aware on how these works but I will try to
-> express myself better. I might still say incorrect things (:
->=20
-> I have a custom board with a i.MX23 processor. My board uses a 4Gb
-> (512Mx8) flash which has an ECC requirement that is supported by the
-> hardware and by the gpmi-nand driver. The gpmi-nand driver reports it
-> as stated below:
->=20
-> nand: 512 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
->=20
-> In a more recent production we chose a 64Gb (4Gx8) flash and it is report=
-ed as:
->=20
-> nand: 4096 MiB, MLC, erase size: 2048 KiB, page size: 8192, OOB size: 744
-> gpmi-nand 8000c000.gpmi-nand: ecc strength: 52 cannot be supported by
-> the controller (20)
+Changes since v2:
+=================
+* Addressed Boris comments, fixed (new) typos, explained what spare
+  bytes and naked operations are.
 
-Don't know where the 52bits/1024bytes ECC requirement is extracted
-from, but assuming you're using BCH it would not even fit in the
-provided OOB area (would require 784 bytes + 2 bytes for the the BBM
-marker). So I guess there's something wrong in the ID/ONFI param page
-decoding.
+Changes since v2:
+=================
+* Addressed Boris comments, mostly typos and rewritting as suggested.
 
-> gpmi-nand 8000c000.gpmi-nand: failed gpmi_check_ecc. ecc bits: 40, ecc
-> size: 1024
-> gpmi-nand 8000c000.gpmi-nand: Error setting BCH geometry : 1
->=20
-> And it fails to probe. I looked at the code and found the following:
->=20
-> gpmi-nand.c
->=20
-> /*
->  * If we can get the ECC information from the nand chip, we do not
->  * need to calculate them ourselves.
->  *
->  * We may have available oob space in this case.
->  */
-> static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
-> {
->         struct bch_geometry *geo =3D &this->bch_geometry;
->         struct nand_chip *chip =3D &this->nand;
->         struct mtd_info *mtd =3D nand_to_mtd(chip);
->         unsigned int block_mark_bit_offset;
->=20
->         if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
->                 return -EINVAL;
->=20
->         switch (chip->ecc_step_ds) {
->         case SZ_512:
->                 geo->gf_len =3D 13;
->                 break;
->         case SZ_1K:
->                 geo->gf_len =3D 14;
->                 break;
->         default:
->                 dev_err(this->dev,
->                         "unsupported nand chip. ecc bits : %d, ecc size :=
- %d\n",
->                         chip->ecc_strength_ds, chip->ecc_step_ds);
->                 return -EINVAL;
->         }
->         geo->ecc_chunk_size =3D chip->ecc_step_ds;
->         geo->ecc_strength =3D round_up(chip->ecc_strength_ds, 2);
->         if (!gpmi_check_ecc(this))
->                 return -EINVAL;
-> ...
->=20
-> and a little bit before that:
->=20
-> static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
-> {
->         struct bch_geometry *geo =3D &this->bch_geometry;
->=20
->         /* Do the sanity check. */
->         if (GPMI_IS_MX23(this) || GPMI_IS_MX28(this)) {
->                 /* The mx23/mx28 only support the GF13. */
->                 if (geo->gf_len =3D=3D 14)
->                         return false;
->         }
->         return geo->ecc_strength <=3D this->devdata->bch_max_ecc_strength;
-> }
->=20
-> That is where it is falling.
->=20
-> My questions are:
->=20
-> 1. Is there any possibility to use a lower ECC strength on this flash
-> that is supported by the hardware (at the expense of getting a lower
-> device lifetime as I understand)?
+Changes since v1:
+=================
+* Corrected mistakes pointed by Boris.
+* Enlarged the documentation as suggested by Thomas to mention the
+  layouts as seen per the controller.
+* Added a mention about the maximum ECC size which is 2kiB.
 
-We're talking about MLC NANDs, don't even think about doing that. The
-ECC requirements is the least you should do, and I'd even recommend
-choosing stronger ECC if you have space left in the OOB area.
 
-> 2. If positive, what changes (and literature) do you recommend me to impl=
-ement?
-> 3. If positive, will I be able to boot using this flash (will ROM boot
-> code be able to load data from this part)?
-> 4. If negative, can I implement support for the software BCH stack in
-> this driver? And will I be able to boot using this approach?
+ drivers/mtd/nand/raw/marvell_nand.c | 67 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-I think you'll regret that. The CPU consumption is already quite high
-for weaker ECC configs (4bit/512bytes), and we're talking about
-52bits/1024bytes here?!
-
-> 5. In both cases, do I need to change kobs-ng in order to implement
-> the same approach?
-
-kobs-ng is the least of your problems. Before even considering all of
-this you should be aware that MLC NAND is not reliably supported in
-Linux. So, unless you're willing to fix that, I'd recommend
-reconsidering you HW choices and choosing an SLC NAND.
-
-If you don't have a choice, you might want to have a look at this
-ubi-mlc branch [1] and finish the work Richard and I started 3 years
-ago.
-
-Regards,
-
-Boris
-
-[1]https://github.com/bbrezillon/linux/commits/nand/mlc
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 218e09431d3d..53ebd5cb3e6e 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -5,6 +5,73 @@
+  * Copyright (C) 2017 Marvell
+  * Author: Miquel RAYNAL <miquel.raynal@free-electrons.com>
+  *
++ *
++ * This NAND controller driver handles two versions of the hardware,
++ * one is called NFCv1 and is available on PXA SoCs and the other is
++ * called NFCv2 and is available on Armada SoCs.
++ *
++ * The main visible difference is that NFCv1 only has Hamming ECC
++ * capabilities, while NFCv2 also embeds a BCH ECC engine. Also, DMA
++ * is not used with NFCv2.
++ *
++ * The ECC layouts are depicted in details in Marvell AN-379, but here
++ * is a brief description.
++ *
++ * When using Hamming, the data is split in 512B chunks (either 1, 2
++ * or 4) and each chunk will have its own ECC "digest" of 6B at the
++ * beginning of the OOB area and eventually the remaining free OOB
++ * bytes (also called "spare" bytes in the driver). This engine
++ * corrects up to 1 bit per chunk and detects reliably an error if
++ * there are at most 2 bitflips. Here is the page layout used by the
++ * controller when Hamming is chosen:
++ *
++ * +-------------------------------------------------------------+
++ * | Data 1 | ... | Data N | ECC 1 | ... | ECCN | Free OOB bytes |
++ * +-------------------------------------------------------------+
++ *
++ * When using the BCH engine, there are N identical (data + free OOB +
++ * ECC) sections and potentially an extra one to deal with
++ * configurations where the chosen (data + free OOB + ECC) sizes do
++ * not align with the page (data + OOB) size. ECC bytes are always
++ * 30B per ECC chunk. Here is the page layout used by the controller
++ * when BCH is chosen:
++ *
++ * +-----------------------------------------
++ * | Data 1 | Free OOB bytes 1 | ECC 1 | ...
++ * +-----------------------------------------
++ *
++ *      -------------------------------------------
++ *       ... | Data N | Free OOB bytes N | ECC N |
++ *      -------------------------------------------
++ *
++ *           --------------------------------------------+
++ *            Last Data | Last Free OOB bytes | Last ECC |
++ *           --------------------------------------------+
++ *
++ * In both cases, the layout seen by the user is always: all data
++ * first, then all free OOB bytes and finally all ECC bytes. With BCH,
++ * ECC bytes are 30B long and are padded with 0xFF to align on 32
++ * bytes.
++ *
++ * The controller has certain limitations that are handled by the
++ * driver:
++ *   - It can only read 2k at a time. To overcome this limitation, the
++ *     driver issues data cycles on the bus, without issuing new
++ *     CMD + ADDR cycles. The Marvell term is "naked" operations.
++ *   - The ECC strength in BCH mode cannot be tuned. It is fixed 16
++ *     bits. What can be tuned is the ECC block size as long as it
++ *     stays between 512B and 2kiB. It's usually chosen based on the
++ *     chip ECC requirements. For instance, using 2kiB ECC chunks
++ *     provides 4b/512B correctability.
++ *   - The controller will always treat data bytes, free OOB bytes
++ *     and ECC bytes in that order, no matter what the real layout is
++ *     (which is usually all data then all OOB bytes). The
++ *     marvell_nfc_layouts array below contains the currently
++ *     supported layouts.
++ *   - Because of these weird layouts, the Bad Block Markers can be
++ *     located in data section. In this case, the NAND_BBT_NO_OOB_BBM
++ *     option must be set to prevent scanning/writing bad block
++ *     markers.
+  */
+ 
+ #include <linux/module.h>
+-- 
+2.14.1
