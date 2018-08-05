@@ -1,21 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmP3m-0006BV-M8
- for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 19:51:28 +0000
-Date: Sun, 5 Aug 2018 21:51:10 +0200
+ id 1fmPGB-0001TO-SZ
+ for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 20:04:17 +0000
+Date: Sun, 5 Aug 2018 22:04:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Mike Dunn <mikedunn@newsguy.com>, Daniel Mack <daniel@zonque.org>,
- Haojian Zhuang <haojian.zhuang@gmail.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: Re: [PATCH v2 1/4] mtd: rawnand: Remove docg4
-Message-ID: <20180805215110.7464488a@bbrezillon>
-In-Reply-To: <87effc1vck.fsf@belgarion.home>
-References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
- <87effc1vck.fsf@belgarion.home>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v4 2/2] Documentation: mtd: remove stale pxa3xx NAND
+ controller documentation
+Message-ID: <20180805220403.0eaafc8f@bbrezillon>
+In-Reply-To: <87in4o1vlj.fsf@belgarion.home>
+References: <20180805145257.15256-1-miquel.raynal@bootlin.com>
+ <20180805145257.15256-2-miquel.raynal@bootlin.com>
+ <87in4o1vlj.fsf@belgarion.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,50 +30,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Robert,
 
-On Sun, 05 Aug 2018 21:12:11 +0200
+On Sun, 05 Aug 2018 21:06:48 +0200
 Robert Jarzmik <robert.jarzmik@free.fr> wrote:
 
-> Boris Brezillon <boris.brezillon@bootlin.com> writes:
+> Miquel Raynal <miquel.raynal@bootlin.com> writes:
 > 
-> > The diskonchip G4 driver does not fit very well in the raw/parallel
-> > NAND framework simply because such chips have an internal controller
-> > translating DoC-specific commands into NAND ones.
-> >
-> > Keeping such a driver in the raw NAND framework is a real burden for
-> > NAND maintainers.  
-> Hi Boris,
+> > It is preferred to have the documentation about the drivers directly
+> > embedded in the driver itself.  
+> Could you tell me where this statement comes from ?
 > 
-> I understand the "burden" part, yet we all have our burdens as old code
-> maintainers.
+> Because so far I've always been told the opposite.
 
-Well, we have plenty of old drivers to maintain, but this one clearly
-stands out in that it should never have been interfaced with the NAND
-framework (the docg4 command set is completely different from the
-parallel NAND command set). Note that you did not put docg3 in the NAND
-framework, and after looking at the driver and the spec, I think you
-were right, because docg3/4 clearly did (and do) not fit in the NAND
-framework.
+I complained about that when I inadvertently discovered there was a doc
+explaining how the marvell IP works in Documentation/mtd/nand/
+(which happened after someone posted a patch series adding a new file
+there). That's really something I'd expect to be described inside the
+driver directly. I'm perfectly fine having framework documentation or
+even SoC documentation placed in Documentation, but when it comes to
+driver/IP documentation it's IMO better placed directly in the driver
+source code, just because people usually don't look for driver-specific
+doc in Documentation/.
 
-> But still, you're going to remove a working driver from one of my
-> platforms. This is not something I'm really happy about.
-
-I wouldn't be so prompt at saying the driver works, this patch says the
-opposite [1], and it's apparently not something that has been broken
-recently.
-
-> 
-> At least, I'd like to hear from Mike that he doesn't use this anymore.
-
-I'd also like to hear back from Sergey (who posted [1]). As I said in my
-RFC, I'm not opposed to keeping support for docg4 as long as it goes
-out of drivers/mtd/nand/raw, either by being merged with the docg3
-driver (whose reg layout looks surprisingly similar) or be being
-interfaced with the recently introduced bus agnostic NAND layer.
-But if nobody shows interest in helping me getting this driver
-reworked the proper way, I'm not willing to keep it. 
+A compromise would be to have everything documented in the driver
+using overview doc comments [1], and then let sphynx parse this doc
+header and generate the proper doc entry, but that's IMHO less important
+to have such IP-specific information embedded in the kernel doc.
 
 Regards,
 
 Boris
 
-[1]https://lore.kernel.org/patchwork/patch/960428/
+[1]https://www.kernel.org/doc/html/v4.11/doc-guide/kernel-doc.html#overview-documentation-comments
