@@ -1,20 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmEqy-0001L7-Hu
- for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 08:57:34 +0000
-Date: Sun, 5 Aug 2018 10:57:17 +0200
+ id 1fmF6V-0006uu-Ss
+ for linux-mtd@lists.infradead.org; Sun, 05 Aug 2018 09:13:37 +0000
+Date: Sun, 5 Aug 2018 11:13:23 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Raphael Pereira <raphaelpereira@gmail.com>
 Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org
 Subject: Re: Suport for gf_len 14 in gpmi-nand for i.MX23 using Software BCH
  ECC
-Message-ID: <20180805105717.4aab931b@bbrezillon>
-In-Reply-To: <CAAN9NvcPHsUDcJY82DhX8SR1hXTzgY4N7ijp9XQAgBE66LUM_g@mail.gmail.com>
+Message-ID: <20180805111323.51f0a4a7@bbrezillon>
+In-Reply-To: <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
 References: <CAAN9NvdvscL1MOKTXuH=Esf0NjC__QVH745n-h3R_hFfeqT9jw@mail.gmail.com>
  <20180804115555.667b3fb8@xps13>
  <CAAN9Nvcuz_KydZW0GHPHdz0j27rS=9onMxZ_3zpG-ELCTc7jKg@mail.gmail.com>
- <20180804193307.0ca82318@xps13>
- <CAAN9NvcPHsUDcJY82DhX8SR1hXTzgY4N7ijp9XQAgBE66LUM_g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,27 +27,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Raphael,
 
-On Sat, 4 Aug 2018 21:39:13 -0300
+On Sat, 4 Aug 2018 08:22:24 -0300
 Raphael Pereira <raphaelpereira@gmail.com> wrote:
 
 > Hi Miqu=C3=A8l,
 >=20
-> This old thread mentions the exact same part I am trying to use and it
-> seems to work on i.MX6 SOLO, which supports 40bit ECC strengh, so I
-> think the MLC issue is not the case, although I could not find the
-> solution used as it seems it is not explicit in the thread:
+> First thanks for the response. Second, I apologize for the ignorance
+> on the matter, I should have studied a little more before asking for
+> help. I am not fully aware on how these works but I will try to
+> express myself better. I might still say incorrect things (:
 >=20
-> http://lists.infradead.org/pipermail/linux-mtd/2015-April/058901.html
+> I have a custom board with a i.MX23 processor. My board uses a 4Gb
+> (512Mx8) flash which has an ECC requirement that is supported by the
+> hardware and by the gpmi-nand driver. The gpmi-nand driver reports it
+> as stated below:
+>=20
+> nand: 512 MiB, SLC, erase size: 256 KiB, page size: 4096, OOB size: 224
+>=20
+> In a more recent production we chose a 64Gb (4Gx8) flash and it is report=
+ed as:
+>=20
+> nand: 4096 MiB, MLC, erase size: 2048 KiB, page size: 8192, OOB size: 744
+> gpmi-nand 8000c000.gpmi-nand: ecc strength: 52 cannot be supported by
+> the controller (20)
 
-Trust me, getting the proper ECC config in place is just a tiny part of
-the problem. I'm not saying supporting MLC NANDs is impossible, but it
-requires spending a non-negligible amount of time to make it work
-reliably (see [1] and [2] if you need more details).
+Don't know where the 52bits/1024bytes ECC requirement is extracted
+from, but assuming you're using BCH it would not even fit in the
+provided OOB area (would require 784 bytes + 2 bytes for the the BBM
+marker). So I guess there's something wrong in the ID/ONFI param page
+decoding.
+
+> gpmi-nand 8000c000.gpmi-nand: failed gpmi_check_ecc. ecc bits: 40, ecc
+> size: 1024
+> gpmi-nand 8000c000.gpmi-nand: Error setting BCH geometry : 1
+>=20
+> And it fails to probe. I looked at the code and found the following:
+>=20
+> gpmi-nand.c
+>=20
+> /*
+>  * If we can get the ECC information from the nand chip, we do not
+>  * need to calculate them ourselves.
+>  *
+>  * We may have available oob space in this case.
+>  */
+> static int set_geometry_by_ecc_info(struct gpmi_nand_data *this)
+> {
+>         struct bch_geometry *geo =3D &this->bch_geometry;
+>         struct nand_chip *chip =3D &this->nand;
+>         struct mtd_info *mtd =3D nand_to_mtd(chip);
+>         unsigned int block_mark_bit_offset;
+>=20
+>         if (!(chip->ecc_strength_ds > 0 && chip->ecc_step_ds > 0))
+>                 return -EINVAL;
+>=20
+>         switch (chip->ecc_step_ds) {
+>         case SZ_512:
+>                 geo->gf_len =3D 13;
+>                 break;
+>         case SZ_1K:
+>                 geo->gf_len =3D 14;
+>                 break;
+>         default:
+>                 dev_err(this->dev,
+>                         "unsupported nand chip. ecc bits : %d, ecc size :=
+ %d\n",
+>                         chip->ecc_strength_ds, chip->ecc_step_ds);
+>                 return -EINVAL;
+>         }
+>         geo->ecc_chunk_size =3D chip->ecc_step_ds;
+>         geo->ecc_strength =3D round_up(chip->ecc_strength_ds, 2);
+>         if (!gpmi_check_ecc(this))
+>                 return -EINVAL;
+> ...
+>=20
+> and a little bit before that:
+>=20
+> static inline bool gpmi_check_ecc(struct gpmi_nand_data *this)
+> {
+>         struct bch_geometry *geo =3D &this->bch_geometry;
+>=20
+>         /* Do the sanity check. */
+>         if (GPMI_IS_MX23(this) || GPMI_IS_MX28(this)) {
+>                 /* The mx23/mx28 only support the GF13. */
+>                 if (geo->gf_len =3D=3D 14)
+>                         return false;
+>         }
+>         return geo->ecc_strength <=3D this->devdata->bch_max_ecc_strength;
+> }
+>=20
+> That is where it is falling.
+>=20
+> My questions are:
+>=20
+> 1. Is there any possibility to use a lower ECC strength on this flash
+> that is supported by the hardware (at the expense of getting a lower
+> device lifetime as I understand)?
+
+We're talking about MLC NANDs, don't even think about doing that. The
+ECC requirements is the least you should do, and I'd even recommend
+choosing stronger ECC if you have space left in the OOB area.
+
+> 2. If positive, what changes (and literature) do you recommend me to impl=
+ement?
+> 3. If positive, will I be able to boot using this flash (will ROM boot
+> code be able to load data from this part)?
+> 4. If negative, can I implement support for the software BCH stack in
+> this driver? And will I be able to boot using this approach?
+
+I think you'll regret that. The CPU consumption is already quite high
+for weaker ECC configs (4bit/512bytes), and we're talking about
+52bits/1024bytes here?!
+
+> 5. In both cases, do I need to change kobs-ng in order to implement
+> the same approach?
+
+kobs-ng is the least of your problems. Before even considering all of
+this you should be aware that MLC NAND is not reliably supported in
+Linux. So, unless you're willing to fix that, I'd recommend
+reconsidering you HW choices and choosing an SLC NAND.
+
+If you don't have a choice, you might want to have a look at this
+ubi-mlc branch [1] and finish the work Richard and I started 3 years
+ago.
 
 Regards,
 
 Boris
 
-[1]https://events.static.linuxfound.org/sites/events/files/slides/brezillon=
--mlc-nand_0.pdf
-[2]https://elinux.org/images/5/54/Weinberger.pdf
+[1]https://github.com/bbrezillon/linux/commits/nand/mlc
