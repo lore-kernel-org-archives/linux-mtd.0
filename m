@@ -1,23 +1,20 @@
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmn1O-0006zb-Dj
- for linux-mtd@lists.infradead.org; Mon, 06 Aug 2018 21:26:36 +0000
-Received: by mail-wr1-x443.google.com with SMTP id v14-v6so13700491wro.5
- for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2018 14:26:23 -0700 (PDT)
-Subject: Re: [PATCH] spi-nor: add support for is25wp256d
-To: Palmer Dabbelt <palmer@sifive.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at,
- linux-kernel@vger.kernel.org, Wesley Terpstra <wesley@sifive.com>
-References: <mhng-0f1dbb5d-9aa3-41c1-9cd6-c1f79b09ee4b@palmer-si-x1c4>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <e951a9b0-b365-5818-f66f-b48492d93eb2@gmail.com>
-Date: Mon, 6 Aug 2018 23:05:11 +0200
-MIME-Version: 1.0
-In-Reply-To: <mhng-0f1dbb5d-9aa3-41c1-9cd6-c1f79b09ee4b@palmer-si-x1c4>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Linus Walleij <linus.walleij@linaro.org>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [RFC PATCH v2] mtd: rawnand: ams-delta: Use GPIO API for data I/O
+Date: Tue,  7 Aug 2018 00:29:06 +0200
+Message-Id: <20180806222918.12644-1-jmkrzyszt@gmail.com>
+In-Reply-To: <20180718235710.18242-1-jmkrzyszt@gmail.com>
+References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,127 +24,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/06/2018 10:58 PM, Palmer Dabbelt wrote:
-> On Sat, 04 Aug 2018 02:27:54 PDT (-0700), marek.vasut@gmail.com wrote:
->> On 08/04/2018 03:49 AM, Palmer Dabbelt wrote:
->>> From: "Wesley W. Terpstra" <wesley@sifive.com>
->>>
->>> This is used of the HiFive Unleashed development board.
->>>
->>> Signed-off-by: Wesley W. Terpstra <wesley@sifive.com>
->>> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 47
->>> ++++++++++++++++++++++++++++++++++++++++++-
->>>  include/linux/mtd/spi-nor.h   |  2 ++
->>>  2 files changed, 48 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
->>> b/drivers/mtd/spi-nor/spi-nor.c
->>> index d9c368c44194..e9a3557a3c23 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -1072,6 +1072,9 @@ static const struct flash_info spi_nor_ids[] = {
->>>              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->>>      { "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
->>>              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->>> +    { "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
->>
->> Is there a reason for the trailing 'd' in is25wp256d ? I'd drop it.
-> 
-> I'm honestly not sure.  There are data sheets for both of them, but I
-> don't see much of a difference
-> 
->    http://www.issi.com/WW/pdf/IS25LP(WP)256D.pdf
->    http://www.issi.com/WW/pdf/25LP-WP256.pdf
-> 
-> Following the pattern, I'd expect to see
-> 
->        { "is25wp256",  INFO(0x9d7019, 0, 64 * 1024, 512,
->                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-> 
-> versus
-> 
->        { "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
->                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-> SPI_NOR_4B_OPCODES)
->        },
-
-They have the same ID ? Do we support the variant without the d already?
-
-> So in other words: the d less sections that are larger, and also has the
-> 4B opcodes flag set.  From the documentation in looks like the non-d
-> version supports 3 and 4 byte opcodes, so I guess it's just a different
-> physical layout?
-> 
-> In the data sheet for both I see
-> 
->    "Pages can be erased in groups of 4Kbyte sectors, 32Kbyte blocks,
-> 64Kbyte    blocks, and/or the entire chip"
-> 
-> which indicates to me that maybe we've just selected the larger section
-> size?  If so then I'll change it to the first one in the new patch.
-> 
->>> +                    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ
->>> | SPI_NOR_4B_OPCODES)
->>> +    },
->>>
->>>      /* Macronix */
->>>      { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
->>> @@ -1515,6 +1518,45 @@ static int macronix_quad_enable(struct spi_nor
->>> *nor)
->>>      return 0;
->>>  }
->>>
->>> +/**
->>> + * issi_unlock() - clear BP[0123] write-protection.
->>> + * @nor:    pointer to a 'struct spi_nor'
->>> + *
->>> + * Bits [2345] of the Status Register are BP[0123].
->>> + * ISSI chips use a different block protection scheme than other chips.
->>> + * Just disable the write-protect unilaterally.
->>> + *
->>> + * Return: 0 on success, -errno otherwise.
->>> + */
->>> +static int issi_unlock(struct spi_nor *nor)
->>> +{
->>> +    int ret, val;
->>> +    u8 mask = SR_BP0 | SR_BP1 | SR_BP2 | SR_BP3;
->>> +
->>> +    val = read_sr(nor);
->>> +    if (val < 0)
->>> +        return val;
->>> +    if (!(val & mask))
->>> +        return 0;
->>> +
->>> +    write_enable(nor);
->>> +
->>> +    write_sr(nor, val & ~mask);
->>> +
->>> +    ret = spi_nor_wait_till_ready(nor);
->>> +    if (ret)
->>> +        return ret;
->>> +
->>> +    ret = read_sr(nor);
->>> +    if (ret > 0 && !(ret & mask)) {
->>> +        dev_info(nor->dev, "ISSI Block Protection Bits cleared\n");
->>> +        return 0;
->>
->> Is the dev_info() really needed ?
-> 
-> Nope.  I'll spin a v2 pending the above discussion.
-> 
->>> +    } else {
->>> +        dev_err(nor->dev, "ISSI Block Protection Bits not cleared\n");
->>> +        return -EINVAL;
->>> +    }
->>> +}
->>
->> [...]
-> 
-> Thanks!
+Implement the idea suggested by Artem Bityutskiy and Tony Lindgren,
+described in commit b027274d2e3a ("mtd: ams-delta: fix
+request_mem_region() failure"). Use pure GPIO API as suggested by
+Boris Brezillon.
 
 
--- 
-Best regards,
-Marek Vasut
+Janusz Krzysztofik (12):
+      mtd: rawnand: ams-delta: Assign mtd->dev.parent, not mtd->owner
+      mtd: rawnand: ams-delta: Use private structure
+      ARM: OMAP1: ams-delta: Provide GPIO lookup table for NAND data port
+      mtd: rawnand: ams-delta: request data port GPIO resource
+      mtd: rawnand: ams-delta: use GPIO API for data read/write
+      ARM: OMAP1: ams-delta: drop obsolete NAND resources
+      mtd: rawnand: ams-delta: Set port direction once per transfer
+      mtd: rawnand: ams-delta: Simplify pointer resolution on read/write
+      gpiolib: Identify GPIO descriptor arrays with direct mapping
+      gpiolib: Introduce bitmap get/set array API extension
+      mtd: rawnand: ams-delta: Use GPIO API bitmap extension
+      gpiolib: Add fast processing path to bitmap API functions
+
+
+Changelog:
+v2:
+[RFC PATCH v2 00/12] mtd: rawnand: ams-delta: Use GPIO API for data I/O
+- renamed from former [RFC PATCH 0/8] mtd: rawnand: ams-delta: Use
+  gpio-omap accessors for data I/O
+[RFC PATCH v2 01/12] mtd: rawnand: ams-delta: Assign mtd->dev.parent,
+			not mtd->owner
+- split out from former [RFC PATCH 1/8] on Boris request, thanks.
+[RFC PATCH v2 02/12] mtd: rawnand: ams-delta: Use private structure
+- remaining part of the former [RFC PATCH 1/8].
+[RFC PATCH v2 03/12] ARM: OMAP1: ams-delta: Provide GPIO lookup table
+			for NAND data port
+- split out from former [RFC PATCH 5/8] on Boris requesst, thanks,
+[RFC PATCH v2 04/12] mtd: rawnand: ams-delta: request data port GPIO resource
+- remaining part of the former [RFC PATCH 5/8],
+[RFC PATCH v2 05/12] mtd: rawnand: ams-delta: use GPIO API for data read/write
+- reworked from former [RFC PATCH 8/8] on Boris requesst to use pure
+  GPIO API, thanks,
+- moved up in front of former [RFC PATCH 3/8] on Boris request, thanks.
+[RFC PATCH v2 06/12] ARM: OMAP1: ams-delta: drop obsolete NAND resources
+- split out from former [RFC PATCH 8/8].
+[RFC PATCH v2 07/12] mtd: rawnand: ams-delta: Set port direction once per
+			transfer
+- reworked from former [RFC PATCH 3/8] on top of [RFC PATCH v2 05/12].
+[RFC PATCH v2 08/12] mtd: rawnand: ams-delta: Simplify pointer resolution
+			on read/write
+- reworked from former [RFC PATCH 4/8] on top of [RFC PATCH v2 08/12],
+- renamed from 'Optimize' to 'Simplify' on Boris request, thanks.
+[RFC PATCH v2 09/12] gpiolib: Identify GPIO descriptor arrays with direct
+			mapping
+- new patch.
+[RFC PATCH v2 10/12] gpiolib: Introduce bitmap get/set array API extension
+- new patch.
+[RFC PATCH v2 11/12] mtd: rawnand: ams-delta: Use GPIO API bitmap extension
+- new patch.
+[RFC PATCH v2 12/12] gpiolib: Add fast processing path to bitmap API functions
+- new patch.
+Removed from the series:
+[RFC PATCH 2/8] mtd: rawnand: ams-delta: Write protect device during probe
+- postponed on Boris request, thanks.
+[RFC PATCH 6/8] gpio: omap: Add get/set_multiple() callbacks
+- already applied by Linux in linux-gpio tree, thanks.
+[RFC PATCH 7/8] mtd: rawnand: ams-delta: Check sanity of data GPIO resource
+- most controversial one, no longer needed after switching to GPIO API.
+
+
+diffstat:
+ Documentation/driver-api/gpio/consumer.rst |   36 ++
+ arch/arm/mach-omap1/board-ams-delta.c      |   22 -
+ drivers/gpio/gpiolib.c                     |  237 +++++++++++++++++++
+ drivers/mtd/nand/raw/ams-delta.c           |  350 +++++++++++++++--------------
+ include/linux/gpio/consumer.h              |   15 +
+ 5 files changed, 485 insertions(+), 175 deletions(-)
