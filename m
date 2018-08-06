@@ -1,18 +1,22 @@
-Received: from mail.kmu-office.ch ([2a02:418:6a02::a2])
+Received: from mail-pf1-x444.google.com ([2607:f8b0:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmbpU-00023L-Mc
- for linux-mtd@lists.infradead.org; Mon, 06 Aug 2018 09:29:35 +0000
-From: Stefan Agner <stefan@agner.ch>
-To: boris.brezillon@bootlin.com,
-	miquel.raynal@bootlin.com
-Cc: computersforpeace@gmail.com, dwmw2@infradead.org, marek.vasut@gmail.com,
- richard@nod.at, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>
-Subject: [PATCH 3/3] mtd: rawnand: vf610_nfc: handle only idle interrupts
-Date: Mon,  6 Aug 2018 11:29:09 +0200
-Message-Id: <20180806092909.28980-3-stefan@agner.ch>
-In-Reply-To: <20180806092909.28980-1-stefan@agner.ch>
-References: <20180806092909.28980-1-stefan@agner.ch>
+ id 1fmmao-0003Vo-Sf
+ for linux-mtd@lists.infradead.org; Mon, 06 Aug 2018 20:59:08 +0000
+Received: by mail-pf1-x444.google.com with SMTP id x17-v6so7433679pfh.5
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2018 13:58:56 -0700 (PDT)
+Date: Mon, 06 Aug 2018 13:58:54 -0700 (PDT)
+Subject: Re: [PATCH] spi-nor: add support for is25wp256d
+In-Reply-To: <6acaba6b-b645-7098-45f6-e37abc3414a8@gmail.com>
+CC: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ Wesley Terpstra <wesley@sifive.com>
+From: Palmer Dabbelt <palmer@sifive.com>
+To: marek.vasut@gmail.com
+Message-ID: <mhng-0f1dbb5d-9aa3-41c1-9cd6-c1f79b09ee4b@palmer-si-x1c4>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,97 +26,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are two similar sounding interrupts: IDLE and DONE. The DONE
-interrupt only reflects the NAND command state, but not DMA or HW
-ECC correction. The IDLE interrupt reflects that all components are
-idle. The driver can assume that the NAND command finished and that
-data have been transferred and corrected.
+On Sat, 04 Aug 2018 02:27:54 PDT (-0700), marek.vasut@gmail.com wrote:
+> On 08/04/2018 03:49 AM, Palmer Dabbelt wrote:
+>> From: "Wesley W. Terpstra" <wesley@sifive.com>
+>>
+>> This is used of the HiFive Unleashed development board.
+>>
+>> Signed-off-by: Wesley W. Terpstra <wesley@sifive.com>
+>> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+>> ---
+>>  drivers/mtd/spi-nor/spi-nor.c | 47 ++++++++++++++++++++++++++++++++++++++++++-
+>>  include/linux/mtd/spi-nor.h   |  2 ++
+>>  2 files changed, 48 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+>> index d9c368c44194..e9a3557a3c23 100644
+>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>> @@ -1072,6 +1072,9 @@ static const struct flash_info spi_nor_ids[] = {
+>>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>  	{ "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+>>  			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>> +	{ "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
+>
+> Is there a reason for the trailing 'd' in is25wp256d ? I'd drop it.
 
-This driver makes use of the IDLE interrupt only. But before this
-patch the driver still handled all interrupts and cleared the DONE
-interrupt although not used. This works just fine in practice, but
-is not the way it should be done.
+I'm honestly not sure.  There are data sheets for both of them, but I don't see 
+much of a difference
 
-This patch makes sure that only the IDLE interrupt is handled and
-cleared. To do so we have to clear the status bit in the interrupt
-routine. With that it is also save to keep the interrupt always
-enabled and just clear the IRQ in the interrupt handler.
+    http://www.issi.com/WW/pdf/IS25LP(WP)256D.pdf
+    http://www.issi.com/WW/pdf/25LP-WP256.pdf
 
-This new interrupt handling has been tested for several thousand
-boots and did not show any adverse effects.
+Following the pattern, I'd expect to see
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Tested-by: Stefan Agner <stefan@agner.ch>
----
- drivers/mtd/nand/raw/vf610_nfc.c | 30 ++++++++++++++----------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
+        { "is25wp256",  INFO(0x9d7019, 0, 64 * 1024, 512,
+                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 
-diff --git a/drivers/mtd/nand/raw/vf610_nfc.c b/drivers/mtd/nand/raw/vf610_nfc.c
-index 52e7811c0bde..39307f4b1c94 100644
---- a/drivers/mtd/nand/raw/vf610_nfc.c
-+++ b/drivers/mtd/nand/raw/vf610_nfc.c
-@@ -290,15 +290,6 @@ static inline void vf610_nfc_wr_to_sram(void __iomem *dst, const void *src,
- 	}
- }
- 
--/* Clear flags for upcoming command */
--static inline void vf610_nfc_clear_status(struct vf610_nfc *nfc)
--{
--	u32 tmp = vf610_nfc_read(nfc, NFC_IRQ_STATUS);
--
--	tmp |= DONE_CLEAR_BIT | IDLE_CLEAR_BIT;
--	vf610_nfc_write(nfc, NFC_IRQ_STATUS, tmp);
--}
--
- static void vf610_nfc_done(struct vf610_nfc *nfc)
- {
- 	unsigned long timeout = msecs_to_jiffies(100);
-@@ -310,24 +301,29 @@ static void vf610_nfc_done(struct vf610_nfc *nfc)
- 	 * vf610_nfc_set implicates such a barrier by using writel
- 	 * to write to the register.
- 	 */
--	vf610_nfc_set(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
- 	vf610_nfc_set(nfc, NFC_FLASH_CMD2, START_BIT);
- 
- 	if (!wait_for_completion_timeout(&nfc->cmd_done, timeout))
- 		dev_warn(nfc->dev, "Timeout while waiting for BUSY.\n");
--
--	vf610_nfc_clear_status(nfc);
- }
- 
- static irqreturn_t vf610_nfc_irq(int irq, void *data)
- {
- 	struct mtd_info *mtd = data;
- 	struct vf610_nfc *nfc = mtd_to_nfc(mtd);
-+	u32 status;
- 
--	vf610_nfc_clear(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
--	complete(&nfc->cmd_done);
-+	status = vf610_nfc_read(nfc, NFC_IRQ_STATUS);
- 
--	return IRQ_HANDLED;
-+	if (status & IDLE_IRQ_BIT) {
-+		status |= IDLE_CLEAR_BIT;
-+		vf610_nfc_write(nfc, NFC_IRQ_STATUS, status);
-+		complete(&nfc->cmd_done);
-+
-+		return IRQ_HANDLED;
-+	}
-+
-+	return IRQ_NONE;
- }
- 
- static inline void vf610_nfc_ecc_mode(struct vf610_nfc *nfc, int ecc_mode)
-@@ -826,7 +822,9 @@ static int vf610_nfc_probe(struct platform_device *pdev)
- 
- 	vf610_nfc_clear(nfc, NFC_IRQ_STATUS, WERR_EN_BIT);
- 	vf610_nfc_clear(nfc, NFC_IRQ_STATUS, DONE_EN_BIT);
--	vf610_nfc_clear(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
-+
-+	vf610_nfc_set(nfc, NFC_IRQ_STATUS, IDLE_CLEAR_BIT);
-+	vf610_nfc_set(nfc, NFC_IRQ_STATUS, IDLE_EN_BIT);
- 
- 	err = devm_request_irq(nfc->dev, irq, vf610_nfc_irq, 0, DRV_NAME, mtd);
- 	if (err) {
--- 
-2.18.0
+versus
+
+        { "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
+                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES)
+        },
+
+So in other words: the d less sections that are larger, and also has the 4B 
+opcodes flag set.  From the documentation in looks like the non-d version 
+supports 3 and 4 byte opcodes, so I guess it's just a different physical 
+layout?
+
+In the data sheet for both I see
+
+    "Pages can be erased in groups of 4Kbyte sectors, 32Kbyte blocks, 64Kbyte 
+    blocks, and/or the entire chip"
+
+which indicates to me that maybe we've just selected the larger section size?  If 
+so then I'll change it to the first one in the new patch.
+
+>> +	                SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES)
+>> +	},
+>>
+>>  	/* Macronix */
+>>  	{ "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+>> @@ -1515,6 +1518,45 @@ static int macronix_quad_enable(struct spi_nor *nor)
+>>  	return 0;
+>>  }
+>>
+>> +/**
+>> + * issi_unlock() - clear BP[0123] write-protection.
+>> + * @nor:	pointer to a 'struct spi_nor'
+>> + *
+>> + * Bits [2345] of the Status Register are BP[0123].
+>> + * ISSI chips use a different block protection scheme than other chips.
+>> + * Just disable the write-protect unilaterally.
+>> + *
+>> + * Return: 0 on success, -errno otherwise.
+>> + */
+>> +static int issi_unlock(struct spi_nor *nor)
+>> +{
+>> +	int ret, val;
+>> +	u8 mask = SR_BP0 | SR_BP1 | SR_BP2 | SR_BP3;
+>> +
+>> +	val = read_sr(nor);
+>> +	if (val < 0)
+>> +		return val;
+>> +	if (!(val & mask))
+>> +		return 0;
+>> +
+>> +	write_enable(nor);
+>> +
+>> +	write_sr(nor, val & ~mask);
+>> +
+>> +	ret = spi_nor_wait_till_ready(nor);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	ret = read_sr(nor);
+>> +	if (ret > 0 && !(ret & mask)) {
+>> +		dev_info(nor->dev, "ISSI Block Protection Bits cleared\n");
+>> +		return 0;
+>
+> Is the dev_info() really needed ?
+
+Nope.  I'll spin a v2 pending the above discussion.
+
+>> +	} else {
+>> +		dev_err(nor->dev, "ISSI Block Protection Bits not cleared\n");
+>> +		return -EINVAL;
+>> +	}
+>> +}
+>
+> [...]
+
+Thanks!
