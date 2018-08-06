@@ -1,19 +1,19 @@
 Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fmowx-0000SQ-EU
- for linux-mtd@lists.infradead.org; Mon, 06 Aug 2018 23:30:09 +0000
-Received: by mail-it0-x241.google.com with SMTP id 139-v6so13759374itf.0
- for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2018 16:29:56 -0700 (PDT)
+ id 1fmpAi-0005Xi-B3
+ for linux-mtd@lists.infradead.org; Mon, 06 Aug 2018 23:44:21 +0000
+Received: by mail-it0-x241.google.com with SMTP id s7-v6so19742790itb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2018 16:44:10 -0700 (PDT)
 MIME-Version: 1.0
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
  <20180806222918.12644-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-10-jmkrzyszt@gmail.com>
-In-Reply-To: <20180806222918.12644-10-jmkrzyszt@gmail.com>
+ <20180806222918.12644-13-jmkrzyszt@gmail.com>
+In-Reply-To: <20180806222918.12644-13-jmkrzyszt@gmail.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Tue, 7 Aug 2018 01:29:43 +0200
-Message-ID: <CACRpkdZtuU6zXBz6UqprE7-31vW9-1ZabFjyzHBgWaTgmqkbbQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 09/12] gpiolib: Identify GPIO descriptor arrays
- with direct mapping
+Date: Tue, 7 Aug 2018 01:43:56 +0200
+Message-ID: <CACRpkdYHqFOFSv-erCzx8_u-mVUgGPdDH0ts-+DNAvjP3Qxb9w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 12/12] gpiolib: Add fast processing path to bitmap
+ API functions
 To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  Jonathan Corbet <corbet@lwn.net>,
@@ -36,39 +36,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz!
-
 On Tue, Aug 7, 2018 at 12:29 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-> Certain GPIO array lookup results may map directly to GPIO pins of a
-> single GPIO chip in hardware order.  If that condition is recognized
-> and handled efficiently, significant performance gain of get/set array
-> functions may be possible.
+Hi Janusz!
+
+> Certain GPIO descriptor arrays returned by gpio_get_array() may contain
+> information on a single GPIO chip driving array member pins in hardware
+> order.  In such cases, bitmaps of values can be passed directly to the
+> chip callback functions without wasting time on iterations.
 >
-> While processing a request for an array of GPIO descriptors, verify if
-> the descriptors just collected represent consecutive pins of a single
-> GPIO chip.  Pass that information with the array to the caller so it
-> can benefit from enhanced performance as soon as bitmap based get/set
-> array functions which can make efficient use of that are available.
+> Add respective code to gpiod_get/set_array_bitmap_complex() functions.
 >
 > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-(...)
->  This function returns a struct gpio_descs which contains an array of
-> -descriptors::
-> +descriptors.  It may also contain a valid descriptor of a single GPIO chip in
-> +case the array strictly matches pin hardware layout of the chip::
->
->         struct gpio_descs {
->                 unsigned int ndescs;
->                 struct gpio_desc *desc[];
-> +               struct gpio_chip *chip;
 
-This must be motivated: if the only purpose is to indicate to the consumer that
-all GPIOs are on the same chip, why not just have a
+I think it would be disappointing to leave all the users of the old
+array API without the performance improvement. I think we need to
+deal with this in a way such that everyone can benefit from it.
 
-bool all_on_same_chip;
+Also it is kludgy if users (consumers) would need to handle the case
+where all lines are on the same chip separately, through the bitmap
+API.
 
-That you set to true if these are all on the same chip?
+What we need is an API that:
+
+- All drivers handling arrays can use (including current users).
+
+- Enables speed-up if the lines are all on the same chip/register.
+
+- Doesn't require consumers to know if they are all on the same
+  chip or not.
+
+This means a deep API with a small surface.
+
+How do we achieve this the best way?
 
 Yours,
 Linus Walleij
