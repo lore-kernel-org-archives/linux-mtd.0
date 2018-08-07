@@ -1,27 +1,22 @@
-Subject: Re: [RFC PATCH v2 05/12] mtd: rawnand: ams-delta: use GPIO API for
- data read/write
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Linus Walleij <linus.walleij@linaro.org>
-Cc: Jonathan Corbet <corbet@lwn.net>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Tony Lindgren
- <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-6-jmkrzyszt@gmail.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <f4ebe9bf-8ca8-9ad2-3e48-697266b6962b@gmail.com>
-Date: Tue, 7 Aug 2018 01:57:14 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180806222918.12644-6-jmkrzyszt@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fmpav-0007yC-9d
+ for linux-mtd@lists.infradead.org; Tue, 07 Aug 2018 00:11:26 +0000
+Received: by mail-pg1-x542.google.com with SMTP id k3-v6so6935583pgq.5
+ for <linux-mtd@lists.infradead.org>; Mon, 06 Aug 2018 17:11:14 -0700 (PDT)
+Date: Mon, 06 Aug 2018 17:11:12 -0700 (PDT)
+Subject: Re: [PATCH] spi-nor: add support for is25wp256d
+In-Reply-To: <e951a9b0-b365-5818-f66f-b48492d93eb2@gmail.com>
+CC: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+ computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com, richard@nod.at, linux-kernel@vger.kernel.org,
+ Wesley Terpstra <wesley@sifive.com>
+From: Palmer Dabbelt <palmer@sifive.com>
+To: marek.vasut@gmail.com
+Message-ID: <mhng-e542ffb6-757f-49a3-9fdd-6d1c1400dc52@palmer-si-x1c4>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,250 +26,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/07/2018 12:29 AM, Janusz Krzysztofik wrote:
-> Don't readw()/writew() data directly from/to GPIO port which is under
-> control of gpio-omap driver, use GPIO API instead.
-> 
-> Degrade of performance on Amstrad Delta is completely not acceptable.
+On Mon, 06 Aug 2018 14:05:11 PDT (-0700), marek.vasut@gmail.com wrote:
+> On 08/06/2018 10:58 PM, Palmer Dabbelt wrote:
+>> On Sat, 04 Aug 2018 02:27:54 PDT (-0700), marek.vasut@gmail.com wrote:
+>>> On 08/04/2018 03:49 AM, Palmer Dabbelt wrote:
+>>>> From: "Wesley W. Terpstra" <wesley@sifive.com>
+>>>>
+>>>> This is used of the HiFive Unleashed development board.
+>>>>
+>>>> Signed-off-by: Wesley W. Terpstra <wesley@sifive.com>
+>>>> Signed-off-by: Palmer Dabbelt <palmer@sifive.com>
+>>>> ---
+>>>>  drivers/mtd/spi-nor/spi-nor.c | 47
+>>>> ++++++++++++++++++++++++++++++++++++++++++-
+>>>>  include/linux/mtd/spi-nor.h   |  2 ++
+>>>>  2 files changed, 48 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
+>>>> b/drivers/mtd/spi-nor/spi-nor.c
+>>>> index d9c368c44194..e9a3557a3c23 100644
+>>>> --- a/drivers/mtd/spi-nor/spi-nor.c
+>>>> +++ b/drivers/mtd/spi-nor/spi-nor.c
+>>>> @@ -1072,6 +1072,9 @@ static const struct flash_info spi_nor_ids[] = {
+>>>>              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>>>      { "is25wp128",  INFO(0x9d7018, 0, 64 * 1024, 256,
+>>>>              SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>>> +    { "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
+>>>
+>>> Is there a reason for the trailing 'd' in is25wp256d ? I'd drop it.
+>>
+>> I'm honestly not sure.  There are data sheets for both of them, but I
+>> don't see much of a difference
+>>
+>>    http://www.issi.com/WW/pdf/IS25LP(WP)256D.pdf
+>>    http://www.issi.com/WW/pdf/25LP-WP256.pdf
+>>
+>> Following the pattern, I'd expect to see
+>>
+>>        { "is25wp256",  INFO(0x9d7019, 0, 64 * 1024, 512,
+>>                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>>
+>> versus
+>>
+>>        { "is25wp256d", INFO(0x9d7019, 0, 32 * 1024, 1024,
+>>                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+>> SPI_NOR_4B_OPCODES)
+>>        },
+>
+> They have the same ID ? Do we support the variant without the d already?
 
-I'd expect that changing from direct PIO to access through GPIO API
-would degrade the performance. Maybe I misunderstood something ?
+Sorry for being a bit vague there.  There is no is25wp256 in the list already, 
+but if I follow the pattern from the other similar chips I get a different 
+value for is25wp256 than what was proposed in the patch for an is25wp256d.  
+>From my understanding the different values are just because we picked a 
+different block size, which seems possible because the original version of this 
+patch was written before the other is25wp devices were added to the list.
 
-> The driver should work with any 8+-bit bidirectional GPIO port, not
-> only OMAP.
-> 
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> ---
->  drivers/mtd/nand/raw/ams-delta.c | 97 ++++++++++++++++------------------------
->  1 file changed, 38 insertions(+), 59 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-> index 09d6901fc94d..78996ddf82e0 100644
-> --- a/drivers/mtd/nand/raw/ams-delta.c
-> +++ b/drivers/mtd/nand/raw/ams-delta.c
-> @@ -24,13 +24,10 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/rawnand.h>
->  #include <linux/mtd/partitions.h>
-> -#include <linux/platform_data/gpio-omap.h>
-> +#include <linux/platform_device.h>
->  
-> -#include <asm/io.h>
->  #include <asm/sizes.h>
->  
-> -#include <mach/hardware.h>
-> -
->  /*
->   * MTD structure for E3 (Delta)
->   */
-> @@ -44,7 +41,7 @@ struct ams_delta_nand {
->  	struct gpio_desc	*gpiod_nwe;
->  	struct gpio_desc	*gpiod_ale;
->  	struct gpio_desc	*gpiod_cle;
-> -	void __iomem		*io_base;
-> +	struct gpio_descs	*data_gpiods;
->  };
->  
->  /*
-> @@ -76,10 +73,14 @@ static void ams_delta_write_byte(struct mtd_info *mtd, u_char byte)
->  {
->  	struct nand_chip *this = mtd_to_nand(mtd);
->  	struct ams_delta_nand *priv = nand_get_controller_data(this);
-> -	void __iomem *io_base = priv->io_base;
-> +	struct gpio_descs *data_gpiods = priv->data_gpiods;
-> +	unsigned long bits = byte;
-> +	int i;
-> +
-> +	for (i = 0; i < data_gpiods->ndescs; i++)
-> +		gpiod_direction_output_raw(data_gpiods->desc[i],
-> +					   test_bit(i, &bits));
->  
-> -	writew(0, io_base + OMAP_MPUIO_IO_CNTL);
-> -	writew(byte, this->IO_ADDR_W);
->  	gpiod_set_value(priv->gpiod_nwe, 0);
->  	ndelay(40);
->  	gpiod_set_value(priv->gpiod_nwe, 1);
-> @@ -87,18 +88,28 @@ static void ams_delta_write_byte(struct mtd_info *mtd, u_char byte)
->  
->  static u_char ams_delta_read_byte(struct mtd_info *mtd)
->  {
-> -	u_char res;
->  	struct nand_chip *this = mtd_to_nand(mtd);
->  	struct ams_delta_nand *priv = nand_get_controller_data(this);
-> -	void __iomem *io_base = priv->io_base;
-> +	struct gpio_descs *data_gpiods = priv->data_gpiods;
-> +	unsigned long bits = 0;
-> +	int i, value_array[data_gpiods->ndescs];
-> +
-> +	for (i = 0; i < data_gpiods->ndescs; i++)
-> +		gpiod_direction_input(data_gpiods->desc[i]);
->  
->  	gpiod_set_value(priv->gpiod_nre, 0);
->  	ndelay(40);
-> -	writew(~0, io_base + OMAP_MPUIO_IO_CNTL);
-> -	res = readw(this->IO_ADDR_R);
-> +
-> +	gpiod_get_raw_array_value(data_gpiods->ndescs, data_gpiods->desc,
-> +				  value_array);
-> +
->  	gpiod_set_value(priv->gpiod_nre, 1);
->  
-> -	return res;
-> +	for (i = 0; i < data_gpiods->ndescs; i++)
-> +		if (value_array[i])
-> +			__set_bit(i, &bits);
-> +
-> +	return bits;
->  }
->  
->  static void ams_delta_write_buf(struct mtd_info *mtd, const u_char *buf,
-> @@ -159,14 +170,8 @@ static int ams_delta_init(struct platform_device *pdev)
->  	struct ams_delta_nand *priv;
->  	struct nand_chip *this;
->  	struct mtd_info *mtd;
-> -	struct resource *res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	void __iomem *io_base;
-> -	struct gpio_descs *data_gpiods;
->  	int err = 0;
->  
-> -	if (!res)
-> -		return -ENXIO;
-> -
->  	/* Allocate memory for MTD device structure and private data */
->  	priv = devm_kzalloc(&pdev->dev, sizeof(struct ams_delta_nand),
->  			    GFP_KERNEL);
-> @@ -179,25 +184,8 @@ static int ams_delta_init(struct platform_device *pdev)
->  	mtd = nand_to_mtd(this);
->  	mtd->dev.parent = &pdev->dev;
->  
-> -	/*
-> -	 * Don't try to request the memory region from here,
-> -	 * it should have been already requested from the
-> -	 * gpio-omap driver and requesting it again would fail.
-> -	 */
-> -
-> -	io_base = ioremap(res->start, resource_size(res));
-> -	if (io_base == NULL) {
-> -		dev_err(&pdev->dev, "ioremap failed\n");
-> -		err = -EIO;
-> -		goto out_free;
-> -	}
-> -
-> -	priv->io_base = io_base;
->  	nand_set_controller_data(this, priv);
->  
-> -	/* Set address of NAND IO lines */
-> -	this->IO_ADDR_R = io_base + OMAP_MPUIO_INPUT_LATCH;
-> -	this->IO_ADDR_W = io_base + OMAP_MPUIO_OUTPUT;
->  	this->read_byte = ams_delta_read_byte;
->  	this->write_buf = ams_delta_write_buf;
->  	this->read_buf = ams_delta_read_buf;
-> @@ -207,7 +195,7 @@ static int ams_delta_init(struct platform_device *pdev)
->  	if (IS_ERR(priv->gpiod_rdy)) {
->  		err = PTR_ERR(priv->gpiod_rdy);
->  		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	if (priv->gpiod_rdy)
-> @@ -225,66 +213,60 @@ static int ams_delta_init(struct platform_device *pdev)
->  	if (IS_ERR(priv->gpiod_nwp)) {
->  		err = PTR_ERR(priv->gpiod_nwp);
->  		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	priv->gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_HIGH);
->  	if (IS_ERR(priv->gpiod_nce)) {
->  		err = PTR_ERR(priv->gpiod_nce);
->  		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	priv->gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_HIGH);
->  	if (IS_ERR(priv->gpiod_nre)) {
->  		err = PTR_ERR(priv->gpiod_nre);
->  		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	priv->gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_HIGH);
->  	if (IS_ERR(priv->gpiod_nwe)) {
->  		err = PTR_ERR(priv->gpiod_nwe);
->  		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	priv->gpiod_ale = devm_gpiod_get(&pdev->dev, "ale", GPIOD_OUT_LOW);
->  	if (IS_ERR(priv->gpiod_ale)) {
->  		err = PTR_ERR(priv->gpiod_ale);
->  		dev_err(&pdev->dev, "ALE GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	priv->gpiod_cle = devm_gpiod_get(&pdev->dev, "cle", GPIOD_OUT_LOW);
->  	if (IS_ERR(priv->gpiod_cle)) {
->  		err = PTR_ERR(priv->gpiod_cle);
->  		dev_err(&pdev->dev, "CLE GPIO request failed (%d)\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  	/* Request array of data pins, initialize them as input */
-> -	data_gpiods = devm_gpiod_get_array(&pdev->dev, "data", GPIOD_IN);
-> -	if (IS_ERR(data_gpiods)) {
-> -		err = PTR_ERR(data_gpiods);
-> +	priv->data_gpiods = devm_gpiod_get_array(&pdev->dev, "data", GPIOD_IN);
-> +	if (IS_ERR(priv->data_gpiods)) {
-> +		err = PTR_ERR(priv->data_gpiods);
->  		dev_err(&pdev->dev, "data GPIO request failed: %d\n", err);
-> -		goto out_mtd;
-> +		return err;
->  	}
->  
->  	/* Scan to find existence of the device */
->  	err = nand_scan(mtd, 1);
->  	if (err)
-> -		goto out_mtd;
-> +		return err;
->  
->  	/* Register the partitions */
->  	mtd_device_register(mtd, partition_info, ARRAY_SIZE(partition_info));
->  
-> -	goto out;
-> -
-> - out_mtd:
-> -	iounmap(io_base);
-> -out_free:
-> - out:
-> -	return err;
-> +	return 0;
->  }
->  
->  /*
-> @@ -294,13 +276,10 @@ static int ams_delta_cleanup(struct platform_device *pdev)
->  {
->  	struct ams_delta_nand *priv = platform_get_drvdata(pdev);
->  	struct mtd_info *mtd = nand_to_mtd(&priv->nand_chip);
-> -	void __iomem *io_base = priv->io_base;
->  
-> -	/* Release resources, unregister device */
-> +	/* Unregister device */
->  	nand_release(mtd);
->  
-> -	iounmap(io_base);
-> -
->  	return 0;
->  }
->  
-> 
+What I'm proposing is adding an is25wp256 with the same block size as the other 
+similar entries in the list.  Looking at the data sheets they appear to have 
+the same values for the "Read Product Identification" instruction.
 
+The data sheets are shared with the is25lp256, which there is an entry for and 
+matches my expected ID and block sizes.
 
--- 
-Best regards,
-Marek Vasut
+>> So in other words: the d less sections that are larger, and also has the
+>> 4B opcodes flag set.  From the documentation in looks like the non-d
+>> version supports 3 and 4 byte opcodes, so I guess it's just a different
+>> physical layout?
+>>
+>> In the data sheet for both I see
+>>
+>>    "Pages can be erased in groups of 4Kbyte sectors, 32Kbyte blocks,
+>> 64Kbyte    blocks, and/or the entire chip"
+>>
+>> which indicates to me that maybe we've just selected the larger section
+>> size?  If so then I'll change it to the first one in the new patch.
+>>
+>>>> +                    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ
+>>>> | SPI_NOR_4B_OPCODES)
+>>>> +    },
+>>>>
+>>>>      /* Macronix */
+>>>>      { "mx25l512e",   INFO(0xc22010, 0, 64 * 1024,   1, SECT_4K) },
+>>>> @@ -1515,6 +1518,45 @@ static int macronix_quad_enable(struct spi_nor
+>>>> *nor)
+>>>>      return 0;
+>>>>  }
+>>>>
+>>>> +/**
+>>>> + * issi_unlock() - clear BP[0123] write-protection.
+>>>> + * @nor:    pointer to a 'struct spi_nor'
+>>>> + *
+>>>> + * Bits [2345] of the Status Register are BP[0123].
+>>>> + * ISSI chips use a different block protection scheme than other chips.
+>>>> + * Just disable the write-protect unilaterally.
+>>>> + *
+>>>> + * Return: 0 on success, -errno otherwise.
+>>>> + */
+>>>> +static int issi_unlock(struct spi_nor *nor)
+>>>> +{
+>>>> +    int ret, val;
+>>>> +    u8 mask = SR_BP0 | SR_BP1 | SR_BP2 | SR_BP3;
+>>>> +
+>>>> +    val = read_sr(nor);
+>>>> +    if (val < 0)
+>>>> +        return val;
+>>>> +    if (!(val & mask))
+>>>> +        return 0;
+>>>> +
+>>>> +    write_enable(nor);
+>>>> +
+>>>> +    write_sr(nor, val & ~mask);
+>>>> +
+>>>> +    ret = spi_nor_wait_till_ready(nor);
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    ret = read_sr(nor);
+>>>> +    if (ret > 0 && !(ret & mask)) {
+>>>> +        dev_info(nor->dev, "ISSI Block Protection Bits cleared\n");
+>>>> +        return 0;
+>>>
+>>> Is the dev_info() really needed ?
+>>
+>> Nope.  I'll spin a v2 pending the above discussion.
+>>
+>>>> +    } else {
+>>>> +        dev_err(nor->dev, "ISSI Block Protection Bits not cleared\n");
+>>>> +        return -EINVAL;
+>>>> +    }
+>>>> +}
+>>>
+>>> [...]
+>>
+>> Thanks!
