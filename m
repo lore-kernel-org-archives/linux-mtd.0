@@ -1,24 +1,25 @@
-Date: Tue, 7 Aug 2018 18:59:58 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Jonathan Corbet
- <corbet@lwn.net>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 03/12] ARM: OMAP1: ams-delta: Provide GPIO lookup
- table for NAND data port
-Message-ID: <20180807185958.2fc6e22b@bbrezillon>
-In-Reply-To: <20180806222918.12644-4-jmkrzyszt@gmail.com>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Jonathan Corbet <corbet@lwn.net>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Tony Lindgren <tony@atomide.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-doc@vger.kernel.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 08/12] mtd: rawnand: ams-delta: Simplify pointer
+ resolution on read/write
+Date: Tue, 07 Aug 2018 19:15:24 +0200
+Message-ID: <1630565.P2WKYxFjuh@z50>
+In-Reply-To: <20180807190256.092b2364@bbrezillon>
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-4-jmkrzyszt@gmail.com>
+ <20180806222918.12644-9-jmkrzyszt@gmail.com>
+ <20180807190256.092b2364@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue,  7 Aug 2018 00:29:09 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+On Tuesday, August 7, 2018 7:02:56 PM CEST Boris Brezillon wrote:
+> On Tue,  7 Aug 2018 00:29:14 +0200
+> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+> 
+> > Simplify data read/write sub-functions by changing their APIs so they
+> > accept driver private structure pointer instead of mtd_info.
+> > 
+> > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> 
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> 
+> Can you move that one earlier in the series so that it can be applied
+> even if we're still discussing the GPIO bitmap changes?
 
-> Data port used by Amstrad Delta NAND driver is actually an OMAP MPUIO
-> device, already under control of gpio-omap driver.  The NAND driver
-> gets access to the port by ioremapping it and performs read/write
-> operations.  That is done without any proteciton from other users
-> legally manipulating the port pins over GPIO API.
-> 
-> The plan is to convert the driver to access the port over GPIO consumer
-> API.  Before that is implemented, the driver can already obtain
-> exclusive access to the port by requesting an array of its GPIO
-> descriptors.
-> 
-> Add respective entries to the NAND GPIO lookup table.
-> 
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Sure, I will, and I would be still more happy if you agreed on me doing the 
+same with [RFC PATCH v2 07/12] mtd: rawnand: ams-delta: Set port direction 
+once per transfer.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
->  arch/arm/mach-omap1/board-ams-delta.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-> index eedacdfe9725..16f7bbe47607 100644
-> --- a/arch/arm/mach-omap1/board-ams-delta.c
-> +++ b/arch/arm/mach-omap1/board-ams-delta.c
-> @@ -337,7 +337,8 @@ static struct platform_device ams_delta_nand_device = {
->  	.resource	= ams_delta_nand_resources,
->  };
->  
-> -#define OMAP_GPIO_LABEL	"gpio-0-15"
-> +#define OMAP_GPIO_LABEL		"gpio-0-15"
-> +#define OMAP_MPUIO_LABEL	"mpuio"
->  
->  static struct gpiod_lookup_table ams_delta_nand_gpio_table = {
->  	.table = {
-> @@ -349,6 +350,14 @@ static struct gpiod_lookup_table ams_delta_nand_gpio_table = {
->  		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_NWE, "nwe", 0),
->  		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_ALE, "ale", 0),
->  		GPIO_LOOKUP(LATCH2_LABEL, LATCH2_PIN_NAND_CLE, "cle", 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 0, "data", 0, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 1, "data", 1, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 2, "data", 2, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 3, "data", 3, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 4, "data", 4, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 5, "data", 5, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 6, "data", 6, 0),
-> +		GPIO_LOOKUP_IDX(OMAP_MPUIO_LABEL, 7, "data", 7, 0),
->  		{ },
->  	},
->  };
+Thanks,
+Janusz
