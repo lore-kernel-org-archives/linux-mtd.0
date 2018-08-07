@@ -1,28 +1,18 @@
-Received: from mail-pg1-x543.google.com ([2607:f8b0:4864:20::543])
+Received: from mail-pf1-x436.google.com ([2607:f8b0:4864:20::436])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fn7ZJ-0007zH-Kr
- for linux-mtd@lists.infradead.org; Tue, 07 Aug 2018 19:22:59 +0000
-Received: by mail-pg1-x543.google.com with SMTP id x5-v6so8290192pgp.7
- for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2018 12:22:46 -0700 (PDT)
-Date: Tue, 7 Aug 2018 12:22:42 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- NeilBrown <neilb@suse.com>, devicetree@vger.kernel.org,
- Richard Weinberger <richard@nod.at>, Zhiqiang Hou <Zhiqiang.Hou@nxp.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: spi-nor: only apply reset hacks to broken hardware
-Message-ID: <20180807192242.GA139259@ban.mtv.corp.google.com>
-References: <20180727183313.137943-1-computersforpeace@gmail.com>
- <20180727220337.1b3375ca@bbrezillon>
- <87wotcrz94.fsf@notabene.neil.brown.name>
- <20180731221255.3e65c1fa@bbrezillon>
- <20180731223550.GA60117@ban.mtv.corp.google.com>
- <20180807183901.GB31722@rob-hp-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180807183901.GB31722@rob-hp-laptop>
+ id 1fn7rQ-0008Hl-KE
+ for linux-mtd@lists.infradead.org; Tue, 07 Aug 2018 19:41:41 +0000
+Received: by mail-pf1-x436.google.com with SMTP id j8-v6so9078773pff.6
+ for <linux-mtd@lists.infradead.org>; Tue, 07 Aug 2018 12:41:30 -0700 (PDT)
+Subject: [PATCH v2 0/2] spi-nor: add support for is25wp256
+Date: Tue,  7 Aug 2018 12:40:57 -0700
+Message-Id: <20180807194059.26348-1-palmer@sifive.com>
+Cc: dwmw2@infradead.org, computersforpeace@gmail.com,
+ boris.brezillon@bootlin.com,
+ richard@nod.at, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Paul Walmsley <paul.walmsley@sifive.com>
+From: Palmer Dabbelt <palmer@sifive.com>
+To: marek.vasut@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 07, 2018 at 12:39:01PM -0600, Rob Herring wrote:
-> On Tue, Jul 31, 2018 at 03:35:50PM -0700, Brian Norris wrote:
-> > One reason I didn't specifically say something like "not connected", is
-> > because IIUC it's actually *possible* to have a robust boot sequence
-> > without the RESET# pin -- e.g., if your boot ROM hardcoded a software
-> > reset command (just because it's not really standardized doesn't mean
-> > one can't do it).
-> 
-> Based on that, then it sounds like you need a specific compatible string 
-> so you too can know how to s/w reset the device.
+This adds support for the is25wp256 flash chip, which is on our HiFive
+Unleashed board.  Additionally it adds support for ISSI's special
+unlocking scheme, which we need to unlock block protection on the whole
+chip.
 
-We do also support compatible properties for these chips, where needed.
-But I don't think that's really needed.
+Changes since v1 [<20180804014947.24601-1-palmer@sifive.com>]:
+* There are now two patches, as it's logically two separate changes.
+* The chip is called is25wp256 instead of is25wp256d, with the
+  corresponding commit text also renamed.
+* The block size has been changed to match the other similar chips that
+  are already supported.
+* SPI_NOR_4B_OPCODES is no longer set, to match the other similar chips
+  that are are already supported.
 
-> I guess you are assuming a bootloader didn't leave the flash in an 
-> unknown addressing state?
-
-For some of these address states (at least, 3-byte vs. 4-byte
-addressing), we can still identify the device independently; the READ ID
-command works in either mode.
-
-The problem is that a boot ROM is rarely as complex as a Linux driver
-and probably can't be updated. And they usually do stupid things anyway.
-So *that's* where you need a well-defined entry state for the flash.
-
-Brian
+[PATCH v2 1/2] spi-nor: add support for ISSI's block unlocking scheme
+[PATCH v2 2/2] spi-nor: add support for is25wp256
