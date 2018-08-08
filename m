@@ -1,9 +1,9 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTe-0001Zf-Er
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:23 +0000
-Received: by mail-wm0-x243.google.com with SMTP id o18-v6so3251174wmc.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:14 -0700 (PDT)
+ id 1fnQTe-0001ZD-59
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:22 +0000
+Received: by mail-wm0-x242.google.com with SMTP id l2-v6so958954wme.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:12 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 22/28] ARM: davinci: dm646x-evm: use device properties for
+Subject: [PATCH 21/28] ARM: davinci: dm644x-evm: use device properties for
  at24 eeprom
-Date: Wed,  8 Aug 2018 17:31:44 +0200
-Message-Id: <20180808153150.23444-23-brgl@bgdev.pl>
+Date: Wed,  8 Aug 2018 17:31:43 +0200
+Message-Id: <20180808153150.23444-22-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -57,46 +57,46 @@ already implies the EEPROM's size.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-dm646x-evm.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ arch/arm/mach-davinci/board-dm644x-evm.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-index 5a9de47bc8a2..5049f0c6cd1a 100644
---- a/arch/arm/mach-davinci/board-dm646x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-@@ -22,7 +22,7 @@
- #include <linux/gpio.h>
- #include <linux/platform_device.h>
+diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
+index 6d35c6e1b0bd..abfcf42da6fb 100644
+--- a/arch/arm/mach-davinci/board-dm644x-evm.c
++++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+@@ -16,8 +16,8 @@
+ #include <linux/gpio/machine.h>
  #include <linux/i2c.h>
--#include <linux/platform_data/at24.h>
-+#include <linux/property.h>
  #include <linux/platform_data/pcf857x.h>
- 
- #include <media/i2c/tvp514x.h>
-@@ -320,12 +320,9 @@ static struct nvmem_cell_lookup dm646x_evm_mac_address_cell = {
+-#include <linux/platform_data/at24.h>
+ #include <linux/platform_data/gpio-davinci.h>
++#include <linux/property.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+@@ -486,12 +486,8 @@ static struct nvmem_cell_lookup dm6446evm_mac_address_cell = {
  	.nvmem_name = "1-00500",
  };
  
 -static struct at24_platform_data eeprom_info = {
--	.byte_len       = (256*1024) / 8,
--	.page_size      = 64,
--	.flags          = AT24_FLAG_ADDR16,
+-	.byte_len	= (256*1024) / 8,
+-	.page_size	= 64,
+-	.flags		= AT24_FLAG_ADDR16,
 -	.setup          = davinci_get_mac_addr,
 -	.context	= (void *)0x7f00,
 +static const struct property_entry eeprom_properties[] = {
 +	PROPERTY_ENTRY_U32("pagesize", 64),
-+	{ }
  };
- #endif
  
-@@ -396,7 +393,7 @@ static void evm_init_cpld(void)
- static struct i2c_board_info __initdata i2c_info[] =  {
- 	{
- 		I2C_BOARD_INFO("24c256", 0x50),
--		.platform_data  = &eeprom_info,
-+		.properties  = eeprom_properties,
+ /*
+@@ -601,7 +597,7 @@ static struct i2c_board_info __initdata i2c_info[] =  {
  	},
  	{
- 		I2C_BOARD_INFO("pcf8574a", 0x38),
+ 		I2C_BOARD_INFO("24c256", 0x50),
+-		.platform_data	= &eeprom_info,
++		.properties = eeprom_properties,
+ 	},
+ 	{
+ 		I2C_BOARD_INFO("tlv320aic33", 0x1b),
 -- 
 2.18.0
