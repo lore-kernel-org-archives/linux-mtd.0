@@ -1,9 +1,9 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQT5-000466-RI
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:33:53 +0000
-Received: by mail-wm0-x243.google.com with SMTP id r24-v6so956641wmh.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:37 -0700 (PDT)
+ id 1fnQT7-0004AA-Bz
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:33:56 +0000
+Received: by mail-wr1-x441.google.com with SMTP id e7-v6so2389390wrs.9
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:39 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 05/28] nvmem: remove the name field from struct nvmem_device
-Date: Wed,  8 Aug 2018 17:31:27 +0200
-Message-Id: <20180808153150.23444-6-brgl@bgdev.pl>
+Subject: [PATCH 06/28] mtd: Add support for reading MTD devices via the nvmem
+ API
+Date: Wed,  8 Aug 2018 17:31:28 +0200
+Message-Id: <20180808153150.23444-7-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -43,36 +44,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+From: Alban Bedel <albeu@free.fr>
 
-This field is never set and is only used in a single error message.
-Remove the field and use nvmem_device_name() instead.
+Allow drivers that use the nvmem API to read data stored on MTD devices.
+For this the mtd devices are registered as read-only NVMEM providers.
+On OF systems only devices that have the 'nvmem-provider' property
+are registered, on non-OF system all MTD devices are registered.
 
+Signed-off-by: Alban Bedel <albeu@free.fr>
+[Bartosz:
+  - use the managed variant of nvmem_register(),
+  - set the nvmem name]
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/nvmem/core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/mtd/Kconfig     |  1 +
+ drivers/mtd/mtdcore.c   | 50 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/mtd.h |  2 ++
+ 3 files changed, 53 insertions(+)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index b040370292a7..6c825ce866b6 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -26,7 +26,6 @@
- #include <linux/slab.h>
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 46ab7feec6b6..f5549482d0df 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -1,5 +1,6 @@
+ menuconfig MTD
+ 	tristate "Memory Technology Device (MTD) support"
++	imply NVMEM
+ 	help
+ 	  Memory Technology Devices are flash, RAM and similar chips, often
+ 	  used for solid state file systems on embedded devices. This option
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 42395df06be9..a57302eaceb5 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -488,6 +488,49 @@ int mtd_pairing_groups(struct mtd_info *mtd)
+ }
+ EXPORT_SYMBOL_GPL(mtd_pairing_groups);
  
- struct nvmem_device {
--	const char		*name;
- 	struct module		*owner;
- 	struct device		dev;
- 	int			stride;
-@@ -712,7 +711,7 @@ static struct nvmem_device *__nvmem_device_get(struct device_node *np,
- 	if (!try_module_get(nvmem->owner)) {
- 		dev_err(&nvmem->dev,
- 			"could not increase module refcount for cell %s\n",
--			nvmem->name);
-+			nvmem_device_name(nvmem));
++static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
++			      void *val, size_t bytes)
++{
++	struct mtd_info *mtd = priv;
++	size_t retlen;
++	int err;
++
++	err = mtd_read(mtd, offset, bytes, &retlen, val);
++	if (err && err != -EUCLEAN)
++		return err;
++
++	return retlen == bytes ? 0 : -EIO;
++}
++
++static int mtd_nvmem_add(struct mtd_info *mtd)
++{
++	struct nvmem_config config = { };
++
++	config.dev = &mtd->dev;
++	config.owner = THIS_MODULE;
++	config.name = mtd->name;
++	config.reg_read = mtd_nvmem_reg_read;
++	config.size = mtd->size;
++	config.word_size = 1;
++	config.stride = 1;
++	config.read_only = true;
++	config.root_only = true;
++	config.priv = mtd;
++
++	mtd->nvmem = devm_nvmem_register(&mtd->dev, &config);
++	if (IS_ERR(mtd->nvmem)) {
++		/* Just ignore if there is no NVMEM support in the kernel */
++		if (PTR_ERR(mtd->nvmem) == -ENOSYS) {
++			mtd->nvmem = NULL;
++		} else {
++			dev_err(&mtd->dev, "Failed to register NVMEM device\n");
++			return PTR_ERR(mtd->nvmem);
++		}
++	}
++
++	return 0;
++}
++
+ static struct dentry *dfs_dir_mtd;
  
- 		mutex_lock(&nvmem_mutex);
- 		nvmem->users--;
+ /**
+@@ -570,6 +613,11 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	if (error)
+ 		goto fail_added;
+ 
++	/* Add the nvmem provider */
++	error = mtd_nvmem_add(mtd);
++	if (error)
++		goto fail_nvmem_add;
++
+ 	if (!IS_ERR_OR_NULL(dfs_dir_mtd)) {
+ 		mtd->dbg.dfs_dir = debugfs_create_dir(dev_name(&mtd->dev), dfs_dir_mtd);
+ 		if (IS_ERR_OR_NULL(mtd->dbg.dfs_dir)) {
+@@ -595,6 +643,8 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	__module_get(THIS_MODULE);
+ 	return 0;
+ 
++fail_nvmem_add:
++	device_unregister(&mtd->dev);
+ fail_added:
+ 	of_node_put(mtd_get_of_node(mtd));
+ 	idr_remove(&mtd_idr, i);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a86c4fa93115..8121c6582285 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -25,6 +25,7 @@
+ #include <linux/notifier.h>
+ #include <linux/device.h>
+ #include <linux/of.h>
++#include <linux/nvmem-provider.h>
+ 
+ #include <mtd/mtd-abi.h>
+ 
+@@ -339,6 +340,7 @@ struct mtd_info {
+ 	struct device dev;
+ 	int usecount;
+ 	struct mtd_debug_info dbg;
++	struct nvmem_device *nvmem;
+ };
+ 
+ int mtd_ooblayout_ecc(struct mtd_info *mtd, int section,
 -- 
 2.18.0
