@@ -1,13 +1,9 @@
-Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTD-0002sJ-QX
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:00 +0000
-Received: by mail-wm0-x243.google.com with SMTP id w24-v6so3220949wmc.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:45 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>,
+Date: Wed, 8 Aug 2018 18:13:53 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -22,19 +18,21 @@ To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Dan Carpenter <dan.carpenter@oracle.com>,
  Florian Fainelli <f.fainelli@gmail.com>,
  Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
- Alban Bedel <albeu@free.fr>, Rob Herring <robh@kernel.org>,
- David Lechner <david@lechnology.com>, Andrew Lunn <andrew@lunn.ch>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alban Bedel <albeu@free.fr>,
+ Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 09/28] ARM: davinci: dm646x-evm: use nvmem lookup for mac
- address
-Date: Wed,  8 Aug 2018 17:31:31 +0200
-Message-Id: <20180808153150.23444-10-brgl@bgdev.pl>
-In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
+Subject: Re: [PATCH 03/28] nvmem: add a notifier chain
+Message-ID: <20180808161353.GF7275@lunn.ch>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
+ <20180808153150.23444-4-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180808153150.23444-4-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,52 +42,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Wed, Aug 08, 2018 at 05:31:25PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> Add a blocking notifier chain with two events (add and remove) so that
+> users can get notified about the addition of nvmem devices they're
+> waiting for.
+> 
+> We'll use this instead of the at24 setup callback in the mityomapl138
+> board file.
 
-We now support nvmem lookups for machine code. Add a lookup for
-mac-address.
+Hi Bartosz
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- arch/arm/mach-davinci/board-dm646x-evm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+What context is this notifier chain called in?
 
-diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
-index 584064fdabf5..5a9de47bc8a2 100644
---- a/arch/arm/mach-davinci/board-dm646x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm646x-evm.c
-@@ -37,6 +37,7 @@
- #include <linux/platform_data/i2c-davinci.h>
- #include <linux/platform_data/mtd-davinci.h>
- #include <linux/platform_data/mtd-davinci-aemif.h>
-+#include <linux/nvmem-provider.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -310,6 +311,15 @@ static struct pcf857x_platform_data pcf_data = {
-  *  - ... newer boards may have more
-  */
- 
-+static struct nvmem_cell_lookup dm646x_evm_mac_address_cell = {
-+	.info = {
-+		.name = "mac-address",
-+		.offset = 0x7f00,
-+		.bytes = ETH_ALEN,
-+	},
-+	.nvmem_name = "1-00500",
-+};
-+
- static struct at24_platform_data eeprom_info = {
- 	.byte_len       = (256*1024) / 8,
- 	.page_size      = 64,
-@@ -802,6 +812,8 @@ static __init void evm_init(void)
- 		davinci_init_ide();
- 
- 	soc_info->emac_pdata->phy_id = DM646X_EVM_PHY_ID;
-+
-+	nvmem_add_lookup_table(&dm646x_evm_mac_address_cell, 1);
- }
- 
- MACHINE_START(DAVINCI_DM6467_EVM, "DaVinci DM646x EVM")
--- 
-2.18.0
+I did something similar using the i2c notifier to try to work around
+the impending disappearing of the setup callback. But i got lockdep
+splats, because the notifier was called while some locks were being
+held, so it was not possible to register other i2c devices.
+
+The at24 setup callback is done as part of probe, so no important
+locks are held. Are any locks held when this notifier chain is called?
+
+Thanks
+	Andrew
