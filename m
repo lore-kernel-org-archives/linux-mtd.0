@@ -1,9 +1,9 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTe-0001ZD-59
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:22 +0000
-Received: by mail-wm0-x242.google.com with SMTP id l2-v6so958954wme.1
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:12 -0700 (PDT)
+ id 1fnQTO-0001WJ-8W
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:11 +0000
+Received: by mail-wr1-x441.google.com with SMTP id v14-v6so2412206wro.5
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:05 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 21/28] ARM: davinci: dm644x-evm: use device properties for
- at24 eeprom
-Date: Wed,  8 Aug 2018 17:31:43 +0200
-Message-Id: <20180808153150.23444-22-brgl@bgdev.pl>
+Subject: [PATCH 19/28] ARM: davinci: dm365-evm: use device properties for at24
+ eeprom
+Date: Wed,  8 Aug 2018 17:31:41 +0200
+Message-Id: <20180808153150.23444-20-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -57,46 +57,44 @@ already implies the EEPROM's size.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-dm644x-evm.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ arch/arm/mach-davinci/board-dm365-evm.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-index 6d35c6e1b0bd..abfcf42da6fb 100644
---- a/arch/arm/mach-davinci/board-dm644x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm644x-evm.c
-@@ -16,8 +16,8 @@
- #include <linux/gpio/machine.h>
+diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
+index cb0ac92a278e..b360d26e6caa 100644
+--- a/arch/arm/mach-davinci/board-dm365-evm.c
++++ b/arch/arm/mach-davinci/board-dm365-evm.c
+@@ -18,7 +18,7 @@
  #include <linux/i2c.h>
- #include <linux/platform_data/pcf857x.h>
+ #include <linux/io.h>
+ #include <linux/clk.h>
 -#include <linux/platform_data/at24.h>
- #include <linux/platform_data/gpio-davinci.h>
 +#include <linux/property.h>
+ #include <linux/leds.h>
  #include <linux/mtd/mtd.h>
- #include <linux/mtd/rawnand.h>
  #include <linux/mtd/partitions.h>
-@@ -486,12 +486,8 @@ static struct nvmem_cell_lookup dm6446evm_mac_address_cell = {
+@@ -179,18 +179,15 @@ static struct nvmem_cell_lookup dm365evm_mac_address_cell = {
  	.nvmem_name = "1-00500",
  };
  
 -static struct at24_platform_data eeprom_info = {
--	.byte_len	= (256*1024) / 8,
--	.page_size	= 64,
--	.flags		= AT24_FLAG_ADDR16,
+-	.byte_len       = (256*1024) / 8,
+-	.page_size      = 64,
+-	.flags          = AT24_FLAG_ADDR16,
 -	.setup          = davinci_get_mac_addr,
 -	.context	= (void *)0x7f00,
 +static const struct property_entry eeprom_properties[] = {
 +	PROPERTY_ENTRY_U32("pagesize", 64),
++	{ }
  };
  
- /*
-@@ -601,7 +597,7 @@ static struct i2c_board_info __initdata i2c_info[] =  {
- 	},
+ static struct i2c_board_info i2c_info[] = {
  	{
  		I2C_BOARD_INFO("24c256", 0x50),
 -		.platform_data	= &eeprom_info,
 +		.properties = eeprom_properties,
  	},
  	{
- 		I2C_BOARD_INFO("tlv320aic33", 0x1b),
+ 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
 -- 
 2.18.0
