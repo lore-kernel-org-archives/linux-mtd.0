@@ -1,9 +1,9 @@
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTl-0001a4-Tt
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:31 +0000
-Received: by mail-wr1-x441.google.com with SMTP id r16-v6so2384739wrt.11
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:19 -0700 (PDT)
+ id 1fnQTg-0001Zm-QA
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:25 +0000
+Received: by mail-wm0-x244.google.com with SMTP id q8-v6so3221427wmq.4
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:15 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 25/28] ARM: davinci: remove dead code related to MAC address
- reading
-Date: Wed,  8 Aug 2018 17:31:47 +0200
-Message-Id: <20180808153150.23444-26-brgl@bgdev.pl>
+Subject: [PATCH 23/28] ARM: davinci: sffsdr: fix the at24 eeprom device name
+Date: Wed,  8 Aug 2018 17:31:45 +0200
+Message-Id: <20180808153150.23444-24-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,58 +45,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-There are no more users of davinci_get_mac_addr(). Remove it. Also
-remove the mac_addr field from the emac platform data struct.
+The currently used 24lc64 i2c device name doesn't match against any
+of the devices supported by the at24 driver. Change it to the closest
+compatible chip.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/common.c | 15 ---------------
- include/linux/davinci_emac.h   |  2 --
- 2 files changed, 17 deletions(-)
+ arch/arm/mach-davinci/board-sffsdr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-davinci/common.c b/arch/arm/mach-davinci/common.c
-index bcb6a7ba84e9..0c6cc354a4aa 100644
---- a/arch/arm/mach-davinci/common.c
-+++ b/arch/arm/mach-davinci/common.c
-@@ -28,21 +28,6 @@ EXPORT_SYMBOL(davinci_soc_info);
- void __iomem *davinci_intc_base;
- int davinci_intc_type;
+diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
+index e7c1728b0833..f6a4d094cbc3 100644
+--- a/arch/arm/mach-davinci/board-sffsdr.c
++++ b/arch/arm/mach-davinci/board-sffsdr.c
+@@ -100,7 +100,7 @@ static struct at24_platform_data eeprom_info = {
  
--void davinci_get_mac_addr(struct nvmem_device *nvmem, void *context)
--{
--	char *mac_addr = davinci_soc_info.emac_pdata->mac_addr;
--	off_t offset = (off_t)context;
--
--	if (!IS_BUILTIN(CONFIG_NVMEM)) {
--		pr_warn("Cannot read MAC addr from EEPROM without CONFIG_NVMEM\n");
--		return;
--	}
--
--	/* Read MAC addr from EEPROM */
--	if (nvmem_device_read(nvmem, offset, ETH_ALEN, mac_addr) == ETH_ALEN)
--		pr_info("Read MAC addr from EEPROM: %pM\n", mac_addr);
--}
--
- static int __init davinci_init_id(struct davinci_soc_info *soc_info)
- {
- 	int			i;
-diff --git a/include/linux/davinci_emac.h b/include/linux/davinci_emac.h
-index 05b97144d342..19888b27706d 100644
---- a/include/linux/davinci_emac.h
-+++ b/include/linux/davinci_emac.h
-@@ -19,7 +19,6 @@ struct mdio_platform_data {
- };
- 
- struct emac_platform_data {
--	char mac_addr[ETH_ALEN];
- 	u32 ctrl_reg_offset;
- 	u32 ctrl_mod_reg_offset;
- 	u32 ctrl_ram_offset;
-@@ -46,5 +45,4 @@ enum {
- 	EMAC_VERSION_2,	/* DM646x */
- };
- 
--void davinci_get_mac_addr(struct nvmem_device *nvmem, void *context);
- #endif
+ static struct i2c_board_info __initdata i2c_info[] =  {
+ 	{
+-		I2C_BOARD_INFO("24lc64", 0x50),
++		I2C_BOARD_INFO("24c64", 0x50),
+ 		.platform_data	= &eeprom_info,
+ 	},
+ 	/* Other I2C devices:
 -- 
 2.18.0
