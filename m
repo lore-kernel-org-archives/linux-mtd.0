@@ -1,9 +1,9 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mail-wr1-f65.google.com ([209.85.221.65])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTB-0004EB-67
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:01 +0000
-Received: by mail-wr1-x444.google.com with SMTP id g6-v6so2426057wrp.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:43 -0700 (PDT)
+ id 1fnQTk-0004zk-1S
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:50 +0000
+Received: by mail-wr1-f65.google.com with SMTP id b15-v6so2390683wrv.10
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:17 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 08/28] ARM: davinci: dm644-evm: use nvmem lookup for mac
- address
-Date: Wed,  8 Aug 2018 17:31:30 +0200
-Message-Id: <20180808153150.23444-9-brgl@bgdev.pl>
+Subject: [PATCH 24/28] ARM: davinci: sffsdr: use device properties for at24
+ eeprom
+Date: Wed,  8 Aug 2018 17:31:46 +0200
+Message-Id: <20180808153150.23444-25-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,50 +46,53 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We now support nvmem lookups for machine code. Add a lookup for
-mac-address.
+We want to work towards phasing out the at24_platform_data structure.
+There are few users and its contents can be represented using generic
+device properties. Using device properties only will allow us to
+significantly simplify the at24 configuration code.
+
+Remove the at24_platform_data structure and replace it with an array
+of property entries. Drop the byte_len/size property, as the model name
+already implies the EEPROM's size.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-dm644x-evm.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm/mach-davinci/board-sffsdr.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
-index 48436f74fd71..6d35c6e1b0bd 100644
---- a/arch/arm/mach-davinci/board-dm644x-evm.c
-+++ b/arch/arm/mach-davinci/board-dm644x-evm.c
-@@ -28,6 +28,7 @@
- #include <linux/v4l2-dv-timings.h>
- #include <linux/export.h>
- #include <linux/leds.h>
-+#include <linux/nvmem-provider.h>
+diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
+index f6a4d094cbc3..680e5d7628a8 100644
+--- a/arch/arm/mach-davinci/board-sffsdr.c
++++ b/arch/arm/mach-davinci/board-sffsdr.c
+@@ -26,7 +26,7 @@
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+ #include <linux/i2c.h>
+-#include <linux/platform_data/at24.h>
++#include <linux/property.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+@@ -92,16 +92,15 @@ static struct platform_device davinci_sffsdr_nandflash_device = {
+ 	.resource	= davinci_sffsdr_nandflash_resource,
+ };
  
- #include <media/i2c/tvp514x.h>
+-static struct at24_platform_data eeprom_info = {
+-	.byte_len	= (64*1024) / 8,
+-	.page_size	= 32,
+-	.flags		= AT24_FLAG_ADDR16,
++static const struct property_entry eeprom_properties[] = {
++	PROPERTY_ENTRY_U32("pagesize", 32),
++	{ },
+ };
  
-@@ -476,6 +477,15 @@ static struct pcf857x_platform_data pcf_data_u35 = {
-  *  - ... newer boards may have more
-  */
- 
-+static struct nvmem_cell_lookup dm6446evm_mac_address_cell = {
-+	.info = {
-+		.name = "mac-address",
-+		.offset = 0x7f00,
-+		.bytes = ETH_ALEN,
-+	},
-+	.nvmem_name = "1-00500",
-+};
-+
- static struct at24_platform_data eeprom_info = {
- 	.byte_len	= (256*1024) / 8,
- 	.page_size	= 64,
-@@ -828,6 +838,8 @@ static __init void davinci_evm_init(void)
- 		phy_register_fixup_for_uid(LXT971_PHY_ID, LXT971_PHY_MASK,
- 						davinci_phy_fixup);
- 	}
-+
-+	nvmem_add_lookup_table(&dm6446evm_mac_address_cell, 1);
- }
- 
- MACHINE_START(DAVINCI_EVM, "DaVinci DM644x EVM")
+ static struct i2c_board_info __initdata i2c_info[] =  {
+ 	{
+ 		I2C_BOARD_INFO("24c64", 0x50),
+-		.platform_data	= &eeprom_info,
++		.properties = eeprom_properties,
+ 	},
+ 	/* Other I2C devices:
+ 	 * MSP430,  addr 0x23 (not used)
 -- 
 2.18.0
