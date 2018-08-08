@@ -1,9 +1,9 @@
 Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTO-0001WJ-8W
+ id 1fnQTO-0001UA-8X
  for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:11 +0000
-Received: by mail-wr1-x441.google.com with SMTP id v14-v6so2412206wro.5
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:05 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h10-v6so2404728wre.6
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:57 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 19/28] ARM: davinci: dm365-evm: use device properties for at24
- eeprom
-Date: Wed,  8 Aug 2018 17:31:41 +0200
-Message-Id: <20180808153150.23444-20-brgl@bgdev.pl>
+Subject: [PATCH 15/28] net: add support for nvmem to
+ eth_platform_get_mac_address()
+Date: Wed,  8 Aug 2018 17:31:37 +0200
+Message-Id: <20180808153150.23444-16-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,55 +46,81 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We want to work towards phasing out the at24_platform_data structure.
-There are few users and its contents can be represented using generic
-device properties. Using device properties only will allow us to
-significantly simplify the at24 configuration code.
+Many non-DT platforms read the MAC address from EEPROM. Usually it's
+either done with callbacks defined in board files or from SoC-specific
+ethernet drivers.
 
-Remove the at24_platform_data structure and replace it with an array
-of property entries. Drop the byte_len/size property, as the model name
-already implies the EEPROM's size.
+In order to generalize this, try to read the MAC from nvmem in
+eth_platform_get_mac_address() using a standard lookup name:
+"mac-address".
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-dm365-evm.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ net/ethernet/eth.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-diff --git a/arch/arm/mach-davinci/board-dm365-evm.c b/arch/arm/mach-davinci/board-dm365-evm.c
-index cb0ac92a278e..b360d26e6caa 100644
---- a/arch/arm/mach-davinci/board-dm365-evm.c
-+++ b/arch/arm/mach-davinci/board-dm365-evm.c
-@@ -18,7 +18,7 @@
- #include <linux/i2c.h>
- #include <linux/io.h>
- #include <linux/clk.h>
--#include <linux/platform_data/at24.h>
-+#include <linux/property.h>
- #include <linux/leds.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-@@ -179,18 +179,15 @@ static struct nvmem_cell_lookup dm365evm_mac_address_cell = {
- 	.nvmem_name = "1-00500",
- };
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index cf54cdf042b7..98bc280b8a62 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -54,6 +54,7 @@
+ #include <linux/if_ether.h>
+ #include <linux/of_net.h>
+ #include <linux/pci.h>
++#include <linux/nvmem-consumer.h>
+ #include <net/dst.h>
+ #include <net/arp.h>
+ #include <net/sock.h>
+@@ -559,6 +560,39 @@ static int mac_address_from_arch(u8 *mac_addr)
+ 	return 0;
+ }
  
--static struct at24_platform_data eeprom_info = {
--	.byte_len       = (256*1024) / 8,
--	.page_size      = 64,
--	.flags          = AT24_FLAG_ADDR16,
--	.setup          = davinci_get_mac_addr,
--	.context	= (void *)0x7f00,
-+static const struct property_entry eeprom_properties[] = {
-+	PROPERTY_ENTRY_U32("pagesize", 64),
-+	{ }
- };
++static int mac_address_from_nvmem(struct device *dev, u8 *mac_addr)
++{
++	const unsigned char *addr;
++	struct nvmem_cell *cell;
++	size_t alen;
++	int rv = 0;
++
++	cell = nvmem_cell_get(dev, "mac-address");
++	if (IS_ERR(cell))
++		return PTR_ERR(cell);
++
++	addr = nvmem_cell_read(cell, &alen);
++	if (IS_ERR(addr)) {
++		rv = PTR_ERR(addr);
++		goto put_nvmem;
++	}
++
++	if (alen != ETH_ALEN || !is_valid_ether_addr(addr)) {
++		rv = -ENODEV;
++		goto free_addr;
++	}
++
++	ether_addr_copy(mac_addr, addr);
++
++free_addr:
++	kfree(addr);
++
++put_nvmem:
++	nvmem_cell_put(cell);
++
++	return rv;
++}
++
+ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+ {
+ 	int rv;
+@@ -571,6 +605,10 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+ 	if (!rv)
+ 		return 0;
  
- static struct i2c_board_info i2c_info[] = {
- 	{
- 		I2C_BOARD_INFO("24c256", 0x50),
--		.platform_data	= &eeprom_info,
-+		.properties = eeprom_properties,
- 	},
- 	{
- 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
++	rv = mac_address_from_nvmem(dev, mac_addr);
++	if (!rv)
++		return 0;
++
+ 	return -ENODEV;
+ }
+ EXPORT_SYMBOL(eth_platform_get_mac_address);
 -- 
 2.18.0
