@@ -1,9 +1,9 @@
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQT1-00042r-4Y
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:33:46 +0000
-Received: by mail-wr1-x442.google.com with SMTP id g1-v6so2421416wru.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:35 -0700 (PDT)
+ id 1fnQT5-000466-RI
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:33:53 +0000
+Received: by mail-wm0-x243.google.com with SMTP id r24-v6so956641wmh.0
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:37 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 04/28] nvmem: provide nvmem_device_name()
-Date: Wed,  8 Aug 2018 17:31:26 +0200
-Message-Id: <20180808153150.23444-5-brgl@bgdev.pl>
+Subject: [PATCH 05/28] nvmem: remove the name field from struct nvmem_device
+Date: Wed,  8 Aug 2018 17:31:27 +0200
+Message-Id: <20180808153150.23444-6-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,59 +45,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Kernel users don't have any means of checking the names of nvmem
-devices. Add a routine that returns the name of the nvmem provider.
-
-This will be useful for nvmem notifier subscribers - otherwise they
-can't check what device is being added/removed.
+This field is never set and is only used in a single error message.
+Remove the field and use nvmem_device_name() instead.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/nvmem/core.c           | 6 ++++++
- include/linux/nvmem-consumer.h | 7 +++++++
- 2 files changed, 13 insertions(+)
+ drivers/nvmem/core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 128c8e51bff2..b040370292a7 100644
+index b040370292a7..6c825ce866b6 100644
 --- a/drivers/nvmem/core.c
 +++ b/drivers/nvmem/core.c
-@@ -1440,6 +1440,12 @@ int nvmem_device_write(struct nvmem_device *nvmem,
- }
- EXPORT_SYMBOL_GPL(nvmem_device_write);
+@@ -26,7 +26,6 @@
+ #include <linux/slab.h>
  
-+const char *nvmem_device_name(struct nvmem_device *nvmem)
-+{
-+	return dev_name(&nvmem->dev);
-+}
-+EXPORT_SYMBOL_GPL(nvmem_device_name);
-+
- static int __init nvmem_init(void)
- {
- 	return bus_register(&nvmem_bus_type);
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index ae4d30347602..c4000a218f67 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -69,6 +69,8 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
+ struct nvmem_device {
+-	const char		*name;
+ 	struct module		*owner;
+ 	struct device		dev;
+ 	int			stride;
+@@ -712,7 +711,7 @@ static struct nvmem_device *__nvmem_device_get(struct device_node *np,
+ 	if (!try_module_get(nvmem->owner)) {
+ 		dev_err(&nvmem->dev,
+ 			"could not increase module refcount for cell %s\n",
+-			nvmem->name);
++			nvmem_device_name(nvmem));
  
- int nvmem_register_notifier(struct notifier_block *nb);
- int nvmem_unregister_notifier(struct notifier_block *nb);
-+
-+const char *nvmem_device_name(struct nvmem_device *nvmem);
- #else
- 
- static inline struct nvmem_cell *nvmem_cell_get(struct device *dev,
-@@ -167,6 +169,11 @@ static inline int int nvmem_unregister_notifier(struct notifier_block *nb)
- {
- 	return -ENOSYS;
- }
-+
-+static inline const char *nvmem_device_name(struct nvmem_device *nvmem)
-+{
-+	return ERR_PTR(-ENOSYS);
-+}
- #endif /* CONFIG_NVMEM */
- 
- #if IS_ENABLED(CONFIG_NVMEM) && IS_ENABLED(CONFIG_OF)
+ 		mutex_lock(&nvmem_mutex);
+ 		nvmem->users--;
 -- 
 2.18.0
