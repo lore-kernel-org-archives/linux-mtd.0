@@ -1,9 +1,9 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTF-0002tC-28
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:03 +0000
-Received: by mail-wm0-x244.google.com with SMTP id r24-v6so957037wmh.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:47 -0700 (PDT)
+ id 1fnQTD-0002sJ-QX
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:00 +0000
+Received: by mail-wm0-x243.google.com with SMTP id w24-v6so3220949wmc.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:33:45 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 10/28] ARM: davinci: da830-evm: use nvmem lookup for mac
+Subject: [PATCH 09/28] ARM: davinci: dm646x-evm: use nvmem lookup for mac
  address
-Date: Wed,  8 Aug 2018 17:31:32 +0200
-Message-Id: <20180808153150.23444-11-brgl@bgdev.pl>
+Date: Wed,  8 Aug 2018 17:31:31 +0200
+Message-Id: <20180808153150.23444-10-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -51,26 +51,26 @@ mac-address.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-da830-evm.c | 12 ++++++++++++
+ arch/arm/mach-davinci/board-dm646x-evm.c | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
-diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-index 14a6fc061744..4a2fe8142a2f 100644
---- a/arch/arm/mach-davinci/board-da830-evm.c
-+++ b/arch/arm/mach-davinci/board-da830-evm.c
-@@ -29,6 +29,7 @@
- #include <linux/platform_data/spi-davinci.h>
- #include <linux/platform_data/usb-davinci.h>
- #include <linux/regulator/machine.h>
+diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
+index 584064fdabf5..5a9de47bc8a2 100644
+--- a/arch/arm/mach-davinci/board-dm646x-evm.c
++++ b/arch/arm/mach-davinci/board-dm646x-evm.c
+@@ -37,6 +37,7 @@
+ #include <linux/platform_data/i2c-davinci.h>
+ #include <linux/platform_data/mtd-davinci.h>
+ #include <linux/platform_data/mtd-davinci-aemif.h>
 +#include <linux/nvmem-provider.h>
  
  #include <asm/mach-types.h>
  #include <asm/mach/arch.h>
-@@ -409,6 +410,15 @@ static inline void da830_evm_init_lcdc(int mux_mode)
- static inline void da830_evm_init_lcdc(int mux_mode) { }
- #endif
+@@ -310,6 +311,15 @@ static struct pcf857x_platform_data pcf_data = {
+  *  - ... newer boards may have more
+  */
  
-+static struct nvmem_cell_lookup da830_evm_mac_address_cell = {
++static struct nvmem_cell_lookup dm646x_evm_mac_address_cell = {
 +	.info = {
 +		.name = "mac-address",
 +		.offset = 0x7f00,
@@ -79,17 +79,17 @@ index 14a6fc061744..4a2fe8142a2f 100644
 +	.nvmem_name = "1-00500",
 +};
 +
- static struct at24_platform_data da830_evm_i2c_eeprom_info = {
- 	.byte_len	= SZ_256K / 8,
- 	.page_size	= 64,
-@@ -618,6 +628,8 @@ static __init void da830_evm_init(void)
- 		pr_warn("%s: spi 0 registration failed: %d\n", __func__, ret);
+ static struct at24_platform_data eeprom_info = {
+ 	.byte_len       = (256*1024) / 8,
+ 	.page_size      = 64,
+@@ -802,6 +812,8 @@ static __init void evm_init(void)
+ 		davinci_init_ide();
  
- 	regulator_has_full_constraints();
+ 	soc_info->emac_pdata->phy_id = DM646X_EVM_PHY_ID;
 +
-+	nvmem_add_lookup_table(&da830_evm_mac_address_cell, 1);
++	nvmem_add_lookup_table(&dm646x_evm_mac_address_cell, 1);
  }
  
- #ifdef CONFIG_SERIAL_8250_CONSOLE
+ MACHINE_START(DAVINCI_DM6467_EVM, "DaVinci DM646x EVM")
 -- 
 2.18.0
