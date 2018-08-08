@@ -1,9 +1,9 @@
-Received: from mail-wr1-f65.google.com ([209.85.221.65])
+Received: from mail-wr1-x42f.google.com ([2a00:1450:4864:20::42f])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQTn-000358-CB
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:33 +0000
-Received: by mail-wr1-f65.google.com with SMTP id g1-v6so2423704wru.2
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:21 -0700 (PDT)
+ id 1fnQTV-0002yy-PA
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:34:16 +0000
+Received: by mail-wr1-x42f.google.com with SMTP id c13-v6so2426581wrt.1
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:34:03 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 26/28] ARM: davinci: mityomapl138: use nvmem notifiers
-Date: Wed,  8 Aug 2018 17:31:48 +0200
-Message-Id: <20180808153150.23444-27-brgl@bgdev.pl>
+Subject: [PATCH 18/28] ARM: davinci: mityomapl138: don't read the MAC address
+ from machine code
+Date: Wed,  8 Aug 2018 17:31:40 +0200
+Message-Id: <20180808153150.23444-19-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,81 +46,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Stop using the at24_platform_data setup callback in favor of nvmem
-notifiers.
+This is now done by the emac driver using a registered nvmem cell.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-mityomapl138.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/mach-davinci/board-mityomapl138.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index 5c0a0557a361..17b67e26bc0e 100644
+index b5be51c0451e..5c0a0557a361 100644
 --- a/arch/arm/mach-davinci/board-mityomapl138.c
 +++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -15,12 +15,14 @@
- #include <linux/console.h>
- #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/notifier.h>
- #include <linux/regulator/machine.h>
- #include <linux/i2c.h>
- #include <linux/platform_data/at24.h>
- #include <linux/etherdevice.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
-+#include <linux/nvmem-consumer.h>
- #include <linux/nvmem-provider.h>
- 
- #include <asm/io.h>
-@@ -116,10 +118,15 @@ static void mityomapl138_cpufreq_init(const char *partnum)
- static void mityomapl138_cpufreq_init(const char *partnum) { }
- #endif
- 
--static void read_factory_config(struct nvmem_device *nvmem, void *context)
-+static int read_factory_config(struct notifier_block *nb,
-+			       unsigned long event, void *data)
+@@ -120,7 +120,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
  {
  	int ret;
  	const char *partnum = NULL;
-+	struct nvmem_device *nvmem = data;
-+
-+	if (strcmp(nvmem_device_name(nvmem), "1-00500") != 0)
-+		return NOTIFY_DONE;
+-	struct davinci_soc_info *soc_info = &davinci_soc_info;
  
  	if (!IS_BUILTIN(CONFIG_NVMEM)) {
  		pr_warn("Factory Config not available without CONFIG_NVMEM\n");
-@@ -151,8 +158,14 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
- bad_config:
- 	/* default maximum speed is valid for all platforms */
- 	mityomapl138_cpufreq_init(partnum);
-+
-+	return NOTIFY_STOP;
- }
+@@ -146,13 +145,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
+ 		goto bad_config;
+ 	}
  
-+static struct notifier_block mityomapl138_nvmem_notifier = {
-+	.notifier_call = read_factory_config,
-+};
-+
- static struct nvmem_cell_lookup mityomapl138_nvmem_cells[] = {
- 	{
- 		.info = {
-@@ -176,8 +189,6 @@ static struct at24_platform_data mityomapl138_fd_chip = {
- 	.byte_len	= 256,
- 	.page_size	= 8,
- 	.flags		= AT24_FLAG_READONLY | AT24_FLAG_IRUGO,
--	.setup		= read_factory_config,
--	.context	= NULL,
- };
+-	pr_info("Found MAC = %pM\n", factory_config.mac);
+-	if (is_valid_ether_addr(factory_config.mac))
+-		memcpy(soc_info->emac_pdata->mac_addr,
+-			factory_config.mac, ETH_ALEN);
+-	else
+-		pr_warn("Invalid MAC found in factory config block\n");
+-
+ 	partnum = factory_config.partnum;
+ 	pr_info("Part Number = %s\n", partnum);
  
- static struct davinci_i2c_platform_data mityomap_i2c_0_pdata = {
-@@ -546,6 +557,7 @@ static void __init mityomapl138_init(void)
- 	if (ret)
- 		pr_warn("spi 1 registration failed: %d\n", ret);
- 
-+	nvmem_register_notifier(&mityomapl138_nvmem_notifier);
- 	nvmem_add_lookup_table(mityomapl138_nvmem_cells,
- 			       ARRAY_SIZE(mityomapl138_nvmem_cells));
- 	mityomapl138_config_emac();
 -- 
 2.18.0
