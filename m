@@ -1,9 +1,9 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnQYo-0001uH-Og
- for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:39:44 +0000
-Received: by mail-wm0-x241.google.com with SMTP id o18-v6so3271173wmc.0
- for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:39:32 -0700 (PDT)
+ id 1fnQa1-0003pF-PP
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 15:41:04 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id c14-v6so3207642wmb.4
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 08:40:47 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 20/28] ARM: davinci: da830-evm: use device properties for at24
- eeprom
-Date: Wed,  8 Aug 2018 17:31:42 +0200
-Message-Id: <20180808153150.23444-21-brgl@bgdev.pl>
+Subject: [PATCH 17/28] ARM: davinci: da850-evm: remove dead MTD code
+Date: Wed,  8 Aug 2018 17:31:39 +0200
+Message-Id: <20180808153150.23444-18-brgl@bgdev.pl>
 In-Reply-To: <20180808153150.23444-1-brgl@bgdev.pl>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,57 +45,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We want to work towards phasing out the at24_platform_data structure.
-There are few users and its contents can be represented using generic
-device properties. Using device properties only will allow us to
-significantly simplify the at24 configuration code.
-
-Remove the at24_platform_data structure and replace it with an array
-of property entries. Drop the byte_len/size property, as the model name
-already implies the EEPROM's size.
+We no longer need to register the MTD notifier to read the MAC address
+as it's now being done in the emac driver.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-da830-evm.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ arch/arm/mach-davinci/board-da850-evm.c | 28 -------------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-index 4a2fe8142a2f..08a23e777eca 100644
---- a/arch/arm/mach-davinci/board-da830-evm.c
-+++ b/arch/arm/mach-davinci/board-da830-evm.c
-@@ -18,7 +18,7 @@
- #include <linux/platform_device.h>
- #include <linux/i2c.h>
- #include <linux/platform_data/pcf857x.h>
--#include <linux/platform_data/at24.h>
-+#include <linux/property.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/spi/spi.h>
-@@ -419,12 +419,9 @@ static struct nvmem_cell_lookup da830_evm_mac_address_cell = {
- 	.nvmem_name = "1-00500",
- };
- 
--static struct at24_platform_data da830_evm_i2c_eeprom_info = {
--	.byte_len	= SZ_256K / 8,
--	.page_size	= 64,
--	.flags		= AT24_FLAG_ADDR16,
--	.setup		= davinci_get_mac_addr,
--	.context	= (void *)0x7f00,
-+static const struct property_entry da830_evm_i2c_eeprom_properties[] = {
-+	PROPERTY_ENTRY_U32("pagesize", 64),
-+	{ }
- };
- 
- static int __init da830_evm_ui_expander_setup(struct i2c_client *client,
-@@ -458,7 +455,7 @@ static struct pcf857x_platform_data __initdata da830_evm_ui_expander_info = {
- static struct i2c_board_info __initdata da830_evm_i2c_devices[] = {
- 	{
- 		I2C_BOARD_INFO("24c256", 0x50),
--		.platform_data	= &da830_evm_i2c_eeprom_info,
-+		.properties = da830_evm_i2c_eeprom_properties,
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 521a26b5c20d..1df796b67b82 100644
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -137,32 +137,6 @@ static struct spi_board_info da850evm_spi_info[] = {
  	},
+ };
+ 
+-#ifdef CONFIG_MTD
+-static void da850_evm_m25p80_notify_add(struct mtd_info *mtd)
+-{
+-	char *mac_addr = davinci_soc_info.emac_pdata->mac_addr;
+-	size_t retlen;
+-
+-	if (!strcmp(mtd->name, "MAC-Address")) {
+-		mtd_read(mtd, 0, ETH_ALEN, &retlen, mac_addr);
+-		if (retlen == ETH_ALEN)
+-			pr_info("Read MAC addr from SPI Flash: %pM\n",
+-				mac_addr);
+-	}
+-}
+-
+-static struct mtd_notifier da850evm_spi_notifier = {
+-	.add	= da850_evm_m25p80_notify_add,
+-};
+-
+-static void da850_evm_setup_mac_addr(void)
+-{
+-	register_mtd_user(&da850evm_spi_notifier);
+-}
+-#else
+-static void da850_evm_setup_mac_addr(void) { }
+-#endif
+-
+ static struct mtd_partition da850_evm_norflash_partition[] = {
  	{
- 		I2C_BOARD_INFO("tlv320aic3x", 0x18),
+ 		.name           = "bootloaders + env",
+@@ -1470,8 +1444,6 @@ static __init void da850_evm_init(void)
+ 	if (ret)
+ 		pr_warn("%s: SATA registration failed: %d\n", __func__, ret);
+ 
+-	da850_evm_setup_mac_addr();
+-
+ 	ret = da8xx_register_rproc();
+ 	if (ret)
+ 		pr_warn("%s: dsp/rproc registration failed: %d\n",
 -- 
 2.18.0
