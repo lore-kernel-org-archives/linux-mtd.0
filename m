@@ -1,10 +1,22 @@
-Date: Wed, 8 Aug 2018 18:20:42 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Received: from mail-oi0-x243.google.com ([2607:f8b0:4003:c06::243])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fnRJD-00032K-K2
+ for linux-mtd@lists.infradead.org; Wed, 08 Aug 2018 16:27:40 +0000
+Received: by mail-oi0-x243.google.com with SMTP id s198-v6so4720563oih.11
+ for <linux-mtd@lists.infradead.org>; Wed, 08 Aug 2018 09:27:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180808155548.s7p4xqsjywz3psrj@ninjato>
+References: <20180808153150.23444-1-brgl@bgdev.pl>
+ <20180808155548.s7p4xqsjywz3psrj@ninjato>
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date: Wed, 8 Aug 2018 18:27:25 +0200
+Message-ID: <CAMpxmJXVNiyqF4qaYtNhPUG3mSZVdvBSGUqDYK-nh59BKeh=Gw@mail.gmail.com>
+Subject: Re: [PATCH 00/28] at24: remove at24_platform_data
+To: Wolfram Sang <wsa@the-dreams.de>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
+ Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
+ Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -20,20 +32,13 @@ Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
  Sven Van Asbroeck <svendev@arcx.com>,
  Paolo Abeni <pabeni@redhat.com>, Alban Bedel <albeu@free.fr>,
- Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 06/28] mtd: Add support for reading MTD devices via the
- nvmem API
-Message-ID: <20180808162042.GG7275@lunn.ch>
-References: <20180808153150.23444-1-brgl@bgdev.pl>
- <20180808153150.23444-7-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180808153150.23444-7-brgl@bgdev.pl>
+ Rob Herring <robh@kernel.org>,
+ David Lechner <david@lechnology.com>, Andrew Lunn <andrew@lunn.ch>,
+ linux-doc <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+ arm-soc <linux-arm-kernel@lists.infradead.org>,
+ linux-i2c <linux-i2c@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Linux-OMAP <linux-omap@vger.kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,26 +48,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 08, 2018 at 05:31:28PM +0200, Bartosz Golaszewski wrote:
-> From: Alban Bedel <albeu@free.fr>
-> 
-> Allow drivers that use the nvmem API to read data stored on MTD devices.
-> For this the mtd devices are registered as read-only NVMEM providers.
-> On OF systems only devices that have the 'nvmem-provider' property
-> are registered, on non-OF system all MTD devices are registered.
-> @@ -570,6 +613,11 @@ int add_mtd_device(struct mtd_info *mtd)
->  	if (error)
->  		goto fail_added;
->  
-> +	/* Add the nvmem provider */
-> +	error = mtd_nvmem_add(mtd);
-> +	if (error)
-> +		goto fail_nvmem_add;
-> +
+2018-08-08 17:55 GMT+02:00 Wolfram Sang <wsa@the-dreams.de>:
+> On Wed, Aug 08, 2018 at 05:31:22PM +0200, Bartosz Golaszewski wrote:
+>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>
+>> This is a follow-up to the previously rejected series[1] which partially
+>> removed the at24_platform_data structure. After further development and
+>> taking reviews into account, this series finally removes that struct
+>> completely but not without touching many different parts of the code
+>> base.
+>>
+>> Since I took over maintainership of the at24 driver I've been working
+>> towards removing at24_platform_data in favor for device properties.
+>
+> Wooha, nice work. I can't really comment on it but wondered how you want
+> to upstream it (after reviews)? Pull request of an immutable branch for
+> nvmem-tree sounds best to me. Then I could also pull it in if i2c needs
+> it. Probably same situation for arm-soc...
+>
 
-Hi Bartosz
+I initially wanted to merge small parts of it starting with v4.18, but
+there were some voices against merging APIs without users. I'm not
+sure how it should go in. There'll be a need for multiple immutable
+branches most probably...
 
-Maybe it is hiding somewhere, but i don't see any code looking into
-device tree looking for the 'nvmem-provider' property.
-
-       Andrew
+Bart
