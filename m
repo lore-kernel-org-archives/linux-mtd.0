@@ -1,19 +1,18 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mail-io0-x241.google.com ([2607:f8b0:4001:c06::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fnisF-0005wo-J4
- for linux-mtd@lists.infradead.org; Thu, 09 Aug 2018 11:13:01 +0000
-Received: by mail-it0-x241.google.com with SMTP id v71-v6so1999829itb.3
- for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2018 04:12:49 -0700 (PDT)
+ id 1fnjCD-0005VH-7V
+ for linux-mtd@lists.infradead.org; Thu, 09 Aug 2018 11:33:38 +0000
+Received: by mail-io0-x241.google.com with SMTP id i18-v6so4438589ioj.13
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2018 04:33:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfxVOPzAtBgTe4RSax1Ki+323WDBTSmh=j7LV_c+vsXDA@mail.gmail.com>
+In-Reply-To: <CAHp75Veiop-0xAbs7MtdhOrX_vzDz7v=xAUSDnEhTYVfMovFQA@mail.gmail.com>
 References: <20180808153150.23444-1-brgl@bgdev.pl>
- <20180808153150.23444-15-brgl@bgdev.pl>
- <CAHp75VfxVOPzAtBgTe4RSax1Ki+323WDBTSmh=j7LV_c+vsXDA@mail.gmail.com>
+ <20180808153150.23444-29-brgl@bgdev.pl>
+ <CAHp75Veiop-0xAbs7MtdhOrX_vzDz7v=xAUSDnEhTYVfMovFQA@mail.gmail.com>
 From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 9 Aug 2018 13:12:47 +0200
-Message-ID: <CAMRc=MfgoCt1BvRx1jJrYp_258_Z9NTNs7waEiOCvdTsK+KWFg@mail.gmail.com>
-Subject: Re: [PATCH 14/28] net: split eth_platform_get_mac_address() into
- subroutines
+Date: Thu, 9 Aug 2018 13:33:25 +0200
+Message-ID: <CAMRc=MdTgr-CTia55cRS-Ob8eOVBQom-nXB670nxjf89U_ZEvg@mail.gmail.com>
+Subject: Re: [PATCH 28/28] eeprom: at24: kill at24_platform_data
 To: Andy Shevchenko <andy.shevchenko@gmail.com>
 Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>,
@@ -54,32 +53,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-08-08 19:50 GMT+02:00 Andy Shevchenko <andy.shevchenko@gmail.com>:
+2018-08-08 20:03 GMT+02:00 Andy Shevchenko <andy.shevchenko@gmail.com>:
 > On Wed, Aug 8, 2018 at 6:31 PM, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >>
->> We want do add more sources from which to read the MAC address. In
->> order to avoid bloating this function too much, start by splitting it
->> into subroutines, each of which takes care of reading the MAC from
->> one source.
->
->> +static int mac_address_from_of(struct device *dev, u8 *mac_addr)
->>  {
->>         const unsigned char *addr;
->> +       struct device_node *np;
+>> There are no more users of at24_platform_data. Remove the relevant
+>> header and modify the driver code to not use it anymore.
 >>
 >
->> +       np = dev_is_pci(dev) ? pci_device_to_OF_node(to_pci_dev(dev))
->> +                            : dev->of_node;
 >
-> I didn't get these manipulations.
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 >
-> What the scenario when pci_dev->dev.of_node != dev->of_node?
+> If you want me to test this on Intel Galileo Gen 2 board, give me a
+> public tree from where I can pull.
+> Thanks.
 >
-> --
-> With Best Regards,
-> Andy Shevchenko
 
-I'll add an additional patch that addresses it.
+Yes, you can pull from git@github.com:brgl/linux.git
+davinci-remove-at24-platform-data
 
 Bart
