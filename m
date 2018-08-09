@@ -1,23 +1,50 @@
-Received: from sv6089.xserver.jp ([183.181.98.90])
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fncXm-0000l3-U2
- for linux-mtd@lists.infradead.org; Thu, 09 Aug 2018 04:27:28 +0000
-Received: from virusgw6001.xserver.jp (virusgw6001.xserver.jp [183.181.98.243])
- by sv6089.xserver.jp (Postfix) with ESMTP id A1E4F195D30FC0
- for <linux-mtd@lists.infradead.org>; Thu,  9 Aug 2018 13:17:44 +0900 (JST)
-Received: from 27-142-210-219.rev.home.ne.jp (27-142-210-219.rev.home.ne.jp
- [27.142.210.219])
- by sv6089.xserver.jp (Postfix) with ESMTPSA id B379618092476D
- for <linux-mtd@lists.infradead.org>; Thu,  9 Aug 2018 13:17:43 +0900 (JST)
+ id 1fnisF-0005wo-J4
+ for linux-mtd@lists.infradead.org; Thu, 09 Aug 2018 11:13:01 +0000
+Received: by mail-it0-x241.google.com with SMTP id v71-v6so1999829itb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 09 Aug 2018 04:12:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Thu, 09 Aug 2018 04:17:42 -0000
-From: "Alert Service" <sugahara@spiralmode.net>
-Reply-To: "Alert Service" <reply@us-shadowinvestigations.accountant>
-To: linux-mtd@lists.infradead.org
-Subject: (Your password plgnb0w8)
-Message-ID: <5yMaFkCvY@hw83H.spiralmode.net>
+In-Reply-To: <CAHp75VfxVOPzAtBgTe4RSax1Ki+323WDBTSmh=j7LV_c+vsXDA@mail.gmail.com>
+References: <20180808153150.23444-1-brgl@bgdev.pl>
+ <20180808153150.23444-15-brgl@bgdev.pl>
+ <CAHp75VfxVOPzAtBgTe4RSax1Ki+323WDBTSmh=j7LV_c+vsXDA@mail.gmail.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 9 Aug 2018 13:12:47 +0200
+Message-ID: <CAMRc=MfgoCt1BvRx1jJrYp_258_Z9NTNs7waEiOCvdTsK+KWFg@mail.gmail.com>
+Subject: Re: [PATCH 14/28] net: split eth_platform_get_mac_address() into
+ subroutines
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Naren <naren.kernel@gmail.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Lukas Wunner <lukas@wunner.de>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
+ Alban Bedel <albeu@free.fr>,
+ Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Linux Documentation List <linux-doc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ linux-i2c <linux-i2c@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ netdev <netdev@vger.kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +54,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SXQgc2VlbXMgdGhhdCwgcGxnbmIwdzgsIGlzIHlvdXIgcGFzc3dvcmQuIFlvdSBtYXkgbm90IGtu
-b3cgbWUgYW5kIHlvdSBhcmUgcHJvYmFibHkgd29uZGVyaW5nIHdoeSB5b3UgYXJlIGdldHRpbmcg
-dGhpcyBlIG1haWwsIHJpZ2h0Pw0KIA0KYWN0dWFsbHksIEkgc2V0dXAgYSBtYWx3YXJlIG9uIHRo
-ZSBhZHVsdCB2aWRzIChwb3Jubykgd2ViLXNpdGUgYW5kIGd1ZXNzIHdoYXQsIHlvdSB2aXNpdGVk
-IHRoaXMgc2l0ZSB0byBoYXZlIGZ1biAoeW91IGtub3cgd2hhdCBJIG1lYW4pLiBXaGlsZSB5b3Ug
-d2VyZSB3YXRjaGluZyB2aWRlb3MsIHlvdXIgaW50ZXJuZXQgYnJvd3NlciBzdGFydGVkIG91dCBm
-dW5jdGlvbmluZyBhcyBhIFJEUCAoUmVtb3RlIERlc2t0b3ApIGhhdmluZyBhIGtleWxvZ2dlciB3
-aGljaCBnYXZlIG1lIGFjY2Vzc2liaWxpdHkgdG8geW91ciBzY3JlZW4gYW5kIHdlYiBjYW0uIGFm
-dGVyIHRoYXQsIG15IHNvZnR3YXJlIHByb2dyYW0gb2J0YWluZWQgYWxsIG9mIHlvdXIgY29udGFj
-dHMgZnJvbSB5b3VyIE1lc3NlbmdlciwgRkIsIGFzIHdlbGwgYXMgZW1haWwuDQogDQpXaGF0IGRp
-ZCBJIGRvPw0KIA0KSSBjcmVhdGVkIGEgZG91YmxlLXNjcmVlbiB2aWRlby4gMXN0IHBhcnQgc2hv
-d3MgdGhlIHZpZGVvIHlvdSB3ZXJlIHdhdGNoaW5nICh5b3UndmUgZ290IGEgZ29vZCB0YXN0ZSBo
-YWhhIC4gLiAuKSwgYW5kIDJuZCBwYXJ0IHNob3dzIHRoZSByZWNvcmRpbmcgb2YgeW91ciB3ZWIg
-Y2FtLg0KIA0KZXhhY3RseSB3aGF0IHNob3VsZCB5b3UgZG8/DQogDQpXZWxsLCBpbiBteSBvcGlu
-aW9uLCAkMTAwMCBpcyBhIGZhaXIgcHJpY2UgZm9yIG91ciBsaXR0bGUgc2VjcmV0LiBZb3UnbGwg
-bWFrZSB0aGUgcGF5bWVudCBieSBCaXRjb2luIChpZiB5b3UgZG8gbm90IGtub3cgdGhpcywgc2Vh
-cmNoICJob3cgdG8gYnV5IGJpdGNvaW4iIGluIEdvb2dsZSkuDQogDQpCVEMgQWRkcmVzczoNCg0K
-MUJiNDQ2WUY4QVpLM25LY2hQSlEzSjVLd1BHUkhSQVJKNQ0KDQooSXQgaXMgY0FzRSBzZW5zaXRp
-dmUsIHNvIGNvcHkgYW5kIHBhc3RlIGl0KQ0KIA0KSW1wb3J0YW50Og0KWW91IGhhdmUgb25lIGRh
-eSBpbiBvcmRlciB0byBtYWtlIHRoZSBwYXltZW50LiAoSSd2ZSBhIHVuaXF1ZSBwaXhlbCBpbiB0
-aGlzIGUgbWFpbCwgYW5kIGF0IHRoaXMgbW9tZW50IEkga25vdyB0aGF0IHlvdSBoYXZlIHJlYWQg
-dGhyb3VnaCB0aGlzIGVtYWlsIG1lc3NhZ2UpLiBJZiBJIGRvIG5vdCBnZXQgdGhlIEJpdENvaW5z
-LCBJIHdpbGwgY2VydGFpbmx5IHNlbmQgb3V0IHlvdXIgdmlkZW8gcmVjb3JkaW5nIHRvIGFsbCBv
-ZiB5b3VyIGNvbnRhY3RzIGluY2x1ZGluZyByZWxhdGl2ZXMsIGNvd29ya2VycywgYW5kIHNvIG9u
-LiBIYXZpbmcgc2FpZCB0aGF0LCBpZiBJIHJlY2VpdmUgdGhlIHBheW1lbnQsIEknbGwgZGVzdHJv
-eSB0aGUgdmlkZW8gaW1taWRpYXRlbHkuIElmIHlvdSBuZWVkIGV2aWRlbmNlLCByZXBseSB3aXRo
-ICJZZXMhIiBhbmQgSSB3aWxsIGNlcnRhaW5seSBzZW5kIG91dCB5b3VyIHZpZGVvIHJlY29yZGlu
-ZyB0byB5b3VyIDYgY29udGFjdHMuIEl0IGlzIGEgbm9uLW5lZ290aWFibGUgb2ZmZXIsIHRoYXQg
-YmVpbmcgc2FpZCBkb24ndCB3YXN0ZSBteSBwZXJzb25hbCB0aW1lIGFuZCB5b3VycyBieSByZXNw
-b25kaW5nIHRvIHRoaXMgbWVzc2FnZS4=
+2018-08-08 19:50 GMT+02:00 Andy Shevchenko <andy.shevchenko@gmail.com>:
+> On Wed, Aug 8, 2018 at 6:31 PM, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>
+>> We want do add more sources from which to read the MAC address. In
+>> order to avoid bloating this function too much, start by splitting it
+>> into subroutines, each of which takes care of reading the MAC from
+>> one source.
+>
+>> +static int mac_address_from_of(struct device *dev, u8 *mac_addr)
+>>  {
+>>         const unsigned char *addr;
+>> +       struct device_node *np;
+>>
+>
+>> +       np = dev_is_pci(dev) ? pci_device_to_OF_node(to_pci_dev(dev))
+>> +                            : dev->of_node;
+>
+> I didn't get these manipulations.
+>
+> What the scenario when pci_dev->dev.of_node != dev->of_node?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+I'll add an additional patch that addresses it.
+
+Bart
