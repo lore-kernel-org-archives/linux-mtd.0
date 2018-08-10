@@ -1,9 +1,9 @@
-Received: from mail-wm0-f48.google.com ([74.125.82.48])
+Received: from mail-wm0-f67.google.com ([74.125.82.67])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2Qz-0002Vl-DL
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:37 +0000
-Received: by mail-wm0-f48.google.com with SMTP id l2-v6so776207wme.1
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:05:59 -0700 (PDT)
+ id 1fo2RI-0002wr-Ne
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:53 +0000
+Received: by mail-wm0-f67.google.com with SMTP id n11-v6so937816wmc.2
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:18 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 13/29] ARM: davinci: da850-evm: remove unnecessary include
-Date: Fri, 10 Aug 2018 10:05:10 +0200
-Message-Id: <20180810080526.27207-14-brgl@bgdev.pl>
+Subject: [PATCH v2 23/29] ARM: davinci: dm646x-evm: use device properties for
+ at24 eeprom
+Date: Fri, 10 Aug 2018 10:05:20 +0200
+Message-Id: <20180810080526.27207-24-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,24 +46,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The include file for at24_platform_data is not needed in this file.
+We want to work towards phasing out the at24_platform_data structure.
+There are few users and its contents can be represented using generic
+device properties. Using device properties only will allow us to
+significantly simplify the at24 configuration code.
+
+Remove the at24_platform_data structure and replace it with an array
+of property entries. Drop the byte_len/size property, as the model name
+already implies the EEPROM's size.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- arch/arm/mach-davinci/board-da850-evm.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/arm/mach-davinci/board-dm646x-evm.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index 5a634a04ec69..521a26b5c20d 100644
---- a/arch/arm/mach-davinci/board-da850-evm.c
-+++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -20,7 +20,6 @@
- #include <linux/kernel.h>
- #include <linux/leds.h>
+diff --git a/arch/arm/mach-davinci/board-dm646x-evm.c b/arch/arm/mach-davinci/board-dm646x-evm.c
+index 943ab0ca6db8..04d293096962 100644
+--- a/arch/arm/mach-davinci/board-dm646x-evm.c
++++ b/arch/arm/mach-davinci/board-dm646x-evm.c
+@@ -22,7 +22,7 @@
+ #include <linux/gpio.h>
+ #include <linux/platform_device.h>
  #include <linux/i2c.h>
 -#include <linux/platform_data/at24.h>
- #include <linux/platform_data/pca953x.h>
- #include <linux/input.h>
- #include <linux/input/tps6507x-ts.h>
++#include <linux/property.h>
+ #include <linux/platform_data/pcf857x.h>
+ 
+ #include <media/i2c/tvp514x.h>
+@@ -320,12 +320,9 @@ static struct nvmem_cell_lookup dm646x_evm_mac_address_cell = {
+ 	.nvmem_name = "1-00500",
+ };
+ 
+-static struct at24_platform_data eeprom_info = {
+-	.byte_len       = (256*1024) / 8,
+-	.page_size      = 64,
+-	.flags          = AT24_FLAG_ADDR16,
+-	.setup          = davinci_get_mac_addr,
+-	.context	= (void *)0x7f00,
++static const struct property_entry eeprom_properties[] = {
++	PROPERTY_ENTRY_U32("pagesize", 64),
++	{ }
+ };
+ #endif
+ 
+@@ -396,7 +393,7 @@ static void evm_init_cpld(void)
+ static struct i2c_board_info __initdata i2c_info[] =  {
+ 	{
+ 		I2C_BOARD_INFO("24c256", 0x50),
+-		.platform_data  = &eeprom_info,
++		.properties  = eeprom_properties,
+ 	},
+ 	{
+ 		I2C_BOARD_INFO("pcf8574a", 0x38),
 -- 
 2.18.0
