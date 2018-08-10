@@ -1,9 +1,9 @@
-Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2RQ-0007cR-EG
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:37 +0000
-Received: by mail-wr1-x443.google.com with SMTP id e7-v6so7443345wrs.9
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:26 -0700 (PDT)
+ id 1fo2RM-0007cG-JW
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:35 +0000
+Received: by mail-wm0-x244.google.com with SMTP id q8-v6so940992wmq.4
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:22 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 27/29] ARM: davinci: mityomapl138: use nvmem notifiers
-Date: Fri, 10 Aug 2018 10:05:24 +0200
-Message-Id: <20180810080526.27207-28-brgl@bgdev.pl>
+Subject: [PATCH v2 25/29] ARM: davinci: sffsdr: use device properties for at24
+ eeprom
+Date: Fri, 10 Aug 2018 10:05:22 +0200
+Message-Id: <20180810080526.27207-26-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,75 +46,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Stop using the at24_platform_data setup callback in favor of nvmem
-notifiers.
+We want to work towards phasing out the at24_platform_data structure.
+There are few users and its contents can be represented using generic
+device properties. Using device properties only will allow us to
+significantly simplify the at24 configuration code.
+
+Remove the at24_platform_data structure and replace it with an array
+of property entries. Drop the byte_len/size property, as the model name
+already implies the EEPROM's size.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- arch/arm/mach-davinci/board-mityomapl138.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ arch/arm/mach-davinci/board-sffsdr.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index 35b2b6068a7a..dacc5292f9bd 100644
---- a/arch/arm/mach-davinci/board-mityomapl138.c
-+++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -15,6 +15,8 @@
- #include <linux/console.h>
+diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
+index f6a4d094cbc3..4f3bc78e8154 100644
+--- a/arch/arm/mach-davinci/board-sffsdr.c
++++ b/arch/arm/mach-davinci/board-sffsdr.c
+@@ -26,7 +26,7 @@
+ #include <linux/init.h>
  #include <linux/platform_device.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/notifier.h>
-+#include <linux/nvmem-consumer.h>
- #include <linux/nvmem-provider.h>
- #include <linux/regulator/machine.h>
  #include <linux/i2c.h>
-@@ -116,10 +118,15 @@ static void mityomapl138_cpufreq_init(const char *partnum)
- static void mityomapl138_cpufreq_init(const char *partnum) { }
- #endif
- 
--static void read_factory_config(struct nvmem_device *nvmem, void *context)
-+static int read_factory_config(struct notifier_block *nb,
-+			       unsigned long event, void *data)
- {
- 	int ret;
- 	const char *partnum = NULL;
-+	struct nvmem_device *nvmem = data;
-+
-+	if (strcmp(nvmem_dev_name(nvmem), "1-00500") != 0)
-+		return NOTIFY_DONE;
- 
- 	if (!IS_BUILTIN(CONFIG_NVMEM)) {
- 		pr_warn("Factory Config not available without CONFIG_NVMEM\n");
-@@ -151,8 +158,14 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
- bad_config:
- 	/* default maximum speed is valid for all platforms */
- 	mityomapl138_cpufreq_init(partnum);
-+
-+	return NOTIFY_STOP;
- }
- 
-+static struct notifier_block mityomapl138_nvmem_notifier = {
-+	.notifier_call = read_factory_config,
-+};
-+
- static struct nvmem_cell_lookup mityomapl138_nvmem_cells[] = {
- 	{
- 		.info = {
-@@ -176,8 +189,6 @@ static struct at24_platform_data mityomapl138_fd_chip = {
- 	.byte_len	= 256,
- 	.page_size	= 8,
- 	.flags		= AT24_FLAG_READONLY | AT24_FLAG_IRUGO,
--	.setup		= read_factory_config,
--	.context	= NULL,
+-#include <linux/platform_data/at24.h>
++#include <linux/property.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+@@ -92,16 +92,15 @@ static struct platform_device davinci_sffsdr_nandflash_device = {
+ 	.resource	= davinci_sffsdr_nandflash_resource,
  };
  
- static struct davinci_i2c_platform_data mityomap_i2c_0_pdata = {
-@@ -546,6 +557,7 @@ static void __init mityomapl138_init(void)
- 	if (ret)
- 		pr_warn("spi 1 registration failed: %d\n", ret);
+-static struct at24_platform_data eeprom_info = {
+-	.byte_len	= (64*1024) / 8,
+-	.page_size	= 32,
+-	.flags		= AT24_FLAG_ADDR16,
++static const struct property_entry eeprom_properties[] = {
++	PROPERTY_ENTRY_U32("pagesize", 32),
++	{ }
+ };
  
-+	nvmem_register_notifier(&mityomapl138_nvmem_notifier);
- 	nvmem_add_lookup_table(mityomapl138_nvmem_cells,
- 			       ARRAY_SIZE(mityomapl138_nvmem_cells));
- 	mityomapl138_config_emac();
+ static struct i2c_board_info __initdata i2c_info[] =  {
+ 	{
+ 		I2C_BOARD_INFO("24c64", 0x50),
+-		.platform_data	= &eeprom_info,
++		.properties = eeprom_properties,
+ 	},
+ 	/* Other I2C devices:
+ 	 * MSP430,  addr 0x23 (not used)
 -- 
 2.18.0
