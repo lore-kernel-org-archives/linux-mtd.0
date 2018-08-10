@@ -1,9 +1,9 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2R5-0007Wv-TB
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:18 +0000
-Received: by mail-wm0-x242.google.com with SMTP id o11-v6so924737wmh.2
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:04 -0700 (PDT)
+ id 1fo2R4-0007X6-Qb
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:16 +0000
+Received: by mail-wr1-x444.google.com with SMTP id h15-v6so7463463wrs.7
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:06 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 16/29] net: add support for nvmem to
- eth_platform_get_mac_address()
-Date: Fri, 10 Aug 2018 10:05:13 +0200
-Message-Id: <20180810080526.27207-17-brgl@bgdev.pl>
+Subject: [PATCH v2 17/29] net: davinci_emac: use eth_platform_get_mac_address()
+Date: Fri, 10 Aug 2018 10:05:14 +0200
+Message-Id: <20180810080526.27207-18-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,81 +45,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Many non-DT platforms read the MAC address from EEPROM. Usually it's
-either done with callbacks defined in board files or from SoC-specific
-ethernet drivers.
-
-In order to generalize this, try to read the MAC from nvmem in
-eth_platform_get_mac_address() using a standard lookup name:
-"mac-address".
+We now support nvmem in eth_platform_get_mac_address() and all boards
+have the mac-address cells defined. Stop getting the MAC from pdata
+and use the dedicated helper.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- net/ethernet/eth.c | 38 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
+ drivers/net/ethernet/ti/davinci_emac.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-index d01dd55de037..f6f6af05fb58 100644
---- a/net/ethernet/eth.c
-+++ b/net/ethernet/eth.c
-@@ -54,6 +54,7 @@
- #include <linux/if_ether.h>
- #include <linux/of_net.h>
- #include <linux/pci.h>
-+#include <linux/nvmem-consumer.h>
- #include <net/dst.h>
- #include <net/arp.h>
- #include <net/sock.h>
-@@ -557,6 +558,39 @@ static int mac_address_from_arch(u8 *mac_addr)
- 	return 0;
- }
+diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
+index f270beebb428..5d01bad4baa5 100644
+--- a/drivers/net/ethernet/ti/davinci_emac.c
++++ b/drivers/net/ethernet/ti/davinci_emac.c
+@@ -1700,7 +1700,6 @@ davinci_emac_of_get_pdata(struct platform_device *pdev, struct emac_priv *priv)
+ 	const struct of_device_id *match;
+ 	const struct emac_platform_data *auxdata;
+ 	struct emac_platform_data *pdata = NULL;
+-	const u8 *mac_addr;
  
-+static int mac_address_from_nvmem(struct device *dev, u8 *mac_addr)
-+{
-+	const unsigned char *addr;
-+	struct nvmem_cell *cell;
-+	size_t alen;
-+	int rv = 0;
-+
-+	cell = nvmem_cell_get(dev, "mac-address");
-+	if (IS_ERR(cell))
-+		return PTR_ERR(cell);
-+
-+	addr = nvmem_cell_read(cell, &alen);
-+	if (IS_ERR(addr)) {
-+		rv = PTR_ERR(addr);
-+		goto put_nvmem;
-+	}
-+
-+	if (alen != ETH_ALEN || !is_valid_ether_addr(addr)) {
-+		rv = -ENODEV;
-+		goto free_addr;
-+	}
-+
-+	ether_addr_copy(mac_addr, addr);
-+
-+free_addr:
-+	kfree(addr);
-+
-+put_nvmem:
-+	nvmem_cell_put(cell);
-+
-+	return rv;
-+}
-+
- int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
- {
- 	int rv;
-@@ -569,6 +603,10 @@ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
- 	if (!rv)
- 		return 0;
+ 	if (!IS_ENABLED(CONFIG_OF) || !pdev->dev.of_node)
+ 		return dev_get_platdata(&pdev->dev);
+@@ -1712,12 +1711,6 @@ davinci_emac_of_get_pdata(struct platform_device *pdev, struct emac_priv *priv)
+ 	np = pdev->dev.of_node;
+ 	pdata->version = EMAC_VERSION_2;
  
-+	rv = mac_address_from_nvmem(dev, mac_addr);
-+	if (!rv)
-+		return 0;
+-	if (!is_valid_ether_addr(pdata->mac_addr)) {
+-		mac_addr = of_get_mac_address(np);
+-		if (mac_addr)
+-			ether_addr_copy(pdata->mac_addr, mac_addr);
+-	}
+-
+ 	of_property_read_u32(np, "ti,davinci-ctrl-reg-offset",
+ 			     &pdata->ctrl_reg_offset);
+ 
+@@ -1819,8 +1812,11 @@ static int davinci_emac_probe(struct platform_device *pdev)
+ 		goto err_free_netdev;
+ 	}
+ 
++	rc = eth_platform_get_mac_address(&pdev->dev, priv->mac_addr);
++	if (rc == -EPROBE_DEFER)
++		return -EPROBE_DEFER; /* We'll get the MAC address later. */
 +
- 	return -ENODEV;
- }
- EXPORT_SYMBOL(eth_platform_get_mac_address);
+ 	/* MAC addr and PHY mask , RMII enable info from platform_data */
+-	memcpy(priv->mac_addr, pdata->mac_addr, ETH_ALEN);
+ 	priv->phy_id = pdata->phy_id;
+ 	priv->rmii_en = pdata->rmii_en;
+ 	priv->version = pdata->version;
 -- 
 2.18.0
