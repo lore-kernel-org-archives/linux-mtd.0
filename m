@@ -1,19 +1,19 @@
 Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo4Ns-0004Jk-QO
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 10:11:07 +0000
-Received: by mail-it0-x241.google.com with SMTP id d10-v6so1890771itj.5
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 03:10:53 -0700 (PDT)
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fo4OZ-0000b7-5j
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 10:11:48 +0000
+Received: by mail-it0-x241.google.com with SMTP id g141-v6so1929338ita.4
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 03:11:33 -0700 (PDT)
 MIME-Version: 1.0
 References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
  <20180806222918.12644-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-4-jmkrzyszt@gmail.com>
-In-Reply-To: <20180806222918.12644-4-jmkrzyszt@gmail.com>
+ <20180806222918.12644-5-jmkrzyszt@gmail.com>
+In-Reply-To: <20180806222918.12644-5-jmkrzyszt@gmail.com>
 From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 10 Aug 2018 12:10:41 +0200
-Message-ID: <CACRpkdaeVRy9XDptCZcTHLo7gs55uQx=6A9HnoQgRP-qnBCqUw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 03/12] ARM: OMAP1: ams-delta: Provide GPIO lookup
- table for NAND data port
+Date: Fri, 10 Aug 2018 12:11:19 +0200
+Message-ID: <CACRpkdZFq3AfH6ehCzMYqwptyfpdd3NLurx3kgj==DmKRASuiA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 04/12] mtd: rawnand: ams-delta: request data port
+ GPIO resource
 To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
  Jonathan Corbet <corbet@lwn.net>,
@@ -38,18 +38,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, Aug 7, 2018 at 12:29 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-> Data port used by Amstrad Delta NAND driver is actually an OMAP MPUIO
-> device, already under control of gpio-omap driver.  The NAND driver
-> gets access to the port by ioremapping it and performs read/write
-> operations.  That is done without any proteciton from other users
-> legally manipulating the port pins over GPIO API.
+> Data port used by the driver is actually an OMAP MPUIO device, already
+> under control of gpio-omap driver.  For that reason we used to not
+> request the memory region of the port as that would fail because the
+> region is already busy.  Despite that, we are still accessing the port
+> by just ioremapping it and performing read/write operations.  Moreover,
+> we are doing that without any proteciton from other users legally
+> manipulating the port pins over GPIO API.
 >
-> The plan is to convert the driver to access the port over GPIO consumer
-> API.  Before that is implemented, the driver can already obtain
-> exclusive access to the port by requesting an array of its GPIO
-> descriptors.
->
-> Add respective entries to the NAND GPIO lookup table.
+> The plan is to convert the driver to access the port over functions
+> exposed by the gpio-omap driver.  Before that happens, already prevent
+> from other users accessing the port pins by requesting an array of its
+> GPIO descriptors.
 >
 > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
