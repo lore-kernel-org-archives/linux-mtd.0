@@ -1,9 +1,9 @@
-Received: from mail-wm0-x241.google.com ([2a00:1450:400c:c09::241])
+Received: from mail-wm0-x22c.google.com ([2a00:1450:400c:c09::22c])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2RI-0007c9-Oh
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:29 +0000
-Received: by mail-wm0-x241.google.com with SMTP id f21-v6so918905wmc.5
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:20 -0700 (PDT)
+ id 1fo2R8-0007XO-L1
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:21 +0000
+Received: by mail-wm0-x22c.google.com with SMTP id y2-v6so935951wma.1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:08 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,9 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 24/29] ARM: davinci: sffsdr: fix the at24 eeprom device name
-Date: Fri, 10 Aug 2018 10:05:21 +0200
-Message-Id: <20180810080526.27207-25-brgl@bgdev.pl>
+Subject: [PATCH v2 18/29] ARM: davinci: da850-evm: remove dead MTD code
+Date: Fri, 10 Aug 2018 10:05:15 +0200
+Message-Id: <20180810080526.27207-19-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,27 +45,59 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-The currently used 24lc64 i2c device name doesn't match against any
-of the devices supported by the at24 driver. Change it to the closest
-compatible chip.
+We no longer need to register the MTD notifier to read the MAC address
+as it's now being done in the emac driver.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-sffsdr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-davinci/board-da850-evm.c | 28 -------------------------
+ 1 file changed, 28 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-sffsdr.c b/arch/arm/mach-davinci/board-sffsdr.c
-index e7c1728b0833..f6a4d094cbc3 100644
---- a/arch/arm/mach-davinci/board-sffsdr.c
-+++ b/arch/arm/mach-davinci/board-sffsdr.c
-@@ -100,7 +100,7 @@ static struct at24_platform_data eeprom_info = {
- 
- static struct i2c_board_info __initdata i2c_info[] =  {
- 	{
--		I2C_BOARD_INFO("24lc64", 0x50),
-+		I2C_BOARD_INFO("24c64", 0x50),
- 		.platform_data	= &eeprom_info,
+diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
+index 521a26b5c20d..1df796b67b82 100644
+--- a/arch/arm/mach-davinci/board-da850-evm.c
++++ b/arch/arm/mach-davinci/board-da850-evm.c
+@@ -137,32 +137,6 @@ static struct spi_board_info da850evm_spi_info[] = {
  	},
- 	/* Other I2C devices:
+ };
+ 
+-#ifdef CONFIG_MTD
+-static void da850_evm_m25p80_notify_add(struct mtd_info *mtd)
+-{
+-	char *mac_addr = davinci_soc_info.emac_pdata->mac_addr;
+-	size_t retlen;
+-
+-	if (!strcmp(mtd->name, "MAC-Address")) {
+-		mtd_read(mtd, 0, ETH_ALEN, &retlen, mac_addr);
+-		if (retlen == ETH_ALEN)
+-			pr_info("Read MAC addr from SPI Flash: %pM\n",
+-				mac_addr);
+-	}
+-}
+-
+-static struct mtd_notifier da850evm_spi_notifier = {
+-	.add	= da850_evm_m25p80_notify_add,
+-};
+-
+-static void da850_evm_setup_mac_addr(void)
+-{
+-	register_mtd_user(&da850evm_spi_notifier);
+-}
+-#else
+-static void da850_evm_setup_mac_addr(void) { }
+-#endif
+-
+ static struct mtd_partition da850_evm_norflash_partition[] = {
+ 	{
+ 		.name           = "bootloaders + env",
+@@ -1470,8 +1444,6 @@ static __init void da850_evm_init(void)
+ 	if (ret)
+ 		pr_warn("%s: SATA registration failed: %d\n", __func__, ret);
+ 
+-	da850_evm_setup_mac_addr();
+-
+ 	ret = da8xx_register_rproc();
+ 	if (ret)
+ 		pr_warn("%s: dsp/rproc registration failed: %d\n",
 -- 
 2.18.0
