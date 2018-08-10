@@ -1,31 +1,41 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo558-0006WU-4t
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 10:55:47 +0000
-Received: by mail-it0-x242.google.com with SMTP id p81-v6so2081947itp.1
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 03:55:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20180718235710.18242-1-jmkrzyszt@gmail.com>
- <20180806222918.12644-13-jmkrzyszt@gmail.com>
- <CACRpkdYHqFOFSv-erCzx8_u-mVUgGPdDH0ts-+DNAvjP3Qxb9w@mail.gmail.com>
- <11711552.OvaP4pOjBH@z50> <20180807194722.5aabb6da@bbrezillon>
-In-Reply-To: <20180807194722.5aabb6da@bbrezillon>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 10 Aug 2018 12:55:22 +0200
-Message-ID: <CACRpkdbxSd+3jzFrs0+Ty-F4xHaDbPQOAR3TjRc0QChK=VsKxw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 12/12] gpiolib: Add fast processing path to bitmap
- API functions
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- ext Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Linux-OMAP <linux-omap@vger.kernel.org>, linux-mtd@lists.infradead.org,
- linux-doc@vger.kernel.org,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+In-Reply-To: <20180810080526.27207-15-brgl@bgdev.pl>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-15-brgl@bgdev.pl>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 10 Aug 2018 17:39:17 +0300
+Message-ID: <CAHp75Ve28aNe+FCK3p4OLsDf7dNo-iJ1VR=pyx+Y9OUn3sjYBw@mail.gmail.com>
+Subject: Re: [PATCH v2 14/29] net: simplify eth_platform_get_mac_address()
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Naren <naren.kernel@gmail.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Lukas Wunner <lukas@wunner.de>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
+ Alban Bedel <albeu@free.fr>,
+ Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
+ Andrew Lunn <andrew@lunn.ch>,
+ Linux Documentation List <linux-doc@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+ linux-i2c <linux-i2c@vger.kernel.org>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux OMAP Mailing List <linux-omap@vger.kernel.org>,
+ netdev <netdev@vger.kernel.org>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,114 +46,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 7, 2018 at 7:47 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
-> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+On Fri, Aug 10, 2018 at 11:05 AM, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >
-> > On Tuesday, August 7, 2018 1:43:56 AM CEST Linus Walleij wrote:
-> > > On Tue, Aug 7, 2018 at 12:29 AM Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> > wrote:
-> > >
-> > > Hi Janusz!
-> > >
-> > > > Certain GPIO descriptor arrays returned by gpio_get_array() may contain
-> > > > information on a single GPIO chip driving array member pins in hardware
-> > > > order.  In such cases, bitmaps of values can be passed directly to the
-> > > > chip callback functions without wasting time on iterations.
-> > > >
-> > > > Add respective code to gpiod_get/set_array_bitmap_complex() functions.
-> > > >
-> > > > Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> > >
-> > > I think it would be disappointing to leave all the users of the old
-> > > array API without the performance improvement. I think we need to
-> > > deal with this in a way such that everyone can benefit from it.
+> We don't need to use pci_device_to_OF_node() - we can retrieve
+> dev->of_node directly even for pci devices.
 >
-> I agree with Linus on that one. When I initially proposed the gpio
-> bitbanging API I had something more advanced in mind where the GPIO
-> framework would be responsible for toggling the GPIOs on its own when
-> it's given an array of bytes to transmit (this way you avoid going
-> back and forth between the GPIO user and the GPIO framework). But this
-> approach would clearly be more invasive than what you propose
-> here (turning the int array into a bitmap and optimizing). So, if we go
-> for the "int array -> bitmap" approach I think all users should be
-> converted so that we end up with a single API.
 
-I thought about this the recent days and something must have gone
-wrong in the development process of the array API because this
-was the (mine atleast) intention all the time.
+>         struct device_node *dp;
+>
+> -       if (dev_is_pci(dev))
+> -               dp = pci_device_to_OF_node(to_pci_dev(dev));
+> -       else
+> -               dp = dev->of_node;
+> -
+> +       dp = dev->of_node;
+>         addr = NULL;
+>         if (dp)
+>                 addr = of_get_mac_address(dp);
 
-If we look at the GPIOchip driver API it looks like this:
+Looking more at this I could even propose to change all above by
 
-        int                     (*get_multiple)(struct gpio_chip *chip,
-                                                unsigned long *mask,
-                                                unsigned long *bits);
-        void                    (*set_multiple)(struct gpio_chip *chip,
-                                                unsigned long *mask,
-                                                unsigned long *bits);
+addr = device_get_mac_address(dev, mac_addr, ETH_ALEN);
 
-So there is nothing hindering the drivers from optimizing a call
-here into a single register write, which is what e.g. the gpio-mmio.c
-driver does: if the hardware has a dedicated register for clearing
-and setting lines, it will simply just write the register with
-whatever is passed in, also cache the current value so it doesn't
-need to read back the register every time.
+Thoughts?
 
-When an array comes down to gpiod_set_array_value_complex()
-it loops over the descriptors in order to handle e.g. open drain
-settings separately. Then the remainder (lines that should just
-be set 1/0) is pushed to the .set_multiple() callback if they
-are on the same chip.
-
-This is assuming:
-
-1. The CPU is not the bottleneck so we can do a bit
-  of complex looping over structs etc in each write.
-
-2. We want to perform as much in a single register write
-  as possible to avoid I/O and glitches as all lines (e.g.
-  clock and data) get written at the same time, if possible.
-  (No skew.)
-
-It seems Janusz has problems with assumption (1) and therefore
-is trying to optimize the read/write path. This can be done if all
-descs are on the same chip and none of them is using open drain
-or open source.
-
-To keep track of "quick path" the array needs to have a state.
-So a magic "cookie" or something like that needs to be passed
-to the array API.
-
-I would suggest that struct gpiod_descs contain a magic cookie
-returned from [devm_]gpiod_get_array[_optional]()  that can be
-passed along to get/set array operations or left as NULL to just
-fall back to the default:
-
-void gpiod_set_array_value(unsigned int array_size,
-                           struct gpio_desc **desc_array, int *value_array,
-                           struct gpiod_array_cookie *cookie);
-
-Cookie is just a dummy name, I don't know what makes most
-sense. It reflects a state for the entire array.
-
-If this cookie exist in some struct gpio_chip state variable, it
-informs gpiolib that this array:
-
-- Has all descriptors in the same gpiochip
-- Has no open drain or open source-flagged lines
-
-It can thenbypass the complex check and just write the values
-directly by calling down into .set_multiple().
-
-Maybe this cookie could just be a bool that is true when the above
-is fulfilled. But it's best if that is hidden from the consumers
-I guess, they shouldn't try to half-guess if the criteria is true,
-gpiolib should do that.
-
-The current users would have to be augmented to store the
-cookie and pass it along when getting/setting arrays, but it would
-be pretty simple and straight-forward compared to adding a new
-API.
-
-Yours,
-Linus Walleij
+-- 
+With Best Regards,
+Andy Shevchenko
