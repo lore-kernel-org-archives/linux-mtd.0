@@ -1,9 +1,9 @@
-Received: from mail-wr1-x436.google.com ([2a00:1450:4864:20::436])
+Received: from mail-wr1-f65.google.com ([209.85.221.65])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2R9-0000Zn-Oz
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:24 +0000
-Received: by mail-wr1-x436.google.com with SMTP id j5-v6so7456095wrr.8
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:09 -0700 (PDT)
+ id 1fo2R2-0000W5-CD
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:14 +0000
+Received: by mail-wr1-f65.google.com with SMTP id h15-v6so7463274wrs.7
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:06:02 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,10 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 19/29] ARM: davinci: mityomapl138: don't read the MAC
- address from machine code
-Date: Fri, 10 Aug 2018 10:05:16 +0200
-Message-Id: <20180810080526.27207-20-brgl@bgdev.pl>
+Subject: [PATCH v2 15/29] net: split eth_platform_get_mac_address() into
+ subroutines
+Date: Fri, 10 Aug 2018 10:05:12 +0200
+Message-Id: <20180810080526.27207-16-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,38 +46,78 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-This is now done by the emac driver using a registered nvmem cell.
+We want do add more sources from which to read the MAC address. In
+order to avoid bloating this function too much, start by splitting it
+into subroutines, each of which takes care of reading the MAC from
+one source.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-mityomapl138.c | 8 --------
- 1 file changed, 8 deletions(-)
+ net/ethernet/eth.c | 44 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 8 deletions(-)
 
-diff --git a/arch/arm/mach-davinci/board-mityomapl138.c b/arch/arm/mach-davinci/board-mityomapl138.c
-index 48a9bae76e4a..35b2b6068a7a 100644
---- a/arch/arm/mach-davinci/board-mityomapl138.c
-+++ b/arch/arm/mach-davinci/board-mityomapl138.c
-@@ -120,7 +120,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index 7f08105402c8..d01dd55de037 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -525,22 +525,50 @@ unsigned char * __weak arch_get_platform_mac_address(void)
+ 	return NULL;
+ }
+ 
+-int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
++static int mac_address_from_of(struct device *dev, u8 *mac_addr)
  {
- 	int ret;
- 	const char *partnum = NULL;
--	struct davinci_soc_info *soc_info = &davinci_soc_info;
+ 	const unsigned char *addr;
+-	struct device_node *dp;
++	struct device_node *np;
  
- 	if (!IS_BUILTIN(CONFIG_NVMEM)) {
- 		pr_warn("Factory Config not available without CONFIG_NVMEM\n");
-@@ -146,13 +145,6 @@ static void read_factory_config(struct nvmem_device *nvmem, void *context)
- 		goto bad_config;
- 	}
+-	dp = dev->of_node;
+-	addr = NULL;
+-	if (dp)
+-		addr = of_get_mac_address(dp);
+-	if (!addr)
+-		addr = arch_get_platform_mac_address();
++	np = dev->of_node;
++	if (!np)
++		return -ENODEV;
  
--	pr_info("Found MAC = %pM\n", factory_config.mac);
--	if (is_valid_ether_addr(factory_config.mac))
--		memcpy(soc_info->emac_pdata->mac_addr,
--			factory_config.mac, ETH_ALEN);
--	else
--		pr_warn("Invalid MAC found in factory config block\n");
--
- 	partnum = factory_config.partnum;
- 	pr_info("Part Number = %s\n", partnum);
++	addr = of_get_mac_address(np);
+ 	if (!addr)
+ 		return -ENODEV;
  
++	if (!addr || !is_valid_ether_addr(addr))
++		return -ENODEV;
++
+ 	ether_addr_copy(mac_addr, addr);
+ 	return 0;
+ }
++
++static int mac_address_from_arch(u8 *mac_addr)
++{
++	const unsigned char *addr;
++
++	addr = arch_get_platform_mac_address();
++	if (!addr || !is_valid_ether_addr(addr))
++		return -ENODEV;
++
++	ether_addr_copy(mac_addr, addr);
++	return 0;
++}
++
++int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
++{
++	int rv;
++
++	rv = mac_address_from_of(dev, mac_addr);
++	if (!rv)
++		return 0;
++
++	rv = mac_address_from_arch(mac_addr);
++	if (!rv)
++		return 0;
++
++	return -ENODEV;
++}
+ EXPORT_SYMBOL(eth_platform_get_mac_address);
 -- 
 2.18.0
