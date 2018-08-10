@@ -1,9 +1,9 @@
-Received: from mail-wm0-x244.google.com ([2a00:1450:400c:c09::244])
+Received: from mail-wm0-f48.google.com ([74.125.82.48])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fo2Qx-0002Sf-86
- for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:34 +0000
-Received: by mail-wm0-x244.google.com with SMTP id s9-v6so927516wmh.3
- for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:05:56 -0700 (PDT)
+ id 1fo2Qz-0002Vl-DL
+ for linux-mtd@lists.infradead.org; Fri, 10 Aug 2018 08:06:37 +0000
+Received: by mail-wm0-f48.google.com with SMTP id l2-v6so776207wme.1
+ for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2018 01:05:59 -0700 (PDT)
 From: Bartosz Golaszewski <brgl@bgdev.pl>
 To: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
  Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
@@ -29,10 +29,9 @@ Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
  linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v2 12/29] ARM: davinci: da850-evm: use nvmem lookup for mac
- address
-Date: Fri, 10 Aug 2018 10:05:09 +0200
-Message-Id: <20180810080526.27207-13-brgl@bgdev.pl>
+Subject: [PATCH v2 13/29] ARM: davinci: da850-evm: remove unnecessary include
+Date: Fri, 10 Aug 2018 10:05:10 +0200
+Message-Id: <20180810080526.27207-14-brgl@bgdev.pl>
 In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,54 +45,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-We now support nvmem lookups for machine code. Add a lookup for
-mac-address.
+The include file for at24_platform_data is not needed in this file.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/mach-davinci/board-da850-evm.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm/mach-davinci/board-da850-evm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/arm/mach-davinci/board-da850-evm.c b/arch/arm/mach-davinci/board-da850-evm.c
-index 6d5beb11bd96..5a634a04ec69 100644
+index 5a634a04ec69..521a26b5c20d 100644
 --- a/arch/arm/mach-davinci/board-da850-evm.c
 +++ b/arch/arm/mach-davinci/board-da850-evm.c
-@@ -29,6 +29,7 @@
- #include <linux/mtd/rawnand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/mtd/physmap.h>
-+#include <linux/nvmem-provider.h>
- #include <linux/platform_device.h>
- #include <linux/platform_data/gpio-davinci.h>
- #include <linux/platform_data/mtd-davinci.h>
-@@ -99,6 +100,19 @@ static struct mtd_partition da850evm_spiflash_part[] = {
- 	},
- };
- 
-+static struct nvmem_cell_lookup da850evm_mac_address_cell = {
-+	.info = {
-+		.name = "mac-address",
-+		.offset = 0x0,
-+		.bytes = ETH_ALEN,
-+	},
-+	/*
-+	 * The nvmem name differs from the partition name because of the
-+	 * internal works of the nvmem framework.
-+	 */
-+	.nvmem_name = "MAC-Address0",
-+};
-+
- static struct flash_platform_data da850evm_spiflash_data = {
- 	.name		= "m25p80",
- 	.parts		= da850evm_spiflash_part,
-@@ -1447,6 +1461,8 @@ static __init void da850_evm_init(void)
- 		pr_warn("%s: spi info registration failed: %d\n", __func__,
- 			ret);
- 
-+	nvmem_add_lookup_table(&da850evm_mac_address_cell, 1);
-+
- 	ret = da8xx_register_spi_bus(1, ARRAY_SIZE(da850evm_spi_info));
- 	if (ret)
- 		pr_warn("%s: SPI 1 registration failed: %d\n", __func__, ret);
+@@ -20,7 +20,6 @@
+ #include <linux/kernel.h>
+ #include <linux/leds.h>
+ #include <linux/i2c.h>
+-#include <linux/platform_data/at24.h>
+ #include <linux/platform_data/pca953x.h>
+ #include <linux/input.h>
+ #include <linux/input/tps6507x-ts.h>
 -- 
 2.18.0
