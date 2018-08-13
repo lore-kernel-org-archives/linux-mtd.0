@@ -1,19 +1,22 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fp9gs-0000fP-JJ
- for linux-mtd@lists.infradead.org; Mon, 13 Aug 2018 10:03:11 +0000
-Received: by mail-it0-x241.google.com with SMTP id 139-v6so13010438itf.0
- for <linux-mtd@lists.infradead.org>; Mon, 13 Aug 2018 03:03:00 -0700 (PDT)
-To: dwmw2@infradead.org
-Cc: linux-mtd@lists.infradead.org
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] fs: jffs2: possible sleep-in-atomic-context bugs in jffs2_iget
-Message-ID: <7888c227-0c6b-aa56-297f-a6ec2777a76c@gmail.com>
-Date: Mon, 13 Aug 2018 18:02:54 +0800
+ id 1fpB3L-0008LC-JO
+ for linux-mtd@lists.infradead.org; Mon, 13 Aug 2018 11:30:29 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 05/25] ubifs: implement ubifs_lpt_lookup using
+ ubifs_pnode_lookup
+Date: Mon, 13 Aug 2018 13:30:13 +0200
+Message-ID: <3522568.rp1UpMI3Wl@blindfold>
+In-Reply-To: <20180813081238.crujoer2qprhn27y@pengutronix.de>
+References: <20180704124137.13396-1-s.hauer@pengutronix.de>
+ <8387142.nbJ7LYRgBX@blindfold>
+ <20180813081238.crujoer2qprhn27y@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The kernel may sleep with holding a spinlock.
+Am Montag, 13. August 2018, 10:12:38 CEST schrieb Sascha Hauer:
+> > Can you please add a helper function for that? These shift games are
+> > always confusing and not easy to spot.
+> 
+> Do you have a suggestion for a helper function? lpt.c is full of rather
+> non obvious arithmetic operations and I couldn't find a helper function
+> that could be reused at least once in the code.
+> 
+> I tried with:
+> 
+> static int lnum_to_pnode_num(struct ubifs_info *c, int lnum)
+> {
+> 	return (lnum - c->main_first) >> UBIFS_LPT_FANOUT_SHIFT;
+> }
+> 
+> But I am not sure this really improves things
 
-The function call paths (from bottom to top) in Linux-4.16 are:
+I had exactly such helpers in mind.
+The lpt code translates often LEB numbers in both direction.
+So, the helpers should have more than one user.
 
-[FUNC] schedule
-fs/inode.c, 1916: schedule in __wait_on_freeing_inode
-fs/inode.c, 826: __wait_on_freeing_inode in find_inode_fast
-fs/inode.c, 1107: find_inode_fast in iget_locked
-fs/jffs2/fs.c, 263: iget_locked in jffs2_iget
-fs/jffs2/fs.c, 665: jffs2_iget in jffs2_gc_fetch_inode
-fs/jffs2/wbuf.c, 505: jffs2_gc_fetch_inode in jffs2_wbuf_recover
-fs/jffs2/wbuf.c, 462: spin_lock in jffs2_wbuf_recover
+Long story short, I don't force you to add such helper and such.
+Just thought while you are here you can try to make the code more
+readable.
 
-[FUNC] mutex_lock_nested
-fs/jffs2/fs.c, 273: mutex_lock_nested in jffs2_iget
-fs/jffs2/fs.c, 665: jffs2_iget in jffs2_gc_fetch_inode
-fs/jffs2/wbuf.c, 505: jffs2_gc_fetch_inode in jffs2_wbuf_recover
-fs/jffs2/wbuf.c, 462: spin_lock in jffs2_wbuf_recover
-
-I do not find a good way to fix, so I only report.
-Maybe the spinlock should be released before calling jffs2_iget(), and 
-then be acquired again.
-This is found by my static analysis tool (DSAC).
-
+I think we both agree that lpt.c is not really review friendly. ;)
 
 Thanks,
-Jia-Ju Bai
+//richard
