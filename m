@@ -1,22 +1,14 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fpB3L-0008LC-JO
- for linux-mtd@lists.infradead.org; Mon, 13 Aug 2018 11:30:29 +0000
+ id 1fpCgj-0005ng-JB
+ for linux-mtd@lists.infradead.org; Mon, 13 Aug 2018 13:15:15 +0000
 From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 05/25] ubifs: implement ubifs_lpt_lookup using
- ubifs_pnode_lookup
-Date: Mon, 13 Aug 2018 13:30:13 +0200
-Message-ID: <3522568.rp1UpMI3Wl@blindfold>
-In-Reply-To: <20180813081238.crujoer2qprhn27y@pengutronix.de>
-References: <20180704124137.13396-1-s.hauer@pengutronix.de>
- <8387142.nbJ7LYRgBX@blindfold>
- <20180813081238.crujoer2qprhn27y@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubifs: Add comment on c->commit_sem
+Date: Mon, 13 Aug 2018 15:14:45 +0200
+Message-Id: <20180813131445.5656-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +18,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 13. August 2018, 10:12:38 CEST schrieb Sascha Hauer:
-> > Can you please add a helper function for that? These shift games are
-> > always confusing and not easy to spot.
-> 
-> Do you have a suggestion for a helper function? lpt.c is full of rather
-> non obvious arithmetic operations and I couldn't find a helper function
-> that could be reused at least once in the code.
-> 
-> I tried with:
-> 
-> static int lnum_to_pnode_num(struct ubifs_info *c, int lnum)
-> {
-> 	return (lnum - c->main_first) >> UBIFS_LPT_FANOUT_SHIFT;
-> }
-> 
-> But I am not sure this really improves things
+Every single time I come across that code, I get confused
+because it looks like a possible dead lock.
+Help myself by adding a comment.
 
-I had exactly such helpers in mind.
-The lpt code translates often LEB numbers in both direction.
-So, the helpers should have more than one user.
+Signed-off-by: Richard Weinberger <richard@nod.at>
+---
+ fs/ubifs/journal.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Long story short, I don't force you to add such helper and such.
-Just thought while you are here you can try to make the code more
-readable.
-
-I think we both agree that lpt.c is not really review friendly. ;)
-
-Thanks,
-//richard
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 95665eba2b70..c913f36d6c21 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -328,6 +328,7 @@ again:
+ 	down_read(&c->commit_sem);
+ 	err = reserve_space(c, jhead, len);
+ 	if (!err)
++		/* c->commit_sem will get released via finish_reservation(). */
+ 		return 0;
+ 	up_read(&c->commit_sem);
+ 
+-- 
+2.18.0
