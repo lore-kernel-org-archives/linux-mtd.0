@@ -1,19 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fqBqT-0006s3-LP
- for linux-mtd@lists.infradead.org; Thu, 16 Aug 2018 06:33:23 +0000
-Date: Thu, 16 Aug 2018 08:33:07 +0200
+Date: Thu, 16 Aug 2018 09:30:52 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Chuanhua Han <chuanhua.han@nxp.com>
-Cc: dwmw2@infradead.org, computersforpeace@gmail.com, marek.vasut@gmail.com,
- richard@nod.at, cyrille.pitchen@wedev4u.fr, broonie@kernel.org,
- pp@emlix.com, Zhiqiang.Hou@nxp.com, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: m25p80: consider max message size in m25p80_read
- when use the spi_mem_xx() API
-Message-ID: <20180816083307.684bdb72@bbrezillon>
-In-Reply-To: <1534314823-14048-1-git-send-email-chuanhua.han@nxp.com>
-References: <1534314823-14048-1-git-send-email-chuanhua.han@nxp.com>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Tony
+ Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Linus
+ Walleij <linus.walleij@linaro.org>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/7] mtd: rawnand: ams-delta: Set port direction when
+ needed
+Message-ID: <20180816093052.2bcbf004@bbrezillon>
+In-Reply-To: <20180813223448.21316-6-jmkrzyszt@gmail.com>
+References: <20180806222918.12644-1-jmkrzyszt@gmail.com>
+ <20180813223448.21316-1-jmkrzyszt@gmail.com>
+ <20180813223448.21316-6-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,40 +27,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chuanhua,
+On Tue, 14 Aug 2018 00:34:46 +0200
+Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-On Wed, 15 Aug 2018 14:33:43 +0800
-Chuanhua Han <chuanhua.han@nxp.com> wrote:
-
-> Consider a message size limit when calculating the maximum amount
-> of data that can be read.
+> In its current shape, the driver sets data port direction before each
+> byte read/write operation, even during multi-byte transfers.  Improve
+> performance of the driver by setting the port direction only when
+> needed.
 > 
-> Signed-off-by: Chuanhua Han <chuanhua.han@nxp.com>
+> This optimisation will become particularly important as soon as
+> planned conversion of the driver to GPIO API for data I/O will be
+> implemented.
+> 
+> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 > ---
->  drivers/mtd/devices/m25p80.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
+>  drivers/mtd/nand/raw/ams-delta.c | 59 ++++++++++++++++++++++++++++++++--------
+>  1 file changed, 47 insertions(+), 12 deletions(-)
 > 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index e84563d..87efa56 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -128,7 +128,12 @@ static ssize_t m25p80_read(struct spi_nor *nor, loff_t from, size_t len,
->  	op.dummy.nbytes = (nor->read_dummy * op.dummy.buswidth) / 8;
+> diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+> index 09d6901fc94d..5f9180fe4f8b 100644
+> --- a/drivers/mtd/nand/raw/ams-delta.c
+> +++ b/drivers/mtd/nand/raw/ams-delta.c
+> @@ -45,6 +45,7 @@ struct ams_delta_nand {
+>  	struct gpio_desc	*gpiod_ale;
+>  	struct gpio_desc	*gpiod_cle;
+>  	void __iomem		*io_base;
+> +	bool			data_in;
+>  };
 >  
->  	while (remaining) {
-> -		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
-> +		op.data.nbytes = min3(remaining,
-> +				spi_max_transfer_size(flash->spimem->spi),
-> +				spi_max_message_size(flash->spimem->spi) -
-> +				sizeof(op.cmd.opcode) -
-> +				op.addr.nbytes -
-> +				op.dummy.nbytes);
+>  /*
+> @@ -72,50 +73,83 @@ static const struct mtd_partition partition_info[] = {
+>  	  .size		=  3 * SZ_256K },
+>  };
+>  
+> -static void ams_delta_write_byte(struct mtd_info *mtd, u_char byte)
+> +static void ams_delta_write_next_byte(struct mtd_info *mtd, u_char byte)
+>  {
+>  	struct nand_chip *this = mtd_to_nand(mtd);
+>  	struct ams_delta_nand *priv = nand_get_controller_data(this);
+> -	void __iomem *io_base = priv->io_base;
+>  
+> -	writew(0, io_base + OMAP_MPUIO_IO_CNTL);
+>  	writew(byte, this->IO_ADDR_W);
+> +
+>  	gpiod_set_value(priv->gpiod_nwe, 0);
+>  	ndelay(40);
+>  	gpiod_set_value(priv->gpiod_nwe, 1);
+>  }
+>  
+> -static u_char ams_delta_read_byte(struct mtd_info *mtd)
+> +static void ams_delta_write_byte(struct mtd_info *mtd, u_char byte)
+>  {
+> -	u_char res;
+>  	struct nand_chip *this = mtd_to_nand(mtd);
+>  	struct ams_delta_nand *priv = nand_get_controller_data(this);
+>  	void __iomem *io_base = priv->io_base;
+>  
+> +	if (priv->data_in) {
+> +		writew(0, io_base + OMAP_MPUIO_IO_CNTL);
+> +		priv->data_in = false;
+> +	}
+> +
+> +	ams_delta_write_next_byte(mtd, byte);
+> +}
 
-Nope, this sort of things should go in the SPI controller driver
-->adjust_op_size() hook or directly in spi_mem_adjust_op_size() if it's
-generic enough (which doesn't seem to be the case since your not
-counting the opcode, addr and dummy bytes in the message length).
+I'm not a big fan of this {read,write}_byte/next_byte() approach.
 
-Regards,
+Can't we do something like:
 
-Boris
+static void ams_delta_io_write(struct ams_delta_nand *priv, u8 data)
+{
+	writew(byte, priv->nand_chip.IO_ADDR_W);
+  	gpiod_set_value(priv->gpiod_nwe, 0);
+  	ndelay(40);
+  	gpiod_set_value(priv->gpiod_nwe, 1);
+}
+
+static u8 ams_delta_io_read(struct ams_delta_nand *priv)
+{
+	u8 res;
+
+  	gpiod_set_value(priv->gpiod_nre, 0);
+  	ndelay(40);
+	res = readw(priv->nand_chip.IO_ADDR_R);
+ 	gpiod_set_value(priv->gpiod_nre, 1);
+ 
+ 	return res;
+}
+
+static void ams_delta_set_io_dir(struct ams_delta_nand *priv, bool in)
+{
+	if (in == priv->data_in)
+		return;
+
+	writew(in ? ~0 : 0, priv->io_base + OMAP_MPUIO_IO_CNTL);
+	priv->data_in = in;
+}
+
+static void ams_delta_write_buf(struct mtd_info *mtd, const u8 *buf,
+				int len)
+{
+	struct nand_chip *this = mtd_to_nand(mtd);
+	struct ams_delta_nand *priv = nand_get_controller_data(this);
+	int i;
+
+	ams_delta_set_io_dir(priv, false);
+
+	for (i =0; i < len; i++)
+		ams_delta_io_write(priv, buf[i]);
+}
+
+static void ams_delta_write_byte(struct mtd_info *mtd, u8 byte)
+{
+	ams_delta_write_buf(mtd, &byte, 1);
+}
+
+static void ams_delta_read_buf(struct mtd_info *mtd, u8 *buf, int len)
+{
+	struct nand_chip *this = mtd_to_nand(mtd);
+	struct ams_delta_nand *priv = nand_get_controller_data(this);
+	int i;
+
+	ams_delta_set_io_dir(priv, true);
+
+	for (i = 0; i < len; i++)
+		buf[i] = ams_delta_io_read(priv);
+}
+
+static u8 ams_delta_read_byte(struct mtd_info *mtd)
+{
+	u8 res;
+
+	ams_delta_read_buf(mtd, &res, 1);
+
+	return res;
+}
