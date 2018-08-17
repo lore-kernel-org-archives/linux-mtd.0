@@ -37,10 +37,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Stefan Agner <stefan@agner.ch>, linux-arm-kernel@lists.infradead.org,
  linux-omap@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: [PATCH 13/23] mtd: rawnand: Pass a nand_chip object to
- chip->block_xxx() hooks
-Date: Fri, 17 Aug 2018 18:09:12 +0200
-Message-Id: <20180817160922.6224-14-boris.brezillon@bootlin.com>
+Subject: [PATCH 07/23] mtd: rawnand: Pass a nand_chip object to ecc->correct()
+Date: Fri, 17 Aug 2018 18:09:06 +0200
+Message-Id: <20180817160922.6224-8-boris.brezillon@bootlin.com>
 In-Reply-To: <20180817160922.6224-1-boris.brezillon@bootlin.com>
 References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -53,243 +52,444 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Let's make the raw NAND API consistent by patching all helpers and
-hooks to take a nand_chip object instead of an mtd_info one or
-remove the mtd_info object when both are passed.
+hooks to take a nand_chip object instead of an mtd_info one.
 
-Let's tackle all chip->block_xxx() hooks at once.
+Now is ecc->correct()'s turn.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/cafe_nand.c           |  2 +-
- drivers/mtd/nand/raw/diskonchip.c          |  2 +-
- drivers/mtd/nand/raw/docg4.c               |  6 +++---
- drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c |  6 +++---
- drivers/mtd/nand/raw/nand_base.c           | 16 ++++++++--------
- drivers/mtd/nand/raw/nand_bbt.c            |  3 +--
- drivers/mtd/nand/raw/qcom_nandc.c          |  7 +++----
- drivers/mtd/nand/raw/sm_common.c           |  3 ++-
- include/linux/mtd/rawnand.h                |  4 ++--
- 9 files changed, 24 insertions(+), 25 deletions(-)
+ drivers/mtd/nand/raw/davinci_nand.c |  9 ++++-----
+ drivers/mtd/nand/raw/diskonchip.c   |  3 +--
+ drivers/mtd/nand/raw/fsmc_nand.c    |  9 ++++-----
+ drivers/mtd/nand/raw/jz4740_nand.c  |  6 +++---
+ drivers/mtd/nand/raw/jz4780_nand.c  |  4 ++--
+ drivers/mtd/nand/raw/lpc32xx_slc.c  |  2 +-
+ drivers/mtd/nand/raw/nand_base.c    | 10 +++++-----
+ drivers/mtd/nand/raw/nand_bch.c     |  5 ++---
+ drivers/mtd/nand/raw/nand_ecc.c     |  7 +++----
+ drivers/mtd/nand/raw/omap2.c        | 18 +++++++++---------
+ drivers/mtd/nand/raw/r852.c         |  6 +++---
+ drivers/mtd/nand/raw/s3c2410.c      |  3 ++-
+ drivers/mtd/nand/raw/tmio_nand.c    |  5 +++--
+ drivers/mtd/nand/raw/txx9ndfmc.c    |  6 +++---
+ include/linux/mtd/nand_bch.h        |  6 +++---
+ include/linux/mtd/nand_ecc.h        |  4 ++--
+ include/linux/mtd/rawnand.h         |  4 ++--
+ 17 files changed, 52 insertions(+), 55 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index e70a47aad538..af6870269f9c 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -546,7 +546,7 @@ static int cafe_nand_write_page_lowlevel(struct nand_chip *chip,
- 	return nand_prog_page_end_op(chip);
- }
- 
--static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs)
-+static int cafe_nand_block_bad(struct nand_chip *chip, loff_t ofs)
- {
+diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
+index af221e1c8a87..c80b6c6da4aa 100644
+--- a/drivers/mtd/nand/raw/davinci_nand.c
++++ b/drivers/mtd/nand/raw/davinci_nand.c
+@@ -185,10 +185,9 @@ static int nand_davinci_calculate_1bit(struct nand_chip *chip,
  	return 0;
  }
+ 
+-static int nand_davinci_correct_1bit(struct mtd_info *mtd, u_char *dat,
++static int nand_davinci_correct_1bit(struct nand_chip *chip, u_char *dat,
+ 				     u_char *read_ecc, u_char *calc_ecc)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
+ 	uint32_t eccNand = read_ecc[0] | (read_ecc[1] << 8) |
+ 					  (read_ecc[2] << 16);
+ 	uint32_t eccCalc = calc_ecc[0] | (calc_ecc[1] << 8) |
+@@ -303,11 +302,11 @@ static int nand_davinci_calculate_4bit(struct nand_chip *chip,
+ /* Correct up to 4 bits in data we just read, using state left in the
+  * hardware plus the ecc_code computed when it was first written.
+  */
+-static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+-		u_char *data, u_char *ecc_code, u_char *null)
++static int nand_davinci_correct_4bit(struct nand_chip *chip, u_char *data,
++				     u_char *ecc_code, u_char *null)
+ {
+ 	int i;
+-	struct davinci_nand_info *info = to_davinci_nand(mtd);
++	struct davinci_nand_info *info = to_davinci_nand(nand_to_mtd(chip));
+ 	unsigned short ecc10[8];
+ 	unsigned short *ecc16;
+ 	u32 syndrome[4];
 diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 4d7b00d066fe..9cbcf020cabe 100644
+index 942a5ee83fbd..142d21be874e 100644
 --- a/drivers/mtd/nand/raw/diskonchip.c
 +++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -777,7 +777,7 @@ static int doc200x_dev_ready(struct mtd_info *mtd)
- 	}
- }
- 
--static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs)
-+static int doc200x_block_bad(struct nand_chip *this, loff_t ofs)
- {
- 	/* This is our last resort if we couldn't find or create a BBT.  Just
- 	   pretend all blocks are good. */
-diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-index 84031b5d1d8e..762ed5599d47 100644
---- a/drivers/mtd/nand/raw/docg4.c
-+++ b/drivers/mtd/nand/raw/docg4.c
-@@ -1102,7 +1102,7 @@ static int __init read_factory_bbt(struct mtd_info *mtd)
+@@ -893,11 +893,10 @@ static int doc200x_calculate_ecc(struct nand_chip *this, const u_char *dat,
  	return 0;
  }
  
--static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int docg4_block_markbad(struct nand_chip *nand, loff_t ofs)
+-static int doc200x_correct_data(struct mtd_info *mtd, u_char *dat,
++static int doc200x_correct_data(struct nand_chip *this, u_char *dat,
+ 				u_char *read_ecc, u_char *isnull)
  {
- 	/*
- 	 * Mark a block as bad.  Bad blocks are marked in the oob area of the
-@@ -1115,7 +1115,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	int i, ret = 0;
+-	struct nand_chip *this = mtd_to_nand(mtd);
+ 	struct doc_priv *doc = nand_get_controller_data(this);
+ 	void __iomem *docptr = doc->virtadr;
+ 	uint8_t calc_ecc[6];
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index d4e91465042c..b41fd09fa389 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -769,7 +769,7 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		memcpy(&ecc_code[i], oob, chip->ecc.bytes);
+ 		chip->ecc.calculate(chip, p, &ecc_calc[i]);
  
- 	int ret, i;
- 	uint8_t *buf;
--	struct nand_chip *nand = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(nand);
- 	struct docg4_priv *doc = nand_get_controller_data(nand);
- 	struct nand_bbt_descr *bbtd = nand->badblock_pattern;
- 	int page = (int)(ofs >> nand->page_shift);
-@@ -1147,7 +1147,7 @@ static int docg4_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return ret;
- }
- 
--static int docg4_block_neverbad(struct mtd_info *mtd, loff_t ofs)
-+static int docg4_block_neverbad(struct nand_chip *nand, loff_t ofs)
- {
- 	/* only called when module_param ignore_badblocks is set */
- 	return 0;
-diff --git a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-index f5f1aebf0d64..2dce9b62ebe7 100644
---- a/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c
-@@ -1542,9 +1542,9 @@ static int gpmi_ecc_write_oob_raw(struct nand_chip *chip, int page)
- 	return gpmi_ecc_write_page_raw(chip, NULL, 1, page);
- }
- 
--static int gpmi_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int gpmi_block_markbad(struct nand_chip *chip, loff_t ofs)
+-		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
++		stat = chip->ecc.correct(chip, p, &ecc_code[i], &ecc_calc[i]);
+ 		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+ 		} else {
+@@ -791,11 +791,10 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+  * calc_ecc is a 104 bit information containing maximum of 8 error
+  * offset informations of 13 bits each in 512 bytes of read data.
+  */
+-static int fsmc_bch8_correct_data(struct mtd_info *mtd, uint8_t *dat,
+-			     uint8_t *read_ecc, uint8_t *calc_ecc)
++static int fsmc_bch8_correct_data(struct nand_chip *chip, uint8_t *dat,
++				  uint8_t *read_ecc, uint8_t *calc_ecc)
  {
 -	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct gpmi_nand_data *this = nand_get_controller_data(chip);
- 	int ret = 0;
- 	uint8_t *block_mark;
-@@ -1776,7 +1776,7 @@ static int mx23_boot_init(struct gpmi_nand_data  *this)
- 		 */
- 		if (block_mark != 0xff) {
- 			dev_dbg(dev, "Transcribing mark in block %u\n", block);
--			ret = chip->block_markbad(mtd, byte);
-+			ret = chip->block_markbad(chip, byte);
- 			if (ret)
- 				dev_err(dev,
- 					"Failed to mark block bad with ret %d\n",
+-	struct fsmc_nand_data *host = mtd_to_fsmc(mtd);
++	struct fsmc_nand_data *host = mtd_to_fsmc(nand_to_mtd(chip));
+ 	uint32_t err_idx[8];
+ 	uint32_t num_err, i;
+ 	uint32_t ecc1, ecc2, ecc3, ecc4;
+diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
+index 98ea5172ac74..e926ed6ed296 100644
+--- a/drivers/mtd/nand/raw/jz4740_nand.c
++++ b/drivers/mtd/nand/raw/jz4740_nand.c
+@@ -215,10 +215,10 @@ static void jz_nand_correct_data(uint8_t *dat, int index, int mask)
+ 	dat[index+1] = (data >> 8) & 0xff;
+ }
+ 
+-static int jz_nand_correct_ecc_rs(struct mtd_info *mtd, uint8_t *dat,
+-	uint8_t *read_ecc, uint8_t *calc_ecc)
++static int jz_nand_correct_ecc_rs(struct nand_chip *chip, uint8_t *dat,
++				  uint8_t *read_ecc, uint8_t *calc_ecc)
+ {
+-	struct jz_nand *nand = mtd_to_jz_nand(mtd);
++	struct jz_nand *nand = mtd_to_jz_nand(nand_to_mtd(chip));
+ 	int i, error_count, index;
+ 	uint32_t reg, status, error;
+ 	unsigned int timeout = 1000;
+diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+index a4df37f6d058..c59c65d49f52 100644
+--- a/drivers/mtd/nand/raw/jz4780_nand.c
++++ b/drivers/mtd/nand/raw/jz4780_nand.c
+@@ -144,10 +144,10 @@ static int jz4780_nand_ecc_calculate(struct nand_chip *chip, const u8 *dat,
+ 	return jz4780_bch_calculate(nfc->bch, &params, dat, ecc_code);
+ }
+ 
+-static int jz4780_nand_ecc_correct(struct mtd_info *mtd, u8 *dat,
++static int jz4780_nand_ecc_correct(struct nand_chip *chip, u8 *dat,
+ 				   u8 *read_ecc, u8 *calc_ecc)
+ {
+-	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(mtd);
++	struct jz4780_nand_chip *nand = to_jz4780_nand_chip(nand_to_mtd(chip));
+ 	struct jz4780_nand_controller *nfc = to_jz4780_nand_controller(nand->chip.controller);
+ 	struct jz4780_bch_params params;
+ 
+diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
+index c35a61c453da..d5cb1b40a235 100644
+--- a/drivers/mtd/nand/raw/lpc32xx_slc.c
++++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
+@@ -639,7 +639,7 @@ static int lpc32xx_nand_read_page_syndrome(struct mtd_info *mtd,
+ 	oobecc = chip->oob_poi + oobregion.offset;
+ 
+ 	for (i = 0; i < chip->ecc.steps; i++) {
+-		stat = chip->ecc.correct(mtd, buf, oobecc,
++		stat = chip->ecc.correct(chip, buf, oobecc,
+ 					 &tmpecc[i * chip->ecc.bytes]);
+ 		if (stat < 0)
+ 			mtd->ecc_stats.failed++;
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 3d3e3c704a5a..add85235497e 100644
+index f147b7948e64..0444bd23c84b 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -398,15 +398,15 @@ static void nand_read_buf16(struct nand_chip *chip, uint8_t *buf, int len)
+@@ -3123,7 +3123,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	for (i = 0 ; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+ 		int stat;
+ 
+-		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
++		stat = chip->ecc.correct(chip, p, &ecc_code[i], &ecc_calc[i]);
+ 		if (stat < 0) {
+ 			mtd->ecc_stats.failed++;
+ 		} else {
+@@ -3224,7 +3224,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip,
+ 	for (i = 0; i < eccfrag_len ; i += chip->ecc.bytes, p += chip->ecc.size) {
+ 		int stat;
+ 
+-		stat = chip->ecc.correct(mtd, p, &chip->ecc.code_buf[i],
++		stat = chip->ecc.correct(chip, p, &chip->ecc.code_buf[i],
+ 					 &chip->ecc.calc_buf[i]);
+ 		if (stat == -EBADMSG &&
+ 		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+@@ -3296,7 +3296,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	for (i = 0 ; eccsteps; eccsteps--, i += eccbytes, p += eccsize) {
+ 		int stat;
+ 
+-		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
++		stat = chip->ecc.correct(chip, p, &ecc_code[i], &ecc_calc[i]);
+ 		if (stat == -EBADMSG &&
+ 		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+ 			/* check for empty pages with bitflips */
+@@ -3366,7 +3366,7 @@ static int nand_read_page_hwecc_oob_first(struct mtd_info *mtd,
+ 
+ 		chip->ecc.calculate(chip, p, &ecc_calc[i]);
+ 
+-		stat = chip->ecc.correct(mtd, p, &ecc_code[i], NULL);
++		stat = chip->ecc.correct(chip, p, &ecc_code[i], NULL);
+ 		if (stat == -EBADMSG &&
+ 		    (chip->ecc.options & NAND_ECC_GENERIC_ERASED_CHECK)) {
+ 			/* check for empty pages with bitflips */
+@@ -3436,7 +3436,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 		if (ret)
+ 			return ret;
+ 
+-		stat = chip->ecc.correct(mtd, p, oob, NULL);
++		stat = chip->ecc.correct(chip, p, oob, NULL);
+ 
+ 		oob += eccbytes;
+ 
+diff --git a/drivers/mtd/nand/raw/nand_bch.c b/drivers/mtd/nand/raw/nand_bch.c
+index 9e3c2da0f3b1..574c0ca16160 100644
+--- a/drivers/mtd/nand/raw/nand_bch.c
++++ b/drivers/mtd/nand/raw/nand_bch.c
+@@ -66,17 +66,16 @@ EXPORT_SYMBOL(nand_bch_calculate_ecc);
  
  /**
-  * nand_block_bad - [DEFAULT] Read bad block marker from the chip
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  * @ofs: offset from device start
+  * nand_bch_correct_data - [NAND Interface] Detect and correct bit error(s)
+- * @mtd:	MTD block structure
++ * @chip:	NAND chip object
+  * @buf:	raw data read from the chip
+  * @read_ecc:	ECC from the chip
+  * @calc_ecc:	the ECC calculated from raw data
   *
-  * Check, if the block is bad.
+  * Detect and correct bit errors for a data byte block
   */
--static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
-+static int nand_block_bad(struct nand_chip *chip, loff_t ofs)
+-int nand_bch_correct_data(struct mtd_info *mtd, unsigned char *buf,
++int nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 			  unsigned char *read_ecc, unsigned char *calc_ecc)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int page, page_end, res;
--	struct nand_chip *chip = mtd_to_nand(mtd);
- 	u8 bad;
- 
- 	if (chip->bbt_options & NAND_BBT_SCANLASTPAGE)
-@@ -435,16 +435,16 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
+-	const struct nand_chip *chip = mtd_to_nand(mtd);
+ 	struct nand_bch_control *nbc = chip->ecc.priv;
+ 	unsigned int *errloc = nbc->errloc;
+ 	int i, count;
+diff --git a/drivers/mtd/nand/raw/nand_ecc.c b/drivers/mtd/nand/raw/nand_ecc.c
+index 1dbfcaecf8c5..8f86eed40b70 100644
+--- a/drivers/mtd/nand/raw/nand_ecc.c
++++ b/drivers/mtd/nand/raw/nand_ecc.c
+@@ -490,18 +490,17 @@ EXPORT_SYMBOL(__nand_correct_data);
  
  /**
-  * nand_default_block_markbad - [DEFAULT] mark a block bad via bad block marker
+  * nand_correct_data - [NAND Interface] Detect and correct bit error(s)
+- * @mtd:	MTD block structure
++ * @chip:	NAND chip object
+  * @buf:	raw data read from the chip
+  * @read_ecc:	ECC from the chip
+  * @calc_ecc:	the ECC calculated from raw data
+  *
+  * Detect and correct a 1 bit error for 256/512 byte block
+  */
+-int nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
++int nand_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 		      unsigned char *read_ecc, unsigned char *calc_ecc)
+ {
+-	return __nand_correct_data(buf, read_ecc, calc_ecc,
+-				   mtd_to_nand(mtd)->ecc.size);
++	return __nand_correct_data(buf, read_ecc, calc_ecc, chip->ecc.size);
+ }
+ EXPORT_SYMBOL(nand_correct_data);
+ 
+diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
+index adc300b6d243..4e0bc2da63fd 100644
+--- a/drivers/mtd/nand/raw/omap2.c
++++ b/drivers/mtd/nand/raw/omap2.c
+@@ -857,7 +857,7 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+ 
+ /**
+  * omap_correct_data - Compares the ECC read with HW generated ECC
 - * @mtd: MTD device structure
 + * @chip: NAND chip object
-  * @ofs: offset from device start
-  *
-  * This is the default implementation, which can be overridden by a hardware
-  * specific driver. It provides the details for writing a bad block marker to a
-  * block.
+  * @dat: page data
+  * @read_ecc: ecc read from nand flash
+  * @calc_ecc: ecc read from HW ECC registers
+@@ -869,10 +869,10 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+  * corrected errors is returned. If uncorrectable errors exist, %-1 is
+  * returned.
   */
--static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int nand_default_block_markbad(struct nand_chip *chip, loff_t ofs)
+-static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+-				u_char *read_ecc, u_char *calc_ecc)
++static int omap_correct_data(struct nand_chip *chip, u_char *dat,
++			     u_char *read_ecc, u_char *calc_ecc)
  {
--	struct nand_chip *chip = mtd_to_nand(mtd);
+-	struct omap_nand_info *info = mtd_to_omap(mtd);
++	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
+ 	int blockCnt = 0, i = 0, ret = 0;
+ 	int stat = 0;
+ 
+@@ -1338,7 +1338,7 @@ static int erased_sector_bitflips(u_char *data, u_char *oob,
+ 
+ /**
+  * omap_elm_correct_data - corrects page data area in case error reported
+- * @mtd:	MTD device structure
++ * @chip:	NAND chip object
+  * @data:	page data
+  * @read_ecc:	ecc read from nand flash
+  * @calc_ecc:	ecc read from HW ECC registers
+@@ -1347,10 +1347,10 @@ static int erased_sector_bitflips(u_char *data, u_char *oob,
+  * In case of non-zero ecc vector, first filter out erased-pages, and
+  * then process data via ELM to detect bit-flips.
+  */
+-static int omap_elm_correct_data(struct mtd_info *mtd, u_char *data,
+-				u_char *read_ecc, u_char *calc_ecc)
++static int omap_elm_correct_data(struct nand_chip *chip, u_char *data,
++				 u_char *read_ecc, u_char *calc_ecc)
+ {
+-	struct omap_nand_info *info = mtd_to_omap(mtd);
++	struct omap_nand_info *info = mtd_to_omap(nand_to_mtd(chip));
+ 	struct nand_ecc_ctrl *ecc = &info->nand.ecc;
+ 	int eccsteps = info->nand.ecc.steps;
+ 	int i , j, stat = 0;
+@@ -1659,7 +1659,7 @@ static int omap_read_page_bch(struct mtd_info *mtd, struct nand_chip *chip,
+ 	if (ret)
+ 		return ret;
+ 
+-	stat = chip->ecc.correct(mtd, buf, ecc_code, ecc_calc);
++	stat = chip->ecc.correct(chip, buf, ecc_code, ecc_calc);
+ 
+ 	if (stat < 0) {
+ 		mtd->ecc_stats.failed++;
+diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
+index f58d633ec062..7673aa140009 100644
+--- a/drivers/mtd/nand/raw/r852.c
++++ b/drivers/mtd/nand/raw/r852.c
+@@ -465,14 +465,14 @@ static int r852_ecc_calculate(struct nand_chip *chip, const uint8_t *dat,
+  * Correct the data using ECC, hw did almost everything for us
+  */
+ 
+-static int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
+-				uint8_t *read_ecc, uint8_t *calc_ecc)
++static int r852_ecc_correct(struct nand_chip *chip, uint8_t *dat,
++			    uint8_t *read_ecc, uint8_t *calc_ecc)
+ {
+ 	uint32_t ecc_reg;
+ 	uint8_t ecc_status, err_byte;
+ 	int i, error = 0;
+ 
+-	struct r852_device *dev = r852_get_dev(mtd);
++	struct r852_device *dev = r852_get_dev(nand_to_mtd(chip));
+ 
+ 	if (dev->card_unstable)
+ 		return 0;
+diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
+index c94e1f62362f..d57201d118d8 100644
+--- a/drivers/mtd/nand/raw/s3c2410.c
++++ b/drivers/mtd/nand/raw/s3c2410.c
+@@ -512,9 +512,10 @@ static int s3c2412_nand_devready(struct mtd_info *mtd)
+ 
+ /* ECC handling functions */
+ 
+-static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
++static int s3c2410_nand_correct_data(struct nand_chip *chip, u_char *dat,
+ 				     u_char *read_ecc, u_char *calc_ecc)
+ {
 +	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mtd_oob_ops ops;
- 	uint8_t buf[2] = { 0, 0 };
- 	int ret = 0, res, i = 0;
-@@ -510,7 +510,7 @@ static int nand_block_markbad_lowlevel(struct mtd_info *mtd, loff_t ofs)
- 
- 		/* Write bad block marker to OOB */
- 		nand_get_device(mtd, FL_WRITING);
--		ret = chip->block_markbad(mtd, ofs);
-+		ret = chip->block_markbad(chip, ofs);
- 		nand_release_device(mtd);
- 	}
- 
-@@ -583,7 +583,7 @@ static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
- 	struct nand_chip *chip = mtd_to_nand(mtd);
- 
- 	if (!chip->bbt)
--		return chip->block_bad(mtd, ofs);
-+		return chip->block_bad(chip, ofs);
- 
- 	/* Return info from the table */
- 	return nand_isbad_bbt(mtd, ofs, allowbbt);
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index 39db352f8757..76849a441518 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -683,14 +683,13 @@ static void mark_bbt_block_bad(struct nand_chip *this,
- 			       struct nand_bbt_descr *td,
- 			       int chip, int block)
- {
--	struct mtd_info *mtd = nand_to_mtd(this);
- 	loff_t to;
- 	int res;
- 
- 	bbt_mark_entry(this, block, BBT_BLOCK_WORN);
- 
- 	to = (loff_t)block << this->bbt_erase_shift;
--	res = this->block_markbad(mtd, to);
-+	res = this->block_markbad(this, to);
- 	if (res)
- 		pr_warn("nand_bbt: error %d while marking block %d bad\n",
- 			res, block);
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index fd00d9f7bb01..952cb735f4cc 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2197,9 +2197,9 @@ static int qcom_nandc_write_oob(struct nand_chip *chip, int page)
- 	return nand_prog_page_end_op(chip);
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+ 	unsigned int diff0, diff1, diff2;
+ 	unsigned int bit, byte;
+diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
+index 03d6428589c8..734ff29705ce 100644
+--- a/drivers/mtd/nand/raw/tmio_nand.c
++++ b/drivers/mtd/nand/raw/tmio_nand.c
+@@ -290,8 +290,9 @@ static int tmio_nand_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+ 	return 0;
  }
  
--static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
-+static int qcom_nandc_block_bad(struct nand_chip *chip, loff_t ofs)
+-static int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
+-		unsigned char *read_ecc, unsigned char *calc_ecc)
++static int tmio_nand_correct_data(struct nand_chip *chip, unsigned char *buf,
++				  unsigned char *read_ecc,
++				  unsigned char *calc_ecc)
  {
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
-@@ -2235,9 +2235,8 @@ static int qcom_nandc_block_bad(struct mtd_info *mtd, loff_t ofs)
- 	return bad;
+ 	int r0, r1;
+ 
+diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
+index 55a5c4d42a81..3c69d834de62 100644
+--- a/drivers/mtd/nand/raw/txx9ndfmc.c
++++ b/drivers/mtd/nand/raw/txx9ndfmc.c
+@@ -190,10 +190,10 @@ static int txx9ndfmc_calculate_ecc(struct nand_chip *chip, const uint8_t *dat,
+ 	return 0;
  }
  
--static int qcom_nandc_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int qcom_nandc_block_markbad(struct nand_chip *chip, loff_t ofs)
+-static int txx9ndfmc_correct_data(struct mtd_info *mtd, unsigned char *buf,
+-		unsigned char *read_ecc, unsigned char *calc_ecc)
++static int txx9ndfmc_correct_data(struct nand_chip *chip, unsigned char *buf,
++				  unsigned char *read_ecc,
++				  unsigned char *calc_ecc)
  {
 -	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct qcom_nand_host *host = to_qcom_nand_host(chip);
- 	struct qcom_nand_controller *nandc = get_qcom_nand_controller(chip);
- 	struct nand_ecc_ctrl *ecc = &chip->ecc;
-diff --git a/drivers/mtd/nand/raw/sm_common.c b/drivers/mtd/nand/raw/sm_common.c
-index 02ac6e9b2d16..bf143e0db787 100644
---- a/drivers/mtd/nand/raw/sm_common.c
-+++ b/drivers/mtd/nand/raw/sm_common.c
-@@ -99,8 +99,9 @@ static const struct mtd_ooblayout_ops oob_sm_small_ops = {
- 	.free = oob_sm_small_ooblayout_free,
- };
+ 	int eccsize;
+ 	int corrected = 0;
+ 	int stat;
+diff --git a/include/linux/mtd/nand_bch.h b/include/linux/mtd/nand_bch.h
+index 6db133508960..b8106651f807 100644
+--- a/include/linux/mtd/nand_bch.h
++++ b/include/linux/mtd/nand_bch.h
+@@ -28,8 +28,8 @@ int nand_bch_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+ /*
+  * Detect and correct bit errors
+  */
+-int nand_bch_correct_data(struct mtd_info *mtd, u_char *dat, u_char *read_ecc,
+-			  u_char *calc_ecc);
++int nand_bch_correct_data(struct nand_chip *chip, u_char *dat,
++			  u_char *read_ecc, u_char *calc_ecc);
+ /*
+  * Initialize BCH encoder/decoder
+  */
+@@ -51,7 +51,7 @@ nand_bch_calculate_ecc(struct nand_chip *chip, const u_char *dat,
+ }
  
--static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
-+static int sm_block_markbad(struct nand_chip *chip, loff_t ofs)
+ static inline int
+-nand_bch_correct_data(struct mtd_info *mtd, unsigned char *buf,
++nand_bch_correct_data(struct nand_chip *chip, unsigned char *buf,
+ 		      unsigned char *read_ecc, unsigned char *calc_ecc)
  {
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	struct mtd_oob_ops ops;
- 	struct sm_oob oob;
- 	int ret;
+ 	return -ENOTSUPP;
+diff --git a/include/linux/mtd/nand_ecc.h b/include/linux/mtd/nand_ecc.h
+index a514e62ff54f..b81fecd5e719 100644
+--- a/include/linux/mtd/nand_ecc.h
++++ b/include/linux/mtd/nand_ecc.h
+@@ -13,7 +13,6 @@
+ #ifndef __MTD_NAND_ECC_H__
+ #define __MTD_NAND_ECC_H__
+ 
+-struct mtd_info;
+ struct nand_chip;
+ 
+ /*
+@@ -37,6 +36,7 @@ int __nand_correct_data(u_char *dat, u_char *read_ecc, u_char *calc_ecc,
+ /*
+  * Detect and correct a 1 bit error for 256/512 byte block
+  */
+-int nand_correct_data(struct mtd_info *mtd, u_char *dat, u_char *read_ecc, u_char *calc_ecc);
++int nand_correct_data(struct nand_chip *chip, u_char *dat, u_char *read_ecc,
++		      u_char *calc_ecc);
+ 
+ #endif /* __MTD_NAND_ECC_H__ */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 65a25e89b426..0d8e2708e125 100644
+index b2f51b2fb110..24434310d126 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1288,8 +1288,8 @@ struct nand_chip {
- 	void (*write_buf)(struct nand_chip *chip, const uint8_t *buf, int len);
- 	void (*read_buf)(struct nand_chip *chip, uint8_t *buf, int len);
- 	void (*select_chip)(struct nand_chip *chip, int cs);
--	int (*block_bad)(struct mtd_info *mtd, loff_t ofs);
--	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
-+	int (*block_bad)(struct nand_chip *chip, loff_t ofs);
-+	int (*block_markbad)(struct nand_chip *chip, loff_t ofs);
- 	void (*cmd_ctrl)(struct mtd_info *mtd, int dat, unsigned int ctrl);
- 	int (*dev_ready)(struct mtd_info *mtd);
- 	void (*cmdfunc)(struct mtd_info *mtd, unsigned command, int column,
+@@ -650,8 +650,8 @@ struct nand_ecc_ctrl {
+ 	void (*hwctl)(struct nand_chip *chip, int mode);
+ 	int (*calculate)(struct nand_chip *chip, const uint8_t *dat,
+ 			 uint8_t *ecc_code);
+-	int (*correct)(struct mtd_info *mtd, uint8_t *dat, uint8_t *read_ecc,
+-			uint8_t *calc_ecc);
++	int (*correct)(struct nand_chip *chip, uint8_t *dat, uint8_t *read_ecc,
++		       uint8_t *calc_ecc);
+ 	int (*read_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
+ 			uint8_t *buf, int oob_required, int page);
+ 	int (*write_page_raw)(struct mtd_info *mtd, struct nand_chip *chip,
 -- 
 2.14.1
