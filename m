@@ -1,25 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fqfsp-0004NU-97
- for linux-mtd@lists.infradead.org; Fri, 17 Aug 2018 14:37:48 +0000
-Date: Fri, 17 Aug 2018 16:37:33 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <kyungmin.park@samsung.com>, <absahu@codeaurora.org>,
- <peterpandong@micron.com>, <frieder.schrempf@exceet.de>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <michals@xilinx.com>, <nagasureshkumarrelli@gmail.com>
-Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20180817163733.34d3199c@xps13>
-In-Reply-To: <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ id 1fqg85-0001hA-NZ
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2018 14:53:35 +0000
+Date: Fri, 17 Aug 2018 16:53:22 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Spieth <mspieth@digivation.com.au>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
+Subject: Re: [RFC PATCH] UBI fixable bit-flip issue
+Message-ID: <20180817165322.61958720@bbrezillon>
+In-Reply-To: <227ad167-4e57-638d-a4cb-1e82613de2bc@digivation.com.au>
+References: <1bcbe82a-85e5-52f8-dc54-9d22e5b390fa@digivation.com.au>
+ <20180817102559.7ab14fd9@bbrezillon>
+ <227ad167-4e57-638d-a4cb-1e82613de2bc@digivation.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
+On Sat, 18 Aug 2018 00:33:25 +1000
+Mark Spieth <mspieth@digivation.com.au> wrote:
 
-A user of Xilinx BSP reported a problem with lockdep that I can see is
-not yet fixed in this code:
+> >> I hope this description is clear enough.  
+> > Well, I think selecting the bitflip threshold properly is really
+> > important, simply because some NANDs (including SLC NANDs) are showing
+> > bitflips even on blocks that have a low EC. Check the NAND ECC
+> > requirements, and if it's something like 8bit/512bytes, I guess that's
+> > more or less expected (it all depends on how many bitflips you have in
+> > the faulty block). It's less likely on NANDs requiring 1bit/512bytes
+> > ECC, and if that happens on such NANDs, you may have a problem in the
+> > controller driver.  
+> 4 bits ECC per 512 bytes, from memory 28 bytes in OOB, using software 
+> ECC in the MTD driver.
+> As I said, I believe the better threshold is hiding the root cause. It 
+> is only a band-aid.
 
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote on
-Fri, 17 Aug 2018 18:49:24 +0530:
+What you describe will anyway happen sooner or later: if you're using
+almost all LEBs, and the remaining free ones are all impacted by the
+correctable bit-flip issue you'll have to use them anyway. So, yes,
+this is a band-aid, just like your solution is just improving things
+but not really solving the issue. This being said, if the blocks
+really show too many bitflips, they should be marked bad at some point,
+because during the scrubbing process we do write a pattern and check
+that we can read it back. I'll have to double check, but I think we're
+also checking for EUCLEAN and mark the block bad when that happens.
 
-> +static int anfc_probe(struct platform_device *pdev)
-> +{
-> +	struct anfc_nand_controller *nfc;
-> +	struct anfc_nand_chip *anand_chip;
-> +	struct device_node *np =3D pdev->dev.of_node, *child;
-> +	struct resource *res;
-> +	int err;
-> +
-> +	nfc =3D devm_kzalloc(&pdev->dev, sizeof(*nfc), GFP_KERNEL);
-> +	if (!nfc)
-> +		return -ENOMEM;
-> +
-> +	init_waitqueue_head(&nfc->controller.wq);
+Another option would be to order free blocks, not only by
+descending erase counters, but also by number of times the upper layer
+reported EUCLEAN on them. That would imply adding a new field to the EC
+header, but I think both Richard and I are open to discussing that.
 
-The controller structure has a lock which is not initialized here. You
-should not initialize the waitqueue manually neither and instead use
-nand_controller_init(&nfc->controller).
+Regards,
 
-> +	INIT_LIST_HEAD(&nfc->chips);
-> +	init_completion(&nfc->event);
-> +	nfc->dev =3D &pdev->dev;
-> +	platform_set_drvdata(pdev, nfc);
-> +	nfc->csnum =3D -1;
-> +	nfc->controller.ops =3D &anfc_nand_controller_ops;
-
-More to come.
-
-Thanks,
-Miqu=C3=A8l
+Boris
