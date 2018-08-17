@@ -37,12 +37,9 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Stefan Agner <stefan@agner.ch>, linux-arm-kernel@lists.infradead.org,
  linux-omap@vger.kernel.org,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: [PATCH 04/23] mtd: rawnand: Pass a nand_chip object to
- nand_wait_ready()
-Date: Fri, 17 Aug 2018 18:09:03 +0200
-Message-Id: <20180817160922.6224-5-boris.brezillon@bootlin.com>
-In-Reply-To: <20180817160922.6224-1-boris.brezillon@bootlin.com>
-References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
+Subject: [PATCH 00/23] mtd: rawnand: Stop passing mtd_info to drivers
+Date: Fri, 17 Aug 2018 18:08:59 +0200
+Message-Id: <20180817160922.6224-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,105 +49,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's make the raw NAND API consistent by patching all helpers to
-take a nand_chip object instead of an mtd_info one.
+Hello,
 
-Now is nand_wait_ready()'s turn.
+This is the first set of patches aiming at cleaning the raw NAND API.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |  2 +-
- drivers/mtd/nand/raw/cafe_nand.c                 |  2 +-
- drivers/mtd/nand/raw/nand_base.c                 | 12 ++++++------
- include/linux/mtd/rawnand.h                      |  2 +-
- 4 files changed, 9 insertions(+), 9 deletions(-)
+This one focuses on inconsistencies we have in the API + the nand_chip
+and nand_ecc_ctrl interfaces. Some functions/hooks are passed a
+nand_chip object, some are passed an mtd_info object and some are
+passed both.
 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 9b62bc2d25a0..7022ffd271ad 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -232,7 +232,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
- 		nand_chip->cmd_ctrl(mtd, command, NAND_CTRL_CLE);
- 
- 		ndelay(100);
--		nand_wait_ready(mtd);
-+		nand_wait_ready(nand_chip);
- 		break;
- 	case NAND_CMD_READID:
- 		ctlcode = NCTL_CSA | 0x01000000 | NCTL_CMD1W | NCTL_CMD0;
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index 3304594177c6..94e5f7a56084 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -313,7 +313,7 @@ static void cafe_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
- 		cafe_writel(cafe, cafe->ctl2, NAND_CTRL2);
- 		return;
- 	}
--	nand_wait_ready(mtd);
-+	nand_wait_ready(chip);
- 	cafe_writel(cafe, cafe->ctl2, NAND_CTRL2);
- }
- 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index f937efe145af..9d684f1d9e26 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -624,13 +624,13 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
- 
- /**
-  * nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  *
-  * Wait for the ready pin after a command, and warn if a timeout occurs.
-  */
--void nand_wait_ready(struct mtd_info *mtd)
-+void nand_wait_ready(struct nand_chip *chip)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
-+	struct mtd_info *mtd = nand_to_mtd(chip);
- 	unsigned long timeo = 400;
- 
- 	if (in_interrupt() || oops_in_progress)
-@@ -852,7 +852,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
- 	 */
- 	ndelay(100);
- 
--	nand_wait_ready(mtd);
-+	nand_wait_ready(chip);
- }
- 
- static void nand_ccs_delay(struct nand_chip *chip)
-@@ -1004,7 +1004,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
- 	 */
- 	ndelay(100);
- 
--	nand_wait_ready(mtd);
-+	nand_wait_ready(chip);
- }
- 
- /**
-@@ -2251,7 +2251,7 @@ static int nand_wait_rdy_op(struct nand_chip *chip, unsigned int timeout_ms,
- 	if (!chip->dev_ready)
- 		udelay(chip->chip_delay);
- 	else
--		nand_wait_ready(nand_to_mtd(chip));
-+		nand_wait_ready(chip);
- 
- 	return 0;
- }
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index e9c59f0624ad..55014e42912a 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -37,7 +37,7 @@ static inline int nand_scan(struct nand_chip *chip, int max_chips)
- }
- 
- /* Internal helper for board drivers which need to override command function */
--void nand_wait_ready(struct mtd_info *mtd);
-+void nand_wait_ready(struct nand_chip *chip);
- 
- /* The maximum number of NAND chips in an array */
- #define NAND_MAX_CHIPS		8
+Since mtd_info can be extracted from nand_chip, we can simply always
+pass a nand_chip and make things consistent. Hopefully with these
+changes merged we'll stop seeing new drivers reproducing the same
+mistake (passing both mtd_info and nand_chip or using mtd_info where
+nand_chip is more appropriate).
+
+For those who want to see what's in the pipe, here is a branch [1]
+containing all the cleanups I plan to merge.
+
+Regards,
+
+Boris
+
+[1]https://github.com/bbrezillon/linux-0day/commits/nand/api-cleanup
+
+Boris Brezillon (23):
+  mtd: rawnand: plat_nand: Pass a nand_chip object to all
+    platform_nand_ctrl hooks
+  mtd: rawnand: Pass a nand_chip object to nand_scan() & co
+  mtd: rawnand: Pass a nand_chip object to nand_release()
+  mtd: rawnand: Pass a nand_chip object to nand_wait_ready()
+  mtd: rawnand: Pass a nand_chip object to ecc->hwctl()
+  mtd: rawnand: Pass a nand_chip object to ecc->calculate()
+  mtd: rawnand: Pass a nand_chip object to ecc->correct()
+  mtd: rawnand: Pass a nand_chip object to ecc->read_xxx() hooks
+  mtd: rawnand: Pass a nand_chip object to ecc->write_xxx() hooks
+  mtd: rawnand: Pass a nand_chip object to chip->read_xxx() hooks
+  mtd: rawnand: Pass a nand_chip object to chip->write_xxx() hooks
+  mtd: rawnand: Pass a nand_chip object to chip->select_chip()
+  mtd: rawnand: Pass a nand_chip object to chip->block_xxx() hooks
+  mtd: rawnand: Pass a nand_chip object to chip->cmd_ctrl()
+  mtd: rawnand: Pass a nand_chip object to chip->dev_ready()
+  mtd: rawnand: Pass a nand_chip object to chip->cmdfunc()
+  mtd: rawnand: Pass a nand_chip object to chip->waitfunc()
+  mtd: rawnand: Pass a nand_chip object to chip->erase()
+  mtd: rawnand: Pass a nand_chip object to chip->{get,set}_features()
+  mtd: rawnand: Pass a nand_chip object to chip->setup_read_retry()
+  mtd: rawnand: Pass a nand_chip object to chip->setup_data_interface()
+  mtd: rawnand: Pass a nand_chip object to all nand_xxx_bbt() helpers
+  mtd: rawnand: Pass a nand_chip object nand_erase_nand()
+
+ Documentation/driver-api/mtdnand.rst             |   4 +-
+ arch/arm/mach-ep93xx/snappercl15.c               |   7 +-
+ arch/arm/mach-ep93xx/ts72xx.c                    |   7 +-
+ arch/arm/mach-imx/mach-qong.c                    |  11 +-
+ arch/arm/mach-ixp4xx/ixdp425-setup.c             |   3 +-
+ arch/arm/mach-omap1/board-fsample.c              |   2 +-
+ arch/arm/mach-omap1/board-h2.c                   |   2 +-
+ arch/arm/mach-omap1/board-h3.c                   |   2 +-
+ arch/arm/mach-omap1/board-nand.c                 |   3 +-
+ arch/arm/mach-omap1/board-perseus2.c             |   2 +-
+ arch/arm/mach-omap1/common.h                     |   2 +-
+ arch/arm/mach-orion5x/ts78xx-setup.c             |  18 +-
+ arch/arm/mach-pxa/balloon3.c                     |   8 +-
+ arch/arm/mach-pxa/em-x270.c                      |   5 +-
+ arch/arm/mach-pxa/palmtx.c                       |   5 +-
+ arch/mips/alchemy/devboards/db1200.c             |   5 +-
+ arch/mips/alchemy/devboards/db1300.c             |   5 +-
+ arch/mips/alchemy/devboards/db1550.c             |   5 +-
+ arch/mips/netlogic/xlr/platform-flash.c          |   4 +-
+ arch/mips/pnx833x/common/platform.c              |   3 +-
+ arch/mips/rb532/devices.c                        |   5 +-
+ arch/sh/boards/mach-migor/setup.c                |   6 +-
+ drivers/mtd/nand/raw/ams-delta.c                 |  24 +-
+ drivers/mtd/nand/raw/atmel/nand-controller.c     |  74 ++-
+ drivers/mtd/nand/raw/au1550nd.c                  |  70 ++-
+ drivers/mtd/nand/raw/bcm47xxnflash/main.c        |   2 +-
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |  38 +-
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c         |  78 +--
+ drivers/mtd/nand/raw/cafe_nand.c                 |  56 +--
+ drivers/mtd/nand/raw/cmx270_nand.c               |  20 +-
+ drivers/mtd/nand/raw/cs553x_nand.c               |  33 +-
+ drivers/mtd/nand/raw/davinci_nand.c              |  59 +--
+ drivers/mtd/nand/raw/denali.c                    |  87 ++--
+ drivers/mtd/nand/raw/diskonchip.c                | 116 ++---
+ drivers/mtd/nand/raw/docg4.c                     |  83 ++--
+ drivers/mtd/nand/raw/fsl_elbc_nand.c             |  52 +-
+ drivers/mtd/nand/raw/fsl_ifc_nand.c              |  46 +-
+ drivers/mtd/nand/raw/fsl_upm.c                   |  34 +-
+ drivers/mtd/nand/raw/fsmc_nand.c                 |  42 +-
+ drivers/mtd/nand/raw/gpio.c                      |  13 +-
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-lib.c        |   3 +-
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c       |  99 ++--
+ drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.h       |   2 +-
+ drivers/mtd/nand/raw/hisi504_nand.c              |  44 +-
+ drivers/mtd/nand/raw/jz4740_nand.c               |  39 +-
+ drivers/mtd/nand/raw/jz4780_nand.c               |  30 +-
+ drivers/mtd/nand/raw/lpc32xx_mlc.c               |  47 +-
+ drivers/mtd/nand/raw/lpc32xx_slc.c               |  67 ++-
+ drivers/mtd/nand/raw/marvell_nand.c              |  74 ++-
+ drivers/mtd/nand/raw/mpc5121_nfc.c               |  40 +-
+ drivers/mtd/nand/raw/mtk_nand.c                  |  81 ++-
+ drivers/mtd/nand/raw/mxc_nand.c                  |  85 ++--
+ drivers/mtd/nand/raw/nand_base.c                 | 606 ++++++++++-------------
+ drivers/mtd/nand/raw/nand_bbt.c                  |  21 +-
+ drivers/mtd/nand/raw/nand_bch.c                  |  10 +-
+ drivers/mtd/nand/raw/nand_ecc.c                  |  14 +-
+ drivers/mtd/nand/raw/nand_hynix.c                |  12 +-
+ drivers/mtd/nand/raw/nand_micron.c               |  16 +-
+ drivers/mtd/nand/raw/nandsim.c                   |  28 +-
+ drivers/mtd/nand/raw/ndfc.c                      |  25 +-
+ drivers/mtd/nand/raw/nuc900_nand.c               |  27 +-
+ drivers/mtd/nand/raw/omap2.c                     | 148 +++---
+ drivers/mtd/nand/raw/orion_nand.c                |  14 +-
+ drivers/mtd/nand/raw/oxnas_nand.c                |  19 +-
+ drivers/mtd/nand/raw/pasemi_nand.c               |  19 +-
+ drivers/mtd/nand/raw/plat_nand.c                 |   6 +-
+ drivers/mtd/nand/raw/qcom_nandc.c                |  52 +-
+ drivers/mtd/nand/raw/r852.c                      |  54 +-
+ drivers/mtd/nand/raw/s3c2410.c                   |  72 +--
+ drivers/mtd/nand/raw/sh_flctl.c                  |  40 +-
+ drivers/mtd/nand/raw/sharpsl.c                   |  24 +-
+ drivers/mtd/nand/raw/sm_common.c                 |   5 +-
+ drivers/mtd/nand/raw/socrates_nand.c             |  32 +-
+ drivers/mtd/nand/raw/sunxi_nand.c                |  82 ++-
+ drivers/mtd/nand/raw/tango_nand.c                |  67 ++-
+ drivers/mtd/nand/raw/tegra_nand.c                |  36 +-
+ drivers/mtd/nand/raw/tmio_nand.c                 |  53 +-
+ drivers/mtd/nand/raw/txx9ndfmc.c                 |  38 +-
+ drivers/mtd/nand/raw/vf610_nfc.c                 |  43 +-
+ drivers/mtd/nand/raw/xway_nand.c                 |  27 +-
+ drivers/staging/mt29f_spinand/mt29f_spinand.c    |  33 +-
+ include/linux/mtd/nand_bch.h                     |  11 +-
+ include/linux/mtd/nand_ecc.h                     |   8 +-
+ include/linux/mtd/rawnand.h                      | 142 +++---
+ 84 files changed, 1612 insertions(+), 1824 deletions(-)
+
 -- 
 2.14.1
