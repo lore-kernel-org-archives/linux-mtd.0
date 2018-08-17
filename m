@@ -1,24 +1,19 @@
-Date: Fri, 17 Aug 2018 10:46:57 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yixun Lan <yixun.lan@amlogic.com>
-Cc: <linux-mtd@lists.infradead.org>, Rob Herring <robh@kernel.org>, Neil
- Armstrong <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Liang
- Yang <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Kevin Hilman
- <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
- linux-amlogic@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [RFC PATCH v2 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20180817104657.7a1da2c4@bbrezillon>
-In-Reply-To: <20180719094612.5833-3-yixun.lan@amlogic.com>
-References: <20180719094612.5833-1-yixun.lan@amlogic.com>
- <20180719094612.5833-3-yixun.lan@amlogic.com>
+Received: from mail-ve1eur01on062e.outbound.protection.outlook.com
+ ([2a01:111:f400:fe1f::62e]
+ helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fqcOs-0001S0-Ph
+ for linux-mtd@lists.infradead.org; Fri, 17 Aug 2018 10:54:40 +0000
+From: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NOR access from ARM-BE toolchain
+Date: Fri, 17 Aug 2018 10:54:24 +0000
+Message-ID: <VI1PR0402MB38542274356BBA43DED30DDC973D0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yixun,
+Hi Boris,
 
-I know I said I would finish reviewing the driver, but I didn't have
-time to do it, so feel free to send a new version addressing the
-comments I already made.
+I am trying to access NOR flash with ARM running in big-endian mode.  But i=
+t is causing error as " do_map_probe() failed for type cfi_probe"
 
-On Thu, 19 Jul 2018 17:46:12 +0800
-Yixun Lan <yixun.lan@amlogic.com> wrote:
+On our platform, The connection between Flash controller and NOR flash is l=
+ittle-endian.
+Here, ARM core running in littler endian mode with MTD_CFI_NOSWAP every thi=
+ngs work fine.=20
 
+if we change ARM mode as big-endian, it start showing error as mentioned ab=
+ove.=20
+Error is same even with MTD_CFI_BE_BYTE_SWAP option.  =20
+As per my understanding MTD_CFI_BE_BYTE_SWAP or MTD_CFI_LE_BYTE_SWAP deals =
+with flash controller and flash connection.
+Not sure, if take care of Core endianness also.=20
 
-> +static void meson_nfc_select_chip(struct mtd_info *mtd, int chip)
-> +{
-> +	struct nand_chip *nand = mtd_to_nand(mtd);
-> +	struct meson_nfc_nand_chip *meson_chip = to_meson_nand(nand);
-> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
-> +
-> +	if (chip < 0 || chip > MAX_CE_NUM)
-
-			^ chip > meson_chip->nsels)
-
-> +		return;
-> +
-> +	nfc->param.chip_select = meson_chip->sels[chip] ? NAND_CE1 : NAND_CE0;
-> +	nfc->param.rb_select = nfc->param.chip_select;
-> +}
-> +
+Please suggest!!
 
 Regards,
-
-Boris
+Prabhakar
