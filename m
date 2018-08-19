@@ -1,16 +1,15 @@
-Date: Sun, 19 Aug 2018 13:31:06 +0200
-From: Alban <albeu@free.fr>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Aban Bedel <albeu@free.fr>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin
- Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Arnd
- Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, Naren <naren.kernel@gmail.com>, Mauro
- Carvalho Chehab <mchehab+samsung@kernel.org>, Andrew Morton
+Date: Sun, 19 Aug 2018 18:46:09 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Alban <albeu@free.fr>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
+ Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
+ King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Grygorii Strashko <grygorii.strashko@ti.com>, "David S . Miller"
+ <davem@davemloft.net>, Naren <naren.kernel@gmail.com>, Mauro Carvalho
+ Chehab <mchehab+samsung@kernel.org>, Andrew Morton
  <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>, Dan Carpenter
  <dan.carpenter@oracle.com>, Florian Fainelli <f.fainelli@gmail.com>, Ivan
  Khoronzhuk <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck
@@ -22,14 +21,14 @@ Cc: Aban Bedel <albeu@free.fr>, Bartosz Golaszewski <brgl@bgdev.pl>,
  netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
  the nvmem API
-Message-ID: <20180819133106.0420df5f@tock>
-In-Reply-To: <20180817182720.6a6e5e8e@bbrezillon>
+Message-ID: <20180819184609.6dcdbb9a@bbrezillon>
+In-Reply-To: <20180819133106.0420df5f@tock>
 References: <20180810080526.27207-1-brgl@bgdev.pl>
  <20180810080526.27207-7-brgl@bgdev.pl>
- <20180817182720.6a6e5e8e@bbrezillon>
+ <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/TQqb4/k1M=FtYu85dR=ch4z"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,67 +38,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/TQqb4/k1M=FtYu85dR=ch4z
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, 19 Aug 2018 13:31:06 +0200
+Alban <albeu@free.fr> wrote:
 
-On Fri, 17 Aug 2018 18:27:20 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> On Fri, 17 Aug 2018 18:27:20 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> 
+> > Hi Bartosz,
+> > 
+> > On Fri, 10 Aug 2018 10:05:03 +0200
+> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >   
+> > > From: Alban Bedel <albeu@free.fr>
+> > > 
+> > > Allow drivers that use the nvmem API to read data stored on MTD devices.
+> > > For this the mtd devices are registered as read-only NVMEM providers.
+> > > 
+> > > Signed-off-by: Alban Bedel <albeu@free.fr>
+> > > [Bartosz:
+> > >   - use the managed variant of nvmem_register(),
+> > >   - set the nvmem name]
+> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>    
+> > 
+> > What happened to the 2 other patches of Alban's series? I'd really
+> > like the DT case to be handled/agreed on in the same patchset, but
+> > IIRC, Alban and Srinivas disagreed on how this should be represented.
+> > I hope this time we'll come to an agreement, because the MTD <-> NVMEM
+> > glue has been floating around for quite some time...  
+> 
+> These other patches were to fix what I consider a fundamental flaw in
+> the generic NVMEM bindings, however we couldn't agree on this point.
+> Bartosz later contacted me to take over this series and I suggested to
+> just change the MTD NVMEM binding to use a compatible string on the
+> NVMEM cells as an alternative solution to fix the clash with the old
+> style MTD partition.
+> 
+> However all this has no impact on the code needed to add NVMEM support
+> to MTD, so the above patch didn't change at all.
 
-> Hi Bartosz,
->=20
-> On Fri, 10 Aug 2018 10:05:03 +0200
-> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->=20
-> > From: Alban Bedel <albeu@free.fr>
-> >=20
-> > Allow drivers that use the nvmem API to read data stored on MTD devices.
-> > For this the mtd devices are registered as read-only NVMEM providers.
-> >=20
-> > Signed-off-by: Alban Bedel <albeu@free.fr>
-> > [Bartosz:
-> >   - use the managed variant of nvmem_register(),
-> >   - set the nvmem name]
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com> =20
->=20
-> What happened to the 2 other patches of Alban's series? I'd really
-> like the DT case to be handled/agreed on in the same patchset, but
-> IIRC, Alban and Srinivas disagreed on how this should be represented.
-> I hope this time we'll come to an agreement, because the MTD <-> NVMEM
-> glue has been floating around for quite some time...
+It does have an impact on the supported binding though.
+nvmem->dev.of_node is automatically assigned to mtd->dev.of_node, which
+means people will be able to define their NVMEM cells directly under
+the MTD device and reference them from other nodes (even if it's not
+documented), and as you said, it conflict with the old MTD partition
+bindings. So we'd better agree on this binding before merging this
+patch.
 
-These other patches were to fix what I consider a fundamental flaw in
-the generic NVMEM bindings, however we couldn't agree on this point.
-Bartosz later contacted me to take over this series and I suggested to
-just change the MTD NVMEM binding to use a compatible string on the
-NVMEM cells as an alternative solution to fix the clash with the old
-style MTD partition.
+I see several options:
 
-However all this has no impact on the code needed to add NVMEM support
-to MTD, so the above patch didn't change at all.
+1/ provide a way to tell the NVMEM framework not to use parent->of_node
+   even if it's != NULL. This way we really don't support defining
+   NVMEM cells in the DT, and also don't support referencing the nvmem
+   device using a phandle.
 
-Alban
+2/ define a new binding where all nvmem-cells are placed in an
+   "nvmem" subnode (just like we have this "partitions" subnode for
+   partitions), and then add a config->of_node field so that the
+   nvmem provider can explicitly specify the DT node representing the
+   nvmem device. We'll also need to set this field to ERR_PTR(-ENOENT)
+   in case this node does not exist so that the nvmem framework knows
+   that it should not assign nvmem->dev.of_node to parent->of_node
 
---Sig_/TQqb4/k1M=FtYu85dR=ch4z
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+3/ only declare partitions as nvmem providers. This would solve the
+   problem we have with partitions defined in the DT since
+   defining sub-partitions in the DT is not (yet?) supported and
+   partition nodes are supposed to be leaf nodes. Still, I'm not a big
+   fan of this solution because it will prevent us from supporting
+   sub-partitions if we ever want/need to.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+4/ Add a ->of_xlate() hook that would be called if present by the
+   framework instead of using the default parsing we have right now.
 
-iQIcBAEBCAAGBQJbeVT7AAoJEHSUmkuduC28SdMP/3+kDayzSjsABxnvDQU4p5lQ
-NA13kysUhSl4DlckghrBsgoq9/Jwg+jFjOWflojpHLDKAWpQyzZQU/pd+M99JorF
-StfVexTlBJqB0gz0wOktfK2XCspxhXSlUa5oWKPDdvVPPNNdVDhfNaQXo6m1SWPg
-DH4Dqmc58UUX0VtLVjPscQLECINAbhvb0T6axgnyev7GXhoV8BJGZs9D+Ap3MAUW
-afsXgaAOaQ8W8W14m8KJ3FsJnj78vXVKoZSbWDvhAt67gt8nN/7SMtEx/vT1ceYD
-vlaWHNMi/6Vsx4SsrdfP2OD9mjj17J61UFjtdXgJDLMgX+Xligr+/uGJSYSCXCwD
-skxKnfs9B391RVeH76q1fIFE1sTBNTO7/3uwl9zF5vDKoPrLtVEu8RpN0SDxZMHJ
-qQy05vA8FoG33IeUAUQ0URiDHH9BaYOmMT735CCtsJD2lujQWU93MXIgb7/5lb0u
-FzYH5lpWnqeP8NJnLplr9g2LG7ucE4IjUoKjp5OHEwv798HWUILmCK4TZRWDwrGx
-cV7a7p0jXiRgkw5haBA7zs3bjYo0p7k46F+6CZFznQEndOKReOsiYT9kdr53V2qK
-sjleNX8U24LXgPeTibUkCfDsk2o9vbB0qd07Afc4div8Blm3pUbd/g1XxTdJsv4a
-zX3GoEXnpt5VB6qK13EN
-=kqAD
------END PGP SIGNATURE-----
+5/ Tell the nvmem framework the name of the subnode containing nvmem
+   cell definitions (if NULL that means cells are directly defined
+   under the nvmem provider node). We would set it to "nvmem-cells" (or
+   whatever you like) for the MTD case.
 
---Sig_/TQqb4/k1M=FtYu85dR=ch4z--
+There are probably other options (some were proposed by Alban and
+Srinivas already), but I'd like to get this sorted out before we merge
+this patch.
+
+Alban, Srinivas, any opinion?
