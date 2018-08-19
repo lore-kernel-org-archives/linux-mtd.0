@@ -1,47 +1,35 @@
-Date: Sun, 19 Aug 2018 13:26:15 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Stefan Agner <stefan@agner.ch>
-Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
- <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>, Lukasz Majewski
- <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
- <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Aaro
- Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- Alexander Clouter <alex@digriz.org.uk>, Jason Cooper
- <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
- <sebastian.hesselbarth@gmail.com>, Gregory Clement
- <gregory.clement@bootlin.com>, Daniel Mack <daniel@zonque.org>, Haojian
- Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Yoshinori
- Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org, Wan ZongShun
- <mcuos.com@gmail.com>, Neil Armstrong <narmstrong@baylibre.com>, Maxim
- Levitsky <maximlevitsky@gmail.com>, Maxime Ripard
- <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH 08/23] mtd: rawnand: Pass a nand_chip object to
- ecc->read_xxx() hooks
-Message-ID: <20180819132615.6c090d12@bbrezillon>
-In-Reply-To: <c08c6ecf720cc6b242094246b2f296c3@agner.ch>
-References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
- <20180817160922.6224-9-boris.brezillon@bootlin.com>
- <c08c6ecf720cc6b242094246b2f296c3@agner.ch>
+Date: Sun, 19 Aug 2018 13:31:06 +0200
+From: Alban <albeu@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Aban Bedel <albeu@free.fr>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin
+ Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Arnd
+ Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Naren <naren.kernel@gmail.com>, Mauro
+ Carvalho Chehab <mchehab+samsung@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>, Dan Carpenter
+ <dan.carpenter@oracle.com>, Florian Fainelli <f.fainelli@gmail.com>, Ivan
+ Khoronzhuk <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck
+ <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
+ <robh@kernel.org>, David Lechner <david@lechnology.com>, Andrew Lunn
+ <andrew@lunn.ch>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+ netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
+ the nvmem API
+Message-ID: <20180819133106.0420df5f@tock>
+In-Reply-To: <20180817182720.6a6e5e8e@bbrezillon>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-7-brgl@bgdev.pl>
+ <20180817182720.6a6e5e8e@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/TQqb4/k1M=FtYu85dR=ch4z"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,39 +39,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+--Sig_/TQqb4/k1M=FtYu85dR=ch4z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 18 Aug 2018 10:30:13 +0200
-Stefan Agner <stefan@agner.ch> wrote:
+On Fri, 17 Aug 2018 18:27:20 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> > diff --git a/drivers/mtd/nand/raw/tegra_nand.c
-> > b/drivers/mtd/nand/raw/tegra_nand.c
-> > index 5dcee20e2a8c..bcc3a2888c4f 100644
-> > --- a/drivers/mtd/nand/raw/tegra_nand.c
-> > +++ b/drivers/mtd/nand/raw/tegra_nand.c
-> > @@ -615,10 +615,10 @@ static int tegra_nand_page_xfer(struct mtd_info
-> > *mtd, struct nand_chip *chip,
-> >  	return ret;
-> >  }
-> >  
-> > -static int tegra_nand_read_page_raw(struct mtd_info *mtd,
-> > -				    struct nand_chip *chip, u8 *buf,
-> > +static int tegra_nand_read_page_raw(struct nand_chip *chip, u8 *buf,
-> >  				    int oob_required, int page)
-> >  {
-> > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> >  	void *oob_buf = oob_required ? chip->oob_poi : NULL;
-> >  
-> >  	return tegra_nand_page_xfer(mtd, chip, buf, oob_buf,  
-> 
-> Since mtd is only required to pass it to tegra_nand_page_xfer, it would
-> be better to change tegra_nand_page_xfer to only take chip.
+> Hi Bartosz,
+>=20
+> On Fri, 10 Aug 2018 10:05:03 +0200
+> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>=20
+> > From: Alban Bedel <albeu@free.fr>
+> >=20
+> > Allow drivers that use the nvmem API to read data stored on MTD devices.
+> > For this the mtd devices are registered as read-only NVMEM providers.
+> >=20
+> > Signed-off-by: Alban Bedel <albeu@free.fr>
+> > [Bartosz:
+> >   - use the managed variant of nvmem_register(),
+> >   - set the nvmem name]
+> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com> =20
+>=20
+> What happened to the 2 other patches of Alban's series? I'd really
+> like the DT case to be handled/agreed on in the same patchset, but
+> IIRC, Alban and Srinivas disagreed on how this should be represented.
+> I hope this time we'll come to an agreement, because the MTD <-> NVMEM
+> glue has been floating around for quite some time...
 
-For sure, but that's the sort of cleanups I'll leave to NAND controller
-driver maintainers (in this case you ;-)). I only take care of the NAND
-API here and try to make things as simple as possible to ease review and
-avoid breaking drivers. 
+These other patches were to fix what I consider a fundamental flaw in
+the generic NVMEM bindings, however we couldn't agree on this point.
+Bartosz later contacted me to take over this series and I suggested to
+just change the MTD NVMEM binding to use a compatible string on the
+NVMEM cells as an alternative solution to fix the clash with the old
+style MTD partition.
 
-Regards,
+However all this has no impact on the code needed to add NVMEM support
+to MTD, so the above patch didn't change at all.
 
-Boris
+Alban
+
+--Sig_/TQqb4/k1M=FtYu85dR=ch4z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJbeVT7AAoJEHSUmkuduC28SdMP/3+kDayzSjsABxnvDQU4p5lQ
+NA13kysUhSl4DlckghrBsgoq9/Jwg+jFjOWflojpHLDKAWpQyzZQU/pd+M99JorF
+StfVexTlBJqB0gz0wOktfK2XCspxhXSlUa5oWKPDdvVPPNNdVDhfNaQXo6m1SWPg
+DH4Dqmc58UUX0VtLVjPscQLECINAbhvb0T6axgnyev7GXhoV8BJGZs9D+Ap3MAUW
+afsXgaAOaQ8W8W14m8KJ3FsJnj78vXVKoZSbWDvhAt67gt8nN/7SMtEx/vT1ceYD
+vlaWHNMi/6Vsx4SsrdfP2OD9mjj17J61UFjtdXgJDLMgX+Xligr+/uGJSYSCXCwD
+skxKnfs9B391RVeH76q1fIFE1sTBNTO7/3uwl9zF5vDKoPrLtVEu8RpN0SDxZMHJ
+qQy05vA8FoG33IeUAUQ0URiDHH9BaYOmMT735CCtsJD2lujQWU93MXIgb7/5lb0u
+FzYH5lpWnqeP8NJnLplr9g2LG7ucE4IjUoKjp5OHEwv798HWUILmCK4TZRWDwrGx
+cV7a7p0jXiRgkw5haBA7zs3bjYo0p7k46F+6CZFznQEndOKReOsiYT9kdr53V2qK
+sjleNX8U24LXgPeTibUkCfDsk2o9vbB0qd07Afc4div8Blm3pUbd/g1XxTdJsv4a
+zX3GoEXnpt5VB6qK13EN
+=kqAD
+-----END PGP SIGNATURE-----
+
+--Sig_/TQqb4/k1M=FtYu85dR=ch4z--
