@@ -1,34 +1,25 @@
-Date: Sun, 19 Aug 2018 18:46:09 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Alban <albeu@free.fr>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
- Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>, "David S . Miller"
- <davem@davemloft.net>, Naren <naren.kernel@gmail.com>, Mauro Carvalho
- Chehab <mchehab+samsung@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>, Dan Carpenter
- <dan.carpenter@oracle.com>, Florian Fainelli <f.fainelli@gmail.com>, Ivan
- Khoronzhuk <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck
- <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
- <robh@kernel.org>, David Lechner <david@lechnology.com>, Andrew Lunn
- <andrew@lunn.ch>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
- the nvmem API
-Message-ID: <20180819184609.6dcdbb9a@bbrezillon>
-In-Reply-To: <20180819133106.0420df5f@tock>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl>
- <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]
+ helo=smtp.smtpout.orange.fr)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1frTXM-0004Td-0s
+ for linux-mtd@lists.infradead.org; Sun, 19 Aug 2018 19:38:57 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Sergey Larin <cerg2010cerg2010@mail.ru>
+Subject: Re: [PATCH v2 2/4] ARM: pxa: palmtreo: Drop docg4 specific init
+References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
+ <20180804205923.25298-2-boris.brezillon@bootlin.com>
+Date: Sun, 19 Aug 2018 21:38:30 +0200
+In-Reply-To: <20180804205923.25298-2-boris.brezillon@bootlin.com> (Boris
+ Brezillon's message of "Sat, 4 Aug 2018 22:59:21 +0200")
+Message-ID: <87d0ue9mfd.fsf@belgarion.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,84 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 19 Aug 2018 13:31:06 +0200
-Alban <albeu@free.fr> wrote:
+Boris Brezillon <boris.brezillon@bootlin.com> writes:
 
-> On Fri, 17 Aug 2018 18:27:20 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> 
-> > Hi Bartosz,
-> > 
-> > On Fri, 10 Aug 2018 10:05:03 +0200
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >   
-> > > From: Alban Bedel <albeu@free.fr>
-> > > 
-> > > Allow drivers that use the nvmem API to read data stored on MTD devices.
-> > > For this the mtd devices are registered as read-only NVMEM providers.
-> > > 
-> > > Signed-off-by: Alban Bedel <albeu@free.fr>
-> > > [Bartosz:
-> > >   - use the managed variant of nvmem_register(),
-> > >   - set the nvmem name]
-> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>    
-> > 
-> > What happened to the 2 other patches of Alban's series? I'd really
-> > like the DT case to be handled/agreed on in the same patchset, but
-> > IIRC, Alban and Srinivas disagreed on how this should be represented.
-> > I hope this time we'll come to an agreement, because the MTD <-> NVMEM
-> > glue has been floating around for quite some time...  
-> 
-> These other patches were to fix what I consider a fundamental flaw in
-> the generic NVMEM bindings, however we couldn't agree on this point.
-> Bartosz later contacted me to take over this series and I suggested to
-> just change the MTD NVMEM binding to use a compatible string on the
-> NVMEM cells as an alternative solution to fix the clash with the old
-> style MTD partition.
-> 
-> However all this has no impact on the code needed to add NVMEM support
-> to MTD, so the above patch didn't change at all.
+> The docg4 driver has been removed. Remove the code that was registering
+> a docg4 device.
+>
+> Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+No answer for several weeks from the maintainers, so let's say they lost
+interest.
 
-It does have an impact on the supported binding though.
-nvmem->dev.of_node is automatically assigned to mtd->dev.of_node, which
-means people will be able to define their NVMEM cells directly under
-the MTD device and reference them from other nodes (even if it's not
-documented), and as you said, it conflict with the old MTD partition
-bindings. So we'd better agree on this binding before merging this
-patch.
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-I see several options:
+Cheers.
 
-1/ provide a way to tell the NVMEM framework not to use parent->of_node
-   even if it's != NULL. This way we really don't support defining
-   NVMEM cells in the DT, and also don't support referencing the nvmem
-   device using a phandle.
-
-2/ define a new binding where all nvmem-cells are placed in an
-   "nvmem" subnode (just like we have this "partitions" subnode for
-   partitions), and then add a config->of_node field so that the
-   nvmem provider can explicitly specify the DT node representing the
-   nvmem device. We'll also need to set this field to ERR_PTR(-ENOENT)
-   in case this node does not exist so that the nvmem framework knows
-   that it should not assign nvmem->dev.of_node to parent->of_node
-
-3/ only declare partitions as nvmem providers. This would solve the
-   problem we have with partitions defined in the DT since
-   defining sub-partitions in the DT is not (yet?) supported and
-   partition nodes are supposed to be leaf nodes. Still, I'm not a big
-   fan of this solution because it will prevent us from supporting
-   sub-partitions if we ever want/need to.
-
-4/ Add a ->of_xlate() hook that would be called if present by the
-   framework instead of using the default parsing we have right now.
-
-5/ Tell the nvmem framework the name of the subnode containing nvmem
-   cell definitions (if NULL that means cells are directly defined
-   under the nvmem provider node). We would set it to "nvmem-cells" (or
-   whatever you like) for the MTD case.
-
-There are probably other options (some were proposed by Alban and
-Srinivas already), but I'd like to get this sorted out before we merge
-this patch.
-
-Alban, Srinivas, any opinion?
+-- 
+Robert
