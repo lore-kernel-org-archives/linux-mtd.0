@@ -1,14 +1,14 @@
 Received: from out1.zte.com.cn ([202.103.147.172] helo=mxct.zte.com.cn)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frbIk-00081L-SC
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 03:56:24 +0000
+ id 1frdQE-0002RZ-Eb
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 06:12:16 +0000
 From: Liu Song <liu.song11@zte.com.cn>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com
+To: dedekind1@gmail.com, richard@nod.at
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
  liu.song11@zte.com.cn, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
-Subject: [PATCH] UBIFS: Fix typo of output in get_cs_sqnum
-Date: Mon, 20 Aug 2018 11:54:30 +0800
-Message-Id: <1534737270-143176-1-git-send-email-liu.song11@zte.com.cn>
+Subject: [PATCH] mtd/ubi: Make sure to read volume record from LEB 0 or LEB 1
+Date: Mon, 20 Aug 2018 14:09:05 +0800
+Message-Id: <1534745345-175434-1-git-send-email-liu.song11@zte.com.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Not a CS node" makes more sense than "Node a CS node".
+From: fishland <liu.song11@zte.com.cn>
+
+Even though we protect on-flash data by CRC checksums,
+we still don't trust the media. If lnum is not 0 or 1,
+access exceed array boundary can lead to bad situation.
 
 Signed-off-by: Liu Song <liu.song11@zte.com.cn>
 Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
 ---
- fs/ubifs/recovery.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/ubi/vtbl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 3af4472061cc..400163dc7022 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -829,7 +829,7 @@ static int get_cs_sqnum(struct ubifs_info *c, int lnum, int offs,
- 		goto out_err;
- 	}
- 	if (cs_node->ch.node_type != UBIFS_CS_NODE) {
--		ubifs_err(c, "Node a CS node, type is %d", cs_node->ch.node_type);
-+		ubifs_err(c, "Not a CS node, type is %d", cs_node->ch.node_type);
- 		goto out_err;
- 	}
- 	if (le64_to_cpu(cs_node->cmt_no) != c->cmt_no) {
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 94d7a86..64a2937 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -410,6 +410,10 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
+ 
+ 	/* Read both LEB 0 and LEB 1 into memory */
+ 	ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb) {
++		if (aeb->lnum != 0 && aeb->lnum != 1) {
++			ubi_warn(ubi, "volume store in LEB %d", aeb->lnum);
++			continue;
++		}
+ 		leb[aeb->lnum] = vzalloc(ubi->vtbl_size);
+ 		if (!leb[aeb->lnum]) {
+ 			err = -ENOMEM;
 -- 
-2.17.1
+2.1.0.GIT
