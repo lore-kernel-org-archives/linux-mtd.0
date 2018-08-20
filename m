@@ -1,42 +1,20 @@
-Date: Mon, 20 Aug 2018 21:06:21 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Alban
- <albeu@free.fr>, Jonathan Corbet <corbet@lwn.net>, Sekhar Nori
- <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>, Russell King
- <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Grygorii Strashko
- <grygorii.strashko@ti.com>, "David S . Miller" <davem@davemloft.net>, Naren
- <naren.kernel@gmail.com>, Mauro Carvalho Chehab
- <mchehab+samsung@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Lukas Wunner <lukas@wunner.de>, Dan Carpenter <dan.carpenter@oracle.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Ivan Khoronzhuk
- <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck <svendev@arcx.com>, Paolo
- Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, David Lechner
- <david@lechnology.com>, Andrew Lunn <andrew@lunn.ch>, linux-doc
- <linux-doc@vger.kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux ARM
- <linux-arm-kernel@lists.infradead.org>, linux-i2c
- <linux-i2c@vger.kernel.org>, "open list:MEMORY TECHNOLOGY..."
- <linux-mtd@lists.infradead.org>, Linux-OMAP <linux-omap@vger.kernel.org>,
- netdev <netdev@vger.kernel.org>, Bartosz Golaszewski
- <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
- the nvmem API
-Message-ID: <20180820210621.5ffe3866@bbrezillon>
-In-Reply-To: <CAMRc=McwEjofZKP93DxPa8vJLE6NceLLGfcbcK9-Pfk-dav_Zg@mail.gmail.com>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl>
- <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
- <20180819184609.6dcdbb9a@bbrezillon>
- <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
- <20180820202038.5d3dc195@bbrezillon>
- <CAMRc=McwEjofZKP93DxPa8vJLE6NceLLGfcbcK9-Pfk-dav_Zg@mail.gmail.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1frqhZ-0006P8-IU
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 20:23:03 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Liu Song <liu.song11@zte.com.cn>
+Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
+Subject: Re: [PATCH] mtd/ubi: Make sure to read volume record from LEB 0 or
+ LEB 1
+Date: Mon, 20 Aug 2018 22:21:46 +0200
+Message-ID: <1543610.baP53LZD3X@blindfold>
+In-Reply-To: <1534745345-175434-1-git-send-email-liu.song11@zte.com.cn>
+References: <1534745345-175434-1-git-send-email-liu.song11@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,72 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 20 Aug 2018 20:50:55 +0200
-Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Lui Song,
 
-> 2018-08-20 20:20 GMT+02:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> > On Mon, 20 Aug 2018 11:43:34 +0100
-> > Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> >  
-> >>
-> >> Overall am still not able to clear visualize on how MTD bindings with
-> >> nvmem cells would look in both partition and un-partition usecases?
-> >> An example DT would be nice here!!  
-> >
-> > Something along those lines:
-> >
-> >         mtdnode {
-> >                 nvmem-cells {
-> >                         #address-cells = <1>;
-> >                         #size-cells = <1>;
-> >
-> >                         cell@0 {
-> >                                 reg = <0x0 0x14>;
-> >                         };
-> >                 };
-> >
-> >                 partitions {
-> >                         compatible = "fixed-partitions";
-> >                         #address-cells = <1>;
-> >                         #size-cells = <1>;
-> >
-> >                         partition@0 {
-> >                                 reg = <0x0 0x20000>;
-> >
-> >                                 nvmem-cells {
-> >                                         #address-cells = <1>;
-> >                                         #size-cells = <1>;
-> >
-> >                                         cell@0 {
-> >                                                 reg = <0x0 0x10>;
-> >                                         };
-> >                                 };
-> >                         };
-> >                 };
-> >         };  
-> 
-> If there'll be an agreement on the bindings: will you be willing to
-> merge Alban's patch even without support in the code for the above
-> (with the assumption that it will be added later)?
+Am Montag, 20. August 2018, 08:09:05 CEST schrieb Liu Song:
+> From: fishland <liu.song11@zte.com.cn>
 
-No, because Alban's patch actually allows people to define and
-reference nvmem cells in a DT, but without documenting it (see my first
-reply).
+Please use your real name. 1st Signed-off-by and patch author should match.
+ 
+> Even though we protect on-flash data by CRC checksums,
+> we still don't trust the media. If lnum is not 0 or 1,
+> access exceed array boundary can lead to bad situation.
 
-> My use-case is on
-> non-DT systems and creating nvmem devices corresponding to MTD
-> partitions if fine by me.
+Good find! I'll queue this for the next fixes-pull-request.
 
-What you propose is option #1 in my list of proposals, and it requires
-some changes to avoid automatically assigning nvmem->dev.of_node to
-parent->of_node (which will be != NULL when the MTD device has been
-instantiated from a DT node).
-
-> I also don't have the means to test the
-> support for these bindings if I were to actually write them myself.
-
-And that's the very reason I proposed #1. I don't want to block this
-stuff, but in its current state, I'm not willing to accept it either.
-Either we agree on the binding and patch the nvmem framework to support
-this new binding, or we find a way to hide the fact that the mtd
-device (the nvmem parent) has a DT node attached to it.
+Thanks,
+//richard
