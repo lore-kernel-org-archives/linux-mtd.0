@@ -1,22 +1,23 @@
-Received: from callisto.digivation.com.au ([198.35.45.124])
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frYGl-0007BG-Eh
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 00:42:09 +0000
-Subject: Re: [RFC PATCH] UBI fixable bit-flip issue
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>
-References: <1bcbe82a-85e5-52f8-dc54-9d22e5b390fa@digivation.com.au>
- <20180817102559.7ab14fd9@bbrezillon>
- <227ad167-4e57-638d-a4cb-1e82613de2bc@digivation.com.au>
- <20180817165322.61958720@bbrezillon> <20180817172246.45fa784c@bbrezillon>
-From: Mark Spieth <mspieth@digivation.com.au>
-Message-ID: <32f5f211-5ae3-6088-ba38-b7ebb7e24f8e@digivation.com.au>
-Date: Mon, 20 Aug 2018 10:40:14 +1000
+ id 1fraqb-0005Ku-TR
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 03:27:20 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Dinh Nguyen <dinguyen@kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: nand: denali: use SPDX-License-Identifier and fix
+ license mismatch
+Date: Mon, 20 Aug 2018 12:26:36 +0900
+Message-Id: <1534735596-10876-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-In-Reply-To: <20180817172246.45fa784c@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +27,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Use SPDX-License-Identifier instead of the license boilerplates.
 
-On 18/08/18 01:22, Boris Brezillon wrote:
-> On Fri, 17 Aug 2018 16:53:22 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->
->> On Sat, 18 Aug 2018 00:33:25 +1000
->> Mark Spieth <mspieth@digivation.com.au> wrote:
->>
->>>>> I hope this description is clear enough.
->>>> Well, I think selecting the bitflip threshold properly is really
->>>> important, simply because some NANDs (including SLC NANDs) are showing
->>>> bitflips even on blocks that have a low EC. Check the NAND ECC
->>>> requirements, and if it's something like 8bit/512bytes, I guess that's
->>>> more or less expected (it all depends on how many bitflips you have in
->>>> the faulty block). It's less likely on NANDs requiring 1bit/512bytes
->>>> ECC, and if that happens on such NANDs, you may have a problem in the
->>>> controller driver.
->>> 4 bits ECC per 512 bytes, from memory 28 bytes in OOB, using software
->>> ECC in the MTD driver.
->>> As I said, I believe the better threshold is hiding the root cause. It
->>> is only a band-aid.
->> What you describe will anyway happen sooner or later: if you're using
->> almost al LEBs, and the remaining free ones are all impacted by the
->> correctable bit-flip issue you'll have to use them anyway. So, yes,
->> this is a band-aid, just like your solution is just improving things
->> but not really solving the issue. This being said, if the blocks
->> really show too many bitflips, they should be marked bad at some point,
->> because during the scrubbing process we do write a pattern and check
->> that we can read it back. I'll have to double check, but I think we're
->> also checking for EUCLEAN and mark the block bad when that happens.
-> Hm, actually we're not torturing the source PEB when moving a LEB
-> because of bitflips (probably because it's expensive and tends to wear
-> the block even faster) :-/. The destination PEB is tortured if we fail
-> to read the VID header back, which is definitely not a guarantee that
-> other data are readable or do not contain too much bitflips.
->
-> There's definitely something to improve there.
-Hi Boris,
+This conversion makes it easier for us to scan the license, then
+I notice license mismatch problems.
 
-The flash in use is a Macronix MX30LF1G18AC and uses ONFI mode.
+The license blocks in denali* indicate GPL-2.0 "only", while the
+MODULE_LICENSE in denali.c and denali_dt.c is GPL-2.0 "or later"
+as explained in include/linux/module.h as follows:
 
-My understanding of the problem is that when a block is read (say 
-kernel+initrd) and one of the PEBs reads ok but with corrected bit 
-errors, scrub mode is enabled.
-It then finds a suitable PEB to copy it to which it does. It then 
-verifies this copy and also detects a corrected bit error, and frees the 
-PEB it copied it from as it read ok, but with corrected errors. It then 
-finds a suitable PEB to copy it to, and finds the original PEB that it 
-moved it from! Does the whole copy and readback verify with corrected 
-errors. This continues forever (or until the PEB does not verify which 
-could be a while). Naturally the block read never completes.
+  "GPL"                           [GNU Public License v2 or later]
+  "GPL v2"                        [GNU Public License v2]
 
-This is the behaviour I observed in the older driver with lots of print 
-debugging. This may not be the behaviour in the current master, but I 
-suspect it is.
-Some way of detecting this loop in a scrubbing session would be optimal, 
-but seems complex to do from my examination of the UBI scrubber. But it 
-shouldnt require a persisted header change.
+I fixed the MODULE_LICENSE tags, assuming the license blocks are
+the authors' intention.
 
-Regards
-Mark
+Also, add missing MODULE_DESCRIPTION/AUTHOR to denali.c
+
+While I am touching the license things, I added my credit to denali.c
+because this driver was largely re-written by me in 2017.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+ drivers/mtd/nand/raw/denali.c     | 17 +++++++----------
+ drivers/mtd/nand/raw/denali.h     | 10 +---------
+ drivers/mtd/nand/raw/denali_dt.c  | 12 ++----------
+ drivers/mtd/nand/raw/denali_pci.c | 10 +---------
+ 4 files changed, 11 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index ca18612..9f432f0 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1,15 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * NAND Flash Controller Device Driver
+  * Copyright © 2009-2010, Intel Corporation and its suppliers.
+  *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
++ * Copyright (c) 2017 Socionext Inc.
++ *   Reworked by Masahiro Yamada <yamada.masahiro@socionext.com>
+  */
+ 
+ #include <linux/bitfield.h>
+@@ -25,8 +20,6 @@
+ 
+ #include "denali.h"
+ 
+-MODULE_LICENSE("GPL");
+-
+ #define DENALI_NAND_NAME    "denali-nand"
+ 
+ /* for Indexed Addressing */
+@@ -1396,3 +1389,7 @@ void denali_remove(struct denali_nand_info *denali)
+ 	denali_disable_irq(denali);
+ }
+ EXPORT_SYMBOL(denali_remove);
++
++MODULE_DESCRIPTION("Driver core for Denali NAND controller");
++MODULE_AUTHOR("Intel Corporation and its suppliers");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
+index 1f8feaf..57a5498 100644
+--- a/drivers/mtd/nand/raw/denali.h
++++ b/drivers/mtd/nand/raw/denali.h
+@@ -1,15 +1,7 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * NAND Flash Controller Device Driver
+  * Copyright (c) 2009 - 2010, Intel Corporation and its suppliers.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+  */
+ 
+ #ifndef __DENALI_H__
+diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
+index 0faaad0..7c6a8a4 100644
+--- a/drivers/mtd/nand/raw/denali_dt.c
++++ b/drivers/mtd/nand/raw/denali_dt.c
+@@ -1,16 +1,8 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * NAND Flash Controller Device Driver for DT
+  *
+  * Copyright © 2011, Picochip.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+  */
+ 
+ #include <linux/clk.h>
+@@ -202,6 +194,6 @@ static struct platform_driver denali_dt_driver = {
+ };
+ module_platform_driver(denali_dt_driver);
+ 
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Jamie Iles");
+ MODULE_DESCRIPTION("DT driver for Denali NAND controller");
+diff --git a/drivers/mtd/nand/raw/denali_pci.c b/drivers/mtd/nand/raw/denali_pci.c
+index 7c8efc4..48e9ac5 100644
+--- a/drivers/mtd/nand/raw/denali_pci.c
++++ b/drivers/mtd/nand/raw/denali_pci.c
+@@ -1,15 +1,7 @@
++// SPDX-License-Identifier: GPL-2.0
+ /*
+  * NAND Flash Controller Device Driver
+  * Copyright © 2009-2010, Intel Corporation and its suppliers.
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+  */
+ 
+ #include <linux/errno.h>
+-- 
+2.7.4
