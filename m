@@ -1,24 +1,28 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fretr-0001RZ-LF
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 07:46:57 +0000
-Date: Mon, 20 Aug 2018 09:46:30 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Kostya Porotchkin <kostap@marvell.com>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
- <haojian.zhuang@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Mike Dunn <mikedunn@newsguy.com>, Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: Re: [EXT] Re: nand speed test
-Message-ID: <20180820094630.392f050f@xps13>
-In-Reply-To: <1c78935418904123a9cc27a65ec9d3e4@IL-EXCH02.marvell.com>
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1frexY-000328-6R
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 07:50:46 +0000
+From: Kostya Porotchkin <kostap@marvell.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "David
+ Woodhouse" <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
+ "Sergey Larin" <cerg2010cerg2010@mail.ru>
+Subject: RE: [EXT] Re: nand speed test
+Date: Mon, 20 Aug 2018 07:50:06 +0000
+Message-ID: <4c5793b11332407eb9f2b903ee242eab@IL-EXCH02.marvell.com>
 References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
  <20180804205923.25298-2-boris.brezillon@bootlin.com>
  <1c78935418904123a9cc27a65ec9d3e4@IL-EXCH02.marvell.com>
+ <20180820094630.392f050f@xps13>
+In-Reply-To: <20180820094630.392f050f@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +32,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kostya,
-
-Kostya Porotchkin <kostap@marvell.com> wrote on Sun, 19 Aug 2018
-14:12:16 +0000:
-
-> Hi, Miguel,
->=20
-> We clearly have a problem with BBT on this 8K-page NAND.
-> The Linux driver is unable to find BBT after reboot, even if it reports t=
-hat the new table was written upon previous boot.
-> It looks like the u-boot also lost the BBT information after reboot.
-> So something is not yet working well with this 4GB device.
->=20
-> Marvell>> nand info =20
->=20
-> Device 0: nand0, sector size 1024 KiB
->   Page size       8192 b
->   OOB size         448 b
->   Erase size   1048576 b
->   subpagesize     8192 b
->   options     0x     200
->   bbt options 0x   a0000
-> Marvell>> nand bad =20
->=20
-> Device 0 bad blocks:
->   ff800000
->   ff900000
->   ffa00000
->   ffb00000
->   ffc00000
->   ffd00000
->   ffe00000
->   fff00000
-
-This enlarging list is very likely to show a mismatch between U-Boot
-and Linux ECC configuration, you should check that first. It will
-probably explain why BBT is not recognized.
-
-Thanks,
-Miqu=C3=A8l
+SGksIE1pZ3VlbCwNCg0KSSBzZWUgdGhlIHNhbWUgaXNzdWUgaW4gdS1ib290Lg0KV2hlbiBJIHJ1
+biAibmFuZCBiYWQiLCBpdCB0YWtlcyBzb21lIHRpbWUgdG8gc2NhbiBhbmQgd3JpdGUgdGhlIEJC
+VCwgc28gdGhlIHNlY29uZCBjYWxsIHRvIHRoaXMgZnVuY3Rpb24gcmV0dXJucyBmYXN0IChJIGJl
+bGlldmUgdGhlIEJCVCBpcyBjYWNoZWQgaW4gRFJBTSkuDQpIb3dldmVyIGFmdGVyIHJlc2V0IHRo
+ZSAibmFuZCBiYWQiIGFnYWluIHRha2VzIHRpbWUgdG8gcmV0dXJuLCBzbyBJIGJlbGlldmUgdGhl
+IEJCVCB3YXMgbm90IHdyaXR0ZW4gaW4gcHJldmlvdXMgc2Vzc2lvbi4NCg0KUmVnYXJkcw0KS29z
+dGENCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaXF1ZWwgUmF5bmFs
+IFttYWlsdG86bWlxdWVsLnJheW5hbEBib290bGluLmNvbV0NCj4gU2VudDogTW9uZGF5LCBBdWd1
+c3QgMjAsIDIwMTggMTA6NDcNCj4gVG86IEtvc3R5YSBQb3JvdGNoa2luIDxrb3N0YXBAbWFydmVs
+bC5jb20+DQo+IENjOiBEYW5pZWwgTWFjayA8ZGFuaWVsQHpvbnF1ZS5vcmc+OyBIYW9qaWFuIFpo
+dWFuZw0KPiA8aGFvamlhbi56aHVhbmdAZ21haWwuY29tPjsgUmljaGFyZCBXZWluYmVyZ2VyIDxy
+aWNoYXJkQG5vZC5hdD47IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgRGF2aWQg
+V29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPjsNCj4gQnJpYW4gTm9ycmlzIDxjb21wdXRl
+cnNmb3JwZWFjZUBnbWFpbC5jb20+OyBNYXJlayBWYXN1dA0KPiA8bWFyZWsudmFzdXRAZ21haWwu
+Y29tPjsgTWlrZSBEdW5uIDxtaWtlZHVubkBuZXdzZ3V5LmNvbT47IFNlcmdleQ0KPiBMYXJpbiA8
+Y2VyZzIwMTBjZXJnMjAxMEBtYWlsLnJ1Pg0KPiBTdWJqZWN0OiBSZTogW0VYVF0gUmU6IG5hbmQg
+c3BlZWQgdGVzdA0KPiANCj4gSGkgS29zdHlhLA0KPiANCj4gS29zdHlhIFBvcm90Y2hraW4gPGtv
+c3RhcEBtYXJ2ZWxsLmNvbT4gd3JvdGUgb24gU3VuLCAxOSBBdWcgMjAxOA0KPiAxNDoxMjoxNiAr
+MDAwMDoNCj4gDQo+ID4gSGksIE1pZ3VlbCwNCj4gPg0KPiA+IFdlIGNsZWFybHkgaGF2ZSBhIHBy
+b2JsZW0gd2l0aCBCQlQgb24gdGhpcyA4Sy1wYWdlIE5BTkQuDQo+ID4gVGhlIExpbnV4IGRyaXZl
+ciBpcyB1bmFibGUgdG8gZmluZCBCQlQgYWZ0ZXIgcmVib290LCBldmVuIGlmIGl0IHJlcG9ydHMg
+dGhhdA0KPiB0aGUgbmV3IHRhYmxlIHdhcyB3cml0dGVuIHVwb24gcHJldmlvdXMgYm9vdC4NCj4g
+PiBJdCBsb29rcyBsaWtlIHRoZSB1LWJvb3QgYWxzbyBsb3N0IHRoZSBCQlQgaW5mb3JtYXRpb24g
+YWZ0ZXIgcmVib290Lg0KPiA+IFNvIHNvbWV0aGluZyBpcyBub3QgeWV0IHdvcmtpbmcgd2VsbCB3
+aXRoIHRoaXMgNEdCIGRldmljZS4NCj4gPg0KPiA+IE1hcnZlbGw+PiBuYW5kIGluZm8NCj4gPg0K
+PiA+IERldmljZSAwOiBuYW5kMCwgc2VjdG9yIHNpemUgMTAyNCBLaUINCj4gPiAgIFBhZ2Ugc2l6
+ZSAgICAgICA4MTkyIGINCj4gPiAgIE9PQiBzaXplICAgICAgICAgNDQ4IGINCj4gPiAgIEVyYXNl
+IHNpemUgICAxMDQ4NTc2IGINCj4gPiAgIHN1YnBhZ2VzaXplICAgICA4MTkyIGINCj4gPiAgIG9w
+dGlvbnMgICAgIDB4ICAgICAyMDANCj4gPiAgIGJidCBvcHRpb25zIDB4ICAgYTAwMDANCj4gPiBN
+YXJ2ZWxsPj4gbmFuZCBiYWQNCj4gPg0KPiA+IERldmljZSAwIGJhZCBibG9ja3M6DQo+ID4gICBm
+ZjgwMDAwMA0KPiA+ICAgZmY5MDAwMDANCj4gPiAgIGZmYTAwMDAwDQo+ID4gICBmZmIwMDAwMA0K
+PiA+ICAgZmZjMDAwMDANCj4gPiAgIGZmZDAwMDAwDQo+ID4gICBmZmUwMDAwMA0KPiA+ICAgZmZm
+MDAwMDANCj4gDQo+IFRoaXMgZW5sYXJnaW5nIGxpc3QgaXMgdmVyeSBsaWtlbHkgdG8gc2hvdyBh
+IG1pc21hdGNoIGJldHdlZW4gVS1Cb290IGFuZA0KPiBMaW51eCBFQ0MgY29uZmlndXJhdGlvbiwg
+eW91IHNob3VsZCBjaGVjayB0aGF0IGZpcnN0LiBJdCB3aWxsIHByb2JhYmx5IGV4cGxhaW4NCj4g
+d2h5IEJCVCBpcyBub3QgcmVjb2duaXplZC4NCj4gDQo+IFRoYW5rcywNCj4gTWlxdcOobA0K
