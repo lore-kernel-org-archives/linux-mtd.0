@@ -1,28 +1,48 @@
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frexY-000328-6R
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 07:50:46 +0000
-From: Kostya Porotchkin <kostap@marvell.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Richard Weinberger <richard@nod.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "David
- Woodhouse" <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
- "Sergey Larin" <cerg2010cerg2010@mail.ru>
-Subject: RE: [EXT] Re: nand speed test
-Date: Mon, 20 Aug 2018 07:50:06 +0000
-Message-ID: <4c5793b11332407eb9f2b903ee242eab@IL-EXCH02.marvell.com>
-References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
- <20180804205923.25298-2-boris.brezillon@bootlin.com>
- <1c78935418904123a9cc27a65ec9d3e4@IL-EXCH02.marvell.com>
- <20180820094630.392f050f@xps13>
-In-Reply-To: <20180820094630.392f050f@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Date: Mon, 20 Aug 2018 09:57:47 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, Lukasz Majewski
+ <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Aaro
+ Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Alexander
+ Clouter <alex@digriz.org.uk>, Jason Cooper <jason@lakedaemon.net>, Andrew
+ Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Gregory Clement
+ <gregory.clement@bootlin.com>, Daniel Mack <daniel@zonque.org>, Haojian
+ Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Yoshinori
+ Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Han
+ Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Xiaolei
+ Li <xiaolei.li@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org, Wan ZongShun <mcuos.com@gmail.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
+ Rullgard <mans@mansr.com>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org
+Subject: Re: [PATCH 08/23] mtd: rawnand: Pass a nand_chip object to
+ ecc->read_xxx() hooks
+In-Reply-To: <20180819132615.6c090d12@bbrezillon>
+References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
+ <20180817160922.6224-9-boris.brezillon@bootlin.com>
+ <c08c6ecf720cc6b242094246b2f296c3@agner.ch>
+ <20180819132615.6c090d12@bbrezillon>
+Message-ID: <f75fc1c2e3c70cdb6c2f9ca2dbba3f2f@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,39 +52,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksIE1pZ3VlbCwNCg0KSSBzZWUgdGhlIHNhbWUgaXNzdWUgaW4gdS1ib290Lg0KV2hlbiBJIHJ1
-biAibmFuZCBiYWQiLCBpdCB0YWtlcyBzb21lIHRpbWUgdG8gc2NhbiBhbmQgd3JpdGUgdGhlIEJC
-VCwgc28gdGhlIHNlY29uZCBjYWxsIHRvIHRoaXMgZnVuY3Rpb24gcmV0dXJucyBmYXN0IChJIGJl
-bGlldmUgdGhlIEJCVCBpcyBjYWNoZWQgaW4gRFJBTSkuDQpIb3dldmVyIGFmdGVyIHJlc2V0IHRo
-ZSAibmFuZCBiYWQiIGFnYWluIHRha2VzIHRpbWUgdG8gcmV0dXJuLCBzbyBJIGJlbGlldmUgdGhl
-IEJCVCB3YXMgbm90IHdyaXR0ZW4gaW4gcHJldmlvdXMgc2Vzc2lvbi4NCg0KUmVnYXJkcw0KS29z
-dGENCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBNaXF1ZWwgUmF5bmFs
-IFttYWlsdG86bWlxdWVsLnJheW5hbEBib290bGluLmNvbV0NCj4gU2VudDogTW9uZGF5LCBBdWd1
-c3QgMjAsIDIwMTggMTA6NDcNCj4gVG86IEtvc3R5YSBQb3JvdGNoa2luIDxrb3N0YXBAbWFydmVs
-bC5jb20+DQo+IENjOiBEYW5pZWwgTWFjayA8ZGFuaWVsQHpvbnF1ZS5vcmc+OyBIYW9qaWFuIFpo
-dWFuZw0KPiA8aGFvamlhbi56aHVhbmdAZ21haWwuY29tPjsgUmljaGFyZCBXZWluYmVyZ2VyIDxy
-aWNoYXJkQG5vZC5hdD47IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgRGF2aWQg
-V29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPjsNCj4gQnJpYW4gTm9ycmlzIDxjb21wdXRl
-cnNmb3JwZWFjZUBnbWFpbC5jb20+OyBNYXJlayBWYXN1dA0KPiA8bWFyZWsudmFzdXRAZ21haWwu
-Y29tPjsgTWlrZSBEdW5uIDxtaWtlZHVubkBuZXdzZ3V5LmNvbT47IFNlcmdleQ0KPiBMYXJpbiA8
-Y2VyZzIwMTBjZXJnMjAxMEBtYWlsLnJ1Pg0KPiBTdWJqZWN0OiBSZTogW0VYVF0gUmU6IG5hbmQg
-c3BlZWQgdGVzdA0KPiANCj4gSGkgS29zdHlhLA0KPiANCj4gS29zdHlhIFBvcm90Y2hraW4gPGtv
-c3RhcEBtYXJ2ZWxsLmNvbT4gd3JvdGUgb24gU3VuLCAxOSBBdWcgMjAxOA0KPiAxNDoxMjoxNiAr
-MDAwMDoNCj4gDQo+ID4gSGksIE1pZ3VlbCwNCj4gPg0KPiA+IFdlIGNsZWFybHkgaGF2ZSBhIHBy
-b2JsZW0gd2l0aCBCQlQgb24gdGhpcyA4Sy1wYWdlIE5BTkQuDQo+ID4gVGhlIExpbnV4IGRyaXZl
-ciBpcyB1bmFibGUgdG8gZmluZCBCQlQgYWZ0ZXIgcmVib290LCBldmVuIGlmIGl0IHJlcG9ydHMg
-dGhhdA0KPiB0aGUgbmV3IHRhYmxlIHdhcyB3cml0dGVuIHVwb24gcHJldmlvdXMgYm9vdC4NCj4g
-PiBJdCBsb29rcyBsaWtlIHRoZSB1LWJvb3QgYWxzbyBsb3N0IHRoZSBCQlQgaW5mb3JtYXRpb24g
-YWZ0ZXIgcmVib290Lg0KPiA+IFNvIHNvbWV0aGluZyBpcyBub3QgeWV0IHdvcmtpbmcgd2VsbCB3
-aXRoIHRoaXMgNEdCIGRldmljZS4NCj4gPg0KPiA+IE1hcnZlbGw+PiBuYW5kIGluZm8NCj4gPg0K
-PiA+IERldmljZSAwOiBuYW5kMCwgc2VjdG9yIHNpemUgMTAyNCBLaUINCj4gPiAgIFBhZ2Ugc2l6
-ZSAgICAgICA4MTkyIGINCj4gPiAgIE9PQiBzaXplICAgICAgICAgNDQ4IGINCj4gPiAgIEVyYXNl
-IHNpemUgICAxMDQ4NTc2IGINCj4gPiAgIHN1YnBhZ2VzaXplICAgICA4MTkyIGINCj4gPiAgIG9w
-dGlvbnMgICAgIDB4ICAgICAyMDANCj4gPiAgIGJidCBvcHRpb25zIDB4ICAgYTAwMDANCj4gPiBN
-YXJ2ZWxsPj4gbmFuZCBiYWQNCj4gPg0KPiA+IERldmljZSAwIGJhZCBibG9ja3M6DQo+ID4gICBm
-ZjgwMDAwMA0KPiA+ICAgZmY5MDAwMDANCj4gPiAgIGZmYTAwMDAwDQo+ID4gICBmZmIwMDAwMA0K
-PiA+ICAgZmZjMDAwMDANCj4gPiAgIGZmZDAwMDAwDQo+ID4gICBmZmUwMDAwMA0KPiA+ICAgZmZm
-MDAwMDANCj4gDQo+IFRoaXMgZW5sYXJnaW5nIGxpc3QgaXMgdmVyeSBsaWtlbHkgdG8gc2hvdyBh
-IG1pc21hdGNoIGJldHdlZW4gVS1Cb290IGFuZA0KPiBMaW51eCBFQ0MgY29uZmlndXJhdGlvbiwg
-eW91IHNob3VsZCBjaGVjayB0aGF0IGZpcnN0LiBJdCB3aWxsIHByb2JhYmx5IGV4cGxhaW4NCj4g
-d2h5IEJCVCBpcyBub3QgcmVjb2duaXplZC4NCj4gDQo+IFRoYW5rcywNCj4gTWlxdcOobA0K
+On 19.08.2018 13:26, Boris Brezillon wrote:
+> Hi Stefan,
+> 
+> On Sat, 18 Aug 2018 10:30:13 +0200
+> Stefan Agner <stefan@agner.ch> wrote:
+> 
+>> > diff --git a/drivers/mtd/nand/raw/tegra_nand.c
+>> > b/drivers/mtd/nand/raw/tegra_nand.c
+>> > index 5dcee20e2a8c..bcc3a2888c4f 100644
+>> > --- a/drivers/mtd/nand/raw/tegra_nand.c
+>> > +++ b/drivers/mtd/nand/raw/tegra_nand.c
+>> > @@ -615,10 +615,10 @@ static int tegra_nand_page_xfer(struct mtd_info
+>> > *mtd, struct nand_chip *chip,
+>> >  	return ret;
+>> >  }
+>> >
+>> > -static int tegra_nand_read_page_raw(struct mtd_info *mtd,
+>> > -				    struct nand_chip *chip, u8 *buf,
+>> > +static int tegra_nand_read_page_raw(struct nand_chip *chip, u8 *buf,
+>> >  				    int oob_required, int page)
+>> >  {
+>> > +	struct mtd_info *mtd = nand_to_mtd(chip);
+>> >  	void *oob_buf = oob_required ? chip->oob_poi : NULL;
+>> >
+>> >  	return tegra_nand_page_xfer(mtd, chip, buf, oob_buf,
+>>
+>> Since mtd is only required to pass it to tegra_nand_page_xfer, it would
+>> be better to change tegra_nand_page_xfer to only take chip.
+> 
+> For sure, but that's the sort of cleanups I'll leave to NAND controller
+> driver maintainers (in this case you ;-)). I only take care of the NAND
+> API here and try to make things as simple as possible to ease review and
+> avoid breaking drivers.
+
+Understand, but that change makes your patch simpler... Or did create
+those patches automatically? In that case it makes sense to avoid manual
+changes.
+
+I can send a follow up patch no problem, but if you do a v2 and did the
+chagnes manually anyway, I really think it can go into this patchset.
+
+--
+Stefan
+ 
