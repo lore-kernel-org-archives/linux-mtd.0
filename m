@@ -1,24 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frjNT-0003pC-BV
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 12:33:48 +0000
-Date: Mon, 20 Aug 2018 14:33:24 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <kyungmin.park@samsung.com>, <absahu@codeaurora.org>,
- <peterpandong@micron.com>, <frieder.schrempf@exceet.de>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <michals@xilinx.com>, <nagasureshkumarrelli@gmail.com>
-Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
- binding documentation
-Message-ID: <20180820143324.61af9027@bbrezillon>
-In-Reply-To: <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+Subject: Re: [PATCH v2 0/3] add support to non-uniform SFDP SPI NOR flash
+ memories
+To: <marek.vasut@gmail.com>
+CC: <cyrille.pitchen@microchip.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nicolas.ferre@microchip.com>, <Cristian.Birsan@microchip.com>
+References: <20180712173235.7901-1-tudor.ambarus@microchip.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <bb6647a7-8d3b-5487-8876-228adfc5ad53@microchip.com>
+Date: Mon, 20 Aug 2018 16:01:36 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180712173235.7901-1-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,107 +24,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Aug 2018 18:49:23 +0530
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+Hi, Marek,
 
-> This patch adds the dts binding document for arasan nand flash
-> controller.
+Did you have the chance to look over these patches? Please advise how can I move
+forward with the non-uniform erase support.
+
+Thanks,
+ta
+
+On 07/12/2018 08:32 PM, Tudor Ambarus wrote:
+> Backward compatibility test done on mx25l3273fm2i-08g.
+> Non-uniform erase test done on sst26vf064b-104i/sn.
 > 
-> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> ---
-> Changes in v10:
-> - None
-> Changes in v9:
-> - None
-> Changes in v8:
-> - Updated compatible and clock-names as per Boris comments
-> Changes in v7:
-> - Corrected the acronyms those should be in caps 
-> changes in v6:
-> - Removed num-cs property
-> - Separated nandchip from nand controller
-> changes in v5:
-> - None
-> Changes in v4:
-> - Added num-cs property
-> - Added clock support
-> Changes in v3:
-> - None
+> Note that in order to do the non-uniform test on the aforementioned memory
+> you'll have to force the spi_nor_has_uniform_erase() to return false, because
+> the erase map is tuned to come back to the uniform case. Also, you'll have to
+> unlock the global protection on the flash. There was an attempt to unlock this
+> protection, but for whatever reason the patch was not taken:
+> https://patchwork.ozlabs.org/patch/544270/. I'm taking care of the
+> global protection lock on sst26vf064b-104i/sn, I will submit a patch soon.
+> 
 > Changes in v2:
-> - None
-> ---
->  .../devicetree/bindings/mtd/arasan_nand.txt        | 38 ++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/arasan_nand.txt
+> - add JESD216B SFDP optional parser: Sector Map Parameter Table parser
+>   and 4-byte Address Instruction Table parser (patch 2/3 and patch 3/3).
+> - fix condition on finding erase regions
+> - fix the list command adding
+> - write_enable(nor); before erasing the sectors
+> - As Boris suggested, remove likely() because it doesn't make any difference
+>   given the time it takes to actually erase the block.
+> - save the Erase Types from bfpt, to determine the Erase Type sizes. Sort all
+>   the map's Erase Types in ascending order with the smallest erase size being
+>   the first member in the erase_type array. Sort Erase Type mask in regions.
+>   We sort the Erase Type by size, at init, in order to speed up the
+>   process of finding the best erase command at run-time.
+> - spi_nor_select_erase(): pass directly info->sector_size instead of the whole
+>   flash_info structure in order to simplify the code.
+> - keep the same convention as most flashes, and order erase types by size with
+>   the smallest Erase Type size starting at index 0/ BIT(0).
+> - return unused function: spi_nor_region_mark_end().
+> - fix return value of spi_nor_has_uniform_erase().
+> - remove setting of mtd->erasesize and nor->erase_opcode when parsing the Basic
+>   Flash Parameter Table. mtd->erasesize was set to the maximum supported Erase
+>   Type size, without verifying if that Erase Type can erase the entire flash.
+>   mtd->erasesize is now set just in spi_nor_select_erase(), after we find which
+>   Erase Types are supported in the uniform case.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/arasan_nand.txt b/Documentation/devicetree/bindings/mtd/arasan_nand.txt
-> new file mode 100644
-> index 0000000..234d7ca
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/arasan_nand.txt
-> @@ -0,0 +1,38 @@
-> +Arasan NAND Flash Controller with ONFI 3.1 support
-> +
-> +Required properties:
-> +- compatible:		Should be "xlnx,zynqmp-nand" or "arasan,nfc-v3p10"
-
-In your example it's not an "or" since both are defined.
-
-> +- reg:			Memory map for module access
-> +- interrupt-parent:	Interrupt controller the interrupt is routed through
-> +- interrupts:		Should contain the interrupt for the device
-> +- clock-name:		List of input clocks - "sys", "flash"
-
-     clock-names
-
-> +			(See clock bindings for details)
-> +- clocks:		Clock phandles (see clock bindings for details)
-> +
-> +Optional properties:
-> +- arasan,has-mdma: Enables DMA support
-
-Can't you detect that based on the compatible (or thanks to a
-register). If it's something you choose when configuring the IP and
-can't detect at runtime I guess it's fine.
-
-> +
-> +For NAND partition information please refer the below file
-> +Documentation/devicetree/bindings/mtd/partition.txt
-> +
-> +Example:
-> +	nand0: nand@ff100000 {
-> +		compatible = "xlnx,zynqmp-nand", "arasan,nfc-v3p10"
-> +		reg = <0x0 0xff100000 0x1000>;
-> +		clock-name = "sys", "flash"
-> +		clocks = <&misc_clk &misc_clk>;
-> +		interrupt-parent = <&gic>;
-> +		interrupts = <0 14 4>;
-> +		arasan,has-mdma;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>
-> +
-> +		nand@0 {
-> +			reg = <0>
-> +			partition@0 {
-> +				label = "filesystem";
-> +				reg = <0x0 0x0 0x1000000>;
-> +			};
-
-Hm, not sure you need to define partitions in this example, but if
-you do, please define your partitions in a 'partitions' subnode:
-
-			partitions {
-				compatible = "fixed-partitions";
-				#address-cells = <1>;
-				#size-cells = <1>;
-
-				partition@0 {
-					reg = <0x0 0x1000000>;
-					...
-				};
-				...
-			};
-
-> +			(...)
-> +		};
-> +	};
+> Changes in v1 or what I've done on top of Cyrille's work (https://lkml.org/lkml/2017/4/15/70):
+> - minimize the amount of erase() calls by using the best sequence of erase
+>   type commands depending on alignment.
+> - build the list of best fitted erase commands to be executed once we
+>   validate that the erase can be performed.
+> - add improvements on how the erase map is handled. The regions are
+>   consecutive in the address space, walk through the regions incrementally.
+> - speed up finding the best erase type command. Order erase types by
+>   size, iterate them from the biggest to the smallest and stop when best
+>   fitted command is found.
+> - determine at init if there are erase types that can erase the entire
+>   memory
+> - fix support for overlaid regions.
+> 
+> Cyrille Pitchen (1):
+>   mtd: spi-nor: parse SFDP 4-byte Address Instruction Table
+> 
+> Tudor Ambarus (2):
+>   mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
+>   mtd: spi-nor: parse SFDP Sector Map Parameter Table
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 892 +++++++++++++++++++++++++++++++++++++++---
+>  include/linux/mtd/spi-nor.h   | 120 ++++++
+>  2 files changed, 954 insertions(+), 58 deletions(-)
+> 
