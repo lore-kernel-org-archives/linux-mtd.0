@@ -1,33 +1,50 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frfx3-0008Kc-Sn
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 08:54:20 +0000
-Date: Mon, 20 Aug 2018 10:53:55 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: "richard@nod.at" <richard@nod.at>, "absahu@codeaurora.org"
- <absahu@codeaurora.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
- <kyungmin.park@samsung.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>, "peterpandong@micron.com"
- <peterpandong@micron.com>
-Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20180820105355.11bd50a8@bbrezillon>
-In-Reply-To: <MWHPR02MB2623D48B5DBAFCE2B5D03747AF3C0@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20180817195903.49963b25@bbrezillon>
- <MWHPR02MB2623D48B5DBAFCE2B5D03747AF3C0@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Date: Mon, 20 Aug 2018 10:57:14 +0200
+From: Stefan Agner <stefan@agner.ch>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>, Lukasz Majewski
+ <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+ <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Aaro
+ Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Alexander
+ Clouter <alex@digriz.org.uk>, Jason Cooper <jason@lakedaemon.net>, Andrew
+ Lunn <andrew@lunn.ch>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Gregory Clement
+ <gregory.clement@bootlin.com>, Daniel Mack <daniel@zonque.org>, Haojian
+ Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Yoshinori
+ Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
+ <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>, Han
+ Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
+ Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>, Xiaolei
+ Li <xiaolei.li@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org, Wan ZongShun <mcuos.com@gmail.com>, Neil
+ Armstrong <narmstrong@baylibre.com>, Maxim Levitsky
+ <maximlevitsky@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>,
+ Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans
+ Rullgard <mans@mansr.com>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org
+Subject: Re: [PATCH 08/23] mtd: rawnand: Pass a nand_chip object to
+ ecc->read_xxx() hooks
+In-Reply-To: <20180820100919.47f89927@bbrezillon>
+References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
+ <20180817160922.6224-9-boris.brezillon@bootlin.com>
+ <c08c6ecf720cc6b242094246b2f296c3@agner.ch>
+ <20180819132615.6c090d12@bbrezillon>
+ <f75fc1c2e3c70cdb6c2f9ca2dbba3f2f@agner.ch>
+ <20180820100919.47f89927@bbrezillon>
+Message-ID: <9ddc83bdad2a21d7317496e08ed82cdf@agner.ch>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,144 +54,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 18 Aug 2018 05:49:32 +0000
-Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
-
-> Hi Boris,
+On 20.08.2018 10:09, Boris Brezillon wrote:
+> Hi Stefan,
 > 
-> Thanks for the review.
+> On Mon, 20 Aug 2018 09:57:47 +0200
+> Stefan Agner <stefan@agner.ch> wrote:
 > 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Friday, August 17, 2018 11:29 PM
-> > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> > Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> > computersforpeace@gmail.com; marek.vasut@gmail.com; kyungmin.park@samsung.com;
-> > absahu@codeaurora.org; peterpandong@micron.com; frieder.schrempf@exceet.de; linux-
-> > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>;
-> > nagasureshkumarrelli@gmail.com
-> > Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for Arasan
-> > NAND Flash Controller
-> > 
-> > Hi Naga,
-> > 
-> > On Fri, 17 Aug 2018 18:49:24 +0530
-> > Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
-> >   
-> > > +static int anfc_exec_op_cmd(struct nand_chip *chip,
-> > > +				   const struct nand_subop *subop) {
-> > > +	const struct nand_op_instr *instr;
-> > > +	struct anfc_op nfc_op = {};
-> > > +	struct anfc_nand_chip *achip = to_anfc_nand(chip);
-> > > +	struct anfc_nand_controller *nfc = to_anfc(chip->controller);
-> > > +	struct mtd_info *mtd = nand_to_mtd(chip);
-> > > +	u32 addrcycles;
-> > > +	unsigned int op_id, len = 0;
-> > > +	bool reading;
-> > > +
-> > > +	anfc_parse_instructions(chip, subop, &nfc_op);
-> > > +	instr = nfc_op.data_instr;
-> > > +	op_id = nfc_op.data_instr_idx;
-> > > +	if (nfc_op.data_instr)
-> > > +		len = nand_subop_get_data_len(subop, op_id);
-> > > +
-> > > +	/*
-> > > +	 * The switch case is to prepare a command and to set page/column
-> > > +	 * address. Arasan NAND controller has program register(Off: 0x10)),
-> > > +	 * which needs to be set for every command.
-> > > +	 * Ex: When NAND_CMD_RESET is issued, then we need to set reset bit
-> > > +	 * in program_register. etc..
-> > > +	 */
-> > > +	switch (nfc_op.cmnds[0]) {
-> > > +	case NAND_CMD_SEQIN:
-> > > +		addrcycles = achip->raddr_cycles + achip->caddr_cycles;
-> > > +
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], NAND_CMD_PAGEPROG, 1,
-> > > +				 mtd->writesize, addrcycles);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		break;
-> > > +	case NAND_CMD_READOOB:
-> > > +		nfc_op.col += mtd->writesize;
-> > > +	case NAND_CMD_READ0:
-> > > +	case NAND_CMD_READ1:
-> > > +		addrcycles = achip->raddr_cycles + achip->caddr_cycles;
-> > > +		anfc_prepare_cmd(nfc, NAND_CMD_READ0, NAND_CMD_READSTART,  
-> > 1,  
-> > > +				 mtd->writesize, addrcycles);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		if (!nfc_op.data_instr)
-> > > +			return 0;
-> > > +
-> > > +		anfc_read_data_op(mtd, instr->ctx.data.buf.in, len);
-> > > +		break;
-> > > +	case NAND_CMD_RNDOUT:
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], NAND_CMD_RNDOUTSTART, 1,
-> > > +				 mtd->writesize, 2);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		nfc->prog = PROG_PGRD;
-> > > +		break;
-> > > +	case NAND_CMD_PARAM:
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		nfc->prog = PROG_RDPARAM;
-> > > +		break;
-> > > +	case NAND_CMD_READID:
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		nfc->prog = PROG_RDID;
-> > > +		break;
-> > > +	case NAND_CMD_GET_FEATURES:
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		nfc->prog = PROG_GET_FEATURE;
-> > > +		break;
-> > > +	case NAND_CMD_SET_FEATURES:
-> > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
-> > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > > +		nfc->prog = PROG_SET_FEATURE;
-> > > +		break;
-> > > +	case NAND_CMD_ERASE1:
-> > > +		anfc_erase_function(chip, nfc_op);
-> > > +		break;
-> > > +	default:
-> > > +		break;
-> > > +	}  
-> > 
-> > Looks like you have one of these smart controllers where everything is hardcoded and new
-> > commands (like vendor specific commands) can't be supported, and we're back to abusing -  
-> > >exec_op(), just like ->cmdfunc() was abused.  
-> Actually hardcoding commands with ->exec_op() interface in the driver is really looking weird.
-> I agree with that.
-> But as per the spec, for every command, we need to set respective bit in PROG_REG and because
-> Of this, we need to track the commands for each exec_op() call.
-> > 
-> > Don't you have a way to send raw CMD/ADDR/DATA cycles? If not, then we'll have to
-> > consider other options, because I don't want to go back to the situation we are in with -  
-> > >cmdfunc().  
-> As I said above, for each command we need to set a bit in PROG_REG, to initiate the operation.
-> The only conflicting thing is that, setting a respective bit in PROG_REG based on the command
-> Needs command tracking. 
-> > 
-> > Maybe I already asked, but is there a public spec for this IP?  
-> I didn't find any public spec for this IP, but you can find the register data base at below link
-> https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-ultrascale-registers.html
-> and click on NAND.
-> There we have Command Reg(Off: 0x0C) and Program Reg(Off: 0x10), which describes the usage.
+>> On 19.08.2018 13:26, Boris Brezillon wrote:
+>> > Hi Stefan,
+>> >
+>> > On Sat, 18 Aug 2018 10:30:13 +0200
+>> > Stefan Agner <stefan@agner.ch> wrote:
+>> >
+>> >> > diff --git a/drivers/mtd/nand/raw/tegra_nand.c
+>> >> > b/drivers/mtd/nand/raw/tegra_nand.c
+>> >> > index 5dcee20e2a8c..bcc3a2888c4f 100644
+>> >> > --- a/drivers/mtd/nand/raw/tegra_nand.c
+>> >> > +++ b/drivers/mtd/nand/raw/tegra_nand.c
+>> >> > @@ -615,10 +615,10 @@ static int tegra_nand_page_xfer(struct mtd_info
+>> >> > *mtd, struct nand_chip *chip,
+>> >> >  	return ret;
+>> >> >  }
+>> >> >
+>> >> > -static int tegra_nand_read_page_raw(struct mtd_info *mtd,
+>> >> > -				    struct nand_chip *chip, u8 *buf,
+>> >> > +static int tegra_nand_read_page_raw(struct nand_chip *chip, u8 *buf,
+>> >> >  				    int oob_required, int page)
+>> >> >  {
+>> >> > +	struct mtd_info *mtd = nand_to_mtd(chip);
+>> >> >  	void *oob_buf = oob_required ? chip->oob_poi : NULL;
+>> >> >
+>> >> >  	return tegra_nand_page_xfer(mtd, chip, buf, oob_buf,
+>> >>
+>> >> Since mtd is only required to pass it to tegra_nand_page_xfer, it would
+>> >> be better to change tegra_nand_page_xfer to only take chip.
+>> >
+>> > For sure, but that's the sort of cleanups I'll leave to NAND controller
+>> > driver maintainers (in this case you ;-)). I only take care of the NAND
+>> > API here and try to make things as simple as possible to ease review and
+>> > avoid breaking drivers.
+>>
+>> Understand, but that change makes your patch simpler... Or did create
+>> those patches automatically? In that case it makes sense to avoid manual
+>> changes.
 > 
-> Also not in depth but at least something is documented in TRM
-> https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf
-> we can find the programming model in chapter 25.
-> Please let me know if I missed anything.
+> I could have written a coccinelle script, but every time I tried it
+> took me more time than using git grep + manual patching :-).
+> 
+>>
+>> I can send a follow up patch no problem, but if you do a v2 and did the
+>> chagnes manually anyway, I really think it can go into this patchset.
+> 
+> The thing is, if I do that for tegra, why not doing it for other
+> drivers, and then the patch becomes really hard to review. So yes, I'd
+> prefer to keep the changes as dumb as possible and let each maintainer
+> cleanup their driver (which basically means, stop passing mtd_info to
+> all internal functions, not only this one).
 
-I had a closer look at those documents (which I remember reading a
-while back BTW), and the PROG bits are indeed not described in detail.
+Ok.
 
-Still, I think it's close to what we have on Marvell SoC, where those
-'modes' actually encode a specific sequence of timing that is used for
-well-known commands (like ERASE, RESET, READID) but could be used the
-same way with other opcodes assuming the sequence is the same.
+For tegra/vf610:
 
-So, you should use the pattern approach, but not like you do: you
-should have a dedicated hook for each pattern which would set PROG bit,
-and then a generic helper to fill all other information (opcode,
-address cycles, ...).
+Acked-by: Stefan Agner <stefan@agner.ch>
+
+--
+Stefan
