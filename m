@@ -1,14 +1,24 @@
-Received: from out1.zte.com.cn ([202.103.147.172] helo=mxct.zte.com.cn)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frdQE-0002RZ-Eb
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 06:12:16 +0000
-From: Liu Song <liu.song11@zte.com.cn>
-To: dedekind1@gmail.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- liu.song11@zte.com.cn, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
-Subject: [PATCH] mtd/ubi: Make sure to read volume record from LEB 0 or LEB 1
-Date: Mon, 20 Aug 2018 14:09:05 +0800
-Message-Id: <1534745345-175434-1-git-send-email-liu.song11@zte.com.cn>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fretr-0001RZ-LF
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 07:46:57 +0000
+Date: Mon, 20 Aug 2018 09:46:30 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Kostya Porotchkin <kostap@marvell.com>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang
+ <haojian.zhuang@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Mike Dunn <mikedunn@newsguy.com>, Sergey Larin <cerg2010cerg2010@mail.ru>
+Subject: Re: [EXT] Re: nand speed test
+Message-ID: <20180820094630.392f050f@xps13>
+In-Reply-To: <1c78935418904123a9cc27a65ec9d3e4@IL-EXCH02.marvell.com>
+References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
+ <20180804205923.25298-2-boris.brezillon@bootlin.com>
+ <1c78935418904123a9cc27a65ec9d3e4@IL-EXCH02.marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: fishland <liu.song11@zte.com.cn>
+Hi Kostya,
 
-Even though we protect on-flash data by CRC checksums,
-we still don't trust the media. If lnum is not 0 or 1,
-access exceed array boundary can lead to bad situation.
+Kostya Porotchkin <kostap@marvell.com> wrote on Sun, 19 Aug 2018
+14:12:16 +0000:
 
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
-Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
----
- drivers/mtd/ubi/vtbl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> Hi, Miguel,
+>=20
+> We clearly have a problem with BBT on this 8K-page NAND.
+> The Linux driver is unable to find BBT after reboot, even if it reports t=
+hat the new table was written upon previous boot.
+> It looks like the u-boot also lost the BBT information after reboot.
+> So something is not yet working well with this 4GB device.
+>=20
+> Marvell>> nand info =20
+>=20
+> Device 0: nand0, sector size 1024 KiB
+>   Page size       8192 b
+>   OOB size         448 b
+>   Erase size   1048576 b
+>   subpagesize     8192 b
+>   options     0x     200
+>   bbt options 0x   a0000
+> Marvell>> nand bad =20
+>=20
+> Device 0 bad blocks:
+>   ff800000
+>   ff900000
+>   ffa00000
+>   ffb00000
+>   ffc00000
+>   ffd00000
+>   ffe00000
+>   fff00000
 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index 94d7a86..64a2937 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -410,6 +410,10 @@ static struct ubi_vtbl_record *process_lvol(struct ubi_device *ubi,
- 
- 	/* Read both LEB 0 and LEB 1 into memory */
- 	ubi_rb_for_each_entry(rb, aeb, &av->root, u.rb) {
-+		if (aeb->lnum != 0 && aeb->lnum != 1) {
-+			ubi_warn(ubi, "volume store in LEB %d", aeb->lnum);
-+			continue;
-+		}
- 		leb[aeb->lnum] = vzalloc(ubi->vtbl_size);
- 		if (!leb[aeb->lnum]) {
- 			err = -ENOMEM;
--- 
-2.1.0.GIT
+This enlarging list is very likely to show a mismatch between U-Boot
+and Linux ECC configuration, you should check that first. It will
+probably explain why BBT is not recognized.
+
+Thanks,
+Miqu=C3=A8l
