@@ -1,18 +1,44 @@
-Received: from mta-01.yadro.com ([89.207.88.251])
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frhOx-0003p3-31
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 10:27:12 +0000
-From: Alexander Amelkin <a.amelkin@yadro.com>
-Subject: [PATCH] mtd: spi-nor: fix options for mx66l51235f
-To: <linux-mtd@lists.infradead.org>
-CC: Marek Vasut <marek.vasut@gmail.com>, <openbmc@lists.ozlabs.org>, Joel
- Stanley <joel@jms.id.au>, =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>
-Message-ID: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
-Date: Mon, 20 Aug 2018 13:26:51 +0300
+ id 1frhf4-0004Zn-0s
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 10:43:51 +0000
+Received: by mail-wm0-x242.google.com with SMTP id s12-v6so13803071wmc.0
+ for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2018 03:43:38 -0700 (PDT)
+Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via the
+ nvmem API
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Alban <albeu@free.fr>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
+ Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
+ Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
+ Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, netdev@vger.kernel.org,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-7-brgl@bgdev.pl> <20180817182720.6a6e5e8e@bbrezillon>
+ <20180819133106.0420df5f@tock> <20180819184609.6dcdbb9a@bbrezillon>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
+Date: Mon, 20 Aug 2018 11:43:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20180819184609.6dcdbb9a@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +48,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently in spi-nor driver there is a line for mx66l51235l.
-According to Macronix site, there is no such part number. The chip
-detected as such is actually mx66l51235f. Hence, this commit renames
-the chip.
+Thanks Boris, for looking into this in more detail.
 
-According to the datasheet for mx66l51235f, "The device default is in
-24-bit address mode" (section 9-10). Having option SPI_NOR_4B_OPCODES
-makes the code act as if the device was already in 4B mode and didn't
-need the EN4B command. That prevents this chip from functioning on
-systems where the boot loader left the chip in 3B mode (e.g. if the
-chip wasn't used during the boot process).
+On 19/08/18 17:46, Boris Brezillon wrote:
+> On Sun, 19 Aug 2018 13:31:06 +0200
+> Alban <albeu@free.fr> wrote:
+> 
+>> On Fri, 17 Aug 2018 18:27:20 +0200
+>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>>
+>>> Hi Bartosz,
+>>>
+>>> On Fri, 10 Aug 2018 10:05:03 +0200
+>>> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>>    
+>>>> From: Alban Bedel <albeu@free.fr>
+>>>>
+>>>> Allow drivers that use the nvmem API to read data stored on MTD devices.
+>>>> For this the mtd devices are registered as read-only NVMEM providers.
+>>>>
+>>>> Signed-off-by: Alban Bedel <albeu@free.fr>
+>>>> [Bartosz:
+>>>>    - use the managed variant of nvmem_register(),
+>>>>    - set the nvmem name]
+>>>> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>>>
+>>> What happened to the 2 other patches of Alban's series? I'd really
+>>> like the DT case to be handled/agreed on in the same patchset, but
+>>> IIRC, Alban and Srinivas disagreed on how this should be represented.
+>>> I hope this time we'll come to an agreement, because the MTD <-> NVMEM
+>>> glue has been floating around for quite some time...
+>>
+>> These other patches were to fix what I consider a fundamental flaw in
+>> the generic NVMEM bindings, however we couldn't agree on this point.
+>> Bartosz later contacted me to take over this series and I suggested to
+>> just change the MTD NVMEM binding to use a compatible string on the
+>> NVMEM cells as an alternative solution to fix the clash with the old
+>> style MTD partition.
+>>
+>> However all this has no impact on the code needed to add NVMEM support
+>> to MTD, so the above patch didn't change at all.
+> 
+> It does have an impact on the supported binding though.
+> nvmem->dev.of_node is automatically assigned to mtd->dev.of_node, which
+> means people will be able to define their NVMEM cells directly under
+> the MTD device and reference them from other nodes (even if it's not
+> documented), and as you said, it conflict with the old MTD partition
+> bindings. So we'd better agree on this binding before merging this
+> patch.
+> 
 
-Hence, this commit removes the SPI_NOR_4B_OPCODES option for
-mx66l51235f (added previously by commit d342b6a973af).
+Yes, I agree with you!
 
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: <linux-mtd@lists.infradead.org>
-Cc: <openbmc@lists.ozlabs.org>
-Cc: Joel Stanley <joel@jms.id.au>
-Fixes: d342b6a973af ("mtd: spi-nor: enable 4B opcodes for mx66l51235l")
-Signed-off-by: Alexander Amelkin <a.amelkin@yadro.com>
-Reviewed-by: Cédric Le Goater <clg@kaod.org>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I see several options:
+> 
+> 1/ provide a way to tell the NVMEM framework not to use parent->of_node
+>     even if it's != NULL. This way we really don't support defining
+>     NVMEM cells in the DT, and also don't support referencing the nvmem
+>     device using a phandle.
+> 
+Other options look much better than this one!
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f028277..c5ef85e 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1091,7 +1091,7 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
- 	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
--	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
-+	{ "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
- 	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
--- 
-2.7.4
+> 2/ define a new binding where all nvmem-cells are placed in an
+>     "nvmem" subnode (just like we have this "partitions" subnode for
+>     partitions), and then add a config->of_node field so that the
+>     nvmem provider can explicitly specify the DT node representing the
+>     nvmem device. We'll also need to set this field to ERR_PTR(-ENOENT)
+>     in case this node does not exist so that the nvmem framework knows
+>     that it should not assign nvmem->dev.of_node to parent->of_node
+> 
+This one looks promising, One Question though..
+
+Do we expect that there would be nvmem cells in any of the partitions?
+or
+nvmem cell are only valid for unpartioned area?
+
+Am sure that the nvmem cells would be in multiple partitions, Is it okay 
+to have some parts of partition to be in a separate subnode?
+
+I would like this case to be considered too.
+
+> 3/ only declare partitions as nvmem providers. This would solve the
+>     problem we have with partitions defined in the DT since
+>     defining sub-partitions in the DT is not (yet?) supported and
+>     partition nodes are supposed to be leaf nodes. Still, I'm not a big
+>     fan of this solution because it will prevent us from supporting
+>     sub-partitions if we ever want/need to.
+> 
+This one is going to come back so, its better we
+
+> 4/ Add a ->of_xlate() hook that would be called if present by the
+>     framework instead of using the default parsing we have right now.
+This looks much cleaner! We could hook that up under 
+__nvmem_device_get() to do that translation.
+
+> 
+> 5/ Tell the nvmem framework the name of the subnode containing nvmem
+>     cell definitions (if NULL that means cells are directly defined
+>     under the nvmem provider node). We would set it to "nvmem-cells" (or
+>     whatever you like) for the MTD case.
+Option 2 looks better than this.
+
+> 
+> There are probably other options (some were proposed by Alban and
+> Srinivas already), but I'd like to get this sorted out before we merge
+> this patch.
+> 
+> Alban, Srinivas, any opinion?
+
+Overall am still not able to clear visualize on how MTD bindings with 
+nvmem cells would look in both partition and un-partition usecases?
+An example DT would be nice here!!
+
+Option 4 looks like much generic solution to me, may be we should try 
+this once bindings on MTD side w.r.t nvmem cells are decided.
+
+Thanks,
+Srini
+
+> 
