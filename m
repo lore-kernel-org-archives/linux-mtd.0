@@ -1,44 +1,36 @@
-Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+Received: from mail-eopbgr720046.outbound.protection.outlook.com
+ ([40.107.72.46] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1frhf4-0004Zn-0s
- for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 10:43:51 +0000
-Received: by mail-wm0-x242.google.com with SMTP id s12-v6so13803071wmc.0
- for <linux-mtd@lists.infradead.org>; Mon, 20 Aug 2018 03:43:38 -0700 (PDT)
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via the
- nvmem API
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Alban <albeu@free.fr>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
- Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
- Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, netdev@vger.kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl> <20180817182720.6a6e5e8e@bbrezillon>
- <20180819133106.0420df5f@tock> <20180819184609.6dcdbb9a@bbrezillon>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
-Date: Mon, 20 Aug 2018 11:43:34 +0100
-MIME-Version: 1.0
-In-Reply-To: <20180819184609.6dcdbb9a@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ id 1frhky-0004iy-SL
+ for linux-mtd@lists.infradead.org; Mon, 20 Aug 2018 10:50:08 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "richard@nod.at" <richard@nod.at>, "absahu@codeaurora.org"
+ <absahu@codeaurora.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
+ <kyungmin.park@samsung.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>, Michal Simek <michals@xilinx.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "peterpandong@micron.com"
+ <peterpandong@micron.com>
+Subject: RE: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Mon, 20 Aug 2018 10:49:38 +0000
+Message-ID: <MWHPR02MB2623218B2BD3D102B07AC862AF320@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180817195903.49963b25@bbrezillon>
+ <MWHPR02MB2623D48B5DBAFCE2B5D03747AF3C0@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180820105355.11bd50a8@bbrezillon>
+In-Reply-To: <20180820105355.11bd50a8@bbrezillon>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,122 +40,207 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks Boris, for looking into this in more detail.
+Hi Boris,
 
-On 19/08/18 17:46, Boris Brezillon wrote:
-> On Sun, 19 Aug 2018 13:31:06 +0200
-> Alban <albeu@free.fr> wrote:
-> 
->> On Fri, 17 Aug 2018 18:27:20 +0200
->> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->>
->>> Hi Bartosz,
->>>
->>> On Fri, 10 Aug 2018 10:05:03 +0200
->>> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->>>    
->>>> From: Alban Bedel <albeu@free.fr>
->>>>
->>>> Allow drivers that use the nvmem API to read data stored on MTD devices.
->>>> For this the mtd devices are registered as read-only NVMEM providers.
->>>>
->>>> Signed-off-by: Alban Bedel <albeu@free.fr>
->>>> [Bartosz:
->>>>    - use the managed variant of nvmem_register(),
->>>>    - set the nvmem name]
->>>> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>>
->>> What happened to the 2 other patches of Alban's series? I'd really
->>> like the DT case to be handled/agreed on in the same patchset, but
->>> IIRC, Alban and Srinivas disagreed on how this should be represented.
->>> I hope this time we'll come to an agreement, because the MTD <-> NVMEM
->>> glue has been floating around for quite some time...
->>
->> These other patches were to fix what I consider a fundamental flaw in
->> the generic NVMEM bindings, however we couldn't agree on this point.
->> Bartosz later contacted me to take over this series and I suggested to
->> just change the MTD NVMEM binding to use a compatible string on the
->> NVMEM cells as an alternative solution to fix the clash with the old
->> style MTD partition.
->>
->> However all this has no impact on the code needed to add NVMEM support
->> to MTD, so the above patch didn't change at all.
-> 
-> It does have an impact on the supported binding though.
-> nvmem->dev.of_node is automatically assigned to mtd->dev.of_node, which
-> means people will be able to define their NVMEM cells directly under
-> the MTD device and reference them from other nodes (even if it's not
-> documented), and as you said, it conflict with the old MTD partition
-> bindings. So we'd better agree on this binding before merging this
-> patch.
-> 
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Monday, August 20, 2018 2:24 PM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: richard@nod.at; absahu@codeaurora.org; linux-kernel@vger.kernel.org;
+> marek.vasut@gmail.com; kyungmin.park@samsung.com; frieder.schrempf@exceet=
+.de; linux-
+> mtd@lists.infradead.org; miquel.raynal@bootlin.com; nagasureshkumarrelli@=
+gmail.com;
+> Michal Simek <michals@xilinx.com>; computersforpeace@gmail.com; dwmw2@inf=
+radead.org;
+> peterpandong@micron.com
+> Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for =
+Arasan
+> NAND Flash Controller
+>=20
+> On Sat, 18 Aug 2018 05:49:32 +0000
+> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+>=20
+> > Hi Boris,
+> >
+> > Thanks for the review.
+> >
+> > > -----Original Message-----
+> > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > > Sent: Friday, August 17, 2018 11:29 PM
+> > > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> > > Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> > > computersforpeace@gmail.com; marek.vasut@gmail.com;
+> > > kyungmin.park@samsung.com; absahu@codeaurora.org;
+> > > peterpandong@micron.com; frieder.schrempf@exceet.de; linux-
+> > > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek
+> > > <michals@xilinx.com>; nagasureshkumarrelli@gmail.com
+> > > Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support
+> > > for Arasan NAND Flash Controller
+> > >
+> > > Hi Naga,
+> > >
+> > > On Fri, 17 Aug 2018 18:49:24 +0530
+> > > Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+> > >
+> > > > +static int anfc_exec_op_cmd(struct nand_chip *chip,
+> > > > +				   const struct nand_subop *subop) {
+> > > > +	const struct nand_op_instr *instr;
+> > > > +	struct anfc_op nfc_op =3D {};
+> > > > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > > > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
+> > > > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> > > > +	u32 addrcycles;
+> > > > +	unsigned int op_id, len =3D 0;
+> > > > +	bool reading;
+> > > > +
+> > > > +	anfc_parse_instructions(chip, subop, &nfc_op);
+> > > > +	instr =3D nfc_op.data_instr;
+> > > > +	op_id =3D nfc_op.data_instr_idx;
+> > > > +	if (nfc_op.data_instr)
+> > > > +		len =3D nand_subop_get_data_len(subop, op_id);
+> > > > +
+> > > > +	/*
+> > > > +	 * The switch case is to prepare a command and to set page/column
+> > > > +	 * address. Arasan NAND controller has program register(Off: 0x10=
+)),
+> > > > +	 * which needs to be set for every command.
+> > > > +	 * Ex: When NAND_CMD_RESET is issued, then we need to set reset b=
+it
+> > > > +	 * in program_register. etc..
+> > > > +	 */
+> > > > +	switch (nfc_op.cmnds[0]) {
+> > > > +	case NAND_CMD_SEQIN:
+> > > > +		addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
+> > > > +
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], NAND_CMD_PAGEPROG,
+> 1,
+> > > > +				 mtd->writesize, addrcycles);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		break;
+> > > > +	case NAND_CMD_READOOB:
+> > > > +		nfc_op.col +=3D mtd->writesize;
+> > > > +	case NAND_CMD_READ0:
+> > > > +	case NAND_CMD_READ1:
+> > > > +		addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
+> > > > +		anfc_prepare_cmd(nfc, NAND_CMD_READ0,
+> NAND_CMD_READSTART,
+> > > 1,
+> > > > +				 mtd->writesize, addrcycles);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		if (!nfc_op.data_instr)
+> > > > +			return 0;
+> > > > +
+> > > > +		anfc_read_data_op(mtd, instr->ctx.data.buf.in, len);
+> > > > +		break;
+> > > > +	case NAND_CMD_RNDOUT:
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0],
+> NAND_CMD_RNDOUTSTART, 1,
+> > > > +				 mtd->writesize, 2);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		nfc->prog =3D PROG_PGRD;
+> > > > +		break;
+> > > > +	case NAND_CMD_PARAM:
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		nfc->prog =3D PROG_RDPARAM;
+> > > > +		break;
+> > > > +	case NAND_CMD_READID:
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		nfc->prog =3D PROG_RDID;
+> > > > +		break;
+> > > > +	case NAND_CMD_GET_FEATURES:
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		nfc->prog =3D PROG_GET_FEATURE;
+> > > > +		break;
+> > > > +	case NAND_CMD_SET_FEATURES:
+> > > > +		anfc_prepare_cmd(nfc, nfc_op.cmnds[0], 0, 0, 0, 1);
+> > > > +		anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > > > +		nfc->prog =3D PROG_SET_FEATURE;
+> > > > +		break;
+> > > > +	case NAND_CMD_ERASE1:
+> > > > +		anfc_erase_function(chip, nfc_op);
+> > > > +		break;
+> > > > +	default:
+> > > > +		break;
+> > > > +	}
+> > >
+> > > Looks like you have one of these smart controllers where everything
+> > > is hardcoded and new commands (like vendor specific commands) can't
+> > > be supported, and we're back to abusing -
+> > > >exec_op(), just like ->cmdfunc() was abused.
+> > Actually hardcoding commands with ->exec_op() interface in the driver i=
+s really looking
+> weird.
+> > I agree with that.
+> > But as per the spec, for every command, we need to set respective bit
+> > in PROG_REG and because Of this, we need to track the commands for each=
+ exec_op() call.
+> > >
+> > > Don't you have a way to send raw CMD/ADDR/DATA cycles? If not, then
+> > > we'll have to consider other options, because I don't want to go
+> > > back to the situation we are in with -
+> > > >cmdfunc().
+> > As I said above, for each command we need to set a bit in PROG_REG, to =
+initiate the
+> operation.
+> > The only conflicting thing is that, setting a respective bit in
+> > PROG_REG based on the command Needs command tracking.
+> > >
+> > > Maybe I already asked, but is there a public spec for this IP?
+> > I didn't find any public spec for this IP, but you can find the
+> > register data base at below link
+> > https://www.xilinx.com/html_docs/registers/ug1087/ug1087-zynq-ultrasca
+> > le-registers.html
+> > and click on NAND.
+> > There we have Command Reg(Off: 0x0C) and Program Reg(Off: 0x10), which =
+describes the
+> usage.
+> >
+> > Also not in depth but at least something is documented in TRM
+> > https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-u
+> > ltrascale-trm.pdf we can find the programming model in chapter 25.
+> > Please let me know if I missed anything.
+>=20
+> I had a closer look at those documents (which I remember reading a while =
+back BTW), and the
+> PROG bits are indeed not described in detail.
+>=20
+> Still, I think it's close to what we have on Marvell SoC, where those 'mo=
+des' actually encode a
+> specific sequence of timing that is used for well-known commands (like ER=
+ASE, RESET,
+> READID) but could be used the same way with other opcodes assuming the se=
+quence is the
+> same.
+>=20
+> So, you should use the pattern approach, but not like you do: you should =
+have a dedicated hook
+> for each pattern which would set PROG bit, and then a generic helper to f=
+ill all other
+> information (opcode, address cycles, ...).
 
-Yes, I agree with you!
+Thanks for your suggestion and are you saying something like Marvell parser=
+ patterns for nfcv1 as below?
 
-> I see several options:
-> 
-> 1/ provide a way to tell the NVMEM framework not to use parent->of_node
->     even if it's != NULL. This way we really don't support defining
->     NVMEM cells in the DT, and also don't support referencing the nvmem
->     device using a phandle.
-> 
-Other options look much better than this one!
-
-> 2/ define a new binding where all nvmem-cells are placed in an
->     "nvmem" subnode (just like we have this "partitions" subnode for
->     partitions), and then add a config->of_node field so that the
->     nvmem provider can explicitly specify the DT node representing the
->     nvmem device. We'll also need to set this field to ERR_PTR(-ENOENT)
->     in case this node does not exist so that the nvmem framework knows
->     that it should not assign nvmem->dev.of_node to parent->of_node
-> 
-This one looks promising, One Question though..
-
-Do we expect that there would be nvmem cells in any of the partitions?
-or
-nvmem cell are only valid for unpartioned area?
-
-Am sure that the nvmem cells would be in multiple partitions, Is it okay 
-to have some parts of partition to be in a separate subnode?
-
-I would like this case to be considered too.
-
-> 3/ only declare partitions as nvmem providers. This would solve the
->     problem we have with partitions defined in the DT since
->     defining sub-partitions in the DT is not (yet?) supported and
->     partition nodes are supposed to be leaf nodes. Still, I'm not a big
->     fan of this solution because it will prevent us from supporting
->     sub-partitions if we ever want/need to.
-> 
-This one is going to come back so, its better we
-
-> 4/ Add a ->of_xlate() hook that would be called if present by the
->     framework instead of using the default parsing we have right now.
-This looks much cleaner! We could hook that up under 
-__nvmem_device_get() to do that translation.
-
-> 
-> 5/ Tell the nvmem framework the name of the subnode containing nvmem
->     cell definitions (if NULL that means cells are directly defined
->     under the nvmem provider node). We would set it to "nvmem-cells" (or
->     whatever you like) for the MTD case.
-Option 2 looks better than this.
-
-> 
-> There are probably other options (some were proposed by Alban and
-> Srinivas already), but I'd like to get this sorted out before we merge
-> this patch.
-> 
-> Alban, Srinivas, any opinion?
-
-Overall am still not able to clear visualize on how MTD bindings with 
-nvmem cells would look in both partition and un-partition usecases?
-An example DT would be nice here!!
-
-Option 4 looks like much generic solution to me, may be we should try 
-this once bindings on MTD side w.r.t nvmem cells are decided.
+static const struct nand_op_parser marvell_nfcv1_op_parser =3D NAND_OP_PARS=
+ER(
+	/* Naked commands not supported, use a function for each pattern */
+	NAND_OP_PARSER_PATTERN(
+		marvell_nfc_read_id_type_exec,
+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYC_NFCV1),
+		NAND_OP_PARSER_PAT_DATA_IN_ELEM(false, 8)),
+	NAND_OP_PARSER_PATTERN(
+		marvell_nfc_erase_cmd_type_exec,
+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+		NAND_OP_PARSER_PAT_ADDR_ELEM(false, MAX_ADDRESS_CYC_NFCV1),
+		NAND_OP_PARSER_PAT_CMD_ELEM(false),
+		NAND_OP_PARSER_PAT_WAITRDY_ELEM(false)),
+	);
+That means, a separate hook for each pattern, is that you are suggesting?
 
 Thanks,
-Srini
-
-> 
+Naga Sureshkumar Relli.
