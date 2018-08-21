@@ -1,9 +1,9 @@
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs7hh-0003oU-CB
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 14:32:21 +0000
-Received: by mail-ed1-x541.google.com with SMTP id q15-v6so1222084eds.5
- for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2018 07:32:06 -0700 (PDT)
+ id 1fs7hd-0003kw-Ue
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 14:32:18 +0000
+Received: by mail-ed1-x544.google.com with SMTP id h9-v6so3354646edr.0
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2018 07:32:03 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
 Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH 5/8] mtd: maps: gpio-addr-flash: Replace array with an integer
-Date: Tue, 21 Aug 2018 16:31:49 +0200
-Message-Id: <20180821143152.32293-6-ricardo.ribalda@gmail.com>
+Subject: [PATCH 4/8] mtd: maps: gpio-addr-flash: Use order insted of size
+Date: Tue, 21 Aug 2018 16:31:48 +0200
+Message-Id: <20180821143152.32293-5-ricardo.ribalda@gmail.com>
 In-Reply-To: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
 References: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,83 +26,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By replacing the array with an integer we can avoid completely
-the bit comparison loop if the value has not changed (by far
-the most common case).
+By using the order of the window instead of the size, we can replace a
+lot of expensive division and modulus on the code with simple bit
+operations.
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 31 +++++++++++++++---------------
- 1 file changed, 16 insertions(+), 15 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 39 ++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 22e100f07112..8f5e3dce9be3 100644
+index 54a0d7d2365a..22e100f07112 100644
 --- a/drivers/mtd/maps/gpio-addr-flash.c
 +++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -43,7 +43,7 @@ struct async_state {
- 	struct map_info map;
+@@ -25,6 +25,8 @@
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ 
++#define win_mask(x) ((BIT(x)) - 1)
++
+ #define DRIVER_NAME "gpio-addr-flash"
+ 
+ /**
+@@ -34,7 +36,7 @@
+  *	@gpio_count:  number of GPIOs used to address
+  *	@gpio_addrs:  array of GPIOs to twiddle
+  *	@gpio_values: cached GPIO values
+- *	@win_size:    dedicated memory size (if no GPIOs)
++ *	@win_order:   dedicated memory size (if no GPIOs)
+  */
+ struct async_state {
+ 	struct mtd_info *mtd;
+@@ -42,7 +44,7 @@ struct async_state {
  	size_t gpio_count;
  	unsigned *gpio_addrs;
--	int *gpio_values;
-+	unsigned int gpio_values;
- 	unsigned int win_order;
+ 	int *gpio_values;
+-	unsigned long win_size;
++	unsigned int win_order;
  };
  #define gf_map_info_to_state(mi) ((struct async_state *)(mi)->map_priv_1)
-@@ -55,22 +55,25 @@ struct async_state {
-  *
-  * Rather than call the GPIO framework every time, cache the last-programmed
-  * value.  This speeds up sequential accesses (which are by far the most common
-- * type).  We rely on the GPIO framework to treat non-zero value as high so
-- * that we don't have to normalize the bits.
-+ * type).
-  */
- static void gf_set_gpios(struct async_state *state, unsigned long ofs)
- {
--	size_t i = 0;
--	int value;
-+	int i;
  
- 	ofs >>= state->win_order;
--	do {
--		value = ofs & (1 << i);
--		if (state->gpio_values[i] != value) {
--			gpio_set_value(state->gpio_addrs[i], value);
--			state->gpio_values[i] = value;
--		}
--	} while (++i < state->gpio_count);
+@@ -60,7 +62,8 @@ static void gf_set_gpios(struct async_state *state, unsigned long ofs)
+ {
+ 	size_t i = 0;
+ 	int value;
+-	ofs /= state->win_size;
 +
-+	if (ofs == state->gpio_values)
-+		return;
-+
-+	for (i = 0; i < state->gpio_count; i++) {
-+		if ((ofs & BIT(i)) == (state->gpio_values & BIT(i)))
-+			continue;
-+
-+		gpio_set_value(state->gpio_addrs[i], !!(ofs & BIT(i)));
-+	}
-+
-+	state->gpio_values = ofs;
++	ofs >>= state->win_order;
+ 	do {
+ 		value = ofs & (1 << i);
+ 		if (state->gpio_values[i] != value) {
+@@ -83,7 +86,7 @@ static map_word gf_read(struct map_info *map, unsigned long ofs)
+ 
+ 	gf_set_gpios(state, ofs);
+ 
+-	word = readw(map->virt + (ofs % state->win_size));
++	word = readw(map->virt + (ofs & win_mask(state->win_order)));
+ 	test.x[0] = word;
+ 	return test;
+ }
+@@ -105,14 +108,14 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
+ 	int this_len;
+ 
+ 	while (len) {
+-		if ((from % state->win_size) + len > state->win_size)
+-			this_len = state->win_size - (from % state->win_size);
+-		else
+-			this_len = len;
++		this_len = from & win_mask(state->win_order);
++		this_len = BIT(state->win_order) - this_len;
++		this_len = min_t(int, len, this_len);
+ 
+ 		gf_set_gpios(state, from);
+-		memcpy_fromio(to, map->virt + (from % state->win_size),
+-			 this_len);
++		memcpy_fromio(to,
++			      map->virt + (from & win_mask(state->win_order)),
++			      this_len);
+ 		len -= this_len;
+ 		from += this_len;
+ 		to += this_len;
+@@ -132,7 +135,7 @@ static void gf_write(struct map_info *map, map_word d1, unsigned long ofs)
+ 	gf_set_gpios(state, ofs);
+ 
+ 	d = d1.x[0];
+-	writew(d, map->virt + (ofs % state->win_size));
++	writew(d, map->virt + (ofs & win_mask(state->win_order)));
  }
  
  /**
-@@ -215,7 +218,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	if (!memory || !gpios || !gpios->end)
- 		return -EINVAL;
+@@ -152,13 +155,13 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
+ 	int this_len;
  
--	arr_size = sizeof(int) * gpios->end;
-+	arr_size = sizeof(state->gpio_addrs[0]) * gpios->end;
- 	state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
- 	if (!state)
- 		return -ENOMEM;
-@@ -226,9 +229,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	 */
+ 	while (len) {
+-		if ((to % state->win_size) + len > state->win_size)
+-			this_len = state->win_size - (to % state->win_size);
+-		else
+-			this_len = len;
++		this_len = to & win_mask(state->win_order);
++		this_len = BIT(state->win_order) - this_len;
++		this_len = min_t(int, len, this_len);
+ 
+ 		gf_set_gpios(state, to);
+-		memcpy_toio(map->virt + (to % state->win_size), from, len);
++		memcpy_toio(map->virt + (to & win_mask(state->win_order)),
++			    from, len);
+ 
+ 		len -= this_len;
+ 		to += this_len;
+@@ -224,7 +227,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
  	state->gpio_count     = gpios->end;
  	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
--	state->gpio_values    = (void *)(state + 1);
- 	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
--	memset(state->gpio_values, 0xff, arr_size);
+ 	state->gpio_values    = (void *)(state + 1);
+-	state->win_size       = resource_size(memory);
++	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
+ 	memset(state->gpio_values, 0xff, arr_size);
  
  	state->map.name       = DRIVER_NAME;
- 	state->map.read       = gf_read;
+@@ -233,7 +236,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	state->map.write      = gf_write;
+ 	state->map.copy_to    = gf_copy_to;
+ 	state->map.bankwidth  = pdata->width;
+-	state->map.size       = state->win_size * (1 << state->gpio_count);
++	state->map.size       = BIT(state->win_order + state->gpio_count);
+ 	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
+ 	if (IS_ERR(state->map.virt)) {
+ 		dev_err(&pdev->dev, "failed to map memory\n");
 -- 
 2.18.0
