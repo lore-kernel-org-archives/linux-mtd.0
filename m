@@ -1,9 +1,9 @@
-Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs7hd-0003kw-Ue
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 14:32:18 +0000
-Received: by mail-ed1-x544.google.com with SMTP id h9-v6so3354646edr.0
- for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2018 07:32:03 -0700 (PDT)
+ id 1fs7hr-00041f-IM
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 14:32:32 +0000
+Received: by mail-ed1-x543.google.com with SMTP id j21-v6so10756277edp.10
+ for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2018 07:32:17 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,10 +11,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH 4/8] mtd: maps: gpio-addr-flash: Use order insted of size
-Date: Tue, 21 Aug 2018 16:31:48 +0200
-Message-Id: <20180821143152.32293-5-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH 8/8] dt-binding: mtd: Document gpio-addr-flash
+Date: Tue, 21 Aug 2018 16:31:52 +0200
+Message-Id: <20180821143152.32293-9-ricardo.ribalda@gmail.com>
 In-Reply-To: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
 References: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,131 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By using the order of the window instead of the size, we can replace a
-lot of expensive division and modulus on the code with simple bit
-operations.
+Add documentation for gpio-addr-flash. This binding allow creating
+flash devices that are paged using GPIOs.
 
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 39 ++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+ .../bindings/mtd/gpio-addr-flash.txt          | 46 +++++++++++++++++++
+ 1 file changed, 46 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 54a0d7d2365a..22e100f07112 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -25,6 +25,8 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- 
-+#define win_mask(x) ((BIT(x)) - 1)
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+new file mode 100644
+index 000000000000..4279e8cad09b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+@@ -0,0 +1,46 @@
++Memory Mapped flash with some address lines addressed using GPIOs
 +
- #define DRIVER_NAME "gpio-addr-flash"
- 
- /**
-@@ -34,7 +36,7 @@
-  *	@gpio_count:  number of GPIOs used to address
-  *	@gpio_addrs:  array of GPIOs to twiddle
-  *	@gpio_values: cached GPIO values
-- *	@win_size:    dedicated memory size (if no GPIOs)
-+ *	@win_order:   dedicated memory size (if no GPIOs)
-  */
- struct async_state {
- 	struct mtd_info *mtd;
-@@ -42,7 +44,7 @@ struct async_state {
- 	size_t gpio_count;
- 	unsigned *gpio_addrs;
- 	int *gpio_values;
--	unsigned long win_size;
-+	unsigned int win_order;
- };
- #define gf_map_info_to_state(mi) ((struct async_state *)(mi)->map_priv_1)
- 
-@@ -60,7 +62,8 @@ static void gf_set_gpios(struct async_state *state, unsigned long ofs)
- {
- 	size_t i = 0;
- 	int value;
--	ofs /= state->win_size;
++Handle the case where a flash device is mostly addressed using physical
++line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
++to a 2MiB memory range and use the GPIOs to select a particular range.
 +
-+	ofs >>= state->win_order;
- 	do {
- 		value = ofs & (1 << i);
- 		if (state->gpio_values[i] != value) {
-@@ -83,7 +86,7 @@ static map_word gf_read(struct map_info *map, unsigned long ofs)
- 
- 	gf_set_gpios(state, ofs);
- 
--	word = readw(map->virt + (ofs % state->win_size));
-+	word = readw(map->virt + (ofs & win_mask(state->win_order)));
- 	test.x[0] = word;
- 	return test;
- }
-@@ -105,14 +108,14 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
- 	int this_len;
- 
- 	while (len) {
--		if ((from % state->win_size) + len > state->win_size)
--			this_len = state->win_size - (from % state->win_size);
--		else
--			this_len = len;
-+		this_len = from & win_mask(state->win_order);
-+		this_len = BIT(state->win_order) - this_len;
-+		this_len = min_t(int, len, this_len);
- 
- 		gf_set_gpios(state, from);
--		memcpy_fromio(to, map->virt + (from % state->win_size),
--			 this_len);
-+		memcpy_fromio(to,
-+			      map->virt + (from & win_mask(state->win_order)),
-+			      this_len);
- 		len -= this_len;
- 		from += this_len;
- 		to += this_len;
-@@ -132,7 +135,7 @@ static void gf_write(struct map_info *map, map_word d1, unsigned long ofs)
- 	gf_set_gpios(state, ofs);
- 
- 	d = d1.x[0];
--	writew(d, map->virt + (ofs % state->win_size));
-+	writew(d, map->virt + (ofs & win_mask(state->win_order)));
- }
- 
- /**
-@@ -152,13 +155,13 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
- 	int this_len;
- 
- 	while (len) {
--		if ((to % state->win_size) + len > state->win_size)
--			this_len = state->win_size - (to % state->win_size);
--		else
--			this_len = len;
-+		this_len = to & win_mask(state->win_order);
-+		this_len = BIT(state->win_order) - this_len;
-+		this_len = min_t(int, len, this_len);
- 
- 		gf_set_gpios(state, to);
--		memcpy_toio(map->virt + (to % state->win_size), from, len);
-+		memcpy_toio(map->virt + (to & win_mask(state->win_order)),
-+			    from, len);
- 
- 		len -= this_len;
- 		to += this_len;
-@@ -224,7 +227,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	state->gpio_count     = gpios->end;
- 	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
- 	state->gpio_values    = (void *)(state + 1);
--	state->win_size       = resource_size(memory);
-+	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
- 	memset(state->gpio_values, 0xff, arr_size);
- 
- 	state->map.name       = DRIVER_NAME;
-@@ -233,7 +236,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	state->map.write      = gf_write;
- 	state->map.copy_to    = gf_copy_to;
- 	state->map.bankwidth  = pdata->width;
--	state->map.size       = state->win_size * (1 << state->gpio_count);
-+	state->map.size       = BIT(state->win_order + state->gpio_count);
- 	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
- 	if (IS_ERR(state->map.virt)) {
- 		dev_err(&pdev->dev, "failed to map memory\n");
++ - compatible : "cfi-gpio-addr-flash"
++ - reg : Address range of the mtd chip that is memory mapped, this is,
++   on the previous example 2MiB.
++ - bank-width : Width (in bytes) of the bank.  Equal to the
++   device width times the number of interleaved chips.
++ - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
++   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
++ - #address-cells, #size-cells : Must be present if the device has
++   sub-nodes representing partitions (see below).  In this case
++   both #address-cells and #size-cells must be equal to 1.
++
++The device tree may optionally contain sub-nodes describing partitions of the
++address space. See partition.txt for more detail.
++
++Example:
++
++	cfi_flash_0: cfi_flash {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "cfi-gpio-addr-flash";
++		bank-width = <2>;
++		reg = < 0x00300000 0x00200000 >;
++		gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
++		partition@0 {
++			reg = < 0x0 0x200000 >;
++			label = "Golden Bitstream";
++		};
++		partition@200000 {
++			reg = < 0x200000 0x200000 >;
++			label = "User Bitstream";
++		};
++		partition@400000 {
++			reg = < 0x400000 0x200000 >;
++			label = "V4L Controls";
++		};
++		partition@600000 {
++			reg = < 0x600000 0x200000 >;
++			label = "Production Data";
++		};
++	} ;
 -- 
 2.18.0
