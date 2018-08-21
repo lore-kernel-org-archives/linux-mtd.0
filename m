@@ -1,25 +1,25 @@
-Received: from mail-by2nam01on0051.outbound.protection.outlook.com
- ([104.47.34.51] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs49u-0000uN-0x
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 10:45:12 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fs4Hy-0004Wb-7c
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 10:53:32 +0000
+Date: Tue, 21 Aug 2018 12:52:48 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>, "richard@nod.at"
  <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
- <kyungmin.park@samsung.com>, "absahu@codeaurora.org" <absahu@codeaurora.org>,
- "peterpandong@micron.com" <peterpandong@micron.com>,
- "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Simek
- <michals@xilinx.com>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>
-Subject: RE: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "absahu@codeaurora.org" <absahu@codeaurora.org>, "peterpandong@micron.com"
+ <peterpandong@micron.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
+Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
  binding documentation
-Date: Tue, 21 Aug 2018 10:44:54 +0000
-Message-ID: <MWHPR02MB2623A681FB4FF038B3F9C758AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+Message-ID: <20180821125248.0eecbb5e@bbrezillon>
+In-Reply-To: <MWHPR02MB2623A681FB4FF038B3F9C758AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
 References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
  <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
  <20180820143324.61af9027@bbrezillon>
@@ -27,11 +27,10 @@ References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com
  <20180821075948.28962170@bbrezillon>
  <MWHPR02MB2623E78222225D1CE8167463AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
  <20180821115238.1ad4dcb8@xps13>
-In-Reply-To: <20180821115238.1ad4dcb8@xps13>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ <MWHPR02MB2623A681FB4FF038B3F9C758AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,78 +40,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
-bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBUdWVz
-ZGF5LCBBdWd1c3QgMjEsIDIwMTggMzoyMyBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
-aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJl
-emlsbG9uQGJvb3RsaW4uY29tPjsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7
-DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBr
-eXVuZ21pbi5wYXJrQHNhbXN1bmcuY29tOw0KPiBhYnNhaHVAY29kZWF1cm9yYS5vcmc7IHBldGVy
-cGFuZG9uZ0BtaWNyb24uY29tOyBmcmllZGVyLnNjaHJlbXBmQGV4Y2VldC5kZTsgbGludXgtDQo+
-IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBN
-aWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+IG5hZ2FzdXJlc2hrdW1hcnJlbGxp
-QGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBBVENIIHYxMCAxLzJdIGR0LWJpbmRp
-bmdzOiBtdGQ6IGFyYXNhbjogQWRkIGRldmljZSB0cmVlIGJpbmRpbmcNCj4gZG9jdW1lbnRhdGlv
-bg0KPiANCj4gSGkgTmFnYSwNCj4gDQo+IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJl
-QHhpbGlueC5jb20+IHdyb3RlIG9uIFR1ZSwgMjEgQXVnIDIwMTgNCj4gMDk6MjI6MDcgKzAwMDA6
-DQo+IA0KPiA+IEhpIEJvcmlzLA0KPiA+DQo+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KPiA+ID4gRnJvbTogQm9yaXMgQnJlemlsbG9uIFttYWlsdG86Ym9yaXMuYnJlemlsbG9uQGJv
-b3RsaW4uY29tXQ0KPiA+ID4gU2VudDogVHVlc2RheSwgQXVndXN0IDIxLCAyMDE4IDExOjMwIEFN
-DQo+ID4gPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4N
-Cj4gPiA+IENjOiBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOyByaWNoYXJkQG5vZC5hdDsgZHdt
-dzJAaW5mcmFkZWFkLm9yZzsNCj4gPiA+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFy
-ZWsudmFzdXRAZ21haWwuY29tOw0KPiA+ID4ga3l1bmdtaW4ucGFya0BzYW1zdW5nLmNvbTsgYWJz
-YWh1QGNvZGVhdXJvcmEub3JnOw0KPiA+ID4gcGV0ZXJwYW5kb25nQG1pY3Jvbi5jb207IGZyaWVk
-ZXIuc2NocmVtcGZAZXhjZWV0LmRlOyBsaW51eC0NCj4gPiA+IG10ZEBsaXN0cy5pbmZyYWRlYWQu
-b3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBNaWNoYWwgU2ltZWsNCj4gPiA+IDxt
-aWNoYWxzQHhpbGlueC5jb20+OyBuYWdhc3VyZXNoa3VtYXJyZWxsaUBnbWFpbC5jb20NCj4gPiA+
-IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjEwIDEvMl0gZHQtYmluZGluZ3M6IG10ZDogYXJh
-c2FuOiBBZGQNCj4gPiA+IGRldmljZSB0cmVlIGJpbmRpbmcgZG9jdW1lbnRhdGlvbg0KPiA+ID4N
-Cj4gPiA+IE9uIFR1ZSwgMjEgQXVnIDIwMTggMDU6NDc6MTggKzAwMDANCj4gPiA+IE5hZ2EgU3Vy
-ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+
-ID4gPiA+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ID4gPiA+ID4gKy0gY29tcGF0aWJsZToJ
-CVNob3VsZCBiZSAieGxueCx6eW5xbXAtbmFuZCIgb3IgImFyYXNhbixuZmMtdjNwMTAiDQo+ID4g
-PiA+ID4NCj4gPiA+ID4gPiBJbiB5b3VyIGV4YW1wbGUgaXQncyBub3QgYW4gIm9yIiBzaW5jZSBi
-b3RoIGFyZSBkZWZpbmVkLg0KPiA+ID4gPiBJbiBvdXIgcHJldmlvdXMgZGlzY3Vzc2lvbg0KPiA+
-ID4gPiAoaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzc0ODkwMS8pDQo+
-ID4gPiA+IFdlIGRlY2lkZWQgdG8gaGF2ZSBjb21wYXRpYmxlIHN0cmluZ3MgbGlrZSAiIGNvbXBh
-dGlibGUgPQ0KPiA+ID4gPiAiPHNvYy12ZW5kb3I+LDxpcC1yZXZpc2lvbj4iLA0KPiA+ID4gImFy
-YXNhbiw8aXAtcmV2aXNpb24+IjsiDQo+ID4gPiA+IFNvIGl0IHNob3VsZCBiZSBlaXRoZXIgb2Yg
-dGhlc2UuDQo+ID4gPiA+IHNvIEkgd2lsbCB3cml0ZSBzb21ldGhpbmcgbGlrZSBiZWxvdyAiUG9z
-c2libGUgdmFsdWVzIGFyZQ0KPiA+ID4gPiAieGxueCx6eW5xbXAtbmFuZCINCj4gPiA+ID4gCQkJ
-ImFyYXNhbixuZmMtdjNwMTAiDQo+ID4gPiA+IEFuZCBpbiBleGFtcGxlIEkgd2lsbCBtZW50aW9u
-IGFueSBvbmUgY29tcGF0aWJsZS4NCj4gPiA+ID4gSXMgaXQgb2s/DQo+ID4gPg0KPiA+ID4gSG0s
-IHdoeSBkbyB5b3UgbmVlZCBhcmFzYW4sbmZjLXYzcDEwIGF0IGFsbCBpZiBpdCdzIHN1cHBvc2Vk
-IHRvIGJlDQo+ID4gPiBvdmVybG9hZGVkIGJ5IGEgc29jIHNwZWNpZmljIGNvbXBhdD8NCj4gPiBB
-Y3R1YWxseSB3ZSBwdXQgdGhlc2UgY29tcGF0aWJsZSBzdHJpbmdzIGJhc2VkIG9uIHRoZSBjb21t
-ZW50cyBvbiB2NyBzZXJpZXMuDQo+ID4gQW55d2F5IEkgd2lsbCBqdXN0IGtlZXAgInhsbngsenlu
-cW1wLW5hbmQiIGFzIGNvbXBhdGlibGUuDQo+ID4gPg0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+
-ID4gK09wdGlvbmFsIHByb3BlcnRpZXM6DQo+ID4gPiA+ID4gPiArLSBhcmFzYW4saGFzLW1kbWE6
-IEVuYWJsZXMgRE1BIHN1cHBvcnQNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IENhbid0IHlvdSBkZXRl
-Y3QgdGhhdCBiYXNlZCBvbiB0aGUgY29tcGF0aWJsZSAob3IgdGhhbmtzIHRvIGENCj4gPiA+ID4g
-PiByZWdpc3RlcikuIElmIGl0J3Mgc29tZXRoaW5nIHlvdSBjaG9vc2Ugd2hlbiBjb25maWd1cmlu
-ZyB0aGUgSVANCj4gPiA+ID4gPiBhbmQgY2FuJ3QgZGV0ZWN0IGF0DQo+ID4gPiBydW50aW1lIEkg
-Z3Vlc3MgaXQncyBmaW5lLg0KPiA+ID4gPiBUaGVyZSBpcyBubyB3YXkgdG8gc2VsZWN0IERNQSB3
-aGVuIGNvbmZpZ3VyaW5nIHRoZSBJUC4NCj4gPiA+ID4gQnV0IGl0IGhhcyBpbnRlcm5hbCBETUEg
-YW5kIHRoZXJlIGlzIGEgcmVnaXN0ZXIgdG8gc2VsZWN0IFBJTyBvcg0KPiA+ID4gPiBETUEgd2hp
-bGUgc3RhcnRpbmcgYQ0KPiA+ID4gdHJhbnNmZXIuDQo+ID4gPiA+IFNvIGlmIHVzZXIgcmVhbGx5
-IGRvbid0IHdhbnQgRE1BLCB0aGVuIHdlIHdpbGwgbmV2ZXIgc2V0IERNQSBpbg0KPiA+ID4gPiB0
-aGUgY29kZSBiYXNlZCBvbiBEVA0KPiA+ID4gcHJvcGVydHkuDQo+ID4gPg0KPiA+ID4gSWYgaXQn
-cyBhIHB1cmVseSBTVyBjaG9pY2UsIHRoZW4gaXMgc2hvdWxkbid0IGJlIGRlc2NyaWJlZCBpbiB0
-aGUgRFQuDQo+ID4gPiBZb3UgY2FuIHVzZSBhIG1vZHVsZSBwYXJhbSwgYnV0IEknbSBub3QgZXZl
-biBzdXJlIHdoeSBvbmUgd291bGQgd2FudCB0byBkaXNhYmxlIERNQS4NCj4gPiBVQklGUyBkb2Vz
-bid0IHdvcmsgd2l0aCBETUEsIGhlbmNlIHdlIGFyZSB1c2luZyBhIERUIHByb3BlcnR5IHRvIG9w
-ZXJhdGUgdGhlIGRyaXZlciBpbg0KPiBJTy4NCj4gPiBCdXQgYXMgeW91IHBvaW50ZWQgKHVzZSB2
-aXJ0X2lzX3ZhbGlkKCkpLCB3aXRoIHRoaXMgd2UgY2FuIHN3aXRjaCBvdXIgZHJpdmVyIHRvIG9w
-ZXJhdGUgaW4NCj4gUElPIG9yIERNQS4NCj4gPiBJIHdpbGwgcmVtb3ZlIHRoaXMgZnJvbSBEVC4N
-Cj4gDQo+IEkgZG9uJ3QgZ2V0IHdoeSBVQklGUyB3b3VsZCBub3Qgd29yayB3aXRoIERNQT8gVGhp
-cyBpcyBhIHNpZ25pZmljYW50IGRyYXdiYWNrLg0KVUJJRlMgdXNlcyB2bWFsbG9jJ2VkIGJ1ZmZl
-cnMgd2hlcmVhcyBmb3IgRE1BIGl0IHNob3VsZCBiZSBETUEtYWJsZSwgaS5lIHVzZXMgcGh5c2lj
-YWxseSBjb250aWd1b3VzIG1lbW9yeS4NCkhlbmNlIHdlIHVzZWQgYSBEVCBwcm9wZXJ0eSB0byBt
-YWtlIGl0IHdvcmsgaW4gUElPIG1vZGUuDQpTb21lIGRpc2N1c3Npb24gaGFwcGVuZWQgaW4gaHR0
-cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC85Njc1MDA3Ly4NCkJ1dCB3aGF0ZXZlciBJ
-IHNhaWQgYWJvdmUsIGlzIHdpdGggb2xkZXIgYXJhc2FuX25hbmQgZHJpdmVyLCBub3cgYW55d2F5
-IHdlIGhhdmUNCnZpcnRfYWRkcl92YWxpZCgpLiBCeSBjaGVja2luZyB0aGlzIHdlIGNhbiB1c2Ug
-RE1BIG9yIFBJTy4NClRoaXMgaXMgdGhlIGluZm9ybWF0aW9uIEkgaGF2ZSwgYnV0IEkgbWF5IGJl
-IHdyb25nLg0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0KPiANCj4gTWlxdcOo
-bA0K
+On Tue, 21 Aug 2018 10:44:54 +0000
+Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+
+> Hi Miquel,
+> 
+> > -----Original Message-----
+> > From: Miquel Raynal [mailto:miquel.raynal@bootlin.com]
+> > Sent: Tuesday, August 21, 2018 3:23 PM
+> > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> > Cc: Boris Brezillon <boris.brezillon@bootlin.com>; richard@nod.at; dwmw2@infradead.org;
+> > computersforpeace@gmail.com; marek.vasut@gmail.com; kyungmin.park@samsung.com;
+> > absahu@codeaurora.org; peterpandong@micron.com; frieder.schrempf@exceet.de; linux-
+> > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <michals@xilinx.com>;
+> > nagasureshkumarrelli@gmail.com
+> > Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree binding
+> > documentation
+> > 
+> > Hi Naga,
+> > 
+> > Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Tue, 21 Aug 2018
+> > 09:22:07 +0000:
+> >   
+> > > Hi Boris,
+> > >  
+> > > > -----Original Message-----
+> > > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > > > Sent: Tuesday, August 21, 2018 11:30 AM
+> > > > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> > > > Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> > > > computersforpeace@gmail.com; marek.vasut@gmail.com;
+> > > > kyungmin.park@samsung.com; absahu@codeaurora.org;
+> > > > peterpandong@micron.com; frieder.schrempf@exceet.de; linux-
+> > > > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek
+> > > > <michals@xilinx.com>; nagasureshkumarrelli@gmail.com
+> > > > Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add
+> > > > device tree binding documentation
+> > > >
+> > > > On Tue, 21 Aug 2018 05:47:18 +0000
+> > > > Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+> > > >  
+> > > > > > > +Required properties:
+> > > > > > > +- compatible:		Should be "xlnx,zynqmp-nand" or "arasan,nfc-v3p10"  
+> > > > > >
+> > > > > > In your example it's not an "or" since both are defined.  
+> > > > > In our previous discussion
+> > > > > (https://lore.kernel.org/patchwork/patch/748901/)
+> > > > > We decided to have compatible strings like " compatible =
+> > > > > "<soc-vendor>,<ip-revision>",  
+> > > > "arasan,<ip-revision>";"  
+> > > > > So it should be either of these.
+> > > > > so I will write something like below "Possible values are
+> > > > > "xlnx,zynqmp-nand"
+> > > > > 			"arasan,nfc-v3p10"
+> > > > > And in example I will mention any one compatible.
+> > > > > Is it ok?  
+> > > >
+> > > > Hm, why do you need arasan,nfc-v3p10 at all if it's supposed to be
+> > > > overloaded by a soc specific compat?  
+> > > Actually we put these compatible strings based on the comments on v7 series.
+> > > Anyway I will just keep "xlnx,zynqmp-nand" as compatible.  
+> > > >  
+> > > > > > > +
+> > > > > > > +Optional properties:
+> > > > > > > +- arasan,has-mdma: Enables DMA support  
+> > > > > >
+> > > > > > Can't you detect that based on the compatible (or thanks to a
+> > > > > > register). If it's something you choose when configuring the IP
+> > > > > > and can't detect at  
+> > > > runtime I guess it's fine.  
+> > > > > There is no way to select DMA when configuring the IP.
+> > > > > But it has internal DMA and there is a register to select PIO or
+> > > > > DMA while starting a  
+> > > > transfer.  
+> > > > > So if user really don't want DMA, then we will never set DMA in
+> > > > > the code based on DT  
+> > > > property.
+> > > >
+> > > > If it's a purely SW choice, then is shouldn't be described in the DT.
+> > > > You can use a module param, but I'm not even sure why one would want to disable DMA.  
+> > > UBIFS doesn't work with DMA, hence we are using a DT property to operate the driver in  
+> > IO.  
+> > > But as you pointed (use virt_is_valid()), with this we can switch our driver to operate in  
+> > PIO or DMA.  
+> > > I will remove this from DT.  
+> > 
+> > I don't get why UBIFS would not work with DMA? This is a significant drawback.  
+> UBIFS uses vmalloc'ed buffers whereas for DMA it should be DMA-able, i.e uses physically contiguous memory.
+> Hence we used a DT property to make it work in PIO mode.
+> Some discussion happened in https://patchwork.kernel.org/patch/9675007/.
+> But whatever I said above, is with older arasan_nand driver, now anyway we have
+> virt_addr_valid(). By checking this we can use DMA or PIO.
+> This is the information I have, but I may be wrong.
+
+My recommandation: set the NAND_USE_BOUNCE_BUFFER and always use DMA.
