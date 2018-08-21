@@ -1,32 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs18c-0002GK-Fr
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 07:31:40 +0000
-Date: Tue, 21 Aug 2018 09:31:25 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
- "absahu@codeaurora.org" <absahu@codeaurora.org>, "peterpandong@micron.com"
- <peterpandong@micron.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>,
- "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
-Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Message-ID: <20180821093125.05fb46a4@xps13>
-In-Reply-To: <MWHPR02MB26235AF18211E3FB39076396AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20180820184013.57fd7b5c@bbrezillon>
- <MWHPR02MB26235AF18211E3FB39076396AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fs1Io-0006N5-Ga
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 07:42:12 +0000
+From: Richard Weinberger <richard@nod.at>
+To: liu.song11@zte.com.cn
+Cc: dedekind1@gmail.com, adrian.hunter@intel.com, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
+Subject: Re: [PATCH] ubifs: remove unnecessary check in ubifs_log_start_commit
+Date: Tue, 21 Aug 2018 09:41:57 +0200
+Message-ID: <2441223.E8OYYOjAtB@blindfold>
+In-Reply-To: <201808211457448170622@zte.com.cn>
+References: <201808211457448170622@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,84 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
+Am Dienstag, 21. August 2018, 08:57:44 CEST schrieb liu.song11@zte.com.cn:
+> Hi Richard,
+> 
+> In ubifs_log_start_commit, the value of c->lhead_offs is zero or set to zero by code bellow
+> 409         /* Switch to the next log LEB */
+> 410         if (c->lhead_offs) {
+> 411                 c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+> 412                 ubifs_assert(c->lhead_lnum != c->ltail_lnum);
+> 413                 c->lhead_offs = 0;
+> 414         }
+> 
+> The value of 'len' can not exceed 'max_len' which assigned value by code bellow
+> 370         max_len = UBIFS_CS_NODE_SZ + c->jhead_cnt * UBIFS_REF_NODE_SZ;
+> 
+> So, the value of c->lhead_offs cannot exceed 'max_len' 
+> 429         c->lhead_offs += len;
+> 430         if (c->lhead_offs == c->leb_size) {
+> 431                 c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+> 432                 c->lhead_offs = 0;
+> 433         }
+> 
+> Usually, the size of PEB is between 64KB and 256KB, and in UBIFS, the value of
+> c->lhead_offs far less than UBIFS_BLOCK_SIZE which equal to 4096. So I think
+> the value of c->lhead_offs far less than c->leb_size, the check in line 430 seem 
+> never to be true.
 
-> > And why is it an s32 and not a u32? =20
-> To monitor NAND_CMD_STATUS.
-> Sometimes core will just send status command without reading back the sta=
-tus data and later
-> It will try to read one byte using ->exec_op().
-> So Arasan has FLASH_STS register and whenever we initiate a status comman=
-d, the controller
-> Will update this register with the value returned by the flash device.
-> So we need to return this value when core is asking about 1 byte status v=
-alue without issuing the command.
-> And in driver we are using memset(nfc_op, 0, sizeof(struct anfc_op)), thi=
-s will make cmnds[4] to zeros but 0x0 is also
-> NAND_CMD_READ0, so inorder to differentiate whether to give status data o=
-r not, I just assigned=20
-> 	nfc_op->cmnds[0] =3D NAND_CMD_NONE;
->=20
-> May be this case we can now eliminate as per your suggestion(defining a s=
-eparate hook for each pattern) and thanks for that.
-> >  =20
-> > > +	u32 type;
-> > > +	u32 len;
-> > > +	u32 naddrs;
-> > > +	u32 col;
-> > > +	u32 row;
-> > > +	unsigned int data_instr_idx;
-> > > +	unsigned int rdy_timeout_ms;
-> > > +	unsigned int rdy_delay_ns;
-> > > +	const struct nand_op_instr *data_instr; }; =20
-> >=20
-> > Please make sure you actually need to redefine all these fields. Looks =
-like some them could be
-> > extracted directly from the nand_op_instr objects. =20
-> Ok, all these values are getting updated in anfc_parse_instructions()
+Okay, now it makes sense.
+But what has this do to with UBIFS_BLOCK_SIZE?
 
-In anfc_parse_instructions():
-
-+			nfc_op->data_instr =3D instr;
-+			nfc_op->type =3D NAND_OP_DATA_IN_INSTR;
-
-This looks pointless.
-
-+			nfc_op->data_instr_idx =3D op_id;
-+			break;
-+		case NAND_OP_DATA_OUT_INSTR:
-+			nfc_op->data_instr =3D instr;
-+			nfc_op->type =3D NAND_OP_DATA_IN_INSTR;
-+			nfc_op->data_instr_idx =3D op_id;
-+			break;
-+		case NAND_OP_WAITRDY_INSTR:
-+			nfc_op->rdy_timeout_ms =3D instr->ctx.waitrdy.timeout_ms;
-
-This one also.
-
-+			nfc_op->rdy_delay_ns =3D instr->delay_ns;
-
-And this one too.
-
-Once you'll have a per pattern callback, I suppose you won't need it
-anymore.
-
-> >  =20
-> > > +
-> > > +/**
-> > > + * struct anfc_nand_chip - Defines the nand chip related information
-> > > + * @node:		used to store NAND chips into a list.
-> > > + * @chip:		NAND chip information structure.
-> > > + * @bch:		Bch / Hamming mode enable/disable.
-> > > + * @bchmode:		Bch mode. =20
-> >=20
-> > What's the difference between bch and bchmode? =20
-> @bch -> to select error correction method(either BCH or Hamming)
-> @bchmode -> to select ECC correctability (4/8/12/24 bit ECC)
-
-Then something like "strength" or "ecc_strength" would be more
-meaningful.
-
+Anyway, your patch description needs to be more detailed.
+What you explained to me right now needs to go in the commit message.
+Then people can understand why the check is not needed.
+For the sake of paranoia and debug-ability, please also add a
+ubifs_assert(c->lhead_offs < c->leb_size);.
 
 Thanks,
-Miqu=C3=A8l
+//richard
