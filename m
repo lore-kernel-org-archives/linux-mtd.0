@@ -1,22 +1,35 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs2FU-00041w-Kh
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 08:42:50 +0000
-Date: Tue, 21 Aug 2018 10:42:24 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Boris Brezillon
- <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: denali: do not pass zero maxchips to
- nand_scan()
-Message-ID: <20180821104224.6aafb0bd@xps13>
-In-Reply-To: <1534839799-14112-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1534839799-14112-1-git-send-email-yamada.masahiro@socionext.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Received: from mail-eopbgr690049.outbound.protection.outlook.com
+ ([40.107.69.49] helo=NAM04-CO1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fs2rn-0002fZ-Oh
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 09:22:25 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
+ <kyungmin.park@samsung.com>, "absahu@codeaurora.org" <absahu@codeaurora.org>,
+ "peterpandong@micron.com" <peterpandong@micron.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Simek
+ <michals@xilinx.com>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>
+Subject: RE: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+Date: Tue, 21 Aug 2018 09:22:07 +0000
+Message-ID: <MWHPR02MB2623E78222225D1CE8167463AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180820143324.61af9027@bbrezillon>
+ <MWHPR02MB2623F315C6D4C9775CDA08D8AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180821075948.28962170@bbrezillon>
+In-Reply-To: <20180821075948.28962170@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +39,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Masahiro,
+Hi Boris,
 
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Tue, 21 Aug
-2018 17:23:19 +0900:
-
-> Commit 49aa76b16676 ("mtd: rawnand: do not execute nand_scan_ident()
-> if maxchips is zero") gave a new meaning for calling nand_scan_ident()
-> with maxchips=3D0.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Tuesday, August 21, 2018 11:30 AM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com; kyungmin.park@samsung=
+.com;
+> absahu@codeaurora.org; peterpandong@micron.com; frieder.schrempf@exceet.d=
+e; linux-
+> mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <mich=
+als@xilinx.com>;
+> nagasureshkumarrelli@gmail.com
+> Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device t=
+ree binding
+> documentation
 >=20
-> It is a special usage for some drivers such as docg4, but in fact
-> the Denali driver may pass maxchips=3D0 to nand_scan() when the driver
-> is enabled but no NAND chip is found on the board for some reasons.
+> On Tue, 21 Aug 2018 05:47:18 +0000
+> Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
 >=20
-> If nand_scan_with_ids() is called with maxchips=3D0, nand_scan_ident()
-> is skipped, i.e. nand_set_defaults() is skipped.  Therefore, the
-> driver must have set chip->controller beforehand.  Otherwise,
-> nand_attach() causes NULL pointer dereference.
+> > > > +Required properties:
+> > > > +- compatible:		Should be "xlnx,zynqmp-nand" or "arasan,nfc-v3p10"
+> > >
+> > > In your example it's not an "or" since both are defined.
+> > In our previous discussion
+> > (https://lore.kernel.org/patchwork/patch/748901/)
+> > We decided to have compatible strings like " compatible =3D "<soc-vendo=
+r>,<ip-revision>",
+> "arasan,<ip-revision>";"
+> > So it should be either of these.
+> > so I will write something like below
+> > "Possible values are  "xlnx,zynqmp-nand"
+> > 			"arasan,nfc-v3p10"
+> > And in example I will mention any one compatible.
+> > Is it ok?
 >=20
-> In fact, the Denali controller knows the number of connected chips
-> before calling nand_scan_ident(); if DEVICE_RESET fails, there is no
-> chip in that chip select.  Then, denali_reset_banks() sets the maxchips
-> to the number of detected chips.  If no chip is found, it is zero.
+> Hm, why do you need arasan,nfc-v3p10 at all if it's supposed to be overlo=
+aded by a soc specific
+> compat?
+Actually we put these compatible strings based on the comments on v7 series=
+.
+Anyway I will just keep "xlnx,zynqmp-nand" as compatible.
 >=20
-> The reason of this trick was, as commit f486287d2372 ("mtd: nand:
-> denali: fix bank reset function to detect the number of chips")
-> explained, nand_scan_ident() issued Set Features (0xEF) command
-> to all CS lines, some of which may not be connected with a chip.
-> Then, the driver would wait until R/B# response, which never happens.
+> > > > +
+> > > > +Optional properties:
+> > > > +- arasan,has-mdma: Enables DMA support
+> > >
+> > > Can't you detect that based on the compatible (or thanks to a
+> > > register). If it's something you choose when configuring the IP and c=
+an't detect at
+> runtime I guess it's fine.
+> > There is no way to select DMA when configuring the IP.
+> > But it has internal DMA and there is a register to select PIO or DMA wh=
+ile starting a
+> transfer.
+> > So if user really don't want DMA, then we will never set DMA in the cod=
+e based on DT
+> property.
 >=20
-> This problem was solved by commit 107b7d6a7ad4 ("mtd: rawnand: avoid
-> setting again the timings to mode 0 after a reset").  In the current
-> code, nand_setup_data_interface() is called from nand_scan_tail(),
-> which is after the chip detection is done.
->=20
-> Remove the code that is causing NULL pointer dereference.  Now, the
-> maxchips passed to nand_scan() is the maximum number of chip selects
-> supported by the IP (typically 4 or 8).  Leave all the chip detection
-> process to nand_scan_ident().
->=20
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
-Thanks for the fix.
-
-Actually the docg4 driver is getting removed and the special handling
-in nand_scan() about having 0 maxchips will also disappear.
-Nonetheless, I think the below code was buggy and I would like to apply
-the fix anyway.
-
-> ---
->=20
->  drivers/mtd/nand/raw/denali.c | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index ca18612..3e4b8e1 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -1086,7 +1086,6 @@ static void denali_reset_banks(struct denali_nand_i=
-nfo *denali)
->  	}
-> =20
->  	dev_dbg(denali->dev, "%d chips connected\n", i);
-> -	denali->max_banks =3D i;
->  }
-> =20
->  static void denali_hw_init(struct denali_nand_info *denali)
+> If it's a purely SW choice, then is shouldn't be described in the DT.
+> You can use a module param, but I'm not even sure why one would want to d=
+isable DMA.
+UBIFS doesn't work with DMA, hence we are using a DT property to operate th=
+e driver in IO.
+But as you pointed (use virt_is_valid()), with this we can switch our drive=
+r to operate in PIO or DMA.
+I will remove this from DT.
 
 Thanks,
-Miqu=C3=A8l
+Naga Sureshkumar Relli.
