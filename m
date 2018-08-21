@@ -1,47 +1,34 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fs3Ir-0004GB-Ra
- for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 09:50:23 +0000
-Received: by mail-wr1-x444.google.com with SMTP id o37-v6so6424904wrf.6
- for <linux-mtd@lists.infradead.org>; Tue, 21 Aug 2018 02:50:10 -0700 (PDT)
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via the
- nvmem API
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Alban <albeu@free.fr>, Bartosz Golaszewski <brgl@bgdev.pl>,
- Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>,
- Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
- Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, netdev@vger.kernel.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl> <20180817182720.6a6e5e8e@bbrezillon>
- <20180819133106.0420df5f@tock> <20180819184609.6dcdbb9a@bbrezillon>
- <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
- <20180820202038.5d3dc195@bbrezillon>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
-Date: Tue, 21 Aug 2018 10:50:07 +0100
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fs3LI-00058S-CO
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 09:52:54 +0000
+Date: Tue, 21 Aug 2018 11:52:38 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+ "absahu@codeaurora.org" <absahu@codeaurora.org>, "peterpandong@micron.com"
+ <peterpandong@micron.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Michal Simek <michals@xilinx.com>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>
+Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+Message-ID: <20180821115238.1ad4dcb8@xps13>
+In-Reply-To: <MWHPR02MB2623E78222225D1CE8167463AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180820143324.61af9027@bbrezillon>
+ <MWHPR02MB2623F315C6D4C9775CDA08D8AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180821075948.28962170@bbrezillon>
+ <MWHPR02MB2623E78222225D1CE8167463AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20180820202038.5d3dc195@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,79 +38,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Naga,
 
+Naga Sureshkumar Relli <nagasure@xilinx.com> wrote on Tue, 21 Aug 2018
+09:22:07 +0000:
 
-On 20/08/18 19:20, Boris Brezillon wrote:
-> On Mon, 20 Aug 2018 11:43:34 +0100
-> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> 
->>
->> Overall am still not able to clear visualize on how MTD bindings with
->> nvmem cells would look in both partition and un-partition usecases?
->> An example DT would be nice here!!
-> 
-> Something along those lines:
-> 
-This looks good to me.
-> 	mtdnode {
-> 		nvmem-cells {
-> 			#address-cells = <1>;
-> 			#size-cells = <1>;
-> 
-> 			cell@0 {
-> 				reg = <0x0 0x14>;
-> 			};
-> 		};
-> 
-> 		partitions {
-> 			compatible = "fixed-partitions";
-> 			#address-cells = <1>;
-> 			#size-cells = <1>;
-> 
-> 			partition@0 {
-> 				reg = <0x0 0x20000>;
-> 
-> 				nvmem-cells {
-> 					#address-cells = <1>;
-> 					#size-cells = <1>;
-> 
-> 					cell@0 {
-> 						reg = <0x0 0x10>;
-> 					};
-> 				};
-> 			};
-> 		};
-> 	}; >
+> Hi Boris,
+>=20
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > Sent: Tuesday, August 21, 2018 11:30 AM
+> > To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> > Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> > computersforpeace@gmail.com; marek.vasut@gmail.com; kyungmin.park@samsu=
+ng.com;
+> > absahu@codeaurora.org; peterpandong@micron.com; frieder.schrempf@exceet=
+.de; linux-
+> > mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <mi=
+chals@xilinx.com>;
+> > nagasureshkumarrelli@gmail.com
+> > Subject: Re: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device=
+ tree binding
+> > documentation
+> >=20
+> > On Tue, 21 Aug 2018 05:47:18 +0000
+> > Naga Sureshkumar Relli <nagasure@xilinx.com> wrote:
+> >  =20
+> > > > > +Required properties:
+> > > > > +- compatible:		Should be "xlnx,zynqmp-nand" or "arasan,nfc-v3p10=
+" =20
+> > > >
+> > > > In your example it's not an "or" since both are defined. =20
+> > > In our previous discussion
+> > > (https://lore.kernel.org/patchwork/patch/748901/)
+> > > We decided to have compatible strings like " compatible =3D "<soc-ven=
+dor>,<ip-revision>", =20
+> > "arasan,<ip-revision>";" =20
+> > > So it should be either of these.
+> > > so I will write something like below
+> > > "Possible values are  "xlnx,zynqmp-nand"
+> > > 			"arasan,nfc-v3p10"
+> > > And in example I will mention any one compatible.
+> > > Is it ok? =20
+> >=20
+> > Hm, why do you need arasan,nfc-v3p10 at all if it's supposed to be over=
+loaded by a soc specific
+> > compat? =20
+> Actually we put these compatible strings based on the comments on v7 seri=
+es.
+> Anyway I will just keep "xlnx,zynqmp-nand" as compatible.
+> >  =20
+> > > > > +
+> > > > > +Optional properties:
+> > > > > +- arasan,has-mdma: Enables DMA support =20
+> > > >
+> > > > Can't you detect that based on the compatible (or thanks to a
+> > > > register). If it's something you choose when configuring the IP and=
+ can't detect at =20
+> > runtime I guess it's fine. =20
+> > > There is no way to select DMA when configuring the IP.
+> > > But it has internal DMA and there is a register to select PIO or DMA =
+while starting a =20
+> > transfer. =20
+> > > So if user really don't want DMA, then we will never set DMA in the c=
+ode based on DT =20
+> > property.
+> >=20
+> > If it's a purely SW choice, then is shouldn't be described in the DT.
+> > You can use a module param, but I'm not even sure why one would want to=
+ disable DMA. =20
+> UBIFS doesn't work with DMA, hence we are using a DT property to operate =
+the driver in IO.
+> But as you pointed (use virt_is_valid()), with this we can switch our dri=
+ver to operate in PIO or DMA.
+> I will remove this from DT.
 
-Just curious...Is there a reason why we can't do it like this?:
-Is this because of issue of #address-cells and #size-cells Or mtd 
-bindings always prefer subnodes?
+I don't get why UBIFS would not work with DMA? This is a significant
+drawback.
 
-	mtdnode {
-		reg = <0x0123000 0x40000>;
-		#address-cells = <1>;
-		#size-cells = <1>;
-		cell@0 {
-			compatible = "nvmem-cell";
-			reg = <0x0 0x14>;
-		};
-
-		partitions {
-			compatible = "fixed-partitions";
-			#address-cells = <1>;
-			#size-cells = <1>;
-
-			partition@0 {
-				reg = <0x0 0x20000>;
-				cell@0 {
-					compatible = "nvmem-cell";
-					reg = <0x0 0x10>;
-				};
-			};
-		};
-	};
-
-Am okay either way!
-
-thanks,
-srini
+Miqu=C3=A8l
