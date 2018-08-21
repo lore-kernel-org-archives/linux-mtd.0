@@ -1,40 +1,37 @@
-Date: Tue, 21 Aug 2018 12:43:52 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Alban <albeu@free.fr>, Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan
- Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin Hilman
- <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Arnd Bergmann
- <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Andrew Morton
- <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>, Dan Carpenter
- <dan.carpenter@oracle.com>, Florian Fainelli <f.fainelli@gmail.com>, Ivan
- Khoronzhuk <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck
- <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
- <robh@kernel.org>, David Lechner <david@lechnology.com>, Andrew Lunn
- <andrew@lunn.ch>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
- netdev@vger.kernel.org, Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
- the nvmem API
-Message-ID: <20180821124352.21340939@bbrezillon>
-In-Reply-To: <bd4dd892-3b6c-a77e-b2f3-386600c8c9bd@linaro.org>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl>
- <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
- <20180819184609.6dcdbb9a@bbrezillon>
- <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
- <20180820202038.5d3dc195@bbrezillon>
- <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
- <20180821115639.4894c1c9@bbrezillon>
- <bd4dd892-3b6c-a77e-b2f3-386600c8c9bd@linaro.org>
+Received: from mail-by2nam01on0051.outbound.protection.outlook.com
+ ([104.47.34.51] helo=NAM01-BY2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fs49u-0000uN-0x
+ for linux-mtd@lists.infradead.org; Tue, 21 Aug 2018 10:45:12 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
+ <kyungmin.park@samsung.com>, "absahu@codeaurora.org" <absahu@codeaurora.org>,
+ "peterpandong@micron.com" <peterpandong@micron.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Simek
+ <michals@xilinx.com>, "nagasureshkumarrelli@gmail.com"
+ <nagasureshkumarrelli@gmail.com>
+Subject: RE: [LINUX PATCH v10 1/2] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+Date: Tue, 21 Aug 2018 10:44:54 +0000
+Message-ID: <MWHPR02MB2623A681FB4FF038B3F9C758AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1534511964-20342-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20180820143324.61af9027@bbrezillon>
+ <MWHPR02MB2623F315C6D4C9775CDA08D8AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180821075948.28962170@bbrezillon>
+ <MWHPR02MB2623E78222225D1CE8167463AF310@MWHPR02MB2623.namprd02.prod.outlook.com>
+ <20180821115238.1ad4dcb8@xps13>
+In-Reply-To: <20180821115238.1ad4dcb8@xps13>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,111 +41,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Aug 2018 11:11:58 +0100
-Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-
-> On 21/08/18 10:56, Boris Brezillon wrote:
-> > On Tue, 21 Aug 2018 10:50:07 +0100
-> > Srinivas Kandagatla<srinivas.kandagatla@linaro.org>  wrote:
-> >   
-> >> On 20/08/18 19:20, Boris Brezillon wrote:  
-> >>> On Mon, 20 Aug 2018 11:43:34 +0100
-> >>> Srinivas Kandagatla<srinivas.kandagatla@linaro.org>  wrote:
-> >>>      
-> >>>> Overall am still not able to clear visualize on how MTD bindings with
-> >>>> nvmem cells would look in both partition and un-partition usecases?
-> >>>> An example DT would be nice here!!  
-> >>> Something along those lines:
-> >>>      
-> >> This looks good to me.  
-> >>> 	mtdnode {
-> >>> 		nvmem-cells {
-> >>> 			#address-cells = <1>;
-> >>> 			#size-cells = <1>;
-> >>>
-> >>> 			cell@0 {
-> >>> 				reg = <0x0 0x14>;
-> >>> 			};
-> >>> 		};
-> >>>
-> >>> 		partitions {
-> >>> 			compatible = "fixed-partitions";
-> >>> 			#address-cells = <1>;
-> >>> 			#size-cells = <1>;
-> >>>
-> >>> 			partition@0 {
-> >>> 				reg = <0x0 0x20000>;
-> >>>
-> >>> 				nvmem-cells {
-> >>> 					#address-cells = <1>;
-> >>> 					#size-cells = <1>;
-> >>>
-> >>> 					cell@0 {
-> >>> 						reg = <0x0 0x10>;
-> >>> 					};
-> >>> 				};
-> >>> 			};
-> >>> 		};
-> >>> 	}; >  
-> >> Just curious...Is there a reason why we can't do it like this?:
-> >> Is this because of issue of #address-cells and #size-cells Or mtd
-> >> bindings always prefer subnodes?
-> >>
-> >> 	mtdnode {
-> >> 		reg = <0x0123000 0x40000>;
-> >> 		#address-cells = <1>;
-> >> 		#size-cells = <1>;
-> >> 		cell@0 {
-> >> 			compatible = "nvmem-cell";
-> >> 			reg = <0x0 0x14>;
-> >> 		};
-> >>
-> >> 		partitions {
-> >> 			compatible = "fixed-partitions";
-> >> 			#address-cells = <1>;
-> >> 			#size-cells = <1>;
-> >>
-> >> 			partition@0 {
-> >> 				reg = <0x0 0x20000>;
-> >> 				cell@0 {
-> >> 					compatible = "nvmem-cell";
-> >> 					reg = <0x0 0x10>;
-> >> 				};
-> >> 			};
-> >> 		};
-> >> 	};  
-> > It's because partitions were initially directly defined under the mtd
-> > node, so, if you have an old DT you might have something like:
-> > 
-> > 	mtdnode {
-> > 		reg = <0x0123000 0x40000>;
-> > 		#address-cells = <1>;
-> > 		#size-cells = <1>;
-> > 
-> > 		partition@0 {
-> > 			reg = <0x0 0x20000>;
-> > 			...
-> > 		};
-> > 		...
-> > 	};
-> > 
-> > If we use such a DT with this patch applied, the NVMEM framework will
-> > consider MTD partitions as nvmem cells, which is not what we want.  
-> Yep, I agree.
-> TBH, I wanted to add compatible string to nvmem-cell at some point in 
-> time and it seems more natural update too. One of the reason we 
-> discussed this in the past was parsers. Looks like mtd can make use of this.
-> 
-> We should be able to add this as an optional flag in nvmem_config to 
-> enforce this check in case providers wanted to.
-> 
-> Do you think that would help mtd nvmem case?
-
-Yes, it should work if nvmem cells are defined directly under the mtd
-node (or the partition they belong to).
-
-> Also I felt like nvmem-cells subnode seems to be a bit heavy!
-
-I still think grouping nvmem cells in a subnode is cleaner (just like
-we do for partitions), but I won't object if all parties (you, Alban
-and Rob) agree on this solution.
+SGkgTWlxdWVsLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pcXVl
+bCBSYXluYWwgW21haWx0bzptaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tXQ0KPiBTZW50OiBUdWVz
+ZGF5LCBBdWd1c3QgMjEsIDIwMTggMzoyMyBQTQ0KPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxs
+aSA8bmFnYXN1cmVAeGlsaW54LmNvbT4NCj4gQ2M6IEJvcmlzIEJyZXppbGxvbiA8Ym9yaXMuYnJl
+emlsbG9uQGJvb3RsaW4uY29tPjsgcmljaGFyZEBub2QuYXQ7IGR3bXcyQGluZnJhZGVhZC5vcmc7
+DQo+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOyBr
+eXVuZ21pbi5wYXJrQHNhbXN1bmcuY29tOw0KPiBhYnNhaHVAY29kZWF1cm9yYS5vcmc7IHBldGVy
+cGFuZG9uZ0BtaWNyb24uY29tOyBmcmllZGVyLnNjaHJlbXBmQGV4Y2VldC5kZTsgbGludXgtDQo+
+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBN
+aWNoYWwgU2ltZWsgPG1pY2hhbHNAeGlsaW54LmNvbT47DQo+IG5hZ2FzdXJlc2hrdW1hcnJlbGxp
+QGdtYWlsLmNvbQ0KPiBTdWJqZWN0OiBSZTogW0xJTlVYIFBBVENIIHYxMCAxLzJdIGR0LWJpbmRp
+bmdzOiBtdGQ6IGFyYXNhbjogQWRkIGRldmljZSB0cmVlIGJpbmRpbmcNCj4gZG9jdW1lbnRhdGlv
+bg0KPiANCj4gSGkgTmFnYSwNCj4gDQo+IE5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJl
+QHhpbGlueC5jb20+IHdyb3RlIG9uIFR1ZSwgMjEgQXVnIDIwMTgNCj4gMDk6MjI6MDcgKzAwMDA6
+DQo+IA0KPiA+IEhpIEJvcmlzLA0KPiA+DQo+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
+LQ0KPiA+ID4gRnJvbTogQm9yaXMgQnJlemlsbG9uIFttYWlsdG86Ym9yaXMuYnJlemlsbG9uQGJv
+b3RsaW4uY29tXQ0KPiA+ID4gU2VudDogVHVlc2RheSwgQXVndXN0IDIxLCAyMDE4IDExOjMwIEFN
+DQo+ID4gPiBUbzogTmFnYSBTdXJlc2hrdW1hciBSZWxsaSA8bmFnYXN1cmVAeGlsaW54LmNvbT4N
+Cj4gPiA+IENjOiBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOyByaWNoYXJkQG5vZC5hdDsgZHdt
+dzJAaW5mcmFkZWFkLm9yZzsNCj4gPiA+IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgbWFy
+ZWsudmFzdXRAZ21haWwuY29tOw0KPiA+ID4ga3l1bmdtaW4ucGFya0BzYW1zdW5nLmNvbTsgYWJz
+YWh1QGNvZGVhdXJvcmEub3JnOw0KPiA+ID4gcGV0ZXJwYW5kb25nQG1pY3Jvbi5jb207IGZyaWVk
+ZXIuc2NocmVtcGZAZXhjZWV0LmRlOyBsaW51eC0NCj4gPiA+IG10ZEBsaXN0cy5pbmZyYWRlYWQu
+b3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBNaWNoYWwgU2ltZWsNCj4gPiA+IDxt
+aWNoYWxzQHhpbGlueC5jb20+OyBuYWdhc3VyZXNoa3VtYXJyZWxsaUBnbWFpbC5jb20NCj4gPiA+
+IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjEwIDEvMl0gZHQtYmluZGluZ3M6IG10ZDogYXJh
+c2FuOiBBZGQNCj4gPiA+IGRldmljZSB0cmVlIGJpbmRpbmcgZG9jdW1lbnRhdGlvbg0KPiA+ID4N
+Cj4gPiA+IE9uIFR1ZSwgMjEgQXVnIDIwMTggMDU6NDc6MTggKzAwMDANCj4gPiA+IE5hZ2EgU3Vy
+ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+IHdyb3RlOg0KPiA+ID4NCj4gPiA+
+ID4gPiA+ICtSZXF1aXJlZCBwcm9wZXJ0aWVzOg0KPiA+ID4gPiA+ID4gKy0gY29tcGF0aWJsZToJ
+CVNob3VsZCBiZSAieGxueCx6eW5xbXAtbmFuZCIgb3IgImFyYXNhbixuZmMtdjNwMTAiDQo+ID4g
+PiA+ID4NCj4gPiA+ID4gPiBJbiB5b3VyIGV4YW1wbGUgaXQncyBub3QgYW4gIm9yIiBzaW5jZSBi
+b3RoIGFyZSBkZWZpbmVkLg0KPiA+ID4gPiBJbiBvdXIgcHJldmlvdXMgZGlzY3Vzc2lvbg0KPiA+
+ID4gPiAoaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvcGF0Y2h3b3JrL3BhdGNoLzc0ODkwMS8pDQo+
+ID4gPiA+IFdlIGRlY2lkZWQgdG8gaGF2ZSBjb21wYXRpYmxlIHN0cmluZ3MgbGlrZSAiIGNvbXBh
+dGlibGUgPQ0KPiA+ID4gPiAiPHNvYy12ZW5kb3I+LDxpcC1yZXZpc2lvbj4iLA0KPiA+ID4gImFy
+YXNhbiw8aXAtcmV2aXNpb24+IjsiDQo+ID4gPiA+IFNvIGl0IHNob3VsZCBiZSBlaXRoZXIgb2Yg
+dGhlc2UuDQo+ID4gPiA+IHNvIEkgd2lsbCB3cml0ZSBzb21ldGhpbmcgbGlrZSBiZWxvdyAiUG9z
+c2libGUgdmFsdWVzIGFyZQ0KPiA+ID4gPiAieGxueCx6eW5xbXAtbmFuZCINCj4gPiA+ID4gCQkJ
+ImFyYXNhbixuZmMtdjNwMTAiDQo+ID4gPiA+IEFuZCBpbiBleGFtcGxlIEkgd2lsbCBtZW50aW9u
+IGFueSBvbmUgY29tcGF0aWJsZS4NCj4gPiA+ID4gSXMgaXQgb2s/DQo+ID4gPg0KPiA+ID4gSG0s
+IHdoeSBkbyB5b3UgbmVlZCBhcmFzYW4sbmZjLXYzcDEwIGF0IGFsbCBpZiBpdCdzIHN1cHBvc2Vk
+IHRvIGJlDQo+ID4gPiBvdmVybG9hZGVkIGJ5IGEgc29jIHNwZWNpZmljIGNvbXBhdD8NCj4gPiBB
+Y3R1YWxseSB3ZSBwdXQgdGhlc2UgY29tcGF0aWJsZSBzdHJpbmdzIGJhc2VkIG9uIHRoZSBjb21t
+ZW50cyBvbiB2NyBzZXJpZXMuDQo+ID4gQW55d2F5IEkgd2lsbCBqdXN0IGtlZXAgInhsbngsenlu
+cW1wLW5hbmQiIGFzIGNvbXBhdGlibGUuDQo+ID4gPg0KPiA+ID4gPiA+ID4gKw0KPiA+ID4gPiA+
+ID4gK09wdGlvbmFsIHByb3BlcnRpZXM6DQo+ID4gPiA+ID4gPiArLSBhcmFzYW4saGFzLW1kbWE6
+IEVuYWJsZXMgRE1BIHN1cHBvcnQNCj4gPiA+ID4gPg0KPiA+ID4gPiA+IENhbid0IHlvdSBkZXRl
+Y3QgdGhhdCBiYXNlZCBvbiB0aGUgY29tcGF0aWJsZSAob3IgdGhhbmtzIHRvIGENCj4gPiA+ID4g
+PiByZWdpc3RlcikuIElmIGl0J3Mgc29tZXRoaW5nIHlvdSBjaG9vc2Ugd2hlbiBjb25maWd1cmlu
+ZyB0aGUgSVANCj4gPiA+ID4gPiBhbmQgY2FuJ3QgZGV0ZWN0IGF0DQo+ID4gPiBydW50aW1lIEkg
+Z3Vlc3MgaXQncyBmaW5lLg0KPiA+ID4gPiBUaGVyZSBpcyBubyB3YXkgdG8gc2VsZWN0IERNQSB3
+aGVuIGNvbmZpZ3VyaW5nIHRoZSBJUC4NCj4gPiA+ID4gQnV0IGl0IGhhcyBpbnRlcm5hbCBETUEg
+YW5kIHRoZXJlIGlzIGEgcmVnaXN0ZXIgdG8gc2VsZWN0IFBJTyBvcg0KPiA+ID4gPiBETUEgd2hp
+bGUgc3RhcnRpbmcgYQ0KPiA+ID4gdHJhbnNmZXIuDQo+ID4gPiA+IFNvIGlmIHVzZXIgcmVhbGx5
+IGRvbid0IHdhbnQgRE1BLCB0aGVuIHdlIHdpbGwgbmV2ZXIgc2V0IERNQSBpbg0KPiA+ID4gPiB0
+aGUgY29kZSBiYXNlZCBvbiBEVA0KPiA+ID4gcHJvcGVydHkuDQo+ID4gPg0KPiA+ID4gSWYgaXQn
+cyBhIHB1cmVseSBTVyBjaG9pY2UsIHRoZW4gaXMgc2hvdWxkbid0IGJlIGRlc2NyaWJlZCBpbiB0
+aGUgRFQuDQo+ID4gPiBZb3UgY2FuIHVzZSBhIG1vZHVsZSBwYXJhbSwgYnV0IEknbSBub3QgZXZl
+biBzdXJlIHdoeSBvbmUgd291bGQgd2FudCB0byBkaXNhYmxlIERNQS4NCj4gPiBVQklGUyBkb2Vz
+bid0IHdvcmsgd2l0aCBETUEsIGhlbmNlIHdlIGFyZSB1c2luZyBhIERUIHByb3BlcnR5IHRvIG9w
+ZXJhdGUgdGhlIGRyaXZlciBpbg0KPiBJTy4NCj4gPiBCdXQgYXMgeW91IHBvaW50ZWQgKHVzZSB2
+aXJ0X2lzX3ZhbGlkKCkpLCB3aXRoIHRoaXMgd2UgY2FuIHN3aXRjaCBvdXIgZHJpdmVyIHRvIG9w
+ZXJhdGUgaW4NCj4gUElPIG9yIERNQS4NCj4gPiBJIHdpbGwgcmVtb3ZlIHRoaXMgZnJvbSBEVC4N
+Cj4gDQo+IEkgZG9uJ3QgZ2V0IHdoeSBVQklGUyB3b3VsZCBub3Qgd29yayB3aXRoIERNQT8gVGhp
+cyBpcyBhIHNpZ25pZmljYW50IGRyYXdiYWNrLg0KVUJJRlMgdXNlcyB2bWFsbG9jJ2VkIGJ1ZmZl
+cnMgd2hlcmVhcyBmb3IgRE1BIGl0IHNob3VsZCBiZSBETUEtYWJsZSwgaS5lIHVzZXMgcGh5c2lj
+YWxseSBjb250aWd1b3VzIG1lbW9yeS4NCkhlbmNlIHdlIHVzZWQgYSBEVCBwcm9wZXJ0eSB0byBt
+YWtlIGl0IHdvcmsgaW4gUElPIG1vZGUuDQpTb21lIGRpc2N1c3Npb24gaGFwcGVuZWQgaW4gaHR0
+cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC85Njc1MDA3Ly4NCkJ1dCB3aGF0ZXZlciBJ
+IHNhaWQgYWJvdmUsIGlzIHdpdGggb2xkZXIgYXJhc2FuX25hbmQgZHJpdmVyLCBub3cgYW55d2F5
+IHdlIGhhdmUNCnZpcnRfYWRkcl92YWxpZCgpLiBCeSBjaGVja2luZyB0aGlzIHdlIGNhbiB1c2Ug
+RE1BIG9yIFBJTy4NClRoaXMgaXMgdGhlIGluZm9ybWF0aW9uIEkgaGF2ZSwgYnV0IEkgbWF5IGJl
+IHdyb25nLg0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpLg0KPiANCj4gTWlxdcOo
+bA0K
