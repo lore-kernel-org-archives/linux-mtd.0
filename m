@@ -1,47 +1,16 @@
-Date: Wed, 22 Aug 2018 21:24:16 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, Hartley
- Sweeten <hsweeten@visionengravers.com>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Lukasz Majewski <lukma@denx.de>, Shawn Guo
- <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix
- Kernel Team <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>,
- NXP Linux Team <linux-imx@nxp.com>, Imre Kaloz <kaloz@openwrt.org>,
- Krzysztof Halasa <khalasa@piap.pl>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Tony Lindgren <tony@atomide.com>, Alexander Clouter <alex@digriz.org.uk>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Gregory Clement
- <gregory.clement@bootlin.com>, Daniel Mack <daniel@zonque.org>, Haojian
- Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org, Yoshinori
- Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Kamal Dasu
- <kdasu.kdev@gmail.com>, Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir
- Zapolskiy <vz@mleia.com>, Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>, Matthias Brugger
- <matthias.bgg@gmail.com>, linux-mediatek@lists.infradead.org, Wan ZongShun
- <mcuos.com@gmail.com>, Neil Armstrong <narmstrong@baylibre.com>, Maxim
- Levitsky <maximlevitsky@gmail.com>, Maxime Ripard
- <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marc Gonzalez
- <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>, Stefan Agner
- <stefan@agner.ch>, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH 01/23] mtd: rawnand: plat_nand: Pass a nand_chip object
- to all platform_nand_ctrl hooks
-Message-ID: <20180822212416.404c47e6@bbrezillon>
-In-Reply-To: <20180817160922.6224-2-boris.brezillon@bootlin.com>
-References: <20180817160922.6224-1-boris.brezillon@bootlin.com>
- <20180817160922.6224-2-boris.brezillon@bootlin.com>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fsaCR-0007x4-2L
+ for linux-mtd@lists.infradead.org; Wed, 22 Aug 2018 20:57:59 +0000
+From: Richard Weinberger <richard@nod.at>
+To: torvalds@linux-foundation.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] UBI/UBIFS updates for 4.19-rc1
+Date: Wed, 22 Aug 2018 22:57:32 +0200
+Message-ID: <25583958.CCRG8GzgUh@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,24 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Aug 2018 18:09:00 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Linus,
 
-> Let's make the raw NAND API consistent by patching all helpers and
-> hooks to take a nand_chip object instead of an mtd_info one or
-> remove the mtd_info object when both are passed.
-> 
-> In order to do that, we first need to update the platform_nand_ctrl
-> hooks to take a nand_chip object instead of an mtd_info.
-> 
-> We had temporary plat_nand_xxx() wrappers to the do the mtd -> chip
+The following changes since commit 94710cac0ef4ee177a63b5227664b38c95bbf703:
 
-     ^ add
+  Linux 4.18 (2018-08-12 13:41:04 -0700)
 
-> conversion, but those will be dropped when doing the patching nand_chip
+are available in the Git repository at:
 
-					     ^ s/doing the//
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc1
 
-> hooks to take a nand_chip object.
+for you to fetch changes up to 99a24e02ccf6604e3020cf9e2c7a042b6ebb655f:
 
-Will fix those typos in v2.
+  ubifs: Set default assert action to read-only (2018-08-15 00:25:22 +0200)
+
+----------------------------------------------------------------
+This pull request contains updates for both UBI and UBIFS:
+
+- Year 2038 preparations
+- New UBI feature to skip CRC checks of static volumes
+- A new Kconfig option to disable xattrs in UBIFS
+- Lots of fixes in UBIFS, found by our new test framework
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      ubifs: use timespec64 for inode timestamps
+      ubifs: tnc: use monotonic znode timestamp
+
+Gustavo A. R. Silva (1):
+      ubifs: use swap macro in swap_dirty_idx
+
+Quentin Schulz (2):
+      ubi: provide a way to skip CRC checks
+      ubi: expose the volume CRC check skip flag
+
+Richard Weinberger (15):
+      ubifs: Fix directory size calculation for symlinks
+      ubifs: Fix synced_i_size calculation for xattr inodes
+      ubi: Initialize Fastmap checkmapping correctly
+      ubifs: Fix memory leak in lprobs self-check
+      ubifs: gc: Fix typo
+      ubifs: xattr: Don't operate on deleted inodes
+      ubifs: Add comment on c->commit_sem
+      Revert "UBIFS: Fix potential integer overflow in allocation"
+      ubifs: Check data node size before truncate
+      ubifs: Use kmalloc_array()
+      ubifs: Turn two ubifs_assert() into a WARN_ON()
+      ubifs: Pass struct ubifs_info to ubifs_assert()
+      ubifs: Rework ubifs_assert()
+      ubifs: Allow setting assert action as mount parameter
+      ubifs: Set default assert action to read-only
+
+Stefan Agner (1):
+      ubifs: introduce Kconfig symbol for xattr support
+
+ drivers/mtd/ubi/cdev.c      |  11 +++++
+ drivers/mtd/ubi/kapi.c      |   2 +-
+ drivers/mtd/ubi/ubi-media.h |   6 +++
+ drivers/mtd/ubi/ubi.h       |   4 ++
+ drivers/mtd/ubi/vmt.c       |  12 +++++
+ drivers/mtd/ubi/vtbl.c      |  23 +++++----
+ fs/ubifs/Kconfig            |  15 +++++-
+ fs/ubifs/Makefile           |   3 +-
+ fs/ubifs/budget.c           |  68 +++++++++++++--------------
+ fs/ubifs/commit.c           |   8 ++--
+ fs/ubifs/crypto.c           |   4 +-
+ fs/ubifs/debug.c            |  42 +++++++++++++----
+ fs/ubifs/debug.h            |  14 +++---
+ fs/ubifs/dir.c              |  42 +++++++++--------
+ fs/ubifs/file.c             |  62 ++++++++++++++----------
+ fs/ubifs/file.h             |   0
+ fs/ubifs/find.c             |  59 +++++++++++------------
+ fs/ubifs/gc.c               |  66 +++++++++++++-------------
+ fs/ubifs/io.c               |  97 +++++++++++++++++++-------------------
+ fs/ubifs/journal.c          |  72 ++++++++++++++++------------
+ fs/ubifs/key.h              |  14 +++---
+ fs/ubifs/log.c              |  12 ++---
+ fs/ubifs/lprops.c           |  94 ++++++++++++++++++-------------------
+ fs/ubifs/lpt.c              | 112 ++++++++++++++++++++++----------------------
+ fs/ubifs/lpt_commit.c       |  50 ++++++++++----------
+ fs/ubifs/master.c           |   2 +-
+ fs/ubifs/misc.c             |  11 +++++
+ fs/ubifs/misc.h             |  16 ++++---
+ fs/ubifs/orphan.c           |  26 +++++-----
+ fs/ubifs/recovery.c         |  14 +++---
+ fs/ubifs/replay.c           |  13 ++---
+ fs/ubifs/sb.c               |  18 +++----
+ fs/ubifs/scan.c             |   2 +-
+ fs/ubifs/shrinker.c         |  12 ++---
+ fs/ubifs/super.c            |  76 ++++++++++++++++++++----------
+ fs/ubifs/tnc.c              | 111 +++++++++++++++++++++----------------------
+ fs/ubifs/tnc_commit.c       |  28 +++++------
+ fs/ubifs/tnc_misc.c         |  40 +++++++++-------
+ fs/ubifs/ubifs.h            |  39 ++++++++++++---
+ fs/ubifs/xattr.c            |  40 ++++++++++++----
+ include/uapi/mtd/ubi-user.h |  18 ++++++-
+ 41 files changed, 787 insertions(+), 571 deletions(-)
+ create mode 100644 fs/ubifs/file.h
