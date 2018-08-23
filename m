@@ -1,26 +1,23 @@
-Received: from gateway23.websitewelcome.com ([192.185.50.108])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fsvN1-0007ad-6Y
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 19:34:16 +0000
-Received: from cm17.websitewelcome.com (cm17.websitewelcome.com [100.42.49.20])
- by gateway23.websitewelcome.com (Postfix) with ESMTP id 9C7C92C078
- for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2018 14:34:03 -0500 (CDT)
-Date: Thu, 23 Aug 2018 14:33:32 -0500
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Harvey Hunt <harveyhuntnexus@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- Kees Cook <keescook@chromium.org>,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] mtd: rawnand: jz4780: use struct_size() in devm_kzalloc()
-Message-ID: <20180823193332.GA31602@embeddedor.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fsx99-00062C-3J
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 21:28:06 +0000
+Date: Thu, 23 Aug 2018 23:27:47 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Harvey Hunt <harveyhuntnexus@gmail.com>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Kees Cook
+ <keescook@chromium.org>
+Subject: Re: [PATCH] mtd: rawnand: jz4780: use struct_size() in devm_kzalloc()
+Message-ID: <20180823232747.072af43d@bbrezillon>
+In-Reply-To: <20180823193332.GA31602@embeddedor.com>
+References: <20180823193332.GA31602@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-One of the more common cases of allocation size calculations is finding
-the size of a structure that has a zero-sized array at the end, along
-with memory for some number of elements for that array. For example:
+On Thu, 23 Aug 2018 14:33:32 -0500
+"Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote:
 
-struct foo {
-	int stuff;
-        void *entry[];
-};
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
+> 
+> struct foo {
+> 	int stuff;
+>         void *entry[];
+> };
+> 
+> instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
+> 
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
+> 
+> instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
 
-instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
+Oh, I didn't know about that one. That's nice!
 
-Instead of leaving these open-coded and prone to type mistakes, we can
-now use the new struct_size() helper:
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- drivers/mtd/nand/raw/jz4780_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-index db4fa60..ac62395 100644
---- a/drivers/mtd/nand/raw/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/jz4780_nand.c
-@@ -352,7 +352,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	nfc = devm_kzalloc(dev, sizeof(*nfc) + (sizeof(nfc->cs[0]) * num_banks), GFP_KERNEL);
-+	nfc = devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KERNEL);
- 	if (!nfc)
- 		return -ENOMEM;
- 
--- 
-2.7.4
+> ---
+>  drivers/mtd/nand/raw/jz4780_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+> index db4fa60..ac62395 100644
+> --- a/drivers/mtd/nand/raw/jz4780_nand.c
+> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+> @@ -352,7 +352,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+>  		return -ENODEV;
+>  	}
+>  
+> -	nfc = devm_kzalloc(dev, sizeof(*nfc) + (sizeof(nfc->cs[0]) * num_banks), GFP_KERNEL);
+> +	nfc = devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KERNEL);
+>  	if (!nfc)
+>  		return -ENOMEM;
+>  
