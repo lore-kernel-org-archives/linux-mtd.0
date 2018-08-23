@@ -1,16 +1,42 @@
-Received: from mailout1.w1.samsung.com ([210.118.77.11])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fslDo-0008NR-IU
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 08:44:06 +0000
-From: Huijin Park <huijin.park@samsung.com>
+Date: Thu, 23 Aug 2018 12:29:21 +0200
+From: Alban <albeu@free.fr>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Huijin Park <huijin.park@samsung.com>,
- bbanghj.park@gmail.com
-Subject: [PATCH] mtd: change len type from signed to unsigned type
-Date: Thu, 23 Aug 2018 04:43:39 -0400
-Message-id: <1535013819-1646-1-git-send-email-huijin.park@samsung.com>
-References: <CGME20180823084348eucas1p2157ab1089290298cf43647e522b8be4f@eucas1p2.samsung.com>
+Cc: Alban Bedel <albeu@free.fr>, Srinivas Kandagatla
+ <srinivas.kandagatla@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>,
+ Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>, Kevin
+ Hilman <khilman@kernel.org>, Russell King <linux@armlinux.org.uk>, Arnd
+ Bergmann <arnd@arndb.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>, Dan Carpenter
+ <dan.carpenter@oracle.com>, Florian Fainelli <f.fainelli@gmail.com>, Ivan
+ Khoronzhuk <ivan.khoronzhuk@linaro.org>, Sven Van Asbroeck
+ <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>, Rob Herring
+ <robh@kernel.org>, David Lechner <david@lechnology.com>, Andrew Lunn
+ <andrew@lunn.ch>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+ linux-mtd@lists.infradead.org, Bartosz Golaszewski
+ <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
+ the nvmem API
+Message-ID: <20180823122921.6857d917@tock>
+In-Reply-To: <20180821150121.4408672f@bbrezillon>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-7-brgl@bgdev.pl>
+ <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
+ <20180819184609.6dcdbb9a@bbrezillon>
+ <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
+ <20180820202038.5d3dc195@bbrezillon>
+ <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
+ <20180821133916.3a1c51b1@eos>
+ <6db14f9c-edd3-5e43-839c-953bb03097ff@linaro.org>
+ <20180821150121.4408672f@bbrezillon>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/clJVj=KipsjMDyfNIMePBO1"; protocol="application/pgp-signature"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +46,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: "huijin.park" <huijin.park@samsung.com>
+--Sig_/clJVj=KipsjMDyfNIMePBO1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-assign of a signed value which has type 'int' to a variable of
-a bigger unsigned integer type 'uint64_t'.
-this is ok most of the time, but can lead to unexpectedly large
-resulting value if the original signed value is negative.
-in addtion, the callers of the erase_write() pass the len parameter
-as unsigned type.
+On Tue, 21 Aug 2018 15:01:21 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Signed-off-by: huijin.park <huijin.park@samsung.com>
----
- drivers/mtd/mtdblock.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Tue, 21 Aug 2018 13:00:04 +0100
+> Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
+>=20
+> > On 21/08/18 12:39, Alban wrote: =20
+> > > However we still have the a potential address space clash between
+> > > the nvmem cells and the main device binding.   =20
+> > Can you elaborate?
+> >  =20
+>=20
+> Yes, I'd be interested in having a real example too, cause I don't see
+> what this address space clash is.
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index a5b1933..b2d5ed1 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -56,7 +56,7 @@ struct mtdblk_dev {
-  */
- 
- static int erase_write (struct mtd_info *mtd, unsigned long pos,
--			int len, const char *buf)
-+			unsigned int len, const char *buf)
- {
- 	struct erase_info erase;
- 	size_t retlen;
--- 
-1.7.9.5
+Let say I have a device that use the following binding:
+
+device {
+    compatible =3D "example-device";
+    #address-cells =3D <2>;
+    #size-cells =3D <1>;
+
+    child@0,0 {
+        reg =3D <0x0 0x0>;
+        ...
+    };
+
+    child@1,2 {
+        reg =3D <0x1 0x2>;
+        ...
+    };
+
+};
+
+Now this binding already use the node address space for something,
+so putting a nvmem node as direct child would not work. Here it is
+quiet clear as we have 2 address cells, however even if the number of
+cells and the cells size would match it would still be conceptually
+wrong as both bindings then use the same address space for something
+different.
+
+Alban
+
+--Sig_/clJVj=KipsjMDyfNIMePBO1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJbfoyCAAoJEHSUmkuduC2831EQANEODpUrKPBwoUPR5kK9+xS1
+1qpoYGYl6TM2lHAEP7nZP+eNv3rOyBncZoiuVAIAIqYi2cJ1eyury5lRDpgIpZaH
+hYDSyeBefkS/qFTH91x3+CYq5wK8uPKEFoDJcAmj0jDw+dEGk9xRohWF0rSR5AVv
+IKVtiDByjgCLlNBCmzOe9GAxEU9hSZVRck3u84NA9HlklZ+P3dbEotpRkt3c9qsZ
+3HlckafnYuWs3gFW+HP++oALuUa4X7iqHTNi2Wubj/G0K30vhOrSAgCpQty5TqWF
+iYiZq/zfZqDJlDkWOYkW9lSdF0tGlCgfsVOrxG5ByG5jMMtW5B7QREyZrBmQzcuz
+kIoerm0mjZYCfev2rkdtw0FZWXQdDGp9Rjy28B8RnnSMjR3cljid3wyWRZRhtnOY
+6QuHDQ7D5ncqn9LiZIAj4Th6RKgxxd4F7iNDLMY57+GmMVeqdgXJr/vWMXUy+KEu
+k9xO3xr+7l7wy23C35vGw+IK2Y9mrWyuchUNF+waa3gUL2L9ufugB8l6Yp+4OjRx
+ur16kOtTg4ZTYeRryImv8FLrjjm3FT81aKwZthoLL5W4Wxh5WPU0oMe2YWcE7g/G
+K6exE5qdZ285k3uHVgvqXH4SZTcjkqonJZ59Xjl5lb/NWhvMrAY3nXzUH1roM863
+jpGm3PZXS4uPr9TwgjAK
+=952h
+-----END PGP SIGNATURE-----
+
+--Sig_/clJVj=KipsjMDyfNIMePBO1--
