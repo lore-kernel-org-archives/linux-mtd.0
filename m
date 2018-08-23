@@ -1,16 +1,16 @@
 Received: from mailout1.w1.samsung.com ([210.118.77.11])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fsk2f-0005gJ-NC
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 07:28:31 +0000
+ id 1fslDo-0008NR-IU
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 08:44:06 +0000
 From: Huijin Park <huijin.park@samsung.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Huijin Park
- <huijin.park@samsung.com>, bbanghj.park@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: cast to u64 to avoid unexpected error
-Date: Thu, 23 Aug 2018 03:28:02 -0400
-Message-id: <1535009282-1480-1-git-send-email-huijin.park@samsung.com>
-References: <CGME20180823072813eucas1p2a534b4be94a3a2bc3480adcefca2ca22@eucas1p2.samsung.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Huijin Park <huijin.park@samsung.com>,
+ bbanghj.park@gmail.com
+Subject: [PATCH] mtd: change len type from signed to unsigned type
+Date: Thu, 23 Aug 2018 04:43:39 -0400
+Message-id: <1535013819-1646-1-git-send-email-huijin.park@samsung.com>
+References: <CGME20180823084348eucas1p2157ab1089290298cf43647e522b8be4f@eucas1p2.samsung.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +22,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: "huijin.park" <huijin.park@samsung.com>
 
-the params->size is defined as "u64"
-and, "info->sector_size" and "info->n_sectors" is defined as unsgined and u16
-thus, u64 data might have strange data(loss data) if data is overflow.
-this patch cast it to u64.
+assign of a signed value which has type 'int' to a variable of
+a bigger unsigned integer type 'uint64_t'.
+this is ok most of the time, but can lead to unexpectedly large
+resulting value if the original signed value is negative.
+in addtion, the callers of the erase_write() pass the len parameter
+as unsigned type.
 
 Signed-off-by: huijin.park <huijin.park@samsung.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c |    2 +-
+ drivers/mtd/mtdblock.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index d9c368c..527f281 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2459,7 +2459,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
- 	memset(params, 0, sizeof(*params));
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index a5b1933..b2d5ed1 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -56,7 +56,7 @@ struct mtdblk_dev {
+  */
  
- 	/* Set SPI NOR sizes. */
--	params->size = info->sector_size * info->n_sectors;
-+	params->size = (u64)info->sector_size * (u64)info->n_sectors;
- 	params->page_size = info->page_size;
- 
- 	/* (Fast) Read settings. */
+ static int erase_write (struct mtd_info *mtd, unsigned long pos,
+-			int len, const char *buf)
++			unsigned int len, const char *buf)
+ {
+ 	struct erase_info erase;
+ 	size_t retlen;
 -- 
 1.7.9.5
