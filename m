@@ -1,18 +1,32 @@
-Received: from xavier.telenet-ops.be ([2a02:1800:120:4::f00:14])
+Received: from mail-yb0-x241.google.com ([2607:f8b0:4002:c09::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fsxOf-0003ca-6x
- for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 21:44:06 +0000
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ id 1fsxVP-0006pc-SB
+ for linux-mtd@lists.infradead.org; Thu, 23 Aug 2018 21:51:06 +0000
+Received: by mail-yb0-x241.google.com with SMTP id f4-v6so2766549ybp.7
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2018 14:50:52 -0700 (PDT)
+Received: from mail-yb0-f169.google.com (mail-yb0-f169.google.com.
+ [209.85.213.169])
+ by smtp.gmail.com with ESMTPSA id i190-v6sm6679990ywc.60.2018.08.23.14.50.49
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 23 Aug 2018 14:50:49 -0700 (PDT)
+Received: by mail-yb0-f169.google.com with SMTP id y20-v6so2751035ybi.13
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2018 14:50:49 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180823193332.GA31602@embeddedor.com>
+References: <20180823193332.GA31602@embeddedor.com>
+From: Kees Cook <keescook@chromium.org>
+Date: Thu, 23 Aug 2018 14:50:48 -0700
+Message-ID: <CAGXu5j+biznRQt+gi7Nj1GZ0zk-s6JRh1NB5DhOOOMq0sf8ciQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: jz4780: use struct_size() in devm_kzalloc()
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Harvey Hunt <harveyhuntnexus@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
  Miquel Raynal <miquel.raynal@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] mtd: rawnand: docg4: Remove wrong __init annotations
-Date: Thu, 23 Aug 2018 23:43:45 +0200
-Message-Id: <20180823214345.20949-1-geert@linux-m68k.org>
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +36,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If gcc (e.g. 4.1.2) decides not to inline init_mtd_structs() and
-read_id_reg(), this will cause section mismatches, and crashes:
+On Thu, Aug 23, 2018 at 12:33 PM, Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
+>
+> struct foo {
+>         int stuff;
+>         void *entry[];
+> };
+>
+> instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
+>
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
+>
+> instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-    WARNING: drivers/mtd/nand/raw/docg4.o(.text+0xc10): Section mismatch in reference from the function docg4_attach_chip() to the function .init.text:init_mtd_structs()
-    The function docg4_attach_chip() references
-    the function __init init_mtd_structs().
-    This is often because docg4_attach_chip lacks a __init
-    annotation or the annotation of init_mtd_structs is wrong.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-    WARNING: drivers/mtd/nand/raw/docg4.o(.text+0xc3e): Section mismatch in reference from the function docg4_attach_chip() to the function .init.text:read_id_reg()
-    The function docg4_attach_chip() references
-    the function __init read_id_reg().
-    This is often because docg4_attach_chip lacks a __init
-    annotation or the annotation of read_id_reg is wrong.
+-Kees
 
-Fix this by dropping the now incorrect __init annotations from
-init_mtd_structs() and read_id_reg().
+> ---
+>  drivers/mtd/nand/raw/jz4780_nand.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
+> index db4fa60..ac62395 100644
+> --- a/drivers/mtd/nand/raw/jz4780_nand.c
+> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
+> @@ -352,7 +352,7 @@ static int jz4780_nand_probe(struct platform_device *pdev)
+>                 return -ENODEV;
+>         }
+>
+> -       nfc = devm_kzalloc(dev, sizeof(*nfc) + (sizeof(nfc->cs[0]) * num_banks), GFP_KERNEL);
+> +       nfc = devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KERNEL);
+>         if (!nfc)
+>                 return -ENOMEM;
+>
+> --
+> 2.7.4
+>
 
-Fixes: 66a38478dcc5b5a3 ("mtd: rawnand: docg4: convert driver to nand_scan()")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/mtd/nand/raw/docg4.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-index a3f04315c05c54e6..427fcbc1b71c0551 100644
---- a/drivers/mtd/nand/raw/docg4.c
-+++ b/drivers/mtd/nand/raw/docg4.c
-@@ -1218,7 +1218,7 @@ static int docg4_resume(struct platform_device *pdev)
- 	return 0;
- }
- 
--static void __init init_mtd_structs(struct mtd_info *mtd)
-+static void init_mtd_structs(struct mtd_info *mtd)
- {
- 	/* initialize mtd and nand data structures */
- 
-@@ -1290,7 +1290,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
- 
- }
- 
--static int __init read_id_reg(struct mtd_info *mtd)
-+static int read_id_reg(struct mtd_info *mtd)
- {
- 	struct nand_chip *nand = mtd_to_nand(mtd);
- 	struct docg4_priv *doc = nand_get_controller_data(nand);
+
 -- 
-2.17.1
+Kees Cook
+Pixel Security
