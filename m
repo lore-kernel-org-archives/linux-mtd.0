@@ -1,41 +1,25 @@
-Date: Fri, 24 Aug 2018 16:39:17 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Alban <albeu@free.fr>
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org, Sekhar Nori
- <nsekhar@ti.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Srinivas
- Kandagatla <srinivas.kandagatla@linaro.org>, linux-i2c@vger.kernel.org,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Rob Herring
- <robh@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman
- <khilman@kernel.org>, Richard Weinberger <richard@nod.at>, Bartosz
- Golaszewski <brgl@bgdev.pl>, Russell King <linux@armlinux.org.uk>, Marek
- Vasut <marek.vasut@gmail.com>, Paolo Abeni <pabeni@redhat.com>, Dan
- Carpenter <dan.carpenter@oracle.com>, Grygorii Strashko
- <grygorii.strashko@ti.com>, David Lechner <david@lechnology.com>, Arnd
- Bergmann <arnd@arndb.de>, Sven Van Asbroeck <svendev@arcx.com>,
- linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Ivan
- Khoronzhuk <ivan.khoronzhuk@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>, Naren
- <naren.kernel@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Brian
- Norris <computersforpeace@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
- the nvmem API
-Message-ID: <20180824163917.6bc349c9@bbrezillon>
-In-Reply-To: <20180823122921.6857d917@tock>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl>
- <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
- <20180819184609.6dcdbb9a@bbrezillon>
- <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
- <20180820202038.5d3dc195@bbrezillon>
- <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
- <20180821133916.3a1c51b1@eos>
- <6db14f9c-edd3-5e43-839c-953bb03097ff@linaro.org>
- <20180821150121.4408672f@bbrezillon> <20180823122921.6857d917@tock>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from smtprz14.163.net ([106.3.154.247] helo=smtp.tom.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ftDH6-0004Dc-G0
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2018 14:41:27 +0000
+Received: from antispam1.tom.com (unknown [172.25.16.55])
+ by freemail01.tom.com (Postfix) with ESMTP id 406DC1C80E01
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2018 22:41:03 +0800 (CST)
+Received: from antispam1.tom.com (antispam1.tom.com [127.0.0.1])
+ by antispam1.tom.com (Postfix) with ESMTP id 8411F10013B2
+ for <linux-mtd@lists.infradead.org>; Fri, 24 Aug 2018 22:40:59 +0800 (CST)
+Received: from antispam1.tom.com ([127.0.0.1])
+ by antispam1.tom.com (antispam1.tom.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id owwJhSz6qlcL for <linux-mtd@lists.infradead.org>;
+ Fri, 24 Aug 2018 22:40:58 +0800 (CST)
+From: Liu Xiang <liu.xiang6@zte.com.cn>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, marek.vasut@gmail.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at,
+ Liu Xiang <liu.xiang6@zte.com.cn>
+Subject: [PATCH] mtd: spi-nor: Add 4-byte address support for is25lp256
+Date: Fri, 24 Aug 2018 22:40:51 +0800
+Message-Id: <1535121651-2887-1-git-send-email-liu.xiang6@zte.com.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,52 +29,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Aug 2018 12:29:21 +0200
-Alban <albeu@free.fr> wrote:
+The is25lp256 supports 4-byte opcodes and quad output.
+In is25lp256, the DWORD1 of JEDEC Basic Flash Parameter Header
+is 0xfff920e5. So the DWORD1[18:17] Address Bytes bits are 0b00,
+means that 3-Byte only addressing. Now this limits nor->addr_width
+to 3 and makes it inpossible to access the address above 16MB.
+I think the size of flash is the most important judgement for
+nor->addr_width. Once the size is larger than 16MB, nor->addr_width
+must be 4. This can avoid the bad situation that manufacturer sets
+incorrect value of register.
 
-> On Tue, 21 Aug 2018 15:01:21 +0200
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> 
-> > On Tue, 21 Aug 2018 13:00:04 +0100
-> > Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
-> >   
-> > > On 21/08/18 12:39, Alban wrote:    
-> > > > However we still have the a potential address space clash between
-> > > > the nvmem cells and the main device binding.      
-> > > Can you elaborate?
-> > >     
-> > 
-> > Yes, I'd be interested in having a real example too, cause I don't see
-> > what this address space clash is.  
-> 
-> Let say I have a device that use the following binding:
-> 
-> device {
->     compatible = "example-device";
->     #address-cells = <2>;
->     #size-cells = <1>;
-> 
->     child@0,0 {
->         reg = <0x0 0x0>;
->         ...
->     };
-> 
->     child@1,2 {
->         reg = <0x1 0x2>;
->         ...
->     };
-> 
-> };
-> 
-> Now this binding already use the node address space for something,
-> so putting a nvmem node as direct child would not work. Here it is
-> quiet clear as we have 2 address cells, however even if the number of
-> cells and the cells size would match it would still be conceptually
-> wrong as both bindings then use the same address space for something
-> different.
+Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-When would we end up in this situation? MTD/flash nodes are supposed to
-be leaf nodes (if you omit the partitions underneath). What would be
-the case for defining subnodes there?
-
-Do you know of any devices that uses such a representation?
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index d9c368c..0203b09 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1065,7 +1065,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ 	{ "is25lp128",  INFO(0x9d6018, 0, 64 * 1024, 256,
+ 			SECT_4K | SPI_NOR_DUAL_READ) },
+ 	{ "is25lp256",  INFO(0x9d6019, 0, 64 * 1024, 512,
+-			SECT_4K | SPI_NOR_DUAL_READ) },
++			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+ 	{ "is25wp032",  INFO(0x9d7016, 0, 64 * 1024,  64,
+ 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+ 	{ "is25wp064",  INFO(0x9d7017, 0, 64 * 1024, 128,
+@@ -2926,16 +2926,16 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (nor->addr_width) {
+-		/* already configured from SFDP */
+-	} else if (info->addr_width) {
+-		nor->addr_width = info->addr_width;
+-	} else if (mtd->size > 0x1000000) {
++	if (mtd->size > 0x1000000) {
+ 		/* enable 4-byte addressing if the device exceeds 16MiB */
+ 		nor->addr_width = 4;
+ 		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
+-		    info->flags & SPI_NOR_4B_OPCODES)
++			info->flags & SPI_NOR_4B_OPCODES)
+ 			spi_nor_set_4byte_opcodes(nor, info);
++	} else if (nor->addr_width) {
++		/* already configured from SFDP */
++	} else if (info->addr_width) {
++		nor->addr_width = info->addr_width;
+ 	} else {
+ 		nor->addr_width = 3;
+ 	}
+-- 
+1.9.1
