@@ -1,26 +1,38 @@
-Date: Fri, 24 Aug 2018 14:48:10 +0200
+Date: Fri, 24 Aug 2018 16:39:17 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Liang Yang <liang.yang@amlogic.com>
-Cc: Yixun Lan <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>, Rob
- Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Richard Weinberger
- <richard@nod.at>, <linux-kernel@vger.kernel.org>, Marek Vasut
- <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Kevin Hilman
- <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
- <linux-amlogic@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, Jerome Brunet
- <jbrunet@baylibre.com>
-Subject: Re: [RFC PATCH v2 2/2] mtd: rawnand: meson: add support for Amlogic
- NAND flash controller
-Message-ID: <20180824144810.31c929a5@bbrezillon>
-In-Reply-To: <96e538a5-1232-11f2-8b9e-5ddb09dcc2de@amlogic.com>
-References: <20180719094612.5833-1-yixun.lan@amlogic.com>
- <20180719094612.5833-3-yixun.lan@amlogic.com>
- <20180801235045.5b4d8211@bbrezillon>
- <42877a0d-9830-0626-3f64-e49a326eaa3c@amlogic.com>
- <20180817155608.5929b37a@bbrezillon>
- <96e538a5-1232-11f2-8b9e-5ddb09dcc2de@amlogic.com>
+To: Alban <albeu@free.fr>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org, Sekhar Nori
+ <nsekhar@ti.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>, Srinivas
+ Kandagatla <srinivas.kandagatla@linaro.org>, linux-i2c@vger.kernel.org,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Rob Herring
+ <robh@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman
+ <khilman@kernel.org>, Richard Weinberger <richard@nod.at>, Bartosz
+ Golaszewski <brgl@bgdev.pl>, Russell King <linux@armlinux.org.uk>, Marek
+ Vasut <marek.vasut@gmail.com>, Paolo Abeni <pabeni@redhat.com>, Dan
+ Carpenter <dan.carpenter@oracle.com>, Grygorii Strashko
+ <grygorii.strashko@ti.com>, David Lechner <david@lechnology.com>, Arnd
+ Bergmann <arnd@arndb.de>, Sven Van Asbroeck <svendev@arcx.com>,
+ linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Ivan
+ Khoronzhuk <ivan.khoronzhuk@linaro.org>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>,
+ linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>, Naren
+ <naren.kernel@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via
+ the nvmem API
+Message-ID: <20180824163917.6bc349c9@bbrezillon>
+In-Reply-To: <20180823122921.6857d917@tock>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-7-brgl@bgdev.pl>
+ <20180817182720.6a6e5e8e@bbrezillon> <20180819133106.0420df5f@tock>
+ <20180819184609.6dcdbb9a@bbrezillon>
+ <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
+ <20180820202038.5d3dc195@bbrezillon>
+ <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
+ <20180821133916.3a1c51b1@eos>
+ <6db14f9c-edd3-5e43-839c-953bb03097ff@linaro.org>
+ <20180821150121.4408672f@bbrezillon> <20180823122921.6857d917@tock>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -33,25 +45,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Aug 2018 22:08:42 +0800
-Liang Yang <liang.yang@amlogic.com> wrote:
+On Thu, 23 Aug 2018 12:29:21 +0200
+Alban <albeu@free.fr> wrote:
 
-> > You have to wait tWB, that's for sure.
+> On Tue, 21 Aug 2018 15:01:21 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> 
+> > On Tue, 21 Aug 2018 13:00:04 +0100
+> > Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
 > >   
-> we have a maximum 32 commands fifo. when command is written into 
-> NFC_REG_CMD, it doesn't mean that command is executing right now, maybe 
-> it is buffering on the queue.Assume one ERASE operation, when 2nd 
-> command(0xd0) is written into NFC_REG_CMD and then come into 
-> NAND_OP_WAITRDY_INSTR, if I read the RB status by register, it may be 
-> wrong because 0xd0 may not being executed. it is unusual unless 
-> buffering two many command.
+> > > On 21/08/18 12:39, Alban wrote:    
+> > > > However we still have the a potential address space clash between
+> > > > the nvmem cells and the main device binding.      
+> > > Can you elaborate?
+> > >     
+> > 
+> > Yes, I'd be interested in having a real example too, cause I don't see
+> > what this address space clash is.  
+> 
+> Let say I have a device that use the following binding:
+> 
+> device {
+>     compatible = "example-device";
+>     #address-cells = <2>;
+>     #size-cells = <1>;
+> 
+>     child@0,0 {
+>         reg = <0x0 0x0>;
+>         ...
+>     };
+> 
+>     child@1,2 {
+>         reg = <0x1 0x2>;
+>         ...
+>     };
+> 
+> };
+> 
+> Now this binding already use the node address space for something,
+> so putting a nvmem node as direct child would not work. Here it is
+> quiet clear as we have 2 address cells, however even if the number of
+> cells and the cells size would match it would still be conceptually
+> wrong as both bindings then use the same address space for something
+> different.
 
-You should flush the queue and wait for it to empty at the end of
-->exec_op().
+When would we end up in this situation? MTD/flash nodes are supposed to
+be leaf nodes (if you omit the partitions underneath). What would be
+the case for defining subnodes there?
 
-> so it seems that i still need to use nand_soft_waitrdy or wait cmd is 
-> executed somewhere.
-
-Don't you have a WAIT_FOR_RB instruction? What is NFC_CMD_RB for? Also,
-NFC_CMD_IDLE seems to allow you to add an arbitrary delay, and that's
-probably what you should use for tWB.
+Do you know of any devices that uses such a representation?
