@@ -1,13 +1,14 @@
-Received: from cmccmta1.chinamobile.com ([221.176.66.79])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ft3Ke-0005RG-C3
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2018 04:04:22 +0000
-From: Ding Xiang <dingxiang@cmss.chinamobile.com>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: ubifs: remove unneeded semicolon
-Date: Fri, 24 Aug 2018 01:15:05 -0400
-Message-Id: <1535087705-17637-1-git-send-email-dingxiang@cmss.chinamobile.com>
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ft65R-0001uD-No
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2018 07:00:55 +0000
+From: Richard Weinberger <richard@nod.at>
+To: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org,
+	Richard Weinberger <richard@nod.at>
+Subject: [PATCH] ubifs: Remove empty file.h
+Date: Fri, 24 Aug 2018 08:59:05 +0200
+Message-Id: <20180824065905.30492-1-richard@nod.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,25 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-delete redundant semicolon
+This empty file sneaked into the tree by mistake.
+Remove it.
 
-Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
+Fixes: 6eb61d587f45 ("ubifs: Pass struct ubifs_info to ubifs_assert()")
+Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- fs/ubifs/sb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/file.h | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 fs/ubifs/file.h
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index bf17f58..d5c55e2 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -603,7 +603,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 		c->key_hash = key_test_hash;
- 		c->key_hash_type = UBIFS_KEY_HASH_TEST;
- 		break;
--	};
-+	}
- 
- 	c->key_fmt = sup->key_fmt;
- 
+diff --git a/fs/ubifs/file.h b/fs/ubifs/file.h
+deleted file mode 100644
+index e69de29bb2d1..000000000000
 -- 
-1.8.3.1
+2.18.0
