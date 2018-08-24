@@ -1,14 +1,37 @@
-Received: from out1.zte.com.cn ([202.103.147.172] helo=mxct.zte.com.cn)
+Received: from mail-yb0-x242.google.com ([2607:f8b0:4002:c09::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ft0kF-0000Ob-Gl
- for linux-mtd@lists.infradead.org; Fri, 24 Aug 2018 01:18:37 +0000
-From: Liu Song <liu.song11@zte.com.cn>
-To: richard@nod.at, dedekind1@gmail.com, adrian.hunter@intel.com
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- liu.song11@zte.com.cn, jiang.biao2@zte.com.cn, zhong.weidong@zte.com.cn
-Subject: [PATCH v2] ubifs: remove unnecessary check in ubifs_log_start_commit
-Date: Fri, 24 Aug 2018 09:15:45 +0800
-Message-Id: <1535073345-88009-1-git-send-email-liu.song11@zte.com.cn>
+ id 1ft2IG-0001Zf-4S
+ for linux-mtd@lists.infradead.org; Fri, 24 Aug 2018 02:57:49 +0000
+Received: by mail-yb0-x242.google.com with SMTP id l16-v6so2984466ybk.11
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2018 19:57:37 -0700 (PDT)
+Received: from mail-yb0-f174.google.com (mail-yb0-f174.google.com.
+ [209.85.213.174])
+ by smtp.gmail.com with ESMTPSA id z193-v6sm3510655ywd.90.2018.08.23.19.57.36
+ for <linux-mtd@lists.infradead.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 23 Aug 2018 19:57:37 -0700 (PDT)
+Received: by mail-yb0-f174.google.com with SMTP id z12-v6so2987534ybg.9
+ for <linux-mtd@lists.infradead.org>; Thu, 23 Aug 2018 19:57:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20180824010938.GA25581@embeddedor.com>
+References: <20180824010938.GA25581@embeddedor.com>
+From: Kees Cook <keescook@chromium.org>
+Date: Thu, 23 Aug 2018 19:57:35 -0700
+Message-ID: <CAGXu5jL_p6Z863qq5=K2B+=AW6LuxmBu23bjhQe-1saz4kdeFA@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: atmel: use struct_size() in devm_kzalloc()
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Josh Wu <rainyfeeling@outlook.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Linux mtd <linux-mtd@lists.infradead.org>,
+ linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,57 +41,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In ubifs_log_start_commit, the value of c->lhead_offs is zero or set
-to zero by code bellow.
+On Thu, Aug 23, 2018 at 6:09 PM, Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> One of the more common cases of allocation size calculations is finding
+> the size of a structure that has a zero-sized array at the end, along
+> with memory for some number of elements for that array. For example:
+>
+> struct foo {
+>         int stuff;
+>         void *entry[];
+> };
+>
+> instance = devm_kzalloc(dev, sizeof(struct foo) + sizeof(void *) * count, GFP_KERNEL);
+>
+> Instead of leaving these open-coded and prone to type mistakes, we can
+> now use the new struct_size() helper:
+>
+> instance = devm_kzalloc(dev, struct_size(instance, entry, count), GFP_KERNEL);
+>
+> This issue was detected with the help of Coccinelle.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 
-	/* Switch to the next log LEB */
-	if (c->lhead_offs) {
-		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
-		ubifs_assert(c->lhead_lnum != c->ltail_lnum);
-		c->lhead_offs = 0;
-	}
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-The value of 'len' can not exceed 'max_len' which assigned value by
-code bellow.
+-Kees
 
-	max_len = UBIFS_CS_NODE_SZ + c->jhead_cnt * UBIFS_REF_NODE_SZ;
+> ---
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> index a068b21..b17cfd0 100644
+> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> @@ -1586,9 +1586,7 @@ static struct atmel_nand *atmel_nand_create(struct atmel_nand_controller *nc,
+>                 return ERR_PTR(-EINVAL);
+>         }
+>
+> -       nand = devm_kzalloc(nc->dev,
+> -                           sizeof(*nand) + (numcs * sizeof(*nand->cs)),
+> -                           GFP_KERNEL);
+> +       nand = devm_kzalloc(nc->dev, struct_size(nand, cs, numcs), GFP_KERNEL);
+>         if (!nand) {
+>                 dev_err(nc->dev, "Failed to allocate NAND object\n");
+>                 return ERR_PTR(-ENOMEM);
+> --
+> 2.7.4
+>
 
-The value of c->lhead_offs changed by code bellow and cannot exceed
-'max_len'.
 
-	c->lhead_offs += len;
-	if (c->lhead_offs == c->leb_size) {
-		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
-		c->lhead_offs = 0;
-	}
 
-Usually, the size of PEB is between 64KB and 256KB. So the value of
-c->lhead_offs is far less than c->leb_size. The check 
-'if (c->lhead_offs == c->leb_size)' could never to be true.
-
-Signed-off-by: Liu Song <liu.song11@zte.com.cn>
-Reviewed-by: Jiang Biao <jiang.biao2@zte.com.cn>
----
-v2: Improve description and code as suggestted by Richard.
-
- fs/ubifs/log.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index 7cffa12..78afb78 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -427,10 +427,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
- 	*ltail_lnum = c->lhead_lnum;
- 
- 	c->lhead_offs += len;
--	if (c->lhead_offs == c->leb_size) {
--		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
--		c->lhead_offs = 0;
--	}
-+	ubifs_assert(c->lhead_offs < c->leb_size);
- 
- 	remove_buds(c);
- 
 -- 
-2.1.0.GIT
+Kees Cook
+Pixel Security
