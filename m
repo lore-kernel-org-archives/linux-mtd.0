@@ -1,35 +1,16 @@
-Date: Sat, 25 Aug 2018 08:27:22 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: linux-doc@vger.kernel.org, Sekhar Nori <nsekhar@ti.com>, Bartosz
- Golaszewski <bgolaszewski@baylibre.com>, Srinivas Kandagatla
- <srinivas.kandagatla@linaro.org>, linux-i2c@vger.kernel.org, Mauro Carvalho
- Chehab <mchehab+samsung@kernel.org>, Rob Herring <robh@kernel.org>, Florian
- Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>, Richard
- Weinberger <richard@nod.at>, Bartosz Golaszewski <brgl@bgdev.pl>, Russell
- King <linux@armlinux.org.uk>, Marek Vasut <marek.vasut@gmail.com>, Paolo
- Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@oracle.com>,
- Grygorii Strashko <grygorii.strashko@ti.com>, David Lechner
- <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>, Sven Van Asbroeck
- <svendev@arcx.com>, linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Ivan
- Khoronzhuk <ivan.khoronzhuk@linaro.org>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jonathan Corbet <corbet@lwn.net>,
- linux-kernel@vger.kernel.org, Lukas Wunner <lukas@wunner.de>, Naren
- <naren.kernel@gmail.com>, netdev@vger.kernel.org, Alban Bedel
- <albeu@free.fr>, Andrew Morton <akpm@linux-foundation.org>, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
-Message-ID: <20180825082722.567e8c9a@bbrezillon>
-In-Reply-To: <20180824152740.GD27483@lunn.ch>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-2-brgl@bgdev.pl>
- <20180824170848.29594318@bbrezillon>
- <20180824152740.GD27483@lunn.ch>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1ftU3X-00081x-Nx
+ for linux-mtd@lists.infradead.org; Sat, 25 Aug 2018 08:36:29 +0000
+From: Richard Weinberger <richard@nod.at>
+To: torvalds@linux-foundation.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] UBIFS fix for 4.19-rc1
+Date: Sat, 25 Aug 2018 10:36:05 +0200
+Message-ID: <10888946.TpHzFjB4nf@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,86 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 24 Aug 2018 17:27:40 +0200
-Andrew Lunn <andrew@lunn.ch> wrote:
+Linus,
 
-> On Fri, Aug 24, 2018 at 05:08:48PM +0200, Boris Brezillon wrote:
-> > Hi Bartosz,
-> > 
-> > On Fri, 10 Aug 2018 10:04:58 +0200
-> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >   
-> > > +struct nvmem_cell_lookup {
-> > > +	struct nvmem_cell_info	info;
-> > > +	struct list_head	list;
-> > > +	const char		*nvmem_name;
-> > > +};  
-> > 
-> > Hm, maybe I don't get it right, but this looks suspicious. Usually the
-> > consumer lookup table is here to attach device specific names to
-> > external resources.
-> > 
-> > So what I'd expect here is:
-> > 
-> > struct nvmem_cell_lookup {
-> > 	/* The nvmem device name. */
-> > 	const char *nvmem_name;
-> > 
-> > 	/* The nvmem cell name */
-> > 	const char *nvmem_cell_name;
-> > 
-> > 	/*
-> > 	 * The local resource name. Basically what you have in the
-> > 	 * nvmem-cell-names prop.
-> > 	 */
-> > 	const char *conid;
-> > };
-> > 
-> > struct nvmem_cell_lookup_table {
-> > 	struct list_head list;
-> > 
-> > 	/* ID of the consumer device. */
-> > 	const char *devid;
-> > 
-> > 	/* Array of cell lookup entries. */
-> > 	unsigned int ncells;
-> > 	const struct nvmem_cell_lookup *cells;
-> > };
-> > 
-> > Looks like your nvmem_cell_lookup is more something used to attach cells
-> > to an nvmem device, which is NVMEM provider's responsibility not the
-> > consumer one.  
-> 
-> Hi Boris
-> 
-> There are cases where there is not a clear providier/consumer split. I
-> have an x86 platform, with a few at24 EEPROMs on it. It uses an off
-> the shelf Komtron module, placed on a custom carrier board. One of the
-> EEPROMs contains the hardware variant information. Once i know the
-> variant, i need to instantiate other I2C, SPI, MDIO devices, all using
-> platform devices, since this is x86, no DT available.
-> 
-> So the first thing my x86 platform device does is instantiate the
-> first i2c device for the AT24. Once the EEPROM pops into existence, i
-> need to add nvmem cells onto it. So at that point, the x86 platform
-> driver is playing the provider role. Once the cells are added, i can
-> then use nvmem consumer interfaces to get the contents of the cell,
-> run a checksum, and instantiate the other devices.
-> 
-> I wish the embedded world was all DT, but the reality is that it is
-> not :-(
+The following changes since commit 99a24e02ccf6604e3020cf9e2c7a042b6ebb655f:
 
-Actually, I'm not questioning the need for this feature (being able to
-attach NVMEM cells to an NVMEM device on a platform that does not use
-DT). What I'm saying is that this functionality is provider related,
-not consumer related. Also, I wonder if defining such NVMEM cells
-shouldn't go through the provider driver instead of being passed
-directly to the NVMEM layer, because nvmem_config already have a fields
-to pass cells at registration time, plus, the name of the NVMEM cell
-device is sometimes created dynamically and can be hard to guess at
-platform_device registration time.
+  ubifs: Set default assert action to read-only (2018-08-15 00:25:22 +0200)
 
-I also think non-DT consumers will need a way to reference exiting
-NVMEM cells, but this consumer-oriented nvmem cell lookup table should
-look like the gpio or pwm lookup table (basically what I proposed in my
-previous email).
+are available in the Git repository at:
+
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc1-fix
+
+for you to fetch changes up to 6e5461d774bf42aae622ad0f3ff53e41962f886b:
+
+  ubifs: Remove empty file.h (2018-08-24 13:50:07 +0200)
+
+----------------------------------------------------------------
+This pull request contains a single fix for UBIFS:
+
+- Remove an empty file from UBIFS source
+
+----------------------------------------------------------------
+Richard Weinberger (1):
+      ubifs: Remove empty file.h
+
+ fs/ubifs/file.h | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 fs/ubifs/file.h
