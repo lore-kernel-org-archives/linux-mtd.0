@@ -1,16 +1,13 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ftU3X-00081x-Nx
- for linux-mtd@lists.infradead.org; Sat, 25 Aug 2018 08:36:29 +0000
-From: Richard Weinberger <richard@nod.at>
-To: torvalds@linux-foundation.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] UBIFS fix for 4.19-rc1
-Date: Sat, 25 Aug 2018 10:36:05 +0200
-Message-ID: <10888946.TpHzFjB4nf@blindfold>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Sat, 25 Aug 2018 16:36:31 +0200
+From: KELLY ALAN <kellyalan@servicescourrier.club>
+To: kellyalan@servicescourrier.club
+Subject: TRADING  ACCOUNT
+Reply-To: kellyalan@cfmeareongines.com
+Message-ID: <117d763a5cf07fcd9dc75e5e60aba435@servicescourrier.club>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +17,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
 
-The following changes since commit 99a24e02ccf6604e3020cf9e2c7a042b6ebb655f:
+Dear sir ,
 
-  ubifs: Set default assert action to read-only (2018-08-15 00:25:22 +0200)
+I KELLY ALAN  purchasing and sales manager of CFM INTERNATIONAL .Our 
+Company specialised in Supplying computer hardware and Electronic .We 
+want to extend our supplier list because of concurrency in prices on the 
+international market. We are seeking a supplier with whom we can to have 
+  partnered long-term in order to have competitive prices . we are 
+interested to buy the products you sell and want to place an order with 
+you in big quantities.
+Can you give us payment facilities ( 14 , 30 or 60 days payment terms ) 
+?
+What is the procedure for our account opening  and credit line 
+application ?
 
-are available in the Git repository at:
+Cordially
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc1-fix
+  KELLY ALAN
 
-for you to fetch changes up to 6e5461d774bf42aae622ad0f3ff53e41962f886b:
-
-  ubifs: Remove empty file.h (2018-08-24 13:50:07 +0200)
-
-----------------------------------------------------------------
-This pull request contains a single fix for UBIFS:
-
-- Remove an empty file from UBIFS source
-
-----------------------------------------------------------------
-Richard Weinberger (1):
-      ubifs: Remove empty file.h
-
- fs/ubifs/file.h | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
- delete mode 100644 fs/ubifs/file.h
+CFM INTERNATIONAL
+2 BOULEVARD DU GAL MARTIAL VALIN
+75015 PARIS
+REG N° 302 527 700
+VAT N° FR90 302527700
+TEL +33171025367
+FAX +33177759149
+https://www.cfmaeroengines.com
