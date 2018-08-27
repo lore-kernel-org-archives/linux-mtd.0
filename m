@@ -1,22 +1,47 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuCXj-0006lp-Ed
- for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 08:06:37 +0000
-Date: Mon, 27 Aug 2018 10:06:13 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Liu Xiang <liu.xiang6@zte.com.cn>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- han.xu@nxp.com, marek.vasut@gmail.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, richard@nod.at, liuxiang_1999@126.com, Yogesh
- Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: fix read error for flash
- size larger than 16MB
-Message-ID: <20180827100613.78823993@bbrezillon>
-In-Reply-To: <1534583663-2842-1-git-send-email-liu.xiang6@zte.com.cn>
-References: <1534583663-2842-1-git-send-email-liu.xiang6@zte.com.cn>
+Received: from mail-io0-x244.google.com ([2607:f8b0:4001:c06::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuDKD-0007ou-Ln
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 08:56:45 +0000
+Received: by mail-io0-x244.google.com with SMTP id v14-v6so12209084iob.4
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2018 01:56:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20180825082722.567e8c9a@bbrezillon>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-2-brgl@bgdev.pl>
+ <20180824170848.29594318@bbrezillon> <20180824152740.GD27483@lunn.ch>
+ <20180825082722.567e8c9a@bbrezillon>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 27 Aug 2018 10:56:29 +0200
+Message-ID: <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
+Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc <linux-doc@vger.kernel.org>,
+ Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-i2c <linux-i2c@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Marek Vasut <marek.vasut@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>,
+ Naren <naren.kernel@gmail.com>, netdev <netdev@vger.kernel.org>,
+ Alban Bedel <albeu@free.fr>, Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +51,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 18 Aug 2018 17:14:23 +0800
-Liu Xiang <liu.xiang6@zte.com.cn> wrote:
+2018-08-25 8:27 GMT+02:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> On Fri, 24 Aug 2018 17:27:40 +0200
+> Andrew Lunn <andrew@lunn.ch> wrote:
+>
+>> On Fri, Aug 24, 2018 at 05:08:48PM +0200, Boris Brezillon wrote:
+>> > Hi Bartosz,
+>> >
+>> > On Fri, 10 Aug 2018 10:04:58 +0200
+>> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>> >
+>> > > +struct nvmem_cell_lookup {
+>> > > + struct nvmem_cell_info  info;
+>> > > + struct list_head        list;
+>> > > + const char              *nvmem_name;
+>> > > +};
+>> >
+>> > Hm, maybe I don't get it right, but this looks suspicious. Usually the
+>> > consumer lookup table is here to attach device specific names to
+>> > external resources.
+>> >
+>> > So what I'd expect here is:
+>> >
+>> > struct nvmem_cell_lookup {
+>> >     /* The nvmem device name. */
+>> >     const char *nvmem_name;
+>> >
+>> >     /* The nvmem cell name */
+>> >     const char *nvmem_cell_name;
+>> >
+>> >     /*
+>> >      * The local resource name. Basically what you have in the
+>> >      * nvmem-cell-names prop.
+>> >      */
+>> >     const char *conid;
+>> > };
+>> >
+>> > struct nvmem_cell_lookup_table {
+>> >     struct list_head list;
+>> >
+>> >     /* ID of the consumer device. */
+>> >     const char *devid;
+>> >
+>> >     /* Array of cell lookup entries. */
+>> >     unsigned int ncells;
+>> >     const struct nvmem_cell_lookup *cells;
+>> > };
+>> >
+>> > Looks like your nvmem_cell_lookup is more something used to attach cells
+>> > to an nvmem device, which is NVMEM provider's responsibility not the
+>> > consumer one.
+>>
+>> Hi Boris
+>>
+>> There are cases where there is not a clear providier/consumer split. I
+>> have an x86 platform, with a few at24 EEPROMs on it. It uses an off
+>> the shelf Komtron module, placed on a custom carrier board. One of the
+>> EEPROMs contains the hardware variant information. Once i know the
+>> variant, i need to instantiate other I2C, SPI, MDIO devices, all using
+>> platform devices, since this is x86, no DT available.
+>>
+>> So the first thing my x86 platform device does is instantiate the
+>> first i2c device for the AT24. Once the EEPROM pops into existence, i
+>> need to add nvmem cells onto it. So at that point, the x86 platform
+>> driver is playing the provider role. Once the cells are added, i can
+>> then use nvmem consumer interfaces to get the contents of the cell,
+>> run a checksum, and instantiate the other devices.
+>>
+>> I wish the embedded world was all DT, but the reality is that it is
+>> not :-(
+>
+> Actually, I'm not questioning the need for this feature (being able to
+> attach NVMEM cells to an NVMEM device on a platform that does not use
+> DT). What I'm saying is that this functionality is provider related,
+> not consumer related. Also, I wonder if defining such NVMEM cells
+> shouldn't go through the provider driver instead of being passed
+> directly to the NVMEM layer, because nvmem_config already have a fields
+> to pass cells at registration time, plus, the name of the NVMEM cell
+> device is sometimes created dynamically and can be hard to guess at
+> platform_device registration time.
+>
 
-> If the size of spi-nor flash is larger than 16MB, the read_opcode
-> is set to SPINOR_OP_READ_1_1_4_4B, and fsl_qspi_get_seqid() will
-> return -EINVAL when cmd is SPINOR_OP_READ_1_1_4_4B. This can
-> cause read operation fail.
-> 
-> Signed-off-by: Liu Xiang <liu.xiang6@zte.com.cn>
+In my use case the provider is at24 EEPROM driver. This is where the
+nvmem_config lives but I can't image a correct and clean way of
+passing this cell config to the driver from board files without using
+new ugly fields in platform_data which this very series is trying to
+remove. This is why this cell config should live in machine code.
 
-I'm pretty sure you want to backport this fix. Can you add a Fixes tag
-and CC stable?
+> I also think non-DT consumers will need a way to reference exiting
+> NVMEM cells, but this consumer-oriented nvmem cell lookup table should
+> look like the gpio or pwm lookup table (basically what I proposed in my
+> previous email).
 
-Also, I'd like to have an Ack from someone working at NXP (Han,
-Yogesh?).
+How about introducing two new interfaces to nvmem: one for defining
+nvmem cells from machine code and the second for connecting these
+cells with devices?
 
-Thanks,
-
-Boris.
-
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 7d9620c..64304a3 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -478,6 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
->  {
->  	switch (cmd) {
->  	case SPINOR_OP_READ_1_1_4:
-> +	case SPINOR_OP_READ_1_1_4_4B:
->  		return SEQID_READ;
->  	case SPINOR_OP_WREN:
->  		return SEQID_WREN;
+Best regards,
+Bart
