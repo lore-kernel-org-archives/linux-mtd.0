@@ -1,18 +1,22 @@
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
- <Cristian.Birsan@microchip.com>, Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [RESEND PATCH v2 3/3] mtd: spi-nor: parse SFDP 4-byte Address
- Instruction Table
-Date: Mon, 27 Aug 2018 13:26:44 +0300
-Message-ID: <20180827102644.7323-4-tudor.ambarus@microchip.com>
-In-Reply-To: <20180827102644.7323-1-tudor.ambarus@microchip.com>
-References: <20180827102644.7323-1-tudor.ambarus@microchip.com>
+Received: from mail-wm0-x243.google.com ([2a00:1450:400c:c09::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuErE-0007T7-K5
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 10:34:54 +0000
+Received: by mail-wm0-x243.google.com with SMTP id c14-v6so7589555wmb.4
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2018 03:34:41 -0700 (PDT)
+Subject: Re: [PATCH] mtd: spi-nor: fix options for mx66l51235f
+To: Alexander Amelkin <a.amelkin@yadro.com>, linux-mtd@lists.infradead.org
+Cc: openbmc@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>, leroi.lists@gmail.com
+References: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <b2ff17cc-96ca-3acb-6dc2-f7a8688a0742@gmail.com>
+Date: Mon, 27 Aug 2018 12:33:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,192 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+On 08/20/2018 12:26 PM, Alexander Amelkin wrote:
+> Currently in spi-nor driver there is a line for mx66l51235l.
+> According to Macronix site, there is no such part number. The chip
+> detected as such is actually mx66l51235f. Hence, this commit renames
+> the chip.
 
-Add support for SFDP (JESD216B) 4-byte Address Instruction Table. This
-table is optional but when available, we parse it to get the 4-byte
-address op codes supported by the memory.
-Using these op codes is stateless as opposed to entering the 4-byte
-address mode or setting the Base Address Register (BAR).
+I wonder if this could pose a problem, since this might interfere with
+the DT being an ABI. But I guess fixing the name is OK.
 
-Signed-off-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 148 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 148 insertions(+)
+> According to the datasheet for mx66l51235f, "The device default is in
+> 24-bit address mode" (section 9-10). Having option SPI_NOR_4B_OPCODES
+> makes the code act as if the device was already in 4B mode and didn't
+> need the EN4B command. That prevents this chip from functioning on
+> systems where the boot loader left the chip in 3B mode (e.g. if the
+> chip wasn't used during the boot process).
+> 
+> Hence, this commit removes the SPI_NOR_4B_OPCODES option for
+> mx66l51235f (added previously by commit d342b6a973af).
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 522d5aa..4e69d47 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -2196,6 +2196,7 @@ struct sfdp_parameter_header {
- 
- #define SFDP_BFPT_ID		0xff00	/* Basic Flash Parameter Table */
- #define SFDP_SECTOR_MAP_ID	0xff81	/* Sector Map Table */
-+#define SFDP_4BAIT_ID		0xff84u	/* 4-byte Address Instruction Table */
- 
- #define SFDP_SIGNATURE		0x50444653U
- #define SFDP_JESD216_MAJOR	1
-@@ -2883,6 +2884,149 @@ static int spi_nor_parse_smpt(struct spi_nor *nor,
- 	return ret;
- }
- 
-+struct sfdp_4bait {
-+	/* The hardware capability. */
-+	u32		hwcaps;
-+
-+	/*
-+	 * The <supported_bit> bit in DWORD1 of the 4BAIT tells us whether
-+	 * the associated 4-byte address op code is supported.
-+	 */
-+	u32		supported_bit;
-+};
-+
-+static int spi_nor_parse_4bait(struct spi_nor *nor,
-+			       const struct sfdp_parameter_header *param_header,
-+			       struct spi_nor_flash_parameter *params)
-+{
-+	static const struct sfdp_4bait reads[] = {
-+		{ SNOR_HWCAPS_READ,		BIT(0) },
-+		{ SNOR_HWCAPS_READ_FAST,	BIT(1) },
-+		{ SNOR_HWCAPS_READ_1_1_2,	BIT(2) },
-+		{ SNOR_HWCAPS_READ_1_2_2,	BIT(3) },
-+		{ SNOR_HWCAPS_READ_1_1_4,	BIT(4) },
-+		{ SNOR_HWCAPS_READ_1_4_4,	BIT(5) },
-+		{ SNOR_HWCAPS_READ_1_1_1_DTR,	BIT(13) },
-+		{ SNOR_HWCAPS_READ_1_2_2_DTR,	BIT(14) },
-+		{ SNOR_HWCAPS_READ_1_4_4_DTR,	BIT(15) },
-+	};
-+	static const struct sfdp_4bait programs[] = {
-+		{ SNOR_HWCAPS_PP,		BIT(6) },
-+		{ SNOR_HWCAPS_PP_1_1_4,		BIT(7) },
-+		{ SNOR_HWCAPS_PP_1_4_4,		BIT(8) },
-+	};
-+	static const struct sfdp_4bait erases[SNOR_ERASE_TYPE_MAX] = {
-+		{ 0u /* not used */,		BIT(9) },
-+		{ 0u /* not used */,		BIT(10) },
-+		{ 0u /* not used */,		BIT(11) },
-+		{ 0u /* not used */,		BIT(12) },
-+	};
-+	u32 dwords[2], addr, discard_hwcaps, read_hwcaps, pp_hwcaps, erase_mask;
-+	struct spi_nor_erase_map *map = &nor->erase_map;
-+	int i, err;
-+
-+	if (param_header->major != SFDP_JESD216_MAJOR ||
-+	    param_header->length < ARRAY_SIZE(dwords))
-+		return -EINVAL;
-+
-+	/* Read the 4-byte Address Instruction Table. */
-+	addr = SFDP_PARAM_HEADER_PTP(param_header);
-+	err = spi_nor_read_sfdp(nor, addr, sizeof(dwords), dwords);
-+	if (err)
-+		return err;
-+
-+	/* Fix endianness of the 4BAIT DWORDs. */
-+	for (i = 0; i < ARRAY_SIZE(dwords); i++)
-+		dwords[i] = le32_to_cpu(dwords[i]);
-+
-+	/*
-+	 * Compute the subset of (Fast) Read commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	discard_hwcaps = 0;
-+	read_hwcaps = 0;
-+	for (i = 0; i < ARRAY_SIZE(reads); i++) {
-+		const struct sfdp_4bait *read = &reads[i];
-+
-+		discard_hwcaps |= read->hwcaps;
-+		if ((params->hwcaps.mask & read->hwcaps) &&
-+		    (dwords[0] & read->supported_bit))
-+			read_hwcaps |= read->hwcaps;
-+	}
-+
-+	/*
-+	 * Compute the subset of Page Program commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	pp_hwcaps = 0;
-+	for (i = 0; i < ARRAY_SIZE(programs); i++) {
-+		const struct sfdp_4bait *program = &programs[i];
-+
-+		discard_hwcaps |= program->hwcaps;
-+		if ((params->hwcaps.mask & program->hwcaps) &&
-+		    (dwords[0] & program->supported_bit))
-+			pp_hwcaps |= program->hwcaps;
-+	}
-+
-+	/*
-+	 * Compute the subet of Sector Erase commands for which the 4-byte
-+	 * version is supported.
-+	 */
-+	erase_mask = 0;
-+	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+		const struct sfdp_4bait *erase = &erases[i];
-+
-+		if (map->erase_type[i].size > 0 &&
-+		    (dwords[0] & erase->supported_bit))
-+			erase_mask |= BIT(i);
-+	}
-+
-+	/*
-+	 * We need at least one 4-byte op code per read, program and erase
-+	 * operation; the .read(), .write() and .erase() hooks share the
-+	 * nor->addr_width value.
-+	 */
-+	if (!read_hwcaps || !pp_hwcaps || !erase_mask)
-+		return 0;
-+
-+	/*
-+	 * Discard all operations from the 4-byte instruction set which are
-+	 * not supported by this memory.
-+	 */
-+	params->hwcaps.mask &= ~discard_hwcaps;
-+	params->hwcaps.mask |= (read_hwcaps | pp_hwcaps);
-+
-+	/* Use the 4-byte address instruction set. */
-+	for (i = 0; i < SNOR_CMD_READ_MAX; i++) {
-+		struct spi_nor_read_command *read_cmd = &params->reads[i];
-+
-+		read_cmd->opcode = spi_nor_convert_3to4_read(read_cmd->opcode);
-+	}
-+	for (i = 0; i < SNOR_CMD_PP_MAX; i++) {
-+		struct spi_nor_pp_command *pp_cmd = &params->page_programs[i];
-+
-+		pp_cmd->opcode = spi_nor_convert_3to4_program(pp_cmd->opcode);
-+	}
-+	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-+		struct spi_nor_erase_type *erase = &map->erase_type[i];
-+
-+		if (erase_mask & BIT(erase->idx))
-+			erase->opcode = (dwords[1] >> (erase->idx * 8)) & 0xFF;
-+		else
-+			spi_nor_set_erase_type(erase, 0u, 0xFF);
-+	}
-+
-+	/*
-+	 * We set nor->addr_width here to skip spi_nor_set_4byte_opcodes()
-+	 * later because this latest function implements a legacy quirk for
-+	 * the erase size of Spansion memory. However this quirk is no longer
-+	 * needed with new SFDP compliant memories.
-+	 */
-+	nor->addr_width = 4;
-+	nor->flags |= SPI_NOR_4B_OPCODES;
-+	return 0;
-+}
-+
- /**
-  * spi_nor_parse_sfdp() - parse the Serial Flash Discoverable Parameters.
-  * @nor:		pointer to a 'struct spi_nor'
-@@ -2980,6 +3124,10 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
- 			err = spi_nor_parse_smpt(nor, param_header);
- 			break;
- 
-+		case SFDP_4BAIT_ID:
-+			err = spi_nor_parse_4bait(nor, param_header, params);
-+			break;
-+
- 		default:
- 			break;
- 		}
+Could it be there are two variants of the chip, one which supports the
+4B opcodes and one which does not ? Wouldn't be the first time I saw
+this. If this chip supports the SFDP tables, you can check those.
+
+> Cc: Marek Vasut <marek.vasut@gmail.com>
+> Cc: <linux-mtd@lists.infradead.org>
+> Cc: <openbmc@lists.ozlabs.org>
+> Cc: Joel Stanley <joel@jms.id.au>
+> Fixes: d342b6a973af ("mtd: spi-nor: enable 4B opcodes for mx66l51235l")
+> Signed-off-by: Alexander Amelkin <a.amelkin@yadro.com>
+> Reviewed-by: Cédric Le Goater <clg@kaod.org>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index f028277..c5ef85e 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1091,7 +1091,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "mx25l25635e", INFO(0xc22019, 0, 64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx25u25635f", INFO(0xc22539, 0, 64 * 1024, 512, SECT_4K | SPI_NOR_4B_OPCODES) },
+>  	{ "mx25l25655e", INFO(0xc22619, 0, 64 * 1024, 512, 0) },
+> -	{ "mx66l51235l", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+> +	{ "mx66l51235f", INFO(0xc2201a, 0, 64 * 1024, 1024, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx66u51235f", INFO(0xc2253a, 0, 64 * 1024, 1024, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | SPI_NOR_4B_OPCODES) },
+>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+> 
+
+
 -- 
-2.9.4
+Best regards,
+Marek Vasut
