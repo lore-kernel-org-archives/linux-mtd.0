@@ -1,21 +1,49 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuGyr-0007g7-6g
- for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 12:50:56 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/25] ubifs: add helper functions for authentication
- support
-Date: Mon, 27 Aug 2018 14:50:37 +0200
-Message-ID: <1675445.itdTWD7r8S@blindfold>
-In-Reply-To: <20180704124137.13396-11-s.hauer@pengutronix.de>
-References: <20180704124137.13396-1-s.hauer@pengutronix.de>
- <20180704124137.13396-11-s.hauer@pengutronix.de>
+ id 1fuHi5-0000En-1Z
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 13:37:39 +0000
+Received: by mail-it0-x241.google.com with SMTP id u13-v6so2311798iti.1
+ for <linux-mtd@lists.infradead.org>; Mon, 27 Aug 2018 06:37:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20180827110055.122988d0@bbrezillon>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-2-brgl@bgdev.pl>
+ <20180824170848.29594318@bbrezillon> <20180824152740.GD27483@lunn.ch>
+ <20180825082722.567e8c9a@bbrezillon>
+ <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
+ <20180827110055.122988d0@bbrezillon>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 27 Aug 2018 15:37:23 +0200
+Message-ID: <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc <linux-doc@vger.kernel.org>,
+ Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-i2c <linux-i2c@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Marek Vasut <marek.vasut@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>,
+ Naren <naren.kernel@gmail.com>, netdev <netdev@vger.kernel.org>,
+ Alban Bedel <albeu@free.fr>, Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,474 +53,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 4. Juli 2018, 14:41:22 CEST schrieb Sascha Hauer:
-> This patch adds the various helper functions needed for authentication
-> support. We need functions to hash nodes, to embed HMACs into a node and
-> to compare hashes and HMACs. Most functions first check if this
-> filesystem is authenticated and bail out early if not, which makes the
-> functions safe to be called with disabled authentication.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  fs/ubifs/Kconfig  |   1 +
->  fs/ubifs/Makefile |   1 +
->  fs/ubifs/auth.c   | 413 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/ubifs/ubifs.h  | 187 +++++++++++++++++++++
->  4 files changed, 602 insertions(+)
->  create mode 100644 fs/ubifs/auth.c
-> 
-> diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-> index 83a961bf7280..2a0b5f1134a4 100644
-> --- a/fs/ubifs/Kconfig
-> +++ b/fs/ubifs/Kconfig
-> @@ -7,6 +7,7 @@ config UBIFS_FS
->  	select CRYPTO if UBIFS_FS_ZLIB
->  	select CRYPTO_LZO if UBIFS_FS_LZO
->  	select CRYPTO_DEFLATE if UBIFS_FS_ZLIB
-> +	select CRYPTO_HASH_INFO
->  	depends on MTD_UBI
->  	help
->  	  UBIFS is a file system for flash devices which works on top of UBI.
-> diff --git a/fs/ubifs/Makefile b/fs/ubifs/Makefile
-> index 9758f709c736..2bdb8ae2f435 100644
-> --- a/fs/ubifs/Makefile
-> +++ b/fs/ubifs/Makefile
-> @@ -7,3 +7,4 @@ ubifs-y += budget.o find.o tnc_commit.o compress.o lpt.o lprops.o
->  ubifs-y += recovery.o ioctl.o lpt_commit.o tnc_misc.o xattr.o debug.o
->  ubifs-y += misc.o
->  ubifs-$(CONFIG_UBIFS_FS_ENCRYPTION) += crypto.o
-> +ubifs-$(CONFIG_UBIFS_FS_AUTHENTICATION) += auth.o
-> diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-> new file mode 100644
-> index 000000000000..fd21f2ec8734
-> --- /dev/null
-> +++ b/fs/ubifs/auth.c
-> @@ -0,0 +1,413 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * This file is part of UBIFS.
-> + *
-> + * Copyright (C) 2018 Pengutronix, Sascha Hauer <s.hauer@pengutronix.de>
-> + */
-> +
-> +/*
-> + * This file implements various helper functions for UBIFS authentication support
-> + */
-> +
-> +#include <linux/crypto.h>
-> +#include <crypto/hash.h>
-> +#include <crypto/sha.h>
-> +#include <crypto/algapi.h>
-> +#include <keys/user-type.h>
-> +
-> +#include "ubifs.h"
-> +
-> +/**
-> + * ubifs_node_calc_hash - calculate the hash of a UBIFS node
-> + * @c: UBIFS file-system description object
-> + * @node: the node to calculate a hash for
-> + * @hash: the returned hash
-> + */
-> +void __ubifs_node_calc_hash(const struct ubifs_info *c, const void *node,
-> +			    u8 *hash)
-> +{
-> +	const struct ubifs_ch *ch = node;
-> +	SHASH_DESC_ON_STACK(shash, c->hash_tfm);
-> +
-> +	shash->tfm = c->hash_tfm;
-> +	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +
-> +	crypto_shash_digest(shash, node, le32_to_cpu(ch->len), hash);
-> +}
-> +
-> +/**
-> + * ubifs_hash_calc_hmac - calculate a HMAC from a hash
-> + * @c: UBIFS file-system description object
-> + * @hash: the node to calculate a HMAC for
-> + * @hmac: the returned HMAC
-> + */
-> +static void ubifs_hash_calc_hmac(const struct ubifs_info *c, const u8 *hash,
-> +				 u8 *hmac)
-> +{
-> +	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
-> +
-> +	shash->tfm = c->hmac_tfm;
-> +	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +
-> +	crypto_shash_digest(shash, hash, c->hash_len, hmac);
+2018-08-27 11:00 GMT+02:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> On Mon, 27 Aug 2018 10:56:29 +0200
+> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+>> 2018-08-25 8:27 GMT+02:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+>> > On Fri, 24 Aug 2018 17:27:40 +0200
+>> > Andrew Lunn <andrew@lunn.ch> wrote:
+>> >
+>> >> On Fri, Aug 24, 2018 at 05:08:48PM +0200, Boris Brezillon wrote:
+>> >> > Hi Bartosz,
+>> >> >
+>> >> > On Fri, 10 Aug 2018 10:04:58 +0200
+>> >> > Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>> >> >
+>> >> > > +struct nvmem_cell_lookup {
+>> >> > > + struct nvmem_cell_info  info;
+>> >> > > + struct list_head        list;
+>> >> > > + const char              *nvmem_name;
+>> >> > > +};
+>> >> >
+>> >> > Hm, maybe I don't get it right, but this looks suspicious. Usually the
+>> >> > consumer lookup table is here to attach device specific names to
+>> >> > external resources.
+>> >> >
+>> >> > So what I'd expect here is:
+>> >> >
+>> >> > struct nvmem_cell_lookup {
+>> >> >     /* The nvmem device name. */
+>> >> >     const char *nvmem_name;
+>> >> >
+>> >> >     /* The nvmem cell name */
+>> >> >     const char *nvmem_cell_name;
+>> >> >
+>> >> >     /*
+>> >> >      * The local resource name. Basically what you have in the
+>> >> >      * nvmem-cell-names prop.
+>> >> >      */
+>> >> >     const char *conid;
+>> >> > };
+>> >> >
+>> >> > struct nvmem_cell_lookup_table {
+>> >> >     struct list_head list;
+>> >> >
+>> >> >     /* ID of the consumer device. */
+>> >> >     const char *devid;
+>> >> >
+>> >> >     /* Array of cell lookup entries. */
+>> >> >     unsigned int ncells;
+>> >> >     const struct nvmem_cell_lookup *cells;
+>> >> > };
+>> >> >
+>> >> > Looks like your nvmem_cell_lookup is more something used to attach cells
+>> >> > to an nvmem device, which is NVMEM provider's responsibility not the
+>> >> > consumer one.
+>> >>
+>> >> Hi Boris
+>> >>
+>> >> There are cases where there is not a clear providier/consumer split. I
+>> >> have an x86 platform, with a few at24 EEPROMs on it. It uses an off
+>> >> the shelf Komtron module, placed on a custom carrier board. One of the
+>> >> EEPROMs contains the hardware variant information. Once i know the
+>> >> variant, i need to instantiate other I2C, SPI, MDIO devices, all using
+>> >> platform devices, since this is x86, no DT available.
+>> >>
+>> >> So the first thing my x86 platform device does is instantiate the
+>> >> first i2c device for the AT24. Once the EEPROM pops into existence, i
+>> >> need to add nvmem cells onto it. So at that point, the x86 platform
+>> >> driver is playing the provider role. Once the cells are added, i can
+>> >> then use nvmem consumer interfaces to get the contents of the cell,
+>> >> run a checksum, and instantiate the other devices.
+>> >>
+>> >> I wish the embedded world was all DT, but the reality is that it is
+>> >> not :-(
+>> >
+>> > Actually, I'm not questioning the need for this feature (being able to
+>> > attach NVMEM cells to an NVMEM device on a platform that does not use
+>> > DT). What I'm saying is that this functionality is provider related,
+>> > not consumer related. Also, I wonder if defining such NVMEM cells
+>> > shouldn't go through the provider driver instead of being passed
+>> > directly to the NVMEM layer, because nvmem_config already have a fields
+>> > to pass cells at registration time, plus, the name of the NVMEM cell
+>> > device is sometimes created dynamically and can be hard to guess at
+>> > platform_device registration time.
+>> >
+>>
+>> In my use case the provider is at24 EEPROM driver. This is where the
+>> nvmem_config lives but I can't image a correct and clean way of
+>> passing this cell config to the driver from board files without using
+>> new ugly fields in platform_data which this very series is trying to
+>> remove. This is why this cell config should live in machine code.
+>
+> Okay.
+>
+>>
+>> > I also think non-DT consumers will need a way to reference exiting
+>> > NVMEM cells, but this consumer-oriented nvmem cell lookup table should
+>> > look like the gpio or pwm lookup table (basically what I proposed in my
+>> > previous email).
+>>
+>> How about introducing two new interfaces to nvmem: one for defining
+>> nvmem cells from machine code and the second for connecting these
+>> cells with devices?
+>
+> Yes, that's basically what I was suggesting: move what you've done in
+> nvmem-provider.h (maybe rename some of the structs to make it clear
+> that this is about defining cells not referencing existing ones), and
+> add a new consumer interface (based on what other subsystems do) in
+> nvmem-consumer.h.
+>
+> This way you have both things clearly separated, and if a driver is
+> both a consumer and a provider you'll just have to include both headers.
+>
+> Regards,
+>
+> Boris
 
-Crypto functions can fail, you need to check the return value.
-(Please check also other call sites)
+I didn't notice it before but there's a global list of nvmem cells
+with each cell referencing its owner nvmem device. I'm wondering if
+this isn't some kind of inversion of ownership. Shouldn't each nvmem
+device have a separate list of nvmem cells owned by it? What happens
+if we have two nvmem providers with the same names for cells? I'm
+asking because dev_id based lookup doesn't make sense if internally
+nvmem_cell_get_from_list() doesn't care about any device names (takes
+only the cell_id as argument).
 
-> +}
-> +
-> +/**
-> + * ubifs_prepare_auth_node - Prepare an authentication node
-> + * @c: UBIFS file-system description object
-> + * @node: the node to calculate a hash for
-> + * @hash: input hash of previous nodes
-> + *
-> + * This function prepares an authentication node for writing onto flash.
-> + * It creates a HMAC from the given input hash and writes it to the node.
-> + */
-> +void ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
-> +			     struct shash_desc *inhash)
-> +{
-> +	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
-> +	struct ubifs_auth_node *auth = node;
-> +	u8 hash[crypto_shash_descsize(c->hash_tfm)];
+This doesn't cause any trouble now since there are no users defining
+cells in nvmem_config - there are only DT users - but this must be
+clarified before I can advance with correctly implementing nvmem
+lookups.
 
-Doesn't this introduce a new VLA?
-Not that me make Kees unhappy. ;-)
+BTW: of_nvmem_cell_get() seems to always allocate an nvmem_cell
+instance even if the cell for this node was already added to the nvmem
+device.
 
-> +	hash_desc->tfm = c->hash_tfm;
-> +	hash_desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +	ubifs_shash_copy_state(c, inhash, hash_desc);
-> +	crypto_shash_final(hash_desc, hash);
-> +
-> +	ubifs_hash_calc_hmac(c, hash, auth->hmac);
-> +
-> +	auth->ch.node_type = UBIFS_AUTH_NODE;
-> +	ubifs_prepare_node(c, auth, ubifs_auth_node_sz(c), 0);
-> +}
-> +
-> +static struct shash_desc *ubifs_get_desc(const struct ubifs_info *c,
-> +					 struct crypto_shash *tfm)
-> +{
-> +	struct shash_desc *desc;
-> +	int err;
-> +
-> +	if (!ubifs_authenticated(c))
-> +		return NULL;
-> +
-> +	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(tfm), GFP_KERNEL);
-> +	if (!desc)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	desc->tfm = tfm;
-> +	desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +
-> +	err = crypto_shash_init(desc);
-> +	if (err) {
-> +		kfree(desc);
-> +		return ERR_PTR(err);
-> +	}
-> +
-> +	return desc;
-> +}
-> +
-> +/**
-> + * __ubifs_hash_get_desc - get a descriptor suitable for hashing a node
-> + * @c: UBIFS file-system description object
-> + *
-> + * This function returns a descriptor suitable for hashing a node. Free after use
-> + * with kfree.
-> + */
-> +struct shash_desc *__ubifs_hash_get_desc(const struct ubifs_info *c)
-> +{
-> +	return ubifs_get_desc(c, c->hash_tfm);
-> +}
-> +
-> +/**
-> + * __ubifs_shash_final - finalize shash
-> + * @c: UBIFS file-system description object
-> + * @desc: the descriptor
-> + * @out: the output hash
-> + *
-> + * Simple wrapper around crypto_shash_final(), safe to be called with
-> + * disabled authentication.
-> + */
-> +int __ubifs_shash_final(const struct ubifs_info *c, struct shash_desc *desc,
-> +			u8 *out)
-> +{
-> +	if (ubifs_authenticated(c))
-> +		return crypto_shash_final(desc, out);
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * __ubifs_node_check_hash - check the hash of a node against given hash
-> + * @c: UBIFS file-system description object
-> + * @node: the node
-> + * @expected: the expected hash
-> + *
-> + * This function calculates a hash over a node and compares it to the given hash.
-> + * Returns 0 if both hashes are equal or authentication is disabled, otherwise a
-> + * negative error code is returned.
-> + */
-> +int __ubifs_node_check_hash(const struct ubifs_info *c, void *node,
-> +			    const u8 *expected)
-> +{
-> +	u8 calc[UBIFS_MAX_HASH_LEN];
-> +
-> +	__ubifs_node_calc_hash(c, node, calc);
-> +
-> +	if (ubifs_check_hash(c, expected, calc))
-> +		return -EPERM;
-
-Not sure if this action isn't a little too weak.
-If a node's hash is not valid we are already in deep trouble and I'm not sure
-whether it makes sense to trust the filesystem at all anymore.
-
-But that's in general something I need to sort out with VFS/fscrypt folks.
-
-> +	return 0;
-> +}
-> +
-> +/**
-> + * ubifs_init_authentication - initialize UBIFS authentication support
-> + * @c: UBIFS file-system description object
-> + *
-> + * This function returns 0 for success or a negative error code otherwise.
-> + */
-> +int ubifs_init_authentication(struct ubifs_info *c)
-> +{
-> +	struct key *keyring_key;
-> +	const struct user_key_payload *ukp;
-> +	int err;
-> +	char hmac_name[CRYPTO_MAX_ALG_NAME];
-> +
-> +	if (!c->auth_hash_name) {
-> +		ubifs_err(c, "authentication hash name needed with authentication");
-> +		return -EINVAL;
-> +	}
-> +
-> +	c->auth_hash_algo = match_string(hash_algo_name, HASH_ALGO__LAST,
-> +					 c->auth_hash_name);
-> +	if ((int)c->auth_hash_algo < 0) {
-> +		ubifs_err(c, "Unknown hash algo %s specified",
-> +			  c->auth_hash_name);
-> +		return -EINVAL;
-> +	}
-> +
-> +	snprintf(hmac_name, CRYPTO_MAX_ALG_NAME, "hmac(%s)",
-> +		 c->auth_hash_name);
-> +
-> +	keyring_key = request_key(&key_type_logon, c->auth_key_name, NULL);
-> +
-> +	if (IS_ERR(keyring_key)) {
-> +		ubifs_err(c, "Failed to request key: %ld",
-> +			  PTR_ERR(keyring_key));
-> +		return PTR_ERR(keyring_key);
-> +	}
-> +
-> +	down_read(&keyring_key->sem);
-> +
-> +	if (keyring_key->type != &key_type_logon) {
-> +		ubifs_err(c, "key type must be logon");
-> +		err = -ENOKEY;
-> +		goto out;
-> +	}
-> +
-> +	ukp = user_key_payload_locked(keyring_key);
-> +	if (!ukp) {
-> +		/* key was revoked before we acquired its semaphore */
-> +		err = -EKEYREVOKED;
-> +		goto out;
-> +	}
-> +
-> +	c->hash_tfm = crypto_alloc_shash(c->auth_hash_name, 0,
-> +					 CRYPTO_ALG_ASYNC);
-> +	if (IS_ERR(c->hash_tfm)) {
-> +		err = PTR_ERR(c->hash_tfm);
-> +		ubifs_err(c, "Can not allocate %s: %d",
-> +			  c->auth_hash_name, err);
-> +		goto out;
-> +	}
-> +
-> +	c->hash_len = crypto_shash_digestsize(c->hash_tfm);
-> +	if (c->hash_len > UBIFS_MAX_HASH_LEN) {
-> +		ubifs_err(c, "hash %s is bigger than maximum allowed hash size (%d > %d)",
-> +			  c->auth_hash_name, c->hash_len, UBIFS_MAX_HASH_LEN);
-> +		err = -EINVAL;
-> +		goto out_free_hash;
-> +	}
-> +
-> +	c->hmac_tfm = crypto_alloc_shash(hmac_name, 0, CRYPTO_ALG_ASYNC);
-> +	if (IS_ERR(c->hmac_tfm)) {
-> +		err = PTR_ERR(c->hmac_tfm);
-> +		ubifs_err(c, "Can not allocate %s: %d", hmac_name, err);
-> +		goto out_free_hash;
-> +	}
-> +
-> +	c->hmac_desc_len = crypto_shash_digestsize(c->hmac_tfm);
-> +	if (c->hmac_desc_len > UBIFS_MAX_HMAC_LEN) {
-> +		ubifs_err(c, "hmac %s is bigger than maximum allowed hmac size (%d > %d)",
-> +			  hmac_name, c->hmac_desc_len, UBIFS_MAX_HMAC_LEN);
-> +		err = -EINVAL;
-> +		goto out_free_hash;
-> +	}
-> +
-> +	err = crypto_shash_setkey(c->hmac_tfm, ukp->data, ukp->datalen);
-> +	if (err)
-> +		goto out_free_hmac;
-> +
-> +	c->authenticated = true;
-> +
-> +	c->log_hash = ubifs_hash_get_desc(c);
-> +	if (IS_ERR(c->log_hash))
-> +		goto out_free_hmac;
-> +
-> +	err = 0;
-> +
-> +out_free_hmac:
-> +	if (err)
-> +		crypto_free_shash(c->hmac_tfm);
-> +out_free_hash:
-> +	if (err)
-> +		crypto_free_shash(c->hash_tfm);
-> +out:
-> +	up_read(&keyring_key->sem);
-> +	key_put(keyring_key);
-> +
-> +	return err;
-> +}
-> +
-> +/**
-> + * __ubifs_exit_authentication - release resource
-> + * @c: UBIFS file-system description object
-> + *
-> + * This function releases the authentication related resources.
-> + */
-> +void __ubifs_exit_authentication(struct ubifs_info *c)
-> +{
-> +	if (!ubifs_authenticated(c))
-> +		return;
-> +
-> +	crypto_free_shash(c->hmac_tfm);
-> +	crypto_free_shash(c->hash_tfm);
-> +	kfree(c->log_hash);
-> +}
-> +
-> +/**
-> + * ubifs_node_calc_hmac - calculate the HMAC of a UBIFS node
-> + * @c: UBIFS file-system description object
-> + * @node: the node to insert a HMAC into.
-> + * @len: the length of the node
-> + * @ofs_hmac: the offset in the node where the HMAC is inserted
-> + * @hmac: returned HMAC
-> + *
-> + * This function calculates a HMAC of a UBIFS node. The HMAC is expected to be
-> + * embedded into the node, so this area is not covered by the HMAC. Also not
-> + * covered is the UBIFS_NODE_MAGIC and the CRC of the node.
-> + */
-> +static void ubifs_node_calc_hmac(const struct ubifs_info *c, const void *node,
-> +				 int len, int ofs_hmac, void *hmac)
-> +{
-> +	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
-> +	int hmac_len = c->hmac_desc_len;
-> +
-> +	ubifs_assert(ofs_hmac > 8);
-> +	ubifs_assert(ofs_hmac + hmac_len < len);
-> +
-> +	shash->tfm = c->hmac_tfm;
-> +	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +
-> +	crypto_shash_init(shash);
-> +
-> +	/* behind common node header CRC up to HMAC begin */
-> +	crypto_shash_update(shash, node + 8, ofs_hmac - 8);
-> +
-> +	/* behind HMAC, if any */
-> +	if (len - ofs_hmac - hmac_len > 0)
-> +		crypto_shash_update(shash, node + ofs_hmac + hmac_len,
-> +			    len - ofs_hmac - hmac_len);
-> +
-> +	crypto_shash_final(shash, hmac);
-> +}
-> +
-> +/**
-> + * __ubifs_node_insert_hmac - insert a HMAC into a UBIFS node
-> + * @c: UBIFS file-system description object
-> + * @node: the node to insert a HMAC into.
-> + * @len: the length of the node
-> + * @ofs_hmac: the offset in the node where the HMAC is inserted
-> + *
-> + * This function inserts a HMAC at offset @ofs_hmac into the node given in
-> + * @node.
-> + */
-> +void __ubifs_node_insert_hmac(const struct ubifs_info *c, void *node, int len,
-> +			    int ofs_hmac)
-> +{
-> +	ubifs_node_calc_hmac(c, node, len, ofs_hmac, node + ofs_hmac);
-> +}
-> +
-> +/**
-> + * __ubifs_node_verify_hmac - verify the HMAC of UBIFS node
-> + * @c: UBIFS file-system description object
-> + * @node: the node to insert a HMAC into.
-> + * @len: the length of the node
-> + * @ofs_hmac: the offset in the node where the HMAC is inserted
-> + *
-> + * This function verifies the HMAC at offset @ofs_hmac of the node given in
-> + * @node. Returns 0 if successful or a negative error code otherwise.
-> + */
-> +int __ubifs_node_verify_hmac(const struct ubifs_info *c, const void *node,
-> +			     int len, int ofs_hmac)
-> +{
-> +	int hmac_len = c->hmac_desc_len;
-> +	u8 *hmac;
-> +	int err;
-> +
-> +	hmac = kmalloc(hmac_len, GFP_NOFS);
-> +	if (!hmac)
-> +		return -ENOMEM;
-> +
-> +	ubifs_node_calc_hmac(c, node, len, ofs_hmac, hmac);
-> +
-> +	err = crypto_memneq(hmac, node + ofs_hmac, hmac_len);
-> +
-> +	kfree(hmac);
-> +
-> +	if (!err)
-> +		return 0;
-> +
-> +	return -EPERM;
-
-Same.
-
-> +}
-> +
-> +int __ubifs_shash_copy_state(const struct ubifs_info *c, struct shash_desc *src,
-> +			     struct shash_desc *target)
-> +{
-> +	u8 state[crypto_shash_descsize(src->tfm)];
-> +	int err;
-> +
-> +	err = crypto_shash_export(src, state);
-> +	if (err)
-> +		return err;
-> +
-> +	return crypto_shash_import(target, state);
-> +}
-> +
-> +/**
-> + * ubifs_hmac_wkm - Create a HMAC of the well known message
-> + * @c: UBIFS file-system description object
-> + * @hmac: The HMAC of the well known message
-> + *
-> + * This function creates a HMAC of a well known message. This is used
-> + * to check if the provided key is suitable to authenticate a UBIFS
-> + * image. This is only a convenience to the user to provide a better
-> + * error message when the wrong key is provided.
-> + */
-> +void ubifs_hmac_wkm(struct ubifs_info *c, u8 *hmac)
-> +{
-> +	SHASH_DESC_ON_STACK(shash, c->hmac_tfm);
-> +	int err;
-> +	const char well_known_message[] = "UBIFS";
-> +
-> +	if (!ubifs_authenticated(c))
-> +		return;
-> +
-> +	shash->tfm = c->hmac_tfm;
-> +	shash->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
-> +
-> +	err = crypto_shash_init(shash);
-> +	BUG_ON(err);
-
-Huh? Do we really have to shoot the kernel in the head here?
-
-Thanks,
-//richard
+Bart
