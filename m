@@ -1,25 +1,19 @@
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from conuserg-07.nifty.com ([210.131.2.74])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fu28i-0006pa-Ug
- for linux-mtd@lists.infradead.org; Sun, 26 Aug 2018 21:00:06 +0000
-Received: by mail-wr1-x441.google.com with SMTP id v17-v6so11735831wrr.9
- for <linux-mtd@lists.infradead.org>; Sun, 26 Aug 2018 13:59:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20180704124137.13396-1-s.hauer@pengutronix.de>
- <20180704124137.13396-6-s.hauer@pengutronix.de>
- <20180813063127.kpxw6d5amna5wpas@pengutronix.de>
-In-Reply-To: <20180813063127.kpxw6d5amna5wpas@pengutronix.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Sun, 26 Aug 2018 22:59:40 +0200
-Message-ID: <CAFLxGvw8Zd8WE9xZxebp+mPEDDQXizFrjY973+uTjz4VvS=2Kw@mail.gmail.com>
-Subject: Re: [PATCH 05/25] ubifs: implement ubifs_lpt_lookup using
- ubifs_pnode_lookup
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>,
- David Gstir <david@sigma-star.at>, LKML <linux-kernel@vger.kernel.org>,
- kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
+ id 1fuBXu-0007uV-Hl
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 07:02:44 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2] mtd: rawnand: denali: do not pass zero maxchips to
+ nand_scan()
+Date: Mon, 27 Aug 2018 16:01:41 +0900
+Message-Id: <1535353301-1727-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,59 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 13, 2018 at 8:31 AM Sascha Hauer <s.hauer@pengutronix.de> wrote:
->
-> On Wed, Jul 04, 2018 at 02:41:17PM +0200, Sascha Hauer wrote:
-> > ubifs_lpt_lookup() starts by looking up the nth pnode in the LPT. We
-> > already have this functionality in ubifs_pnode_lookup(). Use this
-> > function rather than open coding its functionality.
-> >
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  fs/ubifs/lpt.c | 20 ++------------------
-> >  1 file changed, 2 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-> > index 6cd6f23d4512..cde7b9484157 100644
-> > --- a/fs/ubifs/lpt.c
-> > +++ b/fs/ubifs/lpt.c
-> > @@ -1478,27 +1478,11 @@ struct ubifs_pnode *ubifs_pnode_lookup(struct ubifs_info *c, int i)
-> >   */
-> >  struct ubifs_lprops *ubifs_lpt_lookup(struct ubifs_info *c, int lnum)
-> >  {
-> > -     int err, i, h, iip, shft;
-> > -     struct ubifs_nnode *nnode;
-> > +     int i, iip;
-> >       struct ubifs_pnode *pnode;
-> >
-> > -     if (!c->nroot) {
-> > -             err = ubifs_read_nnode(c, NULL, 0);
-> > -             if (err)
-> > -                     return ERR_PTR(err);
-> > -     }
-> > -     nnode = c->nroot;
-> >       i = lnum - c->main_first;
-> > -     shft = c->lpt_hght * UBIFS_LPT_FANOUT_SHIFT;
-> > -     for (h = 1; h < c->lpt_hght; h++) {
-> > -             iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
-> > -             shft -= UBIFS_LPT_FANOUT_SHIFT;
-> > -             nnode = ubifs_get_nnode(c, nnode, iip);
-> > -             if (IS_ERR(nnode))
-> > -                     return ERR_CAST(nnode);
-> > -     }
-> > -     iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
-> > -     pnode = ubifs_get_pnode(c, nnode, iip);
-> > +     pnode = ubifs_pnode_lookup(c, i);
->
-> This should be
->
->         ubifs_pnode_lookup(c, i >> UBIFS_LPT_FANOUT_SHIFT);
+Commit 49aa76b16676 ("mtd: rawnand: do not execute nand_scan_ident()
+if maxchips is zero") gave a new meaning for calling nand_scan_ident()
+with maxchips=0.
 
-FWIW, I've rebased the whole series to Linus as of today, the merge
-window introduced some minor conflicts.
-http://git.infradead.org/users/rw/linux.git/shortlog/refs/heads/ubifs_auth_wip
+It is a special usage for some drivers such as docg4, but actually
+the Denali driver may pass maxchips=0 to nand_scan() when the driver
+is enabled but no NAND chip is found on the board for some reasons.
 
-The above fix is included.
+If nand_scan_with_ids() is called with maxchips=0, nand_scan_ident()
+is skipped, then nand_set_defaults() is skipped as well.  Thus, the
+driver must set chip->controller beforehand.  Otherwise, nand_attach()
+causes NULL pointer dereference.
 
-Thanks,
-//richard
+In fact, the Denali controller knows the number of connected chips
+before calling nand_scan_ident(); if DEVICE_RESET fails, there is no
+chip in that chip select.  Then, denali_reset_banks() sets the maxchips
+to the number of detected chips.  If no chip is found, maxchips is zero.
+
+In this case, there is no point for calling nand_scan() because we know
+it will fail for sure.  Let's make the probe function fail immediately.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+Changes in v2:
+  - Return -ENODEV immediately if no chip was found on the board
+    for some reasons.
+    This is the smallest, and safest change for the fixes branch.
+    (I will investigate later if further cleanups are possible or not.)
+
+ drivers/mtd/nand/raw/denali.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index ca18612..67b2065 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1338,6 +1338,11 @@ int denali_init(struct denali_nand_info *denali)
+ 
+ 	denali_enable_irq(denali);
+ 	denali_reset_banks(denali);
++	if (!denali->max_banks) {
++		/* Error out earlier if no chip is found for some reasons. */
++		ret = -ENODEV;
++		goto disable_irq;
++	}
+ 
+ 	denali->active_bank = DENALI_INVALID_BANK;
+ 
+-- 
+2.7.4
