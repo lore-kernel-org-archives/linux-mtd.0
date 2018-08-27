@@ -1,22 +1,20 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuMVt-00056A-E0
- for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 18:45:23 +0000
-Date: Mon, 27 Aug 2018 20:44:35 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Arnd Bergmann
- <arnd@arndb.de>
-Subject: Re: [PATCH] mtd: rawnand: docg4: Remove wrong __init annotations
-Message-ID: <20180827204435.0ecfcacf@bbrezillon>
-In-Reply-To: <20180823214345.20949-1-geert@linux-m68k.org>
-References: <20180823214345.20949-1-geert@linux-m68k.org>
+Received: from lithops.sigma-star.at ([195.201.40.130])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuN26-0005JB-QT
+ for linux-mtd@lists.infradead.org; Mon, 27 Aug 2018 19:18:40 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/25] ubifs: Add hashes to the tree node cache
+Date: Mon, 27 Aug 2018 21:18:25 +0200
+Message-ID: <3260968.WmIi4lir0Q@blindfold>
+In-Reply-To: <20180704124137.13396-13-s.hauer@pengutronix.de>
+References: <20180704124137.13396-1-s.hauer@pengutronix.de>
+ <20180704124137.13396-13-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Aug 2018 23:43:45 +0200
-Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+Am Mittwoch, 4. Juli 2018, 14:41:24 CEST schrieb Sascha Hauer:
+> As part of the UBIFS authentication support every branch in the index
+> gets a hash covering the referenced node. To make that happen the tree
+> node cache needs hashes over the nodes. This patch adds a hash argument
+> to ubifs_tnc_add() and ubifs_tnc_add_nm(). The hashes are calculated
+> from the callers of these functions which actually prepare the nodes.
+> With this patch all the leaf nodes of the index tree get hashes, but
+> currently nothing is done with these hashes, this is left for a later
+> patch.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  fs/ubifs/journal.c | 93 ++++++++++++++++++++++++++++++++++------------
+>  fs/ubifs/replay.c  |  4 +-
+>  fs/ubifs/tnc.c     | 10 ++++-
+>  fs/ubifs/ubifs.h   |  7 +++-
+>  4 files changed, 84 insertions(+), 30 deletions(-)
+> 
+> diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+> index 754d969eb27e..55b35bc33c31 100644
+> --- a/fs/ubifs/journal.c
+> +++ b/fs/ubifs/journal.c
+> @@ -517,6 +517,9 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
+>  	struct ubifs_dent_node *dent;
+>  	struct ubifs_ino_node *ino;
+>  	union ubifs_key dent_key, ino_key;
+> +	u8 hash_dent[UBIFS_MAX_HASH_LEN];
+> +	u8 hash_ino[UBIFS_MAX_HASH_LEN];
+> +	u8 hash_ino_host[UBIFS_MAX_HASH_LEN];
 
-> If gcc (e.g. 4.1.2) decides not to inline init_mtd_structs() and
-> read_id_reg(), this will cause section mismatches, and crashes:
-> 
->     WARNING: drivers/mtd/nand/raw/docg4.o(.text+0xc10): Section mismatch in reference from the function docg4_attach_chip() to the function .init.text:init_mtd_structs()
->     The function docg4_attach_chip() references
->     the function __init init_mtd_structs().
->     This is often because docg4_attach_chip lacks a __init
->     annotation or the annotation of init_mtd_structs is wrong.
-> 
->     WARNING: drivers/mtd/nand/raw/docg4.o(.text+0xc3e): Section mismatch in reference from the function docg4_attach_chip() to the function .init.text:read_id_reg()
->     The function docg4_attach_chip() references
->     the function __init read_id_reg().
->     This is often because docg4_attach_chip lacks a __init
->     annotation or the annotation of read_id_reg is wrong.
-> 
-> Fix this by dropping the now incorrect __init annotations from
-> init_mtd_structs() and read_id_reg().
-> 
-> Fixes: 66a38478dcc5b5a3 ("mtd: rawnand: docg4: convert driver to nand_scan()")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Queued to mtd/master.
+With authentication enabled, this makes perfectly sense.
+But if someone builds UBIFS without and has a memory constraint system,
+we could save by setting UBIFS_MAX_HASH_LEN to 0. What do you think?
+Although, we need another define to not influence ubifs-media.h.
 
 Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/nand/raw/docg4.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/docg4.c b/drivers/mtd/nand/raw/docg4.c
-> index a3f04315c05c54e6..427fcbc1b71c0551 100644
-> --- a/drivers/mtd/nand/raw/docg4.c
-> +++ b/drivers/mtd/nand/raw/docg4.c
-> @@ -1218,7 +1218,7 @@ static int docg4_resume(struct platform_device *pdev)
->  	return 0;
->  }
->  
-> -static void __init init_mtd_structs(struct mtd_info *mtd)
-> +static void init_mtd_structs(struct mtd_info *mtd)
->  {
->  	/* initialize mtd and nand data structures */
->  
-> @@ -1290,7 +1290,7 @@ static void __init init_mtd_structs(struct mtd_info *mtd)
->  
->  }
->  
-> -static int __init read_id_reg(struct mtd_info *mtd)
-> +static int read_id_reg(struct mtd_info *mtd)
->  {
->  	struct nand_chip *nand = mtd_to_nand(mtd);
->  	struct docg4_priv *doc = nand_get_controller_data(nand);
+//richard
