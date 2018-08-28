@@ -1,26 +1,51 @@
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fucPD-0007st-EB
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 11:43:33 +0000
-Received: by mail-wr1-x442.google.com with SMTP id z96-v6so1274651wrb.8
- for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 04:43:20 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: fix options for mx66l51235f
-To: Alexander Amelkin <a.amelkin@yadro.com>, linux-mtd@lists.infradead.org
-Cc: openbmc@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
- =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>, leroi.lists@gmail.com
-References: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
- <b2ff17cc-96ca-3acb-6dc2-f7a8688a0742@gmail.com>
- <65072cc4-601b-250b-f797-604368776c3c@yadro.com>
- <f21bc842-47c8-eefd-1af5-3811c2bd25b0@gmail.com>
- <286877dc-22fe-9f49-458a-6a6a0ce0b1c0@yadro.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
-Date: Tue, 28 Aug 2018 13:43:17 +0200
+ id 1fucbv-0005DV-1G
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 11:56:41 +0000
+Received: by mail-it0-x242.google.com with SMTP id h23-v6so2137769ita.5
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 04:56:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <286877dc-22fe-9f49-458a-6a6a0ce0b1c0@yadro.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <8cb75723-dc87-f127-2aab-54dd0b08eee8@linaro.org>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-2-brgl@bgdev.pl>
+ <20180824170848.29594318@bbrezillon> <20180824152740.GD27483@lunn.ch>
+ <20180825082722.567e8c9a@bbrezillon>
+ <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
+ <20180827110055.122988d0@bbrezillon>
+ <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
+ <8cb75723-dc87-f127-2aab-54dd0b08eee8@linaro.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 28 Aug 2018 13:56:25 +0200
+Message-ID: <CAMRc=Mex5WAm8uiV4T=0+bLduBBdj18iekuYT55W9gA_rzQ_sg@mail.gmail.com>
+Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Andrew Lunn <andrew@lunn.ch>,
+ linux-doc <linux-doc@vger.kernel.org>, Sekhar Nori <nsekhar@ti.com>,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+ linux-i2c <linux-i2c@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Florian Fainelli <f.fainelli@gmail.com>, Kevin Hilman <khilman@kernel.org>,
+ Richard Weinberger <richard@nod.at>, Russell King <linux@armlinux.org.uk>,
+ Marek Vasut <marek.vasut@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>,
+ Naren <naren.kernel@gmail.com>, netdev <netdev@vger.kernel.org>,
+ Alban Bedel <albeu@free.fr>, Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ "David S . Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +55,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/28/2018 01:29 PM, Alexander Amelkin wrote:
-> 27.08.2018 14:34, Marek Vasut wrote:
+2018-08-28 12:15 GMT+02:00 Srinivas Kandagatla <srinivas.kandagatla@linaro.org>:
+>
+> On 27/08/18 14:37, Bartosz Golaszewski wrote:
+>>
+>> I didn't notice it before but there's a global list of nvmem cells
+>
+>
+> Bit of history here.
+>
+> The global list of nvmem_cell is to assist non device tree based cell
+> lookups. These cell entries come as part of the non-dt providers
+> nvmem_config.
+>
+> All the device tree based cell lookup happen dynamically on request/demand,
+> and all the cell definition comes from DT.
+>
 
-Hi,
+Makes perfect sense.
 
->>>>> According to the datasheet for mx66l51235f, "The device default is in
->>>>> 24-bit address mode" (section 9-10). Having option SPI_NOR_4B_OPCODES
->>>>> makes the code act as if the device was already in 4B mode and didn't
->>>>> need the EN4B command. That prevents this chip from functioning on
->>>>> systems where the boot loader left the chip in 3B mode (e.g. if the
->>>>> chip wasn't used during the boot process).
->>>>>
->>>>> Hence, this commit removes the SPI_NOR_4B_OPCODES option for
->>>>> mx66l51235f (added previously by commit d342b6a973af).
->>>> Could it be there are two variants of the chip, one which supports the
->>>> 4B opcodes and one which does not ? Wouldn't be the first time I saw
->>>> this. If this chip supports the SFDP tables, you can check those.
->>> I was unable to find another variant of the chip. There is only one specified in the datasheet:
->>> http://www.macronix.com/Lists/Datasheet/Attachments/7401/MX66L51235F,%203V,%20512Mb,%20v1.1.pdf
->>> and it says that the device supports both 3B and 4B modes, but defaults to 3B (24-bit) mode.
->> So keep the 4B part in. Linux will just not reconfigure the device to 4B
->> mode using register write, but will instead issue the 4B opcode
->> directly, without any stateful change.
-> Marek, thank you for asking all these questions. They made me conduct a deeper investigation than just finding the commit that broke it and reverting it. It appears that OpenPOWER P8's SBE code (the thing that P8 CPU runs first from its built-in memory) expects the PNOR flash chip to be in EN4B mode. It reads the rest of OpenPOWER Firmware using a usual READ (0x03) command with 4 bytes of address. Always. That's why, I believe, Roman's commit broke host booting for us.
+> As of today NVMEM supports both DT and non DT usecase, this is much simpler.
+>
+> Non dt cases have various consumer usecases.
+>
+> 1> Consumer is aware of provider name and cell details.
+>         This is probably simple usecase where it can just use device based
+> apis.
+>
+> 2> Consumer is not aware of provider name, its just aware of cell name.
+>         This is the case where global list of cells are used.
+>
 
-Uh oh, I seem to remember some flashes had this weird quirk where they
-were in EN4B mode by default, and if U-Boot/Linux reset the flash into
-"sane default" state (3B addressing etc), some systems failed to boot.
-Furthermore, this EN4B is non-volatile bit on this flash, right ? That
-means it is retained across power-cycles, which sucks even more.
+I would like to support an additional use case here: the provider is
+generic and is not aware of its cells at all. Since the only way of
+defining nvmem cells is through DT or nvmem_config, we lack a way to
+allow machine code to define cells without the provider code being
+aware.
 
-> Probably it would be best not to merge this patch into Linux kernel. I'll discuss it with colleagues from OpenPOWER community and we'll probably fix it on SBE side.
+>> with each cell referencing its owner nvmem device. I'm wondering if
+>> this isn't some kind of inversion of ownership. Shouldn't each nvmem
+>> device have a separate list of nvmem cells owned by it? What happens
+>
+> This is mainly done for use case where consumer does not have idea of
+> provider name or any details.
+>
 
-Can you fix the firmware ? If so, that'd be amazing.
-But still, there can be a software which does rogue transmission on the
-SPI bus and flips the flash into 3B mode before reset, so the system
-will not boot anyway. Do you have a way to deal with that somehow ?
+It doesn't need to know the provider details, but in most subsystems
+the core code associates such resources by dev_id and optional con_id
+as Boris already said.
 
-> As for renaming the chip, I can provide a patch just for that. Or we can leave it as is.
+> First thing non dt user should do is use "NVMEM device based consumer APIs"
+>
+> ex: First get handle to nvmem device using its nvmem provider name by
+> calling nvmem_device_get(); and use nvmem_device_cell_read/write() apis.
+>
+> Also am not 100% sure how would maintaining cells list per nvmem provider
+> would help for the intended purpose of global list?
+>
 
-A patch would be nice, yes.
+It would fix the use case where the consumer wants to use
+nvmem_cell_get(dev, name) and two nvmem providers would have a cell
+with the same name.
 
-> Thanks.
-> Alexander.
-> 
+Next we could add a way to associate dev_ids with nvmem cells.
+
+>> if we have two nvmem providers with the same names for cells? I'm
+>
+> Yes, it would return the first instance.. which is a known issue.
+> Am not really sure this is a big problem as of today! but am open for any
+> better suggestions!
+>
+
+Yes, I would like to rework nvmem a bit. I don't see any non-DT users
+defining nvmem-cells using nvmem_config. I think that what we need is
+a way of specifying cell config outside of nvmem providers in some
+kind of structures. These tables would reference the provider by name
+and define the cells. Then we would have an additional lookup
+structure which would associate the consumer (by dev_id and con_id,
+where dev_id could optionally be NULL and where we would fall back to
+using con_id only) and the nvmem provider + cell together. Similarly
+to how GPIO consumers are associated with the gpiochip and hwnum. How
+does it sound?
+
+>
+>> asking because dev_id based lookup doesn't make sense if internally
+>> nvmem_cell_get_from_list() doesn't care about any device names (takes
+>> only the cell_id as argument).
+>
+>
+> As I said this is for non DT usecase where consumers are not aware of
+> provider details.
+>
+>>
+>> This doesn't cause any trouble now since there are no users defining
+>> cells in nvmem_config - there are only DT users - but this must be
+>> clarified before I can advance with correctly implementing nvmem
+>> lookups.
+>
+> DT users should not be defining this to start with! It's redundant and does
+> not make sense!
+>
+
+Yes, this is what I said: we only seem to have DT users, so this API
+is not used at the moment.
+
+>>
+>> BTW: of_nvmem_cell_get() seems to always allocate an nvmem_cell
+>> instance even if the cell for this node was already added to the nvmem
+>> device.
+>
+> I hope you got the reason why of_nvmem_cell_get() always allocates new
+> instance for every get!!
 
 
--- 
-Best regards,
-Marek Vasut
+I admit I didn't test it, but just from reading the code it seems like
+in nvmem_cell_get() for DT-users we'll always get to
+of_nvmem_cell_get() and in there we always end up calling line 873:
+cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+
+There may be something I'm missing though.
+
+>
+> thanks,
+> srini
+
+BR
+Bart
