@@ -1,49 +1,23 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fub77-0001td-80
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 10:20:46 +0000
-Received: by mail-wr1-x444.google.com with SMTP id w11-v6so1042428wrc.5
- for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 03:20:34 -0700 (PDT)
-Subject: Re: [PATCH v2 06/29] mtd: Add support for reading MTD devices via the
- nvmem API
-To: Alban <albeu@free.fr>, Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Jonathan Corbet <corbet@lwn.net>,
- Sekhar Nori <nsekhar@ti.com>, Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
+ id 1fuc2f-0003tD-Az
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 11:20:15 +0000
+Received: by mail-wr1-x441.google.com with SMTP id v16-v6so1198854wro.11
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 04:20:03 -0700 (PDT)
+From: Jonas Gorski <jonas.gorski@gmail.com>
+To: linux-mtd@lists.infradead.org,
+	devicetree@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>, Naren <naren.kernel@gmail.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Sven Van Asbroeck <svendev@arcx.com>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
- Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-7-brgl@bgdev.pl> <20180817182720.6a6e5e8e@bbrezillon>
- <20180819133106.0420df5f@tock> <20180819184609.6dcdbb9a@bbrezillon>
- <5b8c30b8-41e1-d59e-542b-fef6c6469ff0@linaro.org>
- <20180820202038.5d3dc195@bbrezillon>
- <e0ec3194-fd3a-9b3d-fba8-f88447eb56e9@linaro.org>
- <20180821133916.3a1c51b1@eos>
- <6db14f9c-edd3-5e43-839c-953bb03097ff@linaro.org>
- <20180821150121.4408672f@bbrezillon> <20180823122921.6857d917@tock>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <58fd7ab3-c115-1f26-6d6e-677af6351239@linaro.org>
-Date: Tue, 28 Aug 2018 11:20:31 +0100
-MIME-Version: 1.0
-In-Reply-To: <20180823122921.6857d917@tock>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Florian Fainelli <f.fainelli@gmail.com>
+Subject: [PATCH 2/5] mtd: bcm63xxpart: add of_match_table support
+Date: Tue, 28 Aug 2018 13:19:41 +0200
+Message-Id: <20180828111944.5956-3-jonas.gorski@gmail.com>
+In-Reply-To: <20180828111944.5956-1-jonas.gorski@gmail.com>
+References: <20180828111944.5956-1-jonas.gorski@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -53,42 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add of_match_table support to allow using bcm63xxpart as a full flash
+layout parser from device tree.
 
+Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+---
+ drivers/mtd/bcm63xxpart.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On 23/08/18 11:29, Alban wrote:
-> Let say I have a device that use the following binding:
-> 
-> device {
->      compatible = "example-device";
->      #address-cells = <2>;
->      #size-cells = <1>;
-> 
->      child@0,0 {
->          reg = <0x0 0x0>;
->          ...
->      };
-> 
->      child@1,2 {
->          reg = <0x1 0x2>;
->          ...
->      };
-> 
-> };
-> 
-> Now this binding already use the node address space for something,
-> so putting a nvmem node as direct child would not work.
-
-AFAIK, It should work but the we would get a DT warning this, as nvmem 
-does not use of_address based apis to parse this. Which should be 
-totally fixed!!
-
-As discussed before once we add support to #address-cells and 
-#size-cells in nvmem core this should not be a problem.
-
-
---srini
-  Here it is
-> quiet clear as we have 2 address cells, however even if the number of
-> cells and the cells size would match it would still be conceptually
-> wrong as both bindings then use the same address space for something
-> different.
+diff --git a/drivers/mtd/bcm63xxpart.c b/drivers/mtd/bcm63xxpart.c
+index 41d1d3149c61..f639b4c960f0 100644
+--- a/drivers/mtd/bcm63xxpart.c
++++ b/drivers/mtd/bcm63xxpart.c
+@@ -34,6 +34,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/of.h>
+ 
+ #define BCM963XX_CFE_BLOCK_SIZE		SZ_64K	/* always at least 64KiB */
+ 
+@@ -311,9 +312,16 @@ static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
+ 	return ret;
+ };
+ 
++static const struct of_device_id parse_bcm63xx_cfe_match_table[] = {
++	{ .compatible = "brcm,bcm963xx-cfe-nor-partitions" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, parse_bcm63xx_cfe_match_table);
++
+ static struct mtd_part_parser bcm63xx_cfe_parser = {
+ 	.parse_fn = bcm63xx_parse_cfe_partitions,
+ 	.name = "bcm63xxpart",
++	.of_match_table = parse_bcm63xx_cfe_match_table,
+ };
+ module_mtd_part_parser(bcm63xx_cfe_parser);
+ 
+-- 
+2.13.2
