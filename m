@@ -1,25 +1,54 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fufFH-0004cK-18
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 14:45:28 +0000
-Received: by mail-lj1-x244.google.com with SMTP id y17-v6so1648102ljy.8
- for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 07:45:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
- <20180821143152.32293-3-ricardo.ribalda@gmail.com>
- <20180828162611.2f45e5c9@bbrezillon>
-In-Reply-To: <20180828162611.2f45e5c9@bbrezillon>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Tue, 28 Aug 2018 16:44:57 +0200
-Message-ID: <CAPybu_0yRQunWVoTKffm4NZaCNbiHpBQV11tJ3z62TpDGo1rVw@mail.gmail.com>
-Subject: Re: [PATCH 2/8] mtd: maps: gpio-addr-flash: Fix ioremapped size
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
+ id 1fufIJ-0006Bq-DA
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 14:48:47 +0000
+Received: by mail-wr1-x444.google.com with SMTP id n2-v6so1848763wrw.7
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 07:48:25 -0700 (PDT)
+Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Andrew Lunn <andrew@lunn.ch>, linux-doc <linux-doc@vger.kernel.org>,
+ Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski
+ <bgolaszewski@baylibre.com>, linux-i2c <linux-i2c@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Rob Herring <robh@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Kevin Hilman <khilman@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Marek Vasut <marek.vasut@gmail.com>,
+ Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>, Naren <naren.kernel@gmail.com>,
+ netdev <netdev@vger.kernel.org>, Alban Bedel <albeu@free.fr>,
+ Andrew Morton <akpm@linux-foundation.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ David Woodhouse <dwmw2@infradead.org>, "David S . Miller"
+ <davem@davemloft.net>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-2-brgl@bgdev.pl> <20180824170848.29594318@bbrezillon>
+ <20180824152740.GD27483@lunn.ch> <20180825082722.567e8c9a@bbrezillon>
+ <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
+ <20180827110055.122988d0@bbrezillon>
+ <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
+ <8cb75723-dc87-f127-2aab-54dd0b08eee8@linaro.org>
+ <CAMRc=Mex5WAm8uiV4T=0+bLduBBdj18iekuYT55W9gA_rzQ_sg@mail.gmail.com>
+ <916e3e89-82b3-0d52-2b77-4374261a9d0f@linaro.org>
+ <CAMRc=MeALxpyBQhWxGPt9BubO_ZwKGih1d8zhRzFYZ0+3kHFAA@mail.gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <626e6122-2e58-3317-89b2-77959c9310f7@linaro.org>
+Date: Tue, 28 Aug 2018 15:48:21 +0100
+MIME-Version: 1.0
+In-Reply-To: <CAMRc=MeALxpyBQhWxGPt9BubO_ZwKGih1d8zhRzFYZ0+3kHFAA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +58,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
-On Tue, Aug 28, 2018 at 4:26 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Tue, 21 Aug 2018 16:31:46 +0200
-> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
->
-> > We should only iomap the area of the chip that is memory mapped.
-> > Otherwise we could be mapping devices beyond the memory space or that
-> > belong to other devices.
-> >
->
-> Can you add
->
-> Fixes: ebd71e3a4861 ("mtd: maps: gpio-addr-flash: fix warnings and make more portable")
 
 
-Sure, I have some other changes for the patchset at
-https://github.com/ribalda/linux/tree/gpio-addr-flash-v2
+On 28/08/18 15:41, Bartosz Golaszewski wrote:
+> 2018-08-28 15:45 GMT+02:00 Srinivas Kandagatla <srinivas.kandagatla@linaro.org>:
+>>
+>>
+...
+>>> I would like to support an additional use case here: the provider is
+>>> generic and is not aware of its cells at all. Since the only way of
+>>> defining nvmem cells is through DT or nvmem_config, we lack a way to
+>>> allow machine code to define cells without the provider code being
+>>> aware.
+>>
+>>
+>> machine driver should be able to do
+>> nvmem_device_get()
+>> nvmem_add_cells()
+>>
+> 
+> Indeed, I missed the fact that you can retrieve the nvmem device by
+> name. Except that we cannot know that the nvmem provider has been
+> registered yet when calling nvmem_device_get(). This could potentially
+> be solved by my other patch that adds notifiers to nvmem, but it would
+> require much more boilerplate code in every board file. I think that
+> removing nvmem_cell_info from nvmem_config and having external cell
+> definitions would be cleaner.
 
-I will wait a couple of days for more reviews and I will resend the patches
+Yes, notifiers would work!
 
+...
+>>>
+>>> Yes, I would like to rework nvmem a bit. I don't see any non-DT users
+>>> defining nvmem-cells using nvmem_config. I think that what we need is
+>>> a way of specifying cell config outside of nvmem providers in some
+>>> kind of structures. These tables would reference the provider by name
+>>> and define the cells. Then we would have an additional lookup
+>>> structure which would associate the consumer (by dev_id and con_id,
+>>> where dev_id could optionally be NULL and where we would fall back to
+>>> using con_id only) and the nvmem provider + cell together. Similarly
+>>> to how GPIO consumers are associated with the gpiochip and hwnum. How
+>>> does it sound?
+>>
+>> Yes, sounds good.
+>>
+>> Correct me if am wrong!
+>> You should be able to add the new cells using struct nvmem_cell_info and add
+>> them to particular provider using nvmem_add_cells().
+>>
+>> Sounds like thats exactly what nvmem_add_lookup_table() would look like.
+>>
+>> We should add new nvmem_device_cell_get(nvmem, conn_id) which would return
+>> nvmem cell which is specific to the provider. This cell can be used by the
+>> machine driver to read/write.
+> 
+> Except that we could do it lazily - when the nvmem provider actually
+> gets registered instead of doing it right away and risking that the
+> device isn't even there yet.
+> 
+Yes, it makes more sense to do it once the provider is actually present!
 
->
-> and in case you want to backport the fix:
->
-> Cc: <stable@vger.kernel.org>
->
-> > Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> > ---
-> >  drivers/mtd/maps/gpio-addr-flash.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-> > index 17be47f72973..6de16e81994c 100644
-> > --- a/drivers/mtd/maps/gpio-addr-flash.c
-> > +++ b/drivers/mtd/maps/gpio-addr-flash.c
-> > @@ -234,7 +234,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
-> >       state->map.copy_to    = gf_copy_to;
-> >       state->map.bankwidth  = pdata->width;
-> >       state->map.size       = state->win_size * (1 << state->gpio_count);
-> > -     state->map.virt       = ioremap_nocache(memory->start, state->map.size);
-> > +     state->map.virt       = ioremap_nocache(memory->start, state->win_size);
-> >       if (!state->map.virt)
-> >               return -ENOMEM;
-> >
->
+>>
+>>>>>
+>>>>> BTW: of_nvmem_cell_get() seems to always allocate an nvmem_cell
+>>>>> instance even if the cell for this node was already added to the nvmem
+>>>>> device.
+>>>>
+>>>>
+>>>> I hope you got the reason why of_nvmem_cell_get() always allocates new
+>>>> instance for every get!!
+>>>
+>>>
+>>>
+>>> I admit I didn't test it, but just from reading the code it seems like
+>>> in nvmem_cell_get() for DT-users we'll always get to
+>>> of_nvmem_cell_get() and in there we always end up calling line 873:
+>>> cell = kzalloc(sizeof(*cell), GFP_KERNEL);
+>>>
+>> That is correct, this cell is created when we do a get and release when we
+>> do a put().
+>>
+> 
+> Shouldn't we add the cell to the list, and check first if it's there
+> and only create it if not?
+Yes I agree, duplicate entry checks are missing!
 
-
--- 
-Ricardo Ribalda
+--srini
+> 
+> Bart
+> 
