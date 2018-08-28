@@ -1,19 +1,50 @@
-Received: from martinlund.org ([173.255.130.145]
- helo=slmp-550-86.slc.westdc.net)
+Received: from mail-wm0-x231.google.com ([2a00:1450:400c:c09::231])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuaSE-0005Hw-DA
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 09:38:32 +0000
-Received: from [79.171.149.172] (port=54702 helo=quark.gomspace.lan)
- by slmp-550-86.slc.westdc.net with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
- (envelope-from <malu@gomspace.com>) id 1fuZPU-00DNPI-51
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 02:31:36 -0600
-From: Martin Lund <malu@gomspace.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH mtd-utils] ubi-tests: io_paral: Fix error handling of
- update_volume()
-Date: Tue, 28 Aug 2018 10:31:13 +0200
-Message-Id: <20180828083113.18198-1-malu@gomspace.com>
+ id 1fub1z-0006t1-Lq
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 10:15:29 +0000
+Received: by mail-wm0-x231.google.com with SMTP id o18-v6so1410969wmc.0
+ for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 03:15:16 -0700 (PDT)
+Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
+To: Bartosz Golaszewski <brgl@bgdev.pl>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc <linux-doc@vger.kernel.org>,
+ Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski
+ <bgolaszewski@baylibre.com>, linux-i2c <linux-i2c@vger.kernel.org>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Rob Herring <robh@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
+ Kevin Hilman <khilman@kernel.org>, Richard Weinberger <richard@nod.at>,
+ Russell King <linux@armlinux.org.uk>, Marek Vasut <marek.vasut@gmail.com>,
+ Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@oracle.com>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Lukas Wunner <lukas@wunner.de>, Naren <naren.kernel@gmail.com>,
+ netdev <netdev@vger.kernel.org>, Alban Bedel <albeu@free.fr>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, "David S . Miller"
+ <davem@davemloft.net>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+ <20180810080526.27207-2-brgl@bgdev.pl> <20180824170848.29594318@bbrezillon>
+ <20180824152740.GD27483@lunn.ch> <20180825082722.567e8c9a@bbrezillon>
+ <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
+ <20180827110055.122988d0@bbrezillon>
+ <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <8cb75723-dc87-f127-2aab-54dd0b08eee8@linaro.org>
+Date: Tue, 28 Aug 2018 11:15:12 +0100
+MIME-Version: 1.0
+In-Reply-To: <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,88 +54,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The io_paral test returns success even in case it throws e.g. the
-following error message:
 
-[io_paral] update_volume():125: written and read data are different
+On 27/08/18 14:37, Bartosz Golaszewski wrote:
+> I didn't notice it before but there's a global list of nvmem cells
 
-This patch fixes so that the io_paral application returns a non-zero
-error code when an error is detected.
----
- tests/ubi-tests/io_paral.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+Bit of history here.
 
-diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
-index b2b462e..1b6fee3 100644
---- a/tests/ubi-tests/io_paral.c
-+++ b/tests/ubi-tests/io_paral.c
-@@ -149,22 +149,22 @@ static void *update_thread(void *ptr)
- 			if (ret) {
- 				failed("ubi_rmvol");
- 				errorm("cannot remove volume %d", vol_id);
--				return NULL;
-+				return (void *) -1;
- 			}
- 			ret = ubi_mkvol(libubi, node, &reqests[vol_id]);
- 			if (ret) {
- 				failed("ubi_mkvol");
- 				errorm("cannot create volume %d", vol_id);
--				return NULL;
-+				return (void *) -1;
- 			}
- 		}
- 
- 		ret = update_volume(vol_id, bytes);
--		if (ret)
--			return NULL;
-+		if (ret != 0)
-+			return (void *) -1;
- 	}
- 
--	return NULL;
-+	return (void *) 0;
- }
- 
- static void *write_thread(void *ptr)
-@@ -179,7 +179,7 @@ static void *write_thread(void *ptr)
- 	if (fd == -1) {
- 		failed("open");
- 		errorm("cannot open \"%s\"\n", vol_node);
--		return NULL;
-+		return (void *) -1;
- 	}
- 
- 	ret = ubi_set_property(fd, UBI_VOL_PROP_DIRECT_WRITE, 1);
-@@ -228,12 +228,12 @@ static void *write_thread(void *ptr)
- 	}
- 
- 	close(fd);
--	return NULL;
-+	return (void *) 0;
- }
- 
- int main(int argc, char * const argv[])
- {
--	int i, ret;
-+	int i, ret, error=false;
- 	pthread_t threads[THREADS_NUM];
- 
- 	if (initial_check(argc, argv))
-@@ -302,7 +302,14 @@ int main(int argc, char * const argv[])
- 	}
- 
- 	for (i = 0; i < THREADS_NUM; i++)
--		pthread_join(threads[i], NULL);
-+	{
-+		pthread_join(threads[i], (void **) &ret);
-+		if (ret != 0)
-+			error = true;
-+	}
-+
-+	if (error)
-+		goto remove;
- 
- 	for (i = 0; i <= THREADS_NUM; i++) {
- 		if (ubi_rmvol(libubi, node, i)) {
--- 
-2.17.1
+The global list of nvmem_cell is to assist non device tree based cell 
+lookups. These cell entries come as part of the non-dt providers 
+nvmem_config.
+
+All the device tree based cell lookup happen dynamically on 
+request/demand, and all the cell definition comes from DT.
+
+As of today NVMEM supports both DT and non DT usecase, this is much simpler.
+
+Non dt cases have various consumer usecases.
+
+1> Consumer is aware of provider name and cell details.
+	This is probably simple usecase where it can just use device based apis.
+
+2> Consumer is not aware of provider name, its just aware of cell name.
+	This is the case where global list of cells are used.
+
+> with each cell referencing its owner nvmem device. I'm wondering if
+> this isn't some kind of inversion of ownership. Shouldn't each nvmem
+> device have a separate list of nvmem cells owned by it? What happens
+This is mainly done for use case where consumer does not have idea of 
+provider name or any details.
+
+First thing non dt user should do is use "NVMEM device based consumer APIs"
+
+ex: First get handle to nvmem device using its nvmem provider name by 
+calling nvmem_device_get(); and use nvmem_device_cell_read/write() apis.
+
+Also am not 100% sure how would maintaining cells list per nvmem 
+provider would help for the intended purpose of global list?
+
+> if we have two nvmem providers with the same names for cells? I'm
+Yes, it would return the first instance.. which is a known issue.
+Am not really sure this is a big problem as of today! but am open for 
+any better suggestions!
+
+
+> asking because dev_id based lookup doesn't make sense if internally
+> nvmem_cell_get_from_list() doesn't care about any device names (takes
+> only the cell_id as argument).
+
+As I said this is for non DT usecase where consumers are not aware of 
+provider details.
+
+> 
+> This doesn't cause any trouble now since there are no users defining
+> cells in nvmem_config - there are only DT users - but this must be
+> clarified before I can advance with correctly implementing nvmem
+> lookups.
+DT users should not be defining this to start with! It's redundant and 
+does not make sense!
+
+> 
+> BTW: of_nvmem_cell_get() seems to always allocate an nvmem_cell
+> instance even if the cell for this node was already added to the nvmem
+> device.
+I hope you got the reason why of_nvmem_cell_get() always allocates new 
+instance for every get!!
+
+thanks,
+srini
