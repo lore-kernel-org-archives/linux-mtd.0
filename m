@@ -1,23 +1,19 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fua7X-0006fK-PD
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 09:17:09 +0000
-Date: Tue, 28 Aug 2018 11:16:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Richard Weinberger <richard@nod.at>, Marek
- Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: Convert to using %pOFn instead of
- device_node.name
-Message-ID: <20180828111654.79fe4755@bbrezillon>
-In-Reply-To: <20180828015252.28511-33-robh@kernel.org>
-References: <20180828015252.28511-1-robh@kernel.org>
- <20180828015252.28511-33-robh@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from martinlund.org ([173.255.130.145]
+ helo=slmp-550-86.slc.westdc.net)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuaSE-0005Hw-DA
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 09:38:32 +0000
+Received: from [79.171.149.172] (port=54702 helo=quark.gomspace.lan)
+ by slmp-550-86.slc.westdc.net with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
+ (envelope-from <malu@gomspace.com>) id 1fuZPU-00DNPI-51
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 02:31:36 -0600
+From: Martin Lund <malu@gomspace.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH mtd-utils] ubi-tests: io_paral: Fix error handling of
+ update_volume()
+Date: Tue, 28 Aug 2018 10:31:13 +0200
+Message-Id: <20180828083113.18198-1-malu@gomspace.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +23,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 27 Aug 2018 20:52:34 -0500
-Rob Herring <robh@kernel.org> wrote:
+The io_paral test returns success even in case it throws e.g. the
+following error message:
 
-> In preparation to remove the node name pointer from struct device_node,
-> convert printf users to use the %pOFn format specifier.
-> 
-> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+[io_paral] update_volume():125: written and read data are different
 
-Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+This patch fixes so that the io_paral application returns a non-zero
+error code when an error is detected.
+---
+ tests/ubi-tests/io_paral.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-> ---
->  drivers/mtd/nand/raw/fsl_upm.c | 4 ++--
->  drivers/mtd/nand/raw/ndfc.c    | 4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-> index a88e2cf66e0f..ca82727eca94 100644
-> --- a/drivers/mtd/nand/raw/fsl_upm.c
-> +++ b/drivers/mtd/nand/raw/fsl_upm.c
-> @@ -184,8 +184,8 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
->  		return -ENODEV;
->  
->  	nand_set_flash_node(&fun->chip, flash_np);
-> -	mtd->name = kasprintf(GFP_KERNEL, "0x%llx.%s", (u64)io_res->start,
-> -			      flash_np->name);
-> +	mtd->name = kasprintf(GFP_KERNEL, "0x%llx.%pOFn", (u64)io_res->start,
-> +			      flash_np);
->  	if (!mtd->name) {
->  		ret = -ENOMEM;
->  		goto err;
-> diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-> index 540fa1a0ea24..b193f373f235 100644
-> --- a/drivers/mtd/nand/raw/ndfc.c
-> +++ b/drivers/mtd/nand/raw/ndfc.c
-> @@ -174,8 +174,8 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
->  		return -ENODEV;
->  	nand_set_flash_node(chip, flash_np);
->  
-> -	mtd->name = kasprintf(GFP_KERNEL, "%s.%s", dev_name(&ndfc->ofdev->dev),
-> -			      flash_np->name);
-> +	mtd->name = kasprintf(GFP_KERNEL, "%s.%pOFn", dev_name(&ndfc->ofdev->dev),
-> +			      flash_np);
->  	if (!mtd->name) {
->  		ret = -ENOMEM;
->  		goto err;
+diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
+index b2b462e..1b6fee3 100644
+--- a/tests/ubi-tests/io_paral.c
++++ b/tests/ubi-tests/io_paral.c
+@@ -149,22 +149,22 @@ static void *update_thread(void *ptr)
+ 			if (ret) {
+ 				failed("ubi_rmvol");
+ 				errorm("cannot remove volume %d", vol_id);
+-				return NULL;
++				return (void *) -1;
+ 			}
+ 			ret = ubi_mkvol(libubi, node, &reqests[vol_id]);
+ 			if (ret) {
+ 				failed("ubi_mkvol");
+ 				errorm("cannot create volume %d", vol_id);
+-				return NULL;
++				return (void *) -1;
+ 			}
+ 		}
+ 
+ 		ret = update_volume(vol_id, bytes);
+-		if (ret)
+-			return NULL;
++		if (ret != 0)
++			return (void *) -1;
+ 	}
+ 
+-	return NULL;
++	return (void *) 0;
+ }
+ 
+ static void *write_thread(void *ptr)
+@@ -179,7 +179,7 @@ static void *write_thread(void *ptr)
+ 	if (fd == -1) {
+ 		failed("open");
+ 		errorm("cannot open \"%s\"\n", vol_node);
+-		return NULL;
++		return (void *) -1;
+ 	}
+ 
+ 	ret = ubi_set_property(fd, UBI_VOL_PROP_DIRECT_WRITE, 1);
+@@ -228,12 +228,12 @@ static void *write_thread(void *ptr)
+ 	}
+ 
+ 	close(fd);
+-	return NULL;
++	return (void *) 0;
+ }
+ 
+ int main(int argc, char * const argv[])
+ {
+-	int i, ret;
++	int i, ret, error=false;
+ 	pthread_t threads[THREADS_NUM];
+ 
+ 	if (initial_check(argc, argv))
+@@ -302,7 +302,14 @@ int main(int argc, char * const argv[])
+ 	}
+ 
+ 	for (i = 0; i < THREADS_NUM; i++)
+-		pthread_join(threads[i], NULL);
++	{
++		pthread_join(threads[i], (void **) &ret);
++		if (ret != 0)
++			error = true;
++	}
++
++	if (error)
++		goto remove;
+ 
+ 	for (i = 0; i <= THREADS_NUM; i++) {
+ 		if (ubi_rmvol(libubi, node, i)) {
+-- 
+2.17.1
