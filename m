@@ -1,55 +1,25 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mta-01.yadro.com ([89.207.88.251])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fufcP-000254-Av
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 15:09:23 +0000
-Received: by mail-wr1-x444.google.com with SMTP id a108-v6so1907898wrc.13
- for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 08:09:11 -0700 (PDT)
-Subject: Re: [PATCH v2 01/29] nvmem: add support for cell lookups
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andrew Lunn <andrew@lunn.ch>, linux-doc <linux-doc@vger.kernel.org>,
- Sekhar Nori <nsekhar@ti.com>, Bartosz Golaszewski
- <bgolaszewski@baylibre.com>, linux-i2c <linux-i2c@vger.kernel.org>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Rob Herring <robh@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>,
- Kevin Hilman <khilman@kernel.org>, Richard Weinberger <richard@nod.at>,
- Russell King <linux@armlinux.org.uk>, Marek Vasut <marek.vasut@gmail.com>,
- Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@oracle.com>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- David Lechner <david@lechnology.com>, Arnd Bergmann <arnd@arndb.de>,
- Sven Van Asbroeck <svendev@arcx.com>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Linux-OMAP <linux-omap@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jonathan Corbet <corbet@lwn.net>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Lukas Wunner <lukas@wunner.de>, Naren <naren.kernel@gmail.com>,
- netdev <netdev@vger.kernel.org>, Alban Bedel <albeu@free.fr>,
- Andrew Morton <akpm@linux-foundation.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, "David S . Miller"
- <davem@davemloft.net>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-2-brgl@bgdev.pl> <20180824170848.29594318@bbrezillon>
- <20180824152740.GD27483@lunn.ch> <20180825082722.567e8c9a@bbrezillon>
- <CAMRc=Men-MPk5DGshWcVEc0v=gH2WSpx1j-CawOeydwp59tejw@mail.gmail.com>
- <20180827110055.122988d0@bbrezillon>
- <CAMRc=MfpZJUEAhM4OoLbmJcnX3rTJk8fvdiL6=9BjNkVcsf=SA@mail.gmail.com>
- <8cb75723-dc87-f127-2aab-54dd0b08eee8@linaro.org>
- <CAMRc=Mex5WAm8uiV4T=0+bLduBBdj18iekuYT55W9gA_rzQ_sg@mail.gmail.com>
- <916e3e89-82b3-0d52-2b77-4374261a9d0f@linaro.org>
- <CAMRc=MeALxpyBQhWxGPt9BubO_ZwKGih1d8zhRzFYZ0+3kHFAA@mail.gmail.com>
- <20180828165309.0594ae13@bbrezillon>
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <af94be21-328b-d6a2-2024-67b98860c3d5@linaro.org>
-Date: Tue, 28 Aug 2018 16:09:07 +0100
+ id 1fugK4-00060D-2K
+ for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 15:54:42 +0000
+Subject: Re: [PATCH] mtd: spi-nor: fix options for mx66l51235f
+To: Marek Vasut <marek.vasut@gmail.com>, <linux-mtd@lists.infradead.org>
+CC: <openbmc@lists.ozlabs.org>, Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>, <leroi.lists@gmail.com>
+References: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
+ <b2ff17cc-96ca-3acb-6dc2-f7a8688a0742@gmail.com>
+ <65072cc4-601b-250b-f797-604368776c3c@yadro.com>
+ <f21bc842-47c8-eefd-1af5-3811c2bd25b0@gmail.com>
+ <286877dc-22fe-9f49-458a-6a6a0ce0b1c0@yadro.com>
+ <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
+From: Alexander Amelkin <a.amelkin@yadro.com>
+Message-ID: <a5ae1f53-b7ae-4054-f11e-d8c44b5931cb@yadro.com>
+Date: Tue, 28 Aug 2018 18:54:12 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180828165309.0594ae13@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="l3KNYY5DlcH6d32dNT2hg9s9nFvOPIMTA"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -59,47 +29,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--l3KNYY5DlcH6d32dNT2hg9s9nFvOPIMTA
+Content-Type: multipart/mixed; boundary="ALkjwjbNc57cJBtg7hkTsBFngvlNDmJPp";
+ protected-headers="v1"
+From: Alexander Amelkin <a.amelkin@yadro.com>
+To: Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Cc: openbmc@lists.ozlabs.org, Joel Stanley <joel@jms.id.au>,
+ =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>, leroi.lists@gmail.com
+Message-ID: <a5ae1f53-b7ae-4054-f11e-d8c44b5931cb@yadro.com>
+Subject: Re: [PATCH] mtd: spi-nor: fix options for mx66l51235f
+References: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
+ <b2ff17cc-96ca-3acb-6dc2-f7a8688a0742@gmail.com>
+ <65072cc4-601b-250b-f797-604368776c3c@yadro.com>
+ <f21bc842-47c8-eefd-1af5-3811c2bd25b0@gmail.com>
+ <286877dc-22fe-9f49-458a-6a6a0ce0b1c0@yadro.com>
+ <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
+In-Reply-To: <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
+
+--ALkjwjbNc57cJBtg7hkTsBFngvlNDmJPp
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+
+28.08.2018 14:43, Marek Vasut wrote:
+> On 08/28/2018 01:29 PM, Alexander Amelkin wrote:
+>> 27.08.2018 14:34, Marek Vasut wrote:
+>>>>>> According to the datasheet for mx66l51235f, "The device default is=
+ in
+>>>>>> 24-bit address mode" (section 9-10). Having option SPI_NOR_4B_OPCO=
+DES
+>>>>>> makes the code act as if the device was already in 4B mode and did=
+n't
+>>>>>> need the EN4B command. That prevents this chip from functioning on=
+
+>>>>>> systems where the boot loader left the chip in 3B mode (e.g. if th=
+e
+>>>>>> chip wasn't used during the boot process).
+>>>>>>
+>>>>>> Hence, this commit removes the SPI_NOR_4B_OPCODES option for
+>>>>>> mx66l51235f (added previously by commit d342b6a973af).
+>>>>> Could it be there are two variants of the chip, one which supports =
+the
+>>>>> 4B opcodes and one which does not ? Wouldn't be the first time I sa=
+w
+>>>>> this. If this chip supports the SFDP tables, you can check those.
+>>>> I was unable to find another variant of the chip. There is only one =
+specified in the datasheet:
+>>>> http://www.macronix.com/Lists/Datasheet/Attachments/7401/MX66L51235F=
+,%203V,%20512Mb,%20v1.1.pdf
+>>>> and it says that the device supports both 3B and 4B modes, but defau=
+lts to 3B (24-bit) mode.
+>>> So keep the 4B part in. Linux will just not reconfigure the device to=
+ 4B
+>>> mode using register write, but will instead issue the 4B opcode
+>>> directly, without any stateful change.
+>> Marek, thank you for asking all these questions. They made me conduct =
+a deeper investigation than just finding the commit that broke it and rev=
+erting it. It appears that OpenPOWER P8's SBE code (the thing that P8 CPU=
+ runs first from its built-in memory) expects the PNOR flash chip to be i=
+n EN4B mode. It reads the rest of OpenPOWER Firmware using a usual READ (=
+0x03) command with 4 bytes of address. Always. That's why, I believe, Rom=
+an's commit broke host booting for us.
+> Uh oh, I seem to remember some flashes had this weird quirk where they
+> were in EN4B mode by default, and if U-Boot/Linux reset the flash into
+> "sane default" state (3B addressing etc), some systems failed to boot.
+> Furthermore, this EN4B is non-volatile bit on this flash, right ? That
+> means it is retained across power-cycles, which sucks even more.
+No, EN4B is volatile. It doesn't survive power cycling. A quote from data=
+sheet:
+>>> The 4BYTE bit may be cleared by power-off or writing EX4B instruction=
+ to reset the state to be "0".
+>
+>> Probably it would be best not to merge this patch into Linux kernel. I=
+'ll discuss it with colleagues from OpenPOWER community and we'll probabl=
+y fix it on SBE side.
+> Can you fix the firmware ? If so, that'd be amazing.
+It turns out that it is impossible to fix that on firmware side mainly be=
+cause the firmware does not send any opcodes over SPI at all. It relies o=
+n the SPI flash controller to do the address mapping so the firmware acce=
+sses the chip as a usual memory address range. The flash controller is lo=
+cated in our case inside Aspeed AST2400 BMC SoC and does not support 4B o=
+pcodes. It expects the chip to respond to generic READ and WRITE opcodes =
+with (configurable) either 3 or 4 address byte cycles. So the only way to=
+ make it work is put the chip in EN4B mode when BMC boots. As this is qui=
+te a specific case, I guess you won't be willing to remove the SPI_NOR_4B=
+_OPCODES option globally. We'll have to keep the patch local to openbmc p=
+roject
+> But still, there can be a software which does rogue transmission on the=
+
+> SPI bus and flips the flash into 3B mode before reset, so the system
+> will not boot anyway. Do you have a way to deal with that somehow ?
+Sure. As I said, there is no way to turn on the host without BMC knowing/=
+controlling it.
+The BMC ensures the chip is in the right mode. That's actually the reason=
+ why this patch appeared in the first place.
+Also, there is no rogue software on BMC.
+>> As for renaming the chip, I can provide a patch just for that. Or we c=
+an leave it as is.
+> A patch would be nice, yes.
+Will do a bit later.
+
+Best regards,
+Alexander.
 
 
-On 28/08/18 15:53, Boris Brezillon wrote:
-> On Tue, 28 Aug 2018 16:41:04 +0200
-> Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> 
+--ALkjwjbNc57cJBtg7hkTsBFngvlNDmJPp--
 
-...
-> 
->>>
->>>   static struct nvmem_cell *nvmem_find_cell(const char *cell_id)
-> 
-> Can we get rid of this function and just have the the version that
-> takes an nvmem_name and a cell_id.
+--l3KNYY5DlcH6d32dNT2hg9s9nFvOPIMTA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-That should be feasible!
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQIcBAEBCAAGBQJbhXAkAAoJEOiTWHtbdBeNXrgP/0Q1ZmcEWZIST3a9BGlhabxE
+xftiFnfNsybsfve1QKemwFxQCgKA0CCiwAJspoy2mAJZc9aGpjNf106alaHKhijU
+7lriqCVNB1uLtAP2s7+CBGcOfMdIHIti+l6WiVboDUbbImpqZGSdIP7C6PE6zpb7
+vHoDaYeoJOjKNXH6C/iE0k7pChRH97CSLMCZ1hOX2E7FM/iV0v0Gxi6ZNB7UciEU
+aOrjZMvH7vI2Qcdc+GCChECxqUN/ydELTfnrQ0rPKsWNl77/tWEedZ2+Gf/KKHOE
+fBdYzOyNbEfdGqZw6++wPFidR77M0FXTaWB9LkIyDwYpE6F0+r5DDJlSSpLCO/yy
+Z42oDnLj2+RhiBB68BUvg8gR9XpSQFEvYT8mm94wYbnwCFMpgFAmdMgqBYuh9fIc
+ZiHvspMBN35ylNK+b3LVsjEabJAbokMk7VwMJ22xftWtVeyYJLfd804njDk1yZLQ
+Ed0yUQ6LdgUhHaT9XGY7a/Rou6XsJj4jisBVKqyiY1Js1q/7EBX62Use+tXnWlfu
+6Uyt7Blpt775985HXRG6hXPYvXHeQc0GV8s8UzBmwGw2h/Kz8MCxmqZqGmkrVOYB
+mgUsRHLj1odCfBY7xWSyazTbBE4r5YDVZEaUccEI1QVRPmtTyQ56San5AvY35ocB
+eWtgP/Z+ngINq6dvUkb3
+=jiWi
+-----END PGP SIGNATURE-----
 
->>>>>
->>>>> I hope you got the reason why of_nvmem_cell_get() always allocates new
->>>>> instance for every get!!
->>>>
->>>>
->>>>
->>>> I admit I didn't test it, but just from reading the code it seems like
->>>> in nvmem_cell_get() for DT-users we'll always get to
->>>> of_nvmem_cell_get() and in there we always end up calling line 873:
->>>> cell = kzalloc(sizeof(*cell), GFP_KERNEL);
->>>>   
->>> That is correct, this cell is created when we do a get and release when we
->>> do a put().
->>>   
->>
->> Shouldn't we add the cell to the list, and check first if it's there
->> and only create it if not?
-> 
-> Or even better: create the cells at registration time so that the
-> search code is the same for both DT and non-DT cases. Only the
-> registration would differ (with one path parsing the DT, and the other
-> one searching for nvmem cells defined with a nvmem-provider-lookup
-> table).
-Makes sense! and that would go very well with the plan of "nvmem-cell" 
-compatible for cells!.
-> 
+--l3KNYY5DlcH6d32dNT2hg9s9nFvOPIMTA--
