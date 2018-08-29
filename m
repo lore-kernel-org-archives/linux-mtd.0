@@ -1,28 +1,33 @@
-Received: from mail-cys01nam02on0065.outbound.protection.outlook.com
- ([104.47.37.65] helo=NAM02-CY1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuxhz-0006Ke-Cu
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 10:28:21 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-To: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>
-CC: "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI
- serial flash
-Date: Wed, 29 Aug 2018 10:28:05 +0000
-Message-ID: <57933711d93f3ba372ca14743daa90df834ed494.camel@infinera.com>
-References: <20180828165059.55223-1-mika.westerberg@linux.intel.com>
- <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
- <20180829111740.12223549@bbrezillon>
-In-Reply-To: <20180829111740.12223549@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7DE205614F00944FB46104AD93AE867A@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+Subject: Re: [RFC PATCH v2 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+From: Liang Yang <liang.yang@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Yixun Lan <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>, Rob
+ Herring <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Richard Weinberger
+ <richard@nod.at>, <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Kevin Hilman
+ <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
+ <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
+References: <20180719094612.5833-1-yixun.lan@amlogic.com>
+ <20180719094612.5833-3-yixun.lan@amlogic.com>
+ <20180801235045.5b4d8211@bbrezillon>
+ <42877a0d-9830-0626-3f64-e49a326eaa3c@amlogic.com>
+ <20180817155608.5929b37a@bbrezillon>
+ <96e538a5-1232-11f2-8b9e-5ddb09dcc2de@amlogic.com>
+ <20180824144810.31c929a5@bbrezillon>
+ <fdea2d54-7a68-64ec-8bb4-4a94677a3293@amlogic.com>
+ <20180828152645.457dab5c@bbrezillon>
+ <9abf0461-159b-db45-9ded-3d6cb2cc64db@amlogic.com>
+Message-ID: <5061c929-8db0-3f4c-ec34-303fc351dfdd@amlogic.com>
+Date: Wed, 29 Aug 2018 18:29:05 +0800
 MIME-Version: 1.0
+In-Reply-To: <9abf0461-159b-db45-9ded-3d6cb2cc64db@amlogic.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +37,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCAyMDE4LTA4LTI5IGF0IDExOjE3ICswMjAwLCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6
-DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
-Z2FuaXphdGlvbi4gRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNz
-IHlvdSByZWNvZ25pemUgdGhlIHNlbmRlciBhbmQga25vdyB0aGUgY29udGVudCBpcyBzYWZlLg0K
-PiANCj4gDQo+IEhpIE1hcmVrLA0KPiANCj4gT24gVHVlLCAyOCBBdWcgMjAxOCAxODo1NjozOCAr
-MDIwMA0KPiBNYXJlayBWYXN1dCA8bWFyZWsudmFzdXRAZ21haWwuY29tPiB3cm90ZToNCj4gDQo+
-ID4gT24gMDgvMjgvMjAxOCAwNjo1MCBQTSwgTWlrYSBXZXN0ZXJiZXJnIHdyb3RlOg0KPiA+ID4g
-SW50ZWwgSWNlIExha2UgZXhwb3NlcyB0aGUgU1BJIHNlcmlhbCBmbGFzaCBjb250cm9sbGVyIGFz
-IGEgUENJIGRldmljZQ0KPiA+ID4gaW4gdGhlIHNhbWUgd2F5IHRoYW4gSW50ZWwgRGVudmVydG9u
-LiBBZGQgSWNlIExha2UgU1BJIHNlcmlhbCBmbGFzaCBQQ0kNCj4gPiA+IElEIHRvIHRoZSBkcml2
-ZXIgbGlzdCBvZiBzdXBwb3J0ZWQgZGV2aWNlcy4NCj4gPiA+IA0KPiA+ID4gU2lnbmVkLW9mZi1i
-eTogTWlrYSBXZXN0ZXJiZXJnIDxtaWthLndlc3RlcmJlcmdAbGludXguaW50ZWwuY29tPg0KPiA+
-IA0KPiA+IFRoaXMgc2hvdWxkIHByb2JhYmx5IGdvIHRocm91Z2ggdHJpdmlhbCBwYXRjaGVzIE1M
-LCBubyA/DQo+IA0KPiBOb3BlLCBpdCBzaG91bGQgZ28gdGhyb3VnaCB0aGUgc3BpLW5vciB0cmVl
-LiBBY3R1YWxseSwgZXZlbiBmb3IgdHJpdmlhbA0KPiBmaXhlcyBsaWtlIHR5cG9zLCBJIHByZWZl
-ciB0byB0YWtlIHRoZW0gZGlyZWN0bHkgdG8gYXZvaWQgcG9zc2libGUNCj4gZnV0dXJlIGNvbmZs
-aWN0cyBpbiBjYXNlIHNvbWV0aGluZyBjaGFuZ2VzIG5lYXIgdGhlIHR5cG8uDQo+IA0KPiA+IEFs
-c28sIENDIFN0YWJsZS4NCj4gDQo+IFdoeT8gSXQncyBhZGRpbmcgYSBuZXcgZW50cnkgaW4gcGNp
-X2lkc1tdIHRhYmxlLCBpdCBsb29rcyBsaWtlDQo+IHN1cHBvcnRpbmcgbmV3IEhXIHRvIG1lLCBu
-b3QgZml4aW5nIGEgYnVnLg0KDQpTbyB5b3UgY2FuIGJvb3QvdXNlIG5ldyBIVyB3aXRoIHN0YWJs
-ZSBrZXJuZWxzLiBTdGFibGUga2VybmVscyB3b3VsZCBiZWNvbWUNCnVzZWxlc3MgZmFpcmx5IHF1
-aWNrbHkgb3RoZXJ3aXNlLg0KSFcgZW5hYmxlbWVudCBwYXRjaGVzIGFyZSBPSyB3aGVuIHRoZXkg
-ZG9uJ3QgYWZmZWN0IGV4aXN0aW5nIEhXIGJ5IG11Y2guDQoNCiBKb2NrZQ0K
+
+On 8/29/2018 6:08 PM, Liang Yang wrote:
+> 
+> On 8/28/2018 9:26 PM, Boris Brezillon wrote:
+>> On Tue, 28 Aug 2018 21:21:48 +0800
+>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>
+>>> Hi Boris,
+>>>
+>>> On 8/24/2018 8:48 PM, Boris Brezillon wrote:
+>>>> On Wed, 22 Aug 2018 22:08:42 +0800
+>>>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>>>>> You have to wait tWB, that's for sure.
+>>>>> we have a maximum 32 commands fifo. when command is written into
+>>>>> NFC_REG_CMD, it doesn't mean that command is executing right now, 
+>>>>> maybe
+>>>>> it is buffering on the queue.Assume one ERASE operation, when 2nd
+>>>>> command(0xd0) is written into NFC_REG_CMD and then come into
+>>>>> NAND_OP_WAITRDY_INSTR, if I read the RB status by register, it may be
+>>>>> wrong because 0xd0 may not being executed. it is unusual unless
+>>>>> buffering two many command.
+>>>>
+>>>> You should flush the queue and wait for it to empty at the end of
+>>>> ->exec_op().
+>>>>> so it seems that i still need to use nand_soft_waitrdy or wait cmd is
+>>>>> executed somewhere.
+>>>>
+>>>> Don't you have a WAIT_FOR_RB instruction? What is NFC_CMD_RB for? Also,
+>>>> NFC_CMD_IDLE seems to allow you to add an arbitrary delay, and that's
+>>>> probably what you should use for tWB.
+>>>>
+>>>> em, I can wait for RB by reading the status from register now. but when
+>>> calling nand_soft_waitrdy, i really met a problem. One *jiffies* is
+>>> about 4ms. When programming, it pass 1ms to
+>>> instr->ctx.waitrdy.timeout_ms and nand_soft_waitrdy will be only one
+>>> *jiffies* to reach timeout. And then calling nand_soft_waitrdy maybe at
+>>> the tail of 4ms interval, it may only wait 100us and next jiffies
+>>> arrive. Is it correct?
+>>
+>> Hm, no. If you initialize the time you compare to (using time_before()
+>> or time_after()) correctly it should not happen. Anyway, I keep thinking
+>> this is not how it should be done. Did you try NFC_CMD_RB? Did you ask
+>> HW designers what it was created for?
+>>
+> I am using NFC_CMD_RB and checking with irq. it is ok now.
+there are two usages for NFC_CMD_RB. One reads the data status 
+continuously by hardware after sending 0x70 command; the other checks 
+the r/b IO status continuously.both can send irq when r/b is ready.
+
+>> .
+>>
