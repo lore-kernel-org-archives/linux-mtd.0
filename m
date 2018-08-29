@@ -1,21 +1,30 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuySt-0003dx-Sf
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 11:16:49 +0000
-Date: Wed, 29 Aug 2018 13:16:35 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 12/25] ubifs: Add hashes to the tree node cache
-Message-ID: <20180829111635.zfgaosho3ambuk6t@pengutronix.de>
-References: <20180704124137.13396-1-s.hauer@pengutronix.de>
- <20180704124137.13396-13-s.hauer@pengutronix.de>
- <3260968.WmIi4lir0Q@blindfold>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fuywS-0003Ts-I4
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 11:48:06 +0000
+Date: Wed, 29 Aug 2018 13:46:58 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>,
+ "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "richard@nod.at" <richard@nod.at>, "dwmw2@infradead.org"
+ <dwmw2@infradead.org>
+Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI
+ serial flash
+Message-ID: <20180829134658.1fa24b40@bbrezillon>
+In-Reply-To: <cf194aa6-a694-f309-46e2-68c44452afaf@gmail.com>
+References: <20180828165059.55223-1-mika.westerberg@linux.intel.com>
+ <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
+ <20180829111740.12223549@bbrezillon>
+ <57933711d93f3ba372ca14743daa90df834ed494.camel@infinera.com>
+ <20180829123306.3e9928a4@bbrezillon>
+ <bad7867d47a289730435eb8fba9bf21ae103b425.camel@infinera.com>
+ <cf194aa6-a694-f309-46e2-68c44452afaf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3260968.WmIi4lir0Q@blindfold>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +34,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 27, 2018 at 09:18:25PM +0200, Richard Weinberger wrote:
-> Am Mittwoch, 4. Juli 2018, 14:41:24 CEST schrieb Sascha Hauer:
-> > As part of the UBIFS authentication support every branch in the index
-> > gets a hash covering the referenced node. To make that happen the tree
-> > node cache needs hashes over the nodes. This patch adds a hash argument
-> > to ubifs_tnc_add() and ubifs_tnc_add_nm(). The hashes are calculated
-> > from the callers of these functions which actually prepare the nodes.
-> > With this patch all the leaf nodes of the index tree get hashes, but
-> > currently nothing is done with these hashes, this is left for a later
-> > patch.
+On Wed, 29 Aug 2018 12:54:22 +0200
+Marek Vasut <marek.vasut@gmail.com> wrote:
+
+> On 08/29/2018 12:44 PM, Joakim Tjernlund wrote:
+> > On Wed, 2018-08-29 at 12:33 +0200, Boris Brezillon wrote:  
+> >> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> >>
+> >>
+> >> On Wed, 29 Aug 2018 10:28:05 +0000
+> >> Joakim Tjernlund <Joakim.Tjernlund@infinera.com> wrote:
+> >>  
+> >>> On Wed, 2018-08-29 at 11:17 +0200, Boris Brezillon wrote:  
+> >>>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> >>>>
+> >>>>
+> >>>> Hi Marek,
+> >>>>
+> >>>> On Tue, 28 Aug 2018 18:56:38 +0200
+> >>>> Marek Vasut <marek.vasut@gmail.com> wrote:
+> >>>>  
+> >>>>> On 08/28/2018 06:50 PM, Mika Westerberg wrote:  
+> >>>>>> Intel Ice Lake exposes the SPI serial flash controller as a PCI device
+> >>>>>> in the same way than Intel Denverton. Add Ice Lake SPI serial flash PCI
+> >>>>>> ID to the driver list of supported devices.
+> >>>>>>
+> >>>>>> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>  
+> >>>>>
+> >>>>> This should probably go through trivial patches ML, no ?  
+> >>>>
+> >>>> Nope, it should go through the spi-nor tree. Actually, even for trivial
+> >>>> fixes like typos, I prefer to take them directly to avoid possible
+> >>>> future conflicts in case something changes near the typo.
+> >>>>  
+> >>>>> Also, CC Stable.  
+> >>>>
+> >>>> Why? It's adding a new entry in pci_ids[] table, it looks like
+> >>>> supporting new HW to me, not fixing a bug.  
+> >>>
+> >>> So you can boot/use new HW with stable kernels. Stable kernels would become
+> >>> useless fairly quickly otherwise.
+> >>> HW enablement patches are OK when they don't affect existing HW by much.  
+> >>
+> >> Where did you get that from? I've always been told that Cc-ing stable
+> >> was reserved for bug fixes.  
 > > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  fs/ubifs/journal.c | 93 ++++++++++++++++++++++++++++++++++------------
-> >  fs/ubifs/replay.c  |  4 +-
-> >  fs/ubifs/tnc.c     | 10 ++++-
-> >  fs/ubifs/ubifs.h   |  7 +++-
-> >  4 files changed, 84 insertions(+), 30 deletions(-)
+> > From following linux dev lists. I don't have a reference, sorry.
 > > 
-> > diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-> > index 754d969eb27e..55b35bc33c31 100644
-> > --- a/fs/ubifs/journal.c
-> > +++ b/fs/ubifs/journal.c
-> > @@ -517,6 +517,9 @@ int ubifs_jnl_update(struct ubifs_info *c, const struct inode *dir,
-> >  	struct ubifs_dent_node *dent;
-> >  	struct ubifs_ino_node *ino;
-> >  	union ubifs_key dent_key, ino_key;
-> > +	u8 hash_dent[UBIFS_MAX_HASH_LEN];
-> > +	u8 hash_ino[UBIFS_MAX_HASH_LEN];
-> > +	u8 hash_ino_host[UBIFS_MAX_HASH_LEN];
+> > If you look at the commit log for stable kernels you will see that a lot more
+> > than pure bug fixes. Sometimes backport of new infra structure to
+> > allow for easy backporting of fixes too.  
 > 
-> With authentication enabled, this makes perfectly sense.
-> But if someone builds UBIFS without and has a memory constraint system,
-> we could save by setting UBIFS_MAX_HASH_LEN to 0. What do you think?
-> Although, we need another define to not influence ubifs-media.h.
+> Documentation/process/stable-kernel-rules.rst
+>  24  - New device IDs and quirks are also accepted.
+> 
+> 
 
-I gave it a try and it looks good. Will do it that way.
+Okay. I didn't know that.
 
-Sascha
+Thanks,
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Boris
