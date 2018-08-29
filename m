@@ -1,27 +1,22 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1ful00-0006Tq-L5
- for linux-mtd@lists.infradead.org; Tue, 28 Aug 2018 20:54:06 +0000
-Received: by mail-wr1-x444.google.com with SMTP id v17-v6so2779838wrr.9
- for <linux-mtd@lists.infradead.org>; Tue, 28 Aug 2018 13:53:54 -0700 (PDT)
-Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI
- serial flash
-To: Mika Westerberg <mika.westerberg@linux.intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-References: <20180828165059.55223-1-mika.westerberg@linux.intel.com>
- <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
- <20180828165959.GG2283@lahna.fi.intel.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <39875af1-731d-a5b7-7b10-13701b913751@gmail.com>
-Date: Tue, 28 Aug 2018 21:20:17 +0200
+ id 1futze-0006yf-MO
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 06:30:20 +0000
+Date: Wed, 29 Aug 2018 08:30:03 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/25] ubifs: add helper functions for authentication
+ support
+Message-ID: <20180829063003.goc3eekjo42jkrgy@pengutronix.de>
+References: <20180704124137.13396-1-s.hauer@pengutronix.de>
+ <20180704124137.13396-11-s.hauer@pengutronix.de>
+ <1675445.itdTWD7r8S@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <20180828165959.GG2283@lahna.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1675445.itdTWD7r8S@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,53 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/28/2018 06:59 PM, Mika Westerberg wrote:
-> On Tue, Aug 28, 2018 at 06:56:38PM +0200, Marek Vasut wrote:
->> On 08/28/2018 06:50 PM, Mika Westerberg wrote:
->>> Intel Ice Lake exposes the SPI serial flash controller as a PCI device
->>> in the same way than Intel Denverton. Add Ice Lake SPI serial flash PCI
->>> ID to the driver list of supported devices.
->>>
->>> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
->>
->> This should probably go through trivial patches ML, no ?
+Hi Richard,
+
+On Mon, Aug 27, 2018 at 02:50:37PM +0200, Richard Weinberger wrote:
+> Am Mittwoch, 4. Juli 2018, 14:41:22 CEST schrieb Sascha Hauer:
+> > This patch adds the various helper functions needed for authentication
+> > support. We need functions to hash nodes, to embed HMACs into a node and
+> > to compare hashes and HMACs. Most functions first check if this
+> > filesystem is authenticated and bail out early if not, which makes the
+> > functions safe to be called with disabled authentication.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> > +void ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
+> > +			     struct shash_desc *inhash)
+> > +{
+> > +	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
+> > +	struct ubifs_auth_node *auth = node;
+> > +	u8 hash[crypto_shash_descsize(c->hash_tfm)];
 > 
-> Hmm, what do you mean? This is not a typo fix or similar but adds a new
-> PCI ID to the driver.
+> Doesn't this introduce a new VLA?
+> Not that me make Kees unhappy. ;-)
 
-I mean, adding PCI IDs might be considered trivial. But if you want it
-to go through MTD, fine:
+/me just read https://lwn.net/Articles/749064/ and now realizes why this
+is considered harmful.
 
-Acked-by: Marek Vasut <marek.vasut@gmail.com>
+Thanks for the review. I'll look into this and all the other points. I
+guess that'll keep me busy for some time.
 
->> Also, CC Stable.
-> 
-> OK.
-> 
->>> ---
->>>  drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
->>> index c0976f2e3dd1..872b40922608 100644
->>> --- a/drivers/mtd/spi-nor/intel-spi-pci.c
->>> +++ b/drivers/mtd/spi-nor/intel-spi-pci.c
->>> @@ -65,6 +65,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
->>>  static const struct pci_device_id intel_spi_pci_ids[] = {
->>>  	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
->>>  	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
->>> +	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
->>>  	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
->>>  	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
->>>  	{ },
->>>
->>
->>
->> -- 
->> Best regards,
->> Marek Vasut
-
+Thanks
+  Sascha
 
 -- 
-Best regards,
-Marek Vasut
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
