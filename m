@@ -1,21 +1,31 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fuwbq-0000Zx-AV
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 09:17:56 +0000
-Date: Wed, 29 Aug 2018 11:17:40 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Marek Vasut <marek.vasut@gmail.com>
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI
- serial flash
-Message-ID: <20180829111740.12223549@bbrezillon>
-In-Reply-To: <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
-References: <20180828165059.55223-1-mika.westerberg@linux.intel.com>
- <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Yixun Lan <yixun.lan@amlogic.com>, <linux-mtd@lists.infradead.org>, "Rob
+ Herring" <robh@kernel.org>, Neil Armstrong <narmstrong@baylibre.com>, "Martin
+ Blumenstingl" <martin.blumenstingl@googlemail.com>, Richard Weinberger
+ <richard@nod.at>, <linux-kernel@vger.kernel.org>, Marek Vasut
+ <marek.vasut@gmail.com>, Jian Hu <jian.hu@amlogic.com>, Kevin Hilman
+ <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>,
+ <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
+References: <20180719094612.5833-1-yixun.lan@amlogic.com>
+ <20180719094612.5833-3-yixun.lan@amlogic.com>
+ <20180801235045.5b4d8211@bbrezillon>
+ <42877a0d-9830-0626-3f64-e49a326eaa3c@amlogic.com>
+ <20180817155608.5929b37a@bbrezillon>
+ <96e538a5-1232-11f2-8b9e-5ddb09dcc2de@amlogic.com>
+ <20180824144810.31c929a5@bbrezillon>
+ <fdea2d54-7a68-64ec-8bb4-4a94677a3293@amlogic.com>
+ <20180828152645.457dab5c@bbrezillon>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <9abf0461-159b-db45-9ded-3d6cb2cc64db@amlogic.com>
+Date: Wed, 29 Aug 2018 18:08:05 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180828152645.457dab5c@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,50 +36,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Marek,
 
-On Tue, 28 Aug 2018 18:56:38 +0200
-Marek Vasut <marek.vasut@gmail.com> wrote:
-
-> On 08/28/2018 06:50 PM, Mika Westerberg wrote:
-> > Intel Ice Lake exposes the SPI serial flash controller as a PCI device
-> > in the same way than Intel Denverton. Add Ice Lake SPI serial flash PCI
-> > ID to the driver list of supported devices.
-> > 
-> > Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>  
+On 8/28/2018 9:26 PM, Boris Brezillon wrote:
+> On Tue, 28 Aug 2018 21:21:48 +0800
+> Liang Yang <liang.yang@amlogic.com> wrote:
 > 
-> This should probably go through trivial patches ML, no ?
-
-Nope, it should go through the spi-nor tree. Actually, even for trivial
-fixes like typos, I prefer to take them directly to avoid possible
-future conflicts in case something changes near the typo.
-
-> Also, CC Stable.
-
-Why? It's adding a new entry in pci_ids[] table, it looks like
-supporting new HW to me, not fixing a bug.
-
-Regards,
-
-Boris
-
+>> Hi Boris,
+>>
+>> On 8/24/2018 8:48 PM, Boris Brezillon wrote:
+>>> On Wed, 22 Aug 2018 22:08:42 +0800
+>>> Liang Yang <liang.yang@amlogic.com> wrote:
+>>>    
+>>>>> You have to wait tWB, that's for sure.
+>>>>>       
+>>>> we have a maximum 32 commands fifo. when command is written into
+>>>> NFC_REG_CMD, it doesn't mean that command is executing right now, maybe
+>>>> it is buffering on the queue.Assume one ERASE operation, when 2nd
+>>>> command(0xd0) is written into NFC_REG_CMD and then come into
+>>>> NAND_OP_WAITRDY_INSTR, if I read the RB status by register, it may be
+>>>> wrong because 0xd0 may not being executed. it is unusual unless
+>>>> buffering two many command.
+>>>
+>>> You should flush the queue and wait for it to empty at the end of
+>>> ->exec_op().
+>>>    
+>>>> so it seems that i still need to use nand_soft_waitrdy or wait cmd is
+>>>> executed somewhere.
+>>>
+>>> Don't you have a WAIT_FOR_RB instruction? What is NFC_CMD_RB for? Also,
+>>> NFC_CMD_IDLE seems to allow you to add an arbitrary delay, and that's
+>>> probably what you should use for tWB.
+>>>
+>>> em, I can wait for RB by reading the status from register now. but when
+>> calling nand_soft_waitrdy, i really met a problem. One *jiffies* is
+>> about 4ms. When programming, it pass 1ms to
+>> instr->ctx.waitrdy.timeout_ms and nand_soft_waitrdy will be only one
+>> *jiffies* to reach timeout. And then calling nand_soft_waitrdy maybe at
+>> the tail of 4ms interval, it may only wait 100us and next jiffies
+>> arrive. Is it correct?
 > 
-> > ---
-> >  drivers/mtd/spi-nor/intel-spi-pci.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/mtd/spi-nor/intel-spi-pci.c b/drivers/mtd/spi-nor/intel-spi-pci.c
-> > index c0976f2e3dd1..872b40922608 100644
-> > --- a/drivers/mtd/spi-nor/intel-spi-pci.c
-> > +++ b/drivers/mtd/spi-nor/intel-spi-pci.c
-> > @@ -65,6 +65,7 @@ static void intel_spi_pci_remove(struct pci_dev *pdev)
-> >  static const struct pci_device_id intel_spi_pci_ids[] = {
-> >  	{ PCI_VDEVICE(INTEL, 0x18e0), (unsigned long)&bxt_info },
-> >  	{ PCI_VDEVICE(INTEL, 0x19e0), (unsigned long)&bxt_info },
-> > +	{ PCI_VDEVICE(INTEL, 0x34a4), (unsigned long)&bxt_info },
-> >  	{ PCI_VDEVICE(INTEL, 0xa1a4), (unsigned long)&bxt_info },
-> >  	{ PCI_VDEVICE(INTEL, 0xa224), (unsigned long)&bxt_info },
-> >  	{ },
-> >   
+> Hm, no. If you initialize the time you compare to (using time_before()
+> or time_after()) correctly it should not happen. Anyway, I keep thinking
+> this is not how it should be done. Did you try NFC_CMD_RB? Did you ask
+> HW designers what it was created for?
 > 
+I am using NFC_CMD_RB and checking with irq. it is ok now.
+> .
 > 
