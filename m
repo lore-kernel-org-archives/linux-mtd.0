@@ -1,22 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+Received: from mga07.intel.com ([134.134.136.100])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1futze-0006yf-MO
- for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 06:30:20 +0000
-Date: Wed, 29 Aug 2018 08:30:03 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/25] ubifs: add helper functions for authentication
- support
-Message-ID: <20180829063003.goc3eekjo42jkrgy@pengutronix.de>
-References: <20180704124137.13396-1-s.hauer@pengutronix.de>
- <20180704124137.13396-11-s.hauer@pengutronix.de>
- <1675445.itdTWD7r8S@blindfold>
+ id 1fuwTc-00052W-5K
+ for linux-mtd@lists.infradead.org; Wed, 29 Aug 2018 09:09:25 +0000
+Date: Wed, 29 Aug 2018 12:09:09 +0300
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] spi-nor: intel-spi: Add support for Intel Ice Lake SPI
+ serial flash
+Message-ID: <20180829090909.GU2283@lahna.fi.intel.com>
+References: <20180828165059.55223-1-mika.westerberg@linux.intel.com>
+ <3261d2da-c0a5-920e-ca12-17924a2d3918@gmail.com>
+ <20180828165959.GG2283@lahna.fi.intel.com>
+ <39875af1-731d-a5b7-7b10-13701b913751@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1675445.itdTWD7r8S@blindfold>
+In-Reply-To: <39875af1-731d-a5b7-7b10-13701b913751@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
-On Mon, Aug 27, 2018 at 02:50:37PM +0200, Richard Weinberger wrote:
-> Am Mittwoch, 4. Juli 2018, 14:41:22 CEST schrieb Sascha Hauer:
-> > This patch adds the various helper functions needed for authentication
-> > support. We need functions to hash nodes, to embed HMACs into a node and
-> > to compare hashes and HMACs. Most functions first check if this
-> > filesystem is authenticated and bail out early if not, which makes the
-> > functions safe to be called with disabled authentication.
+On Tue, Aug 28, 2018 at 09:20:17PM +0200, Marek Vasut wrote:
+> On 08/28/2018 06:59 PM, Mika Westerberg wrote:
+> > On Tue, Aug 28, 2018 at 06:56:38PM +0200, Marek Vasut wrote:
+> >> On 08/28/2018 06:50 PM, Mika Westerberg wrote:
+> >>> Intel Ice Lake exposes the SPI serial flash controller as a PCI device
+> >>> in the same way than Intel Denverton. Add Ice Lake SPI serial flash PCI
+> >>> ID to the driver list of supported devices.
+> >>>
+> >>> Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+> >>
+> >> This should probably go through trivial patches ML, no ?
 > > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> > +void ubifs_prepare_auth_node(struct ubifs_info *c, void *node,
-> > +			     struct shash_desc *inhash)
-> > +{
-> > +	SHASH_DESC_ON_STACK(hash_desc, c->hash_tfm);
-> > +	struct ubifs_auth_node *auth = node;
-> > +	u8 hash[crypto_shash_descsize(c->hash_tfm)];
+> > Hmm, what do you mean? This is not a typo fix or similar but adds a new
+> > PCI ID to the driver.
 > 
-> Doesn't this introduce a new VLA?
-> Not that me make Kees unhappy. ;-)
+> I mean, adding PCI IDs might be considered trivial. But if you want it
+> to go through MTD, fine:
+> 
+> Acked-by: Marek Vasut <marek.vasut@gmail.com>
 
-/me just read https://lwn.net/Articles/749064/ and now realizes why this
-is considered harmful.
-
-Thanks for the review. I'll look into this and all the other points. I
-guess that'll keep me busy for some time.
-
-Thanks
-  Sascha
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Thanks!
