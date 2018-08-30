@@ -1,35 +1,22 @@
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fvNlG-0004er-Iq
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2018 14:17:29 +0000
-Received: by mail-wr1-x441.google.com with SMTP id u12-v6so8220214wrr.4
- for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2018 07:17:15 -0700 (PDT)
-Subject: Re: [PATCH] mtd: spi-nor: fix options for mx66l51235f
-To: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- =?UTF-8?Q?C=c3=a9dric_Le_Goater?= <clg@kaod.org>,
- Alexander Amelkin <a.amelkin@yadro.com>, linux-mtd@lists.infradead.org
-Cc: leroi.lists@gmail.com, openbmc@lists.ozlabs.org,
- Joel Stanley <joel@jms.id.au>
-References: <c27b9cb1-33a1-221d-abd8-30050fe2b23b@yadro.com>
- <b2ff17cc-96ca-3acb-6dc2-f7a8688a0742@gmail.com>
- <65072cc4-601b-250b-f797-604368776c3c@yadro.com>
- <f21bc842-47c8-eefd-1af5-3811c2bd25b0@gmail.com>
- <286877dc-22fe-9f49-458a-6a6a0ce0b1c0@yadro.com>
- <c02dc76b-adc7-4c6f-f3c1-3131ce86e0b0@gmail.com>
- <a5ae1f53-b7ae-4054-f11e-d8c44b5931cb@yadro.com>
- <c146b739-6ab8-7b2f-9923-588beff7b9d6@gmail.com>
- <8bc767cd-0000-7e6b-aa1f-0e2a71841f82@yadro.com>
- <5678bf9c-6d9d-294d-3029-710988108bc3@gmail.com>
- <c8b2b68f-b5fe-00ce-df53-f1d32400460b@kaod.org>
- <4c99e942-6641-97ca-bbac-040b05a308cb@wedev4u.fr>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <259aa37f-9837-ad38-43e3-4fa71e721a9d@gmail.com>
-Date: Thu, 30 Aug 2018 16:17:12 +0200
+ id 1fvOAm-0007qw-5U
+ for linux-mtd@lists.infradead.org; Thu, 30 Aug 2018 14:43:50 +0000
+Date: Thu, 30 Aug 2018 16:43:35 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 15/25] ubifs: Add auth nodes to garbage collector journal
+ head
+Message-ID: <20180830144335.4hcam2pkocz5umqx@pengutronix.de>
+References: <20180704124137.13396-1-s.hauer@pengutronix.de>
+ <20180704124137.13396-16-s.hauer@pengutronix.de>
+ <1660996.WYUJqu3I4M@blindfold>
 MIME-Version: 1.0
-In-Reply-To: <4c99e942-6641-97ca-bbac-040b05a308cb@wedev4u.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1660996.WYUJqu3I4M@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,53 +26,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/30/2018 04:16 PM, Cyrille Pitchen wrote:
-> Hi all,
+On Mon, Aug 27, 2018 at 10:51:56PM +0200, Richard Weinberger wrote:
+> Am Mittwoch, 4. Juli 2018, 14:41:27 CEST schrieb Sascha Hauer:
+> > To be able to authenticate the garbage collector journal head add
+> > authentication nodes to the buds the garbage collector creates.
+> > 
+> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> > ---
+> >  fs/ubifs/gc.c | 37 ++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 34 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+> > index ac3a3f7c6a6e..8feeeb12b6ed 100644
+> > --- a/fs/ubifs/gc.c
+> > +++ b/fs/ubifs/gc.c
+> > @@ -365,12 +365,13 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
+> >  
+> >  	/* Write nodes to their new location. Use the first-fit strategy */
+> >  	while (1) {
+> > -		int avail;
+> > +		int avail, moved = 0;
+> >  		struct ubifs_scan_node *snod, *tmp;
+> >  
+> >  		/* Move data nodes */
+> >  		list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
+> > -			avail = c->leb_size - wbuf->offs - wbuf->used;
+> > +			avail = c->leb_size - wbuf->offs - wbuf->used -
+> > +					ubifs_auth_node_sz(c);
+> >  			if  (snod->len > avail)
+> >  				/*
+> >  				 * Do not skip data nodes in order to optimize
+> > @@ -378,14 +379,19 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
+> >  				 */
+> >  				break;
+> >  
+> > +			ubifs_shash_update(c, c->jheads[GCHD].log_hash,
+> > +					   snod->node, snod->len);
+> > +
+> >  			err = move_node(c, sleb, snod, wbuf);
+> >  			if (err)
+> >  				goto out;
+> > +			moved = 1;
+> >  		}
+> >  
+> >  		/* Move non-data nodes */
+> >  		list_for_each_entry_safe(snod, tmp, &nondata, list) {
+> > -			avail = c->leb_size - wbuf->offs - wbuf->used;
+> > +			avail = c->leb_size - wbuf->offs - wbuf->used -
+> > +					ubifs_auth_node_sz(c);
+> >  			if (avail < min)
+> >  				break;
+> >  
+> > @@ -403,7 +409,32 @@ static int move_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb)
+> >  				continue;
+> >  			}
+> >  
+> > +			ubifs_shash_update(c, c->jheads[GCHD].log_hash,
+> > +					   snod->node, snod->len);
+> > +
+> >  			err = move_node(c, sleb, snod, wbuf);
+> > +			if (err)
+> > +				goto out;
+> > +			moved = 1;
+> > +		}
+> > +
+> > +		if (ubifs_authenticated(c) && moved) {
+> > +			struct ubifs_auth_node *auth;
+> > +
+> > +			auth = kmalloc(ubifs_auth_node_sz(c), GFP_NOFS);
+> > +			if (!auth) {
+> > +				err = -ENOMEM;
+> > +				goto out;
+> > +			}
+> > +
+> > +			ubifs_prepare_auth_node(c, auth,
+> > +						c->jheads[GCHD].log_hash);
 > 
-> Le 29/08/2018 à 14:12, Cédric Le Goater a écrit :
->> [ ... ] 
->>
->>> Ah, so the whole problem is, the ASpeed 2400 SPI NOR controller does
->>> memory-mapped read from the flash and that has some limitations when the
->>> flash is over 16 MiB in size -- it sends 3 byte standard opcodes with 4
->>> byte address ?
->>
->> yes.
->>
->> [ ... ]
->>
->>> To simplify the situation, if the ASpeed 2400 SPI NOR controller tried
->>> reading the SPI flash past 16 MiB, it would also require that the flash
->>> is in EN4B mode, yes ?
->>
->> yes.
->>
->> [ ... ]
->>
->>>> I start thinking about maybe adding an option to "jedec,spi-nor" DTS
->>>> binding like "enable-4byte-mode", so that we could get rid of our
->>>> local patch and just specify that option in the devicetree. The
->>>> option would force EN4B on the chip if it supports that mode. What do
->>>> you think? How do I do it if you approve? Send patches separately in
->>>> here and in the devicetree mailing list or cross-post both patches to
->>>> both lists?
->>>
->>> That's an option. But what I think this is really about is a fact that
->>> we completely lack any way to negotiate limitations between the SPI NOR
->>> and the controller.
->>
->> what about the hwcaps in spi_nor_scan() ? 
->>
-> 
-> Maybe only a matter of taste but I agree with Cedric: a new hwcaps sounds
-> better than a new DT property. There are already different "compatible"
-> strings to make the difference between AST2400 and AST2500, so we can
-> add the new hwcap only to AST2400 entries. Then no need to update any
-> existing device trees, at least in this case.
-> 
+> ubifs_prepare_auth_node() does a crypto_shash_final(), check.
+> But the overall "hash life cycle" is not 100% clear to me.
+> For example, does move_nodes() assume that the hash is initialized
+> or is it allowed that an crypto_shash_update() happened before?
 
-Good idea :)
+move_nodes() assumes that the hash is
+- initialized
+- updated with the commit start node
+- updated with all reference nodes before the one that point into
+  the current LEB
+- updated with the reference node pointing to the current LEB
+
+
+To make that more clear here is the overall life cycle of the auth hashes:
+
+Everything starts in ubifs_log_start_commit(). We initialize the global
+log hash and update it with the commit start node:
+
+>	ubifs_shash_init(c->log_hash);
+>	ubifs_shash_update(c, c->log_hash, cs, UBIFS_CS_NODE_SZ);
+
+Afterwards still in ubifs_log_start_commit() ref nodes are created for
+each journal head. We update the global log hash with the reference
+nodes and copy the current state into each journal heads log hash:
+
+>	for (i = 0; i < c->jhead_cnt; i++) {
+>		ubifs_prepare_node(c, ref, UBIFS_REF_NODE_SZ, 0);
+>		ubifs_shash_update(c, c->log_hash, ref, UBIFS_REF_NODE_SZ);
+>		ubifs_shash_copy_state(c, c->log_hash, c->jheads[i].log_hash);
+>	}
+
+>From here on each journal head has its own log hash derived from the
+global log hash. Whenever something is written to a journal head we
+update the hash of that journal head. For the garbage collector this
+happens in gc.c move_nodes():
+
+>	for_each_node_in_gc_leb()
+>		ubifs_shash_update(c, c->jheads[GCHD].log_hash, snod->node, snod->len);
+
+For the base head and data head this happens in journal.c write_head():
+
+>	ubifs_hash_nodes(c, buf, len, c->jheads[jhead].log_hash);
+
+Whenever we want to write an auth node we can now call
+ubifs_prepare_auth_node() with a journal heads current log hash state.
+This creates us a suitable auth node with the correct hash. The trick
+here is that not the hash state is finalized, but a copy thereof, so the
+hash state can be continued to use.
+
+The final interesting thing happens when a journal head is switched to a
+new LEB in ubifs_add_bud_to_log(). We update the global log hash with the
+newly created reference node and again the state is copied to the journal
+heads log hash:
+
+>	ubifs_shash_update(c, c->log_hash, ref, UBIFS_REF_NODE_SZ);
+>	ubifs_shash_copy_state(c, c->log_hash, c->jheads[jhead].log_hash);
+
+I hope that makes it more clear.
+
+Sascha
 
 -- 
-Best regards,
-Marek Vasut
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
