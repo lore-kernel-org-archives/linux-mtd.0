@@ -1,19 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fvOIV-0004ew-Bh
- for linux-mtd@lists.infradead.org; Thu, 30 Aug 2018 14:51:49 +0000
-Date: Thu, 30 Aug 2018 16:51:03 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Marek
- Vasut <marex@denx.de>, Miquel Raynal <miquel.raynal@bootlin.com>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [GIT PULL] mtd: Fixes for 4.19-rc2
-Message-ID: <20180830165103.66eaa2ef@bbrezillon>
+Received: from mail-io0-x233.google.com ([2607:f8b0:4001:c06::233])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fvbVO-00022U-Tn
+ for linux-mtd@lists.infradead.org; Fri, 31 Aug 2018 04:58:00 +0000
+Received: by mail-io0-x233.google.com with SMTP id r196-v6so9488405iod.0
+ for <linux-mtd@lists.infradead.org>; Thu, 30 Aug 2018 21:57:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Yogesh Gaur <yogeshgaur.83@gmail.com>
+Date: Fri, 31 Aug 2018 10:27:46 +0530
+Message-ID: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
+Subject: Query Regarding NOR flash page size calculation s25fl512s
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Linus,
+Hi All,
 
-Here is the MTD fixes PR for 4.19-rc2.
+I have query and concern regarding page_size calculation for the
+underlying NOR flashes.
+
+I have spansion, =E2=80=98s25fl512s=E2=80=99 flash connected on my target.
+
+With SFDP param reading, page_size for this flash is assigned as 0x200
+using below routine.
+   /* Page size: this field specifies 'N' so the page size =3D 2^N bytes. *=
+/
+   params->page_size =3D bfpt.dwords[BFPT_DWORD(11)];
+   params->page_size &=3D BFPT_DWORD11_PAGE_SIZE_MASK;
+   params->page_size >>=3D BFPT_DWORD11_PAGE_SIZE_SHIFT;
+   params->page_size =3D 1U << params->page_size;
+
+As per the BG of S25FS512S_512_M flash and SFDP header info table
+above calculation are correct.
+
+But final value of the page_size for this flash is depends on the
+configuration register CR3V[4], page buffer wrap, it can be either of
+256 byte (0) or 512 byte (1).
+
+For my case, this value is 0 and page_size becomes 0x100 bytes but
+with SFDP header read, value for this is being assigned as 0x200.
+Due to this, I am getting data corruption.
+
+Please suggest, how can we check and proceed in these case. I guess
+this is specific to spansion family of flashes.
+
+IMO, for this flash we need to add flag SPI_NOR_SKIP_SFDP for entry of
+this flash, s25fl512s.
+
 
 Regards,
-
-Boris
-
-The following changes since commit 5b394b2ddf0347bef56e50c69a58773c94343ff3:
-
-  Linux 4.19-rc1 (2018-08-26 14:11:59 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/mtd/for-4.19-rc2
-
-for you to fetch changes up to 336d139f8718b1336c9d22f0e462611ae1229850:
-
-  mtd: rawnand: denali: do not pass zero maxchips to nand_scan() (2018-08-27 20:41:46 +0200)
-
-----------------------------------------------------------------
-Raw NAND fixes:
-- denali: Fix a regression caused by the nand_scan() rework
-- docg4: Fix a build error when gcc decides to not iniline some
-  functions (can be reproduced with gcc 4.1.2)
-
-----------------------------------------------------------------
-Geert Uytterhoeven (1):
-      mtd: rawnand: docg4: Remove wrong __init annotations
-
-Masahiro Yamada (1):
-      mtd: rawnand: denali: do not pass zero maxchips to nand_scan()
-
- drivers/mtd/nand/raw/denali.c | 5 +++++
- drivers/mtd/nand/raw/docg4.c  | 4 ++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+Yogesh
