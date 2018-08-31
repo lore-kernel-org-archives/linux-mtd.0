@@ -1,27 +1,37 @@
-Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fviPe-0005mj-Gm
- for linux-mtd@lists.infradead.org; Fri, 31 Aug 2018 12:20:32 +0000
-Received: by mail-lf1-x143.google.com with SMTP id x207-v6so4129739lff.3
- for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2018 05:20:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
- <20180821143152.32293-9-ricardo.ribalda@gmail.com>
- <20180831121751.GA22256@bogus>
-In-Reply-To: <20180831121751.GA22256@bogus>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Fri, 31 Aug 2018 14:20:00 +0200
-Message-ID: <CAPybu_2cqyLXiQ9pdLBDbz8zFPM1u6B4jnKJqLXWzW+gXHbwRA@mail.gmail.com>
-Subject: Re: [PATCH 8/8] dt-binding: mtd: Document gpio-addr-flash
-To: Rob Herring <robh@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
+Date: Fri, 31 Aug 2018 12:46:43 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
+ Kevin Hilman <khilman@kernel.org>,
+ Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ David Woodhouse <dwmw2@infradead.org>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Grygorii Strashko <grygorii.strashko@ti.com>,
+ "David S . Miller" <davem@davemloft.net>,
+ Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Naren <naren.kernel@gmail.com>,
+ Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+ Sven Van Asbroeck <svendev@arcx.com>,
+ Paolo Abeni <pabeni@redhat.com>, Alban Bedel <albeu@free.fr>,
+ Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
+ Andrew Lunn <andrew@lunn.ch>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-i2c@vger.kernel.org, linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org, netdev@vger.kernel.org,
+ Bartosz Golaszewski <bgolaszewski@baylibre.com>, briannorris@chromium.org
+Subject: Re: [PATCH v2 00/29] at24: remove at24_platform_data
+Message-ID: <20180831194643.GA62862@ban.mtv.corp.google.com>
+References: <20180810080526.27207-1-brgl@bgdev.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180810080526.27207-1-brgl@bgdev.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,91 +41,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- aHi Robb
-On Fri, Aug 31, 2018 at 2:17 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Tue, Aug 21, 2018 at 04:31:52PM +0200, Ricardo Ribalda Delgado wrote:
-> > Add documentation for gpio-addr-flash. This binding allow creating
-> > flash devices that are paged using GPIOs.
-> >
-> > Cc: devicetree@vger.kernel.org
-> > Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> > ---
-> >  .../bindings/mtd/gpio-addr-flash.txt          | 46 +++++++++++++++++++
-> >  1 file changed, 46 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> > new file mode 100644
-> > index 000000000000..4279e8cad09b
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> > @@ -0,0 +1,46 @@
-> > +Memory Mapped flash with some address lines addressed using GPIOs
->
-> That's ugly...
->
-If hw was perfect there would be no firmware engineers in the world :P
+Hi,
 
-> > +
-> > +Handle the case where a flash device is mostly addressed using physical
-> > +line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
-> > +to a 2MiB memory range and use the GPIOs to select a particular range.
-> > +
-> > + - compatible : "cfi-gpio-addr-flash"
->
-> Why a new compatible? Shouldn't just adding some address gpios to an
-> existing flash device binding be sufficient?
+On Fri, Aug 10, 2018 at 10:04:57AM +0200, Bartosz Golaszewski wrote:
+> Most boards use the EEPROM to store the MAC address. This series adds
+> support for cell lookups to the nvmem framework, registers relevant
+> cells for all users, adds nvmem support to eth_platform_get_mac_address(),
+> converts davinci_emac driver to using it and replaces at24_platform_data
+> with device properties.
 
-Because today there are handled by two different drivers
+We already have:
 
-Thanks!
+of_get_nvmem_mac_address() (which does exactly what you're adding,
+except it's DT specific)
+of_get_mac_address()
+fwnode_get_mac_address()
+device_get_mac_address()
 
->
-> > + - reg : Address range of the mtd chip that is memory mapped, this is,
-> > +   on the previous example 2MiB.
-> > + - bank-width : Width (in bytes) of the bank.  Equal to the
-> > +   device width times the number of interleaved chips.
-> > + - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
-> > +   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
-> > + - #address-cells, #size-cells : Must be present if the device has
-> > +   sub-nodes representing partitions (see below).  In this case
-> > +   both #address-cells and #size-cells must be equal to 1.
-> > +
-> > +The device tree may optionally contain sub-nodes describing partitions of the
-> > +address space. See partition.txt for more detail.
-> > +
-> > +Example:
-> > +
-> > +     cfi_flash_0: cfi_flash {
-> > +             #address-cells = <1>;
-> > +             #size-cells = <1>;
-> > +             compatible = "cfi-gpio-addr-flash";
-> > +             bank-width = <2>;
-> > +             reg = < 0x00300000 0x00200000 >;
-> > +             gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
-> > +             partition@0 {
-> > +                     reg = < 0x0 0x200000 >;
-> > +                     label = "Golden Bitstream";
-> > +             };
-> > +             partition@200000 {
-> > +                     reg = < 0x200000 0x200000 >;
-> > +                     label = "User Bitstream";
-> > +             };
-> > +             partition@400000 {
-> > +                     reg = < 0x400000 0x200000 >;
-> > +                     label = "V4L Controls";
-> > +             };
-> > +             partition@600000 {
-> > +                     reg = < 0x600000 0x200000 >;
-> > +                     label = "Production Data";
-> > +             };
-> > +     } ;
-> > --
-> > 2.18.0
-> >
+and now you've taught me that this exists too:
 
+eth_platform_get_mac_address()
 
+These mostly don't share code, and with your series, they'll start to
+diverge even more as to what they support. Can you please help rectify
+that, instead of widening the gap?
 
--- 
-Ricardo Ribalda
+For instance, you can delete most of eth_platform_get_mac_address() and
+replace it with device_get_mac_address() [1]. And you could add your new
+stuff to fwnode_get_mac_address().
+
+And important part to note here is that you code isn't just useful for
+ethernet -- it could be useful for Wifi devices too. So IMO, sticking it
+only in an "eth" function is the wrong move.
+
+Brian
+
+[1] arch_get_platform_mac_address() is the only part I wouldn't want to
+replicate into a truly generic helper. The following should be a no-op
+refactor, AIUI:
+
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index ee28440f57c5..b738651f71e1 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -47,12 +47,12 @@
+ #include <linux/inet.h>
+ #include <linux/ip.h>
+ #include <linux/netdevice.h>
++#include <linux/property.h>
+ #include <linux/etherdevice.h>
+ #include <linux/skbuff.h>
+ #include <linux/errno.h>
+ #include <linux/init.h>
+ #include <linux/if_ether.h>
+-#include <linux/of_net.h>
+ #include <linux/pci.h>
+ #include <net/dst.h>
+ #include <net/arp.h>
+@@ -528,19 +528,11 @@ unsigned char * __weak arch_get_platform_mac_address(void)
+ int eth_platform_get_mac_address(struct device *dev, u8 *mac_addr)
+ {
+ 	const unsigned char *addr;
+-	struct device_node *dp;
+ 
+-	if (dev_is_pci(dev))
+-		dp = pci_device_to_OF_node(to_pci_dev(dev));
+-	else
+-		dp = dev->of_node;
+-
+-	addr = NULL;
+-	if (dp)
+-		addr = of_get_mac_address(dp);
+-	if (!addr)
+-		addr = arch_get_platform_mac_address();
++	if (device_get_mac_address(dev, mac_addr, ETH_ALEN))
++		return 0;
+ 
++	addr = arch_get_platform_mac_address();
+ 	if (!addr)
+ 		return -ENODEV;
+ 
