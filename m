@@ -1,18 +1,25 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
- linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
- frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH 7/7] MAINTAINERS: add maintainers for the NXP FlexSPI driver
-Date: Fri, 31 Aug 2018 16:00:04 +0530
-Message-Id: <1535711404-29528-8-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1535711404-29528-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1535711404-29528-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 31 Aug 2018 13:41:06 +0200
+Message-ID: <CAMuHMdWbqEkARvSuMxSRusCj0yi7GUYTyQouRhOi+iYJq9R-Kg@mail.gmail.com>
+Subject: Re: [PATCH 1/7] spi: add slave device size in spi_device struct
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ linux-spi <linux-spi@vger.kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Rob Herring <robh@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Shawn Guo <shawnguo@kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +29,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainers for the NXP FlexSPI driver
+Hi Yogesh,
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Thanks for your patch!
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d5eeff..2696898 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10228,6 +10228,12 @@ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
- S:	Supported
- F:	drivers/nfc/nxp-nci
- 
-+NXP FSPI DRIVER
-+M:	Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/spi/spi-nxp-fspi.c
-+
- OBJTOOL
- M:	Josh Poimboeuf <jpoimboe@redhat.com>
- M:	Peter Zijlstra <peterz@infradead.org>
--- 
-2.7.4
+On Fri, Aug 31, 2018 at 12:33 PM Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> Add 'size' data variable in spi_device struct.
+> This is to save the size of the connected slave device.
+
+What is the "size" of an SPI slave device?
+
+> After slave device scan, spi_nor_scan, size being assigned to this
+> from MTD layer.
+
+Ah, this is MTD specific?
+
+> SFDP read is being requested before completion of spi_nor_scan()
+> routine, thus populate device size before making read request
+> to the SPI controller.
+>
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -127,6 +127,7 @@ void spi_statistics_add_transfer_stats(struct spi_statistics *stats,
+>   *     for driver coldplugging, and in uevents used for hotplugging
+>   * @cs_gpio: gpio number of the chipselect line (optional, -ENOENT when
+>   *     not using a GPIO line)
+> + * @size: size of the connected slave device
+
+Please document what is the meaning of "size".
+
+>   *
+>   * @statistics: statistics for the spi_device
+>   *
+> @@ -168,6 +169,7 @@ struct spi_device {
+>         void                    *controller_data;
+>         char                    modalias[SPI_NAME_SIZE];
+>         int                     cs_gpio;        /* chip select gpio */
+> +       u32                     size;           /* size of slave device */
+>
+>         /* the statistics */
+>         struct spi_statistics   statistics;
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
