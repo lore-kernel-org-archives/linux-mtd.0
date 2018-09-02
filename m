@@ -1,47 +1,14 @@
-Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+Received: from mout.gmx.net ([212.227.15.15])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fw5gL-0008Ve-Vi
- for linux-mtd@lists.infradead.org; Sat, 01 Sep 2018 13:11:19 +0000
-Received: by mail-it0-x241.google.com with SMTP id h23-v6so10509912ita.5
- for <linux-mtd@lists.infradead.org>; Sat, 01 Sep 2018 06:11:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180831203028.GC62862@ban.mtv.corp.google.com>
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180810080526.27207-3-brgl@bgdev.pl>
- <20180831203028.GC62862@ban.mtv.corp.google.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Sat, 1 Sep 2018 15:11:05 +0200
-Message-ID: <CAMRc=MdergeeYO9HLiFX5_n=SJr22dOJBG2y3+DwkB29XeaFJA@mail.gmail.com>
-Subject: Re: [PATCH v2 02/29] Documentation: nvmem: document lookup entries
-To: Brian Norris <computersforpeace@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>,
- Russell King <linux@armlinux.org.uk>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- "David S . Miller" <davem@davemloft.net>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Naren <naren.kernel@gmail.com>,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, Lukas Wunner <lukas@wunner.de>,
- Dan Carpenter <dan.carpenter@oracle.com>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
- Sven Van Asbroeck <svendev@arcx.com>,
- Paolo Abeni <pabeni@redhat.com>, Alban Bedel <albeu@free.fr>,
- Rob Herring <robh@kernel.org>,
- David Lechner <david@lechnology.com>, Andrew Lunn <andrew@lunn.ch>,
- linux-doc <linux-doc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- linux-i2c <linux-i2c@vger.kernel.org>,
- "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>,
- Linux-OMAP <linux-omap@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>, briannorris@chromium.org
-Content-Type: text/plain; charset="UTF-8"
+ id 1fwUYp-0001P3-AT
+ for linux-mtd@lists.infradead.org; Sun, 02 Sep 2018 15:45:13 +0000
+From: Chengguang Xu <cgxu519@gmx.com>
+To: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org,
+	Chengguang Xu <cgxu519@gmx.com>
+Subject: [PATCH] jffs2: add additinal sanity check for jffs2_acl_from_medium()
+Date: Sun,  2 Sep 2018 23:44:43 +0800
+Message-Id: <20180902154443.4776-1-cgxu519@gmx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -51,79 +18,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-08-31 22:30 GMT+02:00 Brian Norris <computersforpeace@gmail.com>:
-> On Fri, Aug 10, 2018 at 10:04:59AM +0200, Bartosz Golaszewski wrote:
->> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->>
->> Describe the usage of nvmem cell lookup tables.
->>
->> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->> ---
->>  Documentation/nvmem/nvmem.txt | 28 ++++++++++++++++++++++++++++
->>  1 file changed, 28 insertions(+)
->>
->> diff --git a/Documentation/nvmem/nvmem.txt b/Documentation/nvmem/nvmem.txt
->> index 8d8d8f58f96f..9d5e3ca2b4f3 100644
->> --- a/Documentation/nvmem/nvmem.txt
->> +++ b/Documentation/nvmem/nvmem.txt
->> @@ -58,6 +58,34 @@ static int qfprom_probe(struct platform_device *pdev)
->>  It is mandatory that the NVMEM provider has a regmap associated with its
->>  struct device. Failure to do would return error code from nvmem_register().
->>
->> +Additionally it is possible to create nvmem cell lookup entries and register
->> +them with the nvmem framework from machine code as shown in the example below:
->
-> Maybe it's partially a lacking in the existing documentation, but what
-> does the "name" and the "nvmem_name" mean here? AFAICT, "nvmem_name" is
-> akin to a provider identifier; and "name" is a key to match with the
-> consumer. It feels like this should be in either the header / kerneldoc
-> or this file. Or maybe both.
->
-> Does this mean there can only be a single "mac-address" cell in the
-> system? I have systems where there are multiple MACs provided in flash
-> storage, and we need to map them to ethernet0 and ethernet1. Is that
-> supported here?
->
+In the case ACL_USER and ACL_GROUP we check if value has exceeded end,
+add same check in the case ACL_OTHER as well.
 
-This is a shortcoming of the nvmem subsystem we discussed under
-another patch in this series with Boris and Srinivas. I will try to
-post a series addressing this next week. Basically there's a global
-list of nvmem cells referenced only by name and unless you're using DT
-you can only have a single cell with given name. I will address it by
-introducing the standard dev_id/con_id resource association.
+Signed-off-by: Chengguang Xu <cgxu519@gmx.com>
+---
+ fs/jffs2/acl.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Bart
-
-> Brian
->
->> +static struct nvmem_cell_lookup foobar_lookup = {
->> +     .info = {
->> +             .name = "mac-address",
->> +             .offset = 0xd000,
->> +             .bytes = ERH_ALEN,
->> +     },
->> +     .nvmem_name = "foobar",
->> +};
->> +
->> +static void foobar_register(void)
->> +{
->> +     ...
->> +     nvmem_add_lookup_table(&foobar_lookup, 1);
->> +     ...
->> +}
->> +
->> +A lookup entry table can be later removed if needed:
->> +
->> +static void foobar_fini(void)
->> +{
->> +     ...
->> +     nvmem_del_lookup_table(&foobar_lookup, 1);
->> +     ...
->> +}
->> +
->>  NVMEM Consumers
->>  +++++++++++++++
->>
->> --
->> 2.18.0
->>
+diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+index 093ffbd82395..fce32de3a18f 100644
+--- a/fs/jffs2/acl.c
++++ b/fs/jffs2/acl.c
+@@ -94,6 +94,8 @@ static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
+ 			case ACL_MASK:
+ 			case ACL_OTHER:
+ 				value += sizeof(struct jffs2_acl_entry_short);
++				if (value > end)
++					goto fail;
+ 				break;
+ 
+ 			case ACL_USER:
+-- 
+2.17.1
