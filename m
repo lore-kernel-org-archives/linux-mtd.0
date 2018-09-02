@@ -1,14 +1,21 @@
-Received: from mout.gmx.net ([212.227.15.15])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwUYp-0001P3-AT
- for linux-mtd@lists.infradead.org; Sun, 02 Sep 2018 15:45:13 +0000
-From: Chengguang Xu <cgxu519@gmx.com>
-To: dwmw2@infradead.org
-Cc: linux-mtd@lists.infradead.org,
-	Chengguang Xu <cgxu519@gmx.com>
-Subject: [PATCH] jffs2: add additinal sanity check for jffs2_acl_from_medium()
-Date: Sun,  2 Sep 2018 23:44:43 +0800
-Message-Id: <20180902154443.4776-1-cgxu519@gmx.com>
+ id 1fwYJL-0000ND-1h
+ for linux-mtd@lists.infradead.org; Sun, 02 Sep 2018 19:45:28 +0000
+From: Richard Weinberger <richard@nod.at>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, David Gstir <david@sigma-star.at>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 14/25] ubifs: Add authentication nodes to journal
+Date: Sun, 02 Sep 2018 21:45:04 +0200
+Message-ID: <5120826.olsX7Y6fYh@blindfold>
+In-Reply-To: <20180829143834.wwojzrwmpadxqiqk@pengutronix.de>
+References: <20180704124137.13396-1-s.hauer@pengutronix.de>
+ <1901352.nUraZMrBkh@blindfold>
+ <20180829143834.wwojzrwmpadxqiqk@pengutronix.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the case ACL_USER and ACL_GROUP we check if value has exceeded end,
-add same check in the case ACL_OTHER as well.
+Am Mittwoch, 29. August 2018, 16:38:34 CEST schrieb Sascha Hauer:
+> I assumed that make_reservation would align len anyway. I can't find the
+> place that led me to that assumption anymore and even if this is true
+> it's probably safer to just stick to the original len for the
+> non-authenticated case, so I'll change this and other places to use
+> the non aligned len.
+> 
+> BTW could you have a look at ubifs_jnl_change_xattr()? Unlike other
+> function in this file it explicitly calls make_reservation() with the
+> length of the last node aligned. Do you have an idea why?
 
-Signed-off-by: Chengguang Xu <cgxu519@gmx.com>
----
- fs/jffs2/acl.c | 2 ++
- 1 file changed, 2 insertions(+)
+Well, this is not the only call site. Other call sites do so implicitly
+since most UBIFS nodes sizes are aligned to 8.
+But yes, there are some inconsistencies which need a cleanup. I've scheduled
+that for the upcoming week.
 
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index 093ffbd82395..fce32de3a18f 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -94,6 +94,8 @@ static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
- 			case ACL_MASK:
- 			case ACL_OTHER:
- 				value += sizeof(struct jffs2_acl_entry_short);
-+				if (value > end)
-+					goto fail;
- 				break;
- 
- 			case ACL_USER:
--- 
-2.17.1
+Thanks,
+//richard 
