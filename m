@@ -1,21 +1,21 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwpQG-0002l9-MD
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2018 14:01:46 +0000
-From: Richard Weinberger <richard@nod.at>
-To: cgxu519 <cgxu519@gmx.com>, David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2: add additinal sanity check for
- jffs2_acl_from_medium()
-Date: Mon, 03 Sep 2018 16:01:31 +0200
-Message-ID: <2672376.Ws11GeDHN2@blindfold>
-In-Reply-To: <56f970fc-ac3b-94d8-0f00-5db3fa68ca65@gmx.com>
-References: <20180902154443.4776-1-cgxu519@gmx.com>
- <CAFLxGvyVmdDk8RqK5y8Q2eDxx4kLPhOJJ8e6TUpx=_E7_u+d-w@mail.gmail.com>
- <56f970fc-ac3b-94d8-0f00-5db3fa68ca65@gmx.com>
+Subject: Re: [RESEND PATCH v2 1/3] mtd: spi-nor: add support to non-uniform
+ SFDP SPI NOR flash memories
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ cyrille.pitchen@microchip.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
+ Cristian.Birsan@microchip.com
+References: <20180827102644.7323-1-tudor.ambarus@microchip.com>
+ <20180827102644.7323-2-tudor.ambarus@microchip.com>
+From: Marek Vasut <marek.vasut@gmail.com>
+Message-ID: <8f25975d-e0d8-dd11-76ce-857e99df9c2c@gmail.com>
+Date: Mon, 3 Sep 2018 19:37:15 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20180827102644.7323-2-tudor.ambarus@microchip.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +25,155 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, 3. September 2018, 15:28:31 CEST schrieb cgxu519:
-> On 09/03/2018 04:45 PM, Richard Weinberger wrote:
-> > On Sun, Sep 2, 2018 at 5:45 PM Chengguang Xu <cgxu519@gmx.com> wrote:
-> >> In the case ACL_USER and ACL_GROUP we check if value has exceeded end,
-> >> add same check in the case ACL_OTHER as well.
-> > Did you hit a problem in that area or was this found by review?
-> >  From looking at the code I'd say it is fine as is.
-> > In the ACL_MASK/_OTHER case we don't look into the entry object like
-> > ACL_USER/_GROUP
-> > do, we immediately break the switch and run another round in the for loop.
-> > And here we do:
-> >                  entry = value;
-> >                  if (value + sizeof(struct jffs2_acl_entry_short) > end)
-> >                          goto fail;
-> >
-> > Which is what your additional check does. So, we'd check twice.
-> > What do I miss?
+On 08/27/2018 12:26 PM, Tudor Ambarus wrote:
+[...]
+
+> +/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+> +static inline u64
+> +spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
+> +			  u64 dividend, u32 *remainder)
+> +{
+> +	*remainder = (u32)dividend & erase->size_mask;
+
+Is the cast really needed ? btw I think there might be a macro doing
+just this, div_by_ or something in include/ .
+
+> +	return dividend >> erase->size_shift;
+> +}
+> +
+> +static const struct spi_nor_erase_type *
+> +spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+> +			     const struct spi_nor_erase_region *region,
+> +			     u64 addr, u32 len)
+> +{
+> +	const struct spi_nor_erase_type *erase;
+> +	u32 rem;
+> +	int i;
+> +	u8 erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+> +
+> +	/*
+> +	 * Erase types are ordered by size, with the biggest erase type at
+> +	 * index 0.
+> +	 */
+> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+> +		/* Does the erase region support the tested erase type? */
+> +		if (!(erase_mask & BIT(i)))
+> +			continue;
+> +
+> +		erase = &map->erase_type[i];
+> +
+> +		/* Don't erase more than what the user has asked for. */
+> +		if (erase->size > len)
+> +			continue;
+> +
+> +		/* Alignment is not mandatory for overlaid regions */
+> +		if (region->offset & SNOR_OVERLAID_REGION)
+> +			return erase;
+> +
+> +		spi_nor_div_by_erase_size(erase, addr, &rem);
+> +		if (rem)
+> +			continue;
+> +		else
+> +			return erase;
+> +	}
+> +
+> +	return NULL;
+> +}
+> +
+> +static struct spi_nor_erase_region *
+> +spi_nor_region_next(struct spi_nor_erase_region *region)
+> +{
+> +	if (spi_nor_region_is_last(region))
+> +		return NULL;
+> +	return ++region;
+
+region++ ...
+
+[...]
+
+> +static int spi_nor_cmp_erase_type(const void *a, const void *b)
+> +{
+> +	const struct spi_nor_erase_type *erase1 = a;
+> +	const struct spi_nor_erase_type *erase2 = b;
+> +
+> +	return erase1->size - erase2->size;
+
+What does this function do again ?
+
+> +}
+> +
+> +static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+> +{
+> +	struct spi_nor_erase_region *region = map->regions;
+> +	struct spi_nor_erase_type *erase_type = map->erase_type;
+> +	int i;
+> +	u8 region_erase_mask, ordered_erase_mask;
+> +
+> +	/*
+> +	 * Sort each region's Erase Types in ascending order with the smallest
+> +	 * Erase Type size starting at BIT(0).
+> +	 */
+> +	while (region) {
+> +		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+> +
+> +		/*
+> +		 * The region's erase mask indicates which erase types are
+> +		 * supported from the erase types defined in the map.
+> +		 */
+> +		ordered_erase_mask = 0;
+> +		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+> +			if (erase_type[i].size &&
+> +			    region_erase_mask & BIT(erase_type[i].idx))
+> +				ordered_erase_mask |= BIT(i);
+> +
+> +		/* Overwrite erase mask. */
+> +		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
+> +				 ordered_erase_mask;
+> +
+> +		region = spi_nor_region_next(region);
+> +	}
+> +}
+> +
+> +static inline void
+
+Drop the inline
+
+> +spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+> +			       u8 erase_mask, u64 flash_size)
+> +{
+> +	map->uniform_region.offset = SNOR_ERASE_FLAGS_OFFSET(erase_mask, 1, 0,
+> +							     0);
+> +	map->uniform_region.size = flash_size;
+> +	map->regions = &map->uniform_region;
+> +	map->uniform_erase_type = erase_mask;
+> +}
+> +
+
+[...]
+
+> +#define spi_nor_region_is_last(region)  (region->offset & SNOR_LAST_REGION)
+> +
+> +static inline u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
+
+Get rid of the inlines, really.
+
+> +{
+> +	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
+> +}
+> +
+> +static inline bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+> +{
+> +	return !!nor->erase_map.uniform_erase_type;
+> +}
+> +
+>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
+>  					  struct device_node *np)
+>  {
 > 
-> You are right, it is actually not needed. Sorry, please just drop the patch.
 
-No problem, that's why we have a review process. :-)
+General question, what happens if the multi-block erase fails mid-way ,
+is that handled or reported somehow to the user ?
 
-Thanks,
-//richard
+-- 
+Best regards,
+Marek Vasut
