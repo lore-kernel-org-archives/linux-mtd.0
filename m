@@ -1,17 +1,22 @@
-Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
+Received: from mout.gmx.net ([212.227.15.19])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fwoY2-0006cX-QV
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2018 13:05:44 +0000
-Received: by mail-ed1-x544.google.com with SMTP id h4-v6so741045edi.6
- for <linux-mtd@lists.infradead.org>; Mon, 03 Sep 2018 06:05:32 -0700 (PDT)
+ id 1fwouN-0000nz-VF
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2018 13:28:49 +0000
+Subject: Re: [PATCH] jffs2: add additinal sanity check for
+ jffs2_acl_from_medium()
+To: Richard Weinberger <richard.weinberger@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+References: <20180902154443.4776-1-cgxu519@gmx.com>
+ <CAFLxGvyVmdDk8RqK5y8Q2eDxx4kLPhOJJ8e6TUpx=_E7_u+d-w@mail.gmail.com>
+From: cgxu519 <cgxu519@gmx.com>
+Message-ID: <56f970fc-ac3b-94d8-0f00-5db3fa68ca65@gmx.com>
+Date: Mon, 3 Sep 2018 21:28:31 +0800
 MIME-Version: 1.0
-Sender: friendsmotors2424@gmail.com
-From: Hamza Kabore <mrhamzakabore@gmail.com>
-Date: Mon, 3 Sep 2018 13:05:30 +0000
-Message-ID: <CANc+iO=sTAki+CuH25h_u6j0kihd5kHr5uGoV1RdxUfBQAPPkw@mail.gmail.com>
-Subject: HELLO
-To: undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFLxGvyVmdDk8RqK5y8Q2eDxx4kLPhOJJ8e6TUpx=_E7_u+d-w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,12 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
--- 
-Good day,
+On 09/03/2018 04:45 PM, Richard Weinberger wrote:
+> On Sun, Sep 2, 2018 at 5:45 PM Chengguang Xu <cgxu519@gmx.com> wrote:
+>> In the case ACL_USER and ACL_GROUP we check if value has exceeded end,
+>> add same check in the case ACL_OTHER as well.
+> Did you hit a problem in that area or was this found by review?
+>  From looking at the code I'd say it is fine as is.
+> In the ACL_MASK/_OTHER case we don't look into the entry object like
+> ACL_USER/_GROUP
+> do, we immediately break the switch and run another round in the for loop.
+> And here we do:
+>                  entry = value;
+>                  if (value + sizeof(struct jffs2_acl_entry_short) > end)
+>                          goto fail;
+>
+> Which is what your additional check does. So, we'd check twice.
+> What do I miss?
 
-Hello, my name is Hamza Kabore, I am a bank director of the EcoBank
-Plc Burkina Faso. I want to transfer an abandoned sum of 12.8 million
-USD  to your account. 50% will be for you. No risk involved. Contact
-me for more details. Kindly reply me back to my alternative email
-address ( mrhamzakabore@gmail.com )
-Mr. Hamza Kabore
+You are right, it is actually not needed. Sorry, please just drop the patch.
