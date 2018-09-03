@@ -1,18 +1,16 @@
-Subject: Re: [RESEND PATCH v2 2/3] mtd: spi-nor: parse SFDP Sector Map
- Parameter Table
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- cyrille.pitchen@microchip.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, boris.brezillon@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
- Cristian.Birsan@microchip.com
-References: <20180827102644.7323-1-tudor.ambarus@microchip.com>
- <20180827102644.7323-3-tudor.ambarus@microchip.com>
-From: Marek Vasut <marek.vasut@gmail.com>
-Message-ID: <1bfbb5f7-39ee-08cb-8f7b-5c3f441f66a2@gmail.com>
-Date: Mon, 3 Sep 2018 19:40:13 +0200
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>,
+ Kyungmin Park <kyungmin.park@samsung.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Adrian Bunk <bunk@kernel.org>, Adrian Bunk <bunk@debian.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH] mtd: onenand: fix parameter list build warning
+Message-ID: <03e45afe-c4f8-e69b-9cba-6a8863296ad4@infradead.org>
+Date: Mon, 3 Sep 2018 12:32:04 -0700
 MIME-Version: 1.0
-In-Reply-To: <20180827102644.7323-3-tudor.ambarus@microchip.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,96 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/27/2018 12:26 PM, Tudor Ambarus wrote:
-[...]
-> +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
-> +{
-> +	const u32 *ret = NULL;
-> +	u32 i, addr;
-> +	int err;
-> +	u8 addr_width, read_opcode, read_dummy;
-> +	u8 read_data_mask, data_byte, map_id;
-> +
-> +	addr_width = nor->addr_width;
-> +	read_dummy = nor->read_dummy;
-> +	read_opcode = nor->read_opcode;
-> +
-> +	map_id = 0;
-> +	i = 0;
-> +	/* Determine if there are any optional Detection Command Descriptors */
-> +	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
-> +		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
-> +		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
-> +		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
-> +		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
-> +		addr = smpt[i + 1];
-> +
-> +		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
-> +		if (err)
-> +			goto out;
-> +
-> +		/*
-> +		 * Build an index value that is used to select the Sector Map
-> +		 * Configuration that is currently in use.
-> +		 */
-> +		map_id = map_id << 1 | (!(data_byte & read_data_mask) ? 0 : 1);
+From: Randy Dunlap <rdunlap@infradead.org>
 
-You can drop the ternary operator part completely ^
+Fix build warning in <linux/mtd/onenand.h> by adding a "stub" struct
+for mtd_oob_ops:
 
-> +		i = i + 2;
-> +	}
-> +
-> +	/* Find the matching configuration map */
-> +	while (SMPT_MAP_ID(smpt[i]) != map_id) {
-> +		if (smpt[i] & SMPT_DESC_END)
-> +			goto out;
-> +		/* increment the table index to the next map */
-> +		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
-> +	}
-> +
-> +	ret = smpt + i;
-> +	/* fall through */
-> +out:
-> +	nor->addr_width = addr_width;
-> +	nor->read_dummy = read_dummy;
-> +	nor->read_opcode = read_opcode;
-> +	return ret;
-> +}
-> +
-> +static void
-> +spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
-> +			     const struct spi_nor_erase_type *erase,
-> +			     const u8 erase_type)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
-> +		if (!(erase_type & BIT(i)))
-> +			continue;
-> +		if (region->size & erase[i].size_mask) {
-> +			spi_nor_region_mark_overlay(region);
-> +			return;
-> +		}
-> +	}
-> +}
-> +
-> +static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
-> +					      const u32 *smpt)
-> +{
-> +	struct spi_nor_erase_map *map = &nor->erase_map;
-> +	const struct spi_nor_erase_type *erase = map->erase_type;
-> +	struct spi_nor_erase_region *region;
-> +	u64 offset;
-> +	u32 region_count;
-> +	int i, j;
-> +	u8 erase_type;
-> +
-> +	region_count = SMPT_MAP_REGION_COUNT(*smpt);
-> +	region = devm_kcalloc(nor->dev, region_count, sizeof(*region),
-> +			      GFP_KERNEL);
+include/linux/mtd/onenand.h: warning: 'struct mtd_oob_ops' declared inside parameter list [enabled by default]
+include/linux/mtd/onenand.h: warning: its scope is only this definition or declaration, which is probably not what you want [enabled by default]
 
-Is this memory always correctly free'd ?
+Fixes: 607d1cb10426 ("[MTD] [OneNAND] proper onenand_bbt_read_oob() prototype")
 
--- 
-Best regards,
-Marek Vasut
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Adrian Bunk <bunk@kernel.org>
+Cc: Adrian Bunk <bunk@debian.org>
+---
+ include/linux/mtd/onenand.h |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- lnx-419-rc2.orig/include/linux/mtd/onenand.h
++++ lnx-419-rc2/include/linux/mtd/onenand.h
+@@ -221,6 +221,7 @@ struct onenand_manufacturers {
+         char *name;
+ };
+ 
++struct mtd_oob_ops;
+ int onenand_bbt_read_oob(struct mtd_info *mtd, loff_t from,
+ 			 struct mtd_oob_ops *ops);
+ unsigned onenand_block(struct onenand_chip *this, loff_t addr);
