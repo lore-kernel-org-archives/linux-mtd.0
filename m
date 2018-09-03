@@ -1,28 +1,21 @@
-Date: Mon, 3 Sep 2018 10:36:00 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org"
- <robh@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/7] spi: add slave device size in spi_device struct
-Message-ID: <20180903103600.3efabbac@bbrezillon>
-In-Reply-To: <VI1PR04MB103801BA8203421C517199BB990C0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1535711404-29528-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180831135807.22255bce@karo-electronics.de>
- <VI1PR04MB103801BA8203421C517199BB990C0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Received: from mail-wm0-x242.google.com ([2a00:1450:400c:c09::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fwkUl-0006mn-2Z
+ for linux-mtd@lists.infradead.org; Mon, 03 Sep 2018 08:46:06 +0000
+Received: by mail-wm0-x242.google.com with SMTP id s12-v6so301768wmc.0
+ for <linux-mtd@lists.infradead.org>; Mon, 03 Sep 2018 01:45:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20180902154443.4776-1-cgxu519@gmx.com>
+In-Reply-To: <20180902154443.4776-1-cgxu519@gmx.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Mon, 3 Sep 2018 10:45:38 +0200
+Message-ID: <CAFLxGvyVmdDk8RqK5y8Q2eDxx4kLPhOJJ8e6TUpx=_E7_u+d-w@mail.gmail.com>
+Subject: Re: [PATCH] jffs2: add additinal sanity check for
+ jffs2_acl_from_medium()
+To: cgxu519@gmx.com
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,71 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+On Sun, Sep 2, 2018 at 5:45 PM Chengguang Xu <cgxu519@gmx.com> wrote:
+>
+> In the case ACL_USER and ACL_GROUP we check if value has exceeded end,
+> add same check in the case ACL_OTHER as well.
 
-On Mon, 3 Sep 2018 04:47:25 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Did you hit a problem in that area or was this found by review?
+>From looking at the code I'd say it is fine as is.
+In the ACL_MASK/_OTHER case we don't look into the entry object like
+ACL_USER/_GROUP
+do, we immediately break the switch and run another round in the for loop.
+And here we do:
+                entry = value;
+                if (value + sizeof(struct jffs2_acl_entry_short) > end)
+                        goto fail;
 
-> Hi Lothar,
->=20
-> > -----Original Message-----
-> > From: Lothar Wa=C3=9Fmann [mailto:LW@KARO-electronics.de]
-> > Sent: Friday, August 31, 2018 5:28 PM
-> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Cc: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
-> > marek.vasut@gmail.com; linux-spi@vger.kernel.org;
-> > devicetree@vger.kernel.org; mark.rutland@arm.com; robh@kernel.org; linu=
-x-
-> > kernel@vger.kernel.org; frieder.schrempf@exceet.de;
-> > computersforpeace@gmail.com; shawnguo@kernel.org; linux-arm-
-> > kernel@lists.infradead.org
-> > Subject: Re: [PATCH 1/7] spi: add slave device size in spi_device struct
-> >=20
-> > Hi,
-> >=20
-> > On Fri, 31 Aug 2018 15:59:58 +0530 Yogesh Gaur wrote: =20
-> > > Add 'size' data variable in spi_device struct.
-> > > This is to save the size of the connected slave device.
-> > >
-> > > After slave device scan, spi_nor_scan, size being assigned to this
-> > > from MTD layer.
-> > >
-> > > SFDP read is being requested before completion of spi_nor_scan()
-> > > routine, thus populate device size before making read request to the
-> > > SPI controller.
-> > >
-> > > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > > ---
-> > >  drivers/mtd/devices/m25p80.c  | 6 ++++++
-> > > drivers/mtd/spi-nor/spi-nor.c | 2 ++
-> > >  include/linux/spi/spi.h       | 2 ++
-> > >  3 files changed, 10 insertions(+)
-> > >
-> > > diff --git a/drivers/mtd/devices/m25p80.c
-> > > b/drivers/mtd/devices/m25p80.c index fe260cc..6c7ad86 100644
-> > > --- a/drivers/mtd/devices/m25p80.c
-> > > +++ b/drivers/mtd/devices/m25p80.c
-> > > @@ -124,6 +124,10 @@ static ssize_t m25p80_read(struct spi_nor *nor, =
-=20
-> > loff_t from, size_t len, =20
-> > >  	/* convert the dummy cycles to the number of bytes */
-> > >  	op.dummy.nbytes =3D (nor->read_dummy * op.dummy.buswidth) / 8;
-> > >
-> > > +	/* for case of SFDP header read commands, populate spi device size =
-*/
-> > > +	if (flash->spimem->spi->size =3D=3D 0)
-> > > +		flash->spimem->spi->size =3D nor->mtd.size;
-> > > + =20
-> > If the 'size' is an spimem specific variable it should be added to the =
-spi_mem
-> > struct rather than the spi_device struct. =20
->=20
-> Sure, would move 'size' from struct spi_device to the struct spi_mem.
+Which is what your additional check does. So, we'd check twice.
+What do I miss?
 
-Before you send a new version doing that, I'd like to understand why
-you need this information. Can you wait a bit so I have some time to
-review the driver?
+> Signed-off-by: Chengguang Xu <cgxu519@gmx.com>
+> ---
+>  fs/jffs2/acl.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+> index 093ffbd82395..fce32de3a18f 100644
+> --- a/fs/jffs2/acl.c
+> +++ b/fs/jffs2/acl.c
+> @@ -94,6 +94,8 @@ static struct posix_acl *jffs2_acl_from_medium(void *value, size_t size)
+>                         case ACL_MASK:
+>                         case ACL_OTHER:
+>                                 value += sizeof(struct jffs2_acl_entry_short);
+> +                               if (value > end)
+> +                                       goto fail;
+>                                 break;
+>
+>                         case ACL_USER:
+> --
+> 2.17.1
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
+
+
+-- 
 Thanks,
-
-Boris
+//richard
