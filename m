@@ -1,19 +1,18 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx5Z0-0006P6-Q3
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 07:15:52 +0000
-Subject: Re: [PATCH mtd-utils] ubi-tests: io_paral: Fix error handling of
- update_volume()
-To: Martin Lund <malu@gomspace.com>, linux-mtd@lists.infradead.org
-References: <20180828083113.18198-1-malu@gomspace.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <d2063942-07f2-35f3-d9e3-2929155e8b56@sigma-star.at>
-Date: Tue, 4 Sep 2018 09:15:27 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180828083113.18198-1-malu@gomspace.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx7QP-0007oR-7R
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 09:15:07 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: fsmc: Fix Hamming ECC
+Date: Tue,  4 Sep 2018 11:14:38 +0200
+Message-Id: <20180904091438.3755-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Apparently ECC bytes are not ordered as expected by nand_correct_data()
+in the ecc_calc buffer which leads to invalid bitflip correction when
+an ECC error is detected (can be reproduced with 'nandbiterrs -i').
 
-generally, your approach seams reasonable. However there is one small iss=
-ue with
-your patch:
+Re-ordering ECC bytes seems to fix the problem.
 
-On 08/28/2018 10:31 AM, Martin Lund wrote:
-> @@ -302,7 +302,14 @@ int main(int argc, char * const argv[])
->  	}
-> =20
->  	for (i =3D 0; i < THREADS_NUM; i++)
-> -		pthread_join(threads[i], NULL);
-> +	{
-> +		pthread_join(threads[i], (void **) &ret);
-> +		if (ret !=3D 0)
-> +			error =3D true;
-> +	}
-> +
+While at it, get rid of the useless u8 cast.
 
-"ret" happens to be an integer, you take a pointer to it and cast it to a=
- pointer
-to a void*, which receives the result from the thread function.
+Fixes: 6c009ab89a21 ("mtd: generic FSMC NAND MTD driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/fsmc_nand.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-There are platforms where sizeof(void*) !=3D sizeof(int)
-
-Minor nit pick: the '{' should be on the same line as the for, similar to=
- the rest
-of the code.
-
-Thanks,
-
-David
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index f418236fa020..c79f8e965b38 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -440,9 +440,9 @@ static int fsmc_read_hwecc_ecc1(struct mtd_info *mtd, const uint8_t *data,
+ 	uint32_t ecc_tmp;
+ 
+ 	ecc_tmp = readl_relaxed(host->regs_va + ECC1);
+-	ecc[0] = (uint8_t) (ecc_tmp >> 0);
+-	ecc[1] = (uint8_t) (ecc_tmp >> 8);
+-	ecc[2] = (uint8_t) (ecc_tmp >> 16);
++	ecc[0] = ecc_tmp >> 8;
++	ecc[1] = ecc_tmp;
++	ecc[2] = ecc_tmp >> 16;
+ 
+ 	return 0;
+ }
+-- 
+2.14.1
