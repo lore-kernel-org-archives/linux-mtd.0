@@ -1,19 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJFF-00007z-Bl
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:52:22 +0000
-Date: Tue, 4 Sep 2018 23:51:59 +0200
+ id 1fxJGV-00018D-8l
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:53:41 +0000
+Date: Tue, 4 Sep 2018 23:53:17 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, linux-mtd@lists.infradead.org, Marek Vasut
- <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Ofer Heifetz <oferh@marvell.com>
-Subject: Re: [PATCH v2] mtd: nand: use regmap_update_bits() in marvell_nand
- for syscon access
-Message-ID: <20180904235159.6b1361df@xps13>
-In-Reply-To: <20180802085625.29635-1-thomas.petazzoni@bootlin.com>
-References: <20180802085625.29635-1-thomas.petazzoni@bootlin.com>
+To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+Cc: boris.brezillon@bootlin.com, richard@nod.at, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] mtd: nand: toshiba: Add support for Toshiba Memory
+ BENAND (Built-in ECC NAND)
+Message-ID: <20180904235317.0c98e0f1@xps13>
+In-Reply-To: <1533360352-2882-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+References: <1533360352-2882-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,30 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas,
+Hi Yoshitake,
 
-Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote on Thu,  2 Aug
-2018 10:56:25 +0200:
+KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote on Sat,
+4 Aug 2018 14:25:52 +0900:
 
-> The marvell_nfc_init() function fiddles with some bits of a system
-> controller on Armada 7K/8K. However, it does a read/modify/write
-> sequence on GENCONF_CLK_GATING_CTRL and GENCONF_ND_CLK_CTRL, which
-> isn't safe from a concurrency point of view, as the regmap lock isn't
-> taken accross the read/modify/write sequence. To solve this issue, use
-> regmap_update_bits().
+> This patch is a patch to support TOSHIBA MEMORY CORPORATION BENAND
+> memory devices.  Check the status of the built-in ECC with the Read
+> Status command without using the vendor specific command.  The Read
+> Status command only knows whether there was bitflips above the
+> threshold and can not get accurate bitflips.  For now, I set
+> max_bitflips mtd->bitflip_threshold.
 >=20
-> While at it, since the "reg" variable is no longer needed for the
-> read/modify/write sequences, get rid of it for the regmap_write() to
-> GENCONF_SOC_DEVICE_MUX, and directly pass the value to be written as
-> argument.
->=20
-> Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller dr=
-iver")
-> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
 > ---
 
-Applied to nand/next with the subject prefix changed to
-"mtd: rawnand: marvell:"
+Applied to nand/next.
 
 Thanks,
 Miqu=C3=A8l
