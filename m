@@ -1,22 +1,20 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJIk-00033v-68
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:55:59 +0000
-Date: Tue, 4 Sep 2018 23:55:35 +0200
+ id 1fxJJx-0003QR-OD
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:57:15 +0000
+Date: Tue, 4 Sep 2018 23:56:51 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Kurt Kanzenbach <kurt@linutronix.de>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Wenyou Yang
- <wenyou.yang@microchip.com>, Jagdish Gediya <jagdish.gediya@nxp.com>, Jane
- Wan <Jane.Wan@nokia.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] mtd: rawnand: fsl_ifc: fix SRAM initialization
- for newer controller
-Message-ID: <20180904235535.165be621@xps13>
-In-Reply-To: <20180813071846.9433-1-kurt@linutronix.de>
-References: <20180813071846.9433-1-kurt@linutronix.de>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Dinh Nguyen <dinguyen@kernel.org>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: nand: denali: use SPDX-License-Identifier and fix
+ license mismatch
+Message-ID: <20180904235651.12708e91@xps13>
+In-Reply-To: <1534735596-10876-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1534735596-10876-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,39 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kurt,
+Hi Masahiro,
 
-Kurt Kanzenbach <kurt@linutronix.de> wrote on Mon, 13 Aug 2018 09:18:44
-+0200:
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Mon, 20 Aug
+2018 12:26:36 +0900:
 
-> Hi,
+> Use SPDX-License-Identifier instead of the license boilerplates.
 >=20
-> this is version two of
+> This conversion makes it easier for us to scan the license, then
+> I notice license mismatch problems.
 >=20
->  lkml.kernel.org/r/20180806092137.9287-1-kurt@linutronix.de
+> The license blocks in denali* indicate GPL-2.0 "only", while the
+> MODULE_LICENSE in denali.c and denali_dt.c is GPL-2.0 "or later"
+> as explained in include/linux/module.h as follows:
 >=20
-> Changes since v1:
+>   "GPL"                           [GNU Public License v2 or later]
+>   "GPL v2"                        [GNU Public License v2]
 >=20
->  - Addressed comments from Miquel Raynal
->    - Changed subject
->    - Coding style
->    - Using timeout constants
->    - Moving version check completely into fsl_ifc_sram_init()
+> I fixed the MODULE_LICENSE tags, assuming the license blocks are
+> the authors' intention.
 >=20
-> Thanks,
-> Kurt
+> Also, add missing MODULE_DESCRIPTION/AUTHOR to denali.c
 >=20
-> Kurt Kanzenbach (2):
->   mtd: rawnand: fsl_ifc: check result of SRAM initialization
->   mtd: rawnand: fsl_ifc: fixup SRAM init for newer ctrl versions
+> While I am touching the license things, I added my credit to denali.c
+> because this driver was largely re-written by me in 2017.
 >=20
->  drivers/mtd/nand/raw/fsl_ifc_nand.c | 36 +++++++++++++++++++++++++++++++=
-+----
->  include/linux/fsl_ifc.h             |  2 ++
->  2 files changed, 34 insertions(+), 4 deletions(-)
->=20
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
 
-Series applied to nand/next.
+Applied to nand/next with subject prefix s/nand/rawnand/.
 
 Thanks,
 Miqu=C3=A8l
