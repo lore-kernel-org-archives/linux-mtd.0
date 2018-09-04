@@ -1,29 +1,19 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Shawn Guo
- <shawnguo@kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-Subject: RE: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI
- driver
-Date: Tue, 4 Sep 2018 05:37:30 +0000
-Message-ID: <VI1PR04MB10382327ECE8B1004B4E983E99030@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
- <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-In-Reply-To: <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fx5Z0-0006P6-Q3
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 07:15:52 +0000
+Subject: Re: [PATCH mtd-utils] ubi-tests: io_paral: Fix error handling of
+ update_volume()
+To: Martin Lund <malu@gomspace.com>, linux-mtd@lists.infradead.org
+References: <20180828083113.18198-1-malu@gomspace.com>
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Message-ID: <d2063942-07f2-35f3-d9e3-2929155e8b56@sigma-star.at>
+Date: Tue, 4 Sep 2018 09:15:27 +0200
 MIME-Version: 1.0
+In-Reply-To: <20180828083113.18198-1-malu@gomspace.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,82 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Prabhakar,
+Hi,
 
-> -----Original Message-----
-> From: Prabhakar Kushwaha
-> Sent: Monday, September 3, 2018 3:24 PM
-> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; linux-
-> mtd@lists.infradead.org; boris.brezillon@bootlin.com; marek.vasut@gmail.c=
-om;
-> linux-spi@vger.kernel.org; devicetree@vger.kernel.org
-> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
-> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
-> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh Narayan
-> Gaur <yogeshnarayan.gaur@nxp.com>
-> Subject: RE: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexS=
-PI driver
->=20
-> Dear Yogesh,
->=20
-> > -----Original Message-----
-> > From: linux-kernel-owner@vger.kernel.org <linux-kernel-
-> > owner@vger.kernel.org> On Behalf Of Yogesh Gaur
-> > Sent: Friday, August 31, 2018 4:00 PM
-> > To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
-> > marek.vasut@gmail.com; linux-spi@vger.kernel.org;
-> > devicetree@vger.kernel.org
-> > Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
-> > arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
-> > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh
-> > Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Subject: [PATCH 4/7] dt-bindings: spi: add binding file for NXP
-> > FlexSPI driver
-> >
-> > Add binding file for NXP FlexSPI driver.
-> >
-> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > ---
-> >  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42
-> > ++++++++++++++++++++++
-> >  1 file changed, 42 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-
-> > fspi.txt
-> >
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > new file mode 100644
-> > index 0000000..9f07116
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > @@ -0,0 +1,42 @@
-> > +* NXP Flex Serial Peripheral Interface (FSPI)
-> > +
-> > +Required properties:
-> > +  - compatible : Should be "nxp,lx2160a-fspi"
-> > +  - reg :        First contains the register location and length,
-> > +                 Second contains the memory mapping address and
-> > +length
->=20
-> Why are we overriding reg property.  Is there any special requirement.
->=20
-> Can we use "reg" and "ranges" property in device tree.
-> Here "reg" represents controller registers and "ranges" represent the mem=
-ory
-> address of flash.
+generally, your approach seams reasonable. However there is one small iss=
+ue with
+your patch:
 
-'reg' property is being mentioned in the file './Documentation/devicetree/b=
-indings/spi/spi-bus.txt'
-No mention has been given for the 'ranges' property.
+On 08/28/2018 10:31 AM, Martin Lund wrote:
+> @@ -302,7 +302,14 @@ int main(int argc, char * const argv[])
+>  	}
+> =20
+>  	for (i =3D 0; i < THREADS_NUM; i++)
+> -		pthread_join(threads[i], NULL);
+> +	{
+> +		pthread_join(threads[i], (void **) &ret);
+> +		if (ret !=3D 0)
+> +			error =3D true;
+> +	}
+> +
 
-Shawn,
-Please suggest, did we add different property node 'reg' for the configurat=
-ion register address space and 'ranges' for memory mapped address space.
+"ret" happens to be an integer, you take a pointer to it and cast it to a=
+ pointer
+to a void*, which receives the result from the thread function.
 
---
-Regards
-Yogesh Gaur
+There are platforms where sizeof(void*) !=3D sizeof(int)
 
->=20
-> --pk
->=20
+Minor nit pick: the '{' should be on the same line as the for, similar to=
+ the rest
+of the code.
+
+Thanks,
+
+David
