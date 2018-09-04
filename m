@@ -1,15 +1,29 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fww3s-0002Cn-OQ
- for linux-mtd@lists.infradead.org; Mon, 03 Sep 2018 21:07:06 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org, adrian.hunter@intel.com, dedekind1@gmail.com,
- syzkaller-bugs@googlegroups.com, waysweird@gmail.com,
- Richard Weinberger <richard@nod.at>
-Subject: [PATCH] ubifs: Check for name being NULL while mounting
-Date: Mon,  3 Sep 2018 23:06:23 +0200
-Message-Id: <20180903210623.2909-1-richard@nod.at>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>, Shawn Guo
+ <shawnguo@kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+Subject: RE: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI
+ driver
+Date: Tue, 4 Sep 2018 05:37:30 +0000
+Message-ID: <VI1PR04MB10382327ECE8B1004B4E983E99030@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +33,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The requested device name can be NULL or an empty string.
-Check for that and refuse to continue. UBIFS has to do this manually
-since we cannot use mount_bdev(), which checks for this condition.
+Hi Prabhakar,
 
-Fixes: 1e51764a3c2ac ("UBIFS: add new flash file system")
-Reported-by: syzbot+38bd0f7865e5c6379280@syzkaller.appspotmail.com
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- fs/ubifs/super.c | 3 +++
- 1 file changed, 3 insertions(+)
+> -----Original Message-----
+> From: Prabhakar Kushwaha
+> Sent: Monday, September 3, 2018 3:24 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; linux-
+> mtd@lists.infradead.org; boris.brezillon@bootlin.com; marek.vasut@gmail.c=
+om;
+> linux-spi@vger.kernel.org; devicetree@vger.kernel.org
+> Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
+> arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh Narayan
+> Gaur <yogeshnarayan.gaur@nxp.com>
+> Subject: RE: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexS=
+PI driver
+>=20
+> Dear Yogesh,
+>=20
+> > -----Original Message-----
+> > From: linux-kernel-owner@vger.kernel.org <linux-kernel-
+> > owner@vger.kernel.org> On Behalf Of Yogesh Gaur
+> > Sent: Friday, August 31, 2018 4:00 PM
+> > To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
+> > marek.vasut@gmail.com; linux-spi@vger.kernel.org;
+> > devicetree@vger.kernel.org
+> > Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
+> > arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
+> > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh
+> > Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > Subject: [PATCH 4/7] dt-bindings: spi: add binding file for NXP
+> > FlexSPI driver
+> >
+> > Add binding file for NXP FlexSPI driver.
+> >
+> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> > ---
+> >  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42
+> > ++++++++++++++++++++++
+> >  1 file changed, 42 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-
+> > fspi.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > new file mode 100644
+> > index 0000000..9f07116
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > @@ -0,0 +1,42 @@
+> > +* NXP Flex Serial Peripheral Interface (FSPI)
+> > +
+> > +Required properties:
+> > +  - compatible : Should be "nxp,lx2160a-fspi"
+> > +  - reg :        First contains the register location and length,
+> > +                 Second contains the memory mapping address and
+> > +length
+>=20
+> Why are we overriding reg property.  Is there any special requirement.
+>=20
+> Can we use "reg" and "ranges" property in device tree.
+> Here "reg" represents controller registers and "ranges" represent the mem=
+ory
+> address of flash.
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 23e7042666a7..87d08f738632 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1954,6 +1954,9 @@ static struct ubi_volume_desc *open_ubi(const char *name, int mode)
- 	int dev, vol;
- 	char *endptr;
- 
-+	if (!name || !*name)
-+		return ERR_PTR(-EINVAL);
-+
- 	/* First, try to open using the device node path method */
- 	ubi = ubi_open_volume_path(name, mode);
- 	if (!IS_ERR(ubi))
--- 
-2.18.0
+'reg' property is being mentioned in the file './Documentation/devicetree/b=
+indings/spi/spi-bus.txt'
+No mention has been given for the 'ranges' property.
+
+Shawn,
+Please suggest, did we add different property node 'reg' for the configurat=
+ion register address space and 'ranges' for memory mapped address space.
+
+--
+Regards
+Yogesh Gaur
+
+>=20
+> --pk
+>=20
