@@ -1,21 +1,23 @@
-Message-ID: <5b8e8a7b.1c69fb81.f713b.79ea@mx.google.com>
-From: Rob Herring <robh@kernel.org>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, mark.rutland@arm.com,
- shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
- computersforpeace@gmail.com, frieder.schrempf@exceet.de,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI
- driver
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxBwd-0003iL-D9
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 14:04:41 +0000
+Received: by mail-lj1-x243.google.com with SMTP id p10-v6so3281214ljg.2
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2018 07:04:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
-Date: Mon, 3 Sep 2018 20:33:25 -0500
+References: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
+In-Reply-To: <20180821143152.32293-1-ricardo.ribalda@gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Tue, 4 Sep 2018 16:04:09 +0200
+Message-ID: <CAPybu_1Wb75fpQg61HC0Ja7eSgMobKAZfywRGKpWWfiLvhjODw@mail.gmail.com>
+Subject: Re: [PATCH 0/8] gpio-addr-flash: Support for device-tree and cleanup
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Aug 31, 2018 at 04:00:01PM +0530, Yogesh Gaur wrote:
-> Add binding file for NXP FlexSPI driver.
+Hi!
 
-Bindings are for h/w, not drivers.
+Any  other comment before I resubmit v2 tomorrow from
+https://github.com/ribalda/linux/tree/gpio-addr-flash-v2
 
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42 ++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> new file mode 100644
-> index 0000000..9f07116
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> @@ -0,0 +1,42 @@
-> +* NXP Flex Serial Peripheral Interface (FSPI)
-> +
-> +Required properties:
-> +  - compatible : Should be "nxp,lx2160a-fspi"
-> +  - reg :        First contains the register location and length,
-> +                 Second contains the memory mapping address and length
-> +  - reg-names :  Should contain the resource reg names:
-> +                 - fspi_base: iconfiguration register address space
-> +                 - fspi_mmap: memory mapped address space
-> +  - interrupts : Should contain the interrupt for the device
-> +
-> +Optional properties:
-> +  - big-endian : See common-properties.txt.
-> +
-> +Required SPI slave node properties:
-> +  - reg :        There are two buses (A and B) with two chip selects each.
-> +                 This encodes to which bus and CS the flash is connected:
-> +                 - <0>: Bus A, CS 0
-> +                 - <1>: Bus A, CS 1
-> +                 - <2>: Bus B, CS 0
-> +                 - <3>: Bus B, CS 1
-> +
-> +Example showing the usage of two SPI NOR slave devices on bus A:
-> +
-> +fspi0: flexspi@20c0000 {
+So far the diff for v2 I have
 
-spi@...
+>From Boris Brezillon:
+-Add Fixes and cc:stable
 
-> +	compatible = "nxp,lx2160a-fspi";
-> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
-> +	reg-names = "fspi_base", "fspi_mmap";
-> +	interrupts = <0 25 0x4>; /* Level high type */
-> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-> +	clock-names = "fspi_en", "fspi";
-> +
-> +	flash0: mt35xu512aba@0 {
+>From kbuild:
+- Fix warnings
 
-flash@0
+- Rebase
 
-> +		reg = <0>;
-> +		....
-> +	};
-> +
-> +	flash1: mt35xu512aba@1 {
 
-flash@1
+Thanks!
+On Tue, Aug 21, 2018 at 4:31 PM Ricardo Ribalda Delgado
+<ricardo.ribalda@gmail.com> wrote:
+>
+> This patch series does the following:
+>
+> 1) Fix bug regarding ioremap size
+> 2) Cleanup code to use new APIs
+> 3) Simplify numerical operations
+> 4) Add support for device-tree devices
+>
+> Thanks!
+>
+> Ricardo Ribalda Delgado (8):
+>   mtd: maps: gpio-addr-flash: Replace custom printk
+>   mtd: maps: gpio-addr-flash: Fix ioremapped size
+>   mtd: maps: gpio-addr-flash: Use devm_* functions
+>   mtd: maps: gpio-addr-flash: Use order insted of size
+>   mtd: maps: gpio-addr-flash: Replace array with an integer
+>   mtd: maps: gpio-addr-flash: Split allocation in two
+>   mtd: maps: gpio-addr-flash: Add support for device-tree devices
+>   dt-binding: mtd: Document gpio-addr-flash
+>
+>  .../bindings/mtd/gpio-addr-flash.txt          |  46 +++
+>  drivers/mtd/maps/gpio-addr-flash.c            | 277 ++++++++++++------
+>  2 files changed, 237 insertions(+), 86 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+>
+> --
+> 2.18.0
+>
 
-Make sure to fix the dts patch too.
 
-> +		reg = <1>;
-> +		....
-> +	};
-> +};
-> -- 
-> 2.7.4
-> 
+-- 
+Ricardo Ribalda
