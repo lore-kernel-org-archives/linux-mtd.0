@@ -1,21 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJLt-00043g-4z
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:59:14 +0000
-Date: Tue, 4 Sep 2018 23:58:50 +0200
+ id 1fxJMy-0004jP-CD
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 22:00:26 +0000
+Date: Tue, 4 Sep 2018 23:59:58 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Boris Brezillon
- <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: rawnand: Convert to using %pOFn instead of
- device_node.name
-Message-ID: <20180904235850.3e1e69df@xps13>
-In-Reply-To: <20180828015252.28511-33-robh@kernel.org>
-References: <20180828015252.28511-1-robh@kernel.org>
- <20180828015252.28511-33-robh@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>, "linux-mtd @ lists .
+ infradead . org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] mtd: rawnand: qcom: don't include dma-direct.h
+Message-ID: <20180904235958.0d86e8c1@xps13>
+In-Reply-To: <20180827123107.GA27035@lst.de>
+References: <20180827085943.24324-1-hch@lst.de>
+ <CAFLxGvy=1r0aKHxj_LtwFrGMULH0nFk9ZJR6YpeEM6D24P2-mw@mail.gmail.com>
+ <20180827123107.GA27035@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,23 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hi Christoph,
 
-Rob Herring <robh@kernel.org> wrote on Mon, 27 Aug 2018 20:52:34 -0500:
+Christoph Hellwig <hch@lst.de> wrote on Mon, 27 Aug 2018 14:31:07 +0200:
 
-> In preparation to remove the node name pointer from struct device_node,
-> convert printf users to use the %pOFn format specifier.
+> On Mon, Aug 27, 2018 at 11:51:29AM +0200, Richard Weinberger wrote:
+> > On Mon, Aug 27, 2018 at 10:59 AM Christoph Hellwig <hch@lst.de> wrote: =
+=20
+> > >
+> > > A recent commit removed the incorrect use of phys_to_dma from this
+> > > driver, but failed to remove the dma-direct.h include, so do that
+> > > now.
+> > >
+> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > ---
+> > >  drivers/mtd/nand/raw/qcom_nandc.c | 1 -
+> > >  include/linux/dma-mapping.h       | 6 ++++++
+> > >  2 files changed, 6 insertions(+), 1 deletion(-) =20
+> >=20
+> > Hmm, the diffstat does not match the diff itself. =20
 >=20
-> Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Brian Norris <computersforpeace@gmail.com>
-> Cc: Marek Vasut <marek.vasut@gmail.com>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-
+> Tha's because it had an accidental hunk in my tree I removed when
+> sending.  I think you can trust the diff, but if you really want
+> I can resend.
 
 Applied to nand/next.
 
