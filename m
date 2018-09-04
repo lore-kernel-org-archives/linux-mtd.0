@@ -1,18 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJGV-00018D-8l
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:53:41 +0000
-Date: Tue, 4 Sep 2018 23:53:17 +0200
+ id 1fxJHk-0001St-T3
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:54:58 +0000
+Date: Tue, 4 Sep 2018 23:54:34 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
-Cc: boris.brezillon@bootlin.com, richard@nod.at, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] mtd: nand: toshiba: Add support for Toshiba Memory
- BENAND (Built-in ECC NAND)
-Message-ID: <20180904235317.0c98e0f1@xps13>
-In-Reply-To: <1533360352-2882-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
-References: <1533360352-2882-1-git-send-email-yoshitake.kobayashi@toshiba.co.jp>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v4 1/2] mtd: rawnand: marvell: document a bit more the
+ driver
+Message-ID: <20180904235434.10b9318b@xps13>
+In-Reply-To: <20180805145257.15256-1-miquel.raynal@bootlin.com>
+References: <20180805145257.15256-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,22 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yoshitake,
+Hello,
 
-KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp> wrote on Sat,
-4 Aug 2018 14:25:52 +0900:
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  5 Aug 2018
+16:52:56 +0200:
 
-> This patch is a patch to support TOSHIBA MEMORY CORPORATION BENAND
-> memory devices.  Check the status of the built-in ECC with the Read
-> Status command without using the vendor specific command.  The Read
-> Status command only knows whether there was bitflips above the
-> threshold and can not get accurate bitflips.  For now, I set
-> max_bitflips mtd->bitflip_threshold.
+> A stale document about the old pxa3cc_nand.c driver is available in
+> Documentation/mtd/nand/. Rewrite the parts that explain the IP itself
+> and some non-trivial choices made in the driver directly in
+> marvell_nand.c to then be able to remove this file.
 >=20
-> Signed-off-by: KOBAYASHI Yoshitake <yoshitake.kobayashi@toshiba.co.jp>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 > ---
 
-Applied to nand/next.
+Series applied to nand/next.
 
-Thanks,
 Miqu=C3=A8l
