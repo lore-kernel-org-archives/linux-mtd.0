@@ -1,28 +1,25 @@
-Date: Tue, 4 Sep 2018 14:46:27 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
-Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI
- driver
-Message-ID: <20180904144627.1de264b6@bbrezillon>
-In-Reply-To: <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
- <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+Received: from esa4.microchip.iphmx.com ([68.232.154.123])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxB6s-0000G1-9b
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 13:11:13 +0000
+Subject: Re: Query: spi-nor: dummy buswidth calculation
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+CC: "juliensu@mxic.com.tw" <juliensu@mxic.com.tw>, "zhengxunli@mxic.com.tw"
+ <zhengxunli@mxic.com.tw>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "masonccyang@mxic.com.tw"
+ <masonccyang@mxic.com.tw>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>
+References: <VI1PR04MB1038E10EBE458DD72A1070C499030@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20180904143028.4629fe10@bbrezillon>
+From: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Message-ID: <be22e046-48dd-a599-b812-825abde9916d@microchip.com>
+Date: Tue, 4 Sep 2018 15:10:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20180904143028.4629fe10@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,55 +29,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 Sep 2018 09:54:08 +0000
-Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+Hi all,
 
-> Dear Yogesh,
+Le 04/09/2018 à 14:30, Boris Brezillon a écrit :
+> +Macronix team
 > 
-> > -----Original Message-----
-> > From: linux-kernel-owner@vger.kernel.org <linux-kernel-  
-> > owner@vger.kernel.org> On Behalf Of Yogesh Gaur  
-> > Sent: Friday, August 31, 2018 4:00 PM
-> > To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
-> > marek.vasut@gmail.com; linux-spi@vger.kernel.org;
-> > devicetree@vger.kernel.org
-> > Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org; linux-
-> > arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
-> > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh
-> > Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Subject: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI driver
-> > 
-> > Add binding file for NXP FlexSPI driver.
-> > 
-> > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > ---
-> >  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42
-> > ++++++++++++++++++++++
-> >  1 file changed, 42 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-
-> > fspi.txt
-> > 
-> > diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > new file mode 100644
-> > index 0000000..9f07116
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> > @@ -0,0 +1,42 @@
-> > +* NXP Flex Serial Peripheral Interface (FSPI)
-> > +
-> > +Required properties:
-> > +  - compatible : Should be "nxp,lx2160a-fspi"
-> > +  - reg :        First contains the register location and length,
-> > +                 Second contains the memory mapping address and length  
+> On Tue, 4 Sep 2018 09:28:11 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 > 
-> Why are we overriding reg property.  Is there any special requirement. 
+>> Hi Boris,
+>>
+>> I have query regarding dummy bus width calculation for the read commands, added in the patch series [1]
+>>
+>> In func m25p80_read(), dummy.buswidth is being assigned as
+>> +       op.dummy.buswidth = op.addr.buswidth;
+>>
+>> Above, buswidth for dummy commands are being assigned and are marked equal to the buswidth of the address command.
+>> This is true for case when we are doing operation in 1-4-4 or 1-2-2 protocol where data as well as address are running on same data lines and having same buswidth.
+>>
+>> I am adding support of octal commands in framework and for this needs to add support for 1-1-8 protocol for Micron flash MT35XU512ABA1G12.
+>> For octal command, 7Ch, flash is sending data and the dummy on the 8 data lines and address on 1 data line.
 > 
-> Can we use "reg" and "ranges" property in device tree.
-> Here "reg" represents controller registers and "ranges" represent the memory address of flash.
+> Interesting. Macronix is also working on octo-mode support. I think we
+> should sync instead of duplicating the work.
+> 
+>>
+>> If I do below code change, then I am getting correct data else there is data corruption only in the first byte read.
+>> -       op.dummy.buswidth = op.addr.buswidth;
+>> +       op.dummy.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
+> 
+> Regarding this particular aspect, I just followed what was done before
+> the conversion to spi_mem_exec_op(). Maybe it was not correct though.
+>
 
-No, ranges is not used for that. It's used when you need to convert
-from one address space to another, which is not what you're describing
-here. Check section 2.38 of this document [1] for more details.
+Actually this is correct and changing that for the above proposal would
+clearly break support of all existing memories in SPI 1-1-2 or SPI 1-1-4.
 
-[1]https://elinux.org/images/c/cf/Power_ePAPR_APPROVED_v1.1.pdf
+SPI x-y-z means:
+- x I/O line(s) for the instruction op code cycles
+- y I/O line(s) for the address/mode/dummy cycles
+- z I/O line(s) for the data cycles
+
+Till now, this is how all Dual or Quad SPI NOR flash memories work.
+Besides, according to the recent JEDEC JESD126 rev C specification,
+introducing support to Octo SPI protocols:
+
+6.4.20 JEDEC Basic Flash Parameter Table: 17th DWORD
+Bits   Description
+
+23:21  (1-1-8) Fast Read Number of Mode Clocks
+
+       This filed will be 000b if Mode Bits are not supported.
+       NOTE This field should be counted in clocks not number of bits
+       received by the serial flash. The master drivers the bus during
+       "mode bits" cycles, the master tri-states the bus during
+       "dummy" cycles.
+
+       Example: If 4 mode bits are needed with a single input address
+       phase command, this field would be 100b.
+
+20:16  (1-1-8) Fast Read Number of Wait states (dummy clocks) needed
+       before valid output
+
+       This field will be 00000b if wait states/dummy clocks are not supported.
+       (The number of dummy clocks should be > 0 to avoid contention on bi-
+        directional pins.)
+
+       Example: If 8 bits are needed with a single input address phase command,
+       this field would be 01000b.
+
+So it looks like SPI 1-1-8 follows the same logic as SPI 1-1-2 and SPI 1-1-4.
+Then either there is an error about the actual number of dummy clock cycles to
+use or Micron folks have decided to design things their own way.
+
+I've tried to download the datasheet for MT35XU512ABA1G12 but its under NDA.
+
+Best regards,
+
+Cyrille
+
+ 
+> Regards,
+> 
+> Boris
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
