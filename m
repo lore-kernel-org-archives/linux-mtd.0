@@ -1,18 +1,25 @@
-From: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-To: linux-mtd@lists.infradead.org
-Cc: linux-snps-arc@lists.infradead.org, linux-kernel@vger.kernel.org,
- Alexey Brodkin <Alexey.Brodkin@synopsys.com>,
- Vineet Gupta <Vineet.Gupta1@synopsys.com>,
- Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
-Subject: [PATCH 2/2] mtd: spi-nor: add support for sst26wf016, sst26wf032
-Date: Tue,  4 Sep 2018 18:33:42 +0300
-Message-Id: <20180904153342.16742-3-Eugeniy.Paltsev@synopsys.com>
-In-Reply-To: <20180904153342.16742-1-Eugeniy.Paltsev@synopsys.com>
-References: <20180904153342.16742-1-Eugeniy.Paltsev@synopsys.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxIOK-0003DC-IL
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 20:57:42 +0000
+Date: Tue, 4 Sep 2018 22:57:26 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Daniel Mack
+ <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>, Sergey
+ Larin <cerg2010cerg2010@mail.ru>
+Subject: Re: [PATCH v2 2/4] ARM: pxa: palmtreo: Drop docg4 specific init
+Message-ID: <20180904225726.2593ff10@xps13>
+In-Reply-To: <87d0ue9mfd.fsf@belgarion.home>
+References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
+ <20180804205923.25298-2-boris.brezillon@bootlin.com>
+ <87d0ue9mfd.fsf@belgarion.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit adds support for the SST sst26wf016 and sst26wf032
-flash IC.
+Hi Robert,
 
-NOTE:
-this patch is basically following mine u-boot commit port:
-http://git.denx.de/?p=u-boot.git;a=commitdiff;h=a19e97157c3721ef9c4b15c68c1773467a3b4a98
+Robert Jarzmik <robert.jarzmik@free.fr> wrote on Sun, 19 Aug 2018
+21:38:30 +0200:
 
-Signed-off-by: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>
----
- drivers/mtd/spi-nor/spi-nor.c | 2 ++
- 1 file changed, 2 insertions(+)
+> Boris Brezillon <boris.brezillon@bootlin.com> writes:
+>=20
+> > The docg4 driver has been removed. Remove the code that was registering
+> > a docg4 device.
+> >
+> > Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com> =20
+> No answer for several weeks from the maintainers, so let's say they lost
+> interest.
+>=20
+> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 6f74c75c9ddc..e1562363862a 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1333,6 +1333,8 @@ static const struct flash_info spi_nor_ids[] = {
- 	{ "sst25wf040b", INFO(0x621613, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "sst25wf040",  INFO(0xbf2504, 0, 64 * 1024,  8, SECT_4K | SST_WRITE) },
- 	{ "sst25wf080",  INFO(0xbf2505, 0, 64 * 1024, 16, SECT_4K | SST_WRITE) },
-+	{ "sst26wf016",  INFO(0xbf2651, 0, 64 * 1024, 32, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
-+	{ "sst26wf032",  INFO(0xbf2622, 0, 64 * 1024, 64, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "sst26vf064b", INFO(0xbf2643, 0, 64 * 1024, 128, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 
- 	/* ST Microelectronics -- newer production may have feature updates */
--- 
-2.14.4
+I'm about to pick this series including this patch, do you need an
+immutable branch?
+
+Thanks,
+Miqu=C3=A8l
