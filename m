@@ -1,20 +1,18 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJKv-0003hv-Dj
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:58:16 +0000
-Date: Tue, 4 Sep 2018 23:57:50 +0200
+Date: Tue, 4 Sep 2018 23:58:16 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Harvey Hunt <harveyhuntnexus@gmail.com>, Boris Brezillon
+Cc: Josh Wu <rainyfeeling@outlook.com>, Boris Brezillon
  <boris.brezillon@bootlin.com>, Richard Weinberger <richard@nod.at>, David
  Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Kees Cook
- <keescook@chromium.org>
-Subject: Re: [PATCH] mtd: rawnand: jz4780: use struct_size() in devm_kzalloc()
-Message-ID: <20180904235750.3e34397d@xps13>
-In-Reply-To: <20180823193332.GA31602@embeddedor.com>
-References: <20180823193332.GA31602@embeddedor.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Nicolas
+ Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+ <alexandre.belloni@bootlin.com>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Kees
+ Cook <keescook@chromium.org>
+Subject: Re: [PATCH] mtd: rawnand: atmel: use struct_size() in devm_kzalloc()
+Message-ID: <20180904235816.4b239b7a@xps13>
+In-Reply-To: <20180824010938.GA25581@embeddedor.com>
+References: <20180824010938.GA25581@embeddedor.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -30,7 +28,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Hi Gustavo,
 
 "Gustavo A. R. Silva" <gustavo@embeddedor.com> wrote on Thu, 23 Aug
-2018 14:33:32 -0500:
+2018 20:09:38 -0500:
 
 > One of the more common cases of allocation size calculations is finding
 > the size of a structure that has a zero-sized array at the end, along
@@ -50,27 +48,10 @@ t, GFP_KERNEL);
 > instance =3D devm_kzalloc(dev, struct_size(instance, entry, count), GFP_K=
 ERNEL);
 >=20
+> This issue was detected with the help of Coccinelle.
+>=20
 > Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 > ---
->  drivers/mtd/nand/raw/jz4780_nand.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz=
-4780_nand.c
-> index db4fa60..ac62395 100644
-> --- a/drivers/mtd/nand/raw/jz4780_nand.c
-> +++ b/drivers/mtd/nand/raw/jz4780_nand.c
-> @@ -352,7 +352,7 @@ static int jz4780_nand_probe(struct platform_device *=
-pdev)
->  		return -ENODEV;
->  	}
-> =20
-> -	nfc =3D devm_kzalloc(dev, sizeof(*nfc) + (sizeof(nfc->cs[0]) * num_bank=
-s), GFP_KERNEL);
-> +	nfc =3D devm_kzalloc(dev, struct_size(nfc, cs, num_banks), GFP_KERNEL);
->  	if (!nfc)
->  		return -ENOMEM;
-> =20
 
 Applied to nand/next.
 
