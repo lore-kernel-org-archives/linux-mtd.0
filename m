@@ -1,20 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxAay-0001x5-IA
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 12:38:13 +0000
-Date: Tue, 4 Sep 2018 14:38:01 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ashish Kumar <ashish.kumar@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>
-Subject: Re: Query| USE of MTD_CFI_ADV_OPTIONS for SPI-NOR/serial-NOR flash
- for BE-kernel on arm64
-Message-ID: <20180904143801.36297bb6@bbrezillon>
-In-Reply-To: <VI1PR04MB4015390D61A2AA4F289CE15D95030@VI1PR04MB4015.eurprd04.prod.outlook.com>
-References: <VI1PR04MB4015390D61A2AA4F289CE15D95030@VI1PR04MB4015.eurprd04.prod.outlook.com>
+Received: from mail-it0-x241.google.com ([2607:f8b0:4001:c0b::241])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxAfR-0004Ef-Bi
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 12:42:50 +0000
+Received: by mail-it0-x241.google.com with SMTP id d10-v6so4703589itj.5
+ for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2018 05:42:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20180904091438.3755-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20180904091438.3755-1-boris.brezillon@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 4 Sep 2018 14:42:26 +0200
+Message-ID: <CACRpkdaORSM73HaGz=2j4vvRkZxZCfo_GoTFRy4jk9SLMdMVaQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: fsmc: Fix Hamming ECC
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
+ stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ashish,
+On Tue, Sep 4, 2018 at 11:14 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
 
-On Tue, 4 Sep 2018 11:21:11 +0000
-Ashish Kumar <ashish.kumar@nxp.com> wrote:
+> Apparently ECC bytes are not ordered as expected by nand_correct_data()
+> in the ecc_calc buffer which leads to invalid bitflip correction when
+> an ECC error is detected (can be reproduced with 'nandbiterrs -i').
+>
+> Re-ordering ECC bytes seems to fix the problem.
+>
+> While at it, get rid of the useless u8 cast.
+>
+> Fixes: 6c009ab89a21 ("mtd: generic FSMC NAND MTD driver")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-> Hi all,
->=20
-> I may sound very na=C3=AFve, but I do not have other options to look for.
-> What I was trying to achieve was "running BE-kernel on arm64, with the SP=
-I-NOR controller(fsl_qspi) configured for AHB and IP buffer in BE mode. It =
-works to an extent but not all is working correctly.
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Could you detail what is working and what is not?
-
->=20
-> I was grep-ing through /driver/mtd/ and include/linux/mtd to look for the=
-se advance option(MTD_CFI_ADV_OPTIONS) to be used for SPI-NOR interface, is=
- there a way this(MTD_CFI_BE_BYTE_SWAP) can be achieved for SPI-NOR flash?
->=20
-> Is anyone working on this, or similar thing?
-
-That's not the proper fix. If you want you driver to work in
-big-endian, fix the driver.
-
-Regards,
-
-Boris
+Yours,
+Linus Walleij
