@@ -1,21 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fx9jG-0007NE-Ko
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 11:42:44 +0000
-Date: Tue, 4 Sep 2018 13:42:18 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Linus
- Walleij <linus.walleij@linaro.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: rawnand: fsmc: Fix Hamming ECC
-Message-ID: <20180904134218.3da32738@xps13>
-In-Reply-To: <20180904091438.3755-1-boris.brezillon@bootlin.com>
-References: <20180904091438.3755-1-boris.brezillon@bootlin.com>
+ id 1fxATh-0006cV-9e
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 12:30:42 +0000
+Date: Tue, 4 Sep 2018 14:30:28 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "juliensu@mxic.com.tw" <juliensu@mxic.com.tw>, "zhengxunli@mxic.com.tw"
+ <zhengxunli@mxic.com.tw>, "masonccyang@mxic.com.tw"
+ <masonccyang@mxic.com.tw>
+Subject: Re: Query: spi-nor: dummy buswidth calculation
+Message-ID: <20180904143028.4629fe10@bbrezillon>
+In-Reply-To: <VI1PR04MB1038E10EBE458DD72A1070C499030@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <VI1PR04MB1038E10EBE458DD72A1070C499030@VI1PR04MB1038.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
++Macronix team
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  4 Sep 2018
-11:14:38 +0200:
+On Tue, 4 Sep 2018 09:28:11 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-> Apparently ECC bytes are not ordered as expected by nand_correct_data()
-> in the ecc_calc buffer which leads to invalid bitflip correction when
-> an ECC error is detected (can be reproduced with 'nandbiterrs -i').
->=20
-> Re-ordering ECC bytes seems to fix the problem.
->=20
-> While at it, get rid of the useless u8 cast.
->=20
-> Fixes: 6c009ab89a21 ("mtd: generic FSMC NAND MTD driver")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
->  drivers/mtd/nand/raw/fsmc_nand.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
+> Hi Boris,
+> 
+> I have query regarding dummy bus width calculation for the read commands, added in the patch series [1]
+> 
+> In func m25p80_read(), dummy.buswidth is being assigned as
+> +       op.dummy.buswidth = op.addr.buswidth;
+> 
+> Above, buswidth for dummy commands are being assigned and are marked equal to the buswidth of the address command.
+> This is true for case when we are doing operation in 1-4-4 or 1-2-2 protocol where data as well as address are running on same data lines and having same buswidth.
+> 
+> I am adding support of octal commands in framework and for this needs to add support for 1-1-8 protocol for Micron flash MT35XU512ABA1G12.
+> For octal command, 7Ch, flash is sending data and the dummy on the 8 data lines and address on 1 data line.
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Interesting. Macronix is also working on octo-mode support. I think we
+should sync instead of duplicating the work.
 
-Thanks,
-Miqu=C3=A8l
+> 
+> If I do below code change, then I am getting correct data else there is data corruption only in the first byte read.
+> -       op.dummy.buswidth = op.addr.buswidth;
+> +       op.dummy.buswidth = spi_nor_get_protocol_data_nbits(nor->read_proto);
+
+Regarding this particular aspect, I just followed what was done before
+the conversion to spi_mem_exec_op(). Maybe it was not correct though.
+
+Regards,
+
+Boris
