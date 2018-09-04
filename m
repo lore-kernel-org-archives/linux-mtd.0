@@ -1,17 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJDj-0007jY-CJ
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:50:48 +0000
-Date: Tue, 4 Sep 2018 23:50:25 +0200
+ id 1fxJFF-00007z-Bl
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:52:22 +0000
+Date: Tue, 4 Sep 2018 23:51:59 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: Get rid of the ->read_word() hook
-Message-ID: <20180904235025.305527f9@xps13>
-In-Reply-To: <20180727210542.8266-1-boris.brezillon@bootlin.com>
-References: <20180727210542.8266-1-boris.brezillon@bootlin.com>
+To: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, linux-mtd@lists.infradead.org, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Ofer Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH v2] mtd: nand: use regmap_update_bits() in marvell_nand
+ for syscon access
+Message-ID: <20180904235159.6b1361df@xps13>
+In-Reply-To: <20180802085625.29635-1-thomas.petazzoni@bootlin.com>
+References: <20180802085625.29635-1-thomas.petazzoni@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -24,32 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Thomas,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri, 27 Jul 2018
-23:05:42 +0200:
+Thomas Petazzoni <thomas.petazzoni@bootlin.com> wrote on Thu,  2 Aug
+2018 10:56:25 +0200:
 
-> Commit c120e75e0e7d ("mtd: nand: use read_oob() instead of cmdfunc()
-> for bad block check") removed this only user of the ->read_word()
-> method but kept the hook in place. Remove it now.
+> The marvell_nfc_init() function fiddles with some bits of a system
+> controller on Armada 7K/8K. However, it does a read/modify/write
+> sequence on GENCONF_CLK_GATING_CTRL and GENCONF_ND_CLK_CTRL, which
+> isn't safe from a concurrency point of view, as the regmap lock isn't
+> taken accross the read/modify/write sequence. To solve this issue, use
+> regmap_update_bits().
 >=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> While at it, since the "reg" variable is no longer needed for the
+> read/modify/write sequences, get rid of it for the regmap_write() to
+> GENCONF_SOC_DEVICE_MUX, and directly pass the value to be written as
+> argument.
+>=20
+> Fixes: 02f26ecf8c772 ("mtd: nand: add reworked Marvell NAND controller dr=
+iver")
+> Signed-off-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 > ---
->  drivers/mtd/nand/raw/atmel/nand-controller.c |  9 ---------
->  drivers/mtd/nand/raw/au1550nd.c              | 15 ---------------
->  drivers/mtd/nand/raw/denali.c                | 10 ----------
->  drivers/mtd/nand/raw/hisi504_nand.c          | 10 ----------
->  drivers/mtd/nand/raw/mpc5121_nfc.c           | 11 -----------
->  drivers/mtd/nand/raw/mxc_nand.c              | 13 -------------
->  drivers/mtd/nand/raw/nand_base.c             | 14 --------------
->  drivers/mtd/nand/raw/nandsim.c               | 10 ----------
->  drivers/mtd/nand/raw/sh_flctl.c              | 10 ----------
->  drivers/mtd/nand/raw/socrates_nand.c         | 12 ------------
->  include/linux/mtd/rawnand.h                  |  2 --
->  11 files changed, 116 deletions(-)
->=20
 
-Applied to nand/next.
+Applied to nand/next with the subject prefix changed to
+"mtd: rawnand: marvell:"
 
 Thanks,
 Miqu=C3=A8l
