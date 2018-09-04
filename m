@@ -1,18 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJHk-0001St-T3
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:54:58 +0000
-Date: Tue, 4 Sep 2018 23:54:34 +0200
+ id 1fxJIk-00033v-68
+ for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 21:55:59 +0000
+Date: Tue, 4 Sep 2018 23:55:35 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+To: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
  <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v4 1/2] mtd: rawnand: marvell: document a bit more the
- driver
-Message-ID: <20180904235434.10b9318b@xps13>
-In-Reply-To: <20180805145257.15256-1-miquel.raynal@bootlin.com>
-References: <20180805145257.15256-1-miquel.raynal@bootlin.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Wenyou Yang
+ <wenyou.yang@microchip.com>, Jagdish Gediya <jagdish.gediya@nxp.com>, Jane
+ Wan <Jane.Wan@nokia.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] mtd: rawnand: fsl_ifc: fix SRAM initialization
+ for newer controller
+Message-ID: <20180904235535.165be621@xps13>
+In-Reply-To: <20180813071846.9433-1-kurt@linutronix.de>
+References: <20180813071846.9433-1-kurt@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,19 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Kurt,
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Sun,  5 Aug 2018
-16:52:56 +0200:
+Kurt Kanzenbach <kurt@linutronix.de> wrote on Mon, 13 Aug 2018 09:18:44
++0200:
 
-> A stale document about the old pxa3cc_nand.c driver is available in
-> Documentation/mtd/nand/. Rewrite the parts that explain the IP itself
-> and some non-trivial choices made in the driver directly in
-> marvell_nand.c to then be able to remove this file.
+> Hi,
 >=20
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
+> this is version two of
+>=20
+>  lkml.kernel.org/r/20180806092137.9287-1-kurt@linutronix.de
+>=20
+> Changes since v1:
+>=20
+>  - Addressed comments from Miquel Raynal
+>    - Changed subject
+>    - Coding style
+>    - Using timeout constants
+>    - Moving version check completely into fsl_ifc_sram_init()
+>=20
+> Thanks,
+> Kurt
+>=20
+> Kurt Kanzenbach (2):
+>   mtd: rawnand: fsl_ifc: check result of SRAM initialization
+>   mtd: rawnand: fsl_ifc: fixup SRAM init for newer ctrl versions
+>=20
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c | 36 +++++++++++++++++++++++++++++++=
++----
+>  include/linux/fsl_ifc.h             |  2 ++
+>  2 files changed, 34 insertions(+), 4 deletions(-)
+>=20
 
 Series applied to nand/next.
 
+Thanks,
 Miqu=C3=A8l
