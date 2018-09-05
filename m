@@ -1,19 +1,22 @@
-Received: from martinlund.org ([173.255.130.145]
- helo=slmp-550-86.slc.westdc.net)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxYAH-0006ae-Us
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 13:48:15 +0000
-Received: from [79.171.149.172] (port=34584 helo=quark.gomspace.lan)
- by slmp-550-86.slc.westdc.net with esmtpsa
- (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128) (Exim 4.91)
- (envelope-from <malu@gomspace.com>) id 1fxYA4-004Lj4-Qo
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 07:48:01 -0600
-From: Martin Lund <malu@gomspace.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 mtd-utils] ubi-tests: io_paral: Fix error handling of
- update_volume()
-Date: Wed,  5 Sep 2018 15:47:38 +0200
-Message-Id: <20180905134738.3461-1-malu@gomspace.com>
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxYvl-0006bh-2W
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 14:37:17 +0000
+Received: by mail-ed1-x544.google.com with SMTP id s10-v6so6250837edb.11
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2018 07:37:04 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org (open list)
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH v2 6/8] mtd: maps: gpio-addr-flash: Split allocation in two
+Date: Wed,  5 Sep 2018 16:36:41 +0200
+Message-Id: <20180905143643.9871-7-ricardo.ribalda@gmail.com>
+In-Reply-To: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,98 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The io_paral test returns success even in case it throws e.g. the
-following error message:
+Instead of making one allocation and then calculating the addresses of
+those two pointers in that area make two allocations. This simplifies
+the code.
 
-[io_paral] update_volume():125: written and read data are different
-
-This patch fixes so that the io_paral application returns a non-zero
-error code when an error is detected.
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- tests/ubi-tests/io_paral.c | 28 ++++++++++++++++++----------
- 1 file changed, 18 insertions(+), 10 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/tests/ubi-tests/io_paral.c b/tests/ubi-tests/io_paral.c
-index b2b462e..da24b1b 100644
---- a/tests/ubi-tests/io_paral.c
-+++ b/tests/ubi-tests/io_paral.c
-@@ -24,6 +24,7 @@
- #include <errno.h>
- #include <string.h>
- #include <stdlib.h>
-+#include <stdint.h>
- #include <unistd.h>
- #include <pthread.h>
- #include <sys/types.h>
-@@ -149,22 +150,22 @@ static void *update_thread(void *ptr)
- 			if (ret) {
- 				failed("ubi_rmvol");
- 				errorm("cannot remove volume %d", vol_id);
--				return NULL;
-+				return (void *) -1;
- 			}
- 			ret = ubi_mkvol(libubi, node, &reqests[vol_id]);
- 			if (ret) {
- 				failed("ubi_mkvol");
- 				errorm("cannot create volume %d", vol_id);
--				return NULL;
-+				return (void *) -1;
- 			}
- 		}
- 
- 		ret = update_volume(vol_id, bytes);
--		if (ret)
--			return NULL;
-+		if (ret != 0)
-+			return (void *) -1;
- 	}
- 
--	return NULL;
-+	return (void *) 0;
- }
- 
- static void *write_thread(void *ptr)
-@@ -179,7 +180,7 @@ static void *write_thread(void *ptr)
- 	if (fd == -1) {
- 		failed("open");
- 		errorm("cannot open \"%s\"\n", vol_node);
--		return NULL;
-+		return (void *) -1;
- 	}
- 
- 	ret = ubi_set_property(fd, UBI_VOL_PROP_DIRECT_WRITE, 1);
-@@ -228,12 +229,13 @@ static void *write_thread(void *ptr)
- 	}
- 
- 	close(fd);
--	return NULL;
-+	return (void *) 0;
- }
- 
- int main(int argc, char * const argv[])
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 8f5e3dce9be3..9455a8448064 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -205,7 +205,7 @@ static const char * const part_probe_types[] = {
+  */
+ static int gpio_flash_probe(struct platform_device *pdev)
  {
--	int i, ret;
-+	int i, ret, error=false;
-+	intptr_t thread_ret;
- 	pthread_t threads[THREADS_NUM];
+-	size_t i, arr_size;
++	size_t i;
+ 	struct physmap_flash_data *pdata;
+ 	struct resource *memory;
+ 	struct resource *gpios;
+@@ -218,8 +218,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	if (!memory || !gpios || !gpios->end)
+ 		return -EINVAL;
  
- 	if (initial_check(argc, argv))
-@@ -301,8 +303,14 @@ int main(int argc, char * const argv[])
- 		}
- 	}
+-	arr_size = sizeof(state->gpio_addrs[0]) * gpios->end;
+-	state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
++	state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
+ 	if (!state)
+ 		return -ENOMEM;
  
--	for (i = 0; i < THREADS_NUM; i++)
--		pthread_join(threads[i], NULL);
-+	for (i = 0; i < THREADS_NUM; i++) {
-+		pthread_join(threads[i], (void **) &thread_ret);
-+		if (thread_ret != 0)
-+			error = true;
-+	}
-+
-+	if (error)
-+		goto remove;
+@@ -228,7 +227,12 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	 * away their pointer types here to the known types (gpios->xxx).
+ 	 */
+ 	state->gpio_count     = gpios->end;
+-	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
++	state->gpio_addrs     = devm_kzalloc(&pdev->dev,
++					     sizeof(state->gpio_addrs[0]) *
++								gpios->end,
++					     GFP_KERNEL);
++	if (!state->gpio_addrs)
++		return -ENOMEM;
+ 	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
  
- 	for (i = 0; i <= THREADS_NUM; i++) {
- 		if (ubi_rmvol(libubi, node, i)) {
+ 	state->map.name       = DRIVER_NAME;
 -- 
 2.18.0
