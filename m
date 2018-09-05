@@ -1,18 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxJMy-0004jP-CD
- for linux-mtd@lists.infradead.org; Tue, 04 Sep 2018 22:00:26 +0000
-Date: Tue, 4 Sep 2018 23:59:58 +0200
+ id 1fxRbm-0003jg-8c
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 06:48:12 +0000
+Date: Wed, 5 Sep 2018 08:47:57 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Weinberger <richard.weinberger@gmail.com>, "linux-mtd @ lists .
- infradead . org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: qcom: don't include dma-direct.h
-Message-ID: <20180904235958.0d86e8c1@xps13>
-In-Reply-To: <20180827123107.GA27035@lst.de>
-References: <20180827085943.24324-1-hch@lst.de>
- <CAFLxGvy=1r0aKHxj_LtwFrGMULH0nFk9ZJR6YpeEM6D24P2-mw@mail.gmail.com>
- <20180827123107.GA27035@lst.de>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] mtd: rawnand: ams-delta: Cleanups and optimizations
+Message-ID: <20180905084757.432e7c19@xps13>
+In-Reply-To: <20180820213904.13475-1-jmkrzyszt@gmail.com>
+References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
+ <20180820213904.13475-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -25,31 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Christoph,
+Hi Janusz,
 
-Christoph Hellwig <hch@lst.de> wrote on Mon, 27 Aug 2018 14:31:07 +0200:
+Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote on Mon, 20 Aug 2018
+23:39:01 +0200:
 
-> On Mon, Aug 27, 2018 at 11:51:29AM +0200, Richard Weinberger wrote:
-> > On Mon, Aug 27, 2018 at 10:59 AM Christoph Hellwig <hch@lst.de> wrote: =
-=20
-> > >
-> > > A recent commit removed the incorrect use of phys_to_dma from this
-> > > driver, but failed to remove the dma-direct.h include, so do that
-> > > now.
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > ---
-> > >  drivers/mtd/nand/raw/qcom_nandc.c | 1 -
-> > >  include/linux/dma-mapping.h       | 6 ++++++
-> > >  2 files changed, 6 insertions(+), 1 deletion(-) =20
-> >=20
-> > Hmm, the diffstat does not match the diff itself. =20
+> This series consist of possibly ready to apply patches extracted from
+> a former one titled "mtd: rawnand:  ams-delta: Use GPIO API for data I/O".
+> Remaining patches implementing conversion of data I/O to GPIO have been
+> postponed until gpiolib is optimized to ensure sufficient performance.
 >=20
-> Tha's because it had an accidental hunk in my tree I removed when
-> sending.  I think you can trust the diff, but if you really want
-> I can resend.
+>=20
+> Janusz Krzysztofik (3):
+>       mtd: rawnand: ams-delta: show parent device in sysfs
+>       mtd: rawnand: ams-delta: Use private structure
+>       mtd: rawnand: ams-delta: Set port direction when needed
 
-Applied to nand/next.
+Patch 2/3 does not apply on nand/next. Indeed the driver does not look
+the same as in the diff. I don't see any changes on my side that could
+explain this so perhaps you could rebase on top of 4.19-rc2 (or
+nand/next, as you wish) and resend the series?
 
 Thanks,
 Miqu=C3=A8l
