@@ -1,9 +1,9 @@
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxYvl-0006bp-Sx
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 14:37:18 +0000
-Received: by mail-ed1-x542.google.com with SMTP id u1-v6so6286651eds.1
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2018 07:37:07 -0700 (PDT)
+Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxYvY-0003YU-AO
+ for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 14:37:21 +0000
+Received: by mail-ed1-x543.google.com with SMTP id f38-v6so6262209edd.8
+ for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2018 07:36:53 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,13 +11,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  linux-kernel@vger.kernel.org (open list)
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
- devicetree@vger.kernel.org
-Subject: [PATCH v2 8/8] dt-binding: mtd: Document gpio-addr-flash
-Date: Wed,  5 Sep 2018 16:36:43 +0200
-Message-Id: <20180905143643.9871-9-ricardo.ribalda@gmail.com>
-In-Reply-To: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
-References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH v2 0/8] gpio-addr-flash: Support for device-tree and cleanup
+Date: Wed,  5 Sep 2018 16:36:35 +0200
+Message-Id: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add documentation for gpio-addr-flash. This binding allow creating
-flash devices that are paged using GPIOs.
+This patch series does the following:
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- .../bindings/mtd/gpio-addr-flash.txt          | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
+1) Fix bug regarding ioremap size
+2) Cleanup code to use new APIs
+3) Simplify numerical operations
+4) Add support for device-tree devices
+
+Thanks!
+
+Changelog v2:
+
+>From Boris Brezillon:
+-Add Fixes and cc:stable
+
+>From kbuild:
+- Fix warnings
+
+- Rebase
+
+Ricardo Ribalda Delgado (8):
+  mtd: maps: gpio-addr-flash: Replace custom printk
+  mtd: maps: gpio-addr-flash: Fix ioremapped size
+  mtd: maps: gpio-addr-flash: Use devm_* functions
+  mtd: maps: gpio-addr-flash: Use order insted of size
+  mtd: maps: gpio-addr-flash: Replace array with an integer
+  mtd: maps: gpio-addr-flash: Split allocation in two
+  mtd: maps: gpio-addr-flash: Add support for device-tree devices
+  dt-binding: mtd: Document gpio-addr-flash
+
+ .../bindings/mtd/gpio-addr-flash.txt          |  46 +++
+ drivers/mtd/maps/gpio-addr-flash.c            | 276 ++++++++++++------
+ 2 files changed, 236 insertions(+), 86 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
 
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-new file mode 100644
-index 000000000000..4279e8cad09b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-@@ -0,0 +1,46 @@
-+Memory Mapped flash with some address lines addressed using GPIOs
-+
-+Handle the case where a flash device is mostly addressed using physical
-+line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
-+to a 2MiB memory range and use the GPIOs to select a particular range.
-+
-+ - compatible : "cfi-gpio-addr-flash"
-+ - reg : Address range of the mtd chip that is memory mapped, this is,
-+   on the previous example 2MiB.
-+ - bank-width : Width (in bytes) of the bank.  Equal to the
-+   device width times the number of interleaved chips.
-+ - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
-+   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
-+ - #address-cells, #size-cells : Must be present if the device has
-+   sub-nodes representing partitions (see below).  In this case
-+   both #address-cells and #size-cells must be equal to 1.
-+
-+The device tree may optionally contain sub-nodes describing partitions of the
-+address space. See partition.txt for more detail.
-+
-+Example:
-+
-+	cfi_flash_0: cfi_flash {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "cfi-gpio-addr-flash";
-+		bank-width = <2>;
-+		reg = < 0x00300000 0x00200000 >;
-+		gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
-+		partition@0 {
-+			reg = < 0x0 0x200000 >;
-+			label = "Golden Bitstream";
-+		};
-+		partition@200000 {
-+			reg = < 0x200000 0x200000 >;
-+			label = "User Bitstream";
-+		};
-+		partition@400000 {
-+			reg = < 0x400000 0x200000 >;
-+			label = "V4L Controls";
-+		};
-+		partition@600000 {
-+			reg = < 0x600000 0x200000 >;
-+			label = "Production Data";
-+		};
-+	} ;
 -- 
 2.18.0
