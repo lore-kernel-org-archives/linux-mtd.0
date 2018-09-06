@@ -1,22 +1,38 @@
-Received: from scopuli.esotechnik.de ([79.143.188.15] helo=mail.esotechnik.net)
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy1wV-0001ZJ-Lo
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 21:36:01 +0000
-Subject: Re: [PATCH 0/3] Virtual MTD concat device driver
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: linux-mtd@lists.infradead.org
-References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
- <20180906225949.48497cb5@bbrezillon> <20180906230314.4f7744a6@bbrezillon>
- <d8c4e901-ae96-965c-0d01-4fa012da41b8@nospam.obeliks.de>
- <20180906232341.0dd510e3@bbrezillon>
-From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Message-ID: <3f81012f-cd7b-d733-f819-4d359e2415f9@nospam.obeliks.de>
-Date: Thu, 6 Sep 2018 23:35:47 +0200
-MIME-Version: 1.0
-In-Reply-To: <20180906232341.0dd510e3@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+ id 1fy2va-0002Re-Ih
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:11 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Alexander Shiyan <shc_work@mail.ru>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ devel@driverdev.osuosl.org
+Subject: [PATCH 01/19] mtd: rawnand: Leave chip->IO_ADDR_{R,
+ W} to NULL when unused
+Date: Fri,  7 Sep 2018 00:38:33 +0200
+Message-Id: <20180906223851.6964-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +42,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+There's no point in poisoning the ->IO_ADDR_{R,W}, a NULL pointer
+is just as good to detect unexpected ->IO_ADDR_{R,W} usage.
 
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c | 3 ---
+ drivers/mtd/nand/raw/socrates_nand.c     | 4 ----
+ 2 files changed, 7 deletions(-)
 
-On 06/09/18 23:23, Boris Brezillon wrote:
-> On Thu, 6 Sep 2018 23:16:01 +0200
-> Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
->
->> Hi Boris,
->>
->> On 06/09/18 23:03, Boris Brezillon wrote:
->>> On Thu, 6 Sep 2018 22:59:49 +0200
->>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->>>   
->>>> Hi Bernhard,
->>>>
->>>> On Thu,  6 Sep 2018 18:14:10 +0200
->>>> Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
->>>>   
->>>>> Hi everybody,
->>>>>
->>>>> when porting my router board from a mach-file based OpenWRT target to a
->>>>> device-tree based target, I found that there is no generic way to create
->>>>> a mtd_concat device from within the dts. The following patches attempt
->>>>> to provide that possibility.
->>>> There's a fundamental issue with this patch series: DT is supposed to
->>>> represent the hardware, not how you want to use it, and clearly, your
->>>> concatenated MTD dev is a virtual device, not a real one, so I doubt it
->>>> will pass DT maintainers' review.
->>> BTW, did you consider doing that through the command line?
->> Would you mind elaborating on that?
-> Something like:
->
-> mtdconcat=<virtdev1>=<realdev1>,<realdev2>;<virtdev2>=<realdev3>,<realdev4>
->
->> The biggest problem that I see is that I have to specify the fixed
->> partitions somewhere, and I would really like to keep that in the dts
->> file, where they would also be if it was only a single chip.
-> Send a v2, add the DT maintainers+ML in Cc, and you'll see what
-> happens.
-I will do that. Thank you for your review and your input!
+diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+index fee40a3ce5d2..851db4a7d3e4 100644
+--- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
++++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+@@ -2270,9 +2270,6 @@ static int brcmnand_init_cs(struct brcmnand_host *host, struct device_node *dn)
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->dev.parent = &pdev->dev;
+ 
+-	chip->IO_ADDR_R = (void __iomem *)0xdeadbeef;
+-	chip->IO_ADDR_W = (void __iomem *)0xdeadbeef;
+-
+ 	chip->cmd_ctrl = brcmnand_cmd_ctrl;
+ 	chip->cmdfunc = brcmnand_cmdfunc;
+ 	chip->waitfunc = brcmnand_waitfunc;
+diff --git a/drivers/mtd/nand/raw/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
+index 64ea9a014054..aa42b4ea4d23 100644
+--- a/drivers/mtd/nand/raw/socrates_nand.c
++++ b/drivers/mtd/nand/raw/socrates_nand.c
+@@ -152,10 +152,6 @@ static int socrates_nand_probe(struct platform_device *ofdev)
+ 	mtd->name = "socrates_nand";
+ 	mtd->dev.parent = &ofdev->dev;
+ 
+-	/*should never be accessed directly */
+-	nand_chip->IO_ADDR_R = (void *)0xdeadbeef;
+-	nand_chip->IO_ADDR_W = (void *)0xdeadbeef;
+-
+ 	nand_chip->cmd_ctrl = socrates_nand_cmd_ctrl;
+ 	nand_chip->read_byte = socrates_nand_read_byte;
+ 	nand_chip->write_buf = socrates_nand_write_buf;
+-- 
+2.14.1
