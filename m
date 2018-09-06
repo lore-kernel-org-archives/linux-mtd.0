@@ -1,25 +1,30 @@
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxemo-00015B-0I
- for linux-mtd@lists.infradead.org; Wed, 05 Sep 2018 20:52:27 +0000
-Received: by mail-lf1-x142.google.com with SMTP id j8-v6so7168888lfb.4
- for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2018 13:52:14 -0700 (PDT)
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, Tony Lindgren <tony@atomide.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] mtd: rawnand: ams-delta: Cleanups and optimizations
-Date: Wed, 05 Sep 2018 22:53:27 +0200
-Message-ID: <1855340.fVHtouTg44@z50>
-In-Reply-To: <20180905084757.432e7c19@xps13>
-References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
- <20180820213904.13475-1-jmkrzyszt@gmail.com> <20180905084757.432e7c19@xps13>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+From: Jagdish Gediya <jagdish.gediya@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Prabhakar Kushwaha
+ <prabhakar.kushwaha@nxp.com>
+CC: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexSPI
+ driver
+Date: Thu, 6 Sep 2018 07:08:16 +0000
+Message-ID: <AM0PR04MB4052840603E71673747DFA7B90010@AM0PR04MB4052.eurprd04.prod.outlook.com>
+References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1535711404-29528-5-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <VI1PR0402MB385465BEDBFC9CB6A89BEFF4970C0@VI1PR0402MB3854.eurprd04.prod.outlook.com>
+ <20180904144627.1de264b6@bbrezillon>
+In-Reply-To: <20180904144627.1de264b6@bbrezillon>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +34,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel, Tony,
+Hi Boris,
 
-On Wednesday, September 5, 2018 8:47:57 AM CEST Miquel Raynal wrote:
-> Hi Janusz,
-> 
-> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote on Mon, 20 Aug 2018
-> 23:39:01 +0200:
-> 
-> > This series consist of possibly ready to apply patches extracted from
-> > a former one titled "mtd: rawnand:  ams-delta: Use GPIO API for data I/O".
-> > Remaining patches implementing conversion of data I/O to GPIO have been
-> > postponed until gpiolib is optimized to ensure sufficient performance.
-> > 
-> > 
-> > Janusz Krzysztofik (3):
-> >       mtd: rawnand: ams-delta: show parent device in sysfs
-> >       mtd: rawnand: ams-delta: Use private structure
-> >       mtd: rawnand: ams-delta: Set port direction when needed
-> 
-> Patch 2/3 does not apply on nand/next. Indeed the driver does not look
-> the same as in the diff.
+Currently FlexSPI controller is present in ARM SoC but NXP is coming with P=
+owerPC SoC with same FlexSPI controller.
 
-That's because I built it on top of my former series from the mid of July, 
-containing "[PATCH v2 2/3 v4] mtd: rawnand: ams-delta: use GPIO lookup table". 
-It was acked by you, Miquel, and supposed to be merged via linux-omap tree.
+We are trying to use same binding as defined in this patch-set(tested on AR=
+M64 processors) for PowerPC.
+Unfortunately, It is showing issue when driver tries to parse 'fspi_mmap'.
 
-> I don't see any changes on my side that could
-> explain this so perhaps you could rebase on top of 4.19-rc2 (or
-> nand/next, as you wish) and resend the series?
+We did some investigation and figured out that for ARM device trees Periphe=
+rals nodes inside 'soc' node have absolute addresses. For in general NXP's =
+PowerPC device trees, Peripheral nodes have the relative addresses to the u=
+nit-address of the parent 'soc' node. =20
 
-As far as I can see, Tony hasn't applied that series yet, so maybe I can still 
-move that patch out of there and insert it into this series in front of the 
-other 3 patches and resend. That would however make patch 3/3 of that old 
-series depend on this one.
+This creates issue for PowerPC if we follow implementation in this patch-se=
+t.=20
 
-Tony, what do you think?
+Example of device tree used for upcoming PowerPC SoC with FlexSPI controlle=
+r.
+
+soc@f8000000 {
+	ranges =3D <0x0 0x0 0xf8000000 0x4000000>;
+	.
+	fspi0: flexspi@20c0000 {
+		compatible =3D "nxp,XXX-fspi";
+		reg =3D <0x20c0000 0x10000>, <0xC0000000 0x10000000>;
+		reg-names =3D "fspi_base", "fspi_mmap";
+		.
+		.
+	}
+ }=20
+
+As we can see, Final address of 'fspi_base' (0xf8000000 + 0x20c0000) falls =
+into the parent 'soc' range(CCSR) but=20
+for 'fspi_mmap', It is outside of 'soc' range(CCSR). It creates issue when =
+driver tries to parse 'fspi_mmap'.
+
+As per definition of ranges, this field can't be used to solve this problem=
+.=20
+Please suggest how to implement the "fspi_mmap"(memory mapping address and =
+length) in case of PowerPC.
 
 Thanks,
-Janusz
+Jagdish
+
+> -----Original Message-----
+> From: linux-kernel-owner@vger.kernel.org <linux-kernel-
+> owner@vger.kernel.org> On Behalf Of Boris Brezillon
+> Sent: Tuesday, September 4, 2018 6:16 PM
+> To: Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>
+> Cc: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; linux-
+> mtd@lists.infradead.org; marek.vasut@gmail.com; linux-
+> spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
+> mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
+> kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 4/7] dt-bindings: spi: add binding file for NXP FlexS=
+PI
+> driver
+>=20
+> On Mon, 3 Sep 2018 09:54:08 +0000
+> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com> wrote:
+>=20
+> > Dear Yogesh,
+> >
+> > > -----Original Message-----
+> > > From: linux-kernel-owner@vger.kernel.org <linux-kernel-
+> > > owner@vger.kernel.org> On Behalf Of Yogesh Gaur
+> > > Sent: Friday, August 31, 2018 4:00 PM
+> > > To: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
+> > > marek.vasut@gmail.com; linux-spi@vger.kernel.org;
+> > > devicetree@vger.kernel.org
+> > > Cc: robh@kernel.org; mark.rutland@arm.com; shawnguo@kernel.org;
+> > > linux- arm-kernel@lists.infradead.org; computersforpeace@gmail.com;
+> > > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org; Yogesh
+> > > Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > > Subject: [PATCH 4/7] dt-bindings: spi: add binding file for NXP
+> > > FlexSPI driver
+> > >
+> > > Add binding file for NXP FlexSPI driver.
+> > >
+> > > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> > > ---
+> > >  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42
+> > > ++++++++++++++++++++++
+> > >  1 file changed, 42 insertions(+)
+> > >  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-
+> > > fspi.txt
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > > b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > > new file mode 100644
+> > > index 0000000..9f07116
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> > > @@ -0,0 +1,42 @@
+> > > +* NXP Flex Serial Peripheral Interface (FSPI)
+> > > +
+> > > +Required properties:
+> > > +  - compatible : Should be "nxp,lx2160a-fspi"
+> > > +  - reg :        First contains the register location and length,
+> > > +                 Second contains the memory mapping address and
+> > > +length
+> >
+> > Why are we overriding reg property.  Is there any special requirement.
+> >
+> > Can we use "reg" and "ranges" property in device tree.
+> > Here "reg" represents controller registers and "ranges" represent the
+> memory address of flash.
+>=20
+> No, ranges is not used for that. It's used when you need to convert from =
+one
+> address space to another, which is not what you're describing here. Check
+> section 2.38 of this document [1] for more details.
+>=20
+> [1]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fe
+> linux.org%2Fimages%2Fc%2Fcf%2FPower_ePAPR_APPROVED_v1.1.pdf&amp;
+> data=3D02%7C01%7Cjagdish.gediya%40nxp.com%7C5bdb57713bd4403a39e90
+> 8d6126472a0%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%7C63671
+> 6619958727753&amp;sdata=3DTB4mbWEm0opk58oPAVEOQFM0xeAFxCsqdzw
+> 37BPuE3A%3D&amp;reserved=3D0
