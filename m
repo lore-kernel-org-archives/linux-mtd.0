@@ -1,29 +1,48 @@
-Date: Thu, 6 Sep 2018 13:43:56 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/7] spi: spi-mem: Add a driver for NXP FlexSPI controller
-Message-ID: <20180906134356.10e740fa@bbrezillon>
-In-Reply-To: <VI1PR04MB1038AB7497A2FD3E73FBA6D699010@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1535711404-29528-4-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180904165842.774ed960@bbrezillon>
- <VI1PR04MB1038CE65EF4E98ACBEA9990B99020@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <add79e8b-1ab7-e465-5f65-eed6b78161e1@exceet.de>
- <VI1PR04MB1038AB7497A2FD3E73FBA6D699010@VI1PR04MB1038.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
+ Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+ Lukasz Majewski <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
+ Alexander Clouter <alex@digriz.org.uk>,
+ Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
+ linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Kamal Dasu <kdasu.kdev@gmail.com>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
+ Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
+ Sylvain Lemieux <slemieux.tyco@gmail.com>,
+ Xiaolei Li <xiaolei.li@mediatek.com>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ linux-mediatek@lists.infradead.org, Wan ZongShun <mcuos.com@gmail.com>,
+ Neil Armstrong <narmstrong@baylibre.com>,
+ Maxim Levitsky <maximlevitsky@gmail.com>,
+ Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
+ Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
+ Stefan Agner <stefan@agner.ch>, linux-arm-kernel@lists.infradead.org,
+ linux-omap@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: [PATCH v2 04/23] mtd: rawnand: Pass a nand_chip object to
+ nand_wait_ready()
+Date: Thu,  6 Sep 2018 14:05:16 +0200
+Message-Id: <20180906120535.21255-5-boris.brezillon@bootlin.com>
+In-Reply-To: <20180906120535.21255-1-boris.brezillon@bootlin.com>
+References: <20180906120535.21255-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,164 +52,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 6 Sep 2018 11:35:13 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Let's make the raw NAND API consistent by patching all helpers to
+take a nand_chip object instead of an mtd_info one.
 
-> Hi Frieder,
-> 
-> > -----Original Message-----
-> > From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
-> > Sent: Thursday, September 6, 2018 1:56 PM
-> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; Boris
-> > Brezillon <boris.brezillon@bootlin.com>
-> > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; linux-
-> > spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
-> > mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
-> > kernel@lists.infradead.org; computersforpeace@gmail.com; linux-
-> > kernel@vger.kernel.org
-> > Subject: Re: [PATCH 3/7] spi: spi-mem: Add a driver for NXP FlexSPI
-> > controller 
-> > >> Hi Yogesh,
-> > >>
-> > >> On Fri, 31 Aug 2018 16:00:00 +0530
-> > >> Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> > >>  
-> > >>> - Add a driver for NXP FlexSPI host controller
-> > >>>  
-> > >>
-> > >> Yep, I had a quick look at the code and they really look
-> > >> similar. Why not extending the existing driver instead of
-> > >> creating a new one from scratch? 
-> > >
-> > > FlexSPI is different controller not related to the QuadSPI
-> > > controller in its working behavior Both these controller are
-> > > having
-> > > * Different registers name, registers address, registers
-> > > functionality etc, section 30.5.2[1]
-> > > * Different programming sequence for initialization of the
-> > > controller, section 30.8.1[1]
-> > > * Different programming sequence for performing Read and Write
-> > > operation using IP, section 30.7.9[1] and AHB mode
-> > > * Different programming sequence for checking controller current
-> > > state like busy or not
-> > > * New mechanism to program for the connected slave device i.e.
-> > > flash access mode and flash memory map 30.7.4[1] and 30.7.5[1]
-> > > * New entries added for FlexSPI controller for LUT_XX mode for
-> > > various commands, section 30.7.8[1]
-> > >
-> > > There are few similarities between these two like LUT programming
-> > > logic is same i.e. LUT needs to be programmed in same sequence of
-> > > 'INSTR  
-> > PAD  OPCODE', but again LUT register address and LUT command mode
-> > values are different.  
-> > >
-> > > Creating common driver for both FlexSPI and QuadSPI controller,
-> > > would  
-> > involve creation of one more layer between driver/spi/spi-xxx and
-> > the actual controller driver, this layer would going to have less
-> > functionality like doing LUT creation programming and then would
-> > re-direct calls to the respective controller driver functionality
-> > to perform desired programming sequence.  
-> > >  
-> > >>>
-> > >>> (1) The FlexSPI controller is driven by the LUT(Look-up Table)
-> > >>> registers.
-> > >>>   The LUT registers are a look-up-table for sequences of
-> > >>> instructions. A valid sequence consists of four LUT registers.
-> > >>>   Maximum 32 LUT sequences can be programmed simultaneously.
-> > >>>  
-> > >>
-> > >> Do we really want to have this level of details in the commit
-> > >> message? I mean, this is something you can document in the
-> > >> driver, but not here.
-> > >>
-> > >> BTW, you might want to have a look at [1]. I think we can get
-> > >> rid of the ->size field you're adding if this driver implements
-> > >> the dirmap hooks. 
-> > >
-> > > I need size information for the connected device to program the
-> > > controller  
-> > register FLSHXXCRO as Flash Chip select is determined by flash
-> > access address and Flash size setting in register FLSHXXCR0[FLSHz],
-> > section 30.7.9[1].
-> > 
-> > It's the same situation we had with the QSPI driver before. We
-> > decided to **not** pass information about flash size directly to
-> > the controller for now. That's why we currently don't support
-> > mapping the flash device in the implementation of the QSPI driver.
-> > 
-> > I think we should not start this discussion all over again for the
-> > FlexSPI driver, but stick to what we decided for QSPI.
-> >   
-> 
-> There is difference between FlexSPI and QuadSPI controller
-> functionality in detecting the current CS.
-> 
-> As per table-10.32[1] for QuadSPI controller, access to flash is
-> being assigned as per the address values provided i.e. it would be
-> CS0 if address is between TOP_ADDR_MEMXX and QSPI_AMBA_BASE and CS1
-> if access is in between TOP_ADDR_MEMA2 and TOP_ADDR_MEMA1.
-> 
-> But for case of FlexSPI controller, section 30.7.5[2],  CS is being
-> defined as per the address value lies in below range
-> - Flash A1 address range: 0x00000000 ~ FA1_SIZE
-> - Flash A2 address range: FA1_SIZE ~ (FA1_SIZE + FA2_SIZE)
-> - Flash B1 address range: (FA1_SIZE + FA2_SIZE) ~ (FA1_SIZE +
-> FA2_SIZE + FB1_SIZE)
-> - Flash B2 address range: FA1_SIZE + FA2_SIZE + FB1_SIZE) ~ (FA1_SIZE
-> + FA2_SIZE + FB1_SIZE + FB2_SIZE) and FAx_SIZE is determined from
-> register FLSHxxCR0[FLASHSZ]
-> 
-> Thus, for QuadSPI controller we can actually go away with the flash
-> size requirement and with the code logic which you have introduced,
-> of using 2 * ahb_buf_size data size for TOP_ADDR_MEMXX bits in SFxxD
-> register, things are working fine.
-> 
-> But for FlexSPI controller its required to have the connected slave
-> device size to detect the current CS.
+Now is nand_wait_ready()'s turn.
 
-I don't see why. You should be able to take an arbitrary (big enough)
-size at first, and only extend it on-the-fly when a dirmap request is
-done.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |  2 +-
+ drivers/mtd/nand/raw/cafe_nand.c                 |  2 +-
+ drivers/mtd/nand/raw/nand_base.c                 | 12 ++++++------
+ include/linux/mtd/rawnand.h                      |  2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
 
-> I have tried the quadspi driver
-> logic in flexspi driver code, but it gives me failure.
-
-Can you detail a bit what's failing?
-
-> Due, to this
-> reason and requirement I have come-up with this solution of getting
-> the connected device size and programming correct value in
-> FLSHxxCR0[FLASHSZ] register
-
-Alternatively, what we could do is split the memory map in 4 regions
-of the same size and stick to it. That works if you can define an
-offset to apply to the address when an access is done through the
-direct mapping area.
-
-> 
-> > >
-> > > Link for reference of the driver implementing dirmap hooks was
-> > > missing in mail,  
-> > please share.
-> > 
-> > I guess Boris meant to link to his PoC implementation of the direct
-> > mapping API [1]. When this is available we can easily add support
-> > for direct memory mappings to the QuadSPI and FlexSPI drivers.
-> >   
-> 
-> I have checked the link, found that size value is being derived from
-> spi_nor.mtd.size variable. Same being performed in this patch series
-> to detect the size of the slave device.
-
-Well, yes, the result is the same, except it does not require adding a
-new field to spi_mem and ->attach/detach() hooks to the spi_mem_ops
-interface (which your implementation is lacking BTW).
-
-> As per my understanding
-> developed with Boris's code implementation, when direct mapping API
-> interface are available then both QuadSPI and FlexSPI driver needs to
-> be changed as per new introduced ops structure.
-
-It's not a hard requirement, but they would definitely benefit from
-this extension (mainly a perf improvement).
+diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+index 9b62bc2d25a0..7022ffd271ad 100644
+--- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
++++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
+@@ -232,7 +232,7 @@ static void bcm47xxnflash_ops_bcm4706_cmdfunc(struct mtd_info *mtd,
+ 		nand_chip->cmd_ctrl(mtd, command, NAND_CTRL_CLE);
+ 
+ 		ndelay(100);
+-		nand_wait_ready(mtd);
++		nand_wait_ready(nand_chip);
+ 		break;
+ 	case NAND_CMD_READID:
+ 		ctlcode = NCTL_CSA | 0x01000000 | NCTL_CMD1W | NCTL_CMD0;
+diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
+index 3304594177c6..94e5f7a56084 100644
+--- a/drivers/mtd/nand/raw/cafe_nand.c
++++ b/drivers/mtd/nand/raw/cafe_nand.c
+@@ -313,7 +313,7 @@ static void cafe_nand_cmdfunc(struct mtd_info *mtd, unsigned command,
+ 		cafe_writel(cafe, cafe->ctl2, NAND_CTRL2);
+ 		return;
+ 	}
+-	nand_wait_ready(mtd);
++	nand_wait_ready(chip);
+ 	cafe_writel(cafe, cafe->ctl2, NAND_CTRL2);
+ }
+ 
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index f937efe145af..9d684f1d9e26 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -624,13 +624,13 @@ static void panic_nand_wait_ready(struct mtd_info *mtd, unsigned long timeo)
+ 
+ /**
+  * nand_wait_ready - [GENERIC] Wait for the ready pin after commands.
+- * @mtd: MTD device structure
++ * @chip: NAND chip object
+  *
+  * Wait for the ready pin after a command, and warn if a timeout occurs.
+  */
+-void nand_wait_ready(struct mtd_info *mtd)
++void nand_wait_ready(struct nand_chip *chip)
+ {
+-	struct nand_chip *chip = mtd_to_nand(mtd);
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	unsigned long timeo = 400;
+ 
+ 	if (in_interrupt() || oops_in_progress)
+@@ -852,7 +852,7 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 	 */
+ 	ndelay(100);
+ 
+-	nand_wait_ready(mtd);
++	nand_wait_ready(chip);
+ }
+ 
+ static void nand_ccs_delay(struct nand_chip *chip)
+@@ -1004,7 +1004,7 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 	 */
+ 	ndelay(100);
+ 
+-	nand_wait_ready(mtd);
++	nand_wait_ready(chip);
+ }
+ 
+ /**
+@@ -2251,7 +2251,7 @@ static int nand_wait_rdy_op(struct nand_chip *chip, unsigned int timeout_ms,
+ 	if (!chip->dev_ready)
+ 		udelay(chip->chip_delay);
+ 	else
+-		nand_wait_ready(nand_to_mtd(chip));
++		nand_wait_ready(chip);
+ 
+ 	return 0;
+ }
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index e9c59f0624ad..55014e42912a 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -37,7 +37,7 @@ static inline int nand_scan(struct nand_chip *chip, int max_chips)
+ }
+ 
+ /* Internal helper for board drivers which need to override command function */
+-void nand_wait_ready(struct mtd_info *mtd);
++void nand_wait_ready(struct nand_chip *chip);
+ 
+ /* The maximum number of NAND chips in an array */
+ #define NAND_MAX_CHIPS		8
+-- 
+2.14.1
