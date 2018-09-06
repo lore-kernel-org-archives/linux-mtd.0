@@ -1,55 +1,19 @@
-Date: Thu, 6 Sep 2018 10:37:32 -0700
-From: Paul Burton <paul.burton@mips.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
- Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Lukasz Majewski <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>,
- NXP Linux Team <linux-imx@nxp.com>, Imre Kaloz <kaloz@openwrt.org>,
- Krzysztof Halasa <khalasa@piap.pl>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Tony Lindgren <tony@atomide.com>, Alexander Clouter <alex@digriz.org.uk>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- Han Xu <han.xu@nxp.com>, Harvey Hunt <harveyhuntnexus@gmail.com>,
- Vladimir Zapolskiy <vz@mleia.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mediatek@lists.infradead.org, Wan ZongShun <mcuos.com@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>,
- Mans Rullgard <mans@mansr.com>, Stefan Agner <stefan@agner.ch>,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: Re: [PATCH v2 01/23] mtd: rawnand: plat_nand: Pass a nand_chip
- object to all platform_nand_ctrl hooks
-Message-ID: <20180906173732.yrh47v46p2huhyrv@pburton-laptop>
-References: <20180906120535.21255-1-boris.brezillon@bootlin.com>
- <20180906120535.21255-2-boris.brezillon@bootlin.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fxyx1-0003Wd-6l
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 18:24:21 +0000
+Date: Thu, 6 Sep 2018 20:23:55 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Bernhard Frauendienst <kernel@nospam.obeliks.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/3] mtd: core: add get_mtd_device_by_node
+Message-ID: <20180906202355.47b3fd3b@xps13>
+In-Reply-To: <20180906161413.6335-2-kernel@nospam.obeliks.de>
+References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
+ <20180906161413.6335-2-kernel@nospam.obeliks.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180906120535.21255-2-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -59,27 +23,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Bernhard,
 
-On Thu, Sep 06, 2018 at 02:05:13PM +0200, Boris Brezillon wrote:
-> Let's make the raw NAND API consistent by patching all helpers and
-> hooks to take a nand_chip object instead of an mtd_info one or
-> remove the mtd_info object when both are passed.
-> 
-> In order to do that, we first need to update the platform_nand_ctrl
-> hooks to take a nand_chip object instead of an mtd_info.
-> 
-> We add temporary plat_nand_xxx() wrappers to the do the mtd -> chip
-> conversion, but those will be dropped when patching nand_chip hooks to
-> take a nand_chip object.
-> 
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Reviewed-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Acked-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> Acked-by: Krzysztof Halasa <khalasa@piap.pl>
+Minor nits below.
 
-Acked-by: Paul Burton <paul.burton@mips.com> # MIPS parts
+Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote on Thu,  6 Sep
+2018 18:14:11 +0200:
+
+> Add function to retrieve a mtd device by its OF node. Since drivers can
+> assign arbitrary names to mtd devices in the absence of a label
+> property, there is no other reliable way to retrieve a mtd device for a
+> given OF node.
+>=20
+> Signed-off-by: Bernhard Frauendienst <kernel@nospam.obeliks.de>
+> ---
+>  drivers/mtd/mtdcore.c   | 39 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/mtd/mtd.h |  2 ++
+>  2 files changed, 41 insertions(+)
+>=20
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index 97ac219c082e..e59b6a06814c 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -926,6 +926,45 @@ struct mtd_info *get_mtd_device_nm(const char *name)
+>  }
+>  EXPORT_SYMBOL_GPL(get_mtd_device_nm);
+> =20
+> +/**
+> + *	get_mtd_device_by_node - obtain a validated handle for an MTD device
+> + *	by of_node
+> + *	@name: OF node of MTD device to open
+
+Should be @of_node
+
+> + *
+> + *	This function returns MTD device description structure in case of
+> + *	success and an error code in case of failure.
+> + */
+> +struct mtd_info *get_mtd_device_by_node(const struct device_node *of_nod=
+e)
+> +{
+> +	int err =3D -ENODEV;
+> +	struct mtd_info *mtd =3D NULL, *other;
+> +
+> +	mutex_lock(&mtd_table_mutex);
+> +
+> +	mtd_for_each_device(other) {
+> +		if (of_node =3D=3D other->dev.of_node) {
+> +			mtd =3D other;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!mtd)
+> +		goto out_unlock;
+> +
+> +	err =3D __get_mtd_device(mtd);
+> +	if (err)
+> +		goto out_unlock;
+> +
+> +	mutex_unlock(&mtd_table_mutex);
+> +	return mtd;
+> +
+> +out_unlock:
+> +	mutex_unlock(&mtd_table_mutex);
+> +	return ERR_PTR(err);
+> +}
+> +EXPORT_SYMBOL_GPL(get_mtd_device_by_node);
+> +
+> +
+
+Extra space here
+
+>  void put_mtd_device(struct mtd_info *mtd)
+>  {
+>  	mutex_lock(&mtd_table_mutex);
+> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+> index cd0be91bdefa..fe71358f8eaa 100644
+> --- a/include/linux/mtd/mtd.h
+> +++ b/include/linux/mtd/mtd.h
+> @@ -570,6 +570,8 @@ extern struct mtd_info *get_mtd_device(struct mtd_inf=
+o *mtd, int num);
+>  extern int __get_mtd_device(struct mtd_info *mtd);
+>  extern void __put_mtd_device(struct mtd_info *mtd);
+>  extern struct mtd_info *get_mtd_device_nm(const char *name);
+> +extern struct mtd_info *get_mtd_device_by_node(
+> +		const struct device_node *of_node);
+>  extern void put_mtd_device(struct mtd_info *mtd);
+> =20
+> =20
+
+Otherwise,
+
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
 Thanks,
-    Paul
+Miqu=C3=A8l
