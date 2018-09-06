@@ -1,18 +1,19 @@
-Received: from scopuli.esotechnik.de ([2a02:c205:3001:6788::1]
- helo=mail.esotechnik.net)
+Received: from scopuli.esotechnik.de ([79.143.188.15] helo=mail.esotechnik.net)
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy1uF-0008P6-2H
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 21:33:41 +0000
+ id 1fy1wV-0001ZJ-Lo
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 21:36:01 +0000
 Subject: Re: [PATCH 0/3] Virtual MTD concat device driver
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: linux-mtd@lists.infradead.org
 References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
- <20180906231148.7f707304@bbrezillon>
+ <20180906225949.48497cb5@bbrezillon> <20180906230314.4f7744a6@bbrezillon>
+ <d8c4e901-ae96-965c-0d01-4fa012da41b8@nospam.obeliks.de>
+ <20180906232341.0dd510e3@bbrezillon>
 From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Message-ID: <187d5ca4-c6fa-b9b0-aff5-467c5bb6e868@nospam.obeliks.de>
-Date: Thu, 6 Sep 2018 23:32:40 +0200
+Message-ID: <3f81012f-cd7b-d733-f819-4d359e2415f9@nospam.obeliks.de>
+Date: Thu, 6 Sep 2018 23:35:47 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180906231148.7f707304@bbrezillon>
+In-Reply-To: <20180906232341.0dd510e3@bbrezillon>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -25,40 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 06/09/18 23:11, Boris Brezillon wrote:
-> On Thu,  6 Sep 2018 18:14:10 +0200
+
+
+On 06/09/18 23:23, Boris Brezillon wrote:
+> On Thu, 6 Sep 2018 23:16:01 +0200
 > Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
 >
->> Hi everybody,
+>> Hi Boris,
 >>
->> when porting my router board from a mach-file based OpenWRT target to a
->> device-tree based target, I found that there is no generic way to create
->> a mtd_concat device from within the dts. The following patches attempt
->> to provide that possibility.
-> May I ask what kind of devices you're trying to concatenate? Are they
-> of the same type? And finally, I'd like to understand the use case.
-
-Absolutely. Specifically, I'm working on specifying the device tree for 
-the Buffalo WZR-HP-AG300H ([1], [2]). For persistent memory, it uses two 
-Winbond 25Q128BVFG 16MiB chips and concatenates them to a 32MiB device.
-
-I'm pretty sure the original firmware did this as well, but it's 
-definitely done like this in the current OpenWRT implementation (using 
-mach files).
-The manufacturer made some other questionable choices (like attaching 
-USB leds to the WiFi controller's gpio port), but apart from further 
-Buffalo devices, there are also devices from other vendors that have a 
-similar setup (e.g. ALFA Network AP120C, and Qihoo C301).
-
-The current draft of the new dts file is here [3] (where the compatible 
-line is still called virtual,mtd-concat, before I renamed it). As you 
-can see, one of the partitions is crossing the device boundary, so I 
-cannot simply distribute across the chips.
-
-Regards
-Bernhard
-
-[1] https://wikidevi.com/wiki/Buffalo_WZR-HP-AG300H
-[2] https://openwrt.org/toh/buffalo/wzr-hp-ag300h
-[3] 
-https://github.com/oxc/openwrt/blob/wzr-hp-ag300h/target/linux/ath79/dts/ar7161_buffalo_wzr-hp-ag300h.dts#L140
+>> On 06/09/18 23:03, Boris Brezillon wrote:
+>>> On Thu, 6 Sep 2018 22:59:49 +0200
+>>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>>>   
+>>>> Hi Bernhard,
+>>>>
+>>>> On Thu,  6 Sep 2018 18:14:10 +0200
+>>>> Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
+>>>>   
+>>>>> Hi everybody,
+>>>>>
+>>>>> when porting my router board from a mach-file based OpenWRT target to a
+>>>>> device-tree based target, I found that there is no generic way to create
+>>>>> a mtd_concat device from within the dts. The following patches attempt
+>>>>> to provide that possibility.
+>>>> There's a fundamental issue with this patch series: DT is supposed to
+>>>> represent the hardware, not how you want to use it, and clearly, your
+>>>> concatenated MTD dev is a virtual device, not a real one, so I doubt it
+>>>> will pass DT maintainers' review.
+>>> BTW, did you consider doing that through the command line?
+>> Would you mind elaborating on that?
+> Something like:
+>
+> mtdconcat=<virtdev1>=<realdev1>,<realdev2>;<virtdev2>=<realdev3>,<realdev4>
+>
+>> The biggest problem that I see is that I have to specify the fixed
+>> partitions somewhere, and I would really like to keep that in the dts
+>> file, where they would also be if it was only a single chip.
+> Send a v2, add the DT maintainers+ML in Cc, and you'll see what
+> happens.
+I will do that. Thank you for your review and your input!
