@@ -1,21 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy1kw-0004K7-Ky
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 21:24:05 +0000
-Date: Thu, 6 Sep 2018 23:23:41 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 0/3] Virtual MTD concat device driver
-Message-ID: <20180906232341.0dd510e3@bbrezillon>
-In-Reply-To: <d8c4e901-ae96-965c-0d01-4fa012da41b8@nospam.obeliks.de>
-References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
- <20180906225949.48497cb5@bbrezillon>
- <20180906230314.4f7744a6@bbrezillon>
- <d8c4e901-ae96-965c-0d01-4fa012da41b8@nospam.obeliks.de>
+Received: from mout.perfora.net ([74.208.4.196])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fy1rb-0007lD-SW
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 21:30:57 +0000
+From: Marcel Ziswiler <marcel@ziswiler.com>
+To: linux-mtd@lists.infradead.org
+Cc: Marcel Ziswiler <marcel.ziswiler@toradex.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Boris Brezillon <boris.brezillon@bootlin.com>
+Subject: [PATCH v2 1/2] mtd: rawnand: reorder NAND manufacturer IDs
+Date: Thu,  6 Sep 2018 23:30:19 +0200
+Message-Id: <20180906213020.7493-1-marcel@ziswiler.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +25,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 6 Sep 2018 23:16:01 +0200
-Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-> Hi Boris,
-> 
-> On 06/09/18 23:03, Boris Brezillon wrote:
-> > On Thu, 6 Sep 2018 22:59:49 +0200
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote:
-> >  
-> >> Hi Bernhard,
-> >>
-> >> On Thu,  6 Sep 2018 18:14:10 +0200
-> >> Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote:
-> >>  
-> >>> Hi everybody,
-> >>>
-> >>> when porting my router board from a mach-file based OpenWRT target to a
-> >>> device-tree based target, I found that there is no generic way to create
-> >>> a mtd_concat device from within the dts. The following patches attempt
-> >>> to provide that possibility.  
-> >> There's a fundamental issue with this patch series: DT is supposed to
-> >> represent the hardware, not how you want to use it, and clearly, your
-> >> concatenated MTD dev is a virtual device, not a real one, so I doubt it
-> >> will pass DT maintainers' review.  
-> > BTW, did you consider doing that through the command line?  
-> 
-> Would you mind elaborating on that?
+Reorder NAND manufacturer IDs for clarity.
 
-Something like:
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-mtdconcat=<virtdev1>=<realdev1>,<realdev2>;<virtdev2>=<realdev3>,<realdev4>
+---
 
-> 
-> The biggest problem that I see is that I have to specify the fixed 
-> partitions somewhere, and I would really like to keep that in the dts 
-> file, where they would also be if it was only a single chip.
+Changes in v2:
+- Subject prefix s/nand:/rawnand:/ as well as upper-case: s/nand/NAND/
+  and s/id/ID/ in the commit log as suggested by Miquèl.
+- Reordering the macro definitions too as suggested by Boris.
 
-Send a v2, add the DT maintainers+ML in Cc, and you'll see what
-happens.
+ drivers/mtd/nand/raw/nand_ids.c | 20 ++++++++++----------
+ include/linux/mtd/rawnand.h     | 28 ++++++++++++++--------------
+ 2 files changed, 24 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
+index 5423c3bb388e..0851cd86bf19 100644
+--- a/drivers/mtd/nand/raw/nand_ids.c
++++ b/drivers/mtd/nand/raw/nand_ids.c
+@@ -169,21 +169,21 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 
+ /* Manufacturer IDs */
+ static const struct nand_manufacturer nand_manufacturers[] = {
+-	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
++	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
++	{NAND_MFR_ATO, "ATO"},
++	{NAND_MFR_EON, "Eon"},
+ 	{NAND_MFR_ESMT, "ESMT"},
+-	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
+ 	{NAND_MFR_FUJITSU, "Fujitsu"},
+-	{NAND_MFR_NATIONAL, "National"},
+-	{NAND_MFR_RENESAS, "Renesas"},
+-	{NAND_MFR_STMICRO, "ST Micro"},
+ 	{NAND_MFR_HYNIX, "Hynix", &hynix_nand_manuf_ops},
+-	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
+-	{NAND_MFR_AMD, "AMD/Spansion", &amd_nand_manuf_ops},
++	{NAND_MFR_INTEL, "Intel"},
+ 	{NAND_MFR_MACRONIX, "Macronix", &macronix_nand_manuf_ops},
+-	{NAND_MFR_EON, "Eon"},
++	{NAND_MFR_MICRON, "Micron", &micron_nand_manuf_ops},
++	{NAND_MFR_NATIONAL, "National"},
++	{NAND_MFR_RENESAS, "Renesas"},
++	{NAND_MFR_SAMSUNG, "Samsung", &samsung_nand_manuf_ops},
+ 	{NAND_MFR_SANDISK, "SanDisk"},
+-	{NAND_MFR_INTEL, "Intel"},
+-	{NAND_MFR_ATO, "ATO"},
++	{NAND_MFR_STMICRO, "ST Micro"},
++	{NAND_MFR_TOSHIBA, "Toshiba", &toshiba_nand_manuf_ops},
+ 	{NAND_MFR_WINBOND, "Winbond"},
+ };
+ 
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index efb2345359bb..20516fc28b74 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1422,21 +1422,21 @@ static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
+ /*
+  * NAND Flash Manufacturer ID Codes
+  */
+-#define NAND_MFR_TOSHIBA	0x98
++#define NAND_MFR_AMD		0x01
++#define NAND_MFR_ATO		0x9b
++#define NAND_MFR_EON		0x92
+ #define NAND_MFR_ESMT		0xc8
+-#define NAND_MFR_SAMSUNG	0xec
+ #define NAND_MFR_FUJITSU	0x04
+-#define NAND_MFR_NATIONAL	0x8f
+-#define NAND_MFR_RENESAS	0x07
+-#define NAND_MFR_STMICRO	0x20
+ #define NAND_MFR_HYNIX		0xad
+-#define NAND_MFR_MICRON		0x2c
+-#define NAND_MFR_AMD		0x01
++#define NAND_MFR_INTEL		0x89
+ #define NAND_MFR_MACRONIX	0xc2
+-#define NAND_MFR_EON		0x92
++#define NAND_MFR_MICRON		0x2c
++#define NAND_MFR_NATIONAL	0x8f
++#define NAND_MFR_RENESAS	0x07
++#define NAND_MFR_SAMSUNG	0xec
+ #define NAND_MFR_SANDISK	0x45
+-#define NAND_MFR_INTEL		0x89
+-#define NAND_MFR_ATO		0x9b
++#define NAND_MFR_STMICRO	0x20
++#define NAND_MFR_TOSHIBA	0x98
+ #define NAND_MFR_WINBOND	0xef
+ 
+ 
+@@ -1541,12 +1541,12 @@ nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
+ 
+ extern struct nand_flash_dev nand_flash_ids[];
+ 
+-extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
+-extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
+-extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+-extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
++extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
+ extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
++extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
++extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
++extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
+ 
+ int nand_create_bbt(struct nand_chip *chip);
+ int nand_markbad_bbt(struct mtd_info *mtd, loff_t offs);
+-- 
+2.14.4
