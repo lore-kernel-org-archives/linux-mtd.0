@@ -1,48 +1,30 @@
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Lukasz Majewski <lukma@denx.de>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
- Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
- Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
- Alexander Clouter <alex@digriz.org.uk>,
- Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
- Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Robert Jarzmik <robert.jarzmik@free.fr>,
- Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
- Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
- linux-sh@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Kamal Dasu <kdasu.kdev@gmail.com>,
- Masahiro Yamada <yamada.masahiro@socionext.com>, Han Xu <han.xu@nxp.com>,
- Harvey Hunt <harveyhuntnexus@gmail.com>, Vladimir Zapolskiy <vz@mleia.com>,
- Sylvain Lemieux <slemieux.tyco@gmail.com>,
- Xiaolei Li <xiaolei.li@mediatek.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- linux-mediatek@lists.infradead.org, Wan ZongShun <mcuos.com@gmail.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Maxim Levitsky <maximlevitsky@gmail.com>,
- Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>,
- Marc Gonzalez <marc.w.gonzalez@free.fr>, Mans Rullgard <mans@mansr.com>,
- Stefan Agner <stefan@agner.ch>, linux-arm-kernel@lists.infradead.org,
- linux-omap@vger.kernel.org,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
-Subject: [PATCH v2 20/23] mtd: rawnand: Pass a nand_chip object to
- chip->setup_read_retry()
-Date: Thu,  6 Sep 2018 14:05:32 +0200
-Message-Id: <20180906120535.21255-21-boris.brezillon@bootlin.com>
-In-Reply-To: <20180906120535.21255-1-boris.brezillon@bootlin.com>
-References: <20180906120535.21255-1-boris.brezillon@bootlin.com>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Frieder Schrempf <frieder.schrempf@exceet.de>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
+ "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
+ <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/7] spi: spi-mem: Add a driver for NXP FlexSPI controller
+Date: Thu, 6 Sep 2018 12:23:17 +0000
+Message-ID: <VI1PR04MB103829FBFC128073B370B56399010@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <1535711404-29528-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1535711404-29528-4-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20180904165842.774ed960@bbrezillon>
+ <VI1PR04MB1038CE65EF4E98ACBEA9990B99020@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <add79e8b-1ab7-e465-5f65-eed6b78161e1@exceet.de>
+ <VI1PR04MB1038AB7497A2FD3E73FBA6D699010@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20180906134356.10e740fa@bbrezillon>
+In-Reply-To: <20180906134356.10e740fa@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -52,113 +34,200 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Let's make the raw NAND API consistent by patching all helpers and
-hooks to take a nand_chip object instead of an mtd_info one or
-remove the mtd_info object when both are passed.
+Hi Boris,
 
-Let's tackle the chip->setup_read_retry() hook.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Thursday, September 6, 2018 5:14 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: Frieder Schrempf <frieder.schrempf@exceet.de>; linux-
+> mtd@lists.infradead.org; marek.vasut@gmail.com; linux-spi@vger.kernel.org=
+;
+> devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> shawnguo@kernel.org; linux-arm-kernel@lists.infradead.org;
+> computersforpeace@gmail.com; linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH 3/7] spi: spi-mem: Add a driver for NXP FlexSPI contr=
+oller
+>=20
+> On Thu, 6 Sep 2018 11:35:13 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Hi Frieder,
+> >
+> > > -----Original Message-----
+> > > From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
+> > > Sent: Thursday, September 6, 2018 1:56 PM
+> > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>; Boris
+> > > Brezillon <boris.brezillon@bootlin.com>
+> > > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; linux-
+> > > spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
+> > > mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
+> > > kernel@lists.infradead.org; computersforpeace@gmail.com; linux-
+> > > kernel@vger.kernel.org
+> > > Subject: Re: [PATCH 3/7] spi: spi-mem: Add a driver for NXP FlexSPI
+> > > controller
+> > > >> Hi Yogesh,
+> > > >>
+> > > >> On Fri, 31 Aug 2018 16:00:00 +0530 Yogesh Gaur
+> > > >> <yogeshnarayan.gaur@nxp.com> wrote:
+> > > >>
+> > > >>> - Add a driver for NXP FlexSPI host controller
+> > > >>>
+> > > >>
+> > > >> Yep, I had a quick look at the code and they really look similar.
+> > > >> Why not extending the existing driver instead of creating a new
+> > > >> one from scratch?
+> > > >
+> > > > FlexSPI is different controller not related to the QuadSPI
+> > > > controller in its working behavior Both these controller are
+> > > > having
+> > > > * Different registers name, registers address, registers
+> > > > functionality etc, section 30.5.2[1]
+> > > > * Different programming sequence for initialization of the
+> > > > controller, section 30.8.1[1]
+> > > > * Different programming sequence for performing Read and Write
+> > > > operation using IP, section 30.7.9[1] and AHB mode
+> > > > * Different programming sequence for checking controller current
+> > > > state like busy or not
+> > > > * New mechanism to program for the connected slave device i.e.
+> > > > flash access mode and flash memory map 30.7.4[1] and 30.7.5[1]
+> > > > * New entries added for FlexSPI controller for LUT_XX mode for
+> > > > various commands, section 30.7.8[1]
+> > > >
+> > > > There are few similarities between these two like LUT programming
+> > > > logic is same i.e. LUT needs to be programmed in same sequence of
+> > > > 'INSTR
+> > > PAD  OPCODE', but again LUT register address and LUT command mode
+> > > values are different.
+> > > >
+> > > > Creating common driver for both FlexSPI and QuadSPI controller,
+> > > > would
+> > > involve creation of one more layer between driver/spi/spi-xxx and
+> > > the actual controller driver, this layer would going to have less
+> > > functionality like doing LUT creation programming and then would
+> > > re-direct calls to the respective controller driver functionality to
+> > > perform desired programming sequence.
+> > > >
+> > > >>>
+> > > >>> (1) The FlexSPI controller is driven by the LUT(Look-up Table)
+> > > >>> registers.
+> > > >>>   The LUT registers are a look-up-table for sequences of
+> > > >>> instructions. A valid sequence consists of four LUT registers.
+> > > >>>   Maximum 32 LUT sequences can be programmed simultaneously.
+> > > >>>
+> > > >>
+> > > >> Do we really want to have this level of details in the commit
+> > > >> message? I mean, this is something you can document in the
+> > > >> driver, but not here.
+> > > >>
+> > > >> BTW, you might want to have a look at [1]. I think we can get rid
+> > > >> of the ->size field you're adding if this driver implements the
+> > > >> dirmap hooks.
+> > > >
+> > > > I need size information for the connected device to program the
+> > > > controller
+> > > register FLSHXXCRO as Flash Chip select is determined by flash
+> > > access address and Flash size setting in register FLSHXXCR0[FLSHz],
+> > > section 30.7.9[1].
+> > >
+> > > It's the same situation we had with the QSPI driver before. We
+> > > decided to **not** pass information about flash size directly to the
+> > > controller for now. That's why we currently don't support mapping
+> > > the flash device in the implementation of the QSPI driver.
+> > >
+> > > I think we should not start this discussion all over again for the
+> > > FlexSPI driver, but stick to what we decided for QSPI.
+> > >
+> >
+> > There is difference between FlexSPI and QuadSPI controller
+> > functionality in detecting the current CS.
+> >
+> > As per table-10.32[1] for QuadSPI controller, access to flash is being
+> > assigned as per the address values provided i.e. it would be
+> > CS0 if address is between TOP_ADDR_MEMXX and QSPI_AMBA_BASE and CS1
+> if
+> > access is in between TOP_ADDR_MEMA2 and TOP_ADDR_MEMA1.
+> >
+> > But for case of FlexSPI controller, section 30.7.5[2],  CS is being
+> > defined as per the address value lies in below range
+> > - Flash A1 address range: 0x00000000 ~ FA1_SIZE
+> > - Flash A2 address range: FA1_SIZE ~ (FA1_SIZE + FA2_SIZE)
+> > - Flash B1 address range: (FA1_SIZE + FA2_SIZE) ~ (FA1_SIZE + FA2_SIZE
+> > + FB1_SIZE)
+> > - Flash B2 address range: FA1_SIZE + FA2_SIZE + FB1_SIZE) ~ (FA1_SIZE
+> > + FA2_SIZE + FB1_SIZE + FB2_SIZE) and FAx_SIZE is determined from
+> > register FLSHxxCR0[FLASHSZ]
+> >
+> > Thus, for QuadSPI controller we can actually go away with the flash
+> > size requirement and with the code logic which you have introduced, of
+> > using 2 * ahb_buf_size data size for TOP_ADDR_MEMXX bits in SFxxD
+> > register, things are working fine.
+> >
+> > But for FlexSPI controller its required to have the connected slave
+> > device size to detect the current CS.
+>=20
+> I don't see why. You should be able to take an arbitrary (big enough) siz=
+e at first,
+> and only extend it on-the-fly when a dirmap request is done.
+>=20
+> > I have tried the quadspi driver
+> > logic in flexspi driver code, but it gives me failure.
+>=20
+> Can you detail a bit what's failing?
+>=20
+> > Due, to this
+> > reason and requirement I have come-up with this solution of getting
+> > the connected device size and programming correct value in
+> > FLSHxxCR0[FLASHSZ] register
+>=20
+> Alternatively, what we could do is split the memory map in 4 regions of t=
+he same
+> size and stick to it. That works if you can define an offset to apply to =
+the address
+> when an access is done through the direct mapping area.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/mtd/nand/raw/nand_base.c   | 12 +++++-------
- drivers/mtd/nand/raw/nand_hynix.c  |  3 +--
- drivers/mtd/nand/raw/nand_micron.c |  3 +--
- include/linux/mtd/rawnand.h        |  2 +-
- 4 files changed, 8 insertions(+), 12 deletions(-)
+Ok. I would try this and share the result and the failure point, if any.
 
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 0ae597ced5b4..a7575aa68c48 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -3475,17 +3475,15 @@ static uint8_t *nand_transfer_oob(struct mtd_info *mtd, uint8_t *oob,
- 
- /**
-  * nand_setup_read_retry - [INTERN] Set the READ RETRY mode
-- * @mtd: MTD device structure
-+ * @chip: NAND chip object
-  * @retry_mode: the retry mode to use
-  *
-  * Some vendors supply a special command to shift the Vt threshold, to be used
-  * when there are too many bitflips in a page (i.e., ECC error). After setting
-  * a new threshold, the host should retry reading the page.
-  */
--static int nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
-+static int nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
--
- 	pr_debug("setting READ RETRY mode %d\n", retry_mode);
- 
- 	if (retry_mode >= chip->read_retries)
-@@ -3494,7 +3492,7 @@ static int nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
- 	if (!chip->setup_read_retry)
- 		return -EOPNOTSUPP;
- 
--	return chip->setup_read_retry(mtd, retry_mode);
-+	return chip->setup_read_retry(chip, retry_mode);
- }
- 
- static void nand_wait_readrdy(struct nand_chip *chip)
-@@ -3619,7 +3617,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 			if (mtd->ecc_stats.failed - ecc_failures) {
- 				if (retry_mode + 1 < chip->read_retries) {
- 					retry_mode++;
--					ret = nand_setup_read_retry(mtd,
-+					ret = nand_setup_read_retry(chip,
- 							retry_mode);
- 					if (ret < 0)
- 						break;
-@@ -3646,7 +3644,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 
- 		/* Reset to retry mode 0 */
- 		if (retry_mode) {
--			ret = nand_setup_read_retry(mtd, 0);
-+			ret = nand_setup_read_retry(chip, 0);
- 			if (ret < 0)
- 				break;
- 			retry_mode = 0;
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index fa873e517131..bb1c4f8ce785 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -113,9 +113,8 @@ static int hynix_nand_reg_write_op(struct nand_chip *chip, u8 addr, u8 val)
- 	return 0;
- }
- 
--static int hynix_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
-+static int hynix_nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
- 	struct hynix_nand *hynix = nand_get_manufacturer_data(chip);
- 	const u8 *values;
- 	int i, ret;
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 2f26dbeb5428..1a5505ccbe54 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -74,9 +74,8 @@ struct micron_nand {
- 	struct micron_on_die_ecc ecc;
- };
- 
--static int micron_nand_setup_read_retry(struct mtd_info *mtd, int retry_mode)
-+static int micron_nand_setup_read_retry(struct nand_chip *chip, int retry_mode)
- {
--	struct nand_chip *chip = mtd_to_nand(mtd);
- 	u8 feature[ONFI_SUBFEATURE_PARAM_LEN] = {retry_mode};
- 
- 	return nand_set_features(chip, ONFI_FEATURE_ADDR_READ_RETRY, feature);
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 7c639070c512..14ce2b078206 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1303,7 +1303,7 @@ struct nand_chip {
- 			    uint8_t *subfeature_para);
- 	int (*get_features)(struct nand_chip *chip, int feature_addr,
- 			    uint8_t *subfeature_para);
--	int (*setup_read_retry)(struct mtd_info *mtd, int retry_mode);
-+	int (*setup_read_retry)(struct nand_chip *chip, int retry_mode);
- 	int (*setup_data_interface)(struct mtd_info *mtd, int chipnr,
- 				    const struct nand_data_interface *conf);
- 
--- 
-2.14.1
+Meanwhile, can you please review the rest of the driver except _select_mem(=
+) functionality and provide your feedback.
+
+Also, as question asked for AHB RX buffer flush when using both IP and AHB =
+mode in quadspi driver.
+Same logic has been used in the FlexSPI driver as it's required to flush th=
+e AHB RX buffer after using IP mode write operation.
+But, in FlexSPI, SWRESET register bit is w1c i.e. it automatically get rese=
+t to zero, after setting to 1, after 64 clock cycle. Thus, no explicitly ud=
+elay() needs to be added when doing AHB RX buffer invalidation.
+
+Thanks
+Yogesh Gaur.
+
+>=20
+> >
+> > > >
+> > > > Link for reference of the driver implementing dirmap hooks was
+> > > > missing in mail,
+> > > please share.
+> > >
+> > > I guess Boris meant to link to his PoC implementation of the direct
+> > > mapping API [1]. When this is available we can easily add support
+> > > for direct memory mappings to the QuadSPI and FlexSPI drivers.
+> > >
+> >
+> > I have checked the link, found that size value is being derived from
+> > spi_nor.mtd.size variable. Same being performed in this patch series
+> > to detect the size of the slave device.
+>=20
+> Well, yes, the result is the same, except it does not require adding a ne=
+w field to
+> spi_mem and ->attach/detach() hooks to the spi_mem_ops interface (which
+> your implementation is lacking BTW).
+>=20
+> > As per my understanding
+> > developed with Boris's code implementation, when direct mapping API
+> > interface are available then both QuadSPI and FlexSPI driver needs to
+> > be changed as per new introduced ops structure.
+>=20
+> It's not a hard requirement, but they would definitely benefit from this =
+extension
+> (mainly a perf improvement).
