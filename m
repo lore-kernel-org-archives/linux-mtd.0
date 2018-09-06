@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy2vq-0002aO-Kj
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:36 +0000
+ id 1fy2vq-0002ZM-KK
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:38 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -27,10 +27,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
  linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org
-Subject: [PATCH 12/19] mtd: rawnand: Get rid of the duplicate nand_chip
- forward declaration
-Date: Fri,  7 Sep 2018 00:38:44 +0200
-Message-Id: <20180906223851.6964-13-boris.brezillon@bootlin.com>
+Subject: [PATCH 10/19] mtd: rawnand: Move function prototypes after struct
+ declarations
+Date: Fri,  7 Sep 2018 00:38:42 +0200
+Message-Id: <20180906223851.6964-11-boris.brezillon@bootlin.com>
 In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,27 +42,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's already a forward declaration of nand_chip at the beginning of
-the file. Get rid of this one.
+Move nand_scan[_with_ids]() and nand_wait_ready() at the end of the
+file where all function prototype lies. This will also allow us to get
+rid of the nand_flash_dev forward declaration.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- include/linux/mtd/rawnand.h | 3 ---
- 1 file changed, 3 deletions(-)
+ include/linux/mtd/rawnand.h | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 768415ed1159..608279104aae 100644
+index 992d78d29674..15183b73fed2 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -210,9 +210,6 @@ enum nand_ecc_algo {
- #define NAND_CI_CELLTYPE_MSK	0x0C
- #define NAND_CI_CELLTYPE_SHIFT	2
+@@ -27,18 +27,6 @@
+ struct nand_chip;
+ struct nand_flash_dev;
  
--/* Keep gcc happy */
--struct nand_chip;
+-/* Scan and identify a NAND device */
+-int nand_scan_with_ids(struct nand_chip *chip, unsigned int max_chips,
+-		       struct nand_flash_dev *ids);
 -
- /* ONFI version bits */
- #define ONFI_VERSION_1_0		BIT(1)
- #define ONFI_VERSION_2_0		BIT(2)
+-static inline int nand_scan(struct nand_chip *chip, unsigned int max_chips)
+-{
+-	return nand_scan_with_ids(chip, max_chips, NULL);
+-}
+-
+-/* Internal helper for board drivers which need to override command function */
+-void nand_wait_ready(struct nand_chip *chip);
+-
+ /* The maximum number of NAND chips in an array */
+ #define NAND_MAX_CHIPS		8
+ 
+@@ -1739,6 +1727,18 @@ int nand_read_data_op(struct nand_chip *chip, void *buf, unsigned int len,
+ int nand_write_data_op(struct nand_chip *chip, const void *buf,
+ 		       unsigned int len, bool force_8bit);
+ 
++/* Scan and identify a NAND device */
++int nand_scan_with_ids(struct nand_chip *chip, unsigned int max_chips,
++		       struct nand_flash_dev *ids);
++
++static inline int nand_scan(struct nand_chip *chip, unsigned int max_chips)
++{
++	return nand_scan_with_ids(chip, max_chips, NULL);
++}
++
++/* Internal helper for board drivers which need to override command function */
++void nand_wait_ready(struct nand_chip *chip);
++
+ /*
+  * Free resources held by the NAND device, must be called on error after a
+  * sucessful nand_scan().
 -- 
 2.14.1
