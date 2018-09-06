@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy2vw-00051x-89
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:32 +0000
+ id 1fy2vu-00050F-Pg
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:30 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -27,11 +27,15 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
  linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org
-Subject: [PATCH 16/19] mtd: rawnand: Keep all internal stuff private
-Date: Fri,  7 Sep 2018 00:38:48 +0200
-Message-Id: <20180906223851.6964-17-boris.brezillon@bootlin.com>
+Subject: [PATCH 14/19] mtd: rawnand: Move platform_nand_xxx definitions out of
+ rawnand.h
+Date: Fri,  7 Sep 2018 00:38:46 +0200
+Message-Id: <20180906223851.6964-15-boris.brezillon@bootlin.com>
 In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,556 +45,453 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A lot of things defined in rawnand.h should not be exposed to NAND
-controller drivers and should only be shared by core files.
-
-Create the drivers/mtd/nand/rawn/internals.h header to store such
-definitions, and move all private defs to this header.
-
-Also remove EXPORT_SYMBOLS() on functions that are not supposed to be
-exposed.
+platform_nand_xxx definitions are just used by the plat_nand driver.
+Let's move those definitions out of the core/driver-agnostic rawnand.h
+header.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/nand/raw/internals.h     | 98 ++++++++++++++++++++++++++++++++++++
- drivers/mtd/nand/raw/nand_amd.c      |  2 +-
- drivers/mtd/nand/raw/nand_base.c     | 21 ++++----
- drivers/mtd/nand/raw/nand_bbt.c      |  3 +-
- drivers/mtd/nand/raw/nand_hynix.c    |  3 +-
- drivers/mtd/nand/raw/nand_ids.c      |  4 +-
- drivers/mtd/nand/raw/nand_macronix.c |  2 +-
- drivers/mtd/nand/raw/nand_micron.c   |  3 +-
- drivers/mtd/nand/raw/nand_samsung.c  |  2 +-
- drivers/mtd/nand/raw/nand_timings.c  |  4 +-
- drivers/mtd/nand/raw/nand_toshiba.c  |  2 +-
- include/linux/mtd/rawnand.h          | 96 -----------------------------------
- 12 files changed, 123 insertions(+), 117 deletions(-)
- create mode 100644 drivers/mtd/nand/raw/internals.h
+ arch/arm/mach-ep93xx/snappercl15.c      |  3 +-
+ arch/arm/mach-ep93xx/ts72xx.c           |  3 +-
+ arch/arm/mach-imx/mach-qong.c           |  2 +-
+ arch/arm/mach-omap1/board-fsample.c     |  3 +-
+ arch/arm/mach-omap1/board-h2.c          |  3 +-
+ arch/arm/mach-omap1/board-h3.c          |  2 +-
+ arch/arm/mach-omap1/board-perseus2.c    |  3 +-
+ arch/arm/mach-orion5x/ts78xx-setup.c    |  3 +-
+ arch/arm/mach-pxa/balloon3.c            |  3 +-
+ arch/arm/mach-pxa/em-x270.c             |  3 +-
+ arch/arm/mach-pxa/palmtx.c              |  3 +-
+ arch/mips/alchemy/devboards/db1200.c    |  3 +-
+ arch/mips/alchemy/devboards/db1300.c    |  3 +-
+ arch/mips/alchemy/devboards/db1550.c    |  3 +-
+ arch/mips/netlogic/xlr/platform-flash.c |  3 +-
+ arch/mips/pnx833x/common/platform.c     |  3 +-
+ arch/mips/rb532/devices.c               |  3 +-
+ arch/sh/boards/mach-migor/setup.c       |  2 +-
+ drivers/mtd/nand/raw/plat_nand.c        |  3 +-
+ include/linux/mtd/platnand.h            | 74 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h             | 60 --------------------------
+ 21 files changed, 93 insertions(+), 95 deletions(-)
+ create mode 100644 include/linux/mtd/platnand.h
 
-diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+diff --git a/arch/arm/mach-ep93xx/snappercl15.c b/arch/arm/mach-ep93xx/snappercl15.c
+index 1dad83a0bc5b..cf0cb58b3454 100644
+--- a/arch/arm/mach-ep93xx/snappercl15.c
++++ b/arch/arm/mach-ep93xx/snappercl15.c
+@@ -23,8 +23,7 @@
+ #include <linux/i2c.h>
+ #include <linux/fb.h>
+ 
+-#include <linux/mtd/partitions.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ 
+ #include <mach/hardware.h>
+ #include <linux/platform_data/video-ep93xx.h>
+diff --git a/arch/arm/mach-ep93xx/ts72xx.c b/arch/arm/mach-ep93xx/ts72xx.c
+index 188bf02595c5..c6a533699b00 100644
+--- a/arch/arm/mach-ep93xx/ts72xx.c
++++ b/arch/arm/mach-ep93xx/ts72xx.c
+@@ -16,8 +16,7 @@
+ #include <linux/init.h>
+ #include <linux/platform_device.h>
+ #include <linux/io.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/spi/spi.h>
+ #include <linux/spi/flash.h>
+ #include <linux/spi/mmc_spi.h>
+diff --git a/arch/arm/mach-imx/mach-qong.c b/arch/arm/mach-imx/mach-qong.c
+index 48972944bb95..5c5df8ca38dd 100644
+--- a/arch/arm/mach-imx/mach-qong.c
++++ b/arch/arm/mach-imx/mach-qong.c
+@@ -18,7 +18,7 @@
+ #include <linux/memory.h>
+ #include <linux/platform_device.h>
+ #include <linux/mtd/physmap.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/gpio.h>
+ 
+ #include <asm/mach-types.h>
+diff --git a/arch/arm/mach-omap1/board-fsample.c b/arch/arm/mach-omap1/board-fsample.c
+index e9f512a0602e..4a0a66815ca0 100644
+--- a/arch/arm/mach-omap1/board-fsample.c
++++ b/arch/arm/mach-omap1/board-fsample.c
+@@ -16,8 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/input.h>
+ #include <linux/smc91x.h>
+diff --git a/arch/arm/mach-omap1/board-h2.c b/arch/arm/mach-omap1/board-h2.c
+index d5dd2acd6f78..9d9a6ca15df0 100644
+--- a/arch/arm/mach-omap1/board-h2.c
++++ b/arch/arm/mach-omap1/board-h2.c
+@@ -24,8 +24,7 @@
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/input.h>
+ #include <linux/mfd/tps65010.h>
+diff --git a/arch/arm/mach-omap1/board-h3.c b/arch/arm/mach-omap1/board-h3.c
+index a75856fe4259..cd6e02c5c01a 100644
+--- a/arch/arm/mach-omap1/board-h3.c
++++ b/arch/arm/mach-omap1/board-h3.c
+@@ -23,7 +23,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/i2c.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/input.h>
+diff --git a/arch/arm/mach-omap1/board-perseus2.c b/arch/arm/mach-omap1/board-perseus2.c
+index c61c7c7520ca..06a584fef5b8 100644
+--- a/arch/arm/mach-omap1/board-perseus2.c
++++ b/arch/arm/mach-omap1/board-perseus2.c
+@@ -16,8 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/input.h>
+ #include <linux/smc91x.h>
+diff --git a/arch/arm/mach-orion5x/ts78xx-setup.c b/arch/arm/mach-orion5x/ts78xx-setup.c
+index aac2c6eb35e2..fda9b75c3a33 100644
+--- a/arch/arm/mach-orion5x/ts78xx-setup.c
++++ b/arch/arm/mach-orion5x/ts78xx-setup.c
+@@ -16,8 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/mv643xx_eth.h>
+ #include <linux/ata_platform.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/timeriomem-rng.h>
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+diff --git a/arch/arm/mach-pxa/balloon3.c b/arch/arm/mach-pxa/balloon3.c
+index 256e60c38a6d..c52c081eb6d9 100644
+--- a/arch/arm/mach-pxa/balloon3.c
++++ b/arch/arm/mach-pxa/balloon3.c
+@@ -25,11 +25,10 @@
+ #include <linux/ioport.h>
+ #include <linux/ucb1400.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/partitions.h>
+ #include <linux/types.h>
+ #include <linux/platform_data/pcf857x.h>
+ #include <linux/platform_data/i2c-pxa.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/regulator/max1586.h>
+ 
+diff --git a/arch/arm/mach-pxa/em-x270.c b/arch/arm/mach-pxa/em-x270.c
+index 3acb945a2628..c30d20e1fb7a 100644
+--- a/arch/arm/mach-pxa/em-x270.c
++++ b/arch/arm/mach-pxa/em-x270.c
+@@ -15,8 +15,7 @@
+ 
+ #include <linux/dm9000.h>
+ #include <linux/platform_data/rtc-v3020.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/input.h>
+ #include <linux/gpio_keys.h>
+diff --git a/arch/arm/mach-pxa/palmtx.c b/arch/arm/mach-pxa/palmtx.c
+index 36ea32c1bbcc..1d06a8e91d8f 100644
+--- a/arch/arm/mach-pxa/palmtx.c
++++ b/arch/arm/mach-pxa/palmtx.c
+@@ -28,8 +28,7 @@
+ #include <linux/wm97xx.h>
+ #include <linux/power_supply.h>
+ #include <linux/usb/gpio_vbus.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/physmap.h>
+ 
+diff --git a/arch/mips/alchemy/devboards/db1200.c b/arch/mips/alchemy/devboards/db1200.c
+index 97dc74f7f41a..4bf02f96ab7f 100644
+--- a/arch/mips/alchemy/devboards/db1200.c
++++ b/arch/mips/alchemy/devboards/db1200.c
+@@ -29,8 +29,7 @@
+ #include <linux/leds.h>
+ #include <linux/mmc/host.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_8250.h>
+ #include <linux/spi/spi.h>
+diff --git a/arch/mips/alchemy/devboards/db1300.c b/arch/mips/alchemy/devboards/db1300.c
+index b813dc1c1682..ad7dd8e89598 100644
+--- a/arch/mips/alchemy/devboards/db1300.c
++++ b/arch/mips/alchemy/devboards/db1300.c
+@@ -19,8 +19,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/platform_device.h>
+ #include <linux/smsc911x.h>
+ #include <linux/wm97xx.h>
+diff --git a/arch/mips/alchemy/devboards/db1550.c b/arch/mips/alchemy/devboards/db1550.c
+index 65f6b7184fbe..7700ad0b93b4 100644
+--- a/arch/mips/alchemy/devboards/db1550.c
++++ b/arch/mips/alchemy/devboards/db1550.c
+@@ -13,8 +13,7 @@
+ #include <linux/io.h>
+ #include <linux/interrupt.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm.h>
+ #include <linux/spi/spi.h>
+diff --git a/arch/mips/netlogic/xlr/platform-flash.c b/arch/mips/netlogic/xlr/platform-flash.c
+index 4f76b85b44c9..cf9162284b07 100644
+--- a/arch/mips/netlogic/xlr/platform-flash.c
++++ b/arch/mips/netlogic/xlr/platform-flash.c
+@@ -19,8 +19,7 @@
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/physmap.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ 
+ #include <asm/netlogic/haldefs.h>
+ #include <asm/netlogic/xlr/iomap.h>
+diff --git a/arch/mips/pnx833x/common/platform.c b/arch/mips/pnx833x/common/platform.c
+index 33d0f070b33d..dafbf027fad0 100644
+--- a/arch/mips/pnx833x/common/platform.c
++++ b/arch/mips/pnx833x/common/platform.c
+@@ -30,8 +30,7 @@
+ #include <linux/resource.h>
+ #include <linux/serial.h>
+ #include <linux/serial_pnx8xxx.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ 
+ #include <irq.h>
+ #include <irq-mapping.h>
+diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+index 02a9e042fb44..2b23ad640f39 100644
+--- a/arch/mips/rb532/devices.c
++++ b/arch/mips/rb532/devices.c
+@@ -20,9 +20,8 @@
+ #include <linux/ctype.h>
+ #include <linux/string.h>
+ #include <linux/platform_device.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/partitions.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio_keys.h>
+ #include <linux/input.h>
+diff --git a/arch/sh/boards/mach-migor/setup.c b/arch/sh/boards/mach-migor/setup.c
+index ebcc4d5a67ce..f4ad33c6d2aa 100644
+--- a/arch/sh/boards/mach-migor/setup.c
++++ b/arch/sh/boards/mach-migor/setup.c
+@@ -14,7 +14,7 @@
+ #include <linux/mmc/host.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/mfd/tmio.h>
+-#include <linux/mtd/rawnand.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/i2c.h>
+ #include <linux/regulator/fixed.h>
+ #include <linux/regulator/machine.h>
+diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
+index 156c9150fec4..86c536ddaf24 100644
+--- a/drivers/mtd/nand/raw/plat_nand.c
++++ b/drivers/mtd/nand/raw/plat_nand.c
+@@ -15,8 +15,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <linux/mtd/mtd.h>
+-#include <linux/mtd/rawnand.h>
+-#include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ 
+ struct plat_nand_data {
+ 	struct nand_chip	chip;
+diff --git a/include/linux/mtd/platnand.h b/include/linux/mtd/platnand.h
 new file mode 100644
-index 000000000000..1d2edddb6127
+index 000000000000..bc11eb6b593b
 --- /dev/null
-+++ b/drivers/mtd/nand/raw/internals.h
-@@ -0,0 +1,98 @@
++++ b/include/linux/mtd/platnand.h
+@@ -0,0 +1,74 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Copyright (c) 2018 - Bootlin
++ *  Copyright © 2000-2010 David Woodhouse <dwmw2@infradead.org>
++ *			  Steven J. Hill <sjhill@realitydiluted.com>
++ *			  Thomas Gleixner <tglx@linutronix.de>
 + *
-+ * Author: Boris Brezillon <boris.brezillon@bootlin.com>
-+ *
-+ * Header containing internal definitions to be used only by core files.
-+ * NAND controller drivers should not include this file.
++ * Contains all platform NAND related definitions.
 + */
 +
-+#ifndef __LINUX_RAWNAND_INTERNALS
-+#define __LINUX_RAWNAND_INTERNALS
++#ifndef __LINUX_MTD_PLATNAND_H
++#define __LINUX_MTD_PLATNAND_H
 +
++#include <linux/mtd/partitions.h>
 +#include <linux/mtd/rawnand.h>
-+
-+/*
-+ * NAND Flash Manufacturer ID Codes
-+ */
-+#define NAND_MFR_TOSHIBA	0x98
-+#define NAND_MFR_ESMT		0xc8
-+#define NAND_MFR_SAMSUNG	0xec
-+#define NAND_MFR_FUJITSU	0x04
-+#define NAND_MFR_NATIONAL	0x8f
-+#define NAND_MFR_RENESAS	0x07
-+#define NAND_MFR_STMICRO	0x20
-+#define NAND_MFR_HYNIX		0xad
-+#define NAND_MFR_MICRON		0x2c
-+#define NAND_MFR_AMD		0x01
-+#define NAND_MFR_MACRONIX	0xc2
-+#define NAND_MFR_EON		0x92
-+#define NAND_MFR_SANDISK	0x45
-+#define NAND_MFR_INTEL		0x89
-+#define NAND_MFR_ATO		0x9b
-+#define NAND_MFR_WINBOND	0xef
++#include <linux/platform_device.h>
 +
 +/**
-+ * struct nand_manufacturer_ops - NAND Manufacturer operations
-+ * @detect: detect the NAND memory organization and capabilities
-+ * @init: initialize all vendor specific fields (like the ->read_retry()
-+ *	  implementation) if any.
-+ * @cleanup: the ->init() function may have allocated resources, ->cleanup()
-+ *	     is here to let vendor specific code release those resources.
-+ * @fixup_onfi_param_page: apply vendor specific fixups to the ONFI parameter
-+ *			   page. This is called after the checksum is verified.
++ * struct platform_nand_chip - chip level device structure
++ * @nr_chips: max. number of chips to scan for
++ * @chip_offset: chip number offset
++ * @nr_partitions: number of partitions pointed to by partitions (or zero)
++ * @partitions: mtd partition list
++ * @chip_delay: R/B delay value in us
++ * @options: Option flags, e.g. 16bit buswidth
++ * @bbt_options: BBT option flags, e.g. NAND_BBT_USE_FLASH
++ * @part_probe_types: NULL-terminated array of probe types
 + */
-+struct nand_manufacturer_ops {
-+	void (*detect)(struct nand_chip *chip);
-+	int (*init)(struct nand_chip *chip);
-+	void (*cleanup)(struct nand_chip *chip);
-+	void (*fixup_onfi_param_page)(struct nand_chip *chip,
-+				      struct nand_onfi_params *p);
++struct platform_nand_chip {
++	int nr_chips;
++	int chip_offset;
++	int nr_partitions;
++	struct mtd_partition *partitions;
++	int chip_delay;
++	unsigned int options;
++	unsigned int bbt_options;
++	const char **part_probe_types;
 +};
 +
 +/**
-+ * struct nand_manufacturer - NAND Flash Manufacturer structure
-+ * @name: Manufacturer name
-+ * @id: manufacturer ID code of device.
-+ * @ops: manufacturer operations
++ * struct platform_nand_ctrl - controller level device structure
++ * @probe: platform specific function to probe/setup hardware
++ * @remove: platform specific function to remove/teardown hardware
++ * @dev_ready: platform specific function to read ready/busy pin
++ * @select_chip: platform specific chip select function
++ * @cmd_ctrl: platform specific function for controlling
++ *	      ALE/CLE/nCE. Also used to write command and address
++ * @write_buf: platform specific function for write buffer
++ * @read_buf: platform specific function for read buffer
++ * @priv: private data to transport driver specific settings
++ *
++ * All fields are optional and depend on the hardware driver requirements
 + */
-+struct nand_manufacturer {
-+	int id;
-+	char *name;
-+	const struct nand_manufacturer_ops *ops;
++struct platform_nand_ctrl {
++	int (*probe)(struct platform_device *pdev);
++	void (*remove)(struct platform_device *pdev);
++	int (*dev_ready)(struct nand_chip *chip);
++	void (*select_chip)(struct nand_chip *chip, int cs);
++	void (*cmd_ctrl)(struct nand_chip *chip, int dat, unsigned int ctrl);
++	void (*write_buf)(struct nand_chip *chip, const uint8_t *buf, int len);
++	void (*read_buf)(struct nand_chip *chip, uint8_t *buf, int len);
++	void *priv;
 +};
 +
++/**
++ * struct platform_nand_data - container structure for platform-specific data
++ * @chip: chip level chip structure
++ * @ctrl: controller level device structure
++ */
++struct platform_nand_data {
++	struct platform_nand_chip chip;
++	struct platform_nand_ctrl ctrl;
++};
 +
-+extern struct nand_flash_dev nand_flash_ids[];
-+
-+extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
-+extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
-+
-+/* Core functions */
-+const struct nand_manufacturer *nand_get_manufacturer(u8 id);
-+int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
-+int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
-+		    int allowbbt);
-+int onfi_fill_data_interface(struct nand_chip *chip,
-+			     enum nand_data_interface_type type,
-+			     int timing_mode);
-+int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
-+int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
-+int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
-+			       int oob_required, int page);
-+int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
-+				int oob_required, int page);
-+int nand_exit_status_op(struct nand_chip *chip);
-+void nand_decode_ext_id(struct nand_chip *chip);
-+
-+/* BBT functions */
-+int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
-+int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
-+int nand_isbad_bbt(struct nand_chip *chip, loff_t offs, int allowbbt);
-+
-+#endif /* __LINUX_RAWNAND_INTERNALS */
-diff --git a/drivers/mtd/nand/raw/nand_amd.c b/drivers/mtd/nand/raw/nand_amd.c
-index 22f060f38123..890c5b43e03c 100644
---- a/drivers/mtd/nand/raw/nand_amd.c
-+++ b/drivers/mtd/nand/raw/nand_amd.c
-@@ -15,7 +15,7 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
-+#include "internals.h"
- 
- static void amd_nand_decode_id(struct nand_chip *chip)
- {
-diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index 136ccdc61a06..d48c588d1abe 100644
---- a/drivers/mtd/nand/raw/nand_base.c
-+++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -39,7 +39,6 @@
- #include <linux/nmi.h>
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
--#include <linux/mtd/rawnand.h>
- #include <linux/mtd/nand_ecc.h>
- #include <linux/mtd/nand_bch.h>
- #include <linux/interrupt.h>
-@@ -48,6 +47,8 @@
- #include <linux/mtd/partitions.h>
- #include <linux/of.h>
- 
-+#include "internals.h"
-+
- static int nand_get_device(struct mtd_info *mtd, int new_state);
- 
- static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
-@@ -1319,7 +1320,6 @@ static int nand_init_data_interface(struct nand_chip *chip)
- 		modes = GENMASK(chip->onfi_timing_mode_default, 0);
- 	}
- 
--
- 	for (mode = fls(modes) - 1; mode >= 0; mode--) {
- 		ret = onfi_fill_data_interface(chip, NAND_SDR_IFACE, mode);
- 		if (ret)
-@@ -2043,7 +2043,6 @@ int nand_exit_status_op(struct nand_chip *chip)
- 
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(nand_exit_status_op);
- 
- /**
-  * nand_erase_op - Do an erase operation
-@@ -2816,7 +2815,6 @@ int nand_get_features(struct nand_chip *chip, int addr,
- 
- 	return nand_get_features_op(chip, addr, subfeature_param);
- }
--EXPORT_SYMBOL_GPL(nand_get_features);
- 
- /**
-  * nand_set_features - wrapper to perform a SET_FEATURE
-@@ -2838,7 +2836,6 @@ int nand_set_features(struct nand_chip *chip, int addr,
- 
- 	return nand_set_features_op(chip, addr, subfeature_param);
- }
--EXPORT_SYMBOL_GPL(nand_set_features);
- 
- /**
-  * nand_check_erased_buf - check if a buffer contains (almost) only 0xff data
-@@ -2985,7 +2982,6 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
- {
- 	return -ENOTSUPP;
- }
--EXPORT_SYMBOL(nand_read_page_raw_notsupp);
- 
- /**
-  * nand_read_page_raw - [INTERN] read raw page data without ecc
-@@ -3729,7 +3725,7 @@ EXPORT_SYMBOL(nand_read_oob_std);
-  * @chip: nand chip info structure
-  * @page: page number to read
-  */
--int nand_read_oob_syndrome(struct nand_chip *chip, int page)
-+static int nand_read_oob_syndrome(struct nand_chip *chip, int page)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int length = mtd->oobsize;
-@@ -3776,7 +3772,6 @@ int nand_read_oob_syndrome(struct nand_chip *chip, int page)
- 
- 	return 0;
- }
--EXPORT_SYMBOL(nand_read_oob_syndrome);
- 
- /**
-  * nand_write_oob_std - [REPLACEABLE] the most common OOB data write function
-@@ -3798,7 +3793,7 @@ EXPORT_SYMBOL(nand_write_oob_std);
-  * @chip: nand chip info structure
-  * @page: page number to write
-  */
--int nand_write_oob_syndrome(struct nand_chip *chip, int page)
-+static int nand_write_oob_syndrome(struct nand_chip *chip, int page)
- {
- 	struct mtd_info *mtd = nand_to_mtd(chip);
- 	int chunk = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
-@@ -3864,7 +3859,6 @@ int nand_write_oob_syndrome(struct nand_chip *chip, int page)
- 
- 	return nand_prog_page_end_op(chip);
- }
--EXPORT_SYMBOL(nand_write_oob_syndrome);
- 
- /**
-  * nand_do_read_oob - [INTERN] NAND read out-of-band
-@@ -3989,7 +3983,6 @@ int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
- {
- 	return -ENOTSUPP;
- }
--EXPORT_SYMBOL(nand_write_page_raw_notsupp);
- 
- /**
-  * nand_write_page_raw - [INTERN] raw page write function
-@@ -5579,6 +5572,12 @@ static void nand_manufacturer_cleanup(struct nand_chip *chip)
- 		chip->manufacturer.desc->ops->cleanup(chip);
- }
- 
-+static const char *
-+nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
-+{
-+	return manufacturer ? manufacturer->name : "Unknown";
-+}
-+
- /*
-  * Get the flash and manufacturer id and lookup if the type is supported.
-  */
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index b838ecdde8fb..98a826838b60 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -61,13 +61,14 @@
- #include <linux/types.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/bbm.h>
--#include <linux/mtd/rawnand.h>
- #include <linux/bitops.h>
- #include <linux/delay.h>
- #include <linux/vmalloc.h>
- #include <linux/export.h>
- #include <linux/string.h>
- 
-+#include "internals.h"
-+
- #define BBT_BLOCK_GOOD		0x00
- #define BBT_BLOCK_WORN		0x01
- #define BBT_BLOCK_RESERVED	0x02
-diff --git a/drivers/mtd/nand/raw/nand_hynix.c b/drivers/mtd/nand/raw/nand_hynix.c
-index 7eec0d96909a..ac1b5c103968 100644
---- a/drivers/mtd/nand/raw/nand_hynix.c
-+++ b/drivers/mtd/nand/raw/nand_hynix.c
-@@ -15,10 +15,11 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
- #include <linux/sizes.h>
- #include <linux/slab.h>
- 
-+#include "internals.h"
-+
- #define NAND_HYNIX_CMD_SET_PARAMS	0x36
- #define NAND_HYNIX_CMD_APPLY_PARAMS	0x16
- 
-diff --git a/drivers/mtd/nand/raw/nand_ids.c b/drivers/mtd/nand/raw/nand_ids.c
-index 5423c3bb388e..12d39ccd1cff 100644
---- a/drivers/mtd/nand/raw/nand_ids.c
-+++ b/drivers/mtd/nand/raw/nand_ids.c
-@@ -6,9 +6,11 @@
-  * published by the Free Software Foundation.
-  *
-  */
--#include <linux/mtd/rawnand.h>
-+
- #include <linux/sizes.h>
- 
-+#include "internals.h"
-+
- #define LP_OPTIONS 0
- #define LP_OPTIONS16 (LP_OPTIONS | NAND_BUSWIDTH_16)
- 
-diff --git a/drivers/mtd/nand/raw/nand_macronix.c b/drivers/mtd/nand/raw/nand_macronix.c
-index 49c546c97c6f..358dcc957bb2 100644
---- a/drivers/mtd/nand/raw/nand_macronix.c
-+++ b/drivers/mtd/nand/raw/nand_macronix.c
-@@ -15,7 +15,7 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
-+#include "internals.h"
- 
- /*
-  * Macronix AC series does not support using SET/GET_FEATURES to change
-diff --git a/drivers/mtd/nand/raw/nand_micron.c b/drivers/mtd/nand/raw/nand_micron.c
-index 1a5505ccbe54..b85e1c13b79e 100644
---- a/drivers/mtd/nand/raw/nand_micron.c
-+++ b/drivers/mtd/nand/raw/nand_micron.c
-@@ -15,9 +15,10 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
- #include <linux/slab.h>
- 
-+#include "internals.h"
-+
- /*
-  * Special Micron status bit 3 indicates that the block has been
-  * corrected by on-die ECC and should be rewritten.
-diff --git a/drivers/mtd/nand/raw/nand_samsung.c b/drivers/mtd/nand/raw/nand_samsung.c
-index ef022f62f74c..e46d4c492ad8 100644
---- a/drivers/mtd/nand/raw/nand_samsung.c
-+++ b/drivers/mtd/nand/raw/nand_samsung.c
-@@ -15,7 +15,7 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
-+#include "internals.h"
- 
- static void samsung_nand_decode_id(struct nand_chip *chip)
- {
-diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-index cb4f0007b65c..bea3062d71d6 100644
---- a/drivers/mtd/nand/raw/nand_timings.c
-+++ b/drivers/mtd/nand/raw/nand_timings.c
-@@ -11,7 +11,8 @@
- #include <linux/kernel.h>
- #include <linux/err.h>
- #include <linux/export.h>
--#include <linux/mtd/rawnand.h>
-+
-+#include "internals.h"
- 
- #define ONFI_DYN_TIMING_MAX U16_MAX
- 
-@@ -325,4 +326,3 @@ int onfi_fill_data_interface(struct nand_chip *chip,
- 
- 	return 0;
- }
--EXPORT_SYMBOL(onfi_fill_data_interface);
-diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
-index 952fe9e62ab4..941ddc615190 100644
---- a/drivers/mtd/nand/raw/nand_toshiba.c
-+++ b/drivers/mtd/nand/raw/nand_toshiba.c
-@@ -15,7 +15,7 @@
-  * GNU General Public License for more details.
-  */
- 
--#include <linux/mtd/rawnand.h>
-+#include "internals.h"
- 
- /* Bit for detecting BENAND */
- #define TOSHIBA_NAND_ID4_IS_BENAND		BIT(7)
++#endif /* __LINUX_MTD_PLATNAND_H */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 7f0e3dc222ed..fbe7686cfc59 100644
+index 8aa8b57ca4b1..04e11a314e9c 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -775,24 +775,6 @@ nand_get_sdr_timings(const struct nand_data_interface *conf)
- 	return &conf->timings.sdr;
- }
+@@ -1540,66 +1540,6 @@ int nand_isbad_bbt(struct nand_chip *chip, loff_t offs, int allowbbt);
+ int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
+ 		    int allowbbt);
  
 -/**
-- * struct nand_manufacturer_ops - NAND Manufacturer operations
-- * @detect: detect the NAND memory organization and capabilities
-- * @init: initialize all vendor specific fields (like the ->read_retry()
-- *	  implementation) if any.
-- * @cleanup: the ->init() function may have allocated resources, ->cleanup()
-- *	     is here to let vendor specific code release those resources.
-- * @fixup_onfi_param_page: apply vendor specific fixups to the ONFI parameter
-- *			   page. This is called after the checksum is verified.
+- * struct platform_nand_chip - chip level device structure
+- * @nr_chips:		max. number of chips to scan for
+- * @chip_offset:	chip number offset
+- * @nr_partitions:	number of partitions pointed to by partitions (or zero)
+- * @partitions:		mtd partition list
+- * @chip_delay:		R/B delay value in us
+- * @options:		Option flags, e.g. 16bit buswidth
+- * @bbt_options:	BBT option flags, e.g. NAND_BBT_USE_FLASH
+- * @part_probe_types:	NULL-terminated array of probe types
 - */
--struct nand_manufacturer_ops {
--	void (*detect)(struct nand_chip *chip);
--	int (*init)(struct nand_chip *chip);
--	void (*cleanup)(struct nand_chip *chip);
--	void (*fixup_onfi_param_page)(struct nand_chip *chip,
--				      struct nand_onfi_params *p);
+-struct platform_nand_chip {
+-	int nr_chips;
+-	int chip_offset;
+-	int nr_partitions;
+-	struct mtd_partition *partitions;
+-	int chip_delay;
+-	unsigned int options;
+-	unsigned int bbt_options;
+-	const char **part_probe_types;
 -};
 -
- /**
-  * struct nand_op_cmd_instr - Definition of a command instruction
-  * @opcode: the command to issue in one cycle
-@@ -1403,27 +1385,6 @@ static inline void *nand_get_manufacturer_data(struct nand_chip *chip)
- 	return chip->manufacturer.priv;
- }
- 
--/*
-- * NAND Flash Manufacturer ID Codes
-- */
--#define NAND_MFR_TOSHIBA	0x98
--#define NAND_MFR_ESMT		0xc8
--#define NAND_MFR_SAMSUNG	0xec
--#define NAND_MFR_FUJITSU	0x04
--#define NAND_MFR_NATIONAL	0x8f
--#define NAND_MFR_RENESAS	0x07
--#define NAND_MFR_STMICRO	0x20
--#define NAND_MFR_HYNIX		0xad
--#define NAND_MFR_MICRON		0x2c
--#define NAND_MFR_AMD		0x01
--#define NAND_MFR_MACRONIX	0xc2
--#define NAND_MFR_EON		0x92
--#define NAND_MFR_SANDISK	0x45
--#define NAND_MFR_INTEL		0x89
--#define NAND_MFR_ATO		0x9b
--#define NAND_MFR_WINBOND	0xef
+-/* Keep gcc happy */
+-struct platform_device;
 -
--
- /*
-  * A helper for defining older NAND chips where the second ID byte fully
-  * defined the chip, including the geometry (chip size, eraseblock size, page
-@@ -1503,46 +1464,7 @@ struct nand_flash_dev {
- 	int onfi_timing_mode_default;
- };
- 
 -/**
-- * struct nand_manufacturer - NAND Flash Manufacturer structure
-- * @name:	Manufacturer name
-- * @id:		manufacturer ID code of device.
-- * @ops:	manufacturer operations
--*/
--struct nand_manufacturer {
--	int id;
--	char *name;
--	const struct nand_manufacturer_ops *ops;
+- * struct platform_nand_ctrl - controller level device structure
+- * @probe:		platform specific function to probe/setup hardware
+- * @remove:		platform specific function to remove/teardown hardware
+- * @dev_ready:		platform specific function to read ready/busy pin
+- * @select_chip:	platform specific chip select function
+- * @cmd_ctrl:		platform specific function for controlling
+- *			ALE/CLE/nCE. Also used to write command and address
+- * @write_buf:		platform specific function for write buffer
+- * @read_buf:		platform specific function for read buffer
+- * @priv:		private data to transport driver specific settings
+- *
+- * All fields are optional and depend on the hardware driver requirements
+- */
+-struct platform_nand_ctrl {
+-	int (*probe)(struct platform_device *pdev);
+-	void (*remove)(struct platform_device *pdev);
+-	int (*dev_ready)(struct nand_chip *chip);
+-	void (*select_chip)(struct nand_chip *chip, int cs);
+-	void (*cmd_ctrl)(struct nand_chip *chip, int dat, unsigned int ctrl);
+-	void (*write_buf)(struct nand_chip *chip, const uint8_t *buf, int len);
+-	void (*read_buf)(struct nand_chip *chip, uint8_t *buf, int len);
+-	void *priv;
 -};
 -
--const struct nand_manufacturer *nand_get_manufacturer(u8 id);
+-/**
+- * struct platform_nand_data - container structure for platform-specific data
+- * @chip:		chip level chip structure
+- * @ctrl:		controller level device structure
+- */
+-struct platform_nand_data {
+-	struct platform_nand_chip chip;
+-	struct platform_nand_ctrl ctrl;
+-};
 -
--static inline const char *
--nand_manufacturer_name(const struct nand_manufacturer *manufacturer)
--{
--	return manufacturer ? manufacturer->name : "Unknown";
--}
--
--extern struct nand_flash_dev nand_flash_ids[];
--
--extern const struct nand_manufacturer_ops toshiba_nand_manuf_ops;
--extern const struct nand_manufacturer_ops samsung_nand_manuf_ops;
--extern const struct nand_manufacturer_ops hynix_nand_manuf_ops;
--extern const struct nand_manufacturer_ops micron_nand_manuf_ops;
--extern const struct nand_manufacturer_ops amd_nand_manuf_ops;
--extern const struct nand_manufacturer_ops macronix_nand_manuf_ops;
--
- int nand_create_bbt(struct nand_chip *chip);
--int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
--int nand_markbad_bbm(struct nand_chip *chip, loff_t ofs);
--int nand_isreserved_bbt(struct nand_chip *chip, loff_t offs);
--int nand_isbad_bbt(struct nand_chip *chip, loff_t offs, int allowbbt);
--int nand_erase_nand(struct nand_chip *chip, struct erase_info *instr,
--		    int allowbbt);
--
--int onfi_fill_data_interface(struct nand_chip *chip,
--			     enum nand_data_interface_type type,
--			     int timing_mode);
- 
- /*
-  * Check if it is a SLC nand.
-@@ -1574,7 +1496,6 @@ static inline int nand_opcode_8bits(unsigned int command)
- 	return 0;
- }
- 
--
- int nand_check_erased_ecc_chunk(void *data, int datalen,
- 				void *ecc, int ecclen,
- 				void *extraoob, int extraooblen,
-@@ -1586,18 +1507,9 @@ int nand_ecc_choose_conf(struct nand_chip *chip,
- /* Default write_oob implementation */
- int nand_write_oob_std(struct nand_chip *chip, int page);
- 
--/* Default write_oob syndrome implementation */
--int nand_write_oob_syndrome(struct nand_chip *chip, int page);
--
- /* Default read_oob implementation */
- int nand_read_oob_std(struct nand_chip *chip, int page);
- 
--/* Default read_oob syndrome implementation */
--int nand_read_oob_syndrome(struct nand_chip *chip, int page);
--
--/* Wrapper to use in order for controllers/vendors to GET/SET FEATURES */
--int nand_get_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
--int nand_set_features(struct nand_chip *chip, int addr, u8 *subfeature_param);
- /* Stub used by drivers that do not support GET/SET FEATURES operations */
- int nand_get_set_features_notsupp(struct nand_chip *chip, int addr,
- 				  u8 *subfeature_param);
-@@ -1605,14 +1517,10 @@ int nand_get_set_features_notsupp(struct nand_chip *chip, int addr,
- /* Default read_page_raw implementation */
- int nand_read_page_raw(struct nand_chip *chip, uint8_t *buf, int oob_required,
- 		       int page);
--int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
--			       int oob_required, int page);
- 
- /* Default write_page_raw implementation */
- int nand_write_page_raw(struct nand_chip *chip, const uint8_t *buf,
- 			int oob_required, int page);
--int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
--				int oob_required, int page);
- 
- /* Reset and initialize a NAND device */
- int nand_reset(struct nand_chip *chip, int chipnr);
-@@ -1622,7 +1530,6 @@ int nand_reset_op(struct nand_chip *chip);
- int nand_readid_op(struct nand_chip *chip, u8 addr, void *buf,
- 		   unsigned int len);
- int nand_status_op(struct nand_chip *chip, u8 *status);
--int nand_exit_status_op(struct nand_chip *chip);
- int nand_erase_op(struct nand_chip *chip, unsigned int eraseblock);
- int nand_read_page_op(struct nand_chip *chip, unsigned int page,
- 		      unsigned int offset_in_page, void *buf, unsigned int len);
-@@ -1666,9 +1573,6 @@ void nand_cleanup(struct nand_chip *chip);
- /* Unregister the MTD device and calls nand_cleanup() */
- void nand_release(struct nand_chip *chip);
- 
--/* Default extended ID decoding function */
--void nand_decode_ext_id(struct nand_chip *chip);
--
- /*
-  * External helper for controller drivers that have to implement the WAITRDY
-  * instruction and have no physical pin to check it.
+ /* return the supported asynchronous timing mode. */
+ static inline int onfi_get_async_timing_mode(struct nand_chip *chip)
+ {
 -- 
 2.14.1
