@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy2vq-0002aP-Kk
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:47 +0000
+ id 1fy2w9-0002hr-30
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:53 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>,
@@ -27,11 +27,14 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
  linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org
-Subject: [PATCH 09/19] mtd: rawnand: Deprecate ->chip_delay
-Date: Fri,  7 Sep 2018 00:38:41 +0200
-Message-Id: <20180906223851.6964-10-boris.brezillon@bootlin.com>
+Subject: [PATCH 18/19] mtd: rawnand: Move ONFI code to nand_onfi.c
+Date: Fri,  7 Sep 2018 00:38:50 +0200
+Message-Id: <20180906223851.6964-19-boris.brezillon@bootlin.com>
 In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,674 +44,1069 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The wait timeouts and delays are directly extracted from the NAND
-timings and ->chip_delay is only used in legacy path, so let's move it
-to the nand_legacy struct to make it clear.
+This moves ONFI related code to nand_onfi.c and ONFI related
+struct/macros to include/linux/mtd/onfi.h.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- Documentation/driver-api/mtdnand.rst             |  2 +-
- drivers/mtd/nand/raw/ams-delta.c                 |  2 +-
- drivers/mtd/nand/raw/atmel/nand-controller.c     |  2 +-
- drivers/mtd/nand/raw/au1550nd.c                  |  4 ++--
- drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |  2 +-
- drivers/mtd/nand/raw/cafe_nand.c                 |  2 +-
- drivers/mtd/nand/raw/cmx270_nand.c               |  2 +-
- drivers/mtd/nand/raw/cs553x_nand.c               |  2 +-
- drivers/mtd/nand/raw/davinci_nand.c              |  2 +-
- drivers/mtd/nand/raw/diskonchip.c                |  4 ++--
- drivers/mtd/nand/raw/fsl_elbc_nand.c             |  4 ++--
- drivers/mtd/nand/raw/fsl_ifc_nand.c              |  4 ++--
- drivers/mtd/nand/raw/fsl_upm.c                   |  2 +-
- drivers/mtd/nand/raw/fsmc_nand.c                 |  1 -
- drivers/mtd/nand/raw/gpio.c                      |  2 +-
- drivers/mtd/nand/raw/hisi504_nand.c              |  2 +-
- drivers/mtd/nand/raw/jz4740_nand.c               |  2 +-
- drivers/mtd/nand/raw/jz4780_nand.c               |  2 +-
- drivers/mtd/nand/raw/lpc32xx_mlc.c               |  2 +-
- drivers/mtd/nand/raw/lpc32xx_slc.c               |  2 +-
- drivers/mtd/nand/raw/mxc_nand.c                  |  2 +-
- drivers/mtd/nand/raw/nand_base.c                 | 14 +++++++-------
- drivers/mtd/nand/raw/nandsim.c                   |  2 +-
- drivers/mtd/nand/raw/ndfc.c                      |  2 +-
- drivers/mtd/nand/raw/nuc900_nand.c               |  6 +++---
- drivers/mtd/nand/raw/omap2.c                     |  4 ++--
- drivers/mtd/nand/raw/orion_nand.c                |  2 +-
- drivers/mtd/nand/raw/oxnas_nand.c                |  2 +-
- drivers/mtd/nand/raw/pasemi_nand.c               |  2 +-
- drivers/mtd/nand/raw/plat_nand.c                 |  2 +-
- drivers/mtd/nand/raw/s3c2410.c                   |  2 +-
- drivers/mtd/nand/raw/sh_flctl.c                  |  2 +-
- drivers/mtd/nand/raw/sharpsl.c                   |  2 +-
- drivers/mtd/nand/raw/socrates_nand.c             |  2 +-
- drivers/mtd/nand/raw/sunxi_nand.c                |  2 +-
- drivers/mtd/nand/raw/tmio_nand.c                 |  2 +-
- drivers/mtd/nand/raw/txx9ndfmc.c                 |  2 +-
- drivers/mtd/nand/raw/xway_nand.c                 |  2 +-
- include/linux/mtd/rawnand.h                      |  6 +++---
- 39 files changed, 53 insertions(+), 54 deletions(-)
+ drivers/mtd/nand/raw/Makefile    |   1 +
+ drivers/mtd/nand/raw/internals.h |   7 +
+ drivers/mtd/nand/raw/nand_base.c | 296 +------------------------------------
+ drivers/mtd/nand/raw/nand_onfi.c | 305 +++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/onfi.h         | 178 +++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      | 164 +--------------------
+ 6 files changed, 496 insertions(+), 455 deletions(-)
+ create mode 100644 drivers/mtd/nand/raw/nand_onfi.c
+ create mode 100644 include/linux/mtd/onfi.h
 
-diff --git a/Documentation/driver-api/mtdnand.rst b/Documentation/driver-api/mtdnand.rst
-index 0d3fa4d6576d..55447659b81f 100644
---- a/Documentation/driver-api/mtdnand.rst
-+++ b/Documentation/driver-api/mtdnand.rst
-@@ -240,7 +240,7 @@ necessary information about the device.
-         /* Reference hardware control function */
-         this->hwcontrol = board_hwcontrol;
-         /* Set command delay time, see datasheet for correct value */
--        this->chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
-+        this->legacy.chip_delay = CHIP_DEPENDEND_COMMAND_DELAY;
-         /* Assign the device ready function, if available */
-         this->legacy.dev_ready = board_dev_ready;
-         this->eccmode = NAND_ECC_SOFT;
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 2fa6fa3c7464..3d3786dcc5d1 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -221,7 +221,7 @@ static int ams_delta_init(struct platform_device *pdev)
- 		pr_notice("Couldn't request gpio for Delta NAND ready.\n");
- 	}
- 	/* 25 us command delay time */
--	this->chip_delay = 30;
-+	this->legacy.chip_delay = 30;
- 	this->ecc.mode = NAND_ECC_SOFT;
- 	this->ecc.algo = NAND_ECC_HAMMING;
+diff --git a/drivers/mtd/nand/raw/Makefile b/drivers/mtd/nand/raw/Makefile
+index 78f67de2e60b..cc9f50f3ad1b 100644
+--- a/drivers/mtd/nand/raw/Makefile
++++ b/drivers/mtd/nand/raw/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_NAND_MTK)		+= mtk_ecc.o mtk_nand.o
+ obj-$(CONFIG_MTD_NAND_TEGRA)		+= tegra_nand.o
  
-diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-index dd022080442d..ad0245c66892 100644
---- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-+++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-@@ -1483,7 +1483,7 @@ static void atmel_nand_init(struct atmel_nand_controller *nc,
- 		chip->setup_data_interface = atmel_nand_setup_data_interface;
+ nand-objs := nand_base.o nand_legacy.o nand_bbt.o nand_timings.o nand_ids.o
++nand-objs += nand_onfi.o
+ nand-objs += nand_amd.o
+ nand-objs += nand_hynix.o
+ nand-objs += nand_macronix.o
+diff --git a/drivers/mtd/nand/raw/internals.h b/drivers/mtd/nand/raw/internals.h
+index 289a4b8f7974..1ce720a8d756 100644
+--- a/drivers/mtd/nand/raw/internals.h
++++ b/drivers/mtd/nand/raw/internals.h
+@@ -88,8 +88,11 @@ int nand_read_page_raw_notsupp(struct nand_chip *chip, u8 *buf,
+ int nand_write_page_raw_notsupp(struct nand_chip *chip, const u8 *buf,
+ 				int oob_required, int page);
+ int nand_exit_status_op(struct nand_chip *chip);
++int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
++			    unsigned int len);
+ void nand_decode_ext_id(struct nand_chip *chip);
+ void panic_nand_wait(struct nand_chip *chip, unsigned long timeo);
++void sanitize_string(uint8_t *s, size_t len);
  
- 	/* Some NANDs require a longer delay than the default one (20us). */
--	chip->chip_delay = 40;
-+	chip->legacy.chip_delay = 40;
+ /* BBT functions */
+ int nand_markbad_bbt(struct nand_chip *chip, loff_t offs);
+@@ -101,4 +104,8 @@ void nand_legacy_set_defaults(struct nand_chip *chip);
+ void nand_legacy_adjust_cmdfunc(struct nand_chip *chip);
+ int nand_legacy_check_hooks(struct nand_chip *chip);
  
- 	/*
- 	 * Use a bounce buffer when the buffer passed by the MTD user is not
-diff --git a/drivers/mtd/nand/raw/au1550nd.c b/drivers/mtd/nand/raw/au1550nd.c
-index 81bba469c0e4..9731c1c487f6 100644
---- a/drivers/mtd/nand/raw/au1550nd.c
-+++ b/drivers/mtd/nand/raw/au1550nd.c
-@@ -342,7 +342,7 @@ static void au1550_command(struct nand_chip *this, unsigned command,
- 		/* Apply a short delay always to ensure that we do wait tWB. */
- 		ndelay(100);
- 		/* Wait for a chip to become ready... */
--		for (i = this->chip_delay;
-+		for (i = this->legacy.chip_delay;
- 		     !this->legacy.dev_ready(this) && i > 0; --i)
- 			udelay(1);
- 
-@@ -434,7 +434,7 @@ static int au1550nd_probe(struct platform_device *pdev)
- 	this->legacy.cmdfunc = au1550_command;
- 
- 	/* 30 us command delay time */
--	this->chip_delay = 30;
-+	this->legacy.chip_delay = 30;
- 	this->ecc.mode = NAND_ECC_SOFT;
- 	this->ecc.algo = NAND_ECC_HAMMING;
- 
-diff --git a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-index 357bc75948b0..9095a79ebc7d 100644
---- a/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-+++ b/drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c
-@@ -393,7 +393,7 @@ int bcm47xxnflash_ops_bcm4706_init(struct bcm47xxnflash *b47n)
- 	b47n->nand_chip.legacy.set_features = nand_get_set_features_notsupp;
- 	b47n->nand_chip.legacy.get_features = nand_get_set_features_notsupp;
- 
--	nand_chip->chip_delay = 50;
-+	nand_chip->legacy.chip_delay = 50;
- 	b47n->nand_chip.bbt_options = NAND_BBT_USE_FLASH;
- 	b47n->nand_chip.ecc.mode = NAND_ECC_NONE; /* TODO: implement ECC */
- 
-diff --git a/drivers/mtd/nand/raw/cafe_nand.c b/drivers/mtd/nand/raw/cafe_nand.c
-index e3f702bef549..c1a745940d12 100644
---- a/drivers/mtd/nand/raw/cafe_nand.c
-+++ b/drivers/mtd/nand/raw/cafe_nand.c
-@@ -712,7 +712,7 @@ static int cafe_nand_probe(struct pci_dev *pdev,
- 	cafe->nand.legacy.set_features = nand_get_set_features_notsupp;
- 	cafe->nand.legacy.get_features = nand_get_set_features_notsupp;
- 
--	cafe->nand.chip_delay = 0;
-+	cafe->nand.legacy.chip_delay = 0;
- 
- 	/* Enable the following for a flash based bad block table */
- 	cafe->nand.bbt_options = NAND_BBT_USE_FLASH;
-diff --git a/drivers/mtd/nand/raw/cmx270_nand.c b/drivers/mtd/nand/raw/cmx270_nand.c
-index 585dbd51d8b1..143e4acacaae 100644
---- a/drivers/mtd/nand/raw/cmx270_nand.c
-+++ b/drivers/mtd/nand/raw/cmx270_nand.c
-@@ -179,7 +179,7 @@ static int __init cmx270_init(void)
- 	this->legacy.dev_ready = cmx270_device_ready;
- 
- 	/* 15 us command delay time */
--	this->chip_delay = 20;
-+	this->legacy.chip_delay = 20;
- 	this->ecc.mode = NAND_ECC_SOFT;
- 	this->ecc.algo = NAND_ECC_HAMMING;
- 
-diff --git a/drivers/mtd/nand/raw/cs553x_nand.c b/drivers/mtd/nand/raw/cs553x_nand.c
-index 61ae9e60bf0d..c6f578aff5d9 100644
---- a/drivers/mtd/nand/raw/cs553x_nand.c
-+++ b/drivers/mtd/nand/raw/cs553x_nand.c
-@@ -212,7 +212,7 @@ static int __init cs553x_init_one(int cs, int mmio, unsigned long adr)
- 	this->legacy.read_buf = cs553x_read_buf;
- 	this->legacy.write_buf = cs553x_write_buf;
- 
--	this->chip_delay = 0;
-+	this->legacy.chip_delay = 0;
- 
- 	this->ecc.mode = NAND_ECC_HW;
- 	this->ecc.size = 256;
-diff --git a/drivers/mtd/nand/raw/davinci_nand.c b/drivers/mtd/nand/raw/davinci_nand.c
-index bae568d68432..80f228d23cd2 100644
---- a/drivers/mtd/nand/raw/davinci_nand.c
-+++ b/drivers/mtd/nand/raw/davinci_nand.c
-@@ -761,7 +761,7 @@ static int nand_davinci_probe(struct platform_device *pdev)
- 
- 	info->chip.legacy.IO_ADDR_R	= vaddr;
- 	info->chip.legacy.IO_ADDR_W	= vaddr;
--	info->chip.chip_delay	= 0;
-+	info->chip.legacy.chip_delay	= 0;
- 	info->chip.select_chip	= nand_davinci_select_chip;
- 
- 	/* options such as NAND_BBT_USE_FLASH */
-diff --git a/drivers/mtd/nand/raw/diskonchip.c b/drivers/mtd/nand/raw/diskonchip.c
-index 16fdfd06ef25..3a4c373affab 100644
---- a/drivers/mtd/nand/raw/diskonchip.c
-+++ b/drivers/mtd/nand/raw/diskonchip.c
-@@ -717,7 +717,7 @@ static void doc2001plus_command(struct nand_chip *this, unsigned command,
- 	case NAND_CMD_RESET:
- 		if (this->legacy.dev_ready)
- 			break;
--		udelay(this->chip_delay);
-+		udelay(this->legacy.chip_delay);
- 		WriteDOC(NAND_CMD_STATUS, docptr, Mplus_FlashCmd);
- 		WriteDOC(0, docptr, Mplus_WritePipeTerm);
- 		WriteDOC(0, docptr, Mplus_WritePipeTerm);
-@@ -731,7 +731,7 @@ static void doc2001plus_command(struct nand_chip *this, unsigned command,
- 		 * command delay
- 		 */
- 		if (!this->legacy.dev_ready) {
--			udelay(this->chip_delay);
-+			udelay(this->legacy.chip_delay);
- 			return;
- 		}
- 	}
-diff --git a/drivers/mtd/nand/raw/fsl_elbc_nand.c b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-index c5f3aa908416..d6ed697fcfe6 100644
---- a/drivers/mtd/nand/raw/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_elbc_nand.c
-@@ -658,8 +658,8 @@ static int fsl_elbc_attach_chip(struct nand_chip *chip)
- 	        chip->chipsize);
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->pagemask = %8x\n",
- 	        chip->pagemask);
--	dev_dbg(priv->dev, "fsl_elbc_init: nand->chip_delay = %d\n",
--	        chip->chip_delay);
-+	dev_dbg(priv->dev, "fsl_elbc_init: nand->legacy.chip_delay = %d\n",
-+	        chip->legacy.chip_delay);
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->badblockpos = %d\n",
- 	        chip->badblockpos);
- 	dev_dbg(priv->dev, "fsl_elbc_init: nand->chip_shift = %d\n",
-diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-index a303d12079f0..6f4afc44381a 100644
---- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
-+++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
-@@ -727,8 +727,8 @@ static int fsl_ifc_attach_chip(struct nand_chip *chip)
- 							chip->chipsize);
- 	dev_dbg(priv->dev, "%s: nand->pagemask = %8x\n", __func__,
- 							chip->pagemask);
--	dev_dbg(priv->dev, "%s: nand->chip_delay = %d\n", __func__,
--							chip->chip_delay);
-+	dev_dbg(priv->dev, "%s: nand->legacy.chip_delay = %d\n", __func__,
-+		chip->legacy.chip_delay);
- 	dev_dbg(priv->dev, "%s: nand->badblockpos = %d\n", __func__,
- 							chip->badblockpos);
- 	dev_dbg(priv->dev, "%s: nand->chip_shift = %d\n", __func__,
-diff --git a/drivers/mtd/nand/raw/fsl_upm.c b/drivers/mtd/nand/raw/fsl_upm.c
-index fcb79718b6c3..673c5a0c9345 100644
---- a/drivers/mtd/nand/raw/fsl_upm.c
-+++ b/drivers/mtd/nand/raw/fsl_upm.c
-@@ -163,7 +163,7 @@ static int fun_chip_init(struct fsl_upm_nand *fun,
- 	fun->chip.legacy.IO_ADDR_R = fun->io_base;
- 	fun->chip.legacy.IO_ADDR_W = fun->io_base;
- 	fun->chip.legacy.cmd_ctrl = fun_cmd_ctrl;
--	fun->chip.chip_delay = fun->chip_delay;
-+	fun->chip.legacy.chip_delay = fun->chip_delay;
- 	fun->chip.legacy.read_byte = fun_read_byte;
- 	fun->chip.legacy.read_buf = fun_read_buf;
- 	fun->chip.legacy.write_buf = fun_write_buf;
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 5e06fce4b295..f9874fc72f30 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -1080,7 +1080,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
- 	mtd->dev.parent = &pdev->dev;
- 	nand->exec_op = fsmc_exec_op;
- 	nand->select_chip = fsmc_select_chip;
--	nand->chip_delay = 30;
- 
- 	/*
- 	 * Setup default ECC mode. nand_dt_init() called from nand_scan_ident()
-diff --git a/drivers/mtd/nand/raw/gpio.c b/drivers/mtd/nand/raw/gpio.c
-index c4f19067702e..a6c9a824a7d4 100644
---- a/drivers/mtd/nand/raw/gpio.c
-+++ b/drivers/mtd/nand/raw/gpio.c
-@@ -278,7 +278,7 @@ static int gpio_nand_probe(struct platform_device *pdev)
- 	chip->ecc.mode		= NAND_ECC_SOFT;
- 	chip->ecc.algo		= NAND_ECC_HAMMING;
- 	chip->options		= gpiomtd->plat.options;
--	chip->chip_delay	= gpiomtd->plat.chip_delay;
-+	chip->legacy.chip_delay	= gpiomtd->plat.chip_delay;
- 	chip->legacy.cmd_ctrl	= gpio_nand_cmd_ctrl;
- 
- 	mtd			= nand_to_mtd(chip);
-diff --git a/drivers/mtd/nand/raw/hisi504_nand.c b/drivers/mtd/nand/raw/hisi504_nand.c
-index fee7d63e8de8..f043938ee36b 100644
---- a/drivers/mtd/nand/raw/hisi504_nand.c
-+++ b/drivers/mtd/nand/raw/hisi504_nand.c
-@@ -787,7 +787,7 @@ static int hisi_nfc_probe(struct platform_device *pdev)
- 	chip->legacy.read_byte	= hisi_nfc_read_byte;
- 	chip->legacy.write_buf	= hisi_nfc_write_buf;
- 	chip->legacy.read_buf	= hisi_nfc_read_buf;
--	chip->chip_delay	= HINFC504_CHIP_DELAY;
-+	chip->legacy.chip_delay	= HINFC504_CHIP_DELAY;
- 	chip->legacy.set_features	= nand_get_set_features_notsupp;
- 	chip->legacy.get_features	= nand_get_set_features_notsupp;
- 
-diff --git a/drivers/mtd/nand/raw/jz4740_nand.c b/drivers/mtd/nand/raw/jz4740_nand.c
-index 7a1b4c3ff6fd..fb59cfca11a7 100644
---- a/drivers/mtd/nand/raw/jz4740_nand.c
-+++ b/drivers/mtd/nand/raw/jz4740_nand.c
-@@ -425,7 +425,7 @@ static int jz_nand_probe(struct platform_device *pdev)
- 	chip->ecc.strength	= 4;
- 	chip->ecc.options	= NAND_ECC_GENERIC_ERASED_CHECK;
- 
--	chip->chip_delay = 50;
-+	chip->legacy.chip_delay = 50;
- 	chip->legacy.cmd_ctrl = jz_nand_cmd_ctrl;
- 	chip->select_chip = jz_nand_select_chip;
- 	chip->dummy_controller.ops = &jz_nand_controller_ops;
-diff --git a/drivers/mtd/nand/raw/jz4780_nand.c b/drivers/mtd/nand/raw/jz4780_nand.c
-index 2a960211b97d..cdf22100ab77 100644
---- a/drivers/mtd/nand/raw/jz4780_nand.c
-+++ b/drivers/mtd/nand/raw/jz4780_nand.c
-@@ -277,7 +277,7 @@ static int jz4780_nand_init_chip(struct platform_device *pdev,
- 
- 	chip->legacy.IO_ADDR_R = cs->base + OFFSET_DATA;
- 	chip->legacy.IO_ADDR_W = cs->base + OFFSET_DATA;
--	chip->chip_delay = RB_DELAY_US;
-+	chip->legacy.chip_delay = RB_DELAY_US;
- 	chip->options = NAND_NO_SUBPAGE_WRITE;
- 	chip->select_chip = jz4780_nand_select_chip;
- 	chip->legacy.cmd_ctrl = jz4780_nand_cmd_ctrl;
-diff --git a/drivers/mtd/nand/raw/lpc32xx_mlc.c b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-index 8a1dfb7ee885..abbb655fe154 100644
---- a/drivers/mtd/nand/raw/lpc32xx_mlc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_mlc.c
-@@ -741,7 +741,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 
- 	nand_chip->legacy.cmd_ctrl = lpc32xx_nand_cmd_ctrl;
- 	nand_chip->legacy.dev_ready = lpc32xx_nand_device_ready;
--	nand_chip->chip_delay = 25; /* us */
-+	nand_chip->legacy.chip_delay = 25; /* us */
- 	nand_chip->legacy.IO_ADDR_R = MLC_DATA(host->io_base);
- 	nand_chip->legacy.IO_ADDR_W = MLC_DATA(host->io_base);
- 
-diff --git a/drivers/mtd/nand/raw/lpc32xx_slc.c b/drivers/mtd/nand/raw/lpc32xx_slc.c
-index 75d62d6bed7b..f2f2cdbb9d04 100644
---- a/drivers/mtd/nand/raw/lpc32xx_slc.c
-+++ b/drivers/mtd/nand/raw/lpc32xx_slc.c
-@@ -882,7 +882,7 @@ static int lpc32xx_nand_probe(struct platform_device *pdev)
- 	chip->legacy.IO_ADDR_W = SLC_DATA(host->io_base);
- 	chip->legacy.cmd_ctrl = lpc32xx_nand_cmd_ctrl;
- 	chip->legacy.dev_ready = lpc32xx_nand_device_ready;
--	chip->chip_delay = 20; /* 20us command delay time */
-+	chip->legacy.chip_delay = 20; /* 20us command delay time */
- 
- 	/* Init NAND controller */
- 	lpc32xx_nand_setup(host);
-diff --git a/drivers/mtd/nand/raw/mxc_nand.c b/drivers/mtd/nand/raw/mxc_nand.c
-index b8115100a0b8..88bd3f6a499c 100644
---- a/drivers/mtd/nand/raw/mxc_nand.c
-+++ b/drivers/mtd/nand/raw/mxc_nand.c
-@@ -1769,7 +1769,7 @@ static int mxcnd_probe(struct platform_device *pdev)
- 	mtd->name = DRIVER_NAME;
- 
- 	/* 50 us command delay time */
--	this->chip_delay = 5;
-+	this->legacy.chip_delay = 5;
- 
- 	nand_set_controller_data(this, host);
- 	nand_set_flash_node(this, pdev->dev.of_node),
++/* ONFI functions */
++u16 onfi_crc16(u16 crc, u8 const *p, size_t len);
++int nand_onfi_detect(struct nand_chip *chip);
++
+ #endif /* __LINUX_RAWNAND_INTERNALS */
 diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
-index d4a84a871fc7..2f8bbc3bca7a 100644
+index 4ef00cefd5da..812e8bd6ad82 100644
 --- a/drivers/mtd/nand/raw/nand_base.c
 +++ b/drivers/mtd/nand/raw/nand_base.c
-@@ -827,7 +827,7 @@ static void nand_command(struct nand_chip *chip, unsigned int command,
- 	case NAND_CMD_RESET:
- 		if (chip->legacy.dev_ready)
- 			break;
--		udelay(chip->chip_delay);
-+		udelay(chip->legacy.chip_delay);
- 		chip->legacy.cmd_ctrl(chip, NAND_CMD_STATUS,
- 				      NAND_CTRL_CLE | NAND_CTRL_CHANGE);
- 		chip->legacy.cmd_ctrl(chip, NAND_CMD_NONE,
-@@ -853,7 +853,7 @@ static void nand_command(struct nand_chip *chip, unsigned int command,
- 		 * command delay
- 		 */
- 		if (!chip->legacy.dev_ready) {
--			udelay(chip->chip_delay);
-+			udelay(chip->legacy.chip_delay);
- 			return;
- 		}
- 	}
-@@ -964,7 +964,7 @@ static void nand_command_lp(struct nand_chip *chip, unsigned int command,
- 	case NAND_CMD_RESET:
- 		if (chip->legacy.dev_ready)
- 			break;
--		udelay(chip->chip_delay);
-+		udelay(chip->legacy.chip_delay);
- 		chip->legacy.cmd_ctrl(chip, NAND_CMD_STATUS,
- 				      NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
- 		chip->legacy.cmd_ctrl(chip, NAND_CMD_NONE,
-@@ -1005,7 +1005,7 @@ static void nand_command_lp(struct nand_chip *chip, unsigned int command,
- 		 * command delay.
- 		 */
- 		if (!chip->legacy.dev_ready) {
--			udelay(chip->chip_delay);
-+			udelay(chip->legacy.chip_delay);
- 			return;
- 		}
- 	}
-@@ -2206,7 +2206,7 @@ static int nand_wait_rdy_op(struct nand_chip *chip, unsigned int timeout_ms,
+@@ -986,8 +986,8 @@ EXPORT_SYMBOL_GPL(nand_read_page_op);
+  *
+  * Returns 0 on success, a negative error code otherwise.
+  */
+-static int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
+-				   unsigned int len)
++int nand_read_param_page_op(struct nand_chip *chip, u8 page, void *buf,
++			    unsigned int len)
+ {
+ 	unsigned int i;
+ 	u8 *p = buf;
+@@ -4370,7 +4370,7 @@ static void nand_set_defaults(struct nand_chip *chip)
+ }
  
- 	/* Apply delay or wait for ready/busy pin */
- 	if (!chip->legacy.dev_ready)
--		udelay(chip->chip_delay);
-+		udelay(chip->legacy.chip_delay);
- 	else
- 		nand_wait_ready(chip);
+ /* Sanitize ONFI strings so we can safely print them */
+-static void sanitize_string(uint8_t *s, size_t len)
++void sanitize_string(uint8_t *s, size_t len)
+ {
+ 	ssize_t i;
  
-@@ -4926,8 +4926,8 @@ static void nand_set_defaults(struct nand_chip *chip)
- 	unsigned int busw = chip->options & NAND_BUSWIDTH_16;
+@@ -4387,294 +4387,6 @@ static void sanitize_string(uint8_t *s, size_t len)
+ 	strim(s);
+ }
  
- 	/* check for proper chip_delay setup, set 20us if not */
--	if (!chip->chip_delay)
--		chip->chip_delay = 20;
-+	if (!chip->legacy.chip_delay)
-+		chip->legacy.chip_delay = 20;
+-static u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
+-{
+-	int i;
+-	while (len--) {
+-		crc ^= *p++ << 8;
+-		for (i = 0; i < 8; i++)
+-			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
+-	}
+-
+-	return crc;
+-}
+-
+-/* Parse the Extended Parameter Page. */
+-static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
+-					    struct nand_onfi_params *p)
+-{
+-	struct onfi_ext_param_page *ep;
+-	struct onfi_ext_section *s;
+-	struct onfi_ext_ecc_info *ecc;
+-	uint8_t *cursor;
+-	int ret;
+-	int len;
+-	int i;
+-
+-	len = le16_to_cpu(p->ext_param_page_length) * 16;
+-	ep = kmalloc(len, GFP_KERNEL);
+-	if (!ep)
+-		return -ENOMEM;
+-
+-	/* Send our own NAND_CMD_PARAM. */
+-	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+-	if (ret)
+-		goto ext_out;
+-
+-	/* Use the Change Read Column command to skip the ONFI param pages. */
+-	ret = nand_change_read_column_op(chip,
+-					 sizeof(*p) * p->num_of_param_pages,
+-					 ep, len, true);
+-	if (ret)
+-		goto ext_out;
+-
+-	ret = -EINVAL;
+-	if ((onfi_crc16(ONFI_CRC_BASE, ((uint8_t *)ep) + 2, len - 2)
+-		!= le16_to_cpu(ep->crc))) {
+-		pr_debug("fail in the CRC.\n");
+-		goto ext_out;
+-	}
+-
+-	/*
+-	 * Check the signature.
+-	 * Do not strictly follow the ONFI spec, maybe changed in future.
+-	 */
+-	if (strncmp(ep->sig, "EPPS", 4)) {
+-		pr_debug("The signature is invalid.\n");
+-		goto ext_out;
+-	}
+-
+-	/* find the ECC section. */
+-	cursor = (uint8_t *)(ep + 1);
+-	for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
+-		s = ep->sections + i;
+-		if (s->type == ONFI_SECTION_TYPE_2)
+-			break;
+-		cursor += s->length * 16;
+-	}
+-	if (i == ONFI_EXT_SECTION_MAX) {
+-		pr_debug("We can not find the ECC section.\n");
+-		goto ext_out;
+-	}
+-
+-	/* get the info we want. */
+-	ecc = (struct onfi_ext_ecc_info *)cursor;
+-
+-	if (!ecc->codeword_size) {
+-		pr_debug("Invalid codeword size\n");
+-		goto ext_out;
+-	}
+-
+-	chip->ecc_strength_ds = ecc->ecc_bits;
+-	chip->ecc_step_ds = 1 << ecc->codeword_size;
+-	ret = 0;
+-
+-ext_out:
+-	kfree(ep);
+-	return ret;
+-}
+-
+-/*
+- * Recover data with bit-wise majority
+- */
+-static void nand_bit_wise_majority(const void **srcbufs,
+-				   unsigned int nsrcbufs,
+-				   void *dstbuf,
+-				   unsigned int bufsize)
+-{
+-	int i, j, k;
+-
+-	for (i = 0; i < bufsize; i++) {
+-		u8 val = 0;
+-
+-		for (j = 0; j < 8; j++) {
+-			unsigned int cnt = 0;
+-
+-			for (k = 0; k < nsrcbufs; k++) {
+-				const u8 *srcbuf = srcbufs[k];
+-
+-				if (srcbuf[i] & BIT(j))
+-					cnt++;
+-			}
+-
+-			if (cnt > nsrcbufs / 2)
+-				val |= BIT(j);
+-		}
+-
+-		((u8 *)dstbuf)[i] = val;
+-	}
+-}
+-
+-/*
+- * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
+- */
+-static int nand_flash_detect_onfi(struct nand_chip *chip)
+-{
+-	struct mtd_info *mtd = nand_to_mtd(chip);
+-	struct nand_onfi_params *p;
+-	struct onfi_params *onfi;
+-	int onfi_version = 0;
+-	char id[4];
+-	int i, ret, val;
+-
+-	/* Try ONFI for unknown chip or LP */
+-	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
+-	if (ret || strncmp(id, "ONFI", 4))
+-		return 0;
+-
+-	/* ONFI chip: allocate a buffer to hold its parameter page */
+-	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
+-	if (!p)
+-		return -ENOMEM;
+-
+-	ret = nand_read_param_page_op(chip, 0, NULL, 0);
+-	if (ret) {
+-		ret = 0;
+-		goto free_onfi_param_page;
+-	}
+-
+-	for (i = 0; i < 3; i++) {
+-		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
+-		if (ret) {
+-			ret = 0;
+-			goto free_onfi_param_page;
+-		}
+-
+-		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
+-				le16_to_cpu(p->crc)) {
+-			if (i)
+-				memcpy(p, &p[i], sizeof(*p));
+-			break;
+-		}
+-	}
+-
+-	if (i == 3) {
+-		const void *srcbufs[3] = {p, p + 1, p + 2};
+-
+-		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
+-		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
+-				       sizeof(*p));
+-
+-		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
+-				le16_to_cpu(p->crc)) {
+-			pr_err("ONFI parameter recovery failed, aborting\n");
+-			goto free_onfi_param_page;
+-		}
+-	}
+-
+-	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
+-	    chip->manufacturer.desc->ops->fixup_onfi_param_page)
+-		chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
+-
+-	/* Check version */
+-	val = le16_to_cpu(p->revision);
+-	if (val & ONFI_VERSION_2_3)
+-		onfi_version = 23;
+-	else if (val & ONFI_VERSION_2_2)
+-		onfi_version = 22;
+-	else if (val & ONFI_VERSION_2_1)
+-		onfi_version = 21;
+-	else if (val & ONFI_VERSION_2_0)
+-		onfi_version = 20;
+-	else if (val & ONFI_VERSION_1_0)
+-		onfi_version = 10;
+-
+-	if (!onfi_version) {
+-		pr_info("unsupported ONFI version: %d\n", val);
+-		goto free_onfi_param_page;
+-	}
+-
+-	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
+-	sanitize_string(p->model, sizeof(p->model));
+-	chip->parameters.model = kstrdup(p->model, GFP_KERNEL);
+-	if (!chip->parameters.model) {
+-		ret = -ENOMEM;
+-		goto free_onfi_param_page;
+-	}
+-
+-	mtd->writesize = le32_to_cpu(p->byte_per_page);
+-
+-	/*
+-	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
+-	 * (don't ask me who thought of this...). MTD assumes that these
+-	 * dimensions will be power-of-2, so just truncate the remaining area.
+-	 */
+-	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
+-	mtd->erasesize *= mtd->writesize;
+-
+-	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+-
+-	/* See erasesize comment */
+-	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
+-	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
+-	chip->bits_per_cell = p->bits_per_cell;
+-
+-	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
+-	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
+-
+-	if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
+-		chip->options |= NAND_BUSWIDTH_16;
+-
+-	if (p->ecc_bits != 0xff) {
+-		chip->ecc_strength_ds = p->ecc_bits;
+-		chip->ecc_step_ds = 512;
+-	} else if (onfi_version >= 21 &&
+-		(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
+-
+-		/*
+-		 * The nand_flash_detect_ext_param_page() uses the
+-		 * Change Read Column command which maybe not supported
+-		 * by the chip->legacy.cmdfunc. So try to update the
+-		 * chip->legacy.cmdfunc now. We do not replace user supplied
+-		 * command function.
+-		 */
+-		nand_legacy_adjust_cmdfunc(chip);
+-
+-		/* The Extended Parameter Page is supported since ONFI 2.1. */
+-		if (nand_flash_detect_ext_param_page(chip, p))
+-			pr_warn("Failed to detect ONFI extended param page\n");
+-	} else {
+-		pr_warn("Could not retrieve ONFI ECC requirements\n");
+-	}
+-
+-	/* Save some parameters from the parameter page for future use */
+-	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES) {
+-		chip->parameters.supports_set_get_features = true;
+-		bitmap_set(chip->parameters.get_feature_list,
+-			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+-		bitmap_set(chip->parameters.set_feature_list,
+-			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
+-	}
+-
+-	onfi = kzalloc(sizeof(*onfi), GFP_KERNEL);
+-	if (!onfi) {
+-		ret = -ENOMEM;
+-		goto free_model;
+-	}
+-
+-	onfi->version = onfi_version;
+-	onfi->tPROG = le16_to_cpu(p->t_prog);
+-	onfi->tBERS = le16_to_cpu(p->t_bers);
+-	onfi->tR = le16_to_cpu(p->t_r);
+-	onfi->tCCS = le16_to_cpu(p->t_ccs);
+-	onfi->async_timing_mode = le16_to_cpu(p->async_timing_mode);
+-	onfi->vendor_revision = le16_to_cpu(p->vendor_revision);
+-	memcpy(onfi->vendor, p->vendor, sizeof(p->vendor));
+-	chip->parameters.onfi = onfi;
+-
+-	/* Identification done, free the full ONFI parameter page and exit */
+-	kfree(p);
+-
+-	return 1;
+-
+-free_model:
+-	kfree(chip->parameters.model);
+-free_onfi_param_page:
+-	kfree(p);
+-
+-	return ret;
+-}
+-
+ /*
+  * Check if the NAND chip is JEDEC compliant, returns 1 if it is, 0 otherwise.
+  */
+@@ -5076,7 +4788,7 @@ static int nand_detect(struct nand_chip *chip, struct nand_flash_dev *type)
  
- 	/* check, if a user supplied command function given */
- 	if (!chip->legacy.cmdfunc && !chip->exec_op)
-diff --git a/drivers/mtd/nand/raw/nandsim.c b/drivers/mtd/nand/raw/nandsim.c
-index ff0c372ee288..c452819f6123 100644
---- a/drivers/mtd/nand/raw/nandsim.c
-+++ b/drivers/mtd/nand/raw/nandsim.c
-@@ -656,7 +656,7 @@ static int __init init_nandsim(struct mtd_info *mtd)
- 	}
- 
- 	/* Force mtd to not do delays */
--	chip->chip_delay = 0;
-+	chip->legacy.chip_delay = 0;
- 
- 	/* Initialize the NAND flash parameters */
- 	ns->busw = chip->options & NAND_BUSWIDTH_16 ? 16 : 8;
-diff --git a/drivers/mtd/nand/raw/ndfc.c b/drivers/mtd/nand/raw/ndfc.c
-index 19b4cb2d1c6e..d49a7a17146c 100644
---- a/drivers/mtd/nand/raw/ndfc.c
-+++ b/drivers/mtd/nand/raw/ndfc.c
-@@ -147,7 +147,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
- 	chip->legacy.cmd_ctrl = ndfc_hwcontrol;
- 	chip->legacy.dev_ready = ndfc_ready;
- 	chip->select_chip = ndfc_select_chip;
--	chip->chip_delay = 50;
-+	chip->legacy.chip_delay = 50;
- 	chip->controller = &ndfc->ndfc_control;
- 	chip->legacy.read_buf = ndfc_read_buf;
- 	chip->legacy.write_buf = ndfc_write_buf;
-diff --git a/drivers/mtd/nand/raw/nuc900_nand.c b/drivers/mtd/nand/raw/nuc900_nand.c
-index 208b6de67510..38b1994e7ed3 100644
---- a/drivers/mtd/nand/raw/nuc900_nand.c
-+++ b/drivers/mtd/nand/raw/nuc900_nand.c
-@@ -177,7 +177,7 @@ static void nuc900_nand_command_lp(struct nand_chip *chip,
- 	case NAND_CMD_RESET:
- 		if (chip->legacy.dev_ready)
- 			break;
--		udelay(chip->chip_delay);
-+		udelay(chip->legacy.chip_delay);
- 
- 		write_cmd_reg(nand, NAND_CMD_STATUS);
- 		write_cmd_reg(nand, command);
-@@ -197,7 +197,7 @@ static void nuc900_nand_command_lp(struct nand_chip *chip,
- 	default:
- 
- 		if (!chip->legacy.dev_ready) {
--			udelay(chip->chip_delay);
-+			udelay(chip->legacy.chip_delay);
- 			return;
- 		}
- 	}
-@@ -259,7 +259,7 @@ static int nuc900_nand_probe(struct platform_device *pdev)
- 	chip->legacy.read_byte	= nuc900_nand_read_byte;
- 	chip->legacy.write_buf	= nuc900_nand_write_buf;
- 	chip->legacy.read_buf	= nuc900_nand_read_buf;
--	chip->chip_delay	= 50;
-+	chip->legacy.chip_delay	= 50;
- 	chip->options		= 0;
- 	chip->ecc.mode		= NAND_ECC_SOFT;
- 	chip->ecc.algo		= NAND_ECC_HAMMING;
-diff --git a/drivers/mtd/nand/raw/omap2.c b/drivers/mtd/nand/raw/omap2.c
-index 5e1e7ced0d9e..886d05c391ef 100644
---- a/drivers/mtd/nand/raw/omap2.c
-+++ b/drivers/mtd/nand/raw/omap2.c
-@@ -2248,10 +2248,10 @@ static int omap_nand_probe(struct platform_device *pdev)
- 	 */
- 	if (info->ready_gpiod) {
- 		nand_chip->legacy.dev_ready = omap_dev_ready;
--		nand_chip->chip_delay = 0;
-+		nand_chip->legacy.chip_delay = 0;
- 	} else {
- 		nand_chip->legacy.waitfunc = omap_wait;
--		nand_chip->chip_delay = 50;
-+		nand_chip->legacy.chip_delay = 50;
- 	}
- 
- 	if (info->flash_bbt)
-diff --git a/drivers/mtd/nand/raw/orion_nand.c b/drivers/mtd/nand/raw/orion_nand.c
-index bf288c3c930b..d27b39a7223c 100644
---- a/drivers/mtd/nand/raw/orion_nand.c
-+++ b/drivers/mtd/nand/raw/orion_nand.c
-@@ -143,7 +143,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
- 	nc->ecc.algo = NAND_ECC_HAMMING;
- 
- 	if (board->chip_delay)
--		nc->chip_delay = board->chip_delay;
-+		nc->legacy.chip_delay = board->chip_delay;
- 
- 	WARN(board->width > 16,
- 		"%d bit bus width out of range",
-diff --git a/drivers/mtd/nand/raw/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
-index fb0ebb296f6c..0e52dc29141c 100644
---- a/drivers/mtd/nand/raw/oxnas_nand.c
-+++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -136,7 +136,7 @@ static int oxnas_nand_probe(struct platform_device *pdev)
- 		chip->legacy.read_buf = oxnas_nand_read_buf;
- 		chip->legacy.read_byte = oxnas_nand_read_byte;
- 		chip->legacy.write_buf = oxnas_nand_write_buf;
--		chip->chip_delay = 30;
-+		chip->legacy.chip_delay = 30;
- 
- 		/* Scan to find existence of the device */
- 		err = nand_scan(chip, 1);
-diff --git a/drivers/mtd/nand/raw/pasemi_nand.c b/drivers/mtd/nand/raw/pasemi_nand.c
-index e9a4e82bfb34..643cd22af009 100644
---- a/drivers/mtd/nand/raw/pasemi_nand.c
-+++ b/drivers/mtd/nand/raw/pasemi_nand.c
-@@ -143,7 +143,7 @@ static int pasemi_nand_probe(struct platform_device *ofdev)
- 	chip->legacy.dev_ready = pasemi_device_ready;
- 	chip->legacy.read_buf = pasemi_read_buf;
- 	chip->legacy.write_buf = pasemi_write_buf;
--	chip->chip_delay = 0;
-+	chip->legacy.chip_delay = 0;
- 	chip->ecc.mode = NAND_ECC_SOFT;
- 	chip->ecc.algo = NAND_ECC_HAMMING;
- 
-diff --git a/drivers/mtd/nand/raw/plat_nand.c b/drivers/mtd/nand/raw/plat_nand.c
-index 6cce01d09364..156c9150fec4 100644
---- a/drivers/mtd/nand/raw/plat_nand.c
-+++ b/drivers/mtd/nand/raw/plat_nand.c
-@@ -67,7 +67,7 @@ static int plat_nand_probe(struct platform_device *pdev)
- 	data->chip.select_chip = pdata->ctrl.select_chip;
- 	data->chip.legacy.write_buf = pdata->ctrl.write_buf;
- 	data->chip.legacy.read_buf = pdata->ctrl.read_buf;
--	data->chip.chip_delay = pdata->chip.chip_delay;
-+	data->chip.legacy.chip_delay = pdata->chip.chip_delay;
- 	data->chip.options |= pdata->chip.options;
- 	data->chip.bbt_options |= pdata->chip.bbt_options;
- 
-diff --git a/drivers/mtd/nand/raw/s3c2410.c b/drivers/mtd/nand/raw/s3c2410.c
-index 87b5162857f8..d2e42e9d0e8c 100644
---- a/drivers/mtd/nand/raw/s3c2410.c
-+++ b/drivers/mtd/nand/raw/s3c2410.c
-@@ -867,7 +867,7 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
- 	chip->legacy.write_buf    = s3c2410_nand_write_buf;
- 	chip->legacy.read_buf     = s3c2410_nand_read_buf;
- 	chip->select_chip  = s3c2410_nand_select_chip;
--	chip->chip_delay   = 50;
-+	chip->legacy.chip_delay   = 50;
- 	nand_set_controller_data(chip, nmtd);
- 	chip->options	   = set->options;
- 	chip->controller   = &info->controller;
-diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
-index 40a4159924a7..c0c0798f268f 100644
---- a/drivers/mtd/nand/raw/sh_flctl.c
-+++ b/drivers/mtd/nand/raw/sh_flctl.c
-@@ -1178,7 +1178,7 @@ static int flctl_probe(struct platform_device *pdev)
- 
- 	/* Set address of hardware control function */
- 	/* 20 us command delay time */
--	nand->chip_delay = 20;
-+	nand->legacy.chip_delay = 20;
- 
- 	nand->legacy.read_byte = flctl_read_byte;
- 	nand->legacy.write_buf = flctl_write_buf;
-diff --git a/drivers/mtd/nand/raw/sharpsl.c b/drivers/mtd/nand/raw/sharpsl.c
-index 3d14408cbbce..c82f26c8b58c 100644
---- a/drivers/mtd/nand/raw/sharpsl.c
-+++ b/drivers/mtd/nand/raw/sharpsl.c
-@@ -159,7 +159,7 @@ static int sharpsl_nand_probe(struct platform_device *pdev)
- 	this->legacy.cmd_ctrl = sharpsl_nand_hwcontrol;
- 	this->legacy.dev_ready = sharpsl_nand_dev_ready;
- 	/* 15 us command delay time */
--	this->chip_delay = 15;
-+	this->legacy.chip_delay = 15;
- 	/* set eccmode using hardware ECC */
- 	this->ecc.mode = NAND_ECC_HW;
- 	this->ecc.size = 256;
-diff --git a/drivers/mtd/nand/raw/socrates_nand.c b/drivers/mtd/nand/raw/socrates_nand.c
-index 604ef7508f14..8be9a50c7880 100644
---- a/drivers/mtd/nand/raw/socrates_nand.c
-+++ b/drivers/mtd/nand/raw/socrates_nand.c
-@@ -162,7 +162,7 @@ static int socrates_nand_probe(struct platform_device *ofdev)
- 	nand_chip->ecc.algo = NAND_ECC_HAMMING;
- 
- 	/* TODO: I have no idea what real delay is. */
--	nand_chip->chip_delay = 20;		/* 20us command delay time */
-+	nand_chip->legacy.chip_delay = 20;	/* 20us command delay time */
- 
- 	dev_set_drvdata(&ofdev->dev, host);
- 
-diff --git a/drivers/mtd/nand/raw/sunxi_nand.c b/drivers/mtd/nand/raw/sunxi_nand.c
-index 37e23aec4bce..51b1a548064b 100644
---- a/drivers/mtd/nand/raw/sunxi_nand.c
-+++ b/drivers/mtd/nand/raw/sunxi_nand.c
-@@ -1912,7 +1912,7 @@ static int sunxi_nand_chip_init(struct device *dev, struct sunxi_nfc *nfc,
- 
- 	nand = &chip->nand;
- 	/* Default tR value specified in the ONFI spec (chapter 4.15.1) */
--	nand->chip_delay = 200;
-+	nand->legacy.chip_delay = 200;
- 	nand->controller = &nfc->controller;
- 	nand->controller->ops = &sunxi_nand_controller_ops;
- 
-diff --git a/drivers/mtd/nand/raw/tmio_nand.c b/drivers/mtd/nand/raw/tmio_nand.c
-index 7e49272ecef6..3297621241d2 100644
---- a/drivers/mtd/nand/raw/tmio_nand.c
-+++ b/drivers/mtd/nand/raw/tmio_nand.c
-@@ -422,7 +422,7 @@ static int tmio_probe(struct platform_device *dev)
- 		nand_chip->badblock_pattern = data->badblock_pattern;
- 
- 	/* 15 us command delay time */
--	nand_chip->chip_delay = 15;
-+	nand_chip->legacy.chip_delay = 15;
- 
- 	retval = devm_request_irq(&dev->dev, irq, &tmio_irq, 0,
- 				  dev_name(&dev->dev), tmio);
-diff --git a/drivers/mtd/nand/raw/txx9ndfmc.c b/drivers/mtd/nand/raw/txx9ndfmc.c
-index 46cfb11c5502..3a99c8e3f944 100644
---- a/drivers/mtd/nand/raw/txx9ndfmc.c
-+++ b/drivers/mtd/nand/raw/txx9ndfmc.c
-@@ -334,7 +334,7 @@ static int __init txx9ndfmc_probe(struct platform_device *dev)
- 		chip->ecc.hwctl = txx9ndfmc_enable_hwecc;
- 		chip->ecc.mode = NAND_ECC_HW;
- 		chip->ecc.strength = 1;
--		chip->chip_delay = 100;
-+		chip->legacy.chip_delay = 100;
- 		chip->controller = &drvdata->controller;
- 
- 		nand_set_controller_data(chip, txx9_priv);
-diff --git a/drivers/mtd/nand/raw/xway_nand.c b/drivers/mtd/nand/raw/xway_nand.c
-index dcce487f6517..a234a5cb4868 100644
---- a/drivers/mtd/nand/raw/xway_nand.c
-+++ b/drivers/mtd/nand/raw/xway_nand.c
-@@ -180,7 +180,7 @@ static int xway_nand_probe(struct platform_device *pdev)
- 	data->chip.legacy.write_buf = xway_write_buf;
- 	data->chip.legacy.read_buf = xway_read_buf;
- 	data->chip.legacy.read_byte = xway_read_byte;
--	data->chip.chip_delay = 30;
-+	data->chip.legacy.chip_delay = 30;
- 
- 	data->chip.ecc.mode = NAND_ECC_SOFT;
- 	data->chip.ecc.algo = NAND_ECC_HAMMING;
+ 	if (!type->name || !type->pagesize) {
+ 		/* Check if the chip is ONFI compliant */
+-		ret = nand_flash_detect_onfi(chip);
++		ret = nand_onfi_detect(chip);
+ 		if (ret < 0)
+ 			return ret;
+ 		else if (ret)
+diff --git a/drivers/mtd/nand/raw/nand_onfi.c b/drivers/mtd/nand/raw/nand_onfi.c
+new file mode 100644
+index 000000000000..d8184cf591ad
+--- /dev/null
++++ b/drivers/mtd/nand/raw/nand_onfi.c
+@@ -0,0 +1,305 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ *  Copyright (C) 2000 Steven J. Hill (sjhill@realitydiluted.com)
++ *		  2002-2006 Thomas Gleixner (tglx@linutronix.de)
++ *
++ *  Credits:
++ *	David Woodhouse for adding multichip support
++ *
++ *	Aleph One Ltd. and Toby Churchill Ltd. for supporting the
++ *	rework for 2K page size chips
++ *
++ * This file contains all ONFI helpers.
++ */
++
++#include <linux/slab.h>
++
++#include "internals.h"
++
++u16 onfi_crc16(u16 crc, u8 const *p, size_t len)
++{
++	int i;
++	while (len--) {
++		crc ^= *p++ << 8;
++		for (i = 0; i < 8; i++)
++			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
++	}
++
++	return crc;
++}
++
++/* Parse the Extended Parameter Page. */
++static int nand_flash_detect_ext_param_page(struct nand_chip *chip,
++					    struct nand_onfi_params *p)
++{
++	struct onfi_ext_param_page *ep;
++	struct onfi_ext_section *s;
++	struct onfi_ext_ecc_info *ecc;
++	uint8_t *cursor;
++	int ret;
++	int len;
++	int i;
++
++	len = le16_to_cpu(p->ext_param_page_length) * 16;
++	ep = kmalloc(len, GFP_KERNEL);
++	if (!ep)
++		return -ENOMEM;
++
++	/* Send our own NAND_CMD_PARAM. */
++	ret = nand_read_param_page_op(chip, 0, NULL, 0);
++	if (ret)
++		goto ext_out;
++
++	/* Use the Change Read Column command to skip the ONFI param pages. */
++	ret = nand_change_read_column_op(chip,
++					 sizeof(*p) * p->num_of_param_pages,
++					 ep, len, true);
++	if (ret)
++		goto ext_out;
++
++	ret = -EINVAL;
++	if ((onfi_crc16(ONFI_CRC_BASE, ((uint8_t *)ep) + 2, len - 2)
++		!= le16_to_cpu(ep->crc))) {
++		pr_debug("fail in the CRC.\n");
++		goto ext_out;
++	}
++
++	/*
++	 * Check the signature.
++	 * Do not strictly follow the ONFI spec, maybe changed in future.
++	 */
++	if (strncmp(ep->sig, "EPPS", 4)) {
++		pr_debug("The signature is invalid.\n");
++		goto ext_out;
++	}
++
++	/* find the ECC section. */
++	cursor = (uint8_t *)(ep + 1);
++	for (i = 0; i < ONFI_EXT_SECTION_MAX; i++) {
++		s = ep->sections + i;
++		if (s->type == ONFI_SECTION_TYPE_2)
++			break;
++		cursor += s->length * 16;
++	}
++	if (i == ONFI_EXT_SECTION_MAX) {
++		pr_debug("We can not find the ECC section.\n");
++		goto ext_out;
++	}
++
++	/* get the info we want. */
++	ecc = (struct onfi_ext_ecc_info *)cursor;
++
++	if (!ecc->codeword_size) {
++		pr_debug("Invalid codeword size\n");
++		goto ext_out;
++	}
++
++	chip->ecc_strength_ds = ecc->ecc_bits;
++	chip->ecc_step_ds = 1 << ecc->codeword_size;
++	ret = 0;
++
++ext_out:
++	kfree(ep);
++	return ret;
++}
++
++/*
++ * Recover data with bit-wise majority
++ */
++static void nand_bit_wise_majority(const void **srcbufs,
++				   unsigned int nsrcbufs,
++				   void *dstbuf,
++				   unsigned int bufsize)
++{
++	int i, j, k;
++
++	for (i = 0; i < bufsize; i++) {
++		u8 val = 0;
++
++		for (j = 0; j < 8; j++) {
++			unsigned int cnt = 0;
++
++			for (k = 0; k < nsrcbufs; k++) {
++				const u8 *srcbuf = srcbufs[k];
++
++				if (srcbuf[i] & BIT(j))
++					cnt++;
++			}
++
++			if (cnt > nsrcbufs / 2)
++				val |= BIT(j);
++		}
++
++		((u8 *)dstbuf)[i] = val;
++	}
++}
++
++/*
++ * Check if the NAND chip is ONFI compliant, returns 1 if it is, 0 otherwise.
++ */
++int nand_onfi_detect(struct nand_chip *chip)
++{
++	struct mtd_info *mtd = nand_to_mtd(chip);
++	struct nand_onfi_params *p;
++	struct onfi_params *onfi;
++	int onfi_version = 0;
++	char id[4];
++	int i, ret, val;
++
++	/* Try ONFI for unknown chip or LP */
++	ret = nand_readid_op(chip, 0x20, id, sizeof(id));
++	if (ret || strncmp(id, "ONFI", 4))
++		return 0;
++
++	/* ONFI chip: allocate a buffer to hold its parameter page */
++	p = kzalloc((sizeof(*p) * 3), GFP_KERNEL);
++	if (!p)
++		return -ENOMEM;
++
++	ret = nand_read_param_page_op(chip, 0, NULL, 0);
++	if (ret) {
++		ret = 0;
++		goto free_onfi_param_page;
++	}
++
++	for (i = 0; i < 3; i++) {
++		ret = nand_read_data_op(chip, &p[i], sizeof(*p), true);
++		if (ret) {
++			ret = 0;
++			goto free_onfi_param_page;
++		}
++
++		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)&p[i], 254) ==
++				le16_to_cpu(p->crc)) {
++			if (i)
++				memcpy(p, &p[i], sizeof(*p));
++			break;
++		}
++	}
++
++	if (i == 3) {
++		const void *srcbufs[3] = {p, p + 1, p + 2};
++
++		pr_warn("Could not find a valid ONFI parameter page, trying bit-wise majority to recover it\n");
++		nand_bit_wise_majority(srcbufs, ARRAY_SIZE(srcbufs), p,
++				       sizeof(*p));
++
++		if (onfi_crc16(ONFI_CRC_BASE, (u8 *)p, 254) !=
++				le16_to_cpu(p->crc)) {
++			pr_err("ONFI parameter recovery failed, aborting\n");
++			goto free_onfi_param_page;
++		}
++	}
++
++	if (chip->manufacturer.desc && chip->manufacturer.desc->ops &&
++	    chip->manufacturer.desc->ops->fixup_onfi_param_page)
++		chip->manufacturer.desc->ops->fixup_onfi_param_page(chip, p);
++
++	/* Check version */
++	val = le16_to_cpu(p->revision);
++	if (val & ONFI_VERSION_2_3)
++		onfi_version = 23;
++	else if (val & ONFI_VERSION_2_2)
++		onfi_version = 22;
++	else if (val & ONFI_VERSION_2_1)
++		onfi_version = 21;
++	else if (val & ONFI_VERSION_2_0)
++		onfi_version = 20;
++	else if (val & ONFI_VERSION_1_0)
++		onfi_version = 10;
++
++	if (!onfi_version) {
++		pr_info("unsupported ONFI version: %d\n", val);
++		goto free_onfi_param_page;
++	}
++
++	sanitize_string(p->manufacturer, sizeof(p->manufacturer));
++	sanitize_string(p->model, sizeof(p->model));
++	chip->parameters.model = kstrdup(p->model, GFP_KERNEL);
++	if (!chip->parameters.model) {
++		ret = -ENOMEM;
++		goto free_onfi_param_page;
++	}
++
++	mtd->writesize = le32_to_cpu(p->byte_per_page);
++
++	/*
++	 * pages_per_block and blocks_per_lun may not be a power-of-2 size
++	 * (don't ask me who thought of this...). MTD assumes that these
++	 * dimensions will be power-of-2, so just truncate the remaining area.
++	 */
++	mtd->erasesize = 1 << (fls(le32_to_cpu(p->pages_per_block)) - 1);
++	mtd->erasesize *= mtd->writesize;
++
++	mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
++
++	/* See erasesize comment */
++	chip->chipsize = 1 << (fls(le32_to_cpu(p->blocks_per_lun)) - 1);
++	chip->chipsize *= (uint64_t)mtd->erasesize * p->lun_count;
++	chip->bits_per_cell = p->bits_per_cell;
++
++	chip->max_bb_per_die = le16_to_cpu(p->bb_per_lun);
++	chip->blocks_per_die = le32_to_cpu(p->blocks_per_lun);
++
++	if (le16_to_cpu(p->features) & ONFI_FEATURE_16_BIT_BUS)
++		chip->options |= NAND_BUSWIDTH_16;
++
++	if (p->ecc_bits != 0xff) {
++		chip->ecc_strength_ds = p->ecc_bits;
++		chip->ecc_step_ds = 512;
++	} else if (onfi_version >= 21 &&
++		(le16_to_cpu(p->features) & ONFI_FEATURE_EXT_PARAM_PAGE)) {
++
++		/*
++		 * The nand_flash_detect_ext_param_page() uses the
++		 * Change Read Column command which maybe not supported
++		 * by the chip->legacy.cmdfunc. So try to update the
++		 * chip->legacy.cmdfunc now. We do not replace user supplied
++		 * command function.
++		 */
++		nand_legacy_adjust_cmdfunc(chip);
++
++		/* The Extended Parameter Page is supported since ONFI 2.1. */
++		if (nand_flash_detect_ext_param_page(chip, p))
++			pr_warn("Failed to detect ONFI extended param page\n");
++	} else {
++		pr_warn("Could not retrieve ONFI ECC requirements\n");
++	}
++
++	/* Save some parameters from the parameter page for future use */
++	if (le16_to_cpu(p->opt_cmd) & ONFI_OPT_CMD_SET_GET_FEATURES) {
++		chip->parameters.supports_set_get_features = true;
++		bitmap_set(chip->parameters.get_feature_list,
++			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
++		bitmap_set(chip->parameters.set_feature_list,
++			   ONFI_FEATURE_ADDR_TIMING_MODE, 1);
++	}
++
++	onfi = kzalloc(sizeof(*onfi), GFP_KERNEL);
++	if (!onfi) {
++		ret = -ENOMEM;
++		goto free_model;
++	}
++
++	onfi->version = onfi_version;
++	onfi->tPROG = le16_to_cpu(p->t_prog);
++	onfi->tBERS = le16_to_cpu(p->t_bers);
++	onfi->tR = le16_to_cpu(p->t_r);
++	onfi->tCCS = le16_to_cpu(p->t_ccs);
++	onfi->async_timing_mode = le16_to_cpu(p->async_timing_mode);
++	onfi->vendor_revision = le16_to_cpu(p->vendor_revision);
++	memcpy(onfi->vendor, p->vendor, sizeof(p->vendor));
++	chip->parameters.onfi = onfi;
++
++	/* Identification done, free the full ONFI parameter page and exit */
++	kfree(p);
++
++	return 1;
++
++free_model:
++	kfree(chip->parameters.model);
++free_onfi_param_page:
++	kfree(p);
++
++	return ret;
++}
+diff --git a/include/linux/mtd/onfi.h b/include/linux/mtd/onfi.h
+new file mode 100644
+index 000000000000..339ac798568e
+--- /dev/null
++++ b/include/linux/mtd/onfi.h
+@@ -0,0 +1,178 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright © 2000-2010 David Woodhouse <dwmw2@infradead.org>
++ *			 Steven J. Hill <sjhill@realitydiluted.com>
++ *			 Thomas Gleixner <tglx@linutronix.de>
++ *
++ * Contains all ONFI related definitions
++ */
++
++#ifndef __LINUX_MTD_ONFI_H
++#define __LINUX_MTD_ONFI_H
++
++#include <linux/types.h>
++
++/* ONFI version bits */
++#define ONFI_VERSION_1_0		BIT(1)
++#define ONFI_VERSION_2_0		BIT(2)
++#define ONFI_VERSION_2_1		BIT(3)
++#define ONFI_VERSION_2_2		BIT(4)
++#define ONFI_VERSION_2_3		BIT(5)
++#define ONFI_VERSION_3_0		BIT(6)
++#define ONFI_VERSION_3_1		BIT(7)
++#define ONFI_VERSION_3_2		BIT(8)
++#define ONFI_VERSION_4_0		BIT(9)
++
++/* ONFI features */
++#define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
++#define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
++
++/* ONFI timing mode, used in both asynchronous and synchronous mode */
++#define ONFI_TIMING_MODE_0		(1 << 0)
++#define ONFI_TIMING_MODE_1		(1 << 1)
++#define ONFI_TIMING_MODE_2		(1 << 2)
++#define ONFI_TIMING_MODE_3		(1 << 3)
++#define ONFI_TIMING_MODE_4		(1 << 4)
++#define ONFI_TIMING_MODE_5		(1 << 5)
++#define ONFI_TIMING_MODE_UNKNOWN	(1 << 6)
++
++/* ONFI feature number/address */
++#define ONFI_FEATURE_NUMBER		256
++#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
++
++/* Vendor-specific feature address (Micron) */
++#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
++#define ONFI_FEATURE_ON_DIE_ECC		0x90
++#define   ONFI_FEATURE_ON_DIE_ECC_EN	BIT(3)
++
++/* ONFI subfeature parameters length */
++#define ONFI_SUBFEATURE_PARAM_LEN	4
++
++/* ONFI optional commands SET/GET FEATURES supported? */
++#define ONFI_OPT_CMD_SET_GET_FEATURES	(1 << 2)
++
++struct nand_onfi_params {
++	/* rev info and features block */
++	/* 'O' 'N' 'F' 'I'  */
++	u8 sig[4];
++	__le16 revision;
++	__le16 features;
++	__le16 opt_cmd;
++	u8 reserved0[2];
++	__le16 ext_param_page_length; /* since ONFI 2.1 */
++	u8 num_of_param_pages;        /* since ONFI 2.1 */
++	u8 reserved1[17];
++
++	/* manufacturer information block */
++	char manufacturer[12];
++	char model[20];
++	u8 jedec_id;
++	__le16 date_code;
++	u8 reserved2[13];
++
++	/* memory organization block */
++	__le32 byte_per_page;
++	__le16 spare_bytes_per_page;
++	__le32 data_bytes_per_ppage;
++	__le16 spare_bytes_per_ppage;
++	__le32 pages_per_block;
++	__le32 blocks_per_lun;
++	u8 lun_count;
++	u8 addr_cycles;
++	u8 bits_per_cell;
++	__le16 bb_per_lun;
++	__le16 block_endurance;
++	u8 guaranteed_good_blocks;
++	__le16 guaranteed_block_endurance;
++	u8 programs_per_page;
++	u8 ppage_attr;
++	u8 ecc_bits;
++	u8 interleaved_bits;
++	u8 interleaved_ops;
++	u8 reserved3[13];
++
++	/* electrical parameter block */
++	u8 io_pin_capacitance_max;
++	__le16 async_timing_mode;
++	__le16 program_cache_timing_mode;
++	__le16 t_prog;
++	__le16 t_bers;
++	__le16 t_r;
++	__le16 t_ccs;
++	__le16 src_sync_timing_mode;
++	u8 src_ssync_features;
++	__le16 clk_pin_capacitance_typ;
++	__le16 io_pin_capacitance_typ;
++	__le16 input_pin_capacitance_typ;
++	u8 input_pin_capacitance_max;
++	u8 driver_strength_support;
++	__le16 t_int_r;
++	__le16 t_adl;
++	u8 reserved4[8];
++
++	/* vendor */
++	__le16 vendor_revision;
++	u8 vendor[88];
++
++	__le16 crc;
++} __packed;
++
++#define ONFI_CRC_BASE	0x4F4E
++
++/* Extended ECC information Block Definition (since ONFI 2.1) */
++struct onfi_ext_ecc_info {
++	u8 ecc_bits;
++	u8 codeword_size;
++	__le16 bb_per_lun;
++	__le16 block_endurance;
++	u8 reserved[2];
++} __packed;
++
++#define ONFI_SECTION_TYPE_0	0	/* Unused section. */
++#define ONFI_SECTION_TYPE_1	1	/* for additional sections. */
++#define ONFI_SECTION_TYPE_2	2	/* for ECC information. */
++struct onfi_ext_section {
++	u8 type;
++	u8 length;
++} __packed;
++
++#define ONFI_EXT_SECTION_MAX 8
++
++/* Extended Parameter Page Definition (since ONFI 2.1) */
++struct onfi_ext_param_page {
++	__le16 crc;
++	u8 sig[4];             /* 'E' 'P' 'P' 'S' */
++	u8 reserved0[10];
++	struct onfi_ext_section sections[ONFI_EXT_SECTION_MAX];
++
++	/*
++	 * The actual size of the Extended Parameter Page is in
++	 * @ext_param_page_length of nand_onfi_params{}.
++	 * The following are the variable length sections.
++	 * So we do not add any fields below. Please see the ONFI spec.
++	 */
++} __packed;
++
++/**
++ * struct onfi_params - ONFI specific parameters that will be reused
++ * @version: ONFI version (BCD encoded), 0 if ONFI is not supported
++ * @tPROG: Page program time
++ * @tBERS: Block erase time
++ * @tR: Page read time
++ * @tCCS: Change column setup time
++ * @async_timing_mode: Supported asynchronous timing mode
++ * @vendor_revision: Vendor specific revision number
++ * @vendor: Vendor specific data
++ */
++struct onfi_params {
++	int version;
++	u16 tPROG;
++	u16 tBERS;
++	u16 tR;
++	u16 tCCS;
++	u16 async_timing_mode;
++	u16 vendor_revision;
++	u8 vendor[88];
++};
++
++#endif /* __LINUX_MTD_ONFI_H */
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 02ac70a30c63..992d78d29674 100644
+index fbe7686cfc59..f4fc0cce7c55 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -1192,6 +1192,8 @@ int nand_op_parser_exec_op(struct nand_chip *chip,
-  * @erase: erase function
-  * @set_features: set the NAND chip features
-  * @get_features: get the NAND chip features
-+ * @chip_delay: chip dependent delay for transferring data from array to read
-+ *		regs (tR).
-  *
-  * If you look at this structure you're already wrong. These fields/hooks are
-  * all deprecated.
-@@ -1215,6 +1217,7 @@ struct nand_legacy {
- 			    u8 *subfeature_para);
- 	int (*get_features)(struct nand_chip *chip, int feature_addr,
- 			    u8 *subfeature_para);
-+	int chip_delay;
- };
+@@ -21,6 +21,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/flashchip.h>
+ #include <linux/mtd/bbm.h>
++#include <linux/mtd/onfi.h>
+ #include <linux/of.h>
+ #include <linux/types.h>
  
+@@ -204,147 +205,6 @@ enum nand_ecc_algo {
+ #define NAND_CI_CELLTYPE_MSK	0x0C
+ #define NAND_CI_CELLTYPE_SHIFT	2
+ 
+-/* ONFI version bits */
+-#define ONFI_VERSION_1_0		BIT(1)
+-#define ONFI_VERSION_2_0		BIT(2)
+-#define ONFI_VERSION_2_1		BIT(3)
+-#define ONFI_VERSION_2_2		BIT(4)
+-#define ONFI_VERSION_2_3		BIT(5)
+-#define ONFI_VERSION_3_0		BIT(6)
+-#define ONFI_VERSION_3_1		BIT(7)
+-#define ONFI_VERSION_3_2		BIT(8)
+-#define ONFI_VERSION_4_0		BIT(9)
+-
+-/* ONFI features */
+-#define ONFI_FEATURE_16_BIT_BUS		(1 << 0)
+-#define ONFI_FEATURE_EXT_PARAM_PAGE	(1 << 7)
+-
+-/* ONFI timing mode, used in both asynchronous and synchronous mode */
+-#define ONFI_TIMING_MODE_0		(1 << 0)
+-#define ONFI_TIMING_MODE_1		(1 << 1)
+-#define ONFI_TIMING_MODE_2		(1 << 2)
+-#define ONFI_TIMING_MODE_3		(1 << 3)
+-#define ONFI_TIMING_MODE_4		(1 << 4)
+-#define ONFI_TIMING_MODE_5		(1 << 5)
+-#define ONFI_TIMING_MODE_UNKNOWN	(1 << 6)
+-
+-/* ONFI feature number/address */
+-#define ONFI_FEATURE_NUMBER		256
+-#define ONFI_FEATURE_ADDR_TIMING_MODE	0x1
+-
+-/* Vendor-specific feature address (Micron) */
+-#define ONFI_FEATURE_ADDR_READ_RETRY	0x89
+-#define ONFI_FEATURE_ON_DIE_ECC		0x90
+-#define   ONFI_FEATURE_ON_DIE_ECC_EN	BIT(3)
+-
+-/* ONFI subfeature parameters length */
+-#define ONFI_SUBFEATURE_PARAM_LEN	4
+-
+-/* ONFI optional commands SET/GET FEATURES supported? */
+-#define ONFI_OPT_CMD_SET_GET_FEATURES	(1 << 2)
+-
+-struct nand_onfi_params {
+-	/* rev info and features block */
+-	/* 'O' 'N' 'F' 'I'  */
+-	u8 sig[4];
+-	__le16 revision;
+-	__le16 features;
+-	__le16 opt_cmd;
+-	u8 reserved0[2];
+-	__le16 ext_param_page_length; /* since ONFI 2.1 */
+-	u8 num_of_param_pages;        /* since ONFI 2.1 */
+-	u8 reserved1[17];
+-
+-	/* manufacturer information block */
+-	char manufacturer[12];
+-	char model[20];
+-	u8 jedec_id;
+-	__le16 date_code;
+-	u8 reserved2[13];
+-
+-	/* memory organization block */
+-	__le32 byte_per_page;
+-	__le16 spare_bytes_per_page;
+-	__le32 data_bytes_per_ppage;
+-	__le16 spare_bytes_per_ppage;
+-	__le32 pages_per_block;
+-	__le32 blocks_per_lun;
+-	u8 lun_count;
+-	u8 addr_cycles;
+-	u8 bits_per_cell;
+-	__le16 bb_per_lun;
+-	__le16 block_endurance;
+-	u8 guaranteed_good_blocks;
+-	__le16 guaranteed_block_endurance;
+-	u8 programs_per_page;
+-	u8 ppage_attr;
+-	u8 ecc_bits;
+-	u8 interleaved_bits;
+-	u8 interleaved_ops;
+-	u8 reserved3[13];
+-
+-	/* electrical parameter block */
+-	u8 io_pin_capacitance_max;
+-	__le16 async_timing_mode;
+-	__le16 program_cache_timing_mode;
+-	__le16 t_prog;
+-	__le16 t_bers;
+-	__le16 t_r;
+-	__le16 t_ccs;
+-	__le16 src_sync_timing_mode;
+-	u8 src_ssync_features;
+-	__le16 clk_pin_capacitance_typ;
+-	__le16 io_pin_capacitance_typ;
+-	__le16 input_pin_capacitance_typ;
+-	u8 input_pin_capacitance_max;
+-	u8 driver_strength_support;
+-	__le16 t_int_r;
+-	__le16 t_adl;
+-	u8 reserved4[8];
+-
+-	/* vendor */
+-	__le16 vendor_revision;
+-	u8 vendor[88];
+-
+-	__le16 crc;
+-} __packed;
+-
+-#define ONFI_CRC_BASE	0x4F4E
+-
+-/* Extended ECC information Block Definition (since ONFI 2.1) */
+-struct onfi_ext_ecc_info {
+-	u8 ecc_bits;
+-	u8 codeword_size;
+-	__le16 bb_per_lun;
+-	__le16 block_endurance;
+-	u8 reserved[2];
+-} __packed;
+-
+-#define ONFI_SECTION_TYPE_0	0	/* Unused section. */
+-#define ONFI_SECTION_TYPE_1	1	/* for additional sections. */
+-#define ONFI_SECTION_TYPE_2	2	/* for ECC information. */
+-struct onfi_ext_section {
+-	u8 type;
+-	u8 length;
+-} __packed;
+-
+-#define ONFI_EXT_SECTION_MAX 8
+-
+-/* Extended Parameter Page Definition (since ONFI 2.1) */
+-struct onfi_ext_param_page {
+-	__le16 crc;
+-	u8 sig[4];             /* 'E' 'P' 'P' 'S' */
+-	u8 reserved0[10];
+-	struct onfi_ext_section sections[ONFI_EXT_SECTION_MAX];
+-
+-	/*
+-	 * The actual size of the Extended Parameter Page is in
+-	 * @ext_param_page_length of nand_onfi_params{}.
+-	 * The following are the variable length sections.
+-	 * So we do not add any fields below. Please see the ONFI spec.
+-	 */
+-} __packed;
+-
+ struct jedec_ecc_info {
+ 	u8 ecc_bits;
+ 	u8 codeword_size;
+@@ -423,28 +283,6 @@ struct nand_jedec_params {
+ 	__le16 crc;
+ } __packed;
+ 
+-/**
+- * struct onfi_params - ONFI specific parameters that will be reused
+- * @version: ONFI version (BCD encoded), 0 if ONFI is not supported
+- * @tPROG: Page program time
+- * @tBERS: Block erase time
+- * @tR: Page read time
+- * @tCCS: Change column setup time
+- * @async_timing_mode: Supported asynchronous timing mode
+- * @vendor_revision: Vendor specific revision number
+- * @vendor: Vendor specific data
+- */
+-struct onfi_params {
+-	int version;
+-	u16 tPROG;
+-	u16 tBERS;
+-	u16 tR;
+-	u16 tCCS;
+-	u16 async_timing_mode;
+-	u16 vendor_revision;
+-	u8 vendor[88];
+-};
+-
  /**
-@@ -1236,8 +1239,6 @@ struct nand_legacy {
-  * @buf_align:		minimum buffer alignment required by a platform
-  * @dummy_controller:	dummy controller implementation for drivers that can
-  *			only control a single chip
-- * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transferring
-- *			data from array to read regs (tR).
-  * @state:		[INTERN] the current state of the NAND device
-  * @oob_poi:		"poison value buffer," used for laying out OOB data
-  *			before writing
-@@ -1317,7 +1318,6 @@ struct nand_chip {
- 	int (*setup_data_interface)(struct nand_chip *chip, int chipnr,
- 				    const struct nand_data_interface *conf);
- 
--	int chip_delay;
- 	unsigned int options;
- 	unsigned int bbt_options;
- 
+  * struct nand_parameters - NAND generic parameters from the parameter page
+  * @model: Model name
 -- 
 2.14.1
