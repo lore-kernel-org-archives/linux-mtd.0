@@ -1,16 +1,22 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fxzJc-0005fY-A9
- for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 18:47:42 +0000
-Date: Thu, 6 Sep 2018 20:47:17 +0200
+ id 1fy0cR-0004ef-VF
+ for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 20:11:23 +0000
+Date: Thu, 6 Sep 2018 22:10:58 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] mtd: mtdconcat: add dt driver for concat devices
-Message-ID: <20180906204717.7cc4a6a3@xps13>
-In-Reply-To: <20180906161413.6335-4-kernel@nospam.obeliks.de>
-References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
- <20180906161413.6335-4-kernel@nospam.obeliks.de>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Antoine Tenart
+ <antoine.tenart@bootlin.com>, Gregory Clement
+ <gregory.clement@bootlin.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Nadav Haklai <nadavh@marvell.com>, Ofer
+ Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH 0/3] mtd: rawnand: marvell: add new layout
+Message-ID: <20180906221058.338f8c43@xps13>
+In-Reply-To: <20180719152337.6372-1-miquel.raynal@bootlin.com>
+References: <20180719152337.6372-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -23,266 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bernhard,
+Hello,
 
-Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote on Thu,  6 Sep
-2018 18:14:13 +0200:
+Miquel Raynal <miquel.raynal@bootlin.com> wrote on Thu, 19 Jul 2018
+17:23:34 +0200:
 
-> Some mtd drivers like physmap variants have support for concatenating
-> multiple mtd devices, but there is no generic way to define such a
-> concat device from within the device tree.
+> Hello,
 >=20
-> This commit adds a driver for creating virtual mtd-concat devices. They
-> must have a compatible =3D "mtd-concat" line, and define a list of
-> devices to concat in the 'devices' property, for example:
+> This series is an attempt at supporting a new layout for Marvell NAND
+> controller: NAND chips using 2kiB pages, requesting at least 8
+> correctable bits per 512-byte chunks.
 >=20
-> flash {
->   compatible =3D "mtd-concat";
+> While this could have been trivial by the simple addition of this
+> layout in the marvell_nfc_layout table as described in Marvell (not
+> public) AN-379, actual testing shown a strange error. With this
+> layout, one bitflip appears on the second chunk of every erased page
+> when we read with BCH ECC engine activated.
 >=20
->   devices =3D <&flash0 &flash1>;
-> };
+> It has been experimentally checked that using 64 free OOB bytes
+> instead of 32 in the second chunk cancels this bitflip. However, this
+> is not a viable solution as the BootROM would not find the ECC bytes
+> at the right place and would declare bad any block written with this
+> layout.
 >=20
-> The driver is added to the very end of the mtd Makefile to increase the
-> likelyhood of all child devices already being loaded at the time of
-> probing, preventing unnecessary deferred probes.
-
-This is new for me so I'll let more experienced people talk about the
-whole idea. Some questions/remarks below.
-=20
+> The solution found was to re-read in raw mode the whole page instead
+> of just the ECC bytes when an ECC error occurs to check if the entire
+> page is empty or not.
 >=20
-> Signed-off-by: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-> ---
->  drivers/mtd/Kconfig                 |   2 +
->  drivers/mtd/Makefile                |   3 +
->  drivers/mtd/composite/Kconfig       |  12 +++
->  drivers/mtd/composite/Makefile      |   7 ++
->  drivers/mtd/composite/virt_concat.c | 123 ++++++++++++++++++++++++++++
->  5 files changed, 147 insertions(+)
->  create mode 100644 drivers/mtd/composite/Kconfig
->  create mode 100644 drivers/mtd/composite/Makefile
->  create mode 100644 drivers/mtd/composite/virt_concat.c
+> Also, with this layout, Bad Block Markers (BBM) are expected to be
+> within the data area. Prevent any use of the BBM in this case.
 >=20
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index c77f537323ec..6345d886d458 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -339,4 +339,6 @@ source "drivers/mtd/spi-nor/Kconfig"
-> =20
->  source "drivers/mtd/ubi/Kconfig"
-> =20
-> +source "drivers/mtd/composite/Kconfig"
-> +
->  endif # MTD
-> diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-> index 93473d215a38..57af7190b063 100644
-> --- a/drivers/mtd/Makefile
-> +++ b/drivers/mtd/Makefile
-> @@ -36,3 +36,6 @@ obj-y		+=3D chips/ lpddr/ maps/ devices/ nand/ tests/
-> =20
->  obj-$(CONFIG_MTD_SPI_NOR)	+=3D spi-nor/
->  obj-$(CONFIG_MTD_UBI)		+=3D ubi/
-> +
-> +# Composite drivers must be loaded last
-> +obj-y		+=3D composite/
-> diff --git a/drivers/mtd/composite/Kconfig b/drivers/mtd/composite/Kconfig
-> new file mode 100644
-> index 000000000000..0490fc0284bb
-> --- /dev/null
-> +++ b/drivers/mtd/composite/Kconfig
-> @@ -0,0 +1,12 @@
-> +menu "Composite MTD device drivers"
-> +	depends on MTD!=3Dn
-> +
-> +config MTD_VIRT_CONCAT
-> +	tristate "Virtual concat MTD device"
-> +	help
-> +	  This driver allows creation of a virtual MTD concat device, which
-> +	  concatenates multiple underlying MTD devices to a single device.
-> +	  This is required by some SoC boards where multiple memory banks are
-> +	  used as one device with partitions spanning across device boundaries.
-> +
-> +endmenu
-> diff --git a/drivers/mtd/composite/Makefile b/drivers/mtd/composite/Makef=
-ile
-> new file mode 100644
-> index 000000000000..7f4bdeee0e0a
-> --- /dev/null
-> +++ b/drivers/mtd/composite/Makefile
-> @@ -0,0 +1,7 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# linux/drivers/mtd/composite/Makefile
-> +#
-> +
-> +obj-$(CONFIG_MTD_VIRT_CONCAT)   +=3D virt_concat.o
-> +
-> diff --git a/drivers/mtd/composite/virt_concat.c b/drivers/mtd/composite/=
-virt_concat.c
-> new file mode 100644
-> index 000000000000..239c7cdd8bca
-> --- /dev/null
-> +++ b/drivers/mtd/composite/virt_concat.c
-> @@ -0,0 +1,123 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/*
-> + * Virtual concat MTD device driver
-> + *
-> + * Copyright (C) 2018 Bernhard Frauendienst
-> + * Author: Bernhard Frauendienst, kernel@nospam.obeliks.de
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
+> The first patch reworks the ECC failure path of the BCH read function,
+> the second patch adds support for the new layout with the above
+> problems addressed and the last patch is just an optimization of the
+> same ECC failure path for the Hamming read function.
+>=20
+> Thanks,
+> Miqu=C3=A8l
+>=20
+>=20
+> Miquel Raynal (3):
+>   mtd: rawnand: marvell: rework BCH engine failure path
+>   mtd: rawnand: marvell: support 8b/512B strength for 2kiB pages layout
+>   mtd: rawnand: marvell: speed-up hamming failure path
+>=20
+>  drivers/mtd/nand/raw/marvell_nand.c | 123 +++++++++++++++++++++++-------=
+------
+>  1 file changed, 79 insertions(+), 44 deletions(-)
+>=20
 
-I don't think you need this paragraph now thanks to the SPDX tag.
-
-> + */
-
-Space here
-
-> +#include <linux/module.h>
-> +#include <linux/device.h>
-> +#include <linux/mtd/concat.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/of.h>
-> +#include <linux/of_platform.h>
-> +#include <linux/slab.h>
-> +
-
-Please document this structure (with kernel doc headers would be nice)
-
-> +struct of_virt_concat {
-> +	struct mtd_info	 *cmtd;
-
-Extra space             ^
-
-> +	int num_devices;
-> +	struct mtd_info	 **devices;
-
-Ditto                   ^
-
-> +};
-> +
-> +static int virt_concat_remove(struct platform_device *pdev)
-> +{
-> +	struct of_virt_concat *info;
-> +	int i;
-> +
-> +	info =3D platform_get_drvdata(pdev);
-> +	if (!info)
-> +		return 0;
-> +	platform_set_drvdata(pdev, NULL);
-
-Is this really useful?
-
-> +
-> +	if (info->cmtd) {
-> +		mtd_device_unregister(info->cmtd);
-> +		mtd_concat_destroy(info->cmtd);
-> +	}
-> +
-> +	if (info->devices) {
-> +		for (i =3D 0; i < info->num_devices; i++)
-> +			put_mtd_device(info->devices[i]);
-> +
-> +		kfree(info->devices);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int virt_concat_probe(struct platform_device *pdev)
-> +{
-> +	struct device_node *node =3D pdev->dev.of_node;
-> +	struct of_phandle_iterator it;
-> +	int err, count;
-
-I would put this...
-
-> +	struct of_virt_concat *info;
-> +	struct mtd_info *mtd;
-
-...here
-
-> +
-> +	count =3D of_count_phandle_with_args(node, "devices", NULL);
-> +	if (count <=3D 0)
-> +		return -EINVAL;
-> +
-> +	info =3D devm_kzalloc(&pdev->dev, sizeof(*info), GFP_KERNEL);
-> +	if (!info)
-> +		return -ENOMEM;
-> +	err =3D -ENOMEM;
-> +	info->devices =3D kcalloc(count, sizeof(*(info->devices)), GFP_KERNEL);
-
-What's the reason for not using demv_kcalloc()?
-
-> +	if (!info->devices)
-> +		goto err_remove;
-> +
-> +	platform_set_drvdata(pdev, info);
-> +
-> +	of_for_each_phandle(&it, err, node, "devices", NULL, 0) {
-> +		mtd =3D get_mtd_device_by_node(it.node);
-> +		if (IS_ERR(mtd)) {
-> +			of_node_put(it.node);
-> +			err =3D -EPROBE_DEFER;
-> +			goto err_remove;
-> +		}
-> +
-> +		info->devices[info->num_devices++] =3D mtd;
-> +	}
-> +
-> +	err =3D -ENXIO;
-> +	info->cmtd =3D mtd_concat_create(info->devices, info->num_devices,
-> +		dev_name(&pdev->dev));
-
-Indentation should go            there ^
-
-> +	if (!info->cmtd)
-
-I think we usually set err =3D 0 at the top and in the error path err =3D
--ENXIO. But that's just a matter of taste.
-
-> +		goto err_remove;
-> +
-> +	info->cmtd->dev.parent =3D &pdev->dev;
-> +	mtd_set_of_node(info->cmtd, node);
-> +	mtd_device_register(info->cmtd, NULL, 0);
-> +
-> +	return 0;
-> +
-> +err_remove:
-> +	virt_concat_remove(pdev);
-> +
-> +	return err;
-> +}
-> +
-> +static const struct of_device_id virt_concat_of_match[] =3D {
-> +	{ .compatible =3D "mtd-concat", },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, virt_concat_of_match);
-> +
-> +static struct platform_driver virt_concat_driver =3D {
-> +	.probe =3D virt_concat_probe,
-> +	.remove =3D virt_concat_remove,
-> +	.driver	 =3D {
-> +		.name   =3D "virt-mtdconcat",
-> +		.of_match_table =3D virt_concat_of_match,
-> +	},
-> +};
-> +
-> +module_platform_driver(virt_concat_driver);
-> +
-> +MODULE_LICENSE("GPL");
-
-This does not match the license pointed in the header.
-
-> +MODULE_AUTHOR("Bernhard Frauendienst <kernel@nospam.obeliks.de>");
-> +MODULE_DESCRIPTION("Virtual concat MTD device driver");
+Patches 1 and 2 applied, patch 3 dropped because it would have cause
+pxa (NFCv1) not to work anymore because of the unsupported "change
+column".
 
 Thanks,
 Miqu=C3=A8l
