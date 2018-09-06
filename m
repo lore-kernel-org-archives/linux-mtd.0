@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy2vq-0002ZL-Ki
+ id 1fy2vq-0002aO-Kj
  for linux-mtd@lists.infradead.org; Thu, 06 Sep 2018 22:39:36 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -27,10 +27,10 @@ Cc: David Woodhouse <dwmw2@infradead.org>,
  Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>,
  linux-sh@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
  devel@driverdev.osuosl.org
-Subject: [PATCH 11/19] mtd: rawnand: Get rid of nand_flash_dev forward
- declation
-Date: Fri,  7 Sep 2018 00:38:43 +0200
-Message-Id: <20180906223851.6964-12-boris.brezillon@bootlin.com>
+Subject: [PATCH 12/19] mtd: rawnand: Get rid of the duplicate nand_chip
+ forward declaration
+Date: Fri,  7 Sep 2018 00:38:44 +0200
+Message-Id: <20180906223851.6964-13-boris.brezillon@bootlin.com>
 In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,25 +42,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_scan[with_ids]() have been moved at the end of the file. We can
-now get rid of of the nand_flash_dev forward declaration.
+There's already a forward declaration of nand_chip at the beginning of
+the file. Get rid of this one.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- include/linux/mtd/rawnand.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/mtd/rawnand.h | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index 15183b73fed2..768415ed1159 100644
+index 768415ed1159..608279104aae 100644
 --- a/include/linux/mtd/rawnand.h
 +++ b/include/linux/mtd/rawnand.h
-@@ -25,7 +25,6 @@
- #include <linux/types.h>
+@@ -210,9 +210,6 @@ enum nand_ecc_algo {
+ #define NAND_CI_CELLTYPE_MSK	0x0C
+ #define NAND_CI_CELLTYPE_SHIFT	2
  
- struct nand_chip;
--struct nand_flash_dev;
- 
- /* The maximum number of NAND chips in an array */
- #define NAND_MAX_CHIPS		8
+-/* Keep gcc happy */
+-struct nand_chip;
+-
+ /* ONFI version bits */
+ #define ONFI_VERSION_1_0		BIT(1)
+ #define ONFI_VERSION_2_0		BIT(2)
 -- 
 2.14.1
