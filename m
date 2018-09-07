@@ -1,21 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyHuH-0000bd-MF
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:38:47 +0000
-Date: Fri, 7 Sep 2018 16:38:24 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, stable@vger.kernel.org, =?UTF-8?B?UmFm?=
- =?UTF-8?B?YcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
-Message-ID: <20180907163824.6cec1a43@xps13>
-In-Reply-To: <20180907143554.13496-1-miquel.raynal@bootlin.com>
-References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
+Received: from conssluserg-05.nifty.com ([210.131.2.90])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyHzR-0002Ns-Hs
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:44:08 +0000
+Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com
+ [209.85.221.173]) (authenticated)
+ by conssluserg-05.nifty.com with ESMTP id w87EhYkR030561
+ for <linux-mtd@lists.infradead.org>; Fri, 7 Sep 2018 23:43:34 +0900
+Received: by mail-vk1-f173.google.com with SMTP id e139-v6so922447vkf.6
+ for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2018 07:43:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20180907160822.319047c8@bbrezillon>
+References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
+ <20180907160822.319047c8@bbrezillon>
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+Date: Fri, 7 Sep 2018 23:42:53 +0900
+Message-ID: <CAK7LNAQJOD3mxwbiOSn5wpDsU23DhZcx9QB_ufFZB8LUnh1KdQ@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify skipped
+ bytes in OOB
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Dinh Nguyen <dinguyen@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +36,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi Boris,
 
-I forgot to add Rafal which I know worked a lot on the parsers.
+2018-09-07 23:08 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> Hi Masahiro,
+>
+> On Fri,  7 Sep 2018 19:56:23 +0900
+> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+>
+>> NAND devices need additional data area (OOB) for error correction,
+>> but it is also used for Bad Block Marker (BBM).  In many cases, the
+>> first byte in OOB is used for BBM, but the location actually depends
+>> on chip vendors.  The NAND controller should preserve the precious
+>> BBM to keep track of bad blocks.
+>>
+>> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
+>> the number of bytes to skip from the start of OOB.  The ECC engine
+>> will automatically skip the specified number of bytes when it gets
+>> access to OOB area.
+>>
+>> The same value for SPARE_AREA_SKIP_BYTES should be used between
+>> firmware and the operating system if you intend to use the NAND
+>> device across the control hand-off.
+>>
+>> In fact, the current denali.c code expects firmware to have already
+>> set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
+>>
+>> If no firmware (or bootloader) has initialized the controller, the
+>> register value is zero, which is the default after power-on-reset.
+>>
+>> In other words, the Linux driver cannot initialize the controller
+>> by itself.  You cannot support the reset control either because
+>> resetting the controller will get register values lost.
+>>
+>> This commit adds a way to specify it via DT.  If the property
+>> "denali,oob-skip-bytes" exists, the value will be set to the register.
+>
+> Hm, do we really need to make this config customizable? I mean, either
+> you have a large-page NAND (page > 512 bytes) and the 2 first bytes
+> must be reserved for the BBM or you have a small-page NAND and the BBM
+> is at position 4 and 5. Are you sure people configure that differently?
+> Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2?
 
-Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri,  7 Sep 2018
-16:35:54 +0200:
 
-> While at first mtd_part_of_parse() would just call
-> of_get_chil_by_name(), it has been edited to first try to get the OF
-> node thanks to mtd_get_of_node() and fallback on
-> of_get_child_by_name().
-> 
-> A of_node_put() was a bit below in the code, to balance the
-> of_get_child_by_name(). However, despite its name, mtd_get_of_node()
-> does not take a reference on the OF node. It is a simple helper hiding
-> some pointer logic to retrieve the OF node related to an MTD
-> device. People often used it this way:
-> 
->     of_node_put(mtd_get_of_node(<mtd>)).
-> 
-> The direct effect of such unbalanced reference counting is visible by
-> rmmod'ing any module that would have added MTD partitions:
-> 
->     OF: ERROR: Bad of_node_put() on <of_path_to_partition>
-> 
-> As it seems normal to get a reference on the OF node during the
-> of_property_for_each_string() that follows, add a call to
-> of_node_get() when relevant.
-> 
-> Fixes: 76a832254ab0 ("mtd: partitions: use DT info for parsing partitions with "compatible" prop")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> ---
->  drivers/mtd/mtdpart.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 52e2cb35fc79..99c460facd5e 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -873,8 +873,11 @@ static int mtd_part_of_parse(struct mtd_info *master,
->  	int ret, err = 0;
->  
->  	np = mtd_get_of_node(master);
-> -	if (!mtd_is_partition(master))
-> +	if (mtd_is_partition(master))
-> +		of_node_get(np);
-> +	else
->  		np = of_get_child_by_name(np, "partitions");
-> +
->  	of_property_for_each_string(np, "compatible", prop, compat) {
->  		parser = mtd_part_get_compatible_parser(compat);
->  		if (!parser)
+As I said in the patch description,
+I need to use the same SPARE_AREA_SKIP_BYTES value
+across firmware, boot-loader, Linux, and whatever.
+
+I want to set the value to 8 for my platform
+because the on-chip boot ROM expects 8.
+I cannot change it since the boot ROM is hard-wired.
+
+
+The boot ROM skips 8 bytes in OOB
+when it loads images from the on-board NAND device.
+
+So, when I update the image from U-Boot or Linux,
+I need to make sure to set the register to 8.
+
+If I update the image with a different value,
+the Boot ROM fails to boot.
+
+
+
+When the system has booted from NAND,
+the register is already set to 8.  It works.
+
+However, when the system has booted from eMMC,
+the register is not initialized by anyone.
+I am searching for a way to set the register to 8
+in this case.
+
+
+The boot ROM in SOCFPGA might expect a different value,
+I am not sure.
+
+
+
+Thanks.
+
+
+
+> Regards,
+>
+> Boris
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+
+-- 
+Best Regards
+Masahiro Yamada
