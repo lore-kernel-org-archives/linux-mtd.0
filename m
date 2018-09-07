@@ -1,15 +1,17 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2K-0002Dl-QW
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyG2R-0001um-Ec
  for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:05 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH v2 00/25] UBIFS authentication support
-Date: Fri,  7 Sep 2018 14:36:21 +0200
-Message-Id: <20180907123646.12688-1-s.hauer@pengutronix.de>
+Subject: [PATCH 22/25] ubifs: Add hashes and HMACs to default filesystem
+Date: Fri,  7 Sep 2018 14:36:43 +0200
+Message-Id: <20180907123646.12688-23-s.hauer@pengutronix.de>
+In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
+References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,148 +21,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This patch calculates the necessary hashes and HMACs for the default
+filesystem so that the dynamically created default fs can be
+authenticated.
 
-This patchset introduces UBIFS authentication support. With authentication
-enabled UBIFS is fully protected against offline changes. This is done by
-hashing the different parts of UBIFS and protecting the toplevel hashes with
-HMACs. The parts that are protected are:
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ fs/ubifs/sb.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-* the index tree
-* the journal
-* the LPT
-* the master nodes
-* the superblock node
-
-A detailed overview how the different parts are authenticated can be found
-here:
-
-https://github.com/sigma-star/ubifs-authentication/blob/master/ubifs-authentication-whitepaper.md
-
-However, some details still had to be changed, so an updated version of that
-document is part of this patchset.
-
-Usage:
-======
-
-First add an authentication key to the kernel keyring. It must be of type
-'logon'. The description can be freely chosen, it must be passed as mount
-option later:
-
-# keyctl add logon ubifs:foo 12345678901234567890123456789012 @s
-
-Attach the UBI device and mount with auth_key=$description and
-auth_hash_name=$algo:
-
-# mount -t ubifs /dev/ubi0_0 -o auth_key=ubifs:foo,auth_hash_name=sha256 /mnt/
-
-This mounts the UBIFS in authenticated mode. The hash algorithm can be freely
-chosen from include/uapi/linux/hash_info.h as long as the digest is at maximum
-64 bytes which is the space we reserved in the UBIFS structures. We always use
-the same algorithms for creating HMACs, so using sha256 for hashing means that
-we also use hmac(sha256) for creating authentication data.
-
-When the authentication_key mount option is given, a UBIFS image which can be
-authenticated with that key is mandatory, no unauthenticated image will be
-accepted. Likewise, when the option is not given, no authenticated image can be
-accepted since that couldn't be authenticated. We could skip authentication in
-this case, but we couldn't create any valid HMACs when writing new data. We
-could make it an option to mount in readonly mode for debugging purposes when
-we do not have a key (or we already know that parts of the UBIFS image are
-corrupted), but that is not implemented yet.
-
-Offline signed images
-=====================
-
-Currently UBIFS authentication is only supported on the default filesystem the
-kernel creates when an empty UBI volume is found. Support for offline signed
-images is in the makings. Preliminary patches for the Kernel and mtd-utils are
-ready and can be shared on request, otherwise I'll continue on them once
-this basic patchset is ready and merged.
-
-Testing
-=======
-
-I've gone through various tests including powercut tests over the weekend and
-running xfstests. It is tested on real hardware (i.MX6 based) on a 2k page NAND
-and in nandsim on a simulated 512b page NAND in big LPT mode. Basic testing has
-been done with all chk_* ubifs flags set to 1, lockdep enabled.
-
-This patchset is based on v4.19-rc2 and can be obtained here:
-
-git://git.pengutronix.de/sha/linux ubifs-authentication-v2
-
-Changes since v1:
-
-- rebase onto v4.19-rc2
-- Add missing ubifs_copy_hash() in make_idx_node to make in-the-gaps method work
-  with authentication
-- Return error codes from all crypto related functions and forward error
-- Remove VLAs
-- rename c->superblock to c->sup_node
-- use UBIFS_HASH_ARR_SZ for array sizes. UBIFS_HASH_ARR_SZ is set to 0
-  for non authenticated fs and to UBIFS_MAX_HASH_LEN for authenticated fs
-- Add common bad-hash report handler
-- fix various comments
-- Add missing ubifs_add_dirt() in the garbage collectors move_nodes() function
-- add ubifs_add_auth_dirt() to add dirt for an authentication node
-
-/Sascha
-
-Sascha Hauer (25):
-  ARM: imx_v6_v7_defconfig: update
-  ubifs: refactor create_default_filesystem()
-  ubifs: pass ubifs_zbranch to try_read_node()
-  ubifs: pass ubifs_zbranch to read_znode()
-  ubifs: export pnode_lookup as ubifs_pnode_lookup
-  ubifs: implement ubifs_lpt_lookup using ubifs_pnode_lookup
-  ubifs: drop write_node
-  ubifs: Store read superblock node
-  ubifs: Format changes for authentication support
-  ubifs: add separate functions to init/crc a node
-  ubifs: add helper functions for authentication support
-  ubifs: Create functions to embed a HMAC in a node
-  ubifs: Add hashes to the tree node cache
-  ubifs: authentication: Add hashes to index nodes
-  ubifs: Add authentication nodes to journal
-  ubifs: Add auth nodes to garbage collector journal head
-  ubifs: authenticate replayed journal
-  ubifs: authentication: authenticate LPT
-  ubfis: authentication: authenticate master node
-  ubifs: Create hash for default LPT
-  ubifs: authentication: Authenticate super block node
-  ubifs: Add hashes and HMACs to default filesystem
-  ubifs: do not update inode size in-place in authenticated mode
-  ubifs: Enable authentication support
-  Documentation: ubifs: Add authentication whitepaper
-
- .../filesystems/ubifs-authentication.md       | 426 +++++++++++++++
- Documentation/filesystems/ubifs.txt           |   7 +
- arch/arm/configs/imx_v6_v7_defconfig          |  15 +-
- fs/ubifs/Kconfig                              |  11 +
- fs/ubifs/Makefile                             |   1 +
- fs/ubifs/auth.c                               | 502 ++++++++++++++++++
- fs/ubifs/debug.c                              |   6 +
- fs/ubifs/gc.c                                 |  49 +-
- fs/ubifs/io.c                                 | 110 +++-
- fs/ubifs/journal.c                            | 289 +++++++---
- fs/ubifs/log.c                                |  24 +
- fs/ubifs/lpt.c                                | 184 ++++++-
- fs/ubifs/lpt_commit.c                         |  44 +-
- fs/ubifs/master.c                             |  64 ++-
- fs/ubifs/misc.h                               |   5 +-
- fs/ubifs/recovery.c                           | 120 +++--
- fs/ubifs/replay.c                             | 177 +++++-
- fs/ubifs/sb.c                                 | 207 +++++---
- fs/ubifs/super.c                              |  91 +++-
- fs/ubifs/tnc.c                                |  36 +-
- fs/ubifs/tnc_commit.c                         |  27 +
- fs/ubifs/tnc_misc.c                           |  26 +-
- fs/ubifs/ubifs-media.h                        |  46 +-
- fs/ubifs/ubifs.h                              | 253 ++++++++-
- 24 files changed, 2422 insertions(+), 298 deletions(-)
- create mode 100644 Documentation/filesystems/ubifs-authentication.md
- create mode 100644 fs/ubifs/auth.c
-
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 7f0967771c9f..ac1ed5ad126d 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -87,6 +87,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	__le64 tmp_le64;
+ 	__le32 tmp_le32;
+ 	struct timespec64 ts;
++	u8 hash[UBIFS_HASH_ARR_SZ];
+ 	u8 hash_lpt[UBIFS_HASH_ARR_SZ];
+ 
+ 	/* Some functions called from here depend on the @c->key_len filed */
+@@ -177,6 +178,16 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		sup_flags |= UBIFS_FLG_BIGLPT;
+ 	sup_flags |= UBIFS_FLG_DOUBLE_HASH;
+ 
++	if (ubifs_authenticated(c)) {
++		sup_flags |= UBIFS_FLG_AUTHENTICATION;
++		sup->hash_algo = cpu_to_le16(c->auth_hash_algo);
++		err = ubifs_hmac_wkm(c, sup->hmac_wkm);
++		if (err)
++			goto out;
++	} else {
++		sup->hash_algo = 0xffff;
++	}
++
+ 	sup->ch.node_type  = UBIFS_SB_NODE;
+ 	sup->key_hash      = UBIFS_KEY_HASH_R5;
+ 	sup->flags         = cpu_to_le32(sup_flags);
+@@ -235,6 +246,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	mst->empty_lebs   = cpu_to_le32(main_lebs - 2);
+ 	mst->idx_lebs     = cpu_to_le32(1);
+ 	mst->leb_cnt      = cpu_to_le32(c->leb_cnt);
++	ubifs_copy_hash(c, hash_lpt, mst->hash_lpt);
+ 
+ 	/* Calculate lprops statistics */
+ 	tmp64 = main_bytes;
+@@ -307,25 +319,33 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 
+ 	cs->ch.node_type = UBIFS_CS_NODE;
+ 
+-	err = ubifs_write_node(c, sup, UBIFS_SB_NODE_SZ, 0, 0);
++	err = ubifs_write_node_hmac(c, sup, UBIFS_SB_NODE_SZ, 0, 0,
++				    offsetof(struct ubifs_sb_node, hmac));
+ 	if (err)
+ 		goto out;
+ 
+-	err = ubifs_write_node(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM, 0);
++	err = ubifs_write_node(c, ino, UBIFS_INO_NODE_SZ,
++			       main_first + DEFAULT_DATA_LEB, 0);
+ 	if (err)
+ 		goto out;
+ 
+-	err = ubifs_write_node(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1,
+-			       0);
++	ubifs_node_calc_hash(c, ino, hash);
++	ubifs_copy_hash(c, hash, ubifs_branch_hash(c, br));
++
++	err = ubifs_write_node(c, idx, idx_node_size, main_first + DEFAULT_IDX_LEB, 0);
+ 	if (err)
+ 		goto out;
+ 
+-	err = ubifs_write_node(c, idx, idx_node_size, main_first + DEFAULT_IDX_LEB, 0);
++	ubifs_node_calc_hash(c, idx, hash);
++	ubifs_copy_hash(c, hash, mst->hash_root_idx);
++
++	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM, 0,
++		offsetof(struct ubifs_mst_node, hmac));
+ 	if (err)
+ 		goto out;
+ 
+-	err = ubifs_write_node(c, ino, UBIFS_INO_NODE_SZ,
+-			       main_first + DEFAULT_DATA_LEB, 0);
++	err = ubifs_write_node_hmac(c, mst, UBIFS_MST_NODE_SZ, UBIFS_MST_LNUM + 1,
++			       0, offsetof(struct ubifs_mst_node, hmac));
+ 	if (err)
+ 		goto out;
+ 
 -- 
 2.18.0
