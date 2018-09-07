@@ -1,25 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyHqe-00077A-BZ
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:35:02 +0000
+ id 1fyHrt-0000EF-1h
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:36:18 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Nadav Haklai <nadavh@marvell.com>,
- Gregory Clement <gregory.clement@bootlin.com>,
- Antoine Tenart <antoine.tenart@bootlin.com>,
- Maxime Chevallier <maxime.chevallier@bootlin.com>,
- Ofer Heifetz <oferh@marvell.com>,
- Konstantin Porotchkin <kostap@marvell.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH] mtd: rawnand: marvell: Add support for 8kiB pages NAND chips
- layout
-Date: Fri,  7 Sep 2018 16:34:36 +0200
-Message-Id: <20180907143436.13391-1-miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ stable@vger.kernel.org
+Subject: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
+Date: Fri,  7 Sep 2018 16:35:54 +0200
+Message-Id: <20180907143554.13496-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Konstantin Porotchkin <kostap@marvell.com>
+While at first mtd_part_of_parse() would just call
+of_get_chil_by_name(), it has been edited to first try to get the OF
+node thanks to mtd_get_of_node() and fallback on
+of_get_child_by_name().
 
-Add support for two new layouts: 8kiB pages NAND chips, requesting
-either 4 or 8 bit of correctability per 512B step.
+A of_node_put() was a bit below in the code, to balance the
+of_get_child_by_name(). However, despite its name, mtd_get_of_node()
+does not take a reference on the OF node. It is a simple helper hiding
+some pointer logic to retrieve the OF node related to an MTD
+device. People often used it this way:
 
-Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+    of_node_put(mtd_get_of_node(<mtd>)).
+
+The direct effect of such unbalanced reference counting is visible by
+rmmod'ing any module that would have added MTD partitions:
+
+    OF: ERROR: Bad of_node_put() on <of_path_to_partition>
+
+As it seems normal to get a reference on the OF node during the
+of_property_for_each_string() that follows, add a call to
+of_node_get() when relevant.
+
+Fixes: 76a832254ab0 ("mtd: partitions: use DT info for parsing partitions with "compatible" prop")
+Cc: stable@vger.kernel.org
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/mtdpart.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index bc2ef5209783..bba7aa80ec61 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -219,6 +219,8 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
- 	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
- 	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
- 	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
-+	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
-+	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
- };
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 52e2cb35fc79..99c460facd5e 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -873,8 +873,11 @@ static int mtd_part_of_parse(struct mtd_info *master,
+ 	int ret, err = 0;
  
- /**
+ 	np = mtd_get_of_node(master);
+-	if (!mtd_is_partition(master))
++	if (mtd_is_partition(master))
++		of_node_get(np);
++	else
+ 		np = of_get_child_by_name(np, "partitions");
++
+ 	of_property_for_each_string(np, "compatible", prop, compat) {
+ 		parser = mtd_part_get_compatible_parser(compat);
+ 		if (!parser)
 -- 
 2.17.1
