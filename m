@@ -1,17 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2M-0002CD-GK
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:00 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 24/25] ubifs: Enable authentication support
-Date: Fri,  7 Sep 2018 14:36:45 +0200
-Message-Id: <20180907123646.12688-25-s.hauer@pengutronix.de>
-In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
-References: <20180907123646.12688-1-s.hauer@pengutronix.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyGZh-0005xA-97
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 13:13:28 +0000
+Date: Fri, 7 Sep 2018 15:13:01 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Bernhard Frauendienst <kernel@nospam.obeliks.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 3/3] mtd: mtdconcat: add dt driver for concat devices
+Message-ID: <20180907151301.3a25f7e4@xps13>
+In-Reply-To: <345a1f1e-23e8-d7b5-02f5-5b2ae0ec7209@nospam.obeliks.de>
+References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
+ <20180906161413.6335-4-kernel@nospam.obeliks.de>
+ <20180906204717.7cc4a6a3@xps13>
+ <345a1f1e-23e8-d7b5-02f5-5b2ae0ec7209@nospam.obeliks.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,146 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the preparations all being done this patch now enables authentication
-support for UBIFS. Authentication is enabled when the newly introduced
-auth_key and auth_hash_name mount options are passed. auth_key provides
-the key which is used for authentication whereas auth_hash_name provides
-the hashing algorithm used for this FS. Passing these options make
-authentication mandatory and only UBIFS images that can be authenticated
-with the given key are allowed.
+Hi Bernhard,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- Documentation/filesystems/ubifs.txt |  7 ++++++
- fs/ubifs/Kconfig                    | 10 ++++++++
- fs/ubifs/super.c                    | 36 ++++++++++++++++++++++++++++-
- 3 files changed, 52 insertions(+), 1 deletion(-)
+Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote on Fri, 7 Sep
+2018 00:54:01 +0200:
 
-diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.txt
-index a0a61d2f389f..acc80442a3bb 100644
---- a/Documentation/filesystems/ubifs.txt
-+++ b/Documentation/filesystems/ubifs.txt
-@@ -91,6 +91,13 @@ chk_data_crc		do not skip checking CRCs on data nodes
- compr=none              override default compressor and set it to "none"
- compr=lzo               override default compressor and set it to "lzo"
- compr=zlib              override default compressor and set it to "zlib"
-+auth_key=		specify the key used for authenticating the filesystem.
-+			Passing this option makes authentication mandatory.
-+			The passed key must be present in the kernel keyring
-+			and must be of type 'logon'
-+auth_hash_name=		The hash algorithm used for authentication. Used for
-+			both hashing and for creating HMACs. Typical values
-+			include "sha256" or "sha512"
- 
- 
- Quick usage instructions
-diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-index 853c77579b4e..529856fbccd0 100644
---- a/fs/ubifs/Kconfig
-+++ b/fs/ubifs/Kconfig
-@@ -86,3 +86,13 @@ config UBIFS_FS_SECURITY
- 	  the extended attribute support in advance.
- 
- 	  If you are not using a security module, say N.
-+
-+config UBIFS_FS_AUTHENTICATION
-+	bool "UBIFS authentication support"
-+	select CRYPTO_HMAC
-+	help
-+	  Enable authentication support for UBIFS. This feature offers protection
-+	  against offline changes for both data and metadata of the filesystem.
-+	  If you say yes here you should also select a hashing algorithm such as
-+	  sha256, these are not selected automatically since there are many
-+	  different options.
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 12683cb87315..e3fb4dface8c 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -579,7 +579,9 @@ static int init_constants_early(struct ubifs_info *c)
- 	c->ranges[UBIFS_REF_NODE].len  = UBIFS_REF_NODE_SZ;
- 	c->ranges[UBIFS_TRUN_NODE].len = UBIFS_TRUN_NODE_SZ;
- 	c->ranges[UBIFS_CS_NODE].len   = UBIFS_CS_NODE_SZ;
--	c->ranges[UBIFS_AUTH_NODE].len = UBIFS_AUTH_NODE_SZ;
-+	c->ranges[UBIFS_AUTH_NODE].min_len = UBIFS_AUTH_NODE_SZ;
-+	c->ranges[UBIFS_AUTH_NODE].max_len = UBIFS_AUTH_NODE_SZ +
-+				UBIFS_MAX_HMAC_LEN;
- 
- 	c->ranges[UBIFS_INO_NODE].min_len  = UBIFS_INO_NODE_SZ;
- 	c->ranges[UBIFS_INO_NODE].max_len  = UBIFS_MAX_INO_NODE_SZ;
-@@ -935,6 +937,8 @@ static int check_volume_empty(struct ubifs_info *c)
-  * Opt_no_chk_data_crc: do not check CRCs when reading data nodes
-  * Opt_override_compr: override default compressor
-  * Opt_assert: set ubifs_assert() action
-+ * Opt_auth_key: The key name used for authentication
-+ * Opt_auth_hash_name: The hash type used for authentication
-  * Opt_err: just end of array marker
-  */
- enum {
-@@ -946,6 +950,8 @@ enum {
- 	Opt_no_chk_data_crc,
- 	Opt_override_compr,
- 	Opt_assert,
-+	Opt_auth_key,
-+	Opt_auth_hash_name,
- 	Opt_ignore,
- 	Opt_err,
- };
-@@ -958,6 +964,8 @@ static const match_table_t tokens = {
- 	{Opt_chk_data_crc, "chk_data_crc"},
- 	{Opt_no_chk_data_crc, "no_chk_data_crc"},
- 	{Opt_override_compr, "compr=%s"},
-+	{Opt_auth_key, "auth_key=%s"},
-+	{Opt_auth_hash_name, "auth_hash_name=%s"},
- 	{Opt_ignore, "ubi=%s"},
- 	{Opt_ignore, "vol=%s"},
- 	{Opt_assert, "assert=%s"},
-@@ -1081,6 +1089,16 @@ static int ubifs_parse_options(struct ubifs_info *c, char *options,
- 			kfree(act);
- 			break;
- 		}
-+		case Opt_auth_key:
-+			c->auth_key_name = kstrdup(args[0].from, GFP_KERNEL);
-+			if (!c->auth_key_name)
-+				return -ENOMEM;
-+			break;
-+		case Opt_auth_hash_name:
-+			c->auth_hash_name = kstrdup(args[0].from, GFP_KERNEL);
-+			if (!c->auth_hash_name)
-+				return -ENOMEM;
-+			break;
- 		case Opt_ignore:
- 			break;
- 		default:
-@@ -1260,6 +1278,19 @@ static int mount_ubifs(struct ubifs_info *c)
- 
- 	c->mounting = 1;
- 
-+	if (c->auth_key_name) {
-+		if (IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION)) {
-+			err = ubifs_init_authentication(c);
-+			if (err)
-+				goto out_free;
-+		} else {
-+			ubifs_err(c, "auth_key_name, but UBIFS is built without"
-+				  " authentication support");
-+			err = -EINVAL;
-+			goto out_free;
-+		}
-+	}
-+
- 	err = ubifs_read_superblock(c);
- 	if (err)
- 		goto out_free;
-@@ -1577,7 +1608,10 @@ static void ubifs_umount(struct ubifs_info *c)
- 	free_wbufs(c);
- 	free_orphans(c);
- 	ubifs_lpt_free(c, 0);
-+	ubifs_exit_authentication(c);
- 
-+	kfree(c->auth_key_name);
-+	kfree(c->auth_hash_name);
- 	kfree(c->cbuf);
- 	kfree(c->rcvrd_mst_node);
- 	kfree(c->mst_node);
--- 
-2.18.0
+> Hi Miquel,
+>=20
+> thanks for your review, I've applied most of your suggested changes, exce=
+pt:
+>=20
+> On 06/09/18 20:47, Miquel Raynal wrote:
+> > =20
+> >> +static int virt_concat_remove(struct platform_device *pdev)
+> >> +{
+> >> +	struct of_virt_concat *info;
+> >> +	int i;
+> >> +
+> >> +	info =3D platform_get_drvdata(pdev);
+> >> +	if (!info)
+> >> +		return 0;
+> >> +	platform_set_drvdata(pdev, NULL); =20
+> > Is this really useful? =20
+> I believe this is indeed useful, as `virt_concat_remove()` is also called=
+ as cleanup in error cases of `virt_concat_probe()`. Then it seems to be co=
+mmon practice to unset the driver data from the device.
+>=20
+> Am I mistaken here?
+
+That's fine for me. Perhaps you can explain it with a comment.
+
+I'm pretty sure there will be other "deeper" reviews coming on the
+series.
+
+Thanks,
+Miqu=C3=A8l
