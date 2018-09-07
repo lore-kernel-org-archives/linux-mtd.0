@@ -1,31 +1,20 @@
-Received: from mail-co1nam05on070d.outbound.protection.outlook.com
- ([2a01:111:f400:fe50::70d]
- helo=NAM05-CO1-obe.outbound.protection.outlook.com)
+Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy4qv-0005Ls-Lz
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 00:42:30 +0000
-From: Sasha Levin <Alexander.Levin@microsoft.com>
-To: "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: Randy Dunlap <rdunlap@infradead.org>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Boris
- Brezillon <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Yoshinori Sato <ysato@users.sourceforge.jp>,
- Rich Felker <dalias@libc.org>, "linux-sh@vger.kernel.org"
- <linux-sh@vger.kernel.org>, Sergei Shtylyov
- <sergei.shtylyov@cogentembedded.com>, Sasha Levin
- <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL 3.18 06/19] mtd/maps: fix solutionengine.c printk
- format warnings
-Date: Fri, 7 Sep 2018 00:39:30 +0000
-Message-ID: <20180907003923.58019-6-alexander.levin@microsoft.com>
-References: <20180907003923.58019-1-alexander.levin@microsoft.com>
-In-Reply-To: <20180907003923.58019-1-alexander.levin@microsoft.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1fyBCf-00049e-UW
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 07:29:20 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/2] mtd: rawnand: denali: remove denali_reset_banks()
+Date: Fri,  7 Sep 2018 16:28:29 +0900
+Message-Id: <1536305309-28026-3-git-send-email-yamada.masahiro@socionext.com>
+In-Reply-To: <1536305309-28026-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1536305309-28026-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,71 +24,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <rdunlap@infradead.org>
+In nand_scan_ident(), the controller driver resets every NAND chip.
+This is done by sending NAND_CMD_RESET.  The Denali IP provides
+another way to do the equivalent thing; if a bit is set in the
+DEVICE_RESET register, the controller sends the RESET command to
+the corresponding device.  denali_reset_banks() uses it to reset
+all devices beforehand.
 
-[ Upstream commit 1d25e3eeed1d987404e2d2e451eebac8c15cecc1 ]
+This redundant reset sequence was needed to know the actual number
+of chips before calling nand_scan_ident(); if DEVICE_RESET fails,
+there is no chip in that chip select.  Then, denali_reset_banks()
+sets denali->max_banks to the number of detected chips.
 
-Fix 2 printk format warnings (this driver is currently only used by
-arch/sh/) by using "%pap" instead of "%lx".
+As commit f486287d2372 ("mtd: nand: denali: fix bank reset function
+to detect the number of chips") explained, nand_scan_ident() issued
+Set Features (0xEF) command to all CS lines, some of which may not be
+connected with a chip. Then, the driver would wait for R/B# response,
+which never happens.
 
-Fixes these build warnings:
+This problem was solved by commit 107b7d6a7ad4 ("mtd: rawnand: avoid
+setting again the timings to mode 0 after a reset").  In the current
+code, nand_setup_data_interface() is called from nand_scan_tail(),
+which is invoked after the chip detection.
 
-../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument=
- of type 'long unsigned int', but argument 2 has type 'resource_size_t' {ak=
-a 'unsigned int'} [-Wformat=3D]
-../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined =
-here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n=
-",
-                                                  ~~~~^
-                                                  %08x
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument=
- of type 'long unsigned int', but argument 3 has type 'resource_size_t' {ak=
-a 'unsigned int'} [-Wformat=3D]
-../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined =
-here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n=
-",
-                                                                    ~~~~^
-                                                                    %08x
+Now, we can really remove the redundant denali_nand_banks() by simply
+passing the maximum number of chip selects supported by this IP
+(typically 4 or 8) to nand_scan().  Let's leave all the chip detection
+process to nand_scan_ident().
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
- drivers/mtd/maps/solutionengine.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/solutionengine.c b/drivers/mtd/maps/solutione=
-ngine.c
-index bb580bc16445..c07f21b20463 100644
---- a/drivers/mtd/maps/solutionengine.c
-+++ b/drivers/mtd/maps/solutionengine.c
-@@ -59,9 +59,9 @@ static int __init init_soleng_maps(void)
- 			return -ENXIO;
- 		}
+ drivers/mtd/nand/raw/denali.c | 29 -----------------------------
+ 1 file changed, 29 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index f069184..d1ae968 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -1040,29 +1040,6 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
+ 	return 0;
+ }
+ 
+-static void denali_reset_banks(struct denali_nand_info *denali)
+-{
+-	u32 irq_status;
+-	int i;
+-
+-	for (i = 0; i < denali->max_banks; i++) {
+-		denali->active_bank = i;
+-
+-		denali_reset_irq(denali);
+-
+-		iowrite32(DEVICE_RESET__BANK(i),
+-			  denali->reg + DEVICE_RESET);
+-
+-		irq_status = denali_wait_for_irq(denali,
+-			INTR__RST_COMP | INTR__INT_ACT | INTR__TIME_OUT);
+-		if (!(irq_status & INTR__INT_ACT))
+-			break;
+-	}
+-
+-	dev_dbg(denali->dev, "%d chips connected\n", i);
+-	denali->max_banks = i;
+-}
+-
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
+ 	/*
+@@ -1311,12 +1288,6 @@ int denali_init(struct denali_nand_info *denali)
  	}
--	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n=
-",
--	       soleng_flash_map.phys & 0x1fffffff,
--	       soleng_eprom_map.phys & 0x1fffffff);
-+	printk(KERN_NOTICE "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
-+	       &soleng_flash_map.phys,
-+	       &soleng_eprom_map.phys);
- 	flash_mtd->owner =3D THIS_MODULE;
-=20
- 	eprom_mtd =3D do_map_probe("map_rom", &soleng_eprom_map);
---=20
-2.17.1
+ 
+ 	denali_enable_irq(denali);
+-	denali_reset_banks(denali);
+-	if (!denali->max_banks) {
+-		/* Error out earlier if no chip is found for some reasons. */
+-		ret = -ENODEV;
+-		goto disable_irq;
+-	}
+ 
+ 	denali->active_bank = DENALI_INVALID_BANK;
+ 
+-- 
+2.7.4
