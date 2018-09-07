@@ -1,19 +1,48 @@
-Received: from conuserg-09.nifty.com ([210.131.2.76])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyBCf-00049g-UU
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 07:29:21 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+Received: from eddie.linux-mips.org ([148.251.95.138] helo=cvs.linux-mips.org)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyCNv-0000Od-RM
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 08:45:05 +0000
+Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
+ (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
+ id S23993946AbeIGIkplYOuO (ORCPT
+ <rfc822;linux-mtd@lists.infradead.org>);
+ Fri, 7 Sep 2018 10:40:45 +0200
+Date: Fri, 7 Sep 2018 10:40:44 +0200
+Sender: Ladislav Michl <ladis@linux-mips.org>
+From: Ladislav Michl <ladis@linux-mips.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 0/2] mtd: rawnand: denali: clean-up unnecessary hook and
- device reset
-Date: Fri,  7 Sep 2018 16:28:27 +0900
-Message-Id: <1536305309-28026-1-git-send-email-yamada.masahiro@socionext.com>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Alexander Shiyan <shc_work@mail.ru>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>,
+ Fabio Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Imre Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>,
+ Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+ Alexander Clouter <alex@digriz.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Jason Cooper <jason@lakedaemon.net>,
+ Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Daniel Mack <daniel@zonque.org>,
+ Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Robert Jarzmik <robert.jarzmik@free.fr>,
+ Ralf Baechle <ralf@linux-mips.org>, linux-mips@linux-mips.org,
+ Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: Re: [PATCH 19/19] mtd: rawnand: Move JEDEC code to nand_jedec.c
+Message-ID: <20180907084044.GA6361@lenoch>
+References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+ <20180906223851.6964-20-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180906223851.6964-20-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +52,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris,
 
-As I replied to Boris [1],
-I took a closer look for further cleanups.
-I test this series on my board.
+this patchseries is really amazing clean up. Thank you!
 
-Remove mis-implemented ->dev_ready hook.
-Remove unnecessary device resetting because
-nand_scan_ident() reset devices anyway.
+On Fri, Sep 07, 2018 at 12:38:51AM +0200, Boris Brezillon wrote:
+> This moves ONFI related code to nand_onfi.c and ONFI related
+> struct/macros to include/linux/mtd/onfi.h.
 
-[1] http://patchwork.ozlabs.org/patch/960160/
-
-
-
-Masahiro Yamada (2):
-  mtd: rawnand: denali: remove ->dev_ready() hook
-  mtd: rawnand: denali: remove denali_reset_banks()
-
- drivers/mtd/nand/raw/denali.c | 51 +------------------------------------------
- 1 file changed, 1 insertion(+), 50 deletions(-)
-
--- 
-2.7.4
+Seems above commit log comes from previous patch.
