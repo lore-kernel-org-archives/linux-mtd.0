@@ -1,22 +1,23 @@
-Received: from conuserg-10.nifty.com ([210.131.2.77])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyESF-0006jb-1e
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 10:57:38 +0000
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-To: linux-mtd@lists.infradead.org,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, devicetree@vger.kernel.org,
- Rob Herring <robh+dt@kernel.org>
-Cc: Dinh Nguyen <dinguyen@kernel.org>,
- Masahiro Yamada <yamada.masahiro@socionext.com>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH] mtd: rawnand: denali: add DT property to specify skipped
- bytes in OOB
-Date: Fri,  7 Sep 2018 19:56:23 +0900
-Message-Id: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome
+ Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Yixun Lan <yixun.lan@amlogic.com>, Jian Hu
+ <jian.hu@amlogic.com>, Liang Yang <liang.yang@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [RFC PATCH v3 0/2] mtd: rawnand: meson: add Amlogic NAND driver
+ support
+Date: Fri, 7 Sep 2018 18:57:09 +0800
+Message-ID: <1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,112 +27,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NAND devices need additional data area (OOB) for error correction,
-but it is also used for Bad Block Marker (BBM).  In many cases, the
-first byte in OOB is used for BBM, but the location actually depends
-on chip vendors.  The NAND controller should preserve the precious
-BBM to keep track of bad blocks.
+  These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 
-In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
-the number of bytes to skip from the start of OOB.  The ECC engine
-will automatically skip the specified number of bytes when it gets
-access to OOB area.
+Changes since v2 at [3]:
+ - remove some hardcode time value, like twb
+ - use dev wait R/B instead of nand_soft_waitrdy
+ - implement nfc ecc init by ecc helper
+ - rework nfc buffer init to register the maximun buffer when several chips
+ - free nfc buffer when error and cleanup
+ - add variable to teack all the already assigned CS lines
+ - fix mtd->name use the first cs line only
+ - remove dt "nand-enable-scrambler" and use NAND_NEED_SCRAMBLING instead.
+ - move setuping ECC fileds after the identification phase
+ - use nand_scan() and attach_chip()
+ - check one event to return IRQ_NONE
+ - delete cast when of_device_get_match_data
+ - use nand_controller_init() helper
+ - remove nfc driver complains when calling devm_ioremap_resource
+ - clear irqs before setting up irq handler
 
-The same value for SPARE_AREA_SKIP_BYTES should be used between
-firmware and the operating system if you intend to use the NAND
-device across the control hand-off.
+Changes since v1 at [1]:
+  - adopt property amlogic,nand-enable-scrambler - thanks Martin
+  - drop nand pins in DT
+  - convert clk access to emmc clkc model 
+  - fix regiser field definition alignment
+  - drop nand-user-mode 
+  - parse cs id from DT
+  - rework n2m, m2n function
+  - explain why insert two "IDLE" command
+  - implement exec_op()
+  - drop meson_nfc_get_nand_chip_dts()
+  - release resource once error occur in meson_nfc_nand_chips_init(), 
+  - call nand_cleanup(nand) once mtd_device_register fail
 
-In fact, the current denali.c code expects firmware to have already
-set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
+Items not addressed ( or confirmed ) in this version:
+  - convert to ECC conf helper() 
+  - convert to dma coherent API
+  - how to construct mtd->name
 
-If no firmware (or bootloader) has initialized the controller, the
-register value is zero, which is the default after power-on-reset.
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
+[3] https://lkml.kernel.org/r//20180719094612.5833-1-yixun.lan@amlogic.com
 
-In other words, the Linux driver cannot initialize the controller
-by itself.  You cannot support the reset control either because
-resetting the controller will get register values lost.
+Liang Yang (2):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
 
-This commit adds a way to specify it via DT.  If the property
-"denali,oob-skip-bytes" exists, the value will be set to the register.
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt |   91 ++
+ drivers/mtd/nand/raw/Kconfig                       |   10 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/meson_nand.c                  | 1372 ++++++++++++++++++++
+ 4 files changed, 1474 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-I thought this feature was common enough, but I could not find
-any relevant property.
-
-I added "denali," vendor prefix.  If you have a better property name
-(or a better way to specify the value), please suggest it.
-
-
- Documentation/devicetree/bindings/mtd/denali-nand.txt |  3 +++
- drivers/mtd/nand/raw/denali.c                         | 14 +++++++++-----
- drivers/mtd/nand/raw/denali_dt.c                      |  6 ++++++
- 3 files changed, 18 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/mtd/denali-nand.txt b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-index f33da87..453faca 100644
---- a/Documentation/devicetree/bindings/mtd/denali-nand.txt
-+++ b/Documentation/devicetree/bindings/mtd/denali-nand.txt
-@@ -22,6 +22,9 @@ Optional properties:
-       8, 16, 24  for "socionext,uniphier-denali-nand-v5a"
-       8, 16      for "socionext,uniphier-denali-nand-v5b"
-   - nand-ecc-maximize: see nand.txt for details
-+  - denali,oob-skip-bytes: number of bytes to reserve from the start of OOB.
-+    The reserved bytes should not be used for ECC or any other purpose.
-+    It is generally intended to preserve bad block markers.
- 
- The device tree may optionally contain sub-nodes describing partitions of the
- address space. See partition.txt for more detail.
-diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index d1ae968..3ef3f0d 100644
---- a/drivers/mtd/nand/raw/denali.c
-+++ b/drivers/mtd/nand/raw/denali.c
-@@ -1050,12 +1050,16 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 		denali->revision = swab16(ioread32(denali->reg + REVISION));
- 
- 	/*
--	 * tell driver how many bit controller will skip before
--	 * writing ECC code in OOB, this register may be already
--	 * set by firmware. So we read this value out.
--	 * if this value is 0, just let it be.
-+	 * If oob_skip_bytes is specified (e.g. by DT property), set it to the
-+	 * reigster. Otherwise, read the value out that may be set by firmware.
- 	 */
--	denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
-+	if (denali->oob_skip_bytes)
-+		iowrite32(denali->oob_skip_bytes,
-+			  denali->reg + SPARE_AREA_SKIP_BYTES);
-+	else
-+		denali->oob_skip_bytes = ioread32(denali->reg +
-+						  SPARE_AREA_SKIP_BYTES);
-+
- 	denali_detect_max_banks(denali);
- 	iowrite32(0x0F, denali->reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG, denali->reg + CHIP_ENABLE_DONT_CARE);
-diff --git a/drivers/mtd/nand/raw/denali_dt.c b/drivers/mtd/nand/raw/denali_dt.c
-index 7c6a8a4..bc93675 100644
---- a/drivers/mtd/nand/raw/denali_dt.c
-+++ b/drivers/mtd/nand/raw/denali_dt.c
-@@ -78,6 +78,7 @@ static int denali_dt_probe(struct platform_device *pdev)
- 	struct denali_dt *dt;
- 	const struct denali_dt_data *data;
- 	struct denali_nand_info *denali;
-+	u32 oob_skip;
- 	int ret;
- 
- 	dt = devm_kzalloc(dev, sizeof(*dt), GFP_KERNEL);
-@@ -155,6 +156,11 @@ static int denali_dt_probe(struct platform_device *pdev)
- 		denali->clk_x_rate = 200000000;
- 	}
- 
-+	ret = of_property_read_u32(dev->of_node, "denali,oob-skip-bytes",
-+				   &oob_skip);
-+	if (!ret)
-+		denali->oob_skip_bytes = oob_skip;
-+
- 	ret = denali_init(denali);
- 	if (ret)
- 		goto out_disable_clk_ecc;
 -- 
-2.7.4
+1.9.1
