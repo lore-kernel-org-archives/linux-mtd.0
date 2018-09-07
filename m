@@ -1,27 +1,17 @@
-Date: Fri, 7 Sep 2018 14:19:44 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
- <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
- Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
- <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
- <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 1/2] dt-bindings: nand: meson: add Amlogic NAND
- controller driver
-Message-ID: <20180907141944.4dd4406b@bbrezillon>
-In-Reply-To: <1536317831-58056-2-git-send-email-jianxin.pan@amlogic.com>
-References: <1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com>
- <1536317831-58056-2-git-send-email-jianxin.pan@amlogic.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyG2K-0002Di-QY
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:01 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH 01/25] ARM: imx_v6_v7_defconfig: update
+Date: Fri,  7 Sep 2018 14:36:22 +0200
+Message-Id: <20180907123646.12688-2-s.hauer@pengutronix.de>
+In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
+References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,136 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 7 Sep 2018 18:57:10 +0800
-Jianxin Pan <jianxin.pan@amlogic.com> wrote:
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ arch/arm/configs/imx_v6_v7_defconfig | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
 
-> From: Liang Yang <liang.yang@amlogic.com>
-> 
-> Add Amlogic NAND controller dt-bindings for Meson SoC,
-> Current this driver support GXBB/GXL/AXG platform.
-> 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
-> ---
->  .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 91 ++++++++++++++++++++++
->  1 file changed, 91 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> new file mode 100644
-> index 0000000..655a778
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> @@ -0,0 +1,91 @@
-> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> +
-> +This file documents the properties in addition to those available in
-> +the MTD NAND bindings.
-> +
-> +Required properties:
-> +- compatible : contains one of:
-> +  - "amlogic,meson-gxl-nfc"
-> +  - "amlogic,meson-axg-nfc"
-> +- clocks     :
-> +	A list of phandle + clock-specifier pairs for the clocks listed
-> +	in clock-names.
-> +
-> +- clock-names: Should contain the following:
-> +	"core" - NFC module gate clock
-> +	"device" - device clock from eMMC sub clock controller
-> +
-> +- pins     : Select pins which NFC need.
-> +- nand_pins: Detail NAND pins information.
-
-You mean pinctrl-names and pinctrl-0, right? Not sure it's necessary to
-document that, but if you do, please use the correct DT prop names.
-
-> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
-> +				controller port C
-> +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
-> +
-> +
-> +
-
-One too many blank lines here.
-
-> +Other properties:
-> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
-> +
-> +Example demonstrate on AXG SoC:
-> +
-> +	sd_emmc_c_clkc: mmc@7000 {
-> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
-> +		reg = <0x0 0x7000 0x0 0x800>;
-> +		status = "okay";
-> +	};
-> +
-> +	nand: nfc@7800 {
-> +		compatible = "amlogic,meson-axg-nfc";
-> +		reg = <0x0 0x7800 0x0 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +		status = "disabled";
-> +
-> +		clocks = <&clkc CLKID_SD_EMMC_C>,
-> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
-> +		clock-names = "core", "device";
-> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
-> +
-> +		status = "okay";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&nand_pins>;
-> +
-> +		nand@0 {
-> +			reg = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			nand-on-flash-bbt;
-> +			nand-ecc-mode = "hw";
-> +			nand-ecc-strength = <8>;
-> +			nand-ecc-step-size = <1024>;
-
-Drop nand-ecc- props. I guess you have a sensible default value and I
-prefer when ECC requirements are directly extracted during chip
-detection. Defining that in the DT is a bad habit. The only one that
-could make sense (assuming you support it) is nand-ecc-maximize.
-
-> +
-> +			amlogic,nand-enable-scrambler;
-
-Please drop this property (it's not longer documented).
-
-> +
-> +			partition@0 {
-> +				label = "boot";
-> +				reg = <0x00000000 0x00200000>;
-> +				read-only;
-> +			};
-> +			partition@200000 {
-> +				label = "env";
-> +				reg = <0x00200000 0x00400000>;
-> +			};
-> +			partition@600000 {
-> +				label = "system";
-> +				reg = <0x00600000 0x00a00000>;
-> +			};
-> +			partition@1000000 {
-> +				label = "rootfs";
-> +				reg = <0x01000000 0x03000000>;
-> +			};
-> +			partition@4000000 {
-> +				label = "media";
-> +				reg = <0x04000000 0x8000000>;
-> +			};
-
-No need to define the partitions in your example, especially since they
-should be placed in a partitions subnode with a "fixed-partitions"
-compat.
-
-> +		};
-> +	};
+diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+index 7eca43ff69bb..2ce9626e213b 100644
+--- a/arch/arm/configs/imx_v6_v7_defconfig
++++ b/arch/arm/configs/imx_v6_v7_defconfig
+@@ -4,7 +4,7 @@ CONFIG_NO_HZ=y
+ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+-CONFIG_LOG_BUF_SHIFT=18
++CONFIG_LOG_BUF_SHIFT=24
+ CONFIG_CGROUPS=y
+ CONFIG_RELAY=y
+ CONFIG_BLK_DEV_INITRD=y
+@@ -214,14 +214,13 @@ CONFIG_POWER_SUPPLY=y
+ CONFIG_SENSORS_GPIO_FAN=y
+ CONFIG_SENSORS_IIO_HWMON=y
+ CONFIG_THERMAL_WRITABLE_TRIPS=y
+-CONFIG_CPU_THERMAL=y
+-CONFIG_IMX_THERMAL=y
+ CONFIG_WATCHDOG=y
+ CONFIG_DA9062_WATCHDOG=y
+ CONFIG_RN5T618_WATCHDOG=y
+ CONFIG_IMX2_WDT=y
+ CONFIG_MFD_DA9052_I2C=y
+ CONFIG_MFD_DA9062=y
++CONFIG_MFD_DA9063=y
+ CONFIG_MFD_MC13XXX_SPI=y
+ CONFIG_MFD_MC13XXX_I2C=y
+ CONFIG_MFD_RN5T618=y
+@@ -231,6 +230,7 @@ CONFIG_REGULATOR_FIXED_VOLTAGE=y
+ CONFIG_REGULATOR_ANATOP=y
+ CONFIG_REGULATOR_DA9052=y
+ CONFIG_REGULATOR_DA9062=y
++CONFIG_REGULATOR_DA9063=y
+ CONFIG_REGULATOR_GPIO=y
+ CONFIG_REGULATOR_MC13783=y
+ CONFIG_REGULATOR_MC13892=y
+@@ -299,10 +299,6 @@ CONFIG_USB=y
+ CONFIG_USB_EHCI_HCD=y
+ CONFIG_USB_EHCI_MXC=y
+ CONFIG_USB_STORAGE=y
+-CONFIG_USB_CHIPIDEA=y
+-CONFIG_USB_CHIPIDEA_UDC=y
+-CONFIG_USB_CHIPIDEA_HOST=y
+-CONFIG_USB_CHIPIDEA_ULPI=y
+ CONFIG_USB_SERIAL=m
+ CONFIG_USB_SERIAL_GENERIC=y
+ CONFIG_USB_SERIAL_FTDI_SIO=m
+@@ -411,9 +407,14 @@ CONFIG_MSDOS_FS=m
+ CONFIG_VFAT_FS=y
+ CONFIG_JFFS2_FS=y
+ CONFIG_UBIFS_FS=y
++CONFIG_UBIFS_FS_ENCRYPTION=y
++CONFIG_UBIFS_FS_AUTHENTICATION=y
+ CONFIG_NFS_FS=y
+ CONFIG_NFS_V3_ACL=y
+ CONFIG_NFS_V4=y
++CONFIG_NFS_V4_1=y
++CONFIG_NFS_V4_2=y
++CONFIG_NFS_V4_1_MIGRATION=y
+ CONFIG_ROOT_NFS=y
+ CONFIG_NLS_DEFAULT="cp437"
+ CONFIG_NLS_CODEPAGE_437=y
+-- 
+2.18.0
