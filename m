@@ -1,8 +1,9 @@
-Received: from mail-bn3nam01on0132.outbound.protection.outlook.com
- ([104.47.33.132] helo=NAM01-BN3-obe.outbound.protection.outlook.com)
+Received: from mail-co1nam05on070d.outbound.protection.outlook.com
+ ([2a01:111:f400:fe50::70d]
+ helo=NAM05-CO1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fy4qG-00052E-GR
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 00:41:53 +0000
+ id 1fy4qv-0005Ls-Lz
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 00:42:30 +0000
 From: Sasha Levin <Alexander.Levin@microsoft.com>
 To: "stable@vger.kernel.org" <stable@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
@@ -15,12 +16,12 @@ CC: Randy Dunlap <rdunlap@infradead.org>, David Woodhouse
  <linux-sh@vger.kernel.org>, Sergei Shtylyov
  <sergei.shtylyov@cogentembedded.com>, Sasha Levin
  <Alexander.Levin@microsoft.com>
-Subject: [PATCH AUTOSEL 4.4 12/30] mtd/maps: fix solutionengine.c printk
+Subject: [PATCH AUTOSEL 3.18 06/19] mtd/maps: fix solutionengine.c printk
  format warnings
-Date: Fri, 7 Sep 2018 00:39:04 +0000
-Message-ID: <20180907003853.57942-12-alexander.levin@microsoft.com>
-References: <20180907003853.57942-1-alexander.levin@microsoft.com>
-In-Reply-To: <20180907003853.57942-1-alexander.levin@microsoft.com>
+Date: Fri, 7 Sep 2018 00:39:30 +0000
+Message-ID: <20180907003923.58019-6-alexander.levin@microsoft.com>
+References: <20180907003923.58019-1-alexander.levin@microsoft.com>
+In-Reply-To: <20180907003923.58019-1-alexander.levin@microsoft.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
