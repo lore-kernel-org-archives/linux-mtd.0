@@ -1,7 +1,7 @@
 Received: from conuserg-09.nifty.com ([210.131.2.76])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyBCf-00049e-UW
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 07:29:20 +0000
+ id 1fyBCf-00049f-UV
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 07:29:21 +0000
 From: Masahiro Yamada <yamada.masahiro@socionext.com>
 To: linux-mtd@lists.infradead.org,
  Boris Brezillon <boris.brezillon@bootlin.com>,
@@ -10,9 +10,9 @@ Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
  linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
  Brian Norris <computersforpeace@gmail.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/2] mtd: rawnand: denali: remove denali_reset_banks()
-Date: Fri,  7 Sep 2018 16:28:29 +0900
-Message-Id: <1536305309-28026-3-git-send-email-yamada.masahiro@socionext.com>
+Subject: [PATCH 1/2] mtd: rawnand: denali: remove ->dev_ready() hook
+Date: Fri,  7 Sep 2018 16:28:28 +0900
+Message-Id: <1536305309-28026-2-git-send-email-yamada.masahiro@socionext.com>
 In-Reply-To: <1536305309-28026-1-git-send-email-yamada.masahiro@socionext.com>
 References: <1536305309-28026-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,86 +24,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In nand_scan_ident(), the controller driver resets every NAND chip.
-This is done by sending NAND_CMD_RESET.  The Denali IP provides
-another way to do the equivalent thing; if a bit is set in the
-DEVICE_RESET register, the controller sends the RESET command to
-the corresponding device.  denali_reset_banks() uses it to reset
-all devices beforehand.
+The Denali NAND IP has no way to read out the current signal level
+of the R/B# pin.  Instead, denali_dev_ready() checks if the R/B#
+transition has already happened. (The INTR__INT_ACT interrupt is
+asserted at the rising edge of the R/B# pin.)  It is not a correct
+way to implement the ->dev_ready() hook.
 
-This redundant reset sequence was needed to know the actual number
-of chips before calling nand_scan_ident(); if DEVICE_RESET fails,
-there is no chip in that chip select.  Then, denali_reset_banks()
-sets denali->max_banks to the number of detected chips.
+In fact, it has a drawback; in the nand_scan_ident phase, the chip
+detection iterates over maxchips until it fails to find a homogeneous
+chip.  For the last loop, nand_reset() fails if no chip is there.
 
-As commit f486287d2372 ("mtd: nand: denali: fix bank reset function
-to detect the number of chips") explained, nand_scan_ident() issued
-Set Features (0xEF) command to all CS lines, some of which may not be
-connected with a chip. Then, the driver would wait for R/B# response,
-which never happens.
+If ->dev_ready hook exists, nand_command(_lp) calls nand_wait_ready()
+after NAND_CMD_RESET.  However, we know denali_dev_ready() never
+returns 1 unless there exists a chip that toggles R/B# in that chip
+select.  Then, nand_wait_ready() just ends up with wasting 400 msec,
+in the end, shows the "timeout while waiting for chip to become ready"
+warning.
 
-This problem was solved by commit 107b7d6a7ad4 ("mtd: rawnand: avoid
-setting again the timings to mode 0 after a reset").  In the current
-code, nand_setup_data_interface() is called from nand_scan_tail(),
-which is invoked after the chip detection.
-
-Now, we can really remove the redundant denali_nand_banks() by simply
-passing the maximum number of chip selects supported by this IP
-(typically 4 or 8) to nand_scan().  Let's leave all the chip detection
-process to nand_scan_ident().
+Let's remove the mis-implemented dev_ready hook, and fallback to
+sending the NAND_CMD_STATUS and nand_wait_status_ready(), which
+bails out more quickly.
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- drivers/mtd/nand/raw/denali.c | 29 -----------------------------
- 1 file changed, 29 deletions(-)
+ drivers/mtd/nand/raw/denali.c | 22 +---------------------
+ 1 file changed, 1 insertion(+), 21 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-index f069184..d1ae968 100644
+index f88a5dc..f069184 100644
 --- a/drivers/mtd/nand/raw/denali.c
 +++ b/drivers/mtd/nand/raw/denali.c
-@@ -1040,29 +1040,6 @@ static int denali_setup_data_interface(struct mtd_info *mtd, int chipnr,
- 	return 0;
+@@ -203,18 +203,6 @@ static uint32_t denali_wait_for_irq(struct denali_nand_info *denali,
+ 	return denali->irq_status;
  }
  
--static void denali_reset_banks(struct denali_nand_info *denali)
+-static uint32_t denali_check_irq(struct denali_nand_info *denali)
 -{
--	u32 irq_status;
--	int i;
+-	unsigned long flags;
+-	uint32_t irq_status;
 -
--	for (i = 0; i < denali->max_banks; i++) {
--		denali->active_bank = i;
+-	spin_lock_irqsave(&denali->irq_lock, flags);
+-	irq_status = denali->irq_status;
+-	spin_unlock_irqrestore(&denali->irq_lock, flags);
 -
--		denali_reset_irq(denali);
--
--		iowrite32(DEVICE_RESET__BANK(i),
--			  denali->reg + DEVICE_RESET);
--
--		irq_status = denali_wait_for_irq(denali,
--			INTR__RST_COMP | INTR__INT_ACT | INTR__TIME_OUT);
--		if (!(irq_status & INTR__INT_ACT))
--			break;
--	}
--
--	dev_dbg(denali->dev, "%d chips connected\n", i);
--	denali->max_banks = i;
+-	return irq_status;
 -}
 -
- static void denali_hw_init(struct denali_nand_info *denali)
+ static void denali_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
  {
+ 	struct denali_nand_info *denali = mtd_to_denali(mtd);
+@@ -294,7 +282,7 @@ static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
+ 		return;
+ 
  	/*
-@@ -1311,12 +1288,6 @@ int denali_init(struct denali_nand_info *denali)
- 	}
+-	 * Some commands are followed by chip->dev_ready or chip->waitfunc.
++	 * Some commands are followed by chip->waitfunc.
+ 	 * irq_status must be cleared here to catch the R/B# interrupt later.
+ 	 */
+ 	if (ctrl & NAND_CTRL_CHANGE)
+@@ -303,13 +291,6 @@ static void denali_cmd_ctrl(struct mtd_info *mtd, int dat, unsigned int ctrl)
+ 	denali->host_write(denali, DENALI_BANK(denali) | type, dat);
+ }
  
- 	denali_enable_irq(denali);
--	denali_reset_banks(denali);
--	if (!denali->max_banks) {
--		/* Error out earlier if no chip is found for some reasons. */
--		ret = -ENODEV;
--		goto disable_irq;
--	}
+-static int denali_dev_ready(struct mtd_info *mtd)
+-{
+-	struct denali_nand_info *denali = mtd_to_denali(mtd);
+-
+-	return !!(denali_check_irq(denali) & INTR__INT_ACT);
+-}
+-
+ static int denali_check_erased_page(struct mtd_info *mtd,
+ 				    struct nand_chip *chip, uint8_t *buf,
+ 				    unsigned long uncor_ecc_flags,
+@@ -1349,7 +1330,6 @@ int denali_init(struct denali_nand_info *denali)
+ 	chip->write_byte = denali_write_byte;
+ 	chip->read_word = denali_read_word;
+ 	chip->cmd_ctrl = denali_cmd_ctrl;
+-	chip->dev_ready = denali_dev_ready;
+ 	chip->waitfunc = denali_waitfunc;
  
- 	denali->active_bank = DENALI_INVALID_BANK;
- 
+ 	if (features & FEATURES__INDEX_ADDR) {
 -- 
 2.7.4
