@@ -1,35 +1,25 @@
-Received: from conssluserg-04.nifty.com ([210.131.2.83])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyJMN-0003ex-GA
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 16:12:08 +0000
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com
- [209.85.221.171]) (authenticated)
- by conssluserg-04.nifty.com with ESMTP id w87GB71j007670
- for <linux-mtd@lists.infradead.org>; Sat, 8 Sep 2018 01:11:07 +0900
-Received: by mail-vk1-f171.google.com with SMTP id h200-v6so1036847vke.5
- for <linux-mtd@lists.infradead.org>; Fri, 07 Sep 2018 09:11:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180907165348.3e0027ee@bbrezillon>
-References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
- <20180907160822.319047c8@bbrezillon>
- <CAK7LNAQJOD3mxwbiOSn5wpDsU23DhZcx9QB_ufFZB8LUnh1KdQ@mail.gmail.com>
- <20180907165348.3e0027ee@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Sat, 8 Sep 2018 01:10:25 +0900
-Message-ID: <CAK7LNAT3ZjdW3ENekNJq=26SAh=tXdirmhHyA9qDGnwpXQ6Arg@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify skipped
- bytes in OOB
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Marek Vasut <marek.vasut@gmail.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
+Received: from muru.com ([72.249.23.125])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyJt3-0000ju-QX
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 16:45:39 +0000
+Date: Fri, 7 Sep 2018 09:45:24 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] mtd: rawnand: ams-delta: Cleanups and optimizations
+Message-ID: <20180907164524.GH5662@atomide.com>
+References: <20180813223448.21316-1-jmkrzyszt@gmail.com>
+ <20180820213904.13475-1-jmkrzyszt@gmail.com>
+ <20180905084757.432e7c19@xps13> <1855340.fVHtouTg44@z50>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1855340.fVHtouTg44@z50>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,120 +29,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi,
 
-2018-09-07 23:53 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> On Fri, 7 Sep 2018 23:42:53 +0900
-> Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->
->> Hi Boris,
->>
->> 2018-09-07 23:08 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->> > Hi Masahiro,
->> >
->> > On Fri,  7 Sep 2018 19:56:23 +0900
->> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->> >
->> >> NAND devices need additional data area (OOB) for error correction,
->> >> but it is also used for Bad Block Marker (BBM).  In many cases, the
->> >> first byte in OOB is used for BBM, but the location actually depends
->> >> on chip vendors.  The NAND controller should preserve the precious
->> >> BBM to keep track of bad blocks.
->> >>
->> >> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
->> >> the number of bytes to skip from the start of OOB.  The ECC engine
->> >> will automatically skip the specified number of bytes when it gets
->> >> access to OOB area.
->> >>
->> >> The same value for SPARE_AREA_SKIP_BYTES should be used between
->> >> firmware and the operating system if you intend to use the NAND
->> >> device across the control hand-off.
->> >>
->> >> In fact, the current denali.c code expects firmware to have already
->> >> set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
->> >>
->> >> If no firmware (or bootloader) has initialized the controller, the
->> >> register value is zero, which is the default after power-on-reset.
->> >>
->> >> In other words, the Linux driver cannot initialize the controller
->> >> by itself.  You cannot support the reset control either because
->> >> resetting the controller will get register values lost.
->> >>
->> >> This commit adds a way to specify it via DT.  If the property
->> >> "denali,oob-skip-bytes" exists, the value will be set to the register.
->> >
->> > Hm, do we really need to make this config customizable? I mean, either
->> > you have a large-page NAND (page > 512 bytes) and the 2 first bytes
->> > must be reserved for the BBM or you have a small-page NAND and the BBM
->> > is at position 4 and 5. Are you sure people configure that differently?
->> > Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2?
->>
->>
->> As I said in the patch description,
->> I need to use the same SPARE_AREA_SKIP_BYTES value
->> across firmware, boot-loader, Linux, and whatever.
->>
->> I want to set the value to 8 for my platform
->> because the on-chip boot ROM expects 8.
->> I cannot change it since the boot ROM is hard-wired.
->>
->>
->> The boot ROM skips 8 bytes in OOB
->> when it loads images from the on-board NAND device.
->>
->> So, when I update the image from U-Boot or Linux,
->> I need to make sure to set the register to 8.
->>
->> If I update the image with a different value,
->> the Boot ROM fails to boot.
->>
->>
->>
->> When the system has booted from NAND,
->> the register is already set to 8.  It works.
->>
->> However, when the system has booted from eMMC,
->> the register is not initialized by anyone.
->> I am searching for a way to set the register to 8
->> in this case.
->>
->>
->> The boot ROM in SOCFPGA might expect a different value,
->> I am not sure.
->
-> Okay, then why not having a per-compatible value if it's related to the
-> BootROM? Unless the BootROM is part of the FPGA and can be
-> reprogrammed.
+* Janusz Krzysztofik <jmkrzyszt@gmail.com> [180905 20:56]:
+> On Wednesday, September 5, 2018 8:47:57 AM CEST Miquel Raynal wrote:
+> > Patch 2/3 does not apply on nand/next. Indeed the driver does not look
+> > the same as in the diff.
+> 
+> That's because I built it on top of my former series from the mid of July, 
+> containing "[PATCH v2 2/3 v4] mtd: rawnand: ams-delta: use GPIO lookup table". 
+> It was acked by you, Miquel, and supposed to be merged via linux-omap tree.
 
-FPGA is unrelated here.
+Hmm I thought the plan was for dependencies to clear and then
+merge the rest via various driver trees.. Or at least I don't have
+the patch above tagged anywhere for me to merge. Then again, I
+try to forget everything posted before -rc1 just to stay sane :)
 
-Neither the boot ROM nor the Denali core is re-programmable.
+> > I don't see any changes on my side that could
+> > explain this so perhaps you could rebase on top of 4.19-rc2 (or
+> > nand/next, as you wish) and resend the series?
+> 
+> As far as I can see, Tony hasn't applied that series yet, so maybe I can still 
+> move that patch out of there and insert it into this series in front of the 
+> other 3 patches and resend. That would however make patch 3/3 of that old 
+> series depend on this one.
+> 
+> Tony, what do you think?
 
+Yes please resend based on v4.19-rc1 or MTD next. If there
+are still pending dependencies, please let us know and we can
+set up an immutable branch against v4.19-rc1 with those for
+MTD and me to merge in as needed.
 
+Regards,
 
-I hesitate to associate the number of skipped bytes
-with the compatible string because it is not a parameter
-of the Denali IP.
-
-
-Rather, it is the matter of "how we use the OOB",
-so I want to leave room for customization like nand-ecc-strength etc.
-even if the boot ROM happens to expect a particular value.
-
-
-If you prefer a per-compatible value, I can do that,
-but I believe the NAND core and the boot ROM are orthogonal.
-
-
-
-> I'd really prefer not having a generic property that
-> allows you to put anything you want.
-
-
-
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+Tony
