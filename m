@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2K-0002E5-Ti
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:08 +0000
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyG2R-0001uW-D7
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:04 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 18/25] ubifs: authentication: authenticate LPT
-Date: Fri,  7 Sep 2018 14:36:39 +0200
-Message-Id: <20180907123646.12688-19-s.hauer@pengutronix.de>
+Subject: [PATCH 21/25] ubifs: authentication: Authenticate super block node
+Date: Fri,  7 Sep 2018 14:36:42 +0200
+Message-Id: <20180907123646.12688-22-s.hauer@pengutronix.de>
 In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
 References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,192 +21,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The LPT needs to be authenticated aswell. Since the LPT is only written
-during commit it is enough to authenticate the whole LPT with a single
-hash which is stored in the master node. Only the leaf nodes (pnodes)
-are hashed which makes the implementation much simpler than it would be
-to hash the complete LPT.
+This adds a HMAC covering the super block node and adds the logic that
+decides if a filesystem shall be mounted unauthenticated or
+authenticated.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/lpt.c        | 129 ++++++++++++++++++++++++++++++++++++++++++
- fs/ubifs/lpt_commit.c |   4 ++
- fs/ubifs/ubifs.h      |   1 +
- 3 files changed, 134 insertions(+)
+ fs/ubifs/sb.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 69 insertions(+), 1 deletion(-)
 
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index 5f57af224b8f..ee18305a6152 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -1635,6 +1635,131 @@ struct ubifs_lprops *ubifs_lpt_lookup_dirty(struct ubifs_info *c, int lnum)
- 	return &pnode->lprops[iip];
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index 572756579532..7f0967771c9f 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -517,6 +517,65 @@ static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
+ 	return sup;
  }
  
-+/**
-+ * ubifs_lpt_calc_hash - Calculate hash of the LPT pnodes
-+ * @c: UBIFS file-system description object
-+ * @hash: the returned hash of the LPT pnodes
-+ *
-+ * This function iterates over the LPT pnodes and creates a hash over them.
-+ * Returns 0 for success or a negative error code otherwise.
-+ */
-+int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash)
++static int authenticate_sb_node(struct ubifs_info *c,
++				const struct ubifs_sb_node *sup)
 +{
-+	struct ubifs_nnode *nnode, *nn;
-+	struct ubifs_cnode *cnode;
-+	struct shash_desc *desc;
-+	int iip = 0, i;
-+	int bufsiz = max_t(int, c->nnode_sz, c->pnode_sz);
-+	void *buf;
++	unsigned int sup_flags = le32_to_cpu(sup->flags);
++	u8 hmac_wkm[UBIFS_HMAC_ARR_SZ];
++	int authenticated = !!(sup_flags & UBIFS_FLG_AUTHENTICATION);
++	int hash_algo;
 +	int err;
 +
-+	if (!ubifs_authenticated(c))
++	if (c->authenticated && !authenticated) {
++		ubifs_err(c, "authenticated FS forced, but found FS without authentication");
++		return -EINVAL;
++	}
++
++	if (!c->authenticated && authenticated) {
++		ubifs_err(c, "authenticated FS found, but no key given");
++		return -EINVAL;
++	}
++
++	ubifs_msg(c, "Mounting in %sauthenticated mode",
++		  c->authenticated ? "" : "un");
++
++	if (!c->authenticated)
 +		return 0;
 +
-+	desc = ubifs_hash_get_desc(c);
-+	if (IS_ERR(desc))
-+		return PTR_ERR(desc);
++	if (!IS_ENABLED(CONFIG_UBIFS_FS_AUTHENTICATION))
++		return -EOPNOTSUPP;
 +
-+	buf = kmalloc(bufsiz, GFP_NOFS);
-+	if (!buf) {
-+		err = -ENOMEM;
-+		goto out;
++	hash_algo = le16_to_cpu(sup->hash_algo);
++	if (hash_algo >= HASH_ALGO__LAST) {
++		ubifs_err(c, "superblock uses unknown hash algo %d",
++			  hash_algo);
++		return -EINVAL;
 +	}
 +
-+	if (!c->nroot) {
-+		err = ubifs_read_nnode(c, NULL, 0);
-+		if (err)
-+			return err;
++	if (strcmp(hash_algo_name[hash_algo], c->auth_hash_name)) {
++		ubifs_err(c, "This filesystem uses %s for hashing,"
++			     " but %s is specified", hash_algo_name[hash_algo],
++			     c->auth_hash_name);
++		return -EINVAL;
 +	}
 +
-+	cnode = (struct ubifs_cnode *)c->nroot;
-+
-+	while (cnode) {
-+		nnode = cnode->parent;
-+		nn = (struct ubifs_nnode *)cnode;
-+		if (cnode->level > 1) {
-+			while (iip < UBIFS_LPT_FANOUT) {
-+				if (nn->nbranch[iip].lnum == 0) {
-+					/* Go right */
-+					iip++;
-+					continue;
-+				}
-+
-+				nnode = ubifs_get_nnode(c, nn, iip);
-+				if (IS_ERR(nnode)) {
-+					err = PTR_ERR(nnode);
-+					goto out;
-+				}
-+
-+				/* Go down */
-+				iip = 0;
-+				cnode = (struct ubifs_cnode *)nnode;
-+				break;
-+			}
-+			if (iip < UBIFS_LPT_FANOUT)
-+				continue;
-+		} else {
-+			struct ubifs_pnode *pnode;
-+
-+			for (i = 0; i < UBIFS_LPT_FANOUT; i++) {
-+				if (nn->nbranch[i].lnum == 0)
-+					continue;
-+				pnode = ubifs_get_pnode(c, nn, i);
-+				if (IS_ERR(pnode)) {
-+					err = PTR_ERR(pnode);
-+					goto out;
-+				}
-+
-+				ubifs_pack_pnode(c, buf, pnode);
-+				err = ubifs_shash_update(c, desc, buf,
-+							 c->pnode_sz);
-+				if (err)
-+					goto out;
-+			}
-+		}
-+		/* Go up and to the right */
-+		iip = cnode->iip + 1;
-+		cnode = (struct ubifs_cnode *)nnode;
-+	}
-+
-+	err = ubifs_shash_final(c, desc, hash);
-+out:
-+	kfree(desc);
-+	kfree(buf);
-+
-+	return err;
-+}
-+
-+/**
-+ * lpt_check_hash - check the hash of the LPT.
-+ * @c: UBIFS file-system description object
-+ *
-+ * This function calculates a hash over all pnodes in the LPT and compares it with
-+ * the hash stored in the master node. Returns %0 on success and a negative error
-+ * code on failure.
-+ */
-+static int lpt_check_hash(struct ubifs_info *c)
-+{
-+	int err;
-+	u8 hash[UBIFS_HASH_ARR_SZ];
-+
-+	if (!ubifs_authenticated(c))
-+		return 0;
-+
-+	err = ubifs_lpt_calc_hash(c, hash);
++	err = ubifs_hmac_wkm(c, hmac_wkm);
 +	if (err)
 +		return err;
 +
-+	if (ubifs_check_hash(c, c->mst_node->hash_lpt, hash)) {
-+		err = -EPERM;
-+		ubifs_err(c, "Failed to authenticate LPT");
-+	} else {
-+		err = 0;
++	if (ubifs_check_hmac(c, hmac_wkm, sup->hmac_wkm)) {
++		ubifs_err(c, "provided key does not fit");
++		return -ENOKEY;
 +	}
++
++	err = ubifs_node_verify_hmac(c, sup, sizeof(*sup),
++				     offsetof(struct ubifs_sb_node, hmac));
++	if (err)
++		ubifs_err(c, "Failed to authenticate superblock: %d", err);
 +
 +	return err;
 +}
 +
  /**
-  * lpt_init_rd - initialize the LPT for reading.
+  * ubifs_write_sb_node - write superblock node.
   * @c: UBIFS file-system description object
-@@ -1676,6 +1801,10 @@ static int lpt_init_rd(struct ubifs_info *c)
- 	if (err)
- 		return err;
- 
-+	err = lpt_check_hash(c);
+@@ -527,8 +586,13 @@ static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
+ int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup)
+ {
+ 	int len = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
++	int err;
++
++	err = ubifs_prepare_node_hmac(c, sup, UBIFS_SB_NODE_SZ,
++				      offsetof(struct ubifs_sb_node, hmac), 1);
 +	if (err)
 +		return err;
-+
- 	dbg_lp("space_bits %d", c->space_bits);
- 	dbg_lp("lpt_lnum_bits %d", c->lpt_lnum_bits);
- 	dbg_lp("lpt_offs_bits %d", c->lpt_offs_bits);
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index 62d6a87d4f5d..1f88caffdf2a 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -1247,6 +1247,10 @@ int ubifs_lpt_start_commit(struct ubifs_info *c)
- 	if (err)
- 		goto out;
  
-+	err = ubifs_lpt_calc_hash(c, c->mst_node->hash_lpt);
+-	ubifs_prepare_node(c, sup, UBIFS_SB_NODE_SZ, 1);
+ 	return ubifs_leb_change(c, UBIFS_SB_LNUM, sup, len);
+ }
+ 
+@@ -642,6 +706,10 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 	c->double_hash = !!(sup_flags & UBIFS_FLG_DOUBLE_HASH);
+ 	c->encrypted = !!(sup_flags & UBIFS_FLG_ENCRYPTION);
+ 
++	err = authenticate_sb_node(c, sup);
 +	if (err)
 +		goto out;
 +
- 	/* Copy the LPT's own lprops for end commit to write */
- 	memcpy(c->ltab_cmt, c->ltab,
- 	       sizeof(struct ubifs_lpt_lprops) * c->lpt_lebs);
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 600a25b93a80..7e519a4885a8 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1961,6 +1961,7 @@ struct ubifs_nnode *ubifs_first_nnode(struct ubifs_info *c, int *hght);
- /* Needed only in debugging code in lpt_commit.c */
- int ubifs_unpack_nnode(const struct ubifs_info *c, void *buf,
- 		       struct ubifs_nnode *nnode);
-+int ubifs_lpt_calc_hash(struct ubifs_info *c, u8 *hash);
- 
- /* lpt_commit.c */
- int ubifs_lpt_start_commit(struct ubifs_info *c);
+ 	if ((sup_flags & ~UBIFS_FLG_MASK) != 0) {
+ 		ubifs_err(c, "Unknown feature flags found: %#x",
+ 			  sup_flags & ~UBIFS_FLG_MASK);
 -- 
 2.18.0
