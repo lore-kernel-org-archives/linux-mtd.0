@@ -1,21 +1,37 @@
-Subject: Re: [RESEND PATCH v2 2/3] mtd: spi-nor: parse SFDP Sector Map
- Parameter Table
-To: Marek Vasut <marek.vasut@gmail.com>, <cyrille.pitchen@microchip.com>,
- <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
- <boris.brezillon@bootlin.com>, <richard@nod.at>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
- <Cristian.Birsan@microchip.com>
-References: <20180827102644.7323-1-tudor.ambarus@microchip.com>
- <20180827102644.7323-3-tudor.ambarus@microchip.com>
- <1bfbb5f7-39ee-08cb-8f7b-5c3f441f66a2@gmail.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <78a6ebd0-f0e4-cee4-ab66-b393366b2fe5@microchip.com>
-Date: Fri, 7 Sep 2018 12:10:30 +0300
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fyCpp-0000QY-Mg
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 09:13:51 +0000
+Date: Fri, 7 Sep 2018 11:13:24 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: Richard Weinberger <richard@nod.at>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ linux-doc@vger.kernel.org, Hartley Sweeten <hsweeten@visionengravers.com>,
+ Ryan Mallon <rmallon@gmail.com>, Alexander Shiyan <shc_work@mail.ru>, Shawn
+ Guo <shawnguo@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Fabio
+ Estevam <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Imre
+ Kaloz <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Tony
+ Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, Alexander Clouter
+ <alex@digriz.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>, Jason Cooper
+ <jason@lakedaemon.net>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Daniel
+ Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert
+ Jarzmik <robert.jarzmik@free.fr>, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@linux-mips.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: Re: [PATCH 19/19] mtd: rawnand: Move JEDEC code to nand_jedec.c
+Message-ID: <20180907111324.691ba379@bbrezillon>
+In-Reply-To: <20180907084044.GA6361@lenoch>
+References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+ <20180906223851.6964-20-boris.brezillon@bootlin.com>
+ <20180907084044.GA6361@lenoch>
 MIME-Version: 1.0
-In-Reply-To: <1bfbb5f7-39ee-08cb-8f7b-5c3f441f66a2@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,103 +42,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 7 Sep 2018 10:40:44 +0200
+Ladislav Michl <ladis@linux-mips.org> wrote:
 
-
-On 09/03/2018 08:40 PM, Marek Vasut wrote:
-> On 08/27/2018 12:26 PM, Tudor Ambarus wrote:
-> [...]
->> +static const u32 *spi_nor_get_map_in_use(struct spi_nor *nor, const u32 *smpt)
->> +{
->> +	const u32 *ret = NULL;
->> +	u32 i, addr;
->> +	int err;
->> +	u8 addr_width, read_opcode, read_dummy;
->> +	u8 read_data_mask, data_byte, map_id;
->> +
->> +	addr_width = nor->addr_width;
->> +	read_dummy = nor->read_dummy;
->> +	read_opcode = nor->read_opcode;
->> +
->> +	map_id = 0;
->> +	i = 0;
->> +	/* Determine if there are any optional Detection Command Descriptors */
->> +	while (!(smpt[i] & SMPT_DESC_TYPE_MAP)) {
->> +		read_data_mask = SMPT_CMD_READ_DATA(smpt[i]);
->> +		nor->addr_width = spi_nor_smpt_addr_width(nor, smpt[i]);
->> +		nor->read_dummy = spi_nor_smpt_read_dummy(nor, smpt[i]);
->> +		nor->read_opcode = SMPT_CMD_OPCODE(smpt[i]);
->> +		addr = smpt[i + 1];
->> +
->> +		err = spi_nor_read_raw(nor, addr, 1, &data_byte);
->> +		if (err)
->> +			goto out;
->> +
->> +		/*
->> +		 * Build an index value that is used to select the Sector Map
->> +		 * Configuration that is currently in use.
->> +		 */
->> +		map_id = map_id << 1 | (!(data_byte & read_data_mask) ? 0 : 1);
+> Hi Boris,
 > 
-> You can drop the ternary operator part completely ^
+> this patchseries is really amazing clean up. Thank you!
 
-I'll use !! instead.
+I'm glad I'm not the only one to find it useful :-).
 
 > 
->> +		i = i + 2;
->> +	}
->> +
->> +	/* Find the matching configuration map */
->> +	while (SMPT_MAP_ID(smpt[i]) != map_id) {
->> +		if (smpt[i] & SMPT_DESC_END)
->> +			goto out;
->> +		/* increment the table index to the next map */
->> +		i += SMPT_MAP_REGION_COUNT(smpt[i]) + 1;
->> +	}
->> +
->> +	ret = smpt + i;
->> +	/* fall through */
->> +out:
->> +	nor->addr_width = addr_width;
->> +	nor->read_dummy = read_dummy;
->> +	nor->read_opcode = read_opcode;
->> +	return ret;
->> +}
->> +
->> +static void
->> +spi_nor_region_check_overlay(struct spi_nor_erase_region *region,
->> +			     const struct spi_nor_erase_type *erase,
->> +			     const u8 erase_type)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
->> +		if (!(erase_type & BIT(i)))
->> +			continue;
->> +		if (region->size & erase[i].size_mask) {
->> +			spi_nor_region_mark_overlay(region);
->> +			return;
->> +		}
->> +	}
->> +}
->> +
->> +static int spi_nor_init_non_uniform_erase_map(struct spi_nor *nor,
->> +					      const u32 *smpt)
->> +{
->> +	struct spi_nor_erase_map *map = &nor->erase_map;
->> +	const struct spi_nor_erase_type *erase = map->erase_type;
->> +	struct spi_nor_erase_region *region;
->> +	u64 offset;
->> +	u32 region_count;
->> +	int i, j;
->> +	u8 erase_type;
->> +
->> +	region_count = SMPT_MAP_REGION_COUNT(*smpt);
->> +	region = devm_kcalloc(nor->dev, region_count, sizeof(*region),
->> +			      GFP_KERNEL);
+> On Fri, Sep 07, 2018 at 12:38:51AM +0200, Boris Brezillon wrote:
+> > This moves ONFI related code to nand_onfi.c and ONFI related
+> > struct/macros to include/linux/mtd/onfi.h.  
 > 
-> Is this memory always correctly free'd ?
+> Seems above commit log comes from previous patch.
 
-Yes. It will be free'd when the driver detaches from the device.
+Oops, will fix that.
 
 Thanks,
-ta
+
+Boris
