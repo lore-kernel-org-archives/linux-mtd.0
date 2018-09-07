@@ -1,17 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyHmM-0005Eq-6r
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:30:36 +0000
+ id 1fyHqe-00077A-BZ
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:35:02 +0000
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
  Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
- stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: marvell: prevent harmless warnings
-Date: Fri,  7 Sep 2018 16:29:54 +0200
-Message-Id: <20180907142954.13299-1-miquel.raynal@bootlin.com>
+Cc: linux-mtd@lists.infradead.org,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Nadav Haklai <nadavh@marvell.com>,
+ Gregory Clement <gregory.clement@bootlin.com>,
+ Antoine Tenart <antoine.tenart@bootlin.com>,
+ Maxime Chevallier <maxime.chevallier@bootlin.com>,
+ Ofer Heifetz <oferh@marvell.com>,
+ Konstantin Porotchkin <kostap@marvell.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: marvell: Add support for 8kiB pages NAND chips
+ layout
+Date: Fri,  7 Sep 2018 16:34:36 +0200
+Message-Id: <20180907143436.13391-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since the addition of WARN_ON() in nand_subop_get_data/addr_len()
-helpers, this driver will produce harmless warnings (mostly at probe)
-just because it always called the *_data_len() helper in the parsing
-function (even on non-data instructions, where this value is
-meaningless and unneeded.
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-Fix these warnings by deriving the length only when it is relevant.
+Add support for two new layouts: 8kiB pages NAND chips, requesting
+either 4 or 8 bit of correctability per 512B step.
 
-Fixes: 760c435e0f85 ("mtd: rawnand: make subop helpers return unsigned values")
-Cc: stable@vger.kernel.org
+Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mtd/nand/raw/marvell_nand.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 7af4d6213ee5..bc2ef5209783 100644
+index bc2ef5209783..bba7aa80ec61 100644
 --- a/drivers/mtd/nand/raw/marvell_nand.c
 +++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -1547,7 +1547,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
- 	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
- 		unsigned int offset, naddrs;
- 		const u8 *addrs;
--		int len = nand_subop_get_data_len(subop, op_id);
-+		int len;
+@@ -219,6 +219,8 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
+ 	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
+ 	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
+ 	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
++	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
++	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
+ };
  
- 		instr = &subop->instrs[op_id];
- 
-@@ -1593,6 +1593,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
- 				nfc_op->ndcb[0] |=
- 					NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW) |
- 					NDCB0_LEN_OVRD;
-+				len = nand_subop_get_data_len(subop, op_id);
- 				nfc_op->ndcb[3] |= round_up(len, FIFO_DEPTH);
- 			}
- 			nfc_op->data_delay_ns = instr->delay_ns;
-@@ -1606,6 +1607,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
- 				nfc_op->ndcb[0] |=
- 					NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW) |
- 					NDCB0_LEN_OVRD;
-+				len = nand_subop_get_data_len(subop, op_id);
- 				nfc_op->ndcb[3] |= round_up(len, FIFO_DEPTH);
- 			}
- 			nfc_op->data_delay_ns = instr->delay_ns;
+ /**
 -- 
 2.17.1
