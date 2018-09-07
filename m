@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2K-0002E0-Pu
+ id 1fyG2K-0002E3-Pu
  for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:01 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 08/25] ubifs: Store read superblock node
-Date: Fri,  7 Sep 2018 14:36:29 +0200
-Message-Id: <20180907123646.12688-9-s.hauer@pengutronix.de>
+Subject: [PATCH 05/25] ubifs: export pnode_lookup as ubifs_pnode_lookup
+Date: Fri,  7 Sep 2018 14:36:26 +0200
+Message-Id: <20180907123646.12688-6-s.hauer@pengutronix.de>
 In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
 References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,151 +21,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The superblock node is read/modified/written several times throughout
-the UBIFS code. Instead of reading it from the device each time just
-keep a copy in memory and write back the modified copy when necessary.
-This patch helps for authentication support, here we not only have to
-read the superblock node, but also have to authenticate it, which
-is easier if we do it once during initialization.
+ubifs_lpt_lookup could be implemented using pnode_lookup. To make that
+possible move pnode_lookup from lpt.c to lpt_commit.c. Rename it to
+ubifs_pnode_lookup since it's now exported.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/sb.c    | 19 +++++--------------
- fs/ubifs/super.c |  8 +-------
- fs/ubifs/ubifs.h |  3 ++-
- 3 files changed, 8 insertions(+), 22 deletions(-)
+ fs/ubifs/lpt.c        | 32 ++++++++++++++++++++++++++++++++
+ fs/ubifs/lpt_commit.c | 40 ++++------------------------------------
+ fs/ubifs/ubifs.h      |  1 +
+ 3 files changed, 37 insertions(+), 36 deletions(-)
 
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index cf7ee2880c57..7e08c8143316 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -497,7 +497,7 @@ static int validate_sb(struct ubifs_info *c, struct ubifs_sb_node *sup)
-  * code. Note, the user of this function is responsible of kfree()'ing the
-  * returned superblock buffer.
-  */
--struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
-+static struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
- {
- 	struct ubifs_sb_node *sup;
- 	int err;
-@@ -554,6 +554,8 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 	if (IS_ERR(sup))
- 		return PTR_ERR(sup);
+diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+index 31393370e334..ed0c67fe7500 100644
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -1438,6 +1438,38 @@ struct ubifs_pnode *ubifs_get_pnode(struct ubifs_info *c,
+ 	return branch->pnode;
+ }
  
-+	c->sup_node = sup;
++/**
++ * ubifs_pnode_lookup - lookup a pnode in the LPT.
++ * @c: UBIFS file-system description object
++ * @i: pnode number (0 to (main_lebs - 1) / UBIFS_LPT_FANOUT)
++ *
++ * This function returns a pointer to the pnode on success or a negative
++ * error code on failure.
++ */
++struct ubifs_pnode *ubifs_pnode_lookup(struct ubifs_info *c, int i)
++{
++	int err, h, iip, shft;
++	struct ubifs_nnode *nnode;
 +
- 	c->fmt_version = le32_to_cpu(sup->fmt_version);
- 	c->ro_compat_version = le32_to_cpu(sup->ro_compat_version);
- 
-@@ -685,7 +687,6 @@ int ubifs_read_superblock(struct ubifs_info *c)
- 
- 	err = validate_sb(c, sup);
- out:
--	kfree(sup);
- 	return err;
++	if (!c->nroot) {
++		err = ubifs_read_nnode(c, NULL, 0);
++		if (err)
++			return ERR_PTR(err);
++	}
++	i <<= UBIFS_LPT_FANOUT_SHIFT;
++	nnode = c->nroot;
++	shft = c->lpt_hght * UBIFS_LPT_FANOUT_SHIFT;
++	for (h = 1; h < c->lpt_hght; h++) {
++		iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
++		shft -= UBIFS_LPT_FANOUT_SHIFT;
++		nnode = ubifs_get_nnode(c, nnode, iip);
++		if (IS_ERR(nnode))
++			return ERR_CAST(nnode);
++	}
++	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
++	return ubifs_get_pnode(c, nnode, iip);
++}
++
+ /**
+  * ubifs_lpt_lookup - lookup LEB properties in the LPT.
+  * @c: UBIFS file-system description object
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index 7ce30994bbba..62d6a87d4f5d 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -618,38 +618,6 @@ static struct ubifs_pnode *next_pnode_to_dirty(struct ubifs_info *c,
+ 	return ubifs_get_pnode(c, nnode, iip);
  }
  
-@@ -814,7 +815,7 @@ static int fixup_free_space(struct ubifs_info *c)
- int ubifs_fixup_free_space(struct ubifs_info *c)
- {
- 	int err;
--	struct ubifs_sb_node *sup;
-+	struct ubifs_sb_node *sup = c->sup_node;
- 
- 	ubifs_assert(c, c->space_fixup);
- 	ubifs_assert(c, !c->ro_mount);
-@@ -825,16 +826,11 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- 	if (err)
- 		return err;
- 
--	sup = ubifs_read_sb_node(c);
--	if (IS_ERR(sup))
--		return PTR_ERR(sup);
+-/**
+- * pnode_lookup - lookup a pnode in the LPT.
+- * @c: UBIFS file-system description object
+- * @i: pnode number (0 to (main_lebs - 1) / UBIFS_LPT_FANOUT))
+- *
+- * This function returns a pointer to the pnode on success or a negative
+- * error code on failure.
+- */
+-static struct ubifs_pnode *pnode_lookup(struct ubifs_info *c, int i)
+-{
+-	int err, h, iip, shft;
+-	struct ubifs_nnode *nnode;
 -
- 	/* Free-space fixup is no longer required */
- 	c->space_fixup = 0;
- 	sup->flags &= cpu_to_le32(~UBIFS_FLG_SPACE_FIXUP);
- 
- 	err = ubifs_write_sb_node(c, sup);
--	kfree(sup);
- 	if (err)
- 		return err;
- 
-@@ -845,7 +841,7 @@ int ubifs_fixup_free_space(struct ubifs_info *c)
- int ubifs_enable_encryption(struct ubifs_info *c)
- {
- 	int err;
--	struct ubifs_sb_node *sup;
-+	struct ubifs_sb_node *sup = c->sup_node;
- 
- 	if (c->encrypted)
- 		return 0;
-@@ -858,16 +854,11 @@ int ubifs_enable_encryption(struct ubifs_info *c)
- 		return -EINVAL;
- 	}
- 
--	sup = ubifs_read_sb_node(c);
--	if (IS_ERR(sup))
--		return PTR_ERR(sup);
+-	if (!c->nroot) {
+-		err = ubifs_read_nnode(c, NULL, 0);
+-		if (err)
+-			return ERR_PTR(err);
+-	}
+-	i <<= UBIFS_LPT_FANOUT_SHIFT;
+-	nnode = c->nroot;
+-	shft = c->lpt_hght * UBIFS_LPT_FANOUT_SHIFT;
+-	for (h = 1; h < c->lpt_hght; h++) {
+-		iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
+-		shft -= UBIFS_LPT_FANOUT_SHIFT;
+-		nnode = ubifs_get_nnode(c, nnode, iip);
+-		if (IS_ERR(nnode))
+-			return ERR_CAST(nnode);
+-	}
+-	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
+-	return ubifs_get_pnode(c, nnode, iip);
+-}
 -
- 	sup->flags |= cpu_to_le32(UBIFS_FLG_ENCRYPTION);
+ /**
+  * add_pnode_dirt - add dirty space to LPT LEB properties.
+  * @c: UBIFS file-system description object
+@@ -702,7 +670,7 @@ static int make_tree_dirty(struct ubifs_info *c)
+ {
+ 	struct ubifs_pnode *pnode;
  
- 	err = ubifs_write_sb_node(c, sup);
- 	if (!err)
- 		c->encrypted = 1;
--	kfree(sup);
+-	pnode = pnode_lookup(c, 0);
++	pnode = ubifs_pnode_lookup(c, 0);
+ 	if (IS_ERR(pnode))
+ 		return PTR_ERR(pnode);
  
- 	return err;
- }
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 23e7042666a7..c197492802c2 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1605,16 +1605,10 @@ static int ubifs_remount_rw(struct ubifs_info *c)
- 		goto out;
+@@ -956,7 +924,7 @@ static int make_pnode_dirty(struct ubifs_info *c, int node_num, int lnum,
+ 	struct ubifs_pnode *pnode;
+ 	struct ubifs_nbranch *branch;
  
- 	if (c->old_leb_cnt != c->leb_cnt) {
--		struct ubifs_sb_node *sup;
-+		struct ubifs_sb_node *sup = c->sup_node;
+-	pnode = pnode_lookup(c, node_num);
++	pnode = ubifs_pnode_lookup(c, node_num);
+ 	if (IS_ERR(pnode))
+ 		return PTR_ERR(pnode);
+ 	branch = &pnode->parent->nbranch[pnode->iip];
+@@ -1558,7 +1526,7 @@ static int dbg_is_pnode_dirty(struct ubifs_info *c, int lnum, int offs)
+ 		struct ubifs_nbranch *branch;
  
--		sup = ubifs_read_sb_node(c);
--		if (IS_ERR(sup)) {
--			err = PTR_ERR(sup);
--			goto out;
--		}
- 		sup->leb_cnt = cpu_to_le32(c->leb_cnt);
- 		err = ubifs_write_sb_node(c, sup);
--		kfree(sup);
- 		if (err)
- 			goto out;
- 	}
+ 		cond_resched();
+-		pnode = pnode_lookup(c, i);
++		pnode = ubifs_pnode_lookup(c, i);
+ 		if (IS_ERR(pnode))
+ 			return PTR_ERR(pnode);
+ 		branch = &pnode->parent->nbranch[pnode->iip];
+@@ -1710,7 +1678,7 @@ int dbg_check_ltab(struct ubifs_info *c)
+ 	for (i = 0; i < cnt; i++) {
+ 		struct ubifs_pnode *pnode;
+ 
+-		pnode = pnode_lookup(c, i);
++		pnode = ubifs_pnode_lookup(c, i);
+ 		if (IS_ERR(pnode))
+ 			return PTR_ERR(pnode);
+ 		cond_resched();
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 306cc7a4f725..93e1c34c097f 100644
+index 4368cde476b0..306cc7a4f725 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -983,6 +983,7 @@ struct ubifs_debug_info;
-  * struct ubifs_info - UBIFS file-system description data structure
-  * (per-superblock).
-  * @vfs_sb: VFS @struct super_block object
-+ * @sup_node: The super block node as read from the device
-  *
-  * @highest_inum: highest used inode number
-  * @max_sqnum: current global sequence number
-@@ -1230,6 +1231,7 @@ struct ubifs_debug_info;
-  */
- struct ubifs_info {
- 	struct super_block *vfs_sb;
-+	struct ubifs_sb_node *sup_node;
- 
- 	ino_t highest_inum;
- 	unsigned long long max_sqnum;
-@@ -1664,7 +1666,6 @@ int ubifs_write_master(struct ubifs_info *c);
- 
- /* sb.c */
- int ubifs_read_superblock(struct ubifs_info *c);
--struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c);
- int ubifs_write_sb_node(struct ubifs_info *c, struct ubifs_sb_node *sup);
- int ubifs_fixup_free_space(struct ubifs_info *c);
- int ubifs_enable_encryption(struct ubifs_info *c);
+@@ -1712,6 +1712,7 @@ struct ubifs_pnode *ubifs_get_pnode(struct ubifs_info *c,
+ 				    struct ubifs_nnode *parent, int iip);
+ struct ubifs_nnode *ubifs_get_nnode(struct ubifs_info *c,
+ 				    struct ubifs_nnode *parent, int iip);
++struct ubifs_pnode *ubifs_pnode_lookup(struct ubifs_info *c, int i);
+ int ubifs_read_nnode(struct ubifs_info *c, struct ubifs_nnode *parent, int iip);
+ void ubifs_add_lpt_dirt(struct ubifs_info *c, int lnum, int dirty);
+ void ubifs_add_nnode_dirt(struct ubifs_info *c, struct ubifs_nnode *nnode);
 -- 
 2.18.0
