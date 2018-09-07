@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2K-0002Dz-R0
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:04 +0000
+ id 1fyG2K-0002E1-QS
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:05 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 04/25] ubifs: pass ubifs_zbranch to read_znode()
-Date: Fri,  7 Sep 2018 14:36:25 +0200
-Message-Id: <20180907123646.12688-5-s.hauer@pengutronix.de>
+Subject: [PATCH 10/25] ubifs: add separate functions to init/crc a node
+Date: Fri,  7 Sep 2018 14:36:31 +0200
+Message-Id: <20180907123646.12688-11-s.hauer@pengutronix.de>
 In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
 References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,54 +21,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-read_znode() takes len, lnum and offs arguments which the caller all
-extracts from the same struct ubifs_zbranch *. When adding authentication
-support we would have to add a pointer to a hash to the arguments which
-is also part of struct ubifs_zbranch. Pass the ubifs_zbranch * instead
-so that we do not have to add another argument.
+When adding authentication support we will embed a HMAC into some
+nodes. To prepare these nodes we have to first initialize the nodes,
+then add a HMAC and finally add a CRC. To accomplish this add separate
+ubifs_init_node/ubifs_crc_node functions.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/tnc_misc.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ fs/ubifs/io.c    | 42 +++++++++++++++++++++++++++---------------
+ fs/ubifs/ubifs.h |  2 ++
+ 2 files changed, 29 insertions(+), 15 deletions(-)
 
-diff --git a/fs/ubifs/tnc_misc.c b/fs/ubifs/tnc_misc.c
-index d90ee01076a9..6ce75999f273 100644
---- a/fs/ubifs/tnc_misc.c
-+++ b/fs/ubifs/tnc_misc.c
-@@ -265,9 +265,7 @@ long ubifs_destroy_tnc_subtree(const struct ubifs_info *c,
- /**
-  * read_znode - read an indexing node from flash and fill znode.
-  * @c: UBIFS file-system description object
-- * @lnum: LEB of the indexing node to read
-- * @offs: node offset
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 099bec94b820..4bd61fe146e0 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -365,20 +365,8 @@ static unsigned long long next_sqnum(struct ubifs_info *c)
+ 	return sqnum;
+ }
+ 
+-/**
+- * ubifs_prepare_node - prepare node to be written to flash.
+- * @c: UBIFS file-system description object
+- * @node: the node to pad
 - * @len: node length
-+ * @zzbr: the zbranch describing the node to read
-  * @znode: znode to read to
-  *
-  * This function reads an indexing node from the flash media and fills znode
-@@ -276,9 +274,12 @@ long ubifs_destroy_tnc_subtree(const struct ubifs_info *c,
-  * is wrong with it, this function prints complaint messages and returns
-  * %-EINVAL.
-  */
--static int read_znode(struct ubifs_info *c, int lnum, int offs, int len,
-+static int read_znode(struct ubifs_info *c, struct ubifs_zbranch *zzbr,
- 		      struct ubifs_znode *znode)
+- * @pad: if the buffer has to be padded
+- *
+- * This function prepares node at @node to be written to the media - it
+- * calculates node CRC, fills the common header, and adds proper padding up to
+- * the next minimum I/O unit if @pad is not zero.
+- */
+-void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
++void ubifs_init_node(struct ubifs_info *c, void *node, int len, int pad)
  {
-+	int lnum = zzbr->lnum;
-+	int offs = zzbr->offs;
-+	int len = zzbr->len;
- 	int i, err, type, cmp;
- 	struct ubifs_idx_node *idx;
+-	uint32_t crc;
+ 	struct ubifs_ch *ch = node;
+ 	unsigned long long sqnum = next_sqnum(c);
  
-@@ -425,7 +426,7 @@ struct ubifs_znode *ubifs_load_znode(struct ubifs_info *c,
- 	if (!znode)
- 		return ERR_PTR(-ENOMEM);
+@@ -389,8 +377,6 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+ 	ch->group_type = UBIFS_NO_NODE_GROUP;
+ 	ch->sqnum = cpu_to_le64(sqnum);
+ 	ch->padding[0] = ch->padding[1] = 0;
+-	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
+-	ch->crc = cpu_to_le32(crc);
  
--	err = read_znode(c, zbr->lnum, zbr->offs, zbr->len, znode);
-+	err = read_znode(c, zbr, znode);
- 	if (err)
- 		goto out;
+ 	if (pad) {
+ 		len = ALIGN(len, 8);
+@@ -399,6 +385,32 @@ void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
+ 	}
+ }
  
++void ubifs_crc_node(struct ubifs_info *c, void *node, int len)
++{
++	struct ubifs_ch *ch = node;
++	uint32_t crc;
++
++	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
++	ch->crc = cpu_to_le32(crc);
++}
++
++/**
++ * ubifs_prepare_node - prepare node to be written to flash.
++ * @c: UBIFS file-system description object
++ * @node: the node to pad
++ * @len: node length
++ * @pad: if the buffer has to be padded
++ *
++ * This function prepares node at @node to be written to the media - it
++ * calculates node CRC, fills the common header, and adds proper padding up to
++ * the next minimum I/O unit if @pad is not zero.
++ */
++void ubifs_prepare_node(struct ubifs_info *c, void *node, int len, int pad)
++{
++	ubifs_init_node(c, node, len, pad);
++	ubifs_crc_node(c, node, len);
++}
++
+ /**
+  * ubifs_prep_grp_node - prepare node of a group to be written to flash.
+  * @c: UBIFS file-system description object
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 93e1c34c097f..0422865661b1 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1494,6 +1494,8 @@ int ubifs_write_node(struct ubifs_info *c, void *node, int len, int lnum,
+ 		     int offs);
+ int ubifs_check_node(const struct ubifs_info *c, const void *buf, int lnum,
+ 		     int offs, int quiet, int must_chk_crc);
++void ubifs_init_node(struct ubifs_info *c, void *buf, int len, int pad);
++void ubifs_crc_node(struct ubifs_info *c, void *buf, int len);
+ void ubifs_prepare_node(struct ubifs_info *c, void *buf, int len, int pad);
+ void ubifs_prep_grp_node(struct ubifs_info *c, void *node, int len, int last);
+ int ubifs_io_init(struct ubifs_info *c);
 -- 
 2.18.0
