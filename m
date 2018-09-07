@@ -1,21 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyGZh-0005xA-97
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 13:13:28 +0000
-Date: Fri, 7 Sep 2018 15:13:01 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/3] mtd: mtdconcat: add dt driver for concat devices
-Message-ID: <20180907151301.3a25f7e4@xps13>
-In-Reply-To: <345a1f1e-23e8-d7b5-02f5-5b2ae0ec7209@nospam.obeliks.de>
-References: <20180906161413.6335-1-kernel@nospam.obeliks.de>
- <20180906161413.6335-4-kernel@nospam.obeliks.de>
- <20180906204717.7cc4a6a3@xps13>
- <345a1f1e-23e8-d7b5-02f5-5b2ae0ec7209@nospam.obeliks.de>
+ id 1fyHRE-0003l4-Js
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:08:46 +0000
+Date: Fri, 7 Sep 2018 16:08:22 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal
+ <miquel.raynal@bootlin.com>, devicetree@vger.kernel.org, Rob Herring
+ <robh+dt@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
+ Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify
+ skipped bytes in OOB
+Message-ID: <20180907160822.319047c8@bbrezillon>
+In-Reply-To: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Bernhard,
+Hi Masahiro,
 
-Bernhard Frauendienst <kernel@nospam.obeliks.de> wrote on Fri, 7 Sep
-2018 00:54:01 +0200:
+On Fri,  7 Sep 2018 19:56:23 +0900
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
 
-> Hi Miquel,
->=20
-> thanks for your review, I've applied most of your suggested changes, exce=
-pt:
->=20
-> On 06/09/18 20:47, Miquel Raynal wrote:
-> > =20
-> >> +static int virt_concat_remove(struct platform_device *pdev)
-> >> +{
-> >> +	struct of_virt_concat *info;
-> >> +	int i;
-> >> +
-> >> +	info =3D platform_get_drvdata(pdev);
-> >> +	if (!info)
-> >> +		return 0;
-> >> +	platform_set_drvdata(pdev, NULL); =20
-> > Is this really useful? =20
-> I believe this is indeed useful, as `virt_concat_remove()` is also called=
- as cleanup in error cases of `virt_concat_probe()`. Then it seems to be co=
-mmon practice to unset the driver data from the device.
->=20
-> Am I mistaken here?
+> NAND devices need additional data area (OOB) for error correction,
+> but it is also used for Bad Block Marker (BBM).  In many cases, the
+> first byte in OOB is used for BBM, but the location actually depends
+> on chip vendors.  The NAND controller should preserve the precious
+> BBM to keep track of bad blocks.
+> 
+> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
+> the number of bytes to skip from the start of OOB.  The ECC engine
+> will automatically skip the specified number of bytes when it gets
+> access to OOB area.
+> 
+> The same value for SPARE_AREA_SKIP_BYTES should be used between
+> firmware and the operating system if you intend to use the NAND
+> device across the control hand-off.
+> 
+> In fact, the current denali.c code expects firmware to have already
+> set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
+> 
+> If no firmware (or bootloader) has initialized the controller, the
+> register value is zero, which is the default after power-on-reset.
+> 
+> In other words, the Linux driver cannot initialize the controller
+> by itself.  You cannot support the reset control either because
+> resetting the controller will get register values lost.
+> 
+> This commit adds a way to specify it via DT.  If the property
+> "denali,oob-skip-bytes" exists, the value will be set to the register.
 
-That's fine for me. Perhaps you can explain it with a comment.
+Hm, do we really need to make this config customizable? I mean, either
+you have a large-page NAND (page > 512 bytes) and the 2 first bytes
+must be reserved for the BBM or you have a small-page NAND and the BBM
+is at position 4 and 5. Are you sure people configure that differently?
+Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2?
 
-I'm pretty sure there will be other "deeper" reviews coming on the
-series.
+Regards,
 
-Thanks,
-Miqu=C3=A8l
+Boris
