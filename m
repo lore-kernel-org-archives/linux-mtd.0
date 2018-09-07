@@ -1,24 +1,17 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyHRE-0003l4-Js
- for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:08:46 +0000
-Date: Fri, 7 Sep 2018 16:08:22 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, devicetree@vger.kernel.org, Rob Herring
- <robh+dt@kernel.org>, Dinh Nguyen <dinguyen@kernel.org>,
- linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Brian
- Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- David Woodhouse <dwmw2@infradead.org>, Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify
- skipped bytes in OOB
-Message-ID: <20180907160822.319047c8@bbrezillon>
-In-Reply-To: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ id 1fyHmM-0005Eq-6r
+ for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 14:30:36 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>,
+ stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: marvell: prevent harmless warnings
+Date: Fri,  7 Sep 2018 16:29:54 +0200
+Message-Id: <20180907142954.13299-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +21,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Masahiro,
+Since the addition of WARN_ON() in nand_subop_get_data/addr_len()
+helpers, this driver will produce harmless warnings (mostly at probe)
+just because it always called the *_data_len() helper in the parsing
+function (even on non-data instructions, where this value is
+meaningless and unneeded.
 
-On Fri,  7 Sep 2018 19:56:23 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+Fix these warnings by deriving the length only when it is relevant.
 
-> NAND devices need additional data area (OOB) for error correction,
-> but it is also used for Bad Block Marker (BBM).  In many cases, the
-> first byte in OOB is used for BBM, but the location actually depends
-> on chip vendors.  The NAND controller should preserve the precious
-> BBM to keep track of bad blocks.
-> 
-> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
-> the number of bytes to skip from the start of OOB.  The ECC engine
-> will automatically skip the specified number of bytes when it gets
-> access to OOB area.
-> 
-> The same value for SPARE_AREA_SKIP_BYTES should be used between
-> firmware and the operating system if you intend to use the NAND
-> device across the control hand-off.
-> 
-> In fact, the current denali.c code expects firmware to have already
-> set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
-> 
-> If no firmware (or bootloader) has initialized the controller, the
-> register value is zero, which is the default after power-on-reset.
-> 
-> In other words, the Linux driver cannot initialize the controller
-> by itself.  You cannot support the reset control either because
-> resetting the controller will get register values lost.
-> 
-> This commit adds a way to specify it via DT.  If the property
-> "denali,oob-skip-bytes" exists, the value will be set to the register.
+Fixes: 760c435e0f85 ("mtd: rawnand: make subop helpers return unsigned values")
+Cc: stable@vger.kernel.org
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Hm, do we really need to make this config customizable? I mean, either
-you have a large-page NAND (page > 512 bytes) and the 2 first bytes
-must be reserved for the BBM or you have a small-page NAND and the BBM
-is at position 4 and 5. Are you sure people configure that differently?
-Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2?
-
-Regards,
-
-Boris
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 7af4d6213ee5..bc2ef5209783 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1547,7 +1547,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 	for (op_id = 0; op_id < subop->ninstrs; op_id++) {
+ 		unsigned int offset, naddrs;
+ 		const u8 *addrs;
+-		int len = nand_subop_get_data_len(subop, op_id);
++		int len;
+ 
+ 		instr = &subop->instrs[op_id];
+ 
+@@ -1593,6 +1593,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 				nfc_op->ndcb[0] |=
+ 					NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW) |
+ 					NDCB0_LEN_OVRD;
++				len = nand_subop_get_data_len(subop, op_id);
+ 				nfc_op->ndcb[3] |= round_up(len, FIFO_DEPTH);
+ 			}
+ 			nfc_op->data_delay_ns = instr->delay_ns;
+@@ -1606,6 +1607,7 @@ static void marvell_nfc_parse_instructions(struct nand_chip *chip,
+ 				nfc_op->ndcb[0] |=
+ 					NDCB0_CMD_XTYPE(XTYPE_MONOLITHIC_RW) |
+ 					NDCB0_LEN_OVRD;
++				len = nand_subop_get_data_len(subop, op_id);
+ 				nfc_op->ndcb[3] |= round_up(len, FIFO_DEPTH);
+ 			}
+ 			nfc_op->data_delay_ns = instr->delay_ns;
+-- 
+2.17.1
