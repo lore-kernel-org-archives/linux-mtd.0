@@ -1,15 +1,15 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fyG2K-0002De-QR
+ id 1fyG2K-0002Dz-R0
  for linux-mtd@lists.infradead.org; Fri, 07 Sep 2018 12:39:04 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
 Cc: David Gstir <david@sigma-star.at>, Richard Weinberger <richard@nod.at>,
  kernel@pengutronix.de, linux-kernel@vger.kernel.org,
  Sascha Hauer <s.hauer@pengutronix.de>
-Subject: [PATCH 03/25] ubifs: pass ubifs_zbranch to try_read_node()
-Date: Fri,  7 Sep 2018 14:36:24 +0200
-Message-Id: <20180907123646.12688-4-s.hauer@pengutronix.de>
+Subject: [PATCH 04/25] ubifs: pass ubifs_zbranch to read_znode()
+Date: Fri,  7 Sep 2018 14:36:25 +0200
+Message-Id: <20180907123646.12688-5-s.hauer@pengutronix.de>
 In-Reply-To: <20180907123646.12688-1-s.hauer@pengutronix.de>
 References: <20180907123646.12688-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,7 +21,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-try_read_node() takes len, lnum and offs arguments which the caller all
+read_znode() takes len, lnum and offs arguments which the caller all
 extracts from the same struct ubifs_zbranch *. When adding authentication
 support we would have to add a pointer to a hash to the arguments which
 is also part of struct ubifs_zbranch. Pass the ubifs_zbranch * instead
@@ -29,55 +29,46 @@ so that we do not have to add another argument.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- fs/ubifs/tnc.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ fs/ubifs/tnc_misc.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index bf416e512743..8502c07c1e0a 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -35,7 +35,7 @@
- #include "ubifs.h"
- 
- static int try_read_node(const struct ubifs_info *c, void *buf, int type,
--			 int len, int lnum, int offs);
-+			 struct ubifs_zbranch *zbr);
- static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
- 			      struct ubifs_zbranch *zbr, void *node);
- 
-@@ -433,9 +433,7 @@ static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+diff --git a/fs/ubifs/tnc_misc.c b/fs/ubifs/tnc_misc.c
+index d90ee01076a9..6ce75999f273 100644
+--- a/fs/ubifs/tnc_misc.c
++++ b/fs/ubifs/tnc_misc.c
+@@ -265,9 +265,7 @@ long ubifs_destroy_tnc_subtree(const struct ubifs_info *c,
+ /**
+  * read_znode - read an indexing node from flash and fill znode.
   * @c: UBIFS file-system description object
-  * @buf: buffer to read to
-  * @type: node type
-- * @len: node length (not aligned)
-- * @lnum: LEB number of node to read
-- * @offs: offset of node to read
-+ * @zbr: the zbranch describing the node to read
+- * @lnum: LEB of the indexing node to read
+- * @offs: node offset
+- * @len: node length
++ * @zzbr: the zbranch describing the node to read
+  * @znode: znode to read to
   *
-  * This function tries to read a node of known type and length, checks it and
-  * stores it in @buf. This function returns %1 if a node is present and %0 if
-@@ -453,8 +451,11 @@ static int tnc_read_hashed_node(struct ubifs_info *c, struct ubifs_zbranch *zbr,
-  * journal nodes may potentially be corrupted, so checking is required.
+  * This function reads an indexing node from the flash media and fills znode
+@@ -276,9 +274,12 @@ long ubifs_destroy_tnc_subtree(const struct ubifs_info *c,
+  * is wrong with it, this function prints complaint messages and returns
+  * %-EINVAL.
   */
- static int try_read_node(const struct ubifs_info *c, void *buf, int type,
--			 int len, int lnum, int offs)
-+			 struct ubifs_zbranch *zbr)
+-static int read_znode(struct ubifs_info *c, int lnum, int offs, int len,
++static int read_znode(struct ubifs_info *c, struct ubifs_zbranch *zzbr,
+ 		      struct ubifs_znode *znode)
  {
-+	int len = zbr->len;
-+	int lnum = zbr->lnum;
-+	int offs = zbr->offs;
- 	int err, node_len;
- 	struct ubifs_ch *ch = buf;
- 	uint32_t crc, node_crc;
-@@ -507,8 +508,7 @@ static int fallible_read_node(struct ubifs_info *c, const union ubifs_key *key,
++	int lnum = zzbr->lnum;
++	int offs = zzbr->offs;
++	int len = zzbr->len;
+ 	int i, err, type, cmp;
+ 	struct ubifs_idx_node *idx;
  
- 	dbg_tnck(key, "LEB %d:%d, key ", zbr->lnum, zbr->offs);
+@@ -425,7 +426,7 @@ struct ubifs_znode *ubifs_load_znode(struct ubifs_info *c,
+ 	if (!znode)
+ 		return ERR_PTR(-ENOMEM);
  
--	ret = try_read_node(c, node, key_type(c, key), zbr->len, zbr->lnum,
--			    zbr->offs);
-+	ret = try_read_node(c, node, key_type(c, key), zbr);
- 	if (ret == 1) {
- 		union ubifs_key node_key;
- 		struct ubifs_dent_node *dent = node;
+-	err = read_znode(c, zbr->lnum, zbr->offs, zbr->len, znode);
++	err = read_znode(c, zbr, znode);
+ 	if (err)
+ 		goto out;
+ 
 -- 
 2.18.0
