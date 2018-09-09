@@ -1,19 +1,27 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
+ helo=smtp.smtpout.orange.fr)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fygTL-000273-TW
- for linux-mtd@lists.infradead.org; Sat, 08 Sep 2018 16:52:37 +0000
-Subject: Re: [PATCH v2 mtd-utils] ubi-tests: io_paral: Fix error handling of
- update_volume()
-To: Martin Lund <malu@gomspace.com>, linux-mtd@lists.infradead.org
-References: <20180905134738.3461-1-malu@gomspace.com>
-From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <045ae523-58db-0e79-7497-dffe8734e561@sigma-star.at>
-Date: Sat, 8 Sep 2018 18:52:13 +0200
+ id 1fz585-0007OM-6n
+ for linux-mtd@lists.infradead.org; Sun, 09 Sep 2018 19:12:32 +0000
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
+ Sergey Larin <cerg2010cerg2010@mail.ru>
+Subject: Re: [PATCH v2 2/4] ARM: pxa: palmtreo: Drop docg4 specific init
+References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
+ <20180804205923.25298-2-boris.brezillon@bootlin.com>
+ <87d0ue9mfd.fsf@belgarion.home> <20180904225726.2593ff10@xps13>
+Date: Sun, 09 Sep 2018 21:11:54 +0200
+In-Reply-To: <20180904225726.2593ff10@xps13> (Miquel Raynal's message of "Tue,
+ 4 Sep 2018 22:57:26 +0200")
+Message-ID: <87h8iy5vut.fsf@belgarion.home>
 MIME-Version: 1.0
-In-Reply-To: <20180905134738.3461-1-malu@gomspace.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,8 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied to mtd-utils.git master.
+Miquel Raynal <miquel.raynal@bootlin.com> writes:
 
-Thanks,
+> Hi Robert,
+>
+> Robert Jarzmik <robert.jarzmik@free.fr> wrote on Sun, 19 Aug 2018
+> 21:38:30 +0200:
+>
+>> Boris Brezillon <boris.brezillon@bootlin.com> writes:
+>> 
+>> > The docg4 driver has been removed. Remove the code that was registering
+>> > a docg4 device.
+>> >
+>> > Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
+>> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>  
+>> No answer for several weeks from the maintainers, so let's say they lost
+>> interest.
+>> 
+>> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>
+> I'm about to pick this series including this patch, do you need an
+> immutable branch?
 
-David
+No I don't think so. This time I expect this cycle to be lightweight for the pxa
+part, so go ahead.
+
+Cheers.
+
+-- 
+Robert
