@@ -1,27 +1,22 @@
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]
- helo=smtp.smtpout.orange.fr)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fz585-0007OM-6n
- for linux-mtd@lists.infradead.org; Sun, 09 Sep 2018 19:12:32 +0000
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>,
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Mike Dunn <mikedunn@newsguy.com>,
- Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: Re: [PATCH v2 2/4] ARM: pxa: palmtreo: Drop docg4 specific init
-References: <20180804205923.25298-1-boris.brezillon@bootlin.com>
- <20180804205923.25298-2-boris.brezillon@bootlin.com>
- <87d0ue9mfd.fsf@belgarion.home> <20180904225726.2593ff10@xps13>
-Date: Sun, 09 Sep 2018 21:11:54 +0200
-In-Reply-To: <20180904225726.2593ff10@xps13> (Miquel Raynal's message of "Tue,
- 4 Sep 2018 22:57:26 +0200")
-Message-ID: <87h8iy5vut.fsf@belgarion.home>
-MIME-Version: 1.0
-Content-Type: text/plain
+ Marek Vasut <marek.vasut@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, linux-omap@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+ linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] ARM: OMAP1: ams-delta: Complete driver gpiod migration
+Date: Mon, 10 Sep 2018 00:56:02 +0200
+Message-Id: <20180909225605.16463-1-jmkrzyszt@gmail.com>
+In-Reply-To: <20180717231448.14958-1-jmkrzyszt@gmail.com>
+References: <20180717231448.14958-1-jmkrzyszt@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Miquel Raynal <miquel.raynal@bootlin.com> writes:
 
-> Hi Robert,
->
-> Robert Jarzmik <robert.jarzmik@free.fr> wrote on Sun, 19 Aug 2018
-> 21:38:30 +0200:
->
->> Boris Brezillon <boris.brezillon@bootlin.com> writes:
->> 
->> > The docg4 driver has been removed. Remove the code that was registering
->> > a docg4 device.
->> >
->> > Suggested-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>  
->> No answer for several weeks from the maintainers, so let's say they lost
->> interest.
->> 
->> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
->
-> I'm about to pick this series including this patch, do you need an
-> immutable branch?
+This is a follow up of initial submission of a series consisted of 
+6 changes, 3 of which have been already applied or reworkeed.
 
-No I don't think so. This time I expect this cycle to be lightweight for the pxa
-part, so go ahead.
 
-Cheers.
+Janusz Krzysztofik (3):
+      video: fbdev: omapfb: lcd_ams_delta: use GPIO lookup table
+      mtd: rawnand: ams-delta: use GPIO lookup table
+      ARM: OMAP1: ams-delta: make board header file local to mach-omap1
 
--- 
-Robert
+
+I'm submitting the three patches in series because the last one depends
+on the other two.
+
+Tony, please set up an immutable tag for this series to be used by MTD
+as there are more changes on Amstrad Delta NAND driver coming in.
+
+Thanks,
+Janusz
+
+
+Changelog:
+v3:
+- rebased on top of v4.19-rc1
+- added Acked-by: received from Miquel
+
+v2:
+[PATCH 1/6] ARM: OMAP1: ams-delta: add GPIO lookup tables
+	- already in mainline, commit 68e62a15a914
+[PATCH 2/6] Input: ams_delta_serio: use GPIO lookup table
+	- reworked and submitted as a series, already in linux-omap,
+	  commit 68e62a15a914 ("ARM: OMAP1: ams-delta: drop GPIO lookup
+	  table for serio device") followed by 9 more
+[PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
+	- already in mainline, commit d65777d1a2cd
+[PATCH 4/6] fbdev: omapfb: lcd_ams_delta: use GPIO lookup table
+	- resubmitting as [PATCH v2 1/3 v2]
+	v2: Remove problematic error code conversion no longer
+	    needed if used on top of commit d08605a64e67 ("ARM: OMAP1:
+	    ams-delta: move late devices back to init_machine")
+	    and commit 8853daf3b4ac ("gpiolib: Defer on non-DT
+	    find_chip_by_name() failure") already in linux-next
+[PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
+	- resubmitting as [PATCH v2 2/3 v4]
+	v2: Fix handling of devm_gpiod_get_optional() return values -
+	    thanks to Andy Shevchenko.
+	v3: Remove problematic error code conversion no longer needed
+	    if used on top of commit d08605a64e67 ("ARM: OMAP1:
+	    ams-delta: move late devices back to init_machine") and
+	    commit 8853daf3b4ac ("gpiolib: Defer on non-DT
+	    find_chip_by_name() failure") already in linux-next - thanks
+	    to Boris Brezillon
+	v4: fix style issue - thanks to Boris Brezillon
+[PATCH 6/6] ARM: OMAP1: ams-delta: make board header file local to
+	mach-omap1
+	- resending as [PATCH v2 3/3]
+
+All dependencies mentioned in v2 changelog are satisfied in v4.19-rc1.
+
+
+diffstat:
+ arch/arm/mach-omap1/ams-delta-fiq-handler.S |    2 
+ arch/arm/mach-omap1/ams-delta-fiq.c         |    3 
+ arch/arm/mach-omap1/board-ams-delta.c       |    2 
+ arch/arm/mach-omap1/board-ams-delta.h       |    2 
+ drivers/mtd/nand/raw/ams-delta.c            |  126 ++++++++++++++--------------
+ drivers/video/fbdev/omap/lcd_ams_delta.c    |   55 ++++--------
+ 6 files changed, 93 insertions(+), 97 deletions(-)
