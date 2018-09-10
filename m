@@ -1,32 +1,27 @@
-Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzGQ5-0001f2-KQ
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 07:15:39 +0000
-Received: by mail-it0-x242.google.com with SMTP id u13-v6so27376413iti.1
- for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2018 00:15:25 -0700 (PDT)
+ id 1fzI6D-0003e2-K0
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 09:03:15 +0000
+Received: by mail-wr1-x444.google.com with SMTP id v90-v6so21078555wrc.0
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2018 02:03:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20180717231448.14958-1-jmkrzyszt@gmail.com>
- <20180909225605.16463-1-jmkrzyszt@gmail.com>
- <20180909225605.16463-2-jmkrzyszt@gmail.com>
-In-Reply-To: <20180909225605.16463-2-jmkrzyszt@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 10 Sep 2018 09:15:13 +0200
-Message-ID: <CACRpkdaunjy-k+ssCxVQTHjzCqGdzn3JRHyon8uU9Q8a3d9BXg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] video: fbdev: omapfb: lcd_ams_delta: use GPIO
- lookup table
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: ext Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+In-Reply-To: <5b8e8a58.1c69fb81.12eaa.f292@mx.google.com>
+References: <20180828111944.5956-1-jonas.gorski@gmail.com>
+ <20180828111944.5956-5-jonas.gorski@gmail.com>
+ <5b8e8a58.1c69fb81.12eaa.f292@mx.google.com>
+From: Jonas Gorski <jonas.gorski@gmail.com>
+Date: Mon, 10 Sep 2018 11:02:40 +0200
+Message-ID: <CAOiHx=koYJR_m1RdxxSjxQH-8MuWBw18YfNDun3OWnca=CoT_g@mail.gmail.com>
+Subject: Re: [PATCH 4/5] dt-bindings: mtd: describe BCM963XX ImageTag format
+ and usage
+To: Rob Herring <robh@kernel.org>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Linux-OMAP <linux-omap@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-mtd@lists.infradead.org,
- linux-fbdev@vger.kernel.org,
- "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ Florian Fainelli <f.fainelli@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,30 +32,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 10, 2018 at 12:55 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-
-> Now as Amstrad Delta board - the only user of this driver - provides
-> GPIO lookup tables, switch from GPIO numbers to GPIO descriptors and
-> use the table to locate required GPIO pins.
+On 4 September 2018 at 02:30, Rob Herring <robh@kernel.org> wrote:
+> On Tue, Aug 28, 2018 at 01:19:43PM +0200, Jonas Gorski wrote:
+>> Describe how to use the BCM963XX ImageTag format in a mixed flash layout
+>> environment.
+>>
+>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+>> ---
+>>  .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 78 ++++++++++++++++++++++
+>>  1 file changed, 78 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+>> new file mode 100644
+>> index 000000000000..f4a444d69d9a
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
+>> @@ -0,0 +1,78 @@
+>> +Broadcom BCM963XX ImageTag Partition Container
+>> +==============================================
+>> +
+>> +Some Broadcom BCM63XX SoC based devices contain additional, non discoverable
+>> +partitions or non standard bootloader partition sizes. For these a mixed layout
+>> +needs to be used with an explicit firmware partition.
+>> +
+>> +The BCM963XX ImageTag is a simple firmware header describing the offsets and
+>> +sizes of the rootfs and kernel parts contained in the firmware.
+>> +
+>> +Required properties:
+>> +- compatible : must be "brcm,bcm963xx-imagetag"
+>> +
+>> +Examples:
+>> +
+>> +flash@1e000000 {
+>> +     compatible = "cfi-flash";
+>> +     reg = <0x1e000000 0x2000000>;
+>> +     bank-width = <2>;
+>> +
+>> +     partitions {
+>> +             compatible = "fixed-partitions";
+>> +             #address-cells = <1>;
+>> +             #size-cells = <1>;
+>> +
+>> +             cfe@0 {
+>> +                     reg = <0x0 0x10000>;
+>> +                     read-only;
+>> +             };
+>> +
+>> +             firmware@10000 {
+>> +                     reg = <0x10000 0x7d0000>;
+>> +                     compatible = "brcm,bcm963xx-imagetag";
+>> +             };
+>> +
+>> +             caldata@7e0000 {
+>> +                     reg = <0x7e0000 0x10000>;
+>> +                     read-only;
+>> +             };
+>> +
+>> +             nvram@7f0000 {
+>> +                     reg = <0x7f0000 0x10000>;
+>> +             };
+>> +     };
+>> +};
+>> +
+>> +
+>> +flash@1e000000 {
+>> +     compatible = "cfi-flash";
+>> +     reg = <0x1e000000 0x2000000>;
+>> +     bank-width = <2>;
+>> +
+>> +     partitions {
+>> +             compatible = "fixed-partitions";
+>> +             #address-cells = <1>;
+>> +             #size-cells = <1>;
+>> +
+>> +             /*
+>> +              * Some devices use a flash chip with 64k erase blocks, some
+>> +              * use one with 128k erase blocks, so the vendor decided to
+>> +              * always use 128k as the firmware offset.
+>> +              */
 >
-> Declare static variables for storing GPIO descriptors and replace
-> gpio_ function calls with their gpiod_ equivalents. Move GPIO lookup
-> to the driver probe function so device initialization can be deferred
-> instead of aborted if a GPIO pin is not yet available.
+> That's a interesting piece of info, but not really a reason to have a
+> second example.
+
+Generally, I'd rather have one example too many than one too few, but
+I can drop it if you think it's unnecessary. If I do that, can I add
+your Ack then here as well for the v2?
+
 >
-> Pin naming used by the driver should be followed while respective GPIO
-> lookup table is initialized by a board init code.
+>> +
+>> +             cfe@0 {
+>> +                     reg = <0x0 0x20000>;
+>> +                     read-only;
+>> +             };
+>> +
+>> +             firmware@20000 {
+>> +                     reg = <0x20000 0x7c0000>;
+>> +                     compatible = "brcm,bcm963xx-imagetag";
+>> +             };
+>> +
+>> +             nvram@7e0000 {
+>> +                     reg = <0x7e0000 0x20000>;
+>> +             };
+>> +     };
+>> +};
+>> --
+>> 2.13.2
+>>
 >
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-
-Good work as usual:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-FWIW I think the entire drivers/video/fbdev/omap/*
-could be pretty easy to migrate to DRM if you compare
-the simple drivers/gpu/drm/pl111 or drivers/gpu/drm/tve200
-drivers. Just inspiration! :)
-
-Yours,
-Linus Walleij
