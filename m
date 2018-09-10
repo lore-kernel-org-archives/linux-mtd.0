@@ -1,29 +1,33 @@
-Subject: Re: [RFC PATCH v3 1/2] dt-bindings: nand: meson: add Amlogic NAND
- controller driver
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
- <jianxin.pan@amlogic.com>
-CC: <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
- <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
- <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>
-References: <1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com>
- <1536317831-58056-2-git-send-email-jianxin.pan@amlogic.com>
- <20180907141944.4dd4406b@bbrezillon>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <824dd234-30d6-d47d-8abd-352578b232f6@amlogic.com>
-Date: Mon, 10 Sep 2018 12:46:44 +0800
+Received: from mail-it0-x242.google.com ([2607:f8b0:4001:c0b::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fzGQ5-0001f2-KQ
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 07:15:39 +0000
+Received: by mail-it0-x242.google.com with SMTP id u13-v6so27376413iti.1
+ for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2018 00:15:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20180907141944.4dd4406b@bbrezillon>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20180717231448.14958-1-jmkrzyszt@gmail.com>
+ <20180909225605.16463-1-jmkrzyszt@gmail.com>
+ <20180909225605.16463-2-jmkrzyszt@gmail.com>
+In-Reply-To: <20180909225605.16463-2-jmkrzyszt@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 10 Sep 2018 09:15:13 +0200
+Message-ID: <CACRpkdaunjy-k+ssCxVQTHjzCqGdzn3JRHyon8uU9Q8a3d9BXg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] video: fbdev: omapfb: lcd_ams_delta: use GPIO
+ lookup table
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: ext Tony Lindgren <tony@atomide.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ =?UTF-8?Q?Miqu=C3=A8l_Raynal?= <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ Linux-OMAP <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>, linux-mtd@lists.infradead.org,
+ linux-fbdev@vger.kernel.org,
+ "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
+ "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,158 +37,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi boric,
+On Mon, Sep 10, 2018 at 12:55 AM Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 
-Thanks for your quick reply.
-
-On 9/7/2018 8:19 PM, Boris Brezillon wrote:
-> On Fri, 7 Sep 2018 18:57:10 +0800
-> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
-> 
->> From: Liang Yang <liang.yang@amlogic.com>
->>
->> Add Amlogic NAND controller dt-bindings for Meson SoC,
->> Current this driver support GXBB/GXL/AXG platform.
->>
->> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
->> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
->> ---
->>   .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 91 ++++++++++++++++++++++
->>   1 file changed, 91 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> new file mode 100644
->> index 0000000..655a778
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> @@ -0,0 +1,91 @@
->> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
->> +
->> +This file documents the properties in addition to those available in
->> +the MTD NAND bindings.
->> +
->> +Required properties:
->> +- compatible : contains one of:
->> +  - "amlogic,meson-gxl-nfc"
->> +  - "amlogic,meson-axg-nfc"
->> +- clocks     :
->> +	A list of phandle + clock-specifier pairs for the clocks listed
->> +	in clock-names.
->> +
->> +- clock-names: Should contain the following:
->> +	"core" - NFC module gate clock
->> +	"device" - device clock from eMMC sub clock controller
->> +
->> +- pins     : Select pins which NFC need.
->> +- nand_pins: Detail NAND pins information.
-> 
-> You mean pinctrl-names and pinctrl-0, right? Not sure it's necessary to
-> document that, but if you do, please use the correct DT prop names.
-> 
-
-I find no documentation for that in other xx_nand.txt; I will consider 
-to remove it.
-
->> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
->> +				controller port C
->> +
->> +Optional children nodes:
->> +Children nodes represent the available nand chips.
->> +
->> +
->> +
-> 
-> One too many blank lines here.
-> 
-ok, i will remove it.
-
->> +Other properties:
->> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
->> +
->> +Example demonstrate on AXG SoC:
->> +
->> +	sd_emmc_c_clkc: mmc@7000 {
->> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
->> +		reg = <0x0 0x7000 0x0 0x800>;
->> +		status = "okay";
->> +	};
->> +
->> +	nand: nfc@7800 {
->> +		compatible = "amlogic,meson-axg-nfc";
->> +		reg = <0x0 0x7800 0x0 0x100>;
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
->> +		status = "disabled";
->> +
->> +		clocks = <&clkc CLKID_SD_EMMC_C>,
->> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
->> +		clock-names = "core", "device";
->> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
->> +
->> +		status = "okay";
->> +
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&nand_pins>;
->> +
->> +		nand@0 {
->> +			reg = <0>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			nand-on-flash-bbt;
->> +			nand-ecc-mode = "hw";
->> +			nand-ecc-strength = <8>;
->> +			nand-ecc-step-size = <1024>;
-> 
-> Drop nand-ecc- props. I guess you have a sensible default value and I
-> prefer when ECC requirements are directly extracted during chip
-> detection. Defining that in the DT is a bad habit. The only one that
-> could make sense (assuming you support it) is nand-ecc-maximize.
-> 
-ok, i will drop them.
-we adopt auto detection during init stage, it works too.
-
->> +
->> +			amlogic,nand-enable-scrambler;
-> 
-> Please drop this property (it's not longer documented).
-> 
-em, we should have removed it when nfc driver never use it.
-
->> +
->> +			partition@0 {
->> +				label = "boot";
->> +				reg = <0x00000000 0x00200000>;
->> +				read-only;
->> +			};
->> +			partition@200000 {
->> +				label = "env";
->> +				reg = <0x00200000 0x00400000>;
->> +			};
->> +			partition@600000 {
->> +				label = "system";
->> +				reg = <0x00600000 0x00a00000>;
->> +			};
->> +			partition@1000000 {
->> +				label = "rootfs";
->> +				reg = <0x01000000 0x03000000>;
->> +			};
->> +			partition@4000000 {
->> +				label = "media";
->> +				reg = <0x04000000 0x8000000>;
->> +			};
-> 
-> No need to define the partitions in your example, especially since they
-> should be placed in a partitions subnode with a "fixed-partitions"
-> compat.
+> Now as Amstrad Delta board - the only user of this driver - provides
+> GPIO lookup tables, switch from GPIO numbers to GPIO descriptors and
+> use the table to locate required GPIO pins.
 >
+> Declare static variables for storing GPIO descriptors and replace
+> gpio_ function calls with their gpiod_ equivalents. Move GPIO lookup
+> to the driver probe function so device initialization can be deferred
+> instead of aborted if a GPIO pin is not yet available.
+>
+> Pin naming used by the driver should be followed while respective GPIO
+> lookup table is initialized by a board init code.
+>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
 
-ok, i will remove it.
+Good work as usual:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
->> +		};
->> +	};
-> 
-> .
-> 
+FWIW I think the entire drivers/video/fbdev/omap/*
+could be pretty easy to migrate to DRM if you compare
+the simple drivers/gpu/drm/pl111 or drivers/gpu/drm/tve200
+drivers. Just inspiration! :)
+
+Yours,
+Linus Walleij
