@@ -1,29 +1,24 @@
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzICT-0006Ey-GG
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 09:09:43 +0000
-Received: by mail-wr1-x441.google.com with SMTP id v17-v6so21026934wrr.9
- for <linux-mtd@lists.infradead.org>; Mon, 10 Sep 2018 02:09:31 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2 1/3] mtd: spi-nor: add support to non-uniform
+ SFDP SPI NOR flash memories
+To: Marek Vasut <marek.vasut@gmail.com>
+CC: <cyrille.pitchen@microchip.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
+ <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <nicolas.ferre@microchip.com>, <Cristian.Birsan@microchip.com>
+References: <20180827102644.7323-1-tudor.ambarus@microchip.com>
+ <20180827102644.7323-2-tudor.ambarus@microchip.com>
+ <8f25975d-e0d8-dd11-76ce-857e99df9c2c@gmail.com>
+ <7b7f9f85-075a-eb3c-1c27-24c67dbc027f@microchip.com>
+ <f9b3c046-011c-e5cd-d822-78a7200a6159@gmail.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <37b1c463-b764-e52d-00e9-ec9d46dd2c36@microchip.com>
+Date: Mon, 10 Sep 2018 13:18:23 +0300
 MIME-Version: 1.0
-In-Reply-To: <CAOiHx=koYJR_m1RdxxSjxQH-8MuWBw18YfNDun3OWnca=CoT_g@mail.gmail.com>
-References: <20180828111944.5956-1-jonas.gorski@gmail.com>
- <20180828111944.5956-5-jonas.gorski@gmail.com>
- <5b8e8a58.1c69fb81.12eaa.f292@mx.google.com>
- <CAOiHx=koYJR_m1RdxxSjxQH-8MuWBw18YfNDun3OWnca=CoT_g@mail.gmail.com>
-From: Jonas Gorski <jonas.gorski@gmail.com>
-Date: Mon, 10 Sep 2018 11:09:09 +0200
-Message-ID: <CAOiHx=n+m7je_syF0-606N9foPBibjTUMvpaDstywit5GUO5cA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] dt-bindings: mtd: describe BCM963XX ImageTag format
- and usage
-To: Rob Herring <robh@kernel.org>
-Cc: MTD Maling List <linux-mtd@lists.infradead.org>, devicetree@vger.kernel.org,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- Florian Fainelli <f.fainelli@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f9b3c046-011c-e5cd-d822-78a7200a6159@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,95 +28,228 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10 September 2018 at 11:02, Jonas Gorski <jonas.gorski@gmail.com> wrote:
-> On 4 September 2018 at 02:30, Rob Herring <robh@kernel.org> wrote:
->> On Tue, Aug 28, 2018 at 01:19:43PM +0200, Jonas Gorski wrote:
->>> Describe how to use the BCM963XX ImageTag format in a mixed flash layout
->>> environment.
->>>
->>> Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
->>> ---
->>>  .../mtd/partitions/brcm,bcm963xx-imagetag.txt      | 78 ++++++++++++++++++++++
->>>  1 file changed, 78 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
->>> new file mode 100644
->>> index 000000000000..f4a444d69d9a
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/mtd/partitions/brcm,bcm963xx-imagetag.txt
->>> @@ -0,0 +1,78 @@
->>> +Broadcom BCM963XX ImageTag Partition Container
->>> +==============================================
->>> +
->>> +Some Broadcom BCM63XX SoC based devices contain additional, non discoverable
->>> +partitions or non standard bootloader partition sizes. For these a mixed layout
->>> +needs to be used with an explicit firmware partition.
->>> +
->>> +The BCM963XX ImageTag is a simple firmware header describing the offsets and
->>> +sizes of the rootfs and kernel parts contained in the firmware.
->>> +
->>> +Required properties:
->>> +- compatible : must be "brcm,bcm963xx-imagetag"
->>> +
->>> +Examples:
->>> +
->>> +flash@1e000000 {
->>> +     compatible = "cfi-flash";
->>> +     reg = <0x1e000000 0x2000000>;
->>> +     bank-width = <2>;
->>> +
->>> +     partitions {
->>> +             compatible = "fixed-partitions";
->>> +             #address-cells = <1>;
->>> +             #size-cells = <1>;
->>> +
->>> +             cfe@0 {
->>> +                     reg = <0x0 0x10000>;
->>> +                     read-only;
->>> +             };
->>> +
->>> +             firmware@10000 {
->>> +                     reg = <0x10000 0x7d0000>;
->>> +                     compatible = "brcm,bcm963xx-imagetag";
->>> +             };
->>> +
->>> +             caldata@7e0000 {
->>> +                     reg = <0x7e0000 0x10000>;
->>> +                     read-only;
->>> +             };
->>> +
->>> +             nvram@7f0000 {
->>> +                     reg = <0x7f0000 0x10000>;
->>> +             };
->>> +     };
->>> +};
->>> +
->>> +
->>> +flash@1e000000 {
->>> +     compatible = "cfi-flash";
->>> +     reg = <0x1e000000 0x2000000>;
->>> +     bank-width = <2>;
->>> +
->>> +     partitions {
->>> +             compatible = "fixed-partitions";
->>> +             #address-cells = <1>;
->>> +             #size-cells = <1>;
->>> +
->>> +             /*
->>> +              * Some devices use a flash chip with 64k erase blocks, some
->>> +              * use one with 128k erase blocks, so the vendor decided to
->>> +              * always use 128k as the firmware offset.
->>> +              */
+Marek,
+
+On 09/07/2018 11:31 PM, Marek Vasut wrote:
+> On 09/07/2018 10:51 AM, Tudor Ambarus wrote:
+>> Thanks Marek,
 >>
->> That's a interesting piece of info, but not really a reason to have a
->> second example.
+>> On 09/03/2018 08:37 PM, Marek Vasut wrote:
+>>> On 08/27/2018 12:26 PM, Tudor Ambarus wrote:
+>>> [...]
+>>>
+>>>> +/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
+>>>> +static inline u64
+>>>> +spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
+>>>> +			  u64 dividend, u32 *remainder)
+>>>> +{
+>>>> +	*remainder = (u32)dividend & erase->size_mask;
+>>>
+>>> Is the cast really needed ? btw I think there might be a macro doing
+>>> just this, div_by_ or something in include/ .
+>>
+>> The cast is not needed, the AND sets to zero all but the low-order 32bits of
+>> divided and then we have the implicit cast.
+>>
+>> Are you referring to do_div()? I expect the bitwise operations to be faster.
+>> Bitwise operations are preferred in include/linux/mtd/mtd.h too:
+> 
+> I thought there was some macro to do this bitwise modulo operation
+> already , so you don't have to implement it here. I don't mean do_div, no.
+> 
+>> static inline uint32_t mtd_div_by_eb(uint64_t sz, struct mtd_info *mtd)
+>> {
+>>         if (mtd->erasesize_shift)
+>>                 return sz >> mtd->erasesize_shift;
+>>         do_div(sz, mtd->erasesize);
+>>         return sz;
+>> }
+>>
+>>>
+>>>> +	return dividend >> erase->size_shift;
+>>>> +}
+>>>> +
+>>>> +static const struct spi_nor_erase_type *
+>>>> +spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
+>>>> +			     const struct spi_nor_erase_region *region,
+>>>> +			     u64 addr, u32 len)
+>>>> +{
+>>>> +	const struct spi_nor_erase_type *erase;
+>>>> +	u32 rem;
+>>>> +	int i;
+>>>> +	u8 erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+>>>> +
+>>>> +	/*
+>>>> +	 * Erase types are ordered by size, with the biggest erase type at
+>>>> +	 * index 0.
+>>>> +	 */
+>>>> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
+>>>> +		/* Does the erase region support the tested erase type? */
+>>>> +		if (!(erase_mask & BIT(i)))
+>>>> +			continue;
+>>>> +
+>>>> +		erase = &map->erase_type[i];
+>>>> +
+>>>> +		/* Don't erase more than what the user has asked for. */
+>>>> +		if (erase->size > len)
+>>>> +			continue;
+>>>> +
+>>>> +		/* Alignment is not mandatory for overlaid regions */
+>>>> +		if (region->offset & SNOR_OVERLAID_REGION)
+>>>> +			return erase;
+>>>> +
+>>>> +		spi_nor_div_by_erase_size(erase, addr, &rem);
+>>>> +		if (rem)
+>>>> +			continue;
+>>>> +		else
+>>>> +			return erase;
+>>>> +	}
+>>>> +
+>>>> +	return NULL;
+>>>> +}
+>>>> +
+>>>> +static struct spi_nor_erase_region *
+>>>> +spi_nor_region_next(struct spi_nor_erase_region *region)
+>>>> +{
+>>>> +	if (spi_nor_region_is_last(region))
+>>>> +		return NULL;
+>>>> +	return ++region;
+>>>
+>>> region++ ...
+>>
+>> It's an array of regions, consecutive in address space, in which walking is done
+>> incrementally. If the received region is not the last, I want to return the next
+>> region, so ++region is correct.
+> 
+> return i++ is the same as return ++i;
+> 
+>>> [...]
+>>>
+>>>> +static int spi_nor_cmp_erase_type(const void *a, const void *b)
+>>>> +{
+>>>> +	const struct spi_nor_erase_type *erase1 = a;
+>>>> +	const struct spi_nor_erase_type *erase2 = b;
+>>>> +
+>>>> +	return erase1->size - erase2->size;
+>>>
+>>> What does this function do again ?
+>>
+>> It's a compare function, I compare by size the map's Erase Types. I pass a
+>> pointer to this function in the sort() call. I sort in ascending order, by size,
+>> all the map's Erase Types when parsing bfpt. I'm doing the sort at init to speed
+>> up the finding of the best erase command at run-time.
+>>
+>> A better name for this function is spi_nor_map_cmp_erase_type(), we compare the
+>> map's Erase Types by size.
+> 
+> More like a description would be most welcome, in the actual code. And I
+
+I will describe all functions, together with arguments and return value.
+
+> really dislike how you fiddle around with void pointers, can't that be
+> fixed?
+
+The void pointers are imposed by the sort() declaration, I'm not sure how we can
+avoid them. See include/linux/sort.h:
+void sort(void *base, size_t num, size_t size,
+          int (*cmp)(const void *, const void *),
+          void (*swap)(void *, void *, int));
+
 >
-> Generally, I'd rather have one example too many than one too few, but
-> I can drop it if you think it's unnecessary. If I do that, can I add
-> your Ack then here as well for the v2?
+>>>> +}
+>>>> +
+>>>> +static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map *map)
+>>>> +{
+>>>> +	struct spi_nor_erase_region *region = map->regions;
+>>>> +	struct spi_nor_erase_type *erase_type = map->erase_type;
+>>>> +	int i;
+>>>> +	u8 region_erase_mask, ordered_erase_mask;
+>>>> +
+>>>> +	/*
+>>>> +	 * Sort each region's Erase Types in ascending order with the smallest
+>>>> +	 * Erase Type size starting at BIT(0).
+>>>> +	 */
+>>>> +	while (region) {
+>>>> +		region_erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
+>>>> +
+>>>> +		/*
+>>>> +		 * The region's erase mask indicates which erase types are
+>>>> +		 * supported from the erase types defined in the map.
+>>>> +		 */
+>>>> +		ordered_erase_mask = 0;
+>>>> +		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
+>>>> +			if (erase_type[i].size &&
+>>>> +			    region_erase_mask & BIT(erase_type[i].idx))
+>>>> +				ordered_erase_mask |= BIT(i);
+>>>> +
+>>>> +		/* Overwrite erase mask. */
+>>>> +		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK) |
+>>>> +				 ordered_erase_mask;
+>>>> +
+>>>> +		region = spi_nor_region_next(region);
+>>>> +	}
+>>>> +}
+>>>> +
+>>>> +static inline void
+>>>
+>>> Drop the inline
+>>
+>> Ok.
+>>
+>>>
+>>>> +spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
+>>>> +			       u8 erase_mask, u64 flash_size)
+>>>> +{
+>>>> +	map->uniform_region.offset = SNOR_ERASE_FLAGS_OFFSET(erase_mask, 1, 0,
+>>>> +							     0);
+>>>> +	map->uniform_region.size = flash_size;
+>>>> +	map->regions = &map->uniform_region;
+>>>> +	map->uniform_erase_type = erase_mask;
+>>>> +}
+>>>> +
+>>>
+>>> [...]
+>>>
+>>>> +#define spi_nor_region_is_last(region)  (region->offset & SNOR_LAST_REGION)
+>>>> +
+>>>> +static inline u64 spi_nor_region_end(const struct spi_nor_erase_region *region)
+>>>
+>>> Get rid of the inlines, really.
+>>
+>> Agreed.
+>>
+>>>
+>>>> +{
+>>>> +	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size;
+>>>> +}
+>>>> +
+>>>> +static inline bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
+>>>> +{
+>>>> +	return !!nor->erase_map.uniform_erase_type;
+>>>> +}
+>>>> +
+>>>>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
+>>>>  					  struct device_node *np)
+>>>>  {
+>>>>
+>>>
+>>> General question, what happens if the multi-block erase fails mid-way ,
+>>> is that handled or reported somehow to the user ?
+>>
+>> I already implemented your suggestion. I build a list of erase commands to be
+>> executed once I validate that the erase can be performed.
+> 
+> You can send them, but what happens if it fails mid-way ? Is the user
+> somehow notified that part of his flash is empty and part is not ?
 
-Of course a reviewed-by, not an Ack.
+The user will see just the error code, it is not notified which part of the
+flash is erased and which not, just like in the uniform erase case. I'm not sure
+what would be the advantage of reporting a partial erase. If the erase fails
+mid-way then it's not reliable, no?
 
+Since your suggestion also applies for the uniform erase case, would you agree
+to let it apart and treat it in a different patch after the non-uniform erase
+gets approved?
 
-Jonas
+Thanks,
+ta
