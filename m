@@ -1,31 +1,23 @@
-Received: from scopuli.esotechnik.de ([2a02:c205:3001:6788::1]
- helo=mail.esotechnik.net)
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzL8g-0007FL-Iv
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 12:18:00 +0000
-Subject: Re: [PATCH v3 2/3] dt-bindings: add bindings for mtd-concat devices
-To: Bernhard Frauendienst <kernel@nospam.obeliks.de>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- devicetree@vger.kernel.org, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-References: <20180908131345.8145-1-kernel@nospam.obeliks.de>
- <20180908131345.8145-3-kernel@nospam.obeliks.de>
- <CACna6ryWCwKZJm2rq0_KeaKve8Ym9zi6AU+Kat9cpYAqtzCMdg@mail.gmail.com>
- <bf3d2900-aa99-e39f-24af-aa57d1f41928@nospam.obeliks.de>
-From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-Message-ID: <879f9dae-c983-a2f0-61c5-dce49bed945f@nospam.obeliks.de>
-Date: Mon, 10 Sep 2018 14:17:47 +0200
+ id 1fzLgy-0004f7-MD
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 12:53:26 +0000
+Date: Mon, 10 Sep 2018 14:53:12 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>, Brian Norris
+ <computersforpeace@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>,
+ =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
+Message-ID: <20180910145312.3b9ae4ad@bbrezillon>
+In-Reply-To: <20180907163824.6cec1a43@xps13>
+References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
+ <20180907163824.6cec1a43@xps13>
 MIME-Version: 1.0
-In-Reply-To: <bf3d2900-aa99-e39f-24af-aa57d1f41928@nospam.obeliks.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,12 +27,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 10.09.2018 um 14:13 schrieb Bernhard Frauendienst:
-> Am 10.09.2018 um 12:51 schrieb Rafał Miłecki:  >> I think you forgot to include the documentation. Please 
-***describe*** >> that binding. > You are right, I'm afraid I was 
-mislead by some of the rather sparse > documentation files in the mtd 
-directory. > Would something along these lines be sufficient?
-I'm sorry, I have no idea why my Thunderbird+External editor insists on
-breaking quotes like this. I will switch to a different mailer for the 
-mailing
-list.
+Hi Miquel,
+
+On Fri, 7 Sep 2018 16:38:24 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+
+> Hello,
+> 
+> I forgot to add Rafal which I know worked a lot on the parsers.
+> 
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri,  7 Sep 2018
+> 16:35:54 +0200:
+> 
+> > While at first mtd_part_of_parse() would just call
+> > of_get_chil_by_name(), it has been edited to first try to get the OF
+> > node thanks to mtd_get_of_node() and fallback on
+> > of_get_child_by_name().
+> > 
+> > A of_node_put() was a bit below in the code, to balance the
+> > of_get_child_by_name(). However, despite its name, mtd_get_of_node()
+> > does not take a reference on the OF node.
+
+That's probably something we should patch at some point, but that
+implies patching all mtd_get_of_node() users at the same time, so let's
+keep that for later.
+
+BTW, if mtd_get_of_node() was actually retaining a reference, you
+would miss an of_node_put() in the !mtd_is_partition(master) case.
+
+> > It is a simple helper hiding
+> > some pointer logic to retrieve the OF node related to an MTD
+> > device. People often used it this way:
+> > 
+> >     of_node_put(mtd_get_of_node(<mtd>)).
+
+I don't get your point. Are you saying other places in the code are
+doing the wrong thing? Should we fix them too?
+
+> > 
+> > The direct effect of such unbalanced reference counting is visible by
+> > rmmod'ing any module that would have added MTD partitions:
+> > 
+> >     OF: ERROR: Bad of_node_put() on <of_path_to_partition>
+> > 
+> > As it seems normal to get a reference on the OF node during the
+> > of_property_for_each_string() that follows, add a call to
+> > of_node_get() when relevant.
+> > 
+> > Fixes: 76a832254ab0 ("mtd: partitions: use DT info for parsing partitions with "compatible" prop")
+> > Cc: stable@vger.kernel.org
+
+You can drop the above line since this patch is fixing a bug introduced
+in 4.19-rc1.
+
+> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+> > ---
+> >  drivers/mtd/mtdpart.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+> > index 52e2cb35fc79..99c460facd5e 100644
+> > --- a/drivers/mtd/mtdpart.c
+> > +++ b/drivers/mtd/mtdpart.c
+> > @@ -873,8 +873,11 @@ static int mtd_part_of_parse(struct mtd_info *master,
+> >  	int ret, err = 0;
+> >  
+> >  	np = mtd_get_of_node(master);
+> > -	if (!mtd_is_partition(master))
+> > +	if (mtd_is_partition(master))
+> > +		of_node_get(np);
+> > +	else
+> >  		np = of_get_child_by_name(np, "partitions");
+> > +
+> >  	of_property_for_each_string(np, "compatible", prop, compat) {
+> >  		parser = mtd_part_get_compatible_parser(compat);
+> >  		if (!parser)  
+
+The patch itself looks correct, but I'd like some clarification about
+the commit message before applying it.
+
+Thanks,
+
+Boris
+
+-- 
+Boris Brezillon, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
