@@ -1,24 +1,29 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/3] ARM: OMAP1: ams-delta: make board header file local to
- mach-omap1
-Date: Mon, 10 Sep 2018 00:56:05 +0200
-Message-Id: <20180909225605.16463-4-jmkrzyszt@gmail.com>
-In-Reply-To: <20180909225605.16463-1-jmkrzyszt@gmail.com>
-References: <20180717231448.14958-1-jmkrzyszt@gmail.com>
- <20180909225605.16463-1-jmkrzyszt@gmail.com>
+Subject: Re: [RFC PATCH v3 1/2] dt-bindings: nand: meson: add Amlogic NAND
+ controller driver
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Jianxin Pan
+ <jianxin.pan@amlogic.com>
+CC: <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
+ <narmstrong@baylibre.com>, Martin Blumenstingl
+ <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
+ Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Jian Hu
+ <jian.hu@amlogic.com>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan
+ <victor.wan@amlogic.com>, <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>
+References: <1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com>
+ <1536317831-58056-2-git-send-email-jianxin.pan@amlogic.com>
+ <20180907141944.4dd4406b@bbrezillon>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <824dd234-30d6-d47d-8abd-352578b232f6@amlogic.com>
+Date: Mon, 10 Sep 2018 12:46:44 +0800
+MIME-Version: 1.0
+In-Reply-To: <20180907141944.4dd4406b@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +33,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now as board header file is no longer included by drivers, move it to
-the root directory of mach-omap1.
+Hi boric,
 
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
- arch/arm/mach-omap1/ams-delta-fiq-handler.S              | 2 +-
- arch/arm/mach-omap1/ams-delta-fiq.c                      | 3 +--
- arch/arm/mach-omap1/board-ams-delta.c                    | 2 +-
- arch/arm/mach-omap1/{include/mach => }/board-ams-delta.h | 2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
- rename arch/arm/mach-omap1/{include/mach => }/board-ams-delta.h (98%)
+Thanks for your quick reply.
 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq-handler.S b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-index ddc27638ba2a..2e2a17364dc9 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-+++ b/arch/arm/mach-omap1/ams-delta-fiq-handler.S
-@@ -17,9 +17,9 @@
- #include <linux/platform_data/ams-delta-fiq.h>
- 
- #include <asm/assembler.h>
--#include <mach/board-ams-delta.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- #include "iomap.h"
- #include "soc.h"
- 
-diff --git a/arch/arm/mach-omap1/ams-delta-fiq.c b/arch/arm/mach-omap1/ams-delta-fiq.c
-index b0dc7ddf5877..14c3d3f5255e 100644
---- a/arch/arm/mach-omap1/ams-delta-fiq.c
-+++ b/arch/arm/mach-omap1/ams-delta-fiq.c
-@@ -22,11 +22,10 @@
- #include <linux/platform_data/ams-delta-fiq.h>
- #include <linux/platform_device.h>
- 
--#include <mach/board-ams-delta.h>
--
- #include <asm/fiq.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- 
- static struct fiq_handler fh = {
- 	.name	= "ams-delta-fiq"
-diff --git a/arch/arm/mach-omap1/board-ams-delta.c b/arch/arm/mach-omap1/board-ams-delta.c
-index dd28d2614d7f..34cb63ff45b3 100644
---- a/arch/arm/mach-omap1/board-ams-delta.c
-+++ b/arch/arm/mach-omap1/board-ams-delta.c
-@@ -36,7 +36,6 @@
- #include <asm/mach/arch.h>
- #include <asm/mach/map.h>
- 
--#include <mach/board-ams-delta.h>
- #include <linux/platform_data/keypad-omap.h>
- #include <mach/mux.h>
- 
-@@ -45,6 +44,7 @@
- #include <mach/usb.h>
- 
- #include "ams-delta-fiq.h"
-+#include "board-ams-delta.h"
- #include "iomap.h"
- #include "common.h"
- 
-diff --git a/arch/arm/mach-omap1/include/mach/board-ams-delta.h b/arch/arm/mach-omap1/board-ams-delta.h
-similarity index 98%
-rename from arch/arm/mach-omap1/include/mach/board-ams-delta.h
-rename to arch/arm/mach-omap1/board-ams-delta.h
-index ad6f865d1f16..1fbada29431a 100644
---- a/arch/arm/mach-omap1/include/mach/board-ams-delta.h
-+++ b/arch/arm/mach-omap1/board-ams-delta.h
-@@ -1,5 +1,5 @@
- /*
-- * arch/arm/plat-omap/include/mach/board-ams-delta.h
-+ * arch/arm/mach-omap1/board-ams-delta.h
-  *
-  * Copyright (C) 2006 Jonathan McDowell <noodles@earth.li>
-  *
--- 
-2.16.4
+On 9/7/2018 8:19 PM, Boris Brezillon wrote:
+> On Fri, 7 Sep 2018 18:57:10 +0800
+> Jianxin Pan <jianxin.pan@amlogic.com> wrote:
+> 
+>> From: Liang Yang <liang.yang@amlogic.com>
+>>
+>> Add Amlogic NAND controller dt-bindings for Meson SoC,
+>> Current this driver support GXBB/GXL/AXG platform.
+>>
+>> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
+>> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+>> ---
+>>   .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 91 ++++++++++++++++++++++
+>>   1 file changed, 91 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>> new file mode 100644
+>> index 0000000..655a778
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>> @@ -0,0 +1,91 @@
+>> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
+>> +
+>> +This file documents the properties in addition to those available in
+>> +the MTD NAND bindings.
+>> +
+>> +Required properties:
+>> +- compatible : contains one of:
+>> +  - "amlogic,meson-gxl-nfc"
+>> +  - "amlogic,meson-axg-nfc"
+>> +- clocks     :
+>> +	A list of phandle + clock-specifier pairs for the clocks listed
+>> +	in clock-names.
+>> +
+>> +- clock-names: Should contain the following:
+>> +	"core" - NFC module gate clock
+>> +	"device" - device clock from eMMC sub clock controller
+>> +
+>> +- pins     : Select pins which NFC need.
+>> +- nand_pins: Detail NAND pins information.
+> 
+> You mean pinctrl-names and pinctrl-0, right? Not sure it's necessary to
+> document that, but if you do, please use the correct DT prop names.
+> 
+
+I find no documentation for that in other xx_nand.txt; I will consider 
+to remove it.
+
+>> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
+>> +				controller port C
+>> +
+>> +Optional children nodes:
+>> +Children nodes represent the available nand chips.
+>> +
+>> +
+>> +
+> 
+> One too many blank lines here.
+> 
+ok, i will remove it.
+
+>> +Other properties:
+>> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+>> +
+>> +Example demonstrate on AXG SoC:
+>> +
+>> +	sd_emmc_c_clkc: mmc@7000 {
+>> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
+>> +		reg = <0x0 0x7000 0x0 0x800>;
+>> +		status = "okay";
+>> +	};
+>> +
+>> +	nand: nfc@7800 {
+>> +		compatible = "amlogic,meson-axg-nfc";
+>> +		reg = <0x0 0x7800 0x0 0x100>;
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+>> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
+>> +		status = "disabled";
+>> +
+>> +		clocks = <&clkc CLKID_SD_EMMC_C>,
+>> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
+>> +		clock-names = "core", "device";
+>> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
+>> +
+>> +		status = "okay";
+>> +
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&nand_pins>;
+>> +
+>> +		nand@0 {
+>> +			reg = <0>;
+>> +			#address-cells = <1>;
+>> +			#size-cells = <1>;
+>> +
+>> +			nand-on-flash-bbt;
+>> +			nand-ecc-mode = "hw";
+>> +			nand-ecc-strength = <8>;
+>> +			nand-ecc-step-size = <1024>;
+> 
+> Drop nand-ecc- props. I guess you have a sensible default value and I
+> prefer when ECC requirements are directly extracted during chip
+> detection. Defining that in the DT is a bad habit. The only one that
+> could make sense (assuming you support it) is nand-ecc-maximize.
+> 
+ok, i will drop them.
+we adopt auto detection during init stage, it works too.
+
+>> +
+>> +			amlogic,nand-enable-scrambler;
+> 
+> Please drop this property (it's not longer documented).
+> 
+em, we should have removed it when nfc driver never use it.
+
+>> +
+>> +			partition@0 {
+>> +				label = "boot";
+>> +				reg = <0x00000000 0x00200000>;
+>> +				read-only;
+>> +			};
+>> +			partition@200000 {
+>> +				label = "env";
+>> +				reg = <0x00200000 0x00400000>;
+>> +			};
+>> +			partition@600000 {
+>> +				label = "system";
+>> +				reg = <0x00600000 0x00a00000>;
+>> +			};
+>> +			partition@1000000 {
+>> +				label = "rootfs";
+>> +				reg = <0x01000000 0x03000000>;
+>> +			};
+>> +			partition@4000000 {
+>> +				label = "media";
+>> +				reg = <0x04000000 0x8000000>;
+>> +			};
+> 
+> No need to define the partitions in your example, especially since they
+> should be placed in a partitions subnode with a "fixed-partitions"
+> compat.
+>
+
+ok, i will remove it.
+
+>> +		};
+>> +	};
+> 
+> .
+> 
