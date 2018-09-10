@@ -1,26 +1,25 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzMNU-0005id-AM
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 13:37:21 +0000
-Date: Mon, 10 Sep 2018 15:36:58 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
- Vasut <marek.vasut@gmail.com>, Antoine Tenart <antoine.tenart@bootlin.com>,
- Gregory Clement <gregory.clement@bootlin.com>, Maxime Chevallier
- <maxime.chevallier@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
- linux-mtd@lists.infradead.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, Konstantin Porotchkin <kostap@marvell.com>,
- Ofer Heifetz <oferh@marvell.com>
-Subject: Re: [PATCH] mtd: rawnand: marvell: Add support for 8kiB pages NAND
- chips layout
-Message-ID: <20180910153658.0c1dd6ea@bbrezillon>
-In-Reply-To: <20180907143436.13391-1-miquel.raynal@bootlin.com>
-References: <20180907143436.13391-1-miquel.raynal@bootlin.com>
+ id 1fzMOy-0006Ks-Sk
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 13:38:54 +0000
+Date: Mon, 10 Sep 2018 15:38:31 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Marek Vasut
+ <marek.vasut@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
+ <zajec5@gmail.com>, linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
+Message-ID: <20180910153831.0f426ada@xps13>
+In-Reply-To: <20180910152551.23ffa474@bbrezillon>
+References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
+ <20180907163824.6cec1a43@xps13>
+ <20180910145312.3b9ae4ad@bbrezillon>
+ <20180910151423.2944aca6@xps13>
+ <20180910152551.23ffa474@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +29,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri,  7 Sep 2018 16:34:36 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hi Boris,
 
-> From: Konstantin Porotchkin <kostap@marvell.com>
-> 
-> Add support for two new layouts: 8kiB pages NAND chips, requesting
-> either 4 or 8 bit of correctability per 512B step.
-> 
-> Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep 2018
+15:25:51 +0200:
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> On Mon, 10 Sep 2018 15:14:23 +0200
+> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>=20
+> > Hi Boris,
+> >=20
+> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep 2018
+> > 14:53:12 +0200:
+> >  =20
+> > > Hi Miquel,
+> > >=20
+> > > On Fri, 7 Sep 2018 16:38:24 +0200
+> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > >    =20
+> > > > Hello,
+> > > >=20
+> > > > I forgot to add Rafal which I know worked a lot on the parsers.
+> > > >=20
+> > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri,  7 Sep 2018
+> > > > 16:35:54 +0200:
+> > > >      =20
+> > > > > While at first mtd_part_of_parse() would just call
+> > > > > of_get_chil_by_name(), it has been edited to first try to get the=
+ OF
+> > > > > node thanks to mtd_get_of_node() and fallback on
+> > > > > of_get_child_by_name().
+> > > > >=20
+> > > > > A of_node_put() was a bit below in the code, to balance the
+> > > > > of_get_child_by_name(). However, despite its name, mtd_get_of_nod=
+e()
+> > > > > does not take a reference on the OF node.     =20
+> > >=20
+> > > That's probably something we should patch at some point, but that
+> > > implies patching all mtd_get_of_node() users at the same time, so let=
+'s
+> > > keep that for later.
+> > >=20
+> > > BTW, if mtd_get_of_node() was actually retaining a reference, you
+> > > would miss an of_node_put() in the !mtd_is_partition(master) case.   =
+=20
+> >=20
+> > I think there is a misunderstanding here: mtd_get_of_node() is not
+> > retaining a reference, and I do not think it should! It is by design a
+> > helper to shortcut from the MTD device to the related FW node. Maybe
+> > calling it differently than "get" would be definitely less prone to
+> > errors. Maybe mtd_to_of_node() would be better? =20
+>=20
+> Yes, the name is misleading for sure. But consistency is good, and
+> (almost?) all DT helpers that return a device_node retain a reference
+> to this node before returning it, so I think it would be a good thing
+> to do the same in the MTD framework.
 
-> ---
->  drivers/mtd/nand/raw/marvell_nand.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-> index bc2ef5209783..bba7aa80ec61 100644
-> --- a/drivers/mtd/nand/raw/marvell_nand.c
-> +++ b/drivers/mtd/nand/raw/marvell_nand.c
-> @@ -219,6 +219,8 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
->  	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
->  	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
->  	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
-> +	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
-> +	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
->  };
->  
->  /**
+Fine by me, I'll patch all the places where it's used, but you can
+still take this patch as a fix for now.
+
+>=20
+> Also, I'm not a big fan of the mtd_to_of_node() for this kind of
+> function. It seems to imply that the mtd device is inheriting from
+> device_node, which is not really the case, it's just an association
+> relationship.
+
+Ok
+
+>=20
+> >  =20
+> > >    =20
+> > > > > It is a simple helper hiding
+> > > > > some pointer logic to retrieve the OF node related to an MTD
+> > > > > device. People often used it this way:
+> > > > >=20
+> > > > >     of_node_put(mtd_get_of_node(<mtd>)).     =20
+> > >=20
+> > > I don't get your point. Are you saying other places in the code are
+> > > doing the wrong thing? Should we fix them too?   =20
+> >=20
+> > No, other places are doing the right thing. =20
+>=20
+> Hm, okay. Then your example is not well chosen, because you seem to put
+> the return of mtd_get_of_node(<mtd>), which contradicts what you
+> explain in the previous sentence. I guess somewhere in the same path you
+> have an of_node_get(mtd_get_of_node(<mtd>)) which retains the reference
+> and explains why calling of_node_put(mtd_get_of_node(<mtd>)) is
+> required.
+>=20
+> Maybe you can just drop this example.
+
+Mhhh. Maybe I should s/of_node_put/of_node_get/ in the example? I
+want to show why (currently) no of_node_put() is needed after a mtd_get_of_=
+node().
+
+This examples shows what people do with this helper, ie. calling
+of_node_get() on the returned OF node to actually retain a reference
+of the retrieve object.
+
+Thanks,
+Miqu=C3=A8l
