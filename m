@@ -1,22 +1,23 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzMIi-0003Kh-Vy
- for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 13:32:27 +0000
-Date: Mon, 10 Sep 2018 15:32:03 +0200
+ id 1fzMNU-0005id-AM
+ for linux-mtd@lists.infradead.org; Mon, 10 Sep 2018 13:37:21 +0000
+Date: Mon, 10 Sep 2018 15:36:58 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Marek Vasut
- <marek.vasut@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
-Message-ID: <20180910153203.008398c1@bbrezillon>
-In-Reply-To: <20180910152551.23ffa474@bbrezillon>
-References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
- <20180907163824.6cec1a43@xps13>
- <20180910145312.3b9ae4ad@bbrezillon>
- <20180910151423.2944aca6@xps13>
- <20180910152551.23ffa474@bbrezillon>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Antoine Tenart <antoine.tenart@bootlin.com>,
+ Gregory Clement <gregory.clement@bootlin.com>, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>, Nadav Haklai <nadavh@marvell.com>,
+ linux-mtd@lists.infradead.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Konstantin Porotchkin <kostap@marvell.com>,
+ Ofer Heifetz <oferh@marvell.com>
+Subject: Re: [PATCH] mtd: rawnand: marvell: Add support for 8kiB pages NAND
+ chips layout
+Message-ID: <20180910153658.0c1dd6ea@bbrezillon>
+In-Reply-To: <20180907143436.13391-1-miquel.raynal@bootlin.com>
+References: <20180907143436.13391-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -29,28 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Sep 2018 15:25:51 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On Fri,  7 Sep 2018 16:34:36 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
+> From: Konstantin Porotchkin <kostap@marvell.com>
 > 
-> > I think if the helper was
-> > named "mtd_to_of_node()" that would be much clearer for everyone and
-> > of_node_get(mtd_to_of_node(mtd)) would be the way to retain a reference
-> > on the OF node.
-> > 
-> > I don't think creating a helper for that would be better because I
-> > really prefer seeing the of_node_get() in the code, meaning an
-> > of_node_put() will be needed at some point.  
+> Add support for two new layouts: 8kiB pages NAND chips, requesting
+> either 4 or 8 bit of correctability per 512B step.
 > 
-> Again, it's mainly a matter of consistency. If people are used to call
-> of_node_put() when a function returns a device_node object, then it's
-> better to do the same in the MTD framework.
+> Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-Just to be clear. I still want to queue this patch for 4.19-rc4. All
-I'm saying is that we should consider changing the behavior of
-mtd_get_of_node() (and friends) at some point, otherwise we might see
-other bugs like this one in the future.
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-On a side note, we should probably also call of_node_get/put() when
-someone updates mtd->dev.of_node through the mtd_set_of_node() helper,
-and call of_node_put() when an mtd device is unregistered.
+> ---
+>  drivers/mtd/nand/raw/marvell_nand.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index bc2ef5209783..bba7aa80ec61 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -219,6 +219,8 @@ static const struct marvell_hw_ecc_layout marvell_nfc_layouts[] = {
+>  	MARVELL_LAYOUT( 2048,   512,  4,  1,  1, 2048, 32, 30,  0,  0,  0),
+>  	MARVELL_LAYOUT( 4096,   512,  4,  2,  2, 2048, 32, 30,  0,  0,  0),
+>  	MARVELL_LAYOUT( 4096,   512,  8,  5,  4, 1024,  0, 30,  0, 64, 30),
+> +	MARVELL_LAYOUT( 8192,   512,  4,  4,  4, 2048,  0, 30,  0,  0,  0),
+> +	MARVELL_LAYOUT( 8192,   512,  8,  9,  8, 1024,  0, 30,  0, 160, 30),
+>  };
+>  
+>  /**
