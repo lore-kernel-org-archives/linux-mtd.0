@@ -1,18 +1,21 @@
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-To: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <boris.brezillon@bootlin.com>,
- <richard@nod.at>, <linux-mtd@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <anuragku@xilinx.com>, <cyrille.pitchen@microchip.com>,
- <nicolas.ferre@microchip.com>
-CC: Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH v2 1/3] mtd: spi-nor: add Global Block Unlock support
-Date: Tue, 11 Sep 2018 11:22:30 +0300
-Message-ID: <20180911082232.28678-2-tudor.ambarus@microchip.com>
-In-Reply-To: <20180911082232.28678-1-tudor.ambarus@microchip.com>
-References: <20180911082232.28678-1-tudor.ambarus@microchip.com>
+Received: from youngberry.canonical.com ([91.189.89.112])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1fzi0P-00048c-B3
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2018 12:42:59 +0000
+From: Colin King <colin.king@canonical.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: Kconfig: fix spelling mistake "partions" -> "partition"
+Date: Tue, 11 Sep 2018 13:42:34 +0100
+Message-Id: <20180911124234.32744-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,83 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We can't determine this purely by manufacturer type and it's not
-autodetectable by anything like SFDP, so make a new flag for it:
-UNLOCK_GLOBAL_BLOCK.
+From: Colin Ian King <colin.king@canonical.com>
 
-Note that the Global Block Unlock command has different names
-depending on the manufacturer, but always the same command value:
-0x98. Macronix's MX25U12835F names it Gang Block Unlock,
-Winbound's W25Q128FV names it Global Block Unlock and
-Microchip's SST26VF064B names it Global Block Protection Unlock.
+Trivial fix to spelling mistake in the Kconfig text
 
-Based on initial work done by Anurag Kumar Vulisha:
-https://lkml.org/lkml/2015/11/13/307
-
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-Reviewed-by: Cyrille Pitchen <cyrille.pitchen@microchip.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 21 +++++++++++++++++++++
- include/linux/mtd/spi-nor.h   |  1 +
- 2 files changed, 22 insertions(+)
+ drivers/mtd/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f028277..d3134fd 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -89,6 +89,7 @@ struct flash_info {
- #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
- #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
- #define USE_CLSR		BIT(14)	/* use CLSR command */
-+#define UNLOCK_GLOBAL_BLOCK	BIT(15)	/* Unlock global block protection */
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index c77f537323ec..28b079f20b4b 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -144,7 +144,7 @@ config MTD_BCM63XX_PARTS
+ 	depends on BCM63XX || BMIPS_GENERIC || COMPILE_TEST
+ 	select CRC32
+ 	help
+-	  This provides partions parsing for BCM63xx devices with CFE
++	  This provides partition parsing for BCM63xx devices with CFE
+ 	  bootloaders.
  
- 	int	(*quad_enable)(struct spi_nor *nor);
- };
-@@ -2730,6 +2731,17 @@ static int spi_nor_setup(struct spi_nor *nor, const struct flash_info *info,
- 	return 0;
- }
- 
-+static int spi_nor_unlock_global_block_protection(struct spi_nor *nor)
-+{
-+	int ret;
-+
-+	write_enable(nor);
-+	ret = nor->write_reg(nor, SPINOR_OP_GBULK, NULL, 0);
-+	if (ret < 0)
-+		return ret;
-+	return spi_nor_wait_till_ready(nor);
-+}
-+
- static int spi_nor_init(struct spi_nor *nor)
- {
- 	int err;
-@@ -2747,6 +2759,15 @@ static int spi_nor_init(struct spi_nor *nor)
- 		spi_nor_wait_till_ready(nor);
- 	}
- 
-+	if (nor->info->flags & UNLOCK_GLOBAL_BLOCK) {
-+		err = spi_nor_unlock_global_block_protection(nor);
-+		if (err) {
-+			dev_err(nor->dev,
-+				"Cannot unlock the global block protection\n");
-+			return err;
-+		}
-+	}
-+
- 	if (nor->quad_enable) {
- 		err = nor->quad_enable(nor);
- 		if (err) {
-diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-index c922e97..09a10fd 100644
---- a/include/linux/mtd/spi-nor.h
-+++ b/include/linux/mtd/spi-nor.h
-@@ -64,6 +64,7 @@
- #define SPINOR_OP_CLFSR		0x50	/* Clear flag status register */
- #define SPINOR_OP_RDEAR		0xc8	/* Read Extended Address Register */
- #define SPINOR_OP_WREAR		0xc5	/* Write Extended Address Register */
-+#define SPINOR_OP_GBULK		0x98	/* Global Block Unlock Protection */
- 
- /* 4-byte address opcodes - used on Spansion and some Macronix flashes. */
- #define SPINOR_OP_READ_4B	0x13	/* Read data bytes (low frequency) */
+ config MTD_BCM47XX_PARTS
 -- 
-2.9.4
+2.17.1
