@@ -1,32 +1,33 @@
-Received: from mail-sn1nam02on0072.outbound.protection.outlook.com
- ([104.47.36.72] helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+Received: from mail-sn1nam01on0049.outbound.protection.outlook.com
+ ([104.47.32.49] helo=NAM01-SN1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1fzb91-0002Qu-5C
- for linux-mtd@lists.infradead.org; Tue, 11 Sep 2018 05:23:24 +0000
+ id 1fzbAk-0002ks-5V
+ for linux-mtd@lists.infradead.org; Tue, 11 Sep 2018 05:25:12 +0000
 From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "kyungmin.park@samsung.com"
- <kyungmin.park@samsung.com>, "absahu@codeaurora.org" <absahu@codeaurora.org>,
- "peterpandong@micron.com" <peterpandong@micron.com>,
- "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+To: Markus Mayer <mmayer@broadcom.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Ladislav Michl <ladis@linux-mips.org>, Linus Walleij
+ <linus.walleij@linaro.org>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
+ <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Mark Vasut <marek.vasut@gmail.com>, Roger
+ Quadros <rogerq@ti.com>, "ada@thorsis.co" <ada@thorsis.co>,
+ "honghui.zhang@mediatek.com" <honghui.zhang@mediatek.com>,
+ =?utf-8?B?TWlxdcOobCBSYXluYWw=?= <miquel.raynal@bootlin.com>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michal Simek
- <michals@xilinx.com>, "nagasureshkumarrelli@gmail.com"
- <nagasureshkumarrelli@gmail.com>
-Subject: RE: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Tue, 11 Sep 2018 05:23:09 +0000
-Message-ID: <MWHPR02MB2623A761C40745AD4AE2A295AF040@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1534511964-20342-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1534511964-20342-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20180820184013.57fd7b5c@bbrezillon>
-In-Reply-To: <20180820184013.57fd7b5c@bbrezillon>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "nagasureshkumarrelli@gmail.com" <nagasureshkumarrelli@gmail.com>, Michal
+ Simek <michals@xilinx.com>
+Subject: RE: [LINUX PATCH v11 1/3] dt-bindings: memory: Add pl353 smc
+ controller devicetree binding information
+Date: Tue, 11 Sep 2018 05:24:56 +0000
+Message-ID: <MWHPR02MB2623EB3C27CE14C08EC45ACDAF040@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1531294612-29526-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1531294612-29526-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <CACRpkdZOwgj4hCy=L6kKiQOpGNpvFXJk666pauyRv-fdHizMtg@mail.gmail.com>
+In-Reply-To: <CACRpkdZOwgj4hCy=L6kKiQOpGNpvFXJk666pauyRv-fdHizMtg@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,38 +38,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Monday, August 20, 2018 10:10 PM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; kyungmin.park@samsung=
-.com;
-> absahu@codeaurora.org; peterpandong@micron.com; frieder.schrempf@exceet.d=
-e; linux-
-> mtd@lists.infradead.org; linux-kernel@vger.kernel.org; Michal Simek <mich=
-als@xilinx.com>;
-> nagasureshkumarrelli@gmail.com
-> Subject: Re: [LINUX PATCH v10 2/2] mtd: rawnand: arasan: Add support for =
-Arasan NAND
-> Flash Controller
->=20
-> Hi Naga,
->=20
-> On Fri, 17 Aug 2018 18:49:24 +0530
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
->=20
->=20
-> I haven't finished reviewing the driver but there are still a bunch of th=
-ings that look strange, for
-> instance, your ->read/write_page() implementation looks suspicious. Let's=
- discuss that before
-> you send a new version.
-Could you please review the remaining stuff?
-I have the changes ready with me which will address all your comments given=
- to this series.
-
-Thanks,
-Naga Sureshkumar Relli
+SGksDQoNCltMSU5VWCBQQVRDSCB2MTEgMS8zXSBkdC1iaW5kaW5nczogbWVtb3J5OiBBZGQgcGwz
+NTMgc21jIGNvbnRyb2xsZXIgZGV2aWNldHJlZSBiaW5kaW5nIGluZm9ybWF0aW9uDQpbTElOVVgg
+UEFUQ0ggdjExIDIvM10gbWVtb3J5OiBwbDM1MzogQWRkIGRyaXZlciBmb3IgYXJtIHBsMzUzIHN0
+YXRpYyBtZW1vcnkgY29udHJvbGxlcg0KDQpDYW4gc29tZWJvZHkgYXBwbHkgdGhlIGFib3ZlIHBh
+dGNoZXM/DQpUaGUgYWJvdmUgcGF0Y2hlcyBhcmUgYWxyZWFkeSByZXZpZXdlZC4gDQoNClRoYW5r
+cywNCk5hZ2EgU3VyZXNoa3VtYXIgUmVsbGkuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS0NCj4gRnJvbTogTGludXMgV2FsbGVpaiBbbWFpbHRvOmxpbnVzLndhbGxlaWpAbGluYXJvLm9y
+Z10NCj4gU2VudDogRnJpZGF5LCBKdWx5IDEzLCAyMDE4IDE6MDcgUE0NCj4gVG86IE5hZ2EgU3Vy
+ZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBCb3JpcyBCcmV6aWxs
+b24gPGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbT47IFJpY2hhcmQgV2VpbmJlcmdlciA8cmlj
+aGFyZEBub2QuYXQ+Ow0KPiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+OyBC
+cmlhbiBOb3JyaXMNCj4gPGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbT47IE1hcmsgVmFzdXQg
+PG1hcmVrLnZhc3V0QGdtYWlsLmNvbT47IEZsb3JpYW4gRmFpbmVsbGkNCj4gPGYuZmFpbmVsbGlA
+Z21haWwuY29tPjsgTWFya3VzIE1heWVyIDxtbWF5ZXJAYnJvYWRjb20uY29tPjsgUm9nZXIgUXVh
+ZHJvcw0KPiA8cm9nZXJxQHRpLmNvbT47IExhZGlzbGF2IE1pY2hsIDxsYWRpc0BsaW51eC1taXBz
+Lm9yZz47IGFkYUB0aG9yc2lzLmNvOw0KPiBob25naHVpLnpoYW5nQG1lZGlhdGVrLmNvbTsgTWlx
+dcOobCBSYXluYWwgPG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb20+OyBsaW51eC0NCj4gbXRkQGxp
+c3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG5hZ2FzdXJl
+c2hrdW1hcnJlbGxpQGdtYWlsLmNvbTsNCj4gTWljaGFsIFNpbWVrIDxtaWNoYWxzQHhpbGlueC5j
+b20+DQo+IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjExIDEvM10gZHQtYmluZGluZ3M6IG1l
+bW9yeTogQWRkIHBsMzUzIHNtYyBjb250cm9sbGVyDQo+IGRldmljZXRyZWUgYmluZGluZyBpbmZv
+cm1hdGlvbg0KPiANCj4gT24gV2VkLCBKdWwgMTEsIDIwMTggYXQgOTozNyBBTSBOYWdhIFN1cmVz
+aGt1bWFyIFJlbGxpDQo+IDxuYWdhLnN1cmVzaGt1bWFyLnJlbGxpQHhpbGlueC5jb20+IHdyb3Rl
+Og0KPiANCj4gPiBBZGQgcGwzNTMgc3RhdGljIG1lbW9yeSBjb250cm9sbGVyIGRldmljZXRyZWUg
+YmluZGluZyBpbmZvcm1hdGlvbi4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5hZ2EgU3VyZXNo
+a3VtYXIgUmVsbGkNCj4gPiA8bmFnYS5zdXJlc2hrdW1hci5yZWxsaUB4aWxpbnguY29tPg0KPiA+
+IC0tLQ0KPiA+IENoYW5nZXMgaW4gdjExOg0KPiANCj4gUmV2aWV3ZWQtYnk6IExpbnVzIFdhbGxl
+aWogPGxpbnVzLndhbGxlaWpAbGluYXJvLm9yZz4gVGhhbmtzIQ0KPiANCj4gWW91cnMsDQo+IExp
+bnVzIFdhbGxlaWoNCg==
