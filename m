@@ -1,18 +1,14 @@
 Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g02rp-0004dI-2D
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2018 10:59:30 +0000
-From: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+ id 1g04cd-0007om-0j
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2018 12:52:16 +0000
+From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Cc: Masahiro Yamada <yamada.masahiro@socionext.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
- Dinh Nguyen <dinguyen@kernel.org>
-Subject: [BUG/RFC] denali NAND probe issues on SoCFPGA
-Date: Wed, 12 Sep 2018 12:59:05 +0200
-Message-ID: <737ejrj81y.fsf@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Cc: Richard Weinberger <richard@nod.at>, kernel@pengutronix.de,
+ Sascha Hauer <s.hauer@pengutronix.de>
+Subject: [PATCH] ubifs: drop false positive assertion
+Date: Wed, 12 Sep 2018 14:51:38 +0200
+Message-Id: <20180912125138.10751-1-s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +18,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The following sequence triggers
 
-Hi!
+	ubifs_assert(c, c->lst.taken_empty_lebs > 0);
 
-I just found an issue with
+at the end of ubifs_remount_fs():
 
-    commit 586a2c52909df453ed1b6239283744b0851ccf81
-    Author: Masahiro Yamada <yamada.masahiro@socionext.com>
-    Date:   Fri Sep 22 12:46:41 2017 +0900
+mount -t ubifs /dev/ubi0_0 /mnt
+echo 1 > /sys/kernel/debug/ubifs/ubi0_0/ro_error
+umount /mnt
+mount -t ubifs -o ro /dev/ubix_y /mnt
+mount -o remount,ro /mnt
 
-    mtd: nand: denali: squash denali_enable_dma() helper into 
-    caller
+The resulting
 
-on (atleast) Cyclone5 SoCFPGAs.
+UBIFS assert failed in ubifs_remount_fs at 1878 (pid 161)
 
-With this patch I get
+is a false positive. In the case above c->lst.taken_empty_lebs has
+never been changed from its initial zero value. This will only happen
+when the deferred recovery is done.
 
-    [    0.543088] denali-nand-dt ff900000.nand: necessary clock 
-    is missing. default clock rates are used.
-    [    0.554325] nand: device found, Manufacturer ID: 0x2c, Chip 
-    ID: 0xda
-    [    0.560654] nand: Micron MT29F2G08ABAEAWP
-    [    0.564680] nand: 256 MiB, SLC, erase size: 128 KiB, page 
-    size: 2048, OOB size: 64
-    [    0.971317] nand: timeout while waiting for chip to become 
-    ready
-    [    1.991336] denali-nand-dt ff900000.nand: timeout while 
-    waiting for irq 0x4
+Fix this by doing the assertion only when recovery has been done
+already.
 
-and then the system just reboots. Adding the ioread32 back or just 
-some printks fixes this. So there seems to be a timing issue.
-What would be the preferred solution? Add a 
-msleep($IDONTKNOWWHATISAGOODVALUE) although it is unnecessary for 
-the other SoCs?
-Bringing the ioread32 back seems like obfuscating the problem.
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+---
+ fs/ubifs/super.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
-Best regards,
-Steffen
-
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 23e7042666a7..617197e35749 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1912,7 +1912,9 @@ static int ubifs_remount_fs(struct super_block *sb, int *flags, char *data)
+ 		mutex_unlock(&c->bu_mutex);
+ 	}
+ 
+-	ubifs_assert(c, c->lst.taken_empty_lebs > 0);
++	if (!c->need_recovery)
++		ubifs_assert(c, c->lst.taken_empty_lebs > 0);
++
+ 	return 0;
+ }
+ 
 -- 
-Pengutronix e.K.                          | Steffen Trumtrar 
-|
-Industrial Linux Solutions                | 
-http://www.pengutronix.de/ |
-Peiner Str. 6-8, 31137 Hildesheim, Germany| Phone: 
-+49-5121-206917-0   |
-Amtsgericht Hildesheim, HRA 2686          | Fax: 
-+49-5121-206917-5555|
+2.18.0
