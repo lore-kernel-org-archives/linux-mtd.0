@@ -1,22 +1,25 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::8])
+Received: from mail-db5eur03on0628.outbound.protection.outlook.com
+ ([2a01:111:f400:fe0a::628]
+ helo=EUR03-DB5-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g0A4V-0007Kp-4l
- for linux-mtd@lists.infradead.org; Wed, 12 Sep 2018 18:41:17 +0000
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-To: Han Xu <han.xu@nxp.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Wolfe <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ id 1g0CJO-0002Uf-AZ
+ for linux-mtd@lists.infradead.org; Wed, 12 Sep 2018 21:04:38 +0000
+From: Han Xu <han.xu@nxp.com>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>, David Wolfe
+ <david.wolfe@nxp.com>, Fabio Estevam <fabio.estevam@nxp.com>, Prabhakar
+ Kushwaha <prabhakar.kushwaha@nxp.com>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
  "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "broonie@kernel.org" <broonie@kernel.org>
+ "dwmw2@infradead.org" <dwmw2@infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "broonie@kernel.org"
+ <broonie@kernel.org>
+Subject: RE: Questions about the Freescale/NXP QuadSPI controller
+Date: Wed, 12 Sep 2018 21:04:19 +0000
+Message-ID: <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
 References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
  <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
  <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
@@ -25,14 +28,12 @@ References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
  <20180804153728.0a99d28f@bbrezillon>
  <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
  <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
-Date: Wed, 12 Sep 2018 20:40:39 +0200
-MIME-Version: 1.0
-In-Reply-To: <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
+In-Reply-To: <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,174 +43,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Han,
-
-On 12.09.2018 19:04, Han Xu wrote:
-> 
-> 
->> -----Original Message-----
->> From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
->> Sent: Monday, September 3, 2018 4:02 AM
->> To: Han Xu <han.xu@nxp.com>
->> Cc: Boris Brezillon <boris.brezillon@bootlin.com>; David Wolfe
->> <david.wolfe@nxp.com>; Fabio Estevam <fabio.estevam@nxp.com>;
->> Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>; Yogesh Narayan
->> Gaur <yogeshnarayan.gaur@nxp.com>; shawnguo@kernel.org; linux-
->> mtd@lists.infradead.org; linux-spi@vger.kernel.org; dwmw2@infradead.org;
->> computersforpeace@gmail.com; marek.vasut@gmail.com; richard@nod.at;
->> miquel.raynal@bootlin.com; broonie@kernel.org
->> Subject: Re: Questions about the Freescale/NXP QuadSPI controller
->>
->> Hi Han,
->>
->> On 04.08.2018 15:37, Boris Brezillon wrote:
->>> Hi Han,
->>>
->>> On Thu, 2 Aug 2018 21:58:48 +0000
->>> Han Xu <han.xu@nxp.com> wrote:
->>>
->>>>> -----Original Message-----
->>>>> From: Frieder Schrempf [mailto:frieder.schrempf@exceet.de]
->>>>> Sent: Thursday, August 2, 2018 8:09 AM
->>>>> To: David Wolfe <david.wolfe@nxp.com>; Fabio Estevam
->>>>> <fabio.estevam@nxp.com>; Prabhakar Kushwaha
->>>>> <prabhakar.kushwaha@nxp.com>; Yogesh Narayan Gaur
->>>>> <yogeshnarayan.gaur@nxp.com>; Han Xu <han.xu@nxp.com>;
->>>>> shawnguo@kernel.org
->>>>> Cc: linux-mtd@lists.infradead.org; boris.brezillon@bootlin.com;
->>>>> linux- spi@vger.kernel.org; dwmw2@infradead.org;
->>>>> computersforpeace@gmail.com; marek.vasut@gmail.com;
->> richard@nod.at;
->>>>> miquel.raynal@bootlin.com; broonie@kernel.org
->>>>> Subject: Re: Questions about the Freescale/NXP QuadSPI controller
->>>>>
->>>>> Ping.
->>>>>
->>>>> I'm not sure if my message below went out to you at all. At least I
->>>>> can't find it in the ML archive.
->>>>>
->>>>> I still hope someone can help with the questions below.
->>>>>
->>>>> Meanwhile for the second point I did some tests myself with one chip
->>>>> on each of the two buses and it worked fine with my latest v2 patches.
->>>>> So I'm not sure at all why Yogesh has problems with his setup (two
->>>>> chips on the first bus).
->>>>
->>>> Tried to test the v2 patch set on i.MX6SX SDB board but get the memory
->> map failure.
->>>>
->>>> [    1.298633] fsl-quadspi 21e4000.qspi: ioremap failed for resource [mem
->> 0x70000000-0x7fffffff]
->>>> [    1.307330] fsl-quadspi 21e4000.qspi: Freescale QuadSPI probe failed
->>>> [    1.313922] fsl-quadspi: probe of 21e4000.qspi failed with error -12
->>>>
->>>> This is the reason why dynamic ioremap added in previous driver, please
->> refer to
->>>>
->>>>
->> https://smex12-5-en-ctp.trendmicro.com:443/wis/clicktime/v1/query?url=https%3a%2f%2femea01.safelinks.protection.outlook.com%2f%3furl%3dhttps%253A%252F%252Fpa&umid=d6cc1014-1848-42fb-92fd-9626d45c8050&auth=541e45255b6517100d80c2b1b80b6933b203c492-5aa8e1977a9db94300a9f61f5446e7a21b175f56
->>>>
->> tchwork.ozlabs.org%2Fpatch%2F503655%2F&amp;data=02%7C01%7Chan.xu
->> %40nx
->>>>
->> p.com%7C9f45a8b666d3478f065408d6117bf524%7C686ea1d3bc2b4c6fa92cd9
->> 9c5c
->>>>
->> 301635%7C0%7C0%7C636715621426190473&amp;sdata=XWPfWe%2Fu2ePW
->> mNPe179D0
->>>> vjTp6eLp0%2FJRF2vRayDwug%3D&amp;reserved=0
->>>
->>> We can reduce the size of the iomap to 2k * 4, since this is all we
->>> use currently. Can you try to change the size of the ioremap call to
->>> 16k and tell us if it works.
->>
->> Were you able to test with the reduced iomap size?
->> It would be great to know if it works on your board.
->>
->> Thanks,
->> Frieder
-> 
-> Test the code on i.MX6SX sabreauto board with two micron n25q256a chips on two CS.
-> First issue found is __div0 kernel dump with these code
-> /* Max 64 dummy clock cycles supported */
-> if (op->dummy.nbytes * 8 / op->dummy.buswidth > 64)
-> dummy.buswidth was not set during read id.
-
-First, thank you for coming back to this and doing the test.
-I'm currently not sure about the reason for this, but I guess Boris will 
-figure it out easily ;)
-
-> 
-> Second issue is the second part failed to be probed, tried both buswidth 4 and buswidth 1.
-> 
-> [    1.364979] m25p80 spi5.0: found n25q256a, expected m25p80
-> [    1.370986] m25p80 spi5.0: n25q256a (32768 Kbytes)
-> [    1.381020] m25p80 spi5.1: unrecognized JEDEC id bytes: ff, ff, ff
-> 
-> These are the DT settings:
-> &qspi1 {
->          pinctrl-names = "default";
->          pinctrl-0 = <&pinctrl_qspi1_1>;
->          status = "okay";
-> 
->          flash0: n25q256a@0 {
->          ¦       #address-cells = <1>;
->          ¦       #size-cells = <1>;
->          ¦       compatible = "micron,m25p80";
->          ¦       spi-max-frequency = <29000000>;
->                  spi-rx-bus-width = <4>;
->                  spi-tx-bus-width = <4>;
->          ¦       reg = <0>;
->          };
-> 
->          flash1: n25q256a@1 {
->          ¦       #address-cells = <1>;
->          ¦       #size-cells = <1>;
->          ¦       compatible = "micron,m25p80";
->          ¦       spi-max-frequency = <29000000>;
->                  spi-rx-bus-width = <4>;
->                  spi-tx-bus-width = <4>;
->          ¦       reg = <1>;
->          };
-> };
-
-First, I think you should add "jedec,spi-nor" to your compatible properties.
-
-Second, are you sure, that the two chips are both on QSPIA using the two 
-chip selects?
-I have no schematics of the board, but if I look at the devicetree in 
-the linux-imx kernel [1] it seems to me that one chip is on QSPIA CS0 
-and the other on QSPIB CS0.
-If this is the case, then you have to set reg = <2> for the second chip.
-
-Thanks,
-Frieder
-
-[1] 
-http://git.freescale.com/git/cgit.cgi/imx/linux-imx.git/tree/arch/arm/boot/dts/imx6sx-sabreauto.dts?h=imx_4.9.11_1.0.0_ga#n771
-
->>>
->>> Unrelated to this issue, we still have 2 questions left unanswered:
->>>
->>> 1/ is there an easy way to invalidate AHB buffers? I mean, not
->>>      something that implies a full reset + several milliseconds of delay
->>>      after the reset. Right now we trick the caching logic by mapping a
->>>      portion that is twice the size of the buffer and switching from one
->>>      sub-portion to this other to trigger a real read on each read
->>>      access, but that's hack-ish, and I'd be surprised if HW
->>>      engineers hadn't planned for this "manual AHB buffer flush" case.
->>>
->>> 2/ if we use DMA, do you know what happens when the TX FIFO runs out
->>>      of data while the TX request is not finished yet. In PIO mode, it
->>>      seems the engine sends garbage on the bus when that happens, and we
->>>      definitely don't want that.
->>>
->>> While #1 is not blocking us, #2 is if we don't have those patches
->>> [1][2] applied, and Marek wanted to be sure there was no other ways to
->>> solve the "TX FIFO starvation" issue before considering these changes.
->>> So that'd be great if someone from NXP could have a look/ask around
->>> and give us answers to those 2 questions.
->>>
->>> Thanks,
->>>
->>> Boris
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRnJpZWRlciBTY2hyZW1w
+ZiBbbWFpbHRvOmZyaWVkZXIuc2NocmVtcGZAZXhjZWV0LmRlXQ0KPiBTZW50OiBXZWRuZXNkYXks
+IFNlcHRlbWJlciAxMiwgMjAxOCAxOjQxIFBNDQo+IFRvOiBIYW4gWHUgPGhhbi54dUBueHAuY29t
+Pg0KPiBDYzogQm9yaXMgQnJlemlsbG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb20+OyBE
+YXZpZCBXb2xmZQ0KPiA8ZGF2aWQud29sZmVAbnhwLmNvbT47IEZhYmlvIEVzdGV2YW0gPGZhYmlv
+LmVzdGV2YW1AbnhwLmNvbT47DQo+IFByYWJoYWthciBLdXNod2FoYSA8cHJhYmhha2FyLmt1c2h3
+YWhhQG54cC5jb20+OyBZb2dlc2ggTmFyYXlhbg0KPiBHYXVyIDx5b2dlc2huYXJheWFuLmdhdXJA
+bnhwLmNvbT47IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBtdGRAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsgbGludXgtc3BpQHZnZXIua2VybmVsLm9yZzsgZHdtdzJAaW5mcmFkZWFkLm9yZzsN
+Cj4gY29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOyBtYXJlay52YXN1dEBnbWFpbC5jb207IHJp
+Y2hhcmRAbm9kLmF0Ow0KPiBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOyBicm9vbmllQGtlcm5l
+bC5vcmcNCj4gU3ViamVjdDogUmU6IFF1ZXN0aW9ucyBhYm91dCB0aGUgRnJlZXNjYWxlL05YUCBR
+dWFkU1BJIGNvbnRyb2xsZXINCj4gDQo+IEhpIEhhbiwNCj4gDQo+IE9uIDEyLjA5LjIwMTggMTk6
+MDQsIEhhbiBYdSB3cm90ZToNCj4gPg0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tDQo+ID4+IEZyb206IEZyaWVkZXIgU2NocmVtcGYgW21haWx0bzpmcmllZGVyLnNjaHJlbXBm
+QGV4Y2VldC5kZV0NCj4gPj4gU2VudDogTW9uZGF5LCBTZXB0ZW1iZXIgMywgMjAxOCA0OjAyIEFN
+DQo+ID4+IFRvOiBIYW4gWHUgPGhhbi54dUBueHAuY29tPg0KPiA+PiBDYzogQm9yaXMgQnJlemls
+bG9uIDxib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb20+OyBEYXZpZCBXb2xmZQ0KPiA+PiA8ZGF2
+aWQud29sZmVAbnhwLmNvbT47IEZhYmlvIEVzdGV2YW0gPGZhYmlvLmVzdGV2YW1AbnhwLmNvbT47
+DQo+ID4+IFByYWJoYWthciBLdXNod2FoYSA8cHJhYmhha2FyLmt1c2h3YWhhQG54cC5jb20+OyBZ
+b2dlc2ggTmFyYXlhbg0KPiBHYXVyDQo+ID4+IDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT47
+IHNoYXduZ3VvQGtlcm5lbC5vcmc7IGxpbnV4LQ0KPiA+PiBtdGRAbGlzdHMuaW5mcmFkZWFkLm9y
+ZzsgbGludXgtc3BpQHZnZXIua2VybmVsLm9yZzsNCj4gPj4gZHdtdzJAaW5mcmFkZWFkLm9yZzsg
+Y29tcHV0ZXJzZm9ycGVhY2VAZ21haWwuY29tOw0KPiA+PiBtYXJlay52YXN1dEBnbWFpbC5jb207
+IHJpY2hhcmRAbm9kLmF0OyBtaXF1ZWwucmF5bmFsQGJvb3RsaW4uY29tOw0KPiA+PiBicm9vbmll
+QGtlcm5lbC5vcmcNCj4gPj4gU3ViamVjdDogUmU6IFF1ZXN0aW9ucyBhYm91dCB0aGUgRnJlZXNj
+YWxlL05YUCBRdWFkU1BJIGNvbnRyb2xsZXINCj4gPj4NCj4gPj4gSGkgSGFuLA0KPiA+Pg0KPiA+
+PiBPbiAwNC4wOC4yMDE4IDE1OjM3LCBCb3JpcyBCcmV6aWxsb24gd3JvdGU6DQo+ID4+PiBIaSBI
+YW4sDQo+ID4+Pg0KPiA+Pj4gT24gVGh1LCAyIEF1ZyAyMDE4IDIxOjU4OjQ4ICswMDAwDQo+ID4+
+PiBIYW4gWHUgPGhhbi54dUBueHAuY29tPiB3cm90ZToNCj4gPj4+DQo+ID4+Pj4+IC0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+Pj4+IEZyb206IEZyaWVkZXIgU2NocmVtcGYgW21haWx0
+bzpmcmllZGVyLnNjaHJlbXBmQGV4Y2VldC5kZV0NCj4gPj4+Pj4gU2VudDogVGh1cnNkYXksIEF1
+Z3VzdCAyLCAyMDE4IDg6MDkgQU0NCj4gPj4+Pj4gVG86IERhdmlkIFdvbGZlIDxkYXZpZC53b2xm
+ZUBueHAuY29tPjsgRmFiaW8gRXN0ZXZhbQ0KPiA+Pj4+PiA8ZmFiaW8uZXN0ZXZhbUBueHAuY29t
+PjsgUHJhYmhha2FyIEt1c2h3YWhhDQo+ID4+Pj4+IDxwcmFiaGFrYXIua3VzaHdhaGFAbnhwLmNv
+bT47IFlvZ2VzaCBOYXJheWFuIEdhdXINCj4gPj4+Pj4gPHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAu
+Y29tPjsgSGFuIFh1IDxoYW4ueHVAbnhwLmNvbT47DQo+ID4+Pj4+IHNoYXduZ3VvQGtlcm5lbC5v
+cmcNCj4gPj4+Pj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBib3Jpcy5icmV6
+aWxsb25AYm9vdGxpbi5jb207DQo+ID4+Pj4+IGxpbnV4LSBzcGlAdmdlci5rZXJuZWwub3JnOyBk
+d213MkBpbmZyYWRlYWQub3JnOw0KPiA+Pj4+PiBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207
+IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsNCj4gPj4gcmljaGFyZEBub2QuYXQ7DQo+ID4+Pj4+IG1p
+cXVlbC5yYXluYWxAYm9vdGxpbi5jb207IGJyb29uaWVAa2VybmVsLm9yZw0KPiA+Pj4+PiBTdWJq
+ZWN0OiBSZTogUXVlc3Rpb25zIGFib3V0IHRoZSBGcmVlc2NhbGUvTlhQIFF1YWRTUEkgY29udHJv
+bGxlcg0KPiA+Pj4+Pg0KPiA+Pj4+PiBQaW5nLg0KPiA+Pj4+Pg0KPiA+Pj4+PiBJJ20gbm90IHN1
+cmUgaWYgbXkgbWVzc2FnZSBiZWxvdyB3ZW50IG91dCB0byB5b3UgYXQgYWxsLiBBdCBsZWFzdA0K
+PiA+Pj4+PiBJIGNhbid0IGZpbmQgaXQgaW4gdGhlIE1MIGFyY2hpdmUuDQo+ID4+Pj4+DQo+ID4+
+Pj4+IEkgc3RpbGwgaG9wZSBzb21lb25lIGNhbiBoZWxwIHdpdGggdGhlIHF1ZXN0aW9ucyBiZWxv
+dy4NCj4gPj4+Pj4NCj4gPj4+Pj4gTWVhbndoaWxlIGZvciB0aGUgc2Vjb25kIHBvaW50IEkgZGlk
+IHNvbWUgdGVzdHMgbXlzZWxmIHdpdGggb25lDQo+ID4+Pj4+IGNoaXAgb24gZWFjaCBvZiB0aGUg
+dHdvIGJ1c2VzIGFuZCBpdCB3b3JrZWQgZmluZSB3aXRoIG15IGxhdGVzdCB2Mg0KPiBwYXRjaGVz
+Lg0KPiA+Pj4+PiBTbyBJJ20gbm90IHN1cmUgYXQgYWxsIHdoeSBZb2dlc2ggaGFzIHByb2JsZW1z
+IHdpdGggaGlzIHNldHVwICh0d28NCj4gPj4+Pj4gY2hpcHMgb24gdGhlIGZpcnN0IGJ1cykuDQo+
+ID4+Pj4NCj4gPj4+PiBUcmllZCB0byB0ZXN0IHRoZSB2MiBwYXRjaCBzZXQgb24gaS5NWDZTWCBT
+REIgYm9hcmQgYnV0IGdldCB0aGUNCj4gPj4+PiBtZW1vcnkNCj4gPj4gbWFwIGZhaWx1cmUuDQo+
+ID4+Pj4NCj4gPj4+PiBbICAgIDEuMjk4NjMzXSBmc2wtcXVhZHNwaSAyMWU0MDAwLnFzcGk6IGlv
+cmVtYXAgZmFpbGVkIGZvciByZXNvdXJjZQ0KPiBbbWVtDQo+ID4+IDB4NzAwMDAwMDAtMHg3ZmZm
+ZmZmZl0NCj4gPj4+PiBbICAgIDEuMzA3MzMwXSBmc2wtcXVhZHNwaSAyMWU0MDAwLnFzcGk6IEZy
+ZWVzY2FsZSBRdWFkU1BJIHByb2JlIGZhaWxlZA0KPiA+Pj4+IFsgICAgMS4zMTM5MjJdIGZzbC1x
+dWFkc3BpOiBwcm9iZSBvZiAyMWU0MDAwLnFzcGkgZmFpbGVkIHdpdGggZXJyb3IgLTEyDQo+ID4+
+Pj4NCj4gPj4+PiBUaGlzIGlzIHRoZSByZWFzb24gd2h5IGR5bmFtaWMgaW9yZW1hcCBhZGRlZCBp
+biBwcmV2aW91cyBkcml2ZXIsDQo+ID4+Pj4gcGxlYXNlDQo+ID4+IHJlZmVyIHRvDQo+ID4+Pj4N
+Cj4gPj4+Pg0KPiA+Pg0KPiBodHRwczovL2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRs
+b29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGc20NCj4gPj4gZXgxMi01LWVuLQ0KPiBjdHAudHJl
+bmRtaWNyby5jb20lM0E0NDMlMkZ3aXMlMkZjbGlja3RpbWUlMkZ2MSUyRnF1ZXJ5JTNGdQ0KPiA+
+Pg0KPiBybCUzRGh0dHBzJTI1M2ElMjUyZiUyNTJmZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9u
+Lm91dGxvb2suY29tJTI1Mg0KPiBmDQo+ID4+ICUyNTNmdXJsJTI1M2RodHRwcyUyNTI1M0ElMjUy
+NTJGJTI1MjUyRnBhJTI2dW1pZCUzRGQ2Y2MxMDE0LQ0KPiAxODQ4LTQyZmINCj4gPj4gLTkyZmQt
+DQo+IDk2MjZkNDVjODA1MCUyNmF1dGglM0Q1NDFlNDUyNTViNjUxNzEwMGQ4MGMyYjFiODBiNjkz
+M2IyMDNjNDkyLQ0KPiA+Pg0KPiA1YWE4ZTE5NzdhOWRiOTQzMDBhOWY2MWY1NDQ2ZTdhMjFiMTc1
+ZjU2JmFtcDtkYXRhPTAyJTdDMDElN0NoYW4ueA0KPiB1JTQwDQo+ID4+DQo+IG54cC5jb20lN0M5
+ZDQzZTliMjlhODI0MTlhMzZjNDA4ZDYxOGRmM2RjMyU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjDQo+
+IGQ5OWMNCj4gPj4NCj4gNWMzMDE2MzUlN0MwJTdDMCU3QzYzNjcyMzc0NDQyNjg5NjIyMyZhbXA7
+c2RhdGE9WTMySTlIOWFkUG4lMkJuDQo+IGxjSUN1Vg0KPiA+PiBNOFVvb3pzaWclMkJNM0Ywck5B
+aGtJRjVaRSUzRCZhbXA7cmVzZXJ2ZWQ9MA0KPiA+Pj4+DQo+ID4+DQo+IHRjaHdvcmsub3psYWJz
+Lm9yZyUyRnBhdGNoJTJGNTAzNjU1JTJGJmFtcDtkYXRhPTAyJTdDMDElN0NoYW4ueHUNCj4gPj4g
+JTQwbngNCj4gPj4+Pg0KPiA+Pg0KPiBwLmNvbSU3QzlmNDVhOGI2NjZkMzQ3OGYwNjU0MDhkNjEx
+N2JmNTI0JTdDNjg2ZWExZDNiYzJiNGM2ZmE5MmNkOQ0KPiA+PiA5YzVjDQo+ID4+Pj4NCj4gPj4N
+Cj4gMzAxNjM1JTdDMCU3QzAlN0M2MzY3MTU2MjE0MjYxOTA0NzMmYW1wO3NkYXRhPVhXUGZXZSUy
+RnUyZVBXDQo+ID4+IG1OUGUxNzlEMA0KPiA+Pj4+IHZqVHA2ZUxwMCUyRkpSRjJ2UmF5RHd1ZyUz
+RCZhbXA7cmVzZXJ2ZWQ9MA0KPiA+Pj4NCj4gPj4+IFdlIGNhbiByZWR1Y2UgdGhlIHNpemUgb2Yg
+dGhlIGlvbWFwIHRvIDJrICogNCwgc2luY2UgdGhpcyBpcyBhbGwgd2UNCj4gPj4+IHVzZSBjdXJy
+ZW50bHkuIENhbiB5b3UgdHJ5IHRvIGNoYW5nZSB0aGUgc2l6ZSBvZiB0aGUgaW9yZW1hcCBjYWxs
+IHRvDQo+ID4+PiAxNmsgYW5kIHRlbGwgdXMgaWYgaXQgd29ya3MuDQo+ID4+DQo+ID4+IFdlcmUg
+eW91IGFibGUgdG8gdGVzdCB3aXRoIHRoZSByZWR1Y2VkIGlvbWFwIHNpemU/DQo+ID4+IEl0IHdv
+dWxkIGJlIGdyZWF0IHRvIGtub3cgaWYgaXQgd29ya3Mgb24geW91ciBib2FyZC4NCj4gPj4NCj4g
+Pj4gVGhhbmtzLA0KPiA+PiBGcmllZGVyDQo+ID4NCj4gPiBUZXN0IHRoZSBjb2RlIG9uIGkuTVg2
+U1ggc2FicmVhdXRvIGJvYXJkIHdpdGggdHdvIG1pY3JvbiBuMjVxMjU2YSBjaGlwcw0KPiBvbiB0
+d28gQ1MuDQo+ID4gRmlyc3QgaXNzdWUgZm91bmQgaXMgX19kaXYwIGtlcm5lbCBkdW1wIHdpdGgg
+dGhlc2UgY29kZQ0KPiA+IC8qIE1heCA2NCBkdW1teSBjbG9jayBjeWNsZXMgc3VwcG9ydGVkICov
+IGlmIChvcC0+ZHVtbXkubmJ5dGVzICogOCAvDQo+ID4gb3AtPmR1bW15LmJ1c3dpZHRoID4gNjQp
+IGR1bW15LmJ1c3dpZHRoIHdhcyBub3Qgc2V0IGR1cmluZyByZWFkIGlkLg0KPiANCj4gRmlyc3Qs
+IHRoYW5rIHlvdSBmb3IgY29taW5nIGJhY2sgdG8gdGhpcyBhbmQgZG9pbmcgdGhlIHRlc3QuDQo+
+IEknbSBjdXJyZW50bHkgbm90IHN1cmUgYWJvdXQgdGhlIHJlYXNvbiBmb3IgdGhpcywgYnV0IEkg
+Z3Vlc3MgQm9yaXMgd2lsbCBmaWd1cmUgaXQNCj4gb3V0IGVhc2lseSA7KQ0KPiANCj4gPg0KPiA+
+IFNlY29uZCBpc3N1ZSBpcyB0aGUgc2Vjb25kIHBhcnQgZmFpbGVkIHRvIGJlIHByb2JlZCwgdHJp
+ZWQgYm90aCBidXN3aWR0aCA0DQo+IGFuZCBidXN3aWR0aCAxLg0KPiA+DQo+ID4gWyAgICAxLjM2
+NDk3OV0gbTI1cDgwIHNwaTUuMDogZm91bmQgbjI1cTI1NmEsIGV4cGVjdGVkIG0yNXA4MA0KPiA+
+IFsgICAgMS4zNzA5ODZdIG0yNXA4MCBzcGk1LjA6IG4yNXEyNTZhICgzMjc2OCBLYnl0ZXMpDQo+
+ID4gWyAgICAxLjM4MTAyMF0gbTI1cDgwIHNwaTUuMTogdW5yZWNvZ25pemVkIEpFREVDIGlkIGJ5
+dGVzOiBmZiwgZmYsIGZmDQo+ID4NCj4gPiBUaGVzZSBhcmUgdGhlIERUIHNldHRpbmdzOg0KPiA+
+ICZxc3BpMSB7DQo+ID4gICAgICAgICAgcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0IjsNCj4gPiAg
+ICAgICAgICBwaW5jdHJsLTAgPSA8JnBpbmN0cmxfcXNwaTFfMT47DQo+ID4gICAgICAgICAgc3Rh
+dHVzID0gIm9rYXkiOw0KPiA+DQo+ID4gICAgICAgICAgZmxhc2gwOiBuMjVxMjU2YUAwIHsNCj4g
+PiAgICAgICAgICDCpiAgICAgICAjYWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPiAgICAgICAgICDC
+piAgICAgICAjc2l6ZS1jZWxscyA9IDwxPjsNCj4gPiAgICAgICAgICDCpiAgICAgICBjb21wYXRp
+YmxlID0gIm1pY3JvbixtMjVwODAiOw0KPiA+ICAgICAgICAgIMKmICAgICAgIHNwaS1tYXgtZnJl
+cXVlbmN5ID0gPDI5MDAwMDAwPjsNCj4gPiAgICAgICAgICAgICAgICAgIHNwaS1yeC1idXMtd2lk
+dGggPSA8ND47DQo+ID4gICAgICAgICAgICAgICAgICBzcGktdHgtYnVzLXdpZHRoID0gPDQ+Ow0K
+PiA+ICAgICAgICAgIMKmICAgICAgIHJlZyA9IDwwPjsNCj4gPiAgICAgICAgICB9Ow0KPiA+DQo+
+ID4gICAgICAgICAgZmxhc2gxOiBuMjVxMjU2YUAxIHsNCj4gPiAgICAgICAgICDCpiAgICAgICAj
+YWRkcmVzcy1jZWxscyA9IDwxPjsNCj4gPiAgICAgICAgICDCpiAgICAgICAjc2l6ZS1jZWxscyA9
+IDwxPjsNCj4gPiAgICAgICAgICDCpiAgICAgICBjb21wYXRpYmxlID0gIm1pY3JvbixtMjVwODAi
+Ow0KPiA+ICAgICAgICAgIMKmICAgICAgIHNwaS1tYXgtZnJlcXVlbmN5ID0gPDI5MDAwMDAwPjsN
+Cj4gPiAgICAgICAgICAgICAgICAgIHNwaS1yeC1idXMtd2lkdGggPSA8ND47DQo+ID4gICAgICAg
+ICAgICAgICAgICBzcGktdHgtYnVzLXdpZHRoID0gPDQ+Ow0KPiA+ICAgICAgICAgIMKmICAgICAg
+IHJlZyA9IDwxPjsNCj4gPiAgICAgICAgICB9Ow0KPiA+IH07DQo+IA0KPiBGaXJzdCwgSSB0aGlu
+ayB5b3Ugc2hvdWxkIGFkZCAiamVkZWMsc3BpLW5vciIgdG8geW91ciBjb21wYXRpYmxlIHByb3Bl
+cnRpZXMuDQo+IA0KPiBTZWNvbmQsIGFyZSB5b3Ugc3VyZSwgdGhhdCB0aGUgdHdvIGNoaXBzIGFy
+ZSBib3RoIG9uIFFTUElBIHVzaW5nIHRoZSB0d28NCj4gY2hpcCBzZWxlY3RzPw0KPiBJIGhhdmUg
+bm8gc2NoZW1hdGljcyBvZiB0aGUgYm9hcmQsIGJ1dCBpZiBJIGxvb2sgYXQgdGhlIGRldmljZXRy
+ZWUgaW4gdGhlIGxpbnV4LQ0KPiBpbXgga2VybmVsIFsxXSBpdCBzZWVtcyB0byBtZSB0aGF0IG9u
+ZSBjaGlwIGlzIG9uIFFTUElBIENTMCBhbmQgdGhlIG90aGVyIG9uDQo+IFFTUElCIENTMC4NCj4g
+SWYgdGhpcyBpcyB0aGUgY2FzZSwgdGhlbiB5b3UgaGF2ZSB0byBzZXQgcmVnID0gPDI+IGZvciB0
+aGUgc2Vjb25kIGNoaXAuDQoNClllcywgeW91IGFyZSByaWdodCwgdGhlIHNlY29uZCBjaGlwIGNv
+bm5lY3RzIHRvIFFTUElCIENTMCwgd2l0aCB0aGUgRFQgY2hhbmdlLCBib3RoIG9mIHRoZW0gd29y
+ayBmaW5lIHdpdGggX19kaXYwIGlzc3VlIHdvcmthcm91bmQuDQoNCj4gDQo+IFRoYW5rcywNCj4g
+RnJpZWRlcg0KPiANCj4gWzFdDQo+IGh0dHBzOi8vZW1lYTAxLnNhZmVsaW5rcy5wcm90ZWN0aW9u
+Lm91dGxvb2suY29tLz91cmw9aHR0cCUzQSUyRiUyRmdpdC5mDQo+IHJlZXNjYWxlLmNvbSUyRmdp
+dCUyRmNnaXQuY2dpJTJGaW14JTJGbGludXgtDQo+IGlteC5naXQlMkZ0cmVlJTJGYXJjaCUyRmFy
+bSUyRmJvb3QlMkZkdHMlMkZpbXg2c3gtDQo+IHNhYnJlYXV0by5kdHMlM0ZoJTNEaW14XzQuOS4x
+MV8xLjAuMF9nYSUyM243NzEmYW1wO2RhdGE9MDIlN0MwMSUNCj4gN0NoYW4ueHUlNDBueHAuY29t
+JTdDOWQ0M2U5YjI5YTgyNDE5YTM2YzQwOGQ2MThkZjNkYzMlN0M2ODZlYTFkDQo+IDNiYzJiNGM2
+ZmE5MmNkOTljNWMzMDE2MzUlN0MwJTdDMCU3QzYzNjcyMzc0NDQyNjg5NjIyMyZhbXA7c2RhdGEN
+Cj4gPTAzOERkZ01Mak8yM0lvM0NUSG9TVnJKTDJIbyUyQmd4eUhseDklMkJMTXJMV2tRJTNEJmFt
+cDtyZXNlcg0KPiB2ZWQ9MA0KPiANCj4gPj4+DQo+ID4+PiBVbnJlbGF0ZWQgdG8gdGhpcyBpc3N1
+ZSwgd2Ugc3RpbGwgaGF2ZSAyIHF1ZXN0aW9ucyBsZWZ0IHVuYW5zd2VyZWQ6DQo+ID4+Pg0KPiA+
+Pj4gMS8gaXMgdGhlcmUgYW4gZWFzeSB3YXkgdG8gaW52YWxpZGF0ZSBBSEIgYnVmZmVycz8gSSBt
+ZWFuLCBub3QNCj4gPj4+ICAgICAgc29tZXRoaW5nIHRoYXQgaW1wbGllcyBhIGZ1bGwgcmVzZXQg
+KyBzZXZlcmFsIG1pbGxpc2Vjb25kcyBvZiBkZWxheQ0KPiA+Pj4gICAgICBhZnRlciB0aGUgcmVz
+ZXQuIFJpZ2h0IG5vdyB3ZSB0cmljayB0aGUgY2FjaGluZyBsb2dpYyBieSBtYXBwaW5nIGENCj4g
+Pj4+ICAgICAgcG9ydGlvbiB0aGF0IGlzIHR3aWNlIHRoZSBzaXplIG9mIHRoZSBidWZmZXIgYW5k
+IHN3aXRjaGluZyBmcm9tIG9uZQ0KPiA+Pj4gICAgICBzdWItcG9ydGlvbiB0byB0aGlzIG90aGVy
+IHRvIHRyaWdnZXIgYSByZWFsIHJlYWQgb24gZWFjaCByZWFkDQo+ID4+PiAgICAgIGFjY2Vzcywg
+YnV0IHRoYXQncyBoYWNrLWlzaCwgYW5kIEknZCBiZSBzdXJwcmlzZWQgaWYgSFcNCj4gPj4+ICAg
+ICAgZW5naW5lZXJzIGhhZG4ndCBwbGFubmVkIGZvciB0aGlzICJtYW51YWwgQUhCIGJ1ZmZlciBm
+bHVzaCIgY2FzZS4NCj4gPj4+DQo+ID4+PiAyLyBpZiB3ZSB1c2UgRE1BLCBkbyB5b3Uga25vdyB3
+aGF0IGhhcHBlbnMgd2hlbiB0aGUgVFggRklGTyBydW5zDQo+IG91dA0KPiA+Pj4gICAgICBvZiBk
+YXRhIHdoaWxlIHRoZSBUWCByZXF1ZXN0IGlzIG5vdCBmaW5pc2hlZCB5ZXQuIEluIFBJTyBtb2Rl
+LCBpdA0KPiA+Pj4gICAgICBzZWVtcyB0aGUgZW5naW5lIHNlbmRzIGdhcmJhZ2Ugb24gdGhlIGJ1
+cyB3aGVuIHRoYXQgaGFwcGVucywgYW5kDQo+IHdlDQo+ID4+PiAgICAgIGRlZmluaXRlbHkgZG9u
+J3Qgd2FudCB0aGF0Lg0KPiA+Pj4NCj4gPj4+IFdoaWxlICMxIGlzIG5vdCBibG9ja2luZyB1cywg
+IzIgaXMgaWYgd2UgZG9uJ3QgaGF2ZSB0aG9zZSBwYXRjaGVzDQo+ID4+PiBbMV1bMl0gYXBwbGll
+ZCwgYW5kIE1hcmVrIHdhbnRlZCB0byBiZSBzdXJlIHRoZXJlIHdhcyBubyBvdGhlciB3YXlzDQo+
+ID4+PiB0byBzb2x2ZSB0aGUgIlRYIEZJRk8gc3RhcnZhdGlvbiIgaXNzdWUgYmVmb3JlIGNvbnNp
+ZGVyaW5nIHRoZXNlIGNoYW5nZXMuDQo+ID4+PiBTbyB0aGF0J2QgYmUgZ3JlYXQgaWYgc29tZW9u
+ZSBmcm9tIE5YUCBjb3VsZCBoYXZlIGEgbG9vay9hc2sgYXJvdW5kDQo+ID4+PiBhbmQgZ2l2ZSB1
+cyBhbnN3ZXJzIHRvIHRob3NlIDIgcXVlc3Rpb25zLg0KPiA+Pj4NCj4gPj4+IFRoYW5rcywNCj4g
+Pj4+DQo+ID4+PiBCb3Jpcw0K
