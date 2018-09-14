@@ -1,29 +1,23 @@
-Received: from scopuli.esotechnik.de ([2a02:c205:3001:6788::1]
- helo=mail.esotechnik.net)
+Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g0oNB-0001fV-IR
- for linux-mtd@lists.infradead.org; Fri, 14 Sep 2018 13:43:03 +0000
-Date: Fri, 14 Sep 2018 15:42:46 +0200
-From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
-To: Rob Herring <robh+dt@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek =?utf-8?B?VmHFoXV0?= <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
- =?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>,
- MTD Maling List <linux-mtd@lists.infradead.org>,
- devicetree@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] mtd: mtdconcat: add dt driver for concat devices
-Message-ID: <20180914134246.GB5913@dellux>
-References: <20180908131345.8145-1-kernel@nospam.obeliks.de>
- <20180908131345.8145-4-kernel@nospam.obeliks.de>
- <CAL_JsqL+CMzkyeHLxa+6xf0FkM3mSPiGvoMrRoVV-FS1Q7SQsA@mail.gmail.com>
+ id 1g0p6M-0002EA-57
+ for linux-mtd@lists.infradead.org; Fri, 14 Sep 2018 14:29:44 +0000
+Date: Fri, 14 Sep 2018 16:29:23 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: linux-mtd@lists.infradead.org, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Steffen Trumtrar
+ <s.trumtrar@pengutronix.de>, linux-kernel@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: rawnand: denali: fix a race condition when DMA is
+ kicked
+Message-ID: <20180914162923.05c44fcc@xps13>
+In-Reply-To: <1536818329-11068-1-git-send-email-yamada.masahiro@socionext.com>
+References: <1536818329-11068-1-git-send-email-yamada.masahiro@socionext.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqL+CMzkyeHLxa+6xf0FkM3mSPiGvoMrRoVV-FS1Q7SQsA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Rob,
+Hello,
 
-sorry it took me so long to reply, I had to set up mutt first ;)
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Thu, 13 Sep
+2018 14:58:49 +0900:
 
-On Mon, Sep 10, 2018 at 04:47:22PM -0500, Rob Herring wrote:
-> On Sat, Sep 8, 2018 at 8:20 AM Bernhard Frauendienst
-> <kernel@nospam.obeliks.de> wrote:
-> >
-> > Some mtd drivers like physmap variants have support for concatenating
-> > multiple mtd devices, but there is no generic way to define such a
-> > concat device from within the device tree.
-> 
-> That is the generic way, but I suppose that only works for parallel
-> memory mapped devices. So is it just spi-nor that you need to support?
+> I thought the read-back of the DMA_ENABLE register was unnecessary
+> (at least it is working on my boards), then deleted it in commit
+> 586a2c52909d ("mtd: nand: denali: squash denali_enable_dma() helper
+> into caller").  Sorry, I was wrong - it caused a timing issue on
+> Cyclone5 SoCFPGAs.
+>=20
+> Revive the register read-back, commenting why this is necessary.
+>=20
+> Fixes: 586a2c52909d ("mtd: nand: denali: squash denali_enable_dma() helpe=
+r into caller")
+> Reported-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 
-I'm no expert in this domain, or regarding OpenWRT, but as far as I can
-tell this only concerns spi-nor devices. It definitely does in my
-specific use-case.
+Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-> Can we just make reg take multiple chip selects just like the existing
-> support takes multiple reg entries?
 
-That sounds like an interesting idea, but I'm afraid it's not a trivial
-change, as far as I can tell from looking at spi.c. 
-
-The 'reg' property is currently read in of_spi_parse_dt which gets
-passed the spi device created in of_register_spi_device. The latter
-would have to create multiple devices from a single OF node, and pass
-the chipselect value to of_spi_parse_dt, which would have to parse the
-same node multiple times, which feels a bit strange. To make things
-worse, of_register_spi_device returns the created device, although that
-value seems unused in the current tree (except for error checks).
-
-Am I correct to assume that this change in method signature could be
-accteptable since both functions are not exported?
-
-Regards,
-Bernhard
+Thanks,
+Miqu=C3=A8l
