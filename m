@@ -1,18 +1,29 @@
-Received: from mga09.intel.com ([134.134.136.24])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g0lgA-0006QM-WC
- for linux-mtd@lists.infradead.org; Fri, 14 Sep 2018 10:50:28 +0000
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-To: linux-mtd@lists.infradead.org
-Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+Received: from scopuli.esotechnik.de ([2a02:c205:3001:6788::1]
+ helo=mail.esotechnik.net)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g0oNB-0001fV-IR
+ for linux-mtd@lists.infradead.org; Fri, 14 Sep 2018 13:43:03 +0000
+Date: Fri, 14 Sep 2018 15:42:46 +0200
+From: Bernhard Frauendienst <kernel@nospam.obeliks.de>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
  Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>,
- Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Subject: [PATCH] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
- spi_nor_read_id()
-Date: Fri, 14 Sep 2018 13:49:01 +0300
-Message-Id: <20180914104901.4480-1-jarkko.nikula@linux.intel.com>
+ Marek =?utf-8?B?VmHFoXV0?= <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Mark Rutland <mark.rutland@arm.com>,
+ =?iso-8859-1?Q?Miqu=E8l?= Raynal <miquel.raynal@bootlin.com>,
+ MTD Maling List <linux-mtd@lists.infradead.org>,
+ devicetree@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] mtd: mtdconcat: add dt driver for concat devices
+Message-ID: <20180914134246.GB5913@dellux>
+References: <20180908131345.8145-1-kernel@nospam.obeliks.de>
+ <20180908131345.8145-4-kernel@nospam.obeliks.de>
+ <CAL_JsqL+CMzkyeHLxa+6xf0FkM3mSPiGvoMrRoVV-FS1Q7SQsA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqL+CMzkyeHLxa+6xf0FkM3mSPiGvoMrRoVV-FS1Q7SQsA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
-there is no allocation for DMA-safe buffer when transmitting data bytes
-over SPI bus in m25p80 driver.
+Hi Rob,
 
-JEDEC ID reading in spi_nor_read_id() has the buffer in stack. This is
-not safe with the m25p80 driver anymore after commit 4120f8d158ef if
-underlying SPI controller is using DMA for transfers.
+sorry it took me so long to reply, I had to set up mutt first ;)
 
-Therefore allocate a temporary DMA-safe buffer for JEDEC ID reading.
+On Mon, Sep 10, 2018 at 04:47:22PM -0500, Rob Herring wrote:
+> On Sat, Sep 8, 2018 at 8:20 AM Bernhard Frauendienst
+> <kernel@nospam.obeliks.de> wrote:
+> >
+> > Some mtd drivers like physmap variants have support for concatenating
+> > multiple mtd devices, but there is no generic way to define such a
+> > concat device from within the device tree.
+> 
+> That is the generic way, but I suppose that only works for parallel
+> memory mapped devices. So is it just spi-nor that you need to support?
 
-Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
----
-I'm not an spi-nor expert at all but noticed this "WARNING: CPU: 3 PID: 154
-at kernel/dma/debug.c:1191 check_for_stack+0xc2/0x1a0" after
-4120f8d158ef since my test setup has DMA debugging enabled and using DMA
-for SPI.
-I don't know are there other places that may transfer from stack but it
-looked potentially better to have the buffer allocated in
-spi_nor_read_id() instead of doing allocation & copy all the places
-that 4120f8d158ef touches.
----
- drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+I'm no expert in this domain, or regarding OpenWRT, but as far as I can
+tell this only concerns spi-nor devices. It definitely does in my
+specific use-case.
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f028277fb1ce..f2294ed14d8f 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1269,25 +1269,37 @@ static const struct flash_info spi_nor_ids[] = {
- static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
- {
- 	int			tmp;
--	u8			id[SPI_NOR_MAX_ID_LEN];
--	const struct flash_info	*info;
-+	u8			*id;
-+	const struct flash_info	*info, *ret;
-+
-+	id = kzalloc(SPI_NOR_MAX_ID_LEN, GFP_KERNEL | GFP_DMA);
-+	if (!id) {
-+		ret = ERR_PTR(ENOMEM);
-+		goto out;
-+	}
- 
- 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
- 	if (tmp < 0) {
- 		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
--		return ERR_PTR(tmp);
-+		ret = ERR_PTR(tmp);
-+		goto out;
- 	}
- 
- 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
- 		info = &spi_nor_ids[tmp];
- 		if (info->id_len) {
--			if (!memcmp(info->id, id, info->id_len))
--				return &spi_nor_ids[tmp];
-+			if (!memcmp(info->id, id, info->id_len)) {
-+				ret = &spi_nor_ids[tmp];
-+				goto out;
-+			}
- 		}
- 	}
- 	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
- 		id[0], id[1], id[2]);
--	return ERR_PTR(-ENODEV);
-+	ret = ERR_PTR(-ENODEV);
-+out:
-+	kfree(id);
-+	return ret;
- }
- 
- static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
--- 
-2.18.0
+> Can we just make reg take multiple chip selects just like the existing
+> support takes multiple reg entries?
+
+That sounds like an interesting idea, but I'm afraid it's not a trivial
+change, as far as I can tell from looking at spi.c. 
+
+The 'reg' property is currently read in of_spi_parse_dt which gets
+passed the spi device created in of_register_spi_device. The latter
+would have to create multiple devices from a single OF node, and pass
+the chipselect value to of_spi_parse_dt, which would have to parse the
+same node multiple times, which feels a bit strange. To make things
+worse, of_register_spi_device returns the created device, although that
+value seems unused in the current tree (except for error checks).
+
+Am I correct to assume that this change in method signature could be
+accteptable since both functions are not exported?
+
+Regards,
+Bernhard
