@@ -1,18 +1,21 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g152f-0006Li-HB
- for linux-mtd@lists.infradead.org; Sat, 15 Sep 2018 07:30:58 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, kernel@pengutronix.de
-Subject: Re: [PATCH] ubifs: drop false positive assertion
-Date: Sat, 15 Sep 2018 09:30:45 +0200
-Message-ID: <2674138.VomuAnzpmK@blindfold>
-In-Reply-To: <20180912125138.10751-1-s.hauer@pengutronix.de>
-References: <20180912125138.10751-1-s.hauer@pengutronix.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g15wg-0006hz-76
+ for linux-mtd@lists.infradead.org; Sat, 15 Sep 2018 08:28:52 +0000
+Date: Sat, 15 Sep 2018 10:28:34 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
+ spi_nor_read_id()
+Message-ID: <20180915102834.60c3edc2@bbrezillon>
+In-Reply-To: <20180914104901.4480-1-jarkko.nikula@linux.intel.com>
+References: <20180914104901.4480-1-jarkko.nikula@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sascha,
+On Fri, 14 Sep 2018 13:49:01 +0300
+Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
 
-Am Mittwoch, 12. September 2018, 14:51:38 CEST schrieb Sascha Hauer:
-> The following sequence triggers
+> After commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
+> there is no allocation for DMA-safe buffer when transmitting data bytes
+> over SPI bus in m25p80 driver.
 > 
-> 	ubifs_assert(c, c->lst.taken_empty_lebs > 0);
+> JEDEC ID reading in spi_nor_read_id() has the buffer in stack. This is
+> not safe with the m25p80 driver anymore after commit 4120f8d158ef if
+> underlying SPI controller is using DMA for transfers.
 > 
-> at the end of ubifs_remount_fs():
+> Therefore allocate a temporary DMA-safe buffer for JEDEC ID reading.
 > 
-> mount -t ubifs /dev/ubi0_0 /mnt
-> echo 1 > /sys/kernel/debug/ubifs/ubi0_0/ro_error
-> umount /mnt
-> mount -t ubifs -o ro /dev/ubix_y /mnt
-> mount -o remount,ro /mnt
+> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> ---
+> I'm not an spi-nor expert at all but noticed this "WARNING: CPU: 3 PID: 154
+> at kernel/dma/debug.c:1191 check_for_stack+0xc2/0x1a0" after
+> 4120f8d158ef since my test setup has DMA debugging enabled and using DMA
+> for SPI.
+> I don't know are there other places that may transfer from stack but it
+> looked potentially better to have the buffer allocated in
+> spi_nor_read_id() instead of doing allocation & copy all the places
+> that 4120f8d158ef touches.
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++++++++------
+>  1 file changed, 18 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index f028277fb1ce..f2294ed14d8f 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1269,25 +1269,37 @@ static const struct flash_info spi_nor_ids[] = {
+>  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+>  {
+>  	int			tmp;
+> -	u8			id[SPI_NOR_MAX_ID_LEN];
+> -	const struct flash_info	*info;
+> +	u8			*id;
+> +	const struct flash_info	*info, *ret;
+> +
+> +	id = kzalloc(SPI_NOR_MAX_ID_LEN, GFP_KERNEL | GFP_DMA);
 
-Ahh, ok. You have a unclean mount and then a read-only mount.
-Therefore UBIFs is still not clean but cannot do anything about that.
+You can drop the GFP_DMA flag here, it's not needed (see the GFP_DMA
+description [1] for more details).
 
-> The resulting
-> 
-> UBIFS assert failed in ubifs_remount_fs at 1878 (pid 161)
-> 
-> is a false positive. In the case above c->lst.taken_empty_lebs has
-> never been changed from its initial zero value. This will only happen
-> when th> e deferred recovery is done.
-> 
-> Fix this by doing the assertion only when recovery has been done
-> already.
+the patch looks good otherwise.
 
-Makes sense!
+> +	if (!id) {
+> +		ret = ERR_PTR(ENOMEM);
+> +		goto out;
+> +	}
+>  
+>  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+>  	if (tmp < 0) {
+>  		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
+> -		return ERR_PTR(tmp);
+> +		ret = ERR_PTR(tmp);
+> +		goto out;
+>  	}
+>  
+>  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+>  		info = &spi_nor_ids[tmp];
+>  		if (info->id_len) {
+> -			if (!memcmp(info->id, id, info->id_len))
+> -				return &spi_nor_ids[tmp];
+> +			if (!memcmp(info->id, id, info->id_len)) {
+> +				ret = &spi_nor_ids[tmp];
+> +				goto out;
+> +			}
+>  		}
+>  	}
+>  	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
+>  		id[0], id[1], id[2]);
+> -	return ERR_PTR(-ENODEV);
+> +	ret = ERR_PTR(-ENODEV);
+> +out:
+> +	kfree(id);
+> +	return ret;
+>  }
+>  
+>  static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
 
-Thanks,
-//richard
+[1]https://elixir.bootlin.com/linux/v4.19-rc3/source/Documentation/kernel-hacking/hacking.rst#L320
