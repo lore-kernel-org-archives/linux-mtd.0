@@ -1,21 +1,36 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g15wg-0006hz-76
- for linux-mtd@lists.infradead.org; Sat, 15 Sep 2018 08:28:52 +0000
-Date: Sat, 15 Sep 2018 10:28:34 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: linux-mtd@lists.infradead.org, Marek Vasut <marek.vasut@gmail.com>,
+ id 1g1Ema-00081J-Oo
+ for linux-mtd@lists.infradead.org; Sat, 15 Sep 2018 17:55:03 +0000
+Date: Sat, 15 Sep 2018 19:54:40 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
  David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
- spi_nor_read_id()
-Message-ID: <20180915102834.60c3edc2@bbrezillon>
-In-Reply-To: <20180914104901.4480-1-jarkko.nikula@linux.intel.com>
-References: <20180914104901.4480-1-jarkko.nikula@linux.intel.com>
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org, Hartley
+ Sweeten <hsweeten@visionengravers.com>, Ryan Mallon <rmallon@gmail.com>,
+ Alexander Shiyan <shc_work@mail.ru>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam
+ <fabio.estevam@nxp.com>, NXP Linux Team <linux-imx@nxp.com>, Imre Kaloz
+ <kaloz@openwrt.org>, Krzysztof Halasa <khalasa@piap.pl>, Tony Lindgren
+ <tony@atomide.com>, linux-omap@vger.kernel.org, Alexander Clouter
+ <alex@digriz.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>, Jason Cooper
+ <jason@lakedaemon.net>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Daniel
+ Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert
+ Jarzmik <robert.jarzmik@free.fr>, Ralf Baechle <ralf@linux-mips.org>,
+ linux-mips@linux-mips.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org
+Subject: Re: [PATCH 00/19] mtd: rawnand: API cleanup (2nd batch)
+Message-ID: <20180915195440.251fea18@xps13>
+In-Reply-To: <20180906223851.6964-1-boris.brezillon@bootlin.com>
+References: <20180906223851.6964-1-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,86 +40,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Sep 2018 13:49:01 +0300
-Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+Hi Boris,
 
-> After commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
-> there is no allocation for DMA-safe buffer when transmitting data bytes
-> over SPI bus in m25p80 driver.
-> 
-> JEDEC ID reading in spi_nor_read_id() has the buffer in stack. This is
-> not safe with the m25p80 driver anymore after commit 4120f8d158ef if
-> underlying SPI controller is using DMA for transfers.
-> 
-> Therefore allocate a temporary DMA-safe buffer for JEDEC ID reading.
-> 
-> Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> ---
-> I'm not an spi-nor expert at all but noticed this "WARNING: CPU: 3 PID: 154
-> at kernel/dma/debug.c:1191 check_for_stack+0xc2/0x1a0" after
-> 4120f8d158ef since my test setup has DMA debugging enabled and using DMA
-> for SPI.
-> I don't know are there other places that may transfer from stack but it
-> looked potentially better to have the buffer allocated in
-> spi_nor_read_id() instead of doing allocation & copy all the places
-> that 4120f8d158ef touches.
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f028277fb1ce..f2294ed14d8f 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1269,25 +1269,37 @@ static const struct flash_info spi_nor_ids[] = {
->  static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
->  {
->  	int			tmp;
-> -	u8			id[SPI_NOR_MAX_ID_LEN];
-> -	const struct flash_info	*info;
-> +	u8			*id;
-> +	const struct flash_info	*info, *ret;
-> +
-> +	id = kzalloc(SPI_NOR_MAX_ID_LEN, GFP_KERNEL | GFP_DMA);
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Fri,  7 Sep 2018
+00:38:32 +0200:
 
-You can drop the GFP_DMA flag here, it's not needed (see the GFP_DMA
-description [1] for more details).
+> Hello,
+>=20
+> This is the 2nd batch of API cleanup patches. This time we move
+> deprecated hooks/fields to the nand_legacy struct, and then move some
+> of the code found in nand_base.c into separate source/header files.
+>=20
+> With this new organization, new comers should more easily identify the
+> bits they can use in their NAND controller drivers and those that are
+> only meant for core code. It also shrink a bit nand_base.c which was
+> over 6000 lines of code.
+>=20
+> Note that existing coding style issues (reported by checkpatch) in arch
+> or driver code are intentionally not fixed to keep the series focused
+> on the API/core cleanup.
+>=20
+> Regards,
+>=20
+> Boris
+>=20
+> Boris Brezillon (19):
+>   mtd: rawnand: Leave chip->IO_ADDR_{R,W} to NULL when unused
+>   mtd: rawnand: Create a legacy struct and move ->IO_ADDR_{R,W} there
+>   mtd: rawnand: Deprecate ->{read,write}_{byte,buf}() hooks
+>   mtd: rawnand: Deprecate ->cmd_ctrl() and ->cmdfunc()
+>   mtd: rawnand: Deprecate ->dev_ready() and ->waitfunc()
+>   mtd: rawnand: Deprecate ->block_{bad,markbad}() hooks
+>   mtd: rawnand: Deprecate ->erase()
+>   mtd: rawnand: Deprecate ->{set,get}_features() hooks
+>   mtd: rawnand: Deprecate ->chip_delay
+>   mtd: rawnand: Move function prototypes after struct declarations
+>   mtd: rawnand: Get rid of nand_flash_dev forward declation
+>   mtd: rawnand: Get rid of the duplicate nand_chip forward declaration
+>   mtd: rawnand: Get rid of a few unused definitions
+>   mtd: rawnand: Move platform_nand_xxx definitions out of rawnand.h
+>   mtd: rawnand: Inline onfi_get_async_timing_mode()
+>   mtd: rawnand: Keep all internal stuff private
+>   mtd: rawnand: Move legacy code to nand_legacy.c
+>   mtd: rawnand: Move ONFI code to nand_onfi.c
+>   mtd: rawnand: Move JEDEC code to nand_jedec.c
+>=20
+>  Documentation/driver-api/mtdnand.rst             |   30 +-
+>  arch/arm/mach-ep93xx/snappercl15.c               |    8 +-
+>  arch/arm/mach-ep93xx/ts72xx.c                    |    9 +-
+>  arch/arm/mach-imx/mach-qong.c                    |    6 +-
+>  arch/arm/mach-ixp4xx/ixdp425-setup.c             |    2 +-
+>  arch/arm/mach-omap1/board-fsample.c              |    3 +-
+>  arch/arm/mach-omap1/board-h2.c                   |    3 +-
+>  arch/arm/mach-omap1/board-h3.c                   |    2 +-
+>  arch/arm/mach-omap1/board-nand.c                 |    2 +-
+>  arch/arm/mach-omap1/board-perseus2.c             |    3 +-
+>  arch/arm/mach-orion5x/ts78xx-setup.c             |    9 +-
+>  arch/arm/mach-pxa/balloon3.c                     |    5 +-
+>  arch/arm/mach-pxa/em-x270.c                      |    9 +-
+>  arch/arm/mach-pxa/palmtx.c                       |    5 +-
+>  arch/mips/alchemy/devboards/db1200.c             |    9 +-
+>  arch/mips/alchemy/devboards/db1300.c             |    9 +-
+>  arch/mips/alchemy/devboards/db1550.c             |    9 +-
+>  arch/mips/netlogic/xlr/platform-flash.c          |    3 +-
+>  arch/mips/pnx833x/common/platform.c              |    5 +-
+>  arch/mips/rb532/devices.c                        |    5 +-
+>  arch/sh/boards/mach-migor/setup.c                |    8 +-
+>  drivers/mtd/nand/raw/Makefile                    |    4 +-
+>  drivers/mtd/nand/raw/ams-delta.c                 |   22 +-
+>  drivers/mtd/nand/raw/atmel/nand-controller.c     |   22 +-
+>  drivers/mtd/nand/raw/au1550nd.c                  |   43 +-
+>  drivers/mtd/nand/raw/bcm47xxnflash/ops_bcm4706.c |   22 +-
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c         |   15 +-
+>  drivers/mtd/nand/raw/cafe_nand.c                 |   22 +-
+>  drivers/mtd/nand/raw/cmx270_nand.c               |   28 +-
+>  drivers/mtd/nand/raw/cs553x_nand.c               |   42 +-
+>  drivers/mtd/nand/raw/davinci_nand.c              |   34 +-
+>  drivers/mtd/nand/raw/denali.c                    |   23 +-
+>  drivers/mtd/nand/raw/diskonchip.c                |   50 +-
+>  drivers/mtd/nand/raw/fsl_elbc_nand.c             |   18 +-
+>  drivers/mtd/nand/raw/fsl_ifc_nand.c              |   24 +-
+>  drivers/mtd/nand/raw/fsl_upm.c                   |   30 +-
+>  drivers/mtd/nand/raw/fsmc_nand.c                 |    1 -
+>  drivers/mtd/nand/raw/gpio.c                      |   16 +-
+>  drivers/mtd/nand/raw/gpmi-nand/gpmi-nand.c       |   22 +-
+>  drivers/mtd/nand/raw/hisi504_nand.c              |   18 +-
+>  drivers/mtd/nand/raw/internals.h                 |  114 ++
+>  drivers/mtd/nand/raw/jz4740_nand.c               |   14 +-
+>  drivers/mtd/nand/raw/jz4780_nand.c               |   10 +-
+>  drivers/mtd/nand/raw/lpc32xx_mlc.c               |   12 +-
+>  drivers/mtd/nand/raw/lpc32xx_slc.c               |   26 +-
+>  drivers/mtd/nand/raw/mpc5121_nfc.c               |   14 +-
+>  drivers/mtd/nand/raw/mtk_nand.c                  |   12 +-
+>  drivers/mtd/nand/raw/mxc_nand.c                  |   20 +-
+>  drivers/mtd/nand/raw/nand_amd.c                  |    2 +-
+>  drivers/mtd/nand/raw/nand_base.c                 | 1260 +++-------------=
+------
+>  drivers/mtd/nand/raw/nand_bbt.c                  |    5 +-
+>  drivers/mtd/nand/raw/nand_hynix.c                |    9 +-
+>  drivers/mtd/nand/raw/nand_ids.c                  |    4 +-
+>  drivers/mtd/nand/raw/nand_jedec.c                |  113 ++
+>  drivers/mtd/nand/raw/nand_legacy.c               |  642 +++++++++++
+>  drivers/mtd/nand/raw/nand_macronix.c             |    2 +-
+>  drivers/mtd/nand/raw/nand_micron.c               |    3 +-
+>  drivers/mtd/nand/raw/nand_onfi.c                 |  305 ++++++
+>  drivers/mtd/nand/raw/nand_samsung.c              |    2 +-
+>  drivers/mtd/nand/raw/nand_timings.c              |   18 +-
+>  drivers/mtd/nand/raw/nand_toshiba.c              |    2 +-
+>  drivers/mtd/nand/raw/nandsim.c                   |   14 +-
+>  drivers/mtd/nand/raw/ndfc.c                      |   14 +-
+>  drivers/mtd/nand/raw/nuc900_nand.c               |   22 +-
+>  drivers/mtd/nand/raw/omap2.c                     |   62 +-
+>  drivers/mtd/nand/raw/orion_nand.c                |   12 +-
+>  drivers/mtd/nand/raw/oxnas_nand.c                |   10 +-
+>  drivers/mtd/nand/raw/pasemi_nand.c               |   32 +-
+>  drivers/mtd/nand/raw/plat_nand.c                 |   17 +-
+>  drivers/mtd/nand/raw/qcom_nandc.c                |   39 +-
+>  drivers/mtd/nand/raw/r852.c                      |   14 +-
+>  drivers/mtd/nand/raw/s3c2410.c                   |   34 +-
+>  drivers/mtd/nand/raw/sh_flctl.c                  |   18 +-
+>  drivers/mtd/nand/raw/sharpsl.c                   |   12 +-
+>  drivers/mtd/nand/raw/sm_common.c                 |    2 +-
+>  drivers/mtd/nand/raw/socrates_nand.c             |   16 +-
+>  drivers/mtd/nand/raw/sunxi_nand.c                |   14 +-
+>  drivers/mtd/nand/raw/tango_nand.c                |   12 +-
+>  drivers/mtd/nand/raw/tmio_nand.c                 |   20 +-
+>  drivers/mtd/nand/raw/txx9ndfmc.c                 |   12 +-
+>  drivers/mtd/nand/raw/xway_nand.c                 |   12 +-
+>  drivers/staging/mt29f_spinand/mt29f_spinand.c    |   16 +-
+>  include/linux/mtd/jedec.h                        |   91 ++
+>  include/linux/mtd/onfi.h                         |  178 +++
+>  include/linux/mtd/platnand.h                     |   74 ++
+>  include/linux/mtd/rawnand.h                      |  555 ++--------
+>  86 files changed, 2300 insertions(+), 2191 deletions(-)
+>  create mode 100644 drivers/mtd/nand/raw/internals.h
+>  create mode 100644 drivers/mtd/nand/raw/nand_jedec.c
+>  create mode 100644 drivers/mtd/nand/raw/nand_legacy.c
+>  create mode 100644 drivers/mtd/nand/raw/nand_onfi.c
+>  create mode 100644 include/linux/mtd/jedec.h
+>  create mode 100644 include/linux/mtd/onfi.h
+>  create mode 100644 include/linux/mtd/platnand.h
+>=20
 
-the patch looks good otherwise.
+Series reviewed, there is one typo in patch 2/19 and 16/19 and a
+s/ONFI/JEDEC/ in patch 19/19, otherwise I like the cleanup very much!
+Can I modify when applying or you plan to do more/other changes?
 
-> +	if (!id) {
-> +		ret = ERR_PTR(ENOMEM);
-> +		goto out;
-> +	}
->  
->  	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
->  	if (tmp < 0) {
->  		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
-> -		return ERR_PTR(tmp);
-> +		ret = ERR_PTR(tmp);
-> +		goto out;
->  	}
->  
->  	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
->  		info = &spi_nor_ids[tmp];
->  		if (info->id_len) {
-> -			if (!memcmp(info->id, id, info->id_len))
-> -				return &spi_nor_ids[tmp];
-> +			if (!memcmp(info->id, id, info->id_len)) {
-> +				ret = &spi_nor_ids[tmp];
-> +				goto out;
-> +			}
->  		}
->  	}
->  	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
->  		id[0], id[1], id[2]);
-> -	return ERR_PTR(-ENODEV);
-> +	ret = ERR_PTR(-ENODEV);
-> +out:
-> +	kfree(id);
-> +	return ret;
->  }
->  
->  static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
 
-[1]https://elixir.bootlin.com/linux/v4.19-rc3/source/Documentation/kernel-hacking/hacking.rst#L320
+Thanks,
+Miqu=C3=A8l
