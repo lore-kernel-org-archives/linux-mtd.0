@@ -1,23 +1,21 @@
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
+Received: from mail-ed1-x532.google.com ([2a00:1450:4864:20::532])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1d6L-0002kk-5C
- for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 19:53:03 +0000
-Received: by mail-ed1-x541.google.com with SMTP id k14-v6so11185818edr.13
- for <linux-mtd@lists.infradead.org>; Sun, 16 Sep 2018 12:52:49 -0700 (PDT)
-Subject: Re: ubifs: regression since "ubifs: xattr: Don't operate on deleted
- inodes"
-To: Richard Weinberger <richard.weinberger@gmail.com>,
- Greg KH <gregkh@linuxfoundation.org>
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
- stable <stable@vger.kernel.org>
-References: <fd473abd-58d2-076f-675a-fb1ac06aa984@ncentric.com>
- <20180913094630.GB634@kroah.com>
- <CAFLxGvyz6oPbeS4KmG-O6vs26P4kB8rMwbukRVgbN-PKvcgcTA@mail.gmail.com>
+ id 1g1dO2-0000hx-J5
+ for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 20:11:20 +0000
+Received: by mail-ed1-x532.google.com with SMTP id k14-v6so11206303edr.13
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Sep 2018 13:11:08 -0700 (PDT)
+Subject: Re: UBIFS issues within kernel 4.14.69?
+To: Richard Weinberger <richard@nod.at>
+Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
+ linux-mtd@lists.infradead.org
+References: <d3f55a2a-dd98-1bc6-272a-9a7b9a318b76@ncentric.com>
+ <daa753bf-8572-f2d4-847a-e7a87e49333d@ncentric.com>
+ <18519120.7jNkZpEG5c@blindfold> <1680286.R2LEE90rvs@blindfold>
 From: Koen Vandeputte <koen.vandeputte@ncentric.com>
-Message-ID: <957f48b5-cc45-ce9b-0a48-cab8534ad570@ncentric.com>
-Date: Sun, 16 Sep 2018 21:52:48 +0200
+Message-ID: <14d0c8dc-111d-57e1-e86b-ca28544933b3@ncentric.com>
+Date: Sun, 16 Sep 2018 22:11:07 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAFLxGvyz6oPbeS4KmG-O6vs26P4kB8rMwbukRVgbN-PKvcgcTA@mail.gmail.com>
+In-Reply-To: <1680286.R2LEE90rvs@blindfold>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -31,77 +29,74 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-
-On 15-09-18 09:15, Richard Weinberger wrote:
+On 16-09-18 21:39, Richard Weinberger wrote:
 > Koen,
 >
-> On Thu, Sep 13, 2018 at 12:09 PM gregkh@linuxfoundation.org
-> <gregkh@linuxfoundation.org> wrote:
->> adding stable@ for stable kernel issues...
+> Am Samstag, 15. September 2018, 09:13:09 CEST schrieb Richard Weinberger:
+>> Koen,
 >>
->> On Thu, Sep 13, 2018 at 09:58:35AM +0200, Koen Vandeputte wrote:
->>> Hi all,
+>> Am Dienstag, 11. September 2018, 16:26:34 CEST schrieb Koen Vandeputte:
+>>> On 2018-09-11 15:46, Koen Vandeputte wrote:
+>>>> Hi Richard,
+>>> ...
 >>>
->>> I'm currently in the process of updating the kernel version within OpenWrt.
->>> (4.14.68 to 4.14.69)
->>>
->>> Testing shows some issues on devices using specifically UBIFS.
->>> Altering a perfect valid writable file shows weird errors:
->>>
->>>
->>> [ Node 2 | node-2 ] ls -l /root/custom/scripts/banner.sh
->>> -rwxr-xr-x    1 root     root           283 Sep 11 09:52
->>> /root/custom/scripts/banner.sh
->>>
->>> [ Node 2 | node-2 ] cat /root/custom/scripts/banner.sh
->>> #!/bin/sh
->>>
->>> if [ ! -f /root/.banner_ok ]
->>> then
->>>      RELEASE=$(cat /root/build_date)
->>>      VERSION=$(cat /root/version)
->>>
->>>      echo "Generating banner: $VERSION $RELEASE"
->>>      sed s/VERSION/$VERSION/g /root/custom/banner > /etc/banner
->>>      sed -i s/RELEASE/$RELEASE/g /etc/banner
->>>
->>>      touch /root/.banner_ok
->>> fi
->>>
->>> [ Node 2 | node-2 ] echo "test" > /root/custom/scripts/banner.sh
->>> -ash: can't create /root/custom/scripts/banner.sh: nonexistent directory
->>>
->>>
->>>
->>> I'm also noticing other apps fail because /etc doesn't exists yet after
->>> UBIFS boot loading.
->>> these 2 issues were not seen on 4.14.68.
->>>
->>> The bootlog doesn't show any error:
->>> https://pastebin.com/raw/dJx47uBp
->>>
->>>
->>> I'm only seeing these issues on UBIFS enabled volumes.
->>> Reverting ("ubifs: xattr: Don't operate on deleted inodes") fixes these
+>>>> I'm only seeing these issues on UBIFS enabled volumes.
+>>>>
+>>>> It seems it's related to one of your 5 commits, but I'm still in the
+>>>> process of bisecting to find the actual culprit.
+>>>> As soon as I've found it, I'll let you know, but maybe you already
+>>>> have an idea here?
+>>>>
+>>> Reverting ("ubifs: xattr: Don't operate on deleted inodes") fixes the
 >>> weird issues.
-> Please see my answer to the other thread.
-> Always keep the patch author on CC and don't start multiple threads for the
-> same issue on two mailing lists.
-> Yes, I didn't answer for three days, I had no internet connection...
+>> Thanks for finding that bad commit!
+>> I fear by fixing one bug I've uncovered another one.
+>>
+>> So, I guess you are using overlayfs?
+>> Which overlayfs features are you using?
+> I guess I've figured myself.
+> overlayfs is using temp files (O_TMPFILE), and a recent overlayfs
+> feature uses xattrs to indicate directory redirects.
+> So it can happen that a temp file, which has link count 0, gains
+> xattrs.
 >
-Richard,
+> UBIFS models xattrs like regular files in directories. Since you cannot
+> add new files to a unlinked directory, UBIFS kind of enforced that for
+> xattrs too.
+> I say "kind of" because technically it works but can trigger an assertion
+> in UBIFS's journal code.
+> Recently I saw this assertion but failed to conclude that xattr operations on
+> unlinked files are perfectly fine and "fixed" the assert.
+>
+> The right solution is reverting "ubifs: xattr: Don't operate on deleted inodes"
+> and removing the false positive asserts from UBIFS' journal code.
+>
+> Sadly xfstests does not test for that, I'll prepare a new test case.
+> Maybe other file systems got this wrong too.
+>
+> Thanks,
+> //richard
+>
+Hi Richard,
 
-I indeed posted here too as we passed the 3 days marker, and I noticed 
-4.14.70 RC2 got staged.
-Also, a lot of developers tend to ignore questions unless the initial 
-question got posted to the official mailinglist.
+Apologies for the late reply.
+It was a busy weekend with the kids ..
 
-Let's continue on the OpenWrt list as you propose, were the initial 
-question was raised.
+I'm very pleased to read you already have a good idea of what is going 
+on here.
 
-Apologies for the (double) noise.
+Can I conclude you will provide a patch upstream to revert this specific 
+commit?
+Please keep me in CC in case you do, so I can backport it properly into 
+OpenWrt on the next kernel bump. (until it is present in a future stable)
 
+Once again, I highly appreciate you fast response in trying to get this 
+fixed.
 
-Thank you,
+Thank you Richard,
 
 Koen
+
+
+
+Reported-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
