@@ -1,17 +1,37 @@
-Received: from smtp-edge.dctlse.inra.fr ([147.100.174.138])
+Received: from mga02.intel.com ([134.134.136.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1UaO-0008Ko-Vr
- for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 10:47:30 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1g1cOq-0004qh-O6
+ for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 19:08:06 +0000
+Date: Sun, 16 Sep 2018 22:07:24 +0300
+From: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+ Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Stefan Richter <stefanr@s5r6.in-berlin.de>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Tomas Winkler <tomas.winkler@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Alex Williamson <alex.williamson@redhat.com>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+ linux1394-devel@lists.sourceforge.net, linux-usb@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-mtd@lists.infradead.org,
+ netdev@vger.kernel.org, devel@driverdev.osuosl.org,
+ kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 02/17] compat_ioctl: move drivers to
+ generic_compat_ioctl_ptrarg
+Message-ID: <20180916190724.GA7473@linux.intel.com>
+References: <20180912150142.157913-1-arnd@arndb.de>
+ <20180912150142.157913-2-arnd@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: EMAIL BACK
-To: Recipients <sylvie.milin@inra.fr>
-From: Program Coordinator <sylvie.milin@inra.fr>
-Date: Sun, 16 Sep 2018 06:29:26 -0400
-Reply-To: <fmf@suddenlink.net>
-Message-ID: <009d61d3fc3c484c8a3711b2a36c0410@TLSDCPRIPEXMU06.inra.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180912150142.157913-2-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,7 +41,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Reply with your Full Name and stand a chance to win $1,000,000.00. It's so =
-easy!
+On Wed, Sep 12, 2018 at 05:01:03PM +0200, Arnd Bergmann wrote:
+> diff --git a/drivers/char/tpm/tpm_vtpm_proxy.c b/drivers/char/tpm/tpm_vtpm_proxy.c
+> index 87a0ce47f201..a170f5ca7416 100644
+> --- a/drivers/char/tpm/tpm_vtpm_proxy.c
+> +++ b/drivers/char/tpm/tpm_vtpm_proxy.c
+> @@ -678,20 +678,10 @@ static long vtpmx_fops_ioctl(struct file *f, unsigned int ioctl,
+>  	}
+>  }
+>  
+> -#ifdef CONFIG_COMPAT
+> -static long vtpmx_fops_compat_ioctl(struct file *f, unsigned int ioctl,
+> -					  unsigned long arg)
+> -{
+> -	return vtpmx_fops_ioctl(f, ioctl, (unsigned long)compat_ptr(arg));
+> -}
+> -#endif
+> -
+>  static const struct file_operations vtpmx_fops = {
+>  	.owner = THIS_MODULE,
+>  	.unlocked_ioctl = vtpmx_fops_ioctl,
+> -#ifdef CONFIG_COMPAT
+> -	.compat_ioctl = vtpmx_fops_compat_ioctl,
+> -#endif
+> +	.compat_ioctl = generic_compat_ioctl_ptrarg,
+>  	.llseek = noop_llseek,
+>  };
 
-Goodluck.
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+
+/Jarkko
