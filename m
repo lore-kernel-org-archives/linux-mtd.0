@@ -1,21 +1,26 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1ctP-0005tl-6W
- for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 19:39:41 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Koen Vandeputte <koen.vandeputte@ncentric.com>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: UBIFS issues within kernel 4.14.69?
-Date: Sun, 16 Sep 2018 21:39:22 +0200
-Message-ID: <1680286.R2LEE90rvs@blindfold>
-In-Reply-To: <18519120.7jNkZpEG5c@blindfold>
-References: <d3f55a2a-dd98-1bc6-272a-9a7b9a318b76@ncentric.com>
- <daa753bf-8572-f2d4-847a-e7a87e49333d@ncentric.com>
- <18519120.7jNkZpEG5c@blindfold>
+ id 1g1d6L-0002kk-5C
+ for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 19:53:03 +0000
+Received: by mail-ed1-x541.google.com with SMTP id k14-v6so11185818edr.13
+ for <linux-mtd@lists.infradead.org>; Sun, 16 Sep 2018 12:52:49 -0700 (PDT)
+Subject: Re: ubifs: regression since "ubifs: xattr: Don't operate on deleted
+ inodes"
+To: Richard Weinberger <richard.weinberger@gmail.com>,
+ Greg KH <gregkh@linuxfoundation.org>
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ stable <stable@vger.kernel.org>
+References: <fd473abd-58d2-076f-675a-fb1ac06aa984@ncentric.com>
+ <20180913094630.GB634@kroah.com>
+ <CAFLxGvyz6oPbeS4KmG-O6vs26P4kB8rMwbukRVgbN-PKvcgcTA@mail.gmail.com>
+From: Koen Vandeputte <koen.vandeputte@ncentric.com>
+Message-ID: <957f48b5-cc45-ce9b-0a48-cab8534ad570@ncentric.com>
+Date: Sun, 16 Sep 2018 21:52:48 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <CAFLxGvyz6oPbeS4KmG-O6vs26P4kB8rMwbukRVgbN-PKvcgcTA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +30,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Koen,
 
-Am Samstag, 15. September 2018, 09:13:09 CEST schrieb Richard Weinberger:
+
+On 15-09-18 09:15, Richard Weinberger wrote:
 > Koen,
-> 
-> Am Dienstag, 11. September 2018, 16:26:34 CEST schrieb Koen Vandeputte:
-> > 
-> > On 2018-09-11 15:46, Koen Vandeputte wrote:
-> > > Hi Richard,
-> > ...
-> > 
-> > > I'm only seeing these issues on UBIFS enabled volumes.
-> > >
-> > > It seems it's related to one of your 5 commits, but I'm still in the 
-> > > process of bisecting to find the actual culprit.
-> > > As soon as I've found it, I'll let you know, but maybe you already 
-> > > have an idea here?
-> > >
-> > Reverting ("ubifs: xattr: Don't operate on deleted inodes") fixes the 
-> > weird issues.
-> 
-> Thanks for finding that bad commit!
-> I fear by fixing one bug I've uncovered another one.
-> 
-> So, I guess you are using overlayfs?
-> Which overlayfs features are you using?
+>
+> On Thu, Sep 13, 2018 at 12:09 PM gregkh@linuxfoundation.org
+> <gregkh@linuxfoundation.org> wrote:
+>> adding stable@ for stable kernel issues...
+>>
+>> On Thu, Sep 13, 2018 at 09:58:35AM +0200, Koen Vandeputte wrote:
+>>> Hi all,
+>>>
+>>> I'm currently in the process of updating the kernel version within OpenWrt.
+>>> (4.14.68 to 4.14.69)
+>>>
+>>> Testing shows some issues on devices using specifically UBIFS.
+>>> Altering a perfect valid writable file shows weird errors:
+>>>
+>>>
+>>> [ Node 2 | node-2 ] ls -l /root/custom/scripts/banner.sh
+>>> -rwxr-xr-x    1 root     root           283 Sep 11 09:52
+>>> /root/custom/scripts/banner.sh
+>>>
+>>> [ Node 2 | node-2 ] cat /root/custom/scripts/banner.sh
+>>> #!/bin/sh
+>>>
+>>> if [ ! -f /root/.banner_ok ]
+>>> then
+>>>      RELEASE=$(cat /root/build_date)
+>>>      VERSION=$(cat /root/version)
+>>>
+>>>      echo "Generating banner: $VERSION $RELEASE"
+>>>      sed s/VERSION/$VERSION/g /root/custom/banner > /etc/banner
+>>>      sed -i s/RELEASE/$RELEASE/g /etc/banner
+>>>
+>>>      touch /root/.banner_ok
+>>> fi
+>>>
+>>> [ Node 2 | node-2 ] echo "test" > /root/custom/scripts/banner.sh
+>>> -ash: can't create /root/custom/scripts/banner.sh: nonexistent directory
+>>>
+>>>
+>>>
+>>> I'm also noticing other apps fail because /etc doesn't exists yet after
+>>> UBIFS boot loading.
+>>> these 2 issues were not seen on 4.14.68.
+>>>
+>>> The bootlog doesn't show any error:
+>>> https://pastebin.com/raw/dJx47uBp
+>>>
+>>>
+>>> I'm only seeing these issues on UBIFS enabled volumes.
+>>> Reverting ("ubifs: xattr: Don't operate on deleted inodes") fixes these
+>>> weird issues.
+> Please see my answer to the other thread.
+> Always keep the patch author on CC and don't start multiple threads for the
+> same issue on two mailing lists.
+> Yes, I didn't answer for three days, I had no internet connection...
+>
+Richard,
 
-I guess I've figured myself.
-overlayfs is using temp files (O_TMPFILE), and a recent overlayfs
-feature uses xattrs to indicate directory redirects.
-So it can happen that a temp file, which has link count 0, gains
-xattrs.
+I indeed posted here too as we passed the 3 days marker, and I noticed 
+4.14.70 RC2 got staged.
+Also, a lot of developers tend to ignore questions unless the initial 
+question got posted to the official mailinglist.
 
-UBIFS models xattrs like regular files in directories. Since you cannot
-add new files to a unlinked directory, UBIFS kind of enforced that for
-xattrs too.
-I say "kind of" because technically it works but can trigger an assertion
-in UBIFS's journal code.
-Recently I saw this assertion but failed to conclude that xattr operations on
-unlinked files are perfectly fine and "fixed" the assert.
+Let's continue on the OpenWrt list as you propose, were the initial 
+question was raised.
 
-The right solution is reverting "ubifs: xattr: Don't operate on deleted inodes"
-and removing the false positive asserts from UBIFS' journal code.
+Apologies for the (double) noise.
 
-Sadly xfstests does not test for that, I'll prepare a new test case.
-Maybe other file systems got this wrong too.
 
-Thanks,
-//richard
+Thank you,
+
+Koen
