@@ -1,22 +1,18 @@
-Received: from mail-ve1eur01on0082.outbound.protection.outlook.com
- ([104.47.1.82] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1qPZ-0004DZ-61
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 10:05:47 +0000
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Yogesh Gaur <yogeshgaur.83@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-Subject: RE: Query Regarding NOR flash page size calculation s25fl512s
-Date: Mon, 17 Sep 2018 10:05:27 +0000
-Message-ID: <VI1PR04MB10387E1BDEFE07D998EA53BB991E0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
-In-Reply-To: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ marek.vasut@gmail.com, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org
+Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
+ frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v2 5/5] MAINTAINERS: add maintainers for the NXP FlexSPI driver
+Date: Mon, 17 Sep 2018 15:18:30 +0530
+Message-Id: <1537177710-9379-6-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+References: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQWxsLA0KDQpQbGVhc2Ugc3VnZ2VzdCBob3cgY2FuIHdlIHdvcmsgZm9yIHRoaXMgZmxhc2gs
-IHMyNWZsNTEycz8NClBhc3NpbmcgZmxhZyBTUElfTk9SX1NLSVBfU0ZEUCB3b3VsZCBnb2luZyB0
-byBicmVhayBmdW5jdGlvbmFsaXR5IG9mIDEtMi0yLzEtNC00IHByb3RvY29sIG1vZGUsIGFzIG9u
-bHkgdGhyb3VnaCBTRkRQIHBhcmFtZXRlciByZWFkIHdlIGdldCBpbmZvcm1hdGlvbiBmb3IgdGhl
-IGR1bW15IGN5Y2xlcywgbW9kZSBiaXRzIGV0YyBmb3IgdGhpcyBmbGFzaC4NCg0KQnV0LCBwYWdl
-X3NpemUgdmFsdWUgaXMgZ2V0dGluZyBwb3B1bGF0ZWQgd3JvbmdseSBmb3IgY2FzZSB3aGVuIHZh
-bHVlIG9mIENSM1ZbNF0gaXMgMCBmb3IgdGhpcyBmbGFzaC4NCg0KLS0NClJlZ2FyZHMNCllvZ2Vz
-aCBHYXVyDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgtbXRk
-IFttYWlsdG86bGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxm
-IE9mDQo+IFlvZ2VzaCBHYXVyDQo+IFNlbnQ6IEZyaWRheSwgQXVndXN0IDMxLCAyMDE4IDEwOjI4
-IEFNDQo+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBRdWVy
-eSBSZWdhcmRpbmcgTk9SIGZsYXNoIHBhZ2Ugc2l6ZSBjYWxjdWxhdGlvbiBzMjVmbDUxMnMNCj4g
-DQo+IEhpIEFsbCwNCj4gDQo+IEkgaGF2ZSBxdWVyeSBhbmQgY29uY2VybiByZWdhcmRpbmcgcGFn
-ZV9zaXplIGNhbGN1bGF0aW9uIGZvciB0aGUgdW5kZXJseWluZw0KPiBOT1IgZmxhc2hlcy4NCj4g
-DQo+IEkgaGF2ZSBzcGFuc2lvbiwg4oCYczI1Zmw1MTJz4oCZIGZsYXNoIGNvbm5lY3RlZCBvbiBt
-eSB0YXJnZXQuDQo+IA0KPiBXaXRoIFNGRFAgcGFyYW0gcmVhZGluZywgcGFnZV9zaXplIGZvciB0
-aGlzIGZsYXNoIGlzIGFzc2lnbmVkIGFzIDB4MjAwIHVzaW5nDQo+IGJlbG93IHJvdXRpbmUuDQo+
-ICAgIC8qIFBhZ2Ugc2l6ZTogdGhpcyBmaWVsZCBzcGVjaWZpZXMgJ04nIHNvIHRoZSBwYWdlIHNp
-emUgPSAyXk4gYnl0ZXMuICovDQo+ICAgIHBhcmFtcy0+cGFnZV9zaXplID0gYmZwdC5kd29yZHNb
-QkZQVF9EV09SRCgxMSldOw0KPiAgICBwYXJhbXMtPnBhZ2Vfc2l6ZSAmPSBCRlBUX0RXT1JEMTFf
-UEFHRV9TSVpFX01BU0s7DQo+ICAgIHBhcmFtcy0+cGFnZV9zaXplID4+PSBCRlBUX0RXT1JEMTFf
-UEFHRV9TSVpFX1NISUZUOw0KPiAgICBwYXJhbXMtPnBhZ2Vfc2l6ZSA9IDFVIDw8IHBhcmFtcy0+
-cGFnZV9zaXplOw0KPiANCj4gQXMgcGVyIHRoZSBCRyBvZiBTMjVGUzUxMlNfNTEyX00gZmxhc2gg
-YW5kIFNGRFAgaGVhZGVyIGluZm8gdGFibGUgYWJvdmUNCj4gY2FsY3VsYXRpb24gYXJlIGNvcnJl
-Y3QuDQo+IA0KPiBCdXQgZmluYWwgdmFsdWUgb2YgdGhlIHBhZ2Vfc2l6ZSBmb3IgdGhpcyBmbGFz
-aCBpcyBkZXBlbmRzIG9uIHRoZSBjb25maWd1cmF0aW9uDQo+IHJlZ2lzdGVyIENSM1ZbNF0sIHBh
-Z2UgYnVmZmVyIHdyYXAsIGl0IGNhbiBiZSBlaXRoZXIgb2YNCj4gMjU2IGJ5dGUgKDApIG9yIDUx
-MiBieXRlICgxKS4NCj4gDQo+IEZvciBteSBjYXNlLCB0aGlzIHZhbHVlIGlzIDAgYW5kIHBhZ2Vf
-c2l6ZSBiZWNvbWVzIDB4MTAwIGJ5dGVzIGJ1dCB3aXRoIFNGRFANCj4gaGVhZGVyIHJlYWQsIHZh
-bHVlIGZvciB0aGlzIGlzIGJlaW5nIGFzc2lnbmVkIGFzIDB4MjAwLg0KPiBEdWUgdG8gdGhpcywg
-SSBhbSBnZXR0aW5nIGRhdGEgY29ycnVwdGlvbi4NCj4gDQo+IFBsZWFzZSBzdWdnZXN0LCBob3cg
-Y2FuIHdlIGNoZWNrIGFuZCBwcm9jZWVkIGluIHRoZXNlIGNhc2UuIEkgZ3Vlc3MgdGhpcyBpcw0K
-PiBzcGVjaWZpYyB0byBzcGFuc2lvbiBmYW1pbHkgb2YgZmxhc2hlcy4NCj4gDQo+IElNTywgZm9y
-IHRoaXMgZmxhc2ggd2UgbmVlZCB0byBhZGQgZmxhZyBTUElfTk9SX1NLSVBfU0ZEUCBmb3IgZW50
-cnkgb2YgdGhpcw0KPiBmbGFzaCwgczI1Zmw1MTJzLg0KPiANCj4gDQo+IFJlZ2FyZHMsDQo+IFlv
-Z2VzaA0KPiANCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwczov
-L2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHAlM0ElMkYl
-MkZsaXN0cy5pbmZyDQo+IGFkZWFkLm9yZyUyRm1haWxtYW4lMkZsaXN0aW5mbyUyRmxpbnV4LQ0K
-PiBtdGQlMkYmYW1wO2RhdGE9MDIlN0MwMSU3Q3lvZ2VzaG5hcmF5YW4uZ2F1ciU0MG54cC5jb20l
-N0NlYmUzNGQyDQo+IDQ4YmQ1NGU0YzM5OTUwOGQ2MGVmZTU4MDUlN0M2ODZlYTFkM2JjMmI0YzZm
-YTkyY2Q5OWM1YzMwMTYzNSU3QzAlDQo+IDdDMCU3QzYzNjcxMjg4MjkwNzM0NDQ5NCZhbXA7c2Rh
-dGE9bSUyQnR3S1JiekZFWWMyaHF4VWlsb1lUNVNLR3ENCj4gZUFrc2NWVlBrN0FrT2FITSUzRCZh
-bXA7cmVzZXJ2ZWQ9MA0K
+Add maintainers for the NXP FlexSPI driver
+
+Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+---
+Changes for v2:
+- None.
+
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9d5eeff..2696898 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -10228,6 +10228,12 @@ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
+ S:	Supported
+ F:	drivers/nfc/nxp-nci
+ 
++NXP FSPI DRIVER
++M:	Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
++L:	linux-spi@vger.kernel.org
++S:	Maintained
++F:	drivers/spi/spi-nxp-fspi.c
++
+ OBJTOOL
+ M:	Josh Poimboeuf <jpoimboe@redhat.com>
+ M:	Peter Zijlstra <peterz@infradead.org>
+-- 
+2.7.4
