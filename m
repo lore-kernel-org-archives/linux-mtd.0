@@ -1,30 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1uRh-0006B1-Ng
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 14:24:15 +0000
-Date: Mon, 17 Sep 2018 16:24:02 +0200
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g1uYw-0001Xh-9G
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 14:31:43 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, stable@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
- <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
-Message-ID: <20180917162402.10cc8994@bbrezillon>
-In-Reply-To: <20180917160318.37afd433@xps13>
-References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
- <20180907163824.6cec1a43@xps13>
- <20180910145312.3b9ae4ad@bbrezillon>
- <20180910151423.2944aca6@xps13>
- <20180910152551.23ffa474@bbrezillon>
- <20180910153831.0f426ada@xps13>
- <20180910154219.30fddb7a@bbrezillon>
- <20180917115520.7cceef50@xps13>
- <20180917155140.33fb4cc1@bbrezillon>
- <20180917160318.37afd433@xps13>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] mtd: devices: m25p80: Make sure the buffer passed in op is
+ DMA-able
+Date: Mon, 17 Sep 2018 16:31:30 +0200
+Message-Id: <20180917143130.23007-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,62 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Sep 2018 16:03:18 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+As documented in spi-mem.h, spi_mem_op->data.buf.{in,out} must be
+DMA-able, and commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx()
+API") failed to follow this rule as buffers passed to
+->{read,write}_reg() are usually placed on the stack.
 
-> Hi Boris,
-> 
-> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 17 Sep 2018
-> 15:51:40 +0200:
-> 
-> > On Mon, 17 Sep 2018 11:55:20 +0200
-> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> >   
-> > > > Or you just say that mtd_get_of_node() does not retain a reference to
-> > > > the device_node object it returns and that should be enough ;-).      
-> > > 
-> > > Fine by me, you can apply it and modify in place.    
-> > 
-> > Here is the new commit message:
-> > 
-> > "
-> > mtd: partitions: fix unbalanced of_node_get/put()
-> > 
-> > While at first mtd_part_of_parse() would just call
-> > of_get_chil_by_name(), it has been patched to deal with sub-partitions
-> > and will now directly manipulate the node returned mtd_get_of_node() if  
-> 
->                                                     ^by
-> 
-> > the MTD device is a partition.
-> > 
-> > A of_node_put() was a bit below in the code, to balance the
-> > of_get_child_by_name(). However, despite its name, mtd_get_of_node()
-> > does not take a reference on the OF node. It is a simple helper
-> > hiding some pointer logic to retrieve the OF node related to an MTD
-> > device.
-> >     
-> > The direct effect of such unbalanced reference counting is visible
-> > by rmmod'ing any module that would have added MTD partitions:
-> > 
-> > 	OF: ERROR: Bad of_node_put() on <of_path_to_partition>
-> > 
-> > As it seems normal to get a reference on the OF node during the
-> > of_property_for_each_string() that follows, add a call to
-> > of_node_get() when relevant.
-> >     
-> > Fixes: 76a832254ab0 ("mtd: partitions: use DT info for parsing partitions with "compatible" prop")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > "
-> > 
-> > Let me know if you're okay with this update.  
-> 
-> One missing work, otherwise I'm ok.
+Fix that by allocating a scratch buffer and copying the data around.
 
-Fixed and pushed.
+Fixes: 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
+Reported-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Note that the ->{read,write}() path is still buggy since nothing
+guarantees that buffers passed by the MTD layer to the SPI NOR layer
+are DMA-able, but this is a long-standing issue which we'll have to
+address at the spi-nor level (this layer can choose the bounce buffer
+size based on nor->page_size).
 
-Thanks,
+Changes in v2:
+- Copy the data from scratchbuf in the ->read_reg() path
+---
+ drivers/mtd/devices/m25p80.c | 26 +++++++++++++++++++++++---
+ 1 file changed, 23 insertions(+), 3 deletions(-)
 
-Boris
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index cbfafc453274..270d3c9580c5 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -39,13 +39,23 @@ static int m25p80_read_reg(struct spi_nor *nor, u8 code, u8 *val, int len)
+ 	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(code, 1),
+ 					  SPI_MEM_OP_NO_ADDR,
+ 					  SPI_MEM_OP_NO_DUMMY,
+-					  SPI_MEM_OP_DATA_IN(len, val, 1));
++					  SPI_MEM_OP_DATA_IN(len, NULL, 1));
++	void *scratchbuf;
+ 	int ret;
+ 
++	scratchbuf = kmalloc(len, GFP_KERNEL);
++	if (!scratchbuf)
++		return -ENOMEM;
++
++	op.data.buf.in = scratchbuf;
+ 	ret = spi_mem_exec_op(flash->spimem, &op);
+ 	if (ret < 0)
+ 		dev_err(&flash->spimem->spi->dev, "error %d reading %x\n", ret,
+ 			code);
++	else
++		memcpy(val, scratchbuf, len);
++
++	kfree(scratchbuf);
+ 
+ 	return ret;
+ }
+@@ -56,9 +66,19 @@ static int m25p80_write_reg(struct spi_nor *nor, u8 opcode, u8 *buf, int len)
+ 	struct spi_mem_op op = SPI_MEM_OP(SPI_MEM_OP_CMD(opcode, 1),
+ 					  SPI_MEM_OP_NO_ADDR,
+ 					  SPI_MEM_OP_NO_DUMMY,
+-					  SPI_MEM_OP_DATA_OUT(len, buf, 1));
++					  SPI_MEM_OP_DATA_OUT(len, NULL, 1));
++	void *scratchbuf;
++	int ret;
+ 
+-	return spi_mem_exec_op(flash->spimem, &op);
++	scratchbuf = kmemdup(buf, len, GFP_KERNEL);
++	if (!scratchbuf)
++		return -ENOMEM;
++
++	op.data.buf.out = scratchbuf;
++	ret = spi_mem_exec_op(flash->spimem, &op);
++	kfree(scratchbuf);
++
++	return ret;
+ }
+ 
+ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+-- 
+2.14.1
