@@ -1,21 +1,26 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1ruK-0003W2-6z
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 11:41:36 +0000
-Date: Mon, 17 Sep 2018 13:41:12 +0200
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g1seV-00005q-LS
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 12:29:34 +0000
+Date: Mon, 17 Sep 2018 14:28:57 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Yogesh Gaur <yogeshgaur.83@gmail.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Cyrille Pitchen
- <cyrille.pitchen@microchip.com>, Marek Vasut <marex@denx.de>
-Subject: Re: Query Regarding NOR flash page size calculation s25fl512s
-Message-ID: <20180917134112.293e13d7@bbrezillon>
-In-Reply-To: <VI1PR04MB10387E1BDEFE07D998EA53BB991E0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
- <VI1PR04MB10387E1BDEFE07D998EA53BB991E0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
+ <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, David
+ Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+Subject: Re: [PATCH v2] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
+ spi_nor_read_id()
+Message-ID: <20180917142857.16be0331@bbrezillon>
+In-Reply-To: <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
+References: <20180917081018.14475-1-jarkko.nikula@linux.intel.com>
+ <20180917101851.3d359d18@bbrezillon>
+ <20180917102821.16c69697@bbrezillon>
+ <08b87712-b018-e448-21b5-aa7c3c7b82cc@linux.intel.com>
+ <20180917104633.5a18bcd1@bbrezillon>
+ <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,73 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+On Mon, 17 Sep 2018 12:04:43 +0300
+Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
 
-On Mon, 17 Sep 2018 10:05:27 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> On 09/17/2018 11:46 AM, Boris Brezillon wrote:
+> > On Mon, 17 Sep 2018 11:41:31 +0300
+> > Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+> >   
+> >> On 09/17/2018 11:28 AM, Boris Brezillon wrote:  
+> >>>
+> >>> Hm, I just had a look at all ->read/write_reg() call sites and it seems
+> >>> we have the same problem in other places. Maybe it's just better to fix
+> >>> the problem in m25p80 ->read/write_reg() implems for now
 
-> Hi All,
->=20
-> Please suggest how can we work for this flash, s25fl512s?
-> Passing flag SPI_NOR_SKIP_SFDP would going to break functionality of 1-2-=
-2/1-4-4 protocol mode, as only through SFDP parameter read we get informati=
-on for the dummy cycles, mode bits etc for this flash.
->=20
-> But, page_size value is getting populated wrongly for case when value of =
-CR3V[4] is 0 for this flash.
->=20
-> --
-> Regards
-> Yogesh Gaur
->=20
-> > -----Original Message-----
-> > From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behal=
-f Of
-> > Yogesh Gaur
-> > Sent: Friday, August 31, 2018 10:28 AM
-> > To: linux-mtd@lists.infradead.org
-> > Subject: Query Regarding NOR flash page size calculation s25fl512s
-> >=20
-> > Hi All,
-> >=20
-> > I have query and concern regarding page_size calculation for the underl=
-ying
-> > NOR flashes.
-> >=20
-> > I have spansion, =E2=80=98s25fl512s=E2=80=99 flash connected on my targ=
-et.
-> >=20
-> > With SFDP param reading, page_size for this flash is assigned as 0x200 =
-using
-> > below routine.
-> >    /* Page size: this field specifies 'N' so the page size =3D 2^N byte=
-s. */
-> >    params->page_size =3D bfpt.dwords[BFPT_DWORD(11)];
-> >    params->page_size &=3D BFPT_DWORD11_PAGE_SIZE_MASK;
-> >    params->page_size >>=3D BFPT_DWORD11_PAGE_SIZE_SHIFT;
-> >    params->page_size =3D 1U << params->page_size;
-> >=20
-> > As per the BG of S25FS512S_512_M flash and SFDP header info table above
-> > calculation are correct.
-> >=20
-> > But final value of the page_size for this flash is depends on the confi=
-guration
-> > register CR3V[4], page buffer wrap, it can be either of
-> > 256 byte (0) or 512 byte (1).
-> >=20
-> > For my case, this value is 0 and page_size becomes 0x100 bytes but with=
- SFDP
-> > header read, value for this is being assigned as 0x200.
-> > Due to this, I am getting data corruption.
-> >=20
-> > Please suggest, how can we check and proceed in these case. I guess thi=
-s is
-> > specific to spansion family of flashes.
-
-I guess we need some kind of ->fixup() hook that the core would call
-after SFDP has been parsed, so that vendors can adjust SPI NOR params.
-
-Marek, Cyrille, any opinion on that?
+Do you plan to send a new fix doing that, or should I? I'd really like
+to have the fix queued to mtd/master early this week, so that it
+spends a bit of time in -next.
 
 Thanks,
 
