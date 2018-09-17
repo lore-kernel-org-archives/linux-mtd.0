@@ -1,18 +1,19 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+Date: Mon, 17 Sep 2018 13:37:51 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org,
  linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
- frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v2 4/5] arm64: defconfig: enable NXP FlexSPI driver
-Date: Mon, 17 Sep 2018 15:18:29 +0530
-Message-Id: <1537177710-9379-5-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
+Message-ID: <20180917133751.453ea6ed@bbrezillon>
+In-Reply-To: <1537177710-9379-2-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537177710-9379-2-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Enable driver support of NXP FlexSPI controller.
+Hi Yogesh,
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v2:
-- None.
+On Mon, 17 Sep 2018 15:18:26 +0530
+Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+> +
+> +	/*
+> +	 * R/W functions for big- or little-endian registers:
+> +	 * The FSPI controller's endianness is independent of
+> +	 * the CPU core's endianness. So far, although the CPU
+> +	 * core is little-endian the FSPI controller can use
+> +	 * big-endian or little-endian.
+> +	 */
+> +	if (of_property_read_bool(np, "big-endian")) {
+> +		f->write = fspi_writel_be;
+> +		f->read = fspi_readl_be;
+> +	} else {
+> +		f->write = fspi_writel;
+> +		f->read = fspi_readl;
+> +	}
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 3cfa8ca..75ceddf 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -335,6 +335,7 @@ CONFIG_SPI_QUP=y
- CONFIG_SPI_ROCKCHIP=y
- CONFIG_SPI_S3C64XX=y
- CONFIG_SPI_SPIDEV=m
-+CONFIG_SPI_NXP_FLEXSPI=y
- CONFIG_SPMI=y
- CONFIG_PINCTRL_IPQ8074=y
- CONFIG_PINCTRL_SINGLE=y
--- 
-2.7.4
+Hm, isn't it something you can extract from the compatible string? I'd
+rather not allow users to set that in their DT if it's not something
+you can change.
+
+Regards,
+
+Boris
