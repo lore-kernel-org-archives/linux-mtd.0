@@ -1,21 +1,18 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from mga14.intel.com ([192.55.52.115])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1f4B-00006y-LS
- for linux-mtd@lists.infradead.org; Sun, 16 Sep 2018 21:58:57 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Koen Vandeputte <koen.vandeputte@ncentric.com>
-Cc: OpenWrt Development List <openwrt-devel@lists.openwrt.org>,
- linux-mtd@lists.infradead.org
-Subject: Re: UBIFS issues within kernel 4.14.69?
-Date: Sun, 16 Sep 2018 23:58:42 +0200
-Message-ID: <3246931.C87L8AhBv1@blindfold>
-In-Reply-To: <14d0c8dc-111d-57e1-e86b-ca28544933b3@ncentric.com>
-References: <d3f55a2a-dd98-1bc6-272a-9a7b9a318b76@ncentric.com>
- <1680286.R2LEE90rvs@blindfold>
- <14d0c8dc-111d-57e1-e86b-ca28544933b3@ncentric.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+ id 1g1ocA-0007cj-VY
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 08:10:40 +0000
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+To: linux-mtd@lists.infradead.org
+Cc: Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>,
+ Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Subject: [PATCH v2] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
+ spi_nor_read_id()
+Date: Mon, 17 Sep 2018 11:10:18 +0300
+Message-Id: <20180917081018.14475-1-jarkko.nikula@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +22,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, 16. September 2018, 22:11:07 CEST schrieb Koen Vandeputte:
-> Hi Richard,
-> 
-> Apologies for the late reply.
-> It was a busy weekend with the kids ..
-> 
-> I'm very pleased to read you already have a good idea of what is going 
-> on here.
-> 
-> Can I conclude you will provide a patch upstream to revert this specific 
-> commit?
+After commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
+there is no allocation for DMA-safe buffer when transmitting data bytes
+over SPI bus in m25p80 driver.
 
-Correct.
+JEDEC ID reading in spi_nor_read_id() has the buffer in stack. This is
+not safe with the m25p80 driver anymore after commit 4120f8d158ef if
+underlying SPI controller is using DMA for transfers.
 
-> Please keep me in CC in case you do, so I can backport it properly into 
-> OpenWrt on the next kernel bump. (until it is present in a future stable)
+Therefore allocate a temporary DMA-safe buffer for JEDEC ID reading.
 
-Done.
+Signed-off-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+---
+v2: Drop GFP_DMA.
 
-Thanks,
-//richard
+I'm not an spi-nor expert at all but noticed this "WARNING: CPU: 3 PID: 154
+at kernel/dma/debug.c:1191 check_for_stack+0xc2/0x1a0" after
+4120f8d158ef since my test setup has DMA debugging enabled and using DMA
+for SPI.
+I don't know are there other places that may transfer from stack but it
+looked potentially better to have the buffer allocated in
+spi_nor_read_id() instead of doing allocation & copy all the places
+that 4120f8d158ef touches.
+---
+ drivers/mtd/spi-nor/spi-nor.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index f028277fb1ce..f186b95c55f9 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -1269,25 +1269,37 @@ static const struct flash_info spi_nor_ids[] = {
+ static const struct flash_info *spi_nor_read_id(struct spi_nor *nor)
+ {
+ 	int			tmp;
+-	u8			id[SPI_NOR_MAX_ID_LEN];
+-	const struct flash_info	*info;
++	u8			*id;
++	const struct flash_info	*info, *ret;
++
++	id = kzalloc(SPI_NOR_MAX_ID_LEN, GFP_KERNEL);
++	if (!id) {
++		ret = ERR_PTR(ENOMEM);
++		goto out;
++	}
+ 
+ 	tmp = nor->read_reg(nor, SPINOR_OP_RDID, id, SPI_NOR_MAX_ID_LEN);
+ 	if (tmp < 0) {
+ 		dev_dbg(nor->dev, "error %d reading JEDEC ID\n", tmp);
+-		return ERR_PTR(tmp);
++		ret = ERR_PTR(tmp);
++		goto out;
+ 	}
+ 
+ 	for (tmp = 0; tmp < ARRAY_SIZE(spi_nor_ids) - 1; tmp++) {
+ 		info = &spi_nor_ids[tmp];
+ 		if (info->id_len) {
+-			if (!memcmp(info->id, id, info->id_len))
+-				return &spi_nor_ids[tmp];
++			if (!memcmp(info->id, id, info->id_len)) {
++				ret = &spi_nor_ids[tmp];
++				goto out;
++			}
+ 		}
+ 	}
+ 	dev_err(nor->dev, "unrecognized JEDEC id bytes: %02x, %02x, %02x\n",
+ 		id[0], id[1], id[2]);
+-	return ERR_PTR(-ENODEV);
++	ret = ERR_PTR(-ENODEV);
++out:
++	kfree(id);
++	return ret;
+ }
+ 
+ static int spi_nor_read(struct mtd_info *mtd, loff_t from, size_t len,
+-- 
+2.18.0
