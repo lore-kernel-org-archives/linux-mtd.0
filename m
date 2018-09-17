@@ -1,22 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1siA-0001tK-Bn
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 12:33:16 +0000
-Date: Mon, 17 Sep 2018 14:32:44 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, Steffen Trumtrar <s.trumtrar@pengutronix.de>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-kernel@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: denali: fix a race condition when DMA is
- kicked
-Message-ID: <20180917143244.2e55fbac@bbrezillon>
-In-Reply-To: <1536818329-11068-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1536818329-11068-1-git-send-email-yamada.masahiro@socionext.com>
+Received: from mga06.intel.com ([134.134.136.31])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g1t04-0000H1-Jx
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 12:51:37 +0000
+Subject: Re: [PATCH v2] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
+ spi_nor_read_id()
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
+References: <20180917081018.14475-1-jarkko.nikula@linux.intel.com>
+ <20180917101851.3d359d18@bbrezillon> <20180917102821.16c69697@bbrezillon>
+ <08b87712-b018-e448-21b5-aa7c3c7b82cc@linux.intel.com>
+ <20180917104633.5a18bcd1@bbrezillon>
+ <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
+ <20180917142857.16be0331@bbrezillon>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <870a6721-620c-a73c-82f9-014fdb02cd6c@linux.intel.com>
+Date: Mon, 17 Sep 2018 15:51:24 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180917142857.16be0331@bbrezillon>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,46 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 13 Sep 2018 14:58:49 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
-
-> I thought the read-back of the DMA_ENABLE register was unnecessary
-> (at least it is working on my boards), then deleted it in commit
-> 586a2c52909d ("mtd: nand: denali: squash denali_enable_dma() helper
-> into caller").  Sorry, I was wrong - it caused a timing issue on
-> Cyclone5 SoCFPGAs.
+On 09/17/2018 03:28 PM, Boris Brezillon wrote:
+> On Mon, 17 Sep 2018 12:04:43 +0300
+> Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
 > 
-> Revive the register read-back, commenting why this is necessary.
+>> On 09/17/2018 11:46 AM, Boris Brezillon wrote:
+>>> On Mon, 17 Sep 2018 11:41:31 +0300
+>>> Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+>>>    
+>>>> On 09/17/2018 11:28 AM, Boris Brezillon wrote:
+>>>>>
+>>>>> Hm, I just had a look at all ->read/write_reg() call sites and it seems
+>>>>> we have the same problem in other places. Maybe it's just better to fix
+>>>>> the problem in m25p80 ->read/write_reg() implems for now
 > 
-> Fixes: 586a2c52909d ("mtd: nand: denali: squash denali_enable_dma() helper into caller")
-> Reported-by: Steffen Trumtrar <s.trumtrar@pengutronix.de>
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
-
-Queued to master.
-
-Thanks,
-
-Boris
-
-> ---
+> Do you plan to send a new fix doing that, or should I? I'd really like
+> to have the fix queued to mtd/master early this week, so that it
+> spends a bit of time in -next.
 > 
->  drivers/mtd/nand/raw/denali.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
-> index 67b2065..b864b93 100644
-> --- a/drivers/mtd/nand/raw/denali.c
-> +++ b/drivers/mtd/nand/raw/denali.c
-> @@ -596,6 +596,12 @@ static int denali_dma_xfer(struct denali_nand_info *denali, void *buf,
->  	}
->  
->  	iowrite32(DMA_ENABLE__FLAG, denali->reg + DMA_ENABLE);
-> +	/*
-> +	 * The ->setup_dma() hook kicks DMA by using the data/command
-> +	 * interface, which belongs to a different AXI port from the
-> +	 * register interface.  Read back the register to avoid a race.
-> +	 */
-> +	ioread32(denali->reg + DMA_ENABLE);
->  
->  	denali_reset_irq(denali);
->  	denali->setup_dma(denali, dma_addr, page, write);
+I guess better if you could as I haven't started anything yet. I'm not 
+so familiar with the code to see what would be best way to fix, 
+reverting m25p80_read_reg/m25p80_write_reg back to spi_write(), the 
+whole commit or do some kmemdup() there.
+
+-- 
+Jarkko
