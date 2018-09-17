@@ -1,27 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1qFm-0002CD-VR
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 09:55:39 +0000
-Date: Mon, 17 Sep 2018 11:55:20 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Brian Norris <computersforpeace@gmail.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Marek Vasut
- <marek.vasut@gmail.com>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, linux-mtd@lists.infradead.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: partitions: fix of_node_get/put balance in parser
-Message-ID: <20180917115520.7cceef50@xps13>
-In-Reply-To: <20180910154219.30fddb7a@bbrezillon>
-References: <20180907143554.13496-1-miquel.raynal@bootlin.com>
- <20180907163824.6cec1a43@xps13>
- <20180910145312.3b9ae4ad@bbrezillon>
- <20180910151423.2944aca6@xps13>
- <20180910152551.23ffa474@bbrezillon>
- <20180910153831.0f426ada@xps13>
- <20180910154219.30fddb7a@bbrezillon>
+Received: from mail-ve1eur01on0082.outbound.protection.outlook.com
+ ([104.47.1.82] helo=EUR01-VE1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g1qPZ-0004DZ-61
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 10:05:47 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Yogesh Gaur <yogeshgaur.83@gmail.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, Cyrille Pitchen
+ <cyrille.pitchen@microchip.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>
+Subject: RE: Query Regarding NOR flash page size calculation s25fl512s
+Date: Mon, 17 Sep 2018 10:05:27 +0000
+Message-ID: <VI1PR04MB10387E1BDEFE07D998EA53BB991E0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
+In-Reply-To: <CAG6enPzUygjG5taj04g=zrmV-HooPp_kSADFgJkxFs3C2u07Rg@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,128 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
-
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep 2018
-15:42:19 +0200:
-
-> On Mon, 10 Sep 2018 15:38:31 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->=20
-> > Hi Boris,
-> >=20
-> > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep 2018
-> > 15:25:51 +0200:
-> >  =20
-> > > On Mon, 10 Sep 2018 15:14:23 +0200
-> > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > >    =20
-> > > > Hi Boris,
-> > > >=20
-> > > > Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep =
-2018
-> > > > 14:53:12 +0200:
-> > > >      =20
-> > > > > Hi Miquel,
-> > > > >=20
-> > > > > On Fri, 7 Sep 2018 16:38:24 +0200
-> > > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
-> > > > >        =20
-> > > > > > Hello,
-> > > > > >=20
-> > > > > > I forgot to add Rafal which I know worked a lot on the parsers.
-> > > > > >=20
-> > > > > > Miquel Raynal <miquel.raynal@bootlin.com> wrote on Fri,  7 Sep =
-2018
-> > > > > > 16:35:54 +0200:
-> > > > > >          =20
-> > > > > > > While at first mtd_part_of_parse() would just call
-> > > > > > > of_get_chil_by_name(), it has been edited to first try to get=
- the OF
-> > > > > > > node thanks to mtd_get_of_node() and fallback on
-> > > > > > > of_get_child_by_name().
-> > > > > > >=20
-> > > > > > > A of_node_put() was a bit below in the code, to balance the
-> > > > > > > of_get_child_by_name(). However, despite its name, mtd_get_of=
-_node()
-> > > > > > > does not take a reference on the OF node.         =20
-> > > > >=20
-> > > > > That's probably something we should patch at some point, but that
-> > > > > implies patching all mtd_get_of_node() users at the same time, so=
- let's
-> > > > > keep that for later.
-> > > > >=20
-> > > > > BTW, if mtd_get_of_node() was actually retaining a reference, you
-> > > > > would miss an of_node_put() in the !mtd_is_partition(master) case=
-.       =20
-> > > >=20
-> > > > I think there is a misunderstanding here: mtd_get_of_node() is not
-> > > > retaining a reference, and I do not think it should! It is by desig=
-n a
-> > > > helper to shortcut from the MTD device to the related FW node. Maybe
-> > > > calling it differently than "get" would be definitely less prone to
-> > > > errors. Maybe mtd_to_of_node() would be better?     =20
-> > >=20
-> > > Yes, the name is misleading for sure. But consistency is good, and
-> > > (almost?) all DT helpers that return a device_node retain a reference
-> > > to this node before returning it, so I think it would be a good thing
-> > > to do the same in the MTD framework.   =20
-> >=20
-> > Fine by me, I'll patch all the places where it's used, but you can
-> > still take this patch as a fix for now.
-> >  =20
-> > >=20
-> > > Also, I'm not a big fan of the mtd_to_of_node() for this kind of
-> > > function. It seems to imply that the mtd device is inheriting from
-> > > device_node, which is not really the case, it's just an association
-> > > relationship.   =20
-> >=20
-> > Ok
-> >  =20
-> > >    =20
-> > > >      =20
-> > > > >        =20
-> > > > > > > It is a simple helper hiding
-> > > > > > > some pointer logic to retrieve the OF node related to an MTD
-> > > > > > > device. People often used it this way:
-> > > > > > >=20
-> > > > > > >     of_node_put(mtd_get_of_node(<mtd>)).         =20
-> > > > >=20
-> > > > > I don't get your point. Are you saying other places in the code a=
-re
-> > > > > doing the wrong thing? Should we fix them too?       =20
-> > > >=20
-> > > > No, other places are doing the right thing.     =20
-> > >=20
-> > > Hm, okay. Then your example is not well chosen, because you seem to p=
-ut
-> > > the return of mtd_get_of_node(<mtd>), which contradicts what you
-> > > explain in the previous sentence. I guess somewhere in the same path =
-you
-> > > have an of_node_get(mtd_get_of_node(<mtd>)) which retains the referen=
-ce
-> > > and explains why calling of_node_put(mtd_get_of_node(<mtd>)) is
-> > > required.
-> > >=20
-> > > Maybe you can just drop this example.   =20
-> >=20
-> > Mhhh. Maybe I should s/of_node_put/of_node_get/ in the example? I
-> > want to show why (currently) no of_node_put() is needed after a mtd_get=
-_of_node().
-> >=20
-> > This examples shows what people do with this helper, ie. calling
-> > of_node_get() on the returned OF node to actually retain a reference
-> > of the retrieve object. =20
->=20
-> Or you just say that mtd_get_of_node() does not retain a reference to
-> the device_node object it returns and that should be enough ;-).
-
-Fine by me, you can apply it and modify in place. If you want a new
-version, just ask.
-
-I will soon send a patch cleaning the mtd_of_get/put() so that it does
-retain a reference (as most of_ helpers do), as discussed earlier.
-
-
-Thanks,
-Miqu=C3=A8l
+SGkgQWxsLA0KDQpQbGVhc2Ugc3VnZ2VzdCBob3cgY2FuIHdlIHdvcmsgZm9yIHRoaXMgZmxhc2gs
+IHMyNWZsNTEycz8NClBhc3NpbmcgZmxhZyBTUElfTk9SX1NLSVBfU0ZEUCB3b3VsZCBnb2luZyB0
+byBicmVhayBmdW5jdGlvbmFsaXR5IG9mIDEtMi0yLzEtNC00IHByb3RvY29sIG1vZGUsIGFzIG9u
+bHkgdGhyb3VnaCBTRkRQIHBhcmFtZXRlciByZWFkIHdlIGdldCBpbmZvcm1hdGlvbiBmb3IgdGhl
+IGR1bW15IGN5Y2xlcywgbW9kZSBiaXRzIGV0YyBmb3IgdGhpcyBmbGFzaC4NCg0KQnV0LCBwYWdl
+X3NpemUgdmFsdWUgaXMgZ2V0dGluZyBwb3B1bGF0ZWQgd3JvbmdseSBmb3IgY2FzZSB3aGVuIHZh
+bHVlIG9mIENSM1ZbNF0gaXMgMCBmb3IgdGhpcyBmbGFzaC4NCg0KLS0NClJlZ2FyZHMNCllvZ2Vz
+aCBHYXVyDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgtbXRk
+IFttYWlsdG86bGludXgtbXRkLWJvdW5jZXNAbGlzdHMuaW5mcmFkZWFkLm9yZ10gT24gQmVoYWxm
+IE9mDQo+IFlvZ2VzaCBHYXVyDQo+IFNlbnQ6IEZyaWRheSwgQXVndXN0IDMxLCAyMDE4IDEwOjI4
+IEFNDQo+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBRdWVy
+eSBSZWdhcmRpbmcgTk9SIGZsYXNoIHBhZ2Ugc2l6ZSBjYWxjdWxhdGlvbiBzMjVmbDUxMnMNCj4g
+DQo+IEhpIEFsbCwNCj4gDQo+IEkgaGF2ZSBxdWVyeSBhbmQgY29uY2VybiByZWdhcmRpbmcgcGFn
+ZV9zaXplIGNhbGN1bGF0aW9uIGZvciB0aGUgdW5kZXJseWluZw0KPiBOT1IgZmxhc2hlcy4NCj4g
+DQo+IEkgaGF2ZSBzcGFuc2lvbiwg4oCYczI1Zmw1MTJz4oCZIGZsYXNoIGNvbm5lY3RlZCBvbiBt
+eSB0YXJnZXQuDQo+IA0KPiBXaXRoIFNGRFAgcGFyYW0gcmVhZGluZywgcGFnZV9zaXplIGZvciB0
+aGlzIGZsYXNoIGlzIGFzc2lnbmVkIGFzIDB4MjAwIHVzaW5nDQo+IGJlbG93IHJvdXRpbmUuDQo+
+ICAgIC8qIFBhZ2Ugc2l6ZTogdGhpcyBmaWVsZCBzcGVjaWZpZXMgJ04nIHNvIHRoZSBwYWdlIHNp
+emUgPSAyXk4gYnl0ZXMuICovDQo+ICAgIHBhcmFtcy0+cGFnZV9zaXplID0gYmZwdC5kd29yZHNb
+QkZQVF9EV09SRCgxMSldOw0KPiAgICBwYXJhbXMtPnBhZ2Vfc2l6ZSAmPSBCRlBUX0RXT1JEMTFf
+UEFHRV9TSVpFX01BU0s7DQo+ICAgIHBhcmFtcy0+cGFnZV9zaXplID4+PSBCRlBUX0RXT1JEMTFf
+UEFHRV9TSVpFX1NISUZUOw0KPiAgICBwYXJhbXMtPnBhZ2Vfc2l6ZSA9IDFVIDw8IHBhcmFtcy0+
+cGFnZV9zaXplOw0KPiANCj4gQXMgcGVyIHRoZSBCRyBvZiBTMjVGUzUxMlNfNTEyX00gZmxhc2gg
+YW5kIFNGRFAgaGVhZGVyIGluZm8gdGFibGUgYWJvdmUNCj4gY2FsY3VsYXRpb24gYXJlIGNvcnJl
+Y3QuDQo+IA0KPiBCdXQgZmluYWwgdmFsdWUgb2YgdGhlIHBhZ2Vfc2l6ZSBmb3IgdGhpcyBmbGFz
+aCBpcyBkZXBlbmRzIG9uIHRoZSBjb25maWd1cmF0aW9uDQo+IHJlZ2lzdGVyIENSM1ZbNF0sIHBh
+Z2UgYnVmZmVyIHdyYXAsIGl0IGNhbiBiZSBlaXRoZXIgb2YNCj4gMjU2IGJ5dGUgKDApIG9yIDUx
+MiBieXRlICgxKS4NCj4gDQo+IEZvciBteSBjYXNlLCB0aGlzIHZhbHVlIGlzIDAgYW5kIHBhZ2Vf
+c2l6ZSBiZWNvbWVzIDB4MTAwIGJ5dGVzIGJ1dCB3aXRoIFNGRFANCj4gaGVhZGVyIHJlYWQsIHZh
+bHVlIGZvciB0aGlzIGlzIGJlaW5nIGFzc2lnbmVkIGFzIDB4MjAwLg0KPiBEdWUgdG8gdGhpcywg
+SSBhbSBnZXR0aW5nIGRhdGEgY29ycnVwdGlvbi4NCj4gDQo+IFBsZWFzZSBzdWdnZXN0LCBob3cg
+Y2FuIHdlIGNoZWNrIGFuZCBwcm9jZWVkIGluIHRoZXNlIGNhc2UuIEkgZ3Vlc3MgdGhpcyBpcw0K
+PiBzcGVjaWZpYyB0byBzcGFuc2lvbiBmYW1pbHkgb2YgZmxhc2hlcy4NCj4gDQo+IElNTywgZm9y
+IHRoaXMgZmxhc2ggd2UgbmVlZCB0byBhZGQgZmxhZyBTUElfTk9SX1NLSVBfU0ZEUCBmb3IgZW50
+cnkgb2YgdGhpcw0KPiBmbGFzaCwgczI1Zmw1MTJzLg0KPiANCj4gDQo+IFJlZ2FyZHMsDQo+IFlv
+Z2VzaA0KPiANCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fDQo+IExpbnV4IE1URCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KPiBodHRwczov
+L2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHAlM0ElMkYl
+MkZsaXN0cy5pbmZyDQo+IGFkZWFkLm9yZyUyRm1haWxtYW4lMkZsaXN0aW5mbyUyRmxpbnV4LQ0K
+PiBtdGQlMkYmYW1wO2RhdGE9MDIlN0MwMSU3Q3lvZ2VzaG5hcmF5YW4uZ2F1ciU0MG54cC5jb20l
+N0NlYmUzNGQyDQo+IDQ4YmQ1NGU0YzM5OTUwOGQ2MGVmZTU4MDUlN0M2ODZlYTFkM2JjMmI0YzZm
+YTkyY2Q5OWM1YzMwMTYzNSU3QzAlDQo+IDdDMCU3QzYzNjcxMjg4MjkwNzM0NDQ5NCZhbXA7c2Rh
+dGE9bSUyQnR3S1JiekZFWWMyaHF4VWlsb1lUNVNLR3ENCj4gZUFrc2NWVlBrN0FrT2FITSUzRCZh
+bXA7cmVzZXJ2ZWQ9MA0K
