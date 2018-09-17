@@ -1,23 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1seV-00005q-LS
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 12:29:34 +0000
-Date: Mon, 17 Sep 2018 14:28:57 +0200
+ id 1g1shc-0001j4-HK
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 12:32:34 +0000
+Date: Mon, 17 Sep 2018 14:32:11 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Brian Norris
- <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org, David
- Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-Subject: Re: [PATCH v2] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
- spi_nor_read_id()
-Message-ID: <20180917142857.16be0331@bbrezillon>
-In-Reply-To: <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
-References: <20180917081018.14475-1-jarkko.nikula@linux.intel.com>
- <20180917101851.3d359d18@bbrezillon>
- <20180917102821.16c69697@bbrezillon>
- <08b87712-b018-e448-21b5-aa7c3c7b82cc@linux.intel.com>
- <20180917104633.5a18bcd1@bbrezillon>
- <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, stable@vger.kernel.org, Marek Vasut
+ <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: rawnand: marvell: prevent harmless warnings
+Message-ID: <20180917143211.7e615d69@bbrezillon>
+In-Reply-To: <20180910151523.38a59b68@xps13>
+References: <20180907142954.13299-1-miquel.raynal@bootlin.com>
+ <20180910145744.4a73b068@bbrezillon>
+ <20180910151523.38a59b68@xps13>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,22 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Sep 2018 12:04:43 +0300
-Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+On Mon, 10 Sep 2018 15:15:23 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-> On 09/17/2018 11:46 AM, Boris Brezillon wrote:
-> > On Mon, 17 Sep 2018 11:41:31 +0300
-> > Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+> Hi Boris,
+> 
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Mon, 10 Sep 2018
+> 14:57:44 +0200:
+> 
+> > On Fri,  7 Sep 2018 16:29:54 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 > >   
-> >> On 09/17/2018 11:28 AM, Boris Brezillon wrote:  
-> >>>
-> >>> Hm, I just had a look at all ->read/write_reg() call sites and it seems
-> >>> we have the same problem in other places. Maybe it's just better to fix
-> >>> the problem in m25p80 ->read/write_reg() implems for now
+> > > Since the addition of WARN_ON() in nand_subop_get_data/addr_len()
+> > > helpers, this driver will produce harmless warnings (mostly at probe)
+> > > just because it always called the *_data_len() helper in the parsing    
+> > 
+> > 			 ^calls
+> >   
+> > > function (even on non-data instructions, where this value is
+> > > meaningless and unneeded.    
+> > 
+> > 			  ^ missing ')'
+> >   
+> > > 
+> > > Fix these warnings by deriving the length only when it is relevant.
+> > > 
+> > > Fixes: 760c435e0f85 ("mtd: rawnand: make subop helpers return unsigned values")
+> > > Cc: stable@vger.kernel.org    
+> > 
+> > You can drop the above line this 760c435e0f85 was merged in 4.19-rc1.
+> > 
+> > If you're okay with these changes, no need to send a new version, I'll
+> > fix it when applying.  
+> 
+> Sure, you can apply, thanks for fixing it.
 
-Do you plan to send a new fix doing that, or should I? I'd really like
-to have the fix queued to mtd/master early this week, so that it
-spends a bit of time in -next.
+Queued to master.
 
 Thanks,
 
