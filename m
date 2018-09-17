@@ -1,25 +1,24 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g1pSh-0001Fs-Ht
- for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 09:04:57 +0000
-Subject: Re: [PATCH v2] mtd: spi-nor: Use DMA-safe buffer for JEDEC ID in
- spi_nor_read_id()
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>
-References: <20180917081018.14475-1-jarkko.nikula@linux.intel.com>
- <20180917101851.3d359d18@bbrezillon> <20180917102821.16c69697@bbrezillon>
- <08b87712-b018-e448-21b5-aa7c3c7b82cc@linux.intel.com>
- <20180917104633.5a18bcd1@bbrezillon>
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <03fe4a2a-2b74-b4b9-b143-9a1ef5cb4907@linux.intel.com>
-Date: Mon, 17 Sep 2018 12:04:43 +0300
+ id 1g1pz1-0004v0-Bk
+ for linux-mtd@lists.infradead.org; Mon, 17 Sep 2018 09:38:21 +0000
+Date: Mon, 17 Sep 2018 11:38:04 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Koen Vandeputte <koen.vandeputte@ncentric.com>
+Cc: Richard Weinberger <richard.weinberger@gmail.com>,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ stable <stable@vger.kernel.org>
+Subject: Re: ubifs: regression since "ubifs: xattr: Don't operate on deleted
+ inodes"
+Message-ID: <20180917093804.GD26181@kroah.com>
+References: <fd473abd-58d2-076f-675a-fb1ac06aa984@ncentric.com>
+ <20180913094630.GB634@kroah.com>
+ <CAFLxGvyz6oPbeS4KmG-O6vs26P4kB8rMwbukRVgbN-PKvcgcTA@mail.gmail.com>
+ <957f48b5-cc45-ce9b-0a48-cab8534ad570@ncentric.com>
 MIME-Version: 1.0
-In-Reply-To: <20180917104633.5a18bcd1@bbrezillon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <957f48b5-cc45-ce9b-0a48-cab8534ad570@ncentric.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +28,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/17/2018 11:46 AM, Boris Brezillon wrote:
-> On Mon, 17 Sep 2018 11:41:31 +0300
-> Jarkko Nikula <jarkko.nikula@linux.intel.com> wrote:
+On Sun, Sep 16, 2018 at 09:52:48PM +0200, Koen Vandeputte wrote:
 > 
->> On 09/17/2018 11:28 AM, Boris Brezillon wrote:
->>>
->>> Hm, I just had a look at all ->read/write_reg() call sites and it seems
->>> we have the same problem in other places. Maybe it's just better to fix
->>> the problem in m25p80 ->read/write_reg() implems for now and see how we
->>> can fix that generically afterwards.
->>>    
->> It's not only m25p80, how about all other cases calling spi_nor_scan()?
->>
 > 
-> I agree, the problem is more generic than that, but commit 4120f8d158ef
-> only breaks the m25p80 driver, and I'd like to keep the fix as simple as
-> possible.
+> On 15-09-18 09:15, Richard Weinberger wrote:
+> > Koen,
+> > 
+> > On Thu, Sep 13, 2018 at 12:09 PM gregkh@linuxfoundation.org
+> > <gregkh@linuxfoundation.org> wrote:
+> > > adding stable@ for stable kernel issues...
+> > > 
+> > > On Thu, Sep 13, 2018 at 09:58:35AM +0200, Koen Vandeputte wrote:
+> > > > Hi all,
+> > > > 
+> > > > I'm currently in the process of updating the kernel version within OpenWrt.
+> > > > (4.14.68 to 4.14.69)
+> > > > 
+> > > > Testing shows some issues on devices using specifically UBIFS.
+> > > > Altering a perfect valid writable file shows weird errors:
+> > > > 
+> > > > 
+> > > > [ Node 2 | node-2 ] ls -l /root/custom/scripts/banner.sh
+> > > > -rwxr-xr-x    1 root     root           283 Sep 11 09:52
+> > > > /root/custom/scripts/banner.sh
+> > > > 
+> > > > [ Node 2 | node-2 ] cat /root/custom/scripts/banner.sh
+> > > > #!/bin/sh
+> > > > 
+> > > > if [ ! -f /root/.banner_ok ]
+> > > > then
+> > > >      RELEASE=$(cat /root/build_date)
+> > > >      VERSION=$(cat /root/version)
+> > > > 
+> > > >      echo "Generating banner: $VERSION $RELEASE"
+> > > >      sed s/VERSION/$VERSION/g /root/custom/banner > /etc/banner
+> > > >      sed -i s/RELEASE/$RELEASE/g /etc/banner
+> > > > 
+> > > >      touch /root/.banner_ok
+> > > > fi
+> > > > 
+> > > > [ Node 2 | node-2 ] echo "test" > /root/custom/scripts/banner.sh
+> > > > -ash: can't create /root/custom/scripts/banner.sh: nonexistent directory
+> > > > 
+> > > > 
+> > > > 
+> > > > I'm also noticing other apps fail because /etc doesn't exists yet after
+> > > > UBIFS boot loading.
+> > > > these 2 issues were not seen on 4.14.68.
+> > > > 
+> > > > The bootlog doesn't show any error:
+> > > > https://pastebin.com/raw/dJx47uBp
+> > > > 
+> > > > 
+> > > > I'm only seeing these issues on UBIFS enabled volumes.
+> > > > Reverting ("ubifs: xattr: Don't operate on deleted inodes") fixes these
+> > > > weird issues.
+> > Please see my answer to the other thread.
+> > Always keep the patch author on CC and don't start multiple threads for the
+> > same issue on two mailing lists.
+> > Yes, I didn't answer for three days, I had no internet connection...
+> > 
+> Richard,
 > 
-You are right, I looked at too quickly spi_nor_scan() users. Those 
-others are controller drivers.
+> I indeed posted here too as we passed the 3 days marker, and I noticed
+> 4.14.70 RC2 got staged.
+> Also, a lot of developers tend to ignore questions unless the initial
+> question got posted to the official mailinglist.
+> 
+> Let's continue on the OpenWrt list as you propose, were the initial question
+> was raised.
+> 
+> Apologies for the (double) noise.
 
--- 
-Jarkko
+I will assume that if the resolution is that something needs to be done
+to the stable releases and a patch added/reverted, someone will
+eventually tell me?
+
+thanks,
+
+greg k-h
