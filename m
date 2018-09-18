@@ -1,26 +1,30 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>, Boris Brezillon
- <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>, "robh@kernel.org" <robh@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>, "shawnguo@kernel.org"
- <shawnguo@kernel.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Date: Tue, 18 Sep 2018 08:28:23 +0000
-Message-ID: <VI1PR04MB1038A85DC36665244DF2104A991D0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537177710-9379-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180917133751.453ea6ed@bbrezillon>
- <9529c765-cb3b-02f9-df15-4f79cfa48e47@exceet.de>
-In-Reply-To: <9529c765-cb3b-02f9-df15-4f79cfa48e47@exceet.de>
+Received: from mail-sn1nam02on062f.outbound.protection.outlook.com
+ ([2a01:111:f400:fe44::62f]
+ helo=NAM02-SN1-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2Bq1-000802-Jj
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 08:58:31 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, naga suresh kumar
+ <nagasureshkumarrelli@gmail.com>
+CC: "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ =?iso-8859-2?Q?Marek_Va=B9ut?= <marek.vasut@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
+ "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [RFC PATCH 0/5] RFC for Zynq QSPI
+Date: Tue, 18 Sep 2018 08:58:14 +0000
+Message-ID: <MWHPR02MB2623014F6F8E7B8F78952834AF1D0@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1521807722-21626-1-git-send-email-nagasure@xilinx.com>
+ <BY2PR02MB14115B9E46B35A59AC6505D9AFB00@BY2PR02MB1411.namprd02.prod.outlook.com>
+ <CALgLF9K=rZxVx_QXvV_LH3OhidTcguZ=K=p=Lf9AfFbk4H+8Zw@mail.gmail.com>
+ <20180917170522.0312ae8c@bbrezillon>
+ <CALgLF9JVweEcEm6L33HaHp4HtXhmsZL7J5FDe8+O11i0Q1nukg@mail.gmail.com>
+ <20180918091712.2f97db80@bbrezillon>
+In-Reply-To: <20180918091712.2f97db80@bbrezillon>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,41 +35,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRnJpZWRlciwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBGcmll
-ZGVyIFNjaHJlbXBmIFttYWlsdG86ZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGVdDQo+IFNlbnQ6
-IFR1ZXNkYXksIFNlcHRlbWJlciAxOCwgMjAxOCAxOjUyIFBNDQo+IFRvOiBCb3JpcyBCcmV6aWxs
-b24gPGJvcmlzLmJyZXppbGxvbkBib290bGluLmNvbT47IFlvZ2VzaCBOYXJheWFuIEdhdXINCj4g
-PHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAuY29tPg0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJh
-ZGVhZC5vcmc7IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgbGludXgtDQo+IHNwaUB2Z2VyLmtlcm5l
-bC5vcmc7IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyByb2JoQGtlcm5lbC5vcmc7DQo+IG1h
-cmsucnV0bGFuZEBhcm0uY29tOyBzaGF3bmd1b0BrZXJuZWwub3JnOyBsaW51eC1hcm0tDQo+IGtl
-cm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IGxp
-bnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIg
-MS81XSBzcGk6IHNwaS1tZW06IEFkZCBkcml2ZXIgZm9yIE5YUCBGbGV4U1BJIGNvbnRyb2xsZXIN
-Cj4gDQo+IEhpIEJvcmlzLCBZb2dlc2gsDQo+IA0KPiBPbiAxNy4wOS4yMDE4IDEzOjM3LCBCb3Jp
-cyBCcmV6aWxsb24gd3JvdGU6DQo+ID4gSGkgWW9nZXNoLA0KPiA+DQo+ID4gT24gTW9uLCAxNyBT
-ZXAgMjAxOCAxNToxODoyNiArMDUzMA0KPiA+IFlvZ2VzaCBHYXVyIDx5b2dlc2huYXJheWFuLmdh
-dXJAbnhwLmNvbT4gd3JvdGU6DQo+ID4NCj4gPj4gKw0KPiA+PiArCS8qDQo+ID4+ICsJICogUi9X
-IGZ1bmN0aW9ucyBmb3IgYmlnLSBvciBsaXR0bGUtZW5kaWFuIHJlZ2lzdGVyczoNCj4gPj4gKwkg
-KiBUaGUgRlNQSSBjb250cm9sbGVyJ3MgZW5kaWFubmVzcyBpcyBpbmRlcGVuZGVudCBvZg0KPiA+
-PiArCSAqIHRoZSBDUFUgY29yZSdzIGVuZGlhbm5lc3MuIFNvIGZhciwgYWx0aG91Z2ggdGhlIENQ
-VQ0KPiA+PiArCSAqIGNvcmUgaXMgbGl0dGxlLWVuZGlhbiB0aGUgRlNQSSBjb250cm9sbGVyIGNh
-biB1c2UNCj4gPj4gKwkgKiBiaWctZW5kaWFuIG9yIGxpdHRsZS1lbmRpYW4uDQo+ID4+ICsJICov
-DQo+ID4+ICsJaWYgKG9mX3Byb3BlcnR5X3JlYWRfYm9vbChucCwgImJpZy1lbmRpYW4iKSkgew0K
-PiA+PiArCQlmLT53cml0ZSA9IGZzcGlfd3JpdGVsX2JlOw0KPiA+PiArCQlmLT5yZWFkID0gZnNw
-aV9yZWFkbF9iZTsNCj4gPj4gKwl9IGVsc2Ugew0KPiA+PiArCQlmLT53cml0ZSA9IGZzcGlfd3Jp
-dGVsOw0KPiA+PiArCQlmLT5yZWFkID0gZnNwaV9yZWFkbDsNCj4gPj4gKwl9DQo+ID4NCj4gPiBI
-bSwgaXNuJ3QgaXQgc29tZXRoaW5nIHlvdSBjYW4gZXh0cmFjdCBmcm9tIHRoZSBjb21wYXRpYmxl
-IHN0cmluZz8gSSdkDQo+ID4gcmF0aGVyIG5vdCBhbGxvdyB1c2VycyB0byBzZXQgdGhhdCBpbiB0
-aGVpciBEVCBpZiBpdCdzIG5vdCBzb21ldGhpbmcNCj4gPiB5b3UgY2FuIGNoYW5nZS4NCj4gDQo+
-IFRoaXMgd2FzIGNvcGllZCBmcm9tIHRoZSBRU1BJIGRyaXZlciwgYnV0IEkgdGhpbmsgQm9yaXMg
-aXMgcmlnaHQuIFRoaXMgc2VlbXMgdG8gYmUgYQ0KPiBmaXhlZCBTT0Mtc3BlY2lmaWMgc2V0dGlu
-ZyBhbmQgd2Ugc2hvdWxkbid0IHNldCBpdCBpbiB0aGUgRFQuIFRoaXMgYXBwbGllcyB0byBRU1BJ
-DQo+IGFuZCBGU1BJIGFsaWtlLg0KPiANCg0KWWVzLCBpdCBjYW4gYmUgbW9kaWZpZWQuIEluc3Rl
-YWQgb2YgcmVhZGluZyBlbmRpYW5uZXNzIHByb3BlcnR5IGZyb20gZGV2aWNlIHRyZWUgY2FuIGJl
-IG1vdmVkIHRvIHRoZSBwbGF0Zm9ybSBzdHJ1Y3R1cmUgbnhwX2ZzcGlfZGV2dHlwZV9kYXRhIHdo
-aWNoIGlzIGxpbmtlZCB3aXRoIHRoZSBjb21wYXRpYmxlIHN0cmluZw0KeyAuY29tcGF0aWJsZSA9
-ICJueHAsbHgyMTYwYS1mc3BpIiwgLmRhdGEgPSAodm9pZCAqKSZseDIxNjBhX2RhdGEsIH0NCg0K
-VGhhbmtzLg0KDQpXb3VsZCBzZW5kIHRoZSBjaGFuZ2VzIGluIG5leHQgdmVyc2lvbi4NCg0KLS0N
-ClJlZ2FyZHMsDQpZb2dlc2ggR2F1ci4NCg0KPiBSZWdhcmRzLA0KPiBGcmllZGVyDQo+IA0KPiA+
-DQo+ID4gUmVnYXJkcywNCj4gPg0KPiA+IEJvcmlzDQo+ID4NCg==
+Hi Boris,
+
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Tuesday, September 18, 2018 12:47 PM
+> To: naga suresh kumar <nagasureshkumarrelli@gmail.com>
+> Cc: Naga Sureshkumar Relli <nagasure@xilinx.com>; cyrille.pitchen@wedev4u=
+.fr; Marek
+> Va=B9ut <marek.vasut@gmail.com>; David Woodhouse <dwmw2@infradead.org>; B=
+rian
+> Norris <computersforpeace@gmail.com>; boris.brezillon@free-electrons.com;=
+ linux-
+> mtd@lists.infradead.org
+> Subject: Re: [RFC PATCH 0/5] RFC for Zynq QSPI
+>=20
+> Hi Naga,
+>=20
+> On Tue, 18 Sep 2018 11:26:05 +0530
+> naga suresh kumar <nagasureshkumarrelli@gmail.com> wrote:
+>=20
+> > Hi,
+> >
+> > Please see my reply inline by prefacing my name, currently i am facing
+> > issues with my outlook. the reply looks not good but please don't mind.
+>=20
+> I do mind. Please find a way to fix that, 'cause I'm pretty sure others w=
+ill soon complain about
+> that too.
+Its working now.
+>=20
+>=20
+> > > > As i said, it needs tweaking the mtd->size and spi read/write addre=
+sses.
+> > >
+> > > Can you elaborate a bit on why you think this is needed? Did you
+> > > look at [1]? Maybe it will prevent us from exposing the flash size
+> > > at the spi-mem level.
+> > > [naga]: some example snippet below
+> > >
+> > > spi_nor_read () {
+> > >
+> > >    if (nor->isparallel =3D=3D 1)
+> > >
+> > >    {
+> > >
+> > >       offset /=3D 2; //byte stripping will happen here
+> > >
+> > >        nor->spi->master->flags |=3D SPI_DATA_STRIPE;
+> > >
+> > >        //By setting this flag even bits of data word located in
+> > > lower memory and odd are in upper memory
+> > >
+> > >    }
+> > >
+> > >    if (nor->isstacked =3D=3D 1) {
+> > >
+> > >      stack_shift =3D 1;
+> > >
+> > >      if (offset >=3D (mtd->size / 2)) {
+> > >
+> > >      offset =3D offset - (mtd->size / 2);
+> > >
+> > >      nor->spi->master->flags |=3D SPI_MASTER_U_PAGE;
+> > >
+> > >      //We can access Upper memory or lower memory, by setting this
+> > > flag in controller.
+> > >
+> > >   } else {
+> > >
+> > >         nor->spi->master->flags &=3D ~SPI_MASTER_U_PAGE;
+> > >
+> > >   }
+> > >
+> > >  }
+> > >
+> > > same for spi_nor_write() also.
+>=20
+> Let's put the stacked and parallel support on the side for now and focus =
+on single die/chip
+> support. Will find a clean way to handle that afterwards.
+Ok
+>=20
+> > >
+> > > Also in both dual parallel and stacked mode mtd->size should be sum
+> > > of both flash device sizes
+>=20
+> Yes, but this information should stay at the spi-nor/mtd level.
+>=20
+> > >
+> > > also status register read will change, it needs status from both devi=
+ces.
+> > > like that some changes
+> > >
+> > > will be needed in core.
+>=20
+> Which is why this needs to be handled in spi-nor.c. The spi-nor core need=
+s to know about the
+> parallel/stack setup and handle it differently (read both status bytes, r=
+ead both IDs, ...).
+Ok
+>=20
+> > > > Can somebody share your thoughts on this(Adding Zynq QSPI Dual
+> > > > parallel
+> > > and
+> > > > stacked)?
+> > >
+> > > I always have a hard time with this naming. I guess stacked is when
+> > > you have 2 chips sharing the same I/O bus, and parallel is when you
+> > > have 2 chips with one taking all of the I/O and the other taking the
+> > > other half. Is that correct?
+> > > [naga]: Yes, you are correct, i have attached the diagrams for these =
+mode.
+> > >
+> > > In parallel mode, with the help of controller STRIPE feature, even
+> > > bits of
+> > >
+> > > data words are located in lower memory and odd bits are located in
+> > > upper memory.
+> > >
+> > > Data management will be taken care by controller in both modes
+>=20
+> Ok. I need to think about it a bit more. In the meantime, I recommend tha=
+t you submit a
+> version of the driver that does not support parallel and stacked modes.
+Ok sure.
+
+Thanks,
+Naga Sureshkumar Relli.
+>=20
+> Regards,
+>=20
+> Boris
