@@ -1,24 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2AGE-0001fO-RT
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 07:17:29 +0000
-Date: Tue, 18 Sep 2018 09:17:12 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: naga suresh kumar <nagasureshkumarrelli@gmail.com>
-Cc: nagasure@xilinx.com, cyrille.pitchen@wedev4u.fr, Marek =?UTF-8?B?VmE=?=
- =?UTF-8?B?xaF1dA==?= <marek.vasut@gmail.com>, David Woodhouse
- <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- boris.brezillon@free-electrons.com, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH 0/5] RFC for Zynq QSPI
-Message-ID: <20180918091712.2f97db80@bbrezillon>
-In-Reply-To: <CALgLF9JVweEcEm6L33HaHp4HtXhmsZL7J5FDe8+O11i0Q1nukg@mail.gmail.com>
-References: <1521807722-21626-1-git-send-email-nagasure@xilinx.com>
- <BY2PR02MB14115B9E46B35A59AC6505D9AFB00@BY2PR02MB1411.namprd02.prod.outlook.com>
- <CALgLF9K=rZxVx_QXvV_LH3OhidTcguZ=K=p=Lf9AfFbk4H+8Zw@mail.gmail.com>
- <20180917170522.0312ae8c@bbrezillon>
- <CALgLF9JVweEcEm6L33HaHp4HtXhmsZL7J5FDe8+O11i0Q1nukg@mail.gmail.com>
+Received: from mga03.intel.com ([134.134.136.65])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2Auv-0000Lj-Fe
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 07:59:30 +0000
+Subject: Re: [PATCH v2] mtd: devices: m25p80: Make sure the buffer passed in
+ op is DMA-able
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: stable@vger.kernel.org
+References: <20180917143130.23007-1-boris.brezillon@bootlin.com>
+From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Message-ID: <8e5e8113-b091-6d3e-50d4-3e70e9372016@linux.intel.com>
+Date: Tue, 18 Sep 2018 10:59:17 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20180917143130.23007-1-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,106 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Naga,
-
-On Tue, 18 Sep 2018 11:26:05 +0530
-naga suresh kumar <nagasureshkumarrelli@gmail.com> wrote:
-
-> Hi,
+On 09/17/2018 05:31 PM, Boris Brezillon wrote:
+> As documented in spi-mem.h, spi_mem_op->data.buf.{in,out} must be
+> DMA-able, and commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx()
+> API") failed to follow this rule as buffers passed to
+> ->{read,write}_reg() are usually placed on the stack.
 > 
-> Please see my reply inline by prefacing my name, currently i am facing
-> issues with my outlook. the reply looks not good but please don't mind.
-
-I do mind. Please find a way to fix that, 'cause I'm pretty sure others
-will soon complain about that too.
-
-
-> > > As i said, it needs tweaking the mtd->size and spi read/write addresses.  
-> >
-> > Can you elaborate a bit on why you think this is needed? Did you look
-> > at [1]? Maybe it will prevent us from exposing the flash size at the
-> > spi-mem level.
-> > [naga]: some example snippet below
-> >
-> > spi_nor_read () {
-> >
-> >    if (nor->isparallel == 1)
-> >
-> >    {
-> >
-> >       offset /= 2; //byte stripping will happen here
-> >
-> >        nor->spi->master->flags |= SPI_DATA_STRIPE;
-> >
-> >        //By setting this flag even bits of data word located in lower
-> > memory and odd are in upper memory
-> >
-> >    }
-> >
-> >    if (nor->isstacked == 1) {
-> >
-> >      stack_shift = 1;
-> >
-> >      if (offset >= (mtd->size / 2)) {
-> >
-> >      offset = offset - (mtd->size / 2);
-> >
-> >      nor->spi->master->flags |= SPI_MASTER_U_PAGE;
-> >
-> >      //We can access Upper memory or lower memory, by setting this flag in
-> > controller.
-> >
-> >   } else {
-> >
-> >         nor->spi->master->flags &= ~SPI_MASTER_U_PAGE;
-> >
-> >   }
-> >
-> >  }
-> >
-> > same for spi_nor_write() also.
-
-Let's put the stacked and parallel support on the side for now and
-focus on single die/chip support. Will find a clean way to handle that
-afterwards.
-
-> >
-> > Also in both dual parallel and stacked mode mtd->size should be sum of
-> > both flash device sizes
-
-Yes, but this information should stay at the spi-nor/mtd level.
-
-> >
-> > also status register read will change, it needs status from both devices.
-> > like that some changes
-> >
-> > will be needed in core.  
-
-Which is why this needs to be handled in spi-nor.c. The spi-nor core
-needs to know about the parallel/stack setup and handle it differently
-(read both status bytes, read both IDs, ...).
-
-> > > Can somebody share your thoughts on this(Adding Zynq QSPI Dual parallel  
-> > and  
-> > > stacked)?  
-> >
-> > I always have a hard time with this naming. I guess stacked is when you
-> > have 2 chips sharing the same I/O bus, and parallel is when you have 2
-> > chips with one taking all of the I/O and the other taking the other
-> > half. Is that correct?
-> > [naga]: Yes, you are correct, i have attached the diagrams for these mode.
-> >
-> > In parallel mode, with the help of controller STRIPE feature, even bits of
-> >
-> > data words are located in lower memory and odd bits are located in upper
-> > memory.
-> >
-> > Data management will be taken care by controller in both modes
-
-Ok. I need to think about it a bit more. In the meantime, I recommend
-that you submit a version of the driver that does not support parallel
-and stacked modes.
-
-Regards,
-
-Boris
+> Fix that by allocating a scratch buffer and copying the data around.
+> 
+> Fixes: 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
+> Reported-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Note that the ->{read,write}() path is still buggy since nothing
+> guarantees that buffers passed by the MTD layer to the SPI NOR layer
+> are DMA-able, but this is a long-standing issue which we'll have to
+> address at the spi-nor level (this layer can choose the bounce buffer
+> size based on nor->page_size).
+> 
+> Changes in v2:
+> - Copy the data from scratchbuf in the ->read_reg() path
+> ---
+>   drivers/mtd/devices/m25p80.c | 26 +++++++++++++++++++++++---
+>   1 file changed, 23 insertions(+), 3 deletions(-)
+> 
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
