@@ -1,25 +1,17 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2HCi-0002Yq-Hh
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 14:42:18 +0000
-Date: Tue, 18 Sep 2018 16:41:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, marek.vasut@gmail.com,
- linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
- prabhakar.kushwaha@nxp.com, linux-mtd@lists.infradead.org, han.xu@nxp.com,
- Fabio Estevam <fabio.estevam@nxp.com>, david.wolfe@nxp.com,
- computersforpeace@gmail.com, festevam@gmail.com
-Subject: Re: [PATCH] mtd: spi-nor: Support controllers with limited TX FIFO
- size
-Message-ID: <20180918164154.28d7a31c@bbrezillon>
-In-Reply-To: <81e0653f-1e07-6ec9-f12a-d448e269c87a@exceet.de>
-References: <1528870092-14526-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180709233427.1a714de7@bbrezillon>
- <81e0653f-1e07-6ec9-f12a-d448e269c87a@exceet.de>
+Received: from mail-pf1-x434.google.com ([2607:f8b0:4864:20::434])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2OKa-0000HZ-GX
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 22:18:54 +0000
+Received: by mail-pf1-x434.google.com with SMTP id h79-v6so1667893pfk.8
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2018 15:18:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Andrea Adami <andrea.adami@gmail.com>
+Date: Wed, 19 Sep 2018 00:18:28 +0200
+Message-ID: <CAAQYJAvt7MU-ip9k1Vj9371P0G=1Nnw4zZ4Rs0SdGVMDzEfZKg@mail.gmail.com>
+Subject: [ubi-utils] - fixes for ubi-utils-klibc 2.0.2
+To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
+ linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 Sep 2018 12:51:51 +0200
-Frieder Schrempf <frieder.schrempf@exceet.de> wrote:
+David,
 
-> I want to revive the discussion about this patch. Meanwhile we have 
-> received confirmation from NXP, that the hardware can't handle writing 
-> data chunks bigger than the TX buffer size, even when we use DMA to 
-> refill the buffer [1].
-> 
-> This means, that this patch is required to get the FSL QSPI driver 
-> working with the SPI mem framework.
-> 
-> Could you please reconsider this patch?
+before next release please check again the patch 0002 in our git repo
+[1],  about output of off_t as long long.
 
-I'm all for taking this patch, just waiting for a green light from
-Marek.
+Then about patch 0005 you sent me last time an improved getline()
+replacement for libmissing.h but I get build failures with glibc (musl
+is ok) with that so I replaced with the simple fgets() again.
+Can we maybe debug it? Have you that snippet still around?
+
+Thanks
+Andrea
+
+
+[1] http://cgit.openembedded.org/meta-openembedded/tree/meta-initramfs/recipes-devtools/mtd/ubi-utils-klibc-2.0.2
