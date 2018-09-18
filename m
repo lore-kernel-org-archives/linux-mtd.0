@@ -1,27 +1,20 @@
-Date: Tue, 18 Sep 2018 14:52:01 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Message-ID: <20180918145201.68adcb8d@bbrezillon>
-In-Reply-To: <VI1PR04MB1038EDE4B2F5AFC5B0FDE8DF991D0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537177710-9379-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <9a80752f-2db3-bf76-fbf4-e5efaa3974d7@exceet.de>
- <VI1PR04MB1038EDE4B2F5AFC5B0FDE8DF991D0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2FhI-0003sV-JS
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 13:05:51 +0000
+Received: by mail-pg1-x542.google.com with SMTP id 2-v6so1020375pgo.4
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2018 06:05:33 -0700 (PDT)
+From: Andrew Worsley <amworsley@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org (open list:UNSORTED BLOCK IMAGES (UBI)),
+ linux-kernel@vger.kernel.org (open list)
+Subject: Round up the average EC for recovered EB to defer their reuse
+Date: Tue, 18 Sep 2018 23:05:20 +1000
+Message-Id: <20180918130521.22880-1-amworsley@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,90 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+We suggest rounding up the EC(Erase Count) for recovered EB(Erase Blocks) so
+they are less likely than averaged to be re-used. The EBs which have lost their
+EC header page and need to be reset are likely to be more worn than average
+so it is better to use a larger than average number rather than less than
+average number.
 
-On Tue, 18 Sep 2018 11:34:18 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-
-> >=20
-> > Do we really need all those macros for registers and modes, that
-> > aren't even used in the driver? I don't know what the common
-> > practice is, but to me it seems like removing all the unused macros
-> > would make the driver much smaller and more readable.
-> >  =20
-> We don't need all Macros currently, but can be needed in future and
-> then have to add again. Generally, we add them all so that in future
-> don't have to dig in datasheet to add basic register details.
-
-I guess it's just a matter of taste, but I also prefer when all regs are
-defined even if not all of them are used.
-
-[...]
-
-> >=20
-> > You are only considering 3 and 4 byte long addresses, which is fine
-> > for NOR chips, but the SPI mem interface allows to connect other
-> > chips like SPI NAND which also use 1 byte addresses.
-> >=20
-> > In the QSPI driver Boris worked around this restriction by using
-> > LUT_MODE instead of LUT_ADDRESS.
-> >=20
-> > Does this restriction also exist for FSPI? =20
->=20
-> Yes, I have seen that implementation and first tries with that same
-> logic, using LUT_MODE instead of LUT_ADDR, but didn=E2=80=99t work for the
-> FlexSPI controller.
->=20
-> In this controller, we are having separate LUT_XX for RowAddress and
-> ColumnAddress. For case of the Nand flash, we need to program both
-> RowAddress and ColumnAddress in single LUT sequence.
-
-Hm, I don't get it. LUT_MODE was just a way to pass raw data on the I/O
-bus, so the row vs column thing has no meaning in this case, and the
-offset withing the QSPI AHB range should just be ignored.
-
->=20
-> IMO, when support needs to be added for NAND flash, then slight
-> modification can be done in the logic. As per my discussion with
-> controller validation guys, needs to send 16-bit addrlen for
-> RowAddress, LUT_ADDR (0x2) Addrlen can vary for the column-address
-> and needs to be programmed for sequence LUT_CADDR_SDR (0x3)
-
-And that's again flash specific details leaking into the spi-mem layer,
-which I'd like to avoid (as repeated many times before).
-
-> >=20
-> > You are using the remapping procedure as in the QSPI NOR driver.
-> > The original purpose was to start with a rather small mapping size
-> > and increase it when a larger memory device is used.
-> >=20
-> > At the same time you use the logic from the QSPI SPI mem driver,
-> > that adjusts the data.nbytes of each read op to a maximum of
-> > ahb_buf_size in nxp_fspi_adjust_op_size().
-> > This is the logic that Boris introduced for the QSPI driver until
-> > we replace it with something like dirmap.
-> >=20
-> > Unless there is something I missed, this means the ramapping is
-> > useless and it's enough to reserve memory with the fixed size of
-> > ahb_buf_size.=20
->=20
-> My concern was for performance and that's why has done remap for the
-> 4MB buffer size so that if any subsequent Read request would come
-> within the range then don=E2=80=99t have to perform remap and can just
-> directly do memcpy()
->=20
-> I would re-visit again and see if getting any issue in doing direct
-> memcpy() instead of remap. We need to perform AHB buffer invalidation
-> when using controller in both IP(write, erase etc) and AHB (read)
-> mode.
-
-Then you should really review my dirmap proposal instead of trying to
-hack things directly into your driver. The only reason I did no send a
-new version of the dirmap patchset is because I got no reviews from
-people that might need it, so please have a look at it, try to
-implement a backend for your controller, and let me know if you face
-any issues or think things should be done differently.
-
-Thanks,
-
-Boris
+        Andrew Worsley
