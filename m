@@ -1,19 +1,29 @@
-Date: Tue, 18 Sep 2018 15:09:34 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Tudor Ambarus <tudor.ambarus@microchip.com>
-Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <richard@nod.at>,
- linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
- cyrille.pitchen@microchip.com, linux-mtd@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, Cristian.Birsan@microchip.com
-Subject: Re: [PATCH v3 0/2] add support to non-uniform SFDP SPI NOR flash
- memories
-Message-ID: <20180918150934.6c55b1d4@bbrezillon>
-In-Reply-To: <20180911154007.17195-1-tudor.ambarus@microchip.com>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+Received: from gateway34.websitewelcome.com ([192.185.148.200])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2G8l-00077T-9I
+ for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 13:34:08 +0000
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id 29C81F353B
+ for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2018 08:33:43 -0500 (CDT)
+Date: Tue, 18 Sep 2018 08:33:17 -0500
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Ludovic Desroches <ludovic.desroches@microchip.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: rawnand: atmel: Fix potential NULL pointer dereference
+Message-ID: <20180918133317.GA17358@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,82 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 Sep 2018 18:40:05 +0300
-Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
+There is a potential execution path in which function
+of_find_compatible_node() returns NULL. In such a case,
+we end up having a NULL pointer dereference when accessing
+pointer *nfc_np* in function of_clk_get().
 
-> Backward compatibility test done on mx25l3273fm2i-08g with
-> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS set and unset.
-> Non-uniform erase test done on sst26vf064b-104i/sn with
-> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS set and unset.
-> 
-> Note that in order to do the non-uniform test you'll have to force the
-> spi_nor_has_uniform_erase() to return false, because the erase map is
-> tuned to come back to the uniform case. Also, for the SST flashes, you'll
-> have to unlock the global protection (see
-> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1763887.html).
-> 
-> Changes in v3:
-> - drop "mtd: spi-nor: parse SFDP 4-byte Address Instruction Table":
->   let's add just a feature per patch set to make it easily digestible.
->   No worries, will resubmit it once the non-uniform erase supports gets
->   approved.
-> - SNOR_ERASE_FLAGS_OFFSET was buggy and since it's used only once
->   in the uniform erase case, remove it entirely and do the init by
->   hand
-> - describe all introduced functions together with arguments and
->   return value
-> - various minor updates: drop a cast, rename a function - cosmetics ...
-> 
-> Changes in v2:
-> - add JESD216B SFDP optional parsers: Sector Map Parameter Table parser and
->   4-byte Address Instruction Table parser (patch 2/3 and patch 3/3).
-> 
-> - save the Erase Types from bfpt to determine the Erase Type sizes. Sort all
->   the map's Erase Types in ascending order with the smallest erase size being
->   the first member in the erase_type array. Sort in the same way the Erase Type
->   mask in regions in order to have a 1-to-1 correspondence with the Erase
->   Types defined in the map. We sort the Erase Type by size, at init, in order to
->   speed up the process of finding the best erase command at run-time.
-> 
-> - remove setting of mtd->erasesize and nor->erase_opcode when parsing the Basic
->   Flash Parameter Table. mtd->erasesize was set to the maximum supported Erase
->   Type size, without verifying if that Erase Type can erase the entire flash.
->   mtd->erasesize is now set just in spi_nor_select_erase(), after we find which
->   Erase Types are supported in the uniform case.
-> 
-> - spi_nor_select_erase(): pass directly info->sector_size instead of the whole
->   flash_info structure in order to simplify the code.
-> 
-> - fix condition on finding erase regions:
->   while (addr < region_start || addr >= region_end) {
-> - fix the list command adding: list_add_tail() instead of list_add()
-> - write_enable(nor); before erasing the sectors
-> - As Boris suggested, remove likely() because it doesn't make any difference
->   given the time it takes to actually erase the block.
-> - bool return value for spi_nor_has_uniform_erase().
-> 
-> Changes in v1 or what I've done on top of Cyrille's work (https://lkml.org/lkml//
-> 2017/4/15/70):
-> - minimize the amount of erase() calls by using the best sequence of erase
->   type commands depending on alignment.
-> - build the list of best fitted erase commands to be executed once we
->   validate that the erase can be performed.
-> - add improvements on how the erase map is handled. The regions are
->   consecutive in the address space, walk through the regions incrementally.
-> - speed up finding the best erase type command. Order erase types by
->   size, iterate them from the biggest to the smallest and stop when best
->   fitted command is found.
-> - determine at init if there are erase types that can erase the entire
->   memory
-> - fix support for overlaid regions.
-> 
-> 
-> Tudor Ambarus (2):
->   mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
->   mtd: spi-nor: parse SFDP Sector Map Parameter Table
+So, we better don't take any chances and fix this by null
+checking pointer *nfc_np* before calling of_clk_get().
 
-Queued to spi-nor/next after fixing the kerneldoc headers.
+Addresses-Coverity-ID: 1473052 ("Dereference null return value")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/nand/raw/atmel/nand-controller.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Thanks,
-
-Boris
+diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+index a38633a..ffa0c6b6 100644
+--- a/drivers/mtd/nand/raw/atmel/nand-controller.c
++++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+@@ -2035,6 +2035,11 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
+ 	nfc_np = of_find_compatible_node(dev->of_node, NULL,
+ 					 "atmel,sama5d3-nfc");
+ 
++	if (!nfc_np) {
++		dev_err(dev, "Could not find device node for sama5d3-nfc\n");
++		return -ENODEV;
++	}
++
+ 	nc->clk = of_clk_get(nfc_np, 0);
+ 	if (IS_ERR(nc->clk)) {
+ 		ret = PTR_ERR(nc->clk);
+-- 
+2.7.4
