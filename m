@@ -1,23 +1,19 @@
-Received: from mail-pf1-x443.google.com ([2607:f8b0:4864:20::443])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2Fhb-0003xa-UW
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 13:06:18 +0000
-Received: by mail-pf1-x443.google.com with SMTP id s13-v6so1001756pfi.7
- for <linux-mtd@lists.infradead.org>; Tue, 18 Sep 2018 06:05:53 -0700 (PDT)
-From: Andrew Worsley <amworsley@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org (open list:UNSORTED BLOCK IMAGES (UBI)),
- linux-kernel@vger.kernel.org (open list)
-Cc: Andrew Worsley <amworsley@gmail.com>
-Subject: [PATCH] Round UBI average erase count up to next integer
-Date: Tue, 18 Sep 2018 23:05:21 +1000
-Message-Id: <20180918130521.22880-2-amworsley@gmail.com>
-In-Reply-To: <20180918130521.22880-1-amworsley@gmail.com>
-References: <20180918130521.22880-1-amworsley@gmail.com>
+Date: Tue, 18 Sep 2018 15:09:34 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>
+Cc: <marek.vasut@gmail.com>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <richard@nod.at>,
+ linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com,
+ cyrille.pitchen@microchip.com, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Cristian.Birsan@microchip.com
+Subject: Re: [PATCH v3 0/2] add support to non-uniform SFDP SPI NOR flash
+ memories
+Message-ID: <20180918150934.6c55b1d4@bbrezillon>
+In-Reply-To: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +23,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use a slightly larger than average EC so these PEBs will be
-reinitialised with erase counts that make them less likely to
-be reused than other (perhaps less worn or error-prone) PEBs
+On Tue, 11 Sep 2018 18:40:05 +0300
+Tudor Ambarus <tudor.ambarus@microchip.com> wrote:
 
-We have more frequent ECC failures on reads of page 0 of some PEBs
-which manifest itself commonly during ubiattach. We believe this is due to
-"program disturb" and want those PEB to be re-used later than average.
+> Backward compatibility test done on mx25l3273fm2i-08g with
+> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS set and unset.
+> Non-uniform erase test done on sst26vf064b-104i/sn with
+> CONFIG_MTD_SPI_NOR_USE_4K_SECTORS set and unset.
+> 
+> Note that in order to do the non-uniform test you'll have to force the
+> spi_nor_has_uniform_erase() to return false, because the erase map is
+> tuned to come back to the uniform case. Also, for the SST flashes, you'll
+> have to unlock the global protection (see
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg1763887.html).
+> 
+> Changes in v3:
+> - drop "mtd: spi-nor: parse SFDP 4-byte Address Instruction Table":
+>   let's add just a feature per patch set to make it easily digestible.
+>   No worries, will resubmit it once the non-uniform erase supports gets
+>   approved.
+> - SNOR_ERASE_FLAGS_OFFSET was buggy and since it's used only once
+>   in the uniform erase case, remove it entirely and do the init by
+>   hand
+> - describe all introduced functions together with arguments and
+>   return value
+> - various minor updates: drop a cast, rename a function - cosmetics ...
+> 
+> Changes in v2:
+> - add JESD216B SFDP optional parsers: Sector Map Parameter Table parser and
+>   4-byte Address Instruction Table parser (patch 2/3 and patch 3/3).
+> 
+> - save the Erase Types from bfpt to determine the Erase Type sizes. Sort all
+>   the map's Erase Types in ascending order with the smallest erase size being
+>   the first member in the erase_type array. Sort in the same way the Erase Type
+>   mask in regions in order to have a 1-to-1 correspondence with the Erase
+>   Types defined in the map. We sort the Erase Type by size, at init, in order to
+>   speed up the process of finding the best erase command at run-time.
+> 
+> - remove setting of mtd->erasesize and nor->erase_opcode when parsing the Basic
+>   Flash Parameter Table. mtd->erasesize was set to the maximum supported Erase
+>   Type size, without verifying if that Erase Type can erase the entire flash.
+>   mtd->erasesize is now set just in spi_nor_select_erase(), after we find which
+>   Erase Types are supported in the uniform case.
+> 
+> - spi_nor_select_erase(): pass directly info->sector_size instead of the whole
+>   flash_info structure in order to simplify the code.
+> 
+> - fix condition on finding erase regions:
+>   while (addr < region_start || addr >= region_end) {
+> - fix the list command adding: list_add_tail() instead of list_add()
+> - write_enable(nor); before erasing the sectors
+> - As Boris suggested, remove likely() because it doesn't make any difference
+>   given the time it takes to actually erase the block.
+> - bool return value for spi_nor_has_uniform_erase().
+> 
+> Changes in v1 or what I've done on top of Cyrille's work (https://lkml.org/lkml//
+> 2017/4/15/70):
+> - minimize the amount of erase() calls by using the best sequence of erase
+>   type commands depending on alignment.
+> - build the list of best fitted erase commands to be executed once we
+>   validate that the erase can be performed.
+> - add improvements on how the erase map is handled. The regions are
+>   consecutive in the address space, walk through the regions incrementally.
+> - speed up finding the best erase type command. Order erase types by
+>   size, iterate them from the biggest to the smallest and stop when best
+>   fitted command is found.
+> - determine at init if there are erase types that can erase the entire
+>   memory
+> - fix support for overlaid regions.
+> 
+> 
+> Tudor Ambarus (2):
+>   mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
+>   mtd: spi-nor: parse SFDP Sector Map Parameter Table
 
-Signed-off-by: Andrew Worsley <amworsley@gmail.com>
----
- drivers/mtd/ubi/attach.c  | 2 +-
- drivers/mtd/ubi/fastmap.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Queued to spi-nor/next after fixing the kerneldoc headers.
 
-diff --git a/drivers/mtd/ubi/attach.c b/drivers/mtd/ubi/attach.c
-index 93ceea4f27d5..f97e2ba56fb2 100644
---- a/drivers/mtd/ubi/attach.c
-+++ b/drivers/mtd/ubi/attach.c
-@@ -1414,7 +1414,7 @@ static int scan_all(struct ubi_device *ubi, struct ubi_attach_info *ai,
- 
- 	/* Calculate mean erase counter */
- 	if (ai->ec_count)
--		ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
-+		ai->mean_ec = div_u64(ai->ec_sum+ai->ec_count-1, ai->ec_count);
- 
- 	err = late_analysis(ubi, ai);
- 	if (err)
-diff --git a/drivers/mtd/ubi/fastmap.c b/drivers/mtd/ubi/fastmap.c
-index 462526a10537..91e513788f38 100644
---- a/drivers/mtd/ubi/fastmap.c
-+++ b/drivers/mtd/ubi/fastmap.c
-@@ -684,7 +684,7 @@ static int ubi_attach_fastmap(struct ubi_device *ubi,
- 			be32_to_cpu(fmec->ec), 1);
- 	}
- 
--	ai->mean_ec = div_u64(ai->ec_sum, ai->ec_count);
-+	ai->mean_ec = div_u64(ai->ec_sum+ai->ec_count-1, ai->ec_count);
- 	ai->bad_peb_count = be32_to_cpu(fmhdr->bad_peb_count);
- 
- 	/* Iterate over all volumes and read their EBA table */
--- 
-2.11.0
+Thanks,
+
+Boris
