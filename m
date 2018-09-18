@@ -1,21 +1,19 @@
-Received: from mga03.intel.com ([134.134.136.65])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2Auv-0000Lj-Fe
- for linux-mtd@lists.infradead.org; Tue, 18 Sep 2018 07:59:30 +0000
-Subject: Re: [PATCH v2] mtd: devices: m25p80: Make sure the buffer passed in
- op is DMA-able
+Subject: Re: [PATCH v2 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
 To: Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: stable@vger.kernel.org
-References: <20180917143130.23007-1-boris.brezillon@bootlin.com>
-From: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <8e5e8113-b091-6d3e-50d4-3e70e9372016@linux.intel.com>
-Date: Tue, 18 Sep 2018 10:59:17 +0300
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
+ linux-kernel@vger.kernel.org
+References: <1537177710-9379-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537177710-9379-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20180917133751.453ea6ed@bbrezillon>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <9529c765-cb3b-02f9-df15-4f79cfa48e47@exceet.de>
+Date: Tue, 18 Sep 2018 10:22:11 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180917143130.23007-1-boris.brezillon@bootlin.com>
+In-Reply-To: <20180917133751.453ea6ed@bbrezillon>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -28,30 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/17/2018 05:31 PM, Boris Brezillon wrote:
-> As documented in spi-mem.h, spi_mem_op->data.buf.{in,out} must be
-> DMA-able, and commit 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx()
-> API") failed to follow this rule as buffers passed to
-> ->{read,write}_reg() are usually placed on the stack.
+Hi Boris, Yogesh,
+
+On 17.09.2018 13:37, Boris Brezillon wrote:
+> Hi Yogesh,
 > 
-> Fix that by allocating a scratch buffer and copying the data around.
+> On Mon, 17 Sep 2018 15:18:26 +0530
+> Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 > 
-> Fixes: 4120f8d158ef ("mtd: spi-nor: Use the spi_mem_xx() API")
-> Reported-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> ---
-> Note that the ->{read,write}() path is still buggy since nothing
-> guarantees that buffers passed by the MTD layer to the SPI NOR layer
-> are DMA-able, but this is a long-standing issue which we'll have to
-> address at the spi-nor level (this layer can choose the bounce buffer
-> size based on nor->page_size).
+>> +
+>> +	/*
+>> +	 * R/W functions for big- or little-endian registers:
+>> +	 * The FSPI controller's endianness is independent of
+>> +	 * the CPU core's endianness. So far, although the CPU
+>> +	 * core is little-endian the FSPI controller can use
+>> +	 * big-endian or little-endian.
+>> +	 */
+>> +	if (of_property_read_bool(np, "big-endian")) {
+>> +		f->write = fspi_writel_be;
+>> +		f->read = fspi_readl_be;
+>> +	} else {
+>> +		f->write = fspi_writel;
+>> +		f->read = fspi_readl;
+>> +	}
 > 
-> Changes in v2:
-> - Copy the data from scratchbuf in the ->read_reg() path
-> ---
->   drivers/mtd/devices/m25p80.c | 26 +++++++++++++++++++++++---
->   1 file changed, 23 insertions(+), 3 deletions(-)
+> Hm, isn't it something you can extract from the compatible string? I'd
+> rather not allow users to set that in their DT if it's not something
+> you can change.
+
+This was copied from the QSPI driver, but I think Boris is right. This 
+seems to be a fixed SOC-specific setting and we shouldn't set it in the 
+DT. This applies to QSPI and FSPI alike.
+
+Regards,
+Frieder
+
 > 
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> Regards,
+> 
+> Boris
+> 
