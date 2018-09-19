@@ -1,40 +1,21 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::9])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2WJ4-0008JJ-IE
- for linux-mtd@lists.infradead.org; Wed, 19 Sep 2018 06:49:53 +0000
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Han Xu <han.xu@nxp.com>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "richard@nod.at" <richard@nod.at>, Fabio Estevam <fabio.estevam@nxp.com>,
- David Wolfe <david.wolfe@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
- <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
- <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
- <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
- <20180804153728.0a99d28f@bbrezillon>
- <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
- <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
- <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <09d39759-390a-bca3-caeb-2ee8ddb29443@exceet.de>
- <20180919004247.60c6099a@jawa>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <e76062cb-f703-2830-8074-d1a812dc14ce@exceet.de>
-Date: Wed, 19 Sep 2018 08:49:14 +0200
+Subject: Re: [PATCH v2] mtd: rawnand: atmel: Fix potential NULL pointer
+ dereference
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches
+ <ludovic.desroches@microchip.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+References: <20180918135555.GA18114@embeddedor.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <61472393-b699-45b4-6d74-cfa774669ad2@microchip.com>
+Date: Wed, 19 Sep 2018 10:44:54 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180919004247.60c6099a@jawa>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20180918135555.GA18114@embeddedor.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -46,41 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lukasz,
 
-On 19.09.2018 00:42, Lukasz Majewski wrote:
-> Dear All,
+
+On 09/18/2018 04:55 PM, Gustavo A. R. Silva wrote:
+> There is a potential execution path in which function
+> of_find_compatible_node() returns NULL. In such a case,
+> we end up having a NULL pointer dereference when accessing
+> pointer *nfc_np* in function of_clk_get().
 > 
-> Maybe I do jump a bit off topic here, but...
+> So, we better don't take any chances and fix this by null
+> checking pointer *nfc_np* before calling of_clk_get().
 > 
-> I've read through the following thread:
-> https://patchwork.ozlabs.org/patch/939885/
+> Addresses-Coverity-ID: 1473052 ("Dereference null return value")
+> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+
+Acked-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
+> ---
+> Changes in v2:
+>  - Add Fixes tag to the commit log.
+>  - Remove blank line before null checking nfc_np.
 > 
-> And it mentions some issues with reading AHB content (buffers) in
-> fsl-quadspi.c driver discovered when new QuadSPI driver was developed.
-
-The only setup with two chips that is known to be problematic with the 
-new driver, is when both chips are connected to the same bus (e.g. 
-QSPIA) using separate chip selects.
-
-Does your board use this kind of setup, or are the two chips connected 
-two different buses (QSPIA and QSPIB)?
-
-Have you tested the new driver? It would be great to receive some more 
-feedback.
-
-> I do have a setup with qspi0 having two SPI memories connected (2x16
-> MiB), and I'm wondering if anybody has some more info regarding:
+>  drivers/mtd/nand/raw/atmel/nand-controller.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> (What's more is that there is a bug in
->   * the "IP Command Read" in the Vybrid.) found here:
-> https://elixir.bootlin.com/linux/v4.19-rc4/source/drivers/mtd/spi-nor/fsl-quadspi.c#L671
+> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> index a38633a..5bfbe97 100644
+> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
+> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
+> @@ -2034,6 +2034,10 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
+>  	nand_np = dev->of_node;
+>  	nfc_np = of_find_compatible_node(dev->of_node, NULL,
+>  					 "atmel,sama5d3-nfc");
+> +	if (!nfc_np) {
+> +		dev_err(dev, "Could not find device node for sama5d3-nfc\n");
+> +		return -ENODEV;
+> +	}
+>  
+>  	nc->clk = of_clk_get(nfc_np, 0);
+>  	if (IS_ERR(nc->clk)) {
 > 
-> I've googled for some errata or known issues for vybryd's QSPI IP block
-> (vf610) but without luck so far ...
-
-Unfortunately I don't know the background for this comment. Is your 
-board using VF610? Do you experience problems?
-
-Regards,
-Frieder
