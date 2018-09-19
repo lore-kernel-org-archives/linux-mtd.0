@@ -1,24 +1,27 @@
-Received: from esa1.microchip.iphmx.com ([68.232.147.91])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2fND-00082q-Eh
- for linux-mtd@lists.infradead.org; Wed, 19 Sep 2018 16:30:44 +0000
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: add macros related to MICRON
- flash
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
- <linux-spi@vger.kernel.org>
-CC: <boris.brezillon@bootlin.com>, <linux-kernel@vger.kernel.org>,
- <marek.vasut@gmail.com>, <frieder.schrempf@exceet.de>,
- <cyrille.pitchen@wedev4u.fr>, <computersforpeace@gmail.com>
-References: <1537332608-19561-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <bd92d56c-fba6-6b79-07a8-cb426de33639@microchip.com>
-Date: Wed, 19 Sep 2018 19:30:15 +0300
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+ linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH v3 0/3] ARM: OMAP1: ams-delta: Complete driver gpiod
+ migration
+Date: Wed, 19 Sep 2018 20:10:54 +0200
+Message-ID: <1794253.R1RrZXVNCJ@z50>
+In-Reply-To: <20180909225605.16463-1-jmkrzyszt@gmail.com>
+References: <20180717231448.14958-1-jmkrzyszt@gmail.com>
+ <20180909225605.16463-1-jmkrzyszt@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,96 +31,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On 09/19/2018 07:50 AM, Yogesh Gaur wrote:
-> Some MICRON related macros in spi-nor domain were ST.
-> Rename entries related to STMicroelectronics under macro SNOR_MFR_ST.
+On Monday, September 10, 2018 12:56:02 AM CEST Janusz Krzysztofik wrote:
 > 
-> Added entry of MFR Id for Micron flashes, 0x002C.
+> This is a follow up of initial submission of a series consisted of 
+> 6 changes, 3 of which have been already applied or reworkeed.
 > 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
->  include/linux/mtd/cfi.h       | 1 +
->  include/linux/mtd/spi-nor.h   | 3 ++-
->  3 files changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index f028277..33a55bc 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -271,6 +271,7 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
->  	u8 cmd;
->  
->  	switch (JEDEC_MFR(info)) {
-> +	case SNOR_MFR_ST:
+> Janusz Krzysztofik (3):
+>       video: fbdev: omapfb: lcd_ams_delta: use GPIO lookup table
+>       mtd: rawnand: ams-delta: use GPIO lookup table
 
-We should mark switch cases where we are expecting to fall through, so that we
-will be prepared when enabling -Wimplicit-fallthrough.
+Hi Tony,
 
->  	case SNOR_MFR_MICRON:
->  		/* Some Micron need WREN command; all will accept it */
->  		need_wren = true;
-> @@ -1096,7 +1097,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
->  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
->  
-> -	/* Micron */
-> +	/* Micron <--> ST Micro */
->  	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
->  	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
-> @@ -2502,6 +2503,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
->  			params->quad_enable = macronix_quad_enable;
->  			break;
->  
-> +		case SNOR_MFR_ST:
->  		case SNOR_MFR_MICRON:
->  			break;
->  
-> @@ -2876,8 +2878,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
->  	mtd->_resume = spi_nor_resume;
->  
->  	/* NOR protection support for STmicro/Micron chips and similar */
-> -	if (JEDEC_MFR(info) == SNOR_MFR_MICRON ||
-> -			info->flags & SPI_NOR_HAS_LOCK) {
-> +	if (JEDEC_MFR(info) == SNOR_MFR_ST ||
-> +	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
-> +	    info->flags & SPI_NOR_HAS_LOCK) {
->  		nor->flash_lock = stm_lock;
->  		nor->flash_unlock = stm_unlock;
->  		nor->flash_is_locked = stm_is_locked;
-> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-> index 9b57a9b..cbf7716 100644
-> --- a/include/linux/mtd/cfi.h
-> +++ b/include/linux/mtd/cfi.h
-> @@ -377,6 +377,7 @@ struct cfi_fixup {
->  #define CFI_MFR_SHARP		0x00B0
->  #define CFI_MFR_SST		0x00BF
->  #define CFI_MFR_ST		0x0020 /* STMicroelectronics */
-> +#define CFI_MFR_MICRON		0x002C /* Micron */
+Please ignore this patch. It may no longer be possible to merged it cleanly 
+with nand/next tree. I'll exclude it from the series, rebase on top of nand/
+next and submit via linux-mtd.
 
-Can you point us to a datasheet to verify the id?
+That shouldn't affect the two remaining patches of the series which should 
+still apply and merge cleanly, but I can resend them renumbered if you wish.
 
-Best,
-ta
+Thanks,
+Janusz
 
->  #define CFI_MFR_TOSHIBA		0x0098
->  #define CFI_MFR_WINBOND		0x00DA
->  
-> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
-> index c922e97..f43bfc5 100644
-> --- a/include/linux/mtd/spi-nor.h
-> +++ b/include/linux/mtd/spi-nor.h
-> @@ -23,7 +23,8 @@
->  #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
->  #define SNOR_MFR_GIGADEVICE	0xc8
->  #define SNOR_MFR_INTEL		CFI_MFR_INTEL
-> -#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
-> +#define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
-> +#define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
->  #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
->  #define SNOR_MFR_SPANSION	CFI_MFR_AMD
->  #define SNOR_MFR_SST		CFI_MFR_SST
+>       ARM: OMAP1: ams-delta: make board header file local to mach-omap1
+> 
+> 
+> I'm submitting the three patches in series because the last one depends
+> on the other two.
+> 
+> Tony, please set up an immutable tag for this series to be used by MTD
+> as there are more changes on Amstrad Delta NAND driver coming in.
+> 
+> Thanks,
+> Janusz
+> 
+> 
+> Changelog:
+> v3:
+> - rebased on top of v4.19-rc1
+> - added Acked-by: received from Miquel
+> 
+> v2:
+> [PATCH 1/6] ARM: OMAP1: ams-delta: add GPIO lookup tables
+> 	- already in mainline, commit 68e62a15a914
+> [PATCH 2/6] Input: ams_delta_serio: use GPIO lookup table
+> 	- reworked and submitted as a series, already in linux-omap,
+> 	  commit 68e62a15a914 ("ARM: OMAP1: ams-delta: drop GPIO lookup
+> 	  table for serio device") followed by 9 more
+> [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
+> 	- already in mainline, commit d65777d1a2cd
+> [PATCH 4/6] fbdev: omapfb: lcd_ams_delta: use GPIO lookup table
+> 	- resubmitting as [PATCH v2 1/3 v2]
+> 	v2: Remove problematic error code conversion no longer
+> 	    needed if used on top of commit d08605a64e67 ("ARM: OMAP1:
+> 	    ams-delta: move late devices back to init_machine")
+> 	    and commit 8853daf3b4ac ("gpiolib: Defer on non-DT
+> 	    find_chip_by_name() failure") already in linux-next
+> [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
+> 	- resubmitting as [PATCH v2 2/3 v4]
+> 	v2: Fix handling of devm_gpiod_get_optional() return values -
+> 	    thanks to Andy Shevchenko.
+> 	v3: Remove problematic error code conversion no longer needed
+> 	    if used on top of commit d08605a64e67 ("ARM: OMAP1:
+> 	    ams-delta: move late devices back to init_machine") and
+> 	    commit 8853daf3b4ac ("gpiolib: Defer on non-DT
+> 	    find_chip_by_name() failure") already in linux-next - thanks
+> 	    to Boris Brezillon
+> 	v4: fix style issue - thanks to Boris Brezillon
+> [PATCH 6/6] ARM: OMAP1: ams-delta: make board header file local to
+> 	mach-omap1
+> 	- resending as [PATCH v2 3/3]
+> 
+> All dependencies mentioned in v2 changelog are satisfied in v4.19-rc1.
+> 
+> 
+> diffstat:
+>  arch/arm/mach-omap1/ams-delta-fiq-handler.S |    2 
+>  arch/arm/mach-omap1/ams-delta-fiq.c         |    3 
+>  arch/arm/mach-omap1/board-ams-delta.c       |    2 
+>  arch/arm/mach-omap1/board-ams-delta.h       |    2 
+>  drivers/mtd/nand/raw/ams-delta.c            |  126 +++++++++++++
++--------------
+>  drivers/video/fbdev/omap/lcd_ams_delta.c    |   55 ++++--------
+>  6 files changed, 93 insertions(+), 97 deletions(-)
+> 
 > 
