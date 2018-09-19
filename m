@@ -1,23 +1,15 @@
-Subject: Re: [PATCH v2] mtd: rawnand: atmel: Fix potential NULL pointer
- dereference
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Boris Brezillon
- <boris.brezillon@bootlin.com>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>, Ludovic Desroches
- <ludovic.desroches@microchip.com>
-CC: <linux-mtd@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>
-References: <20180918135555.GA18114@embeddedor.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <61472393-b699-45b4-6d74-cfa774669ad2@microchip.com>
-Date: Wed, 19 Sep 2018 10:44:54 +0300
-MIME-Version: 1.0
-In-Reply-To: <20180918135555.GA18114@embeddedor.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: from lilium.sigma-star.at ([109.75.188.150])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2Xsu-0003uw-D3
+ for linux-mtd@lists.infradead.org; Wed, 19 Sep 2018 08:30:58 +0000
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+To: linux-mtd@lists.infradead.org
+Cc: Chris.Packham@alliedtelesis.co.nz, xiaolei.li@mediatek.com,
+ David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Subject: [PATCH] libmtd: don't print an error message for devices without ecc
+ support
+Date: Wed, 19 Sep 2018 10:29:36 +0200
+Message-Id: <20180919082936.4011-1-david.oberhollenzer@sigma-star.at>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The libmtd library tries to obtain the available OOB size via the sysfs
+with a fallback to the ECCGETLAYOUT ioctl. For some devices (e.g. plat-ram),
+the fallback path is always taken and prints an error message to stderr
+since the ioctl fails.
 
+This patch fixes the fallback path by suppressing the error message if
+errno is set to EOPNOTSUPP (i.e. the device simply doesn't support that).
 
-On 09/18/2018 04:55 PM, Gustavo A. R. Silva wrote:
-> There is a potential execution path in which function
-> of_find_compatible_node() returns NULL. In such a case,
-> we end up having a NULL pointer dereference when accessing
-> pointer *nfc_np* in function of_clk_get().
-> 
-> So, we better don't take any chances and fix this by null
-> checking pointer *nfc_np* before calling of_clk_get().
-> 
-> Addresses-Coverity-ID: 1473052 ("Dereference null return value")
-> Fixes: f88fc122cc34 ("mtd: nand: Cleanup/rework the atmel_nand driver")
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Fixes: a10353584f93 ("libmtd: Add support to access OOB available size")
+Reported-by: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+---
+ lib/libmtd_legacy.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Acked-by: Tudor Ambarus <tudor.ambarus@microchip.com>
-
-> ---
-> Changes in v2:
->  - Add Fixes tag to the commit log.
->  - Remove blank line before null checking nfc_np.
-> 
->  drivers/mtd/nand/raw/atmel/nand-controller.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/atmel/nand-controller.c b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> index a38633a..5bfbe97 100644
-> --- a/drivers/mtd/nand/raw/atmel/nand-controller.c
-> +++ b/drivers/mtd/nand/raw/atmel/nand-controller.c
-> @@ -2034,6 +2034,10 @@ atmel_hsmc_nand_controller_legacy_init(struct atmel_hsmc_nand_controller *nc)
->  	nand_np = dev->of_node;
->  	nfc_np = of_find_compatible_node(dev->of_node, NULL,
->  					 "atmel,sama5d3-nfc");
-> +	if (!nfc_np) {
-> +		dev_err(dev, "Could not find device node for sama5d3-nfc\n");
-> +		return -ENODEV;
-> +	}
->  
->  	nc->clk = of_clk_get(nfc_np, 0);
->  	if (IS_ERR(nc->clk)) {
-> 
+diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c
+index 97fef04..2b7f65f 100644
+--- a/lib/libmtd_legacy.c
++++ b/lib/libmtd_legacy.c
+@@ -235,6 +235,8 @@ int legacy_get_mtd_oobavail(const char *node)
+ 
+ 	ret = ioctl(fd, ECCGETLAYOUT, &usrlay);
+ 	if (ret < 0) {
++		if (errno == EOPNOTSUPP)
++			goto out_close;
+ 		sys_errmsg("ECCGETLAYOUT ioctl request failed");
+ 		goto out_close;
+ 	}
+-- 
+2.17.1
