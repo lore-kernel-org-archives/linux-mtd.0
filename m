@@ -1,20 +1,25 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2kIq-0001DO-7a
- for linux-mtd@lists.infradead.org; Wed, 19 Sep 2018 21:46:43 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "xiaolei.li@mediatek.com" <xiaolei.li@mediatek.com>
-Subject: Re: [PATCH] libmtd: don't print an error message for devices without
- ecc support
-Date: Wed, 19 Sep 2018 21:45:52 +0000
-Message-ID: <21d64b86e8ba49b4b7e852aeb73325cd@svr-chch-ex1.atlnz.lc>
-References: <20180919082936.4011-1-david.oberhollenzer@sigma-star.at>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+ id 1g2knB-0004Ci-4s
+ for linux-mtd@lists.infradead.org; Wed, 19 Sep 2018 22:17:55 +0000
+Received: by mail-lf1-x143.google.com with SMTP id t140-v6so6552681lff.4
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2018 15:17:41 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Tony Lindgren <tony@atomide.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, linux-omap@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH v5] mtd: rawnand: ams-delta: use GPIO lookup table
+Date: Thu, 20 Sep 2018 00:17:29 +0200
+Message-Id: <20180919221729.21179-1-jmkrzyszt@gmail.com>
+In-Reply-To: <20180909225605.16463-3-jmkrzyszt@gmail.com>
+References: <20180909225605.16463-3-jmkrzyszt@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +29,264 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,=0A=
-=0A=
-On 19/09/18 20:39, David Oberhollenzer wrote:=0A=
-> The libmtd library tries to obtain the available OOB size via the sysfs=
-=0A=
-> with a fallback to the ECCGETLAYOUT ioctl. For some devices (e.g. plat-ra=
-m),=0A=
-> the fallback path is always taken and prints an error message to stderr=
-=0A=
-> since the ioctl fails.=0A=
-> =0A=
-> This patch fixes the fallback path by suppressing the error message if=0A=
-> errno is set to EOPNOTSUPP (i.e. the device simply doesn't support that).=
-=0A=
-> =0A=
-> Fixes: a10353584f93 ("libmtd: Add support to access OOB available size")=
-=0A=
-> Reported-by: Chris Packham <Chris.Packham@alliedtelesis.co.nz>=0A=
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>=0A=
-=0A=
-Thanks for the fix. Works well for me on nand, spi-nor and plat-ram=0A=
-=0A=
-Tested-by: Chris Packham <Chris.Packham@alliedtelesis.co.nz>=0A=
-=0A=
-> ---=0A=
->   lib/libmtd_legacy.c | 2 ++=0A=
->   1 file changed, 2 insertions(+)=0A=
-> =0A=
-> diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c=0A=
-> index 97fef04..2b7f65f 100644=0A=
-> --- a/lib/libmtd_legacy.c=0A=
-> +++ b/lib/libmtd_legacy.c=0A=
-> @@ -235,6 +235,8 @@ int legacy_get_mtd_oobavail(const char *node)=0A=
->   =0A=
->   	ret =3D ioctl(fd, ECCGETLAYOUT, &usrlay);=0A=
->   	if (ret < 0) {=0A=
-> +		if (errno =3D=3D EOPNOTSUPP)=0A=
-> +			goto out_close;=0A=
->   		sys_errmsg("ECCGETLAYOUT ioctl request failed");=0A=
->   		goto out_close;=0A=
->   	}=0A=
-> =0A=
-=0A=
-By the way, the incoming email got flagged by my IS department. Not sure =
-=0A=
-if that's a false positive or something you need to bring to the =0A=
-attention of whomever runs your email infrastructure. Let me know if you =
-=0A=
-want a copy of the original.=0A=
-=0A=
- >=0A=
- > *** This email message may be dodgy ***=0A=
- >=0A=
- > The sending domain's SPF record was checked to try and prove if it =0A=
-was sent by an authorised host. The sender's SPF record is invalid so =0A=
-the sending host could not be validated.=0A=
- > This could be for one or more of several reasons -=0A=
- > 	The sending domain has more that one SPF record. (max=3D1)=0A=
- > 	The sending domains SPF record has bad syntax.=0A=
- > 	The sending domains SPF record requires too many DNS lookups. (max=3D10=
-)=0A=
- >=0A=
- > If the email is genuine, the sender should be notified of this issue =0A=
-so that they can report it to their IS team.=0A=
- >=0A=
- > ATLNZ IS=0A=
- >=0A=
- >=0A=
+Now as Amstrad Delta board - the only user of this driver - provides
+GPIO lookup tables, switch from GPIO numbers to GPIO descriptors and
+use the table to locate required GPIO pins.
+
+Declare static variables for storing GPIO descriptors and replace
+gpio_ function calls with their gpiod_ equivalents.
+
+Pin naming used by the driver should be followed while respective GPIO
+lookup table is initialized by a board init code.
+
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Acked-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+Changelog:
+v5:
+- rebased on nand/next
+- resubmitted to linux-mtd as a stand-alone patch
+
+v3 2/3:
+- series rebased on top of v4.19-rc1
+- added Acked-by: received from Miquel
+
+v2 2/3 v4:
+- fix style issue - thanks to Boris Brezillon
+- resubmitted to linux-omap in a series
+
+v3:
+- remove problematic error code conversion no longer needed if used on
+  top of commit d08605a64e67 ("ARM: OMAP1: ams-delta: move late devices
+  back to init_machine") and commit 8853daf3b4ac ("gpiolib: Defer on
+  non-DT find_chip_by_name() failure") already in linux-next - thanks
+  to Boris Brezillon
+
+v2:
+- fix handling of devm_gpiod_get_optional() return values - thanks to
+  Andy Shevchenko
+- resubmitted to linux-mtd as a stand-alone patch
+
+Originally submitted to linux-omap as "[PATCH 5/6] mtd: rawnand:
+ ams-delta: use GPIO lookup table"
+
+ drivers/mtd/nand/raw/ams-delta.c | 126 +++++++++++++++++++++------------------
+ 1 file changed, 67 insertions(+), 59 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
+index 3d3786dcc5d1..a2d2dfc55984 100644
+--- a/drivers/mtd/nand/raw/ams-delta.c
++++ b/drivers/mtd/nand/raw/ams-delta.c
+@@ -20,23 +20,28 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
+-#include <linux/gpio.h>
+ #include <linux/platform_data/gpio-omap.h>
+ 
+ #include <asm/io.h>
+ #include <asm/sizes.h>
+ 
+-#include <mach/board-ams-delta.h>
+-
+ #include <mach/hardware.h>
+ 
+ /*
+  * MTD structure for E3 (Delta)
+  */
+ static struct mtd_info *ams_delta_mtd = NULL;
++static struct gpio_desc *gpiod_rdy;
++static struct gpio_desc *gpiod_nce;
++static struct gpio_desc *gpiod_nre;
++static struct gpio_desc *gpiod_nwp;
++static struct gpio_desc *gpiod_nwe;
++static struct gpio_desc *gpiod_ale;
++static struct gpio_desc *gpiod_cle;
+ 
+ /*
+  * Define partitions for flash devices
+@@ -69,9 +74,9 @@ static void ams_delta_write_byte(struct nand_chip *this, u_char byte)
+ 
+ 	writew(0, io_base + OMAP_MPUIO_IO_CNTL);
+ 	writew(byte, this->legacy.IO_ADDR_W);
+-	gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_NWE, 0);
++	gpiod_set_value(gpiod_nwe, 0);
+ 	ndelay(40);
+-	gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_NWE, 1);
++	gpiod_set_value(gpiod_nwe, 1);
+ }
+ 
+ static u_char ams_delta_read_byte(struct nand_chip *this)
+@@ -79,11 +84,11 @@ static u_char ams_delta_read_byte(struct nand_chip *this)
+ 	u_char res;
+ 	void __iomem *io_base = (void __iomem *)nand_get_controller_data(this);
+ 
+-	gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_NRE, 0);
++	gpiod_set_value(gpiod_nre, 0);
+ 	ndelay(40);
+ 	writew(~0, io_base + OMAP_MPUIO_IO_CNTL);
+ 	res = readw(this->legacy.IO_ADDR_R);
+-	gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_NRE, 1);
++	gpiod_set_value(gpiod_nre, 1);
+ 
+ 	return res;
+ }
+@@ -118,12 +123,9 @@ static void ams_delta_hwcontrol(struct nand_chip *this, int cmd,
+ {
+ 
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+-		gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_NCE,
+-				(ctrl & NAND_NCE) == 0);
+-		gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_CLE,
+-				(ctrl & NAND_CLE) != 0);
+-		gpio_set_value(AMS_DELTA_GPIO_PIN_NAND_ALE,
+-				(ctrl & NAND_ALE) != 0);
++		gpiod_set_value(gpiod_nce, !(ctrl & NAND_NCE));
++		gpiod_set_value(gpiod_cle, !!(ctrl & NAND_CLE));
++		gpiod_set_value(gpiod_ale, !!(ctrl & NAND_ALE));
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE)
+@@ -132,41 +134,9 @@ static void ams_delta_hwcontrol(struct nand_chip *this, int cmd,
+ 
+ static int ams_delta_nand_ready(struct nand_chip *this)
+ {
+-	return gpio_get_value(AMS_DELTA_GPIO_PIN_NAND_RB);
++	return gpiod_get_value(gpiod_rdy);
+ }
+ 
+-static const struct gpio _mandatory_gpio[] = {
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NCE,
+-		.flags	= GPIOF_OUT_INIT_HIGH,
+-		.label	= "nand_nce",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NRE,
+-		.flags	= GPIOF_OUT_INIT_HIGH,
+-		.label	= "nand_nre",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NWP,
+-		.flags	= GPIOF_OUT_INIT_HIGH,
+-		.label	= "nand_nwp",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_NWE,
+-		.flags	= GPIOF_OUT_INIT_HIGH,
+-		.label	= "nand_nwe",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_ALE,
+-		.flags	= GPIOF_OUT_INIT_LOW,
+-		.label	= "nand_ale",
+-	},
+-	{
+-		.gpio	= AMS_DELTA_GPIO_PIN_NAND_CLE,
+-		.flags	= GPIOF_OUT_INIT_LOW,
+-		.label	= "nand_cle",
+-	},
+-};
+ 
+ /*
+  * Main initialization routine
+@@ -214,12 +184,17 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	this->legacy.write_buf = ams_delta_write_buf;
+ 	this->legacy.read_buf = ams_delta_read_buf;
+ 	this->legacy.cmd_ctrl = ams_delta_hwcontrol;
+-	if (gpio_request(AMS_DELTA_GPIO_PIN_NAND_RB, "nand_rdy") == 0) {
+-		this->legacy.dev_ready = ams_delta_nand_ready;
+-	} else {
+-		this->legacy.dev_ready = NULL;
+-		pr_notice("Couldn't request gpio for Delta NAND ready.\n");
++
++	gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
++	if (IS_ERR(gpiod_rdy)) {
++		err = PTR_ERR(gpiod_rdy);
++		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
++		goto out_mtd;
+ 	}
++
++	if (gpiod_rdy)
++		this->legacy.dev_ready = ams_delta_nand_ready;
++
+ 	/* 25 us command delay time */
+ 	this->legacy.chip_delay = 30;
+ 	this->ecc.mode = NAND_ECC_SOFT;
+@@ -228,9 +203,47 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, io_base);
+ 
+ 	/* Set chip enabled, but  */
+-	err = gpio_request_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+-	if (err)
+-		goto out_gpio;
++	gpiod_nwp = devm_gpiod_get(&pdev->dev, "nwp", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_nwp)) {
++		err = PTR_ERR(gpiod_nwp);
++		dev_err(&pdev->dev, "NWP GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
++
++	gpiod_nce = devm_gpiod_get(&pdev->dev, "nce", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_nce)) {
++		err = PTR_ERR(gpiod_nce);
++		dev_err(&pdev->dev, "NCE GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
++
++	gpiod_nre = devm_gpiod_get(&pdev->dev, "nre", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_nre)) {
++		err = PTR_ERR(gpiod_nre);
++		dev_err(&pdev->dev, "NRE GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
++
++	gpiod_nwe = devm_gpiod_get(&pdev->dev, "nwe", GPIOD_OUT_HIGH);
++	if (IS_ERR(gpiod_nwe)) {
++		err = PTR_ERR(gpiod_nwe);
++		dev_err(&pdev->dev, "NWE GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
++
++	gpiod_ale = devm_gpiod_get(&pdev->dev, "ale", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_ale)) {
++		err = PTR_ERR(gpiod_ale);
++		dev_err(&pdev->dev, "ALE GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
++
++	gpiod_cle = devm_gpiod_get(&pdev->dev, "cle", GPIOD_OUT_LOW);
++	if (IS_ERR(gpiod_cle)) {
++		err = PTR_ERR(gpiod_cle);
++		dev_err(&pdev->dev, "CLE GPIO request failed (%d)\n", err);
++		goto out_mtd;
++	}
+ 
+ 	/* Scan to find existence of the device */
+ 	err = nand_scan(this, 1);
+@@ -244,9 +257,6 @@ static int ams_delta_init(struct platform_device *pdev)
+ 	goto out;
+ 
+  out_mtd:
+-	gpio_free_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+-out_gpio:
+-	gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB);
+ 	iounmap(io_base);
+ out_free:
+ 	kfree(this);
+@@ -264,8 +274,6 @@ static int ams_delta_cleanup(struct platform_device *pdev)
+ 	/* Release resources, unregister device */
+ 	nand_release(mtd_to_nand(ams_delta_mtd));
+ 
+-	gpio_free_array(_mandatory_gpio, ARRAY_SIZE(_mandatory_gpio));
+-	gpio_free(AMS_DELTA_GPIO_PIN_NAND_RB);
+ 	iounmap(io_base);
+ 
+ 	/* Free the MTD device structure */
+-- 
+2.16.4
