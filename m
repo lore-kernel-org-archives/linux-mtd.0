@@ -1,42 +1,21 @@
-Received: from mail.iluvatar.ai ([58.213.90.100])
+Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2nbr-0004ok-0z
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 01:18:26 +0000
-Date: Thu, 20 Sep 2018 09:17:59 +0800
-From: Huang Shijie <sjhuang@iluvatar.ai>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>,
- David Wolfe <david.wolfe@nxp.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- "richard@nod.at" <richard@nod.at>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "broonie@kernel.org" <broonie@kernel.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- Albert ARIBAUD <albert.aribaud@3adev.fr>
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-Message-ID: <20180920011759.GA19040@hsj-Precision-5520>
-References: <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
- <20180804153728.0a99d28f@bbrezillon>
- <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
- <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
- <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <09d39759-390a-bca3-caeb-2ee8ddb29443@exceet.de>
- <20180919004247.60c6099a@jawa>
- <e76062cb-f703-2830-8074-d1a812dc14ce@exceet.de>
- <20180919130211.3f2e7e3a@jawa>
+ id 1g2okC-0004VF-Kj
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 02:31:06 +0000
+Received: by mail-qk1-x742.google.com with SMTP id p84-v6so3973251qke.1
+ for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2018 19:30:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180919130211.3f2e7e3a@jawa>
+References: <20180916215735.31393-1-richard@nod.at>
+In-Reply-To: <20180916215735.31393-1-richard@nod.at>
+From: Joel Stanley <joel@jms.id.au>
+Date: Thu, 20 Sep 2018 12:00:41 +0930
+Message-ID: <CACPK8Xd_fNNEYbtY6HEnB6kOnqTWBC5stPVUbc2gMHpne4J6jQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "ubifs: xattr: Don't operate on deleted inodes"
+To: Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>
+Cc: linux-mtd@lists.infradead.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ koen.vandeputte@ncentric.com, Eddie James <eajames.ibm@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,68 +25,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 19, 2018 at 01:02:11PM +0200, Lukasz Majewski wrote:
-> Hi Frieder,
-> 
-> > Hi Lukasz,
-> > 
-> > On 19.09.2018 00:42, Lukasz Majewski wrote:
-> > > Dear All,
-> > > 
-> > > Maybe I do jump a bit off topic here, but...
-> > > 
-> > > I've read through the following thread:
-> > > https://patchwork.ozlabs.org/patch/939885/
-> > > 
-> > > And it mentions some issues with reading AHB content (buffers) in
-> > > fsl-quadspi.c driver discovered when new QuadSPI driver was
-> > > developed.  
-> > 
-> > The only setup with two chips that is known to be problematic with
-> > the new driver, is when both chips are connected to the same bus
-> > (e.g. QSPIA) using separate chip selects.
-> 
-> I'm using QSPI0 controller, with two memories connected to QSPI0_A and
-> QSPI0_B lines.
-> 
-> > 
-> > Does your board use this kind of setup, or are the two chips
-> > connected two different buses (QSPIA and QSPIB)?
-> > 
-> > Have you tested the new driver? It would be great to receive some
-> > more feedback.
-> 
-> I will check (test) this new driver. No problem.
-> 
-> > 
-> > > I do have a setup with qspi0 having two SPI memories connected (2x16
-> > > MiB), and I'm wondering if anybody has some more info regarding:
-> > > 
-> > > (What's more is that there is a bug in
-> > >   * the "IP Command Read" in the Vybrid.) found here:
-> > > https://elixir.bootlin.com/linux/v4.19-rc4/source/drivers/mtd/spi-nor/fsl-quadspi.c#L671
-> > > 
-> > > I've googled for some errata or known issues for vybryd's QSPI IP
-> > > block (vf610) but without luck so far ...  
-> > 
-> > Unfortunately I don't know the background for this comment.
-> 
-> The comment was added by some Freescale employee when the driver was
-> added to Linux (by Huang - CC'ed).
+On Mon, 17 Sep 2018 at 07:30, Richard Weinberger <richard@nod.at> wrote:
+>
+> This reverts commit 11a6fc3dc743e22fb50f2196ec55bee5140d3c52.
+> UBIFS wants to assert that xattr operations are only issued on files
+> with positive link count. The said patch made this operations return
+> -ENOENT for unlinked files such that the asserts will no longer trigger.
+> This was wrong since xattr operations are perfectly fine on unlinked
+> files.
+> Instead the assertions need to be fixed/removed.
+>
+> Cc: <stable@vger.kernel.org>
+> Fixes: 11a6fc3dc743 ("ubifs: xattr: Don't operate on deleted inodes")
+> Reported-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-I was told that there was a hardware bug in the vybryd when we use the "IP Command Read":
-    If you use the "IP Command Read", you will not get the correct data.
+The bad commit 11a6fc3dc743 was included in 4.18.7, and broke our
+systems which use overlayfs on top of ubifs.
 
-So I added that comment.
+This patch didn't apply cleanly for me to 4.18.8 (an encoding issue?),
+but I did a revert of the offending commit which did the trick.
 
-I suggest that do not use the "IP Command Read" for vybryd.
+Tested-by: Joel Stanley <joel@jms.id.au>
 
-Thanks
-Huang Shijie
+Cheers,
 
-> 
-> > Is your 
-> > board using VF610?
-> 
-> Yes, it uses vf610 (A5 + M4 cores).
-> 
+Joel
+
+
+> ---
+>  fs/ubifs/xattr.c | 24 ------------------------
+>  1 file changed, 24 deletions(-)
+>
+> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
+> index 61afdfee4b28..f5ad1ede7990 100644
+> --- a/fs/ubifs/xattr.c
+> +++ b/fs/ubifs/xattr.c
+> @@ -152,12 +152,6 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+>         ui->data_len = size;
+>
+>         mutex_lock(&host_ui->ui_mutex);
+> -
+> -       if (!host->i_nlink) {
+> -               err = -ENOENT;
+> -               goto out_noent;
+> -       }
+> -
+>         host->i_ctime = current_time(host);
+>         host_ui->xattr_cnt += 1;
+>         host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
+> @@ -190,7 +184,6 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
+>         host_ui->xattr_size -= CALC_XATTR_BYTES(size);
+>         host_ui->xattr_names -= fname_len(nm);
+>         host_ui->flags &= ~UBIFS_CRYPT_FL;
+> -out_noent:
+>         mutex_unlock(&host_ui->ui_mutex);
+>  out_free:
+>         make_bad_inode(inode);
+> @@ -242,12 +235,6 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+>         mutex_unlock(&ui->ui_mutex);
+>
+>         mutex_lock(&host_ui->ui_mutex);
+> -
+> -       if (!host->i_nlink) {
+> -               err = -ENOENT;
+> -               goto out_noent;
+> -       }
+> -
+>         host->i_ctime = current_time(host);
+>         host_ui->xattr_size -= CALC_XATTR_BYTES(old_size);
+>         host_ui->xattr_size += CALC_XATTR_BYTES(size);
+> @@ -269,7 +256,6 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
+>  out_cancel:
+>         host_ui->xattr_size -= CALC_XATTR_BYTES(size);
+>         host_ui->xattr_size += CALC_XATTR_BYTES(old_size);
+> -out_noent:
+>         mutex_unlock(&host_ui->ui_mutex);
+>         make_bad_inode(inode);
+>  out_free:
+> @@ -496,12 +482,6 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
+>                 return err;
+>
+>         mutex_lock(&host_ui->ui_mutex);
+> -
+> -       if (!host->i_nlink) {
+> -               err = -ENOENT;
+> -               goto out_noent;
+> -       }
+> -
+>         host->i_ctime = current_time(host);
+>         host_ui->xattr_cnt -= 1;
+>         host_ui->xattr_size -= CALC_DENT_SIZE(fname_len(nm));
+> @@ -521,7 +501,6 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
+>         host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
+>         host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
+>         host_ui->xattr_names += fname_len(nm);
+> -out_noent:
+>         mutex_unlock(&host_ui->ui_mutex);
+>         ubifs_release_budget(c, &req);
+>         make_bad_inode(inode);
+> @@ -561,9 +540,6 @@ static int ubifs_xattr_remove(struct inode *host, const char *name)
+>
+>         ubifs_assert(c, inode_is_locked(host));
+>
+> -       if (!host->i_nlink)
+> -               return -ENOENT;
+> -
+>         if (fname_len(&nm) > UBIFS_MAX_NLEN)
+>                 return -ENAMETOOLONG;
+>
+> --
+> 2.19.0
+>
