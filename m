@@ -1,16 +1,23 @@
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g38HG-0005pW-Ue
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 23:22:33 +0000
-Received: by mail-wr1-x442.google.com with SMTP id j15-v6so6942621wrt.8
- for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2018 16:22:20 -0700 (PDT)
-From: Andrea Adami <andrea.adami@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Thorsten Glaser <tg@mirbsd.org>
-Subject: [PATCH] mtd-utils: Instead of doing preprocessor magic,
- just output off_t as long long
-Date: Fri, 21 Sep 2018 01:22:11 +0200
-Message-Id: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
+ id 1g38Pi-0000ri-3i
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 23:31:15 +0000
+Received: by mail-wr1-x444.google.com with SMTP id v17-v6so11023573wrr.9
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2018 16:31:02 -0700 (PDT)
+From: Nathan Chancellor <natechancellor@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+ Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] mtd: rawnand: Use proper enum for flctl_dma_fifo0_transfer
+Date: Thu, 20 Sep 2018 16:30:25 -0700
+Message-Id: <20180920233024.28534-1-natechancellor@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,322 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Thorsten Glaser <tg@mirbsd.org>
+Clang warns when one enumerated type is converted implicitly to another:
 
-Fix warnings abot PRIdoff_t in libmtd.c, in mtd_read (and mtd_write):
+drivers/mtd/nand/raw/sh_flctl.c:483:46: warning: implicit conversion
+from enumeration type 'enum dma_transfer_direction' to different
+enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
+                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+drivers/mtd/nand/raw/sh_flctl.c:542:46: warning: implicit conversion
+from enumeration type 'enum dma_transfer_direction' to different
+enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+                flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
+                ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+2 warnings generated.
 
-In file included from ../git/lib/libmtd.c:40:0:
-../git/lib/libmtd.c: In function 'mtd_read':
-../git/include/common.h:110:18: warning: format '%ld' expects argument of
- type 'long int', but argument 5 has type 'off_t {aka long long int}'
- [-Wformat=]
+Use the proper enums from dma_data_direction to satisfy Clang.
 
-../git/include/common.h:120:2: note: in expansion of macro 'errmsg'
-  errmsg(fmt, ##__VA_ARGS__);                                         \
-  ^~~~~~
-../git/lib/libmtd.c:1082:10: note: in expansion of macro 'sys_errmsg'
-   return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
-          ^~~~~~~~~~
+DMA_MEM_TO_DEV = DMA_TO_DEVICE = 1
+DMA_DEV_TO_MEM = DMA_FROM_DEVICE = 2
 
-/usr/lib/klibc/include/inttypes.h:28:17: note: format string is defined here
- #define PRId32 "d"
-
-Signed-off-by: Thorsten Glaser <tg@mirbsd.org>
+Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- include/common.h                    | 18 ------------------
- jffsX-utils/mkfs.jffs2.c            | 20 ++++++++++----------
- lib/libmtd.c                        |  8 ++++----
- misc-utils/flash_erase.c            |  6 +++---
- misc-utils/flash_otp_write.c        |  2 +-
- misc-utils/ftl_check.c              |  2 +-
- misc-utils/mtd_debug.c              |  4 ++--
- misc-utils/serve_image.c            |  4 ++--
- tests/fs-tests/integrity/integck.c  |  4 ++--
- tests/mtd-tests/nandpagetest.c      |  4 ++--
- tests/ubi-tests/integ.c             |  6 +++---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  6 +++---
- 12 files changed, 33 insertions(+), 51 deletions(-)
+ drivers/mtd/nand/raw/sh_flctl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/common.h b/include/common.h
-index f8f72ea..642c212 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -70,24 +70,6 @@ extern "C" {
- #define O_CLOEXEC 0
- #endif
+diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+index c0c0798f268f..4d20d033de7b 100644
+--- a/drivers/mtd/nand/raw/sh_flctl.c
++++ b/drivers/mtd/nand/raw/sh_flctl.c
+@@ -480,7 +480,7 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
  
--/* define a print format specifier for off_t */
--#if (SIZEOF_OFF_T >= 8)
--#define PRIxoff_t PRIx64
--#define PRIdoff_t PRId64
--#else
--#define PRIxoff_t "l"PRIx32
--#define PRIdoff_t "l"PRId32
--#endif
--
--/* define a print format specifier for loff_t */
--#if (SIZEOF_LOFF_T >= 8)
--#define PRIxloff_t PRIx64
--#define PRIdloff_t PRId64
--#else
--#define PRIxloff_t "l"PRIx32
--#define PRIdloff_t "l"PRId32
--#endif
--
- /* Verbose messages */
- #define bareverbose(verbose, fmt, ...) do {                        \
- 	if (verbose)                                               \
-diff --git a/jffsX-utils/mkfs.jffs2.c b/jffsX-utils/mkfs.jffs2.c
-index 9aa6c39..0661786 100644
---- a/jffsX-utils/mkfs.jffs2.c
-+++ b/jffsX-utils/mkfs.jffs2.c
-@@ -1237,8 +1237,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 		} else switch (e->sb.st_mode & S_IFMT) {
- 			case S_IFDIR:
- 				if (verbose) {
--					printf("\td %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
-+					printf("\td %04o %9lld             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
- 							(int) (e->sb.st_uid), (int) (e->sb.st_gid),
- 							e->name);
- 				}
-@@ -1247,8 +1247,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFSOCK:
- 				if (verbose) {
--					printf("\ts %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
-+					printf("\ts %04o %9lld             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-@@ -1256,8 +1256,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFIFO:
- 				if (verbose) {
--					printf("\tp %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
-+					printf("\tp %04o %9lld             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-@@ -1285,8 +1285,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFLNK:
- 				if (verbose) {
--					printf("\tl %04o %9" PRIdoff_t "             %5d:%-3d %s -> %s\n",
--							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
-+					printf("\tl %04o %9lld             %5d:%-3d %s -> %s\n",
-+							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name,
- 							e->link);
- 				}
-@@ -1297,8 +1297,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				wrote = write_regular_file(e);
- 				write_xattr_entry(e);
- 				if (verbose) {
--					printf("\tf %04o %9" PRIdoff_t " (%9u) %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, e->sb.st_size, wrote,
-+					printf("\tf %04o %9lld (%9u) %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size, wrote,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				break;
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 86c89ae..f375381 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -1079,8 +1079,8 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 	/* Seek to the beginning of the eraseblock */
- 	seek = (off_t)eb * mtd->eb_size + offs;
- 	if (lseek(fd, seek, SEEK_SET) != seek)
--		return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
--				  mtd->mtd_num, seek);
-+		return sys_errmsg("cannot seek mtd%d to offset %lld",
-+				  mtd->mtd_num, (long long)seek);
+ 	/* initiate DMA transfer */
+ 	if (flctl->chan_fifo0_rx && rlen >= 32 &&
+-		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
++		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_FROM_DEVICE) > 0)
+ 			goto convert;	/* DMA success */
  
- 	while (rd < len) {
- 		ret = read(fd, buf + rd, len - rd);
-@@ -1188,8 +1188,8 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
- 	if (data) {
- 		/* Seek to the beginning of the eraseblock */
- 		if (lseek(fd, seek, SEEK_SET) != seek)
--			return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
--					mtd->mtd_num, seek);
-+			return sys_errmsg("cannot seek mtd%d to offset %lld",
-+					mtd->mtd_num, (long long)seek);
- 		ret = write(fd, data, len);
- 		if (ret != len)
- 			return sys_errmsg("cannot write %d bytes to mtd%d "
-diff --git a/misc-utils/flash_erase.c b/misc-utils/flash_erase.c
-index 0c9449f..ec4b2e1 100644
---- a/misc-utils/flash_erase.c
-+++ b/misc-utils/flash_erase.c
-@@ -53,8 +53,8 @@ int target_endian = __BYTE_ORDER;
- static void show_progress(struct mtd_dev_info *mtd, off_t start, int eb,
- 			  int eb_start, int eb_cnt)
- {
--	bareverbose(!quiet, "\rErasing %d Kibyte @ %"PRIxoff_t" -- %2i %% complete ",
--		mtd->eb_size / 1024, start, ((eb - eb_start) * 100) / eb_cnt);
-+	bareverbose(!quiet, "\rErasing %d Kibyte @ %llx -- %2i %% complete ",
-+		mtd->eb_size / 1024, (unsigned long long)start, ((eb - eb_start) * 100) / eb_cnt);
- 	fflush(stdout);
- }
+ 	/* do polling transfer */
+@@ -539,7 +539,7 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
  
-@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
- 		if (!noskipbad) {
- 			int ret = mtd_is_bad(&mtd, fd, eb);
- 			if (ret > 0) {
--				verbose(!quiet, "Skipping bad block at %08"PRIxoff_t, offset);
-+				verbose(!quiet, "Skipping bad block at %08llx", (unsigned long long)offset);
- 				continue;
- 			} else if (ret < 0) {
- 				if (errno == EOPNOTSUPP) {
-diff --git a/misc-utils/flash_otp_write.c b/misc-utils/flash_otp_write.c
-index b02d0b0..04c96c6 100644
---- a/misc-utils/flash_otp_write.c
-+++ b/misc-utils/flash_otp_write.c
-@@ -76,7 +76,7 @@ int main(int argc,char *argv[])
- 		return errno;
- 	}
+ 	/* initiate DMA transfer */
+ 	if (flctl->chan_fifo0_tx && rlen >= 32 &&
+-		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
++		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_TO_DEVICE) > 0)
+ 			return;	/* DMA success */
  
--	printf("Writing OTP user data on %s at offset 0x%"PRIxoff_t"\n", argv[2], offset);
-+	printf("Writing OTP user data on %s at offset 0x%llx\n", argv[2], (unsigned long long)offset);
- 
- 	if (mtd_type_is_nand_user(&mtdInfo))
- 		len = mtdInfo.writesize;
-diff --git a/misc-utils/ftl_check.c b/misc-utils/ftl_check.c
-index a853cf4..e854922 100644
---- a/misc-utils/ftl_check.c
-+++ b/misc-utils/ftl_check.c
-@@ -131,7 +131,7 @@ static void check_partition(int fd)
- 			perror("read failed");
- 			break;
- 		}
--		printf("\nErase unit %"PRIdoff_t":\n", i);
-+		printf("\nErase unit %lld:\n", (long long)i);
- 		if ((hdr2.FormattedSize != hdr.FormattedSize) ||
- 				(hdr2.NumEraseUnits != hdr.NumEraseUnits) ||
- 				(hdr2.SerialNumber != hdr.SerialNumber))
-diff --git a/misc-utils/mtd_debug.c b/misc-utils/mtd_debug.c
-index ac37e23..d65ad36 100644
---- a/misc-utils/mtd_debug.c
-+++ b/misc-utils/mtd_debug.c
-@@ -160,7 +160,7 @@ retry:
- 	if (buf != NULL)
- 		free(buf);
- 	close(outfd);
--	printf("Copied %zu bytes from address 0x%.8"PRIxoff_t" in flash to %s\n", len, offset, filename);
-+	printf("Copied %zu bytes from address 0x%.8llx in flash to %s\n", len, (unsigned long long)offset, filename);
- 	return 0;
- 
- err2:
-@@ -225,7 +225,7 @@ retry:
- 	if (buf != NULL)
- 		free(buf);
- 	fclose(fp);
--	printf("Copied %d bytes from %s to address 0x%.8"PRIxoff_t" in flash\n", len, filename, offset);
-+	printf("Copied %d bytes from %s to address 0x%.8llx in flash\n", len, filename, (unsigned long long)offset);
- 	return 0;
- }
- 
-diff --git a/misc-utils/serve_image.c b/misc-utils/serve_image.c
-index f2475d6..6c8c8fb 100644
---- a/misc-utils/serve_image.c
-+++ b/misc-utils/serve_image.c
-@@ -129,8 +129,8 @@ int main(int argc, char **argv)
- 	}
- 
- 	if (st.st_size % erasesize) {
--		fprintf(stderr, "Image size %" PRIdoff_t " bytes is not a multiple of erasesize %d bytes\n",
--				st.st_size, erasesize);
-+		fprintf(stderr, "Image size %lld bytes is not a multiple of erasesize %d bytes\n",
-+				(long long)st.st_size, erasesize);
- 		exit(1);
- 	}
- 	image = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, rfd, 0);
-diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 84753d6..0a7f142 100644
---- a/tests/fs-tests/integrity/integck.c
-+++ b/tests/fs-tests/integrity/integck.c
-@@ -897,8 +897,8 @@ static ssize_t file_write_data(struct file_info *file, int fd, off_t offset,
- 	remains = size;
- 	actual = 0;
- 	written = IO_BUFFER_SIZE;
--	v("write %zd bytes, offset %"PRIdoff_t", file %s",
--	  size, offset, get_file_name(file));
-+	v("write %zd bytes, offset %lld, file %s",
-+	  size, (long long)offset, get_file_name(file));
- 	while (remains) {
- 		/* Fill up buffer with random data */
- 		if (written < IO_BUFFER_SIZE) {
-diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
-index c6812df..465e548 100644
---- a/tests/mtd-tests/nandpagetest.c
-+++ b/tests/mtd-tests/nandpagetest.c
-@@ -232,8 +232,8 @@ static int verify_eraseblock(int ebnum)
- 			return err;
- 
- 		if (lseek(fd, addr, SEEK_SET) != addr) {
--			fprintf(stderr, "cannot seek mtd%d to offset %"PRIdloff_t,
--	 				mtd.mtd_num, addr);
-+			fprintf(stderr, "cannot seek mtd%d to offset %lld",
-+	 				mtd.mtd_num, (long long)addr);
- 			return -1;
- 		}
- 
-diff --git a/tests/ubi-tests/integ.c b/tests/ubi-tests/integ.c
-index 26c2ce5..1cd0649 100644
---- a/tests/ubi-tests/integ.c
-+++ b/tests/ubi-tests/integ.c
-@@ -243,7 +243,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
- 			while (size)
- 				if (read_buffer[--size] != 0xff) {
- 					fprintf(stderr, "block no. = %d\n" , erase_block->block_number);
--					fprintf(stderr, "offset = %"PRIdoff_t"\n" , gap_start);
-+					fprintf(stderr, "offset = %lld\n" , (long long)gap_start);
- 					fprintf(stderr, "size = %ld\n" , (long) bytes_read);
- 					error_exit("verify 0xff failed");
- 				}
-@@ -254,7 +254,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
- 		errno = 0;
- 		bytes_read = read(fd, read_buffer, w->size);
- 		if (bytes_read != w->size) {
--			fprintf(stderr, "offset = %"PRIdoff_t"\n" , w->offset);
-+			fprintf(stderr, "offset = %lld\n" , (long long)w->offset);
- 			fprintf(stderr, "size = %ld\n" , (long) w->size);
- 			fprintf(stderr, "bytes_read = %ld\n" , (long) bytes_read);
- 			error_exit("read failed");
-@@ -279,7 +279,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
- 		while (size)
- 			if (read_buffer[--size] != 0xff) {
- 				fprintf(stderr, "block no. = %d\n" , erase_block->block_number);
--				fprintf(stderr, "offset = %"PRIdoff_t"\n" , gap_start);
-+				fprintf(stderr, "offset = %lld\n" , (long long)gap_start);
- 				fprintf(stderr, "size = %ld\n" , (long) bytes_read);
- 				error_exit("verify 0xff failed!");
- 			}
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-index c916f48..f0237ab 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -772,11 +772,11 @@ int write_leb(int lnum, int len, void *buf)
- 			return sys_err_msg("ubi_leb_change_start failed");
- 
- 	if (lseek(out_fd, pos, SEEK_SET) != pos)
--		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
-+		return sys_err_msg("lseek failed seeking %lld", (long long)pos);
- 
- 	if (write(out_fd, buf, c->leb_size) != c->leb_size)
--		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
--				   c->leb_size, pos);
-+		return sys_err_msg("write failed writing %d bytes at pos %lld",
-+				   c->leb_size, (long long)pos);
- 
- 	return 0;
- }
+ 	/* do polling transfer */
 -- 
-2.7.4
+2.19.0
