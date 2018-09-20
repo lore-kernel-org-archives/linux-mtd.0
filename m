@@ -1,44 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g37Co-0006vu-RZ
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 22:13:53 +0000
-Date: Fri, 21 Sep 2018 00:13:23 +0200
-From: Lukasz Majewski <lukma@denx.de>
-To: Frieder Schrempf <frieder.schrempf@exceet.de>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>, Huang
- Shijie <sjhuang@iluvatar.ai>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "richard@nod.at" <richard@nod.at>,
- "broonie@kernel.org" <broonie@kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, Albert ARIBAUD <albert.aribaud@3adev.fr>,
- Boris Brezillon <boris.brezillon@bootlin.com>, Prabhakar Kushwaha
- <prabhakar.kushwaha@nxp.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, David Wolfe <david.wolfe@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>, "dwmw2@infradead.org"
- <dwmw2@infradead.org>
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-Message-ID: <20180921001323.596a39c8@jawa>
-In-Reply-To: <bd116b60-49ce-b4ad-3943-93df505bc710@exceet.de>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
- <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
- <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
- <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
- <20180804153728.0a99d28f@bbrezillon>
- <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
- <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
- <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <09d39759-390a-bca3-caeb-2ee8ddb29443@exceet.de>
- <20180919004247.60c6099a@jawa>
- <e76062cb-f703-2830-8074-d1a812dc14ce@exceet.de>
- <20180919130211.3f2e7e3a@jawa> <20180920170032.39fb5073@jawa>
- <bd116b60-49ce-b4ad-3943-93df505bc710@exceet.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/PAb3Bmzn=T6ivPbr9QPMxAI"; protocol="application/pgp-signature"
+ id 1g38HG-0005pW-Ue
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 23:22:33 +0000
+Received: by mail-wr1-x442.google.com with SMTP id j15-v6so6942621wrt.8
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2018 16:22:20 -0700 (PDT)
+From: Andrea Adami <andrea.adami@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: Thorsten Glaser <tg@mirbsd.org>
+Subject: [PATCH] mtd-utils: Instead of doing preprocessor magic,
+ just output off_t as long long
+Date: Fri, 21 Sep 2018 01:22:11 +0200
+Message-Id: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,248 +20,322 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Sig_/PAb3Bmzn=T6ivPbr9QPMxAI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Thorsten Glaser <tg@mirbsd.org>
 
-Hi Frieder,
+Fix warnings abot PRIdoff_t in libmtd.c, in mtd_read (and mtd_write):
 
-Please find some more comments regarding the new spi-fsl-qspi.c driver.
+In file included from ../git/lib/libmtd.c:40:0:
+../git/lib/libmtd.c: In function 'mtd_read':
+../git/include/common.h:110:18: warning: format '%ld' expects argument of
+ type 'long int', but argument 5 has type 'off_t {aka long long int}'
+ [-Wformat=]
 
-> Hi Lukasz,
->=20
-> On 20.09.2018 17:00, Lukasz Majewski wrote:
-> > Hi Frieder,
-> >  =20
-> >> Hi Frieder,
-> >> =20
-> >>> Hi Lukasz,
-> >>>
-> >>> On 19.09.2018 00:42, Lukasz Majewski wrote: =20
-> >>>> Dear All,
-> >>>>
-> >>>> Maybe I do jump a bit off topic here, but...
-> >>>>
-> >>>> I've read through the following thread:
-> >>>> https://patchwork.ozlabs.org/patch/939885/
-> >>>>
-> >>>> And it mentions some issues with reading AHB content (buffers) in
-> >>>> fsl-quadspi.c driver discovered when new QuadSPI driver was
-> >>>> developed. =20
-> >>>
-> >>> The only setup with two chips that is known to be problematic with
-> >>> the new driver, is when both chips are connected to the same bus
-> >>> (e.g. QSPIA) using separate chip selects. =20
-> >>
-> >> I'm using QSPI0 controller, with two memories connected to QSPI0_A
-> >> and QSPI0_B lines.
-> >> =20
-> >>>
-> >>> Does your board use this kind of setup, or are the two chips
-> >>> connected two different buses (QSPIA and QSPIB)?
-> >>>
-> >>> Have you tested the new driver? It would be great to receive some
-> >>> more feedback. =20
-> >>
-> >> I will check (test) this new driver. No problem. =20
-> >=20
-> > I've ported your patch on v4.19-rc3.
-> >=20
-> > I had to fix the "div0 issue" by adding:
-> > if (op->dummy.buswidth &&
-> > 	(op->dummy.nbytes * 8 / op->dummy.buswidth > 64))
-> >=20
-> > In fsl_qspi_supports_op() function.
-> >=20
-> >=20
-> > Unfortunately, on Vybrid vf610 when testing I do see corruption of
-> > read data from the mtd device:
-> >=20
-> > ~# hexdump aaa.img
-> > 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
-> > 0000010 e98e 5265 683c a635 c069 e402 303f d936
-> > 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
-> > 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
-> > 0000040 ffff ffff ffff ffff ffff ffff ffff ffff
-> > *
-> > 0000100
-> >=20
-> > ~# hexdump data_test.img
-> > 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
-> > 0000010 e98e 5265 683c a635 c069 e402 303f d936
-> > 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
-> > 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
-> > 0000040 01c9 462d 0a43 f893 0e42 67f1 57f0 787c
-> > 0000050 49c0 fb2a e514 e954 1d21 affa bac4 38f1
-> > 0000060 1ca5 ec46 77eb a854 285b 8e21 12d7 f377
-> > 0000070 b441 2baf ee33 596c 98b6 e71a c1cb 876c
-> >=20
-> >=20
-> > Test case:
-> > flash_erase /dev/mtd3 0 1
-> > dd if=3Ddata_test.img of=3D/dev/mtd3
-> > dd if=3D/dev/mtd3 of=3Daaa.img bs=3D1 count=3D256
-> >=20
-> >=20
-> >  From the code I see that the AHB buffer has 1024B. It is accessed
-> > in 8 bytes packs.
-> >=20
-> > This seems like some cache or HW issue....
-> >=20
-> > In the old driver, to fix this problem one needed to
-> > 1. Reduce the RX fifo size from 128B to 64B
-> >=20
-> > 2. Disable (set to 0) the AHB transfer's BUF3CR ADATSZ field - the
-> > transfer size is the same as in LUT.
-> >=20
-> > (Original patch: https://patchwork.ozlabs.org/patch/675401/) =20
->=20
-> Thanks a lot for doing the test. It seems like Vybrid needs some
-> special handling to work around this problem.
-> So this means the current driver has never worked for Vybrid, as the=20
-> mentioned patch was never merged!?
->=20
-> As these issues seem to be specific to Vybrid and as they seem to
-> exist in the current driver too, I would like to fix them after we
-> have a first version of the new driver that works for the other
-> platforms.
->=20
-> I hope we can figure out the other issues soon.
->=20
-> Thanks,
-> Frieder
->=20
-> >=20
-> >  =20
-> >> =20
-> >>>     =20
-> >>>> I do have a setup with qspi0 having two SPI memories connected
-> >>>> (2x16 MiB), and I'm wondering if anybody has some more info
-> >>>> regarding:
-> >>>>
-> >>>> (What's more is that there is a bug in
-> >>>>    * the "IP Command Read" in the Vybrid.) found here: =20
-> > 	^^^^^^^^^^^^^^^^^^^^^^^^ - It would be handy to have the
-> > exact explanation of this issue.
-> >  =20
-> >>>> https://elixir.bootlin.com/linux/v4.19-rc4/source/drivers/mtd/spi-no=
-r/fsl-quadspi.c#L671
-       ^^^^^^^^^^^^ - [1]
+../git/include/common.h:120:2: note: in expansion of macro 'errmsg'
+  errmsg(fmt, ##__VA_ARGS__);                                         \
+  ^~~~~~
+../git/lib/libmtd.c:1082:10: note: in expansion of macro 'sys_errmsg'
+   return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
+          ^~~~~~~~~~
 
+/usr/lib/klibc/include/inttypes.h:28:17: note: format string is defined here
+ #define PRId32 "d"
 
-I've looked a bit closer to the new spi-fsl-qspi.c driver and it looks
-like it uses fsl_qspi_exec_op() and then calls fsl_qspi_do_op().
+Signed-off-by: Thorsten Glaser <tg@mirbsd.org>
+---
+ include/common.h                    | 18 ------------------
+ jffsX-utils/mkfs.jffs2.c            | 20 ++++++++++----------
+ lib/libmtd.c                        |  8 ++++----
+ misc-utils/flash_erase.c            |  6 +++---
+ misc-utils/flash_otp_write.c        |  2 +-
+ misc-utils/ftl_check.c              |  2 +-
+ misc-utils/mtd_debug.c              |  4 ++--
+ misc-utils/serve_image.c            |  4 ++--
+ tests/fs-tests/integrity/integck.c  |  4 ++--
+ tests/mtd-tests/nandpagetest.c      |  4 ++--
+ tests/ubi-tests/integ.c             |  6 +++---
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  6 +++---
+ 12 files changed, 33 insertions(+), 51 deletions(-)
 
-In the last function we setup the QUADSPI_IPCR register to initiate the
-transfer between SPI-NOR and the internal RX buffer.
-
-Please correct me if I'm wrong but it seems to me like we are using "IP
-Command Read" approach here.
-
-If this is true - what was the rationale to use it in the new driver, as
-in the old one the "AHB Command Read" approach was recommended (i.e.
-faster) [1]?
-
-To be even more problematic the info in link [1] states that on vybrid
-there is a bug on the "IP Command Read" HW block and it should be
-avoided.
-
-> >>>>
-> >>>> I've googled for some errata or known issues for vybryd's QSPI IP
-> >>>> block (vf610) but without luck so far ... =20
-> >>>
-> >>> Unfortunately I don't know the background for this comment. =20
-> >>
-> >> The comment was added by some Freescale employee when the driver
-> >> was added to Linux (by Huang - CC'ed).
-> >> =20
-> >>> Is your
-> >>> board using VF610? =20
-> >>
-> >> Yes, it uses vf610 (A5 + M4 cores).
-> >> =20
-> >>> Do you experience problems? =20
-> >>
-> >> I've already observed following issue:
-> >>
-> >> For the current QSPI ML driver (fsl-quadspi.c - 4.19-rc3) only half
-> >> of the AHB buffer is valid. When I do read the whole one - I do see
-> >> read data corruption (on UBI or raw memory).
-> >>
-> >> This was pointed out in the patch:
-> >> https://patchwork.ozlabs.org/patch/675401/
-> >>
-> >> Unfortunately, I did not found any info regarding this problem (in
-> >> NXP's errata or other doc).
-> >>
-> >> I will check if this issue shows up on new patches.
-> >>
-> >> Thanks in advance for your help.
-> >> =20
-> >>>
-> >>> Regards,
-> >>> Frieder
-> >>>
-> >>> ______________________________________________________
-> >>> Linux MTD discussion mailing list
-> >>> http://lists.infradead.org/mailman/listinfo/linux-mtd/ =20
-> >>
-> >> Best regards,
-> >>
-> >> Lukasz Majewski
-> >>
-> >> --
-> >>
-> >> DENX Software Engineering GmbH,      Managing Director: Wolfgang
-> >> Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> >> Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
-> >> wd@denx.de =20
-> >=20
-> >=20
-> >=20
-> >=20
-> > Best regards,
-> >=20
-> > Lukasz Majewski
-> >=20
-> > --
-> >=20
-> > DENX Software Engineering GmbH,      Managing Director: Wolfgang
-> > Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
-> > Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
-> > wd@denx.de=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-
---Sig_/PAb3Bmzn=T6ivPbr9QPMxAI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAlukG4MACgkQAR8vZIA0
-zr3lrwf/du5GHJWsNZ4xVkEsozpsto7uYs7gRGP7UGfxIi2xw4OrDJlVusW9US7v
-gDQicqQBz3JICYME6eMjQ0YrUX2hseSggE4ie5dALT5w9HQ4Q4LWGsW0QqWJTbFl
-wMzhQ1y6h9gZojKRv2LVOT5l67UE+dOeiMge0LgE80Al0IESjsueL9aY0zC7BQAK
-7wVBFPUvfFoQQtF0pGJ0PE1/c3NiUpS76vDoLNk158uKzwY/RqK6t8M+Yxsl4lIz
-ieBSGJvJMjzzRm3tsJaoXyrKFO/oT+47UlgXwMhnDirO+qoqBcwcJLsNh8UqbX2U
-4kfvtOnIZszyvYeMVKMn0sVjqyfcgQ==
-=iBj6
------END PGP SIGNATURE-----
-
---Sig_/PAb3Bmzn=T6ivPbr9QPMxAI--
+diff --git a/include/common.h b/include/common.h
+index f8f72ea..642c212 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -70,24 +70,6 @@ extern "C" {
+ #define O_CLOEXEC 0
+ #endif
+ 
+-/* define a print format specifier for off_t */
+-#if (SIZEOF_OFF_T >= 8)
+-#define PRIxoff_t PRIx64
+-#define PRIdoff_t PRId64
+-#else
+-#define PRIxoff_t "l"PRIx32
+-#define PRIdoff_t "l"PRId32
+-#endif
+-
+-/* define a print format specifier for loff_t */
+-#if (SIZEOF_LOFF_T >= 8)
+-#define PRIxloff_t PRIx64
+-#define PRIdloff_t PRId64
+-#else
+-#define PRIxloff_t "l"PRIx32
+-#define PRIdloff_t "l"PRId32
+-#endif
+-
+ /* Verbose messages */
+ #define bareverbose(verbose, fmt, ...) do {                        \
+ 	if (verbose)                                               \
+diff --git a/jffsX-utils/mkfs.jffs2.c b/jffsX-utils/mkfs.jffs2.c
+index 9aa6c39..0661786 100644
+--- a/jffsX-utils/mkfs.jffs2.c
++++ b/jffsX-utils/mkfs.jffs2.c
+@@ -1237,8 +1237,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 		} else switch (e->sb.st_mode & S_IFMT) {
+ 			case S_IFDIR:
+ 				if (verbose) {
+-					printf("\td %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++					printf("\td %04o %9lld             %5d:%-3d %s\n",
++							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
+ 							(int) (e->sb.st_uid), (int) (e->sb.st_gid),
+ 							e->name);
+ 				}
+@@ -1247,8 +1247,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 				break;
+ 			case S_IFSOCK:
+ 				if (verbose) {
+-					printf("\ts %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++					printf("\ts %04o %9lld             %5d:%-3d %s\n",
++							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				write_pipe(e);
+@@ -1256,8 +1256,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 				break;
+ 			case S_IFIFO:
+ 				if (verbose) {
+-					printf("\tp %04o %9" PRIdoff_t "             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++					printf("\tp %04o %9lld             %5d:%-3d %s\n",
++							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				write_pipe(e);
+@@ -1285,8 +1285,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 				break;
+ 			case S_IFLNK:
+ 				if (verbose) {
+-					printf("\tl %04o %9" PRIdoff_t "             %5d:%-3d %s -> %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++					printf("\tl %04o %9lld             %5d:%-3d %s -> %s\n",
++							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name,
+ 							e->link);
+ 				}
+@@ -1297,8 +1297,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 				wrote = write_regular_file(e);
+ 				write_xattr_entry(e);
+ 				if (verbose) {
+-					printf("\tf %04o %9" PRIdoff_t " (%9u) %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size, wrote,
++					printf("\tf %04o %9lld (%9u) %5d:%-3d %s\n",
++							e->sb.st_mode & ~S_IFMT, (long long)e->sb.st_size, wrote,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				break;
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 86c89ae..f375381 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -1079,8 +1079,8 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+ 	/* Seek to the beginning of the eraseblock */
+ 	seek = (off_t)eb * mtd->eb_size + offs;
+ 	if (lseek(fd, seek, SEEK_SET) != seek)
+-		return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
+-				  mtd->mtd_num, seek);
++		return sys_errmsg("cannot seek mtd%d to offset %lld",
++				  mtd->mtd_num, (long long)seek);
+ 
+ 	while (rd < len) {
+ 		ret = read(fd, buf + rd, len - rd);
+@@ -1188,8 +1188,8 @@ int mtd_write(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb,
+ 	if (data) {
+ 		/* Seek to the beginning of the eraseblock */
+ 		if (lseek(fd, seek, SEEK_SET) != seek)
+-			return sys_errmsg("cannot seek mtd%d to offset %"PRIdoff_t,
+-					mtd->mtd_num, seek);
++			return sys_errmsg("cannot seek mtd%d to offset %lld",
++					mtd->mtd_num, (long long)seek);
+ 		ret = write(fd, data, len);
+ 		if (ret != len)
+ 			return sys_errmsg("cannot write %d bytes to mtd%d "
+diff --git a/misc-utils/flash_erase.c b/misc-utils/flash_erase.c
+index 0c9449f..ec4b2e1 100644
+--- a/misc-utils/flash_erase.c
++++ b/misc-utils/flash_erase.c
+@@ -53,8 +53,8 @@ int target_endian = __BYTE_ORDER;
+ static void show_progress(struct mtd_dev_info *mtd, off_t start, int eb,
+ 			  int eb_start, int eb_cnt)
+ {
+-	bareverbose(!quiet, "\rErasing %d Kibyte @ %"PRIxoff_t" -- %2i %% complete ",
+-		mtd->eb_size / 1024, start, ((eb - eb_start) * 100) / eb_cnt);
++	bareverbose(!quiet, "\rErasing %d Kibyte @ %llx -- %2i %% complete ",
++		mtd->eb_size / 1024, (unsigned long long)start, ((eb - eb_start) * 100) / eb_cnt);
+ 	fflush(stdout);
+ }
+ 
+@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
+ 		if (!noskipbad) {
+ 			int ret = mtd_is_bad(&mtd, fd, eb);
+ 			if (ret > 0) {
+-				verbose(!quiet, "Skipping bad block at %08"PRIxoff_t, offset);
++				verbose(!quiet, "Skipping bad block at %08llx", (unsigned long long)offset);
+ 				continue;
+ 			} else if (ret < 0) {
+ 				if (errno == EOPNOTSUPP) {
+diff --git a/misc-utils/flash_otp_write.c b/misc-utils/flash_otp_write.c
+index b02d0b0..04c96c6 100644
+--- a/misc-utils/flash_otp_write.c
++++ b/misc-utils/flash_otp_write.c
+@@ -76,7 +76,7 @@ int main(int argc,char *argv[])
+ 		return errno;
+ 	}
+ 
+-	printf("Writing OTP user data on %s at offset 0x%"PRIxoff_t"\n", argv[2], offset);
++	printf("Writing OTP user data on %s at offset 0x%llx\n", argv[2], (unsigned long long)offset);
+ 
+ 	if (mtd_type_is_nand_user(&mtdInfo))
+ 		len = mtdInfo.writesize;
+diff --git a/misc-utils/ftl_check.c b/misc-utils/ftl_check.c
+index a853cf4..e854922 100644
+--- a/misc-utils/ftl_check.c
++++ b/misc-utils/ftl_check.c
+@@ -131,7 +131,7 @@ static void check_partition(int fd)
+ 			perror("read failed");
+ 			break;
+ 		}
+-		printf("\nErase unit %"PRIdoff_t":\n", i);
++		printf("\nErase unit %lld:\n", (long long)i);
+ 		if ((hdr2.FormattedSize != hdr.FormattedSize) ||
+ 				(hdr2.NumEraseUnits != hdr.NumEraseUnits) ||
+ 				(hdr2.SerialNumber != hdr.SerialNumber))
+diff --git a/misc-utils/mtd_debug.c b/misc-utils/mtd_debug.c
+index ac37e23..d65ad36 100644
+--- a/misc-utils/mtd_debug.c
++++ b/misc-utils/mtd_debug.c
+@@ -160,7 +160,7 @@ retry:
+ 	if (buf != NULL)
+ 		free(buf);
+ 	close(outfd);
+-	printf("Copied %zu bytes from address 0x%.8"PRIxoff_t" in flash to %s\n", len, offset, filename);
++	printf("Copied %zu bytes from address 0x%.8llx in flash to %s\n", len, (unsigned long long)offset, filename);
+ 	return 0;
+ 
+ err2:
+@@ -225,7 +225,7 @@ retry:
+ 	if (buf != NULL)
+ 		free(buf);
+ 	fclose(fp);
+-	printf("Copied %d bytes from %s to address 0x%.8"PRIxoff_t" in flash\n", len, filename, offset);
++	printf("Copied %d bytes from %s to address 0x%.8llx in flash\n", len, filename, (unsigned long long)offset);
+ 	return 0;
+ }
+ 
+diff --git a/misc-utils/serve_image.c b/misc-utils/serve_image.c
+index f2475d6..6c8c8fb 100644
+--- a/misc-utils/serve_image.c
++++ b/misc-utils/serve_image.c
+@@ -129,8 +129,8 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (st.st_size % erasesize) {
+-		fprintf(stderr, "Image size %" PRIdoff_t " bytes is not a multiple of erasesize %d bytes\n",
+-				st.st_size, erasesize);
++		fprintf(stderr, "Image size %lld bytes is not a multiple of erasesize %d bytes\n",
++				(long long)st.st_size, erasesize);
+ 		exit(1);
+ 	}
+ 	image = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, rfd, 0);
+diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
+index 84753d6..0a7f142 100644
+--- a/tests/fs-tests/integrity/integck.c
++++ b/tests/fs-tests/integrity/integck.c
+@@ -897,8 +897,8 @@ static ssize_t file_write_data(struct file_info *file, int fd, off_t offset,
+ 	remains = size;
+ 	actual = 0;
+ 	written = IO_BUFFER_SIZE;
+-	v("write %zd bytes, offset %"PRIdoff_t", file %s",
+-	  size, offset, get_file_name(file));
++	v("write %zd bytes, offset %lld, file %s",
++	  size, (long long)offset, get_file_name(file));
+ 	while (remains) {
+ 		/* Fill up buffer with random data */
+ 		if (written < IO_BUFFER_SIZE) {
+diff --git a/tests/mtd-tests/nandpagetest.c b/tests/mtd-tests/nandpagetest.c
+index c6812df..465e548 100644
+--- a/tests/mtd-tests/nandpagetest.c
++++ b/tests/mtd-tests/nandpagetest.c
+@@ -232,8 +232,8 @@ static int verify_eraseblock(int ebnum)
+ 			return err;
+ 
+ 		if (lseek(fd, addr, SEEK_SET) != addr) {
+-			fprintf(stderr, "cannot seek mtd%d to offset %"PRIdloff_t,
+-	 				mtd.mtd_num, addr);
++			fprintf(stderr, "cannot seek mtd%d to offset %lld",
++	 				mtd.mtd_num, (long long)addr);
+ 			return -1;
+ 		}
+ 
+diff --git a/tests/ubi-tests/integ.c b/tests/ubi-tests/integ.c
+index 26c2ce5..1cd0649 100644
+--- a/tests/ubi-tests/integ.c
++++ b/tests/ubi-tests/integ.c
+@@ -243,7 +243,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
+ 			while (size)
+ 				if (read_buffer[--size] != 0xff) {
+ 					fprintf(stderr, "block no. = %d\n" , erase_block->block_number);
+-					fprintf(stderr, "offset = %"PRIdoff_t"\n" , gap_start);
++					fprintf(stderr, "offset = %lld\n" , (long long)gap_start);
+ 					fprintf(stderr, "size = %ld\n" , (long) bytes_read);
+ 					error_exit("verify 0xff failed");
+ 				}
+@@ -254,7 +254,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
+ 		errno = 0;
+ 		bytes_read = read(fd, read_buffer, w->size);
+ 		if (bytes_read != w->size) {
+-			fprintf(stderr, "offset = %"PRIdoff_t"\n" , w->offset);
++			fprintf(stderr, "offset = %lld\n" , (long long)w->offset);
+ 			fprintf(stderr, "size = %ld\n" , (long) w->size);
+ 			fprintf(stderr, "bytes_read = %ld\n" , (long) bytes_read);
+ 			error_exit("read failed");
+@@ -279,7 +279,7 @@ static void check_erase_block(struct erase_block_info *erase_block, int fd)
+ 		while (size)
+ 			if (read_buffer[--size] != 0xff) {
+ 				fprintf(stderr, "block no. = %d\n" , erase_block->block_number);
+-				fprintf(stderr, "offset = %"PRIdoff_t"\n" , gap_start);
++				fprintf(stderr, "offset = %lld\n" , (long long)gap_start);
+ 				fprintf(stderr, "size = %ld\n" , (long) bytes_read);
+ 				error_exit("verify 0xff failed!");
+ 			}
+diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+index c916f48..f0237ab 100644
+--- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
++++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
+@@ -772,11 +772,11 @@ int write_leb(int lnum, int len, void *buf)
+ 			return sys_err_msg("ubi_leb_change_start failed");
+ 
+ 	if (lseek(out_fd, pos, SEEK_SET) != pos)
+-		return sys_err_msg("lseek failed seeking %"PRIdoff_t, pos);
++		return sys_err_msg("lseek failed seeking %lld", (long long)pos);
+ 
+ 	if (write(out_fd, buf, c->leb_size) != c->leb_size)
+-		return sys_err_msg("write failed writing %d bytes at pos %"PRIdoff_t,
+-				   c->leb_size, pos);
++		return sys_err_msg("write failed writing %d bytes at pos %lld",
++				   c->leb_size, (long long)pos);
+ 
+ 	return 0;
+ }
+-- 
+2.7.4
