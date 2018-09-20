@@ -1,21 +1,18 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2t7D-00046f-Q4
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 07:12:45 +0000
-From: Richard Weinberger <richard@nod.at>
-To: Joel Stanley <joel@jms.id.au>
-Cc: Greg KH <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- koen.vandeputte@ncentric.com, Eddie James <eajames.ibm@gmail.com>
-Subject: Re: [PATCH] Revert "ubifs: xattr: Don't operate on deleted inodes"
-Date: Thu, 20 Sep 2018 09:10:44 +0200
-Message-ID: <2090091.R1QOzN4fXt@blindfold>
-In-Reply-To: <CACPK8Xd_fNNEYbtY6HEnB6kOnqTWBC5stPVUbc2gMHpne4J6jQ@mail.gmail.com>
-References: <20180916215735.31393-1-richard@nod.at>
- <CACPK8Xd_fNNEYbtY6HEnB6kOnqTWBC5stPVUbc2gMHpne4J6jQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g2tQy-0004TO-Vz
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 07:31:39 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Mark Brown <broonie@kernel.org>,
+	linux-spi@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Subject: [PATCH 0/3] spi: spi-mem: Minor fixes/improvements
+Date: Thu, 20 Sep 2018 09:31:09 +0200
+Message-Id: <20180920073112.7897-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, 20. September 2018, 04:30:41 CEST schrieb Joel Stanley:
-> On Mon, 17 Sep 2018 at 07:30, Richard Weinberger <richard@nod.at> wrote:
-> >
-> > This reverts commit 11a6fc3dc743e22fb50f2196ec55bee5140d3c52.
-> > UBIFS wants to assert that xattr operations are only issued on files
-> > with positive link count. The said patch made this operations return
-> > -ENOENT for unlinked files such that the asserts will no longer trigger.
-> > This was wrong since xattr operations are perfectly fine on unlinked
-> > files.
-> > Instead the assertions need to be fixed/removed.
-> >
-> > Cc: <stable@vger.kernel.org>
-> > Fixes: 11a6fc3dc743 ("ubifs: xattr: Don't operate on deleted inodes")
-> > Reported-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > Signed-off-by: Richard Weinberger <richard@nod.at>
-> 
-> The bad commit 11a6fc3dc743 was included in 4.18.7, and broke our
-> systems which use overlayfs on top of ubifs.
-> 
-> This patch didn't apply cleanly for me to 4.18.8 (an encoding issue?),
-> but I did a revert of the offending commit which did the trick.
-> 
-> Tested-by: Joel Stanley <joel@jms.id.au>
+Hello Mark,
 
-Thanks a lot for testing and sorry for the breakage. :-(
+Here is a patchset which, IMO, is improving spi-mem support. The first
+2 patches are fixing/improving the kerneldoc header associated to the
+spi_mem_op struct, and the last one is adding checks on the spi_mem_op
+object passed to spi_mem_{exec,supports}_op().
 
-Thanks,
-//richard
+Regards,
+
+Boris
+
+Boris Brezillon (3):
+  spi: spi-mem: Add missing description for data.nbytes field
+  spi: spi-mem: Move the DMA-able constraint doc to the kerneldoc header
+  spi: spi-mem: Add extra sanity checks on the op param
+
+ drivers/spi/spi-mem.c       | 54 ++++++++++++++++++++++++++++++++++++++++-----
+ include/linux/spi/spi-mem.h |  7 +++---
+ 2 files changed, 52 insertions(+), 9 deletions(-)
+
+-- 
+2.14.1
