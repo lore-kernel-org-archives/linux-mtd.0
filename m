@@ -1,21 +1,30 @@
-Received: from mail-qk1-x742.google.com ([2607:f8b0:4864:20::742])
+Received: from mail-he1eur01on0048.outbound.protection.outlook.com
+ ([104.47.0.48] helo=EUR01-HE1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2okC-0004VF-Kj
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 02:31:06 +0000
-Received: by mail-qk1-x742.google.com with SMTP id p84-v6so3973251qke.1
- for <linux-mtd@lists.infradead.org>; Wed, 19 Sep 2018 19:30:53 -0700 (PDT)
+ id 1g2qdC-0005Wh-Hy
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 04:32:00 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
+CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "cyrille.pitchen@wedev4u.fr"
+ <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>
+Subject: RE: [RESEND PATCH 1/2] mtd: spi-nor: add macros related to MICRON
+ flash
+Date: Thu, 20 Sep 2018 04:31:41 +0000
+Message-ID: <VI1PR04MB103873DF92DF3380E53C572699130@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <1537332608-19561-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <bd92d56c-fba6-6b79-07a8-cb426de33639@microchip.com>
+In-Reply-To: <bd92d56c-fba6-6b79-07a8-cb426de33639@microchip.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20180916215735.31393-1-richard@nod.at>
-In-Reply-To: <20180916215735.31393-1-richard@nod.at>
-From: Joel Stanley <joel@jms.id.au>
-Date: Thu, 20 Sep 2018 12:00:41 +0930
-Message-ID: <CACPK8Xd_fNNEYbtY6HEnB6kOnqTWBC5stPVUbc2gMHpne4J6jQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ubifs: xattr: Don't operate on deleted inodes"
-To: Richard Weinberger <richard@nod.at>, Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- koen.vandeputte@ncentric.com, Eddie James <eajames.ibm@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,115 +34,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Sep 2018 at 07:30, Richard Weinberger <richard@nod.at> wrote:
->
-> This reverts commit 11a6fc3dc743e22fb50f2196ec55bee5140d3c52.
-> UBIFS wants to assert that xattr operations are only issued on files
-> with positive link count. The said patch made this operations return
-> -ENOENT for unlinked files such that the asserts will no longer trigger.
-> This was wrong since xattr operations are perfectly fine on unlinked
-> files.
-> Instead the assertions need to be fixed/removed.
->
-> Cc: <stable@vger.kernel.org>
-> Fixes: 11a6fc3dc743 ("ubifs: xattr: Don't operate on deleted inodes")
-> Reported-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> Signed-off-by: Richard Weinberger <richard@nod.at>
-
-The bad commit 11a6fc3dc743 was included in 4.18.7, and broke our
-systems which use overlayfs on top of ubifs.
-
-This patch didn't apply cleanly for me to 4.18.8 (an encoding issue?),
-but I did a revert of the offending commit which did the trick.
-
-Tested-by: Joel Stanley <joel@jms.id.au>
-
-Cheers,
-
-Joel
-
-
-> ---
->  fs/ubifs/xattr.c | 24 ------------------------
->  1 file changed, 24 deletions(-)
->
-> diff --git a/fs/ubifs/xattr.c b/fs/ubifs/xattr.c
-> index 61afdfee4b28..f5ad1ede7990 100644
-> --- a/fs/ubifs/xattr.c
-> +++ b/fs/ubifs/xattr.c
-> @@ -152,12 +152,6 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
->         ui->data_len = size;
->
->         mutex_lock(&host_ui->ui_mutex);
-> -
-> -       if (!host->i_nlink) {
-> -               err = -ENOENT;
-> -               goto out_noent;
-> -       }
-> -
->         host->i_ctime = current_time(host);
->         host_ui->xattr_cnt += 1;
->         host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
-> @@ -190,7 +184,6 @@ static int create_xattr(struct ubifs_info *c, struct inode *host,
->         host_ui->xattr_size -= CALC_XATTR_BYTES(size);
->         host_ui->xattr_names -= fname_len(nm);
->         host_ui->flags &= ~UBIFS_CRYPT_FL;
-> -out_noent:
->         mutex_unlock(&host_ui->ui_mutex);
->  out_free:
->         make_bad_inode(inode);
-> @@ -242,12 +235,6 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
->         mutex_unlock(&ui->ui_mutex);
->
->         mutex_lock(&host_ui->ui_mutex);
-> -
-> -       if (!host->i_nlink) {
-> -               err = -ENOENT;
-> -               goto out_noent;
-> -       }
-> -
->         host->i_ctime = current_time(host);
->         host_ui->xattr_size -= CALC_XATTR_BYTES(old_size);
->         host_ui->xattr_size += CALC_XATTR_BYTES(size);
-> @@ -269,7 +256,6 @@ static int change_xattr(struct ubifs_info *c, struct inode *host,
->  out_cancel:
->         host_ui->xattr_size -= CALC_XATTR_BYTES(size);
->         host_ui->xattr_size += CALC_XATTR_BYTES(old_size);
-> -out_noent:
->         mutex_unlock(&host_ui->ui_mutex);
->         make_bad_inode(inode);
->  out_free:
-> @@ -496,12 +482,6 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
->                 return err;
->
->         mutex_lock(&host_ui->ui_mutex);
-> -
-> -       if (!host->i_nlink) {
-> -               err = -ENOENT;
-> -               goto out_noent;
-> -       }
-> -
->         host->i_ctime = current_time(host);
->         host_ui->xattr_cnt -= 1;
->         host_ui->xattr_size -= CALC_DENT_SIZE(fname_len(nm));
-> @@ -521,7 +501,6 @@ static int remove_xattr(struct ubifs_info *c, struct inode *host,
->         host_ui->xattr_size += CALC_DENT_SIZE(fname_len(nm));
->         host_ui->xattr_size += CALC_XATTR_BYTES(ui->data_len);
->         host_ui->xattr_names += fname_len(nm);
-> -out_noent:
->         mutex_unlock(&host_ui->ui_mutex);
->         ubifs_release_budget(c, &req);
->         make_bad_inode(inode);
-> @@ -561,9 +540,6 @@ static int ubifs_xattr_remove(struct inode *host, const char *name)
->
->         ubifs_assert(c, inode_is_locked(host));
->
-> -       if (!host->i_nlink)
-> -               return -ENOENT;
-> -
->         if (fname_len(&nm) > UBIFS_MAX_NLEN)
->                 return -ENAMETOOLONG;
->
-> --
-> 2.19.0
->
+SGkgVHVkb3IsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVHVkb3Ig
+QW1iYXJ1cyBbbWFpbHRvOnR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbV0NCj4gU2VudDogV2Vk
+bmVzZGF5LCBTZXB0ZW1iZXIgMTksIDIwMTggMTA6MDAgUE0NCj4gVG86IFlvZ2VzaCBOYXJheWFu
+IEdhdXIgPHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAuY29tPjsgbGludXgtDQo+IG10ZEBsaXN0cy5p
+bmZyYWRlYWQub3JnOyBsaW51eC1zcGlAdmdlci5rZXJuZWwub3JnDQo+IENjOiBib3Jpcy5icmV6
+aWxsb25AYm9vdGxpbi5jb207IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7DQo+IG1hcmVr
+LnZhc3V0QGdtYWlsLmNvbTsgZnJpZWRlci5zY2hyZW1wZkBleGNlZXQuZGU7DQo+IGN5cmlsbGUu
+cGl0Y2hlbkB3ZWRldjR1LmZyOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb20NCj4gU3ViamVj
+dDogUmU6IFtSRVNFTkQgUEFUQ0ggMS8yXSBtdGQ6IHNwaS1ub3I6IGFkZCBtYWNyb3MgcmVsYXRl
+ZCB0byBNSUNST04NCj4gZmxhc2gNCj4gDQo+IEhpLA0KPiANCj4gT24gMDkvMTkvMjAxOCAwNzo1
+MCBBTSwgWW9nZXNoIEdhdXIgd3JvdGU6DQo+ID4gU29tZSBNSUNST04gcmVsYXRlZCBtYWNyb3Mg
+aW4gc3BpLW5vciBkb21haW4gd2VyZSBTVC4NCj4gPiBSZW5hbWUgZW50cmllcyByZWxhdGVkIHRv
+IFNUTWljcm9lbGVjdHJvbmljcyB1bmRlciBtYWNybyBTTk9SX01GUl9TVC4NCj4gPg0KPiA+IEFk
+ZGVkIGVudHJ5IG9mIE1GUiBJZCBmb3IgTWljcm9uIGZsYXNoZXMsIDB4MDAyQy4NCj4gPg0KPiA+
+IFNpZ25lZC1vZmYtYnk6IFlvZ2VzaCBHYXVyIDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT4N
+Cj4gPiAtLS0NCj4gPiAgZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMgfCA5ICsrKysrKy0t
+LQ0KPiA+ICBpbmNsdWRlL2xpbnV4L210ZC9jZmkuaCAgICAgICB8IDEgKw0KPiA+ICBpbmNsdWRl
+L2xpbnV4L210ZC9zcGktbm9yLmggICB8IDMgKystDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgOSBp
+bnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gYi9kcml2ZXJzL210ZC9zcGktbm9yL3NwaS1u
+b3IuYyBpbmRleCBmMDI4Mjc3Li4zM2E1NWJjIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbXRk
+L3NwaS1ub3Ivc3BpLW5vci5jDQo+ID4gKysrIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9y
+LmMNCj4gPiBAQCAtMjcxLDYgKzI3MSw3IEBAIHN0YXRpYyBpbmxpbmUgaW50IHNldF80Ynl0ZShz
+dHJ1Y3Qgc3BpX25vciAqbm9yLCBjb25zdA0KPiBzdHJ1Y3QgZmxhc2hfaW5mbyAqaW5mbywNCj4g
+PiAgCXU4IGNtZDsNCj4gPg0KPiA+ICAJc3dpdGNoIChKRURFQ19NRlIoaW5mbykpIHsNCj4gPiAr
+CWNhc2UgU05PUl9NRlJfU1Q6DQo+IA0KPiBXZSBzaG91bGQgbWFyayBzd2l0Y2ggY2FzZXMgd2hl
+cmUgd2UgYXJlIGV4cGVjdGluZyB0byBmYWxsIHRocm91Z2gsIHNvIHRoYXQgd2UNCj4gd2lsbCBi
+ZSBwcmVwYXJlZCB3aGVuIGVuYWJsaW5nIC1XaW1wbGljaXQtZmFsbHRocm91Z2guDQoNClBsZWFz
+ZSBleHBsYWluIG1vcmUsIG5vdCBhYmxlIHRvIGdldCB0aGlzIGNvbW1lbnQuIFNvcnJ5IGZvciBp
+Z25vcmFuY2UuDQoNCj4gDQo+ID4gIAljYXNlIFNOT1JfTUZSX01JQ1JPTjoNCj4gPiAgCQkvKiBT
+b21lIE1pY3JvbiBuZWVkIFdSRU4gY29tbWFuZDsgYWxsIHdpbGwgYWNjZXB0IGl0ICovDQo+ID4g
+IAkJbmVlZF93cmVuID0gdHJ1ZTsNCj4gPiBAQCAtMTA5Niw3ICsxMDk3LDcgQEAgc3RhdGljIGlu
+dCBzcGlfbm9yX2lzX2xvY2tlZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwNCj4gbG9mZl90IG9mcywg
+dWludDY0X3QgbGVuKQ0KPiA+ICAJeyAibXg2NmwxZzQ1ZyIsICBJTkZPKDB4YzIyMDFiLCAwLCA2
+NCAqIDEwMjQsIDIwNDgsIFNFQ1RfNEsgfA0KPiBTUElfTk9SX0RVQUxfUkVBRCB8IFNQSV9OT1Jf
+UVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibXg2NmwxZzU1ZyIsICBJTkZPKDB4YzIyNjFiLCAwLCA2
+NCAqIDEwMjQsIDIwNDgsDQo+ID4gU1BJX05PUl9RVUFEX1JFQUQpIH0sDQo+ID4NCj4gPiAtCS8q
+IE1pY3JvbiAqLw0KPiA+ICsJLyogTWljcm9uIDwtLT4gU1QgTWljcm8gKi8NCj4gPiAgCXsgIm4y
+NXEwMTZhIiwJIElORk8oMHgyMGJiMTUsIDAsIDY0ICogMTAyNCwgICAzMiwgU0VDVF80SyB8DQo+
+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAibjI1cTAzMiIsCSBJTkZPKDB4MjBiYTE2
+LCAwLCA2NCAqIDEwMjQsICAgNjQsDQo+IFNQSV9OT1JfUVVBRF9SRUFEKSB9LA0KPiA+ICAJeyAi
+bjI1cTAzMmEiLAkgSU5GTygweDIwYmIxNiwgMCwgNjQgKiAxMDI0LCAgIDY0LA0KPiBTUElfTk9S
+X1FVQURfUkVBRCkgfSwNCj4gPiBAQCAtMjUwMiw2ICsyNTAzLDcgQEAgc3RhdGljIGludCBzcGlf
+bm9yX2luaXRfcGFyYW1zKHN0cnVjdCBzcGlfbm9yICpub3IsDQo+ID4gIAkJCXBhcmFtcy0+cXVh
+ZF9lbmFibGUgPSBtYWNyb25peF9xdWFkX2VuYWJsZTsNCj4gPiAgCQkJYnJlYWs7DQo+ID4NCj4g
+PiArCQljYXNlIFNOT1JfTUZSX1NUOg0KPiA+ICAJCWNhc2UgU05PUl9NRlJfTUlDUk9OOg0KPiA+
+ICAJCQlicmVhazsNCj4gPg0KPiA+IEBAIC0yODc2LDggKzI4NzgsOSBAQCBpbnQgc3BpX25vcl9z
+Y2FuKHN0cnVjdCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXINCj4gKm5hbWUsDQo+ID4gIAltdGQt
+Pl9yZXN1bWUgPSBzcGlfbm9yX3Jlc3VtZTsNCj4gPg0KPiA+ICAJLyogTk9SIHByb3RlY3Rpb24g
+c3VwcG9ydCBmb3IgU1RtaWNyby9NaWNyb24gY2hpcHMgYW5kIHNpbWlsYXIgKi8NCj4gPiAtCWlm
+IChKRURFQ19NRlIoaW5mbykgPT0gU05PUl9NRlJfTUlDUk9OIHx8DQo+ID4gLQkJCWluZm8tPmZs
+YWdzICYgU1BJX05PUl9IQVNfTE9DSykgew0KPiA+ICsJaWYgKEpFREVDX01GUihpbmZvKSA9PSBT
+Tk9SX01GUl9TVCB8fA0KPiA+ICsJICAgIEpFREVDX01GUihpbmZvKSA9PSBTTk9SX01GUl9NSUNS
+T04gfHwNCj4gPiArCSAgICBpbmZvLT5mbGFncyAmIFNQSV9OT1JfSEFTX0xPQ0spIHsNCj4gPiAg
+CQlub3ItPmZsYXNoX2xvY2sgPSBzdG1fbG9jazsNCj4gPiAgCQlub3ItPmZsYXNoX3VubG9jayA9
+IHN0bV91bmxvY2s7DQo+ID4gIAkJbm9yLT5mbGFzaF9pc19sb2NrZWQgPSBzdG1faXNfbG9ja2Vk
+OyBkaWZmIC0tZ2l0DQo+ID4gYS9pbmNsdWRlL2xpbnV4L210ZC9jZmkuaCBiL2luY2x1ZGUvbGlu
+dXgvbXRkL2NmaS5oIGluZGV4DQo+ID4gOWI1N2E5Yi4uY2JmNzcxNiAxMDA2NDQNCj4gPiAtLS0g
+YS9pbmNsdWRlL2xpbnV4L210ZC9jZmkuaA0KPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL2Nm
+aS5oDQo+ID4gQEAgLTM3Nyw2ICszNzcsNyBAQCBzdHJ1Y3QgY2ZpX2ZpeHVwIHsNCj4gPiAgI2Rl
+ZmluZSBDRklfTUZSX1NIQVJQCQkweDAwQjANCj4gPiAgI2RlZmluZSBDRklfTUZSX1NTVAkJMHgw
+MEJGDQo+ID4gICNkZWZpbmUgQ0ZJX01GUl9TVAkJMHgwMDIwIC8qIFNUTWljcm9lbGVjdHJvbmlj
+cyAqLw0KPiA+ICsjZGVmaW5lIENGSV9NRlJfTUlDUk9OCQkweDAwMkMgLyogTWljcm9uICovDQo+
+IA0KPiBDYW4geW91IHBvaW50IHVzIHRvIGEgZGF0YXNoZWV0IHRvIHZlcmlmeSB0aGUgaWQ/DQo+
+IA0KDQpDdXJyZW50bHkgZGF0YSBzaGVldCBvZiB0aGlzIGZsYXNoIGlzIHVuZGVyIE5EQSwgSSBo
+YXZlIGFza2VkIE1pY3JvbiBndXlzIHRvIHByb3ZpZGUgdGhlIHB1YmxpYyBsaW5rIG9mIHRoaXMg
+ZGF0YSBzaGVldC4NCg0KLS0NClJlZ2FyZHMNCllvZ2VzaCBHYXVyLg0KDQo+IEJlc3QsDQo+IHRh
+DQo+IA0KPiA+ICAjZGVmaW5lIENGSV9NRlJfVE9TSElCQQkJMHgwMDk4DQo+ID4gICNkZWZpbmUg
+Q0ZJX01GUl9XSU5CT05ECQkweDAwREENCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xp
+bnV4L210ZC9zcGktbm9yLmggYi9pbmNsdWRlL2xpbnV4L210ZC9zcGktbm9yLmgNCj4gPiBpbmRl
+eCBjOTIyZTk3Li5mNDNiZmM1IDEwMDY0NA0KPiA+IC0tLSBhL2luY2x1ZGUvbGludXgvbXRkL3Nw
+aS1ub3IuaA0KPiA+ICsrKyBiL2luY2x1ZGUvbGludXgvbXRkL3NwaS1ub3IuaA0KPiA+IEBAIC0y
+Myw3ICsyMyw4IEBADQo+ID4gICNkZWZpbmUgU05PUl9NRlJfQVRNRUwJCUNGSV9NRlJfQVRNRUwN
+Cj4gPiAgI2RlZmluZSBTTk9SX01GUl9HSUdBREVWSUNFCTB4YzgNCj4gPiAgI2RlZmluZSBTTk9S
+X01GUl9JTlRFTAkJQ0ZJX01GUl9JTlRFTA0KPiA+IC0jZGVmaW5lIFNOT1JfTUZSX01JQ1JPTgkJ
+Q0ZJX01GUl9TVCAvKiBTVCBNaWNybyA8LS0+IE1pY3Jvbg0KPiAqLw0KPiA+ICsjZGVmaW5lIFNO
+T1JfTUZSX1NUCQlDRklfTUZSX1NUCS8qIFNUIE1pY3JvICovDQo+ID4gKyNkZWZpbmUgU05PUl9N
+RlJfTUlDUk9OCQlDRklfTUZSX01JQ1JPTgkvKiBNaWNyb24gKi8NCj4gPiAgI2RlZmluZSBTTk9S
+X01GUl9NQUNST05JWAlDRklfTUZSX01BQ1JPTklYDQo+ID4gICNkZWZpbmUgU05PUl9NRlJfU1BB
+TlNJT04JQ0ZJX01GUl9BTUQNCj4gPiAgI2RlZmluZSBTTk9SX01GUl9TU1QJCUNGSV9NRlJfU1NU
+DQo+ID4NCg==
