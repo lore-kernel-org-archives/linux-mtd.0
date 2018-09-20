@@ -1,30 +1,22 @@
-Received: from esa3.microchip.iphmx.com ([68.232.153.233])
+Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2v8Q-0004tN-2r
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 09:20:38 +0000
-Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: add macros related to MICRON
- flash
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>
-CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "cyrille.pitchen@wedev4u.fr"
- <cyrille.pitchen@wedev4u.fr>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>
-References: <1537332608-19561-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <bd92d56c-fba6-6b79-07a8-cb426de33639@microchip.com>
- <VI1PR04MB103873DF92DF3380E53C572699130@VI1PR04MB1038.eurprd04.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <2f7430c2-bef0-0959-e428-ea1658cb9818@microchip.com>
-Date: Thu, 20 Sep 2018 12:20:15 +0300
+ id 1g2vfp-0003rs-Bg
+ for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 09:55:03 +0000
+Date: Thu, 20 Sep 2018 11:54:46 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Marek Vasut <marex@denx.de>, Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [GIT PULL] mtd: Fixes for 4.19-rc5
+Message-ID: <20180920095446.GA6193@kroah.com>
+References: <20180920111928.6cef5b91@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <VI1PR04MB103873DF92DF3380E53C572699130@VI1PR04MB1038.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180920111928.6cef5b91@bbrezillon>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,50 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -271,6 +271,7 @@ static inline int set_4byte(struct spi_nor *nor, const
->> struct flash_info *info,
->>>  	u8 cmd;
->>>
->>>  	switch (JEDEC_MFR(info)) {
->>> +	case SNOR_MFR_ST:
->>
->> We should mark switch cases where we are expecting to fall through, so that we
->> will be prepared when enabling -Wimplicit-fallthrough.
+On Thu, Sep 20, 2018 at 11:19:28AM +0200, Boris Brezillon wrote:
+> Hello Greg,
 > 
-> Please explain more, not able to get this comment. Sorry for ignorance.
+> Here is a fixes PR for the MTD subsystem.
 > 
->>
->>>  	case SNOR_MFR_MICRON:
->>>  		/* Some Micron need WREN command; all will accept it */
->>>  		need_wren = true;
+> Regards,
+> 
+> Boris
+> 
+> The following changes since commit 11da3a7f84f19c26da6f86af878298694ede0804:
+> 
+>   Linux 4.19-rc3 (2018-09-09 17:26:43 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.19-rc5
 
-We can ignore my comment, it's not in the scope of this patch.
+Now pulled, thanks.
 
-I wrongly suggested to do this:
-case SNOR_MFR_ST:
-	/* fall through */
-case SNOR_MFR_MICRON:
-
-in order to suppress the -Wimplicit-fallthrough warning that I thought it will
-appear on gcc 7. The suggestion is wrong because the warning is not emitted for
-empty case bodies, so it's not needed here.
-
-However, when compiling with gcc 7 and -Wimplicit-fallthrough the following can
-be seen:
-
-drivers/mtd/spi-nor/spi-nor.c: In function ‘set_4byte’:
-drivers/mtd/spi-nor/spi-nor.c:290:13: warning: this statement may fall through
-[-Wimplicit-fallthrough=]
-   need_wren = true;
-   ~~~~~~~~~~^~~~~~
-drivers/mtd/spi-nor/spi-nor.c:291:2: note: here
-  case SNOR_MFR_MACRONIX:
-  ^~~~
-
-We should add a /* fall through */ comment after setting need_wren = true;, but
-it's not in the scope of this patch.
-
-Cheers,
-ta
+greg k-h
