@@ -1,20 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g2tQz-0004TR-0v
- for linux-mtd@lists.infradead.org; Thu, 20 Sep 2018 07:31:56 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>,
-	linux-spi@vger.kernel.org
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] spi: spi-mem: Add extra sanity checks on the op param
-Date: Thu, 20 Sep 2018 09:31:12 +0200
-Message-Id: <20180920073112.7897-4-boris.brezillon@bootlin.com>
-In-Reply-To: <20180920073112.7897-1-boris.brezillon@bootlin.com>
-References: <20180920073112.7897-1-boris.brezillon@bootlin.com>
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome
+ Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Yixun Lan <yixun.lan@amlogic.com>, Jian Hu
+ <jian.hu@amlogic.com>, Liang Yang <liang.yang@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v4 0/2] mtd: rawnand: meson: add Amlogic NAND driver support
+Date: Thu, 20 Sep 2018 16:50:47 +0800
+Message-ID: <1537433449-65213-1-git-send-email-jianxin.pan@amlogic.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,103 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some combinations are simply not valid and should be rejected before
-the op is passed to the SPI controller driver.
+  These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 
-Add an spi_mem_check_op() helper and use it in spi_mem_exec_op() and
-spi_mem_supports_op() to make sure the spi-mem operation is valid.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
- drivers/spi/spi-mem.c | 54 +++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 48 insertions(+), 6 deletions(-)
+Changes since v3 at [4]:
+ - remove partition table and some used props from dt-bindings 
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index eb72dba71d83..cc3d425aae56 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -12,6 +12,8 @@
- 
- #include "internals.h"
- 
-+#define SPI_MEM_MAX_BUSWIDTH		4
-+
- /**
-  * spi_controller_dma_map_mem_op_data() - DMA-map the buffer attached to a
-  *					  memory operation
-@@ -149,6 +151,44 @@ static bool spi_mem_default_supports_op(struct spi_mem *mem,
- }
- EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
- 
-+static bool spi_mem_buswidth_is_valid(u8 buswidth)
-+{
-+	if (hweight8(buswidth) > 1 || buswidth > SPI_MEM_MAX_BUSWIDTH)
-+		return false;
-+
-+	return true;
-+}
-+
-+static int spi_mem_check_op(const struct spi_mem_op *op)
-+{
-+	if (!op->cmd.buswidth)
-+		return -EINVAL;
-+
-+	if ((op->addr.nbytes && !op->addr.buswidth) ||
-+	    (op->dummy.nbytes && !op->dummy.buswidth) ||
-+	    (op->data.nbytes && !op->data.buswidth))
-+		return -EINVAL;
-+
-+	if (spi_mem_buswidth_is_valid(op->cmd.buswidth) ||
-+	    spi_mem_buswidth_is_valid(op->addr.buswidth) ||
-+	    spi_mem_buswidth_is_valid(op->dummy.buswidth) ||
-+	    spi_mem_buswidth_is_valid(op->data.buswidth))
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+static bool spi_mem_internal_supports_op(struct spi_mem *mem,
-+					 const struct spi_mem_op *op)
-+{
-+	struct spi_controller *ctlr = mem->spi->controller;
-+
-+	if (ctlr->mem_ops && ctlr->mem_ops->supports_op)
-+		return ctlr->mem_ops->supports_op(mem, op);
-+
-+	return spi_mem_default_supports_op(mem, op);
-+}
-+
- /**
-  * spi_mem_supports_op() - Check if a memory device and the controller it is
-  *			   connected to support a specific memory operation
-@@ -166,12 +206,10 @@ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
-  */
- bool spi_mem_supports_op(struct spi_mem *mem, const struct spi_mem_op *op)
- {
--	struct spi_controller *ctlr = mem->spi->controller;
--
--	if (ctlr->mem_ops && ctlr->mem_ops->supports_op)
--		return ctlr->mem_ops->supports_op(mem, op);
-+	if (spi_mem_check_op(op))
-+		return false;
- 
--	return spi_mem_default_supports_op(mem, op);
-+	return spi_mem_internal_supports_op(mem, op);
- }
- EXPORT_SYMBOL_GPL(spi_mem_supports_op);
- 
-@@ -196,7 +234,11 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
- 	u8 *tmpbuf;
- 	int ret;
- 
--	if (!spi_mem_supports_op(mem, op))
-+	ret = spi_mem_check_op(op);
-+	if (ret)
-+		return ret;
-+
-+	if (!spi_mem_internal_supports_op(mem, op))
- 		return -ENOTSUPP;
- 
- 	if (ctlr->mem_ops) {
+Changes since v2 at [3]:
+ - remove some hardcode time value, like twb
+ - use dev wait R/B instead of nand_soft_waitrdy
+ - implement nfc ecc init by ecc helper
+ - rework nfc buffer init to register the maximun buffer when several chips
+ - free nfc buffer when error and cleanup
+ - add variable to teack all the already assigned CS lines
+ - fix mtd->name use the first cs line only
+ - remove dt "nand-enable-scrambler" and use NAND_NEED_SCRAMBLING instead.
+ - move setuping ECC fileds after the identification phase
+ - use nand_scan() and attach_chip()
+ - check one event to return IRQ_NONE
+ - delete cast when of_device_get_match_data
+ - use nand_controller_init() helper
+ - remove nfc driver complains when calling devm_ioremap_resource
+ - clear irqs before setting up irq handler
+
+Changes since v1 at [1]:
+  - adopt property amlogic,nand-enable-scrambler - thanks Martin
+  - drop nand pins in DT
+  - convert clk access to emmc clkc model 
+  - fix regiser field definition alignment
+  - drop nand-user-mode 
+  - parse cs id from DT
+  - rework n2m, m2n function
+  - explain why insert two "IDLE" command
+  - implement exec_op()
+  - drop meson_nfc_get_nand_chip_dts()
+  - release resource once error occur in meson_nfc_nand_chips_init(), 
+  - call nand_cleanup(nand) once mtd_device_register fail
+
+Items not addressed ( or confirmed ) in this version:
+  - convert to ECC conf helper() 
+  - convert to dma coherent API
+  - how to construct mtd->name
+
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
+[3] https://lkml.kernel.org/r/20180719094612.5833-1-yixun.lan@amlogic.com
+[4] https://lkml.kernel.org/r/1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com/
+
+Liang Yang (2):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
+
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt |   60 +
+ drivers/mtd/nand/raw/Kconfig                       |   10 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/meson_nand.c                  | 1372 ++++++++++++++++++++
+ 4 files changed, 1443 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
+
 -- 
-2.14.1
+1.9.1
