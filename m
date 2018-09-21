@@ -1,16 +1,21 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
+Received: from metis.ext.pengutronix.de ([2001:67c:670:201:290:27ff:fe1d:cc33])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3Hod-0005jz-Te
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 09:33:37 +0000
-From: Richard Weinberger <richard@nod.at>
-To: gregkh@linuxfoundation.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] UBIFS fixes for 4.19-rc4
-Date: Fri, 21 Sep 2018 11:33:15 +0200
-Message-ID: <3383200.5o9oegka29@blindfold>
+ id 1g3Hs5-0007i7-Lw
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 09:37:11 +0000
+From: Ahmad Fatoum <a.fatoum@pengutronix.de>
+To: Han Xu <han.xu@nxp.com>,
+	Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ kernel@pengutronix.de, Ahmad Fatoum <a.fatoum@pengutronix.de>,
+ stable@vger.kernel.org
+Subject: [PATCH] mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
+Date: Fri, 21 Sep 2018 11:32:53 +0200
+Message-Id: <20180921093252.9115-1-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greg,
+fsl_qspi_get_seqid() may return -EINVAL, but fsl_qspi_init_ahb_read()
+doesn't check for error codes with the result that -EINVAL could find
+itself signalled over the bus.
 
-The following changes since commit ae596de1a0c8c2c924dc99d23c026259372ab234:
+In conjunction with the LS1046A SoC's A-009283 errata
+("Illegal accesses to SPI flash memory can result in a system hang")
+this illegal access to SPI flash memory results in a system hang
+if userspace attempts reading later on.
 
-  Compiler Attributes: naked can be shared (2018-09-20 15:23:58 +0200)
+Avoid this by always checking fsl_qspi_get_seqid()'s return value
+and bail out otherwise.
 
-are available in the Git repository at:
+Cc: stable@vger.kernel.org
+Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-  git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc4
-
-for you to fetch changes up to f061c1cc404a618858a77aea233fde0aeaad2f2d:
-
-  Revert "ubifs: xattr: Don't operate on deleted inodes" (2018-09-20 21:37:41 +0200)
-
-----------------------------------------------------------------
-This pull request contains fixes for UBIFS:
-
-- A wrong UBIFS assertion in mount code
-- Fix for a NULL pointer deref in mount code
-- Revert of a bad fix for xattrs
-
-----------------------------------------------------------------
-Richard Weinberger (2):
-      ubifs: Check for name being NULL while mounting
-      Revert "ubifs: xattr: Don't operate on deleted inodes"
-
-Sascha Hauer (1):
-      ubifs: drop false positive assertion
-
- fs/ubifs/super.c |  7 ++++++-
- fs/ubifs/xattr.c | 24 ------------------------
- 2 files changed, 6 insertions(+), 25 deletions(-)
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 7d9620c7ff6c..1bb42e40c38b 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -543,6 +543,9 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
+ 
+ 	/* trigger the LUT now */
+ 	seqid = fsl_qspi_get_seqid(q, cmd);
++	if (seqid < 0)
++		return seqid;
++
+ 	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
+ 			base + QUADSPI_IPCR);
+ 
+@@ -671,7 +674,7 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+  * causes the controller to clear the buffer, and use the sequence pointed
+  * by the QUADSPI_BFGENCR[SEQID] to initiate a read from the flash.
+  */
+-static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
++static int fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+ {
+ 	void __iomem *base = q->iobase;
+ 	int seqid;
+@@ -696,8 +699,12 @@ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+ 
+ 	/* Set the default lut sequence for AHB Read. */
+ 	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
++	if (seqid < 0)
++		return seqid;
++
+ 	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+ 		q->iobase + QUADSPI_BFGENCR);
++	return 0;
+ }
+ 
+ /* This function was used to prepare and enable QSPI clock */
+@@ -805,9 +812,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+ 	fsl_qspi_init_lut(q);
+ 
+ 	/* Init for AHB read */
+-	fsl_qspi_init_ahb_read(q);
+-
+-	return 0;
++	return fsl_qspi_init_ahb_read(q);
+ }
+ 
+ static const struct of_device_id fsl_qspi_dt_ids[] = {
+-- 
+2.19.0
