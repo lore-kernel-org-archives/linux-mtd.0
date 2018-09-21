@@ -1,9 +1,9 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3Fpb-0005MQ-Ax
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 07:26:29 +0000
+ id 1g3GHZ-0004s3-H2
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 07:55:23 +0000
 Subject: Patch "mtd/maps: fix solutionengine.c printk format warnings" has
- been added to the 3.18-stable tree
+ been added to the 4.9-stable tree
 To: alexander.levin@microsoft.com, boris.brezillon@bootlin.com,
  computersforpeace@gmail.com, dalias@libc.org, dwmw2@infradead.org,
  gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
@@ -11,8 +11,8 @@ To: alexander.levin@microsoft.com, boris.brezillon@bootlin.com,
  sergei.shtylyov@cogentembedded.com, ysato@users.sourceforge.jp
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Fri, 21 Sep 2018 09:25:16 +0200
-Message-ID: <153751471613182@kroah.com>
+Date: Fri, 21 Sep 2018 09:45:39 +0200
+Message-ID: <15375159391144@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -30,18 +30,18 @@ This is a note to let you know that I've just added the patch titled
 
     mtd/maps: fix solutionengine.c printk format warnings
 
-to the 3.18-stable tree which can be found at:
+to the 4.9-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
-and it can be found in the queue-3.18 subdirectory.
+and it can be found in the queue-4.9 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
->From foo@baz Fri Sep 21 09:23:07 CEST 2018
+>From foo@baz Fri Sep 21 09:36:02 CEST 2018
 From: Randy Dunlap <rdunlap@infradead.org>
 Date: Tue, 24 Jul 2018 11:29:01 -0700
 Subject: mtd/maps: fix solutionengine.c printk format warnings
@@ -105,8 +105,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from rdunlap@infradead.org are
 
-queue-3.18/scripts-modpost-check-memory-allocation-results.patch
-queue-3.18/fbdev-via-fix-defined-but-not-used-warning.patch
-queue-3.18/platform-x86-toshiba_acpi-fix-defined-but-not-used-build-warnings.patch
-queue-3.18/mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
-queue-3.18/kbuild-make-missing-depmod-a-warning-instead-of-an-error.patch
+queue-4.9/fbdev-via-fix-defined-but-not-used-warning.patch
+queue-4.9/platform-x86-toshiba_acpi-fix-defined-but-not-used-build-warnings.patch
+queue-4.9/mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
