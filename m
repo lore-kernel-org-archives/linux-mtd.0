@@ -1,19 +1,22 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from mail-pg1-x542.google.com ([2607:f8b0:4864:20::542])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3M6a-0004xW-Mu
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 14:08:46 +0000
-Date: Fri, 21 Sep 2018 16:08:10 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] UBIFS fixes for 4.19-rc4
-Message-ID: <20180921140810.GA15210@kroah.com>
-References: <3383200.5o9oegka29@blindfold> <20180921135342.GA13900@kroah.com>
- <1614017.BCjLPTCWnn@blindfold>
+ id 1g3PEW-0003m5-H2
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 17:28:50 +0000
+Received: by mail-pg1-x542.google.com with SMTP id q19-v6so5490534pgn.10
+ for <linux-mtd@lists.infradead.org>; Fri, 21 Sep 2018 10:28:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614017.BCjLPTCWnn@blindfold>
+References: <20180920233024.28534-1-natechancellor@gmail.com>
+In-Reply-To: <20180920233024.28534-1-natechancellor@gmail.com>
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Fri, 21 Sep 2018 10:28:22 -0700
+Message-ID: <CAKwvOd=V4n9MXDn3+gX7iQtoCBNEcn3CSueg++QvOMMzD4VDDg@mail.gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: Use proper enum for flctl_dma_fifo0_transfer
+To: Nathan Chancellor <natechancellor@gmail.com>
+Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
+ David Woodhouse <dwmw2@infradead.org>, computersforpeace@gmail.com,
+ marek.vasut@gmail.com,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 21, 2018 at 04:01:33PM +0200, Richard Weinberger wrote:
-> Am Freitag, 21. September 2018, 15:53:42 CEST schrieb Greg KH:
-> > On Fri, Sep 21, 2018 at 11:33:15AM +0200, Richard Weinberger wrote:
-> > > Greg,
-> > > 
-> > > The following changes since commit ae596de1a0c8c2c924dc99d23c026259372ab234:
-> > > 
-> > >   Compiler Attributes: naked can be shared (2018-09-20 15:23:58 +0200)
-> > 
-> > Wow, bold move, new patches with less than 24 hours in your tree.  That
-> > means linux-next didn't see them :(
-> > 
-> > > are available in the Git repository at:
-> > > 
-> > >   git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc4
-> > 
-> > Now pulled, but really, don't you think that they should at least go
-> > through 0-day first?  Maybe no one runs ubifs on mainline kernels...
-> 
-> Huh? I checked this morning next-20180921 and saw all patches.
+On Thu, Sep 20, 2018 at 4:31 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> Clang warns when one enumerated type is converted implicitly to another:
+>
+> drivers/mtd/nand/raw/sh_flctl.c:483:46: warning: implicit conversion
+> from enumeration type 'enum dma_transfer_direction' to different
+> enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+>                 flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
+>                 ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+> drivers/mtd/nand/raw/sh_flctl.c:542:46: warning: implicit conversion
+> from enumeration type 'enum dma_transfer_direction' to different
+> enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+>                 flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
+>                 ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+> 2 warnings generated.
+>
+> Use the proper enums from dma_data_direction to satisfy Clang.
+>
+> DMA_MEM_TO_DEV = DMA_TO_DEVICE = 1
+> DMA_DEV_TO_MEM = DMA_FROM_DEVICE = 2
+>
+> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/mtd/nand/raw/sh_flctl.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_flctl.c
+> index c0c0798f268f..4d20d033de7b 100644
+> --- a/drivers/mtd/nand/raw/sh_flctl.c
+> +++ b/drivers/mtd/nand/raw/sh_flctl.c
+> @@ -480,7 +480,7 @@ static void read_fiforeg(struct sh_flctl *flctl, int rlen, int offset)
+>
+>         /* initiate DMA transfer */
+>         if (flctl->chan_fifo0_rx && rlen >= 32 &&
+> -               flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
+> +               flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_FROM_DEVICE) > 0)
 
-Ah, ok, must have snuck in, I assumed that less than 24 hours was pretty
-fast...
+Looks like flctl_dma_fifo0_transfer() expects an `enum
+dma_data_direction dir`, not an `enum dma_transfer_direction` as noted
+by the warning, and luckily the values specified happened to have the
+same value today as you noted.  So this change is no functional
+change, but will prevent changes to either enum from potentially
+breaking this code.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+>                         goto convert;   /* DMA success */
+>
+>         /* do polling transfer */
+> @@ -539,7 +539,7 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, int rlen,
+>
+>         /* initiate DMA transfer */
+>         if (flctl->chan_fifo0_tx && rlen >= 32 &&
+> -               flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
+> +               flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_TO_DEVICE) > 0)
+>                         return; /* DMA success */
+>
+>         /* do polling transfer */
+> --
+> 2.19.0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
