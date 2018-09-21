@@ -1,16 +1,18 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
- linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
- frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v3 0/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Date: Fri, 21 Sep 2018 15:51:58 +0530
-Message-Id: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g3Lsc-0006Uh-GW
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 13:54:02 +0000
+Date: Fri, 21 Sep 2018 15:53:42 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] UBIFS fixes for 4.19-rc4
+Message-ID: <20180921135342.GA13900@kroah.com>
+References: <3383200.5o9oegka29@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3383200.5o9oegka29@blindfold>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-- Add driver for NXP FlexSPI host controller
+On Fri, Sep 21, 2018 at 11:33:15AM +0200, Richard Weinberger wrote:
+> Greg,
+> 
+> The following changes since commit ae596de1a0c8c2c924dc99d23c026259372ab234:
+> 
+>   Compiler Attributes: naked can be shared (2018-09-20 15:23:58 +0200)
 
- FlexSPI is a flexsible SPI host controller [1], Chapter 30 page 1475,
- which supports two SPI channels and up to 4 external devices.
- Each channel supports Single/Dual/Quad/Octal mode data transfer (1/2/4/8 bidirectional data lines)
- i.e. FlexSPI acts as an interface to external devices, maximum 4, each with up to 8
- bidirectional data lines.
+Wow, bold move, new patches with less than 24 hours in your tree.  That
+means linux-next didn't see them :(
 
-- Tested this driver with mtd_debug(Erase/Write/Read) utility and JFFS2
- filesystem mounting and booting on NXP LX2160ARDB[2] and LX2160AQDS targets.
- LX2160ARDB is having two NOR slave device connected on single bus A
- i.e. A0 and A1 (CS0 and CS1).
- LX2160AQDS is having two NOR slave device connected on separate buses
- one flash on A0 and second on B1 i.e. (CS0 and CS3).
- Verified this driver on following SPI NOR flashes:
-   Micron, mt35xu512aba[3], [Read - 1 bit mode]
-   Cypress, s25fl512s, [Read - 1/2/4 bit mode]
+> are available in the Git repository at:
+> 
+>   git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc4
 
- Support for octal flash commands and other Octal data transfer related framework
- changes work is in progress.
+Now pulled, but really, don't you think that they should at least go
+through 0-day first?  Maybe no one runs ubifs on mainline kernels...
 
-[1] https://www.nxp.com/docs/en/reference-manual/IMXRT1050RM.pdf
-[2] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=9721
-[3] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=63445
+thanks,
 
-Yogesh Gaur (5):
-  spi: spi-mem: Add driver for NXP FlexSPI controller
-  dt-bindings: spi: add binding file for NXP FlexSPI controller
-  arm64: dts: lx2160a: add FlexSPI node property
-  arm64: defconfig: enable NXP FlexSPI driver
-  MAINTAINERS: add maintainers for the NXP FlexSPI driver
-
-Changes for v3:
-- Incorporated review comments for
-  patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
-Changes for v2:
-- Incorporated Boris review comments and drop below patches as per the comments.
- - Patch 'spi: add slave device size in spi_device struct'
- - Patch 'spi: add flags for octal I/O data transfer'
-- Incorporated DTS and Binding file review comments of Shawn Guo and Rob Herring.
-
- .../devicetree/bindings/spi/spi-nxp-fspi.txt       |   42 +
- MAINTAINERS                                        |    6 +
- arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts  |   22 +
- arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi     |   12 +
- arch/arm64/configs/defconfig                       |    1 +
- drivers/spi/Kconfig                                |   10 +
- drivers/spi/Makefile                               |    1 +
- drivers/spi/spi-nxp-fspi.c                         | 1231 ++++++++++++++++++++
- 8 files changed, 1324 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
- create mode 100644 drivers/spi/spi-nxp-fspi.c
-
--- 
-2.7.4
+greg k-h
