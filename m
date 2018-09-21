@@ -1,9 +1,9 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3Fv2-0001ys-0a
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 07:32:05 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g3GpI-00011N-AR
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 08:30:14 +0000
 Subject: Patch "mtd/maps: fix solutionengine.c printk format warnings" has
- been added to the 4.4-stable tree
+ been added to the 4.18-stable tree
 To: alexander.levin@microsoft.com, boris.brezillon@bootlin.com,
  computersforpeace@gmail.com, dalias@libc.org, dwmw2@infradead.org,
  gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
@@ -11,8 +11,8 @@ To: alexander.levin@microsoft.com, boris.brezillon@bootlin.com,
  sergei.shtylyov@cogentembedded.com, ysato@users.sourceforge.jp
 Cc: <stable-commits@vger.kernel.org>
 From: <gregkh@linuxfoundation.org>
-Date: Fri, 21 Sep 2018 09:29:04 +0200
-Message-ID: <153751494418489@kroah.com>
+Date: Fri, 21 Sep 2018 10:23:49 +0200
+Message-ID: <1537518229143175@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -30,18 +30,18 @@ This is a note to let you know that I've just added the patch titled
 
     mtd/maps: fix solutionengine.c printk format warnings
 
-to the 4.4-stable tree which can be found at:
+to the 4.18-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
-and it can be found in the queue-4.4 subdirectory.
+and it can be found in the queue-4.18 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
->From foo@baz Fri Sep 21 09:28:34 CEST 2018
+>From foo@baz Fri Sep 21 10:21:24 CEST 2018
 From: Randy Dunlap <rdunlap@infradead.org>
 Date: Tue, 24 Jul 2018 11:29:01 -0700
 Subject: mtd/maps: fix solutionengine.c printk format warnings
@@ -105,6 +105,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from rdunlap@infradead.org are
 
-queue-4.4/fbdev-via-fix-defined-but-not-used-warning.patch
-queue-4.4/platform-x86-toshiba_acpi-fix-defined-but-not-used-build-warnings.patch
-queue-4.4/mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
+queue-4.18/fbdev-via-fix-defined-but-not-used-warning.patch
+queue-4.18/platform-x86-toshiba_acpi-fix-defined-but-not-used-build-warnings.patch
+queue-4.18/mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
