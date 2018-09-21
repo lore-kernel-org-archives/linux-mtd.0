@@ -1,21 +1,16 @@
-Received: from mail.linuxfoundation.org ([140.211.169.12])
+Received: from lithops.sigma-star.at ([195.201.40.130])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3GpI-00011N-AR
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 08:30:14 +0000
-Subject: Patch "mtd/maps: fix solutionengine.c printk format warnings" has
- been added to the 4.18-stable tree
-To: alexander.levin@microsoft.com, boris.brezillon@bootlin.com,
- computersforpeace@gmail.com, dalias@libc.org, dwmw2@infradead.org,
- gregkh@linuxfoundation.org, linux-mtd@lists.infradead.org,
- marek.vasut@gmail.com, rdunlap@infradead.org, richard@nod.at,
- sergei.shtylyov@cogentembedded.com, ysato@users.sourceforge.jp
-Cc: <stable-commits@vger.kernel.org>
-From: <gregkh@linuxfoundation.org>
-Date: Fri, 21 Sep 2018 10:23:49 +0200
-Message-ID: <1537518229143175@kroah.com>
+ id 1g3Hod-0005jz-Te
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 09:33:37 +0000
+From: Richard Weinberger <richard@nod.at>
+To: gregkh@linuxfoundation.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] UBIFS fixes for 4.19-rc4
+Date: Fri, 21 Sep 2018 11:33:15 +0200
+Message-ID: <3383200.5o9oegka29@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,86 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Greg,
 
-This is a note to let you know that I've just added the patch titled
+The following changes since commit ae596de1a0c8c2c924dc99d23c026259372ab234:
 
-    mtd/maps: fix solutionengine.c printk format warnings
+  Compiler Attributes: naked can be shared (2018-09-20 15:23:58 +0200)
 
-to the 4.18-stable tree which can be found at:
-    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
+are available in the Git repository at:
 
-The filename of the patch is:
-     mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
-and it can be found in the queue-4.18 subdirectory.
+  git://git.infradead.org/linux-ubifs.git tags/upstream-4.19-rc4
 
-If you, or anyone else, feels it should not be added to the stable tree,
-please let <stable@vger.kernel.org> know about it.
+for you to fetch changes up to f061c1cc404a618858a77aea233fde0aeaad2f2d:
 
+  Revert "ubifs: xattr: Don't operate on deleted inodes" (2018-09-20 21:37:41 +0200)
 
->From foo@baz Fri Sep 21 10:21:24 CEST 2018
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Tue, 24 Jul 2018 11:29:01 -0700
-Subject: mtd/maps: fix solutionengine.c printk format warnings
+----------------------------------------------------------------
+This pull request contains fixes for UBIFS:
 
-From: Randy Dunlap <rdunlap@infradead.org>
+- A wrong UBIFS assertion in mount code
+- Fix for a NULL pointer deref in mount code
+- Revert of a bad fix for xattrs
 
-[ Upstream commit 1d25e3eeed1d987404e2d2e451eebac8c15cecc1 ]
+----------------------------------------------------------------
+Richard Weinberger (2):
+      ubifs: Check for name being NULL while mounting
+      Revert "ubifs: xattr: Don't operate on deleted inodes"
 
-Fix 2 printk format warnings (this driver is currently only used by
-arch/sh/) by using "%pap" instead of "%lx".
+Sascha Hauer (1):
+      ubifs: drop false positive assertion
 
-Fixes these build warnings:
-
-../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
-                                                  ~~~~^
-                                                  %08x
-../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
-../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined here
-  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
-                                                                    ~~~~^
-                                                                    %08x
-
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>
-Cc: Richard Weinberger <richard@nod.at>
-Cc: linux-mtd@lists.infradead.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/mtd/maps/solutionengine.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- a/drivers/mtd/maps/solutionengine.c
-+++ b/drivers/mtd/maps/solutionengine.c
-@@ -59,9 +59,9 @@ static int __init init_soleng_maps(void)
- 			return -ENXIO;
- 		}
- 	}
--	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
--	       soleng_flash_map.phys & 0x1fffffff,
--	       soleng_eprom_map.phys & 0x1fffffff);
-+	printk(KERN_NOTICE "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
-+	       &soleng_flash_map.phys,
-+	       &soleng_eprom_map.phys);
- 	flash_mtd->owner = THIS_MODULE;
- 
- 	eprom_mtd = do_map_probe("map_rom", &soleng_eprom_map);
-
-
-Patches currently in stable-queue which might be from rdunlap@infradead.org are
-
-queue-4.18/fbdev-via-fix-defined-but-not-used-warning.patch
-queue-4.18/platform-x86-toshiba_acpi-fix-defined-but-not-used-build-warnings.patch
-queue-4.18/mtd-maps-fix-solutionengine.c-printk-format-warnings.patch
+ fs/ubifs/super.c |  7 ++++++-
+ fs/ubifs/xattr.c | 24 ------------------------
+ 2 files changed, 6 insertions(+), 25 deletions(-)
