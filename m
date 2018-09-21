@@ -1,23 +1,27 @@
-Received: from mail-qt1-x844.google.com ([2607:f8b0:4864:20::844])
+Received: from mail-qt1-x843.google.com ([2607:f8b0:4864:20::843])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g3AYa-0006pB-33
- for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 01:48:33 +0000
-Received: by mail-qt1-x844.google.com with SMTP id x23-v6so316010qtr.1
- for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2018 18:48:21 -0700 (PDT)
+ id 1g3BU7-0002zF-Ov
+ for linux-mtd@lists.infradead.org; Fri, 21 Sep 2018 02:48:01 +0000
+Received: by mail-qt1-x843.google.com with SMTP id t39-v6so409772qtc.8
+ for <linux-mtd@lists.infradead.org>; Thu, 20 Sep 2018 19:47:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20180916215735.31393-1-richard@nod.at>
- <CACPK8Xd_fNNEYbtY6HEnB6kOnqTWBC5stPVUbc2gMHpne4J6jQ@mail.gmail.com>
- <2090091.R1QOzN4fXt@blindfold>
-In-Reply-To: <2090091.R1QOzN4fXt@blindfold>
+References: <20180622121417.6762-1-clg@kaod.org>
+ <20180622121417.6762-2-clg@kaod.org>
+ <CACPK8Xf-XfxMVMewC5T6u1XzDX3idqk+FeGRLMC+xrKDqtWggg@mail.gmail.com>
+In-Reply-To: <CACPK8Xf-XfxMVMewC5T6u1XzDX3idqk+FeGRLMC+xrKDqtWggg@mail.gmail.com>
 From: Joel Stanley <joel@jms.id.au>
-Date: Fri, 21 Sep 2018 11:12:25 +0930
-Message-ID: <CACPK8XfnV=MOLqLL3UK7FP+oRCt1NLLgB-OdNEGWXwyFWVu_+g@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ubifs: xattr: Don't operate on deleted inodes"
-To: Richard Weinberger <richard@nod.at>
-Cc: Greg KH <gregkh@linuxfoundation.org>, linux-mtd@lists.infradead.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- koen.vandeputte@ncentric.com, Eddie James <eajames.ibm@gmail.com>
+Date: Fri, 21 Sep 2018 12:09:57 +0930
+Message-ID: <CACPK8XePSehmuYTtJFYuNqUz_CQ4cQ6s4gdZ2rKNKUpO46yZKQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] mtd: spi-nor: aspeed: use command mode for reads
+To: Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+ =?UTF-8?Q?C=C3=A9dric_Le_Goater?= <clg@kaod.org>,
+ Boris Brezillon <boris.brezillon@free-electrons.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-aspeed@lists.ozlabs.org, Andrew Jeffery <andrew@aj.id.au>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Sep 2018 at 16:40, Richard Weinberger <richard@nod.at> wrote:
->
-> Am Donnerstag, 20. September 2018, 04:30:41 CEST schrieb Joel Stanley:
-> > On Mon, 17 Sep 2018 at 07:30, Richard Weinberger <richard@nod.at> wrote:
-> > >
-> > > This reverts commit 11a6fc3dc743e22fb50f2196ec55bee5140d3c52.
-> > > UBIFS wants to assert that xattr operations are only issued on files
-> > > with positive link count. The said patch made this operations return
-> > > -ENOENT for unlinked files such that the asserts will no longer trigger.
-> > > This was wrong since xattr operations are perfectly fine on unlinked
-> > > files.
-> > > Instead the assertions need to be fixed/removed.
-> > >
-> > > Cc: <stable@vger.kernel.org>
-> > > Fixes: 11a6fc3dc743 ("ubifs: xattr: Don't operate on deleted inodes")
-> > > Reported-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-> > > Signed-off-by: Richard Weinberger <richard@nod.at>
-> >
-> > The bad commit 11a6fc3dc743 was included in 4.18.7, and broke our
-> > systems which use overlayfs on top of ubifs.
-> >
-> > This patch didn't apply cleanly for me to 4.18.8 (an encoding issue?),
-> > but I did a revert of the offending commit which did the trick.
-> >
-> > Tested-by: Joel Stanley <joel@jms.id.au>
->
-> Thanks a lot for testing and sorry for the breakage. :-(
+Hello Mark,
 
-No worries. How do you plan to get this fix in? It would be good to
-get it in master asap, so we can get it backported in the next wave of
-stable releases.
+On Mon, 23 Jul 2018 at 21:42, Joel Stanley <joel@jms.id.au> wrote:
+>
+> On 22 June 2018 at 21:44, C=C3=A9dric Le Goater <clg@kaod.org> wrote:
+> > When reading flash contents, try to use the "command mode" if the AHB
+> > window configured for the flash module is big enough. Else, just fall
+> > back to the "user mode" to perform the read.
+> >
+> > Signed-off-by: C=C3=A9dric Le Goater <clg@kaod.org>
+>
+> Reviewed-by: Joel Stanley <joel@jms.id.au>
+
+Are you waiting on anything from Cedric or myself for this series. If
+not, can we please get them queued for 4.20?
 
 Cheers,
 
