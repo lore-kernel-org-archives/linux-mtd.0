@@ -1,36 +1,22 @@
-Received: from conssluserg-01.nifty.com ([210.131.2.80])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g41nn-0003NP-O1
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 10:39:49 +0000
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com
- [209.85.222.41]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id w8NAdLfB015679
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2018 19:39:22 +0900
-Received: by mail-ua1-f41.google.com with SMTP id i4-v6so7334235uak.0
- for <linux-mtd@lists.infradead.org>; Sun, 23 Sep 2018 03:39:22 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20180922101116.7c9b4767@bbrezillon>
-References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
- <20180907160822.319047c8@bbrezillon>
- <CAK7LNAQJOD3mxwbiOSn5wpDsU23DhZcx9QB_ufFZB8LUnh1KdQ@mail.gmail.com>
- <20180907165348.3e0027ee@bbrezillon>
- <CAK7LNAT3ZjdW3ENekNJq=26SAh=tXdirmhHyA9qDGnwpXQ6Arg@mail.gmail.com>
- <20180922094111.1c2969e8@xps13> <20180922101116.7c9b4767@bbrezillon>
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Date: Sun, 23 Sep 2018 06:38:40 -0400
-Message-ID: <CAK7LNAR0=1zAWkf9c4mYgLrJNmKR=8=mi6idWaaeuN4uHQVjug@mail.gmail.com>
-Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify skipped
- bytes in OOB
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g42aw-0003bl-Uz
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 11:30:36 +0000
+Date: Sun, 23 Sep 2018 13:30:19 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- Mark Rutland <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>,
- Dinh Nguyen <dinguyen@kernel.org>, Richard Weinberger <richard@nod.at>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- David Woodhouse <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Linus
+ Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] mtd: rawnand: Allow selection of ECC byte ordering at
+ runtime
+Message-ID: <20180923133019.1c6c9cbc@xps13>
+In-Reply-To: <20180904142328.26577-1-boris.brezillon@bootlin.com>
+References: <20180904142328.26577-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,121 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2018-09-22 4:11 GMT-04:00 Boris Brezillon <boris.brezillon@bootlin.com>:
-> On Sat, 22 Sep 2018 09:41:11 +0200
-> Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
->> Hi Masahiro,
->>
->> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Sat, 8 Sep
->> 2018 01:10:25 +0900:
->>
->> > Hi Boris,
->> >
->> > 2018-09-07 23:53 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->> > > On Fri, 7 Sep 2018 23:42:53 +0900
->> > > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->> > >
->> > >> Hi Boris,
->> > >>
->> > >> 2018-09-07 23:08 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.com>:
->> > >> > Hi Masahiro,
->> > >> >
->> > >> > On Fri,  7 Sep 2018 19:56:23 +0900
->> > >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
->> > >> >
->> > >> >> NAND devices need additional data area (OOB) for error correction,
->> > >> >> but it is also used for Bad Block Marker (BBM).  In many cases, the
->> > >> >> first byte in OOB is used for BBM, but the location actually depends
->> > >> >> on chip vendors.  The NAND controller should preserve the precious
->> > >> >> BBM to keep track of bad blocks.
->> > >> >>
->> > >> >> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
->> > >> >> the number of bytes to skip from the start of OOB.  The ECC engine
->> > >> >> will automatically skip the specified number of bytes when it gets
->> > >> >> access to OOB area.
->> > >> >>
->> > >> >> The same value for SPARE_AREA_SKIP_BYTES should be used between
->> > >> >> firmware and the operating system if you intend to use the NAND
->> > >> >> device across the control hand-off.
->> > >> >>
->> > >> >> In fact, the current denali.c code expects firmware to have already
->> > >> >> set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
->> > >> >>
->> > >> >> If no firmware (or bootloader) has initialized the controller, the
->> > >> >> register value is zero, which is the default after power-on-reset.
->> > >> >>
->> > >> >> In other words, the Linux driver cannot initialize the controller
->> > >> >> by itself.  You cannot support the reset control either because
->> > >> >> resetting the controller will get register values lost.
->> > >> >>
->> > >> >> This commit adds a way to specify it via DT.  If the property
->> > >> >> "denali,oob-skip-bytes" exists, the value will be set to the register.
->> > >> >
->> > >> > Hm, do we really need to make this config customizable? I mean, either
->> > >> > you have a large-page NAND (page > 512 bytes) and the 2 first bytes
->> > >> > must be reserved for the BBM or you have a small-page NAND and the BBM
->> > >> > is at position 4 and 5. Are you sure people configure that differently?
->> > >> > Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2?
->> > >>
->> > >>
->> > >> As I said in the patch description,
->> > >> I need to use the same SPARE_AREA_SKIP_BYTES value
->> > >> across firmware, boot-loader, Linux, and whatever.
->> > >>
->> > >> I want to set the value to 8 for my platform
->> > >> because the on-chip boot ROM expects 8.
->> > >> I cannot change it since the boot ROM is hard-wired.
->> > >>
->> > >>
->> > >> The boot ROM skips 8 bytes in OOB
->> > >> when it loads images from the on-board NAND device.
->> > >>
->> > >> So, when I update the image from U-Boot or Linux,
->> > >> I need to make sure to set the register to 8.
->> > >>
->> > >> If I update the image with a different value,
->> > >> the Boot ROM fails to boot.
->> > >>
->> > >>
->> > >>
->> > >> When the system has booted from NAND,
->> > >> the register is already set to 8.  It works.
->> > >>
->> > >> However, when the system has booted from eMMC,
->> > >> the register is not initialized by anyone.
->> > >> I am searching for a way to set the register to 8
->> > >> in this case.
->
-> Maybe there's a solution which does not involve attaching a per-compat
-> value or adding a DT prop. If the FW/bootloader has not initialized this
-> register the value is 0, right? Why not testing the value and
-> assigning it to the default (8) if it's not been initialized by the
-> bootloader. That shouldn't break existing platforms since I don't think
-> 0 is a valid value anyway.
->
->         denali->oob_skip_bytes = ioread32(denali->reg +
->                                           SPARE_AREA_SKIP_BYTES);
->         if (!denali->oob_skip_bytes) {
->                 denali->oob_skip_bytes = DEFAULT_OOB_SKIP_BYTES;
->                 iowrite32(denali->oob_skip_bytes,
->                           denali->reg + SPARE_AREA_SKIP_BYTES);
->         }
->
+Hi Boris,
 
+Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  4 Sep 2018
+16:23:28 +0200:
 
-I prefer per-compatible values to a fixed default.
+> Currently, the selection of ECC byte ordering for software hamming is
+> done at compilation time, which doesn't make sense when ECC byte
+> calculation is done in hardware and byte ordering is forced by the
+> hardware engine.
+> In this case, only the correction is done and software and we want to
 
+                                            ^ in
 
-I'd like to set the register to 8 unless set otherwise
-because the boot ROM on my platform (Socionext UniPhier SoCs)
-uses that value.
+> force the byte-ordering no matter the value of CONFIG_MTD_NAND_ECC_SMC.
+>=20
+> This is typically the case for the FSMC (Smart Media ordering), TMIO and
+> TXX9NDFMC (regular byte ordering) blocks.
+>=20
+> For all other use cases (pure software implementation, SM FTL and
+> nandecctest), we keep selecting the byte ordering based on the
+> CONFIG_MTD_NAND_ECC_SMC value. It might not be ideal for SM FTL (I'd
+> expect Smart Media ordering to be employed by the Smart Media FTL), but
+> this option doesn't seem to be enabled in the existing _defconfig, so
+> I can't tell setting sm_order to true is the right choice.
+>=20
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
 
-Other platforms like Altera SOCFPGA may want to use a different value
-(at least, I do not know what is the preferred value).
+Applied to nand/next with the above typo corrected.
 
-
-
--- 
-Best Regards
-Masahiro Yamada
+Thanks,
+Miqu=C3=A8l
