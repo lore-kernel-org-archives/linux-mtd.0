@@ -1,19 +1,21 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g42aw-0003bl-Uz
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 11:30:36 +0000
-Date: Sun, 23 Sep 2018 13:30:19 +0200
+ id 1g42fI-000440-Rn
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 11:35:06 +0000
+Date: Sun, 23 Sep 2018 13:34:51 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
- David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Linus
- Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] mtd: rawnand: Allow selection of ECC byte ordering at
- runtime
-Message-ID: <20180923133019.1c6c9cbc@xps13>
-In-Reply-To: <20180904142328.26577-1-boris.brezillon@bootlin.com>
-References: <20180904142328.26577-1-boris.brezillon@bootlin.com>
+To: <christophe.kerello@st.com>
+Cc: <boris.brezillon@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
+ <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
+ <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+ <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND flash
+ controller driver
+Message-ID: <20180923133451.78c95cef@xps13>
+In-Reply-To: <1537199260-7280-3-git-send-email-christophe.kerello@st.com>
+References: <1537199260-7280-1-git-send-email-christophe.kerello@st.com>
+ <1537199260-7280-3-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,35 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+Hi Christophe,
 
-Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue,  4 Sep 2018
-16:23:28 +0200:
+<christophe.kerello@st.com> wrote on Mon, 17 Sep 2018 17:47:39 +0200:
 
-> Currently, the selection of ECC byte ordering for software hamming is
-> done at compilation time, which doesn't make sense when ECC byte
-> calculation is done in hardware and byte ordering is forced by the
-> hardware engine.
-> In this case, only the correction is done and software and we want to
-
-                                            ^ in
-
-> force the byte-ordering no matter the value of CONFIG_MTD_NAND_ECC_SMC.
+> From: Christophe Kerello <christophe.kerello@st.com>
 >=20
-> This is typically the case for the FSMC (Smart Media ordering), TMIO and
-> TXX9NDFMC (regular byte ordering) blocks.
+> The driver adds the support for the STMicroelectronics FMC2 NAND
+> Controller found on STM32MP SOCs.
 >=20
-> For all other use cases (pure software implementation, SM FTL and
-> nandecctest), we keep selecting the byte ordering based on the
-> CONFIG_MTD_NAND_ECC_SMC value. It might not be ideal for SM FTL (I'd
-> expect Smart Media ordering to be employed by the Smart Media FTL), but
-> this option doesn't seem to be enabled in the existing _defconfig, so
-> I can't tell setting sm_order to true is the right choice.
+> This patch is based on FMC2 command sequencer.
+> The purpose of the command sequencer is to facilitate the programming
+> and the reading of NAND flash pages with the ECC and to free the CPU
+> of sequencing tasks.
+> It requires one DMA channel for write and two DMA channels for read
+> operations.
 >=20
-> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Only NAND_ECC_HW mode is actually supported.
+> The driver supports a maximum 8k page size.
+> The following ECC strength and step size are currently supported:
+>  - nand-ecc-strength =3D <8>, nand-ecc-step-size =3D <512> (BCH8)
+>  - nand-ecc-strength =3D <4>, nand-ecc-step-size =3D <512> (BCH4)
+>  - nand-ecc-strength =3D <1>, nand-ecc-step-size =3D <512> (Extended ecc
+>    based on HAMMING)
+>=20
+> This patch has been tested on Micron MT29F8G08ABACAH4 and
+> MT29F8G16ABACAH4
+>=20
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
 > ---
 
-Applied to nand/next with the above typo corrected.
+
+[...]
+
+> +/* NAND callbacks setup */
+> +static void stm32_fmc2_nand_callbacks_setup(struct stm32_fmc2 *fmc2)
+> +{
+> +	struct nand_chip *chip =3D &fmc2->chip;
+> +
+> +	/* Specific callbacks to read/write a page */
+> +	chip->ecc.correct =3D stm32_fmc2_ham_correct;
+> +	chip->ecc.write_page =3D stm32_fmc2_sequencer_write_page;
+> +	chip->ecc.read_page =3D stm32_fmc2_sequencer_read_page;
+> +	chip->ecc.write_page_raw =3D stm32_fmc2_sequencer_write_page_raw;
+> +	chip->ecc.read_page_raw =3D stm32_fmc2_sequencer_read_page_raw;
+
+Are you sure all the tests in mtd-utils are successful?
+
 
 Thanks,
 Miqu=C3=A8l
