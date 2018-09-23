@@ -1,19 +1,29 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g42hV-000647-Hz
- for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 11:37:34 +0000
-Date: Sun, 23 Sep 2018 13:37:08 +0200
+ id 1g42ol-0000Q2-QL
+ for linux-mtd@lists.infradead.org; Sun, 23 Sep 2018 11:44:54 +0000
+Date: Sun, 23 Sep 2018 13:44:37 +0200
 From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Nathan Chancellor <natechancellor@gmail.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, Nick
- Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] mtd: rawnand: Use proper enum for flctl_dma_fifo0_transfer
-Message-ID: <20180923133708.58171117@xps13>
-In-Reply-To: <20180920233024.28534-1-natechancellor@gmail.com>
-References: <20180920233024.28534-1-natechancellor@gmail.com>
+To: Masahiro Yamada <yamada.masahiro@socionext.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, Mark Rutland
+ <mark.rutland@arm.com>, DTML <devicetree@vger.kernel.org>, Dinh Nguyen
+ <dinguyen@kernel.org>, Richard Weinberger <richard@nod.at>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Marek Vasut <marek.vasut@gmail.com>
+Subject: Re: [PATCH] mtd: rawnand: denali: add DT property to specify
+ skipped bytes in OOB
+Message-ID: <20180923134437.283b5dda@xps13>
+In-Reply-To: <CAK7LNAR0=1zAWkf9c4mYgLrJNmKR=8=mi6idWaaeuN4uHQVjug@mail.gmail.com>
+References: <1536317783-4942-1-git-send-email-yamada.masahiro@socionext.com>
+ <20180907160822.319047c8@bbrezillon>
+ <CAK7LNAQJOD3mxwbiOSn5wpDsU23DhZcx9QB_ufFZB8LUnh1KdQ@mail.gmail.com>
+ <20180907165348.3e0027ee@bbrezillon>
+ <CAK7LNAT3ZjdW3ENekNJq=26SAh=tXdirmhHyA9qDGnwpXQ6Arg@mail.gmail.com>
+ <20180922094111.1c2969e8@xps13>
+ <20180922101116.7c9b4767@bbrezillon>
+ <CAK7LNAR0=1zAWkf9c4mYgLrJNmKR=8=mi6idWaaeuN4uHQVjug@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,68 +36,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nathan,
+Hi Masahiro,
 
-Nathan Chancellor <natechancellor@gmail.com> wrote on Thu, 20 Sep 2018
-16:30:25 -0700:
+Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Sun, 23 Sep
+2018 06:38:40 -0400:
 
-> Clang warns when one enumerated type is converted implicitly to another:
+> 2018-09-22 4:11 GMT-04:00 Boris Brezillon <boris.brezillon@bootlin.com>:
+> > On Sat, 22 Sep 2018 09:41:11 +0200
+> > Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > =20
+> >> Hi Masahiro,
+> >>
+> >> Masahiro Yamada <yamada.masahiro@socionext.com> wrote on Sat, 8 Sep
+> >> 2018 01:10:25 +0900:
+> >> =20
+> >> > Hi Boris,
+> >> >
+> >> > 2018-09-07 23:53 GMT+09:00 Boris Brezillon <boris.brezillon@bootlin.=
+com>: =20
+> >> > > On Fri, 7 Sep 2018 23:42:53 +0900
+> >> > > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >> > > =20
+> >> > >> Hi Boris,
+> >> > >>
+> >> > >> 2018-09-07 23:08 GMT+09:00 Boris Brezillon <boris.brezillon@bootl=
+in.com>: =20
+> >> > >> > Hi Masahiro,
+> >> > >> >
+> >> > >> > On Fri,  7 Sep 2018 19:56:23 +0900
+> >> > >> > Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+> >> > >> > =20
+> >> > >> >> NAND devices need additional data area (OOB) for error correct=
+ion,
+> >> > >> >> but it is also used for Bad Block Marker (BBM).  In many cases=
+, the
+> >> > >> >> first byte in OOB is used for BBM, but the location actually d=
+epends
+> >> > >> >> on chip vendors.  The NAND controller should preserve the prec=
+ious
+> >> > >> >> BBM to keep track of bad blocks.
+> >> > >> >>
+> >> > >> >> In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to sp=
+ecify
+> >> > >> >> the number of bytes to skip from the start of OOB.  The ECC en=
+gine
+> >> > >> >> will automatically skip the specified number of bytes when it =
+gets
+> >> > >> >> access to OOB area.
+> >> > >> >>
+> >> > >> >> The same value for SPARE_AREA_SKIP_BYTES should be used between
+> >> > >> >> firmware and the operating system if you intend to use the NAND
+> >> > >> >> device across the control hand-off.
+> >> > >> >>
+> >> > >> >> In fact, the current denali.c code expects firmware to have al=
+ready
+> >> > >> >> set the SPARE_AREA_SKIP_BYTES register, then reads the value o=
+ut.
+> >> > >> >>
+> >> > >> >> If no firmware (or bootloader) has initialized the controller,=
+ the
+> >> > >> >> register value is zero, which is the default after power-on-re=
+set.
+> >> > >> >>
+> >> > >> >> In other words, the Linux driver cannot initialize the control=
+ler
+> >> > >> >> by itself.  You cannot support the reset control either because
+> >> > >> >> resetting the controller will get register values lost.
+> >> > >> >>
+> >> > >> >> This commit adds a way to specify it via DT.  If the property
+> >> > >> >> "denali,oob-skip-bytes" exists, the value will be set to the r=
+egister. =20
+> >> > >> >
+> >> > >> > Hm, do we really need to make this config customizable? I mean,=
+ either
+> >> > >> > you have a large-page NAND (page > 512 bytes) and the 2 first b=
+ytes
+> >> > >> > must be reserved for the BBM or you have a small-page NAND and =
+the BBM
+> >> > >> > is at position 4 and 5. Are you sure people configure that diff=
+erently?
+> >> > >> > Don't you always have SPARE_AREA_SKIP_BYTES set to 6 or 2? =20
+> >> > >>
+> >> > >>
+> >> > >> As I said in the patch description,
+> >> > >> I need to use the same SPARE_AREA_SKIP_BYTES value
+> >> > >> across firmware, boot-loader, Linux, and whatever.
+> >> > >>
+> >> > >> I want to set the value to 8 for my platform
+> >> > >> because the on-chip boot ROM expects 8.
+> >> > >> I cannot change it since the boot ROM is hard-wired.
+> >> > >>
+> >> > >>
+> >> > >> The boot ROM skips 8 bytes in OOB
+> >> > >> when it loads images from the on-board NAND device.
+> >> > >>
+> >> > >> So, when I update the image from U-Boot or Linux,
+> >> > >> I need to make sure to set the register to 8.
+> >> > >>
+> >> > >> If I update the image with a different value,
+> >> > >> the Boot ROM fails to boot.
+> >> > >>
+> >> > >>
+> >> > >>
+> >> > >> When the system has booted from NAND,
+> >> > >> the register is already set to 8.  It works.
+> >> > >>
+> >> > >> However, when the system has booted from eMMC,
+> >> > >> the register is not initialized by anyone.
+> >> > >> I am searching for a way to set the register to 8
+> >> > >> in this case. =20
+> >
+> > Maybe there's a solution which does not involve attaching a per-compat
+> > value or adding a DT prop. If the FW/bootloader has not initialized this
+> > register the value is 0, right? Why not testing the value and
+> > assigning it to the default (8) if it's not been initialized by the
+> > bootloader. That shouldn't break existing platforms since I don't think
+> > 0 is a valid value anyway.
+> >
+> >         denali->oob_skip_bytes =3D ioread32(denali->reg +
+> >                                           SPARE_AREA_SKIP_BYTES);
+> >         if (!denali->oob_skip_bytes) {
+> >                 denali->oob_skip_bytes =3D DEFAULT_OOB_SKIP_BYTES;
+> >                 iowrite32(denali->oob_skip_bytes,
+> >                           denali->reg + SPARE_AREA_SKIP_BYTES);
+> >         }
+> > =20
 >=20
-> drivers/mtd/nand/raw/sh_flctl.c:483:46: warning: implicit conversion
-> from enumeration type 'enum dma_transfer_direction' to different
-> enumeration type 'enum dma_data_direction' [-Wenum-conversion]
->                 flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM=
-) > 0)
->                 ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-> drivers/mtd/nand/raw/sh_flctl.c:542:46: warning: implicit conversion
-> from enumeration type 'enum dma_transfer_direction' to different
-> enumeration type 'enum dma_data_direction' [-Wenum-conversion]
->                 flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV=
-) > 0)
->                 ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
-> 2 warnings generated.
 >=20
-> Use the proper enums from dma_data_direction to satisfy Clang.
+> I prefer per-compatible values to a fixed default.
 >=20
-> DMA_MEM_TO_DEV =3D DMA_TO_DEVICE =3D 1
-> DMA_DEV_TO_MEM =3D DMA_FROM_DEVICE =3D 2
 >=20
-> Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->  drivers/mtd/nand/raw/sh_flctl.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I'd like to set the register to 8 unless set otherwise
+> because the boot ROM on my platform (Socionext UniPhier SoCs)
+> uses that value.
 >=20
-> diff --git a/drivers/mtd/nand/raw/sh_flctl.c b/drivers/mtd/nand/raw/sh_fl=
-ctl.c
-> index c0c0798f268f..4d20d033de7b 100644
-> --- a/drivers/mtd/nand/raw/sh_flctl.c
-> +++ b/drivers/mtd/nand/raw/sh_flctl.c
-> @@ -480,7 +480,7 @@ static void read_fiforeg(struct sh_flctl *flctl, int =
-rlen, int offset)
-> =20
->  	/* initiate DMA transfer */
->  	if (flctl->chan_fifo0_rx && rlen >=3D 32 &&
-> -		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_DEV_TO_MEM) > 0)
-> +		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_FROM_DEVICE) > 0)
->  			goto convert;	/* DMA success */
-> =20
->  	/* do polling transfer */
-> @@ -539,7 +539,7 @@ static void write_ec_fiforeg(struct sh_flctl *flctl, =
-int rlen,
-> =20
->  	/* initiate DMA transfer */
->  	if (flctl->chan_fifo0_tx && rlen >=3D 32 &&
-> -		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_MEM_TO_DEV) > 0)
-> +		flctl_dma_fifo0_transfer(flctl, buf, rlen, DMA_TO_DEVICE) > 0)
->  			return;	/* DMA success */
-> =20
->  	/* do polling transfer */
+> Other platforms like Altera SOCFPGA may want to use a different value
+> (at least, I do not know what is the preferred value).
+>=20
+>=20
 
-
-Applied on nand/next with the subject prefix changed to
-
-    mtd: rawnand: sh_flctl:
+Well, for now we can just have a default to 8, and if someone complains
+have a per-compatible default?
 
 
 Thanks,
