@@ -1,22 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4MnO-0002ce-0q
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 09:06:46 +0000
-Date: Mon, 24 Sep 2018 11:04:33 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Daniel Mack <daniel@zonque.org>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, Chris Packham
- <chris.packham@alliedtelesis.co.nz>
-Subject: Re: Trouble with new marvell_nand driver on PXA3xx
-Message-ID: <20180924110433.2cd5fb3a@bbrezillon>
-In-Reply-To: <0e773d54-a2c2-63be-12e3-5da6caabd215@zonque.org>
-References: <f3cf564d-7976-5b2e-ca07-ea872c165396@zonque.org>
- <20180924100902.7b177324@bbrezillon>
- <0e773d54-a2c2-63be-12e3-5da6caabd215@zonque.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g4NHJ-00023l-CB
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 09:35:44 +0000
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org,
+	Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH] mtd: rawnand: toshiba: Pass a single nand_chip object to the
+ status helper
+Date: Mon, 24 Sep 2018 11:35:18 +0200
+Message-Id: <20180924093518.22021-1-miquel.raynal@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 Sep 2018 10:30:47 +0200
-Daniel Mack <daniel@zonque.org> wrote:
+Now that most of the raw NAND API is consistent and has almost all its
+helpers and hooks using a single nand_chip object instead of an mtd_info
+one (or both), let's do the same cleanup in the raw NAND vendors
+drivers.
 
-> >> Interestingly, I can't seem to reproduce the bug with any of the mtd
-> >> kernel tests, I've tried all of them, several times, and all succeed. So
-> >> a file system test that includes the UBI/UBIFS layers seems to trigger
-> >> different things in the driver than the the tests that operate on the
-> >> mtd device directly.  
-> > 
-> > Looking at the backtrace, it seems to fail on a high PEB num. Are you
-> > interfacing with a dual-die chip? Can you share the part number of your
-> > chip?  
-> 
-> The chip is a NAND01GR3B2BZA which is identified like this during probe:
+Apply this change to the Toshiba driver so that the internal helper to
+retrieve the ECC status does only take a nand_chip object.
 
-Okay, so it's definitely not caused by a missing R/B pin on a multi-die
-chip (this chip only has one die).
+Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+---
+ drivers/mtd/nand/raw/nand_toshiba.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+index 941ddc615190..0549c4b59d9c 100644
+--- a/drivers/mtd/nand/raw/nand_toshiba.c
++++ b/drivers/mtd/nand/raw/nand_toshiba.c
+@@ -23,9 +23,9 @@
+ /* Recommended to rewrite for BENAND */
+ #define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
+ 
+-static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
+-					 struct nand_chip *chip)
++static int toshiba_nand_benand_eccstatus(struct nand_chip *chip)
+ {
++	struct mtd_info *mtd = nand_to_mtd(chip);
+ 	int ret;
+ 	unsigned int max_bitflips = 0;
+ 	u8 status;
+@@ -58,7 +58,7 @@ toshiba_nand_read_page_benand(struct nand_chip *chip, uint8_t *buf,
+ 	if (ret)
+ 		return ret;
+ 
+-	return toshiba_nand_benand_eccstatus(mtd, chip);
++	return toshiba_nand_benand_eccstatus(chip);
+ }
+ 
+ static int
+@@ -73,7 +73,7 @@ toshiba_nand_read_subpage_benand(struct nand_chip *chip, uint32_t data_offs,
+ 	if (ret)
+ 		return ret;
+ 
+-	return toshiba_nand_benand_eccstatus(mtd, chip);
++	return toshiba_nand_benand_eccstatus(chip);
+ }
+ 
+ static void toshiba_nand_benand_init(struct nand_chip *chip)
+-- 
+2.17.1
