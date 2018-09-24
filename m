@@ -1,7 +1,7 @@
 Received: from mail.linuxfoundation.org ([140.211.169.12])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4PEV-0000zO-Jd
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 11:40:58 +0000
+ id 1g4PRP-0008Ls-Ct
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 11:54:33 +0000
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: linux-kernel@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
@@ -14,12 +14,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
  Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
  Randy Dunlap <rdunlap@infradead.org>,
  Sasha Levin <alexander.levin@microsoft.com>
-Subject: [PATCH 3.18 067/105] mtd/maps: fix solutionengine.c printk format
+Subject: [PATCH 4.4 11/70] mtd/maps: fix solutionengine.c printk format
  warnings
-Date: Mon, 24 Sep 2018 13:33:53 +0200
-Message-Id: <20180924113120.126241239@linuxfoundation.org>
-In-Reply-To: <20180924113113.268650190@linuxfoundation.org>
-References: <20180924113113.268650190@linuxfoundation.org>
+Date: Mon, 24 Sep 2018 13:52:10 +0200
+Message-Id: <20180924113059.619858924@linuxfoundation.org>
+In-Reply-To: <20180924113058.420454070@linuxfoundation.org>
+References: <20180924113058.420454070@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -32,7 +32,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-3.18-stable review patch.  If anyone has any objections, please let me know.
+4.4-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
