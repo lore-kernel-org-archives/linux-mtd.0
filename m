@@ -1,26 +1,28 @@
-From: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
-To: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- Alexey Brodkin <alexey.brodkin@synopsys.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- Vineet Gupta <vineet.gupta1@synopsys.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add support of sst26wf* flash ICs
- protection ops
-Date: Mon, 24 Sep 2018 09:55:49 +0000
-Message-ID: <1537782946.4902.6.camel@synopsys.com>
-References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
- <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
-In-Reply-To: <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9B14D78872C8004AA1D3FB8D9737BA19@internal.synopsys.com>
-Content-Transfer-Encoding: base64
+Received: from mail.linuxfoundation.org ([140.211.169.12])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g4PEV-0000zO-Jd
+ for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 11:40:58 +0000
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
+ Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
+ Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>,
+ Randy Dunlap <rdunlap@infradead.org>,
+ Sasha Levin <alexander.levin@microsoft.com>
+Subject: [PATCH 3.18 067/105] mtd/maps: fix solutionengine.c printk format
+ warnings
+Date: Mon, 24 Sep 2018 13:33:53 +0200
+Message-Id: <20180924113120.126241239@linuxfoundation.org>
+In-Reply-To: <20180924113113.268650190@linuxfoundation.org>
+References: <20180924113113.268650190@linuxfoundation.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,143 +32,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWFyZWssDQoNCk1heWJlIHlvdSBoYXZlIGFueSBjb21tZW50cyBvciByZW1hcmtzIGFib3V0
-IHRoaXMgcGF0Y2g/IEFuZCBpZiB5b3UgZG9uJ3QgY291bGQgeW91IHBsZWFzZSBhcHBseSBpdC4N
-ClRoYW5rcyENCg0KT24gTW9uLCAyMDE4LTA5LTEwIGF0IDE0OjQ2ICswMzAwLCBFdWdlbml5IFBh
-bHRzZXYgd3JvdGU6DQo+IHNzdDI2d2YgZmxhc2ggc2VyaWVzIGJsb2NrIHByb3RlY3Rpb24gaW1w
-bGVtZW50YXRpb24gZGlmZmVycw0KPiBmcm9tIG90aGVyIFNTVCBzZXJpZXMsIHNvIGFkZCBzcGVj
-aWZpYyBpbXBsZW1lbnRhdGlvbg0KPiBmbGFzaF9sb2NrL2ZsYXNoX3VubG9jay9mbGFzaF9pc19s
-b2NrZWQgZnVuY3Rpb25zIGZvciBzc3QyNndmDQo+IGZsYXNoIElDcy4NCj4gDQo+IE5PVEU6DQo+
-IHRoaXMgcGF0Y2ggaXMgYmFzaWNhbGx5IGZvbGxvd2luZyBtaW5lIHUtYm9vdCBjb21taXQgcG9y
-dDoNCj4gaHR0cDovL2dpdC5kZW54LmRlLz9wPXUtYm9vdC5naXQ7YT1jb21taXRkaWZmO2g9M2Q0
-ZmVkODdhNWZhM2ZmZWRmNjRmZjI4MTFjZDk1YzVhYzQ1MDNhYw0KPiANCj4gU2lnbmVkLW9mZi1i
-eTogRXVnZW5peSBQYWx0c2V2IDxFdWdlbml5LlBhbHRzZXZAc3lub3BzeXMuY29tPg0KPiAtLS0N
-Cj4gQ2hhbmdlcyB2MS0+djI6DQo+ICAqIENoZWNrIHJldHVybiB2YWx1ZSBvZiB7cmVhZCB8IHdy
-aXRlfV9yZWcgY2FsbGJhY2tzLg0KPiANCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5j
-IHwgMTc3ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgaW5j
-bHVkZS9saW51eC9tdGQvc3BpLW5vci5oICAgfCAgIDQgKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAx
-ODEgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-c3BpLW5vci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggZDljMzY4
-YzQ0MTk0Li5kMGU3Yzg1YjYwMDIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Iv
-c3BpLW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC01
-OTgsNiArNTk4LDE3NyBAQCBzdGF0aWMgaW50IHdyaXRlX3NyX2FuZF9jaGVjayhzdHJ1Y3Qgc3Bp
-X25vciAqbm9yLCB1OCBzdGF0dXNfbmV3LCB1OCBtYXNrKQ0KPiAgCXJldHVybiAoKHJldCAmIG1h
-c2spICE9IChzdGF0dXNfbmV3ICYgbWFzaykpID8gLUVJTyA6IDA7DQo+ICB9DQo+ICANCj4gKy8q
-DQo+ICsgKiBzc3QyNndmMDE2L3NzdDI2d2YwMzIvc3N0MjZ3ZjA2NCBoYXZlIG5leHQgYmxvY2sg
-cHJvdGVjdGlvbjoNCj4gKyAqIDR4ICAgLSA4ICBLQnl0ZSBibG9ja3MgLSByZWFkICYgd3JpdGUg
-cHJvdGVjdGlvbiBiaXRzIC0gdXBwZXIgYWRkcmVzc2VzDQo+ICsgKiAxeCAgIC0gMzIgS0J5dGUg
-YmxvY2tzIC0gd3JpdGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiByZXN0IC0gNjQgS0J5dGUgYmxv
-Y2tzIC0gd3JpdGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiAxeCAgIC0gMzIgS0J5dGUgYmxvY2tz
-IC0gd3JpdGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiA0eCAgIC0gOCAgS0J5dGUgYmxvY2tzIC0g
-cmVhZCAmIHdyaXRlIHByb3RlY3Rpb24gYml0cyAtIGxvd2VyIGFkZHJlc3Nlcw0KPiArICoNCj4g
-KyAqIFdlJ2xsIHN1cHBvcnQgb25seSBwZXIgNjRrIGxvY2svdW5sb2NrIHNvIGxvd2VyIGFuZCB1
-cHBlciA2NCBLQnl0ZSByZWdpb24NCj4gKyAqIHdpbGwgYmUgdHJlYXRlZCBhcyBzaW5nbGUgYmxv
-Y2suDQo+ICsgKi8NCj4gKyNkZWZpbmUgU1NUMjZfQlBSXzhLX05VTQkJNA0KPiArI2RlZmluZSBT
-U1QyNl9NQVhfQlBSX1JFR19MRU4JCSgxOCArIDEpDQo+ICsjZGVmaW5lIFNTVDI2X0JPVU5EX1JF
-R19TSVpFCQkoKDMyICsgU1NUMjZfQlBSXzhLX05VTSAqIDgpICogU1pfMUspDQo+ICsNCj4gK2Vu
-dW0gbG9ja19jdGwgew0KPiArCVNTVDI2X0NUTF9MT0NLLA0KPiArCVNTVDI2X0NUTF9VTkxPQ0ss
-DQo+ICsJU1NUMjZfQ1RMX0NIRUNLDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgYm9vbCBzc3QyNl9w
-cm9jZXNzX2Jwcih1MzIgYnByX3NpemUsIHU4ICpjbWQsIHUzMiBiaXQsIGVudW0gbG9ja19jdGwg
-Y3RsKQ0KPiArew0KPiArCXN3aXRjaCAoY3RsKSB7DQo+ICsJY2FzZSBTU1QyNl9DVExfTE9DSzoN
-Cj4gKwkJY21kW2Jwcl9zaXplIC0gKGJpdCAvIDgpIC0gMV0gfD0gQklUKGJpdCAlIDgpOw0KPiAr
-CQlicmVhazsNCj4gKwljYXNlIFNTVDI2X0NUTF9VTkxPQ0s6DQo+ICsJCWNtZFticHJfc2l6ZSAt
-IChiaXQgLyA4KSAtIDFdICY9IH5CSVQoYml0ICUgOCk7DQo+ICsJCWJyZWFrOw0KPiArCWNhc2Ug
-U1NUMjZfQ1RMX0NIRUNLOg0KPiArCQlyZXR1cm4gISEoY21kW2Jwcl9zaXplIC0gKGJpdCAvIDgp
-IC0gMV0gJiBCSVQoYml0ICUgOCkpOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiBmYWxzZTsNCj4g
-K30NCj4gKw0KPiArLyoNCj4gKyAqIExvY2ssIHVubG9jayBvciBjaGVjayBsb2NrIHN0YXR1cyBv
-ZiB0aGUgZmxhc2ggcmVnaW9uIG9mIHRoZSBmbGFzaCAoZGVwZW5kaW5nDQo+ICsgKiBvbiB0aGUg
-bG9ja19jdGwgdmFsdWUpDQo+ICsgKi8NCj4gK3N0YXRpYyBpbnQgc3N0MjZfbG9ja19jdGwoc3Ry
-dWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IG9mcywgdWludDY0X3QgbGVuLCBlbnVtIGxvY2tfY3Rs
-IGN0bCkNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9ICZub3ItPm10ZDsNCj4gKwl1
-MzIgaSwgYnByX3B0ciwgcnB0cl82NGssIGxwdHJfNjRrLCBicHJfc2l6ZTsNCj4gKwlib29sIGxv
-d2VyXzY0ayA9IGZhbHNlLCB1cHBlcl82NGsgPSBmYWxzZTsNCj4gKwl1OCBicHJfYnVmZltTU1Qy
-Nl9NQVhfQlBSX1JFR19MRU5dID0ge307DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCS8qIENoZWNr
-IGxlbmd0aCBhbmQgb2Zmc2V0IGZvciA2NGsgYWxpZ25tZW50ICovDQo+ICsJaWYgKChvZnMgJiAo
-U1pfNjRLIC0gMSkpIHx8IChsZW4gJiAoU1pfNjRLIC0gMSkpKSB7DQo+ICsJCWRldl9lcnIobm9y
-LT5kZXYsICJsZW5ndGggb3Igb2Zmc2V0IGlzIG5vdCA2NEtpQiBhbGxpZ2huZWRcbiIpOw0KPiAr
-CQlyZXR1cm4gLUVJTlZBTDsNCj4gKwl9DQo+ICsNCj4gKwlpZiAob2ZzICsgbGVuID4gbXRkLT5z
-aXplKSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJyYW5nZSBpcyBtb3JlIHRoYW4gZGV2aWNl
-IHNpemU6ICUjbGx4ICsgJSNsbHggPiAlI2xseFxuIiwNCj4gKwkJCW9mcywgbGVuLCBtdGQtPnNp
-emUpOw0KPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwl9DQo+ICsNCj4gKwkvKiBTU1QyNiBmYW1p
-bHkgaGFzIG9ubHkgMTYgTWJpdCwgMzIgTWJpdCBhbmQgNjQgTWJpdCBJQyAqLw0KPiArCWlmICht
-dGQtPnNpemUgIT0gU1pfMk0gJiYNCj4gKwkgICAgbXRkLT5zaXplICE9IFNaXzRNICYmDQo+ICsJ
-ICAgIG10ZC0+c2l6ZSAhPSBTWl84TSkNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsNCj4gKwli
-cHJfc2l6ZSA9IDIgKyAobXRkLT5zaXplIC8gU1pfNjRLIC8gOCk7DQo+ICsNCj4gKwlyZXQgPSBu
-b3ItPnJlYWRfcmVnKG5vciwgU1BJTk9SX09QX1JFQURfQlBSLCBicHJfYnVmZiwgYnByX3NpemUp
-Ow0KPiArCWlmIChyZXQgPCAwKSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJmYWlsIHRvIHJl
-YWQgYmxvY2stcHJvdGVjdGlvbiByZWdpc3RlclxuIik7DQo+ICsJCXJldHVybiByZXQ7DQo+ICsJ
-fQ0KPiArDQo+ICsJcnB0cl82NGsgPSBtaW5fdCh1MzIsIG9mcyArIGxlbiwgbXRkLT5zaXplIC0g
-U1NUMjZfQk9VTkRfUkVHX1NJWkUpOw0KPiArCWxwdHJfNjRrID0gbWF4X3QodTMyLCBvZnMsIFNT
-VDI2X0JPVU5EX1JFR19TSVpFKTsNCj4gKw0KPiArCXVwcGVyXzY0ayA9ICgob2ZzICsgbGVuKSA+
-IChtdGQtPnNpemUgLSBTU1QyNl9CT1VORF9SRUdfU0laRSkpOw0KPiArCWxvd2VyXzY0ayA9IChv
-ZnMgPCBTU1QyNl9CT1VORF9SRUdfU0laRSk7DQo+ICsNCj4gKwkvKiBMb3dlciBiaXRzIGluIGJs
-b2NrLXByb3RlY3Rpb24gcmVnaXN0ZXIgYXJlIGFib3V0IDY0ayByZWdpb24gKi8NCj4gKwlicHJf
-cHRyID0gbHB0cl82NGsgLyBTWl82NEsgLSAxOw0KPiArDQo+ICsJLyogUHJvY2VzcyA2NEsgYmxv
-Y2tzIHJlZ2lvbiAqLw0KPiArCXdoaWxlIChscHRyXzY0ayA8IHJwdHJfNjRrKSB7DQo+ICsJCWlm
-IChzc3QyNl9wcm9jZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkpDQo+
-ICsJCQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJCWJwcl9wdHIrKzsNCj4gKwkJbHB0cl82NGsg
-Kz0gU1pfNjRLOw0KPiArCX0NCj4gKw0KPiArCS8qIDMySyBhbmQgOEsgcmVnaW9uIGJpdHMgaW4g
-QlBSIGFyZSBhZnRlciA2NGsgcmVnaW9uIGJpdHMgKi8NCj4gKwlicHJfcHRyID0gKG10ZC0+c2l6
-ZSAtIDIgKiBTU1QyNl9CT1VORF9SRUdfU0laRSkgLyBTWl82NEs7DQo+ICsNCj4gKwkvKiBQcm9j
-ZXNzIGxvd2VyIDMySyBibG9jayByZWdpb24gKi8NCj4gKwlpZiAobG93ZXJfNjRrKQ0KPiArCQlp
-ZiAoc3N0MjZfcHJvY2Vzc19icHIoYnByX3NpemUsIGJwcl9idWZmLCBicHJfcHRyLCBjdGwpKQ0K
-PiArCQkJcmV0dXJuIEVBQ0NFUzsNCj4gKw0KPiArCWJwcl9wdHIrKzsNCj4gKw0KPiArCS8qIFBy
-b2Nlc3MgdXBwZXIgMzJLIGJsb2NrIHJlZ2lvbiAqLw0KPiArCWlmICh1cHBlcl82NGspDQo+ICsJ
-CWlmIChzc3QyNl9wcm9jZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkp
-DQo+ICsJCQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJYnByX3B0cisrOw0KPiArDQo+ICsJLyog
-UHJvY2VzcyBsb3dlciA4SyBibG9jayByZWdpb25zICovDQo+ICsJZm9yIChpID0gMDsgaSA8IFNT
-VDI2X0JQUl84S19OVU07IGkrKykgew0KPiArCQlpZiAobG93ZXJfNjRrKQ0KPiArCQkJaWYgKHNz
-dDI2X3Byb2Nlc3NfYnByKGJwcl9zaXplLCBicHJfYnVmZiwgYnByX3B0ciwgY3RsKSkNCj4gKwkJ
-CQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJCS8qIEluIDhLIGFyZWEgQlBSIGhhcyBib3RoIHJl
-YWQgYW5kIHdyaXRlIHByb3RlY3Rpb24gYml0cyAqLw0KPiArCQlicHJfcHRyICs9IDI7DQo+ICsJ
-fQ0KPiArDQo+ICsJLyogUHJvY2VzcyB1cHBlciA4SyBibG9jayByZWdpb25zICovDQo+ICsJZm9y
-IChpID0gMDsgaSA8IFNTVDI2X0JQUl84S19OVU07IGkrKykgew0KPiArCQlpZiAodXBwZXJfNjRr
-KQ0KPiArCQkJaWYgKHNzdDI2X3Byb2Nlc3NfYnByKGJwcl9zaXplLCBicHJfYnVmZiwgYnByX3B0
-ciwgY3RsKSkNCj4gKwkJCQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJCS8qIEluIDhLIGFyZWEg
-QlBSIGhhcyBib3RoIHJlYWQgYW5kIHdyaXRlIHByb3RlY3Rpb24gYml0cyAqLw0KPiArCQlicHJf
-cHRyICs9IDI7DQo+ICsJfQ0KPiArDQo+ICsJLyogSWYgd2UgY2hlY2sgcmVnaW9uIHN0YXR1cyB3
-ZSBkb24ndCBuZWVkIHRvIHdyaXRlIEJQUiBiYWNrICovDQo+ICsJaWYgKGN0bCA9PSBTU1QyNl9D
-VExfQ0hFQ0spDQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJcmV0ID0gbm9yLT53cml0ZV9yZWco
-bm9yLCBTUElOT1JfT1BfV1JJVEVfQlBSLCBicHJfYnVmZiwgYnByX3NpemUpOw0KPiArCWlmIChy
-ZXQgPCAwKSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJmYWlsIHRvIHdyaXRlIGJsb2NrLXBy
-b3RlY3Rpb24gcmVnaXN0ZXJcbiIpOw0KPiArCQlyZXR1cm4gcmV0Ow0KPiArCX0NCj4gKw0KPiAr
-CXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IHNzdDI2X3VubG9jayhzdHJ1Y3Qg
-c3BpX25vciAqbm9yLCBsb2ZmX3Qgb2ZzLCB1aW50NjRfdCBsZW4pDQo+ICt7DQo+ICsJcmV0dXJu
-IHNzdDI2X2xvY2tfY3RsKG5vciwgb2ZzLCBsZW4sIFNTVDI2X0NUTF9VTkxPQ0spOw0KPiArfQ0K
-PiArDQo+ICtzdGF0aWMgaW50IHNzdDI2X2xvY2soc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90
-IG9mcywgdWludDY0X3QgbGVuKQ0KPiArew0KPiArCXJldHVybiBzc3QyNl9sb2NrX2N0bChub3Is
-IG9mcywgbGVuLCBTU1QyNl9DVExfTE9DSyk7DQo+ICt9DQo+ICsNCj4gKy8qDQo+ICsgKiBSZXR1
-cm5zIEVBQ0NFUyAocG9zaXRpdmUgdmFsdWUpIGlmIHJlZ2lvbiBpcyBsb2NrZWQsIDAgaWYgcmVn
-aW9uIGlzIHVubG9ja2VkLA0KPiArICogYW5kIG5lZ2F0aXZlIG9uIGVycm9ycy4NCj4gKyAqLw0K
-PiArc3RhdGljIGludCBzc3QyNl9pc19sb2NrZWQoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90
-IG9mcywgdWludDY0X3QgbGVuKQ0KPiArew0KPiArCS8qDQo+ICsJICogaXNfbG9ja2VkIGZ1bmN0
-aW9uIGlzIHVzZWQgZm9yIGNoZWNrIGJlZm9yZSByZWFkaW5nIG9yIGVyYXNpbmcgZmxhc2gNCj4g
-KwkgKiByZWdpb24sIHNvIG9mZnNldCBhbmQgbGVuZ3RoIG1pZ2h0IGJlIG5vdCA2NGsgYWxsaWdo
-bmVkLCBzbyBhZGp1c3QNCj4gKwkgKiB0aGVtIHRvIGJlIDY0ayBhbGxpZ2huZWQgYXMgc3N0MjZf
-bG9ja19jdGwgd29ya3Mgb25seSB3aXRoIDY0aw0KPiArCSAqIGFsbGlnaG5lZCByZWdpb25zLg0K
-PiArCSAqLw0KPiArCW9mcyAtPSBvZnMgJiAoU1pfNjRLIC0gMSk7DQo+ICsJbGVuID0gbGVuICYg
-KFNaXzY0SyAtIDEpID8gKGxlbiAmIH4oU1pfNjRLIC0gMSkpICsgU1pfNjRLIDogbGVuOw0KPiAr
-DQo+ICsJcmV0dXJuIHNzdDI2X2xvY2tfY3RsKG5vciwgb2ZzLCBsZW4sIFNTVDI2X0NUTF9DSEVD
-Syk7DQo+ICt9DQo+ICsNCj4gIHN0YXRpYyB2b2lkIHN0bV9nZXRfbG9ja2VkX3JhbmdlKHN0cnVj
-dCBzcGlfbm9yICpub3IsIHU4IHNyLCBsb2ZmX3QgKm9mcywNCj4gIAkJCQkgdWludDY0X3QgKmxl
-bikNCj4gIHsNCj4gQEAgLTI4NzIsNiArMzA0MywxMiBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVj
-dCBzcGlfbm9yICpub3IsIGNvbnN0IGNoYXIgKm5hbWUsDQo+ICAJCW5vci0+Zmxhc2hfaXNfbG9j
-a2VkID0gc3RtX2lzX2xvY2tlZDsNCj4gIAl9DQo+ICANCj4gKwlpZiAoSkVERUNfTUZSKGluZm8p
-ID09IFNOT1JfTUZSX1NTVCAmJiBpbmZvLT5pZFsxXSA9PSAweDI2KSB7DQo+ICsJCW5vci0+Zmxh
-c2hfbG9jayA9IHNzdDI2X2xvY2s7DQo+ICsJCW5vci0+Zmxhc2hfdW5sb2NrID0gc3N0MjZfdW5s
-b2NrOw0KPiArCQlub3ItPmZsYXNoX2lzX2xvY2tlZCA9IHNzdDI2X2lzX2xvY2tlZDsNCj4gKwl9
-DQo+ICsNCj4gIAlpZiAobm9yLT5mbGFzaF9sb2NrICYmIG5vci0+Zmxhc2hfdW5sb2NrICYmIG5v
-ci0+Zmxhc2hfaXNfbG9ja2VkKSB7DQo+ICAJCW10ZC0+X2xvY2sgPSBzcGlfbm9yX2xvY2s7DQo+
-ICAJCW10ZC0+X3VubG9jayA9IHNwaV9ub3JfdW5sb2NrOw0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVk
-ZS9saW51eC9tdGQvc3BpLW5vci5oIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+IGlu
-ZGV4IGU2MGRhMGQzNGNjMS4uMjQ2MDE0YTczZjgzIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xp
-bnV4L210ZC9zcGktbm9yLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+
-IEBAIC05Myw2ICs5MywxMCBAQA0KPiAgI2RlZmluZSBTUElOT1JfT1BfV1JESQkJMHgwNAkvKiBX
-cml0ZSBkaXNhYmxlICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9BQUlfV1AJMHhhZAkvKiBBdXRv
-IGFkZHJlc3MgaW5jcmVtZW50IHdvcmQgcHJvZ3JhbSAqLw0KPiAgDQo+ICsvKiBVc2VkIGZvciBT
-U1QyNiogZmxhc2hlcyBvbmx5LiAqLw0KPiArI2RlZmluZSBTUElOT1JfT1BfUkVBRF9CUFIJMHg3
-MgkvKiBSZWFkIGJsb2NrIHByb3RlY3Rpb24gcmVnaXN0ZXIgKi8NCj4gKyNkZWZpbmUgU1BJTk9S
-X09QX1dSSVRFX0JQUgkweDQyCS8qIFdyaXRlIGJsb2NrIHByb3RlY3Rpb24gcmVnaXN0ZXIgKi8N
-Cj4gKw0KPiAgLyogVXNlZCBmb3IgUzNBTiBmbGFzaGVzIG9ubHkgKi8NCj4gICNkZWZpbmUgU1BJ
-Tk9SX09QX1hTRQkJMHg1MAkvKiBTZWN0b3IgZXJhc2UgKi8NCj4gICNkZWZpbmUgU1BJTk9SX09Q
-X1hQUAkJMHg4MgkvKiBQYWdlIHByb2dyYW0gKi8NCi0tIA0KIEV1Z2VuaXkgUGFsdHNldg==
+3.18-stable review patch.  If anyone has any objections, please let me know.
+
+------------------
+
+From: Randy Dunlap <rdunlap@infradead.org>
+
+[ Upstream commit 1d25e3eeed1d987404e2d2e451eebac8c15cecc1 ]
+
+Fix 2 printk format warnings (this driver is currently only used by
+arch/sh/) by using "%pap" instead of "%lx".
+
+Fixes these build warnings:
+
+../drivers/mtd/maps/solutionengine.c: In function 'init_soleng_maps':
+../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 2 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
+../drivers/mtd/maps/solutionengine.c:62:54: note: format string is defined here
+  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+                                                  ~~~~^
+                                                  %08x
+../include/linux/kern_levels.h:5:18: warning: format '%lx' expects argument of type 'long unsigned int', but argument 3 has type 'resource_size_t' {aka 'unsigned int'} [-Wformat=]
+../drivers/mtd/maps/solutionengine.c:62:72: note: format string is defined here
+  printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+                                                                    ~~~~^
+                                                                    %08x
+
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: linux-mtd@lists.infradead.org
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>
+Cc: linux-sh@vger.kernel.org
+Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/mtd/maps/solutionengine.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+--- a/drivers/mtd/maps/solutionengine.c
++++ b/drivers/mtd/maps/solutionengine.c
+@@ -59,9 +59,9 @@ static int __init init_soleng_maps(void)
+ 			return -ENXIO;
+ 		}
+ 	}
+-	printk(KERN_NOTICE "Solution Engine: Flash at 0x%08lx, EPROM at 0x%08lx\n",
+-	       soleng_flash_map.phys & 0x1fffffff,
+-	       soleng_eprom_map.phys & 0x1fffffff);
++	printk(KERN_NOTICE "Solution Engine: Flash at 0x%pap, EPROM at 0x%pap\n",
++	       &soleng_flash_map.phys,
++	       &soleng_eprom_map.phys);
+ 	flash_mtd->owner = THIS_MODULE;
+ 
+ 	eprom_mtd = do_map_probe("map_rom", &soleng_eprom_map);
