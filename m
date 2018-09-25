@@ -1,18 +1,26 @@
-Received: from mx4.edumail.vic.gov.au ([203.12.63.139]
- helo=smtp.edumail.vic.gov.au)
+Received: from mail-oi1-f194.google.com ([209.85.167.194])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4pxo-00040e-GR
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 16:13:35 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+ id 1g4uG5-00008D-Bk
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 20:48:46 +0000
+Received: by mail-oi1-f194.google.com with SMTP id d63-v6so2681121oic.12
+ for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2018 13:48:16 -0700 (PDT)
+Date: Tue, 25 Sep 2018 15:48:14 -0500
+From: Rob Herring <robh@kernel.org>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ open list <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 8/8] dt-binding: mtd: Document gpio-addr-flash
+Message-ID: <20180925204813.GA6450@bogus>
+References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+ <20180905143643.9871-9-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Re
-To: Westnet Support <suport@westnet.net.au>
-From: Margaret Kwan Wing Han <01968747@edumail.vic.gov.au>
-Date: Tue, 25 Sep 2018 09:12:32 -0700
-Reply-To: <margaretkwings@gmail.com>
-Message-ID: <c8ed7081-0130-47f9-96fa-d70dd5dd4d39@PRWPEXED04.education.vic.gov.au>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180905143643.9871-9-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,9 +30,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I sincerely apologize to bother you I have a proposition for you reply for =
-more details.
+On Wed, Sep 05, 2018 at 04:36:43PM +0200, Ricardo Ribalda Delgado wrote:
+> Add documentation for gpio-addr-flash. This binding allow creating
+> flash devices that are paged using GPIOs.
+> 
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> ---
+>  .../bindings/mtd/gpio-addr-flash.txt          | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> new file mode 100644
+> index 000000000000..4279e8cad09b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> @@ -0,0 +1,46 @@
+> +Memory Mapped flash with some address lines addressed using GPIOs
+> +
+> +Handle the case where a flash device is mostly addressed using physical
+> +line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
+> +to a 2MiB memory range and use the GPIOs to select a particular range.
+> +
+> + - compatible : "cfi-gpio-addr-flash"
+> + - reg : Address range of the mtd chip that is memory mapped, this is,
+> +   on the previous example 2MiB.
+> + - bank-width : Width (in bytes) of the bank.  Equal to the
+> +   device width times the number of interleaved chips.
+> + - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
+> +   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
 
+Why not just a bool prop for jedec mode? As-is, the '_probe' part is 
+redundant.
 
-Kind Regards,
-Ms Margaret KWAN Wing Han
+> + - #address-cells, #size-cells : Must be present if the device has
+> +   sub-nodes representing partitions (see below).  In this case
+> +   both #address-cells and #size-cells must be equal to 1.
+
+Perhaps most importantly, where's 'gpios' property?
+
+> +
+> +The device tree may optionally contain sub-nodes describing partitions of the
+> +address space. See partition.txt for more detail.
+> +
+> +Example:
+> +
+> +	cfi_flash_0: cfi_flash {
+
+flash@300000
+
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		compatible = "cfi-gpio-addr-flash";
+> +		bank-width = <2>;
+> +		reg = < 0x00300000 0x00200000 >;
+> +		gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
+> +		partition@0 {
+
+All these under a partitions node is now recommended.
+
+> +			reg = < 0x0 0x200000 >;
+> +			label = "Golden Bitstream";
+> +		};
+> +		partition@200000 {
+> +			reg = < 0x200000 0x200000 >;
+> +			label = "User Bitstream";
+> +		};
+> +		partition@400000 {
+> +			reg = < 0x400000 0x200000 >;
+> +			label = "V4L Controls";
+> +		};
+> +		partition@600000 {
+> +			reg = < 0x600000 0x200000 >;
+> +			label = "Production Data";
+> +		};
+> +	} ;
+> -- 
+> 2.18.0
+> 
