@@ -1,20 +1,46 @@
-Received: from mail.bugwerft.de ([2a03:6000:1011::59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4Wza-0000gZ-WB
- for linux-mtd@lists.infradead.org; Mon, 24 Sep 2018 19:58:04 +0000
-Subject: Re: Trouble with new marvell_nand driver on PXA3xx
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org,
- Chris Packham <chris.packham@alliedtelesis.co.nz>
-References: <f3cf564d-7976-5b2e-ca07-ea872c165396@zonque.org>
- <20180924092031.3d4af408@xps13>
-From: Daniel Mack <daniel@zonque.org>
-Message-ID: <7843c6db-e466-9d17-39e5-570135006a0c@zonque.org>
-Date: Mon, 24 Sep 2018 21:57:20 +0200
+Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::11])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g4hAs-00077B-9P
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 06:50:27 +0000
+Subject: Re: Questions about the Freescale/NXP QuadSPI controller
+To: Lukasz Majewski <lukma@denx.de>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>,
+ Huang Shijie <sjhuang@iluvatar.ai>,
+ Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "richard@nod.at" <richard@nod.at>, "broonie@kernel.org"
+ <broonie@kernel.org>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, Albert ARIBAUD <albert.aribaud@3adev.fr>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
+ David Wolfe <david.wolfe@nxp.com>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "dwmw2@infradead.org" <dwmw2@infradead.org>
+References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
+ <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
+ <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
+ <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
+ <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
+ <20180804153728.0a99d28f@bbrezillon>
+ <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
+ <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
+ <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
+ <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
+ <09d39759-390a-bca3-caeb-2ee8ddb29443@exceet.de>
+ <20180919004247.60c6099a@jawa>
+ <e76062cb-f703-2830-8074-d1a812dc14ce@exceet.de>
+ <20180919130211.3f2e7e3a@jawa> <20180920170032.39fb5073@jawa>
+ <bd116b60-49ce-b4ad-3943-93df505bc710@exceet.de>
+ <20180921001323.596a39c8@jawa>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <b3a25bd9-25a7-c1a5-ec50-c711d25f1b7e@exceet.de>
+Date: Tue, 25 Sep 2018 08:49:20 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180924092031.3d4af408@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20180921001323.596a39c8@jawa>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,87 +52,246 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+Hi Lukasz,
 
-On 24/9/2018 9:20 AM, Miquel Raynal wrote:
-> Right now I have no idea of what happens, but you might want to add a
-> dump_stack() at the "Timeout waiting for RB signal" error to see what
-> path in the driver failed.
+On 21.09.2018 00:13, Lukasz Majewski wrote:
+> Hi Frieder,
+> 
+> Please find some more comments regarding the new spi-fsl-qspi.c driver.
+> 
+>> Hi Lukasz,
+>>
+>> On 20.09.2018 17:00, Lukasz Majewski wrote:
+>>> Hi Frieder,
+>>>    
+>>>> Hi Frieder,
+>>>>   
+>>>>> Hi Lukasz,
+>>>>>
+>>>>> On 19.09.2018 00:42, Lukasz Majewski wrote:
+>>>>>> Dear All,
+>>>>>>
+>>>>>> Maybe I do jump a bit off topic here, but...
+>>>>>>
+>>>>>> I've read through the following thread:
+>>>>>> https://patchwork.ozlabs.org/patch/939885/
+>>>>>>
+>>>>>> And it mentions some issues with reading AHB content (buffers) in
+>>>>>> fsl-quadspi.c driver discovered when new QuadSPI driver was
+>>>>>> developed.
+>>>>>
+>>>>> The only setup with two chips that is known to be problematic with
+>>>>> the new driver, is when both chips are connected to the same bus
+>>>>> (e.g. QSPIA) using separate chip selects.
+>>>>
+>>>> I'm using QSPI0 controller, with two memories connected to QSPI0_A
+>>>> and QSPI0_B lines.
+>>>>   
+>>>>>
+>>>>> Does your board use this kind of setup, or are the two chips
+>>>>> connected two different buses (QSPIA and QSPIB)?
+>>>>>
+>>>>> Have you tested the new driver? It would be great to receive some
+>>>>> more feedback.
+>>>>
+>>>> I will check (test) this new driver. No problem.
+>>>
+>>> I've ported your patch on v4.19-rc3.
+>>>
+>>> I had to fix the "div0 issue" by adding:
+>>> if (op->dummy.buswidth &&
+>>> 	(op->dummy.nbytes * 8 / op->dummy.buswidth > 64))
+>>>
+>>> In fsl_qspi_supports_op() function.
+>>>
+>>>
+>>> Unfortunately, on Vybrid vf610 when testing I do see corruption of
+>>> read data from the mtd device:
+>>>
+>>> ~# hexdump aaa.img
+>>> 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
+>>> 0000010 e98e 5265 683c a635 c069 e402 303f d936
+>>> 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
+>>> 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
+>>> 0000040 ffff ffff ffff ffff ffff ffff ffff ffff
+>>> *
+>>> 0000100
+>>>
+>>> ~# hexdump data_test.img
+>>> 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
+>>> 0000010 e98e 5265 683c a635 c069 e402 303f d936
+>>> 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
+>>> 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
+>>> 0000040 01c9 462d 0a43 f893 0e42 67f1 57f0 787c
+>>> 0000050 49c0 fb2a e514 e954 1d21 affa bac4 38f1
+>>> 0000060 1ca5 ec46 77eb a854 285b 8e21 12d7 f377
+>>> 0000070 b441 2baf ee33 596c 98b6 e71a c1cb 876c
+>>>
+>>>
+>>> Test case:
+>>> flash_erase /dev/mtd3 0 1
+>>> dd if=data_test.img of=/dev/mtd3
+>>> dd if=/dev/mtd3 of=aaa.img bs=1 count=256
+>>>
+>>>
+>>>   From the code I see that the AHB buffer has 1024B. It is accessed
+>>> in 8 bytes packs.
+>>>
+>>> This seems like some cache or HW issue....
+>>>
+>>> In the old driver, to fix this problem one needed to
+>>> 1. Reduce the RX fifo size from 128B to 64B
+>>>
+>>> 2. Disable (set to 0) the AHB transfer's BUF3CR ADATSZ field - the
+>>> transfer size is the same as in LUT.
+>>>
+>>> (Original patch: https://patchwork.ozlabs.org/patch/675401/)
+>>
+>> Thanks a lot for doing the test. It seems like Vybrid needs some
+>> special handling to work around this problem.
+>> So this means the current driver has never worked for Vybrid, as the
+>> mentioned patch was never merged!?
+>>
+>> As these issues seem to be specific to Vybrid and as they seem to
+>> exist in the current driver too, I would like to fix them after we
+>> have a first version of the new driver that works for the other
+>> platforms.
+>>
+>> I hope we can figure out the other issues soon.
+>>
+>> Thanks,
+>> Frieder
+>>
+>>>
+>>>    
+>>>>   
+>>>>>       
+>>>>>> I do have a setup with qspi0 having two SPI memories connected
+>>>>>> (2x16 MiB), and I'm wondering if anybody has some more info
+>>>>>> regarding:
+>>>>>>
+>>>>>> (What's more is that there is a bug in
+>>>>>>     * the "IP Command Read" in the Vybrid.) found here:
+>>> 	^^^^^^^^^^^^^^^^^^^^^^^^ - It would be handy to have the
+>>> exact explanation of this issue.
+>>>    
+>>>>>> https://elixir.bootlin.com/linux/v4.19-rc4/source/drivers/mtd/spi-nor/fsl-quadspi.c#L671
+>         ^^^^^^^^^^^^ - [1]
+> 
+> 
+> I've looked a bit closer to the new spi-fsl-qspi.c driver and it looks
+> like it uses fsl_qspi_exec_op() and then calls fsl_qspi_do_op().
+> 
+> In the last function we setup the QUADSPI_IPCR register to initiate the
+> transfer between SPI-NOR and the internal RX buffer.
+> 
+> Please correct me if I'm wrong but it seems to me like we are using "IP
+> Command Read" approach here.
 
-I've triggered it several times now, and all traces show 
-marvell_nfc_hw_ecc_hmg_write_page() as a stack parent.
+"IP Read" is only used if data size is smaller then RX FIFO size (128 
+bytes for Vybrid). For bigger chunks of data "AHB Read" is used.
 
-So it seems to affect the writing routines only.
+> 
+> If this is true - what was the rationale to use it in the new driver, as
+> in the old one the "AHB Command Read" approach was recommended (i.e.
+> faster) [1]?
 
+As explained above we only use "IP Read" for small chunks of data. To 
+speed up the tranfer for bigger chunks we do use "AHB Read".
+And in the future we plan to add an interface for mapping memory, so we 
+can use the "AHB Read" even more efficiently.
 
-Any idea yet?
+> 
+> To be even more problematic the info in link [1] states that on vybrid
+> there is a bug on the "IP Command Read" HW block and it should be
+> avoided.
 
-Thanks,
-Daniel
+If "IP Read" should be avoided completely for Vybrid, we have to add 
+some kind of quirk.
 
+Thanks for you comments,
+Frieder
 
-> [  365.951351] WARNING: CPU: 0 PID: 1305 at drivers/mtd/nand/raw/marvell_nand.c:629 marvell_nfc_wait_op+0x88/0xb8
-> [  365.961375] Modules linked in: pxamci
-> [  365.965047] CPU: 0 PID: 1305 Comm: bonnie++ Not tainted 4.19.0-rc5+ #445
-> [  365.971768] Hardware name: Marvell PXA3xx (Device Tree Support)
-> [  365.977712] Backtrace: 
-> [  365.980192] [<c0106120>] (dump_backtrace) from [<c01063dc>] (show_stack+0x18/0x1c)
-> [  365.987789]  r6:00000000 r5:c07eb850 r4:00000000 r3:c6923b63
-> [  365.993437] [<c01063c4>] (show_stack) from [<c0686c04>] (dump_stack+0x20/0x28)
-> [  366.000716] [<c0686be4>] (dump_stack) from [<c0112054>] (__warn+0xe0/0x10c)
-> [  366.007724] [<c0111f74>] (__warn) from [<c011219c>] (warn_slowpath_null+0x44/0x50)
-> [  366.015249]  r9:89705f41 r8:36b4a597 r7:00000042 r6:c07eb850 r5:00000275 r4:c0450a48
-> [  366.023033] [<c0112158>] (warn_slowpath_null) from [<c0450a48>] (marvell_nfc_wait_op+0x88/0xb8)
-> [  366.031754]  r6:c64a8c90 r5:c64a8c70 r4:00000000
-> [  366.036362] [<c04509c0>] (marvell_nfc_wait_op) from [<c0450e78>] (marvell_nfc_hw_ecc_hmg_do_write_page+0x19c/0x1cc)
-> [  366.046801]  r7:c0a03008 r6:c64a8c70 r5:00000028 r4:c6610010
-> [  366.052438] [<c0450cdc>] (marvell_nfc_hw_ecc_hmg_do_write_page) from [<c0450f38>] (marvell_nfc_hw_ecc_hmg_write_page+0x3c/0x54)
-> [  366.063912]  r10:c674a000 r9:00000800 r8:00000000 r7:c674a000 r6:c68bbb4c r5:c674a000
-> [  366.071753]  r4:c6610010
-> [  366.074304] [<c0450efc>] (marvell_nfc_hw_ecc_hmg_write_page) from [<c0444d7c>] (nand_do_write_ops+0x3a0/0x3ec)
-> [  366.084304]  r5:00000800 r4:c6610010
-> [  366.087948] [<c04449dc>] (nand_do_write_ops) from [<c04467ac>] (nand_write_oob+0x68/0x84)
-> [  366.096080]  r10:c0a03008 r9:c674a000 r8:c68bbbc4 r7:00000000 r6:05d1e000 r5:c6610010
-> [  366.104243]  r4:c68bbb4c
-> [  366.106896] [<c0446744>] (nand_write_oob) from [<c043908c>] (part_write_oob+0x38/0x40)
-> [  366.114770]  r7:00000000 r6:05bfe000 r5:00000000 r4:00120000
-> [  366.120492] [<c0439054>] (part_write_oob) from [<c0435a70>] (mtd_write+0xdc/0x12c)
-> [  366.128087]  r5:c661dc00 r4:00000800
-> [  366.131670] [<c0435994>] (mtd_write) from [<c045d074>] (ubi_io_write+0x3e8/0x6bc)
-> [  366.139178]  r10:0001e000 r9:00000000 r8:0001e000 r7:00000000 r6:000002df r5:00000000
-> [  366.147025]  r4:05bfe000
-> [  366.149561] [<c045cc8c>] (ubi_io_write) from [<c045a11c>] (ubi_eba_write_leb+0xc0/0x6f8)
-> [  366.157672]  r10:00000000 r9:c68c0600 r8:0000002e r7:0000002e r6:c6755c00 r5:c664f000
-> [  366.165444]  r4:00000000
-> [  366.168042] [<c045a05c>] (ubi_eba_write_leb) from [<c0458994>] (ubi_leb_write+0xc4/0xdc)
-> [  366.176090]  r10:00000000 r9:c68c0600 r8:00000800 r7:0000002e r6:00000080 r5:c674a000
-> [  366.183928]  r4:000007ff
-> [  366.186463] [<c04588d0>] (ubi_leb_write) from [<c02d9420>] (ubifs_leb_write+0x88/0xf8)
-> [  366.194394]  r6:0001d000 r5:c664a000 r4:c674a000
-> [  366.199061] [<c02d9398>] (ubifs_leb_write) from [<c02da5b0>] (ubifs_wbuf_write_nolock+0x328/0x704)
-> [  366.208035]  r8:00000190 r7:c68bbdc0 r6:00000190 r5:c664a000 r4:c674fa80
-> [  366.214730] [<c02da288>] (ubifs_wbuf_write_nolock) from [<c02cd260>] (write_head.constprop.1+0x3c/0x5c)
-> [  366.224132]  r10:00000000 r9:c68c0650 r8:c18d8848 r7:c68bbdc0 r6:c19826a0 r5:c68c0600
-> [  366.231973]  r4:c674fa80
-> [  366.234508] [<c02cd224>] (write_head.constprop.1) from [<c02cd5dc>] (ubifs_jnl_update+0x35c/0x5ec)
-> [  366.243470]  r4:c664a000 r3:c68bbd48
-> [  366.247109] [<c02cd280>] (ubifs_jnl_update) from [<c02d3ce0>] (ubifs_create+0x134/0x1ec)
-> [  366.255154]  r10:c18d89c8 r9:c18d89b0 r8:c19733b8 r7:c664a000 r6:c19826a0 r5:00000000
-> [  366.262989]  r4:c18d8848
-> [  366.265529] [<c02d3bac>] (ubifs_create) from [<c01d0ba0>] (path_openat+0x770/0xe3c)
-> [  366.273214]  r10:c18d8848 r9:c19733b8 r8:00000241 r7:c19733b8 r6:00000000 r5:c666a640
-> [  366.281054]  r4:c68bbe98
-> [  366.283586] [<c01d0430>] (path_openat) from [<c01d12b8>] (do_filp_open+0x4c/0xb0)
-> [  366.291098]  r10:00020000 r9:c68ba000 r8:c6068000 r7:00000001 r6:c68bbf50 r5:c0a03008
-> [  366.298939]  r4:00000004
-> [  366.301472] [<c01d126c>] (do_filp_open) from [<c01befac>] (do_sys_open+0x124/0x1e0)
-> [  366.309150]  r7:00000241 r6:ffffff9c r5:c0a03008 r4:00000004
-> [  366.314778] [<c01bee88>] (do_sys_open) from [<c01bf0dc>] (sys_creat+0x28/0x30)
-> [  366.322026]  r10:00020000 r9:c68ba000 r8:c01011e4 r7:00000008 r6:00000000 r5:00009f74
-> [  366.329869]  r4:00052c48
-> [  366.332400] [<c01bf0b4>] (sys_creat) from [<c0101000>] (ret_fast_syscall+0x0/0x50)
-> [  366.339980] Exception stack(0xc68bbfa8 to 0xc68bbff0)
-> [  366.345009] bfa0:                   00052c48 00009f74 00052c48 00000180 00000064 00000000
-> [  366.353205] bfc0: 00052c48 00009f74 00000000 00000008 beba98bc 0002da58 00000000 0002c170
-> [  366.361396] bfe0: 00028010 beba9850 00013f3c b6cfe648
-> [  366.366421] ---[ end trace c36e65bc21373d32 ]---
+> 
+>>>>>>
+>>>>>> I've googled for some errata or known issues for vybryd's QSPI IP
+>>>>>> block (vf610) but without luck so far ...
+>>>>>
+>>>>> Unfortunately I don't know the background for this comment.
+>>>>
+>>>> The comment was added by some Freescale employee when the driver
+>>>> was added to Linux (by Huang - CC'ed).
+>>>>   
+>>>>> Is your
+>>>>> board using VF610?
+>>>>
+>>>> Yes, it uses vf610 (A5 + M4 cores).
+>>>>   
+>>>>> Do you experience problems?
+>>>>
+>>>> I've already observed following issue:
+>>>>
+>>>> For the current QSPI ML driver (fsl-quadspi.c - 4.19-rc3) only half
+>>>> of the AHB buffer is valid. When I do read the whole one - I do see
+>>>> read data corruption (on UBI or raw memory).
+>>>>
+>>>> This was pointed out in the patch:
+>>>> https://patchwork.ozlabs.org/patch/675401/
+>>>>
+>>>> Unfortunately, I did not found any info regarding this problem (in
+>>>> NXP's errata or other doc).
+>>>>
+>>>> I will check if this issue shows up on new patches.
+>>>>
+>>>> Thanks in advance for your help.
+>>>>   
+>>>>>
+>>>>> Regards,
+>>>>> Frieder
+>>>>>
+>>>>> ______________________________________________________
+>>>>> Linux MTD discussion mailing list
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>>>
+>>>> Best regards,
+>>>>
+>>>> Lukasz Majewski
+>>>>
+>>>> --
+>>>>
+>>>> DENX Software Engineering GmbH,      Managing Director: Wolfgang
+>>>> Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
+>>>> Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
+>>>> wd@denx.de
+>>>
+>>>
+>>>
+>>>
+>>> Best regards,
+>>>
+>>> Lukasz Majewski
+>>>
+>>> --
+>>>
+>>> DENX Software Engineering GmbH,      Managing Director: Wolfgang
+>>> Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
+>>> Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
+>>> wd@denx.de
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+> 
+> 
+> Best regards,
+> 
+> Lukasz Majewski
+> 
+> --
+> 
+> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+> 
