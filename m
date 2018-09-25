@@ -1,46 +1,21 @@
-Received: from mo6-p05-ob.smtp.rzone.de ([2a01:238:20a:202:5305::11])
+Received: from esa6.microchip.iphmx.com ([216.71.154.253])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4hAs-00077B-9P
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 06:50:27 +0000
-Subject: Re: Questions about the Freescale/NXP QuadSPI controller
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Han Xu <han.xu@nxp.com>,
- Huang Shijie <sjhuang@iluvatar.ai>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "broonie@kernel.org"
- <broonie@kernel.org>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, Albert ARIBAUD <albert.aribaud@3adev.fr>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Prabhakar Kushwaha <prabhakar.kushwaha@nxp.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>,
- David Wolfe <david.wolfe@nxp.com>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>
-References: <1530789310-16254-1-git-send-email-frieder.schrempf@exceet.de>
- <1530789310-16254-4-git-send-email-frieder.schrempf@exceet.de>
- <7e95c72c-2cd1-f138-a687-6cca362c95b7@exceet.de>
- <63462dd2-b61b-6522-0619-0cdc89148193@exceet.de>
- <VI1PR0401MB2221D006E89A06B7D343A5E5972C0@VI1PR0401MB2221.eurprd04.prod.outlook.com>
- <20180804153728.0a99d28f@bbrezillon>
- <121b89ad-712f-166b-83d2-6b0f1bdc750e@exceet.de>
- <AM6PR04MB4967E918792A1C0D7D3D5C18971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <b2a29f52-f658-d92c-7b42-3096af6449f1@exceet.de>
- <AM6PR04MB4967C4B3F97004C41220E310971B0@AM6PR04MB4967.eurprd04.prod.outlook.com>
- <09d39759-390a-bca3-caeb-2ee8ddb29443@exceet.de>
- <20180919004247.60c6099a@jawa>
- <e76062cb-f703-2830-8074-d1a812dc14ce@exceet.de>
- <20180919130211.3f2e7e3a@jawa> <20180920170032.39fb5073@jawa>
- <bd116b60-49ce-b4ad-3943-93df505bc710@exceet.de>
- <20180921001323.596a39c8@jawa>
-From: Frieder Schrempf <frieder.schrempf@exceet.de>
-Message-ID: <b3a25bd9-25a7-c1a5-ec50-c711d25f1b7e@exceet.de>
-Date: Tue, 25 Sep 2018 08:49:20 +0200
+ id 1g4hiC-0004CC-OY
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 07:24:50 +0000
+Subject: Re: [PATCH] mtd: spi-nor: cadence-quadspi: Use proper enum for
+ dma_unmap_single
+To: Nathan Chancellor <natechancellor@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>
+References: <20180921102944.27968-1-natechancellor@gmail.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <5e1d2e30-764f-f3a9-d0c1-7a6c81f296b7@microchip.com>
+Date: Tue, 25 Sep 2018 10:24:04 +0300
 MIME-Version: 1.0
-In-Reply-To: <20180921001323.596a39c8@jawa>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20180921102944.27968-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -52,246 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lukasz,
+Hi, Nathan,
 
-On 21.09.2018 00:13, Lukasz Majewski wrote:
-> Hi Frieder,
+On 09/21/2018 01:29 PM, Nathan Chancellor wrote:
+> Clang warns when one enumerated type is converted implicitly to another.
 > 
-> Please find some more comments regarding the new spi-fsl-qspi.c driver.
+> drivers/mtd/spi-nor/cadence-quadspi.c:962:47: warning: implicit
+> conversion from enumeration type 'enum dma_transfer_direction' to
+> different enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+>         dma_dst = dma_map_single(nor->dev, buf, len, DMA_DEV_TO_MEM);
+>                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+> ./include/linux/dma-mapping.h:428:66: note: expanded from macro
+> 'dma_map_single'
+> #define dma_map_single(d, a, s, r) dma_map_single_attrs(d, a, s, r, 0)
+>                                    ~~~~~~~~~~~~~~~~~~~~          ^
+> drivers/mtd/spi-nor/cadence-quadspi.c:997:43: warning: implicit
+> conversion from enumeration type 'enum dma_transfer_direction' to
+> different enumeration type 'enum dma_data_direction' [-Wenum-conversion]
+>         dma_unmap_single(nor->dev, dma_dst, len, DMA_DEV_TO_MEM);
+>         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+> ./include/linux/dma-mapping.h:429:70: note: expanded from macro
+> 'dma_unmap_single'
+> #define dma_unmap_single(d, a, s, r) dma_unmap_single_attrs(d, a, s, r, 0)
+>                                      ~~~~~~~~~~~~~~~~~~~~~~          ^
+> 2 warnings generated.
 > 
->> Hi Lukasz,
->>
->> On 20.09.2018 17:00, Lukasz Majewski wrote:
->>> Hi Frieder,
->>>    
->>>> Hi Frieder,
->>>>   
->>>>> Hi Lukasz,
->>>>>
->>>>> On 19.09.2018 00:42, Lukasz Majewski wrote:
->>>>>> Dear All,
->>>>>>
->>>>>> Maybe I do jump a bit off topic here, but...
->>>>>>
->>>>>> I've read through the following thread:
->>>>>> https://patchwork.ozlabs.org/patch/939885/
->>>>>>
->>>>>> And it mentions some issues with reading AHB content (buffers) in
->>>>>> fsl-quadspi.c driver discovered when new QuadSPI driver was
->>>>>> developed.
->>>>>
->>>>> The only setup with two chips that is known to be problematic with
->>>>> the new driver, is when both chips are connected to the same bus
->>>>> (e.g. QSPIA) using separate chip selects.
->>>>
->>>> I'm using QSPI0 controller, with two memories connected to QSPI0_A
->>>> and QSPI0_B lines.
->>>>   
->>>>>
->>>>> Does your board use this kind of setup, or are the two chips
->>>>> connected two different buses (QSPIA and QSPIB)?
->>>>>
->>>>> Have you tested the new driver? It would be great to receive some
->>>>> more feedback.
->>>>
->>>> I will check (test) this new driver. No problem.
->>>
->>> I've ported your patch on v4.19-rc3.
->>>
->>> I had to fix the "div0 issue" by adding:
->>> if (op->dummy.buswidth &&
->>> 	(op->dummy.nbytes * 8 / op->dummy.buswidth > 64))
->>>
->>> In fsl_qspi_supports_op() function.
->>>
->>>
->>> Unfortunately, on Vybrid vf610 when testing I do see corruption of
->>> read data from the mtd device:
->>>
->>> ~# hexdump aaa.img
->>> 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
->>> 0000010 e98e 5265 683c a635 c069 e402 303f d936
->>> 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
->>> 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
->>> 0000040 ffff ffff ffff ffff ffff ffff ffff ffff
->>> *
->>> 0000100
->>>
->>> ~# hexdump data_test.img
->>> 0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
->>> 0000010 e98e 5265 683c a635 c069 e402 303f d936
->>> 0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
->>> 0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
->>> 0000040 01c9 462d 0a43 f893 0e42 67f1 57f0 787c
->>> 0000050 49c0 fb2a e514 e954 1d21 affa bac4 38f1
->>> 0000060 1ca5 ec46 77eb a854 285b 8e21 12d7 f377
->>> 0000070 b441 2baf ee33 596c 98b6 e71a c1cb 876c
->>>
->>>
->>> Test case:
->>> flash_erase /dev/mtd3 0 1
->>> dd if=data_test.img of=/dev/mtd3
->>> dd if=/dev/mtd3 of=aaa.img bs=1 count=256
->>>
->>>
->>>   From the code I see that the AHB buffer has 1024B. It is accessed
->>> in 8 bytes packs.
->>>
->>> This seems like some cache or HW issue....
->>>
->>> In the old driver, to fix this problem one needed to
->>> 1. Reduce the RX fifo size from 128B to 64B
->>>
->>> 2. Disable (set to 0) the AHB transfer's BUF3CR ADATSZ field - the
->>> transfer size is the same as in LUT.
->>>
->>> (Original patch: https://patchwork.ozlabs.org/patch/675401/)
->>
->> Thanks a lot for doing the test. It seems like Vybrid needs some
->> special handling to work around this problem.
->> So this means the current driver has never worked for Vybrid, as the
->> mentioned patch was never merged!?
->>
->> As these issues seem to be specific to Vybrid and as they seem to
->> exist in the current driver too, I would like to fix them after we
->> have a first version of the new driver that works for the other
->> platforms.
->>
->> I hope we can figure out the other issues soon.
->>
->> Thanks,
->> Frieder
->>
->>>
->>>    
->>>>   
->>>>>       
->>>>>> I do have a setup with qspi0 having two SPI memories connected
->>>>>> (2x16 MiB), and I'm wondering if anybody has some more info
->>>>>> regarding:
->>>>>>
->>>>>> (What's more is that there is a bug in
->>>>>>     * the "IP Command Read" in the Vybrid.) found here:
->>> 	^^^^^^^^^^^^^^^^^^^^^^^^ - It would be handy to have the
->>> exact explanation of this issue.
->>>    
->>>>>> https://elixir.bootlin.com/linux/v4.19-rc4/source/drivers/mtd/spi-nor/fsl-quadspi.c#L671
->         ^^^^^^^^^^^^ - [1]
+> Use the proper enums from dma_data_direction to satisfy Clang.
 > 
+> DMA_TO_DEVICE = DMA_MEM_TO_DEV = 1
+> DMA_FROM_DEVICE = DMA_DEV_TO_MEM = 2
 > 
-> I've looked a bit closer to the new spi-fsl-qspi.c driver and it looks
-> like it uses fsl_qspi_exec_op() and then calls fsl_qspi_do_op().
+> Link: https://github.com/ClangBuiltLinux/linux/issues/108
+> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> ---
+>  drivers/mtd/spi-nor/cadence-quadspi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> In the last function we setup the QUADSPI_IPCR register to initiate the
-> transfer between SPI-NOR and the internal RX buffer.
-> 
-> Please correct me if I'm wrong but it seems to me like we are using "IP
-> Command Read" approach here.
+> diff --git a/drivers/mtd/spi-nor/cadence-quadspi.c b/drivers/mtd/spi-nor/cadence-quadspi.c
+> index 8e714fbfa521..d0e57ac81098 100644
+> --- a/drivers/mtd/spi-nor/cadence-quadspi.c
+> +++ b/drivers/mtd/spi-nor/cadence-quadspi.c
+> @@ -959,7 +959,7 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
+>  		return 0;
+>  	}
+>  
+> -	dma_dst = dma_map_single(nor->dev, buf, len, DMA_DEV_TO_MEM);
+> +	dma_dst = dma_map_single(nor->dev, buf, len, DMA_FROM_DEVICE);
+>  	if (dma_mapping_error(nor->dev, dma_dst)) {
+>  		dev_err(nor->dev, "dma mapping failed\n");
+>  		return -ENOMEM;
+> @@ -994,7 +994,7 @@ static int cqspi_direct_read_execute(struct spi_nor *nor, u_char *buf,
+>  	}
+>  
+>  err_unmap:
+> -	dma_unmap_single(nor->dev, dma_dst, len, DMA_DEV_TO_MEM);
+> +	dma_unmap_single(nor->dev, dma_dst, len, DMA_TO_DEVICE);
 
-"IP Read" is only used if data size is smaller then RX FIFO size (128 
-bytes for Vybrid). For bigger chunks of data "AHB Read" is used.
+Should have used DMA_FROM_DEVICE, as you did above. Otherwise looks good.
 
-> 
-> If this is true - what was the rationale to use it in the new driver, as
-> in the old one the "AHB Command Read" approach was recommended (i.e.
-> faster) [1]?
-
-As explained above we only use "IP Read" for small chunks of data. To 
-speed up the tranfer for bigger chunks we do use "AHB Read".
-And in the future we plan to add an interface for mapping memory, so we 
-can use the "AHB Read" even more efficiently.
-
-> 
-> To be even more problematic the info in link [1] states that on vybrid
-> there is a bug on the "IP Command Read" HW block and it should be
-> avoided.
-
-If "IP Read" should be avoided completely for Vybrid, we have to add 
-some kind of quirk.
-
-Thanks for you comments,
-Frieder
-
-> 
->>>>>>
->>>>>> I've googled for some errata or known issues for vybryd's QSPI IP
->>>>>> block (vf610) but without luck so far ...
->>>>>
->>>>> Unfortunately I don't know the background for this comment.
->>>>
->>>> The comment was added by some Freescale employee when the driver
->>>> was added to Linux (by Huang - CC'ed).
->>>>   
->>>>> Is your
->>>>> board using VF610?
->>>>
->>>> Yes, it uses vf610 (A5 + M4 cores).
->>>>   
->>>>> Do you experience problems?
->>>>
->>>> I've already observed following issue:
->>>>
->>>> For the current QSPI ML driver (fsl-quadspi.c - 4.19-rc3) only half
->>>> of the AHB buffer is valid. When I do read the whole one - I do see
->>>> read data corruption (on UBI or raw memory).
->>>>
->>>> This was pointed out in the patch:
->>>> https://patchwork.ozlabs.org/patch/675401/
->>>>
->>>> Unfortunately, I did not found any info regarding this problem (in
->>>> NXP's errata or other doc).
->>>>
->>>> I will check if this issue shows up on new patches.
->>>>
->>>> Thanks in advance for your help.
->>>>   
->>>>>
->>>>> Regards,
->>>>> Frieder
->>>>>
->>>>> ______________________________________________________
->>>>> Linux MTD discussion mailing list
->>>>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>>
->>>> Best regards,
->>>>
->>>> Lukasz Majewski
->>>>
->>>> --
->>>>
->>>> DENX Software Engineering GmbH,      Managing Director: Wolfgang
->>>> Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
->>>> Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
->>>> wd@denx.de
->>>
->>>
->>>
->>>
->>> Best regards,
->>>
->>> Lukasz Majewski
->>>
->>> --
->>>
->>> DENX Software Engineering GmbH,      Managing Director: Wolfgang
->>> Denk HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell,
->>> Germany Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email:
->>> wd@denx.de
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
-> 
-> 
-> Best regards,
-> 
-> Lukasz Majewski
-> 
-> --
-> 
-> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-> 
+Cheers,
+ta
