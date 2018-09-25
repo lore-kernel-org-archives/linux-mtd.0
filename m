@@ -1,22 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g4k7Y-0005On-G5
- for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 09:59:10 +0000
-Date: Tue, 25 Sep 2018 11:58:23 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Mark Brown <broonie@kernel.org>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>, Marek Vasut
- <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-mem: Fix inverted logic in op sanity check
-Message-ID: <20180925115823.3dd07cda@bbrezillon>
-In-Reply-To: <20180925094655.11438-1-geert+renesas@glider.be>
-References: <20180925094655.11438-1-geert+renesas@glider.be>
+Received: from mail-eopbgr730088.outbound.protection.outlook.com
+ ([40.107.73.88] helo=NAM05-DM3-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g4mLM-0008C3-55
+ for linux-mtd@lists.infradead.org; Tue, 25 Sep 2018 12:21:33 +0000
+From: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+To: <boris.brezillon@bootlin.com>, <miquel.raynal@bootlin.com>,
+ <richard@nod.at>, <dwmw2@infradead.org>, <computersforpeace@gmail.com>,
+ <marek.vasut@gmail.com>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+ <michals@xilinx.com>, <nagasuresh12@gmail.com>, Naga Sureshkumar Relli
+ <naga.sureshkumar.relli@xilinx.com>
+Subject: [LINUX PATCH v11 1/3] dt-bindings: mtd: arasan: Add device tree
+ binding documentation
+Date: Tue, 25 Sep 2018 17:50:29 +0530
+Message-ID: <1537878031-22253-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
+In-Reply-To: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 Sep 2018 11:46:55 +0200
-Geert Uytterhoeven <geert+renesas@glider.be> wrote:
+This patch adds the dts binding document for arasan nand flash controller
 
-> On r8a7791/koelsch:
-> 
->     m25p80 spi0.0: error -22 reading 9f
->     m25p80: probe of spi0.0 failed with error -22
-> 
-> Apparently the logic in spi_mem_check_op() is wrong, rejecting the
-> spi-mem operation if any buswidth is valid, instead of invalid.
-> 
-> Fixes: 380583227c0c7f52 ("spi: spi-mem: Add extra sanity checks on the op param")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
+---
+Changes in v11:
+ - Updated compatible description as suggested by Boris
+ - Removed arasan-has-dma property
+Changes in v10:
+- None
+Changes in v9:
+- None
+Changes in v8:
+- Updated compatible and clock-names as per Boris comments
+Changes in v7:
+- Corrected the acronyms those should be in caps 
+Changes in v6:
+- Removed num-cs property
+- Separated nandchip from nand controller
+Changes in v5:
+- None
+Changes in v4:
+- Added num-cs property
+- Added clock support
+Changes in v3:
+- None
+Changes in v2:
+- None
+---
+ .../devicetree/bindings/mtd/arasan_nand.txt        | 33 ++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/arasan_nand.txt
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-Sorry for the mess :-/, and thanks for reporting/fixing it.
-
-> ---
->  drivers/spi/spi-mem.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index cc3d425aae56c634..62a7b80801d22098 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -169,10 +169,10 @@ static int spi_mem_check_op(const struct spi_mem_op *op)
->  	    (op->data.nbytes && !op->data.buswidth))
->  		return -EINVAL;
->  
-> -	if (spi_mem_buswidth_is_valid(op->cmd.buswidth) ||
-> -	    spi_mem_buswidth_is_valid(op->addr.buswidth) ||
-> -	    spi_mem_buswidth_is_valid(op->dummy.buswidth) ||
-> -	    spi_mem_buswidth_is_valid(op->data.buswidth))
-> +	if (!spi_mem_buswidth_is_valid(op->cmd.buswidth) ||
-> +	    !spi_mem_buswidth_is_valid(op->addr.buswidth) ||
-> +	    !spi_mem_buswidth_is_valid(op->dummy.buswidth) ||
-> +	    !spi_mem_buswidth_is_valid(op->data.buswidth))
->  		return -EINVAL;
->  
->  	return 0;
+diff --git a/Documentation/devicetree/bindings/mtd/arasan_nand.txt b/Documentation/devicetree/bindings/mtd/arasan_nand.txt
+new file mode 100644
+index 0000000..546ed98
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/arasan_nand.txt
+@@ -0,0 +1,33 @@
++Arasan NAND Flash Controller with ONFI 3.1 support
++
++Required properties:
++- compatible:		Should be "xlnx,zynqmp-nand", "arasan,nfc-v3p10"
++- reg:			Memory map for module access
++- interrupt-parent:	Interrupt controller the interrupt is routed through
++- interrupts:		Should contain the interrupt for the device
++- clock-name:		List of input clocks - "sys", "flash"
++			(See clock bindings for details)
++- clocks:		Clock phandles (see clock bindings for details)
++
++Required properties for child node:
++- nand-ecc-mode: see nand.txt
++
++For NAND partition information please refer the below file
++Documentation/devicetree/bindings/mtd/partition.txt
++
++Example:
++	nfc: nand@ff100000 {
++		compatible = "xlnx,zynqmp-nand", "arasan,nfc-v3p10"
++		reg = <0x0 0xff100000 0x1000>;
++		clock-name = "sys", "flash"
++		clocks = <&misc_clk &misc_clk>;
++		interrupt-parent = <&gic>;
++		interrupts = <0 14 4>;
++		#address-cells = <1>;
++		#size-cells = <0>
++
++		nand@0 {
++			reg = <0>
++			nand-ecc-mode = "hw";
++		};
++	};
+-- 
+2.7.4
