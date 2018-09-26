@@ -1,7 +1,7 @@
-Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
+Received: from mail-out.m-online.net ([212.18.0.9])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5HzU-0005ia-68
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:09:06 +0000
+ id 1g5HzU-0005j8-67
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:09:08 +0000
 From: Lukasz Majewski <lukma@denx.de>
 To: Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
  Mark Rutland <mark.rutland@arm.com>
@@ -12,10 +12,10 @@ Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  han.xu@nxp.com, broonie@kernel.org, david.wolfe@nxp.com,
  computersforpeace@gmail.com, dwmw2@infradead.org, albert.aribaud@3adev.fr,
  Lukasz Majewski <lukma@denx.de>
-Subject: [RFC/RFT PATCH v1 6/9] mtd: spi: Enhance the fsl_qspi_read() method
- to support DUAL and QUAD
-Date: Thu, 27 Sep 2018 00:07:36 +0200
-Message-Id: <20180926220739.620-7-lukma@denx.de>
+Subject: [RFC/RFT PATCH v1 8/9] mtd: spi: Allocate memory corresponding to
+ maximal fsl-quadspi.c controller area
+Date: Thu, 27 Sep 2018 00:07:38 +0200
+Message-Id: <20180926220739.620-9-lukma@denx.de>
 In-Reply-To: <20180926220739.620-1-lukma@denx.de>
 References: <20180926220739.620-1-lukma@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,53 +27,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This commit not only provides the DUAL and QUAD read capability for QSPI
-controller, but also resets the AHB pointer sequence (as recommended) and
-makes sure that AHB - not IP - mode is used for reading SPI-NOR data to
-internal buffer.
+This commit changes the way how QUADSPI controller allocates memory for
+reading data via AHB.
+
+After this change it is a fixed buffer with maximal size (for up to four
+SPI-NOR memories connected).
+
+In my case:
+
+----------------- 0x0
+SPI0 (QSPI0, A1 -> QUAD)
+----------------- 0x1000000
+HOLE
+----------------- 0x2000000
+SPI1 (QSPI0, B1 -> DUAL)
+----------------- 0x3000000
+HOLE
+----------------- 0x4000000
+
+Without this change, some single bytes are missing when reading single
+bytes from 256B buffer.
+
+dd if=/dev/mtd7 of=aaa.img bs=1 count=256
+
+root@nix:~# hexdump aaa.img
+0000000 464c eec0 baa5 c5ff 7b99 4dfb e0b6 8a2e
+0000010 e98e 5265 683c a635 c069 e402 303f d936
+0000020 c243 01a7 7064 fce8 e3a9 200a 7e85 28bc
+0000030 4296 a30e 1bb4 88d4 b456 b4a6 f3aa 8cff
+0000040 01c9 462d 0a43 f893 0e42 67f1 57f0 787c
+0000050 49c0 fb2a e514 e954 1d21 affa bac4 38f1
+0000060 1ca5 ec46 77eb a854 98b6 e71a c1cb 876c
+0000070 b441 2baf ee33 596c 98b6 e71a c1cb 876c
+0000080 7d8b 5739 5cca 873f c3df 8aca 2d5b 2bbb
+0000090 5afe 6ad9 6072 b092 5ace 905b e217 faee
+00000a0 58c6 6851 a1b9 c756 5ace 905b e217 faee
+00000b0 b3dd 98be 0412 73d2 cbca c47c 6ab0 7c6d
+00000c0 65cf b1e2 1457 a3cf 502b 6449 9a84 d83f
+00000d0 a6e7 df30 b0e6 ea23 502b 6449 9a84 d83f
+00000e0 5638 26bf d680 c47a 0225 6762 cf65 75fc
+00000f0 2faa edf1 f8b6 dc13 ffff ffff ffff ffff
+0000100
+
 
 Signed-off-by: Lukasz Majewski <lukma@denx.de>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 0c381cdfb39f..97546fa70b79 100644
+index 97546fa70b79..915e5a203895 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -119,6 +119,10 @@
- #define QUADSPI_FR			0x160
- #define QUADSPI_FR_TFF_MASK		0x1
- 
-+#define QUADSPI_SPTRCLR                 0x16c
-+#define QUADSPI_SPTRCLR_BFPTRC_SHIFT    0
-+#define QUADSPI_SPTRCLR_BFPTRC_MASK     (0x1 << QUADSPI_SPTRCLR_BFPTRC_SHIFT)
-+
- #define QUADSPI_SFA1AD			0x180
- #define QUADSPI_SFA2AD			0x184
- #define QUADSPI_SFB1AD			0x188
-@@ -903,6 +907,22 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
- {
+@@ -908,6 +908,9 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
  	struct fsl_qspi *q = nor->priv;
  	u8 cmd = nor->read_opcode;
-+	int seqid;
-+
-+	/* Set the actual lut sequence for AHB Read from the considered nor. */
-+	seqid = fsl_qspi_get_seqid(q, nor->read_opcode);
-+	if (seqid < 0)
-+		return seqid;
-+
-+	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
-+		    q->iobase + QUADSPI_BFGENCR);
-+
-+	/* Reset the AHB sequence pointer */
-+	qspi_writel(q, QUADSPI_SPTRCLR_BFPTRC_MASK,
-+		    q->iobase + QUADSPI_SPTRCLR);
-+
-+	/* make sure the Rx buffer is read through AHB, not IP */
-+	qspi_writel(q, QUADSPI_RBCT_WMRK_MASK, q->iobase + QUADSPI_RBCT);
+ 	int seqid;
++	size_t qlen = q->nor_size * 4;
++	int nor_idx = nor - q->nor;
++	size_t nor_ofs = q->nor_size * nor_idx;
+ 
+ 	/* Set the actual lut sequence for AHB Read from the considered nor. */
+ 	seqid = fsl_qspi_get_seqid(q, nor->read_opcode);
+@@ -926,8 +929,9 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
  
  	/* if necessary,ioremap buffer before AHB read, */
  	if (!q->ahb_addr) {
+-		q->memmap_offs = q->chip_base_addr + from;
+-		q->memmap_len = len > QUADSPI_MIN_IOMAP ? len : QUADSPI_MIN_IOMAP;
++		q->memmap_offs = q->chip_base_addr;
++		q->memmap_len = qlen > QUADSPI_MIN_IOMAP ?
++			qlen : QUADSPI_MIN_IOMAP;
+ 
+ 		q->ahb_addr = ioremap_nocache(
+ 				q->memmap_phy + q->memmap_offs,
+@@ -942,8 +946,9 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 			q->memmap_offs + q->memmap_len) {
+ 		iounmap(q->ahb_addr);
+ 
+-		q->memmap_offs = q->chip_base_addr + from;
+-		q->memmap_len = len > QUADSPI_MIN_IOMAP ? len : QUADSPI_MIN_IOMAP;
++		q->memmap_offs = q->chip_base_addr;
++		q->memmap_len = qlen > QUADSPI_MIN_IOMAP ?
++			qlen : QUADSPI_MIN_IOMAP;
+ 		q->ahb_addr = ioremap_nocache(
+ 				q->memmap_phy + q->memmap_offs,
+ 				q->memmap_len);
+@@ -954,12 +959,11 @@ static ssize_t fsl_qspi_read(struct spi_nor *nor, loff_t from,
+ 	}
+ 
+ 	dev_dbg(q->dev, "cmd [%x],read from %p, len:%zd\n",
+-		cmd, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
++		cmd, q->ahb_addr + nor_ofs + from - q->memmap_offs,
+ 		len);
+ 
+ 	/* Read out the data directly from the AHB buffer.*/
+-	memcpy(buf, q->ahb_addr + q->chip_base_addr + from - q->memmap_offs,
+-		len);
++	memcpy(buf, q->ahb_addr + nor_ofs + from - q->memmap_offs, len);
+ 
+ 	return len;
+ }
 -- 
 2.11.0
