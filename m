@@ -1,24 +1,18 @@
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g53Ul-0003zw-Eh
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 06:40:24 +0000
-Received: by mail-ed1-x541.google.com with SMTP id t11-v6so846351edq.11
- for <linux-mtd@lists.infradead.org>; Tue, 25 Sep 2018 23:39:53 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: robh@kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- open list <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v3 8/8] dt-binding: mtd: Document gpio-addr-flash
-Date: Wed, 26 Sep 2018 08:39:34 +0200
-Message-Id: <20180926063934.9229-1-ricardo.ribalda@gmail.com>
-In-Reply-To: <20180925204813.GA6450@bogus>
-References: <20180925204813.GA6450@bogus>
+Subject: Re: [PATCH] arm64: dts: rockchip: Enable SPI NOR flash on Rock64
+To: Chen-Yu Tsai <wens@csie.org>, Heiko Stuebner <heiko@sntech.de>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org, linux-rockchip@lists.infradead.org,
+ Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org
+References: <20180926045357.20722-1-wens@csie.org>
+From: Frieder Schrempf <frieder.schrempf@exceet.de>
+Message-ID: <7ecb43c3-1693-005b-b547-03ca361bd843@exceet.de>
+Date: Wed, 26 Sep 2018 09:10:17 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20180926045357.20722-1-wens@csie.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,82 +22,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add documentation for gpio-addr-flash. This binding allow creating
-flash devices that are paged using GPIOs.
+On 26.09.2018 06:53, Chen-Yu Tsai wrote:
+> The Pine64 Rock64 board comes with a GigaDevice GD25Q128CSIG
+> or GD25Q127CSIG chip, which is a 128 Mbit SPI NOR flash chip
+> that supports the JEDEC read-ID command.
+> 
+> This patch enables the SPI controller and adds a device node
+> for the flash chip using the generic "jedec,spi-nor" comaptible.
+> 
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+> ---
+> 
+> This was working on linux-next 20180910, but now fails on linux-next
+> 20180925, with the following error messages:
+> 
+>      m25p80 spi0.0: error -22 reading 9f
+>      m25p80: probe of spi0.0 failed with error -2
+> 
+> Reverting the spi/for-next branch makes it work again:
+> 
+>      m25p80 spi0.0: gd25q128 (16384 Kbytes)
+> 
+> Not sure what's up.
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
+The reason is probably an issue that was introduced here: [1], and it 
+was fixed here: [2].
 
-Changelog v3: 
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/spi?id=380583227c0c7f52383b0cd5c0e2de93ed31d553
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/drivers/spi?id=4c53f98555fdbf1cc291cab8ffa5e1507a4f25d9
 
-- Changes suggested by Rob Herring (Thanks!)
-  - Add gpio description
-  - Improve partition
-
- .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-
-diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-new file mode 100644
-index 000000000000..5006a26e1753
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-@@ -0,0 +1,54 @@
-+Memory Mapped flash with some address lines addressed using GPIOs
-+
-+Handle the case where a flash device is mostly addressed using physical
-+line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
-+to a 2MiB memory range and use the GPIOs to select a particular range.
-+
-+ - compatible : "cfi-gpio-addr-flash"
-+ - reg : Address range of the mtd chip that is memory mapped, this is,
-+   on the previous example 2MiB.
-+ - bank-width : Width (in bytes) of the bank.  Equal to the
-+   device width times the number of interleaved chips.
-+ - gpios: List of GPIO specifiers that will be used to address the MSBs address
-+   lines. The order goes from LSB to MSB.
-+ - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
-+   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
-+ - #address-cells, #size-cells : Must be present if the device has
-+   sub-nodes representing partitions (see below).  In this case
-+   both #address-cells and #size-cells must be equal to 1.
-+
-+The device tree may optionally contain sub-nodes describing partitions of the
-+address space. Check partition.txt for more details.
-+
-+Example:
-+
-+	flash@300000 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "cfi-gpio-addr-flash";
-+		bank-width = <2>;
-+		reg = < 0x00300000 0x00200000 >;
-+		gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
-+		partitions {
-+			compatible = "fixed-partitions";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			partition@0 {
-+				reg = < 0x0 0x200000 >;
-+				label = "Golden Bitstream";
-+			};
-+			partition@200000 {
-+				reg = < 0x200000 0x200000 >;
-+				label = "User Bitstream";
-+			};
-+			partition@400000 {
-+				reg = < 0x400000 0x200000 >;
-+				label = "V4L Controls";
-+			};
-+			partition@600000 {
-+				reg = < 0x600000 0x200000 >;
-+				label = "Production Data";
-+			};
-+		}
-+	} ;
--- 
-2.19.0
+> 
+> ---
+>   arch/arm64/boot/dts/rockchip/rk3328-rock64.dts | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+> index 9ee4f57557f3..2170cf63845e 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+> +++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+> @@ -290,6 +290,18 @@
+>   	};
+>   };
+>   
+> +&spi0 {
+> +	status = "okay";
+> +
+> +	spiflash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0>;
+> +
+> +		/* maximum speed for Rockchip SPI */
+> +		spi-max-frequency = <50000000>;
+> +	};
+> +};
+> +
+>   &tsadc {
+>   	rockchip,hw-tshut-mode = <0>;
+>   	rockchip,hw-tshut-polarity = <0>;
+> 
