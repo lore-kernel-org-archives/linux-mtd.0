@@ -1,13 +1,14 @@
-Content-Type: text/plain; charset="iso-8859-1"
+From: Chen-Yu Tsai <wens@csie.org>
+To: Heiko Stuebner <heiko@sntech.de>
+Cc: Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: [PATCH] arm64: dts: rockchip: Enable SPI NOR flash on Rock64
+Date: Wed, 26 Sep 2018 12:53:57 +0800
+Message-Id: <20180926045357.20722-1-wens@csie.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: ASAP
-To: Westnet Support <suport@westnet.net.au>
-From: Margaret Kwan Wing Han <01968747@edumail.vic.gov.au>
-Date: Tue, 25 Sep 2018 16:50:24 -0700
-Reply-To: <magerateh0001@gmail.com>
-Message-ID: <af340612-d594-43a7-a29c-16e921cc492b@PRWPEXED02.education.vic.gov.au>
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,7 +18,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a deal for you reply for more details.
+The Pine64 Rock64 board comes with a GigaDevice GD25Q128CSIG
+or GD25Q127CSIG chip, which is a 128 Mbit SPI NOR flash chip
+that supports the JEDEC read-ID command.
 
-Kind Regards,
-Ms Margaret KWAN Wing Han
+This patch enables the SPI controller and adds a device node
+for the flash chip using the generic "jedec,spi-nor" comaptible.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+
+This was working on linux-next 20180910, but now fails on linux-next
+20180925, with the following error messages:
+
+    m25p80 spi0.0: error -22 reading 9f
+    m25p80: probe of spi0.0 failed with error -2
+
+Reverting the spi/for-next branch makes it work again:
+
+    m25p80 spi0.0: gd25q128 (16384 Kbytes)
+
+Not sure what's up.
+
+---
+ arch/arm64/boot/dts/rockchip/rk3328-rock64.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+index 9ee4f57557f3..2170cf63845e 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+@@ -290,6 +290,18 @@
+ 	};
+ };
+ 
++&spi0 {
++	status = "okay";
++
++	spiflash@0 {
++		compatible = "jedec,spi-nor";
++		reg = <0>;
++
++		/* maximum speed for Rockchip SPI */
++		spi-max-frequency = <50000000>;
++	};
++};
++
+ &tsadc {
+ 	rockchip,hw-tshut-mode = <0>;
+ 	rockchip,hw-tshut-polarity = <0>;
+-- 
+2.19.0
