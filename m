@@ -1,17 +1,15 @@
-From: Heiko Stuebner <heiko@sntech.de>
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] arm64: dts: rockchip: Enable SPI NOR flash on Rock64
-Date: Wed, 26 Sep 2018 13:38:53 +0200
-Message-ID: <2872521.VFYVRVU0oA@phil>
-In-Reply-To: <20180926045357.20722-1-wens@csie.org>
-References: <20180926045357.20722-1-wens@csie.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+From: Arnd Bergmann <arnd@arndb.de>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
+Cc: Arnd Bergmann <arnd@arndb.de>, Imre Kaloz <kaloz@openwrt.org>,
+ Krzysztof Halasa <khalasa@piap.pl>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/2] ARM: ixp4xx: include linux/mtd/platnand.h
+Date: Wed, 26 Sep 2018 15:04:39 +0200
+Message-Id: <20180926130458.2406549-2-arnd@arndb.de>
+In-Reply-To: <20180926130458.2406549-1-arnd@arndb.de>
+References: <20180926130458.2406549-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, 26. September 2018, 06:53:57 CEST schrieb Chen-Yu Tsai:
-> The Pine64 Rock64 board comes with a GigaDevice GD25Q128CSIG
-> or GD25Q127CSIG chip, which is a 128 Mbit SPI NOR flash chip
-> that supports the JEDEC read-ID command.
-> 
-> This patch enables the SPI controller and adds a device node
-> for the flash chip using the generic "jedec,spi-nor" comaptible.
-> 
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+The platform_nand_data structure definition is required for ixdp425
+but has now moved to a new header file:
 
-applied for 4.20
+arch/arm/mach-ixp4xx/ixdp425-setup.c:98:15: error: variable 'ixdp425_flash_nand_data' has initializer but incomplete type
+ static struct platform_nand_data ixdp425_flash_nand_data = {
+               ^~~~~~~~~~~~~~~~~~
+arch/arm/mach-ixp4xx/ixdp425-setup.c:99:3: error: 'struct platform_nand_data' has no member named 'chip'
 
-Thanks
-Heiko
+Fixes: 19cf5dfa3a31 ("mtd: rawnand: Move platform_nand_xxx definitions out of rawnand.h")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm/mach-ixp4xx/ixdp425-setup.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/mach-ixp4xx/ixdp425-setup.c b/arch/arm/mach-ixp4xx/ixdp425-setup.c
+index 797e7edc7124..57d7df79d838 100644
+--- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
++++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
+@@ -20,6 +20,7 @@
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/rawnand.h>
+ #include <linux/mtd/partitions.h>
++#include <linux/mtd/platnand.h>
+ #include <linux/delay.h>
+ #include <linux/gpio.h>
+ #include <asm/types.h>
+-- 
+2.18.0
