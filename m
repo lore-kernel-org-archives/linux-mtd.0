@@ -1,21 +1,22 @@
-Date: Wed, 26 Sep 2018 07:59:32 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Arnd Bergmann <arnd@arndb.de>
+MIME-Version: 1.0
+References: <20180926142029.619397-1-arnd@arndb.de>
+ <20180926165240.77a78fc4@xps13>
+In-Reply-To: <20180926165240.77a78fc4@xps13>
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 26 Sep 2018 17:30:21 +0200
+Message-ID: <CAK8P3a29=N9AoBAfKzNR-8fKQgoLGyPJJrqXn0eMwas+nKWN=A@mail.gmail.com>
+Subject: Re: [PATCH] [v2] ARM: omap1: add nand_chip declaration
+To: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- linux-mtd@lists.infradead.org, Aaro Koskinen <aaro.koskinen@iki.fi>,
+ linux-mtd <linux-mtd@lists.infradead.org>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>,
  Alexander Sverdlin <alexander.sverdlin@gmail.com>,
  Paul Burton <paul.burton@mips.com>,
  Wolfram Sang <wsa@the-dreams.de>, Suman Anna <s-anna@ti.com>,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ARM: omap1: add nand_chip declaration
-Message-ID: <20180926145932.GR5662@atomide.com>
-References: <20180926142029.619397-1-arnd@arndb.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180926142029.619397-1-arnd@arndb.de>
+ linux-omap <linux-omap@vger.kernel.org>,
+ Linux ARM <linux-arm-kernel@lists.infradead.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Arnd Bergmann <arnd@arndb.de> [180926 14:26]:
-> Recent MTD changes caused a minor build regression on OMAP1:
-> 
-> In file included from arch/arm/mach-omap1/devices.c:31:
-> arch/arm/mach-omap1/common.h:85:39: error: 'struct nand_chip' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
-> 
-> Fixes: 1002aed789bc ("mtd: rawnand: plat_nand: Pass a nand_chip object to all platform_nand_ctrl hooks")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ----
-> v2: remove unused linux/mtd/mtd.h inclusion
+On Wed, Sep 26, 2018 at 4:52 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> Arnd Bergmann <arnd@arndb.de> wrote on Wed, 26 Sep 2018 16:20:16 +0200:
+> > @@ -82,6 +81,7 @@ void omap1_restart(enum reboot_mode, const char *);
+> >
+> >  extern void __init omap_check_revision(void);
+> >
+> > +struct nand_chip;
+> >  extern void omap1_nand_cmd_ctl(struct nand_chip *this, int cmd,
+> >                              unsigned int ctrl);
+> >
+>
+> Boris pointed me that the commit introducing the regression is still
+> in nand/next, so do you mind if I squash both patches with it?
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+No worries, please do that if it makes it easier for you.
+
+      Arnd
