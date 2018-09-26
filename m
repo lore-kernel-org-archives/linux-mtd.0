@@ -1,6 +1,6 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([2001:a60:0:28:0:1:25:1])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5Hz0-0005dv-A0
+ id 1g5Hz0-0005dt-Ak
  for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:08:36 +0000
 From: Lukasz Majewski <lukma@denx.de>
 To: Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
@@ -12,10 +12,10 @@ Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  han.xu@nxp.com, broonie@kernel.org, david.wolfe@nxp.com,
  computersforpeace@gmail.com, dwmw2@infradead.org, albert.aribaud@3adev.fr,
  Lukasz Majewski <lukma@denx.de>
-Subject: [RFC/RFT PATCH v1 3/9] mtd: spi: Do not setup the default seqid as we
- got it set for DUAL and QUAD
-Date: Thu, 27 Sep 2018 00:07:33 +0200
-Message-Id: <20180926220739.620-4-lukma@denx.de>
+Subject: [RFC/RFT PATCH v1 1/9] Revert "mtd: fsl-quadspi: Rename
+ SEQID_QUAD_READ to SEQID_READ"
+Date: Thu, 27 Sep 2018 00:07:31 +0200
+Message-Id: <20180926220739.620-2-lukma@denx.de>
 In-Reply-To: <20180926220739.620-1-lukma@denx.de>
 References: <20180926220739.620-1-lukma@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,34 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This reverts commit 9b2a34906c917e6dacfa08f2eafa5beb8baff5e1, as
+it is misleading to have READ_QSPI only when we do plan to use
+READ_DUAL_QSPI.
+
+Lets bring back the old naming (explicitly showing the QUAD operation).
+
 Signed-off-by: Lukasz Majewski <lukma@denx.de>
 ---
- drivers/mtd/spi-nor/fsl-quadspi.c | 6 ------
- 1 file changed, 6 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 2ef5bfc41d32..ad951a46a628 100644
+index 7d9620c7ff6c..f67f3fa5b9c9 100644
 --- a/drivers/mtd/spi-nor/fsl-quadspi.c
 +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -686,7 +686,6 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
- static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+@@ -193,7 +193,7 @@
+ #define QUADSPI_LUT_NUM		64
+ 
+ /* SEQID -- we can have 16 seqids at most. */
+-#define SEQID_READ		0
++#define SEQID_QUAD_READ		0
+ #define SEQID_WREN		1
+ #define SEQID_WRDI		2
+ #define SEQID_RDSR		3
+@@ -396,8 +396,8 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
+ 	for (i = 0; i < QUADSPI_LUT_NUM; i++)
+ 		qspi_writel(q, 0, base + QUADSPI_LUT_BASE + i * 4);
+ 
+-	/* Read */
+-	lut_base = SEQID_READ * 4;
++	/* Quad Read */
++	lut_base = SEQID_QUAD_READ * 4;
+ 
+ 	qspi_writel(q, LUT0(CMD, PAD1, read_op) | LUT1(ADDR, PAD1, addrlen),
+ 			base + QUADSPI_LUT(lut_base));
+@@ -478,7 +478,7 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
  {
- 	void __iomem *base = q->iobase;
--	int seqid;
- 	u32 buf3cr;
- 
- 	/* AHB configuration for access buffer 0/1/2 .*/
-@@ -708,11 +707,6 @@ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
- 	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
- 	qspi_writel(q, 0, base + QUADSPI_BUF1IND);
- 	qspi_writel(q, 0, base + QUADSPI_BUF2IND);
--
--	/* Set the default lut sequence for AHB Read. */
--	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
--	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
--		q->iobase + QUADSPI_BFGENCR);
- }
- 
- /* This function was used to prepare and enable QSPI clock */
+ 	switch (cmd) {
+ 	case SPINOR_OP_READ_1_1_4:
+-		return SEQID_READ;
++		return SEQID_QUAD_READ;
+ 	case SPINOR_OP_WREN:
+ 		return SEQID_WREN;
+ 	case SPINOR_OP_WRDI:
 -- 
 2.11.0
