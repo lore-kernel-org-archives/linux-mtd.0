@@ -1,7 +1,7 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-out.m-online.net ([212.18.0.10])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5Hz0-0005ds-AL
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:08:39 +0000
+ id 1g5HzU-0005iY-62
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:09:06 +0000
 From: Lukasz Majewski <lukma@denx.de>
 To: Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
  Mark Rutland <mark.rutland@arm.com>
@@ -12,10 +12,12 @@ Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
  han.xu@nxp.com, broonie@kernel.org, david.wolfe@nxp.com,
  computersforpeace@gmail.com, dwmw2@infradead.org, albert.aribaud@3adev.fr,
  Lukasz Majewski <lukma@denx.de>
-Subject: [RFC/RFT PATCH v1 0/9] mtd: fsl: quadspi: Fixes for fsl-quadspi.c
- driver (vybrid HW)
-Date: Thu, 27 Sep 2018 00:07:30 +0200
-Message-Id: <20180926220739.620-1-lukma@denx.de>
+Subject: [RFC/RFT PATCH v1 4/9] mtd: spi: Modify the HW capability mask
+ according to supported RX lanes
+Date: Thu, 27 Sep 2018 00:07:34 +0200
+Message-Id: <20180926220739.620-5-lukma@denx.de>
+In-Reply-To: <20180926220739.620-1-lukma@denx.de>
+References: <20180926220739.620-1-lukma@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please find following set of patches, which provide improved behaviour
-of the fsl-quadspi.c driver on Vybrid vf610 HW.
+It may happen that we got two identical SPI devices connected to the QSPI
+controller with asymmetrical number of RX lanes. Due to PCB constraints,
+one can work as DUAL and second as QUAD.
 
-Below code is based on previous work done by Albert ARIBAUD:
-https://patchwork.ozlabs.org/patch/675401/
+For such scenario we do need support for setting different read commands.
 
-I've cleaned up the code a bit, make separate patches, exclude not
-needed parts and port it to v4.19-rc3.
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
+---
+ drivers/mtd/spi-nor/fsl-quadspi.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-After applying those patches, the quadspi controller on vf610 works
-with UBI/UBIFS.
-The problem is with some corner case writes to raw MTD device
-(like writing 1023B with single byte writes). Those fail sometimes.
-
-Regression tests can be found in the following repository:
-https://github.com/lmajewski/tests-spi/tree/master/tests
-
-(Please read README.txt).
-
-The NXP's community thread regarding HW issues in this block on
-the vf610:
-https://community.nxp.com/thread/485139
-
-Maybe those patches will be helpful with the new, work in progress
-driver for spi-fsl-qspi.c
-
-Lukasz Majewski (9):
-  Revert "mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ"
-  mtd: qspi: Provide quirk to read only half of RX buffer (NXP's vybrid)
-  mtd: spi: Do not setup the default seqid as we got it set for DUAL and
-    QUAD
-  mtd: spi: Modify the HW capability mask according to supported RX
-    lanes
-  mtd: spi: Provide LUT entry to perform DUAL read
-  mtd: spi: Enhance the fsl_qspi_read() method to support DUAL and QUAD
-  mtd: spi: Add SPI_NOR_DUAL_READ property for the 'n25q128a13' Micron
-    memory
-  mtd: spi: Allocate memory corresponding to maximal fsl-quadspi.c
-    controller area
-  mtd: spi: Skip reading the Serial Flash Discoverable Parameters
-
- drivers/mtd/spi-nor/fsl-quadspi.c | 103 +++++++++++++++++++++++++++++---------
- drivers/mtd/spi-nor/spi-nor.c     |   2 +-
- 2 files changed, 79 insertions(+), 26 deletions(-)
-
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index ad951a46a628..4f0c78ba6fcb 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -977,7 +977,7 @@ static void fsl_qspi_unprep(struct spi_nor *nor, enum spi_nor_ops ops)
+ 
+ static int fsl_qspi_probe(struct platform_device *pdev)
+ {
+-	const struct spi_nor_hwcaps hwcaps = {
++	struct spi_nor_hwcaps hwcaps = {
+ 		.mask = SNOR_HWCAPS_READ_1_1_4 |
+ 			SNOR_HWCAPS_PP,
+ 	};
+@@ -987,7 +987,7 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 	struct resource *res;
+ 	struct spi_nor *nor;
+ 	struct mtd_info *mtd;
+-	int ret, i = 0;
++	int ret, i = 0, width;
+ 
+ 	q = devm_kzalloc(dev, sizeof(*q), GFP_KERNEL);
+ 	if (!q)
+@@ -1104,6 +1104,14 @@ static int fsl_qspi_probe(struct platform_device *pdev)
+ 		if (ret < 0)
+ 			goto mutex_failed;
+ 
++		if (!of_property_read_u32(np, "spi-rx-bus-width", &width)) {
++			if (width == 2) {
++				hwcaps.mask &= ~SNOR_HWCAPS_READ_QUAD;
++				hwcaps.mask |= SNOR_HWCAPS_READ_1_1_2;
++			} else if (width != 4)
++				return -EINVAL;
++		}
++
+ 		/* set the chip address for READID */
+ 		fsl_qspi_set_base_addr(q, nor);
+ 
 -- 
 2.11.0
