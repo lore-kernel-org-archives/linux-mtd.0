@@ -1,16 +1,23 @@
-Received: from mail.bugwerft.de ([46.23.86.59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5HIU-0004BZ-TR
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 21:24:40 +0000
-From: Daniel Mack <daniel@zonque.org>
-To: miquel.raynal@bootlin.com,
-	boris.brezillon@bootlin.com
-Cc: linux-mtd@lists.infradead.org, chris.packham@alliedtelesis.co.nz,
- Daniel Mack <daniel@zonque.org>, stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: marvell: check for RDY bits after enabling the
- IRQ
-Date: Wed, 26 Sep 2018 23:23:53 +0200
-Message-Id: <20180926212353.13399-1-daniel@zonque.org>
+Received: from mail-out.m-online.net ([212.18.0.10])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5Hz0-0005dv-A0
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 22:08:36 +0000
+From: Lukasz Majewski <lukma@denx.de>
+To: Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yogeshnarayan.gaur@nxp.com, richard@nod.at,
+ Stefan Agner <stefan@agner.ch>, Fabio Estevam <festevam@gmail.com>,
+ Fabio Estevam <fabio.estevam@nxp.com>, prabhakar.kushwaha@nxp.com,
+ han.xu@nxp.com, broonie@kernel.org, david.wolfe@nxp.com,
+ computersforpeace@gmail.com, dwmw2@infradead.org, albert.aribaud@3adev.fr,
+ Lukasz Majewski <lukma@denx.de>
+Subject: [RFC/RFT PATCH v1 3/9] mtd: spi: Do not setup the default seqid as we
+ got it set for DUAL and QUAD
+Date: Thu, 27 Sep 2018 00:07:33 +0200
+Message-Id: <20180926220739.620-4-lukma@denx.de>
+In-Reply-To: <20180926220739.620-1-lukma@denx.de>
+References: <20180926220739.620-1-lukma@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At least on PXA3xx platforms, enabling RDY interrupts in the NDCR register
-will only cause the IRQ to latch when the RDY lanes are changing, and not
-in case they are already asserted.
-
-This means that if the controller finished the command in flight before
-marvell_nfc_wait_op() is called, that function will wait for a change in
-the bit that can't ever happen as it is already set.
-
-To mitigate this race, check for the RDY bits after the IRQ was enabled,
-and only sleep on the condition if the controller isn't ready yet.
-
-This fixes a bug that was observed with a NAND chip that holds a UBIFS
-parition on which file system stress tests were executed. When
-marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount
-the filesystem read-only, reporting lots of warnings along the way.
-
-Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
-Cc: stable@vger.kernel.org
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
 ---
- drivers/mtd/nand/raw/marvell_nand.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/mtd/spi-nor/fsl-quadspi.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index 666f34b58dec..e96ec7b9a152 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -613,7 +613,8 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *chip)
- static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+index 2ef5bfc41d32..ad951a46a628 100644
+--- a/drivers/mtd/spi-nor/fsl-quadspi.c
++++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+@@ -686,7 +686,6 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
  {
- 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
--	int ret;
-+	int ret = -EALREADY;
-+	u32 st;
+ 	void __iomem *base = q->iobase;
+-	int seqid;
+ 	u32 buf3cr;
  
- 	/* Timeout is expressed in ms */
- 	if (!timeout_ms)
-@@ -622,8 +623,15 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
- 	init_completion(&nfc->complete);
+ 	/* AHB configuration for access buffer 0/1/2 .*/
+@@ -708,11 +707,6 @@ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+ 	qspi_writel(q, 0, base + QUADSPI_BUF0IND);
+ 	qspi_writel(q, 0, base + QUADSPI_BUF1IND);
+ 	qspi_writel(q, 0, base + QUADSPI_BUF2IND);
+-
+-	/* Set the default lut sequence for AHB Read. */
+-	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+-	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+-		q->iobase + QUADSPI_BFGENCR);
+ }
  
- 	marvell_nfc_enable_int(nfc, NDCR_RDYM);
--	ret = wait_for_completion_timeout(&nfc->complete,
--					  msecs_to_jiffies(timeout_ms));
-+
-+	/*
-+	 * Check if the NDSR_RDY bits have already been set before the
-+	 * interrupt was enabled.
-+	 */
-+	st = readl_relaxed(nfc->regs + NDSR);
-+	if (!(st & (NDSR_RDY(0) | NDSR_RDY(1))))
-+		ret = wait_for_completion_timeout(&nfc->complete,
-+						  msecs_to_jiffies(timeout_ms));
- 	marvell_nfc_disable_int(nfc, NDCR_RDYM);
- 	marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
- 	if (!ret) {
+ /* This function was used to prepare and enable QSPI clock */
 -- 
-2.17.1
+2.11.0
