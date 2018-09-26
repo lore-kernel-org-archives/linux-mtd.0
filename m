@@ -1,20 +1,16 @@
-Received: from mail.bugwerft.de ([2a03:6000:1011::59])
+Received: from mail.bugwerft.de ([46.23.86.59])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5HDm-0002To-Lf
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 21:19:48 +0000
-Subject: Re: Trouble with new marvell_nand driver on PXA3xx
+ id 1g5HIU-0004BZ-TR
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 21:24:40 +0000
 From: Daniel Mack <daniel@zonque.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-References: <f3cf564d-7976-5b2e-ca07-ea872c165396@zonque.org>
-Message-ID: <75388de4-5892-042d-6174-d18cc1b14465@zonque.org>
-Date: Wed, 26 Sep 2018 23:19:09 +0200
-MIME-Version: 1.0
-In-Reply-To: <f3cf564d-7976-5b2e-ca07-ea872c165396@zonque.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To: miquel.raynal@bootlin.com,
+	boris.brezillon@bootlin.com
+Cc: linux-mtd@lists.infradead.org, chris.packham@alliedtelesis.co.nz,
+ Daniel Mack <daniel@zonque.org>, stable@vger.kernel.org
+Subject: [PATCH] mtd: rawnand: marvell: check for RDY bits after enabling the
+ IRQ
+Date: Wed, 26 Sep 2018 23:23:53 +0200
+Message-Id: <20180926212353.13399-1-daniel@zonque.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +20,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 24/9/2018 8:45 AM, Daniel Mack wrote:
-> I'm having issues using the new marvell_nand driver on a PXA3xx based
-> platform. My test does a ubiformat on the chip, then creates a volume,
-> mounts it and runs bonnie++ on the file system. After some time (usually
-> less than half a minute), the driver spits out a warning like the one
-> below, and eventually the UBI layer bails out, which leads to a r/o
-> remount and (possibly) file system corruptions.
+At least on PXA3xx platforms, enabling RDY interrupts in the NDCR register
+will only cause the IRQ to latch when the RDY lanes are changing, and not
+in case they are already asserted.
 
-Okay, I think I figured it out. What happens is that after the 
-controller has been sent a command to process it, it sets the RDY bits 
-before the driver ends up in that marvell_nfc_wait_op(). Enabling the 
-interrupt for RDY does not latch it if the RDY bit already set, so the 
-condition wait times out. IOW, it's a race - the controller is faster 
-than than the driver expects it to be.
+This means that if the controller finished the command in flight before
+marvell_nfc_wait_op() is called, that function will wait for a change in
+the bit that can't ever happen as it is already set.
 
-I'll send a patch to fix that. With this applied, I wasn't able to 
-reproduce the issue anymore. It could possibly be fixed by other means 
-too, so I'm open for discussions and I can also test other approaches 
-easily. Let me know what you think.
+To mitigate this race, check for the RDY bits after the IRQ was enabled,
+and only sleep on the condition if the controller isn't ready yet.
 
+This fixes a bug that was observed with a NAND chip that holds a UBIFS
+parition on which file system stress tests were executed. When
+marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount
+the filesystem read-only, reporting lots of warnings along the way.
 
-Thanks,
-Daniel
+Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index 666f34b58dec..e96ec7b9a152 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -613,7 +613,8 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *chip)
+ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+ {
+ 	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+-	int ret;
++	int ret = -EALREADY;
++	u32 st;
+ 
+ 	/* Timeout is expressed in ms */
+ 	if (!timeout_ms)
+@@ -622,8 +623,15 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+ 	init_completion(&nfc->complete);
+ 
+ 	marvell_nfc_enable_int(nfc, NDCR_RDYM);
+-	ret = wait_for_completion_timeout(&nfc->complete,
+-					  msecs_to_jiffies(timeout_ms));
++
++	/*
++	 * Check if the NDSR_RDY bits have already been set before the
++	 * interrupt was enabled.
++	 */
++	st = readl_relaxed(nfc->regs + NDSR);
++	if (!(st & (NDSR_RDY(0) | NDSR_RDY(1))))
++		ret = wait_for_completion_timeout(&nfc->complete,
++						  msecs_to_jiffies(timeout_ms));
+ 	marvell_nfc_disable_int(nfc, NDCR_RDYM);
+ 	marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
+ 	if (!ret) {
+-- 
+2.17.1
