@@ -1,15 +1,18 @@
-From: Arnd Bergmann <arnd@arndb.de>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>, linux-mtd@lists.infradead.org
-Cc: Arnd Bergmann <arnd@arndb.de>, Aaro Koskinen <aaro.koskinen@iki.fi>,
- Tony Lindgren <tony@atomide.com>,
- Alexander Sverdlin <alexander.sverdlin@gmail.com>,
- Paul Burton <paul.burton@mips.com>, Wolfram Sang <wsa@the-dreams.de>,
- Suman Anna <s-anna@ti.com>, linux-omap@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] ARM: omap1: add nand_chip declaration
-Date: Wed, 26 Sep 2018 16:20:16 +0200
-Message-Id: <20180926142029.619397-1-arnd@arndb.de>
+Received: from mx2.edumail.vic.gov.au ([203.12.63.137]
+ helo=smtp.edumail.vic.gov.au)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5AhL-0003i6-FX
+ for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 14:22:04 +0000
+Content-Type: text/plain; charset="iso-8859-1"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Hello
+To: <01968747@edumail.vic.gov.au>
+From: Margaret Kwan Wing Han <01968747@edumail.vic.gov.au>
+Date: Wed, 26 Sep 2018 06:49:08 -0700
+Reply-To: <markingarbril@gmail.com>
+Message-ID: <614f85c2-8a78-47a1-a9c8-eb0e4fb337d7@PRWPEXED02.education.vic.gov.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Recent MTD changes caused a minor build regression on OMAP1:
+I have a legal business proposal worth $30.5M for you if interested reply =
 
-In file included from arch/arm/mach-omap1/devices.c:31:
-arch/arm/mach-omap1/common.h:85:39: error: 'struct nand_chip' declared inside parameter list will not be visible outside of this definition or declaration [-Werror]
+me for more details. =
 
-Fixes: 1002aed789bc ("mtd: rawnand: plat_nand: Pass a nand_chip object to all platform_nand_ctrl hooks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-----
-v2: remove unused linux/mtd/mtd.h inclusion
----
- arch/arm/mach-omap1/common.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-omap1/common.h b/arch/arm/mach-omap1/common.h
-index 11b87a4c84d4..504b959ba5cf 100644
---- a/arch/arm/mach-omap1/common.h
-+++ b/arch/arm/mach-omap1/common.h
-@@ -26,7 +26,6 @@
- #ifndef __ARCH_ARM_MACH_OMAP1_COMMON_H
- #define __ARCH_ARM_MACH_OMAP1_COMMON_H
- 
--#include <linux/mtd/mtd.h>
- #include <linux/platform_data/i2c-omap.h>
- #include <linux/reboot.h>
- 
-@@ -82,6 +81,7 @@ void omap1_restart(enum reboot_mode, const char *);
- 
- extern void __init omap_check_revision(void);
- 
-+struct nand_chip;
- extern void omap1_nand_cmd_ctl(struct nand_chip *this, int cmd,
- 			       unsigned int ctrl);
- 
--- 
-2.18.0
+Regards, =
+
+Ms Margaret Kwan Wing Han
