@@ -1,23 +1,20 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5JS3-0002Ij-K5
- for linux-mtd@lists.infradead.org; Wed, 26 Sep 2018 23:42:42 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Daniel Mack <daniel@zonque.org>, "miquel.raynal@bootlin.com"
- <miquel.raynal@bootlin.com>, "boris.brezillon@bootlin.com"
- <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] mtd: rawnand: marvell: check for RDY bits after enabling
- the IRQ
-Date: Wed, 26 Sep 2018 23:42:05 +0000
-Message-ID: <9b6db42cceb5424b9e0eca2704e0f2f2@svr-chch-ex1.atlnz.lc>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5Pfv-0007nl-FY
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 06:21:25 +0000
+Date: Thu, 27 Sep 2018 08:20:33 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ chris.packham@alliedtelesis.co.nz, stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: rawnand: marvell: check for RDY bits after
+ enabling the IRQ
+Message-ID: <20180927082033.0b5295de@bbrezillon>
+In-Reply-To: <20180926212353.13399-1-daniel@zonque.org>
 References: <20180926212353.13399-1-daniel@zonque.org>
- <55f805fcf236481b869ba097a7db0194@svr-chch-ex1.atlnz.lc>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,97 +24,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 27/09/18 11:33, Chris Packham wrote:=0A=
-> Hi Daniel,=0A=
-> =0A=
-> On 27/09/18 09:24, Daniel Mack wrote:=0A=
->> At least on PXA3xx platforms, enabling RDY interrupts in the NDCR regist=
-er=0A=
->> will only cause the IRQ to latch when the RDY lanes are changing, and no=
-t=0A=
->> in case they are already asserted.=0A=
->>=0A=
->> This means that if the controller finished the command in flight before=
-=0A=
->> marvell_nfc_wait_op() is called, that function will wait for a change in=
-=0A=
->> the bit that can't ever happen as it is already set.=0A=
->>=0A=
->> To mitigate this race, check for the RDY bits after the IRQ was enabled,=
-=0A=
->> and only sleep on the condition if the controller isn't ready yet.=0A=
->>=0A=
->> This fixes a bug that was observed with a NAND chip that holds a UBIFS=
-=0A=
->> parition on which file system stress tests were executed. When=0A=
->> marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount=
-=0A=
->> the filesystem read-only, reporting lots of warnings along the way.=0A=
->>=0A=
->> Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driv=
-er=0A=
->> Cc: stable@vger.kernel.org=0A=
->> Signed-off-by: Daniel Mack <daniel@zonque.org>=0A=
->> ---=0A=
->>    drivers/mtd/nand/raw/marvell_nand.c | 14 +++++++++++---=0A=
->>    1 file changed, 11 insertions(+), 3 deletions(-)=0A=
->>=0A=
->> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/=
-marvell_nand.c=0A=
->> index 666f34b58dec..e96ec7b9a152 100644=0A=
->> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
->> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
->> @@ -613,7 +613,8 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *c=
-hip)=0A=
->>    static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int t=
-imeout_ms)=0A=
->>    {=0A=
->>    	struct marvell_nfc *nfc =3D to_marvell_nfc(chip->controller);=0A=
->> -	int ret;=0A=
->> +	int ret =3D -EALREADY;=0A=
-> =0A=
-> Won't this cause us to hit the if (!ret) below if we don't end up=0A=
-> calling wait_for_completion_timeout()?=0A=
-=0A=
-Nope boolean logic fail.=0A=
-=0A=
-> In fact I did just hit something=0A=
-> like this on my Armada-385 based board=0A=
-> =0A=
-> marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal=0A=
-> ubi0 warning: do_sync_erase: error -5 while erasing PEB 755, retry=0A=
->=0A=
-=0A=
-But this still might be something else, it doesn't happen regularly. For =
-=0A=
-what it's worth=0A=
-=0A=
-Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
-=0A=
->> +	u32 st;=0A=
->>    =0A=
->>    	/* Timeout is expressed in ms */=0A=
->>    	if (!timeout_ms)=0A=
->> @@ -622,8 +623,15 @@ static int marvell_nfc_wait_op(struct nand_chip *ch=
-ip, unsigned int timeout_ms)=0A=
->>    	init_completion(&nfc->complete);=0A=
->>    =0A=
->>    	marvell_nfc_enable_int(nfc, NDCR_RDYM);=0A=
->> -	ret =3D wait_for_completion_timeout(&nfc->complete,=0A=
->> -					  msecs_to_jiffies(timeout_ms));=0A=
->> +=0A=
->> +	/*=0A=
->> +	 * Check if the NDSR_RDY bits have already been set before the=0A=
->> +	 * interrupt was enabled.=0A=
->> +	 */=0A=
->> +	st =3D readl_relaxed(nfc->regs + NDSR);=0A=
->> +	if (!(st & (NDSR_RDY(0) | NDSR_RDY(1))))=0A=
->> +		ret =3D wait_for_completion_timeout(&nfc->complete,=0A=
->> +						  msecs_to_jiffies(timeout_ms));=0A=
->>    	marvell_nfc_disable_int(nfc, NDCR_RDYM);=0A=
->>    	marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));=0A=
->>    	if (!ret) {=0A=
->>=0A=
-> =0A=
-> =0A=
-=0A=
+Hi Daniel,
+
+On Wed, 26 Sep 2018 23:23:53 +0200
+Daniel Mack <daniel@zonque.org> wrote:
+
+> At least on PXA3xx platforms, enabling RDY interrupts in the NDCR register
+> will only cause the IRQ to latch when the RDY lanes are changing, and not
+> in case they are already asserted.
+> 
+> This means that if the controller finished the command in flight before
+> marvell_nfc_wait_op() is called, that function will wait for a change in
+> the bit that can't ever happen as it is already set.
+> 
+> To mitigate this race, check for the RDY bits after the IRQ was enabled,
+> and only sleep on the condition if the controller isn't ready yet.
+> 
+> This fixes a bug that was observed with a NAND chip that holds a UBIFS
+> parition on which file system stress tests were executed. When
+> marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount
+> the filesystem read-only, reporting lots of warnings along the way.
+> 
+> Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Daniel Mack <daniel@zonque.org>
+> ---
+>  drivers/mtd/nand/raw/marvell_nand.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+> index 666f34b58dec..e96ec7b9a152 100644
+> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> @@ -613,7 +613,8 @@ static int marvell_nfc_wait_cmdd(struct nand_chip *chip)
+>  static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+>  {
+>  	struct marvell_nfc *nfc = to_marvell_nfc(chip->controller);
+> -	int ret;
+> +	int ret = -EALREADY;
+> +	u32 st;
+>  
+>  	/* Timeout is expressed in ms */
+>  	if (!timeout_ms)
+> @@ -622,8 +623,15 @@ static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned int timeout_ms)
+>  	init_completion(&nfc->complete);
+>  
+>  	marvell_nfc_enable_int(nfc, NDCR_RDYM);
+> -	ret = wait_for_completion_timeout(&nfc->complete,
+> -					  msecs_to_jiffies(timeout_ms));
+> +
+> +	/*
+> +	 * Check if the NDSR_RDY bits have already been set before the
+> +	 * interrupt was enabled.
+> +	 */
+> +	st = readl_relaxed(nfc->regs + NDSR);
+> +	if (!(st & (NDSR_RDY(0) | NDSR_RDY(1))))
+> +		ret = wait_for_completion_timeout(&nfc->complete,
+> +						  msecs_to_jiffies(timeout_ms));
+
+Or you can just do:
+
+	st = readl_relaxed(nfc->regs + NDSR);
+	if (st & (NDSR_RDY(0) | NDSR_RDY(1)))
+		complete(&nfc->complete);
+
+	ret = wait_for_completion_timeout(&nfc->complete,
+					  msecs_to_jiffies(timeout_ms));
+	...
+
+Of course, it's less efficient than your version, but I find it clearer
+than the -EALREADY approach.
+
+>  	marvell_nfc_disable_int(nfc, NDCR_RDYM);
+>  	marvell_nfc_clear_int(nfc, NDSR_RDY(0) | NDSR_RDY(1));
+>  	if (!ret) {
