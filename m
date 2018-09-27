@@ -1,30 +1,22 @@
-Received: from mail-eopbgr720046.outbound.protection.outlook.com
- ([40.107.72.46] helo=NAM05-CO1-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5Tzo-0005hs-Mj
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 10:58:16 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Rob Herring <robh@kernel.org>
-CC: "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>, Michal Simek
- <michals@xilinx.com>, "nagasuresh12@gmail.com" <nagasuresh12@gmail.com>
-Subject: RE: [LINUX PATCH v11 1/3] dt-bindings: mtd: arasan: Add device tree
- binding documentation
-Date: Thu, 27 Sep 2018 10:57:35 +0000
-Message-ID: <MWHPR02MB2623FE755E8F0C61A754F74DAF140@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1537878031-22253-2-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <CABGGiszo3BO9LrSPT7tRey9g6jMZkB_0oXJA7ebsk-toud0EGw@mail.gmail.com>
-In-Reply-To: <CABGGiszo3BO9LrSPT7tRey9g6jMZkB_0oXJA7ebsk-toud0EGw@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5UaN-0003i0-0E
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 11:36:00 +0000
+Date: Thu, 27 Sep 2018 13:35:13 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v2 3/8] mtd: maps: gpio-addr-flash: Use devm_* functions
+Message-ID: <20180927133513.487666f0@bbrezillon>
+In-Reply-To: <20180905143643.9871-4-ricardo.ribalda@gmail.com>
+References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+ <20180905143643.9871-4-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,73 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgUm9iLA0KDQpUaGFua3MgZm9yIHRoZSByZXZpZXcuDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNz
-YWdlLS0tLS0NCj4gRnJvbTogUm9iIEhlcnJpbmcgW21haWx0bzpyb2JoQGtlcm5lbC5vcmddDQo+
-IFNlbnQ6IFdlZG5lc2RheSwgU2VwdGVtYmVyIDI2LCAyMDE4IDY6NDggUE0NCj4gVG86IE5hZ2Eg
-U3VyZXNoa3VtYXIgUmVsbGkgPG5hZ2FzdXJlQHhpbGlueC5jb20+DQo+IENjOiBib3Jpcy5icmV6
-aWxsb25AYm9vdGxpbi5jb207IG1pcXVlbC5yYXluYWxAYm9vdGxpbi5jb207IHJpY2hhcmRAbm9k
-LmF0Ow0KPiBkd213MkBpbmZyYWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207
-IG1hcmVrLnZhc3V0QGdtYWlsLmNvbTsgbGludXgtDQo+IG10ZEBsaXN0cy5pbmZyYWRlYWQub3Jn
-OyBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0IDxsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-PjsgTWljaGFsDQo+IFNpbWVrIDxtaWNoYWxzQHhpbGlueC5jb20+OyBuYWdhc3VyZXNoMTJAZ21h
-aWwuY29tDQo+IFN1YmplY3Q6IFJlOiBbTElOVVggUEFUQ0ggdjExIDEvM10gZHQtYmluZGluZ3M6
-IG10ZDogYXJhc2FuOiBBZGQgZGV2aWNlIHRyZWUgYmluZGluZw0KPiBkb2N1bWVudGF0aW9uDQo+
-IA0KPiBEVCBiaW5kaW5ncyBzaG91bGQgYmUgc2VudCB0byBEVCBsaXN0Lg0KU2luY2UgbGFzdCA0
-IHZlcnNpb24gb2YgcGF0Y2hlcyBJIGFtIHNlbmRpbmcgbGlrZSB0aGlzLg0KVGhhbmtzIGZvciBs
-ZXR0aW5nIHVzIGtub3cuDQpDdXJyZW50bHkgSSBhbSB3YWl0aW5nIGZvciBhcmFzYW5fbmFuZCBk
-cml2ZXIgcmV2aWV3Lg0KT25jZSBpdCBpcyBkb25lLCBJIHdpbGwgYWRkcmVzcyBhbGwgdGhlIGNv
-bW1lbnRzIGFuZCBzZW5kIG5ldyB2ZXJzaW9uLCBhbG9uZyB3aXRoIHRoZSBkcml2ZXIgY2hhbmdl
-cw0KDQpUaGFua3MsDQpOYWdhIFN1cmVzaGt1bWFyIFJlbGxpDQoNCj4gDQo+IE9uIFR1ZSwgU2Vw
-IDI1LCAyMDE4IGF0IDc6MjEgQU0gTmFnYSBTdXJlc2hrdW1hciBSZWxsaQ0KPiA8bmFnYS5zdXJl
-c2hrdW1hci5yZWxsaUB4aWxpbnguY29tPiB3cm90ZToNCj4gPg0KPiA+IFRoaXMgcGF0Y2ggYWRk
-cyB0aGUgZHRzIGJpbmRpbmcgZG9jdW1lbnQgZm9yIGFyYXNhbiBuYW5kIGZsYXNoDQo+ID4gY29u
-dHJvbGxlcg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTmFnYSBTdXJlc2hrdW1hciBSZWxsaQ0K
-PiA+IDxuYWdhLnN1cmVzaGt1bWFyLnJlbGxpQHhpbGlueC5jb20+DQo+ID4gLS0tDQo+ID4gQ2hh
-bmdlcyBpbiB2MTE6DQo+ID4gIC0gVXBkYXRlZCBjb21wYXRpYmxlIGRlc2NyaXB0aW9uIGFzIHN1
-Z2dlc3RlZCBieSBCb3Jpcw0KPiA+ICAtIFJlbW92ZWQgYXJhc2FuLWhhcy1kbWEgcHJvcGVydHkN
-Cj4gPiBDaGFuZ2VzIGluIHYxMDoNCj4gPiAtIE5vbmUNCj4gPiBDaGFuZ2VzIGluIHY5Og0KPiA+
-IC0gTm9uZQ0KPiA+IENoYW5nZXMgaW4gdjg6DQo+ID4gLSBVcGRhdGVkIGNvbXBhdGlibGUgYW5k
-IGNsb2NrLW5hbWVzIGFzIHBlciBCb3JpcyBjb21tZW50cyBDaGFuZ2VzIGluDQo+ID4gdjc6DQo+
-ID4gLSBDb3JyZWN0ZWQgdGhlIGFjcm9ueW1zIHRob3NlIHNob3VsZCBiZSBpbiBjYXBzIENoYW5n
-ZXMgaW4gdjY6DQo+ID4gLSBSZW1vdmVkIG51bS1jcyBwcm9wZXJ0eQ0KPiA+IC0gU2VwYXJhdGVk
-IG5hbmRjaGlwIGZyb20gbmFuZCBjb250cm9sbGVyIENoYW5nZXMgaW4gdjU6DQo+ID4gLSBOb25l
-DQo+ID4gQ2hhbmdlcyBpbiB2NDoNCj4gPiAtIEFkZGVkIG51bS1jcyBwcm9wZXJ0eQ0KPiA+IC0g
-QWRkZWQgY2xvY2sgc3VwcG9ydA0KPiA+IENoYW5nZXMgaW4gdjM6DQo+ID4gLSBOb25lDQo+ID4g
-Q2hhbmdlcyBpbiB2MjoNCj4gPiAtIE5vbmUNCj4gPiAtLS0NCj4gPiAgLi4uL2RldmljZXRyZWUv
-YmluZGluZ3MvbXRkL2FyYXNhbl9uYW5kLnR4dCAgICAgICAgfCAzMyArKysrKysrKysrKysrKysr
-KysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0
-ZSBtb2RlIDEwMDY0NA0KPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-YXJhc2FuX25hbmQudHh0DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL210ZC9hcmFzYW5fbmFuZC50eHQNCj4gPiBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJhc2FuX25hbmQudHh0DQo+ID4gbmV3IGZpbGUgbW9k
-ZSAxMDA2NDQNCj4gPiBpbmRleCAwMDAwMDAwLi41NDZlZDk4DQo+ID4gLS0tIC9kZXYvbnVsbA0K
-PiA+ICsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQvYXJhc2FuX25h
-bmQudHh0DQo+ID4gQEAgLTAsMCArMSwzMyBAQA0KPiA+ICtBcmFzYW4gTkFORCBGbGFzaCBDb250
-cm9sbGVyIHdpdGggT05GSSAzLjEgc3VwcG9ydA0KPiA+ICsNCj4gPiArUmVxdWlyZWQgcHJvcGVy
-dGllczoNCj4gPiArLSBjb21wYXRpYmxlOiAgICAgICAgICBTaG91bGQgYmUgInhsbngsenlucW1w
-LW5hbmQiLCAiYXJhc2FuLG5mYy12M3AxMCINCj4gPiArLSByZWc6ICAgICAgICAgICAgICAgICBN
-ZW1vcnkgbWFwIGZvciBtb2R1bGUgYWNjZXNzDQo+ID4gKy0gaW50ZXJydXB0LXBhcmVudDogICAg
-SW50ZXJydXB0IGNvbnRyb2xsZXIgdGhlIGludGVycnVwdCBpcyByb3V0ZWQgdGhyb3VnaA0KPiAN
-Cj4gRHJvcCB0aGlzLiBJdCBpcyBpbXBsaWVkLg0KPiANCj4gPiArLSBpbnRlcnJ1cHRzOiAgICAg
-ICAgICBTaG91bGQgY29udGFpbiB0aGUgaW50ZXJydXB0IGZvciB0aGUgZGV2aWNlDQo+ID4gKy0g
-Y2xvY2stbmFtZTogICAgICAgICAgTGlzdCBvZiBpbnB1dCBjbG9ja3MgLSAic3lzIiwgImZsYXNo
-Ig0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIChTZWUgY2xvY2sgYmluZGluZ3MgZm9yIGRl
-dGFpbHMpDQo+ID4gKy0gY2xvY2tzOiAgICAgICAgICAgICAgQ2xvY2sgcGhhbmRsZXMgKHNlZSBj
-bG9jayBiaW5kaW5ncyBmb3IgZGV0YWlscykNCj4gPiArDQo+ID4gK1JlcXVpcmVkIHByb3BlcnRp
-ZXMgZm9yIGNoaWxkIG5vZGU6DQo+ID4gKy0gbmFuZC1lY2MtbW9kZTogc2VlIG5hbmQudHh0DQo+
-ID4gKw0KPiA+ICtGb3IgTkFORCBwYXJ0aXRpb24gaW5mb3JtYXRpb24gcGxlYXNlIHJlZmVyIHRo
-ZSBiZWxvdyBmaWxlDQo+ID4gK0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tdGQv
-cGFydGl0aW9uLnR4dA0KPiA+ICsNCj4gPiArRXhhbXBsZToNCj4gPiArICAgICAgIG5mYzogbmFu
-ZEBmZjEwMDAwMCB7DQo+ID4gKyAgICAgICAgICAgICAgIGNvbXBhdGlibGUgPSAieGxueCx6eW5x
-bXAtbmFuZCIsICJhcmFzYW4sbmZjLXYzcDEwIg0KPiANCj4gTWlzc2luZyA7DQo+IA0KPiA+ICsg
-ICAgICAgICAgICAgICByZWcgPSA8MHgwIDB4ZmYxMDAwMDAgMHgxMDAwPjsNCj4gPiArICAgICAg
-ICAgICAgICAgY2xvY2stbmFtZSA9ICJzeXMiLCAiZmxhc2giDQo+IA0KPiBNaXNzaW5nIDsNCj4g
-DQo+ID4gKyAgICAgICAgICAgICAgIGNsb2NrcyA9IDwmbWlzY19jbGsgJm1pc2NfY2xrPjsNCj4g
-PiArICAgICAgICAgICAgICAgaW50ZXJydXB0LXBhcmVudCA9IDwmZ2ljPjsNCj4gPiArICAgICAg
-ICAgICAgICAgaW50ZXJydXB0cyA9IDwwIDE0IDQ+Ow0KPiA+ICsgICAgICAgICAgICAgICAjYWRk
-cmVzcy1jZWxscyA9IDwxPjsNCj4gPiArICAgICAgICAgICAgICAgI3NpemUtY2VsbHMgPSA8MD4N
-Cj4gDQo+IE1pc3NpbmcgOw0KPiANCj4gPiArDQo+ID4gKyAgICAgICAgICAgICAgIG5hbmRAMCB7
-DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmVnID0gPDA+DQo+IA0KPiBNaXNzaW5nIDsN
-Cj4gDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgbmFuZC1lY2MtbW9kZSA9ICJodyI7DQo+
-ID4gKyAgICAgICAgICAgICAgIH07DQo+ID4gKyAgICAgICB9Ow0KPiA+IC0tDQo+ID4gMi43LjQN
-Cj4gPg0K
+On Wed,  5 Sep 2018 16:36:38 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> @@ -234,9 +234,11 @@ static int gpio_flash_probe(struct platform_device *pdev)
+>  	state->map.copy_to    = gf_copy_to;
+>  	state->map.bankwidth  = pdata->width;
+>  	state->map.size       = state->win_size * (1 << state->gpio_count);
+> -	state->map.virt       = ioremap_nocache(memory->start, state->win_size);
+> -	if (!state->map.virt)
+> -		return -ENOMEM;
+> +	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
+> +	if (IS_ERR(state->map.virt)) {
+> +		dev_err(&pdev->dev, "failed to map memory\n");
+
+You can drop this error message, devm_ioremap_resource() already takes
+care of that (no need to send a new version, I'll fix it when applying).
+
+> +		return PTR_ERR(state->map.virt);
+> +	}
