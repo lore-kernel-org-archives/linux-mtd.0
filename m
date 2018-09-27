@@ -1,25 +1,21 @@
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5SRT-00064j-5J
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 09:18:40 +0000
+Date: Thu, 27 Sep 2018 11:17:57 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: rawnand: toshiba: Pass a single nand_chip object
+ to the status helper
+Message-ID: <20180927111757.2b6fdd50@bbrezillon>
+In-Reply-To: <20180924093518.22021-1-miquel.raynal@bootlin.com>
+References: <20180924093518.22021-1-miquel.raynal@bootlin.com>
 MIME-Version: 1.0
-References: <1537433449-65213-1-git-send-email-jianxin.pan@amlogic.com>
- <1537433449-65213-3-git-send-email-jianxin.pan@amlogic.com>
- <CAFBinCAaphyifUNyDQr7th2Mt=A+UQnzai0edKLCPNbxhh2w+Q@mail.gmail.com>
- <f75b6f23-6d58-2145-30f3-b23e4b69966b@amlogic.com>
-In-Reply-To: <f75b6f23-6d58-2145-30f3-b23e4b69966b@amlogic.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Thu, 27 Sep 2018 11:12:32 +0200
-Message-ID: <CAFBinCBLfoqnLK_hu6fufO4MXKKoRDPDuJgLasCNYWeuL6tCKw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] mtd: rawnand: meson: add support for Amlogic NAND
- flash controller
-To: liang.yang@amlogic.com
-Cc: jianxin.pan@amlogic.com, boris.brezillon@bootlin.com,
- linux-mtd@lists.infradead.org, yixun.lan@amlogic.com, dwmw2@infradead.org,
- computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
- jbrunet@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
- carlo@caione.org,
- khilman@baylibre.com, robh@kernel.org, jian.hu@amlogic.com,
- hanjie.lin@amlogic.com, victor.wan@amlogic.com,
- linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,110 +25,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Liang,
+On Mon, 24 Sep 2018 11:35:18 +0200
+Miquel Raynal <miquel.raynal@bootlin.com> wrote:
 
-On Thu, Sep 27, 2018 at 10:19 AM Liang Yang <liang.yang@amlogic.com> wrote:
->
-> Hello Martin,
->
-> On 9/22/2018 11:32 PM, Martin Blumenstingl wrote:
-> > Hello,
-> >
-> > On Thu, Sep 20, 2018 at 10:51 AM Jianxin Pan <jianxin.pan@amlogic.com> wrote:
-> > [snip]
-> >> +static int meson_nfc_clk_init(struct meson_nfc *nfc)
-> >> +{
-> >> +       int ret;
-> >> +
-> >> +       /* request core clock */
-> >> +       nfc->core_clk = devm_clk_get(nfc->dev, "core");
-> >> +       if (IS_ERR(nfc->core_clk)) {
-> >> +               dev_err(nfc->dev, "failed to get core clk\n");
-> >> +               return PTR_ERR(nfc->core_clk);
-> >> +       }
-> >> +
-> >> +       nfc->device_clk = devm_clk_get(nfc->dev, "device");
-> >> +       if (IS_ERR(nfc->device_clk)) {
-> >> +               dev_err(nfc->dev, "failed to get device clk\n");
-> >> +               return PTR_ERR(nfc->device_clk);
-> >> +       }
-> >> +
-> >> +       nfc->phase_tx = devm_clk_get(nfc->dev, "tx");
-> >> +       if (IS_ERR(nfc->phase_tx)) {
-> >> +               dev_err(nfc->dev, "failed to get tx clk\n");
-> >> +               return PTR_ERR(nfc->phase_tx);
-> >> +       }
-> >> +
-> >> +       nfc->phase_rx = devm_clk_get(nfc->dev, "rx");
-> >> +       if (IS_ERR(nfc->phase_rx)) {
-> >> +               dev_err(nfc->dev, "failed to get rx clk\n");
-> >> +               return PTR_ERR(nfc->phase_rx);
-> >> +       }
-> > neither the "rx" nor the "tx" clock are documented in the dt-bindings patch
-> >
->
-> ok, i will add them later.
->
-> >> +       /* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
-> >> +       regmap_update_bits(nfc->reg_clk, 0,
-> >> +                          CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK,
-> >> +                          CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK);
-> > clk_set_rate also works for clocks that are not enabled yet (except if
-> > they have the flag CLK_SET_RATE_UNGATE)
-> > this should help you to remove CLK_DIV_MASK here
-> >
->
-> if not set clk_div_mask here, the value 0x00 of divider means nand clock
-> off, even read/write nand register is forbidden.
-ah, now I see the pattern here.
-Jerome has written a "sclk-div" driver (which is currently only used
-for the audio clocks on AXG). based on reading the code it seems that
-switching the driver of the divider clock to sclk-div would allow you
-to remove setting CLK_DIV_MASK here:
-- the  "hi" parameter in struct meson_sclk_div_data is optional ->
-then the sclk-div clock won't try to change the duty cycle
-- sclk_div_init reads the divider at initialization time - if it's 0
-it takes the maximum possible divider value
-- sclk_div_enable (which you're going to call anyways, through
-clk_prepare_enable) will then set the divider to the greatest possible
-value
+> Now that most of the raw NAND API is consistent and has almost all its
+> helpers and hooks using a single nand_chip object instead of an mtd_info
+> one (or both), let's do the same cleanup in the raw NAND vendors
+> drivers.
+> 
+> Apply this change to the Toshiba driver so that the internal helper to
+> retrieve the ECC status does only take a nand_chip object.
+> 
+> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 
-> > is CLK_SELECT_NAND a bit that switches the clock output from the sdmmc
-> > controller to the NAND controller?
-> > if so: can this be modeled as a mux clock?
-> >
->
-> it seems to like a gate. 1: nand is selected; 0: emmc is selected.
-> Is it suitable for making it as a mux clock?
-my understanding of a gate is:
-- register value X = OFF, value Y = ON
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 
-but in your case it's:
-- 0 = eMMC is ON but NAND is OFF
-- 1 = eMMC is OFF but NAND is ON
-(so both values mean "on", just for different contexts)
-
-I believe you need to set this value for eMMC as well:
-what if the bootloader (or hardware defaults, etc.) incorrectly sets
-the value to 1 but the Linux .dts is configured to use eMMC?
-
-> > the public S905 datasheet doesn't mention CLK_ALWAYS_ON at bit 28 but
-> > uses bit 24 instead. the description from the datasheet:
-> > Cfg_always_on:
-> > 1: Keep clock always on
-> > 0: Clock on/off controlled by activities.
-> >      Any APB3 access or descriptor execution will turn clock on.
-> > Recommended value: 0
-> >
-> > can you please explain what CLK_ALWAYS_ON does and why it has to be 1?
-> >
->
-> em , it is the same as bit 24 in S905 datasheet, only moves to bit 28.
-> it means keeping internal clock on whether nand wroks or not.
-> it doesn't have to be 1; i have tried 0 successfully on AXG platform.
-my preference would be to use the recommended value from the datasheet
-unless there's a good argument why it has to be different
-
-
-Regards
-Martin
+> ---
+>  drivers/mtd/nand/raw/nand_toshiba.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/nand_toshiba.c b/drivers/mtd/nand/raw/nand_toshiba.c
+> index 941ddc615190..0549c4b59d9c 100644
+> --- a/drivers/mtd/nand/raw/nand_toshiba.c
+> +++ b/drivers/mtd/nand/raw/nand_toshiba.c
+> @@ -23,9 +23,9 @@
+>  /* Recommended to rewrite for BENAND */
+>  #define TOSHIBA_NAND_STATUS_REWRITE_RECOMMENDED	BIT(3)
+>  
+> -static int toshiba_nand_benand_eccstatus(struct mtd_info *mtd,
+> -					 struct nand_chip *chip)
+> +static int toshiba_nand_benand_eccstatus(struct nand_chip *chip)
+>  {
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+>  	int ret;
+>  	unsigned int max_bitflips = 0;
+>  	u8 status;
+> @@ -58,7 +58,7 @@ toshiba_nand_read_page_benand(struct nand_chip *chip, uint8_t *buf,
+>  	if (ret)
+>  		return ret;
+>  
+> -	return toshiba_nand_benand_eccstatus(mtd, chip);
+> +	return toshiba_nand_benand_eccstatus(chip);
+>  }
+>  
+>  static int
+> @@ -73,7 +73,7 @@ toshiba_nand_read_subpage_benand(struct nand_chip *chip, uint32_t data_offs,
+>  	if (ret)
+>  		return ret;
+>  
+> -	return toshiba_nand_benand_eccstatus(mtd, chip);
+> +	return toshiba_nand_benand_eccstatus(chip);
+>  }
+>  
+>  static void toshiba_nand_benand_init(struct nand_chip *chip)
