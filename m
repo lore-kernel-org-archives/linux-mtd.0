@@ -1,29 +1,21 @@
-Date: Thu, 27 Sep 2018 13:16:53 -0500
+Date: Thu, 27 Sep 2018 14:10:00 -0500
 From: Rob Herring <robh@kernel.org>
-To: Jianxin Pan <jianxin.pan@amlogic.com>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, Liang Yang <liang.yang@amlogic.com>,
- Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>,
- Neil Armstrong <narmstrong@baylibre.com>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Carlo Caione <carlo@caione.org>,
- Kevin Hilman <khilman@baylibre.com>, Jian Hu <jian.hu@amlogic.com>,
- Hanjie Lin <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- linux-amlogic@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: nand: meson: add Amlogic NAND
- controller driver
-Message-ID: <20180927181653.GA22153@bogus>
-References: <1537433449-65213-1-git-send-email-jianxin.pan@amlogic.com>
- <1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com>
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ marek.vasut@gmail.com, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org, mark.rutland@arm.com,
+ shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
+ computersforpeace@gmail.com, frieder.schrempf@exceet.de,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] dt-bindings: spi: add binding file for NXP
+ FlexSPI controller
+Message-ID: <20180927191000.GA18549@bogus>
+References: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537525323-20730-3-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com>
+In-Reply-To: <1537525323-20730-3-git-send-email-yogeshnarayan.gaur@nxp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,91 +25,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 20, 2018 at 04:50:48PM +0800, Jianxin Pan wrote:
-> From: Liang Yang <liang.yang@amlogic.com>
+On Fri, Sep 21, 2018 at 03:52:00PM +0530, Yogesh Gaur wrote:
+> Add binding file for NXP FlexSPI controller
 > 
-> Add Amlogic NAND controller dt-bindings for Meson SoC,
-> Current this driver support GXBB/GXL/AXG platform.
-> 
-> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
-> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 > ---
->  .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 60 ++++++++++++++++++++++
->  1 file changed, 60 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+> Changes for v3:
+> - None
+> Changes for v2:
+> - Incorporated Rob review comments.
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+>  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42 ++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
 > new file mode 100644
-> index 0000000..803df2a
+> index 0000000..94b5203
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
-> @@ -0,0 +1,60 @@
-> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
-> +
-> +This file documents the properties in addition to those available in
-> +the MTD NAND bindings.
+> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> @@ -0,0 +1,42 @@
+> +* NXP Flex Serial Peripheral Interface (FSPI)
 > +
 > +Required properties:
-> +- compatible : contains one of:
-> +  - "amlogic,meson-gxl-nfc"
-> +  - "amlogic,meson-axg-nfc"
-> +- clocks     :
-> +	A list of phandle + clock-specifier pairs for the clocks listed
-> +	in clock-names.
+> +  - compatible : Should be "nxp,lx2160a-fspi"
+> +  - reg :        First contains the register location and length,
+> +                 Second contains the memory mapping address and length
+> +  - reg-names :  Should contain the resource reg names:
+> +	         - fspi_base: configuration register address space
+> +                 - fspi_mmap: memory mapped address space
+> +  - interrupts : Should contain the interrupt for the device
 > +
-> +- clock-names: Should contain the following:
-> +	"core" - NFC module gate clock
-> +	"device" - device clock from eMMC sub clock controller
+> +Optional properties:
+> +  - big-endian : See common-properties.txt.
 > +
-> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
-> +				controller port C
+> +Required SPI slave node properties:
+> +  - reg :        There are two buses (A and B) with two chip selects each.
+> +                 This encodes to which bus and CS the flash is connected:
+> +                 - <0>: Bus A, CS 0
+> +                 - <1>: Bus A, CS 1
+> +                 - <2>: Bus B, CS 0
+> +                 - <3>: Bus B, CS 1
 > +
-> +Optional children nodes:
-> +Children nodes represent the available nand chips.
+> +Example showing the usage of two SPI NOR slave devices on bus A:
 > +
-> +Other properties:
-> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
+> +fspi@0: flexspi@20c0000 {
+
+Use standard node names.
+
+spi@...
+
+> +	compatible = "nxp,lx2160a-fspi";
+> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
+> +	reg-names = "fspi_base", "fspi_mmap";
+> +	interrupts = <0 25 0x4>; /* Level high type */
+> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
+> +	clock-names = "fspi_en", "fspi";
 > +
-> +Example demonstrate on AXG SoC:
-> +
-> +	sd_emmc_c_clkc: mmc@7000 {
-> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
-> +		reg = <0x0 0x7000 0x0 0x800>;
-> +		status = "okay";
+> +	flash@0: mt35xu512aba@0 {
+
+You've got the label and node name reversed. Drop the '@' in the label. 
+That should be reserved for node names.
+
+> +		reg = <0>;
+> +		....
 > +	};
 > +
-> +	nand: nfc@7800 {
-
-nand-controller@7800
-
-> +		compatible = "amlogic,meson-axg-nfc";
-> +		reg = <0x0 0x7800 0x0 0x100>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
-> +		status = "disabled";
-> +
-> +		clocks = <&clkc CLKID_SD_EMMC_C>,
-> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
-> +		clock-names = "core", "device";
-> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
-> +
-> +		status = "okay";
-
-Don't show status in examples, plus you have it twice.
-
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&nand_pins>;
-> +
-> +		nand@0 {
-> +			reg = <0>;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +
-> +			nand-on-flash-bbt;
-> +		};
+> +	flash@1: mt35xu512aba@1 {
+> +		reg = <1>;
+> +		....
 > +	};
+> +};
 > -- 
-> 1.9.1
+> 2.7.4
 > 
