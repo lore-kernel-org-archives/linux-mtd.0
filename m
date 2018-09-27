@@ -1,21 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5S6l-0002nR-7q
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 08:57:21 +0000
-Date: Thu, 27 Sep 2018 10:56:30 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Daniel Mack <daniel@zonque.org>, linux-mtd@lists.infradead.org,
- chris.packham@alliedtelesis.co.nz, stable@vger.kernel.org
-Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
- enabling the IRQ
-Message-ID: <20180927105630.19fc1ff8@bbrezillon>
-In-Reply-To: <20180927101145.4c2d1159@xps13>
-References: <20180927071751.21513-1-daniel@zonque.org>
- <20180927101145.4c2d1159@xps13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <1537433449-65213-1-git-send-email-jianxin.pan@amlogic.com>
+ <1537433449-65213-3-git-send-email-jianxin.pan@amlogic.com>
+ <CAFBinCAaphyifUNyDQr7th2Mt=A+UQnzai0edKLCPNbxhh2w+Q@mail.gmail.com>
+ <f75b6f23-6d58-2145-30f3-b23e4b69966b@amlogic.com>
+In-Reply-To: <f75b6f23-6d58-2145-30f3-b23e4b69966b@amlogic.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Thu, 27 Sep 2018 11:12:32 +0200
+Message-ID: <CAFBinCBLfoqnLK_hu6fufO4MXKKoRDPDuJgLasCNYWeuL6tCKw@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: liang.yang@amlogic.com
+Cc: jianxin.pan@amlogic.com, boris.brezillon@bootlin.com,
+ linux-mtd@lists.infradead.org, yixun.lan@amlogic.com, dwmw2@infradead.org,
+ computersforpeace@gmail.com, marek.vasut@gmail.com, richard@nod.at,
+ jbrunet@baylibre.com, Neil Armstrong <narmstrong@baylibre.com>,
+ carlo@caione.org,
+ khilman@baylibre.com, robh@kernel.org, jian.hu@amlogic.com,
+ hanjie.lin@amlogic.com, victor.wan@amlogic.com,
+ linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,45 +29,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 27 Sep 2018 10:11:45 +0200
-Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+Hello Liang,
 
-> Hi Daniel,
-> 
-> Daniel Mack <daniel@zonque.org> wrote on Thu, 27 Sep 2018 09:17:51
-> +0200:
-> 
-> > At least on PXA3xx platforms, enabling RDY interrupts in the NDCR register
-> > will only cause the IRQ to latch when the RDY lanes are changing, and not
-> > in case they are already asserted.
-> > 
-> > This means that if the controller finished the command in flight before
-> > marvell_nfc_wait_op() is called, that function will wait for a change in
-> > the bit that can't ever happen as it is already set.
-> > 
-> > To address this race, check for the RDY bits after the IRQ was enabled,
-> > and complete the completion immediately if the condition is already met.
-> > 
-> > This fixes a bug that was observed with a NAND chip that holds a UBIFS
-> > parition on which file system stress tests were executed. When
-> > marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount
-> > the filesystem read-only, reporting lots of warnings along the way.
-> > 
-> > Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Daniel Mack <daniel@zonque.org>
-> > ---  
-> 
-> Sorry I haven't had the time to check on my Armada, but you figured it
-> out, and the fix looks good to me!
-> 
-> Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> 
-> Boris, do you plan to send another fixes PR of can I take it into
-> the nand/next branch?
+On Thu, Sep 27, 2018 at 10:19 AM Liang Yang <liang.yang@amlogic.com> wrote:
+>
+> Hello Martin,
+>
+> On 9/22/2018 11:32 PM, Martin Blumenstingl wrote:
+> > Hello,
+> >
+> > On Thu, Sep 20, 2018 at 10:51 AM Jianxin Pan <jianxin.pan@amlogic.com> wrote:
+> > [snip]
+> >> +static int meson_nfc_clk_init(struct meson_nfc *nfc)
+> >> +{
+> >> +       int ret;
+> >> +
+> >> +       /* request core clock */
+> >> +       nfc->core_clk = devm_clk_get(nfc->dev, "core");
+> >> +       if (IS_ERR(nfc->core_clk)) {
+> >> +               dev_err(nfc->dev, "failed to get core clk\n");
+> >> +               return PTR_ERR(nfc->core_clk);
+> >> +       }
+> >> +
+> >> +       nfc->device_clk = devm_clk_get(nfc->dev, "device");
+> >> +       if (IS_ERR(nfc->device_clk)) {
+> >> +               dev_err(nfc->dev, "failed to get device clk\n");
+> >> +               return PTR_ERR(nfc->device_clk);
+> >> +       }
+> >> +
+> >> +       nfc->phase_tx = devm_clk_get(nfc->dev, "tx");
+> >> +       if (IS_ERR(nfc->phase_tx)) {
+> >> +               dev_err(nfc->dev, "failed to get tx clk\n");
+> >> +               return PTR_ERR(nfc->phase_tx);
+> >> +       }
+> >> +
+> >> +       nfc->phase_rx = devm_clk_get(nfc->dev, "rx");
+> >> +       if (IS_ERR(nfc->phase_rx)) {
+> >> +               dev_err(nfc->dev, "failed to get rx clk\n");
+> >> +               return PTR_ERR(nfc->phase_rx);
+> >> +       }
+> > neither the "rx" nor the "tx" clock are documented in the dt-bindings patch
+> >
+>
+> ok, i will add them later.
+>
+> >> +       /* init SD_EMMC_CLOCK to sane defaults w/min clock rate */
+> >> +       regmap_update_bits(nfc->reg_clk, 0,
+> >> +                          CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK,
+> >> +                          CLK_SELECT_NAND | CLK_ALWAYS_ON | CLK_DIV_MASK);
+> > clk_set_rate also works for clocks that are not enabled yet (except if
+> > they have the flag CLK_SET_RATE_UNGATE)
+> > this should help you to remove CLK_DIV_MASK here
+> >
+>
+> if not set clk_div_mask here, the value 0x00 of divider means nand clock
+> off, even read/write nand register is forbidden.
+ah, now I see the pattern here.
+Jerome has written a "sclk-div" driver (which is currently only used
+for the audio clocks on AXG). based on reading the code it seems that
+switching the driver of the divider clock to sclk-div would allow you
+to remove setting CLK_DIV_MASK here:
+- the  "hi" parameter in struct meson_sclk_div_data is optional ->
+then the sclk-div clock won't try to change the duty cycle
+- sclk_div_init reads the divider at initialization time - if it's 0
+it takes the maximum possible divider value
+- sclk_div_enable (which you're going to call anyways, through
+clk_prepare_enable) will then set the divider to the greatest possible
+value
 
-Queued to mtd/master.
+> > is CLK_SELECT_NAND a bit that switches the clock output from the sdmmc
+> > controller to the NAND controller?
+> > if so: can this be modeled as a mux clock?
+> >
+>
+> it seems to like a gate. 1: nand is selected; 0: emmc is selected.
+> Is it suitable for making it as a mux clock?
+my understanding of a gate is:
+- register value X = OFF, value Y = ON
 
-Thanks,
+but in your case it's:
+- 0 = eMMC is ON but NAND is OFF
+- 1 = eMMC is OFF but NAND is ON
+(so both values mean "on", just for different contexts)
 
-Boris
+I believe you need to set this value for eMMC as well:
+what if the bootloader (or hardware defaults, etc.) incorrectly sets
+the value to 1 but the Linux .dts is configured to use eMMC?
+
+> > the public S905 datasheet doesn't mention CLK_ALWAYS_ON at bit 28 but
+> > uses bit 24 instead. the description from the datasheet:
+> > Cfg_always_on:
+> > 1: Keep clock always on
+> > 0: Clock on/off controlled by activities.
+> >      Any APB3 access or descriptor execution will turn clock on.
+> > Recommended value: 0
+> >
+> > can you please explain what CLK_ALWAYS_ON does and why it has to be 1?
+> >
+>
+> em , it is the same as bit 24 in S905 datasheet, only moves to bit 28.
+> it means keeping internal clock on whether nand wroks or not.
+> it doesn't have to be 1; i have tried 0 successfully on AXG platform.
+my preference would be to use the recommended value from the datasheet
+unless there's a good argument why it has to be different
+
+
+Regards
+Martin
