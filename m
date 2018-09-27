@@ -1,21 +1,27 @@
-Date: Thu, 27 Sep 2018 14:10:00 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5cVs-0006kr-2c
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 20:04:00 +0000
+Received: by mail-ot1-f66.google.com with SMTP id i12-v6so3840874otl.1
+ for <linux-mtd@lists.infradead.org>; Thu, 27 Sep 2018 13:03:21 -0700 (PDT)
+Date: Thu, 27 Sep 2018 15:03:19 -0500
 From: Rob Herring <robh@kernel.org>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, mark.rutland@arm.com,
- shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org,
- computersforpeace@gmail.com, frieder.schrempf@exceet.de,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/5] dt-bindings: spi: add binding file for NXP
- FlexSPI controller
-Message-ID: <20180927191000.GA18549@bogus>
-References: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537525323-20730-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: robh@kernel.org, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ open list <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
+ Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: Re: [PATCH v3 8/8] dt-binding: mtd: Document gpio-addr-flash
+Message-ID: <20180927200319.GA5099@bogus>
+References: <20180925204813.GA6450@bogus>
+ <20180926063934.9229-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1537525323-20730-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <20180926063934.9229-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +31,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 21, 2018 at 03:52:00PM +0530, Yogesh Gaur wrote:
-> Add binding file for NXP FlexSPI controller
+On Wed, 26 Sep 2018 08:39:34 +0200, Ricardo Ribalda Delgado wrote:
+> Add documentation for gpio-addr-flash. This binding allow creating
+> flash devices that are paged using GPIOs.
 > 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 > ---
-> Changes for v3:
-> - None
-> Changes for v2:
-> - Incorporated Rob review comments.
 > 
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 42 ++++++++++++++++++++++
->  1 file changed, 42 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> Changelog v3: 
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> new file mode 100644
-> index 0000000..94b5203
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> @@ -0,0 +1,42 @@
-> +* NXP Flex Serial Peripheral Interface (FSPI)
-> +
-> +Required properties:
-> +  - compatible : Should be "nxp,lx2160a-fspi"
-> +  - reg :        First contains the register location and length,
-> +                 Second contains the memory mapping address and length
-> +  - reg-names :  Should contain the resource reg names:
-> +	         - fspi_base: configuration register address space
-> +                 - fspi_mmap: memory mapped address space
-> +  - interrupts : Should contain the interrupt for the device
-> +
-> +Optional properties:
-> +  - big-endian : See common-properties.txt.
-> +
-> +Required SPI slave node properties:
-> +  - reg :        There are two buses (A and B) with two chip selects each.
-> +                 This encodes to which bus and CS the flash is connected:
-> +                 - <0>: Bus A, CS 0
-> +                 - <1>: Bus A, CS 1
-> +                 - <2>: Bus B, CS 0
-> +                 - <3>: Bus B, CS 1
-> +
-> +Example showing the usage of two SPI NOR slave devices on bus A:
-> +
-> +fspi@0: flexspi@20c0000 {
-
-Use standard node names.
-
-spi@...
-
-> +	compatible = "nxp,lx2160a-fspi";
-> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
-> +	reg-names = "fspi_base", "fspi_mmap";
-> +	interrupts = <0 25 0x4>; /* Level high type */
-> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-> +	clock-names = "fspi_en", "fspi";
-> +
-> +	flash@0: mt35xu512aba@0 {
-
-You've got the label and node name reversed. Drop the '@' in the label. 
-That should be reserved for node names.
-
-> +		reg = <0>;
-> +		....
-> +	};
-> +
-> +	flash@1: mt35xu512aba@1 {
-> +		reg = <1>;
-> +		....
-> +	};
-> +};
-> -- 
-> 2.7.4
+> - Changes suggested by Rob Herring (Thanks!)
+>   - Add gpio description
+>   - Improve partition
 > 
+>  .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
