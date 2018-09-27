@@ -1,27 +1,25 @@
-Received: from mail-ot1-f66.google.com ([209.85.210.66])
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5cVs-0006kr-2c
- for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 20:04:00 +0000
-Received: by mail-ot1-f66.google.com with SMTP id i12-v6so3840874otl.1
- for <linux-mtd@lists.infradead.org>; Thu, 27 Sep 2018 13:03:21 -0700 (PDT)
-Date: Thu, 27 Sep 2018 15:03:19 -0500
-From: Rob Herring <robh@kernel.org>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: robh@kernel.org, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- open list <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org,
- Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: Re: [PATCH v3 8/8] dt-binding: mtd: Document gpio-addr-flash
-Message-ID: <20180927200319.GA5099@bogus>
-References: <20180925204813.GA6450@bogus>
- <20180926063934.9229-1-ricardo.ribalda@gmail.com>
+ id 1g5d22-0003Gt-5y
+ for linux-mtd@lists.infradead.org; Thu, 27 Sep 2018 20:37:08 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Daniel Mack <daniel@zonque.org>, "miquel.raynal@bootlin.com"
+ <miquel.raynal@bootlin.com>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] mtd: rawnand: marvell: check for RDY bits after enabling
+ the IRQ
+Date: Thu, 27 Sep 2018 20:36:11 +0000
+Message-ID: <07720cf14e9b4bc0853649283a93d37a@svr-chch-ex1.atlnz.lc>
+References: <20180926212353.13399-1-daniel@zonque.org>
+ <55f805fcf236481b869ba097a7db0194@svr-chch-ex1.atlnz.lc>
+ <9b6db42cceb5424b9e0eca2704e0f2f2@svr-chch-ex1.atlnz.lc>
+ <a3846a05-ba03-87ac-12ab-3986723fc0e0@zonque.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20180926063934.9229-1-ricardo.ribalda@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +29,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 26 Sep 2018 08:39:34 +0200, Ricardo Ribalda Delgado wrote:
-> Add documentation for gpio-addr-flash. This binding allow creating
-> flash devices that are paged using GPIOs.
-> 
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> ---
-> 
-> Changelog v3: 
-> 
-> - Changes suggested by Rob Herring (Thanks!)
->   - Add gpio description
->   - Improve partition
-> 
->  .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
->  1 file changed, 54 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> 
-
-Reviewed-by: Rob Herring <robh@kernel.org>
+On 27/09/18 19:13, Daniel Mack wrote:=0A=
+> Hi,=0A=
+> =0A=
+> On 27/9/2018 1:42 AM, Chris Packham wrote:=0A=
+>> On 27/09/18 11:33, Chris Packham wrote:=0A=
+>>> On 27/09/18 09:24, Daniel Mack wrote:=0A=
+> =0A=
+>>>> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/ra=
+w/marvell_nand.c=0A=
+>>>> index 666f34b58dec..e96ec7b9a152 100644=0A=
+>>>> --- a/drivers/mtd/nand/raw/marvell_nand.c=0A=
+>>>> +++ b/drivers/mtd/nand/raw/marvell_nand.c=0A=
+>>>> @@ -613,7 +613,8 @@ static int marvell_nfc_wait_cmdd(struct nand_chip =
+*chip)=0A=
+>>>>      static int marvell_nfc_wait_op(struct nand_chip *chip, unsigned i=
+nt timeout_ms)=0A=
+>>>>      {=0A=
+>>>>      	struct marvell_nfc *nfc =3D to_marvell_nfc(chip->controller);=0A=
+>>>> -	int ret;=0A=
+>>>> +	int ret =3D -EALREADY;=0A=
+>>>=0A=
+>>> Won't this cause us to hit the if (!ret) below if we don't end up=0A=
+>>> calling wait_for_completion_timeout()?=0A=
+>>=0A=
+>> Nope boolean logic fail.=0A=
+> =0A=
+> Yup :)=0A=
+> =0A=
+>>> In fact I did just hit something=0A=
+>>> like this on my Armada-385 based board=0A=
+>>>=0A=
+>>> marvell-nfc f10d0000.nand-controller: Timeout waiting for RB signal=0A=
+>>> ubi0 warning: do_sync_erase: error -5 while erasing PEB 755, retry=0A=
+>>>=0A=
+>>=0A=
+>> But this still might be something else, it doesn't happen regularly. For=
+=0A=
+>> what it's worth=0A=
+>>=0A=
+>> Tested-by: Chris Packham <chris.packham@alliedtelesis.co.nz>=0A=
+> =0A=
+> Thanks. Did you see the issue that I described without that patch?=0A=
+> =0A=
+=0A=
+Yes. I've just tried a test without your patch and I see the same thing. =
+=0A=
+I wonder if my R/B configuration is correct.=0A=
