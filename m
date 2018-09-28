@@ -1,13 +1,20 @@
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: CONGRATULATIONS
-To: Westnet Support <suport@westnet.net.au>
-From: YAHOO MAIL <01725403@edumail.vic.gov.au>
-Date: Thu, 27 Sep 2018 17:20:53 -0700
-Reply-To: <barryann85@yahoo.com>
-Message-ID: <1afe36e0-2b2a-42c3-8faa-70da6665307c@PRWPEXED01.education.vic.gov.au>
+Received: from conuserg-11.nifty.com ([210.131.2.78])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5kDG-0007fb-Hb
+ for linux-mtd@lists.infradead.org; Fri, 28 Sep 2018 04:17:12 +0000
+From: Masahiro Yamada <yamada.masahiro@socionext.com>
+To: linux-mtd@lists.infradead.org,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Dinh Nguyen <dinguyen@kernel.org>,
+ Masahiro Yamada <yamada.masahiro@socionext.com>,
+ linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH v2] mtd: rawnand: denali: set SPARE_AREA_SKIP_BYTES register
+ to 8 if unset
+Date: Fri, 28 Sep 2018 13:16:01 +0900
+Message-Id: <1538108161-6174-1-git-send-email-yamada.masahiro@socionext.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,32 +24,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yahoo!=A9
-We are delighted to inform you that you were drawn a winner of (USD $5,005,=
-000.00)
-in our 2018 Yahoo (email) lottery. To file for claim please contact below o=
-ur (claim officer)
-______________________________________
+NAND devices need additional data area (OOB) for error correction,
+but it is also used for Bad Block Marker (BBM).  In many cases, the
+first byte in OOB is used for BBM, but the location actually depends
+on chip vendors.  The NAND controller should preserve the precious
+BBM to keep track of bad blocks.
 
-Sir. Warren Vandall
-(Claims Officer)
-Asian Regional Sector
-_______________________________________
+In Denali IP, the SPARE_AREA_SKIP_BYTES register is used to specify
+the number of bytes to skip from the start of OOB.  The ECC engine
+will automatically skip the specified number of bytes when it gets
+access to OOB area.
 
-You are to establish contact with the Following details:
+The same value for SPARE_AREA_SKIP_BYTES should be used between
+firmware and the operating system if you intend to use the NAND
+device across the control hand-off.
 
-Name
-Residential/Office Address
-Telephone
-Fax Number
-Age
-M/F
+In fact, the current denali.c code expects firmware to have already
+set the SPARE_AREA_SKIP_BYTES register, then reads the value out.
 
-Thanks & Regards
-Mrs. Georgina Rowland
-Yahoo Asia Pte. Ltd.
-YAHOO! ASIA=A9
+If no firmware (or bootloader) has initialized the controller, the
+register value is zero, which is the default after power-on-reset.
+In other words, the Linux driver cannot initialize the controller
+by itself.
 
----------------------------------------------------------------------------=
-----------------------------------------
-Yahoo Asia Pte. Ltd. (Co. Reg. No. 199700735D) VERIFIED BY YAHOO ASIA.
+Some possible solutions are:
+
+ [1] Add a DT property to specify the skipped bytes in OOB
+ [2] Associate the preferred value with compatible
+ [3] Hard-code the default value in the driver
+
+My first attempt was [1], but in the review process, [3] was suggested
+as a counter-implementation.
+(https://lore.kernel.org/patchwork/patch/983055/)
+
+The default value 8 was chosen to match to the boot ROM of the UniPhier
+platform.  The preferred value may vary by platform.  If so, please
+trade up to a different solution.
+
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
+
+Changes in v2:
+  - Change approach from a DT-property to a hard-coded dafault
+
+ drivers/mtd/nand/raw/denali.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/denali.c b/drivers/mtd/nand/raw/denali.c
+index aaab121..18bbfc8 100644
+--- a/drivers/mtd/nand/raw/denali.c
++++ b/drivers/mtd/nand/raw/denali.c
+@@ -21,6 +21,7 @@
+ #include "denali.h"
+ 
+ #define DENALI_NAND_NAME    "denali-nand"
++#define DENALI_DEFAULT_OOB_SKIP_BYTES	8
+ 
+ /* for Indexed Addressing */
+ #define DENALI_INDEXED_CTRL	0x00
+@@ -1056,12 +1057,17 @@ static void denali_hw_init(struct denali_nand_info *denali)
+ 		denali->revision = swab16(ioread32(denali->reg + REVISION));
+ 
+ 	/*
+-	 * tell driver how many bit controller will skip before
+-	 * writing ECC code in OOB, this register may be already
+-	 * set by firmware. So we read this value out.
+-	 * if this value is 0, just let it be.
++	 * Set how many bytes should be skipped before writing data in OOB.
++	 * If a non-zero value has already been set (by firmware or something),
++	 * just use it.  Otherwise, set the driver default.
+ 	 */
+ 	denali->oob_skip_bytes = ioread32(denali->reg + SPARE_AREA_SKIP_BYTES);
++	if (!denali->oob_skip_bytes) {
++		denali->oob_skip_bytes = DENALI_DEFAULT_OOB_SKIP_BYTES;
++		iowrite32(denali->oob_skip_bytes,
++			  denali->reg + SPARE_AREA_SKIP_BYTES);
++	}
++
+ 	denali_detect_max_banks(denali);
+ 	iowrite32(0x0F, denali->reg + RB_PIN_ENABLED);
+ 	iowrite32(CHIP_EN_DONT_CARE__FLAG, denali->reg + CHIP_ENABLE_DONT_CARE);
+-- 
+2.7.4
