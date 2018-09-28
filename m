@@ -1,28 +1,32 @@
-Subject: Re: [PATCH v4 1/2] dt-bindings: nand: meson: add Amlogic NAND
- controller driver
-To: Rob Herring <robh@kernel.org>, Jianxin Pan <jianxin.pan@amlogic.com>
-CC: Boris Brezillon <boris.brezillon@bootlin.com>,
- <linux-mtd@lists.infradead.org>, Yixun Lan <yixun.lan@amlogic.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Jerome Brunet <jbrunet@baylibre.com>, Neil Armstrong
- <narmstrong@baylibre.com>, Martin Blumenstingl
- <martin.blumenstingl@googlemail.com>, Carlo Caione <carlo@caione.org>, Kevin
- Hilman <khilman@baylibre.com>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
- <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
- <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
- <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <1537433449-65213-1-git-send-email-jianxin.pan@amlogic.com>
- <1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com>
- <20180927181653.GA22153@bogus>
-From: Liang Yang <liang.yang@amlogic.com>
-Message-ID: <8f194c47-10bb-cb9d-c626-39f9b22887cb@amlogic.com>
-Date: Fri, 28 Sep 2018 16:33:23 +0800
+Received: from 18.mo5.mail-out.ovh.net ([178.33.45.10])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g5vDE-0001d9-Eh
+ for linux-mtd@lists.infradead.org; Fri, 28 Sep 2018 16:02:00 +0000
+Received: from player728.ha.ovh.net (unknown [10.109.143.246])
+ by mo5.mail-out.ovh.net (Postfix) with ESMTP id 9E7061ECEC5
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2018 18:01:33 +0200 (CEST)
+Subject: Re: [RFC/RFT PATCH v1 9/9] mtd: spi: Skip reading the Serial Flash
+ Discoverable Parameters
+To: Lukasz Majewski <lukma@denx.de>,
+ Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
+ Mark Rutland <mark.rutland@arm.com>
+Cc: yogeshnarayan.gaur@nxp.com, richard@nod.at, broonie@kernel.org,
+ linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
+ linux-spi@vger.kernel.org, albert.aribaud@3adev.fr,
+ prabhakar.kushwaha@nxp.com, linux-mtd@lists.infradead.org,
+ david.wolfe@nxp.com, Fabio Estevam <fabio.estevam@nxp.com>, han.xu@nxp.com,
+ computersforpeace@gmail.com, Fabio Estevam <festevam@gmail.com>,
+ dwmw2@infradead.org
+References: <20180926220739.620-1-lukma@denx.de>
+ <20180926220739.620-10-lukma@denx.de>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <1a85becb-6cb0-ede4-be0a-2608e8532c9e@wedev4u.fr>
+Date: Fri, 28 Sep 2018 18:01:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180927181653.GA22153@bogus>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20180926220739.620-10-lukma@denx.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,99 +36,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Lukasz,
 
-On 9/28/2018 2:16 AM, Rob Herring wrote:
-> On Thu, Sep 20, 2018 at 04:50:48PM +0800, Jianxin Pan wrote:
->> From: Liang Yang <liang.yang@amlogic.com>
->>
->> Add Amlogic NAND controller dt-bindings for Meson SoC,
->> Current this driver support GXBB/GXL/AXG platform.
->>
->> Signed-off-by: Liang Yang <liang.yang@amlogic.com>
->> Signed-off-by: Yixun Lan <yixun.lan@amlogic.com>
->> ---
->>   .../devicetree/bindings/mtd/amlogic,meson-nand.txt | 60 ++++++++++++++++++++++
->>   1 file changed, 60 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> new file mode 100644
->> index 0000000..803df2a
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
->> @@ -0,0 +1,60 @@
->> +Amlogic NAND Flash Controller (NFC) for GXBB/GXL/AXG family SoCs
->> +
->> +This file documents the properties in addition to those available in
->> +the MTD NAND bindings.
->> +
->> +Required properties:
->> +- compatible : contains one of:
->> +  - "amlogic,meson-gxl-nfc"
->> +  - "amlogic,meson-axg-nfc"
->> +- clocks     :
->> +	A list of phandle + clock-specifier pairs for the clocks listed
->> +	in clock-names.
->> +
->> +- clock-names: Should contain the following:
->> +	"core" - NFC module gate clock
->> +	"device" - device clock from eMMC sub clock controller
->> +
->> +- amlogic,mmc-syscon	: Required for NAND clocks, it's shared with SD/eMMC
->> +				controller port C
->> +
->> +Optional children nodes:
->> +Children nodes represent the available nand chips.
->> +
->> +Other properties:
->> +see Documentation/devicetree/bindings/mtd/nand.txt for generic bindings.
->> +
->> +Example demonstrate on AXG SoC:
->> +
->> +	sd_emmc_c_clkc: mmc@7000 {
->> +		compatible = "amlogic,meson-axg-mmc-clkc", "syscon";
->> +		reg = <0x0 0x7000 0x0 0x800>;
->> +		status = "okay";
->> +	};
->> +
->> +	nand: nfc@7800 {
-> 
-> nand-controller@7800
-> 
-ok, i will fix it.
+Le 27/09/2018 à 00:07, Lukasz Majewski a écrit :
+> The fsl-quadspi.c driver is not supporting SPINOR_OP_RDSFDP (0x5a)
+> read opcode - in the legacy driver we do read some garbage
+> data from AHB mapped area and then return on the first check
 
->> +		compatible = "amlogic,meson-axg-nfc";
->> +		reg = <0x0 0x7800 0x0 0x100>;
->> +		#address-cells = <1>;
->> +		#size-cells = <0>;
->> +		interrupts = <GIC_SPI 34 IRQ_TYPE_EDGE_RISING>;
->> +		status = "disabled";
->> +
->> +		clocks = <&clkc CLKID_SD_EMMC_C>,
->> +			<&sd_emmc_c_clkc CLKID_MMC_DIV>;
->> +		clock-names = "core", "device";
->> +		amlogic,mmc-syscon = <&sd_emmc_c_clkc>;
->> +
->> +		status = "okay";
+If your controller reads garbage then spi_nor_parse_sfdp() fails and exists on the
+very first check: signature of the SFDP header. Hence everything should already go on
+as if the SPI_NOR_SKIP_SFDP flag is set.
+
+So this patch doesn't change anything for your controller but prevents other controller
+from using QSPI protocols like SPI 1-4-4.
+
+This patch introduces a regression for other chips.
+
+Best regards,
+
+Cyrille
+
+> (L2376 @ ./mtd/spi-nor/spi-nor.c)
 > 
-> Don't show status in examples, plus you have it twice.
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-ok, i will fix it.
->> +
->> +		pinctrl-names = "default";
->> +		pinctrl-0 = <&nand_pins>;
->> +
->> +		nand@0 {
->> +			reg = <0>;
->> +			#address-cells = <1>;
->> +			#size-cells = <1>;
->> +
->> +			nand-on-flash-bbt;
->> +		};
->> +	};
->> -- 
->> 1.9.1
->>
-> 
-> .
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 442102be174e..c79b8c33aeeb 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -1103,7 +1103,7 @@ static const struct flash_info spi_nor_ids[] = {
+>  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
+> -	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
+> +	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ | SPI_NOR_SKIP_SFDP) },
+>  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
 > 
