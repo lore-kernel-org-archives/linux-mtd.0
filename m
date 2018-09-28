@@ -1,32 +1,26 @@
-Received: from 18.mo5.mail-out.ovh.net ([178.33.45.10])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g5vDE-0001d9-Eh
- for linux-mtd@lists.infradead.org; Fri, 28 Sep 2018 16:02:00 +0000
-Received: from player728.ha.ovh.net (unknown [10.109.143.246])
- by mo5.mail-out.ovh.net (Postfix) with ESMTP id 9E7061ECEC5
- for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2018 18:01:33 +0200 (CEST)
-Subject: Re: [RFC/RFT PATCH v1 9/9] mtd: spi: Skip reading the Serial Flash
- Discoverable Parameters
-To: Lukasz Majewski <lukma@denx.de>,
- Frieder Schrempf <frieder.schrempf@exceet.de>, boris.brezillon@bootlin.com,
- Mark Rutland <mark.rutland@arm.com>
-Cc: yogeshnarayan.gaur@nxp.com, richard@nod.at, broonie@kernel.org,
- linux-kernel@vger.kernel.org, Stefan Agner <stefan@agner.ch>,
- linux-spi@vger.kernel.org, albert.aribaud@3adev.fr,
- prabhakar.kushwaha@nxp.com, linux-mtd@lists.infradead.org,
- david.wolfe@nxp.com, Fabio Estevam <fabio.estevam@nxp.com>, han.xu@nxp.com,
- computersforpeace@gmail.com, Fabio Estevam <festevam@gmail.com>,
- dwmw2@infradead.org
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g60ru-0007fV-PO
+ for linux-mtd@lists.infradead.org; Fri, 28 Sep 2018 22:04:17 +0000
+Date: Sat, 29 Sep 2018 00:03:59 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Lukasz Majewski <lukma@denx.de>
+Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, Mark Rutland
+ <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yogeshnarayan.gaur@nxp.com, richard@nod.at, Stefan Agner <stefan@agner.ch>,
+ Fabio Estevam <festevam@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>,
+ prabhakar.kushwaha@nxp.com, han.xu@nxp.com, broonie@kernel.org,
+ david.wolfe@nxp.com, computersforpeace@gmail.com, dwmw2@infradead.org,
+ albert.aribaud@3adev.fr
+Subject: Re: [RFC/RFT PATCH v1 0/9] mtd: fsl: quadspi: Fixes for
+ fsl-quadspi.c driver (vybrid HW)
+Message-ID: <20180929000359.34fe18ae@bbrezillon>
+In-Reply-To: <20180926220739.620-1-lukma@denx.de>
 References: <20180926220739.620-1-lukma@denx.de>
- <20180926220739.620-10-lukma@denx.de>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <1a85becb-6cb0-ede4-be0a-2608e8532c9e@wedev4u.fr>
-Date: Fri, 28 Sep 2018 18:01:06 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180926220739.620-10-lukma@denx.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,42 +32,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Lukasz,
 
-Le 27/09/2018 à 00:07, Lukasz Majewski a écrit :
-> The fsl-quadspi.c driver is not supporting SPINOR_OP_RDSFDP (0x5a)
-> read opcode - in the legacy driver we do read some garbage
-> data from AHB mapped area and then return on the first check
+On Thu, 27 Sep 2018 00:07:30 +0200
+Lukasz Majewski <lukma@denx.de> wrote:
 
-If your controller reads garbage then spi_nor_parse_sfdp() fails and exists on the
-very first check: signature of the SFDP header. Hence everything should already go on
-as if the SPI_NOR_SKIP_SFDP flag is set.
-
-So this patch doesn't change anything for your controller but prevents other controller
-from using QSPI protocols like SPI 1-4-4.
-
-This patch introduces a regression for other chips.
-
-Best regards,
-
-Cyrille
-
-> (L2376 @ ./mtd/spi-nor/spi-nor.c)
+> Please find following set of patches, which provide improved behaviour
+> of the fsl-quadspi.c driver on Vybrid vf610 HW.
 > 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Below code is based on previous work done by Albert ARIBAUD:
+> https://patchwork.ozlabs.org/patch/675401/
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 442102be174e..c79b8c33aeeb 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1103,7 +1103,7 @@ static const struct flash_info spi_nor_ids[] = {
->  	{ "n25q064",     INFO(0x20ba17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q064a",    INFO(0x20bb17, 0, 64 * 1024,  128, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q128a11",  INFO(0x20bb18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ) },
-> -	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ) },
-> +	{ "n25q128a13",  INFO(0x20ba18, 0, 64 * 1024,  256, SECT_4K | SPI_NOR_QUAD_READ | SPI_NOR_DUAL_READ | SPI_NOR_SKIP_SFDP) },
->  	{ "n25q256a",    INFO(0x20ba19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
->  	{ "n25q256ax1",  INFO(0x20bb19, 0, 64 * 1024,  512, SECT_4K | SPI_NOR_QUAD_READ) },
->  	{ "n25q512a",    INFO(0x20bb20, 0, 64 * 1024, 1024, SECT_4K | USE_FSR | SPI_NOR_QUAD_READ) },
+> I've cleaned up the code a bit, make separate patches, exclude not
+> needed parts and port it to v4.19-rc3.
 > 
+> After applying those patches, the quadspi controller on vf610 works
+> with UBI/UBIFS.
+> The problem is with some corner case writes to raw MTD device
+> (like writing 1023B with single byte writes). Those fail sometimes.
+> 
+> Regression tests can be found in the following repository:
+> https://github.com/lmajewski/tests-spi/tree/master/tests
+> 
+> (Please read README.txt).
+> 
+> The NXP's community thread regarding HW issues in this block on
+> the vf610:
+> https://community.nxp.com/thread/485139
+> 
+> Maybe those patches will be helpful with the new, work in progress
+> driver for spi-fsl-qspi.c
+
+Talking about that, can you try to port your fixes on top of Frieder's
+patchset? I'm pretty sure some bug fixes are irrelevant after the
+migration to spi-mem (patch 1, 3, 4, 5, 6, 7 and 9 should be dropped I
+think).
+
+> 
+> Lukasz Majewski (9):
+>   Revert "mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ"
+>   mtd: qspi: Provide quirk to read only half of RX buffer (NXP's vybrid)
+>   mtd: spi: Do not setup the default seqid as we got it set for DUAL and
+>     QUAD
+>   mtd: spi: Modify the HW capability mask according to supported RX
+>     lanes
+>   mtd: spi: Provide LUT entry to perform DUAL read
+>   mtd: spi: Enhance the fsl_qspi_read() method to support DUAL and QUAD
+>   mtd: spi: Add SPI_NOR_DUAL_READ property for the 'n25q128a13' Micron
+>     memory
+>   mtd: spi: Allocate memory corresponding to maximal fsl-quadspi.c
+>     controller area
+>   mtd: spi: Skip reading the Serial Flash Discoverable Parameters
