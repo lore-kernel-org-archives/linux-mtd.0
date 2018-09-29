@@ -1,26 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g60ru-0007fV-PO
- for linux-mtd@lists.infradead.org; Fri, 28 Sep 2018 22:04:17 +0000
-Date: Sat, 29 Sep 2018 00:03:59 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Lukasz Majewski <lukma@denx.de>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>, Mark Rutland
- <mark.rutland@arm.com>, linux-mtd@lists.infradead.org,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- yogeshnarayan.gaur@nxp.com, richard@nod.at, Stefan Agner <stefan@agner.ch>,
- Fabio Estevam <festevam@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>,
- prabhakar.kushwaha@nxp.com, han.xu@nxp.com, broonie@kernel.org,
- david.wolfe@nxp.com, computersforpeace@gmail.com, dwmw2@infradead.org,
- albert.aribaud@3adev.fr
-Subject: Re: [RFC/RFT PATCH v1 0/9] mtd: fsl: quadspi: Fixes for
- fsl-quadspi.c driver (vybrid HW)
-Message-ID: <20180929000359.34fe18ae@bbrezillon>
-In-Reply-To: <20180926220739.620-1-lukma@denx.de>
-References: <20180926220739.620-1-lukma@denx.de>
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g68gv-000724-CE
+ for linux-mtd@lists.infradead.org; Sat, 29 Sep 2018 06:25:26 +0000
+Received: by mail-lj1-x242.google.com with SMTP id u21-v6so704633lja.8
+ for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2018 23:25:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+ <20180905143643.9871-4-ricardo.ribalda@gmail.com>
+ <20180927133513.487666f0@bbrezillon>
+In-Reply-To: <20180927133513.487666f0@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Sat, 29 Sep 2018 08:24:55 +0200
+Message-ID: <CAPybu_2hLyhrf+itbJthJG7+uWPs1jiiQaNRvRjh_FLJS65WRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] mtd: maps: gpio-addr-flash: Use devm_* functions
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,54 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lukasz,
+Hi Boris
 
-On Thu, 27 Sep 2018 00:07:30 +0200
-Lukasz Majewski <lukma@denx.de> wrote:
+On Thu, 27 Sep 2018, 13:35 Boris Brezillon, <boris.brezillon@bootlin.com> wrote:
+>
+> On Wed,  5 Sep 2018 16:36:38 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> > @@ -234,9 +234,11 @@ static int gpio_flash_probe(struct platform_device *pdev)
+> >       state->map.copy_to    = gf_copy_to;
+> >       state->map.bankwidth  = pdata->width;
+> >       state->map.size       = state->win_size * (1 << state->gpio_count);
+> > -     state->map.virt       = ioremap_nocache(memory->start, state->win_size);
+> > -     if (!state->map.virt)
+> > -             return -ENOMEM;
+> > +     state->map.virt       = devm_ioremap_resource(&pdev->dev, memory);
+> > +     if (IS_ERR(state->map.virt)) {
+> > +             dev_err(&pdev->dev, "failed to map memory\n");
+>
+> You can drop this error message, devm_ioremap_resource() already takes
+> care of that (no need to send a new version, I'll fix it when applying).
 
-> Please find following set of patches, which provide improved behaviour
-> of the fsl-quadspi.c driver on Vybrid vf610 HW.
-> 
-> Below code is based on previous work done by Albert ARIBAUD:
-> https://patchwork.ozlabs.org/patch/675401/
-> 
-> I've cleaned up the code a bit, make separate patches, exclude not
-> needed parts and port it to v4.19-rc3.
-> 
-> After applying those patches, the quadspi controller on vf610 works
-> with UBI/UBIFS.
-> The problem is with some corner case writes to raw MTD device
-> (like writing 1023B with single byte writes). Those fail sometimes.
-> 
-> Regression tests can be found in the following repository:
-> https://github.com/lmajewski/tests-spi/tree/master/tests
-> 
-> (Please read README.txt).
-> 
-> The NXP's community thread regarding HW issues in this block on
-> the vf610:
-> https://community.nxp.com/thread/485139
-> 
-> Maybe those patches will be helpful with the new, work in progress
-> driver for spi-fsl-qspi.c
+Thanks for you review. I will do the port to gpiod next monday (I want
+to try it on real hw)
 
-Talking about that, can you try to port your fixes on top of Frieder's
-patchset? I'm pretty sure some bug fixes are irrelevant after the
-migration to spi-mem (patch 1, 3, 4, 5, 6, 7 and 9 should be dropped I
-think).
-
-> 
-> Lukasz Majewski (9):
->   Revert "mtd: fsl-quadspi: Rename SEQID_QUAD_READ to SEQID_READ"
->   mtd: qspi: Provide quirk to read only half of RX buffer (NXP's vybrid)
->   mtd: spi: Do not setup the default seqid as we got it set for DUAL and
->     QUAD
->   mtd: spi: Modify the HW capability mask according to supported RX
->     lanes
->   mtd: spi: Provide LUT entry to perform DUAL read
->   mtd: spi: Enhance the fsl_qspi_read() method to support DUAL and QUAD
->   mtd: spi: Add SPI_NOR_DUAL_READ property for the 'n25q128a13' Micron
->     memory
->   mtd: spi: Allocate memory corresponding to maximal fsl-quadspi.c
->     controller area
->   mtd: spi: Skip reading the Serial Flash Discoverable Parameters
+Cheers!
+>
+> > +             return PTR_ERR(state->map.virt);
+> > +     }
+>
