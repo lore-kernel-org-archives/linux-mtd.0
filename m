@@ -1,9 +1,9 @@
 Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6xYa-0007Du-0c
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:21 +0000
-Received: by mail-ed1-x544.google.com with SMTP id a4-v6so196634eds.10
- for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:44:03 -0700 (PDT)
+ id 1g6xYa-0007EY-0a
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:22 +0000
+Received: by mail-ed1-x544.google.com with SMTP id f4-v6so14068385edq.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:44:08 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,11 +11,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v4 5/8] mtd: maps: gpio-addr-flash: Replace array with an
- integer
-Date: Mon,  1 Oct 2018 14:43:48 +0200
-Message-Id: <20181001124351.31615-5-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH v4 7/8] dt-binding: mtd: Document gpio-addr-flash
+Date: Mon,  1 Oct 2018 14:43:50 +0200
+Message-Id: <20181001124351.31615-7-ricardo.ribalda@gmail.com>
 In-Reply-To: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
 References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
@@ -29,93 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By replacing the array with an integer we can avoid completely
-the bit comparison loop if the value has not changed (by far
-the most common case).
+Add documentation for gpio-addr-flash. This binding allow creating
+flash devices that are paged using GPIOs.
 
+Cc: devicetree@vger.kernel.org
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 34 +++++++++++++++---------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 89cc8cce161b..47b12a6fead4 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -43,7 +43,7 @@ struct async_state {
- 	struct map_info map;
- 	size_t gpio_count;
- 	unsigned *gpio_addrs;
--	int *gpio_values;
-+	unsigned int gpio_values;
- 	unsigned int win_order;
- };
- #define gf_map_info_to_state(mi) ((struct async_state *)(mi)->map_priv_1)
-@@ -55,22 +55,25 @@ struct async_state {
-  *
-  * Rather than call the GPIO framework every time, cache the last-programmed
-  * value.  This speeds up sequential accesses (which are by far the most common
-- * type).  We rely on the GPIO framework to treat non-zero value as high so
-- * that we don't have to normalize the bits.
-+ * type).
-  */
- static void gf_set_gpios(struct async_state *state, unsigned long ofs)
- {
--	size_t i = 0;
--	int value;
-+	int i;
- 
- 	ofs >>= state->win_order;
--	do {
--		value = ofs & (1 << i);
--		if (state->gpio_values[i] != value) {
--			gpio_set_value(state->gpio_addrs[i], value);
--			state->gpio_values[i] = value;
--		}
--	} while (++i < state->gpio_count);
+diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+new file mode 100644
+index 000000000000..5006a26e1753
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+@@ -0,0 +1,54 @@
++Memory Mapped flash with some address lines addressed using GPIOs
 +
-+	if (ofs == state->gpio_values)
-+		return;
++Handle the case where a flash device is mostly addressed using physical
++line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
++to a 2MiB memory range and use the GPIOs to select a particular range.
 +
-+	for (i = 0; i < state->gpio_count; i++) {
-+		if ((ofs & BIT(i)) == (state->gpio_values & BIT(i)))
-+			continue;
++ - compatible : "cfi-gpio-addr-flash"
++ - reg : Address range of the mtd chip that is memory mapped, this is,
++   on the previous example 2MiB.
++ - bank-width : Width (in bytes) of the bank.  Equal to the
++   device width times the number of interleaved chips.
++ - gpios: List of GPIO specifiers that will be used to address the MSBs address
++   lines. The order goes from LSB to MSB.
++ - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
++   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
++ - #address-cells, #size-cells : Must be present if the device has
++   sub-nodes representing partitions (see below).  In this case
++   both #address-cells and #size-cells must be equal to 1.
 +
-+		gpio_set_value(state->gpio_addrs[i], !!(ofs & BIT(i)));
-+	}
++The device tree may optionally contain sub-nodes describing partitions of the
++address space. Check partition.txt for more details.
 +
-+	state->gpio_values = ofs;
- }
- 
- /**
-@@ -202,7 +205,7 @@ static const char * const part_probe_types[] = {
-  */
- static int gpio_flash_probe(struct platform_device *pdev)
- {
--	size_t i, arr_size;
-+	size_t i;
- 	struct physmap_flash_data *pdata;
- 	struct resource *memory;
- 	struct resource *gpios;
-@@ -215,8 +218,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	if (!memory || !gpios || !gpios->end)
- 		return -EINVAL;
- 
--	arr_size = sizeof(int) * gpios->end;
--	state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
-+	state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
- 	if (!state)
- 		return -ENOMEM;
- 
-@@ -226,9 +228,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	 */
- 	state->gpio_count     = gpios->end;
- 	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
--	state->gpio_values    = (void *)(state + 1);
- 	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
--	memset(state->gpio_values, 0xff, arr_size);
- 
- 	state->map.name       = DRIVER_NAME;
- 	state->map.read       = gf_read;
++Example:
++
++	flash@300000 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		compatible = "cfi-gpio-addr-flash";
++		bank-width = <2>;
++		reg = < 0x00300000 0x00200000 >;
++		gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
++		partitions {
++			compatible = "fixed-partitions";
++			#address-cells = <1>;
++			#size-cells = <1>;
++
++			partition@0 {
++				reg = < 0x0 0x200000 >;
++				label = "Golden Bitstream";
++			};
++			partition@200000 {
++				reg = < 0x200000 0x200000 >;
++				label = "User Bitstream";
++			};
++			partition@400000 {
++				reg = < 0x400000 0x200000 >;
++				label = "V4L Controls";
++			};
++			partition@600000 {
++				reg = < 0x600000 0x200000 >;
++				label = "Production Data";
++			};
++		}
++	} ;
 -- 
 2.19.0
