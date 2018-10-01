@@ -1,9 +1,9 @@
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6xYU-0007DA-NH
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:09 +0000
-Received: by mail-ed1-x542.google.com with SMTP id t11-v6so14043578edq.11
- for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:43:56 -0700 (PDT)
+ id 1g6xYW-0007DF-A1
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:10 +0000
+Received: by mail-ed1-x541.google.com with SMTP id n2-v6so3976368edo.9
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:43:57 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -11,10 +11,12 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v4 1/8] mtd: maps: gpio-addr-flash: Replace custom printk
-Date: Mon,  1 Oct 2018 14:43:44 +0200
-Message-Id: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v4 2/8] mtd: maps: gpio-addr-flash: Fix ioremapped size
+Date: Mon,  1 Oct 2018 14:43:45 +0200
+Message-Id: <20181001124351.31615-2-ricardo.ribalda@gmail.com>
+In-Reply-To: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,48 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use preferred print methods dev_*
+We should only iomap the area of the chip that is memory mapped.
+Otherwise we could be mapping devices beyond the memory space or that
+belong to other devices.
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Fixes: ebd71e3a4861 ("mtd: maps: gpio-addr-flash: fix warnings and make more portable")
+Cc: <stable@vger.kernel.org>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 9d9723693217..17be47f72973 100644
+index 17be47f72973..6de16e81994c 100644
 --- a/drivers/mtd/maps/gpio-addr-flash.c
 +++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -25,11 +25,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
+@@ -234,7 +234,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	state->map.copy_to    = gf_copy_to;
+ 	state->map.bankwidth  = pdata->width;
+ 	state->map.size       = state->win_size * (1 << state->gpio_count);
+-	state->map.virt       = ioremap_nocache(memory->start, state->map.size);
++	state->map.virt       = ioremap_nocache(memory->start, state->win_size);
+ 	if (!state->map.virt)
+ 		return -ENOMEM;
  
--#define pr_devinit(fmt, args...) \
--	({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
--
- #define DRIVER_NAME "gpio-addr-flash"
--#define PFX DRIVER_NAME ": "
- 
- /**
-  * struct async_state - keep GPIO flash state
-@@ -250,7 +246,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	i = 0;
- 	do {
- 		if (gpio_request(state->gpio_addrs[i], DRIVER_NAME)) {
--			pr_devinit(KERN_ERR PFX "failed to request gpio %d\n",
-+			dev_err(&pdev->dev, "failed to request gpio %d\n",
- 				state->gpio_addrs[i]);
- 			while (i--)
- 				gpio_free(state->gpio_addrs[i]);
-@@ -260,8 +256,8 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 		gpio_direction_output(state->gpio_addrs[i], 0);
- 	} while (++i < state->gpio_count);
- 
--	pr_devinit(KERN_NOTICE PFX "probing %d-bit flash bus\n",
--		state->map.bankwidth * 8);
-+	dev_notice(&pdev->dev, "probing %d-bit flash bus\n",
-+		   state->map.bankwidth * 8);
- 	state->mtd = do_map_probe(memory->name, &state->map);
- 	if (!state->mtd) {
- 		for (i = 0; i < state->gpio_count; ++i)
 -- 
 2.19.0
