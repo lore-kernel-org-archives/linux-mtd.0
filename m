@@ -1,24 +1,20 @@
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g76Te-0005j6-LU
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 22:16:02 +0000
-From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Daniel Mack <daniel@zonque.org>, Miquel Raynal
- <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
- <stable@vger.kernel.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g76wK-00079C-A9
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 22:45:21 +0000
+Date: Tue, 2 Oct 2018 00:44:56 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: miquel.raynal@bootlin.com, linux-mtd@lists.infradead.org,
+ chris.packham@alliedtelesis.co.nz, stable@vger.kernel.org
 Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
  enabling the IRQ
-Date: Mon, 1 Oct 2018 22:15:28 +0000
-Message-ID: <b98170dbd30541d8aa5b51be7efe850d@svr-chch-ex1.atlnz.lc>
-References: <20181001234120.425ae1f5@bbrezillon>
- <c8de62fb56fd493baa8b1f6343bb8bfe@svr-chch-ex1.atlnz.lc>
- <20181002001328.7f64ecbc@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <20181002004456.4694ac4d@bbrezillon>
+In-Reply-To: <20180927071751.21513-1-daniel@zonque.org>
+References: <20180927071751.21513-1-daniel@zonque.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/10/18 11:13, Boris Brezillon wrote:=0A=
-> On Mon, 1 Oct 2018 22:01:27 +0000=0A=
-> Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:=0A=
-> =0A=
->> On 02/10/18 10:41, Boris Brezillon wrote:=0A=
->>> On Mon, 1 Oct 2018 22:34:38 +0200=0A=
->>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:=0A=
->>>       =0A=
->>>>>=0A=
->>>>> I'd previously tried readl() based on the same hunch. No change.=0A=
->>>>>=0A=
->>>>> I think my snippet above might be misleading. While a delay between=
-=0A=
->>>>> readl_relaxed() and the if should not change the outcome, this is als=
-o a=0A=
->>>>> delay between marvell_nfc_enable_int() and marvell_nfc_disable_int()=
-=0A=
->>>>> which is probably more significant. Sure enough if I move the delay t=
-o=0A=
->>>>> just before the marvell_nfc_disable_int() the error is not seen.=0A=
->>>>=0A=
->>>> AFAICT, your timeout always happens when waiting for RDREQ, not RDYM.=
-=0A=
->>>> So maybe disabling MRDY too early has a side-effect on the RDREQ event=
-.=0A=
->>>=0A=
->>> Can you try with this patch [1]? It should ensure that NDSR_RDY bits=0A=
->>> are cleared before starting an operation.=0A=
->>>=0A=
->>> [1]http://code.bulix.org/lgs30c-468205=0A=
->>>    =0A=
->>=0A=
->> No luck. I applied that on top of Daniel's and got the same result.=0A=
->>=0A=
->> One thing that does look promising is the following modification of=0A=
->> Daniel's patch[1]. Which moves the RDY check to before where the=0A=
->> interrupts are enabled.=0A=
-> =0A=
-> Except we still don't know why this is happening, and I'm not sure I=0A=
-> want to take a fix without understanding why it does fix the problem.=0A=
-=0A=
-Agreed. My only guess is that there is some interrupt that is missed in =0A=
-the short period they are disabled when calling complete().=0A=
-=0A=
-> Also, it looks like complete() is not called until the RDDREQ, WRDREQ=0A=
-> and WRCMDREQ are cleared in the interrupt handler [1], which is weird.=0A=
-> Miquel, do you happen to remember why you had to do that?=0A=
-> =0A=
-> [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/drivers/mtd/nand/raw/marvell_nand.c?h=3Dv4.19-rc6#n689=0A=
-> =0A=
-=0A=
+Hi Daniel,
+
+On Thu, 27 Sep 2018 09:17:51 +0200
+Daniel Mack <daniel@zonque.org> wrote:
+
+> At least on PXA3xx platforms, enabling RDY interrupts in the NDCR register
+> will only cause the IRQ to latch when the RDY lanes are changing, and not
+> in case they are already asserted.
+> 
+> This means that if the controller finished the command in flight before
+> marvell_nfc_wait_op() is called, that function will wait for a change in
+> the bit that can't ever happen as it is already set.
+> 
+> To address this race, check for the RDY bits after the IRQ was enabled,
+> and complete the completion immediately if the condition is already met.
+> 
+> This fixes a bug that was observed with a NAND chip that holds a UBIFS
+> parition on which file system stress tests were executed. When
+> marvell_nfc_wait_op() reports an error, UBI/UBIFS will eventually mount
+> the filesystem read-only, reporting lots of warnings along the way.
+> 
+> Fixes: 02f26ecf8c77 mtd: nand: add reworked Marvell NAND controller driver
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Daniel Mack <daniel@zonque.org>
+
+Can you try to replace your patch by the following one and let me know if
+it solves your problem?
+
+Thanks,
+
+Boris
+
+--->8---
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index e63f714f7639..295a86a5545f 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -1123,7 +1123,7 @@ static int marvell_nfc_hw_ecc_hmg_do_write_page(struct nand_chip *chip,
+                memcpy(nfc->dma_buf, data_buf, lt->data_bytes);
+                memcpy(nfc->dma_buf + lt->data_bytes, oob_buf, oob_bytes);
+                marvell_nfc_xfer_data_dma(nfc, DMA_TO_DEVICE, lt->data_bytes +
+-                                         lt->ecc_bytes + lt->spare_bytes);
++                                         oob_bytes);
+        } else {
+                marvell_nfc_xfer_data_out_pio(nfc, data_buf, lt->data_bytes);
+                marvell_nfc_xfer_data_out_pio(nfc, oob_buf, oob_bytes);
