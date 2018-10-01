@@ -1,28 +1,24 @@
-Date: Mon, 1 Oct 2018 11:09:46 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Frieder Schrempf <frieder.schrempf@exceet.de>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Message-ID: <20181001110946.5330a90e@bbrezillon>
-In-Reply-To: <VI1PR04MB10381FD703F054F33B9BA6BE99EF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537525323-20730-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180929174023.51b1e284@bbrezillon>
- <7c10ced6-91af-187a-0c34-ce9b3e897e2e@exceet.de>
- <VI1PR04MB10381FD703F054F33B9BA6BE99EF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g6uz1-0003k2-Ld
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 09:59:21 +0000
+Received: by mail-lf1-x144.google.com with SMTP id v17-v6so9368371lfe.3
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 02:59:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20180905143643.9871-1-ricardo.ribalda@gmail.com>
+ <20180905143643.9871-7-ricardo.ribalda@gmail.com>
+In-Reply-To: <20180905143643.9871-7-ricardo.ribalda@gmail.com>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Mon, 1 Oct 2018 11:58:49 +0200
+Message-ID: <CAPybu_2WZd8w-HbW-7gn=Z+9LmRYV--pag--xjT=UBDgcxWYnA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] mtd: maps: gpio-addr-flash: Split allocation in two
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +28,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 1 Oct 2018 09:02:32 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Hi Boris
 
-> > > static void fspi_writel(struct nxp_fspi *f, u32 val, void __iomem
-> > > *addr) {
-> > > 	if (f->big_endian)
-> > > 		iowrite32be(val, addr);
-> > > 	else
-> > > 		iowrite32(val, addr);
-> > > }
-> > >
-> > >
-> > > static u32 fspi_readl(struct nxp_fspi *f, void __iomem *addr) {
-> > > 	if (f->big_endian)
-> > > 		return ioread32be(addr);
-> > > 	else
-> > > 		return ioread32(addr);
-> > > }  
-> > 
-> > I introduced the ->read/write() hooks in the QSPI driver because I
-> > was told to remove the conditional in the read/write path, but I
-> > can't really tell if this really makes any difference.
-> >   
-> Yes, I have taken these hooks by looking into the comments received
-> for Frieder's QSPI patch series. For me this looks more clean and can
-> be decided in the controller initialization sequence which hook would
-> going to be invoked.
+PLEASE do not apply this one!
+
+There is a bug, value from gpio->addr is lost.
+On Wed, Sep 5, 2018 at 4:37 PM Ricardo Ribalda Delgado
+<ricardo.ribalda@gmail.com> wrote:
+>
+> Instead of making one allocation and then calculating the addresses of
+> those two pointers in that area make two allocations. This simplifies
+> the code.
+>
+> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> ---
+>  drivers/mtd/maps/gpio-addr-flash.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+> index 8f5e3dce9be3..9455a8448064 100644
+> --- a/drivers/mtd/maps/gpio-addr-flash.c
+> +++ b/drivers/mtd/maps/gpio-addr-flash.c
+> @@ -205,7 +205,7 @@ static const char * const part_probe_types[] = {
+>   */
+>  static int gpio_flash_probe(struct platform_device *pdev)
+>  {
+> -       size_t i, arr_size;
+> +       size_t i;
+>         struct physmap_flash_data *pdata;
+>         struct resource *memory;
+>         struct resource *gpios;
+> @@ -218,8 +218,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+>         if (!memory || !gpios || !gpios->end)
+>                 return -EINVAL;
+>
+> -       arr_size = sizeof(state->gpio_addrs[0]) * gpios->end;
+> -       state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
+> +       state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
+>         if (!state)
+>                 return -ENOMEM;
+>
+> @@ -228,7 +227,12 @@ static int gpio_flash_probe(struct platform_device *pdev)
+>          * away their pointer types here to the known types (gpios->xxx).
+>          */
+>         state->gpio_count     = gpios->end;
+> -       state->gpio_addrs     = (void *)(unsigned long)gpios->start;
+> +       state->gpio_addrs     = devm_kzalloc(&pdev->dev,
+> +                                            sizeof(state->gpio_addrs[0]) *
+> +                                                               gpios->end,
+> +                                            GFP_KERNEL);
+> +       if (!state->gpio_addrs)
+> +               return -ENOMEM;
+>         state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
+>
+>         state->map.name       = DRIVER_NAME;
+> --
+> 2.18.0
+>
 
 
-Well, depending on your CPU, the indirect branch (caused by the
-function pointer call) might have an higher cost than the conditional
-branch. Not sure we care about such micro-optimizations though.
-Regarding the readability aspect, I still prefer my version, but I
-guess that's a matter of taste.
+-- 
+Ricardo Ribalda
