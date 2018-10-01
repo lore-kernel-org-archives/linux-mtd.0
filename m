@@ -1,26 +1,28 @@
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+Received: from gate2.alliedtelesis.co.nz ([2001:df5:b000:5::4])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6xYi-0007Es-Mf
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:44 +0000
-Received: by mail-ed1-x542.google.com with SMTP id g26-v6so14079526edp.0
- for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:44:10 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- open list <linux-kernel@vger.kernel.org>
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v4 8/8] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-Date: Mon,  1 Oct 2018 14:43:51 +0200
-Message-Id: <20181001124351.31615-8-ricardo.ribalda@gmail.com>
-In-Reply-To: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
-References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+ id 1g74M4-0001zx-21
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 19:59:46 +0000
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Daniel Mack <daniel@zonque.org>, Miquel Raynal <miquel.raynal@bootlin.com>
+CC: Boris Brezillon <boris.brezillon@bootlin.com>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
+ enabling the IRQ
+Date: Mon, 1 Oct 2018 19:59:11 +0000
+Message-ID: <59f9c342cf8140979329aa269aa0c2eb@svr-chch-ex1.atlnz.lc>
+References: <20180927071751.21513-1-daniel@zonque.org>
+ <20180927101145.4c2d1159@xps13> <20180927105630.19fc1ff8@bbrezillon>
+ <de6fbe4af7904d6db23e42bf3e4e2565@svr-chch-ex1.atlnz.lc>
+ <9b32fe67-c6fb-5f8c-d97a-4419557e6768@zonque.org>
+ <20180928102454.325644f3@xps13>
+ <692a1133-59d1-ae45-fa06-2a684e94c350@zonque.org>
+ <3d7b337f701c45caa35aef94f8d93731@svr-chch-ex1.atlnz.lc>
+ <227028c0-e1e0-46b3-3c7d-2b242b31bb3f@zonque.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,271 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Allow creating gpio-addr-flash via device-tree and not just via platform
-data.
-
-The gpio probing has been moved to a different function allowing
-deferred probing if they are not ready.
-
-Option parsing has been also moved to separated functions.
-
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- drivers/mtd/maps/gpio-addr-flash.c | 184 ++++++++++++++++++++++-------
- 1 file changed, 144 insertions(+), 40 deletions(-)
-
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index c6fe1de33a82..afa9dce14f68 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -7,6 +7,7 @@
-  *
-  * Copyright © 2000 Nicolas Pitre <nico@cam.org>
-  * Copyright © 2005-2009 Analog Devices Inc.
-+ * Copyright © 2018 Ricardo Ribalda <ricardo.ribalda@gmail.com>
-  *
-  * Enter bugs at http://blackfin.uclinux.org/
-  *
-@@ -171,8 +172,120 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
- 	}
- }
- 
--static const char * const part_probe_types[] = {
--	"cmdlinepart", "RedBoot", NULL };
-+static int gf_bankwidth(struct platform_device *pdev)
-+{
-+	struct device_node *dn;
-+	int ret;
-+	u32 bankwidth;
-+
-+	dn = pdev->dev.of_node;
-+	if (!dn) {
-+		struct physmap_flash_data *pdata;
-+
-+		pdata = dev_get_platdata(&pdev->dev);
-+		return pdata->width;
-+	}
-+
-+	ret = of_property_read_u32(dn, "bank-width", &bankwidth);
-+	if (ret) {
-+		dev_err(&pdev->dev, "failed to get bank-width\n");
-+		return -EINVAL;
-+	}
-+
-+	return bankwidth;
-+}
-+
-+static const char *gf_probe_type(struct platform_device *pdev)
-+{
-+	struct device_node *dn;
-+	struct resource *memory;
-+	const char *of_probe;
-+
-+	dn = pdev->dev.of_node;
-+	if (!dn) {
-+		memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+		return memory->name;
-+	}
-+
-+	of_probe = of_get_property(dn, "probe-type", NULL);
-+	if (of_probe)
-+		return of_probe;
-+
-+	return "cfi_probe";
-+}
-+
-+static void gf_device_parse_register(struct platform_device *pdev,
-+				     struct async_state *state)
-+{
-+	static const char * const part_probe_types[] = {
-+		"cmdlinepart", "RedBoot", "ofpart", "ofoldpart", NULL };
-+	struct device_node *dn;
-+
-+	dn = pdev->dev.of_node;
-+	if (!dn) {
-+		struct physmap_flash_data *pdata;
-+
-+		pdata = dev_get_platdata(&pdev->dev);
-+		mtd_device_parse_register(state->mtd, part_probe_types, NULL,
-+					  pdata->parts, pdata->nr_parts);
-+		return;
-+	}
-+
-+	mtd_device_parse_register(state->mtd, part_probe_types, NULL, NULL, 0);
-+}
-+
-+static int gpio_flash_probe_gpios(struct platform_device *pdev,
-+				  struct async_state *state)
-+{
-+	struct physmap_flash_data *pdata;
-+	struct device_node *dn;
-+	struct resource *gpios = NULL;
-+	int i;
-+
-+	dn = pdev->dev.of_node;
-+	if (dn) {
-+		state->gpios = devm_gpiod_get_array(&pdev->dev, NULL,
-+						    GPIOD_OUT_LOW);
-+		if (IS_ERR(state->gpios)) {
-+			dev_err(&pdev->dev, "Error getting gpio array %ld\n",
-+				   PTR_ERR(state->gpios));
-+			return PTR_ERR(state->gpios);
-+		}
-+		return 0;
-+	}
-+
-+	pdata = dev_get_platdata(&pdev->dev);
-+	if (!pdata)
-+		return -EINVAL;
-+	gpios = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (IS_ERR(gpios) || !gpios->end)
-+		return -EINVAL;
-+
-+	state->gpios = devm_kzalloc(&pdev->dev,
-+				    sizeof(*state->gpios) +
-+				    gpios->end * sizeof(state->gpios->desc[0]),
-+				    GFP_KERNEL);
-+	if (!state->gpios)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < gpios->end ; i++) {
-+		unsigned int *gpio_id = (unsigned int *)gpios->start;
-+
-+		if (devm_gpio_request_one(&pdev->dev, gpio_id[i], GPIOD_OUT_LOW,
-+					DRIVER_NAME)) {
-+			dev_err(&pdev->dev, "failed to request gpio %d\n",
-+				gpio_id[i]);
-+			return -EBUSY;
-+		}
-+
-+		state->gpios->desc[i] = gpio_to_desc(gpio_id[i]);
-+		if (!state->gpios->desc[i])
-+			return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- 
- /**
-  * gpio_flash_probe() - setup a mapping for a GPIO assisted flash
-@@ -204,42 +317,42 @@ static const char * const part_probe_types[] = {
-  */
- static int gpio_flash_probe(struct platform_device *pdev)
- {
--	size_t i;
- 	struct physmap_flash_data *pdata;
- 	struct resource *memory;
--	struct resource *gpios;
- 	struct async_state *state;
-+	int ret;
- 
- 	pdata = dev_get_platdata(&pdev->dev);
- 	memory = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	gpios = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
--
--	if (!memory || !gpios || !gpios->end)
-+	if (!memory)
- 		return -EINVAL;
- 
-+	if (!is_power_of_2(resource_size(memory))) {
-+		dev_err(&pdev->dev, "Window size must be aligned\n");
-+		return -EIO;
-+	}
-+
- 	state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
- 	if (!state)
- 		return -ENOMEM;
-+	platform_set_drvdata(pdev, state);
- 
--	state->gpios = devm_kzalloc(&pdev->dev,
--			sizeof(*state->gpios) +
--			gpios->end * sizeof(state->gpios->desc[0]),
--			GFP_KERNEL);
--	if (!state->gpios)
--		return -ENOMEM;
--	state->gpios->ndescs = gpios->end;
--
--	if (!state->gpios->desc)
--		return -ENOMEM;
-+	ret = gpio_flash_probe_gpios(pdev, state);
-+	if (ret < 0)
-+		return ret;
- 
- 	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
--
- 	state->map.name       = DRIVER_NAME;
- 	state->map.read       = gf_read;
- 	state->map.copy_from  = gf_copy_from;
- 	state->map.write      = gf_write;
- 	state->map.copy_to    = gf_copy_to;
--	state->map.bankwidth  = pdata->width;
-+
-+	ret = gf_bankwidth(pdev);
-+	if (ret < 0)
-+		return ret;
-+	state->map.bankwidth = ret;
-+
- 	state->map.size       = BIT(state->win_order + state->gpios->ndescs);
- 	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
- 	if (IS_ERR(state->map.virt))
-@@ -248,33 +361,15 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	state->map.phys       = NO_XIP;
- 	state->map.map_priv_1 = (unsigned long)state;
- 
--	platform_set_drvdata(pdev, state);
--
--	i = 0;
--	do {
--		unsigned int *gpio_id = (unsigned int *)gpios->start;
--
--		if (devm_gpio_request_one(&pdev->dev, gpio_id[i], GPIOD_OUT_LOW,
--					DRIVER_NAME)) {
--			dev_err(&pdev->dev, "failed to request gpio %d\n",
--				gpio_id[i]);
--			return -EBUSY;
--		}
--
--		state->gpios->desc[i] = gpio_to_desc(gpio_id[i]);
--		if (!state->gpios->desc[i])
--			return -EINVAL;
--	} while (++i < state->gpios->ndescs);
--
- 	dev_notice(&pdev->dev, "probing %d-bit flash bus\n",
- 		   state->map.bankwidth * 8);
--	state->mtd = do_map_probe(memory->name, &state->map);
-+	state->mtd = do_map_probe(gf_probe_type(pdev), &state->map);
- 	if (!state->mtd)
- 		return -ENXIO;
- 	state->mtd->dev.parent = &pdev->dev;
-+	mtd_set_of_node(state->mtd, pdev->dev.of_node);
- 
--	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
--				  pdata->parts, pdata->nr_parts);
-+	gf_device_parse_register(pdev, state);
- 
- 	return 0;
- }
-@@ -288,11 +383,20 @@ static int gpio_flash_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
-+static const struct of_device_id gpio_flash_match[] = {
-+	{
-+		.compatible	= "cfi-gpio-addr-flash",
-+	},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, gpio_flash_match);
-+
- static struct platform_driver gpio_flash_driver = {
- 	.probe		= gpio_flash_probe,
- 	.remove		= gpio_flash_remove,
- 	.driver		= {
- 		.name	= DRIVER_NAME,
-+		.of_match_table = gpio_flash_match,
- 	},
- };
- 
--- 
-2.19.0
+On 01/10/18 18:31, Daniel Mack wrote:=0A=
+> On 30/9/2018 11:10 PM, Chris Packham wrote:=0A=
+>>>> With this in mind, I don't see why this=0A=
+>>>>=0A=
+>>>> +	st =3D readl_relaxed(nfc->regs + NDSR);=0A=
+>>>> +	if (st & (NDSR_RDY(0) | NDSR_RDY(1)))=0A=
+>>>> +		complete(&nfc->complete);=0A=
+>>> Yeah, me neither. Chris, are you absolutely sure this is the reason? I'=
+m=0A=
+>>> asking because it took me several tries sometimes to trigger the bug, s=
+o=0A=
+>>> is there a chance that you see an error at all times, regardless of=0A=
+>>> whether my patch is applied?=0A=
+>> It seems pretty consistent. Without this patch there seems to be no=0A=
+>> problem. With this patch it triggers pretty much straight away. I can't=
+=0A=
+>> discount that there might be something wrong with my dts (the R/B=0A=
+>> configuration was missing initially).=0A=
+>>=0A=
+>> I've also been able to run this on the DB-88F6820-AMC board with the=0A=
+>> same result (the dts for this is in the for-next branch of=0A=
+>> git://git.infradead.org/linux-mvebu.git).=0A=
+>>=0A=
+>> The really odd thing is the following seems to avoid the problem=0A=
+>>=0A=
+>> +        st =3D readl_relaxed(nfc->regs + NDSR);=0A=
+>> +        udelay(1000);=0A=
+>> +        if (st & (NDSR_RDY(0) | NDSR_RDY(1)))=0A=
+>> +                complete(&nfc->complete);=0A=
+>>=0A=
+>> Which is weird because the st value has already been read so the udelay=
+=0A=
+>> should have no effect.=0A=
+> =0A=
+> Erm, yes. That's totally weird. Which gcc are you using for this?=0A=
+=0A=
+arm-softfloat-linux-gnueabi-gcc (crosstool-NG crosstool-ng-1.22.0) 4.9.3=0A=
+=0A=
+> Could you please try and use readl() here instead of readl_relaxed()?=0A=
+> That will place a memory barrier after the read to enforce ordering.=0A=
+=0A=
+I'd previously tried readl() based on the same hunch. No change.=0A=
+=0A=
+I think my snippet above might be misleading. While a delay between =0A=
+readl_relaxed() and the if should not change the outcome, this is also a =
+=0A=
+delay between marvell_nfc_enable_int() and marvell_nfc_disable_int() =0A=
+which is probably more significant. Sure enough if I move the delay to =0A=
+just before the marvell_nfc_disable_int() the error is not seen.=0A=
+=0A=
+> But if this is a problem, many other parts of that driver should be=0A=
+> equally affected.=0A=
+> =0A=
+>> On 28/09/18 19:43, Daniel Mack wrote:=0A=
+>>    >=0A=
+>>    > Also, does my .EALREADY approach (v1) make any difference?=0A=
+>>    >=0A=
+>>=0A=
+>> The v1 of this patch doesn't show the problem.=0A=
+> =0A=
+> That's also very strange because the condition it triggers on is exactly=
+=0A=
+> the same.=0A=
+=0A=
+One difference is that by calling complete() interrupts will be disabled =
+=0A=
+in the spinlock.=0A=
+=0A=
+> =0A=
+> =0A=
+> Thanks,=0A=
+> Daniel=0A=
+> =0A=
+=0A=
