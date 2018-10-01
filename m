@@ -1,9 +1,9 @@
-Received: from mail-ed1-x543.google.com ([2a00:1450:4864:20::543])
+Received: from mail-ed1-x544.google.com ([2a00:1450:4864:20::544])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g6xYX-0007DJ-V9
- for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:11 +0000
-Received: by mail-ed1-x543.google.com with SMTP id c22-v6so452220edc.4
- for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:43:59 -0700 (PDT)
+ id 1g6xYa-0007Du-0c
+ for linux-mtd@lists.infradead.org; Mon, 01 Oct 2018 12:44:21 +0000
+Received: by mail-ed1-x544.google.com with SMTP id a4-v6so196634eds.10
+ for <linux-mtd@lists.infradead.org>; Mon, 01 Oct 2018 05:44:03 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
 Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v4 3/8] mtd: maps: gpio-addr-flash: Use devm_* functions
-Date: Mon,  1 Oct 2018 14:43:46 +0200
-Message-Id: <20181001124351.31615-3-ricardo.ribalda@gmail.com>
+Subject: [PATCH v4 5/8] mtd: maps: gpio-addr-flash: Replace array with an
+ integer
+Date: Mon,  1 Oct 2018 14:43:48 +0200
+Message-Id: <20181001124351.31615-5-ricardo.ribalda@gmail.com>
 In-Reply-To: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
 References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
@@ -28,82 +29,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-By using devm functions we can make the code cleaner.
+By replacing the array with an integer we can avoid completely
+the bit comparison loop if the value has not changed (by far
+the most common case).
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 34 +++++++++++++++---------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 6de16e81994c..84404dcc7824 100644
+index 89cc8cce161b..47b12a6fead4 100644
 --- a/drivers/mtd/maps/gpio-addr-flash.c
 +++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -213,7 +213,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+@@ -43,7 +43,7 @@ struct async_state {
+ 	struct map_info map;
+ 	size_t gpio_count;
+ 	unsigned *gpio_addrs;
+-	int *gpio_values;
++	unsigned int gpio_values;
+ 	unsigned int win_order;
+ };
+ #define gf_map_info_to_state(mi) ((struct async_state *)(mi)->map_priv_1)
+@@ -55,22 +55,25 @@ struct async_state {
+  *
+  * Rather than call the GPIO framework every time, cache the last-programmed
+  * value.  This speeds up sequential accesses (which are by far the most common
+- * type).  We rely on the GPIO framework to treat non-zero value as high so
+- * that we don't have to normalize the bits.
++ * type).
+  */
+ static void gf_set_gpios(struct async_state *state, unsigned long ofs)
+ {
+-	size_t i = 0;
+-	int value;
++	int i;
+ 
+ 	ofs >>= state->win_order;
+-	do {
+-		value = ofs & (1 << i);
+-		if (state->gpio_values[i] != value) {
+-			gpio_set_value(state->gpio_addrs[i], value);
+-			state->gpio_values[i] = value;
+-		}
+-	} while (++i < state->gpio_count);
++
++	if (ofs == state->gpio_values)
++		return;
++
++	for (i = 0; i < state->gpio_count; i++) {
++		if ((ofs & BIT(i)) == (state->gpio_values & BIT(i)))
++			continue;
++
++		gpio_set_value(state->gpio_addrs[i], !!(ofs & BIT(i)));
++	}
++
++	state->gpio_values = ofs;
+ }
+ 
+ /**
+@@ -202,7 +205,7 @@ static const char * const part_probe_types[] = {
+  */
+ static int gpio_flash_probe(struct platform_device *pdev)
+ {
+-	size_t i, arr_size;
++	size_t i;
+ 	struct physmap_flash_data *pdata;
+ 	struct resource *memory;
+ 	struct resource *gpios;
+@@ -215,8 +218,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	if (!memory || !gpios || !gpios->end)
  		return -EINVAL;
  
- 	arr_size = sizeof(int) * gpios->end;
--	state = kzalloc(sizeof(*state) + arr_size, GFP_KERNEL);
-+	state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
+-	arr_size = sizeof(int) * gpios->end;
+-	state = devm_kzalloc(&pdev->dev, sizeof(*state) + arr_size, GFP_KERNEL);
++	state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
  	if (!state)
  		return -ENOMEM;
  
-@@ -234,9 +234,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	state->map.copy_to    = gf_copy_to;
- 	state->map.bankwidth  = pdata->width;
- 	state->map.size       = state->win_size * (1 << state->gpio_count);
--	state->map.virt       = ioremap_nocache(memory->start, state->win_size);
--	if (!state->map.virt)
--		return -ENOMEM;
-+	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
-+	if (IS_ERR(state->map.virt))
-+		return PTR_ERR(state->map.virt);
+@@ -226,9 +228,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	 */
+ 	state->gpio_count     = gpios->end;
+ 	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
+-	state->gpio_values    = (void *)(state + 1);
+ 	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
+-	memset(state->gpio_values, 0xff, arr_size);
  
- 	state->map.phys       = NO_XIP;
- 	state->map.map_priv_1 = (unsigned long)state;
-@@ -245,12 +245,10 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 
- 	i = 0;
- 	do {
--		if (gpio_request(state->gpio_addrs[i], DRIVER_NAME)) {
-+		if (devm_gpio_request(&pdev->dev, state->gpio_addrs[i],
-+				      DRIVER_NAME)) {
- 			dev_err(&pdev->dev, "failed to request gpio %d\n",
- 				state->gpio_addrs[i]);
--			while (i--)
--				gpio_free(state->gpio_addrs[i]);
--			kfree(state);
- 			return -EBUSY;
- 		}
- 		gpio_direction_output(state->gpio_addrs[i], 0);
-@@ -259,12 +257,8 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	dev_notice(&pdev->dev, "probing %d-bit flash bus\n",
- 		   state->map.bankwidth * 8);
- 	state->mtd = do_map_probe(memory->name, &state->map);
--	if (!state->mtd) {
--		for (i = 0; i < state->gpio_count; ++i)
--			gpio_free(state->gpio_addrs[i]);
--		kfree(state);
-+	if (!state->mtd)
- 		return -ENXIO;
--	}
- 	state->mtd->dev.parent = &pdev->dev;
- 
- 	mtd_device_parse_register(state->mtd, part_probe_types, NULL,
-@@ -276,13 +270,9 @@ static int gpio_flash_probe(struct platform_device *pdev)
- static int gpio_flash_remove(struct platform_device *pdev)
- {
- 	struct async_state *state = platform_get_drvdata(pdev);
--	size_t i = 0;
--	do {
--		gpio_free(state->gpio_addrs[i]);
--	} while (++i < state->gpio_count);
-+
- 	mtd_device_unregister(state->mtd);
- 	map_destroy(state->mtd);
--	kfree(state);
- 	return 0;
- }
- 
+ 	state->map.name       = DRIVER_NAME;
+ 	state->map.read       = gf_read;
 -- 
 2.19.0
