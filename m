@@ -1,18 +1,21 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7Jvc-000057-Kl
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:37:41 +0000
-Date: Tue, 2 Oct 2018 14:37:17 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Cc: linux-mtd@lists.infradead.org, richard@nod.at
-Subject: Re: [PATCH mtd-www] Remove references to the "unstable bits" issue
-Message-ID: <20181002143717.5e9a4735@xps13>
-In-Reply-To: <20181002122523.12422-1-david.oberhollenzer@sigma-star.at>
-References: <20181002122523.12422-1-david.oberhollenzer@sigma-star.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7K1k-0002PY-DZ
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:43:50 +0000
+Received: by mail-lf1-x144.google.com with SMTP id r191-v6so1305320lff.2
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2018 05:43:37 -0700 (PDT)
+From: Linus Walleij <linus.walleij@linaro.org>
+To: linux-block@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>
+Cc: linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Linus Walleij <linus.walleij@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+ Paolo Valente <paolo.valente@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: [PATCH] block: BFQ default for single queue devices
+Date: Tue,  2 Oct 2018 14:43:29 +0200
+Message-Id: <20181002124329.21248-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +25,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+This sets BFQ as the default scheduler for single queue
+block devices (nr_hw_queues == 1) if it is available. This
+affects notably MMC/SD-cards but notably also UBI and
+the loopback device.
 
-David Oberhollenzer <david.oberhollenzer@sigma-star.at> wrote on Tue,
-2 Oct 2018 14:25:23 +0200:
+I have been running it for a while without any negative
+effects on my pet systems and I want some wider testing
+so let's throw it out there and see what people say.
+Admittedly my use cases are limited.
 
-> In 2011, several sections about an issue with SLC and MLC NAND flashes of
-> that time were added. The problem was referred to as "unstable bits" issue
-> throughout the documentation and the FAQ.
->=20
-> As of writing, the issue could not be reproduced with modern NADN flashes
+I talked to Pavel a bit back and it turns out he has a
+usecase for BFQ as well and I bet he also would like it
+as default scheduler for that system (Pavel tell us more,
+I don't remember what it was!)
 
-                                                                 ^ NAND
+Intuitively I could understand that maybe we want to
+leave the loop device (possibly others? nbd? rbd?) as
+"none", as it is probably relying on a scheduler on the
+device below it, so I'm open to passing in a scheduler hint
+from the respective subsystem in say struct blk_mq_tag_set.
+However that makes for a bit of syntactic dissonance
+with the struct member ".nr_hw_queues" (I wonder how
+the loop device can have 1 "hardware queue"?) so
+maybe we should in that case also rename that struct
+member to ".nr_queues" fair and square before we start
+making adjustments for treating queues differently whether
+they are in hardware or actually not.
 
-> for several years and the section on the web site actually caused some
-> confusion, with some users of MTD/UBI/UBIFS attributing actual bugs to the
-> unstable bits issue instead of reporting on the mailing list.
->=20
-> To avoid future confusion, this patch removes the section about the issue
-> and all references to it.
->=20
-> Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Paolo Valente <paolo.valente@linaro.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ block/elevator.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
-
-Thanks!
-Miqu=C3=A8l
+diff --git a/block/elevator.c b/block/elevator.c
+index e18ac68626e3..e5a2c39eee7b 100644
+--- a/block/elevator.c
++++ b/block/elevator.c
+@@ -948,13 +948,15 @@ int elevator_switch_mq(struct request_queue *q,
+ }
+ 
+ /*
+- * For blk-mq devices, we default to using mq-deadline, if available, for single
+- * queue devices.  If deadline isn't available OR we have multiple queues,
+- * default to "none".
++ * For blk-mq devices, we default to using:
++ * - "none" for multiqueue devices (nr_hw_queues != 1)
++ * - "bfq", if available, for single queue devices
++ * - "mq-deadline" if "bfq" is not available for single queue devices
++ * - "none" for single queue devices as well as last resort
+  */
+ int elevator_init_mq(struct request_queue *q)
+ {
+-	struct elevator_type *e;
++	struct elevator_type *e = NULL;
+ 	int err = 0;
+ 
+ 	if (q->nr_hw_queues != 1)
+@@ -968,9 +970,14 @@ int elevator_init_mq(struct request_queue *q)
+ 	if (unlikely(q->elevator))
+ 		goto out_unlock;
+ 
+-	e = elevator_get(q, "mq-deadline", false);
+-	if (!e)
+-		goto out_unlock;
++	if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
++		e = elevator_get(q, "bfq", false);
++
++	if (!e) {
++		e = elevator_get(q, "mq-deadline", false);
++		if (!e)
++			goto out_unlock;
++	}
+ 
+ 	err = blk_mq_init_sched(q, e);
+ 	if (err)
+-- 
+2.17.1
