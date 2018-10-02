@@ -1,20 +1,20 @@
-Received: from mail-wr1-x42a.google.com ([2a00:1450:4864:20::42a])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7GFo-0008O3-KW
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 08:42:09 +0000
-Received: by mail-wr1-x42a.google.com with SMTP id u12-v6so1184493wrr.4
- for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2018 01:41:54 -0700 (PDT)
+Received: from forward100j.mail.yandex.net ([2a02:6b8:0:801:2::100])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7GQl-0000mA-8F
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 08:53:35 +0000
+Message-ID: <5BB331EC.60204@ircoc.vrn.ru>
+Date: Tue, 02 Oct 2018 11:53:00 +0300
+From: =?UTF-8?B?ItCc0Y/RgdC+0LXQtNC+0LIg0JAu0K4uIg==?=
+ <myasoedovau@ircoc.vrn.ru>
 MIME-Version: 1.0
-References: <5BB32167.1040902@ircoc.vrn.ru>
-In-Reply-To: <5BB32167.1040902@ircoc.vrn.ru>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Tue, 2 Oct 2018 10:41:41 +0200
-Message-ID: <CAFLxGvzDTi+tU6LT7r4QpxvM=f+mg5j8VOfyV5gZihu5-UWreg@mail.gmail.com>
+To: Richard Weinberger <richard.weinberger@gmail.com>
+CC: linux-mtd@lists.infradead.org
 Subject: Re: How to organize UBI volumes and power crash
-To: myasoedovau@ircoc.vrn.ru
-Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <5BB32167.1040902@ircoc.vrn.ru>
+ <CAFLxGvzDTi+tU6LT7r4QpxvM=f+mg5j8VOfyV5gZihu5-UWreg@mail.gmail.com>
+In-Reply-To: <CAFLxGvzDTi+tU6LT7r4QpxvM=f+mg5j8VOfyV5gZihu5-UWreg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 2, 2018 at 9:43 AM "=D0=9C=D1=8F=D1=81=D0=BE=D0=B5=D0=B4=D0=BE=
-=D0=B2 =D0=90.=D0=AE." <myasoedovau@ircoc.vrn.ru> wrote:
->
-> I use UBIFS at my device. I'd like 2 UBIFS volumes, first volume for
+Thank ypu, Richard.
 
-There is no such thing. You guess mean UBI volumes.
-A UBIFS filesystem always sits ontop of a UBI volume.
-
-> work purposes, and second volume for logs omly. RootFS is in RAM.
->
-> Both volumes are R/W, but the first volume is not intended for permanent
-> writing. The second volume is intended for permanent writing (logs and
-> some data tables).
->
-> The second volume may be failured in casual power crash. But the first
-> volume would work.
-
-Both UBI and UBIFS must not corrupt upon a powercut, if you face such an
+>  Both UBI and UBIFS must not corrupt upon a powercut, if you face such an
 issue, please report. This could be a bug or a hardware problem.
 
-> Will it be safe to have only 1 mfd device, and 2 UBI volume on the mtd
-> device? Or I must to have 2 separate mtd devices with one UBI volume on
-> each? The second approach is not suitable because of device tree
-> modifications when I want to change volume sizes/
+But http://www.linux-mtd.infradead.org/doc/ubifs.html#L_unstable_bits 
+says about such possible problems (unstable bits).
 
-The general recommendation is having the MTD partition and therefore the UB=
-I
-device as large as possible such that the wear leveling large.
+ >  The general recommendation is having the MTD partition and therefore 
+the UBI device as large as possible such that the wear leveling large.
+02.10.2018 11:41, Richard Weinberger написал:
 
---=20
-Thanks,
-//richard
+Do you mean one MTD partition for first UBI volume, and second MTD 
+partition for another one?
+
+Andrey
