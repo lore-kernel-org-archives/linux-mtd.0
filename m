@@ -1,17 +1,15 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7JSP-0000w1-Ch
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:08:00 +0000
-Subject: Re: [PATCH] mtd-utils: Instead of doing preprocessor magic, just
- output off_t as long long
-To: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org
-Cc: Thorsten Glaser <tg@mirbsd.org>
-References: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
+ id 1g7JSm-00017v-54
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:08:20 +0000
+Subject: Re: [PATCH mtd-utils] mkfs.ubifs: Fix xattr nlink value
+To: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+References: <20180927093643.18097-1-s.hauer@pengutronix.de>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <4f46f58a-35cf-f841-ca49-a29c19eaa351@sigma-star.at>
-Date: Tue, 2 Oct 2018 14:07:04 +0200
+Message-ID: <a7907a85-ed97-b79e-c34e-bcd92b384b36@sigma-star.at>
+Date: Tue, 2 Oct 2018 14:07:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
+In-Reply-To: <20180927093643.18097-1-s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -24,7 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Applied to mtd-utils.git master
+Applied to mtd-utils.git master.
 
 Thanks,
 
