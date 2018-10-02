@@ -1,19 +1,25 @@
-Received: from lithops.sigma-star.at ([195.201.40.130])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7Go7-00066i-Uy
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 09:17:38 +0000
-From: Richard Weinberger <richard@nod.at>
-To: =?utf-8?B?0JzRj9GB0L7QtdC00L7QsiDQkC7Qri4=?= <myasoedovau@ircoc.vrn.ru>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: How to organize UBI volumes and power crash
-Date: Tue, 02 Oct 2018 11:17:19 +0200
-Message-ID: <2293422.Vpu53VqG5S@blindfold>
-In-Reply-To: <5BB336BF.1030401@ircoc.vrn.ru>
-References: <5BB32167.1040902@ircoc.vrn.ru> <10059393.qm9dNCvvdv@blindfold>
- <5BB336BF.1030401@ircoc.vrn.ru>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7H6X-0005MH-44
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 09:36:35 +0000
+Date: Tue, 2 Oct 2018 11:36:10 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Daniel Mack <daniel@zonque.org>, Miquel Raynal
+ <miquel.raynal@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
+ enabling the IRQ
+Message-ID: <20181002113610.380abf9c@bbrezillon>
+In-Reply-To: <b98170dbd30541d8aa5b51be7efe850d@svr-chch-ex1.atlnz.lc>
+References: <20181001234120.425ae1f5@bbrezillon>
+ <c8de62fb56fd493baa8b1f6343bb8bfe@svr-chch-ex1.atlnz.lc>
+ <20181002001328.7f64ecbc@bbrezillon>
+ <b98170dbd30541d8aa5b51be7efe850d@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +29,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 2. Oktober 2018, 11:13:35 CEST schrieb =D0=9C=D1=8F=D1=81=D0=
-=BE=D0=B5=D0=B4=D0=BE=D0=B2 =D0=90.=D0=AE.:
-> If so, the UBI/UBIFS is very good and reliable system.
-> It would be beautiful if linux-mtd.infradead.org will correct they=20
-> documentation. So I can tell my chief about FLASH partitions=20
-> organisation in my device.
+On Mon, 1 Oct 2018 22:15:28 +0000
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
 
-Since we are hackers and not marketing experts our website sucks a little. =
-;-)
+> On 02/10/18 11:13, Boris Brezillon wrote:
+> > On Mon, 1 Oct 2018 22:01:27 +0000
+> > Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote:
+> >   
+> >> On 02/10/18 10:41, Boris Brezillon wrote:  
+> >>> On Mon, 1 Oct 2018 22:34:38 +0200
+> >>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+> >>>         
+> >>>>>
+> >>>>> I'd previously tried readl() based on the same hunch. No change.
+> >>>>>
+> >>>>> I think my snippet above might be misleading. While a delay between
+> >>>>> readl_relaxed() and the if should not change the outcome, this is also a
+> >>>>> delay between marvell_nfc_enable_int() and marvell_nfc_disable_int()
+> >>>>> which is probably more significant. Sure enough if I move the delay to
+> >>>>> just before the marvell_nfc_disable_int() the error is not seen.  
+> >>>>
+> >>>> AFAICT, your timeout always happens when waiting for RDREQ, not RDYM.
+> >>>> So maybe disabling MRDY too early has a side-effect on the RDREQ event.  
+> >>>
+> >>> Can you try with this patch [1]? It should ensure that NDSR_RDY bits
+> >>> are cleared before starting an operation.
+> >>>
+> >>> [1]http://code.bulix.org/lgs30c-468205
+> >>>      
+> >>
+> >> No luck. I applied that on top of Daniel's and got the same result.
+> >>
+> >> One thing that does look promising is the following modification of
+> >> Daniel's patch[1]. Which moves the RDY check to before where the
+> >> interrupts are enabled.  
+> > 
+> > Except we still don't know why this is happening, and I'm not sure I
+> > want to take a fix without understanding why it does fix the problem.  
+> 
+> Agreed. My only guess is that there is some interrupt that is missed in 
+> the short period they are disabled when calling complete().
 
-Thanks,
-//richard
+Disabling interrupts when taking a spinlock means masking the IRQ line,
+but the interrupt still exists and should be there when linux unmasks
+the IRQ line. I don't think this is the problem we're chasing.
+
+Looks more like something 
+
+> 
+> > Also, it looks like complete() is not called until the RDDREQ, WRDREQ
+> > and WRCMDREQ are cleared in the interrupt handler [1], which is weird.
+> > Miquel, do you happen to remember why you had to do that?
+> > 
+> > [1]https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/mtd/nand/raw/marvell_nand.c?h=v4.19-rc6#n689
+> >   
+> 
