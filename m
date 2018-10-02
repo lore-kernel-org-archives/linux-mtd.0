@@ -1,25 +1,25 @@
-Received: from mail-pl1-x641.google.com ([2607:f8b0:4864:20::641])
+Received: from mail-io1-xd41.google.com ([2607:f8b0:4864:20::d41])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7Lhp-0002lo-RY
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 14:31:35 +0000
-Received: by mail-pl1-x641.google.com with SMTP id az3-v6so1724786plb.4
- for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2018 07:31:11 -0700 (PDT)
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-To: Linus Walleij <linus.walleij@linaro.org>, linux-block@vger.kernel.org
-Cc: linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
-Date: Tue, 2 Oct 2018 08:31:07 -0600
+ id 1g7Lvz-0000ZK-VC
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 14:46:15 +0000
+Received: by mail-io1-xd41.google.com with SMTP id k19-v6so2296352iom.1
+ for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2018 07:45:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20181002124329.21248-1-linus.walleij@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+In-Reply-To: <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 2 Oct 2018 16:45:36 +0200
+Message-ID: <CACRpkdZFeGy2e9OiDYaq_8XwMTjCd+oeGiJ1HXzNifqZyxPkKw@mail.gmail.com>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Paolo Valente <paolo.valente@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/2/18 6:43 AM, Linus Walleij wrote:
-> This sets BFQ as the default scheduler for single queue
-> block devices (nr_hw_queues == 1) if it is available. This
-> affects notably MMC/SD-cards but notably also UBI and
-> the loopback device.
-> 
-> I have been running it for a while without any negative
-> effects on my pet systems and I want some wider testing
-> so let's throw it out there and see what people say.
-> Admittedly my use cases are limited.
-> 
-> I talked to Pavel a bit back and it turns out he has a
-> usecase for BFQ as well and I bet he also would like it
-> as default scheduler for that system (Pavel tell us more,
-> I don't remember what it was!)
-> 
-> Intuitively I could understand that maybe we want to
-> leave the loop device (possibly others? nbd? rbd?) as
-> "none", as it is probably relying on a scheduler on the
-> device below it, so I'm open to passing in a scheduler hint
-> from the respective subsystem in say struct blk_mq_tag_set.
-> However that makes for a bit of syntactic dissonance
-> with the struct member ".nr_hw_queues" (I wonder how
-> the loop device can have 1 "hardware queue"?) so
-> maybe we should in that case also rename that struct
-> member to ".nr_queues" fair and square before we start
-> making adjustments for treating queues differently whether
-> they are in hardware or actually not.
+On Tue, Oct 2, 2018 at 4:31 PM Jens Axboe <axboe@kernel.dk> wrote:
+> On 10/2/18 6:43 AM, Linus Walleij wrote:
 
-I think this should just be done with udev rules, and I'd
-prefer if the distros would lead the way on this, as they
-are the ones that will most likely see the most bug reports
-on a change like this.
+> > This sets BFQ as the default scheduler for single queue
+> > block devices (nr_hw_queues == 1) if it is available. This
+> > affects notably MMC/SD-cards but notably also UBI and
+> > the loopback device.
+>
+> I think this should just be done with udev rules, and I'd
+> prefer if the distros would lead the way on this, as they
+> are the ones that will most likely see the most bug reports
+> on a change like this.
 
--- 
-Jens Axboe
+AFAICT there is no sysfs property that
+states how many hw queues the device has. And what
+we want to do is activate BFQ when there is one HW
+queue.
+
+Should I make a patch to add a nr_hw_queues sysfs
+file for this purpose in that case?
+
+That will be a slightly misleading file for loop or networked
+devices.
+
+udev is a way to do this with desktop/server distros that has
+"standard" (as they think about it) userspace. They can even
+do it from their initrd/initramfs to mount root using BFQ
+I guess (quick handover from e.g. UEFI).
+
+However this is not a very good fit with Embedded systems,
+as they tend to be minimal, not use udev (e.g. Android,
+OpenWRT, busybox-derivates...) they don't do udev
+rules, but I guess they can in theory do other scripts.
+But they will mount root before anything like that can
+happen. They don't use initrd/initramfs.
+
+What I want to achieve
+is to mount my rootfs with BFQ but that is not possible
+on embedded systems that do not use initramfs, e.g.
+a rootfs on MMC/SD or UBI.
+
+Yours,
+Linus Walleij
