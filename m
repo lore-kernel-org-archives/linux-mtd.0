@@ -1,17 +1,17 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7JRq-0000lw-UY
- for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:06:44 +0000
-Subject: Re: [PATCH] libmtd: don't print an error message for devices without
- ecc support
-To: linux-mtd@lists.infradead.org
-Cc: Chris.Packham@alliedtelesis.co.nz, xiaolei.li@mediatek.com
-References: <20180919082936.4011-1-david.oberhollenzer@sigma-star.at>
+ id 1g7JSP-0000w1-Ch
+ for linux-mtd@lists.infradead.org; Tue, 02 Oct 2018 12:08:00 +0000
+Subject: Re: [PATCH] mtd-utils: Instead of doing preprocessor magic, just
+ output off_t as long long
+To: Andrea Adami <andrea.adami@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Thorsten Glaser <tg@mirbsd.org>
+References: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
 From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
-Message-ID: <e65d3e57-9a14-acce-4a89-bd84da1cfc60@sigma-star.at>
-Date: Tue, 2 Oct 2018 14:06:36 +0200
+Message-ID: <4f46f58a-35cf-f841-ca49-a29c19eaa351@sigma-star.at>
+Date: Tue, 2 Oct 2018 14:07:04 +0200
 MIME-Version: 1.0
-In-Reply-To: <20180919082936.4011-1-david.oberhollenzer@sigma-star.at>
+In-Reply-To: <1537485731-4712-1-git-send-email-andrea.adami@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -25,5 +25,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Applied to mtd-utils.git master
+
+Thanks,
 
 David
