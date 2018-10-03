@@ -1,22 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7iKg-0002SJ-AW
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 14:40:59 +0000
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Julien Su <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
- <zhengxunli@mxic.com.tw>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 1/8] mtd: spi-nor: Set SPI_NOR_4B_OPCODES on all >16MB
- Spansion NORs
-Date: Wed,  3 Oct 2018 16:40:36 +0200
-Message-Id: <20181003144043.21529-2-boris.brezillon@bootlin.com>
-In-Reply-To: <20181003144043.21529-1-boris.brezillon@bootlin.com>
-References: <20181003144043.21529-1-boris.brezillon@bootlin.com>
+Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7jRJ-00085D-Eg
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 15:51:56 +0000
+Received: by mail-wr1-x441.google.com with SMTP id z3-v6so6685420wrr.13
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 08:51:42 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+From: Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20181002124329.21248-1-linus.walleij@linaro.org>
+Date: Wed, 3 Oct 2018 17:51:38 +0200
+Cc: linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B7588E6C-FCD5-460E-8334-8128CEF7BC07@linaro.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,80 +30,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The code was treating >16MB Spansion NORs as a special case, while they
-could just be flagged with SPI_NOR_4B_OPCODES and be treated as other
-NORs.
 
-This change simplifies the code and makes it explicit that those parts
-are supporting 4B addressing.
 
-Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
----
-I've checked the datasheet of s25fl512s, s70fl01gs, s25fl256s0 and
-s25fl256s1, and they indeed support 4B opcodes. Other Spansion NORs
-might also support 4B opcodes, but those that do not already have
-SPI_NOR_4B_OPCODES set are anyway <=16MB in size.
+> Il giorno 02 ott 2018, alle ore 14:43, Linus Walleij =
+<linus.walleij@linaro.org> ha scritto:
+>=20
+> This sets BFQ as the default scheduler for single queue
+> block devices (nr_hw_queues =3D=3D 1) if it is available. This
+> affects notably MMC/SD-cards but notably also UBI and
+> the loopback device.
+>=20
+> I have been running it for a while without any negative
+> effects on my pet systems and I want some wider testing
+> so let's throw it out there and see what people say.
+> Admittedly my use cases are limited.
+>=20
+> I talked to Pavel a bit back and it turns out he has a
+> usecase for BFQ as well and I bet he also would like it
+> as default scheduler for that system (Pavel tell us more,
+> I don't remember what it was!)
+>=20
+> Intuitively I could understand that maybe we want to
+> leave the loop device
 
-Also, I kept NOR definitions on a single line, since those were already
-over 80chars. Marek, let me know if you want me to change that for the
-GigaDevice formatting:
+Actually, I've tested loop devices too.  And, also with these virtual
+devices, switching to bfq radically improves figures of merits as
+responsiveness and latency for soft real-time applications.
 
-        {
-                "gd25q16", INFO(0xc84015, 0, 64 * 1024,  32,
-                        SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
-                        SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB)
-        },
+Thanks,
+Paolo
 
-Changes in v2:
-- Add SPI_NOR_4B_OPCODES to s25fl256s0 and s25fl256s1 entries
----
- drivers/mtd/spi-nor/spi-nor.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index 9407ca5f9443..27ea10dc0395 100644
---- a/drivers/mtd/spi-nor/spi-nor.c
-+++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -1414,10 +1414,10 @@ static const struct flash_info spi_nor_ids[] = {
- 	 */
- 	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
- 	{ "s25sl064p",  INFO(0x010216, 0x4d00,  64 * 1024, 128, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
--	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR) },
--	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
--	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
--	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, 0) },
-+	{ "s25fl256s0", INFO(0x010219, 0x4d00, 256 * 1024, 128, USE_CLSR | SPI_NOR_4B_OPCODES) },
-+	{ "s25fl256s1", INFO(0x010219, 0x4d01,  64 * 1024, 512, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR | SPI_NOR_4B_OPCODES) },
-+	{ "s25fl512s",  INFO(0x010220, 0x4d00, 256 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR | SPI_NOR_4B_OPCODES) },
-+	{ "s70fl01gs",  INFO(0x010221, 0x4d00, 256 * 1024, 256, SPI_NOR_4B_OPCODES) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
- 	{ "s25fl128s",  INFO6(0x012018, 0x4d0180, 64 * 1024, 256, SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ | USE_CLSR) },
-@@ -3551,7 +3551,6 @@ static int spi_nor_init(struct spi_nor *nor)
- 	}
- 
- 	if ((nor->addr_width == 4) &&
--	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
- 	    !(nor->info->flags & SPI_NOR_4B_OPCODES)) {
- 		/*
- 		 * If the RESET# pin isn't hooked up properly, or the system
-@@ -3585,7 +3584,6 @@ void spi_nor_restore(struct spi_nor *nor)
- {
- 	/* restore the addressing mode */
- 	if ((nor->addr_width == 4) &&
--	    (JEDEC_MFR(nor->info) != SNOR_MFR_SPANSION) &&
- 	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
- 	    (nor->flags & SNOR_F_BROKEN_RESET))
- 		set_4byte(nor, nor->info, 0);
-@@ -3742,8 +3740,7 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
- 	} else if (mtd->size > 0x1000000) {
- 		/* enable 4-byte addressing if the device exceeds 16MiB */
- 		nor->addr_width = 4;
--		if (JEDEC_MFR(info) == SNOR_MFR_SPANSION ||
--		    info->flags & SPI_NOR_4B_OPCODES)
-+		if (info->flags & SPI_NOR_4B_OPCODES)
- 			spi_nor_set_4byte_opcodes(nor, info);
- 	} else {
- 		nor->addr_width = 3;
--- 
-2.14.1
+> (possibly others? nbd? rbd?) as
+> "none", as it is probably relying on a scheduler on the
+> device below it, so I'm open to passing in a scheduler hint
+> from the respective subsystem in say struct blk_mq_tag_set.
+> However that makes for a bit of syntactic dissonance
+> with the struct member ".nr_hw_queues" (I wonder how
+> the loop device can have 1 "hardware queue"?) so
+> maybe we should in that case also rename that struct
+> member to ".nr_queues" fair and square before we start
+> making adjustments for treating queues differently whether
+> they are in hardware or actually not.
+>=20
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Paolo Valente <paolo.valente@linaro.org>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> block/elevator.c | 21 ++++++++++++++-------
+> 1 file changed, 14 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/block/elevator.c b/block/elevator.c
+> index e18ac68626e3..e5a2c39eee7b 100644
+> --- a/block/elevator.c
+> +++ b/block/elevator.c
+> @@ -948,13 +948,15 @@ int elevator_switch_mq(struct request_queue *q,
+> }
+>=20
+> /*
+> - * For blk-mq devices, we default to using mq-deadline, if available, =
+for single
+> - * queue devices.  If deadline isn't available OR we have multiple =
+queues,
+> - * default to "none".
+> + * For blk-mq devices, we default to using:
+> + * - "none" for multiqueue devices (nr_hw_queues !=3D 1)
+> + * - "bfq", if available, for single queue devices
+> + * - "mq-deadline" if "bfq" is not available for single queue devices
+> + * - "none" for single queue devices as well as last resort
+>  */
+> int elevator_init_mq(struct request_queue *q)
+> {
+> -	struct elevator_type *e;
+> +	struct elevator_type *e =3D NULL;
+> 	int err =3D 0;
+>=20
+> 	if (q->nr_hw_queues !=3D 1)
+> @@ -968,9 +970,14 @@ int elevator_init_mq(struct request_queue *q)
+> 	if (unlikely(q->elevator))
+> 		goto out_unlock;
+>=20
+> -	e =3D elevator_get(q, "mq-deadline", false);
+> -	if (!e)
+> -		goto out_unlock;
+> +	if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
+> +		e =3D elevator_get(q, "bfq", false);
+> +
+> +	if (!e) {
+> +		e =3D elevator_get(q, "mq-deadline", false);
+> +		if (!e)
+> +			goto out_unlock;
+> +	}
+>=20
+> 	err =3D blk_mq_init_sched(q, e);
+> 	if (err)
+> --=20
+> 2.17.1
+>=20
