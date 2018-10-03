@@ -1,31 +1,25 @@
-Received: from mail-pl1-f195.google.com ([209.85.214.195])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7jUP-0000bZ-A0
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 15:55:51 +0000
-Received: by mail-pl1-f195.google.com with SMTP id v5-v6so3681594plz.13
- for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 08:54:54 -0700 (PDT)
-Message-ID: <1538582091.205649.20.camel@acm.org>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-From: Bart Van Assche <bvanassche@acm.org>
-To: Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-block
- <linux-block@vger.kernel.org>, linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>, Ulf Hansson
- <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Artem
- Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Jan Kara <jack@suse.cz>, Andreas Herrmann <aherrmann@suse.com>, Mel Gorman
- <mgorman@suse.com>, Chunyan Zhang <zhang.chunyan@linaro.org>, linux-kernel
- <linux-kernel@vger.kernel.org>, 'Paolo Valente' via bfq-iosched
- <bfq-iosched@googlegroups.com>, Oleksandr Natalenko
- <oleksandr@natalenko.name>,  Mark Brown <broonie@kernel.org>
-Date: Wed, 03 Oct 2018 08:54:51 -0700
-In-Reply-To: <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
-Content-Type: text/plain; charset="UTF-7"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7jVo-0002Yw-HC
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 15:56:34 +0000
+Received: by mail-lf1-x141.google.com with SMTP id p34-v6so4516916lfg.10
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 08:56:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+ <20181001124351.31615-6-ricardo.ribalda@gmail.com>
+ <20181003171114.51ab47b8@bbrezillon>
+ <20181003171727.145e7e41@bbrezillon>
+In-Reply-To: <20181003171727.145e7e41@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Wed, 3 Oct 2018 17:56:03 +0200
+Message-ID: <CAPybu_0uheoKRd01V_WQg10gaY2xkkZTxXuz+LKunMoSe97GYg@mail.gmail.com>
+Subject: Re: [PATCH v4 6/8] mtd: maps: gpio-addr-flash: Convert to gpiod
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Zhouyang Jia <jiazhouyang09@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ Richard Weinberger <richard@nod.at>, Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,20 +29,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-10-03 at 08:29 +-0200, Paolo Valente wrote:
-+AD4 +AFs-1+AF0 https://lkml.org/lkml/2017/2/21/791
-+AD4 +AFs-2+AF0 http://algo.ing.unimo.it/people/paolo/disk+AF8-sched/results.php
-+AD4 +AFs-3+AF0 https://lwn.net/Articles/763603/
+Hi Boris
+On Wed, Oct 3, 2018 at 5:17 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Wed, 3 Oct 2018 17:11:14 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>
+> > Hi Ricardo,
+> >
+> > On Mon,  1 Oct 2018 14:43:49 +0200
+> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> >
+> > > @@ -248,14 +252,19 @@ static int gpio_flash_probe(struct platform_device *pdev)
+> > >
+> > >     i = 0;
+> > >     do {
+> > > -           if (devm_gpio_request(&pdev->dev, state->gpio_addrs[i],
+> > > -                                 DRIVER_NAME)) {
+> > > +           unsigned int *gpio_id = (unsigned int *)gpios->start;
+> > > +
+> > > +           if (devm_gpio_request_one(&pdev->dev, gpio_id[i], GPIOD_OUT_LOW,
+> > > +                                   DRIVER_NAME)) {
+> > >                     dev_err(&pdev->dev, "failed to request gpio %d\n",
+> > > -                           state->gpio_addrs[i]);
+> > > +                           gpio_id[i]);
+> > >                     return -EBUSY;
+> > >             }
+> > > -           gpio_direction_output(state->gpio_addrs[i], 0);
+> > > -   } while (++i < state->gpio_count);
+> > > +
+> > > +           state->gpios->desc[i] = gpio_to_desc(gpio_id[i]);
+> > > +           if (!state->gpios->desc[i])
+> > > +                   return -EINVAL;
+> > > +   } while (++i < state->gpios->ndescs);
+> >
+> > Actually, I was thinking about using devm_gpiod_get_array() here and
+> > defining a gpio lookup table in the board file registering the device.
+> > This way, adding support for DT based parsing is transparent.
+>
+> It's actually easier than I thought since no one is registering such a
+> device, so all you have to do is call devm_gpiod_get_array() and have a
+> struct gpio_descs pointer in struct async_state.
 
->From +AFs-2+AF0: +ACI-BFQ loses about 18+ACU with only random readers, because the number
-of IOPS becomes so high that the execution time and parallel efficiency of
-the schedulers becomes relevant.+ACI Since the number of I/O patterns for which
-results are available on +AFs-2+AF0 is limited and since the number of devices for
-which test results are available on +AFs-2+AF0 is limited (e.g. RAID is missing),
-there might be other cases in which configuring BFQ as the default would
-introduce a regression.
+That is what I do in patch 8/8 for DT based parsing.
 
-I agree with Jens that it's best to leave it to the Linux distributors to
-select a default I/O scheduler.
+I am am doing the gpio_to_desc and other to maintain compatibility
+with old platform board files (in and out tree).
 
-Bart.
+I think is important to maintain that compatibility, but you decide ;)
+
+Cheers
+
+-- 
+Ricardo Ribalda
