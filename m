@@ -1,23 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7mqw-0000hf-DN
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 19:30:36 +0000
-Date: Wed, 3 Oct 2018 21:30:12 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>, michals@xilinx.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- nagasuresh12@gmail.com
-Subject: Re: [LINUX PATCH v11 2/3] mtd: rawnand: Add an option to get sdr
- timing mode number
-Message-ID: <20181003213012.021cebed@bbrezillon>
-In-Reply-To: <1537878031-22253-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
-References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1537878031-22253-3-git-send-email-naga.sureshkumar.relli@xilinx.com>
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7mvA-0001eA-07
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 19:34:57 +0000
+Received: by mail-lj1-x244.google.com with SMTP id p89-v6so6229451ljb.3
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 12:34:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+ <20181001124351.31615-8-ricardo.ribalda@gmail.com>
+ <20181003190130.4c9e509f@bbrezillon>
+In-Reply-To: <20181003190130.4c9e509f@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Wed, 3 Oct 2018 21:34:25 +0200
+Message-ID: <CAPybu_06=Mz+wGLeodM4CjP810Dphm9JKLmX62FVmspy0888ag@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,111 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 Sep 2018 17:50:30 +0530
-Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+Hi Boris
+On Wed, Oct 3, 2018 at 7:01 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Mon,  1 Oct 2018 14:43:51 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+>
+> > +static int gpio_flash_probe_gpios(struct platform_device *pdev,
+> > +                               struct async_state *state)
+> > +{
+> > +     struct physmap_flash_data *pdata;
+> > +     struct device_node *dn;
+> > +     struct resource *gpios = NULL;
+> > +     int i;
+> > +
+> > +     dn = pdev->dev.of_node;
+> > +     if (dn) {
+> > +             state->gpios = devm_gpiod_get_array(&pdev->dev, NULL,
+> > +                                                 GPIOD_OUT_LOW);
+>
+> Did you consider using gpiod_set_array_value() to update the gpio vals
+> instead of having your own update loop (the for loop in the
+> gf_set_gpios() func)?
 
-> Some NAND controllers needs sdr timing mode value, instead of
+Yes briefly but there are some cons:
 
-			^need SDR
+- I need to allocate the value_array
+- I want to relay on my cached old values, so I still have to loop
 
-> timings parameters. i.e the NAND controller will change its operating
 
-	  s/parameters//
-
-> mode by just configuring the sdr timing mode number. so add mode parameter
-
-							^ So, add a mode field 
-
-> in struct nand_sdr_timings.
-
-  ^ to ...
-
-> 
-> Signed-off-by: Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>
-> ---
-> Changes in v11:
->  - None
-> ---
->  drivers/mtd/nand/raw/nand_timings.c | 6 ++++++
->  include/linux/mtd/rawnand.h         | 2 ++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/drivers/mtd/nand/raw/nand_timings.c b/drivers/mtd/nand/raw/nand_timings.c
-> index ebc7b5f..1ec7a28 100644
-> --- a/drivers/mtd/nand/raw/nand_timings.c
-> +++ b/drivers/mtd/nand/raw/nand_timings.c
-> @@ -56,6 +56,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 120000,
->  			.tWP_min = 50000,
->  			.tWW_min = 100000,
-> +			.mode = 0,
->  		},
->  	},
->  	/* Mode 1 */
-> @@ -98,6 +99,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 80000,
->  			.tWP_min = 25000,
->  			.tWW_min = 100000,
-> +			.mode = 1,
->  		},
->  	},
->  	/* Mode 2 */
-> @@ -140,6 +142,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 80000,
->  			.tWP_min = 17000,
->  			.tWW_min = 100000,
-> +			.mode = 2,
->  		},
->  	},
->  	/* Mode 3 */
-> @@ -182,6 +185,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 80000,
->  			.tWP_min = 15000,
->  			.tWW_min = 100000,
-> +			.mode = 3,
->  		},
->  	},
->  	/* Mode 4 */
-> @@ -224,6 +228,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 80000,
->  			.tWP_min = 12000,
->  			.tWW_min = 100000,
-> +			.mode = 4,
->  		},
->  	},
->  	/* Mode 5 */
-> @@ -266,6 +271,7 @@ static const struct nand_data_interface onfi_sdr_timings[] = {
->  			.tWHR_min = 80000,
->  			.tWP_min = 10000,
->  			.tWW_min = 100000,
-> +			.mode = 5,
->  		},
->  	},
->  };
-> diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-> index efb2345..3bf2cea 100644
-> --- a/include/linux/mtd/rawnand.h
-> +++ b/include/linux/mtd/rawnand.h
-> @@ -723,6 +723,7 @@ struct nand_ecc_ctrl {
->   * @tWHR_min: WE# high to RE# low
->   * @tWP_min: WE# pulse width
->   * @tWW_min: WP# transition to WE# low
-> + * @mode: sdr timing mode value
-
-      @mode: ONFI timing mode
-
->   */
->  struct nand_sdr_timings {
->  	u64 tBERS_max;
-> @@ -763,6 +764,7 @@ struct nand_sdr_timings {
->  	u32 tWHR_min;
->  	u32 tWP_min;
->  	u32 tWW_min;
-> +	u8 mode;
->  };
->  
->  /**
-
-With this addressed, you can add
-
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+-- 
+Ricardo Ribalda
