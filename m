@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7iKr-0002Td-AC
+ id 1g7iKr-0002TV-AB
  for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 14:41:10 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -11,10 +11,10 @@ To: David Woodhouse <dwmw2@infradead.org>,
 Cc: Julien Su <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
  <zhengxunli@mxic.com.tw>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
  Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH 8/8] mtd: spi-nor: Move Spansion erase related fixup to a
- dedicated function
-Date: Wed,  3 Oct 2018 16:40:43 +0200
-Message-Id: <20181003144043.21529-9-boris.brezillon@bootlin.com>
+Subject: [PATCH 5/8] mtd: spi-nor: Make the enable argument passed to
+ set_byte() a bool
+Date: Wed,  3 Oct 2018 16:40:40 +0200
+Message-Id: <20181003144043.21529-6-boris.brezillon@bootlin.com>
 In-Reply-To: <20181003144043.21529-1-boris.brezillon@bootlin.com>
 References: <20181003144043.21529-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,64 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-spi_nor_set_4byte_opcodes() is changing the erase size for Spansion
-chips operating in 4B addressing mode. Let's move this code to
-spansion_fixups() and call it from spi_nor_manufacturer_fixups().
+No need to use an integer when the value is either true or false.
+Make it a boolean.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/spi-nor/spi-nor.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ drivers/mtd/spi-nor/spi-nor.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-index f2e00755813d..1a9b3e6a181d 100644
+index c68e8ccfb357..1f174adb4da0 100644
 --- a/drivers/mtd/spi-nor/spi-nor.c
 +++ b/drivers/mtd/spi-nor/spi-nor.c
-@@ -244,18 +244,6 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
- static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
- 				      const struct flash_info *info)
- {
--	/* Do some manufacturer fixups first */
--	switch (JEDEC_MFR(info)) {
--	case SNOR_MFR_SPANSION:
--		/* No small sector erase for 4-byte command set */
--		nor->erase_opcode = SPINOR_OP_SE;
--		nor->mtd.erasesize = info->sector_size;
--		break;
--
--	default:
--		break;
--	}
--
- 	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
- 	nor->program_opcode = spi_nor_convert_3to4_program(nor->program_opcode);
- 	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
-@@ -3608,6 +3596,15 @@ static void winbond_fixups(struct spi_nor *nor)
- 	nor->set_4byte = winbond_set_4byte;
+@@ -274,7 +274,7 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor *nor,
  }
  
-+static void spansion_fixups(struct spi_nor *nor)
-+{
-+	if (nor->flags & SPI_NOR_4B_OPCODES) {
-+		/* No small sector erase for 4-byte command set */
-+		nor->erase_opcode = SPINOR_OP_SE_4B;
-+		nor->mtd.erasesize = nor->info->sector_size;
-+	}
-+}
-+
- static void spi_nor_manufacturer_fixups(struct spi_nor *nor)
+ /* Enable/disable 4-byte addressing mode. */
+-static int set_4byte(struct spi_nor *nor, int enable)
++static int set_4byte(struct spi_nor *nor, bool enable)
  {
- 	switch (JEDEC_MFR(nor->info)) {
-@@ -3623,6 +3620,10 @@ static void spi_nor_manufacturer_fixups(struct spi_nor *nor)
- 		winbond_fixups(nor);
- 		break;
- 
-+	case SNOR_MFR_SPANSION:
-+		spansion_fixups(nor);
-+		break;
-+
- 	default:
- 		break;
+ 	int status;
+ 	bool need_wren = false;
+@@ -3554,7 +3554,7 @@ static int spi_nor_init(struct spi_nor *nor)
+ 		 */
+ 		WARN_ONCE(nor->flags & SNOR_F_BROKEN_RESET,
+ 			  "enabling reset hack; may not recover from unexpected reboots\n");
+-		set_4byte(nor, 1);
++		set_4byte(nor, true);
  	}
+ 
+ 	return 0;
+@@ -3579,7 +3579,7 @@ void spi_nor_restore(struct spi_nor *nor)
+ 	if ((nor->addr_width == 4) &&
+ 	    !(nor->info->flags & SPI_NOR_4B_OPCODES) &&
+ 	    (nor->flags & SNOR_F_BROKEN_RESET))
+-		set_4byte(nor, 0);
++		set_4byte(nor, false);
+ }
+ EXPORT_SYMBOL_GPL(spi_nor_restore);
+ 
 -- 
 2.14.1
