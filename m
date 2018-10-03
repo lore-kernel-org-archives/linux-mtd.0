@@ -1,22 +1,32 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7bKY-0004x5-4J
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:12:23 +0000
-Date: Wed, 3 Oct 2018 09:12:00 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc: Han Xu <han.xu@nxp.com>, Marek Vasut <marek.vasut@gmail.com>, David
- Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, kernel@pengutronix.de,
- stable@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
-Message-ID: <20181003091200.4191b2e6@bbrezillon>
-In-Reply-To: <20180921093252.9115-1-a.fatoum@pengutronix.de>
-References: <20180921093252.9115-1-a.fatoum@pengutronix.de>
+Received: from mail-it1-x144.google.com ([2607:f8b0:4864:20::144])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7bQz-0006oh-NH
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:19:03 +0000
+Received: by mail-it1-x144.google.com with SMTP id c85-v6so7444877itd.1
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 00:18:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538550325.14984.108.camel@gmail.com>
+In-Reply-To: <1538550325.14984.108.camel@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 3 Oct 2018 09:18:37 +0200
+Message-ID: <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ aherrmann@suse.com,
+ mgorman@suse.com, Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ bfq-iosched@googlegroups.com,
+ oleksandr@natalenko.name, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,82 +36,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 21 Sep 2018 11:32:53 +0200
-Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+On Wed, Oct 3, 2018 at 9:05 AM Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2018-10-03 at 08:29 +0200, Paolo Valente wrote:
+> > So, I do understand your need for conservativeness, but, after so much
+> > evidence on single-queue devices, and so many years! :), what's the
+> > point in keeping Linux worse for virtually everybody, by default?
+>
+> Sounds like what we just need a mechanism for the device (ubi block in
+> this case) to select the I/O scheduler. I doubt enhancing the default
+> scheduler selection logic in 'elevator.c' is the right answer. Just
+> give the driver authority to override the defaults.
 
-> fsl_qspi_get_seqid() may return -EINVAL, but fsl_qspi_init_ahb_read()
-> doesn't check for error codes with the result that -EINVAL could find
-> itself signalled over the bus.
-> 
-> In conjunction with the LS1046A SoC's A-009283 errata
-> ("Illegal accesses to SPI flash memory can result in a system hang")
-> this illegal access to SPI flash memory results in a system hang
-> if userspace attempts reading later on.
-> 
-> Avoid this by always checking fsl_qspi_get_seqid()'s return value
-> and bail out otherwise.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+This might be true in the wider sense (like for what scheduler to
+select for an NVME device with N channels) but $SUBJECT is just
+trying to select BFQ (if available) for devices with one and only one
+hardware queue.
 
-Added
+That is AFAICT the only reasonable choice for anything with just
+one hardware queue as things stand right now.
 
-Fixes: e46ecda764dc ("mtd: spi-nor: Add Freescale QuadSPI driver")
+I have a slight reservation for the weird outliers like loopdev, which
+has "one hardware queue" (.nr_hw_queues == 1) though this
+makes no sense at all. So I would like to know what people think
+about that. Maybe we should have .nr_queues and .nr_hw_queues
+where the former is the number of logical queues and the latter
+the actual number of hardware queues.
 
-and queued it to spi-nor/next.
-
-Thanks,
-
-Boris
-
-> ---
->  drivers/mtd/spi-nor/fsl-quadspi.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-> index 7d9620c7ff6c..1bb42e40c38b 100644
-> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
-> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-> @@ -543,6 +543,9 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
->  
->  	/* trigger the LUT now */
->  	seqid = fsl_qspi_get_seqid(q, cmd);
-> +	if (seqid < 0)
-> +		return seqid;
-> +
->  	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
->  			base + QUADSPI_IPCR);
->  
-> @@ -671,7 +674,7 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
->   * causes the controller to clear the buffer, and use the sequence pointed
->   * by the QUADSPI_BFGENCR[SEQID] to initiate a read from the flash.
->   */
-> -static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
-> +static int fsl_qspi_init_ahb_read(struct fsl_qspi *q)
->  {
->  	void __iomem *base = q->iobase;
->  	int seqid;
-> @@ -696,8 +699,12 @@ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
->  
->  	/* Set the default lut sequence for AHB Read. */
->  	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
-> +	if (seqid < 0)
-> +		return seqid;
-> +
->  	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
->  		q->iobase + QUADSPI_BFGENCR);
-> +	return 0;
->  }
->  
->  /* This function was used to prepare and enable QSPI clock */
-> @@ -805,9 +812,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
->  	fsl_qspi_init_lut(q);
->  
->  	/* Init for AHB read */
-> -	fsl_qspi_init_ahb_read(q);
-> -
-> -	return 0;
-> +	return fsl_qspi_init_ahb_read(q);
->  }
->  
->  static const struct of_device_id fsl_qspi_dt_ids[] = {
+Yours,
+Linus Walleij
