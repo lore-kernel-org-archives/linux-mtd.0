@@ -1,32 +1,27 @@
-Received: from mail-it1-x144.google.com ([2607:f8b0:4864:20::144])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7bQz-0006oh-NH
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:19:03 +0000
-Received: by mail-it1-x144.google.com with SMTP id c85-v6so7444877itd.1
- for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 00:18:50 -0700 (PDT)
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7bev-0004Zl-6q
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:33:26 +0000
+Date: Wed, 3 Oct 2018 09:33:02 +0200
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc: Daniel Mack <daniel@zonque.org>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "stable@vger.kernel.org"
+ <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
+ enabling the IRQ
+Message-ID: <20181003093302.4b810e64@xps13>
+In-Reply-To: <da3e196e239545cfb533a84d9ad71656@svr-chch-ex1.atlnz.lc>
+References: <20181001234120.425ae1f5@bbrezillon>
+ <c8de62fb56fd493baa8b1f6343bb8bfe@svr-chch-ex1.atlnz.lc>
+ <20181002001328.7f64ecbc@bbrezillon>
+ <20181002084601.2a118f10@xps13> <20181002092500.3dc2ac7a@xps13>
+ <09d3f8ab-6c5e-56be-479f-6ca28dca5778@zonque.org>
+ <da3e196e239545cfb533a84d9ad71656@svr-chch-ex1.atlnz.lc>
 MIME-Version: 1.0
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1538550325.14984.108.camel@gmail.com>
-In-Reply-To: <1538550325.14984.108.camel@gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Wed, 3 Oct 2018 09:18:37 +0200
-Message-ID: <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Cc: Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
- aherrmann@suse.com,
- mgorman@suse.com, Chunyan Zhang <zhang.chunyan@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- bfq-iosched@googlegroups.com,
- oleksandr@natalenko.name, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,31 +31,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 3, 2018 at 9:05 AM Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2018-10-03 at 08:29 +0200, Paolo Valente wrote:
-> > So, I do understand your need for conservativeness, but, after so much
-> > evidence on single-queue devices, and so many years! :), what's the
-> > point in keeping Linux worse for virtually everybody, by default?
->
-> Sounds like what we just need a mechanism for the device (ubi block in
-> this case) to select the I/O scheduler. I doubt enhancing the default
-> scheduler selection logic in 'elevator.c' is the right answer. Just
-> give the driver authority to override the defaults.
+Hi Chris,
 
-This might be true in the wider sense (like for what scheduler to
-select for an NVME device with N channels) but $SUBJECT is just
-trying to select BFQ (if available) for devices with one and only one
-hardware queue.
+Chris Packham <Chris.Packham@alliedtelesis.co.nz> wrote on Tue, 2 Oct
+2018 20:53:14 +0000:
 
-That is AFAICT the only reasonable choice for anything with just
-one hardware queue as things stand right now.
+> On 02/10/18 21:23, Daniel Mack wrote:
+> > Hi Miquel,
+> >=20
+> > On 2/10/2018 9:25 AM, Miquel Raynal wrote: =20
+> >> Miquel Raynal <miquel.raynal@bootlin.com> wrote on Tue, 2 Oct 2018
+> >> 08:46:01 +0200: =20
+> >>> Boris Brezillon <boris.brezillon@bootlin.com> wrote on Tue, 2 Oct 2018
+> >>> 00:13:28 +0200: =20
+> >  =20
+> >>>> Also, it looks like complete() is not called until the RDDREQ, WRDREQ
+> >>>> and WRCMDREQ are cleared in the interrupt handler [1], which is weir=
+d.
+> >>>> Miquel, do you happen to remember why you had to do that? =20
+> >>>
+> >>> The RDDREQ, WRDREQ and WRCMDREQ events might potentially happen while
+> >>> the interrupts are enabled while we only wait for R/B signalling. This
+> >>> check is to avoid calling complete() on these situations. =20
+> >>
+> >> Actually Boris is right on the fact that while the intention is good,
+> >> the writing of [1] is not accurate. Daniel, could you please test if
+> >> the following diff changes something with your setup, without your
+> >> patch?
+> >>
+> >>
+> >> diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/ra=
+w/marvell_nand.c
+> >> index bc2ef5209783..c7573ccdbacd 100644
+> >> --- a/drivers/mtd/nand/raw/marvell_nand.c
+> >> +++ b/drivers/mtd/nand/raw/marvell_nand.c
+> >> @@ -686,7 +686,7 @@ static irqreturn_t marvell_nfc_isr(int irq, void *=
+dev_id)
+> >>   =20
+> >>           marvell_nfc_disable_int(nfc, st & NDCR_ALL_INT);
+> >>   =20
+> >> -       if (!(st & (NDSR_RDDREQ | NDSR_WRDREQ | NDSR_WRCMDREQ)))
+> >> +       if (st & (NDSR_RDY(0) | NDSR_RDY(1)))
+> >>                   complete(&nfc->complete);
+> >>   =20
+> >>           return IRQ_HANDLED; =20
+> >=20
+> > Yes! That seems to work nicely as a replacement for my patch.
+> >=20
+> > Chris, how is that going on your board? =20
+>=20
+> Looks good to me. I've just re-run stress_{1,2,3} on the custom board=20
+> and DB-88F6820-AMC.
 
-I have a slight reservation for the weird outliers like loopdev, which
-has "one hardware queue" (.nr_hw_queues == 1) though this
-makes no sense at all. So I would like to know what people think
-about that. Maybe we should have .nr_queues and .nr_hw_queues
-where the former is the number of logical queues and the latter
-the actual number of hardware queues.
+Great! There is still something weird about the complete() though.
 
-Yours,
-Linus Walleij
+Daniel, do you plan to send the above change or do you want me to do
+it? I would like to integrate the fix in nand/next before sending the
+PR.
+
+
+Thanks,
+Miqu=C3=A8l
