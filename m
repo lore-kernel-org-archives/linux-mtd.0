@@ -1,22 +1,34 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7gJA-0004Yd-1Z
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 12:31:17 +0000
-Date: Wed, 3 Oct 2018 14:30:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: ams-delta: use ->exec_op()
-Message-ID: <20181003143054.597b3a9e@bbrezillon>
-In-Reply-To: <20181003120028.9257-1-jmkrzyszt@gmail.com>
-References: <20180719081508.5dafebde@bbrezillon>
- <20181003120028.9257-1-jmkrzyszt@gmail.com>
+Date: Wed, 3 Oct 2018 05:51:46 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ "aherrmann@suse.com" <aherrmann@suse.com>,
+ "mgorman@suse.com" <mgorman@suse.com>,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bfq-iosched@googlegroups.com" <bfq-iosched@googlegroups.com>,
+ "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181003125146.GA9313@infradead.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538550325.14984.108.camel@gmail.com>
+ <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
+ <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +38,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Janusz,
+On Wed, Oct 03, 2018 at 07:42:15AM +0000, Damien Le Moal wrote:
+> Of note also is that host-managed like sequential zone devices are also likely
+> to show up soon with the work being done in the NVMe standard on the new "Zoned
+> namespace" feature proposal. These devices will also require a scheduler like
+> mq-deadline guaranteeing per-zone in-order delivery of sequential write
+> requests. Looking only at the number of queues of the device is not enough to
+> choose the best (most reasonnable/appropriate) scheduler.
 
-On Wed,  3 Oct 2018 14:00:28 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
-
-> Replace legacy callbacks with ->select_chip() and ->exec_op().
-
-Thanks for working on that, that's really appreciated.
-
-> 
-> Implementation of NAND_OP_WAITRDY_INSTR has been based on legacy
-> nand_wait_ready(),
-
-I don't remember what the ams-delta ->dev_ready()/->waitfunc() hooks
-are doing, but is shouldn't be too hard to replace them by an
-ams_delta_wait_ready() func.
-
-> otherwise that function would probabaly have to be
-
-				^ probably
-
-
-> reimplemented inside the driver.  Hence, legacy callback ->dev_ready()
-> is still used.
-> 
-> Use of IO_ADDR_R and IO_ADDR_W legacy structure members will be dropped
-> later, as soon as the driver is converted to use GPIO API for data I/O.
-
-In the meantime, can you move the iomem pointer to the ams_delta
-private struct so that this driver no longer uses the ->IO_ADDR_R/W
-fields?
-
-> 
-> Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> ---
-> Hi,
-> 
-> I've not tested the change on hardware yet as I'm not sure if:
-> - handling of NCE limited to that inside ->select_chip() is
->   sufficient,
-
-I think it is.
-
-> - releasing ALE / CLE immediately after ams_delta_write_buf() is
->   correct.
-
-Well, you should probably consider waiting for instr->ctx.delay_ns
-nanoseconds after each instruction, but, if it was working before the
-conversion to ->exec_op(), it should work just fine now.
-
-Regards,
-
-Boris
+We actually have a plan to avoid the need for a non-reordering scheduler
+there (including a Linux prototype for it).  Lets see if it survives the
+committee.
