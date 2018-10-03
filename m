@@ -1,29 +1,34 @@
-Received: from mail.bugwerft.de ([2a03:6000:1011::59])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7bz7-0003pL-2m
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:54:18 +0000
-Subject: Re: [PATCH v2] mtd: rawnand: marvell: check for RDY bits after
- enabling the IRQ
-To: Miquel Raynal <miquel.raynal@bootlin.com>,
- Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20181001234120.425ae1f5@bbrezillon>
- <c8de62fb56fd493baa8b1f6343bb8bfe@svr-chch-ex1.atlnz.lc>
- <20181002001328.7f64ecbc@bbrezillon> <20181002084601.2a118f10@xps13>
- <20181002092500.3dc2ac7a@xps13>
- <09d3f8ab-6c5e-56be-479f-6ca28dca5778@zonque.org>
- <da3e196e239545cfb533a84d9ad71656@svr-chch-ex1.atlnz.lc>
- <20181003093302.4b810e64@xps13>
-From: Daniel Mack <daniel@zonque.org>
-Message-ID: <da2b155e-5c79-67d6-c6e4-bd998b43479b@zonque.org>
-Date: Wed, 3 Oct 2018 09:54:02 +0200
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7cWA-0000za-4B
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 08:28:28 +0000
+Received: by mail-io1-xd43.google.com with SMTP id t7-v6so4305298ioj.13
+ for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 01:28:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20181003093302.4b810e64@xps13>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538550325.14984.108.camel@gmail.com>
+ <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
+ <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
+In-Reply-To: <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Wed, 3 Oct 2018 10:28:03 +0200
+Message-ID: <CACRpkdbHiq9bstRzyg-fJfXKnXr8wD1YzAooLAwQKM0OzP=HVA@mail.gmail.com>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Damien.LeMoal@wdc.com
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+ Paolo Valente <paolo.valente@linaro.org>,
+ Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ Jan Kara <jack@suse.cz>, aherrmann@suse.com, mgorman@suse.com,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ bfq-iosched@googlegroups.com,
+ oleksandr@natalenko.name, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,26 +38,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Miquel,
+On Wed, Oct 3, 2018 at 9:42 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
 
-On 3/10/2018 9:33 AM, Miquel Raynal wrote:
->>> Yes! That seems to work nicely as a replacement for my patch.
->>>
->>> Chris, how is that going on your board?
->> Looks good to me. I've just re-run stress_{1,2,3} on the custom board
->> and DB-88F6820-AMC.
-> Great! There is still something weird about the complete() though.
-> 
-> Daniel, do you plan to send the above change or do you want me to do
-> it? I would like to integrate the fix in nand/next before sending the
-> PR.
+> There is another class of outliers: host-managed SMR disks (SATA and SCSI,
+> definitely single hw queue). For these, using mq-deadline is mandatory in many
+> cases in order to guarantee sequential write command delivery to the device
+> driver. Having the default changed to bfq, which as far as I know is not SMR
+> friendly (can sequential writes within a single zone be reordered ?) is asking
+> for troubles (unaligned write errors showing up).
 
-Nah, your version has barely anything to do with my patch anymore, 
-except that it fixes the same effect, so go ahead please :)
+Ah, that is interesting.
 
-You can add my Reported-and-tested-by though.
+Which device driver files are we talking about here, specifically?
+I'd like to take a look.
 
+I guess what you say is not that you are looking for the deadline
+scheduling per se (as in deadline scheduling is nice), what you want is
+the zone locking semantics in that scheduler, is that right?
 
-Thanks for chasing this, everyone!
+I.e. this business:
+blk_queue_is_zoned(q)
+blk_req_zone_write_lock(rq);
+blk_req_zone_write_unlock(rq);
+and mq-deadline solves this with a spinlock.
 
-Daniel
+I will augment the patch to enforce mq-deadline
+if blk_queue_is_zoned(q) is true, as it is clear that
+any device with that characteristic must use mq-deadline.
+
+Paoly might be interested in looking into whether BFQ could
+also handle zoned devices in the future, I have no idea of how
+hard that would be.
+
+The zoned business seems a bit fragile. Should it even be
+allowed to select any other scheduler than deadline on these
+devices? Presenting all compiled in schedulers in
+/sysblock/device/queue/scheduler sounds like just giving
+sysadmins too much rope.
+
+Yours,
+Linus Walleij
