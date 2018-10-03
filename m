@@ -1,19 +1,19 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7bJY-0004fK-Ns
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:11:26 +0000
-Date: Wed, 3 Oct 2018 09:10:58 +0200
+ id 1g7bKY-0004x5-4J
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:12:23 +0000
+Date: Wed, 3 Oct 2018 09:12:00 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, frieder.schrempf@exceet.de,
- computersforpeace@gmail.com, david.wolfe@nxp.com, han.xu@nxp.com,
- festevam@gmail.com, marek.vasut@gmail.com, prabhakar.kushwaha@nxp.com,
- linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mtd: spi-nor: Support controllers with limited TX FIFO
- size
-Message-ID: <20181003091058.07a13965@bbrezillon>
-In-Reply-To: <1528870092-14526-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1528870092-14526-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+To: Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc: Han Xu <han.xu@nxp.com>, Marek Vasut <marek.vasut@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org, kernel@pengutronix.de,
+ stable@vger.kernel.org
+Subject: Re: [PATCH] mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
+Message-ID: <20181003091200.4191b2e6@bbrezillon>
+In-Reply-To: <20180921093252.9115-1-a.fatoum@pengutronix.de>
+References: <20180921093252.9115-1-a.fatoum@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,42 +26,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Jun 2018 11:38:12 +0530
-Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+On Fri, 21 Sep 2018 11:32:53 +0200
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-> Some SPI controllers can't write nor->page_size bytes in a single
-> step because their TX FIFO is too small.
+> fsl_qspi_get_seqid() may return -EINVAL, but fsl_qspi_init_ahb_read()
+> doesn't check for error codes with the result that -EINVAL could find
+> itself signalled over the bus.
 > 
-> Allow nor->write() to return a size that is smaller than the requested
-> write size to gracefully handle this case.
+> In conjunction with the LS1046A SoC's A-009283 errata
+> ("Illegal accesses to SPI flash memory can result in a system hang")
+> this illegal access to SPI flash memory results in a system hang
+> if userspace attempts reading later on.
 > 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> Avoid this by always checking fsl_qspi_get_seqid()'s return value
+> and bail out otherwise.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-Queued to spi-nor/next.
+Added
+
+Fixes: e46ecda764dc ("mtd: spi-nor: Add Freescale QuadSPI driver")
+
+and queued it to spi-nor/next.
 
 Thanks,
 
 Boris
 
 > ---
->  drivers/mtd/spi-nor/spi-nor.c | 7 -------
->  1 file changed, 7 deletions(-)
+>  drivers/mtd/spi-nor/fsl-quadspi.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index 5bfa36e..3e63543 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -1431,13 +1431,6 @@ static int spi_nor_write(struct mtd_info *mtd, loff_t to, size_t len,
->  			goto write_err;
->  		*retlen += written;
->  		i += written;
-> -		if (written != page_remain) {
-> -			dev_err(nor->dev,
-> -				"While writing %zu bytes written %zd bytes\n",
-> -				page_remain, written);
-> -			ret = -EIO;
-> -			goto write_err;
-> -		}
->  	}
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
+> index 7d9620c7ff6c..1bb42e40c38b 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -543,6 +543,9 @@ fsl_qspi_runcmd(struct fsl_qspi *q, u8 cmd, unsigned int addr, int len)
 >  
->  write_err:
+>  	/* trigger the LUT now */
+>  	seqid = fsl_qspi_get_seqid(q, cmd);
+> +	if (seqid < 0)
+> +		return seqid;
+> +
+>  	qspi_writel(q, (seqid << QUADSPI_IPCR_SEQID_SHIFT) | len,
+>  			base + QUADSPI_IPCR);
+>  
+> @@ -671,7 +674,7 @@ static void fsl_qspi_set_map_addr(struct fsl_qspi *q)
+>   * causes the controller to clear the buffer, and use the sequence pointed
+>   * by the QUADSPI_BFGENCR[SEQID] to initiate a read from the flash.
+>   */
+> -static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+> +static int fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+>  {
+>  	void __iomem *base = q->iobase;
+>  	int seqid;
+> @@ -696,8 +699,12 @@ static void fsl_qspi_init_ahb_read(struct fsl_qspi *q)
+>  
+>  	/* Set the default lut sequence for AHB Read. */
+>  	seqid = fsl_qspi_get_seqid(q, q->nor[0].read_opcode);
+> +	if (seqid < 0)
+> +		return seqid;
+> +
+>  	qspi_writel(q, seqid << QUADSPI_BFGENCR_SEQID_SHIFT,
+>  		q->iobase + QUADSPI_BFGENCR);
+> +	return 0;
+>  }
+>  
+>  /* This function was used to prepare and enable QSPI clock */
+> @@ -805,9 +812,7 @@ static int fsl_qspi_nor_setup_last(struct fsl_qspi *q)
+>  	fsl_qspi_init_lut(q);
+>  
+>  	/* Init for AHB read */
+> -	fsl_qspi_init_ahb_read(q);
+> -
+> -	return 0;
+> +	return fsl_qspi_init_ahb_read(q);
+>  }
+>  
+>  static const struct of_device_id fsl_qspi_dt_ids[] = {
