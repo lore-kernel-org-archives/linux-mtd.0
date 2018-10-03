@@ -1,39 +1,22 @@
-Received: from mail-pg1-f195.google.com ([209.85.215.195])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7isE-00081v-Bc
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 15:16:15 +0000
-Received: by mail-pg1-f195.google.com with SMTP id 23-v6so1709987pgc.8
- for <linux-mtd@lists.infradead.org>; Wed, 03 Oct 2018 08:15:27 -0700 (PDT)
-Message-ID: <1538579724.205649.2.camel@acm.org>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-From: Bart Van Assche <bvanassche@acm.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Damien Le Moal <Damien.LeMoal@wdc.com>, Linus Walleij
- <linus.walleij@linaro.org>, Artem Bityutskiy <dedekind1@gmail.com>, Paolo
- Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
- linux-block <linux-block@vger.kernel.org>, linux-mmc
- <linux-mmc@vger.kernel.org>,  "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Pavel Machek <pavel@ucw.cz>, Ulf Hansson
- <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Adrian
- Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
- "aherrmann@suse.com" <aherrmann@suse.com>, "mgorman@suse.com"
- <mgorman@suse.com>, Chunyan Zhang <zhang.chunyan@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "bfq-iosched@googlegroups.com" <bfq-iosched@googlegroups.com>,
- "oleksandr@natalenko.name" <oleksandr@natalenko.name>, Mark Brown
- <broonie@kernel.org>
-Date: Wed, 03 Oct 2018 08:15:24 -0700
-In-Reply-To: <20181003150131.GA7306@infradead.org>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1538550325.14984.108.camel@gmail.com>
- <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
- <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
- <20181003125146.GA9313@infradead.org> <1538578732.205649.0.camel@acm.org>
- <20181003150131.GA7306@infradead.org>
-Content-Type: text/plain; charset="UTF-7"
-Mime-Version: 1.0
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7iuA-0000aU-WB
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 15:17:40 +0000
+Date: Wed, 3 Oct 2018 17:17:27 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: Zhouyang Jia <jiazhouyang09@gmail.com>, open list
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>,
+ linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 6/8] mtd: maps: gpio-addr-flash: Convert to gpiod
+Message-ID: <20181003171727.145e7e41@bbrezillon>
+In-Reply-To: <20181003171114.51ab47b8@bbrezillon>
+References: <20181001124351.31615-1-ricardo.ribalda@gmail.com>
+ <20181001124351.31615-6-ricardo.ribalda@gmail.com>
+ <20181003171114.51ab47b8@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -44,14 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-10-03 at 08:01 -0700, Christoph Hellwig wrote:
-+AD4 On Wed, Oct 03, 2018 at 07:58:52AM -0700, Bart Van Assche wrote:
-+AD4 +AD4 Has the work with the T10 committee to standardize the SCSI equivalent of anonymous
-+AD4 +AD4 writes already started?
-+AD4 
-+AD4 No, and I don't know of anyone who wants to do that in the short term.
+On Wed, 3 Oct 2018 17:11:14 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-That's unfortunate. I think having such a command available in the SCSI
-command set would be a step forward.
+> Hi Ricardo,
+> 
+> On Mon,  1 Oct 2018 14:43:49 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> 
+> > @@ -248,14 +252,19 @@ static int gpio_flash_probe(struct platform_device *pdev)
+> >  
+> >  	i = 0;
+> >  	do {
+> > -		if (devm_gpio_request(&pdev->dev, state->gpio_addrs[i],
+> > -				      DRIVER_NAME)) {
+> > +		unsigned int *gpio_id = (unsigned int *)gpios->start;
+> > +
+> > +		if (devm_gpio_request_one(&pdev->dev, gpio_id[i], GPIOD_OUT_LOW,
+> > +					DRIVER_NAME)) {
+> >  			dev_err(&pdev->dev, "failed to request gpio %d\n",
+> > -				state->gpio_addrs[i]);
+> > +				gpio_id[i]);
+> >  			return -EBUSY;
+> >  		}
+> > -		gpio_direction_output(state->gpio_addrs[i], 0);
+> > -	} while (++i < state->gpio_count);
+> > +
+> > +		state->gpios->desc[i] = gpio_to_desc(gpio_id[i]);
+> > +		if (!state->gpios->desc[i])
+> > +			return -EINVAL;
+> > +	} while (++i < state->gpios->ndescs);  
+> 
+> Actually, I was thinking about using devm_gpiod_get_array() here and
+> defining a gpio lookup table in the board file registering the device.
+> This way, adding support for DT based parsing is transparent.
 
-Bart.
+It's actually easier than I thought since no one is registering such a
+device, so all you have to do is call devm_gpiod_get_array() and have a
+struct gpio_descs pointer in struct async_state.
