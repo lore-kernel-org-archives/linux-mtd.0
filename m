@@ -1,17 +1,17 @@
-Received: from mailsrv.ifac.cnr.it ([149.139.32.100])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7jvp-00041g-IG
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 16:23:27 +0000
-Content-Type: text/plain; charset="iso-8859-1"
+From: Vignesh R <vigneshr@ti.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>
+CC: Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>,
+ <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, Vignesh R <vigneshr@ti.com>
+Subject: [PATCH 0/3] spi-nor: Add Octal SPI support
+Date: Wed, 3 Oct 2018 22:26:00 +0530
+Message-ID: <20181003165603.2579-1-vigneshr@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE
-To: Recipients <luca.bernasconi@ksa.ch>
-From: "Alice Waltoni"<luca.bernasconi@ksa.ch>
-Date: Wed, 03 Oct 2018 17:22:09 +0100
-Reply-To: shengli019@outlook.com
-Message-Id: <20181003162226.7D5B05658B18@mailsrv.ifac.cnr.it>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,4 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a charity mission worth $ 100,000,000.00
+This series adds support for octal mode of mt35x flash. Also, adds
+support for OSPI version of Cadence QSPI controller.
+
+Based on top of patches adding basic support for mt35xu512aba here:
+https://patchwork.ozlabs.org/cover/971437/
+
+Vignesh R (3):
+  mtd: spi-nor: Add Octal mode support for mt35xu512aba
+  dt-bindings: cadence-quadspi: Add new compatible for AM654 SoC
+  mtd: spi-nor: cadence-quadspi: Add support for Octal SPI controller
+
+ .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
+ drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++
+ drivers/mtd/spi-nor/spi-nor.c                         | 11 ++++++++++-
+ include/linux/mtd/spi-nor.h                           |  2 ++
+ 4 files changed, 22 insertions(+), 1 deletion(-)
+
+-- 
+2.19.0
