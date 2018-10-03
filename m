@@ -1,28 +1,21 @@
-Received: from mga01.intel.com ([192.55.52.88])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7bE6-0001kV-KT
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:05:44 +0000
-Message-ID: <1538550325.14984.108.camel@gmail.com>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-From: Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: dedekind1@gmail.com
-To: Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>
-Cc: Linus Walleij <linus.walleij@linaro.org>, linux-block
- <linux-block@vger.kernel.org>, linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>, Ulf Hansson
- <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>, Adrian
- Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>, Andreas Herrmann
- <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>, Chunyan Zhang
- <zhang.chunyan@linaro.org>, linux-kernel <linux-kernel@vger.kernel.org>,
- 'Paolo Valente' via bfq-iosched <bfq-iosched@googlegroups.com>, Oleksandr
- Natalenko <oleksandr@natalenko.name>,  Mark Brown <broonie@kernel.org>
-Date: Wed, 03 Oct 2018 10:05:25 +0300
-In-Reply-To: <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7bIf-0003IV-OR
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 07:10:27 +0000
+Date: Wed, 3 Oct 2018 09:10:03 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: linux-mtd@lists.infradead.org, frieder.schrempf@exceet.de,
+ computersforpeace@gmail.com, david.wolfe@nxp.com, han.xu@nxp.com,
+ festevam@gmail.com, marek.vasut@gmail.com, prabhakar.kushwaha@nxp.com,
+ linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: devices: m25p80: Make sure WRITE_EN is issued
+ before each write
+Message-ID: <20181003091003.5fb134e1@bbrezillon>
+In-Reply-To: <1528870158-14781-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+References: <1528870158-14781-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,12 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2018-10-03 at 08:29 +0200, Paolo Valente wrote:
-> So, I do understand your need for conservativeness, but, after so much
-> evidence on single-queue devices, and so many years! :), what's the
-> point in keeping Linux worse for virtually everybody, by default?
+On Wed, 13 Jun 2018 11:39:18 +0530
+Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Sounds like what we just need a mechanism for the device (ubi block in
-this case) to select the I/O scheduler. I doubt enhancing the default
-scheduler selection logic in 'elevator.c' is the right answer. Just
-give the driver authority to override the defaults.
+> Some SPI controllers can't write nor->page_size bytes in a single step
+> because their TX FIFO is too small, but when that happens we should
+> make sure a WRITE_EN command before each write access and READ_SR command
+> after each write access is issued.
+> 
+> The core is already taking care of that, so all we have to do here is
+> return the actual number of bytes that were written during the
+> spi_mem_exec_op() operation.
+> 
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+
+Queued to spi-nor/next.
+
+Thanks,
+
+Boris
+
+> ---
+>  drivers/mtd/devices/m25p80.c | 23 ++++++++---------------
+>  1 file changed, 8 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index e84563d..60224fe 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -72,7 +72,6 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  				   SPI_MEM_OP_ADDR(nor->addr_width, to, 1),
+>  				   SPI_MEM_OP_DUMMY(0, 1),
+>  				   SPI_MEM_OP_DATA_OUT(len, buf, 1));
+> -	size_t remaining = len;
+>  	int ret;
+>  
+>  	/* get transfer protocols. */
+> @@ -84,22 +83,16 @@ static ssize_t m25p80_write(struct spi_nor *nor, loff_t to, size_t len,
+>  	if (nor->program_opcode == SPINOR_OP_AAI_WP && nor->sst_write_second)
+>  		op.addr.nbytes = 0;
+>  
+> -	while (remaining) {
+> -		op.data.nbytes = remaining < UINT_MAX ? remaining : UINT_MAX;
+> -		ret = spi_mem_adjust_op_size(flash->spimem, &op);
+> -		if (ret)
+> -			return ret;
+> -
+> -		ret = spi_mem_exec_op(flash->spimem, &op);
+> -		if (ret)
+> -			return ret;
+> +	ret = spi_mem_adjust_op_size(flash->spimem, &op);
+> +	if (ret)
+> +		return ret;
+> +	op.data.nbytes = len < op.data.nbytes ? len : op.data.nbytes;
+>  
+> -		op.addr.val += op.data.nbytes;
+> -		remaining -= op.data.nbytes;
+> -		op.data.buf.out += op.data.nbytes;
+> -	}
+> +	ret = spi_mem_exec_op(flash->spimem, &op);
+> +	if (ret)
+> +		return ret;
+>  
+> -	return len;
+> +	return op.data.nbytes;
+>  }
+>  
+>  /*
