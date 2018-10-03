@@ -1,19 +1,30 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7d5z-0007xN-M7
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 09:05:29 +0000
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, daniel@zonque.org,
- Chris.Packham@alliedtelesis.co.nz,
- Miquel Raynal <miquel.raynal@bootlin.com>, stable@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: marvell: fix the IRQ handler complete()
- condition
-Date: Wed,  3 Oct 2018 11:05:04 +0200
-Message-Id: <20181003090504.19910-1-miquel.raynal@bootlin.com>
+Received: from vulcan.natalenko.name ([2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat
+ Linux)) id 1g7feu-00052T-RB
+ for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 11:49:52 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Wed, 03 Oct 2018 13:49:25 +0200
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Paolo Valente <paolo.valente@linaro.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>, linux-mmc
+ <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org, Pavel Machek
+ <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger
+ <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter
+ <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>, Andreas Herrmann
+ <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>, Chunyan Zhang
+ <zhang.chunyan@linaro.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+ 'Paolo Valente' via bfq-iosched <bfq-iosched@googlegroups.com>, Mark Brown
+ <broonie@kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+In-Reply-To: <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+Message-ID: <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +34,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-With the current implementation, the complete() in the IRQ handler is
-supposed to be called only if the register status has one or the other
-RDY bit set. Other events might trigger an interrupt as well if
-enabled, but should not end-up with a complete() call.
+Hi.
 
-For this purpose, the code was checking if the other bits were set, in
-this case complete() was not called. This is wrong as two events might
-happen in a very tight time-frame and if the NDSR status read reports
-two bits set (eg. RDY(0) and RDDREQ) at the same time, complete() was
-not called.
+On 03.10.2018 08:29, Paolo Valente wrote:
+> As also Linus Torvalds complained [1], people feel lost among
+> I/O-scheduler options.  Actual differences across I/O schedulers are
+> basically obscure to non experts.  In this respect, Linux-kernel
+> 'users' are way more than a few top-level distros that can afford a
+> strong performance team, and that, basing on the input of such a team,
+> might venture light-heartedly to change a critical component like an
+> I/O scheduler.  Plus, as Linus Walleij pointed out, some users simply
+> are not distros that use udev.
 
-This logic would lead to timeouts in marvell_nfc_wait_op() and has
-been observed on PXA boards (NFCv1) in the Hamming write path.
+I feel a contradiction in this counter-argument. On one hand, there are 
+lots of, let's call them, home users, that use major distributions with 
+udev, so the distribution maintainers can reasonably decide which 
+scheduler to use for which type of device based on the udev rule and 
+common sense provided via Documentation/ by linux-block devs. Moreover, 
+most likely, those rules should be similar or the same across all the 
+major distros and available via some (systemd?) upstream.
 
-Fixes: 02f26ecf8c77 ("mtd: nand: add reworked Marvell NAND controller driver")
-Cc: stable@vger.kernel.org
-Reported-by: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Tested-by: Daniel Mack <daniel@zonque.org>
----
- drivers/mtd/nand/raw/marvell_nand.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On another hand, the users of embedded devices, mentioned by Linus, 
+should already know what scheduler to choose because dealing with 
+embedded world assumes the person can decide this on their own, or with 
+the help of abovementioned udev scripts and/or Documentation/ as a 
+reference point.
 
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index bc2ef5209783..c7573ccdbacd 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -686,7 +686,7 @@ static irqreturn_t marvell_nfc_isr(int irq, void *dev_id)
- 
- 	marvell_nfc_disable_int(nfc, st & NDCR_ALL_INT);
- 
--	if (!(st & (NDSR_RDDREQ | NDSR_WRDREQ | NDSR_WRCMDREQ)))
-+	if (st & (NDSR_RDY(0) | NDSR_RDY(1)))
- 		complete(&nfc->complete);
- 
- 	return IRQ_HANDLED;
+So I see no obstacles here, and the choice to rely on udev by default 
+sounds reasonable.
+
+The question that remain is whether it is really important to mount a 
+root partition while already using some specific scheduler? Why it 
+cannot be done with "none", for instance?
+
+> So, probably 99% of Linux-kernel users will just stick to the default
+> I/O scheduler, mq-deadline, assuming that the algorithm by which that
+> scheduler was chosen was not "pick the scheduler with the longest
+> name", but "pick the best scheduler for most cases".  The problem is
+> that, for single-queue devices with a speed below 400/500 KIOPS, the
+> default scheduler is apparently incomparably worse than bfq in terms
+> of responsiveness and latency for time-sensitive applications [2], and
+> in terms of throughput reached while controlling I/O [3].  And, in all
+> other tests ran so far, by any entity or group I'm aware of, bfq
+> results basically on par with or better than mq-deadline.
+
+And that's why major distributions are likely to default to BFQ via 
+udev. No one argues with BFQ superiority here ☺.
+
+> So, I do understand your need for conservativeness, but, after so much
+> evidence on single-queue devices, and so many years! :), what's the
+> point in keeping Linux worse for virtually everybody, by default?
+
+ From my point of view this is not a conservative approach at all. On 
+contrary, offloading decisions to userspace aligns pretty well with 
+recent trends like pressure metrics/userspace OOM killer, eBPF etc. The 
+less unnecessary logic the kernel handles, the more flexibility it 
+affords.
+
 -- 
-2.17.1
+   Oleksandr Natalenko (post-factum)
