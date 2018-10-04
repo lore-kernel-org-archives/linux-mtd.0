@@ -1,9 +1,9 @@
 Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g83G6-0007cu-0K
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:40 +0000
-Received: by mail-lj1-x244.google.com with SMTP id r8-v6so8256566ljc.10
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:26 -0700 (PDT)
+ id 1g83G6-0007d5-0E
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:43 +0000
+Received: by mail-lj1-x244.google.com with SMTP id r83-v6so8287241ljr.7
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:33 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
 Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v6 01/10] mtd: physmap_of: Release resources on error
-Date: Thu,  4 Oct 2018 15:01:01 +0200
-Message-Id: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
+Subject: [PATCH v6 03/10] mtd: maps: gpio-addr-flash: Replace custom printk
+Date: Thu,  4 Oct 2018 15:01:03 +0200
+Message-Id: <20181004130110.8496-3-ricardo.ribalda@gmail.com>
+In-Reply-To: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
+References: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,61 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-During probe, if there was an error the memory region and the memory
-map were not properly released.
-
-This can lead a system unusable if deferred probe is in use.
+Use preferred print methods dev_*
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/physmap_of_core.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-index 4129535b8e46..062add8b3a6e 100644
---- a/drivers/mtd/maps/physmap_of_core.c
-+++ b/drivers/mtd/maps/physmap_of_core.c
-@@ -241,10 +241,10 @@ static int of_flash_probe(struct platform_device *dev)
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 9d9723693217..17be47f72973 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -25,11 +25,7 @@
+ #include <linux/slab.h>
+ #include <linux/types.h>
  
- 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
- 		if (err)
--			goto err_out;
-+			goto err_out_release;
- 		err = of_flash_probe_versatile(dev, dp, &info->list[i].map);
- 		if (err)
--			goto err_out;
-+			goto err_out_release;
+-#define pr_devinit(fmt, args...) \
+-	({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
+-
+ #define DRIVER_NAME "gpio-addr-flash"
+-#define PFX DRIVER_NAME ": "
  
- 		err = -ENOMEM;
- 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
-@@ -252,7 +252,7 @@ static int of_flash_probe(struct platform_device *dev)
- 		if (!info->list[i].map.virt) {
- 			dev_err(&dev->dev, "Failed to ioremap() flash"
- 				" region\n");
--			goto err_out;
-+			goto err_out_release;
- 		}
+ /**
+  * struct async_state - keep GPIO flash state
+@@ -250,7 +246,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	i = 0;
+ 	do {
+ 		if (gpio_request(state->gpio_addrs[i], DRIVER_NAME)) {
+-			pr_devinit(KERN_ERR PFX "failed to request gpio %d\n",
++			dev_err(&pdev->dev, "failed to request gpio %d\n",
+ 				state->gpio_addrs[i]);
+ 			while (i--)
+ 				gpio_free(state->gpio_addrs[i]);
+@@ -260,8 +256,8 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 		gpio_direction_output(state->gpio_addrs[i], 0);
+ 	} while (++i < state->gpio_count);
  
- 		simple_map_init(&info->list[i].map);
-@@ -290,7 +290,7 @@ static int of_flash_probe(struct platform_device *dev)
- 		err = -ENXIO;
- 		if (!info->list[i].mtd) {
- 			dev_err(&dev->dev, "do_map_probe() failed\n");
--			goto err_out;
-+			goto err_out_iounmap;
- 		} else {
- 			info->list_size++;
- 		}
-@@ -329,6 +329,10 @@ static int of_flash_probe(struct platform_device *dev)
- 
- 	return 0;
- 
-+err_out_iounmap:
-+	iounmap(info->list[i].map.virt);
-+err_out_release:
-+	release_mem_region(res.start, resource_size(&res));
- err_out:
- 	kfree(mtd_list);
- err_flash_remove:
+-	pr_devinit(KERN_NOTICE PFX "probing %d-bit flash bus\n",
+-		state->map.bankwidth * 8);
++	dev_notice(&pdev->dev, "probing %d-bit flash bus\n",
++		   state->map.bankwidth * 8);
+ 	state->mtd = do_map_probe(memory->name, &state->map);
+ 	if (!state->mtd) {
+ 		for (i = 0; i < state->gpio_count; ++i)
 -- 
 2.19.0
