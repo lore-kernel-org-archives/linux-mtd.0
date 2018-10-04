@@ -1,35 +1,19 @@
-Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
+Received: from mail-wm1-x329.google.com ([2a00:1450:4864:20::329])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8APH-0005oR-Lf
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 20:39:37 +0000
-Received: by mail-wr1-x444.google.com with SMTP id y16so11328846wrw.3
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 13:39:24 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-From: Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <1538683746.230807.9.camel@acm.org>
-Date: Thu, 4 Oct 2018 22:39:20 +0200
-Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Jens Axboe <axboe@kernel.dk>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
- Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
- Chunyan Zhang <zhang.chunyan@linaro.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1538582091.205649.20.camel@acm.org> <20181004202553.71c2599c@alans-desktop>
- <1538683746.230807.9.camel@acm.org>
-To: Bart Van Assche <bvanassche@acm.org>
+ id 1g8BhT-0007up-5Y
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 22:02:28 +0000
+Received: by mail-wm1-x329.google.com with SMTP id q8-v6so50378wmq.4
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 15:02:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAGkQfmN6PguBRdL68ZRuOEgC2GWEW4-XxeE3=7epLGODTqHqeQ@mail.gmail.com>
+In-Reply-To: <CAGkQfmN6PguBRdL68ZRuOEgC2GWEW4-XxeE3=7epLGODTqHqeQ@mail.gmail.com>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Fri, 5 Oct 2018 00:02:02 +0200
+Message-ID: <CAFLxGvyEfMtyoWb6517+mjSSBkU=Ofx7Vs1vKPBa7U+Q3zuTjQ@mail.gmail.com>
+Subject: Re: Nandsim, UBIFS and memory concerns
+To: romain.izard.pro@gmail.com
+Cc: "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,52 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Oct 4, 2018 at 6:52 PM Romain Izard <romain.izard.pro@gmail.com> wrote:
+> My questions are the following:
+> - Has UBIFS been tested in low memory conditions? Is there a suitable test
+>   suite to verify that everything works correctly?
 
+The smallest device in my office with UBIFS support has 32MiB RAM.
+But the kernel is not fresh, maybe recent kernels consume more memory wrt. VFS.
+To answer your question, it has been designed to work with low memory.
 
-> Il giorno 04 ott 2018, alle ore 22:09, Bart Van Assche =
-<bvanassche@acm.org> ha scritto:
->=20
-> On Thu, 2018-10-04 at 20:25 +0100, Alan Cox wrote:
->>> I agree with Jens that it's best to leave it to the Linux =
-distributors to
->>> select a default I/O scheduler.
->>=20
->> That assumes such a thing exists. The kernel knows what devices it is
->> dealing with. The kernel 'default' ought to be 'whatever is usually =
-best
->> for this device'. A distro cannot just pick a correct single default
->> because NVME and USB sticks are both normal and rather different in =
-needs.
->=20
-> Which I/O scheduler works best also depends which workload the user =
-will run.
-> BFQ has significant advantages for interactive workloads like video =
-replay
-> with concurrent background I/O but probably slows down kernel builds.
+> - Is the nandsim file mode working as expected?  What can I do to be sure
+>   that the read and writes are committed to the file?
 
-No, kernel build is, for evident reasons, one of the workloads I cared
-most about.  Actually, I tried to focus on all my main
-kernel-development tasks, such as also git checkout, git merge, git
-grep, ...
+Nandsim works in memory. The file backend is a hack and what you might expect.
 
-According to my test results, with BFQ these tasks are at least as
-fast as, or, in most system configurations, much faster than with the
-other schedulers.  Of course, at the same time the system also remains
-responsive with BFQ.
-
-You can repeat these tests using one of my first scripts in the S
-suite: kern_dev_tasks_vs_rw.sh (usually, the older the tests, the more
-hypertrophied the names I gave :) ).
-
-I stopped sharing also my kernel-build results years ago, because I
-went on obtaining the same, identical good results for years, and I'm
-aware that I tend to show and say too much stuff.
-
+Please tell me more about the corruptions you're facing. Even in UBIFS
+runs out of memory
+it must not corrupt.
+-- 
 Thanks,
-Paolo
-
-> That's
-> why I'm not sure whether the kernel should select the default I/O =
-scheduler.
->=20
-> Bart.
+//richard
