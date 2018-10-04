@@ -1,30 +1,22 @@
-Date: Thu, 4 Oct 2018 14:12:04 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
- <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] spi: add support for octal I/O data transfer
-Message-ID: <20181004141204.04168a22@bbrezillon>
-In-Reply-To: <VI1PR04MB10384B74E6E27435313CC73099EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1538642920-3843-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181004110446.5e1bb255@bbrezillon>
- <VI1PR04MB10380FD9CE99E34BA27E55B699EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181004111941.0da33ec0@bbrezillon>
- <VI1PR04MB1038E23CBFE9CFD5C2ECCD3299EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <VI1PR04MB10384B74E6E27435313CC73099EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g83G6-0007cu-0K
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:40 +0000
+Received: by mail-lj1-x244.google.com with SMTP id r8-v6so8256566ljc.10
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:26 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ open list <linux-kernel@vger.kernel.org>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH v6 01/10] mtd: physmap_of: Release resources on error
+Date: Thu,  4 Oct 2018 15:01:01 +0200
+Message-Id: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,88 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Oct 2018 12:07:17 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+During probe, if there was an error the memory region and the memory
+map were not properly released.
 
-> Hi Boris,
-> 
-> > -----Original Message-----
-> > From: Yogesh Narayan Gaur
-> > Sent: Thursday, October 4, 2018 2:56 PM
-> > To: 'Boris Brezillon' <boris.brezillon@bootlin.com>
-> > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com;
-> > linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
-> > mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
-> > kernel@lists.infradead.org; computersforpeace@gmail.com;
-> > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
-> > Subject: RE: [PATCH 1/4] spi: add support for octal I/O data transfer
-> > 
-> > Hi Boris,
-> >   
-> > > -----Original Message-----
-> > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > > Sent: Thursday, October 4, 2018 2:50 PM
-> > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com;
-> > > vigneshr@ti.com; linux-spi@vger.kernel.org;
-> > > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
-> > > shawnguo@kernel.org; linux-arm- kernel@lists.infradead.org;
-> > > computersforpeace@gmail.com; frieder.schrempf@exceet.de;
-> > > linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH 1/4] spi: add support for octal I/O data transfer
-> > >
-> > > On Thu, 4 Oct 2018 09:14:36 +0000
-> > > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> > >  
-> > > > Hi Boris,
-> > > >  
-> > > > > -----Original Message-----
-> > > > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > > > > Sent: Thursday, October 4, 2018 2:35 PM
-> > > > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > > > > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com;
-> > > > > vigneshr@ti.com; linux-spi@vger.kernel.org;
-> > > > > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
-> > > > > shawnguo@kernel.org; linux-arm- kernel@lists.infradead.org;
-> > > > > computersforpeace@gmail.com; frieder.schrempf@exceet.de;
-> > > > > linux-kernel@vger.kernel.org Subject: Re: [PATCH 1/4] spi: add
-> > > > > support for octal I/O data transfer
-> > > > >
-> > > > > Hi Yogesh,
-> > > > >  
-> [...]
-> > > > > > +#define	SPI_RX_OCTAL
-> > > > > > 0x2000			/* receive with 8 wires  
-> > > > > */  
-> > > > > >  	int			irq;
-> > > > > >  	void			*controller_state;
-> > > > > >  	void			*controller_data;  
-> > > > >
-> > > > > You're still not updating spi-mem.c to check those flags and
-> > > > > SPI_MEM_MAX_BUSWIDTH is not updated to match the new limit (8
-> > > > > instead of 4).
-> > > > >  
-> > > > Yes and its strange that my octal mode communication is working fine
-> > > > without adding support in spi-mem.c and that's why this has been
-> > > > missed from me.  
-> > >
-> > > Are you based on top of spi-next?  
-> > 
-> > Ok, that might be the reason. I have rebased few days back.
-> > Would rebase with current tip and add support in spi-mem interface too.  
-> 
-> I have rebased spi-next and currently on top but still my octal command support is working fine without any issue with current shared patch series, performed data sanity.
-> 
-> =>  git log  --pretty=oneline -3  
-> 	496c415717b8bb7d37181127fcfad0ba450eb10d mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
-> 	2336d3a7b125683c9e8b25d6efa6064310d19dbe mtd: devices: m25p80: Make sure WRITE_EN is issued before each write
-> 	e55841874471282d32eec595997afce43a5f55c0 mtd: spi-nor: Support controllers with limited TX FIFO size
-> 
-> GIT Repo - 	git://git.infradead.org/linux-mtd.git
-> Branch -	remotes/origin/spi-nor/next
-> 
-> Also, I am not able to find string SPI_MEM_MAX_BUSWIDTH in current source code, can you share the GIT details where these changes are pushed.
+This can lead a system unusable if deferred probe is in use.
 
-It's in Mark's tree [1] (spi-next != spi-nor/next).
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ drivers/mtd/maps/physmap_of_core.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-[1]https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/?h=for-next
+diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
+index 4129535b8e46..062add8b3a6e 100644
+--- a/drivers/mtd/maps/physmap_of_core.c
++++ b/drivers/mtd/maps/physmap_of_core.c
+@@ -241,10 +241,10 @@ static int of_flash_probe(struct platform_device *dev)
+ 
+ 		err = of_flash_probe_gemini(dev, dp, &info->list[i].map);
+ 		if (err)
+-			goto err_out;
++			goto err_out_release;
+ 		err = of_flash_probe_versatile(dev, dp, &info->list[i].map);
+ 		if (err)
+-			goto err_out;
++			goto err_out_release;
+ 
+ 		err = -ENOMEM;
+ 		info->list[i].map.virt = ioremap(info->list[i].map.phys,
+@@ -252,7 +252,7 @@ static int of_flash_probe(struct platform_device *dev)
+ 		if (!info->list[i].map.virt) {
+ 			dev_err(&dev->dev, "Failed to ioremap() flash"
+ 				" region\n");
+-			goto err_out;
++			goto err_out_release;
+ 		}
+ 
+ 		simple_map_init(&info->list[i].map);
+@@ -290,7 +290,7 @@ static int of_flash_probe(struct platform_device *dev)
+ 		err = -ENXIO;
+ 		if (!info->list[i].mtd) {
+ 			dev_err(&dev->dev, "do_map_probe() failed\n");
+-			goto err_out;
++			goto err_out_iounmap;
+ 		} else {
+ 			info->list_size++;
+ 		}
+@@ -329,6 +329,10 @@ static int of_flash_probe(struct platform_device *dev)
+ 
+ 	return 0;
+ 
++err_out_iounmap:
++	iounmap(info->list[i].map.virt);
++err_out_release:
++	release_mem_region(res.start, resource_size(&res));
+ err_out:
+ 	kfree(mtd_list);
+ err_flash_remove:
+-- 
+2.19.0
