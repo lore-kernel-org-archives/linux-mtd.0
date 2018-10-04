@@ -1,22 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g84Wa-0001eK-PT
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 14:22:50 +0000
-Date: Thu, 4 Oct 2018 16:22:32 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Miquel Raynal <miquel.raynal@bootlin.com>, Richard Weinberger
- <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mtd: rawnand: ams-delta: use ->exec_op()
-Message-ID: <20181004162232.5ac363be@bbrezillon>
-In-Reply-To: <38470936.GRFaOSl3cF@z50>
-References: <20180719081508.5dafebde@bbrezillon> <7546835.d2Xs8Qh0bZ@z50>
- <20181004155933.0a32c4ac@bbrezillon> <38470936.GRFaOSl3cF@z50>
+Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g84dZ-000785-73
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 14:29:58 +0000
+Received: by mail-ed1-x542.google.com with SMTP id f38-v6so8742006edd.8
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 07:29:46 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ open list <linux-kernel@vger.kernel.org>
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
+ devicetree@vger.kernel.org
+Subject: [PATCH v10 09/10] dt-binding: mtd: Document gpio-addr-flash
+Date: Thu,  4 Oct 2018 16:29:41 +0200
+Message-Id: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 04 Oct 2018 16:11:42 +0200
-Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+Add documentation for gpio-addr-flash. This binding allow creating
+flash devices that are paged using GPIOs.
 
-> 
-> Legacy nand_wait_ready() uses a hardcoded timeout value of 400 ms.   Should we 
-> follow the same approach in nand_gpio_waitrdy(), or should we rather let 
-> drivers pass the timeout value, like in case of nand_soft_waitrdy()?
+Cc: devicetree@vger.kernel.org
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The latter.
+diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+index 232fa12e90ef..7df0dcaccb7d 100644
+--- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
++++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
+@@ -29,6 +29,8 @@ file systems on embedded devices.
+  - use-advanced-sector-protection: boolean to enable support for the
+    advanced sector protection (Spansion: PPB - Persistent Protection
+    Bits) locking.
++ - addr-gpios : (optional) List of GPIO descriptors that will be used to
++   address the MSBs address lines. The order goes from LSB to MSB.
+ 
+ For JEDEC compatible devices, the following additional properties
+ are defined:
+-- 
+2.19.0
