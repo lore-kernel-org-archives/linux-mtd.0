@@ -1,24 +1,34 @@
-Date: Thu, 4 Oct 2018 09:39:25 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7yKS-00013F-Vz
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 07:45:50 +0000
+Date: Thu, 4 Oct 2018 09:45:35 +0200
+From: Johannes Thumshirn <jthumshirn@suse.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Paolo Valente <paolo.valente@linaro.org>, aherrmann@suse.com,
+ Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, mgorman@suse.com,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "juliensu@mxic.com.tw" <juliensu@mxic.com.tw>, "zhengxunli@mxic.com.tw"
- <zhengxunli@mxic.com.tw>, "masonccyang@mxic.com.tw"
- <masonccyang@mxic.com.tw>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
-Message-ID: <20181004093925.2961d881@bbrezillon>
-In-Reply-To: <VI1PR04MB1038C20CA97E453FC4C9CEAE99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-2-vigneshr@ti.com>
- <VI1PR04MB1038C20CA97E453FC4C9CEAE99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ bfq-iosched@googlegroups.com, oleksandr@natalenko.name,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181004074535.GB6682@linux-x5ow.site>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <CACRpkdaeYU+Crr75T49WftyOHqCrsyBLBPDBBsJF-RCjmAQEdw@mail.gmail.com>
+ <20181003132554.GC21043@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20181003132554.GC21043@quack2.suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +38,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Julien, Zhengxunli and Mason from Macronix
-
-Hi Yogesh,
-
-On Thu, 4 Oct 2018 06:51:41 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-
-> Hi Vignesh,
-> 
-> > -----Original Message-----
-> > From: Vignesh R [mailto:vigneshr@ti.com]
-> > Sent: Wednesday, October 3, 2018 10:26 PM
-> > To: Boris Brezillon <boris.brezillon@bootlin.com>; Marek Vasut
-> > <marek.vasut@gmail.com>; Rob Herring <robh+dt@kernel.org>
-> > Cc: Brian Norris <computersforpeace@gmail.com>; Yogesh Narayan Gaur
-> > <yogeshnarayan.gaur@nxp.com>; Linux ARM Mailing List <linux-arm-  
-> > kernel@lists.infradead.org>; linux-mtd@lists.infradead.org;  
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Vignesh R
-> > <vigneshr@ti.com>
-> > Subject: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
+On Wed, Oct 03, 2018 at 03:25:54PM +0200, Jan Kara wrote:
+> On Wed 03-10-18 08:53:37, Linus Walleij wrote:
+> > On Wed, Oct 3, 2018 at 8:29 AM Paolo Valente <paolo.valente@linaro.org> wrote:
 > > 
-> > Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It supports
-> > read/write over 8 IO lines simulatenously. Add support for Octal read mode for
-> > Micron mt35xu512aba.
-> > Unfortunately, this flash is only complaint to SFDP JESD216B and does not seem
-> > to support newer JESD216C standard that provides auto detection of Octal
-> > mode capabilities and opcodes. Therefore, this capability is manually added
-> > using new SPI_NOR_OCTAL_READ flag.
-> >   
+> > > So, I do understand your need for conservativeness, but, after so much
+> > > evidence on single-queue devices, and so many years! :), what's the
+> > > point in keeping Linux worse for virtually everybody, by default?
+> > 
+> > I understand if we need to ease things in as well, I don't intend this
+> > change for the current merge window or anything, since v4.19
+> > will notably have this patch:
+> > 
+> > commit d5038a13eca72fb216c07eb717169092e92284f1
+> > Author: Johannes Thumshirn <jthumshirn@suse.de>
+> > Date:   Wed Jul 4 10:53:56 2018 +0200
+> > 
+> >     scsi: core: switch to scsi-mq by default
+> > 
+> >     It has been more than one year since we tried to change the default from
+> >     legacy to multi queue in SCSI with commit c279bd9e406 ("scsi: default to
+> >     scsi-mq"). But due to issues with suspend/resume and performance problems
+> >     it had been reverted again with commit cbe7dfa26eee ("Revert "scsi: default
+> >     to scsi-mq"").
+> > 
+> >     In the meantime there have been a substantial amount of performance
+> >     improvements and suspend/resume got fixed as well, thus we can re-enable
+> >     scsi-mq without a significant performance penalty.
+> > 
+> >     Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> >     Reviewed-by: Hannes Reinecke <hare@suse.com>
+> >     Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> >     Acked-by: John Garry <john.garry@huawei.com>
+> >     Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+> > 
+> > I guess that patch can be a bit scary by itself. But IIUC it all went
+> > fine this time!
+> > 
+> > But hey, if that works, that means $SUBJECT patch will enable BFQ on all
+> > libata devices and any SCSI that is single queue as well, not just
+> > "obscure" stuff like MMC/SD and UBI, and that is
+> > indeed a massive crowd of legacy devices. But we're talking
+> > v4.21 here.
+> > 
+> > Johannes, you might be interested in $SUBJECT patch.
+> > It'd be nice to hear what SUSE people have to add, since they
+> > are pretty proactive in this area.
 > 
-> Thanks for sending the patch-set of adding octal support.
-> If possible, can you share the MT35x datasheet?
+> So we do have a udev rules in our distro which sets the IO scheduler based
+> on device parameters (rotational at least, with blk-mq we might start
+> considering number of queues as well, plus we have some exceptions like
+> virtio, loop, etc.). So the kernel default doesn't concern us too much as a
+> distro.
 > 
-> I also have the patch ready in which I have added support for Read (1-1-8 and 1-8-8) protocol and Write (1-1-8 and 1-8-8).
-> Also have added support of Octal in driver/spi/spi.c framework.
-> 
-> IMO, we would collaborate our patches.
+> I personally would consider bfq a safer default for single-queue devices
+> (loop probably needs exception) but I don't feel too strongly about it.
 
-Looks like we are of stepping on each others toes here (see this branch
-[1]). I guess it's not a problem if we agree on who is working on what.
+[Full quote for context]
 
-Yogesh, you already sent "spi: add flags for octal I/O data
-transfer" [3] which is only adding the new OCTAL flags but is not
-patching spi.c and spi-mem.c to take those new flags into account. Here
-is my version of this patch [2] (it's still missing an update of
-SPI_MEM_MAX_BUSWIDTH). Let me know what you want to do (rework your
-version to address the problem or take mine).
+What about resurrecting CONFIG_DEFAULT_IOSCHED for MQ as well and
+leave it default to mq-deadline but give bfq, kyber and none as a
+choice as well?
 
-Regarding other patches in [2], they're mainly here to add support for
-X-X-X and DTR modes and get the m25p80 logic integrated in spi-nor.c so
-that we can really check which NOR operations are supported by the SPI
-controller.
+The question is shall we only do it for single queue devices or for
+native MQ devices as well if we go down that road?
 
-Regards,
+I understand the embedded floks will want a different interface than
+udev, but from the non-embedded point of view I'm with Jens and Jan
+here, let udev do the job.
 
-Boris
-
-[1]https://github.com/bbrezillon/linux/commits/spi-nor/octo
-[2]https://github.com/bbrezillon/linux/commit/9854a8fdd23f64e79859fd07a71d4a1c57b812f2
-[3]https://patchwork.ozlabs.org/patch/894916/
+      Johannes
+-- 
+Johannes Thumshirn                                          Storage
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Jane Smithard, Graham Norton
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
