@@ -1,18 +1,18 @@
-Subject: Re: [PATCH 0/4] spi: add support for octal mode data transfer
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
- <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
- <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>
-CC: <robh@kernel.org>, <mark.rutland@arm.com>, <shawnguo@kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <computersforpeace@gmail.com>,
- <frieder.schrempf@exceet.de>, <linux-kernel@vger.kernel.org>
-References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <43cff872-0dc5-d3ce-ca35-082faa0e0e7c@ti.com>
-Date: Thu, 4 Oct 2018 14:52:18 +0530
+Date: Thu, 4 Oct 2018 11:45:35 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
+Message-ID: <20181004114535.3a5dba05@bbrezillon>
+In-Reply-To: <20181003165603.2579-2-vigneshr@ti.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003165603.2579-2-vigneshr@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,58 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Yogesh,
+On Wed, 3 Oct 2018 22:26:01 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-On Thursday 04 October 2018 02:18 PM, Yogesh Gaur wrote:
-> Add support for octal mode IO data transfer.
-> Micron flash, mt35xu512aba, supports octal mode data transfer and
-> NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
+> Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It
+> supports read/write over 8 IO lines simulatenously. Add support for
+> Octal read mode for Micron mt35xu512aba.
+> Unfortunately, this flash is only complaint to SFDP JESD216B and does not
+> seem to support newer JESD216C standard that provides auto detection of
+> Octal mode capabilities and opcodes. Therefore, this capability is
+> manually added using new SPI_NOR_OCTAL_READ flag.
 > 
-> Patch series 
-> * Add support for octal mode flags and parsing of same in spi driver.
-> * Add octal data communication commands required for mt35xu512aba [1] flash.
-> * Add support for Read and Write proto for (1-1-8/1-8-8) mode.
-> * Add mode bit required for octal mode in nxp-fspi driver [2].
-> * Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++++-
+>  include/linux/mtd/spi-nor.h   |  2 ++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 > 
-> Tested on LX2160ARDB target with nxp-fspi driver, below are
-> Read performance number of 1-1-1 and 1-1-8 read protocol.
-> 
->  root@lxxx:~# cat /proc/mtd
->  dev:    size   erasesize  name
->  mtd0: 04000000 00001000 "spi0.0"
->  mtd1: 04000000 00001000 "spi0.1"
->  root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
->  Copied 16777216 bytes from address 0x00000000 in flash to 0read
->  
->  real    0m2.792s
->  user    0m0.000s
->  sys     0m2.790s
->  root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
->  Copied 16777216 bytes from address 0x00000000 in flash to 0read
->  
->  real    0m0.441s
->  user    0m0.000s
->  sys     0m0.440s
->  root@ls1012ardb:~#
-> 
->  Flash device MTD0 configured in 1-1-1 protocol.
->  Flash device MTD1 configured in 1-1-8 protocol.
-> 
-> [1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=66317
-> [2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=66887
-> 
-> Yogesh Gaur (4):
->   spi: add support for octal I/O data transfer
->   mtd: spi-nor: add support for octal mode data transfer
->   spi: nxp-fspi: add mode flag bit for octal support
->   arm64: dts: lx2160a: update fspi node
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index aff5e6ff0b2c..4926e805a8cb 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -90,6 +90,7 @@ struct flash_info {
+>  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
+>  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
+>  #define USE_CLSR		BIT(14)	/* use CLSR command */
+> +#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
 
-This is a bit confusing and difficult to follow. I suggest to order
-patches such that spi-nor layer changes are at the first, then m25p80
-related things, followed by spi-mem (if needed spi) changes and finally
-spi-mem controller driver changes.
+Hm, we'll need to clarify what OCTAL means. I see at least 3 different
+modes using 8 IO lines (1-1-8, 1-8-8 and 8-8-8) and all of them could
+be qualified as "octal" modes.
+So how about renaming this macro SPI_NOR_1_1_8_READ.
 
--- 
-Regards
-Vignesh
+Also, I fear we'll soon run out of bits in ->flags if we keep adding
+one flag per mode which is why I proposed a solution to let flash
+chips tweak the flash parameters as they wish [1][2]. I'm not saying we
+should do it now, but we should definitely plan for something like that.
+
+[1]https://github.com/bbrezillon/linux/commit/9c672e4c85a91f1b0803c9c6e4b8f3aae5d79ffb
+[2]https://github.com/bbrezillon/linux/commit/3a5515c8821314c06a3d84f9861aefe476bb711e
