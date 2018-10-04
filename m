@@ -1,9 +1,9 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g83G6-0007d5-0E
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:43 +0000
-Received: by mail-lj1-x244.google.com with SMTP id r83-v6so8287241ljr.7
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:33 -0700 (PDT)
+ id 1g83G9-0007d3-HN
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:44 +0000
+Received: by mail-lj1-x242.google.com with SMTP id z21-v6so8306951ljz.0
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:31 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
 Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v6 03/10] mtd: maps: gpio-addr-flash: Replace custom printk
-Date: Thu,  4 Oct 2018 15:01:03 +0200
-Message-Id: <20181004130110.8496-3-ricardo.ribalda@gmail.com>
+Subject: [PATCH v6 02/10] mtd: physmap_of: Remove unused struct of_device_id
+Date: Thu,  4 Oct 2018 15:01:02 +0200
+Message-Id: <20181004130110.8496-2-ricardo.ribalda@gmail.com>
 In-Reply-To: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 References: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
@@ -28,48 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use preferred print methods dev_*
+This struct does not seem to be used anywhere on the code
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/gpio-addr-flash.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/mtd/maps/physmap_of_gemini.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
-index 9d9723693217..17be47f72973 100644
---- a/drivers/mtd/maps/gpio-addr-flash.c
-+++ b/drivers/mtd/maps/gpio-addr-flash.c
-@@ -25,11 +25,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
+diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
+index 830b1b7e702b..9df62ca721d5 100644
+--- a/drivers/mtd/maps/physmap_of_gemini.c
++++ b/drivers/mtd/maps/physmap_of_gemini.c
+@@ -44,11 +44,6 @@
  
--#define pr_devinit(fmt, args...) \
--	({ static const char __fmt[] = fmt; printk(__fmt, ## args); })
+ #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
+ 
+-static const struct of_device_id syscon_match[] = {
+-	{ .compatible = "cortina,gemini-syscon" },
+-	{ },
+-};
 -
- #define DRIVER_NAME "gpio-addr-flash"
--#define PFX DRIVER_NAME ": "
- 
- /**
-  * struct async_state - keep GPIO flash state
-@@ -250,7 +246,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 	i = 0;
- 	do {
- 		if (gpio_request(state->gpio_addrs[i], DRIVER_NAME)) {
--			pr_devinit(KERN_ERR PFX "failed to request gpio %d\n",
-+			dev_err(&pdev->dev, "failed to request gpio %d\n",
- 				state->gpio_addrs[i]);
- 			while (i--)
- 				gpio_free(state->gpio_addrs[i]);
-@@ -260,8 +256,8 @@ static int gpio_flash_probe(struct platform_device *pdev)
- 		gpio_direction_output(state->gpio_addrs[i], 0);
- 	} while (++i < state->gpio_count);
- 
--	pr_devinit(KERN_NOTICE PFX "probing %d-bit flash bus\n",
--		state->map.bankwidth * 8);
-+	dev_notice(&pdev->dev, "probing %d-bit flash bus\n",
-+		   state->map.bankwidth * 8);
- 	state->mtd = do_map_probe(memory->name, &state->map);
- 	if (!state->mtd) {
- 		for (i = 0; i < state->gpio_count; ++i)
+ int of_flash_probe_gemini(struct platform_device *pdev,
+ 			  struct device_node *np,
+ 			  struct map_info *map)
 -- 
 2.19.0
