@@ -1,19 +1,38 @@
-Date: Thu, 4 Oct 2018 11:45:35 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
-Message-ID: <20181004114535.3a5dba05@bbrezillon>
-In-Reply-To: <20181003165603.2579-2-vigneshr@ti.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-2-vigneshr@ti.com>
+Received: from mail-io1-xd43.google.com ([2607:f8b0:4864:20::d43])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g80NZ-0002Rn-2L
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 09:57:10 +0000
+Received: by mail-io1-xd43.google.com with SMTP id y10-v6so7382291ioa.10
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 02:56:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAHhmqcRbz+UsgDsHzJzKDWqZ_JMNp1UYq3M2rAf1vqfmO+wRyg@mail.gmail.com>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538550325.14984.108.camel@gmail.com>
+ <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
+ <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
+ <CACRpkdbHiq9bstRzyg-fJfXKnXr8wD1YzAooLAwQKM0OzP=HVA@mail.gmail.com>
+ <1E24731C-13E1-41CC-A96A-ABDAA6175849@linaro.org>
+ <CAHhmqcRbz+UsgDsHzJzKDWqZ_JMNp1UYq3M2rAf1vqfmO+wRyg@mail.gmail.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 4 Oct 2018 11:56:17 +0200
+Message-ID: <CAPDyKFqJMJkmumxS3vET6kvjnGGMrHaDpUT20LDAgzygbFmZHw@mail.gmail.com>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Bryan Gurney <bgurney@redhat.com>
+Cc: Paolo Valente <paolo.valente@linaro.org>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Damien.LeMoal@wdc.com, Artem Bityutskiy <dedekind1@gmail.com>,
+ Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ Jan Kara <jack@suse.cz>, aherrmann@suse.com, mgorman@suse.com,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ bfq-iosched@googlegroups.com,
+ oleksandr@natalenko.name, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +42,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 3 Oct 2018 22:26:01 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+On 3 October 2018 at 19:34, Bryan Gurney <bgurney@redhat.com> wrote:
+> On Wed, Oct 3, 2018 at 11:53 AM, Paolo Valente <paolo.valente@linaro.org> wrote:
+>>
+>>
+>>> Il giorno 03 ott 2018, alle ore 10:28, Linus Walleij <linus.walleij@linaro.org> ha scritto:
+>>>
+>>> On Wed, Oct 3, 2018 at 9:42 AM Damien Le Moal <Damien.LeMoal@wdc.com> wrote:
+>>>
+>>>> There is another class of outliers: host-managed SMR disks (SATA and SCSI,
+>>>> definitely single hw queue). For these, using mq-deadline is mandatory in many
+>>>> cases in order to guarantee sequential write command delivery to the device
+>>>> driver. Having the default changed to bfq, which as far as I know is not SMR
+>>>> friendly (can sequential writes within a single zone be reordered ?) is asking
+>>>> for troubles (unaligned write errors showing up).
+>>>
+>>> Ah, that is interesting.
+>>>
+>>> Which device driver files are we talking about here, specifically?
+>>> I'd like to take a look.
+>>>
+>>> I guess what you say is not that you are looking for the deadline
+>>> scheduling per se (as in deadline scheduling is nice), what you want is
+>>> the zone locking semantics in that scheduler, is that right?
+>>>
+>>> I.e. this business:
+>>> blk_queue_is_zoned(q)
+>>> blk_req_zone_write_lock(rq);
+>>> blk_req_zone_write_unlock(rq);
+>>> and mq-deadline solves this with a spinlock.
+>>>
+>>> I will augment the patch to enforce mq-deadline
+>>> if blk_queue_is_zoned(q) is true, as it is clear that
+>>> any device with that characteristic must use mq-deadline.
+>>>
+>>> Paoly might be interested in looking into whether BFQ could
+>>> also handle zoned devices in the future, I have no idea of how
+>>> hard that would be.
+>>>
+>>
+>> Absolutely, as I already wrote in my reply to Damien.
+>>
+>> In the meantime, Linus, augmenting your patch as you propose seems
+>> a clean and effective solution to me.
+>>
+>> Thanks,
+>> Paolo
+>>
+>>> The zoned business seems a bit fragile. Should it even be
+>>> allowed to select any other scheduler than deadline on these
+>>> devices? Presenting all compiled in schedulers in
+>>> /sysblock/device/queue/scheduler sounds like just giving
+>>> sysadmins too much rope.
+>>>
+>>> Yours,
+>>> Linus Walleij
+>>
+>
+> Right now, users of host-managed SMR drives should be using "deadline"
+> or "mq-deadline", to avoid out-of-order writes in sequential-only
+> zones.
+>
+> I'm running into a situation right now on a test system (Fedora 28,
+> 4.18.7 kernel) where I copied test data onto an F2FS filesystem, but I
+> accidentally forgot to add my "udev rule" file:
+>
+> # cat /etc/udev/rules.d/99-zoned-block-devices.rules
+> ACTION=="add|change", KERNEL=="sd[a-z]",
+> ATTRS{queue/zoned}=="host-managed", ATTR{queue/scheduler}="deadline"
+>
+> ...and now, I see these messages when that specific SMR drive is mounted:
+>
+> kernel: F2FS-fs (sdc): IO Block Size:        4 KB
+> kernel: F2FS-fs (sdc): Found nat_bits in checkpoint
+> kernel: F2FS-fs (sdc): Mounted with checkpoint version = 212216ab
+> kernel: mpt3sas_cm0: log_info(0x31080000): originator(PL), code(0x08),
+> sub_code(0x0000)
+> kernel: mpt3sas_cm0: log_info(0x31080000): originator(PL), code(0x08),
+> sub_code(0x0000)
+> kernel: scsi_io_completion: 20 callbacks suppressed
+> kernel: sd 7:0:0:0: [sdb] tag#0 FAILED Result: hostbyte=DID_OK
+> driverbyte=DRIVER_SENSE
+> kernel: sd 7:0:0:0: [sdb] tag#0 Sense Key : Aborted Command [current]
+> kernel: sd 7:0:0:0: [sdb] tag#0 Add. Sense: No additional sense information
+> kernel: sd 7:0:0:0: [sdb] tag#0 CDB: Write(16) 8a 00 00 00 00 00 3d d4
+> ec 99 00 00 00 80 00 00
+>
+> I was also running into problems with creating new directories on this
+> F2FS filesystem.  However, "fsck.f2fs" reports no problems.  So at
+> this point, I created a new F2FS filesystem on a second SMR drive, and
+> am currently copying the data from the "bad" F2FS filesystem to the
+> "good" one.
+>
+> I wouldn't call zoned block devices "fragile"; they simply have I/O
+> rules that didn't previously exist: all writes to sequential-only
+> zones must be sequential.  And one of the things that schedulers do is
+> reorder writes.  After 4.16, sd stopped being the "gatekeeper" of
+> ensuring sequential writes, but the only "zoned-aware" schedulers were
+> deadline and mq-deadline.  Since my test system defaulted to "cfq", I
+> ran into problems.
+>
+> So I welcome any changes that make it impossible for the user to
+> "accidentally use the wrong scheduler".
 
-> Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It
-> supports read/write over 8 IO lines simulatenously. Add support for
-> Octal read mode for Micron mt35xu512aba.
-> Unfortunately, this flash is only complaint to SFDP JESD216B and does not
-> seem to support newer JESD216C standard that provides auto detection of
-> Octal mode capabilities and opcodes. Therefore, this capability is
-> manually added using new SPI_NOR_OCTAL_READ flag.
-> 
-> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> ---
->  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++++-
->  include/linux/mtd/spi-nor.h   |  2 ++
->  2 files changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> index aff5e6ff0b2c..4926e805a8cb 100644
-> --- a/drivers/mtd/spi-nor/spi-nor.c
-> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> @@ -90,6 +90,7 @@ struct flash_info {
->  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
->  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
->  #define USE_CLSR		BIT(14)	/* use CLSR command */
-> +#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
+I fully agree.
 
-Hm, we'll need to clarify what OCTAL means. I see at least 3 different
-modes using 8 IO lines (1-1-8, 1-8-8 and 8-8-8) and all of them could
-be qualified as "octal" modes.
-So how about renaming this macro SPI_NOR_1_1_8_READ.
+>
+> At least this time, I didn't "brick" my test system's BIOS, like I did
+> back in May of this year [1].
 
-Also, I fear we'll soon run out of bits in ->flags if we keep adding
-one flag per mode which is why I proposed a solution to let flash
-chips tweak the flash parameters as they wish [1][2]. I'm not saying we
-should do it now, but we should definitely plan for something like that.
+It sounds to me that the kernel isn't doing its job. In particular,
+the kernel have the information, as to be able to select the proper
+I/O scheduler (the block layer could just check
+BLK_ZONE_TYPE_SEQWRITE_REQ/ZBC_ZONE_TYPE_SEQWRITE_REQ). Instead it
+relies on userspace to do the right thing, it can't be right.
 
-[1]https://github.com/bbrezillon/linux/commit/9c672e4c85a91f1b0803c9c6e4b8f3aae5d79ffb
-[2]https://github.com/bbrezillon/linux/commit/3a5515c8821314c06a3d84f9861aefe476bb711e
+Kind regards
+Uffe
