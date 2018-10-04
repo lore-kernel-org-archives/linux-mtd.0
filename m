@@ -1,26 +1,22 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7pUX-0002Qa-Cs
- for linux-mtd@lists.infradead.org; Wed, 03 Oct 2018 22:19:40 +0000
-Date: Thu, 4 Oct 2018 00:19:24 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 7/8] dt-binding: mtd: Document gpio-addr-flash
-Message-ID: <20181004001924.3644185d@bbrezillon>
-In-Reply-To: <20181004001415.224d53fe@bbrezillon>
-References: <20181003193859.23928-1-ricardo.ribalda@gmail.com>
- <20181003193859.23928-7-ricardo.ribalda@gmail.com>
- <20181003232702.4c18e725@bbrezillon>
- <CAPybu_3M75E9c+JmR7MVKsyv3vYPOrZ6qBABtvEF317KA+roBg@mail.gmail.com>
- <20181004001415.224d53fe@bbrezillon>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Vignesh R <vigneshr@ti.com>, Boris Brezillon
+ <boris.brezillon@bootlin.com>, Marek Vasut <marek.vasut@gmail.com>, Rob
+ Herring <robh+dt@kernel.org>
+CC: Brian Norris <computersforpeace@gmail.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
+Date: Thu, 4 Oct 2018 06:51:41 +0000
+Message-ID: <VI1PR04MB1038C20CA97E453FC4C9CEAE99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003165603.2579-2-vigneshr@ti.com>
+In-Reply-To: <20181003165603.2579-2-vigneshr@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,89 +26,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Oct 2018 00:14:15 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+Hi Vignesh,
 
-> On Wed, 3 Oct 2018 23:53:27 +0200
-> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> 
-> > Hi Boris
-> > On Wed, Oct 3, 2018 at 11:27 PM Boris Brezillon
-> > <boris.brezillon@bootlin.com> wrote:  
-> > >
-> > > On Wed,  3 Oct 2018 21:38:58 +0200
-> > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> > >    
-> > > > Add documentation for gpio-addr-flash. This binding allow creating
-> > > > flash devices that are paged using GPIOs.
-> > > >
-> > > > Cc: devicetree@vger.kernel.org
-> > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > > Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> > > > ---
-> > > >  .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
-> > > >  1 file changed, 54 insertions(+)
-> > > >  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> > > > new file mode 100644
-> > > > index 000000000000..5006a26e1753
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
-> > > > @@ -0,0 +1,54 @@
-> > > > +Memory Mapped flash with some address lines addressed using GPIOs
-> > > > +
-> > > > +Handle the case where a flash device is mostly addressed using physical
-> > > > +line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
-> > > > +to a 2MiB memory range and use the GPIOs to select a particular range.
-> > > > +
-> > > > + - compatible : "cfi-gpio-addr-flash"
-> > > > + - reg : Address range of the mtd chip that is memory mapped, this is,
-> > > > +   on the previous example 2MiB.
-> > > > + - bank-width : Width (in bytes) of the bank.  Equal to the
-> > > > +   device width times the number of interleaved chips.
-> > > > + - gpios: List of GPIO specifiers that will be used to address the MSBs address
-> > > > +   lines. The order goes from LSB to MSB.
-> > > > + - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
-> > > > +   is going to be probed. If omitted, assumed to be equal to "cfi_probe".    
-> > >
-> > > Looks like other bindings are encoding the probe type in the
-> > > compatible [1][2], and we should probably follow what's been done by
-> > > others.    
-> > 
-> > If I understood it right, they are special cases of physmap_of_core.c
-> > https://elixir.bootlin.com/linux/v4.18.11/source/drivers/mtd/maps/physmap_of_core.c#L242
-> > 
-> > The driver that handles the compatible is physmap_of_core.c, and afaik
-> > multiple drivers with the same
-> > compatible string is a very bad idea.  
-> 
-> Yes, I know.
-> 
-> > 
-> > We can convert the driver to something like Versatile or gemini, but
-> > then we will not support platform devices
-> > 
-> > btw, the binding that I am used is used by:
-> > https://elixir.bootlin.com/linux/v4.18.11/source/drivers/mtd/maps/physmap_of_core.c#L91  
-> 
-> Actually, the more I think about it the more I realize this should
-> somehow be integrated to the physmap core logic. I mean, there's nothing
-> controller/platform specific in what the gpio-physmap driver does.
-> 
-> We could basically add the msb_addr_gpios related fields to map_info,
-> let physmap.c and physmap_of_core.c call
-> devm_gpiod_get_array_optional() and, based on the returned value,
-> call simple_map_init() (when the pointer is NULL) or
-> gpio_addr_map_init() (when the pointer is valid).
+> -----Original Message-----
+> From: Vignesh R [mailto:vigneshr@ti.com]
+> Sent: Wednesday, October 3, 2018 10:26 PM
+> To: Boris Brezillon <boris.brezillon@bootlin.com>; Marek Vasut
+> <marek.vasut@gmail.com>; Rob Herring <robh+dt@kernel.org>
+> Cc: Brian Norris <computersforpeace@gmail.com>; Yogesh Narayan Gaur
+> <yogeshnarayan.gaur@nxp.com>; Linux ARM Mailing List <linux-arm-
+> kernel@lists.infradead.org>; linux-mtd@lists.infradead.org;
+> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Vignesh R
+> <vigneshr@ti.com>
+> Subject: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512ab=
+a
+>=20
+> Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It su=
+pports
+> read/write over 8 IO lines simulatenously. Add support for Octal read mod=
+e for
+> Micron mt35xu512aba.
+> Unfortunately, this flash is only complaint to SFDP JESD216B and does not=
+ seem
+> to support newer JESD216C standard that provides auto detection of Octal
+> mode capabilities and opcodes. Therefore, this capability is manually add=
+ed
+> using new SPI_NOR_OCTAL_READ flag.
+>=20
 
-Or even better, let simple_map_init() call gpio_addr_map_init() when
-map->addr_gpios != NULL, so that you don't even have to duplicate the
-selection logic in physmap.c and physmap_of_core.c.
+Thanks for sending the patch-set of adding octal support.
+If possible, can you share the MT35x datasheet?
 
-> 
-> gpio_addr_map_init() would still be implemented in gpio-addr-flash.c so
-> that we can still enable/disable support for this feature (providing
-> dummy wrappers when it's disabled). By doing that, we also keep a single
-> driver which matches a generic compatible string. We also stay
-> compatible with .c based board files.
+I also have the patch ready in which I have added support for Read (1-1-8 a=
+nd 1-8-8) protocol and Write (1-1-8 and 1-8-8).
+Also have added support of Octal in driver/spi/spi.c framework.
+
+IMO, we would collaborate our patches.
+--
+Regards
+Yogesh Gaur
+
+> Signed-off-by: Vignesh R <vigneshr@ti.com>
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++++-
+>  include/linux/mtd/spi-nor.h   |  2 ++
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.=
+c index
+> aff5e6ff0b2c..4926e805a8cb 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -90,6 +90,7 @@ struct flash_info {
+>  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip
+> erase */
+>  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
+>  #define USE_CLSR		BIT(14)	/* use CLSR command */
+> +#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
+>=20
+>  	int	(*quad_enable)(struct spi_nor *nor);
+>  };
+> @@ -209,6 +210,7 @@ static inline u8 spi_nor_convert_3to4_read(u8 opcode)
+>  		{ SPINOR_OP_READ_1_2_2,	SPINOR_OP_READ_1_2_2_4B },
+>  		{ SPINOR_OP_READ_1_1_4,	SPINOR_OP_READ_1_1_4_4B },
+>  		{ SPINOR_OP_READ_1_4_4,	SPINOR_OP_READ_1_4_4_4B },
+> +		{ SPINOR_OP_READ_1_1_8,	SPINOR_OP_READ_1_1_8_4B },
+>=20
+>  		{ SPINOR_OP_READ_1_1_1_DTR,
+> 	SPINOR_OP_READ_1_1_1_DTR_4B },
+>  		{ SPINOR_OP_READ_1_2_2_DTR,
+> 	SPINOR_OP_READ_1_2_2_DTR_4B },
+> @@ -1406,7 +1408,7 @@ static const struct flash_info spi_nor_ids[] =3D {
+>  	{ "mt25qu02g",   INFO(0x20bb22, 0, 64 * 1024, 4096, SECT_4K |
+> USE_FSR | SPI_NOR_QUAD_READ | NO_CHIP_ERASE) },
+>=20
+>  	/* Micron */
+> -	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512, SECT_4K |
+> USE_FSR | SPI_NOR_4B_OPCODES) },
+> +	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512, SECT_4K |
+> USE_FSR
+> +| SPI_NOR_OCTAL_READ | SPI_NOR_4B_OPCODES) },
+>=20
+>  	/* PMC */
+>  	{ "pm25lv512",   INFO(0,        0, 32 * 1024,    2, SECT_4K_PMC) },
+> @@ -3199,6 +3201,13 @@ static int spi_nor_init_params(struct spi_nor *nor=
+,
+>  					  SNOR_PROTO_1_1_4);
+>  	}
+>=20
+> +	if (info->flags & SPI_NOR_OCTAL_READ) {
+> +		params->hwcaps.mask |=3D SNOR_HWCAPS_READ_1_1_8;
+> +		spi_nor_set_read_settings(&params-
+> >reads[SNOR_CMD_READ_1_1_8],
+> +					  0, 8, SPINOR_OP_READ_1_1_8,
+> +					  SNOR_PROTO_1_1_8);
+> +	}
+> +
+>  	/* Page Program settings. */
+>  	params->hwcaps.mask |=3D SNOR_HWCAPS_PP;
+>  	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h in=
+dex
+> 8b1acf68b7ac..ae9861ed7e0f 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -50,6 +50,7 @@
+>  #define SPINOR_OP_READ_1_2_2	0xbb	/* Read data bytes (Dual I/O
+> SPI) */
+>  #define SPINOR_OP_READ_1_1_4	0x6b	/* Read data bytes (Quad
+> Output SPI) */
+>  #define SPINOR_OP_READ_1_4_4	0xeb	/* Read data bytes (Quad I/O
+> SPI) */
+> +#define SPINOR_OP_READ_1_1_8	0x8b	/* Read data bytes (Octal
+> Output SPI) */
+>  #define SPINOR_OP_PP		0x02	/* Page program (up to 256 bytes) */
+>  #define SPINOR_OP_PP_1_1_4	0x32	/* Quad page program */
+>  #define SPINOR_OP_PP_1_4_4	0x38	/* Quad page program */
+> @@ -73,6 +74,7 @@
+>  #define SPINOR_OP_READ_1_2_2_4B	0xbc	/* Read data bytes (Dual I/O
+> SPI) */
+>  #define SPINOR_OP_READ_1_1_4_4B	0x6c	/* Read data bytes (Quad
+> Output SPI) */
+>  #define SPINOR_OP_READ_1_4_4_4B	0xec	/* Read data bytes (Quad I/O
+> SPI) */
+> +#define SPINOR_OP_READ_1_1_8_4B	0x7c	/* Read data bytes (Octal
+> Output SPI) */
+>  #define SPINOR_OP_PP_4B		0x12	/* Page program (up to 256
+> bytes) */
+>  #define SPINOR_OP_PP_1_1_4_4B	0x34	/* Quad page program */
+>  #define SPINOR_OP_PP_1_4_4_4B	0x3e	/* Quad page program */
+> --
+> 2.19.0
