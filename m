@@ -1,31 +1,25 @@
-Received: from mail-io1-xd42.google.com ([2607:f8b0:4864:20::d42])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g7yxU-0000Zu-6q
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 08:26:14 +0000
-Received: by mail-io1-xd42.google.com with SMTP id y10-v6so7208230ioa.10
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 01:25:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
-In-Reply-To: <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 4 Oct 2018 10:25:43 +0200
-Message-ID: <CACRpkdb1YSw3WWpGSqwxORaMSAeemiaP4i6cWJcY5VtADfzorQ@mail.gmail.com>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-To: oleksandr@natalenko.name
-Cc: Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>, Adrian Hunter <adrian.hunter@intel.com>,
- Jan Kara <jack@suse.cz>, aherrmann@suse.com, mgorman@suse.com,
- Chunyan Zhang <zhang.chunyan@linaro.org>,
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>, Rob
+ Herring <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
  "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- bfq-iosched@googlegroups.com, Mark Brown <broonie@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ "juliensu@mxic.com.tw" <juliensu@mxic.com.tw>, "zhengxunli@mxic.com.tw"
+ <zhengxunli@mxic.com.tw>, "masonccyang@mxic.com.tw" <masonccyang@mxic.com.tw>
+Subject: RE: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
+Date: Thu, 4 Oct 2018 08:47:33 +0000
+Message-ID: <VI1PR04MB103837831B8BFEC2F7FD12E799EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003165603.2579-2-vigneshr@ti.com>
+ <VI1PR04MB1038C20CA97E453FC4C9CEAE99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181004093925.2961d881@bbrezillon>
+In-Reply-To: <20181004093925.2961d881@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,63 +29,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 3, 2018 at 1:49 PM Oleksandr Natalenko
-<oleksandr@natalenko.name> wrote:
+Hi Boris,
 
-> On another hand, the users of embedded devices, mentioned by Linus,
-> should already know what scheduler to choose because dealing with
-> embedded world assumes the person can decide this on their own, or with
-> the help of abovementioned udev scripts and/or Documentation/ as a
-> reference point.
->
-> So I see no obstacles here, and the choice to rely on udev by default
-> sounds reasonable.
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Thursday, October 4, 2018 1:09 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: Vignesh R <vigneshr@ti.com>; Marek Vasut <marek.vasut@gmail.com>; Rob
+> Herring <robh+dt@kernel.org>; Brian Norris <computersforpeace@gmail.com>;
+> Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>; linux-
+> mtd@lists.infradead.org; devicetree@vger.kernel.org; linux-
+> kernel@vger.kernel.org; juliensu@mxic.com.tw; zhengxunli@mxic.com.tw;
+> masonccyang@mxic.com.tw
+> Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for
+> mt35xu512aba
+>=20
+> +Julien, Zhengxunli and Mason from Macronix
+>=20
+> Hi Yogesh,
+>=20
+> On Thu, 4 Oct 2018 06:51:41 +0000
+> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+>=20
+> > Hi Vignesh,
+> >
+> > > -----Original Message-----
+> > > From: Vignesh R [mailto:vigneshr@ti.com]
+> > > Sent: Wednesday, October 3, 2018 10:26 PM
+> > > To: Boris Brezillon <boris.brezillon@bootlin.com>; Marek Vasut
+> > > <marek.vasut@gmail.com>; Rob Herring <robh+dt@kernel.org>
+> > > Cc: Brian Norris <computersforpeace@gmail.com>; Yogesh Narayan Gaur
+> > > <yogeshnarayan.gaur@nxp.com>; Linux ARM Mailing List <linux-arm-
+> > > kernel@lists.infradead.org>; linux-mtd@lists.infradead.org;
+> > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Vignesh R
+> > > <vigneshr@ti.com>
+> > > Subject: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for
+> > > mt35xu512aba
+> > >
+> > > Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines.
+> > > It supports read/write over 8 IO lines simulatenously. Add support
+> > > for Octal read mode for Micron mt35xu512aba.
+> > > Unfortunately, this flash is only complaint to SFDP JESD216B and
+> > > does not seem to support newer JESD216C standard that provides auto
+> > > detection of Octal mode capabilities and opcodes. Therefore, this
+> > > capability is manually added using new SPI_NOR_OCTAL_READ flag.
+> > >
+> >
+> > Thanks for sending the patch-set of adding octal support.
+> > If possible, can you share the MT35x datasheet?
+> >
+> > I also have the patch ready in which I have added support for Read (1-1=
+-8 and
+> 1-8-8) protocol and Write (1-1-8 and 1-8-8).
+> > Also have added support of Octal in driver/spi/spi.c framework.
+> >
+> > IMO, we would collaborate our patches.
+>=20
+> Looks like we are of stepping on each others toes here (see this branch [=
+1]). I
+> guess it's not a problem if we agree on who is working on what.
+>=20
+> Yogesh, you already sent "spi: add flags for octal I/O data transfer" [3]=
+ which is
+> only adding the new OCTAL flags but is not patching spi.c and spi-mem.c t=
+o take
+> those new flags into account. Here is my version of this patch [2] (it's =
+still
+> missing an update of SPI_MEM_MAX_BUSWIDTH). Let me know what you want
+> to do (rework your version to address the problem or take mine).
+>=20
+I haven't said that I have sent the patches. My patches are ready and neede=
+d to be sent for review.
+In these patches,  I am adding support for X-X-X protocol for octal support=
+ and integrating them with spi  and flash m25p80 interface.
 
-I am sorry but I do not agree with this.
+Would send the patches by today evening for review.
 
-There are several historical precedents where we have
-concluded that just "have the kernel do the right thing
-by default" is the way to go.
+Regards
+Yogesh Gaur
 
-Example 1: pluggable CPU schedulers.
-The reasoning was that users or distros have no clue what
-scheduler they want, only scheduler developers do. We
-drove it to the point where we have one and one
-scheduler only, not different flavors. (Special
-usecases have special scheduling classes inside the
-one scheduler instead.)
-
-Example 2: Automatic process group scheduling
-The reasoning was that daemons such as systemd would
-be better at placing processes/tasks into the right
-control groups to manage their resources, so this would
-be a userspace policy handled by the udev/systemd
-complex. We did not do that. Instead the kernel does
-autogrouping per-session, indeed it is a Kconfig option
-but even e.g. Fedora has this enabled by default.
-(commit 5091faa449ee)
-
-As pointed out elsewhere: these defaults make it
-easy for custom builds not using udev+systemd to
-get a system up and running with sensible defaults.
-
-Simple embedded systems use Busybox' mdev (I wouldn't
-trust it do do any complex decisions). OpenWRT
-has ubox+ubus+uci, also extremely lightweight,
-Android has its own init system that I don't
-manage to keep track of anymore. Instead of running
-all over the map and fixing these userspaces to
-do the right thing, it makes sense to make the
-right thing the default.
-
-And these are millions and millions of deployed
-systems not using udev+systemd we are talking about,
-they are not fringe hobby projects. It's not that I
-personally dislike udev or anything, I kind of like
-it, but these tailored distros simply don't use it
-and they are huge in numbers. They need help to do
-the right thing. Fixing a udev rule doesn't solve
-even half the world's problems I'm afraid.
-
-Yours,
-Linus Walleij
+> Regarding other patches in [2], they're mainly here to add support for X-=
+X-X and
+> DTR modes and get the m25p80 logic integrated in spi-nor.c so that we can
+> really check which NOR operations are supported by the SPI controller.
+>=20
+> Regards,
+>=20
+> Boris
+>=20
+> [1]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
+ith
+> ub.com%2Fbbrezillon%2Flinux%2Fcommits%2Fspi-
+> nor%2Focto&amp;data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C3ad
+> 4b6f2a4c9470e98f308d629cc8362%7C686ea1d3bc2b4c6fa92cd99c5c301635%7
+> C0%7C0%7C636742355682081158&amp;sdata=3DvXg7nwZ6dLrUxoNw9t41GYMp
+> oPdNWUWhLM6wZPmrIec%3D&amp;reserved=3D0
+> [2]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
+ith
+> ub.com%2Fbbrezillon%2Flinux%2Fcommit%2F9854a8fdd23f64e79859fd07a71d4
+> a1c57b812f2&amp;data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C3ad
+> 4b6f2a4c9470e98f308d629cc8362%7C686ea1d3bc2b4c6fa92cd99c5c301635%7
+> C0%7C0%7C636742355682081158&amp;sdata=3DyEZqGYprHS8q2wuisFLpHg8bMj
+> uuWDrl3ggWlA8LRoc%3D&amp;reserved=3D0
+> [3]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fp=
+at
+> chwork.ozlabs.org%2Fpatch%2F894916%2F&amp;data=3D02%7C01%7Cyogeshnar
+> ayan.gaur%40nxp.com%7C3ad4b6f2a4c9470e98f308d629cc8362%7C686ea1d3
+> bc2b4c6fa92cd99c5c301635%7C0%7C0%7C636742355682081158&amp;sdata=3Dt
+> 5DFvXgDOlyLn7pMieue9BB5q24DNiJMywGvNrWAYOo%3D&amp;reserved=3D0
