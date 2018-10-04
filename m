@@ -1,29 +1,21 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
 To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
- <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
- <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 4/4] arm64: dts: lx2160a: update fspi node
-Date: Thu, 4 Oct 2018 09:27:07 +0000
-Message-ID: <VI1PR04MB1038A3CE7098227B6912C6F699EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1538642920-3843-5-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181004111822.48ab1f5c@bbrezillon>
- <VI1PR04MB1038ECE25B571117405A617799EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181004112608.3ae23d99@bbrezillon>
-In-Reply-To: <20181004112608.3ae23d99@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+CC: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ <devicetree@vger.kernel.org>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003212017.653e739f@bbrezillon>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
+Date: Thu, 4 Oct 2018 16:05:36 +0530
 MIME-Version: 1.0
+In-Reply-To: <20181003212017.653e739f@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,87 +25,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thursday 04 October 2018 12:50 AM, Boris Brezillon wrote:
+> On Wed, 3 Oct 2018 22:26:00 +0530
+> Vignesh R <vigneshr@ti.com> wrote:
+> 
+>> This series adds support for octal mode of mt35x flash. Also, adds
+>> support for OSPI version of Cadence QSPI controller.
+>>
+>> Based on top of patches adding basic support for mt35xu512aba here:
+>> https://patchwork.ozlabs.org/cover/971437/
+>>
+>> Vignesh R (3):
+>>   mtd: spi-nor: Add Octal mode support for mt35xu512aba
+>>   dt-bindings: cadence-quadspi: Add new compatible for AM654 SoC
+>>   mtd: spi-nor: cadence-quadspi: Add support for Octal SPI controller
+> 
+> The patchset looks good to me, I'll just wait the next release cycle
+> before applying it, since I'd prefer to have it stay a bit longer in
+> -next. This should leave enough time to let other people review this
+> stuff.
+> 
+
+Ok, thats fine...
+
+>>
+>>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
+>>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++
+> 
+> On a slightly different topic, do you plan to convert the Cadence
+> driver to spi-mem? And if you don't, is it because you don't have time
+> or because some features are missing in spi-mem (I remember you
+> mentioned a few things back when you were reviewing the spi-mem series)?
+> 
+
+I do not have plans to convert cadence QSPI driver to spi-mem yet,
+mainly due to lack of time. Also, not sure if original author Marek and
+other altera people are okay with that.
+
+I see couple of issues in the way of conversion:
+1. I would wait to know what direction would direct mapping APIs[1] go
+before starting spi-mem conversion for Cadence QSPI driver. Else, we
+have may to re write again if direct mapping APIs are merged.
+2. New Cadence OSPI IP has an integrated PHY to support high throughput
+OSPI flashes operating up 200MHz in Octal DDR mode. In order to work
+with such flashes, PHY DLLs need to be calibrated. Highly simplified
+calibration sequence is as below(See [2] for actual sequence):
+-Read flash ID at low speed and store it.
+-Enable PHY and set DLLs to a defined initial value
+-Increment RX DLL value
+-Read flash ID and check for correctness of data read
+-repeat above two steps until a band of passing values is obtained for
+RX DLL where flash ID is correctly read.
+-DLL needs to set to middle of the passing band.
+
+I am trying to figure out how to fit this into the spi-mem framework as
+controller would to need to store READ ID opcode and expected JEDEC ID
+before starting calibration sequence.
 
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Thursday, October 4, 2018 2:56 PM
-> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com=
-;
-> linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
-> mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
-> kernel@lists.infradead.org; computersforpeace@gmail.com;
-> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH 4/4] arm64: dts: lx2160a: update fspi node
->=20
-> On Thu, 4 Oct 2018 09:24:57 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->=20
-> > Hi Boris,
-> >
-> > > -----Original Message-----
-> > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > > Sent: Thursday, October 4, 2018 2:48 PM
-> > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com;
-> > > vigneshr@ti.com; linux-spi@vger.kernel.org;
-> > > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
-> > > shawnguo@kernel.org; linux-arm- kernel@lists.infradead.org;
-> > > computersforpeace@gmail.com; frieder.schrempf@exceet.de;
-> > > linux-kernel@vger.kernel.org
-> > > Subject: Re: [PATCH 4/4] arm64: dts: lx2160a: update fspi node
-> > >
-> > > On Thu,  4 Oct 2018 14:18:40 +0530
-> > > Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> > >
-> > > > Flash mt35xu512aba connected to FlexSPI controller supports
-> > > > 1-1-8 protocol.
-> > > > Added flag spi-rx-bus-width and spi-tx-bus-width with values as
-> > > > 8 and 1 respectively for both flashes connected at CS0 and CS1.
-> > > >
-> > > > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > > > ---
-> > > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
-> > > >  1 file changed, 4 insertions(+)
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > index 901ca346..817175a 100644
-> > > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > > @@ -42,6 +42,8 @@
-> > > >  		m25p,fast-read;
-> > > >  		spi-max-frequency =3D <20000000>;
-> > > >  		reg =3D <0>;
-> > > > +		spi-rx-bus-width =3D <8>;
-> > > > +		spi-tx-bus-width =3D <1>;
-> > >
-> > > Why 1? The flash is already flagged with SPI_NOR_OCTAL_READ, which
-> > > means only the read path will use 1-1-8 mode, so you can safely set
-> > > spi-tx-bus-width
->=20
-> I meant 'set spi-tx-bus-width to 8' here
+[1]https://patchwork.ozlabs.org/cover/924041/
+[2]http://www.ti.com/lit/ug/spruid7a/spruid7a.pdf(12.3.2.4.14 PHY Module
+page 9770-9772)
 
-Yes.
-
->=20
-> > > here and let the framework choose the appropriate mode based on the
-> > > flash capabilities.
-> >
-> > Ok.
-> >
-> > >
-> > > >  	};
-> > > >
-> > > >  	mt35xu512aba1: flash@1 {
-> > > > @@ -51,6 +53,8 @@
-> > > >  		m25p,fast-read;
-> > > >  		spi-max-frequency =3D <20000000>;
-> > > >  		reg =3D <1>;
-> > > > +		spi-rx-bus-width =3D <8>;
-> > > > +		spi-tx-bus-width =3D <1>;
-> > > >  	};
-> > > >  };
-> > > >
-> >
+-- 
+Regards
+Vignesh
