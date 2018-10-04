@@ -1,26 +1,18 @@
-Date: Thu, 4 Oct 2018 11:26:08 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
- <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] arm64: dts: lx2160a: update fspi node
-Message-ID: <20181004112608.3ae23d99@bbrezillon>
-In-Reply-To: <VI1PR04MB1038ECE25B571117405A617799EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Subject: Re: [PATCH 0/4] spi: add support for octal mode data transfer
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
+ <boris.brezillon@bootlin.com>, <marek.vasut@gmail.com>,
+ <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>
+CC: <robh@kernel.org>, <mark.rutland@arm.com>, <shawnguo@kernel.org>,
+ <linux-arm-kernel@lists.infradead.org>, <computersforpeace@gmail.com>,
+ <frieder.schrempf@exceet.de>, <linux-kernel@vger.kernel.org>
 References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1538642920-3843-5-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20181004111822.48ab1f5c@bbrezillon>
- <VI1PR04MB1038ECE25B571117405A617799EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <43cff872-0dc5-d3ce-ca35-082faa0e0e7c@ti.com>
+Date: Thu, 4 Oct 2018 14:52:18 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,68 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Oct 2018 09:24:57 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+Hi Yogesh,
 
-> Hi Boris,
+On Thursday 04 October 2018 02:18 PM, Yogesh Gaur wrote:
+> Add support for octal mode IO data transfer.
+> Micron flash, mt35xu512aba, supports octal mode data transfer and
+> NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
 > 
-> > -----Original Message-----
-> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> > Sent: Thursday, October 4, 2018 2:48 PM
-> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com;
-> > linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
-> > mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
-> > kernel@lists.infradead.org; computersforpeace@gmail.com;
-> > frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
-> > Subject: Re: [PATCH 4/4] arm64: dts: lx2160a: update fspi node
-> > 
-> > On Thu,  4 Oct 2018 14:18:40 +0530
-> > Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> >   
-> > > Flash mt35xu512aba connected to FlexSPI controller supports
-> > > 1-1-8 protocol.
-> > > Added flag spi-rx-bus-width and spi-tx-bus-width with values as
-> > > 8 and 1 respectively for both flashes connected at CS0 and CS1.
-> > >
-> > > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> > > ---
-> > >  arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts | 4 ++++
-> > >  1 file changed, 4 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > index 901ca346..817175a 100644
-> > > --- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts
-> > > @@ -42,6 +42,8 @@
-> > >  		m25p,fast-read;
-> > >  		spi-max-frequency = <20000000>;
-> > >  		reg = <0>;
-> > > +		spi-rx-bus-width = <8>;
-> > > +		spi-tx-bus-width = <1>;  
-> > 
-> > Why 1? The flash is already flagged with SPI_NOR_OCTAL_READ, which means
-> > only the read path will use 1-1-8 mode, so you can safely set spi-tx-bus-width
+> Patch series 
+> * Add support for octal mode flags and parsing of same in spi driver.
+> * Add octal data communication commands required for mt35xu512aba [1] flash.
+> * Add support for Read and Write proto for (1-1-8/1-8-8) mode.
+> * Add mode bit required for octal mode in nxp-fspi driver [2].
+> * Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
+> 
+> Tested on LX2160ARDB target with nxp-fspi driver, below are
+> Read performance number of 1-1-1 and 1-1-8 read protocol.
+> 
+>  root@lxxx:~# cat /proc/mtd
+>  dev:    size   erasesize  name
+>  mtd0: 04000000 00001000 "spi0.0"
+>  mtd1: 04000000 00001000 "spi0.1"
+>  root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+>  
+>  real    0m2.792s
+>  user    0m0.000s
+>  sys     0m2.790s
+>  root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+>  Copied 16777216 bytes from address 0x00000000 in flash to 0read
+>  
+>  real    0m0.441s
+>  user    0m0.000s
+>  sys     0m0.440s
+>  root@ls1012ardb:~#
+> 
+>  Flash device MTD0 configured in 1-1-1 protocol.
+>  Flash device MTD1 configured in 1-1-8 protocol.
+> 
+> [1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=66317
+> [2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=66887
+> 
+> Yogesh Gaur (4):
+>   spi: add support for octal I/O data transfer
+>   mtd: spi-nor: add support for octal mode data transfer
+>   spi: nxp-fspi: add mode flag bit for octal support
+>   arm64: dts: lx2160a: update fspi node
 
-I meant 'set spi-tx-bus-width to 8' here
+This is a bit confusing and difficult to follow. I suggest to order
+patches such that spi-nor layer changes are at the first, then m25p80
+related things, followed by spi-mem (if needed spi) changes and finally
+spi-mem controller driver changes.
 
-> > here and let the framework choose the appropriate mode based on the flash
-> > capabilities.  
-> 
-> Ok.
-> 
-> >   
-> > >  	};
-> > >
-> > >  	mt35xu512aba1: flash@1 {
-> > > @@ -51,6 +53,8 @@
-> > >  		m25p,fast-read;
-> > >  		spi-max-frequency = <20000000>;
-> > >  		reg = <1>;
-> > > +		spi-rx-bus-width = <8>;
-> > > +		spi-tx-bus-width = <1>;
-> > >  	};
-> > >  };
-> > >  
-> 
+-- 
+Regards
+Vignesh
