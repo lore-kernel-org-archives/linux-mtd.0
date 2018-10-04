@@ -1,21 +1,30 @@
-Date: Thu, 4 Oct 2018 13:27:57 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
-Message-ID: <20181004132757.16107d10@bbrezillon>
-In-Reply-To: <904391ba-5a12-aee9-966a-17346dded080@ti.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-2-vigneshr@ti.com>
- <20181004114535.3a5dba05@bbrezillon>
- <904391ba-5a12-aee9-966a-17346dded080@ti.com>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
+ <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "robh@kernel.org"
+ <robh@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>,
+ "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/4] spi: add support for octal I/O data transfer
+Date: Thu, 4 Oct 2018 12:07:17 +0000
+Message-ID: <VI1PR04MB10384B74E6E27435313CC73099EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1538642920-3843-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20181004110446.5e1bb255@bbrezillon>
+ <VI1PR04MB10380FD9CE99E34BA27E55B699EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181004111941.0da33ec0@bbrezillon>
+ <VI1PR04MB1038E23CBFE9CFD5C2ECCD3299EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+In-Reply-To: <VI1PR04MB1038E23CBFE9CFD5C2ECCD3299EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,82 +34,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 4 Oct 2018 16:42:22 +0530
-Vignesh R <vigneshr@ti.com> wrote:
+Hi Boris,
 
-> On Thursday 04 October 2018 03:15 PM, Boris Brezillon wrote:
-> > On Wed, 3 Oct 2018 22:26:01 +0530
-> > Vignesh R <vigneshr@ti.com> wrote:
-> >   
-> >> Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It
-> >> supports read/write over 8 IO lines simulatenously. Add support for
-> >> Octal read mode for Micron mt35xu512aba.
-> >> Unfortunately, this flash is only complaint to SFDP JESD216B and does not
-> >> seem to support newer JESD216C standard that provides auto detection of
-> >> Octal mode capabilities and opcodes. Therefore, this capability is
-> >> manually added using new SPI_NOR_OCTAL_READ flag.
-> >>
-> >> Signed-off-by: Vignesh R <vigneshr@ti.com>
-> >> ---
-> >>  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++++-
-> >>  include/linux/mtd/spi-nor.h   |  2 ++
-> >>  2 files changed, 12 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
-> >> index aff5e6ff0b2c..4926e805a8cb 100644
-> >> --- a/drivers/mtd/spi-nor/spi-nor.c
-> >> +++ b/drivers/mtd/spi-nor/spi-nor.c
-> >> @@ -90,6 +90,7 @@ struct flash_info {
-> >>  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
-> >>  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
-> >>  #define USE_CLSR		BIT(14)	/* use CLSR command */
-> >> +#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */  
-> > 
-> > Hm, we'll need to clarify what OCTAL means. I see at least 3 different
-> > modes using 8 IO lines (1-1-8, 1-8-8 and 8-8-8) and all of them could
-> > be qualified as "octal" modes.
-> > So how about renaming this macro SPI_NOR_1_1_8_READ.
-> >   
-> 
-> My understanding is that, if a flash is Octal IO capable, then it
-> supports all mode of Octal IO (1-1-8, 1-8-8 and 8-8-8). At least in the
-> current code, I see SPI_NOR_QUAD_READ seems to imply 1-1-4, 1-4-4 and
-> 4-4-4 modes.
+> -----Original Message-----
+> From: Yogesh Narayan Gaur
+> Sent: Thursday, October 4, 2018 2:56 PM
+> To: 'Boris Brezillon' <boris.brezillon@bootlin.com>
+> Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com; vigneshr@ti.com=
+;
+> linux-spi@vger.kernel.org; devicetree@vger.kernel.org; robh@kernel.org;
+> mark.rutland@arm.com; shawnguo@kernel.org; linux-arm-
+> kernel@lists.infradead.org; computersforpeace@gmail.com;
+> frieder.schrempf@exceet.de; linux-kernel@vger.kernel.org
+> Subject: RE: [PATCH 1/4] spi: add support for octal I/O data transfer
+>=20
+> Hi Boris,
+>=20
+> > -----Original Message-----
+> > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > Sent: Thursday, October 4, 2018 2:50 PM
+> > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com;
+> > vigneshr@ti.com; linux-spi@vger.kernel.org;
+> > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> > shawnguo@kernel.org; linux-arm- kernel@lists.infradead.org;
+> > computersforpeace@gmail.com; frieder.schrempf@exceet.de;
+> > linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH 1/4] spi: add support for octal I/O data transfer
+> >
+> > On Thu, 4 Oct 2018 09:14:36 +0000
+> > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> >
+> > > Hi Boris,
+> > >
+> > > > -----Original Message-----
+> > > > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> > > > Sent: Thursday, October 4, 2018 2:35 PM
+> > > > To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> > > > Cc: linux-mtd@lists.infradead.org; marek.vasut@gmail.com;
+> > > > vigneshr@ti.com; linux-spi@vger.kernel.org;
+> > > > devicetree@vger.kernel.org; robh@kernel.org; mark.rutland@arm.com;
+> > > > shawnguo@kernel.org; linux-arm- kernel@lists.infradead.org;
+> > > > computersforpeace@gmail.com; frieder.schrempf@exceet.de;
+> > > > linux-kernel@vger.kernel.org Subject: Re: [PATCH 1/4] spi: add
+> > > > support for octal I/O data transfer
+> > > >
+> > > > Hi Yogesh,
+> > > >
+[...]
+> > > > > +#define	SPI_RX_OCTAL
+> > > > > 0x2000			/* receive with 8 wires
+> > > > */
+> > > > >  	int			irq;
+> > > > >  	void			*controller_state;
+> > > > >  	void			*controller_data;
+> > > >
+> > > > You're still not updating spi-mem.c to check those flags and
+> > > > SPI_MEM_MAX_BUSWIDTH is not updated to match the new limit (8
+> > > > instead of 4).
+> > > >
+> > > Yes and its strange that my octal mode communication is working fine
+> > > without adding support in spi-mem.c and that's why this has been
+> > > missed from me.
+> >
+> > Are you based on top of spi-next?
+>=20
+> Ok, that might be the reason. I have rebased few days back.
+> Would rebase with current tip and add support in spi-mem interface too.
 
-I already have one NOR which is not following this rule (mx25uw51245g)
-and is only supporting 1-1-1 and 8-8-8, nothing in between.
+I have rebased spi-next and currently on top but still my octal command sup=
+port is working fine without any issue with current shared patch series, pe=
+rformed data sanity.
 
-> Moreover, these capabilities should be auto discoverable once flash
-> start populating SFDP JESD216C tables (IIRC, JESD216B already takes care
-> of QUAD IO modes). So, I don't think we need different flags for 1-1-8,
-> 1-8-8 and 8-8-8. Please let me if that's not the case.
+=3D>  git log  --pretty=3Doneline -3
+	496c415717b8bb7d37181127fcfad0ba450eb10d mtd: spi-nor: fsl-quadspi: Don't =
+let -EINVAL on the bus
+	2336d3a7b125683c9e8b25d6efa6064310d19dbe mtd: devices: m25p80: Make sure W=
+RITE_EN is issued before each write
+	e55841874471282d32eec595997afce43a5f55c0 mtd: spi-nor: Support controllers=
+ with limited TX FIFO size
 
-Except we already have NORs out there that do not have a valid SFDP
-table but still support a subset of the octal modes (mx25uw51245g is in
-this case, but I'm pretty sure there are others).
+GIT Repo - 	git://git.infradead.org/linux-mtd.git
+Branch -	remotes/origin/spi-nor/next
 
-> 
-> For this patch, I wanted to start small and support only 1-1-8 mode
-> which is the easiest.
-
-Which is fine, just wanted to know what SPI_NOR_OCTAL_READ meant.
-
-> 
-> 
-> > Also, I fear we'll soon run out of bits in ->flags if we keep adding
-> > one flag per mode which is why I proposed a solution to let flash
-> > chips tweak the flash parameters as they wish [1][2]. I'm not saying we
-> > should do it now, but we should definitely plan for something like that.
-> > 
-> > [1]https://github.com/bbrezillon/linux/commit/9c672e4c85a91f1b0803c9c6e4b8f3aae5d79ffb
-> > [2]https://github.com/bbrezillon/linux/commit/3a5515c8821314c06a3d84f9861aefe476bb711e
-> >   
-> 
-> Hmm, it almost seems like Macronix flash warrants its own driver now.
-> 
-
-Actually, we already have quite a bit of code that is vendor (and even
-chip) specific in spi-nor.c, and I indeed think it would be beneficial
-to have one driver per manufacturer so that the core is not polluted by
-those chip/manufacturer specific hacks. The thing is, the spi_nor
-interface (and the way hwcaps selection works) is not ready for that.
+Also, I am not able to find string SPI_MEM_MAX_BUSWIDTH in current source c=
+ode, can you share the GIT details where these changes are pushed.
+--
+Regards
+Yogesh Gaur.
