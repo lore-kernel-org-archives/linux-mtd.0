@@ -1,33 +1,27 @@
-Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g80dO-0000E7-Hh
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 10:13:32 +0000
-Date: Thu, 4 Oct 2018 11:13:05 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: oleksandr@natalenko.name, Paolo Valente <paolo.valente@linaro.org>,
- Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
- aherrmann@suse.com, mgorman@suse.com,
- Chunyan Zhang <zhang.chunyan@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- bfq-iosched@googlegroups.com
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-Message-ID: <20181004101305.GA6412@sirena.org.uk>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
- <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Vignesh R <vigneshr@ti.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "boris.brezillon@bootlin.com"
+ <boris.brezillon@bootlin.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
+ <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
+ <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/4] spi: add support for octal mode data transfer
+Date: Thu, 4 Oct 2018 09:28:05 +0000
+Message-ID: <VI1PR04MB103828C628A6550F7E1B942E99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <1538642920-3843-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <43cff872-0dc5-d3ce-ca35-082faa0e0e7c@ti.com>
+In-Reply-To: <43cff872-0dc5-d3ce-ca35-082faa0e0e7c@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,40 +31,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Oct 04, 2018 at 10:14:38AM +0200, Linus Walleij wrote:
-
-> And these are millions and millions of deployed
-> systems not using udev+systemd we are talking about,
-> they are not fringe hobby projects. It's not that I
-> personally dislike udev or anything, I kind of like
-> it, but these tailored distros simply don't use it
-> and they are huge in numbers. They need help to do
-> the right thing. Fixing a udev rule doesn't solve
-> even half the world's problems I'm afraid.
-
-Further, even those embedded systems that do use udev (some of them do
-lean heavily on modern init stuff like that and systemd, especially when
-boot time is a priority) they'll still need to get the relevant udev
-rule installed somehow.
-
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlu157EACgkQJNaLcl1U
-h9BBkwf/Q9GIidNJDuHpmm+LavB0wocpu32qHC5GsxYNyo2v5lRvYq6YBUzZmG1J
-U3aytRnyQh/4/0ttPCUxh/9weXA3P5uyOaQdYz7LMQ2RcsXV0hgqxqvrQAzzUaEA
-ZjpzjCa9WxCvwf6RSiDkqzgPfPIXDFRKu9WMBX2hHt9VGMWszD5lJI9FjRUROr/s
-QtV4jjf0vvxPDefhe3YuOhYmCAPsgVlSunFAC8LjYilLOxoOIruGD6AfJinr7f6v
-6ANVMSrdRGb89J0BgU+FCXO2KJMYx9T0ETsSN0Tbr1FUNPdfFDelyY78qnokMzGj
-wV16/LdECx8c5qQ4KSf3CdpNMDOS+w==
-=TeIs
------END PGP SIGNATURE-----
-
---tThc/1wpZn/ma/RB--
+SGkgVmlnbmVzaCwNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBWaWdu
+ZXNoIFIgW21haWx0bzp2aWduZXNockB0aS5jb21dDQo+IFNlbnQ6IFRodXJzZGF5LCBPY3RvYmVy
+IDQsIDIwMTggMjo1MiBQTQ0KPiBUbzogWW9nZXNoIE5hcmF5YW4gR2F1ciA8eW9nZXNobmFyYXlh
+bi5nYXVyQG54cC5jb20+OyBsaW51eC0NCj4gbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGJvcmlz
+LmJyZXppbGxvbkBib290bGluLmNvbTsgbWFyZWsudmFzdXRAZ21haWwuY29tOw0KPiBsaW51eC1z
+cGlAdmdlci5rZXJuZWwub3JnOyBkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZw0KPiBDYzogcm9i
+aEBrZXJuZWwub3JnOyBtYXJrLnJ1dGxhbmRAYXJtLmNvbTsgc2hhd25ndW9Aa2VybmVsLm9yZzsg
+bGludXgtDQo+IGFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgY29tcHV0ZXJzZm9ycGVh
+Y2VAZ21haWwuY29tOw0KPiBmcmllZGVyLnNjaHJlbXBmQGV4Y2VldC5kZTsgbGludXgta2VybmVs
+QHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDAvNF0gc3BpOiBhZGQgc3Vw
+cG9ydCBmb3Igb2N0YWwgbW9kZSBkYXRhIHRyYW5zZmVyDQo+IA0KPiBIaSBZb2dlc2gsDQo+IA0K
+PiBPbiBUaHVyc2RheSAwNCBPY3RvYmVyIDIwMTggMDI6MTggUE0sIFlvZ2VzaCBHYXVyIHdyb3Rl
+Og0KPiA+IEFkZCBzdXBwb3J0IGZvciBvY3RhbCBtb2RlIElPIGRhdGEgdHJhbnNmZXIuDQo+ID4g
+TWljcm9uIGZsYXNoLCBtdDM1eHU1MTJhYmEsIHN1cHBvcnRzIG9jdGFsIG1vZGUgZGF0YSB0cmFu
+c2ZlciBhbmQgTlhQDQo+ID4gRmxleFNQSSBjb250cm9sbGVyIHN1cHBvcnRzIDggZGF0YSBsaW5l
+cyBmb3IgZGF0YSB0cmFuc2ZlciAoUngvVHgpLg0KPiA+DQo+ID4gUGF0Y2ggc2VyaWVzDQo+ID4g
+KiBBZGQgc3VwcG9ydCBmb3Igb2N0YWwgbW9kZSBmbGFncyBhbmQgcGFyc2luZyBvZiBzYW1lIGlu
+IHNwaSBkcml2ZXIuDQo+ID4gKiBBZGQgb2N0YWwgZGF0YSBjb21tdW5pY2F0aW9uIGNvbW1hbmRz
+IHJlcXVpcmVkIGZvciBtdDM1eHU1MTJhYmEgWzFdDQo+IGZsYXNoLg0KPiA+ICogQWRkIHN1cHBv
+cnQgZm9yIFJlYWQgYW5kIFdyaXRlIHByb3RvIGZvciAoMS0xLTgvMS04LTgpIG1vZGUuDQo+ID4g
+KiBBZGQgbW9kZSBiaXQgcmVxdWlyZWQgZm9yIG9jdGFsIG1vZGUgaW4gbnhwLWZzcGkgZHJpdmVy
+IFsyXS4NCj4gPiAqIERlZmluZSBiaW5kaW5nIHByb3BlcnR5ICdzcGktcngvdHgtYnVzLXdpZHRo
+JyBmb3IgTFgyMTYwQVJEQiB0YXJnZXQgWzJdLg0KPiA+DQo+ID4gVGVzdGVkIG9uIExYMjE2MEFS
+REIgdGFyZ2V0IHdpdGggbnhwLWZzcGkgZHJpdmVyLCBiZWxvdyBhcmUgUmVhZA0KPiA+IHBlcmZv
+cm1hbmNlIG51bWJlciBvZiAxLTEtMSBhbmQgMS0xLTggcmVhZCBwcm90b2NvbC4NCj4gPg0KPiA+
+ICByb290QGx4eHg6fiMgY2F0IC9wcm9jL210ZA0KPiA+ICBkZXY6ICAgIHNpemUgICBlcmFzZXNp
+emUgIG5hbWUNCj4gPiAgbXRkMDogMDQwMDAwMDAgMDAwMDEwMDAgInNwaTAuMCINCj4gPiAgbXRk
+MTogMDQwMDAwMDAgMDAwMDEwMDAgInNwaTAuMSINCj4gPiAgcm9vdEBseHh4On4jIHRpbWUgbXRk
+X2RlYnVnIHJlYWQgL2Rldi9tdGQwIDB4MCAweDEwMDAwMDAgMHJlYWQNCj4gPiBDb3BpZWQgMTY3
+NzcyMTYgYnl0ZXMgZnJvbSBhZGRyZXNzIDB4MDAwMDAwMDAgaW4gZmxhc2ggdG8gMHJlYWQNCj4g
+Pg0KPiA+ICByZWFsICAgIDBtMi43OTJzDQo+ID4gIHVzZXIgICAgMG0wLjAwMHMNCj4gPiAgc3lz
+ICAgICAwbTIuNzkwcw0KPiA+ICByb290QGx4eHg6fiMgdGltZSBtdGRfZGVidWcgcmVhZCAvZGV2
+L210ZDEgMHgwIDB4MTAwMDAwMCAwcmVhZA0KPiA+IENvcGllZCAxNjc3NzIxNiBieXRlcyBmcm9t
+IGFkZHJlc3MgMHgwMDAwMDAwMCBpbiBmbGFzaCB0byAwcmVhZA0KPiA+DQo+ID4gIHJlYWwgICAg
+MG0wLjQ0MXMNCj4gPiAgdXNlciAgICAwbTAuMDAwcw0KPiA+ICBzeXMgICAgIDBtMC40NDBzDQo+
+ID4gIHJvb3RAbHMxMDEyYXJkYjp+Iw0KPiA+DQo+ID4gIEZsYXNoIGRldmljZSBNVEQwIGNvbmZp
+Z3VyZWQgaW4gMS0xLTEgcHJvdG9jb2wuDQo+ID4gIEZsYXNoIGRldmljZSBNVEQxIGNvbmZpZ3Vy
+ZWQgaW4gMS0xLTggcHJvdG9jb2wuDQo+ID4NCj4gPiBbMV0NCj4gPiBodHRwczovL2VtZWEwMS5z
+YWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGcGF0DQo+
+ID4gY2h3b3JrLm96bGFicy5vcmclMkZwcm9qZWN0JTJGbGludXgtDQo+IG10ZCUyRmxpc3QlMkYl
+M0ZzZXJpZXMlM0Q2NjMxNyZhbXANCj4gPiA7ZGF0YT0wMiU3QzAxJTdDeW9nZXNobmFyYXlhbi5n
+YXVyJTQwbnhwLmNvbSU3QzdhYWU4YmE3MWQ4MDQyMGQ0DQo+IDQ5ZjA4ZA0KPiA+DQo+IDYyOWRh
+ZDQ0ZCU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1JTdDMCU3QzAlN0M2MzY3NDI0
+MTcNCj4gMTg5MzAwDQo+ID4NCj4gNTc0JmFtcDtzZGF0YT14c1NwbW9SekRLSjlaNk81NmtURzVw
+SFBvamptVWZTejlyQjVjV1FsUEVNJTNEJmFtDQo+IHA7cmVzZXINCj4gPiB2ZWQ9MCBbMl0NCj4g
+PiBodHRwczovL2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0
+dHBzJTNBJTJGJTJGcGF0DQo+ID4gY2h3b3JrLm96bGFicy5vcmclMkZwcm9qZWN0JTJGbGludXgt
+DQo+IG10ZCUyRmxpc3QlMkYlM0ZzZXJpZXMlM0Q2Njg4NyZhbXANCj4gPiA7ZGF0YT0wMiU3QzAx
+JTdDeW9nZXNobmFyYXlhbi5nYXVyJTQwbnhwLmNvbSU3QzdhYWU4YmE3MWQ4MDQyMGQ0DQo+IDQ5
+ZjA4ZA0KPiA+DQo+IDYyOWRhZDQ0ZCU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1
+JTdDMCU3QzAlN0M2MzY3NDI0MTcNCj4gMTg5MzAwDQo+ID4NCj4gNTc0JmFtcDtzZGF0YT1vRnNm
+VHRwdDBHRGkzeTBGaSUyQiUyRjlTRnA4WnZid1BQZTVxTU5GSXdWdzd3RSUzRA0KPiAmYW1wO3IN
+Cj4gPiBlc2VydmVkPTANCj4gPg0KPiA+IFlvZ2VzaCBHYXVyICg0KToNCj4gPiAgIHNwaTogYWRk
+IHN1cHBvcnQgZm9yIG9jdGFsIEkvTyBkYXRhIHRyYW5zZmVyDQo+ID4gICBtdGQ6IHNwaS1ub3I6
+IGFkZCBzdXBwb3J0IGZvciBvY3RhbCBtb2RlIGRhdGEgdHJhbnNmZXINCj4gPiAgIHNwaTogbnhw
+LWZzcGk6IGFkZCBtb2RlIGZsYWcgYml0IGZvciBvY3RhbCBzdXBwb3J0DQo+ID4gICBhcm02NDog
+ZHRzOiBseDIxNjBhOiB1cGRhdGUgZnNwaSBub2RlDQo+IA0KPiBUaGlzIGlzIGEgYml0IGNvbmZ1
+c2luZyBhbmQgZGlmZmljdWx0IHRvIGZvbGxvdy4gSSBzdWdnZXN0IHRvIG9yZGVyIHBhdGNoZXMg
+c3VjaCB0aGF0DQo+IHNwaS1ub3IgbGF5ZXIgY2hhbmdlcyBhcmUgYXQgdGhlIGZpcnN0LCB0aGVu
+IG0yNXA4MCByZWxhdGVkIHRoaW5ncywgZm9sbG93ZWQgYnkNCj4gc3BpLW1lbSAoaWYgbmVlZGVk
+IHNwaSkgY2hhbmdlcyBhbmQgZmluYWxseSBzcGktbWVtIGNvbnRyb2xsZXIgZHJpdmVyIGNoYW5n
+ZXMuDQo+IA0KDQpUaGFua3MgZm9yIHRoZSBjb21tZW50Lg0KV291bGQgY2hhbmdlIHRoZSBwYXRj
+aCBvcmRlciBhcyBzdWdnZXN0ZWQgYW5kIGJyZWFrIHRoZSBmdW5jdGlvbmFsaXR5IGluIHNtYWxs
+IHBhdGNoZXMgYXMgc3VnZ2VzdGVkIGJ5IEJvcmlzLg0KDQotLQ0KUmVnYXJkcw0KWW9nZXNoIEdh
+dXINCg0KPiAtLQ0KPiBSZWdhcmRzDQo+IFZpZ25lc2gNCg==
