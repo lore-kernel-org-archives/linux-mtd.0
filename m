@@ -1,9 +1,9 @@
 Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g83G9-0007d3-HN
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:44 +0000
-Received: by mail-lj1-x242.google.com with SMTP id z21-v6so8306951ljz.0
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:31 -0700 (PDT)
+ id 1g83G9-0007d7-HQ
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:01:59 +0000
+Received: by mail-lj1-x242.google.com with SMTP id u21-v6so8274899lja.8
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:01:34 -0700 (PDT)
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -12,9 +12,9 @@ To: David Woodhouse <dwmw2@infradead.org>,
  Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
  open list <linux-kernel@vger.kernel.org>
 Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v6 02/10] mtd: physmap_of: Remove unused struct of_device_id
-Date: Thu,  4 Oct 2018 15:01:02 +0200
-Message-Id: <20181004130110.8496-2-ricardo.ribalda@gmail.com>
+Subject: [PATCH v6 06/10] mtd: maps: gpio-addr-flash: Use order insted of size
+Date: Thu,  4 Oct 2018 15:01:06 +0200
+Message-Id: <20181004130110.8496-6-ricardo.ribalda@gmail.com>
 In-Reply-To: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 References: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
 MIME-Version: 1.0
@@ -28,28 +28,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This struct does not seem to be used anywhere on the code
+By using the order of the window instead of the size, we can replace a
+lot of expensive division and modulus on the code with simple bit
+operations.
 
 Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
- drivers/mtd/maps/physmap_of_gemini.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c | 39 ++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-index 830b1b7e702b..9df62ca721d5 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap_of_gemini.c
-@@ -44,11 +44,6 @@
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 84404dcc7824..89cc8cce161b 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -25,6 +25,8 @@
+ #include <linux/slab.h>
+ #include <linux/types.h>
  
- #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
++#define win_mask(x) ((BIT(x)) - 1)
++
+ #define DRIVER_NAME "gpio-addr-flash"
  
--static const struct of_device_id syscon_match[] = {
--	{ .compatible = "cortina,gemini-syscon" },
--	{ },
--};
--
- int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map)
+ /**
+@@ -34,7 +36,7 @@
+  *	@gpio_count:  number of GPIOs used to address
+  *	@gpio_addrs:  array of GPIOs to twiddle
+  *	@gpio_values: cached GPIO values
+- *	@win_size:    dedicated memory size (if no GPIOs)
++ *	@win_order:   dedicated memory size (if no GPIOs)
+  */
+ struct async_state {
+ 	struct mtd_info *mtd;
+@@ -42,7 +44,7 @@ struct async_state {
+ 	size_t gpio_count;
+ 	unsigned *gpio_addrs;
+ 	int *gpio_values;
+-	unsigned long win_size;
++	unsigned int win_order;
+ };
+ #define gf_map_info_to_state(mi) ((struct async_state *)(mi)->map_priv_1)
+ 
+@@ -60,7 +62,8 @@ static void gf_set_gpios(struct async_state *state, unsigned long ofs)
+ {
+ 	size_t i = 0;
+ 	int value;
+-	ofs /= state->win_size;
++
++	ofs >>= state->win_order;
+ 	do {
+ 		value = ofs & (1 << i);
+ 		if (state->gpio_values[i] != value) {
+@@ -83,7 +86,7 @@ static map_word gf_read(struct map_info *map, unsigned long ofs)
+ 
+ 	gf_set_gpios(state, ofs);
+ 
+-	word = readw(map->virt + (ofs % state->win_size));
++	word = readw(map->virt + (ofs & win_mask(state->win_order)));
+ 	test.x[0] = word;
+ 	return test;
+ }
+@@ -105,14 +108,14 @@ static void gf_copy_from(struct map_info *map, void *to, unsigned long from, ssi
+ 	int this_len;
+ 
+ 	while (len) {
+-		if ((from % state->win_size) + len > state->win_size)
+-			this_len = state->win_size - (from % state->win_size);
+-		else
+-			this_len = len;
++		this_len = from & win_mask(state->win_order);
++		this_len = BIT(state->win_order) - this_len;
++		this_len = min_t(int, len, this_len);
+ 
+ 		gf_set_gpios(state, from);
+-		memcpy_fromio(to, map->virt + (from % state->win_size),
+-			 this_len);
++		memcpy_fromio(to,
++			      map->virt + (from & win_mask(state->win_order)),
++			      this_len);
+ 		len -= this_len;
+ 		from += this_len;
+ 		to += this_len;
+@@ -132,7 +135,7 @@ static void gf_write(struct map_info *map, map_word d1, unsigned long ofs)
+ 	gf_set_gpios(state, ofs);
+ 
+ 	d = d1.x[0];
+-	writew(d, map->virt + (ofs % state->win_size));
++	writew(d, map->virt + (ofs & win_mask(state->win_order)));
+ }
+ 
+ /**
+@@ -152,13 +155,13 @@ static void gf_copy_to(struct map_info *map, unsigned long to,
+ 	int this_len;
+ 
+ 	while (len) {
+-		if ((to % state->win_size) + len > state->win_size)
+-			this_len = state->win_size - (to % state->win_size);
+-		else
+-			this_len = len;
++		this_len = to & win_mask(state->win_order);
++		this_len = BIT(state->win_order) - this_len;
++		this_len = min_t(int, len, this_len);
+ 
+ 		gf_set_gpios(state, to);
+-		memcpy_toio(map->virt + (to % state->win_size), from, len);
++		memcpy_toio(map->virt + (to & win_mask(state->win_order)),
++			    from, len);
+ 
+ 		len -= this_len;
+ 		to += this_len;
+@@ -224,7 +227,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	state->gpio_count     = gpios->end;
+ 	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
+ 	state->gpio_values    = (void *)(state + 1);
+-	state->win_size       = resource_size(memory);
++	state->win_order      = get_bitmask_order(resource_size(memory)) - 1;
+ 	memset(state->gpio_values, 0xff, arr_size);
+ 
+ 	state->map.name       = DRIVER_NAME;
+@@ -233,7 +236,7 @@ static int gpio_flash_probe(struct platform_device *pdev)
+ 	state->map.write      = gf_write;
+ 	state->map.copy_to    = gf_copy_to;
+ 	state->map.bankwidth  = pdata->width;
+-	state->map.size       = state->win_size * (1 << state->gpio_count);
++	state->map.size       = BIT(state->win_order + state->gpio_count);
+ 	state->map.virt	      = devm_ioremap_resource(&pdev->dev, memory);
+ 	if (IS_ERR(state->map.virt))
+ 		return PTR_ERR(state->map.virt);
 -- 
 2.19.0
