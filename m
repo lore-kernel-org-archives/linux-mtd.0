@@ -1,17 +1,17 @@
-Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+Received: from mail-wr1-x444.google.com ([2a00:1450:4864:20::444])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8A63-0006VU-M4
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 20:19:45 +0000
-Received: by mail-wr1-x442.google.com with SMTP id z4-v6so11283742wrb.1
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 13:19:32 -0700 (PDT)
+ id 1g8APH-0005oR-Lf
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 20:39:37 +0000
+Received: by mail-wr1-x444.google.com with SMTP id y16so11328846wrw.3
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 13:39:24 -0700 (PDT)
 Content-Type: text/plain;
 	charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
 Subject: Re: [PATCH] block: BFQ default for single queue devices
 From: Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20181004202553.71c2599c@alans-desktop>
-Date: Thu, 4 Oct 2018 22:19:34 +0200
-Cc: Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
+In-Reply-To: <1538683746.230807.9.camel@acm.org>
+Date: Thu, 4 Oct 2018 22:39:20 +0200
+Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Jens Axboe <axboe@kernel.dk>,
  Linus Walleij <linus.walleij@linaro.org>,
  linux-block <linux-block@vger.kernel.org>,
  linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
@@ -21,16 +21,15 @@ Cc: Bart Van Assche <bvanassche@acm.org>, Jens Axboe <axboe@kernel.dk>,
  Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
  Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
  Chunyan Zhang <zhang.chunyan@linaro.org>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Mark Brown <broonie@kernel.org>
+ linux-kernel <linux-kernel@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <466C47DB-02D7-490C-91E3-8C7AA41B8D79@linaro.org>
+Message-Id: <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
 References: <20181002124329.21248-1-linus.walleij@linaro.org>
  <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
  <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
  <1538582091.205649.20.camel@acm.org> <20181004202553.71c2599c@alans-desktop>
-To: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+ <1538683746.230807.9.camel@acm.org>
+To: Bart Van Assche <bvanassche@acm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,29 +41,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 
 
-> Il giorno 04 ott 2018, alle ore 21:25, Alan Cox =
-<gnomes@lxorguk.ukuu.org.uk> ha scritto:
+> Il giorno 04 ott 2018, alle ore 22:09, Bart Van Assche =
+<bvanassche@acm.org> ha scritto:
 >=20
->> I agree with Jens that it's best to leave it to the Linux =
+> On Thu, 2018-10-04 at 20:25 +0100, Alan Cox wrote:
+>>> I agree with Jens that it's best to leave it to the Linux =
 distributors to
->> select a default I/O scheduler.
+>>> select a default I/O scheduler.
+>>=20
+>> That assumes such a thing exists. The kernel knows what devices it is
+>> dealing with. The kernel 'default' ought to be 'whatever is usually =
+best
+>> for this device'. A distro cannot just pick a correct single default
+>> because NVME and USB sticks are both normal and rather different in =
+needs.
 >=20
-> That assumes such a thing exists.
+> Which I/O scheduler works best also depends which workload the user =
+will run.
+> BFQ has significant advantages for interactive workloads like video =
+replay
+> with concurrent background I/O but probably slows down kernel builds.
 
-Well, as of now the default is more or less in the Schrdinger's cat =
-state :)
+No, kernel build is, for evident reasons, one of the workloads I cared
+most about.  Actually, I tried to focus on all my main
+kernel-development tasks, such as also git checkout, git merge, git
+grep, ...
 
-Metaphors apart, I do agree with your point.  As for me, what you
-point out is one of the core issues at stake here.
+According to my test results, with BFQ these tasks are at least as
+fast as, or, in most system configurations, much faster than with the
+other schedulers.  Of course, at the same time the system also remains
+responsive with BFQ.
+
+You can repeat these tests using one of my first scripts in the S
+suite: kern_dev_tasks_vs_rw.sh (usually, the older the tests, the more
+hypertrophied the names I gave :) ).
+
+I stopped sharing also my kernel-build results years ago, because I
+went on obtaining the same, identical good results for years, and I'm
+aware that I tend to show and say too much stuff.
 
 Thanks,
 Paolo
 
-> The kernel knows what devices it is
-> dealing with. The kernel 'default' ought to be 'whatever is usually =
-best
-> for this device'. A distro cannot just pick a correct single default
-> because NVME and USB sticks are both normal and rather different in =
-needs.
+> That's
+> why I'm not sure whether the kernel should select the default I/O =
+scheduler.
 >=20
-> Alan
+> Bart.
