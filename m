@@ -1,21 +1,33 @@
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g80Yv-0006DY-QD
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 10:08:55 +0000
-Received: by mail-ed1-x542.google.com with SMTP id y20-v6so1364435eds.10
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 03:08:43 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH] mtd: physmap_of: Remove unused struct of_device_id
-Date: Thu,  4 Oct 2018 12:08:38 +0200
-Message-Id: <20181004100838.12911-1-ricardo.ribalda@gmail.com>
+ id 1g80dO-0000E7-Hh
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 10:13:32 +0000
+Date: Thu, 4 Oct 2018 11:13:05 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: oleksandr@natalenko.name, Paolo Valente <paolo.valente@linaro.org>,
+ Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ aherrmann@suse.com, mgorman@suse.com,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ bfq-iosched@googlegroups.com
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181004101305.GA6412@sirena.org.uk>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
+ <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +37,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This struct does not seem to be used anywhere on the code
 
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- drivers/mtd/maps/physmap_of_gemini.c | 5 -----
- 1 file changed, 5 deletions(-)
+--tThc/1wpZn/ma/RB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-index 830b1b7e702b..9df62ca721d5 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap_of_gemini.c
-@@ -44,11 +44,6 @@
- 
- #define FLASH_PARALLEL_HIGH_PIN_CNT	(1 << 20)	/* else low pin cnt */
- 
--static const struct of_device_id syscon_match[] = {
--	{ .compatible = "cortina,gemini-syscon" },
--	{ },
--};
--
- int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map)
--- 
-2.19.0
+On Thu, Oct 04, 2018 at 10:14:38AM +0200, Linus Walleij wrote:
+
+> And these are millions and millions of deployed
+> systems not using udev+systemd we are talking about,
+> they are not fringe hobby projects. It's not that I
+> personally dislike udev or anything, I kind of like
+> it, but these tailored distros simply don't use it
+> and they are huge in numbers. They need help to do
+> the right thing. Fixing a udev rule doesn't solve
+> even half the world's problems I'm afraid.
+
+Further, even those embedded systems that do use udev (some of them do
+lean heavily on modern init stuff like that and systemd, especially when
+boot time is a priority) they'll still need to get the relevant udev
+rule installed somehow.
+
+--tThc/1wpZn/ma/RB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlu157EACgkQJNaLcl1U
+h9BBkwf/Q9GIidNJDuHpmm+LavB0wocpu32qHC5GsxYNyo2v5lRvYq6YBUzZmG1J
+U3aytRnyQh/4/0ttPCUxh/9weXA3P5uyOaQdYz7LMQ2RcsXV0hgqxqvrQAzzUaEA
+ZjpzjCa9WxCvwf6RSiDkqzgPfPIXDFRKu9WMBX2hHt9VGMWszD5lJI9FjRUROr/s
+QtV4jjf0vvxPDefhe3YuOhYmCAPsgVlSunFAC8LjYilLOxoOIruGD6AfJinr7f6v
+6ANVMSrdRGb89J0BgU+FCXO2KJMYx9T0ETsSN0Tbr1FUNPdfFDelyY78qnokMzGj
+wV16/LdECx8c5qQ4KSf3CdpNMDOS+w==
+=TeIs
+-----END PGP SIGNATURE-----
+
+--tThc/1wpZn/ma/RB--
