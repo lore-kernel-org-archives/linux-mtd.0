@@ -1,20 +1,20 @@
-Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Brian Norris <computersforpeace@gmail.com>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>,
- <linux-mtd@lists.infradead.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>
+Date: Thu, 4 Oct 2018 13:17:32 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Vignesh R <vigneshr@ti.com>
+Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ <devicetree@vger.kernel.org>, Yogesh Gaur <yogeshnarayan.gaur@nxp.com>,
+ <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Brian
+ Norris <computersforpeace@gmail.com>, Linux ARM Mailing List
+ <linux-arm-kernel@lists.infradead.org>, Tudor Ambarus
+ <tudor.ambarus@microchip.com>
+Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
+Message-ID: <20181004131732.4c9e2ae9@bbrezillon>
+In-Reply-To: <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
 References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-2-vigneshr@ti.com> <20181004114535.3a5dba05@bbrezillon>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <904391ba-5a12-aee9-966a-17346dded080@ti.com>
-Date: Thu, 4 Oct 2018 16:42:22 +0530
+ <20181003212017.653e739f@bbrezillon>
+ <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20181004114535.3a5dba05@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,66 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 4 Oct 2018 16:05:36 +0530
+Vignesh R <vigneshr@ti.com> wrote:
 
-
-On Thursday 04 October 2018 03:15 PM, Boris Brezillon wrote:
-> On Wed, 3 Oct 2018 22:26:01 +0530
-> Vignesh R <vigneshr@ti.com> wrote:
+> >>
+> >>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
+> >>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++  
+> > 
+> > On a slightly different topic, do you plan to convert the Cadence
+> > driver to spi-mem? And if you don't, is it because you don't have time
+> > or because some features are missing in spi-mem (I remember you
+> > mentioned a few things back when you were reviewing the spi-mem series)?
+> >   
 > 
->> Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines. It
->> supports read/write over 8 IO lines simulatenously. Add support for
->> Octal read mode for Micron mt35xu512aba.
->> Unfortunately, this flash is only complaint to SFDP JESD216B and does not
->> seem to support newer JESD216C standard that provides auto detection of
->> Octal mode capabilities and opcodes. Therefore, this capability is
->> manually added using new SPI_NOR_OCTAL_READ flag.
->>
->> Signed-off-by: Vignesh R <vigneshr@ti.com>
->> ---
->>  drivers/mtd/spi-nor/spi-nor.c | 11 ++++++++++-
->>  include/linux/mtd/spi-nor.h   |  2 ++
->>  2 files changed, 12 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
->> index aff5e6ff0b2c..4926e805a8cb 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -90,6 +90,7 @@ struct flash_info {
->>  #define NO_CHIP_ERASE		BIT(12) /* Chip does not support chip erase */
->>  #define SPI_NOR_SKIP_SFDP	BIT(13)	/* Skip parsing of SFDP tables */
->>  #define USE_CLSR		BIT(14)	/* use CLSR command */
->> +#define SPI_NOR_OCTAL_READ	BIT(15)	/* Flash supports Octal Read */
+> I do not have plans to convert cadence QSPI driver to spi-mem yet,
+> mainly due to lack of time. Also, not sure if original author Marek and
+> other altera people are okay with that.
 > 
-> Hm, we'll need to clarify what OCTAL means. I see at least 3 different
-> modes using 8 IO lines (1-1-8, 1-8-8 and 8-8-8) and all of them could
-> be qualified as "octal" modes.
-> So how about renaming this macro SPI_NOR_1_1_8_READ.
+> I see couple of issues in the way of conversion:
+> 1. I would wait to know what direction would direct mapping APIs[1] go
+> before starting spi-mem conversion for Cadence QSPI driver. Else, we
+> have may to re write again if direct mapping APIs are merged.
+
+I'd suggest reviewing the proposal I posted so that you can influence
+the design of this new API ;-).
+
+> 2. New Cadence OSPI IP has an integrated PHY to support high throughput
+> OSPI flashes operating up 200MHz in Octal DDR mode. In order to work
+> with such flashes, PHY DLLs need to be calibrated. Highly simplified
+> calibration sequence is as below(See [2] for actual sequence):
+> -Read flash ID at low speed and store it.
+> -Enable PHY and set DLLs to a defined initial value
+> -Increment RX DLL value
+> -Read flash ID and check for correctness of data read
+> -repeat above two steps until a band of passing values is obtained for
+> RX DLL where flash ID is correctly read.
+> -DLL needs to set to middle of the passing band.
+
+Is the Read ID operation hardcoded or do you just use it as a way to
+trigger predictable transfers on the IO bus?
+
 > 
+> I am trying to figure out how to fit this into the spi-mem framework as
+> controller would to need to store READ ID opcode and expected JEDEC ID
+> before starting calibration sequence.
 
-My understanding is that, if a flash is Octal IO capable, then it
-supports all mode of Octal IO (1-1-8, 1-8-8 and 8-8-8). At least in the
-current code, I see SPI_NOR_QUAD_READ seems to imply 1-1-4, 1-4-4 and
-4-4-4 modes.
-Moreover, these capabilities should be auto discoverable once flash
-start populating SFDP JESD216C tables (IIRC, JESD216B already takes care
-of QUAD IO modes). So, I don't think we need different flags for 1-1-8,
-1-8-8 and 8-8-8. Please let me if that's not the case.
+I think this should be split in 2:
 
-For this patch, I wanted to start small and support only 1-1-8 mode
-which is the easiest.
+- the SPI NOR framework passing the operation to use to do the
+  calibration (here a READ ID)
+- the SPI controller framework replaying the same operation with
+  different DLL configs until it finds the best match
 
+So, it would basically be added as a new hook:
 
-> Also, I fear we'll soon run out of bits in ->flags if we keep adding
-> one flag per mode which is why I proposed a solution to let flash
-> chips tweak the flash parameters as they wish [1][2]. I'm not saying we
-> should do it now, but we should definitely plan for something like that.
-> 
-> [1]https://github.com/bbrezillon/linux/commit/9c672e4c85a91f1b0803c9c6e4b8f3aae5d79ffb
-> [2]https://github.com/bbrezillon/linux/commit/3a5515c8821314c06a3d84f9861aefe476bb711e
-> 
+	int (*calibrate)(struct spi_mem *mem,
+			 const struct spi_mem_op *tmpl);
 
-Hmm, it almost seems like Macronix flash warrants its own driver now.
+and a new function provided by the spi-mem API
 
--- 
-Regards
-Vignesh
+int spi_mem_calibrate(struct spi_mem *mem,
+		      const struct spi_mem_op *tmpl);
+
+and calibration outcome would be somehow attached to the spi_mem
+object.
+
+This way we stay memory agnostic but still provide the necessary blocks
+at the spi-mem level to do such callibrations.
+
+Would that work?
