@@ -1,45 +1,33 @@
-MIME-Version: 1.0
-References: <20180810080526.27207-1-brgl@bgdev.pl>
- <20180831194643.GA62862@ban.mtv.corp.google.com>
- <CAMRc=MejZLV1EQ7uAddsxLY0MTUF8WyiBn=F0ZhkWQJpET0EDQ@mail.gmail.com>
- <a4c2e6cf-749a-83a1-0bda-43ddb7e744cd@gmail.com>
- <CAMRc=MfwM7vODsnuV9eKS4Uf7M5ac59u7ao7KvyaxKzPv5FRvw@mail.gmail.com>
- <CAK8P3a1LufzR1_6mXH=1zDb34VQStLywGM1w5x5CDAMh_7uMyA@mail.gmail.com>
- <20181004143508.GG13299@oracle.com>
-In-Reply-To: <20181004143508.GG13299@oracle.com>
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 4 Oct 2018 16:38:51 +0200
-Message-ID: <CAK8P3a3Z7CT3tV=mMB-qZFJfyamP0kTHK2PPCbqzh-WXDNdPZA@mail.gmail.com>
-Subject: Re: [PATCH v2 00/29] at24: remove at24_platform_data
-To: Sowmini Varadhan <sowmini.varadhan@oracle.com>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>,
- Florian Fainelli <f.fainelli@gmail.com>,
- Brian Norris <computersforpeace@gmail.com>, David Miller <davem@davemloft.net>,
- Jonathan Corbet <corbet@lwn.net>, Sekhar Nori <nsekhar@ti.com>,
- Kevin Hilman <khilman@kernel.org>,
- Russell King - ARM Linux <linux@armlinux.org.uk>,
- gregkh <gregkh@linuxfoundation.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Grygorii Strashko <grygorii.strashko@ti.com>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, naren.kernel@gmail.com,
- Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Lukas Wunner <lukas@wunner.de>, Dan Carpenter <dan.carpenter@oracle.com>,
- ivan.khoronzhuk@linaro.org,
- svendev@arcx.com, pabeni@redhat.com, Alban Bedel <albeu@free.fr>,
- Rob Herring <robh@kernel.org>, David Lechner <david@lechnology.com>,
- Andrew Lunn <andrew@lunn.ch>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux ARM <linux-arm-kernel@lists.infradead.org>,
- Linux I2C <linux-i2c@vger.kernel.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- linux-omap <linux-omap@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
- Bartosz Golaszewski <bgolaszewski@baylibre.com>,
- Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail-pf1-f193.google.com ([209.85.210.193])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g85HT-0001k9-HQ
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 15:11:44 +0000
+Received: by mail-pf1-f193.google.com with SMTP id m77-v6so3522290pfi.8
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 08:11:00 -0700 (PDT)
+Message-ID: <1538665857.230807.1.camel@acm.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+From: Bart Van Assche <bvanassche@acm.org>
+To: Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>
+Cc: oleksandr@natalenko.name, Paolo Valente <paolo.valente@linaro.org>, Jens
+ Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org, Pavel
+ Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>, Richard
+ Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>, Adrian
+ Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ aherrmann@suse.com,  mgorman@suse.com, Chunyan Zhang
+ <zhang.chunyan@linaro.org>,  "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, bfq-iosched@googlegroups.com
+Date: Thu, 04 Oct 2018 08:10:57 -0700
+In-Reply-To: <20181004101305.GA6412@sirena.org.uk>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
+ <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
+ <20181004101305.GA6412@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-7"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,33 +37,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 4, 2018 at 4:36 PM Sowmini Varadhan
-<sowmini.varadhan@oracle.com> wrote:
->
-> Just catching up on this thread, so please excuse any unintentional
-> misquotes here.
->
-> > > > > David: I couldn't find a place in sparc code where any ethernet device
-> > > > > would be registered, so is there a chance that nobody is using it?
-> > > >
-> > > > SPARC uses a true Open Firmware implementation, so it would register
-> > > > drivers through the CONFIG_OF infrastructure.
->
-> correct
->
-> > The calls are not even that old, and clearly added intentionally for sparc,
-> > see commit ba94272d08a7 ("i40e: use eth_platform_get_mac_address()")
-> > which added the first one.
->
-> Yes, correct again. Wouldn't PPC also end up doing the same thing?
->
-> See also commit c762dff24c06 (for ixgbe) - without this fix sparc systems
-> will come up with a bogus mac address and then you end up having to
-> manually fix this in ugly ways.
+On Thu, 2018-10-04 at 11:13 +-0100, Mark Brown wrote:
++AD4 On Thu, Oct 04, 2018 at 10:14:38AM +-0200, Linus Walleij wrote:
++AD4 
++AD4 +AD4 And these are millions and millions of deployed
++AD4 +AD4 systems not using udev+-systemd we are talking about,
++AD4 +AD4 they are not fringe hobby projects. It's not that I
++AD4 +AD4 personally dislike udev or anything, I kind of like
++AD4 +AD4 it, but these tailored distros simply don't use it
++AD4 +AD4 and they are huge in numbers. They need help to do
++AD4 +AD4 the right thing. Fixing a udev rule doesn't solve
++AD4 +AD4 even half the world's problems I'm afraid.
++AD4 
++AD4 Further, even those embedded systems that do use udev (some of them do
++AD4 lean heavily on modern init stuff like that and systemd, especially when
++AD4 boot time is a priority) they'll still need to get the relevant udev
++AD4 rule installed somehow.
 
-The of_get_mac_address() portion is not controversial at all I think,
-the question was whether we need the fallback to
-arch_get_platform_mac_address() in any of the drivers that
-call eth_platform_get_mac_address().
+Hi Mark,
 
-      Arnd
+Are you aware that the systemd source tree includes a set of udev rules?
+See also https://github.com/systemd/systemd/tree/master/rules.
+
+Bart.
