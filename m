@@ -1,25 +1,27 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Vignesh R <vigneshr@ti.com>, Marek Vasut <marek.vasut@gmail.com>, Rob
- Herring <robh+dt@kernel.org>, Brian Norris <computersforpeace@gmail.com>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "juliensu@mxic.com.tw" <juliensu@mxic.com.tw>, "zhengxunli@mxic.com.tw"
- <zhengxunli@mxic.com.tw>, "masonccyang@mxic.com.tw" <masonccyang@mxic.com.tw>
-Subject: RE: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for mt35xu512aba
-Date: Thu, 4 Oct 2018 08:47:33 +0000
-Message-ID: <VI1PR04MB103837831B8BFEC2F7FD12E799EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003165603.2579-2-vigneshr@ti.com>
- <VI1PR04MB1038C20CA97E453FC4C9CEAE99EA0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181004093925.2961d881@bbrezillon>
-In-Reply-To: <20181004093925.2961d881@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g7z76-0004J0-16
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 08:36:06 +0000
+Received: by mail-lj1-x243.google.com with SMTP id v7-v6so7148508ljg.5
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 01:35:53 -0700 (PDT)
 MIME-Version: 1.0
+References: <20181003193859.23928-1-ricardo.ribalda@gmail.com>
+ <20181003193859.23928-7-ricardo.ribalda@gmail.com>
+ <20181003232702.4c18e725@bbrezillon>
+ <CAPybu_3M75E9c+JmR7MVKsyv3vYPOrZ6qBABtvEF317KA+roBg@mail.gmail.com>
+ <20181004001415.224d53fe@bbrezillon> <20181004001924.3644185d@bbrezillon>
+In-Reply-To: <20181004001924.3644185d@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Thu, 4 Oct 2018 10:35:35 +0200
+Message-ID: <CAPybu_1CoBLRx8FjzbXQ7M9KjJot9PF90qu+s8s5OUJ40KpYjw@mail.gmail.com>
+Subject: Re: [PATCH v5 7/8] dt-binding: mtd: Document gpio-addr-flash
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,111 +31,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+HI Boris
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Thursday, October 4, 2018 1:09 PM
-> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-> Cc: Vignesh R <vigneshr@ti.com>; Marek Vasut <marek.vasut@gmail.com>; Rob
-> Herring <robh+dt@kernel.org>; Brian Norris <computersforpeace@gmail.com>;
-> Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>; linux-
-> mtd@lists.infradead.org; devicetree@vger.kernel.org; linux-
-> kernel@vger.kernel.org; juliensu@mxic.com.tw; zhengxunli@mxic.com.tw;
-> masonccyang@mxic.com.tw
-> Subject: Re: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for
-> mt35xu512aba
->=20
-> +Julien, Zhengxunli and Mason from Macronix
->=20
-> Hi Yogesh,
->=20
-> On Thu, 4 Oct 2018 06:51:41 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->=20
-> > Hi Vignesh,
+
+On Thu, Oct 4, 2018 at 12:19 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Thu, 4 Oct 2018 00:14:15 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>
+> > On Wed, 3 Oct 2018 23:53:27 +0200
+> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 > >
-> > > -----Original Message-----
-> > > From: Vignesh R [mailto:vigneshr@ti.com]
-> > > Sent: Wednesday, October 3, 2018 10:26 PM
-> > > To: Boris Brezillon <boris.brezillon@bootlin.com>; Marek Vasut
-> > > <marek.vasut@gmail.com>; Rob Herring <robh+dt@kernel.org>
-> > > Cc: Brian Norris <computersforpeace@gmail.com>; Yogesh Narayan Gaur
-> > > <yogeshnarayan.gaur@nxp.com>; Linux ARM Mailing List <linux-arm-
-> > > kernel@lists.infradead.org>; linux-mtd@lists.infradead.org;
-> > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Vignesh R
-> > > <vigneshr@ti.com>
-> > > Subject: [PATCH 1/3] mtd: spi-nor: Add Octal mode support for
-> > > mt35xu512aba
+> > > Hi Boris
+> > > On Wed, Oct 3, 2018 at 11:27 PM Boris Brezillon
+> > > <boris.brezillon@bootlin.com> wrote:
+> > > >
+> > > > On Wed,  3 Oct 2018 21:38:58 +0200
+> > > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> > > >
+> > > > > Add documentation for gpio-addr-flash. This binding allow creating
+> > > > > flash devices that are paged using GPIOs.
+> > > > >
+> > > > > Cc: devicetree@vger.kernel.org
+> > > > > Reviewed-by: Rob Herring <robh@kernel.org>
+> > > > > Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> > > > > ---
+> > > > >  .../bindings/mtd/gpio-addr-flash.txt          | 54 +++++++++++++++++++
+> > > > >  1 file changed, 54 insertions(+)
+> > > > >  create mode 100644 Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> > > > >
+> > > > > diff --git a/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> > > > > new file mode 100644
+> > > > > index 000000000000..5006a26e1753
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/devicetree/bindings/mtd/gpio-addr-flash.txt
+> > > > > @@ -0,0 +1,54 @@
+> > > > > +Memory Mapped flash with some address lines addressed using GPIOs
+> > > > > +
+> > > > > +Handle the case where a flash device is mostly addressed using physical
+> > > > > +line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
+> > > > > +to a 2MiB memory range and use the GPIOs to select a particular range.
+> > > > > +
+> > > > > + - compatible : "cfi-gpio-addr-flash"
+> > > > > + - reg : Address range of the mtd chip that is memory mapped, this is,
+> > > > > +   on the previous example 2MiB.
+> > > > > + - bank-width : Width (in bytes) of the bank.  Equal to the
+> > > > > +   device width times the number of interleaved chips.
+> > > > > + - gpios: List of GPIO specifiers that will be used to address the MSBs address
+> > > > > +   lines. The order goes from LSB to MSB.
+> > > > > + - probe-type : (optional) "cfi_probe", "jedec_probe". How the mtd chip
+> > > > > +   is going to be probed. If omitted, assumed to be equal to "cfi_probe".
+> > > >
+> > > > Looks like other bindings are encoding the probe type in the
+> > > > compatible [1][2], and we should probably follow what's been done by
+> > > > others.
 > > >
-> > > Micron's mt35xu512aba flash is an Octal flash that has x8 IO lines.
-> > > It supports read/write over 8 IO lines simulatenously. Add support
-> > > for Octal read mode for Micron mt35xu512aba.
-> > > Unfortunately, this flash is only complaint to SFDP JESD216B and
-> > > does not seem to support newer JESD216C standard that provides auto
-> > > detection of Octal mode capabilities and opcodes. Therefore, this
-> > > capability is manually added using new SPI_NOR_OCTAL_READ flag.
+> > > If I understood it right, they are special cases of physmap_of_core.c
+> > > https://elixir.bootlin.com/linux/v4.18.11/source/drivers/mtd/maps/physmap_of_core.c#L242
 > > >
+> > > The driver that handles the compatible is physmap_of_core.c, and afaik
+> > > multiple drivers with the same
+> > > compatible string is a very bad idea.
 > >
-> > Thanks for sending the patch-set of adding octal support.
-> > If possible, can you share the MT35x datasheet?
+> > Yes, I know.
 > >
-> > I also have the patch ready in which I have added support for Read (1-1=
--8 and
-> 1-8-8) protocol and Write (1-1-8 and 1-8-8).
-> > Also have added support of Octal in driver/spi/spi.c framework.
+> > >
+> > > We can convert the driver to something like Versatile or gemini, but
+> > > then we will not support platform devices
+> > >
+> > > btw, the binding that I am used is used by:
+> > > https://elixir.bootlin.com/linux/v4.18.11/source/drivers/mtd/maps/physmap_of_core.c#L91
 > >
-> > IMO, we would collaborate our patches.
->=20
-> Looks like we are of stepping on each others toes here (see this branch [=
-1]). I
-> guess it's not a problem if we agree on who is working on what.
->=20
-> Yogesh, you already sent "spi: add flags for octal I/O data transfer" [3]=
- which is
-> only adding the new OCTAL flags but is not patching spi.c and spi-mem.c t=
-o take
-> those new flags into account. Here is my version of this patch [2] (it's =
-still
-> missing an update of SPI_MEM_MAX_BUSWIDTH). Let me know what you want
-> to do (rework your version to address the problem or take mine).
->=20
-I haven't said that I have sent the patches. My patches are ready and neede=
-d to be sent for review.
-In these patches,  I am adding support for X-X-X protocol for octal support=
- and integrating them with spi  and flash m25p80 interface.
+> > Actually, the more I think about it the more I realize this should
+> > somehow be integrated to the physmap core logic. I mean, there's nothing
+> > controller/platform specific in what the gpio-physmap driver does.
+> >
+> > We could basically add the msb_addr_gpios related fields to map_info,
+> > let physmap.c and physmap_of_core.c call
+> > devm_gpiod_get_array_optional() and, based on the returned value,
+> > call simple_map_init() (when the pointer is NULL) or
+> > gpio_addr_map_init() (when the pointer is valid).
+>
+> Or even better, let simple_map_init() call gpio_addr_map_init() when
+> map->addr_gpios != NULL, so that you don't even have to duplicate the
+> selection logic in physmap.c and physmap_of_core.c.
+>
 
-Would send the patches by today evening for review.
+I am all in for the removal of duplicated code. But I have implemented
+it slightly different, following gemini and versatile
 
-Regards
-Yogesh Gaur
+In physmap_of_core.c
 
-> Regarding other patches in [2], they're mainly here to add support for X-=
-X-X and
-> DTR modes and get the m25p80 logic integrated in spi-nor.c so that we can
-> really check which NOR operations are supported by the SPI controller.
->=20
-> Regards,
->=20
-> Boris
->=20
-> [1]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ith
-> ub.com%2Fbbrezillon%2Flinux%2Fcommits%2Fspi-
-> nor%2Focto&amp;data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C3ad
-> 4b6f2a4c9470e98f308d629cc8362%7C686ea1d3bc2b4c6fa92cd99c5c301635%7
-> C0%7C0%7C636742355682081158&amp;sdata=3DvXg7nwZ6dLrUxoNw9t41GYMp
-> oPdNWUWhLM6wZPmrIec%3D&amp;reserved=3D0
-> [2]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fg=
-ith
-> ub.com%2Fbbrezillon%2Flinux%2Fcommit%2F9854a8fdd23f64e79859fd07a71d4
-> a1c57b812f2&amp;data=3D02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C3ad
-> 4b6f2a4c9470e98f308d629cc8362%7C686ea1d3bc2b4c6fa92cd99c5c301635%7
-> C0%7C0%7C636742355682081158&amp;sdata=3DyEZqGYprHS8q2wuisFLpHg8bMj
-> uuWDrl3ggWlA8LRoc%3D&amp;reserved=3D0
-> [3]https://emea01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fp=
-at
-> chwork.ozlabs.org%2Fpatch%2F894916%2F&amp;data=3D02%7C01%7Cyogeshnar
-> ayan.gaur%40nxp.com%7C3ad4b6f2a4c9470e98f308d629cc8362%7C686ea1d3
-> bc2b4c6fa92cd99c5c301635%7C0%7C0%7C636742355682081158&amp;sdata=3Dt
-> 5DFvXgDOlyLn7pMieue9BB5q24DNiJMywGvNrWAYOo%3D&amp;reserved=3D0
+I have added
+
+err = of_flash_probe_gpio(dev, dp, &info->list[i].map);
+if (err){
+iounmap(info->list[i].map.virt);
+goto err_out;
+}
+
+and on gpio-addr-flash the code for DT is simply
+
+int of_flash_probe_gpio(struct platform_device *pdev, struct device_node *np,
+struct map_info *map)
+{
+struct async_state *state;
+
+if (!of_device_is_compatible(np, "mtd,gpio-addr-flash"))
+return 0;
+
+state = devm_kzalloc(&pdev->dev, sizeof(*state), GFP_KERNEL);
+if (!state)
+return -ENOMEM;
+
+return gpio_flash_probe_common(&pdev->dev, state, map);
+}
+
+You can take a look to the code at
+https://github.com/ribalda/linux/tree/gpio-addr-flash-v6
+
+once it is tested on hw I will commit to the list
+
+I think now we are getting into something quite good :)
+
+Thanks!
+
+> >
+> > gpio_addr_map_init() would still be implemented in gpio-addr-flash.c so
+> > that we can still enable/disable support for this feature (providing
+> > dummy wrappers when it's disabled). By doing that, we also keep a single
+> > driver which matches a generic compatible string. We also stay
+> > compatible with .c based board files.
+>
+
+
+-- 
+Ricardo Ribalda
