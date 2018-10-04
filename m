@@ -1,22 +1,25 @@
-Received: from mail-ed1-x542.google.com ([2a00:1450:4864:20::542])
+Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g83mN-0008HY-Tr
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:35:01 +0000
-Received: by mail-ed1-x542.google.com with SMTP id c22-v6so8569051edc.4
- for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:34:49 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
+ id 1g842W-0007kn-SM
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 13:51:47 +0000
+Received: by mail-lj1-x244.google.com with SMTP id p89-v6so8463964ljb.3
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 06:51:30 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- open list <linux-kernel@vger.kernel.org>
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH v8 01/10] mtd: physmap_of: Release resources on error
-Date: Thu,  4 Oct 2018 15:34:45 +0200
-Message-Id: <20181004133445.20914-1-ricardo.ribalda@gmail.com>
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [RFC PATCH] mtd: rawnand: ams-delta: use ->exec_op()
+Date: Thu, 04 Oct 2018 15:52:57 +0200
+Message-ID: <7546835.d2Xs8Qh0bZ@z50>
+In-Reply-To: <20181003160634.147dd95c@bbrezillon>
+References: <20180719081508.5dafebde@bbrezillon> <4278198.vlhjLe5TOR@z50>
+ <20181003160634.147dd95c@bbrezillon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,79 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-During probe, if there was an error the memory region and the memory
-map were not properly released.This can lead a system unusable if
-deferred probe is in use.
+Hi Boris,
 
-Replace mem_request and map with devm_ioremap_resource
+On Wednesday, October 3, 2018 4:06:34 PM CEST Boris Brezillon wrote:
+> On Wed, 03 Oct 2018 15:55:25 +0200
+> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+>   
+> > > > 
+> > > > Implementation of NAND_OP_WAITRDY_INSTR has been based on legacy
+> > > > nand_wait_ready(),  
+> > > 
+> > > I don't remember what the ams-delta ->dev_ready()/->waitfunc() hooks
+> > > are doing, but is shouldn't be too hard to replace them by an
+> > > ams_delta_wait_ready() func.  
+> > 
+> > Default nand_wait() is used as ->waitfunc(), and ->dev_ready() returns R/B 
+> > GPIO pin status.
+> 
+> Okay. Then it might make sense to provide a generic helper to poll a
+> gpio.
+> 
+> void nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod)
+> {
+> 	...
+> }
 
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- drivers/mtd/maps/physmap_of_core.c | 27 +++++----------------------
- 1 file changed, 5 insertions(+), 22 deletions(-)
+How about a still more generic helper which accepts dev_ready() callback as an 
+argument?
 
-diff --git a/drivers/mtd/maps/physmap_of_core.c b/drivers/mtd/maps/physmap_of_core.c
-index 4129535b8e46..ece605d78c21 100644
---- a/drivers/mtd/maps/physmap_of_core.c
-+++ b/drivers/mtd/maps/physmap_of_core.c
-@@ -31,7 +31,6 @@
- struct of_flash_list {
- 	struct mtd_info *mtd;
- 	struct map_info map;
--	struct resource *res;
- };
- 
- struct of_flash {
-@@ -56,18 +55,10 @@ static int of_flash_remove(struct platform_device *dev)
- 			mtd_concat_destroy(info->cmtd);
- 	}
- 
--	for (i = 0; i < info->list_size; i++) {
-+	for (i = 0; i < info->list_size; i++)
- 		if (info->list[i].mtd)
- 			map_destroy(info->list[i].mtd);
- 
--		if (info->list[i].map.virt)
--			iounmap(info->list[i].map.virt);
--
--		if (info->list[i].res) {
--			release_resource(info->list[i].res);
--			kfree(info->list[i].res);
--		}
--	}
- 	return 0;
- }
- 
-@@ -215,10 +206,11 @@ static int of_flash_probe(struct platform_device *dev)
- 
- 		err = -EBUSY;
- 		res_size = resource_size(&res);
--		info->list[i].res = request_mem_region(res.start, res_size,
--						       dev_name(&dev->dev));
--		if (!info->list[i].res)
-+		info->list[i].map.virt = devm_ioremap_resource(&dev->dev, &res);
-+		if (IS_ERR(info->list[i].map.virt)) {
-+			err = PTR_ERR(info->list[i].map.virt);
- 			goto err_out;
-+		}
- 
- 		err = -ENXIO;
- 		width = of_get_property(dp, "bank-width", NULL);
-@@ -246,15 +238,6 @@ static int of_flash_probe(struct platform_device *dev)
- 		if (err)
- 			goto err_out;
- 
--		err = -ENOMEM;
--		info->list[i].map.virt = ioremap(info->list[i].map.phys,
--						 info->list[i].map.size);
--		if (!info->list[i].map.virt) {
--			dev_err(&dev->dev, "Failed to ioremap() flash"
--				" region\n");
--			goto err_out;
--		}
--
- 		simple_map_init(&info->list[i].map);
- 
- 		/*
--- 
-2.19.0
+Thanks,
+Janusz
