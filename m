@@ -1,23 +1,25 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g84Cp-0003vA-FB
- for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 14:02:24 +0000
-Date: Thu, 4 Oct 2018 16:02:07 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org, open list <linux-kernel@vger.kernel.org>,
- devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 09/10] dt-binding: mtd: Document gpio-addr-flash
-Message-ID: <20181004160207.3b0403d7@bbrezillon>
-In-Reply-To: <20181004130110.8496-9-ricardo.ribalda@gmail.com>
-References: <20181004130110.8496-1-ricardo.ribalda@gmail.com>
- <20181004130110.8496-9-ricardo.ribalda@gmail.com>
+Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g84Kd-0006ne-Dx
+ for linux-mtd@lists.infradead.org; Thu, 04 Oct 2018 14:10:25 +0000
+Received: by mail-lf1-x142.google.com with SMTP id o21-v6so6905646lfe.0
+ for <linux-mtd@lists.infradead.org>; Thu, 04 Oct 2018 07:10:12 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mtd: rawnand: ams-delta: use ->exec_op()
+Date: Thu, 04 Oct 2018 16:11:42 +0200
+Message-ID: <38470936.GRFaOSl3cF@z50>
+In-Reply-To: <20181004155933.0a32c4ac@bbrezillon>
+References: <20180719081508.5dafebde@bbrezillon> <7546835.d2Xs8Qh0bZ@z50>
+ <20181004155933.0a32c4ac@bbrezillon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu,  4 Oct 2018 15:01:09 +0200
-Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-
-> Add documentation for gpio-addr-flash. This binding allow creating
-> flash devices that are paged using GPIOs.
+On Thursday, October 4, 2018 3:59:33 PM CEST Boris Brezillon wrote:
+> On Thu, 04 Oct 2018 15:52:57 +0200
+> Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
 > 
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-> ---
->  .../bindings/mtd/mtd,gpio-addr-flash.txt      | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/mtd,gpio-addr-flash.txt
+> > Hi Boris,
+> > 
+> > On Wednesday, October 3, 2018 4:06:34 PM CEST Boris Brezillon wrote:
+> > > On Wed, 03 Oct 2018 15:55:25 +0200
+> > > Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+> > >     
+> > > > > > 
+> > > > > > Implementation of NAND_OP_WAITRDY_INSTR has been based on legacy
+> > > > > > nand_wait_ready(),    
+> > > > > 
+> > > > > I don't remember what the ams-delta ->dev_ready()/->waitfunc() hooks
+> > > > > are doing, but is shouldn't be too hard to replace them by an
+> > > > > ams_delta_wait_ready() func.    
+> > > > 
+> > > > Default nand_wait() is used as ->waitfunc(), and ->dev_ready() returns 
+R/B 
+> > > > GPIO pin status.  
+> > > 
+> > > Okay. Then it might make sense to provide a generic helper to poll a
+> > > gpio.
+> > > 
+> > > void nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod)
+> > > {
+> > > 	...
+> > > }  
+> > 
+> > How about a still more generic helper which accepts dev_ready() callback 
+as an 
+> > argument?
 > 
-> diff --git a/Documentation/devicetree/bindings/mtd/mtd,gpio-addr-flash.txt b/Documentation/devicetree/bindings/mtd/mtd,gpio-addr-flash.txt
-> new file mode 100644
-> index 000000000000..304a33880f9e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/mtd,gpio-addr-flash.txt
-> @@ -0,0 +1,25 @@
-> +Memory Mapped flash with some address lines addressed using GPIOs
-> +
-> +Handle the case where a flash device is mostly addressed using physical
-> +line and supplemented by GPIOs.  This way you can hook up say a 8MiB flash
-> +to a 2MiB memory range and use the GPIOs to select a particular range.
-> +
-> + - compatible :  must be "mtd,gpio-addr-flash", "cfi-flash";
+> Nope, I still prefer the GPIO based one. We'll see if others need a
+> a more generic helper, but I doubt it.
 
-I keep thinking you don't need a specific binding, just add an optional
-addr-gpios property to the generic physmap binding and that should do
-the trick. Plus, "*mtd*,gpio-addr-flash" is a linux-ism, and DT
-bindings should be OS-agnostic.
+OK.
 
-> + - reg : Address range of the mtd chip that is memory mapped, this is,
-> +   on the previous example 2MiB.
-> + - addr-gpios: List of GPIO specifiers that will be used to address the MSBs
-> +   address lines. The order goes from LSB to MSB.
-> +
-> +For the rest of the properties, see mtd-physmap.txt.
-> +
-> +The device tree may optionally contain sub-nodes describing partitions of the
-> +address space. Check partition.txt for more details.
-> +
-> +Example:
-> +
-> +	flash@300000 {
-> +		compatible = "mtd,gpio-addr-flash", "cfi-flash";
-> +		bank-width = <2>;
-> +		reg = < 0x00300000 0x00200000 >;
-> +		addr-gpios = <&gpio_0 3 0>, <&gpio_0 4 0>;
-> +	} ;
+Legacy nand_wait_ready() uses a hardcoded timeout value of 400 ms.   Should we 
+follow the same approach in nand_gpio_waitrdy(), or should we rather let 
+drivers pass the timeout value, like in case of nand_soft_waitrdy()?
+
+Thanks,
+Janusz
