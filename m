@@ -1,22 +1,36 @@
-Received: from mail-wr1-x433.google.com ([2a00:1450:4864:20::433])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8LsA-0001n4-27
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 08:54:12 +0000
-Received: by mail-wr1-x433.google.com with SMTP id z4-v6so12705786wrb.1
- for <linux-mtd@lists.infradead.org>; Fri, 05 Oct 2018 01:53:59 -0700 (PDT)
+Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8MDw-0006SN-Iv
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 09:16:42 +0000
+Date: Fri, 5 Oct 2018 11:16:26 +0200
+From: Jan Kara <jack@suse.cz>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Paolo Valente <paolo.valente@linaro.org>,
+ Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Jens Axboe <axboe@kernel.dk>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181005091626.GA9686@quack2.suse.cz>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538582091.205649.20.camel@acm.org>
+ <20181004202553.71c2599c@alans-desktop>
+ <1538683746.230807.9.camel@acm.org>
+ <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
+ <1538692972.8223.7.camel@acm.org>
 MIME-Version: 1.0
-References: <CAGkQfmN6PguBRdL68ZRuOEgC2GWEW4-XxeE3=7epLGODTqHqeQ@mail.gmail.com>
- <CALLGbRLqOnJzTtFkC6LLO2Fgo+V2QvPDk4U+i1MW1AUOT8C3oA@mail.gmail.com>
- <CAGkQfmOuGYZANi4XxVCpW7murKegpJHh-qvpAK8H7H6YS1nJ2A@mail.gmail.com>
-In-Reply-To: <CAGkQfmOuGYZANi4XxVCpW7murKegpJHh-qvpAK8H7H6YS1nJ2A@mail.gmail.com>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Fri, 5 Oct 2018 10:53:46 +0200
-Message-ID: <CAFLxGvy1704O8bEdLS_t2A3vKDdvsB71n8R-OrQHrsgATxjdsg@mail.gmail.com>
-Subject: Re: Nandsim, UBIFS and memory concerns
-To: romain.izard.pro@gmail.com
-Cc: Steve deRosier <derosier@gmail.com>,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1538692972.8223.7.camel@acm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +40,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Romain,
+On Thu 04-10-18 15:42:52, Bart Van Assche wrote:
+> On Thu, 2018-10-04 at 22:39 +0200, Paolo Valente wrote:
+> > No, kernel build is, for evident reasons, one of the workloads I cared
+> > most about.  Actually, I tried to focus on all my main
+> > kernel-development tasks, such as also git checkout, git merge, git
+> > grep, ...
+> > 
+> > According to my test results, with BFQ these tasks are at least as
+> > fast as, or, in most system configurations, much faster than with the
+> > other schedulers.  Of course, at the same time the system also remains
+> > responsive with BFQ.
+> > 
+> > You can repeat these tests using one of my first scripts in the S
+> > suite: kern_dev_tasks_vs_rw.sh (usually, the older the tests, the more
+> > hypertrophied the names I gave :) ).
+> > 
+> > I stopped sharing also my kernel-build results years ago, because I
+> > went on obtaining the same, identical good results for years, and I'm
+> > aware that I tend to show and say too much stuff.
+> 
+> On my test setup building the kernel is slightly slower when using the BFQ
+> scheduler compared to using scheduler "none" (kernel 4.18.12, NVMe SSD,
+> single CPU with 6 cores, hyperthreading disabled). I am aware that the
+> proposal at the start of this thread was to make BFQ the default for devices
+> with a single hardware queue and not for devices like NVMe SSDs that support
+> multiple hardware queues.
+> 
+> What I think is missing is measurement results for BFQ on a system with
+> multiple CPU sockets and against a fast storage medium. Eliminating
+> the host lock from the SCSI core yielded a significant performance
+> improvement for such storage devices. Since the BFQ scheduler locks and
+> unlocks bfqd->lock for every dispatch operation it is very likely that BFQ
+> will slow down I/O for fast storage devices, even if their driver only
+> creates a single hardware queue.
 
-On Fri, Oct 5, 2018 at 10:21 AM Romain Izard <romain.izard.pro@gmail.com> wrote:
-> Thank you for sharing your experience on this topic. This will help
-> me to concentrate on checking my own code, rather than spending
-> time to analyse something that works.
+Well, I'm not sure why that is missing. I don't think anyone proposed to
+default to BFQ for such setup? Neither was anyone claiming that BFQ is
+better in such situation... The proposal has been: Default to BFQ for slow
+storage, leave it to deadline-mq otherwise.
 
-So, what you are facing are not UBIFS corruptions in terms of
-filesystem inconsistencies/errors?
-
+								Honza
 -- 
-Thanks,
-//richard
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
