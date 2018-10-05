@@ -1,10 +1,18 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8UbA-0007mI-Cj
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 18:13:14 +0000
-Received: by mail-lj1-x243.google.com with SMTP id v6-v6so12394873ljc.11
- for <linux-mtd@lists.infradead.org>; Fri, 05 Oct 2018 11:13:02 -0700 (PDT)
-MIME-Version: 1.0
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8Vph-0006Qr-HC
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 19:32:19 +0000
+Date: Fri, 5 Oct 2018 21:32:03 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+Message-ID: <20181005213203.247c369f@bbrezillon>
+In-Reply-To: <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
 References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
  <20181004142942.11887-2-ricardo.ribalda@gmail.com>
  <20181005002125.12fd229f@bbrezillon>
@@ -20,19 +28,10 @@ References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
  <20181005165234.468d2397@bbrezillon>
  <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
  <20181005182931.172b8f1c@bbrezillon>
-In-Reply-To: <20181005182931.172b8f1c@bbrezillon>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Fri, 5 Oct 2018 20:12:43 +0200
-Message-ID: <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
-Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,130 +41,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
-On Fri, Oct 5, 2018 at 6:29 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Fri, 5 Oct 2018 17:40:44 +0200
-> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
->
-> > Hi Boris
-> > On Fri, Oct 5, 2018 at 4:52 PM Boris Brezillon
-> > <boris.brezillon@bootlin.com> wrote:
-> > >
-> > > On Fri, 5 Oct 2018 16:06:57 +0200
-> > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> > >
-> > > > Hi again Boris
-> > > >
-> > > >
-> > > > On Fri, Oct 5, 2018 at 2:10 PM Boris Brezillon
-> > > > <boris.brezillon@bootlin.com> wrote:
-> > > > >
-> > > > > On Fri, 5 Oct 2018 14:04:52 +0200
-> > > > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> > > > >
-> > > > > > Hi Boris
-> > > > > > On Fri, Oct 5, 2018 at 12:12 PM Boris Brezillon
-> > > > > > <boris.brezillon@bootlin.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, 5 Oct 2018 11:54:18 +0200
-> > > > > > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> > > > > > >
-> > > > > > > > Hi Boris
-> > > > > > > >
-> > > > > > > > Just seen that  you already did the rebase at
-> > > > > > > > https://github.com/bbrezillon/linux-0day/commits/mtd/physmap-cleanup
-> > > > > > > >
-> > > > > > > > Thanks for that.
-> > > > > > > >
-> > > > > > > > I am about to test it in real hw (unless you want me wait)
-> > > > > > >
-> > > > > > > Sure, go ahead and test it.
-> > > > > > >
-> > > > > > > Thanks,
-> > > > > > >
-> > > > > > > Boris
-> > > > > > I had to change this on your patchset to have it working on hw:
-> > > > > > https://pastebin.com/78A7yhJ9
-> > > > > >
-> > > > > > If you send the patchset to the mailing list I can review it patch by patch.
-> > > > > >
-> > > > > > Also
-> > > > > > mtd: maps: Prepare merging of physmap and physmap_of
-> > > > > >
-> > > > > > I do not think that can be bisected. (Not sure, I have to test it)
-> > > > >
-> > > > > Okay, I'll have a look.
-> > > > >
-> > > > > >
-> > > > > > I add the diff to the mail, but gmail will probably scramble the
-> > > > > > lines(yes I know I have to use other mail client)
-> > > > >
-> > > > > The diff looks good, I'll fix that an send a push a new version.
-> > > >
-> > > > Also fix on physmap_flash_remove
-> > > >
-> > > > physmap_data->exit(dev); must be called BEFORE
-> > > > map_destroy(info->mtds[i]);
-> > >
-> > > Hm, that's weird. That shouldn't happen. Do you have a non-NULL
-> > > ->exit()? Can you detail why you think ->exit() call is the cause of
-> > > this OOPS?
-> > >
-> >
-> > No idea.  It was crashing at:
-> > https://github.com/bbrezillon/linux-0day/blob/mtd/physmap-cleanup/drivers/mtd/chips/cfi_cmdset_0002.c#L2839
-> > cfi_cmdset_0002.c seesm to play with cfi->chips on its reset callback
-> >
-> > I added some printfs:
-> >
-> > if (!cfi),
-> > if (!chip)
-> > if (!cfi->chips)
-> >
-> > sometimes it crashed on one place, sometimes in another :S. Reading
-> > back our patch it seemed more logical (semantically :P) to
-> > destroy after exit and not the other way around.
->
-> Actually no, it makes more sense to call ->exit() after destroying the
-> maps, because the platform-specific ->exit() implem might release
-> resources that are used during the destroy_map() operation. Another
-> reason to keep it in this order is that operations in the remove path
-> should be in the reverse order of those done in the probe path, and
-> ->init() is definitely called before map_probe().
->
+On Fri, 5 Oct 2018 20:12:43 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 
-I think I know what might be the issue. on cfi_cmdset_002.c
-cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
+> 
+> I think I know what might be the issue. on cfi_cmdset_002.c
+> cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
+> 
+> maybe we should call
+> unregister_reboot_notifier(&mtd->reboot_notifier);
+> before
+> cfi_amdstd_reset(mtd)
+> 
+> need to try that on real hw with some strategical printfs :P. But that
+> will ahve to wait til Monday
 
-maybe we should call
-unregister_reboot_notifier(&mtd->reboot_notifier);
-before
-cfi_amdstd_reset(mtd)
-
-need to try that on real hw with some strategical printfs :P. But that
-will ahve to wait til Monday
-
-Cheers
-
-
-> >
-> > I made that change and it stopped OOPsing at reboot.
->
-> Maybe it's just a side effect, especially since I'm pretty sure your
-> physmap_data->exit() is NULL (assuming you do use DT to declare your
-> flash).
->
-> >
-> > Havent had the time to dig deeper. But if it does not break anything
-> > on your side to invert destroy and exit please do so. It was not
-> > oopsing with my patchset.
->
-> I'd like to understand what's happening before doing this change. As I
-> said, I fear this reordering just hides something else.
-
-
-
--- 
-Ricardo Ribalda
+No problem, nothing urgent here. Have a nice weekend.
