@@ -1,26 +1,40 @@
-Received: from fllv0016.ext.ti.com ([198.47.19.142])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8J68-00082A-KB
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 05:56:28 +0000
-Subject: Re: [RFC PATCH] mtd: maps: Get rid of the latch-addr-flash driver
-To: Vignesh R <vigneshr@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>,
- David Woodhouse <dwmw2@infradead.org>, Brian
- Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-CC: Aleksey Makarov <amakarov@ru.mvista.com>, Sergei Shtylyov
- <sshtylyov@ru.mvista.com>, David Griego <dgriego@mvista.com>, Kevin Hilman
- <khilman@baylibre.com>
-References: <20181004224142.2181-1-boris.brezillon@bootlin.com>
- <afc00869-4cfe-b53d-e9de-7c01cd1848a2@ti.com>
-From: Sekhar Nori <nsekhar@ti.com>
-Message-ID: <e2a3b8fb-41a7-a131-3d32-442974c72074@ti.com>
-Date: Fri, 5 Oct 2018 11:25:44 +0530
+Date: Thu, 4 Oct 2018 23:24:44 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Paolo Valente <paolo.valente@linaro.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ "aherrmann@suse.com" <aherrmann@suse.com>,
+ "mgorman@suse.com" <mgorman@suse.com>,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "bfq-iosched@googlegroups.com" <bfq-iosched@googlegroups.com>,
+ "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+ Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181005062444.GA30240@infradead.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538550325.14984.108.camel@gmail.com>
+ <CACRpkdaLZXGKMQGJPH02p2QPkxUDA03Y=cu_wBR_+rFaLWTw7g@mail.gmail.com>
+ <BN3PR0401MB164003C967C45F2681F503A7E7E90@BN3PR0401MB1640.namprd04.prod.outlook.com>
+ <20181003125146.GA9313@infradead.org>
+ <1538578732.205649.0.camel@acm.org>
+ <20181003150131.GA7306@infradead.org>
+ <1538579724.205649.2.camel@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <afc00869-4cfe-b53d-e9de-7c01cd1848a2@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1538579724.205649.2.camel@acm.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +44,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 05 October 2018 10:47 AM, Vignesh R wrote:
-> + Sekhar, who is DaVinci port maintainer
+On Wed, Oct 03, 2018 at 08:15:24AM -0700, Bart Van Assche wrote:
+> On Wed, 2018-10-03 at 08:01 -0700, Christoph Hellwig wrote:
+> > On Wed, Oct 03, 2018 at 07:58:52AM -0700, Bart Van Assche wrote:
+> > > Has the work with the T10 committee to standardize the SCSI equivalent of anonymous
+> > > writes already started?
+> > 
+> > No, and I don't know of anyone who wants to do that in the short term.
 > 
-> On 05-Oct-18 4:11 AM, Boris Brezillon wrote:
->> Looks like this driver was initially added to support the NOR on the
->> DA830-EVM (Davinci) board, but the board file update was never merged.
+> That's unfortunate. I think having such a command available in the SCSI
+> command set would be a step forward.
 
-Thats right, I just checked that too from archives.
-
->>
->> Keeping unused drivers just adds to the maintenance burden, so let's
->> remove it if nobody uses it.
->>
->> Cc: David Griego <dgriego@mvista.com>
->> Cc: Aleksey Makarov <amakarov@ru.mvista.com>
->> Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>
->> Cc: Savinay Dharmappa <savinay.dharmappa@ti.com>
->> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
->> ---
->> Hi,
->>
->> If anyone cares about this driver, please raise your voice. If I have no
->> news before the 4.21 (5.1?) merge window, I'll merge the patch.
-
-No objections from me. You can remove the driver.
-
-Acked-by: Sekhar Nori <nsekhar@ti.com>
-
-Thanks,
-Sekhar
+I'm not saying it doesn't make sense, only that I don't know of any short
+term plans.
