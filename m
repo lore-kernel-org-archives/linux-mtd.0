@@ -1,18 +1,10 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8RxA-0004e9-Fm
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 15:23:46 +0000
-Date: Fri, 5 Oct 2018 17:23:32 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-Message-ID: <20181005172332.173791b5@bbrezillon>
-In-Reply-To: <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
+Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8S8j-0002iC-8s
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 15:35:43 +0000
+Received: by mail-lj1-x242.google.com with SMTP id v7-v6so11542468ljg.5
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Oct 2018 08:35:30 -0700 (PDT)
+MIME-Version: 1.0
 References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
  <20181004142942.11887-2-ricardo.ribalda@gmail.com>
  <20181005002125.12fd229f@bbrezillon>
@@ -23,9 +15,20 @@ References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
  <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
  <20181005121235.7e64b64a@bbrezillon>
  <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20181005164609.0058ae2c@bbrezillon>
+In-Reply-To: <20181005164609.0058ae2c@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Fri, 5 Oct 2018 17:35:12 +0200
+Message-ID: <CAPybu_2G8Kou3acrxWBQs1qff8Oa0DWGkfrQitnET89JXLnkFw@mail.gmail.com>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,34 +38,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 5 Oct 2018 14:04:52 +0200
-Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-
-> Hi Boris
-> On Fri, Oct 5, 2018 at 12:12 PM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> >
-> > On Fri, 5 Oct 2018 11:54:18 +0200
-> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> >  
-> > > Hi Boris
+Hi Boris
+On Fri, Oct 5, 2018 at 4:46 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Fri, 5 Oct 2018 14:04:52 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+>
+> > Hi Boris
+> > On Fri, Oct 5, 2018 at 12:12 PM Boris Brezillon
+> > <boris.brezillon@bootlin.com> wrote:
 > > >
-> > > Just seen that  you already did the rebase at
-> > > https://github.com/bbrezillon/linux-0day/commits/mtd/physmap-cleanup
+> > > On Fri, 5 Oct 2018 11:54:18 +0200
+> > > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 > > >
-> > > Thanks for that.
+> > > > Hi Boris
+> > > >
+> > > > Just seen that  you already did the rebase at
+> > > > https://github.com/bbrezillon/linux-0day/commits/mtd/physmap-cleanup
+> > > >
+> > > > Thanks for that.
+> > > >
+> > > > I am about to test it in real hw (unless you want me wait)
 > > >
-> > > I am about to test it in real hw (unless you want me wait)  
+> > > Sure, go ahead and test it.
+> > >
+> > > Thanks,
+> > >
+> > > Boris
+> > I had to change this on your patchset to have it working on hw:
+> > https://pastebin.com/78A7yhJ9
 > >
-> > Sure, go ahead and test it.
+> > If you send the patchset to the mailing list I can review it patch by patch.
 > >
-> > Thanks,
-> >
-> > Boris  
-> I had to change this on your patchset to have it working on hw:
-> https://pastebin.com/78A7yhJ9
+> > Also
+> > mtd: maps: Prepare merging of physmap and physmap_of
+>
+> It seems to compile just fine here. Is there a problem at runtime?
+
+Sorry, my fault, that is just me trying to review in github. I saw the
+cahnge on the Makefile but not the rename. Ignore this comment
 
 
-I pushed a new version to my branch. Can you test it? The reboot
-notifier bug should still be present, but I don't think this is
-something we introduced.
+
+-- 
+Ricardo Ribalda
