@@ -1,20 +1,31 @@
-Date: Fri, 5 Oct 2018 16:37:50 +0200
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>,
- linux-mtd@lists.infradead.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony
- Lindgren <tony@atomide.com>, Alexander Sverdlin
- <alexander.sverdlin@gmail.com>, Paul Burton <paul.burton@mips.com>, Wolfram
- Sang <wsa@the-dreams.de>, Suman Anna <s-anna@ti.com>,
- linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ARM: omap1: add nand_chip declaration
-Message-ID: <20181005163750.01fddf10@xps13>
-In-Reply-To: <20180926142029.619397-1-arnd@arndb.de>
-References: <20180926142029.619397-1-arnd@arndb.de>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8RNA-0002Aj-9v
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 14:46:34 +0000
+Date: Fri, 5 Oct 2018 16:46:09 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+Message-ID: <20181005164609.0058ae2c@bbrezillon>
+In-Reply-To: <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
+References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
+ <20181004142942.11887-2-ricardo.ribalda@gmail.com>
+ <20181005002125.12fd229f@bbrezillon>
+ <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
+ <20181005090811.6b7e9957@bbrezillon>
+ <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
+ <20181005103730.57d52e3c@bbrezillon>
+ <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
+ <20181005121235.7e64b64a@bbrezillon>
+ <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +35,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+On Fri, 5 Oct 2018 14:04:52 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 
-Arnd Bergmann <arnd@arndb.de> wrote on Wed, 26 Sep 2018 16:20:16 +0200:
+> Hi Boris
+> On Fri, Oct 5, 2018 at 12:12 PM Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> >
+> > On Fri, 5 Oct 2018 11:54:18 +0200
+> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> >  
+> > > Hi Boris
+> > >
+> > > Just seen that  you already did the rebase at
+> > > https://github.com/bbrezillon/linux-0day/commits/mtd/physmap-cleanup
+> > >
+> > > Thanks for that.
+> > >
+> > > I am about to test it in real hw (unless you want me wait)  
+> >
+> > Sure, go ahead and test it.
+> >
+> > Thanks,
+> >
+> > Boris  
+> I had to change this on your patchset to have it working on hw:
+> https://pastebin.com/78A7yhJ9
+> 
+> If you send the patchset to the mailing list I can review it patch by patch.
+> 
+> Also
+> mtd: maps: Prepare merging of physmap and physmap_of
 
-> Recent MTD changes caused a minor build regression on OMAP1:
->=20
-> In file included from arch/arm/mach-omap1/devices.c:31:
-> arch/arm/mach-omap1/common.h:85:39: error: 'struct nand_chip' declared in=
-side parameter list will not be visible outside of this definition or decla=
-ration [-Werror]
->=20
-> Fixes: 1002aed789bc ("mtd: rawnand: plat_nand: Pass a nand_chip object to=
- all platform_nand_ctrl hooks")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ----
-> v2: remove unused linux/mtd/mtd.h inclusion
-> ---
-
-Also squashed in nand/next with the failing commit.
-
-Thanks,
-Miqu=C3=A8l
+It seems to compile just fine here. Is there a problem at runtime?
