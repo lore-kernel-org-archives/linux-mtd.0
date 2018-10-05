@@ -1,20 +1,24 @@
-Received: from szxga06-in.huawei.com ([45.249.212.32] helo=huawei.com)
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8KJ0-0002Oq-H7
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 07:13:48 +0000
-From: Hou Tao <houtao1@huawei.com>
-To: "gregkh@linuxfoundation.org >> Greg Kroah-Hartman"
- <gregkh@linuxfoundation.org>, Andreas Gruenbacher <agruenba@redhat.com>
-CC: David Woodhouse <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
- <stable@vger.kernel.org>, "houtao1@huawei.com" <houtao1@huawei.com>
-Subject: [PATCH 4.4-stable] jffs2: return -ERANGE when xattr buffer is too
- small
-Message-ID: <d05f826c-5b68-2409-ac96-01f0885d0617@huawei.com>
-Date: Fri, 5 Oct 2018 15:13:20 +0800
+ id 1g8L6m-0000kY-Jm
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 08:05:15 +0000
+Date: Fri, 5 Oct 2018 10:04:57 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+ linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
+ Paolo Valente <paolo.valente@linaro.org>,
+ Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181005080457.GB14466@amd>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="tjCHc7DPkfUGtrlw"
+Content-Disposition: inline
+In-Reply-To: <20181002124329.21248-1-linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Greg,
 
-The problem had been fixed by 764a5c6b1fa4 ("xattr handlers: Simplify list
-operation") in v4.5-rc1, but the modification in that commit may be too much
-because it modifies all file-systems which implement xattr, so I create a single
-patch for jffs2 to fix the problem. Which one is your preference ?
+--tjCHc7DPkfUGtrlw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hi Andreas,
+Hi!
 
-Could you please help review the patch ?
+> I talked to Pavel a bit back and it turns out he has a
+> usecase for BFQ as well and I bet he also would like it
+> as default scheduler for that system (Pavel tell us more,
+> I don't remember what it was!)
 
-Thanks,
-Tao
----
+I'm not sure I remember clearly, either.
 
-From: Hou Tao <houtao1@huawei.com>
+IIRC I was working with ionice on spinning disks, and it had no
+effect. I switched to BFQ and suddenly ionice was effective.
 
-When a file have multiple xattrs and the passed buffer is
-smaller than the required size, jffs2_listxattr() should
-return -ERANGE instead of continue, else Oops may occurs
-due to memory corruption.
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Also remove the unnecessary check ("rc < 0"), because
-xhandle->list(...) will not return an error number.
+--tjCHc7DPkfUGtrlw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Spotted by generic/377 in xfstests-dev.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- fs/jffs2/xattr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+iEYEARECAAYFAlu3GykACgkQMOfwapXb+vLPwACfdqGloCd9CjmTKQ5BeYsHA9Jc
+AZoAoKwt4ORtanA0S3EqgvOJ2hMzMIp5
+=s0++
+-----END PGP SIGNATURE-----
 
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index 4c2c03663533..8e1427762eeb 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -1004,12 +1004,14 @@ ssize_t jffs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
-                        rc = xhandle->list(xhandle, dentry, buffer + len,
-                                           size - len, xd->xname,
-                                           xd->name_len);
-+                       if (rc > size - len) {
-+                               rc = -ERANGE;
-+                               goto out;
-+                       }
-                } else {
-                        rc = xhandle->list(xhandle, dentry, NULL, 0,
-                                           xd->xname, xd->name_len);
-                }
--               if (rc < 0)
--                       goto out;
-                len += rc;
-        }
-        rc = len;
---
+--tjCHc7DPkfUGtrlw--
