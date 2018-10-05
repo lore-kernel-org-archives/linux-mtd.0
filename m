@@ -1,24 +1,33 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8MsR-0007Uj-Tn
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 09:58:33 +0000
-Date: Fri, 5 Oct 2018 11:58:09 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: <christophe.kerello@st.com>
-Cc: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [PATCH v2 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND
- flash controller driver
-Message-ID: <20181005115809.55356782@bbrezillon>
-In-Reply-To: <1538732520-2800-3-git-send-email-christophe.kerello@st.com>
-References: <1538732520-2800-1-git-send-email-christophe.kerello@st.com>
- <1538732520-2800-3-git-send-email-christophe.kerello@st.com>
+Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
+ by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8Mje-00047k-2K
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 09:49:27 +0000
+Date: Fri, 5 Oct 2018 11:49:09 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: oleksandr@natalenko.name, Paolo Valente <paolo.valente@linaro.org>,
+ Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
+ aherrmann@suse.com, mgorman@suse.com,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ bfq-iosched@googlegroups.com, Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+Message-ID: <20181005094909.GB17069@amd>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
+ <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +37,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 5 Oct 2018 11:41:59 +0200
-<christophe.kerello@st.com> wrote:
 
-> +struct stm32_fmc2 {
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You should inherit from nand_controller even if the nand_chip already
-embeds a dummy nand controller object.
+Hi!
 
-	struct nand_controller base;
+> On another hand, the users of embedded devices, mentioned by Linus,
+> > should already know what scheduler to choose because dealing with
+> > embedded world assumes the person can decide this on their own, or with
+> > the help of abovementioned udev scripts and/or Documentation/ as a
+> > reference point.
+> >
+> > So I see no obstacles here, and the choice to rely on udev by default
+> > sounds reasonable.
+> >
+>=20
+> I am sorry but I do not agree with this.
+>=20
+> There are several historical precedents where we have
+> concluded that just "have the kernel do the right thing
+> by default" is the way to go.
 
-> +	struct stm32_fmc2_nand nand;
-> +	struct device *dev;
-> +	void __iomem *io_base;
-> +	void __iomem *data_base[FMC2_MAX_CE];
-> +	void __iomem *cmd_base[FMC2_MAX_CE];
-> +	void __iomem *addr_base[FMC2_MAX_CE];
-> +	phys_addr_t io_phys_addr;
-> +	phys_addr_t data_phys_addr[FMC2_MAX_CE];
-> +	struct clk *clk;
-> +
-> +	struct dma_chan *dma_tx_ch;
-> +	struct dma_chan *dma_rx_ch;
-> +	struct dma_chan *dma_ecc_ch;
-> +	struct sg_table dma_data_sg;
-> +	struct sg_table dma_ecc_sg;
-> +	u8 *ecc_buf;
-> +	int dma_ecc_len;
-> +
-> +	struct completion complete;
-> +	struct completion dma_data_complete;
-> +	struct completion dma_ecc_complete;
-> +
-> +	u8 cs_assigned;
-> +	int cs_sel;
-> +};
+Kernel should do the right thing by default, I agree with Linus W.
+
+Having reasonable defaults is useful; yes, my desktop has udev etc,
+but I still want reasonable scheduler when doing fsck in
+init=3D/bin/bash.
+
+Plus, I update kernels more often than distros, and I run various
+embedded stuff.
+
+Kernel should just provide reasonable defaults.
+
+And yes, we have "ionice" command and yes, it would be nice if it
+worked by default...
+
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlu3M5UACgkQMOfwapXb+vJ6eACfcuqmLHOP0/KPd0GVpLGns0P0
+WcIAoJmlmzUGDFB4GFpMdVF0osheZdbP
+=pxio
+-----END PGP SIGNATURE-----
+
+--5I6of5zJg18YgZEa--
