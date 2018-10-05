@@ -1,33 +1,29 @@
-Received: from atrey.karlin.mff.cuni.cz ([195.113.26.193])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8Mje-00047k-2K
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 09:49:27 +0000
-Date: Fri, 5 Oct 2018 11:49:09 +0200
-From: Pavel Machek <pavel@ucw.cz>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: oleksandr@natalenko.name, Paolo Valente <paolo.valente@linaro.org>,
- Jens Axboe <axboe@kernel.dk>, linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>, Jan Kara <jack@suse.cz>,
- aherrmann@suse.com, mgorman@suse.com,
- Chunyan Zhang <zhang.chunyan@linaro.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- bfq-iosched@googlegroups.com, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-Message-ID: <20181005094909.GB17069@amd>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1eca41df95ff660eb247a3de666adeb4@natalenko.name>
- <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8N6P-0005BY-L1
+ for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 10:12:59 +0000
+Date: Fri, 5 Oct 2018 12:12:35 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+Message-ID: <20181005121235.7e64b64a@bbrezillon>
+In-Reply-To: <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
+References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
+ <20181004142942.11887-2-ricardo.ribalda@gmail.com>
+ <20181005002125.12fd229f@bbrezillon>
+ <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
+ <20181005090811.6b7e9957@bbrezillon>
+ <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
+ <20181005103730.57d52e3c@bbrezillon>
+ <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYG2Y=rspbZ_o=H3REXTEfOcaiqEyQD4kzO=G=d63V3yA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,60 +33,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 5 Oct 2018 11:54:18 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 
---5I6of5zJg18YgZEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hi Boris
+> 
+> Just seen that  you already did the rebase at
+> https://github.com/bbrezillon/linux-0day/commits/mtd/physmap-cleanup
+> 
+> Thanks for that.
+> 
+> I am about to test it in real hw (unless you want me wait)
 
-Hi!
+Sure, go ahead and test it.
 
-> On another hand, the users of embedded devices, mentioned by Linus,
-> > should already know what scheduler to choose because dealing with
-> > embedded world assumes the person can decide this on their own, or with
-> > the help of abovementioned udev scripts and/or Documentation/ as a
-> > reference point.
-> >
-> > So I see no obstacles here, and the choice to rely on udev by default
-> > sounds reasonable.
-> >
->=20
-> I am sorry but I do not agree with this.
->=20
-> There are several historical precedents where we have
-> concluded that just "have the kernel do the right thing
-> by default" is the way to go.
+Thanks,
 
-Kernel should do the right thing by default, I agree with Linus W.
-
-Having reasonable defaults is useful; yes, my desktop has udev etc,
-but I still want reasonable scheduler when doing fsck in
-init=3D/bin/bash.
-
-Plus, I update kernels more often than distros, and I run various
-embedded stuff.
-
-Kernel should just provide reasonable defaults.
-
-And yes, we have "ionice" command and yes, it would be nice if it
-worked by default...
-
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---5I6of5zJg18YgZEa
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlu3M5UACgkQMOfwapXb+vJ6eACfcuqmLHOP0/KPd0GVpLGns0P0
-WcIAoJmlmzUGDFB4GFpMdVF0osheZdbP
-=pxio
------END PGP SIGNATURE-----
-
---5I6of5zJg18YgZEa--
+Boris
