@@ -1,17 +1,38 @@
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from mail-pg1-f193.google.com ([209.85.215.193])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8odW-0001yo-V1
- for linux-mtd@lists.infradead.org; Sat, 06 Oct 2018 15:37:00 +0000
-Received: by mail-wm1-x342.google.com with SMTP id 206-v6so4337538wmb.5
- for <linux-mtd@lists.infradead.org>; Sat, 06 Oct 2018 08:36:48 -0700 (PDT)
-From: Robert Marko <robimarko@gmail.com>
-To: linux-mtd@lists.infradead.org
-Cc: Robert Marko <robimarko@gmail.com>
-Subject: [PATCH] mtd: spinand: winbond: Add support for W25N01GV
-Date: Sat,  6 Oct 2018 17:36:42 +0200
-Message-Id: <20181006153642.10376-1-robimarko@gmail.com>
+ id 1g8pJy-0000h0-Or
+ for linux-mtd@lists.infradead.org; Sat, 06 Oct 2018 16:20:52 +0000
+Received: by mail-pg1-f193.google.com with SMTP id y18-v6so6040952pge.0
+ for <linux-mtd@lists.infradead.org>; Sat, 06 Oct 2018 09:20:40 -0700 (PDT)
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Paolo Valente <paolo.valente@linaro.org>
+Cc: Jan Kara <jack@suse.cz>, Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
+ Jens Axboe <axboe@kernel.dk>, Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538582091.205649.20.camel@acm.org> <20181004202553.71c2599c@alans-desktop>
+ <1538683746.230807.9.camel@acm.org>
+ <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
+ <1538692972.8223.7.camel@acm.org> <20181005091626.GA9686@quack2.suse.cz>
+ <20bfa679-3131-e0af-f69d-2fbec32fbced@acm.org>
+ <A6518C7A-C7DF-48A6-A57A-F4B4162DC16E@linaro.org>
+From: Bart Van Assche <bvanassche@acm.org>
+Message-ID: <bb934140-ef97-05b3-2bfc-d82be4766578@acm.org>
+Date: Sat, 6 Oct 2018 09:20:36 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <A6518C7A-C7DF-48A6-A57A-F4B4162DC16E@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +42,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-W25N01GV is a single die version of the already supported
-W25M02GV with half the capacity. Everything else is the
-same so introduce support for W25N01GV.
+On 10/5/18 11:46 PM, Paolo Valente wrote:
+>> Il giorno 06 ott 2018, alle ore 05:12, Bart Van Assche <bvanassche@acm.org> ha scritto:
+>> On 10/5/18 2:16 AM, Jan Kara wrote:
+>>> On Thu 04-10-18 15:42:52, Bart Van Assche wrote:
+>>>> What I think is missing is measurement results for BFQ on a system with
+>>>> multiple CPU sockets and against a fast storage medium. Eliminating
+>>>> the host lock from the SCSI core yielded a significant performance
+>>>> improvement for such storage devices. Since the BFQ scheduler locks and
+>>>> unlocks bfqd->lock for every dispatch operation it is very likely that BFQ
+>>>> will slow down I/O for fast storage devices, even if their driver only
+>>>> creates a single hardware queue.
+>>> Well, I'm not sure why that is missing. I don't think anyone proposed to
+>>> default to BFQ for such setup? Neither was anyone claiming that BFQ is
+>>> better in such situation... The proposal has been: Default to BFQ for slow
+>>> storage, leave it to deadline-mq otherwise.
+>>
+>> How do you define slow storage? The proposal at the start of this thread
+>> was to make BFQ the default for all block devices that create a single
+>> hardware queue. That includes all SATA storage since scsi-mq only creates
+>> a single hardware queue when using the SATA protocol. The proposal to make >> BFQ the default for systems with a single hard disk probably makes sense
+>> but I am not sure that making BFQ the default for systems equipped with
+>> one or more (SATA) SSDs is also a good idea. Especially for multi-socket
+>> systems since BFQ reintroduces a queue-wide lock.
+> 
+> No, BFQ has no queue-wide lock.  The very first change made to BFQ for
+> porting it to blk-mq was to remove the queue lock.  Guided by Jens, I
+> replaced that lock with the exact, same scheduler lock used in
+> mq-deadline.
 
-Datasheet:http://www.winbond.com/resource-files/w25n01gv%20revl%20050918%20unsecured.pdf
+It's easy to see that both mq-deadline and BFQ define a queue-wide lock. 
+For mq-deadline its deadline_data.lock. For BFQ it's bfq_data.lock. That 
+last lock serializes all bfq_dispatch_request() calls and hence reduces 
+concurrency while processing I/O requests. From bfq_dispatch_request():
 
-Tested on 8devices Jalapeno dev board under OpenWrt running 4.19-rc5.
+static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx *hctx)
+{
+	struct bfq_data *bfqd = hctx->queue->elevator->elevator_data;
+	[ ... ]
+	spin_lock_irq(&bfqd->lock);
+	[ ... ]
+}
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/mtd/nand/spi/winbond.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I think the above makes it very clear that bfqd->lock is queue-wide.
 
---- a/drivers/mtd/nand/spi/winbond.c
-+++ b/drivers/mtd/nand/spi/winbond.c
-@@ -84,6 +84,14 @@ static const struct spinand_info winbond
- 		     0,
- 		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
- 		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
-+	SPINAND_INFO("W25N01GV", 0xAA,
-+		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
-+		     NAND_ECCREQ(1, 512),
-+		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-+					      &write_cache_variants,
-+					      &update_cache_variants),
-+		     0,
-+		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
- };
- 
- /**
+It is easy to understand why both I/O schedulers need a queue-wide lock: 
+the only way to avoid race conditions when considering all pending I/O 
+requests for scheduling decisions is to use a lock that covers all 
+pending requests and hence that is queue-wide.
+
+Bart.
