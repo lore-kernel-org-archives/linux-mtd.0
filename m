@@ -1,36 +1,36 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8Vph-0006Qr-HC
- for linux-mtd@lists.infradead.org; Fri, 05 Oct 2018 19:32:19 +0000
-Date: Fri, 5 Oct 2018 21:32:03 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-Message-ID: <20181005213203.247c369f@bbrezillon>
-In-Reply-To: <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
-References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
- <20181004142942.11887-2-ricardo.ribalda@gmail.com>
- <20181005002125.12fd229f@bbrezillon>
- <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
- <20181005090811.6b7e9957@bbrezillon>
- <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
- <20181005103730.57d52e3c@bbrezillon>
- <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
- <20181005121235.7e64b64a@bbrezillon>
- <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
- <20181005141057.0f1b0a9b@bbrezillon>
- <CAPybu_0OZR==4k5nxVRZ-1NjPEXLQsun7QhnYds8dPndreUjcQ@mail.gmail.com>
- <20181005165234.468d2397@bbrezillon>
- <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
- <20181005182931.172b8f1c@bbrezillon>
- <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
+Received: from mail-pf1-f194.google.com ([209.85.210.194])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g8d1F-0006Sr-Rk
+ for linux-mtd@lists.infradead.org; Sat, 06 Oct 2018 03:12:58 +0000
+Received: by mail-pf1-f194.google.com with SMTP id r9-v6so5749233pff.11
+ for <linux-mtd@lists.infradead.org>; Fri, 05 Oct 2018 20:12:31 -0700 (PDT)
+Subject: Re: [PATCH] block: BFQ default for single queue devices
+To: Jan Kara <jack@suse.cz>
+Cc: Paolo Valente <paolo.valente@linaro.org>,
+ Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Jens Axboe <axboe@kernel.dk>,
+ Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
+ Chunyan Zhang <zhang.chunyan@linaro.org>,
+ linux-kernel <linux-kernel@vger.kernel.org>
+References: <20181002124329.21248-1-linus.walleij@linaro.org>
+ <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
+ <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
+ <1538582091.205649.20.camel@acm.org> <20181004202553.71c2599c@alans-desktop>
+ <1538683746.230807.9.camel@acm.org>
+ <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
+ <1538692972.8223.7.camel@acm.org> <20181005091626.GA9686@quack2.suse.cz>
+From: Bart Van Assche <bvanassche@acm.org>
+Message-ID: <20bfa679-3131-e0af-f69d-2fbec32fbced@acm.org>
+Date: Fri, 5 Oct 2018 20:12:27 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181005091626.GA9686@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,19 +41,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 5 Oct 2018 20:12:43 +0200
-Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+On 10/5/18 2:16 AM, Jan Kara wrote:
+> On Thu 04-10-18 15:42:52, Bart Van Assche wrote:
+>> What I think is missing is measurement results for BFQ on a system with
+>> multiple CPU sockets and against a fast storage medium. Eliminating
+>> the host lock from the SCSI core yielded a significant performance
+>> improvement for such storage devices. Since the BFQ scheduler locks and
+>> unlocks bfqd->lock for every dispatch operation it is very likely that BFQ
+>> will slow down I/O for fast storage devices, even if their driver only
+>> creates a single hardware queue.
+> 
+> Well, I'm not sure why that is missing. I don't think anyone proposed to
+> default to BFQ for such setup? Neither was anyone claiming that BFQ is
+> better in such situation... The proposal has been: Default to BFQ for slow
+> storage, leave it to deadline-mq otherwise.
 
-> 
-> I think I know what might be the issue. on cfi_cmdset_002.c
-> cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
-> 
-> maybe we should call
-> unregister_reboot_notifier(&mtd->reboot_notifier);
-> before
-> cfi_amdstd_reset(mtd)
-> 
-> need to try that on real hw with some strategical printfs :P. But that
-> will ahve to wait til Monday
+Hi Jan,
 
-No problem, nothing urgent here. Have a nice weekend.
+How do you define slow storage? The proposal at the start of this thread 
+was to make BFQ the default for all block devices that create a single 
+hardware queue. That includes all SATA storage since scsi-mq only 
+creates a single hardware queue when using the SATA protocol. The 
+proposal to make BFQ the default for systems with a single hard disk 
+probably makes sense but I am not sure that making BFQ the default for 
+systems equipped with one or more (SATA) SSDs is also a good idea. 
+Especially for multi-socket systems since BFQ reintroduces a queue-wide 
+lock. As you know no queue-wide locking happens during I/O in the 
+scsi-mq core nor in the blk-mq core.
+
+Bart.
