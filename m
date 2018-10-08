@@ -1,38 +1,24 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9UZw-0004dL-Kw
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 12:24:05 +0000
-Date: Mon, 8 Oct 2018 14:23:45 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
- linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-Message-ID: <20181008142345.32114923@bbrezillon>
-In-Reply-To: <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
-References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
- <20181004142942.11887-2-ricardo.ribalda@gmail.com>
- <20181005002125.12fd229f@bbrezillon>
- <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
- <20181005090811.6b7e9957@bbrezillon>
- <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
- <20181005103730.57d52e3c@bbrezillon>
- <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
- <20181005121235.7e64b64a@bbrezillon>
- <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
- <20181005141057.0f1b0a9b@bbrezillon>
- <CAPybu_0OZR==4k5nxVRZ-1NjPEXLQsun7QhnYds8dPndreUjcQ@mail.gmail.com>
- <20181005165234.468d2397@bbrezillon>
- <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
- <20181005182931.172b8f1c@bbrezillon>
- <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
- <20181005213203.247c369f@bbrezillon>
- <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
+Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Yogesh Gaur
+ <yogeshnarayan.gaur@nxp.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>
+References: <20181003165603.2579-1-vigneshr@ti.com>
+ <20181003212017.653e739f@bbrezillon>
+ <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
+ <20181004131732.4c9e2ae9@bbrezillon>
+From: Vignesh R <vigneshr@ti.com>
+Message-ID: <e4af1014-2008-440c-a017-bb8e7e960d3b@ti.com>
+Date: Mon, 8 Oct 2018 21:06:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20181004131732.4c9e2ae9@bbrezillon>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -43,37 +29,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 Oct 2018 09:40:09 +0200
-Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+Hi Boris,
 
-> Hi Boris
-> On Fri, Oct 5, 2018 at 9:32 PM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> >
-> > On Fri, 5 Oct 2018 20:12:43 +0200
-> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
-> >  
-> > >
-> > > I think I know what might be the issue. on cfi_cmdset_002.c
-> > > cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
-> > >
-> > > maybe we should call
-> > > unregister_reboot_notifier(&mtd->reboot_notifier);
-> > > before
-> > > cfi_amdstd_reset(mtd)
-> > >
-> > > need to try that on real hw with some strategical printfs :P. But that
-> > > will ahve to wait til Monday  
-> >
-> > No problem, nothing urgent here. Have a nice weekend.  
+Sorry I missed this mail.
+
+On Thursday 04 October 2018 04:47 PM, Boris Brezillon wrote:
+> On Thu, 4 Oct 2018 16:05:36 +0530
+> Vignesh R <vigneshr@ti.com> wrote:
 > 
-> Just updated my kernel version (4.14.53 ->  4.14.69) with you last
-> github and I do not see the crash anymore. So I guess we are good to
-> go.
+>>>>
+>>>>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
+>>>>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++  
+>>>
+>>> On a slightly different topic, do you plan to convert the Cadence
+>>> driver to spi-mem? And if you don't, is it because you don't have time
+>>> or because some features are missing in spi-mem (I remember you
+>>> mentioned a few things back when you were reviewing the spi-mem series)?
+>>>   
+>>
+>> I do not have plans to convert cadence QSPI driver to spi-mem yet,
+>> mainly due to lack of time. Also, not sure if original author Marek and
+>> other altera people are okay with that.
+>>
+>> I see couple of issues in the way of conversion:
+>> 1. I would wait to know what direction would direct mapping APIs[1] go
+>> before starting spi-mem conversion for Cadence QSPI driver. Else, we
+>> have may to re write again if direct mapping APIs are merged.
+> 
+> I'd suggest reviewing the proposal I posted so that you can influence
+> the design of this new API ;-).
+> 
 
-Okay, I'll try to send the patch series. Don't hesitate to ping me if I
-forget.
+I did take a look and proposal seems fine. Will try to prototype and
+test cadence QSPI driver with these. Thanks for the patches!
 
-Thanks,
 
-Boris
+>> 2. New Cadence OSPI IP has an integrated PHY to support high throughput
+>> OSPI flashes operating up 200MHz in Octal DDR mode. In order to work
+>> with such flashes, PHY DLLs need to be calibrated. Highly simplified
+>> calibration sequence is as below(See [2] for actual sequence):
+>> -Read flash ID at low speed and store it.
+>> -Enable PHY and set DLLs to a defined initial value
+>> -Increment RX DLL value
+>> -Read flash ID and check for correctness of data read
+>> -repeat above two steps until a band of passing values is obtained for
+>> RX DLL where flash ID is correctly read.
+>> -DLL needs to set to middle of the passing band.
+> 
+> Is the Read ID operation hardcoded or do you just use it as a way to
+> trigger predictable transfers on the IO bus?
+> 
+
+Just a way to trigger predictable data reads.
+
+>>
+>> I am trying to figure out how to fit this into the spi-mem framework as
+>> controller would to need to store READ ID opcode and expected JEDEC ID
+>> before starting calibration sequence.
+> 
+> I think this should be split in 2:
+> 
+> - the SPI NOR framework passing the operation to use to do the
+>   calibration (here a READ ID)
+> - the SPI controller framework replaying the same operation with
+>   different DLL configs until it finds the best match
+> 
+> So, it would basically be added as a new hook:
+> 
+> 	int (*calibrate)(struct spi_mem *mem,
+> 			 const struct spi_mem_op *tmpl);
+> 
+> and a new function provided by the spi-mem API
+> 
+> int spi_mem_calibrate(struct spi_mem *mem,
+> 		      const struct spi_mem_op *tmpl);
+> 
+> and calibration outcome would be somehow attached to the spi_mem
+> object.
+> 
+> This way we stay memory agnostic but still provide the necessary blocks
+> at the spi-mem level to do such callibrations.
+> 
+> Would that work?
+> 
+
+That would work and hopefully is not intrusive to spi-mem framework.
+
+-- 
+Regards
+Vignesh
