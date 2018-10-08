@@ -1,40 +1,40 @@
-Received: from mail-wr1-x441.google.com ([2a00:1450:4864:20::441])
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g8piv-0004R0-R8
- for linux-mtd@lists.infradead.org; Sat, 06 Oct 2018 16:46:39 +0000
-Received: by mail-wr1-x441.google.com with SMTP id 61-v6so15748042wrb.6
- for <linux-mtd@lists.infradead.org>; Sat, 06 Oct 2018 09:46:27 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH] block: BFQ default for single queue devices
-From: Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <bb934140-ef97-05b3-2bfc-d82be4766578@acm.org>
-Date: Sat, 6 Oct 2018 18:46:22 +0200
-Cc: Jan Kara <jack@suse.cz>, Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
- Jens Axboe <axboe@kernel.dk>, Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Andreas Herrmann <aherrmann@suse.com>, Mel Gorman <mgorman@suse.com>,
- Chunyan Zhang <zhang.chunyan@linaro.org>,
- linux-kernel <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6305E683-5078-4DA1-A168-D4E5D9BFA80F@linaro.org>
-References: <20181002124329.21248-1-linus.walleij@linaro.org>
- <05fdbe23-ec01-895f-e67e-abff85c1ece2@kernel.dk>
- <B5321A64-8A1A-42FF-A337-F4524BDA179B@linaro.org>
- <1538582091.205649.20.camel@acm.org> <20181004202553.71c2599c@alans-desktop>
- <1538683746.230807.9.camel@acm.org>
- <A017CAC7-41E6-4BB3-AC31-5EB524276138@linaro.org>
- <1538692972.8223.7.camel@acm.org> <20181005091626.GA9686@quack2.suse.cz>
- <20bfa679-3131-e0af-f69d-2fbec32fbced@acm.org>
- <A6518C7A-C7DF-48A6-A57A-F4B4162DC16E@linaro.org>
- <bb934140-ef97-05b3-2bfc-d82be4766578@acm.org>
-To: Bart Van Assche <bvanassche@acm.org>
+ id 1g9Q9e-0002Ca-QX
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 07:40:40 +0000
+Received: by mail-lj1-x241.google.com with SMTP id z21-v6so16914299ljz.0
+ for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2018 00:40:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
+ <20181004142942.11887-2-ricardo.ribalda@gmail.com>
+ <20181005002125.12fd229f@bbrezillon>
+ <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
+ <20181005090811.6b7e9957@bbrezillon>
+ <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
+ <20181005103730.57d52e3c@bbrezillon>
+ <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
+ <20181005121235.7e64b64a@bbrezillon>
+ <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
+ <20181005141057.0f1b0a9b@bbrezillon>
+ <CAPybu_0OZR==4k5nxVRZ-1NjPEXLQsun7QhnYds8dPndreUjcQ@mail.gmail.com>
+ <20181005165234.468d2397@bbrezillon>
+ <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
+ <20181005182931.172b8f1c@bbrezillon>
+ <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
+ <20181005213203.247c369f@bbrezillon>
+In-Reply-To: <20181005213203.247c369f@bbrezillon>
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Date: Mon, 8 Oct 2018 09:40:09 +0200
+Message-ID: <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
+ LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,111 +44,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Boris
+On Fri, Oct 5, 2018 at 9:32 PM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+>
+> On Fri, 5 Oct 2018 20:12:43 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+>
+> >
+> > I think I know what might be the issue. on cfi_cmdset_002.c
+> > cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
+> >
+> > maybe we should call
+> > unregister_reboot_notifier(&mtd->reboot_notifier);
+> > before
+> > cfi_amdstd_reset(mtd)
+> >
+> > need to try that on real hw with some strategical printfs :P. But that
+> > will ahve to wait til Monday
+>
+> No problem, nothing urgent here. Have a nice weekend.
+
+Just updated my kernel version (4.14.53 ->  4.14.69) with you last
+github and I do not see the crash anymore. So I guess we are good to
+go.
+
+Thanks!
 
 
-> Il giorno 06 ott 2018, alle ore 18:20, Bart Van Assche =
-<bvanassche@acm.org> ha scritto:
->=20
-> On 10/5/18 11:46 PM, Paolo Valente wrote:
->>> Il giorno 06 ott 2018, alle ore 05:12, Bart Van Assche =
-<bvanassche@acm.org> ha scritto:
->>> On 10/5/18 2:16 AM, Jan Kara wrote:
->>>> On Thu 04-10-18 15:42:52, Bart Van Assche wrote:
->>>>> What I think is missing is measurement results for BFQ on a system =
-with
->>>>> multiple CPU sockets and against a fast storage medium. =
-Eliminating
->>>>> the host lock from the SCSI core yielded a significant performance
->>>>> improvement for such storage devices. Since the BFQ scheduler =
-locks and
->>>>> unlocks bfqd->lock for every dispatch operation it is very likely =
-that BFQ
->>>>> will slow down I/O for fast storage devices, even if their driver =
-only
->>>>> creates a single hardware queue.
->>>> Well, I'm not sure why that is missing. I don't think anyone =
-proposed to
->>>> default to BFQ for such setup? Neither was anyone claiming that BFQ =
-is
->>>> better in such situation... The proposal has been: Default to BFQ =
-for slow
->>>> storage, leave it to deadline-mq otherwise.
->>>=20
->>> How do you define slow storage? The proposal at the start of this =
-thread
->>> was to make BFQ the default for all block devices that create a =
-single
->>> hardware queue. That includes all SATA storage since scsi-mq only =
-creates
->>> a single hardware queue when using the SATA protocol. The proposal =
-to make >> BFQ the default for systems with a single hard disk probably =
-makes sense
->>> but I am not sure that making BFQ the default for systems equipped =
-with
->>> one or more (SATA) SSDs is also a good idea. Especially for =
-multi-socket
->>> systems since BFQ reintroduces a queue-wide lock.
->> No, BFQ has no queue-wide lock.  The very first change made to BFQ =
-for
->> porting it to blk-mq was to remove the queue lock.  Guided by Jens, I
->> replaced that lock with the exact, same scheduler lock used in
->> mq-deadline.
->=20
-> It's easy to see that both mq-deadline and BFQ define a queue-wide =
-lock. For mq-deadline its deadline_data.lock. For BFQ it's =
-bfq_data.lock. That last lock serializes all bfq_dispatch_request() =
-calls and hence reduces concurrency while processing I/O requests. =46rom =
-bfq_dispatch_request():
->=20
-> static struct request *bfq_dispatch_request(struct blk_mq_hw_ctx =
-*hctx)
-> {
-> 	struct bfq_data *bfqd =3D hctx->queue->elevator->elevator_data;
-> 	[ ... ]
-> 	spin_lock_irq(&bfqd->lock);
-> 	[ ... ]
-> }
->=20
-> I think the above makes it very clear that bfqd->lock is queue-wide.
->=20
-> It is easy to understand why both I/O schedulers need a queue-wide =
-lock: the only way to avoid race conditions when considering all pending =
-I/O requests for scheduling decisions is to use a lock that covers all =
-pending requests and hence that is queue-wide.
->=20
-
-Absolutely true.  Queue lock is evidently a very general concept, and
-a lock on a scheduler is, in the end, a lock on its internal queue(s).
-But the queue lock removed by blk-mq is not that small per-scheduler
-lock, but the big, single-request-queue lock.  The effects of the
-latter are probably almost one order of magnitude higher than those of
-a scheduler lock, even with a non-trivial scheduler like BFQ.
-
-As a simple concrete proof of this fact, consider the numbers that I
-already gave you, and that you can re-obtain in five minutes: on a
-laptop, BFQ may support up to 400KIOPS.  Probably, even just with noop
-as I/O scheduler, the same PC cannot process so many IOPS with legacy
-blk (because of the single-request-queue lock).
-
-To sum up, in your argument you mixed two different locks.
-
-Anyway, you are going very deep in this issue.  This takes you very
-close to what I'm currently working on (still in a design phase):
-increasing the parallel efficiency of BFQ, mainly by reducing the
-duration of the pieces of BFQ executed under its scheduler lock.
-
-But the goal of such a non-trivial improvement is to go from the
-current 400 KIOPS to more than one million of IOPS.  This is an
-improvement that will most likely provide no benefits for probably 99%
-of the systems with single-queue devices.  Those systems simply do no go
-beyond 300 KIOPS.
-
-So, I'm trying to first devote my limited single-person bandwidth
-(sorry, I didn't resist the temptation to joke on this growing
-discussion on single-something issues :) ) to improvements that make
-BFQ better within its current hardware scope.
-
-Thanks,
-Paolo
-
-> Bart.
+-- 
+Ricardo Ribalda
