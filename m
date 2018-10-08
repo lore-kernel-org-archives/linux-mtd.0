@@ -1,18 +1,27 @@
-From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org
-Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
- linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
- frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
- Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v4 5/5] MAINTAINERS: add maintainers for the NXP FlexSPI driver
-Date: Mon,  8 Oct 2018 16:41:43 +0530
-Message-Id: <1538997103-11152-6-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1538997103-11152-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1538997103-11152-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Date: Mon, 8 Oct 2018 14:32:40 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+ "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
+Message-ID: <20181008143240.00e784a8@bbrezillon>
+In-Reply-To: <AM2PR04MB1027555CED1534472C6B8A3C99E60@AM2PR04MB1027.eurprd04.prod.outlook.com>
+References: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537525323-20730-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <20180929174023.51b1e284@bbrezillon>
+ <AM2PR04MB1027555CED1534472C6B8A3C99E60@AM2PR04MB1027.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainers for the NXP FlexSPI driver
+On Mon, 8 Oct 2018 11:21:13 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v4:
-- None
-Changes for v3:
-- None
-Changes for v2:
-- None
+> > > +static void nxp_fspi_read_ahb(struct nxp_fspi *f, const struct
+> > > +spi_mem_op *op) {
+> > > +	u32 len = op->data.nbytes;
+> > > +
+> > > +	/* Read out the data directly from the AHB buffer. */
+> > > +	memcpy_fromio(op->data.buf.in, (f->ahb_addr + op->addr.val), len);  
+> > 
+> > Don't know if it's supported, but if it is, I recommend using DMA to do this copy,
+> > because otherwise you might stall the CPU for quite a long time if the flash is
+> > operating in a low-speed mode, and RT maintainers will complain about that at
+> > some point ;-).
+> >   
+> Read using DMA is not supported by the controller in AHB mode, only supported in IP mode.
+> Have to use memcpy_fromio() calls. Maximum data size can be read in single call is 0x800 using AHB read.
+> 
 
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+Still, blocking the CPU until the SPI controller has read 0x800 bytes
+is enough to make you miss a real-time deadline. Don't you have a
+controller that supports mem2mem transfers (I'm pretty sure a mem2mem
+DMA transfer would do the trick here)?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d5eeff..2696898 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10228,6 +10228,12 @@ L:	linux-nfc@lists.01.org (moderated for non-subscribers)
- S:	Supported
- F:	drivers/nfc/nxp-nci
- 
-+NXP FSPI DRIVER
-+M:	Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/spi/spi-nxp-fspi.c
-+
- OBJTOOL
- M:	Josh Poimboeuf <jpoimboe@redhat.com>
- M:	Peter Zijlstra <peterz@infradead.org>
--- 
-2.7.4
+Regards,
+
+Boris
