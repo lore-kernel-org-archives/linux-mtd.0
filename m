@@ -1,24 +1,18 @@
-Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003212017.653e739f@bbrezillon>
- <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
- <20181004131732.4c9e2ae9@bbrezillon>
-From: Vignesh R <vigneshr@ti.com>
-Message-ID: <e4af1014-2008-440c-a017-bb8e7e960d3b@ti.com>
-Date: Mon, 8 Oct 2018 21:06:02 +0530
+Date: Mon, 8 Oct 2018 21:10:53 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: linux-mtd@lists.infradead.org, marek.vasut@gmail.com,
+ linux-spi@vger.kernel.org, devicetree@vger.kernel.org, robh@kernel.org,
+ mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
+ frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
+Message-ID: <20181008211053.71171cff@bbrezillon>
+In-Reply-To: <1538997103-11152-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+References: <1538997103-11152-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1538997103-11152-2-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-In-Reply-To: <20181004131732.4c9e2ae9@bbrezillon>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,92 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Mon,  8 Oct 2018 16:41:39 +0530
+Yogesh Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Sorry I missed this mail.
+> +/* Registers used by the driver */
+> +#define FSPI_MCR0			0x00
+> +#define FSPI_MCR0_AHB_TIMEOUT_MASK	GENMASK(31, 24)
+> +#define FSPI_MCR0_IP_TIMEOUT_MASK	GENMASK(23, 16)
 
-On Thursday 04 October 2018 04:47 PM, Boris Brezillon wrote:
-> On Thu, 4 Oct 2018 16:05:36 +0530
-> Vignesh R <vigneshr@ti.com> wrote:
-> 
->>>>
->>>>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
->>>>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++  
->>>
->>> On a slightly different topic, do you plan to convert the Cadence
->>> driver to spi-mem? And if you don't, is it because you don't have time
->>> or because some features are missing in spi-mem (I remember you
->>> mentioned a few things back when you were reviewing the spi-mem series)?
->>>   
->>
->> I do not have plans to convert cadence QSPI driver to spi-mem yet,
->> mainly due to lack of time. Also, not sure if original author Marek and
->> other altera people are okay with that.
->>
->> I see couple of issues in the way of conversion:
->> 1. I would wait to know what direction would direct mapping APIs[1] go
->> before starting spi-mem conversion for Cadence QSPI driver. Else, we
->> have may to re write again if direct mapping APIs are merged.
-> 
-> I'd suggest reviewing the proposal I posted so that you can influence
-> the design of this new API ;-).
-> 
+You never mask the IP_TIMEOUT val, so you don't need a _MASK macro
+here. Just define
 
-I did take a look and proposal seems fine. Will try to prototype and
-test cadence QSPI driver with these. Thanks for the patches!
+#define FSPI_MCR0_IP_TIMEOUT(x)		((x) < 16)
 
+The same goes for any field that you don't need to mask.
 
->> 2. New Cadence OSPI IP has an integrated PHY to support high throughput
->> OSPI flashes operating up 200MHz in Octal DDR mode. In order to work
->> with such flashes, PHY DLLs need to be calibrated. Highly simplified
->> calibration sequence is as below(See [2] for actual sequence):
->> -Read flash ID at low speed and store it.
->> -Enable PHY and set DLLs to a defined initial value
->> -Increment RX DLL value
->> -Read flash ID and check for correctness of data read
->> -repeat above two steps until a band of passing values is obtained for
->> RX DLL where flash ID is correctly read.
->> -DLL needs to set to middle of the passing band.
-> 
-> Is the Read ID operation hardcoded or do you just use it as a way to
-> trigger predictable transfers on the IO bus?
-> 
+The only case you might need a mask def is when you have the following
+pattern:
 
-Just a way to trigger predictable data reads.
+	val = readl(reg);
+	val &= ~XXXX_MASK;
+	val |= XXXX(new_field_val);
+	writel(val, reg);
 
->>
->> I am trying to figure out how to fit this into the spi-mem framework as
->> controller would to need to store READ ID opcode and expected JEDEC ID
->> before starting calibration sequence.
-> 
-> I think this should be split in 2:
-> 
-> - the SPI NOR framework passing the operation to use to do the
->   calibration (here a READ ID)
-> - the SPI controller framework replaying the same operation with
->   different DLL configs until it finds the best match
-> 
-> So, it would basically be added as a new hook:
-> 
-> 	int (*calibrate)(struct spi_mem *mem,
-> 			 const struct spi_mem_op *tmpl);
-> 
-> and a new function provided by the spi-mem API
-> 
-> int spi_mem_calibrate(struct spi_mem *mem,
-> 		      const struct spi_mem_op *tmpl);
-> 
-> and calibration outcome would be somehow attached to the spi_mem
-> object.
-> 
-> This way we stay memory agnostic but still provide the necessary blocks
-> at the spi-mem level to do such callibrations.
-> 
-> Would that work?
-> 
+> +#define FSPI_MCR0_LEARN_EN_MASK		BIT(15)
+> +#define FSPI_MCR0_SCRFRUN_EN_MASK	BIT(14)
+> +#define FSPI_MCR0_OCTCOMB_EN_MASK	BIT(13)
 
-That would work and hopefully is not intrusive to spi-mem framework.
+Drop the _MASK suffix for any single-bit field:
 
--- 
-Regards
-Vignesh
+#define FSPI_MCR0_OCTCOMB_EN		BIT(13)
