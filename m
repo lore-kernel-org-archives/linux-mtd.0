@@ -1,24 +1,36 @@
-Date: Mon, 8 Oct 2018 14:32:40 +0200
+Received: from mail.bootlin.com ([62.4.15.54])
+ by merlin.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g9UZw-0004dL-Kw
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 12:24:05 +0000
+Date: Mon, 8 Oct 2018 14:23:45 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/5] spi: spi-mem: Add driver for NXP FlexSPI controller
-Message-ID: <20181008143240.00e784a8@bbrezillon>
-In-Reply-To: <AM2PR04MB1027555CED1534472C6B8A3C99E60@AM2PR04MB1027.eurprd04.prod.outlook.com>
-References: <1537525323-20730-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1537525323-20730-2-git-send-email-yogeshnarayan.gaur@nxp.com>
- <20180929174023.51b1e284@bbrezillon>
- <AM2PR04MB1027555CED1534472C6B8A3C99E60@AM2PR04MB1027.eurprd04.prod.outlook.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, Zhouyang Jia <jiazhouyang09@gmail.com>,
+ linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
+ device-tree devices
+Message-ID: <20181008142345.32114923@bbrezillon>
+In-Reply-To: <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
+References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
+ <20181004142942.11887-2-ricardo.ribalda@gmail.com>
+ <20181005002125.12fd229f@bbrezillon>
+ <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
+ <20181005090811.6b7e9957@bbrezillon>
+ <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
+ <20181005103730.57d52e3c@bbrezillon>
+ <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
+ <20181005121235.7e64b64a@bbrezillon>
+ <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
+ <20181005141057.0f1b0a9b@bbrezillon>
+ <CAPybu_0OZR==4k5nxVRZ-1NjPEXLQsun7QhnYds8dPndreUjcQ@mail.gmail.com>
+ <20181005165234.468d2397@bbrezillon>
+ <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
+ <20181005182931.172b8f1c@bbrezillon>
+ <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
+ <20181005213203.247c369f@bbrezillon>
+ <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -31,30 +43,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 Oct 2018 11:21:13 +0000
-Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+On Mon, 8 Oct 2018 09:40:09 +0200
+Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 
-> > > +static void nxp_fspi_read_ahb(struct nxp_fspi *f, const struct
-> > > +spi_mem_op *op) {
-> > > +	u32 len = op->data.nbytes;
-> > > +
-> > > +	/* Read out the data directly from the AHB buffer. */
-> > > +	memcpy_fromio(op->data.buf.in, (f->ahb_addr + op->addr.val), len);  
-> > 
-> > Don't know if it's supported, but if it is, I recommend using DMA to do this copy,
-> > because otherwise you might stall the CPU for quite a long time if the flash is
-> > operating in a low-speed mode, and RT maintainers will complain about that at
-> > some point ;-).
-> >   
-> Read using DMA is not supported by the controller in AHB mode, only supported in IP mode.
-> Have to use memcpy_fromio() calls. Maximum data size can be read in single call is 0x800 using AHB read.
+> Hi Boris
+> On Fri, Oct 5, 2018 at 9:32 PM Boris Brezillon
+> <boris.brezillon@bootlin.com> wrote:
+> >
+> > On Fri, 5 Oct 2018 20:12:43 +0200
+> > Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
+> >  
+> > >
+> > > I think I know what might be the issue. on cfi_cmdset_002.c
+> > > cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
+> > >
+> > > maybe we should call
+> > > unregister_reboot_notifier(&mtd->reboot_notifier);
+> > > before
+> > > cfi_amdstd_reset(mtd)
+> > >
+> > > need to try that on real hw with some strategical printfs :P. But that
+> > > will ahve to wait til Monday  
+> >
+> > No problem, nothing urgent here. Have a nice weekend.  
 > 
+> Just updated my kernel version (4.14.53 ->  4.14.69) with you last
+> github and I do not see the crash anymore. So I guess we are good to
+> go.
 
-Still, blocking the CPU until the SPI controller has read 0x800 bytes
-is enough to make you miss a real-time deadline. Don't you have a
-controller that supports mem2mem transfers (I'm pretty sure a mem2mem
-DMA transfer would do the trick here)?
+Okay, I'll try to send the patch series. Don't hesitate to ping me if I
+forget.
 
-Regards,
+Thanks,
 
 Boris
