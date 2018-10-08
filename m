@@ -1,40 +1,16 @@
-Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9Q9e-0002Ca-QX
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 07:40:40 +0000
-Received: by mail-lj1-x241.google.com with SMTP id z21-v6so16914299ljz.0
- for <linux-mtd@lists.infradead.org>; Mon, 08 Oct 2018 00:40:27 -0700 (PDT)
+From: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+To: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
+ marek.vasut@gmail.com, linux-spi@vger.kernel.org,
+ devicetree@vger.kernel.org
+Cc: robh@kernel.org, mark.rutland@arm.com, shawnguo@kernel.org,
+ linux-arm-kernel@lists.infradead.org, computersforpeace@gmail.com,
+ frieder.schrempf@exceet.de, linux-kernel@vger.kernel.org,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v4 0/5] spi: spi-mem: Add driver for NXP FlexSPI controller
+Date: Mon,  8 Oct 2018 16:41:38 +0530
+Message-Id: <1538997103-11152-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-References: <20181004142942.11887-1-ricardo.ribalda@gmail.com>
- <20181004142942.11887-2-ricardo.ribalda@gmail.com>
- <20181005002125.12fd229f@bbrezillon>
- <CAPybu_26HST5xGfhE6MoVTRZok_gfDqN=ZOAesuEMVskdrCpLA@mail.gmail.com>
- <20181005090811.6b7e9957@bbrezillon>
- <CAPybu_38xH2Cv+eONQmEJ1i6k=oiQM=WrcwOFR29LbtRvWfKXA@mail.gmail.com>
- <20181005103730.57d52e3c@bbrezillon>
- <CAPybu_1RMcro3xLNW5mbybYdObCTq=QwXgk+RT6hcmRGTh6s7A@mail.gmail.com>
- <20181005121235.7e64b64a@bbrezillon>
- <CAPybu_0TbeN+-F6zwN8XOMuY1EpgE6GRi=ExDx6O3Yun9kXjYQ@mail.gmail.com>
- <20181005141057.0f1b0a9b@bbrezillon>
- <CAPybu_0OZR==4k5nxVRZ-1NjPEXLQsun7QhnYds8dPndreUjcQ@mail.gmail.com>
- <20181005165234.468d2397@bbrezillon>
- <CAPybu_1cd9aJN9mC9m36Gd_fhU5UnfLH9EtU0h8BvJCZchOV_A@mail.gmail.com>
- <20181005182931.172b8f1c@bbrezillon>
- <CAPybu_01Bn5qmv91Pc-DExCAMheJyGYxiSvmGDUGiSxBA+S0DQ@mail.gmail.com>
- <20181005213203.247c369f@bbrezillon>
-In-Reply-To: <20181005213203.247c369f@bbrezillon>
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Mon, 8 Oct 2018 09:40:09 +0200
-Message-ID: <CAPybu_3PS_19mGqHfdrD3oSRbUreBj1ABddMFdt5zOHmSg7=_g@mail.gmail.com>
-Subject: Re: [PATCH v10 10/10] mtd: maps: gpio-addr-flash: Add support for
- device-tree devices
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- Zhouyang Jia <jiazhouyang09@gmail.com>, linux-mtd@lists.infradead.org,
- LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,33 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris
-On Fri, Oct 5, 2018 at 9:32 PM Boris Brezillon
-<boris.brezillon@bootlin.com> wrote:
->
-> On Fri, 5 Oct 2018 20:12:43 +0200
-> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
->
-> >
-> > I think I know what might be the issue. on cfi_cmdset_002.c
-> > cfi_amdstd_reset can be called in parrallel to cfi_amdstd_destroy.
-> >
-> > maybe we should call
-> > unregister_reboot_notifier(&mtd->reboot_notifier);
-> > before
-> > cfi_amdstd_reset(mtd)
-> >
-> > need to try that on real hw with some strategical printfs :P. But that
-> > will ahve to wait til Monday
->
-> No problem, nothing urgent here. Have a nice weekend.
+- Add driver for NXP FlexSPI host controller
 
-Just updated my kernel version (4.14.53 ->  4.14.69) with you last
-github and I do not see the crash anymore. So I guess we are good to
-go.
+ FlexSPI is a flexsible SPI host controller [1], Chapter 30 page 1475,
+ which supports two SPI channels and up to 4 external devices.
+ Each channel supports Single/Dual/Quad/Octal mode data transfer (1/2/4/8 bidirectional data lines)
+ i.e. FlexSPI acts as an interface to external devices, maximum 4, each with up to 8
+ bidirectional data lines.
 
-Thanks!
+- Tested this driver with mtd_debug(Erase/Write/Read) utility and JFFS2
+ filesystem mounting and booting on NXP LX2160ARDB[2] and LX2160AQDS targets.
+ LX2160ARDB is having two NOR slave device connected on single bus A
+ i.e. A0 and A1 (CS0 and CS1).
+ LX2160AQDS is having two NOR slave device connected on separate buses
+ one flash on A0 and second on B1 i.e. (CS0 and CS3).
+ Verified this driver on following SPI NOR flashes:
+   Micron, mt35xu512aba[3], [Read - 1 bit mode]
+   Cypress, s25fl512s, [Read - 1/2/4 bit mode]
 
+[1] https://www.nxp.com/docs/en/reference-manual/IMXRT1050RM.pdf
+[2] https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=9721
+[3] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=63445
+
+Yogesh Gaur (5):
+  spi: spi-mem: Add driver for NXP FlexSPI controller
+  dt-bindings: spi: add binding file for NXP FlexSPI controller
+  arm64: dts: lx2160a: add FlexSPI node property
+  arm64: defconfig: enable NXP FlexSPI driver
+  MAINTAINERS: add maintainers for the NXP FlexSPI driver
+
+Changes for v4:
+- Incorporated review comments for
+  patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
+- Incorporated binding file review comments of Rob Herring.
+Changes for v3:
+- Incorporated review comments for
+  patch 'spi: spi-mem: Add driver for NXP FlexSPI controller'.
+Changes for v2:
+- Incorporated Boris review comments and drop below patches as per the comments.
+ - Patch 'spi: add slave device size in spi_device struct'
+ - Patch 'spi: add flags for octal I/O data transfer'
+- Incorporated DTS and Binding file review comments of Shawn Guo and Rob Herring.
+
+ .../devicetree/bindings/spi/spi-nxp-fspi.txt       |   39 +
+ MAINTAINERS                                        |    6 +
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts  |   22 +
+ arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi     |   12 +
+ arch/arm64/configs/defconfig                       |    1 +
+ drivers/spi/Kconfig                                |   10 +
+ drivers/spi/Makefile                               |    1 +
+ drivers/spi/spi-nxp-fspi.c                         | 1157 ++++++++++++++++++++
+ 8 files changed, 1248 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+ create mode 100644 drivers/spi/spi-nxp-fspi.c
 
 -- 
-Ricardo Ribalda
+2.7.4
