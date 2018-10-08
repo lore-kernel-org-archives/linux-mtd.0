@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9brt-0006Ch-1U
- for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 20:11:31 +0000
+ id 1g9brt-0006Ay-0L
+ for linux-mtd@lists.infradead.org; Mon, 08 Oct 2018 20:11:41 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -13,10 +13,9 @@ Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Ian Campbell <ijc+devicetree@hellion.org.uk>,
  Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
  Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH 13/14] mtd: maps: Rename physmap_of_{versatile,
- gemini} into physmap-{versatile, gemini}
-Date: Mon,  8 Oct 2018 22:10:26 +0200
-Message-Id: <20181008201027.17952-14-boris.brezillon@bootlin.com>
+Subject: [PATCH 06/14] mtd: maps: physmap: Remove the MAX_RESOURCES limitation
+Date: Mon,  8 Oct 2018 22:10:19 +0200
+Message-Id: <20181008201027.17952-7-boris.brezillon@bootlin.com>
 In-Reply-To: <20181008201027.17952-1-boris.brezillon@bootlin.com>
 References: <20181008201027.17952-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,140 +27,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the physmap_of driver is gone, the gemini and versative
-extensions are part of the physmap driver. Rename the source files and
-the config option to reflect this.
+Remove the MAX_RESOURCES limitation by dynamically allocating the
+->mtds[] and ->maps[] at probe time based on the number of iomem
+resources attached to the platform device.
 
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 ---
- drivers/mtd/maps/Kconfig                                         | 4 ++--
- drivers/mtd/maps/Makefile                                        | 4 ++--
- drivers/mtd/maps/physmap-core.c                                  | 4 ++--
- drivers/mtd/maps/{physmap_of_gemini.c => physmap-gemini.c}       | 2 +-
- drivers/mtd/maps/{physmap_of_gemini.h => physmap-gemini.h}       | 2 +-
- drivers/mtd/maps/{physmap_of_versatile.c => physmap-versatile.c} | 2 +-
- drivers/mtd/maps/{physmap_of_versatile.h => physmap-versatile.h} | 2 +-
- 7 files changed, 10 insertions(+), 10 deletions(-)
- rename drivers/mtd/maps/{physmap_of_gemini.c => physmap-gemini.c} (98%)
- rename drivers/mtd/maps/{physmap_of_gemini.h => physmap-gemini.h} (90%)
- rename drivers/mtd/maps/{physmap_of_versatile.c => physmap-versatile.c} (99%)
- rename drivers/mtd/maps/{physmap_of_versatile.h => physmap-versatile.h} (90%)
+ drivers/mtd/maps/physmap.c | 44 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 27 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 4fd13d76b7b5..93b7ae32e277 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -74,7 +74,7 @@ config MTD_PHYSMAP_OF
- 	  physically into the CPU's memory. The mapping description here is
- 	  taken from OF device tree.
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index cbc50b53ec9d..86679d149a49 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -22,12 +22,11 @@
+ #include <linux/mtd/concat.h>
+ #include <linux/io.h>
  
--config MTD_PHYSMAP_OF_VERSATILE
-+config MTD_PHYSMAP_VERSATILE
- 	bool "ARM Versatile OF-based physical memory map handling"
- 	depends on MTD_PHYSMAP_OF
- 	depends on MFD_SYSCON
-@@ -84,7 +84,7 @@ config MTD_PHYSMAP_OF_VERSATILE
- 	  platforms, basically to add a VPP (write protection) callback so
- 	  the flash can be taken out of write protection.
- 
--config MTD_PHYSMAP_OF_GEMINI
-+config MTD_PHYSMAP_GEMINI
- 	bool "Cortina Gemini OF-based physical memory map handling"
- 	depends on MTD_PHYSMAP_OF
- 	depends on MFD_SYSCON
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index acec0fbfa18d..ed1ef75244db 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -18,8 +18,8 @@ obj-$(CONFIG_MTD_CK804XROM)	+= ck804xrom.o
- obj-$(CONFIG_MTD_TSUNAMI)	+= tsunami_flash.o
- obj-$(CONFIG_MTD_PXA2XX)	+= pxa2xx-flash.o
- physmap-objs-y			+= physmap-core.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_OF_VERSATILE) += physmap_of_versatile.o
--physmap-objs-$(CONFIG_MTD_PHYSMAP_OF_GEMINI) += physmap_of_gemini.o
-+physmap-objs-$(CONFIG_MTD_PHYSMAP_VERSATILE) += physmap-versatile.o
-+physmap-objs-$(CONFIG_MTD_PHYSMAP_GEMINI) += physmap-gemini.o
- physmap-objs			:= $(physmap-objs-y)
- obj-$(CONFIG_MTD_PHYSMAP)	+= physmap.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 2dc33ae71335..c7a12c394529 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -40,8 +40,8 @@
- #include <linux/of_device.h>
- #include <linux/gpio/consumer.h>
- 
--#include "physmap_of_gemini.h"
--#include "physmap_of_versatile.h"
-+#include "physmap-gemini.h"
-+#include "physmap-versatile.h"
- 
+-#define MAX_RESOURCES		4
+-
  struct physmap_flash_info {
- 	unsigned int		nmaps;
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap-gemini.c
-similarity index 98%
-rename from drivers/mtd/maps/physmap_of_gemini.c
-rename to drivers/mtd/maps/physmap-gemini.c
-index 9df62ca721d5..1cf128a0526d 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap-gemini.c
-@@ -13,7 +13,7 @@
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
--#include "physmap_of_gemini.h"
-+#include "physmap-gemini.h"
+-	struct mtd_info		*mtds[MAX_RESOURCES];
++	unsigned int		nmaps;
++	struct mtd_info		**mtds;
+ 	struct mtd_info		*cmtd;
+-	struct map_info		maps[MAX_RESOURCES];
++	struct map_info		*maps;
+ 	spinlock_t		vpp_lock;
+ 	int			vpp_refcnt;
+ };
+@@ -50,7 +49,7 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 			mtd_concat_destroy(info->cmtd);
+ 	}
  
- /*
-  * The Flash-relevant parts of the global status register
-diff --git a/drivers/mtd/maps/physmap_of_gemini.h b/drivers/mtd/maps/physmap-gemini.h
-similarity index 90%
-rename from drivers/mtd/maps/physmap_of_gemini.h
-rename to drivers/mtd/maps/physmap-gemini.h
-index 60e13a689d6a..72bd04ce3fdb 100644
---- a/drivers/mtd/maps/physmap_of_gemini.h
-+++ b/drivers/mtd/maps/physmap-gemini.h
-@@ -2,7 +2,7 @@
- #include <linux/of.h>
- #include <linux/mtd/map.h>
+-	for (i = 0; i < MAX_RESOURCES; i++) {
++	for (i = 0; i < info->nmaps; i++) {
+ 		if (info->mtds[i] != NULL)
+ 			map_destroy(info->mtds[i]);
+ 	}
+@@ -101,7 +100,6 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 	const char * const *part_types;
+ 	int err = 0;
+ 	int i;
+-	int devices_found = 0;
  
--#ifdef CONFIG_MTD_PHYSMAP_OF_GEMINI
-+#ifdef CONFIG_MTD_PHYSMAP_GEMINI
- int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map);
-diff --git a/drivers/mtd/maps/physmap_of_versatile.c b/drivers/mtd/maps/physmap-versatile.c
-similarity index 99%
-rename from drivers/mtd/maps/physmap_of_versatile.c
-rename to drivers/mtd/maps/physmap-versatile.c
-index 03f2b6e7bc7e..0179d710bb3f 100644
---- a/drivers/mtd/maps/physmap_of_versatile.c
-+++ b/drivers/mtd/maps/physmap-versatile.c
-@@ -28,7 +28,7 @@
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
--#include "physmap_of_versatile.h"
-+#include "physmap-versatile.h"
+ 	physmap_data = dev_get_platdata(&dev->dev);
+ 	if (physmap_data == NULL)
+@@ -114,6 +112,24 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		goto err_out;
+ 	}
  
- static struct regmap *syscon_regmap;
++	while (platform_get_resource(dev, IORESOURCE_MEM, info->nmaps))
++		info->nmaps++;
++
++	if (!info->nmaps)
++		return -ENODEV;
++
++	info->maps = devm_kzalloc(&dev->dev,
++				  sizeof(*info->maps) * info->nmaps,
++				  GFP_KERNEL);
++	if (!info->maps)
++		return -ENOMEM;
++
++	info->mtds = devm_kzalloc(&dev->dev,
++				  sizeof(*info->mtds) * info->nmaps,
++				  GFP_KERNEL);
++	if (!info->mtds)
++		return -ENOMEM;
++
+ 	if (physmap_data->init) {
+ 		err = physmap_data->init(dev);
+ 		if (err)
+@@ -122,13 +138,10 @@ static int physmap_flash_probe(struct platform_device *dev)
  
-diff --git a/drivers/mtd/maps/physmap_of_versatile.h b/drivers/mtd/maps/physmap-versatile.h
-similarity index 90%
-rename from drivers/mtd/maps/physmap_of_versatile.h
-rename to drivers/mtd/maps/physmap-versatile.h
-index 0302502c9462..9cf39d031f5a 100644
---- a/drivers/mtd/maps/physmap_of_versatile.h
-+++ b/drivers/mtd/maps/physmap-versatile.h
-@@ -2,7 +2,7 @@
- #include <linux/of.h>
- #include <linux/mtd/map.h>
+ 	platform_set_drvdata(dev, info);
  
--#ifdef CONFIG_MTD_PHYSMAP_OF_VERSATILE
-+#ifdef CONFIG_MTD_PHYSMAP_VERSATILE
- int of_flash_probe_versatile(struct platform_device *pdev,
- 			     struct device_node *np,
- 			     struct map_info *map);
+-	for (i = 0; i < MAX_RESOURCES; i++) {
++	for (i = 0; i < info->nmaps; i++) {
+ 		struct resource *res;
+ 
+ 		res = platform_get_resource(dev, IORESOURCE_MEM, i);
+-		if (res)
+-			break;
+-
+ 		info->maps[i].virt = devm_ioremap_resource(&dev->dev, res);
+ 		if (IS_ERR(info->maps[i].virt)) {
+ 			err = PTR_ERR(info->maps[i].virt);
+@@ -159,21 +172,18 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 			dev_err(&dev->dev, "map_probe failed\n");
+ 			err = -ENXIO;
+ 			goto err_out;
+-		} else {
+-			devices_found++;
+ 		}
+ 		info->mtds[i]->dev.parent = &dev->dev;
+ 	}
+ 
+-	if (!devices_found) {
+-		err = -ENODEV;
+-	} else if (devices_found == 1) {
++	if (info->nmaps == 1) {
+ 		info->cmtd = info->mtds[0];
+ 	} else {
+ 		/*
+ 		 * We detected multiple devices. Concatenate them together.
+ 		 */
+-		info->cmtd = mtd_concat_create(info->mtds, devices_found, dev_name(&dev->dev));
++		info->cmtd = mtd_concat_create(info->mtds, info->nmaps,
++					       dev_name(&dev->dev));
+ 		if (info->cmtd == NULL)
+ 			err = -ENXIO;
+ 	}
+@@ -199,7 +209,7 @@ static void physmap_flash_shutdown(struct platform_device *dev)
+ 	struct physmap_flash_info *info = platform_get_drvdata(dev);
+ 	int i;
+ 
+-	for (i = 0; i < MAX_RESOURCES && info->mtds[i]; i++)
++	for (i = 0; i < info->nmaps && info->mtds[i]; i++)
+ 		if (mtd_suspend(info->mtds[i]) == 0)
+ 			mtd_resume(info->mtds[i]);
+ }
 -- 
 2.14.1
