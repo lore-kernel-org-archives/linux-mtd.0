@@ -1,18 +1,18 @@
-Received: from mail-lj1-x244.google.com ([2a00:1450:4864:20::244])
+Received: from mail-lf1-x143.google.com ([2a00:1450:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9mV3-0005Nm-0z
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2018 07:32:28 +0000
-Received: by mail-lj1-x244.google.com with SMTP id y71-v6so553166lje.9
- for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2018 00:32:02 -0700 (PDT)
+ id 1g9maS-0008Jx-5y
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2018 07:37:49 +0000
+Received: by mail-lf1-x143.google.com with SMTP id q39-v6so446022lfi.8
+ for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2018 00:37:37 -0700 (PDT)
 MIME-Version: 1.0
 References: <20181008201027.17952-1-boris.brezillon@bootlin.com>
- <20181008201027.17952-7-boris.brezillon@bootlin.com>
-In-Reply-To: <20181008201027.17952-7-boris.brezillon@bootlin.com>
+ <20181008201027.17952-10-boris.brezillon@bootlin.com>
+In-Reply-To: <20181008201027.17952-10-boris.brezillon@bootlin.com>
 From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Date: Tue, 9 Oct 2018 09:31:44 +0200
-Message-ID: <CAPybu_3ROm1HpX7nqS5w3pZ3RuWnAwL8aTPWBH8t+Q4-UX0ZiQ@mail.gmail.com>
-Subject: Re: [PATCH 06/14] mtd: maps: physmap: Remove the MAX_RESOURCES
- limitation
+Date: Tue, 9 Oct 2018 09:37:19 +0200
+Message-ID: <CAPybu_0XVLVrq+BvinjE2uF9u39La=N-b2-CZGf7q5vH89R4hg@mail.gmail.com>
+Subject: Re: [PATCH 09/14] mtd: maps: physmap: Fix coding style issues
+ reported by checkpatch
 To: Boris Brezillon <boris.brezillon@bootlin.com>
 Cc: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -36,133 +36,124 @@ Hi Boris
 On Mon, Oct 8, 2018 at 10:10 PM Boris Brezillon
 <boris.brezillon@bootlin.com> wrote:
 >
-> Remove the MAX_RESOURCES limitation by dynamically allocating the
-> ->mtds[] and ->maps[] at probe time based on the number of iomem
-> resources attached to the platform device.
+> Fix the following coding style issues:
+> - != NULL and == NULL test replaced by ! (or nothing)
+> - split over 80 chars lines
+> - add missing braces in multi-line if() {} else {} statements
 >
 > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > ---
->  drivers/mtd/maps/physmap.c | 44 +++++++++++++++++++++++++++-----------------
->  1 file changed, 27 insertions(+), 17 deletions(-)
+>  drivers/mtd/maps/physmap.c | 33 ++++++++++++++++++---------------
+>  1 file changed, 18 insertions(+), 15 deletions(-)
 >
 > diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-> index cbc50b53ec9d..86679d149a49 100644
+> index 7d30f3524d35..e27051bc5dc6 100644
 > --- a/drivers/mtd/maps/physmap.c
 > +++ b/drivers/mtd/maps/physmap.c
-> @@ -22,12 +22,11 @@
->  #include <linux/mtd/concat.h>
->  #include <linux/io.h>
+> @@ -38,7 +38,7 @@ static int physmap_flash_remove(struct platform_device *dev)
+>         int i, err;
 >
-> -#define MAX_RESOURCES          4
-> -
->  struct physmap_flash_info {
-> -       struct mtd_info         *mtds[MAX_RESOURCES];
-> +       unsigned int            nmaps;
-> +       struct mtd_info         **mtds;
->         struct mtd_info         *cmtd;
-> -       struct map_info         maps[MAX_RESOURCES];
-> +       struct map_info         *maps;
->         spinlock_t              vpp_lock;
->         int                     vpp_refcnt;
->  };
-> @@ -50,7 +49,7 @@ static int physmap_flash_remove(struct platform_device *dev)
->                         mtd_concat_destroy(info->cmtd);
->         }
->
-> -       for (i = 0; i < MAX_RESOURCES; i++) {
-> +       for (i = 0; i < info->nmaps; i++) {
->                 if (info->mtds[i] != NULL)
->                         map_destroy(info->mtds[i]);
->         }
-> @@ -101,7 +100,6 @@ static int physmap_flash_probe(struct platform_device *dev)
->         const char * const *part_types;
->         int err = 0;
->         int i;
-> -       int devices_found = 0;
+>         info = platform_get_drvdata(dev);
+> -       if (info == NULL)
+> +       if (!info)
+>                 return 0;
 >
 >         physmap_data = dev_get_platdata(&dev->dev);
->         if (physmap_data == NULL)
-> @@ -114,6 +112,24 @@ static int physmap_flash_probe(struct platform_device *dev)
->                 goto err_out;
+> @@ -53,7 +53,7 @@ static int physmap_flash_remove(struct platform_device *dev)
 >         }
 >
-> +       while (platform_get_resource(dev, IORESOURCE_MEM, info->nmaps))
-> +               info->nmaps++;
-
-Maybe you prefer:
-for (info->nmaps = 0; platform_get_resource(dev, IORESOURCE_MEM,
-info->nmaps) ; info->nmaps++);
-
-(your choice, they are probably compiled into the same assembly)
-
-> +
-> +       if (!info->nmaps)
-> +               return -ENODEV;
-> +
-> +       info->maps = devm_kzalloc(&dev->dev,
-> +                                 sizeof(*info->maps) * info->nmaps,
-> +                                 GFP_KERNEL);
-> +       if (!info->maps)
-> +               return -ENOMEM;
-> +
-> +       info->mtds = devm_kzalloc(&dev->dev,
-> +                                 sizeof(*info->mtds) * info->nmaps,
-> +                                 GFP_KERNEL);
-> +       if (!info->mtds)
-> +               return -ENOMEM;
-> +
->         if (physmap_data->init) {
->                 err = physmap_data->init(dev);
->                 if (err)
-> @@ -122,13 +138,10 @@ static int physmap_flash_probe(struct platform_device *dev)
+>         for (i = 0; i < info->nmaps; i++) {
+> -               if (info->mtds[i] != NULL)
+> +               if (info->mtds[i])
+>                         map_destroy(info->mtds[i]);
+>         }
 >
->         platform_set_drvdata(dev, info);
+> @@ -90,10 +90,12 @@ static void physmap_set_vpp(struct map_info *map, int state)
+>  }
 >
-> -       for (i = 0; i < MAX_RESOURCES; i++) {
-> +       for (i = 0; i < info->nmaps; i++) {
->                 struct resource *res;
+>  static const char * const rom_probe_types[] = {
+> -       "cfi_probe", "jedec_probe", "qinfo_probe", "map_rom", NULL };
+> +       "cfi_probe", "jedec_probe", "qinfo_probe", "map_rom", NULL
+> +};
 >
->                 res = platform_get_resource(dev, IORESOURCE_MEM, i);
-> -               if (res)
-> -                       break;
-> -
->                 info->maps[i].virt = devm_ioremap_resource(&dev->dev, res);
->                 if (IS_ERR(info->maps[i].virt)) {
->                         err = PTR_ERR(info->maps[i].virt);
-> @@ -159,21 +172,18 @@ static int physmap_flash_probe(struct platform_device *dev)
+>  static const char * const part_probe_types[] = {
+> -       "cmdlinepart", "RedBoot", "afs", NULL };
+> +       "cmdlinepart", "RedBoot", "afs", NULL
+> +};
+>
+>  static int physmap_flash_probe(struct platform_device *dev)
+>  {
+> @@ -105,11 +107,10 @@ static int physmap_flash_probe(struct platform_device *dev)
+>         int i;
+>
+>         physmap_data = dev_get_platdata(&dev->dev);
+> -       if (physmap_data == NULL)
+> +       if (!physmap_data)
+>                 return -ENODEV;
+>
+> -       info = devm_kzalloc(&dev->dev, sizeof(struct physmap_flash_info),
+> -                           GFP_KERNEL);
+> +       info = devm_kzalloc(&dev->dev, sizeof(*info), GFP_KERNEL);
+>         if (!info)
+>                 return -ENOMEM;
+>
+> @@ -163,13 +164,16 @@ static int physmap_flash_probe(struct platform_device *dev)
+>                 simple_map_init(&info->maps[i]);
+>
+>                 probe_type = rom_probe_types;
+> -               if (physmap_data->probe_type == NULL) {
+> -                       for (; info->mtds[i] == NULL && *probe_type != NULL; probe_type++)
+> -                               info->mtds[i] = do_map_probe(*probe_type, &info->maps[i]);
+> -               } else
+> -                       info->mtds[i] = do_map_probe(physmap_data->probe_type, &info->maps[i]);
+> +               if (!physmap_data->probe_type) {
+> +                       for (; !info->mtds[i] && *probe_type; probe_type++)
+> +                               info->mtds[i] = do_map_probe(*probe_type,
+> +                                                            &info->maps[i]);
+> +               } else {
+> +                       info->mtds[i] = do_map_probe(physmap_data->probe_type,
+> +                                                    &info->maps[i]);
+> +               }
+
+Now that you are at it, maybe you want to change the order of the if branches:
+
+if (true){
+} else{
+}
+
+and move:
+probe_type = rom_probe_types;
+into the branch
+
+and fix:
+const char * const *probe_type;
+
+
+If you do not want to change it, is also fine :P
+
+>
+> -               if (info->mtds[i] == NULL) {
+> +               if (!info->mtds[i]) {
 >                         dev_err(&dev->dev, "map_probe failed\n");
 >                         err = -ENXIO;
 >                         goto err_out;
-> -               } else {
-> -                       devices_found++;
->                 }
->                 info->mtds[i]->dev.parent = &dev->dev;
->         }
->
-> -       if (!devices_found) {
-> -               err = -ENODEV;
-> -       } else if (devices_found == 1) {
-> +       if (info->nmaps == 1) {
->                 info->cmtd = info->mtds[0];
->         } else {
->                 /*
->                  * We detected multiple devices. Concatenate them together.
+> @@ -185,7 +189,7 @@ static int physmap_flash_probe(struct platform_device *dev)
 >                  */
-> -               info->cmtd = mtd_concat_create(info->mtds, devices_found, dev_name(&dev->dev));
-> +               info->cmtd = mtd_concat_create(info->mtds, info->nmaps,
-> +                                              dev_name(&dev->dev));
->                 if (info->cmtd == NULL)
+>                 info->cmtd = mtd_concat_create(info->mtds, info->nmaps,
+>                                                dev_name(&dev->dev));
+> -               if (info->cmtd == NULL)
+> +               if (!info->cmtd)
 >                         err = -ENXIO;
 >         }
-> @@ -199,7 +209,7 @@ static void physmap_flash_shutdown(struct platform_device *dev)
->         struct physmap_flash_info *info = platform_get_drvdata(dev);
->         int i;
+>         if (err)
+> @@ -231,7 +235,6 @@ static struct platform_driver physmap_flash_driver = {
+>         },
+>  };
 >
-> -       for (i = 0; i < MAX_RESOURCES && info->mtds[i]; i++)
-> +       for (i = 0; i < info->nmaps && info->mtds[i]; i++)
->                 if (mtd_suspend(info->mtds[i]) == 0)
->                         mtd_resume(info->mtds[i]);
->  }
+> -
+>  #ifdef CONFIG_MTD_PHYSMAP_COMPAT
+>  static struct physmap_flash_data physmap_flash_data = {
+>         .width          = CONFIG_MTD_PHYSMAP_BANKWIDTH,
 > --
 > 2.14.1
 >
