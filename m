@@ -1,8 +1,8 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1g9mqZ-0006JF-H1
- for linux-mtd@lists.infradead.org; Tue, 09 Oct 2018 07:54:37 +0000
-Date: Tue, 9 Oct 2018 09:54:15 +0200
+ id 1g9mt1-0008Kk-Sh
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2018 07:57:01 +0000
+Date: Tue, 9 Oct 2018 09:56:47 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
@@ -11,13 +11,13 @@ Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
  <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland
  <mark.rutland@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Kumar
  Gala <galak@codeaurora.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 03/14] mtd: maps: physmap: Use platform_get_resource()
- to retrieve iomem resources
-Message-ID: <20181009095415.0e6309a3@bbrezillon>
-In-Reply-To: <CAPybu_2BECuV5SJaHPopj5+hVVU+7i4pw8CWGqh5rDZ_TALF8g@mail.gmail.com>
+Subject: Re: [PATCH 14/14] dt-binding: mtd: physmap: Document the addr-gpios
+ property
+Message-ID: <20181009095647.36b4c3a3@bbrezillon>
+In-Reply-To: <CAPybu_0LYnWzgUX=HvY3HZUw8pLWTWR5ppG3TVG7S9dt_XitRw@mail.gmail.com>
 References: <20181008201027.17952-1-boris.brezillon@bootlin.com>
- <20181008201027.17952-4-boris.brezillon@bootlin.com>
- <CAPybu_2BECuV5SJaHPopj5+hVVU+7i4pw8CWGqh5rDZ_TALF8g@mail.gmail.com>
+ <20181008201027.17952-15-boris.brezillon@bootlin.com>
+ <CAPybu_0LYnWzgUX=HvY3HZUw8pLWTWR5ppG3TVG7S9dt_XitRw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -30,41 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 9 Oct 2018 09:16:41 +0200
+Hi Ricardo,
+
+On Tue, 9 Oct 2018 09:43:16 +0200
 Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 
-> Hi Boris
-> On Mon, Oct 8, 2018 at 10:10 PM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> >
-> > Stop manipulating the dev->resource array directly and use the
-> > platform_get_resource() helper instead.
-> >
-> > While at it, fix the loop check so that we never overflow the info->maps
-> > and info->mtds array even if the number of resources attached to the
-> > platform dev is higher than MAX_RESOURCES.
-> >
-> > Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
-> > ---
-> >  drivers/mtd/maps/physmap.c | 29 ++++++++++++++++++-----------
-> >  1 file changed, 18 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-> > index 4010afee4a33..e5b15ec2cb04 100644
-> > --- a/drivers/mtd/maps/physmap.c
-> > +++ b/drivers/mtd/maps/physmap.c
-> > @@ -122,23 +122,28 @@ static int physmap_flash_probe(struct platform_device *dev)
-> >
-> >         platform_set_drvdata(dev, info);
-> >
-> > -       for (i = 0; i < dev->num_resources; i++) {
-> > +       for (i = 0; i < MAX_RESOURCES; i++) {
-> > +               struct resource *res;
-> > +
-> > +               res = platform_get_resource(dev, IORESOURCE_MEM, i);
-> > +               if (res)
-> > +                       break;  
+> HI Boris
 > 
-> Maybe if (!res)
+> Usually they want the bindings to be sent before the changes. You
+> might want to swap the order of 13 and 14
 
-I'll fix that one.
+Sure.
+
+>  And I think the version
+> reviewed by Rob is too different to this version, maybe we want to
+> ping him to be 100% sure that his review is still valid.
+
+I'll drop his R-b then.
+
+> 
+> FWIW: To the whose serie, after you send the fixed version, you can
+> add to all the patches my:
+> Reviewed-by:   Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> 
+> and to the last one:
+> Tested-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+> 
+> Thanks a lot for the serie!
+
+And thanks for testing+reviewing it.
+
+Regards,
+
+Boris
