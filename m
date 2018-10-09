@@ -1,20 +1,24 @@
-Date: Tue, 9 Oct 2018 08:25:39 +0800
-From: Shawn Guo <shawnguo@kernel.org>
-To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: linux-mtd@lists.infradead.org, boris.brezillon@bootlin.com,
- marek.vasut@gmail.com, linux-spi@vger.kernel.org,
- devicetree@vger.kernel.org, mark.rutland@arm.com, robh@kernel.org,
- linux-kernel@vger.kernel.org, frieder.schrempf@exceet.de,
- computersforpeace@gmail.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 2/5] dt-bindings: spi: add binding file for NXP
- FlexSPI controller
-Message-ID: <20181009002537.GV3587@dragon>
-References: <1538997103-11152-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1538997103-11152-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+Received: from esa1.microchip.iphmx.com ([68.232.147.91])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1g9jDO-0005Wk-QR
+ for linux-mtd@lists.infradead.org; Tue, 09 Oct 2018 04:01:48 +0000
+Subject: Re: [RESEND PATCH 1/2] mtd: spi-nor: add macros related to MICRON
+ flash
+To: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, <linux-mtd@lists.infradead.org>,
+ <linux-spi@vger.kernel.org>
+CC: <boris.brezillon@bootlin.com>, <linux-kernel@vger.kernel.org>,
+ <marek.vasut@gmail.com>, <frieder.schrempf@exceet.de>,
+ <cyrille.pitchen@wedev4u.fr>, <computersforpeace@gmail.com>
+References: <1537332608-19561-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+From: Tudor Ambarus <tudor.ambarus@microchip.com>
+Message-ID: <6f692aa5-99af-2da8-95db-8ac71197c9a7@microchip.com>
+Date: Tue, 9 Oct 2018 07:01:21 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1538997103-11152-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+In-Reply-To: <1537332608-19561-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,77 +28,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 08, 2018 at 04:41:40PM +0530, Yogesh Gaur wrote:
-> Add binding file for NXP FlexSPI controller
+
+
+On 09/19/2018 07:50 AM, Yogesh Gaur wrote:
+> Some MICRON related macros in spi-nor domain were ST.
+> Rename entries related to STMicroelectronics under macro SNOR_MFR_ST.
+> 
+> Added entry of MFR Id for Micron flashes, 0x002C.
 > 
 > Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+
 > ---
-> Changes for v4:
-> - Incorporated Rob review comments.
-> Changes for v3:
-> - Removed node property 'big-endian'.
-> Changes for v2:
-> - Incorporated Rob review comments.
+>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
+>  include/linux/mtd/cfi.h       | 1 +
+>  include/linux/mtd/spi-nor.h   | 3 ++-
+>  3 files changed, 9 insertions(+), 4 deletions(-)
 > 
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 39 ++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index f028277..33a55bc 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -271,6 +271,7 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  	u8 cmd;
+>  
+>  	switch (JEDEC_MFR(info)) {
+> +	case SNOR_MFR_ST:
+>  	case SNOR_MFR_MICRON:
+>  		/* Some Micron need WREN command; all will accept it */
+>  		need_wren = true;
+> @@ -1096,7 +1097,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>  
+> -	/* Micron */
+> +	/* Micron <--> ST Micro */
+>  	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+>  	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> @@ -2502,6 +2503,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>  			params->quad_enable = macronix_quad_enable;
+>  			break;
+>  
+> +		case SNOR_MFR_ST:
+>  		case SNOR_MFR_MICRON:
+>  			break;
+>  
+> @@ -2876,8 +2878,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	mtd->_resume = spi_nor_resume;
+>  
+>  	/* NOR protection support for STmicro/Micron chips and similar */
+> -	if (JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+> -			info->flags & SPI_NOR_HAS_LOCK) {
+> +	if (JEDEC_MFR(info) == SNOR_MFR_ST ||
+> +	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+> +	    info->flags & SPI_NOR_HAS_LOCK) {
+>  		nor->flash_lock = stm_lock;
+>  		nor->flash_unlock = stm_unlock;
+>  		nor->flash_is_locked = stm_is_locked;
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index 9b57a9b..cbf7716 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -377,6 +377,7 @@ struct cfi_fixup {
+>  #define CFI_MFR_SHARP		0x00B0
+>  #define CFI_MFR_SST		0x00BF
+>  #define CFI_MFR_ST		0x0020 /* STMicroelectronics */
+> +#define CFI_MFR_MICRON		0x002C /* Micron */
+>  #define CFI_MFR_TOSHIBA		0x0098
+>  #define CFI_MFR_WINBOND		0x00DA
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index c922e97..f43bfc5 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -23,7 +23,8 @@
+>  #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
+>  #define SNOR_MFR_GIGADEVICE	0xc8
+>  #define SNOR_MFR_INTEL		CFI_MFR_INTEL
+> -#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
+> +#define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
+> +#define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
+>  #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
+>  #define SNOR_MFR_SPANSION	CFI_MFR_AMD
+>  #define SNOR_MFR_SST		CFI_MFR_SST
 > 
-> diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> new file mode 100644
-> index 0000000..402e2b7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> @@ -0,0 +1,39 @@
-> +* NXP Flex Serial Peripheral Interface (FSPI)
-> +
-> +Required properties:
-> +  - compatible : Should be "nxp,lx2160a-fspi"
-> +  - reg :        First contains the register location and length,
-> +                 Second contains the memory mapping address and length
-> +  - reg-names :  Should contain the resource reg names:
-> +	         - fspi_base: configuration register address space
-> +                 - fspi_mmap: memory mapped address space
-> +  - interrupts : Should contain the interrupt for the device
-> +
-> +Required SPI slave node properties:
-> +  - reg :        There are two buses (A and B) with two chip selects each.
-> +                 This encodes to which bus and CS the flash is connected:
-> +                 - <0>: Bus A, CS 0
-> +                 - <1>: Bus A, CS 1
-> +                 - <2>: Bus B, CS 0
-> +                 - <3>: Bus B, CS 1
-> +
-> +Example showing the usage of two SPI NOR slave devices on bus A:
-> +
-> +spi0: flexspi@20c0000 {
-
-It seems that Rob's comment on node name in v3 review gets overlooked?
-
-Shawn
-
-> +	compatible = "nxp,lx2160a-fspi";
-> +	reg = <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
-> +	reg-names = "fspi_base", "fspi_mmap";
-> +	interrupts = <0 25 0x4>; /* Level high type */
-> +	clocks = <&clockgen 4 3>, <&clockgen 4 3>;
-> +	clock-names = "fspi_en", "fspi";
-> +
-> +	mt35xu512aba0: flash@0 {
-> +		reg = <0>;
-> +		....
-> +	};
-> +
-> +	mt35xu512aba1: flash@1 {
-> +		reg = <1>;
-> +		....
-> +	};
-> +};
-> -- 
-> 2.7.4
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
