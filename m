@@ -1,26 +1,17 @@
-Received: from gateway34.websitewelcome.com ([192.185.148.214])
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAGtU-0003EI-Oq
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2018 15:59:30 +0000
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway34.websitewelcome.com (Postfix) with ESMTP id 369B131E3903
- for <linux-mtd@lists.infradead.org>;
- Wed, 10 Oct 2018 10:59:17 -0500 (CDT)
-Date: Wed, 10 Oct 2018 17:58:58 +0200
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ id 1gAJUc-0006Ef-B8
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2018 18:46:00 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] mtd: rawnand: fsmc: Fix unchecked return value in
- fsmc_read_page_hwecc
-Message-ID: <20181010155857.GA18860@embeddedor.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>
+Cc: Arnd Bergmann <arnd@arndb.de>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd: sa1100: avoid VLA in sa1100_setup_mtd
+Date: Wed, 10 Oct 2018 20:44:50 +0200
+Message-Id: <20181010184533.691620-1-arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,49 +21,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Check return value of nand_read_data_op.
+Enabling -Wvla found another variable-length array with randconfig
+testing:
 
-Notice that, currently, all instances of nand_read_data_op() are
-being checked, with the exception of two of them in marvell_nand
-driver, in which the caller function explicitly returns 0 every
-time.
+drivers/mtd/maps/sa1100-flash.c: In function 'sa1100_setup_mtd':
+drivers/mtd/maps/sa1100-flash.c:224:10: error: ISO C90 forbids variable length array 'cdev' [-Werror=vla]
 
-Also, notice that I moved the declaration of *ret* to the top of
-fsmc_read_page_hwecc().
+As far as I can tell, there is an upper bound on the number of resources
+that can be passed, based on the number of CS lines on the bus.
+In practice, all boards we support have either one or two resources,
+but using six to be on the safe side has no extra cost.
 
-Addresses-Coverity-ID: 1471968 ("Unchecked return value")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/mtd/nand/raw/fsmc_nand.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/mtd/maps/sa1100-flash.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
-index 70ac8d8..41ba76e 100644
---- a/drivers/mtd/nand/raw/fsmc_nand.c
-+++ b/drivers/mtd/nand/raw/fsmc_nand.c
-@@ -727,7 +727,7 @@ static int fsmc_read_page_hwecc(struct nand_chip *chip, uint8_t *buf,
- 	uint8_t *p = buf;
- 	uint8_t *ecc_calc = chip->ecc.calc_buf;
- 	uint8_t *ecc_code = chip->ecc.code_buf;
--	int off, len, group = 0;
-+	int off, len, ret, group = 0;
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index 784c6e1a0391..234573b401bd 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -23,6 +23,8 @@
+ #include <asm/sizes.h>
+ #include <asm/mach/flash.h>
+ 
++#define SA1100_NUM_CS 6
++
+ struct sa_subdev_info {
+ 	char name[16];
+ 	struct map_info map;
+@@ -157,7 +159,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
  	/*
- 	 * ecc_oob is intentionally taken as uint16_t. In 16bit devices, we
- 	 * end up reading 14 bytes (7 words) from oob. The local array is
-@@ -740,11 +740,12 @@ static int fsmc_read_page_hwecc(struct nand_chip *chip, uint8_t *buf,
- 	for (i = 0, s = 0; s < eccsteps; s++, i += eccbytes, p += eccsize) {
- 		nand_read_page_op(chip, page, s * eccsize, NULL, 0);
- 		chip->ecc.hwctl(chip, NAND_ECC_READ);
--		nand_read_data_op(chip, p, eccsize, false);
-+		ret = nand_read_data_op(chip, p, eccsize, false);
-+		if (ret)
-+			return ret;
+ 	 * Count number of devices.
+ 	 */
+-	for (nr = 0; ; nr++)
++	for (nr = 0; nr < SA1100_NUM_CS; nr++)
+ 		if (!platform_get_resource(pdev, IORESOURCE_MEM, nr))
+ 			break;
  
- 		for (j = 0; j < eccbytes;) {
- 			struct mtd_oob_region oobregion;
--			int ret;
- 
- 			ret = mtd_ooblayout_ecc(mtd, group++, &oobregion);
- 			if (ret)
+@@ -221,7 +223,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+ 		info->mtd = info->subdev[0].mtd;
+ 		ret = 0;
+ 	} else if (info->num_subdev > 1) {
+-		struct mtd_info *cdev[nr];
++		struct mtd_info *cdev[SA1100_NUM_CS];
+ 		/*
+ 		 * We detected multiple devices.  Concatenate them together.
+ 		 */
 -- 
-2.7.4
+2.18.0
