@@ -1,27 +1,26 @@
-Received: from mail-vk1-f193.google.com ([209.85.221.193])
+Received: from gateway34.websitewelcome.com ([192.185.148.214])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAFh1-0003f4-7p
- for linux-mtd@lists.infradead.org; Wed, 10 Oct 2018 14:42:43 +0000
-Received: by mail-vk1-f193.google.com with SMTP id y128-v6so1326507vky.4
- for <linux-mtd@lists.infradead.org>; Wed, 10 Oct 2018 07:42:20 -0700 (PDT)
+ id 1gAGtU-0003EI-Oq
+ for linux-mtd@lists.infradead.org; Wed, 10 Oct 2018 15:59:30 +0000
+Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id 369B131E3903
+ for <linux-mtd@lists.infradead.org>;
+ Wed, 10 Oct 2018 10:59:17 -0500 (CDT)
+Date: Wed, 10 Oct 2018 17:58:58 +0200
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] mtd: rawnand: fsmc: Fix unchecked return value in
+ fsmc_read_page_hwecc
+Message-ID: <20181010155857.GA18860@embeddedor.com>
 MIME-Version: 1.0
-References: <20181010134036.8296-1-geert+renesas@glider.be>
- <20181010134317.8466-1-geert+renesas@glider.be>
- <20181010134317.8466-2-geert+renesas@glider.be>
- <CAK8P3a1vSqKk4jRoz-YOnLKP6uL7sPRLj9=BVz92mnjNjbJ3Tg@mail.gmail.com>
-In-Reply-To: <CAK8P3a1vSqKk4jRoz-YOnLKP6uL7sPRLj9=BVz92mnjNjbJ3Tg@mail.gmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 10 Oct 2018 16:42:06 +0200
-Message-ID: <CAMuHMdVs7CTqeyxM_dZ2aLZOc_Deo3cOWocwFBCGCY8xcyJo0g@mail.gmail.com>
-Subject: Re: [PATCH 1/3] eeprom: at25: Drop obsolete cast in at25_ee_write()
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
- Greg KH <gregkh@linuxfoundation.org>,
- Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-spi <linux-spi@vger.kernel.org>,
- MTD Maling List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Arnd,
+Check return value of nand_read_data_op.
 
-On Wed, Oct 10, 2018 at 4:01 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On 10/10/18, Geert Uytterhoeven <geert+renesas@glider.be> wrote:
-> > Since commit 01973a01f9ec34b7 ("eeprom: at25: remove nvmem regmap
-> > dependency") changed the type of "off" from "loff_t" to "unsigned int",
-> > there is no longer a need to cast it to "unsigned".
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > ---
-> >  drivers/misc/eeprom/at25.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/misc/eeprom/at25.c b/drivers/misc/eeprom/at25.c
-> > index 840afb398f9e4c88..7707d3fb49b526d9 100644
-> > --- a/drivers/misc/eeprom/at25.c
-> > +++ b/drivers/misc/eeprom/at25.c
-> > @@ -160,7 +160,7 @@ static int at25_ee_write(void *priv, unsigned int off,
-> > void *val, size_t count)
-> >       do {
-> >               unsigned long   timeout, retries;
-> >               unsigned        segment;
-> > -             unsigned        offset = (unsigned) off;
-> > +             unsigned        offset = off;
-> >               u8              *cp = bounce;
-> >               int             sr;
-> >               u8              instr;
-> > --
->
-> This looks correct, but why not remove the extra variable completely
-> and rename 'off' to 'offset'?
+Notice that, currently, all instances of nand_read_data_op() are
+being checked, with the exception of two of them in marvell_nand
+driver, in which the caller function explicitly returns 0 every
+time.
 
-Thanks, good point. Will do.
+Also, notice that I moved the declaration of *ret* to the top of
+fsmc_read_page_hwecc().
 
-Gr{oetje,eeting}s,
+Addresses-Coverity-ID: 1471968 ("Unchecked return value")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/mtd/nand/raw/fsmc_nand.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-                        Geert
-
+diff --git a/drivers/mtd/nand/raw/fsmc_nand.c b/drivers/mtd/nand/raw/fsmc_nand.c
+index 70ac8d8..41ba76e 100644
+--- a/drivers/mtd/nand/raw/fsmc_nand.c
++++ b/drivers/mtd/nand/raw/fsmc_nand.c
+@@ -727,7 +727,7 @@ static int fsmc_read_page_hwecc(struct nand_chip *chip, uint8_t *buf,
+ 	uint8_t *p = buf;
+ 	uint8_t *ecc_calc = chip->ecc.calc_buf;
+ 	uint8_t *ecc_code = chip->ecc.code_buf;
+-	int off, len, group = 0;
++	int off, len, ret, group = 0;
+ 	/*
+ 	 * ecc_oob is intentionally taken as uint16_t. In 16bit devices, we
+ 	 * end up reading 14 bytes (7 words) from oob. The local array is
+@@ -740,11 +740,12 @@ static int fsmc_read_page_hwecc(struct nand_chip *chip, uint8_t *buf,
+ 	for (i = 0, s = 0; s < eccsteps; s++, i += eccbytes, p += eccsize) {
+ 		nand_read_page_op(chip, page, s * eccsize, NULL, 0);
+ 		chip->ecc.hwctl(chip, NAND_ECC_READ);
+-		nand_read_data_op(chip, p, eccsize, false);
++		ret = nand_read_data_op(chip, p, eccsize, false);
++		if (ret)
++			return ret;
+ 
+ 		for (j = 0; j < eccbytes;) {
+ 			struct mtd_oob_region oobregion;
+-			int ret;
+ 
+ 			ret = mtd_ooblayout_ecc(mtd, group++, &oobregion);
+ 			if (ret)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2.7.4
