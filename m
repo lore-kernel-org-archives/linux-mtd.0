@@ -1,21 +1,22 @@
-Received: from mail-lj1-x242.google.com ([2a00:1450:4864:20::242])
+Received: from mail-wm1-x343.google.com ([2a00:1450:4864:20::343])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAg5l-00024t-GQ
- for linux-mtd@lists.infradead.org; Thu, 11 Oct 2018 18:53:56 +0000
-Received: by mail-lj1-x242.google.com with SMTP id j17-v6so9208391lja.1
- for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2018 11:53:38 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 2/2] mtd: physmap_of_gemini: Handle pin control
-Date: Thu, 11 Oct 2018 20:53:26 +0200
-Message-Id: <20181011185326.1371-2-linus.walleij@linaro.org>
-In-Reply-To: <20181011185326.1371-1-linus.walleij@linaro.org>
-References: <20181011185326.1371-1-linus.walleij@linaro.org>
+ id 1gAi84-0003t6-Ht
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2018 21:04:22 +0000
+Received: by mail-wm1-x343.google.com with SMTP id 143-v6so10270866wmf.1
+ for <linux-mtd@lists.infradead.org>; Thu, 11 Oct 2018 14:04:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20181011165909.32615-1-axboe@kernel.dk>
+ <20181011165909.32615-17-axboe@kernel.dk>
+In-Reply-To: <20181011165909.32615-17-axboe@kernel.dk>
+From: Richard Weinberger <richard.weinberger@gmail.com>
+Date: Thu, 11 Oct 2018 23:03:55 +0200
+Message-ID: <CAFLxGvy04s++HExKixU02=e86kx4yqcz+boeepxi9=uDU94sQg@mail.gmail.com>
+Subject: Re: [PATCH 16/17] mtd_blkdevs: convert to blk-mq
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-block@vger.kernel.org,
+ "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>,
+ David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,191 +26,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This enables the complex mapping for the Gemini and kicks in
-custom read/write functions that will wrap the existing
-simple functions in calls to enable/disable the parallel
-flash pins using pin controls.
+Jens,
 
-This is necessary on some hardware such as the D-Link
-DIR-685 where all flash pins are patched in/out at the same
-time, but some of the flash pins are in practice unused by
-the flash and have anyway been reused as GPIO.
+On Thu, Oct 11, 2018 at 7:00 PM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> Straight forward conversion, using an internal list to enable the
+> driver to pull requests at will.
+>
+> Dynamically allocate the tag set to avoid having to pull in the
+> block headers for blktrans.h, since various mtd drivers use
+> block conflicting names for defines and functions.
 
-This concerns specifically CE1 on the Gemini. There is only
-one flash chip, so only CE0 is used, and the line for CE1
-has been reused as chip select for the emulated SPI port
-connected to the display. If we try to use the same lines
-for flash and GPIO at the same time, one of them will loose:
-the GPIO line will disappear because it gets disconnected
-from the pin when the flash group is muxed out.
+This explodes on my test system. :-/
 
-Fix this by introducing two pin control states named simply
-"enabled" and "disabled" and only enable the flash lines
-when absolutely necessary (during read/write/copy). This
-way, they are available for GPIO at all other times and
-the display works.
+[    2.236594] BUG: unable to handle kernel NULL pointer dereference
+at 000000000000001a
+[    2.237621] PGD 0 P4D 0
+[    2.237968] Oops: 0000 [#1] SMP PTI
+[    2.238425] CPU: 3 PID: 1110 Comm: kworker/3:1H Not tainted 4.19.0-rc7+ #143
+[    2.239331] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.0.0-prebuilt.qemu-project.org 04/01/2014
+[    2.240893] Workqueue: kblockd blk_mq_run_work_fn
+[    2.241533] RIP: 0010:__blk_mq_end_request+0xe/0xb0
+[    2.242212] Code: 44 21 c2 48 0f a3 10 73 02 f3 c3 f0 48 0f ab 10
+c3 90 66 2e 0f 1f 84 00 00 00 00 00 41 54 55 89 f5 53 48 89 fb e8 f2
+80 d6 ff <f6> 43 1a 02 49 89 c4 75 4f 4c 89 e6 48 89 df e8 4e 69 ff ff
+48 83
+[    2.244798] RSP: 0018:ffffac65c2c43d20 EFLAGS: 00010216
+[    2.245469] RAX: 000000007caad848 RBX: 0000000000000000 RCX: 0000000000000017
+[    2.246382] RDX: 0000031c57000000 RSI: 001778d956000000 RDI: ffffffffa4cc70c0
+[    2.247296] RBP: 0000000000000000 R08: 00000000d2a4b8d8 R09: ffffffffa355ead3
+[    2.248208] R10: fffff1a2c5e46740 R11: ffffffffff76acba R12: 0000000000000000
+[    2.249123] R13: ffffa117793ff720 R14: ffffffffa46c7120 R15: 000000000007ff88
+[    2.259551] FS:  0000000000000000(0000) GS:ffffa1177ab80000(0000)
+knlGS:0000000000000000
+[    2.259552] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.259553] CR2: 000000000000001a CR3: 0000000177d44000 CR4: 00000000000006e0
+[    2.259560] Call Trace:
+[    2.259630]  mtd_queue_rq+0x1fa/0x400
+[    2.259661]  blk_mq_dispatch_rq_list+0x8b/0x510
+[    2.259672]  ? elv_rqhash_add+0x1/0x60
+[    2.259680]  ? deadline_remove_request+0x44/0xa0
+[    2.259684]  blk_mq_do_dispatch_sched+0x5a/0xf0
+[    2.259690]  blk_mq_sched_dispatch_requests+0xf0/0x160
+[    2.259697]  __blk_mq_run_hw_queue+0x49/0xc0
+[    2.259705]  process_one_work+0x1e9/0x3d0
+[    2.259726]  worker_thread+0x28/0x3d0
+[    2.259728]  ? process_one_work+0x3d0/0x3d0
+[    2.259732]  kthread+0x10e/0x130
+[    2.259740]  ? kthread_create_worker_on_cpu+0x70/0x70
+[    2.259750]  ret_from_fork+0x35/0x40
+[    2.259763] Modules linked in:
+[    2.259767] CR2: 000000000000001a
+[    2.259772] ---[ end trace b08076f7e1ed1f91 ]---
+[    2.259774] RIP: 0010:__blk_mq_end_request+0xe/0xb0
+[    2.259776] Code: 44 21 c2 48 0f a3 10 73 02 f3 c3 f0 48 0f ab 10
+c3 90 66 2e 0f 1f 84 00 00 00 00 00 41 54 55 89 f5 53 48 89 fb e8 f2
+80 d6 ff <f6> 43 1a 02 49 89 c4 75 4f 4c 89 e6 48 89 df e8 4e 69 ff ff
+48 83
+[    2.259777] RSP: 0018:ffffac65c2c43d20 EFLAGS: 00010216
+[    2.259778] RAX: 000000007caad848 RBX: 0000000000000000 RCX: 0000000000000017
+[    2.259779] RDX: 0000031c57000000 RSI: 001778d956000000 RDI: ffffffffa4cc70c0
+[    2.259780] RBP: 0000000000000000 R08: 00000000d2a4b8d8 R09: ffffffffa355ead3
+[    2.259780] R10: fffff1a2c5e46740 R11: ffffffffff76acba R12: 0000000000000000
+[    2.259781] R13: ffffa117793ff720 R14: ffffffffa46c7120 R15: 000000000007ff88
+[    2.259782] FS:  0000000000000000(0000) GS:ffffa1177ab80000(0000)
+knlGS:0000000000000000
+[    2.259783] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    2.259784] CR2: 000000000000001a CR3: 0000000177d44000 CR4: 00000000000006e0
+[    2.259786] Kernel panic - not syncing: Fatal exception
+[    2.261997] Kernel Offset: 0x22200000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
 
-Collect all the state variables in a struct named
-struct gemini_flash and allocate this struct at probe
-time.
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mtd/maps/Kconfig             |   1 +
- drivers/mtd/maps/physmap_of_gemini.c | 105 ++++++++++++++++++++++++++-
- 2 files changed, 105 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index afb36bff13a7..00efbf246849 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -89,6 +89,7 @@ config MTD_PHYSMAP_OF_GEMINI
- 	depends on MTD_PHYSMAP_OF
- 	depends on MFD_SYSCON
- 	default ARCH_GEMINI
-+	select MTD_COMPLEX_MAPPINGS
- 	help
- 	  This provides some extra DT physmap parsing for the Gemini
- 	  platforms, some detection and setting up parallel mode on the
-diff --git a/drivers/mtd/maps/physmap_of_gemini.c b/drivers/mtd/maps/physmap_of_gemini.c
-index 830b1b7e702b..7c2b67460192 100644
---- a/drivers/mtd/maps/physmap_of_gemini.c
-+++ b/drivers/mtd/maps/physmap_of_gemini.c
-@@ -10,9 +10,11 @@
- #include <linux/of.h>
- #include <linux/of_device.h>
- #include <linux/mtd/map.h>
-+#include <linux/mtd/xip.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/bitops.h>
-+#include <linux/pinctrl/consumer.h>
- #include "physmap_of_gemini.h"
- 
- /*
-@@ -49,6 +51,77 @@ static const struct of_device_id syscon_match[] = {
- 	{ },
- };
- 
-+struct gemini_flash {
-+	struct device *dev;
-+	struct pinctrl *p;
-+	struct pinctrl_state *enabled_state;
-+	struct pinctrl_state *disabled_state;
-+};
-+
-+/* Static local state */
-+static struct gemini_flash *gf;
-+
-+static void gemini_flash_enable_pins(void)
-+{
-+	int ret;
-+
-+	if (IS_ERR(gf->enabled_state))
-+		return;
-+	ret = pinctrl_select_state(gf->p, gf->enabled_state);
-+	if (ret)
-+		dev_err(gf->dev, "failed to enable pins\n");
-+}
-+
-+static void gemini_flash_disable_pins(void)
-+{
-+	int ret;
-+
-+	if (IS_ERR(gf->disabled_state))
-+		return;
-+	ret = pinctrl_select_state(gf->p, gf->disabled_state);
-+	if (ret)
-+		dev_err(gf->dev, "failed to disable pins\n");
-+}
-+
-+static map_word __xipram gemini_flash_map_read(struct map_info *map,
-+					       unsigned long ofs)
-+{
-+	map_word __xipram ret;
-+
-+	gemini_flash_enable_pins();
-+	ret = inline_map_read(map, ofs);
-+	gemini_flash_disable_pins();
-+
-+	return ret;
-+}
-+
-+static void __xipram gemini_flash_map_write(struct map_info *map,
-+					    const map_word datum,
-+					    unsigned long ofs)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_write(map, datum, ofs);
-+	gemini_flash_disable_pins();
-+}
-+
-+static void __xipram gemini_flash_map_copy_from(struct map_info *map,
-+						void *to, unsigned long from,
-+						ssize_t len)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_copy_from(map, to, from, len);
-+	gemini_flash_disable_pins();
-+}
-+
-+static void __xipram gemini_flash_map_copy_to(struct map_info *map,
-+					      unsigned long to,
-+					      const void *from, ssize_t len)
-+{
-+	gemini_flash_enable_pins();
-+	inline_map_copy_to(map, to, from, len);
-+	gemini_flash_disable_pins();
-+}
-+
- int of_flash_probe_gemini(struct platform_device *pdev,
- 			  struct device_node *np,
- 			  struct map_info *map)
-@@ -62,6 +135,11 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 	if (!of_device_is_compatible(np, "cortina,gemini-flash"))
- 		return 0;
- 
-+	gf = devm_kzalloc(dev, sizeof(*gf), GFP_KERNEL);
-+	if (!gf)
-+		return -ENOMEM;
-+	gf->dev = dev;
-+
- 	rmap = syscon_regmap_lookup_by_phandle(np, "syscon");
- 	if (IS_ERR(rmap)) {
- 		dev_err(dev, "no syscon\n");
-@@ -96,7 +174,32 @@ int of_flash_probe_gemini(struct platform_device *pdev,
- 				 map->bankwidth * 8);
- 	}
- 
--	dev_info(&pdev->dev, "initialized Gemini-specific physmap control\n");
-+	gf->p = devm_pinctrl_get(dev);
-+	if (IS_ERR(gf->p)) {
-+		dev_err(dev, "no pinctrl handle\n");
-+		ret = PTR_ERR(gf->p);
-+		return ret;
-+	}
-+
-+	gf->enabled_state = pinctrl_lookup_state(gf->p, "enabled");
-+	if (IS_ERR(gf->enabled_state))
-+		dev_err(dev, "no enabled pin control state\n");
-+
-+	gf->disabled_state = pinctrl_lookup_state(gf->p, "disabled");
-+	if (IS_ERR(gf->enabled_state)) {
-+		dev_err(dev, "no disabled pin control state\n");
-+	} else {
-+		ret = pinctrl_select_state(gf->p, gf->disabled_state);
-+		if (ret)
-+			dev_err(gf->dev, "failed to disable pins\n");
-+	}
-+
-+	map->read = gemini_flash_map_read;
-+	map->write = gemini_flash_map_write;
-+	map->copy_from = gemini_flash_map_copy_from;
-+	map->copy_to = gemini_flash_map_copy_to;
-+
-+	dev_info(dev, "initialized Gemini-specific physmap control\n");
- 
- 	return 0;
- }
 -- 
-2.17.1
+Thanks,
+//richard
