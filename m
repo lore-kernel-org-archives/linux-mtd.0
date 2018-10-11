@@ -1,27 +1,22 @@
-From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "linux-spi@vger.kernel.org"
- <linux-spi@vger.kernel.org>, "devicetree@vger.kernel.org"
- <devicetree@vger.kernel.org>
-CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
- <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
- <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
- <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
- <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH v4 2/5] dt-bindings: spi: add binding file for NXP FlexSPI
- controller
-Date: Thu, 11 Oct 2018 11:00:38 +0000
-Message-ID: <1539255519-1408-3-git-send-email-yogeshnarayan.gaur@nxp.com>
-References: <1539255519-1408-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-In-Reply-To: <1539255519-1408-1-git-send-email-yogeshnarayan.gaur@nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.kernel.org ([198.145.29.99])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAbXM-0007Sx-9U
+ for linux-mtd@lists.infradead.org; Thu, 11 Oct 2018 14:02:15 +0000
+Date: Thu, 11 Oct 2018 16:01:46 +0200
+From: "gregkh@linuxfoundation.org >> Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>
+To: Hou Tao <houtao1@huawei.com>
+Cc: Andreas Gruenbacher <agruenba@redhat.com>,
+ David Woodhouse <dwmw2@infradead.org>,
+ linux-mtd@lists.infradead.org, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4-stable] jffs2: return -ERANGE when xattr buffer is
+ too small
+Message-ID: <20181011140146.GA2158@kroah.com>
+References: <d05f826c-5b68-2409-ac96-01f0885d0617@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d05f826c-5b68-2409-ac96-01f0885d0617@huawei.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,67 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add binding file for NXP FlexSPI controller
+On Fri, Oct 05, 2018 at 03:13:20PM +0800, Hou Tao wrote:
+> Hi Greg,
+> 
+> The problem had been fixed by 764a5c6b1fa4 ("xattr handlers: Simplify list
+> operation") in v4.5-rc1, but the modification in that commit may be too much
+> because it modifies all file-systems which implement xattr, so I create a single
+> patch for jffs2 to fix the problem. Which one is your preference ?
 
-Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
----
-Changes for v4:
-- Incorporated Rob review comments.
-Changes for v3:
-- Removed node property 'big-endian'.
-Changes for v2:
-- Incorporated Rob review comments.
+This single patch is good.  But the tabs are all converted to spaces and
+this does not apply :(
 
- .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 39 ++++++++++++++++++=
-++++
- 1 file changed, 39 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
+Please fix up and resend.
 
-diff --git a/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt b/Docum=
-entation/devicetree/bindings/spi/spi-nxp-fspi.txt
-new file mode 100644
-index 0000000..2cd67eb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-@@ -0,0 +1,39 @@
-+* NXP Flex Serial Peripheral Interface (FSPI)
-+
-+Required properties:
-+  - compatible : Should be "nxp,lx2160a-fspi"
-+  - reg :        First contains the register location and length,
-+                 Second contains the memory mapping address and length
-+  - reg-names :  Should contain the resource reg names:
-+	         - fspi_base: configuration register address space
-+                 - fspi_mmap: memory mapped address space
-+  - interrupts : Should contain the interrupt for the device
-+
-+Required SPI slave node properties:
-+  - reg :        There are two buses (A and B) with two chip selects each.
-+                 This encodes to which bus and CS the flash is connected:
-+                 - <0>: Bus A, CS 0
-+                 - <1>: Bus A, CS 1
-+                 - <2>: Bus B, CS 0
-+                 - <3>: Bus B, CS 1
-+
-+Example showing the usage of two SPI NOR slave devices on bus A:
-+
-+fspi0: spi@20c0000 {
-+	compatible =3D "nxp,lx2160a-fspi";
-+	reg =3D <0x0 0x20c0000 0x0 0x10000>, <0x0 0x20000000 0x0 0x10000000>;
-+	reg-names =3D "fspi_base", "fspi_mmap";
-+	interrupts =3D <0 25 0x4>; /* Level high type */
-+	clocks =3D <&clockgen 4 3>, <&clockgen 4 3>;
-+	clock-names =3D "fspi_en", "fspi";
-+
-+	mt35xu512aba0: flash@0 {
-+		reg =3D <0>;
-+		....
-+	};
-+
-+	mt35xu512aba1: flash@1 {
-+		reg =3D <1>;
-+		....
-+	};
-+};
---=20
-2.7.4
+thanks,
+
+greg k-h
