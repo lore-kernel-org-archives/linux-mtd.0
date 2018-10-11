@@ -12,9 +12,9 @@ CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
  <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
  <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
  <yogeshnarayan.gaur@nxp.com>
-Subject: [PATCH 5/5] MAINTAINERS: add maintainers for the NXP FlexSPI driver
-Date: Thu, 11 Oct 2018 11:00:55 +0000
-Message-ID: <1539255519-1408-6-git-send-email-yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v4 4/5] arm64: defconfig: enable NXP FlexSPI driver
+Date: Thu, 11 Oct 2018 11:00:49 +0000
+Message-ID: <1539255519-1408-5-git-send-email-yogeshnarayan.gaur@nxp.com>
 References: <1539255519-1408-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 In-Reply-To: <1539255519-1408-1-git-send-email-yogeshnarayan.gaur@nxp.com>
 Content-Language: en-US
@@ -30,7 +30,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add maintainers for the NXP FlexSPI driver
+Enable driver support of NXP FlexSPI controller.
 
 Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
 ---
@@ -41,26 +41,20 @@ Changes for v3:
 Changes for v2:
 - None
 
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d5eeff..2696898 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -10228,6 +10228,12 @@ L:	linux-nfc@lists.01.org (moderated for non-subsc=
-ribers)
- S:	Supported
- F:	drivers/nfc/nxp-nci
-=20
-+NXP FSPI DRIVER
-+M:	Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-+L:	linux-spi@vger.kernel.org
-+S:	Maintained
-+F:	drivers/spi/spi-nxp-fspi.c
-+
- OBJTOOL
- M:	Josh Poimboeuf <jpoimboe@redhat.com>
- M:	Peter Zijlstra <peterz@infradead.org>
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 3cfa8ca..75ceddf 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -335,6 +335,7 @@ CONFIG_SPI_QUP=3Dy
+ CONFIG_SPI_ROCKCHIP=3Dy
+ CONFIG_SPI_S3C64XX=3Dy
+ CONFIG_SPI_SPIDEV=3Dm
++CONFIG_SPI_NXP_FLEXSPI=3Dy
+ CONFIG_SPMI=3Dy
+ CONFIG_PINCTRL_IPQ8074=3Dy
+ CONFIG_PINCTRL_SINGLE=3Dy
 --=20
 2.7.4
