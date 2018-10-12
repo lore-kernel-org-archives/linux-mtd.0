@@ -1,17 +1,26 @@
-Received: from szxga07-in.huawei.com ([45.249.212.35] helo=huawei.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAqTs-0004wU-MV
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 05:59:26 +0000
-From: Hou Tao <houtao1@huawei.com>
-To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <agruenba@redhat.com>,
- <dwmw2@infradead.org>, <houtao1@huawei.com>
-Subject: [RESEND][PATCH 4.4-stable] jffs2: return -ERANGE when xattr buffer is
- too small
-Date: Fri, 12 Oct 2018 14:01:26 +0800
-Message-ID: <20181012060126.33739-1-houtao1@huawei.com>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAqcJ-0000Hf-Bi
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 06:08:09 +0000
+Date: Fri, 12 Oct 2018 08:07:53 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add macros related to MICRON flash
+Message-ID: <20181012080753.2a59b75c@bbrezillon>
+In-Reply-To: <1539310881-17438-2-git-send-email-yogeshnarayan.gaur@nxp.com>
+References: <1539310881-17438-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+ <1539310881-17438-2-git-send-email-yogeshnarayan.gaur@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +30,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When a file have multiple xattrs and the passed buffer is
-smaller than the required size, jffs2_listxattr() should
-return -ERANGE instead of continue, else Oops may occur
-due to memory corruption.
+On Fri, 12 Oct 2018 02:23:08 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-Also remove the unnecessary check ("rc < 0"), because
-xhandle->list(...) will not return an error number.
+> Some MICRON related macros in spi-nor domain were ST.
+> Rename entries related to STMicroelectronics under macro SNOR_MFR_ST.
+> 
+> Added entry of MFR Id for Micron flashes, 0x002C.
+> 
+> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
+> Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+> ---
+> Changes for v3:
+> - None
+> Changes for v2:
+> - None
+> 
+>  drivers/mtd/spi-nor/spi-nor.c | 9 ++++++---
+>  include/linux/mtd/cfi.h       | 1 +
+>  include/linux/mtd/spi-nor.h   | 3 ++-
+>  3 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 9407ca5..b8b494f 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -284,6 +284,7 @@ static inline int set_4byte(struct spi_nor *nor, const struct flash_info *info,
+>  	u8 cmd;
+>  
+>  	switch (JEDEC_MFR(info)) {
+> +	case SNOR_MFR_ST:
+>  	case SNOR_MFR_MICRON:
+>  		/* Some Micron need WREN command; all will accept it */
+>  		need_wren = true;
+> @@ -1388,7 +1389,7 @@ static int spi_nor_is_locked(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+>  	{ "mx66l1g45g",  INFO(0xc2201b, 0, 64 * 1024, 2048, SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+>  	{ "mx66l1g55g",  INFO(0xc2261b, 0, 64 * 1024, 2048, SPI_NOR_QUAD_READ) },
+>  
+> -	/* Micron */
+> +	/* Micron <--> ST Micro */
+>  	{ "n25q016a",	 INFO(0x20bb15, 0, 64 * 1024,   32, SECT_4K | SPI_NOR_QUAD_READ) },
+>  	{ "n25q032",	 INFO(0x20ba16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+>  	{ "n25q032a",	 INFO(0x20bb16, 0, 64 * 1024,   64, SPI_NOR_QUAD_READ) },
+> @@ -3223,6 +3224,7 @@ static int spi_nor_init_params(struct spi_nor *nor,
+>  			params->quad_enable = macronix_quad_enable;
+>  			break;
+>  
+> +		case SNOR_MFR_ST:
+>  		case SNOR_MFR_MICRON:
+>  			break;
+>  
+> @@ -3671,8 +3673,9 @@ int spi_nor_scan(struct spi_nor *nor, const char *name,
+>  	mtd->_resume = spi_nor_resume;
+>  
+>  	/* NOR protection support for STmicro/Micron chips and similar */
+> -	if (JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+> -			info->flags & SPI_NOR_HAS_LOCK) {
+> +	if (JEDEC_MFR(info) == SNOR_MFR_ST ||
+> +	    JEDEC_MFR(info) == SNOR_MFR_MICRON ||
+> +	    info->flags & SPI_NOR_HAS_LOCK) {
+>  		nor->flash_lock = stm_lock;
+>  		nor->flash_unlock = stm_unlock;
+>  		nor->flash_is_locked = stm_is_locked;
 
-Spotted by generic/377 in xfstests-dev.
+Are you sure ST and Micron NORs work the same way WRT locking, 4-byte
+addressing mode and Quad enable?
 
-NB: The problem had been fixed by commit 764a5c6b1fa4 ("xattr
-handlers: Simplify list operation") in v4.5-rc1, but the
-modification in that commit may be too much because it modifies
-all file-systems which implement xattr, so I create a single
-patch for jffs2 to fix the problem.
-
-Signed-off-by: Hou Tao <houtao1@huawei.com>
----
- fs/jffs2/xattr.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
-index 4c2c03663533..8e1427762eeb 100644
---- a/fs/jffs2/xattr.c
-+++ b/fs/jffs2/xattr.c
-@@ -1004,12 +1004,14 @@ ssize_t jffs2_listxattr(struct dentry *dentry, char *buffer, size_t size)
- 			rc = xhandle->list(xhandle, dentry, buffer + len,
- 					   size - len, xd->xname,
- 					   xd->name_len);
-+			if (rc > size - len) {
-+				rc = -ERANGE;
-+				goto out;
-+			}
- 		} else {
- 			rc = xhandle->list(xhandle, dentry, NULL, 0,
- 					   xd->xname, xd->name_len);
- 		}
--		if (rc < 0)
--			goto out;
- 		len += rc;
- 	}
- 	rc = len;
--- 
-2.16.2.dirty
+> diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+> index 9b57a9b..cbf7716 100644
+> --- a/include/linux/mtd/cfi.h
+> +++ b/include/linux/mtd/cfi.h
+> @@ -377,6 +377,7 @@ struct cfi_fixup {
+>  #define CFI_MFR_SHARP		0x00B0
+>  #define CFI_MFR_SST		0x00BF
+>  #define CFI_MFR_ST		0x0020 /* STMicroelectronics */
+> +#define CFI_MFR_MICRON		0x002C /* Micron */
+>  #define CFI_MFR_TOSHIBA		0x0098
+>  #define CFI_MFR_WINBOND		0x00DA
+>  
+> diff --git a/include/linux/mtd/spi-nor.h b/include/linux/mtd/spi-nor.h
+> index 7f0c730..8b1acf6 100644
+> --- a/include/linux/mtd/spi-nor.h
+> +++ b/include/linux/mtd/spi-nor.h
+> @@ -23,7 +23,8 @@
+>  #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
+>  #define SNOR_MFR_GIGADEVICE	0xc8
+>  #define SNOR_MFR_INTEL		CFI_MFR_INTEL
+> -#define SNOR_MFR_MICRON		CFI_MFR_ST /* ST Micro <--> Micron */
+> +#define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
+> +#define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
+>  #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
+>  #define SNOR_MFR_SPANSION	CFI_MFR_AMD
+>  #define SNOR_MFR_SST		CFI_MFR_SST
