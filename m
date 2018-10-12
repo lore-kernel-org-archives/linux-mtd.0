@@ -1,18 +1,26 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAxDx-0006Jx-R8
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 13:11:27 +0000
-Date: Fri, 12 Oct 2018 15:11:13 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Cc: Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marex@denx.de>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [GIT PULL] mtd: spi-nor: Changes for 4.20
-Message-ID: <20181012151113.1b58457a@bbrezillon>
+Received: from mail-ot1-f68.google.com ([209.85.210.68])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gB471-0007d9-V2
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 20:32:45 +0000
+Received: by mail-ot1-f68.google.com with SMTP id c23so11781173otl.9
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 13:32:32 -0700 (PDT)
+Date: Fri, 12 Oct 2018 15:32:29 -0500
+From: Rob Herring <robh@kernel.org>
+To: christophe.kerello@st.com
+Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
+ dwmw2@infradead.org, computersforpeace@gmail.com,
+ marek.vasut@gmail.com, mark.rutland@arm.com,
+ linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND
+ controller documentation
+Message-ID: <20181012203229.GA9657@bogus>
+References: <1538732520-2800-1-git-send-email-christophe.kerello@st.com>
+ <1538732520-2800-2-git-send-email-christophe.kerello@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1538732520-2800-2-git-send-email-christophe.kerello@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +30,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Fri, Oct 05, 2018 at 11:41:58AM +0200, christophe.kerello@st.com wrote:
+> From: Christophe Kerello <christophe.kerello@st.com>
+> 
+> This patch adds the documentation of the device tree bindings for the STM32
+> FMC2 NAND controller.
+> 
+> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
+> ---
+>  .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 59 ++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+> new file mode 100644
+> index 0000000..b620176
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
+> @@ -0,0 +1,59 @@
+> +STMicroelectronics Flexible Memory Controller 2 (FMC2)
+> +NAND Interface
+> +
+> +Required properties:
+> +- compatible: Should be one of:
+> +              * st,stm32mp15-fmc2
+> +- reg: NAND flash controller memory areas.
+> +       First region contains the register location.
+> +       Regions 2 to 4 respectively contain the data, command,
+> +       and address space for CS0.
+> +       Regions 5 to 7 contain the same areas for CS1.
+> +- interrupts: The interrupt number
+> +- pinctrl-0: Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
+> +- clocks: Use common clock framework
 
-Here is the spi-nor PR for 4.20.
+How many? 'common clock framework' is a Linux thing, not part of 
+bindings.
 
-Regards,
-
-Boris
-
-The following changes since commit 5b394b2ddf0347bef56e50c69a58773c94343ff3:
-
-  Linux 4.19-rc1 (2018-08-26 14:11:59 -0700)
-
-are available in the git repository at:
-
-  git://git.infradead.org/linux-mtd.git tags/spi-nor/for-4.20
-
-for you to fetch changes up to 41fe242979e463d6ad251077ded01b825a330b7e:
-
-  mtd: spi-nor: fsl-quadspi: fix read error for flash size larger than 16MB (2018-10-12 11:48:19 +0200)
-
-----------------------------------------------------------------
-Core changes:
-* Support non-uniform erase size
-* Support controllers with limited TX fifo size
-
-Driver changes:
-* m25p80: Re-issue a WREN command after each write access
-* cadence: Pass a proper dir value to dma_[un]map_single()
-* fsl-qspi: Check fsl_qspi_get_seqid() return val make sure 4B
-  addressing opcodes are properly handled
-* intel-spi: Add a new PCI entry for Ice Lake
-
-----------------------------------------------------------------
-Ahmad Fatoum (1):
-      mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
-
-Liu Xiang (1):
-      mtd: spi-nor: fsl-quadspi: fix read error for flash size larger than 16MB
-
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Ice Lake SPI serial flash
-
-Nathan Chancellor (1):
-      mtd: spi-nor: cadence-quadspi: Use proper enum for dma_[un]map_single
-
-Tudor Ambarus (2):
-      mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
-      mtd: spi-nor: parse SFDP Sector Map Parameter Table
-
-Yogesh Gaur (2):
-      mtd: spi-nor: Support controllers with limited TX FIFO size
-      mtd: devices: m25p80: Make sure WRITE_EN is issued before each write
-
- drivers/mtd/devices/m25p80.c          |  23 +-
- drivers/mtd/spi-nor/cadence-quadspi.c |   4 +-
- drivers/mtd/spi-nor/fsl-quadspi.c     |  15 +-
- drivers/mtd/spi-nor/intel-spi-pci.c   |   1 +
- drivers/mtd/spi-nor/spi-nor.c         | 925 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
- include/linux/mtd/spi-nor.h           | 119 ++++++++
- 6 files changed, 1001 insertions(+), 86 deletions(-)
-
-
--- 
-Boris Brezillon, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> +
+> +Optional properties:
+> +- resets: Reference to a reset controller asserting the FMC controller
+> +- dmas: DMA specifiers (see: dma/stm32-mdma.txt)
+> +- dma-names: Must be "tx", "rx" and "ecc"
+> +
+> +Optional children nodes:
+> +Children nodes represent the available NAND chips.
+> +
+> +Optional properties:
+> +- nand-on-flash-bbt: see nand.txt
+> +- nand-ecc-strength: see nand.txt
+> +- nand-ecc-step-size: see nand.txt
+> +
+> +The following ECC strength and step size are currently supported:
+> + - nand-ecc-strength = <1>, nand-ecc-step-size = <512> (Hamming)
+> + - nand-ecc-strength = <4>, nand-ecc-step-size = <512> (BCH4)
+> + - nand-ecc-strength = <8>, nand-ecc-step-size = <512> (BCH8) (default)
+> +
+> +Example:
+> +
+> +	fmc: nand-controller@58002000 {
+> +		compatible = "st,stm32mp15-fmc2";
+> +		reg = <0x58002000 0x1000>,
+> +		      <0x80000000 0x1000>,
+> +		      <0x88010000 0x1000>,
+> +		      <0x88020000 0x1000>,
+> +		      <0x81000000 0x1000>,
+> +		      <0x89010000 0x1000>,
+> +		      <0x89020000 0x1000>;
+> +		interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks = <&rcc FMC_K>;
+> +		resets = <&rcc FMC_R>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&fmc_pins_a>;
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		nand@0 {
+> +			reg = <0>;
+> +			nand-on-flash-bbt;
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +		};
+> +	};
+> -- 
+> 1.9.1
+> 
