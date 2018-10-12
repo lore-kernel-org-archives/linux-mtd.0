@@ -1,6 +1,6 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAt7q-0001hF-HD
+ id 1gAt7q-0001j7-HI
  for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 08:48:55 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
@@ -12,9 +12,11 @@ To: David Woodhouse <dwmw2@infradead.org>,
 Cc: Julien Su <juliensu@mxic.com.tw>, Mason Yang <masonccyang@mxic.com.tw>,
  <zhengxunli@mxic.com.tw>, Mark Brown <broonie@kernel.org>,
  linux-spi@vger.kernel.org
-Subject: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
-Date: Fri, 12 Oct 2018 10:48:07 +0200
-Message-Id: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+Subject: [PATCH RFC 03/18] spi: spi-mem: Prepare things for DTR mode support
+Date: Fri, 12 Oct 2018 10:48:10 +0200
+Message-Id: <20181012084825.23697-4-boris.brezillon@bootlin.com>
+In-Reply-To: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,107 +26,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Add dtr fields to the spi_mem_op struct and make sure all DTR
+operations are rejected for now.
 
-The trend has been around octo (or octal) SPI NOR lately, and both
-Yogesh and Vignesh proposed patches to support 1-1-8 and 1-8-8 modes
-on Micron SPI NORs (plus the associated patches to support that on the
-Cadence and FlesSPI controllers). I'll probably take their patches in
-4.20 since adding support for stateless octo modes is not invasive, but
-I wanted to start a discussion on how we should support stateful modes
-(X-X-X and XD-XD-XD, where X is the bus width and D means Double
-Transfer Rate).
+We intentionally do not expose a new flag at the spi_device level,
+since spi memories seem to be the only users of this feature.
 
-First question that might come to mind is why should we support such
-stateful modes? If you think about it, the gain of transmitting the
-opcode on 8 IO lines is rather small compared to the pain it is to
-teach the SPI NOR framework how to deal with that. The problem is,
-some SPI NOR manufacturers (Macronix for instance) only implement 1-1-1
-and 8-8-8 (or 8D-8D-8D), and they want to be able to use their NORs in
-8-8-8 mode when the controller supports it.
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/spi/spi-mem.c       |  3 +++
+ include/linux/spi/spi-mem.h | 48 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 51 insertions(+)
 
-So, this patchset is aiming at starting a wider discussion on how you
-think those modes should be supported. This is just a proposal, and I'm
-of course open to other suggestions, as long as the answer is not as
-definitive as "too bad for them, they should have supported 1-8-8 or
-1-1-8 modes".
-
-Just a few more details about the patches in this series. Some of them
-are clearly conflicting with patches posted by Yogesh and Vignesh.
-Don't worry guys, I'm still planning to take yours before, it's just
-that I was too lazy to rebase on top of your modifications. Also, some
-patches might not pass checkpatch or might trigger kbuild errors, but
-before fixing those problems, I'd like to get your opinion on the
-general approach.
-
-It's also worth mentioning that I focused on spi-mem support only,
-because on the long run, I want all SPI NOR controller drivers
-converted to this interface, and if I can limit support of octo modes
-to those implementing the spi-mem interface, that's an incentive to
-push developers to do the conversion. This part is still open to
-discussion though.
-
-Also, in this patchset, I merge the m25p80 driver code in spi-nor.c,
-which is something I wanted to do for quite some. Indeed, the m25p80 is
-just a simple SPI NOR controller driver (a wrapper around the SPI mem
-API). Not only it shouldn't be named after a specific SPI NOR chip, but
-it also doesn't deserve a specific driver IMO, especially if the end
-goal is to get rid of SPI NOR controller drivers found in
-drivers/mtd/spi-nor/ and replace them by SPI mem drivers (which would
-be placed in drivers/spi/). With this solution, we declare the SPI NOR
-driver as a spi_mem_driver, just like the SPI NAND layer is declared as
-a spi_mem driver. This solution also allows us to check at a
-fined-grain level (thanks to the spi_mem_supports_op() function) which
-operations are supported and which ones are not, while the original
-m25p80 logic was basing this decision on the
-SPI_{RX,TX}_{DUAL,QUAD,OCTO} flags only.
-
-The last set of patches in the series are modifying the framework to
-allow entering X-X-X modes in a chip-specific way, and then adds
-support for 8-8-8 and 8D-8D-8D modes on a Macronix chip (mx25uw51245g).
-
-Yogesh, Vignesh, Tudor (and maybe Cyrille and Marek if you have some
-time), please have a look at this patch series and tell me what you
-think.
-
-Regards,
-
-Boris
-
-Boris Brezillon (18):
-  mtd: spi-nor: Add a flash_info entry for Macronix mx25uw51245g
-  spi: Prepare things for octo mode support
-  spi: spi-mem: Prepare things for DTR mode support
-  spi: spi-mem: Prepare things for dual bytes opcodes support
-  spi: spi-mem: mxic: Add support for DTR and Octo mode
-  mtd: spi-nor: Move m25p80 code in spi-nor.c
-  mtd: spi-nor: Rework hwcaps selection for the spi-mem case
-  mtd: spi-nor: Define the DPI, QPI and OPI hwcaps
-  mtd: spi-nor: Add spi_nor_{read,write}_reg() helpers
-  mtd: spi-nor: Add support for X-X-X modes
-  mtd: spi-nor: Prepare things for 2byte opcodes
-  mtd: spi-nor: Provide a hook to tweak flash parameters
-  mtd: spi-nor: Add 8-8-8 mode support to Macronix mx25uw51245g
-  mtd: spi-nor: Clarify where DTR mode applies
-  mtd: spi-nor: Add DTR support to the spi-mem logic
-  mtd: spi-nor: Add the concept of full DTR modes
-  mtd: spi-nor: Add 8D-8D-8D mode
-  mtd: spi-nor: Make sure the 8D-8D-8D can be selected on mx25uw51245g
-
- drivers/mtd/devices/Kconfig         |   18 -
- drivers/mtd/devices/Makefile        |    1 -
- drivers/mtd/devices/m25p80.c        |  324 ---------
- drivers/mtd/spi-nor/Kconfig         |    3 +-
- drivers/mtd/spi-nor/atmel-quadspi.c |    5 +-
- drivers/mtd/spi-nor/spi-nor.c       | 1331 +++++++++++++++++++++++++++++++----
- drivers/spi/spi-mem.c               |   15 +-
- drivers/spi/spi-mxic.c              |   27 +-
- drivers/spi/spi.c                   |   12 +-
- include/linux/mtd/spi-nor.h         |  168 ++++-
- include/linux/spi/spi-mem.h         |   69 +-
- include/linux/spi/spi.h             |    2 +
- 12 files changed, 1424 insertions(+), 551 deletions(-)
- delete mode 100644 drivers/mtd/devices/m25p80.c
-
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index 2379efcaf1c6..3da57219b539 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -154,6 +154,9 @@ static bool spi_mem_default_supports_op(struct spi_mem *mem,
+ 				   op->data.dir == SPI_MEM_DATA_OUT))
+ 		return false;
+ 
++	if (op->cmd.dtr || op->addr.dtr || op->dummy.dtr || op->data.dtr)
++		return false;
++
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(spi_mem_default_supports_op);
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 69ee30456864..cad116005034 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -19,6 +19,13 @@
+ 		.opcode = __opcode,				\
+ 	}
+ 
++#define SPI_MEM_OP_DTR_CMD(__opcode, __buswidth)		\
++	{							\
++		.buswidth = __buswidth,				\
++		.opcode = __opcode,				\
++		.dtr = true,					\
++	}
++
+ #define SPI_MEM_OP_ADDR(__nbytes, __val, __buswidth)		\
+ 	{							\
+ 		.nbytes = __nbytes,				\
+@@ -26,6 +33,14 @@
+ 		.buswidth = __buswidth,				\
+ 	}
+ 
++#define SPI_MEM_OP_DTR_ADDR(__nbytes, __val, __buswidth)	\
++	{							\
++		.nbytes = __nbytes,				\
++		.val = __val,					\
++		.buswidth = __buswidth,				\
++		.dtr = true,					\
++	}
++
+ #define SPI_MEM_OP_NO_ADDR	{ }
+ 
+ #define SPI_MEM_OP_DUMMY(__nbytes, __buswidth)			\
+@@ -34,6 +49,13 @@
+ 		.buswidth = __buswidth,				\
+ 	}
+ 
++#define SPI_MEM_OP_DTR_DUMMY(__nbytes, __buswidth)		\
++	{							\
++		.nbytes = __nbytes,				\
++		.buswidth = __buswidth,				\
++		.dtr = true,					\
++	}
++
+ #define SPI_MEM_OP_NO_DUMMY	{ }
+ 
+ #define SPI_MEM_OP_DATA_IN(__nbytes, __buf, __buswidth)		\
+@@ -44,6 +66,15 @@
+ 		.buswidth = __buswidth,				\
+ 	}
+ 
++#define SPI_MEM_OP_DTR_DATA_IN(__nbytes, __buf, __buswidth)	\
++	{							\
++		.dir = SPI_MEM_DATA_IN,				\
++		.nbytes = __nbytes,				\
++		.buf.in = __buf,				\
++		.buswidth = __buswidth,				\
++		.dtr = true,					\
++	}
++
+ #define SPI_MEM_OP_DATA_OUT(__nbytes, __buf, __buswidth)	\
+ 	{							\
+ 		.dir = SPI_MEM_DATA_OUT,			\
+@@ -52,6 +83,15 @@
+ 		.buswidth = __buswidth,				\
+ 	}
+ 
++#define SPI_MEM_OP_DTR_DATA_OUT(__nbytes, __buf, __buswidth)	\
++	{							\
++		.dir = SPI_MEM_DATA_OUT,			\
++		.nbytes = __nbytes,				\
++		.buf.out = __buf,				\
++		.buswidth = __buswidth,				\
++		.dtr = true,					\
++	}
++
+ #define SPI_MEM_OP_NO_DATA	{ }
+ 
+ /**
+@@ -68,10 +108,12 @@ enum spi_mem_data_dir {
+ /**
+  * struct spi_mem_op - describes a SPI memory operation
+  * @cmd.buswidth: number of IO lines used to transmit the command
++ * @cmd.dtr: set true to transfer opcode in double transfer rate mode
+  * @cmd.opcode: operation opcode
+  * @addr.nbytes: number of address bytes to send. Can be zero if the operation
+  *		 does not need to send an address
+  * @addr.buswidth: number of IO lines used to transmit the address cycles
++ * @addr.dtr: set true to transfer address bytes in double transfer rate mode
+  * @addr.val: address value. This value is always sent MSB first on the bus.
+  *	      Note that only @addr.nbytes are taken into account in this
+  *	      address value, so users should make sure the value fits in the
+@@ -79,34 +121,40 @@ enum spi_mem_data_dir {
+  * @dummy.nbytes: number of dummy bytes to send after an opcode or address. Can
+  *		  be zero if the operation does not require dummy bytes
+  * @dummy.buswidth: number of IO lanes used to transmit the dummy bytes
++ * @dummy.dtr: set true to transfer dummy bytes in double transfer rate mode
+  * @data.buswidth: number of IO lanes used to send/receive the data
+  * @data.dir: direction of the transfer
+  * @data.nbytes: number of data bytes to send/receive. Can be zero if the
+  *		 operation does not involve transferring data
++ * @data.dtr: set true to transfer data bytes in double transfer rate mode
+  * @data.buf.in: input buffer (must be DMA-able)
+  * @data.buf.out: output buffer (must be DMA-able)
+  */
+ struct spi_mem_op {
+ 	struct {
+ 		u8 buswidth;
++		bool dtr;
+ 		u8 opcode;
+ 	} cmd;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		bool dtr;
+ 		u64 val;
+ 	} addr;
+ 
+ 	struct {
+ 		u8 nbytes;
+ 		u8 buswidth;
++		bool dtr;
+ 	} dummy;
+ 
+ 	struct {
+ 		u8 buswidth;
+ 		enum spi_mem_data_dir dir;
+ 		unsigned int nbytes;
++		bool dtr;
+ 		union {
+ 			void *in;
+ 			const void *out;
 -- 
 2.14.1
