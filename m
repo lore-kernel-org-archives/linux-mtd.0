@@ -1,26 +1,21 @@
-Received: from mail-ot1-f68.google.com ([209.85.210.68])
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gB471-0007d9-V2
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 20:32:45 +0000
-Received: by mail-ot1-f68.google.com with SMTP id c23so11781173otl.9
- for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 13:32:32 -0700 (PDT)
-Date: Fri, 12 Oct 2018 15:32:29 -0500
-From: Rob Herring <robh@kernel.org>
-To: christophe.kerello@st.com
-Cc: boris.brezillon@bootlin.com, miquel.raynal@bootlin.com, richard@nod.at,
- dwmw2@infradead.org, computersforpeace@gmail.com,
- marek.vasut@gmail.com, mark.rutland@arm.com,
- linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 1/3] dt-bindings: mtd: stm32_fmc2: add STM32 FMC2 NAND
- controller documentation
-Message-ID: <20181012203229.GA9657@bogus>
-References: <1538732520-2800-1-git-send-email-christophe.kerello@st.com>
- <1538732520-2800-2-git-send-email-christophe.kerello@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1538732520-2800-2-git-send-email-christophe.kerello@st.com>
+ id 1gB4Ds-0001wK-MX
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 20:39:59 +0000
+Received: by mail-lj1-x243.google.com with SMTP id v7-v6so12451211ljg.5
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 13:39:37 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: [PATCH v2 1/2] mtd: rawnand: Provide helper for polling GPIO R/B pin
+Date: Fri, 12 Oct 2018 22:41:00 +0200
+Message-Id: <20181012204101.26274-1-jmkrzyszt@gmail.com>
+In-Reply-To: <20181003120028.9257-1-jmkrzyszt@gmail.com>
+References: <20181003120028.9257-1-jmkrzyszt@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,87 +25,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 05, 2018 at 11:41:58AM +0200, christophe.kerello@st.com wrote:
-> From: Christophe Kerello <christophe.kerello@st.com>
-> 
-> This patch adds the documentation of the device tree bindings for the STM32
-> FMC2 NAND controller.
-> 
-> Signed-off-by: Christophe Kerello <christophe.kerello@st.com>
-> ---
->  .../devicetree/bindings/mtd/stm32-fmc2-nand.txt    | 59 ++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
-> new file mode 100644
-> index 0000000..b620176
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mtd/stm32-fmc2-nand.txt
-> @@ -0,0 +1,59 @@
-> +STMicroelectronics Flexible Memory Controller 2 (FMC2)
-> +NAND Interface
-> +
-> +Required properties:
-> +- compatible: Should be one of:
-> +              * st,stm32mp15-fmc2
-> +- reg: NAND flash controller memory areas.
-> +       First region contains the register location.
-> +       Regions 2 to 4 respectively contain the data, command,
-> +       and address space for CS0.
-> +       Regions 5 to 7 contain the same areas for CS1.
-> +- interrupts: The interrupt number
-> +- pinctrl-0: Standard Pinctrl phandle (see: pinctrl/pinctrl-bindings.txt)
-> +- clocks: Use common clock framework
+Each controller driver with access to NAND R/B pin over GPIO would have 
+to reimplement the polling loop otherwise.
 
-How many? 'common clock framework' is a Linux thing, not part of 
-bindings.
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+---
+Changelog:
+v2:
+New patch - v1 consisted of only one patch (the followning one)
 
-> +
-> +Optional properties:
-> +- resets: Reference to a reset controller asserting the FMC controller
-> +- dmas: DMA specifiers (see: dma/stm32-mdma.txt)
-> +- dma-names: Must be "tx", "rx" and "ecc"
-> +
-> +Optional children nodes:
-> +Children nodes represent the available NAND chips.
-> +
-> +Optional properties:
-> +- nand-on-flash-bbt: see nand.txt
-> +- nand-ecc-strength: see nand.txt
-> +- nand-ecc-step-size: see nand.txt
-> +
-> +The following ECC strength and step size are currently supported:
-> + - nand-ecc-strength = <1>, nand-ecc-step-size = <512> (Hamming)
-> + - nand-ecc-strength = <4>, nand-ecc-step-size = <512> (BCH4)
-> + - nand-ecc-strength = <8>, nand-ecc-step-size = <512> (BCH8) (default)
-> +
-> +Example:
-> +
-> +	fmc: nand-controller@58002000 {
-> +		compatible = "st,stm32mp15-fmc2";
-> +		reg = <0x58002000 0x1000>,
-> +		      <0x80000000 0x1000>,
-> +		      <0x88010000 0x1000>,
-> +		      <0x88020000 0x1000>,
-> +		      <0x81000000 0x1000>,
-> +		      <0x89010000 0x1000>,
-> +		      <0x89020000 0x1000>;
-> +		interrupts = <GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH>;
-> +		clocks = <&rcc FMC_K>;
-> +		resets = <&rcc FMC_R>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&fmc_pins_a>;
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		nand@0 {
-> +			reg = <0>;
-> +			nand-on-flash-bbt;
-> +			#address-cells = <1>;
-> +			#size-cells = <1>;
-> +		};
-> +	};
-> -- 
-> 1.9.1
-> 
+
+ drivers/mtd/nand/raw/nand_base.c | 38 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      | 10 ++++++++++
+ 2 files changed, 48 insertions(+)
+
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 05bd0779fe9b..ff1ac4a3c647 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -45,6 +45,9 @@
+ #include <linux/io.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
++#ifdef CONFIG_GPIOLIB
++#include <linux/gpio/consumer.h>
++#endif
+ 
+ #include "internals.h"
+ 
+@@ -531,6 +534,41 @@ int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
+ };
+ EXPORT_SYMBOL_GPL(nand_soft_waitrdy);
+ 
++#ifdef CONFIG_GPIOLIB
++/**
++ * nand_gpio_waitrdy - Poll R/B GPIO pin until ready
++ * @chip: NAND chip structure
++ * @gpiod: GPIO descriptor of R/B pin
++ * @timeout_ms: Timeout in ms
++ *
++ * Poll the R/B GPIO pin until it becomes ready. If that does not happen
++ * whitin the specified timeout, -ETIMEDOUT is returned.
++ *
++ * This helper is intended to be used when the controller has access to the
++ * NAND R/B pin over GPIO.
++ *
++ * Be aware that calling this helper from an ->exec_op() implementation means
++ * ->exec_op() must be re-entrant.
++ *
++ * Return 0 if the R/B pin indicates chip is ready, a negative error otherwise.
++ */
++int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
++		      unsigned long timeout_ms)
++{
++	/* Wait until command is processed or timeout occurs */
++	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms);
++	do {
++		if (gpiod_get_value_cansleep(gpiod))
++			return 0;
++
++		cond_resched();
++	} while	(time_before(jiffies, timeout_ms));
++
++	return gpiod_get_value_cansleep(gpiod) ? 0 : -ETIMEDOUT;
++};
++EXPORT_SYMBOL_GPL(nand_gpio_waitrdy);
++#endif
++
+ /**
+  * panic_nand_get_device - [GENERIC] Get chip for selected access
+  * @chip: the nand chip descriptor
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index e10b126e148f..09f0ed1345b1 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1346,4 +1346,14 @@ void nand_release(struct nand_chip *chip);
+  */
+ int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms);
+ 
++#ifdef CONFIG_GPIOLIB
++struct gpio_desc;
++/*
++ * External helper for controller drivers that have to implement the WAITRDY
++ * instruction and do have GPIO pin to check it.
++ */
++int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
++		      unsigned long timeout_ms);
++#endif
++
+ #endif /* __LINUX_MTD_RAWNAND_H */
+-- 
+2.16.4
