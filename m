@@ -1,15 +1,18 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAtNS-0003Io-5W
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 09:05:16 +0000
-Date: Fri, 12 Oct 2018 11:04:12 +0200
+ id 1gAtYX-00029X-1n
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 09:16:26 +0000
+Date: Fri, 12 Oct 2018 11:16:03 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Robert Marko <robimarko@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH] mtd: spinand: winbond: Add support for W25N01GV
-Message-ID: <20181012110412.000a932c@bbrezillon>
-In-Reply-To: <20181006153642.10376-1-robimarko@gmail.com>
-References: <20181006153642.10376-1-robimarko@gmail.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
+ Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: sa1100: avoid VLA in sa1100_setup_mtd
+Message-ID: <20181012111603.0d03e043@bbrezillon>
+In-Reply-To: <20181010184533.691620-1-arnd@arndb.de>
+References: <20181010184533.691620-1-arnd@arndb.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -22,53 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+Miquel
+Hi Arnd,
 
-Hi Robert,
+On Wed, 10 Oct 2018 20:44:50 +0200
+Arnd Bergmann <arnd@arndb.de> wrote:
 
-Please Cc the NAND mantainers when you send a NAND related patch
-(in case you don't know about it already, scripts/get_maintainer.pl
-should help you find who to Cc).
-
-On Sat,  6 Oct 2018 17:36:42 +0200
-Robert Marko <robimarko@gmail.com> wrote:
-
-> W25N01GV is a single die version of the already supported
-> W25M02GV with half the capacity. Everything else is the
-> same so introduce support for W25N01GV.
+> Enabling -Wvla found another variable-length array with randconfig
+> testing:
 > 
-> Datasheet:http://www.winbond.com/resource-files/w25n01gv%20revl%20050918%20unsecured.pdf
+> drivers/mtd/maps/sa1100-flash.c: In function 'sa1100_setup_mtd':
+> drivers/mtd/maps/sa1100-flash.c:224:10: error: ISO C90 forbids variable length array 'cdev' [-Werror=vla]
 > 
-> Tested on 8devices Jalapeno dev board under OpenWrt running 4.19-rc5.
-> 
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> As far as I can tell, there is an upper bound on the number of resources
+> that can be passed, based on the number of CS lines on the bus.
+> In practice, all boards we support have either one or two resources,
+> but using six to be on the safe side has no extra cost.
 
-Looks good.
+Why not dynamically allocate cdev instead? That removes any kind of
+guessing on the max value, and it shouldn't hurt much since this code is
+in the probe path.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
->  drivers/mtd/nand/spi/winbond.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> --- a/drivers/mtd/nand/spi/winbond.c
-> +++ b/drivers/mtd/nand/spi/winbond.c
-> @@ -84,6 +84,14 @@ static const struct spinand_info winbond
->  		     0,
->  		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
->  		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
-> +	SPINAND_INFO("W25N01GV", 0xAA,
-> +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
-> +		     NAND_ECCREQ(1, 512),
-> +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
-> +					      &write_cache_variants,
-> +					      &update_cache_variants),
-> +		     0,
-> +		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
->  };
->  
->  /**
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--->8---
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index 784c6e1a0391..fd5fe12d7461 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -221,7 +221,14 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+                info->mtd = info->subdev[0].mtd;
+                ret = 0;
+        } else if (info->num_subdev > 1) {
+-               struct mtd_info *cdev[nr];
++               struct mtd_info **cdev;
++
++               cdev = kmalloc_array(nr, sizeof(*cdev), GFP_KERNEL);
++               if (!cdev) {
++                       ret = -ENOMEM;
++                       goto err;
++               }
++
+                /*
+                 * We detected multiple devices.  Concatenate them together.
+                 */
+@@ -230,6 +237,7 @@ static struct sa_info *sa1100_setup_mtd(struct platform_device *pdev,
+ 
+                info->mtd = mtd_concat_create(cdev, info->num_subdev,
+                                              plat->name);
++               kfree(cdev);
+                if (info->mtd == NULL) {
+                        ret = -ENXIO;
+                        goto err;
