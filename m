@@ -1,24 +1,20 @@
-Date: Fri, 12 Oct 2018 10:52:42 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Vignesh R <vigneshr@ti.com>
-Cc: Marek Vasut <marek.vasut@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Linux ARM Mailing List
- <linux-arm-kernel@lists.infradead.org>, Tudor Ambarus
- <tudor.ambarus@microchip.com>
-Subject: Re: [PATCH 0/3] spi-nor: Add Octal SPI support
-Message-ID: <20181012105242.519a70b9@bbrezillon>
-In-Reply-To: <e4af1014-2008-440c-a017-bb8e7e960d3b@ti.com>
-References: <20181003165603.2579-1-vigneshr@ti.com>
- <20181003212017.653e739f@bbrezillon>
- <1074d503-71ef-2998-7096-de6135bb965d@ti.com>
- <20181004131732.4c9e2ae9@bbrezillon>
- <e4af1014-2008-440c-a017-bb8e7e960d3b@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail-wr1-x443.google.com ([2a00:1450:4864:20::443])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAvE5-0004En-So
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 11:03:27 +0000
+Received: by mail-wr1-x443.google.com with SMTP id q5-v6so12966360wrw.12
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 04:03:14 -0700 (PDT)
+Message-ID: <cdc8194047bc0118f130d4b31e3f07772e657b09.camel@gmail.com>
+Subject: Re: [PATCH] mtd: spinand: winbond: Add support for W25N01GV
+From: Robert Marko <robimarko@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: linux-mtd@lists.infradead.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Date: Fri, 12 Oct 2018 13:03:11 +0200
+In-Reply-To: <20181012110412.000a932c@bbrezillon>
+References: <20181006153642.10376-1-robimarko@gmail.com>
+ <20181012110412.000a932c@bbrezillon>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,109 +25,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vignesh,
-
-On Mon, 8 Oct 2018 21:06:02 +0530
-Vignesh R <vigneshr@ti.com> wrote:
-
-> Hi Boris,
+On Fri, 2018-10-12 at 11:04 +0200, Boris Brezillon wrote:
+> +Miquel
 > 
-> Sorry I missed this mail.
+> Hi Robert,
 > 
-> On Thursday 04 October 2018 04:47 PM, Boris Brezillon wrote:
-> > On Thu, 4 Oct 2018 16:05:36 +0530
-> > Vignesh R <vigneshr@ti.com> wrote:
-> >   
-> >>>>
-> >>>>  .../devicetree/bindings/mtd/cadence-quadspi.txt       |  1 +
-> >>>>  drivers/mtd/spi-nor/cadence-quadspi.c                 |  9 +++++++++    
-> >>>
-> >>> On a slightly different topic, do you plan to convert the Cadence
-> >>> driver to spi-mem? And if you don't, is it because you don't have time
-> >>> or because some features are missing in spi-mem (I remember you
-> >>> mentioned a few things back when you were reviewing the spi-mem series)?
-> >>>     
-> >>
-> >> I do not have plans to convert cadence QSPI driver to spi-mem yet,
-> >> mainly due to lack of time. Also, not sure if original author Marek and
-> >> other altera people are okay with that.
-> >>
-> >> I see couple of issues in the way of conversion:
-> >> 1. I would wait to know what direction would direct mapping APIs[1] go
-> >> before starting spi-mem conversion for Cadence QSPI driver. Else, we
-> >> have may to re write again if direct mapping APIs are merged.  
-> > 
-> > I'd suggest reviewing the proposal I posted so that you can influence
-> > the design of this new API ;-).
-> >   
+> Please Cc the NAND mantainers when you send a NAND related patch
+> (in case you don't know about it already, scripts/get_maintainer.pl
+> should help you find who to Cc).
 > 
-> I did take a look and proposal seems fine. Will try to prototype and
-> test cadence QSPI driver with these. Thanks for the patches!
+Sorry, I knew about scripts/get_maintainer.pl but completelly forgot
+about it this time.
 
-That's great news! Let me know how it goes, and don't hesitate to ask
-if you have any questions.
-
+> On Sat,  6 Oct 2018 17:36:42 +0200
+> Robert Marko <robimarko@gmail.com> wrote:
 > 
+> > W25N01GV is a single die version of the already supported
+> > W25M02GV with half the capacity. Everything else is the
+> > same so introduce support for W25N01GV.
+> > 
+> > Datasheet:
+> > http://www.winbond.com/resource-files/w25n01gv%20revl%20050918%20unsecured.pdf
+> > 
+> > Tested on 8devices Jalapeno dev board under OpenWrt running 4.19-
+> > rc5.
+> > 
+> > Signed-off-by: Robert Marko <robimarko@gmail.com>
 > 
-> >> 2. New Cadence OSPI IP has an integrated PHY to support high throughput
-> >> OSPI flashes operating up 200MHz in Octal DDR mode. In order to work
-> >> with such flashes, PHY DLLs need to be calibrated. Highly simplified
-> >> calibration sequence is as below(See [2] for actual sequence):
-> >> -Read flash ID at low speed and store it.
-> >> -Enable PHY and set DLLs to a defined initial value
-> >> -Increment RX DLL value
-> >> -Read flash ID and check for correctness of data read
-> >> -repeat above two steps until a band of passing values is obtained for
-> >> RX DLL where flash ID is correctly read.
-> >> -DLL needs to set to middle of the passing band.  
-> > 
-> > Is the Read ID operation hardcoded or do you just use it as a way to
-> > trigger predictable transfers on the IO bus?
-> >   
+> Looks good.
 > 
-> Just a way to trigger predictable data reads.
-
-Good.
-
-
+> Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
 > 
-> >>
-> >> I am trying to figure out how to fit this into the spi-mem framework as
-> >> controller would to need to store READ ID opcode and expected JEDEC ID
-> >> before starting calibration sequence.  
+> > ---
+> >  drivers/mtd/nand/spi/winbond.c | 8 ++++++++
+> >  1 file changed, 8 insertions(+)
 > > 
-> > I think this should be split in 2:
+> > --- a/drivers/mtd/nand/spi/winbond.c
+> > +++ b/drivers/mtd/nand/spi/winbond.c
+> > @@ -84,6 +84,14 @@ static const struct spinand_info winbond
+> >  		     0,
+> >  		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL),
+> >  		     SPINAND_SELECT_TARGET(w25m02gv_select_target)),
+> > +	SPINAND_INFO("W25N01GV", 0xAA,
+> > +		     NAND_MEMORG(1, 2048, 64, 64, 1024, 1, 1, 1),
+> > +		     NAND_ECCREQ(1, 512),
+> > +		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
+> > +					      &write_cache_variants,
+> > +					      &update_cache_variants),
+> > +		     0,
+> > +		     SPINAND_ECCINFO(&w25m02gv_ooblayout, NULL)),
+> >  };
+> >  
+> >  /**
 > > 
-> > - the SPI NOR framework passing the operation to use to do the
-> >   calibration (here a READ ID)
-> > - the SPI controller framework replaying the same operation with
-> >   different DLL configs until it finds the best match
-> > 
-> > So, it would basically be added as a new hook:
-> > 
-> > 	int (*calibrate)(struct spi_mem *mem,
-> > 			 const struct spi_mem_op *tmpl);
-> > 
-> > and a new function provided by the spi-mem API
-> > 
-> > int spi_mem_calibrate(struct spi_mem *mem,
-> > 		      const struct spi_mem_op *tmpl);
-> > 
-> > and calibration outcome would be somehow attached to the spi_mem
-> > object.
-> > 
-> > This way we stay memory agnostic but still provide the necessary blocks
-> > at the spi-mem level to do such callibrations.
-> > 
-> > Would that work?
-> >   
-> 
-> That would work and hopefully is not intrusive to spi-mem framework.
-> 
-
-Okay. Don't hesitate to post a proposal along those lines and I'll try
-to review it.
-
-Thanks,
-
-Boris
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
