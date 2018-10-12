@@ -1,28 +1,26 @@
-Date: Thu, 11 Oct 2018 17:17:30 -0500
-From: Rob Herring <robh@kernel.org>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+Received: from mail-eopbgr30069.outbound.protection.outlook.com ([40.107.3.69]
+ helo=EUR03-AM5-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAn6m-0007UN-BV
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 02:23:22 +0000
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
  "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "robh@kernel.org" <robh@kernel.org>,
- "mark.rutland@arm.com" <mark.rutland@arm.com>,
- "shawnguo@kernel.org" <shawnguo@kernel.org>,
- "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+ "tudor.ambarus@microchip.com" <tudor.ambarus@microchip.com>
+CC: "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
+ "cyrille.pitchen@wedev4u.fr" <cyrille.pitchen@wedev4u.fr>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
  "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
  "frieder.schrempf@exceet.de" <frieder.schrempf@exceet.de>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Subject: Re: [PATCH v4 2/5] dt-bindings: spi: add binding file for NXP
- FlexSPI  controller
-Message-ID: <20181011221730.GA7293@bogus>
-References: <1539255519-1408-1-git-send-email-yogeshnarayan.gaur@nxp.com>
- <1539255519-1408-3-git-send-email-yogeshnarayan.gaur@nxp.com>
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Yogesh Narayan
+ Gaur <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v3 0/2] mtd: spi-nor: add entry for mt35xu512aba flash
+Date: Fri, 12 Oct 2018 02:23:03 +0000
+Message-ID: <1539310881-17438-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1539255519-1408-3-git-send-email-yogeshnarayan.gaur@nxp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +30,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 11 Oct 2018 11:00:38 +0000, Yogesh Narayan Gaur wrote:
-> Add binding file for NXP FlexSPI controller
-> 
-> Signed-off-by: Yogesh Gaur <yogeshnarayan.gaur@nxp.com>
-> ---
-> Changes for v4:
-> - Incorporated Rob review comments.
-> Changes for v3:
-> - Removed node property 'big-endian'.
-> Changes for v2:
-> - Incorporated Rob review comments.
-> 
->  .../devicetree/bindings/spi/spi-nxp-fspi.txt       | 39 ++++++++++++++++++++++
->  1 file changed, 39 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/spi/spi-nxp-fspi.txt
-> 
+Add MFR_ID information, 0x002C, related to the Micron flash.
+Currently, MFR_ID 0x0020 is being specified as Micron flash ID but
+these are actually CFI ID of STMicro flashes.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Rename SNOR_MFR_MICRON to SNOR_MFR_ST and add entry for
+SNOR_MFR_MICRON having CFI ID value of Micron flash.
+Add entry of mt35xu512aba [1] flash in spi_nor_ids table.
+
+[1] https://www.micron.com/resource-details/0b74b806-bbf1-4c24-b07b-35e2799=
+bb6ff
+
+Yogesh Gaur (2):
+  mtd: spi-nor: add macros related to MICRON flash
+  mtd: spi-nor: add entry for mt35xu512aba flash
+
+Changes for v3:
+- Modified flash node style as suggested by Tudor.
+Changes for v2:
+- Removed checkpatch warning, 80 character limit, in patch
+ 'mtd: spi-nor: add entry for mt35xu512aba flash'.
+
+ drivers/mtd/spi-nor/spi-nor.c | 15 ++++++++++++---
+ include/linux/mtd/cfi.h       |  1 +
+ include/linux/mtd/spi-nor.h   |  3 ++-
+ 3 files changed, 15 insertions(+), 4 deletions(-)
+
+--=20
+1.9.1
