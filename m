@@ -1,23 +1,21 @@
-Received: from mail.kernel.org ([198.145.29.99])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gAvMZ-0000ST-7w
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 11:12:12 +0000
-Date: Fri, 12 Oct 2018 13:11:57 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- David Woodhouse <dwmw2@infradead.org>,
- Richard Weinberger <richard@nod.at>, Arnd Bergmann <arnd@arndb.de>,
- Miquel Raynal <miquel.raynal@bootlin.com>, Marek Vasut <marex@denx.de>,
- Brian Norris <computersforpeace@gmail.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] mtd: Fix for 4.19-rc8
-Message-ID: <20181012111157.GC6536@kroah.com>
-References: <20181012092555.7e92d996@bbrezillon>
+Received: from 219.117.247.201.static.zoot.jp ([219.117.247.201]
+ helo=mail.techlico.co.jp)
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gAwK3-0007ef-Hh
+ for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 12:13:44 +0000
+Received: from WIN-2LPEFJ7HNBJ
+ (ec2-52-199-66-0.ap-northeast-1.compute.amazonaws.com [52.199.66.0])
+ by mail.techlico.co.jp (Postfix) with ESMTP id C4E4F475A69B
+ for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 21:07:45 +0900 (JST)
+From: "Sean Kim." <info@takobeach.com>
+Subject: URGENT RESPONSE NEEDED
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20181012092555.7e92d996@bbrezillon>
+Reply-To: kimsean1@kims-sean.com
+Date: Fri, 12 Oct 2018 12:07:30 +0000
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <20181012120745.C4E4F475A69B@mail.techlico.co.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +25,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 12, 2018 at 09:25:55AM +0200, Boris Brezillon wrote:
-> Hello Greg,
-> 
-> Here is a PR containing a fix for a bug introduced in 4.19-rc1.
-> 
-> Regards,
-> 
-> Boris
-> 
-> The following changes since commit 0238df646e6224016a45505d2c111a24669ebe21:
-> 
->   Linux 4.19-rc7 (2018-10-07 17:26:02 +0200)
-> 
-> are available in the git repository at:
-> 
->   git://git.infradead.org/linux-mtd.git tags/mtd/fixes-for-4.19-rc8
+Hello my dear.
 
-Now merged, thanks.
+Did you receive my email message to you? Please, get back to me ASAP a=
+s the matter is becoming late.  Expecting your urgent response.
 
-greg k-h
+Sean.
