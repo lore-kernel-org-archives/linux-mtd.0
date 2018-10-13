@@ -1,22 +1,13 @@
-Received: from mail-lf1-x141.google.com ([2a00:1450:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gB4Dv-0001y5-KE
- for linux-mtd@lists.infradead.org; Fri, 12 Oct 2018 20:40:07 +0000
-Received: by mail-lf1-x141.google.com with SMTP id m18-v6so10216720lfl.11
- for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2018 13:39:41 -0700 (PDT)
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>,
- Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
- linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2 2/2] mtd: rawnand: ams-delta: Use ->exec_op()
-Date: Fri, 12 Oct 2018 22:41:01 +0200
-Message-Id: <20181012204101.26274-2-jmkrzyszt@gmail.com>
-In-Reply-To: <20181012204101.26274-1-jmkrzyszt@gmail.com>
-References: <20181003120028.9257-1-jmkrzyszt@gmail.com>
- <20181012204101.26274-1-jmkrzyszt@gmail.com>
+To: linux-mtd@lists.infradead.org
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: ubifs: WARNINGs
+Message-ID: <44aa413b-cc4c-c1c5-ebc4-895d07b5a159@infradead.org>
+Date: Fri, 12 Oct 2018 18:48:36 -0700
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,197 +17,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replace legacy callbacks with ->select_chip() and ->exec_op().
+Hi,
 
-In order to remove any references to legacy structure members, use of 
-.IO_ADDR_R/W has been replaced wit runtime calculations based on 
-priv->io_base.
+Linux 4.19-rc7, x86_64 laptop.
 
-Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
-Changelog:
-v2:
-- replace references to legacy structure .IO_ADDR_R/W members with 
-  runtime calculated values - requested by Boris Brezillon, thanks!
-- modify ams_delta_read/write_buf() functions, no longer exposed as 
-  callbacks, to accept driver private structure instead of struct 
-  nand_chip,
-- use newly introduced nand_gpio_waitrdy() helper instead of legacy 
-  nand_wait_ready() - suggested by Boris Brezillon, thanks!
-- remove no longer needed ams_delta_dev_ready() legacy callback and
-  legacy structure member .chip_delay.
+I don't have an ubifs filesystem.  When I just modprobe ubifs and then
+rmmod ubifs, I get 2 WARNINGs from these 2 lines:
 
- drivers/mtd/nand/raw/ams-delta.c | 103 +++++++++++++++++++++------------------
- 1 file changed, 55 insertions(+), 48 deletions(-)
+static void __exit ubifs_exit(void)
+{
+	WARN_ON(list_empty(&ubifs_infos));
+	WARN_ON(atomic_long_read(&ubifs_clean_zn_cnt) == 0);
 
-diff --git a/drivers/mtd/nand/raw/ams-delta.c b/drivers/mtd/nand/raw/ams-delta.c
-index 5ba180a291eb..f0745aeecb1c 100644
---- a/drivers/mtd/nand/raw/ams-delta.c
-+++ b/drivers/mtd/nand/raw/ams-delta.c
-@@ -75,7 +75,7 @@ static const struct mtd_partition partition_info[] = {
- 
- static void ams_delta_io_write(struct ams_delta_nand *priv, u_char byte)
- {
--	writew(byte, priv->nand_chip.legacy.IO_ADDR_W);
-+	writew(byte, priv->io_base + OMAP_MPUIO_OUTPUT);
- 	gpiod_set_value(priv->gpiod_nwe, 0);
- 	ndelay(40);
- 	gpiod_set_value(priv->gpiod_nwe, 1);
-@@ -87,7 +87,7 @@ static u_char ams_delta_io_read(struct ams_delta_nand *priv)
- 
- 	gpiod_set_value(priv->gpiod_nre, 0);
- 	ndelay(40);
--	res = readw(priv->nand_chip.legacy.IO_ADDR_R);
-+	res = readw(priv->io_base + OMAP_MPUIO_INPUT_LATCH);
- 	gpiod_set_value(priv->gpiod_nre, 1);
- 
- 	return res;
-@@ -99,10 +99,9 @@ static void ams_delta_dir_input(struct ams_delta_nand *priv, bool in)
- 	priv->data_in = in;
- }
- 
--static void ams_delta_write_buf(struct nand_chip *this, const u_char *buf,
-+static void ams_delta_write_buf(struct ams_delta_nand *priv, const u_char *buf,
- 				int len)
- {
--	struct ams_delta_nand *priv = nand_get_controller_data(this);
- 	int i;
- 
- 	if (priv->data_in)
-@@ -112,9 +111,9 @@ static void ams_delta_write_buf(struct nand_chip *this, const u_char *buf,
- 		ams_delta_io_write(priv, buf[i]);
- }
- 
--static void ams_delta_read_buf(struct nand_chip *this, u_char *buf, int len)
-+static void ams_delta_read_buf(struct ams_delta_nand *priv, u_char *buf,
-+			       int len)
- {
--	struct ams_delta_nand *priv = nand_get_controller_data(this);
- 	int i;
- 
- 	if (!priv->data_in)
-@@ -124,46 +123,63 @@ static void ams_delta_read_buf(struct nand_chip *this, u_char *buf, int len)
- 		buf[i] = ams_delta_io_read(priv);
- }
- 
--static u_char ams_delta_read_byte(struct nand_chip *this)
--{
--	u_char res;
--
--	ams_delta_read_buf(this, &res, 1);
--
--	return res;
--}
--
--/*
-- * Command control function
-- *
-- * ctrl:
-- * NAND_NCE: bit 0 -> bit 2
-- * NAND_CLE: bit 1 -> bit 7
-- * NAND_ALE: bit 2 -> bit 6
-- */
--static void ams_delta_hwcontrol(struct nand_chip *this, int cmd,
--				unsigned int ctrl)
-+static void ams_delta_select_chip(struct nand_chip *this, int n)
- {
- 	struct ams_delta_nand *priv = nand_get_controller_data(this);
- 
--	if (ctrl & NAND_CTRL_CHANGE) {
--		gpiod_set_value(priv->gpiod_nce, !(ctrl & NAND_NCE));
--		gpiod_set_value(priv->gpiod_cle, !!(ctrl & NAND_CLE));
--		gpiod_set_value(priv->gpiod_ale, !!(ctrl & NAND_ALE));
--	}
--
--	if (cmd != NAND_CMD_NONE) {
--		u_char byte = cmd;
-+	if (n > 0)
-+		return;
- 
--		ams_delta_write_buf(this, &byte, 1);
--	}
-+	gpiod_set_value(priv->gpiod_nce, n < 0);
- }
- 
--static int ams_delta_nand_ready(struct nand_chip *this)
-+static int ams_delta_exec_op(struct nand_chip *this,
-+			     const struct nand_operation *op, bool check_only)
- {
- 	struct ams_delta_nand *priv = nand_get_controller_data(this);
-+	const struct nand_op_instr *instr;
-+	int ret = 0;
-+
-+	for (instr = op->instrs; instr < op->instrs + op->ninstrs; instr++) {
-+
-+		switch (instr->type) {
-+		case NAND_OP_CMD_INSTR:
-+			gpiod_set_value(priv->gpiod_cle, 1);
-+			ams_delta_write_buf(priv, &instr->ctx.cmd.opcode, 1);
-+			gpiod_set_value(priv->gpiod_cle, 0);
-+			break;
-+
-+		case NAND_OP_ADDR_INSTR:
-+			gpiod_set_value(priv->gpiod_ale, 1);
-+			ams_delta_write_buf(priv, instr->ctx.addr.addrs,
-+					    instr->ctx.addr.naddrs);
-+			gpiod_set_value(priv->gpiod_ale, 0);
-+			break;
-+
-+		case NAND_OP_DATA_IN_INSTR:
-+			ams_delta_read_buf(priv, instr->ctx.data.buf.in,
-+					   instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_DATA_OUT_INSTR:
-+			ams_delta_write_buf(priv, instr->ctx.data.buf.out,
-+					    instr->ctx.data.len);
-+			break;
-+
-+		case NAND_OP_WAITRDY_INSTR:
-+			ret = priv->gpiod_rdy ?
-+			      nand_gpio_waitrdy(this, priv->gpiod_rdy,
-+						instr->ctx.waitrdy.timeout_ms) :
-+			      nand_soft_waitrdy(this,
-+						instr->ctx.waitrdy.timeout_ms);
-+			break;
-+		}
-+
-+		if (ret)
-+			break;
-+	}
- 
--	return gpiod_get_value(priv->gpiod_rdy);
-+	return ret;
- }
- 
- 
-@@ -211,12 +227,8 @@ static int ams_delta_init(struct platform_device *pdev)
- 	nand_set_controller_data(this, priv);
- 
- 	/* Set address of NAND IO lines */
--	this->legacy.IO_ADDR_R = io_base + OMAP_MPUIO_INPUT_LATCH;
--	this->legacy.IO_ADDR_W = io_base + OMAP_MPUIO_OUTPUT;
--	this->legacy.read_byte = ams_delta_read_byte;
--	this->legacy.write_buf = ams_delta_write_buf;
--	this->legacy.read_buf = ams_delta_read_buf;
--	this->legacy.cmd_ctrl = ams_delta_hwcontrol;
-+	this->select_chip = ams_delta_select_chip;
-+	this->exec_op = ams_delta_exec_op;
- 
- 	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
- 	if (IS_ERR(priv->gpiod_rdy)) {
-@@ -225,11 +237,6 @@ static int ams_delta_init(struct platform_device *pdev)
- 		goto out_mtd;
- 	}
- 
--	if (priv->gpiod_rdy)
--		this->legacy.dev_ready = ams_delta_nand_ready;
--
--	/* 25 us command delay time */
--	this->legacy.chip_delay = 30;
- 	this->ecc.mode = NAND_ECC_SOFT;
- 	this->ecc.algo = NAND_ECC_HAMMING;
- 
+Is this normal/expected?
+
+
+
+[  977.091170] calling  init_mtd+0x0/0x100 [mtd] @ 3187
+[  977.092365] initcall init_mtd+0x0/0x100 [mtd] returned 0 after 251 usecs
+[  977.146490] calling  ubi_init+0x0/0x249 [ubi] @ 3187
+[  977.148351] initcall ubi_init+0x0/0x249 [ubi] returned 0 after 896 usecs
+[  977.260504] calling  ubifs_init+0x0/0xae [ubifs] @ 3187
+[  977.261976] initcall ubifs_init+0x0/0xae [ubifs] returned 0 after 516 usecs
+[  987.695589] WARNING: CPU: 2 PID: 3217 at ../fs/ubifs/super.c:2340 ubifs_exit+0xf/0x488 [ubifs]
+[  987.697142] Modules linked in: ubifs(-) ubi mtd fuse xt_tcpudp ip6t_rpfilter ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 xt_conntrack ip_set nfnetlink af_packet ebtable_nat ebtable_broute bridge stp llc ip6table_nat nf_nat_ipv6 ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat_ipv4 nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_raw iptable_security ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ip_tables x_tables bpfilter snd_hda_codec_hdmi snd_hda_codec_realtek btrfs snd_hda_codec_generic xor coretemp zstd_compress hwmon i915 raid6_pq uvcvideo intel_rapl x86_pkg_temp_thermal intel_powerclamp libcrc32c zstd_decompress xxhash videobuf2_vmalloc kvm_intel videobuf2_memops crct10dif_pclmul videobuf2_v4l2 videobuf2_common hid_generic
+[  987.709985]  videodev arc4 usbmouse crc32_pclmul usbhid iwldvm media crc32c_intel hid ghash_clmulni_intel pcbc mac80211 msr aesni_intel aes_x86_64 crypto_simd cryptd glue_helper iwlwifi kvmgt vfio_mdev mdev vfio_iommu_type1 vfio intel_cstate snd_hda_intel snd_hda_codec gpio_ich sdhci_pci iTCO_wdt kvm iTCO_vendor_support snd_hda_core cqhci cfg80211 intel_uncore intel_rapl_perf snd_hwdep sdhci snd_pcm irqbypass joydev mei_me mmc_core mei toshiba_acpi evdev sparse_keymap e1000e mousedev snd_timer input_leds mac_hid sr_mod snd uio_pdrv_genirq lpc_ich uio rfkill wmi serio_raw led_class industrialio cdrom thermal video soundcore button pcc_cpufreq ac pcspkr toshiba_haps battery sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua autofs4
+[  987.721976] CPU: 2 PID: 3217 Comm: rmmod Not tainted 4.19.0-rc7mod #2
+[  987.723150] Hardware name: TOSHIBA PORTEGE R835/Portable PC, BIOS Version 4.10   01/08/2013
+[  987.724583] RIP: 0010:ubifs_exit+0xf/0x488 [ubifs]
+[  987.725377] Code: c3 8b 97 24 0a 00 00 6a 00 45 31 c9 41 b8 10 00 00 00 31 c9 e8 3a 32 ff ff 5a c3 48 8b 05 b1 e6 01 00 48 3d 30 62 fb c0 75 02 <0f> 0b 48 8b 05 f0 3b 02 00 48 85 c0 75 02 0f 0b e8 44 b9 ff ff e8
+[  987.728689] RSP: 0018:ffffa3a18286fed0 EFLAGS: 00010246
+[  987.729608] RAX: ffffffffc0fb6230 RBX: ffffffffc0fbb400 RCX: 0000000000000001
+[  987.730907] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000246
+[  987.732211] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+[  987.733512] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000800
+[  987.734807] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[  987.736103] FS:  00007fd2ded67b80(0000) GS:ffff88664ae00000(0000) knlGS:0000000000000000
+[  987.737527] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  987.738571] CR2: 000055b4d9cd4ed8 CR3: 00000001352b4004 CR4: 00000000000606e0
+[  987.739869] Call Trace:
+[  987.740292]  __x64_sys_delete_module+0x157/0x240
+[  987.741086]  ? task_work_run+0x6e/0xb0
+[  987.741757]  do_syscall_64+0x60/0x180
+[  987.742426]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  987.743346] RIP: 0033:0x7fd2de453f87
+[  987.744013] Code: 73 01 c3 48 8b 0d 11 af 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 ae 2b 00 f7 d8 64 89 01 48
+[  987.747326] RSP: 002b:00007ffe66c1a6d8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+[  987.748624] RAX: ffffffffffffffda RBX: 00007ffe66c1a738 RCX: 00007fd2de453f87
+[  987.749919] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000055b4d9cca7e8
+[  987.751215] RBP: 000055b4d9cca780 R08: 00007ffe66c19651 R09: 0000000000000000
+[  987.752512] R10: 00007fd2de4c31e0 R11: 0000000000000206 R12: 00007ffe66c1a900
+[  987.753808] R13: 00007ffe66c1c256 R14: 000055b4d9cca260 R15: 000055b4d9cca780
+[  987.755111] ---[ end trace 512f0dc2470230e0 ]---
+[  987.755997] WARNING: CPU: 2 PID: 3217 at ../fs/ubifs/super.c:2341 ubifs_exit+0x1d/0x488 [ubifs]
+[  987.756383] systemd-journald[142]: Compressed data object 804 -> 577 using LZ4
+[  987.757553] Modules linked in: ubifs(-) ubi mtd fuse xt_tcpudp ip6t_rpfilter ip6t_REJECT nf_reject_ipv6 ipt_REJECT nf_reject_ipv4 xt_conntrack ip_set nfnetlink af_packet ebtable_nat ebtable_broute bridge stp llc ip6table_nat nf_nat_ipv6 ip6table_mangle ip6table_raw ip6table_security iptable_nat nf_nat_ipv4 nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 iptable_mangle iptable_raw iptable_security ebtable_filter ebtables ip6table_filter ip6_tables iptable_filter ip_tables x_tables bpfilter snd_hda_codec_hdmi snd_hda_codec_realtek btrfs snd_hda_codec_generic xor coretemp zstd_compress hwmon i915 raid6_pq uvcvideo intel_rapl x86_pkg_temp_thermal intel_powerclamp libcrc32c zstd_decompress xxhash videobuf2_vmalloc kvm_intel videobuf2_memops crct10dif_pclmul videobuf2_v4l2 videobuf2_common hid_generic
+[  987.758925]  videodev arc4 usbmouse crc32_pclmul usbhid iwldvm media crc32c_intel hid ghash_clmulni_intel pcbc mac80211 msr aesni_intel aes_x86_64 crypto_simd cryptd glue_helper iwlwifi kvmgt vfio_mdev mdev
+[  987.759101] systemd-journald[142]: Compressed data object 745 -> 658 using LZ4
+[  987.776401]  vfio_iommu_type1 vfio intel_cstate snd_hda_intel snd_hda_codec gpio_ich sdhci_pci iTCO_wdt kvm iTCO_vendor_support snd_hda_core cqhci cfg80211 intel_uncore intel_rapl_perf snd_hwdep sdhci snd_pcm irqbypass joydev mei_me mmc_core mei toshiba_acpi evdev sparse_keymap e1000e mousedev snd_timer input_leds mac_hid sr_mod snd uio_pdrv_genirq lpc_ich uio rfkill wmi serio_raw led_class industrialio cdrom thermal video soundcore button pcc_cpufreq ac pcspkr toshiba_haps battery sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua autofs4
+[  987.776472] CPU: 2 PID: 3217 Comm: rmmod Tainted: G        W         4.19.0-rc7mod #2
+[  987.776473] Hardware name: TOSHIBA PORTEGE R835/Portable PC, BIOS Version 4.10   01/08/2013
+[  987.776480] RIP: 0010:ubifs_exit+0x1d/0x488 [ubifs]
+[  987.776482] Code: 10 00 00 00 31 c9 e8 3a 32 ff ff 5a c3 48 8b 05 b1 e6 01 00 48 3d 30 62 fb c0 75 02 0f 0b 48 8b 05 f0 3b 02 00 48 85 c0 75 02 <0f> 0b e8 44 b9 ff ff e8 5f d2 fe ff 48 c7 c7 c0 62 fb c0 e8 c3 d3
+[  987.776483] RSP: 0018:ffffa3a18286fed0 EFLAGS: 00010246
+[  987.776486] RAX: 0000000000000000 RBX: ffffffffc0fbb400 RCX: 0000000000000001
+[  987.776487] RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000246
+[  987.776488] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000001
+[  987.776489] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000800
+[  987.776490] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+[  987.776492] FS:  00007fd2ded67b80(0000) GS:ffff88664ae00000(0000) knlGS:0000000000000000
+[  987.776493] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  987.776494] CR2: 000055b4d9cd4ed8 CR3: 00000001352b4004 CR4: 00000000000606e0
+[  987.776495] Call Trace:
+[  987.776499]  __x64_sys_delete_module+0x157/0x240
+[  987.776502]  ? task_work_run+0x6e/0xb0
+[  987.776508]  do_syscall_64+0x60/0x180
+[  987.776512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  987.776513] RIP: 0033:0x7fd2de453f87
+[  987.776515] Code: 73 01 c3 48 8b 0d 11 af 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 ae 2b 00 f7 d8 64 89 01 48
+[  987.776516] RSP: 002b:00007ffe66c1a6d8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+[  987.776518] RAX: ffffffffffffffda RBX: 00007ffe66c1a738 RCX: 00007fd2de453f87
+[  987.776519] RDX: 000000000000000a RSI: 0000000000000800 RDI: 000055b4d9cca7e8
+[  987.776520] RBP: 000055b4d9cca780 R08: 00007ffe66c19651 R09: 0000000000000000
+[  987.776522] R10: 00007fd2de4c31e0 R11: 0000000000000206 R12: 00007ffe66c1a900
+[  987.776523] R13: 00007ffe66c1c256 R14: 000055b4d9cca260 R15: 000055b4d9cca780
+[  987.776533] ---[ end trace 512f0dc2470230e1 ]---
+
+
+thanks,
 -- 
-2.16.4
+~Randy
