@@ -1,16 +1,24 @@
-Subject: Re: [PATCH] ubifs: Fix WARN_ON logic in exit path
-To: Richard Weinberger <richard@nod.at>, gregkh@linuxfoundation.org
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
- dunlap@infradead.org
-References: <20181013081841.13369-1-richard@nod.at>
-From: Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ab4fe8b1-330d-3aa9-a45b-761f65a31f2c@infradead.org>
-Date: Sat, 13 Oct 2018 09:21:40 -0700
+Received: from mail-io1-xd33.google.com ([2607:f8b0:4864:20::d33])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gBMkC-0003Vx-5C
+ for linux-mtd@lists.infradead.org; Sat, 13 Oct 2018 16:26:25 +0000
+Received: by mail-io1-xd33.google.com with SMTP id n18-v6so11366351ioa.9
+ for <linux-mtd@lists.infradead.org>; Sat, 13 Oct 2018 09:26:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20181013081841.13369-1-richard@nod.at>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20181011185326.1371-1-linus.walleij@linaro.org>
+ <20181012112054.2c74b9c7@bbrezillon>
+In-Reply-To: <20181012112054.2c74b9c7@bbrezillon>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Sat, 13 Oct 2018 18:26:00 +0200
+Message-ID: <CACRpkdYin5kj1p3Z2h2ugwMSSHeLMCabb5gdLMSNhmX+_EZADA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mtd: physmap_of: Move custom initialization
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris BREZILLON <boris.brezillon@free-electrons.com>,
+ Mark Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/13/18 1:18 AM, Richard Weinberger wrote:
-> ubifs_assert() is not WARN_ON(), so we have to invert
-> the checks.
-> Randy faced this warning with UBIFS being a module, since
-> most users use UBIFS as builtin because UBIFS is the rootfs
-> nobody noticed so far. :-(
-> Including me.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Fixes: 54169ddd382d ("ubifs: Turn two ubifs_assert() into a WARN_ON()")
-> Signed-off-by: Richard Weinberger <richard@nod.at>
+On Fri, Oct 12, 2018 at 11:21 AM Boris Brezillon
+<boris.brezillon@bootlin.com> wrote:
+> Linus Walleij <linus.walleij@linaro.org> wrote:
 
-Thanks.  Works for me.
+> > In order to be able to assign custom complex mappings
+> > to the physmap_of plugin for Gemini, move the initialization
+> > so that the simple map is initialized before we enter the
+> > platform-specific functions so the latter can override
+> > them.
+>
+> I forgot to Cc you but I'm currently reworking the physmap driver to
+> merge the physmap_of logic in it [1]. I'll probably ask you to rebase
+> this patchset on top of mtd/next once [1] is applied.
 
-> ---
-> Greg,
-> 
-> can you please take this patch directly?
-> It fixes a brown paper bug which was introduced in rc1, I'd like to avoid
-> having it in a release and going the -stable path.
-> 
-> Thanks,
-> //richard
-> ---
->  fs/ubifs/super.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-> index bf000c8aeffb..fec62e9dfbe6 100644
-> --- a/fs/ubifs/super.c
-> +++ b/fs/ubifs/super.c
-> @@ -2337,8 +2337,8 @@ late_initcall(ubifs_init);
->  
->  static void __exit ubifs_exit(void)
->  {
-> -	WARN_ON(list_empty(&ubifs_infos));
-> -	WARN_ON(atomic_long_read(&ubifs_clean_zn_cnt) == 0);
-> +	WARN_ON(!list_empty(&ubifs_infos));
-> +	WARN_ON(atomic_long_read(&ubifs_clean_zn_cnt) != 0);
->  
->  	dbg_debugfs_exit();
->  	ubifs_compressors_exit();
-> 
+No problem. Will you apply it after v4.20-rc1?
 
-
--- 
-~Randy
+Yours,
+Linus Walleij
