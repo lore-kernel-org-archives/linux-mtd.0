@@ -1,20 +1,24 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBZzQ-0007US-Eq
- for linux-mtd@lists.infradead.org; Sun, 14 Oct 2018 06:35:02 +0000
-Date: Sun, 14 Oct 2018 08:34:44 +0200
+ id 1gBaTi-0001l8-MO
+ for linux-mtd@lists.infradead.org; Sun, 14 Oct 2018 07:06:20 +0000
+Date: Sun, 14 Oct 2018 09:06:06 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Boris BREZILLON
- <boris.brezillon@free-electrons.com>, Mark Vasut <marek.vasut@gmail.com>,
- Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] mtd: physmap_of: Move custom initialization
-Message-ID: <20181014083444.6e8f5b59@bbrezillon>
-In-Reply-To: <CACRpkdYin5kj1p3Z2h2ugwMSSHeLMCabb5gdLMSNhmX+_EZADA@mail.gmail.com>
-References: <20181011185326.1371-1-linus.walleij@linaro.org>
- <20181012112054.2c74b9c7@bbrezillon>
- <CACRpkdYin5kj1p3Z2h2ugwMSSHeLMCabb5gdLMSNhmX+_EZADA@mail.gmail.com>
+To: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel
+ Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>,
+ Richard Weinberger <richard@nod.at>, Marek Vasut <marek.vasut@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>, linux-mtd@lists.infradead.org, Kumar Gala
+ <galak@codeaurora.org>, Brian Norris <computersforpeace@gmail.com>, David
+ Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 12/14] mtd: maps: Merge gpio-addr-flash.c into
+ physmap-core.c
+Message-ID: <20181014090606.12c9baac@bbrezillon>
+In-Reply-To: <20181009091106.7f25a314@bbrezillon>
+References: <20181008201027.17952-1-boris.brezillon@bootlin.com>
+ <20181008201027.17952-13-boris.brezillon@bootlin.com>
+ <CAPybu_3ZTNzB=PmidBRzW_ZG_H5Pwwp7sro52LuO58XpOzq+Tg@mail.gmail.com>
+ <20181009091106.7f25a314@bbrezillon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -27,23 +31,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 13 Oct 2018 18:26:00 +0200
-Linus Walleij <linus.walleij@linaro.org> wrote:
+On Tue, 9 Oct 2018 09:11:06 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-> On Fri, Oct 12, 2018 at 11:21 AM Boris Brezillon
-> <boris.brezillon@bootlin.com> wrote:
-> > Linus Walleij <linus.walleij@linaro.org> wrote:  
+> On Tue, 9 Oct 2018 09:04:51 +0200
+> Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com> wrote:
 > 
-> > > In order to be able to assign custom complex mappings
-> > > to the physmap_of plugin for Gemini, move the initialization
-> > > so that the simple map is initialized before we enter the
-> > > platform-specific functions so the latter can override
-> > > them.  
-> >
-> > I forgot to Cc you but I'm currently reworking the physmap driver to
-> > merge the physmap_of logic in it [1]. I'll probably ask you to rebase
-> > this patchset on top of mtd/next once [1] is applied.  
+> > Hi Boris
+> > 
+> > Maybe we want to leave the pdata example.
+> > 
+> > /**
+> >  * The platform resource layout expected looks something like:
+> >  * struct mtd_partition partitions[] = { ... };
+> >  * struct physmap_flash_data flash_data =
+> > .....  
 > 
-> No problem. Will you apply it after v4.20-rc1?
+> Sure, I'll add it back.
 
-Yep, that's the plan.
+Actually I changed my mind on that one. The physmap driver did not
+document that in the first place, so, if we want to add this example,
+we should do it in a separate patch, and maybe place it next to the
+physmap_flash_data struct definition. This being said, I don't see a
+lot of drivers documenting this sort of things and I doubt new
+platforms will use pdata to describe their device anyway.
