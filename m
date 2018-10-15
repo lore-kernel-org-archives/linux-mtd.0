@@ -1,35 +1,21 @@
-Received: from mail-it1-x142.google.com ([2607:f8b0:4864:20::142])
+Received: from mail-lj1-x241.google.com ([2a00:1450:4864:20::241])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gC8WB-0008JI-Ih
- for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 19:27:09 +0000
-Received: by mail-it1-x142.google.com with SMTP id 74-v6so30211491itw.1
- for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2018 12:26:57 -0700 (PDT)
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Paolo Valente <paolo.valente@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
- Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>, Alan Cox
- <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
-Date: Mon, 15 Oct 2018 13:26:53 -0600
-MIME-Version: 1.0
-In-Reply-To: <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ id 1gC8iu-00044C-Ny
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 19:40:18 +0000
+Received: by mail-lj1-x241.google.com with SMTP id y71-v6so18614857lje.9
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2018 12:40:05 -0700 (PDT)
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: [PATCH v3 1/3] mtd: rawnand: Provide helper for polling GPIO R/B pin
+Date: Mon, 15 Oct 2018 21:41:28 +0200
+Message-Id: <20181015194130.21764-1-jmkrzyszt@gmail.com>
+In-Reply-To: <20181012204101.26274-1-jmkrzyszt@gmail.com>
+References: <20181012204101.26274-1-jmkrzyszt@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,91 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/15/18 12:26 PM, Paolo Valente wrote:
-> 
-> 
->> Il giorno 15 ott 2018, alle ore 17:39, Jens Axboe <axboe@kernel.dk> ha scritto:
->>
->> On 10/15/18 8:10 AM, Linus Walleij wrote:
->>> This sets BFQ as the default scheduler for single queue
->>> block devices (nr_hw_queues == 1) if it is available. This
->>> affects notably MMC/SD-cards but also UBI and the loopback
->>> device.
->>>
->>> I have been running it for a while without any negative
->>> effects on my pet systems and I want some wider testing
->>> so let's throw it out there and see what people say.
->>> Admittedly my use cases are limited. I need to keep this
->>> patch around for my personal needs anyway.
->>>
->>> We take special care to avoid using BFQ on zoned devices
->>> (in particular SMR, shingled magnetic recording devices)
->>> as these currently require mq-deadline to group writes
->>> together.
->>>
->>> I have opted against introducing any default scheduler
->>> through Kconfig as the mq-deadline enforcement for
->>> zoned devices has to be done at runtime anyways and
->>> too many config options will make things confusing.
->>>
->>> My argument for setting a default policy in the kernel
->>> as opposed to user space is the "reasonable defaults"
->>> type, analogous to how we have one default CPU scheduling
->>> policy (CFS) that make most sense for most tasks, and
->>> how automatic process group scheduling happens in most
->>> distributions without userspace involvement. The BFQ
->>> scheduling policy makes most sense for single hardware
->>> queue devices and many embedded systems will not have
->>> the clever userspace tools (such as udev) to make an
->>> educated choice of scheduling policy. Defaults should be
->>> those that make most sense for the hardware.
->>
->> I still don't like this. There are going to be tons of
->> cases where the single queue device is some hw raid setup
->> or similar, where performance is going to be much worse with
->> BFQ than it is with mq-deadline, for instance. That's just
->> one case.
->>
-> 
-> Hi Jens,
-> in my RAID tests bfq performed as well as in non-RAID tests.  Probably
-> you refer to the fact that, in a RAID configuration, IOPS can become
-> very high.  But, if that is the case, then the response to your
-> objections already emerged in the previous thread.  Let me sum it up
-> again.
-> 
-> I tested bfq on virtually every device in the range from few hundred
-> of IOPS to 50-100KIOPS.  Then, through the public script I already
-> mentioned, I found the maximum number of IOPS that bfq can handle:
-> about 400K with a commodity CPU.
-> 
-> In particular, in all my tests with real hardware, bfq
-> - is not even comparable to that of any of the other scheduler, in
->   terms of responsiveness, latency for real-time applications, ability
->   to provide strong bandwidth guarantees, ability to boost throughput
->   while guaranteeing bandwidths;
-> - is a little worse than the other scheduler for only one test, on
->   only some hardware: total throughput with random reads, were it may
->   lose up to 10-15% of throughput.  Of course, the scheduler that reach
->   a higher throughput leave the machine unusable during the test.
-> 
-> So I really cannot see a reason why bfq could do worse than any of
-> these other schedulers for some single-queue device (conservatively)
-> below 300KIOPS.
-> 
-> Finally, since, AFAICT, single-queue devices doing 400+ KIOPS are
-> probably less than 1% of all the single-queue storage around (USB
-> drives, HDDs, eMMC, standard SSDs, ...), by sticking to mq-deadline we
-> are sacrificing 99% of the hardware, to help 1% of the hardware, for
-> one kind of test cases.
+Each controller driver having access to NAND R/B pin over GPIO would
+have to reimplement the polling loop otherwise.
 
-I should have been more clear - I'm not worried about IOPS overhead,
-I'm worried about scheduling decisions that lower performance on
-(for instance) raid composed of many drives (rotational or otherwise).
+Suggested-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+Changelog:
+v3:
+- don't surround added code with #ifdef CONFIG_GPIOLIB - sugeested by
+  Boris Brezillon - thanks,
+- drop inadequate comment on calling ->exec_op() recursively - catched
+  by Boris Brezillon, thanks,
+- drop redundant commend from header file - suggensted by Boris
+  Brezillon - thanks,
+- update comment on waiting for R/B pin rather than command completion
+v2:
+New patch - v1 consisted of only one patch reusing legacy helper
 
-If you have actual data (on what hardware, and what kind of tests)
-to disprove that worry, then that's great, and I'd love to see that.
+ drivers/mtd/nand/raw/nand_base.c | 31 +++++++++++++++++++++++++++++++
+ include/linux/mtd/rawnand.h      |  4 ++++
+ 2 files changed, 35 insertions(+)
 
-
+diff --git a/drivers/mtd/nand/raw/nand_base.c b/drivers/mtd/nand/raw/nand_base.c
+index 05bd0779fe9b..0d5a2dc59b8d 100644
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -45,6 +45,7 @@
+ #include <linux/io.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/of.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include "internals.h"
+ 
+@@ -531,6 +532,36 @@ int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms)
+ };
+ EXPORT_SYMBOL_GPL(nand_soft_waitrdy);
+ 
++/**
++ * nand_gpio_waitrdy - Poll R/B GPIO pin until ready
++ * @chip: NAND chip structure
++ * @gpiod: GPIO descriptor of R/B pin
++ * @timeout_ms: Timeout in ms
++ *
++ * Poll the R/B GPIO pin until it becomes ready. If that does not happen
++ * whitin the specified timeout, -ETIMEDOUT is returned.
++ *
++ * This helper is intended to be used when the controller has access to the
++ * NAND R/B pin over GPIO.
++ *
++ * Return 0 if the R/B pin indicates chip is ready, a negative error otherwise.
++ */
++int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
++		      unsigned long timeout_ms)
++{
++	/* Wait until R/B pin indicates chip is ready or timeout occurs */
++	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms);
++	do {
++		if (gpiod_get_value_cansleep(gpiod))
++			return 0;
++
++		cond_resched();
++	} while	(time_before(jiffies, timeout_ms));
++
++	return gpiod_get_value_cansleep(gpiod) ? 0 : -ETIMEDOUT;
++};
++EXPORT_SYMBOL_GPL(nand_gpio_waitrdy);
++
+ /**
+  * panic_nand_get_device - [GENERIC] Get chip for selected access
+  * @chip: the nand chip descriptor
+diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
+index e10b126e148f..4e91a70ede10 100644
+--- a/include/linux/mtd/rawnand.h
++++ b/include/linux/mtd/rawnand.h
+@@ -1346,4 +1346,8 @@ void nand_release(struct nand_chip *chip);
+  */
+ int nand_soft_waitrdy(struct nand_chip *chip, unsigned long timeout_ms);
+ 
++struct gpio_desc;
++int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
++		      unsigned long timeout_ms);
++
+ #endif /* __LINUX_MTD_RAWNAND_H */
 -- 
-Jens Axboe
+2.16.4
