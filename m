@@ -1,27 +1,23 @@
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]
- helo=mx07-00178001.pphosted.com)
+Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBxxH-0000CW-QD
- for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 08:12:24 +0000
-Subject: Re: [PATCH v2 2/3] mtd: rawnand: stm32_fmc2: add STM32 FMC2 NAND
- flash controller driver
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: <miquel.raynal@bootlin.com>, <richard@nod.at>, <dwmw2@infradead.org>,
- <computersforpeace@gmail.com>, <marek.vasut@gmail.com>,
- <robh+dt@kernel.org>, <mark.rutland@arm.com>,
- <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>
-References: <1538732520-2800-1-git-send-email-christophe.kerello@st.com>
- <1538732520-2800-3-git-send-email-christophe.kerello@st.com>
- <20181005115809.55356782@bbrezillon>
-From: Christophe Kerello <christophe.kerello@st.com>
-Message-ID: <b10a3919-7b86-c177-2254-30d32ac6f25e@st.com>
-Date: Mon, 15 Oct 2018 10:09:49 +0200
+ id 1gBybq-0005Dx-T8
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 08:52:20 +0000
+Received: by mail-ed1-x541.google.com with SMTP id y19-v6so17064664edd.2
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2018 01:52:07 -0700 (PDT)
+From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
+ linux-mtd@lists.infradead.org
+Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Subject: [PATCH] mtd: maps: code style: Invert logic on if/else branch
+Date: Mon, 15 Oct 2018 10:52:02 +0200
+Message-Id: <20181015085202.23921-1-ricardo.ribalda@gmail.com>
+In-Reply-To: <20181014092638.75cda7ad@bbrezillon>
+References: <20181014092638.75cda7ad@bbrezillon>
 MIME-Version: 1.0
-In-Reply-To: <20181005115809.55356782@bbrezillon>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,49 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+It is preferred to have the positive statement on an if/else. While we
+are at it we replace the way we access rom_probe_types.
 
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+---
+ drivers/mtd/maps/physmap-core.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-On 10/05/2018 11:58 AM, Boris Brezillon wrote:
-> On Fri, 5 Oct 2018 11:41:59 +0200
-> <christophe.kerello@st.com> wrote:
-> 
->> +struct stm32_fmc2 {
-> 
-> You should inherit from nand_controller even if the nand_chip already
-> embeds a dummy nand controller object.
-> 
-> 	struct nand_controller base;
-> 
-
-Hi Boris,
-
-Ok, i will add and handle the nand controller structure.
-
-Regards,
-Christophe Kerello.
-
->> +	struct stm32_fmc2_nand nand;
->> +	struct device *dev;
->> +	void __iomem *io_base;
->> +	void __iomem *data_base[FMC2_MAX_CE];
->> +	void __iomem *cmd_base[FMC2_MAX_CE];
->> +	void __iomem *addr_base[FMC2_MAX_CE];
->> +	phys_addr_t io_phys_addr;
->> +	phys_addr_t data_phys_addr[FMC2_MAX_CE];
->> +	struct clk *clk;
->> +
->> +	struct dma_chan *dma_tx_ch;
->> +	struct dma_chan *dma_rx_ch;
->> +	struct dma_chan *dma_ecc_ch;
->> +	struct sg_table dma_data_sg;
->> +	struct sg_table dma_ecc_sg;
->> +	u8 *ecc_buf;
->> +	int dma_ecc_len;
->> +
->> +	struct completion complete;
->> +	struct completion dma_data_complete;
->> +	struct completion dma_ecc_complete;
->> +
->> +	u8 cs_assigned;
->> +	int cs_sel;
->> +};
+diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
+index 85ef1142c134..cd443c1dd947 100644
+--- a/drivers/mtd/maps/physmap-core.c
++++ b/drivers/mtd/maps/physmap-core.c
+@@ -435,7 +435,6 @@ static int physmap_flash_pdata_init(struct platform_device *dev)
+ static int physmap_flash_probe(struct platform_device *dev)
+ {
+ 	struct physmap_flash_info *info;
+-	const char * const *probe_type;
+ 	int err = 0;
+ 	int i;
+ 
+@@ -516,14 +515,19 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 			simple_map_init(&info->maps[i]);
+ 		}
+ 
+-		probe_type = rom_probe_types;
+-		if (!info->probe_type) {
+-			for (; !info->mtds[i] && *probe_type; probe_type++)
+-				info->mtds[i] = do_map_probe(*probe_type,
+-							     &info->maps[i]);
+-		} else {
++		if (info->probe_type) {
+ 			info->mtds[i] = do_map_probe(info->probe_type,
+ 						     &info->maps[i]);
++		} else {
++			int j;
++
++			for (j = 0; ARRAY_SIZE(rom_probe_types); j++) {
++				info->mtds[i] = do_map_probe(
++							rom_probe_types[j],
++							&info->maps[i]);
++				if (info->mtds[i])
++					break;
++			}
+ 		}
+ 
+ 		if (!info->mtds[i]) {
+-- 
+2.19.1
