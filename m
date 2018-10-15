@@ -1,23 +1,24 @@
-Received: from mail-ed1-x541.google.com ([2a00:1450:4864:20::541])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gBybq-0005Dx-T8
- for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 08:52:20 +0000
-Received: by mail-ed1-x541.google.com with SMTP id y19-v6so17064664edd.2
- for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2018 01:52:07 -0700 (PDT)
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@bootlin.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
-Subject: [PATCH] mtd: maps: code style: Invert logic on if/else branch
-Date: Mon, 15 Oct 2018 10:52:02 +0200
-Message-Id: <20181015085202.23921-1-ricardo.ribalda@gmail.com>
-In-Reply-To: <20181014092638.75cda7ad@bbrezillon>
-References: <20181014092638.75cda7ad@bbrezillon>
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+ "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, "vigneshr@ti.com"
+ <vigneshr@ti.com>, "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
+ "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+CC: "robh@kernel.org" <robh@kernel.org>, "mark.rutland@arm.com"
+ <mark.rutland@arm.com>, "shawnguo@kernel.org" <shawnguo@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "computersforpeace@gmail.com"
+ <computersforpeace@gmail.com>, "frieder.schrempf@exceet.de"
+ <frieder.schrempf@exceet.de>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, Yogesh Narayan Gaur
+ <yogeshnarayan.gaur@nxp.com>
+Subject: [PATCH v2 0/7] spi: add support for octal mode
+Date: Mon, 15 Oct 2018 11:47:55 +0000
+Message-ID: <1539603969-21076-1-git-send-email-yogeshnarayan.gaur@nxp.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It is preferred to have the positive statement on an if/else. While we
-are at it we replace the way we access rom_probe_types.
+Add support for octal mode IO data transfer.
+Micron flash, mt35xu512aba, supports octal mode data transfer and
+NXP FlexSPI controller supports 8 data lines for data transfer (Rx/Tx).
 
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
----
- drivers/mtd/maps/physmap-core.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Patch series
+* Add support for octal mode flags and parsing of same in spi driver.
+* Add opcodes for octal I/O commands in spi-nor framework, Read and Write p=
+roto for (1-1-8/1-8-8) mode.
+  Opcodes are added as per octal data IO commands required for mt35xu512aba=
+ [1] flash.
+* Add parsing logic for spi-mem framework and m25p80.c device file.
+* Add mode bit required for octal mode in nxp-fspi driver [2].
+* Define binding property 'spi-rx/tx-bus-width' for LX2160ARDB target [2].
 
-diff --git a/drivers/mtd/maps/physmap-core.c b/drivers/mtd/maps/physmap-core.c
-index 85ef1142c134..cd443c1dd947 100644
---- a/drivers/mtd/maps/physmap-core.c
-+++ b/drivers/mtd/maps/physmap-core.c
-@@ -435,7 +435,6 @@ static int physmap_flash_pdata_init(struct platform_device *dev)
- static int physmap_flash_probe(struct platform_device *dev)
- {
- 	struct physmap_flash_info *info;
--	const char * const *probe_type;
- 	int err = 0;
- 	int i;
- 
-@@ -516,14 +515,19 @@ static int physmap_flash_probe(struct platform_device *dev)
- 			simple_map_init(&info->maps[i]);
- 		}
- 
--		probe_type = rom_probe_types;
--		if (!info->probe_type) {
--			for (; !info->mtds[i] && *probe_type; probe_type++)
--				info->mtds[i] = do_map_probe(*probe_type,
--							     &info->maps[i]);
--		} else {
-+		if (info->probe_type) {
- 			info->mtds[i] = do_map_probe(info->probe_type,
- 						     &info->maps[i]);
-+		} else {
-+			int j;
-+
-+			for (j = 0; ARRAY_SIZE(rom_probe_types); j++) {
-+				info->mtds[i] = do_map_probe(
-+							rom_probe_types[j],
-+							&info->maps[i]);
-+				if (info->mtds[i])
-+					break;
-+			}
- 		}
- 
- 		if (!info->mtds[i]) {
--- 
-2.19.1
+Cherry pick below 2 patches (from: https://git.kernel.org/pub/scm/linux/ker=
+nel/git/broonie/spi.git):
+    c639f871febe6667d9afce28108c634e5636c735 spi: spi-mem: Fix inverted log=
+ic in op sanity check
+    db122eb8a749a1eff038f9a282c620ab16c4be1d spi: spi-mem: Add extra sanity=
+ checks on the op param
+
+Tested on LX2160ARDB target with nxp-fspi driver, below are
+Read performance number of 1-1-1 and 1-1-8 read protocol.
+
+ root@lxxx:~# cat /proc/mtd
+ dev:    size   erasesize  name
+ mtd0: 04000000 00001000 "spi0.0"
+ mtd1: 04000000 00001000 "spi0.1"
+ root@lxxx:~# time mtd_debug read /dev/mtd0 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m2.792s
+ user    0m0.000s
+ sys     0m2.790s
+ root@lxxx:~# time mtd_debug read /dev/mtd1 0x0 0x1000000 0read
+ Copied 16777216 bytes from address 0x00000000 in flash to 0read
+
+ real    0m0.441s
+ user    0m0.000s
+ sys     0m0.440s
+ root@ls1012ardb:~#
+
+ Flash device MTD0 configured in 1-1-1 protocol.
+ Flash device MTD1 configured in 1-1-8 protocol.
+
+[1] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D70384
+[2] https://patchwork.ozlabs.org/project/linux-mtd/list/?series=3D70210
+
+Yogesh Gaur (7):
+  spi: add support for octal I/O data transfer
+  mtd: spi-nor: add opcodes for octal Read/Write commands
+  mtd: spi-nor: add octal read flag for flash mt35xu512aba
+  mtd: m25p80: add support of octal I/O transfer
+  spi: spi-mem: add support for octal I/O data transfer
+  spi: nxp-fspi: add mode flag bit for octal support
+  arm64: dts: lx2160a: update fspi node
+
+Changes for v2:
+ Incorporated review comments of Boris and Vignesh.
+
+ arch/arm64/boot/dts/freescale/fsl-lx2160a-rdb.dts |  4 ++++
+ drivers/mtd/devices/m25p80.c                      |  9 ++++++++-
+ drivers/mtd/spi-nor/spi-nor.c                     | 15 ++++++++++++++-
+ drivers/spi/spi-mem.c                             |  9 ++++++++-
+ drivers/spi/spi-nxp-fspi.c                        |  4 ++--
+ drivers/spi/spi.c                                 |  6 ++++++
+ include/linux/mtd/spi-nor.h                       |  8 ++++++++
+ include/linux/spi/spi.h                           |  2 ++
+ 8 files changed, 52 insertions(+), 5 deletions(-)
+
+--=20
+2.7.4
