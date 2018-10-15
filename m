@@ -1,26 +1,33 @@
-From: Eugeniy Paltsev <eugeniy.paltsev@synopsys.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- Alexey Brodkin <alexey.brodkin@synopsys.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- Vineet Gupta <vineet.gupta1@synopsys.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "richard@nod.at" <richard@nod.at>
-Subject: Re: [PATCH v2 1/2] mtd: spi-nor: Add support of sst26wf* flash ICs
- protection ops
-Date: Mon, 15 Oct 2018 14:21:18 +0000
-Message-ID: <1539613276.4199.9.camel@synopsys.com>
-References: <20180910114628.19156-1-Eugeniy.Paltsev@synopsys.com>
- <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
-In-Reply-To: <20180910114628.19156-2-Eugeniy.Paltsev@synopsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7EE5D155E9B4ED44BE31EB3F3303CC6F@internal.synopsys.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+Received: from mail-wr1-x442.google.com ([2a00:1450:4864:20::442])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gC3lY-0004Fm-Fi
+ for linux-mtd@lists.infradead.org; Mon, 15 Oct 2018 14:22:54 +0000
+Received: by mail-wr1-x442.google.com with SMTP id 61-v6so21565701wrb.6
+ for <linux-mtd@lists.infradead.org>; Mon, 15 Oct 2018 07:22:29 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+From: Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <20181015141059.26579-1-linus.walleij@linaro.org>
+Date: Mon, 15 Oct 2018 16:22:25 +0200
+Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D52B79BA-9F47-46E4-A110-0A72050761F9@linaro.org>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,143 +37,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkhDQoNCk1heWJlIHlvdSBoYXZlIGFueSBjb21tZW50cyBvciByZW1hcmtzIGFib3V0IHRoaXMg
-cGF0Y2g/DQpBbmQgaWYgeW91IGRvbid0IGNvdWxkIHlvdSBwbGVhc2UgYXBwbHkgaXQuIFRoYW5r
-cyENCg0KT24gTW9uLCAyMDE4LTA5LTEwIGF0IDE0OjQ2ICswMzAwLCBFdWdlbml5IFBhbHRzZXYg
-d3JvdGU6DQo+IHNzdDI2d2YgZmxhc2ggc2VyaWVzIGJsb2NrIHByb3RlY3Rpb24gaW1wbGVtZW50
-YXRpb24gZGlmZmVycw0KPiBmcm9tIG90aGVyIFNTVCBzZXJpZXMsIHNvIGFkZCBzcGVjaWZpYyBp
-bXBsZW1lbnRhdGlvbg0KPiBmbGFzaF9sb2NrL2ZsYXNoX3VubG9jay9mbGFzaF9pc19sb2NrZWQg
-ZnVuY3Rpb25zIGZvciBzc3QyNndmDQo+IGZsYXNoIElDcy4NCj4gDQo+IE5PVEU6DQo+IHRoaXMg
-cGF0Y2ggaXMgYmFzaWNhbGx5IGZvbGxvd2luZyBtaW5lIHUtYm9vdCBjb21taXQgcG9ydDoNCj4g
-aHR0cDovL2dpdC5kZW54LmRlLz9wPXUtYm9vdC5naXQ7YT1jb21taXRkaWZmO2g9M2Q0ZmVkODdh
-NWZhM2ZmZWRmNjRmZjI4MTFjZDk1YzVhYzQ1MDNhYw0KPiANCj4gU2lnbmVkLW9mZi1ieTogRXVn
-ZW5peSBQYWx0c2V2IDxFdWdlbml5LlBhbHRzZXZAc3lub3BzeXMuY29tPg0KPiAtLS0NCj4gQ2hh
-bmdlcyB2MS0+djI6DQo+ICAqIENoZWNrIHJldHVybiB2YWx1ZSBvZiB7cmVhZCB8IHdyaXRlfV9y
-ZWcgY2FsbGJhY2tzLg0KPiANCj4gIGRyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jIHwgMTc3
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0KPiAgaW5jbHVkZS9s
-aW51eC9tdGQvc3BpLW5vci5oICAgfCAgIDQgKw0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAxODEgaW5z
-ZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jIGIvZHJpdmVycy9tdGQvc3BpLW5vci9zcGktbm9yLmMNCj4gaW5kZXggZDljMzY4YzQ0MTk0
-Li5kMGU3Yzg1YjYwMDIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5v
-ci5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL3NwaS1ub3Ivc3BpLW5vci5jDQo+IEBAIC01OTgsNiAr
-NTk4LDE3NyBAQCBzdGF0aWMgaW50IHdyaXRlX3NyX2FuZF9jaGVjayhzdHJ1Y3Qgc3BpX25vciAq
-bm9yLCB1OCBzdGF0dXNfbmV3LCB1OCBtYXNrKQ0KPiAgCXJldHVybiAoKHJldCAmIG1hc2spICE9
-IChzdGF0dXNfbmV3ICYgbWFzaykpID8gLUVJTyA6IDA7DQo+ICB9DQo+ICANCj4gKy8qDQo+ICsg
-KiBzc3QyNndmMDE2L3NzdDI2d2YwMzIvc3N0MjZ3ZjA2NCBoYXZlIG5leHQgYmxvY2sgcHJvdGVj
-dGlvbjoNCj4gKyAqIDR4ICAgLSA4ICBLQnl0ZSBibG9ja3MgLSByZWFkICYgd3JpdGUgcHJvdGVj
-dGlvbiBiaXRzIC0gdXBwZXIgYWRkcmVzc2VzDQo+ICsgKiAxeCAgIC0gMzIgS0J5dGUgYmxvY2tz
-IC0gd3JpdGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiByZXN0IC0gNjQgS0J5dGUgYmxvY2tzIC0g
-d3JpdGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiAxeCAgIC0gMzIgS0J5dGUgYmxvY2tzIC0gd3Jp
-dGUgcHJvdGVjdGlvbiBiaXRzDQo+ICsgKiA0eCAgIC0gOCAgS0J5dGUgYmxvY2tzIC0gcmVhZCAm
-IHdyaXRlIHByb3RlY3Rpb24gYml0cyAtIGxvd2VyIGFkZHJlc3Nlcw0KPiArICoNCj4gKyAqIFdl
-J2xsIHN1cHBvcnQgb25seSBwZXIgNjRrIGxvY2svdW5sb2NrIHNvIGxvd2VyIGFuZCB1cHBlciA2
-NCBLQnl0ZSByZWdpb24NCj4gKyAqIHdpbGwgYmUgdHJlYXRlZCBhcyBzaW5nbGUgYmxvY2suDQo+
-ICsgKi8NCj4gKyNkZWZpbmUgU1NUMjZfQlBSXzhLX05VTQkJNA0KPiArI2RlZmluZSBTU1QyNl9N
-QVhfQlBSX1JFR19MRU4JCSgxOCArIDEpDQo+ICsjZGVmaW5lIFNTVDI2X0JPVU5EX1JFR19TSVpF
-CQkoKDMyICsgU1NUMjZfQlBSXzhLX05VTSAqIDgpICogU1pfMUspDQo+ICsNCj4gK2VudW0gbG9j
-a19jdGwgew0KPiArCVNTVDI2X0NUTF9MT0NLLA0KPiArCVNTVDI2X0NUTF9VTkxPQ0ssDQo+ICsJ
-U1NUMjZfQ1RMX0NIRUNLDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgYm9vbCBzc3QyNl9wcm9jZXNz
-X2Jwcih1MzIgYnByX3NpemUsIHU4ICpjbWQsIHUzMiBiaXQsIGVudW0gbG9ja19jdGwgY3RsKQ0K
-PiArew0KPiArCXN3aXRjaCAoY3RsKSB7DQo+ICsJY2FzZSBTU1QyNl9DVExfTE9DSzoNCj4gKwkJ
-Y21kW2Jwcl9zaXplIC0gKGJpdCAvIDgpIC0gMV0gfD0gQklUKGJpdCAlIDgpOw0KPiArCQlicmVh
-azsNCj4gKwljYXNlIFNTVDI2X0NUTF9VTkxPQ0s6DQo+ICsJCWNtZFticHJfc2l6ZSAtIChiaXQg
-LyA4KSAtIDFdICY9IH5CSVQoYml0ICUgOCk7DQo+ICsJCWJyZWFrOw0KPiArCWNhc2UgU1NUMjZf
-Q1RMX0NIRUNLOg0KPiArCQlyZXR1cm4gISEoY21kW2Jwcl9zaXplIC0gKGJpdCAvIDgpIC0gMV0g
-JiBCSVQoYml0ICUgOCkpOw0KPiArCX0NCj4gKw0KPiArCXJldHVybiBmYWxzZTsNCj4gK30NCj4g
-Kw0KPiArLyoNCj4gKyAqIExvY2ssIHVubG9jayBvciBjaGVjayBsb2NrIHN0YXR1cyBvZiB0aGUg
-Zmxhc2ggcmVnaW9uIG9mIHRoZSBmbGFzaCAoZGVwZW5kaW5nDQo+ICsgKiBvbiB0aGUgbG9ja19j
-dGwgdmFsdWUpDQo+ICsgKi8NCj4gK3N0YXRpYyBpbnQgc3N0MjZfbG9ja19jdGwoc3RydWN0IHNw
-aV9ub3IgKm5vciwgbG9mZl90IG9mcywgdWludDY0X3QgbGVuLCBlbnVtIGxvY2tfY3RsIGN0bCkN
-Cj4gK3sNCj4gKwlzdHJ1Y3QgbXRkX2luZm8gKm10ZCA9ICZub3ItPm10ZDsNCj4gKwl1MzIgaSwg
-YnByX3B0ciwgcnB0cl82NGssIGxwdHJfNjRrLCBicHJfc2l6ZTsNCj4gKwlib29sIGxvd2VyXzY0
-ayA9IGZhbHNlLCB1cHBlcl82NGsgPSBmYWxzZTsNCj4gKwl1OCBicHJfYnVmZltTU1QyNl9NQVhf
-QlBSX1JFR19MRU5dID0ge307DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCS8qIENoZWNrIGxlbmd0
-aCBhbmQgb2Zmc2V0IGZvciA2NGsgYWxpZ25tZW50ICovDQo+ICsJaWYgKChvZnMgJiAoU1pfNjRL
-IC0gMSkpIHx8IChsZW4gJiAoU1pfNjRLIC0gMSkpKSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYs
-ICJsZW5ndGggb3Igb2Zmc2V0IGlzIG5vdCA2NEtpQiBhbGxpZ2huZWRcbiIpOw0KPiArCQlyZXR1
-cm4gLUVJTlZBTDsNCj4gKwl9DQo+ICsNCj4gKwlpZiAob2ZzICsgbGVuID4gbXRkLT5zaXplKSB7
-DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJyYW5nZSBpcyBtb3JlIHRoYW4gZGV2aWNlIHNpemU6
-ICUjbGx4ICsgJSNsbHggPiAlI2xseFxuIiwNCj4gKwkJCW9mcywgbGVuLCBtdGQtPnNpemUpOw0K
-PiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gKwl9DQo+ICsNCj4gKwkvKiBTU1QyNiBmYW1pbHkgaGFz
-IG9ubHkgMTYgTWJpdCwgMzIgTWJpdCBhbmQgNjQgTWJpdCBJQyAqLw0KPiArCWlmIChtdGQtPnNp
-emUgIT0gU1pfMk0gJiYNCj4gKwkgICAgbXRkLT5zaXplICE9IFNaXzRNICYmDQo+ICsJICAgIG10
-ZC0+c2l6ZSAhPSBTWl84TSkNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsNCj4gKwlicHJfc2l6
-ZSA9IDIgKyAobXRkLT5zaXplIC8gU1pfNjRLIC8gOCk7DQo+ICsNCj4gKwlyZXQgPSBub3ItPnJl
-YWRfcmVnKG5vciwgU1BJTk9SX09QX1JFQURfQlBSLCBicHJfYnVmZiwgYnByX3NpemUpOw0KPiAr
-CWlmIChyZXQgPCAwKSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJmYWlsIHRvIHJlYWQgYmxv
-Y2stcHJvdGVjdGlvbiByZWdpc3RlclxuIik7DQo+ICsJCXJldHVybiByZXQ7DQo+ICsJfQ0KPiAr
-DQo+ICsJcnB0cl82NGsgPSBtaW5fdCh1MzIsIG9mcyArIGxlbiwgbXRkLT5zaXplIC0gU1NUMjZf
-Qk9VTkRfUkVHX1NJWkUpOw0KPiArCWxwdHJfNjRrID0gbWF4X3QodTMyLCBvZnMsIFNTVDI2X0JP
-VU5EX1JFR19TSVpFKTsNCj4gKw0KPiArCXVwcGVyXzY0ayA9ICgob2ZzICsgbGVuKSA+IChtdGQt
-PnNpemUgLSBTU1QyNl9CT1VORF9SRUdfU0laRSkpOw0KPiArCWxvd2VyXzY0ayA9IChvZnMgPCBT
-U1QyNl9CT1VORF9SRUdfU0laRSk7DQo+ICsNCj4gKwkvKiBMb3dlciBiaXRzIGluIGJsb2NrLXBy
-b3RlY3Rpb24gcmVnaXN0ZXIgYXJlIGFib3V0IDY0ayByZWdpb24gKi8NCj4gKwlicHJfcHRyID0g
-bHB0cl82NGsgLyBTWl82NEsgLSAxOw0KPiArDQo+ICsJLyogUHJvY2VzcyA2NEsgYmxvY2tzIHJl
-Z2lvbiAqLw0KPiArCXdoaWxlIChscHRyXzY0ayA8IHJwdHJfNjRrKSB7DQo+ICsJCWlmIChzc3Qy
-Nl9wcm9jZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkpDQo+ICsJCQly
-ZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJCWJwcl9wdHIrKzsNCj4gKwkJbHB0cl82NGsgKz0gU1pf
-NjRLOw0KPiArCX0NCj4gKw0KPiArCS8qIDMySyBhbmQgOEsgcmVnaW9uIGJpdHMgaW4gQlBSIGFy
-ZSBhZnRlciA2NGsgcmVnaW9uIGJpdHMgKi8NCj4gKwlicHJfcHRyID0gKG10ZC0+c2l6ZSAtIDIg
-KiBTU1QyNl9CT1VORF9SRUdfU0laRSkgLyBTWl82NEs7DQo+ICsNCj4gKwkvKiBQcm9jZXNzIGxv
-d2VyIDMySyBibG9jayByZWdpb24gKi8NCj4gKwlpZiAobG93ZXJfNjRrKQ0KPiArCQlpZiAoc3N0
-MjZfcHJvY2Vzc19icHIoYnByX3NpemUsIGJwcl9idWZmLCBicHJfcHRyLCBjdGwpKQ0KPiArCQkJ
-cmV0dXJuIEVBQ0NFUzsNCj4gKw0KPiArCWJwcl9wdHIrKzsNCj4gKw0KPiArCS8qIFByb2Nlc3Mg
-dXBwZXIgMzJLIGJsb2NrIHJlZ2lvbiAqLw0KPiArCWlmICh1cHBlcl82NGspDQo+ICsJCWlmIChz
-c3QyNl9wcm9jZXNzX2JwcihicHJfc2l6ZSwgYnByX2J1ZmYsIGJwcl9wdHIsIGN0bCkpDQo+ICsJ
-CQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJYnByX3B0cisrOw0KPiArDQo+ICsJLyogUHJvY2Vz
-cyBsb3dlciA4SyBibG9jayByZWdpb25zICovDQo+ICsJZm9yIChpID0gMDsgaSA8IFNTVDI2X0JQ
-Ul84S19OVU07IGkrKykgew0KPiArCQlpZiAobG93ZXJfNjRrKQ0KPiArCQkJaWYgKHNzdDI2X3By
-b2Nlc3NfYnByKGJwcl9zaXplLCBicHJfYnVmZiwgYnByX3B0ciwgY3RsKSkNCj4gKwkJCQlyZXR1
-cm4gRUFDQ0VTOw0KPiArDQo+ICsJCS8qIEluIDhLIGFyZWEgQlBSIGhhcyBib3RoIHJlYWQgYW5k
-IHdyaXRlIHByb3RlY3Rpb24gYml0cyAqLw0KPiArCQlicHJfcHRyICs9IDI7DQo+ICsJfQ0KPiAr
-DQo+ICsJLyogUHJvY2VzcyB1cHBlciA4SyBibG9jayByZWdpb25zICovDQo+ICsJZm9yIChpID0g
-MDsgaSA8IFNTVDI2X0JQUl84S19OVU07IGkrKykgew0KPiArCQlpZiAodXBwZXJfNjRrKQ0KPiAr
-CQkJaWYgKHNzdDI2X3Byb2Nlc3NfYnByKGJwcl9zaXplLCBicHJfYnVmZiwgYnByX3B0ciwgY3Rs
-KSkNCj4gKwkJCQlyZXR1cm4gRUFDQ0VTOw0KPiArDQo+ICsJCS8qIEluIDhLIGFyZWEgQlBSIGhh
-cyBib3RoIHJlYWQgYW5kIHdyaXRlIHByb3RlY3Rpb24gYml0cyAqLw0KPiArCQlicHJfcHRyICs9
-IDI7DQo+ICsJfQ0KPiArDQo+ICsJLyogSWYgd2UgY2hlY2sgcmVnaW9uIHN0YXR1cyB3ZSBkb24n
-dCBuZWVkIHRvIHdyaXRlIEJQUiBiYWNrICovDQo+ICsJaWYgKGN0bCA9PSBTU1QyNl9DVExfQ0hF
-Q0spDQo+ICsJCXJldHVybiAwOw0KPiArDQo+ICsJcmV0ID0gbm9yLT53cml0ZV9yZWcobm9yLCBT
-UElOT1JfT1BfV1JJVEVfQlBSLCBicHJfYnVmZiwgYnByX3NpemUpOw0KPiArCWlmIChyZXQgPCAw
-KSB7DQo+ICsJCWRldl9lcnIobm9yLT5kZXYsICJmYWlsIHRvIHdyaXRlIGJsb2NrLXByb3RlY3Rp
-b24gcmVnaXN0ZXJcbiIpOw0KPiArCQlyZXR1cm4gcmV0Ow0KPiArCX0NCj4gKw0KPiArCXJldHVy
-biAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IHNzdDI2X3VubG9jayhzdHJ1Y3Qgc3BpX25v
-ciAqbm9yLCBsb2ZmX3Qgb2ZzLCB1aW50NjRfdCBsZW4pDQo+ICt7DQo+ICsJcmV0dXJuIHNzdDI2
-X2xvY2tfY3RsKG5vciwgb2ZzLCBsZW4sIFNTVDI2X0NUTF9VTkxPQ0spOw0KPiArfQ0KPiArDQo+
-ICtzdGF0aWMgaW50IHNzdDI2X2xvY2soc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IG9mcywg
-dWludDY0X3QgbGVuKQ0KPiArew0KPiArCXJldHVybiBzc3QyNl9sb2NrX2N0bChub3IsIG9mcywg
-bGVuLCBTU1QyNl9DVExfTE9DSyk7DQo+ICt9DQo+ICsNCj4gKy8qDQo+ICsgKiBSZXR1cm5zIEVB
-Q0NFUyAocG9zaXRpdmUgdmFsdWUpIGlmIHJlZ2lvbiBpcyBsb2NrZWQsIDAgaWYgcmVnaW9uIGlz
-IHVubG9ja2VkLA0KPiArICogYW5kIG5lZ2F0aXZlIG9uIGVycm9ycy4NCj4gKyAqLw0KPiArc3Rh
-dGljIGludCBzc3QyNl9pc19sb2NrZWQoc3RydWN0IHNwaV9ub3IgKm5vciwgbG9mZl90IG9mcywg
-dWludDY0X3QgbGVuKQ0KPiArew0KPiArCS8qDQo+ICsJICogaXNfbG9ja2VkIGZ1bmN0aW9uIGlz
-IHVzZWQgZm9yIGNoZWNrIGJlZm9yZSByZWFkaW5nIG9yIGVyYXNpbmcgZmxhc2gNCj4gKwkgKiBy
-ZWdpb24sIHNvIG9mZnNldCBhbmQgbGVuZ3RoIG1pZ2h0IGJlIG5vdCA2NGsgYWxsaWdobmVkLCBz
-byBhZGp1c3QNCj4gKwkgKiB0aGVtIHRvIGJlIDY0ayBhbGxpZ2huZWQgYXMgc3N0MjZfbG9ja19j
-dGwgd29ya3Mgb25seSB3aXRoIDY0aw0KPiArCSAqIGFsbGlnaG5lZCByZWdpb25zLg0KPiArCSAq
-Lw0KPiArCW9mcyAtPSBvZnMgJiAoU1pfNjRLIC0gMSk7DQo+ICsJbGVuID0gbGVuICYgKFNaXzY0
-SyAtIDEpID8gKGxlbiAmIH4oU1pfNjRLIC0gMSkpICsgU1pfNjRLIDogbGVuOw0KPiArDQo+ICsJ
-cmV0dXJuIHNzdDI2X2xvY2tfY3RsKG5vciwgb2ZzLCBsZW4sIFNTVDI2X0NUTF9DSEVDSyk7DQo+
-ICt9DQo+ICsNCj4gIHN0YXRpYyB2b2lkIHN0bV9nZXRfbG9ja2VkX3JhbmdlKHN0cnVjdCBzcGlf
-bm9yICpub3IsIHU4IHNyLCBsb2ZmX3QgKm9mcywNCj4gIAkJCQkgdWludDY0X3QgKmxlbikNCj4g
-IHsNCj4gQEAgLTI4NzIsNiArMzA0MywxMiBAQCBpbnQgc3BpX25vcl9zY2FuKHN0cnVjdCBzcGlf
-bm9yICpub3IsIGNvbnN0IGNoYXIgKm5hbWUsDQo+ICAJCW5vci0+Zmxhc2hfaXNfbG9ja2VkID0g
-c3RtX2lzX2xvY2tlZDsNCj4gIAl9DQo+ICANCj4gKwlpZiAoSkVERUNfTUZSKGluZm8pID09IFNO
-T1JfTUZSX1NTVCAmJiBpbmZvLT5pZFsxXSA9PSAweDI2KSB7DQo+ICsJCW5vci0+Zmxhc2hfbG9j
-ayA9IHNzdDI2X2xvY2s7DQo+ICsJCW5vci0+Zmxhc2hfdW5sb2NrID0gc3N0MjZfdW5sb2NrOw0K
-PiArCQlub3ItPmZsYXNoX2lzX2xvY2tlZCA9IHNzdDI2X2lzX2xvY2tlZDsNCj4gKwl9DQo+ICsN
-Cj4gIAlpZiAobm9yLT5mbGFzaF9sb2NrICYmIG5vci0+Zmxhc2hfdW5sb2NrICYmIG5vci0+Zmxh
-c2hfaXNfbG9ja2VkKSB7DQo+ICAJCW10ZC0+X2xvY2sgPSBzcGlfbm9yX2xvY2s7DQo+ICAJCW10
-ZC0+X3VubG9jayA9IHNwaV9ub3JfdW5sb2NrOw0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51
-eC9tdGQvc3BpLW5vci5oIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+IGluZGV4IGU2
-MGRhMGQzNGNjMS4uMjQ2MDE0YTczZjgzIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L210
-ZC9zcGktbm9yLmgNCj4gKysrIGIvaW5jbHVkZS9saW51eC9tdGQvc3BpLW5vci5oDQo+IEBAIC05
-Myw2ICs5MywxMCBAQA0KPiAgI2RlZmluZSBTUElOT1JfT1BfV1JESQkJMHgwNAkvKiBXcml0ZSBk
-aXNhYmxlICovDQo+ICAjZGVmaW5lIFNQSU5PUl9PUF9BQUlfV1AJMHhhZAkvKiBBdXRvIGFkZHJl
-c3MgaW5jcmVtZW50IHdvcmQgcHJvZ3JhbSAqLw0KPiAgDQo+ICsvKiBVc2VkIGZvciBTU1QyNiog
-Zmxhc2hlcyBvbmx5LiAqLw0KPiArI2RlZmluZSBTUElOT1JfT1BfUkVBRF9CUFIJMHg3MgkvKiBS
-ZWFkIGJsb2NrIHByb3RlY3Rpb24gcmVnaXN0ZXIgKi8NCj4gKyNkZWZpbmUgU1BJTk9SX09QX1dS
-SVRFX0JQUgkweDQyCS8qIFdyaXRlIGJsb2NrIHByb3RlY3Rpb24gcmVnaXN0ZXIgKi8NCj4gKw0K
-PiAgLyogVXNlZCBmb3IgUzNBTiBmbGFzaGVzIG9ubHkgKi8NCj4gICNkZWZpbmUgU1BJTk9SX09Q
-X1hTRQkJMHg1MAkvKiBTZWN0b3IgZXJhc2UgKi8NCj4gICNkZWZpbmUgU1BJTk9SX09QX1hQUAkJ
-MHg4MgkvKiBQYWdlIHByb2dyYW0gKi8NCi0tIA0KIEV1Z2VuaXkgUGFsdHNldg==
+
+
+> Il giorno 15 ott 2018, alle ore 16:10, Linus Walleij =
+<linus.walleij@linaro.org> ha scritto:
+>=20
+> This sets BFQ as the default scheduler for single queue
+> block devices (nr_hw_queues =3D=3D 1) if it is available. This
+> affects notably MMC/SD-cards but also UBI and the loopback
+> device.
+>=20
+> I have been running it for a while without any negative
+> effects on my pet systems and I want some wider testing
+> so let's throw it out there and see what people say.
+> Admittedly my use cases are limited. I need to keep this
+> patch around for my personal needs anyway.
+>=20
+> We take special care to avoid using BFQ on zoned devices
+> (in particular SMR, shingled magnetic recording devices)
+> as these currently require mq-deadline to group writes
+> together.
+>=20
+> I have opted against introducing any default scheduler
+> through Kconfig as the mq-deadline enforcement for
+> zoned devices has to be done at runtime anyways and
+> too many config options will make things confusing.
+>=20
+> My argument for setting a default policy in the kernel
+> as opposed to user space is the "reasonable defaults"
+> type, analogous to how we have one default CPU scheduling
+> policy (CFS) that make most sense for most tasks, and
+> how automatic process group scheduling happens in most
+> distributions without userspace involvement. The BFQ
+> scheduling policy makes most sense for single hardware
+> queue devices and many embedded systems will not have
+> the clever userspace tools (such as udev) to make an
+> educated choice of scheduling policy. Defaults should be
+> those that make most sense for the hardware.
+>=20
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Paolo Valente <paolo.valente@linaro.org>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Damien Le Moal <Damien.LeMoal@wdc.com>
+> Cc: Johannes Thumshirn <jthumshirn@suse.de>
+> Cc: Oleksandr Natalenko <oleksandr@natalenko.name>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+
+Unless someone reports (hopefully reproducible) regressions with
+common single-queue hardware, then
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
+
+Thanks,
+Paolo
+
+> ---
+> ChangeLog v1->v2:
+> - Add a quirk so that devices with zoned writes are forced
+>  to use the deadline scheduler, this is necessary since only
+>  that scheduler supports zoned writes.
+> - There is a summary article in LWN for subscribers:
+>  https://lwn.net/Articles/767987/
+> ---
+> block/elevator.c | 22 ++++++++++++++++++----
+> 1 file changed, 18 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/block/elevator.c b/block/elevator.c
+> index 8fdcd64ae12e..6e6048ca3471 100644
+> --- a/block/elevator.c
+> +++ b/block/elevator.c
+> @@ -948,13 +948,16 @@ int elevator_switch_mq(struct request_queue *q,
+> }
+>=20
+> /*
+> - * For blk-mq devices, we default to using mq-deadline, if available, =
+for single
+> - * queue devices.  If deadline isn't available OR we have multiple =
+queues,
+> - * default to "none".
+> + * For blk-mq devices, we default to using:
+> + * - "none" for multiqueue devices (nr_hw_queues !=3D 1)
+> + * - "bfq", if available, for single queue devices
+> + * - "mq-deadline" if "bfq" is not available for single queue devices
+> + * - "none" for single queue devices as well as last resort
+>  */
+> int elevator_init_mq(struct request_queue *q)
+> {
+> 	struct elevator_type *e;
+> +	const char *policy;
+> 	int err =3D 0;
+>=20
+> 	if (q->nr_hw_queues !=3D 1)
+> @@ -968,7 +971,18 @@ int elevator_init_mq(struct request_queue *q)
+> 	if (unlikely(q->elevator))
+> 		goto out_unlock;
+>=20
+> -	e =3D elevator_get(q, "mq-deadline", false);
+> +	/*
+> +	 * Zoned devices must use a deadline scheduler because currently
+> +	 * that is the only scheduler respecting zoned writes.
+> +	 */
+> +	if (blk_queue_is_zoned(q))
+> +		policy =3D "mq-deadline";
+> +	else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
+> +		policy =3D "bfq";
+> +	else
+> +		policy =3D "mq-deadline";
+> +
+> +	e =3D elevator_get(q, policy, false);
+> 	if (!e)
+> 		goto out_unlock;
+>=20
+> --=20
+> 2.17.2
+>=20
