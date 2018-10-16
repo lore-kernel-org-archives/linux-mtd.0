@@ -1,27 +1,29 @@
-Date: Tue, 16 Oct 2018 14:17:54 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
-Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, "marek.vasut@gmail.com"
- <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
- <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
- <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
- <Cristian.Birsan@microchip.com>
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
- SPI NOR flash memories
-Message-ID: <20181016141754.38dfcf90@bbrezillon>
-In-Reply-To: <20181016140411.3f06e449@bbrezillon>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <20180911154007.17195-2-tudor.ambarus@microchip.com>
- <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <20181016140411.3f06e449@bbrezillon>
+Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCPct-00040D-U8
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 13:44:04 +0000
+Received: by mail-it1-x141.google.com with SMTP id c23-v6so33125054itd.5
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2018 06:43:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20181015141059.26579-1-linus.walleij@linaro.org>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Tue, 16 Oct 2018 15:42:19 +0200
+Message-ID: <CAPDyKFp-26FWi74BzrPsuE3gn-no2AZfiNR0DQfe15cG3_XY7w@mail.gmail.com>
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
+ "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+ linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +33,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 Oct 2018 14:04:11 +0200
-Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+On 15 October 2018 at 16:10, Linus Walleij <linus.walleij@linaro.org> wrote:
+> This sets BFQ as the default scheduler for single queue
+> block devices (nr_hw_queues == 1) if it is available. This
+> affects notably MMC/SD-cards but also UBI and the loopback
+> device.
+>
+> I have been running it for a while without any negative
+> effects on my pet systems and I want some wider testing
+> so let's throw it out there and see what people say.
+> Admittedly my use cases are limited. I need to keep this
+> patch around for my personal needs anyway.
+>
+> We take special care to avoid using BFQ on zoned devices
+> (in particular SMR, shingled magnetic recording devices)
+> as these currently require mq-deadline to group writes
+> together.
+>
+> I have opted against introducing any default scheduler
+> through Kconfig as the mq-deadline enforcement for
+> zoned devices has to be done at runtime anyways and
+> too many config options will make things confusing.
+>
+> My argument for setting a default policy in the kernel
+> as opposed to user space is the "reasonable defaults"
+> type, analogous to how we have one default CPU scheduling
+> policy (CFS) that make most sense for most tasks, and
+> how automatic process group scheduling happens in most
+> distributions without userspace involvement. The BFQ
+> scheduling policy makes most sense for single hardware
+> queue devices and many embedded systems will not have
+> the clever userspace tools (such as udev) to make an
+> educated choice of scheduling policy. Defaults should be
+> those that make most sense for the hardware.
 
-> On Tue, 16 Oct 2018 09:51:47 +0000
-> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
-> 
-> > Hi Tudor,
-> > 
-> > This patch is breaking the 1-4-4 Read protocol for the spansion flash "s25fl512s".
-> > 
-> > Without this patch read request command for Quad mode, 4-byte enable, is coming as 0xEC i.e. SPINOR_OP_READ_1_4_4_4B.
-> > But after applying this patch, read request command for Quad mode is coming as 0x6C i.e. SPINOR_OP_READ_1_1_4_4B.
-> > 
-> > This flash also supports non-uniform erase.
-> > Can you please check and provide some suggestion?  
-> 
-> Are you sure the regression comes from this patch? I suspect your bug
-> comes from 41fe242979e4 ("mtd: spi-nor: fsl-quadspi: fix read error for
-> flash size larger than 16MB").
+As already stated for v1, this makes perfect sense to me, thanks for posting it!
 
-I guess you're testing with an fsl-qspi controller, right? Can you try
-with this patch?
+I do understand there is some pushback from Bart and Jens, around how
+to move this forward. However, let's hope they get convinced to try
+this out.
 
---->8---
+When it comes to potential "performance" regressions, I am sure Paolo
+is standing-by to help out with BFQ changes, if needed. Moreover, we
+can always do a simple revert in worst case scenario, especially since
+the change is really limited.
 
-diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-quadspi.c
-index 1ff3430f82c8..c47fe70c9f98 100644
---- a/drivers/mtd/spi-nor/fsl-quadspi.c
-+++ b/drivers/mtd/spi-nor/fsl-quadspi.c
-@@ -477,9 +477,6 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)
- static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
- {
-        switch (cmd) {
--       case SPINOR_OP_READ_1_1_4:
--       case SPINOR_OP_READ_1_1_4_4B:
--               return SEQID_READ;
-        case SPINOR_OP_WREN:
-                return SEQID_WREN;
-        case SPINOR_OP_WRDI:
-@@ -490,8 +487,6 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
-                return SEQID_SE;
-        case SPINOR_OP_CHIP_ERASE:
-                return SEQID_CHIP_ERASE;
--       case SPINOR_OP_PP:
--               return SEQID_PP;
-        case SPINOR_OP_RDID:
-                return SEQID_RDID;
-        case SPINOR_OP_WRSR:
-@@ -503,7 +498,11 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)
-        case SPINOR_OP_BRWR:
-                return SEQID_BRWR;
-        default:
--               if (cmd == q->nor[0].erase_opcode)
-+               if (cmd == q->nor[0].read_opcode)
-+                       return SEQID_READ;
-+               else if (cmd == q->nor[0].program_opcode)
-+                       return SEQID_PP;
-+               else if (cmd == q->nor[0].erase_opcode)
-                        return SEQID_SE;
-                dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
-                break;
+>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: Paolo Valente <paolo.valente@linaro.org>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Bart Van Assche <bvanassche@acm.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Christoph Hellwig <hch@infradead.org>
+> Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Damien Le Moal <Damien.LeMoal@wdc.com>
+> Cc: Johannes Thumshirn <jthumshirn@suse.de>
+> Cc: Oleksandr Natalenko <oleksandr@natalenko.name>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+
+So FWIW:
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
+
+> ---
+> ChangeLog v1->v2:
+> - Add a quirk so that devices with zoned writes are forced
+>   to use the deadline scheduler, this is necessary since only
+>   that scheduler supports zoned writes.
+> - There is a summary article in LWN for subscribers:
+>   https://lwn.net/Articles/767987/
+> ---
+>  block/elevator.c | 22 ++++++++++++++++++----
+>  1 file changed, 18 insertions(+), 4 deletions(-)
+>
+> diff --git a/block/elevator.c b/block/elevator.c
+> index 8fdcd64ae12e..6e6048ca3471 100644
+> --- a/block/elevator.c
+> +++ b/block/elevator.c
+> @@ -948,13 +948,16 @@ int elevator_switch_mq(struct request_queue *q,
+>  }
+>
+>  /*
+> - * For blk-mq devices, we default to using mq-deadline, if available, for single
+> - * queue devices.  If deadline isn't available OR we have multiple queues,
+> - * default to "none".
+> + * For blk-mq devices, we default to using:
+> + * - "none" for multiqueue devices (nr_hw_queues != 1)
+> + * - "bfq", if available, for single queue devices
+> + * - "mq-deadline" if "bfq" is not available for single queue devices
+> + * - "none" for single queue devices as well as last resort
+>   */
+>  int elevator_init_mq(struct request_queue *q)
+>  {
+>         struct elevator_type *e;
+> +       const char *policy;
+>         int err = 0;
+>
+>         if (q->nr_hw_queues != 1)
+> @@ -968,7 +971,18 @@ int elevator_init_mq(struct request_queue *q)
+>         if (unlikely(q->elevator))
+>                 goto out_unlock;
+>
+> -       e = elevator_get(q, "mq-deadline", false);
+> +       /*
+> +        * Zoned devices must use a deadline scheduler because currently
+> +        * that is the only scheduler respecting zoned writes.
+> +        */
+> +       if (blk_queue_is_zoned(q))
+> +               policy = "mq-deadline";
+> +       else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
+> +               policy = "bfq";
+> +       else
+> +               policy = "mq-deadline";
+> +
+> +       e = elevator_get(q, policy, false);
+>         if (!e)
+>                 goto out_unlock;
+>
+> --
+> 2.17.2
+>
