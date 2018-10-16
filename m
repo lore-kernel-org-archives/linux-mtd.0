@@ -1,29 +1,19 @@
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
+Received: from mail.kernel.org ([198.145.29.99])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCPct-00040D-U8
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 13:44:04 +0000
-Received: by mail-it1-x141.google.com with SMTP id c23-v6so33125054itd.5
- for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2018 06:43:00 -0700 (PDT)
+ id 1gCPzc-00069w-N4
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 14:06:47 +0000
+Subject: Patch "jffs2: return -ERANGE when xattr buffer is too small" has been
+ added to the 4.4-stable tree
+To: agruenba@redhat.com, dwmw2@infradead.org, gregkh@linuxfoundation.org,
+ houtao1@huawei.com, linux-mtd@lists.infradead.org
+Cc: <stable-commits@vger.kernel.org>
+From: <gregkh@linuxfoundation.org>
+Date: Tue, 16 Oct 2018 16:06:19 +0200
+In-Reply-To: <20181012060126.33739-1-houtao1@huawei.com>
+Message-ID: <1539698779189238@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20181015141059.26579-1-linus.walleij@linaro.org>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Tue, 16 Oct 2018 15:42:19 +0200
-Message-ID: <CAPDyKFp-26FWi74BzrPsuE3gn-no2AZfiNR0DQfe15cG3_XY7w@mail.gmail.com>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
- "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
- Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
- Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,132 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 October 2018 at 16:10, Linus Walleij <linus.walleij@linaro.org> wrote:
-> This sets BFQ as the default scheduler for single queue
-> block devices (nr_hw_queues == 1) if it is available. This
-> affects notably MMC/SD-cards but also UBI and the loopback
-> device.
->
-> I have been running it for a while without any negative
-> effects on my pet systems and I want some wider testing
-> so let's throw it out there and see what people say.
-> Admittedly my use cases are limited. I need to keep this
-> patch around for my personal needs anyway.
->
-> We take special care to avoid using BFQ on zoned devices
-> (in particular SMR, shingled magnetic recording devices)
-> as these currently require mq-deadline to group writes
-> together.
->
-> I have opted against introducing any default scheduler
-> through Kconfig as the mq-deadline enforcement for
-> zoned devices has to be done at runtime anyways and
-> too many config options will make things confusing.
->
-> My argument for setting a default policy in the kernel
-> as opposed to user space is the "reasonable defaults"
-> type, analogous to how we have one default CPU scheduling
-> policy (CFS) that make most sense for most tasks, and
-> how automatic process group scheduling happens in most
-> distributions without userspace involvement. The BFQ
-> scheduling policy makes most sense for single hardware
-> queue devices and many embedded systems will not have
-> the clever userspace tools (such as udev) to make an
-> educated choice of scheduling policy. Defaults should be
-> those that make most sense for the hardware.
 
-As already stated for v1, this makes perfect sense to me, thanks for posting it!
+This is a note to let you know that I've just added the patch titled
 
-I do understand there is some pushback from Bart and Jens, around how
-to move this forward. However, let's hope they get convinced to try
-this out.
+    jffs2: return -ERANGE when xattr buffer is too small
 
-When it comes to potential "performance" regressions, I am sure Paolo
-is standing-by to help out with BFQ changes, if needed. Moreover, we
-can always do a simple revert in worst case scenario, especially since
-the change is really limited.
+to the 4.4-stable tree which can be found at:
+    http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
->
-> Cc: Pavel Machek <pavel@ucw.cz>
-> Cc: Paolo Valente <paolo.valente@linaro.org>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Bart Van Assche <bvanassche@acm.org>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Artem Bityutskiy <dedekind1@gmail.com>
-> Cc: Christoph Hellwig <hch@infradead.org>
-> Cc: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: Damien Le Moal <Damien.LeMoal@wdc.com>
-> Cc: Johannes Thumshirn <jthumshirn@suse.de>
-> Cc: Oleksandr Natalenko <oleksandr@natalenko.name>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+The filename of the patch is:
+     jffs2-return-erange-when-xattr-buffer-is-too-small.patch
+and it can be found in the queue-4.4 subdirectory.
 
-So FWIW:
+If you, or anyone else, feels it should not be added to the stable tree,
+please let <stable@vger.kernel.org> know about it.
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Kind regards
-Uffe
+>From houtao1@huawei.com  Tue Oct 16 15:52:02 2018
+From: Hou Tao <houtao1@huawei.com>
+Date: Fri, 12 Oct 2018 14:01:26 +0800
+Subject: jffs2: return -ERANGE when xattr buffer is too small
+To: <gregkh@linuxfoundation.org>, <stable@vger.kernel.org>
+Cc: <linux-mtd@lists.infradead.org>, <agruenba@redhat.com>, <dwmw2@infradead.org>, <houtao1@huawei.com>
+Message-ID: <20181012060126.33739-1-houtao1@huawei.com>
 
-> ---
-> ChangeLog v1->v2:
-> - Add a quirk so that devices with zoned writes are forced
->   to use the deadline scheduler, this is necessary since only
->   that scheduler supports zoned writes.
-> - There is a summary article in LWN for subscribers:
->   https://lwn.net/Articles/767987/
-> ---
->  block/elevator.c | 22 ++++++++++++++++++----
->  1 file changed, 18 insertions(+), 4 deletions(-)
->
-> diff --git a/block/elevator.c b/block/elevator.c
-> index 8fdcd64ae12e..6e6048ca3471 100644
-> --- a/block/elevator.c
-> +++ b/block/elevator.c
-> @@ -948,13 +948,16 @@ int elevator_switch_mq(struct request_queue *q,
->  }
->
->  /*
-> - * For blk-mq devices, we default to using mq-deadline, if available, for single
-> - * queue devices.  If deadline isn't available OR we have multiple queues,
-> - * default to "none".
-> + * For blk-mq devices, we default to using:
-> + * - "none" for multiqueue devices (nr_hw_queues != 1)
-> + * - "bfq", if available, for single queue devices
-> + * - "mq-deadline" if "bfq" is not available for single queue devices
-> + * - "none" for single queue devices as well as last resort
->   */
->  int elevator_init_mq(struct request_queue *q)
->  {
->         struct elevator_type *e;
-> +       const char *policy;
->         int err = 0;
->
->         if (q->nr_hw_queues != 1)
-> @@ -968,7 +971,18 @@ int elevator_init_mq(struct request_queue *q)
->         if (unlikely(q->elevator))
->                 goto out_unlock;
->
-> -       e = elevator_get(q, "mq-deadline", false);
-> +       /*
-> +        * Zoned devices must use a deadline scheduler because currently
-> +        * that is the only scheduler respecting zoned writes.
-> +        */
-> +       if (blk_queue_is_zoned(q))
-> +               policy = "mq-deadline";
-> +       else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
-> +               policy = "bfq";
-> +       else
-> +               policy = "mq-deadline";
-> +
-> +       e = elevator_get(q, policy, false);
->         if (!e)
->                 goto out_unlock;
->
-> --
-> 2.17.2
->
+From: Hou Tao <houtao1@huawei.com>
+
+When a file have multiple xattrs and the passed buffer is
+smaller than the required size, jffs2_listxattr() should
+return -ERANGE instead of continue, else Oops may occur
+due to memory corruption.
+
+Also remove the unnecessary check ("rc < 0"), because
+xhandle->list(...) will not return an error number.
+
+Spotted by generic/377 in xfstests-dev.
+
+NB: The problem had been fixed by commit 764a5c6b1fa4 ("xattr
+handlers: Simplify list operation") in v4.5-rc1, but the
+modification in that commit may be too much because it modifies
+all file-systems which implement xattr, so I create a single
+patch for jffs2 to fix the problem.
+
+Signed-off-by: Hou Tao <houtao1@huawei.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/jffs2/xattr.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -1004,12 +1004,14 @@ ssize_t jffs2_listxattr(struct dentry *d
+ 			rc = xhandle->list(xhandle, dentry, buffer + len,
+ 					   size - len, xd->xname,
+ 					   xd->name_len);
++			if (rc > size - len) {
++				rc = -ERANGE;
++				goto out;
++			}
+ 		} else {
+ 			rc = xhandle->list(xhandle, dentry, NULL, 0,
+ 					   xd->xname, xd->name_len);
+ 		}
+-		if (rc < 0)
+-			goto out;
+ 		len += rc;
+ 	}
+ 	rc = len;
+
+
+Patches currently in stable-queue which might be from houtao1@huawei.com are
+
+queue-4.4/jffs2-return-erange-when-xattr-buffer-is-too-small.patch
