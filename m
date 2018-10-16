@@ -1,19 +1,23 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCO19-0004ac-9P
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 12:00:09 +0000
-Date: Tue, 16 Oct 2018 13:59:43 +0200
+Date: Tue, 16 Oct 2018 14:04:11 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Masahiro Yamada <yamada.masahiro@socionext.com>
-Cc: linux-mtd@lists.infradead.org, Miquel Raynal
- <miquel.raynal@bootlin.com>, linux-kernel@vger.kernel.org, Marek Vasut
- <marek.vasut@gmail.com>, Brian Norris <computersforpeace@gmail.com>,
- Richard Weinberger <richard@nod.at>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: rawnand: denali: include <linux/bits.h> instead of
- <linux/bitops.h>
-Message-ID: <20181016135943.75655316@bbrezillon>
-In-Reply-To: <1539664401-17651-1-git-send-email-yamada.masahiro@socionext.com>
-References: <1539664401-17651-1-git-send-email-yamada.masahiro@socionext.com>
+To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "richard@nod.at" <richard@nod.at>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
+ <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
+ <Cristian.Birsan@microchip.com>
+Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
+ SPI NOR flash memories
+Message-ID: <20181016140411.3f06e449@bbrezillon>
+In-Reply-To: <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+ <20180911154007.17195-2-tudor.ambarus@microchip.com>
+ <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -26,35 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 Oct 2018 13:33:21 +0900
-Masahiro Yamada <yamada.masahiro@socionext.com> wrote:
+On Tue, 16 Oct 2018 09:51:47 +0000
+Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
 
-> The reason of including <linux/bitops.h> here is just for BIT() and
-> GENMASK macros.
+> Hi Tudor,
 > 
-> Since commit 8bd9cb51daac8 ("locking/atomics, asm-generic: Move some
-> macros from <linux/bitops.h> to a new <linux/bits.h> file"),
-> <linux/bits.h> is enough for such compile-time macros.
+> This patch is breaking the 1-4-4 Read protocol for the spansion flash "s25fl512s".
 > 
-> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> Without this patch read request command for Quad mode, 4-byte enable, is coming as 0xEC i.e. SPINOR_OP_READ_1_4_4_4B.
+> But after applying this patch, read request command for Quad mode is coming as 0x6C i.e. SPINOR_OP_READ_1_1_4_4B.
+> 
+> This flash also supports non-uniform erase.
+> Can you please check and provide some suggestion?
 
-Reviewed-by: Boris Brezillon <boris.brezillon@bootlin.com>
-
-> ---
-> 
->  drivers/mtd/nand/raw/denali.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mtd/nand/raw/denali.h b/drivers/mtd/nand/raw/denali.h
-> index 57a5498..25c0060 100644
-> --- a/drivers/mtd/nand/raw/denali.h
-> +++ b/drivers/mtd/nand/raw/denali.h
-> @@ -7,7 +7,7 @@
->  #ifndef __DENALI_H__
->  #define __DENALI_H__
->  
-> -#include <linux/bitops.h>
-> +#include <linux/bits.h>
->  #include <linux/completion.h>
->  #include <linux/mtd/rawnand.h>
->  #include <linux/spinlock_types.h>
+Are you sure the regression comes from this patch? I suspect your bug
+comes from 41fe242979e4 ("mtd: spi-nor: fsl-quadspi: fix read error for
+flash size larger than 16MB").
