@@ -1,38 +1,37 @@
-Received: from 2.mo6.mail-out.ovh.net ([46.105.76.65])
+Received: from mail-it1-x143.google.com ([2607:f8b0:4864:20::143])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCSJC-0006dL-5v
- for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 16:35:07 +0000
-Received: from player750.ha.ovh.net (unknown [10.109.143.72])
- by mo6.mail-out.ovh.net (Postfix) with ESMTP id 5007E18A093
- for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2018 18:34:45 +0200 (CEST)
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
- NOR flash memories
-To: Tudor Ambarus <tudor.ambarus@microchip.com>,
- Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
- "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "boris.brezillon@bootlin.com" <boris.brezillon@bootlin.com>,
- "richard@nod.at" <richard@nod.at>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
- "cyrille.pitchen@microchip.com" <cyrille.pitchen@microchip.com>,
- "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "Cristian.Birsan@microchip.com" <Cristian.Birsan@microchip.com>
-References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
- <20180911154007.17195-2-tudor.ambarus@microchip.com>
- <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
- <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
-From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
-Message-ID: <de0f7245-2557-12be-a306-67b08e55ae7b@wedev4u.fr>
-Date: Tue, 16 Oct 2018 18:34:27 +0200
+ id 1gCTGQ-0000IP-MS
+ for linux-mtd@lists.infradead.org; Tue, 16 Oct 2018 17:36:16 +0000
+Received: by mail-it1-x143.google.com with SMTP id l191-v6so34172139ita.4
+ for <linux-mtd@lists.infradead.org>; Tue, 16 Oct 2018 10:36:03 -0700 (PDT)
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: Paolo Valente <paolo.valente@linaro.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter
+ <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
+ Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>, Alan Cox
+ <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+ <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
+ <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
+From: Jens Axboe <axboe@kernel.dk>
+Message-ID: <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+Date: Tue, 16 Oct 2018 11:35:59 -0600
 MIME-Version: 1.0
-In-Reply-To: <31a8f6a9-1459-443a-6ef8-2b2c17769ae4@microchip.com>
+In-Reply-To: <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,997 +41,121 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tudor,
+On 10/15/18 1:44 PM, Paolo Valente wrote:
+> 
+> 
+>> Il giorno 15 ott 2018, alle ore 21:26, Jens Axboe <axboe@kernel.dk> ha scritto:
+>>
+>> On 10/15/18 12:26 PM, Paolo Valente wrote:
+>>>
+>>>
+>>>> Il giorno 15 ott 2018, alle ore 17:39, Jens Axboe <axboe@kernel.dk> ha scritto:
+>>>>
+>>>> On 10/15/18 8:10 AM, Linus Walleij wrote:
+>>>>> This sets BFQ as the default scheduler for single queue
+>>>>> block devices (nr_hw_queues == 1) if it is available. This
+>>>>> affects notably MMC/SD-cards but also UBI and the loopback
+>>>>> device.
+>>>>>
+>>>>> I have been running it for a while without any negative
+>>>>> effects on my pet systems and I want some wider testing
+>>>>> so let's throw it out there and see what people say.
+>>>>> Admittedly my use cases are limited. I need to keep this
+>>>>> patch around for my personal needs anyway.
+>>>>>
+>>>>> We take special care to avoid using BFQ on zoned devices
+>>>>> (in particular SMR, shingled magnetic recording devices)
+>>>>> as these currently require mq-deadline to group writes
+>>>>> together.
+>>>>>
+>>>>> I have opted against introducing any default scheduler
+>>>>> through Kconfig as the mq-deadline enforcement for
+>>>>> zoned devices has to be done at runtime anyways and
+>>>>> too many config options will make things confusing.
+>>>>>
+>>>>> My argument for setting a default policy in the kernel
+>>>>> as opposed to user space is the "reasonable defaults"
+>>>>> type, analogous to how we have one default CPU scheduling
+>>>>> policy (CFS) that make most sense for most tasks, and
+>>>>> how automatic process group scheduling happens in most
+>>>>> distributions without userspace involvement. The BFQ
+>>>>> scheduling policy makes most sense for single hardware
+>>>>> queue devices and many embedded systems will not have
+>>>>> the clever userspace tools (such as udev) to make an
+>>>>> educated choice of scheduling policy. Defaults should be
+>>>>> those that make most sense for the hardware.
+>>>>
+>>>> I still don't like this. There are going to be tons of
+>>>> cases where the single queue device is some hw raid setup
+>>>> or similar, where performance is going to be much worse with
+>>>> BFQ than it is with mq-deadline, for instance. That's just
+>>>> one case.
+>>>>
+>>>
+>>> Hi Jens,
+>>> in my RAID tests bfq performed as well as in non-RAID tests.  Probably
+>>> you refer to the fact that, in a RAID configuration, IOPS can become
+>>> very high.  But, if that is the case, then the response to your
+>>> objections already emerged in the previous thread.  Let me sum it up
+>>> again.
+>>>
+>>> I tested bfq on virtually every device in the range from few hundred
+>>> of IOPS to 50-100KIOPS.  Then, through the public script I already
+>>> mentioned, I found the maximum number of IOPS that bfq can handle:
+>>> about 400K with a commodity CPU.
+>>>
+>>> In particular, in all my tests with real hardware, bfq
+>>> - is not even comparable to that of any of the other scheduler, in
+>>>  terms of responsiveness, latency for real-time applications, ability
+>>>  to provide strong bandwidth guarantees, ability to boost throughput
+>>>  while guaranteeing bandwidths;
+>>> - is a little worse than the other scheduler for only one test, on
+>>>  only some hardware: total throughput with random reads, were it may
+>>>  lose up to 10-15% of throughput.  Of course, the scheduler that reach
+>>>  a higher throughput leave the machine unusable during the test.
+>>>
+>>> So I really cannot see a reason why bfq could do worse than any of
+>>> these other schedulers for some single-queue device (conservatively)
+>>> below 300KIOPS.
+>>>
+>>> Finally, since, AFAICT, single-queue devices doing 400+ KIOPS are
+>>> probably less than 1% of all the single-queue storage around (USB
+>>> drives, HDDs, eMMC, standard SSDs, ...), by sticking to mq-deadline we
+>>> are sacrificing 99% of the hardware, to help 1% of the hardware, for
+>>> one kind of test cases.
+>>
+>> I should have been more clear - I'm not worried about IOPS overhead,
+>> I'm worried about scheduling decisions that lower performance on
+>> (for instance) raid composed of many drives (rotational or otherwise).
+>>
+>> If you have actual data (on what hardware, and what kind of tests)
+>> to disprove that worry, then that's great, and I'd love to see that.
+>>
+> 
+> Here are some old results with a very simple configuration:
+> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/4.4.0-v7r11/
+> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.14.0-v7r3/
+> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.13.0-v7r2/
+> 
+> Then I stopped repeating tests that always yielded the same good results.
+> 
+> As for more professional systems, a well-known company doing
+> real-time packet-traffic dumping asked me to modify bfq so as to
+> guarantee lossless data writing also during queries.  The involved box
+> had a RAID reaching a few Gbps, and everything worked well.
+> 
+> Anyway, if you have specific issues in mind, I can check more deeply.
 
-Le 16/10/2018 à 17:14, Tudor Ambarus a écrit :
-> Hi, Yogesh,
-> 
-> On 10/16/2018 12:51 PM, Yogesh Narayan Gaur wrote:
->> Hi Tudor,
->>
->> This patch is breaking the 1-4-4 Read protocol for the spansion flash "s25fl512s".
->>
->> Without this patch read request command for Quad mode, 4-byte enable, is coming as 0xEC i.e. SPINOR_OP_READ_1_4_4_4B.
->> But after applying this patch, read request command for Quad mode is coming as 0x6C i.e. SPINOR_OP_READ_1_1_4_4B.
->>
->> This flash also supports non-uniform erase.
->> Can you please check and provide some suggestion?
-> 
-> I don't have this memory to test it, but I'll try to help.
-> 
-> Does s25fl512s support non-uniform erase? I'm looking in datasheet[1] at JEDEC
-> BFPT table, dwords 8 and 9, page 132/146 and it looks like it supports just
-> 256KB uniform erase.
->
+Do you have anything more recent? All of these predate the current
+code (by a lot), and isn't even mq. I'm mostly just interested in
+plain fast NVMe device, and a big box hardware raid setup with
+a ton of drives.
 
-s25fS512s supports both uniform and non uniform erase options but s25fL512s is
-always uniform. L is an old memory part, S is newer.
+I do still think that this should be going through the distros, they
+need to be the ones driving this, as they will ultimately be the
+ones getting customer reports on regressions. The qual/test cycle
+they do is useful for this. In mainline, if we make a change like
+this, we'll figure out if it worked many releases down the line.
 
-Also, the 8th and 9th WORDs of the Basic Flash Parameter Table alone can't tell
-you whether or not the memory part can be non uniform.
-If the memory can be non uniform then the sector erase map table is mandatory,
-hence when the table is missing you know that your memory part is always uniform.
-
-Best regards,
-
-Cyrille
- 
-> Thanks,
-> ta
-> 
-> [1] http://www.cypress.com/file/177971/download
-> 
->>
->> --
->> Regards
->> Yogesh Gaur
->>
->>> -----Original Message-----
->>> From: linux-mtd [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of
->>> Tudor Ambarus
->>> Sent: Tuesday, September 11, 2018 9:10 PM
->>> To: marek.vasut@gmail.com; dwmw2@infradead.org;
->>> computersforpeace@gmail.com; boris.brezillon@bootlin.com; richard@nod.at
->>> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>; linux-
->>> kernel@vger.kernel.org; nicolas.ferre@microchip.com;
->>> cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org; linux-arm-
->>> kernel@lists.infradead.org; Cristian.Birsan@microchip.com
->>> Subject: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI NOR
->>> flash memories
->>>
->>> Based on Cyrille Pitchen's patch
->>> https://emea01.safelinks.protection.outlook.com/?url=https%3A%2F%2Flkml.or
->>> g%2Flkml%2F2017%2F3%2F22%2F935&amp;data=02%7C01%7Cyogeshnarayan.
->>> gaur%40nxp.com%7C3c782e52b7fd4a8b9af008d617fd5154%7C686ea1d3bc2b4
->>> c6fa92cd99c5c301635%7C0%7C0%7C636722774108718782&amp;sdata=szyc%
->>> 2FTumG6eYAmBd0oW3IL7v1yLh9E1SAZqL%2BCWczOA%3D&amp;reserved=0.
->>>
->>> This patch is a transitional patch in introducing  the support of SFDP SPI
->>> memories with non-uniform erase sizes like Spansion s25fs512s.
->>> Non-uniform erase maps will be used later when initialized based on the SFDP
->>> data.
->>>
->>> Introduce the memory erase map which splits the memory array into one or
->>> many erase regions. Each erase region supports up to 4 erase types, as defined
->>> by the JEDEC JESD216B (SFDP) specification.
->>>
->>> To be backward compatible, the erase map of uniform SPI NOR flash memories
->>> is initialized so it contains only one erase region and this erase region supports
->>> only one erase command. Hence a single size is used to erase any sector/block
->>> of the memory.
->>>
->>> Besides, since the algorithm used to erase sectors on non-uniform SPI NOR flash
->>> memories is quite expensive, when possible, the erase map is tuned to come
->>> back to the uniform case.
->>>
->>> The 'erase with the best command, move forward and repeat' approach was
->>> suggested by Cristian Birsan in a brainstorm session, so:
->>>
->>> Suggested-by: Cristian Birsan <cristian.birsan@microchip.com>
->>> Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
->>> ---
->>>  drivers/mtd/spi-nor/spi-nor.c | 594
->>> +++++++++++++++++++++++++++++++++++++++---
->>>  include/linux/mtd/spi-nor.h   | 107 ++++++++
->>>  2 files changed, 659 insertions(+), 42 deletions(-)
->>>
->>> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c index
->>> dc8757e..4687345 100644
->>> --- a/drivers/mtd/spi-nor/spi-nor.c
->>> +++ b/drivers/mtd/spi-nor/spi-nor.c
->>> @@ -18,6 +18,7 @@
->>>  #include <linux/math64.h>
->>>  #include <linux/sizes.h>
->>>  #include <linux/slab.h>
->>> +#include <linux/sort.h>
->>>
->>>  #include <linux/mtd/mtd.h>
->>>  #include <linux/of_platform.h>
->>> @@ -261,6 +262,18 @@ static void spi_nor_set_4byte_opcodes(struct spi_nor
->>> *nor,
->>>  	nor->read_opcode = spi_nor_convert_3to4_read(nor->read_opcode);
->>>  	nor->program_opcode = spi_nor_convert_3to4_program(nor-
->>>> program_opcode);
->>>  	nor->erase_opcode = spi_nor_convert_3to4_erase(nor->erase_opcode);
->>> +
->>> +	if (!spi_nor_has_uniform_erase(nor)) {
->>> +		struct spi_nor_erase_map *map = &nor->erase_map;
->>> +		struct spi_nor_erase_type *erase;
->>> +		int i;
->>> +
->>> +		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++) {
->>> +			erase = &map->erase_type[i];
->>> +			erase->opcode =
->>> +				spi_nor_convert_3to4_erase(erase->opcode);
->>> +		}
->>> +	}
->>>  }
->>>
->>>  /* Enable/disable 4-byte addressing mode. */ @@ -499,6 +512,275 @@ static
->>> int spi_nor_erase_sector(struct spi_nor *nor, u32 addr)  }
->>>
->>>  /*
->>> + * spi_nor_div_by_erase_size() - calculate remainder and update new dividend
->>> + * @erase:	pointer to a structure that describes a SPI NOR erase type
->>> + * @dividend:	dividend value
->>> + * @remainder:	pointer to u32 remainder (will be updated)
->>> + *
->>> + * Returns two values: remainder and the new dividend  */ static u64
->>> +spi_nor_div_by_erase_size(const struct spi_nor_erase_type *erase,
->>> +				     u64 dividend, u32 *remainder)
->>> +{
->>> +	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
->>> +	*remainder = (u32)dividend & erase->size_mask;
->>> +	return dividend >> erase->size_shift;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_find_best_erase_type() - find the best erase type for the
->>> +given
->>> + * offset in the serial flash memory and the number of bytes to erase.
->>> +The
->>> + * region in which the address fits is expected to be provided.
->>> + * @map:	the erase map of the SPI NOR
->>> + * @region:	pointer to a structure that describes a SPI NOR erase region
->>> + * @addr:	offset in the serial flash memory
->>> + * @len:	number of bytes to erase
->>> + *
->>> + * Returns a pointer to the best fitted erase type, NULL otherwise.
->>> + */
->>> +static const struct spi_nor_erase_type *
->>> +spi_nor_find_best_erase_type(const struct spi_nor_erase_map *map,
->>> +			     const struct spi_nor_erase_region *region,
->>> +			     u64 addr, u32 len)
->>> +{
->>> +	const struct spi_nor_erase_type *erase;
->>> +	u32 rem;
->>> +	int i;
->>> +	u8 erase_mask = region->offset & SNOR_ERASE_TYPE_MASK;
->>> +
->>> +	/*
->>> +	 * Erase types are ordered by size, with the biggest erase type at
->>> +	 * index 0.
->>> +	 */
->>> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
->>> +		/* Does the erase region support the tested erase type? */
->>> +		if (!(erase_mask & BIT(i)))
->>> +			continue;
->>> +
->>> +		erase = &map->erase_type[i];
->>> +
->>> +		/* Don't erase more than what the user has asked for. */
->>> +		if (erase->size > len)
->>> +			continue;
->>> +
->>> +		/* Alignment is not mandatory for overlaid regions */
->>> +		if (region->offset & SNOR_OVERLAID_REGION)
->>> +			return erase;
->>> +
->>> +		spi_nor_div_by_erase_size(erase, addr, &rem);
->>> +		if (rem)
->>> +			continue;
->>> +		else
->>> +			return erase;
->>> +	}
->>> +
->>> +	return NULL;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_region_next() - get the next spi nor region
->>> + * @region:	pointer to a structure that describes a SPI NOR erase region
->>> + *
->>> + * Returns the next spi nor region or NULL if last region.
->>> + */
->>> +static struct spi_nor_erase_region *
->>> +spi_nor_region_next(struct spi_nor_erase_region *region) {
->>> +	if (spi_nor_region_is_last(region))
->>> +		return NULL;
->>> +	region++;
->>> +	return region;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_find_erase_region() - find the region of the serial flash
->>> +memory in
->>> + * which the offset fits
->>> + * @map:	the erase map of the SPI NOR
->>> + * @addr:	offset in the serial flash memory
->>> + *
->>> + * Returns pointer to the spi_nor_erase_region struct, ERR_PTR(-errno)
->>> + * otherwise.
->>> + */
->>> +static struct spi_nor_erase_region *
->>> +spi_nor_find_erase_region(const struct spi_nor_erase_map *map, u64
->>> +addr) {
->>> +	struct spi_nor_erase_region *region = map->regions;
->>> +	u64 region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
->>> +	u64 region_end = region_start + region->size;
->>> +
->>> +	while (addr < region_start || addr >= region_end) {
->>> +		region = spi_nor_region_next(region);
->>> +		if (!region)
->>> +			return ERR_PTR(-EINVAL);
->>> +
->>> +		region_start = region->offset & ~SNOR_ERASE_FLAGS_MASK;
->>> +		region_end = region_start + region->size;
->>> +	}
->>> +
->>> +	return region;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_init_erase_cmd() - initialize an erase command
->>> + * @region:	pointer to a structure that describes a SPI NOR erase region
->>> + * @erase:	pointer to a structure that describes a SPI NOR erase type
->>> + *
->>> + * Returns the pointer to the allocated erase command, ERR_PTR(-errno)
->>> + * otherwise.
->>> + */
->>> +static struct spi_nor_erase_command *
->>> +spi_nor_init_erase_cmd(const struct spi_nor_erase_region *region,
->>> +		       const struct spi_nor_erase_type *erase) {
->>> +	struct spi_nor_erase_command *cmd;
->>> +
->>> +	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
->>> +	if (!cmd)
->>> +		return ERR_PTR(-ENOMEM);
->>> +
->>> +	INIT_LIST_HEAD(&cmd->list);
->>> +	cmd->opcode = erase->opcode;
->>> +	cmd->count = 1;
->>> +
->>> +	if (region->offset & SNOR_OVERLAID_REGION)
->>> +		cmd->size = region->size;
->>> +	else
->>> +		cmd->size = erase->size;
->>> +
->>> +	return cmd;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_destroy_erase_cmd_list() - destroy erase command list
->>> + * @erase_list:	list of erase commands
->>> + */
->>> +static void spi_nor_destroy_erase_cmd_list(struct list_head
->>> +*erase_list) {
->>> +	struct spi_nor_erase_command *cmd, *next;
->>> +
->>> +	list_for_each_entry_safe(cmd, next, erase_list, list) {
->>> +		list_del(&cmd->list);
->>> +		kfree(cmd);
->>> +	}
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_init_erase_cmd_list() - initialize erase command list
->>> + * @nor:	pointer to a 'struct spi_nor'
->>> + * @erase_list:	list of erase commands to be executed once we validate that
->>> the
->>> + *		erase can be performed
->>> + * @addr:	offset in the serial flash memory
->>> + * @len:	number of bytes to erase
->>> + *
->>> + * Builds the list of best fitted erase commands and verifies if the
->>> +erase can
->>> + * be performed.
->>> + *
->>> + * Returns 0 on success, -errno otherwise.
->>> + */
->>> +static int spi_nor_init_erase_cmd_list(struct spi_nor *nor,
->>> +				       struct list_head *erase_list,
->>> +				       u64 addr, u32 len)
->>> +{
->>> +	const struct spi_nor_erase_map *map = &nor->erase_map;
->>> +	const struct spi_nor_erase_type *erase, *prev_erase = NULL;
->>> +	struct spi_nor_erase_region *region;
->>> +	struct spi_nor_erase_command *cmd = NULL;
->>> +	u64 region_end;
->>> +	int ret = -EINVAL;
->>> +
->>> +	region = spi_nor_find_erase_region(map, addr);
->>> +	if (IS_ERR(region))
->>> +		return PTR_ERR(region);
->>> +
->>> +	region_end = spi_nor_region_end(region);
->>> +
->>> +	while (len) {
->>> +		erase = spi_nor_find_best_erase_type(map, region, addr, len);
->>> +		if (!erase)
->>> +			goto destroy_erase_cmd_list;
->>> +
->>> +		if (prev_erase != erase ||
->>> +		    region->offset & SNOR_OVERLAID_REGION) {
->>> +			cmd = spi_nor_init_erase_cmd(region, erase);
->>> +			if (IS_ERR(cmd)) {
->>> +				ret = PTR_ERR(cmd);
->>> +				goto destroy_erase_cmd_list;
->>> +			}
->>> +
->>> +			list_add_tail(&cmd->list, erase_list);
->>> +		} else {
->>> +			cmd->count++;
->>> +		}
->>> +
->>> +		addr += cmd->size;
->>> +		len -= cmd->size;
->>> +
->>> +		if (len && addr >= region_end) {
->>> +			region = spi_nor_region_next(region);
->>> +			if (!region)
->>> +				goto destroy_erase_cmd_list;
->>> +			region_end = spi_nor_region_end(region);
->>> +		}
->>> +
->>> +		prev_erase = erase;
->>> +	}
->>> +
->>> +	return 0;
->>> +
->>> +destroy_erase_cmd_list:
->>> +	spi_nor_destroy_erase_cmd_list(erase_list);
->>> +	return ret;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_erase_multi_sectors() - perform a non-uniform erase
->>> + * @nor:	pointer to a 'struct spi_nor'
->>> + * @addr:	offset in the serial flash memory
->>> + * @len:	number of bytes to erase
->>> + *
->>> + * Build a list of best fitted erase commands and execute it once we
->>> + * validate that the erase can be performed.
->>> + *
->>> + * Returns 0 on success, -errno otherwise.
->>> + */
->>> +static int spi_nor_erase_multi_sectors(struct spi_nor *nor, u64 addr,
->>> +u32 len) {
->>> +	LIST_HEAD(erase_list);
->>> +	struct spi_nor_erase_command *cmd, *next;
->>> +	int ret;
->>> +
->>> +	ret = spi_nor_init_erase_cmd_list(nor, &erase_list, addr, len);
->>> +	if (ret)
->>> +		return ret;
->>> +
->>> +	list_for_each_entry_safe(cmd, next, &erase_list, list) {
->>> +		nor->erase_opcode = cmd->opcode;
->>> +		while (cmd->count) {
->>> +			write_enable(nor);
->>> +
->>> +			ret = spi_nor_erase_sector(nor, addr);
->>> +			if (ret)
->>> +				goto destroy_erase_cmd_list;
->>> +
->>> +			addr += cmd->size;
->>> +			cmd->count--;
->>> +
->>> +			ret = spi_nor_wait_till_ready(nor);
->>> +			if (ret)
->>> +				goto destroy_erase_cmd_list;
->>> +		}
->>> +		list_del(&cmd->list);
->>> +		kfree(cmd);
->>> +	}
->>> +
->>> +	return 0;
->>> +
->>> +destroy_erase_cmd_list:
->>> +	spi_nor_destroy_erase_cmd_list(&erase_list);
->>> +	return ret;
->>> +}
->>> +
->>> +/*
->>>   * Erase an address range on the nor chip.  The address range may extend
->>>   * one or more erase sectors.  Return an error is there is a problem erasing.
->>>   */
->>> @@ -512,9 +794,11 @@ static int spi_nor_erase(struct mtd_info *mtd, struct
->>> erase_info *instr)
->>>  	dev_dbg(nor->dev, "at 0x%llx, len %lld\n", (long long)instr->addr,
->>>  			(long long)instr->len);
->>>
->>> -	div_u64_rem(instr->len, mtd->erasesize, &rem);
->>> -	if (rem)
->>> -		return -EINVAL;
->>> +	if (spi_nor_has_uniform_erase(nor)) {
->>> +		div_u64_rem(instr->len, mtd->erasesize, &rem);
->>> +		if (rem)
->>> +			return -EINVAL;
->>> +	}
->>>
->>>  	addr = instr->addr;
->>>  	len = instr->len;
->>> @@ -553,7 +837,7 @@ static int spi_nor_erase(struct mtd_info *mtd, struct
->>> erase_info *instr)
->>>  	 */
->>>
->>>  	/* "sector"-at-a-time erase */
->>> -	} else {
->>> +	} else if (spi_nor_has_uniform_erase(nor)) {
->>>  		while (len) {
->>>  			write_enable(nor);
->>>
->>> @@ -568,6 +852,12 @@ static int spi_nor_erase(struct mtd_info *mtd, struct
->>> erase_info *instr)
->>>  			if (ret)
->>>  				goto erase_err;
->>>  		}
->>> +
->>> +	/* erase multiple sectors */
->>> +	} else {
->>> +		ret = spi_nor_erase_multi_sectors(nor, addr, len);
->>> +		if (ret)
->>> +			goto erase_err;
->>>  	}
->>>
->>>  	write_disable(nor);
->>> @@ -2190,6 +2480,113 @@ static const struct sfdp_bfpt_erase
->>> sfdp_bfpt_erases[] = {
->>>
->>>  static int spi_nor_hwcaps_read2cmd(u32 hwcaps);
->>>
->>> +/*
->>> + * spi_nor_set_erase_type() - set a SPI NOR erase type
->>> + * @erase:	pointer to a structure that describes a SPI NOR erase type
->>> + * @size:	the size of the sector/block erased by the erase type
->>> + * @opcode:	the SPI command op code to erase the sector/block
->>> + */
->>> +static void spi_nor_set_erase_type(struct spi_nor_erase_type *erase,
->>> +				   u32 size, u8 opcode)
->>> +{
->>> +	erase->size = size;
->>> +	erase->opcode = opcode;
->>> +	/* JEDEC JESD216B Standard imposes erase sizes to be power of 2. */
->>> +	erase->size_shift = ffs(erase->size) - 1;
->>> +	erase->size_mask = (1 << erase->size_shift) - 1; }
->>> +
->>> +/*
->>> + * spi_nor_set_erase_settings_from_bfpt() - set erase type settings from BFPT
->>> + * @erase:	pointer to a structure that describes a SPI NOR erase type
->>> + * @size:	the size of the sector/block erased by the erase type
->>> + * @opcode:	the SPI command op code to erase the sector/block
->>> + * @i:		erase type index as sorted in the Basic Flash Parameter Table
->>> + *
->>> + * The supported Erase Types will be sorted at init in ascending order,
->>> +with
->>> + * the smallest Erase Type size being the first member in the
->>> +erase_type array
->>> + * of the spi_nor_erase_map structure. Save the Erase Type index as
->>> +sorted in
->>> + * the Basic Flash Parameter Table since it will be used later on to
->>> + * synchronize with the supported Erase Types defined in SFDP optional tables.
->>> + */
->>> +static void
->>> +spi_nor_set_erase_settings_from_bfpt(struct spi_nor_erase_type *erase,
->>> +				     u32 size, u8 opcode, u8 i)
->>> +{
->>> +	erase->idx = i;
->>> +	spi_nor_set_erase_type(erase, size, opcode); }
->>> +
->>> +/* spi_nor_map_cmp_erase_type() - compare the map's erase types by size
->>> + * @l:	member in the left half of the map's erase_type array
->>> + * @r:	member in the right half of the map's erase_type array
->>> + *
->>> + * Comparison function used in the sort() call to sort in ascending
->>> +order the
->>> + * map's erase types, the smallest erase type size being the first
->>> +member in the
->>> + * sorted erase_type array.
->>> + */
->>> +static int spi_nor_map_cmp_erase_type(const void *l, const void *r) {
->>> +	const struct spi_nor_erase_type *left = l, *right = r;
->>> +
->>> +	return left->size - right->size;
->>> +}
->>> +
->>> +/*
->>> + * spi_nor_regions_sort_erase_types() - sort erase types in each region
->>> + * @map:	the erase map of the SPI NOR
->>> + *
->>> + * Function assumes that the erase types defined in the erase map are
->>> +already
->>> + * sorted in ascending order, with the smallest erase type size being
->>> +the first
->>> + * member in the erase_type array. It replicates the sort done for the
->>> +map's
->>> + * erase types. Each region's erase bitmask will indicate which erase
->>> +types are
->>> + * supported from the sorted erase types defined in the erase map.
->>> + * Sort the all region's erase type at init in order to speed up the
->>> +process of
->>> + * finding the best erase command at runtime.
->>> + */
->>> +static void spi_nor_regions_sort_erase_types(struct spi_nor_erase_map
->>> +*map) {
->>> +	struct spi_nor_erase_region *region = map->regions;
->>> +	struct spi_nor_erase_type *erase_type = map->erase_type;
->>> +	int i;
->>> +	u8 region_erase_mask, sorted_erase_mask;
->>> +
->>> +	while (region) {
->>> +		region_erase_mask = region->offset &
->>> SNOR_ERASE_TYPE_MASK;
->>> +
->>> +		/* Replicate the sort done for the map's erase types. */
->>> +		sorted_erase_mask = 0;
->>> +		for (i = 0; i < SNOR_ERASE_TYPE_MAX; i++)
->>> +			if (erase_type[i].size &&
->>> +			    region_erase_mask & BIT(erase_type[i].idx))
->>> +				sorted_erase_mask |= BIT(i);
->>> +
->>> +		/* Overwrite erase mask. */
->>> +		region->offset = (region->offset & ~SNOR_ERASE_TYPE_MASK)
->>> |
->>> +				 sorted_erase_mask;
->>> +
->>> +		region = spi_nor_region_next(region);
->>> +	}
->>> +}
->>> +
->>> +/*
->>> + *spi_nor_init_uniform_erase_map() - Initialize uniform erase map
->>> + * @map:		the erase map of the SPI NOR
->>> + * @erase_mask:		bitmask encoding erase types that can erase
->>> the entire
->>> + *			flash memory
->>> + * @flash_size:		the spi nor flash memory size
->>> + */
->>> +static void spi_nor_init_uniform_erase_map(struct spi_nor_erase_map *map,
->>> +					   u8 erase_mask, u64 flash_size)
->>> +{
->>> +	/* Offset 0 with erase_mask and SNOR_LAST_REGION bit set */
->>> +	map->uniform_region.offset = (erase_mask &
->>> SNOR_ERASE_TYPE_MASK) |
->>> +				     SNOR_LAST_REGION;
->>> +	map->uniform_region.size = flash_size;
->>> +	map->regions = &map->uniform_region;
->>> +	map->uniform_erase_type = erase_mask;
->>> +}
->>> +
->>>  /**
->>>   * spi_nor_parse_bfpt() - read and parse the Basic Flash Parameter Table.
->>>   * @nor:		pointer to a 'struct spi_nor'
->>> @@ -2224,12 +2621,14 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->>>  			      const struct sfdp_parameter_header *bfpt_header,
->>>  			      struct spi_nor_flash_parameter *params)  {
->>> -	struct mtd_info *mtd = &nor->mtd;
->>> +	struct spi_nor_erase_map *map = &nor->erase_map;
->>> +	struct spi_nor_erase_type *erase_type = map->erase_type;
->>>  	struct sfdp_bfpt bfpt;
->>>  	size_t len;
->>>  	int i, cmd, err;
->>>  	u32 addr;
->>>  	u16 half;
->>> +	u8 erase_mask;
->>>
->>>  	/* JESD216 Basic Flash Parameter Table length is at least 9 DWORDs. */
->>>  	if (bfpt_header->length < BFPT_DWORD_MAX_JESD216) @@ -2298,7
->>> +2697,12 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->>>  		spi_nor_set_read_settings_from_bfpt(read, half, rd->proto);
->>>  	}
->>>
->>> -	/* Sector Erase settings. */
->>> +	/*
->>> +	 * Sector Erase settings. Reinitialize the uniform erase map using the
->>> +	 * Erase Types defined in the bfpt table.
->>> +	 */
->>> +	erase_mask = 0;
->>> +	memset(&nor->erase_map, 0, sizeof(nor->erase_map));
->>>  	for (i = 0; i < ARRAY_SIZE(sfdp_bfpt_erases); i++) {
->>>  		const struct sfdp_bfpt_erase *er = &sfdp_bfpt_erases[i];
->>>  		u32 erasesize;
->>> @@ -2313,18 +2717,25 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
->>>
->>>  		erasesize = 1U << erasesize;
->>>  		opcode = (half >> 8) & 0xff;
->>> -#ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->>> -		if (erasesize == SZ_4K) {
->>> -			nor->erase_opcode = opcode;
->>> -			mtd->erasesize = erasesize;
->>> -			break;
->>> -		}
->>> -#endif
->>> -		if (!mtd->erasesize || mtd->erasesize < erasesize) {
->>> -			nor->erase_opcode = opcode;
->>> -			mtd->erasesize = erasesize;
->>> -		}
->>> +		erase_mask |= BIT(i);
->>> +		spi_nor_set_erase_settings_from_bfpt(&erase_type[i],
->>> erasesize,
->>> +						     opcode, i);
->>>  	}
->>> +	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
->>> +	/*
->>> +	 * Sort all the map's Erase Types in ascending order with the smallest
->>> +	 * erase size being the first member in the erase_type array.
->>> +	 */
->>> +	sort(erase_type, SNOR_ERASE_TYPE_MAX, sizeof(erase_type[0]),
->>> +	     spi_nor_map_cmp_erase_type, NULL);
->>> +	/*
->>> +	 * Sort the erase types in the uniform region in order to update the
->>> +	 * uniform_erase_type bitmask. The bitmask will be used later on when
->>> +	 * selecting the uniform erase.
->>> +	 */
->>> +	spi_nor_regions_sort_erase_types(map);
->>> +	map->uniform_erase_type = map->uniform_region.offset &
->>> +				  SNOR_ERASE_TYPE_MASK;
->>>
->>>  	/* Stop here if not JESD216 rev A or later. */
->>>  	if (bfpt_header->length < BFPT_DWORD_MAX) @@ -2480,6 +2891,9
->>> @@ static int spi_nor_init_params(struct spi_nor *nor,
->>>  			       const struct flash_info *info,
->>>  			       struct spi_nor_flash_parameter *params)  {
->>> +	struct spi_nor_erase_map *map = &nor->erase_map;
->>> +	u8 i, erase_mask;
->>> +
->>>  	/* Set legacy flash parameters as default. */
->>>  	memset(params, 0, sizeof(*params));
->>>
->>> @@ -2519,6 +2933,28 @@ static int spi_nor_init_params(struct spi_nor *nor,
->>>  	spi_nor_set_pp_settings(&params->page_programs[SNOR_CMD_PP],
->>>  				SPINOR_OP_PP, SNOR_PROTO_1_1_1);
->>>
->>> +	/*
->>> +	 * Sector Erase settings. Sort Erase Types in ascending order, with the
->>> +	 * smallest erase size starting at BIT(0).
->>> +	 */
->>> +	erase_mask = 0;
->>> +	i = 0;
->>> +	if (info->flags & SECT_4K_PMC) {
->>> +		erase_mask |= BIT(i);
->>> +		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
->>> +				       SPINOR_OP_BE_4K_PMC);
->>> +		i++;
->>> +	} else if (info->flags & SECT_4K) {
->>> +		erase_mask |= BIT(i);
->>> +		spi_nor_set_erase_type(&map->erase_type[i], 4096u,
->>> +				       SPINOR_OP_BE_4K);
->>> +		i++;
->>> +	}
->>> +	erase_mask |= BIT(i);
->>> +	spi_nor_set_erase_type(&map->erase_type[i], info->sector_size,
->>> +			       SPINOR_OP_SE);
->>> +	spi_nor_init_uniform_erase_map(map, erase_mask, params->size);
->>> +
->>>  	/* Select the procedure to set the Quad Enable bit. */
->>>  	if (params->hwcaps.mask & (SNOR_HWCAPS_READ_QUAD |
->>>  				   SNOR_HWCAPS_PP_QUAD)) {
->>> @@ -2546,20 +2982,20 @@ static int spi_nor_init_params(struct spi_nor *nor,
->>>  			params->quad_enable = info->quad_enable;
->>>  	}
->>>
->>> -	/* Override the parameters with data read from SFDP tables. */
->>> -	nor->addr_width = 0;
->>> -	nor->mtd.erasesize = 0;
->>>  	if ((info->flags & (SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ)) &&
->>>  	    !(info->flags & SPI_NOR_SKIP_SFDP)) {
->>>  		struct spi_nor_flash_parameter sfdp_params;
->>> +		struct spi_nor_erase_map prev_map;
->>>
->>>  		memcpy(&sfdp_params, params, sizeof(sfdp_params));
->>> -		if (spi_nor_parse_sfdp(nor, &sfdp_params)) {
->>> -			nor->addr_width = 0;
->>> -			nor->mtd.erasesize = 0;
->>> -		} else {
->>> +		memcpy(&prev_map, &nor->erase_map, sizeof(prev_map));
->>> +
->>> +		if (spi_nor_parse_sfdp(nor, &sfdp_params))
->>> +			/* restore previous erase map */
->>> +			memcpy(&nor->erase_map, &prev_map,
->>> +			       sizeof(nor->erase_map));
->>> +		else
->>>  			memcpy(params, &sfdp_params, sizeof(*params));
->>> -		}
->>>  	}
->>>
->>>  	return 0;
->>> @@ -2668,29 +3104,103 @@ static int spi_nor_select_pp(struct spi_nor *nor,
->>>  	return 0;
->>>  }
->>>
->>> -static int spi_nor_select_erase(struct spi_nor *nor,
->>> -				const struct flash_info *info)
->>> +/*
->>> + * spi_nor_select_uniform_erase() - select optimum uniform erase type
->>> + * @map:		the erase map of the SPI NOR
->>> + * @wanted_size:	the erase type size to search for. Contains the value of
->>> + *			info->sector_size or of the "small sector" size in case
->>> + *			CONFIG_MTD_SPI_NOR_USE_4K_SECTORS is defined.
->>> + *
->>> + * Once the optimum uniform sector erase command is found, disable all
->>> +the
->>> + * other.
->>> + *
->>> + * Return: pointer to erase type on success, NULL otherwise.
->>> + */
->>> +static const struct spi_nor_erase_type *
->>> +spi_nor_select_uniform_erase(struct spi_nor_erase_map *map,
->>> +			     const u32 wanted_size)
->>>  {
->>> -	struct mtd_info *mtd = &nor->mtd;
->>> +	const struct spi_nor_erase_type *tested_erase, *erase = NULL;
->>> +	int i;
->>> +	u8 uniform_erase_type = map->uniform_erase_type;
->>>
->>> -	/* Do nothing if already configured from SFDP. */
->>> -	if (mtd->erasesize)
->>> -		return 0;
->>> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
->>> +		if (!(uniform_erase_type & BIT(i)))
->>> +			continue;
->>> +
->>> +		tested_erase = &map->erase_type[i];
->>> +
->>> +		/*
->>> +		 * If the current erase size is the one, stop here:
->>> +		 * we have found the right uniform Sector Erase command.
->>> +		 */
->>> +		if (tested_erase->size == wanted_size) {
->>> +			erase = tested_erase;
->>> +			break;
->>> +		}
->>>
->>> +		/*
->>> +		 * Otherwise, the current erase size is still a valid canditate.
->>> +		 * Select the biggest valid candidate.
->>> +		 */
->>> +		if (!erase && tested_erase->size)
->>> +			erase = tested_erase;
->>> +			/* keep iterating to find the wanted_size */
->>> +	}
->>> +
->>> +	if (!erase)
->>> +		return NULL;
->>> +
->>> +	/* Disable all other Sector Erase commands. */
->>> +	map->uniform_erase_type &= ~SNOR_ERASE_TYPE_MASK;
->>> +	map->uniform_erase_type |= BIT(erase - map->erase_type);
->>> +	return erase;
->>> +}
->>> +
->>> +static int spi_nor_select_erase(struct spi_nor *nor, u32 wanted_size) {
->>> +	struct spi_nor_erase_map *map = &nor->erase_map;
->>> +	const struct spi_nor_erase_type *erase = NULL;
->>> +	struct mtd_info *mtd = &nor->mtd;
->>> +	int i;
->>> +
->>> +	/*
->>> +	 * The previous implementation handling Sector Erase commands
->>> assumed
->>> +	 * that the SPI flash memory has an uniform layout then used only one
->>> +	 * of the supported erase sizes for all Sector Erase commands.
->>> +	 * So to be backward compatible, the new implementation also tries to
->>> +	 * manage the SPI flash memory as uniform with a single erase sector
->>> +	 * size, when possible.
->>> +	 */
->>>  #ifdef CONFIG_MTD_SPI_NOR_USE_4K_SECTORS
->>>  	/* prefer "small sector" erase if possible */
->>> -	if (info->flags & SECT_4K) {
->>> -		nor->erase_opcode = SPINOR_OP_BE_4K;
->>> -		mtd->erasesize = 4096;
->>> -	} else if (info->flags & SECT_4K_PMC) {
->>> -		nor->erase_opcode = SPINOR_OP_BE_4K_PMC;
->>> -		mtd->erasesize = 4096;
->>> -	} else
->>> +	wanted_size = 4096u;
->>>  #endif
->>> -	{
->>> -		nor->erase_opcode = SPINOR_OP_SE;
->>> -		mtd->erasesize = info->sector_size;
->>> +
->>> +	if (spi_nor_has_uniform_erase(nor)) {
->>> +		erase = spi_nor_select_uniform_erase(map, wanted_size);
->>> +		if (!erase)
->>> +			return -EINVAL;
->>> +		nor->erase_opcode = erase->opcode;
->>> +		mtd->erasesize = erase->size;
->>> +		return 0;
->>>  	}
->>> +
->>> +	/*
->>> +	 * For non-uniform SPI flash memory, set mtd->erasesize to the
->>> +	 * maximum erase sector size. No need to set nor->erase_opcode.
->>> +	 */
->>> +	for (i = SNOR_ERASE_TYPE_MAX - 1; i >= 0; i--) {
->>> +		if (map->erase_type[i].size) {
->>> +			erase = &map->erase_type[i];
->>> +			break;
->>> +		}
->>> +	}
->>> +
->>> +	if (!erase)
->>> +		return -EINVAL;
->>> +
->>> +	mtd->erasesize = erase->size;
->>>  	return 0;
->>>  }
->>>
->>> @@ -2737,7 +3247,7 @@ static int spi_nor_setup(struct spi_nor *nor, const
->>> struct flash_info *info,
->>>  	}
->>>
->>>  	/* Select the Sector Erase command. */
->>> -	err = spi_nor_select_erase(nor, info);
->>> +	err = spi_nor_select_erase(nor, info->sector_size);
->>>  	if (err) {
->>>  		dev_err(nor->dev,
->>>  			"can't select erase settings supported by both the SPI
->>> controller and memory.\n"); diff --git a/include/linux/mtd/spi-nor.h
->>> b/include/linux/mtd/spi-nor.h index 09a10fd..a873a0b 100644
->>> --- a/include/linux/mtd/spi-nor.h
->>> +++ b/include/linux/mtd/spi-nor.h
->>> @@ -240,6 +240,94 @@ enum spi_nor_option_flags {  };
->>>
->>>  /**
->>> + * struct spi_nor_erase_type - Structure to describe a SPI NOR erase type
->>> + * @size:		the size of the sector/block erased by the erase type.
->>> + *			JEDEC JESD216B imposes erase sizes to be a power of 2.
->>> + * @size_shift:		@size is a power of 2, the shift is stored in
->>> + *			@size_shift.
->>> + * @size_mask:		the size mask based on @size_shift.
->>> + * @opcode:		the SPI command op code to erase the sector/block.
->>> + * @idx:		Erase Type index as sorted in the Basic Flash Parameter
->>> + *			Table. It will be used to synchronize the supported
->>> + *			Erase Types with the ones identified in the SFDP
->>> + *			optional tables.
->>> + */
->>> +struct spi_nor_erase_type {
->>> +	u32	size;
->>> +	u32	size_shift;
->>> +	u32	size_mask;
->>> +	u8	opcode;
->>> +	u8	idx;
->>> +};
->>> +
->>> +/**
->>> + * struct spi_nor_erase_command - Used for non-uniform erases
->>> + * The structure is used to describe a list of erase commands to be
->>> +executed
->>> + * once we validate that the erase can be performed. The elements in
->>> +the list
->>> + * are run-length encoded.
->>> + * @list:		for inclusion into the list of erase commands.
->>> + * @count:		how many times the same erase command should be
->>> + *			consecutively used.
->>> + * @size:		the size of the sector/block erased by the command.
->>> + * @opcode:		the SPI command op code to erase the sector/block.
->>> + */
->>> +struct spi_nor_erase_command {
->>> +	struct list_head	list;
->>> +	u32			count;
->>> +	u32			size;
->>> +	u8			opcode;
->>> +};
->>> +
->>> +/**
->>> + * struct spi_nor_erase_region - Structure to describe a SPI NOR erase region
->>> + * @offset:		the offset in the data array of erase region start.
->>> + *			LSB bits are used as a bitmask encoding flags to
->>> + *			determine if this region is overlaid, if this region is
->>> + *			the last in the SPI NOR flash memory and to indicate
->>> + *			all the supported erase commands inside this region.
->>> + *			The erase types are sorted in ascending order with the
->>> + *			smallest Erase Type size being at BIT(0).
->>> + * @size:		the size of the region in bytes.
->>> + */
->>> +struct spi_nor_erase_region {
->>> +	u64		offset;
->>> +	u64		size;
->>> +};
->>> +
->>> +#define SNOR_ERASE_TYPE_MAX	4
->>> +#define SNOR_ERASE_TYPE_MASK
->>> 	GENMASK_ULL(SNOR_ERASE_TYPE_MAX - 1, 0)
->>> +
->>> +#define SNOR_LAST_REGION	BIT(4)
->>> +#define SNOR_OVERLAID_REGION	BIT(5)
->>> +
->>> +#define SNOR_ERASE_FLAGS_MAX	6
->>> +#define SNOR_ERASE_FLAGS_MASK
->>> 	GENMASK_ULL(SNOR_ERASE_FLAGS_MAX - 1, 0)
->>> +
->>> +/**
->>> + * struct spi_nor_erase_map - Structure to describe the SPI NOR erase map
->>> + * @regions:		array of erase regions. The regions are consecutive in
->>> + *			address space. Walking through the regions is done
->>> + *			incrementally.
->>> + * @uniform_region:	a pre-allocated erase region for SPI NOR with a uniform
->>> + *			sector size (legacy implementation).
->>> + * @erase_type:		an array of erase types shared by all the regions.
->>> + *			The erase types are sorted in ascending order, with the
->>> + *			smallest Erase Type size being the first member in the
->>> + *			erase_type array.
->>> + * @uniform_erase_type:	bitmask encoding erase types that can erase
->>> the
->>> + *			entire memory. This member is completed at init by
->>> + *			uniform and non-uniform SPI NOR flash memories if
->>> they
->>> + *			support at least one erase type that can erase the
->>> + *			entire memory.
->>> + */
->>> +struct spi_nor_erase_map {
->>> +	struct spi_nor_erase_region	*regions;
->>> +	struct spi_nor_erase_region	uniform_region;
->>> +	struct spi_nor_erase_type	erase_type[SNOR_ERASE_TYPE_MAX];
->>> +	u8				uniform_erase_type;
->>> +};
->>> +
->>> +/**
->>>   * struct flash_info - Forward declaration of a structure used internally by
->>>   *		       spi_nor_scan()
->>>   */
->>> @@ -263,6 +351,7 @@ struct flash_info;
->>>   * @write_proto:	the SPI protocol for write operations
->>>   * @reg_proto		the SPI protocol for read_reg/write_reg/erase
->>> operations
->>>   * @cmd_buf:		used by the write_reg
->>> + * @erase_map:		the erase map of the SPI NOR
->>>   * @prepare:		[OPTIONAL] do some preparations for the
->>>   *			read/write/erase/lock/unlock operations
->>>   * @unprepare:		[OPTIONAL] do some post work after the
->>> @@ -298,6 +387,7 @@ struct spi_nor {
->>>  	bool			sst_write_second;
->>>  	u32			flags;
->>>  	u8			cmd_buf[SPI_NOR_MAX_CMD_SIZE];
->>> +	struct spi_nor_erase_map	erase_map;
->>>
->>>  	int (*prepare)(struct spi_nor *nor, enum spi_nor_ops ops);
->>>  	void (*unprepare)(struct spi_nor *nor, enum spi_nor_ops ops); @@ -
->>> 318,6 +408,23 @@ struct spi_nor {
->>>  	void *priv;
->>>  };
->>>
->>> +static u64 __maybe_unused
->>> +spi_nor_region_is_last(const struct spi_nor_erase_region *region) {
->>> +	return region->offset & SNOR_LAST_REGION; }
->>> +
->>> +static u64 __maybe_unused
->>> +spi_nor_region_end(const struct spi_nor_erase_region *region) {
->>> +	return (region->offset & ~SNOR_ERASE_FLAGS_MASK) + region->size; }
->>> +
->>> +static bool __maybe_unused spi_nor_has_uniform_erase(const struct
->>> +spi_nor *nor) {
->>> +	return !!nor->erase_map.uniform_erase_type;
->>> +}
->>> +
->>>  static inline void spi_nor_set_flash_node(struct spi_nor *nor,
->>>  					  struct device_node *np)
->>>  {
->>> --
->>> 2.9.4
->>>
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> https://emea01.safelinks.protection.outlook.com/?url=http%3A%2F%2Flists.infr
->>> adead.org%2Fmailman%2Flistinfo%2Flinux-
->>> mtd%2F&amp;data=02%7C01%7Cyogeshnarayan.gaur%40nxp.com%7C3c782e5
->>> 2b7fd4a8b9af008d617fd5154%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%
->>> 7C0%7C636722774108718782&amp;sdata=cSpHUDMi0LDV%2FxAYj6i6piSi3gn%
->>> 2BDGAMWKoOx3%2F5%2BsU%3D&amp;reserved=0
->>
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+-- 
+Jens Axboe
