@@ -1,6 +1,5 @@
-Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
- NOR flash memories
-To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>, Boris Brezillon
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>, Boris Brezillon
  <boris.brezillon@bootlin.com>
 CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, "marek.vasut@gmail.com"
  <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
@@ -12,6 +11,10 @@ CC: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, "marek.vasut@gmail.com"
  <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
  <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
  <Cristian.Birsan@microchip.com>
+Subject: RE: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
+ NOR flash memories
+Date: Wed, 17 Oct 2018 08:20:19 +0000
+Message-ID: <VI1PR04MB1038987B053C31099A76344699FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
 References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
  <20180911154007.17195-2-tudor.ambarus@microchip.com>
  <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
@@ -21,14 +24,12 @@ References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
  <20181017090724.12f2cd79@bbrezillon> <20181017091045.124e0266@bbrezillon>
  <20181017092941.3658bd9a@bbrezillon>
  <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-From: Tudor Ambarus <tudor.ambarus@microchip.com>
-Message-ID: <47586729-d711-cd38-a4b2-bef09f64cba3@microchip.com>
-Date: Wed, 17 Oct 2018 11:00:32 +0300
-MIME-Version: 1.0
-In-Reply-To: <VI1PR04MB1038EFA1E83AD78EBE84ECC499FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
+ <47586729-d711-cd38-a4b2-bef09f64cba3@microchip.com>
+In-Reply-To: <47586729-d711-cd38-a4b2-bef09f64cba3@microchip.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,99 +39,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Yogesh,
-
-On 10/17/2018 10:46 AM, Yogesh Narayan Gaur wrote:
-> Hi Boris,
-> 
->> -----Original Message-----
->> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
->> Sent: Wednesday, October 17, 2018 1:00 PM
->> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
->> Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>; Tudor Ambarus
->> <tudor.ambarus@microchip.com>; marek.vasut@gmail.com;
->> dwmw2@infradead.org; computersforpeace@gmail.com; richard@nod.at;
->> linux-kernel@vger.kernel.org; nicolas.ferre@microchip.com;
->> cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org; linux-arm-
->> kernel@lists.infradead.org; Cristian.Birsan@microchip.com
->> Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
->> NOR flash memories
->>
->> On Wed, 17 Oct 2018 09:10:45 +0200
->> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->>
->>> On Wed, 17 Oct 2018 09:07:24 +0200
->>> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
->>>
->>>> On Wed, 17 Oct 2018 02:07:43 +0000
->>>> Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
->>>>
->>>>>>
->>>>> Actually there is no entry of s25fs512s in current spi-nor.c file.
->>>>> For my connected flash part, jedec ID read points to s25fl512s. I
->>>>> have asked my board team to confirm the name of exact connected
->>>>> flash part. When I check the data sheet of s25fs512s, it also
->>>>> points to the same Jedec ID information. { "s25fl512s",
->>>>> INFO(0x010220, 0x4d00, 256
->>>>> * 1024, 256, ....}
->>>>>
->>>>> But as stated earlier, if I skip reading SFDP or read using 1-1-1
->>>>> protocol then read are always correct. For 1-4-4 protocol read are
->>>>> wrong and on further debugging found that Read code of 0x6C is
->>>>> being send as opcode instead of 0xEC.
->>>>>
->>>>> If I revert this patch, reads are working fine.
->>>>
->>>> Can you try with the following patch?
->>>>
->>>
->>> Hm, nevermind. The problem is actually not related to 4B vs non-4B
->>> mode but 1-1-4 vs 1-4-4 modes.
-> Yes, that's only I have stated in my first mail that instead of 1-4-4 mode read opcode is being sent for 1-1-4 mode.
->>>
->>
->> Can you try with this patch applied?
->>
-> With suggested patch, read for protocol 1-4-4 working correctly.
-> 
-> 	[    1.625360] m25p80 spi0.0: found s25fl512s, expected m25p80                                                                   
-> 	[    1.631094] m25p80 spi0.0: failed to parse SMPT (err = -22)                                                                   
-> 	[    1.636661] 261 8c4c780 opcode(read:eb, pp:2, erase:d8)                                                                       
-> 	[    1.641878] 266 8c4c780 opcode(read:ec, pp:12, erase:dc)                                                                      
-> 	[    1.647200] m25p80 spi0.0: s25fl512s (65536 Kbytes)         
-> 
-> Without this patch, param_headers are getting freed and restoring previous erase map i.e. opcode related to 1-1-4 protocol.
-> 
-
-Can you add some prints in spi_nor_parse_smpt() to isolate what's failing? We
-should understand whether it's something wrong in spi_nor_parse_smpt() or the
-s25fs512s smpt table does not respect the standard.
-
-Thanks,
-ta
-
-> 
->> --->8---
->> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c index
->> 9407ca5f9443..cf33d834698c 100644
->> --- a/drivers/mtd/spi-nor/spi-nor.c
->> +++ b/drivers/mtd/spi-nor/spi-nor.c
->> @@ -3132,6 +3132,17 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
->>                 switch (SFDP_PARAM_HEADER_ID(param_header)) {
->>                 case SFDP_SECTOR_MAP_ID:
->>                         err = spi_nor_parse_smpt(nor, param_header);
->> +                       if (err) {
->> +                               dev_warn(dev,
->> +                                        "failed to parse SMPT (err = %d)\n",
->> +                                        err);
->> +                               /*
->> +                                * SMPT parsing is optional, let's not drop
->> +                                * all information we extracted so far just
->> +                                * because it failed.
->> +                                */
->> +                               err = 0;
->> +                       }
->>                         break;
->>
->>                 default:
-> 
+SGkgVHVkb3IsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVHVkb3Ig
+QW1iYXJ1cyBbbWFpbHRvOnR1ZG9yLmFtYmFydXNAbWljcm9jaGlwLmNvbV0NCj4gU2VudDogV2Vk
+bmVzZGF5LCBPY3RvYmVyIDE3LCAyMDE4IDE6MzEgUE0NCj4gVG86IFlvZ2VzaCBOYXJheWFuIEdh
+dXIgPHlvZ2VzaG5hcmF5YW4uZ2F1ckBueHAuY29tPjsgQm9yaXMgQnJlemlsbG9uDQo+IDxib3Jp
+cy5icmV6aWxsb25AYm9vdGxpbi5jb20+DQo+IENjOiBDeXJpbGxlIFBpdGNoZW4gPGN5cmlsbGUu
+cGl0Y2hlbkB3ZWRldjR1LmZyPjsgbWFyZWsudmFzdXRAZ21haWwuY29tOw0KPiBkd213MkBpbmZy
+YWRlYWQub3JnOyBjb21wdXRlcnNmb3JwZWFjZUBnbWFpbC5jb207IHJpY2hhcmRAbm9kLmF0Ow0K
+PiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBuaWNvbGFzLmZlcnJlQG1pY3JvY2hpcC5j
+b207DQo+IGN5cmlsbGUucGl0Y2hlbkBtaWNyb2NoaXAuY29tOyBsaW51eC1tdGRAbGlzdHMuaW5m
+cmFkZWFkLm9yZzsgbGludXgtYXJtLQ0KPiBrZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgQ3Jp
+c3RpYW4uQmlyc2FuQG1pY3JvY2hpcC5jb20NCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MyAxLzJd
+IG10ZDogc3BpLW5vcjogYWRkIHN1cHBvcnQgdG8gbm9uLXVuaWZvcm0gU0ZEUCBTUEkNCj4gTk9S
+IGZsYXNoIG1lbW9yaWVzDQo+IA0KPiBIaSwgWW9nZXNoLA0KPiANCj4gT24gMTAvMTcvMjAxOCAx
+MDo0NiBBTSwgWW9nZXNoIE5hcmF5YW4gR2F1ciB3cm90ZToNCj4gPiBIaSBCb3JpcywNCj4gPg0K
+PiA+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+PiBGcm9tOiBCb3JpcyBCcmV6aWxs
+b24gW21haWx0bzpib3Jpcy5icmV6aWxsb25AYm9vdGxpbi5jb21dDQo+ID4+IFNlbnQ6IFdlZG5l
+c2RheSwgT2N0b2JlciAxNywgMjAxOCAxOjAwIFBNDQo+ID4+IFRvOiBZb2dlc2ggTmFyYXlhbiBH
+YXVyIDx5b2dlc2huYXJheWFuLmdhdXJAbnhwLmNvbT4NCj4gPj4gQ2M6IEN5cmlsbGUgUGl0Y2hl
+biA8Y3lyaWxsZS5waXRjaGVuQHdlZGV2NHUuZnI+OyBUdWRvciBBbWJhcnVzDQo+ID4+IDx0dWRv
+ci5hbWJhcnVzQG1pY3JvY2hpcC5jb20+OyBtYXJlay52YXN1dEBnbWFpbC5jb207DQo+ID4+IGR3
+bXcyQGluZnJhZGVhZC5vcmc7IGNvbXB1dGVyc2ZvcnBlYWNlQGdtYWlsLmNvbTsgcmljaGFyZEBu
+b2QuYXQ7DQo+ID4+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IG5pY29sYXMuZmVycmVA
+bWljcm9jaGlwLmNvbTsNCj4gPj4gY3lyaWxsZS5waXRjaGVuQG1pY3JvY2hpcC5jb207IGxpbnV4
+LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOw0KPiA+PiBsaW51eC1hcm0tIGtlcm5lbEBsaXN0cy5p
+bmZyYWRlYWQub3JnOyBDcmlzdGlhbi5CaXJzYW5AbWljcm9jaGlwLmNvbQ0KPiA+PiBTdWJqZWN0
+OiBSZTogW1BBVENIIHYzIDEvMl0gbXRkOiBzcGktbm9yOiBhZGQgc3VwcG9ydCB0byBub24tdW5p
+Zm9ybQ0KPiA+PiBTRkRQIFNQSSBOT1IgZmxhc2ggbWVtb3JpZXMNCj4gPj4NCj4gPj4gT24gV2Vk
+LCAxNyBPY3QgMjAxOCAwOToxMDo0NSArMDIwMA0KPiA+PiBCb3JpcyBCcmV6aWxsb24gPGJvcmlz
+LmJyZXppbGxvbkBib290bGluLmNvbT4gd3JvdGU6DQo+ID4+DQo+ID4+PiBPbiBXZWQsIDE3IE9j
+dCAyMDE4IDA5OjA3OjI0ICswMjAwDQo+ID4+PiBCb3JpcyBCcmV6aWxsb24gPGJvcmlzLmJyZXpp
+bGxvbkBib290bGluLmNvbT4gd3JvdGU6DQo+ID4+Pg0KPiA+Pj4+IE9uIFdlZCwgMTcgT2N0IDIw
+MTggMDI6MDc6NDMgKzAwMDANCj4gPj4+PiBZb2dlc2ggTmFyYXlhbiBHYXVyIDx5b2dlc2huYXJh
+eWFuLmdhdXJAbnhwLmNvbT4gd3JvdGU6DQo+ID4+Pj4NCj4gPj4+Pj4+DQo+ID4+Pj4+IEFjdHVh
+bGx5IHRoZXJlIGlzIG5vIGVudHJ5IG9mIHMyNWZzNTEycyBpbiBjdXJyZW50IHNwaS1ub3IuYyBm
+aWxlLg0KPiA+Pj4+PiBGb3IgbXkgY29ubmVjdGVkIGZsYXNoIHBhcnQsIGplZGVjIElEIHJlYWQg
+cG9pbnRzIHRvIHMyNWZsNTEycy4gSQ0KPiA+Pj4+PiBoYXZlIGFza2VkIG15IGJvYXJkIHRlYW0g
+dG8gY29uZmlybSB0aGUgbmFtZSBvZiBleGFjdCBjb25uZWN0ZWQNCj4gPj4+Pj4gZmxhc2ggcGFy
+dC4gV2hlbiBJIGNoZWNrIHRoZSBkYXRhIHNoZWV0IG9mIHMyNWZzNTEycywgaXQgYWxzbw0KPiA+
+Pj4+PiBwb2ludHMgdG8gdGhlIHNhbWUgSmVkZWMgSUQgaW5mb3JtYXRpb24uIHsgInMyNWZsNTEy
+cyIsDQo+ID4+Pj4+IElORk8oMHgwMTAyMjAsIDB4NGQwMCwgMjU2DQo+ID4+Pj4+ICogMTAyNCwg
+MjU2LCAuLi4ufQ0KPiA+Pj4+Pg0KPiA+Pj4+PiBCdXQgYXMgc3RhdGVkIGVhcmxpZXIsIGlmIEkg
+c2tpcCByZWFkaW5nIFNGRFAgb3IgcmVhZCB1c2luZyAxLTEtMQ0KPiA+Pj4+PiBwcm90b2NvbCB0
+aGVuIHJlYWQgYXJlIGFsd2F5cyBjb3JyZWN0LiBGb3IgMS00LTQgcHJvdG9jb2wgcmVhZCBhcmUN
+Cj4gPj4+Pj4gd3JvbmcgYW5kIG9uIGZ1cnRoZXIgZGVidWdnaW5nIGZvdW5kIHRoYXQgUmVhZCBj
+b2RlIG9mIDB4NkMgaXMNCj4gPj4+Pj4gYmVpbmcgc2VuZCBhcyBvcGNvZGUgaW5zdGVhZCBvZiAw
+eEVDLg0KPiA+Pj4+Pg0KPiA+Pj4+PiBJZiBJIHJldmVydCB0aGlzIHBhdGNoLCByZWFkcyBhcmUg
+d29ya2luZyBmaW5lLg0KPiA+Pj4+DQo+ID4+Pj4gQ2FuIHlvdSB0cnkgd2l0aCB0aGUgZm9sbG93
+aW5nIHBhdGNoPw0KPiA+Pj4+DQo+ID4+Pg0KPiA+Pj4gSG0sIG5ldmVybWluZC4gVGhlIHByb2Js
+ZW0gaXMgYWN0dWFsbHkgbm90IHJlbGF0ZWQgdG8gNEIgdnMgbm9uLTRCDQo+ID4+PiBtb2RlIGJ1
+dCAxLTEtNCB2cyAxLTQtNCBtb2Rlcy4NCj4gPiBZZXMsIHRoYXQncyBvbmx5IEkgaGF2ZSBzdGF0
+ZWQgaW4gbXkgZmlyc3QgbWFpbCB0aGF0IGluc3RlYWQgb2YgMS00LTQgbW9kZSByZWFkDQo+IG9w
+Y29kZSBpcyBiZWluZyBzZW50IGZvciAxLTEtNCBtb2RlLg0KPiA+Pj4NCj4gPj4NCj4gPj4gQ2Fu
+IHlvdSB0cnkgd2l0aCB0aGlzIHBhdGNoIGFwcGxpZWQ/DQo+ID4+DQo+ID4gV2l0aCBzdWdnZXN0
+ZWQgcGF0Y2gsIHJlYWQgZm9yIHByb3RvY29sIDEtNC00IHdvcmtpbmcgY29ycmVjdGx5Lg0KPiA+
+DQo+ID4gCVsgICAgMS42MjUzNjBdIG0yNXA4MCBzcGkwLjA6IGZvdW5kIHMyNWZsNTEycywgZXhw
+ZWN0ZWQgbTI1cDgwDQo+ID4gCVsgICAgMS42MzEwOTRdIG0yNXA4MCBzcGkwLjA6IGZhaWxlZCB0
+byBwYXJzZSBTTVBUIChlcnIgPSAtMjIpDQo+ID4gCVsgICAgMS42MzY2NjFdIDI2MSA4YzRjNzgw
+IG9wY29kZShyZWFkOmViLCBwcDoyLCBlcmFzZTpkOCkNCj4gPiAJWyAgICAxLjY0MTg3OF0gMjY2
+IDhjNGM3ODAgb3Bjb2RlKHJlYWQ6ZWMsIHBwOjEyLCBlcmFzZTpkYykNCj4gPiAJWyAgICAxLjY0
+NzIwMF0gbTI1cDgwIHNwaTAuMDogczI1Zmw1MTJzICg2NTUzNiBLYnl0ZXMpDQo+ID4NCj4gPiBX
+aXRob3V0IHRoaXMgcGF0Y2gsIHBhcmFtX2hlYWRlcnMgYXJlIGdldHRpbmcgZnJlZWQgYW5kIHJl
+c3RvcmluZyBwcmV2aW91cw0KPiBlcmFzZSBtYXAgaS5lLiBvcGNvZGUgcmVsYXRlZCB0byAxLTEt
+NCBwcm90b2NvbC4NCj4gPg0KPiANCj4gQ2FuIHlvdSBhZGQgc29tZSBwcmludHMgaW4gc3BpX25v
+cl9wYXJzZV9zbXB0KCkgdG8gaXNvbGF0ZSB3aGF0J3MgZmFpbGluZz8gV2UNCj4gc2hvdWxkIHVu
+ZGVyc3RhbmQgd2hldGhlciBpdCdzIHNvbWV0aGluZyB3cm9uZyBpbiBzcGlfbm9yX3BhcnNlX3Nt
+cHQoKSBvciB0aGUNCj4gczI1ZnM1MTJzIHNtcHQgdGFibGUgZG9lcyBub3QgcmVzcGVjdCB0aGUg
+c3RhbmRhcmQuDQo+IA0KDQpJdCdzIHJldHVybmluZyBmYWlsdXJlIGZyb20gYmVsb3cgcG9pbnQg
+aW4gZnVuYyBzcGlfbm9yX2dldF9tYXBfaW5fdXNlKCkNCg0KICAgICAgICAvKiBGaW5kIHRoZSBt
+YXRjaGluZyBjb25maWd1cmF0aW9uIG1hcCAqLw0KICAgICAgICB3aGlsZSAoU01QVF9NQVBfSUQo
+c21wdFtpXSkgIT0gbWFwX2lkKSB7DQogICAgICAgICAgICAgICAgaWYgKHNtcHRbaV0gJiBTTVBU
+X0RFU0NfRU5EKSB7DQogICAgICAgICAgICAgICAgICAgICAgICBwcmludGsoIiVkICVzIFxuIiwg
+X19MSU5FX18sIF9fZnVuY19fKTsNCiAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gb3V0Ow0K
+ICAgICAgICAgICAgICAgIH0NCi0tDQpSZWdhcmRzDQpZb2dlc2ggR2F1ci4NCg0KPiBUaGFua3Ms
+DQo+IHRhDQo+IA0KDQo=
