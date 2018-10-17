@@ -1,37 +1,20 @@
-Received: from mx2.suse.de ([195.135.220.15] helo=mx1.suse.de)
+Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCihx-0000R8-L6
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2018 10:06:01 +0000
-Date: Wed, 17 Oct 2018 12:05:26 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Paolo Valente <paolo.valente@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>,
- linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>,
- Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-Message-ID: <20181017100526.GB23493@quack2.suse.cz>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
- <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
- <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+ id 1gCjHx-0005Br-8q
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2018 10:42:55 +0000
+Received: by mail-qk1-x731.google.com with SMTP id x8-v6so16130240qka.4
+ for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2018 03:42:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+References: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
+In-Reply-To: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
+From: Romain Izard <romain.izard.pro@gmail.com>
+Date: Wed, 17 Oct 2018 12:42:28 +0200
+Message-ID: <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
+Subject: Re: Clock configuration for the SAMA5D2 NAND controller
+To: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ linux-mtd <linux-mtd@lists.infradead.org>, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,41 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue 16-10-18 11:35:59, Jens Axboe wrote:
-> On 10/15/18 1:44 PM, Paolo Valente wrote:
-> > Here are some old results with a very simple configuration:
-> > http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/4.4.0-v7r11/
-> > http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.14.0-v7r3/
-> > http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.13.0-v7r2/
-> > 
-> > Then I stopped repeating tests that always yielded the same good results.
-> > 
-> > As for more professional systems, a well-known company doing
-> > real-time packet-traffic dumping asked me to modify bfq so as to
-> > guarantee lossless data writing also during queries.  The involved box
-> > had a RAID reaching a few Gbps, and everything worked well.
-> > 
-> > Anyway, if you have specific issues in mind, I can check more deeply.
-> 
-> Do you have anything more recent? All of these predate the current
-> code (by a lot), and isn't even mq. I'm mostly just interested in
-> plain fast NVMe device, and a big box hardware raid setup with
-> a ton of drives.
-> 
-> I do still think that this should be going through the distros, they
-> need to be the ones driving this, as they will ultimately be the
-> ones getting customer reports on regressions. The qual/test cycle
-> they do is useful for this. In mainline, if we make a change like
-> this, we'll figure out if it worked many releases down the line.
++linux-mtd, linux-clk
 
-Well, the problem with this is that big distro people really don't care
-much because they already use udev for tuning the IO scheduler. So whatever
-defaults the kernel is going to pick likely won't be seen by distro
-customers. Embedded people seem to be driving this effort because they
-either don't run udev or they feel not all their teams building new
-products have enough expertise to come up with a proper set of rules...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Le mer. 10 oct. 2018 =C3=A0 19:05, Romain Izard
+<romain.izard.pro@gmail.com> a =C3=A9crit :
+>
+> Hello,
+>
+> While evaluating a new flash memory chip for my product based on a SAMA5D=
+2
+> chip, I tried to update my software to use the latest device tree binding=
+s.
+>
+> Until now, I was using the legacy bindings for the NAND controller, that
+> preserved the timings configured by the bootloader in the EBI registers. =
+The
+> bindings introduced in Linux 4.13 are used together with the NAND driver =
+to
+> reconfigure the timings of the memory interface to match the speed profil=
+e
+> declared by some NAND components.
+>
+> However, when comparing the timings in the registers, there was a large
+> difference between what I calculated by hand in the past and the values
+> configured by the drivers. The difference was in fact a 2 factor.
+>
+> For me, the issue is due to the clock configuration declared in the SAMA5=
+D2
+> device tree: The reference clock used by the nand-controller driver is th=
+e
+> clock for its parent node, which is directly the Master Clock. And on my
+> end, what I understood when writing the clock settings for my bootloader =
+was
+> that the reference clock was the HSMC clock, which derives from the H32MX
+> clock, which runs at half the rate of the Master Clock.
+>
+> The documentation for the SAMA5D2 is not very precise on this topic, so I
+> would like to have some feedback. Is the clock used as a reference for th=
+e
+> chip select configuration registers the Master Clock itself, or is it the
+> peripheral clock for the HSMC module ?
+>
+>
+> Best regards,
+> --
+> Romain Izard
