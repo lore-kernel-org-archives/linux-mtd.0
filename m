@@ -1,4 +1,4 @@
-Date: Wed, 17 Oct 2018 09:17:38 +0200
+Date: Wed, 17 Oct 2018 09:29:41 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
 Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Tudor Ambarus
@@ -14,7 +14,7 @@ Cc: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Tudor Ambarus
  <Cristian.Birsan@microchip.com>
 Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP
  SPI NOR flash memories
-Message-ID: <20181017091738.2619dd06@bbrezillon>
+Message-ID: <20181017092941.3658bd9a@bbrezillon>
 In-Reply-To: <20181017091045.124e0266@bbrezillon>
 References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
  <20180911154007.17195-2-tudor.ambarus@microchip.com>
@@ -67,7 +67,28 @@ Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 > but 1-1-4 vs 1-4-4 modes.
 > 
 
-Can you add traces in this loop [1] to see which features are flagged
-as supported and which ones are not.
+Can you try with this patch applied?
 
-[1]https://elixir.bootlin.com/linux/v4.19-rc8/source/drivers/mtd/spi-nor/spi-nor.c#L2259
+--->8---
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 9407ca5f9443..cf33d834698c 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -3132,6 +3132,17 @@ static int spi_nor_parse_sfdp(struct spi_nor *nor,
+                switch (SFDP_PARAM_HEADER_ID(param_header)) {
+                case SFDP_SECTOR_MAP_ID:
+                        err = spi_nor_parse_smpt(nor, param_header);
++                       if (err) {
++                               dev_warn(dev,
++                                        "failed to parse SMPT (err = %d)\n",
++                                        err);
++                               /*
++                                * SMPT parsing is optional, let's not drop
++                                * all information we extracted so far just
++                                * because it failed.
++                                */
++                               err = 0;
++                       }
+                        break;
+ 
+                default:
