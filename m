@@ -1,15 +1,28 @@
+From: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Tudor Ambarus <tudor.ambarus@microchip.com>, "marek.vasut@gmail.com"
+ <marek.vasut@gmail.com>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>, "richard@nod.at"
+ <richard@nod.at>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nicolas.ferre@microchip.com"
+ <nicolas.ferre@microchip.com>, "cyrille.pitchen@microchip.com"
+ <cyrille.pitchen@microchip.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>, "Cristian.Birsan@microchip.com"
+ <Cristian.Birsan@microchip.com>
+Subject: RE: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP SPI
+ NOR flash memories
+Date: Wed, 17 Oct 2018 01:54:01 +0000
+Message-ID: <VI1PR04MB1038B7650F887549CA5EE22B99FF0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+References: <20180911154007.17195-1-tudor.ambarus@microchip.com>
+ <20180911154007.17195-2-tudor.ambarus@microchip.com>
+ <VI1PR04MB103888BC18F3C5AD0C02DEF699FE0@VI1PR04MB1038.eurprd04.prod.outlook.com>
+ <20181016140411.3f06e449@bbrezillon> <20181016141754.38dfcf90@bbrezillon>
+In-Reply-To: <20181016141754.38dfcf90@bbrezillon>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20181015065637.1860-1-hch@lst.de>
-In-Reply-To: <20181015065637.1860-1-hch@lst.de>
-From: Richard Weinberger <richard.weinberger@gmail.com>
-Date: Wed, 17 Oct 2018 00:43:14 +0200
-Message-ID: <CAFLxGvwx4TPTHRY91LMBdd7h4pgCjw2zY7Q67r3CRHTqfzSB1w@mail.gmail.com>
-Subject: Re: [PATCH, RFC] ubd: remove use of blk_rq_map_sg
-To: Christoph Hellwig <hch@lst.de>
-Cc: Richard Weinberger <richard@nod.at>, Jens Axboe <axboe@kernel.dk>,
- linux-block@vger.kernel.org, linux-um@lists.infradead.org,
- "linux-mtd @ lists . infradead . org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,17 +32,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 15, 2018 at 8:56 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> There is no good reason to create a scatterlist in the ubd driver,
-> it can just iterate the request directly.
+Hi Boris,
 
-BTW: Does it make sense to drop blk_rq_map_sq from()
-drivers/mtd/ubi/block.c too?
-If so we have to allocate a temporary structure for the worker thread
-for each segment, just like
-UBD does already. I'm not sure if that is cheaper than blk_rq_map_sq().
+> -----Original Message-----
+> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
+> Sent: Tuesday, October 16, 2018 5:48 PM
+> To: Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com>
+> Cc: Tudor Ambarus <tudor.ambarus@microchip.com>; marek.vasut@gmail.com;
+> dwmw2@infradead.org; computersforpeace@gmail.com; richard@nod.at;
+> linux-kernel@vger.kernel.org; nicolas.ferre@microchip.com;
+> cyrille.pitchen@microchip.com; linux-mtd@lists.infradead.org; linux-arm-
+> kernel@lists.infradead.org; Cristian.Birsan@microchip.com
+> Subject: Re: [PATCH v3 1/2] mtd: spi-nor: add support to non-uniform SFDP=
+ SPI
+> NOR flash memories
+>=20
+> On Tue, 16 Oct 2018 14:04:11 +0200
+> Boris Brezillon <boris.brezillon@bootlin.com> wrote:
+>=20
+> > On Tue, 16 Oct 2018 09:51:47 +0000
+> > Yogesh Narayan Gaur <yogeshnarayan.gaur@nxp.com> wrote:
+> >
+> > > Hi Tudor,
+> > >
+> > > This patch is breaking the 1-4-4 Read protocol for the spansion flash
+> "s25fl512s".
+> > >
+> > > Without this patch read request command for Quad mode, 4-byte enable,=
+ is
+> coming as 0xEC i.e. SPINOR_OP_READ_1_4_4_4B.
+> > > But after applying this patch, read request command for Quad mode is
+> coming as 0x6C i.e. SPINOR_OP_READ_1_1_4_4B.
+> > >
+> > > This flash also supports non-uniform erase.
+> > > Can you please check and provide some suggestion?
+> >
+> > Are you sure the regression comes from this patch? I suspect your bug
+> > comes from 41fe242979e4 ("mtd: spi-nor: fsl-quadspi: fix read error
+> > for flash size larger than 16MB").
+>=20
+> I guess you're testing with an fsl-qspi controller, right? Can you try wi=
+th this
+> patch?
 
--- 
-Thanks,
-//richard
+I am testing nxp-flexspi controller and doing just read of small size 0x200=
+.
+Also 1-1-1 protocol i.e. spi-rx/tx-bus-width as 1 is working fine for this =
+flash.
+
+Without this patch read from 1-4-4 protocol is working correctly.
+
+--
+Regards
+Yogesh Gaur
+
+>=20
+> --->8---
+>=20
+> diff --git a/drivers/mtd/spi-nor/fsl-quadspi.c b/drivers/mtd/spi-nor/fsl-=
+quadspi.c
+> index 1ff3430f82c8..c47fe70c9f98 100644
+> --- a/drivers/mtd/spi-nor/fsl-quadspi.c
+> +++ b/drivers/mtd/spi-nor/fsl-quadspi.c
+> @@ -477,9 +477,6 @@ static void fsl_qspi_init_lut(struct fsl_qspi *q)  st=
+atic int
+> fsl_qspi_get_seqid(struct fsl_qspi *q, u8 cmd)  {
+>         switch (cmd) {
+> -       case SPINOR_OP_READ_1_1_4:
+> -       case SPINOR_OP_READ_1_1_4_4B:
+> -               return SEQID_READ;
+>         case SPINOR_OP_WREN:
+>                 return SEQID_WREN;
+>         case SPINOR_OP_WRDI:
+> @@ -490,8 +487,6 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8 =
+cmd)
+>                 return SEQID_SE;
+>         case SPINOR_OP_CHIP_ERASE:
+>                 return SEQID_CHIP_ERASE;
+> -       case SPINOR_OP_PP:
+> -               return SEQID_PP;
+>         case SPINOR_OP_RDID:
+>                 return SEQID_RDID;
+>         case SPINOR_OP_WRSR:
+> @@ -503,7 +498,11 @@ static int fsl_qspi_get_seqid(struct fsl_qspi *q, u8=
+ cmd)
+>         case SPINOR_OP_BRWR:
+>                 return SEQID_BRWR;
+>         default:
+> -               if (cmd =3D=3D q->nor[0].erase_opcode)
+> +               if (cmd =3D=3D q->nor[0].read_opcode)
+> +                       return SEQID_READ;
+> +               else if (cmd =3D=3D q->nor[0].program_opcode)
+> +                       return SEQID_PP;
+> +               else if (cmd =3D=3D q->nor[0].erase_opcode)
+>                         return SEQID_SE;
+>                 dev_err(q->dev, "Unsupported cmd 0x%.2x\n", cmd);
+>                 break;
