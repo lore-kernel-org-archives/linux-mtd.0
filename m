@@ -1,20 +1,21 @@
-Received: from mail-qk1-x731.google.com ([2607:f8b0:4864:20::731])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCjHx-0005Br-8q
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2018 10:42:55 +0000
-Received: by mail-qk1-x731.google.com with SMTP id x8-v6so16130240qka.4
- for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2018 03:42:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
-In-Reply-To: <CAGkQfmNuROsD29jR_7opiXcfPB6=FuaoxaK-hF5Ezz7r-1pBZA@mail.gmail.com>
-From: Romain Izard <romain.izard.pro@gmail.com>
-Date: Wed, 17 Oct 2018 12:42:28 +0200
-Message-ID: <CAGkQfmMphvck9rraYq+o8zA254q7ETYyniiUV-QBsUR9X+OFKQ@mail.gmail.com>
-Subject: Re: Clock configuration for the SAMA5D2 NAND controller
-To: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>, linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gCn41-0000DA-93
+ for linux-mtd@lists.infradead.org; Wed, 17 Oct 2018 14:44:47 +0000
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Boris Brezillon <boris.brezillon@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: [PATCH 2/2] mtd: spi-nor: Use 4B opcodes when the NOR advertises both
+ 3B and 4B
+Date: Wed, 17 Oct 2018 16:44:24 +0200
+Message-Id: <20181017144424.17554-2-boris.brezillon@bootlin.com>
+In-Reply-To: <20181017144424.17554-1-boris.brezillon@bootlin.com>
+References: <20181017144424.17554-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-+linux-mtd, linux-clk
+When the NOR supports 4 bytes opcodes we should use those instead of
+switching the flash in 4-bytes mode. This way, we don't have to restore
+the addressing mode when resetting the board.
 
-Le mer. 10 oct. 2018 =C3=A0 19:05, Romain Izard
-<romain.izard.pro@gmail.com> a =C3=A9crit :
->
-> Hello,
->
-> While evaluating a new flash memory chip for my product based on a SAMA5D=
-2
-> chip, I tried to update my software to use the latest device tree binding=
-s.
->
-> Until now, I was using the legacy bindings for the NAND controller, that
-> preserved the timings configured by the bootloader in the EBI registers. =
-The
-> bindings introduced in Linux 4.13 are used together with the NAND driver =
-to
-> reconfigure the timings of the memory interface to match the speed profil=
-e
-> declared by some NAND components.
->
-> However, when comparing the timings in the registers, there was a large
-> difference between what I calculated by hand in the past and the values
-> configured by the drivers. The difference was in fact a 2 factor.
->
-> For me, the issue is due to the clock configuration declared in the SAMA5=
-D2
-> device tree: The reference clock used by the nand-controller driver is th=
-e
-> clock for its parent node, which is directly the Master Clock. And on my
-> end, what I understood when writing the clock settings for my bootloader =
-was
-> that the reference clock was the HSMC clock, which derives from the H32MX
-> clock, which runs at half the rate of the Master Clock.
->
-> The documentation for the SAMA5D2 is not very precise on this topic, so I
-> would like to have some feedback. Is the clock used as a reference for th=
-e
-> chip select configuration registers the Master Clock itself, or is it the
-> peripheral clock for the HSMC module ?
->
->
-> Best regards,
-> --
-> Romain Izard
+Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+---
+ drivers/mtd/spi-nor/spi-nor.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+index 85e57e9ea1b5..260ed1757a08 100644
+--- a/drivers/mtd/spi-nor/spi-nor.c
++++ b/drivers/mtd/spi-nor/spi-nor.c
+@@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+ 		break;
+ 
+ 	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
++	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+ 		nor->flags |= SNOR_F_4B_OPCODES;
+ 		nor->addr_width = 4;
+ 		break;
+-- 
+2.14.1
