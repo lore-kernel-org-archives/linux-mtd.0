@@ -1,4 +1,4 @@
-Date: Thu, 18 Oct 2018 22:39:43 +0200
+Date: Thu, 18 Oct 2018 22:50:09 +0200
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: Jianxin Pan <jianxin.pan@amlogic.com>
 Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
@@ -14,7 +14,7 @@ Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
  <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic
  NAND flash controller
-Message-ID: <20181018223943.145e5497@bbrezillon>
+Message-ID: <20181018225009.59d94aee@bbrezillon>
 In-Reply-To: <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
 References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
  <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
@@ -33,77 +33,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Thu, 18 Oct 2018 13:09:05 +0800
 Jianxin Pan <jianxin.pan@amlogic.com> wrote:
 
-> +static int meson_nfc_calc_set_timing(struct meson_nfc *nfc,
-> +				     const struct nand_sdr_timings *timings)
+> +static int meson_nfc_buffer_init(struct mtd_info *mtd)
 > +{
-> +	struct nand_timing *timing = &nfc->timing;
-> +	int div, bt_min, bt_max, bus_timing;
-> +	int ret;
+> +	struct nand_chip *nand = mtd_to_nand(mtd);
+> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
+> +	static int max_page_bytes, max_info_bytes;
+> +	int page_bytes, info_bytes;
+> +	int nsectors;
 > +
-> +	div = DIV_ROUND_UP((timings->tRC_min / 1000), NFC_CLK_CYCLE);
-> +	ret = clk_set_rate(nfc->device_clk, 1000000000 / div);
-> +	if (ret) {
-> +		dev_err(nfc->dev, "failed to set nand clock rate\n");
-> +		return ret;
+> +	nsectors = mtd->writesize / nand->ecc.size;
+> +	page_bytes =  mtd->writesize + mtd->oobsize;
+> +	info_bytes = nsectors * PER_INFO_BYTE;
+> +
+> +	if (nfc->data_buf && nfc->info_buf) {
+> +		if (max_page_bytes < page_bytes)
+> +			meson_nfc_free_buffer(nfc);
+> +		else
+> +			return 0;
 > +	}
 > +
-> +	timing->twb = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tWB_max),
-> +				   div * NFC_CLK_CYCLE);
-> +	timing->tadl = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tADL_min),
-> +				    div * NFC_CLK_CYCLE);
-> +	timing->twhr = DIV_ROUND_UP(PSEC_TO_NSEC(timings->tWHR_min),
-> +				    div * NFC_CLK_CYCLE);
+> +	max_page_bytes = max_t(int, max_page_bytes, page_bytes);
+> +	max_info_bytes = max_t(int, max_info_bytes, info_bytes);
 > +
-> +	bt_min = (timings->tREA_max + NFC_DEFAULT_DELAY) / div;
-> +	bt_max = (NFC_DEFAULT_DELAY + timings->tRHOH_min
-> +			+ timings->tRC_min / 2) / div;
-> +
-> +	bt_min = DIV_ROUND_UP(bt_min, 1000);
-> +	bt_max = DIV_ROUND_UP(bt_max, 1000);
-> +
-> +	if (bt_max < bt_min)
-> +		return -EINVAL;
-> +
-> +	bus_timing = (bt_min + bt_max) / 2 + 1;
-> +
-> +	writel((1 << 21), nfc->reg_base + NFC_REG_CFG);
-> +	writel((NFC_CLK_CYCLE - 1) | (bus_timing << 5),
-> +	       nfc->reg_base + NFC_REG_CFG);
-> +
-> +	writel((1 << 31), nfc->reg_base + NFC_REG_CMD);
-> +
-> +	return 0;
-> +}
-> +
-> +static int
-> +meson_nfc_setup_data_interface(struct nand_chip *nand, int csline,
-> +			       const struct nand_data_interface *conf)
-> +{
-> +	struct meson_nfc *nfc = nand_get_controller_data(nand);
-> +	const struct nand_sdr_timings *timings;
-> +
-> +	timings = nand_get_sdr_timings(conf);
-> +	if (IS_ERR(timings))
-> +		return -ENOTSUPP;
-> +
-> +	if (csline == NAND_DATA_IFACE_CHECK_ONLY)
-> +		return 0;
+> +	nfc->data_buf = kmalloc(max_page_bytes, GFP_KERNEL);
 
-Hm, before saying you supporting the requested timing, you should make
-sure they are actually supported. I'd recommend splitting this in 2
-steps:
+Is there a good reason for not using chip->data_buf and allocating a
+new buffer here?
 
-1/ calc timings
-2/ store the timings in the chip priv struct so that they can be
-applied next time ->select_chip() is called.
+> +	if (!nfc->data_buf)
+> +		return -ENOMEM;
+> +
+> +	nfc->info_buf = kmalloc(max_info_bytes, GFP_KERNEL);
+> +	if (!nfc->info_buf) {
+> +		kfree(nfc->data_buf);
+> +		return -ENOMEM;
+> +	}
+
+I'd recommend moving this info_buf in the priv chip struct, otherwise
+you'll have to protect nfc->info_buf with a lock to prevent an already
+register chip from using this pointer while you're reallocating the
+buffer. Also, I think you have a memleak here.
 
 > +
-> +	meson_nfc_calc_set_timing(nfc, timings);
-
-You should not set the timing from ->setup_data_interface(), just
-calculate them, make sure they are supported and store the state in the
-private chip struct. Applying those timings should be done in
-->select_chip(), so that you can support 2 chips with different timings.
-
 > +	return 0;
 > +}
