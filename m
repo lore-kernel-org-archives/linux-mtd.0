@@ -1,15 +1,15 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9Rv-0004Mk-8b
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:33 +0000
+ id 1gD9Rv-0004MX-A6
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:36 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 23/42] mkfs.ubifs: Make encryption dependend on
- (not-yet-existant) command line options
-Date: Thu, 18 Oct 2018 16:36:59 +0200
-Message-Id: <20181018143718.26298-24-richard@nod.at>
+Subject: [PATCH 21/42] mkfs.ubifs: Cleanup add_dent_node,
+ user path encryption helper
+Date: Thu, 18 Oct 2018 16:36:57 +0200
+Message-Id: <20181018143718.26298-22-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -28,56 +28,85 @@ From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 55 ++++++++---------------------
+ 1 file changed, 15 insertions(+), 40 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index 8be84ca1e99c..5be390e93da9 100644
+index 49a895ae3682..ae1d26726deb 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -217,6 +217,7 @@ static struct inum_mapping **hash_table;
- /* Inode creation sequence number */
- static unsigned long long creat_sqnum;
+@@ -1703,53 +1703,28 @@ static int add_dent_node(ino_t dir_inum, const ch=
+ar *name, ino_t inum,
+ 	set_dent_cookie(dent);
 =20
-+//TODO: add options for double hash and encryption
- static const char *optstring =3D "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:=
-j:UQqa";
+ 	if (!fctx) {
+-		dent_key_init(c, &key, dir_inum, dname.name, dname.len);
+-		dent->nlen =3D cpu_to_le16(dname.len);
+-		memcpy(dent->name, dname.name, dname.len);
+-		dent->name[dname.len] =3D '\0';
+-		len =3D UBIFS_DENT_NODE_SZ + dname.len + 1;
+-
+ 		kname_len =3D dname.len;
+ 		kname =3D strdup(name);
+ 		if (!kname)
+ 			return err_msg("cannot allocate memory");
+ 	} else {
+-		void *inbuf, *outbuf, *crypt_key;
+ 		unsigned int max_namelen =3D type =3D=3D UBIFS_ITYPE_LNK ? UBIFS_MAX_I=
+NO_DATA : UBIFS_MAX_NLEN;
+-		unsigned int padding =3D 4 << (fctx->flags & FS_POLICY_FLAGS_PAD_MASK)=
+;
+-		unsigned int cryptlen;
+-
+-		cryptlen =3D max_t(unsigned int, dname.len, FS_CRYPTO_BLOCK_SIZE);
+-		cryptlen =3D round_up(cryptlen, padding);
+-		cryptlen =3D min(cryptlen, max_namelen);
+-
+-		inbuf =3D xmalloc(cryptlen);
+-		/* CTS mode needs a block size aligned buffer */
+-		outbuf =3D xmalloc(round_up(cryptlen, FS_CRYPTO_BLOCK_SIZE));
+-
+-		memset(inbuf, 0, cryptlen);
+-		memcpy(inbuf, dname.name, dname.len);
+-
+-		crypt_key =3D calc_fscrypt_subkey(fctx);
+-		if (!crypt_key)
+-			return err_msg("could not compute subkey");
+-		if (encrypt_aes128_cbc_cts(inbuf, cryptlen, crypt_key, outbuf) < 0)
+-			return err_msg("could not encrypt filename");
+-
+-		dent->nlen =3D cpu_to_le16(cryptlen);
+-		memcpy(dent->name, outbuf, cryptlen);
+-		dent->name[cryptlen] =3D '\0';
+-		len =3D UBIFS_DENT_NODE_SZ + cryptlen + 1;
+-
+-		dent_key_init(c, &key, dir_inum, outbuf, cryptlen);
+-
+-		kname_len =3D cryptlen;
+-		kname =3D xmalloc(cryptlen);
+-		memcpy(kname, outbuf, cryptlen);
+-		free(crypt_key);
+-		free(inbuf);
+-		free(outbuf);
++		int ret;
++
++		ret =3D encrypt_path((void **)&kname, dname.name, dname.len,
++				   max_namelen, fctx);
++		if (ret < 0)
++			return ret;
++
++		kname_len =3D ret;
+ 	}
++
++	dent_key_init(c, &key, dir_inum, kname, kname_len);
++	dent->nlen =3D cpu_to_le16(kname_len);
++	memcpy(dent->name, kname, kname_len);
++	dent->name[kname_len] =3D '\0';
++	len =3D UBIFS_DENT_NODE_SZ + kname_len + 1;
++
+ 	key_write(&key, dent->key);
 =20
- static const struct option longopts[] =3D {
-@@ -654,6 +655,8 @@ static int get_options(int argc, char**argv)
- 	c->max_leb_cnt =3D -1;
- 	c->max_bud_bytes =3D -1;
- 	c->log_lebs =3D -1;
-+	c->double_hash =3D 0;
-+	c->encrypted =3D 0;
-=20
- 	while (1) {
- 		opt =3D getopt_long(argc, argv, optstring, longopts, &i);
-@@ -2826,15 +2829,16 @@ static int init(void)
- 	sz =3D sizeof(struct inum_mapping *) * HASH_TABLE_SIZE;
- 	hash_table =3D xzalloc(sz);
-=20
--	//TODO make this a parameter
--	RAND_bytes((void *)master_key_descriptor, FS_KEY_DESCRIPTOR_SIZE);
--	RAND_bytes((void *)nonce, FS_KEY_DERIVATION_NONCE_SIZE);
-+	if (c->encrypted) {
-+		RAND_bytes((void *)master_key_descriptor,
-+				FS_KEY_DESCRIPTOR_SIZE);
-+		RAND_bytes((void *)nonce, FS_KEY_DERIVATION_NONCE_SIZE);
-=20
--	root_fctx =3D init_fscrypt_context(FS_POLICY_FLAGS_PAD_4,
--					master_key_descriptor, nonce);
--	print_fscrypt_master_key_descriptor(root_fctx);
--	c->double_hash =3D 1;
--	c->encrypted =3D 1;
-+		root_fctx =3D init_fscrypt_context(FS_POLICY_FLAGS_PAD_4,
-+						master_key_descriptor, nonce);
-+		print_fscrypt_master_key_descriptor(root_fctx);
-+		c->double_hash =3D 1;
-+	}
-=20
- 	err =3D init_compression();
- 	if (err)
+ 	return add_node(&key, kname, kname_len, dent, len);
 --=20
 2.19.1
