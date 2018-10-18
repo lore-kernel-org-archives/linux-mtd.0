@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9RP-000454-R5
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:38:33 +0000
+ id 1gD9RP-000451-Qs
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:38:43 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 08/42] mkfs.ubifs: Implement UBIFS_FLG_ENCRYPTION
-Date: Thu, 18 Oct 2018 16:36:44 +0200
-Message-Id: <20181018143718.26298-9-richard@nod.at>
+Subject: [PATCH 05/42] mkfs.ubifs: Make r5 hash binary string aware
+Date: Thu, 18 Oct 2018 16:36:41 +0200
+Message-Id: <20181018143718.26298-6-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -22,65 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-...and set UBIFS format version
+As of now all filenames known by UBIFS are strings with a NUL
+terminator. With encrypted filenames a filename can be any binary
+string and the r5 function cannot search for the NUL terminator.
+UBIFS always knows how long a filename is, therefore we can change
+the hash function to iterate over the filename length to work
+correctly with binary strings.
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 13 ++++++++++++-
- ubifs-utils/mkfs.ubifs/ubifs.h      |  1 +
- 2 files changed, 13 insertions(+), 1 deletion(-)
+ ubifs-utils/mkfs.ubifs/key.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
-/mkfs.ubifs.c
-index fc1b0cb1f6cc..09c28ab0b6bd 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -2357,6 +2357,15 @@ static int finalize_leb_cnt(void)
- 	return 0;
- }
+diff --git a/ubifs-utils/mkfs.ubifs/key.h b/ubifs-utils/mkfs.ubifs/key.h
+index c16d0a85418e..0c7922b67687 100644
+--- a/ubifs-utils/mkfs.ubifs/key.h
++++ b/ubifs-utils/mkfs.ubifs/key.h
+@@ -64,9 +64,8 @@ static inline uint32_t key_r5_hash(const char *s, int l=
+en)
+ {
+ 	uint32_t a =3D 0;
+ 	const signed char *str =3D (const signed char *)s;
+-	(void)len;
 =20
-+static int ubifs_format_version(void)
-+{
-+	if (c->double_hash || c->encrypted)
-+		return 5;
-+
-+	/* Default */
-+	return 4;
-+}
-+
- /**
-  * write_super - write the super block.
-  */
-@@ -2379,7 +2388,7 @@ static int write_super(void)
- 	sup.jhead_cnt     =3D cpu_to_le32(c->jhead_cnt);
- 	sup.fanout        =3D cpu_to_le32(c->fanout);
- 	sup.lsave_cnt     =3D cpu_to_le32(c->lsave_cnt);
--	sup.fmt_version   =3D cpu_to_le32(UBIFS_FORMAT_VERSION);
-+	sup.fmt_version   =3D cpu_to_le32(ubifs_format_version());
- 	sup.default_compr =3D cpu_to_le16(c->default_compr);
- 	sup.rp_size       =3D cpu_to_le64(c->rp_size);
- 	sup.time_gran     =3D cpu_to_le32(DEFAULT_TIME_GRAN);
-@@ -2396,6 +2405,8 @@ static int write_super(void)
- 		sup.flags |=3D cpu_to_le32(UBIFS_FLG_SPACE_FIXUP);
- 	if (c->double_hash)
- 		sup.flags |=3D cpu_to_le32(UBIFS_FLG_DOUBLE_HASH);
-+	if (c->encrypted)
-+		sup.flags |=3D cpu_to_le32(UBIFS_FLG_ENCRYPTION);
-=20
- 	return write_node(&sup, UBIFS_SB_NODE_SZ, UBIFS_SB_LNUM);
- }
-diff --git a/ubifs-utils/mkfs.ubifs/ubifs.h b/ubifs-utils/mkfs.ubifs/ubif=
-s.h
-index 5a4af997e7bd..c26d0944ac50 100644
---- a/ubifs-utils/mkfs.ubifs/ubifs.h
-+++ b/ubifs-utils/mkfs.ubifs/ubifs.h
-@@ -410,6 +410,7 @@ struct ubifs_info
- 	int big_lpt;
- 	int space_fixup;
- 	int double_hash;
-+	int encrypted;
- 	long long lpt_sz;
-=20
- 	int ltab_lnum;
+-	while (*str) {
++	while (len--) {
+ 		a +=3D *str << 4;
+ 		a +=3D *str >> 4;
+ 		a *=3D 11;
 --=20
 2.19.1
