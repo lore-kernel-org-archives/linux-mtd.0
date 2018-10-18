@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9RP-00045e-Qt
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:09 +0000
+ id 1gD9RP-00045f-R4
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:20 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 10/42] mkfs.ubifs: Implement fscrypto context store as xattr
-Date: Thu, 18 Oct 2018 16:36:46 +0200
-Message-Id: <20181018143718.26298-11-richard@nod.at>
+Subject: [PATCH 09/42] mkfs.ubifs: Implement basic fscrypto context passing
+Date: Thu, 18 Oct 2018 16:36:45 +0200
+Message-Id: <20181018143718.26298-10-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -24,138 +24,289 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 53 ++++++++++++++++++-----------
- 1 file changed, 34 insertions(+), 19 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 64 ++++++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 25 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index 349f68ab8797..e391cdaae35f 100644
+index 09c28ab0b6bd..349f68ab8797 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1156,36 +1156,45 @@ static int add_node(union ubifs_key *key, char *n=
-ame, void *node, int len)
- 	return 0;
+@@ -174,6 +174,7 @@ int yes;
+=20
+ static char *root;
+ static int root_len;
++static struct fscrypt_context *root_fctx;
+ static struct stat root_st;
+ static char *output;
+ static int out_fd;
+@@ -1423,7 +1424,8 @@ static inline int inode_add_selinux_xattr(struct ub=
+ifs_ino_node *host_ino,
+  * @flags: source inode flags
+  */
+ static int add_inode(struct stat *st, ino_t inum, void *data,
+-		     unsigned int data_len, int flags, const char *xattr_path)
++		     unsigned int data_len, int flags, const char *xattr_path,
++		     struct fscrypt_context *fctx)
+ {
+ 	struct ubifs_ino_node *ino =3D node_buf;
+ 	union ubifs_key key;
+@@ -1441,7 +1443,8 @@ static int add_inode(struct stat *st, ino_t inum, v=
+oid *data,
+ 		use_flags |=3D UBIFS_APPEND_FL;
+ 	if (flags & FS_DIRSYNC_FL && S_ISDIR(st->st_mode))
+ 		use_flags |=3D UBIFS_DIRSYNC_FL;
+-
++	if (fctx)
++		use_flags |=3D UBIFS_CRYPT_FL;
+ 	memset(ino, 0, UBIFS_INO_NODE_SZ);
+=20
+ 	ino_key_init(&key, inum);
+@@ -1498,7 +1501,8 @@ static int add_inode(struct stat *st, ino_t inum, v=
+oid *data,
+  * the device table.
+  */
+ static int add_dir_inode(const char *path_name, DIR *dir, ino_t inum, lo=
+ff_t size,
+-			 unsigned int nlink, struct stat *st)
++			 unsigned int nlink, struct stat *st,
++			 struct fscrypt_context *fctx)
+ {
+ 	int fd, flags =3D 0;
+=20
+@@ -1513,7 +1517,7 @@ static int add_dir_inode(const char *path_name, DIR=
+ *dir, ino_t inum, loff_t siz
+ 			flags =3D 0;
+ 	}
+=20
+-	return add_inode(st, inum, NULL, 0, flags, path_name);
++	return add_inode(st, inum, NULL, 0, flags, path_name, fctx);
  }
 =20
--static int add_xattr(struct stat *st, ino_t inum, const void *data,
--		     unsigned int data_len, struct qstr *nm)
-+static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st, i=
-no_t inum,
-+		     char *name, const void *data, unsigned int data_len)
+ /**
+@@ -1527,7 +1531,7 @@ static int add_dev_inode(const char *path_name, str=
+uct stat *st, ino_t inum, int
+ 	union ubifs_dev_desc dev;
+=20
+ 	dev.huge =3D cpu_to_le64(makedev(major(st->st_rdev), minor(st->st_rdev)=
+));
+-	return add_inode(st, inum, &dev, 8, flags, path_name);
++	return add_inode(st, inum, &dev, 8, flags, path_name, NULL);
+ }
+=20
+ /**
+@@ -1538,7 +1542,7 @@ static int add_dev_inode(const char *path_name, str=
+uct stat *st, ino_t inum, int
+  * @flags: source inode flags
+  */
+ static int add_symlink_inode(const char *path_name, struct stat *st, ino=
+_t inum,
+-			     int flags)
++			     int flags, struct fscrypt_context *fctx)
  {
- 	struct ubifs_ino_node *ino;
- 	struct ubifs_dent_node *xent;
-+	struct qstr nm;
- 	union ubifs_key xkey, nkey;
- 	int len, ret;
+ 	char buf[UBIFS_MAX_INO_DATA + 2];
+ 	ssize_t len;
+@@ -1550,7 +1554,7 @@ static int add_symlink_inode(const char *path_name,=
+ struct stat *st, ino_t inum,
+ 	if (len > UBIFS_MAX_INO_DATA)
+ 		return err_msg("symlink too long for %s", path_name);
 =20
--	xent =3D xzalloc(sizeof(*xent) + nm->len + 1);
-+	nm.name =3D name;
-+	nm.len =3D strlen(name);
-+
-+	host_ino->xattr_cnt++;
-+	host_ino->xattr_size +=3D CALC_DENT_SIZE(nm.len);
-+	host_ino->xattr_size +=3D CALC_XATTR_BYTES(data_len);
-+	host_ino->xattr_names +=3D nm.len;
-+
-+	xent =3D xzalloc(sizeof(*xent) + nm.len + 1);
- 	ino =3D xzalloc(sizeof(*ino) + data_len);
+-	return add_inode(st, inum, buf, len, flags, path_name);
++	return add_inode(st, inum, buf, len, flags, path_name, fctx);
+ }
 =20
--	xent_key_init(c, &xkey, inum, nm);
-+	xent_key_init(c, &xkey, inum, &nm);
- 	xent->ch.node_type =3D UBIFS_XENT_NODE;
- 	key_write(&xkey, &xent->key);
+ static void set_dent_cookie(struct ubifs_dent_node *dent)
+@@ -1569,7 +1573,7 @@ static void set_dent_cookie(struct ubifs_dent_node =
+*dent)
+  * @type: type of the target inode
+  */
+ static int add_dent_node(ino_t dir_inum, const char *name, ino_t inum,
+-			 unsigned char type)
++			 unsigned char type, struct fscrypt_context *fctx)
+ {
+ 	struct ubifs_dent_node *dent =3D node_buf;
+ 	union ubifs_key key;
+@@ -1658,7 +1662,7 @@ static int all_zero(void *buf, int len)
+  * @flags: source inode flags
+  */
+ static int add_file(const char *path_name, struct stat *st, ino_t inum,
+-		    int flags)
++		    int flags, struct fscrypt_context *fctx)
+ {
+ 	struct ubifs_data_node *dn =3D node_buf;
+ 	void *buf =3D block_buf;
+@@ -1728,7 +1732,7 @@ static int add_file(const char *path_name, struct s=
+tat *st, ino_t inum,
+ 		return err_msg("file size changed during writing file '%s'",
+ 			       path_name);
 =20
--	len =3D UBIFS_XENT_NODE_SZ + nm->len + 1;
-+	len =3D UBIFS_XENT_NODE_SZ + nm.len + 1;
+-	return add_inode(st, inum, NULL, 0, flags, path_name);
++	return add_inode(st, inum, NULL, 0, flags, path_name, fctx);
+ }
 =20
- 	xent->ch.len =3D len;
- 	xent->padding1 =3D 0;
- 	xent->type =3D UBIFS_ITYPE_DIR;
--	xent->nlen =3D cpu_to_le16(nm->len);
-+	xent->nlen =3D cpu_to_le16(nm.len);
+ /**
+@@ -1741,7 +1745,8 @@ static int add_file(const char *path_name, struct s=
+tat *st, ino_t inum,
+  *      creating the UBIFS inode
+  */
+ static int add_non_dir(const char *path_name, ino_t *inum, unsigned int =
+nlink,
+-		       unsigned char *type, struct stat *st)
++		       unsigned char *type, struct stat *st,
++		       struct fscrypt_context *fctx)
+ {
+ 	int fd, flags =3D 0;
 =20
--	memcpy(xent->name, nm->name, nm->len + 1);
-+	memcpy(xent->name, nm.name, nm.len + 1);
-=20
- 	inum =3D ++c->highest_inum;
+@@ -1806,17 +1811,17 @@ static int add_non_dir(const char *path_name, ino=
+_t *inum, unsigned int nlink,
  	creat_sqnum =3D ++c->max_sqnum;
 =20
- 	xent->inum =3D cpu_to_le64(inum);
+ 	if (S_ISREG(st->st_mode))
+-		return add_file(path_name, st, *inum, flags);
++		return add_file(path_name, st, *inum, flags, fctx);
+ 	if (S_ISCHR(st->st_mode))
+ 		return add_dev_inode(path_name, st, *inum, flags);
+ 	if (S_ISBLK(st->st_mode))
+ 		return add_dev_inode(path_name, st, *inum, flags);
+ 	if (S_ISLNK(st->st_mode))
+-		return add_symlink_inode(path_name, st, *inum, flags);
++		return add_symlink_inode(path_name, st, *inum, flags, fctx);
+ 	if (S_ISSOCK(st->st_mode))
+-		return add_inode(st, *inum, NULL, 0, flags, NULL);
++		return add_inode(st, *inum, NULL, 0, flags, NULL, NULL);
+ 	if (S_ISFIFO(st->st_mode))
+-		return add_inode(st, *inum, NULL, 0, flags, NULL);
++		return add_inode(st, *inum, NULL, 0, flags, NULL, NULL);
 =20
--	ret =3D add_node(&xkey, nm->name, xent, len);
-+	ret =3D add_node(&xkey, nm.name, xent, len);
- 	if (ret)
- 		goto out;
-=20
-@@ -1217,7 +1226,7 @@ static int add_xattr(struct stat *st, ino_t inum, c=
-onst void *data,
- 	if (data_len)
- 		memcpy(&ino->data, data, data_len);
-=20
--	ret =3D add_node(&nkey, nm->name, ino, UBIFS_INO_NODE_SZ + data_len) ;
-+	ret =3D add_node(&nkey, nm.name, ino, UBIFS_INO_NODE_SZ + data_len) ;
-=20
- out:
- 	free(xent);
-@@ -1270,7 +1279,6 @@ static int inode_add_xattr(struct ubifs_ino_node *h=
-ost_ino,
- 			   const char *path_name, struct stat *st, ino_t inum)
+ 	return err_msg("file '%s' has unknown inode type", path_name);
+ }
+@@ -1831,7 +1836,7 @@ static int add_non_dir(const char *path_name, ino_t=
+ *inum, unsigned int nlink,
+  *            created because it is defined in the device table file.
+  */
+ static int add_directory(const char *dir_name, ino_t dir_inum, struct st=
+at *st,
+-			 int existing)
++			 int existing, struct fscrypt_context *fctx)
  {
- 	int ret;
--	struct qstr nm;
- 	void *buf =3D NULL;
- 	ssize_t len;
- 	ssize_t pos =3D 0;
-@@ -1327,15 +1335,7 @@ static int inode_add_xattr(struct ubifs_ino_node *=
-host_ino,
- 			continue;
+ 	struct dirent *entry;
+ 	DIR *dir =3D NULL;
+@@ -1867,6 +1872,7 @@ static int add_directory(const char *dir_name, ino_=
+t dir_inum, struct stat *st,
+ 	 */
+ 	for (; existing;) {
+ 		struct stat dent_st;
++		struct fscrypt_context *new_fctx =3D NULL;
+=20
+ 		errno =3D 0;
+ 		entry =3D readdir(dir);
+@@ -1922,14 +1928,16 @@ static int add_directory(const char *dir_name, in=
+o_t dir_inum, struct stat *st,
+=20
+ 		inum =3D ++c->highest_inum;
+=20
++		new_fctx =3D inherit_fscrypt_context(fctx);
++
+ 		if (S_ISDIR(dent_st.st_mode)) {
+-			err =3D add_directory(name, inum, &dent_st, 1);
++			err =3D add_directory(name, inum, &dent_st, 1, new_fctx);
+ 			if (err)
+ 				goto out_free;
+ 			nlink +=3D 1;
+ 			type =3D UBIFS_ITYPE_DIR;
+ 		} else {
+-			err =3D add_non_dir(name, &inum, 0, &type, &dent_st);
++			err =3D add_non_dir(name, &inum, 0, &type, &dent_st, new_fctx);
+ 			if (err)
+ 				goto out_free;
  		}
-=20
--		nm.name =3D name;
--		nm.len =3D strlen(name);
--
--		host_ino->xattr_cnt++;
--		host_ino->xattr_size +=3D CALC_DENT_SIZE(nm.len);
--		host_ino->xattr_size +=3D CALC_XATTR_BYTES(attrsize);
--		host_ino->xattr_names +=3D nm.len;
--
--		ret =3D add_xattr(st, inum, attrbuf, attrsize, &nm);
-+		ret =3D add_xattr(host_ino, st, inum, name, attrbuf, attrsize);
- 		if (ret < 0)
+@@ -1938,11 +1946,13 @@ static int add_directory(const char *dir_name, in=
+o_t dir_inum, struct stat *st,
+ 		if (err)
  			goto out_free;
- 	}
-@@ -1415,6 +1415,15 @@ static inline int inode_add_selinux_xattr(struct u=
-bifs_ino_node *host_ino,
- }
- #endif
 =20
-+static int set_fscrypt_context(struct ubifs_ino_node *host_ino, ino_t in=
-um,
-+			       struct stat *host_st,
-+			       struct fscrypt_context *fctx)
-+{
-+	return add_xattr(host_ino, host_st, inum,
-+			 UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT,
-+			 fctx, sizeof(*fctx));
-+}
+-		err =3D add_dent_node(dir_inum, entry->d_name, inum, type);
++		err =3D add_dent_node(dir_inum, entry->d_name, inum, type, fctx);
+ 		if (err)
+ 			goto out_free;
+ 		size +=3D ALIGN(UBIFS_DENT_NODE_SZ + strlen(entry->d_name) + 1,
+ 			      8);
 +
- /**
-  * add_inode - write an inode.
-  * @st: stat information of source inode
-@@ -1484,6 +1493,12 @@ static int add_inode(struct stat *st, ino_t inum, =
-void *data,
- 			return ret;
++		free_fscrypt_context(new_fctx);
  	}
 =20
-+	if (fctx) {
-+		ret =3D set_fscrypt_context(ino, inum, st, fctx);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	return add_node(&key, NULL, ino, len);
- }
+ 	/*
+@@ -1952,6 +1962,7 @@ static int add_directory(const char *dir_name, ino_=
+t dir_inum, struct stat *st,
+ 	nh_elt =3D first_name_htbl_element(ph_elt, &itr);
+ 	while (nh_elt) {
+ 		struct stat fake_st;
++		struct fscrypt_context *new_fctx =3D NULL;
 =20
+ 		/*
+ 		 * We prohibit creating regular files using the device table,
+@@ -1978,14 +1989,16 @@ static int add_directory(const char *dir_name, in=
+o_t dir_inum, struct stat *st,
+ 		name =3D make_path(dir_name, nh_elt->name);
+ 		inum =3D ++c->highest_inum;
+=20
++		new_fctx =3D inherit_fscrypt_context(fctx);
++
+ 		if (S_ISDIR(nh_elt->mode)) {
+-			err =3D add_directory(name, inum, &fake_st, 0);
++			err =3D add_directory(name, inum, &fake_st, 0, new_fctx);
+ 			if (err)
+ 				goto out_free;
+ 			nlink +=3D 1;
+ 			type =3D UBIFS_ITYPE_DIR;
+ 		} else {
+-			err =3D add_non_dir(name, &inum, 0, &type, &fake_st);
++			err =3D add_non_dir(name, &inum, 0, &type, &fake_st, new_fctx);
+ 			if (err)
+ 				goto out_free;
+ 		}
+@@ -1994,17 +2007,18 @@ static int add_directory(const char *dir_name, in=
+o_t dir_inum, struct stat *st,
+ 		if (err)
+ 			goto out_free;
+=20
+-		err =3D add_dent_node(dir_inum, nh_elt->name, inum, type);
++		err =3D add_dent_node(dir_inum, nh_elt->name, inum, type, fctx);
+ 		if (err)
+ 			goto out_free;
+ 		size +=3D ALIGN(UBIFS_DENT_NODE_SZ + strlen(nh_elt->name) + 1, 8);
+=20
+ 		nh_elt =3D next_name_htbl_element(ph_elt, &itr);
++		free_fscrypt_context(new_fctx);
+ 	}
+=20
+ 	creat_sqnum =3D dir_creat_sqnum;
+=20
+-	err =3D add_dir_inode(dir ? dir_name : NULL, dir, dir_inum, size, nlink=
+, st);
++	err =3D add_dir_inode(dir ? dir_name : NULL, dir, dir_inum, size, nlink=
+, st, fctx);
+ 	if (err)
+ 		goto out_free;
+=20
+@@ -2035,7 +2049,7 @@ static int add_multi_linked_files(void)
+ 		for (im =3D hash_table[i]; im; im =3D im->next) {
+ 			dbg_msg(2, "%s", im->path_name);
+ 			err =3D add_non_dir(im->path_name, &im->use_inum,
+-					  im->use_nlink, &type, &im->st);
++					  im->use_nlink, &type, &im->st, NULL);
+ 			if (err)
+ 				return err;
+ 		}
+@@ -2083,7 +2097,7 @@ static int write_data(void)
+ 	if (err)
+ 		return err;
+=20
+-	err =3D add_directory(root, UBIFS_ROOT_INO, &root_st, !!root);
++	err =3D add_directory(root, UBIFS_ROOT_INO, &root_st, !!root, root_fctx=
+);
+ 	if (err)
+ 		return err;
+ 	err =3D add_multi_linked_files();
 --=20
 2.19.1
