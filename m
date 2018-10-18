@@ -1,39 +1,22 @@
-Received: from mail-it1-x141.google.com ([2607:f8b0:4864:20::141])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gCohX-0004k9-Lp
- for linux-mtd@lists.infradead.org; Wed, 17 Oct 2018 16:29:41 +0000
-Received: by mail-it1-x141.google.com with SMTP id i191-v6so3237375iti.5
- for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2018 09:29:28 -0700 (PDT)
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Jan Kara <jack@suse.cz>
-Cc: Paolo Valente <paolo.valente@linaro.org>,
- Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter
- <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
- Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig
- <hch@infradead.org>, Alan Cox <gnomes@lxorguk.ukuu.org.uk>,
- Mark Brown <broonie@kernel.org>, Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
- <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
- <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
- <20181017100526.GB23493@quack2.suse.cz>
-From: Jens Axboe <axboe@kernel.dk>
-Message-ID: <e54c3943-0335-6db4-1c86-f093432fd84b@kernel.dk>
-Date: Wed, 17 Oct 2018 10:29:22 -0600
+From: Jianxin Pan <jianxin.pan@amlogic.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ <linux-mtd@lists.infradead.org>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, David Woodhouse
+ <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek
+ Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome
+ Brunet <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Yixun Lan <yixun.lan@amlogic.com>, Liang Yang
+ <liang.yang@amlogic.com>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH v5 0/2] mtd: rawnand: meson: add Amlogic NAND driver support
+Date: Thu, 18 Oct 2018 13:09:03 +0800
+Message-ID: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
 MIME-Version: 1.0
-In-Reply-To: <20181017100526.GB23493@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,43 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/17/18 4:05 AM, Jan Kara wrote:
-> On Tue 16-10-18 11:35:59, Jens Axboe wrote:
->> On 10/15/18 1:44 PM, Paolo Valente wrote:
->>> Here are some old results with a very simple configuration:
->>> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/4.4.0-v7r11/
->>> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.14.0-v7r3/
->>> http://algo.ing.unimo.it/people/paolo/disk_sched/old-results/3.13.0-v7r2/
->>>
->>> Then I stopped repeating tests that always yielded the same good results.
->>>
->>> As for more professional systems, a well-known company doing
->>> real-time packet-traffic dumping asked me to modify bfq so as to
->>> guarantee lossless data writing also during queries.  The involved box
->>> had a RAID reaching a few Gbps, and everything worked well.
->>>
->>> Anyway, if you have specific issues in mind, I can check more deeply.
->>
->> Do you have anything more recent? All of these predate the current
->> code (by a lot), and isn't even mq. I'm mostly just interested in
->> plain fast NVMe device, and a big box hardware raid setup with
->> a ton of drives.
->>
->> I do still think that this should be going through the distros, they
->> need to be the ones driving this, as they will ultimately be the
->> ones getting customer reports on regressions. The qual/test cycle
->> they do is useful for this. In mainline, if we make a change like
->> this, we'll figure out if it worked many releases down the line.
-> 
-> Well, the problem with this is that big distro people really don't care
-> much because they already use udev for tuning the IO scheduler. So whatever
-> defaults the kernel is going to pick likely won't be seen by distro
-> customers. Embedded people seem to be driving this effort because they
-> either don't run udev or they feel not all their teams building new
-> products have enough expertise to come up with a proper set of rules...
+  These two patches try to add initial NAND driver support for Amlogic Meson
+SoCs, current it has been tested on GXL(p212) and AXG(s400) platform.
 
-Which is also the approach that I've been advocating for here, instead
-of a kernel patch...
+
+Changes since v4 at [5]:
+ - remove the initial default divider(CLK_DIV_MASK) in meson_nfc_clk_init()
+ - dt-bindings: remove staus, add "rx" and "tx" clock, and node rename
+
+Changes since v3 at [4]:
+ - remove partition table and some used props from dt-bindings 
+
+Changes since v2 at [3]:
+ - remove some hardcode time value, like twb
+ - use dev wait R/B instead of nand_soft_waitrdy
+ - implement nfc ecc init by ecc helper
+ - rework nfc buffer init to register the maximun buffer when several chips
+ - free nfc buffer when error and cleanup
+ - add variable to teack all the already assigned CS lines
+ - fix mtd->name use the first cs line only
+ - remove dt "nand-enable-scrambler" and use NAND_NEED_SCRAMBLING instead.
+ - move setuping ECC fileds after the identification phase
+ - use nand_scan() and attach_chip()
+ - check one event to return IRQ_NONE
+ - delete cast when of_device_get_match_data
+ - use nand_controller_init() helper
+ - remove nfc driver complains when calling devm_ioremap_resource
+ - clear irqs before setting up irq handler
+
+Changes since v1 at [1]:
+  - adopt property amlogic,nand-enable-scrambler - thanks Martin
+  - drop nand pins in DT
+  - convert clk access to emmc clkc model 
+  - fix regiser field definition alignment
+  - drop nand-user-mode 
+  - parse cs id from DT
+  - rework n2m, m2n function
+  - explain why insert two "IDLE" command
+  - implement exec_op()
+  - drop meson_nfc_get_nand_chip_dts()
+  - release resource once error occur in meson_nfc_nand_chips_init(), 
+  - call nand_cleanup(nand) once mtd_device_register fail
+
+Items not addressed ( or confirmed ) in this version:
+  - convert to ECC conf helper() 
+  - convert to dma coherent API
+  - how to construct mtd->name
+
+[1] https://lkml.kernel.org/r/20180613161314.14894-1-yixun.lan@amlogic.com
+[2] https://lkml.kernel.org/r/20180712211244.11428-1-yixun.lan@amlogic.com
+[3] https://lkml.kernel.org/r/20180719094612.5833-1-yixun.lan@amlogic.com
+[4] https://lkml.kernel.org/r/1536317831-58056-1-git-send-email-jianxin.pan@amlogic.com/
+[5] https://lore.kernel.org/r/1537433449-65213-2-git-send-email-jianxin.pan@amlogic.com/
+
+Liang Yang (2):
+  dt-bindings: nand: meson: add Amlogic NAND controller driver
+  mtd: rawnand: meson: add support for Amlogic NAND flash controller
+
+ .../devicetree/bindings/mtd/amlogic,meson-nand.txt |   60 +
+ drivers/mtd/nand/raw/Kconfig                       |   10 +
+ drivers/mtd/nand/raw/Makefile                      |    1 +
+ drivers/mtd/nand/raw/meson_nand.c                  | 1370 ++++++++++++++++++++
+ 4 files changed, 1441 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/amlogic,meson-nand.txt
+ create mode 100644 drivers/mtd/nand/raw/meson_nand.c
 
 -- 
-Jens Axboe
+1.9.1
