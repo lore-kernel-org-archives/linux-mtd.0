@@ -1,19 +1,23 @@
-Received: from lilium.sigma-star.at ([109.75.188.150])
- by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9Rv-0005Id-U7
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:38:56 +0000
-From: Richard Weinberger <richard@nod.at>
-To: linux-mtd@lists.infradead.org
-Cc: david.oberhollenzer@sigma-star.at,
-	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 18/42] mkfs.ubifs: Make sure we catch nodes that should or
- should not have name
-Date: Thu, 18 Oct 2018 16:36:54 +0200
-Message-Id: <20181018143718.26298-19-richard@nod.at>
-In-Reply-To: <20181018143718.26298-1-richard@nod.at>
-References: <20181018143718.26298-1-richard@nod.at>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDAPM-0005Tc-Fl
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 15:41:54 +0000
+Date: Thu, 18 Oct 2018 17:40:09 +0200
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: Use 4B opcodes when the NOR
+ advertises both 3B and 4B
+Message-ID: <20181018154009.GG17341@piout.net>
+References: <20181018115512.15131-1-boris.brezillon@bootlin.com>
+ <20181018115512.15131-2-boris.brezillon@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20181018115512.15131-2-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Richard Weinberger <richard@nod.at>
----
- ubifs-utils/mkfs.ubifs/key.h        | 10 ++++++++++
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c |  8 ++++++++
- 2 files changed, 18 insertions(+)
+On 18/10/2018 13:55:12+0200, Boris Brezillon wrote:
+> When the NOR supports 4 bytes opcodes we should use those instead of
+> switching the flash in 4-bytes mode. This way, we don't have to restore
+> the addressing mode when resetting the board.
+> 
+> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Tested-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v2:
+> - None
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 9155d3b9c37b..72536a5dfe05 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		break;
+>  
+>  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+>  		nor->flags |= SNOR_F_4B_OPCODES;
+>  		nor->addr_width = 4;
+>  		break;
+> -- 
+> 2.14.1
+> 
 
-diff --git a/ubifs-utils/mkfs.ubifs/key.h b/ubifs-utils/mkfs.ubifs/key.h
-index c18e35e8f0a3..2de530b813a2 100644
---- a/ubifs-utils/mkfs.ubifs/key.h
-+++ b/ubifs-utils/mkfs.ubifs/key.h
-@@ -209,4 +209,14 @@ static inline int keys_cmp(const union ubifs_key *ke=
-y1,
- 	return 0;
- }
-=20
-+/**
-+ * key_type - get key type.
-+ * @c: UBIFS file-system description object
-+ * @key: key to get type of
-+ */
-+static inline int key_type(const union ubifs_key *key)
-+{
-+	return key->u32[1] >> UBIFS_S_KEY_BLOCK_BITS;
-+}
-+
- #endif /* !__UBIFS_KEY_H__ */
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
-/mkfs.ubifs.c
-index b402945924ac..8aba668f8e28 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1161,6 +1161,14 @@ static int add_node(union ubifs_key *key, char *na=
-me, int name_len, void *node,
- {
- 	int err, lnum, offs;
-=20
-+	if (key_type(key) =3D=3D UBIFS_DENT_KEY || key_type(key) =3D=3D UBIFS_X=
-ENT_KEY) {
-+		if (!name)
-+			return err_msg("Directory entry or xattr without name!");
-+	} else {
-+		if (name)
-+			return err_msg("Name given for non dir/xattr node!");
-+	}
-+
- 	prepare_node(node, len);
-=20
- 	err =3D reserve_space(len, &lnum, &offs);
---=20
-2.19.1
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
