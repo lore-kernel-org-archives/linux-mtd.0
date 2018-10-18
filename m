@@ -1,15 +1,15 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9Rv-0004MX-A6
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:36 +0000
+ id 1gD9Rv-0004N9-8L
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:48 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 21/42] mkfs.ubifs: Cleanup add_dent_node,
- user path encryption helper
-Date: Thu, 18 Oct 2018 16:36:57 +0200
-Message-Id: <20181018143718.26298-22-richard@nod.at>
+Subject: [PATCH 27/42] mkfs.ubifs: Remove cipher implementations from public
+ header
+Date: Thu, 18 Oct 2018 16:37:03 +0200
+Message-Id: <20181018143718.26298-28-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -28,85 +28,139 @@ From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 55 ++++++++---------------------
- 1 file changed, 15 insertions(+), 40 deletions(-)
+ ubifs-utils/mkfs.ubifs/crypto.c | 47 +++++++++++++++------------------
+ ubifs-utils/mkfs.ubifs/crypto.h | 14 ----------
+ 2 files changed, 22 insertions(+), 39 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
-/mkfs.ubifs.c
-index 49a895ae3682..ae1d26726deb 100644
---- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-+++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1703,53 +1703,28 @@ static int add_dent_node(ino_t dir_inum, const ch=
-ar *name, ino_t inum,
- 	set_dent_cookie(dent);
+diff --git a/ubifs-utils/mkfs.ubifs/crypto.c b/ubifs-utils/mkfs.ubifs/cry=
+pto.c
+index f249b49b5b59..f7b51357c04a 100644
+--- a/ubifs-utils/mkfs.ubifs/crypto.c
++++ b/ubifs-utils/mkfs.ubifs/crypto.c
+@@ -27,21 +27,6 @@
+ #include "common.h"
+ #include "mtd_swab.h"
 =20
- 	if (!fctx) {
--		dent_key_init(c, &key, dir_inum, dname.name, dname.len);
--		dent->nlen =3D cpu_to_le16(dname.len);
--		memcpy(dent->name, dname.name, dname.len);
--		dent->name[dname.len] =3D '\0';
--		len =3D UBIFS_DENT_NODE_SZ + dname.len + 1;
 -
- 		kname_len =3D dname.len;
- 		kname =3D strdup(name);
- 		if (!kname)
- 			return err_msg("cannot allocate memory");
- 	} else {
--		void *inbuf, *outbuf, *crypt_key;
- 		unsigned int max_namelen =3D type =3D=3D UBIFS_ITYPE_LNK ? UBIFS_MAX_I=
-NO_DATA : UBIFS_MAX_NLEN;
--		unsigned int padding =3D 4 << (fctx->flags & FS_POLICY_FLAGS_PAD_MASK)=
-;
--		unsigned int cryptlen;
+-static struct cipher ciphers[] =3D {
+-	{
+-		.name =3D "AES-128-CBC",
+-		.encrypt_block =3D encrypt_block_aes128_cbc,
+-		.encrypt_fname =3D encrypt_aes128_cbc_cts,
+-	}, {
+-		.name =3D "AES-256-XTS",
+-		.encrypt_block =3D encrypt_block_aes256_xts,
+-		.encrypt_fname =3D encrypt_aes256_cbc_cts,
+-	}
+-};
 -
--		cryptlen =3D max_t(unsigned int, dname.len, FS_CRYPTO_BLOCK_SIZE);
--		cryptlen =3D round_up(cryptlen, padding);
--		cryptlen =3D min(cryptlen, max_namelen);
 -
--		inbuf =3D xmalloc(cryptlen);
--		/* CTS mode needs a block size aligned buffer */
--		outbuf =3D xmalloc(round_up(cryptlen, FS_CRYPTO_BLOCK_SIZE));
 -
--		memset(inbuf, 0, cryptlen);
--		memcpy(inbuf, dname.name, dname.len);
--
--		crypt_key =3D calc_fscrypt_subkey(fctx);
--		if (!crypt_key)
--			return err_msg("could not compute subkey");
--		if (encrypt_aes128_cbc_cts(inbuf, cryptlen, crypt_key, outbuf) < 0)
--			return err_msg("could not encrypt filename");
--
--		dent->nlen =3D cpu_to_le16(cryptlen);
--		memcpy(dent->name, outbuf, cryptlen);
--		dent->name[cryptlen] =3D '\0';
--		len =3D UBIFS_DENT_NODE_SZ + cryptlen + 1;
--
--		dent_key_init(c, &key, dir_inum, outbuf, cryptlen);
--
--		kname_len =3D cryptlen;
--		kname =3D xmalloc(cryptlen);
--		memcpy(kname, outbuf, cryptlen);
--		free(crypt_key);
--		free(inbuf);
--		free(outbuf);
-+		int ret;
-+
-+		ret =3D encrypt_path((void **)&kname, dname.name, dname.len,
-+				   max_namelen, fctx);
-+		if (ret < 0)
-+			return ret;
-+
-+		kname_len =3D ret;
- 	}
-+
-+	dent_key_init(c, &key, dir_inum, kname, kname_len);
-+	dent->nlen =3D cpu_to_le16(kname_len);
-+	memcpy(dent->name, kname, kname_len);
-+	dent->name[kname_len] =3D '\0';
-+	len =3D UBIFS_DENT_NODE_SZ + kname_len + 1;
-+
- 	key_write(&key, dent->key);
+ static int do_sha256(const unsigned char *in, size_t len, unsigned char =
+*out)
+ {
+ 	unsigned int out_len;
+@@ -168,9 +153,9 @@ static ssize_t encrypt_block(const void *plaintext, s=
+ize_t size,
+ 	return ret;
+ }
 =20
- 	return add_node(&key, kname, kname_len, dent, len);
+-ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t size,
+-				 const void *key, uint64_t block_index,
+-				 void *ciphertext)
++static ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t si=
+ze,
++					const void *key, uint64_t block_index,
++					void *ciphertext)
+ {
+ 	const EVP_CIPHER *cipher =3D EVP_aes_128_cbc();
+=20
+@@ -182,9 +167,9 @@ ssize_t encrypt_block_aes128_cbc(const void *plaintex=
+t, size_t size,
+ 			     ciphertext, cipher);
+ }
+=20
+-ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t size,
+-				 const void *key, uint64_t block_index,
+-				 void *ciphertext)
++static ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t si=
+ze,
++					const void *key, uint64_t block_index,
++					void *ciphertext)
+ {
+ 	const EVP_CIPHER *cipher =3D EVP_aes_256_xts();
+=20
+@@ -252,8 +237,8 @@ static ssize_t encrypt_cbc_cts(const void *plaintext,=
+ size_t size,
+ 	return size;
+ }
+=20
+-ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size,
+-				const void *key, void *ciphertext)
++static ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size=
+,
++				      const void *key, void *ciphertext)
+ {
+ 	const EVP_CIPHER *cipher =3D EVP_aes_128_cbc();
+ 	if (!cipher) {
+@@ -264,8 +249,8 @@ ssize_t encrypt_aes128_cbc_cts(const void *plaintext,=
+ size_t size,
+ 	return encrypt_cbc_cts(plaintext, size, key, ciphertext, cipher);
+ }
+=20
+-ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size,
+-				const void *key, void *ciphertext)
++static ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size=
+,
++				      const void *key, void *ciphertext)
+ {
+ 	const EVP_CIPHER *cipher =3D EVP_aes_256_cbc();
+ 	if (!cipher) {
+@@ -293,6 +278,18 @@ ssize_t derive_key_aes(const void *deriving_key, con=
+st void *source_key,
+ 			  aes_key_len, NULL, 0, derived_key);
+ }
+=20
++static struct cipher ciphers[] =3D {
++	{
++		.name =3D "AES-128-CBC",
++		.encrypt_block =3D encrypt_block_aes128_cbc,
++		.encrypt_fname =3D encrypt_aes128_cbc_cts,
++	}, {
++		.name =3D "AES-256-XTS",
++		.encrypt_block =3D encrypt_block_aes256_xts,
++		.encrypt_fname =3D encrypt_aes256_cbc_cts,
++	}
++};
++
+ int crypto_init(void)
+ {
+ 	ERR_load_crypto_strings();
+diff --git a/ubifs-utils/mkfs.ubifs/crypto.h b/ubifs-utils/mkfs.ubifs/cry=
+pto.h
+index 5bff70fea29e..b6a1e004f46d 100644
+--- a/ubifs-utils/mkfs.ubifs/crypto.h
++++ b/ubifs-utils/mkfs.ubifs/crypto.h
+@@ -42,20 +42,6 @@ int crypto_init(void);
+=20
+ void crypto_cleanup(void);
+=20
+-ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t size,
+-				 const void *key, uint64_t block_index,
+-				 void *ciphertext);
+-
+-ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t size,
+-				 const void *key, uint64_t block_index,
+-				 void *ciphertext);
+-
+-ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size,
+-			       const void *key, void *ciphertext);
+-
+-ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size,
+-			       const void *key, void *ciphertext);
+-
+ ssize_t derive_key_aes(const void *deriving_key, const void *source_key,
+ 		       size_t source_key_len, void *derived_key);
+=20
 --=20
 2.19.1
