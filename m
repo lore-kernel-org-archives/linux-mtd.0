@@ -1,13 +1,26 @@
-From: Christoph Hellwig <hch@lst.de>
-To: maximlevitsky@gmail.com, boris.brezillon@bootlin.com,
- miquel.raynal@bootlin.com, richard@nod.at
-Cc: linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] mtd: rawnand: r852: use generic DMA API
-Date: Thu, 18 Oct 2018 14:59:35 +0200
-Message-Id: <20181018125935.9028-1-hch@lst.de>
+Date: Thu, 18 Oct 2018 16:24:49 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: Jianxin Pan <jianxin.pan@amlogic.com>
+Cc: <linux-mtd@lists.infradead.org>, Liang Yang <liang.yang@amlogic.com>,
+ Yixun Lan <yixun.lan@amlogic.com>, David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>, Marek Vasut
+ <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Jerome Brunet
+ <jbrunet@baylibre.com>, Neil Armstrong <narmstrong@baylibre.com>, Martin
+ Blumenstingl <martin.blumenstingl@googlemail.com>, Carlo Caione
+ <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Rob Herring
+ <robh@kernel.org>, Jian Hu <jian.hu@amlogic.com>, Hanjie Lin
+ <hanjie.lin@amlogic.com>, Victor Wan <victor.wan@amlogic.com>,
+ <linux-amlogic@lists.infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic
+ NAND flash controller
+Message-ID: <20181018162449.3fe433e7@bbrezillon>
+In-Reply-To: <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
+References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
+ <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,85 +30,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use the generic DMA API instead of the legacy PCI DMA API.
+On Thu, 18 Oct 2018 13:09:05 +0800
+Jianxin Pan <jianxin.pan@amlogic.com> wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- drivers/mtd/nand/raw/r852.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+> +static int meson_nfc_exec_op(struct nand_chip *chip,
+> +			     const struct nand_operation *op, bool check_only)
+> +{
+> +	struct mtd_info *mtd = nand_to_mtd(chip);
+> +	struct meson_nfc *nfc = nand_get_controller_data(chip);
+> +	const struct nand_op_instr *instr = NULL;
+> +	int ret = 0, cmd;
+> +	unsigned int op_id;
+> +	int i;
+> +
+> +	for (op_id = 0; op_id < op->ninstrs; op_id++) {
+> +		instr = &op->instrs[op_id];
+> +		switch (instr->type) {
+> +		case NAND_OP_CMD_INSTR:
+> +			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
+> +				meson_nfc_cmd_idle(nfc, nfc->timing.twb);
 
-diff --git a/drivers/mtd/nand/raw/r852.c b/drivers/mtd/nand/raw/r852.c
-index 39be65b35ac25..35f0b343cf908 100644
---- a/drivers/mtd/nand/raw/r852.c
-+++ b/drivers/mtd/nand/raw/r852.c
-@@ -151,8 +151,9 @@ static void r852_dma_done(struct r852_device *dev, int error)
- 	dev->dma_stage = 0;
- 
- 	if (dev->phys_dma_addr && dev->phys_dma_addr != dev->phys_bounce_buffer)
--		pci_unmap_single(dev->pci_dev, dev->phys_dma_addr, R852_DMA_LEN,
--			dev->dma_dir ? PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE);
-+		dma_unmap_single(&dev->pci_dev->dev, dev->phys_dma_addr,
-+			R852_DMA_LEN,
-+			dev->dma_dir ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
- }
- 
- /*
-@@ -197,11 +198,10 @@ static void r852_do_dma(struct r852_device *dev, uint8_t *buf, int do_read)
- 		bounce = 1;
- 
- 	if (!bounce) {
--		dev->phys_dma_addr = pci_map_single(dev->pci_dev, (void *)buf,
-+		dev->phys_dma_addr = dma_map_single(&dev->pci_dev->dev, buf,
- 			R852_DMA_LEN,
--			(do_read ? PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
--
--		if (pci_dma_mapping_error(dev->pci_dev, dev->phys_dma_addr))
-+			do_read ? DMA_FROM_DEVICE : DMA_TO_DEVICE);
-+		if (dma_mapping_error(&dev->pci_dev->dev, dev->phys_dma_addr))
- 			bounce = 1;
- 	}
- 
-@@ -835,7 +835,7 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 
- 	pci_set_master(pci_dev);
- 
--	error = pci_set_dma_mask(pci_dev, DMA_BIT_MASK(32));
-+	error = dma_set_mask(&pci_dev->dev, DMA_BIT_MASK(32));
- 	if (error)
- 		goto error2;
- 
-@@ -885,8 +885,8 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- 	dev->pci_dev = pci_dev;
- 	pci_set_drvdata(pci_dev, dev);
- 
--	dev->bounce_buffer = pci_alloc_consistent(pci_dev, R852_DMA_LEN,
--		&dev->phys_bounce_buffer);
-+	dev->bounce_buffer = dma_alloc_coherent(&pci_dev->dev, R852_DMA_LEN,
-+		&dev->phys_bounce_buffer, GFP_KERNEL);
- 
- 	if (!dev->bounce_buffer)
- 		goto error6;
-@@ -946,8 +946,8 @@ static int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
- error8:
- 	pci_iounmap(pci_dev, dev->mmio);
- error7:
--	pci_free_consistent(pci_dev, R852_DMA_LEN,
--		dev->bounce_buffer, dev->phys_bounce_buffer);
-+	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
-+			  dev->phys_bounce_buffer);
- error6:
- 	kfree(dev);
- error5:
-@@ -980,8 +980,8 @@ static void r852_remove(struct pci_dev *pci_dev)
- 	/* Cleanup */
- 	kfree(dev->tmp_buffer);
- 	pci_iounmap(pci_dev, dev->mmio);
--	pci_free_consistent(pci_dev, R852_DMA_LEN,
--		dev->bounce_buffer, dev->phys_bounce_buffer);
-+	dma_free_coherent(&pci_dev->dev, R852_DMA_LEN, dev->bounce_buffer,
-+			  dev->phys_bounce_buffer);
- 
- 	kfree(dev->chip);
- 	kfree(dev);
--- 
-2.19.1
+Hm, I don't want drivers to base their decisions on the opcode value.
+There's a ->delay_ns field in the instruction object, can't you use
+that one instead? Also, I don't understand why this is only needed for
+the STATUS command. It should normally be applied to all instructions.
+
+> +			cmd = nfc->param.chip_select | NFC_CMD_CLE;
+> +			cmd |= instr->ctx.cmd.opcode & 0xff;
+> +			writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> +			if (instr->ctx.cmd.opcode == NAND_CMD_STATUS)
+> +				meson_nfc_cmd_idle(nfc, nfc->timing.twhr);
+> +			break;
+> +
+> +		case NAND_OP_ADDR_INSTR:
+> +			for (i = 0; i < instr->ctx.addr.naddrs; i++) {
+> +				cmd = nfc->param.chip_select | NFC_CMD_ALE;
+> +				cmd |= instr->ctx.addr.addrs[i] & 0xff;
+> +				writel(cmd, nfc->reg_base + NFC_REG_CMD);
+> +			}
+> +			break;
+> +
+> +		case NAND_OP_DATA_IN_INSTR:
+> +			meson_nfc_read_buf(mtd, instr->ctx.data.buf.in,
+> +					   instr->ctx.data.len);
+> +			break;
+> +
+> +		case NAND_OP_DATA_OUT_INSTR:
+> +			meson_nfc_write_buf(mtd, instr->ctx.data.buf.out,
+> +					    instr->ctx.data.len);
+> +			break;
+> +
+> +		case NAND_OP_WAITRDY_INSTR:
+> +			meson_nfc_queue_rb(nfc, instr->ctx.waitrdy.timeout_ms);
+> +			break;
+> +		}
+> +	}
+> +	return ret;
+> +}
