@@ -1,15 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9RP-00045j-Qp
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:02 +0000
+ id 1gD9RP-00045e-Qt
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:09 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 11/42] mkfs.ubifs: Store directory name len in the temporary
- index
-Date: Thu, 18 Oct 2018 16:36:47 +0200
-Message-Id: <20181018143718.26298-12-richard@nod.at>
+Subject: [PATCH 10/42] mkfs.ubifs: Implement fscrypto context store as xattr
+Date: Thu, 18 Oct 2018 16:36:46 +0200
+Message-Id: <20181018143718.26298-11-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -23,149 +22,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-since names are no longer strings, we need to know the length.
-
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 53 ++++++++++++++++++-----------
+ 1 file changed, 34 insertions(+), 19 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index e391cdaae35f..469d5874eaa2 100644
+index 349f68ab8797..e391cdaae35f 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -73,6 +73,7 @@ struct idx_entry {
- 	struct idx_entry *prev;
- 	union ubifs_key key;
- 	char *name;
-+	int name_len;
- 	int lnum;
- 	int offs;
- 	int len;
-@@ -1069,7 +1070,7 @@ static void set_lprops(int lnum, int offs, int flag=
-s)
-  * @offs: node offset
-  * @len: node length
-  */
--static int add_to_index(union ubifs_key *key, char *name, int lnum, int =
-offs,
-+static int add_to_index(union ubifs_key *key, char *name, int name_len, =
-int lnum, int offs,
- 			int len)
- {
- 	struct idx_entry *e;
-@@ -1080,6 +1081,7 @@ static int add_to_index(union ubifs_key *key, char =
-*name, int lnum, int offs,
- 	e->prev =3D idx_list_last;
- 	e->key =3D *key;
- 	e->name =3D name;
-+	e->name_len =3D name_len;
- 	e->lnum =3D lnum;
- 	e->offs =3D offs;
- 	e->len =3D len;
-@@ -1138,7 +1140,7 @@ static int reserve_space(int len, int *lnum, int *o=
-ffs)
-  * @node: node
-  * @len: node length
-  */
--static int add_node(union ubifs_key *key, char *name, void *node, int le=
-n)
-+static int add_node(union ubifs_key *key, char *name, int name_len, void=
- *node, int len)
- {
- 	int err, lnum, offs;
-=20
-@@ -1151,7 +1153,7 @@ static int add_node(union ubifs_key *key, char *nam=
-e, void *node, int len)
- 	memcpy(leb_buf + offs, node, len);
- 	memset(leb_buf + offs + len, 0xff, ALIGN(len, 8) - len);
-=20
--	add_to_index(key, name, lnum, offs, len);
-+	add_to_index(key, name, name_len, lnum, offs, len);
-=20
+@@ -1156,36 +1156,45 @@ static int add_node(union ubifs_key *key, char *n=
+ame, void *node, int len)
  	return 0;
  }
-@@ -1194,7 +1196,7 @@ static int add_xattr(struct ubifs_ino_node *host_in=
-o, struct stat *st, ino_t inu
+=20
+-static int add_xattr(struct stat *st, ino_t inum, const void *data,
+-		     unsigned int data_len, struct qstr *nm)
++static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st, i=
+no_t inum,
++		     char *name, const void *data, unsigned int data_len)
+ {
+ 	struct ubifs_ino_node *ino;
+ 	struct ubifs_dent_node *xent;
++	struct qstr nm;
+ 	union ubifs_key xkey, nkey;
+ 	int len, ret;
+=20
+-	xent =3D xzalloc(sizeof(*xent) + nm->len + 1);
++	nm.name =3D name;
++	nm.len =3D strlen(name);
++
++	host_ino->xattr_cnt++;
++	host_ino->xattr_size +=3D CALC_DENT_SIZE(nm.len);
++	host_ino->xattr_size +=3D CALC_XATTR_BYTES(data_len);
++	host_ino->xattr_names +=3D nm.len;
++
++	xent =3D xzalloc(sizeof(*xent) + nm.len + 1);
+ 	ino =3D xzalloc(sizeof(*ino) + data_len);
+=20
+-	xent_key_init(c, &xkey, inum, nm);
++	xent_key_init(c, &xkey, inum, &nm);
+ 	xent->ch.node_type =3D UBIFS_XENT_NODE;
+ 	key_write(&xkey, &xent->key);
+=20
+-	len =3D UBIFS_XENT_NODE_SZ + nm->len + 1;
++	len =3D UBIFS_XENT_NODE_SZ + nm.len + 1;
+=20
+ 	xent->ch.len =3D len;
+ 	xent->padding1 =3D 0;
+ 	xent->type =3D UBIFS_ITYPE_DIR;
+-	xent->nlen =3D cpu_to_le16(nm->len);
++	xent->nlen =3D cpu_to_le16(nm.len);
+=20
+-	memcpy(xent->name, nm->name, nm->len + 1);
++	memcpy(xent->name, nm.name, nm.len + 1);
+=20
+ 	inum =3D ++c->highest_inum;
+ 	creat_sqnum =3D ++c->max_sqnum;
 =20
  	xent->inum =3D cpu_to_le64(inum);
 =20
--	ret =3D add_node(&xkey, nm.name, xent, len);
-+	ret =3D add_node(&xkey, nm.name, nm.len, xent, len);
+-	ret =3D add_node(&xkey, nm->name, xent, len);
++	ret =3D add_node(&xkey, nm.name, xent, len);
  	if (ret)
  		goto out;
 =20
-@@ -1226,7 +1228,7 @@ static int add_xattr(struct ubifs_ino_node *host_in=
-o, struct stat *st, ino_t inu
+@@ -1217,7 +1226,7 @@ static int add_xattr(struct stat *st, ino_t inum, c=
+onst void *data,
  	if (data_len)
  		memcpy(&ino->data, data, data_len);
 =20
--	ret =3D add_node(&nkey, nm.name, ino, UBIFS_INO_NODE_SZ + data_len) ;
-+	ret =3D add_node(&nkey, nm.name, nm.len, ino, UBIFS_INO_NODE_SZ + data_=
-len) ;
+-	ret =3D add_node(&nkey, nm->name, ino, UBIFS_INO_NODE_SZ + data_len) ;
++	ret =3D add_node(&nkey, nm.name, ino, UBIFS_INO_NODE_SZ + data_len) ;
 =20
  out:
  	free(xent);
-@@ -1499,7 +1501,7 @@ static int add_inode(struct stat *st, ino_t inum, v=
-oid *data,
+@@ -1270,7 +1279,6 @@ static int inode_add_xattr(struct ubifs_ino_node *h=
+ost_ino,
+ 			   const char *path_name, struct stat *st, ino_t inum)
+ {
+ 	int ret;
+-	struct qstr nm;
+ 	void *buf =3D NULL;
+ 	ssize_t len;
+ 	ssize_t pos =3D 0;
+@@ -1327,15 +1335,7 @@ static int inode_add_xattr(struct ubifs_ino_node *=
+host_ino,
+ 			continue;
+ 		}
+=20
+-		nm.name =3D name;
+-		nm.len =3D strlen(name);
+-
+-		host_ino->xattr_cnt++;
+-		host_ino->xattr_size +=3D CALC_DENT_SIZE(nm.len);
+-		host_ino->xattr_size +=3D CALC_XATTR_BYTES(attrsize);
+-		host_ino->xattr_names +=3D nm.len;
+-
+-		ret =3D add_xattr(st, inum, attrbuf, attrsize, &nm);
++		ret =3D add_xattr(host_ino, st, inum, name, attrbuf, attrsize);
+ 		if (ret < 0)
+ 			goto out_free;
+ 	}
+@@ -1415,6 +1415,15 @@ static inline int inode_add_selinux_xattr(struct u=
+bifs_ino_node *host_ino,
+ }
+ #endif
+=20
++static int set_fscrypt_context(struct ubifs_ino_node *host_ino, ino_t in=
+um,
++			       struct stat *host_st,
++			       struct fscrypt_context *fctx)
++{
++	return add_xattr(host_ino, host_st, inum,
++			 UBIFS_XATTR_NAME_ENCRYPTION_CONTEXT,
++			 fctx, sizeof(*fctx));
++}
++
+ /**
+  * add_inode - write an inode.
+  * @st: stat information of source inode
+@@ -1484,6 +1493,12 @@ static int add_inode(struct stat *st, ino_t inum, =
+void *data,
  			return ret;
  	}
 =20
--	return add_node(&key, NULL, ino, len);
-+	return add_node(&key, NULL, 0, ino, len);
++	if (fctx) {
++		ret =3D set_fscrypt_context(ino, inum, st, fctx);
++		if (ret < 0)
++			return ret;
++	}
++
+ 	return add_node(&key, NULL, ino, len);
  }
 =20
- /**
-@@ -1621,7 +1623,7 @@ static int add_dent_node(ino_t dir_inum, const char=
- *name, ino_t inum,
- 	if (!kname)
- 		return err_msg("cannot allocate memory");
-=20
--	return add_node(&key, kname, dent, len);
-+	return add_node(&key, kname, dname.len, dent, len);
- }
-=20
- /**
-@@ -1732,9 +1734,10 @@ static int add_file(const char *path_name, struct =
-stat *st, ino_t inum,
- 		compr_type =3D compress_data(buf, bytes_read, &dn->data,
- 					   &out_len, use_compr);
- 		dn->compr_type =3D cpu_to_le16(compr_type);
-+		//TODO: encrypt
- 		dn_len =3D UBIFS_DATA_NODE_SZ + out_len;
- 		/* Add data node to file system */
--		err =3D add_node(&key, NULL, dn, dn_len);
-+		err =3D add_node(&key, NULL, 0, dn, dn_len);
- 		if (err) {
- 			close(fd);
- 			return err;
-@@ -2121,13 +2124,13 @@ static int write_data(void)
- 	return flush_nodes();
- }
-=20
--static int namecmp(const char *name1, const char *name2)
-+static int namecmp(const struct idx_entry *e1, const struct idx_entry *e=
-2)
- {
--	size_t len1 =3D strlen(name1), len2 =3D strlen(name2);
-+	size_t len1 =3D e1->name_len, len2 =3D e2->name_len;
- 	size_t clen =3D (len1 < len2) ? len1 : len2;
- 	int cmp;
-=20
--	cmp =3D memcmp(name1, name2, clen);
-+	cmp =3D memcmp(e1->name, e2->name, clen);
- 	if (cmp)
- 		return cmp;
- 	return (len1 < len2) ? -1 : 1;
-@@ -2142,7 +2145,7 @@ static int cmp_idx(const void *a, const void *b)
- 	cmp =3D keys_cmp(&e1->key, &e2->key);
- 	if (cmp)
- 		return cmp;
--	return namecmp(e1->name, e2->name);
-+	return namecmp(e1, e2);
- }
-=20
- /**
 --=20
 2.19.1
