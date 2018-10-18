@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9SJ-0005Jn-T7
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:20 +0000
+ id 1gD9S1-0005J1-H8
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:02 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 41/42] mkfs.ubifs: Print key descriptor only when generated
-Date: Thu, 18 Oct 2018 16:37:17 +0200
-Message-Id: <20181018143718.26298-42-richard@nod.at>
+Subject: [PATCH 25/42] mkfs.ubifs: Specify padding policy via command line
+Date: Thu, 18 Oct 2018 16:37:01 +0200
+Message-Id: <20181018143718.26298-26-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -22,72 +22,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
+
+Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/fscrypt.c    | 5 +++--
- ubifs-utils/mkfs.ubifs/fscrypt.h    | 1 -
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 2 --
- 3 files changed, 3 insertions(+), 5 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 38 ++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
 
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.c b/ubifs-utils/mkfs.ubifs/fs=
-crypt.c
-index 3d4bff618050..6d2b650d626d 100644
---- a/ubifs-utils/mkfs.ubifs/fscrypt.c
-+++ b/ubifs-utils/mkfs.ubifs/fscrypt.c
-@@ -65,13 +65,13 @@ void free_fscrypt_context(struct fscrypt_context *fct=
-x)
- 	free(fctx);
- }
-=20
--void print_fscrypt_master_key_descriptor(struct fscrypt_context *fctx)
-+static void print_fscrypt_master_key_descriptor(__u8 *master_key_descrip=
-tor)
- {
- 	int i;
-=20
- 	normsg_cont("fscrypt master key descriptor: 0x");
- 	for (i =3D 0; i < FS_KEY_DESCRIPTOR_SIZE; i++) {
--		printf("%02x", fctx->master_key_descriptor[i]);
-+		printf("%02x", master_key_descriptor[i]);
- 	}
- 	printf("\n");
- }
-@@ -248,6 +248,7 @@ struct fscrypt_context *init_fscrypt_context(const ch=
-ar *cipher_name,
- 	if (!key_descriptor) {
- 		if (derive_key_descriptor(fscrypt_masterkey, master_key_descriptor))
- 			return NULL;
-+		print_fscrypt_master_key_descriptor(master_key_descriptor);
- 	} else {
- 		if (parse_key_descriptor(key_descriptor, master_key_descriptor))
- 			return NULL;
-diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.h b/ubifs-utils/mkfs.ubifs/fs=
-crypt.h
-index 3b717b4359c6..34b799c94c2b 100644
---- a/ubifs-utils/mkfs.ubifs/fscrypt.h
-+++ b/ubifs-utils/mkfs.ubifs/fscrypt.h
-@@ -101,7 +101,6 @@ struct fscrypt_symlink_data {
- unsigned char *calc_fscrypt_subkey(struct fscrypt_context *fctx);
- struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_context *=
-fctx);
- void free_fscrypt_context(struct fscrypt_context *fctx);
--void print_fscrypt_master_key_descriptor(struct fscrypt_context *fctx);
- unsigned int fscrypt_fname_encrypted_size(struct fscrypt_context *fctx,
- 					  unsigned int ilen);
- int encrypt_path(void **outbuf, void *data, unsigned int data_len,
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index 7073bf052688..a60d392bbc81 100644
+index 70c306bdf94e..9935fceafb77 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -772,8 +772,6 @@ static int get_options(int argc, char**argv)
+@@ -217,7 +217,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
+=20
+-static const char *optstring =3D "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:=
+j:UQqaK:b:";
++static const char *optstring =3D "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:=
+j:UQqaK:b:P:";
+=20
+ static const struct option longopts[] =3D {
+ 	{"root",               1, NULL, 'r'},
+@@ -245,6 +245,7 @@ static const struct option longopts[] =3D {
+ 	{"selinux",            1, NULL, 's'},
+ 	{"key",                1, NULL, 'K'},
+ 	{"key-descriptor",     1, NULL, 'b'},
++	{"padding",            1, NULL, 'P'},
+ 	{NULL, 0, NULL, 0}
+ };
+=20
+@@ -291,6 +292,8 @@ static const char *helptext =3D
+ "-s, --selinux=3DFILE       Selinux context file\n"
+ "-K, --key=3DFILE           load an encryption key from a specified file=
+.\n"
+ "-b, --key-descriptor=3DHEX specify the key descriptor as a hex string.\=
+n"
++"-P, --padding=3DNUM        specify padding policy for encrypting filena=
+mes\n"
++"                         (default =3D 4).\n"
+ "-h, --help               display this help text\n\n"
+ "Note, SIZE is specified in bytes, but it may also be specified in Kilob=
+ytes,\n"
+ "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+@@ -713,7 +716,7 @@ static int open_ubi(const char *node)
+=20
+ static int get_options(int argc, char**argv)
+ {
+-	int opt, i;
++	int opt, i, fscrypt_flags =3D FS_POLICY_FLAGS_PAD_4;
+ 	const char *key_file =3D NULL, *key_desc =3D NULL;
+ 	const char *tbl_file =3D NULL;
+ 	struct stat st;
+@@ -904,6 +907,35 @@ static int get_options(int argc, char**argv)
+ 			}
+ 			key_desc =3D optarg;
+ 			break;
++		case 'P': {
++			int error =3D 0;
++			unsigned long num;
++
++			num =3D simple_strtoul(optarg, &error);
++			if (error)
++				num =3D -1;
++
++			fscrypt_flags &=3D ~FS_POLICY_FLAGS_PAD_MASK;
++
++			switch (num) {
++			case 4:
++				fscrypt_flags |=3D FS_POLICY_FLAGS_PAD_4;
++				break;
++			case 8:
++				fscrypt_flags |=3D FS_POLICY_FLAGS_PAD_8;
++				break;
++			case 16:
++				fscrypt_flags |=3D FS_POLICY_FLAGS_PAD_16;
++				break;
++			case 32:
++				fscrypt_flags |=3D FS_POLICY_FLAGS_PAD_32;
++				break;
++			default:
++				return errmsg("invalid padding policy '%s'",
++						optarg);
++			}
++			break;
++		}
+ 		}
+ 	}
+=20
+@@ -931,7 +963,7 @@ static int get_options(int argc, char**argv)
+ 		c->double_hash =3D 1;
+ 		c->encrypted =3D 1;
+=20
+-		root_fctx =3D init_fscrypt_context(FS_POLICY_FLAGS_PAD_4,
++		root_fctx =3D init_fscrypt_context(fscrypt_flags,
  						key_file, key_desc);
  		if (!root_fctx)
  			return -1;
--
--		print_fscrypt_master_key_descriptor(root_fctx);
- #else
- 		return err_msg("mkfs.ubifs was built without crypto support.");
- #endif
 --=20
 2.19.1
