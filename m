@@ -1,15 +1,15 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
- by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9S6-0002Qp-IJ
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:08 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gD9Rv-0004KS-98
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:26 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 22/42] mkfs.ubifs: Replace constant values with parameters in
- init_fscrypt_context
-Date: Thu, 18 Oct 2018 16:36:58 +0200
-Message-Id: <20181018143718.26298-23-richard@nod.at>
+Subject: [PATCH 20/42] mkfs.ubifs: Seperate path encryption from symlink
+ encryption helper
+Date: Thu, 18 Oct 2018 16:36:56 +0200
+Message-Id: <20181018143718.26298-21-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -28,60 +28,86 @@ From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 36 ++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 11 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index ae1d26726deb..8be84ca1e99c 100644
+index 66ca061cc225..49a895ae3682 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -581,16 +581,20 @@ static void print_fscrypt_master_key_descriptor(str=
-uct fscrypt_context *fctx)
- 	normsg("");
+@@ -1451,24 +1451,20 @@ static int set_fscrypt_context(struct ubifs_ino_n=
+ode *host_ino, ino_t inum,
+ 			 fctx, sizeof(*fctx));
  }
 =20
--static struct fscrypt_context *init_fscrypt_context(void)
-+static struct fscrypt_context *init_fscrypt_context(unsigned int flags,
-+						void *master_key_descriptor,
-+						void *nonce)
+-static int encrypt_symlink(void *dst, void *data, unsigned int data_len,
+-			   struct fscrypt_context *fctx)
++static int encrypt_path(void **outbuf, void *data, unsigned int data_len=
+,
++			unsigned int max_namelen, struct fscrypt_context *fctx)
  {
- 	struct fscrypt_context *new_fctx =3D xmalloc(sizeof(*new_fctx));
+-	struct fscrypt_symlink_data *sd;
+-	void *inbuf, *outbuf, *crypt_key;
+-	unsigned int max_namelen =3D UBIFS_MAX_INO_DATA;
++	void *inbuf, *crypt_key;
+ 	unsigned int padding =3D 4 << (fctx->flags & FS_POLICY_FLAGS_PAD_MASK);
+ 	unsigned int cryptlen;
+-	unsigned int link_disk_len =3D fscrypt_fname_encrypted_size(fctx, data_=
+len) + sizeof(struct fscrypt_symlink_data);
 =20
- 	new_fctx->format =3D FS_ENCRYPTION_CONTEXT_FORMAT_V1;
- 	new_fctx->contents_encryption_mode =3D FS_ENCRYPTION_MODE_AES_128_CBC;
- 	new_fctx->filenames_encryption_mode =3D FS_ENCRYPTION_MODE_AES_128_CTS;
--	new_fctx->flags =3D FS_POLICY_FLAGS_PAD_4;
--	RAND_bytes((void *)&new_fctx->nonce, FS_KEY_DERIVATION_NONCE_SIZE);
-+	new_fctx->flags =3D flags;
+ 	cryptlen =3D max_t(unsigned int, data_len, FS_CRYPTO_BLOCK_SIZE);
+ 	cryptlen =3D round_up(cryptlen, padding);
+ 	cryptlen =3D min(cryptlen, max_namelen);
 =20
-+	memcpy(&new_fctx->nonce, nonce, FS_KEY_DERIVATION_NONCE_SIZE);
-+	memcpy(&new_fctx->master_key_descriptor, master_key_descriptor,
-+		FS_KEY_DESCRIPTOR_SIZE);
- 	return new_fctx;
- }
+-	sd =3D xzalloc(link_disk_len);
+ 	inbuf =3D xmalloc(cryptlen);
+ 	/* CTS mode needs a block size aligned buffer */
+-	outbuf =3D xmalloc(round_up(cryptlen, FS_CRYPTO_BLOCK_SIZE));
++	*outbuf =3D xmalloc(round_up(cryptlen, FS_CRYPTO_BLOCK_SIZE));
 =20
-@@ -2779,6 +2783,8 @@ static int close_target(void)
-  */
- static int init(void)
- {
-+	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
-+	__u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
- 	int err, i, main_lebs, big_lpt =3D 0, sz;
+ 	memset(inbuf, 0, cryptlen);
+ 	memcpy(inbuf, data, data_len);
+@@ -1476,16 +1472,34 @@ static int encrypt_symlink(void *dst, void *data,=
+ unsigned int data_len,
+ 	crypt_key =3D calc_fscrypt_subkey(fctx);
+ 	if (!crypt_key)
+ 		return err_msg("could not compute subkey");
+-	if (encrypt_aes128_cbc_cts(inbuf, cryptlen, crypt_key, outbuf) < 0)
++	if (encrypt_aes128_cbc_cts(inbuf, cryptlen, crypt_key, *outbuf) < 0)
+ 		return err_msg("could not encrypt filename");
 =20
- 	c->highest_inum =3D UBIFS_FIRST_INO;
-@@ -2821,7 +2827,11 @@ static int init(void)
- 	hash_table =3D xzalloc(sz);
-=20
- 	//TODO make this a parameter
--	root_fctx =3D init_fscrypt_context();
-+	RAND_bytes((void *)master_key_descriptor, FS_KEY_DESCRIPTOR_SIZE);
-+	RAND_bytes((void *)nonce, FS_KEY_DERIVATION_NONCE_SIZE);
++	free(crypt_key);
++	free(inbuf);
++	return cryptlen;
++}
 +
-+	root_fctx =3D init_fscrypt_context(FS_POLICY_FLAGS_PAD_4,
-+					master_key_descriptor, nonce);
- 	print_fscrypt_master_key_descriptor(root_fctx);
- 	c->double_hash =3D 1;
- 	c->encrypted =3D 1;
++static int encrypt_symlink(void *dst, void *data, unsigned int data_len,
++			   struct fscrypt_context *fctx)
++{
++	struct fscrypt_symlink_data *sd;
++	void *outbuf;
++	unsigned int link_disk_len =3D fscrypt_fname_encrypted_size(fctx, data_=
+len) + sizeof(struct fscrypt_symlink_data);
++	unsigned int cryptlen;
++	int ret;
++
++	ret =3D encrypt_path(&outbuf, data, data_len, UBIFS_MAX_INO_DATA, fctx)=
+;
++	if (ret < 0)
++		return ret;
++	cryptlen =3D ret;
++
++	sd =3D xzalloc(link_disk_len);
+ 	memcpy(sd->encrypted_path, outbuf, cryptlen);
+ 	sd->len =3D cpu_to_le16(cryptlen);
+ 	memcpy(dst, sd, link_disk_len);
+ 	((char *)dst)[link_disk_len - 1] =3D '\0';
+=20
+-	free(crypt_key);
+-	free(inbuf);
+ 	free(outbuf);
+ 	free(sd);
+ 	return link_disk_len;
 --=20
 2.19.1
