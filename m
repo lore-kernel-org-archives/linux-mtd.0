@@ -1,15 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9Rv-0004N9-8L
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:48 +0000
+ id 1gD9SD-0004T0-MF
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:40:52 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 27/42] mkfs.ubifs: Remove cipher implementations from public
- header
-Date: Thu, 18 Oct 2018 16:37:03 +0200
-Message-Id: <20181018143718.26298-28-richard@nod.at>
+Subject: [PATCH 31/42] mkfs.ubifs: Accept 0x prefix for key descriptor
+Date: Thu, 18 Oct 2018 16:37:07 +0200
+Message-Id: <20181018143718.26298-32-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -28,139 +27,24 @@ From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/crypto.c | 47 +++++++++++++++------------------
- ubifs-utils/mkfs.ubifs/crypto.h | 14 ----------
- 2 files changed, 22 insertions(+), 39 deletions(-)
+ ubifs-utils/mkfs.ubifs/fscrypt.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/ubifs-utils/mkfs.ubifs/crypto.c b/ubifs-utils/mkfs.ubifs/cry=
-pto.c
-index f249b49b5b59..f7b51357c04a 100644
---- a/ubifs-utils/mkfs.ubifs/crypto.c
-+++ b/ubifs-utils/mkfs.ubifs/crypto.c
-@@ -27,21 +27,6 @@
- #include "common.h"
- #include "mtd_swab.h"
-=20
--
--static struct cipher ciphers[] =3D {
--	{
--		.name =3D "AES-128-CBC",
--		.encrypt_block =3D encrypt_block_aes128_cbc,
--		.encrypt_fname =3D encrypt_aes128_cbc_cts,
--	}, {
--		.name =3D "AES-256-XTS",
--		.encrypt_block =3D encrypt_block_aes256_xts,
--		.encrypt_fname =3D encrypt_aes256_cbc_cts,
--	}
--};
--
--
--
- static int do_sha256(const unsigned char *in, size_t len, unsigned char =
-*out)
+diff --git a/ubifs-utils/mkfs.ubifs/fscrypt.c b/ubifs-utils/mkfs.ubifs/fs=
+crypt.c
+index 6d1fa4ba9d3f..02132e205a35 100644
+--- a/ubifs-utils/mkfs.ubifs/fscrypt.c
++++ b/ubifs-utils/mkfs.ubifs/fscrypt.c
+@@ -165,6 +165,9 @@ static int parse_key_descriptor(const char *desc, __u=
+8 *dst)
  {
- 	unsigned int out_len;
-@@ -168,9 +153,9 @@ static ssize_t encrypt_block(const void *plaintext, s=
-ize_t size,
- 	return ret;
- }
+ 	int i, hi, lo;
 =20
--ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t size,
--				 const void *key, uint64_t block_index,
--				 void *ciphertext)
-+static ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t si=
-ze,
-+					const void *key, uint64_t block_index,
-+					void *ciphertext)
- {
- 	const EVP_CIPHER *cipher =3D EVP_aes_128_cbc();
-=20
-@@ -182,9 +167,9 @@ ssize_t encrypt_block_aes128_cbc(const void *plaintex=
-t, size_t size,
- 			     ciphertext, cipher);
- }
-=20
--ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t size,
--				 const void *key, uint64_t block_index,
--				 void *ciphertext)
-+static ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t si=
-ze,
-+					const void *key, uint64_t block_index,
-+					void *ciphertext)
- {
- 	const EVP_CIPHER *cipher =3D EVP_aes_256_xts();
-=20
-@@ -252,8 +237,8 @@ static ssize_t encrypt_cbc_cts(const void *plaintext,=
- size_t size,
- 	return size;
- }
-=20
--ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size,
--				const void *key, void *ciphertext)
-+static ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size=
-,
-+				      const void *key, void *ciphertext)
- {
- 	const EVP_CIPHER *cipher =3D EVP_aes_128_cbc();
- 	if (!cipher) {
-@@ -264,8 +249,8 @@ ssize_t encrypt_aes128_cbc_cts(const void *plaintext,=
- size_t size,
- 	return encrypt_cbc_cts(plaintext, size, key, ciphertext, cipher);
- }
-=20
--ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size,
--				const void *key, void *ciphertext)
-+static ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size=
-,
-+				      const void *key, void *ciphertext)
- {
- 	const EVP_CIPHER *cipher =3D EVP_aes_256_cbc();
- 	if (!cipher) {
-@@ -293,6 +278,18 @@ ssize_t derive_key_aes(const void *deriving_key, con=
-st void *source_key,
- 			  aes_key_len, NULL, 0, derived_key);
- }
-=20
-+static struct cipher ciphers[] =3D {
-+	{
-+		.name =3D "AES-128-CBC",
-+		.encrypt_block =3D encrypt_block_aes128_cbc,
-+		.encrypt_fname =3D encrypt_aes128_cbc_cts,
-+	}, {
-+		.name =3D "AES-256-XTS",
-+		.encrypt_block =3D encrypt_block_aes256_xts,
-+		.encrypt_fname =3D encrypt_aes256_cbc_cts,
-+	}
-+};
++	if (desc[0] =3D=3D '0' && (desc[1] =3D=3D 'x' || desc[1] =3D=3D 'X'))
++		desc +=3D 2;
 +
- int crypto_init(void)
- {
- 	ERR_load_crypto_strings();
-diff --git a/ubifs-utils/mkfs.ubifs/crypto.h b/ubifs-utils/mkfs.ubifs/cry=
-pto.h
-index 5bff70fea29e..b6a1e004f46d 100644
---- a/ubifs-utils/mkfs.ubifs/crypto.h
-+++ b/ubifs-utils/mkfs.ubifs/crypto.h
-@@ -42,20 +42,6 @@ int crypto_init(void);
-=20
- void crypto_cleanup(void);
-=20
--ssize_t encrypt_block_aes128_cbc(const void *plaintext, size_t size,
--				 const void *key, uint64_t block_index,
--				 void *ciphertext);
--
--ssize_t encrypt_block_aes256_xts(const void *plaintext, size_t size,
--				 const void *key, uint64_t block_index,
--				 void *ciphertext);
--
--ssize_t encrypt_aes128_cbc_cts(const void *plaintext, size_t size,
--			       const void *key, void *ciphertext);
--
--ssize_t encrypt_aes256_cbc_cts(const void *plaintext, size_t size,
--			       const void *key, void *ciphertext);
--
- ssize_t derive_key_aes(const void *deriving_key, const void *source_key,
- 		       size_t source_key_len, void *derived_key);
-=20
+ 	for (i =3D 0; i < FS_KEY_DESCRIPTOR_SIZE; ++i) {
+ 		if (!desc[i * 2] || !desc[i * 2 + 1]) {
+ 			err_msg("key descriptor '%s' is too short", desc);
 --=20
 2.19.1
