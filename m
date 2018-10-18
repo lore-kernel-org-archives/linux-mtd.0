@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9RP-000450-Ry
- for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:38:49 +0000
+ id 1gD9RP-000453-Rz
+ for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:38:50 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 06/42] mkfs.ubifs: Add fscrypto defines
-Date: Thu, 18 Oct 2018 16:36:42 +0200
-Message-Id: <20181018143718.26298-7-richard@nod.at>
+Subject: [PATCH 07/42] mkfs.ubifs: Add basic fscrypto functions
+Date: Thu, 18 Oct 2018 16:36:43 +0200
+Message-Id: <20181018143718.26298-8-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -22,75 +22,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-most of them should be UAPI, therefore check using #ifndef
+...maybe we should add them to crypto.c?
 
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 50 +++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 67 +++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index e7acf17f6c96..2649c34cdd68 100644
+index 2649c34cdd68..fc1b0cb1f6cc 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -109,6 +109,56 @@ struct inum_mapping {
- 	struct stat st;
- };
+@@ -518,6 +518,73 @@ static long long get_bytes(const char *str)
 =20
-+#ifndef FS_KEY_DESCRIPTOR_SIZE
-+#define FS_KEY_DESCRIPTOR_SIZE  8
-+#endif
-+#define FS_ENCRYPTION_CONTEXT_FORMAT_V1 1
-+#define FS_KEY_DERIVATION_NONCE_SIZE	16
+ 	return bytes;
+ }
 +
-+#ifndef FS_ENCRYPTION_MODE_AES_128_CBC
-+#define FS_ENCRYPTION_MODE_AES_128_CBC 5
-+#endif
++static unsigned char *calc_fscrypt_subkey(struct fscrypt_context *fctx)
++{
++	int ret;
++	unsigned char *new_key =3D xmalloc(FS_MAX_KEY_SIZE);
 +
-+#ifndef FS_ENCRYPTION_MODE_AES_128_CTS
-+#define FS_ENCRYPTION_MODE_AES_128_CTS 6
-+#endif
++	ret =3D derive_key_aes(fctx->nonce, fscrypt_masterkey, new_key);
++	if (ret < 0) {
++		err_msg("derive_key_aes failed: %i\n", ret);
 +
-+#ifndef FS_POLICY_FLAGS_VALID
-+#define FS_POLICY_FLAGS_PAD_4		0x00
-+#define FS_POLICY_FLAGS_PAD_8		0x01
-+#define FS_POLICY_FLAGS_PAD_16		0x02
-+#define FS_POLICY_FLAGS_PAD_32		0x03
-+#define FS_POLICY_FLAGS_PAD_MASK	0x03
-+#define FS_POLICY_FLAGS_VALID		0x03
-+#endif
++		free(new_key);
++		new_key =3D NULL;
++	}
 +
-+#define FS_CRYPTO_BLOCK_SIZE	16
++	return new_key;
++}
 +
-+/**
-+ * Encryption context for inode
-+ *
-+ * Protector format:
-+ *  1 byte: Protector format (1 =3D this version)
-+ *  1 byte: File contents encryption mode
-+ *  1 byte: File names encryption mode
-+ *  1 byte: Flags
-+ *  8 bytes: Master Key descriptor
-+ *  16 bytes: Encryption Key derivation nonce
-+ */
-+struct fscrypt_context {
-+	__u8 format;
-+	__u8 contents_encryption_mode;
-+	__u8 filenames_encryption_mode;
-+	__u8 flags;
-+	__u8 master_key_descriptor[FS_KEY_DESCRIPTOR_SIZE];
-+	__u8 nonce[FS_KEY_DERIVATION_NONCE_SIZE];
-+} __attribute__((packed));
++static struct fscrypt_context *inherit_fscrypt_context(struct fscrypt_co=
+ntext *fctx)
++{
++	struct fscrypt_context *new_fctx =3D NULL;
 +
-+#ifndef FS_MAX_KEY_SIZE
-+#define FS_MAX_KEY_SIZE	64
-+#endif
-+static __u8 fscrypt_masterkey[FS_MAX_KEY_SIZE];
++	if (fctx) {
++		new_fctx =3D xmalloc(sizeof(*new_fctx));
++		new_fctx->format =3D fctx->format;
++		new_fctx->contents_encryption_mode =3D fctx->contents_encryption_mode;
++		new_fctx->filenames_encryption_mode =3D fctx->filenames_encryption_mod=
+e;
++		new_fctx->flags =3D fctx->flags;
++		memcpy(new_fctx->master_key_descriptor, fctx->master_key_descriptor,
++		       FS_KEY_DESCRIPTOR_SIZE);
++		RAND_bytes((void *)&new_fctx->nonce, FS_KEY_DERIVATION_NONCE_SIZE);
++	}
 +
- /*
-  * Because we copy functions from the kernel, we use a subset of the UBI=
-FS
-  * file-system description object struct ubifs_info.
++	return new_fctx;
++}
++
++static void free_fscrypt_context(struct fscrypt_context *fctx)
++{
++	free(fctx);
++}
++
++static void print_fscrypt_master_key_descriptor(struct fscrypt_context *=
+fctx)
++{
++	int i;
++
++	normsg_cont("fscrypt master key descriptor: ");
++	for (i =3D 0; i < FS_KEY_DESCRIPTOR_SIZE; i++) {
++		normsg_cont("%02x", fctx->master_key_descriptor[i]);
++	}
++	normsg("");
++}
++
++static struct fscrypt_context *init_fscrypt_context(void)
++{
++	struct fscrypt_context *new_fctx =3D xmalloc(sizeof(*new_fctx));
++
++	new_fctx->format =3D FS_ENCRYPTION_CONTEXT_FORMAT_V1;
++	new_fctx->contents_encryption_mode =3D FS_ENCRYPTION_MODE_AES_128_CBC;
++	new_fctx->filenames_encryption_mode =3D FS_ENCRYPTION_MODE_AES_128_CTS;
++	//TODO  accept padding via a parameter
++	new_fctx->flags =3D FS_POLICY_FLAGS_PAD_4;
++	//TODO  accept descriptor via a parameter
++	RAND_bytes((void *)&new_fctx->master_key_descriptor, FS_KEY_DESCRIPTOR_=
+SIZE);
++	RAND_bytes((void *)&new_fctx->nonce, FS_KEY_DERIVATION_NONCE_SIZE);
++
++	return new_fctx;
++}
++
+ /**
+  * open_ubi - open the UBI volume.
+  * @node: name of the UBI volume character device to fetch information a=
+bout
 --=20
 2.19.1
