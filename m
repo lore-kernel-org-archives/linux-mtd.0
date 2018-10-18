@@ -1,14 +1,14 @@
 Received: from lilium.sigma-star.at ([109.75.188.150])
  by casper.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gD9S6-0002RX-IH
+ id 1gD9S6-0002Qr-II
  for linux-mtd@lists.infradead.org; Thu, 18 Oct 2018 14:39:10 +0000
 From: Richard Weinberger <richard@nod.at>
 To: linux-mtd@lists.infradead.org
 Cc: david.oberhollenzer@sigma-star.at,
 	Richard Weinberger <richard@nod.at>
-Subject: [PATCH 29/42] mkfs.ubifs: Cleanup over-long lines
-Date: Thu, 18 Oct 2018 16:37:05 +0200
-Message-Id: <20181018143718.26298-30-richard@nod.at>
+Subject: [PATCH 26/42] mkfs.ubifs: Initial support for encryption command lines
+Date: Thu, 18 Oct 2018 16:37:02 +0200
+Message-Id: <20181018143718.26298-27-richard@nod.at>
 In-Reply-To: <20181018143718.26298-1-richard@nod.at>
 References: <20181018143718.26298-1-richard@nod.at>
 MIME-Version: 1.0
@@ -27,127 +27,139 @@ From: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: David Oberhollenzer <david.oberhollenzer@sigma-star.at>
 Signed-off-by: Richard Weinberger <richard@nod.at>
 ---
- ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 35 +++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ ubifs-utils/mkfs.ubifs/mkfs.ubifs.c | 39 +++++++++++++++++++++++------
+ 1 file changed, 32 insertions(+), 7 deletions(-)
 
 diff --git a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c b/ubifs-utils/mkfs.ubifs=
 /mkfs.ubifs.c
-index 1710e25b88ee..9bd15a2f047a 100644
+index 9935fceafb77..707758a42f4f 100644
 --- a/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
 +++ b/ubifs-utils/mkfs.ubifs/mkfs.ubifs.c
-@@ -1030,8 +1030,8 @@ static void set_lprops(int lnum, int offs, int flag=
-s)
-  * @offs: node offset
-  * @len: node length
-  */
--static int add_to_index(union ubifs_key *key, char *name, int name_len, =
-int lnum, int offs,
--			int len)
-+static int add_to_index(union ubifs_key *key, char *name, int name_len,
-+			int lnum, int offs, int len)
- {
- 	struct idx_entry *e;
+@@ -186,6 +186,7 @@ int yes;
+ static char *root;
+ static int root_len;
+ static struct fscrypt_context *root_fctx;
++static struct cipher *fscrypt_cipher;
+ static struct stat root_st;
+ static char *output;
+ static int out_fd;
+@@ -217,7 +218,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
 =20
-@@ -1102,11 +1102,12 @@ static int reserve_space(int len, int *lnum, int =
-*offs)
-  */
- static int add_node(union ubifs_key *key, char *name, int name_len, void=
- *node, int len)
- {
--	int err, lnum, offs;
-+	int err, lnum, offs, type =3D key_type(key);
+-static const char *optstring =3D "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:=
+j:UQqaK:b:P:";
++static const char *optstring =3D "d:r:m:o:D:yh?vVe:c:g:f:Fp:k:x:X:j:R:l:=
+j:UQqaK:b:P:C:";
 =20
--	if (key_type(key) =3D=3D UBIFS_DENT_KEY || key_type(key) =3D=3D UBIFS_X=
-ENT_KEY) {
-+	if (type =3D=3D UBIFS_DENT_KEY || type =3D=3D UBIFS_XENT_KEY) {
- 		if (!name)
--			return err_msg("Directory entry or xattr without name!");
-+			return err_msg("Directory entry or xattr "
-+					"without name!");
- 	} else {
- 		if (name)
- 			return err_msg("Name given for non dir/xattr node!");
-@@ -1126,8 +1127,9 @@ static int add_node(union ubifs_key *key, char *nam=
-e, int name_len, void *node,
- 	return 0;
- }
+ static const struct option longopts[] =3D {
+ 	{"root",               1, NULL, 'r'},
+@@ -246,6 +247,7 @@ static const struct option longopts[] =3D {
+ 	{"key",                1, NULL, 'K'},
+ 	{"key-descriptor",     1, NULL, 'b'},
+ 	{"padding",            1, NULL, 'P'},
++	{"cipher",             1, NULL, 'C'},
+ 	{NULL, 0, NULL, 0}
+ };
 =20
--static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st, i=
-no_t inum,
--		     char *name, const void *data, unsigned int data_len)
-+static int add_xattr(struct ubifs_ino_node *host_ino, struct stat *st,
-+		     ino_t inum, char *name, const void *data,
-+		     unsigned int data_len)
+@@ -294,6 +296,8 @@ static const char *helptext =3D
+ "-b, --key-descriptor=3DHEX specify the key descriptor as a hex string.\=
+n"
+ "-P, --padding=3DNUM        specify padding policy for encrypting filena=
+mes\n"
+ "                         (default =3D 4).\n"
++"-C, --cipher=3DNAME        Specify cipher to use for file level encrypt=
+ion\n"
++"                         (default is \"AES-128-CBC\").\n"
+ "-h, --help               display this help text\n\n"
+ "Note, SIZE is specified in bytes, but it may also be specified in Kilob=
+ytes,\n"
+ "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+@@ -718,7 +722,7 @@ static int get_options(int argc, char**argv)
  {
- 	struct ubifs_ino_node *ino;
- 	struct ubifs_dent_node *xent;
-@@ -1399,10 +1401,13 @@ static int encrypt_symlink(void *dst, void *data,=
- unsigned int data_len,
- {
- 	struct fscrypt_symlink_data *sd;
- 	void *outbuf;
--	unsigned int link_disk_len =3D fscrypt_fname_encrypted_size(fctx, data_=
-len) + sizeof(struct fscrypt_symlink_data);
-+	unsigned int link_disk_len;
+ 	int opt, i, fscrypt_flags =3D FS_POLICY_FLAGS_PAD_4;
+ 	const char *key_file =3D NULL, *key_desc =3D NULL;
+-	const char *tbl_file =3D NULL;
++	const char *tbl_file =3D NULL, *cipher_name =3D "AES-128-CBC";
+ 	struct stat st;
+ 	char *endp;
+=20
+@@ -797,6 +801,8 @@ static int get_options(int argc, char**argv)
+ 			exit(EXIT_SUCCESS);
+ 		case '?':
+ 			printf("%s", helptext);
++			printf("\n\nSupported ciphers:\n");
++			list_ciphers(stdout);
+ 			exit(-1);
+ 		case 'v':
+ 			verbose =3D 1;
+@@ -936,6 +942,9 @@ static int get_options(int argc, char**argv)
+ 			}
+ 			break;
+ 		}
++		case 'C':
++			cipher_name =3D optarg;
++			break;
+ 		}
+ 	}
+=20
+@@ -967,6 +976,15 @@ static int get_options(int argc, char**argv)
+ 						key_file, key_desc);
+ 		if (!root_fctx)
+ 			return -1;
++
++		fscrypt_cipher =3D get_cipher(cipher_name);
++		if (!fscrypt_cipher) {
++			fprintf(stderr, "Cannot find cipher '%s'\n"
++				"Try `%s --help' for more information\n",
++				cipher_name, PROGRAM_NAME);
++			return -1;
++		}
++
+ 		print_fscrypt_master_key_descriptor(root_fctx);
+ 	}
+=20
+@@ -1604,6 +1622,7 @@ static int encrypt_path(void **outbuf, void *data, =
+unsigned int data_len,
+ 	void *inbuf, *crypt_key;
+ 	unsigned int padding =3D 4 << (fctx->flags & FS_POLICY_FLAGS_PAD_MASK);
  	unsigned int cryptlen;
- 	int ret;
++	int ret;
 =20
-+	link_disk_len =3D sizeof(struct fscrypt_symlink_data);
-+	link_disk_len +=3D fscrypt_fname_encrypted_size(fctx, data_len);
+ 	cryptlen =3D max_t(unsigned int, data_len, FS_CRYPTO_BLOCK_SIZE);
+ 	cryptlen =3D round_up(cryptlen, padding);
+@@ -1619,7 +1638,10 @@ static int encrypt_path(void **outbuf, void *data,=
+ unsigned int data_len,
+ 	crypt_key =3D calc_fscrypt_subkey(fctx);
+ 	if (!crypt_key)
+ 		return err_msg("could not compute subkey");
+-	if (encrypt_aes128_cbc_cts(inbuf, cryptlen, crypt_key, *outbuf) < 0)
 +
- 	ret =3D encrypt_path(&outbuf, data, data_len, UBIFS_MAX_INO_DATA, fctx)=
-;
- 	if (ret < 0)
- 		return ret;
-@@ -1622,9 +1627,12 @@ static int add_dent_node(ino_t dir_inum, const cha=
-r *name, ino_t inum,
- 		if (!kname)
- 			return err_msg("cannot allocate memory");
- 	} else {
--		unsigned int max_namelen =3D type =3D=3D UBIFS_ITYPE_LNK ? UBIFS_MAX_I=
-NO_DATA : UBIFS_MAX_NLEN;
-+		unsigned int max_namelen =3D UBIFS_MAX_NLEN;
- 		int ret;
++	ret =3D fscrypt_cipher->encrypt_fname(inbuf, cryptlen,
++					    crypt_key, *outbuf);
++	if (ret < 0)
+ 		return err_msg("could not encrypt filename");
 =20
-+		if (type =3D=3D UBIFS_ITYPE_LNK)
-+			max_namelen =3D UBIFS_MAX_INO_DATA;
-+
- 		ret =3D encrypt_path((void **)&kname, dname.name, dname.len,
- 				   max_namelen, fctx);
- 		if (ret < 0)
-@@ -1984,7 +1992,8 @@ static int add_directory(const char *dir_name, ino_=
-t dir_inum, struct stat *st,
- 			nlink +=3D 1;
- 			type =3D UBIFS_ITYPE_DIR;
- 		} else {
--			err =3D add_non_dir(name, &inum, 0, &type, &dent_st, new_fctx);
-+			err =3D add_non_dir(name, &inum, 0, &type,
-+					  &dent_st, new_fctx);
- 			if (err)
- 				goto out_free;
- 		}
-@@ -2045,7 +2054,8 @@ static int add_directory(const char *dir_name, ino_=
-t dir_inum, struct stat *st,
- 			nlink +=3D 1;
- 			type =3D UBIFS_ITYPE_DIR;
- 		} else {
--			err =3D add_non_dir(name, &inum, 0, &type, &fake_st, new_fctx);
-+			err =3D add_non_dir(name, &inum, 0, &type,
-+					  &fake_st, new_fctx);
- 			if (err)
- 				goto out_free;
- 		}
-@@ -2065,7 +2075,8 @@ static int add_directory(const char *dir_name, ino_=
-t dir_inum, struct stat *st,
+ 	free(crypt_key);
+@@ -2003,10 +2025,13 @@ static int add_file(const char *path_name, struct=
+ stat *st, ino_t inum,
+ 			if (!crypt_key)
+ 				return err_msg("could not compute subkey");
 =20
- 	creat_sqnum =3D dir_creat_sqnum;
+-			ret =3D encrypt_block_aes128_cbc(inbuf, pad_len, crypt_key, block_no,
+-						       outbuf);
+-			if (ret !=3D pad_len)
+-				return err_msg("encrypt_block_aes128_cbc returned %zi instead of %zi=
+", ret, pad_len);
++			ret =3D fscrypt_cipher->encrypt_block(inbuf, pad_len,
++							    crypt_key, block_no,
++							    outbuf);
++			if (ret !=3D pad_len) {
++				return err_msg("encrypt_block returned %zi "
++						"instead of %zi", ret, pad_len);
++			}
 =20
--	err =3D add_dir_inode(dir ? dir_name : NULL, dir, dir_inum, size, nlink=
-, st, fctx);
-+	err =3D add_dir_inode(dir ? dir_name : NULL, dir, dir_inum, size,
-+			    nlink, st, fctx);
- 	if (err)
- 		goto out_free;
+ 			memcpy(&dn->data, outbuf, pad_len);
 =20
 --=20
 2.19.1
