@@ -1,21 +1,20 @@
-Received: from mail-lf1-x142.google.com ([2a00:1450:4864:20::142])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDOrr-0003e5-O7
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:06:45 +0000
-Received: by mail-lf1-x142.google.com with SMTP id l1-v6so4663952lfc.3
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 00:06:33 -0700 (PDT)
-From: Linus Walleij <linus.walleij@linaro.org>
-To: David Woodhouse <dwmw2@infradead.org>,
- Brian Norris <computersforpeace@gmail.com>,
- Boris Brezillon <boris.brezillon@free-electrons.com>,
- Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>,
- linux-mtd@lists.infradead.org
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 3/3] mtd: partitions: Add OF support to RedBoot partitions
-Date: Fri, 19 Oct 2018 09:06:22 +0200
-Message-Id: <20181019070622.26661-3-linus.walleij@linaro.org>
-In-Reply-To: <20181019070622.26661-1-linus.walleij@linaro.org>
-References: <20181019070622.26661-1-linus.walleij@linaro.org>
+Received: from mail.bootlin.com ([62.4.15.54])
+ by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDP3D-0007yG-Qn
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:18:29 +0000
+Date: Fri, 19 Oct 2018 09:18:05 +0200
+From: Boris Brezillon <boris.brezillon@bootlin.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Marek Vasut <marex@denx.de>, Richard Weinberger <richard@nod.at>, Brian
+ Norris <computersforpeace@gmail.com>, David Woodhouse
+ <dwmw2@infradead.org>, Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: Re: [GIT PULL] mtd: spi-nor: Changes for 4.20
+Message-ID: <20181019091805.579f1493@bbrezillon>
+In-Reply-To: <20181012151113.1b58457a@bbrezillon>
+References: <20181012151113.1b58457a@bbrezillon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,84 +24,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds device tree support for RedBoot partitioning. We
-read out the FIS directory block information from the device
-tree and then parse the partition table from there.
+On Fri, 12 Oct 2018 15:11:13 +0200
+Boris Brezillon <boris.brezillon@bootlin.com> wrote:
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- drivers/mtd/parsers/redboot.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+> Hello,
+> 
+> Here is the spi-nor PR for 4.20.
+> 
+> Regards,
+> 
+> Boris
+> 
+> The following changes since commit 5b394b2ddf0347bef56e50c69a58773c94343ff3:
+> 
+>   Linux 4.19-rc1 (2018-08-26 14:11:59 -0700)
+> 
+> are available in the git repository at:
+> 
+>   git://git.infradead.org/linux-mtd.git tags/spi-nor/for-4.20
 
-diff --git a/drivers/mtd/parsers/redboot.c b/drivers/mtd/parsers/redboot.c
-index 7623ac5fc586..fb816825aa19 100644
---- a/drivers/mtd/parsers/redboot.c
-+++ b/drivers/mtd/parsers/redboot.c
-@@ -25,7 +25,7 @@
- #include <linux/slab.h>
- #include <linux/init.h>
- #include <linux/vmalloc.h>
--
-+#include <linux/of.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
- #include <linux/module.h>
-@@ -56,6 +56,31 @@ static inline int redboot_checksum(struct fis_image_desc *img)
- 	return 1;
- }
- 
-+#ifdef CONFIG_OF
-+static void parse_redboot_of(struct mtd_info *master)
-+{
-+	struct device_node *np;
-+	u32 dirblock;
-+	int ret;
-+
-+	np = mtd_get_of_node(master);
-+	if (!np)
-+		return;
-+	ret = of_property_read_u32(np, "fis-index-block", &dirblock);
-+	if (ret)
-+		return;
-+	/*
-+	 * Assign the block found in the device tree to the local
-+	 * directory block pointer.
-+	 */
-+	directory = dirblock;
-+}
-+#else
-+static void parse_redboot_of(struct mtd_info *master)
-+{
-+}
-+#endif
-+
- static int parse_redboot_partitions(struct mtd_info *master,
- 				    const struct mtd_partition **pparts,
- 				    struct mtd_part_parser_data *data)
-@@ -75,6 +100,7 @@ static int parse_redboot_partitions(struct mtd_info *master,
- #ifdef CONFIG_MTD_REDBOOT_PARTS_UNALLOCATED
- 	static char nullstring[] = "unallocated";
- #endif
-+	parse_redboot_of(master);
- 
- 	if ( directory < 0 ) {
- 		offset = master->size + directory * master->erasesize;
-@@ -289,9 +315,16 @@ static int parse_redboot_partitions(struct mtd_info *master,
- 	return ret;
- }
- 
-+static const struct of_device_id mtd_parser_redboot_of_match_table[] = {
-+	{ .compatible = "redboot-fis" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, mtd_parser_trx_of_match_table);
-+
- static struct mtd_part_parser redboot_parser = {
- 	.parse_fn = parse_redboot_partitions,
- 	.name = "RedBoot",
-+	.of_match_table = mtd_parser_redboot_of_match_table,
- };
- module_mtd_part_parser(redboot_parser);
- 
--- 
-2.17.2
+Merged in mtd/next.
+
+> 
+> for you to fetch changes up to 41fe242979e463d6ad251077ded01b825a330b7e:
+> 
+>   mtd: spi-nor: fsl-quadspi: fix read error for flash size larger than 16MB (2018-10-12 11:48:19 +0200)
+> 
+> ----------------------------------------------------------------
+> Core changes:
+> * Support non-uniform erase size
+> * Support controllers with limited TX fifo size
+> 
+> Driver changes:
+> * m25p80: Re-issue a WREN command after each write access
+> * cadence: Pass a proper dir value to dma_[un]map_single()
+> * fsl-qspi: Check fsl_qspi_get_seqid() return val make sure 4B
+>   addressing opcodes are properly handled
+> * intel-spi: Add a new PCI entry for Ice Lake
+> 
+> ----------------------------------------------------------------
+> Ahmad Fatoum (1):
+>       mtd: spi-nor: fsl-quadspi: Don't let -EINVAL on the bus
+> 
+> Liu Xiang (1):
+>       mtd: spi-nor: fsl-quadspi: fix read error for flash size larger than 16MB
+> 
+> Mika Westerberg (1):
+>       mtd: spi-nor: intel-spi: Add support for Intel Ice Lake SPI serial flash
+> 
+> Nathan Chancellor (1):
+>       mtd: spi-nor: cadence-quadspi: Use proper enum for dma_[un]map_single
+> 
+> Tudor Ambarus (2):
+>       mtd: spi-nor: add support to non-uniform SFDP SPI NOR flash memories
+>       mtd: spi-nor: parse SFDP Sector Map Parameter Table
+> 
+> Yogesh Gaur (2):
+>       mtd: spi-nor: Support controllers with limited TX FIFO size
+>       mtd: devices: m25p80: Make sure WRITE_EN is issued before each write
+> 
+>  drivers/mtd/devices/m25p80.c          |  23 +-
+>  drivers/mtd/spi-nor/cadence-quadspi.c |   4 +-
+>  drivers/mtd/spi-nor/fsl-quadspi.c     |  15 +-
+>  drivers/mtd/spi-nor/intel-spi-pci.c   |   1 +
+>  drivers/mtd/spi-nor/spi-nor.c         | 925 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+>  include/linux/mtd/spi-nor.h           | 119 ++++++++
+>  6 files changed, 1001 insertions(+), 86 deletions(-)
+> 
+> 
