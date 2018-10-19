@@ -1,30 +1,36 @@
-Received: from mail-eopbgr710045.outbound.protection.outlook.com
- ([40.107.71.45] helo=NAM05-BY2-obe.outbound.protection.outlook.com)
+Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDRND-0002Hc-Te
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:47:33 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
- <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>
-Subject: RE: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Fri, 19 Oct 2018 09:47:01 +0000
-Message-ID: <MWHPR02MB262333376A88320A52F06331AFF90@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1537878031-22253-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181003214633.54e93c00@bbrezillon>
-In-Reply-To: <20181003214633.54e93c00@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+ id 1gDSUy-0005LR-0d
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 10:59:21 +0000
+Received: by mail-wm1-x342.google.com with SMTP id o17-v6so2534128wmh.0
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 03:59:09 -0700 (PDT)
+Content-Type: text/plain;
+	charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+From: Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+Date: Fri, 19 Oct 2018 12:59:04 +0200
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>,
+ Adrian Hunter <adrian.hunter@intel.com>,
+ Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+ Artem Bityutskiy <dedekind1@gmail.com>,
+ Christoph Hellwig <hch@infradead.org>,
+ Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>,
+ Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
 Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Message-Id: <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+To: Jens Axboe <axboe@kernel.dk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,56 +40,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Thursday, October 4, 2018 1:17 AM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
-> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
-rnel.org;
-> nagasuresh12@gmail.com
-> Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for =
-Arasan
-> NAND Flash Controller
+
+> Il giorno 15 ott 2018, alle ore 20:26, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
 >=20
-> On Tue, 25 Sep 2018 17:50:31 +0530
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
+> ...
+>> This kind of policy does not belong in the kernel, at least
+>> not in the current form. If we had some sort of "enable best
+>> options for a desktop" then it could fall under that umbrella.
+>>=20
 >=20
-> > +static int anfc_zero_len_page_write_type_exec(struct nand_chip *chip,
-> > +					      const struct nand_subop *subop) {
-> > +	const struct nand_op_instr *instr;
-> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
-> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
-> > +	unsigned int op_id;
-> > +	struct anfc_op nfc_op =3D {};
-> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> > +	u32 addrcycles;
-> > +
-> > +	anfc_parse_instructions(chip, subop, &nfc_op);
-> > +	nfc->prog =3D PROG_PGRD;
-> > +	instr =3D nfc_op.data_instr;
-> > +	op_id =3D nfc_op.data_instr_idx;
-> > +
-> > +	addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
-> > +
-> > +	anfc_prepare_cmd(nfc, nfc_op.cmds[0], NAND_CMD_PAGEPROG, 1,
+> I don't think bfq can be considered a scheduler for only desktops any
+> longer.
 >=20
-> Why are the second opcode and the number of address cycles hardcoded.
-> That's simply not future-proof, and I don't want that. Also, I don't unde=
-rstand why you do
-> that, you have all the information you need in subop and you keep guessin=
-g some parameters.
-Ok, I will remove all these hard coding commands from the driver, instead I=
- will use nfc_op.cmds[0], nfc_op.cmds[1].
+
+Hi Jens,
+this reply of mine went on bugging me, until I understood my mistake.
+
+The fact that I consider bfq good also for servers *does not* imply
+that having bfq in desktops is to be refused.
+
+As for the option that you are hinting at, I also acknowledge that it
+would be trivial for an admin/developer to know whether a given kernel
+is meant for a desktop/personal system, while it is more difficult to
+choose explicitly among the various I/O schedulers available.
+
+So, I apologize for my shortsighted, initial reply, and ask you if can
+elaborate a little more on this.  I'm willing to help, if I can.
 
 Thanks,
-Naga Sureshkumar Relli
+Paolo
+
+> Thanks,
+> Paolo
 >=20
-> > +			 mtd->writesize, addrcycles);
-> > +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > +
-> > +	return 0;
-> > +}
+>> --=20
+>> Jens Axboe
