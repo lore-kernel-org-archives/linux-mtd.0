@@ -1,30 +1,38 @@
-Received: from mail-bl2nam02on0068.outbound.protection.outlook.com
- ([104.47.38.68] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDRL9-0000Z6-Li
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:45:09 +0000
-From: Naga Sureshkumar Relli <nagasure@xilinx.com>
-To: Boris Brezillon <boris.brezillon@bootlin.com>
-CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
- <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
- "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
- "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
- <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
- <nagasuresh12@gmail.com>
-Subject: RE: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for
- Arasan NAND Flash Controller
-Date: Fri, 19 Oct 2018 09:44:41 +0000
-Message-ID: <MWHPR02MB26235FB2ECB9073CFC38594DAFF90@MWHPR02MB2623.namprd02.prod.outlook.com>
-References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <1537878031-22253-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
- <20181003213844.14d4095e@bbrezillon>
-In-Reply-To: <20181003213844.14d4095e@bbrezillon>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+ by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDQNP-0003Up-Dh
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 08:43:24 +0000
+Received: by mail-lj1-x243.google.com with SMTP id x3-v6so30131719lji.13
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 01:43:09 -0700 (PDT)
 MIME-Version: 1.0
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+ <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
+ <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
+ <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+ <20181017100526.GB23493@quack2.suse.cz>
+ <d1d082f3-d681-02ed-5bbe-5eb011d6b0da@acm.org>
+ <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
+In-Reply-To: <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Fri, 19 Oct 2018 10:42:53 +0200
+Message-ID: <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: bgurney@redhat.com
+Cc: Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+ Jens Axboe <axboe@kernel.dk>, Paolo Valente <paolo.valente@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
+ Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,102 +42,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Boris,
+On Wed, Oct 17, 2018 at 4:59 PM Bryan Gurney <bgurney@redhat.com> wrote:
 
-Sorry for the late reply.
-I am busy with some other work.
+> I feel strongly about the prevention of users running into errors
+> because of an incorrect scheduler default, because I encountered that
+> situation three times in my testing with zoned block devices. The
+> switch to SCSI_MQ would resolve that, since mq-deadline is the
+> default, but in my case, I was using Fedora 28, which disables
+> CONFIG_SCSI_MQ_DEFAULT (which is enabled in the 4.18 kernel), so my
+> default scheduler was cfq.
 
-> -----Original Message-----
-> From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Thursday, October 4, 2018 1:09 AM
-> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
-> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
-> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
-> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
-rnel.org;
-> nagasuresh12@gmail.com
-> Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for =
-Arasan
-> NAND Flash Controller
->=20
-> Hi Naga,
->=20
-> On Tue, 25 Sep 2018 17:50:31 +0530
-> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
->=20
-> > +static int anfc_read_param_get_feature_sp_read_type_exec(struct nand_c=
-hip *chip,
-> > +							 const struct nand_subop
-> > +							 *subop)
-> > +{
-> > +	const struct nand_op_instr *instr;
-> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
-> > +	unsigned int op_id, len;
-> > +	struct anfc_op nfc_op =3D {};
-> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
-> > +	u32 dma_mode, addrcycles, write_size;
-> > +
-> > +	anfc_parse_instructions(chip, subop, &nfc_op);
-> > +	instr =3D nfc_op.data_instr;
-> > +	op_id =3D nfc_op.data_instr_idx;
-> > +
-> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_PARAM) {
-> > +		nfc->prog =3D PROG_RDPARAM;
-> > +		dma_mode =3D 0;
-> > +		addrcycles =3D 1;
-> > +		write_size =3D 0;
-> > +	}
-> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_GET_FEATURES) {
-> > +		nfc->prog =3D PROG_GET_FEATURE;
-> > +		dma_mode =3D 0;
-> > +		addrcycles =3D 1;
-> > +		write_size =3D 0;
-> > +	}
-> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_READ0) {
-> > +		nfc->prog =3D PROG_PGRD;
-> > +		addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
-> > +		write_size =3D mtd->writesize;
-> > +		dma_mode =3D 1;
-> > +	}
-> > +
->=20
-> Sorry, but I still don't understand why nfc->prog is different. Did you t=
-ry using
-> PROG_PGRD for all these ops? I mean, the sequence is the same, and you ke=
-ep passing the
-> opcode and the number of address cycles to the engine using other reg fie=
-lds.
-Yes, I tried it now with PROG_PGRD and I don't see any issues.
-I will update the same in next version of patch.
-Thanks for your suggestion.
+I think we should make a patch to the kernel that makes it
+impossible (even from sysfs) to choose a non-zone aware
+scheduler for these devices.
 
->=20
-> Also, you're not using the addrcycles info provided by the the address in=
-struction and instead
-> deduce it based on the opcode, which is wrong.
-> To make it clearer, I'd like to avoid those nfc_op.cmds[0] =3D=3D NAND_OP=
-CODE tests,
-> because it's exactly the kind of things we were trying to get rid off by =
-introducing the -
-> >exec_op() interface.
-Ok. I understand, I will remove hardcoding the commands in the driver.
-And I will change the driver to read addrcycles info from address instructi=
-on.
+It's another topic than $SUBJECT patch though. I take this
+into account in this version.
 
-Thanks,
-Naga Sureshkumar Relli
->=20
-> > +	anfc_prepare_cmd(nfc, nfc_op.cmds[0], 0, dma_mode, write_size,
-> > +			 addrcycles);
-> > +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
-> > +
-> > +	if (!nfc_op.data_instr)
-> > +		return 0;
-> > +
-> > +	len =3D nand_subop_get_data_len(subop, op_id);
-> > +	anfc_rw_pio_op(mtd, nfc->buf, roundup(len, 4), 1, nfc->prog, 1, 0);
-> > +	memcpy(instr->ctx.data.buf.in,  nfc->buf, len);
-> > +
-> > +	return 0;
-> > +}
+Yours,
+Linus Walleij
