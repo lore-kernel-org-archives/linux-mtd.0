@@ -1,24 +1,27 @@
-Received: from mail1.bemta24.messagelabs.com ([67.219.250.113])
- by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDRHl-0007zd-Tx
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:41:40 +0000
-From: IKEGAMI Tokunori <ikegami@allied-telesis.co.jp>
-To: Boris Brezillon <boris.brezillon@bootlin.com>, Hauke Mehrtens
- <hauke@hauke-m.de>, Koen Vandeputte <koen.vandeputte@ncentric.com>
-CC: "boris.brezillon@free-electrons.com" <boris.brezillon@free-electrons.com>,
- Fabio Bettoni <fbettoni@gmail.com>, PACKHAM Chris
- <chris.packham@alliedtelesis.co.nz>, Joakim Tjernlund
- <Joakim.Tjernlund@infinera.com>, "linux-mtd@lists.infradead.org"
- <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH 3/3] mtd: cfi_cmdset_0002: Remove goto statemnet from
- do_write_buffer()
-Date: Fri, 19 Oct 2018 09:41:22 +0000
-Message-ID: <TY2PR01MB2169CE8FEAE17C6FDC623FA7DCF90@TY2PR01MB2169.jpnprd01.prod.outlook.com>
-References: <20181019081320.12843-1-ikegami@allied-telesis.co.jp>
- <20181019081320.12843-4-ikegami@allied-telesis.co.jp>
- <20181019103329.313ea0a4@bbrezillon>
-In-Reply-To: <20181019103329.313ea0a4@bbrezillon>
-Content-Language: ja-JP
+Received: from mail-bl2nam02on0068.outbound.protection.outlook.com
+ ([104.47.38.68] helo=NAM02-BL2-obe.outbound.protection.outlook.com)
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDRL9-0000Z6-Li
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 09:45:09 +0000
+From: Naga Sureshkumar Relli <nagasure@xilinx.com>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: "miquel.raynal@bootlin.com" <miquel.raynal@bootlin.com>, "richard@nod.at"
+ <richard@nod.at>, "dwmw2@infradead.org" <dwmw2@infradead.org>,
+ "computersforpeace@gmail.com" <computersforpeace@gmail.com>,
+ "marek.vasut@gmail.com" <marek.vasut@gmail.com>, Michal Simek
+ <michals@xilinx.com>, "linux-mtd@lists.infradead.org"
+ <linux-mtd@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "nagasuresh12@gmail.com"
+ <nagasuresh12@gmail.com>
+Subject: RE: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for
+ Arasan NAND Flash Controller
+Date: Fri, 19 Oct 2018 09:44:41 +0000
+Message-ID: <MWHPR02MB26235FB2ECB9073CFC38594DAFF90@MWHPR02MB2623.namprd02.prod.outlook.com>
+References: <1537878031-22253-1-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <1537878031-22253-4-git-send-email-naga.sureshkumar.relli@xilinx.com>
+ <20181003213844.14d4095e@bbrezillon>
+In-Reply-To: <20181003213844.14d4095e@bbrezillon>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
@@ -31,131 +34,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thank you so much for your comments.
+Hi Boris,
+
+Sorry for the late reply.
+I am busy with some other work.
 
 > -----Original Message-----
 > From: Boris Brezillon [mailto:boris.brezillon@bootlin.com]
-> Sent: Friday, October 19, 2018 5:33 PM
-> To: IKEGAMI Tokunori
-> Cc: boris.brezillon@free-electrons.com; Fabio Bettoni; PACKHAM Chris;
-> Joakim Tjernlund; linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH 3/3] mtd: cfi_cmdset_0002: Remove goto statemnet from
-> do_write_buffer()
+> Sent: Thursday, October 4, 2018 1:09 AM
+> To: Naga Sureshkumar Relli <nagasure@xilinx.com>
+> Cc: miquel.raynal@bootlin.com; richard@nod.at; dwmw2@infradead.org;
+> computersforpeace@gmail.com; marek.vasut@gmail.com; Michal Simek
+> <michals@xilinx.com>; linux-mtd@lists.infradead.org; linux-kernel@vger.ke=
+rnel.org;
+> nagasuresh12@gmail.com
+> Subject: Re: [LINUX PATCH v11 3/3] mtd: rawnand: arasan: Add support for =
+Arasan
+> NAND Flash Controller
 >=20
-> In the subject: s/statemnet/statement/
-
-[Ikegami] Will do fix this sorry.
-
+> Hi Naga,
 >=20
-> On Fri, 19 Oct 2018 17:13:20 +0900
-> Tokunori Ikegami <ikegami@allied-telesis.co.jp> wrote:
+> On Tue, 25 Sep 2018 17:50:31 +0530
+> Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com> wrote:
 >=20
-> > Also change to call xip_enable() once only.
->=20
-> Just like for the other patches I'd like to have more explanation in
-> the commit message. And please split the commit in 2 commits since you
-> seem to do 2 unrelated changes:
-> - drop a label+gotos
-> - call xip_enable() only once.
-
-[Ikegami] Yes will do I think so.
-Also I will do add additional refactoring patches to remove goto statement =
-more and reduce the longer functions lines later.
-
->=20
-> >
-> > Signed-off-by: Tokunori Ikegami <ikegami@allied-telesis.co.jp>
-> > Cc: Fabio Bettoni <fbettoni@gmail.com>
-> > Cc: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> > Cc: Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-> > Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
-> > Cc: linux-mtd@lists.infradead.org
-> > ---
-> >  drivers/mtd/chips/cfi_cmdset_0002.c | 48
-> +++++++++++++++--------------
-> >  1 file changed, 25 insertions(+), 23 deletions(-)
-> >
-> > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-> b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > index c2e51768a02c..060edd2f1693 100644
-> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -1883,39 +1883,41 @@ static int __xipram do_write_buffer(struct
-> map_info *map, struct flchip *chip,
-> >  		}
-> >
-> >  		if (chip_good(map, adr, datum)) {
-> > -			xip_enable(map, chip, adr);
-> > -			goto op_done;
-> > +			break;
-> >  		}
-> >
-> > -		if (time_after(jiffies, timeo))
-> > +		if (time_after(jiffies, timeo)) {
-> > +			ret =3D -EIO;
-> >  			break;
-> > +		}
-> >
-> >  		/* Latency issues. Drop the lock, wait a while and retry
-> */
-> >  		UDELAY(map, chip, adr, 1);
-> >  	}
-> >
-> > -	/*
-> > -	 * Recovery from write-buffer programming failures requires
-> > -	 * the write-to-buffer-reset sequence.  Since the last part
-> > -	 * of the sequence also works as a normal reset, we can run
-> > -	 * the same commands regardless of why we are here.
-> > -	 * See e.g.
-> > -	 *
-> http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Bu
-> ffer_Prog_Page_Buffer_Read_AN.pdf
-> > -	 */
-> > -	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start, map, cfi,
-> > -			 cfi->device_type, NULL);
-> > -	xip_enable(map, chip, adr);
-> > -	/* FIXME - should have reset delay before continuing */
-> > +	if (ret) {
-> > +		/*
-> > +		 * Recovery from write-buffer programming failures
-> requires
-> > +		 * the write-to-buffer-reset sequence.  Since the last
-> part
-> > +		 * of the sequence also works as a normal reset, we can
-> run
-> > +		 * the same commands regardless of why we are here.
-> > +		 * See e.g.
-> > +		 *
-> http://www.spansion.com/Support/Application%20Notes/MirrorBit_Write_Bu
-> ffer_Prog_Page_Buffer_Read_AN.pdf
-> > +		 */
-> > +		cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		cfi_send_gen_cmd(0xF0, cfi->addr_unlock1, chip->start,
-> map, cfi,
-> > +				 cfi->device_type, NULL);
-> > +		/* FIXME - should have reset delay before continuing */
-> >
-> > -	printk(KERN_WARNING "MTD %s(): software timeout,
-> address:0x%.8lx.\n",
-> > -	       __func__, adr);
-> > +		printk(KERN_WARNING "MTD %s(): software timeout,
-> address:0x%.8lx.\n",
-> > +		       __func__, adr);
+> > +static int anfc_read_param_get_feature_sp_read_type_exec(struct nand_c=
+hip *chip,
+> > +							 const struct nand_subop
+> > +							 *subop)
+> > +{
+> > +	const struct nand_op_instr *instr;
+> > +	struct anfc_nand_controller *nfc =3D to_anfc(chip->controller);
+> > +	unsigned int op_id, len;
+> > +	struct anfc_op nfc_op =3D {};
+> > +	struct mtd_info *mtd =3D nand_to_mtd(chip);
+> > +	struct anfc_nand_chip *achip =3D to_anfc_nand(chip);
+> > +	u32 dma_mode, addrcycles, write_size;
+> > +
+> > +	anfc_parse_instructions(chip, subop, &nfc_op);
+> > +	instr =3D nfc_op.data_instr;
+> > +	op_id =3D nfc_op.data_instr_idx;
+> > +
+> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_PARAM) {
+> > +		nfc->prog =3D PROG_RDPARAM;
+> > +		dma_mode =3D 0;
+> > +		addrcycles =3D 1;
+> > +		write_size =3D 0;
+> > +	}
+> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_GET_FEATURES) {
+> > +		nfc->prog =3D PROG_GET_FEATURE;
+> > +		dma_mode =3D 0;
+> > +		addrcycles =3D 1;
+> > +		write_size =3D 0;
+> > +	}
+> > +	if (nfc_op.cmds[0] =3D=3D NAND_CMD_READ0) {
+> > +		nfc->prog =3D PROG_PGRD;
+> > +		addrcycles =3D achip->raddr_cycles + achip->caddr_cycles;
+> > +		write_size =3D mtd->writesize;
+> > +		dma_mode =3D 1;
 > > +	}
 > > +
-> > +	xip_enable(map, chip, adr);
-> >
-> > -	ret =3D -EIO;
-> > - op_done:
-> >  	chip->state =3D FL_READY;
-> >  	DISABLE_VPP(map);
-> >  	put_chip(map, chip, adr);
+>=20
+> Sorry, but I still don't understand why nfc->prog is different. Did you t=
+ry using
+> PROG_PGRD for all these ops? I mean, the sequence is the same, and you ke=
+ep passing the
+> opcode and the number of address cycles to the engine using other reg fie=
+lds.
+Yes, I tried it now with PROG_PGRD and I don't see any issues.
+I will update the same in next version of patch.
+Thanks for your suggestion.
+
+>=20
+> Also, you're not using the addrcycles info provided by the the address in=
+struction and instead
+> deduce it based on the opcode, which is wrong.
+> To make it clearer, I'd like to avoid those nfc_op.cmds[0] =3D=3D NAND_OP=
+CODE tests,
+> because it's exactly the kind of things we were trying to get rid off by =
+introducing the -
+> >exec_op() interface.
+Ok. I understand, I will remove hardcoding the commands in the driver.
+And I will change the driver to read addrcycles info from address instructi=
+on.
+
+Thanks,
+Naga Sureshkumar Relli
+>=20
+> > +	anfc_prepare_cmd(nfc, nfc_op.cmds[0], 0, dma_mode, write_size,
+> > +			 addrcycles);
+> > +	anfc_setpagecoladdr(nfc, nfc_op.row, nfc_op.col);
+> > +
+> > +	if (!nfc_op.data_instr)
+> > +		return 0;
+> > +
+> > +	len =3D nand_subop_get_data_len(subop, op_id);
+> > +	anfc_rw_pio_op(mtd, nfc->buf, roundup(len, 4), 1, nfc->prog, 1, 0);
+> > +	memcpy(instr->ctx.data.buf.in,  nfc->buf, len);
+> > +
+> > +	return 0;
+> > +}
