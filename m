@@ -1,36 +1,27 @@
-Received: from mail-wm1-x342.google.com ([2a00:1450:4864:20::342])
+Received: from heliosphere.sirena.org.uk ([2a01:7e01::f03c:91ff:fed4:a3b6])
  by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDSUy-0005LR-0d
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 10:59:21 +0000
-Received: by mail-wm1-x342.google.com with SMTP id o17-v6so2534128wmh.0
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 03:59:09 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-From: Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
-Date: Fri, 19 Oct 2018 12:59:04 +0200
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
- Artem Bityutskiy <dedekind1@gmail.com>,
- Christoph Hellwig <hch@infradead.org>,
- Alan Cox <gnomes@lxorguk.ukuu.org.uk>, Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>,
- Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E2DDE0B9-F693-4EF3-B90C-C57F787B4DB3@linaro.org>
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
-To: Jens Axboe <axboe@kernel.dk>
+ id 1gDTqa-0002XT-MP
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 12:26:27 +0000
+Date: Fri, 19 Oct 2018 13:25:27 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+ Brian Norris <computersforpeace@gmail.com>,
+ Marek Vasut <marek.vasut@gmail.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Yogesh Gaur <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>,
+ Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>,
+ Julien Su <juliensu@mxic.com.tw>,
+ Mason Yang <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
+ linux-spi@vger.kernel.org
+Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
+Message-ID: <20181019122527.GJ5895@sirena.org.uk>
+References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature"; boundary="sT9gWZPUZYhvPS56"
+Content-Disposition: inline
+In-Reply-To: <20181012084825.23697-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,39 +32,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+--sT9gWZPUZYhvPS56
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Il giorno 15 ott 2018, alle ore 20:26, Paolo Valente =
-<paolo.valente@linaro.org> ha scritto:
->=20
-> ...
->> This kind of policy does not belong in the kernel, at least
->> not in the current form. If we had some sort of "enable best
->> options for a desktop" then it could fall under that umbrella.
->>=20
->=20
-> I don't think bfq can be considered a scheduler for only desktops any
-> longer.
->=20
+On Fri, Oct 12, 2018 at 10:48:07AM +0200, Boris Brezillon wrote:
 
-Hi Jens,
-this reply of mine went on bugging me, until I understood my mistake.
+> First question that might come to mind is why should we support such
+> stateful modes? If you think about it, the gain of transmitting the
+> opcode on 8 IO lines is rather small compared to the pain it is to
+> teach the SPI NOR framework how to deal with that. The problem is,
+> some SPI NOR manufacturers (Macronix for instance) only implement 1-1-1
+> and 8-8-8 (or 8D-8D-8D), and they want to be able to use their NORs in
+> 8-8-8 mode when the controller supports it.
 
-The fact that I consider bfq good also for servers *does not* imply
-that having bfq in desktops is to be refused.
+The SPI framework changes definitely look OK to me, if everyone agrees
+that this is a good way to go from a MTD point of view I'm happy to
+apply them.  I have no strong opinion on the MTD bits of the series.
 
-As for the option that you are hinting at, I also acknowledge that it
-would be trivial for an admin/developer to know whether a given kernel
-is meant for a desktop/personal system, while it is more difficult to
-choose explicitly among the various I/O schedulers available.
+--sT9gWZPUZYhvPS56
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So, I apologize for my shortsighted, initial reply, and ask you if can
-elaborate a little more on this.  I'm willing to help, if I can.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Paolo
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvJzTYACgkQJNaLcl1U
+h9AHxgf+KPJafqQ5ZnA02BlSPDiXCiC0dgf/Ee+Vj5GA+bFoZ0CXyiYCBhX9wh2o
+xK06Xd+OomhhMDFV7SX3yfR4s84xgS/x2mXtXTE+t5ED161LTi6frnRQWOQ/vAum
+CceDRf41Hoj9QK75oBF/CYNJo2xrYrWXKHoRafZx/4gVTPz67KfykIvYAQ878hWf
+p7cFCyFTXfrupDORGFZqo5XUBnPCFsgTchH2qg/TaxOlquaQYNVnYqozlWM+4VlL
+EWaI6q+p+CPhk6fZe14Hxl+WyQfDhnmVzX8/Nys/36Wbzej1Re95ZSZ7bjz1AwBq
+QCu0a3ARqjBqTUjlDOk+kYQgRcX9wg==
+=qu6u
+-----END PGP SIGNATURE-----
 
-> Thanks,
-> Paolo
->=20
->> --=20
->> Jens Axboe
+--sT9gWZPUZYhvPS56--
