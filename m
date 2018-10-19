@@ -1,30 +1,29 @@
-Received: from mail-lf1-x144.google.com ([2a00:1450:4864:20::144])
- by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDQEV-0003vh-3u
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 08:36:11 +0000
-Received: by mail-lf1-x144.google.com with SMTP id x24-v6so8870085lfe.5
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 01:34:00 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] mtd: rawnand: meson: add support for Amlogic NAND
+ flash controller
+To: Boris Brezillon <boris.brezillon@bootlin.com>
+CC: Jianxin Pan <jianxin.pan@amlogic.com>, <linux-mtd@lists.infradead.org>,
+ Rob Herring <robh@kernel.org>, Hanjie Lin <hanjie.lin@amlogic.com>, Victor
+ Wan <victor.wan@amlogic.com>, Neil Armstrong <narmstrong@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Richard Weinberger
+ <richard@nod.at>, Yixun Lan <yixun.lan@amlogic.com>,
+ <linux-kernel@vger.kernel.org>, Marek Vasut <marek.vasut@gmail.com>, Jian Hu
+ <jian.hu@amlogic.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione
+ <carlo@caione.org>, <linux-amlogic@lists.infradead.org>, Brian Norris
+ <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+ <linux-arm-kernel@lists.infradead.org>, Jerome Brunet <jbrunet@baylibre.com>
+References: <1539839345-14021-1-git-send-email-jianxin.pan@amlogic.com>
+ <1539839345-14021-3-git-send-email-jianxin.pan@amlogic.com>
+ <20181018213308.3f8a5279@bbrezillon>
+ <09f76f17-05c4-d9e0-0167-f68e224f00c4@amlogic.com>
+ <20181019101033.0a160506@bbrezillon>
+From: Liang Yang <liang.yang@amlogic.com>
+Message-ID: <3e462d23-a100-6eb2-3740-abe2373a8e15@amlogic.com>
+Date: Fri, 19 Oct 2018 16:30:48 +0800
 MIME-Version: 1.0
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <18744e21b9f5aa4b3ab721a007a3e9a2@natalenko.name>
-In-Reply-To: <18744e21b9f5aa4b3ab721a007a3e9a2@natalenko.name>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 19 Oct 2018 10:33:47 +0200
-Message-ID: <CACRpkdZgethKLu3P4taLfzqjGULyoP-T7bhUUpRKtjDRteNnxA@mail.gmail.com>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-block <linux-block@vger.kernel.org>, Jens Axboe <axboe@kernel.dk>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Paolo Valente <paolo.valente@linaro.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, Richard Weinberger <richard@nod.at>,
- Adrian Hunter <adrian.hunter@intel.com>, Bart Van Assche <bvanassche@acm.org>,
- Jan Kara <jack@suse.cz>,
- Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
- Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
- Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20181019101033.0a160506@bbrezillon>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,27 +33,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 15, 2018 at 4:32 PM Oleksandr Natalenko
-<oleksandr@natalenko.name> wrote:
-> On 15.10.2018 16:10, Linus Walleij wrote:
 
-> > +     /*
-> > +      * Zoned devices must use a deadline scheduler because currently
-> > +      * that is the only scheduler respecting zoned writes.
-> > +      */
-> > +     if (blk_queue_is_zoned(q))
-> > +             policy = "mq-deadline";
-> > +     else if (IS_ENABLED(CONFIG_IOSCHED_BFQ))
-> > +             policy = "bfq";
-> > +     else
-> > +             policy = "mq-deadline";
->
-> If more rules will be needed in the future, shall we just add extra ifs,
-> or it would be better to craft some struct/table now + policy search
-> helper?
 
-Let's do it when it happens. Premature optimization is the root
-of all evil ;)
-
-Yours,
-Linus Walleij
+On 2018/10/19 16:10, Boris Brezillon wrote:
+> On Fri, 19 Oct 2018 15:29:05 +0800
+> Liang Yang <liang.yang@amlogic.com> wrote:
+> 
+>>> How about defining that the HW returns an array of __le64 instead and then
+>>> define the following macros which you can use after converting in the
+>>> CPU endianness
+>>>
+>>> #define ECC_GET_PROTECTED_OOB_BYTE(x, y)	(((x) >> (8 * (1 + y)) & GENMASK(7, 0))
+>>> #define ECC_COMPLETE			BIT(31)
+>>> #define ECC_ERR_CNT(x)			(((x) >> 24) & GENMASK(5, 0))
+>>>
+>>> (I'm not entirely sure the field positions are correct, but I'll let you
+>>> check that).
+>>>    
+>> ok. i think it should be:
+>>
+>> #define ECC_GET_PROTECTED_OOB_BYTE(x, y)	(((x) >> (8 * y) &
+>> GENMASK(7, 0))
+>>
+>> if x represents the u64 and y represents the index of the u64.
+> 
+> Absolutely.
+> 
+>>
+>>
+>>
+>>>> +
+>>>> +#define PER_INFO_BYTE	(sizeof(struct meson_nfc_info_format))
+>>>> +
+>>>> +struct meson_nfc_nand_chip {
+>>>> +	struct list_head node;
+>>>> +	struct nand_chip nand;
+>>>> +	bool is_scramble;
+>>>
+>>> I think I already mentioned the NAND_NEED_SCRAMBLING flag []. Please
+>>> drop this field and test (chip->flags & NAND_NEED_SCRAMBLING) instead.
+>>>    
+>> em, i use NAND_NEED_SCRAMBLING and is_scramble is set:
+>> static int meson_nand_attach_chip(struct nand_chip *nand)
+>> {
+>> 	......
+>> 	meson_chip->is_scramble =
+>> 		(nand->options & NAND_NEED_SCRAMBLING) ? 1 : 0;
+>> 	......
+>> }
+> 
+> Why do you need to add a new field then? Just test
+> nand->options & NAND_NEED_SCRAMBLING directly or provide a helper
+> function that does that.
+> 
+ok, i will fix it.
+> .
+> 
