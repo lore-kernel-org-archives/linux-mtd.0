@@ -1,25 +1,39 @@
-Received: from mail.bootlin.com ([62.4.15.54])
- by casper.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDUNS-0000Ho-J9
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 12:59:44 +0000
-Date: Fri, 19 Oct 2018 14:59:20 +0200
-From: Boris Brezillon <boris.brezillon@bootlin.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris
- <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard
- Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org, Yogesh Gaur
- <yogeshnarayan.gaur@nxp.com>, Vignesh R <vigneshr@ti.com>, Cyrille Pitchen
- <cyrille.pitchen@wedev4u.fr>, Julien Su <juliensu@mxic.com.tw>, Mason Yang
- <masonccyang@mxic.com.tw>, zhengxunli@mxic.com.tw,
- linux-spi@vger.kernel.org
-Subject: Re: [PATCH RFC 00/18] mtd: spi-nor: Proposal for 8-8-8 mode support
-Message-ID: <20181019145920.43f9d5ec@bbrezillon>
-In-Reply-To: <20181019122527.GJ5895@sirena.org.uk>
-References: <20181012084825.23697-1-boris.brezillon@bootlin.com>
- <20181019122527.GJ5895@sirena.org.uk>
+Received: from mail-wr1-f65.google.com ([209.85.221.65])
+ by bombadil.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
+ id 1gDUxa-0006z2-Ih
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 13:37:32 +0000
+Received: by mail-wr1-f65.google.com with SMTP id f17-v6so5708446wrs.12
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 06:36:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
+References: <20181015141059.26579-1-linus.walleij@linaro.org>
+ <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
+ <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
+ <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
+ <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
+ <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
+ <20181017100526.GB23493@quack2.suse.cz>
+ <d1d082f3-d681-02ed-5bbe-5eb011d6b0da@acm.org>
+ <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
+ <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
+From: Bryan Gurney <bgurney@redhat.com>
+Date: Fri, 19 Oct 2018 09:36:49 -0400
+Message-ID: <CAHhmqcQinFN9ez5MTRquY0FPaYO2BmOKMn0avy84QPWLK1g2Gg@mail.gmail.com>
+Subject: Re: [PATCH v2] block: BFQ default for single queue devices
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
+ Jens Axboe <axboe@kernel.dk>, Paolo Valente <paolo.valente@linaro.org>,
+ linux-block <linux-block@vger.kernel.org>,
+ linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
+ Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
+ Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
+ Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
+ Mark Brown <broonie@kernel.org>,
+ Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
+ Oleksandr Natalenko <oleksandr@natalenko.name>,
+ Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +43,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+On Fri, Oct 19, 2018 at 4:42 AM, Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Wed, Oct 17, 2018 at 4:59 PM Bryan Gurney <bgurney@redhat.com> wrote:
+>
+> > I feel strongly about the prevention of users running into errors
+> > because of an incorrect scheduler default, because I encountered that
+> > situation three times in my testing with zoned block devices. The
+> > switch to SCSI_MQ would resolve that, since mq-deadline is the
+> > default, but in my case, I was using Fedora 28, which disables
+> > CONFIG_SCSI_MQ_DEFAULT (which is enabled in the 4.18 kernel), so my
+> > default scheduler was cfq.
+>
+> I think we should make a patch to the kernel that makes it
+> impossible (even from sysfs) to choose a non-zone aware
+> scheduler for these devices.
+>
+> It's another topic than $SUBJECT patch though. I take this
+> into account in this version.
+>
 
-On Fri, 19 Oct 2018 13:25:27 +0100
-Mark Brown <broonie@kernel.org> wrote:
+I like this idea.  I don't have enough experience to write this patch
+myself, but I imagine something like adding "bool is_zoned_aware" to
+"struct elevator_type", and setting that true only for the schedulers
+that are currently zoned-device aware (which is currently deadline on
+single queue, mq-deadline on blk-mq).
 
-> On Fri, Oct 12, 2018 at 10:48:07AM +0200, Boris Brezillon wrote:
-> 
-> > First question that might come to mind is why should we support such
-> > stateful modes? If you think about it, the gain of transmitting the
-> > opcode on 8 IO lines is rather small compared to the pain it is to
-> > teach the SPI NOR framework how to deal with that. The problem is,
-> > some SPI NOR manufacturers (Macronix for instance) only implement 1-1-1
-> > and 8-8-8 (or 8D-8D-8D), and they want to be able to use their NORs in
-> > 8-8-8 mode when the controller supports it.  
-> 
-> The SPI framework changes definitely look OK to me, if everyone agrees
-> that this is a good way to go from a MTD point of view I'm happy to
-> apply them.  I have no strong opinion on the MTD bits of the series.
 
-Actually, Yogesh posted similar patches before me, so maybe you can
-look at this series [1]. The spi/spi-mem side of things is rather
-uncontroversial. Feel free to apply them if you think they're good
-enough to go in.
+Thanks,
 
-Thanks for your review.
-
-Boris
-
-[1]http://patchwork.ozlabs.org/project/linux-mtd/list/?series=70822
+Bryan
