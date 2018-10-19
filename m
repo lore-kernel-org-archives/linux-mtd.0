@@ -1,38 +1,29 @@
-Received: from mail-lj1-x243.google.com ([2a00:1450:4864:20::243])
+Received: from 10.mo173.mail-out.ovh.net ([46.105.74.148])
  by merlin.infradead.org with esmtps (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDQNP-0003Up-Dh
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 08:43:24 +0000
-Received: by mail-lj1-x243.google.com with SMTP id x3-v6so30131719lji.13
- for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 01:43:09 -0700 (PDT)
+ id 1gDPcf-0002ue-Az
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:55:06 +0000
+Received: from player732.ha.ovh.net (unknown [10.109.160.244])
+ by mo173.mail-out.ovh.net (Postfix) with ESMTP id 064F5DC938
+ for <linux-mtd@lists.infradead.org>; Fri, 19 Oct 2018 09:54:42 +0200 (CEST)
+Subject: Re: [PATCH v2 2/2] mtd: spi-nor: Use 4B opcodes when the NOR
+ advertises both 3B and 4B
+To: Boris Brezillon <boris.brezillon@bootlin.com>,
+ Tudor Ambarus <tudor.ambarus@microchip.com>,
+ Marek Vasut <marek.vasut@gmail.com>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Richard Weinberger <richard@nod.at>, linux-mtd@lists.infradead.org,
+ Brian Norris <computersforpeace@gmail.com>,
+ David Woodhouse <dwmw2@infradead.org>
+References: <20181018115512.15131-1-boris.brezillon@bootlin.com>
+ <20181018115512.15131-2-boris.brezillon@bootlin.com>
+From: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+Message-ID: <60bca262-2cde-ef96-4a54-72b6c30b6de0@wedev4u.fr>
+Date: Fri, 19 Oct 2018 09:54:30 +0200
 MIME-Version: 1.0
-References: <20181015141059.26579-1-linus.walleij@linaro.org>
- <d25e02de-e1be-0fb7-237b-3e53d56c6f64@kernel.dk>
- <307F6078-0A77-4AAA-BE1A-55C2ACC328CC@linaro.org>
- <ab70f1dd-6943-9642-aafa-71840fd44f07@kernel.dk>
- <689F28AA-92B5-48B5-BBE7-0B589F163228@linaro.org>
- <7375c004-ac6e-c692-4282-46de554285d5@kernel.dk>
- <20181017100526.GB23493@quack2.suse.cz>
- <d1d082f3-d681-02ed-5bbe-5eb011d6b0da@acm.org>
- <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
-In-Reply-To: <CAHhmqcSb45qePdKsidQcEk7bNeZC5h6Oew-qH=LA7dsQL_uhSg@mail.gmail.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 19 Oct 2018 10:42:53 +0200
-Message-ID: <CACRpkdZZ6RU0aJpUqRn1ndyob1_COhaEs6B9QVRWfa+a60n+Lg@mail.gmail.com>
-Subject: Re: [PATCH v2] block: BFQ default for single queue devices
-To: bgurney@redhat.com
-Cc: Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>,
- Jens Axboe <axboe@kernel.dk>, Paolo Valente <paolo.valente@linaro.org>,
- linux-block <linux-block@vger.kernel.org>,
- linux-mmc <linux-mmc@vger.kernel.org>, linux-mtd@lists.infradead.org,
- Pavel Machek <pavel@ucw.cz>, Ulf Hansson <ulf.hansson@linaro.org>,
- Richard Weinberger <richard@nod.at>, Adrian Hunter <adrian.hunter@intel.com>,
- Artem Bityutskiy <dedekind1@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>,
- Mark Brown <broonie@kernel.org>,
- Damien Le Moal <Damien.LeMoal@wdc.com>, Johannes Thumshirn <jthumshirn@suse.de>,
- Oleksandr Natalenko <oleksandr@natalenko.name>,
- Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20181018115512.15131-2-boris.brezillon@bootlin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,22 +33,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Oct 17, 2018 at 4:59 PM Bryan Gurney <bgurney@redhat.com> wrote:
 
-> I feel strongly about the prevention of users running into errors
-> because of an incorrect scheduler default, because I encountered that
-> situation three times in my testing with zoned block devices. The
-> switch to SCSI_MQ would resolve that, since mq-deadline is the
-> default, but in my case, I was using Fedora 28, which disables
-> CONFIG_SCSI_MQ_DEFAULT (which is enabled in the 4.18 kernel), so my
-> default scheduler was cfq.
 
-I think we should make a patch to the kernel that makes it
-impossible (even from sysfs) to choose a non-zone aware
-scheduler for these devices.
-
-It's another topic than $SUBJECT patch though. I take this
-into account in this version.
-
-Yours,
-Linus Walleij
+Le 18/10/2018 à 13:55, Boris Brezillon a écrit :
+> When the NOR supports 4 bytes opcodes we should use those instead of
+> switching the flash in 4-bytes mode. This way, we don't have to restore
+> the addressing mode when resetting the board.
+> 
+> Reported-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Reviewed-by: Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>
+> Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+> ---
+> Changes in v2:
+> - None
+> ---
+>  drivers/mtd/spi-nor/spi-nor.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/mtd/spi-nor/spi-nor.c b/drivers/mtd/spi-nor/spi-nor.c
+> index 9155d3b9c37b..72536a5dfe05 100644
+> --- a/drivers/mtd/spi-nor/spi-nor.c
+> +++ b/drivers/mtd/spi-nor/spi-nor.c
+> @@ -2643,6 +2643,7 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
+>  		break;
+>  
+>  	case BFPT_DWORD1_ADDRESS_BYTES_4_ONLY:
+> +	case BFPT_DWORD1_ADDRESS_BYTES_3_OR_4:
+>  		nor->flags |= SNOR_F_4B_OPCODES;
+>  		nor->addr_width = 4;
+>  		break;
+> 
