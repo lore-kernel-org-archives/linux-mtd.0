@@ -1,7 +1,7 @@
 Received: from mail.bootlin.com ([62.4.15.54])
  by bombadil.infradead.org with esmtp (Exim 4.90_1 #2 (Red Hat Linux))
- id 1gDPXV-0003Sy-Fa
- for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:49:54 +0000
+ id 1gDPXV-0003SZ-FU
+ for linux-mtd@lists.infradead.org; Fri, 19 Oct 2018 07:49:55 +0000
 From: Boris Brezillon <boris.brezillon@bootlin.com>
 To: David Woodhouse <dwmw2@infradead.org>,
  Brian Norris <computersforpeace@gmail.com>,
@@ -14,10 +14,9 @@ Cc: Rob Herring <robh+dt@kernel.org>, Pawel Moll <pawel.moll@arm.com>,
  Kumar Gala <galak@codeaurora.org>, devicetree@vger.kernel.org,
  Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>,
  Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v2 13/15] dt-binding: mtd: physmap: Document the addr-gpios
- property
-Date: Fri, 19 Oct 2018 09:49:06 +0200
-Message-Id: <20181019074908.13226-14-boris.brezillon@bootlin.com>
+Subject: [PATCH v2 05/15] mtd: maps: physmap: Use devm_ioremap_resource()
+Date: Fri, 19 Oct 2018 09:48:58 +0200
+Message-Id: <20181019074908.13226-6-boris.brezillon@bootlin.com>
 In-Reply-To: <20181019074908.13226-1-boris.brezillon@bootlin.com>
 References: <20181019074908.13226-1-boris.brezillon@bootlin.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,33 +28,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
  <mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Use devm_ioremap_resource() to replace the devm_request_mem_region() +
+devm_ioremap() combination.
 
-Add documentation for the addr-gpios. This extension to the physmap
-binding allow creating flash devices that are paged using GPIOs.
-
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 Signed-off-by: Boris Brezillon <boris.brezillon@bootlin.com>
+Reviewed-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
 ---
 Changes in v2:
-- Drop Rob's R-b (waiting for a second review)
+- Add Ricardo's R-b
 ---
- Documentation/devicetree/bindings/mtd/mtd-physmap.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mtd/maps/physmap.c | 23 ++++++-----------------
+ 1 file changed, 6 insertions(+), 17 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-index 232fa12e90ef..7df0dcaccb7d 100644
---- a/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-+++ b/Documentation/devicetree/bindings/mtd/mtd-physmap.txt
-@@ -29,6 +29,8 @@ file systems on embedded devices.
-  - use-advanced-sector-protection: boolean to enable support for the
-    advanced sector protection (Spansion: PPB - Persistent Protection
-    Bits) locking.
-+ - addr-gpios : (optional) List of GPIO descriptors that will be used to
-+   address the MSBs address lines. The order goes from LSB to MSB.
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index b98072a67d74..1d0f6f034a03 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -129,17 +129,15 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		if (!res)
+ 			break;
  
- For JEDEC compatible devices, the following additional properties
- are defined:
+-		dev_notice(&dev->dev, "physmap platform flash device: %pR\n",
+-			   res);
+-
+-		if (!devm_request_mem_region(&dev->dev, res->start,
+-					     resource_size(res),
+-					     dev_name(&dev->dev))) {
+-			dev_err(&dev->dev, "Could not reserve memory region\n");
+-			err = -ENOMEM;
++		info->maps[i].virt = devm_ioremap_resource(&dev->dev, res);
++		if (IS_ERR(info->maps[i].virt)) {
++			err = PTR_ERR(info->maps[i].virt);
+ 			goto err_out;
+ 		}
+ 
++		dev_notice(&dev->dev, "physmap platform flash device: %pR\n",
++			   res);
++
+ 		info->maps[i].name = dev_name(&dev->dev);
+ 		info->maps[i].phys = res->start;
+ 		info->maps[i].size = resource_size(res);
+@@ -148,15 +146,6 @@ static int physmap_flash_probe(struct platform_device *dev)
+ 		info->maps[i].pfow_base = physmap_data->pfow_base;
+ 		info->maps[i].map_priv_1 = (unsigned long)dev;
+ 
+-		info->maps[i].virt = devm_ioremap(&dev->dev,
+-						  info->maps[i].phys,
+-						  info->maps[i].size);
+-		if (info->maps[i].virt == NULL) {
+-			dev_err(&dev->dev, "Failed to ioremap flash region\n");
+-			err = -EIO;
+-			goto err_out;
+-		}
+-
+ 		simple_map_init(&info->maps[i]);
+ 
+ 		probe_type = rom_probe_types;
 -- 
 2.14.1
